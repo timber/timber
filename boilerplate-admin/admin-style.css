@@ -1,0 +1,52 @@
+/* body.settings_page_timber-admin */
+#timber-options-wrap {
+  width: 100%;
+  max-width: 900px;
+  padding: 3em;
+}
+
+#timber-options-wrap h2 {
+  margin-bottom:2em;
+}
+
+#timber-options-wrap #icon-tools {
+  position: relative;
+  top: -10px;
+}
+
+#timber-options-wrap input[type="checkbox"] {
+  float:left;
+  margin:0 6px 0 -20px;
+}
+
+#timber-options-wrap p input {
+  border-color:#666;
+}
+
+#timber-options-wrap table.form-table tr {
+	border-top:1px solid #666;
+}
+
+#timber-options-wrap table.form-table tr:nth-child(odd){
+	background:#ccc;
+}
+
+#timber-options-wrap table.form-table td {
+	padding:8px 10px 8px 20px;
+}
+
+#timber-options-wrap table.form-table p {
+	margin:0 0 1px;
+	color:#444;
+}
+
+#timber-options-wrap code {
+	display:block;
+	font-weight: normal;
+	background:#000;
+	color:lime;
+}
+
+#timber-options-wrap p code {
+	display:inline;
+}
