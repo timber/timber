@@ -1,20 +1,16 @@
 <?php
 /**
- * The template for displaying 404 pages (Not Found).
+ * The template for displaying 404 pages (Not Found)
  *
- * @package WordPress
- * @subpackage Boilerplate
- * @since Boilerplate 1.0
+ * Please see /external/starkers-utilities.php for info on Starkers_Utilities::get_template_parts()
+ *
+ * @package 	WordPress
+ * @subpackage 	Starkers
+ * @since 		Starkers 4.0
  */
+?>
+<?php Starkers_Utilities::get_template_parts( array( 'parts/shared/html-header', 'parts/shared/header' ) ); ?>
 
-get_header(); ?>
-			<article id="post-0" class="post error404 not-found" role="main">
-				<h1><?php _e( 'Not Found', 'boilerplate' ); ?></h1>
-				<p><?php _e( 'Apologies, but the page you requested could not be found. Perhaps searching will help.', 'boilerplate' ); ?></p>
-				<?php
-					get_search_form();
-					// add focus to search <input>
-					echo '<script>document.getElementById(\'s\') && document.getElementById(\'s\').focus();</script>'.PHP_EOL;
-				?>
-			</article>
-<?php get_footer(); ?>
+<h2>Page not found</h2>
+
+<?php Starkers_Utilities::get_template_parts( array( 'parts/shared/footer','parts/shared/html-footer' ) ); ?>

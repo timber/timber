@@ -1,28 +1,31 @@
 <?php
 /**
- * The template for displaying Category Archive pages.
+ * The template for displaying Category Archive pages
  *
- * @package WordPress
- * @subpackage Boilerplate
- * @since Boilerplate 1.0
+ * Please see /external/starkers-utilities.php for info on Starkers_Utilities::get_template_parts()
+ *
+ * @package 	WordPress
+ * @subpackage 	Starkers
+ * @since 		Starkers 4.0
  */
+?>
+<?php Starkers_Utilities::get_template_parts( array( 'parts/shared/html-header', 'parts/shared/header' ) ); ?>
 
-get_header(); ?>
+<?php if ( have_posts() ): ?>
+<h2>Category Archive: <?php echo single_cat_title( '', false ); ?></h2>
+<ol>
+<?php while ( have_posts() ) : the_post(); ?>
+	<li>
+		<article>
+			<h2><a href="<?php esc_url( the_permalink() ); ?>" title="Permalink to <?php the_title(); ?>" rel="bookmark"><?php the_title(); ?></a></h2>
+			<time datetime="<?php the_time( 'Y-m-d' ); ?>" pubdate><?php the_date(); ?> <?php the_time(); ?></time> <?php comments_popup_link('Leave a Comment', '1 Comment', '% Comments'); ?>
+			<?php the_content(); ?>
+		</article>
+	</li>
+<?php endwhile; ?>
+</ol>
+<?php else: ?>
+<h2>No posts to display in <?php echo single_cat_title( '', false ); ?></h2>
+<?php endif; ?>
 
-				<h1><?php
-					printf( __( 'Category Archives: %s', 'boilerplate' ), '' . single_cat_title( '', false ) . '' );
-				?></h1>
-				<?php
-					$category_description = category_description();
-					if ( ! empty( $category_description ) )
-						echo '' . $category_description . '';
-
-				/* Run the loop for the category page to output the posts.
-				 * If you want to overload this in a child theme then include a file
-				 * called loop-category.php and that will be used instead.
-				 */
-				get_template_part( 'loop', 'category' );
-				?>
-
-<?php get_sidebar(); ?>
-<?php get_footer(); ?>
+<?php Starkers_Utilities::get_template_parts( array( 'parts/shared/footer','parts/shared/html-footer' ) ); ?>

@@ -7,44 +7,40 @@
  *
  * Learn more: http://codex.wordpress.org/Template_Hierarchy
  *
- * @package WordPress
- * @subpackage Boilerplate
- * @since Boilerplate 1.0
+ * Please see /external/starkers-utilities.php for info on Starkers_Utilities::get_template_parts() 
+ *
+ * @package 	WordPress
+ * @subpackage 	Starkers
+ * @since 		Starkers 4.0
  */
+?>
+<?php Starkers_Utilities::get_template_parts( array( 'parts/shared/html-header', 'parts/shared/header' ) ); ?>
 
-get_header(); ?>
-<?php
-	/* Queue the first post, that way we know
-	 * what date we're dealing with (if that is the case).
-	 *
-	 * We reset this later so we can run the loop
-	 * properly with a call to rewind_posts().
-	 */
-	if ( have_posts() )
-		the_post();
-?>
-					<h1 class="page-title"><?php
-						if ( is_day() ) :
-							printf( __( 'Daily Archives: %s', 'boilerplate' ), get_the_date() );
-						elseif ( is_month() ) :
-							printf( __( 'Monthly Archives: %s', 'boilerplate' ), get_the_date('F Y') );
-						elseif ( is_year() ) :
-							printf( __( 'Yearly Archives: %s', 'boilerplate' ), get_the_date('Y') );
-						else :
-							_e( 'Blog Archives', 'boilerplate' );
-						endif;
-					?></h1>
-<?php
-	/* Since we called the_post() above, we need to
-	 * rewind the loop back to the beginning that way
-	 * we can run the loop properly, in full.
-	 */
-	rewind_posts();
-	/* Run the loop for the archives page to output the posts.
-	 * If you want to overload this in a child theme then include a file
-	 * called loop-archives.php and that will be used instead.
-	 */
-	 get_template_part( 'loop', 'archive' );
-?>
-<?php get_sidebar(); ?>
-<?php get_footer(); ?>
+<?php if ( have_posts() ): ?>
+
+<?php if ( is_day() ) : ?>
+<h2>Archive: <?php echo  get_the_date( 'D M Y' ); ?></h2>							
+<?php elseif ( is_month() ) : ?>
+<h2>Archive: <?php echo  get_the_date( 'M Y' ); ?></h2>	
+<?php elseif ( is_year() ) : ?>
+<h2>Archive: <?php echo  get_the_date( 'Y' ); ?></h2>								
+<?php else : ?>
+<h2>Archive</h2>	
+<?php endif; ?>
+
+<ol>
+<?php while ( have_posts() ) : the_post(); ?>
+	<li>
+		<article>
+			<h2><a href="<?php esc_url( the_permalink() ); ?>" title="Permalink to <?php the_title(); ?>" rel="bookmark"><?php the_title(); ?></a></h2>
+			<time datetime="<?php the_time( 'Y-m-d' ); ?>" pubdate><?php the_date(); ?> <?php the_time(); ?></time> <?php comments_popup_link('Leave a Comment', '1 Comment', '% Comments'); ?>
+			<?php the_content(); ?>
+		</article>
+	</li>
+<?php endwhile; ?>
+</ol>
+<?php else: ?>
+<h2>No posts to display</h2>	
+<?php endif; ?>
+
+<?php Starkers_Utilities::get_template_parts( array( 'parts/shared/footer','parts/shared/html-footer' ) ); ?>
