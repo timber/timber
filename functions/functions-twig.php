@@ -1,10 +1,10 @@
 <?php
-	function get_twig(){
-		require_once(THEME_DIR.'/Twig/Autoloader.php');
+	function get_twig($uri){
+		require_once(TIMBER_URI.'/Twig/lib/Twig/Autoloader.php');
 		Twig_Autoloader::register();
-		$loader = new Twig_Loader_Filesystem(THEME_DIR.'/views/');
+		$loader = new Twig_Loader_Filesystem($uri.'/views/');
 		$twig = new Twig_Environment($loader, array(
-    		/*'cache' => THEME_DIR.'/twig-cache',*/
+    		/*'cache' => TIMBER_URI.'/twig-cache',*/
 			'debug' => false,
 			'autoescape' => false
 		));
@@ -17,16 +17,31 @@
 		$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
 		$twig->addFilter('editable', new Twig_Filter_Function('twig_editable'));
 		$twig->addFilter('cdn', new Twig_Filter_Function('twig_cdn'));
+
+		$twig->addFilter('wp_head', new Twig_Filter_Function('twig_wp_head'));
+		$twig->addFilter('wp_footer', new Twig_Filter_Function('twig_wp_footer'));
 		return $twig;
 	}
 
+	function twig_wp_head(){
+		wp_head();
+	}
+
+	function twig_wp_footer(){
+		wp_footer();
+	}
+
 	function twig_cdn($path){
-		return $path;
-		return 'http://cloudfront.upstatement.com'.$path;
+		return 'http://yourcdn.com'.$path;
 	}
 
 	function render_twig($filename, $data = array(), $render = true){
-		$twig = get_twig();
+		
+		$uri = TIMBER_URI;
+		if (file_exists(THEME_URI.'/'.$filename)){
+			$uri = THEME_URI;
+		}
+		$twig = get_twig($uri);
 		$output = $twig->render($filename, $data);
 		if ($render){
 			echo $output;

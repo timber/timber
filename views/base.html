@@ -1,0 +1,13 @@
+        <div id="content">
+            {% if title %}<h1>{{title}}</h1>{% endif %}
+            {% block content %}
+                Sorry, no content
+            {% endblock %}
+        </div>
+        <div id="footer">
+            {% include 'footer.html' %}
+        </div>
+
+        {{ 0|wp_footer }}
+    </body>
+</html>

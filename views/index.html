@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+	
+	{% for post in posts %}
+		{% include 'summary.html' %}
+	{% endfor %}
+
+{% endblock %}

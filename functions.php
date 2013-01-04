@@ -14,8 +14,19 @@
 	Required external files
 	
 	======================================================================================================================== */
+	$timber = str_replace($_SERVER['DOCUMENT_ROOT'], '', __DIR__);
+	define("TIMBER", $timber);
+	define("TIMBER_URL", 'http://'.$_SERVER["HTTP_HOST"].TIMBER);
+	define("TIMBER_URI", $_SERVER["DOCUMENT_ROOT"].TIMBER);
 
-	require_once( 'external/starkers-utilities.php' );
+	define("THEME_URI", TIMBER_URI);
+
+	require_once('functions/starkers-utilities.php' );
+	require_once('functions/functions-twig.php');
+	require_once('functions/functions-post-master.php');
+	require_once('functions/functions-php-helper.php');
+	require_once('functions/functions-wp-helper.php');
+	require_once('functions/functions-theme-preview.php');
 
 	/* ========================================================================================================================
 	

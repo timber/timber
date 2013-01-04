@@ -5,6 +5,23 @@
 
 		}
 
+		function loop_to_array(){
+			$posts = array();
+			while ( have_posts() ) {
+				the_post(); 
+				$posts[] = PostMaster::get_post_info(get_the_ID());
+			}
+			return $posts;
+		}
+
+		function loop_to_post(){
+			if (have_posts()){
+				the_post(); 
+				return PostMaster::get_post_info(get_the_ID());
+			}
+			return false;
+		}
+
 		function get_post_id_by_name($post_name){
 			global $wpdb;
 			$query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$post_name'";
