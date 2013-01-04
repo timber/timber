@@ -1,80 +1,1702 @@
-/*
-Theme Name: 	Starkers
-Theme URI: 		http://viewportindustries.com/products/starkers
-Description: 	The totally nude Wordpress theme!
-Version: 		4.0
-Author: 		Elliot Jay Stocks & Keir Whitaker
-Author URI: 	http://viewportindustries.com
-Tags: 			starkers, naked, clean, basic
-*/
-
-/*
-===========================
-CONTENTS:
-
-01 Sensible defaults
-02 Typography
-03 Media queries 
-===========================
-*/
-
-/* ---------------------------------------------------------------------------------------------------------- 
-01 Sensible defaults ----------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------- */
-
-@import "css/reset.css";
-
-div,
-article,
-section,
-header,
-footer,
-nav,
-li					{ position:relative; /* For absolutely positioning elements within containers (add more to the list if need be) */ }
-.group:after 		{ display:block; height:0; clear:both; content:"."; visibility:hidden; /* For clearing */ }
-body 				{ background:#fff; /* Don't forget to style your body to avoid user overrides */ }
-::-moz-selection 	{ background:#ff0; color:#333; }
-::selection 		{ background:#ff0; color:#333; }
-
-/* ---------------------------------------------------------------------------------------------------------- 
-02 Typography -----------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------- */
-/*
-
-14 / 16	= 		0.875em 		(14px equivalent)
-16 / 16	= 		1em 			(16px equivalent)
-18 / 16 = 		1.125em 		(18px equivalent)
-21 / 16 = 		1.3125em 		(21px equivalent)
-24 / 16 = 		1.5em 			(24px equivalent)
-30 / 16 = 		1.875em 		(30px equivalent)
-
-*/
-
-body,
-input,
-textarea 			{ /* We strongly recommend you declare font-weight using numerical values, but check to see which weights you're exporting first */ }
-
-h1, 
-h2, 
-h3, 
-h4, 
-h5, 
-h6 					{ font-weight:bold; /* This helps to identify headings at the initial build stage, but you should write something more precise later on */ }
-
-/* ---------------------------------------------------------------------------------------------------------- 
-03 Media queries (using a mobile-first approach) ------------------------------------------------------------
----------------------------------------------------------------------------------------------------------- */
-
-/* 400 and up */
-@media screen and (min-width:400px) {
-
-					{ /* Place your styles here for all widths greater than 400px */ }
-
+/* line 17, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-/* Retina Display */
-@media screen and (-webkit-min-device-pixel-ratio:2) {
+/* line 30, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
 
-					{ /* Place your styles here for all 'Retina' screens */ }
+/* line 41, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
 
+/* line 47, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+img {
+  line-height: 0;
+  vertical-align: middle;
+}
+
+/* line 49, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+nav ul {
+  list-style: none;
+}
+
+/* line 51, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+blockquote, q {
+  quotes: none;
+}
+
+/* line 54, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+/* line 56, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+a {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+/* line 58, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+ins {
+  background-color: #ff9;
+  color: #000;
+  text-decoration: none;
+}
+
+/* line 60, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+mark {
+  background-color: #ff9;
+  color: #000;
+  font-style: italic;
+  font-weight: bold;
+}
+
+/* line 62, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+del {
+  text-decoration: line-through;
+}
+
+/* line 64, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+abbr[title], dfn[title] {
+  border-bottom: 1px dotted;
+  cursor: help;
+}
+
+/* line 67, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 69, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 0;
+}
+
+/* line 71, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+input, select {
+  vertical-align: middle;
+}
+
+/* line 84, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+body {
+  font: 13px/1.231 sans-serif;
+  *font-size: small;
+  /*text-rendering: optimizeLegibility;*/
+  /* this causes problems in Chrome for Windows and on iOS */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* line 87, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+select, input, textarea, button {
+  font: 99% sans-serif;
+}
+
+/* line 92, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+pre, code, kbd, samp {
+  font-family: monospace, sans-serif;
+}
+
+/* line 100, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+body, select, input, textarea {
+  color: #444;
+}
+
+/* line 109, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+}
+
+/* line 112, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+html {
+  overflow-y: scroll;
+}
+
+/* line 116, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+a:hover, a:active {
+  outline: none;
+}
+
+/* line 121, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+ul, ol {
+  list-style: none;
+}
+
+/* line 122, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+ol {
+  list-style-type: decimal;
+}
+
+/* line 125, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+nav ul, nav li {
+  margin: 0;
+}
+
+/* line 127, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+small {
+  font-size: 85%;
+}
+
+/* line 128, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+strong, th {
+  font-weight: bold;
+}
+
+/* line 130, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+td, td img {
+  vertical-align: top;
+}
+
+/* line 132, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+sub {
+  vertical-align: sub;
+  font-size: smaller;
+}
+
+/* line 133, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+sup {
+  vertical-align: super;
+  font-size: smaller;
+}
+
+/* line 135, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+pre {
+  padding: 15px;
+  white-space: pre;
+  white-space: pre-wrap;
+  white-space: pre-line;
+  word-wrap: break-word;
+}
+
+/* line 145, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+textarea {
+  overflow: auto;
+}
+
+/* line 147, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+.ie6 legend, .ie7 legend {
+  margin-left: -7px;
+}
+
+/* line 151, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+input[type="radio"] {
+  vertical-align: text-bottom;
+}
+
+/* line 152, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+input[type="checkbox"] {
+  vertical-align: bottom;
+}
+
+/* line 153, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+.ie7 input[type="checkbox"] {
+  vertical-align: baseline;
+}
+
+/* line 154, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+.ie6 input {
+  vertical-align: text-bottom;
+}
+
+/* line 157, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+label, input[type=button], input[type=submit], button {
+  cursor: pointer;
+}
+
+/* line 160, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+button, input, select, textarea {
+  margin: 0;
+}
+
+/* line 164, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+input:invalid, textarea:invalid {
+  border-radius: 1px;
+  -moz-box-shadow: 0px 0px 5px red;
+  -webkit-box-shadow: 0px 0px 5px red;
+  box-shadow: 0px 0px 5px red;
+}
+
+/* line 171, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+.no-boxshadow input:invalid,
+.no-boxshadow textarea:invalid {
+  background-color: #f0dddd;
+}
+
+/* line 177, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+::-moz-selection {
+  background: #27b99e;
+  color: #fff;
+  text-shadow: none;
+}
+
+/* line 178, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+::selection {
+  background: #27b99e;
+  color: #fff;
+  text-shadow: none;
+}
+
+/* line 181, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+a:link {
+  -webkit-tap-highlight-color: #FF5E99;
+}
+
+/* line 185, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+button {
+  width: auto;
+  overflow: visible;
+}
+
+/* line 189, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+.ie7 img {
+  -ms-interpolation-mode: bicubic;
+}
+
+/* line 197, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+.clearfix:before, .clearfix:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+
+/* line 201, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+.clearfix:after {
+  clear: both;
+}
+
+/* line 203, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+.clearfix {
+  zoom: 1;
+}
+
+/* line 211, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+.a11y-only {
+  position: absolute !important;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+/* !============================================= */
+/* ! Variables						  			  */
+/* !============================================= */
+/* !-- Universal ------------------------------------ */
+/* !-- Project ------------------------------------ */
+/* line 42, sprite/*.png */
+.sprite-sprite, .sprite-edit-off {
+  background: url('images/sprite-scc1f2af80b.png') no-repeat;
+}
+
+/* line 60, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/utilities/sprites/_base.scss */
+.sprite-edit-off {
+  background-position: 0 0;
+  height: 1px;
+  width: 1px;
+}
+
+/* line 301, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_mixins.scss */
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto;
+}
+
+/* !============================================= */
+/* ! Custom Fonts					   			  */
+/* !============================================= */
+/* Follow this format, y'hear:
+
+	@font-face { 
+		font-family: "Knockout32"; 
+		src: font-url('knockout/knockout-32.eot');
+		src: font-url('knockout/knockout-32?#iefix') format('embedded-opentype'),
+			 font-url('knockout/knockout-32.woff') format('woff'), 
+			 font-url('knockout/knockout-32.ttf') format('truetype'), 
+			 font-url('knockout/knockout-32.svg#webfontABgg4EO0') format('svg'); }	
+*/
+/* !============================================= */
+/* ! Universal						   			  */
+/* !============================================= */
+/* Kill the margin on the last column */
+/* line 11, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+.ui-block:last-child,
+.ui-block.last {
+  margin-right: 0;
+}
+
+/* !============================================= */
+/* ! Media Grid							   			  */
+/* !============================================= */
+/* !============================================= */
+/* ! Grids							   			  */
+/* !============================================= */
+/* Grid-2 vars */
+/* Grid-3 vars */
+/* Grid-3-rrl vars */
+/* Grid-4 vars */
+/* Grid-5 vars */
+/* ! Columns */
+/* line 287, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+.ui-block-25 {
+  width: 25%;
+}
+
+/* line 291, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+.ui-block-50 {
+  width: 50%;
+}
+
+/* line 295, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+.ui-block-75 {
+  width: 75%;
+}
+
+/* !============================================= */
+/* ! Spacers						   			  */
+/* !============================================= */
+/* Variables & Mixins */
+/* Selectors */
+/* line 325, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+.spacer {
+  margin-bottom: 50px;
+}
+
+/* line 329, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+.spacer-small {
+  margin-bottom: 10px;
+}
+
+/* line 333, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+.spacer-med {
+  margin-bottom: 25px;
+}
+
+/* line 337, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+.spacer-large {
+  margin-bottom: 75px;
+}
+
+/* !============================================= */
+/* ! Image Blocks						   		  */
+/* !============================================= */
+/* line 352, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+.imageblock-image {
+  float: left;
+  margin: 0 10px 0 0;
+}
+
+/* line 357, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+.imageblock-image-right {
+  float: right;
+  margin: 0 0 0 10px;
+}
+
+/* line 362, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+.imageblock-content {
+  display: table-cell;
+  vertical-align: top;
+  width: 1000em;
+}
+
+/* line 369, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+.ie6 .imageblock-content,
+.ie7 .imageblock-content {
+  display: block;
+  width: auto;
+  zoom: 1;
+}
+
+/* ---------------------------------------------- */
+/*	Lists							 			  */
+/* ---------------------------------------------- */
+/* line 28, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list {
+  padding: 0 0 0 22px;
+}
+/* line 10, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list > li {
+  margin-bottom: 6px;
+}
+/* line 20, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list.horiz > li {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  margin: 0 7px 0 0;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.list.horiz > li {
+  *display: inline;
+}
+
+/* line 33, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list-bull, .bull-list {
+  list-style: disc outside;
+  padding: 0 0 0 22px;
+}
+/* line 10, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list-bull > li, .bull-list > li {
+  margin-bottom: 6px;
+}
+/* line 20, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list-bull.horiz > li, .bull-list.horiz > li {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  margin: 0 7px 0 0;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.list-bull.horiz > li, .bull-list.horiz > li {
+  *display: inline;
+}
+/* line 36, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list-bull > .list-bull, .bull-list > .list-bull {
+  margin: 9px 0;
+  list-style-type: circle;
+}
+
+/* line 43, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list-alpha, .alpha-list {
+  list-style: lower-alpha outside;
+  padding: 0 0 0 22px;
+}
+/* line 10, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list-alpha > li, .alpha-list > li {
+  margin-bottom: 6px;
+}
+/* line 20, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list-alpha.horiz > li, .alpha-list.horiz > li {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  margin: 0 7px 0 0;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.list-alpha.horiz > li, .alpha-list.horiz > li {
+  *display: inline;
+}
+
+/* line 50, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.num-list, .list-num,
+.number-list, .list-number {
+  list-style: decimal outside;
+  padding: 0 0 0 22px;
+}
+/* line 10, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.num-list > li, .list-num > li,
+.number-list > li, .list-number > li {
+  margin-bottom: 6px;
+}
+/* line 20, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.num-list.horiz > li, .list-num.horiz > li,
+.number-list.horiz > li, .list-number.horiz > li {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  margin: 0 7px 0 0;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.num-list.horiz > li, .list-num.horiz > li,
+.number-list.horiz > li, .list-number.horiz > li {
+  *display: inline;
+}
+
+/* line 63, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list-horiz,
+.horiz-list {
+  padding: 0 0 0 22px;
+  padding: 0;
+}
+/* line 10, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list-horiz > li,
+.horiz-list > li {
+  margin-bottom: 6px;
+}
+/* line 20, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list-horiz.horiz > li,
+.horiz-list.horiz > li {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  margin: 0 7px 0 0;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.list-horiz.horiz > li,
+.horiz-list.horiz > li {
+  *display: inline;
+}
+/* line 66, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list-horiz > li,
+.horiz-list > li {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  margin: 0 4px 0 0;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.list-horiz > li,
+.horiz-list > li {
+  *display: inline;
+}
+/* line 69, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.list-horiz > li:not(:last-child):after,
+.horiz-list > li:not(:last-child):after {
+  content: '|';
+  margin-left: 8px;
+}
+/* line 73, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.ie .list-horiz > li:after, .ie
+.horiz-list > li:after {
+  content: '|';
+  margin-left: 8px;
+}
+/* line 76, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_lists.scss */
+.ie .list-horiz > li.last:after, .ie
+.horiz-list > li.last:after {
+  content: "";
+}
+
+/* ---------------------------------------------- */
+/*	Buttons							 			  */
+/* ---------------------------------------------- */
+/* line 163, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-small-light, .btn-small {
+  text-align: center;
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  line-height: normal;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -moz-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -ms-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+  font-size: 11px;
+  padding: 4px 11px 5px;
+  color: #333;
+  border-bottom-color: #bbb;
+  background-color: #e6e6e6;
+  background-repeat: no-repeat;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #e6e6e6));
+  background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -o-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: linear-gradient(top, #ffffff, #e6e6e6);
+  text-shadow: rgba(255, 255, 255, 0.75), 0, 1px, 1px;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.btn-small-light, .btn-small {
+  *display: inline;
+}
+/* line 47, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-small-light:hover, .btn-small:hover {
+  cursor: pointer;
+  background-position: 0 -15px;
+}
+/* line 51, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-small-light:focus, .btn-small:focus {
+  outline: 1px dotted #666;
+}
+/* line 68, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-small-light.active, .active.btn-small, .btn-small-light:active, .btn-small:active {
+  -webkit-box-shadow: rgba(0, 0, 0, 0.25) 0 2px 4px inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.25) 0 2px 4px inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 2px 4px inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+}
+/* line 72, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-small-light.disabled, .disabled.btn-small, .btn-small-light[disabled], [disabled].btn-small, .btn-small-light.disabled:hover, .disabled.btn-small:hover, .btn-small-light[disabled]:hover, [disabled].btn-small:hover {
+  cursor: default;
+  background-image: none;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=65);
+  opacity: 0.65;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+/* line 163, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-small-dark {
+  text-align: center;
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  line-height: normal;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -moz-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -ms-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+  font-size: 11px;
+  padding: 4px 11px 5px;
+  color: #fff;
+  border-color: #0064cd #0064cd #003f81;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  background-color: #0064cd;
+  background-repeat: repeat-x;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #049cdb), color-stop(100%, #0064cd));
+  background-image: -webkit-linear-gradient(top, #049cdb, #0064cd);
+  background-image: -moz-linear-gradient(top, #049cdb, #0064cd);
+  background-image: -o-linear-gradient(top, #049cdb, #0064cd);
+  background-image: -ms-linear-gradient(top, #049cdb, #0064cd);
+  background-image: linear-gradient(top, #049cdb, #0064cd);
+  text-shadow: rgba(0, 0, 0, 0.25) 0 -1px 0;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.btn-small-dark {
+  *display: inline;
+}
+/* line 47, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-small-dark:hover {
+  cursor: pointer;
+  background-position: 0 -15px;
+}
+/* line 51, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-small-dark:focus {
+  outline: 1px dotted #666;
+}
+
+/* line 163, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-small-alt {
+  text-align: center;
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  line-height: normal;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -moz-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -ms-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+  font-size: 11px;
+  padding: 4px 11px 5px;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.btn-small-alt {
+  *display: inline;
+}
+/* line 47, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-small-alt:hover {
+  cursor: pointer;
+  background-position: 0 -15px;
+}
+/* line 51, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-small-alt:focus {
+  outline: 1px dotted #666;
+}
+
+/* line 163, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-med-light, .btn, .btn-med, .btn-light {
+  text-align: center;
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  line-height: normal;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -moz-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -ms-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+  font-size: 13px;
+  padding: 5px 14px 6px;
+  color: #333;
+  border-bottom-color: #bbb;
+  background-color: #e6e6e6;
+  background-repeat: no-repeat;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #e6e6e6));
+  background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -o-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: linear-gradient(top, #ffffff, #e6e6e6);
+  text-shadow: rgba(255, 255, 255, 0.75), 0, 1px, 1px;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.btn-med-light, .btn, .btn-med, .btn-light {
+  *display: inline;
+}
+/* line 47, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-med-light:hover, .btn:hover, .btn-med:hover, .btn-light:hover {
+  cursor: pointer;
+  background-position: 0 -15px;
+}
+/* line 51, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-med-light:focus, .btn:focus, .btn-med:focus, .btn-light:focus {
+  outline: 1px dotted #666;
+}
+/* line 68, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-med-light.active, .active.btn, .active.btn-med, .active.btn-light, .btn-med-light:active, .btn:active, .btn-med:active, .btn-light:active {
+  -webkit-box-shadow: rgba(0, 0, 0, 0.25) 0 2px 4px inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.25) 0 2px 4px inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 2px 4px inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+}
+/* line 72, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-med-light.disabled, .disabled.btn, .disabled.btn-med, .disabled.btn-light, .btn-med-light[disabled], [disabled].btn, [disabled].btn-med, [disabled].btn-light, .btn-med-light.disabled:hover, .disabled.btn:hover, .disabled.btn-med:hover, .disabled.btn-light:hover, .btn-med-light[disabled]:hover, [disabled].btn:hover, [disabled].btn-med:hover, [disabled].btn-light:hover {
+  cursor: default;
+  background-image: none;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=65);
+  opacity: 0.65;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+/* line 163, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-med-dark, .btn-dark {
+  text-align: center;
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  line-height: normal;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -moz-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -ms-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+  font-size: 13px;
+  padding: 5px 14px 6px;
+  color: #fff;
+  border-color: #0064cd #0064cd #003f81;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  background-color: #0064cd;
+  background-repeat: repeat-x;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #049cdb), color-stop(100%, #0064cd));
+  background-image: -webkit-linear-gradient(top, #049cdb, #0064cd);
+  background-image: -moz-linear-gradient(top, #049cdb, #0064cd);
+  background-image: -o-linear-gradient(top, #049cdb, #0064cd);
+  background-image: -ms-linear-gradient(top, #049cdb, #0064cd);
+  background-image: linear-gradient(top, #049cdb, #0064cd);
+  text-shadow: rgba(0, 0, 0, 0.25) 0 -1px 0;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.btn-med-dark, .btn-dark {
+  *display: inline;
+}
+/* line 47, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-med-dark:hover, .btn-dark:hover {
+  cursor: pointer;
+  background-position: 0 -15px;
+}
+/* line 51, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-med-dark:focus, .btn-dark:focus {
+  outline: 1px dotted #666;
+}
+
+/* line 163, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-med-alt, .btn-alt {
+  text-align: center;
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  line-height: normal;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -moz-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -ms-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+  font-size: 13px;
+  padding: 5px 14px 6px;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.btn-med-alt, .btn-alt {
+  *display: inline;
+}
+/* line 47, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-med-alt:hover, .btn-alt:hover {
+  cursor: pointer;
+  background-position: 0 -15px;
+}
+/* line 51, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-med-alt:focus, .btn-alt:focus {
+  outline: 1px dotted #666;
+}
+
+/* line 163, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-large-light, .btn-large {
+  text-align: center;
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  line-height: normal;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -moz-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -ms-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+  font-size: 14px;
+  padding: 7px 16px 8px;
+  color: #333;
+  border-bottom-color: #bbb;
+  background-color: #e6e6e6;
+  background-repeat: no-repeat;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #e6e6e6));
+  background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -o-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: linear-gradient(top, #ffffff, #e6e6e6);
+  text-shadow: rgba(255, 255, 255, 0.75), 0, 1px, 1px;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.btn-large-light, .btn-large {
+  *display: inline;
+}
+/* line 47, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-large-light:hover, .btn-large:hover {
+  cursor: pointer;
+  background-position: 0 -15px;
+}
+/* line 51, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-large-light:focus, .btn-large:focus {
+  outline: 1px dotted #666;
+}
+/* line 68, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-large-light.active, .active.btn-large, .btn-large-light:active, .btn-large:active {
+  -webkit-box-shadow: rgba(0, 0, 0, 0.25) 0 2px 4px inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.25) 0 2px 4px inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 2px 4px inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+}
+/* line 72, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-large-light.disabled, .disabled.btn-large, .btn-large-light[disabled], [disabled].btn-large, .btn-large-light.disabled:hover, .disabled.btn-large:hover, .btn-large-light[disabled]:hover, [disabled].btn-large:hover {
+  cursor: default;
+  background-image: none;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=65);
+  opacity: 0.65;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+/* line 163, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-large-dark {
+  text-align: center;
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  line-height: normal;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -moz-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -ms-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+  font-size: 14px;
+  padding: 7px 16px 8px;
+  color: #fff;
+  border-color: #0064cd #0064cd #003f81;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  background-color: #0064cd;
+  background-repeat: repeat-x;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #049cdb), color-stop(100%, #0064cd));
+  background-image: -webkit-linear-gradient(top, #049cdb, #0064cd);
+  background-image: -moz-linear-gradient(top, #049cdb, #0064cd);
+  background-image: -o-linear-gradient(top, #049cdb, #0064cd);
+  background-image: -ms-linear-gradient(top, #049cdb, #0064cd);
+  background-image: linear-gradient(top, #049cdb, #0064cd);
+  text-shadow: rgba(0, 0, 0, 0.25) 0 -1px 0;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.btn-large-dark {
+  *display: inline;
+}
+/* line 47, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-large-dark:hover {
+  cursor: pointer;
+  background-position: 0 -15px;
+}
+/* line 51, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-large-dark:focus {
+  outline: 1px dotted #666;
+}
+
+/* line 163, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-large-alt {
+  text-align: center;
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  line-height: normal;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -moz-box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  box-shadow: rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -ms-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+  font-size: 14px;
+  padding: 7px 16px 8px;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.btn-large-alt {
+  *display: inline;
+}
+/* line 47, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-large-alt:hover {
+  cursor: pointer;
+  background-position: 0 -15px;
+}
+/* line 51, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_buttons.scss */
+.btn-large-alt:focus {
+  outline: 1px dotted #666;
+}
+
+/* ============================================= */
+/*	Type styles					   			 */
+/* ============================================= */
+/* line 29, src/style.scss */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* line 30, src/style.scss */
+strong {
+  font-weight: bold;
+}
+
+/* line 31, src/style.scss */
+em {
+  font-style: italic;
+}
+
+/* line 33, src/style.scss */
+body {
+  background-color: white;
+  color: #333333;
+  font-family: 'Helvetica Neue';
+}
+
+/* line 39, src/style.scss */
+.txt-oversize, .ftr-msg {
+  font: 100 18px/26px "proxima-nova", Helvetica, Arial, sans-serif;
+}
+/* line 41, src/style.scss */
+.txt-oversize > p, .ftr-msg > p {
+  margin-bottom: 18px;
+}
+
+/* line 46, src/style.scss */
+.txt {
+  font: 100 16px/24px "proxima-nova", Helvetica, Arial, sans-serif;
+  margin: 0 0 20px 0;
+}
+
+/* line 51, src/style.scss */
+.txt a, .txt-oversize a, .ftr-msg a {
+  color: #666;
+}
+/* line 54, src/style.scss */
+.txt a:hover, .txt-oversize a:hover, .ftr-msg a:hover {
+  color: #209781;
+}
+
+/* line 59, src/style.scss */
+.txt-dark {
+  color: #666;
+  font-weight: 400;
+}
+
+/* line 64, src/style.scss */
+.txt-center {
+  text-align: center;
+}
+
+/* line 68, src/style.scss */
+.h1, .article-h1,
+.portfolio-h1, .h2, .h3 {
+  font-family: "adelle", Georgia, Times, "Times New Roman", serif;
+  font-weight: 100;
+}
+
+/* line 73, src/style.scss */
+.h4, .section-h {
+  font-family: "proxima-nova", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+/* line 82, src/style.scss */
+.h1, .article-h1,
+.portfolio-h1 {
+  font-size: 36px;
+}
+@media (max-width: 500px) {
+  /* line 82, src/style.scss */
+  .h1, .article-h1,
+  .portfolio-h1 {
+    font-size: 28px;
+  }
+}
+
+/* line 88, src/style.scss */
+.h2 {
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+/* line 92, src/style.scss */
+.h3 {
+  font-size: 23px;
+}
+
+/* line 93, src/style.scss */
+.h4, .section-h {
+  font-size: 14px;
+}
+
+/* line 94, src/style.scss */
+.h5 {
+  font-size: 16px;
+}
+
+/* line 95, src/style.scss */
+.h6 {
+  font-size: 12px;
+}
+
+/* line 98, src/style.scss */
+.tile-h4 {
+  margin: 10px 0 0 0;
+  color: #999;
+  font: 600 14px/17px "proxima-nova", Helvetica, Arial, sans-serif;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -ms-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+
+/* line 105, src/style.scss */
+.section-h {
+  margin: 50px auto 30px;
+  text-align: center;
+}
+/* line 109, src/style.scss */
+.inset .section-h {
+  margin-top: 20px;
+}
+
+/* line 115, src/style.scss */
+.article-h1,
+.portfolio-h1 {
+  color: #000;
+}
+
+/* ============================================= */
+/*	Layout boxes						   			 */
+/* ============================================= */
+/* line 126, src/style.scss */
+.wrapper {
+  padding: 0 30px;
+}
+@media (min-width: 600px) {
+  /* line 126, src/style.scss */
+  .wrapper {
+    padding: 0 40px;
+  }
+}
+@media (min-width: 900px) {
+  /* line 126, src/style.scss */
+  .wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+}
+
+/* line 139, src/style.scss */
+.inset {
+  background-color: #161616;
+  border-top: 1px solid #222;
+  border-bottom: 1px solid #222;
+  padding: 30px 0;
+}
+
+/* line 146, src/style.scss */
+#content {
+  padding: 0px 0 0 0;
+}
+
+/* ============================================= */
+/*	Header						   			 */
+/* ============================================= */
+/* line 155, src/style.scss */
+.hdr {
+  background-color: #000;
+  padding: 15px 0 0px 0;
+  margin: 0 0 0px 0;
+  border-bottom: 1px solid #1d1d1d;
+  *zoom: 1;
+}
+/* line 38, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+.hdr:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+@media (min-width: 500px) {
+  /* line 155, src/style.scss */
+  .hdr {
+    padding-bottom: 15px;
+  }
+}
+@media (min-width: 900px) {
+  /* line 155, src/style.scss */
+  .hdr {
+    height: 70px;
+  }
+}
+/* line 170, src/style.scss */
+.hdr .wrapper {
+  padding: 0;
+}
+@media (min-width: 500px) {
+  /* line 170, src/style.scss */
+  .hdr .wrapper {
+    padding: 0 40px;
+  }
+}
+
+/* ============================================= */
+/*	Navigation						   			 */
+/* ============================================= */
+@media (min-width: 500px) {
+  /* line 182, src/style.scss */
+  .hdr-logo {
+    float: left;
+  }
+}
+
+/* line 188, src/style.scss */
+.hdr-logo-img {
+  display: block;
+  width: 164px;
+  height: 41px;
+  text-indent: -10000px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  margin: 0 auto 10px auto;
+}
+/* line 184, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_mixins.scss */
+.no-svg .hdr-logo-img {
+  background-image: url('images/icons/ups-logo.png?1355958250');
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='url('images/icons/ups-logo.png?1355958250')', sizingMethod='scale')";
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='url('images/icons/ups-logo.png?1355958250')', sizingMethod='scale')";
+}
+/* line 191, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_mixins.scss */
+.svg .hdr-logo-img {
+  background-image: url('images/icons/ups-logo.svg?1355958250');
+}
+@media (min-width: 500px) {
+  /* line 188, src/style.scss */
+  .hdr-logo-img {
+    display: block;
+    width: 164px;
+    height: 41px;
+    margin: 0;
+  }
+}
+
+/* line 206, src/style.scss */
+.hdr-nav #menu-main-nav li {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+}
+/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.hdr-nav #menu-main-nav li {
+  *display: inline;
+}
+/* line 210, src/style.scss */
+.hdr-nav #menu-main-nav li a {
+  font: 700 14px "proxima-nova", Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  color: #666;
+  letter-spacing: 2px;
+  display: block;
+}
+/* line 217, src/style.scss */
+.hdr-nav #menu-main-nav li a:hover {
+  color: #FFF;
+}
+/* line 225, src/style.scss */
+.hdr-nav #menu-main-nav li.current-menu-item a {
+  color: #FFF;
+}
+@media (max-width: 500px) {
+  /* line 231, src/style.scss */
+  .hdr-nav #menu-main-nav li {
+    width: 32.5%;
+    margin: 0;
+  }
+  /* line 234, src/style.scss */
+  .hdr-nav #menu-main-nav li a {
+    display: block;
+    height: 40px;
+    padding: 10px;
+    font: 700 12px "proxima-nova", Helvetica, Arial, sans-serif;
+    text-align: center;
+    background-color: #161616;
+  }
+}
+@media (min-width: 500px) {
+  /* line 205, src/style.scss */
+  .hdr-nav {
+    float: right;
+  }
+  /* line 249, src/style.scss */
+  .hdr-nav #menu-main-nav li {
+    margin: 0 20px 0 0;
+  }
+  /* line 253, src/style.scss */
+  .hdr-nav #menu-main-nav li a {
+    padding: 10px 0 0 0;
+  }
+}
+
+/* ============================================= */
+/*	Footer						   			 */
+/* ============================================= */
+/* line 264, src/style.scss */
+.ftr {
+  text-align: center;
+  background-color: #000;
+  padding: 40px 0;
+  margin-top: 100px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.05) 0 1px 21px 2px;
+  -moz-box-shadow: rgba(255, 255, 255, 0.05) 0 1px 21px 2px;
+  box-shadow: rgba(255, 255, 255, 0.05) 0 1px 21px 2px;
+}
+@media (min-width: 900px) {
+  /* line 264, src/style.scss */
+  .ftr {
+    min-height: 115px;
+  }
+}
+
+/* line 276, src/style.scss */
+.ftr-logo-mod {
+  display: block;
+  padding: 20px;
+  margin: -60px auto 20px;
+  height: 70px;
+  width: 70px;
+  background-color: #000;
+  text-align: center;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  -ms-border-radius: 100px;
+  -o-border-radius: 100px;
+  border-radius: 100px;
+  -webkit-box-shadow: #1d1d1d 0px 2px 0px;
+  -moz-box-shadow: #1d1d1d 0px 2px 0px;
+  box-shadow: #1d1d1d 0px 2px 0px;
+}
+
+/* line 288, src/style.scss */
+.ftr-logo-icon {
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: auto;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  text-indent: -9999em;
+}
+/* line 184, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_mixins.scss */
+.no-svg .ftr-logo-icon {
+  background-image: url('images/icons/ups-lig.png?1356039104');
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='url('images/icons/ups-lig.png?1356039104')', sizingMethod='scale')";
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='url('images/icons/ups-lig.png?1356039104')', sizingMethod='scale')";
+}
+/* line 191, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_mixins.scss */
+.svg .ftr-logo-icon {
+  background-image: url('images/icons/ups-lig.svg?1355973468');
+}
+
+/* line 297, src/style.scss */
+.ftr-info {
+  text-align: center;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+/* line 303, src/style.scss */
+.ftr-msg {
+  font-size: 18px;
+  margin-bottom: 21px;
+  color: #888;
+}
+/* line 308, src/style.scss */
+.ftr-msg a {
+  color: #333333;
+}
+@media (min-width: 500px) {
+  /* line 313, src/style.scss */
+  .ftr-msg .br {
+    display: block;
+  }
+}
+
+/* ============================================= */
+/*	Homepage						   			 */
+/* ============================================= */
+/* line 325, src/style.scss */
+.cover {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  height: 350px;
+  border-bottom: 1px solid #222;
+}
+@media (min-width: 800px) {
+  /* line 325, src/style.scss */
+  .cover {
+    height: 500px;
+  }
+}
+
+/* line 337, src/style.scss */
+.slide {
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+  float: left;
+  width: 100%;
+  height: 500px;
+}
+@media (max-width: 800px) {
+  /* line 337, src/style.scss */
+  .slide {
+    background-position: 50% 50%;
+  }
+}
+@media (min-width: 800px) {
+  /* line 337, src/style.scss */
+  .slide {
+    height: 500px;
+  }
+}
+
+/* slider */
+/* line 355, src/style.scss */
+.cover .cover-slider {
+  /* required */
+  width: 100%;
+  height: 100%;
+}
+
+/* line 361, src/style.scss */
+.slider-message-hidden {
+  display: none;
+}
+
+/* line 366, src/style.scss */
+.slidenav .next, .slidenav .prev {
+  z-index: 10000;
+  position: absolute;
+  top: 254px;
+  width: 10%;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.25);
+  text-indent: -10000px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -ms-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+/* line 377, src/style.scss */
+.slidenav .next {
+  right: 0;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+/* line 184, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_mixins.scss */
+.no-svg .slidenav .next {
+  background-image: url('images/icons/arrow-right.png?1355958250');
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='url('images/icons/arrow-right.png?1355958250')', sizingMethod='scale')";
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='url('images/icons/arrow-right.png?1355958250')', sizingMethod='scale')";
+}
+/* line 191, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_mixins.scss */
+.svg .slidenav .next {
+  background-image: url('images/icons/arrow-right.svg?1355958250');
+}
+/* line 382, src/style.scss */
+.slidenav .prev {
+  left: 0;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+/* line 184, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_mixins.scss */
+.no-svg .slidenav .prev {
+  background-image: url('images/icons/arrow-left.png?1355958250');
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='url('images/icons/arrow-left.png?1355958250')', sizingMethod='scale')";
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='url('images/icons/arrow-left.png?1355958250')', sizingMethod='scale')";
+}
+/* line 191, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_mixins.scss */
+.svg .slidenav .prev {
+  background-image: url('images/icons/arrow-left.svg?1355958250');
+}
+@media (min-width: 800px) {
+  /* line 388, src/style.scss */
+  .slidenav .next, .slidenav .prev {
+    top: auto;
+    bottom: 60px;
+    width: 80px;
+    height: 60px;
+  }
+  /* line 394, src/style.scss */
+  .slidenav .next:hover, .slidenav .prev:hover {
+    background-color: rgba(0, 0, 0, 0.75);
+    width: 60px;
+  }
+}
+
+/* ============================================= */
+/*	Print Styles							     
+	Inline to avoid required HTTP connection     */
+/* ============================================= */
+@media print {
+  /* line 3, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_print.scss */
+  * {
+    background: transparent !important;
+    color: #000 !important;
+    /* Black prints faster: h5bp.com/s */
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* line 11, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_print.scss */
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+
+  /* line 15, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_print.scss */
+  a[href]:after {
+    content: " (" attr(href) ")";
+  }
+
+  /* line 19, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_print.scss */
+  abbr[title]:after {
+    content: " (" attr(title) ")";
+  }
+
+  /* line 29, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_print.scss */
+  .ir a:after,
+  a[href^="javascript:"]:after,
+  a[href^="#"]:after {
+    content: "";
+  }
+
+  /* line 34, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_print.scss */
+  pre,
+  blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+  }
+
+  /* line 39, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_print.scss */
+  thead {
+    display: table-header-group;
+    /* h5bp.com/t */
+  }
+
+  /* line 44, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_print.scss */
+  tr,
+  img {
+    page-break-inside: avoid;
+  }
+
+  /* line 48, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_print.scss */
+  img {
+    max-width: 100% !important;
+  }
+
+  @page {
+    margin: 0.5cm;
+}
+
+  /* line 58, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_print.scss */
+  p,
+  h2,
+  h3 {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* line 64, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/project/_print.scss */
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
 }

@@ -1,0 +1,40 @@
+/* ---------------------------------------------- */
+
+/*	Modals						 				  */ 
+
+/* ---------------------------------------------- */
+
+// Overrides default modal overlay style
+.simplemodal-overlay {
+	@include background-image(radial-gradient(rgba(127, 127, 127, 0.5), rgba(127, 127, 127, 0.5) 35%, rgba(0, 0, 0, 0.9)));
+	opacity: 1 !important;
+	max-height: 100%;
+	}
+
+// Base modal box styles
+@mixin modal-box {
+	padding: 8px;
+	background-color: #f5f5f5;
+	background-color: rgba(255, 255, 255, .5);
+	@include border-radius(16px);
+	.modal-content {
+		background-color: #fff;
+		padding: 20px;
+		@include border-radius(8px);
+		@include box-shadow(rgba(0,0,0,.35), 0px, 5px, 80px, 0);
+		}
+	}
+
+// Base modal style, hidden by default
+.modal {
+	@include modal-box;
+	display: none;
+	margin: auto;
+	position: fixed;
+	top: 30%;
+	left: 5%;
+	right: 5%;
+	width: 75%;
+	max-width: 480px;
+	z-index: 9999;
+	}

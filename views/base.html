@@ -1,9 +1,27 @@
-        <div id="content">
+        
+        <header class="hdr">
+            {% block header %}
+            <div class="wrapper">
+
+                <h1 class="hdr-logo" role="banner">
+                    <a class="hdr-logo-img" href="<?php echo home_url( '/' ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a>
+                </h1>
+
+                <nav id="access" class="hdr-nav" role="navigation">
+                    {{wp_nav_menu}}
+                </nav><!-- #access -->
+            </div>
+            {% endblock %}
+        </header>
+
+
+        <section id="content" role="main">
             {% if title %}<h1>{{title}}</h1>{% endif %}
             {% block content %}
                 Sorry, no content
             {% endblock %}
-        </div>
+        </section>
+
         <div id="footer">
             {% include 'footer.html' %}
         </div>

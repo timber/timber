@@ -15,23 +15,8 @@
 					{{post.post_content|wpautop|raw}}
 				</section>
 
-				<section class="respond">
-					<h3 class="h2">Comments</h3>
-					{{ respond }}
-				</section>
-
 				<section class="comments">
-					{% for comment in comments%}
-						<div class="blog-comment {{comment.comment_type}}" id="blog-comment-{{comment.comment_ID}}">
-							<!-- {{comment|print_r}} -->
-							{% if comment.comment_author != "" %}
-							<h5 class="comment-author">{{comment.comment_author}} says</h5>
-							{% else %}
-							<h5 class="comment-author">Anonymous says</h5>
-							{% endif %}
-							<div class="comment-content">{{comment.comment_content|wpautop}}</div>
-						</div>
-					{% endfor %}
+					{{comments}}
 				</section>
 
 			</article>

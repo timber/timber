@@ -1,0 +1,104 @@
+/* ---------------------------------------------- */
+
+/*	Tabs & Pills						 		  */ 
+
+/* ---------------------------------------------- */
+
+.tabs, .pills {
+	margin: 0 0 18px;
+	@include pie-clearfix;	
+
+	> li {
+		float: left;
+		}
+	> li > a {
+		@include trans;
+		display: block;
+		}
+	} // end .tabs, .pills
+
+.tabs {
+	border: 0px solid #ddd;
+	border-bottom-width: 1px;
+	
+	> li {
+		position: relative;
+		margin-bottom: -1px;	
+		}
+	> li > a {
+		padding: 11px 15px;
+		margin-right: 2px;
+		border: 1px solid transparent;
+		@include border-top-radius(4px);
+		&:hover {
+			background-color: #eee;
+			border-color: #eee #eee #ddd;			
+			}
+		}
+	.active > a, .active > a:hover,
+	a.active, a.active:hover {
+		color: #808080;
+		background-color: #fff;
+		border: 1px solid #ddd;
+		border-bottom-color: transparent;
+		cursor: default;
+		}
+
+	// Dropdown menus
+	.menu-dropdown, 
+	.dropdown-menu {
+		top: 35px;
+		border-width: 1px;
+		@include border-radius(0 6px 6px 6px);
+		}
+	a.menu:after, 
+	.dropdown-toggle:after {
+		border-top-color: #999;
+		margin-top: 15px;
+		margin-left: 5px;
+		}
+	li.open.menu .menu, 
+	.open.dropdown .dropdown-toggle {
+		border-color: #999;
+		}
+	li.open a.menu:after,
+	.dropdown.open .dropdown-toggle:after {
+		border-top-color: #555;
+		}
+	} // end tabs
+
+
+/* !-- Pills ----------------------------------- */
+
+.pills {
+	> li > a {
+		margin: 5px 3px 5px 0;
+		padding: 8px 15px;
+		@include border-radius(15px);
+		&:hover {
+			background-color: #eee;
+			}
+		}
+	a.active, a.active:hover,
+	.active > a, .active > a:hover {
+		color: #fff;
+		@include text-shadow(rgba(0, 0, 0, 0.25) 0 1px 1px);
+		background-color: $link;
+		}
+	// Stack pills vertically 
+	&.vert,	&.vertical,
+	&-vert,	&-vertical {
+		float: none;
+		}
+	} // end pills
+
+
+// Universal code to show / hide panes
+.tab-content > .tab-pane,
+.pill-content > .pill-pane,
+.tab-content > .pane {
+	display: none;
+	}
+.tab-content > .active, .pill-content > .active {
+	display: block;
+	}

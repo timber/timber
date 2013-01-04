@@ -22,6 +22,10 @@
 			$data['title'] = 'Archive: '.get_the_date( 'M Y' );	
 		} else if (is_year()){
 			$data['title'] = 'Archive: '.get_the_date( 'Y' );	
+		} else if (is_tag()){
+
+		} else if (is_category()){
+			$data['title'] = single_cat_title('', false);
 		}
 		if ( have_posts() ){
 			$data['posts'] = PostMaster::loop_to_array();

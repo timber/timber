@@ -1,0 +1,27 @@
+img {
+	max-width: 100%;
+	height: auto;
+	}
+
+	
+/* ! Variables & Mixins */
+
+@media screen and (min-width: 700px) {
+
+	.ui-grid-2 {
+		@include ui-grid-2(50%, 50%, 4%);
+		}
+
+	.ui-grid-3 {
+		@include ui-grid-3;	
+		}
+
+	.ui-grid-4 {
+		@include ui-grid-4;	
+		}
+
+	.ui-grid-lr {
+		@include ui-grid-lr;
+		}
+
+	}/*/mediaquery*/

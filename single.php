@@ -10,7 +10,11 @@
 ?>
 <?php get_header();
 	$data['post'] = PostMaster::loop_to_post();
-	$data['comments'] = get_comments(array('post_id' => $pi->ID));
-	$data['respond'] = WPHelper::get_comment_form(null, $pi->ID);
+
+	/* comments */
+	$comments['responses'] = get_comments(array('post_id' => $pi->ID));
+	$comments['respond'] = WPHelper::get_comment_form(null, $pi->ID);
+	$data['comments'] = render_twig('comments.html', $comments, false);
+
 	render_twig('single.html', $data);
 ?>

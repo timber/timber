@@ -1,0 +1,167 @@
+/* ---------------------------------------------- */
+
+/*	Buttons							 			  */ 
+
+/* ---------------------------------------------- */
+
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// Button Defaults
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+// Set default classes based on style
+
+.btn, .btn-med, .btn-light {
+	@extend .btn-med-light;
+}
+
+.btn-small {
+	@extend .btn-small-light;
+}
+
+.btn-large {
+	@extend .btn-large-light;
+}
+
+.btn-dark {
+	@extend .btn-med-dark;
+}
+
+.btn-alt {
+	@extend .btn-med-alt;
+}
+
+
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// Universal Button Styles
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+@mixin btn-basic($btn-size) {
+	text-align: center;
+	@include inline-block;
+	line-height: normal;
+	border: 1px solid #ccc;
+	@include border-radius(4px);
+	@include box-shadow(rgba(255, 255, 255, 0.2) 0 1px 0 inset, rgba(0, 0, 0, 0.05) 0 1px 2px);
+	@include trans;
+	
+	&:hover {
+		cursor: pointer;
+		background-position: 0 -15px;	
+		}
+	&:focus {
+		outline: 1px dotted #666;	
+		}
+	}
+
+
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// Specific Button Styles
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+@mixin btn-light {
+	color: #333;
+	border-bottom-color: #bbb;
+	background-color: #e6e6e6;
+	background-repeat: no-repeat;
+	@include background-image(linear-gradient(top, #fff, #e6e6e6));
+	@include text-shadow(rgba(255, 255, 255, 0.75), 0, 1px, 1px);
+	&.active, &:active {
+		@include box-shadow(rgba(0, 0, 0, .25) 0 2px 4px inset, rgba(0, 0, 0, .05) 0 1px 2px);
+		}
+	&.disabled, &[disabled],
+	&.disabled:hover, &[disabled]:hover {
+		cursor: default;
+		background-image: none;
+		@include opacity(.65);
+		@include box-shadow(none);
+		}	
+	}
+
+@mixin btn-dark {
+	color: #fff;
+	border-color: #0064cd #0064cd #003f81;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);	
+	background-color: #0064cd;
+	background-repeat: repeat-x;
+	@include background-image(linear-gradient(top, #049cdb, #0064cd));
+	@include text-shadow(rgba(0, 0, 0, 0.25) 0 -1px 0);
+	}
+
+@mixin btn-alt {
+	// If you have a third button style
+	// You can put the code here, ya' hear?
+	}
+
+
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// Universal Button Sizes
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+	
+@mixin btn-size-small {
+	font-size: 11px;
+	padding: 4px 11px 5px;		
+	}
+
+@mixin btn-size-med {
+	font-size: 13px;
+	padding: 5px 14px 6px;	
+	}
+
+@mixin btn-size-large {
+	font-size: 14px;
+	padding: 7px 16px 8px;		
+	}
+
+
+
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// Button Mixin
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+// Mixin variable defaults
+$btn-size: med !default;
+$btn-style: light !default;
+
+// Mixin used to create any combination of button sizes and styles
+@mixin btn($btn-size, $btn-style) {
+	@include btn-basic;
+
+	// Define button sizes & definitions
+	@if $btn-size == "s" or $btn-size == "small" {
+		@include btn-size-small;
+		}
+	@if $btn-size == "m" or $btn-size == "med" or $btn-size == "medium" or $btn-size == "reg" {
+		@include btn-size-med;
+		}
+	@if $btn-size == "l" or $btn-size == "large" {
+		@include btn-size-large;
+		}
+
+
+	// Define button styles & definitions	
+	@if $btn-style == "light" or $btn-style == "lt" or $btn-style == "reg" {
+		@include btn-light;
+		}
+	@if $btn-style == "dark" or $btn-style == "dk" {
+		@include btn-dark;
+		}
+	} // end btn
+
+
+
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// Button Class Generator
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+// Automagically output every combination of button style and size
+
+$size-defaults: small, med, large;
+$style-defaults: light, dark, alt;
+
+@each $size in $size-defaults {
+	@each $style in $style-defaults {
+	.btn-#{$size}-#{$style} {
+		@include btn($size, $style);
+		}
+	}
+}

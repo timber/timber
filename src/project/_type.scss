@@ -1,0 +1,250 @@
+/* ---------------------------------------------- */
+
+/*	Typography						 			  */ 
+
+/* ---------------------------------------------- */
+
+
+/* !-- Links ------------------------------------ */
+
+// Your standard link style. Create more as needed
+@mixin default-link {
+	@include trans;
+	color: $link;
+	&:hover {
+		color: darken($link, 10%);
+		}
+	}
+
+.default-link {
+	@include default-link;
+	}
+
+
+/* !-- Headlines/Headers ------------------------ */
+
+.page-h1 {
+	font: bold 36px/100% $sans;
+	color: #000;
+	> a {
+		// Direct descendent links will share master style  
+		@include unstyled-link;
+		}
+	}
+
+.page-h2 {
+	font: normal 21px/100% $sans;	
+	> a {
+		// Direct descendent links will share master style  
+		@include unstyled-link;
+		}
+	}
+
+.section-h1 {
+	font: bold 16px/100% $sans;
+	padding-bottom: 6px;
+	border-bottom: 1px solid #ccc;
+	color: #000;
+	> a {
+		// Direct descendent links will share master style  
+		@include unstyled-link;
+		&:hover {
+			text-decoration: underline;
+			}
+		}
+	}
+
+.section-h2 {
+	font: bold 12px/100% $sans;
+	color: #000;
+	padding-bottom: 4px;
+	border-bottom: 1px solid #ccc;
+	> a {
+		// Direct descendent links will share master style  
+		@include unstyled-link;
+		&:hover {
+			text-decoration: underline;
+			}
+		}	
+	}
+
+
+/* !-- Text ----------------------------------- */
+
+
+// Set default text size mixin
+@mixin text-large {
+	font: normal 16px/180% $serif;
+	color: #222;
+
+	// Links will take on default style
+	> a,
+	> p > a {
+		@include default-link;		
+		}
+	}
+
+@mixin text {
+	font: normal 13px/150% $serif;
+	color: #222;
+
+	// Links will take on default style
+	> a,
+	> p > a {
+		@include default-link;		
+		}
+	}
+
+@mixin text-small {
+	font: normal 13px/150% $serif;
+	color: #222;
+
+	// Links will take on default style
+	> a,
+	> p > a {
+		@include default-link;		
+		}
+	}
+
+
+// Create base classes based on mixin
+.text-l, .txt-l,
+.text-large, .txt-large {
+	@include text-large;
+
+	// For instances with multiple paragraphs, add margin 
+	> p {
+		margin-bottom: 16px;
+		}	
+	}
+
+.text, .txt,
+.text-m, .text-med, 
+.txt-m, .txt-med {
+	@include text;
+
+	// For instances with multiple paragraphs, add margin 
+	> p {
+		margin-bottom: 12px;
+		}
+	}
+
+.text-s, .txt-s,
+.text-small, .txt-small {
+	@include text-small;
+
+	// For instances with multiple paragraphs, add margin 
+	> p {
+		margin-bottom: 10px;
+		}	
+	}
+
+
+/* !-- Misc. Type -------------------------------- */
+
+// Set misc. text styles mixins
+@mixin overline {
+	font: normal 10px $sans;
+	color: #000;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	}
+
+@mixin source {
+	font: bold 10px $serif;
+	color: #bbb;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	}
+
+@mixin breadcrumb-glyph {
+	content: '\203A'; // Entity for the caret ">" character
+	margin-left: 8px;
+	position: relative;
+	top: -1px;	
+	}
+
+@mixin breadcrumb {
+	margin: 0 0 18px;
+	color: #aaa;
+	@include pie-clearfix;	
+	
+	> li {
+		@include inline-block;
+		font: bold 10px $sans;
+		text-transform: uppercase;
+		margin-right: 7px;
+		&:not(:last-child):after {
+			@include breadcrumb-glyph;	
+			}
+		// Rewrite this rule so IE 7-8 understand
+		.ie &:after {
+			@include breadcrumb-glyph;	
+			}
+		.ie &.last:after {
+			content: "";
+			}
+		}
+	
+	> li > a {
+		@include trans;
+		@include inline-block;
+		color: #aaa;
+		&:hover {
+			color: #666;
+			}
+		}
+	}
+
+
+// Create base classes from misc. text styles	
+.src,
+.source {
+	@include source;
+	}
+
+.overline {
+	@include overline;
+	margin-bottom: 10px;
+	}
+
+.breadcrumb {
+	@include breadcrumb;
+	}
+
+
+/* !-- Bugs ----------------------------------- */
+
+// Bug color variables
+$bug-new: #46a546;
+$bug-important: #c43c35;
+$bug-warning: #f89406;
+$bug-success: #46a546;
+$bug-notice: #62cffc;
+
+.bug {
+	@include inline-block;
+	padding: 1px 3px 2px;
+	font-size: 9.75px;
+	font-weight: bold;
+	color: #fff;
+	text-transform: uppercase;
+	white-space: nowrap;
+	background-color: #bbb;
+	@include border-radius(3px);
+	&.new {
+		background-color: $bug-new;
+		}
+	&.important {
+		background-color: $bug-important;
+		}
+	&.warning {
+		background-color: $bug-warning;
+		}
+	&.success {
+		background-color: $bug-success;
+		}
+	&.notice {
+		background-color: $bug-notice;
+		}
+	}

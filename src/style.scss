@@ -1,0 +1,410 @@
+// Theme Name: Blades
+// Description: The Upstatement Theme. WordPress using MVC pattern for better(ish) management and control
+// Author: Upstatement
+// Template: boilerplate
+// 
+
+//  ## Bring in all Compass Helpers 
+@import "partials/base";
+ 
+//  ## Base CSS 
+// @import "project/type";
+// @import "project/forms";
+// @import "project/tables";
+@import "project/lists";
+
+//  ## Components 
+@import "project/buttons";  
+// @import "project/dropdowns";
+// @import "project/tabs";
+// @import "project/modals";
+// @import "project/tooltips";
+
+ 
+  
+/* ============================================= */
+/*	Type styles					   			 */ 
+/* ============================================= */
+
+a 		{ 	text-decoration: none; color: inherit; }
+strong	{	font-weight: bold;	}
+em   	{	font-style: italic;	}
+
+body {
+	background-color: $background-color;
+	color: $text;
+	font-family:'Helvetica Neue';
+}
+
+.txt-oversize {
+	font: 100 18px/26px $proxima;
+	> p {
+		margin-bottom: 18px;		
+	}
+}
+
+.txt {
+	font: 100 16px/24px $proxima;
+	margin: 0 0 20px 0;
+}
+
+.txt a, .txt-oversize a{
+	color: #666;
+
+	&:hover {
+		color: $highlight-hover;
+	}
+}
+
+.txt-dark {
+	color: #666;
+	font-weight: 400;
+}
+
+.txt-center {
+	text-align: center;
+}
+
+.h1, .h2, .h3 {
+	font-family: $adelle;
+	font-weight: 100;
+}
+
+.h4 {
+	font-family: $proxima;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 3px;
+	color: #fff;
+	margin-bottom: 20px;
+}
+
+.h1 {	
+	font-size: 36px;  	
+	@media (max-width: 500px) {	
+		font-size: 28px;
+	} 
+}
+.h2 {	
+	font-size: 30px;  
+	margin-bottom: 20px;
+}
+.h3 {	font-size: 23px;  }
+.h4 {	font-size: 14px;  }
+.h5 {	font-size: 16px;  }
+.h6 {	font-size: 12px;  }
+
+
+.tile-h4 {
+	margin: 10px 0 0 0;
+	color: #999;
+	font: 600 14px/17px $proxima;
+	@include trans;
+}
+
+.section-h {
+	@extend .h4;
+	margin: 50px auto 30px;
+	text-align: center;
+	.inset & {
+		margin-top: 20px;
+	}
+}
+
+.article-h1,
+.portfolio-h1 {
+	@extend .h1;
+	color: #000;
+}
+
+
+
+/* ============================================= */
+/*	Layout boxes						   			 */ 
+/* ============================================= */
+
+.wrapper {
+	padding: 0 30px;
+
+	@media (min-width: 600px) {
+		padding: 0 40px;
+	}
+
+	@media (min-width: 900px){
+		max-width: 1100px;
+		margin: 0 auto;
+	}
+}
+
+.inset {
+	background-color: #161616;
+	border-top: 1px solid #222;
+	border-bottom: 1px solid #222;
+	padding: 30px 0;
+}
+
+#content {
+	padding: 0px 0 0 0;
+}
+
+/* ============================================= */
+/*	Header						   			 */ 
+/* ============================================= */
+
+
+.hdr {
+	background-color: #000;
+	padding: 15px 0 0px 0;
+	margin: 0 0 0px 0;
+	border-bottom: 1px solid #1d1d1d;
+	@include pie-clearfix;
+
+	@media (min-width: 500px) {
+		padding-bottom: 15px;
+	}
+
+	@media (min-width: 900px){
+		height: 70px;
+	}
+
+	.wrapper {
+		padding: 0;
+		@media (min-width: 500px) {
+			padding: 0 40px;
+		}
+	}
+}
+
+/* ============================================= */
+/*	Navigation						   			 */ 
+/* ============================================= */
+
+.hdr-logo {
+	@media (min-width: 500px){
+		float: left;
+	}	
+}
+
+.hdr-logo-img {
+	display: block;
+	width: 164px;
+	height: 41px;
+	text-indent: -10000px;
+	@include svg(ups-logo);
+	margin: 0 auto 10px auto;
+
+	@media (min-width: 500px){
+		display: block;
+		width: 164px;
+		height: 41px;
+		margin: 0;
+	}
+}
+
+
+.hdr-nav {
+	#menu-main-nav li {
+		@include inline-block;
+	}
+
+	#menu-main-nav li a {
+		font: 700 14px $proxima;
+		text-transform: uppercase;
+		color: #666;
+		letter-spacing: 2px;
+		display: block;
+
+		&:hover {
+			color: #FFF;
+		}
+
+		@media (max-width: 600px){
+		}
+	}
+
+	#menu-main-nav li.current-menu-item a {
+		color: #FFF;
+	}
+
+	@media (max-width: 500px){
+
+		#menu-main-nav li {
+			width: 32.5%;
+			margin: 0;
+			a {
+				display: block;
+				height: 40px;
+				padding: 10px;
+				font: 700 12px $proxima;
+				text-align: center;
+				background-color: #161616;
+			}
+		}
+	} // max-width 600
+
+	@media (min-width: 500px) {
+
+		float: right;
+
+		#menu-main-nav li {
+			margin: 0 20px 0 0;
+		}
+
+		#menu-main-nav li a {
+			padding: 10px 0 0 0;
+		}
+	}
+}
+
+
+/* ============================================= */
+/*	Footer						   			 */ 
+/* ============================================= */
+
+.ftr {
+	text-align: center;
+	background-color: #000;
+	padding: 40px 0;
+	margin-top: 100px;
+	@include box-shadow(rgba(255,255,255,.05) 0 1px 21px 2px);
+
+	@media (min-width: 900px){
+		min-height: 115px;
+	}
+}
+
+.ftr-logo-mod {
+	display: block;
+	padding: 20px;
+	margin: -60px auto 20px;
+	height: 70px;
+	width: 70px;
+	background-color: #000;
+	text-align: center;
+	@include border-radius(100px);
+	@include box-shadow(rgb(29, 29, 29) 0px 2px 0px);
+}
+
+.ftr-logo-icon {
+	display: block;
+	width: 30px;
+	height: 30px;
+	margin: auto;
+	@include svg(ups-lig);
+	text-indent: -9999em;
+}
+
+.ftr-info {
+	text-align: center;
+	color:#555;
+	margin-bottom: 6px;
+}
+
+.ftr-msg {
+	@extend .txt-oversize;
+	font-size: 18px;
+	margin-bottom: 21px;
+	color: #888;
+	a {
+		color: $text;
+	}
+
+	@media (min-width: 500px) {
+		.br {
+			display: block;
+		}
+	}
+}
+
+
+/* ============================================= */
+/*	Homepage						   			 */ 
+/* ============================================= */
+
+
+.cover {
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+	height: 350px;
+	border-bottom: 1px solid #222;
+
+	@media (min-width: 800px) {
+		height: 500px;
+	}
+}
+
+.slide {
+	@include background-size(cover);
+	background-repeat: no-repeat;
+	float: left;
+	width:100%;
+	height: 500px;
+
+	@media (max-width: 800px) {
+		background-position: 50% 50%;
+	}
+
+	@media (min-width: 800px) {
+		height: 500px;
+	}
+}
+
+
+/* slider */
+.cover .cover-slider {
+	/* required */
+	width: 100%;
+	height: 100%;
+}
+
+.slider-message-hidden {
+	display:none;
+}
+
+.slidenav {
+	.next, .prev {
+		z-index: 10000;
+		position: absolute;
+		top: 254px;
+		width: 10%;
+		height: 50px;
+		background-color: rgba(0,0,0,.25);
+		text-indent: -10000px;
+		@include trans;
+	}
+
+	.next {
+		right: 0;
+		@include svg(arrow-right);
+	}
+
+	.prev {
+		left: 0;
+		@include svg(arrow-left);
+	}
+
+	@media (min-width: 800px){
+		.next, .prev {
+			top: auto;
+			bottom: 60px;
+			width: 80px;
+			height: 60px;
+
+			&:hover {
+				background-color: rgba(0,0,0,.75);
+				width: 60px;
+			}
+		}
+	} // mq
+} // slidenav
+
+
+
+/* ============================================= */
+/*	Print Styles							     
+	Inline to avoid required HTTP connection     */
+/* ============================================= */
+
+// Import Print Styles
+@import "project/print";

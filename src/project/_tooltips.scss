@@ -1,0 +1,99 @@
+/* ---------------------------------------------- */
+
+/*	Tooltips						 			  */ 
+
+/* ---------------------------------------------- */
+
+/* !Universal Tooltip / Popover Styles */
+
+.tip-trigger,
+.pop-trigger {
+	position: relative;
+	}
+
+.tooltip,
+.popover {
+	@include trans(.2s, opacity, ease-in);
+	@include opacity(0);
+	z-index: 900;
+	position: absolute;
+	visibility: hidden;
+	text-align: center;
+	display: block;
+	}
+
+// Make tooltips and popovers appear on hover
+.tip-active .tooltip,
+.pop-active .popover {
+	@include opacity(.95);
+	visibility: visible;
+	}
+
+.triangles,
+.tooltip-triangles,
+.popover-triangles {
+	content: '\0020';
+	position: absolute;
+	border-top-width: 0;
+	z-index: 9999;
+	width: 0;
+	height: 0;
+	}
+
+/* !Tooltip Pointer */
+
+.tooltip:after {
+	@extend .tooltip-triangles;
+	border-left: 5px solid transparent; 
+	border-right: 5px solid transparent;
+	border-bottom: 5px solid rgba(0, 0, 0, 0.9);
+	top: -4px;
+	left: 48%;
+	}
+
+/* !Popover Pointer */
+
+.popover:before {
+	@extend .triangles;
+	border-left: 6px solid transparent; 
+	border-right: 6px solid transparent;
+	border-bottom: 6px solid rgba(0, 0, 0, 0.9);
+	top: -8px;
+	left: 10%;
+	}	
+
+/* Tooltip Aesthetics */
+
+$tooltip-box-padding: 4px 8px 5px !default;
+
+@mixin tooltip-box($tooltip-box-padding) {
+	font: normal 11px $sans;
+	background-color: rgba(0, 0, 0, 0.9);
+	color: #fff;
+	@include border-radius(4px);
+	padding: #{$tooltip-box-padding};
+	}
+
+.tooltip {	
+	@include tooltip-box;	
+	max-width: 300px;
+	}
+
+/* Popover Aesthetics */
+
+$popover-box-padding: 10px !default;
+
+@mixin popover-box {
+	font: normal 12px/130% $sans;
+	color: #404040;
+	border: 3px solid rgba(0, 0, 0, 0.9);
+	background-color: #fff;
+	@include box-shadow(rgba(0, 0, 0, 0.3) 0 3px 7px);
+	@include border-radius(6px);
+	padding: #{$popover-box-padding};
+	}
+
+.popover {
+	@include popover-box;
+	width: 250px;
+	}

@@ -1,0 +1,104 @@
+/* ---------------------------------------------- */
+
+/*	Tables						 			      */ 
+
+/* ---------------------------------------------- */
+
+// Base table style mixins
+@mixin table-basic {
+	width: 100%;
+	margin-bottom: 18px;
+	padding: 0;
+	font-size: 13px;
+	border-collapse: collapse;
+	th, td {
+		padding: 10px 10px 9px;
+		line-height: 18px;
+		text-align: left;
+		}
+	th {
+		padding-top: 9px;
+		font-weight: bold;
+		vertical-align: middle;
+		}
+	td {
+		vertical-align: top;
+		border-top: 1px solid #ddd;
+		}
+	tbody th {
+		border-top: 1px solid #ddd;
+	  	vertical-align: top;
+		}	
+	}
+
+@mixin table-condensed {
+	th, td {
+		padding: 5px 5px 4px;
+		}
+	}
+
+@mixin table-bordered {
+	border: 1px solid #ddd;
+	border-collapse: separate;
+	*border-collapse: collapse; /* IE7, collapse table to remove spacing */
+	@include border-radius(4px);
+
+	th + th, 
+	td + td,
+	th + td {
+		border-left: 1px solid #ddd;
+		}
+	thead tr:first-child th:first-child, 
+	tr:first-child td:first-child {
+		@include border-radius(4px 0 0 0);
+		}
+	thead tr:first-child th:last-child,
+	tbody tr:first-child td:last-child {
+		@include border-radius(0 4px 0 0);
+		}
+	tbody tr:last-child td:first-child {
+		@include border-radius(0 0 0 4px);
+		}
+	tbody tr:last-child td:last-child {
+		@include border-radius(0 0 4px 0px);
+		}
+	}
+
+@mixin table-zebra {
+	tbody tr:nth-child(odd) td, .zebra-striped tbody tr:nth-child(odd) th {
+	  background-color: #f9f9f9;
+		}
+	tbody tr:hover td, .zebra-striped tbody tr:hover th {
+	  background-color: #f5f5f5;
+		}
+	}
+
+// Base table style classes
+.basic-table, .table-basic {
+	@include table-basic; 
+	
+	&.condensed {
+		@include table-condensed;
+		}
+	&.bordered {
+		@include table-bordered;
+		}
+	&.zebra {
+		@include table-bordered;
+		}
+	} // end .basic-table
+
+.condensed-table, .table-condensed {
+	@include table-basic;
+	@include table-condensed;
+	}
+
+.bordered-table, .table-bordered {
+	@include table-basic;
+	@include table-bordered;
+	} // end bordered-table
+
+.zebra-table, .table-zebra {
+	@include table-basic;
+	@include table-zebra;	
+	}

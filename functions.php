@@ -77,7 +77,7 @@
 		wp_register_script( 'site', get_template_directory_uri().'/js/site.js', array( 'jquery' ) );
 		wp_enqueue_script( 'site' );
 
-		wp_register_style( 'screen', get_stylesheet_directory_uri().'/style.css', '', '', 'screen' );
+		wp_register_style( 'screen', TIMBER_URL.'/style.css', '', '', 'screen' );
         wp_enqueue_style( 'screen' );
 	}	
 

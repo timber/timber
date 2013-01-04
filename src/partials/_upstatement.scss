@@ -1,0 +1,15 @@
+/* ---------------------------------------------- */
+
+/*	Upstatement	Styles					 		  */ 
+
+/* ---------------------------------------------- */
+
+// Default properties for responsive images
+.resp-img {
+	max-width: 100%;
+	}
+
+// Default transform properties
+.trans {
+	@include trans;
+	}

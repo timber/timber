@@ -1,0 +1,36 @@
+/* ---------------------------------------------- */
+
+/*	Dropdowns						 			  */ 
+
+/* ---------------------------------------------- */
+
+/* !Universal Dropdown Styles */
+
+.dropdown {
+	position: relative;
+	@include pie-clearfix;
+	overflow: hidden;
+	}
+
+.dropdown-trigger,
+.dropdown-trigger-hover {
+	position: relative;
+	z-index: 101;
+	cursor: pointer;
+	}
+
+.dropdown-menu {
+	@include trans(.2s, opacity, ease-in);
+	@include opacity(0);
+	position: absolute;
+	z-index: 100;
+	}
+
+.dropdown-active {
+	.dropdown-menu {
+		@include opacity(1);
+		}
+	&.dropdown {
+		overflow: visible;
+		}
+	}
