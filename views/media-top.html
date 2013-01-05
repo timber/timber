@@ -1,0 +1,7 @@
+<div class="post-slideshow">
+	{% for media in media_items %}
+		<img src="{{media.image.url|path}}" class="ink-article-top-img" />
+		<p class="ink-article-top-credit">{{media.credit}}</p>
+		<p class="ink-article-top-caption">{{media.caption}}</p>
+	{% endfor %}
+</div>

@@ -23,7 +23,7 @@
 		} else if (is_year()){
 			$data['title'] = 'Archive: '.get_the_date( 'Y' );	
 		} else if (is_tag()){
-
+			$data['title'] = single_tag_title('', false);
 		} else if (is_category()){
 			$data['title'] = single_cat_title('', false);
 		}

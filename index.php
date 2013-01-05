@@ -15,7 +15,7 @@
 ?>
 <?php get_header();
 	$posts = PostMaster::loop_to_array();
-	$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' ) );
+	$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
 	$data['page_title'] = wp_title('|', false);
 	$data['posts'] = $posts;
 	render_twig('index.html', $data);

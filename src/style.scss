@@ -37,14 +37,14 @@ body {
 }
 
 .txt-oversize {
-	font: 100 18px/26px $proxima;
+	font: 100 18px/26px;
 	> p {
 		margin-bottom: 18px;		
 	}
 }
 
 .txt {
-	font: 100 16px/24px $proxima;
+	font: 100 16px/24px;
 	margin: 0 0 20px 0;
 }
 
@@ -66,12 +66,10 @@ body {
 }
 
 .h1, .h2, .h3 {
-	font-family: $adelle;
 	font-weight: 100;
 }
 
 .h4 {
-	font-family: $proxima;
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 3px;
@@ -98,7 +96,7 @@ body {
 .tile-h4 {
 	margin: 10px 0 0 0;
 	color: #999;
-	font: 600 14px/17px $proxima;
+	font: 600 14px/17px;
 	@include trans;
 }
 
@@ -117,7 +115,60 @@ body {
 	color: #000;
 }
 
+/* ============================================= */
+/*	Inkwell basics 					   			 */ 
+/* ============================================= */
 
+.ink-header {
+	background-color:black;
+}
+
+.ink-logo-text {
+	font-size:80px;
+	color:white;
+}
+
+/* Summary / Archive */
+.ink-summary {
+	border-bottom:1px solid black;
+}
+
+/* Article pages */
+
+.ink-article-top-img {
+	max-width:100%;
+}
+
+.ink-article-top-credit {
+	text-align:right;
+	color:#CCC;
+}
+
+/* Layout */
+
+.ink-layout-content {
+	padding:40px;
+	max-width:$max-width;
+	margin:auto;
+}
+
+.ink-layout-stream {
+	@media (min-width:900px) {
+		float:left;
+		width:75%;
+		&.no-sidebar {
+			float:none;
+			width:100%;
+		}
+	}
+}
+
+.ink-layout-sidebar {
+	@media (min-width:900px) {
+		float:left;
+		width:25%;
+	}
+}
 
 /* ============================================= */
 /*	Layout boxes						   			 */ 
@@ -131,7 +182,7 @@ body {
 	}
 
 	@media (min-width: 900px){
-		max-width: 1100px;
+		max-width: $max-width;
 		margin: 0 auto;
 	}
 }
@@ -144,7 +195,6 @@ body {
 }
 
 #content {
-	padding: 0px 0 0 0;
 }
 
 /* ============================================= */
@@ -175,229 +225,7 @@ body {
 	}
 }
 
-/* ============================================= */
-/*	Navigation						   			 */ 
-/* ============================================= */
 
-.hdr-logo {
-	@media (min-width: 500px){
-		float: left;
-	}	
-}
-
-.hdr-logo-img {
-	display: block;
-	width: 164px;
-	height: 41px;
-	text-indent: -10000px;
-	@include svg(ups-logo);
-	margin: 0 auto 10px auto;
-
-	@media (min-width: 500px){
-		display: block;
-		width: 164px;
-		height: 41px;
-		margin: 0;
-	}
-}
-
-
-.hdr-nav {
-	#menu-main-nav li {
-		@include inline-block;
-	}
-
-	#menu-main-nav li a {
-		font: 700 14px $proxima;
-		text-transform: uppercase;
-		color: #666;
-		letter-spacing: 2px;
-		display: block;
-
-		&:hover {
-			color: #FFF;
-		}
-
-		@media (max-width: 600px){
-		}
-	}
-
-	#menu-main-nav li.current-menu-item a {
-		color: #FFF;
-	}
-
-	@media (max-width: 500px){
-
-		#menu-main-nav li {
-			width: 32.5%;
-			margin: 0;
-			a {
-				display: block;
-				height: 40px;
-				padding: 10px;
-				font: 700 12px $proxima;
-				text-align: center;
-				background-color: #161616;
-			}
-		}
-	} // max-width 600
-
-	@media (min-width: 500px) {
-
-		float: right;
-
-		#menu-main-nav li {
-			margin: 0 20px 0 0;
-		}
-
-		#menu-main-nav li a {
-			padding: 10px 0 0 0;
-		}
-	}
-}
-
-
-/* ============================================= */
-/*	Footer						   			 */ 
-/* ============================================= */
-
-.ftr {
-	text-align: center;
-	background-color: #000;
-	padding: 40px 0;
-	margin-top: 100px;
-	@include box-shadow(rgba(255,255,255,.05) 0 1px 21px 2px);
-
-	@media (min-width: 900px){
-		min-height: 115px;
-	}
-}
-
-.ftr-logo-mod {
-	display: block;
-	padding: 20px;
-	margin: -60px auto 20px;
-	height: 70px;
-	width: 70px;
-	background-color: #000;
-	text-align: center;
-	@include border-radius(100px);
-	@include box-shadow(rgb(29, 29, 29) 0px 2px 0px);
-}
-
-.ftr-logo-icon {
-	display: block;
-	width: 30px;
-	height: 30px;
-	margin: auto;
-	@include svg(ups-lig);
-	text-indent: -9999em;
-}
-
-.ftr-info {
-	text-align: center;
-	color:#555;
-	margin-bottom: 6px;
-}
-
-.ftr-msg {
-	@extend .txt-oversize;
-	font-size: 18px;
-	margin-bottom: 21px;
-	color: #888;
-	a {
-		color: $text;
-	}
-
-	@media (min-width: 500px) {
-		.br {
-			display: block;
-		}
-	}
-}
-
-
-/* ============================================= */
-/*	Homepage						   			 */ 
-/* ============================================= */
-
-
-.cover {
-	position: relative;
-	width: 100%;
-	overflow: hidden;
-	height: 350px;
-	border-bottom: 1px solid #222;
-
-	@media (min-width: 800px) {
-		height: 500px;
-	}
-}
-
-.slide {
-	@include background-size(cover);
-	background-repeat: no-repeat;
-	float: left;
-	width:100%;
-	height: 500px;
-
-	@media (max-width: 800px) {
-		background-position: 50% 50%;
-	}
-
-	@media (min-width: 800px) {
-		height: 500px;
-	}
-}
-
-
-/* slider */
-.cover .cover-slider {
-	/* required */
-	width: 100%;
-	height: 100%;
-}
-
-.slider-message-hidden {
-	display:none;
-}
-
-.slidenav {
-	.next, .prev {
-		z-index: 10000;
-		position: absolute;
-		top: 254px;
-		width: 10%;
-		height: 50px;
-		background-color: rgba(0,0,0,.25);
-		text-indent: -10000px;
-		@include trans;
-	}
-
-	.next {
-		right: 0;
-		@include svg(arrow-right);
-	}
-
-	.prev {
-		left: 0;
-		@include svg(arrow-left);
-	}
-
-	@media (min-width: 800px){
-		.next, .prev {
-			top: auto;
-			bottom: 60px;
-			width: 80px;
-			height: 60px;
-
-			&:hover {
-				background-color: rgba(0,0,0,.75);
-				width: 60px;
-			}
-		}
-	} // mq
-} // slidenav
 
 
 

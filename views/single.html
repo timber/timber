@@ -6,21 +6,20 @@
 		<img src="{{post.banner_image}}" class="blog-banner-image" alt="{{post.post_title}}" />
 	{% endif %}
 	<div class="content-wrapper">
-		<div class="wrapper">
-			<article class="post-type-{{post.post_type}}" id="post-{{ID}}">
-				<section class="article-content">
-					
-					<h1 class="article-h1">{{post.post_title|editable(post.ID, 'post_title')}}</h1>
-					<p class="blog-author"><span>By</span> {{ post.author_data.display_name }} <span>&bull;</span> {{ post.display_date }}</p>
-					{{post.post_content|wpautop|raw}}
-				</section>
+		<article class="post-type-{{post.post_type}}" id="post-{{ID}}">
+			<section class="article-content">
+				{{media_top}}
 
-				<section class="comments">
-					{{comments}}
-				</section>
+				<h1 class="article-h1">{{post.post_title|editable(post.ID, 'post_title')}}</h1>
+				<p class="blog-author"><span>By</span> {{ post.author_data.display_name }} <span>&bull;</span> {{ post.display_date }}</p>
+				{{post.post_content|wpautop|raw}}
+			</section>
 
-			</article>
-		</div> <!-- /wrapper -->
+			<section class="comments">
+				{{comments}}
+			</section>
+
+		</article>
 	</div> <!-- /content-wrapper -->
 
 {% endblock %}

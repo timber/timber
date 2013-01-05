@@ -2,7 +2,15 @@
 	function get_twig($uri){
 		require_once(TIMBER_URI.'/Twig/lib/Twig/Autoloader.php');
 		Twig_Autoloader::register();
-		$loader = new Twig_Loader_Filesystem($uri.'/views/');
+		if (is_array($uri)){
+			$loaders = array();
+			foreach($uri as $u){
+				$loaders[] = new Twig_Loader_Filesystem($u.'/views/');
+			}
+			$loader = new Twig_loader_Chain($loaders);
+		} else {
+			$loader = new Twig_Loader_Filesystem($uri.'/views/');
+		}
 		$twig = new Twig_Environment($loader, array(
     		/*'cache' => TIMBER_URI.'/twig-cache',*/
 			'debug' => false,
@@ -20,6 +28,8 @@
 
 		$twig->addFilter('wp_head', new Twig_Filter_Function('twig_wp_head'));
 		$twig->addFilter('wp_footer', new Twig_Filter_Function('twig_wp_footer'));
+
+		
 		return $twig;
 	}
 
@@ -36,10 +46,17 @@
 	}
 
 	function render_twig($filename, $data = array(), $render = true){
-		
+		/*
 		$uri = TIMBER_URI;
 		if (file_exists(THEME_URI.'/'.$filename)){
 			$uri = THEME_URI;
+		}
+		*/
+		$uri = TIMBER_URI;
+		if (THEME_URI != TIMBER_URI){
+			$uri = array();
+			$uri[] = THEME_URI;
+			$uri[] = TIMBER_URI;
 		}
 		$twig = get_twig($uri);
 		$output = $twig->render($filename, $data);
