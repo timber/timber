@@ -1,4 +1,5 @@
 <?php
+
 	function get_twig($uri){
 		require_once(TIMBER_URI.'/Twig/lib/Twig/Autoloader.php');
 		Twig_Autoloader::register();
