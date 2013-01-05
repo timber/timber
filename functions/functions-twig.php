@@ -53,6 +53,9 @@
 			$uri = THEME_URI;
 		}
 		*/
+		if(!$data){
+			$data = array();
+		}
 		$uri = TIMBER_URI;
 		if (THEME_URI != TIMBER_URI){
 			$uri = array();
