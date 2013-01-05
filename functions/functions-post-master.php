@@ -76,6 +76,7 @@
 			$post->path = str_replace('http://', '', $post->path);
 			$post->thumb_src = self::get_post_thumbnail_src($post->ID);
 			$post->display_date = date(get_option('date_format'), strtotime($post->post_date));
+
 			if ($post->thumb_src){
 				$thumb_path = parse_url($post->thumb_src);
 				$post->thumb_path = $thumb_path['path'];
@@ -96,6 +97,32 @@
 			$post->parent = $post->post_parent;
 			$post->post_type_info = get_post_type_object($post->post_type);
 			return $post;
+		}
+
+		function find_posts_by_meta($key, $value){
+			global $wpdb;
+			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '$key' AND meta_value = '$value'";
+			$results = $wpdb->get_results($query);
+			$pids = array();
+			foreach($results as $result){
+				if (get_post($result->post_id)){
+					$pids[] = $result->post_id;
+				}
+			}
+			if (count($pids)){
+				return $pids;
+			}
+			return 0;
+		}
+
+		function find_post_by_meta($key, $value){
+			global $wpdb;
+			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '$key' AND meta_value = '$value' ORDER BY post_id";
+			$result = $wpdb->get_row($query);
+			if ($result && get_post($result->post_id)){
+				return $result->post_id;
+			}
+			return 0;
 		}
 
 		function get_related_posts_on_field($arr, $field){
