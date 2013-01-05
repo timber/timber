@@ -1,12 +1,12 @@
 /* Bring in all Compass Helpers as well as Tito's base style files */
-/* line 17, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 17, src/partials/_reset.scss */
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 
-/* line 30, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 30, src/partials/_reset.scss */
 html, body, div, span, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 abbr, address, cite, code,
@@ -28,36 +28,36 @@ time, mark, audio, video {
   background: transparent;
 }
 
-/* line 41, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 41, src/partials/_reset.scss */
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
   display: block;
 }
 
-/* line 47, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 47, src/partials/_reset.scss */
 img {
   line-height: 0;
   vertical-align: middle;
 }
 
-/* line 49, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 49, src/partials/_reset.scss */
 nav ul {
   list-style: none;
 }
 
-/* line 51, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 51, src/partials/_reset.scss */
 blockquote, q {
   quotes: none;
 }
 
-/* line 54, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 54, src/partials/_reset.scss */
 blockquote:before, blockquote:after,
 q:before, q:after {
   content: '';
   content: none;
 }
 
-/* line 56, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 56, src/partials/_reset.scss */
 a {
   margin: 0;
   padding: 0;
@@ -66,14 +66,14 @@ a {
   background: transparent;
 }
 
-/* line 58, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 58, src/partials/_reset.scss */
 ins {
   background-color: #ff9;
   color: #000;
   text-decoration: none;
 }
 
-/* line 60, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 60, src/partials/_reset.scss */
 mark {
   background-color: #ff9;
   color: #000;
@@ -81,24 +81,24 @@ mark {
   font-weight: bold;
 }
 
-/* line 62, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 62, src/partials/_reset.scss */
 del {
   text-decoration: line-through;
 }
 
-/* line 64, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 64, src/partials/_reset.scss */
 abbr[title], dfn[title] {
   border-bottom: 1px dotted;
   cursor: help;
 }
 
-/* line 67, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 67, src/partials/_reset.scss */
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-/* line 69, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 69, src/partials/_reset.scss */
 hr {
   display: block;
   height: 1px;
@@ -108,12 +108,12 @@ hr {
   padding: 0;
 }
 
-/* line 71, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 71, src/partials/_reset.scss */
 input, select {
   vertical-align: middle;
 }
 
-/* line 84, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 84, src/partials/_reset.scss */
 body {
   font: 13px/1.231 sans-serif;
   *font-size: small;
@@ -122,79 +122,79 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* line 87, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 87, src/partials/_reset.scss */
 select, input, textarea, button {
   font: 99% sans-serif;
 }
 
-/* line 92, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 92, src/partials/_reset.scss */
 pre, code, kbd, samp {
   font-family: monospace, sans-serif;
 }
 
-/* line 100, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 100, src/partials/_reset.scss */
 body, select, input, textarea {
   color: #444;
 }
 
-/* line 109, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 109, src/partials/_reset.scss */
 h1, h2, h3, h4, h5, h6 {
   font-weight: bold;
 }
 
-/* line 112, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 112, src/partials/_reset.scss */
 html {
   overflow-y: scroll;
 }
 
-/* line 116, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 116, src/partials/_reset.scss */
 a:hover, a:active {
   outline: none;
 }
 
-/* line 121, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 121, src/partials/_reset.scss */
 ul, ol {
   list-style: none;
 }
 
-/* line 122, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 122, src/partials/_reset.scss */
 ol {
   list-style-type: decimal;
 }
 
-/* line 125, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 125, src/partials/_reset.scss */
 nav ul, nav li {
   margin: 0;
 }
 
-/* line 127, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 127, src/partials/_reset.scss */
 small {
   font-size: 85%;
 }
 
-/* line 128, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 128, src/partials/_reset.scss */
 strong, th {
   font-weight: bold;
 }
 
-/* line 130, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 130, src/partials/_reset.scss */
 td, td img {
   vertical-align: top;
 }
 
-/* line 132, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 132, src/partials/_reset.scss */
 sub {
   vertical-align: sub;
   font-size: smaller;
 }
 
-/* line 133, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 133, src/partials/_reset.scss */
 sup {
   vertical-align: super;
   font-size: smaller;
 }
 
-/* line 135, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 135, src/partials/_reset.scss */
 pre {
   padding: 15px;
   white-space: pre;
@@ -203,47 +203,47 @@ pre {
   word-wrap: break-word;
 }
 
-/* line 145, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 145, src/partials/_reset.scss */
 textarea {
   overflow: auto;
 }
 
-/* line 147, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 147, src/partials/_reset.scss */
 .ie6 legend, .ie7 legend {
   margin-left: -7px;
 }
 
-/* line 151, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 151, src/partials/_reset.scss */
 input[type="radio"] {
   vertical-align: text-bottom;
 }
 
-/* line 152, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 152, src/partials/_reset.scss */
 input[type="checkbox"] {
   vertical-align: bottom;
 }
 
-/* line 153, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 153, src/partials/_reset.scss */
 .ie7 input[type="checkbox"] {
   vertical-align: baseline;
 }
 
-/* line 154, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 154, src/partials/_reset.scss */
 .ie6 input {
   vertical-align: text-bottom;
 }
 
-/* line 157, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 157, src/partials/_reset.scss */
 label, input[type=button], input[type=submit], button {
   cursor: pointer;
 }
 
-/* line 160, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 160, src/partials/_reset.scss */
 button, input, select, textarea {
   margin: 0;
 }
 
-/* line 164, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 164, src/partials/_reset.scss */
 input:invalid, textarea:invalid {
   border-radius: 1px;
   -moz-box-shadow: 0px 0px 5px red;
@@ -251,43 +251,43 @@ input:invalid, textarea:invalid {
   box-shadow: 0px 0px 5px red;
 }
 
-/* line 171, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 171, src/partials/_reset.scss */
 .no-boxshadow input:invalid,
 .no-boxshadow textarea:invalid {
   background-color: #f0dddd;
 }
 
-/* line 177, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 177, src/partials/_reset.scss */
 ::-moz-selection {
   background: #27b99e;
   color: #fff;
   text-shadow: none;
 }
 
-/* line 178, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 178, src/partials/_reset.scss */
 ::selection {
   background: #27b99e;
   color: #fff;
   text-shadow: none;
 }
 
-/* line 181, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 181, src/partials/_reset.scss */
 a:link {
   -webkit-tap-highlight-color: #FF5E99;
 }
 
-/* line 185, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 185, src/partials/_reset.scss */
 button {
   width: auto;
   overflow: visible;
 }
 
-/* line 189, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 189, src/partials/_reset.scss */
 .ie7 img {
   -ms-interpolation-mode: bicubic;
 }
 
-/* line 197, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 197, src/partials/_reset.scss */
 .clearfix:before, .clearfix:after {
   content: "\0020";
   display: block;
@@ -295,17 +295,17 @@ button {
   visibility: hidden;
 }
 
-/* line 201, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 201, src/partials/_reset.scss */
 .clearfix:after {
   clear: both;
 }
 
-/* line 203, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 203, src/partials/_reset.scss */
 .clearfix {
   zoom: 1;
 }
 
-/* line 211, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_reset.scss */
+/* line 211, src/partials/_reset.scss */
 .a11y-only {
   position: absolute !important;
   clip: rect(1px 1px 1px 1px);
@@ -323,14 +323,14 @@ button {
   background: url('images/sprite-scc1f2af80b.png') no-repeat;
 }
 
-/* line 60, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/utilities/sprites/_base.scss */
+/* line 60, ../../../../../../../Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/utilities/sprites/_base.scss */
 .sprite-edit-off {
   background-position: 0 0;
   height: 1px;
   width: 1px;
 }
 
-/* line 301, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_mixins.scss */
+/* line 301, src/partials/_mixins.scss */
 .visuallyhidden.focusable:active,
 .visuallyhidden.focusable:focus {
   clip: auto;
@@ -358,7 +358,7 @@ button {
 /* ! Universal						   			  */
 /* !============================================= */
 /* Kill the margin on the last column */
-/* line 11, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+/* line 11, src/partials/_layout.scss */
 .ui-block:last-child,
 .ui-block.last {
   margin-right: 0;
@@ -376,17 +376,17 @@ button {
 /* Grid-4 vars */
 /* Grid-5 vars */
 /* ! Columns */
-/* line 287, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+/* line 287, src/partials/_layout.scss */
 .ui-block-25 {
   width: 25%;
 }
 
-/* line 291, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+/* line 291, src/partials/_layout.scss */
 .ui-block-50 {
   width: 50%;
 }
 
-/* line 295, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+/* line 295, src/partials/_layout.scss */
 .ui-block-75 {
   width: 75%;
 }
@@ -396,22 +396,22 @@ button {
 /* !============================================= */
 /* Variables & Mixins */
 /* Selectors */
-/* line 325, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+/* line 325, src/partials/_layout.scss */
 .spacer {
   margin-bottom: 50px;
 }
 
-/* line 329, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+/* line 329, src/partials/_layout.scss */
 .spacer-small {
   margin-bottom: 10px;
 }
 
-/* line 333, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+/* line 333, src/partials/_layout.scss */
 .spacer-med {
   margin-bottom: 25px;
 }
 
-/* line 337, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+/* line 337, src/partials/_layout.scss */
 .spacer-large {
   margin-bottom: 75px;
 }
@@ -419,26 +419,26 @@ button {
 /* !============================================= */
 /* ! Image Blocks						   		  */
 /* !============================================= */
-/* line 352, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+/* line 352, src/partials/_layout.scss */
 .imageblock-image {
   float: left;
   margin: 0 10px 0 0;
 }
 
-/* line 357, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+/* line 357, src/partials/_layout.scss */
 .imageblock-image-right {
   float: right;
   margin: 0 0 0 10px;
 }
 
-/* line 362, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+/* line 362, src/partials/_layout.scss */
 .imageblock-content {
   display: table-cell;
   vertical-align: top;
   width: 1000em;
 }
 
-/* line 369, /Users/jared/Sites/timber-wordpress/wp-content/themes/timber/src/partials/_layout.scss */
+/* line 369, src/partials/_layout.scss */
 .ie6 .imageblock-content,
 .ie7 .imageblock-content {
   display: block;
@@ -454,7 +454,7 @@ button {
 
 /* line 11, src/patterns.scss */
 #style-hdr {
-  background: #222222 url('images/bg-leather.png?1351528248') 50% 50% repeat;
+  background: #222222 url('images/bg-leather.png?1357410311') 50% 50% repeat;
   padding: 20px 0;
   position: fixed;
   top: 0;
@@ -477,7 +477,7 @@ button {
   margin: 0 5%;
   *zoom: 1;
 }
-/* line 38, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+/* line 38, ../../../../../../../Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 #style-hdr .style-hdr-group:after {
   content: "";
   display: table;
@@ -570,7 +570,7 @@ button {
   padding: 30px 0 0;
   *zoom: 1;
 }
-/* line 38, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+/* line 38, ../../../../../../../Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 .style-node:after {
   content: "";
   display: table;
@@ -757,7 +757,7 @@ dl, dt, dd {
   vertical-align: middle;
   *vertical-align: auto;
 }
-/* line 7, /Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+/* line 7, ../../../../../../../Applications/LiveReload.app/Contents/Resources/SASS.lrplugin/lib/compass/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
 .style-meta .code-snip pre .pln:first-child {
   *display: inline;
 }
