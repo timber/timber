@@ -38,8 +38,9 @@
 	======================================================================================================================== */
 
 	add_theme_support('post-thumbnails');
+	add_theme_support('menus');
 	
-	// register_nav_menus(array('primary' => 'Primary Navigation'));
+	register_nav_menus(array('primary' => 'Primary Navigation'));
 
 	/* ========================================================================================================================
 	
@@ -50,16 +51,6 @@
 	add_action( 'wp_enqueue_scripts', 'starkers_script_enqueuer' );
 
 	add_filter( 'body_class', array( 'Starkers_Utilities', 'add_slug_to_body_class' ) );
-
-	/* ========================================================================================================================
-	
-	Custom Post Types - include custom post types and taxonimies here e.g.
-
-	e.g. require_once( 'custom-post-types/your-custom-post-type.php' );
-	
-	======================================================================================================================== */
-
-
 
 	/* ========================================================================================================================
 	
