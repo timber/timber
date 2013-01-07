@@ -27,6 +27,7 @@
 		} else if (is_category()){
 			$data['title'] = single_cat_title('', false);
 		}
+		$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
 		if ( have_posts() ){
 			$data['posts'] = PostMaster::loop_to_array();
 			render_twig('index.html', $data);
