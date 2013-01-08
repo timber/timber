@@ -1111,55 +1111,60 @@ em {
   font-style: italic;
 }
 
-/* line 33, src/style.scss */
+/* line 32, src/style.scss */
+.img {
+  max-width: 100%;
+}
+
+/* line 34, src/style.scss */
 body {
   background-color: white;
   color: #333333;
   font-family: 'Helvetica Neue';
 }
 
-/* line 39, src/style.scss */
+/* line 40, src/style.scss */
 .txt-oversize {
   font: 100 18px/26px;
 }
-/* line 41, src/style.scss */
+/* line 42, src/style.scss */
 .txt-oversize > p {
   margin-bottom: 18px;
 }
 
-/* line 46, src/style.scss */
+/* line 47, src/style.scss */
 .txt {
   font: 100 16px/24px;
   margin: 0 0 20px 0;
 }
 
-/* line 51, src/style.scss */
+/* line 52, src/style.scss */
 .txt a, .txt-oversize a {
   color: #666;
 }
-/* line 54, src/style.scss */
+/* line 55, src/style.scss */
 .txt a:hover, .txt-oversize a:hover {
   color: #209781;
 }
 
-/* line 59, src/style.scss */
+/* line 60, src/style.scss */
 .txt-dark {
   color: #666;
   font-weight: 400;
 }
 
-/* line 64, src/style.scss */
+/* line 65, src/style.scss */
 .txt-center {
   text-align: center;
 }
 
-/* line 68, src/style.scss */
+/* line 69, src/style.scss */
 .h1, .article-h1,
 .portfolio-h1, .h2, .h3 {
   font-weight: 100;
 }
 
-/* line 72, src/style.scss */
+/* line 73, src/style.scss */
 .h4, .section-h {
   font-weight: 700;
   text-transform: uppercase;
@@ -1168,46 +1173,46 @@ body {
   margin-bottom: 20px;
 }
 
-/* line 80, src/style.scss */
+/* line 81, src/style.scss */
 .h1, .article-h1,
 .portfolio-h1 {
   font-size: 36px;
 }
 @media (max-width: 500px) {
-  /* line 80, src/style.scss */
+  /* line 81, src/style.scss */
   .h1, .article-h1,
   .portfolio-h1 {
     font-size: 28px;
   }
 }
 
-/* line 86, src/style.scss */
+/* line 87, src/style.scss */
 .h2 {
   font-size: 30px;
   margin-bottom: 20px;
 }
 
-/* line 90, src/style.scss */
+/* line 91, src/style.scss */
 .h3 {
   font-size: 23px;
 }
 
-/* line 91, src/style.scss */
+/* line 92, src/style.scss */
 .h4, .section-h {
   font-size: 14px;
 }
 
-/* line 92, src/style.scss */
+/* line 93, src/style.scss */
 .h5 {
   font-size: 16px;
 }
 
-/* line 93, src/style.scss */
+/* line 94, src/style.scss */
 .h6 {
   font-size: 12px;
 }
 
-/* line 96, src/style.scss */
+/* line 97, src/style.scss */
 .tile-h4 {
   margin: 10px 0 0 0;
   color: #999;
@@ -1219,17 +1224,17 @@ body {
   transition: all 0.2s ease-in;
 }
 
-/* line 103, src/style.scss */
+/* line 104, src/style.scss */
 .section-h {
   margin: 50px auto 30px;
   text-align: center;
 }
-/* line 107, src/style.scss */
+/* line 108, src/style.scss */
 .inset .section-h {
   margin-top: 20px;
 }
 
-/* line 113, src/style.scss */
+/* line 114, src/style.scss */
 .article-h1,
 .portfolio-h1 {
   color: #000;
@@ -1238,37 +1243,37 @@ body {
 /* ============================================= */
 /*	Inkwell basics 					   			 */
 /* ============================================= */
-/* line 122, src/style.scss */
+/* line 123, src/style.scss */
 .ink-header {
   background-color: black;
 }
 
-/* line 126, src/style.scss */
+/* line 127, src/style.scss */
 .ink-logo-text {
   font-size: 80px;
   color: white;
 }
 
 /* Summary / Archive */
-/* line 132, src/style.scss */
+/* line 133, src/style.scss */
 .ink-summary {
   border-bottom: 1px solid black;
 }
 
 /* Article pages */
-/* line 138, src/style.scss */
+/* line 139, src/style.scss */
 .ink-article-top-img {
   max-width: 100%;
 }
 
-/* line 142, src/style.scss */
+/* line 143, src/style.scss */
 .ink-article-top-credit {
   text-align: right;
   color: #CCC;
 }
 
 /* Layout */
-/* line 149, src/style.scss */
+/* line 150, src/style.scss */
 .ink-layout-content {
   padding: 40px;
   max-width: 1500px;
@@ -1276,12 +1281,12 @@ body {
 }
 
 @media (min-width:900px) {
-  /* line 155, src/style.scss */
+  /* line 156, src/style.scss */
   .ink-layout-stream {
     float: left;
     width: 75%;
   }
-  /* line 159, src/style.scss */
+  /* line 160, src/style.scss */
   .ink-layout-stream.no-sidebar {
     float: none;
     width: 100%;
@@ -1289,7 +1294,7 @@ body {
 }
 
 @media (min-width:900px) {
-  /* line 166, src/style.scss */
+  /* line 167, src/style.scss */
   .ink-layout-sidebar {
     float: left;
     width: 25%;
@@ -1299,25 +1304,25 @@ body {
 /* ============================================= */
 /*	Layout boxes						   			 */
 /* ============================================= */
-/* line 177, src/style.scss */
+/* line 178, src/style.scss */
 .wrapper {
   padding: 0 30px;
 }
 @media (min-width: 600px) {
-  /* line 177, src/style.scss */
+  /* line 178, src/style.scss */
   .wrapper {
     padding: 0 40px;
   }
 }
 @media (min-width: 900px) {
-  /* line 177, src/style.scss */
+  /* line 178, src/style.scss */
   .wrapper {
     max-width: 1500px;
     margin: 0 auto;
   }
 }
 
-/* line 190, src/style.scss */
+/* line 191, src/style.scss */
 .inset {
   background-color: #161616;
   border-top: 1px solid #222;
@@ -1328,7 +1333,7 @@ body {
 /* ============================================= */
 /*	Header						   			 */
 /* ============================================= */
-/* line 205, src/style.scss */
+/* line 206, src/style.scss */
 .hdr {
   background-color: #000;
   padding: 15px 0 0px 0;
@@ -1343,23 +1348,23 @@ body {
   clear: both;
 }
 @media (min-width: 500px) {
-  /* line 205, src/style.scss */
+  /* line 206, src/style.scss */
   .hdr {
     padding-bottom: 15px;
   }
 }
 @media (min-width: 900px) {
-  /* line 205, src/style.scss */
+  /* line 206, src/style.scss */
   .hdr {
     height: 70px;
   }
 }
-/* line 220, src/style.scss */
+/* line 221, src/style.scss */
 .hdr .wrapper {
   padding: 0;
 }
 @media (min-width: 500px) {
-  /* line 220, src/style.scss */
+  /* line 221, src/style.scss */
   .hdr .wrapper {
     padding: 0 40px;
   }

@@ -8,7 +8,7 @@
 			foreach($uri as $u){
 				$loaders[] = new Twig_Loader_Filesystem($u.'/views/');
 			}
-			$loader = new Twig_loader_Chain($loaders);
+			$loader = new Twig_Loader_Chain($loaders);
 		} else {
 			$loader = new Twig_Loader_Filesystem($uri.'/views/');
 		}
@@ -21,6 +21,7 @@
 		$twig->addFilter('resize', new Twig_Filter_Function('twig_resize_image'));
 		$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
 		$twig->addFilter('print_r', new Twig_Filter_Function('twig_print_r'));
+		$twig->addFilter('get_src_from_attachment_id', new Twig_Filter_Function('twig_get_src_from_attachment_id'));
 		$twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
 		$twig->addFilter('tojpg', new Twig_Filter_Function('twig_img_to_jpg'));
 		$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
@@ -63,6 +64,9 @@
 			$uri[] = TIMBER_URI;
 		}
 		$twig = get_twig($uri);
+		
+		
+	
 		$output = $twig->render($filename, $data);
 		if ($render){
 			echo $output;
@@ -75,6 +79,12 @@
 			return $content;
 		}		
 		return ce_wrap_content_field($content, $ID, $field);
+	}
+
+	function twig_get_src_from_attachment_id($aid){
+		$src = PostMaster::get_image_path($aid);
+		return $src;
+
 	}
 
 	function twig_print_r($arr){

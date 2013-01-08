@@ -3,7 +3,12 @@
 	class WPHelper {
 
 		function __construct(){
+			add_filter('cron_schedules', array($this, 'cron_add_quarterly'));
+		}
 
+		function cron_add_quarterly($schedules) {
+			$schedules['quarterly'] = array('interval' => 900, 'display' => 'Every 15 minutes');
+			return $schedules;
 		}
 
 		function get_comment_form_title( $noreplytext = false, $replytext = false, $linktoparent = true ) {
@@ -104,3 +109,5 @@
 			return $return;
 		}
 	}
+
+	new WPHelper();
