@@ -15,6 +15,9 @@
  */
 ?>
 <?php 	get_header();
+
+		$templates = array('archive.html', 'index.html');
+
 		$data['title'] = 'Archive';
 		if (is_day()){
 			$data['title'] = 'Archive: '.get_the_date( 'D M Y' );	
@@ -30,5 +33,5 @@
 		$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
 		if ( have_posts() ){
 			$data['posts'] = PostMaster::loop_to_array();
-			render_twig('index.html', $data);
+			render_twig($templates, $data);
 		}
