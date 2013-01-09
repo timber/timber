@@ -47,7 +47,28 @@
 		return 'http://yourcdn.com'.$path;
 	}
 
-	function render_twig($filename, $data = array(), $render = true){
+	function twig_template_exists($file, $dirs){
+		foreach($dirs as $dir){
+			$look_for = $dir.'/views/'.$file;
+			if (file_exists($look_for)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	function twig_choose_template($filenames, $dirs){
+		if(is_array($filenames)){
+			foreach($filenames as $filename){
+				if (twig_template_exists($filename, $dirs)){
+					return $filename;
+				}
+			}
+		} 
+		return $filenames;
+	}
+
+	function render_twig($filenames, $data = array(), $render = true){
 		/*
 		$uri = TIMBER_URI;
 		if (file_exists(THEME_URI.'/'.$filename)){
@@ -65,8 +86,7 @@
 		}
 		$twig = get_twig($uri);
 		
-		
-	
+		$filename = twig_choose_template($filenames, $uri);
 		$output = $twig->render($filename, $data);
 		if ($render){
 			echo $output;

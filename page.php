@@ -18,8 +18,4 @@
 	
 	$pi = PostMaster::loop_to_post();
 	$data['post'] = $pi;
-	$template_file = 'page.html';
-	if (file_exists(__DIR__.'/views/page-'.$pi->post_name.'.html')){
-		$template_file = 'page-'.$pi->post_name.'.html';
-	} 
-	render_twig($template_file, $data);
+	render_twig(array('page-'.$pi->post_name.'.html', 'page.html'), $data);
