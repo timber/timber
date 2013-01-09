@@ -13,7 +13,7 @@
  * @since 		Timber 0.1
  */
 ?>
-<?php get_header();
+<?php 
 	$posts = PostMaster::loop_to_array();
 	
 	$data['page_title'] = wp_title('|', false);

@@ -30,9 +30,29 @@
 
 		$twig->addFilter('wp_head', new Twig_Filter_Function('twig_wp_head'));
 		$twig->addFilter('wp_footer', new Twig_Filter_Function('twig_wp_footer'));
-
-		
+		$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
+		$twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
+		/*
+		ob_start();
+		$twig->addGlobal('poop', (string)function(){
+			echo 'shit';
+			return 'fdsfs';
+		});
+		ob_end_clean();
+		*/
 		return $twig;
+	}
+
+	function twig_wp_title(){
+		wp_title( '|' ); 
+	}
+
+	function twig_body_class(){
+		ob_start();
+		body_class();
+		$return = ob_get_contents();
+		ob_end_clean();
+		return $return;
 	}
 
 	function twig_wp_head(){

@@ -5,12 +5,14 @@
 	{% if post.banner_image %}
 		<img src="{{post.banner_image}}" class="blog-banner-image" alt="{{post.post_title}}" />
 	{% endif %}
+	{{post|print_r}}
 	<div class="content-wrapper">
 		<article class="post-type-{{post.post_type}}" id="post-{{ID}}">
 			<section class="article-content">
 				{{media_top}}
 
 				<h1 class="article-h1">{{post.post_title|editable(post.ID, 'post_title')}}</h1>
+				<h2 class="article-h2">{{post.subtitle}}</h2>
 				<p class="blog-author"><span>By</span> {{ post.author_data.display_name }} <span>&bull;</span> {{ post.display_date }}</p>
 				{{post.post_content|wpautop|raw}}
 			</section>

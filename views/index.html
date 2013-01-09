@@ -3,7 +3,7 @@
 {% block content %}
 	
 	{% for post in posts %}
-		{% include 'summary.html' %}
+		{% include ['tease-'~post.post_type~'.html', 'tease.html'] %}
 	{% endfor %}
 
 {% endblock %}
