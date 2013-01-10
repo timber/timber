@@ -11,11 +11,11 @@
 ?>
 
 
-<?php   get_header();
+<?php   
 
 		$templates = array('archive.html', 'index.html');
 
-		$data['title'] = 'Search results for ' get_search_query();
+		$data['title'] = 'Search results for '. get_search_query();
 		
 		$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
 
