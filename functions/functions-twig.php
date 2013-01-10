@@ -32,6 +32,7 @@
 		$twig->addFilter('wp_footer', new Twig_Filter_Function('twig_wp_footer'));
 		$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
 		$twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
+		$twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
 		/*
 		ob_start();
 		$twig->addGlobal('poop', (string)function(){
@@ -41,6 +42,10 @@
 		ob_end_clean();
 		*/
 		return $twig;
+	}
+
+	function twig_wp_sidebar($arg){
+		get_sidebar($arg);
 	}
 
 	function twig_wp_title(){
@@ -84,6 +89,7 @@
 					return $filename;
 				}
 			}
+			return false;
 		} 
 		return $filenames;
 	}
@@ -107,7 +113,10 @@
 		$twig = get_twig($uri);
 		
 		$filename = twig_choose_template($filenames, $uri);
-		$output = $twig->render($filename, $data);
+		$output = '';
+		if (strlen($filename)){
+			$output = $twig->render($filename, $data);
+		}
 		if ($render){
 			echo $output;
 		}

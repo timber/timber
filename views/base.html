@@ -1,4 +1,5 @@
-{% include 'header.html' %}        
+{% include 'html-header.html' %}    
+
         <header class="ink-header" data-source="base.html">
             {% block header %}
             <div class="wrapper">
@@ -23,11 +24,11 @@
                     Sorry, no content
                 {% endblock %}
             </div>
-            {% block sidebar %}
+            {% if sidebar %}
                 <aside class="ink-layout-sidebar">
-                    Stuff over here
+                    {{sidebar}}
                 </aside>
-            {% endblock %}
+            {% endif %}
         </section>
 
         <div id="footer">

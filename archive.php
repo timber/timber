@@ -14,7 +14,7 @@
  * @since 		Starkers 4.0
  */
 ?>
-<?php 	get_header();
+<?php 	
 
 		$templates = array('archive.html', 'index.html');
 

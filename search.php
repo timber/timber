@@ -10,20 +10,18 @@
  */
 ?>
 
-<?php if ( have_posts() ): ?>
-<h2>Search Results for '<?php echo get_search_query(); ?>'</h2>	
-<ol>
-<?php while ( have_posts() ) : the_post(); ?>
-	<li>
-		<article>
-			<h2><a href="<?php esc_url( the_permalink() ); ?>" title="Permalink to <?php the_title(); ?>" rel="bookmark"><?php the_title(); ?></a></h2>
-			<time datetime="<?php the_time( 'Y-m-d' ); ?>" pubdate><?php the_date(); ?> <?php the_time(); ?></time> <?php comments_popup_link('Leave a Comment', '1 Comment', '% Comments'); ?>
-			<?php the_content(); ?>
-		</article>
-	</li>
-<?php endwhile; ?>
-</ol>
-<?php else: ?>
-<h2>No results found for '<?php echo get_search_query(); ?>'</h2>
-<?php endif; ?>
 
+<?php   get_header();
+
+		$templates = array('archive.html', 'index.html');
+
+		$data['title'] = 'Search results for ' get_search_query();
+		
+		$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
+
+		if ( have_posts() ){
+			$data['posts'] = PostMaster::loop_to_array();
+			render_twig($templates, $data);
+		} else {
+
+		}

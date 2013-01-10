@@ -7,7 +7,7 @@
  * @subpackage 	Timber
  */
 ?>
-<?php get_header();
+<?php 
 	$pi = PostMaster::loop_to_post();
 	$data['post'] = $pi;
 	$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
