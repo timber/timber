@@ -29,6 +29,9 @@
 			$data['title'] = single_tag_title('', false);
 		} else if (is_category()){
 			$data['title'] = single_cat_title('', false);
+			array_unshift($templates, 'archive-'.get_query_var('cat').'.html');
+		} else if (is_post_type_archive()){
+			array_unshift($templates, 'archive-'.get_post_type().'.html');
 		}
 		$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
 		if ( have_posts() ){
