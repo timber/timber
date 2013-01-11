@@ -18,9 +18,9 @@
 	define("TIMBER", $timber);
 	define("TIMBER_URL", 'http://'.$_SERVER["HTTP_HOST"].TIMBER);
 	define("TIMBER_URI", $_SERVER["DOCUMENT_ROOT"].TIMBER);
-
-	define("THEME_URI", TIMBER_URI);
-
+	if (!THEME_URI){
+		define("THEME_URI", TIMBER_URI);
+	}
 	require_once('functions/starkers-utilities.php' );
 	require_once('functions/functions-twig.php');
 	//require_once('functions/functions-post-master.php');
@@ -41,6 +41,15 @@
 	add_theme_support('menus');
 	
 	register_nav_menus(array('primary' => 'Primary Navigation'));
+
+	add_filter( 'sidebars_widgets', 'disable_all_widgets' );
+
+	function disable_all_widgets( $sidebars_widgets ) {
+
+		$sidebars_widgets = array( false );
+
+		return $sidebars_widgets;
+	}
 
 	/* ========================================================================================================================
 	
@@ -68,9 +77,9 @@
 	function starkers_script_enqueuer() {
 		wp_register_script( 'site', get_template_directory_uri().'/js/site.js', array( 'jquery' ) );
 		wp_enqueue_script( 'site' );
-
-		
 	}	
+
+
 
 	/* ========================================================================================================================
 	
