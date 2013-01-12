@@ -23,11 +23,11 @@
 	}
 	require_once('functions/starkers-utilities.php' );
 	require_once('functions/functions-twig.php');
-	//require_once('functions/functions-post-master.php');
-	//require_once('functions/functions-php-helper.php');
-	//require_once('functions/functions-wp-helper.php');
-	require_once('functions/functions-acf.php');
-	require_once('functions/functions-theme-preview.php');
+	require_once('functions/functions-post-master.php');
+	require_once('functions/functions-php-helper.php');
+	require_once('functions/functions-wp-helper.php');
+	
+	//require_once('functions/functions-theme-preview.php');
 
 	/* ========================================================================================================================
 	
