@@ -6,6 +6,22 @@
 			add_filter('cron_schedules', array($this, 'cron_add_quarterly'));
 		}
 
+		function get_video_embed($url){
+			if (strstr(strtolower($url), 'youtube')){
+				return self::get_video_embed_youtube($url);
+			}
+
+		}
+
+		function get_video_embed_youtube($yt_url){
+			$yt_url_info = parse_url($yt_url);
+			$query = $yt_url_info['query'];
+			parse_str($query, $query);
+			$vid = $query['v'];
+			$ytstr = '<iframe width="560" height="315" src="http://www.youtube.com/embed/'.$vid.'" frameborder="0" allowfullscreen></iframe>';
+			return $ytstr;
+		}
+
 		function get_comments_template(){
 
 			if (function_exists('dsq_comments_template')){

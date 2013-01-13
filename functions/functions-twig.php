@@ -6,6 +6,7 @@
 		if (is_array($uri)){
 			$loaders = array();
 			foreach($uri as $u){
+
 				$loaders[] = new Twig_Loader_Filesystem($u.'/views/');
 			}
 			$loader = new Twig_Loader_Chain($loaders);
@@ -21,6 +22,7 @@
 		$twig->addFilter('resize', new Twig_Filter_Function('twig_resize_image'));
 		$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
 		$twig->addFilter('print_r', new Twig_Filter_Function('twig_print_r'));
+		$twig->addFilter('print_a', new Twig_Filter_Function('twig_print_a'));
 		$twig->addFilter('get_src_from_attachment_id', new Twig_Filter_Function('twig_get_src_from_attachment_id'));
 		$twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
 		$twig->addFilter('tojpg', new Twig_Filter_Function('twig_img_to_jpg'));
@@ -133,11 +135,14 @@
 	function twig_get_src_from_attachment_id($aid){
 		$src = PostMaster::get_image_path($aid);
 		return $src;
-
 	}
 
 	function twig_print_r($arr){
 		return print_r($arr, true);
+	}
+
+	function twig_print_a($arr){
+		return '<pre>'.print_r($arr, true).'</pre>';
 	}
 
 	function twig_get_path($url){
