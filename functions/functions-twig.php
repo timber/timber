@@ -51,7 +51,7 @@
 	}
 
 	function twig_wp_title(){
-		wp_title( '|' ); 
+		return wp_title('|', false, 'right'); 
 	}
 
 	function twig_body_class(){

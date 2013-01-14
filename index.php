@@ -18,6 +18,7 @@
 	
 	$data['page_title'] = wp_title('|', false);
 	$data['posts'] = $posts;
+	$data['wp_title'] = WPHelper::get_wp_title();
 	render_twig('index.html', $data);
 
 

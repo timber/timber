@@ -13,12 +13,25 @@
 
 		}
 
+		function get_wp_title(){
+			return wp_title('|', false, 'right'); 
+		}
+
+		/* Unlike WP's default get_sidebar(), this function will capture the HTML of the sidebar and return it to the requesting code */
+		function get_sidebar($template = ''){
+			ob_start();
+			get_sidebar($template);
+			$return = ob_get_contents();
+			ob_end_clean();
+			return $return;
+		}
+
 		function get_video_embed_youtube($yt_url){
 			$yt_url_info = parse_url($yt_url);
 			$query = $yt_url_info['query'];
 			parse_str($query, $query);
 			$vid = $query['v'];
-			$ytstr = '<iframe width="560" height="315" src="http://www.youtube.com/embed/'.$vid.'" frameborder="0" allowfullscreen></iframe>';
+			$ytstr = '<iframe class="video-embed video-embed-youtube" width="560" height="315" src="http://www.youtube.com/embed/'.$vid.'" frameborder="0" allowfullscreen></iframe>';
 			return $ytstr;
 		}
 
