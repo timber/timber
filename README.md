@@ -1,6 +1,4 @@
 ![Timber logo](https://github.com/jarednova/timber/blob/master/images/logo/timber-badge-large.jpg?raw=true)
-
-# Timber
 By Jared Novack (@JaredNova) and Upstatement (@Upstatement)
 
 ## Because WordPress is awesome, but the_loop isn't
