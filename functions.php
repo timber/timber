@@ -1,12 +1,14 @@
 <?php
 	/**
-	 * Starkers functions and definitions
+	 * Timber functions and definitions
 	 *
 	 * For more information on hooks, actions, and filters, see http://codex.wordpress.org/Plugin_API.
 	 *
- 	 * @package 	WordPress
- 	 * @subpackage 	Starkers
- 	 * @since 		Starkers 4.0
+	 * Methods for PostMaster and WPHelper can be found in the /functions sub-directory
+	 *
+	 * @package 	WordPress
+	 * @subpackage 	Timber
+	 * @since 		Timber 0.1
 	 */
 
 	/* ========================================================================================================================

@@ -18,6 +18,7 @@
 			'debug' => false,
 			'autoescape' => false
 		));
+		
 		$twig->addExtension(new Twig_Extension_Debug());
 		$twig->addFilter('resize', new Twig_Filter_Function('twig_resize_image'));
 		$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
@@ -35,6 +36,8 @@
 		$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
 		$twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
 		$twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
+
+
 		/*
 		ob_start();
 		$twig->addGlobal('poop', (string)function(){
@@ -43,6 +46,8 @@
 		});
 		ob_end_clean();
 		*/
+
+		$twig = apply_filters('get_twig', $twig);
 		return $twig;
 	}
 

@@ -7,14 +7,13 @@
  *
  * Learn more: http://codex.wordpress.org/Template_Hierarchy
  *
- * Please see /external/starkers-utilities.php for info on Starkers_Utilities::get_template_parts() 
+ * Methods for PostMaster and WPHelper can be found in the /functions sub-directory
  *
  * @package 	WordPress
- * @subpackage 	Starkers
- * @since 		Starkers 4.0
+ * @subpackage 	Timber
+ * @since 		Timber 0.1
  */
-?>
-<?php 	
+	
 		global $wp_query;
 
 		$templates = array('archive.html', 'index.html');

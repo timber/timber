@@ -2,26 +2,23 @@
 /**
  * Search results page
  * 
- * Please see /external/starkers-utilities.php for info on Starkers_Utilities::get_template_parts()
+ * Methods for PostMaster and WPHelper can be found in the /functions sub-directory
  *
  * @package 	WordPress
- * @subpackage 	Starkers
- * @since 		Starkers 4.0
+ * @subpackage 	Timber
+ * @since 		Timber 0.1
  */
-?>
+  
 
+	$templates = array('archive.html', 'index.html');
 
-<?php   
+	$data['title'] = 'Search results for '. get_search_query();
+	
+	$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
 
-		$templates = array('archive.html', 'index.html');
+	if ( have_posts() ){
+		$data['posts'] = PostMaster::loop_to_array();
+		render_twig($templates, $data);
+	} else {
 
-		$data['title'] = 'Search results for '. get_search_query();
-		
-		$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
-
-		if ( have_posts() ){
-			$data['posts'] = PostMaster::loop_to_array();
-			render_twig($templates, $data);
-		} else {
-
-		}
+	}

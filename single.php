@@ -2,12 +2,13 @@
 /**
  * The Template for displaying all single posts
  *
+ * Methods for PostMaster and WPHelper can be found in the /functions sub-directory
  *
  * @package 	WordPress
  * @subpackage 	Timber
+ * @since 		Timber 0.1
  */
-?>
-<?php 
+
 	$pi = PostMaster::loop_to_post();
 	$data['post'] = $pi;
 	$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );

@@ -2,15 +2,13 @@
 /**
  * The template for displaying Author Archive pages
  *
- * Please see /external/starkers-utilities.php for info on Starkers_Utilities::get_template_parts()
+ * Methods for PostMaster and WPHelper can be found in the /functions sub-directory
  *
  * @package 	WordPress
- * @subpackage 	Starkers
- * @since 		Starkers 4.0
+ * @subpackage 	Timber
+ * @since 		Timber 0.1
  */
-?>
 
-<?php
 	$data['posts'] = PostMaster::loop_to_array();
 	$data['title'] = 'Author Archives: '.get_the_author();
 	$data['desc'] = get_the_author_meta( 'description' );

@@ -6,14 +6,13 @@
  * It is used to display a page when nothing more specific matches a query.
  * E.g., it puts together the home page when no home.php file 
  *
- * Please see /external/starkers-utilities.php for info on Starkers_Utilities::get_template_parts()
+ * Methods for PostMaster and WPHelper can be found in the /functions sub-directory
  *
  * @package 	WordPress
  * @subpackage 	Timber
  * @since 		Timber 0.1
  */
-?>
-<?php 
+
 	$posts = PostMaster::loop_to_array();
 	
 	$data['page_title'] = wp_title('|', false);
