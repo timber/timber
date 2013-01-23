@@ -57,7 +57,7 @@ You'll want to **copy** **single.html** from timber to your child theme's views 
 
 Brilliant! Open it up.
 
-```html
+```twig
 {% extends "base.html" %}
 {% block content %}
 	{% if post.banner_image %}
