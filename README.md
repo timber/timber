@@ -14,4 +14,4 @@ Timber is great for teams of designers and developers working together. At Upsta
 Well, it's **free**! And it's GPL-licensed, so use in personal or commerical work. Just don't re-sell it.
 
 ## Getting Started
-	git clone --recurseive git@github.com:jarednova/timber.git
+	git clone --recursive git@github.com:jarednova/timber.git
