@@ -57,7 +57,7 @@ You'll want to **copy** **single.html** from timber to your child theme's views 
 
 Brilliant! Open it up.
 
-```twig
+```html
 {% extends "base.html" %}
 {% block content %}
 	{% if post.banner_image %}
@@ -78,4 +78,28 @@ Brilliant! Open it up.
 	</div> <!-- /content-wrapper -->
 {% endblock %}
 ```	
-		
+### This is the fun part. 
+
+	<h1 class="article-h1">{{post.post_title}}</h1>
+	
+This is how we now call stuff from the WordPress API. Does this look familiar?
+	
+	<h1 class="article-h1"><?php the_title(); ?></h1>
+
+This is how WordPress wants you to interact with its API. Which sucks. Because soon you get things like:
+
+	<h1 class="article-h1"><a href="<?php get_permalink(); ?>"><?php the_title(); ?></a></h1>
+
+Okay, not _too_ terrible, but doesn't this (Timber) way look so much nicer:
+	
+	<h1 class="article-h1"><a href="{{post.permalink}}">{{post.post_title}}</a></h1>
+	
+It gets better. Let's explain some other concepts.
+
+	{% extends "base.html" %}
+	
+This means that **single.html** is using **base.html** as its parent template. That's why you don't see any ```<head>```, ```<header>```, or ```<footer>``` tags, those site-wide (usually) things are all controlled in base.html. If they're not? no prob, you can make single extend **base-single.html** or just include _all_ the markup inside of single.html.
+
+	{% block content %}
+	
+If you were to peak into **base.html** you would see a matching set of ```{% block content %} / {% endblock %}``` tags. **single.html** is replacing the content of base's {% block content %} with its own.
