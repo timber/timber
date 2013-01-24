@@ -1,7 +1,7 @@
 <div style="text-align:center">
 <img src="https://github.com/jarednova/timber/blob/master/images/logo/timber-badge-large.jpg?raw=true" style="display:block; margin:auto;"/>
 
-By Jared Novack (@JaredNova) and Upstatement (@Upstatement)</center>  
+<div>By Jared Novack (@JaredNova) and Upstatement (@Upstatement)</div>  
 </div>
 ## Because WordPress is awesome, but the_loop isn't
 Timber is a WordPress theme that uses the [Twig Templating Engine](http://twig.sensiolabs.org/). This helps clean-up your theme code so your single.php file can focus on your WordPress model, while your single.html file can focus 100% on the HTML and display.
@@ -110,3 +110,13 @@ Yeah baby!
 ### Loop / Index page
 
 Let's crack open **index.php** and see what's inside:
+
+```php
+$posts = PostMaster::loop_to_array();
+$data['page_title'] = wp_title('|', false);
+$data['posts'] = $posts;
+$data['wp_title'] = WPHelper::get_wp_title();
+render_twig('index.html', $data);
+```
+
+
