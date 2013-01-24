@@ -78,4 +78,8 @@ Brilliant! Open it up.
 	</div> <!-- /content-wrapper -->
 {% endblock %}
 ```	
-		
+Let's explain some concepts.
+
+	{% extends "base.html" %}
+	
+This means that **single.html** is using **base.html** as its parent template. That's why you don't see any ```<head>```, ```<header>```, or ```<footer>``` tags
