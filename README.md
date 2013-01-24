@@ -79,7 +79,7 @@ Brilliant! Open it up.
 {% endblock %}
 ```	
 
-### This is the fun part. 
+#### This is the fun part. 
 
 	<h1 class="article-h1">{{post.post_title}}</h1>
 	
@@ -101,6 +101,12 @@ It gets better. Let's explain some other concepts.
 ```	
 This means that **single.html** is using **base.html** as its parent template. That's why you don't see any ```<head>```, ```<header>```, or ```<footer>``` tags, those site-wide (usually) things are all controlled in base.html. If they're not? no prob, you can make single extend **base-single.html** or just include _all_ the markup inside of single.html.
 
-	{% block content %}
+	{% block content %} / {% endblock %}
 	
-If you were to peak into **base.html** you would see a matching set of ```{% block content %} / {% endblock %}``` tags. **single.html** is replacing the content of base's {% block content %} with its own.
+If you were to peak into **base.html** you would see a matching set of ```{% block content %} / {% endblock %}``` tags. **single.html** is replacing the content of base's ```{% block content %}``` with its own.
+
+Yeah baby!
+
+### Loop / Index page
+
+Let's crack open **index.php** and see what's inside:
