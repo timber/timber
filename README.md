@@ -46,7 +46,9 @@ Optional but _strongly_ recommended
 
 Pull the ```child-theme``` folder from ```timber``` into your main ```themes``` directory
 ![Drag child-theme into the themes directory](http://i.imgur.com/SyfoYRh.png)
+
 You should now have
+
 	/wp-content/themes/child-theme
 	
 Feel free to rename this to something ... cool
