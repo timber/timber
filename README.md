@@ -41,10 +41,17 @@ We'll also need to grab [Twig](https://github.com/fabpot/Twig). Download the zip
 	/wp-content/themes/timber/Twig/composer.json
 	/wp-content/themes/timber/Twig/lib
 
-### Make a child theme
+### Use the child theme
 Optional but _strongly_ recommended
 
-You can download the [Timber Starter Child Theme](https://github.com/jarednova/timber-child-starter) place it in the themes directory (you can rename it too).
+Pull the ```child-theme``` folder from ```timber``` into your main ```themes``` directory
+![Drag child-theme into the themes directory](http://i.imgur.com/SyfoYRh.png)
+
+You should now have
+
+	/wp-content/themes/child-theme
+	
+Feel free to rename this to something ... cool
 
 ### Select your theme in WordPress
 Use the **child** theme from the step above.
