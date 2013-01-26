@@ -1,12 +1,11 @@
 <?php
 
 	function get_twig($uri){
-		require_once(TIMBER_URI.'/Twig/lib/Twig/Autoloader.php');
+		require_once(TIMBER_LOC.'/Twig/lib/Twig/Autoloader.php');
 		Twig_Autoloader::register();
 		if (is_array($uri)){
 			$loaders = array();
 			foreach($uri as $u){
-
 				$loaders[] = new Twig_Loader_Filesystem($u.'/views/');
 			}
 			$loader = new Twig_Loader_Chain($loaders);
@@ -14,7 +13,7 @@
 			$loader = new Twig_Loader_Filesystem($uri.'/views/');
 		}
 		$twig = new Twig_Environment($loader, array(
-    		/*'cache' => TIMBER_URI.'/twig-cache',*/
+    		/*'cache' => TIMBER_LOC.'/twig-cache',*/
 			'debug' => false,
 			'autoescape' => false
 		));
@@ -111,11 +110,11 @@
 		if(!$data){
 			$data = array();
 		}
-		$uri = TIMBER_URI;
-		if (THEME_URI != TIMBER_URI){
+		$uri = TIMBER_LOC;
+		if (THEME_LOC != TIMBER_LOC){
 			$uri = array();
-			$uri[] = THEME_URI;
-			$uri[] = TIMBER_URI;
+			$uri[] = THEME_LOC;
+			$uri[] = TIMBER_LOC;
 		}
 		$twig = get_twig($uri);
 		

@@ -19,9 +19,9 @@
 	$timber = str_replace($_SERVER['DOCUMENT_ROOT'], '', __DIR__);
 	define("TIMBER", $timber);
 	define("TIMBER_URL", 'http://'.$_SERVER["HTTP_HOST"].TIMBER);
-	define("TIMBER_URI", $_SERVER["DOCUMENT_ROOT"].TIMBER);
-	if (!THEME_URI){
-		define("THEME_URI", TIMBER_URI);
+	define("TIMBER_LOC", $_SERVER["DOCUMENT_ROOT"].TIMBER);
+	if (!defined("THEME_LOC")){
+		define("THEME_LOC", TIMBER_LOC);
 	}
 	require_once('functions/starkers-utilities.php' );
 	require_once('functions/functions-twig.php');
@@ -59,7 +59,6 @@
 	
 	======================================================================================================================== */
 
-	add_action( 'wp_enqueue_scripts', 'starkers_script_enqueuer' );
 
 	add_filter( 'body_class', array( 'Starkers_Utilities', 'add_slug_to_body_class' ) );
 
@@ -69,17 +68,7 @@
 	
 	======================================================================================================================== */
 
-	/**
-	 * Add scripts via wp_head()
-	 *
-	 * @return void
-	 * @author Keir Whitaker
-	 */
 
-	function starkers_script_enqueuer() {
-		wp_register_script( 'site', get_template_directory_uri().'/js/site.js', array( 'jquery' ) );
-		wp_enqueue_script( 'site' );
-	}	
 
 
 
