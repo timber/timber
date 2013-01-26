@@ -79,6 +79,9 @@
 	}
 
 	function twig_template_exists($file, $dirs){
+		if (is_string($dirs)){
+			$dirs = array($dirs);
+		}
 		foreach($dirs as $dir){
 			$look_for = $dir.'/views/'.$file;
 			if (file_exists($look_for)){

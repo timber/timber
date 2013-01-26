@@ -1,6 +1,6 @@
 {% include 'html-header.html' %}    
 
-        <header class="ink-header" data-source="base.html">
+        <header class="header" data-source="base.html">
             {% block header %}
             <div class="wrapper">
 
@@ -17,15 +17,15 @@
         </header>
 
 
-        <section id="content" role="main" class="ink-layout-content">
+        <section id="content" role="main" class="content-wrapper">
             {% if title %}<h1>{{title}}</h1>{% endif %}
-            <div class="ink-layout-stream {{sidebar_class}}">
+            <div class="wrapper {{sidebar_class}}">
                 {% block content %}
                     Sorry, no content
                 {% endblock %}
             </div>
             {% if sidebar %}
-                <aside class="ink-layout-sidebar">
+                <aside class="layout-sidebar">
                     {{sidebar}}
                 </aside>
             {% endif %}
