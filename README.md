@@ -30,7 +30,7 @@ Like where twentyeleven and twentytwelve live. Timber will live at the same leve
 
 #### 2) Use git to grab the repo
 	git clone --recursive git@github.com:jarednova/timber.git
-This is important! **--recursive** is needed so that the **Twig** submodule is also downloaded. Having trouble with the recursive stuff? Skip to step #4
+This is important! **--recursive** is needed so that the **Twig** submodule is also downloaded. Having trouble with the recursive stuff? Skip to step #4 to download Twig
 
 #### 3) Don't know git?
 That's cool, you should, but developer lectures are lame. Grab the zip and stick it in the themes directory (so timber lives in the same folder as twentyeleven and other thems you may have)
