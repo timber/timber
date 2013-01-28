@@ -20,9 +20,7 @@
 	define("TIMBER", $timber);
 	define("TIMBER_URL", 'http://'.$_SERVER["HTTP_HOST"].TIMBER);
 	define("TIMBER_LOC", $_SERVER["DOCUMENT_ROOT"].TIMBER);
-	if (!defined("THEME_LOC")){
-		define("THEME_LOC", TIMBER_LOC);
-	}
+
 	require_once('functions/starkers-utilities.php' );
 	require_once('functions/functions-twig.php');
 	require_once('functions/functions-post-master.php');

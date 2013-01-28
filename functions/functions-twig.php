@@ -36,16 +36,6 @@
 		$twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
 		$twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
 
-
-		/*
-		ob_start();
-		$twig->addGlobal('poop', (string)function(){
-			echo 'shit';
-			return 'fdsfs';
-		});
-		ob_end_clean();
-		*/
-
 		$twig = apply_filters('get_twig', $twig);
 		return $twig;
 	}
@@ -93,13 +83,19 @@
 
 	function twig_choose_template($filenames, $dirs){
 		if(is_array($filenames)){
+			/* its an array so we have to figure out which one the dev wants */
 			foreach($filenames as $filename){
 				if (twig_template_exists($filename, $dirs)){
 					return $filename;
 				}
 			}
 			return false;
-		} 
+		} else {
+			/* its a single, but we still need to figure out if it exists, default to index.html */
+			// if (!twig_template_exists($filenames, $dirs)){
+			// 	$filenames = 'index.html';
+			// }
+		}
 		return $filenames;
 	}
 
@@ -110,6 +106,9 @@
 			$uri = THEME_URI;
 		}
 		*/
+		if (!defined("THEME_LOC")){
+			define("THEME_LOC", TIMBER_LOC);
+		}
 		if(!$data){
 			$data = array();
 		}

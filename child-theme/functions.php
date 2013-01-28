@@ -1,7 +1,8 @@
 <?php
-	//if (!isset(THEME_URI)){
-		define("THEME_URI", __DIR__);
-	//}
+	if (!defined("THEME_LOC")){
+		define("THEME_LOC", __DIR__);
+	}
+	
 	$theme = str_replace($_SERVER['DOCUMENT_ROOT'], '', __DIR__);
 	define("THEME_URL", 'http://'.$_SERVER["HTTP_HOST"].$theme);
 	
