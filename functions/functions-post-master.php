@@ -5,11 +5,13 @@
 
 		}
 		
-		function loop_to_array(){
+		function loop_to_array($limit = 99999){
 			$posts = array();
-			while ( have_posts() ) {
+			$i = 0;
+			while ( have_posts() && $i < $limit ) {
 				the_post(); 
 				$posts[] = PostMaster::get_post_info(get_the_ID());
+				$i++;
 			}
 			return $posts;
 		}
@@ -78,13 +80,17 @@
 			$post->author_data = get_userdata($post->post_author); 
 			$post->path = str_replace($_SERVER['HTTP_HOST'], '', $post->permalink);
 			$post->path = str_replace('http://', '', $post->path);
-			//$post->thumb_src = self::get_post_thumbnail_src($post->ID);
+			$post->thumb_src = self::get_post_thumbnail_src($post->ID);
 			$post->display_date = date(get_option('date_format'), strtotime($post->post_date));
-
+			if ($post->_thumbnail_id){
+				$post->thumb_src = self::get_image_path($post->_thumbnail_id);
+			}
+			/*
 			if ($post->thumb_src){
 				$thumb_path = parse_url($post->thumb_src);
 				$post->thumb_path = $thumb_path['path'];
 			}
+			*/
 			if ($post->custom){
 				foreach($post->custom as $key => $value){
 					$v = $value[0];
@@ -103,7 +109,7 @@
 			return $post;
 		}
 
-		function find_posts_by_meta($key, $value){
+		function get_posts_by_meta($key, $value){
 			
 			global $wpdb;
 			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '$key' AND meta_value = '$value'";
@@ -122,7 +128,7 @@
 		}
 		
 
-		function find_post_by_meta($key, $value){
+		function get_post_by_meta($key, $value){
 			
 			global $wpdb;
 			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '$key' AND meta_value = '$value' ORDER BY post_id";

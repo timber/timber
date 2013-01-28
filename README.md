@@ -1,7 +1,7 @@
 <div style="text-align:center">
 <img src="https://github.com/jarednova/timber/blob/master/images/logo/timber-badge-large.jpg?raw=true" style="display:block; margin:auto;"/>
 
-By Jared Novack (@JaredNova) and Upstatement (@Upstatement)</center>  
+<div>By Jared Novack (@JaredNova) and Upstatement (@Upstatement)</div>  
 </div>
 ## Because WordPress is awesome, but the_loop isn't
 Timber is a WordPress theme that uses the [Twig Templating Engine](http://twig.sensiolabs.org/). This helps clean-up your theme code so your single.php file can focus on your WordPress model, while your single.html file can focus 100% on the HTML and display.
@@ -30,7 +30,7 @@ Like where twentyeleven and twentytwelve live. Timber will live at the same leve
 
 #### 2) Use git to grab the repo
 	git clone --recursive git@github.com:jarednova/timber.git
-This is important! **--recursive** is needed so that the **Twig** submodule is also downloaded. Having trouble with the recursive stuff? Skip to step #4
+This is important! **--recursive** is needed so that the **Twig** submodule is also downloaded. Having trouble with the recursive stuff? Skip to step #4 to download Twig
 
 #### 3) Don't know git?
 That's cool, you should, but developer lectures are lame. Grab the zip and stick it in the themes directory (so timber lives in the same folder as twentyeleven and other thems you may have)
@@ -41,10 +41,17 @@ We'll also need to grab [Twig](https://github.com/fabpot/Twig). Download the zip
 	/wp-content/themes/timber/Twig/composer.json
 	/wp-content/themes/timber/Twig/lib
 
-### Make a child theme
+### Use the child theme
 Optional but _strongly_ recommended
 
-You can download the [Timber Starter Child Theme](https://github.com/jarednova/timber-child-starter) place it in the themes directory (you can rename it too).
+Pull the ```child-theme``` folder from ```timber``` into your main ```themes``` directory
+![Drag child-theme into the themes directory](http://i.imgur.com/SyfoYRh.png)
+
+You should now have
+
+	/wp-content/themes/child-theme
+	
+Feel free to rename this to something ... cool
 
 ### Select your theme in WordPress
 Use the **child** theme from the step above.
@@ -110,3 +117,13 @@ Yeah baby!
 ### Loop / Index page
 
 Let's crack open **index.php** and see what's inside:
+
+```php
+$posts = PostMaster::loop_to_array();
+$data['page_title'] = wp_title('|', false);
+$data['posts'] = $posts;
+$data['wp_title'] = WPHelper::get_wp_title();
+render_twig('index.html', $data);
+```
+
+
