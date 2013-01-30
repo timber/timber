@@ -126,6 +126,16 @@
 			return 0;
 
 		}
+
+		function set_post_parent($child_ids, $parent_id){
+			if (!is_array($child_ids)){
+				$child_ids = array($child_ids);
+			}
+			global $wpdb;
+			foreach($child_ids as $child_id){
+				$wpdb->query("UPDATE $wpdb->posts SET post_parent = $parent_id WHERE ID = $child_id");
+			}
+		}
 		
 
 		function get_post_by_meta($key, $value){
