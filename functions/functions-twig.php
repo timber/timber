@@ -99,6 +99,12 @@
 		return $filenames;
 	}
 
+	function render_twig_string($string, $data = array()){
+		$loader = new Twig_Loader_String();
+		$twig = new Twig_Environment($loader);
+		return $twig->render($string, $data);
+	}
+
 	function render_twig($filenames, $data = array(), $render = true){
 		/*
 		$uri = TIMBER_URI;
