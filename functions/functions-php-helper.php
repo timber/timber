@@ -29,10 +29,15 @@
 		} 
 
 		function get_object_by_property($array, $key, $value){
-			foreach($array as $arr){
-				if ($arr->$key == $value){
-					return $arr;
+			if (is_array($array)){
+				foreach($array as $arr){
+					if ($arr->$key == $value){
+						return $arr;
+					}
 				}
+			} else {
+				echo $array;
+				echo 'not an array'.$key.' = '.$value;
 			}
 		}
 
