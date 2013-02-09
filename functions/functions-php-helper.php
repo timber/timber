@@ -28,5 +28,13 @@
 		  	return $obj;
 		} 
 
+		function get_object_by_property($array, $key, $value){
+			foreach($array as $arr){
+				if ($arr->$key == $value){
+					return $arr;
+				}
+			}
+		}
+
 	}
 ?>
