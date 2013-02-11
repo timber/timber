@@ -48,9 +48,12 @@
 		return wp_title('|', false, 'right'); 
 	}
 
-	function twig_body_class(){
+	function twig_body_class($body_classes){
 		ob_start();
-		body_class();
+		if (is_array($body_classes)){
+			$body_classes = explode(' ', $body_classes);
+		}
+		body_class($body_classes);
 		$return = ob_get_contents();
 		ob_end_clean();
 		return $return;
