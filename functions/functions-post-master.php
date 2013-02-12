@@ -71,6 +71,10 @@
 			} else {
 				$post = $pid;
 			}
+			if (!$post){
+				throw new Exception('Could not find post '.$pid);
+				return false;
+			}
 			$post->title = $post->post_title;
 			$post->body = wpautop($post->post_content);
 			$post->excerpt = $post->post_excerpt;
