@@ -11,11 +11,10 @@
 	 * @since 		Timber 0.1
 	 */
 
-	/* ========================================================================================================================
-	
-	Required external files
-	
-	======================================================================================================================== */
+	/*  ============================
+		Required external files
+		============================ */
+
 	$timber = str_replace($_SERVER['DOCUMENT_ROOT'], '', __DIR__);
 	define("TIMBER", $timber);
 	define("TIMBER_URL", 'http://'.$_SERVER["HTTP_HOST"].TIMBER);
@@ -27,15 +26,18 @@
 	require_once('functions/functions-php-helper.php');
 	require_once('functions/functions-wp-helper.php');
 	
-	//require_once('functions/functions-theme-preview.php');
+	/*  ============================
+		Theme Specific Settings 
+		============================ */
 
-	/* ========================================================================================================================
-	
-	Theme specific settings
-
-	Uncomment register_nav_menus to enable a single menu with the title of "Primary Navigation" in your theme
-	
-	======================================================================================================================== */
+	/*  This will generate your data array for each .php file */
+	function get_data(){
+		$data = array();
+		$data['body_classes'] = 'a-body-class-you-want-to-add';
+		$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
+		$data['wp_title'] = get_bloginfo('name');
+		return $data;
+	}
 
 	add_theme_support('post-thumbnails');
 	add_theme_support('menus');

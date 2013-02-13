@@ -10,8 +10,9 @@
  */
 
 	$pi = PostMaster::loop_to_post();
+	$data = get_data();
 	$data['post'] = $pi;
-	$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
+	
 	/* comments */
 	$comments['responses'] = get_comments(array('post_id' => $pi->ID));
 	$comments['respond'] = WPHelper::get_comment_form(null, $pi->ID);
