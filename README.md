@@ -120,8 +120,7 @@ Let's crack open **index.php** and see what's inside:
 
 ```php
 $data = get_context();
-$posts = PostMaster::loop_to_array();
-$data['posts'] = $posts;
+$data['posts'] = PostMaster::loop_to_array();
 render_twig('index.html', $data);
 ```
 This is where we are going to handle the logic that powers our index file. Let's go step-by-step
@@ -132,5 +131,15 @@ $data = get_context();
 ```
 This is going to return an object with a lot of the common things we need across the site. Things like your nav and sidebar you'll want to start with each time (even if you over-write them later). You can do a ```print_r($data);``` to see what's inside or open-up **functions.php** to inspect for yourself
 
+#### Grab your posts
+```php
+$data['posts'] = PostMaster::loop_to_array();
+```
+We're now going to grab the posts that are inside the loop and stick them inside our data object under the **posts** key. What's this PostMaster business? It's a helpful class full of shortcuts to handle frequent WordPress tasks. [Read more in the Wiki Docs](https://github.com/jarednova/timber/wiki/PostMaster)
 
+#### 
+```php
+render_twig('index.html', $data);
+```
+We're now telling Twig to grab **index.html** and send it our data object. 
 
