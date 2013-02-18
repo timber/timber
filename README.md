@@ -1,8 +1,8 @@
 <div style="text-align:center">
 <img src="https://github.com/jarednova/timber/blob/master/images/logo/timber-badge-large.jpg?raw=true" style="display:block; margin:auto;"/>
-
-By Jared Novack [@JaredNova](http://twitter.com/jarednova) and [Upstatement](http://upstatement.com) / [@Upstatement](http://twitter.com/upstatement.com)</div>  
-
+<div>
+By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a href="http://upstatement.com">Upstatement</a> (<a href="http://twitter.com/upstatement">@Upstatement</a>)</div>  
+</div>
 ## Because WordPress is awesome, but the_loop isn't
 Timber is a WordPress theme that uses the [Twig Templating Engine](http://twig.sensiolabs.org/). This helps clean-up your theme code so your single.php file can focus on your WordPress model, while your single.html file can focus 100% on the HTML and display.
 
