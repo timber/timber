@@ -11,14 +11,11 @@
   
 
 	$templates = array('archive.html', 'index.html');
+	$data = get_context();
 
 	$data['title'] = 'Search results for '. get_search_query();
-	
-	$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
 
 	if ( have_posts() ){
 		$data['posts'] = PostMaster::loop_to_array();
-		render_twig($templates, $data);
-	} else {
-
 	}
+	render_twig($templates, $data);

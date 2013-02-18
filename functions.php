@@ -31,12 +31,14 @@
 		============================ */
 
 	/*  This will generate your data array for each .php file */
-	function get_data(){
-		$data = array();
-		$data['body_classes'] = 'a-body-class-you-want-to-add';
-		$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
-		$data['wp_title'] = get_bloginfo('name');
-		return $data;
+	function get_context(){
+		$context = array();
+		$context['body_classes'] = 'a-body-class-you-want-to-add';
+		$context['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
+		$context['wp_title'] = get_bloginfo('name');
+		$context['sidebar'] = WPHelper::get_sidebar();
+		
+		return $context;
 	}
 
 	add_theme_support('post-thumbnails');

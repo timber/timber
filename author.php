@@ -8,7 +8,7 @@
  * @subpackage 	Timber
  * @since 		Timber 0.1
  */
-
+	$data = get_context();
 	$data['posts'] = PostMaster::loop_to_array();
 	$data['title'] = 'Author Archives: '.get_the_author();
 	$data['desc'] = get_the_author_meta( 'description' );
