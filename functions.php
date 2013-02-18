@@ -70,6 +70,12 @@
 
 
 
+	function timber_add_scripts(){
+		wp_enqueue_style('style', TIMBER_URL.'/style.css');
+
+	}
+
+	add_action('init', 'timber_add_scripts');
 
 
 	/* ========================================================================================================================
