@@ -90,7 +90,7 @@ Brilliant! Open it up.
 
 	<h1 class="article-h1">{{post.post_title}}</h1>
 	
-This is how we now call stuff from the WordPress API. Does this look familiar?
+This is now how we now call stuff from the WordPress API. Instaed of this familiar face:
 ```php	
 <h1 class="article-h1"><?php the_title(); ?></h1>
 ```
@@ -119,11 +119,18 @@ Yeah baby!
 Let's crack open **index.php** and see what's inside:
 
 ```php
+$data = get_context();
 $posts = PostMaster::loop_to_array();
-$data['page_title'] = wp_title('|', false);
 $data['posts'] = $posts;
-$data['wp_title'] = WPHelper::get_wp_title();
 render_twig('index.html', $data);
 ```
+This is where we are going to handle the logic that powers our index file. Let's go step-by-step
+
+#### Get the starter
+```php
+$data = get_context();
+```
+This is going to return an object with a lot of the common things we need across the site. Things like your nav and sidebar you'll want to start with each time (even if you over-write them later). You can do a ```print_r($data);``` to see what's inside or open-up **functions.php** to inspect for yourself
+
 
 
