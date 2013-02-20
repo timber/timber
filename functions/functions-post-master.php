@@ -82,8 +82,7 @@
 			$post->custom = get_post_custom($post->ID);
 			$post->permalink = get_permalink($post->ID);
 			$post->author_data = get_userdata($post->post_author); 
-			$post->path = str_replace($_SERVER['HTTP_HOST'], '', $post->permalink);
-			$post->path = str_replace('http://', '', $post->path);
+			$post->path = self::get_path($post->permalink);
 			$post->thumb_src = self::get_post_thumbnail_src($post->ID);
 			$post->display_date = date(get_option('date_format'), strtotime($post->post_date));
 			if ($post->_thumbnail_id){
