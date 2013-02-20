@@ -36,8 +36,15 @@
 		$twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
 		$twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
 
+		$twig->addFilter('get_post_info', new Twig_Filter_Function('twig_get_post_info'));
+
 		$twig = apply_filters('get_twig', $twig);
 		return $twig;
+	}
+
+	function twig_get_post_info($id, $field = 'path'){
+		$pi = PostMaster::get_post_info($id);
+		return $pi->$field;
 	}
 
 	function twig_wp_sidebar($arg){
