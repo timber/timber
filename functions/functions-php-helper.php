@@ -41,5 +41,13 @@
 			}
 		}
 
+		function iseven($i){
+			return ($i % 2) == 0;
+		}
+
+		function isodd($i){
+			return ($i % 2) != 0;
+		}
+
 	}
 ?>
