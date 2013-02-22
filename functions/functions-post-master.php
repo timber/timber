@@ -64,20 +64,30 @@
 			return $url_info['path'];
 		}
 
-		function get_post_info($pid){
+		function get_teaser($pid){
+			$post = self::prepare_post_info($pid);
+			$pos = strpos($post->post_content, '<!--more');
+			if ($pos > 0){
+				return trim(substr($post->post_content, 0, $pos));
+			}
+		}
+
+		function prepare_post_info($pid){
 			if (is_string($pid) || is_numeric($pid) || !$pid->post_title){
 				$pid = self::check_post_id($pid);
-				$post = get_post($pid);
+				return get_post($pid);
 			} else {
-				$post = $pid;
+				return $pid;
 			}
-			if (!$post){
-				throw new Exception('Could not find post '.$pid);
-				return false;
-			}
+			throw new Exception('Could not find post '.$pid);
+			return false;
+		}
+
+		function get_post_info($pid){
+			$post = self::prepare_post_info($pid);
 			$post->title = $post->post_title;
 			$post->body = wpautop($post->post_content);
-			$post->excerpt = $post->post_excerpt;
+			$post->teaser = self::get_teaser($post);
 			$post->slug = $post->post_name;
 			$post->custom = get_post_custom($post->ID);
 			$post->permalink = get_permalink($post->ID);
