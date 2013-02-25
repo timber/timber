@@ -149,6 +149,15 @@
 				$wpdb->query("UPDATE $wpdb->posts SET post_parent = $parent_id WHERE ID = $child_id");
 			}
 		}
+
+		function update_post_meta($pids, $field, $value){
+			if (!is_array($pids)){
+				$pids = array($pids);
+			}
+			foreach($pids as $pid){
+				update_post_meta($pid, $field, $value);
+			}
+		}
 		
 
 		function get_post_by_meta($key, $value){
