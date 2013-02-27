@@ -61,6 +61,7 @@
 			ob_end_clean();
 			return $ret;
 		}
+
 	}
 
 	new WPHelper();

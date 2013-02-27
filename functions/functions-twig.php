@@ -27,6 +27,8 @@
 		$twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
 		$twig->addFilter('tojpg', new Twig_Filter_Function('twig_img_to_jpg'));
 		$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
+		$twig->addFilter('twitterify', new Twig_Filter_Function('twitterify'));
+
 		$twig->addFilter('editable', new Twig_Filter_Function('twig_editable'));
 		$twig->addFilter('cdn', new Twig_Filter_Function('twig_cdn'));
 
@@ -54,6 +56,8 @@
 	function twig_wp_title(){
 		return wp_title('|', false, 'right'); 
 	}
+
+
 
 	function twig_body_class($body_classes){
 		ob_start();
