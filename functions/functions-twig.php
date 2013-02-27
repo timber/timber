@@ -29,6 +29,8 @@
 		$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
 		$twig->addFilter('twitterify', new Twig_Filter_Function('twitterify'));
 
+		$twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
+
 		$twig->addFilter('editable', new Twig_Filter_Function('twig_editable'));
 		$twig->addFilter('cdn', new Twig_Filter_Function('twig_cdn'));
 
