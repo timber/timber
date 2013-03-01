@@ -137,7 +137,7 @@
 				if (!$taxes[$tax->taxonomy]){
 					$taxes[$tax->taxonomy] = array();
 				}
-				$taxes[$tax->taxonomy] = get_term($tax->term_id, $tax->taxonomy);
+				$taxes[$tax->taxonomy][] = get_term($tax->term_id, $tax->taxonomy);
 			}
 			return $taxes;
 		}
