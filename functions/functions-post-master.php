@@ -83,7 +83,7 @@
 			return false;
 		}
 
-		function get_post_info($pid){
+		function get_post_info($pid, $extras = null){
 			$post = self::prepare_post_info($pid);
 			$post->title = $post->post_title;
 			$post->body = wpautop($post->post_content);
@@ -98,12 +98,6 @@
 			if ($post->_thumbnail_id){
 				$post->thumb_src = self::get_image_path($post->_thumbnail_id);
 			}
-			/*
-			if ($post->thumb_src){
-				$thumb_path = parse_url($post->thumb_src);
-				$post->thumb_path = $thumb_path['path'];
-			}
-			*/
 			if ($post->custom){
 				foreach($post->custom as $key => $value){
 					$v = $value[0];
@@ -116,10 +110,33 @@
 				}
 			}
 			$post->status = $post->post_status;
-			$post->children = get_children('post_parent='.$post->ID.'&post_type='.$post->post_type);
-			$post->parent = $post->post_parent;
-			$post->post_type_info = get_post_type_object($post->post_type);
+			if (is_array($extras)){
+				foreach($extras as $extra){
+					if ($extra == 'post_type_info'){
+						$post->post_type_info = get_post_type_object($post->post_type);
+					}
+					if ($extra == 'children'){
+						$post->children = get_children('post_parent='.$post->ID.'&post_type='.$post->post_type);
+					}
+				}
+			}			
 			return $post;
+		}
+
+		function get_post_terms($pid){
+			global $wpdb;
+			$query = "SELECT term_taxonomy_id FROM $wpdb->term_relationships WHERE object_ID = '$pid'";
+			$results = $wpdb->get_col($query);
+			$taxes = array();
+			foreach($results as $result){
+				$query = "SELECT * FROM $wpdb->term_taxonomy WHERE term_taxonomy_id = '$result'";
+				$tax = $wpdb->get_row($query);
+				if (!$taxes[$tax->taxonomy]){
+					$taxes[$tax->taxonomy] = array();
+				}
+				$taxes[$tax->taxonomy] = get_term($tax->term_id, $tax->taxonomy);
+			}
+			return $taxes;
 		}
 
 		function get_posts_by_meta($key, $value){
