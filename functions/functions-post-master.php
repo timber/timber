@@ -46,7 +46,7 @@
 			return $pid;
 		}
 
-		function get_posts_info($query){
+		function get_posts_info($query, $extras = null){
 			if (is_array($query) && !PHPHelper::is_array_assoc($query)){
 				$results = $query;
 			} else {
@@ -54,7 +54,7 @@
 			} 
 			$ret = array();
 			foreach($results as $result){
-				$ret[] = self::get_post_info($result);
+				$ret[] = self::get_post_info($result, $extras);
 			}
 			return $ret;
 		}
@@ -117,6 +117,9 @@
 					}
 					if ($extra == 'children'){
 						$post->children = get_children('post_parent='.$post->ID.'&post_type='.$post->post_type);
+					}
+					if ($extra == 'terms'){
+						$post->terms = self::get_post_terms($post->ID);
 					}
 				}
 			}			
