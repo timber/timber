@@ -31,6 +31,13 @@
 			return $result->ID;
 		}
 
+		function get_post_id_by_name_and_type($post_name, $post_type){
+			global $wpdb;
+			$query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$post_name' AND post_type = '$post_type'";
+			$result = $wpdb->get_row($query);
+			return $result->ID;
+		}
+
 		function check_post_id($pid){
 			if ($pid == 0 && is_numeric($pid)){
 				$pid = get_the_ID();
