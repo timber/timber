@@ -28,6 +28,19 @@
 		  	return $obj;
 		} 
 
+		function get_object_index_by_property($array, $key, $value){
+			if (is_array($array)){
+				$i = 0;
+				foreach($array as $arr){
+					if ($arr->$key == $value || $arr[$key] == $value){
+						return $i;
+					}
+					$i++;
+				}
+			}
+			return false;
+		}
+
 		function get_object_by_property($array, $key, $value){
 			if (is_array($array)){
 				foreach($array as $arr){
