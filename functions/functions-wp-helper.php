@@ -6,9 +6,9 @@
 			add_filter('cron_schedules', array($this, 'cron_add_quarterly'));
 		}
 
-		function get_video_embed($url){
+		function get_video_embed($url, $ht = '315'){
 			if (strstr(strtolower($url), 'youtube')){
-				return self::get_video_embed_youtube($url);
+				return self::get_video_embed_youtube($url, $ht);
 			}
 
 		}
@@ -26,12 +26,12 @@
 			return $return;
 		}
 
-		function get_video_embed_youtube($yt_url){
+		function get_video_embed_youtube($yt_url, $ht){
 			$yt_url_info = parse_url($yt_url);
 			$query = $yt_url_info['query'];
 			parse_str($query, $query);
 			$vid = $query['v'];
-			$ytstr = '<iframe class="video-embed video-embed-youtube" width="560" height="315" src="http://www.youtube.com/embed/'.$vid.'" frameborder="0" allowfullscreen></iframe>';
+			$ytstr = '<iframe class="video-embed video-embed-youtube" width="100%" height="'.$ht.'" src="http://www.youtube.com/embed/'.$vid.'" frameborder="0" allowfullscreen></iframe>';
 			return $ytstr;
 		}
 
