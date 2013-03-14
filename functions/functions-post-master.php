@@ -8,11 +8,13 @@
 		function loop_to_array($limit = 99999){
 			$posts = array();
 			$i = 0;
+			ob_start();
 			while ( have_posts() && $i < $limit ) {
 				the_post(); 
 				$posts[] = PostMaster::get_post_info(get_the_ID());
 				$i++;
 			}
+			ob_end_clean();
 			return $posts;
 		}
 
