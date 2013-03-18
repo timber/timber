@@ -1,8 +1,12 @@
 <?php
 
-	function get_twig($uri){
+	function load_twig(){
 		require_once(TIMBER_LOC.'/Twig/lib/Twig/Autoloader.php');
 		Twig_Autoloader::register();
+	}
+
+	function get_twig($uri){
+		load_twig();
 		if (is_array($uri)){
 			$loaders = array();
 			foreach($uri as $u){
@@ -14,10 +18,10 @@
 		}
 		$twig = new Twig_Environment($loader, array(
     		/*'cache' => TIMBER_LOC.'/twig-cache',*/
-			'debug' => false,
+			'debug' => true,
 			'autoescape' => false
 		));
-		
+		$twig->addExtension(new Twig_Extension_StringLoader());
 		$twig->addExtension(new Twig_Extension_Debug());
 		$twig->addFilter('resize', new Twig_Filter_Function('twig_resize_image'));
 		$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
@@ -116,6 +120,8 @@
 	}
 
 	function render_twig_string($string, $data = array()){
+
+		load_twig();
 		$loader = new Twig_Loader_String();
 		$twig = new Twig_Environment($loader);
 		return $twig->render($string, $data);
