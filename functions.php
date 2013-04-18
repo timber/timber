@@ -15,7 +15,7 @@
 		Required external files
 		============================ */
 
-	$timber = str_replace($_SERVER['DOCUMENT_ROOT'], '', __DIR__);
+	$timber = str_replace(realpath($_SERVER['DOCUMENT_ROOT']), '', realpath(__DIR__));
 	define("TIMBER", $timber);
 	define("TIMBER_URL", 'http://'.$_SERVER["HTTP_HOST"].TIMBER);
 	define("TIMBER_LOC", $_SERVER["DOCUMENT_ROOT"].TIMBER);
