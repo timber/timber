@@ -1,0 +1,17 @@
+<div class="respond">
+	<h3 class="h2">Comments</h3>
+	{{ respond }}
+</div>
+<div class="responses">
+	{% for comment in responses %}
+		<div class="blog-comment {{comment.comment_type}}" id="blog-comment-{{comment.comment_ID}}">
+			<!-- {{comment|print_r}} -->
+			{% if comment.comment_author != "" %}
+			<h5 class="comment-author">{{comment.comment_author}} says</h5>
+			{% else %}
+			<h5 class="comment-author">Anonymous says</h5>
+			{% endif %}
+			<div class="comment-content">{{comment.comment_content|wpautop}}</div>
+		</div>
+	{% endfor %}
+</div>

@@ -18,4 +18,4 @@
 	
 	$pi = PostMaster::loop_to_post();
 	$data['post'] = $pi;
-	render_twig(array('page-'.$pi->post_name.'.html', 'page.html'), $data);
+	render_twig(array('page-'.$pi->post_name.'.twig', 'page.twig'), $data);

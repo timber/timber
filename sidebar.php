@@ -7,5 +7,5 @@
  * @subpackage 	Timber
  */
 
-	render_twig(array('sidebar.html'), $data);
+	render_twig(array('sidebar.twig'), $data);
 ?>

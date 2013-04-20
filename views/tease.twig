@@ -1,0 +1,6 @@
+<article class="tease tease-{{post.post_type}}">
+	{% block content %}
+		<h2 class="h2"><a href="{{post.path}}">{{post.title}}</a></h2>
+		<p>{{post.post_content|wpautop|excerpt}}</p>
+	{% endblock %}
+</article>
