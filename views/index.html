@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-
-{% block content %}
-	
-	{% for post in posts %}
-		{% include ['tease-'~post.post_type~'.html', 'tease.html'] %}
-	{% endfor %}
-
-{% endblock %}
