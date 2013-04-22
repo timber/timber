@@ -45,7 +45,7 @@
 			} else {
 				$comments['responses'] = get_comments(array('post_id' => $pi->ID));
 				$comments['respond'] = WPHelper::get_comment_form(null, $pi->ID);
-				$data['comments'] = render_twig('comments.html', $comments, false);
+				$data['comments'] = render_twig('comments.twig', $comments, false);
 			}
 		}
 

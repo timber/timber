@@ -15,6 +15,6 @@
 
 	$posts = PostMaster::loop_to_array();
 	$data['posts'] = $posts;
-	render_twig('index.html', $data);
+	render_twig('index.twig', $data);
 
 

@@ -12,5 +12,5 @@
 	$data['posts'] = PostMaster::loop_to_array();
 	$data['title'] = 'Author Archives: '.get_the_author();
 	$data['desc'] = get_the_author_meta( 'description' );
-	render_twig(array('author.html', 'archive.html'), $data);
+	render_twig(array('author.twig', 'archive.twig'), $data);
 ?>

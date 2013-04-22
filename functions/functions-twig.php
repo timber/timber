@@ -18,9 +18,12 @@
 		}
 		$twig = new Twig_Environment($loader, array(
     		/*'cache' => TIMBER_LOC.'/twig-cache',*/
-			'debug' => true,
+			'debug' => WP_DEBUG,
 			'autoescape' => false
 		));
+		$twig->addFunction(new Twig_SimpleFunction('wp_bloginfo', function($show = null,$filter = null){
+			return get_bloginfo($show,$filter);
+		}));
 		$twig->addExtension(new Twig_Extension_StringLoader());
 		$twig->addExtension(new Twig_Extension_Debug());
 		$twig->addFilter('resize', new Twig_Filter_Function('twig_resize_image'));
@@ -32,20 +35,15 @@
 		$twig->addFilter('tojpg', new Twig_Filter_Function('twig_img_to_jpg'));
 		$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
 		$twig->addFilter('twitterify', new Twig_Filter_Function('twitterify'));
-
 		$twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
-
 		$twig->addFilter('editable', new Twig_Filter_Function('twig_editable'));
 		$twig->addFilter('cdn', new Twig_Filter_Function('twig_cdn'));
-
 		$twig->addFilter('wp_head', new Twig_Filter_Function('twig_wp_head'));
 		$twig->addFilter('wp_footer', new Twig_Filter_Function('twig_wp_footer'));
 		$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
 		$twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
 		$twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
-
 		$twig->addFilter('get_post_info', new Twig_Filter_Function('twig_get_post_info'));
-
 		$twig = apply_filters('get_twig', $twig);
 		return $twig;
 	}
@@ -60,10 +58,8 @@
 	}
 
 	function twig_wp_title(){
-		return wp_title('|', false, 'right'); 
+		return wp_title('|', false, 'right');
 	}
-
-
 
 	function twig_body_class($body_classes){
 		ob_start();
@@ -147,7 +143,6 @@
 			$uri[] = TIMBER_LOC;
 		}
 		$twig = get_twig($uri);
-		
 		$filename = twig_choose_template($filenames, $uri);
 		$output = '';
 		if (strlen($filename)){
@@ -162,7 +157,7 @@
 	function twig_editable($content, $ID, $field){
 		if (!function_exists('ce_wrap_content')){
 			return $content;
-		}		
+		}
 		return ce_wrap_content_field($content, $ID, $field);
 	}
 
@@ -204,9 +199,6 @@
     	imagedestroy($image);
     	return $output;
 	}
-	
 	function twig_resize_image($src, $w, $h = 0, $ratio = 0, $append = ''){
 		return get_resized_image($src, $w, $h, $ratio, $append);
 	}
-
-	

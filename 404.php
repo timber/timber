@@ -9,5 +9,5 @@
  * @since 		Timber 0.1
  */
 
-	render_twig('404.html');
+	render_twig('404.twig');
 ?>

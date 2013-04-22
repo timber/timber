@@ -10,7 +10,7 @@
  */
   
 
-	$templates = array('archive.html', 'index.html');
+	$templates = array('archive.twig', 'index.twig');
 	$data = get_context();
 
 	$data['title'] = 'Search results for '. get_search_query();
