@@ -1,0 +1,39 @@
+{% include 'html-header.html' %}    
+
+        <header class="header" data-source="base.html">
+            {% block header %}
+            <div class="wrapper">
+
+                <h1 class="hdr-logo" role="banner">
+                    <a class="ink-logo-text" href="/" title="Timber" rel="home">Timber</a>
+                </h1>
+
+                <nav id="access" class="ink-navigation" role="navigation">
+                    {{wp_nav_menu}}
+                </nav><!-- #access -->
+                
+            </div>
+            {% endblock %}
+        </header>
+
+
+        <section id="content" role="main" class="content-wrapper">
+            {% if title %}<h1>{{title}}</h1>{% endif %}
+            <div class="wrapper {{sidebar_class}}">
+                {% block content %}
+                    Sorry, no content
+                {% endblock %}
+            </div>
+            {% if sidebar %}
+                <aside class="layout-sidebar">
+                    {{sidebar}}
+                </aside>
+            {% endif %}
+        </section>
+
+        <div id="footer">
+            {% include 'footer.html' %}
+        </div>
+        {{ wp_footer }}
+    </body>
+</html>
