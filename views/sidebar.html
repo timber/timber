@@ -1,1 +1,0 @@
-Sidebar in Timber. Add HTML to your hearts content.
