@@ -50,9 +50,6 @@ Like where twentyeleven and twentytwelve live. Timber will live at the same leve
 						/twentytwelve
 						/timber-starter-theme
 
-Pull the ```timber-starter-theme``` folder from ```timber-framework``` into your main ```themes``` directory
-![Drag child-theme into the themes directory](http://i.imgur.com/SyfoYRh.png)
-
 You should now have
 
 	/wp-content/themes/timber-starter-theme
