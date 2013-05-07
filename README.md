@@ -159,15 +159,22 @@ We're now telling Twig to grab **index.html** and send it our data object.
 
 ### Timber
 #### get_posts($query, $PostClass = 'TimberPost')
-
-
-#### loop_to_posts($PostClass = 'TimberPost')
-
-#### loop_to_ids()
-Takes the WordPress loop and translates it into post IDS
+Send WordPress an arbitrary [WordPress Query](http://codex.wordpress.org/Class_Reference/WP_Query) or an array of IDs and it will send you back an array of Post Objects. By default it will use `TimberPost` but you can supply your own subclass of `TimberPost`.
 
 ##### returns
-(array)
+(array) of TimberPosts
+
+#### loop_to_posts($PostClass = 'TimberPost')
+Takes the WordPress loop and translates into an array of Post Objects. By default it will use `TimberPost` but you can supply your own subclass of `TimberPost`.
+
+##### returns
+(array) of TimberPosts
+
+#### loop_to_ids()
+Takes the WordPress loop and translates it into an array post IDS
+
+##### returns
+(array) of integers
 
 ###### example
 ``` array(3214, 3200, 3199, 3197, 3188); ```
@@ -179,6 +186,9 @@ Returns a basic context object with:
 * ['wp_head'] = the output from wp_head();
 * ['wp_footer'] = the output of wp_footer();
 * ['wp_nav_menu'] = <ul><li>Whatever HTML is rendered from your nav menu '</li></ul>';
+
+##### returns
+(array) an associative array of different types
 
 #### get_wp_footer
 ##### returns
