@@ -3,14 +3,17 @@
 <div>
 By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a href="http://upstatement.com">Upstatement</a> (<a href="http://twitter.com/upstatement">@Upstatement</a>)</div>  
 </div>
+## Upgrade Notes
+This is a major rewrite of Timber. Trust me, it's worth it. But if you're looking for the old [Parent Theme Timber](https://github.com/jarednova/timber/tree/theme) you can still find it on this [branch](https://github.com/jarednova/timber/tree/theme).
+
 ## Because WordPress is awesome, but the_loop isn't
 Timber is a WordPress theme that uses the [Twig Templating Engine](http://twig.sensiolabs.org/). This helps clean-up your theme code so your single.php file can focus on your WordPress model, while your single.html file can focus 100% on the HTML and display.
 
 ### What does it look like?
-Nothing. Timber is meant for you to build a child theme on. Like the [Starkers](https://github.com/viewportindustries/starkers) or [Boilerplate theme](https://github.com/zencoder/html5-boilerplate-for-wordpress) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
+Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https://github.com/viewportindustries/starkers) or [Boilerplate theme](https://github.com/zencoder/html5-boilerplate-for-wordpress) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
 
 ### Who is it good for?
-Timber is great for teams of designers and developers working together. At Upstatement not everyone knows the ins-and-outs of the_loop(), WordPress codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .html files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
+Timber is great for teams of designers and developers working together. At [Upstatement](http://upstatement.com) not everyone knows the ins-and-outs of the_loop(), WordPress codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .html files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
 
 ### Should I use it?
 Well, it's **free**! And it's GPL-licensed, so use in personal or commerical work. Just don't re-sell it.
@@ -21,65 +24,65 @@ Well, it's **free**! And it's GPL-licensed, so use in personal or commerical wor
 
 ### Download Timber + Twig
 
-#### 1) Navigate to your WordPress themes directory
-Like where twentyeleven and twentytwelve live. Timber will live at the same level.
-
-	/wp-content/themes	/twentyeleven
-						/twentytwelve
-						/timber
+#### 1) Navigate to your WordPress plugins directory
+	cd ~/Sites/mywordpress/wp-content/plugins
 
 #### 2) Use git to grab the repo
-	git clone --recursive git@github.com:jarednova/timber.git
-This is important! **--recursive** is needed so that the **Twig** submodule is also downloaded. Having trouble with the recursive stuff? Skip to step #4 to download Twig
+	git clone --recursive git@github.com:jarednova/timber.git timber-framework
+
+This is important! **--recursive** is needed so that the **Twig** submodule is also downloaded. Having trouble with the recursive stuff? Skip to step #4 to download Twig. Also some dude took the name 'timber' in the WP Plugin Repo so you should change the name of the directory or you'll get a misleading upgrade notice.
 
 #### 3) Don't know git?
-That's cool, you should, but developer lectures are lame. Grab the zip and stick it in the themes directory (so timber lives in the same folder as twentyeleven and other thems you may have)
+That's cool, you should, but developer lectures are lame. Grab the zip and stick it in the plugins directory (so **timber** lives in the same folder as other plugins you may have). You should also rename it to "timber-framework" or you'll get an incorrect upgrade warning from WordPress.
 
 #### 4) Don't know git? (part 2)
 We'll also need to grab [Twig](https://github.com/fabpot/Twig). Download the zip and replace the Twig folder inside of timber (please note: cAsE sEnSeTiVe). Confirm this file structure:
 	
-	/wp-content/themes/timber/Twig/composer.json
-	/wp-content/themes/timber/Twig/lib
+	/wp-content/plugins/timber-framework/Twig/composer.json
+	/wp-content/plugins/timber-framework/Twig/lib
 
-### Use the child theme
-Optional but _strongly_ recommended
+### Use the starter theme
 
-Pull the ```child-theme``` folder from ```timber``` into your main ```themes``` directory
+#### Navigate to your WordPress themes directory
+Like where twentyeleven and twentytwelve live. Timber will live at the same level.
+
+	/wp-content/themes	/twentyeleven
+						/twentytwelve
+						/timber-starter-theme
+
+Pull the ```timber-starter-theme``` folder from ```timber-framework``` into your main ```themes``` directory
 ![Drag child-theme into the themes directory](http://i.imgur.com/SyfoYRh.png)
 
 You should now have
 
-	/wp-content/themes/child-theme
+	/wp-content/themes/timber-starter-theme
 	
 Feel free to rename this to something ... cool
 
+### Activate Timber
+It will be in wp-admin/plugins.php
+
 ### Select your theme in WordPress
-Use the **child** theme from the step above.
+Use the **timber-starter-theme** theme from the step above.
 
 ## Your first Timber project
 ### Let's start with your single post
-You'll want to **copy** **single.html** from timber to your child theme's views folder. You should now have:
+Find this file:
 	
-	wp-content/themes/my-child-theme/views/single.html
+	wp-content/themes/[timber-starter-theme]/views/single.html
 
 Brilliant! Open it up.
 
 ```html
 {% extends "base.html" %}
 {% block content %}
-	{% if post.banner_image %}
-		<img src="{{post.banner_image}}" class="blog-banner-image" alt="{{post.post_title}}" />
-	{% endif %}
 	<div class="content-wrapper">
 		<article class="post-type-{{post.post_type}}" id="post-{{ID}}">
 			<section class="article-content">
-				<h1 class="article-h1">{{post.post_title|editable(post.ID, 'post_title')}}</h1>
+				<h1 class="article-h1">{{post.post_title}}</h1>
 				<h2 class="article-h2">{{post.subtitle}}</h2>
-				<p class="blog-author"><span>By</span> {{ post.author_data.display_name }} <span>&bull;</span> {{ post.display_date }}</p>
+				<p class="blog-author"><span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.display_date }}</p>
 				{{post.post_content|wpautop|raw}}
-			</section>
-			<section class="article-comments">
-				{{comments}}
 			</section>
 		</article>
 	</div> <!-- /content-wrapper -->
@@ -119,27 +122,94 @@ Yeah baby!
 Let's crack open **index.php** and see what's inside:
 
 ```php
-$data = get_context();
-$data['posts'] = PostMaster::loop_to_array();
-render_twig('index.html', $data);
+$context = Timber::get_context();
+$context['posts'] = Timber::loop_to_posts();
+render_twig('index.html', $context);
 ```
 This is where we are going to handle the logic that powers our index file. Let's go step-by-step
 
 #### Get the starter
 ```php
-$data = get_context();
+$context = Timber::get_context();
 ```
-This is going to return an object with a lot of the common things we need across the site. Things like your nav and sidebar you'll want to start with each time (even if you over-write them later). You can do a ```print_r($data);``` to see what's inside or open-up **functions.php** to inspect for yourself
+This is going to return an object with a lot of the common things we need across the site. Things like your nav, wp_head and wp_footer you'll want to start with each time (even if you over-write them later). You can do a ```print_r($context);``` to see what's inside or open-up **timber.php** to inspect for yourself
 
 #### Grab your posts
 ```php
-$data['posts'] = PostMaster::loop_to_array();
+$context['posts'] = Timber::loop_to_posts();
 ```
-We're now going to grab the posts that are inside the loop and stick them inside our data object under the **posts** key. What's this PostMaster business? It's a helpful class full of shortcuts to handle frequent WordPress tasks. [Read more in the Wiki Docs](https://github.com/jarednova/timber/wiki/PostMaster)
+We're now going to grab the posts that are inside the loop and stick them inside our data object under the **posts** key. 
 
 #### 
 ```php
-render_twig('index.html', $data);
+render_twig('index.html', $context);
 ```
 We're now telling Twig to grab **index.html** and send it our data object. 
+
+# Reference
+
+### TimberCore
+
+#### title
+
+#### slug
+
+#### content
+
+#### path
+
+
+
+### Timber
+#### get_posts($query, $PostClass = 'TimberPost')
+
+
+#### loop_to_posts($PostClass = 'TimberPost')
+
+#### loop_to_ids()
+Takes the WordPress loop and translates it into post IDS
+
+##### returns
+(array)
+
+###### example
+``` array(3214, 3200, 3199, 3197, 3188); ```
+
+#### get_context()
+Returns a basic context object with:
+* ['http_host'] = 'http://mywordpresssite.com';
+* ['wp_title'] = "Jared's Site";
+* ['wp_head'] = the output from wp_head();
+* ['wp_footer'] = the output of wp_footer();
+* ['wp_nav_menu'] = <ul><li>Whatever HTML is rendered from your nav menu '</li></ul>';
+
+#### get_wp_footer
+
+]
+
+#### get_wp_head
+
+
+### TimberCore
+#### import();
+#### url_to_path()
+
+### TimberPost extends TimberCore
+init()
+update()
+
+
+### TimberComment extends TimberCore
+### TimberImage extends TimberCore
+#### get_url()
+#### get_path()
+#### url()
+#### can_edit();
+#### init_with_url()
+### TimberTerm extends TimberCore
+### TimberUser extends TimberCore
+
+TimberUtils
+
+
 
