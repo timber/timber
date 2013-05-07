@@ -87,9 +87,9 @@ Brilliant! Open it up.
 ```	
 
 #### This is the fun part. 
-
-	<h1 class="article-h1">{{post.post_title}}</h1>
-	
+```php	
+<h1 class="article-h1">{{post.post_title}}</h1>
+```
 This is now how we now call stuff from the WordPress API. Instaed of this familiar face:
 ```php	
 <h1 class="article-h1"><?php the_title(); ?></h1>
@@ -103,13 +103,13 @@ Okay, not _too_ terrible, but doesn't this (Timber) way look so much nicer:
 <h1 class="article-h1"><a href="{{post.permalink}}">{{post.post_title}}</a></h1>
 ```	
 It gets better. Let's explain some other concepts.
-```html
+```php
 {% extends "base.html" %}
-```	
+```
 This means that **single.html** is using **base.html** as its parent template. That's why you don't see any ```<head>```, ```<header>```, or ```<footer>``` tags, those site-wide (usually) things are all controlled in base.html. If they're not? no prob, you can make single extend **base-single.html** or just include _all_ the markup inside of single.html.
-
-	{% block content %} / {% endblock %}
-	
+```php
+{% block content %} / {% endblock %}
+```
 If you were to peak into **base.html** you would see a matching set of ```{% block content %} / {% endblock %}``` tags. **single.html** is replacing the content of base's ```{% block content %}``` with its own.
 
 Yeah baby!
@@ -181,11 +181,12 @@ Returns a basic context object with:
 * ['wp_nav_menu'] = <ul><li>Whatever HTML is rendered from your nav menu '</li></ul>';
 
 #### get_wp_footer
-
-]
+##### returns
+(string)
 
 #### get_wp_head
-
+##### returns
+(string)
 
 ### TimberCore
 #### import();
@@ -205,8 +206,6 @@ update()
 #### init_with_url()
 ### TimberTerm extends TimberCore
 ### TimberUser extends TimberCore
-
-TimberUtils
 
 
 
