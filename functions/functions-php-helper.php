@@ -5,8 +5,19 @@
 
 		}
 
+		
+
 		function is_array_assoc($arr){
     		return array_keys($arr) !== range(0, count($arr) - 1);
+		}
+
+		function is_true($property){
+			if (isset($property)){
+				if ($property == 'true' || $property == 1 || $property == '1' || $property == true){
+					return true;
+				}
+			}
+			return false;
 		}
 
 		function array_truncate($array, $len){

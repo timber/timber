@@ -1,12 +1,9 @@
-<?php
-
-	function load_twig(){
-		require_once(TIMBER_LOC.'/Twig/lib/Twig/Autoloader.php');
-		Twig_Autoloader::register();
-	}
+<?php 
 
 	function get_twig($uri){
-		load_twig();
+		$loader_loc = TIMBER_LOC.'/Twig/lib/Twig/Autoloader.php';
+		require_once($loader_loc);
+		$reg = Twig_Autoloader::register();
 		if (is_array($uri)){
 			$loaders = array();
 			foreach($uri as $u){
@@ -18,10 +15,10 @@
 		}
 		$twig = new Twig_Environment($loader, array(
     		/*'cache' => TIMBER_LOC.'/twig-cache',*/
-			'debug' => true,
+			'debug' => false,
 			'autoescape' => false
 		));
-		$twig->addExtension(new Twig_Extension_StringLoader());
+		
 		$twig->addExtension(new Twig_Extension_Debug());
 		$twig->addFilter('resize', new Twig_Filter_Function('twig_resize_image'));
 		$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
@@ -38,17 +35,46 @@
 		$twig->addFilter('editable', new Twig_Filter_Function('twig_editable'));
 		$twig->addFilter('cdn', new Twig_Filter_Function('twig_cdn'));
 
-		$twig->addFilter('wp_head', new Twig_Filter_Function('twig_wp_head'));
-		$twig->addFilter('wp_footer', new Twig_Filter_Function('twig_wp_footer'));
 		$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
 		$twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
 		$twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
-
+		$twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
 		$twig->addFilter('get_post_info', new Twig_Filter_Function('twig_get_post_info'));
 
 		$twig = apply_filters('get_twig', $twig);
 		return $twig;
 	}
+
+	function twig_time_ago($from, $to = null) {
+        $to = (($to === null) ? (time()) : ($to));
+  		$to = ((is_int($to)) ? ($to) : (strtotime($to)));
+  		$from = ((is_int($from)) ? ($from) : (strtotime($from)));
+
+  		$units = array(
+			"year"   => 29030400, // seconds in a year   (12 months)
+			"month"  => 2419200,  // seconds in a month  (4 weeks)
+			"week"   => 604800,   // seconds in a week   (7 days)
+			"day"    => 86400,    // seconds in a day    (24 hours)
+			"hour"   => 3600,     // seconds in an hour  (60 minutes)
+			"minute" => 60,       // seconds in a minute (60 seconds)
+			"second" => 1         // 1 second
+		);
+
+  		$diff = abs($from - $to);
+  		$suffix = (($from > $to) ? ("from now") : ("ago"));
+  		$output = '';
+  		foreach($units as $unit => $mult) {
+   			if ($diff >= $mult) {
+    			$and = (($mult != 1) ? ("") : ("and "));
+    			$output .= ", ".$and.intval($diff / $mult)." ".$unit.((intval($diff / $mult) == 1) ? ("") : ("s"));
+    			$diff -= intval($diff / $mult) * $mult;
+    			break;
+   			}
+		}
+  		$output .= " ".$suffix;
+  		$output = substr($output, strlen(", "));
+  		return $output;
+    }
 
 	function twig_get_post_info($id, $field = 'path'){
 		$pi = PostMaster::get_post_info($id);
@@ -63,8 +89,6 @@
 		return wp_title('|', false, 'right'); 
 	}
 
-
-
 	function twig_body_class($body_classes){
 		ob_start();
 		if (is_array($body_classes)){
@@ -74,14 +98,6 @@
 		$return = ob_get_contents();
 		ob_end_clean();
 		return $return;
-	}
-
-	function twig_wp_head(){
-		wp_head();
-	}
-
-	function twig_wp_footer(){
-		wp_footer();
 	}
 
 	function twig_cdn($path){
@@ -120,32 +136,34 @@
 	}
 
 	function render_twig_string($string, $data = array()){
-
-		load_twig();
 		$loader = new Twig_Loader_String();
 		$twig = new Twig_Environment($loader);
 		return $twig->render($string, $data);
 	}
 
+	function get_calling_script_dir($backtrace){
+		$caller = $backtrace[0]['file'];
+		$pathinfo = pathinfo($caller);
+		$dir = $pathinfo['dirname'];
+		return $dir.'/';
+	}
+
 	function render_twig($filenames, $data = array(), $render = true){
-		/*
-		$uri = TIMBER_URI;
-		if (file_exists(THEME_URI.'/'.$filename)){
-			$uri = THEME_URI;
-		}
-		*/
-		if (!defined("THEME_LOC")){
-			define("THEME_LOC", TIMBER_LOC);
-		}
+		$backtrace = debug_backtrace();
+
+		$dir = get_calling_script_dir($backtrace);
+		
 		if(!$data){
 			$data = array();
 		}
-		$uri = TIMBER_LOC;
-		if (THEME_LOC != TIMBER_LOC){
-			$uri = array();
-			$uri[] = THEME_LOC;
-			$uri[] = TIMBER_LOC;
+		$uri = array();
+		$uri[] = get_stylesheet_directory();
+		$uri_parent = get_template_directory();
+
+		if ($uri[0] != $uri_parent){
+			$uri[] = $uri_parent;
 		}
+		$uri[] = $dir;
 		$twig = get_twig($uri);
 		
 		$filename = twig_choose_template($filenames, $uri);
@@ -206,7 +224,7 @@
 	}
 	
 	function twig_resize_image($src, $w, $h = 0, $ratio = 0, $append = ''){
-		return get_resized_image($src, $w, $h, $ratio, $append);
+		return InkwellImage::get_photon($src, $w, $h, $ratio, $append);
 	}
 
 	

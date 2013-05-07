@@ -18,6 +18,29 @@
 			return $posts;
 		}
 
+		function loop_to_ids($limit = 99999){
+			$posts = array();
+			$i = 0;
+			ob_start();
+			while ( have_posts() && $i < $limit ) {
+				the_post(); 
+				$posts[] = get_the_ID();
+				$i++;
+			}
+			wp_reset_query();
+			ob_end_clean();
+			return $posts;
+		}
+
+		function loop_to_id(){
+			if (have_posts()){
+				the_post();
+				wp_reset_query();
+				return get_the_ID();
+			}
+			return false;
+		}
+
 		function loop_to_post(){
 			if (have_posts()){
 				the_post(); 
@@ -41,7 +64,7 @@
 		}
 
 		function check_post_id($pid){
-			if ($pid == 0 && is_numeric($pid)){
+			if (is_numeric($pid) && $pid === 0){
 				$pid = get_the_ID();
 				return $pid;
 			}
@@ -68,11 +91,6 @@
 			return $ret;
 		}
 
-		function get_path($url){
-			$url_info = parse_url($url);
-			return $url_info['path'];
-		}
-
 		function get_teaser($pid){
 			$post = self::prepare_post_info($pid);
 			$pos = strpos($post->post_content, '<!--more');
@@ -92,6 +110,24 @@
 			return false;
 		}
 
+		function get_post_custom($post, $pid){
+			$customs = get_post_custom($pid);
+			foreach($customs as $key => $value){
+				$v = $value[0];
+				$post->$key = $v;
+				if (is_serialized($v)){
+					if (gettype(unserialize($v)) == 'array'){
+						$post->$key = unserialize($v);
+					}
+				}
+			}
+		}
+
+		function get_path($url){
+			$url_info = parse_url($url);
+			return $url_info['path'];
+		}
+
 		function get_post_info($pid, $extras = null){
 			$post = self::prepare_post_info($pid);
 			$post->title = $post->post_title;
@@ -100,7 +136,7 @@
 			$post->slug = $post->post_name;
 			$post->custom = get_post_custom($post->ID);
 			$post->permalink = get_permalink($post->ID);
-			$post->author_data = get_userdata($post->post_author); 
+			$post->author = get_userdata($post->post_author); 
 			$post->path = self::get_path($post->permalink);
 			$post->thumb_src = self::get_post_thumbnail_src($post->ID);
 			$post->display_date = date(get_option('date_format'), strtotime($post->post_date));
@@ -190,7 +226,6 @@
 		
 
 		function get_post_by_meta($key, $value){
-			
 			global $wpdb;
 			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '$key' AND meta_value = '$value' ORDER BY post_id";
 			$result = $wpdb->get_row($query);
