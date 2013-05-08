@@ -30,6 +30,10 @@
 		$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
 		$twig->addFilter('twitterify', new Twig_Filter_Function('twitterify'));
 
+		$twig->addFilter('get_class', new Twig_Filter_Function('twig_get_class'));
+
+		$twig->addFilter('get_type', new Twig_Filter_Function('twig_get_type'));
+
 		$twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
 
 		$twig->addFilter('editable', new Twig_Filter_Function('twig_editable'));
@@ -43,6 +47,14 @@
 
 		$twig = apply_filters('get_twig', $twig);
 		return $twig;
+	}
+
+	function twig_get_class($this){
+		return get_class($this);
+	}
+
+	function twig_get_type($this){
+		return gettype($this);
 	}
 
 	function twig_time_ago($from, $to = null) {
