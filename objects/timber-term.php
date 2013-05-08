@@ -97,7 +97,7 @@
 		}
 
 		function get_path(){
-			return $this->get_url();
+			return '/'.$this->get_url();
 		}
 
 		function get_url(){
