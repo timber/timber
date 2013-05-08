@@ -3,6 +3,7 @@
 	class TimberTerm extends TimberCore {
 
 		var $taxonomy;
+		var $PostClass;
 
 		function __construct($tid = null){
 			if ($tid === null){
@@ -107,7 +108,10 @@
 			return $base.'/'.$this->slug;
 		}
 
-		function get_posts($numberposts = 10, $post_type = 'any', $PostClass = 'TimberPost'){
+		function get_posts($numberposts = 10, $post_type = 'any', $PostClass = ''){
+			if (!strlen($PostClass)){
+				$PostClass = $this->PostClass;
+			}
 			$args = array(
 					'numberposts' => $numberposts,
 					'tax_query' => array(array(
