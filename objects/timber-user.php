@@ -11,6 +11,7 @@
 				$data = get_userdata($uid); 
 				$this->import($data->data);
 			}
+			$this->ID = $uid;
 			$this->import_custom();
 		}
 
