@@ -10,6 +10,20 @@
 			return false;
 		}	
 
+		function get_params($i = -1){
+			$args = explode('/', trim(strtolower($_SERVER['REQUEST_URI'])));
+			$newargs = array();
+			foreach($args as $arg){
+				if (strlen($arg)){
+					$newargs[] = $arg;
+				}
+			}
+			if ($i > -1){
+				return $newargs[$i];
+			}
+			return $newargs;
+		}
+
 		function get_json($url){
 			$data = self::get_curl($url);
 			return json_decode($data);
