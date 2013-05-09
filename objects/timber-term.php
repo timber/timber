@@ -76,6 +76,7 @@
 		}
 
 		function get_tid($tid){
+			global $wpdb;
 			if (is_numeric($tid)){
 				return $tid;
 			}
@@ -87,7 +88,7 @@
 			} else {
 				$query = "SELECT * FROM $wpdb->terms WHERE slug = '$tid'";
 			}
-			global $wpdb;
+			
 			$result = $wpdb->get_row($query);
 			if (isset($result->term_id)){
 				$result->ID = $result->term_id;
