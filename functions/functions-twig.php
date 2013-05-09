@@ -18,6 +18,7 @@
 			'debug' => false,
 			'autoescape' => false
 		));
+
 		
 		$twig->addExtension(new Twig_Extension_Debug());
 		$twig->addFilter('resize', new Twig_Filter_Function('twig_resize_image'));
