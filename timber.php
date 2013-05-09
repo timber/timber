@@ -90,6 +90,15 @@ class Timber {
 		return $posts;
 	}
 
+	function loop_to_id(){
+		if (have_posts()){
+			the_post();
+			wp_reset_query();
+			return get_the_ID();
+		}
+		return false;
+	}
+
 	function get_context(){
 		$data = array();
 		$data['http_host'] = 'http://'.$_SERVER['HTTP_HOST'];
