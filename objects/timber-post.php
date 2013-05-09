@@ -25,7 +25,10 @@
 
 		/*
 		*/
-		function init($pid){
+		function init($pid = false){
+			if ($pid === false){
+				$pid = get_the_ID();
+			}
 			$this->import_info($pid);
 		}
 
@@ -52,7 +55,13 @@
 		private function prepare_post_info($pid = 0){
 			if (is_string($pid) || is_numeric($pid) || (is_object($pid) && !isset($pid->post_title)) || $pid === 0){
 				$pid = self::check_post_id($pid);
-				return get_post($pid);
+				$post = get_post($pid);
+				if ($post){
+					return $post;
+				} else {
+					$post = get_page($pid);
+					return $post;
+				}
 			} 
 			return $pid;
 		}
@@ -147,19 +156,28 @@
 				//print_r(debug_backtrace());
 			}
 			$post = $this->prepare_post_info($pid);
+			if (!$post){
+				print_r(debug_backtrace());
+				print_r($post);
+			}
 			$post->title = $post->post_title;
 			$post->slug = $post->post_name;
 			$this->import_custom($post->ID);
-				$post->permalink = get_permalink($post->ID);
-				
 			
-			$post->path = $this->url_to_path($post->permalink);
-
-			$post->author = new TimberUser($post->post_author); 
-			
+			if (isset($post->post_author)){
+				$post->author = new TimberUser($post->post_author); 
+			}
 			$post->display_date = date(get_option('date_format'), strtotime($post->post_date));
 			
-			$post->status = $post->post_status;		
+			$post->status = $post->post_status;	
+			if (!isset($wp_rewrite)){
+				return $post;
+			} else {
+				$post->permalink = get_permalink($post->ID);
+				$post->path = $this->url_to_path($post->permalink);
+			}
+			
+			
 			return $post;
 		}
 
