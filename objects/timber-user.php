@@ -9,25 +9,29 @@
 		function init($uid){
 			if (function_exists('get_userdata')){
 				$data = get_userdata($uid); 
-				$this->import($data->data);
+				if (is_object($data) && isset($data)){
+					$this->import($data->data);
+				}
 			}
 			$this->ID = $uid;
 			$this->import_custom();
 		}
 
 		function get_custom(){
-			$um = get_user_meta($this->ID);
-			$custom = new stdClass();
-			foreach($um as $key => $value){
-				$v = $value[0];
-				$custom->$key = $v;
-				if (is_serialized($v)){
-					if (gettype(unserialize($v)) == 'array'){
-						$custom->$key = unserialize($v);
+			if ($this->ID){
+				$um = get_user_meta($this->ID);
+				$custom = new stdClass();
+				foreach($um as $key => $value){
+					$v = $value[0];
+					$custom->$key = $v;
+					if (is_serialized($v)){
+						if (gettype(unserialize($v)) == 'array'){
+							$custom->$key = unserialize($v);
+						}
 					}
 				}
+				return $custom;
 			}
-			return $custom;
 		}
 
 		function import_custom(){
