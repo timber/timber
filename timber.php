@@ -45,7 +45,11 @@ class Timber {
 			if (isset($result->ID)){
 				$rid = $result->ID;
 			}
-			$result = new $PostClass($rid);
+			$PostClassUse = $PostClass;
+			if (is_array($PostClass)){
+				$PostClassUse = $PostClass[$result->post_type];
+			}
+			$result = new $PostClassUse($rid);
 		}
 		return $results;
 	}
