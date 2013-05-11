@@ -53,6 +53,10 @@ define("TIMBER_LOC", realpath(__DIR__));
 	
 class Timber {
 
+	function get_post($pid){
+		return new TimberPost($pid);
+	}
+
 	// TODO: homogenize this interface to combine get_posts with loop_to_posts
 	function get_posts($query = false, $PostClass = 'TimberPost'){
 		// error_log(print_r($query, true));
