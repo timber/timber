@@ -34,6 +34,10 @@ define("TIMBER_LOC", realpath(__DIR__));
 	
 class Timber {
 
+	function get_post($pid){
+		return new TimberPost($pid);
+	}
+
 	function get_posts($query, $PostClass = 'TimberPost'){
 		if (is_array($query) && !PHPHelper::is_array_assoc($query)){
 			$results = $query;

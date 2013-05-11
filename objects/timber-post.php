@@ -17,8 +17,10 @@
 				ob_end_clean();
 			}
 			if (is_numeric($pid)){
+
 				$this->ID = $pid;
 			}
+
 			$this->init($pid);
 			return $this;
 		}

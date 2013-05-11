@@ -10,6 +10,13 @@
 			return false;
 		}	
 
+		function error_log($arg){
+			if (is_object($arg) || is_array($arg)){
+				$arg = print_r($arg, true);
+			}
+			error_log($arg);
+		}
+
 		function get_params($i = -1){
 			$args = explode('/', trim(strtolower($_SERVER['REQUEST_URI'])));
 			$newargs = array();
