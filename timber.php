@@ -31,10 +31,35 @@ define("TIMBER", $timber);
 define("TIMBER_URL", 'http://'.$_SERVER["HTTP_HOST"].TIMBER);
 define("TIMBER_LOC", realpath(__DIR__));
 
+/*
+
+	Usage:
+
+		$posts = Timber::get_posts();
+		$posts = Timber::get_posts('post_type = article')
+		$posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format
+		$posts = Timber::get_posts(array(23,24,35,67), 'InkwellArticle');
+
+		$posts = Timber::loop_to_posts();
+		$posts = Timber::loop_to_posts('InkwellArticle');
+		$posts = Timber::loop_to_posts(array('post' => 'InkwellArticle')); // wp_query format
+
+		$pids = Timber::loop_to_ids();
+
+		$context = Timber::get_context(); // returns wp favorites!
+
+
+*/
 	
 class Timber {
 
-	function get_posts($query, $PostClass = 'TimberPost'){
+	// TODO: homogenize this interface to combine get_posts with loop_to_posts
+	function get_posts($query = false, $PostClass = 'TimberPost'){
+		if(!$query) {
+			error_log('--- Timber::get_posts is getting default WP posts');
+			return get_posts();
+		}
+
 		if (is_array($query) && !PHPHelper::is_array_assoc($query)){
 			$results = $query;
 		} else {
@@ -54,6 +79,27 @@ class Timber {
 		return $results;
 	}
 
+	// TODO: new interface for loop_to_ids
+	function get_pids() {
+
+	}
+
+	// TODO: new interface for loop_to_id
+	function get_pid() {
+
+	}
+
+	// shortcut function for common wordpress things
+	function get_wp_context() {
+
+	}
+
+	/* ----
+
+		"private"
+
+	*/
+
 	function loop_to_posts($PostClass = 'TimberPost'){
 		if (is_array($PostClass)){
 			$map = $PostClass;
@@ -63,23 +109,24 @@ class Timber {
 		
 		if ( have_posts() ){
 			ob_start();
-		while ( have_posts() && $i < 99999 ) {
-			the_post(); 
-			if (isset($map)){
-				$pt = get_post_type();
-				$PostClass = 'TimberPost';
-				if (isset($map[$pt])){
-					$PostClass = $map[$pt];
-				} 
+			while ( have_posts() && $i < 99999 ) {
+				the_post(); 
+				if (isset($map)){
+					$pt = get_post_type();
+					$PostClass = 'TimberPost';
+					if (isset($map[$pt])){
+						$PostClass = $map[$pt];
+					} 
+				}
+				$posts[] = new $PostClass(get_the_ID());
+				$i++;
 			}
-			$posts[] = new $PostClass(get_the_ID());
-			$i++;
-		}
-		ob_end_clean();
+			ob_end_clean();
 		}
 		return $posts;
 	}
 
+	// returns ids of posts from current query
 	function loop_to_ids(){
 		$posts = array();
 		$i = 0;
@@ -103,6 +150,7 @@ class Timber {
 		return false;
 	}
 
+	// TODO: move into wp shortcut function
 	function get_context(){
 		$data = array();
 		$data['http_host'] = 'http://'.$_SERVER['HTTP_HOST'];
@@ -116,6 +164,7 @@ class Timber {
 		return $data;
 	}
 
+	// TODO: move into wp shortcut function
 	function get_wp_footer(){
 		ob_start();
 		wp_footer();
@@ -124,6 +173,7 @@ class Timber {
 		return $ret;
 	}
 
+	// TODO: move into wp shortcut function
 	function get_wp_head(){
 		ob_start();
 		wp_head();
