@@ -55,14 +55,21 @@ class Timber {
 
 	// TODO: homogenize this interface to combine get_posts with loop_to_posts
 	function get_posts($query = false, $PostClass = 'TimberPost'){
+		// error_log(print_r($query, true));
 		if(!$query) {
 			error_log('--- Timber::get_posts is getting default WP posts');
-			return get_posts();
+			$posts = get_posts();
+			foreach($posts as &$post){
+				$post = new $PostClass($post->ID);
+			}
+			return $posts;
 		}
 
 		if (is_array($query) && !PHPHelper::is_array_assoc($query)){
+			error_log('--- Timber::get_posts $query IS array, and is not assoc');
 			$results = $query;
 		} else {
+			error_log('--- Timber::get_posts $query might be an assoc array');
 			$results = get_posts($query);
 		} 
 		foreach($results as &$result){
