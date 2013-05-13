@@ -69,9 +69,14 @@ class Timber {
 			return $posts;
 		}
 
-		if (is_array($query) && !PHPHelper::is_array_assoc($query)){
+		if (is_array($query) && !PHPHelper::is_array_assoc($query) && count($query)){
 			error_log('--- Timber::get_posts $query IS array, and is not assoc');
-			$results = $query;
+			//still need to query so you can retrive live posts
+			WPHelper::error_log($query);
+			global $wpdb;
+			$query_list = implode(', ', $query);
+			$results = $wpdb->get_col("SELECT ID FROM $wpdb->posts WHERE ID IN ($query_list)");
+			WPHelper::error_log($results);
 		} else {
 			error_log('--- Timber::get_posts $query might be an assoc array');
 			$results = get_posts($query);
@@ -85,7 +90,10 @@ class Timber {
 			if (is_array($PostClass)){
 				$PostClassUse = $PostClass[$result->post_type];
 			}
-			$result = new $PostClassUse($rid);
+			$post = new $PostClassUse($rid);
+			if (isset($post->post_title)){
+				$result = $post;
+			}
 		}
 		return $results;
 	}

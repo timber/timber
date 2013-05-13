@@ -162,6 +162,9 @@
 				print_r(debug_backtrace());
 				print_r($post);
 			}
+			if (!isset($post->post_title)){
+				return;
+			}
 			$post->title = $post->post_title;
 			$post->slug = $post->post_name;
 			$this->import_custom($post->ID);
