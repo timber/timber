@@ -69,16 +69,8 @@ class Timber {
 			return $posts;
 		}
 
-		if (is_array($query) && !PHPHelper::is_array_assoc($query) && count($query) && !is_object($query)){
-			error_log('--- Timber::get_posts $query IS array, and is not assoc');
-			//still need to query so you can retrive live posts
-			
-			if (is_string($query)){
-				global $wpdb;
-				$query_list = implode(', ', $query);
-				$results = $wpdb->get_col("SELECT ID FROM $wpdb->posts WHERE ID IN ($query_list)");
-			}
-			
+		if (is_array($query) && !PHPHelper::is_array_assoc($query) && count($query) && !is_object($query) && is_integer($query[0])){
+			return self::get_posts_from_array_of_ids($query, $PostClass);
 		} else {
 			error_log('--- Timber::get_posts $query might be an assoc array');
 			$results = get_posts($query);
@@ -103,6 +95,27 @@ class Timber {
 			return $results;
 		}	
 		return null;
+	}
+
+	function get_posts_from_array_of_ids($query = array(), $PostClass = 'TimberPost'){
+		if (!is_array($query) || !count($query)){
+			return null;
+		}
+		global $wpdb;
+		$query_list = implode(', ', $query);
+		$results = $wpdb->get_col("SELECT ID FROM $wpdb->posts WHERE ID IN ($query_list)");
+		$posts = array();
+		foreach($results as $rid){
+			$PostClassUse = $PostClass;
+			if (is_array($PostClass)){
+				$PostClassUse = $PostClass[$result->post_type];
+			}
+			$post = new $PostClassUse($rid);
+			if (isset($post->post_title)){
+				$posts[] = $post;
+			}
+		}
+		return $posts;
 	}
 
 	// TODO: new interface for loop_to_ids
