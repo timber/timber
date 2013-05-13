@@ -70,9 +70,11 @@ class Timber {
 		}
 
 		if (is_array($query) && !PHPHelper::is_array_assoc($query) && count($query) && !is_object($query) && is_integer($query[0])){
+
 			return self::get_posts_from_array_of_ids($query, $PostClass);
+		} else if(is_array($query) && count($query) && is_object($query[0])){
+			$results = $query;
 		} else {
-			error_log('--- Timber::get_posts $query might be an assoc array');
 			$results = get_posts($query);
 		} 
 		if (isset($results) && is_array($results)){
@@ -98,6 +100,7 @@ class Timber {
 	}
 
 	function get_posts_from_array_of_ids($query = array(), $PostClass = 'TimberPost'){
+		error_log('get_posts_from_array');
 		if (!is_array($query) || !count($query)){
 			return null;
 		}
