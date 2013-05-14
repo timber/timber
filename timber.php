@@ -69,13 +69,15 @@ class Timber {
 			return $posts;
 		}
 
-		if (is_array($query) && !PHPHelper::is_array_assoc($query) && count($query) && !is_object($query) && is_integer($query[0])){
-
+		if (PHPHelper::is_array_assoc($query) || is_string($query)){
+			//straight-up query to WP_Query
+			$results = get_posts($query);
+		} else if (is_array($query) && count($query) && !is_object($query) && is_integer($query[0])){
 			return self::get_posts_from_array_of_ids($query, $PostClass);
-		} else if(is_array($query) && count($query) && is_object($query[0])){
+		} else if(is_array($query) && count($query) && is_object(isset($query[0]))){
 			$results = $query;
 		} else {
-			$results = get_posts($query);
+			
 		} 
 		if (isset($results) && is_array($results)){
 			foreach($results as &$result){

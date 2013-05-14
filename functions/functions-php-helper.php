@@ -8,7 +8,10 @@
 		
 
 		function is_array_assoc($arr){
-    		return array_keys($arr) !== range(0, count($arr) - 1);
+			if (!is_array($arr)){
+				return false;
+			}
+    		return (bool)count(array_filter(array_keys($arr), 'is_string'));
 		}
 
 		function is_true($property){
