@@ -42,6 +42,12 @@
 			$image_info = $iid;
 			if(is_numeric($iid)){
 				$image_info = wp_get_attachment_metadata($iid);
+				$image_custom = get_post_custom($iid);
+				$basic = get_post($iid);
+				$this->caption = $basic->post_excerpt;
+				$image_info = array_merge($image_info, $image_custom, get_object_vars($basic));
+
+
 			} else if (is_array($image_info) && isset($image_info['image'])){
 				$image_info = $image_info['image'];
 			} else if (is_object($image_info)){
