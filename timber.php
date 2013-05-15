@@ -57,33 +57,37 @@ class Timber {
 		return new TimberPost($pid);
 	}
 
-	function get_posts($query = false, $PostClass = 'TimberPost'){
-		// error_log(print_r($query, true));
-		if(!$query) {
-			error_log('--- Timber::get_posts is getting default WP posts');
-			$query = array('numberposts' => 5);
-		}
+	public function get_posts($query = false, $PostClass = 'TimberPost'){
 		if (PHPHelper::is_array_assoc($query) || is_string($query)){
-			//straight-up query to WP_Query
-			error_log('--> associative array query');
+			//we have a reguarlly formed WP query string or array to use
 			return self::get_posts_from_wp_query($query, $PostClass);
 		} else if (is_array($query) && count($query) && (is_integer($query[0]) || is_string($query[0]))){
-			error_log('--> regular array query');
-			//print_r($query);
+			//we have a list of pids to extract from
 			return self::get_posts_from_array_of_ids($query, $PostClass);
-		} else if(is_array($query) && count($query) && is_object(isset($query[0]))){
-			error_log('i am an array, but not a list');
+		} else if(is_array($query) && count($query) && isset($query[0]) && is_object($query[0])){
+			error_log("USE ME!!!");
 			return self::handle_post_results($query, $PostClass);
+		} else if (have_posts()){
+			error_log('using the post query');
+			error_log('am I an array? '.is_array($query));
+			error_log('but do i have a count of ='.count($query));
+			error_log('is the first one of me an object '.is_object($query[0]));
+			WPHelper::error_log(debug_backtrace());
+			return self::get_posts_from_loop($PostClass);
+		} else if (!$query){
+			return self::get_posts_from_wp_query(array('numberposts' => 5), $PostClass);
 		} else {
-			error_log('i have failed you');
+			error_log('I have failed you in timber.php::72');
 			WPHelper::error_log($query);
 		}
 		return $query;
 	}
 
 	// TODO: new interface for loop_to_ids
-	function get_pids() {
-
+	public function get_pids($query = false) {
+		if (!$query){
+			//no prob we should give it a default query;
+		}
 	}
 
 	function get_posts_from_loop($PostClass){

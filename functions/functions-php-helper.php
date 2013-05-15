@@ -5,8 +5,6 @@
 
 		}
 
-		
-
 		function is_array_assoc($arr){
 			if (!is_array($arr)){
 				return false;
