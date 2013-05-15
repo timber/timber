@@ -57,63 +57,68 @@ class Timber {
 		return new TimberPost($pid);
 	}
 
-	// TODO: homogenize this interface to combine get_posts with loop_to_posts
 	function get_posts($query = false, $PostClass = 'TimberPost'){
 		// error_log(print_r($query, true));
 		if(!$query) {
 			error_log('--- Timber::get_posts is getting default WP posts');
-			$posts = get_posts();
-			foreach($posts as &$post){
-				$post = new $PostClass($post->ID);
-			}
-			return $posts;
+			$query = array('numberposts' => 5);
 		}
-
 		if (PHPHelper::is_array_assoc($query) || is_string($query)){
 			//straight-up query to WP_Query
-			$results = get_posts($query);
-		} else if (is_array($query) && count($query) && !is_object($query) && is_integer($query[0])){
+			error_log('--> associative array query');
+			return self::get_posts_from_wp_query($query, $PostClass);
+		} else if (is_array($query) && count($query) && (is_integer($query[0]) || is_string($query[0]))){
+			error_log('--> regular array query');
+			//print_r($query);
 			return self::get_posts_from_array_of_ids($query, $PostClass);
 		} else if(is_array($query) && count($query) && is_object(isset($query[0]))){
-			$results = $query;
+			error_log('i am an array, but not a list');
+			return self::handle_post_results($query, $PostClass);
 		} else {
-			
-		} 
-		if (isset($results) && is_array($results)){
-			foreach($results as &$result){
-				$rid = $result;
-				if (isset($result->ID)){
-					$rid = $result->ID;
-				}
-				$PostClassUse = $PostClass;
-				if (is_array($PostClass)){
-					$PostClassUse = $PostClass[$result->post_type];
-				}
-				$post = new $PostClassUse($rid);
-				if (isset($post->post_title)){
-					$result = $post;
-				}
-			}
+			error_log('i have failed you');
+			WPHelper::error_log($query);
 		}
-		if (isset($results)){
-			return $results;
-		}	
-		return null;
+		return $query;
+	}
+
+	// TODO: new interface for loop_to_ids
+	function get_pids() {
+
+	}
+
+	function get_posts_from_loop($PostClass){
+		$i = 0;
+		$results = self::get_pids_from_loop();
+		return self::handle_post_results($results, $PostClass);
+	}
+
+	function get_posts_from_wp_query($query = array(), $PostClass = 'TimberPost'){
+		$results = get_posts($query);
+		return self::handle_post_results($results, $PostClass);
 	}
 
 	function get_posts_from_array_of_ids($query = array(), $PostClass = 'TimberPost'){
-		error_log('get_posts_from_array');
 		if (!is_array($query) || !count($query)){
 			return null;
 		}
 		global $wpdb;
 		$query_list = implode(', ', $query);
 		$results = $wpdb->get_col("SELECT ID FROM $wpdb->posts WHERE ID IN ($query_list)");
+		return self::handle_post_results($results, $PostClass);
+	}
+
+	private function handle_post_results($results, $PostClass = 'TimberPost'){
 		$posts = array();
 		foreach($results as $rid){
 			$PostClassUse = $PostClass;
 			if (is_array($PostClass)){
-				$PostClassUse = $PostClass[$result->post_type];
+				$post_type = get_post_type($rid);
+				$PostClassUse = 'TimberPost';
+				if (isset($PostClass[$post_type])){
+					$PostClassUse = $PostClass[$post_type];
+				} else {
+					error_log($post_type.' not found in '.$PostClass);
+				}
 			}
 			$post = new $PostClassUse($rid);
 			if (isset($post->post_title)){
@@ -123,10 +128,7 @@ class Timber {
 		return $posts;
 	}
 
-	// TODO: new interface for loop_to_ids
-	function get_pids() {
-
-	}
+	
 
 	// TODO: new interface for loop_to_id
 	function get_pid() {
@@ -144,34 +146,8 @@ class Timber {
 
 	*/
 
-	function loop_to_posts($PostClass = 'TimberPost'){
-		if (is_array($PostClass)){
-			$map = $PostClass;
-		}
-		$posts = array();
-		$i = 0;
-		
-		if ( have_posts() ){
-			ob_start();
-			while ( have_posts() && $i < 99999 ) {
-				the_post(); 
-				if (isset($map)){
-					$pt = get_post_type();
-					$PostClass = 'TimberPost';
-					if (isset($map[$pt])){
-						$PostClass = $map[$pt];
-					} 
-				}
-				$posts[] = new $PostClass(get_the_ID());
-				$i++;
-			}
-			ob_end_clean();
-		}
-		return $posts;
-	}
-
 	// returns ids of posts from current query
-	function loop_to_ids(){
+	function get_pids_from_loop(){
 		$posts = array();
 		$i = 0;
 		ob_start();
