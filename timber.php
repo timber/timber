@@ -108,6 +108,7 @@ class Timber {
 		global $wpdb;
 		$query_list = implode(', ', $query);
 		$results = $wpdb->get_col("SELECT ID FROM $wpdb->posts WHERE ID IN ($query_list)");
+		$results = array_intersect($query, $results);
 		return self::handle_post_results($results, $PostClass);
 	}
 
