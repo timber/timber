@@ -18,13 +18,6 @@
 			return $qo->term_id;
 		}
 
-		function has_termmeta(){
-			if(mysql_num_rows(mysql_query("SHOW TABLES LIKE 'wp_termmeta'"))==1){
-				return true;
-			}
-			return false;
-		}
-
 		function get_page($i){
 			return $this->get_path().'/page/'.$i;
 		}
@@ -40,23 +33,24 @@
 				echo 'bad call';
 				print_r(debug_backtrace());
 			}
-			
-			if(function_exists('get_term_custom')){
-				$term->custom = get_term_custom($result->term_id);
-				if ($term->custom){
-					foreach($term->custom as $key => $value){
-						$term->$key = $value[0];
+			if (function_exists('get_fields')){
+				//lets get whatever we can from advanced custom fields;
+				//IF you have the wonderful ACF installed
+				$searcher = $term->taxonomy."_".$term->ID; // save to a specific category
+				$fields = array();
+				$fds = get_fields($searcher);
+				if (is_array($fds)){
+					foreach($fds as $key=>$value){
+						$key = preg_replace('/_/', '', $key, 1);
+						$key = str_replace($searcher, '', $key);
+						$key = preg_replace('/_/', '', $key, 1);
+						$field = get_field($key, $searcher);
+						$fields[$key] = $field;
 					}
 				}
-			} else if (self::has_termmeta()){
-				$query = "SELECT * FROM $wpdb->termmeta WHERE term_id = $tid";
-				$results = $wpdb->get_results($query);
-				foreach($results as $result){
-					$key = $result->meta_key;
-					$value = $result->meta_value;
-					$term->$key = $value;
-				}
-			}
+				$this->import($fields);
+
+			} 
 			$this->import($term);
 		}
 
