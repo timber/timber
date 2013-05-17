@@ -142,6 +142,32 @@
 			return $html;
 		} 
 
+		function get_posts_by_meta($key, $value){
+			global $wpdb;
+			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '$key' AND meta_value = '$value'";
+			$results = $wpdb->get_results($query);
+			$pids = array();
+			foreach($results as $result){
+				if (get_post($result->post_id)){
+					$pids[] = $result->post_id;
+				}
+			}
+			if (count($pids)){
+				return $pids;
+			}
+			return 0;
+		}
+
+		function get_post_by_meta($key, $value){
+			global $wpdb;
+			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '$key' AND meta_value = '$value' ORDER BY post_id";
+			$result = $wpdb->get_row($query);
+			if ($result && get_post($result->post_id)){
+				return $result->post_id;
+			}
+			return 0;
+		}
+
 		/* this $args thing is a fucking mess, fix at some point: 
 
 		http://codex.wordpress.org/Function_Reference/comment_form */

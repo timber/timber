@@ -78,6 +78,33 @@
 			return $pid;
 		}
 
+		function get_posts_by_meta($key, $value){
+			global $wpdb;
+			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '$key' AND meta_value = '$value'";
+			$results = $wpdb->get_results($query);
+			$pids = array();
+			foreach($results as $result){
+				if (get_post($result->post_id)){
+					$pids[] = $result->post_id;
+				}
+			}
+			if (count($pids)){
+				return $pids;
+			}
+			return 0;
+		}
+
+		function get_post_by_meta($key, $value){
+			global $wpdb;
+			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '$key' AND meta_value = '$value' ORDER BY post_id";
+			$result = $wpdb->get_row($query);
+			if ($result && get_post($result->post_id)){
+				return $result->post_id;
+			}
+			return 0;
+		}
+
+
 		function get_posts_info($query, $extras = null){
 			if (is_array($query) && !PHPHelper::is_array_assoc($query)){
 				$results = $query;
@@ -187,23 +214,7 @@
 			return $taxes;
 		}
 
-		function get_posts_by_meta($key, $value){
-			
-			global $wpdb;
-			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '$key' AND meta_value = '$value'";
-			$results = $wpdb->get_results($query);
-			$pids = array();
-			foreach($results as $result){
-				if (get_post($result->post_id)){
-					$pids[] = $result->post_id;
-				}
-			}
-			if (count($pids)){
-				return $pids;
-			}
-			return 0;
-
-		}
+		
 
 		function set_post_parent($child_ids, $parent_id){
 			if (!is_array($child_ids)){
@@ -225,15 +236,7 @@
 		}
 		
 
-		function get_post_by_meta($key, $value){
-			global $wpdb;
-			$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '$key' AND meta_value = '$value' ORDER BY post_id";
-			$result = $wpdb->get_row($query);
-			if ($result && get_post($result->post_id)){
-				return $result->post_id;
-			}
-			return 0;
-		}
+		
 
 		function get_related_posts_on_field($arr, $field){
 			$ret = array();
