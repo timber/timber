@@ -120,7 +120,7 @@ Let's crack open **index.php** and see what's inside:
 
 ```php
 $context = Timber::get_context();
-$context['posts'] = Timber::loop_to_posts();
+$context['posts'] = Timber::get_posts();
 render_twig('index.html', $context);
 ```
 This is where we are going to handle the logic that powers our index file. Let's go step-by-step
@@ -133,7 +133,7 @@ This is going to return an object with a lot of the common things we need across
 
 #### Grab your posts
 ```php
-$context['posts'] = Timber::loop_to_posts();
+$context['posts'] = Timber::get_posts();
 ```
 We're now going to grab the posts that are inside the loop and stick them inside our data object under the **posts** key. 
 
@@ -161,23 +161,10 @@ We're now telling Twig to grab **index.html** and send it our data object.
 #### get_posts($query, $PostClass = 'TimberPost')
 Send WordPress an arbitrary [WordPress Query](http://codex.wordpress.org/Class_Reference/WP_Query) or an array of IDs and it will send you back an array of Post Objects. By default it will use `TimberPost` but you can supply your own subclass of `TimberPost`.
 
-##### returns
-(array) of TimberPosts
-
-#### loop_to_posts($PostClass = 'TimberPost')
-Takes the WordPress loop and translates into an array of Post Objects. By default it will use `TimberPost` but you can supply your own subclass of `TimberPost`.
+If you send **false** to the $query, Timber takes the WordPress loop and translates into an array of Post Objects. By default it will use `TimberPost` but you can supply your own subclass of `TimberPost`.
 
 ##### returns
 (array) of TimberPosts
-
-#### loop_to_ids()
-Takes the WordPress loop and translates it into an array post IDS
-
-##### returns
-(array) of integers
-
-###### example
-``` array(3214, 3200, 3199, 3197, 3188); ```
 
 #### get_context()
 Returns a basic context object with:
