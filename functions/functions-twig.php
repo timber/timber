@@ -29,8 +29,7 @@
 		$twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
 		$twig->addFilter('tojpg', new Twig_Filter_Function('twig_img_to_jpg'));
 		$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
-		$twig->addFilter('twitterify', new Twig_Filter_Function('twitterify'));
-
+		$twig->addFilter('twitterify', new Twig_Filter_Function('twig_twitterify'));
 		$twig->addFilter('get_class', new Twig_Filter_Function('twig_get_class'));
 
 		$twig->addFilter('get_type', new Twig_Filter_Function('twig_get_type'));
@@ -56,6 +55,17 @@
 
 	function twig_get_type($this){
 		return gettype($this);
+	}
+
+	function twig_twitterify($ret) {
+		$ret = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t< ]*)#", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $ret);
+		$ret = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r< ]*)#", "\\1<a href=\"http://\\2\" target=\"_blank\">\\2</a>", $ret);
+		$pattern = '#([0-9a-z]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.';
+		$pattern .= '[a-wyz][a-z](fo|g|l|m|mes|o|op|pa|ro|seum|t|u|v|z)?)#i';
+		$ret = preg_replace($pattern, '<a href="mailto:\\1">\\1</a>', $ret);
+		$ret = preg_replace("/\B@(\w+)/", " <a href=\"http://www.twitter.com/\\1\" target=\"_blank\">@\\1</a>", $ret);
+		$ret = preg_replace("/\B#(\w+)/", " <a href=\"http://search.twitter.com/search?q=\\1\" target=\"_blank\">#\\1</a>", $ret);
+		return $ret;
 	}
 
 	function twig_time_ago($from, $to = null) {
