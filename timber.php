@@ -122,7 +122,11 @@ class Timber {
 				if (isset($PostClass[$post_type])){
 					$PostClassUse = $PostClass[$post_type];
 				} else {
-					error_log($post_type.' not found in '.$PostClass);
+					if (is_array($PostClass)){
+						error_log($post_type.' not found in '.print_r($PostClass, true));
+					} else {
+						error_log($post_type.' not found in '.$PostClass);
+					}
 				}
 			}
 			$post = new $PostClassUse($rid);
