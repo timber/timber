@@ -16,6 +16,7 @@
 ?>
 <?php
 	
+	$context = Timber::get_context();
 	$post = new TimberPost();
-	$data['post'] = $post;
-	render_twig(array('page-'.$post->post_name.'.html', 'page.html'), $data);
+	$context['post'] = $post;
+	render_twig(array('page-'.$post->post_name.'.html', 'page.html'), $context);
