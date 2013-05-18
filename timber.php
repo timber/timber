@@ -42,6 +42,8 @@ define("TIMBER_LOC", realpath(__DIR__));
 
 		$context = Timber::get_context(); // returns wp favorites!
 
+		Timber::render('index.twig', $context);
+
 
 */
 	
@@ -59,26 +61,29 @@ class Timber {
 	}
 
 	public function get_posts($query = false, $PostClass = 'TimberPost'){
+
 		if (PHPHelper::is_array_assoc($query) || is_string($query)){
-			// we have a reguarlly formed WP query string or array to use
-			WPHelper::error_log('GOOD QUERY');
-			WPHelper::error_log($query);
-			WPHelper::error_log('----------');
+			// we have a regularly formed WP query string or array to use
 			return self::get_posts_from_wp_query($query, $PostClass);
+
 		} else if (is_array($query) && count($query) && (is_integer($query[0]) || is_string($query[0]))){
-			// we have a list of pids to extract from
+			// we have a list of pids (post IDs) to extract from
 			return self::get_posts_from_array_of_ids($query, $PostClass);
+
 		} else if(is_array($query) && count($query) && isset($query[0]) && is_object($query[0])){
-			// hmmm -- maybe its an array of post objects already
+			// maybe its an array of post objects that already have data
 			return self::handle_post_results($query, $PostClass);
+
 		} else if (have_posts()){
 			//lets just use the default WordPress current query
-			WPHelper::error_log(debug_backtrace());
 			return self::get_posts_from_loop($PostClass);
+
 		} else if (!$query){
-			return self::get_posts_from_wp_query(array('numberposts' => 5), $PostClass);
+			//okay, everything failed lets just return some posts so that the user has something to work with
+			return self::get_posts_from_wp_query(array(), $PostClass);
+
 		} else {
-			error_log('I have failed you in timber.php::72');
+			error_log('I have failed you! in timber.php::81');
 			WPHelper::error_log($query);
 		}
 		return $query;
@@ -177,6 +182,10 @@ class Timber {
 			return get_the_ID();
 		}
 		return false;
+	}
+
+	public function render($file, $data = array(), $echo = false){
+		return render_twig($file, $data, $echo);
 	}
 
 	// TODO: move into wp shortcut function
