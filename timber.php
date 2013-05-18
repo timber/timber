@@ -57,6 +57,13 @@ class Timber {
 		return new TimberPost($pid);
 	}
 
+
+	//this function is deprecated in favor of:
+	//Timber::get_posts(false, $PostClass);
+	function loop_to_posts($PostClass = 'TimberPost'){
+		return self::get_posts(false, $PostClass);
+	}
+
 	public function get_posts($query = false, $PostClass = 'TimberPost'){
 		if (PHPHelper::is_array_assoc($query) || is_string($query)){
 			// we have a reguarlly formed WP query string or array to use
