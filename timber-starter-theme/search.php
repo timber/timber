@@ -14,6 +14,6 @@
 	$data = Timber::get_context();
 
 	$data['title'] = 'Search results for '. get_search_query();
-	$data['posts'] = Timber::loop_to_posts();
+	$data['posts'] = Timber::get_posts();
 	
 	render_twig($templates, $data);

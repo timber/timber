@@ -18,7 +18,7 @@
 	}
 	
 	$data = Timber::get_context();
-	$posts = Timber::loop_to_posts();
+	$posts = Timber::get_posts();
 	$data['posts'] = $posts;
 	render_twig('index.html', $data);
 

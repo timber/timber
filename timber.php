@@ -40,12 +40,6 @@ define("TIMBER_LOC", realpath(__DIR__));
 		$posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format
 		$posts = Timber::get_posts(array(23,24,35,67), 'InkwellArticle');
 
-		$posts = Timber::loop_to_posts();
-		$posts = Timber::loop_to_posts('InkwellArticle');
-		$posts = Timber::loop_to_posts(array('post' => 'InkwellArticle')); // wp_query format
-
-		$pids = Timber::loop_to_ids();
-
 		$context = Timber::get_context(); // returns wp favorites!
 
 
@@ -98,7 +92,6 @@ class Timber {
 	}
 
 	function get_posts_from_loop($PostClass){
-		$i = 0;
 		$results = self::get_pids_from_loop();
 		return self::handle_post_results($results, $PostClass);
 	}

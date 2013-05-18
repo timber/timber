@@ -36,6 +36,6 @@
 			array_unshift($templates, 'archive-'.get_post_type().'.html');
 		}
 		
-		$data['posts'] = Timber::loop_to_posts();
+		$data['posts'] = Timber::get_posts();
 		
 		render_twig($templates, $data);
