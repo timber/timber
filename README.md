@@ -204,5 +204,7 @@ update()
 ### TimberTerm extends TimberCore
 ### TimberUser extends TimberCore
 
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jarednova/timber/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
 
 
