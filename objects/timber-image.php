@@ -4,6 +4,7 @@
 
 		var $_can_edit;
 		var $abs_url;
+		var $PostClass = 'TimberPost';
 
 		function __construct($iid){
 			$this->init($iid);
@@ -29,7 +30,12 @@
 			return get_permalink($this->ID);
 		}
 
-		
+		function get_parent(){
+			if (!$this->post_parent){
+				return false;
+			}
+			return new $this->PostClass($this->post_parent);
+		}
 
 		function init($iid){
 			
@@ -42,6 +48,9 @@
 			$image_info = $iid;
 			if(is_numeric($iid)){
 				$image_info = wp_get_attachment_metadata($iid);
+				if (!is_array($image_info)){
+					$image_info = array();
+				}
 				$image_custom = get_post_custom($iid);
 				$basic = get_post($iid);
 				$this->caption = $basic->post_excerpt;

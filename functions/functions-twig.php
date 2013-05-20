@@ -171,6 +171,7 @@
 		return $dir.'/';
 	}
 
+	//deprecated
 	function render_twig($filenames, $data = array(), $render = true){
 		$backtrace = debug_backtrace();
 

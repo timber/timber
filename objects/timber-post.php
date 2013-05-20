@@ -3,6 +3,7 @@
 	class TimberPost extends TimberCore {
 
 		var $ImageClass = 'TimberImage';
+		var $PostClass = 'TimberPost';
 
 		/**
 		*	If you send the contructor nothing it will try to figure out the current post id based on being inside The_Loop
@@ -151,6 +152,12 @@
 			$this->import($post_info);			
 		}
 
+		function get_parent(){
+			if (!$this->post_parent){
+				return false;
+			}
+			return new $this->PostClass($this->post_parent);
+		}
 
 		function get_info($pid){
 			global $wp_rewrite;

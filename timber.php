@@ -61,6 +61,11 @@ class Timber {
 	}
 
 	public function get_posts($query = false, $PostClass = 'TimberPost'){
+		
+		if (self::is_post_class_or_class_map($query)){
+			$PostClass = $query;
+			$query = false;
+		}
 
 		if (PHPHelper::is_array_assoc($query) || is_string($query)){
 			// we have a regularly formed WP query string or array to use
@@ -184,8 +189,33 @@ class Timber {
 		return false;
 	}
 
-	public function render($file, $data = array(), $echo = false){
-		return render_twig($file, $data, $echo);
+	function render($filenames, $data = array(), $echo = true){
+		$backtrace = debug_backtrace();
+
+		$dir = get_calling_script_dir($backtrace);
+		
+		if(!$data){
+			$data = array();
+		}
+		$uri = array();
+		$uri[] = get_stylesheet_directory();
+		$uri_parent = get_template_directory();
+
+		if ($uri[0] != $uri_parent){
+			$uri[] = $uri_parent;
+		}
+		$uri[] = $dir;
+		$twig = get_twig($uri);
+		
+		$filename = twig_choose_template($filenames, $uri);
+		$output = '';
+		if (strlen($filename)){
+			$output = $twig->render($filename, $data);
+		}
+		if ($echo){
+			echo $output;
+		}
+		return $output;
 	}
 
 	// TODO: move into wp shortcut function
@@ -200,6 +230,21 @@ class Timber {
 		}
 
 		return $data;
+	}
+
+
+	private function is_post_class_or_class_map($arg){
+		if (is_string($arg) && class_exists($arg)){
+			return true;
+		}
+		if (is_array($arg)){
+			foreach($arg as $item){
+				if (is_string($item) && class_exists($item)){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	// TODO: move into wp shortcut function
