@@ -7,7 +7,9 @@
 		if (is_array($uri)){
 			$loaders = array();
 			foreach($uri as $u){
-				$loaders[] = new Twig_Loader_Filesystem($u.'/views/');
+				if (strlen(trim($u))){
+					$loaders[] = new Twig_Loader_Filesystem($u.'/views/');
+				}
 			}
 			$loader = new Twig_Loader_Chain($loaders);
 		} else {
