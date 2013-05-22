@@ -7,13 +7,15 @@ By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a h
 This is a major rewrite of Timber. Trust me, it's worth it. But if you're looking for the old [Parent Theme Timber](https://github.com/jarednova/timber/tree/theme) you can still find it on this [branch](https://github.com/jarednova/timber/tree/theme).
 
 ## Because WordPress is awesome, but the_loop isn't
-Timber is a WordPress plugin that allows you to use the [Twig Templating Engine](http://twig.sensiolabs.org/) in your theme. This helps clean-up your theme code so your single.php file can focus on being the controller for your WordPress model, while your single.html file can focus 100% on the HTML and display.
+Timber helps you create fully-customized WordPress themes faster with more maintainable code. With Timber, you write your HTML using the [Twig Templating Engine](http://twig.sensiolabs.org/) separate from your PHP files. 
+
+This cleans-up your theme code so, for example, your single.php file can focus on being the controller for your WordPress model, while your single.html file can focus 100% on the HTML and display.
 
 ### What does it look like?
 Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https://github.com/viewportindustries/starkers) or [Boilerplate theme](https://github.com/zencoder/html5-boilerplate-for-wordpress) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
 
 ### Who is it good for?
-Timber is great for teams of designers and developers working together. At [Upstatement](http://upstatement.com) not everyone knows the ins-and-outs of the_loop(), WordPress codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .html files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
+Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because not everyone knows the ins-and-outs of the_loop(), WordPress codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .html files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
 
 ### Should I use it?
 Well, it's **free**! And it's GPL-licensed, so use in personal or commerical work. Just don't re-sell it.
@@ -143,66 +145,6 @@ render_twig('index.html', $context);
 ```
 We're now telling Twig to grab **index.html** and send it our data object. 
 
-# Reference
-
-### TimberCore
-
-#### title
-
-#### slug
-
-#### content
-
-#### path
-
-
-
-### Timber
-#### get_posts($query, $PostClass = 'TimberPost')
-Send WordPress an arbitrary [WordPress Query](http://codex.wordpress.org/Class_Reference/WP_Query) or an array of IDs and it will send you back an array of Post Objects. By default it will use `TimberPost` but you can supply your own subclass of `TimberPost`.
-
-If you send **false** to the $query, Timber takes the WordPress loop and translates into an array of Post Objects. By default it will use `TimberPost` but you can supply your own subclass of `TimberPost`.
-
-##### returns
-(array) of TimberPosts
-
-#### get_context()
-Returns a basic context object with:
-* ['http_host'] = 'http://mywordpresssite.com';
-* ['wp_title'] = "Jared's Site";
-* ['wp_head'] = the output from wp_head();
-* ['wp_footer'] = the output of wp_footer();
-* ['wp_nav_menu'] = <ul><li>Whatever HTML is rendered from your nav menu '</li></ul>';
-
-##### returns
-(array) an associative array of different types
-
-#### get_wp_footer
-##### returns
-(string)
-
-#### get_wp_head
-##### returns
-(string)
-
-### TimberCore
-#### import();
-#### url_to_path()
-
-### TimberPost extends TimberCore
-init()
-update()
-
-
-### TimberComment extends TimberCore
-### TimberImage extends TimberCore
-#### get_url()
-#### get_path()
-#### url()
-#### can_edit();
-#### init_with_url()
-### TimberTerm extends TimberCore
-### TimberUser extends TimberCore
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jarednova/timber/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
