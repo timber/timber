@@ -62,10 +62,12 @@
 			global $wpdb;
 			$query = "SELECT * FROM $wpdb->term_taxonomy WHERE term_id = '$tid'";
 			$tax = $wpdb->get_row($query);
-			if ($tax->taxonomy){
-				$term = get_term($tid, $tax->taxonomy);
-				return $term;
-			} 
+			if (isset($tax) && isset($tax->taxonomy)){
+				if ($tax->taxonomy){
+					$term = get_term($tid, $tax->taxonomy);
+					return $term;
+				} 
+			}
 			return null;
 		}
 
