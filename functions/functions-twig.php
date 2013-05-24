@@ -57,16 +57,36 @@
 
 	function wp_resize($src, $w, $h){
 		$root = $_SERVER['DOCUMENT_ROOT'];
+		
+		if (strstr($src, 'http')){
+			//Its a URL so we need to fetch it
+			$image = WPHelper::sideload_image($src);
+			WPHelper::error_log($image);
+			return;
+			//$src = str_replace($_SERVR['HTTP_HOST'], '', $image);
+			//$src = str_replace('http://', '', $image);
+			//$src = str_replace('https://', '', $image);
+		} 
+		//oh good, its in the uploads folder!
 		$path_parts = pathinfo($src);
 		$basename = $path_parts['filename'];
 		$ext = $path_parts['extension'];
 		$dir = $path_parts['dirname'];
 		$newbase = $basename.'-r-'.$w.'x'.$h;
 		$new_path = $dir.'/'.$newbase.'.'.$ext;
-		if (file_exists($root.$new_path)){
+		$new_root_path = $root.$new_path;
+		$old_root_path = $root.$src;
+		
+		$old_root_path = str_replace('//', '/', $old_root_path);
+		$new_root_path = str_replace('//', '/', $new_root_path);
+		
+		WPHelper::error_log($old_root_path);
+		WPHelper::error_log($new_root_path);
+		if (file_exists($new_root_path)){
 			return $new_path;
 		}
-		$image = wp_get_image_editor($root.$src);
+		
+		$image = wp_get_image_editor($old_root_path);
 		if ( ! is_wp_error( $image ) ) {
 		    $current_size = $image->get_size();
 		    $ow = $current_size['width'];
@@ -76,7 +96,7 @@
 		    if ($new_aspect > $old_aspect){
 		    	//cropping a vertical photo horitzonally
 		    	$oht = $ow/$new_aspect;
-		    	$oy = ($oh - $oht) / 3;
+		    	$oy = ($oh - $oht) / 6;
 		    	$image->crop(0, $oy, $ow, $oht, $w, $h);
 		    } else {
 		    	$owt = $oh * $new_aspect;
@@ -84,8 +104,10 @@
 		   		$image->crop($ox, 0, $owt, $oh, $w, $h);
 		   	}
 		   // $image->
-		    $image->save($root.$new_path);
+		    $image->save($new_root_path);
 		    return $new_path;
+		} else {
+			WPHelper::error_log($image);
 		}
 		return $src;
 	}

@@ -10,6 +10,59 @@
 			return false;
 		}	
 
+		function download_url( $url, $timeout = 300 ) {
+			//WARNING: The file is not automatically deleted, The script must unlink() the file.
+			if ( ! $url )
+				return new WP_Error('http_no_url', __('Invalid URL Provided.'));
+
+			$tmpfname = wp_tempnam($url);
+			if ( ! $tmpfname )
+				return new WP_Error('http_no_file', __('Could not create Temporary file.'));
+
+			$response = wp_remote_get( $url, array( 'timeout' => $timeout, 'stream' => true, 'filename' => $tmpfname ) );
+
+			if ( is_wp_error( $response ) ) {
+				unlink( $tmpfname );
+				return $response;
+			}
+
+			if ( 200 != wp_remote_retrieve_response_code( $response ) ){
+				unlink( $tmpfname );
+				return new WP_Error( 'http_404', trim( wp_remote_retrieve_response_message( $response ) ) );
+			}
+
+			return $tmpfname;
+		}
+
+		function sideload_image($file){
+			require_once($_SERVER['DOCUMENT_ROOT'].'wp-admin/includes/file.php');
+			require_once($_SERVER['DOCUMENT_ROOT'].'wp-admin/includes/media.php');
+			if (empty($file)){
+				return null;
+			}
+			// Download file to temp location
+			$tmp = download_url($file);
+      		// Set variables for storage
+          	// fix file filename for query strings
+			preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches );
+			$file_array['name'] = basename($matches[0]);
+			$file_array['tmp_name'] = $tmp;
+			// If error storing temporarily, unlink
+			if ( is_wp_error( $tmp ) ) {
+				@unlink($file_array['tmp_name']);
+				$file_array['tmp_name'] = '';
+			}
+			// do the validation and storage stuff
+			$id = media_handle_sideload( $file_array, $post_id, $desc );
+			// If error storing permanently, unlink
+			if ( is_wp_error($id) ) {
+				@unlink($file_array['tmp_name']);
+				return $id;
+			}
+			$src = wp_get_attachment_url( $id );
+			return $src;
+		}
+
 		function osort(&$array, $prop) {
     		usort($array, function($a, $b) use ($prop) {
         		return $a->$prop > $b->$prop ? 1 : -1;
