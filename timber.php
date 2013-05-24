@@ -94,6 +94,8 @@ class Timber {
 		}
 	}
 
+	//TODO: make this work, this is UNTESTED right now
+
 	function get_sidebar($sidebar_name = '', $data = array()){
 		if (is_array($sidebar_name)){
 			$data = $sidebar_name;
