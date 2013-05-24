@@ -35,13 +35,17 @@
 		}
 
 		function sideload_image($file){
-			require_once($_SERVER['DOCUMENT_ROOT'].'wp-admin/includes/file.php');
-			require_once($_SERVER['DOCUMENT_ROOT'].'wp-admin/includes/media.php');
+			error_log('sideload_image');
+			include($_SERVER['DOCUMENT_ROOT'].'/wp-admin/includes/file.php');
+			include($_SERVER['DOCUMENT_ROOT'].'/wp-admin/includes/media.php');
 			if (empty($file)){
+				error_log('returnning');
 				return null;
 			}
 			// Download file to temp location
 			$tmp = download_url($file);
+
+			error_log('about to do preg match');
       		// Set variables for storage
           	// fix file filename for query strings
 			preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches );
@@ -49,18 +53,15 @@
 			$file_array['tmp_name'] = $tmp;
 			// If error storing temporarily, unlink
 			if ( is_wp_error( $tmp ) ) {
+				error_log('theres an error');
 				@unlink($file_array['tmp_name']);
 				$file_array['tmp_name'] = '';
 			}
+			error_log('continuing on');
 			// do the validation and storage stuff
-			$id = media_handle_sideload( $file_array, $post_id, $desc );
-			// If error storing permanently, unlink
-			if ( is_wp_error($id) ) {
-				@unlink($file_array['tmp_name']);
-				return $id;
-			}
-			$src = wp_get_attachment_url( $id );
-			return $src;
+			$file = wp_upload_bits($file_array['name'], null, file_get_contents($file_array['tmp_name']));
+
+			return $file;
 		}
 
 		function osort(&$array, $prop) {

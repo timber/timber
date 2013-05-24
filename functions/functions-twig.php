@@ -55,19 +55,7 @@
 		return gettype($this);
 	}
 
-	function wp_resize($src, $w, $h){
-		$root = $_SERVER['DOCUMENT_ROOT'];
-		
-		if (strstr($src, 'http')){
-			//Its a URL so we need to fetch it
-			//$image = WPHelper::sideload_image($src);
-			//WPHelper::error_log($image);
-			return;
-			//$src = str_replace($_SERVR['HTTP_HOST'], '', $image);
-			//$src = str_replace('http://', '', $image);
-			//$src = str_replace('https://', '', $image);
-		} 
-		//oh good, its in the uploads folder!
+	function does_resize_exist($file, $w, $h){
 		$path_parts = pathinfo($src);
 		$basename = $path_parts['filename'];
 		$ext = $path_parts['extension'];
@@ -82,10 +70,61 @@
 		
 		WPHelper::error_log($old_root_path);
 		WPHelper::error_log($new_root_path);
-		if (file_exists($new_root_path)){
-			return $new_path;
-		}
 		
+	}
+
+	function wp_resize_external($src, $w, $h){
+		$upload = wp_upload_dir();
+		$dir = $upload['path'];
+		$file = parse_url($src);
+		$path_parts = pathinfo($file['path']);
+		$basename = $path_parts['filename'];
+		$newbase = $basename.'-r-'.$w.'x'.$h;
+		$ext = $path_parts['extension'];
+
+		$new_root_path = $dir.'/'.$newbase.'.'.$ext;
+
+		$new_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $new_root_path);
+
+		$ret = array('new_root_path' => $new_root_path, 'old_root_path' => $dir.'/'.$basename.$ext, 'new_path' => $new_path);
+		if (file_exists($new_root_path)){
+			return $ret;
+		}
+		error_log('src= '.$src);
+		error_log('sideload');
+		$image = WPHelper::sideload_image($src);
+		WPHelper::error_log($image);
+		return $ret;
+	}
+
+	function wp_resize($src, $w, $h){
+		error_log("wp_resize");
+		$root = $_SERVER['DOCUMENT_ROOT'];
+		if (strstr($src, 'http')){
+			//Its a URL so we need to fetch it
+			$external = wp_resize_external($src, $w, $h);
+			WPHelper::error_log($external);
+			$old_root_path = $external['old_root_path'];
+			$new_root_path = $external['new_root_path'];
+			$new_path = $external['new_path'];
+		} else {
+		//oh good, its in the uploads folder!
+			$path_parts = pathinfo($src);
+			$basename = $path_parts['filename'];
+			$ext = $path_parts['extension'];
+			$dir = $path_parts['dirname'];
+			$newbase = $basename.'-r-'.$w.'x'.$h;
+			$new_path = $dir.'/'.$newbase.'.'.$ext;
+			$new_root_path = $root.$new_path;
+			$old_root_path = $root.$src;
+			
+			$old_root_path = str_replace('//', '/', $old_root_path);
+			$new_root_path = str_replace('//', '/', $new_root_path);
+			
+			if (file_exists($new_root_path)){
+				return $new_path;
+			}
+		}
 		$image = wp_get_image_editor($old_root_path);
 		if ( ! is_wp_error( $image ) ) {
 		    $current_size = $image->get_size();
@@ -289,5 +328,3 @@
 	function twig_resize_image($src, $w, $h = 0, $ratio = 0, $append = ''){
 		//return InkwellImage::get_photon($src, $w, $h, $ratio, $append);
 	}
-
-	
