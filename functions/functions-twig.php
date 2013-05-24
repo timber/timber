@@ -23,7 +23,7 @@
 
 		
 		$twig->addExtension(new Twig_Extension_Debug());
-		$twig->addFilter('resize', new Twig_Filter_Function('twig_resize_image'));
+		$twig->addFilter('resize', new Twig_Filter_Function('wp_resize'));
 		$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
 		$twig->addFilter('print_r', new Twig_Filter_Function('twig_print_r'));
 		$twig->addFilter('print_a', new Twig_Filter_Function('twig_print_a'));
@@ -38,14 +38,10 @@
 
 		$twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
 
-		$twig->addFilter('editable', new Twig_Filter_Function('twig_editable'));
-		$twig->addFilter('cdn', new Twig_Filter_Function('twig_cdn'));
-
 		$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
 		$twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
 		$twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
 		$twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
-		$twig->addFilter('get_post_info', new Twig_Filter_Function('twig_get_post_info'));
 
 		$twig = apply_filters('get_twig', $twig);
 		return $twig;
@@ -57,6 +53,41 @@
 
 	function twig_get_type($this){
 		return gettype($this);
+	}
+
+	function wp_resize($src, $w, $h){
+		$root = $_SERVER['DOCUMENT_ROOT'];
+		$path_parts = pathinfo($src);
+		$basename = $path_parts['filename'];
+		$ext = $path_parts['extension'];
+		$dir = $path_parts['dirname'];
+		$newbase = $basename.'-r-'.$w.'x'.$h;
+		$new_path = $dir.'/'.$newbase.'.'.$ext;
+		if (file_exists($root.$new_path)){
+			return $new_path;
+		}
+		$image = wp_get_image_editor($root.$src);
+		if ( ! is_wp_error( $image ) ) {
+		    $current_size = $image->get_size();
+		    $ow = $current_size['width'];
+		    $oh = $current_size['height'];
+		    $new_aspect = $w/$h;
+		    $old_aspect = $ow/$oh;
+		    if ($new_aspect > $old_aspect){
+		    	//cropping a vertical photo horitzonally
+		    	$oht = $ow/$new_aspect;
+		    	$oy = ($oh - $oht) / 3;
+		    	$image->crop(0, $oy, $ow, $oht, $w, $h);
+		    } else {
+		    	$owt = $oh * $new_aspect;
+		    	$ox = $ow/2 - $owt/2;
+		   		$image->crop($ox, 0, $owt, $oh, $w, $h);
+		   	}
+		   // $image->
+		    $image->save($root.$new_path);
+		    return $new_path;
+		}
+		return $src;
 	}
 
 	function twig_twitterify($ret) {
@@ -101,11 +132,6 @@
   		return $output;
     }
 
-	function twig_get_post_info($id, $field = 'path'){
-		$pi = PostMaster::get_post_info($id);
-		return $pi->$field;
-	}
-
 	function twig_wp_sidebar($arg){
 		get_sidebar($arg);
 	}
@@ -123,10 +149,6 @@
 		$return = ob_get_contents();
 		ob_end_clean();
 		return $return;
-	}
-
-	function twig_cdn($path){
-		return 'http://yourcdn.com'.$path;
 	}
 
 	function twig_template_exists($file, $dirs){
@@ -203,13 +225,6 @@
 		return $output;
 	}
 
-	function twig_editable($content, $ID, $field){
-		if (!function_exists('ce_wrap_content')){
-			return $content;
-		}		
-		return ce_wrap_content_field($content, $ID, $field);
-	}
-
 	function twig_get_src_from_attachment_id($aid){
 		$src = PostMaster::get_image_path($aid);
 		return $src;
@@ -250,7 +265,7 @@
 	}
 	
 	function twig_resize_image($src, $w, $h = 0, $ratio = 0, $append = ''){
-		return InkwellImage::get_photon($src, $w, $h, $ratio, $append);
+		//return InkwellImage::get_photon($src, $w, $h, $ratio, $append);
 	}
 
 	

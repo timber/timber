@@ -15,10 +15,10 @@
 				ob_start();
 				the_post();
 				$pid = get_the_ID();
+				$this->ID = $pid;
 				ob_end_clean();
 			}
 			if (is_numeric($pid)){
-
 				$this->ID = $pid;
 			}
 
@@ -193,12 +193,16 @@
 			return $post;
 		}
 
-		function children(){
+		function get_children(){
 			if (isset($this->children)){
 				return $this->children;
 			}
 			$this->children = get_children('post_parent='.$this->ID.'&post_type='.$this->post_type);
 			return $this->children;
+		}
+
+		function children(){
+			return $this->get_children();
 		}
 
 		function get_comments($ct = -1, $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment'){
@@ -226,6 +230,10 @@
 		}
 
 		function tags(){
+			return $this->get_tags();
+		}
+
+		function get_tags(){
 			$tags = get_the_tags($this->ID);
 			if (is_array($tags)){
 				$tags = array_values($tags);
@@ -236,7 +244,6 @@
 		}
 
 		function get_post_type(){
-			//print_r(get_post_type_object($this->post_type));
 			return get_post_type_object($this->post_type);
 		}
 

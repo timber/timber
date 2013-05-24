@@ -4,11 +4,18 @@
 
 		function is_url($url){
 			$url = strtolower($url);
-			if (strstr('http', $url)){
+			if (strstr('://', $url)){
 				return true;
 			}
 			return false;
 		}	
+
+		function osort(&$array, $prop) {
+    		usort($array, function($a, $b) use ($prop) {
+        		return $a->$prop > $b->$prop ? 1 : -1;
+    		}); 
+		}
+
 
 		function error_log($arg){
 			if (is_object($arg) || is_array($arg)){
@@ -178,6 +185,13 @@
 			$ret = ob_get_contents();
 			ob_end_clean();
 			return $ret;
+		}
+
+		function array_truncate($array, $len){
+			if (sizeof($array) > $len) { 
+   				$array = array_splice($array, 0, $len); 
+ 			}
+ 			return $array;
 		}
 
 	}

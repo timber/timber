@@ -2,17 +2,21 @@
 	
 	class TimberUser extends TimberCore {
 
-		function __construct($uid){
+		function __construct($uid = false){
 			$this->init($uid);
 		}
 
-		function init($uid){
+		function init($uid = false){
+			if (!$uid){
+				$uid = get_current_user_id();
+			}
 			if (function_exists('get_userdata')){
 				$data = get_userdata($uid); 
 				if (is_object($data) && isset($data)){
 					$this->import($data->data);
 				}
 			}
+
 			$this->ID = $uid;
 			$this->import_custom();
 		}
@@ -44,8 +48,12 @@
 			return $this->display_name;
 		}
 
-		function path(){
+		function get_path(){
 			return '/author/'.$this->slug();
+		}
+
+		function path(){
+			return $this->get_path();
 		}
 
 		function slug(){

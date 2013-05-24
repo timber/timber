@@ -43,6 +43,8 @@
 				if (strstr($iid, '://')){
 					$this->init_with_url($iid);
 					return;
+				} else if (strstr(strtolower($iid), '.jpg')){
+					$this->init_with_url($iid);
 				}
 			}	
 			$image_info = $iid;

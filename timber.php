@@ -53,13 +53,6 @@ class Timber {
 		return new TimberPost($pid);
 	}
 
-
-	//this function is deprecated in favor of:
-	//Timber::get_posts(false, $PostClass);
-	function loop_to_posts($PostClass = 'TimberPost'){
-		return self::get_posts(false, $PostClass);
-	}
-
 	public function get_posts($query = false, $PostClass = 'TimberPost'){
 		
 		if (self::is_post_class_or_class_map($query)){
@@ -99,6 +92,19 @@ class Timber {
 		if (!$query){
 			//no prob we should give it a default query;
 		}
+	}
+
+	function get_sidebar($sidebar_name = '', $data = array()){
+		if (is_array($sidebar_name)){
+			$data = $sidebar_name;
+			$sidebar_name = '';
+		}
+		$sidebar_file = 'sidebar-'.$sidebar_name;
+		if (!strlen($sidebar_name)){
+			$sidebar_file = 'sidebar.html';
+		}
+
+		return self::render($sidebar_view, $data);
 	}
 
 	function get_posts_from_loop($PostClass){
@@ -147,6 +153,11 @@ class Timber {
 		return $posts;
 	}
 
+	//this function is deprecated in favor of:
+	//Timber::get_posts(false, $PostClass);
+	function loop_to_posts($PostClass = 'TimberPost'){
+		return self::get_posts(false, $PostClass);
+	}
 	
 
 	// TODO: new interface for loop_to_id
