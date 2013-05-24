@@ -60,8 +60,8 @@
 		
 		if (strstr($src, 'http')){
 			//Its a URL so we need to fetch it
-			$image = WPHelper::sideload_image($src);
-			WPHelper::error_log($image);
+			//$image = WPHelper::sideload_image($src);
+			//WPHelper::error_log($image);
 			return;
 			//$src = str_replace($_SERVR['HTTP_HOST'], '', $image);
 			//$src = str_replace('http://', '', $image);
