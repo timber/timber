@@ -55,24 +55,6 @@
 		return gettype($this);
 	}
 
-	function does_resize_exist($file, $w, $h){
-		$path_parts = pathinfo($src);
-		$basename = $path_parts['filename'];
-		$ext = $path_parts['extension'];
-		$dir = $path_parts['dirname'];
-		$newbase = $basename.'-r-'.$w.'x'.$h;
-		$new_path = $dir.'/'.$newbase.'.'.$ext;
-		$new_root_path = $root.$new_path;
-		$old_root_path = $root.$src;
-		
-		$old_root_path = str_replace('//', '/', $old_root_path);
-		$new_root_path = str_replace('//', '/', $new_root_path);
-		
-		WPHelper::error_log($old_root_path);
-		WPHelper::error_log($new_root_path);
-		
-	}
-
 	function wp_resize_external($src, $w, $h){
 		$upload = wp_upload_dir();
 		$dir = $upload['path'];
@@ -90,20 +72,15 @@
 		if (file_exists($new_root_path)){
 			return $ret;
 		}
-		error_log('src= '.$src);
-		error_log('sideload');
 		$image = WPHelper::sideload_image($src);
-		WPHelper::error_log($image);
 		return $ret;
 	}
 
 	function wp_resize($src, $w, $h){
-		error_log("wp_resize");
 		$root = $_SERVER['DOCUMENT_ROOT'];
 		if (strstr($src, 'http')){
 			//Its a URL so we need to fetch it
 			$external = wp_resize_external($src, $w, $h);
-			WPHelper::error_log($external);
 			$old_root_path = $external['old_root_path'];
 			$new_root_path = $external['new_root_path'];
 			$new_path = $external['new_path'];
@@ -132,6 +109,7 @@
 		    $oh = $current_size['height'];
 		    $new_aspect = $w/$h;
 		    $old_aspect = $ow/$oh;
+
 		    if ($new_aspect > $old_aspect){
 		    	//cropping a vertical photo horitzonally
 		    	$oht = $ow/$new_aspect;
