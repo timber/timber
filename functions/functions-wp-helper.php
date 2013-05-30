@@ -74,8 +74,8 @@
 
 		function sideload_image($file){
 			error_log('sideload_image');
-			include($_SERVER['DOCUMENT_ROOT'].'/wp-admin/includes/file.php');
-			include($_SERVER['DOCUMENT_ROOT'].'/wp-admin/includes/media.php');
+			include_once($_SERVER['DOCUMENT_ROOT'].'/wp-admin/includes/file.php');
+			include_once($_SERVER['DOCUMENT_ROOT'].'/wp-admin/includes/media.php');
 			if (empty($file)){
 				error_log('returnning');
 				return null;

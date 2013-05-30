@@ -119,7 +119,7 @@
 		}
 	}
 
-	function wp_resize($src, $w, $h){
+	function wp_resize($src, $w, $h = 0){
 		$root = $_SERVER['DOCUMENT_ROOT'];
 		if (strstr($src, 'http')){
 			//Its a URL so we need to fetch it
@@ -150,23 +150,28 @@
 		    $current_size = $image->get_size();
 		    $ow = $current_size['width'];
 		    $oh = $current_size['height'];
-		    $new_aspect = $w/$h;
-		    $old_aspect = $ow/$oh;
+		    if ($h){
+			    $new_aspect = $w/$h;
+			    $old_aspect = $ow/$oh;
 
-		    if ($new_aspect > $old_aspect){
-		    	//cropping a vertical photo horitzonally
-		    	$oht = $ow/$new_aspect;
-		    	$oy = ($oh - $oht) / 6;
-		    	$image->crop(0, $oy, $ow, $oht, $w, $h);
-		    } else {
-		    	$owt = $oh * $new_aspect;
-		    	$ox = $ow/2 - $owt/2;
-		   		$image->crop($ox, 0, $owt, $oh, $w, $h);
-		   	}
+			    if ($new_aspect > $old_aspect){
+			    	//cropping a vertical photo horitzonally
+			    	$oht = $ow/$new_aspect;
+			    	$oy = ($oh - $oht) / 6;
+			    	$image->crop(0, $oy, $ow, $oht, $w, $h);
+			    } else {
+			    	$owt = $oh * $new_aspect;
+			    	$ox = $ow/2 - $owt/2;
+			   		$image->crop($ox, 0, $owt, $oh, $w, $h);
+			   	}
+			} else {
+				$image->resize($w, $w);
+			}
 		   // $image->
 		    $image->save($new_root_path);
 		    return $new_path;
 		} else {
+			return $src;
 			WPHelper::error_log($image);
 		}
 		return $src;
