@@ -24,6 +24,8 @@ Well, it's **free**! And it's GPL-licensed, so use in personal or commerical wor
 
 ## Setup
 
+### Watch the [Getting Started Lesson on YouTube](http://www.youtube.com/watch?v=_y3VFE1JogQ)
+
 ### Download Timber + Twig
 
 #### 1) Navigate to your WordPress plugins directory
