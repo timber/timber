@@ -24,6 +24,7 @@
 		
 		$twig->addExtension(new Twig_Extension_Debug());
 		$twig->addFilter('resize', new Twig_Filter_Function('wp_resize'));
+		$twig->addFilter('letterbox', new Twig_Filter_Function('wp_resize'));
 		$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
 		$twig->addFilter('print_r', new Twig_Filter_Function('twig_print_r'));
 		$twig->addFilter('print_a', new Twig_Filter_Function('twig_print_a'));
