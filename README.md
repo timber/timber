@@ -30,9 +30,9 @@ Well, it's **free**! And it's GPL-licensed, so use in personal or commerical wor
 	cd ~/Sites/mywordpress/wp-content/plugins
 
 #### 2) Use git to grab the repo
-	git clone --recursive git@github.com:jarednova/timber.git timber-framework
+	git clone --recursive git@github.com:jarednova/timber.git
 
-This is important! **--recursive** is needed so that the **Twig** submodule is also downloaded. Having trouble with the recursive stuff? Skip to step #4 to download Twig. Also some dude took the name 'timber' in the WP Plugin Repo so you should change the name of the directory or you'll get a misleading upgrade notice.
+This is important! **--recursive** is needed so that the **Twig** submodule is also downloaded. Having trouble with the recursive stuff? Skip to step #4 to download Twig.
 
 #### 3) Don't know git?
 That's cool, you should, but developer lectures are lame. Grab the zip and stick it in the plugins directory (so **timber** lives in the same folder as other plugins you may have). You should also rename it to "timber-framework" or you'll get an incorrect upgrade warning from WordPress.
