@@ -1,6 +1,6 @@
-{% include 'html-header.html' %}    
+{% include 'html-header.twig' %}    
 
-        <header class="header" data-source="base.html">
+        <header class="header" data-source="base.twig">
             {% block header %}
             <div class="wrapper">
 
@@ -32,7 +32,7 @@
         </section>
 
         <div id="footer">
-            {% include 'footer.html' %}
+            {% include 'footer.twig' %}
         </div>
         {{ wp_footer }}
     </body>

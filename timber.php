@@ -103,7 +103,7 @@ class Timber {
 		}
 		$sidebar_file = 'sidebar-'.$sidebar_name;
 		if (!strlen($sidebar_name)){
-			$sidebar_file = 'sidebar.html';
+			$sidebar_file = 'sidebar.twig';
 		}
 
 		return self::render($sidebar_view, $data);

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.twig" %}
 
 {% block content %}
 
@@ -19,7 +19,7 @@
 					<div class="responses">
 	
 					{% for cmt in post.get_comments() %}
-						{% include "comment.html" with {comment:cmt} %}
+						{% include "comment.twig" with {comment:cmt} %}
 					{% endfor %}
 </div>
 
