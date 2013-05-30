@@ -15,5 +15,5 @@
 	$context['wp_title'] .= ' - '.$post->post_title;
 	$context['comment_form'] = WPHelper::get_comment_form($pid);
 
-	render_twig(array('single-'.$post->post_type.'.html','single.html'), $context);
+	Timber::render(array('single-'.$post->post_type.'.twig','single.twig'), $context);
 ?>

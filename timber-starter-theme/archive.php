@@ -15,7 +15,7 @@
  */
 	
 
-		$templates = array('archive.html', 'index.html');
+		$templates = array('archive.twig', 'index.twig');
 
 		$data = Timber::get_context();
 
@@ -30,10 +30,10 @@
 			$data['title'] = single_tag_title('', false);
 		} else if (is_category()){
 			$data['title'] = single_cat_title('', false);
-			array_unshift($templates, 'archive-'.get_query_var('cat').'.html');
+			array_unshift($templates, 'archive-'.get_query_var('cat').'.twig');
 		} else if (is_post_type_archive()){
 			$data['title'] = post_type_archive_title('', false);
-			array_unshift($templates, 'archive-'.get_post_type().'.html');
+			array_unshift($templates, 'archive-'.get_post_type().'.twig');
 		}
 		
 		$data['posts'] = Timber::get_posts();

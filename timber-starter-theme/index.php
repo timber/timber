@@ -14,12 +14,12 @@
  */
 
 	if (!class_exists('Timber')){
-		echo 'timber not activated';
+		echo 'Timber not activated';
 	}
 	
 	$data = Timber::get_context();
-	$posts = Timber::get_posts();
+	$posts = Timber::get_posts('TimberPost');
 	$data['posts'] = $posts;
-	render_twig('index.html', $data);
+	render_twig('index.twig', $data);
 
 
