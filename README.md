@@ -24,6 +24,8 @@ Well, it's **free**! And it's GPL-licensed, so use in personal or commerical wor
 
 ## Setup
 
+<iframe width="560" height="315" src="http://www.youtube.com/embed/_y3VFE1JogQ" frameborder="0" allowfullscreen></iframe>
+
 ### Download Timber + Twig
 
 #### 1) Navigate to your WordPress plugins directory
