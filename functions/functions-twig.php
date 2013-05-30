@@ -82,8 +82,11 @@
 		$old_file = WPHelper::get_full_path($src);
 		$new_file = WPHelper::get_letterbox_file_path($src, $w, $h);
 		$new_file_rel = WPHelper::get_letterbox_file_rel($src, $w, $h);
-		if (file_exists($new_file)){
-			//return $new_file_rel;
+
+		$new_file_boxed = str_replace('-lb-', '-lbox-', $new_file);
+		if (file_exists($new_file_boxed)){
+			$new_file_rel = str_replace('-lb-', '-lbox-', $new_file_rel);
+			return $new_file_rel;
 		}
 		WPHelper::error_log($old_file);
 		$image = wp_get_image_editor($old_file);
