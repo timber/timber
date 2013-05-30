@@ -166,8 +166,8 @@
 			}
 			$post = $this->prepare_post_info($pid);
 			if (!$post){
-				print_r(debug_backtrace());
-				print_r($post);
+				//print_r(debug_backtrace());
+				//print_r($post);
 			}
 			if (!isset($post->post_title)){
 				return;
