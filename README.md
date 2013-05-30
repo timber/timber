@@ -24,7 +24,7 @@ Well, it's **free**! And it's GPL-licensed, so use in personal or commerical wor
 
 ## Setup
 
-<iframe width="560" height="315" src="http://www.youtube.com/embed/_y3VFE1JogQ" frameborder="0" allowfullscreen></iframe>
+### Watch the [Getting Started Lesson on YouTube](http://www.youtube.com/watch?v=_y3VFE1JogQ)
 
 ### Download Timber + Twig
 
