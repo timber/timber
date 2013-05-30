@@ -10,6 +10,44 @@
 			return false;
 		}	
 
+		function resize_letterbox($src, $w, $h){
+
+		}
+
+		function get_full_path($src){
+			$root = $_SERVER['DOCUMENT_ROOT'];
+			$old_root_path = $root.$src;
+			$old_root_path = str_replace('//', '/', $old_root_path);
+			return $old_root_path;
+		}
+
+		function get_rel_path($src){
+			return str_replace($_SERVER['DOCUMENT_ROOT'], '', $src);
+		}
+
+		function get_letterbox_file_rel($src, $w, $h){
+			$path_parts = pathinfo($src);
+			$basename = $path_parts['filename'];
+			$ext = $path_parts['extension'];
+			$dir = $path_parts['dirname'];
+			$newbase = $basename.'-lb-'.$w.'x'.$h;
+			$new_path = $dir.'/'.$newbase.'.'.$ext;
+			return $new_path;
+		}
+
+		function get_letterbox_file_path($src, $w, $h){
+			$root = $_SERVER['DOCUMENT_ROOT'];
+			$path_parts = pathinfo($src);
+			$basename = $path_parts['filename'];
+			$ext = $path_parts['extension'];
+			$dir = $path_parts['dirname'];
+			$newbase = $basename.'-lb-'.$w.'x'.$h;
+			$new_path = $dir.'/'.$newbase.'.'.$ext;
+			$new_root_path = $root.$new_path;
+			$new_root_path = str_replace('//', '/', $new_root_path);
+			return $new_root_path;
+		}
+
 		function download_url( $url, $timeout = 300 ) {
 			//WARNING: The file is not automatically deleted, The script must unlink() the file.
 			if ( ! $url )

@@ -24,7 +24,7 @@
 		
 		$twig->addExtension(new Twig_Extension_Debug());
 		$twig->addFilter('resize', new Twig_Filter_Function('wp_resize'));
-		$twig->addFilter('letterbox', new Twig_Filter_Function('wp_resize'));
+		$twig->addFilter('letterbox', new Twig_Filter_Function('wp_resize_letterbox'));
 		$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
 		$twig->addFilter('print_r', new Twig_Filter_Function('twig_print_r'));
 		$twig->addFilter('print_a', new Twig_Filter_Function('twig_print_a'));
@@ -77,6 +77,45 @@
 		return $ret;
 	}
 
+	function wp_resize_letterbox($src, $w, $h){
+		$bg = imagecreatetruecolor($w, $h);
+		$old_file = WPHelper::get_full_path($src);
+		$new_file = WPHelper::get_letterbox_file_path($src, $w, $h);
+		$new_file_rel = WPHelper::get_letterbox_file_rel($src, $w, $h);
+		if (file_exists($new_file)){
+			//return $new_file_rel;
+		}
+		WPHelper::error_log($old_file);
+		$image = wp_get_image_editor($old_file);
+		if ( ! is_wp_error( $image ) ) {
+			$current_size = $image->get_size();
+		    $ow = $current_size['width'];
+		    $oh = $current_size['height'];
+		    $new_aspect = $w/$h;
+		    $old_aspect = $ow/$oh;
+		    if ($new_aspect > $old_aspect){
+		    	//taller than goal
+		    	$h_scale = $h / $oh;
+		    	$owt = $ow * $h_scale;
+		    	$y = 0;
+		    	$x = $w/2 - $owt/2;
+		    	$image->crop(0, 0, $ow, $oh, $owt, $h);
+		    } else {
+		    	$w_scale = $w / $ow;
+		    	$oht = $oh * $w_scale;
+		    	$x = 0;
+		    	$y = $h/2 - $oht/2;
+		    	$image->crop(0, 0, $ow, $oh, $w, $oht);
+		    }
+		   	$image->save($new_file);
+		   	$image = imagecreatefromjpeg($new_file);
+		   	imagecopy($bg, $image, $x, $y, 0, 0, $w, $h);
+		   	$new_file = str_replace('-lb-', '-lbox-', $new_file);
+		   	imagejpeg($bg, $new_file);
+		    return WPHelper::get_rel_path($new_file);
+		}
+	}
+
 	function wp_resize($src, $w, $h){
 		$root = $_SERVER['DOCUMENT_ROOT'];
 		if (strstr($src, 'http')){
@@ -86,7 +125,7 @@
 			$new_root_path = $external['new_root_path'];
 			$new_path = $external['new_path'];
 		} else {
-		//oh good, its in the uploads folder!
+			//oh good, its in the uploads folder!
 			$path_parts = pathinfo($src);
 			$basename = $path_parts['filename'];
 			$ext = $path_parts['extension'];
