@@ -9,13 +9,13 @@ This is a major rewrite of Timber. Trust me, it's worth it. But if you're lookin
 ## Because WordPress is awesome, but the_loop isn't
 Timber helps you create fully-customized WordPress themes faster with more maintainable code. With Timber, you write your HTML using the [Twig Templating Engine](http://twig.sensiolabs.org/) separate from your PHP files. 
 
-This cleans-up your theme code so, for example, your single.php file can focus on being the controller for your WordPress model, while your single.html file can focus 100% on the HTML and display.
+This cleans-up your theme code so, for example, your single.php file can focus on being the controller for your WordPress model, while your single.twig file can focus 100% on the HTML and display.
 
 ### What does it look like?
 Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https://github.com/viewportindustries/starkers) or [Boilerplate theme](https://github.com/zencoder/html5-boilerplate-for-wordpress) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
 
 ### Who is it good for?
-Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because not everyone knows the ins-and-outs of the_loop(), WordPress codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .html files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
+Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because not everyone knows the ins-and-outs of the_loop(), WordPress codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .twig files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
 
 ### Should I use it?
 Well, it's **free**! And it's GPL-licensed, so use in personal or commerical work. Just don't re-sell it.
@@ -68,12 +68,12 @@ Use the **timber-starter-theme** theme from the step above.
 ### Let's start with your single post
 Find this file:
 	
-	wp-content/themes/[timber-starter-theme]/views/single.html
+	wp-content/themes/[timber-starter-theme]/views/single.twig
 
 Brilliant! Open it up.
 
 ```html
-{% extends "base.html" %}
+{% extends "base.twig" %}
 {% block content %}
 	<div class="content-wrapper">
 		<article class="post-type-{{post.post_type}}" id="post-{{ID}}">
@@ -106,13 +106,13 @@ Okay, not _too_ terrible, but doesn't this (Timber) way look so much nicer:
 ```	
 It gets better. Let's explain some other concepts.
 ```php
-{% extends "base.html" %}
+{% extends "base.twig" %}
 ```
-This means that **single.html** is using **base.html** as its parent template. That's why you don't see any ```<head>```, ```<header>```, or ```<footer>``` tags, those site-wide (usually) things are all controlled in base.html. If they're not? no prob, you can make single extend **base-single.html** or just include _all_ the markup inside of single.html.
+This means that **single.twig** is using **base.twig** as its parent template. That's why you don't see any ```<head>```, ```<header>```, or ```<footer>``` tags, those site-wide (usually) things are all controlled in base.twig. If they're not? no prob, you can make single extend **base-single.twig** or just include _all_ the markup inside of single.twig.
 ```php
 {% block content %} / {% endblock %}
 ```
-If you were to peak into **base.html** you would see a matching set of ```{% block content %} / {% endblock %}``` tags. **single.html** is replacing the content of base's ```{% block content %}``` with its own.
+If you were to peak into **base.twig** you would see a matching set of ```{% block content %} / {% endblock %}``` tags. **single.twig** is replacing the content of base's ```{% block content %}``` with its own.
 
 Yeah baby!
 
@@ -123,7 +123,7 @@ Let's crack open **index.php** and see what's inside:
 ```php
 $context = Timber::get_context();
 $context['posts'] = Timber::get_posts();
-render_twig('index.html', $context);
+Timber::render('index.twig', $context);
 ```
 This is where we are going to handle the logic that powers our index file. Let's go step-by-step
 
@@ -141,9 +141,9 @@ We're now going to grab the posts that are inside the loop and stick them inside
 
 #### 
 ```php
-render_twig('index.html', $context);
+Timber::render('index.twig', $context);
 ```
-We're now telling Twig to grab **index.html** and send it our data object. 
+We're now telling Twig to grab **index.twig** and send it our data object. 
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jarednova/timber/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
