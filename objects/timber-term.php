@@ -30,8 +30,8 @@
 			} else if (isset($term->term_id)){
 				$term->ID = $term->term_id;
 			} else {
-				echo 'bad call';
-				print_r(debug_backtrace());
+				//echo 'bad call';
+				WPHelper::error_log(debug_backtrace());
 			}
 			if (function_exists('get_fields')){
 				//lets get whatever we can from advanced custom fields;
