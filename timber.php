@@ -49,8 +49,9 @@ define("TIMBER_LOC", realpath(__DIR__));
 	
 class Timber {
 
-	function get_post($pid){
-		return new TimberPost($pid);
+	public function get_post($query = false, $PostClass = 'TimberPost'){
+		$posts = self::get_posts($query, $PostClass);
+		return $posts[0];
 	}
 
 	public function get_posts($query = false, $PostClass = 'TimberPost'){

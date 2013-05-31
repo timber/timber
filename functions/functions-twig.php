@@ -77,17 +77,28 @@
 		return $ret;
 	}
 
-	function wp_resize_letterbox($src, $w, $h){
-		$bg = imagecreatetruecolor($w, $h);
+	function hexrgb($hexstr) {
+		    $int = hexdec($hexstr);
+
+		    return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
+		}
+
+	function wp_resize_letterbox($src, $w, $h, $color = '#000000'){		
 		$old_file = WPHelper::get_full_path($src);
 		$new_file = WPHelper::get_letterbox_file_path($src, $w, $h);
 		$new_file_rel = WPHelper::get_letterbox_file_rel($src, $w, $h);
-
 		$new_file_boxed = str_replace('-lb-', '-lbox-', $new_file);
 		if (file_exists($new_file_boxed)){
 			$new_file_rel = str_replace('-lb-', '-lbox-', $new_file_rel);
 			return $new_file_rel;
 		}
+
+		$bg = imagecreatetruecolor($w, $h);
+		$c = hexrgb($color);
+		
+		$white = imagecolorallocate($bg, $c['red'], $c['green'], $c['blue']);
+		imagefill($bg, 0, 0, $white);
+
 		WPHelper::error_log($old_file);
 		$image = wp_get_image_editor($old_file);
 		if ( ! is_wp_error( $image ) ) {
@@ -102,17 +113,19 @@
 		    	$owt = $ow * $h_scale;
 		    	$y = 0;
 		    	$x = $w/2 - $owt/2;
-		    	$image->crop(0, 0, $ow, $oh, $owt, $h);
+		    	$oht = $h;
+		    	$image->crop(0, 0, $ow, $oh, $owt, $oht);
 		    } else {
 		    	$w_scale = $w / $ow;
 		    	$oht = $oh * $w_scale;
 		    	$x = 0;
 		    	$y = $h/2 - $oht/2;
-		    	$image->crop(0, 0, $ow, $oh, $w, $oht);
+		    	$owt = $w;
+		    	$image->crop(0, 0, $ow, $oh, $owt, $oht);
 		    }
 		   	$image->save($new_file);
 		   	$image = imagecreatefromjpeg($new_file);
-		   	imagecopy($bg, $image, $x, $y, 0, 0, $w, $h);
+		   	imagecopy($bg, $image, $x, $y, 0, 0, $owt, $oht);
 		   	$new_file = str_replace('-lb-', '-lbox-', $new_file);
 		   	imagejpeg($bg, $new_file);
 		    return WPHelper::get_rel_path($new_file);
