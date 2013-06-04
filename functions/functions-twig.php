@@ -140,7 +140,6 @@
 			$new_root_path = $external['new_root_path'];
 			$new_path = $external['new_path'];
 		} else {
-			echo 'elseeee';
 			//oh good, its in the uploads folder!
 			$path_parts = pathinfo($src);
 			$basename = $path_parts['filename'];
