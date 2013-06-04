@@ -94,7 +94,8 @@
 		}
 
 		function get_path(){
-			return '/'.$this->get_url();
+			$p = WPHelper::get_path_base();			
+			return $p.$this->get_url();
 		}
 
 		function get_url(){

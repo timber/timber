@@ -14,6 +14,18 @@
 
 		}
 
+		function get_path_base(){
+			$struc = get_option('permalink_structure');
+			$struc = explode('/', $struc);
+			$p = '/';
+			foreach($struc as $s){
+				if (!strstr($s, '%') && strlen($s)){
+					$p .= $s.'/';
+				}
+			}
+			return $p;
+		}
+
 		function get_full_path($src){
 			$root = $_SERVER['DOCUMENT_ROOT'];
 			$old_root_path = $root.$src;

@@ -49,7 +49,8 @@
 		}
 
 		function get_path(){
-			return '/author/'.$this->slug();
+			$p = WPHelper::get_path_base();
+			return $p.'author/'.$this->slug();
 		}
 
 		function path(){

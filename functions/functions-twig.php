@@ -99,7 +99,6 @@
 		$white = imagecolorallocate($bg, $c['red'], $c['green'], $c['blue']);
 		imagefill($bg, 0, 0, $white);
 
-		WPHelper::error_log($old_file);
 		$image = wp_get_image_editor($old_file);
 		if ( ! is_wp_error( $image ) ) {
 			$current_size = $image->get_size();
@@ -185,7 +184,6 @@
 		    return $new_path;
 		} else {
 			return $src;
-			WPHelper::error_log($image);
 		}
 		return $src;
 	}
