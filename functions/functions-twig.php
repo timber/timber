@@ -69,7 +69,7 @@
 
 		$new_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $new_root_path);
 
-		$ret = array('new_root_path' => $new_root_path, 'old_root_path' => $dir.'/'.$basename.$ext, 'new_path' => $new_path);
+		$ret = array('new_root_path' => $new_root_path, 'old_root_path' => $dir.'/'.$basename.'.'.$ext, 'new_path' => $new_path);
 		if (file_exists($new_root_path)){
 			return $ret;
 		}
@@ -140,6 +140,7 @@
 			$new_root_path = $external['new_root_path'];
 			$new_path = $external['new_path'];
 		} else {
+			echo 'elseeee';
 			//oh good, its in the uploads folder!
 			$path_parts = pathinfo($src);
 			$basename = $path_parts['filename'];
