@@ -68,8 +68,12 @@
 		$new_root_path = $dir.'/'.$newbase.'.'.$ext;
 
 		$new_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $new_root_path);
-
+		if (strpos($new_path, '/') != 0)
+		{
+			$new_path = '/'.$new_path;	
+		}
 		$ret = array('new_root_path' => $new_root_path, 'old_root_path' => $dir.'/'.$basename.'.'.$ext, 'new_path' => $new_path);
+
 		if (file_exists($new_root_path)){
 			return $ret;
 		}
