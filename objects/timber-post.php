@@ -5,6 +5,8 @@
 		var $ImageClass = 'TimberImage';
 		var $PostClass = 'TimberPost';
 
+		var $_can_edit;
+
 		/**
 		*	If you send the contructor nothing it will try to figure out the current post id based on being inside The_Loop
 		*	@param mixed $pid	
@@ -25,6 +27,17 @@
 			$this->init($pid);
 			return $this;
 		}
+
+		function can_edit(){
+			if (isset($this->_can_edit)){
+				return $_can_edit;
+			}
+			$this->_can_edit = false;
+			if (current_user_can('edit_post', $this->ID)){
+				$this->_can_edit = true;
+  			}
+  			return $this->_can_edit;
+ 		}
 
 		/*
 		*/
@@ -233,6 +246,11 @@
 			return $this->get_tags();
 		}
 
+		function get_image($field){
+			error_log('field='.$this->$field);
+			return new $ImageClass($this->$field);
+		}
+
 		function get_tags(){
 			$tags = get_the_tags($this->ID);
 			if (is_array($tags)){
@@ -253,5 +271,10 @@
 			} else {
 				return 0;
 			}
+		}
+
+		//This is for integration with Elliot Condon's wonderful ACF
+		function get_field($field_name){
+			return get_field($field_name, $this->ID);
 		}
 	}
