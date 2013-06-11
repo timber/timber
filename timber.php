@@ -95,21 +95,6 @@ class Timber {
 		}
 	}
 
-	//TODO: make this work, this is UNTESTED right now
-
-	function get_sidebar($sidebar_name = '', $data = array()){
-		if (is_array($sidebar_name)){
-			$data = $sidebar_name;
-			$sidebar_name = '';
-		}
-		$sidebar_file = 'sidebar-'.$sidebar_name;
-		if (!strlen($sidebar_name)){
-			$sidebar_file = 'sidebar.twig';
-		}
-
-		return self::render($sidebar_view, $data);
-	}
-
 	function get_posts_from_loop($PostClass){
 		$results = self::get_pids_from_loop();
 		return self::handle_post_results($results, $PostClass);
@@ -131,7 +116,7 @@ class Timber {
 		return self::handle_post_results($results, $PostClass);
 	}
 
-	private function handle_post_results($results, $PostClass = 'TimberPost'){
+	function handle_post_results($results, $PostClass = 'TimberPost'){
 		$posts = array();
 		foreach($results as $rid){
 			$PostClassUse = $PostClass;
@@ -154,6 +139,31 @@ class Timber {
 			}
 		}
 		return $posts;
+	}
+
+	function get_sidebar($sidebar = '', $data = array()){
+		if ($sidebar == ''){
+			$sidebar = 'sidebar.php';
+		}
+		if (strstr(strtolower($sidebar), '.php')){
+			return self::get_sidebar_from_php($sidebar, $data);
+		} 
+		return self::render($sidebar, $data, false);
+	}
+
+	function get_sidebar_from_php($sidebar = '', $data){
+		$context = $data;
+		$uris = self::get_dirs();
+		ob_start();
+		foreach($uris as $uri){
+			if (file_exists($uri.$sidebar)){
+				include($uri.$sidebar);
+				break;
+			}
+		}
+		$ret = ob_get_contents();
+		ob_end_clean();
+		return $ret;
 	}
 
 	//this function is deprecated in favor of:
@@ -203,22 +213,39 @@ class Timber {
 		return false;
 	}
 
-	function render($filenames, $data = array(), $echo = true){
+	function get_calling_script_dir(){
 		$backtrace = debug_backtrace();
-
-		$dir = get_calling_script_dir($backtrace);
-		
-		if(!$data){
-			$data = array();
+		foreach($backtrace as $trace){
+			if ($trace['file'] != __FILE__){
+				$caller = $trace['file'];
+				break;
+			}
 		}
-		$uri = array();
-		$uri[] = get_stylesheet_directory();
+		$pathinfo = pathinfo($caller);
+		$dir = $pathinfo['dirname'];
+		return $dir;
+	}
+
+	function get_dirs(){
+		$uris = array();
+		$uris[] = get_stylesheet_directory();
 		$uri_parent = get_template_directory();
 
-		if ($uri[0] != $uri_parent){
-			$uri[] = $uri_parent;
+		if ($uris[0] != $uri_parent){
+			$uris[] = $uri_parent;
 		}
-		$uri[] = $dir;
+		$uris[] = self::get_calling_script_dir();
+		/* make sure all directories have trailing slash */
+		foreach($uris as &$uri){
+			if (substr($uri, -1) != '/'){
+				$uri .= '/';
+			}
+		}
+		return $uris;
+	}
+
+	function render($filenames, $data = array(), $echo = true){
+		$uri = self::get_dirs();
 		$twig = get_twig($uri);
 		
 		$filename = twig_choose_template($filenames, $uri);
@@ -242,12 +269,11 @@ class Timber {
 		if (function_exists('wp_nav_menu')){
 			$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
 		}
-
 		return $data;
 	}
 
 
-	private function is_post_class_or_class_map($arg){
+	function is_post_class_or_class_map($arg){
 		if (is_string($arg) && class_exists($arg)){
 			return true;
 		}

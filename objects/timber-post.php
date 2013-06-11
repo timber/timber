@@ -39,6 +39,12 @@
   			return $this->_can_edit;
  		}
 
+ 		function get_edit_url(){
+ 			if ($this->can_edit){
+ 				return '/wp-admin/post.php?post='.$this->ID.'&action=edit';
+ 			}
+ 		}
+
 		/*
 		*/
 		function init($pid = false){

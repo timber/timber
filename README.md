@@ -141,11 +141,111 @@ $context['posts'] = Timber::get_posts();
 ```
 We're now going to grab the posts that are inside the loop and stick them inside our data object under the **posts** key. 
 
-#### 
+##### Timber::get_posts() usage
+
+###### Use a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) array
+```php
+	$args = array(
+		'post_type' => 'post',
+		'tax_query' => array(
+			'relation' => 'AND',
+			array(
+				'taxonomy' => 'movie_genre',
+				'field' => 'slug',
+				'terms' => array( 'action', 'comedy' )
+			),
+			array(
+				'taxonomy' => 'actor',
+				'field' => 'id',
+				'terms' => array( 103, 115, 206 ),
+				'operator' => 'NOT IN'
+			)
+		)
+	);
+	$context['posts'] = Timber::get_posts($args);
+```
+
+##### Use a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) string
+```php
+	$args = 'post_type=movies&numberposts=8&orderby=rand';
+	$context['posts'] = Timber::get_posts($args);
+```
+
+##### Use Post ID numbers
+```php
+	$ids = array(14, 123, 234, 421, 811, 6);
+	$context['posts'] = Timber::get_posts($ids);
+
+#### Render
 ```php
 Timber::render('index.twig', $context);
 ```
 We're now telling Twig to grab **index.twig** and send it our data object. 
+
+#### You want a sidebar?
+
+##### Method 1: PHP file
+Let's say you've got the same contents going into your sidebar across the site you would
+1. Create a `sidebar.php` file in your theme directory (so `wp-content/themes/mytheme/sidebar.php`)
+```php
+# sidebar.php #
+$context = array();
+$context['widget'] = my_function_to_get_widget();
+$context['ad'] = my_function_to_get_an_ad();
+Timber::render('sidebar.twig', $context);
+```
+
+2. Use that php file in your main php file (home.php, single.php, archive.php, etc):
+```php
+# single.php #
+$context = Timber::get_context();
+$context['sidebar'] = Timber::get_sidebar('sidebar.php');
+Timber::render('single.twig', $context);
+
+3. In the final twig file make sure you have spot for your sidebar
+```html
+# single.twig #
+<aside class="sidebar">
+	{{sidebar}}
+</aside>
+```
+
+##### Method 2: Twig file
+In this example, you would populate your sidebar from your main PHP file (home.php, single.php, archive.php, etc).
+
+1. Make a Twig file for what your sidebar should be...
+```html
+# views/sidebar-related.twig #
+<h3>Related Stories</h3>
+{% for post in related %}
+	<h4><a href="{{post.get_path}}">{{post.post_title}}</a></h4>
+{% endfor %}
+```
+
+2. Send data to it via your main PHP file
+```php
+# single.php #
+$context = Timber::get_context();
+$post = new TimberPost();
+$post_cat = $post->get_terms('category');
+$post_cat = $post_cat[0]->ID;
+$context['post'] = $post;
+
+$sidebar_context = array();
+$sidebar_context['related'] = Timber::get_posts('cat='.$post_cat);
+$context['sidebar'] = Timber::get_sidebar('sidebar-related.twig', $sidebar_context);
+Timber::render('single.twig', $context);
+
+3. In the final twig file make sure you have spot for your sidebar
+```html
+# single.twig #
+<aside class="sidebar">
+	{{sidebar}}
+</aside>
+```
+
+
+
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jarednova/timber/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
