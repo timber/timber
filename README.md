@@ -3,8 +3,12 @@
 <div>
 By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a href="http://upstatement.com">Upstatement</a> (<a href="http://twitter.com/upstatement">@Upstatement</a>)</div>  
 </div>
-## Upgrade Notes
+### Upgrade Notes
 This is a major rewrite of Timber. Trust me, it's worth it. But if you're looking for the old [Parent Theme Timber](https://github.com/jarednova/timber/tree/theme) you can still find it on this [branch](https://github.com/jarednova/timber/tree/theme).
+
+### Looking for docs?
+* [Timber Reference](https://github.com/jarednova/timber/wiki/Timber-docs)
+* [Twig Reference](http://twig.sensiolabs.org/documentation)
 
 ## Because WordPress is awesome, but the_loop isn't
 Timber helps you create fully-customized WordPress themes faster with more maintainable code. With Timber, you write your HTML using the [Twig Templating Engine](http://twig.sensiolabs.org/) separate from your PHP files. 
