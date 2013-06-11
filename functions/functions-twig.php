@@ -127,7 +127,14 @@
 		    	$image->crop(0, 0, $ow, $oh, $owt, $oht);
 		    }
 		   	$image->save($new_file);
-		   	$image = imagecreatefromjpeg($new_file);
+		   	$func = 'imagecreatefromjpeg';
+		   	$ext = pathinfo($new_file, PATHINFO_EXTENSION);
+		   	if ($ext == 'gif'){
+		   		$func = 'imagecreatefromgif';
+		   	} else if ($ext == 'png'){
+		   		$func = 'imagecreatefrompng';
+		   	}
+		   	$image = $func($new_file);
 		   	imagecopy($bg, $image, $x, $y, 0, 0, $owt, $oht);
 		   	$new_file = str_replace('-lb-', '-lbox-', $new_file);
 		   	imagejpeg($bg, $new_file);
