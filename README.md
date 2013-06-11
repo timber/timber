@@ -175,8 +175,10 @@ We're now going to grab the posts that are inside the loop and stick them inside
 ```php
 	$ids = array(14, 123, 234, 421, 811, 6);
 	$context['posts'] = Timber::get_posts($ids);
+```
 
 #### Render
+
 ```php
 Timber::render('index.twig', $context);
 ```
@@ -186,7 +188,8 @@ We're now telling Twig to grab **index.twig** and send it our data object.
 
 ##### Method 1: PHP file
 Let's say you've got the same contents going into your sidebar across the site you would
-1. Create a `sidebar.php` file in your theme directory (so `wp-content/themes/mytheme/sidebar.php`)
+* Create a `sidebar.php` file in your theme directory (so `wp-content/themes/mytheme/sidebar.php`)
+
 ```php
 # sidebar.php #
 $context = array();
@@ -195,14 +198,17 @@ $context['ad'] = my_function_to_get_an_ad();
 Timber::render('sidebar.twig', $context);
 ```
 
-2. Use that php file in your main php file (home.php, single.php, archive.php, etc):
+* Use that php file in your main php file (home.php, single.php, archive.php, etc):
+
 ```php
 # single.php #
 $context = Timber::get_context();
 $context['sidebar'] = Timber::get_sidebar('sidebar.php');
 Timber::render('single.twig', $context);
+```
 
-3. In the final twig file make sure you have spot for your sidebar
+* In the final twig file make sure you have spot for your sidebar
+
 ```html
 # single.twig #
 <aside class="sidebar">
@@ -213,7 +219,8 @@ Timber::render('single.twig', $context);
 ##### Method 2: Twig file
 In this example, you would populate your sidebar from your main PHP file (home.php, single.php, archive.php, etc).
 
-1. Make a Twig file for what your sidebar should be...
+* Make a Twig file for what your sidebar should be...
+
 ```html
 # views/sidebar-related.twig #
 <h3>Related Stories</h3>
@@ -222,7 +229,8 @@ In this example, you would populate your sidebar from your main PHP file (home.p
 {% endfor %}
 ```
 
-2. Send data to it via your main PHP file
+* Send data to it via your main PHP file
+
 ```php
 # single.php #
 $context = Timber::get_context();
@@ -235,8 +243,9 @@ $sidebar_context = array();
 $sidebar_context['related'] = Timber::get_posts('cat='.$post_cat);
 $context['sidebar'] = Timber::get_sidebar('sidebar-related.twig', $sidebar_context);
 Timber::render('single.twig', $context);
+```
+* In the final twig file make sure you have spot for your sidebar
 
-3. In the final twig file make sure you have spot for your sidebar
 ```html
 # single.twig #
 <aside class="sidebar">
