@@ -50,6 +50,10 @@ define("TIMBER_LOC", realpath(__DIR__));
 class Timber {
 
 	public function get_post($query = false, $PostClass = 'TimberPost'){
+		if (is_int($query)){
+			/* its a post id number */
+			$query = array($query);
+		}
 		$posts = self::get_posts($query, $PostClass);
 		return $posts[0];
 	}
