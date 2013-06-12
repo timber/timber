@@ -33,6 +33,9 @@
 				return $_can_edit;
 			}
 			$this->_can_edit = false;
+			if (!function_exists('current_user_can')){
+				return false;
+			}
 			if (current_user_can('edit_post', $this->ID)){
 				$this->_can_edit = true;
   			}
@@ -64,6 +67,7 @@
 		function update($field, $value){
 			if (isset($this->ID)) {
 				update_post_meta($this->ID, $field, $value);
+				$this->$field = $value;
 			} 
 		}
 
