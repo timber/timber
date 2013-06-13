@@ -217,6 +217,11 @@ class Timber {
 		return false;
 	}
 
+	function get_calling_script_path(){
+		$dir = self::get_calling_script_dir();
+		return str_replace($_SERVER['DOCUMENT_ROOT'], '', $dir);
+	}
+
 	function get_calling_script_dir(){
 		$backtrace = debug_backtrace();
 		foreach($backtrace as $trace){
