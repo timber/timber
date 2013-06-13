@@ -30,7 +30,7 @@
 
 		function can_edit(){
 			if (isset($this->_can_edit)){
-				return $_can_edit;
+				return $this->_can_edit;
 			}
 			$this->_can_edit = false;
 			if (!function_exists('current_user_can')){
@@ -43,9 +43,9 @@
  		}
 
  		function get_edit_url(){
- 			if ($this->can_edit){
+ 			if ($this->can_edit()){
  				return '/wp-admin/post.php?post='.$this->ID.'&action=edit';
- 			}
+ 			} 
  		}
 
 		/*
@@ -269,6 +269,21 @@
 				$tags = array();
 			}
 			return $tags;
+		}
+
+		function get_content($len = 0, $page = 0){
+			$content = $this->post_content;
+			if ($len){
+				wp_trim_words($content, $len);
+			}
+			if ($page){
+				$contents = explode('<!--nextpage-->', $content);
+				$page--;
+				if (count($contents) > $page){
+					$content = $contents[$page];
+				}
+			}
+			return apply_filters('the_content', ($content));
 		}
 
 		function get_post_type(){
