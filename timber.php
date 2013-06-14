@@ -25,6 +25,7 @@ require_once(__DIR__.'/objects/timber-comment.php');
 require_once(__DIR__.'/objects/timber-user.php');
 require_once(__DIR__.'/objects/timber-term.php');
 require_once(__DIR__.'/objects/timber-image.php');
+require_once(__DIR__.'/objects/timber-menu.php');
 
 $timber = str_replace(realpath($_SERVER['DOCUMENT_ROOT']), '', realpath(__DIR__));
 define("TIMBER", $timber);
