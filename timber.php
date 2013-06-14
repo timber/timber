@@ -55,7 +55,10 @@ class Timber {
 			$query = array($query);
 		}
 		$posts = self::get_posts($query, $PostClass);
-		return $posts[0];
+		if (count($posts) && is_array($posts)){
+			return $posts[0];
+		}
+		return $posts;
 	}
 
 	public function get_posts($query = false, $PostClass = 'TimberPost'){
