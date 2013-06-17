@@ -164,6 +164,10 @@
 			return null;
 		}
 
+		function get_peramlink(){
+			return get_permalink( $this->ID );
+		}
+
 		function get_path(){
 			if (isset($this->path)){
 				return $this->path;
@@ -197,12 +201,13 @@
 			}
 			$post->title = $post->post_title;
 			$post->slug = $post->post_name;
+			$post->display_date = date(get_option('date_format'), strtotime($post->post_date));
+
 			$this->import_custom($post->ID);
 			
 			if (isset($post->post_author)){
 				$post->author = new TimberUser($post->post_author); 
 			}
-			$post->display_date = date(get_option('date_format'), strtotime($post->post_date));
 			
 			$post->status = $post->post_status;	
 			if (!isset($wp_rewrite)){
@@ -211,9 +216,11 @@
 				$post->permalink = get_permalink($post->ID);
 				$post->path = $this->url_to_path($post->permalink);
 			}
-			
-			
 			return $post;
+		}
+
+		function get_display_date(){
+			return date(get_option('date_format'), strtotime($this->post_date));
 		}
 
 		function get_children(){
