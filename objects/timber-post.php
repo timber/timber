@@ -252,10 +252,7 @@
 					$ret[] = new TimberTerm($term->term_id);
 				}
 				return $ret;
-			} /*else if (isset($this->terms)){
-				return $this->terms;
-			}*/
-			// $this->terms = PostMaster::get_post_terms($this->ID);
+			}
 			return $this->terms || PostMaster::get_post_terms($this->ID);
 		}
 

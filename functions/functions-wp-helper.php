@@ -137,7 +137,9 @@
 				}
 			}
 			if ($i > -1){
-				return $newargs[$i];
+				if (isset($newargs[$i])){
+					return $newargs[$i];
+				}
 			}
 			return $newargs;
 		}
