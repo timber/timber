@@ -69,7 +69,7 @@ class Timber {
 			$query = false;
 		}
 
-		if (PHPHelper::is_array_assoc($query) || is_string($query)){
+		if (WPHelper::is_array_assoc($query) || is_string($query)){
 			// we have a regularly formed WP query string or array to use
 			return self::get_posts_from_wp_query($query, $PostClass);
 

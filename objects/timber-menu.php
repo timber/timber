@@ -1,6 +1,6 @@
 <?php
 	
-	class TimberMenu {
+	class TimberMenu extends TimberCore {
 
 		var $items = null;
 

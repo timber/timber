@@ -7,7 +7,14 @@
  * and that other 'pages' on your WordPress site will use a
  * different template.
  *
- * Methods for PostMaster and WPHelper can be found in the /functions sub-directory
+ * To generate specific templates for your pages you can use:
+ * /mytheme/views/page-mypage.twig
+ * (which will still route through this PHP file)
+ * OR
+ * /mytheme/page-mypage.php
+ * (in which case you'll want to duplicate this file and save to the above path)
+ *
+ * Methods for WPHelper can be found in the /functions sub-directory
  *
  * @package 	WordPress
  * @subpackage 	Timber

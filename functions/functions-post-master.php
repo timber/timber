@@ -106,7 +106,7 @@
 
 
 		function get_posts_info($query, $extras = null){
-			if (is_array($query) && !PHPHelper::is_array_assoc($query)){
+			if (is_array($query) && !WPHelper::is_array_assoc($query)){
 				$results = $query;
 			} else {
 				$results = get_posts($query);

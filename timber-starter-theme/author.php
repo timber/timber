@@ -2,7 +2,7 @@
 /**
  * The template for displaying Author Archive pages
  *
- * Methods for PostMaster and WPHelper can be found in the /functions sub-directory
+ * Methods for WPHelper can be found in the /functions sub-directory
  *
  * @package 	WordPress
  * @subpackage 	Timber

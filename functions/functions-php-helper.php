@@ -1,9 +1,8 @@
 <?php
+/*
+ * THIS FILE IS DEPRECATED AND WILL BE REMOVED AT SOME POINT */
+
 	class PHPHelper {
-
-		function __construct(){
-
-		}
 
 		function is_array_assoc($arr){
 			if (!is_array($arr)){
