@@ -63,16 +63,17 @@ class Timber {
 	}
 
 	public function get_posts($query = false, $PostClass = 'TimberPost'){
-		
 		if (self::is_post_class_or_class_map($query)){
 			$PostClass = $query;
 			$query = false;
 		}
 
-		if (WPHelper::is_array_assoc($query) || is_string($query)){
+		if (WPHelper::is_array_assoc($query) || (is_string($query) && strstr($query, '='))) {
 			// we have a regularly formed WP query string or array to use
 			return self::get_posts_from_wp_query($query, $PostClass);
-
+		} else if (is_string($query) && !is_integer($query)){
+			// we have what could be a post name to pull out
+			return self::get_posts_from_slug($query, $PostClass);
 		} else if (is_array($query) && count($query) && (is_integer($query[0]) || is_string($query[0]))){
 			// we have a list of pids (post IDs) to extract from
 			return self::get_posts_from_array_of_ids($query, $PostClass);
@@ -90,7 +91,7 @@ class Timber {
 			return self::get_posts_from_wp_query(array(), $PostClass);
 
 		} else {
-			error_log('I have failed you! in timber.php::81');
+			error_log('I have failed you! in timber.php::94');
 			WPHelper::error_log($query);
 		}
 		return $query;
@@ -105,6 +106,18 @@ class Timber {
 
 	function get_posts_from_loop($PostClass){
 		$results = self::get_pids_from_loop();
+		return self::handle_post_results($results, $PostClass);
+	}
+
+	function get_posts_from_slug($slug, $PostClass){
+		global $wpdb;
+		$query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$slug'";
+		if (strstr($slug, '/')){
+			//we have a post_type directive here
+			$q = explode('/', $slug);
+			$query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$q[1]' AND post_type = '$q[0]'";
+		}
+		$results = $wpdb->get_col($query);
 		return self::handle_post_results($results, $PostClass);
 	}
 
