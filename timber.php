@@ -88,7 +88,9 @@ class Timber {
 
 		} else if (!$query){
 			//okay, everything failed lets just return some posts so that the user has something to work with
-			return self::get_posts_from_wp_query(array(), $PostClass);
+			//this turns out to cause all kinds of awful behavior
+			//return self::get_posts_from_wp_query(array(), $PostClass);
+			return null;
 
 		} else {
 			error_log('I have failed you! in timber.php::94');
