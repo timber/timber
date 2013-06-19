@@ -236,8 +236,13 @@
 		}
 
 		function get_comments($ct = -1, $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment'){
-			$args = array('post_id' => $this->ID, 'status' => $status, 'number' => $ct);
+
+			$args = array('post_id' => $this->ID, 'status' => $status);
+			if ($ct >= 0){
+				$args['number'] = $ct;
+			}
 			$comments = get_comments($args);
+			WPHelper::error_log($comments);
 			foreach($comments as &$comment){
 				$comment = new $CommentClass($comment);
 			}
