@@ -34,20 +34,6 @@
 			$this->import_info($pid);
 		}
 
-		function can_edit(){
-			if (isset($this->_can_edit)){
-				return $this->_can_edit;
-			}
-			$this->_can_edit = false;
-			if (!function_exists('current_user_can')){
-				return false;
-			}
-			if (current_user_can('edit_post', $this->ID)){
-				$this->_can_edit = true;
-  			}
-  			return $this->_can_edit;
- 		}
-
  		function get_edit_url(){
  			if ($this->can_edit()){
  				return '/wp-admin/post.php?post='.$this->ID.'&action=edit';
