@@ -13,6 +13,7 @@
 		*	@return a TimberPost object -- woo!
 		*/
 		function __construct($pid = null){
+			WPHelper::error_log(debug_backtrace());
 			if ($pid === null && have_posts()){
 				ob_start();
 				the_post();
@@ -23,7 +24,6 @@
 			if (is_numeric($pid)){
 				$this->ID = $pid;
 			}
-
 			$this->init($pid);
 			return $this;
 		}
@@ -219,30 +219,33 @@
 			return $post;
 		}
 
-		function get_display_date(){
-			return date(get_option('date_format'), strtotime($this->post_date));
+		function get_display_date($use = 'post_date'){
+			return date(get_option('date_format'), strtotime($this->$use));
 		}
 
-		function get_children(){
+		function get_children($post_type = 'any', $childPostClass = false){
+			if ($childPostClass == false){
+				$childPostClass = $this->PostClass;
+			}
 			if (isset($this->children)){
 				return $this->children;
 			}
-			$this->children = get_children('post_parent='.$this->ID.'&post_type='.$this->post_type);
+			if ($post_type == 'parent'){
+				$post_type = $this->post_type;
+			}
+			$this->children = get_children('post_parent='.$this->ID.'&post_type='.$post_type);
+			foreach($this->children as &$child){
+				$child = new $childPostClass($child->ID);
+			}
 			return $this->children;
 		}
 
-		function children(){
-			return $this->get_children();
-		}
-
-		function get_comments($ct = -1, $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment'){
-
+		function get_comments($ct = 0, $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment'){
 			$args = array('post_id' => $this->ID, 'status' => $status);
-			if ($ct >= 0){
+			if ($ct > 0){
 				$args['number'] = $ct;
 			}
 			$comments = get_comments($args);
-			WPHelper::error_log($comments);
 			foreach($comments as &$comment){
 				$comment = new $CommentClass($comment);
 			}
@@ -310,5 +313,10 @@
 		//This is for integration with Elliot Condon's wonderful ACF
 		function get_field($field_name){
 			return get_field($field_name, $this->ID);
+		}
+
+		//Deprecated
+		function children(){
+			return $this->get_children();
 		}
 	}
