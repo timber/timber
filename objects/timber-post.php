@@ -13,7 +13,6 @@
 		*	@return a TimberPost object -- woo!
 		*/
 		function __construct($pid = null){
-			WPHelper::error_log(debug_backtrace());
 			if ($pid === null && have_posts()){
 				ob_start();
 				the_post();
@@ -126,15 +125,36 @@
 			return $result->ID;
 		}
 
-		function get_preview(){
-			if (isset($this->post_content)){
-				$pos = strpos($this->post_content, '<!--more');
-				if ($pos > 0){
-					return trim(substr($this->post_content, 0, $pos));
-				} else if ($this->post_excerpt){
-					return $this->post_excerpt;
+		function get_preview($len = 50, $force = false, $readmore = 'Read More', $strip = true){
+			$text = '';
+			$trimmed = false;
+			if (isset($this->post_excerpt) && strlen($this->post_excerpt)){
+				if ($force){
+					$text = WPHelper::trim_words($this->post_excerpt, $len);
+					$trimmed = true;
+				} else {
+					$text = $this->post_excerpt;
 				}
 			}
+			if (!strlen($text)){
+				$text = WPHelper::trim_words($this->get_content(), $len, false);
+				$trimmed = true;
+			}
+			if (!strlen(trim($text))){
+				return $text;
+			}
+			if ($strip){
+				$text = trim(strip_tags($text));
+			}
+			if (strlen($text)){
+				$text = trim($text);
+				$last = $text[strlen($text)-1];
+				if ($last != '.' && $trimmed){
+					$text .= ' &hellip; ';
+				}
+				$text .= ' <a href="'.$this->get_path().'" class="read-more">'.$readmore.'</a>';
+			}
+			return $text;
 		}
 
 		/** 
