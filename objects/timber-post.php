@@ -27,6 +27,13 @@
 			return $this;
 		}
 
+		function init($pid = false){
+			if ($pid === false){
+				$pid = get_the_ID();
+			}
+			$this->import_info($pid);
+		}
+
 		function can_edit(){
 			if (isset($this->_can_edit)){
 				return $this->_can_edit;
@@ -45,17 +52,8 @@
  			if ($this->can_edit()){
  				return '/wp-admin/post.php?post='.$this->ID.'&action=edit';
  			} 
+ 			return false;
  		}
-
-		/*
-		*/
-		function init($pid = false){
-			if ($pid === false){
-				$pid = get_the_ID();
-			}
-			$this->import_info($pid);
-		}
-
 
 		/**
 		*	updates the post_meta of the current object with the given value
@@ -272,16 +270,30 @@
 			return $comments;
 		}
 
-		function terms($tax = ''){
-			if (strlen($tax)){
-				$terms = wp_get_post_terms($this->ID, $tax);
-				$ret = array();
-				foreach($terms as &$term){
-					$ret[] = new TimberTerm($term->term_id);
-				}
-				return $ret;
+		function get_terms($tax = '', $merge = true){
+			if (!strlen($tax) || $tax == 'all' || $tax == 'any'){
+				$taxs = get_object_taxonomies($this->post_type);
+			} else {
+				$taxs = array($tax);
 			}
-			return $this->terms || PostMaster::get_post_terms($this->ID);
+			$ret = array();
+			foreach($taxs as $tax){
+				if ($tax == 'tags' || $tax == 'tag'){
+					$tax = 'post_tag';
+				} else if ($tax == 'categories'){
+					$tax = 'category';
+				}
+				$terms = wp_get_post_terms($this->ID, $tax);
+				foreach($terms as &$term){
+					$term = new TimberTerm($term->term_id);
+				}
+				if ($merge){
+					$ret = array_merge($ret, $terms);
+				} else if (count($terms)){
+					$ret[$tax] = $terms;
+				}
+			}
+			return $ret;
 		}
 
 		function tags(){
@@ -338,5 +350,9 @@
 		//Deprecated
 		function children(){
 			return $this->get_children();
+		}
+
+		function terms($tax = ''){
+			return $this->get_terms($tax);
 		}
 	}
