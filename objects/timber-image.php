@@ -10,7 +10,9 @@
 			$this->init($iid);
 		}
 
-		function get_url(){
+		
+
+		function get_src(){
 			if (isset($this->abs_url)){
 				return $this->abs_url;
 			}
@@ -84,14 +86,8 @@
 			$this->abs_url = $url;
 		}
 
-		function can_edit(){
-			if (isset($this->_can_edit)){
-				return $_can_edit;
-			}
-			$this->_can_edit = false;
-			if (current_user_can('edit_post', $this->ID)){
-				$this->_can_edit = true;
-			}
-			return $this->_can_edit;
+		/* deprecated */
+		function get_url(){
+			return $this->get_src();
 		}
 	}
