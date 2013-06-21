@@ -36,7 +36,7 @@
 		$twig->addFilter('get_class', new Twig_Filter_Function('twig_get_class'));
 
 		$twig->addFilter('get_type', new Twig_Filter_Function('twig_get_type'));
-
+		$twig->addFilter('shortcodes', new Twig_Filter_Function('twig_shortcodes'));
 		$twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
 
 		$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
@@ -46,6 +46,11 @@
 
 		$twig = apply_filters('get_twig', $twig);
 		return $twig;
+	}
+
+	function twig_shortcodes($text){
+		return do_shortcode($text);
+		//apply_filters('the_content', ($text));
 	}
 
 	function twig_get_class($this){
