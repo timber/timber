@@ -4,14 +4,14 @@
 By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a href="http://upstatement.com">Upstatement</a> (<a href="http://twitter.com/upstatement">@Upstatement</a>)</div>  
 </div>
 
-### Looking for docs?
-* [Timber Reference](https://github.com/jarednova/timber/wiki/Timber-docs)
-* [Twig Reference](http://twig.sensiolabs.org/documentation)
-
-## Because WordPress is awesome, but the_loop isn't
+### Because WordPress is awesome, but the_loop isn't
 Timber helps you create fully-customized WordPress themes faster with more maintainable code. With Timber, you write your HTML using the [Twig Templating Engine](http://twig.sensiolabs.org/) separate from your PHP files. 
 
 This cleans-up your theme code so, for example, your single.php file can focus on being the controller for your WordPress model, while your single.twig file can focus 100% on the HTML and display.
+
+### Looking for docs?
+* [Timber Reference](https://github.com/jarednova/timber/wiki/Timber-docs)
+* [Twig Reference](http://twig.sensiolabs.org/documentation)
 
 ### What does it look like?
 Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https://github.com/viewportindustries/starkers) or [Boilerplate theme](https://github.com/zencoder/html5-boilerplate-for-wordpress) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
