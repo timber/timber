@@ -14,7 +14,7 @@ Once Timber is installed and activated in your plugin directory, it gives any Wo
 ### Looking for docs?
 * [Timber Documentation](https://github.com/jarednova/timber/wiki/)
 * [Twig Reference](http://twig.sensiolabs.org/documentation)
-* [Getting Started](https://github.com/jarednova/timber/wiki)
+* [Getting Started](https://github.com/jarednova/timber/wiki/getting-started)
 
 #### What does it look like?
 Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https://github.com/viewportindustries/starkers) or [Boilerplate theme](https://github.com/zencoder/html5-boilerplate-for-wordpress) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
