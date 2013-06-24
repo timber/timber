@@ -27,10 +27,12 @@ require_once(__DIR__.'/objects/timber-term.php');
 require_once(__DIR__.'/objects/timber-image.php');
 require_once(__DIR__.'/objects/timber-menu.php');
 
-$timber = str_replace(realpath($_SERVER['DOCUMENT_ROOT']), '', realpath(__DIR__));
-define("TIMBER", $timber);
+$timber_loc = str_replace(realpath($_SERVER['DOCUMENT_ROOT']), '', realpath(__DIR__));
+define("TIMBER", $timber_loc);
 define("TIMBER_URL", 'http://'.$_SERVER["HTTP_HOST"].TIMBER);
 define("TIMBER_LOC", realpath(__DIR__));
+
+
 
 /*
 
@@ -49,6 +51,12 @@ define("TIMBER_LOC", realpath(__DIR__));
 */
 	
 class Timber {
+
+	var $router;
+
+	function __construct(){
+		add_action('init', array(&$this, 'init_routes'));
+	}
 
 	public function get_post($query = false, $PostClass = 'TimberPost'){
 		if (is_int($query)){
@@ -101,9 +109,14 @@ class Timber {
 
 	// TODO: new interface for loop_to_ids
 	public function get_pids($query = false) {
-		if (!$query){
-			//no prob we should give it a default query;
+		$posts = get_posts($query);
+		$pids = array();
+		foreach($posts as $post){
+			if ($post->ID){
+				$pids[] = $post->ID;
+			}
 		}
+		return $pids;
 	}
 
 	function get_posts_from_loop($PostClass){
@@ -164,7 +177,7 @@ class Timber {
 		return $posts;
 	}
 
-	function get_sidebar($sidebar = '', $data = array()){
+	public function get_sidebar($sidebar = '', $data = array()){
 		if ($sidebar == ''){
 			$sidebar = 'sidebar.php';
 		}
@@ -178,11 +191,16 @@ class Timber {
 		$context = $data;
 		$uris = self::get_dirs();
 		ob_start();
+		$found = false;
 		foreach($uris as $uri){
-			if (file_exists($uri.$sidebar)){
-				include($uri.$sidebar);
+			if (file_exists(trailingslashit($uri).$sidebar)){
+				include(trailingslashit($uri).$sidebar);
+				$found = true;
 				break;
 			}
+		}
+		if (!$found){
+			error_log('error loading your sidebar, check to make sure the file exists');
 		}
 		$ret = ob_get_contents();
 		ob_end_clean();
@@ -265,9 +283,7 @@ class Timber {
 		$uris[] = self::get_calling_script_dir();
 		/* make sure all directories have trailing slash */
 		foreach($uris as &$uri){
-			if (substr($uri, -1) != '/'){
-				$uri .= '/';
-			}
+			$uri = trailingslashit($uri);
 		}
 		return $uris;
 	}
@@ -313,6 +329,39 @@ class Timber {
 			}
 		}
 		return false;
+	}
+
+	/* Routes 				*/
+	/* ==================== */
+
+	function init_routes(){
+		global $timber;
+		if (isset($timber)){
+			$route = $timber->router->matchCurrentRequest();
+			if ($route){
+				$callback = $route->getTarget();
+				$params = $route->getParameters();
+				$callback($params);
+			}
+		}
+	}
+
+	function add_route($route, $callback){
+		global $timber;
+		if (!isset($timber)){
+			require_once('router/Router.php');
+			require_once('router/Route.php');
+			$timber = new Timber();
+			$timber->router = new Router();
+			$timber->router->setBasePath('/');
+		} 
+		$timber->router->map($route, $callback);
+	}
+
+	function load_template($template){
+		header('HTTP/1.1 200 OK');
+		load_template(locate_template($template));
+		return;
 	}
 
 	// TODO: move into wp shortcut function
