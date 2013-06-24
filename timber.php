@@ -191,11 +191,16 @@ class Timber {
 		$context = $data;
 		$uris = self::get_dirs();
 		ob_start();
+		$found = false;
 		foreach($uris as $uri){
-			if (file_exists($uri.$sidebar)){
+			if (file_exists(trailingslashit($uri).$sidebar)){
 				include(trailingslashit($uri).$sidebar);
+				$found = true;
 				break;
 			}
+		}
+		if (!$found){
+			error_log('error loading your sidebar, check to make sure the file exists');
 		}
 		$ret = ob_get_contents();
 		ob_end_clean();
