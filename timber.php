@@ -27,10 +27,12 @@ require_once(__DIR__.'/objects/timber-term.php');
 require_once(__DIR__.'/objects/timber-image.php');
 require_once(__DIR__.'/objects/timber-menu.php');
 
-$timber = str_replace(realpath($_SERVER['DOCUMENT_ROOT']), '', realpath(__DIR__));
-define("TIMBER", $timber);
+$timber_loc = str_replace(realpath($_SERVER['DOCUMENT_ROOT']), '', realpath(__DIR__));
+define("TIMBER", $timber_loc);
 define("TIMBER_URL", 'http://'.$_SERVER["HTTP_HOST"].TIMBER);
 define("TIMBER_LOC", realpath(__DIR__));
+
+
 
 /*
 
@@ -49,6 +51,12 @@ define("TIMBER_LOC", realpath(__DIR__));
 */
 	
 class Timber {
+
+	var $router;
+
+	function __construct(){
+		add_action('init', array(&$this, 'init_routes'));
+	}
 
 	public function get_post($query = false, $PostClass = 'TimberPost'){
 		if (is_int($query)){
@@ -313,6 +321,36 @@ class Timber {
 			}
 		}
 		return false;
+	}
+
+	function init_routes(){
+		global $timber;
+		if (isset($timber->router)){
+			$timber->router->run();
+		}
+	}
+
+	function add_route($route, $function){
+		global $timber;
+		if (!isset($timber)){
+			$timber = new Timber();
+			add_action('404_template', function($temp){
+				return '';
+			});
+		} 
+		require_once __DIR__.'/vendor/autoload.php';
+		if (!isset($timber->router)){
+			$timber->router = new Silex\Application();
+		}
+		$timber->router->get($route, $function);
+
+	}
+
+	function get_template($template){
+		header('HTTP/1.1 200 OK');
+		wp_redirect(load_template(locate_template('home.php')));
+		
+		return;
 	}
 
 	// TODO: move into wp shortcut function
