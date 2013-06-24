@@ -1,2 +1,3 @@
 .sass-cache
 twig-cache/*
+.DS_Store
