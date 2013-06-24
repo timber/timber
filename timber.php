@@ -109,9 +109,14 @@ class Timber {
 
 	// TODO: new interface for loop_to_ids
 	public function get_pids($query = false) {
-		if (!$query){
-			//no prob we should give it a default query;
+		$posts = get_posts($query);
+		$pids = array();
+		foreach($posts as $post){
+			if ($post->ID){
+				$pids[] = $post->ID;
+			}
 		}
+		return $pids;
 	}
 
 	function get_posts_from_loop($PostClass){
@@ -172,7 +177,7 @@ class Timber {
 		return $posts;
 	}
 
-	function get_sidebar($sidebar = '', $data = array()){
+	public function get_sidebar($sidebar = '', $data = array()){
 		if ($sidebar == ''){
 			$sidebar = 'sidebar.php';
 		}
@@ -188,7 +193,7 @@ class Timber {
 		ob_start();
 		foreach($uris as $uri){
 			if (file_exists($uri.$sidebar)){
-				include($uri.$sidebar);
+				include(trailingslashit($uri).$sidebar);
 				break;
 			}
 		}
@@ -273,9 +278,7 @@ class Timber {
 		$uris[] = self::get_calling_script_dir();
 		/* make sure all directories have trailing slash */
 		foreach($uris as &$uri){
-			if (substr($uri, -1) != '/'){
-				$uri .= '/';
-			}
+			$uri = trailingslashit($uri);
 		}
 		return $uris;
 	}
@@ -323,33 +326,36 @@ class Timber {
 		return false;
 	}
 
-	
+	/* Routes 				*/
+	/* ==================== */
 
 	function init_routes(){
-		if (!class_exists('Flight')){
-			return;
+		global $timber;
+		if (isset($timber)){
+			$route = $timber->router->matchCurrentRequest();
+			if ($route){
+				$callback = $route->getTarget();
+				$params = $route->getParameters();
+				$callback($params);
+			}
 		}
-
-		Flight::map('notFound', function(){
-			require($_SERVER['DOCUMENT_ROOT'].'/index.php');
-			Flight::stop();
-		});
-		Flight::start();
 	}
 
-	function add_route($route, $function){
+	function add_route($route, $callback){
 		global $timber;
 		if (!isset($timber)){
+			require_once('router/Router.php');
+			require_once('router/Route.php');
 			$timber = new Timber();
+			$timber->router = new Router();
+			$timber->router->setBasePath('/');
 		} 
-		require_once('flight/Flight.php');
-		Flight::route($route, $function);
+		$timber->router->map($route, $callback);
 	}
 
 	function get_template($template){
 		header('HTTP/1.1 200 OK');
 		wp_redirect(load_template(locate_template('home.php')));
-		
 		return;
 	}
 
