@@ -333,6 +333,10 @@
 			return get_field($field_name, $this->ID);
 		}
 
+		function import_field($field_name){
+			$this->$field_name = $this->get_field($field_name);
+		}
+
 		//Deprecated
 		function children(){
 			return $this->get_children();
