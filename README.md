@@ -14,7 +14,7 @@ Once Timber is installed and activated in your plugin directory, it gives any Wo
 ### Looking for docs?
 * [Timber Documentation](https://github.com/jarednova/timber/wiki/)
 * [Twig Reference](http://twig.sensiolabs.org/documentation)
-* [Video Tutorials](https://github.com/jarednova/timber/wiki/Video-Tutorials)
+* **[Video Tutorials](https://github.com/jarednova/timber/wiki/Video-Tutorials)**
 * [Overview / Getting Started Guide](https://github.com/jarednova/timber/wiki/getting-started)
 
 #### What does it look like?
