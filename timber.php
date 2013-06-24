@@ -353,9 +353,9 @@ class Timber {
 		$timber->router->map($route, $callback);
 	}
 
-	function get_template($template){
+	function load_template($template){
 		header('HTTP/1.1 200 OK');
-		wp_redirect(load_template(locate_template('home.php')));
+		load_template(locate_template($template));
 		return;
 	}
 
