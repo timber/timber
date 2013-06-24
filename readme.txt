@@ -1,13 +1,15 @@
-<div style="text-align:center">
-<a href="http://jarednova.github.com/timber"><img src="https://github.com/jarednova/timber/blob/master/images/logo/timber-badge-large.jpg?raw=true" style="display:block; margin:auto;"/></a>
-<div>
-By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a href="http://upstatement.com">Upstatement</a> (<a href="http://twitter.com/upstatement">@Upstatement</a>)</div>  
-</div>
+=== Timber ===
+Contributors: jarednova
+Tags: template engine, templates, twig
+Requires at least: 3.5
+Tested up to: 3.5.2
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-### Because WordPress is awesome, but the_loop isn't
-Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](http://twig.sensiolabs.org/) separate from your PHP files. 
+Helps you create themes faster with more sustainable code. With Timber, you write your HTML using Twig Templates separate from PHP. 
 
-This cleans-up your theme code so, for example, your php file can focus on being the data, while your twig/html file can focus 100% on the HTML and display.
+== Description ==
+Timber cleans-up your theme code so, for example, your php file can focus on being the data, while your twig/html file can focus 100% on the HTML and display.
 
 Once Timber is installed and activated in your plugin directory, it gives any WordPress theme the ability to take advantage of the power of Twig and other Timber features.
 
@@ -23,14 +25,34 @@ Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https:
 #### Who is it good for?
 Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because not everyone knows the ins-and-outs of the_loop(), WordPress codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .twig files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
 
-#### Should I use it?
-Well, it's **free**! And it's GPL-licensed, so use in personal or commerical work. Just don't re-sell it.
+== Installation ==
 
-#### Upgrade Notes
-In May 2013 there was a major rewrite of Timber. Trust me, it's worth it. But if you're looking for the old [Parent Theme Timber](https://github.com/jarednova/timber/tree/theme) you can still find it on this [branch](https://github.com/jarednova/timber/tree/theme).
+This section describes how to install the plugin and get it working.
+
+e.g.
+
+1. Activate the plugin through the 'Plugins' menu in WordPress
+2. For an example, try modifying your home.php or index.php with something like this:
+
+```php
+$context = array();
+$context['message'] = 'Hello Timber!';
+Timber::render('welcome.twig', $context);
+```
+
+Then create a subdirectory called `views` in your theme folder. The make this file: `views/welcome.twig`
+```html
+{# welcome.twig #}
+<div class="welcome">
+	<h3>{{message}}</h3>
+</div>
+```
+
+That's Timber!
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jarednova/timber/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+== Frequently Asked Questions ==
 
+= Can it be used in an existing theme? =
 
-
+You bet! Watch these **[video tutorials](https://github.com/jarednova/timber/wiki/Video-Tutorials)** to see how.
