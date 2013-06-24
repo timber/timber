@@ -323,27 +323,27 @@ class Timber {
 		return false;
 	}
 
+	
+
 	function init_routes(){
-		global $timber;
-		if (isset($timber->router)){
-			$timber->router->run();
+		if (!class_exists('Flight')){
+			return;
 		}
+
+		Flight::map('notFound', function(){
+			require($_SERVER['DOCUMENT_ROOT'].'/index.php');
+			Flight::stop();
+		});
+		Flight::start();
 	}
 
 	function add_route($route, $function){
 		global $timber;
 		if (!isset($timber)){
 			$timber = new Timber();
-			add_action('404_template', function($temp){
-				return '';
-			});
 		} 
-		require_once __DIR__.'/vendor/autoload.php';
-		if (!isset($timber->router)){
-			$timber->router = new Silex\Application();
-		}
-		$timber->router->get($route, $function);
-
+		require_once('flight/Flight.php');
+		Flight::route($route, $function);
 	}
 
 	function get_template($template){
