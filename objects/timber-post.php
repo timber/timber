@@ -172,7 +172,7 @@
 			return get_permalink( $this->ID );
 		}
 
-		function get_path(){
+		function get_link(){
 			if (isset($this->path)){
 				return $this->path;
 			}
@@ -190,16 +190,20 @@
 			return new $this->PostClass($this->post_parent);
 		}
 
+		function get_author(){
+			if (isset($this->post_author)){
+				return new TimberUser($this->post_author); 
+			}
+			return false;
+		}
+
 		function get_info($pid){
 			global $wp_rewrite;
 			if (is_array($pid)){
 				//print_r(debug_backtrace());
 			}
 			$post = $this->prepare_post_info($pid);
-			if (!$post){
-				//print_r(debug_backtrace());
-				//print_r($post);
-			}
+			
 			if (!isset($post->post_title)){
 				return;
 			}
@@ -301,6 +305,11 @@
 			return $tags;
 		}
 
+		function get_title(){
+			$title = $this->post_title;
+			return apply_filters('the_title', $title);
+		}
+
 		function get_content($len = 0, $page = 0){
 			$content = $this->post_content;
 			if ($len){
@@ -344,5 +353,9 @@
 
 		function terms($tax = ''){
 			return $this->get_terms($tax);
+		}
+
+		function get_path(){
+			return $this->get_link();
 		}
 	}
