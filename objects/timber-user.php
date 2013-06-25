@@ -6,6 +6,11 @@
 			$this->init($uid);
 		}
 
+		public function get_link(){
+			$p = WPHelper::get_path_base();
+			return $p.'author/'.$this->slug();
+		}
+
 		function init($uid = false){
 			if (!$uid){
 				$uid = get_current_user_id();
@@ -49,8 +54,7 @@
 		}
 
 		function get_path(){
-			$p = WPHelper::get_path_base();
-			return $p.'author/'.$this->slug();
+			return $this->get_link();
 		}
 
 		function path(){
