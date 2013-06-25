@@ -1,7 +1,7 @@
 <article class="tease tease-{{post.post_type}}">
 	{% block content %}
 		<h2 class="h2"><a href="{{post.get_path}}">{{post.title}}</a></h2>
-		<p>{{post.post_content|wpautop|excerpt}}</p>
+		<p>{{post.get_preview}}</p>
 
 		{% if post.get_thumbnail %}
 			<img src="{{post.get_thumbnail.get_url}}" />

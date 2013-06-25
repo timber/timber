@@ -1,5 +1,8 @@
-{% include 'html-header.twig' %}    
-
+{% include 'html-header.twig' %}  
+{% block head %}
+{% endblock %}  
+</head>
+    <body {{body_classes|wp_body_class}}>
         <header class="header" data-source="base.twig">
             {% block header %}
             <div class="wrapper">

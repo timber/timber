@@ -7,8 +7,9 @@
 			<section class="article-content">
 				<h1 class="article-h1">{{post.post_title}}</h1>
 				
-				
-				{{post.post_content|raw|wpautop}}
+				<div class="article-body">
+					{{post.get_content}}
+				</div>
 			</section>
 
 		</article>
