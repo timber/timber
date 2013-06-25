@@ -27,6 +27,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 Well, it's **free**! And it's GPL-licensed, so use in personal or commerical work. Just don't re-sell it.
 
 #### Upgrade Notes
+Twig is no longer a submodule, just a part of the repo. If you have trouble pulling, just delete the `Twig` folder. Then you should be good.
 In May 2013 there was a major rewrite of Timber. Trust me, it's worth it. But if you're looking for the old [Parent Theme Timber](https://github.com/jarednova/timber/tree/theme) you can still find it on this [branch](https://github.com/jarednova/timber/tree/theme).
 
 
