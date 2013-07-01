@@ -361,7 +361,7 @@ class Timber {
 	function load_template($template){
 		header('HTTP/1.1 200 OK');
 		load_template(locate_template($template));
-		return;
+		die;
 	}
 
 	// TODO: move into wp shortcut function
