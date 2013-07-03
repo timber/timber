@@ -127,9 +127,9 @@ class Timber {
 	function get_posts_from_slug($slug, $PostClass){
 		global $wpdb;
 		$query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$slug'";
-		if (strstr($slug, '/')){
+		if (strstr($slug, '#')){
 			//we have a post_type directive here
-			$q = explode('/', $slug);
+			$q = explode('#', $slug);
 			$query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$q[1]' AND post_type = '$q[0]'";
 		}
 		$results = $wpdb->get_col($query);
