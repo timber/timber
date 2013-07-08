@@ -90,8 +90,9 @@ class TimberLoader {
 		//prioirty: user locations, caller, theme
 		$locs = array();
 		$locs = array_merge($locs, $this->get_locations_user());
-		$locs = array_merge($locs, $this->get_locations_caller());
+		$locs = array_merge($locs, $this->get_locations_caller($caller));
 		$locs = array_merge($locs, $this->get_locations_theme());
+		$locs = array_unique($locs);
 		return $locs;
 	}
 

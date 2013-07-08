@@ -71,6 +71,7 @@
 
 
 		function get_twig($loader){
+			
 			$loader_loc = TIMBER_LOC.'/Twig/lib/Twig/Autoloader.php';
 			require_once($loader_loc);
 			$reg = Twig_Autoloader::register();
@@ -340,30 +341,15 @@
 	}
 
 	//deprecated
-	function render_twig($filenames, $data = array(), $render = true){
-		$backtrace = debug_backtrace();
-
-		$dir = get_calling_script_dir($backtrace);
-		
-		if(!$data){
-			$data = array();
-		}
-		$uri = array();
-		$uri[] = get_stylesheet_directory();
-		$uri_parent = get_template_directory();
-
-		if ($uri[0] != $uri_parent){
-			$uri[] = $uri_parent;
-		}
-		$uri[] = $dir;
-		$twig = TimberTwig::get_twig($uri);
-		
-		$filename = twig_choose_template($filenames, $uri);
+	function render_twig($filenames, $data = array(), $echo = true){
+		$caller = Timber::get_calling_script_dir();
+		$loader = new TimberLoader($caller);
+		$file = $loader->choose_template($filenames);
 		$output = '';
-		if (strlen($filename)){
-			$output = $twig->render($filename, $data);
+		if (strlen($file)){
+			$output = $loader->render($file, $data);
 		}
-		if ($render){
+		if ($echo){
 			echo $output;
 		}
 		return $output;
