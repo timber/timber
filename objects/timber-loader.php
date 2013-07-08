@@ -62,6 +62,7 @@ class TimberLoader {
 				Timber::$locations = array(Timber::$locations);
 			}
 			foreach(Timber::$locations as $tloc){
+				$tloc = realpath($tloc);
 				if (is_dir($tloc)){
 					$locs[] = $tloc;
 				}
