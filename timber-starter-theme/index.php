@@ -20,6 +20,6 @@
 	$data = Timber::get_context();
 	$posts = Timber::get_posts('TimberPost');
 	$data['posts'] = $posts;
-	render_twig('index.twig', $data);
+	Timber::render('index.twig', $data);
 
 

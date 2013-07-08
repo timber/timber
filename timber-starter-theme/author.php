@@ -17,5 +17,5 @@
 	$data['author'] = $author;
 	$data['title'] = 'Author Archives: '.$author->name();
 
-	render_twig(array('author.twig', 'archive.twig'), $data);
+	Timber::render(array('author.twig', 'archive.twig'), $data);
 ?>
