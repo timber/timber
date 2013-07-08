@@ -38,4 +38,4 @@
 		
 		$data['posts'] = Timber::get_posts();
 		
-		render_twig($templates, $data);
+		Timber::render($templates, $data);
