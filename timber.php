@@ -119,6 +119,20 @@ class Timber {
 		return $pids;
 	}
 
+	/* Experimental */
+	public function get_pagination(){
+		global $wp_query;
+		$data = array();
+		$data['next'] = array('link' => next_posts(0, false));
+		$data['prev'] = array('link' => previous_posts(false));
+		$data['pages'] = ceil($wp_query->found_posts / $wp_query->query_vars['posts_per_page']);
+		$data['paged'] = 1;
+		if (isset($wp_query->query_vars['paged'])){
+			$data['paged'] = $wp_query->query_vars['paged'];
+		}
+		return $data;
+	}
+
 	function get_posts_from_loop($PostClass){
 		$results = self::get_pids_from_loop();
 		return self::handle_post_results($results, $PostClass);
@@ -240,7 +254,8 @@ class Timber {
 			$posts[] = get_the_ID();
 			$i++;
 		}
-		wp_reset_query();
+		//why is this here? seems to only cause pain.
+		//wp_reset_query();
 		ob_end_clean();
 		return $posts;
 	}
@@ -358,8 +373,12 @@ class Timber {
 		$timber->router->map($route, $callback);
 	}
 
-	function load_template($template){
+	function load_template($template, $query = false){
 		header('HTTP/1.1 200 OK');
+		if ($query){
+			global $wp_query;
+			$wp_query = new WP_Query($query);
+		}
 		load_template(locate_template($template));
 		die;
 	}
