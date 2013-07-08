@@ -168,7 +168,7 @@
 			return null;
 		}
 
-		function get_peramlink(){
+		function get_permalink(){
 			return get_permalink( $this->ID );
 		}
 
