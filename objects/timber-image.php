@@ -21,7 +21,7 @@
 			}
 			if (isset($this->file)){
 				$dir = wp_upload_dir();
-				return $dir["url"].'/'.$this->file;
+				return $dir["baseurl"].'/'.$this->file;
 			}
 			return false;
 		}
