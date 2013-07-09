@@ -8,7 +8,7 @@ Author URI: http://timber.upstatement.com/
 */
 
 global $wp_version;
-global $plugin_timber;
+global $timber;
 $exit_msg = 'Timber reqiures WordPress 3.0 or newer';
 if (version_compare($wp_version, '3.0', '<')){
 	exit ($exit_msg);
@@ -33,7 +33,6 @@ $timber_loc = str_replace(realpath($_SERVER['DOCUMENT_ROOT']), '', realpath(__DI
 define("TIMBER", $timber_loc);
 define("TIMBER_URL", 'http://'.$_SERVER["HTTP_HOST"].TIMBER);
 define("TIMBER_LOC", realpath(__DIR__));
-
 
 
 /*
@@ -349,7 +348,7 @@ class Timber {
 
 	function init_routes(){
 		global $timber;
-		if (isset($timber)){
+		if (isset($timber->router)){
 			$route = $timber->router->matchCurrentRequest();
 			if ($route){
 				$callback = $route->getTarget();
@@ -361,10 +360,9 @@ class Timber {
 
 	function add_route($route, $callback){
 		global $timber;
-		if (!isset($timber)){
+		if (!isset($timber->router)){
 			require_once('router/Router.php');
 			require_once('router/Route.php');
-			$timber = new Timber();
 			$timber->router = new Router();
 			$timber->router->setBasePath('/');
 		} 
@@ -399,3 +397,5 @@ class Timber {
 		return $ret;
 	}
 }
+
+$timber = new Timber();
