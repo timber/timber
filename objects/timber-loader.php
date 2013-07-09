@@ -123,7 +123,7 @@ class TimberLoader {
 		}
 		$twig = new Twig_Environment($loader, $params);
 		$twig->addExtension(new Twig_Extension_Debug());
-		$twig = apply_filters('get_twig', $twig);
+		$twig = apply_filters('twig_apply_filters', $twig);
 		return $twig;
 	}
 

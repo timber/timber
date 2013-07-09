@@ -3,7 +3,7 @@
 	class TimberTwig {
 
 		function __construct(){
-			add_action('get_twig', array($this, 'add_twig_filters'));
+			add_action('twig_apply_filters', array(&$this, 'add_twig_filters'));
 		}
 
 		function add_twig_filters($twig){
@@ -324,8 +324,6 @@
 		ob_end_clean();
 		return $return;
 	}
-
-	
 
 	function render_twig_string($string, $data = array()){
 		$loader = new Twig_Loader_String();
