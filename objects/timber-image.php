@@ -20,7 +20,8 @@
 				$this->file = $this->_wp_attached_file;
 			}
 			if (isset($this->file)){
-				return '/wp-content/uploads/'.$this->file;
+				$dir = wp_upload_dir();
+				return $dir["baseurl"].'/'.$this->file;
 			}
 			return false;
 		}
