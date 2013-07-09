@@ -1,51 +1,111 @@
 <?php 
 
-	function get_twig($uri){
-		$loader_loc = TIMBER_LOC.'/Twig/lib/Twig/Autoloader.php';
-		require_once($loader_loc);
-		$reg = Twig_Autoloader::register();
-		if (is_array($uri)){
-			$loaders = array();
-			foreach($uri as $u){
-				if (strlen(trim($u))){
-					$loaders[] = new Twig_Loader_Filesystem($u.'/views/');
+	class TimberTwig {
+
+		function __construct(){
+			add_action('get_twig', array($this, 'add_twig_filters'));
+		}
+
+		function add_twig_filters($twig){
+			$twig->addFilter('resize', new Twig_Filter_Function('wp_resize'));
+			$twig->addFilter('letterbox', new Twig_Filter_Function('wp_resize_letterbox'));
+			$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
+			$twig->addFilter('print_r', new Twig_Filter_Function('twig_print_r'));
+			$twig->addFilter('print_a', new Twig_Filter_Function('twig_print_a'));
+			$twig->addFilter('get_src_from_attachment_id', new Twig_Filter_Function('twig_get_src_from_attachment_id'));
+			$twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
+			$twig->addFilter('tojpg', new Twig_Filter_Function('twig_img_to_jpg'));
+			$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
+			$twig->addFilter('twitterify', new Twig_Filter_Function('twig_twitterify'));
+			$twig->addFilter('get_class', new Twig_Filter_Function('twig_get_class'));
+
+			$twig->addFilter('get_type', new Twig_Filter_Function('twig_get_type'));
+			$twig->addFilter('shortcodes', new Twig_Filter_Function('twig_shortcodes'));
+			$twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
+
+			$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
+			$twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
+			$twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
+			$twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
+			return $twig;
+		}
+
+		function add_dir_name_to_locations($locs){
+			$locs = array_filter($locs);
+			foreach($locs as &$loc){
+				$loc = trailingslashit($loc).trailingslashit(self::$dir_name);
+			}
+			return $locs;
+		}
+
+		function template_exists($file, $dirs){
+			if (is_string($dirs)){
+				$dirs = array($dirs);
+			}
+			foreach($dirs as $dir){
+				$look_for = trailingslashit($dir).trailingslashit(self::$dir_name).$file;
+				if (file_exists($look_for)){
+					return true;
 				}
 			}
-			$loader = new Twig_Loader_Chain($loaders);
-		} else {
-			$loader = new Twig_Loader_Filesystem($uri.'/views/');
+			return false;
 		}
-		$twig = new Twig_Environment($loader, array(
-    		/*'cache' => TIMBER_LOC.'/twig-cache',*/
-			'debug' => false,
-			'autoescape' => false
-		));
 
-		
-		$twig->addExtension(new Twig_Extension_Debug());
-		$twig->addFilter('resize', new Twig_Filter_Function('wp_resize'));
-		$twig->addFilter('letterbox', new Twig_Filter_Function('wp_resize_letterbox'));
-		$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
-		$twig->addFilter('print_r', new Twig_Filter_Function('twig_print_r'));
-		$twig->addFilter('print_a', new Twig_Filter_Function('twig_print_a'));
-		$twig->addFilter('get_src_from_attachment_id', new Twig_Filter_Function('twig_get_src_from_attachment_id'));
-		$twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
-		$twig->addFilter('tojpg', new Twig_Filter_Function('twig_img_to_jpg'));
-		$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
-		$twig->addFilter('twitterify', new Twig_Filter_Function('twig_twitterify'));
-		$twig->addFilter('get_class', new Twig_Filter_Function('twig_get_class'));
+		function twig_choose_template($filenames, $dirs){
+			if(is_array($filenames)){
+				/* its an array so we have to figure out which one the dev wants */
+				foreach($filenames as $filename){
+					if (self::template_exists($filename, $dirs)){
+						return $filename;
+					}
+				}
+				return false;
+			} else {
+				/* its a single, but we still need to figure out if it exists, default to index.html */
+				// if (!twig_template_exists($filenames, $dirs)){
+				// 	$filenames = 'index.html';
+				// }
+			}
+			return $filenames;
+		}
 
-		$twig->addFilter('get_type', new Twig_Filter_Function('twig_get_type'));
-		$twig->addFilter('shortcodes', new Twig_Filter_Function('twig_shortcodes'));
-		$twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
 
-		$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
-		$twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
-		$twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
-		$twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
+		function get_twig($loader){
+			
+			$loader_loc = TIMBER_LOC.'/Twig/lib/Twig/Autoloader.php';
+			require_once($loader_loc);
+			$reg = Twig_Autoloader::register();
+			
+			$params = array('debug' => false, 'autoescape' => false);
+			if (Timber::$cache){
+				$params['cache'] = TIMBER_LOC.'/twig-cache';
+			}
+			$twig = new Twig_Environment($loader, $params);
+			$twig->addExtension(new Twig_Extension_Debug());
+			$twig->addFilter('resize', new Twig_Filter_Function('wp_resize'));
+			$twig->addFilter('letterbox', new Twig_Filter_Function('wp_resize_letterbox'));
+			$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
+			$twig->addFilter('print_r', new Twig_Filter_Function('twig_print_r'));
+			$twig->addFilter('print_a', new Twig_Filter_Function('twig_print_a'));
+			$twig->addFilter('get_src_from_attachment_id', new Twig_Filter_Function('twig_get_src_from_attachment_id'));
+			$twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
+			$twig->addFilter('tojpg', new Twig_Filter_Function('twig_img_to_jpg'));
+			$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
+			$twig->addFilter('twitterify', new Twig_Filter_Function('twig_twitterify'));
+			$twig->addFilter('get_class', new Twig_Filter_Function('twig_get_class'));
 
-		$twig = apply_filters('get_twig', $twig);
-		return $twig;
+			$twig->addFilter('get_type', new Twig_Filter_Function('twig_get_type'));
+			$twig->addFilter('shortcodes', new Twig_Filter_Function('twig_shortcodes'));
+			$twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
+
+			$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
+			$twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
+			$twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
+			$twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
+
+			$twig = apply_filters('get_twig', $twig);
+			return $twig;
+		}
 	}
 
 	function twig_shortcodes($text){
@@ -265,36 +325,7 @@
 		return $return;
 	}
 
-	function twig_template_exists($file, $dirs){
-		if (is_string($dirs)){
-			$dirs = array($dirs);
-		}
-		foreach($dirs as $dir){
-			$look_for = $dir.'/views/'.$file;
-			if (file_exists($look_for)){
-				return true;
-			}
-		}
-		return false;
-	}
-
-	function twig_choose_template($filenames, $dirs){
-		if(is_array($filenames)){
-			/* its an array so we have to figure out which one the dev wants */
-			foreach($filenames as $filename){
-				if (twig_template_exists($filename, $dirs)){
-					return $filename;
-				}
-			}
-			return false;
-		} else {
-			/* its a single, but we still need to figure out if it exists, default to index.html */
-			// if (!twig_template_exists($filenames, $dirs)){
-			// 	$filenames = 'index.html';
-			// }
-		}
-		return $filenames;
-	}
+	
 
 	function render_twig_string($string, $data = array()){
 		$loader = new Twig_Loader_String();
@@ -310,30 +341,15 @@
 	}
 
 	//deprecated
-	function render_twig($filenames, $data = array(), $render = true){
-		$backtrace = debug_backtrace();
-
-		$dir = get_calling_script_dir($backtrace);
-		
-		if(!$data){
-			$data = array();
-		}
-		$uri = array();
-		$uri[] = get_stylesheet_directory();
-		$uri_parent = get_template_directory();
-
-		if ($uri[0] != $uri_parent){
-			$uri[] = $uri_parent;
-		}
-		$uri[] = $dir;
-		$twig = get_twig($uri);
-		
-		$filename = twig_choose_template($filenames, $uri);
+	function render_twig($filenames, $data = array(), $echo = true){
+		$caller = Timber::get_calling_script_dir();
+		$loader = new TimberLoader($caller);
+		$file = $loader->choose_template($filenames);
 		$output = '';
-		if (strlen($filename)){
-			$output = $twig->render($filename, $data);
+		if (strlen($file)){
+			$output = $loader->render($file, $data);
 		}
-		if ($render){
+		if ($echo){
 			echo $output;
 		}
 		return $output;
