@@ -21,7 +21,8 @@
 			}
 			if (isset($this->file)){
 				$dir = wp_upload_dir();
-				return $dir["baseurl"].'/'.$this->file;
+				$base = $this->url_to_path($dir["baseurl"]);
+				return trailingslashit($base).$this->file;
 			}
 			return false;
 		}
