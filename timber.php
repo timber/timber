@@ -322,6 +322,7 @@ class Timber {
 		$data['wp_title'] = get_bloginfo('name');
 		$data['wp_head'] = self::get_wp_head();
 		$data['wp_footer'] = self::get_wp_footer();
+		$data['body_class'] = implode(' ', get_body_class());
 		if (function_exists('wp_nav_menu')){
 			$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
 		}
