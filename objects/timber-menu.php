@@ -57,6 +57,18 @@
 			$this->import($data);
 		}
 
+		function get_link(){
+			return $this->get_path();
+		}
+
+		function name(){
+			return $this->post_title;
+		}
+
+		function slug(){
+			return $this->post_name;
+		}
+
 		function get_path(){
 			return $this->url_to_path($this->url);
 		}
