@@ -260,6 +260,18 @@
 			return $comments;
 		}
 
+		function get_categories(){
+			return $this->get_terms('category');
+		}
+
+		function get_category(){
+			$cats = $this->get_categories();
+			if (count($cats) && isset($cats[0])){
+				return $cats[0];
+			}
+			return null;
+		}
+
 		function get_terms($tax = '', $merge = true){
 			if (!strlen($tax) || $tax == 'all' || $tax == 'any'){
 				$taxs = get_object_taxonomies($this->post_type);
@@ -284,10 +296,6 @@
 				}
 			}
 			return $ret;
-		}
-
-		function tags(){
-			return $this->get_tags();
 		}
 
 		function get_image($field){
@@ -357,5 +365,9 @@
 
 		function get_path(){
 			return $this->get_link();
+		}
+
+		function tags(){
+			return $this->get_tags();
 		}
 	}

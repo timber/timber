@@ -27,6 +27,8 @@ require_once(__DIR__.'/objects/timber-term.php');
 require_once(__DIR__.'/objects/timber-image.php');
 require_once(__DIR__.'/objects/timber-menu.php');
 
+require_once(__DIR__.'/objects/timber-loader.php');
+
 $timber_loc = str_replace(realpath($_SERVER['DOCUMENT_ROOT']), '', realpath(__DIR__));
 define("TIMBER", $timber_loc);
 define("TIMBER_URL", 'http://'.$_SERVER["HTTP_HOST"].TIMBER);
@@ -52,9 +54,14 @@ define("TIMBER_LOC", realpath(__DIR__));
 	
 class Timber {
 
+	public static $locations;
+	public static $dirname = 'views';
+	public static $cache = false;
+
 	var $router;
 
 	function __construct(){
+		$timber_twig = new TimberTwig();
 		add_action('init', array(&$this, 'init_routes'));
 	}
 
@@ -148,9 +155,9 @@ class Timber {
 	function get_posts_from_slug($slug, $PostClass){
 		global $wpdb;
 		$query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$slug'";
-		if (strstr($slug, '/')){
+		if (strstr($slug, '#')){
 			//we have a post_type directive here
-			$q = explode('/', $slug);
+			$q = explode('#', $slug);
 			$query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$q[1]' AND post_type = '$q[0]'";
 		}
 		$results = $wpdb->get_col($query);
@@ -210,7 +217,7 @@ class Timber {
 
 	function get_sidebar_from_php($sidebar = '', $data){
 		$context = $data;
-		$uris = self::get_dirs();
+		$uris = TimberTwig::get_dirs();
 		ob_start();
 		$found = false;
 		foreach($uris as $uri){
@@ -294,30 +301,13 @@ class Timber {
 		return $dir;
 	}
 
-	function get_dirs(){
-		$uris = array();
-		$uris[] = get_stylesheet_directory();
-		$uri_parent = get_template_directory();
-
-		if ($uris[0] != $uri_parent){
-			$uris[] = $uri_parent;
-		}
-		$uris[] = self::get_calling_script_dir();
-		/* make sure all directories have trailing slash */
-		foreach($uris as &$uri){
-			$uri = trailingslashit($uri);
-		}
-		return $uris;
-	}
-
 	function render($filenames, $data = array(), $echo = true){
-		$uri = self::get_dirs();
-		$twig = get_twig($uri);
-		
-		$filename = twig_choose_template($filenames, $uri);
+		$caller = self::get_calling_script_dir();
+		$loader = new TimberLoader($caller);
+		$file = $loader->choose_template($filenames);
 		$output = '';
-		if (strlen($filename)){
-			$output = $twig->render($filename, $data);
+		if (strlen($file)){
+			$output = $loader->render($file, $data);
 		}
 		if ($echo){
 			echo $output;
