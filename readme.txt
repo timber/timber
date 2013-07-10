@@ -35,19 +35,19 @@ e.g.
 1. Activate the plugin through the 'Plugins' menu in WordPress
 2. For an example, try modifying your home.php or index.php with something like this:
 
-```php
+`
 $context = array();
 $context['message'] = 'Hello Timber!';
 Timber::render('welcome.twig', $context);
-```
+`
 
 Then create a subdirectory called `views` in your theme folder. The make this file: `views/welcome.twig`
-```html
+`
 {# welcome.twig #}
 <div class="welcome">
 	<h3>{{message}}</h3>
 </div>
-```
+`
 
 That's Timber!
 

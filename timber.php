@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: TimberFramework
-Description: The WordPress Timber Framework allows you to write themes using the power of MVT and Twig
+Plugin Name: Timber
+Description: The WordPress Timber Library allows you to write themes using the power Twig templates
 Author: Jared Novack + Upstatement
-Version: 0.8.1
+Version: 0.10.0
 Author URI: http://timber.upstatement.com/
 */
 
@@ -29,10 +29,9 @@ require_once(__DIR__.'/objects/timber-menu.php');
 
 require_once(__DIR__.'/objects/timber-loader.php');
 
-$timber_loc = str_replace(realpath($_SERVER['DOCUMENT_ROOT']), '', realpath(__DIR__));
-define("TIMBER", $timber_loc);
-define("TIMBER_URL", 'http://'.$_SERVER["HTTP_HOST"].TIMBER);
-define("TIMBER_LOC", realpath(__DIR__));
+require_once(__DIR__.'/admin/timber-admin.php');
+
+
 
 
 /*
@@ -60,6 +59,7 @@ class Timber {
 	var $router;
 
 	function __construct(){
+		$this->init_constants();
 		$timber_twig = new TimberTwig();
 		add_action('init', array(&$this, 'init_routes'));
 	}
@@ -341,6 +341,23 @@ class Timber {
 			}
 		}
 		return false;
+	}
+
+	function init_constants(){
+		$timber_loc = str_replace(realpath($_SERVER['DOCUMENT_ROOT']), '', realpath(__DIR__));
+		$plugin_url_path = str_replace($_SERVER['HTTP_HOST'], '', plugins_url());
+		$plugin_url_path = str_replace('https://', '', $plugin_url_path);
+		$plugin_url_path = str_replace('http://', '', $plugin_url_path);
+		
+		$timber_dirs = dirname(__FILE__);
+		$timber_dirs = explode('/', $timber_dirs);
+		$timber_dirname = array_pop($timber_dirs);
+
+		define("TIMBER", $timber_loc);
+		define("TIMBER_URL_PATH", trailingslashit($plugin_url_path).trailingslashit($timber_dirname));
+
+		define("TIMBER_URL", 'http://'.$_SERVER["HTTP_HOST"].TIMBER);
+		define("TIMBER_LOC", realpath(__DIR__));
 	}
 
 	/* Routes 				*/
