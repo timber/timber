@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="WordPress Unit Tests" default="build" basedir=".">
+	<target name="clean">
+		<delete dir="build" />
+	</target>
+	<target name="prepare">
+		<mkdir dir="build/logs" />
+		<mkdir dir="build/phpunitreport" />
+	</target>
+	<target name="phpunit">
+		<phpunit bootstrap="bootstrap.php" printsummary="true" haltonfailure="false">
+			<formatter todir="build/logs" type="xml" outfile="junit.xml" />
+			<batchtest>
+				<fileset dir=".">
+					<include name="test_*.php" />
+				</fileset>
+			</batchtest>
+		</phpunit>
+		<phpunitreport infile="build/logs/junit.xml" format="frames" todir="build/phpunitreport" />
+	</target>
+	<target name="build" depends="clean,prepare,phpunit" />
+</project>

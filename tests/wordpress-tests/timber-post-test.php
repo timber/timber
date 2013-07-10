@@ -1,8 +1,9 @@
 <?php
 	
-	require_once('../objects/timber-post.php');
+	require_once('../../timber.php');
 
-	class TimberPostTest extends PHPUnit_testCase {
+	class TimberPostTest extends WP_UnitTestCase {
+		/*
 		var $post;
 
 		function TimberPostTest($query){
@@ -22,5 +23,5 @@
 			$this->assertTrue(is_string($image->get_src));
 		}
 
-		
+		*/
 	}
