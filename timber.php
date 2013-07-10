@@ -382,6 +382,7 @@ class Timber {
 		add_action('wp_loaded', function($template){
 			if (isset($GLOBALS['timber_template'])){
 				load_template($GLOBALS['timber_template']);
+				die;
 			}
 		}, 10, 1);
 	}
