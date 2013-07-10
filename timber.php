@@ -370,14 +370,22 @@ class Timber {
 	}
 
 	function load_template($template, $query = false){
-		header('HTTP/1.1 200 OK');
 		if ($query){
 			global $wp_query;
 			$wp_query = new WP_Query($query);
 		}
-		load_template(locate_template($template));
-		die;
+		$template = locate_template($template);
+		$GLOBALS['timber_template'] = $template;
+		add_action('send_headers', function(){
+			header('HTTP/1.1 200 OK');
+		});
+		add_action('wp_loaded', function($template){
+			if (isset($GLOBALS['timber_template'])){
+				load_template($GLOBALS['timber_template']);
+			}
+		}, 10, 1);
 	}
+
 
 	// TODO: move into wp shortcut function
 	function get_wp_footer(){
@@ -399,3 +407,4 @@ class Timber {
 }
 
 $timber = new Timber();
+$GLOBALS['timber'] = $timber;
