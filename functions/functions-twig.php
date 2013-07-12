@@ -360,14 +360,6 @@
 		return $src;
 	}
 
-	function twig_print_r($arr){
-		return print_r($arr, true);
-	}
-
-	function twig_print_a($arr){
-		return '<pre>'.print_r($arr, true).'</pre>';
-	}
-
 	function twig_get_path($url){
 		$url = parse_url($url);
 		return $url['path'];
@@ -404,6 +396,14 @@
 			$product = '?????';
 		}
 		return $product;
+	}
+
+	function twig_print_r($arr){
+		return print_r($arr, true);
+	}
+
+	function twig_print_a($arr){
+		return '<pre>'.twig_object_docs($arr, true).'</pre>';
 	}
 
 	function twig_object_docs($obj){
@@ -450,8 +450,4 @@
     	imagejpeg($bg, '/'.$_SERVER['DOCUMENT_ROOT'].$output, 90);
     	imagedestroy($image);
     	return $output;
-	}
-	
-	function twig_resize_image($src, $w, $h = 0, $ratio = 0, $append = ''){
-		//return InkwellImage::get_photon($src, $w, $h, $ratio, $append);
 	}
