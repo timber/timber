@@ -12,6 +12,8 @@
 			$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
 			$twig->addFilter('print_r', new Twig_Filter_Function('twig_print_r'));
 			$twig->addFilter('print_a', new Twig_Filter_Function('twig_print_a'));
+			$twig->addFilter('docs', new Twig_Filter_function('twig_object_docs'));
+
 			$twig->addFilter('get_src_from_attachment_id', new Twig_Filter_Function('twig_get_src_from_attachment_id'));
 			$twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
 			$twig->addFilter('tojpg', new Twig_Filter_Function('twig_img_to_jpg'));
@@ -373,6 +375,29 @@
 
 	function twig_make_excerpt($text, $length = 55){
 		return wp_trim_words($text, $length);
+	}
+
+	function twig_object_docs($obj){
+		$reflector = new ReflectionClass($obj);
+		$methods = $reflector->getMethods();
+		$rets = array();
+		$rep = $reflector->getProperty('representation')->getValue();
+		foreach($methods as $method){
+			if ($method->isPublic()){
+				$comments = $method->getDocComment();
+				$comments = str_replace('/**', '', $comments);
+				//$comments = preg_replace('(\/)(\*)(\*)\r', '', $comments);
+				$info = new stdClass();
+				$info->comments = $comments;
+				$info->returns = $method->invoke();
+				if (strlen($comments) && !strstr($comments, '@nodoc')){
+					$rets[$rep.'.'.$method->name] = $comments;
+				}
+			}
+			//$rf = new ReflectionFunction($closure);
+			//return gettype($rf->getDocComment());
+		}
+		return '<pre>'.(print_r($rets, true)).'</pre>';
 	}
 
 	function twig_img_to_jpg($src){

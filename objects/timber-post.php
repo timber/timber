@@ -1,11 +1,14 @@
 <?php
-
+	/** 
+	* TimberPost is yr friend
+	*/
 	class TimberPost extends TimberCore {
 
 		var $ImageClass = 'TimberImage';
 		var $PostClass = 'TimberPost';
-
 		var $_can_edit;
+
+		public static $representation = 'post';
 
 		/**
 		*	If you send the contructor nothing it will try to figure out the current post id based on being inside The_Loop
@@ -46,6 +49,7 @@
 		*
 		*	@param string $field
 		*	@param mixed $value
+		*	@nodoc
 		*/
 		function update($field, $value){
 			if (isset($this->ID)) {
@@ -190,6 +194,11 @@
 			return new $this->PostClass($this->post_parent);
 		}
 
+		/**
+		*	## Gets a User object from the author of the post
+		*	<p class="byline">{{post.get_author.name}}</p>
+		*/
+
 		function get_author(){
 			if (isset($this->post_author)){
 				return new TimberUser($this->post_author); 
@@ -199,24 +208,13 @@
 
 		function get_info($pid){
 			global $wp_rewrite;
-			if (is_array($pid)){
-				//print_r(debug_backtrace());
-			}
 			$post = $this->prepare_post_info($pid);
-			
 			if (!isset($post->post_title)){
 				return;
 			}
-			$post->title = $post->post_title;
 			$post->slug = $post->post_name;
 			$post->display_date = date(get_option('date_format'), strtotime($post->post_date));
-
 			$this->import_custom($post->ID);
-			
-			if (isset($post->post_author)){
-				$post->author = new TimberUser($post->post_author); 
-			}
-			
 			$post->status = $post->post_status;	
 			if (!isset($wp_rewrite)){
 				return $post;
@@ -248,6 +246,12 @@
 			return $this->children;
 		}
 
+		/** 
+		*	{% for comment in post.get_comments %}
+		*		<p>{{comment.content}}</p>
+		*	{% endfor %}
+		*/
+
 		function get_comments($ct = 0, $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment'){
 			$args = array('post_id' => $this->ID, 'status' => $status);
 			if ($ct > 0){
@@ -259,6 +263,15 @@
 			}
 			return $comments;
 		}
+
+		/**
+		*	<ul class="categories">
+		*	{% for cateogry in post.get_categories %}
+		*		<li>{{category.name}}</li>
+		*	{% endfor %}
+		*	</ul>
+		*/
+
 
 		function get_categories(){
 			return $this->get_terms('category');
@@ -299,9 +312,17 @@
 		}
 
 		function get_image($field){
-			error_log('field='.$this->$field);
 			return new $ImageClass($this->$field);
 		}
+
+		/** 
+		*	## Gets an array of tags for you to use
+		*	<ul class="tags">
+		*	{% for tag in post.tags %}
+		*		<li>{{tag.name}}</li>
+		*	{% endfor %}
+		*	</ul>
+		*/
 
 		function get_tags(){
 			$tags = get_the_tags($this->ID);
@@ -313,10 +334,20 @@
 			return $tags;
 		}
 
+		/** 	
+		*	## Outputs the title with filters applied
+		*	<h1>{{post.get_title}}</h1>
+		*/
+
 		function get_title(){
 			$title = $this->post_title;
 			return apply_filters('the_title', $title);
 		}
+
+		/**
+		*	## Displays the content of the post with filters, shortcodes and wpautop applied
+		*	<div class="article-text">{{post.get_content}}</div>
+		*/
 
 		function get_content($len = 0, $page = 0){
 			$content = $this->post_content;
@@ -354,20 +385,47 @@
 			$this->$field_name = $this->get_field($field_name);
 		}
 
-		//Deprecated
+		//Aliases
+		function author(){
+			return $this->get_author();
+		}
+
+		function categories(){
+			return $this->get_terms('category');
+		}
+
+		function category(){
+			return $this->get_category();
+		}
+
 		function children(){
 			return $this->get_children();
+		}
+
+		function link(){
+			return $this->get_link();
+		}
+
+		function permalink(){
+			return $this->get_permalink();
 		}
 
 		function terms($tax = ''){
 			return $this->get_terms($tax);
 		}
 
+		function tags(){
+			return $this->get_tags();
+		}
+
+		function title(){
+			return $this->get_title();
+		}
+
+		//Deprecated
 		function get_path(){
 			return $this->get_link();
 		}
 
-		function tags(){
-			return $this->get_tags();
-		}
+		
 	}
