@@ -3,7 +3,7 @@
 	class TimberAdmin {
 
 		function __construct(){
-			if (!is_admin()){
+			if (!is_admin() || true){
 				return;
 			}
 			add_action( 'admin_menu', array(&$this, 'create_menu'));
