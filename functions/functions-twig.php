@@ -377,6 +377,35 @@
 		return wp_trim_words($text, $length);
 	}
 
+	function twig_invoke($method, $obj){
+		$product = '';
+		if (!$method->getNumberOfParameters()){
+			//zero parameters, easy street
+			$product = $method->invoke($obj);
+			//$product = $method->getName();
+		} else if ($method->getNumberOfRequiredParameters()){
+			//there are required parametres
+			$product = $method->getParameters();
+		} else if ($method->getNumberOfParameters()) {
+			//all params are optional
+			$pass = array(); 
+			foreach($method->getParameters() as $param) { 
+   				/* @var $param ReflectionParameter */ 
+   				if(isset($args[$param->getName()])) { 
+       				$pass[] = $args[$param->getName()]; 
+   				} else { 
+       				$pass[] = $param->getDefaultValue(); 
+   				} 
+			} 
+			$product = $pass;
+			//$product = $method->invokeArgs($obj, $pass);
+			//$product = $args;
+		} else {
+			$product = '?????';
+		}
+		return $product;
+	}
+
 	function twig_object_docs($obj){
 		$reflector = new ReflectionClass($obj);
 		$methods = $reflector->getMethods();
@@ -389,14 +418,20 @@
 				//$comments = preg_replace('(\/)(\*)(\*)\r', '', $comments);
 				$info = new stdClass();
 				$info->comments = $comments;
-				$info->returns = $method->invoke();
-				if (strlen($comments) && !strstr($comments, '@nodoc')){
-					$rets[$rep.'.'.$method->name] = $comments;
-				}
+				$info->returns = twig_invoke($method, $obj);
+				$info->params = $method->getParameters();
+				//if (strlen($comments) && !strstr($comments, '@nodoc')){
+					//$rets[$rep.'.'.$method->name] = $comments;
+					//$rets[$rep.'.'.$method->name] = $info->returns;
+					$rets[$method->name] = $info->returns;
+				//}
 			}
-			//$rf = new ReflectionFunction($closure);
-			//return gettype($rf->getDocComment());
 		}
+		foreach($obj as $key=>$value){
+			$rets[$key] = $value;
+		}
+		ksort($rets);
+
 		return '<pre>'.(print_r($rets, true)).'</pre>';
 	}
 

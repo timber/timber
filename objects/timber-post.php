@@ -104,14 +104,22 @@
 
 		/** 
 		*	get_post_id_by_name($post_name)
-		*
+		*	@nodoc
 		*/
+
 		function get_post_id_by_name($post_name){
 			global $wpdb;
 			$query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$post_name'";
 			$result = $wpdb->get_row($query);
 			return $result->ID;
 		}
+
+
+		/**
+		*	## get a preview of your post, if you have an excerpt it will use that,
+		*	## otherwise it will pull from the post_content
+		*	<p>{{post.get_preview(50)}}</p>	
+		*/
 
 		function get_preview($len = 50, $force = false, $readmore = 'Read More', $strip = true){
 			$text = '';
@@ -148,6 +156,7 @@
 		/** 
 		*	gets the post custom and attaches it to the current object
 		*	@param integer $pid a post ID number
+		*	@nodoc
 		*/
 		function import_custom($pid){
 			$customs = get_post_custom($pid);
@@ -161,6 +170,11 @@
 				}
 			}
 		}
+
+		/**
+		*	## get the featured image as a TimberImage
+		*	<img src="{{post.get_thumbnail.get_src}}" />
+		*/
 
 		function get_thumbnail(){
 			if (function_exists('get_post_thumbnail_id')){
@@ -284,6 +298,10 @@
 			}
 			return null;
 		}
+
+		/** # get terms is good
+		*
+		*/
 
 		function get_terms($tax = '', $merge = true){
 			if (!strlen($tax) || $tax == 'all' || $tax == 'any'){
