@@ -4,7 +4,7 @@
 
 		var $ImageClass = 'TimberImage';
 		var $PostClass = 'TimberPost';
-		var $_can_edit;
+		var $_can_edit; 
 
 		public static $representation = 'post';
 
@@ -35,6 +35,9 @@
 			$this->import_info($pid);
 		}
 
+		/**
+		*	Get the URL that will edit the current post/object
+		*/
  		function get_edit_url(){
  			if ($this->can_edit()){
  				return '/wp-admin/post.php?post='.$this->ID.'&action=edit';
