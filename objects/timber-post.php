@@ -1,7 +1,5 @@
 <?php
-	/** 
-	* TimberPost is yr friend
-	*/
+	
 	class TimberPost extends TimberCore {
 
 		var $ImageClass = 'TimberImage';
