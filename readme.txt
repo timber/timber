@@ -28,6 +28,15 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Installation ==
 
+== Changelog ==
+
+= 0.10.1 =
+* load_template for routing can now accept a query argument
+* load_template will wait to load a template so that 'init' actions can fire.
+* way more inline documentation
+* print_a now includes the output of (most) methods in addition to properites.
+* added lots of aliases so that things like .author will work the same as .get_author
+
 This section describes how to install the plugin and get it working.
 
 e.g.

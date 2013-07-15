@@ -371,25 +371,28 @@
 
 	function twig_invoke($method, $obj){
 		$product = '';
+		$totalParams = $method->getNumberOfParameters();
+		$reqParams = $method->getNumberOfRequiredParameters();
 		if (!$method->getNumberOfParameters()){
 			//zero parameters, easy street
 			$product = $method->invoke($obj);
 			//$product = $method->getName();
 		} else if ($method->getNumberOfRequiredParameters()){
 			//there are required parametres
-			$product = $method->getParameters();
-		} else if ($method->getNumberOfParameters()) {
+			//$product = $method->getName();
+		} else if ($totalParams && !$reqParams) {
 			//all params are optional
 			$pass = array(); 
-			foreach($method->getParameters() as $param) { 
-   				/* @var $param ReflectionParameter */ 
-   				if(isset($args[$param->getName()])) { 
-       				$pass[] = $args[$param->getName()]; 
-   				} else { 
-       				$pass[] = $param->getDefaultValue(); 
-   				} 
-			} 
 			$product = $pass;
+			if ($method->getName() == 'get_preview'){
+				$function = $method->getName();
+				// try {
+				// 	$product = $obj->$function();
+				// } catch($e){
+				// 	$product = 'error with '.$method->getName();
+				// }
+			}
+			
 			//$product = $method->invokeArgs($obj, $pass);
 			//$product = $args;
 		} else {

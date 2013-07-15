@@ -247,17 +247,15 @@
 			if ($childPostClass == false){
 				$childPostClass = $this->PostClass;
 			}
-			if (isset($this->children)){
-				return $this->children;
-			}
 			if ($post_type == 'parent'){
 				$post_type = $this->post_type;
 			}
-			$this->children = get_children('post_parent='.$this->ID.'&post_type='.$post_type);
-			foreach($this->children as &$child){
+			$children = get_children('post_parent='.$this->ID.'&post_type='.$post_type);
+			foreach($children as &$child){
 				$child = new $childPostClass($child->ID);
 			}
-			return $this->children;
+			$children = array_values($children);
+			return $children;
 		}
 
 		/** 

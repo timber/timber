@@ -3,7 +3,7 @@
 Plugin Name: Timber
 Description: The WordPress Timber Library allows you to write themes using the power Twig templates
 Author: Jared Novack + Upstatement
-Version: 0.10.0
+Version: 0.10.1
 Author URI: http://timber.upstatement.com/
 */
 
@@ -28,26 +28,19 @@ require_once(__DIR__.'/objects/timber-image.php');
 require_once(__DIR__.'/objects/timber-menu.php');
 
 require_once(__DIR__.'/objects/timber-loader.php');
-
-require_once(__DIR__.'/admin/timber-admin.php');
-
+//require_once(__DIR__.'/admin/timber-admin.php');
 
 
-
-/*
-
-	Usage:
-
-		$posts = Timber::get_posts();
-		$posts = Timber::get_posts('post_type = article')
-		$posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format
-		$posts = Timber::get_posts(array(23,24,35,67), 'InkwellArticle');
-
-		$context = Timber::get_context(); // returns wp favorites!
-
-		Timber::render('index.twig', $context);
-
-
+/** Usage:
+*
+*	$posts = Timber::get_posts();
+*	$posts = Timber::get_posts('post_type = article')
+*	$posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format
+*	$posts = Timber::get_posts(array(23,24,35,67), 'InkwellArticle');
+*
+*	$context = Timber::get_context(); // returns wp favorites!
+*
+*	Timber::render('index.twig', $context);
 */
 	
 class Timber {
@@ -322,6 +315,9 @@ class Timber {
 		$data['wp_head'] = self::get_wp_head();
 		$data['wp_footer'] = self::get_wp_footer();
 		$data['body_class'] = implode(' ', get_body_class());
+		$context['bloginfo'] = array();
+		$context['bloginfo']['name'] = get_bloginfo('name');
+		$context['bloginfo']['description'] = get_bloginfo('description');
 		if (function_exists('wp_nav_menu')){
 			$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
 		}
