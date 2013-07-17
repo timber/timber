@@ -419,6 +419,10 @@
 			return $this->get_children();
 		}
 
+		function content(){
+			return $this->get_content();
+		}
+
 		function link(){
 			return $this->get_link();
 		}

@@ -10,8 +10,6 @@
 			$this->init($iid);
 		}
 
-		
-
 		function get_src(){
 			if (isset($this->abs_url)){
 				return $this->abs_url;
@@ -90,6 +88,12 @@
 
 		/* deprecated */
 		function get_url(){
+			return $this->get_src();
+		}
+
+		/* Alias */
+
+		function src(){
 			return $this->get_src();
 		}
 	}
