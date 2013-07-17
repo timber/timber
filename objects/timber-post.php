@@ -439,6 +439,10 @@
 			return $this->get_tags();
 		}
 
+		function thumbnail(){
+			return $this->get_thumbnail();
+		}
+
 		function title(){
 			return $this->get_title();
 		}
