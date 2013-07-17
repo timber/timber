@@ -30,6 +30,10 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 0.10.2 =
+* added more aliases for easier coding (post.thumbnail instead of post.get_thumbnail, etc.)
+* Garbage removal
+
 = 0.10.1 =
 * load_template for routing can now accept a query argument
 * load_template will wait to load a template so that 'init' actions can fire.
