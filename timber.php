@@ -317,16 +317,16 @@ class Timber {
 		$data['wp_head'] = self::get_wp_head();
 		$data['wp_footer'] = self::get_wp_footer();
 		$data['body_class'] = implode(' ', get_body_class());
-		$context['bloginfo'] = array();
-		$context['bloginfo']['name'] = get_bloginfo('name');
-		$context['bloginfo']['description'] = get_bloginfo('description');
-		$context['bloginfo']['admin_email'] = get_bloginfo('admin_email');		
+		$data['bloginfo'] = array();
+		$data['bloginfo']['name'] = get_bloginfo('name');
+		$data['bloginfo']['description'] = get_bloginfo('description');
+		$data['bloginfo']['admin_email'] = get_bloginfo('admin_email');		
 		if (function_exists('wp_nav_menu')){
 			$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'primary' , 'echo' => false) );
 		}
+    	$data['language_attributes'] = WPHelper::ob_function('language_attributes');
 		return $data;
 	}
-
 
 	function is_post_class_or_class_map($arg){
 		if (is_string($arg) && class_exists($arg)){
