@@ -9,9 +9,9 @@
     		return (bool)count(array_filter(array_keys($arr), 'is_string'));
 		}
 
-		function ob_function($function, $args = null){
+		function ob_function($function, $args = array(null)){
 			ob_start();
-			call_user_func($function, $args);
+			call_user_func_array($function, $args);
 			//call_user_func($function);
 			$data = ob_get_contents();
 			ob_end_clean();
