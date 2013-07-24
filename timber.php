@@ -209,7 +209,9 @@ class Timber {
 
 	function get_sidebar_from_php($sidebar = '', $data){
 		$context = $data;
-		$uris = TimberTwig::get_dirs();
+		$caller = self::get_calling_script_dir();
+		$loader = new TimberLoader();
+		$uris = $loader->get_locations($caller);
 		ob_start();
 		$found = false;
 		foreach($uris as $uri){
