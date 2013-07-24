@@ -11,7 +11,8 @@
 
 		function ob_function($function, $args = null){
 			ob_start();
-			call_user_func($function);
+			call_user_func($function, $args);
+			//call_user_func($function);
 			$data = ob_get_contents();
 			ob_end_clean();
 			return $data;
