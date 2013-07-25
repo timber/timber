@@ -117,7 +117,7 @@ class TimberLoader {
 		$reg = Twig_Autoloader::register();
 		
 		$loader = $this->get_loader();
-		$params = array('debug' => false, 'autoescape' => false);
+		$params = array('debug' => WP_DEBUG, 'autoescape' => false);
 		if (Timber::$cache){
 			$params['cache'] = TIMBER_LOC.'/twig-cache';
 		}

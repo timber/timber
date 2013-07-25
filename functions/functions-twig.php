@@ -78,7 +78,7 @@
 			require_once($loader_loc);
 			$reg = Twig_Autoloader::register();
 			
-			$params = array('debug' => false, 'autoescape' => false);
+			$params = array('debug' => WP_DEBUG, 'autoescape' => false);
 			if (Timber::$cache){
 				$params['cache'] = TIMBER_LOC.'/twig-cache';
 			}
