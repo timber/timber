@@ -7,7 +7,7 @@ Tested up to: 3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Helps you create themes faster with more sustainable code. With Timber, you write your HTML using Twig Templates separate from PHP. Check out http://timber.upstatement.com for more info<a href="#">.</a>
+Helps you create themes faster with sustainable code. With Timber, you write HTML using Mustache-like Templates http://timber.upstatement.com
 
 == Description ==
 Timber cleans-up your theme code so, for example, your php file can focus on being the data, while your twig/html file can focus 100% on the HTML and display.
