@@ -1,67 +1,78 @@
 <?php
-	
-	class TimberUser extends TimberCore {
 
-		function __construct($uid = false){
-			$this->init($uid);
-		}
+class TimberUser extends TimberCore
+{
 
-		public function get_link(){
-			$p = WPHelper::get_path_base();
-			return $p.'author/'.$this->slug();
-		}
+  function __construct($uid = false)
+  {
+    $this->init($uid);
+  }
 
-		function init($uid = false){
-			if (!$uid){
-				$uid = get_current_user_id();
-			}
-			if (function_exists('get_userdata')){
-				$data = get_userdata($uid); 
-				if (is_object($data) && isset($data)){
-					$this->import($data->data);
-				}
-			}
+  public function get_link()
+  {
+    $p = WPHelper::get_path_base();
+    return $p . 'author/' . $this->slug();
+  }
 
-			$this->ID = $uid;
-			$this->import_custom();
-		}
+  function init($uid = false)
+  {
+    if (!$uid) {
+      $uid = get_current_user_id();
+    }
+    if (function_exists('get_userdata')) {
+      $data = get_userdata($uid);
+      if (is_object($data) && isset($data)) {
+        $this->import($data->data);
+      }
+    }
 
-		function get_custom(){
-			if ($this->ID){
-				$um = get_user_meta($this->ID);
-				$custom = new stdClass();
-				foreach($um as $key => $value){
-					$v = $value[0];
-					$custom->$key = $v;
-					if (is_serialized($v)){
-						if (gettype(unserialize($v)) == 'array'){
-							$custom->$key = unserialize($v);
-						}
-					}
-				}
-				return $custom;
-			}
-		}
+    $this->ID = $uid;
+    $this->import_custom();
+  }
 
-		function import_custom(){
-			$custom = $this->get_custom();
-			$this->import($custom);			
-		}
+  function get_custom()
+  {
+    if ($this->ID) {
+      $um = get_user_meta($this->ID);
+      $custom = new stdClass();
+      foreach ($um as $key => $value) {
+        $v = $value[0];
+        $custom->$key = $v;
+        if (is_serialized($v)) {
+          if (gettype(unserialize($v)) == 'array') {
+            $custom->$key = unserialize($v);
+          }
+        }
+      }
+      return $custom;
+    }
+    return null;
+  }
 
-		
-		function name(){
-			return $this->display_name;
-		}
+  function import_custom()
+  {
+    $custom = $this->get_custom();
+    $this->import($custom);
+  }
 
-		function get_path(){
-			return $this->get_link();
-		}
 
-		function path(){
-			return $this->get_path();
-		}
+  function name()
+  {
+    return $this->display_name;
+  }
 
-		function slug(){
-			return $this->user_nicename;
-		}
-	}
+  function get_path()
+  {
+    return $this->get_link();
+  }
+
+  function path()
+  {
+    return $this->get_path();
+  }
+
+  function slug()
+  {
+    return $this->user_nicename;
+  }
+}

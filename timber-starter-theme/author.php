@@ -4,18 +4,17 @@
  *
  * Methods for WPHelper can be found in the /functions sub-directory
  *
- * @package 	WordPress
- * @subpackage 	Timber
- * @since 		Timber 0.1
+ * @package  WordPress
+ * @subpackage  Timber
+ * @since    Timber 0.1
  */
-	global $wp_query;
+global $wp_query;
 
-	$data = Timber::get_context();
-	$data['posts'] = Timber::get_posts();
+$data = Timber::get_context();
+$data['posts'] = Timber::get_posts();
 
-	$author = new TimberUser($wp_query->query_vars['author']);
-	$data['author'] = $author;
-	$data['title'] = 'Author Archives: '.$author->name();
+$author = new TimberUser($wp_query->query_vars['author']);
+$data['author'] = $author;
+$data['title'] = 'Author Archives: ' . $author->name();
 
-	Timber::render(array('author.twig', 'archive.twig'), $data);
-?>
+Timber::render(array('author.twig', 'archive.twig'), $data);

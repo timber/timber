@@ -90,6 +90,11 @@ class Timber
 
   // TODO: new interface for loop_to_ids
 
+  /**
+   * @param mixed $query
+   * @param string $PostClass
+   * @return array|int|null
+   */
   public static function get_posts($query = false, $PostClass = 'TimberPost')
   {
     if (self::is_post_class_or_class_map($query)) {
@@ -403,7 +408,7 @@ class Timber
     }
   }
 
-  public function add_route($route, $callback)
+  public static function add_route($route, $callback)
   {
     global $timber;
     if (!isset($timber->router)) {
