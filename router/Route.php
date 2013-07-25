@@ -1,105 +1,116 @@
 <?php
 
-class Route {
-	
-	/**
-	* URL of this Route
-	* @var string
-	*/
-	private $url;
+class Route
+{
 
-	/**
-	* Accepted HTTP methods for this route
-	* @var array
-	*/
-	private $methods = array('GET','POST','PUT','DELETE');
+  /**
+   * URL of this Route
+   * @var string
+   */
+  private $url;
 
-	/**
-	* Target for this route, can be anything.
-	* @var mixed
-	*/
-	private $target;
+  /**
+   * Accepted HTTP methods for this route
+   * @var array
+   */
+  private $methods = array('GET', 'POST', 'PUT', 'DELETE');
 
-	/**
-	* The name of this route, used for reversed routing
-	* @var string
-	*/
-	private $name;
+  /**
+   * Target for this route, can be anything.
+   * @var mixed
+   */
+  private $target;
 
-	/**
-	* Custom parameter filters for this route
-	* @var array
-	*/
-	private $filters = array();
+  /**
+   * The name of this route, used for reversed routing
+   * @var string
+   */
+  private $name;
 
-	/**
-	* Array containing parameters passed through request URL
-	* @var array
-	*/
-	private $params = array();
+  /**
+   * Custom parameter filters for this route
+   * @var array
+   */
+  private $filters = array();
 
-	public function getUrl() {
-		return $this->url;
-	}
+  /**
+   * Array containing parameters passed through request URL
+   * @var array
+   */
+  private $parameters = array();
 
-	public function setUrl($url) {
-		$url = (string) $url;
+  public function getUrl()
+  {
+    return $this->url;
+  }
 
-		// make sure that the URL is suffixed with a forward slash
-		if(substr($url,-1) !== '/') $url .= '/';
-		
-		$this->url = $url;
-	}
+  public function setUrl($url)
+  {
+    $url = (string)$url;
 
-	public function getTarget() {
-		return $this->target;
-	}
+    // make sure that the URL is suffixed with a forward slash
+    if (substr($url, -1) !== '/') $url .= '/';
 
-	public function setTarget($target) {
-		$this->target = $target;
-	}
+    $this->url = $url;
+  }
 
-	public function getMethods() {
-		return $this->methods;
-	}
+  public function getTarget()
+  {
+    return $this->target;
+  }
 
-	public function setMethods(array $methods) {
-		$this->methods = $methods;
-	}
+  public function setTarget($target)
+  {
+    $this->target = $target;
+  }
 
-	public function getName() {
-		return $this->name;
-	}
+  public function getMethods()
+  {
+    return $this->methods;
+  }
 
-	public function setName($name) {
-		$this->name = (string) $name;
-	}
+  public function setMethods(array $methods)
+  {
+    $this->methods = $methods;
+  }
 
-	public function setFilters(array $filters) {
-		$this->filters = $filters;
-	}
+  public function getName()
+  {
+    return $this->name;
+  }
 
-	public function getRegex() {
-		return preg_replace_callback("/:(\w+)/", array(&$this, 'substituteFilter'), $this->url);
-	}
+  public function setName($name)
+  {
+    $this->name = (string)$name;
+  }
 
-	private function substituteFilter($matches) {
-		if (isset($matches[1]) && isset($this->filters[$matches[1]])) {
-        		return $this->filters[$matches[1]];
-        	}
-        
-        	return "([\w-]+)";
-	}
+  public function setFilters(array $filters)
+  {
+    $this->filters = $filters;
+  }
 
-	public function getParameters() {
-		return $this->parameters;
-	}
+  public function getRegex()
+  {
+    return preg_replace_callback("/:(\w+)/", array(&$this, 'substituteFilter'), $this->url);
+  }
 
-	public function setParameters(array $parameters) {
-		$this->parameters = $parameters;
-	}
+  private function substituteFilter($matches)
+  {
+    if (isset($matches[1]) && isset($this->filters[$matches[1]])) {
+      return $this->filters[$matches[1]];
+    }
 
+    return "([\w-]+)";
+  }
 
+  public function getParameters()
+  {
+    return $this->parameters;
+  }
 
+  public function setParameters(array $parameters)
+  {
+    $this->parameters = $parameters;
+  }
 
 }

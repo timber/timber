@@ -1,26 +1,29 @@
 <?php
-	
-	require_once('../objects/timber-post.php');
 
-	class TimberPostTest extends PHPUnit_testCase {
-		var $post;
+require_once('../objects/timber-post.php');
 
-		function TimberPostTest($query){
-			$this->PHPUnit_TestCase($query);
-		}
+class TimberPostTest extends PHPUnit_testCase
+{
+  var $post;
 
-		function setUp(){
-			$this->post = new TimberPost();
-		}
+  function TimberPostTest($query)
+  {
+    $this->PHPUnit_TestCase($query);
+  }
 
-		function tearDown(){
-			unset($this->post);
-		}
+  function setUp()
+  {
+    $this->post = new TimberPost();
+  }
 
-		function test_get_thumbnail(){
-			$image = $this->post->get_thumbnail();
-			$this->assertTrue(is_string($image->get_src));
-		}
+  function tearDown()
+  {
+    unset($this->post);
+  }
 
-		
-	}
+  function test_get_thumbnail()
+  {
+    $image = $this->post->get_thumbnail();
+    $this->assertTrue(is_string($image->get_src));
+  }
+}
