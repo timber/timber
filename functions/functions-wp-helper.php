@@ -388,6 +388,14 @@ class WPHelper
     return null;
   }
 
+  public static function get_image_path($iid)
+  {
+    $size = 'full';
+    $src = wp_get_attachment_image_src($iid, $size);
+    $src = $src[0];
+    return self::get_path($src);
+  }
+
   public static function array_truncate($array, $len)
   {
     if (sizeof($array) > $len) {

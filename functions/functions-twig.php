@@ -378,7 +378,7 @@ function render_twig($filenames, $data = array(), $echo = true)
 
 function twig_get_src_from_attachment_id($aid)
 {
-  return PostMaster::get_image_path($aid);
+  return WPHelper::get_image_path($aid);
 }
 
 function twig_get_path($url)
