@@ -224,6 +224,91 @@ class Timber {
     }
 
 
+    /* Term Retrieval
+    ================================ */
+
+    public static function get_terms($args, $TermClass = 'TimberTerm'){
+        if (is_string($args) && strstr($args, '=')){
+            //a string and a query string!
+            $parsed = self::get_term_query_from_query_string($args);
+            return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
+        } else if (is_string($args)){
+            $parsed = self::get_term_query_from_string($args);
+            return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
+        } else if (is_array($args) && WPHelper::is_array_assoc($args)){
+            //its an associative array, like a good ole query
+        } else if (is_array($args)){
+            //its just an array of strings (hopefully)
+        } else {
+            //no clue, what you talkin' bout?
+        }
+
+    }
+
+    public static function handle_term_query($taxonomies, $args, $TermClass){
+        $terms = get_terms($taxonomies, $args);
+        foreach($terms as &$term){
+            $term = new TimberTerm($term->term_id);
+        }
+        return $terms;
+    }
+
+    private static function get_term_query_from_query_string($query_string){
+        $ret = new stdClass();
+        $ret->args = array();
+        parse_str($query_string, $ret->args);
+        if (isset($ret->args['tax'])){
+            $ret->taxonomies = $ret->args['tax'];
+        } else if (isset($ret->args['taxonomies'])){
+            $ret->taxonomies = $ret->args['taxonomies'];
+        } else if (isset($ret->args['taxs'])){
+            $ret->taxonomies = $ret->args['taxs'];
+        } else if (isset($ret->args['taxonomy'])){
+            $ret->taxonomies = $ret->args['taxonomy'];
+        }
+        if (isset($ret->taxonomies)){
+            $ret->taxonomies = array($ret->taxonomies);
+            $ret->taxonomies = self::correct_taxonomy_names($ret->taxonomies);
+        }
+
+        return $ret;
+    }
+
+    private static function correct_taxonomy_names($taxs){
+        if (is_string($taxs)){
+            $taxs = array($taxs);
+        }
+        foreach($taxs as &$tax){
+            if ($tax == 'tags' || $tax == 'tag'){
+                $tax = 'post_tag';
+            } else if ($tax == 'categories'){
+                $tax = 'category';
+            }
+        }
+        return $taxs;
+    }
+
+    private static function get_term_query_from_string($taxs){
+        $ret = new stdClass();
+        $ret->args = array();
+        if (is_string($taxs)){
+            $taxs = array($taxs);
+        }
+        $ret->taxonomies = self::correct_taxonomy_names($taxs);
+        return $ret;
+    }
+
+    private static function get_term_query_from_assoc_array($query_string){
+
+    }
+
+    
+
+    private static function get_term_query_from_array_of_strings(){
+
+    }
+
+
     /*  Template Setup and Display
     ================================ */
 
