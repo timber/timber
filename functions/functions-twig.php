@@ -41,6 +41,9 @@ class TimberTwig
     $twig->addFunction('bloginfo', new Twig_SimpleFunction('bloginfo', function($show = '', $filter = 'raw'){
       return get_bloginfo($show, $filter);
     }));
+    $twig->addFunction('__', new Twig_SimpleFunction('__', function($text, $domain = 'default'){
+      return __($text, $domain);
+    }));
 
     return $twig;
   }
