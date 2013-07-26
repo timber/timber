@@ -455,6 +455,10 @@ class TimberPost extends TimberCore
     return $this->get_children();
   }
 
+  function comments(){
+    return $this->get_comments();
+  }
+
   function content()
   {
     return $this->get_content();
