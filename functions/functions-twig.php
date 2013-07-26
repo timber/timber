@@ -27,13 +27,22 @@ class TimberTwig
     $twig->addFilter('get_type', new Twig_Filter_Function('twig_get_type'));
     $twig->addFilter('shortcodes', new Twig_Filter_Function('twig_shortcodes'));
     $twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
-
+    $twig->addFilter('pretags', new Twig_Filter_Function(array(&$this, 'twig_pretags')));
     $twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
     $twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
     $twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
     $twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
+
     return $twig;
   }
+
+  function twig_pretags( $content ) {
+    return preg_replace_callback( '|<pre.*>(.*)</pre|isU' , array(&$this, 'convert_pre_entities'), $content );
+  }
+function convert_pre_entities( $matches ) {
+    return str_replace( $matches[1], htmlentities( $matches[1] ), $matches[0] );
+  }
+
 
   function add_dir_name_to_locations($locs)
   {
@@ -381,6 +390,8 @@ function twig_get_src_from_attachment_id($aid)
   return WPHelper::get_image_path($aid);
 }
 
+
+
 function twig_get_path($url)
 {
   $url = parse_url($url);
@@ -437,6 +448,9 @@ function twig_print_a($arr)
 
 function twig_object_docs($obj)
 {
+  if (!class_exists(get_class($obj))){
+    return false;
+  }
   $reflector = new ReflectionClass($obj);
   $methods = $reflector->getMethods();
   $rets = array();
@@ -468,17 +482,29 @@ function twig_object_docs($obj)
 function twig_img_to_jpg($src)
 {
   $output = str_replace('.png', '.jpg', $src);
-  if (file_exists($_SERVER['DOCUMENT_ROOT'] . $output)) {
+  $oldpath = $_SERVER['DOCUMENT_ROOT'] . $src;
+  $newpath = $_SERVER['DOCUMENT_ROOT'] . $output;
+  if (file_exists($newpath)) {
     return $output;
   }
-  $image = imagecreatefrompng($_SERVER['DOCUMENT_ROOT'] . $src);
-  $w = imagesx($image);
-  $h = imagesy($image);
-  $bg = imagecreatetruecolor($w, $h);
-  imagefill($bg, 0, 0, imagecolorallocate($bg, 255, 255, 255));
-  imagealphablending($bg, TRUE);
-  imagecopy($bg, $image, 0, 0, 0, 0, $w, $h);
-  imagejpeg($bg, '/' . $_SERVER['DOCUMENT_ROOT'] . $output, 90);
-  imagedestroy($image);
+  //make it!
+  $image = wp_get_image_editor($oldpath);
+  if (!is_wp_error($image)){
+    $image->save($newpath);
+    return $output;
+  }
+  return $src;
+
+  // $image = imagecreatefrompng($_SERVER['DOCUMENT_ROOT'] . $src);
+  // $w = imagesx($image);
+  // $h = imagesy($image);
+  // $bg = imagecreatetruecolor($w, $h);
+  // imagefill($bg, 0, 0, imagecolorallocate($bg, 255, 255, 255));
+  // imagealphablending($bg, TRUE);
+  // imagecopy($bg, $image, 0, 0, 0, 0, $w, $h);
+  // imagejpeg($bg, '/' . $_SERVER['DOCUMENT_ROOT'] . $output, 90);
+  // imagedestroy($image);
   return $output;
 }
+
+new TimberTwig();
