@@ -239,6 +239,7 @@ class Timber {
         }
         $data['theme_dir'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', get_stylesheet_directory());
         $data['language_attributes'] = WPHelper::ob_function('language_attributes');
+        $data['stylesheet_uri'] = get_stylesheet_uri();
         return $data;
     }
 
