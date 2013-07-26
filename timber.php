@@ -376,19 +376,19 @@ class Timber {
         $backtrace = debug_backtrace();
         $i = 0;
         foreach ($backtrace as $trace) {
-          if ($trace['file'] != __FILE__) {
-            $caller = $trace['file'];
-            break;
-          }
-          $i++;
+            if ($trace['file'] != __FILE__) {
+                $caller = $trace['file'];
+                break;
+            }
+            $i++;
         }
         if ($offset){
-          $caller = $backtrace[$i + $offset]['file'];
+            $caller = $backtrace[$i + $offset]['file'];
         }
         if ($caller !== null) {
-          $pathinfo = pathinfo($caller);
-          $dir = $pathinfo['dirname'];
-          return $dir;
+            $pathinfo = pathinfo($caller);
+            $dir = $pathinfo['dirname'];
+            return $dir;
         }
         return null;
     }
