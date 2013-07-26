@@ -106,6 +106,10 @@ class TimberTerm extends TimberCore
     return $p . $this->get_url();
   }
 
+  function get_link(){
+    return $this->get_path();
+  }
+
   function get_url()
   {
     $base = $this->taxonomy;
@@ -115,8 +119,7 @@ class TimberTerm extends TimberCore
     return $base . '/' . $this->slug;
   }
 
-  function get_posts($numberposts = 10, $post_type = 'any', $PostClass = '')
-  {
+  function get_posts($numberposts = 10, $post_type = 'any', $PostClass = '') {
     if (!strlen($PostClass)) {
       $PostClass = $this->PostClass;
     }
@@ -130,6 +133,17 @@ class TimberTerm extends TimberCore
       'post_type' => $post_type
     );
     return Timber::get_posts($args, $PostClass);
+  }
+
+  /* Alias 
+  ====================== */
+
+  public function url(){
+    return $this->get_url();
+  }
+
+  public function link(){
+    return $this->get_link();
   }
 
 }
