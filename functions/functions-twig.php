@@ -34,6 +34,10 @@ class TimberTwig
     $twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
     $twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
 
+    $twig->addFunction(new Twig_SimpleFunction('bloginfo', function($show = '', $filter = 'raw'){
+      return get_bloginfo($show, $filter);
+    }));
+
     return $twig;
   }
 
