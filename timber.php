@@ -237,6 +237,8 @@ class Timber {
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else if (is_array($args) && WPHelper::is_array_assoc($args)){
             //its an associative array, like a good ole query
+            $parsed = self::get_term_query_from_assoc_array($args);
+            return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else if (is_array($args)){
             //its just an array of strings (hopefully)
         } else {
@@ -254,23 +256,9 @@ class Timber {
     }
 
     private static function get_term_query_from_query_string($query_string){
-        $ret = new stdClass();
-        $ret->args = array();
-        parse_str($query_string, $ret->args);
-        if (isset($ret->args['tax'])){
-            $ret->taxonomies = $ret->args['tax'];
-        } else if (isset($ret->args['taxonomies'])){
-            $ret->taxonomies = $ret->args['taxonomies'];
-        } else if (isset($ret->args['taxs'])){
-            $ret->taxonomies = $ret->args['taxs'];
-        } else if (isset($ret->args['taxonomy'])){
-            $ret->taxonomies = $ret->args['taxonomy'];
-        }
-        if (isset($ret->taxonomies)){
-            $ret->taxonomies = array($ret->taxonomies);
-            $ret->taxonomies = self::correct_taxonomy_names($ret->taxonomies);
-        }
-
+        $args = array();
+        parse_str($query_string, $args);
+        $ret = self::get_term_query_from_assoc_array($args);
         return $ret;
     }
 
@@ -298,8 +286,25 @@ class Timber {
         return $ret;
     }
 
-    private static function get_term_query_from_assoc_array($query_string){
-
+    private static function get_term_query_from_assoc_array($args){
+        $ret = new stdClass();
+        $ret->args = $args;
+        if (isset($ret->args['tax'])){
+            $ret->taxonomies = $ret->args['tax'];
+        } else if (isset($ret->args['taxonomies'])){
+            $ret->taxonomies = $ret->args['taxonomies'];
+        } else if (isset($ret->args['taxs'])){
+            $ret->taxonomies = $ret->args['taxs'];
+        } else if (isset($ret->args['taxonomy'])){
+            $ret->taxonomies = $ret->args['taxonomy'];
+        }
+        if (isset($ret->taxonomies)){
+            if (is_string($ret->taxonomies)){
+                $ret->taxonomies = array($ret->taxonomies);
+            }
+            $ret->taxonomies = self::correct_taxonomy_names($ret->taxonomies);
+        }
+        return $ret;
     }
 
     
