@@ -114,7 +114,6 @@ class WPHelper
 
   public static function sideload_image($file)
   {
-    error_log('sideload_image');
     require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/includes/file.php');
     require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/includes/media.php');
     if (empty($file)) {
@@ -123,10 +122,6 @@ class WPHelper
     }
     // Download file to temp location
     $tmp = download_url($file);
-
-    error_log('about to do preg match');
-    // Set variables for storage
-    // fix file filename for query strings
     preg_match('/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches);
     $file_array['name'] = basename($matches[0]);
     $file_array['tmp_name'] = $tmp;

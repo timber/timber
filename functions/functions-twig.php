@@ -23,6 +23,7 @@ class TimberTwig
     $twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
     $twig->addFilter('twitterify', new Twig_Filter_Function('twig_twitterify'));
     $twig->addFilter('get_class', new Twig_Filter_Function('twig_get_class'));
+    $twig->addFilter('function', new Twig_Filter_Function(array(&$this, 'exec_function')));
 
     $twig->addFilter('get_type', new Twig_Filter_Function('twig_get_type'));
     $twig->addFilter('shortcodes', new Twig_Filter_Function('twig_shortcodes'));
@@ -34,6 +35,10 @@ class TimberTwig
     $twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
 
     return $twig;
+  }
+
+  function exec_function($function_name){
+  	return call_user_func(trim($function_name));
   }
 
   function twig_pretags( $content ) {
@@ -494,17 +499,6 @@ function twig_img_to_jpg($src)
     return $output;
   }
   return $src;
-
-  // $image = imagecreatefrompng($_SERVER['DOCUMENT_ROOT'] . $src);
-  // $w = imagesx($image);
-  // $h = imagesy($image);
-  // $bg = imagecreatetruecolor($w, $h);
-  // imagefill($bg, 0, 0, imagecolorallocate($bg, 255, 255, 255));
-  // imagealphablending($bg, TRUE);
-  // imagecopy($bg, $image, 0, 0, 0, 0, $w, $h);
-  // imagejpeg($bg, '/' . $_SERVER['DOCUMENT_ROOT'] . $output, 90);
-  // imagedestroy($image);
-  return $output;
 }
 
 new TimberTwig();
