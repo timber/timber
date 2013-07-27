@@ -12,6 +12,10 @@ class TimberImage extends TimberCore
     $this->init($iid);
   }
 
+  function __toString(){
+    return $this->get_src();
+  }
+
   function get_src()
   {
     if (isset($this->abs_url)) {
