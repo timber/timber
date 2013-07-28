@@ -1,18 +1,20 @@
 <?php
 
-class TimberTerm extends TimberCore
-{
+class TimberTerm extends TimberCore {
 
-  var $taxonomy;
-  var $PostClass;
+    var $taxonomy;
+    var $PostClass;
 
-  function __construct($tid = null)
-  {
-    if ($tid === null) {
-      $tid = $this->get_term_from_query();
+    function __construct($tid = null) {
+        if ($tid === null) {
+            $tid = $this->get_term_from_query();
+        }
+        $this->init($tid);
     }
-    $this->init($tid);
-  }
+
+    function __toString(){
+        return $this->name;
+    }
 
   function get_term_from_query()
   {

@@ -274,7 +274,7 @@ class Timber {
         $data['bloginfo']['description'] = get_bloginfo('description');
         $data['bloginfo']['admin_email'] = get_bloginfo('admin_email');
         if (function_exists('wp_nav_menu')) {
-            $data['wp_nav_menu'] = wp_nav_menu(array('container_class' => 'menu-header', 'theme_location' => 'primary', 'echo' => false));
+            $data['wp_nav_menu'] = wp_nav_menu(array('container_class' => 'menu-header', 'theme_location' => 'primary', 'echo' => false, 'menu_class' => 'nav-menu'));
         }
         $data['theme_dir'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', get_stylesheet_directory());
         $data['language_attributes'] = WPHelper::ob_function('language_attributes');
@@ -326,6 +326,7 @@ class Timber {
             error_log('error loading your sidebar, check to make sure the file exists');
         }
         $ret = ob_get_contents();
+        error_log($ret);
         ob_end_clean();
         return $ret;
     }
