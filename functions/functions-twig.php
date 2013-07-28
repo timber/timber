@@ -8,6 +8,10 @@ class TimberTwig
     add_action('twig_apply_filters', array(&$this, 'add_twig_filters'));
   }
 
+  /**
+   * @param Twig_Environment $twig
+   * @return Twig_Environment
+   */
   function add_twig_filters($twig)
   {
     $twig->addFilter('resize', new Twig_Filter_Function('wp_resize'));
@@ -33,6 +37,13 @@ class TimberTwig
     $twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
     $twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
     $twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
+
+    $twig->addFunction('bloginfo', new Twig_SimpleFunction('bloginfo', function($show = '', $filter = 'raw'){
+      return get_bloginfo($show, $filter);
+    }));
+    $twig->addFunction('__', new Twig_SimpleFunction('__', function($text, $domain = 'default'){
+      return __($text, $domain);
+    }));
 
     return $twig;
   }
