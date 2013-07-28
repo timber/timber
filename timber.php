@@ -269,15 +269,12 @@ class Timber {
         $data['wp_head'] = WPHelper::ob_function('wp_head');
         $data['wp_footer'] = WPHelper::ob_function('wp_footer');
         $data['body_class'] = implode(' ', get_body_class());
-        $data['bloginfo'] = array();
-        $data['bloginfo']['name'] = get_bloginfo('name');
-        $data['bloginfo']['description'] = get_bloginfo('description');
-        $data['bloginfo']['admin_email'] = get_bloginfo('admin_email');
         if (function_exists('wp_nav_menu')) {
             $data['wp_nav_menu'] = wp_nav_menu(array('container_class' => 'menu-header', 'theme_location' => 'primary', 'echo' => false, 'menu_class' => 'nav-menu'));
         }
         $data['theme_dir'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', get_stylesheet_directory());
         $data['language_attributes'] = WPHelper::ob_function('language_attributes');
+        $data['stylesheet_uri'] = get_stylesheet_uri();
         return $data;
     }
 
