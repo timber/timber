@@ -12,8 +12,7 @@
 /**
  * Loads template from the filesystem.
  *
- * @package    twig
- * @author     Fabien Potencier <fabien@symfony.com>
+ * @author Fabien Potencier <fabien@symfony.com>
  */
 class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderInterface
 {
@@ -25,9 +24,11 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
      *
      * @param string|array $paths A path or an array of paths where to look for templates
      */
-    public function __construct($paths)
+    public function __construct($paths = array())
     {
-        $this->setPaths($paths);
+        if ($paths) {
+            $this->setPaths($paths);
+        }
     }
 
     /**
@@ -204,6 +205,7 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
             throw new Twig_Error_Loader('A template name cannot contain NUL bytes.');
         }
 
+        $name = ltrim($name, '/');
         $parts = explode('/', $name);
         $level = 0;
         foreach ($parts as $part) {

@@ -1,6 +1,33 @@
-* 1.12.2 (2013-XX-XX)
+* 1.13.1 (2013-06-06)
 
- * n/a
+ * added the possibility to ignore the filesystem constructor argument in Twig_Loader_Filesystem
+ * fixed Twig_Loader_Chain::exists() for a loader which implements Twig_ExistsLoaderInterface
+ * adjusted backtrace call to reduce memory usage when an error occurs
+ * added support for object instances as the second argument of the constant test
+ * fixed the include function when used in an assignment
+
+* 1.13.0 (2013-05-10)
+
+ * fixed getting a numeric-like item on a variable ('09' for instance)
+ * fixed getting a boolean or float key on an array, so it is consistent with PHP's array access:
+   `{{ array[false] }}` behaves the same as `echo $array[false];` (equals `$array[0]`)
+ * made the escape filter 20% faster for happy path (escaping string for html with UTF-8)
+ * changed ☃ to § in tests
+ * enforced usage of named arguments after positional ones
+
+* 1.12.3 (2013-04-08)
+
+ * fixed a security issue in the filesystem loader where it was possible to include a template one
+   level above the configured path
+ * fixed fatal error that should be an exception when adding a filter/function/test too late
+ * added a batch filter
+ * added support for encoding an array as query string in the url_encode filter
+
+* 1.12.2 (2013-02-09)
+
+ * fixed the timezone used by the date filter and function when the given date contains a timezone (like 2010-01-28T15:00:00+02:00)
+ * fixed globals when getGlobals is called early on
+ * added the first and last filter
 
 * 1.12.1 (2013-01-15)
 
@@ -379,7 +406,7 @@ Changes:
  * enhanced error messages when an unexpected token is parsed in an expression
  * fixed filename not being added to syntax error messages
  * added the autoescape option to enable/disable autoescaping
- * removed the newline after a comment (mimicks PHP behavior)
+ * removed the newline after a comment (mimics PHP behavior)
  * added a syntax error exception when parent block is used on a template that does not extend another one
  * made the Escaper extension enabled by default
  * fixed sandbox extension when used with auto output escaping

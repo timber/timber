@@ -16,14 +16,12 @@
  *
  * Methods for WPHelper can be found in the /functions sub-directory
  *
- * @package 	WordPress
- * @subpackage 	Timber
- * @since 		Timber 0.1
+ * @package  WordPress
+ * @subpackage  Timber
+ * @since    Timber 0.1
  */
-?>
-<?php
-	
-	$context = Timber::get_context();
-	$post = new TimberPost();
-	$context['post'] = $post;
-	Timber::render(array('page-'.$post->post_name.'.twig', 'page.twig'), $context);
+
+$context = Timber::get_context();
+$post = new TimberPost();
+$context['post'] = $post;
+Timber::render(array('page-' . $post->post_name . '.twig', 'page.twig'), $context);
