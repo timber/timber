@@ -1,6 +1,6 @@
 <?php
 
-class TimberImage extends TimberCore
+class TimberImage extends TimberCore 
 {
 
   var $_can_edit;
@@ -13,7 +13,10 @@ class TimberImage extends TimberCore
   }
 
   function __toString(){
-    return $this->get_src();
+    if ($this->get_src()){
+        return $this->get_src();
+    }
+    return '';
   }
 
   function get_src()
