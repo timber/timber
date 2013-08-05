@@ -9,8 +9,20 @@ By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a h
 ### Because WordPress is awesome, but the_loop isn't
 Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](http://twig.sensiolabs.org/) separate from your PHP files. 
 
-This cleans-up your theme code so, for example, your php file can focus on being the data, while your twig/html file can focus 100% on the HTML and display.
+This cleans-up your theme code so, for example, your php file can focus on being the data, while your twig file can focus 100% on the HTML and display.
 
+This is what Timber's `.twig` files look like:
+```
+{% extends "base.twig" %}
+{% block content %}
+<h1 class="big-title">{{foo}}</h1>
+<h2>{{post.title}}</h2>
+<img src="{{post.thumbnail.src}}" />
+<div class="body">
+	{{post.content}}
+</div>
+{% endblock %}
+```
 Once Timber is installed and activated in your plugin directory, it gives any WordPress theme the ability to take advantage of the power of Twig and other Timber features.
 
 ### Looking for docs?
