@@ -234,6 +234,7 @@ class Timber {
             $parsed = TimberTermGetter::get_term_query_from_query_string($args);
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else if (is_string($args)){
+            //its just a string with a single taxonomy
             $parsed = TimberTermGetter::get_term_query_from_string($args);
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else if (is_array($args) && WPHelper::is_array_assoc($args)){
@@ -241,7 +242,9 @@ class Timber {
             $parsed = TimberTermGetter::get_term_query_from_assoc_array($args);
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else if (is_array($args)){
-            //its just an array of strings (hopefully)
+            //its just an array of strings or IDs (hopefully)
+            $parsed = TimberTermGetter::get_term_query_from_array($args);
+            return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else {
             //no clue, what you talkin' bout?
         }
@@ -249,6 +252,7 @@ class Timber {
     }
 
     public static function handle_term_query($taxonomies, $args, $TermClass){
+        
         $terms = get_terms($taxonomies, $args);
         foreach($terms as &$term){
             $term = new TimberTerm($term->term_id);
@@ -275,6 +279,7 @@ class Timber {
         $data['theme_dir'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', get_stylesheet_directory());
         $data['language_attributes'] = WPHelper::ob_function('language_attributes');
         $data['stylesheet_uri'] = get_stylesheet_uri();
+        $data = apply_filters('timber_context', $data);
         return $data;
     }
 
@@ -296,7 +301,7 @@ class Timber {
     /*  Sidebar
     ================================ */
 
-    public function get_sidebar($sidebar = '', $data = array()) {
+    public static function get_sidebar($sidebar = '', $data = array()) {
         if ($sidebar == '') {
             $sidebar = 'sidebar.php';
         }
