@@ -10,11 +10,6 @@ Author URI: http://timber.upstatement.com/
 global $wp_version;
 global $timber;
 
-$exit_msg = 'Timber requires WordPress 3.0 or newer';
-if (version_compare($wp_version, '3.0', '<')) {
-	exit ($exit_msg);
-}
-
 require_once(__DIR__ . '/functions/functions-twig.php');
 require_once(__DIR__ . '/functions/functions-post-master.php');
 require_once(__DIR__ . '/functions/functions-php-helper.php');
