@@ -12,7 +12,8 @@ Timber helps you create fully-customized WordPress themes faster with more susta
 This cleans-up your theme code so, for example, your php file can focus on being the data, while your twig file can focus 100% on the HTML and display.
 
 This is what Timber's `.twig` files look like:
-```
+
+```html
 {% extends "base.twig" %}
 {% block content %}
 <h1 class="big-title">{{foo}}</h1>
