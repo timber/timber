@@ -150,7 +150,15 @@ class Timber {
         if (strstr($slug, '#')) {
             //we have a post_type directive here
             $q = explode('#', $slug);
-            $query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$q[1]' AND post_type = '$q[0]'";
+            $q = array_filter($q);
+            $q = array_values($q);
+            if (count($q) == 1){
+                $query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$q[0]'";
+            } else if (count($q) == 2){
+                $query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$q[1]' AND post_type = '$q[0]'";
+            } else {
+                error_log('something we dont understand about '.$slug);
+            }
         }
         $results = $wpdb->get_col($query);
         return self::handle_post_results($results, $PostClass);
