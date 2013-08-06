@@ -45,6 +45,8 @@ class TimberTwig
       return __($text, $domain);
     }));
 
+    $twig = apply_filters('get_twig', $twig);
+
     return $twig;
   }
 
