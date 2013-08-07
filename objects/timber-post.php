@@ -14,9 +14,11 @@ class TimberPost extends TimberCore
    * @param mixed $pid
    * @return \TimberPost TimberPost object -- woo!
    */
-  function __construct($pid = null)
-  {
-    if ($pid === null && have_posts()) {
+  function __construct($pid = null) {
+    if ($pid === null && get_the_ID()){
+      $pid = get_the_ID();
+      $this->ID = $pid;
+    } else if ($pid === null && have_posts()) {
       ob_start();
       the_post();
       $pid = get_the_ID();
