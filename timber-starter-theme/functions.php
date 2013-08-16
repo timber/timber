@@ -2,12 +2,12 @@
 
 	add_theme_support('post-formats');
 	add_theme_support('post-thumbnails');
+	add_theme_support('menus');
 
 	add_filter('get_twig', 'add_to_twig');
 	add_filter('timber_context', 'add_to_context');
 
 	add_action('wp_enqueue_scripts', 'load_scripts');
-	add_action('wp_enqueue_scripts', 'load_styles');
 
 	define('THEME_URL', get_template_directory_uri());
 
@@ -20,21 +20,15 @@
 	function add_to_twig($twig){
 		/* this is where you can add your own fuctions to twig */
 		$twig->addExtension(new Twig_Extension_StringLoader());
+		$twig->addFilter('myfoo', new Twig_Filter_Function('myfoo'));
 		return $twig;
 	}
 
+	function myfoo($text){
+    	$text .= ' bar!';
+    	return $text;
+	}
+
 	function load_scripts(){
-		wp_enqueue_script('jquery');		
+		wp_enqueue_script('jquery');
 	}
-
-	function load_styles(){
-		wp_register_style( 'screen', THEME_URL.'/style.css', '', '', 'screen' );
-        wp_enqueue_style( 'screen' );
-	}
-
-	
-
-	
-
-
-

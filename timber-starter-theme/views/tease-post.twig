@@ -1,6 +1,6 @@
 {% extends "tease.twig" %}
 {% block content %}
-	<h2 class="h2"><a href="{{post.get_link}}">{{post.title}}</a></h2>
+	<h2 class="h2"><a href="{{post.permalink}}">{{post.title}}</a></h2>
 		<p>{{post.get_preview(25)}}</p>
 
 		{% if post.get_thumbnail %}

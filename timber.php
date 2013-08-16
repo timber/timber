@@ -3,7 +3,7 @@
 Plugin Name: Timber
 Description: The WordPress Timber Library allows you to write themes using the power Twig templates
 Author: Jared Novack + Upstatement
-Version: 0.10.4
+Version: 0.10.6
 Author URI: http://timber.upstatement.com/
 */
 
@@ -255,15 +255,12 @@ class Timber {
     }
 
     public static function handle_term_query($taxonomies, $args, $TermClass){
-        
         $terms = get_terms($taxonomies, $args);
         foreach($terms as &$term){
             $term = new TimberTerm($term->term_id);
         }
         return $terms;
     }
-
-   
 
 
     /*  Template Setup and Display
@@ -338,7 +335,7 @@ class Timber {
     }
 
 
-    /*  Routes 				
+    /*  Routes
     ================================ */
 
     public function init_routes() {
