@@ -399,7 +399,7 @@ class TimberPost extends TimberCore
   {
     $content = $this->post_content;
     if ($len) {
-      wp_trim_words($content, $len);
+      $content = wp_trim_words($content, $len);
     }
     if ($page) {
       $contents = explode('<!--nextpage-->', $content);
