@@ -1,89 +1,86 @@
 <?php
 
-class TimberTwig
-{
+class TimberTwig {
 
-  function __construct()
-  {
-    add_action('twig_apply_filters', array(&$this, 'add_twig_filters'));
-  }
-
-  /**
-   * @param Twig_Environment $twig
-   * @return Twig_Environment
-   */
-  function add_twig_filters($twig)
-  {
-    $twig->addFilter('resize', new Twig_Filter_Function('wp_resize'));
-    $twig->addFilter('letterbox', new Twig_Filter_Function('wp_resize_letterbox'));
-    $twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
-    $twig->addFilter('print_r', new Twig_Filter_Function('twig_print_r'));
-    $twig->addFilter('print_a', new Twig_Filter_Function('twig_print_a'));
-    $twig->addFilter('docs', new Twig_Filter_function('twig_object_docs'));
-
-    $twig->addFilter('get_src_from_attachment_id', new Twig_Filter_Function('twig_get_src_from_attachment_id'));
-    $twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
-    $twig->addFilter('tojpg', new Twig_Filter_Function('twig_img_to_jpg'));
-    $twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
-    $twig->addFilter('twitterify', new Twig_Filter_Function('twig_twitterify'));
-    $twig->addFilter('get_class', new Twig_Filter_Function('twig_get_class'));
-    $twig->addFilter('function', new Twig_Filter_Function(array(&$this, 'exec_function')));
-
-    $twig->addFilter('get_type', new Twig_Filter_Function('twig_get_type'));
-    $twig->addFilter('shortcodes', new Twig_Filter_Function('twig_shortcodes'));
-    $twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
-    $twig->addFilter('pretags', new Twig_Filter_Function(array(&$this, 'twig_pretags')));
-    $twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
-    $twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
-    $twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
-    $twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
-
-    $twig->addFunction('bloginfo', new Twig_SimpleFunction('bloginfo', function($show = '', $filter = 'raw'){
-      return get_bloginfo($show, $filter);
-    }));
-    $twig->addFunction('__', new Twig_SimpleFunction('__', function($text, $domain = 'default'){
-      return __($text, $domain);
-    }));
-
-    $twig = apply_filters('get_twig', $twig);
-
-    return $twig;
-  }
-
-  function exec_function($function_name){
-  	return call_user_func(trim($function_name));
-  }
-
-  function twig_pretags( $content ) {
-    return preg_replace_callback( '|<pre.*>(.*)</pre|isU' , array(&$this, 'convert_pre_entities'), $content );
-  }
-function convert_pre_entities( $matches ) {
-    return str_replace( $matches[1], htmlentities( $matches[1] ), $matches[0] );
-  }
-
-
-  function add_dir_name_to_locations($locs)
-  {
-    $locs = array_filter($locs);
-    foreach ($locs as &$loc) {
-      $loc = trailingslashit($loc) . trailingslashit(self::$dir_name);
+    function __construct() {
+        add_action('twig_apply_filters', array(&$this, 'add_twig_filters'));
     }
-    return $locs;
-  }
 
-  function template_exists($file, $dirs)
-  {
-    if (is_string($dirs)) {
-      $dirs = array($dirs);
+    /**
+    * @param Twig_Environment $twig
+    * @return Twig_Environment
+    */
+    function add_twig_filters($twig) {
+        $twig->addFilter('resize', new Twig_Filter_Function('wp_resize'));
+        $twig->addFilter('letterbox', new Twig_Filter_Function('wp_resize_letterbox'));
+        $twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
+        $twig->addFilter('print_r', new Twig_Filter_Function('twig_print_r'));
+        $twig->addFilter('print_a', new Twig_Filter_Function('twig_print_a'));
+        $twig->addFilter('docs', new Twig_Filter_function('twig_object_docs'));
+
+        $twig->addFilter('get_src_from_attachment_id', new Twig_Filter_Function('twig_get_src_from_attachment_id'));
+        $twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
+        $twig->addFilter('tojpg', new Twig_Filter_Function('twig_img_to_jpg'));
+        $twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
+        $twig->addFilter('twitterify', new Twig_Filter_Function('twig_twitterify'));
+        $twig->addFilter('get_class', new Twig_Filter_Function('twig_get_class'));
+        $twig->addFilter('function', new Twig_Filter_Function(array(&$this, 'exec_function')));
+
+        $twig->addFilter('get_type', new Twig_Filter_Function('twig_get_type'));
+        $twig->addFilter('shortcodes', new Twig_Filter_Function('twig_shortcodes'));
+        $twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
+        $twig->addFilter('pretags', new Twig_Filter_Function(array(&$this, 'twig_pretags')));
+        $twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
+        $twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
+        $twig->addFilter('wp_sidebar', new Twig_Filter_Function('twig_wp_sidebar'));
+        $twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
+
+        $twig->addFunction('bloginfo', new Twig_SimpleFunction('bloginfo', function($show = '', $filter = 'raw'){
+          return get_bloginfo($show, $filter);
+        }));
+        $twig->addFunction('__', new Twig_SimpleFunction('__', function($text, $domain = 'default'){
+          return __($text, $domain);
+        }));
+
+        $twig = apply_filters('get_twig', $twig);
+
+        return $twig;
     }
-    foreach ($dirs as $dir) {
-      $look_for = trailingslashit($dir) . trailingslashit(self::$dir_name) . $file;
-      if (file_exists($look_for)) {
-        return true;
-      }
+
+    function exec_function($function_name){
+        $args = func_get_args();
+        array_shift($args);
+        return call_user_func_array(trim($function_name), ($args));
     }
-    return false;
-  }
+
+    function twig_pretags( $content ) {
+        return preg_replace_callback( '|<pre.*>(.*)</pre|isU' , array(&$this, 'convert_pre_entities'), $content );
+    }
+
+    function convert_pre_entities( $matches ) {
+        return str_replace( $matches[1], htmlentities( $matches[1] ), $matches[0] );
+    }
+
+    function add_dir_name_to_locations($locs) {
+        $locs = array_filter($locs);
+        foreach ($locs as &$loc) {
+            $loc = trailingslashit($loc) . trailingslashit(self::$dir_name);
+        }
+        return $locs;
+    }
+
+    function template_exists($file, $dirs) {
+        if (is_string($dirs)) {
+            $dirs = array($dirs);
+        }
+        foreach ($dirs as $dir) {
+        $look_for = trailingslashit($dir) . trailingslashit(self::$dir_name) . $file;
+            if (file_exists($look_for)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
   function twig_choose_template($filenames, $dirs)
   {
