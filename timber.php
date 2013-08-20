@@ -329,7 +329,6 @@ class Timber {
             error_log('error loading your sidebar, check to make sure the file exists');
         }
         $ret = ob_get_contents();
-        error_log($ret);
         ob_end_clean();
         return $ret;
     }
