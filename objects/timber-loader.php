@@ -5,13 +5,11 @@ class TimberLoader
 
   var $locations;
 
-  function __construct($caller = false)
-  {
+  function __construct($caller = false) {
     $this->locations = $this->get_locations($caller);
   }
 
-  function render($file, $data = null)
-  {
+  function render($file, $data = null) {
     $twig = $this->get_twig();
     return $twig->render($file, $data);
   }
@@ -121,8 +119,7 @@ class TimberLoader
     return $loader;
   }
 
-  function get_twig()
-  {
+  function get_twig() {
     $loader_loc = trailingslashit(TIMBER_LOC) . 'Twig/lib/Twig/Autoloader.php';
     require_once($loader_loc);
     Twig_Autoloader::register();
