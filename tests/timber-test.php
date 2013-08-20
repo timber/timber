@@ -56,7 +56,7 @@ class TimberTest extends WP_UnitTestCase {
 		$post = Timber::get_post($str);
 		$this->assertEquals($post_id, $post->ID);
 	}
-	
+
 	function testGetPostsQueryStringClassName(){
 		$this->factory->post->create();
 		$this->factory->post->create();
@@ -113,7 +113,7 @@ class TimberTest extends WP_UnitTestCase {
 		$this->assertTrue(arrays_are_similar($results, $tags));
 
 		//lets add one more occurance in..
-		
+
 	}
 
 }
