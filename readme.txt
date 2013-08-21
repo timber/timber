@@ -32,6 +32,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 0.10.7 =
+* more normalization of menus, users
+* fixed bug in post.get_content (thanks @paulwilde)
+* fixed bug in way menu items with children got their children (thanks @EloB)
+
 = 0.10.6 =
 * more normalization of comments
 * Lots of cleanup of starter theme

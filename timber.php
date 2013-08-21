@@ -333,6 +333,13 @@ class Timber {
         return $ret;
     }
 
+    /* Widgets
+    ================================ */
+
+    public static function get_widgets($widget_id){
+        return WPHelper::ob_function('dynamic_sidebar', array($widget_id));
+    }
+
 
     /*  Routes
     ================================ */
