@@ -72,4 +72,9 @@ class TimberUser extends TimberCore {
     function slug() {
         return $this->user_nicename;
     }
+
+    function link(){
+        return $this->get_link();
+    }
+
 }
