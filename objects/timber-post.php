@@ -32,39 +32,36 @@ class TimberPost extends TimberCore
     return $this;
   }
 
-  function init($pid = false)
-  {
-    if ($pid === false) {
-      $pid = get_the_ID();
+    function init($pid = false) {
+        if ($pid === false) {
+            $pid = get_the_ID();
+        }
+        $this->import_info($pid);
     }
-    $this->import_info($pid);
-  }
 
-  /**
-   *  Get the URL that will edit the current post/object
-   */
-  function get_edit_url()
-  {
-    if ($this->can_edit()) {
-      return '/wp-admin/post.php?post=' . $this->ID . '&action=edit';
+    /**
+    *  Get the URL that will edit the current post/object
+    */
+    function get_edit_url() {
+        if ($this->can_edit()) {
+            return '/wp-admin/post.php?post=' . $this->ID . '&action=edit';
+        }
+        return false;
     }
-    return false;
-  }
 
-  /**
-   *  updates the post_meta of the current object with the given value
-   *
-   * @param string $field
-   * @param mixed $value
-   * @nodoc
-   */
-  function update($field, $value)
-  {
-    if (isset($this->ID)) {
-      update_post_meta($this->ID, $field, $value);
-      $this->$field = $value;
+    /**
+    *  updates the post_meta of the current object with the given value
+    *
+    * @param string $field
+    * @param mixed $value
+    * @nodoc
+    */
+    function update($field, $value) {
+        if (isset($this->ID)) {
+            update_post_meta($this->ID, $field, $value);
+            $this->$field = $value;
+        }
     }
-  }
 
 
   /**
@@ -73,20 +70,19 @@ class TimberPost extends TimberCore
    * @param mixed $pid
    * @return WP_Post on success
    */
-  private function prepare_post_info($pid = 0)
-  {
-    if (is_string($pid) || is_numeric($pid) || (is_object($pid) && !isset($pid->post_title)) || $pid === 0) {
-      $pid = self::check_post_id($pid);
-      $post = get_post($pid);
-      if ($post) {
-        return $post;
-      } else {
-        $post = get_page($pid);
-        return $post;
-      }
+    private function prepare_post_info($pid = 0) {
+        if (is_string($pid) || is_numeric($pid) || (is_object($pid) && !isset($pid->post_title)) || $pid === 0) {
+            $pid = self::check_post_id($pid);
+            $post = get_post($pid);
+            if ($post) {
+                return $post;
+            } else {
+                $post = get_page($pid);
+                return $post;
+            }
+        }
+        return $pid;
     }
-    return $pid;
-  }
 
 
   /**
@@ -95,8 +91,7 @@ class TimberPost extends TimberCore
    * @param mixed $pid;
    * @return integer ID number of a post
    */
-  private function check_post_id($pid)
-  {
+  private function check_post_id($pid) {
     if (is_numeric($pid) && $pid === 0) {
       $pid = get_the_ID();
       return $pid;
@@ -117,8 +112,7 @@ class TimberPost extends TimberCore
    * @nodoc
    */
 
-  function get_post_id_by_name($post_name)
-  {
+  function get_post_id_by_name($post_name) {
     global $wpdb;
     $query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$post_name'";
     $result = $wpdb->get_row($query);
@@ -132,8 +126,7 @@ class TimberPost extends TimberCore
    *  <p>{{post.get_preview(50)}}</p>
    */
 
-  function get_preview($len = 50, $force = false, $readmore = 'Read More', $strip = true)
-  {
+  function get_preview($len = 50, $force = false, $readmore = 'Read More', $strip = true) {
     $text = '';
     $trimmed = false;
     if (isset($this->post_excerpt) && strlen($this->post_excerpt)) {
@@ -170,8 +163,7 @@ class TimberPost extends TimberCore
    * @param integer $pid a post ID number
    * @nodoc
    */
-  function import_custom($pid)
-  {
+  function import_custom($pid) {
     $customs = get_post_custom($pid);
     foreach ($customs as $key => $value) {
       $v = $value[0];
@@ -189,8 +181,7 @@ class TimberPost extends TimberCore
    *  <img src="{{post.get_thumbnail.get_src}}" />
    */
 
-  function get_thumbnail()
-  {
+  function get_thumbnail() {
     if (function_exists('get_post_thumbnail_id')) {
       $tid = get_post_thumbnail_id($this->ID);
       if ($tid) {
@@ -200,27 +191,23 @@ class TimberPost extends TimberCore
     return null;
   }
 
-  function get_permalink()
-  {
+  function get_permalink() {
     return get_permalink($this->ID);
   }
 
-  function get_link()
-  {
+  function get_link() {
     if (isset($this->path)) {
       return $this->path;
     }
     return null;
   }
 
-  function import_info($pid)
-  {
+  function import_info($pid) {
     $post_info = $this->get_info($pid);
     $this->import($post_info);
   }
 
-  function get_parent()
-  {
+  function get_parent() {
     if (!$this->post_parent) {
       return false;
     }
@@ -232,16 +219,14 @@ class TimberPost extends TimberCore
    *  <p class="byline">{{post.get_author.name}}</p>
    */
 
-  function get_author()
-  {
+  function get_author() {
     if (isset($this->post_author)) {
       return new TimberUser($this->post_author);
     }
     return false;
   }
 
-  function get_info($pid)
-  {
+  function get_info($pid) {
     global $wp_rewrite;
     $post = $this->prepare_post_info($pid);
     if (!isset($post->post_title)) {
@@ -260,13 +245,11 @@ class TimberPost extends TimberCore
     return $post;
   }
 
-  function get_display_date($use = 'post_date')
-  {
+  function get_display_date($use = 'post_date') {
     return date(get_option('date_format'), strtotime($this->$use));
   }
 
-  function get_children($post_type = 'any', $childPostClass = false)
-  {
+  function get_children($post_type = 'any', $childPostClass = false) {
     if ($childPostClass == false) {
       $childPostClass = $this->PostClass;
     }
@@ -287,8 +270,7 @@ class TimberPost extends TimberCore
    *  {% endfor %}
    */
 
-  function get_comments($ct = 0, $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment')
-  {
+  function get_comments($ct = 0, $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
     $args = array('post_id' => $this->ID, 'status' => $status);
     if ($ct > 0) {
       $args['number'] = $ct;
@@ -309,13 +291,11 @@ class TimberPost extends TimberCore
    */
 
 
-  function get_categories()
-  {
+  function get_categories() {
     return $this->get_terms('category');
   }
 
-  function get_category()
-  {
+  function get_category() {
     $cats = $this->get_categories();
     if (count($cats) && isset($cats[0])) {
       return $cats[0];
@@ -327,8 +307,7 @@ class TimberPost extends TimberCore
    *
    */
 
-  function get_terms($tax = '', $merge = true)
-  {
+  function get_terms($tax = '', $merge = true) {
     if (!strlen($tax) || $tax == 'all' || $tax == 'any') {
       $taxs = get_object_taxonomies($this->post_type);
     } else {
@@ -354,8 +333,7 @@ class TimberPost extends TimberCore
     return $ret;
   }
 
-  function get_image($field)
-  {
+  function get_image($field) {
     return new $this->ImageClass($this->$field);
   }
 
@@ -368,8 +346,7 @@ class TimberPost extends TimberCore
    *  </ul>
    */
 
-  function get_tags()
-  {
+  function get_tags() {
     $tags = get_the_tags($this->ID);
     if (is_array($tags)) {
       $tags = array_values($tags);
@@ -384,8 +361,7 @@ class TimberPost extends TimberCore
    *  <h1>{{post.get_title}}</h1>
    */
 
-  function get_title()
-  {
+  function get_title() {
     $title = $this->post_title;
     return apply_filters('the_title', $title);
   }
@@ -395,8 +371,7 @@ class TimberPost extends TimberCore
    *  <div class="article-text">{{post.get_content}}</div>
    */
 
-  function get_content($len = 0, $page = 0)
-  {
+  function get_content($len = 0, $page = 0) {
     $content = $this->post_content;
     if ($len) {
       $content = wp_trim_words($content, $len);
@@ -411,13 +386,11 @@ class TimberPost extends TimberCore
     return apply_filters('the_content', ($content));
   }
 
-  function get_post_type()
-  {
+  function get_post_type() {
     return get_post_type_object($this->post_type);
   }
 
-  function get_comment_count()
-  {
+  function get_comment_count() {
     if (isset($this->ID)) {
       return get_comments_number($this->ID);
     } else {
@@ -426,34 +399,28 @@ class TimberPost extends TimberCore
   }
 
   //This is for integration with Elliot Condon's wonderful ACF
-  function get_field($field_name)
-  {
+  function get_field($field_name) {
     return $this->get_field($field_name, $this->ID);
   }
 
-  function import_field($field_name)
-  {
+  function import_field($field_name) {
     $this->$field_name = $this->get_field($field_name);
   }
 
   //Aliases
-  function author()
-  {
+  function author() {
     return $this->get_author();
   }
 
-  function categories()
-  {
+  function categories() {
     return $this->get_terms('category');
   }
 
-  function category()
-  {
+  function category() {
     return $this->get_category();
   }
 
-  function children()
-  {
+  function children() {
     return $this->get_children();
   }
 
@@ -461,44 +428,36 @@ class TimberPost extends TimberCore
     return $this->get_comments();
   }
 
-  function content()
-  {
+  function content() {
     return $this->get_content();
   }
 
-  function link()
-  {
+  function link() {
     return $this->get_link();
   }
 
-  function permalink()
-  {
+  function permalink() {
     return $this->get_permalink();
   }
 
-  function terms($tax = '')
-  {
+  function terms($tax = '') {
     return $this->get_terms($tax);
   }
 
-  function tags()
-  {
+  function tags() {
     return $this->get_tags();
   }
 
-  function thumbnail()
-  {
+  function thumbnail() {
     return $this->get_thumbnail();
   }
 
-  function title()
-  {
+  function title() {
     return $this->get_title();
   }
 
   //Deprecated
-  function get_path()
-  {
+  function get_path() {
     return $this->get_link();
   }
 
