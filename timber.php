@@ -14,6 +14,7 @@ require_once(__DIR__ . '/functions/functions-twig.php');
 require_once(__DIR__ . '/functions/functions-post-master.php');
 require_once(__DIR__ . '/functions/functions-php-helper.php');
 require_once(__DIR__ . '/functions/functions-wp-helper.php');
+require_once(__DIR__ . '/functions/functions-wp-image-helper.php');
 
 require_once(__DIR__ . '/objects/timber-core.php');
 require_once(__DIR__ . '/objects/timber-post.php');

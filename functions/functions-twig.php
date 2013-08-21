@@ -20,7 +20,7 @@ class TimberTwig {
 
         $twig->addFilter('get_src_from_attachment_id', new Twig_Filter_Function('twig_get_src_from_attachment_id'));
         $twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
-        $twig->addFilter('tojpg', new Twig_Filter_Function(array(&$this, 'img_to_jpg')));
+        $twig->addFilter('tojpg', new Twig_Filter_Function(array('WPImageHelper', 'img_to_jpg')));
         $twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
         $twig->addFilter('twitterify', new Twig_Filter_Function(array('WPHelper', 'twitterify')));
         $twig->addFilter('twitterfy', new Twig_Filter_Function(array('WPHelper', 'twitterify')));
@@ -99,23 +99,6 @@ class TimberTwig {
         }
         return $filenames;
     }
-
-    function img_to_jpg($src) {
-        $output = str_replace('.png', '.jpg', $src);
-        $oldpath = $_SERVER['DOCUMENT_ROOT'] . $src;
-        $newpath = $_SERVER['DOCUMENT_ROOT'] . $output;
-        if (file_exists($newpath)) {
-            return $output;
-        }
-        //make it!
-        $image = wp_get_image_editor($oldpath);
-        if (!is_wp_error($image)){
-            $image->save($newpath);
-            return $output;
-        }
-        return $src;
-    }
-
 }
 
 function twig_shortcodes($text) {
@@ -271,8 +254,6 @@ function wp_resize($src, $w, $h = 0) {
     return $src;
   }
 }
-
-
 
 function twig_time_ago($from, $to = null) {
     $to = (($to === null) ? (time()) : ($to));
