@@ -162,7 +162,7 @@ class TimberPost extends TimberCore
       }
       $text .= ' <a href="' . $this->get_path() . '" class="read-more">' . $readmore . '</a>';
     }
-    return $text;
+    return apply_filters('timber_get_preview', $text);
   }
 
   /**
