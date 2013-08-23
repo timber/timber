@@ -217,28 +217,6 @@ class WPHelper {
 		return apply_filters('wp_trim_words', $text, $num_words, $more, $original_text);
 	}
 
-	public static function trim_text($input, $length, $strip_html = true, $ellipses = '') {
-	//strip tags, if desired
-		if ($strip_html) {
-			$input = strip_tags($input);
-		}
-
-		//no need to trim, already shorter than trim length
-		if (strlen($input) <= $length) {
-			return $input;
-		}
-
-		//find last space within length
-		$last_space = strrpos(substr($input, 0, $length), ' ');
-		$trimmed_text = substr($input, 0, $last_space);
-
-		//add ellipses (...)
-		if ($ellipses) {
-			$trimmed_text .= $ellipses;
-		}
-		return $trimmed_text;
-	}
-
 	public static function close_tags($html) {
 		#put all opened tags into an array
 		preg_match_all('#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
