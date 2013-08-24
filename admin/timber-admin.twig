@@ -1,19 +1,44 @@
-<div class="wrap">
-<h2 class="timber-logo"><img src="{{timber_base}}images/logo/timber-badge-large.jpg" class="timber-logo-img" /></h2>
+<div class="wrap" id="timber-getting-started">
+	<h2 class="timber-logo"><img src="{{timber_base}}admin/images/logo/timber-badge-large.jpg" class="timber-logo-img" /></h2>
 
-<h3>Getting Started</h3>
-<p>This is a quick getting-started guide to using Timber in your theme. It requires a solid knowledge of HTML and a basic understanding of PHP.</p>
+	<h3>Getting Started</h3>
+	<p>This is a quick getting-started guide to using Timber in your theme. It requires a solid knowledge of HTML and a basic understanding of PHP.</p>
 
-<ol class="steps">
-	<li>
-		<h4>Open your {{home_file}}</h4>
-		<p>Using your favorite text editor, open up {{home_file.name}} inside of {{theme_dir}}. If you're working off your server, you'll need to use an FTP program like Cyberduck or Transmit.</p>
-	</li>
-	<li>
-		<h4>You should see this:</h4>
-		<pre><code>
-			{{home_file.contents}}
-		</code></pre>
-</ol>
+	<article id="existing-theme">
+		<h3>Method 1: I have an existing theme I want to use with Timber</h3>
+		<p>In that case, use your favorite text editor to open up <span class="code">{{home_file.name}}</span> inside of <span class="code">{{home_file.location}}</span>. This is the file that powers your homepage. If you're working off your server, you'll need to use an FTP program like <a href="http://panic.com/transmit/" target="_blank">Transmit</a> or <a href="http://cyberduck.ch/" target="_blank">Cyberduck</a>.</p>
+		<div class="youtube-embed">
+			<iframe src="//www.youtube.com/embed/SlMonnwVi5M?list=UUb-xvhzF-67Sc3NsBKh2_0Q" frameborder="0" allowfullscreen></iframe>
+		</div>
+	</article>
+
+	<article id="from-scratch">
+		<h3>Method 2: Starting from scratch!</h3>
+		<p>Great, nothing like a fresh start. Navigate to <span class="code">{{timber_base}}</span>. Inside you should see a <span class="code">timber-starter-theme</span> folder. Grab this and copy/drag it into <span class="code">/wp-content/themes</span>. Rename it to something good.</p>
+		<p>
+	</article>
+
+
+<!-- 	<ol class="steps">
+		<li>
+			<h4>Open your theme's homepage</h4>
+			<p>Using your favorite text editor, open up <span class="code">{{home_file.name}}</span> inside of <span class="code">{{home_file.location}}</span>. This is the file that powers your homepage. If you're working off your server, you'll need to use an FTP program like Cyberduck or Transmit.</p>
+		</li>
+		<li>
+			<h4>You should see this:</h4>
+			<pre class="codebox"><code>
+				{{home_file.contents}}
+			</code></pre>
+		</li>
+
+		<li>
+			<h4>
+		</li>
+	</ol> -->
+
+	<form class="timber-controls" method="post">
+		<input type="hidden" name="hide_timber_admin_menu" value="true" />
+		<input type="submit" accesskey="p" class="button-primary button button-hero" value="Thanks! Please remove this from my menu" />
+	</form>
 
 </div>

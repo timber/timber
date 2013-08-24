@@ -1,37 +1,64 @@
 <?php
 
-class TimberAdmin
-{
+add_filter("plugin_action_links_timber", 'timber_settings_link');
+add_filter("plugin_action_links_timber-library", 'timber_settings_link');
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'ts_add_plugin_action_links' );
 
-  function __construct()
-  {
-    if (!is_admin() || true) {
-      return;
-    }
-    add_action('admin_menu', array(&$this, 'create_menu'));
-    add_action('admin_enqueue_scripts', array(&$this, 'load_styles'));
-  }
 
-  function create_menu()
-  {
-    add_menu_page('Timber', 'Timber', 'administrator', __FILE__, array(&$this, 'create_admin_page'), TIMBER_URL_PATH . 'admin/timber-menu.png');
-  }
+function timber_settings_link($links) {
+	error_log('ppooo');
+	$settings_link = '<a href="options-general.php?page=your_plugin.php">Settings</a>';
+	array_unshift($links, $settings_link);
+	return $links;
+}
 
-  function create_admin_page()
-  {
-    $data = array();
-    $data['theme_dir'] = get_stylesheet_directory();
-    $data['home_file']['name'] = 'index.php';
-    $data['timber_base'] = TIMBER_URL_PATH;
-    $data['home_file']['path'] = trailingslashit(get_stylesheet_directory()) . $data['home_file']['name'];
-    $data['home_file']['contents'] = htmlentities(file_get_contents(realpath($data['home_file']['path'])));
-    Timber::render('timber-admin.twig', $data);
-  }
+class TimberAdmin {
 
-  function load_styles()
-  {
-    wp_enqueue_style('timber-admin-css', TIMBER_URL_PATH . 'admin/timber-admin.css');
-  }
+	function __construct() {
+		if (!is_admin()) {
+			return;
+		}
+		$hide = get_option('hide_timber_admin_menu');
+		if (isset($_POST['hide_timber_admin_menu'])){
+			update_option('hide_timber_admin_menu', true);
+			header('Location: '.get_admin_url());
+		}
+		if ($hide == 1){
+			return;
+		}
+		add_action('admin_menu', array(&$this, 'create_menu'));
+		add_action('admin_enqueue_scripts', array(&$this, 'load_styles'));
+		add_filter("plugin_action_links_timber", array(&$this, 'settings_link' ));
+		add_filter("plugin_action_links_timber-library", array(&$this, 'settings_link' ));
+	}
+
+	function settings_link($links) {
+		error_log('ppooo');
+		$settings_link = '<a href="options-general.php?page=your_plugin.php">Settings</a>';
+		array_unshift($links, $settings_link);
+		return $links;
+	}
+
+	function create_menu() {
+		add_menu_page('Timber', 'Timber', 'administrator', __FILE__, array(&$this, 'create_admin_page'), TIMBER_URL_PATH . 'admin/timber-menu.png');
+	}
+
+	function create_admin_page() {
+		$data = array();
+		$data['theme_dir'] = get_stylesheet_directory();
+		$home = get_home_template();
+		$home = pathinfo($home);
+		$data['home_file']['name'] = $home['basename'];
+		$data['timber_base'] = TIMBER_URL_PATH;
+		$data['home_file']['path'] = trailingslashit(get_stylesheet_directory()) . $data['home_file']['name'];
+		$data['home_file']['contents'] = htmlentities(file_get_contents(realpath($data['home_file']['path'])));
+		$data['home_file']['location'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', trailingslashit(get_stylesheet_directory()));
+		Timber::render('timber-admin.twig', $data);
+	}
+
+	function load_styles() {
+		wp_enqueue_style('timber-admin-css', TIMBER_URL_PATH . 'admin/timber-admin.css');
+	}
 
 }
 

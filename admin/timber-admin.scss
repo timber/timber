@@ -1,0 +1,58 @@
+li[class*="timber"] .wp-menu-image {
+	overflow:hidden;
+}
+
+li[class*="timber"] .wp-menu-image img {
+	position:relative;
+	left:-8px;
+	top:-36px;
+}
+li[class*="timber"]:hover .wp-menu-image img,
+li[class*="timber"].current .wp-menu-image img {
+	top:-3px;
+}
+
+.timber-logo {
+	max-width:600px;
+}
+
+.timber-logo-img {
+	width:100%;
+	display:block;
+	max-width:100%;
+}
+
+#timber-getting-started {
+
+	.youtube-embed {
+		max-height:400px;
+		height:400px;
+		background-color:#EEE;
+	}
+
+	article {
+		border-bottom:1px solid #DDD;
+		margin-bottom:20px;
+		padding-bottom:20px;
+	}
+
+	.code {
+		font-family:Consolas,Monaco,monospace, monospace;
+		background-color:lighten(#EEE, 2);
+		padding:3px;
+		border:1px solid darken(#eee, 1);
+		border-radius:3px;
+	}
+
+	.codebox {
+		max-height:300px;
+		overflow-y:scroll;
+		background-color:lighten(#eee, 2);
+		border:1px solid darken(#eee, 1);
+		border-radius:3px;
+	}
+
+	.timber-controls {
+		padding-top:10px;
+	}
+}

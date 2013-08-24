@@ -331,35 +331,35 @@ function twig_make_excerpt($text, $length = 55){
 }
 
 function twig_invoke($method, $obj) {
-  $product = '';
-  $totalParams = $method->getNumberOfParameters();
-  $reqParams = $method->getNumberOfRequiredParameters();
-  if (!$method->getNumberOfParameters()) {
-	//zero parameters, easy street
-	$product = $method->invoke($obj);
-	//$product = $method->getName();
-  } else if ($method->getNumberOfRequiredParameters()) {
-	//there are required parametres
-	//$product = $method->getName();
-  } else if ($totalParams && !$reqParams) {
-	//all params are optional
-	$pass = array();
-	$product = $pass;
-	if ($method->getName() == 'get_preview') {
-	  $function = $method->getName();
-	  // try {
-	  // 	$product = $obj->$function();
-	  // } catch($e){
-	  // 	$product = 'error with '.$method->getName();
-	  // }
-	}
+	$product = '';
+	$totalParams = $method->getNumberOfParameters();
+	$reqParams = $method->getNumberOfRequiredParameters();
+	if (!$method->getNumberOfParameters()) {
+		//zero parameters, easy street
+		$product = $method->invoke($obj);
+		//$product = $method->getName();
+	} else if ($method->getNumberOfRequiredParameters()) {
+		//there are required parametres
+		//$product = $method->getName();
+	} else if ($totalParams && !$reqParams) {
+		//all params are optional
+		$pass = array();
+		$product = $pass;
+		if ($method->getName() == 'get_preview') {
+			$function = $method->getName();
+			// try {
+			// 	$product = $obj->$function();
+			// } catch($e){
+			// 	$product = 'error with '.$method->getName();
+			// }
+		}
 
-	//$product = $method->invokeArgs($obj, $pass);
-	//$product = $args;
-  } else {
-	$product = '?????';
-  }
-  return $product;
+		//$product = $method->invokeArgs($obj, $pass);
+		//$product = $args;
+	} else {
+		$product = '?????';
+	}
+	return $product;
 }
 
 function twig_print_r($arr) {
@@ -371,35 +371,35 @@ function twig_print_a($arr) {
 }
 
 function twig_object_docs($obj) {
-  if (!class_exists(get_class($obj))){
-	return false;
-  }
-  $reflector = new ReflectionClass($obj);
-  $methods = $reflector->getMethods();
-  $rets = array();
-  $rep = $reflector->getProperty('representation')->getValue();
-  foreach ($methods as $method) {
-	if ($method->isPublic()) {
-	  $comments = $method->getDocComment();
-	  $comments = str_replace('/**', '', $comments);
-	  //$comments = preg_replace('(\/)(\*)(\*)\r', '', $comments);
-	  $info = new stdClass();
-	  $info->comments = $comments;
-	  $info->returns = twig_invoke($method, $obj);
-	  $info->params = $method->getParameters();
-	  //if (strlen($comments) && !strstr($comments, '@nodoc')){
-	  //$rets[$rep.'.'.$method->name] = $comments;
-	  //$rets[$rep.'.'.$method->name] = $info->returns;
-	  $rets[$method->name] = $info->returns;
-	  //}
+	if (!class_exists(get_class($obj))){
+		return false;
 	}
-  }
-  foreach ($obj as $key => $value) {
-	$rets[$key] = $value;
-  }
-  ksort($rets);
+	$reflector = new ReflectionClass($obj);
+	$methods = $reflector->getMethods();
+	$rets = array();
+	$rep = $reflector->getProperty('representation')->getValue();
+	foreach ($methods as $method) {
+		if ($method->isPublic()) {
+			$comments = $method->getDocComment();
+			$comments = str_replace('/**', '', $comments);
+			//$comments = preg_replace('(\/)(\*)(\*)\r', '', $comments);
+			$info = new stdClass();
+			$info->comments = $comments;
+			$info->returns = twig_invoke($method, $obj);
+			$info->params = $method->getParameters();
+			//if (strlen($comments) && !strstr($comments, '@nodoc')){
+			//$rets[$rep.'.'.$method->name] = $comments;
+			//$rets[$rep.'.'.$method->name] = $info->returns;
+			$rets[$method->name] = $info->returns;
+		//}
+		}
+	}
+	foreach ($obj as $key => $value) {
+		$rets[$key] = $value;
+	}
+	ksort($rets);
 
-  return '<pre>' . (print_r($rets, true)) . '</pre>';
+	return '<pre>' . (print_r($rets, true)) . '</pre>';
 }
 
 new TimberTwig();
