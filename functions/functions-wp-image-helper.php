@@ -8,6 +8,7 @@
 		}
 
 		function img_to_jpg($src, $bghex = '#FFFFFF'){
+			//WPHelper::error_log('$src = '.$src);
 			$output = str_replace('.png', '.jpg', $src);
         	$input_file = $_SERVER['DOCUMENT_ROOT'] . $src;
         	$output_file = $_SERVER['DOCUMENT_ROOT'] . $output;
@@ -15,7 +16,6 @@
             	return $output;
         	}
         	$filename = $output;
-
 			$input = imagecreatefrompng($input_file);
 			list($width, $height) = getimagesize($input_file);
 			$output = imagecreatetruecolor($width, $height);

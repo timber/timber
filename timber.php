@@ -11,21 +11,21 @@ global $wp_version;
 global $timber;
 
 require_once(__DIR__ . '/functions/functions-twig.php');
-require_once(__DIR__ . '/functions/functions-post-master.php');
-require_once(__DIR__ . '/functions/functions-php-helper.php');
 require_once(__DIR__ . '/functions/functions-wp-helper.php');
 require_once(__DIR__ . '/functions/functions-wp-image-helper.php');
 
-require_once(__DIR__ . '/objects/timber-core.php');
-require_once(__DIR__ . '/objects/timber-post.php');
-require_once(__DIR__ . '/objects/timber-comment.php');
-require_once(__DIR__ . '/objects/timber-user.php');
-require_once(__DIR__ . '/objects/timber-term.php');
-require_once(__DIR__ . '/objects/timber-term-getter.php');
-require_once(__DIR__ . '/objects/timber-image.php');
-require_once(__DIR__ . '/objects/timber-menu.php');
+require_once(__DIR__ . '/functions/timber-core.php');
+require_once(__DIR__ . '/functions/timber-post.php');
+require_once(__DIR__ . '/functions/timber-comment.php');
+require_once(__DIR__ . '/functions/timber-user.php');
+require_once(__DIR__ . '/functions/timber-term.php');
+require_once(__DIR__ . '/functions/timber-term-getter.php');
+require_once(__DIR__ . '/functions/timber-image.php');
+require_once(__DIR__ . '/functions/timber-menu.php');
 
-require_once(__DIR__ . '/objects/timber-loader.php');
+require_once(__DIR__ . '/functions/timber-loader.php');
+
+require_once(__DIR__ . '/admin/timber-admin.php');
 
 
 /** Usage:
@@ -39,6 +39,8 @@ require_once(__DIR__ . '/objects/timber-loader.php');
  *
  *  Timber::render('index.twig', $context);
  */
+
+
 
 class Timber {
 
@@ -275,7 +277,7 @@ class Timber {
         $data['wp_footer'] = WPHelper::ob_function('wp_footer');
         $data['body_class'] = implode(' ', get_body_class());
         if (function_exists('wp_nav_menu')) {
-            $data['wp_nav_menu'] = wp_nav_menu(array('container_class' => 'menu-header', 'theme_location' => 'primary', 'echo' => false, 'menu_class' => 'nav-menu'));
+            $data['wp_nav_menu'] = wp_nav_menu(array('container_class' => 'menu-header', 'echo' => false, 'menu_class' => 'nav-menu'));
         }
         $data['theme_dir'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', get_stylesheet_directory());
         $data['language_attributes'] = WPHelper::ob_function('language_attributes');

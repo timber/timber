@@ -1,0 +1,116 @@
+@import "partials/mixins";
+@import "compass/css3";
+
+li[class*="timber"] .wp-menu-image {
+	overflow:hidden;
+}
+
+li[class*="timber"] .wp-menu-image img {
+	position:relative;
+	left:-8px;
+	top:-36px;
+}
+li[class*="timber"]:hover .wp-menu-image img,
+li[class*="timber"].current .wp-menu-image img {
+	top:-3px;
+}
+
+.timber-logo {
+	max-width:600px;
+}
+
+.timber-logo-img {
+	width:100%;
+	display:block;
+	max-width:100%;
+}
+
+#timber-getting-started {
+
+	$gray : #EEE;
+	$coustard:'Coustard', 'Georgia';
+	$gray-green:#879a84;
+	h2 {
+		margin-bottom:10px;
+	}
+
+	h3 {
+		font-family:$coustard;
+		font-size:18px;
+		line-height:22px;
+		margin-bottom:4px;
+		color:$gray-green;
+
+	} 
+	section {
+		margin-bottom:20px;
+		border-bottom:1px solid $gray;
+		padding-bottom:20px;
+	}
+
+	.reading-list {
+		list-style-type:disc;
+		list-style-position:inside;
+		li {
+			@media (min-width:768px){
+				font-size:15px;
+				line-height:20px;
+			}
+			margin-bottom:12px;
+		}
+	}
+
+	.youtube-embed {
+		max-width:600px;
+		max-height:400px;
+		margin:auto;
+
+		iframe {
+			width:600px;
+			height:400px;
+		}
+	}
+
+	.intro {
+		font-family:Georgia, Times;
+		font-style:italic;
+		font-size:16px;
+		margin-bottom:16px;
+		line-height:25px;
+	}
+
+	.video-mod {
+		max-height:400px;
+		height:400px;
+		text-align:center;
+		background-color:$gray;
+		@include box-shadow(inset 0px 0px 10px rgba(black, .1));
+	}
+
+	article {
+		border-bottom:1px solid #DDD;
+		margin-bottom:20px;
+		padding-bottom:20px;
+		padding-top:10px;
+	}
+
+	.code {
+		font-family:Consolas,Monaco,monospace, monospace;
+		background-color:lighten(#EEE, 2);
+		padding:3px;
+		border:1px solid darken(#eee, 1);
+		border-radius:3px;
+	}
+
+	.codebox {
+		max-height:300px;
+		overflow-y:scroll;
+		background-color:lighten(#eee, 2);
+		border:1px solid darken(#eee, 1);
+		border-radius:3px;
+	}
+
+	.timber-controls {
+		padding-top:10px;
+	}
+}

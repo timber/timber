@@ -23,10 +23,15 @@ _Twig is the template language powering Timber; if you need a little background 
 * [Overview / Getting Started Guide](https://github.com/jarednova/timber/wiki/getting-started)
 
 #### What does it look like?
-Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https://github.com/viewportindustries/starkers) or [Boilerplate theme](https://github.com/zencoder/html5-boilerplate-for-wordpress) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
+Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https://github.com/viewportindustries/starkers) or [_s theme](https://github.com/Automattic/_s) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
 
 #### Who is it good for?
 Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because not everyone knows the ins-and-outs of the_loop(), WordPress codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .twig files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
+
+#### Want to read more?
+* [Timber on WordPress.org](http://wordpress.org/plugins/timber-library/)
+* [Timber Overview on WP Mayor](http://www.wpmayor.com/articles/timber-templating-language-wordpress/)
+* ["What is WordPress Missing? A Template Language" on Torque](http://torquemag.io/what-is-wordpress-lacking-a-template-language/)
 
 
 
