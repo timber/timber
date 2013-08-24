@@ -1,0 +1,262 @@
+/* !============================================= */
+
+/* ! Universal						   			  */ 
+
+/* !============================================= */
+
+
+/* Kill the margin on the last column */
+
+.ui-block:last-child,
+.ui-block.last {
+	margin-right: 0;
+	}
+
+
+
+/* !============================================= */
+
+/* ! Media Grid							   			  */ 
+
+/* !============================================= */
+
+@mixin media-grid($num: 2, $pad: em(20), $class:media-block) {
+	margin-left: -#{$pad};
+	@include pie-clearfix;
+
+	.#{$class} {
+		float: left;
+		padding-left: #{$pad};
+		@if $num == 2 or $num == "two" {
+			width: 50%;
+			&:nth-child(2n+3) {
+				clear: left;
+			}
+			&.n3 {
+				clear:left;
+			}
+		}
+		@if $num == 3 or $num == "three" {
+			width: 33.3333%;
+			&:nth-child(3n+4) {
+				clear: left;
+			}
+			.ie7 & {
+				width: 33%;
+			}
+			&.n4 {
+				clear: left;
+			}
+		}
+		@if $num == 4 or $num == "four" {
+			width: 25%;
+			&:nth-child(4n+5) {
+				clear: left;
+			}
+			&.n5 {
+				clear: left;
+			}
+		}
+		@if $num == 5 or $num == "five" {
+			width: 20%;
+			&:nth-child(5n+6) {
+				clear: left;
+			}
+			&.n6 {
+				clear: left;
+			}
+		}
+	}
+} //media-grid
+
+
+// Grid-2 vars
+
+$width-1: 50%; 
+$width-2: 50%; 
+$margin-r: 5%; 
+
+@mixin ui-grid-2($width-1: 50%, $width-2: 50%, $margin-r:5%) {
+	@include pie-clearfix;
+
+	> .ui-block-1,
+	> .ui-block.first {
+		width: $width-1 - ($margin-r/2);
+		@include float-left;
+		margin-right: $margin-r;
+	}
+
+	> .ui-block-2,	
+	> .ui-block.second {
+		width: $width-2 - ($margin-r/2);
+		@include float-left;
+		margin-right: 0;
+	}
+}
+
+@mixin ui-grid-rl($width-1: 50%, $width-2:50%, $margin-r:5%) {
+	@include pie-clearfix;
+
+	> .ui-block-1,	
+	> .ui-block.first {
+		width: $width-1 - ($margin-r/2);
+		@include float-right;
+	}
+	
+	> .ui-block-2,
+	> .ui-block.second {
+		width: $width-2 - ($margin-r/2);
+		@include float-left;
+		margin-right: 0;
+	}
+}
+
+@mixin ui-grid-lr($width-1:50%, $width-2:50%, $margin-r:5%) {
+	@include pie-clearfix;
+
+	> .ui-block-1,	
+	> .ui-block.first {
+		width: $width-1 - ($margin-r/2);
+		@include float-left;
+	}
+
+	> .ui-block-2,	
+	> .ui-block.second {
+		width: $width-2 - ($margin-r/2);
+		@include float-right;
+		margin-right: 0;
+	}
+}
+
+// Grid-3 vars 
+
+@mixin ui-grid-3($width3-1: 33.333%, $width3-2: 33.333%, $width3-3: 33.333%, $margin3-r: 3.5%)  {
+	@include pie-clearfix;
+
+	> .ui-block-1,
+	> .ui-block.first {
+		width: $width3-1 - ($margin3-r/3);
+		@include float-left;
+		margin-right: $margin3-r/2;
+	}
+
+	> .ui-block-2,	
+	> .ui-block.second {
+		width: $width3-2 - ($margin3-r/3);
+		@include float-left;
+		margin-right: $margin3-r/2;
+	}
+
+	> .ui-block-3,
+	> .ui-block.last {
+		width: $width3-3 - ($margin3-r/3);
+		@include float-left;
+		margin-right: 0;		
+	}
+}
+
+// Grid-3-rrl vars
+	
+@mixin ui-grid-rrl($width3-1: 33.333%, $width3-2: 33.333%, $width3-3: 33.333%, $margin3-r: 3.5%)  {
+	@include pie-clearfix;
+
+	> .ui-block-1,
+	> .ui-block.first {
+		width: $width3-1 - ($margin3-r/3);
+		@include float-right;
+		margin-right: 0;
+	}
+
+	> .ui-block-2,
+	> .ui-block.second {
+		width: $width3-2 - ($margin3-r/3);
+		@include float-right;
+		margin-right: $margin3-r/2;
+	}
+
+	> .ui-block-3,
+	> .ui-block.last {
+		width: $width3-3 - ($margin3-r/3);
+		@include float-left;
+		margin-right: $margin3-r/2;		
+	}
+}
+
+
+// Grid-4 vars 
+
+@mixin ui-grid-4($width4-1: 25%, $width4-2: 25%, $width4-3: 25%, $width4-4: 25%, $margin5-r: 8%) {
+
+	@include pie-clearfix;
+
+	> .ui-block-1,
+	> .ui-block.first {
+		width: $width4-1 - ($margin4-r/4);
+		@include float-left;
+		margin-right: $margin4-r/3;
+	}
+
+	> .ui-block-2,	
+	> .ui-block.second {
+		width: $width4-2 - ($margin4-r/4);
+		@include float-left;
+		margin-right: $margin4-r/3;
+	}
+
+	> .ui-block-3,
+	> .ui-block.third {
+		width: $width4-3 - ($margin4-r/4);
+		@include float-left;
+		margin-right: $margin4-r/3;
+	}
+
+	> .ui-block-4,
+	> .ui-block.last {
+		width: $width4-4 - ($margin4-r/4);
+		@include float-left;
+		margin-right: 0;	
+	}
+}
+
+
+// Grid-5 vars
+
+@mixin ui-grid-5($width5-1: 20%, $width5-2: 20%, $width5-3: 20%, $width5-4: 20%, $width5-5: 20%, $margin5-r: 8%) {
+
+	@include pie-clearfix;
+
+	> .ui-block-1,
+	> .ui-block.first {
+		width: $width5-1 - ($margin5-r/5);
+		@include float-left;
+		margin-right: $margin5-r/4;
+	}
+
+	> .ui-block-2,	
+	> .ui-block.second {
+		width: $width5-2 - ($margin5-r/5);
+		@include float-left;
+		margin-right: $margin5-r/4;
+	}
+
+	> .ui-block-3,
+	> .ui-block.third {
+		width: $width5-3 - ($margin5-r/5);
+		@include float-left;
+		margin-right: $margin5-r/4;
+	}
+
+	> .ui-block-4,
+	> .ui-block.fourth {
+		width: $width5-4 - ($margin5-r/5);
+		@include float-left;
+		margin-right: $margin5-r/4;
+	}
+
+	> .ui-block-5,
+	> .ui-block.last {
+		width: $width5-5 - ($margin5-r/5);
+		@include float-left;
+		margin-right: 0;	
+	}
+}

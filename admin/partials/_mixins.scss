@@ -1,0 +1,429 @@
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+//	Mixins							 			   
+
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+// Layout container width for use as universal variable with em calculators
+$context: 960 !default;
+
+
+// Flexible Grid Propotion Calculator
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Figuring out the ideal percentage of a responsive container.
+// Based on the equation target / context = result.
+// Math usually based on values takne from a static design.
+// WHY: Math is easier this way.
+// REF: http://www.lukew.com/ff/entry.asp?1167
+// USE: width: resp(300px);
+@function resp($target, $context){
+	@return percentage($target / $context); 
+}
+
+// Em Calculator
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Filling psuedo-clases :before, :after with blank content
+// WHY: Psuedo classes won't appear unless you fill them with content.
+// This mixin includes the difficult-to-recall cross-browser character code for "blank". 
+// USE: @include content;
+@function em($px, $doc:13){
+	@return #{($px/$doc)}em;	
+}
+
+// Content
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Filling psuedo-clases :before, :after with blank content
+// WHY: Psuedo classes won't appear unless you fill them with content.
+// This mixin includes the difficult-to-recall cross-browser character code for "blank". 
+// USE: @include content;
+@mixin content($content: \0020) {
+	content: "#{$content}";
+}
+
+// Transitions
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Quick application of transition properties
+// WHY: This are our most common defaults
+// USE: @include trans;
+// USE: @include trans(.1s, opacity, linear);
+@mixin trans($trans-time: .2s, $trans-property: all, $trans-function: ease-in) {
+	@include single-transition(#{$trans-property}, #{$trans-time}, #{$trans-function}, false);
+}
+
+// User Select
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Making text unselectable by the user
+// WHY: Sometimes the cursor highlights text on clickable elements (in particular buttons),
+// which can confuse the user intent. This is especially true on touch interfaces. 
+// This mixin is an easy cross-browser way to repress text selection.
+// USE: @include user-select;
+@mixin user-select($user-select: none) {
+	-webkit-user-select: #{$user-select};
+	-khtml-user-select: #{$user-select};
+	-moz-user-select: #{$user-select};
+	-ms-user-select: #{$user-select};
+	-o-user-select: #{$user-select};
+	user-select: #{$user-select};
+}
+
+
+// Reset Clearfix
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Removing pie-clearfix from an element after it's been applied
+// WHY: Hard to remember attribute combo. Helpful in responsive layouts.
+// USE: @include reset-clearfix;
+@mixin reset-clearfix {
+	&:after {
+		display: initial;
+		clear: none;
+	}
+}
+
+
+// Triangles
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Quickly making CSS triangles
+// WHY: It's annoying to remember how these attribute work. 
+// Plus CSS triangles are really flexible and awesome.
+// USE: @include triangle(right, 6px, #000, .68);
+@mixin triangle($tri-orientation: down, $tri-width: 3px, $tri-color: #666, $mult:1) {
+	@include rotate(.1deg);
+	
+	@if $tri-orientation == "up" or $tri-orientation == "top" {
+		border-left: $tri-width*$mult solid transparent;
+		border-right: $tri-width*$mult solid transparent;
+		border-bottom: $tri-width solid $tri-color;
+	}
+
+	@if $tri-orientation == "down" or $tri-orientation == "bottom" {
+		border-left: $tri-width*$mult solid transparent;
+		border-right: $tri-width*$mult solid transparent;
+		border-top: $tri-width solid $tri-color;
+	}
+
+	@if $tri-orientation == "left" {
+		border-top: $tri-width*$mult solid transparent;
+		border-bottom: $tri-width*$mult solid transparent;
+		border-right: $tri-width solid $tri-color;
+		border-left:0px solid transparent;
+	}
+
+	@if $tri-orientation == "right" {
+		border-top: $tri-width*$mult solid transparent;
+		border-bottom: $tri-width*$mult solid transparent;
+		border-left: $tri-width solid $tri-color;
+		border-right:0px solid transparent;
+	}
+}
+
+
+// Absolute Positioning
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Quickly setting the top, right, left, and bottom positions of an absolutely positioned element
+// WHY: It's verbose to write everytime in CSS
+// USE: @include absolute(0 0 10px 0);
+@mixin absolute($coordinates: n n n n) {
+
+  $top: nth($coordinates, 1);
+  $right: nth($coordinates, 2);
+  $bottom: nth($coordinates, 3);
+  $left: nth($coordinates, 4);
+
+  position: absolute;
+
+  @if $top == auto or $top == a {
+    top: auto;
+  }
+  // Print nothing if we write an "n" or "none"
+  @else if $top == n or $top == none {
+  }
+  @else {
+    top: $top;
+  }
+
+  @if $right == auto or $right == a {
+    right: auto;
+  }
+  // Print nothing if we write an "n" or "none"
+  @else if $right == n or $right == none {
+  }
+  @else {
+    right: $right;
+  }
+
+  @if $bottom == auto or $bottom == a {
+    bottom: auto;
+  }
+  // Print nothing if we write an "n" or "none"
+  @else if $bottom == n or $bottom == none{
+  }
+  @else {
+    bottom: $bottom;
+  }
+
+  @if $left == auto or $left == a {
+    left: auto;
+  }
+  // Print nothing if we write an "n" or "none"
+  @else if $left == n or $left == none {
+  }
+  @else {
+    left: $left;
+  }
+}
+
+
+@mixin unabsolute {
+	position: static;
+	top: auto;
+	right: auto;
+	bottom: auto;
+	left: auto;
+}
+
+
+// Responsive Video
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Giving yourself a responsive video that maintains its aspect ratio 
+// WHY: Annoying to remember/lookup
+// REF: http://webdesignerwall.com/tutorials/css-elastic-videos
+// USE: @include video;
+
+@mixin video($aspect: wide) {
+
+	@if $aspect == wide or $aspect == cinema or $aspect == 16/9 {
+		$aspect: 56.25%;
+	}
+	@else if $aspect == tv or $aspect == 4/3 {
+		$aspect: 75%;
+	}
+
+    position: relative;
+    padding-bottom: $aspect;
+    padding-top: 30px;
+    height: 0;
+    iframe,  
+    object,  
+    embed {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+  }
+}
+
+
+// Ellipsis
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Truncating text with an ellipsis the CSS way
+// WHY: It's hard to recall using this combination of attributes
+// USE: @include ellipsis;
+@mixin ellipsis {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+
+// Placeholder Text
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Styling placeholder text color states (default, hover, focus) 
+// WHY: Provides a shortcut for writing the code, which is necessarily long
+// because selectors cannot be combined. Also a cross-browser solution.
+// USE: @include placholder(#999, #999, #222);
+@mixin placeholder($default: inherit, $hover: $default, $focus: $default){
+	// You have to declare these separately in order to work
+	&::-webkit-input-placeholder {
+	    color: $default;
+	}
+	&:-moz-placeholder {
+	    color: $default;
+	}
+	&:hover::-webkit-input-placeholder {
+	    color: $hover;
+	}
+	&:hover:-moz-placeholder {
+	    color: $hover;
+	}
+	&:focus::-webkit-input-placeholder {
+	    color: $focus;
+	}
+	&:focus:-moz-placeholder {
+	    color: $focus;
+	}
+}
+	
+
+// SVG Fallback Pattern
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Setting PNG fallbacks for SVG background images
+// WHY: Saves time and typing and is guaranteed to work across devices 
+// NOTE 1: You still need to set the display (inline-block or block) 
+// and a height/width for the container
+// NOTE 2: "image-url" is a helper that automatically creates a relative link to the _img folder
+// from wherever it's called. This function is built-in to Compass. It's rare that you'll need
+// change the base folder (_img) but it can be done in the config.rb file in the root 
+// REF: http://compass-style.org/reference/compass/helpers/urls
+// USE: @include svg(imageName);
+
+@mixin svg($image) {
+	// Variables
+	$path: "http://cloudfront.upstatement.com/wp-content/themes/blades/images/icons/";
+	$svg: $path + $image + ".svg";
+	$png: $path + $image + ".png";
+	$ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+ image-url($png) +"', sizingMethod='scale')";
+
+	// Universal properties
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	background-image: image-url($png);
+
+	// Fallback pattern
+	.no-svg & {
+		background-image: image-url($png);
+		// Makes sure that image scales if necessary, works for IE9
+		@include background-size(cover);
+		filter: $ms-filter;
+		-ms-filter: $ms-filter;
+	}
+	.svg & {
+		background-image: image-url($svg);
+	}
+} // svg
+
+
+// RGBA Background Fallback Pattern
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Setting safe fallbacks for RGBA background colors (black & white only)
+// WHY: Saves time and typing; guaranteed to work across devices 
+// USE: @include bg(.5, black);
+
+@mixin bg($color: white, $alpha: .1) {
+	// Turn decimal into whole number
+	$a-integer: $alpha * 100;
+
+
+	@if $color == transparent {
+		background-color: transparent;
+		.no-rgba & {
+			background-color: transparent;
+		}
+	}
+	@else {
+		background-color: $color;
+
+		@if $color == white {
+			background-color: rgba(255,255,255,$alpha);
+		}
+		@else {
+			background-color: rgba(0,0,0,$alpha);
+		}
+
+		.no-rgba & {
+			background: transparent image-url('bg/#{$color}-#{$a-integer}.png') 50% 50% repeat;
+		}
+	}
+}
+
+
+// FOUT: Flash of Unstyled Type
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Making text appear on the page only after webfonts have loaded.
+// Doesn't work without the hooks provided by using Google Webfont Loader (see: snips.html).
+// WHY: Who wants to write this same six lines of code over and over?
+// USE: @include fout;
+@mixin fout {
+	.wf-loading & {
+		visibility: hidden;
+	}
+	.wf-active &,
+	.wf-inactive & {
+		visibility: visible;
+	}	
+}
+
+// Retina Background Images
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+// FOR: Serving larger background images when the user agent has a retina display 
+// WHY: Because it's a long list of hard-to-remember proprietary code
+// REF: Idea originates here: http://37signals.com/svn/posts/3271-easy-retina-ready-images-using-scss
+// USE: @include retina(image.png, 8px, 10px);
+
+@mixin retina($image, $width, $height) {
+  @media (min--moz-device-pixel-ratio: 1.1),
+         (-o-min-device-pixel-ratio: 2.1/2),
+         (-webkit-min-device-pixel-ratio: 1.1),
+         (min-device-pixel-ratio: 1.1),
+         (min-resolution: 96dpi) {
+    // on retina, use image that's scaled by 2
+	background-image: $image;
+	@include background-size($width $height);
+  }
+}
+
+
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+//
+// Sprites	
+//
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+
+//
+// Retina Sprites 
+//
+
+// UNCOMMENT TO ENABLE RETINA SPRITES
+// Place all your retina images in retina folder
+
+// Make a sprite from all the images in the "_img > retina" folder
+// $retina-layout:horizontal;
+// @import "retina/*.png";
+// @include all-retina-sprites; 
+
+// .sprite-sprite {
+// 	@include retina($retina-sprites, 8px, 10px);		
+// }
+
+
+
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+//
+// Paul Irish HTML5 Helpers	
+//
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+// Image replacement
+@mixin ir { 
+	display: block; 
+	text-indent: -999em; 
+	overflow: hidden; 
+	background-repeat: no-repeat; 
+	text-align: left; 
+	direction: ltr; 
+}
+
+// Hide for both screenreaders and browsers
+//   css-discuss.incutio.com/wiki/Screenreader_Visibility
+@mixin hidden { 
+	display: none; 
+	visibility: hidden; 
+} 
+
+// Hide only visually, but have it available for screenreaders 
+//   www.webaim.org/techniques/css/invisiblecontent/  &  j.mp/visuallyhidden
+@mixin visuallyhidden { 
+	position: absolute !important;
+	clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+	clip: rect(1px, 1px, 1px, 1px); 
+}
+
+// Extends the .visuallyhidden class to allow the element to be focusable when navigated to via the keyboard: drupal.org/node/897638
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus { clip: auto; height: auto; margin: 0; overflow: visible; position: static; width: auto; }
+
+// Hide visually and from screenreaders, but maintain layout
+@mixin invisible { 
+	visibility: hidden; 
+}

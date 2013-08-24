@@ -1,3 +1,6 @@
+@import "partials/mixins";
+@import "compass/css3";
+
 li[class*="timber"] .wp-menu-image {
 	overflow:hidden;
 }
@@ -24,16 +27,67 @@ li[class*="timber"].current .wp-menu-image img {
 
 #timber-getting-started {
 
+	$gray : #EEE;
+	$coustard:'Coustard', 'Georgia';
+
+	h2 {
+		margin-bottom:10px;
+	}
+
+	h3 {
+		font-family:$coustard;
+
+	} 
+	section {
+		margin-bottom:20px;
+		border-bottom:1px solid $gray;
+		padding-bottom:20px;
+	}
+
+	.reading-list {
+		list-style-type:disc;
+		list-style-position:inside;
+		li {
+			@media (min-width:768px){
+				font-size:15px;
+				line-height:20px;
+			}
+			margin-bottom:12px;
+		}
+	}
+
 	.youtube-embed {
+		max-width:600px;
+		max-height:400px;
+		margin:auto;
+
+		iframe {
+			width:600px;
+			height:400px;
+		}
+	}
+
+	.intro {
+		font-family:Georgia, Times;
+		font-style:italic;
+		font-size:16px;
+		margin-bottom:16px;
+		line-height:25px;
+	}
+
+	.video-mod {
 		max-height:400px;
 		height:400px;
-		background-color:#EEE;
+		text-align:center;
+		background-color:$gray;
+		@include box-shadow(inset 0px 0px 10px rgba(black, .1));
 	}
 
 	article {
 		border-bottom:1px solid #DDD;
 		margin-bottom:20px;
 		padding-bottom:20px;
+		padding-top:10px;
 	}
 
 	.code {
