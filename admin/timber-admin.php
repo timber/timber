@@ -1,16 +1,6 @@
 <?php
 
-add_filter("plugin_action_links_timber", 'timber_settings_link');
-add_filter("plugin_action_links_timber-library", 'timber_settings_link');
-add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'ts_add_plugin_action_links' );
-
-
-function timber_settings_link($links) {
-	error_log('ppooo');
-	$settings_link = '<a href="options-general.php?page=your_plugin.php">Settings</a>';
-	array_unshift($links, $settings_link);
-	return $links;
-}
+add_filter( 'plugin_action_links', array('TimberAdmin', 'settings_link'), 10, 2 );
 
 class TimberAdmin {
 
@@ -18,29 +8,33 @@ class TimberAdmin {
 		if (!is_admin()) {
 			return;
 		}
-		$hide = get_option('hide_timber_admin_menu');
 		if (isset($_POST['hide_timber_admin_menu'])){
 			update_option('hide_timber_admin_menu', true);
 			header('Location: '.get_admin_url());
 		}
-		if ($hide == 1){
-			return;
-		}
 		add_action('admin_menu', array(&$this, 'create_menu'));
 		add_action('admin_enqueue_scripts', array(&$this, 'load_styles'));
-		add_filter("plugin_action_links_timber", array(&$this, 'settings_link' ));
-		add_filter("plugin_action_links_timber-library", array(&$this, 'settings_link' ));
 	}
 
-	function settings_link($links) {
-		error_log('ppooo');
-		$settings_link = '<a href="options-general.php?page=your_plugin.php">Settings</a>';
-		array_unshift($links, $settings_link);
+	function settings_link( $links, $file ) {
+		if (strstr($file, 'timber')){
+		    return array_merge(
+		        array(
+		            'settings' => '<a href="' . get_bloginfo( 'wpurl' ) . '/wp-admin/themes.php?page=timber-getting-started">Starter Guide</a>'
+		        ),
+		        $links
+		    );
+		}
 		return $links;
 	}
 
 	function create_menu() {
-		add_menu_page('Timber', 'Timber', 'administrator', __FILE__, array(&$this, 'create_admin_page'), TIMBER_URL_PATH . 'admin/timber-menu.png');
+		//$hide = get_option('hide_timber_admin_menu');
+		if (true){
+			add_submenu_page( 'themes.php', 'Timber', 'Timber Starter Guide', 'administrator', 'timber-getting-started', array(&$this, 'create_admin_page') );
+		} else {
+			add_menu_page('Timber', 'Timber', 'administrator', 'timber-getting-started', array(&$this, 'create_admin_page'), TIMBER_URL_PATH . 'admin/timber-menu.png');
+		}
 	}
 
 	function create_admin_page() {

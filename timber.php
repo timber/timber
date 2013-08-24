@@ -40,16 +40,7 @@ require_once(__DIR__ . '/admin/timber-admin.php');
  *  Timber::render('index.twig', $context);
  */
 
-add_filter( 'plugin_action_links_timber', 'ts_add_plugin_action_links' );
-function ts_add_plugin_action_links( $links ) {
-    error_log('dfdsf');
-    return array_merge(
-        array(
-            'settings' => '<a href="' . get_bloginfo( 'wpurl' ) . '/wp-admin/tools.php?page=our_plugin_page">Settings</a>'
-        ),
-        $links
-    );
-}
+
 
 class Timber {
 

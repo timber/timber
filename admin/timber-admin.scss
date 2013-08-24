@@ -29,13 +29,17 @@ li[class*="timber"].current .wp-menu-image img {
 
 	$gray : #EEE;
 	$coustard:'Coustard', 'Georgia';
-
+	$gray-green:#879a84;
 	h2 {
 		margin-bottom:10px;
 	}
 
 	h3 {
 		font-family:$coustard;
+		font-size:18px;
+		line-height:22px;
+		margin-bottom:4px;
+		color:$gray-green;
 
 	} 
 	section {
