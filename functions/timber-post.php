@@ -152,7 +152,7 @@ class TimberPost extends TimberCore {
 			if ($last != '.' && $trimmed) {
 				$text .= ' &hellip; ';
 			}
-			$text .= ' <a href="' . $this->get_path() . '" class="read-more">' . $readmore . '</a>';
+			$text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . $readmore . '</a>';
 		}
 		return $text;
 	}
