@@ -1,7 +1,5 @@
 <?php
 
-add_filter( 'plugin_action_links', array('TimberAdmin', 'settings_link'), 10, 2 );
-
 class TimberAdmin {
 
 	function __construct() {
@@ -14,6 +12,7 @@ class TimberAdmin {
 		}
 		add_action('admin_menu', array(&$this, 'create_menu'));
 		add_action('admin_enqueue_scripts', array(&$this, 'load_styles'));
+		add_filter( 'plugin_action_links', array(&$this, 'settings_link'), 10, 2 );
 	}
 
 	function settings_link( $links, $file ) {
