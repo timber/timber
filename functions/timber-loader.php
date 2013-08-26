@@ -87,11 +87,14 @@ class TimberLoader {
 	}
 
 	function get_locations($caller = false) {
-		//prioirty: user locations, caller, theme
+		//prioirty: user locations, caller (but not theme), child theme, parent theme, caller
 		$locs = array();
 		$locs = array_merge($locs, $this->get_locations_user());
 		$locs = array_merge($locs, $this->get_locations_caller($caller));
+		//remove themes from caller
+		$locs = array_diff($locs, $this->get_locations_theme());
 		$locs = array_merge($locs, $this->get_locations_theme());
+		$locs = array_merge($locs, $this->get_locations_caller($caller));
 		$locs = array_unique($locs);
 		return $locs;
 	}
