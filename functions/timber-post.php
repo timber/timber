@@ -346,13 +346,7 @@ class TimberPost extends TimberCore {
 	*/
 
 	function get_tags() {
-		$tags = get_the_tags($this->ID);
-		if (is_array($tags)) {
-			$tags = array_values($tags);
-		} else {
-			$tags = array();
-		}
-		return $tags;
+		return $this->get_terms('tags');
 	}
 
 	/**
