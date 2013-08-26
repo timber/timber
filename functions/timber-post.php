@@ -269,10 +269,13 @@ class TimberPost extends TimberCore {
 	*  {% endfor %}
 	*/
 
-	function get_comments($ct = 0, $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
-		$args = array('post_id' => $this->ID, 'status' => $status);
+	function get_comments($ct = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
+		$args = array('post_id' => $this->ID, 'status' => $status, 'order' => $order);
 		if ($ct > 0) {
 			$args['number'] = $ct;
+		}
+		if ($order == 'wp'){
+			$args['order'] = get_option('comment_order');
 		}
 		$comments = get_comments($args);
 		foreach ($comments as &$comment) {
@@ -283,7 +286,7 @@ class TimberPost extends TimberCore {
 
 	/**
 	*  <ul class="categories">
-	*  {% for cateogry in post.get_categories %}
+	*  {% for category in post.get_categories %}
 	*    <li>{{category.name}}</li>
 	*  {% endfor %}
 	*  </ul>
