@@ -414,7 +414,7 @@ class Timber {
     /*  Utility
     ================================ */
 
-    public function get_calling_script_path($offset = 0) {
+    public static function get_calling_script_path($offset = 0) {
         $dir = self::get_calling_script_dir($offset);
         return str_replace($_SERVER['DOCUMENT_ROOT'], '', realpath($dir));
     }
