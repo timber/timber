@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.10.7
+Stable tag: 0.11.0
 Tested up to: 3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -17,8 +17,8 @@ Once Timber is installed and activated in your plugin directory, it gives any Wo
 ### Looking for docs?
 * **[Project Page](http://timber.upstatement.com)**
 * [Timber Documentation](https://github.com/jarednova/timber/wiki/)
-* [Twig Reference (from SensioLabs)](http://twig.sensiolabs.org/documentation)
-_Twig is the template language powering Timber; if you need a little background on what a template language is, check out this article_
+* [Twig Reference (from SensioLabs)](http://twig.sensiolabs.org/doc/templates.html)
+_Twig is the template language powering Timber; if you need a little background on what a template language is, [Twig's homepage has an overview](http://twig.sensiolabs.org/)_
 * **[Video Tutorials](https://github.com/jarednova/timber/wiki/Video-Tutorials)**
 * [Overview / Getting Started Guide](https://github.com/jarednova/timber/wiki/getting-started)
 
@@ -36,6 +36,14 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.11.0 =
+* fixed load order of views so files inside of the child theme have priority over the parent theme.
+* comment ordering respects the default set in WordPress
+* added getting started screen
+* misc bug fixes
+* removed lots of old garbage, simplified file organization
+* contributors for this release: @ysurian, @thisislawatts, @punkshui and @paulwilde
 
 = 0.10.7 =
 * more normalization of menus, users
