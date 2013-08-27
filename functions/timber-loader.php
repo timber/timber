@@ -41,12 +41,10 @@ class TimberLoader {
 		$child_loc = get_stylesheet_directory();
 		$parent_loc = get_template_directory();
 		$theme_locs[] = $child_loc;
+		$theme_locs[] = trailingslashit($child_loc) . trailingslashit(Timber::$dirname);
 		if ($child_loc != $parent_loc) {
 			$theme_locs[] = $parent_loc;
-		}
-		//add the template directory to each path
-		foreach ($theme_locs as $tl) {
-			$theme_locs[] = trailingslashit($tl) . trailingslashit(Timber::$dirname);
+			$theme_locs[] = trailingslashit($parent_loc) . trailingslashit(Timber::$dirname);
 		}
 		//now make sure theres a trailing slash on everything
 		foreach ($theme_locs as &$tl) {
