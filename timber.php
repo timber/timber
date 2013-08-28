@@ -391,6 +391,27 @@ class Timber {
     /*  Pagination
     ================================ */
 
+    public static function get_pagination_new($prefs = array()){
+        global $wp_query;
+        global $paged;
+        $args['total'] = ceil($wp_query->found_posts / $wp_query->query_vars['posts_per_page']);
+        $args['format'] = 'page/%#%';
+        $args['type'] = 'array';
+
+        $args['current'] = max( 1, get_query_var('paged') );
+        $args['mid_size'] = max(9 - $args['current'], 3);
+        $args['base'] = get_pagenum_link(0).'%_%';
+        $args['prev_next'] = false;
+        $args = array_merge($args, $prefs);
+        $data['pages'] = WPHelper::paginate_links($args);
+        $data['next'] = array('link' => next_posts($args['total'], false));
+        $data['prev'] = array('link' => previous_posts(false));
+        if ($paged < 2){
+            $data['prev'] = '';
+        }
+        return $data;
+    }
+
     public function get_pagination(){
         global $wp_query;
         global $paged;
