@@ -391,7 +391,7 @@ class Timber {
     /*  Pagination
     ================================ */
 
-    public static function get_pagination_new($prefs = array()){
+    public static function get_pagination($prefs = array()){
         global $wp_query;
         global $paged;
         $args['total'] = ceil($wp_query->found_posts / $wp_query->query_vars['posts_per_page']);
@@ -408,26 +408,6 @@ class Timber {
         $data['prev'] = array('link' => previous_posts(false));
         if ($paged < 2){
             $data['prev'] = '';
-        }
-        return $data;
-    }
-
-    public function get_pagination(){
-        global $wp_query;
-        global $paged;
-        $data = array();
-        $data['pages'] = ceil($wp_query->found_posts / $wp_query->query_vars['posts_per_page']);
-        $paged = 1;
-        if (isset($wp_query->query_vars['paged'])) {
-            $paged = $wp_query->query_vars['paged'];
-        }
-        $data['base'] = get_pagenum_link(0);
-        $data['paged'] = $paged;
-        if ($paged < $data['pages']) {
-            $data['next'] = array('link' => next_posts(0, false), 'path' => next_posts(0, false));
-        }
-        if ($paged > 1) {
-            $data['prev'] = array('link' => previous_posts(false), 'path' => previous_posts(false));
         }
         return $data;
     }
