@@ -412,12 +412,12 @@ class WPHelper {
 					$link = str_replace('%#%', $n, $link);
 					if ( $add_args )
 						$link = add_query_arg( $add_args, $link );
-					$link .= $add_fragment;
+					$link = trailingslashit($link).ltrim($add_fragment, '/');
 					//$page_links[] = "<a class='page-numbers' href='" . esc_url( apply_filters( 'paginate_links', $link ) ) . "'>$n_display</a>";
-					$page_links[] = array('class' => 'page-number', 'link' => esc_url( apply_filters( 'paginate_links', $link ) ), 'text' => $n_display);
+					$page_links[] = array('class' => 'page-number', 'link' => esc_url( apply_filters( 'paginate_links', $link ) ), 'title' => $n_display);
 					$dots = true;
 				elseif ( $dots && !$show_all ) :
-					$page_links[] = array('class' => 'dots', 'text' => __( '&hellip;' ));
+					$page_links[] = array('class' => 'dots', 'title' => __( '&hellip;' ));
 					//$page_links[] = '<span class="page-numbers dots">' . __( '&hellip;' ) . '</span>';
 					$dots = false;
 				endif;
@@ -428,7 +428,8 @@ class WPHelper {
 			$link = str_replace('%#%', $current + 1, $link);
 			if ( $add_args )
 				$link = add_query_arg( $add_args, $link );
-			$link .= $add_fragment;
+			$link = trailingslashit($link).$add_fragment;
+
 			$page_links[] = '<a class="next page-numbers" href="' . esc_url( apply_filters( 'paginate_links', $link ) ) . '">' . $next_text . '</a>';
 		endif;
 		switch ( $type ) :

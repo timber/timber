@@ -395,7 +395,9 @@ class Timber {
         global $wp_query;
         global $paged;
         $args['total'] = ceil($wp_query->found_posts / $wp_query->query_vars['posts_per_page']);
-        $args['format'] = 'page/%#%';
+        if (strlen(trim(get_option('permalink_structure')))){
+            $args['format'] = 'page/%#%';
+        }
         $args['type'] = 'array';
 
         $args['current'] = max( 1, get_query_var('paged') );

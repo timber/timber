@@ -36,10 +36,10 @@ class TimberTwig {
 		$twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
 
 		$twig->addFunction('bloginfo', new Twig_SimpleFunction('bloginfo', function($show = '', $filter = 'raw'){
-		  return get_bloginfo($show, $filter);
+			return get_bloginfo($show, $filter);
 		}));
 		$twig->addFunction('__', new Twig_SimpleFunction('__', function($text, $domain = 'default'){
-		  return __($text, $domain);
+			return __($text, $domain);
 		}));
 
 		$twig = apply_filters('get_twig', $twig);
