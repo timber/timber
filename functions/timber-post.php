@@ -429,7 +429,7 @@ class TimberPost extends TimberCore {
 	}
 
 	function link() {
-		return $this->get_link();
+		return $this->get_permalink();
 	}
 
 	function permalink() {
