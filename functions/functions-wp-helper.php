@@ -9,6 +9,13 @@ class WPHelper {
 		return (bool)count(array_filter(array_keys($arr), 'is_string'));
 	}
 
+	public static function preslashit($path){
+		if (strpos($path, '/') != 0) {
+			$path = '/' . $path;
+		}
+		return $path;
+	}
+
 	public static function ob_function($function, $args = array(null)) {
 		ob_start();
 		call_user_func_array($function, $args);

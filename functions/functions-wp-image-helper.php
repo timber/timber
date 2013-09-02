@@ -8,7 +8,6 @@
 		}
 
 		function img_to_jpg($src, $bghex = '#FFFFFF'){
-			//WPHelper::error_log('$src = '.$src);
 			$output = str_replace('.png', '.jpg', $src);
         	$input_file = $_SERVER['DOCUMENT_ROOT'] . $src;
         	$output_file = $_SERVER['DOCUMENT_ROOT'] . $output;
@@ -27,11 +26,29 @@
 			return $filename;
 		}
 
+		public static function sideloaded_file_loc($file){
+			$upload = wp_upload_dir();
+			$dir = $upload['path'];
+			$file = parse_url($file);
+			$path_parts = pathinfo($file['path']);
+			$basename = $path_parts['filename'];
+			$ext = $path_parts['extension'];
+			$old_root_path = $dir . '/' . $basename. '.' . $ext;
+			error_log('old_root_path = '.$old_root_path);
+			if (file_exists($old_root_path)){
+				return str_replace($_SERVER['DOCUMENT_ROOT'], '', $old_root_path);
+			}
+			return false;
+		}
+
 		public static function sideload_image($file) {
 			require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/includes/file.php');
 			require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/includes/media.php');
 			if (empty($file)) {
 				return null;
+			}
+			if ($loc = self::sideloaded_file_loc($file)){
+				return $loc;
 			}
 			// Download file to temp location
 			$tmp = download_url($file);
@@ -46,41 +63,19 @@
 			}
 			// do the validation and storage stuff
 			$file = wp_upload_bits($file_array['name'], null, file_get_contents($file_array['tmp_name']));
+			$file['path'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', $file['file']);
 			WPHelper::error_log($file);
-			return $file;
-		}
-
-		function get_external_dl_location($src, $w, $h) {
-			$upload = wp_upload_dir();
-			$dir = $upload['path'];
-			$file = parse_url($src);
-			$path_parts = pathinfo($file['path']);
-			$basename = $path_parts['filename'];
-			$newbase = $basename . '-r-' . $w . 'x' . $h;
-			$ext = $path_parts['extension'];
-
-			$new_root_path = $dir . '/' . $newbase . '.' . $ext;
-
-			$new_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $new_root_path);
-			if (strpos($new_path, '/') != 0) {
-				$new_path = '/' . $new_path;
-			}
-			return $new_path;
+			return $file['path'];
 		}
 
 		public static function resize_external($src, $w, $h = 0){
 			//Its a URL so we need to fetch it
-			$external = self::get_external_dl_location($src, $w, $h);
-			if (!file_exists($_SERVER['DOCUMENT_ROOT'].$external)) {
-				error_log('side load the image');
-				$image = self::sideload_image($src);
-			} else {
-				error_log('but there is no need');
-			}
-			return self::resize($external, $w, $h);
+			$image = self::sideload_image($src);
+			return self::resize($image, $w, $h);
 		}
 
 		public static function resize($src, $w, $h = 0){
+			error_log('resize with '.$src);
 			if (strstr($src, 'http') && !strstr($src, site_url())) {
 				return self::resize_external($src, $w, $h);
 			}
