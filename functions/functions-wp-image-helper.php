@@ -34,7 +34,6 @@
 			$basename = $path_parts['filename'];
 			$ext = $path_parts['extension'];
 			$old_root_path = $dir . '/' . $basename. '.' . $ext;
-			error_log('old_root_path = '.$old_root_path);
 			if (file_exists($old_root_path)){
 				return str_replace($_SERVER['DOCUMENT_ROOT'], '', $old_root_path);
 			}
@@ -42,14 +41,11 @@
 		}
 
 		public static function sideload_image($file) {
-			require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/includes/file.php');
-			require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/includes/media.php');
-			if (empty($file)) {
-				return null;
-			}
 			if ($loc = self::sideloaded_file_loc($file)){
 				return $loc;
 			}
+			require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/includes/file.php');
+			require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/includes/media.php');
 			// Download file to temp location
 			$tmp = download_url($file);
 			preg_match('/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches);
@@ -64,20 +60,12 @@
 			// do the validation and storage stuff
 			$file = wp_upload_bits($file_array['name'], null, file_get_contents($file_array['tmp_name']));
 			$file['path'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', $file['file']);
-			WPHelper::error_log($file);
 			return $file['path'];
 		}
 
-		public static function resize_external($src, $w, $h = 0){
-			//Its a URL so we need to fetch it
-			$image = self::sideload_image($src);
-			return self::resize($image, $w, $h);
-		}
-
 		public static function resize($src, $w, $h = 0){
-			error_log('resize with '.$src);
 			if (strstr($src, 'http') && !strstr($src, site_url())) {
-				return self::resize_external($src, $w, $h);
+				$src = self::sideload_image($src);
 			}
 			$abs = false;
 			if (strstr($src, 'http')){

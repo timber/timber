@@ -25,8 +25,9 @@ class TimberImage extends TimberCore {
 			$this->file = $this->_wp_attached_file;
 		}
 		if (isset($this->file)) {
+			//return $this->file;
 			$dir = wp_upload_dir();
-			$base = $this->url_to_path($dir["baseurl"]);
+			$base = ($dir["baseurl"]);
 			return trailingslashit($base) . $this->file;
 		}
     	return false;
@@ -47,7 +48,6 @@ class TimberImage extends TimberCore {
 	}
 
 	function init($iid) {
-
 		if (!is_numeric($iid) && is_string($iid)) {
 			if (strstr($iid, '://')) {
 				$this->init_with_url($iid);
