@@ -97,31 +97,6 @@ class WPHelper {
 		return $tmpfname;
 	}
 
-	public static function sideload_image($file) {
-		require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/includes/file.php');
-		require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/includes/media.php');
-		if (empty($file)) {
-		error_log('returnning');
-		return null;
-		}
-		// Download file to temp location
-		$tmp = download_url($file);
-		preg_match('/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches);
-		$file_array['name'] = basename($matches[0]);
-		$file_array['tmp_name'] = $tmp;
-		// If error storing temporarily, unlink
-		if (is_wp_error($tmp)) {
-		error_log('theres an error');
-		@unlink($file_array['tmp_name']);
-		$file_array['tmp_name'] = '';
-		}
-		error_log('continuing on');
-		// do the validation and storage stuff
-		$file = wp_upload_bits($file_array['name'], null, file_get_contents($file_array['tmp_name']));
-
-		return $file;
-	}
-
 	public static function osort(&$array, $prop) {
 		usort($array, function ($a, $b) use ($prop) {
 			return $a->$prop > $b->$prop ? 1 : -1;
