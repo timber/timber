@@ -32,7 +32,6 @@ class TimberTwig {
 		$twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
 		$twig->addFilter('pretags', new Twig_Filter_Function(array(&$this, 'twig_pretags')));
 		$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
-		$twig->addFilter('wp_title', new Twig_Filter_Function('twig_wp_title'));
 		$twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
 
 		$twig->addFunction('bloginfo', new Twig_SimpleFunction('bloginfo', function($show = '', $filter = 'raw'){
@@ -82,23 +81,6 @@ class TimberTwig {
 		return false;
 	}
 
-	function twig_choose_template($filenames, $dirs) {
-		if (is_array($filenames)) {
-		  /* its an array so we have to figure out which one the dev wants */
-		  foreach ($filenames as $filename) {
-			if (self::template_exists($filename, $dirs)) {
-			  return $filename;
-			}
-		  }
-		  return false;
-		} else {
-		  /* its a single, but we still need to figure out if it exists, default to index.html */
-		  // if (!twig_template_exists($filenames, $dirs)){
-		  // 	$filenames = 'index.html';
-		  // }
-		}
-		return $filenames;
-	}
 }
 
 function twig_shortcodes($text) {
@@ -204,10 +186,6 @@ function twig_time_ago($from, $to = null) {
 	$output .= " " . $suffix;
 	$output = substr($output, strlen(", "));
 	return $output;
-}
-
-function twig_wp_title() {
-	return wp_title('|', false, 'right');
 }
 
 function twig_body_class($body_classes) {
