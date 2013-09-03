@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.11.0
+Stable tag: 0.12.0
 Tested up to: 3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -36,6 +36,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.12.0 =
+* Pagination is refactored to be more intutitve, and well, better.
+* Resize is also refactored to respect absolute vs. relative URLs
+* Got rid of lots of old, bogus code.
 
 = 0.11.0 =
 * fixed load order of views so files inside of the child theme have priority over the parent theme.
