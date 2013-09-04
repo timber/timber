@@ -37,6 +37,9 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 0.12.1 =
+* A few fixes that catch issues with absolute vs. relative URLs in resize
+
 = 0.12.0 =
 * Pagination is refactored to be more intutitve, and well, better.
 * Resize is also refactored to respect absolute vs. relative URLs
