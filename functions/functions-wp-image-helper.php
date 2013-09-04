@@ -81,7 +81,7 @@
 			$new_path = $dir . '/' . $newbase . '.' . $ext;
 			$new_path = str_replace(site_url(), '', $new_path);
 			$new_root_path = $_SERVER['DOCUMENT_ROOT'] . $new_path;
-			$old_root_path = $_SERVER['DOCUMENT_ROOT'] . $src;
+			$old_root_path = $_SERVER['DOCUMENT_ROOT'] . str_replace(site_url(), '', $src);
 
 			$old_root_path = str_replace('//', '/', $old_root_path);
 			$new_root_path = str_replace('//', '/', $new_root_path);
