@@ -17,6 +17,10 @@ class TimberImage extends TimberCore {
 		return '';
 	}
 
+	function get_pathinfo(){
+		return pathinfo($this->file);
+	}
+
 	function get_src() {
 		if (isset($this->abs_url)) {
 			return $this->abs_url;
