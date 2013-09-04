@@ -8,6 +8,7 @@
 		}
 
 		function img_to_jpg($src, $bghex = '#FFFFFF'){
+			$src = str_replace(site_url(), '', $src);
 			$output = str_replace('.png', '.jpg', $src);
         	$input_file = $_SERVER['DOCUMENT_ROOT'] . $src;
         	$output_file = $_SERVER['DOCUMENT_ROOT'] . $output;
