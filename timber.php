@@ -407,8 +407,14 @@ class Timber {
         $args['prev_next'] = false;
         $args = array_merge($args, $prefs);
         $data['pages'] = WPHelper::paginate_links($args);
-        $data['next'] = array('link' => next_posts($args['total'], false));
-        $data['prev'] = array('link' => previous_posts(false));
+        $next = next_posts($args['total'], false);
+        if ($next){
+            $data['next'] = array('link' => $next);
+        }
+        $prev = previous_posts(false);
+        if ($prev){
+            $data['prev'] = array('link' => $prev);
+        }
         if ($paged < 2){
             $data['prev'] = '';
         }
