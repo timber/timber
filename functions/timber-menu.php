@@ -3,12 +3,14 @@
 class TimberMenu extends TimberCore {
 
     var $items = null;
+    var $menu_name = null;
 
     function __construct($slug) {
         $menu_id = $slug;
         if (!is_numeric($slug)){
             $locations = get_nav_menu_locations();
             $menu_id = wp_get_nav_menu_object($locations[$slug]);
+            $this->menu_name = $menu_id->name;
         }
         if (isset($locations[$slug]) || is_numeric($menu_id)) {
             $menu = wp_get_nav_menu_items($menu_id);
