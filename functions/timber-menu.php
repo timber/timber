@@ -3,19 +3,22 @@
 class TimberMenu extends TimberCore {
 
     var $items = null;
-    var $menu_name = null;
+    var $name = null;
+    var $ID = null;
 
     function __construct($slug) {
-        $menu_id = $slug;
-        if (!is_numeric($slug)){
-            $locations = get_nav_menu_locations();
-            $menu_id = wp_get_nav_menu_object($locations[$slug]);
-            $this->menu_name = $menu_id->name;
+        $locations = get_nav_menu_locations();
+        if (is_numeric($slug)){
+            $slug = array_search($slug, $locations);
         }
-        if (isset($locations[$slug]) || is_numeric($menu_id)) {
+        if (isset($locations[$slug])) {
+            $menu_id = $locations[$slug];
             $menu = wp_get_nav_menu_items($menu_id);
             $menu = self::order_children($menu);
             $this->items = $menu;
+            $menu_info = wp_get_nav_menu_object($menu_id);
+            $this->import($menu_info);
+            $this->ID = $this->term_id;
         } else {
             WPHelper::error_log("Sorry, the menu you were looking for wasn't found ('".$slug."'). Here's what Timber did find:");
             WPHelper::error_log($locations);
