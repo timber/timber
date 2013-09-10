@@ -11,28 +11,32 @@ class TimberTwig {
 	* @return Twig_Environment
 	*/
 	function add_twig_filters($twig) {
+		/* image filters */
 		$twig->addFilter('resize', new Twig_Filter_Function(array('WPImageHelper', 'resize')));
 		$twig->addFilter('letterbox', new Twig_Filter_Function('wp_resize_letterbox'));
-		$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
+		$twig->addFilter('tojpg', new Twig_Filter_Function(array('WPImageHelper', 'img_to_jpg')));
+		$twig->addFilter('get_src_from_attachment_id', new Twig_Filter_Function('twig_get_src_from_attachment_id'));
+
+		/* debugging filters */
+		$twig->addFilter('docs', new Twig_Filter_function('twig_object_docs'));
+		$twig->addFilter('get_class', new Twig_Filter_Function('twig_get_class'));
+		$twig->addFilter('get_type', new Twig_Filter_Function('twig_get_type'));
 		$twig->addFilter('print_r', new Twig_Filter_Function('twig_print_r'));
 		$twig->addFilter('print_a', new Twig_Filter_Function('twig_print_a'));
-		$twig->addFilter('docs', new Twig_Filter_function('twig_object_docs'));
 
-		$twig->addFilter('get_src_from_attachment_id', new Twig_Filter_Function('twig_get_src_from_attachment_id'));
+		/* other filters */
+		$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
+		$twig->addFilter('function', new Twig_Filter_Function(array(&$this, 'exec_function')));
 		$twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
-		$twig->addFilter('tojpg', new Twig_Filter_Function(array('WPImageHelper', 'img_to_jpg')));
-		$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
+		$twig->addFilter('pretags', new Twig_Filter_Function(array(&$this, 'twig_pretags')));
+		$twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
+		$twig->addFilter('shortcodes', new Twig_Filter_Function('twig_shortcodes'));
+		$twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
 		$twig->addFilter('twitterify', new Twig_Filter_Function(array('WPHelper', 'twitterify')));
 		$twig->addFilter('twitterfy', new Twig_Filter_Function(array('WPHelper', 'twitterify')));
-		$twig->addFilter('get_class', new Twig_Filter_Function('twig_get_class'));
-		$twig->addFilter('function', new Twig_Filter_Function(array(&$this, 'exec_function')));
-
-		$twig->addFilter('get_type', new Twig_Filter_Function('twig_get_type'));
-		$twig->addFilter('shortcodes', new Twig_Filter_Function('twig_shortcodes'));
-		$twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
-		$twig->addFilter('pretags', new Twig_Filter_Function(array(&$this, 'twig_pretags')));
 		$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
-		$twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
+		$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
+		
 
 		$twig->addFunction('bloginfo', new Twig_SimpleFunction('bloginfo', function($show = '', $filter = 'raw'){
 			return get_bloginfo($show, $filter);
