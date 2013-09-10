@@ -27,24 +27,24 @@
 			return $filename;
 		}
 
-		public static function sideloaded_file_loc($file){
+		public static function get_sideloaded_file_loc($file){
 			$upload = wp_upload_dir();
 			$dir = $upload['path'];
+			$filename = $file;
 			$file = parse_url($file);
 			$path_parts = pathinfo($file['path']);
-			$basename = $path_parts['filename'];
+			$basename = base64_encode($filename);
 			$ext = $path_parts['extension'];
-			$old_root_path = $dir . '/' . $basename. '.' . $ext;
-			if (file_exists($old_root_path)){
-				return str_replace($_SERVER['DOCUMENT_ROOT'], '', $old_root_path);
-			}
-			return false;
+			return $dir . '/' . $basename. '.' . $ext;
 		}
 
 		public static function sideload_image($file) {
-			if ($loc = self::sideloaded_file_loc($file)){
-				return $loc;
+			$loc = self::get_sideloaded_file_loc($file);
+			if (file_exists($loc)){
+				error_log('already exists');
+				return str_replace($_SERVER['DOCUMENT_ROOT'], '', $loc);
 			}
+			error_log('make a new one');
 			require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/includes/file.php');
 			require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/includes/media.php');
 			// Download file to temp location
@@ -59,9 +59,9 @@
 				$file_array['tmp_name'] = '';
 			}
 			// do the validation and storage stuff
-			$file = wp_upload_bits($file_array['name'], null, file_get_contents($file_array['tmp_name']));
-			$file['path'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', $file['file']);
-			return $file['path'];
+			$locinfo = pathinfo($loc);
+			$file = wp_upload_bits($locinfo['basename'], null, file_get_contents($file_array['tmp_name']));
+			return $file['url'];
 		}
 
 		public static function resize($src, $w, $h = 0){
