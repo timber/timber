@@ -25,9 +25,12 @@ class WPHelper {
 	}
 
 	public static function is_url($url) {
+		if (!is_string($url)){
+			return false;
+		}
 		$url = strtolower($url);
 		if (strstr('://', $url)) {
-		return true;
+			return true;
 		}
 		return false;
 	}
@@ -386,7 +389,7 @@ class WPHelper {
 			$n_display = number_format_i18n($n);
 			if ( $n == $current ) :
 				//$page_links[] = "<span class='page-numbers current'>$n_display</span>";
-				$page_links[] = array('class' => 'page-number current', 'title' => $n_display);
+				$page_links[] = array('class' => 'page-number current', 'title' => $n_display, 'text' => $n_display);
 				$dots = true;
 			else :
 				if ( $show_all || ( $n <= $end_size || ( $current && $n >= $current - $mid_size && $n <= $current + $mid_size ) || $n > $total - $end_size ) ) :
