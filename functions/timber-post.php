@@ -191,7 +191,11 @@ class TimberPost extends TimberCore {
 	}
 
 	function get_permalink() {
-		return get_permalink($this->ID);
+		if (isset($this->permalink)){
+			return $this->permalink;
+		}
+		$this->permalink = get_permalink($this->ID);
+		return $this->permalink;
 	}
 
 	function get_link() {
