@@ -106,15 +106,16 @@ function hexrgb($hexstr) {
 }
 
 function wp_resize_letterbox($src, $w, $h, $color = '#000000') {
-	$old_file = WPHelper::get_full_path($src);
-	$new_file = WPHelper::get_letterbox_file_path($src, $w, $h);
-	$new_file_rel = WPHelper::get_letterbox_file_rel($src, $w, $h);
+	//$old_file = WPHelper::get_full_path($src);
+	$urlinfo = parse_url($src);
+	$old_file = $_SERVER['DOCUMENT_ROOT'].$urlinfo['path'];
+	$new_file = WPHelper::get_letterbox_file_path($urlinfo['path'], $w, $h);
+	$new_file_rel = WPHelper::get_letterbox_file_rel($urlinfo['path'], $w, $h);
 	$new_file_boxed = str_replace('-lb-', '-lbox-', $new_file);
 	if (file_exists($new_file_boxed)) {
 		$new_file_rel = str_replace('-lb-', '-lbox-', $new_file_rel);
 		return $new_file_rel;
 	}
-
 	$bg = imagecreatetruecolor($w, $h);
 	$c = hexrgb($color);
 
@@ -157,6 +158,10 @@ function wp_resize_letterbox($src, $w, $h, $color = '#000000') {
 		$new_file = str_replace('-lb-', '-lbox-', $new_file);
 		imagejpeg($bg, $new_file);
 		return WPHelper::get_rel_path($new_file);
+	} else {
+		if (WP_DEBUG){
+			WPHelper::error_log($image);
+		}
 	}
 	return null;
 }
