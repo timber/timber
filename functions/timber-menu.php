@@ -6,8 +6,12 @@ class TimberMenu extends TimberCore {
     var $name = null;
     var $ID = null;
 
-    function __construct($slug) {
+    function __construct($slug = 0) {
         $locations = get_nav_menu_locations();
+        if ($slug === 0){
+            reset($locations);
+            $slug = key($locations);
+        }
         if (is_numeric($slug)){
             $slug = array_search($slug, $locations);
         }
@@ -38,6 +42,7 @@ class TimberMenu extends TimberCore {
     function order_children($items) {
         $index = array();
         $menu = array();
+        _wp_menu_item_classes_by_context($items);
         foreach($items as $item) {
             $index[$item->ID] = new TimberMenuItem($item);
         }
@@ -65,6 +70,7 @@ class TimberMenuItem extends TimberCore {
 
     function __construct($data) {
         $this->import($data);
+        $this->import_classes($data);
     }
 
     function get_link() {
@@ -88,6 +94,10 @@ class TimberMenuItem extends TimberCore {
             $this->children = array();
         }
         $this->children[] = $item;
+    }
+
+    function import_classes($data){
+        $this->class = trim(implode(' ', $data->classes));
     }
 
     function get_children() {
