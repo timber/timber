@@ -5,6 +5,7 @@ class TimberPost extends TimberCore {
 	var $ImageClass = 'TimberImage';
 	var $PostClass = 'TimberPost';
 	var $_can_edit;
+	var $_get_terms;
 
 	public static $representation = 'post';
 
@@ -314,8 +315,15 @@ class TimberPost extends TimberCore {
 	*/
 
 	function get_terms($tax = '', $merge = true, $TermClass = 'TimberTerm') {
+		if (is_string($tax)){
+			if (isset($this->_get_terms) && isset($this->_get_terms[$tax])){
+				return $this->_get_terms[$tax];
+			}
+		}
 		if (!strlen($tax) || $tax == 'all' || $tax == 'any') {
 			$taxs = get_object_taxonomies($this->post_type);
+		} else if (is_array($tax)) {
+			$taxs = $tax;
 		} else {
 			$taxs = array($tax);
 		}
@@ -336,6 +344,10 @@ class TimberPost extends TimberCore {
 				$ret[$tax] = $terms;
 			}
 		}
+		if (!isset($this->_get_terms)){
+			$this->_get_terms = array();
+		}
+		$this->_get_terms[$tax] = $ret;
 		return $ret;
 	}
 
