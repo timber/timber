@@ -16,32 +16,41 @@ class TimberImageTest extends WP_UnitTestCase {
 		Timber::render('assets/image-test.twig', $data);
 		$upload_dir = wp_upload_dir();
 		$path = $upload_dir['path'].'/'.$md5;
-		if (file_exists($path.'.jpg')){
-			$this->assertTrue(true);
-		} else {
-			$this->assertTrue(false);
-		}
+		$exists = file_exists($path.'.jpg');
+		/* was the external image D/Ld to the location? */
+		$this->assertTrue($exists);
+		/* does resize work on external image? */
 		$resized_path = $path.'-r-'.$data['size']['width'].'x'.$data['size']['height'].'.jpg';
-		if (file_exists($resized_path)){
-			$this->assertTrue(true);
-		} else {
-			$this->assertTrue(false);
-		}
+		$exists = file_exists($resized_path);
+		$this->assertTrue($exists);
+		$old_time = filemtime($resized_path);
+		sleep(3);
+		Timber::render('assets/image-test.twig', $data);
+		$new_time = filemtime($resized_path);
+		$this->assertEquals($old_time, $new_time);
 	}
 
 	function testImageResize(){
-		return;
 		$data = array();
 		$data['size'] = array('width' => 600, 'height' => 400);
-		//move arch to uploads
-		wp_upload_dir();
-		$data['test_image'] = '/wp-content/'.wp_upload_dir().'/arch.jpg';
+		$upload_dir = wp_upload_dir();
+		copy(__DIR__.'/assets/arch.jpg', $upload_dir['path'].'/arch.jpg');
+		$url = $upload_dir['url'].'/arch.jpg';
+		$data['test_image'] = $url;
 		Timber::render('assets/image-test.twig', $data);
-		/*if (file_exists()){
-			
-		}*/
-
+		$resized_path = $upload_dir['path'].'/arch-r-'.$data['size']['width'].'x'.$data['size']['height'].'.jpg';
+		$exists = file_exists($resized_path);
+		$this->assertTrue($exists);
+		//Now make sure it doesnt regenerage
+		$old_time = filemtime($resized_path);
+		sleep(3);
+		Timber::render('assets/image-test.twig', $data);
+		$new_time = filemtime($resized_path);
+		error_log('time is '.$old_time);
+		$this->assertEquals($old_time, $new_time);
 	}
+
+	
 
 
 }
