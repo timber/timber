@@ -68,6 +68,7 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testPostThumbnails(){
+		$upload_dir = wp_upload_dir();
 		$post_id = $this->factory->post->create();
 		$filename = $this->copyTestImage('flag.png');
 		$destination_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
@@ -85,6 +86,10 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data['size'] = array('width' => 100, 'height' => 50);
 		Timber::render('assets/thumb-test.twig', $data);
 		$exists = file_exists($filename);
+		$this->assertTrue($exists);
+		$resized_path = $upload_dir['path'].'/flag-r-'.$data['size']['width'].'x'.$data['size']['height'].'.png';
+		error_log($resized_path);
+		$exists = file_exists($resized_path);
 		$this->assertTrue($exists);
 	}
 
