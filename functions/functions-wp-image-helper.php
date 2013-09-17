@@ -10,8 +10,8 @@
 		function img_to_jpg($src, $bghex = '#FFFFFF'){
 			$src = str_replace(site_url(), '', $src);
 			$output = str_replace('.png', '.jpg', $src);
-        	$input_file = $_SERVER['DOCUMENT_ROOT'] . $src;
-        	$output_file = $_SERVER['DOCUMENT_ROOT'] . $output;
+        	$input_file = ABSPATH . $src;
+        	$output_file = ABSPATH . $output;
         	if (file_exists($output_file)) {
             	return $output;
         	}
@@ -33,7 +33,7 @@
 			$filename = $file;
 			$file = parse_url($file);
 			$path_parts = pathinfo($file['path']);
-			$basename = base64_encode($filename);
+			$basename = md5($filename);
 			$ext = $path_parts['extension'];
 			return $dir . '/' . $basename. '.' . $ext;
 		}
@@ -41,12 +41,8 @@
 		public static function sideload_image($file) {
 			$loc = self::get_sideloaded_file_loc($file);
 			if (file_exists($loc)){
-				error_log('already exists');
-				return str_replace($_SERVER['DOCUMENT_ROOT'], '', $loc);
+				return str_replace(ABSPATH, '', $loc);
 			}
-			error_log('make a new one');
-			require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/includes/file.php');
-			require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-admin/includes/media.php');
 			// Download file to temp location
 			$tmp = download_url($file);
 			preg_match('/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches);
@@ -54,7 +50,6 @@
 			$file_array['tmp_name'] = $tmp;
 			// If error storing temporarily, unlink
 			if (is_wp_error($tmp)) {
-				error_log('theres an error');
 				@unlink($file_array['tmp_name']);
 				$file_array['tmp_name'] = '';
 			}
@@ -80,9 +75,8 @@
 			$newbase = $basename . '-r-' . $w . 'x' . $h;
 			$new_path = $dir . '/' . $newbase . '.' . $ext;
 			$new_path = str_replace(site_url(), '', $new_path);
-			$new_root_path = $_SERVER['DOCUMENT_ROOT'] . $new_path;
-			$old_root_path = $_SERVER['DOCUMENT_ROOT'] . str_replace(site_url(), '', $src);
-
+			$new_root_path = ABSPATH . $new_path;
+			$old_root_path = ABSPATH . str_replace(site_url(), '', $src);
 			$old_root_path = str_replace('//', '/', $old_root_path);
 			$new_root_path = str_replace('//', '/', $new_root_path);
 			if (file_exists($new_root_path)) {
@@ -118,6 +112,8 @@
 					return untrailingslashit(site_url()).$new_path;
 				}
 				return $new_path;
+			} else {
+				error_log('there was an error');
 			}
 			return $src;
 		}
