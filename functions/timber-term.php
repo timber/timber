@@ -33,9 +33,9 @@ class TimberTerm extends TimberCore {
 			$term->ID = $term->id;
 		} else if (isset($term->term_id)) {
 			$term->ID = $term->term_id;
-		} else {
-			//echo 'bad call';
-			WPHelper::error_log(debug_backtrace());
+		} else if (is_string($tid)) {
+			echo 'bad call using '.$tid;
+			//WPHelper::error_log(debug_backtrace());
 		}
 		if (function_exists('get_fields')) {
 			//lets get whatever we can from advanced custom fields;
