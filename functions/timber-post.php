@@ -330,7 +330,7 @@ class TimberPost extends TimberCore {
 			foreach ($terms as &$term) {
 				$term = new $TermClass($term->term_id);
 			}
-			if ($merge) {
+			if ($merge && is_array($terms)) {
 				$ret = array_merge($ret, $terms);
 			} else if (count($terms)) {
 				$ret[$tax] = $terms;
