@@ -153,7 +153,18 @@ class TimberPost extends TimberCore {
 			if ($last != '.' && $trimmed) {
 				$text .= ' &hellip; ';
 			}
+			if (!$strip){
+				$last_p_tag = strrpos($text, '</p>');
+				$text = substr($text, 0, $last_p_tag);
+				if ($last != '.' && $trimmed) {
+					$text .= ' &hellip; ';
+				}
+			}
+
 			$text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . $readmore . '</a>';
+			if (!$strip){
+				$text .= '</p>';
+			}
 		}
 		return $text;
 	}
