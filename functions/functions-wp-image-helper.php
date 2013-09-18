@@ -83,8 +83,11 @@
 			$old_root_path = str_replace('//', '/', $old_root_path);
 			$new_root_path = str_replace('//', '/', $new_root_path);
 			if (file_exists($new_root_path)) {
+				error_log('return '.$new_path);
 				if ($abs){
 					return untrailingslashit(site_url()).$new_path;
+				} else {
+					return WPHelper::preslashit($new_path);
 				}
 				return $new_path;
 			}
