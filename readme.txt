@@ -2,8 +2,8 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.12.2
-Tested up to: 3.6
+Stable tag: 0.13.0
+Tested up to: 3.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +36,13 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.13.0 =
+* TimberMenuItems now get the WP classes you've come to know and love (.current-menu-item, etc.)
+* More test coverage for images
+* Resizing external images converts the URL into a md5 hash
+* Removed a dangerous backtrace that could overload errorlog
+* Some object caching on TimberPost->get_terms to improve performance
 
 = 0.12.2 =
 * TimberMenus now contain metadata 'bout the menu (thanks @bryanaka)
@@ -96,6 +103,9 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * print_a now includes the output of (most) methods in addition to properites.
 * added lots of aliases so that things like .author will work the same as .get_author
 
+== Screenshots ==
+<img src="/assets/sample-twig.png" />
+Here's what writ
 
 == Installation ==
 
