@@ -176,6 +176,9 @@ class TimberPost extends TimberCore {
    */
 	function import_custom($pid) {
 		$customs = get_post_custom($pid);
+		if (!is_array($customs)){
+			return;
+		}
 		foreach ($customs as $key => $value) {
 			$v = $value[0];
 			$this->$key = $v;
