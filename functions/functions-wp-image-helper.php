@@ -63,6 +63,9 @@
 		}
 
 		public static function resize($src, $w, $h = 0){
+			if (empty($src)){
+				return '';
+			}
 			if (strstr($src, 'http') && !strstr($src, site_url())) {
 				$src = self::sideload_image($src);
 			}
@@ -83,7 +86,6 @@
 			$old_root_path = str_replace('//', '/', $old_root_path);
 			$new_root_path = str_replace('//', '/', $new_root_path);
 			if (file_exists($new_root_path)) {
-				error_log('return '.$new_path);
 				if ($abs){
 					return untrailingslashit(site_url()).$new_path;
 				} else {
@@ -118,8 +120,10 @@
 					return untrailingslashit(site_url()).$new_path;
 				}
 				return $new_path;
+			} else if (isset($image->error_data['error_loading_image'])) {
+				error_log('Error loading '.$image->error_data['error_loading_image']);
 			} else {
-				error_log('there was an error');
+				WPHelper::error_log($image);
 			}
 			return $src;
 		}
