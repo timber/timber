@@ -2,6 +2,14 @@
 
 class WPHelper {
 
+	public static function transient($slug, $callback, $transient_time = 1800){
+		if (false===($data = get_transient($slug))){
+			$data = $callback();
+			set_transient($slug, $data, $transient_time);
+		}
+		return $data;
+	}
+
 	public static function is_array_assoc($arr) {
 		if (!is_array($arr)) {
 			return false;
@@ -250,6 +258,12 @@ class WPHelper {
 			return $result->post_id;
 		}
 		return 0;
+	}
+
+	public static function get_term_id_by_term_taxonomy_id($ttid){
+		global $wpdb;
+		$query = "SELECT term_id FROM $wpdb->term_taxonomy WHERE term_taxonomy_id = '$ttid'";
+		return $wpdb->get_var($query);
 	}
 
 	/* this $args thing is a fucking mess, fix at some point: 
