@@ -403,7 +403,7 @@ class Timber {
 
         $args['current'] = max( 1, get_query_var('paged') );
         $args['mid_size'] = max(9 - $args['current'], 3);
-        $args['base'] = get_pagenum_link(0).'%_%';
+        $args['base'] = trailingslashit(get_pagenum_link(0)).'%_%';
         $args['prev_next'] = false;
         $args = array_merge($args, $prefs);
         $data['pages'] = WPHelper::paginate_links($args);
