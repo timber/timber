@@ -97,8 +97,7 @@ class TimberTerm extends TimberCore {
 	}
 
 	function get_path() {
-		$p = WPHelper::get_path_base();
-		return $p . $this->get_url();
+		return get_term_link($this);
 	}
 
 	function get_link() {
