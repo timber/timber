@@ -372,18 +372,16 @@ class Timber {
     }
 
     public function load_template($template, $query = false) {
-        if ($query) {
-            global $wp_query;
-            $wp_query = new WP_Query($query);
-        }
         $template = locate_template($template);
-        $GLOBALS['timber_template'] = $template;
         add_action('send_headers', function () {
             header('HTTP/1.1 200 OK');
         });
-        add_action('wp_loaded', function ($template) {
-            if (isset($GLOBALS['timber_template'])) {
-                load_template($GLOBALS['timber_template']);
+        add_action('wp_loaded', function ($template) use ( $template, $query ) {
+            if ($query) {
+                query_posts( $query );
+            }
+            if ($template) {
+                load_template($template);
                 die;
             }
         }, 10, 1);
