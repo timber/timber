@@ -378,8 +378,7 @@ class Timber {
         });
         add_action('wp_loaded', function ($template) use ( $template, $query ) {
             if ($query) {
-                global $wp_query;
-                $wp_query = new WP_Query($query);
+                query_posts( $query );
             }
             if ($template) {
                 load_template($template);
