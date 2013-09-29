@@ -363,8 +363,8 @@ class Timber {
     public static function add_route($route, $callback) {
         global $timber;
         if (!isset($timber->router)) {
-            require_once('router/Router.php');
-            require_once('router/Route.php');
+            require_once('functions/router/Router.php');
+            require_once('functions/router/Route.php');
             $timber->router = new Router();
             $timber->router->setBasePath('/');
         }
