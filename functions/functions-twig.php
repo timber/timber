@@ -37,6 +37,16 @@ class TimberTwig {
 		$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
 		$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
 		
+        /* actions and filters */
+        $twig->addFunction(new Twig_SimpleFunction('action', function(){
+            call_user_func_array('do_action', func_get_args());
+        }));
+        $twig->addFilter( new Twig_SimpleFilter('apply_filters', function(){
+            $args = func_get_args();
+            $tag = current(array_splice($args, 1, 1));
+
+            return apply_filters_ref_array($tag, $args);
+        }));
 
 		$twig->addFunction('bloginfo', new Twig_SimpleFunction('bloginfo', function($show = '', $filter = 'raw'){
 			return get_bloginfo($show, $filter);
