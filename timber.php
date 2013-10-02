@@ -261,7 +261,7 @@ class Timber {
     public static function handle_term_query($taxonomies, $args, $TermClass){
         $terms = get_terms($taxonomies, $args);
         foreach($terms as &$term){
-            $term = new TimberTerm($term->term_id);
+            $term = new $TermClass($term->term_id);
         }
         return $terms;
     }
