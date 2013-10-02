@@ -48,7 +48,9 @@ class TimberTwig {
             return apply_filters_ref_array($tag, $args);
         }));
         $twig->addFunction(new Twig_SimpleFunction('function', array(&$this, 'exec_function')));
+        $twig->addFunction(new Twig_SimpleFunction('fn', array(&$this, 'exec_function')));
 
+        /* bloginfo and translate */
 		$twig->addFunction('bloginfo', new Twig_SimpleFunction('bloginfo', function($show = '', $filter = 'raw'){
 			return get_bloginfo($show, $filter);
 		}));
