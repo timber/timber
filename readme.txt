@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.13.0
+Stable tag: 0.13.5
 Tested up to: 3.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -37,6 +37,13 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 0.13.5 =
+* Added comprehensive support for actions and filters (thanks @mgmartel)
+* Rewrote routing to template to be 100% harmonious with WordPress (thanks again @mgmartel)
+* Fix to some pagination errors when using a custom rewrite on a taxonomy (thanks to @kylehotchkiss)
+* Fixed issue with stripping the ellipses on a preview (thanks to @bryanscode)
+* Functions now work more logically, example: {{function('my_special_function', 'arg1')}}
+
 = 0.13.0 =
 * TimberMenuItems now get the WP classes you've come to know and love (.current-menu-item, etc.)
 * More test coverage for images
@@ -55,7 +62,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * A few fixes that catch issues with absolute vs. relative URLs in resize
 
 = 0.12.0 =
-* Pagination is refactored to be more intutitve, and well, better.
+* Pagination is refactored to be more intuitive, and well, better.
 * Resize is also refactored to respect absolute vs. relative URLs
 * Got rid of lots of old, bogus code.
 
@@ -83,13 +90,13 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * Lots of code cleanup thanks to [Jakub](http://github.com/hsz)
 * Added new function for bloginfo
 * You can now hook into timber_context to filter the $context object
-* Added Timber::get_terms to retrive lists of your blog's terms
+* Added Timber::get_terms to retrieve lists of your blog's terms
 * Added better support for translation
 * Added filter for executing a function, ie {{'my_theme_function'|filter}}
 
 = 0.10.3 =
 * Corrected error with sidebar retrieval
-* language_attributes are now avaiable as part of Timber::get_context(); payload.
+* language_attributes are now available as part of Timber::get_context(); payload.
 * Upgraded to Twig 1.13.1
 
 = 0.10.2 =
@@ -104,8 +111,9 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * added lots of aliases so that things like .author will work the same as .get_author
 
 == Screenshots ==
-<img src="/assets/sample-twig.png" />
-Here's what writ
+
+1. This is what your PHP file will look like
+2. This is what your TWIG file will look like
 
 == Installation ==
 
@@ -128,12 +136,19 @@ Then create a subdirectory called `views` in your theme folder. The make this fi
 
 That's Timber!
 
-
 == Frequently Asked Questions ==
 
 = Can it be used in an existing theme? =
-
 You bet! Watch these **[video tutorials](https://github.com/jarednova/timber/wiki/Video-Tutorials)** to see how.
+
+= Is it used in production? =
+At Upstatement we've now used it on more than a dozen client sites. You can check them out in the showcase here: http://jarednova.github.io/timber/
+
+= Doesn't this all make WordPress harder since there's more to learn? =
+Does jQuery make JavaScript harder? Yes, it's an extra piece to learn -- but it super-charges your ability to write unencumbered JavaScript (and prevents you from having to learn lots of the messy internals). If your answer is "jQuery sucks and everyone should learn how to write vanilla JS or they're rotten stupid people," this tool isn't for you.
+
+= Will you support it? =
+As stated above, we're using it in dozens of sites (and dozens more planned). This isn't going anywhere. Twig is the chosen language for other PHP platforms like Symfony, Drupal8 and Craft. WordPress will eventually adopt Twig too.
 
 = Support? =
 Leave a [GitHub issue](https://github.com/jarednova/timber/issues?state=open) and I'll holler back.
