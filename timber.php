@@ -11,8 +11,8 @@ global $wp_version;
 global $timber;
 
 require_once(__DIR__ . '/functions/functions-twig.php');
-require_once(__DIR__ . '/functions/functions-wp-helper.php');
-require_once(__DIR__ . '/functions/functions-wp-image-helper.php');
+require_once(__DIR__ . '/functions/functions-timber-helper.php');
+require_once(__DIR__ . '/functions/functions-timber-image-helper.php');
 
 require_once(__DIR__ . '/functions/timber-core.php');
 require_once(__DIR__ . '/functions/timber-post.php');
@@ -51,8 +51,18 @@ class Timber {
     protected $router;
 
     public function __construct(){
+        $this->test_compatibility();
         $this->init_constants();
         add_action('init', array(&$this, 'init_routes'));
+    }
+
+    protected function test_compatibility(){
+        if (is_admin() || $_SERVER['PHP_SELF'] == '/wp-login.php'){
+            return;
+        }
+        if (version_compare(phpversion(), '5.3.0', '<') && !is_admin()) {
+            trigger_error('Timber requires PHP 5.3.0 or greater. You have '.phpversion(), E_USER_ERROR);
+        }
     }
 
     protected function init_constants() {
@@ -90,7 +100,7 @@ class Timber {
             $PostClass = $query;
             $query = false;
         }
-        if (WPHelper::is_array_assoc($query) || (is_string($query) && strstr($query, '='))) {
+        if (TimberHelper::is_array_assoc($query) || (is_string($query) && strstr($query, '='))) {
         // we have a regularly formed WP query string or array to use
             return self::get_posts_from_wp_query($query, $PostClass);
         } else if (is_string($query) && !is_integer($query)) {
@@ -112,7 +122,7 @@ class Timber {
             return null;
         } else {
             error_log('I have failed you! in timber.php::94');
-            WPHelper::error_log($query);
+            TimberHelper::error_log($query);
         }
         return $query;
     }
@@ -244,7 +254,7 @@ class Timber {
             //its just a string with a single taxonomy
             $parsed = TimberTermGetter::get_term_query_from_string($args);
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
-        } else if (is_array($args) && WPHelper::is_array_assoc($args)){
+        } else if (is_array($args) && TimberHelper::is_array_assoc($args)){
             //its an associative array, like a good ole query
             $parsed = TimberTermGetter::get_term_query_from_assoc_array($args);
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
@@ -274,14 +284,14 @@ class Timber {
         $data = array();
         $data['http_host'] = 'http://' . $_SERVER['HTTP_HOST'];
         $data['wp_title'] = get_bloginfo('name');
-        $data['wp_head'] = WPHelper::ob_function('wp_head');
-        $data['wp_footer'] = WPHelper::ob_function('wp_footer');
         $data['body_class'] = implode(' ', get_body_class());
         if (function_exists('wp_nav_menu')) {
             $data['wp_nav_menu'] = wp_nav_menu(array('container_class' => 'menu-header', 'echo' => false, 'menu_class' => 'nav-menu'));
         }
+        $data['wp_footer'] = "Note: wp_footer and wp_head have been replaced in Timber 0.14; You'll need to call {{function('wp_footer')}";
+        $data['wp_head'] = "Note: wp_head and wp_footer have been replaced in Timber 0.14; You'll need to call {{function('wp_head'}}";
         $data['theme_dir'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', get_stylesheet_directory());
-        $data['language_attributes'] = WPHelper::ob_function('language_attributes');
+        $data['language_attributes'] = TimberHelper::ob_function('language_attributes');
         $data['stylesheet_uri'] = get_stylesheet_uri();
         $data['template_uri'] = get_template_directory_uri();
         $data = apply_filters('timber_context', $data);
@@ -341,7 +351,7 @@ class Timber {
     ================================ */
 
     public static function get_widgets($widget_id){
-        return WPHelper::ob_function('dynamic_sidebar', array($widget_id));
+        return TimberHelper::ob_function('dynamic_sidebar', array($widget_id));
     }
 
 
@@ -408,7 +418,7 @@ class Timber {
         $args['base'] = trailingslashit(get_pagenum_link(0)).'%_%';
         $args['prev_next'] = false;
         $args = array_merge($args, $prefs);
-        $data['pages'] = WPHelper::paginate_links($args);
+        $data['pages'] = TimberHelper::paginate_links($args);
         $next = next_posts($args['total'], false);
         if ($next){
             $data['next'] = array('link' => $next);
