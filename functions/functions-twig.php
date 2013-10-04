@@ -60,6 +60,15 @@ class TimberTwig {
         	}
         	return new TimberPost($pid);
         }));
+        $twig->addFunction(new Twig_SimpleFunction('TimberImage', function($pid){
+        	if (is_array($pid)){
+        		foreach($pid as &$p){
+        			$p = new TimberImage($p);
+        		}
+        		return $pid;
+        	}
+        	return new TimberImage($pid);
+        }));
 
         /* bloginfo and translate */
 		$twig->addFunction('bloginfo', new Twig_SimpleFunction('bloginfo', function($show = '', $filter = 'raw'){

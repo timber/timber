@@ -1,5 +1,5 @@
 <?php
-
+ 
 class TimberPost extends TimberCore {
 
 	var $ImageClass = 'TimberImage';
@@ -426,7 +426,10 @@ class TimberPost extends TimberCore {
 
 	//This is for integration with Elliot Condon's wonderful ACF
 	function get_field($field_name) {
-		return $this->get_field($field_name, $this->ID);
+		if (function_exists('get_field')){
+			return get_field($field_name, $this->ID);
+		}
+		return get_post_meta($this->ID, $field, true);
 	}
 
 	function import_field($field_name) {
