@@ -16,8 +16,9 @@
 	if (!class_exists('Timber')){
 		echo 'Timber not activated';
 	}
-	
+
 	$data = Timber::get_context();
+	$data['menu'] = new TimberMenu();
 	$posts = Timber::get_posts('TimberPost');
 	$data['posts'] = $posts;
 	Timber::render('index.twig', $data);
