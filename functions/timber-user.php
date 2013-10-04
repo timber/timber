@@ -7,7 +7,7 @@ class TimberUser extends TimberCore {
     }
 
     public function get_link() {
-        $p = WPHelper::get_path_base();
+        $p = TimberHelper::get_path_base();
         return $p . 'author/' . $this->slug();
     }
 

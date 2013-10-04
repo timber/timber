@@ -89,7 +89,7 @@
 				if ($abs){
 					return untrailingslashit(site_url()).$new_path;
 				} else {
-					return WPHelper::preslashit($new_path);
+					return TimberHelper::preslashit($new_path);
 				}
 				return $new_path;
 			}
@@ -123,7 +123,7 @@
 			} else if (isset($image->error_data['error_loading_image'])) {
 				error_log('Error loading '.$image->error_data['error_loading_image']);
 			} else {
-				WPHelper::error_log($image);
+				TimberHelper::error_log($image);
 			}
 			return $src;
 		}

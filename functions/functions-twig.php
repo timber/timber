@@ -32,8 +32,8 @@ class TimberTwig {
 		$twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
 		$twig->addFilter('shortcodes', new Twig_Filter_Function('twig_shortcodes'));
 		$twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
-		$twig->addFilter('twitterify', new Twig_Filter_Function(array('WPHelper', 'twitterify')));
-		$twig->addFilter('twitterfy', new Twig_Filter_Function(array('WPHelper', 'twitterify')));
+		$twig->addFilter('twitterify', new Twig_Filter_Function(array('TimberHelper', 'twitterify')));
+		$twig->addFilter('twitterfy', new Twig_Filter_Function(array('TimberHelper', 'twitterify')));
 		$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
 		$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
 
@@ -119,11 +119,11 @@ function hexrgb($hexstr) {
 }
 
 function wp_resize_letterbox($src, $w, $h, $color = '#000000') {
-	//$old_file = WPHelper::get_full_path($src);
+	//$old_file = TimberHelper::get_full_path($src);
 	$urlinfo = parse_url($src);
 	$old_file = $_SERVER['DOCUMENT_ROOT'].$urlinfo['path'];
-	$new_file = WPHelper::get_letterbox_file_path($urlinfo['path'], $w, $h);
-	$new_file_rel = WPHelper::get_letterbox_file_rel($urlinfo['path'], $w, $h);
+	$new_file = TimberHelper::get_letterbox_file_path($urlinfo['path'], $w, $h);
+	$new_file_rel = TimberHelper::get_letterbox_file_rel($urlinfo['path'], $w, $h);
 	$new_file_boxed = str_replace('-lb-', '-lbox-', $new_file);
 	if (file_exists($new_file_boxed)) {
 		$new_file_rel = str_replace('-lb-', '-lbox-', $new_file_rel);
@@ -170,10 +170,10 @@ function wp_resize_letterbox($src, $w, $h, $color = '#000000') {
 		imagecopy($bg, $image, $x, $y, 0, 0, $owt, $oht);
 		$new_file = str_replace('-lb-', '-lbox-', $new_file);
 		imagejpeg($bg, $new_file);
-		return WPHelper::get_rel_path($new_file);
+		return TimberHelper::get_rel_path($new_file);
 	} else {
 		if (WP_DEBUG){
-			WPHelper::error_log($image);
+			TimberHelper::error_log($image);
 		}
 	}
 	return null;
@@ -238,7 +238,7 @@ function get_calling_script_dir($backtrace) {
 
 
 function twig_get_src_from_attachment_id($aid) {
-  return WPHelper::get_image_path($aid);
+  return TimberHelper::get_image_path($aid);
 }
 
 function twig_get_path($url) {

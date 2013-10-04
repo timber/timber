@@ -2,7 +2,7 @@
 /**
  * The Template for displaying all single posts
  *
- * Methods for WPHelper can be found in the /functions sub-directory
+ * Methods for TimberHelper can be found in the /functions sub-directory
  *
  * @package  WordPress
  * @subpackage  Timber
@@ -13,6 +13,5 @@ $context = Timber::get_context();
 $post = new TimberPost();
 $context['post'] = $post;
 $context['wp_title'] .= ' - ' . $post->post_title;
-$context['comment_form'] = WPHelper::get_comment_form();
-
+$context['comment_form'] = TimberHelper::get_comment_form();
 Timber::render(array('single-' . $post->post_type . '.twig', 'single.twig'), $context);

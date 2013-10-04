@@ -448,6 +448,6 @@ class TimberHelper {
 	}
 }
 
-class WPHelper extends TimberHelper {
+class TimberHelper extends TimberHelper {
 	//for backwards compat, will remove eventually
 }

@@ -7,7 +7,7 @@
  *
  * Learn more: http://codex.wordpress.org/Template_Hierarchy
  *
- * Methods for WPHelper can be found in the /functions sub-directory
+ * Methods for TimberHelper can be found in the /functions sub-directory
  *
  * @package 	WordPress
  * @subpackage 	Timber

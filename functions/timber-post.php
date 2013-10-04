@@ -131,14 +131,14 @@ class TimberPost extends TimberCore {
 		$trimmed = false;
 		if (isset($this->post_excerpt) && strlen($this->post_excerpt)) {
 			if ($force) {
-				$text = WPHelper::trim_words($this->post_excerpt, $len);
+				$text = TimberHelper::trim_words($this->post_excerpt, $len);
 				$trimmed = true;
 			} else {
 				$text = $this->post_excerpt;
 			}
 		}
 		if (!strlen($text)) {
-			$text = WPHelper::trim_words($this->get_content(), $len, false);
+			$text = TimberHelper::trim_words($this->get_content(), $len, false);
 			$trimmed = true;
 		}
 		if (!strlen(trim($text))) {

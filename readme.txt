@@ -112,8 +112,8 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Screenshots ==
 
-1. This is what your PHP file will look like
-2. This is what your TWIG file will look like
+1. This what a normal WordPres PHP file looks like
+2. With Timber, you write Twig files that are super-clear and HTML-centric.
 
 == Installation ==
 
