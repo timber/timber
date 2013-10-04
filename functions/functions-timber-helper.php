@@ -10,6 +10,22 @@ class TimberHelper {
 		return $data;
 	}
 
+	public static function start_timer(){
+		$time = microtime();
+		$time = explode(' ', $time);
+		$time = $time[1] + $time[0];
+		return $time;
+	}
+
+	public static function stop_timer($start){
+		$time = microtime();
+		$time = explode(' ', $time);
+		$time = $time[1] + $time[0];
+		$finish = $time;
+		$total_time = round(($finish - $start), 4);
+		return 'Page generated in '.$total_time.' seconds.';
+	}
+
 	public static function is_array_assoc($arr) {
 		if (!is_array($arr)) {
 			return false;
