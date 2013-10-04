@@ -1,6 +1,6 @@
 <?php
 
-class WPHelper {
+class TimberHelper {
 
 	public static function transient($slug, $callback, $transient_time = 1800){
 		if (false===($data = get_transient($slug))){
@@ -446,5 +446,8 @@ class WPHelper {
 		endswitch;
 		return $r;
 	}
+}
 
+class WPHelper extends TimberHelper {
+	//for backwards compat, will remove eventually
 }

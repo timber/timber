@@ -1,6 +1,6 @@
 <?php
 
-	class WPImageHelper {
+	class TimberImageHelper {
 
 		function hexrgb($hexstr) {
 		    $int = hexdec($hexstr);
@@ -127,4 +127,7 @@
 			}
 			return $src;
 		}
+	}
+
+	class WPImageHelper extends TimberImageHelper {
 	}
