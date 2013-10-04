@@ -12,9 +12,9 @@ class TimberTwig {
 	*/
 	function add_twig_filters($twig) {
 		/* image filters */
-		$twig->addFilter('resize', new Twig_Filter_Function(array('WPImageHelper', 'resize')));
+		$twig->addFilter('resize', new Twig_Filter_Function(array('TimberImageHelper', 'resize')));
 		$twig->addFilter('letterbox', new Twig_Filter_Function('wp_resize_letterbox'));
-		$twig->addFilter('tojpg', new Twig_Filter_Function(array('WPImageHelper', 'img_to_jpg')));
+		$twig->addFilter('tojpg', new Twig_Filter_Function(array('TimberImageHelper', 'img_to_jpg')));
 		$twig->addFilter('get_src_from_attachment_id', new Twig_Filter_Function('twig_get_src_from_attachment_id'));
 
 		/* debugging filters */
@@ -49,6 +49,17 @@ class TimberTwig {
         }));
         $twig->addFunction(new Twig_SimpleFunction('function', array(&$this, 'exec_function')));
         $twig->addFunction(new Twig_SimpleFunction('fn', array(&$this, 'exec_function')));
+
+        /* TimberObjects */
+        $twig->addFunction(new Twig_SimpleFunction('TimberPost', function($pid){
+        	if (is_array($pid)){
+        		foreach($pid as &$p){
+        			$p = new TimberPost($p);
+        		}
+        		return $pid;
+        	}
+        	return new TimberPost($pid);
+        }));
 
         /* bloginfo and translate */
 		$twig->addFunction('bloginfo', new Twig_SimpleFunction('bloginfo', function($show = '', $filter = 'raw'){
