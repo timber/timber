@@ -371,7 +371,7 @@ class Timber {
         $timber->router->map($route, $callback);
     }
 
-    public function load_template($template, $query = false) {
+    public static function load_template($template, $query = false) {
         $template = locate_template($template);
 
         if ($query) {
