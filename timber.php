@@ -377,7 +377,14 @@ class Timber {
         if ($query) {
             add_action('do_parse_request',function() use ($query) {
                 global $wp;
-                $wp->query_vars = $query;
+
+                if ( is_array($query) )
+                    $wp->query_vars = $query;
+                elseif ( !empty($query) )
+                    parse_str($query, $wp->query_vars);
+                else
+                    return true; // Could not interpret query. Let WP try.
+
                 return false;
             });
         }
