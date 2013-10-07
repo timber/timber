@@ -378,6 +378,9 @@ class Timber {
             add_action('do_parse_request',function() use ($query) {
                 global $wp;
 
+                if ( is_callable( $query ) )
+                    $query = call_user_func( $query );
+
                 if ( is_array($query) )
                     $wp->query_vars = $query;
                 elseif ( !empty($query) )
