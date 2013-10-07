@@ -24,6 +24,7 @@ require_once(__DIR__ . '/functions/timber-image.php');
 require_once(__DIR__ . '/functions/timber-menu.php');
 
 require_once(__DIR__ . '/functions/timber-loader.php');
+require_once(__DIR__ . '/functions/timber-function-wrapper.php');
 
 require_once(__DIR__ . '/admin/timber-admin.php');
 
@@ -274,14 +275,14 @@ class Timber {
         $data = array();
         $data['http_host'] = 'http://' . $_SERVER['HTTP_HOST'];
         $data['wp_title'] = get_bloginfo('name');
-        $data['wp_head'] = WPHelper::ob_function('wp_head');
-        $data['wp_footer'] = WPHelper::ob_function('wp_footer');
+        $data['wp_head'] = WPHelper::function_wrapper('wp_head');
+        $data['wp_footer'] = WPHelper::function_wrapper('wp_footer');
         $data['body_class'] = implode(' ', get_body_class());
         if (function_exists('wp_nav_menu')) {
             $data['wp_nav_menu'] = wp_nav_menu(array('container_class' => 'menu-header', 'echo' => false, 'menu_class' => 'nav-menu'));
         }
         $data['theme_dir'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', get_stylesheet_directory());
-        $data['language_attributes'] = WPHelper::ob_function('language_attributes');
+        $data['language_attributes'] = WPHelper::function_wrapper('language_attributes');
         $data['stylesheet_uri'] = get_stylesheet_uri();
         $data['template_uri'] = get_template_directory_uri();
         $data = apply_filters('timber_context', $data);
