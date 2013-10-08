@@ -288,8 +288,6 @@ class Timber {
         if (function_exists('wp_nav_menu')) {
             $data['wp_nav_menu'] = wp_nav_menu(array('container_class' => 'menu-header', 'echo' => false, 'menu_class' => 'nav-menu'));
         }
-        $data['wp_footer'] = "Note: wp_footer and wp_head have been replaced in Timber 0.14; You'll need to call {{function('wp_footer')}";
-        $data['wp_head'] = "Note: wp_head and wp_footer have been replaced in Timber 0.14; You'll need to call {{function('wp_head'}}";
         $data['theme_dir'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', get_stylesheet_directory());
         $data['language_attributes'] = TimberHelper::function_wrapper('language_attributes');
         $data['stylesheet_uri'] = get_stylesheet_uri();
