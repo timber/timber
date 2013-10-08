@@ -6,7 +6,7 @@
 		<article class="post-type-{{post.post_type}}" id="post-{{post.ID}}">
 			<section class="article-content">
 				<h1 class="article-h1">{{post.post_title}}</h1>
-				
+
 				<p class="blog-author">
 					<span>By</span><a href="{{post.author.get_path}}"> {{ post.author.name }} </a><span>&bull;</span> {{ post.display_date }}
 				</p>
@@ -22,7 +22,7 @@
 						{{ comment_form }}
 					</div>
 					<div class="responses">
-	
+
 					{% for cmt in post.get_comments() %}
 						{% include "comment.twig" with {comment:cmt} %}
 					{% endfor %}
