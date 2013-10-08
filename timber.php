@@ -379,13 +379,31 @@ class Timber {
         $timber->router->map($route, $callback);
     }
 
-    public static function load_template($template, $query = false) {
+
+    public static function load_template($template, $query = false, $force_header = 0) {
         $template = locate_template($template);
 
+        if ($force_header) {
+            add_filter('status_header', function($status_header, $header, $text, $protocol) use ($force_header) {
+                $text = get_status_header_desc($force_header);
+                return "$protocol $force_header $text";
+            }, 10, 4 );
+        }
+
         if ($query) {
-            add_action('do_parse_request',function() use ($query) {
+            add_action('do_parse_request', function() use ($query) {
                 global $wp;
-                $wp->query_vars = $query;
+
+                if ( is_callable($query) )
+                    $query = call_user_func($query);
+
+                if ( is_array($query) )
+                    $wp->query_vars = $query;
+                elseif ( !empty($query) )
+                    parse_str($query, $wp->query_vars);
+                else
+                    return true; // Could not interpret query. Let WP try.
+
                 return false;
             });
         }
