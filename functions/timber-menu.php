@@ -46,7 +46,7 @@ class TimberMenu extends TimberCore {
             $index[$item->ID] = new TimberMenuItem($item);
         }
         foreach($index as $item) {
-            if($item->menu_item_parent) {
+            if($item->menu_item_parent && isset($index[$item->menu_item_parent])) {
                 $index[$item->menu_item_parent]->add_child($item);
             } else {
                 $menu[] = $item;
