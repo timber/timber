@@ -48,6 +48,10 @@ class TimberHelper {
 		return $data;
 	}
 
+    public static function function_wrapper($function_name, $defaults = array(), $return_output_buffer = false) {
+        return new TimberFunctionWrapper($function_name, $defaults, $return_output_buffer);
+    }
+
 	public static function is_url($url) {
 		if (!is_string($url)){
 			return false;
@@ -282,7 +286,7 @@ class TimberHelper {
 		return $wpdb->get_var($query);
 	}
 
-	/* this $args thing is a fucking mess, fix at some point: 
+	/* this $args thing is a fucking mess, fix at some point:
 
 	http://codex.wordpress.org/Function_Reference/comment_form */
 
