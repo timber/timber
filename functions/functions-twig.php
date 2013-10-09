@@ -69,6 +69,15 @@ class TimberTwig {
         	}
         	return new TimberImage($pid);
         }));
+        $twig->addFunction(new Twig_SimpleFunction('TimberTerm', function($pid){
+        	if (is_array($pid)){
+        		foreach($pid as &$p){
+        			$p = new TimberTerm($p);
+        		}
+        		return $pid;
+        	}
+        	return new TimberTerm($pid);
+        }));
 
         /* bloginfo and translate */
 		$twig->addFunction('bloginfo', new Twig_SimpleFunction('bloginfo', function($show = '', $filter = 'raw'){

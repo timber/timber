@@ -2,8 +2,9 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.13.5
+Stable tag: 0.14.0
 Tested up to: 3.6.1
+PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +37,14 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.14.0 =
+* More flexiblity for custom routes (thanks @mgmartel)
+* Added filters for core objects (TimberPost and TimberTerm). This greatly helps when you need to have retrived custom fields or repeaters interprted as posts or terms
+* Renamed "WPHelper" to more namespace-friendly "TimberHelper"
+* Added function_wrapper helper to execute functions where they are placed in the template as opposed to when they are generated (@mgmartel)
+* You can now have custom fields processed via post.get_field('my_custom_field'). This is a huge help for using things like Advanced Custom Fields' repeater.
+* Performance improvements
 
 = 0.13.5 =
 * Added comprehensive support for actions and filters (thanks @mgmartel)
