@@ -114,7 +114,7 @@ class TimberPost extends TimberCore {
 
 	function get_post_id_by_name($post_name) {
 		global $wpdb;
-		$query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$post_name'";
+		$query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$post_name' LIMIT 1";
 		$result = $wpdb->get_row($query);
 		return $result->ID;
 	}

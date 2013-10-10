@@ -63,7 +63,7 @@ class TimberTerm extends TimberCore {
 		}
 		$tid = self::get_tid($tid);
 		global $wpdb;
-		$query = "SELECT * FROM $wpdb->term_taxonomy WHERE term_id = '$tid'";
+		$query = "SELECT * FROM $wpdb->term_taxonomy WHERE term_id = '$tid' LIMIT 1";
 		$tax = $wpdb->get_row($query);
 		if (isset($tax) && isset($tax->taxonomy)) {
 			if ($tax->taxonomy) {

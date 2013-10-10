@@ -22,6 +22,7 @@ require_once(__DIR__ . '/functions/timber-term.php');
 require_once(__DIR__ . '/functions/timber-term-getter.php');
 require_once(__DIR__ . '/functions/timber-image.php');
 require_once(__DIR__ . '/functions/timber-menu.php');
+require_once(__DIR__ . '/functions/timber-theme.php');
 
 require_once(__DIR__ . '/functions/timber-loader.php');
 require_once(__DIR__ . '/functions/timber-function-wrapper.php');
@@ -170,7 +171,7 @@ class Timber {
             if (count($q) == 1){
                 $query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$q[0]'";
             } else if (count($q) == 2){
-                $query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$q[1]' AND post_type = '$q[0]'";
+                $query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$q[1]' AND post_type = '$q[0]' LIMIT 1";
             } else {
                 error_log('something we dont understand about '.$slug);
             }
