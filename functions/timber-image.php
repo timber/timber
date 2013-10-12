@@ -87,7 +87,7 @@ class TimberImage extends TimberCore {
 				$this->$key = $value[0];
 			}
 		} else {
-			error_log('Not able to init in TimberImage with iid=' . $iid);
+			TimberHelper::error_log('Not able to init in TimberImage with iid=' . $iid);
 		}
 	}
 

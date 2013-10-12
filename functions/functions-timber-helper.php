@@ -142,6 +142,9 @@ class TimberHelper {
 	}
 
 	public static function error_log($arg) {
+		if (!WP_DEBUG){
+			return;
+		}
 		if (is_object($arg) || is_array($arg)) {
 			$arg = print_r($arg, true);
 		}

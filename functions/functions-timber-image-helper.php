@@ -121,7 +121,7 @@
 				}
 				return $new_path;
 			} else if (isset($image->error_data['error_loading_image'])) {
-				error_log('Error loading '.$image->error_data['error_loading_image']);
+				TimberHelper::error_log('Error loading '.$image->error_data['error_loading_image']);
 			} else {
 				TimberHelper::error_log($image);
 			}

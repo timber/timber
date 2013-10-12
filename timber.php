@@ -123,7 +123,7 @@ class Timber {
             //return self::get_posts_from_wp_query(array(), $PostClass);
             return null;
         } else {
-            error_log('I have failed you! in timber.php::94');
+            TimberHelper::error_log('I have failed you! in timber.php::94');
             TimberHelper::error_log($query);
         }
         return $query;
@@ -169,11 +169,11 @@ class Timber {
             $q = array_filter($q);
             $q = array_values($q);
             if (count($q) == 1){
-                $query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$q[0]'";
+                $query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s", $q[0]);
             } else if (count($q) == 2){
-                $query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$q[1]' AND post_type = '$q[0]' LIMIT 1";
+                $query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = %s LIMIT 1", $q[1], $q[0]);
             } else {
-                error_log('something we dont understand about '.$slug);
+                TimberHelper::error_log('something we dont understand about '.$slug);
             }
         }
         $results = $wpdb->get_col($query);
@@ -204,9 +204,9 @@ class Timber {
                     $PostClassUse = $PostClass[$post_type];
                 } else {
                     if (is_array($PostClass)) {
-                        error_log($post_type.' of '.$rid.' not found in ' . print_r($PostClass, true));
+                        TimberHelper::error_log($post_type.' of '.$rid.' not found in ' . print_r($PostClass, true));
                     } else {
-                        error_log($post_type.' not found in '.$PostClass);
+                        TimberHelper::error_log($post_type.' not found in '.$PostClass);
                     }
                 }
             }
@@ -339,7 +339,7 @@ class Timber {
             }
         }
         if (!$found) {
-            error_log('error loading your sidebar, check to make sure the file exists');
+            TimberHelper::error_log('error loading your sidebar, check to make sure the file exists');
         }
         $ret = ob_get_contents();
         ob_end_clean();

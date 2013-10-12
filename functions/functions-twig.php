@@ -201,9 +201,7 @@ function wp_resize_letterbox($src, $w, $h, $color = '#000000') {
 		imagejpeg($bg, $new_file);
 		return TimberHelper::get_rel_path($new_file);
 	} else {
-		if (WP_DEBUG){
-			TimberHelper::error_log($image);
-		}
+		TimberHelper::error_log($image);
 	}
 	return null;
 }
