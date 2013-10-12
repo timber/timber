@@ -162,7 +162,7 @@ class Timber {
 
     public static function get_posts_from_slug($slug, $PostClass) {
         global $wpdb;
-        $query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$slug'";
+        $query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s", $slug);
         if (strstr($slug, '#')) {
             //we have a post_type directive here
             $q = explode('#', $slug);
