@@ -22,8 +22,8 @@ class WPObjectCacheAdapter implements CacheProviderInterface
         return $this->timberloader->get_cache( $key, $this->cache_group, TimberLoader::CACHE_USE_DEFAULT );
     }
 
-    public function save( $key, $data, $expire = 0 ) {
-        return $this->timberloader->set_cache( $key, $data, $this->cache_group, $expire, TimberLoader::CACHE_USE_DEFAULT );
+    public function save( $key, $value, $expire = 0 ) {
+        return $this->timberloader->set_cache( $key, $value, $this->cache_group, $expire, TimberLoader::CACHE_USE_DEFAULT );
     }
 
 }

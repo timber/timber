@@ -297,7 +297,7 @@ class Timber {
         return $data;
     }
 
-    public static function render($filenames, $data = array(), $echo = true, $expires =  0, $cache_mode = 'cache') {
+    public static function render($filenames, $data = array(), $echo = true, $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT) {
         $caller = self::get_calling_script_dir();
         $loader = new TimberLoader($caller);
         $file = $loader->choose_template($filenames);
