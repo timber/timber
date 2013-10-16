@@ -49,6 +49,7 @@ class Timber {
     public static $locations;
     public static $dirname = 'views';
     public static $cache = false;
+    public static $auto_meta = false;
 
     protected $router;
 
@@ -181,6 +182,7 @@ class Timber {
     }
 
     public static function get_posts_from_wp_query($query = array(), $PostClass = 'TimberPost') {
+        $start = TimberHelper::start_timer();
         $results = get_posts($query);
         return self::handle_post_results($results, $PostClass);
     }
@@ -194,6 +196,7 @@ class Timber {
     }
 
     public static function handle_post_results($results, $PostClass = 'TimberPost') {
+        $start = TimberHelper::start_timer();
         $posts = array();
         foreach ($results as $rid) {
             $PostClassUse = $PostClass;
@@ -211,7 +214,7 @@ class Timber {
                 }
             }
             $post = new $PostClassUse($rid);
-            if (isset($post->post_title)) {
+            if (isset($post->ID)) {
                 $posts[] = $post;
             }
         }
@@ -378,6 +381,15 @@ class Timber {
             $timber->router->setBasePath('/');
         }
         $timber->router->map($route, $callback);
+    }
+
+    public static function cancel_query(){
+        add_action('posts_request', function(){
+            echo 'action!';
+            if (is_main_query()){
+                wp_reset_query();
+            }
+        });
     }
 
 
