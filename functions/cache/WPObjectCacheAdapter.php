@@ -1,24 +1,29 @@
 <?php namespace Timber\Cache;
 
 use Asm89\Twig\CacheExtension\CacheProviderInterface;
+use TimberLoader;
 
 class WPObjectCacheAdapter implements CacheProviderInterface
 {
 
-    private $_cachegroup = 'timber';
+    private $cache_group;
 
-    public function __construct( $cachegroup = '' ) {
-        if ( !empty( $cachegroup ) ) {
-            $this->_cachegroup = $cachegroup;
-        }
+    /**
+     * @var TimberLoader
+     */
+    private $timberloader;
+
+    public function __construct( TimberLoader $timberloader, $cache_group = 'timber' ) {
+        $this->cache_group  = $cache_group;
+        $this->timberloader = $timberloader;
     }
 
     public function fetch( $key ) {
-        return wp_cache_get( $key, $this->_cachegroup );
+        return $this->timberloader->get_cache( $key, $this->cache_group, TimberLoader::CACHE_USE_DEFAULT );
     }
 
     public function save( $key, $data, $expire = 0 ) {
-        return wp_cache_set( $key, $data, $this->_cachegroup, $expire );
+        return $this->timberloader->set_cache( $key, $data, $this->cache_group, $expire, TimberLoader::CACHE_USE_DEFAULT );
     }
 
 }

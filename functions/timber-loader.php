@@ -8,6 +8,7 @@ class TimberLoader {
     const CACHE_OBJECT         = 'cache';
     const CACHE_TRANSIENT      = 'transient';
     const CACHE_SITE_TRANSIENT = 'site-transient';
+    const CACHE_USE_DEFAULT    = 'default';
 
     public static $cache_modes = array(
         self::CACHE_NONE,
@@ -39,7 +40,7 @@ class TimberLoader {
 
         $output = false;
         if ( false !== $expires )
-            $output = self::get_cache( $key, self::CACHEGROUP, $cache_mode );
+            $output = $this->get_cache( $key, self::CACHEGROUP, $cache_mode );
 
         if ( false === $output || null === $output ) {
             $twig = $this->get_twig();
@@ -47,7 +48,7 @@ class TimberLoader {
         }
 
         if ( false !== $output && false !== $expires )
-            self::set_cache( $key, $output, self::CACHEGROUP, $expires, $cache_mode );
+            $this->set_cache( $key, $output, self::CACHEGROUP, $expires, $cache_mode );
 
         return $output;
 
@@ -179,20 +180,20 @@ class TimberLoader {
             TimberCache_Loader::register();
 
             $key_generator   = new \Timber\Cache\KeyGenerator();
-            $cache_provider  = new \Timber\Cache\WPObjectCacheAdapter( $this->cache_mode );
+            $cache_provider  = new \Timber\Cache\WPObjectCacheAdapter( $this );
             $cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy( $cache_provider, $key_generator );
             $cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
 
             return $cache_extension;
         }
 
-    public static function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = 'cache' ) {
+    public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
         $object_cache = false;
 
         if ( isset( $GLOBALS[ 'wp_object_cache' ] ) && is_object( $GLOBALS[ 'wp_object_cache' ] ) )
             $object_cache = true;
 
-        $cache_mode = self::_get_cache_mode( $cache_mode );
+        $cache_mode = $this->_get_cache_mode( $cache_mode );
 
         $value = null;
 
@@ -206,7 +207,7 @@ class TimberLoader {
         return $value;
     }
 
-    public static function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = 'cache' ) {
+    public function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
         $object_cache = false;
 
         if ( isset( $GLOBALS[ 'wp_object_cache' ] ) && is_object( $GLOBALS[ 'wp_object_cache' ] ) )
@@ -227,13 +228,13 @@ class TimberLoader {
         return $value;
     }
 
-        private static function _get_cache_mode( $cache_mode ) {
-            if ( empty( $cache_mode ) )
+        private function _get_cache_mode( $cache_mode ) {
+            if ( empty( $cache_mode ) || self::CACHE_USE_DEFAULT === $cache_mode )
                 $cache_mode = $this->cache_mode;
 
             // Fallback if self::$cache_mode did not get a valid value
             if ( !in_array( $cache_mode, self::$cache_modes ) )
-                $cache_mode = 'cache';
+                $cache_mode = self::CACHE_OBJECT;
 
             return $cache_mode;
         }
