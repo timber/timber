@@ -32,6 +32,13 @@ Once Timber is installed and activated in your plugin directory, it gives any Wo
 * **[Video Tutorials](https://github.com/jarednova/timber/wiki/Video-Tutorials)**
 * [Overview / Getting Started Guide](https://github.com/jarednova/timber/wiki/getting-started)
 
+* * *
+
+### Installation
+Just drag the `timber` folder into `wp-content/plugins` -- then activate in your WordPress admin.
+
+* * *
+
 #### What does it look like?
 Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https://github.com/viewportindustries/starkers) or [Boilerplate theme](https://github.com/zencoder/html5-boilerplate-for-wordpress) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
 
