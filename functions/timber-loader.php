@@ -2,7 +2,6 @@
 
 class TimberLoader {
 
-
     const CACHEGROUP = 'timberloader';
 
     const CACHE_NONE           = 'none';
@@ -10,7 +9,7 @@ class TimberLoader {
     const CACHE_TRANSIENT      = 'transient';
     const CACHE_SITE_TRANSIENT = 'site-transient';
 
-    private $_cache_modes = array(
+    public static $cache_modes = array(
         self::CACHE_NONE,
         self::CACHE_OBJECT,
         self::CACHE_TRANSIENT,
@@ -35,24 +34,12 @@ class TimberLoader {
                 $expires = $expires[0];
         }
 
-        if ( empty( $cache_mode ) )
-            $cache_mode = $this->cache_mode;
-
-        if ( 'none' == $cache_mode )
-            $expires = false;
-
-        if ( false !== $expires && empty( $expires ) )
-            $expires = 0;
-
-        if ( !in_array( $cache_mode, $this->_cache_modes ) )
-            $cache_mode = 'cache';
-
         ksort( $data );
         $key = md5( $file . json_encode( $data ) );
 
         $output = false;
         if ( false !== $expires )
-            $output = $this->_cache_get( $key, $cache_mode );
+            $output = $this->get_cache( $key, self::CACHEGROUP, $cache_mode );
 
         if ( false === $output || null === $output ) {
             $twig = $this->get_twig();
@@ -60,53 +47,62 @@ class TimberLoader {
         }
 
         if ( false !== $output && false !== $expires )
-            $this->_cache_set( $key, $output, $expires, $cache_mode );
+            $this->set_cache( $key, $output, self::CACHEGROUP, $expires, $cache_mode );
 
         return $output;
 
 	}
 
-        private function _cache_get( $key, $cache_mode = 'cache' ) {
-            $object_cache = false;
+    public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = 'cache' ) {
+        $object_cache = false;
 
-            if ( isset( $GLOBALS[ 'wp_object_cache' ] ) && is_object( $GLOBALS[ 'wp_object_cache' ] ) )
-                $object_cache = true;
+        if ( isset( $GLOBALS[ 'wp_object_cache' ] ) && is_object( $GLOBALS[ 'wp_object_cache' ] ) )
+            $object_cache = true;
 
-            if ( !in_array( $cache_mode, $this->_cache_modes ) )
+        $cache_mode = $this->_get_cache_mode( $cache_mode );
+
+        $value = null;
+
+        if ( self::CACHE_TRANSIENT === $cache_mode )
+            $value = get_transient( $group . '_' . $key );
+        elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode )
+            $value = get_site_transient( $group . '_' . $key );
+        elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache )
+            $value = wp_cache_get( $key, $group );
+
+        return $value;
+    }
+
+    public function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = 'cache' ) {
+        $object_cache = false;
+
+        if ( isset( $GLOBALS[ 'wp_object_cache' ] ) && is_object( $GLOBALS[ 'wp_object_cache' ] ) )
+            $object_cache = true;
+
+        if ( (int) $expires < 1 )
+            $expires = 0;
+
+        $cache_mode = $this->_get_cache_mode( $cache_mode );
+
+        if ( self::CACHE_TRANSIENT === $cache_mode )
+            set_transient( $group . '_' . $key, $value, $expires );
+        elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode )
+            set_site_transient( $group . '_' . $key, $value, $expires );
+        elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache )
+            wp_cache_set( $key, $group, $expires );
+
+        return $value;
+    }
+
+        private function _get_cache_mode( $cache_mode ) {
+            if ( empty( $cache_mode ) )
+                $cache_mode = $this->cache_mode;
+
+            // Fallback if $this->cache_mode did not get a valid value
+            if ( !in_array( $cache_mode, self::$cache_modes ) )
                 $cache_mode = 'cache';
 
-            $value = null;
-
-            if ( 'transient' == $cache_mode )
-                $value = get_transient( self::CACHEGROUP . '_' . $key );
-            elseif ( 'site-transient' == $cache_mode )
-                $value = get_site_transient( self::CACHEGROUP . '_' . $key );
-            elseif ( 'cache' == $cache_mode && $object_cache )
-                $value = wp_cache_get( $key, self::CACHEGROUP );
-
-            return $value;
-        }
-
-        private function _cache_set( $key, $value, $expires = 0, $cache_mode = 'cache' ) {
-            $object_cache = false;
-
-            if ( isset( $GLOBALS[ 'wp_object_cache' ] ) && is_object( $GLOBALS[ 'wp_object_cache' ] ) )
-                $object_cache = true;
-
-            if ( (int) $expires < 1 )
-                $expires = 0;
-
-            if ( !in_array( $cache_mode, $this->_cache_modes ) )
-                $cache_mode = 'cache';
-
-            if ( 'transient' == $cache_mode )
-                set_transient( self::CACHEGROUP . '_' . $key, $value, $expires );
-            elseif ( 'site-transient' == $cache_mode )
-                set_site_transient( self::CACHEGROUP . '_' . $key, $value, $expires );
-            elseif ( 'cache' == $cache_mode && $object_cache )
-                wp_cache_set( $key, self::CACHEGROUP, $expires );
-
-            return $value;
+            return $cache_mode;
         }
 
 	function choose_template($filenames) {
@@ -235,7 +231,7 @@ class TimberLoader {
             TimberCache_Loader::register();
 
             $key_generator   = new \Timber\Cache\KeyGenerator();
-            $cache_provider  = new \Timber\Cache\WPObjectCacheAdapter();
+            $cache_provider  = new \Timber\Cache\WPObjectCacheAdapter( $this->cache_mode );
             $cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy( $cache_provider, $key_generator );
             $cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
 
