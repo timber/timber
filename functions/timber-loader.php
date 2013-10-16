@@ -2,16 +2,31 @@
 
 class TimberLoader {
 
-	var $locations;
 
     const CACHEGROUP = 'timberloader';
-    private $_cache_modes = array( 'none', 'transient', 'site-transient', 'cache' );
+
+    const CACHE_NONE           = 'none';
+    const CACHE_OBJECT         = 'cache';
+    const CACHE_TRANSIENT      = 'transient';
+    const CACHE_SITE_TRANSIENT = 'site-transient';
+
+    private $_cache_modes = array(
+        self::CACHE_NONE,
+        self::CACHE_OBJECT,
+        self::CACHE_TRANSIENT,
+        self::CACHE_SITE_TRANSIENT
+    );
+
+    protected $cache_mode = self::CACHE_OBJECT;
+
+    var $locations;
 
 	function __construct($caller = false) {
 		$this->locations = $this->get_locations($caller);
+        $this->cache_mode = apply_filters( 'timber_cache_mode', $this->cache_mode );
 	}
 
-	function render( $file, $data = null, $expires = false, $cache_mode = 'cache' ) {
+	function render( $file, $data = null, $expires = false, $cache_mode = '' ) {
         // Different $expires if user is anonymous or logged in
         if ( is_array( $expires ) ) {
             if ( is_user_logged_in() && isset( $expires[1] ) )
@@ -19,6 +34,9 @@ class TimberLoader {
             else
                 $expires = $expires[0];
         }
+
+        if ( empty( $cache_mode ) )
+            $cache_mode = $this->cache_mode;
 
         if ( 'none' == $cache_mode )
             $expires = false;
