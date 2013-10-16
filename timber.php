@@ -297,13 +297,13 @@ class Timber {
         return $data;
     }
 
-    public static function render($filenames, $data = array(), $echo = true) {
+    public static function render($filenames, $data = array(), $echo = true, $expires =  0, $cache_mode = 'cache') {
         $caller = self::get_calling_script_dir();
         $loader = new TimberLoader($caller);
         $file = $loader->choose_template($filenames);
         $output = '';
         if (strlen($file)) {
-            $output = $loader->render($file, $data);
+            $output = $loader->render($file, $data, $expires, $cache_mode);
         }
         if ($echo) {
             echo $output;
