@@ -26,7 +26,7 @@ class TimberLoader {
         $this->cache_mode = apply_filters( 'timber_cache_mode', $this->cache_mode );
 	}
 
-	function render( $file, $data = null, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
         // Different $expires if user is anonymous or logged in
         if ( is_array( $expires ) ) {
             if ( is_user_logged_in() && isset( $expires[1] ) )
