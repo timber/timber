@@ -48,7 +48,7 @@ class TimberLoader {
 
 	}
 
-        private function _cache_get ( $key, $cache_mode = 'cache' ) {
+        private function _cache_get( $key, $cache_mode = 'cache' ) {
             $object_cache = false;
 
             if ( isset( $GLOBALS[ 'wp_object_cache' ] ) && is_object( $GLOBALS[ 'wp_object_cache' ] ) )
@@ -205,7 +205,22 @@ class TimberLoader {
 		}
 		$twig = new Twig_Environment($loader, $params);
 		$twig->addExtension(new Twig_Extension_Debug());
+        $twig->addExtension($this->_get_cache_extension());
+
 		$twig = apply_filters('twig_apply_filters', $twig);
 		return $twig;
 	}
+
+        private function _get_cache_extension() {
+            $loader_loc = trailingslashit(TIMBER_LOC) . 'functions/cache/loader.php';
+            require_once($loader_loc);
+            TimberCache_Loader::register();
+
+            $key_generator   = new \Timber\Cache\KeyGenerator();
+            $cache_provider  = new \Timber\Cache\WPObjectCacheAdapter();
+            $cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy( $cache_provider, $key_generator );
+            $cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
+
+            return $cache_extension;
+        }
 }
