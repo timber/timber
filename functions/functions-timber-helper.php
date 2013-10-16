@@ -3,7 +3,7 @@
 class TimberHelper {
 
 	public static function transient($slug, $callback, $transient_time = 1800){
-		if (false===($data = get_transient($slug))){
+		if (false === ($data = get_transient($slug)) || WP_DEBUG){
 			$data = $callback();
 			set_transient($slug, $data, $transient_time);
 		}
@@ -23,7 +23,7 @@ class TimberHelper {
 		$time = $time[1] + $time[0];
 		$finish = $time;
 		$total_time = round(($finish - $start), 4);
-		return 'Page generated in '.$total_time.' seconds.';
+		return $total_time.' seconds.';
 	}
 
 	public static function is_array_assoc($arr) {
