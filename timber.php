@@ -49,7 +49,7 @@ class Timber {
     public static $locations;
     public static $dirname = 'views';
     public static $cache = false;
-    public static $auto_meta = false;
+    public static $auto_meta = true;
 
     protected $router;
 
@@ -385,7 +385,6 @@ class Timber {
 
     public static function cancel_query(){
         add_action('posts_request', function(){
-            echo 'action!';
             if (is_main_query()){
                 wp_reset_query();
             }

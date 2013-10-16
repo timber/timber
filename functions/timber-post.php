@@ -7,6 +7,8 @@ class TimberPost extends TimberCore {
 	var $_can_edit;
 	var $_get_terms;
 
+	var $_custom_imported = false;
+
 	public static $representation = 'post';
 
 	/**
@@ -175,22 +177,16 @@ class TimberPost extends TimberCore {
    * @param integer $pid a post ID number
    * @nodoc
    */
-	function import_custom($pid) {
+	function get_post_custom($pid) {
 		$customs = get_post_custom($pid);
 		if (!is_array($customs) || empty($customs)){
 			return;
 		}
 		foreach ($customs as $key => $value) {
 			$v = $value[0];
-			$this->$key = maybe_unserialize($v);
-			/*
-			if (is_serialized($v)) {
-				if (gettype(unserialize($v)) == 'array') {
-					$this->$key = unserialize($v);
-				}
-			}
-			*/
+			$customs[$key] = maybe_unserialize($v);
 		}
+		return $customs;
 	}
 
 	/**
@@ -248,8 +244,9 @@ class TimberPost extends TimberCore {
 			return null;
 		}
 		$post->slug = $post->post_name;
-		$this->import_custom($post->ID);
 		$post->status = $post->post_status;
+		$customs = $this->get_post_custom($post->ID);
+		$post = (object) array_merge((array) $post, (array) $customs);
 		return $post;
 	}
 
@@ -452,11 +449,16 @@ class TimberPost extends TimberCore {
 	}
 
 	function display_date(){
-		return $this->display_date();
+		return date(get_option('date_format'), strtotime($this->post_date));
 	}
 
 	function link() {
 		return $this->get_permalink();
+	}
+
+	function path(){
+		$path = TimberHelper::get_rel_url($this->get_permalink());
+		return TimberHelper::preslashit($path);
 	}
 
 	function permalink() {

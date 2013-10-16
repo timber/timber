@@ -82,6 +82,12 @@ class TimberHelper {
 		return $old_root_path;
 	}
 
+	public static function get_rel_url($url){
+		$url = str_replace('http://', '', $url);
+		$url = str_replace('https://', '', $url);
+		return str_replace($_SERVER['HTTP_HOST'], '', $url);
+	}
+
 	public static function get_rel_path($src) {
 		return str_replace($_SERVER['DOCUMENT_ROOT'], '', $src);
 	}

@@ -8,20 +8,18 @@ class TimberUser extends TimberCore {
 
     public function get_link() {
         $p = TimberHelper::get_path_base();
-        return $p . 'author/' . $this->slug();
+        global $wp_rewrite;
+        return $p . trailingslashit($wp_rewrite->author_base) . $this->slug();
     }
 
     function init($uid = false) {
         if (!$uid) {
             $uid = get_current_user_id();
         }
-        if (function_exists('get_userdata')) {
-            $data = get_userdata($uid);
-            if (is_object($data) && isset($data)) {
-                $this->import($data->data);
-            }
+        $data = get_userdata($uid);
+        if (is_object($data) && isset($data)) {
+            $this->import($data->data);
         }
-
         $this->ID = $uid;
         $this->import_custom();
     }
