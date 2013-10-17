@@ -14,13 +14,10 @@
  */
 
 	if (!class_exists('Timber')){
-		echo 'Timber not activated';
+		echo 'Timber not activated. Make sure you activate the plugin in <a href="/wp-admin/plugins.php#timber">/wp-admin/plugins.php</a>';
 	}
-
 	$data = Timber::get_context();
-	$data['menu'] = new TimberMenu();
-	$posts = Timber::get_posts('TimberPost');
-	$data['posts'] = $posts;
+	$data['posts'] = Timber::get_posts();
 	$data['foo'] = 'bar';
 	$templates = array('index.twig');
 	if (is_home()){

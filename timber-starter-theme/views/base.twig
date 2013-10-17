@@ -8,11 +8,16 @@
             <div class="wrapper">
 
                 <h1 class="hdr-logo" role="banner">
-                    <a class="ink-logo-text" href="/" title="Timber" rel="home">Timber</a>
+                    <a class="hdr-logo-link" href="/" title="Timber" rel="home">{{bloginfo('name')}}</a>
                 </h1>
-
-                <nav id="access" class="ink-navigation" role="navigation">
-                    {{wp_nav_menu}}
+                <nav id="access" class="main-navigation" role="navigation">
+                    <ul>
+                    {% for item in menu.items %}
+                        <li id="menu-item-{{item.ID}}" class="menu-item menu-item-type-{{item.type}} menu-item-object-{{item.object}} menu-item-{{item.ID}}">
+                            <a href="{{item.link}}">{{item.title}}</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
                 </nav><!-- #access -->
 
             </div>
