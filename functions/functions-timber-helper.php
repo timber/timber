@@ -106,14 +106,13 @@ class TimberHelper {
   	}
 
 	public static function get_letterbox_file_path($src, $w, $h) {
-		$root = $_SERVER['DOCUMENT_ROOT'];
 		$path_parts = pathinfo($src);
 		$basename = $path_parts['filename'];
 		$ext = $path_parts['extension'];
 		$dir = $path_parts['dirname'];
 		$newbase = $basename . '-lb-' . $w . 'x' . $h;
 		$new_path = $dir . '/' . $newbase . '.' . $ext;
-		$new_root_path = $root . $new_path;
+		$new_root_path = ABSPATH . $new_path;
 		$new_root_path = str_replace('//', '/', $new_root_path);
 		return $new_root_path;
 	}
@@ -268,12 +267,12 @@ class TimberHelper {
 
 	public static function get_posts_by_meta($key, $value) {
 		global $wpdb;
-		$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '$key' AND meta_value = '$value'";
-		$results = $wpdb->get_results($query);
+		$query = $wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $key, $value);
+		$results = $wpdb->col($query);
 		$pids = array();
 		foreach ($results as $result) {
-			if (get_post($result->post_id)) {
-				$pids[] = $result->post_id;
+			if (get_post($result)) {
+				$pids[] = $result;
 			}
 		}
 		if (count($pids)) {
@@ -284,17 +283,17 @@ class TimberHelper {
 
 	public static function get_post_by_meta($key, $value) {
 		global $wpdb;
-		$query = "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '$key' AND meta_value = '$value' ORDER BY post_id";
-		$result = $wpdb->get_row($query);
-		if ($result && get_post($result->post_id)) {
-			return $result->post_id;
+		$query = $wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s ORDER BY post_id LIMIT 1", $key, $value);
+		$result = $wpdb->get_var($query);
+		if ($result && get_post($result)) {
+			return $result;
 		}
 		return 0;
 	}
 
 	public static function get_term_id_by_term_taxonomy_id($ttid){
 		global $wpdb;
-		$query = "SELECT term_id FROM $wpdb->term_taxonomy WHERE term_taxonomy_id = '$ttid'";
+		$query = $wpdb->prepare("SELECT term_id FROM $wpdb->term_taxonomy WHERE term_taxonomy_id = %s", $ttid);
 		return $wpdb->get_var($query);
 	}
 

@@ -69,7 +69,7 @@ class Timber {
     }
 
     protected function init_constants() {
-        $timber_loc = str_replace(realpath($_SERVER['DOCUMENT_ROOT']), '', realpath(__DIR__));
+        $timber_loc = str_replace(realpath(ABSPATH), '', realpath(__DIR__));
         $plugin_url_path = str_replace($_SERVER['HTTP_HOST'], '', plugins_url());
         $plugin_url_path = str_replace('https://', '', $plugin_url_path);
         $plugin_url_path = str_replace('http://', '', $plugin_url_path);
@@ -292,7 +292,7 @@ class Timber {
         if (function_exists('wp_nav_menu')) {
             $data['wp_nav_menu'] = wp_nav_menu(array('container_class' => 'menu-header', 'echo' => false, 'menu_class' => 'nav-menu'));
         }
-        $data['theme_dir'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', get_stylesheet_directory());
+        $data['theme_dir'] = str_replace(ABSPATH, '', get_stylesheet_directory());
         $data['language_attributes'] = TimberHelper::function_wrapper('language_attributes');
         $data['stylesheet_uri'] = get_stylesheet_uri();
         $data['template_uri'] = get_template_directory_uri();
@@ -466,7 +466,7 @@ class Timber {
 
     public static function get_calling_script_path($offset = 0) {
         $dir = self::get_calling_script_dir($offset);
-        return str_replace($_SERVER['DOCUMENT_ROOT'], '', realpath($dir));
+        return str_replace(ABSPATH, '', realpath($dir));
     }
 
     public static function get_calling_script_dir($offset = 0) {
