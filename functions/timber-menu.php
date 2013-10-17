@@ -8,15 +8,14 @@ class TimberMenu extends TimberCore {
 
     function __construct($slug = 0) {
         $locations = get_nav_menu_locations();
-        if ($slug === 0){
-            reset($locations);
-            $slug = key($locations);
+        if ($slug != 0 && is_numeric($slug)){
+            $menu_id = $slug;
+        } else if (count($locations)){
+            $menu_id = $this->get_menu_id_from_locations($slug, $locations);
+        } else {
+            $menu_id = $this->get_menu_id_from_terms($slug);
         }
-        if (is_numeric($slug)){
-            $slug = array_search($slug, $locations);
-        }
-        if (isset($locations[$slug])) {
-            $menu_id = $locations[$slug];
+        if ($menu_id){
             $menu = wp_get_nav_menu_items($menu_id);
             $menu = self::order_children($menu);
             $this->items = $menu;
@@ -28,6 +27,40 @@ class TimberMenu extends TimberCore {
         }
         return null;
     }
+
+    private function get_menu_id_from_locations($slug, $locations){
+        if ($slug === 0){
+            $slug = $this->get_menu_id_from_terms($slug);
+        }
+        if (is_numeric($slug)){
+            $slug = array_search($slug, $locations);
+        }
+        if (isset($locations[$slug])) {
+            return $locations[$slug];
+        }
+    }
+
+    private function get_menu_id_from_terms($slug = 0){
+        if (!is_numeric($slug) && is_string($slug)){
+            //we have a string so lets search for that
+            $menu_id = get_term_by('slug', $slug, 'nav_menu');
+            if ($menu_id){
+                return $menu_id;
+            }
+            $menu_id = get_term_by('name', $slug, 'nav_menu');
+            if ($menu_id){
+                return $menu_id;
+            }
+        }
+        $menus = get_terms( 'nav_menu', array( 'hide_empty' => true ) );
+        if (is_array($menus) && count($menus)){
+            if (isset($menus[0]->term_id)){
+                return $menus[0]->term_id;
+            }
+        }
+        return 0;
+    }
+
 
     function find_parent_item_in_menu($menu_items, $parent_id) {
         foreach ($menu_items as &$item) {
@@ -72,10 +105,6 @@ class TimberMenuItem extends TimberCore {
         $this->import_classes($data);
     }
 
-    function get_link() {
-        return $this->get_path();
-    }
-
     function name() {
         return $this->post_title;
     }
@@ -84,8 +113,12 @@ class TimberMenuItem extends TimberCore {
         return $this->post_name;
     }
 
+    function get_link() {
+        return $this->url;
+    }
+
     function get_path() {
-        return $this->url_to_path($this->url);
+        return TimberHelper::get_rel_url($this->url);
     }
 
     function add_child($item) {
@@ -109,6 +142,10 @@ class TimberMenuItem extends TimberCore {
     /* Aliases */
     function link(){
         return $this->get_link();
+    }
+
+    function path(){
+        return $this->get_path();
     }
 
     function permalink(){

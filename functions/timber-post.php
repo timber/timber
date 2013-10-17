@@ -177,6 +177,14 @@ class TimberPost extends TimberCore {
    * @param integer $pid a post ID number
    * @nodoc
    */
+  	function import_custom($pid = false){
+  		if (!$pid){
+  			$pid = $this->ID;
+  		}
+  		$customs = $this->get_post_custom($pid);
+  		$this->import($customs);
+  	}
+
 	function get_post_custom($pid) {
 		$customs = get_post_custom($pid);
 		if (!is_array($customs) || empty($customs)){

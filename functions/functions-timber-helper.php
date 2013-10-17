@@ -76,20 +76,23 @@ class TimberHelper {
 	}
 
 	public static function get_full_path($src) {
-		$root = $_SERVER['DOCUMENT_ROOT'];
+		$root = ABSPATH;
 		$old_root_path = $root . $src;
 		$old_root_path = str_replace('//', '/', $old_root_path);
 		return $old_root_path;
 	}
 
 	public static function get_rel_url($url){
+		if (!strstr($url, $_SERVER['HTTP_HOST'])){
+			return $url;
+		}
 		$url = str_replace('http://', '', $url);
 		$url = str_replace('https://', '', $url);
 		return str_replace($_SERVER['HTTP_HOST'], '', $url);
 	}
 
 	public static function get_rel_path($src) {
-		return str_replace($_SERVER['DOCUMENT_ROOT'], '', $src);
+		return str_replace(ABSPATH, '', $src);
 	}
 
 	public static function get_letterbox_file_rel($src, $w, $h) {
