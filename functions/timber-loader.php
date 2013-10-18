@@ -17,7 +17,7 @@ class TimberLoader {
         self::CACHE_SITE_TRANSIENT
     );
 
-    protected $cache_mode = self::CACHE_OBJECT;
+    protected $cache_mode = self::CACHE_TRANSIENT;
 
     var $locations;
 
@@ -187,6 +187,10 @@ class TimberLoader {
             return $cache_extension;
         }
 
+    public function cache($key, $callback, $expires = 0){
+    	TimberHelper::transient($key, $callback, $expires);
+    }
+
     public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
         $object_cache = false;
 
@@ -199,10 +203,12 @@ class TimberLoader {
 
         if ( self::CACHE_TRANSIENT === $cache_mode )
             $value = get_transient( $group . '_' . $key );
-        elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode )
-            $value = get_site_transient( $group . '_' . $key );
+
+		elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode )
+			$value = get_site_transient( $group . '_' . $key );
+
         elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache )
-            $value = wp_cache_get( $key, $group );
+			$value = wp_cache_get( $key, $group );
 
         return $value;
     }
