@@ -38,14 +38,6 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
-= 0.14.0 =
-* More flexiblity for custom routes (thanks @mgmartel)
-* Added filters for core objects (TimberPost and TimberTerm). This greatly helps when you need to have retrived custom fields or repeaters interprted as posts or terms
-* Renamed "WPHelper" to more namespace-friendly "TimberHelper"
-* Added function_wrapper helper to execute functions where they are placed in the template as opposed to when they are generated (@mgmartel)
-* You can now have custom fields processed via post.get_field('my_custom_field'). This is a huge help for using things like Advanced Custom Fields' repeater.
-* Performance improvements
-
 = 0.14.1 =
 * Added hooks to play nicely with Timber Debug Bar
 * Fixed-up Timber Term aliases, link, path, etc.
