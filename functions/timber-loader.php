@@ -4,6 +4,8 @@ class TimberLoader {
 
     const CACHEGROUP = 'timberloader';
 
+    const TRANS_KEY_LEN		   = 50;
+
     const CACHE_NONE           = 'none';
     const CACHE_OBJECT         = 'cache';
     const CACHE_TRANSIENT      = 'transient';
@@ -187,10 +189,6 @@ class TimberLoader {
             return $cache_extension;
         }
 
-    public function cache($key, $callback, $expires = 0){
-    	TimberHelper::transient($key, $callback, $expires);
-    }
-
     public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
         $object_cache = false;
 
@@ -201,11 +199,12 @@ class TimberLoader {
 
         $value = null;
 
+        $trans_key = substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
         if ( self::CACHE_TRANSIENT === $cache_mode )
-            $value = get_transient( $group . '_' . $key );
+            $value = get_transient( $trans_key );
 
 		elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode )
-			$value = get_site_transient( $group . '_' . $key );
+			$value = get_site_transient( $trans_key );
 
         elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache )
 			$value = wp_cache_get( $key, $group );
@@ -223,11 +222,14 @@ class TimberLoader {
             $expires = 0;
 
         $cache_mode = self::_get_cache_mode( $cache_mode );
+        $trans_key = substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
 
         if ( self::CACHE_TRANSIENT === $cache_mode )
-            set_transient( $group . '_' . $key, $value, $expires );
+            set_transient( $trans_key, $value, $expires );
+
         elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode )
-            set_site_transient( $group . '_' . $key, $value, $expires );
+            set_site_transient( $trans_key, $value, $expires );
+
         elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache )
             wp_cache_set( $key, $value, $group, $expires );
 
