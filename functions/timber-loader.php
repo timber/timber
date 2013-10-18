@@ -10,6 +10,11 @@ class TimberLoader {
 
 	function render($file, $data = null) {
 		$twig = $this->get_twig();
+		if (strlen($file)){
+			$loader = $this->get_loader();
+			$result = $loader->getCacheKey($file);
+			do_action('timber_loader_render_file', $result);
+		}
 		return $twig->render($file, $data);
 	}
 

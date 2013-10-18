@@ -16,7 +16,7 @@ class TimberAdmin {
 	}
 
 	function settings_link( $links, $file ) {
-		if (strstr($file, 'timber')){
+		if (strstr($file, 'timber/timber.php')){
 		    return array_merge(
 		        array(
 		            'settings' => '<a href="' . get_bloginfo( 'wpurl' ) . '/wp-admin/themes.php?page=timber-getting-started">Starter Guide</a>'
