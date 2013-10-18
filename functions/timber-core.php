@@ -14,10 +14,11 @@ class TimberCore {
 	}
 
 	function url_to_path($url = '') {
-		if (!strlen($url) && $this->url) {
+		if (!empty($url) && !strlen($url) && $this->url) {
 			$url = $this->url;
 		}
 		$url_info = parse_url($url);
+                if(isset($url_info['path']))
 		return $url_info['path'];
 	}
 
