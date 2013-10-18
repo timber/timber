@@ -2,20 +2,62 @@
 
 class TimberLoader {
 
-	var $locations;
+    const CACHEGROUP = 'timberloader';
+
+    const TRANS_KEY_LEN		   = 50;
+
+    const CACHE_NONE           = 'none';
+    const CACHE_OBJECT         = 'cache';
+    const CACHE_TRANSIENT      = 'transient';
+    const CACHE_SITE_TRANSIENT = 'site-transient';
+    const CACHE_USE_DEFAULT    = 'default';
+
+    public static $cache_modes = array(
+        self::CACHE_NONE,
+        self::CACHE_OBJECT,
+        self::CACHE_TRANSIENT,
+        self::CACHE_SITE_TRANSIENT
+    );
+
+    protected $cache_mode = self::CACHE_TRANSIENT;
+
+    var $locations;
 
 	function __construct($caller = false) {
 		$this->locations = $this->get_locations($caller);
+        $this->cache_mode = apply_filters( 'timber_cache_mode', $this->cache_mode );
 	}
 
-	function render($file, $data = null) {
-		$twig = $this->get_twig();
-		if (strlen($file)){
-			$loader = $this->get_loader();
-			$result = $loader->getCacheKey($file);
-			do_action('timber_loader_render_file', $result);
-		}
-		return $twig->render($file, $data);
+	function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
+        // Different $expires if user is anonymous or logged in
+        if ( is_array( $expires ) ) {
+            if ( is_user_logged_in() && isset( $expires[1] ) )
+                $expires = $expires[1];
+            else
+                $expires = $expires[0];
+        }
+
+        ksort( $data );
+        $key = md5( $file . json_encode( $data ) );
+
+        $output = false;
+        if ( false !== $expires )
+            $output = $this->get_cache( $key, self::CACHEGROUP, $cache_mode );
+
+        if ( false === $output || null === $output ) {
+            $twig = $this->get_twig();
+            if (strlen($file)){
+				$loader = $this->get_loader();
+				$result = $loader->getCacheKey($file);
+				do_action('timber_loader_render_file', $result);
+			}
+            $output = $twig->render($file, $data);
+        }
+
+        if ( false !== $output && false !== $expires )
+            $this->set_cache( $key, $output, self::CACHEGROUP, $expires, $cache_mode );
+
+        return $output;
 	}
 
 	function choose_template($filenames) {
@@ -132,7 +174,80 @@ class TimberLoader {
 		}
 		$twig = new Twig_Environment($loader, $params);
 		$twig->addExtension(new Twig_Extension_Debug());
+        $twig->addExtension($this->_get_cache_extension());
+
 		$twig = apply_filters('twig_apply_filters', $twig);
 		return $twig;
 	}
+
+        private function _get_cache_extension() {
+            $loader_loc = trailingslashit(TIMBER_LOC) . 'functions/cache/loader.php';
+            require_once($loader_loc);
+            TimberCache_Loader::register();
+
+            $key_generator   = new \Timber\Cache\KeyGenerator();
+            $cache_provider  = new \Timber\Cache\WPObjectCacheAdapter( $this );
+            $cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy( $cache_provider, $key_generator );
+            $cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
+
+            return $cache_extension;
+        }
+
+    public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
+        $object_cache = false;
+
+        if ( isset( $GLOBALS[ 'wp_object_cache' ] ) && is_object( $GLOBALS[ 'wp_object_cache' ] ) )
+            $object_cache = true;
+
+        $cache_mode = $this->_get_cache_mode( $cache_mode );
+
+        $value = null;
+
+        $trans_key = substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
+        if ( self::CACHE_TRANSIENT === $cache_mode )
+            $value = get_transient( $trans_key );
+
+		elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode )
+			$value = get_site_transient( $trans_key );
+
+        elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache )
+			$value = wp_cache_get( $key, $group );
+
+        return $value;
+    }
+
+    public function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
+        $object_cache = false;
+
+        if ( isset( $GLOBALS[ 'wp_object_cache' ] ) && is_object( $GLOBALS[ 'wp_object_cache' ] ) )
+            $object_cache = true;
+
+        if ( (int) $expires < 1 )
+            $expires = 0;
+
+        $cache_mode = self::_get_cache_mode( $cache_mode );
+        $trans_key = substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
+
+        if ( self::CACHE_TRANSIENT === $cache_mode )
+            set_transient( $trans_key, $value, $expires );
+
+        elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode )
+            set_site_transient( $trans_key, $value, $expires );
+
+        elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache )
+            wp_cache_set( $key, $value, $group, $expires );
+
+        return $value;
+    }
+
+        private function _get_cache_mode( $cache_mode ) {
+            if ( empty( $cache_mode ) || self::CACHE_USE_DEFAULT === $cache_mode )
+                $cache_mode = $this->cache_mode;
+
+            // Fallback if self::$cache_mode did not get a valid value
+            if ( !in_array( $cache_mode, self::$cache_modes ) )
+                $cache_mode = self::CACHE_OBJECT;
+
+            return $cache_mode;
+        }
 }

@@ -300,7 +300,7 @@ class Timber {
         return $data;
     }
 
-    public static function render($filenames, $data = array(), $echo = true) {
+    public static function render($filenames, $data = array(), $echo = true, $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT) {
         $caller = self::get_calling_script_dir();
         $loader = new TimberLoader($caller);
         $file = $loader->choose_template($filenames);
@@ -308,7 +308,7 @@ class Timber {
         if (strlen($file)) {
             $file = apply_filters('timber_render_file', $file);
             $data = apply_filters('timber_render_data', $data);
-            $output = $loader->render($file, $data);
+            $output = $loader->render($file, $data, $expires, $cache_mode);
         }
         if ($echo) {
             echo $output;
