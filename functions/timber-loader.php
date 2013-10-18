@@ -51,6 +51,7 @@ class TimberLoader {
 				$result = $loader->getCacheKey($file);
 				do_action('timber_loader_render_file', $result);
 			}
+			$data = apply_filters('timber_loader_render_data', $data);
             $output = $twig->render($file, $data);
         }
 
