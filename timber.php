@@ -290,7 +290,10 @@ class Timber {
         $data['wp_footer'] = TimberHelper::function_wrapper('wp_footer');
         $data['body_class'] = implode(' ', get_body_class());
         if (function_exists('wp_nav_menu')) {
-            $data['wp_nav_menu'] = wp_nav_menu(array('container_class' => 'menu-header', 'echo' => false, 'menu_class' => 'nav-menu'));
+            $locations = get_nav_menu_locations();
+            if (count($locations)){
+                $data['wp_nav_menu'] = wp_nav_menu(array('container_class' => 'menu-header', 'echo' => false, 'menu_class' => 'nav-menu'));
+            }
         }
         $data['theme_dir'] = str_replace(ABSPATH, '', get_stylesheet_directory());
         $data['language_attributes'] = TimberHelper::function_wrapper('language_attributes');
@@ -374,7 +377,7 @@ class Timber {
         }
     }
 
-    public static function add_route($route, $callback) {
+    public static function add_route($route, $callback, $args = array()) {
         global $timber;
         if (!isset($timber->router)) {
             require_once('functions/router/Router.php');
@@ -382,7 +385,7 @@ class Timber {
             $timber->router = new Router();
             $timber->router->setBasePath('/');
         }
-        $timber->router->map($route, $callback);
+        $timber->router->map($route, $callback, $args);
     }
 
     public static function cancel_query(){
