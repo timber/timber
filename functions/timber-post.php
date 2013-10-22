@@ -228,7 +228,7 @@ class TimberPost extends TimberCore {
 		}
 		return null;
 	}
-	
+
 	function get_next() {
 		if (!isset($this->next)){
 			$this->next = new $this->PostClass(get_adjacent_post( false, "", true ));
@@ -480,13 +480,21 @@ class TimberPost extends TimberCore {
 		return $this->get_permalink();
 	}
 
-	function path(){
+	function next() {
+		return $this->get_next();
+	}
+
+	function path() {
 		$path = TimberHelper::get_rel_url($this->get_permalink());
 		return TimberHelper::preslashit($path);
 	}
 
 	function permalink() {
 		return $this->get_permalink();
+	}
+
+	function prev() {
+		return $this->get_prev();
 	}
 
 	function terms($tax = '') {
