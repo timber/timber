@@ -164,7 +164,9 @@ class TimberPost extends TimberCore {
 				}
 			}
 
-			$text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . $readmore . '</a>';
+			if($readmore) {
+				$text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . $readmore . '</a>';
+			}
 			if (!$strip){
 				$text .= '</p>';
 			}
