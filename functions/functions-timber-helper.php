@@ -389,7 +389,7 @@ class TimberHelper {
 		return $ret;
 	}
 
-	function paginate_links( $args = '' ) {
+	public static function paginate_links( $args = '' ) {
 		$defaults = array(
 			'base' => '%_%', // http://example.com/all_posts.php%_% : %_% is replaced by format (below)
 			'format' => '?page=%#%', // ?page=%#% : %#% is replaced by the page number
