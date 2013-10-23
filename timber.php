@@ -324,7 +324,9 @@ class Timber {
     public static function render($filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT) {
         if ($expires === true){
             //if this is reading as true; the user probably is using the old $echo param
-            $expires = false;
+            //so we should move all vars up by a spot
+            $expires = $cache_mode;
+            $cache_mode = TimberLoader::CACHE_USE_DEFAULT;
         }
         $output = self::compile($filenames, $data, $expires, $cache_mode, true);
         echo $output;
