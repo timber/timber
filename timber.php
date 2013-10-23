@@ -303,19 +303,31 @@ class Timber {
         return $data;
     }
 
-    public static function render($filenames, $data = array(), $echo = true, $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT) {
+    public static function compile($filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT, $via_render = false) {
         $caller = self::get_calling_script_dir();
         $loader = new TimberLoader($caller);
         $file = $loader->choose_template($filenames);
         $output = '';
         if (strlen($file)) {
-            $file = apply_filters('timber_render_file', $file);
-            $data = apply_filters('timber_render_data', $data);
+            if ($via_render){
+                $file = apply_filters('timber_render_file', $file);
+                $data = apply_filters('timber_render_data', $data);
+            } else {
+                $file = apply_filters('timber_compile_file', $file);
+                $data = apply_filters('timber_compile_data', $data);
+            }
             $output = $loader->render($file, $data, $expires, $cache_mode);
         }
-        if ($echo) {
-            echo $output;
+        return $output;
+    }
+
+    public static function render($filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT) {
+        if ($expires === true){
+            //if this is reading as true; the user probably is using the old $echo param
+            $expires = false;
         }
+        $output = self::compile($filenames, $data, $expires, $cache_mode, true);
+        echo $output;
         return $output;
     }
 
