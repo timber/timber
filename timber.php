@@ -24,6 +24,7 @@ require_once(__DIR__ . '/functions/timber-term-getter.php');
 require_once(__DIR__ . '/functions/timber-image.php');
 require_once(__DIR__ . '/functions/timber-menu.php');
 require_once(__DIR__ . '/functions/timber-theme.php');
+require_once(__DIR__ . '/functions/timber-site.php');
 
 require_once(__DIR__ . '/functions/timber-loader.php');
 require_once(__DIR__ . '/functions/timber-function-wrapper.php');
@@ -276,6 +277,21 @@ class Timber {
             $term = new $TermClass($term->term_id);
         }
         return $terms;
+    }
+
+    /* Site Retrieval
+    ================================ */
+
+    public static function get_sites($blog_ids = false){
+        if (!is_array($blog_ids)){
+            global $wpdb;
+            $site_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
+        }
+        $return = array();
+        foreach($blog_ids as $blog_id){
+            $return[] = new TimberSite($blog_id);
+        }
+        return $return;
     }
 
 
