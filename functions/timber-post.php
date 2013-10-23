@@ -223,10 +223,7 @@ class TimberPost extends TimberCore {
 	}
 
 	function get_link() {
-		if (isset($this->path)) {
-			return $this->path;
-		}
-		return null;
+		return $this->get_permalink();
 	}
 
 	function get_next() {
@@ -515,7 +512,7 @@ class TimberPost extends TimberCore {
 
 	//Deprecated
 	function get_path() {
-		return $this->get_link();
+		return TimberHelper::get_rel_url($this->get_link());
 	}
 
 }

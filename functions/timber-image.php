@@ -6,6 +6,8 @@ class TimberImage extends TimberCore {
 	var $abs_url;
 	var $PostClass = 'TimberPost';
 
+	public static $representation = 'image';
+
 	function __construct($iid) {
 		$this->init($iid);
 	}

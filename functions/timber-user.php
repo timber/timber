@@ -2,14 +2,21 @@
 
 class TimberUser extends TimberCore {
 
+    var $_link;
+
+    public static $representation = 'user';
+
     function __construct($uid = false) {
         $this->init($uid);
     }
 
     public function get_link() {
-        $p = TimberHelper::get_path_base();
-        global $wp_rewrite;
-        return $p . trailingslashit($wp_rewrite->author_base) . $this->slug();
+        if (!$this->_link){
+            $p = TimberHelper::get_path_base();
+            global $wp_rewrite;
+            $this->_link = $p . trailingslashit($wp_rewrite->author_base) . $this->slug();
+        }
+        return $this->_link;
     }
 
     function init($uid = false) {

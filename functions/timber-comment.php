@@ -2,6 +2,10 @@
 
 class TimberComment extends TimberCore {
 
+    var $PostClass = 'TimberPost';
+
+    public static $representation = 'comment';
+
     function __construct($cid) {
         $this->init($cid);
     }
