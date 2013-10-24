@@ -3,7 +3,9 @@
 class TimberTerm extends TimberCore {
 
 	var $taxonomy;
+	var $_children;
 	var $PostClass = 'TimberPost';
+	var $TermClass = 'TimberTerm';
 
 	public static $representation = 'term';
 
@@ -111,7 +113,7 @@ class TimberTerm extends TimberCore {
 		return $this->get_link();
 	}
 
-	function get_posts($numberposts = 10, $post_type = 'any', $PostClass = '') {
+	public function get_posts($numberposts = 10, $post_type = 'any', $PostClass = '') {
 		if (!strlen($PostClass)) {
 			$PostClass = $this->PostClass;
 		}
@@ -127,8 +129,23 @@ class TimberTerm extends TimberCore {
 		return Timber::get_posts($args, $PostClass);
 	}
 
+	public function get_children(){
+		if (!isset($this->_children)){
+			$children = get_term_children($this->ID, $this->taxonomy);
+			foreach($children as &$child){
+				$child = new TimberTerm($child);
+			}
+			$this->_children = $children;
+		}
+		return $this->_children;
+	}
+
 	/* Alias
 	====================== */
+
+	public function children(){
+		return $this->get_children();
+	}
 
 	public function link(){
 		return $this->get_link();

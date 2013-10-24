@@ -71,7 +71,10 @@ class TimberImage extends TimberCore {
 			$image_custom = get_post_custom($iid);
 			$basic = get_post($iid);
 			$this->caption = $basic->post_excerpt;
-			$image_info = array_merge($image_info, $image_custom, get_object_vars($basic));
+			if ($basic){
+				$image_custom = array_merge($image_custom, get_object_vars($basic));
+			}
+			$image_info = array_merge($image_info, $image_custom);
 		} else if (is_array($image_info) && isset($image_info['image'])) {
 			$image_info = $image_info['image'];
 		} else if (is_object($image_info)) {
