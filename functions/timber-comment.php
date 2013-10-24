@@ -32,6 +32,14 @@ class TimberComment extends TimberCore {
         return $this->comment_content;
     }
 
+    function avatar($size='32', $default='<path_to_url>'){
+      // Fetches the Gravatar
+      // use it like this
+      // {{comment.avatar(36,"{{template_uri}}/img/dude.jpg")}}
+      return get_avatar($this,$size,$default );
+      
+    }
+
     function init($cid) {
         $comment_data = $cid;
         if (is_integer($cid)) {
