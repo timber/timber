@@ -247,14 +247,27 @@ class Timber {
     /* Term Retrieval
     ================================ */
 
-    public static function get_terms($args, $TermClass = 'TimberTerm'){
+    public static function get_terms($args, $maybe_args = array(), $TermClass = 'TimberTerm'){
+        if (is_string($maybe_args) && !strstr($maybe_args, '=')){
+            //the user is sending the $TermClass in the second argument
+            $TermClass = $maybe_args;
+        }
+        if (is_string($maybe_args) && strstr($maybe_args, '=')){
+            parse_str($maybe_args, $maybe_args);
+        }
         if (is_string($args) && strstr($args, '=')){
             //a string and a query string!
             $parsed = TimberTermGetter::get_term_query_from_query_string($args);
+            if (is_array($maybe_args)){
+                $parsed->args = array_merge($parsed->args, $maybe_args);
+            }
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else if (is_string($args)){
             //its just a string with a single taxonomy
             $parsed = TimberTermGetter::get_term_query_from_string($args);
+            if (is_array($maybe_args)){
+                $parsed->args = array_merge($parsed->args, $maybe_args);
+            }
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else if (is_array($args) && TimberHelper::is_array_assoc($args)){
             //its an associative array, like a good ole query
@@ -263,6 +276,9 @@ class Timber {
         } else if (is_array($args)){
             //its just an array of strings or IDs (hopefully)
             $parsed = TimberTermGetter::get_term_query_from_array($args);
+            if (is_array($maybe_args)){
+                $parsed->args = array_merge($parsed->args, $maybe_args);
+            }
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else {
             //no clue, what you talkin' bout?
@@ -271,6 +287,9 @@ class Timber {
     }
 
     public static function handle_term_query($taxonomies, $args, $TermClass){
+        if (!isset($args['hide_empty'])){
+            $args['hide_empty'] = false;
+        }
         $terms = get_terms($taxonomies, $args);
         foreach($terms as &$term){
             $term = new $TermClass($term->term_id);
