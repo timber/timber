@@ -26,4 +26,20 @@
 			}
 			return $this->$field;
 		}
+
+		function get_link(){
+			return $this->siteurl;
+		}
+
+		function get_url(){
+			return $this->get_link();
+		}
+
+		function link(){
+			return $this->get_link();
+		}
+
+		function url(){
+			return $this->get_link();
+		}
 	}
