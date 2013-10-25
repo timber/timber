@@ -228,14 +228,14 @@ class TimberPost extends TimberCore {
 
 	function get_next() {
 		if (!isset($this->next)){
-			$this->next = new $this->PostClass(get_adjacent_post( false, "", true ));
+			$this->next = new $this->PostClass(get_adjacent_post( false, "", false ));
 		}
 		return $this->next;
 	}
 
 	function get_prev() {
 		if (!isset($this->prev)){
-			$this->prev = new $this->PostClass(get_adjacent_post( false, "", false ));
+			$this->prev = new $this->PostClass(get_adjacent_post( false, "", true ));
 		}
 		return $this->prev;
 	}
