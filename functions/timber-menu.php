@@ -103,10 +103,15 @@ class TimberMenuItem extends TimberCore {
     function __construct($data) {
         $this->import($data);
         $this->import_classes($data);
+        $this->_name = $this->name;
+        $this->name = $this->name();
     }
 
     function name() {
-        return $this->post_title;
+        if (isset($this->title)){
+            return $this->title;
+        }
+        return $this->_name;
     }
 
     function slug() {
