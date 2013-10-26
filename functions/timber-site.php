@@ -15,6 +15,7 @@
 			$this->import($info);
 			$this->ID = $info->blog_id;
 			$this->name = $this->blogname;
+			$this->title = $this->blogname;
 			$theme_slug = get_blog_option($info->blog_id, 'stylesheet');
 			//echo 'init '.$theme_slug;
 			$this->theme = new TimberTheme($theme_slug);
