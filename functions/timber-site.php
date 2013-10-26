@@ -7,8 +7,9 @@
 
 		function init($site_name_or_id){
 			if ($site_name_or_id === null){
-				$site_name_or_id = get_current_site();
-				$site_name_or_id = $site_name_or_id->id;
+				//this is necessary for some reason, otherwise returns 1 all the time
+				restore_current_blog();
+				$site_name_or_id = get_current_blog_id();
 			}
 			$info = get_blog_details($site_name_or_id);
 			$this->import($info);
