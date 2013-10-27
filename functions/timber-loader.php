@@ -202,7 +202,7 @@ class TimberLoader {
 
         $cache_mode = $this->_get_cache_mode( $cache_mode );
 
-        $value = null;
+        $value = false;
 
         $trans_key = substr($group . '_' . $key, 0, self::TRANS_KEY_LEN);
         if ( self::CACHE_TRANSIENT === $cache_mode )
