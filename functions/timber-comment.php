@@ -10,18 +10,18 @@ class TimberComment extends TimberCore {
         $this->init($cid);
     }
 
-    /* core definition */
-
     function author() {
         if ($this->user_id) {
             return new TimberUser($this->user_id);
+        } else {
+            $author = new TimberUser(0);
+            if (isset($this->comment_author) && $this->comment_author){
+                $author->name = $this->comment_author;
+            } else {
+                $author->name = 'Anonymous';
+            }
         }
-        $fakeUser = new stdClass();
-        $fakeUser->name = 'Anonymous';
-        if ($this->comment_author) {
-            $fakeUser->name = $this->comment_author;
-        }
-        return $fakeUser;
+        return $author;
     }
 
     function date() {

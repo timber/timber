@@ -10,6 +10,24 @@ class TimberUser extends TimberCore {
         $this->init($uid);
     }
 
+    function __toString(){
+        $name = $this->name();
+        if (strlen($name)){
+            return $name;
+        }
+        if (strlen($this->name)){
+            return $this->name;
+        }
+        return '';
+    }
+
+    function __set($field, $value){
+        if ($field == 'name'){
+            $this->display_name = $value;
+        }
+        $this->$field = $value;
+    }
+
     public function get_link() {
         if (!$this->_link){
             $p = TimberHelper::get_path_base();
@@ -20,15 +38,17 @@ class TimberUser extends TimberCore {
     }
 
     function init($uid = false) {
-        if (!$uid) {
+        if ($uid === false) {
             $uid = get_current_user_id();
         }
-        $data = get_userdata($uid);
-        if (is_object($data) && isset($data)) {
-            $this->import($data->data);
+        if ($uid){
+            $data = get_userdata($uid);
+            if (is_object($data) && isset($data)) {
+                $this->import($data->data);
+            }
+            $this->ID = $uid;
+            $this->import_custom();
         }
-        $this->ID = $uid;
-        $this->import_custom();
     }
 
     function get_custom() {
