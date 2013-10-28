@@ -30,9 +30,7 @@ class TimberUser extends TimberCore {
 
     public function get_link() {
         if (!$this->_link){
-            $p = TimberHelper::get_path_base();
-            global $wp_rewrite;
-            $this->_link = $p . trailingslashit($wp_rewrite->author_base) . $this->slug();
+            $this->_link = get_author_posts_url($this->ID);
         }
         return $this->_link;
     }
