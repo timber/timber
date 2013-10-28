@@ -10,18 +10,18 @@ class TimberComment extends TimberCore {
         $this->init($cid);
     }
 
-    /* core definition */
-
     function author() {
         if ($this->user_id) {
             return new TimberUser($this->user_id);
+        } else {
+            $author = new TimberUser(0);
+            if (isset($this->comment_author) && $this->comment_author){
+                $author->name = $this->comment_author;
+            } else {
+                $author->name = 'Anonymous';
+            }
         }
-        $fakeUser = new stdClass();
-        $fakeUser->name = 'Anonymous';
-        if ($this->comment_author) {
-            $fakeUser->name = $this->comment_author;
-        }
-        return $fakeUser;
+        return $author;
     }
 
     function date() {
@@ -40,37 +40,35 @@ class TimberComment extends TimberCore {
         $this->import($comment_data);
         $this->ID = $this->comment_ID;
     }
-    
+
     function avatar($size=92, $default='<path_to_url>'){
         // Fetches the Gravatar
         // use it like this
         // {{comment.avatar(36,template_uri~"/img/dude.jpg")}}
-    
-        if ( ! get_option('show_avatars') ) return false;       
+
+        if ( ! get_option('show_avatars') ) return false;
         if ( !is_numeric($size) ) $size = '32';
-  
+
         $email = $this->avatar_email();
         if ( !empty($email) ) $email_hash = md5( strtolower( trim( $email ) ) );
-      
         $host = $this->avatar_host($email_hash);
-              
-        $default = $this->avatar_default($default,$email, $size);         
-        
+
+        $default = $this->avatar_default($default,$email, $size);
+
         if( !empty($email) ) {
             $avatar = $this->avatar_out($email, $default, $host, $email_hash, $size);
-        }else{
+        } else {
             $avatar = $default;
         }
-      
-        return $avatar;      
+        return $avatar;
     }
 
 
     private function avatar_email(){
-        $email = '';        
+        $email = '';
         $user = get_userdata($this->ID);
         if ( $user ) $email = $user->user_email;
-        
+
         if($email == "" ){
             $email = $this->comment_author_email;
         }
@@ -83,13 +81,13 @@ class TimberComment extends TimberCore {
         } else {
             if ( !empty($email) ){
                 $host = sprintf( "http://%d.gravatar.com", ( hexdec( $email_hash[0] ) % 2 ) );
-            }else{
+            } else {
                 $host = 'http://0.gravatar.com';
-            }                        
+            }
         }
-        return $host;       
+        return $host;
     }
-    
+
     private function avatar_default($default,$email, $size){
       if (empty($default) ){
         $avatar_default = get_option('avatar_default');
