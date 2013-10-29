@@ -12,8 +12,8 @@ global $wp_version;
 global $timber;
 
 require_once(__DIR__ . '/functions/functions-twig.php');
-require_once(__DIR__ . '/functions/functions-timber-helper.php');
-require_once(__DIR__ . '/functions/functions-timber-image-helper.php');
+require_once(__DIR__ . '/functions/timber-helper.php');
+require_once(__DIR__ . '/functions/timber-image-helper.php');
 
 require_once(__DIR__ . '/functions/timber-core.php');
 require_once(__DIR__ . '/functions/timber-post.php');

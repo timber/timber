@@ -95,30 +95,7 @@ class TimberHelper {
 		return str_replace(ABSPATH, '', $src);
 	}
 
-	public static function get_letterbox_file_rel($src, $w, $h) {
-		$path_parts = pathinfo($src);
-		$basename = $path_parts['filename'];
-		$ext = $path_parts['extension'];
-		$dir = $path_parts['dirname'];
-		$newbase = $basename . '-lb-' . $w . 'x' . $h;
-		$new_path = $dir . '/' . $newbase . '.' . $ext;
-		return $new_path;
-  	}
-
-	public static function get_letterbox_file_path($src, $w, $h) {
-		$path_parts = pathinfo($src);
-		$basename = $path_parts['filename'];
-		$ext = $path_parts['extension'];
-		$dir = $path_parts['dirname'];
-		$newbase = $basename . '-lb-' . $w . 'x' . $h;
-		$new_path = $dir . '/' . $newbase . '.' . $ext;
-		$new_root_path = ABSPATH . $new_path;
-		$new_root_path = str_replace('//', '/', $new_root_path);
-		return $new_root_path;
-	}
-
 	public static function download_url($url, $timeout = 300) {
-		//WARNING: The file is not automatically deleted, The script must unlink() the file.
 		if (!$url) {
 			return new WP_Error('http_no_url', __('Invalid URL Provided.'));
 		}
@@ -134,12 +111,10 @@ class TimberHelper {
 			unlink($tmpfname);
 			return $response;
 		}
-
 		if (200 != wp_remote_retrieve_response_code($response)) {
 			unlink($tmpfname);
 			return new WP_Error('http_404', trim(wp_remote_retrieve_response_message($response)));
 		}
-
 		return $tmpfname;
 	}
 
