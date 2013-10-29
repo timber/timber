@@ -473,6 +473,10 @@ class TimberPost extends TimberCore {
 		return date(get_option('date_format'), strtotime($this->post_date));
 	}
 
+	function edit_link(){
+		return $this->get_edit_url();
+	}
+
 	function link() {
 		return $this->get_permalink();
 	}
