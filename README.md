@@ -51,8 +51,12 @@ Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https:
 #### Who is it good for?
 Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because not everyone knows the ins-and-outs of the_loop(), WordPress codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .twig files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
 
+#### Related Projects
+* [**Timber Debug Bar**](https://github.com/upstatement/debug-bar-timber) Adds a debug bar panel that will show you want template is in-use and the data sent to your twig file.
+* [**Twig**](https://github.com/fabpot/Twig) The template language used by Timber.
+
 #### Should I use it?
-Well, it's **free**! And it's GPL-licensed, so use in personal or commerical work. Just don't re-sell it.
+Well, it's **free**! And it's GPL-licensed, so use in personal or commercial work. Just don't re-sell it.
 
 #### Upgrade Notes
 Twig is no longer a submodule, just a part of the repo. If you have trouble pulling, just delete the `Twig` folder. Then you should be good.
