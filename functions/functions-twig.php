@@ -36,6 +36,9 @@ class TimberTwig {
 		$twig->addFilter('twitterfy', new Twig_Filter_Function(array('TimberHelper', 'twitterify')));
 		$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
 		$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
+		$twig->addFilter('relative', new Twig_Filter_Function(function($link){
+			return TimberHelper::get_rel_url($link, true);
+		}));
 
         /* actions and filters */
         $twig->addFunction(new Twig_SimpleFunction('action', function(){

@@ -82,13 +82,16 @@ class TimberHelper {
 		return $old_root_path;
 	}
 
-	public static function get_rel_url($url){
-		if (!strstr($url, $_SERVER['HTTP_HOST'])){
+	public static function get_rel_url($url, $force = false){
+		if (!strstr($url, $_SERVER['HTTP_HOST']) && !$force){
 			return $url;
 		}
-		$url = str_replace('http://', '', $url);
-		$url = str_replace('https://', '', $url);
-		return str_replace($_SERVER['HTTP_HOST'], '', $url);
+		$url_info = parse_url($url);
+		$link = $url_info['path'];
+		if (isset($url_info['query']) && strlen($url_info['query'])){
+			$link .= '?'.$url_info['query'];
+		}
+		return $link;
 	}
 
 	public static function get_rel_path($src) {
