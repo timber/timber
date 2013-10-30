@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.15.1
+Stable tag: 0.15.2
 Tested up to: 3.6.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -23,6 +23,9 @@ _Twig is the template language powering Timber; if you need a little background 
 * **[Video Tutorials](https://github.com/jarednova/timber/wiki/Video-Tutorials)**
 * [Overview / Getting Started Guide](https://github.com/jarednova/timber/wiki/getting-started)
 
+#### Related Projects
+* [**Timber Debug Bar**](http://wordpress.org/plugins/debug-bar-timber/) Adds a debug bar panel that will show you want template is in-use and the data sent to your twig file.
+
 #### What does it look like?
 Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https://github.com/viewportindustries/starkers) or [_s theme](https://github.com/Automattic/_s) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
 
@@ -37,6 +40,12 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.15.2 =
+* TimberImages now support alternate sizes
+
+= 0.15.1 =
+* Fix on revered prev/next post links
 
 = 0.15.0 =
 * Cacheing!!!
