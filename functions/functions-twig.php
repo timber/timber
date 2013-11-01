@@ -52,7 +52,7 @@ class TimberTwig {
 
         /* TimberObjects */
         $twig->addFunction(new Twig_SimpleFunction('TimberPost', function($pid){
-        	if (is_array($pid)){
+        	if (is_array($pid) && !TimberHelper::is_array_assoc($pid)){
         		foreach($pid as &$p){
         			$p = new TimberPost($p);
         		}
@@ -61,7 +61,7 @@ class TimberTwig {
         	return new TimberPost($pid);
         }));
         $twig->addFunction(new Twig_SimpleFunction('TimberImage', function($pid){
-        	if (is_array($pid)){
+        	if (is_array($pid) && !TimberHelper::is_array_assoc($pid)){
         		foreach($pid as &$p){
         			$p = new TimberImage($p);
         		}
@@ -70,7 +70,7 @@ class TimberTwig {
         	return new TimberImage($pid);
         }));
         $twig->addFunction(new Twig_SimpleFunction('TimberTerm', function($pid){
-        	if (is_array($pid)){
+        	if (is_array($pid) && !TimberHelper::is_array_assoc($pid)){
         		foreach($pid as &$p){
         			$p = new TimberTerm($p);
         		}
