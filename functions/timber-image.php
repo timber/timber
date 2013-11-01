@@ -76,8 +76,10 @@ class TimberImage extends TimberCore {
 			}
 			$image_custom = get_post_custom($iid);
 			$basic = get_post($iid);
-			$this->caption = $basic->post_excerpt;
 			if ($basic){
+				if (isset($basic->post_excerpt)){
+					$this->caption = $basic->post_excerpt;
+				}
 				$image_custom = array_merge($image_custom, get_object_vars($basic));
 			}
 			$image_info = array_merge($image_info, $image_custom);
@@ -98,7 +100,12 @@ class TimberImage extends TimberCore {
 				$this->$key = $value[0];
 			}
 		} else {
-			TimberHelper::error_log('Not able to init in TimberImage with iid=' . $iid);
+			if (is_array($iid)){
+				TimberHelper::error_log('Not able to init in TimberImage with iid=');
+				TimberHelper::error_log($iid);
+			} else {
+				TimberHelper::error_log('Not able to init in TimberImage with iid=' . $iid);
+			}
 		}
 	}
 
