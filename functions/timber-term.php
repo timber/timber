@@ -102,7 +102,7 @@ class TimberTerm extends TimberCore {
 
 	function get_path() {
 		$link = $this->get_link();
-		return TimberHelper::get_rel_url($link);
+		return TimberHelper::get_rel_url($link, true);
 	}
 
 	function get_link() {

@@ -7,6 +7,28 @@
 		    return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
 		}
 
+		public static function get_letterbox_file_rel($src, $w, $h) {
+			$path_parts = pathinfo($src);
+			$basename = $path_parts['filename'];
+			$ext = $path_parts['extension'];
+			$dir = $path_parts['dirname'];
+			$newbase = $basename . '-lb-' . $w . 'x' . $h;
+			$new_path = $dir . '/' . $newbase . '.' . $ext;
+			return $new_path;
+		}
+
+		public static function get_letterbox_file_path($src, $w, $h) {
+			$path_parts = pathinfo($src);
+			$basename = $path_parts['filename'];
+			$ext = $path_parts['extension'];
+			$dir = $path_parts['dirname'];
+			$newbase = $basename . '-lb-' . $w . 'x' . $h;
+			$new_path = $dir . '/' . $newbase . '.' . $ext;
+			$new_root_path = ABSPATH . $new_path;
+			$new_root_path = str_replace('//', '/', $new_root_path);
+			return $new_root_path;
+		}
+
 		function img_to_jpg($src, $bghex = '#FFFFFF'){
 			$src = str_replace(site_url(), '', $src);
 			$output = str_replace('.png', '.jpg', $src);

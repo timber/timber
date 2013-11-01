@@ -13,14 +13,6 @@ class TimberCore {
 		}
 	}
 
-	function url_to_path($url = '') {
-		if (!strlen($url) && $this->url) {
-			$url = $this->url;
-		}
-		$url_info = parse_url($url);
-		return $url_info['path'];
-	}
-
 	function can_edit() {
 		if (isset($this->_can_edit)) {
 			return $this->_can_edit;
@@ -33,5 +25,14 @@ class TimberCore {
 			$this->_can_edit = true;
 		}
 		return $this->_can_edit;
+	}
+
+	//deprecated
+	function url_to_path($url = '') {
+		if (!strlen($url) && $this->url) {
+			$url = $this->url;
+		}
+		$url_info = parse_url($url);
+		return $url_info['path'];
 	}
 }
