@@ -20,14 +20,10 @@ class TimberTerm extends TimberCore {
 		return $this->name;
 	}
 
-	function get_term_from_query() {
+	private function get_term_from_query() {
 		global $wp_query;
 		$qo = $wp_query->queried_object;
 		return $qo->term_id;
-	}
-
-	function get_page($i) {
-		return $this->get_path() . '/page/' . $i;
 	}
 
 	function init($tid) {
@@ -110,10 +106,6 @@ class TimberTerm extends TimberCore {
 		return apply_filters('timber_term_link', $link, $this);
 	}
 
-	function get_url() {
-		return $this->get_link();
-	}
-
 	public function get_posts($numberposts = 10, $post_type = 'any', $PostClass = '') {
 		if (!strlen($PostClass)) {
 			$PostClass = $this->PostClass;
@@ -148,6 +140,10 @@ class TimberTerm extends TimberCore {
 		return $this->get_children();
 	}
 
+	public function get_url() {
+		return $this->get_link();
+	}
+
 	public function link(){
 		return $this->get_link();
 	}
@@ -160,6 +156,11 @@ class TimberTerm extends TimberCore {
 		return $this->get_url();
 	}
 
-	
+	/* Deprecated
+	===================== */
+
+	function get_page($i) {
+		return $this->get_path() . '/page/' . $i;
+	}
 
 }
