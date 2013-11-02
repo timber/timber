@@ -91,7 +91,6 @@ class TimberTerm extends TimberCore {
 		} else {
 			$query = $wpdb->prepare("SELECT * FROM $wpdb->terms WHERE slug = %s", $tid);
 		}
-
 		$result = $wpdb->get_row($query);
 		if (isset($result->term_id)) {
 			$result->ID = $result->term_id;
@@ -102,11 +101,13 @@ class TimberTerm extends TimberCore {
 
 	function get_path() {
 		$link = $this->get_link();
-		return TimberHelper::get_rel_url($link, true);
+		$rel = TimberHelper::get_rel_url($link, true);
+		return apply_filters('timber_term_path', $rel, $this);
 	}
 
 	function get_link() {
-		return get_term_link($this);
+		$link = get_term_link($this);
+		return apply_filters('timber_term_link', $link, $this);
 	}
 
 	function get_url() {

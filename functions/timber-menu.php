@@ -12,6 +12,8 @@ class TimberMenu extends TimberCore {
             $menu_id = $slug;
         } else if (count($locations)){
             $menu_id = $this->get_menu_id_from_locations($slug, $locations);
+        } else if ($slug === false){
+            $menu_id = false;
         } else {
             $menu_id = $this->get_menu_id_from_terms($slug);
         }
