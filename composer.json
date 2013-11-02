@@ -5,6 +5,7 @@
     "keywords": ["timber", "twig", "themes", "templating"],
  	"homepage": "http://timber.upstatement.com",
  	"license" : "GPL",
+ 	"version" : "0.15.2",
 	"authors": [
 		{
 			"name": "Jared Novack",
