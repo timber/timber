@@ -110,15 +110,42 @@ class TimberTerm extends TimberCore {
 		if (!strlen($PostClass)) {
 			$PostClass = $this->PostClass;
 		}
-		$args = array(
-			'numberposts' => $numberposts,
-			'tax_query' => array(array(
-				'field' => 'id',
-				'terms' => $this->ID,
-				'taxonomy' => $this->taxonomy,
-			)),
-			'post_type' => $post_type
-		);
+		$default_tax_query = array(array(
+					'field' => 'id',
+					'terms' => $this->ID,
+					'taxonomy' => $this->taxonomy,
+				));
+		if (is_string($numberposts) && strstr($numberposts, '=')){
+			$args = $numberposts;
+			$new_args = array();
+			parse_str($args, $new_args);
+			$args = $new_args;
+			$args['tax_query'] = $default_tax_query;
+			if (!isset($args['post_type'])){
+				$args['post_type'] = 'any';
+			}
+			if (class_exists($post_type)){
+				$PostClass = $post_type;
+			}
+		} else if (is_array($numberposts)) {
+			//they sent us an array already baked
+			$args = $numberposts;
+			if (!isset($args['tax_query'])){
+				$args['tax_query'] = $default_tax_query;
+			}
+			if (class_exists($post_type)){
+				$PostClass = $post_type;
+			}
+			if (!isset($args['post_type'])){
+				$args['post_type'] = 'any';
+			}
+		} else {
+			$args = array(
+				'numberposts' => $numberposts,
+				'tax_query' => $default_tax_query,
+				'post_type' => $post_type
+			);
+		}
 		return Timber::get_posts($args, $PostClass);
 	}
 
