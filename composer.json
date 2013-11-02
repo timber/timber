@@ -1,9 +1,10 @@
 {
  	"name": "jarednova/timber",
  	"type": "wordpress-plugin",
- 	"description": "Logging for PHP 5.3",
+ 	"description": "Plugin to write WordPress themes w Object-Oriented Code and the Twig Template Engine",
     "keywords": ["timber", "twig", "themes", "templating"],
  	"homepage": "http://timber.upstatement.com",
+ 	"license" : "GPL",
 	"authors": [
 		{
 			"name": "Jared Novack",
