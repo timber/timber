@@ -434,10 +434,12 @@ class TimberPost extends TimberCore {
 
 	//This is for integration with Elliot Condon's wonderful ACF
 	function get_field($field_name) {
-		if (function_exists('get_field')){
-			return get_field($field_name, $this->ID);
+		$value = null;
+		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name);
+		if ($value === null){
+			return get_post_meta($this->ID, $field, true);
 		}
-		return get_post_meta($this->ID, $field, true);
+		return $value;
 	}
 
 	function import_field($field_name) {
@@ -479,6 +481,10 @@ class TimberPost extends TimberCore {
 
 	function link() {
 		return $this->get_permalink();
+	}
+
+	function meta($field_name){
+		return $this->get_field($field_name);
 	}
 
 	function next() {

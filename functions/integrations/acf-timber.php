@@ -2,10 +2,15 @@
 	class ACFTimber {
 
 		function __construct(){
-			add_filter('timber_term_get_custom', array($this, 'term_get_custom'), 10, 3);
+			add_filter('timber_term_get_meta', array($this, 'term_get_meta'), 10, 3);
+			add_filter('timber_post_get_meta_field', array($this, 'post_get_meta_field'), 10, 3);
 		}
 
-		function term_get_custom($fields, $term_id, $term){
+		function post_get_meta_field($value, $post_id, $field_name){
+			return get_field($field_name, $post_id);
+		}
+
+		function term_get_meta($fields, $term_id, $term){
 			$searcher = $term->taxonomy . "_" . $term->ID; // save to a specific category
 			$fds = get_fields($searcher);
 			if (is_array($fds)) {

@@ -20,13 +20,16 @@ class TimberTerm extends TimberCore {
 		return $this->name;
 	}
 
+	/* Setup
+	===================== */
+
 	private function get_term_from_query() {
 		global $wp_query;
 		$qo = $wp_query->queried_object;
 		return $qo->term_id;
 	}
 
-	function init($tid) {
+	private function init($tid) {
 		global $wpdb;
 		$term = $this->get_term($tid);
 		if (isset($term->id)) {
@@ -38,17 +41,17 @@ class TimberTerm extends TimberCore {
 			//TimberHelper::error_log(debug_backtrace());
 		}
 		$this->import($term);
-		$custom = $this->get_term_custom($term->term_id);
+		$custom = $this->get_term_meta($term->term_id);
 		$this->import($custom);
 	}
 
-	function get_term_custom($tid){
+	private function get_term_meta($tid){
 		$customs = array();
-		$customs = apply_filters('timber_term_get_custom', $customs, $tid, $this);
+		$customs = apply_filters('timber_term_get_meta', $customs, $tid, $this);
 		return $customs;
 	}
 
-	function get_term($tid) {
+	private function get_term($tid) {
 		if (is_object($tid) || is_array($tid)) {
 			return $tid;
 		}
@@ -63,7 +66,7 @@ class TimberTerm extends TimberCore {
 		return null;
 	}
 
-	function get_tid($tid) {
+	private function get_tid($tid) {
 		global $wpdb;
 		if (is_numeric($tid)) {
 			return $tid;
@@ -84,13 +87,16 @@ class TimberTerm extends TimberCore {
 		return 0;
 	}
 
-	function get_path() {
+	/* Public methods
+	===================== */
+
+	public function get_path() {
 		$link = $this->get_link();
 		$rel = TimberHelper::get_rel_url($link, true);
 		return apply_filters('timber_term_path', $rel, $this);
 	}
 
-	function get_link() {
+	public function get_link() {
 		$link = get_term_link($this);
 		return apply_filters('timber_term_link', $link, $this);
 	}
