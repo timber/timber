@@ -10,6 +10,17 @@ class TimberComment extends TimberCore {
         $this->init($cid);
     }
 
+    function init($cid) {
+        $comment_data = $cid;
+        if (is_integer($cid)) {
+            $comment_data = get_comment($cid);
+        }
+        $this->import($comment_data);
+        $this->ID = $this->comment_ID;
+        $comment_meta_data = $this->get_meta_fields($this->ID);
+        $this->import($comment_meta_data);
+    }
+
     function author() {
         if ($this->user_id) {
             return new TimberUser($this->user_id);
@@ -24,21 +35,38 @@ class TimberComment extends TimberCore {
         return $author;
     }
 
-    function date() {
-        return $this->comment_date;
-    }
-
     function content() {
         return $this->comment_content;
     }
 
-    function init($cid) {
-        $comment_data = $cid;
-        if (is_integer($cid)) {
-            $comment_data = get_comment($cid);
-        }
-        $this->import($comment_data);
-        $this->ID = $this->comment_ID;
+    function date() {
+        return $this->comment_date;
     }
+
+    private function get_meta_fields($comment_id = null){
+        if ($comment_id === null){
+            $comment_id = $this->ID;
+        }
+        //Could not find a WP function to fetch all comment meta data, so I made one.
+        global $wpdb;
+        $query = $wpdb->prepare("SELECT * FROM $wpdb->commentmeta WHERE comment_id = %d", $comment_id);
+        $metas = $wpdb->get_results($query);
+        $customs = array();
+        foreach($metas as $meta_row){
+            $customs[$meta_row->meta_key] = maybe_unserialize($meta_row->meta_value);
+        }
+        return $customs;
+    }
+
+    private function get_meta_field($field_name){
+
+    }
+
+    public function meta($field_name){
+        return $this->get_meta_field($field_name);
+    }
+    
+
+   
 
 }
