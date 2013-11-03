@@ -131,7 +131,7 @@ class Timber {
         return $query;
     }
 
-    public function get_pids($query = null) {
+    public static function get_pids($query = null) {
         $posts = get_posts($query);
         $pids = array();
         foreach ($posts as $post) {
