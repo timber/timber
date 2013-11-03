@@ -37,24 +37,15 @@ class TimberTerm extends TimberCore {
 			//echo 'bad call using '.$tid;
 			//TimberHelper::error_log(debug_backtrace());
 		}
-		if (function_exists('get_fields')) {
-			//lets get whatever we can from advanced custom fields;
-			//IF you have the wonderful ACF installed
-			$searcher = $term->taxonomy . "_" . $term->ID; // save to a specific category
-			$fields = array();
-			$fds = get_fields($searcher);
-			if (is_array($fds)) {
-				foreach ($fds as $key => $value) {
-					$key = preg_replace('/_/', '', $key, 1);
-					$key = str_replace($searcher, '', $key);
-					$key = preg_replace('/_/', '', $key, 1);
-					$field = get_field($key, $searcher);
-					$fields[$key] = $field;
-				}
-			}
-			$this->import($fields);
-		}
 		$this->import($term);
+		$custom = $this->get_term_custom($term->term_id);
+		$this->import($custom);
+	}
+
+	function get_term_custom($tid){
+		$customs = array();
+		$customs = apply_filters('timber_term_get_custom', $customs, $tid, $this);
+		return $customs;
 	}
 
 	function get_term($tid) {
@@ -63,13 +54,11 @@ class TimberTerm extends TimberCore {
 		}
 		$tid = self::get_tid($tid);
 		global $wpdb;
-		$query = $wpdb->prepare("SELECT * FROM $wpdb->term_taxonomy WHERE term_id = %d LIMIT 1", $tid);
-		$tax = $wpdb->get_row($query);
-		if (isset($tax) && isset($tax->taxonomy)) {
-			if ($tax->taxonomy) {
-				$term = get_term($tid, $tax->taxonomy);
-				return $term;
-			}
+		$query = $wpdb->prepare("SELECT taxonomy FROM $wpdb->term_taxonomy WHERE term_id = %d LIMIT 1", $tid);
+		$tax = $wpdb->get_var($query);
+		if (isset($tax) && strlen($tax)) {
+			$term = get_term($tid, $tax);
+			return $term;
 		}
 		return null;
 	}
