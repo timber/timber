@@ -28,6 +28,7 @@ require_once(__DIR__ . '/functions/timber-site.php');
 
 require_once(__DIR__ . '/functions/timber-loader.php');
 require_once(__DIR__ . '/functions/timber-function-wrapper.php');
+require_once(__DIR__ . '/functions/integrations/acf-timber.php');
 
 require_once(__DIR__ . '/admin/timber-admin.php');
 
