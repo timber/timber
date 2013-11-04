@@ -41,8 +41,12 @@ class TimberTerm extends TimberCore {
 			//TimberHelper::error_log(debug_backtrace());
 		}
 		$this->import($term);
-		$custom = $this->get_term_meta($term->term_id);
-		$this->import($custom);
+		if (isset($term->term_id)){
+			$custom = $this->get_term_meta($term->term_id);
+			$this->import($custom);
+		} else {
+			//print_r($term);
+		}
 	}
 
 	private function get_term_meta($tid){
@@ -89,6 +93,15 @@ class TimberTerm extends TimberCore {
 
 	/* Public methods
 	===================== */
+
+	public function get_meta($field_name){
+		if (!$isset($this->$field_name)){
+			$field = '';
+			$field = apply_filters('timber_term_get_meta_field', $field, $field_name, $this);
+			$this->$field_name = $field;
+		}
+		return $this->$field_name;
+	}
 
 	public function get_path() {
 		$link = $this->get_link();
@@ -168,6 +181,10 @@ class TimberTerm extends TimberCore {
 
 	public function link(){
 		return $this->get_link();
+	}
+
+	public function meta($field_name){
+		return $this->get_meta_field($field_name);
 	}
 
 	public function path(){

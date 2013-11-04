@@ -5,6 +5,7 @@
 			add_filter('timber_post_get_meta', array($this, 'post_get_meta'), 10, 2);
 			add_filter('timber_post_get_meta_field', array($this, 'post_get_meta_field'), 10, 3);
 			add_filter('timber_term_get_meta', array($this, 'term_get_meta'), 10, 3);
+			add_filter('timber_term_get_meta_field', array($this, 'term_get_meta_field'), 10, 3);
 			add_filter('timber_user_get_meta_field_pre', array($this, 'user_get_meta_field'), 10, 3);
 		}
 
@@ -14,6 +15,12 @@
 
 		function post_get_meta_field($value, $post_id, $field_name){
 			return get_field($field_name, $post_id);
+		}
+
+		function term_get_meta_field($value, $field_name, $term){
+			$searcher = $term->taxonomy . "_" . $term->ID . "_" .$field_name;
+			$field = get_field($searcher, $term->ID);
+			return $field;
 		}
 
 		function term_get_meta($fields, $term_id, $term){

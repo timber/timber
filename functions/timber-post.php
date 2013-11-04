@@ -362,13 +362,19 @@ class TimberPost extends TimberCore {
 				$tax = 'category';
 			}
 			$terms = wp_get_post_terms($this->ID, $tax);
-			foreach ($terms as &$term) {
-				$term = new $TermClass($term->term_id);
-			}
-			if ($merge && is_array($terms)) {
-				$ret = array_merge($ret, $terms);
-			} else if (count($terms)) {
-				$ret[$tax] = $terms;
+			if (!is_array($terms) && is_object($terms) && get_class($terms) == 'WP_Error'){
+				//something is very wrong
+				TimberHelper::error_log('You have an error retrieving terms on a post in timber-post.php:367');
+				TimberHelper::error_log($terms);
+			} else {
+				foreach ($terms as &$term) {
+					$term = new $TermClass($term->term_id);
+				}
+				if ($merge && is_array($terms)) {
+					$ret = array_merge($ret, $terms);
+				} else if (count($terms)) {
+					$ret[$tax] = $terms;
+				}
 			}
 		}
 		if (!isset($this->_get_terms)){

@@ -54,32 +54,32 @@ class TimberTwig {
         $twig->addFunction(new Twig_SimpleFunction('fn', array(&$this, 'exec_function')));
 
         /* TimberObjects */
-        $twig->addFunction(new Twig_SimpleFunction('TimberPost', function($pid){
+        $twig->addFunction(new Twig_SimpleFunction('TimberPost', function($pid, $PostClass = 'TimberPost'){
         	if (is_array($pid) && !TimberHelper::is_array_assoc($pid)){
         		foreach($pid as &$p){
-        			$p = new TimberPost($p);
+        			$p = new $PostClass($p);
         		}
         		return $pid;
         	}
-        	return new TimberPost($pid);
+        	return new $PostClass($pid);
         }));
-        $twig->addFunction(new Twig_SimpleFunction('TimberImage', function($pid){
+        $twig->addFunction(new Twig_SimpleFunction('TimberImage', function($pid, $ImageClass = 'TimberImage'){
         	if (is_array($pid) && !TimberHelper::is_array_assoc($pid)){
         		foreach($pid as &$p){
-        			$p = new TimberImage($p);
+        			$p = new $ImageClass($p);
         		}
         		return $pid;
         	}
-        	return new TimberImage($pid);
+        	return new $ImageClass($pid);
         }));
-        $twig->addFunction(new Twig_SimpleFunction('TimberTerm', function($pid){
+        $twig->addFunction(new Twig_SimpleFunction('TimberTerm', function($pid, $TermClass = 'TimberTerm'){
         	if (is_array($pid) && !TimberHelper::is_array_assoc($pid)){
         		foreach($pid as &$p){
-        			$p = new TimberTerm($p);
+        			$p = new $TermClass($p);
         		}
         		return $pid;
         	}
-        	return new TimberTerm($pid);
+        	return new $TermClass($pid);
         }));
 
         /* bloginfo and translate */
