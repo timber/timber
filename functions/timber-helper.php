@@ -338,7 +338,7 @@ class TimberHelper {
 		$size = 'full';
 		$src = wp_get_attachment_image_src($iid, $size);
 		$src = $src[0];
-		return self::get_path($src);
+		return self::get_rel_path($src);
 	}
 
 	public static function array_truncate($array, $len) {
