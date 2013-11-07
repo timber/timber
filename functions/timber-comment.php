@@ -21,7 +21,7 @@ class TimberComment extends TimberCore {
         $this->import($comment_meta_data);
     }
 
-    function author() {
+    public function author() {
         if ($this->user_id) {
             return new TimberUser($this->user_id);
         } else {
@@ -35,12 +35,39 @@ class TimberComment extends TimberCore {
         return $author;
     }
 
-    function content() {
+    public function avatar($size=92, $default=''){
+        // Fetches the Gravatar
+        // use it like this
+        // {{comment.avatar(36,template_uri~"/img/dude.jpg")}}
+
+        if ( ! get_option('show_avatars') ) return false;
+        if ( !is_numeric($size) ) $size = '92';
+
+        $email = $this->avatar_email();
+        $email_hash = '';
+        if ( !empty($email) ){
+            $email_hash = md5( strtolower( trim( $email ) ) );
+        }
+        $host = $this->avatar_host($email_hash);
+        $default = $this->avatar_default($default, $email, $size, $host);
+        if( !empty($email) ) {
+            $avatar = $this->avatar_out($email, $default, $host, $email_hash, $size);
+        } else {
+            $avatar = $default;
+        }
+        return $avatar;
+    }
+
+    public function content() {
         return $this->comment_content;
     }
 
-    function date() {
+    public function date() {
         return $this->comment_date;
+    }
+
+    public function meta($field_name){
+        return $this->get_meta_field($field_name);
     }
 
     private function get_meta_fields($comment_id = null){
@@ -62,11 +89,73 @@ class TimberComment extends TimberCore {
 
     }
 
-    public function meta($field_name){
-        return $this->get_meta_field($field_name);
+    /* AVATAR Stuff
+    ======================= */
+
+    private function avatar_email(){
+		$email = '';
+		$id = (int) $this->user_id;
+		$user = get_userdata($id);
+		if ($user){
+			$email = $user->user_email;
+		} else {
+			$email = $this->comment_author_email;
+		}
+		return $email;
     }
-    
 
-   
+    private function avatar_host($email_hash){
+        if ( is_ssl() ) {
+            $host = 'https://secure.gravatar.com';
+        } else {
+            if ( !empty($email_hash) ){
+                $host = sprintf( "http://%d.gravatar.com", ( hexdec( $email_hash[0] ) % 2 ) );
+            } else {
+                $host = 'http://0.gravatar.com';
+            }
+        }
+        return $host;
+    }
 
+    private function avatar_default($default, $email, $size, $host){
+		# what if its relative.
+		if(substr ( $default , 0, 1 ) == "/" ){
+			$default = 'http://'.$_SERVER['SERVER_NAME'] . $default;
+		}
+
+		if (empty($default) ){
+			$avatar_default = get_option('avatar_default');
+       		if ( empty($avatar_default) ){
+            	$default = 'mystery';
+        	} else {
+           		$default = $avatar_default;
+        	}
+		}
+      	if ( 'mystery' == $default ) {
+			$default = "$host/avatar/ad516503a11cd5ca435acc9bb6523536?s={$size}";
+			// ad516503a11cd5ca435acc9bb6523536 == md5('unknown@gravatar.com')
+		} elseif ( 'blank' == $default ) {
+          	$default = $email ? 'blank' : includes_url( 'images/blank.gif' );
+      	} elseif ( !empty($email) && 'gravatar_default' == $default ) {
+          	$default = '';
+      	} elseif ( 'gravatar_default' == $default ) {
+          	$default = "$host/avatar/?s={$size}";
+      	} elseif ( empty($email) && !strstr($default, 'http://') ) {
+          	$default = "$host/avatar/?d=$default&amp;s={$size}";
+      	} elseif ( strpos($default, 'http://') === 0 ) {
+            //theyre just linking to an image so don't do anything else
+          	//$default = add_query_arg( 's', $size, $default );
+        }
+		return $default;
+    }
+
+    private function avatar_out($email, $default, $host, $email_hash, $size){
+        $out = "$host/avatar/";
+        $out .= $email_hash;
+        $out .= '?s='.$size;
+        $out .= '&amp;d=' . urlencode( $default );
+        $rating = get_option('avatar_rating');
+        if ( !empty( $rating ) ) $out .= "&amp;r={$rating}";
+        return str_replace( '&#038;', '&amp;', esc_url( $out ) );
+    }
 }
