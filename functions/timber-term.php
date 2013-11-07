@@ -195,6 +195,10 @@ class TimberTerm extends TimberCore {
 		return $this->get_posts($numberposts_or_args, $post_type_or_class, $post_class);
 	}
 
+	public function title(){
+		return $this->name;
+	}
+
 	public function url(){
 		return $this->get_url();
 	}
