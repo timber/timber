@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.15.2
+Stable tag: 0.15.3
 Tested up to: 3.6.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,14 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.15.3 =
+* Upgreaded to Twig 1.14.2
+* Added composer integration
+* Bunch of new tests
+* Comments now support gravatrs (thanks @asecondwill)
+* Moved ACF integration into its own file. It now interacts via hooks instead of in-line
+* A few misc. bugs and extra sanity checks
 
 = 0.15.2 =
 * TimberImages now support alternate sizes
