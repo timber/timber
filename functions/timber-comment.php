@@ -120,7 +120,7 @@ class TimberComment extends TimberCore {
     private function avatar_default($default, $email, $size, $host){
 		# what if its relative.
 		if(substr ( $default , 0, 1 ) == "/" ){
-			$default = 'http://'.$_SERVER['SERVER_NAME'] . $default;
+			$default = home_url() . $default;
 		}
 
 		if (empty($default) ){
