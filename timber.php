@@ -447,9 +447,12 @@ class Timber {
     }
 
 
-    public static function load_template($template, $query = false, $force_header = 0) {
+    public static function load_template($template, $query = false, $force_header = 0, $tparams = false) {
         $template = locate_template($template);
-
+        if ($tparams){
+            global $params;
+            $params = $tparams;
+        }
         if ($force_header) {
             add_filter('status_header', function($status_header, $header, $text, $protocol) use ($force_header) {
                 $text = get_status_header_desc($force_header);
