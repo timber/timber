@@ -23,8 +23,12 @@ require_once(__DIR__ . '/functions/timber-term.php');
 require_once(__DIR__ . '/functions/timber-term-getter.php');
 require_once(__DIR__ . '/functions/timber-image.php');
 require_once(__DIR__ . '/functions/timber-menu.php');
-require_once(__DIR__ . '/functions/timber-theme.php');
+
+//Other 2nd-class citizens
+require_once(__DIR__ . '/functions/timber-archives.php');
 require_once(__DIR__ . '/functions/timber-site.php');
+require_once(__DIR__ . '/functions/timber-theme.php');
+
 
 require_once(__DIR__ . '/functions/timber-loader.php');
 require_once(__DIR__ . '/functions/timber-function-wrapper.php');
