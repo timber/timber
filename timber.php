@@ -460,8 +460,19 @@ class Timber {
         if ($force_header) {
             add_filter('status_header', function($status_header, $header, $text, $protocol) use ($force_header) {
                 $text = get_status_header_desc($force_header);
-                return "$protocol $force_header $text";
+                $header_string = "$protocol $force_header $text";
+                return $header_string;
             }, 10, 4 );
+            add_filter('body_class', function($classes) use ($force_header) {
+                if (isset($classes) && is_array($classes) && $force_header != 404){
+                    foreach($classes as &$class){
+                        if (strstr($class, '404')){
+                            $class = '';
+                        }
+                    }
+                }
+                return $classes;
+            });
         }
 
         if ($query) {
