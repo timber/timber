@@ -252,6 +252,8 @@ function twig_body_class($body_classes) {
 }
 
 function render_twig_string($string, $data = array()) {
+	$timber_loader = new TimberLoader();
+	$timber_loader->get_twig();
 	$loader = new Twig_Loader_String();
 	$twig = new Twig_Environment($loader);
 	return $twig->render($string, $data);

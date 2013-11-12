@@ -11,6 +11,7 @@
 			$this->name = $data->get('Name');
 			$ss = $data->get_stylesheet();
 			$this->slug = $ss;
+			$this->path = '/'.str_replace(ABSPATH, '', get_stylesheet_directory());
 			$this->parent_slug = $data->get('Template');
 			if ($this->parent_slug && $this->parent_slug != $this->slug){
 				$this->parent = new TimberTheme($this->parent_slug);
