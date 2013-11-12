@@ -88,7 +88,7 @@
 			if (empty($src)){
 				return '';
 			}
-			if (strstr($src, 'http') && !strstr($src, site_url())) {
+			if (strstr($src, 'http') && !strstr($src, home_url())) {
 				$src = self::sideload_image($src);
 			}
 			$abs = false;
