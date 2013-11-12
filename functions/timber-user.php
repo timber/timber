@@ -63,7 +63,7 @@ class TimberUser extends TimberCore {
         $value = null;
         $value = apply_filters('timber_user_get_meta_field_pre', $value, $field_name, $this->ID);
         if ($value === null){
-            $value = get_post_meta($this->ID, $field, true);
+            $value = get_user_meta($this->ID, $field, true);
         }
         $value = apply_filters('timber_user_get_meta_field', $value, $field_name, $this->ID);
         return $value;

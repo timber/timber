@@ -196,7 +196,7 @@ class TimberPost extends TimberCore {
 			$v = $value[0];
 			$customs[$key] = maybe_unserialize($v);
 		}
-		$customs = apply_filters('post_get_meta', $customs, $pid);
+		$customs = apply_filters('timber_post_get_meta', $customs, $pid);
 		return $customs;
 	}
 
