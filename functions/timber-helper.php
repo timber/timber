@@ -4,6 +4,13 @@ class TimberHelper {
 
 	public static function transient($slug, $callback, $transient_time = 1800){
 		if (false === ($data = get_transient($slug)) || WP_DEBUG){
+			$cache_lock_slug = $slug.'_cachelock';
+			if (get_transient($cache_lock_slug)){
+				//the server is currently executing the process.
+				//We're just gonna dump these users. Sorry!
+				return;
+			}
+			set_transient($cache_lock_slug, true, $transient_time);
 			$data = $callback();
 			set_transient($slug, $data, $transient_time);
 		}
@@ -264,10 +271,12 @@ class TimberHelper {
 
 	public static function get_post_by_meta($key, $value) {
 		global $wpdb;
-		$query = $wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s ORDER BY post_id LIMIT 1", $key, $value);
-		$result = $wpdb->get_var($query);
-		if ($result && get_post($result)) {
-			return $result;
+		$query = $wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s ORDER BY post_id", $key, $value);
+		$results = $wpdb->get_col($query);
+		foreach($results as $result){
+			if ($result && get_post($result)) {
+				return $result;
+			}
 		}
 		return 0;
 	}
