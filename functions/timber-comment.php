@@ -75,15 +75,15 @@ class TimberComment extends TimberCore {
             $comment_id = $this->ID;
         }
         //Could not find a WP function to fetch all comment meta data, so I made one.
-        $cm = apply_filters('timber_comment_get_meta_pre', array(), $this->ID);
-        global $wpdb;
-        $query = $wpdb->prepare("SELECT * FROM $wpdb->commentmeta WHERE comment_id = %d", $comment_id);
-        $metas = $wpdb->get_results($query);
-        foreach($metas as $meta_row){
-            $cm[$meta_row->meta_key] = maybe_unserialize($meta_row->meta_value);
+        $comment_metas = apply_filters('timber_comment_get_meta_pre', array(), $this->ID);
+        $comment_metas = get_comment_meta($this->ID);
+        foreach($comment_metas as &$cm){
+            if (is_array($cm) && count($cm) == 1){
+                $cm = $cm[0];
+            }
         }
-        $cm = apply_filters('timber_comment_get_meta', $cm, $this->ID);
-        return $cm;
+        $comment_metas = apply_filters('timber_comment_get_meta', $comment_metas, $this->ID);
+        return $comment_metas;
     }
 
     private function get_meta_field($field_name){
