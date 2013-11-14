@@ -23,11 +23,11 @@ class TimberUser extends TimberCore {
 
     function get_meta($field_name){
         $value = null;
-        $value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name);
+        $value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
         if ($value === null){
             $value = get_post_meta($this->ID, $field, true);
         }
-        $value = apply_filters('timber_user_get_meta_field', $value, $this->ID, $field_name);
+        $value = apply_filters('timber_user_get_meta_field', $value, $this->ID, $field_name, $this);
         return $value;
     }
 
@@ -61,18 +61,18 @@ class TimberUser extends TimberCore {
 
     function get_meta_field($field_name){
         $value = null;
-        $value = apply_filters('timber_user_get_meta_field_pre', $value, $field_name, $this->ID);
+        $value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
         if ($value === null){
             $value = get_user_meta($this->ID, $field, true);
         }
-        $value = apply_filters('timber_user_get_meta_field', $value, $field_name, $this->ID);
+        $value = apply_filters('timber_user_get_meta_field', $value, $this->ID, $field_name, $this);
         return $value;
     }
 
     function get_custom() {
         if ($this->ID) {
             $um = array();
-            $um = apply_filters('timber_user_get_meta_pre', $um, $this->ID);
+            $um = apply_filters('timber_user_get_meta_pre', $um, $this->ID, $this);
             if (empty($um)){
                 $um = get_user_meta($this->ID);
             }
@@ -83,7 +83,7 @@ class TimberUser extends TimberCore {
                 }
                 $custom[$key] = maybe_unserialize($value);
             }
-            $custom = apply_filters('timber_user_get_meta', $custom, $this->ID);
+            $custom = apply_filters('timber_user_get_meta', $custom, $this->ID, $this);
             return $custom;
         }
         return null;

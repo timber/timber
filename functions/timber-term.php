@@ -97,7 +97,7 @@ class TimberTerm extends TimberCore {
 	public function get_meta_field($field_name){
 		if (!isset($this->$field_name)){
 			$field = '';
-			$field = apply_filters('timber_term_get_meta_field', $field, $field_name, $this);
+			$field = apply_filters('timber_term_get_meta_field', $field, $this->ID, $field_name, $this);
 			$this->$field_name = $field;
 		}
 		return $this->$field_name;

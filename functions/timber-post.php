@@ -188,6 +188,7 @@ class TimberPost extends TimberCore {
   	}
 
 	function get_post_custom($pid) {
+		$customs = apply_filters('timber_post_get_meta_pre', array(), $pid, $this);
 		$customs = get_post_custom($pid);
 		if (!is_array($customs) || empty($customs)){
 			return;
@@ -196,7 +197,7 @@ class TimberPost extends TimberCore {
 			$v = $value[0];
 			$customs[$key] = maybe_unserialize($v);
 		}
-		$customs = apply_filters('timber_post_get_meta', $customs, $pid);
+		$customs = apply_filters('timber_post_get_meta', $customs, $pid, $this);
 		return $customs;
 	}
 
@@ -444,11 +445,11 @@ class TimberPost extends TimberCore {
 	}
 
 	public function get_field($field_name) {
-		$value = null;
-		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name);
+		$value = apply_filters('timber_post_get_meta_field_pre', null, $this->ID, $field_name, $this);
 		if ($value === null){
 			$value = get_post_meta($this->ID, $field, true);
 		}
+		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
 		return $value;
 	}
 
