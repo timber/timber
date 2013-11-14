@@ -482,7 +482,7 @@ class TimberPost extends TimberCore {
 	}
 
 	public function display_date(){
-		return date(get_option('date_format'), strtotime($this->post_date));
+		return date_i18n(get_option('date_format') , strtotime($this->post_date));
 	}
 
 	public function edit_link(){
