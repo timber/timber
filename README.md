@@ -9,7 +9,7 @@ By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a h
 ### Because WordPress is awesome, but the_loop isn't
 Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](http://twig.sensiolabs.org/) separate from your PHP files.
 
-This cleans-up your theme code so, for example, your php file can focus on being the data, while your twig file can focus 100% on the HTML and display.
+This cleans-up your theme code so, for example, your php file can focus on being the data/logic, while your twig file can focus 100% on the HTML and display.
 
 This is what Timber's `.twig` files look like:
 
@@ -29,13 +29,13 @@ Once Timber is installed and activated in your plugin directory, it gives any Wo
 ### Looking for docs?
 * [Timber Documentation](https://github.com/jarednova/timber/wiki/)
 * [Twig Reference](http://twig.sensiolabs.org/doc/templates.html)
-* **[Video Tutorials](https://github.com/jarednova/timber/wiki/Video-Tutorials)**
+* [Video Tutorials](https://github.com/jarednova/timber/wiki/Video-Tutorials)
 * [Overview / Getting Started Guide](https://github.com/jarednova/timber/wiki/getting-started)
 
 * * *
 
 ### Installation
-Just drag the `timber` folder into `wp-content/plugins` -- then activate in your WordPress admin.
+Just drag the `timber` folder into `wp-content/plugins` -- then activate in your WordPress admin. If you're looking for a 'blank' theme to start developing with, drag the `timber-starter-theme` from the timber directory into your themes directory.
 
 * * *
 
