@@ -368,7 +368,9 @@ class TimberPost extends TimberCore {
 			if (!is_array($terms) && is_object($terms) && get_class($terms) == 'WP_Error'){
 				//something is very wrong
 				TimberHelper::error_log('You have an error retrieving terms on a post in timber-post.php:367');
+				TimberHelper::error_log('tax = '.$tax);
 				TimberHelper::error_log($terms);
+
 			} else {
 				foreach ($terms as &$term) {
 					$term = new $TermClass($term->term_id);
@@ -459,6 +461,10 @@ class TimberPost extends TimberCore {
 		$this->$field_name = $this->get_field($field_name);
 	}
 
+	function get_format(){
+		return get_post_format($this->ID);
+	}
+
 	//Aliases
 	public function author() {
 		return $this->get_author();
@@ -490,6 +496,10 @@ class TimberPost extends TimberCore {
 
 	public function edit_link(){
 		return $this->get_edit_url();
+	}
+
+	public function format(){
+		return $this->get_format();
 	}
 
 	public function link() {
