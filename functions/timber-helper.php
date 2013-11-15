@@ -3,16 +3,21 @@
 class TimberHelper {
 
 	public static function transient($slug, $callback, $transient_time = 1800){
-		if (false === ($data = get_transient($slug)) || WP_DEBUG){
+		$disable_transients = false;
+		if (defined('WP_DISABLE_TRANSIENTS')){
+			$disable_transients = WP_DISABLE_TRANSIENTS;
+		}
+		if (false === ($data = get_transient($slug)) || $disable_transients){
 			$cache_lock_slug = $slug.'_cachelock';
 			if (get_transient($cache_lock_slug)){
 				//the server is currently executing the process.
 				//We're just gonna dump these users. Sorry!
-				return;
+				return false;
 			}
 			set_transient($cache_lock_slug, true, $transient_time);
 			$data = $callback();
 			set_transient($slug, $data, $transient_time);
+			delete_transient($cache_lock_slug);
 		}
 		return $data;
 	}

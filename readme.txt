@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.15.3
+Stable tag: 0.15.4
 Tested up to: 3.7.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,13 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.15.4 =
+* More improvements to filters to support external integration with Pods and other WP frameworks
+* Fixed bug on date internationalization (thanks @slimndap)
+* Fixed bug on using existing image sizes (thanks @matthewsoares)
+* Fixed bug on homeurl vs siteurl (thanks @ciarand)
+* Fixed
 
 = 0.15.3 =
 * Upgreaded to Twig 1.14.2
