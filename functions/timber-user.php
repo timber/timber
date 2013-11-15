@@ -26,7 +26,7 @@ class TimberUser extends TimberCore {
         $value = null;
         $value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
         if ($value === null){
-            $value = get_post_meta($this->ID, $field, true);
+            $value = get_post_meta($this->ID, $field_name, true);
         }
         $value = apply_filters('timber_user_get_meta_field', $value, $this->ID, $field_name, $this);
         return $value;
@@ -64,7 +64,7 @@ class TimberUser extends TimberCore {
         $value = null;
         $value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
         if ($value === null){
-            $value = get_user_meta($this->ID, $field, true);
+            $value = get_user_meta($this->ID, $field_name, true);
         }
         $value = apply_filters('timber_user_get_meta_field', $value, $this->ID, $field_name, $this);
         return $value;

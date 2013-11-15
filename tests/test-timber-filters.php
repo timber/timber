@@ -33,4 +33,32 @@
 			return $value;
 		}
 
+		function testUserMetaFilter(){
+			$uid = $this->factory->user->create();
+			$user = new TimberUser($uid);
+			$user->update('jared', 'novack');
+			add_filter('timber_user_get_meta_field', array($this, 'filter_timber_user_get_meta_field'), 10, 4);
+			$this->assertEquals($user->meta('jared'), 'novack');
+		}
+
+		function filter_timber_user_get_meta_field($value, $uid, $field_name, $timber_user){
+			$this->assertEquals($field_name, 'jared');
+			$this->assertEquals($value, 'novack');
+			$this->assertEquals($timber_user->ID, $uid);
+			return $value;
+		}
+
+		function testTermMetaFilter(){
+			$tid = $this->factory->term->create();
+			$term = new TimberTerm($tid);
+			add_filter('timber_term_get_meta_field', array($this, 'filter_timber_term_get_meta_field'), 10, 4);
+			$term->meta("panic!");
+		}
+
+		function filter_timber_term_get_meta_field($value, $tid, $field_name, $timber_term){
+			$this->assertEquals($tid, $timber_term->ID);
+			$this->assertEquals($field_name, 'panic!');
+			return $value;
+		}
+
 	}
