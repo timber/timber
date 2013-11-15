@@ -46,10 +46,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * Fixed bug on date internationalization (thanks @slimndap)
 * Fixed bug on using existing image sizes (thanks @matthewsoares)
 * Fixed bug on homeurl vs siteurl (thanks @ciarand)
-* Fixed
+* Added a cache lock to the TimberHelper::transient method
+* Added an in-development version of a TimberArchives object
 
 = 0.15.3 =
-* Upgreaded to Twig 1.14.2
+* Upgrayedd to Twig 1.14.2
 * Added composer integration
 * Bunch of new tests
 * Comments now support gravatrs (thanks @asecondwill)
@@ -66,6 +67,8 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * Cacheing!!!
 * Cacheing!!
 * Cacheing!!!! Timber::render('mytemplate.twig', $data, $expires_time_in_secs);
+* Timber::render now automatically echos. Don't want it to? See below...
+* New Timber::compile method which _doesn't_ automatically echo. (Same args as Timber::render)
 * Added post.get_next / post.get_prev for TimberPosts
 * Fixed a thing to make get_preview easier when you want to omit the 'Read More' link
 * Read the [Full Release Notes](https://github.com/jarednova/timber/releases/tag/0.15.0)
@@ -110,8 +113,8 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * A few fixes that catch issues with absolute vs. relative URLs in resize
 
 = 0.12.0 =
-* Pagination is refactored to be more intuitive, and well, better.
-* Resize is also refactored to respect absolute vs. relative URLs
+* Pagination is re-factored to be more intuitive, and well, better.
+* Resize is also re-factored to respect absolute vs. relative URLs
 * Got rid of lots of old, bogus code.
 
 = 0.11.0 =
@@ -155,7 +158,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * load_template for routing can now accept a query argument
 * load_template will wait to load a template so that 'init' actions can fire.
 * way more inline documentation
-* print_a now includes the output of (most) methods in addition to properites.
+* print_a now includes the output of (most) methods in addition to properties.
 * added lots of aliases so that things like .author will work the same as .get_author
 
 == Screenshots ==
@@ -195,8 +198,11 @@ At Upstatement we've now used it on more than a dozen client sites. You can chec
 = Doesn't this all make WordPress harder since there's more to learn? =
 Does jQuery make JavaScript harder? Yes, it's an extra piece to learn -- but it super-charges your ability to write unencumbered JavaScript (and prevents you from having to learn lots of the messy internals). If your answer is "jQuery sucks and everyone should learn how to write vanilla JS or they're rotten stupid people," this tool isn't for you.
 
+= Oh, Timber is simple code so it's for making simple themes =
+Whatever. It simplifies the silly stuff so that you can focus on building more complicated sites and apps. Django simplifies Python, but you can still use the full range of Python's abilities.
+
 = Will you support it? =
-As stated above, we're using it in dozens of sites (and dozens more planned). This isn't going anywhere. Twig is the chosen language for other PHP platforms like Symfony, Drupal8 and Craft. WordPress will eventually adopt Twig too.
+As stated above, we're using it in dozens of sites (and dozens more planned) -- dozens of other developers are using it too. This isn't going anywhere. Twig is the chosen language for other PHP platforms like Symfony, Drupal 8 and Craft. WordPress will eventually adopt Twig too, I promise you that.
 
 = Support? =
 Leave a [GitHub issue](https://github.com/jarednova/timber/issues?state=open) and I'll holler back.
