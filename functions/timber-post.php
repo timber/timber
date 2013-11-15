@@ -6,10 +6,12 @@ class TimberPost extends TimberCore {
 	var $PostClass = 'TimberPost';
 	var $_can_edit;
 	var $_get_terms;
+	var $object_type = 'post';
 
 	var $_custom_imported = false;
 
 	public static $representation = 'post';
+
 
 	/**
 	*  If you send the contructor nothing it will try to figure out the current post id based on being inside The_Loop
@@ -447,7 +449,7 @@ class TimberPost extends TimberCore {
 	public function get_field($field_name) {
 		$value = apply_filters('timber_post_get_meta_field_pre', null, $this->ID, $field_name, $this);
 		if ($value === null){
-			$value = get_post_meta($this->ID, $field, true);
+			$value = get_post_meta($this->ID, $field_name, true);
 		}
 		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
 		return $value;

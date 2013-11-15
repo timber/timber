@@ -6,6 +6,7 @@ class TimberTerm extends TimberCore {
 	var $_children;
 	var $PostClass = 'TimberPost';
 	var $TermClass = 'TimberTerm';
+	var $object_type = 'term';
 
 	public static $representation = 'term';
 

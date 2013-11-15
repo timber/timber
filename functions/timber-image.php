@@ -5,6 +5,7 @@ class TimberImage extends TimberCore {
 	var $_can_edit;
 	var $abs_url;
 	var $PostClass = 'TimberPost';
+	var $object_type = 'image';
 
 	public static $representation = 'image';
 

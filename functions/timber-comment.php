@@ -3,6 +3,7 @@
 class TimberComment extends TimberCore {
 
     var $PostClass = 'TimberPost';
+    var $object_type = 'comment';
 
     public static $representation = 'comment';
 
@@ -87,11 +88,11 @@ class TimberComment extends TimberCore {
     }
 
     private function get_meta_field($field_name){
-        $value = apply_filters('timber_comment_get_meta_field_pre', null, $this->ID, $field_name);
+        $value = apply_filters('timber_comment_get_meta_field_pre', null, $this->ID, $field_name, $this);
         if ($value === null){
-            $value = get_comment_meta($this->ID, $field, true);
+            $value = get_comment_meta($this->ID, $field_name, true);
         }
-        $value = apply_filters('timber_comment_get_meta_field', $value, $this->ID, $field_name);
+        $value = apply_filters('timber_comment_get_meta_field', $value, $this->ID, $field_name, $this);
         return $value;
     }
 

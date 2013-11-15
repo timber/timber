@@ -13,6 +13,10 @@ class TimberCore {
 		}
 	}
 
+	function update($key, $value){
+		update_metadata($this->object_type, $this->ID, $key, $value);
+	}
+
 	function can_edit() {
 		if (isset($this->_can_edit)) {
 			return $this->_can_edit;
