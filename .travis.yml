@@ -1,7 +1,7 @@
 language: php
 
 php:
-    - 5.3
+    - 5.3.2
     - 5.4
 
 env:
@@ -10,6 +10,6 @@ env:
 
 before_script:
     - export WP_TESTS_DIR=/tmp/wordpress-tests/
-    - bash bin/install-wp-tests.sh wordpress_test root '' $WP_VERSION 
+    - bash bin/install-wp-tests.sh wordpress_test root '' $WP_VERSION
 
 script: phpunit
