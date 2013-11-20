@@ -33,6 +33,9 @@ require_once(__DIR__ . '/functions/timber-theme.php');
 require_once(__DIR__ . '/functions/timber-loader.php');
 require_once(__DIR__ . '/functions/timber-function-wrapper.php');
 require_once(__DIR__ . '/functions/integrations/acf-timber.php');
+if ( defined('WP_CLI') && WP_CLI ) {
+    require_once(__DIR__ . '/functions/integrations/wpcli-timber.php');
+}
 
 require_once(__DIR__ . '/admin/timber-admin.php');
 
