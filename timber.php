@@ -463,16 +463,12 @@ class Timber {
                 $header_string = "$protocol $force_header $text";
                 return $header_string;
             }, 10, 4 );
-            add_filter('body_class', function($classes) use ($force_header) {
-                if (isset($classes) && is_array($classes) && $force_header != 404){
-                    foreach($classes as &$class){
-                        if (strstr($class, '404')){
-                            $class = '';
-                        }
-                    }
-                }
-                return $classes;
-            });
+            if (404 != $force_header) {
+                add_action('parse_query', function($query) {
+                    if ($query->is_main_query())
+                        $query->is_404 = false;
+                });
+            }
         }
 
         if ($query) {
