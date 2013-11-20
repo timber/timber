@@ -86,8 +86,8 @@ class TimberLoader {
 
 	function get_locations_theme() {
 		$theme_locs = array();
-		$child_loc = get_stylesheet_directory();
-		$parent_loc = get_template_directory();
+		$child_loc = str_replace('/', '\\', get_stylesheet_directory());
+    $parent_loc = str_replace('/', '\\', get_template_directory());
 		$theme_locs[] = $child_loc;
 		$theme_locs[] = trailingslashit($child_loc) . trailingslashit(Timber::$dirname);
 		if ($child_loc != $parent_loc) {
