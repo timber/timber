@@ -468,8 +468,9 @@ class Timber {
             }, 10, 4 );
             if (404 != $force_header) {
                 add_action('parse_query', function($query) {
-                    if ($query->is_main_query())
+                    if ($query->is_main_query()){
                         $query->is_404 = false;
+                    }
                 });
             }
         }
