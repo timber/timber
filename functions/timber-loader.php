@@ -86,8 +86,8 @@ class TimberLoader {
 
 	function get_locations_theme() {
 		$theme_locs = array();
-		$child_loc = str_replace('/', '\\', get_stylesheet_directory());
-    $parent_loc = str_replace('/', '\\', get_template_directory());
+		$child_loc = get_stylesheet_directory();
+    $parent_loc = get_template_directory();
 		$theme_locs[] = $child_loc;
 		$theme_locs[] = trailingslashit($child_loc) . trailingslashit(Timber::$dirname);
 		if ($child_loc != $parent_loc) {
@@ -97,6 +97,8 @@ class TimberLoader {
 		//now make sure theres a trailing slash on everything
 		foreach ($theme_locs as &$tl) {
 			$tl = trailingslashit($tl);
+      if (DIRECTORY_SEPARATOR == '\\')
+        $tl = str_replace('/', '\\', $tl);
 		}
 		return $theme_locs;
 	}
