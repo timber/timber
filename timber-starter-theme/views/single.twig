@@ -5,14 +5,14 @@
 	<div class="content-wrapper">
 		<article class="post-type-{{post.post_type}}" id="post-{{post.ID}}">
 			<section class="article-content">
-				<h1 class="article-h1">{{post.post_title}}</h1>
+				<h1 class="article-h1">{{post.title}}</h1>
 
 				<p class="blog-author">
-					<span>By</span><a href="{{post.author.get_path}}"> {{ post.author.name }} </a><span>&bull;</span> {{ post.display_date }}
+					<span>By</span><a href="{{post.author.path}}"> {{ post.author.name }} </a><span>&bull;</span> {{ post.display_date }}
 				</p>
 
 				<div class="article-body">
-					{{post.get_content}}
+					{{post.content}}
 				</div>
 			</section>
 
@@ -23,10 +23,10 @@
 					</div>
 					<div class="responses">
 
-					{% for cmt in post.get_comments() %}
-						{% include "comment.twig" with {comment:cmt} %}
-					{% endfor %}
-</div>
+						{% for cmt in post.get_comments() %}
+							{% include "comment.twig" with {comment:cmt} %}
+						{% endfor %}
+					</div>
 
 			</section>
 
