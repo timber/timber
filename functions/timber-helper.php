@@ -420,8 +420,9 @@ class TimberHelper {
 		if ( $prev_next && $current && 1 < $current ) :
 			$link = str_replace('%_%', 2 == $current ? '' : $format, $base);
 			$link = str_replace('%#%', $current - 1, $link);
-			if ( $add_args )
+			if ( $add_args ){
 				$link = add_query_arg( $add_args, $link );
+			}
 			$link .= $add_fragment;
 			$page_links[] = '<a class="prev page-numbers" href="' . esc_url( apply_filters( 'paginate_links', $link ) ) . '">' . $prev_text . '</a>';
 		endif;
@@ -435,8 +436,10 @@ class TimberHelper {
 				if ( $show_all || ( $n <= $end_size || ( $current && $n >= $current - $mid_size && $n <= $current + $mid_size ) || $n > $total - $end_size ) ) :
 					$link = str_replace('%_%', 1 == $n ? '' : $format, $base);
 					$link = str_replace('%#%', $n, $link);
-					if ( $add_args )
+					if ( $add_args ) {
 						$link = add_query_arg( $add_args, $link );
+					}
+					
 					$link = trailingslashit($link).ltrim($add_fragment, '/');
 					//$page_links[] = "<a class='page-numbers' href='" . esc_url( apply_filters( 'paginate_links', $link ) ) . "'>$n_display</a>";
 					$page_links[] = array('class' => 'page-number', 'link' => esc_url( apply_filters( 'paginate_links', $link ) ), 'title' => $n_display);
