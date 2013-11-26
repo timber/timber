@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.15.5
+Stable tag: 0.16.0
 Tested up to: 3.7.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,12 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.16.0 =
+* TimberTheme is now available in default context as .theme
+* Post meta now respects arrays (watch out for some possible compatiblity issues here)
+* Template loads now work for parent/child themes in Windows (thanks @matthewsoares)
+* Better method for removing 404 body class on manual redirects (thanks @mgmartel)
 
 = 0.15.5 =
 * Post formats: {{post.format}} !
