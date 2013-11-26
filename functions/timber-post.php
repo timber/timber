@@ -196,8 +196,10 @@ class TimberPost extends TimberCore {
 			return;
 		}
 		foreach ($customs as $key => $value) {
-			$v = $value[0];
-			$customs[$key] = maybe_unserialize($v);
+			if (is_array($value) && count($value) == 1 && isset($value[0])){
+				$value = $value[0];
+			}
+			$customs[$key] = maybe_unserialize($value);
 		}
 		$customs = apply_filters('timber_post_get_meta', $customs, $pid, $this);
 		return $customs;
@@ -451,7 +453,10 @@ class TimberPost extends TimberCore {
 	public function get_field($field_name) {
 		$value = apply_filters('timber_post_get_meta_field_pre', null, $this->ID, $field_name, $this);
 		if ($value === null){
-			$value = get_post_meta($this->ID, $field_name, true);
+			$value = get_post_meta($this->ID, $field_name);
+			if (is_array($value) && count($value == 1)){
+				$value = $value[0];
+			}
 		}
 		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
 		return $value;
