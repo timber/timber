@@ -101,9 +101,6 @@ class TimberLoader {
 		//now make sure theres a trailing slash on everything
 		foreach ($theme_locs as &$tl) {
 			$tl = trailingslashit($tl);
-      		if (DIRECTORY_SEPARATOR == '\\'){
-        		$tl = str_replace('/', '\\', $tl);
-        	}
 		}
 		return $theme_locs;
 	}
