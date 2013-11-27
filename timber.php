@@ -512,12 +512,15 @@ class Timber {
         $args['total'] = ceil($wp_query->found_posts / $wp_query->query_vars['posts_per_page']);
         if (strlen(trim(get_option('permalink_structure')))){
             $args['format'] = 'page/%#%';
+            $args['base'] = trailingslashit(get_pagenum_link(0)).'%_%';
+        } else {
+            $big = 999999999;
+            $args['base'] = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
         }
         $args['type'] = 'array';
 
         $args['current'] = max( 1, get_query_var('paged') );
         $args['mid_size'] = max(9 - $args['current'], 3);
-        $args['base'] = trailingslashit(get_pagenum_link(0)).'%_%';
         $args['prev_next'] = false;
         $args = array_merge($args, $prefs);
         $data['pages'] = TimberHelper::paginate_links($args);

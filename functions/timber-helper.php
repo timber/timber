@@ -396,7 +396,7 @@ class TimberHelper {
 			'next_text' => __('Next &raquo;'),
 			'end_size' => 1,
 			'mid_size' => 2,
-			'type' => 'plain',
+			'type' => 'array',
 			'add_args' => false, // array of query args to add
 			'add_fragment' => ''
 		);
@@ -406,8 +406,9 @@ class TimberHelper {
 
 		// Who knows what else people pass in $args
 		$total = (int) $total;
-		if ( $total < 2 )
+		if ( $total < 2 ){
 			return;
+		}
 		$current  = (int) $current;
 		$end_size = 0  < (int) $end_size ? (int) $end_size : 1; // Out of bounds?  Make it the default.
 		$mid_size = 0 <= (int) $mid_size ? (int) $mid_size : 2;
@@ -416,64 +417,46 @@ class TimberHelper {
 		$page_links = array();
 		$n = 0;
 		$dots = false;
-
-		if ( $prev_next && $current && 1 < $current ) :
+		if ( $prev_next && $current && 1 < $current ){
 			$link = str_replace('%_%', 2 == $current ? '' : $format, $base);
 			$link = str_replace('%#%', $current - 1, $link);
 			if ( $add_args ){
 				$link = add_query_arg( $add_args, $link );
 			}
 			$link .= $add_fragment;
-			$page_links[] = '<a class="prev page-numbers" href="' . esc_url( apply_filters( 'paginate_links', $link ) ) . '">' . $prev_text . '</a>';
-		endif;
-		for ( $n = 1; $n <= $total; $n++ ) :
+			$page_links[] = array('class' => 'prev page-numbers', 'link' => esc_url( apply_filters( 'paginate_links', $link )), 'title' => $prev_text);
+		}
+		for ( $n = 1; $n <= $total; $n++ ) {
 			$n_display = number_format_i18n($n);
-			if ( $n == $current ) :
-				//$page_links[] = "<span class='page-numbers current'>$n_display</span>";
+			if ( $n == $current ) {
 				$page_links[] = array('class' => 'page-number current', 'title' => $n_display, 'text' => $n_display);
 				$dots = true;
-			else :
-				if ( $show_all || ( $n <= $end_size || ( $current && $n >= $current - $mid_size && $n <= $current + $mid_size ) || $n > $total - $end_size ) ) :
+			} else {
+				if ( $show_all || ( $n <= $end_size || ( $current && $n >= $current - $mid_size && $n <= $current + $mid_size ) || $n > $total - $end_size ) ) {
 					$link = str_replace('%_%', 1 == $n ? '' : $format, $base);
 					$link = str_replace('%#%', $n, $link);
 					if ( $add_args ) {
 						$link = add_query_arg( $add_args, $link );
 					}
-					
 					$link = trailingslashit($link).ltrim($add_fragment, '/');
-					//$page_links[] = "<a class='page-numbers' href='" . esc_url( apply_filters( 'paginate_links', $link ) ) . "'>$n_display</a>";
 					$page_links[] = array('class' => 'page-number', 'link' => esc_url( apply_filters( 'paginate_links', $link ) ), 'title' => $n_display);
 					$dots = true;
-				elseif ( $dots && !$show_all ) :
+				} elseif ( $dots && !$show_all ) {
 					$page_links[] = array('class' => 'dots', 'title' => __( '&hellip;' ));
-					//$page_links[] = '<span class="page-numbers dots">' . __( '&hellip;' ) . '</span>';
 					$dots = false;
-				endif;
-			endif;
-		endfor;
-		if ( $prev_next && $current && ( $current < $total || -1 == $total ) ) :
+				}
+			}
+		}
+		if ( $prev_next && $current && ( $current < $total || -1 == $total ) ) {
 			$link = str_replace('%_%', $format, $base);
 			$link = str_replace('%#%', $current + 1, $link);
-			if ( $add_args )
+			if ( $add_args ) {
 				$link = add_query_arg( $add_args, $link );
+			}
 			$link = trailingslashit($link).$add_fragment;
-
-			$page_links[] = '<a class="next page-numbers" href="' . esc_url( apply_filters( 'paginate_links', $link ) ) . '">' . $next_text . '</a>';
-		endif;
-		switch ( $type ) :
-			case 'array' :
-				return $page_links;
-				break;
-			case 'list' :
-				$r .= "<ul class='page-numbers'>\n\t<li>";
-				$r .= join("</li>\n\t<li>", $page_links);
-				$r .= "</li>\n</ul>\n";
-				break;
-			default :
-				$r = join("\n", $page_links);
-				break;
-		endswitch;
-		return $r;
+			$page_links[] = array('class' => 'next page-numbers', 'link' => esc_url( apply_filters( 'paginate_links', $link ) ), 'title' => $next_text);
+		}
+		return $page_links;
 	}
 }
 
