@@ -10,10 +10,12 @@ class TimberTerm extends TimberCore {
 
 	public static $representation = 'term';
 
-	function __construct($tid = null) {
+	function __construct($tid = null, $tax='') {
 		if ($tid === null) {
 			$tid = $this->get_term_from_query();
 		}
+		if(strlen($tax))
+			$this->taxonomy = $tax;
 		$this->init($tid);
 	}
 
@@ -61,12 +63,17 @@ class TimberTerm extends TimberCore {
 			return $tid;
 		}
 		$tid = self::get_tid($tid);
-		global $wpdb;
-		$query = $wpdb->prepare("SELECT taxonomy FROM $wpdb->term_taxonomy WHERE term_id = %d LIMIT 1", $tid);
-		$tax = $wpdb->get_var($query);
-		if (isset($tax) && strlen($tax)) {
-			$term = get_term($tid, $tax);
-			return $term;
+		
+		if(isset($this->taxonomy) && strlen($this->taxonomy)) {
+			return get_term($tid, $this->taxonomy);
+		} else {
+			global $wpdb;
+			$query = $wpdb->prepare("SELECT taxonomy FROM $wpdb->term_taxonomy WHERE term_id = %d LIMIT 1", $tid);
+			$tax = $wpdb->get_var($query);
+			if (isset($tax) && strlen($tax)) {
+				$term = get_term($tid, $tax);
+				return $term;
+			}
 		}
 		return null;
 	}
