@@ -454,7 +454,7 @@ class TimberPost extends TimberCore {
 		$value = apply_filters('timber_post_get_meta_field_pre', null, $this->ID, $field_name, $this);
 		if ($value === null){
 			$value = get_post_meta($this->ID, $field_name);
-			if (is_array($value) && count($value == 1)){
+			if (is_array($value) && count($value) == 1){
 				$value = $value[0];
 			}
 		}
