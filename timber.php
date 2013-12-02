@@ -200,7 +200,7 @@ class Timber {
         if (!is_array($query) || !count($query)) {
             return null;
         }
-        $results = get_posts(array('post_type'=>'any', 'post__in' =>$query, 'orderby' => 'post__in'));
+        $results = get_posts(array('post_type'=>'any', 'post__in' =>$query, 'orderby' => 'post__in', 'numberposts' => -1));
         return self::handle_post_results($results, $PostClass);
     }
 
