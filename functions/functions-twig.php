@@ -25,6 +25,13 @@ class TimberTwig {
 		$twig->addFilter('print_a', new Twig_Filter_Function('twig_print_a'));
 
 		/* other filters */
+		$twig->addFilter('array', new Twig_Filter_Function(function($arr){
+			if (is_array($arr)){
+				return $arr;
+			}
+			$arr = array($arr);
+			return $arr;
+		}));
 		$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
 		$twig->addFilter('function', new Twig_Filter_Function(array(&$this, 'exec_function')));
 		$twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
