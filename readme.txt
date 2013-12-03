@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.16.0
+Stable tag: 0.16.1
 Tested up to: 3.7.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -46,6 +46,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * Fixed issue where posts retrived via an array of IDs was truncated at the default post count
 * Fixed issue where loading terms from multi taxonomies (thanks @hohoho)
 * Added support for post_class on TimberPost (thanks @slimndap)
+* new `array` filter to convert single-values into array in twig
 
 = 0.16.0 =
 * TimberTheme is now available in default context as .theme
