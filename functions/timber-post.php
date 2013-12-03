@@ -547,4 +547,9 @@ class TimberPost extends TimberCore {
 		return $this->get_title();
 	}
 
+	function post_class($class='') {
+		return implode(' ', get_post_class($class,$this->ID));
+	}
+
+
 }
