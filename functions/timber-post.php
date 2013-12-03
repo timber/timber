@@ -155,15 +155,10 @@ class TimberPost extends TimberCore {
 		if (strlen($text)) {
 			$text = trim($text);
 			$last = $text[strlen($text) - 1];
-			if ($last != '.' && $trimmed) {
-				$text .= ' &hellip; ';
-			}
+			
 			if (!$strip){
 				$last_p_tag = strrpos($text, '</p>');
 				$text = substr($text, 0, $last_p_tag);
-				if ($last != '.' && $trimmed) {
-					$text .= ' &hellip; ';
-				}
 			}
 
 			if($readmore) {
