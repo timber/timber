@@ -43,7 +43,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 = 0.16.1 =
 * Bug fix on ugly permalinks for pagination
-* Fixed issue where posts retrived via an array of IDs was truncated at the default post count
+* Fixed issue where posts retrieved via an array of IDs was truncated at the default post count
 * Fixed issue where loading terms from multi taxonomies (thanks @WL-hohoho)
 * Added support for post_class on TimberPost (thanks @slimndap)
 * new `array` filter to convert single-values into array in twig
