@@ -41,6 +41,12 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 0.16.1 =
+* Bug fix on ugly permalinks for pagination
+* Fixed issue where posts retrived via an array of IDs was truncated at the default post count
+* Fixed issue where loading terms from multi taxonomies (thanks @hohoho)
+* Added support for post_class on TimberPost (thanks @slimndap)
+
 = 0.16.0 =
 * TimberTheme is now available in default context as .theme
 * Post meta now respects arrays (watch out for some possible compatiblity issues here)
