@@ -25,17 +25,11 @@ class TimberTwig {
 		$twig->addFilter('print_a', new Twig_Filter_Function('twig_print_a'));
 
 		/* other filters */
-		$twig->addFilter('array', new Twig_Filter_Function(function($arr){
-			if (is_array($arr)){
-				return $arr;
-			}
-			$arr = array($arr);
-			return $arr;
-		}));
+		$twig->addFilter('array', new Twig_Filter_Function(array($this, 'to_array')));
 		$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
-		$twig->addFilter('function', new Twig_Filter_Function(array(&$this, 'exec_function')));
+		$twig->addFilter('function', new Twig_Filter_Function(array($this, 'exec_function')));
 		$twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
-		$twig->addFilter('pretags', new Twig_Filter_Function(array(&$this, 'twig_pretags')));
+		$twig->addFilter('pretags', new Twig_Filter_Function(array($this, 'twig_pretags')));
 		$twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
 		$twig->addFilter('shortcodes', new Twig_Filter_Function('twig_shortcodes'));
 		$twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
@@ -100,6 +94,14 @@ class TimberTwig {
 		$twig = apply_filters('get_twig', $twig);
 
 		return $twig;
+	}
+
+	function to_array($arr){
+		if (is_array($arr)){
+			return $arr;
+		}
+		$arr = array($arr);
+		return $arr;
 	}
 
 	function exec_function($function_name){
