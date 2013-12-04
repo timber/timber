@@ -473,6 +473,10 @@ class Timber {
                         $query->is_404 = false;
                     }
                 });
+                add_action('template_redirect', function(){
+                    global $wp_query;
+                    $wp_query->is_404 = false;
+                });
             }
         }
 
