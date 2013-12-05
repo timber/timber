@@ -391,6 +391,21 @@ class TimberPost extends TimberCore {
 		return $ret;
 	}
 
+	function has_term($term_name_or_id, $taxonomy = 'all'){
+		if ($taxonomy == 'all' || $taxonomy == 'any'){
+			$taxes = get_object_taxonomies($this->post_type, 'names');
+			$ret = false;
+			foreach($taxes as $tax){
+				if (has_term($term_name_or_id, $tax, $this->ID)){
+					$ret = true;
+					break;
+				}
+			}
+			return $ret;
+		}
+		return has_term($term_name_or_id, $taxonomy, $this->ID);
+	}
+
 	function get_image($field) {
 		return new $this->ImageClass($this->$field);
 	}
