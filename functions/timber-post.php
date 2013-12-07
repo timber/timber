@@ -534,6 +534,10 @@ class TimberPost extends TimberCore {
 		return $this->get_next();
 	}
 
+	public function parent(){
+		return $this->get_parent();
+	}
+
 	public function path() {
 		return $this->get_path();
 	}

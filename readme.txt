@@ -41,6 +41,9 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 0.16.2 =
+* Added has_term to TimberPost
+
 = 0.16.1 =
 * Bug fix on ugly permalinks for pagination
 * Fixed issue where posts retrieved via an array of IDs was truncated at the default post count
