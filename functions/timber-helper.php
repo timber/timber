@@ -329,8 +329,14 @@ class TimberHelper {
 		if (is_array($array)) {
 			$i = 0;
 			foreach ($array as $arr) {
-				if ($arr->$key == $value || $arr[$key] == $value) {
-					return $i;
+				if (is_array($arr)){
+					if ($arr[$key] == $value){
+						return $i;
+					}
+				} else {
+					if ($arr->$key == $value) {
+						return $i;
+					}
 				}
 				$i++;
 			}
