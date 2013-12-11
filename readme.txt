@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.16.1
+Stable tag: 0.16.2
 Tested up to: 3.7.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -43,6 +43,8 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 = 0.16.2 =
 * Added has_term to TimberPost
+* Extra checks to make sure redirected links don't get 404 body class
+* Misc bugs
 
 = 0.16.1 =
 * Bug fix on ugly permalinks for pagination
