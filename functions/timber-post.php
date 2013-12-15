@@ -234,7 +234,16 @@ class TimberPost extends TimberCore {
 
 	function get_next() {
 		if (!isset($this->next)){
-			$this->next = new $this->PostClass(get_adjacent_post( false, "", false ));
+			$postlist = get_posts('sort_column=menu_order&sort_order=asc');
+			$posts = array();
+			foreach ($postlist as $post) {
+			   $posts[] += $post->ID;
+			}
+			
+			$current = array_search($this->ID, $posts);
+			if (isset($posts[$current-1])) {
+				$this->next = new $this->PostClass($posts[$current-1]);						
+			}
 		}
 		return $this->next;
 	}
@@ -245,7 +254,16 @@ class TimberPost extends TimberCore {
 
 	function get_prev() {
 		if (!isset($this->prev)){
-			$this->prev = new $this->PostClass(get_adjacent_post( false, "", true ));
+			$postlist = get_posts('sort_column=menu_order&sort_order=asc');
+			$posts = array();
+			foreach ($postlist as $post) {
+			   $posts[] += $post->ID;
+			}
+			
+			$current = array_search($this->ID, $posts);
+			if (isset($posts[$current+1])) {
+				$this->prev = new $this->PostClass($posts[$current+1]);						
+			}
 		}
 		return $this->prev;
 	}
