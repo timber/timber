@@ -105,6 +105,7 @@ class TimberMenu extends TimberCore {
 class TimberMenuItem extends TimberCore {
 
     var $children;
+    var $has_child_class = false;
 
     function __construct($data) {
         $this->import($data);
@@ -113,7 +114,7 @@ class TimberMenuItem extends TimberCore {
             $this->_name = $this->name;
         }
         $this->name = $this->name();
-        $this->add_class('menu-item'.$this->ID);
+        $this->add_class('menu-item-'.$this->ID);
     }
 
     function add_class($class_name){
@@ -141,6 +142,9 @@ class TimberMenuItem extends TimberCore {
     }
 
     function add_child($item) {
+        if (!$this->has_child_class){
+            $this->add_class('menu-item-has-children');
+        }
         if (!isset($this->children)) {
             $this->children = array();
         }
