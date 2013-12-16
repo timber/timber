@@ -343,6 +343,7 @@ class Timber {
         $data['stylesheet_uri'] = get_stylesheet_uri();
         $data['template_uri'] = get_template_directory_uri();
         $data['theme'] = new TimberTheme();
+        $data['site'] = new TimberSite();
         $data = apply_filters('timber_context', $data);
         return $data;
     }
@@ -438,12 +439,16 @@ class Timber {
     public static function add_route($route, $callback, $args = array()) {
         global $timber;
         if (!isset($timber->router)) {
-            require_once('functions/router/Router.php');
-            require_once('functions/router/Route.php');
-            $timber->router = new Router();
-            $timber->router->setBasePath('/');
+            require_once(__DIR__.'/functions/router/Router.php');
+            require_once(__DIR__.'/functions/router/Route.php');
+            if (class_exists('Router')){
+                $timber->router = new Router();
+                $timber->router->setBasePath('/');
+            }
         }
-        $timber->router->map($route, $callback, $args);
+        if (class_exists('Router')){
+            $timber->router->map($route, $callback, $args);
+        }
     }
 
     public static function cancel_query(){

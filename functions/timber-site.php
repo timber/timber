@@ -33,6 +33,9 @@
 			$this->description = get_bloginfo('description');
 			$this->url = get_bloginfo('url');
 			$this->language = get_bloginfo('language');
+			$this->charset = get_bloginfo('charset');
+			$this->pingback_url = get_bloginfo('pingback_url');
+			$this->language_attributes = TimberHelper::function_wrapper('language_attributes');
 		}
 
 		function __get($field){
