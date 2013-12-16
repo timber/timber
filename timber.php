@@ -417,7 +417,8 @@ class Timber {
     ================================ */
 
     public static function get_widgets($widget_id){
-        return TimberHelper::ob_function('dynamic_sidebar', array($widget_id));
+        return TimberHelper::function_wrapper('dynamic_sidebar', array($widget_id));
+        //return TimberHelper::ob_function('dynamic_sidebar', array($widget_id));
     }
 
 
@@ -535,11 +536,11 @@ class Timber {
         $data['pages'] = TimberHelper::paginate_links($args);
         $next = next_posts($args['total'], false);
         if ($next){
-            $data['next'] = array('link' => $next);
+            $data['next'] = array('link' => $next, 'class' => 'page-numbers next');
         }
         $prev = previous_posts(false);
         if ($prev){
-            $data['prev'] = array('link' => $prev);
+            $data['prev'] = array('link' => $prev, 'class' => 'page-numbers prev');
         }
         if ($paged < 2){
             $data['prev'] = '';
