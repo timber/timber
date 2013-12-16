@@ -18,16 +18,20 @@ class TimberMenu extends TimberCore {
             $menu_id = $this->get_menu_id_from_terms($slug);
         }
         if ($menu_id){
-            $menu = wp_get_nav_menu_items($menu_id);
-            $menu = self::order_children($menu);
-            $this->items = $menu;
-            $menu_info = wp_get_nav_menu_object($menu_id);
-            $this->import($menu_info);
-            $this->ID = $this->term_id;
+            $this->init($menu_id);
         } else {
             TimberHelper::error_log("Sorry, the menu you were looking for wasn't found ('".$slug."'). Here's what Timber did find:");
         }
         return null;
+    }
+
+    private function init($menu_id){
+        $menu = wp_get_nav_menu_items($menu_id);
+        $menu = self::order_children($menu);
+        $this->items = $menu;
+        $menu_info = wp_get_nav_menu_object($menu_id);
+        $this->import($menu_info);
+        $this->ID = $this->term_id;
     }
 
     private function get_menu_id_from_locations($slug, $locations){
@@ -109,6 +113,12 @@ class TimberMenuItem extends TimberCore {
             $this->_name = $this->name;
         }
         $this->name = $this->name();
+        $this->add_class('menu-item'.$this->ID);
+    }
+
+    function add_class($class_name){
+        $this->classes[] = $class_name;
+        $this->class .= ' '.$class_name;
     }
 
     function name() {
@@ -149,6 +159,11 @@ class TimberMenuItem extends TimberCore {
     }
 
     /* Aliases */
+
+    function children(){
+        return $this->get_children();
+    }
+
     function link(){
         return $this->get_link();
     }
