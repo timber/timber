@@ -94,6 +94,13 @@ class TimberHelper {
 		return $old_root_path;
 	}
 
+	public static function is_local($url){
+		if (strstr($url, $_SERVER['HTTP_HOST'])){
+			return true;
+		}
+		return false;
+	}
+
 	public static function get_rel_url($url, $force = false){
 		if (!strstr($url, $_SERVER['HTTP_HOST']) && !$force){
 			return $url;
