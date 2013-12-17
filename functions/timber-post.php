@@ -41,6 +41,8 @@ class TimberPost extends TimberCore {
 		}
 		$post_info = $this->get_info($pid);
 		$this->import($post_info);
+		//cant have a function, so gots to do it this way
+		$this->class = $this->post_class();
 	}
 
 	/**
@@ -566,7 +568,7 @@ class TimberPost extends TimberCore {
 		return $this->get_title();
 	}
 
-	function post_class($class='') {
+	public function post_class($class='') {
 		return implode(' ', get_post_class($class,$this->ID));
 	}
 
