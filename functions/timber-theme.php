@@ -3,8 +3,7 @@
 	class TimberTheme extends TimberCore {
 
 		function __construct($slug = null){
-			$this->
-			init($slug);
+			$this->init($slug);
 		}
 
 		function init($slug = null){
@@ -23,6 +22,14 @@
 			if ($this->parent_slug && $this->parent_slug != $this->slug){
 				$this->parent = new TimberTheme($this->parent_slug);
 			}
+		}
+
+		public function theme_mod($name, $default = false){
+			return get_theme_mod($name, $default);
+		}
+
+		public function theme_mods(){
+			return get_theme_mods();
 		}
 
 	}
