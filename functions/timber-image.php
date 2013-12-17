@@ -32,7 +32,8 @@ class TimberImage extends TimberCore {
 		list($width, $height) = getimagesize($this->file);
 		$this->_dimensions = array();
 		$this->_dimensions[0] = $width;
-		$this->_dimensions['height'] = $height;
+		$this->_dimensions[1] = $height;
+		TimberHelper::error_log($this->_dimensions);
 		return $this->get_dimensions_loaded($dim);
 	}
 
@@ -41,11 +42,10 @@ class TimberImage extends TimberCore {
 			return $this->_dimensions;
 		}
 		if ($dim == 'w' || $dim == 'width'){
-			return '1260';
 			return $this->_dimensions[0];
 		}
 		if ($dim == 'h' || $dim == 'height'){
-			return $this->_dimensions['height'];
+			return $this->_dimensions[1];
 		}
 	}
 
@@ -123,6 +123,7 @@ class TimberImage extends TimberCore {
 			$image_info = get_object_vars($image_info);
 		}
 		$this->import($image_info);
+		//checkthis $this->filepath = ABSPATH . wp_upload_dir($this->file);
 		if (isset($image_info['id'])) {
 			$this->ID = $image_info['id'];
 		} else if (is_numeric($iid)) {
@@ -156,6 +157,13 @@ class TimberImage extends TimberCore {
 	}
 
 	/* Alias */
+
+	public function aspect(){
+		$w = intval($this->width());
+		return $w;
+		$h = intval($this->height());
+		return $w/$h;
+	}
 
 	public function height(){
 		return $this->get_height();
