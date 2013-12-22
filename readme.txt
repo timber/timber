@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.15.4
+Stable tag: 0.16.2
 Tested up to: 3.7.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,28 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.16.2 =
+* Added has_term to TimberPost
+* Extra checks to make sure redirected links don't get 404 body class
+* Misc bugs
+
+= 0.16.1 =
+* Bug fix on ugly permalinks for pagination
+* Fixed issue where posts retrieved via an array of IDs was truncated at the default post count
+* Fixed issue where loading terms from multi taxonomies (thanks @WL-hohoho)
+* Added support for post_class on TimberPost (thanks @slimndap)
+* new `array` filter to convert single-values into array in twig
+* Cleaned-up and added translation support to `time_ago` filter (thanks @WL-hohoho)
+
+= 0.16.0 =
+* TimberTheme is now available in default context as .theme
+* Post meta now respects arrays (watch out for some possible compatiblity issues here)
+* Template loads now work for parent/child themes in Windows (thanks @matthewsoares)
+* Better method for removing 404 body class on manual redirects (thanks @mgmartel)
+
+= 0.15.5 =
+* Post formats: {{post.format}} !
 
 = 0.15.4 =
 * More improvements to filters to support external integration with Pods and other WP frameworks

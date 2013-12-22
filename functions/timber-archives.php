@@ -34,7 +34,7 @@ class TimberArchives extends TimberCore {
 		return $output;
 	}
 
-	function get_items_montly($args, $last_changed, $join, $where, $order, $limit){
+	function get_items_montly($args, $last_changed, $join, $where, $order, $limit, $nested = true){
 		global $wpdb, $wp_locale;
 		$output = array();
 		$defaults = array(
@@ -55,13 +55,25 @@ class TimberArchives extends TimberCore {
 			foreach ( (array) $results as $result ) {
 				$url = get_month_link( $result->year, $result->month );
 				/* translators: 1: month name, 2: 4-digit year */
-				if ($show_year){
+
+				if ($show_year && !$nested){
 					$text = sprintf(__('%1$s %2$d'), $wp_locale->get_month($result->month), $result->year);
 				} else {
 					$text = sprintf(__('%1$s'), $wp_locale->get_month($result->month));
 				}
-				$output[] = self::get_archives_link($url, $text);
+				if ($nested){
+					$output[$result->year][] = self::get_archives_link($url, $text);
+				} else {
+					$output[] = self::get_archives_link($url, $text);
+				}
 			}
+		}
+		if ($nested){
+			$out2 = array();
+			foreach($output as $year=>$months){
+				$out2[] = array('name' => $year, 'children' => $months);
+			}
+			return $out2;
 		}
 		return $output;
 	}
@@ -74,6 +86,8 @@ class TimberArchives extends TimberCore {
 			'format' => 'html', 'before' => '',
 			'after' => '', 'show_post_count' => false,
 			'order' => 'DESC',
+			'post_type' => 'post',
+			'nested' => true
 		);
 
 		$r = wp_parse_args( $args, $defaults );
@@ -111,7 +125,7 @@ class TimberArchives extends TimberCore {
 			$archive_week_end_date_format = get_option('date_format');
 		}
 
-		$where = apply_filters( 'getarchives_where', "WHERE post_type = 'post' AND post_status = 'publish'", $r );
+		$where = apply_filters( 'getarchives_where', "WHERE post_type = '".$post_type."' AND post_status = 'publish'", $r );
 		$join = apply_filters( 'getarchives_join', '', $r );
 
 		$output = array();
@@ -123,7 +137,7 @@ class TimberArchives extends TimberCore {
 		}
 
 		if ( 'monthly' == $type ) {
-			$output = $this->get_items_montly($args, $last_changed, $join, $where, $order, $limit);
+			$output = $this->get_items_montly($args, $last_changed, $join, $where, $order, $limit, $nested);
 		} elseif ('yearly' == $type) {
 			$output = $this->get_items_yearly($args, $last_changed, $join, $where, $order, $limit);
 		} elseif ( 'yearlymonthly' == $type || 'yearmonth' == $type){

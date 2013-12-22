@@ -196,8 +196,10 @@ class TimberPost extends TimberCore {
 			return;
 		}
 		foreach ($customs as $key => $value) {
-			$v = $value[0];
-			$customs[$key] = maybe_unserialize($v);
+			if (is_array($value) && count($value) == 1 && isset($value[0])){
+				$value = $value[0];
+			}
+			$customs[$key] = maybe_unserialize($value);
 		}
 		$customs = apply_filters('timber_post_get_meta', $customs, $pid, $this);
 		return $customs;
@@ -373,7 +375,7 @@ class TimberPost extends TimberCore {
 
 			} else {
 				foreach ($terms as &$term) {
-					$term = new $TermClass($term->term_id);
+					$term = new $TermClass($term->term_id, $tax);
 				}
 				if ($merge && is_array($terms)) {
 					$ret = array_merge($ret, $terms);
@@ -387,6 +389,21 @@ class TimberPost extends TimberCore {
 		}
 		$this->_get_terms[$tax] = $ret;
 		return $ret;
+	}
+
+	function has_term($term_name_or_id, $taxonomy = 'all'){
+		if ($taxonomy == 'all' || $taxonomy == 'any'){
+			$taxes = get_object_taxonomies($this->post_type, 'names');
+			$ret = false;
+			foreach($taxes as $tax){
+				if (has_term($term_name_or_id, $tax, $this->ID)){
+					$ret = true;
+					break;
+				}
+			}
+			return $ret;
+		}
+		return has_term($term_name_or_id, $taxonomy, $this->ID);
 	}
 
 	function get_image($field) {
@@ -451,7 +468,10 @@ class TimberPost extends TimberCore {
 	public function get_field($field_name) {
 		$value = apply_filters('timber_post_get_meta_field_pre', null, $this->ID, $field_name, $this);
 		if ($value === null){
-			$value = get_post_meta($this->ID, $field_name, true);
+			$value = get_post_meta($this->ID, $field_name);
+			if (is_array($value) && count($value) == 1){
+				$value = $value[0];
+			}
 		}
 		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
 		return $value;
@@ -514,6 +534,10 @@ class TimberPost extends TimberCore {
 		return $this->get_next();
 	}
 
+	public function parent(){
+		return $this->get_parent();
+	}
+
 	public function path() {
 		return $this->get_path();
 	}
@@ -541,5 +565,10 @@ class TimberPost extends TimberCore {
 	public function title() {
 		return $this->get_title();
 	}
+
+	function post_class($class='') {
+		return implode(' ', get_post_class($class,$this->ID));
+	}
+
 
 }

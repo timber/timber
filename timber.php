@@ -4,7 +4,7 @@ Plugin Name: Timber
 Plugin URI: http://timber.upstatement.com
 Description: The WordPress Timber Library allows you to write themes using the power Twig templates
 Author: Jared Novack + Upstatement
-Version: 0.15.4
+Version: 0.16.2
 Author URI: http://upstatement.com/
 */
 
@@ -33,6 +33,9 @@ require_once(__DIR__ . '/functions/timber-theme.php');
 require_once(__DIR__ . '/functions/timber-loader.php');
 require_once(__DIR__ . '/functions/timber-function-wrapper.php');
 require_once(__DIR__ . '/functions/integrations/acf-timber.php');
+if ( defined('WP_CLI') && WP_CLI ) {
+    require_once(__DIR__ . '/functions/integrations/wpcli-timber.php');
+}
 
 require_once(__DIR__ . '/admin/timber-admin.php');
 
@@ -197,7 +200,7 @@ class Timber {
         if (!is_array($query) || !count($query)) {
             return null;
         }
-        $results = get_posts(array('post_type'=>'any', 'post__in' =>$query, 'orderby' => 'post__in'));
+        $results = get_posts(array('post_type'=>'any', 'post__in' =>$query, 'orderby' => 'post__in', 'numberposts' => -1));
         return self::handle_post_results($results, $PostClass);
     }
 
@@ -339,6 +342,7 @@ class Timber {
         $data['language_attributes'] = TimberHelper::function_wrapper('language_attributes');
         $data['stylesheet_uri'] = get_stylesheet_uri();
         $data['template_uri'] = get_template_directory_uri();
+        $data['theme'] = new TimberTheme();
         $data = apply_filters('timber_context', $data);
         return $data;
     }
@@ -463,16 +467,17 @@ class Timber {
                 $header_string = "$protocol $force_header $text";
                 return $header_string;
             }, 10, 4 );
-            add_filter('body_class', function($classes) use ($force_header) {
-                if (isset($classes) && is_array($classes) && $force_header != 404){
-                    foreach($classes as &$class){
-                        if (strstr($class, '404')){
-                            $class = '';
-                        }
+            if (404 != $force_header) {
+                add_action('parse_query', function($query) {
+                    if ($query->is_main_query()){
+                        $query->is_404 = false;
                     }
-                }
-                return $classes;
-            });
+                });
+                add_action('template_redirect', function(){
+                    global $wp_query;
+                    $wp_query->is_404 = false;
+                });
+            }
         }
 
         if ($query) {
@@ -511,12 +516,15 @@ class Timber {
         $args['total'] = ceil($wp_query->found_posts / $wp_query->query_vars['posts_per_page']);
         if (strlen(trim(get_option('permalink_structure')))){
             $args['format'] = 'page/%#%';
+            $args['base'] = trailingslashit(get_pagenum_link(0)).'%_%';
+        } else {
+            $big = 999999999;
+            $args['base'] = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
         }
         $args['type'] = 'array';
 
         $args['current'] = max( 1, get_query_var('paged') );
         $args['mid_size'] = max(9 - $args['current'], 3);
-        $args['base'] = trailingslashit(get_pagenum_link(0)).'%_%';
         $args['prev_next'] = false;
         $args = array_merge($args, $prefs);
         $data['pages'] = TimberHelper::paginate_links($args);
