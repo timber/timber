@@ -37,11 +37,11 @@ class TimberLoader {
                 $expires = $expires[0];
         }
 
-        ksort( $data );
         $key = null;
 
         $output = false;
         if ( false !== $expires ){
+            ksort( $data );
             $key = md5( $file . json_encode( $data ) );
             $output = $this->get_cache( $key, self::CACHEGROUP, $cache_mode );
         }
