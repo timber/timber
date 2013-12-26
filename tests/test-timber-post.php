@@ -32,6 +32,15 @@
 			$this->assertEquals($rand, $post->test_meta);
 		}
 
+		function testDoubleEllipsis(){
+			$post_id = $this->factory->post->create();
+			$post = new TimberPost($post_id);
+			$post->post_excerpt = 'this is super dooper trooper long words';
+			
+			$prev = $post->get_preview(3, true);
+			$this->assertEquals(1, substr_count($prev, '&hellip;'));
+		}
+
 		function testGetPreview() {
 			
 		}
