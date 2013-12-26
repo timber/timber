@@ -20,6 +20,17 @@
 			$this->assertEquals($firstPost->next()->ID, $nextPost->ID);
 		}
 
+		function testPrev(){
+			$posts = array();
+			for($i = 0; $i<2; $i++){
+				$posts[] = $this->factory->post->create();
+				sleep(1);
+			}
+			$lastPost = new TimberPost($posts[1]);
+			$prevPost = new TimberPost($posts[0]);
+			$this->assertEquals($lastPost->prev()->ID, $prevPost->ID);
+		}
+
 		function testNextWithDraftAndFallover(){
 			$posts = array();
 			for($i = 0; $i<3; $i++){
