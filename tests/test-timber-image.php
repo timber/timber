@@ -8,6 +8,10 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testExternalImageResize(){
+		if (!self::
+			is_connected()){
+			return null;
+		}
 		$data = array();
 		$data['size'] = array('width' => 600, 'height' => 400);
 		$filename = 'St._Louis_Gateway_Arch.jpg';
@@ -91,6 +95,18 @@ class TimberImageTest extends WP_UnitTestCase {
 		error_log($resized_path);
 		$exists = file_exists($resized_path);
 		$this->assertTrue($exists);
+	}
+
+	function is_connected() {
+	    $connected = @fsockopen("www.google.com", [80|443]); //website and port
+	    if ($connected){
+	        $is_conn = true; //action when connected
+	        fclose($connected);
+	    } else {
+	        $is_conn = false; //action in connection failure
+	    }
+	    return $is_conn;
+
 	}
 
 
