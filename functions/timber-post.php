@@ -139,7 +139,7 @@ class TimberPost extends TimberCore {
 		$trimmed = false;
 		if (isset($this->post_excerpt) && strlen($this->post_excerpt)) {
 			if ($force) {
-				$text = TimberHelper::trim_words($this->post_excerpt, $len);
+				$text = TimberHelper::trim_words($this->post_excerpt, $len, false);
 				$trimmed = true;
 			} else {
 				$text = $this->post_excerpt;
