@@ -242,13 +242,8 @@ class TimberPost extends TimberCore {
 			$old_global = $post;
 			$post = $this;
 			$adjacent = get_adjacent_post(false, '', false);
-			error_log('got it');
-			TimberHelper::error_log($adjacent);
 			if ($adjacent){
-				$next = new $this->PostClass($adjacent);
-				//if ($next->post_status == 'publish') {
-					$this->_next = $next;
-				//}
+				$this->_next = new $this->PostClass($adjacent);
 			}
 			$post = $old_global;
 		}
@@ -260,13 +255,18 @@ class TimberPost extends TimberCore {
 	}
 
 	function get_prev() {
-		if (!isset($this->prev)){
-			$prev = new $this->PostClass(get_adjacent_post( false, "", true ));
-			if ($prev->post_status=='publish') {
-				$this->prev = $prev;
+		if (!isset($this->_prev)){
+			global $post;
+			$this->_prev = null;
+			$old_global = $post;
+			$post = $this;
+			$adjacent = get_adjacent_post(false, '', true);
+			if ($adjacent){
+				$this->_prev = new $this->PostClass($adjacent);
 			}
+			$post = $old_global;
 		}
-		return $this->prev;
+		return $this->_prev;
 	}
 
 	function get_parent() {
