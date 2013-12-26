@@ -37,12 +37,14 @@ class TimberLoader {
                 $expires = $expires[0];
         }
 
-        ksort( $data );
-        $key = md5( $file . json_encode( $data ) );
+        $key = null;
 
         $output = false;
-        if ( false !== $expires )
+        if ( false !== $expires ){
+            ksort( $data );
+            $key = md5( $file . json_encode( $data ) );
             $output = $this->get_cache( $key, self::CACHEGROUP, $cache_mode );
+        }
 
         if ( false === $output || null === $output ) {
             $twig = $this->get_twig();
@@ -55,7 +57,7 @@ class TimberLoader {
             $output = $twig->render($file, $data);
         }
 
-        if ( false !== $output && false !== $expires )
+        if ( false !== $output && false !== $expires && null !== $key )
             $this->set_cache( $key, $output, self::CACHEGROUP, $expires, $cache_mode );
 
         return $output;
