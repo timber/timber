@@ -10,6 +10,18 @@
 			$this->assertEquals($transientBad, 'poop');
 		}
 
+		function testTransientAsAnonymousFunction(){
+			$transient = TimberHelper::transient('jn_test_anon', function(){
+				return 'pooptime';
+			}, 200);
+			$this->assertEquals($transient, 'pooptime');
+		}
+
+		function testTransientAsString(){
+			$transient = TimberHelper::transient('jn_test_string', 'my_test_callback', 200);
+			$this->assertEquals($transient, 'lbj');
+		}
+
 		function trans_cachelock_test(){
 			return 'poop';
 		}
@@ -19,4 +31,8 @@
 			return 'poopy pants';
 		}
 
+	}
+
+	function my_test_callback(){
+		return "lbj";
 	}
