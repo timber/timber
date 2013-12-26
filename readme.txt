@@ -2,8 +2,8 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.16.2
-Tested up to: 3.7.1
+Stable tag: 0.16.3
+Tested up to: 3.8.0
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -46,6 +46,8 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * Timber::pagination can now accept a single integer as the overall "size" argument (for the total number of pages that get shown)
 * TimberPost->class (usage: `<article class="{{post.class}}"`>) will now show you the products of post_class
 * Sanity checks for ACF (thanks @parisholley)
+* Fixed bug in TimberPost::prev and TimberPost::next that could return draft posts (thanks @slimndap)
+* Fixed bug with extra ellipsis in some previews (thanks @parisholley)
 
 = 0.16.2 =
 * Added has_term to TimberPost
