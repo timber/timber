@@ -50,6 +50,7 @@ class TimberPost extends TimberCore {
 	*/
 	function get_edit_url() {
 		if ($this->can_edit()) {
+			return get_edit_post_link($this->ID);
 			return '/wp-admin/post.php?post=' . $this->ID . '&action=edit';
 		}
 		return false;
@@ -235,13 +236,21 @@ class TimberPost extends TimberCore {
 	}
 
 	function get_next() {
-		if (!isset($this->next)){
-			$next = new $this->PostClass(get_adjacent_post( false, "", false ));
-			if ($next->post_status=='publish') {
-				$this->next = $next;
-			} 
+		if (!isset($this->_next)){
+			global $post;
+			$this->_next = null;
+			$old_global = $post;
+			$post = $this;
+			$adjacent = get_next_post();
+			if ($adjacent){
+				$next = new $this->PostClass($adjacent);
+				if ($next->post_status == 'publish') {
+					$this->_next = $next;
+				}
+			}
+			$post = $old_global;
 		}
-		return $this->next;
+		return $this->_next;
 	}
 
 	public function get_path() {
@@ -575,7 +584,9 @@ class TimberPost extends TimberCore {
 	}
 
 	public function post_class($class='') {
-		return implode(' ', get_post_class($class,$this->ID));
+		$pid = $this->ID;
+		$class_array = get_post_class($class, $pid);
+		return implode(' ', $class_array);
 	}
 
 

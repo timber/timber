@@ -125,7 +125,12 @@ class TimberImage extends TimberCore {
 		$this->import($image_info);
 		$basedir = wp_upload_dir();
 		$basedir = $basedir['basedir'];
-		$this->file_loc = $basedir . $this->file;
+		if (isset($this->file)){
+			$this->file_loc = $basedir . $this->file;
+		} else if (isset($this->_wp_attached_file)){
+			$this->file = reset($this->_wp_attached_file);
+			$this->file_loc = $basedir . $this->file;
+		}
 		if (isset($image_info['id'])) {
 			$this->ID = $image_info['id'];
 		} else if (is_numeric($iid)) {
