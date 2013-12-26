@@ -241,12 +241,14 @@ class TimberPost extends TimberCore {
 			$this->_next = null;
 			$old_global = $post;
 			$post = $this;
-			$adjacent = get_next_post();
+			$adjacent = get_adjacent_post(false, '', false);
+			error_log('got it');
+			TimberHelper::error_log($adjacent);
 			if ($adjacent){
 				$next = new $this->PostClass($adjacent);
-				if ($next->post_status == 'publish') {
+				//if ($next->post_status == 'publish') {
 					$this->_next = $next;
-				}
+				//}
 			}
 			$post = $old_global;
 		}
@@ -262,7 +264,7 @@ class TimberPost extends TimberCore {
 			$prev = new $this->PostClass(get_adjacent_post( false, "", true ));
 			if ($prev->post_status=='publish') {
 				$this->prev = $prev;
-			} 
+			}
 		}
 		return $this->prev;
 	}
