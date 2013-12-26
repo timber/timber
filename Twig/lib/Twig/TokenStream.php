@@ -64,6 +64,18 @@ class Twig_TokenStream
     }
 
     /**
+     * Tests a token, sets the pointer to the next one and returns it or throws a syntax error.
+     *
+     * @return Twig_Token|null The next token if the condition is true, null otherwise
+     */
+    public function nextIf($primary, $secondary = null)
+    {
+        if ($this->tokens[$this->current]->test($primary, $secondary)) {
+            return $this->next();
+        }
+    }
+
+    /**
      * Tests a token and returns it or throws a syntax error.
      *
      * @return Twig_Token
@@ -105,7 +117,7 @@ class Twig_TokenStream
     /**
      * Tests the current token
      *
-     * @return bool
+     * @return Boolean
      */
     public function test($primary, $secondary = null)
     {
@@ -115,7 +127,7 @@ class Twig_TokenStream
     /**
      * Checks if end of stream was reached
      *
-     * @return bool
+     * @return Boolean
      */
     public function isEOF()
     {
