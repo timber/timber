@@ -98,22 +98,20 @@ class Timber {
     ================================ */
 
     public static function get_post($query = false, $PostClass = 'TimberPost') {
-        if (is_int($query)) {
-            /* its a post id number */
-            $query = array($query);
-        }
         $posts = self::get_posts($query, $PostClass);
-        if (count($posts) && is_array($posts)) {
-            return $posts[0];
+
+        if ( $post = $posts->current() ) {
+            return $post;
         }
-        return $posts;
+
+        return false;
     }
 
     public static function get_posts( $query = false, $PostClass = 'TimberPost' ) {
         if ( self::is_post_class_or_class_map( $query ) ) {
             $PostClass = $query;
             $query     = false;
-            
+
         }
 
         if ( is_object( $query ) && !is_a( $query, 'WP_Query' ) ) {
@@ -221,7 +219,7 @@ class Timber {
                 $posts[] = $post;
             }
         }
-        return $posts;
+        return new TimberPostsIterator( $posts );
     }
 
     public function get_pid($query) {
