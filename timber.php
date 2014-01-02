@@ -111,13 +111,11 @@ class Timber {
         if ( self::is_post_class_or_class_map( $query ) ) {
             $PostClass = $query;
             $query     = false;
-
         }
 
         if ( is_object( $query ) && !is_a( $query, 'WP_Query' ) ) {
             // The only object other than a query is a type of post object
             $query = array( $query );
-
         }
 
         if ( is_array( $query ) && count( $query ) && isset( $query[0] ) && is_object( $query[0] ) ) {
@@ -223,7 +221,7 @@ class Timber {
     }
 
     public function get_pid($query) {
-        $post = self::get_posts($query);
+        $post = self::get_post($query);
         return $post->ID;
     }
 
