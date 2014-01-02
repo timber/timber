@@ -7,8 +7,8 @@ class TimberHelper {
 		if (defined('WP_DISABLE_TRANSIENTS')){
 			$disable_transients = WP_DISABLE_TRANSIENTS;
 		}
-
-		if (false === ($data = get_transient($slug)) || $disable_transients){
+		$data = null;
+		if (is_callable($callback) && (false === ($data = get_transient($slug)) || $disable_transients)){
 			$cache_lock_slug = $slug.'_lock';
 
 			if (get_transient($cache_lock_slug)){
