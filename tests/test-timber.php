@@ -30,7 +30,7 @@ class TimberTest extends WP_UnitTestCase {
 		$this->factory->post->create();
 		$query = array('post_type' => 'post');
 		$posts = Timber::get_posts($query);
-		$this->assertEquals('TimberPost', get_class($posts[0]));
+		$this->assertEquals('TimberPost', get_class($posts->current()));
 	}
 
 	function testGetPostsFromSlugWithHash(){
