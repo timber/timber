@@ -30,6 +30,8 @@ require_once(__DIR__ . '/functions/timber-term.php');
 require_once(__DIR__ . '/functions/timber-term-getter.php');
 require_once(__DIR__ . '/functions/timber-image.php');
 require_once(__DIR__ . '/functions/timber-menu.php');
+require_once(__DIR__ . '/functions/timber-query-iterator.php');
+require_once(__DIR__ . '/functions/timber-posts-iterator.php');
 
 //Other 2nd-class citizens
 require_once(__DIR__ . '/functions/timber-archives.php');
@@ -104,7 +106,6 @@ class Timber {
     public static function get_post($query = false, $PostClass = 'TimberPost') {
         return TimberPostGetter::get_post($query, $PostClass);
     }
-
 
     /**
      * @param mixed $query

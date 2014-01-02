@@ -26,10 +26,26 @@ class TimberPostGetter
      * @return array|bool|null
      */
     public static function get_posts($query = false, $PostClass = 'TimberPost'){
+        
         if (self::is_post_class_or_class_map($query)) {
             $PostClass = $query;
             $query = false;
         }
+
+        if (is_object($query) && !is_a('WP_Query' ) ){
+            // The only object other than a query is a type of post object
+            $query = array( $query );
+        }
+
+        if ( is_array( $query ) && count( $query ) && isset( $query[0] ) && is_object( $query[0] ) ) {
+            // We have an array of post objects that already have data
+            return new TimberPostsIterator( $query, $PostClass );
+        } else {
+            // We have a query (of sorts) to work with
+            return new TimberQueryIterator( $query, $PostClass );
+        }
+
+        /*
         if (TimberHelper::is_array_assoc($query) || (is_string($query) && strstr($query, '='))) {
             // we have a regularly formed WP query string or array to use
             $posts = self::get_posts_from_wp_query($query, $PostClass);
@@ -54,7 +70,7 @@ class TimberPostGetter
             TimberHelper::error_log('I have failed you! in timber.php::94');
             TimberHelper::error_log($query);
             return $query;
-        }
+        }*/
 
         return self::maybe_set_preview( $posts );
     }
