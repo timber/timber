@@ -31,10 +31,15 @@ class TimberPostsIterator extends ArrayIterator
                 }
             }
 
-            $post = new $post_class_use( $rid );
+            // Don't create yet another object if $rid is already of the right type
+            if ( is_a( $rid, $post_class_use ) ) {
+                $post = $rid;
+            } else {
+                $post = new $post_class_use( $rid );
+            }
+
             if ( isset( $post->ID ) ) {
                 $posts[] = $post;
-                
             }
         }
 
