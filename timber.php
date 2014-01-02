@@ -113,8 +113,8 @@ class Timber {
      * @return array|bool|null
      */
     public static function get_posts($query = false, $PostClass = 'TimberPost'){
-        $posts = TimberPostGetter::get_posts($query, $PostClass);
-        return TimberPostGetter::maybe_set_preview( $posts );
+        return TimberPostGetter::get_posts($query, $PostClass);
+
     }
 
     /**
@@ -180,7 +180,33 @@ class Timber {
      * @deprecated since 0.20.0
      */
     public static function handle_post_results($results, $PostClass = 'TimberPost') {
+<<<<<<< HEAD
         return TimberPostGetter::handle_post_results($results, $PostClass);
+=======
+        $start = TimberHelper::start_timer();
+        $posts = array();
+        foreach ($results as $rid) {
+            $PostClassUse = $PostClass;
+            if (is_array($PostClass)) {
+                $post_type = get_post_type($rid);
+                $PostClassUse = 'TimberPost';
+                if (isset($PostClass[$post_type])) {
+                    $PostClassUse = $PostClass[$post_type];
+                } else {
+                    if (is_array($PostClass)) {
+                        TimberHelper::error_log($post_type.' of '.$rid.' not found in ' . print_r($PostClass, true));
+                    } else {
+                        TimberHelper::error_log($post_type.' not found in '.$PostClass);
+                    }
+                }
+            }
+            $post = new $PostClassUse($rid);
+            if (isset($post->ID)) {
+                $posts[] = $post;
+            }
+        }
+        return new TimberPostsIterator( $posts );
+>>>>>>> 5f9019a... Make sure also Timber::get_post works with the iterators
     }
 
     /**

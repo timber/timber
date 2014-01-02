@@ -9,15 +9,11 @@ class TimberPostGetter
      * @return array|bool|null
      */
     public static function get_post($query = false, $PostClass = 'TimberPost') {
-        if (is_int($query)) {
-            /* its a post id number */
-            $query = array($query);
-        }
         $posts = self::get_posts($query, $PostClass);
-        if (count($posts) && is_array($posts)) {
-            return $posts[0];
+        if ( $post = $posts->current() ) {
+            return $post;
         }
-        return $posts;
+        return false;
     }
 
 	/**
@@ -195,7 +191,7 @@ class TimberPostGetter
                 $posts[] = $post;
             }
         }
-        return $posts;
+        return new TimberPostsIterator( $posts );
     }
 
     /**
