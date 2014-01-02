@@ -23,6 +23,8 @@ require_once(__DIR__ . '/functions/timber-term.php');
 require_once(__DIR__ . '/functions/timber-term-getter.php');
 require_once(__DIR__ . '/functions/timber-image.php');
 require_once(__DIR__ . '/functions/timber-menu.php');
+require_once(__DIR__ . '/functions/timber-query-iterator.php');
+require_once(__DIR__ . '/functions/timber-posts-iterator.php');
 
 //Other 2nd-class citizens
 require_once(__DIR__ . '/functions/timber-archives.php');
@@ -107,36 +109,28 @@ class Timber {
         return $posts;
     }
 
-    public static function get_posts($query = false, $PostClass = 'TimberPost'){
-        if (self::is_post_class_or_class_map($query)) {
+    public static function get_posts( $query = false, $PostClass = 'TimberPost' ) {
+        if ( self::is_post_class_or_class_map( $query ) ) {
             $PostClass = $query;
-            $query = false;
+            $query     = false;
+            
         }
-        if (TimberHelper::is_array_assoc($query) || (is_string($query) && strstr($query, '='))) {
-        // we have a regularly formed WP query string or array to use
-            return self::get_posts_from_wp_query($query, $PostClass);
-        } else if (is_string($query) && !is_integer($query)) {
-            // we have what could be a post name to pull out
-            return self::get_posts_from_slug($query, $PostClass);
-        } else if (is_array($query) && count($query) && (is_integer($query[0]) || is_string($query[0]))) {
-            // we have a list of pids (post IDs) to extract from
-            return self::get_posts_from_array_of_ids($query, $PostClass);
-        } else if (is_array($query) && count($query) && isset($query[0]) && is_object($query[0])) {
-            // maybe its an array of post objects that already have data
-            return self::handle_post_results($query, $PostClass);
-        } else if (have_posts()) {
-            //lets just use the default WordPress current query
-            return self::get_posts_from_loop($PostClass);
-        } else if (!$query) {
-            //okay, everything failed lets just return some posts so that the user has something to work with
-            //this turns out to cause all kinds of awful behavior
-            //return self::get_posts_from_wp_query(array(), $PostClass);
-            return null;
+
+        if ( is_object( $query ) && !is_a( $query, 'WP_Query' ) ) {
+            // The only object other than a query is a type of post object
+            $query = array( $query );
+
+        }
+
+        if ( is_array( $query ) && count( $query ) && isset( $query[0] ) && is_object( $query[0] ) ) {
+            // We have an array of post objects that already have data
+            return new TimberPostsIterator( $query, $PostClass );
+
         } else {
-            TimberHelper::error_log('I have failed you! in timber.php::94');
-            TimberHelper::error_log($query);
+            // We have a query (of sorts) to work with
+            return new TimberQueryIterator( $query, $PostClass );
+
         }
-        return $query;
     }
 
     public static function get_pids($query = null) {
