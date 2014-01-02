@@ -93,15 +93,15 @@ class TimberQueryIterator implements Iterator
 
         $this->_query->the_post();
 
-        $posts_class = $this->_posts_class;
-
         // Sets up the global post, but also return the post, for use in Twig template
+        $posts_class = $this->_posts_class;
         return new $posts_class( $post );
     }
 
-    public function next() {
-        $this->_query->next_post();
-    }
+    /**
+     * Don't implement next, because current already advances the loop
+     */
+    final public function next() {}
 
     public function rewind() {
         $this->_query->rewind_posts();
