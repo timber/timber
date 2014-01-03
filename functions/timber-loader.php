@@ -148,6 +148,7 @@ class TimberLoader {
 		$locs = array_merge($locs, $this->get_locations_theme());
 		$locs = array_merge($locs, $this->get_locations_caller($caller));
 		$locs = array_unique($locs);
+		$locs = apply_filters('timber_locations', $locs);
 		return $locs;
 	}
 

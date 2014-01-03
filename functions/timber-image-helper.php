@@ -137,7 +137,11 @@
 				} else {
 					$image->resize($w, $w);
 				}
-				$image->save($new_root_path);
+				$result = $image->save($new_root_path);
+				if (is_wp_error($result)){
+					error_log('Error resizing image');
+					error_log(print_r($result, true));
+				}
 				if ($abs){
 					return untrailingslashit(site_url()).$new_path;
 				}
