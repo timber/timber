@@ -417,8 +417,7 @@ class Timber {
     ================================ */
 
     public static function get_widgets($widget_id){
-        return TimberHelper::function_wrapper('dynamic_sidebar', array($widget_id));
-        //return TimberHelper::ob_function('dynamic_sidebar', array($widget_id));
+        return TimberHelper::function_wrapper('dynamic_sidebar', array($widget_id), true);
     }
 
 

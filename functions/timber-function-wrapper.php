@@ -1,7 +1,6 @@
 <?php
 
-class TimberFunctionWrapper
-{
+class TimberFunctionWrapper {
 
     private $_function;
     private $_args;
