@@ -282,9 +282,11 @@ class TimberPost extends TimberCore {
 
 	private static function get_wp_link_page($i){
 		$link = _wp_link_page($i);
-		error_log('$link = '.$link);
 		$link = new SimpleXMLElement($link.'</a>');
-		return $link['href'];
+		if (isset($link['href'])){
+			return $link['href'];
+		}
+		return '';
 	}
 
 	public function get_path() {
@@ -562,8 +564,8 @@ class TimberPost extends TimberCore {
 		return $this->get_comments();
 	}
 
-	public function content() {
-		return $this->get_content();
+	public function content($page) {
+		return $this->get_content(0, $page);
 	}
 
 	public function display_date(){
