@@ -120,10 +120,9 @@
 				$current_size = $image->get_size();
 				$ow = $current_size['width'];
 				$oh = $current_size['height'];
+				$old_aspect = $ow / $oh;
 				if ($h) {
 					$new_aspect = $w / $h;
-					$old_aspect = $ow / $oh;
-
 					if ($new_aspect > $old_aspect) {
 						//cropping a vertical photo horitzonally
 						$oht = $ow / $new_aspect;
@@ -135,7 +134,13 @@
 						$image->crop($ox, 0, $owt, $oh, $w, $h);
 					}
 				} else {
-					$image->resize($w, $w);
+					$h = $w;
+					if ($old_aspect < 1){
+						$h = $w / $old_aspect;
+						$image->crop(0, 0, $ow, $oh, $w, $h);
+					} else {
+						$image->resize($w, $h);
+					}
 				}
 				$result = $image->save($new_root_path);
 				if (is_wp_error($result)){
