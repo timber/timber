@@ -2,11 +2,6 @@
 
 class TimberImageTest extends WP_UnitTestCase {
 
-	function testSample() {
-		// replace this with some actual testing code
-		$this->assertTrue( true );
-	}
-
 	function testExternalImageResize(){
 		if (!self::
 			is_connected()){
