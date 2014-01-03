@@ -252,6 +252,34 @@ class TimberPost extends TimberCore {
 		return $this->_next;
 	}
 
+	public function get_pagination(){
+		global $post, $page, $numpages, $multipage, $more, $pagenow;
+		$old_global_post = $post;
+		$post = $this;
+		$ret = array();
+		if ($multipage){
+			for ( $i = 1; $i <= $numpages; $i++ ) {
+				$link = _wp_link_page($i);
+				$data = array('name' => $i, 'title' => $i, 'text' => $i, 'link' => $link);
+				if ($i == $page){
+					$data['current'] = true;
+				}
+				$ret['pages'][] = $data;
+			}
+			$i = $page - 1;
+			if ( $i ) {
+				$link = _wp_link_page( $i );
+				$ret['prev'] = array('link' => $link);
+			}
+			$i = $page + 1;
+			if ( $i <= $numpages ) {
+				$link = _wp_link_page( $i );
+				$ret['next'] = array('link' => $link);
+			}
+		}
+		return $ret;
+	}
+
 	public function get_path() {
 		return TimberHelper::get_rel_url($this->get_link());
 	}
