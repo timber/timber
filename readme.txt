@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.16.3
+Stable tag: 0.16.4
 Tested up to: 3.8.0
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,12 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.16.4 =
+* Fixed a few things on image handling
+* Updated to Twig 1.15 (thanks @fabpot)
+* Added wp_link_pages as TimberPost::pagination
+* New filter to help with template selection (thanks @zlove)
 
 = 0.16.3 =
 * Added width, height and aspect methods for TimberImages
