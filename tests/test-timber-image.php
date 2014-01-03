@@ -63,6 +63,24 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals($old_time, $new_time);
 	}
 
+	function testResizeTallImage(){
+		$data = array();
+		$data['size'] = array('width' => 600);
+		$upload_dir = wp_upload_dir();
+		$this->copyTestImage('tall.jpg');
+		$url = $upload_dir['url'].'/tall.jpg';
+		$data['test_image'] = $url;
+		Timber::render('assets/image-test-one-param.twig', $data);
+		$resized_path = $upload_dir['path'].'/tall-r-'.$data['size']['width'].'x0.jpg';
+		$exists = file_exists($resized_path);
+		$this->assertTrue($exists);
+		//make sure it's the width it's supposed to be
+		$image = wp_get_image_editor($resized_path);
+		$current_size = $image->get_size();
+		$w = $current_size['width'];
+		$this->assertEquals($w, 600);
+	}
+
 	function testInitFromURL(){
 		$destination_path = $this->copyTestImage();
 		$destination_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $destination_path);
@@ -97,8 +115,8 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertTrue($exists);
 	}
 
-	function is_connected() {
-	    $connected = @fsockopen("www.google.com", [80|443]); //website and port
+	public static function is_connected() {
+	    $connected = @fsockopen("www.google.com", [80|443]);
 	    if ($connected){
 	        $is_conn = true; //action when connected
 	        fclose($connected);
