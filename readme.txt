@@ -41,6 +41,10 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 0.16.5 =
+* print_a lives! added methods for TimberPost
+* quick fix on TimberPost::content which was generating warning
+
 = 0.16.4 =
 * Fixed a few things on image handling
 * Updated to Twig 1.15 (thanks @fabpot)
