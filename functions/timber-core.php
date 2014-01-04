@@ -33,6 +33,12 @@ class TimberCore {
 		return $this->_can_edit;
 	}
 
+	function get_method_values(){
+		$ret = array();
+		$ret['can_edit'] = $this->can_edit();
+		return $ret;
+	}
+
 	//deprecated
 	function url_to_path($url = '') {
 		if (!strlen($url) && $this->url) {

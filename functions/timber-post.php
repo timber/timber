@@ -543,7 +543,33 @@ class TimberPost extends TimberCore {
 		return get_post_format($this->ID);
 	}
 
-	//Aliases
+	// Docs
+
+	public function get_method_values(){
+		$ret = parent::get_method_values();
+		$ret['author'] = $this->author();
+		$ret['categories'] = $this->categories();
+		$ret['category'] = $this->category();
+		$ret['children'] = $this->children();
+		$ret['comments'] = $this->comments();
+		$ret['content'] = $this->content();
+		$ret['display_date'] = $this->display_date();
+		$ret['edit_link'] = $this->edit_link();
+		$ret['format'] = $this->format();
+		$ret['link'] = $this->link();
+		$ret['next'] = $this->next();
+		$ret['pagination'] = $this->pagination();
+		$ret['parent'] = $this->parent();
+		$ret['path'] = $this->path();
+		$ret['prev'] = $this->prev();
+		$ret['terms'] = $this->terms();
+		$ret['tags'] = $this->tags();
+		$ret['thumbnail'] = $this->thumbnail();
+		$ret['title'] = $this->title();
+		return $ret;
+	}
+
+	// Aliases
 	public function author() {
 		return $this->get_author();
 	}
@@ -564,7 +590,7 @@ class TimberPost extends TimberCore {
 		return $this->get_comments();
 	}
 
-	public function content($page) {
+	public function content($page  = 0) {
 		return $this->get_content(0, $page);
 	}
 

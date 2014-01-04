@@ -272,76 +272,27 @@ function twig_make_excerpt($text, $length = 55){
 	return wp_trim_words($text, $length);
 }
 
-function twig_invoke($method, $obj) {
-	$product = '';
-	$totalParams = $method->getNumberOfParameters();
-	$reqParams = $method->getNumberOfRequiredParameters();
-	if (!$method->getNumberOfParameters()) {
-		//zero parameters, easy street
-		$product = $method->invoke($obj);
-		//$product = $method->getName();
-	} else if ($method->getNumberOfRequiredParameters()) {
-		//there are required parametres
-		//$product = $method->getName();
-	} else if ($totalParams && !$reqParams) {
-		//all params are optional
-		$pass = array();
-		$product = $pass;
-		if ($method->getName() == 'get_preview') {
-			$function = $method->getName();
-			// try {
-			// 	$product = $obj->$function();
-			// } catch($e){
-			// 	$product = 'error with '.$method->getName();
-			// }
-		}
-
-		//$product = $method->invokeArgs($obj, $pass);
-		//$product = $args;
-	} else {
-		$product = '?????';
-	}
-	return $product;
-}
-
 function twig_print_r($arr) {
+	//$rets = twig_object_docs($obj, false);
 	return print_r($arr, true);
+	return $rets;
 }
 
 function twig_print_a($arr) {
 	return '<pre>' . twig_object_docs($arr, true) . '</pre>';
 }
 
-function twig_object_docs($obj) {
-	if (!class_exists(get_class($obj))){
-		return false;
+function twig_object_docs($obj, $methods = true) {
+	$class = get_class($obj);
+	$properties = (array) $obj;
+	if ($methods){
+		$methods = $obj->get_method_values();
 	}
-	$reflector = new ReflectionClass($obj);
-	$methods = $reflector->getMethods();
-	$rets = array();
-	$rep = $reflector->getProperty('representation')->getValue();
-	foreach ($methods as $method) {
-		if ($method->isPublic()) {
-			$comments = $method->getDocComment();
-			$comments = str_replace('/**', '', $comments);
-			//$comments = preg_replace('(\/)(\*)(\*)\r', '', $comments);
-			$info = new stdClass();
-			$info->comments = $comments;
-			$info->returns = twig_invoke($method, $obj);
-			$info->params = $method->getParameters();
-			//if (strlen($comments) && !strstr($comments, '@nodoc')){
-			//$rets[$rep.'.'.$method->name] = $comments;
-			//$rets[$rep.'.'.$method->name] = $info->returns;
-			$rets[$method->name] = $info->returns;
-		//}
-		}
-	}
-	foreach ($obj as $key => $value) {
-		$rets[$key] = $value;
-	}
+	$rets = array_merge($properties, $methods);
 	ksort($rets);
-
-	return '<pre>' . (print_r($rets, true)) . '</pre>';
+	$str = print_r($rets, true);
+	$str = str_replace('Array', $class . ' Object', $str);
+	return $str;
 }
 
 new TimberTwig();
