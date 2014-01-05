@@ -50,6 +50,11 @@ class TimberQueryIterator implements Iterator
 
     }
 
+    public function get_posts( $return_collection = false ) {
+        $posts = new TimberPostsCollection( $this->_query->posts, $this->_posts_class );
+        return ( $return_collection ) ? $posts : $posts->get_posts();
+    }
+
     //
     // GET POSTS
     //
