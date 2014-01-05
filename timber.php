@@ -24,7 +24,7 @@ require_once(__DIR__ . '/functions/timber-term-getter.php');
 require_once(__DIR__ . '/functions/timber-image.php');
 require_once(__DIR__ . '/functions/timber-menu.php');
 require_once(__DIR__ . '/functions/timber-query-iterator.php');
-require_once(__DIR__ . '/functions/timber-posts-iterator.php');
+require_once(__DIR__ . '/functions/timber-posts-collection.php');
 
 //Other 2nd-class citizens
 require_once(__DIR__ . '/functions/timber-archives.php');
@@ -120,7 +120,7 @@ class Timber {
 
         if ( is_array( $query ) && count( $query ) && isset( $query[0] ) && is_object( $query[0] ) ) {
             // We have an array of post objects that already have data
-            return new TimberPostsIterator( $query, $PostClass );
+            return new TimberPostsCollection( $query, $PostClass );
 
         } else {
             // We have a query (of sorts) to work with
@@ -217,7 +217,7 @@ class Timber {
                 $posts[] = $post;
             }
         }
-        return new TimberPostsIterator( $posts );
+        return new TimberPostsCollection( $posts );
     }
 
     public function get_pid($query) {
