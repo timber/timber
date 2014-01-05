@@ -222,7 +222,7 @@ class Timber {
                 $posts[] = $post;
             }
         }
-        return new TimberPostsCollection( $posts );
+        return new TimberPostsCollection( $posts, $PostClass );
     }
 
     public function get_pid($query) {
