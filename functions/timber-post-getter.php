@@ -196,7 +196,7 @@ class TimberPostGetter
                 $posts[] = $post;
             }
         }
-        return new TimberPostsCollection( $posts );
+        return new TimberPostsCollection( $posts, $PostClass );
     }
 
     /**
