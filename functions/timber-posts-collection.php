@@ -4,7 +4,7 @@
 if ( !defined( 'ABSPATH' ) )
     exit;
 
-class TimberPostsIterator extends ArrayIterator
+class TimberPostsCollection extends ArrayObject
 {
 
     public function __construct( $array = array(), $post_class = 'TimberPost' ) {
@@ -43,14 +43,21 @@ class TimberPostsIterator extends ArrayIterator
             }
         }
 
-        parent::__construct( $posts );
+        parent::__construct( $posts, $flags = 0, 'TimberPostsIterator' );
     }
 
+    public function get_posts() {
+        return $this->getArrayCopy();
+    }
+
+}
+
+class TimberPostsIterator extends ArrayIterator
+{
     public function current() {
         global $post;
         $post = parent::current();
 
         return $post;
     }
-
 }

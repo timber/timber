@@ -35,7 +35,7 @@ class TimberPostGetter
 
         if ( is_array( $query ) && count( $query ) && isset( $query[0] ) && is_object( $query[0] ) ) {
             // We have an array of post objects that already have data
-            return new TimberPostsIterator( $query, $PostClass );
+            return new TimberPostsCollection( $query, $PostClass );
         } else {
             // We have a query (of sorts) to work with
             return new TimberQueryIterator( $query, $PostClass );
@@ -191,7 +191,7 @@ class TimberPostGetter
                 $posts[] = $post;
             }
         }
-        return new TimberPostsIterator( $posts );
+        return new TimberPostsCollection( $posts );
     }
 
     /**
