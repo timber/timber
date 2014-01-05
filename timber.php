@@ -108,6 +108,11 @@ class Timber {
     }
 
     public static function get_posts( $query = false, $PostClass = 'TimberPost' ) {
+        $posts = self::query_posts( $query, $PostClass );
+        return $posts->get_posts();
+    }
+
+    public static function query_posts( $query = false, $PostClass = 'TimberPost' ) {
         if ( self::is_post_class_or_class_map( $query ) ) {
             $PostClass = $query;
             $query     = false;
