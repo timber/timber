@@ -86,12 +86,31 @@
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost($post_id);
 			$post->post_excerpt = 'this is super dooper trooper long words';
-			
 			$prev = $post->get_preview(3, true);
 			$this->assertEquals(1, substr_count($prev, '&hellip;'));
 		}
 
 		function testGetPreview() {
 
+		}
+
+		function testTitle(){
+			$title = 'Fifteen Million Merits';
+			$post_id = $this->factory->post->create();
+			$post = new TimberPost($post_id);
+			$post->post_title = $title;
+			wp_update_post($post);
+			$this->assertEquals($title, trim(strip_tags($post->title())));
+			$this->assertEquals($title, trim(strip_tags($post->get_title())));
+		}
+
+		function testContent(){
+			$quote = 'The way to do well is to do well.';
+			$post_id = $this->factory->post->create();
+			$post = new TimberPost($post_id);
+			$post->post_content = $quote;
+			wp_update_post($post);
+			$this->assertEquals($quote, trim(strip_tags($post->content())));
+			$this->assertEquals($quote, trim(strip_tags($post->get_content())));
 		}
 	}
