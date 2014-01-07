@@ -42,6 +42,10 @@ class TimberTwig {
 			return TimberHelper::get_rel_url($link, true);
 		}));
 
+		$twig->addFilter('truncate', new Twig_Filter_Function(function($text, $len){
+			return TimberHelper::trim_words($text, $len);
+		}));
+
         /* actions and filters */
         $twig->addFunction(new Twig_SimpleFunction('action', function(){
             call_user_func_array('do_action', func_get_args());
