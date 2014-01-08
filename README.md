@@ -56,7 +56,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Twig**](https://github.com/fabpot/Twig) The template language used by Timber.
 
 #### Should I use it?
-Well, it's **free**! And it's GPL-licensed, so use in personal or commercial work. Just don't re-sell it.
+Well, it's **free**! And it's GPL-licensed, so use in personal or commercial work. Just don't re-sell it. Timber is still in development. While much has been stabalized since the first major push back in June 2013, you should expect some breaking changes as development progresses towards a version 1.0
 
 #### Upgrade Notes
 Twig is no longer a submodule, just a part of the repo. If you have trouble pulling, just delete the `Twig` folder. Then you should be good.
