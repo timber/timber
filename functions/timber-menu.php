@@ -166,12 +166,7 @@ class TimberMenuItem extends TimberCore {
         if ($this->type != 'custom'){
             return false;
         }
-        $has_http = strstr(strtolower($this->url), 'http');
-        $on_domain = strstr($this->url, $_SERVER['HTTP_HOST']);
-        if ($has_http && !$on_domain){
-            return true;
-        }
-        return false;
+        return TimberHelper::is_external($this->url);
     }
 
     /* Aliases */

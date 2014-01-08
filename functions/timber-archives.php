@@ -1,16 +1,20 @@
 <?php
 class TimberArchives extends TimberCore {
-	function __construct($args){
-		$this->init($args);
+
+	var $base = '';
+
+	function __construct($args, $base = ''){
+		$this->init($args, $base);
 	}
 
-	function init($args){
+	function init($args, $base = ''){
+		$this->base = $base;
 		$this->items = $this->get_items($args);
 	}
 
 	function get_archives_link($url, $text) {
 		$ret['text'] = $ret['title'] = $ret['name'] = wptexturize($text);
-		$ret['url'] = $ret['link'] = esc_url($url);
+		$ret['url'] = $ret['link'] = esc_url(TimberHelper::prepend_to_url($url, $this->base));
 		return $ret;
 	}
 
@@ -28,7 +32,7 @@ class TimberArchives extends TimberCore {
 			foreach ( (array) $results as $result) {
 				$url = get_year_link($result->year);
 				$text = sprintf('%d', $result->year);
-				$output[] = self::get_archives_link($url, $text);
+				$output[] = $this->get_archives_link($url, $text);
 			}
 		}
 		return $output;
@@ -62,9 +66,9 @@ class TimberArchives extends TimberCore {
 					$text = sprintf(__('%1$s'), $wp_locale->get_month($result->month));
 				}
 				if ($nested){
-					$output[$result->year][] = self::get_archives_link($url, $text);
+					$output[$result->year][] = $this->get_archives_link($url, $text);
 				} else {
-					$output[] = self::get_archives_link($url, $text);
+					$output[] = $this->get_archives_link($url, $text);
 				}
 			}
 		}
@@ -162,7 +166,7 @@ class TimberArchives extends TimberCore {
 					$url	= get_day_link($result->year, $result->month, $result->dayofmonth);
 					$date = sprintf('%1$d-%2$02d-%3$02d 00:00:00', $result->year, $result->month, $result->dayofmonth);
 					$text = mysql2date($archive_day_date_format, $date);
-					$output[] = self::get_archives_link($url, $text);
+					$output[] = $this->get_archives_link($url, $text);
 				}
 			}
 		} elseif ( 'weekly' == $type ) {
@@ -186,7 +190,7 @@ class TimberArchives extends TimberCore {
 							$arc_week_end = date_i18n($archive_week_end_date_format, $arc_week['end']);
 							$url  = sprintf('%1$s/%2$s%3$sm%4$s%5$s%6$sw%7$s%8$d', home_url(), '', '?', '=', $arc_year, '&amp;', '=', $result->week);
 							$text = $arc_week_start . $archive_week_separator . $arc_week_end;
-							$output[] = self::get_archives_link($url, $text);
+							$output[] = $this->get_archives_link($url, $text);
 						}
 					}
 			}

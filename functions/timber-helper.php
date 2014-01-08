@@ -8,7 +8,11 @@ class TimberHelper {
 			$disable_transients = WP_DISABLE_TRANSIENTS;
 		}
 		$data = null;
-		if (is_callable($callback) && (false === ($data = get_transient($slug)) || $disable_transients)){
+		if ($transient_time === false){
+			$data = $callback();
+			return $data;
+		}
+		if (is_callable($callback) && (false === ($data = get_transient($slug)) || $disable_transients) && $transient_time !== false){
 			$cache_lock_slug = $slug.'_lock';
 
 			if (get_transient($cache_lock_slug)){
@@ -103,6 +107,9 @@ class TimberHelper {
 		return false;
 	}
 
+	/* URL Stuff
+	======================== */
+
 	public static function get_rel_url($url, $force = false){
 		if (!strstr($url, $_SERVER['HTTP_HOST']) && !$force){
 			return $url;
@@ -117,6 +124,24 @@ class TimberHelper {
 
 	public static function get_rel_path($src) {
 		return str_replace(ABSPATH, '', $src);
+	}
+
+	public static function remove_double_slashes($url){
+		$url = str_replace('//', '/', $url);
+		if (strstr($url, 'http:') && !strstr($url, 'http://')){
+			$url = str_replace('http:/', 'http://', $url);
+		}
+		return $url;
+	}
+
+	public static function prepend_to_url($url, $path){
+		if (strstr(strtolower($url), 'http')){
+			$url_parts = parse_url($url);
+			$url = $url_parts['scheme'].'://'.$url_parts['host'].$path.$url_parts['path'];
+		} else {
+			$url = $url.$path;
+		}
+		return self::remove_double_slashes($url);
 	}
 
 	public static function download_url($url, $timeout = 300) {
@@ -386,6 +411,15 @@ class TimberHelper {
 
 	public static function isodd($i) {
 		return ($i % 2) != 0;
+	}
+
+	public static function is_external($url){
+		$has_http = strstr(strtolower($url), 'http');
+        $on_domain = strstr($url, $_SERVER['HTTP_HOST']);
+        if ($has_http && !$on_domain){
+            return true;
+        }
+        return false;
 	}
 
 	public static function twitterify($ret) {
