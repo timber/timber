@@ -450,7 +450,7 @@ class Timber {
                 if (strpos($route, $base_path) === 0) {
                     $base_path = '/';
                 } else {
-                    $base_path = '/' . $base_path;
+                    $base_path = '/' . $base_path . '/';
                 }
                 $timber->router->setBasePath($base_path);
             }
