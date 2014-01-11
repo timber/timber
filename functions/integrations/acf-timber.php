@@ -47,7 +47,7 @@
 			return get_field($field, 'user_'.$uid);
 		}
 	}
-	add_action( 'plugins_loaded', function(){
+	add_action( 'init', function(){
 		if (class_exists('ACF')){
 			new ACFTimber();
 		}
