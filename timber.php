@@ -59,6 +59,7 @@ class Timber {
     public static $dirname = 'views';
     public static $cache = false;
     public static $auto_meta = true;
+    public static $autoescape = false;
 
     protected $router;
 
