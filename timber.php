@@ -301,7 +301,7 @@ class Timber {
         }
         $terms = get_terms($taxonomies, $args);
         foreach($terms as &$term){
-            $term = new $TermClass($term->term_id);
+            $term = new $TermClass($term->term_id, $term->taxonomy);
         }
         return $terms;
     }
