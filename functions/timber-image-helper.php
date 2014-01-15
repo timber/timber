@@ -56,7 +56,10 @@
 			$file = parse_url($file);
 			$path_parts = pathinfo($file['path']);
 			$basename = md5($filename);
-			$ext = $path_parts['extension'];
+			$ext = 'jpg';
+			if (isset($path_parts['extension'])){
+				$ext = $path_parts['extension'];
+			}
 			return $dir . '/' . $basename. '.' . $ext;
 		}
 
