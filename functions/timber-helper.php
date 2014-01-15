@@ -295,7 +295,7 @@ class TimberHelper {
 	public static function get_posts_by_meta($key, $value) {
 		global $wpdb;
 		$query = $wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $key, $value);
-		$results = $wpdb->col($query);
+		$results = $wpdb->get_col($query);
 		$pids = array();
 		foreach ($results as $result) {
 			if (get_post($result)) {
