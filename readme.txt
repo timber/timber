@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.16.5
+Stable tag: 0.16.6
 Tested up to: 3.8.0
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,16 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.16.6 =
+* Router plays nice with installs in subdirectories (thanks @TerminalPixel)
+* ACF Timber now initializes on Init (thanks @Zerek)
+* Composer is updated (thanks @Rarst)
+* $autoescape bug fixed (thanks @ParisHolley)
+* You can now select a term ID from a specific taxonomy (thanks @mgmartel)
+* added stripshortcodes filter
+* TimberMenuItems now have is_external method
+* Other misc bugs
 
 = 0.16.5 =
 * print_a lives! added methods for TimberPost
