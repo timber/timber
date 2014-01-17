@@ -375,6 +375,7 @@ class Timber {
             $cache_mode = TimberLoader::CACHE_USE_DEFAULT;
         }
         $output = self::compile($filenames, $data, $expires, $cache_mode, true);
+        $output = apply_filters('timber_compile_result', $output);
         echo $output;
         return $output;
     }
