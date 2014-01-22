@@ -102,6 +102,10 @@ class TimberTerm extends TimberCore {
 	/* Public methods
 	===================== */
 
+	public function get_edit_url(){
+		return get_edit_term_link($this->ID, $this->taxonomy);
+	}
+
 	public function get_meta_field($field_name){
 		if (!isset($this->$field_name)){
 			$field = '';
@@ -181,6 +185,10 @@ class TimberTerm extends TimberCore {
 
 	public function children(){
 		return $this->get_children();
+	}
+
+	public function edit_link(){
+		return $this->get_edit_url();
 	}
 
 	public function get_url() {
