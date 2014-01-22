@@ -6,6 +6,7 @@ class TimberPost extends TimberCore {
 	var $PostClass = 'TimberPost';
 	var $_can_edit;
 	var $_get_terms;
+	var $_content;
 	var $object_type = 'post';
 
 	var $_custom_imported = false;
@@ -497,6 +498,9 @@ class TimberPost extends TimberCore {
 	*/
 
 	function get_content($len = 0, $page = 0) {
+		if ($len == 0 && $page == 0 && $this->_content){
+			return $this->_content;
+		}
 		$content = $this->post_content;
 		if ($len) {
 			$content = wp_trim_words($content, $len);
@@ -508,7 +512,11 @@ class TimberPost extends TimberCore {
 				$content = $contents[$page];
 			}
 		}
-		return apply_filters('the_content', ($content));
+		$content = apply_filters('the_content', ($content));
+		if ($len == 0 && $page == 0){
+			$this->_content = $content;
+		}
+		return $content;
 	}
 
 	public function get_post_type() {
