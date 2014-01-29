@@ -179,37 +179,7 @@ class Timber {
      * @deprecated since 0.20.0
      */
     public static function handle_post_results($results, $PostClass = 'TimberPost') {
-<<<<<<< HEAD
         return TimberPostGetter::handle_post_results($results, $PostClass);
-=======
-        $start = TimberHelper::start_timer();
-        $posts = array();
-        foreach ($results as $rid) {
-            $PostClassUse = $PostClass;
-            if (is_array($PostClass)) {
-                $post_type = get_post_type($rid);
-                $PostClassUse = 'TimberPost';
-                if (isset($PostClass[$post_type])) {
-                    $PostClassUse = $PostClass[$post_type];
-                } else {
-                    if (is_array($PostClass)) {
-                        TimberHelper::error_log($post_type.' of '.$rid.' not found in ' . print_r($PostClass, true));
-                    } else {
-                        TimberHelper::error_log($post_type.' not found in '.$PostClass);
-                    }
-                }
-            }
-            $post = new $PostClassUse($rid);
-            if (isset($post->ID)) {
-                $posts[] = $post;
-            }
-        }
-<<<<<<< HEAD
-        return new TimberPostsIterator( $posts );
->>>>>>> 5f9019a... Make sure also Timber::get_post works with the iterators
-=======
-        return new TimberPostsCollection( $posts );
->>>>>>> 67aaee7... Create TimberPostsCollection object that uses TimberPostsIterator to push the current post as the current global $post
     }
 
     /**
