@@ -98,18 +98,18 @@ class Timber {
     ================================ */
 
     public static function get_post($query = false, $PostClass = 'TimberPost') {
-        $posts = self::get_posts($query, $PostClass);
+        $posts = self::get_posts( $query, $PostClass );
 
-        if ( $post = $posts->current() ) {
+        if ( $post = reset( $posts ) ) {
             return $post;
         }
 
         return false;
     }
 
-    public static function get_posts( $query = false, $PostClass = 'TimberPost' ) {
+    public static function get_posts( $query = false, $PostClass = 'TimberPost', $return_collection = false ) {
         $posts = self::query_posts( $query, $PostClass );
-        return $posts->get_posts();
+        return $posts->get_posts( $return_collection );
     }
 
     public static function query_posts( $query = false, $PostClass = 'TimberPost' ) {
