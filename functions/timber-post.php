@@ -359,7 +359,8 @@ class TimberPost extends TimberCore {
 			"Agosto",
 			"Septiembre",
 			"Octubre",
-			"Noviembre"
+			"Noviembre",
+			"Diciembre"
 		);
 		return $allMonthsES[$number_month-1];
 	}
