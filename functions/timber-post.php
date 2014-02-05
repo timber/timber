@@ -344,26 +344,6 @@ class TimberPost extends TimberCore {
 		return date(get_option('date_format'), strtotime($this->$use));
 	}
 	
-	function get_month_spanish($use = 'post_date') {
-		$timestamp = strtotime($this->$use);
-		$number_month = date("m", $timestamp);
-		$allMonthsES = array
-		(
-			"Enero",
-			"Febrero",
-			"Marzo",
-			"Abril",
-			"Mayo",
-			"Junio",
-			"Julio",
-			"Agosto",
-			"Septiembre",
-			"Octubre",
-			"Noviembre",
-			"Diciembre"
-		);
-		return $allMonthsES[$number_month-1];
-	}
 	
 	function get_children($post_type = 'any', $childPostClass = false) {
 		if ($childPostClass == false) {
