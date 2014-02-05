@@ -91,7 +91,7 @@
 			if (empty($src)){
 				return '';
 			}
-			if (strstr($src, 'http') && !strstr($src, home_url())) {
+			if (strstr($src, 'http') && !strstr($src, content_url())) {
 				$src = self::sideload_image($src);
 			}
 			$abs = false;
@@ -105,14 +105,14 @@
 			$dir = $path_parts['dirname'];
 			$newbase = $basename . '-r-' . $w . 'x' . $h;
 			$new_path = $dir . '/' . $newbase . '.' . $ext;
-			$new_path = str_replace(site_url(), '', $new_path);
-			$new_root_path = ABSPATH . $new_path;
-			$old_root_path = ABSPATH . str_replace(site_url(), '', $src);
+			$new_path = str_replace(content_url(), '', $new_path);
+			$new_root_path = WP_CONTENT_DIR . $new_path;
+			$old_root_path = WP_CONTENT_DIR . str_replace(content_url(), '', $src);
 			$old_root_path = str_replace('//', '/', $old_root_path);
 			$new_root_path = str_replace('//', '/', $new_root_path);
 			if (file_exists($new_root_path)) {
 				if ($abs){
-					return untrailingslashit(site_url()).$new_path;
+					return untrailingslashit(content_url()).$new_path;
 				} else {
 					return TimberHelper::preslashit($new_path);
 				}
@@ -151,7 +151,7 @@
 					error_log(print_r($result, true));
 				}
 				if ($abs){
-					return untrailingslashit(site_url()).$new_path;
+					return untrailingslashit(content_url()).$new_path;
 				}
 				return $new_path;
 			} else if (isset($image->error_data['error_loading_image'])) {
