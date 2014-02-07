@@ -1,0 +1,448 @@
+/* ## Bring in all Compass Helpers */ 
+@import "partials/base";
+
+/* ## Base CSS */
+@import "project/type";
+// @import "project/forms";
+// @import "project/tables";
+// @import "project/lists";
+
+/* ## Components */
+// @import "project/buttons";
+// @import "project/dropdowns";
+// @import "project/tabs";
+// @import "project/modals";
+// @import "project/tooltips";
+
+/* ============================================= */
+/*	Universal						   			 */ 
+/* ============================================= */
+
+a 		{ 	text-decoration: none; color: inherit; }
+strong	{	font-weight: bold;	}
+em   	{	font-style: italic;	}
+
+body { background-color: $light-green; }
+
+$codeBlack : rgb(72, 78, 88);
+
+.inline { display: inline; }
+
+/* ============================================= */
+/*	 Layout					   		*/ 
+/* ============================================= */ 
+
+.container {
+	width: 100%;
+	max-width: 960px;
+	margin: 0 auto;
+}
+
+.logo-container {
+	.logo {
+		max-width:100%;
+	}
+}
+
+.header {
+	margin-top:0px;
+}
+
+/* ============================================= */
+/*	Typography		                             */
+/*	Variables defined in project/_type.scss		 */ 
+/* ============================================= */
+
+.default-link {
+	@include default-link;
+}
+
+.section-h1 {
+	font-size:26px;
+	font-family:$coustard;
+	margin-bottom:20px; 
+	text-align:center;
+	text-transform:uppercase;
+	color:rgba(black, .6);
+}
+
+.section-h {
+	color: $dark-green;
+	font-size: 26px;
+	font-family:$coustard;
+}
+
+.section-txt {
+	font-size: 18px;
+	line-height: 150%;
+	$font-family:$openSans;
+}
+
+.block-h {
+	color: $dark-green;
+	font-size: 18px;
+	font-family:$coustard;
+}
+
+.label-h {
+	font-size: 14px;
+	font-family:$coustard;
+	color: $dark-green;
+}
+.label {
+	font-size: 14px;
+	line-height: 18px;
+	color: darken($dark-green, 10%);
+	// text-transform: uppercase;
+	font-family:$openSans;
+
+	a {
+		color: $light-green;
+		&:hover {
+			color: $dark-green;
+		}
+	}
+
+	&.ss {
+		padding-left: 10px;
+	}
+}  
+
+p {
+	font-size: 16px;
+	line-height: 150%;
+	margin-bottom: 20px;
+	font-family:$openSans;
+}
+
+
+/* ============================================= */
+/*	Buttons					   			 */ 
+/* ============================================= */
+
+.big-btn {
+	background-color: $med-green;
+	@include background-image(linear-gradient(lighten($med-green, 10), darken($med-green, 10)));
+	color: $light-green;
+	@include border-radius(5px 5px);
+	font-family:$openSans;
+	font-size: 12px;
+	padding: 10px;
+	font-weight:bold;
+	margin: 0 5px 0 0;
+	width:30%;
+	display:inline-block;
+	text-shadow:0 -1px 0 rgba(0, 0, 0, 0.25);
+	border:1px solid;
+	border-color:rgba(black, 0.1) rgba(black, 0.1) rgba(black, 0.25);
+	@media(min-width: 600px){
+		font-size: 16px;
+		padding: 15px 30px;
+	}
+	&:hover { 
+		background-color:$evergreen;
+		color:$whiteGreen;
+		@include box-shadow(0px 0px 2px rgba($evergreen, .5));
+		@include background-image(linear-gradient(lighten($evergreen, 10), darken($evergreen, 10)));
+	}
+	
+	
+}
+
+button {
+	background-color: $bright-green;
+	@include background-image(linear-gradient($bright-green, $dark-green));
+	color: $black-10;
+	@include border-radius(5px 5px);
+	border: 1px solid lighten($dark-green, 10);
+
+	&:hover { 
+		@include background-image(linear-gradient(lighten($blue-green, 10), $dark-green));
+	}
+	
+	&.big-btn {
+		font-family:$coustard;
+		font-size: 12px;
+		padding: 10px;
+		margin: 0 5px 0 0;
+		width:30%;
+		@media(min-width: 600px){
+			font-size: 16px;
+			padding: 15px 30px;
+		}
+	}
+}
+
+.buttons {
+	max-width: 720px;
+	margin: 0 auto 20px auto;
+	padding: 10px;
+	@include border-radius(8px);
+	@include pie-clearfix;
+}
+
+.btn-container {
+	text-align: center;
+	margin: 0 auto;
+}
+
+
+
+
+/* ============================================= */
+/*	Page Sections					   		*/ 
+/* ============================================= */
+
+.explainer-mod {
+	border-bottom: 20px;
+	@include pie-clearfix;
+
+	@media (min-width: 600px){
+		width: 100%;
+	}
+}
+
+
+/* ============================================= */
+/*	Top section					   		*/ 
+/* ============================================= */
+
+// styling for code window
+.ex-code-mod {
+	width: 100%;
+	background-color: $codeBlack;
+	@include box-shadow(rgba(0,0,0,.4) 0px 0px 8px);
+
+	@media (min-width: 600px){
+		width: 35%;
+		height: 200px;
+		margin-top: -10px;
+		margin-right: -5%;
+
+		float: right;
+		@include box-shadow(0px 0px 5px rgba(black, .4) );
+		@include trans;
+
+		&:hover {
+			
+		}
+	}
+}
+
+.code-mod {
+	background-color:$codeBlack;
+	@include box-shadow(rgba(0,0,0,.4) 0px 0px 8px);
+	margin-bottom:10px;
+}
+
+//IE7 fixes
+.ie7 {
+	.ex-code-out {
+		@media (min-width: 600px){
+			width: 60%;
+		}
+	}
+	.ex-code-mod {
+		background-color: #222;
+
+		white-space: pre-wrap;
+		word-wrap: break-word;
+
+		@media (min-width: 600px){
+			width: 25%;
+			float: left;
+			margin: 0;
+		}
+
+		&:hover {
+			background-color: #000;
+		}
+	}
+
+}
+
+//inline styles for the code window
+code {
+	color: #5cbb4d;
+}
+
+.code-white {
+	color: #FFF;
+}
+
+.code-header {
+	margin: 0 auto;
+	padding: 10px;
+	background-color: $med-green;
+	text-align: center;
+	color: #FFF;
+	font-family:$openSans;
+
+	@media (min-width: 600px){
+		display: none;
+	}
+}
+
+//styling for "blog post" window
+.ex-code-out {
+	width: 100%;
+	background-color: #FFF;
+	border: 8px solid #EEE;
+	padding: 20px;
+
+	@media (min-width: 600px){
+		width: 70%;
+		padding: 60px;
+		float: right;
+		@include border-radius(8px);
+	}
+}
+
+//the little arrow thing under the code
+.ex-code-arrow {
+	display: none;
+	@media (min-width: 600px){
+		display: block;
+		width: 25%;
+		height: 180px;
+		float: left;
+
+		background-image: url(../_img/ex-arrow-two.png);
+		background-repeat: no-repeat;
+		background-position: center center;
+	}
+}
+
+
+/* ============================================= */
+/*	Typography for fake blog post				*/ 
+/* ============================================= */
+
+.ex-h1 {
+	font-size: 38px;
+	margin-bottom: 20px;
+	font-family:$openSans;
+}
+
+.ex-small {
+	font-family:$coustard;
+	font-size: 10px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: #666;
+	margin-bottom: 10px;
+}
+
+.ex-img {
+	float: left;
+	margin: 0 10px 10px 0;
+
+	img {
+		width: 40px;
+		height: 40px;
+	}
+	@media (min-width: 600px){
+		img {
+			width: 80px;
+			height: 80px;
+			@include border-radius(100px);
+			border: 4px solid #EEE;
+		}
+	}
+}
+
+.ex-p {
+	font-size: 14px;
+	line-height: 18px;
+	font-family:$openSans;
+
+	@media (min-width: 600px){
+		margin-left: 95px;
+	}
+}
+
+/* ============================================= */
+/*	Code examples in bottom					   		*/ 
+/* ============================================= */
+
+.code-sections, .code-examples {
+
+	.ui-block {
+		background-color: $codeBlack;
+		@include box-shadow(rgba(black, .5) 0px 0px 5px);
+		color: $black-10;
+		font-size: 15px;
+		min-height: 400px;
+		padding: 10px;
+		margin-bottom: 20px;
+		@extend .inconsolata;
+	}
+
+	@media(min-width: 600px){
+		@include ui-grid-2(50%,50%,10%);
+
+		background-image: url(../_img/code-arrow.png);
+		background-repeat: no-repeat;
+		background-position: center center;
+	}
+
+}
+
+
+/* ============================================= */
+/*	Footer			   		*/ 
+/* ============================================= */ 
+
+footer {
+	font-family:$openSans;
+	background-color: $med-green;
+	min-height: 150px;
+	border-top: 1px dashed $light-green;
+	@include box-shadow($dark-green 0px 5px 10px inset);
+
+	.container {
+		margin: 0 auto;
+		padding-top: 30px;
+
+		@media (min-width: 600px){
+			max-width: 960px;
+			@include ui-grid-3(40%, 40%, 20%, 5%);
+		}
+	}
+}
+
+.ups-logo {
+	width: 100%;
+	margin: 30px 0 0 0;
+	text-align: center;
+}
+
+.social-icons {
+	font-size: 25px;
+	text-align: right;
+	a {
+		color: $dark-green;
+		&:hover { 
+			color: #FFF;
+		}
+	}
+}
+
+/* ============================================= */
+/*	Print Styles							     
+	Inline to avoid required HTTP connection     */
+/* ============================================= */
+
+// Import Print Styles
+@import "project/print";
+
+html pre code {
+	padding-top:0px;
+}
+
+pre {
+	padding-top:0px;
+}
+
+@import "project/rebuild";
+@import "project/github";
