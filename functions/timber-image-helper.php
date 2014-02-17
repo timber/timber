@@ -161,8 +161,8 @@
 
 						// Get source x and y
 						if ( $crop == 'center' ) {
-							$src_x = round( ( $src_w - $w ) / 2 );
-							$src_y = round( ( $src_h - $h ) / 2 );
+							$src_x = round( ( $src_w - $src_wt ) / 2 );
+							$src_y = round( ( $src_h - $src_ht ) / 2 );
 						} else {
 							$src_x = $src_w / 2 - $src_wt / 2;
 							$src_y = ( $src_h - $src_ht ) / 6;
