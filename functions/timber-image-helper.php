@@ -98,12 +98,21 @@
 			if (strstr($src, 'http')){
 				$abs = true;
 			}
+			// Sanitize crop position
+			$allowed_crop_positions = array( 'default', 'center' );
+			if ( $crop !== false && ! in_array( $crop, $allowed_crop_positions ) ) {
+				$crop = $allowed_crop_positions[ 0 ];
+			}
 			//oh good, it's a relative image in the uploads folder!
 			$path_parts = pathinfo($src);
 			$basename = $path_parts['filename'];
 			$ext = $path_parts['extension'];
 			$dir = $path_parts['dirname'];
 			$newbase = $basename . '-r-' . $w . 'x' . $h;
+			if ( $crop ) {
+				// Add crop position to filename to cachebust
+				$newbase .= '-c-' . $crop[ 0 ];
+			}
 			$new_path = $dir . '/' . $newbase . '.' . $ext;
 			$new_path = str_replace(content_url(), '', $new_path);
 			$new_root_path = WP_CONTENT_DIR . $new_path;
