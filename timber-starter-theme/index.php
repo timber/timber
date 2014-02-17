@@ -23,6 +23,6 @@
 	if (is_home()){
 		array_unshift($templates, 'home.twig');
 	}
-	Timber::render('index.twig', $context);
+	Timber::render('$templates', $context);
 
 

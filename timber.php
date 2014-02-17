@@ -531,8 +531,13 @@ class Timber {
         global $paged;
         $args['total'] = ceil($wp_query->found_posts / $wp_query->query_vars['posts_per_page']);
         if (strlen(trim(get_option('permalink_structure')))){
+            $url = explode('?', get_pagenum_link(0));
+            if (isset($url[1])){
+               parse_str($url[1], $query);
+               $args['add_args'] = $query;
+            }
             $args['format'] = 'page/%#%';
-            $args['base'] = trailingslashit(get_pagenum_link(0)).'%_%';
+            $args['base'] = trailingslashit($url[0]).'%_%';
         } else {
             $big = 999999999;
             $args['base'] = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
