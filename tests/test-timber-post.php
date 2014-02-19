@@ -20,6 +20,19 @@
 			$this->assertEquals($firstPost->next()->ID, $nextPost->ID);
 		}
 
+		function testNextCategory(){
+			$posts = array();
+			for($i = 0; $i<3; $i++){
+				$posts[] = $this->factory->post->create();
+				sleep(1);
+			}
+			wp_set_object_terms($posts[0], 'TestMe', 'category', false);
+			wp_set_object_terms($posts[2], 'TestMe', 'category', false);
+			$firstPost = new TimberPost($posts[0]);
+			$nextPost = new TimberPost($posts[2]);
+			$this->assertEquals($firstPost->next('category')->ID, $nextPost->ID);
+		}
+
 		function testPrev(){
 			$posts = array();
 			for($i = 0; $i<2; $i++){
@@ -29,6 +42,19 @@
 			$lastPost = new TimberPost($posts[1]);
 			$prevPost = new TimberPost($posts[0]);
 			$this->assertEquals($lastPost->prev()->ID, $prevPost->ID);
+		}
+
+		function testPrevCategory(){
+			$posts = array();
+			for($i = 0; $i<3; $i++){
+				$posts[] = $this->factory->post->create();
+				sleep(1);
+			}
+			wp_set_object_terms($posts[0], 'TestMe', 'category', false);
+			wp_set_object_terms($posts[2], 'TestMe', 'category', false);
+			$lastPost = new TimberPost($posts[2]);
+			$prevPost = new TimberPost($posts[0]);
+			$this->assertEquals($lastPost->prev('category')->ID, $prevPost->ID);
 		}
 
 		function testNextWithDraftAndFallover(){
@@ -56,7 +82,6 @@
 			$nextPost->post_status = 'draft';
 			wp_update_post($nextPost);
 			$nextPostTest = $firstPost->next();
-			print_r($nextPostTest);
 		}
 
 		function testPostInitObject(){
