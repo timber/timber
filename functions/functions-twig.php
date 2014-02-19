@@ -166,9 +166,15 @@ function hexrgb($hexstr) {
 
 function wp_resize_letterbox($src, $w, $h, $color = '#000000') {
 	//$old_file = TimberHelper::get_full_path($src);
+	$abspath = substr(ABSPATH, 0, -1);
 	$urlinfo = parse_url($src);
+	if( $_SERVER['DOCUMENT_ROOT'] != $abspath ) {
+		$subdir = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $abspath);
+		$urlinfo['path'] = str_replace('/'.$subdir.'/', '', $urlinfo['path']);
+	}
 	$old_file = ABSPATH.$urlinfo['path'];
 	$new_file = TimberImageHelper::get_letterbox_file_path($urlinfo['path'], $w, $h);
+	$urlinfo = parse_url($src);
 	$new_file_rel = TimberImageHelper::get_letterbox_file_rel($urlinfo['path'], $w, $h);
 	$new_file_boxed = str_replace('-lb-', '-lbox-', $new_file);
 	if (file_exists($new_file_boxed)) {
