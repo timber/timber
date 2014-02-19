@@ -238,13 +238,13 @@ class TimberPost extends TimberCore {
 		return $this->get_permalink();
 	}
 
-	function get_next() {
+	function get_next($in_same_cat = false) {
 		if (!isset($this->_next)){
 			global $post;
 			$this->_next = null;
 			$old_global = $post;
 			$post = $this;
-			$adjacent = get_adjacent_post(false, '', false);
+			$adjacent = get_adjacent_post($in_same_cat, '', false);
 			if ($adjacent){
 				$this->_next = new $this->PostClass($adjacent);
 			}
@@ -294,13 +294,13 @@ class TimberPost extends TimberCore {
 		return TimberHelper::get_rel_url($this->get_link());
 	}
 
-	function get_prev() {
+	function get_prev($in_same_cat = false) {
 		if (!isset($this->_prev)){
 			global $post;
 			$this->_prev = null;
 			$old_global = $post;
 			$post = $this;
-			$adjacent = get_adjacent_post(false, '', true);
+			$adjacent = get_adjacent_post($in_same_cat, '', true);
 			if ($adjacent){
 				$this->_prev = new $this->PostClass($adjacent);
 			}
@@ -622,8 +622,8 @@ class TimberPost extends TimberCore {
 		return $this->get_field($field_name);
 	}
 
-	public function next() {
-		return $this->get_next();
+	public function next($in_same_cat = false) {
+		return $this->get_next($in_same_cat);
 	}
 
 	public function pagination(){
@@ -642,8 +642,8 @@ class TimberPost extends TimberCore {
 		return $this->get_permalink();
 	}
 
-	public function prev() {
-		return $this->get_prev();
+	public function prev($in_same_cat = false) {
+		return $this->get_prev($in_same_cat);
 	}
 
 	public function terms($tax = '') {
