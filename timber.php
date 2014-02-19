@@ -345,6 +345,7 @@ class Timber {
         $data['template_uri'] = get_template_directory_uri();
         $data['theme'] = new TimberTheme();
         $data['site'] = new TimberSite();
+        $data['site']->theme = $data['theme'];
         $data = apply_filters('timber_context', $data);
         return $data;
     }
