@@ -2,8 +2,8 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.16.7
-Tested up to: 3.8.0
+Stable tag: 0.16.8
+Tested up to: 3.8.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -40,6 +40,13 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.16.8 =
+* You can now retrieve prev/next posts within the same category (post.next('category').title, etc.). (thanks @slimndap)
+* Fixed issue with letterboxing images when WP is installed in a subdirectory ( @wesrice)
+* Fix for images stored inside custom content path (@mmikkel)
+* Cleaned-up some things in Timber Starter theme (@southernfriedbb, @jarednova)
+
 
 = 0.16.7 =
 * Fixed issue with image heights on external images (thanks @AndrewDuthie)
