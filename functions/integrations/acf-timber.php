@@ -10,7 +10,7 @@
 		}
 
 		function post_get_meta($customs, $post_id){
-			return $customs;
+			return array_merge($customs, get_fields());
 		}
 
 		function post_get_meta_field($value, $post_id, $field_name){
