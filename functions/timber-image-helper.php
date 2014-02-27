@@ -87,7 +87,7 @@
 			return $file['url'];
 		}
 
-		public static function resize($src, $w, $h = 0){
+		public static function resize($src, $w, $h = 0, $crop = 'default', $force_resize = false ){
 			if (empty($src)){
 				return '';
 			}
@@ -98,62 +98,120 @@
 			if (strstr($src, 'http')){
 				$abs = true;
 			}
+			// Sanitize crop position
+			$allowed_crop_positions = array( 'default', 'center' );
+			if ( $crop !== false && ! in_array( $crop, $allowed_crop_positions ) ) {
+				$crop = $allowed_crop_positions[ 0 ];
+			}
 			//oh good, it's a relative image in the uploads folder!
 			$path_parts = pathinfo($src);
 			$basename = $path_parts['filename'];
 			$ext = $path_parts['extension'];
 			$dir = $path_parts['dirname'];
-			$newbase = $basename . '-r-' . $w . 'x' . $h;
+			$newbase = $basename . '-r-' . $w . 'x' . $h . '-c-' . ( $crop ? $crop[ 0 ] : 'f' ); // Crop will be either d (default), c (center) or f (false)
 			$new_path = $dir . '/' . $newbase . '.' . $ext;
 			$new_path = str_replace(content_url(), '', $new_path);
 			$new_root_path = WP_CONTENT_DIR . $new_path;
 			$old_root_path = WP_CONTENT_DIR . str_replace(content_url(), '', $src);
 			$old_root_path = str_replace('//', '/', $old_root_path);
 			$new_root_path = str_replace('//', '/', $new_root_path);
-			if (file_exists($new_root_path)) {
-				if ($abs){
-					return untrailingslashit(content_url()).$new_path;
+			
+			if ( file_exists($new_root_path) ) {
+				if ( $force_resize ) {
+					// Force resize - warning: will regenerate the image on every pageload, use for testing purposes only!
+					unlink( $new_root_path );
 				} else {
-					return TimberHelper::preslashit($new_path);
+					if ($abs){
+						return untrailingslashit(content_url()).$new_path;
+					} else {
+						return TimberHelper::preslashit($new_path);
+					}
+					return $new_path;
 				}
-				return $new_path;
 			}
+
 			$image = wp_get_image_editor($old_root_path);
+			
 			if (!is_wp_error($image)) {
+				
 				$current_size = $image->get_size();
-				$ow = $current_size['width'];
-				$oh = $current_size['height'];
-				$old_aspect = $ow / $oh;
-				if ($h) {
-					$new_aspect = $w / $h;
-					if ($new_aspect > $old_aspect) {
-						//cropping a vertical photo horitzonally
-						$oht = $ow / $new_aspect;
-						$oy = ($oh - $oht) / 6;
-						$image->crop(0, $oy, $ow, $oht, $w, $h);
+				
+				$src_w = $current_size['width'];
+				$src_h = $current_size['height'];
+
+				$src_ratio = $src_w / $src_h;
+				
+				if ( $h ) {
+
+					// Get ratios
+					$dest_ratio = $w / $h;
+					$src_wt = $src_h * $dest_ratio;
+					$src_ht = $src_w / $dest_ratio;
+
+					if ( ! $crop ) {
+						
+						// Do not crop
+						$image->resize( $w, $h );
+					
 					} else {
-						$owt = $oh * $new_aspect;
-						$ox = $ow / 2 - $owt / 2;
-						$image->crop($ox, 0, $owt, $oh, $w, $h);
+
+						// Get source x and y
+						if ( $crop == 'center' ) {
+							$src_x = round( ( $src_w - $src_wt ) / 2 );
+							$src_y = round( ( $src_h - $src_ht ) / 2 );
+						} else {
+							$src_x = $src_w / 2 - $src_wt / 2;
+							$src_y = ( $src_h - $src_ht ) / 6;
+						}
+
+						// Crop the image
+						if ( $dest_ratio > $src_ratio ) {
+							$image->crop( 0, $src_y, $src_w, $src_ht, $w, $h );
+						} else {
+							$image->crop( $src_x, 0, $src_wt, $src_h, $w, $h );	
+						}
+
 					}
+
 				} else {
+					
 					$h = $w;
-					if ($old_aspect < 1){
-						$h = $w / $old_aspect;
-						$image->crop(0, 0, $ow, $oh, $w, $h);
+					
+					if ( $src_ratio < 1 ){
+						
+						$h = $w / $src_ratio;
+
+						// Get source x and y
+						if ( $crop == 'center' ) {
+							$src_x = round( ( $src_w - $w ) / 2 );
+							$src_y = round( ( $src_h - $h ) / 2 );
+						} else {
+							$src_x = 0;
+							$src_y = 0;
+						}
+
+						$image->crop( $src_x, $src_y, $src_w, $src_h, $w, $h );
+					
 					} else {
-						$image->resize($w, $h);
+					
+						$image->resize( $w, $h );
 					}
+
 				}
+				
 				$result = $image->save($new_root_path);
+				
 				if (is_wp_error($result)){
 					error_log('Error resizing image');
 					error_log(print_r($result, true));
 				}
+				
 				if ($abs){
 					return untrailingslashit(content_url()).$new_path;
 				}
+				
 				return $new_path;
+
 			} else if (isset($image->error_data['error_loading_image'])) {
 				TimberHelper::error_log('Error loading '.$image->error_data['error_loading_image']);
 			} else {
