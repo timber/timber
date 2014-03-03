@@ -20,7 +20,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		/* was the external image D/Ld to the location? */
 		$this->assertTrue($exists);
 		/* does resize work on external image? */
-		$resized_path = $path.'-r-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'][0].'.jpg';
+		$resized_path = $path.'-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.jpg';
 		$exists = file_exists($resized_path);
 		$this->assertTrue($exists);
 		$old_time = filemtime($resized_path);
@@ -48,7 +48,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data['test_image'] = $url;
 		$data['crop'] = 'default';
 		Timber::render('assets/image-test.twig', $data);
-		$resized_path = $upload_dir['path'].'/arch-r-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'][0].'.jpg';
+		$resized_path = $upload_dir['path'].'/arch-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.jpg';
 		$exists = file_exists($resized_path);
 		$this->assertTrue($exists);
 		//Now make sure it doesnt regenerage
@@ -69,7 +69,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data['test_image'] = $url;
 		$data['crop'] = 'default';
 		Timber::render('assets/image-test-one-param.twig', $data);
-		$resized_path = $upload_dir['path'].'/tall-r-'.$data['size']['width'].'x0'.'-c-'.$data['crop'][0].'.jpg';
+		$resized_path = $upload_dir['path'].'/tall-'.$data['size']['width'].'x0'.'-c-'.$data['crop'].'.jpg';
 		$exists = file_exists($resized_path);
 		$this->assertTrue($exists);
 		//make sure it's the width it's supposed to be
@@ -108,8 +108,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		Timber::render('assets/thumb-test.twig', $data);
 		$exists = file_exists($filename);
 		$this->assertTrue($exists);
-		$resized_path = $upload_dir['path'].'/flag-r-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'][0].'.png';
-		error_log($resized_path);
+		$resized_path = $upload_dir['path'].'/flag-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.png';
 		$exists = file_exists($resized_path);
 		$this->assertTrue($exists);
 	}
