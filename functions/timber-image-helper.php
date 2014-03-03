@@ -99,7 +99,7 @@
 				$abs = true;
 			}
 			// Sanitize crop position
-			$allowed_crop_positions = array( 'default', 'center' );
+			$allowed_crop_positions = array( 'default', 'center', 'top', 'bottom', 'left', 'right');
 			if ( $crop !== false && ! in_array( $crop, $allowed_crop_positions ) ) {
 				$crop = $allowed_crop_positions[ 0 ];
 			}
@@ -115,7 +115,7 @@
 			$old_root_path = WP_CONTENT_DIR . str_replace(content_url(), '', $src);
 			$old_root_path = str_replace('//', '/', $old_root_path);
 			$new_root_path = str_replace('//', '/', $new_root_path);
-			
+			error_log('make me an image');
 			if ( file_exists($new_root_path) ) {
 				if ( $force_resize ) {
 					// Force resize - warning: will regenerate the image on every pageload, use for testing purposes only!
@@ -131,16 +131,15 @@
 			}
 
 			$image = wp_get_image_editor($old_root_path);
-			
+
 			if (!is_wp_error($image)) {
-				
+
 				$current_size = $image->get_size();
-				
+
 				$src_w = $current_size['width'];
 				$src_h = $current_size['height'];
 
 				$src_ratio = $src_w / $src_h;
-				
 				if ( $h ) {
 
 					// Get ratios
@@ -149,19 +148,27 @@
 					$src_ht = $src_w / $dest_ratio;
 
 					if ( ! $crop ) {
-						
 						// Do not crop
 						$image->resize( $w, $h );
-					
 					} else {
-
-						// Get source x and y
+						//start with defaults:
+						$src_x = $src_w / 2 - $src_wt / 2;
+						$src_y = ( $src_h - $src_ht ) / 6;
+						//now specific overrides based on options:
 						if ( $crop == 'center' ) {
+							// Get source x and y
 							$src_x = round( ( $src_w - $src_wt ) / 2 );
 							$src_y = round( ( $src_h - $src_ht ) / 2 );
-						} else {
-							$src_x = $src_w / 2 - $src_wt / 2;
-							$src_y = ( $src_h - $src_ht ) / 6;
+						} else if ($crop == 'top') {
+
+							error_log('found it on top');
+							$src_y = 0;
+						} else if ($crop == 'bottom') {
+							$src_y = $src_h - $src_ht;
+						} else if ($crop == 'left') {
+							$src_x = 0;
+						} else if ($crop == 'right') {
+							$src_x = $src_w - $src_wt;
 						}
 
 						// Crop the image
@@ -174,13 +181,9 @@
 					}
 
 				} else {
-					
 					$h = $w;
-					
 					if ( $src_ratio < 1 ){
-						
 						$h = $w / $src_ratio;
-
 						// Get source x and y
 						if ( $crop == 'center' ) {
 							$src_x = round( ( $src_w - $w ) / 2 );
@@ -189,29 +192,20 @@
 							$src_x = 0;
 							$src_y = 0;
 						}
-
 						$image->crop( $src_x, $src_y, $src_w, $src_h, $w, $h );
-					
 					} else {
-					
 						$image->resize( $w, $h );
 					}
-
 				}
-				
 				$result = $image->save($new_root_path);
-				
 				if (is_wp_error($result)){
 					error_log('Error resizing image');
 					error_log(print_r($result, true));
 				}
-				
 				if ($abs){
 					return untrailingslashit(content_url()).$new_path;
 				}
-				
 				return $new_path;
-
 			} else if (isset($image->error_data['error_loading_image'])) {
 				TimberHelper::error_log('Error loading '.$image->error_data['error_loading_image']);
 			} else {
@@ -219,7 +213,4 @@
 			}
 			return $src;
 		}
-	}
-
-	class WPImageHelper extends TimberImageHelper {
 	}
