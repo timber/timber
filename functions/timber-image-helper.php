@@ -108,7 +108,7 @@
 			$basename = $path_parts['filename'];
 			$ext = $path_parts['extension'];
 			$dir = $path_parts['dirname'];
-			$newbase = $basename . '-r-' . $w . 'x' . $h . '-c-' . ( $crop ? $crop[ 0 ] : 'f' ); // Crop will be either d (default), c (center) or f (false)
+			$newbase = $basename . '-' . $w . 'x' . $h . '-c-' . ( $crop ? $crop : 'f' ); // Crop will be either d (default), c (center) or f (false)
 			$new_path = $dir . '/' . $newbase . '.' . $ext;
 			$new_path = str_replace(content_url(), '', $new_path);
 			$new_root_path = WP_CONTENT_DIR . $new_path;
@@ -175,7 +175,7 @@
 						if ( $dest_ratio > $src_ratio ) {
 							$image->crop( 0, $src_y, $src_w, $src_ht, $w, $h );
 						} else {
-							$image->crop( $src_x, 0, $src_wt, $src_h, $w, $h );	
+							$image->crop( $src_x, 0, $src_wt, $src_h, $w, $h );
 						}
 
 					}
