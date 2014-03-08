@@ -114,6 +114,14 @@ class TimberImage extends TimberCore {
 				if (isset($basic->post_excerpt)){
 					$this->caption = $basic->post_excerpt;
 				}
+				$alt = trim(strip_tags(get_post_meta($iid, '_wp_attachment_image_alt', true)));
+				if (empty($alt)){
+					$alt = $this->caption;
+				}
+				if (empty($alt)){
+					$alt = $basic->post_excerpt;
+				}
+				$this->alt = $alt;
 				$image_custom = array_merge($image_custom, get_object_vars($basic));
 			}
 			$image_info = array_merge($image_info, $image_custom);
