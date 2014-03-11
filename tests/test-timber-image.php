@@ -133,6 +133,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
 		$data = array();
 		$data['post'] = new TimberPost($post_id);
+		$this->assertEquals($data['post']->thumbnail()->alt, $thumb_title);
 
 		// if excerpt (i.e. caption) isset, alt = caption
 		$post_id = $this->factory->post->create();

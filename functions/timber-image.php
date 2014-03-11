@@ -119,7 +119,7 @@ class TimberImage extends TimberCore {
 					$alt = $this->caption;
 				}
 				if (empty($alt)){
-					$alt = $basic->post_excerpt;
+					$alt = $basic->post_title;
 				}
 				$this->alt = $alt;
 				$image_custom = array_merge($image_custom, get_object_vars($basic));
