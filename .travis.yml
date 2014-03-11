@@ -5,7 +5,7 @@ php:
 
 env:
     - WP_VERSION=master WP_MULTISITE=0
-    - WP_VERSION=3.8.1 WP_MULTISITE=0
+    - WP_VERSION=3.5.1 WP_MULTISITE=0
 
 before_script:
     - export WP_TESTS_DIR=/tmp/wordpress-tests/
