@@ -37,7 +37,7 @@ if ( defined('WP_CLI') && WP_CLI ) {
     require_once(__DIR__ . '/functions/integrations/wpcli-timber.php');
 }
 
-require_once(__DIR__ . '/admin/timber-admin.php');
+require_once(__DIR__ . '/functions/timber-admin.php');
 
 /** Usage:
  *
