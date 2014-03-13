@@ -138,4 +138,23 @@
 			$this->assertEquals($quote, trim(strip_tags($post->content())));
 			$this->assertEquals($quote, trim(strip_tags($post->get_content())));
 		}
+
+		function testMetaCustomArrayFilter(){
+			add_filter('timber_post_get_meta', function($customs){
+				foreach($customs as $key=>$value){
+					$flat_key = str_replace('-', '_', $key);
+					$flat_key .= '_flat';
+					$customs[$flat_key] = $value;
+				}
+				// print_r($customs);
+				return $customs;
+			});
+			$post_id = $this->factory->post->create();
+			update_post_meta($post_id, 'the-field-name', 'the-value');
+			update_post_meta($post_id, 'with_underscores', 'the_value');
+			$post = new TimberPost($post_id);
+			$this->assertEquals($post->with_underscores_flat, 'the_value');
+			$this->assertEquals($post->the_field_name_flat, 'the-value');
+		}
+
 	}
