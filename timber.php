@@ -115,19 +115,19 @@ class Timber {
         }
         if (TimberHelper::is_array_assoc($query) || (is_string($query) && strstr($query, '='))) {
         // we have a regularly formed WP query string or array to use
-            return self::get_posts_from_wp_query($query, $PostClass);
+            $posts = self::get_posts_from_wp_query($query, $PostClass);
         } else if (is_string($query) && !is_integer($query)) {
             // we have what could be a post name to pull out
-            return self::get_posts_from_slug($query, $PostClass);
+            $posts = self::get_posts_from_slug($query, $PostClass);
         } else if (is_array($query) && count($query) && (is_integer($query[0]) || is_string($query[0]))) {
             // we have a list of pids (post IDs) to extract from
-            return self::get_posts_from_array_of_ids($query, $PostClass);
+            $posts = self::get_posts_from_array_of_ids($query, $PostClass);
         } else if (is_array($query) && count($query) && isset($query[0]) && is_object($query[0])) {
             // maybe its an array of post objects that already have data
-            return self::handle_post_results($query, $PostClass);
+            $posts = self::handle_post_results($query, $PostClass);
         } else if (have_posts()) {
             //lets just use the default WordPress current query
-            return self::get_posts_from_loop($PostClass);
+            $posts = self::get_posts_from_loop($PostClass);
         } else if (!$query) {
             //okay, everything failed lets just return some posts so that the user has something to work with
             //this turns out to cause all kinds of awful behavior
@@ -136,8 +136,10 @@ class Timber {
         } else {
             TimberHelper::error_log('I have failed you! in timber.php::94');
             TimberHelper::error_log($query);
+            return $query;
         }
-        return $query;
+
+        return self::maybe_set_preview( $posts );
     }
 
     public static function get_pids($query = null) {
@@ -234,6 +236,41 @@ class Timber {
     public function get_pid($query) {
         $post = self::get_posts($query);
         return $post->ID;
+    }
+
+    /* Post Previews
+    ================================ */
+
+    public static function maybe_set_preview( $posts ) {
+        if ( is_array( $posts ) && isset( $_GET['preview'] ) && $_GET['preview']
+               && isset( $_GET['preview_id'] ) && $_GET['preview_id']
+               && current_user_can( 'edit_post', $_GET['preview_id'] ) ) {
+
+            // No need to check the nonce, that already happened in _show_post_preview on init
+
+            $preview_id = $_GET['preview_id'];
+            foreach( $posts as &$post ) {
+                if ( is_object( $post ) && $post->ID == $preview_id ) {
+                    // Based on _set_preview( $post ), but adds import_custom
+                    $preview = wp_get_post_autosave( $preview_id );
+
+                    if ( is_object($preview) ) {
+
+                        $preview = sanitize_post($preview);
+
+                        $post->post_content = $preview->post_content;
+                        $post->post_title = $preview->post_title;
+                        $post->post_excerpt = $preview->post_excerpt;
+                        $post->import_custom( $preview_id );
+
+                        add_filter( 'get_the_terms', '_wp_preview_terms_filter', 10, 3 );
+                    }
+                }
+            }
+
+        }
+
+        return $posts;
     }
 
 
