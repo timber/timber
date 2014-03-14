@@ -489,11 +489,11 @@ class Timber {
                     if ($query->is_main_query()){
                         $query->is_404 = false;
                     }
-                });
+                },1);
                 add_action('template_redirect', function(){
                     global $wp_query;
                     $wp_query->is_404 = false;
-                });
+                },1);
             }
         }
 
