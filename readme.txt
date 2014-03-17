@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.5
-Stable tag: 0.17.0
+Stable tag: 0.17.1
 Tested up to: 3.8.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,9 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.17.1 =
+* Hotfix on timber-admin error
 
 = 0.17.0 =
 * Now you can resize/crop images with positional preferences, thanks @mmikkel. Here are the docs: https://github.com/jarednova/timber/wiki/TimberImage#resize

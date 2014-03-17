@@ -115,7 +115,6 @@
 			$old_root_path = WP_CONTENT_DIR . str_replace(content_url(), '', $src);
 			$old_root_path = str_replace('//', '/', $old_root_path);
 			$new_root_path = str_replace('//', '/', $new_root_path);
-			error_log('make me an image');
 			if ( file_exists($new_root_path) ) {
 				if ( $force_resize ) {
 					// Force resize - warning: will regenerate the image on every pageload, use for testing purposes only!

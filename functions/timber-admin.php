@@ -10,7 +10,7 @@ class TimberAdmin {
 	}
 
 	function settings_link( $links, $file ) {
-		if (strstr($file, 'timber/timber.php')){
+		if (strstr($file, '/timber.php')){
 		    return array_merge(
 		        array(
 		            'settings' => '<a href="https://github.com/jarednova/timber/wiki" target="_blank">Documentation</a> | <a href="https://github.com/jarednova/timber/wiki/getting-started" target="_blank">Starter Guide</a>'
