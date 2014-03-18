@@ -116,6 +116,22 @@ class TimberTest extends WP_UnitTestCase {
 
 	}
 
+    /* Previews */
+    function testGetPostPreview(){
+        $editor_user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
+        wp_set_current_user( $editor_user_id );
+
+        $post_id = $this->factory->post->create( array( 'post_author' => $editor_user_id ) );
+        _wp_put_post_revision( array( 'ID' => $post_id, 'post_content' => 'autosave_content'), true );
+
+        $_GET['preview'] = true;
+        $_GET['preview_id'] = $post_id;
+
+        $the_post = Timber::get_post( $post_id );
+
+        $this->assertEquals( 'autosave_content', $the_post->post_content );
+    }
+
 }
 
 function arrays_are_similar($a, $b) {
