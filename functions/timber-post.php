@@ -415,6 +415,17 @@ class TimberPost extends TimberCore {
 		return null;
 	}
 
+	function get_category_link() {
+		$cat = $this->get_category();
+		if (!is_null($cat)) {
+			$cat_id = get_cat_ID($cat);
+			$cat_link = get_category_link($cat_id);
+			return $cat_link;
+		} else {
+			return null;
+		}
+	}
+
 	/** # get terms is good
 	*
 	*/
@@ -602,6 +613,10 @@ class TimberPost extends TimberCore {
 
 	public function category() {
 		return $this->get_category();
+	}
+
+	public function category_link() {
+		return $this->get_category_link();
 	}
 
 	public function children() {
