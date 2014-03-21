@@ -93,6 +93,11 @@ class TimberImage extends TimberCore {
 		return new $this->PostClass($this->post_parent);
 	}
 
+	function get_alt() {
+		$alt = trim(strip_tags(get_post_meta($this->ID, '_wp_attachment_image_alt', true)));
+		return $alt;
+	}
+
 	function init($iid) {
 		if (!is_numeric($iid) && is_string($iid)) {
 			if (strstr($iid, '://')) {
@@ -114,14 +119,6 @@ class TimberImage extends TimberCore {
 				if (isset($basic->post_excerpt)){
 					$this->caption = $basic->post_excerpt;
 				}
-				$alt = trim(strip_tags(get_post_meta($iid, '_wp_attachment_image_alt', true)));
-				if (empty($alt)){
-					$alt = $this->caption;
-				}
-				if (empty($alt)){
-					$alt = $basic->post_title;
-				}
-				$this->alt = $alt;
 				$image_custom = array_merge($image_custom, get_object_vars($basic));
 			}
 			$image_info = array_merge($image_info, $image_custom);
@@ -190,5 +187,9 @@ class TimberImage extends TimberCore {
 
 	public function width(){
 		return $this->get_width();
+	}
+
+	public function alt(){
+		return $this->get_alt();
 	}
 }
