@@ -10,6 +10,11 @@ class TimberFunctionWrapper {
         return $this->call();
     }
 
+    /**
+     * @param callable $function
+     * @param array $args
+     * @param bool $return_output_buffer
+     */
     public function __construct( $function, $args = array( ), $return_output_buffer = false ) {
         $this->_function = $function;
         $this->_args     = $args;
@@ -18,6 +23,10 @@ class TimberFunctionWrapper {
         add_filter( 'get_twig', array( &$this, 'add_to_twig' ) );
     }
 
+    /**
+     * @param Twig_Environment $twig
+     * @return Twig_Environment
+     */
     public function add_to_twig( $twig ) {
         $wrapper = $this;
 
@@ -28,6 +37,9 @@ class TimberFunctionWrapper {
         return $twig;
     }
 
+    /**
+     * @return string
+     */
     public function call() {
         $args = $this->_parse_args( func_get_args(), $this->_args );
 
@@ -37,15 +49,20 @@ class TimberFunctionWrapper {
             return (string) call_user_func_array( $this->_function, $args );
     }
 
-        private function _parse_args( $args, $defaults ) {
-            $_arg = reset( $defaults );
+    /**
+     * @param array $args
+     * @param array $defaults
+     * @return array
+     */
+    private function _parse_args( $args, $defaults ) {
+        $_arg = reset( $defaults );
 
-            foreach ( $args as $index => $arg ) {
-                $defaults[$index] = is_null( $arg ) ? $_arg : $arg;
-                $_arg             = next( $defaults );
-            }
-
-            return $defaults;
+        foreach ( $args as $index => $arg ) {
+            $defaults[$index] = is_null( $arg ) ? $_arg : $arg;
+            $_arg             = next( $defaults );
         }
+
+        return $defaults;
+    }
 
 }
