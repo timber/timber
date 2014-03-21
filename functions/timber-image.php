@@ -93,6 +93,11 @@ class TimberImage extends TimberCore {
 		return new $this->PostClass($this->post_parent);
 	}
 
+	function get_alt() {
+		$alt = trim(strip_tags(get_post_meta($this->ID, '_wp_attachment_image_alt', true)));
+		return $alt;
+	}
+
 	function init($iid) {
 		if (!is_numeric($iid) && is_string($iid)) {
 			if (strstr($iid, '://')) {
@@ -182,5 +187,9 @@ class TimberImage extends TimberCore {
 
 	public function width(){
 		return $this->get_width();
+	}
+
+	public function alt(){
+		return $this->get_alt();
 	}
 }

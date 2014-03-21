@@ -144,6 +144,7 @@ class TimberMenuItem extends TimberCore {
     function add_child($item) {
         if (!$this->has_child_class){
             $this->add_class('menu-item-has-children');
+            $this->has_child_class = true;
         }
         if (!isset($this->children)) {
             $this->children = array();
