@@ -365,7 +365,7 @@ class TimberPost extends TimberCore {
 		if ($post_type == 'parent') {
 			$post_type = $this->post_type;
 		}
-		$children = get_children('post_parent=' . $this->ID . '&post_type=' . $post_type);
+		$children = get_children('post_parent=' . $this->ID . '&post_type=' . $post_type.'&numberposts=-1');
 		foreach ($children as &$child) {
 			$child = new $childPostClass($child->ID);
 		}
