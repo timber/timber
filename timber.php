@@ -96,6 +96,11 @@ class Timber {
     /*  Post Retrieval
     ================================ */
 
+    /**
+     * @param mixed $query
+     * @param string $PostClass
+     * @return array|bool|null
+     */
     public static function get_post($query = false, $PostClass = 'TimberPost') {
         if (is_int($query)) {
             /* its a post id number */
@@ -108,6 +113,12 @@ class Timber {
         return $posts;
     }
 
+
+    /**
+     * @param mixed $query
+     * @param string $PostClass
+     * @return array|bool|null
+     */
     public static function get_posts($query = false, $PostClass = 'TimberPost'){
         if (self::is_post_class_or_class_map($query)) {
             $PostClass = $query;
@@ -142,6 +153,10 @@ class Timber {
         return self::maybe_set_preview( $posts );
     }
 
+    /**
+     * @param array|string $query
+     * @return array
+     */
     public static function get_pids($query = null) {
         $posts = get_posts($query);
         $pids = array();
@@ -153,11 +168,18 @@ class Timber {
         return $pids;
     }
 
+    /**
+     * @param string $PostClass
+     * @return array
+     */
     public static function get_posts_from_loop($PostClass) {
         $results = self::get_pids_from_loop();
         return self::handle_post_results($results, $PostClass);
     }
 
+    /**
+     * @return array
+     */
     public static function get_pids_from_loop() {
         $posts = array();
         $i = 0;
@@ -173,6 +195,11 @@ class Timber {
         return $posts;
     }
 
+    /**
+     * @param string $slug
+     * @param string $PostClass
+     * @return array
+     */
     public static function get_posts_from_slug($slug, $PostClass) {
         global $wpdb;
         $query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s", $slug);
@@ -193,12 +220,22 @@ class Timber {
         return self::handle_post_results($results, $PostClass);
     }
 
+    /**
+     * @param array $query
+     * @param string $PostClass
+     * @return array
+     */
     public static function get_posts_from_wp_query($query = array(), $PostClass = 'TimberPost') {
         $start = TimberHelper::start_timer();
         $results = get_posts($query);
         return self::handle_post_results($results, $PostClass);
     }
 
+    /**
+     * @param array $query
+     * @param string $PostClass
+     * @return array|null
+     */
     public static function get_posts_from_array_of_ids($query = array(), $PostClass = 'TimberPost') {
         if (!is_array($query) || !count($query)) {
             return null;
@@ -207,6 +244,11 @@ class Timber {
         return self::handle_post_results($results, $PostClass);
     }
 
+    /**
+     * @param array $results
+     * @param string $PostClass
+     * @return array
+     */
     public static function handle_post_results($results, $PostClass = 'TimberPost') {
         $start = TimberHelper::start_timer();
         $posts = array();
@@ -233,6 +275,10 @@ class Timber {
         return $posts;
     }
 
+    /**
+     * @param $query
+     * @return mixed
+     */
     public function get_pid($query) {
         $post = self::get_posts($query);
         return $post->ID;
@@ -241,6 +287,10 @@ class Timber {
     /* Post Previews
     ================================ */
 
+    /**
+     * @param array $posts
+     * @return array
+     */
     public static function maybe_set_preview( $posts ) {
         if ( is_array( $posts ) && isset( $_GET['preview'] ) && $_GET['preview']
                && isset( $_GET['preview_id'] ) && $_GET['preview_id']
@@ -277,10 +327,17 @@ class Timber {
     /*  Deprecated
     ================================ */
 
+    /**
+     * @param string $PostClass
+     * @return bool|null
+     */
     public function loop_to_posts($PostClass = 'TimberPost') {
         return self::get_posts(false, $PostClass);
     }
 
+    /**
+     * @return bool|int
+     */
     public function loop_to_id() {
         if (have_posts()) {
             the_post();
@@ -294,6 +351,12 @@ class Timber {
     /* Term Retrieval
     ================================ */
 
+    /**
+     * @param string|array $args
+     * @param array $maybe_args
+     * @param string $TermClass
+     * @return mixed
+     */
     public static function get_terms($args, $maybe_args = array(), $TermClass = 'TimberTerm'){
         if (is_string($maybe_args) && !strstr($maybe_args, '=')){
             //the user is sending the $TermClass in the second argument
@@ -333,6 +396,12 @@ class Timber {
 
     }
 
+    /**
+     * @param string|array $taxonomies
+     * @param string|array $args
+     * @param $TermClass
+     * @return mixed
+     */
     public static function handle_term_query($taxonomies, $args, $TermClass){
         if (!isset($args['hide_empty'])){
             $args['hide_empty'] = false;
@@ -347,6 +416,10 @@ class Timber {
     /* Site Retrieval
     ================================ */
 
+    /**
+     * @param array|bool $blog_ids
+     * @return array
+     */
     public static function get_sites($blog_ids = false){
         if (!is_array($blog_ids)){
             global $wpdb;
@@ -363,6 +436,9 @@ class Timber {
     /*  Template Setup and Display
     ================================ */
 
+    /**
+     * @return array
+     */
     public static function get_context() {
         $data = array();
         $data['http_host'] = 'http://' . $_SERVER['HTTP_HOST'];
@@ -387,6 +463,14 @@ class Timber {
         return $data;
     }
 
+    /**
+     * @param array $filenames
+     * @param array $data
+     * @param bool $expires
+     * @param string $cache_mode
+     * @param bool $via_render
+     * @return bool|string
+     */
     public static function compile($filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT, $via_render = false) {
         $caller = self::get_calling_script_dir();
         $loader = new TimberLoader($caller);
@@ -405,6 +489,13 @@ class Timber {
         return $output;
     }
 
+    /**
+     * @param array $filenames
+     * @param array $data
+     * @param bool $expires
+     * @param string $cache_mode
+     * @return bool|string
+     */
     public static function render($filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT) {
         if ($expires === true){
             //if this is reading as true; the user probably is using the old $echo param
@@ -422,6 +513,11 @@ class Timber {
     /*  Sidebar
     ================================ */
 
+    /**
+     * @param string $sidebar
+     * @param array $data
+     * @return bool|string
+     */
     public static function get_sidebar($sidebar = '', $data = array()) {
         if ($sidebar == '') {
             $sidebar = 'sidebar.php';
@@ -432,6 +528,11 @@ class Timber {
         return self::render($sidebar, $data, false);
     }
 
+    /**
+     * @param string $sidebar
+     * @param array $data
+     * @return string
+     */
     public static function get_sidebar_from_php($sidebar = '', $data) {
         $caller = self::get_calling_script_dir();
         $loader = new TimberLoader();
@@ -456,6 +557,10 @@ class Timber {
     /* Widgets
     ================================ */
 
+    /**
+     * @param int $widget_id
+     * @return TimberFunctionWrapper
+     */
     public static function get_widgets($widget_id){
         return TimberHelper::function_wrapper('dynamic_sidebar', array($widget_id), true);
     }
@@ -476,6 +581,11 @@ class Timber {
         }
     }
 
+    /**
+     * @param string $route
+     * @param callable $callback
+     * @param array $args
+     */
     public static function add_route($route, $callback, $args = array()) {
         global $timber;
         if (!isset($timber->router)) {
@@ -508,7 +618,12 @@ class Timber {
         });
     }
 
-
+    /**
+     * @param array $template
+     * @param bool $query
+     * @param int $force_header
+     * @param bool $tparams
+     */
     public static function load_template($template, $query = false, $force_header = 0, $tparams = false) {
         $template = locate_template($template);
         if ($tparams){
@@ -564,6 +679,10 @@ class Timber {
     /*  Pagination
     ================================ */
 
+    /**
+     * @param array $prefs
+     * @return array mixed
+     */
     public static function get_pagination($prefs = array()){
         global $wp_query;
         global $paged;
@@ -608,11 +727,19 @@ class Timber {
     /*  Utility
     ================================ */
 
+    /**
+     * @param int $offset
+     * @return string
+     */
     public static function get_calling_script_path($offset = 0) {
         $dir = self::get_calling_script_dir($offset);
         return str_replace(ABSPATH, '', realpath($dir));
     }
 
+    /**
+     * @param int $offset
+     * @return string|null
+     */
     public static function get_calling_script_dir($offset = 0) {
         $caller = null;
         $backtrace = debug_backtrace();
@@ -635,6 +762,10 @@ class Timber {
         return null;
     }
 
+    /**
+     * @param string|array $arg
+     * @return bool
+     */
     public static function is_post_class_or_class_map($arg){
         if (is_string($arg) && class_exists($arg)) {
             return true;

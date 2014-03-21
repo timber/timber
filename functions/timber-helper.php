@@ -2,7 +2,13 @@
 
 class TimberHelper {
 
-	public static function transient($slug, $callback, $transient_time = 0){
+    /**
+     * @param string $slug
+     * @param callback $callback
+     * @param int $transient_time
+     * @return bool|null|mixed
+     */
+    public static function transient($slug, $callback, $transient_time = 0){
 		$disable_transients = false;
 		if (defined('WP_DISABLE_TRANSIENTS')){
 			$disable_transients = WP_DISABLE_TRANSIENTS;
@@ -28,14 +34,21 @@ class TimberHelper {
 		return $data;
 	}
 
-	public static function start_timer(){
+    /**
+     * @return float
+     */
+    public static function start_timer(){
 		$time = microtime();
 		$time = explode(' ', $time);
-		$time = $time[1] + $time[0];
+		$time = (float) $time[1] + (float) $time[0];
 		return $time;
 	}
 
-	public static function stop_timer($start){
+    /**
+     * @param int $start
+     * @return string
+     */
+    public static function stop_timer($start){
 		$time = microtime();
 		$time = explode(' ', $time);
 		$time = $time[1] + $time[0];
@@ -44,21 +57,34 @@ class TimberHelper {
 		return $total_time.' seconds.';
 	}
 
-	public static function is_array_assoc($arr) {
+    /**
+     * @param array $arr
+     * @return bool
+     */
+    public static function is_array_assoc($arr) {
 		if (!is_array($arr)) {
 			return false;
 		}
 		return (bool)count(array_filter(array_keys($arr), 'is_string'));
 	}
 
-	public static function preslashit($path){
+    /**
+     * @param string $path
+     * @return string
+     */
+    public static function preslashit($path){
 		if (strpos($path, '/') != 0) {
 			$path = '/' . $path;
 		}
 		return $path;
 	}
 
-	public static function ob_function($function, $args = array(null)) {
+    /**
+     * @param callback $function
+     * @param array $args
+     * @return string
+     */
+    public static function ob_function($function, $args = array(null)) {
 		ob_start();
 		call_user_func_array($function, $args);
 		$data = ob_get_contents();
@@ -66,11 +92,21 @@ class TimberHelper {
 		return $data;
 	}
 
+    /**
+     * @param string $function_name
+     * @param array $defaults
+     * @param bool $return_output_buffer
+     * @return TimberFunctionWrapper
+     */
     public static function function_wrapper($function_name, $defaults = array(), $return_output_buffer = false) {
         return new TimberFunctionWrapper($function_name, $defaults, $return_output_buffer);
     }
 
-	public static function is_url($url) {
+    /**
+     * @param string $url
+     * @return bool
+     */
+    public static function is_url($url) {
 		if (!is_string($url)){
 			return false;
 		}
@@ -81,7 +117,10 @@ class TimberHelper {
 		return false;
 	}
 
-	public static function get_path_base() {
+    /**
+     * @return string
+     */
+    public static function get_path_base() {
 		$struc = get_option('permalink_structure');
 		$struc = explode('/', $struc);
 		$p = '/';
@@ -93,14 +132,22 @@ class TimberHelper {
 		return $p;
 	}
 
-	public static function get_full_path($src) {
+    /**
+     * @param string $src
+     * @return string
+     */
+    public static function get_full_path($src) {
 		$root = ABSPATH;
 		$old_root_path = $root . $src;
 		$old_root_path = str_replace('//', '/', $old_root_path);
 		return $old_root_path;
 	}
 
-	public static function is_local($url){
+    /**
+     * @param string $url
+     * @return bool
+     */
+    public static function is_local($url){
 		if (strstr($url, $_SERVER['HTTP_HOST'])){
 			return true;
 		}
@@ -110,7 +157,12 @@ class TimberHelper {
 	/* URL Stuff
 	======================== */
 
-	public static function get_rel_url($url, $force = false){
+    /**
+     * @param string $url
+     * @param bool $force
+     * @return string
+     */
+    public static function get_rel_url($url, $force = false){
 		if (!strstr($url, $_SERVER['HTTP_HOST']) && !$force){
 			return $url;
 		}
@@ -122,11 +174,19 @@ class TimberHelper {
 		return $link;
 	}
 
-	public static function get_rel_path($src) {
+    /**
+     * @param string $src
+     * @return string
+     */
+    public static function get_rel_path($src) {
 		return str_replace(ABSPATH, '', $src);
 	}
 
-	public static function remove_double_slashes($url){
+    /**
+     * @param string $url
+     * @return string
+     */
+    public static function remove_double_slashes($url){
 		$url = str_replace('//', '/', $url);
 		if (strstr($url, 'http:') && !strstr($url, 'http://')){
 			$url = str_replace('http:/', 'http://', $url);
@@ -134,7 +194,12 @@ class TimberHelper {
 		return $url;
 	}
 
-	public static function prepend_to_url($url, $path){
+    /**
+     * @param string $url
+     * @param string $path
+     * @return string
+     */
+    public static function prepend_to_url($url, $path){
 		if (strstr(strtolower($url), 'http')){
 			$url_parts = parse_url($url);
 			$url = $url_parts['scheme'].'://'.$url_parts['host'].$path.$url_parts['path'];
@@ -144,7 +209,12 @@ class TimberHelper {
 		return self::remove_double_slashes($url);
 	}
 
-	public static function download_url($url, $timeout = 300) {
+    /**
+     * @param string $url
+     * @param int $timeout
+     * @return string|WP_Error
+     */
+    public static function download_url($url, $timeout = 300) {
 		if (!$url) {
 			return new WP_Error('http_no_url', __('Invalid URL Provided.'));
 		}
@@ -167,13 +237,22 @@ class TimberHelper {
 		return $tmpfname;
 	}
 
-	public static function osort(&$array, $prop) {
+    /**
+     * @param array $array
+     * @param string $prop
+     * @return void
+     */
+    public static function osort(&$array, $prop) {
 		usort($array, function ($a, $b) use ($prop) {
 			return $a->$prop > $b->$prop ? 1 : -1;
 		});
 	}
 
-	public static function error_log($arg) {
+    /**
+     * @param $arg
+     * @return void
+     */
+    public static function error_log($arg) {
 		if (!WP_DEBUG){
 			return;
 		}
@@ -183,7 +262,11 @@ class TimberHelper {
 		error_log($arg);
 	}
 
-	public static function get_params($i = -1) {
+    /**
+     * @param int $i
+     * @return array
+     */
+    public static function get_params($i = -1) {
 		$args = explode('/', trim(strtolower($_SERVER['REQUEST_URI'])));
 		$newargs = array();
 		foreach ($args as $arg) {
@@ -199,12 +282,20 @@ class TimberHelper {
 		return $newargs;
 	}
 
-	public static function get_json($url) {
+    /**
+     * @param string $url
+     * @return mixed
+     */
+    public static function get_json($url) {
 		$data = self::get_curl($url);
 		return json_decode($data);
 	}
 
-	public static function get_curl($url) {
+    /**
+     * @param string $url
+     * @return string
+     */
+    public static function get_curl($url) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -214,16 +305,26 @@ class TimberHelper {
 		return $content;
 	}
 
-	public static function get_wp_title() {
+    /**
+     * @return string
+     */
+    public static function get_wp_title() {
 		return wp_title('|', false, 'right');
 	}
 
-	public static function force_update_option($option, $value) {
+    /**
+     * @param string $option
+     * @param string $value
+     */
+    public static function force_update_option($option, $value) {
 		global $wpdb;
 		$wpdb->query("UPDATE $wpdb->options SET option_value = '$value' WHERE option_name = '$option'");
 	}
 
-	public static function get_current_url() {
+    /**
+     * @return string
+     */
+    public static function get_current_url() {
 		$pageURL = "http://";
 		if (isset($_SERVER['HTTPS']) && $_SERVER["HTTPS"] == "on"){
 			$pageURL = "https://";;
@@ -236,7 +337,14 @@ class TimberHelper {
 		return $pageURL;
 	}
 
-	public static function trim_words($text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br') {
+    /**
+     * @param string $text
+     * @param int $num_words
+     * @param string $more
+     * @param string $allowed_tags
+     * @return string
+     */
+    public static function trim_words($text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br') {
 		if (null === $more) {
 			$more = __('&hellip;');
 		}
@@ -268,7 +376,11 @@ class TimberHelper {
 		return apply_filters('wp_trim_words', $text, $num_words, $more, $original_text);
 	}
 
-	public static function close_tags($html) {
+    /**
+     * @param string $html
+     * @return string
+     */
+    public static function close_tags($html) {
 		#put all opened tags into an array
 		preg_match_all('#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
 		$openedtags = $result[1];
@@ -292,7 +404,12 @@ class TimberHelper {
 		return $html;
 	}
 
-	public static function get_posts_by_meta($key, $value) {
+    /**
+     * @param string $key
+     * @param string $value
+     * @return array|int
+     */
+    public static function get_posts_by_meta($key, $value) {
 		global $wpdb;
 		$query = $wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $key, $value);
 		$results = $wpdb->get_col($query);
@@ -308,7 +425,12 @@ class TimberHelper {
 		return 0;
 	}
 
-	public static function get_post_by_meta($key, $value) {
+    /**
+     * @param string $key
+     * @param string $value
+     * @return int
+     */
+    public static function get_post_by_meta($key, $value) {
 		global $wpdb;
 		$query = $wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s ORDER BY post_id", $key, $value);
 		$results = $wpdb->get_col($query);
@@ -320,7 +442,11 @@ class TimberHelper {
 		return 0;
 	}
 
-	public static function get_term_id_by_term_taxonomy_id($ttid){
+    /**
+     * @param int $ttid
+     * @return mixed
+     */
+    public static function get_term_id_by_term_taxonomy_id($ttid){
 		global $wpdb;
 		$query = $wpdb->prepare("SELECT term_id FROM $wpdb->term_taxonomy WHERE term_taxonomy_id = %s", $ttid);
 		return $wpdb->get_var($query);
@@ -330,7 +456,12 @@ class TimberHelper {
 
 	http://codex.wordpress.org/Function_Reference/comment_form */
 
-	public static function get_comment_form($post_id = null, $args = array()) {
+    /**
+     * @param int $post_id
+     * @param array $args
+     * @return string
+     */
+    public static function get_comment_form($post_id = null, $args = array()) {
 		ob_start();
 		comment_form($args, $post_id);
 		$ret = ob_get_contents();
@@ -338,7 +469,11 @@ class TimberHelper {
 		return $ret;
 	}
 
-	public static function is_true($property) {
+    /**
+     * @param mixed $property
+     * @return bool
+     */
+    public static function is_true($property) {
 		if (isset($property)) {
 			if ($property == 'true' || $property == 1 || $property == '1' || $property == true) {
 				return true;
@@ -347,7 +482,11 @@ class TimberHelper {
 		return false;
 	}
 
-	public static function array_to_object($array) {
+    /**
+     * @param array $array
+     * @return stdClass
+     */
+    public static function array_to_object($array) {
 		$obj = new stdClass;
 		foreach ($array as $k => $v) {
 			if (is_array($v)) {
@@ -359,7 +498,13 @@ class TimberHelper {
 		return $obj;
 	}
 
-	public static function get_object_index_by_property($array, $key, $value) {
+    /**
+     * @param array $array
+     * @param string $key
+     * @param mixed $value
+     * @return bool|int
+     */
+    public static function get_object_index_by_property($array, $key, $value) {
 		if (is_array($array)) {
 			$i = 0;
 			foreach ($array as $arr) {
@@ -378,7 +523,14 @@ class TimberHelper {
 		return false;
 	}
 
-	public static function get_object_by_property($array, $key, $value) {
+    /**
+     * @param array $array
+     * @param string $key
+     * @param mixed $value
+     * @return array|null
+     * @throws Exception
+     */
+    public static function get_object_by_property($array, $key, $value) {
 		if (is_array($array)) {
 			foreach ($array as $arr) {
 				if ($arr->$key == $value) {
@@ -391,29 +543,50 @@ class TimberHelper {
 		return null;
 	}
 
-	public static function get_image_path($iid) {
+    /**
+     * @param int $iid
+     * @return string
+     */
+    public static function get_image_path($iid) {
 		$size = 'full';
 		$src = wp_get_attachment_image_src($iid, $size);
 		$src = $src[0];
 		return self::get_rel_path($src);
 	}
 
-	public static function array_truncate($array, $len) {
+    /**
+     * @param array $array
+     * @param int $len
+     * @return array
+     */
+    public static function array_truncate($array, $len) {
 		if (sizeof($array) > $len) {
 			$array = array_splice($array, 0, $len);
 		}
 		return $array;
 	}
 
-	public static function iseven($i) {
+    /**
+     * @param int $i
+     * @return bool
+     */
+    public static function iseven($i) {
 		return ($i % 2) == 0;
 	}
 
-	public static function isodd($i) {
+    /**
+     * @param int $i
+     * @return bool
+     */
+    public static function isodd($i) {
 		return ($i % 2) != 0;
 	}
 
-	public static function is_external($url){
+    /**
+     * @param string $url
+     * @return bool
+     */
+    public static function is_external($url){
 		$has_http = strstr(strtolower($url), 'http');
         $on_domain = strstr($url, $_SERVER['HTTP_HOST']);
         if ($has_http && !$on_domain){
@@ -422,7 +595,11 @@ class TimberHelper {
         return false;
 	}
 
-	public static function twitterify($ret) {
+    /**
+     * @param string $ret
+     * @return mixed
+     */
+    public static function twitterify($ret) {
 		$ret = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t< ]*)#", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $ret);
 		$ret = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r< ]*)#", "\\1<a href=\"http://\\2\" target=\"_blank\">\\2</a>", $ret);
 		$pattern = '#([0-9a-z]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.';
@@ -433,7 +610,11 @@ class TimberHelper {
 		return $ret;
 	}
 
-	public static function paginate_links( $args = '' ) {
+    /**
+     * @param string $args
+     * @return array
+     */
+    public static function paginate_links( $args = '' ) {
 		$defaults = array(
 			'base' => '%_%', // http://example.com/all_posts.php%_% : %_% is replaced by format (below)
 			'format' => '?page=%#%', // ?page=%#% : %#% is replaced by the page number

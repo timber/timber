@@ -10,7 +10,11 @@ class TimberTerm extends TimberCore {
 
 	public static $representation = 'term';
 
-	function __construct($tid = null, $tax='') {
+    /**
+     * @param int $tid
+     * @param string $tax
+     */
+    function __construct($tid = null, $tax='') {
 		if ($tid === null) {
 			$tid = $this->get_term_from_query();
 		}
@@ -19,20 +23,29 @@ class TimberTerm extends TimberCore {
 		$this->init($tid);
 	}
 
-	function __toString(){
+    /**
+     * @return string
+     */
+    function __toString(){
 		return $this->name;
 	}
 
 	/* Setup
 	===================== */
 
-	private function get_term_from_query() {
+    /**
+     * @return mixed
+     */
+    private function get_term_from_query() {
 		global $wp_query;
 		$qo = $wp_query->queried_object;
 		return $qo->term_id;
 	}
 
-	private function init($tid) {
+    /**
+     * @param int $tid
+     */
+    private function init($tid) {
 		global $wpdb;
 		$term = $this->get_term($tid);
 		if (isset($term->id)) {
@@ -52,13 +65,21 @@ class TimberTerm extends TimberCore {
 		}
 	}
 
-	private function get_term_meta($tid){
+    /**
+     * @param int $tid
+     * @return array
+     */
+    private function get_term_meta($tid){
 		$customs = array();
 		$customs = apply_filters('timber_term_get_meta', $customs, $tid, $this);
 		return $customs;
 	}
 
-	private function get_term($tid) {
+    /**
+     * @param int $tid
+     * @return int|null
+     */
+    private function get_term($tid) {
 		if (is_object($tid) || is_array($tid)) {
 			return $tid;
 		}
@@ -78,7 +99,11 @@ class TimberTerm extends TimberCore {
 		return null;
 	}
 
-	private function get_tid($tid) {
+    /**
+     * @param int $tid
+     * @return int
+     */
+    private function get_tid($tid) {
 		global $wpdb;
 		if (is_numeric($tid)) {
 			return $tid;
@@ -102,11 +127,18 @@ class TimberTerm extends TimberCore {
 	/* Public methods
 	===================== */
 
-	public function get_edit_url(){
+    /**
+     * @return string
+     */
+    public function get_edit_url(){
 		return get_edit_term_link($this->ID, $this->taxonomy);
 	}
 
-	public function get_meta_field($field_name){
+    /**
+     * @param string $field_name
+     * @return string
+     */
+    public function get_meta_field($field_name){
 		if (!isset($this->$field_name)){
 			$field = '';
 			$field = apply_filters('timber_term_get_meta_field', $field, $this->ID, $field_name, $this);
@@ -115,18 +147,30 @@ class TimberTerm extends TimberCore {
 		return $this->$field_name;
 	}
 
-	public function get_path() {
+    /**
+     * @return string
+     */
+    public function get_path() {
 		$link = $this->get_link();
 		$rel = TimberHelper::get_rel_url($link, true);
 		return apply_filters('timber_term_path', $rel, $this);
 	}
 
-	public function get_link() {
+    /**
+     * @return string
+     */
+    public function get_link() {
 		$link = get_term_link($this);
 		return apply_filters('timber_term_link', $link, $this);
 	}
 
-	public function get_posts($numberposts = 10, $post_type = 'any', $PostClass = '') {
+    /**
+     * @param int $numberposts
+     * @param string $post_type
+     * @param string $PostClass
+     * @return array|bool|null
+     */
+    public function get_posts($numberposts = 10, $post_type = 'any', $PostClass = '') {
 		if (!strlen($PostClass)) {
 			$PostClass = $this->PostClass;
 		}
@@ -169,7 +213,10 @@ class TimberTerm extends TimberCore {
 		return Timber::get_posts($args, $PostClass);
 	}
 
-	public function get_children(){
+    /**
+     * @return array
+     */
+    public function get_children(){
 		if (!isset($this->_children)){
 			$children = get_term_children($this->ID, $this->taxonomy);
 			foreach($children as &$child){
@@ -183,46 +230,82 @@ class TimberTerm extends TimberCore {
 	/* Alias
 	====================== */
 
-	public function children(){
+    /**
+     * @return array
+     */
+    public function children(){
 		return $this->get_children();
 	}
 
-	public function edit_link(){
+    /**
+     * @return string
+     */
+    public function edit_link(){
 		return $this->get_edit_url();
 	}
 
-	public function get_url() {
+    /**
+     * @return string
+     */
+    public function get_url() {
 		return $this->get_link();
 	}
 
-	public function link(){
+    /**
+     * @return string
+     */
+    public function link(){
 		return $this->get_link();
 	}
 
-	public function meta($field_name){
+    /**
+     * @param string $field_name
+     * @return mixed
+     */
+    public function meta($field_name){
 		return $this->get_meta_field($field_name);
 	}
 
-	public function path(){
+    /**
+     * @return string
+     */
+    public function path(){
 		return $this->get_path();
 	}
 
-	public function posts($numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = ''){
+    /**
+     * @param int $numberposts_or_args
+     * @param string $post_type_or_class
+     * @param string $post_class
+     * @return array|bool|null
+     */
+    public function posts($numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = ''){
 		return $this->get_posts($numberposts_or_args, $post_type_or_class, $post_class);
 	}
 
-	public function title(){
+    /**
+     * @return string
+     */
+    public function title(){
 		return $this->name;
 	}
 
-	public function url(){
+    /**
+     * @return string
+     */
+    public function url(){
 		return $this->get_url();
 	}
 
 	/* Deprecated
 	===================== */
 
-	function get_page($i) {
+    /**
+     * @deprecated
+     * @param int $i
+     * @return string
+     */
+    function get_page($i) {
 		return $this->get_path() . '/page/' . $i;
 	}
 

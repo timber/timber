@@ -23,12 +23,22 @@ class TimberLoader {
 
     var $locations;
 
-	function __construct($caller = false) {
+    /**
+     * @param bool $caller
+     */
+    function __construct($caller = false) {
 		$this->locations = $this->get_locations($caller);
         $this->cache_mode = apply_filters( 'timber_cache_mode', $this->cache_mode );
 	}
 
-	function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
+    /**
+     * @param string $file
+     * @param array $data
+     * @param bool $expires
+     * @param string $cache_mode
+     * @return bool|string
+     */
+    function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
         // Different $expires if user is anonymous or logged in
         if ( is_array( $expires ) ) {
             if ( is_user_logged_in() && isset( $expires[1] ) )
@@ -63,7 +73,11 @@ class TimberLoader {
         return $output;
 	}
 
-	function choose_template($filenames) {
+    /**
+     * @param array $filenames
+     * @return bool
+     */
+    function choose_template($filenames) {
 		if (is_array($filenames)) {
 			/* its an array so we have to figure out which one the dev wants */
 			foreach ($filenames as $filename) {
@@ -76,7 +90,11 @@ class TimberLoader {
 		return $filenames;
 	}
 
-	function template_exists($file) {
+    /**
+     * @param string $file
+     * @return bool
+     */
+    function template_exists($file) {
 		foreach ($this->locations as $dir) {
 			$look_for = trailingslashit($dir) . $file;
 			if (file_exists($look_for)) {
@@ -86,7 +104,10 @@ class TimberLoader {
 		return false;
 	}
 
-	function get_locations_theme() {
+    /**
+     * @return array
+     */
+    function get_locations_theme() {
 		$theme_locs = array();
 		$child_loc = get_stylesheet_directory();
 		$parent_loc = get_template_directory();
@@ -107,7 +128,10 @@ class TimberLoader {
 		return $theme_locs;
 	}
 
-	function get_locations_user() {
+    /**
+     * @return array
+     */
+    function get_locations_user() {
 		$locs = array();
 		if (isset(Timber::$locations)) {
 			if (is_string(Timber::$locations)) {
@@ -123,7 +147,11 @@ class TimberLoader {
 		return $locs;
 	}
 
-	function get_locations_caller($caller = false) {
+    /**
+     * @param bool $caller
+     * @return array
+     */
+    function get_locations_caller($caller = false) {
 		$locs = array();
 		if ($caller && is_string($caller)) {
 			$caller = trailingslashit($caller);
@@ -138,7 +166,11 @@ class TimberLoader {
 		return $locs;
 	}
 
-	function get_locations($caller = false) {
+    /**
+     * @param bool $caller
+     * @return array
+     */
+    function get_locations($caller = false) {
 		//prioirty: user locations, caller (but not theme), child theme, parent theme, caller
 		$locs = array();
 		$locs = array_merge($locs, $this->get_locations_user());
@@ -152,7 +184,10 @@ class TimberLoader {
 		return $locs;
 	}
 
-	function get_loader() {
+    /**
+     * @return Twig_Loader_Chain
+     */
+    function get_loader() {
 		$loaders = array();
 		foreach ($this->locations as $loc) {
 			$loc = realpath($loc);
@@ -167,7 +202,10 @@ class TimberLoader {
 		return $loader;
 	}
 
-	function get_twig() {
+    /**
+     * @return Twig_Environment
+     */
+    function get_twig() {
 		$loader_loc = trailingslashit(TIMBER_LOC) . 'Twig/lib/Twig/Autoloader.php';
 		require_once($loader_loc);
 		Twig_Autoloader::register();
@@ -188,19 +226,28 @@ class TimberLoader {
 		return $twig;
 	}
 
-        private function _get_cache_extension() {
-            $loader_loc = trailingslashit(TIMBER_LOC) . 'functions/cache/loader.php';
-            require_once($loader_loc);
-            TimberCache_Loader::register();
+    /**
+     * @return \Asm89\Twig\CacheExtension\Extension
+     */
+    private function _get_cache_extension() {
+        $loader_loc = trailingslashit(TIMBER_LOC) . 'functions/cache/loader.php';
+        require_once($loader_loc);
+        TimberCache_Loader::register();
 
-            $key_generator   = new \Timber\Cache\KeyGenerator();
-            $cache_provider  = new \Timber\Cache\WPObjectCacheAdapter( $this );
-            $cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy( $cache_provider, $key_generator );
-            $cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
+        $key_generator   = new \Timber\Cache\KeyGenerator();
+        $cache_provider  = new \Timber\Cache\WPObjectCacheAdapter( $this );
+        $cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy( $cache_provider, $key_generator );
+        $cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
 
-            return $cache_extension;
-        }
+        return $cache_extension;
+    }
 
+    /**
+     * @param string $key
+     * @param string $group
+     * @param string $cache_mode
+     * @return bool
+     */
     public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
         $object_cache = false;
 
@@ -224,6 +271,14 @@ class TimberLoader {
         return $value;
     }
 
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @param string $group
+     * @param int $expires
+     * @param string $cache_mode
+     * @return mixed
+     */
     public function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
         $object_cache = false;
 
@@ -248,14 +303,18 @@ class TimberLoader {
         return $value;
     }
 
-        private function _get_cache_mode( $cache_mode ) {
-            if ( empty( $cache_mode ) || self::CACHE_USE_DEFAULT === $cache_mode )
-                $cache_mode = $this->cache_mode;
+    /**
+     * @param string $cache_mode
+     * @return string
+     */
+    private function _get_cache_mode( $cache_mode ) {
+        if ( empty( $cache_mode ) || self::CACHE_USE_DEFAULT === $cache_mode )
+            $cache_mode = $this->cache_mode;
 
-            // Fallback if self::$cache_mode did not get a valid value
-            if ( !in_array( $cache_mode, self::$cache_modes ) )
-                $cache_mode = self::CACHE_OBJECT;
+        // Fallback if self::$cache_mode did not get a valid value
+        if ( !in_array( $cache_mode, self::$cache_modes ) )
+            $cache_mode = self::CACHE_OBJECT;
 
-            return $cache_mode;
-        }
+        return $cache_mode;
+    }
 }

@@ -6,6 +6,9 @@ class TimberMenu extends TimberCore {
     var $name = null;
     var $ID = null;
 
+    /**
+     * @param int $slug
+     */
     function __construct($slug = 0) {
         $locations = get_nav_menu_locations();
         if ($slug != 0 && is_numeric($slug)){
@@ -25,6 +28,9 @@ class TimberMenu extends TimberCore {
         return null;
     }
 
+    /**
+     * @param int $menu_id
+     */
     private function init($menu_id){
         $menu = wp_get_nav_menu_items($menu_id);
         $menu = self::order_children($menu);
@@ -34,6 +40,11 @@ class TimberMenu extends TimberCore {
         $this->ID = $this->term_id;
     }
 
+    /**
+     * @param string $slug
+     * @param array $locations
+     * @return mixed
+     */
     private function get_menu_id_from_locations($slug, $locations){
         if ($slug === 0){
             $slug = $this->get_menu_id_from_terms($slug);
@@ -46,6 +57,10 @@ class TimberMenu extends TimberCore {
         }
     }
 
+    /**
+     * @param int $slug
+     * @return int
+     */
     private function get_menu_id_from_terms($slug = 0){
         if (!is_numeric($slug) && is_string($slug)){
             //we have a string so lets search for that
@@ -67,7 +82,11 @@ class TimberMenu extends TimberCore {
         return 0;
     }
 
-
+    /**
+     * @param array $menu_items
+     * @param int $parent_id
+     * @return TimberMenuItem|null
+     */
     function find_parent_item_in_menu($menu_items, $parent_id) {
         foreach ($menu_items as &$item) {
             if ($item->ID == $parent_id) {
@@ -77,6 +96,10 @@ class TimberMenu extends TimberCore {
         return null;
     }
 
+    /**
+     * @param array $items
+     * @return array
+     */
     function order_children($items) {
         $index = array();
         $menu = array();
@@ -94,6 +117,9 @@ class TimberMenu extends TimberCore {
         return $menu;
     }
 
+    /**
+     * @return array
+     */
     function get_items() {
         if (is_array($this->items)) {
             return $this->items;
@@ -107,6 +133,9 @@ class TimberMenuItem extends TimberCore {
     var $children;
     var $has_child_class = false;
 
+    /**
+     * @param array|object $data
+     */
     function __construct($data) {
         $this->import($data);
         $this->import_classes($data);
@@ -117,11 +146,17 @@ class TimberMenuItem extends TimberCore {
         $this->add_class('menu-item-'.$this->ID);
     }
 
+    /**
+     * @param string $class_name
+     */
     function add_class($class_name){
         $this->classes[] = $class_name;
         $this->class .= ' '.$class_name;
     }
 
+    /**
+     * @return string
+     */
     function name() {
         if (isset($this->title)){
             return $this->title;
@@ -129,18 +164,30 @@ class TimberMenuItem extends TimberCore {
         return $this->_name;
     }
 
+    /**
+     * @return string
+     */
     function slug() {
         return $this->post_name;
     }
 
+    /**
+     * @return string
+     */
     function get_link() {
         return $this->url;
     }
 
+    /**
+     * @return string
+     */
     function get_path() {
         return TimberHelper::get_rel_url($this->url);
     }
 
+    /**
+     * @param TimberMenuItem $item
+     */
     function add_child($item) {
         if (!$this->has_child_class){
             $this->add_class('menu-item-has-children');
@@ -152,10 +199,16 @@ class TimberMenuItem extends TimberCore {
         $this->children[] = $item;
     }
 
+    /**
+     * @param object $data
+     */
     function import_classes($data){
         $this->class = trim(implode(' ', $data->classes));
     }
 
+    /**
+     * @return array|bool
+     */
     function get_children() {
         if (isset($this->children)) {
             return $this->children;
@@ -163,6 +216,9 @@ class TimberMenuItem extends TimberCore {
         return false;
     }
 
+    /**
+     * @return bool
+     */
     function is_external(){
         if ($this->type != 'custom'){
             return false;
@@ -172,26 +228,44 @@ class TimberMenuItem extends TimberCore {
 
     /* Aliases */
 
+    /**
+     * @return array|bool
+     */
     public function children(){
         return $this->get_children();
     }
 
+    /**
+     * @return bool
+     */
     public function external(){
         return $this->is_external();
     }
 
+    /**
+     * @return string
+     */
     public function link(){
         return $this->get_link();
     }
 
+    /**
+     * @return string
+     */
     public function path(){
         return $this->get_path();
     }
 
+    /**
+     * @return string
+     */
     public function permalink(){
         return $this->get_link();
     }
 
+    /**
+     * @return string
+     */
     public function get_permalink(){
         return $this->get_link();
     }
