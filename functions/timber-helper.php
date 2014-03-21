@@ -199,28 +199,8 @@ class TimberHelper {
 		return $newargs;
 	}
 
-	public static function get_json($url) {
-		$data = self::get_curl($url);
-		return json_decode($data);
-	}
-
-	public static function get_curl($url) {
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-		$content = curl_exec($ch);
-		curl_close($ch);
-		return $content;
-	}
-
 	public static function get_wp_title() {
 		return wp_title('|', false, 'right');
-	}
-
-	public static function force_update_option($option, $value) {
-		global $wpdb;
-		$wpdb->query("UPDATE $wpdb->options SET option_value = '$value' WHERE option_name = '$option'");
 	}
 
 	public static function get_current_url() {
