@@ -127,12 +127,24 @@ abstract class Twig_Template implements Twig_TemplateInterface
     {
         $name = (string) $name;
 
+        $template = null;
         if (isset($blocks[$name])) {
-            $b = $blocks;
-            unset($b[$name]);
-            call_user_func($blocks[$name], $context, $b);
+            $template = $blocks[$name][0];
+            $block = $blocks[$name][1];
+            unset($blocks[$name]);
         } elseif (isset($this->blocks[$name])) {
-            call_user_func($this->blocks[$name], $context, $blocks);
+            $template = $this->blocks[$name][0];
+            $block = $this->blocks[$name][1];
+        }
+
+        if (null !== $template) {
+            try {
+                $template->$block($context, $blocks);
+            } catch (Twig_Error $e) {
+                throw $e;
+            } catch (Exception $e) {
+                throw new Twig_Error_Runtime(sprintf('An exception has been thrown during the rendering of a template ("%s").', $e->getMessage()), -1, $template->getTemplateName(), $e);
+            }
         } elseif (false !== $parent = $this->getParent($context)) {
             $parent->displayBlock($name, $context, array_merge($this->blocks, $blocks));
         }
@@ -276,7 +288,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
 
             throw $e;
         } catch (Exception $e) {
-            throw new Twig_Error_Runtime(sprintf('An exception has been thrown during the rendering of a template ("%s").', $e->getMessage()), -1, null, $e);
+            throw new Twig_Error_Runtime(sprintf('An exception has been thrown during the rendering of a template ("%s").', $e->getMessage()), -1, $this->getTemplateName(), $e);
         }
     }
 
@@ -326,7 +338,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      * @param mixed   $object            The object or array from where to get the item
      * @param mixed   $item              The item to get from the array or object
      * @param array   $arguments         An array of arguments to pass if the item is an object method
-     * @param string  $type              The type of attribute (@see Twig_TemplateInterface)
+     * @param string  $type              The type of attribute (@see Twig_Template constants)
      * @param Boolean $isDefinedTest     Whether this is only a defined check
      * @param Boolean $ignoreStrictCheck Whether to ignore the strict attribute check or not
      *
@@ -334,10 +346,10 @@ abstract class Twig_Template implements Twig_TemplateInterface
      *
      * @throws Twig_Error_Runtime if the attribute does not exist and Twig is running in strict mode and $isDefinedTest is false
      */
-    protected function getAttribute($object, $item, array $arguments = array(), $type = Twig_TemplateInterface::ANY_CALL, $isDefinedTest = false, $ignoreStrictCheck = false)
+    protected function getAttribute($object, $item, array $arguments = array(), $type = Twig_Template::ANY_CALL, $isDefinedTest = false, $ignoreStrictCheck = false)
     {
         // array
-        if (Twig_TemplateInterface::METHOD_CALL !== $type) {
+        if (Twig_Template::METHOD_CALL !== $type) {
             $arrayItem = is_bool($item) || is_float($item) ? (int) $item : $item;
 
             if ((is_array($object) && array_key_exists($arrayItem, $object))
@@ -350,7 +362,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
                 return $object[$arrayItem];
             }
 
-            if (Twig_TemplateInterface::ARRAY_CALL === $type || !is_object($object)) {
+            if (Twig_Template::ARRAY_CALL === $type || !is_object($object)) {
                 if ($isDefinedTest) {
                     return false;
                 }
@@ -363,7 +375,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
                     throw new Twig_Error_Runtime(sprintf('Key "%s" in object (with ArrayAccess) of type "%s" does not exist', $arrayItem, get_class($object)), -1, $this->getTemplateName());
                 } elseif (is_array($object)) {
                     throw new Twig_Error_Runtime(sprintf('Key "%s" for array with keys "%s" does not exist', $arrayItem, implode(', ', array_keys($object))), -1, $this->getTemplateName());
-                } elseif (Twig_TemplateInterface::ARRAY_CALL === $type) {
+                } elseif (Twig_Template::ARRAY_CALL === $type) {
                     throw new Twig_Error_Runtime(sprintf('Impossible to access a key ("%s") on a %s variable ("%s")', $item, gettype($object), $object), -1, $this->getTemplateName());
                 } else {
                     throw new Twig_Error_Runtime(sprintf('Impossible to access an attribute ("%s") on a %s variable ("%s")', $item, gettype($object), $object), -1, $this->getTemplateName());
@@ -386,7 +398,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
         $class = get_class($object);
 
         // object property
-        if (Twig_TemplateInterface::METHOD_CALL !== $type) {
+        if (Twig_Template::METHOD_CALL !== $type) {
             if (isset($object->$item) || array_key_exists((string) $item, $object)) {
                 if ($isDefinedTest) {
                     return true;
@@ -405,6 +417,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
             self::$cache[$class]['methods'] = array_change_key_case(array_flip(get_class_methods($object)));
         }
 
+        $call = false;
         $lcItem = strtolower($item);
         if (isset(self::$cache[$class]['methods'][$lcItem])) {
             $method = (string) $item;
@@ -414,6 +427,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
             $method = 'is'.$item;
         } elseif (isset(self::$cache[$class]['methods']['__call'])) {
             $method = (string) $item;
+            $call = true;
         } else {
             if ($isDefinedTest) {
                 return false;
@@ -434,7 +448,16 @@ abstract class Twig_Template implements Twig_TemplateInterface
             $this->env->getExtension('sandbox')->checkMethodAllowed($object, $method);
         }
 
-        $ret = call_user_func_array(array($object, $method), $arguments);
+        // Some objects throw exceptions when they have __call, and the method we try
+        // to call is not supported. If ignoreStrictCheck is true, we should return null.
+        try {
+            $ret = call_user_func_array(array($object, $method), $arguments);
+        } catch (BadMethodCallException $e) {
+            if ($call && ($ignoreStrictCheck || !$this->env->isStrictVariables())) {
+                return null;
+            }
+            throw $e;
+        }
 
         // useful when calling a template method from a template
         // this is not supported but unfortunately heavily used in the Symfony profiler

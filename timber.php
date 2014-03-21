@@ -1,31 +1,43 @@
 <?php
 /*
 Plugin Name: Timber
+Plugin URI: http://timber.upstatement.com
 Description: The WordPress Timber Library allows you to write themes using the power Twig templates
 Author: Jared Novack + Upstatement
-Version: 0.10.6
-Author URI: http://timber.upstatement.com/
+Version: 0.17.1
+Author URI: http://upstatement.com/
 */
 
 global $wp_version;
 global $timber;
 
 require_once(__DIR__ . '/functions/functions-twig.php');
-require_once(__DIR__ . '/functions/functions-post-master.php');
-require_once(__DIR__ . '/functions/functions-php-helper.php');
-require_once(__DIR__ . '/functions/functions-wp-helper.php');
+require_once(__DIR__ . '/functions/timber-helper.php');
+require_once(__DIR__ . '/functions/timber-image-helper.php');
 
-require_once(__DIR__ . '/objects/timber-core.php');
-require_once(__DIR__ . '/objects/timber-post.php');
-require_once(__DIR__ . '/objects/timber-comment.php');
-require_once(__DIR__ . '/objects/timber-user.php');
-require_once(__DIR__ . '/objects/timber-term.php');
-require_once(__DIR__ . '/objects/timber-term-getter.php');
-require_once(__DIR__ . '/objects/timber-image.php');
-require_once(__DIR__ . '/objects/timber-menu.php');
+require_once(__DIR__ . '/functions/timber-core.php');
+require_once(__DIR__ . '/functions/timber-post.php');
+require_once(__DIR__ . '/functions/timber-comment.php');
+require_once(__DIR__ . '/functions/timber-user.php');
+require_once(__DIR__ . '/functions/timber-term.php');
+require_once(__DIR__ . '/functions/timber-term-getter.php');
+require_once(__DIR__ . '/functions/timber-image.php');
+require_once(__DIR__ . '/functions/timber-menu.php');
 
-require_once(__DIR__ . '/objects/timber-loader.php');
+//Other 2nd-class citizens
+require_once(__DIR__ . '/functions/timber-archives.php');
+require_once(__DIR__ . '/functions/timber-site.php');
+require_once(__DIR__ . '/functions/timber-theme.php');
 
+
+require_once(__DIR__ . '/functions/timber-loader.php');
+require_once(__DIR__ . '/functions/timber-function-wrapper.php');
+require_once(__DIR__ . '/functions/integrations/acf-timber.php');
+if ( defined('WP_CLI') && WP_CLI ) {
+    require_once(__DIR__ . '/functions/integrations/wpcli-timber.php');
+}
+
+require_once(__DIR__ . '/functions/timber-admin.php');
 
 /** Usage:
  *
@@ -39,25 +51,40 @@ require_once(__DIR__ . '/objects/timber-loader.php');
  *  Timber::render('index.twig', $context);
  */
 
+
+
 class Timber {
 
     public static $locations;
     public static $dirname = 'views';
     public static $cache = false;
+    public static $auto_meta = true;
+    public static $autoescape = false;
 
     protected $router;
 
     public function __construct(){
+        $this->test_compatibility();
         $this->init_constants();
-        add_action('init', array(&$this, 'init_routes'));
+        add_action('init', array($this, 'init_routes'));
+    }
+
+    protected function test_compatibility(){
+        if (is_admin() || $_SERVER['PHP_SELF'] == '/wp-login.php'){
+            return;
+        }
+        if (version_compare(phpversion(), '5.3.0', '<') && !is_admin()) {
+            trigger_error('Timber requires PHP 5.3.0 or greater. You have '.phpversion(), E_USER_ERROR);
+        }
     }
 
     protected function init_constants() {
-        $timber_loc = str_replace(realpath($_SERVER['DOCUMENT_ROOT']), '', realpath(__DIR__));
+        $timber_loc = str_replace(realpath(ABSPATH), '', realpath(__DIR__));
         $plugin_url_path = str_replace($_SERVER['HTTP_HOST'], '', plugins_url());
         $plugin_url_path = str_replace('https://', '', $plugin_url_path);
         $plugin_url_path = str_replace('http://', '', $plugin_url_path);
         $timber_dirs = dirname(__FILE__);
+        $timber_dirs = str_replace('\\', '/', $timber_dirs);
         $timber_dirs = explode('/', $timber_dirs);
         $timber_dirname = array_pop($timber_dirs);
         define("TIMBER", $timber_loc);
@@ -86,34 +113,36 @@ class Timber {
             $PostClass = $query;
             $query = false;
         }
-        if (WPHelper::is_array_assoc($query) || (is_string($query) && strstr($query, '='))) {
+        if (TimberHelper::is_array_assoc($query) || (is_string($query) && strstr($query, '='))) {
         // we have a regularly formed WP query string or array to use
-            return self::get_posts_from_wp_query($query, $PostClass);
+            $posts = self::get_posts_from_wp_query($query, $PostClass);
         } else if (is_string($query) && !is_integer($query)) {
             // we have what could be a post name to pull out
-            return self::get_posts_from_slug($query, $PostClass);
+            $posts = self::get_posts_from_slug($query, $PostClass);
         } else if (is_array($query) && count($query) && (is_integer($query[0]) || is_string($query[0]))) {
             // we have a list of pids (post IDs) to extract from
-            return self::get_posts_from_array_of_ids($query, $PostClass);
+            $posts = self::get_posts_from_array_of_ids($query, $PostClass);
         } else if (is_array($query) && count($query) && isset($query[0]) && is_object($query[0])) {
             // maybe its an array of post objects that already have data
-            return self::handle_post_results($query, $PostClass);
+            $posts = self::handle_post_results($query, $PostClass);
         } else if (have_posts()) {
             //lets just use the default WordPress current query
-            return self::get_posts_from_loop($PostClass);
+            $posts = self::get_posts_from_loop($PostClass);
         } else if (!$query) {
             //okay, everything failed lets just return some posts so that the user has something to work with
             //this turns out to cause all kinds of awful behavior
             //return self::get_posts_from_wp_query(array(), $PostClass);
             return null;
         } else {
-            error_log('I have failed you! in timber.php::94');
-            WPHelper::error_log($query);
+            TimberHelper::error_log('I have failed you! in timber.php::94');
+            TimberHelper::error_log($query);
+            return $query;
         }
-        return $query;
+
+        return self::maybe_set_preview( $posts );
     }
 
-    public function get_pids($query = null) {
+    public static function get_pids($query = null) {
         $posts = get_posts($query);
         $pids = array();
         foreach ($posts as $post) {
@@ -146,18 +175,18 @@ class Timber {
 
     public static function get_posts_from_slug($slug, $PostClass) {
         global $wpdb;
-        $query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$slug'";
+        $query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s", $slug);
         if (strstr($slug, '#')) {
             //we have a post_type directive here
             $q = explode('#', $slug);
             $q = array_filter($q);
             $q = array_values($q);
             if (count($q) == 1){
-                $query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$q[0]'";
+                $query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s", $q[0]);
             } else if (count($q) == 2){
-                $query = "SELECT ID FROM $wpdb->posts WHERE post_name = '$q[1]' AND post_type = '$q[0]'";
+                $query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = %s LIMIT 1", $q[1], $q[0]);
             } else {
-                error_log('something we dont understand about '.$slug);
+                TimberHelper::error_log('something we dont understand about '.$slug);
             }
         }
         $results = $wpdb->get_col($query);
@@ -165,6 +194,7 @@ class Timber {
     }
 
     public static function get_posts_from_wp_query($query = array(), $PostClass = 'TimberPost') {
+        $start = TimberHelper::start_timer();
         $results = get_posts($query);
         return self::handle_post_results($results, $PostClass);
     }
@@ -173,14 +203,12 @@ class Timber {
         if (!is_array($query) || !count($query)) {
             return null;
         }
-        global $wpdb;
-        $query_list = implode(', ', $query);
-        $results = $wpdb->get_col("SELECT ID FROM $wpdb->posts WHERE ID IN ($query_list)");
-        $results = array_intersect($query, $results);
+        $results = get_posts(array('post_type'=>'any', 'post__in' =>$query, 'orderby' => 'post__in', 'numberposts' => -1));
         return self::handle_post_results($results, $PostClass);
     }
 
     public static function handle_post_results($results, $PostClass = 'TimberPost') {
+        $start = TimberHelper::start_timer();
         $posts = array();
         foreach ($results as $rid) {
             $PostClassUse = $PostClass;
@@ -191,14 +219,14 @@ class Timber {
                     $PostClassUse = $PostClass[$post_type];
                 } else {
                     if (is_array($PostClass)) {
-                        error_log($post_type . ' not found in ' . print_r($PostClass, true));
+                        TimberHelper::error_log($post_type.' of '.$rid.' not found in ' . print_r($PostClass, true));
                     } else {
-                        error_log($post_type . ' not found in ' . $PostClass);
+                        TimberHelper::error_log($post_type.' not found in '.$PostClass);
                     }
                 }
             }
             $post = new $PostClassUse($rid);
-            if (isset($post->post_title)) {
+            if (isset($post->ID)) {
                 $posts[] = $post;
             }
         }
@@ -208,6 +236,41 @@ class Timber {
     public function get_pid($query) {
         $post = self::get_posts($query);
         return $post->ID;
+    }
+
+    /* Post Previews
+    ================================ */
+
+    public static function maybe_set_preview( $posts ) {
+        if ( is_array( $posts ) && isset( $_GET['preview'] ) && $_GET['preview']
+               && isset( $_GET['preview_id'] ) && $_GET['preview_id']
+               && current_user_can( 'edit_post', $_GET['preview_id'] ) ) {
+
+            // No need to check the nonce, that already happened in _show_post_preview on init
+
+            $preview_id = $_GET['preview_id'];
+            foreach( $posts as &$post ) {
+                if ( is_object( $post ) && $post->ID == $preview_id ) {
+                    // Based on _set_preview( $post ), but adds import_custom
+                    $preview = wp_get_post_autosave( $preview_id );
+
+                    if ( is_object($preview) ) {
+
+                        $preview = sanitize_post($preview);
+
+                        $post->post_content = $preview->post_content;
+                        $post->post_title = $preview->post_title;
+                        $post->post_excerpt = $preview->post_excerpt;
+                        $post->import_custom( $preview_id );
+
+                        add_filter( 'get_the_terms', '_wp_preview_terms_filter', 10, 3 );
+                    }
+                }
+            }
+
+        }
+
+        return $posts;
     }
 
 
@@ -231,22 +294,38 @@ class Timber {
     /* Term Retrieval
     ================================ */
 
-    public static function get_terms($args, $TermClass = 'TimberTerm'){
+    public static function get_terms($args, $maybe_args = array(), $TermClass = 'TimberTerm'){
+        if (is_string($maybe_args) && !strstr($maybe_args, '=')){
+            //the user is sending the $TermClass in the second argument
+            $TermClass = $maybe_args;
+        }
+        if (is_string($maybe_args) && strstr($maybe_args, '=')){
+            parse_str($maybe_args, $maybe_args);
+        }
         if (is_string($args) && strstr($args, '=')){
             //a string and a query string!
             $parsed = TimberTermGetter::get_term_query_from_query_string($args);
+            if (is_array($maybe_args)){
+                $parsed->args = array_merge($parsed->args, $maybe_args);
+            }
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else if (is_string($args)){
             //its just a string with a single taxonomy
             $parsed = TimberTermGetter::get_term_query_from_string($args);
+            if (is_array($maybe_args)){
+                $parsed->args = array_merge($parsed->args, $maybe_args);
+            }
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
-        } else if (is_array($args) && WPHelper::is_array_assoc($args)){
+        } else if (is_array($args) && TimberHelper::is_array_assoc($args)){
             //its an associative array, like a good ole query
             $parsed = TimberTermGetter::get_term_query_from_assoc_array($args);
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else if (is_array($args)){
             //its just an array of strings or IDs (hopefully)
             $parsed = TimberTermGetter::get_term_query_from_array($args);
+            if (is_array($maybe_args)){
+                $parsed->args = array_merge($parsed->args, $maybe_args);
+            }
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else {
             //no clue, what you talkin' bout?
@@ -255,11 +334,29 @@ class Timber {
     }
 
     public static function handle_term_query($taxonomies, $args, $TermClass){
+        if (!isset($args['hide_empty'])){
+            $args['hide_empty'] = false;
+        }
         $terms = get_terms($taxonomies, $args);
         foreach($terms as &$term){
-            $term = new TimberTerm($term->term_id);
+            $term = new $TermClass($term->term_id, $term->taxonomy);
         }
         return $terms;
+    }
+
+    /* Site Retrieval
+    ================================ */
+
+    public static function get_sites($blog_ids = false){
+        if (!is_array($blog_ids)){
+            global $wpdb;
+            $site_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
+        }
+        $return = array();
+        foreach($blog_ids as $blog_id){
+            $return[] = new TimberSite($blog_id);
+        }
+        return $return;
     }
 
 
@@ -270,31 +367,54 @@ class Timber {
         $data = array();
         $data['http_host'] = 'http://' . $_SERVER['HTTP_HOST'];
         $data['wp_title'] = get_bloginfo('name');
-        $data['wp_head'] = WPHelper::ob_function('wp_head');
-        $data['wp_footer'] = WPHelper::ob_function('wp_footer');
+        $data['wp_head'] = TimberHelper::function_wrapper('wp_head');
+        $data['wp_footer'] = TimberHelper::function_wrapper('wp_footer');
         $data['body_class'] = implode(' ', get_body_class());
         if (function_exists('wp_nav_menu')) {
-            $data['wp_nav_menu'] = wp_nav_menu(array('container_class' => 'menu-header', 'theme_location' => 'primary', 'echo' => false, 'menu_class' => 'nav-menu'));
+            $locations = get_nav_menu_locations();
+            if (count($locations)){
+                $data['wp_nav_menu'] = wp_nav_menu(array('container_class' => 'menu-header', 'echo' => false, 'menu_class' => 'nav-menu'));
+            }
         }
-        $data['theme_dir'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', get_stylesheet_directory());
-        $data['language_attributes'] = WPHelper::ob_function('language_attributes');
+        $data['theme_dir'] = str_replace(ABSPATH, '', get_stylesheet_directory());
+        $data['language_attributes'] = TimberHelper::function_wrapper('language_attributes');
         $data['stylesheet_uri'] = get_stylesheet_uri();
         $data['template_uri'] = get_template_directory_uri();
+        $data['theme'] = new TimberTheme();
+        $data['site'] = new TimberSite();
+        $data['site']->theme = $data['theme'];
         $data = apply_filters('timber_context', $data);
         return $data;
     }
 
-    public static function render($filenames, $data = array(), $echo = true) {
+    public static function compile($filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT, $via_render = false) {
         $caller = self::get_calling_script_dir();
         $loader = new TimberLoader($caller);
         $file = $loader->choose_template($filenames);
         $output = '';
         if (strlen($file)) {
-            $output = $loader->render($file, $data);
+            if ($via_render){
+                $file = apply_filters('timber_render_file', $file);
+                $data = apply_filters('timber_render_data', $data);
+            } else {
+                $file = apply_filters('timber_compile_file', $file);
+                $data = apply_filters('timber_compile_data', $data);
+            }
+            $output = $loader->render($file, $data, $expires, $cache_mode);
         }
-        if ($echo) {
-            echo $output;
+        return $output;
+    }
+
+    public static function render($filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT) {
+        if ($expires === true){
+            //if this is reading as true; the user probably is using the old $echo param
+            //so we should move all vars up by a spot
+            $expires = $cache_mode;
+            $cache_mode = TimberLoader::CACHE_USE_DEFAULT;
         }
+        $output = self::compile($filenames, $data, $expires, $cache_mode, true);
+        $output = apply_filters('timber_compile_result', $output);
+        echo $output;
         return $output;
     }
 
@@ -326,12 +446,18 @@ class Timber {
             }
         }
         if (!$found) {
-            error_log('error loading your sidebar, check to make sure the file exists');
+            TimberHelper::error_log('error loading your sidebar, check to make sure the file exists');
         }
         $ret = ob_get_contents();
-        error_log($ret);
         ob_end_clean();
         return $ret;
+    }
+
+    /* Widgets
+    ================================ */
+
+    public static function get_widgets($widget_id){
+        return TimberHelper::function_wrapper('dynamic_sidebar', array($widget_id), true);
     }
 
 
@@ -350,54 +476,131 @@ class Timber {
         }
     }
 
-    public static function add_route($route, $callback) {
+    public static function add_route($route, $callback, $args = array()) {
         global $timber;
         if (!isset($timber->router)) {
-            require_once('router/Router.php');
-            require_once('router/Route.php');
-            $timber->router = new Router();
-            $timber->router->setBasePath('/');
+            require_once(__DIR__.'/functions/router/Router.php');
+            require_once(__DIR__.'/functions/router/Route.php');
+            if (class_exists('Router')){
+                $timber->router = new Router();
+                $site_url = get_bloginfo('url');
+                $site_url_parts = explode('/', $site_url);
+                $site_url_parts = array_slice($site_url_parts, 3);
+                $base_path = implode('/', $site_url_parts);
+                if (!$base_path || strpos($route, $base_path) === 0) {
+                    $base_path = '/';
+                } else {
+                    $base_path = '/' . $base_path . '/';
+                }
+                $timber->router->setBasePath($base_path);
+            }
         }
-        $timber->router->map($route, $callback);
+        if (class_exists('Router')){
+            $timber->router->map($route, $callback, $args);
+        }
     }
 
-    public function load_template($template, $query = false) {
-        if ($query) {
-            global $wp_query;
-            $wp_query = new WP_Query($query);
-        }
-        $template = locate_template($template);
-        $GLOBALS['timber_template'] = $template;
-        add_action('send_headers', function () {
-            header('HTTP/1.1 200 OK');
-        });
-        add_action('wp_loaded', function ($template) {
-            if (isset($GLOBALS['timber_template'])) {
-                load_template($GLOBALS['timber_template']);
-                die;
+    public static function cancel_query(){
+        add_action('posts_request', function(){
+            if (is_main_query()){
+                wp_reset_query();
             }
-        }, 10, 1);
+        });
+    }
+
+
+    public static function load_template($template, $query = false, $force_header = 0, $tparams = false) {
+        $template = locate_template($template);
+        if ($tparams){
+            global $params;
+            $params = $tparams;
+        }
+        if ($force_header) {
+            add_filter('status_header', function($status_header, $header, $text, $protocol) use ($force_header) {
+                $text = get_status_header_desc($force_header);
+                $header_string = "$protocol $force_header $text";
+                return $header_string;
+            }, 10, 4 );
+            if (404 != $force_header) {
+                add_action('parse_query', function($query) {
+                    if ($query->is_main_query()){
+                        $query->is_404 = false;
+                    }
+                },1);
+                add_action('template_redirect', function(){
+                    global $wp_query;
+                    $wp_query->is_404 = false;
+                },1);
+            }
+        }
+
+        if ($query) {
+            add_action('do_parse_request', function() use ($query) {
+                global $wp;
+
+                if ( is_callable($query) )
+                    $query = call_user_func($query);
+
+                if ( is_array($query) )
+                    $wp->query_vars = $query;
+                elseif ( !empty($query) )
+                    parse_str($query, $wp->query_vars);
+                else
+                    return true; // Could not interpret query. Let WP try.
+
+                return false;
+            });
+        }
+        if ($template) {
+            add_action('wp_loaded', function() use ($template) {
+                wp();
+                do_action('template_redirect');
+                load_template($template);
+                die;
+            });
+        }
     }
 
     /*  Pagination
     ================================ */
 
-    public function get_pagination(){
+    public static function get_pagination($prefs = array()){
         global $wp_query;
         global $paged;
-        $data = array();
-        $data['pages'] = ceil($wp_query->found_posts / $wp_query->query_vars['posts_per_page']);
-        $paged = 1;
-        if (isset($wp_query->query_vars['paged'])) {
-            $paged = $wp_query->query_vars['paged'];
+        $args['total'] = ceil($wp_query->found_posts / $wp_query->query_vars['posts_per_page']);
+        if (strlen(trim(get_option('permalink_structure')))){
+            $url = explode('?', get_pagenum_link(0));
+            if (isset($url[1])){
+               parse_str($url[1], $query);
+               $args['add_args'] = $query;
+            }
+            $args['format'] = 'page/%#%';
+            $args['base'] = trailingslashit($url[0]).'%_%';
+        } else {
+            $big = 999999999;
+            $args['base'] = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
         }
-        $data['base'] = get_pagenum_link(0);
-        $data['paged'] = $paged;
-        if ($paged < $data['pages']) {
-            $data['next'] = array('link' => next_posts(0, false), 'path' => next_posts(0, false));
+        $args['type'] = 'array';
+
+        $args['current'] = max( 1, get_query_var('paged') );
+        $args['mid_size'] = max(9 - $args['current'], 3);
+        $args['prev_next'] = false;
+        if (is_int($prefs)){
+            $args['mid_size'] = $prefs - 2;
+        } else {
+            $args = array_merge($args, $prefs);
         }
-        if ($paged > 1) {
-            $data['prev'] = array('link' => previous_posts(false), 'path' => previous_posts(false));
+        $data['pages'] = TimberHelper::paginate_links($args);
+        $next = next_posts($args['total'], false);
+        if ($next){
+            $data['next'] = array('link' => $next, 'class' => 'page-numbers next');
+        }
+        $prev = previous_posts(false);
+        if ($prev){
+            $data['prev'] = array('link' => $prev, 'class' => 'page-numbers prev');
+        }
+        if ($paged < 2){
+            $data['prev'] = '';
         }
         return $data;
     }
@@ -405,9 +608,9 @@ class Timber {
     /*  Utility
     ================================ */
 
-    public function get_calling_script_path($offset = 0) {
+    public static function get_calling_script_path($offset = 0) {
         $dir = self::get_calling_script_dir($offset);
-        return str_replace($_SERVER['DOCUMENT_ROOT'], '', realpath($dir));
+        return str_replace(ABSPATH, '', realpath($dir));
     }
 
     public static function get_calling_script_dir($offset = 0) {

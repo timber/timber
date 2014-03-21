@@ -10,10 +10,10 @@
 	add_action('wp_enqueue_scripts', 'load_scripts');
 
 	define('THEME_URL', get_template_directory_uri());
-
 	function add_to_context($data){
 		/* this is where you can add your own data to Timber's context object */
-		$data['foo'] = 'bar';
+		$data['qux'] = 'I am a value set in your functions.php file';
+		$data['menu'] = new TimberMenu();
 		return $data;
 	}
 

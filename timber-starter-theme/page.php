@@ -14,7 +14,7 @@
  * /mytheme/page-mypage.php
  * (in which case you'll want to duplicate this file and save to the above path)
  *
- * Methods for WPHelper can be found in the /functions sub-directory
+ * Methods for TimberHelper can be found in the /functions sub-directory
  *
  * @package  WordPress
  * @subpackage  Timber

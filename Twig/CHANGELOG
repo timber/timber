@@ -1,3 +1,42 @@
+* 1.15.0 (2013-12-06)
+
+ * made ignoreStrictCheck in Template::getAttribute() works with __call() methods throwing BadMethodCallException
+ * added min and max functions
+ * added the round filter
+ * fixed a bug that prevented the optimizers to be enabled/disabled selectively
+ * fixed first and last filters for UTF-8 strings
+ * added a source function to include the content of a template without rendering it
+ * fixed the C extension sandbox behavior when get or set is prepend to method name
+
+* 1.14.2 (2013-10-30)
+
+ * fixed error filename/line when an error occurs in an included file
+ * allowed operators that contain whitespaces to have more than one whitespace
+ * allowed tests to be made of 1 or 2 words (like "same as" or "divisible by")
+
+* 1.14.1 (2013-10-15)
+
+ * made it possible to use named operators as variables
+ * fixed the possibility to have a variable named 'matches'
+ * added support for PHP 5.5 DateTimeInterface
+
+* 1.14.0 (2013-10-03)
+
+ * fixed usage of the html_attr escaping strategy to avoid double-escaping with the html strategy
+ * added new operators: ends with, starts with, and matches
+ * fixed some compatibility issues with HHVM
+ * added a way to add custom escaping strategies
+ * fixed the C extension compilation on Windows
+ * fixed the batch filter when using a fill argument with an exact match of elements to batch
+ * fixed the filesystem loader cache when a template name exists in several namespaces
+ * fixed template_from_string when the template includes or extends other ones
+ * fixed a crash of the C extension on an edge case
+
+* 1.13.2 (2013-08-03)
+
+ * fixed the error line number for an error occurs in and embedded template
+ * fixed crashes of the C extension on some edge cases
+
 * 1.13.1 (2013-06-06)
 
  * added the possibility to ignore the filesystem constructor argument in Twig_Loader_Filesystem
