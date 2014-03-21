@@ -113,6 +113,26 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertTrue($exists);
 	}
 
+	function testImageAltText(){
+		$upload_dir = wp_upload_dir();
+		$thumb_alt = 'Thumb alt';
+		$filename = $this->copyTestImage('flag.png');
+		$wp_filetype = wp_check_filetype(basename($filename), null );
+		$post_id = $this->factory->post->create();
+		$attachment = array(
+			'post_mime_type' => $wp_filetype['type'],
+			'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
+			'post_excerpt' => '',
+			'post_status' => 'inherit'
+		);
+		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
+		add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
+		add_post_meta($attach_id, '_wp_attachment_image_alt', $thumb_alt, true);
+		$data = array();
+		$data['post'] = new TimberPost($post_id);
+		$this->assertEquals($data['post']->thumbnail()->alt(), $thumb_alt);
+	}
+
 	public static function is_connected() {
 	    $connected = @fsockopen("www.google.com", [80|443]);
 	    if ($connected){
