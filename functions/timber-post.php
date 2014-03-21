@@ -411,8 +411,9 @@ class TimberPost extends TimberCore {
 		$cats = $this->get_categories();
 		if (count($cats) && isset($cats[0])) {
 			return $cats[0];
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	function get_category_link() {
