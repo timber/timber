@@ -360,7 +360,8 @@ class TimberPost extends TimberCore {
 	function get_display_date($use = 'post_date') {
 		return date(get_option('date_format'), strtotime($this->$use));
 	}
-
+	
+	
 	function get_children($post_type = 'any', $childPostClass = false) {
 		if ($childPostClass == false) {
 			$childPostClass = $this->PostClass;
