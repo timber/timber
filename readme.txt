@@ -1,8 +1,8 @@
 === Timber ===
 Contributors: jarednova
 Tags: template engine, templates, twig
-Requires at least: 3.5
-Stable tag: 0.17.1
+Requires at least: 3.7
+Stable tag: 0.17.2
 Tested up to: 3.8.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,13 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.17.2 =
+* TimberPost::children() now sorts by menu_order, title as WordPress core does (thanks @aduth)
+* Fixed an occaisonal warning (thanks @matthewsoares)
+* TimberImage::alt() now returns your image's alt tag info from WordPress (thanks @jnweaver)
+* In the router, non-404 headers are forced asap (thanks @mgmartel)
+* Router now accepts + signs in paths
 
 = 0.17.1 =
 * Hotfix on timber-admin error
