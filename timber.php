@@ -366,7 +366,7 @@ class Timber {
     public static function get_context() {
         $data = array();
         $data['http_host'] = 'http://' . $_SERVER['HTTP_HOST'];
-        $data['wp_title'] = get_bloginfo('name');
+        $data['wp_title'] = TimberHelper::get_wp_title();
         $data['wp_head'] = TimberHelper::function_wrapper('wp_head');
         $data['wp_footer'] = TimberHelper::function_wrapper('wp_footer');
         $data['body_class'] = implode(' ', get_body_class());
