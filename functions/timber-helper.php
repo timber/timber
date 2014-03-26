@@ -200,6 +200,10 @@ class TimberHelper {
 	}
 
 	public static function get_wp_title() {
+		add_filter('wp_title', function($title) {
+			return $title . get_bloginfo('name');
+		}, 0);
+
 		return wp_title('|', false, 'right');
 	}
 
