@@ -134,6 +134,11 @@
 			$post->post_excerpt = '';
 			$prev = $post->get_preview(3,false,'Custom more');
 			$this->assertRegExp('/this is super &hellip;  <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Custom more<\/a>/',$prev);
+
+			// content with <!--more--> tag, force false
+			$post->post_content = 'this is super dooper<!--more--> trooper long words';
+			$prev = $post->get_preview(3,false,'');
+			$this->assertEquals($prev, 'this is super dooper');
 		}
 
 		function testTitle(){
