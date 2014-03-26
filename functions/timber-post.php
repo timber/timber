@@ -149,6 +149,14 @@ class TimberPost extends TimberCore {
 				$text = $this->post_excerpt;
 			}
 		}
+		if (!strlen($text) && strpos($this->post_content, '<!--more-->') !== false) {
+			$pieces = explode('<!--more-->',$this->post_content);
+			$text = $pieces[0];
+			if ($force) {
+				$text = TimberHelper::trim_words($text, $len, false);
+				$trimmed = true;
+			}
+		}
 		if (!strlen($text)) {
 			$text = TimberHelper::trim_words($this->get_content(), $len, false);
 			$trimmed = true;

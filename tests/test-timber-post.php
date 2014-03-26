@@ -116,7 +116,29 @@
 		}
 
 		function testGetPreview() {
+			$post_id = $this->factory->post->create();
+			$post = new TimberPost($post_id);
 
+			// no excerpt
+			$post->post_excerpt = '';
+			$post->post_content = 'this is super dooper trooper long words';
+			$prev = $post->get_preview(3);
+			$this->assertRegExp('/this is super &hellip;  <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Read More<\/a>/',$prev);
+
+			// excerpt set, force is false, no read more
+			$post->post_excerpt = 'this is excerpt longer than three words';
+			$prev = $post->get_preview(3,false,'');
+			$this->assertEquals($prev, $post->post_excerpt);
+
+			// custom read more set
+			$post->post_excerpt = '';
+			$prev = $post->get_preview(3,false,'Custom more');
+			$this->assertRegExp('/this is super &hellip;  <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Custom more<\/a>/',$prev);
+
+			// content with <!--more--> tag, force false
+			$post->post_content = 'this is super dooper<!--more--> trooper long words';
+			$prev = $post->get_preview(3,false,'');
+			$this->assertEquals($prev, 'this is super dooper');
 		}
 
 		function testTitle(){
