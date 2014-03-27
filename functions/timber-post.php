@@ -134,7 +134,8 @@ class TimberPost extends TimberCore {
 
   /**
    *  ## get a preview of your post, if you have an excerpt it will use that,
-   *  ## otherwise it will pull from the post_content
+   *  ## otherwise it will pull from the post_content.
+   *  ## If there's a <!-- more --> tag it will use that to mark where to pull through.
    *  <p>{{post.get_preview(50)}}</p>
    */
 
