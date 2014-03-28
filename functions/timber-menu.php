@@ -2,6 +2,8 @@
 
 class TimberMenu extends TimberCore {
 
+    var $MenuItemClass = 'TimberMenuItem';
+
     var $items = null;
     var $name = null;
     var $ID = null;
@@ -82,7 +84,7 @@ class TimberMenu extends TimberCore {
         $menu = array();
         _wp_menu_item_classes_by_context($items);
         foreach($items as $item) {
-            $index[$item->ID] = new TimberMenuItem($item);
+            $index[$item->ID] = new $this->MenuItemClass($item);
         }
         foreach($index as $item) {
             if($item->menu_item_parent && isset($index[$item->menu_item_parent])) {
