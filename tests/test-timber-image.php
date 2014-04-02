@@ -43,7 +43,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data = array();
 		$file_loc = $this->copyTestImage('stl.jpg');
 		$upload_dir = wp_upload_dir();
-		$new_file = TimberImageHelper::resize($upload_dir['url'].'/stl.jpg', 500);
+		$new_file = TimberImageHelper::resize($upload_dir['url'].'/stl.jpg', 500, true);
 		$path_to_image = TimberHelper::get_rel_url($new_file, true);
 		$location_of_image = ABSPATH.$path_to_image;
 		$size = getimagesize($location_of_image);
@@ -54,7 +54,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data = array();
 		$file_loc = $this->copyTestImage('stl.jpg');
 		$upload_dir = wp_upload_dir();
-		$new_file = TimberImageHelper::resize($upload_dir['url'].'/stl.jpg', 500, 300);
+		$new_file = TimberImageHelper::resize($upload_dir['url'].'/stl.jpg', 500, 300, true);
 		$path_to_image = TimberHelper::get_rel_url($new_file, true);
 		$location_of_image = ABSPATH.$path_to_image;
 		$size = getimagesize($location_of_image);
