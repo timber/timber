@@ -2,31 +2,54 @@
 
 class TimberHelper {
 
-	public static function transient($slug, $callback, $transient_time = 0){
-		$disable_transients = false;
-		if (defined('WP_DISABLE_TRANSIENTS')){
-			$disable_transients = WP_DISABLE_TRANSIENTS;
-		}
-		$data = null;
-		if ($transient_time === false){
-			$data = $callback();
-			return $data;
-		}
-		if (is_callable($callback) && (false === ($data = get_transient($slug)) || $disable_transients) && $transient_time !== false){
-			$cache_lock_slug = $slug.'_lock';
+    /**
+     * @param string $slug Unique identifier for transient
+     * @param callable $callback Callback that generates the data that's to be cached
+     * @param int $transient_time (optional) Expiration of transients in seconds
+     * @param int $lock_timeout (optional) How long to lock the transient to prevent race conditions
+     * @param bool $force (optional) Force callback to be executed when transient is locked
+     * @return mixed
+     */
+	public static function transient( $slug, $callback, $transient_time = 0, $lock_timeout = 5, $force = false ) {
 
-			if (get_transient($cache_lock_slug)){
-				//the server is currently executing the process.
-				//We're just gonna dump these users. Sorry!
-				return false;
-			}
-			set_transient($cache_lock_slug, true, $transient_time);
-			$data = $callback();
-			set_transient($slug, $data, $transient_time);
-			delete_transient($cache_lock_slug);
-		}
-		return $data;
-	}
+        if ( $transient_time === false || ( defined( 'WP_DISABLE_TRANSIENTS' ) && WP_DISABLE_TRANSIENTS ) ) {
+            $enable_transients = false;
+        } else {
+            $enable_transients = true;
+        }
+
+        $data = $enable_transients ? get_transient( $slug ) : false;
+
+        if ( false === $data ) {
+
+            $cache_lock_slug = $slug . '_lock';
+            if ( $enable_transients && get_transient( $cache_lock_slug ) ) {
+
+                $force = apply_filters( 'timber_force_transients', $force );
+                $force = apply_filters( 'timber_force_transient_' . $slug, $force );
+
+                if ( !$force )
+                //the server is currently executing the process.
+                //We're just gonna dump these users. Sorry!
+                    return false;
+
+                $enable_transients = false;
+            }
+
+            // lock timeout shouldn't be higher than 5 seconds, unless
+            // remote calls with high timeouts are made here
+            if ( $enable_transients )
+                set_transient( $cache_lock_slug, true, $lock_timeout );
+
+            $data = $callback();
+
+            if ( $enable_transients ) {
+                set_transient( $slug, $data, $transient_time );
+                delete_transient( $cache_lock_slug );
+            }
+        }
+        return $data;
+    }
 
 	public static function start_timer(){
 		$time = microtime();
