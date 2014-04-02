@@ -168,9 +168,11 @@ class TimberLoader {
 	}
 
 	function get_twig() {
-		$loader_loc = trailingslashit(TIMBER_LOC) . 'Twig/lib/Twig/Autoloader.php';
-		require_once($loader_loc);
-		Twig_Autoloader::register();
+            if (!class_exists('Twig_Autoloader')) {
+	        $loader_loc = trailingslashit(TIMBER_LOC) . 'Twig/lib/Twig/Autoloader.php';
+	        require_once($loader_loc);
+	        Twig_Autoloader::register();
+            }
 
 		$loader = $this->get_loader();
 		$params = array('debug' => WP_DEBUG, 'autoescape' => false);
@@ -182,7 +184,7 @@ class TimberLoader {
 		}
 		$twig = new Twig_Environment($loader, $params);
 		$twig->addExtension(new Twig_Extension_Debug());
-        $twig->addExtension($this->_get_cache_extension());
+        	$twig->addExtension($this->_get_cache_extension());
 
 		$twig = apply_filters('twig_apply_filters', $twig);
 		return $twig;
