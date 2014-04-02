@@ -2,9 +2,9 @@
 
 class TimberImageTest extends WP_UnitTestCase {
 
+
 	function testExternalImageResize(){
-		if (!self::
-			is_connected()){
+		if (!self::is_connected()){
 			return null;
 		}
 		$data = array();
@@ -24,7 +24,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$exists = file_exists($resized_path);
 		$this->assertTrue($exists);
 		$old_time = filemtime($resized_path);
-		sleep(2);
+		sleep(1);
 		Timber::render('assets/image-test.twig', $data);
 		$new_time = filemtime($resized_path);
 		$this->assertEquals($old_time, $new_time);
@@ -38,6 +38,30 @@ class TimberImageTest extends WP_UnitTestCase {
 		}
 		return $destination;
 	}
+
+	function testUpSizing(){
+		$data = array();
+		$file_loc = $this->copyTestImage('stl.jpg');
+		$upload_dir = wp_upload_dir();
+		$new_file = TimberImageHelper::resize($upload_dir['url'].'/stl.jpg', 500);
+		$path_to_image = TimberHelper::get_rel_url($new_file, true);
+		$location_of_image = ABSPATH.$path_to_image;
+		$size = getimagesize($location_of_image);
+		$this->assertEquals(500, $size[0]);
+	}
+
+	function testUpSizing2Param(){
+		$data = array();
+		$file_loc = $this->copyTestImage('stl.jpg');
+		$upload_dir = wp_upload_dir();
+		$new_file = TimberImageHelper::resize($upload_dir['url'].'/stl.jpg', 500, 300);
+		$path_to_image = TimberHelper::get_rel_url($new_file, true);
+		$location_of_image = ABSPATH.$path_to_image;
+		$size = getimagesize($location_of_image);
+		$this->assertEquals(500, $size[0]);
+		$this->assertEquals(300, $size[1]);
+	}
+
 
 	function testImageResize(){
 		$data = array();
@@ -53,7 +77,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertTrue($exists);
 		//Now make sure it doesnt regenerage
 		$old_time = filemtime($resized_path);
-		sleep(2);
+		sleep(1);
 		Timber::render('assets/image-test.twig', $data);
 		$new_time = filemtime($resized_path);
 		error_log('time is '.$old_time);
