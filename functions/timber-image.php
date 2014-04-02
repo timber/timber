@@ -59,12 +59,12 @@ class TimberImage extends TimberCore {
 
 	function get_src( $size = '' ) {
 		if (isset($this->abs_url)) {
-			return $this->abs_url;
+			return $this->_maybe_secure_url( $this->abs_url );
 		}
 
         if ($size && is_string($size) && isset($this->sizes[$size])) {
         	$image = image_downsize($this->ID, $size);
-          return reset($image);
+            return $this->_maybe_secure_url( reset($image) );
         }
 
         if (!isset($this->file) && isset($this->_wp_attached_file)) {
@@ -76,8 +76,16 @@ class TimberImage extends TimberCore {
 
         $dir = wp_upload_dir();
         $base = ($dir["baseurl"]);
-        return trailingslashit($base) . $this->file;
+
+        return trailingslashit( $this->_maybe_secure_url( $base ) ) . $this->file;
   	}
+
+        private static function _maybe_secure_url( $url ) {
+            if ( is_ssl() && strpos( $url, 'https' ) !== 0 && strpos( $url, 'http' ) === 0 )
+                $url = 'https' . substr( $url, strlen( 'http' ) );
+
+            return $url;
+        }
 
 	function get_path() {
 		if (strlen($this->abs_url)) {
