@@ -12,7 +12,7 @@ class TimberMenu extends TimberCore {
         $locations = get_nav_menu_locations();
         if ($slug != 0 && is_numeric($slug)){
             $menu_id = $slug;
-        } else if (count($locations)){
+        } else if (is_array($locations) && count($locations)){
             $menu_id = $this->get_menu_id_from_locations($slug, $locations);
         } else if ($slug === false){
             $menu_id = false;
