@@ -74,7 +74,7 @@ class TimberImage extends TimberCore {
 		if (!isset($this->file))
             return false;
 
-        $dir = wp_upload_dir();
+        $dir = self::wp_upload_dir();
         $base = ($dir["baseurl"]);
 
         return trailingslashit( $this->_maybe_secure_url( $base ) ) . $this->file;
@@ -86,6 +86,15 @@ class TimberImage extends TimberCore {
 
             return $url;
         }
+
+    public static function wp_upload_dir() {
+        static $wp_upload_dir = false;
+
+        if ( !$wp_upload_dir )
+            $wp_upload_dir = wp_upload_dir();
+
+        return $wp_upload_dir;
+    }
 
 	function get_path() {
 		if (strlen($this->abs_url)) {
@@ -136,7 +145,7 @@ class TimberImage extends TimberCore {
 			$image_info = get_object_vars($image_info);
 		}
 		$this->import($image_info);
-		$basedir = wp_upload_dir();
+		$basedir = self::wp_upload_dir();
 		$basedir = $basedir['basedir'];
 		if (isset($this->file)){
 			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
