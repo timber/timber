@@ -22,8 +22,7 @@ class TimberHelper {
 
         if ( false === $data ) {
 
-            $cache_lock_slug = $slug . '_lock';
-            if ( $enable_transients && get_transient( $cache_lock_slug ) ) {
+            if ( $enable_transients && self::_is_transient_locked( $slug ) ) {
 
                 $force = apply_filters( 'timber_force_transients', $force );
                 $force = apply_filters( 'timber_force_transient_' . $slug, $force );
@@ -39,17 +38,29 @@ class TimberHelper {
             // lock timeout shouldn't be higher than 5 seconds, unless
             // remote calls with high timeouts are made here
             if ( $enable_transients )
-                set_transient( $cache_lock_slug, true, $lock_timeout );
+                self::_lock_transient( $slug, $lock_timeout );
 
             $data = $callback();
 
             if ( $enable_transients ) {
                 set_transient( $slug, $data, $transient_time );
-                delete_transient( $cache_lock_slug );
+                self::_unlock_transient( $slug );
             }
         }
         return $data;
     }
+
+        public static function _lock_transient( $slug, $lock_timeout ) {
+            set_transient( $slug . '_lock', true, $lock_timeout );
+        }
+
+        public static function _unlock_transient( $slug ) {
+            delete_transient( $slug . '_lock', true );
+        }
+
+        public static function _is_transient_locked( $slug ) {
+            return (bool) get_transient( $slug . '_lock' );
+        }
 
 	public static function start_timer(){
 		$time = microtime();
