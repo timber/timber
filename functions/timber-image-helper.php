@@ -139,63 +139,48 @@
 				$src_h = $current_size['height'];
 
 				$src_ratio = $src_w / $src_h;
-				if ( $h ) {
-
-					// Get ratios
-					$dest_ratio = $w / $h;
-					$src_wt = $src_h * $dest_ratio;
-					$src_ht = $src_w / $dest_ratio;
-
-					if ( ! $crop ) {
-						// Do not crop
-						$image->resize( $w, $h );
-					} else {
-						//start with defaults:
-						$src_x = $src_w / 2 - $src_wt / 2;
-						$src_y = ( $src_h - $src_ht ) / 6;
-						//now specific overrides based on options:
-						if ( $crop == 'center' ) {
-							// Get source x and y
-							$src_x = round( ( $src_w - $src_wt ) / 2 );
-							$src_y = round( ( $src_h - $src_ht ) / 2 );
-						} else if ($crop == 'top') {
-
-							error_log('found it on top');
-							$src_y = 0;
-						} else if ($crop == 'bottom') {
-							$src_y = $src_h - $src_ht;
-						} else if ($crop == 'left') {
-							$src_x = 0;
-						} else if ($crop == 'right') {
-							$src_x = $src_w - $src_wt;
-						}
-
-						// Crop the image
-						if ( $dest_ratio > $src_ratio ) {
-							$image->crop( 0, $src_y, $src_w, $src_ht, $w, $h );
-						} else {
-							$image->crop( $src_x, 0, $src_wt, $src_h, $w, $h );
-						}
-
-					}
-
-				} else {
-					$h = $w;
-					if ( $src_ratio < 1 ){
-						$h = $w / $src_ratio;
-						// Get source x and y
-						if ( $crop == 'center' ) {
-							$src_x = round( ( $src_w - $w ) / 2 );
-							$src_y = round( ( $src_h - $h ) / 2 );
-						} else {
-							$src_x = 0;
-							$src_y = 0;
-						}
-						$image->crop( $src_x, $src_y, $src_w, $src_h, $w, $h );
-					} else {
-						$image->resize( $w, $h );
-					}
+				if ( ! $h ) {
+					$h = round( $w / $src_ratio);
 				}
+
+				// Get ratios
+				$dest_ratio = $w / $h;
+				$src_wt = $src_h * $dest_ratio;
+				$src_ht = $src_w / $dest_ratio;
+
+				if ( ! $crop ) {
+					// Always crop, to allow resizing upwards
+					$image->crop( 0, 0, $src_w, $src_h, $w, $h );
+				} else {
+					//start with defaults:
+					$src_x = $src_w / 2 - $src_wt / 2;
+					$src_y = ( $src_h - $src_ht ) / 6;
+					//now specific overrides based on options:
+					if ( $crop == 'center' ) {
+						// Get source x and y
+						$src_x = round( ( $src_w - $src_wt ) / 2 );
+						$src_y = round( ( $src_h - $src_ht ) / 2 );
+					} else if ($crop == 'top') {
+
+						error_log('found it on top');
+						$src_y = 0;
+					} else if ($crop == 'bottom') {
+						$src_y = $src_h - $src_ht;
+					} else if ($crop == 'left') {
+						$src_x = 0;
+					} else if ($crop == 'right') {
+						$src_x = $src_w - $src_wt;
+					}
+
+					// Crop the image
+					if ( $dest_ratio > $src_ratio ) {
+						$image->crop( 0, $src_y, $src_w, $src_ht, $w, $h );
+					} else {
+						$image->crop( $src_x, 0, $src_wt, $src_h, $w, $h );
+					}
+
+				}
+
 				$result = $image->save($new_root_path);
 				if (is_wp_error($result)){
 					error_log('Error resizing image');
