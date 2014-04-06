@@ -157,6 +157,64 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals($data['post']->thumbnail()->alt(), $thumb_alt);
 	}
 
+	function testLetterbox(){
+		$data = array();
+		$file_loc = $this->copyTestImage('eastern.jpg');
+		$upload_dir = wp_upload_dir();
+		$new_file = TimberImageHelper::letterbox($upload_dir['url'].'/eastern.jpg', 500, 500, '#CCC', true);
+		$path_to_image = TimberURLHelper::get_rel_url($new_file, true);
+		$location_of_image = ABSPATH.$path_to_image;
+		$size = getimagesize($location_of_image);
+		$this->assertEquals(500, $size[0]);
+		$this->assertEquals(500, $size[1]);
+		//whats the bg/color of the image
+		$image = imagecreatefromjpeg($location_of_image);
+		$pixel_rgb = imagecolorat($image, 1, 1);
+		$colors = imagecolorsforindex($image, $pixel_rgb);
+		$this->assertEquals(204, $colors['red']);
+		$this->assertEquals(204, $colors['blue']);
+		$this->assertEquals(204, $colors['green']);
+	}
+
+	// function testLetterboxColorChange(){
+	// 	$data = array();
+	// 	$file_loc = $this->copyTestImage('eastern.jpg');
+	// 	$upload_dir = wp_upload_dir();
+	// 	$new_file_red = TimberImageHelper::letterbox($upload_dir['url'].'/eastern.jpg', 500, 500, '#FF0000');
+	// 	$new_file = TimberImageHelper::letterbox($upload_dir['url'].'/eastern.jpg', 500, 500, '#00FF00');
+	// 	$path_to_image = TimberURLHelper::get_rel_url($new_file, true);
+	// 	$location_of_image = ABSPATH.$path_to_image;
+	// 	$size = getimagesize($location_of_image);
+	// 	$this->assertEquals(500, $size[0]);
+	// 	$this->assertEquals(500, $size[1]);
+	// 	//whats the bg/color of the image
+	// 	$image = imagecreatefromjpeg($location_of_image);
+	// 	$pixel_rgb = imagecolorat($image, 1, 1);
+	// 	$colors = imagecolorsforindex($image, $pixel_rgb);
+	// 	$this->assertEquals(204, $colors['red']);
+	// 	$this->assertEquals(204, $colors['blue']);
+	// 	$this->assertEquals(204, $colors['green']);
+	// }
+
+	function testLetterboxSixCharHex(){
+		$data = array();
+		$file_loc = $this->copyTestImage('eastern.jpg');
+		$upload_dir = wp_upload_dir();
+		$new_file = TimberImageHelper::letterbox($upload_dir['url'].'/eastern.jpg', 500, 500, '#FFFFFF', true);
+		$path_to_image = TimberURLHelper::get_rel_url($new_file, true);
+		$location_of_image = ABSPATH.$path_to_image;
+		$size = getimagesize($location_of_image);
+		$this->assertEquals(500, $size[0]);
+		$this->assertEquals(500, $size[1]);
+		//whats the bg/color of the image
+		$image = imagecreatefromjpeg($location_of_image);
+		$pixel_rgb = imagecolorat($image, 1, 1);
+		$colors = imagecolorsforindex($image, $pixel_rgb);
+		$this->assertEquals(255, $colors['red']);
+		$this->assertEquals(255, $colors['blue']);
+		$this->assertEquals(255, $colors['green']);
+	}
+
 	public static function is_connected() {
 	    $connected = @fsockopen("www.google.com", [80|443]);
 	    if ($connected){

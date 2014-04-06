@@ -13,7 +13,7 @@ class TimberTwig {
 	function add_twig_filters($twig) {
 		/* image filters */
 		$twig->addFilter('resize', new Twig_Filter_Function(array('TimberImageHelper', 'resize')));
-		$twig->addFilter('letterbox', new Twig_Filter_Function('wp_resize_letterbox'));
+		$twig->addFilter('letterbox', new Twig_Filter_Function(array('TimberImageHelper', 'letterbox')));
 		$twig->addFilter('tojpg', new Twig_Filter_Function(array('TimberImageHelper', 'img_to_jpg')));
 		$twig->addFilter('get_src_from_attachment_id', new Twig_Filter_Function('twig_get_src_from_attachment_id'));
 
@@ -164,69 +164,6 @@ function hexrgb($hexstr) {
 	return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
 }
 
-function wp_resize_letterbox($src, $w, $h, $color = '#000000') {
-	$abspath = substr(ABSPATH, 0, -1);
-	$urlinfo = parse_url($src);
-	if( $_SERVER['DOCUMENT_ROOT'] != $abspath ) {
-		$subdir = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $abspath);
-		$urlinfo['path'] = str_replace('/'.$subdir.'/', '', $urlinfo['path']);
-	}
-	$old_file = ABSPATH.$urlinfo['path'];
-	$new_file = TimberImageHelper::get_letterbox_file_path($urlinfo['path'], $w, $h);
-	$urlinfo = parse_url($src);
-	$new_file_rel = TimberImageHelper::get_letterbox_file_rel($urlinfo['path'], $w, $h);
-	$new_file_boxed = str_replace('-lb-', '-lbox-', $new_file);
-	if (file_exists($new_file_boxed)) {
-		$new_file_rel = str_replace('-lb-', '-lbox-', $new_file_rel);
-		return $new_file_rel;
-	}
-	$bg = imagecreatetruecolor($w, $h);
-	$c = hexrgb($color);
-
-	$white = imagecolorallocate($bg, $c['red'], $c['green'], $c['blue']);
-	imagefill($bg, 0, 0, $white);
-
-	$image = wp_get_image_editor($old_file);
-	if (!is_wp_error($image)) {
-		$current_size = $image->get_size();
-		$ow = $current_size['width'];
-		$oh = $current_size['height'];
-		$new_aspect = $w / $h;
-		$old_aspect = $ow / $oh;
-		if ($new_aspect > $old_aspect) {
-			//taller than goal
-			$h_scale = $h / $oh;
-			$owt = $ow * $h_scale;
-			$y = 0;
-			$x = $w / 2 - $owt / 2;
-			$oht = $h;
-			$image->crop(0, 0, $ow, $oh, $owt, $oht);
-		} else {
-			$w_scale = $w / $ow;
-			$oht = $oh * $w_scale;
-			$x = 0;
-			$y = $h / 2 - $oht / 2;
-			$owt = $w;
-			$image->crop(0, 0, $ow, $oh, $owt, $oht);
-		}
-		$image->save($new_file);
-		$func = 'imagecreatefromjpeg';
-		$ext = pathinfo($new_file, PATHINFO_EXTENSION);
-		if ($ext == 'gif') {
-			$func = 'imagecreatefromgif';
-		} else if ($ext == 'png') {
-			$func = 'imagecreatefrompng';
-		}
-		$image = $func($new_file);
-		imagecopy($bg, $image, $x, $y, 0, 0, $owt, $oht);
-		$new_file = str_replace('-lb-', '-lbox-', $new_file);
-		imagejpeg($bg, $new_file);
-		return TimberURLHelper::get_rel_path($new_file);
-	} else {
-		TimberHelper::error_log($image);
-	}
-	return null;
-}
 
 function twig_time_ago($from, $to = null, $format_past='%s ago', $format_future='%s from now') {
 	$to = (($to === null) ? (time()) : ($to));
