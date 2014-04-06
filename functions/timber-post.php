@@ -310,7 +310,7 @@ class TimberPost extends TimberCore {
 	}
 
 	function get_path() {
-		return TimberHelper::get_rel_url($this->get_link());
+		return TimberURLHelper::get_rel_url($this->get_link());
 	}
 
 	function get_prev($by_taxonomy = false) {

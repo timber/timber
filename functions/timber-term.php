@@ -63,7 +63,7 @@ class TimberTerm extends TimberCore {
 			return $tid;
 		}
 		$tid = self::get_tid($tid);
-		
+
 		if(isset($this->taxonomy) && strlen($this->taxonomy)) {
 			return get_term($tid, $this->taxonomy);
 		} else {
@@ -117,7 +117,7 @@ class TimberTerm extends TimberCore {
 
 	public function get_path() {
 		$link = $this->get_link();
-		$rel = TimberHelper::get_rel_url($link, true);
+		$rel = TimberURLHelper::get_rel_url($link, true);
 		return apply_filters('timber_term_path', $rel, $this);
 	}
 

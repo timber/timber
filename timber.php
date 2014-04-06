@@ -13,6 +13,7 @@ global $timber;
 
 require_once(__DIR__ . '/functions/functions-twig.php');
 require_once(__DIR__ . '/functions/timber-helper.php');
+require_once(__DIR__ . '/functions/timber-url-helper.php');
 require_once(__DIR__ . '/functions/timber-image-helper.php');
 
 require_once(__DIR__ . '/functions/timber-core.php');
@@ -194,7 +195,6 @@ class Timber {
     }
 
     public static function get_posts_from_wp_query($query = array(), $PostClass = 'TimberPost') {
-        $start = TimberHelper::start_timer();
         $results = get_posts($query);
         return self::handle_post_results($results, $PostClass);
     }
@@ -208,7 +208,6 @@ class Timber {
     }
 
     public static function handle_post_results($results, $PostClass = 'TimberPost') {
-        $start = TimberHelper::start_timer();
         $posts = array();
         foreach ($results as $rid) {
             $PostClassUse = $PostClass;

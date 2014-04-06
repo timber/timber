@@ -39,7 +39,7 @@ class TimberTwig {
 		$twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
 		$twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
 		$twig->addFilter('relative', new Twig_Filter_Function(function($link){
-			return TimberHelper::get_rel_url($link, true);
+			return TimberURLHelper::get_rel_url($link, true);
 		}));
 
 		$twig->addFilter('truncate', new Twig_Filter_Function(function($text, $len){
@@ -165,7 +165,6 @@ function hexrgb($hexstr) {
 }
 
 function wp_resize_letterbox($src, $w, $h, $color = '#000000') {
-	//$old_file = TimberHelper::get_full_path($src);
 	$abspath = substr(ABSPATH, 0, -1);
 	$urlinfo = parse_url($src);
 	if( $_SERVER['DOCUMENT_ROOT'] != $abspath ) {
@@ -222,7 +221,7 @@ function wp_resize_letterbox($src, $w, $h, $color = '#000000') {
 		imagecopy($bg, $image, $x, $y, 0, 0, $owt, $oht);
 		$new_file = str_replace('-lb-', '-lbox-', $new_file);
 		imagejpeg($bg, $new_file);
-		return TimberHelper::get_rel_path($new_file);
+		return TimberURLHelper::get_rel_path($new_file);
 	} else {
 		TimberHelper::error_log($image);
 	}
@@ -271,7 +270,7 @@ function get_calling_script_dir($backtrace) {
 
 
 function twig_get_src_from_attachment_id($aid) {
-  return TimberHelper::get_image_path($aid);
+  return TimberImageHelper::get_image_path($aid);
 }
 
 function twig_get_path($url) {

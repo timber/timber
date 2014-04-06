@@ -140,7 +140,7 @@ class TimberMenuItem extends TimberCore {
     }
 
     function get_path() {
-        return TimberHelper::get_rel_url($this->url);
+        return TimberURLHelper::get_rel_url($this->url);
     }
 
     function add_child($item) {
@@ -169,7 +169,7 @@ class TimberMenuItem extends TimberCore {
         if ($this->type != 'custom'){
             return false;
         }
-        return TimberHelper::is_external($this->url);
+        return TimberURLHelper::is_external($this->url);
     }
 
     /* Aliases */

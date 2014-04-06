@@ -176,8 +176,8 @@ class TimberImage extends TimberCore {
 	function init_with_url($url) {
 		$this->abs_url = $url;
 		$this->file_loc = $url;
-		if (TimberHelper::is_local($url)){
-			$this->file = ABSPATH . TimberHelper::get_rel_url($url);
+		if (TimberURLHelper::is_local($url)){
+			$this->file = ABSPATH . TimberURLHelper::get_rel_url($url);
 		}
 	}
 

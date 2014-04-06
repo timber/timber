@@ -7,6 +7,13 @@
 		    return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
 		}
 
+		public static function get_image_path($iid) {
+			$size = 'full';
+			$src = wp_get_attachment_image_src($iid, $size);
+			$src = $src[0];
+			return self::get_rel_path($src);
+		}
+
 		public static function get_letterbox_file_rel($src, $w, $h) {
 			$path_parts = pathinfo($src);
 			$basename = $path_parts['filename'];
@@ -123,7 +130,7 @@
 					if ($abs){
 						return untrailingslashit(content_url()).$new_path;
 					} else {
-						return TimberHelper::preslashit($new_path);
+						return TimberURLHelper::preslashit($new_path);
 					}
 					return $new_path;
 				}

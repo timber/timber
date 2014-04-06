@@ -62,6 +62,9 @@ class TimberHelper {
             return (bool) get_transient( $slug . '_lock' );
         }
 
+    /* These are for measuring page render time */
+
+
 	public static function start_timer(){
 		$time = microtime();
 		$time = explode(' ', $time);
@@ -78,19 +81,8 @@ class TimberHelper {
 		return $total_time.' seconds.';
 	}
 
-	public static function is_array_assoc($arr) {
-		if (!is_array($arr)) {
-			return false;
-		}
-		return (bool)count(array_filter(array_keys($arr), 'is_string'));
-	}
-
-	public static function preslashit($path){
-		if (strpos($path, '/') != 0) {
-			$path = '/' . $path;
-		}
-		return $path;
-	}
+	/* Function Utilities
+	======================== */
 
 	public static function ob_function($function, $args = array(null)) {
 		ob_start();
@@ -104,109 +96,6 @@ class TimberHelper {
         return new TimberFunctionWrapper($function_name, $defaults, $return_output_buffer);
     }
 
-	public static function is_url($url) {
-		if (!is_string($url)){
-			return false;
-		}
-		$url = strtolower($url);
-		if (strstr('://', $url)) {
-			return true;
-		}
-		return false;
-	}
-
-	public static function get_path_base() {
-		$struc = get_option('permalink_structure');
-		$struc = explode('/', $struc);
-		$p = '/';
-		foreach ($struc as $s) {
-			if (!strstr($s, '%') && strlen($s)) {
-				$p .= $s . '/';
-			}
-		}
-		return $p;
-	}
-
-	public static function get_full_path($src) {
-		$root = ABSPATH;
-		$old_root_path = $root . $src;
-		$old_root_path = str_replace('//', '/', $old_root_path);
-		return $old_root_path;
-	}
-
-	public static function is_local($url){
-		if (strstr($url, $_SERVER['HTTP_HOST'])){
-			return true;
-		}
-		return false;
-	}
-
-	/* URL Stuff
-	======================== */
-
-	public static function get_rel_url($url, $force = false){
-		if (!strstr($url, $_SERVER['HTTP_HOST']) && !$force){
-			return $url;
-		}
-		$url_info = parse_url($url);
-		$link = $url_info['path'];
-		if (isset($url_info['query']) && strlen($url_info['query'])){
-			$link .= '?'.$url_info['query'];
-		}
-		return $link;
-	}
-
-	public static function get_rel_path($src) {
-		return str_replace(ABSPATH, '', $src);
-	}
-
-	public static function remove_double_slashes($url){
-		$url = str_replace('//', '/', $url);
-		if (strstr($url, 'http:') && !strstr($url, 'http://')){
-			$url = str_replace('http:/', 'http://', $url);
-		}
-		return $url;
-	}
-
-	public static function prepend_to_url($url, $path){
-		if (strstr(strtolower($url), 'http')){
-			$url_parts = parse_url($url);
-			$url = $url_parts['scheme'].'://'.$url_parts['host'].$path.$url_parts['path'];
-		} else {
-			$url = $url.$path;
-		}
-		return self::remove_double_slashes($url);
-	}
-
-	public static function download_url($url, $timeout = 300) {
-		if (!$url) {
-			return new WP_Error('http_no_url', __('Invalid URL Provided.'));
-		}
-
-		$tmpfname = wp_tempnam($url);
-		if (!$tmpfname) {
-			return new WP_Error('http_no_file', __('Could not create Temporary file.'));
-		}
-
-		$response = wp_remote_get($url, array('timeout' => $timeout, 'stream' => true, 'filename' => $tmpfname));
-
-		if (is_wp_error($response)) {
-			unlink($tmpfname);
-			return $response;
-		}
-		if (200 != wp_remote_retrieve_response_code($response)) {
-			unlink($tmpfname);
-			return new WP_Error('http_404', trim(wp_remote_retrieve_response_message($response)));
-		}
-		return $tmpfname;
-	}
-
-	public static function osort(&$array, $prop) {
-		usort($array, function ($a, $b) use ($prop) {
-			return $a->$prop > $b->$prop ? 1 : -1;
-		});
-	}
-
 	public static function error_log($arg) {
 		if (!WP_DEBUG){
 			return;
@@ -217,22 +106,6 @@ class TimberHelper {
 		error_log($arg);
 	}
 
-	public static function get_params($i = -1) {
-		$args = explode('/', trim(strtolower($_SERVER['REQUEST_URI'])));
-		$newargs = array();
-		foreach ($args as $arg) {
-			if (strlen($arg)) {
-				$newargs[] = $arg;
-			}
-		}
-		if ($i > -1) {
-			if (isset($newargs[$i])) {
-				return $newargs[$i];
-			}
-		}
-		return $newargs;
-	}
-
 	public static function get_wp_title() {
 		add_filter('wp_title', function($title) {
 			return $title . get_bloginfo('name');
@@ -241,18 +114,8 @@ class TimberHelper {
 		return wp_title('|', false, 'right');
 	}
 
-	public static function get_current_url() {
-		$pageURL = "http://";
-		if (isset($_SERVER['HTTPS']) && $_SERVER["HTTPS"] == "on"){
-			$pageURL = "https://";;
-		}
-		if ($_SERVER["SERVER_PORT"] != "80") {
-			$pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
-		} else {
-			$pageURL .= $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
-		}
-		return $pageURL;
-	}
+	/* Text Utilities
+	======================== */
 
 	public static function trim_words($text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br') {
 		if (null === $more) {
@@ -310,6 +173,20 @@ class TimberHelper {
 		return $html;
 	}
 
+	public static function twitterify($ret) {
+		$ret = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t< ]*)#", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $ret);
+		$ret = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r< ]*)#", "\\1<a href=\"http://\\2\" target=\"_blank\">\\2</a>", $ret);
+		$pattern = '#([0-9a-z]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.';
+		$pattern .= '[a-wyz][a-z](fo|g|l|m|mes|o|op|pa|ro|seum|t|u|v|z)?)#i';
+		$ret = preg_replace($pattern, '<a href="mailto:\\1">\\1</a>', $ret);
+		$ret = preg_replace("/\B@(\w+)/", " <a href=\"http://www.twitter.com/\\1\" target=\"_blank\">@\\1</a>", $ret);
+		$ret = preg_replace("/\B#(\w+)/", " <a href=\"http://search.twitter.com/search?q=\\1\" target=\"_blank\">#\\1</a>", $ret);
+		return $ret;
+	}
+
+	/* WordPress Query Utilities
+	======================== */
+
 	public static function get_posts_by_meta($key, $value) {
 		global $wpdb;
 		$query = $wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $key, $value);
@@ -344,25 +221,20 @@ class TimberHelper {
 		return $wpdb->get_var($query);
 	}
 
-	/* this $args thing is a fucking mess, fix at some point:
+	/* Object Utilities
+	======================== */
 
-	http://codex.wordpress.org/Function_Reference/comment_form */
-
-	public static function get_comment_form($post_id = null, $args = array()) {
-		ob_start();
-		comment_form($args, $post_id);
-		$ret = ob_get_contents();
-		ob_end_clean();
-		return $ret;
+	public static function osort(&$array, $prop) {
+		usort($array, function ($a, $b) use ($prop) {
+			return $a->$prop > $b->$prop ? 1 : -1;
+		});
 	}
 
-	public static function is_true($property) {
-		if (isset($property)) {
-			if ($property == 'true' || $property == 1 || $property == '1' || $property == true) {
-				return true;
-			}
+	public static function is_array_assoc($arr) {
+		if (!is_array($arr)) {
+			return false;
 		}
-		return false;
+		return (bool)count(array_filter(array_keys($arr), 'is_string'));
 	}
 
 	public static function array_to_object($array) {
@@ -409,18 +281,23 @@ class TimberHelper {
 		return null;
 	}
 
-	public static function get_image_path($iid) {
-		$size = 'full';
-		$src = wp_get_attachment_image_src($iid, $size);
-		$src = $src[0];
-		return self::get_rel_path($src);
-	}
-
 	public static function array_truncate($array, $len) {
 		if (sizeof($array) > $len) {
 			$array = array_splice($array, 0, $len);
 		}
 		return $array;
+	}
+
+	/* Bool Utilities
+	======================== */
+
+	public static function is_true($property) {
+		if (isset($property)) {
+			if ($property == 'true' || $property == 1 || $property == '1' || $property == true) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static function iseven($i) {
@@ -431,23 +308,18 @@ class TimberHelper {
 		return ($i % 2) != 0;
 	}
 
-	public static function is_external($url){
-		$has_http = strstr(strtolower($url), 'http');
-        $on_domain = strstr($url, $_SERVER['HTTP_HOST']);
-        if ($has_http && !$on_domain){
-            return true;
-        }
-        return false;
-	}
+	/* Links, Forms, Etc. Utilities
+	======================== */
 
-	public static function twitterify($ret) {
-		$ret = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t< ]*)#", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $ret);
-		$ret = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r< ]*)#", "\\1<a href=\"http://\\2\" target=\"_blank\">\\2</a>", $ret);
-		$pattern = '#([0-9a-z]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.';
-		$pattern .= '[a-wyz][a-z](fo|g|l|m|mes|o|op|pa|ro|seum|t|u|v|z)?)#i';
-		$ret = preg_replace($pattern, '<a href="mailto:\\1">\\1</a>', $ret);
-		$ret = preg_replace("/\B@(\w+)/", " <a href=\"http://www.twitter.com/\\1\" target=\"_blank\">@\\1</a>", $ret);
-		$ret = preg_replace("/\B#(\w+)/", " <a href=\"http://search.twitter.com/search?q=\\1\" target=\"_blank\">#\\1</a>", $ret);
+	/* this $args thing is a fucking mess, fix at some point:
+
+	http://codex.wordpress.org/Function_Reference/comment_form */
+
+	public static function get_comment_form($post_id = null, $args = array()) {
+		ob_start();
+		comment_form($args, $post_id);
+		$ret = ob_get_contents();
+		ob_end_clean();
 		return $ret;
 	}
 
@@ -525,6 +397,66 @@ class TimberHelper {
 		}
 		return $page_links;
 	}
+
+	/* LEGACY These have since been re-organized; but keeping linkages for backwards-compatability */
+
+	public static function get_image_path($iid){
+		return TimberImageHelper::get_image_path($iid);
+	}
+
+	public static function get_current_url() {
+		return TimberURLHelper::get_current_url();
+	}
+
+	public static function is_url($url) {
+		return TimberURLHelper::is_url($url);
+	}
+
+	public static function get_path_base() {
+		return TimberURLHelper::get_path_base();
+	}
+
+	public static function get_rel_url($url, $force = false){
+		return TimberURLHelper::get_rel_url($url, $force);
+	}
+
+	public static function is_local($url){
+		return TimberURLHelper::is_local($url);
+	}
+
+	public static function get_full_path($src) {
+		return TimberURLHelper::get_full_path($src);
+	}
+
+	public static function get_rel_path($src) {
+		return TimberURLHelper::get_rel_path($src);
+	}
+
+	public static function remove_double_slashes($url){
+		return TimberURLHelper::remove_double_slashes($url);
+	}
+
+	public static function prepend_to_url($url, $path){
+		return TimberURLHelper::prepend_to_url($url, $path);
+	}
+
+	public static function preslashit($path){
+		return TimberURLHelper::preslashit($path);
+	}
+
+	public static function is_external($url){
+		return TimberURLHelper::is_external($url);
+	}
+
+	public static function download_url($url, $timeout = 300) {
+		return TimberURLHelper::download_url($url, $timeout);
+	}
+
+	public static function get_params($i = -1) {
+		return TimberURLHelper::get_params($i);
+	}
+
+
 }
 
 class WPHelper extends TimberHelper {
