@@ -157,6 +157,13 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals($data['post']->thumbnail()->alt(), $thumb_alt);
 	}
 
+	function testLetterboxFileNaming(){
+		$file_loc = $this->copyTestImage('eastern.jpg');
+		$filename = TimberImageHelper::get_letterbox_file_rel($file_loc, 300, 500, '#FFFFFF');
+		$filename = str_replace(ABSPATH, '', $filename);
+		$this->assertEquals('wp-content/uploads/'.date('Y/m').'/eastern-lbox-300x500-FFFFFF.jpg', $filename);
+	}
+
 	function testLetterbox(){
 		$data = array();
 		$file_loc = $this->copyTestImage('eastern.jpg');
@@ -176,25 +183,24 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals(204, $colors['green']);
 	}
 
-	// function testLetterboxColorChange(){
-	// 	$data = array();
-	// 	$file_loc = $this->copyTestImage('eastern.jpg');
-	// 	$upload_dir = wp_upload_dir();
-	// 	$new_file_red = TimberImageHelper::letterbox($upload_dir['url'].'/eastern.jpg', 500, 500, '#FF0000');
-	// 	$new_file = TimberImageHelper::letterbox($upload_dir['url'].'/eastern.jpg', 500, 500, '#00FF00');
-	// 	$path_to_image = TimberURLHelper::get_rel_url($new_file, true);
-	// 	$location_of_image = ABSPATH.$path_to_image;
-	// 	$size = getimagesize($location_of_image);
-	// 	$this->assertEquals(500, $size[0]);
-	// 	$this->assertEquals(500, $size[1]);
-	// 	//whats the bg/color of the image
-	// 	$image = imagecreatefromjpeg($location_of_image);
-	// 	$pixel_rgb = imagecolorat($image, 1, 1);
-	// 	$colors = imagecolorsforindex($image, $pixel_rgb);
-	// 	$this->assertEquals(204, $colors['red']);
-	// 	$this->assertEquals(204, $colors['blue']);
-	// 	$this->assertEquals(204, $colors['green']);
-	// }
+	function testLetterboxColorChange(){
+		$data = array();
+		$file_loc = $this->copyTestImage('eastern.jpg');
+		$upload_dir = wp_upload_dir();
+		$new_file_red = TimberImageHelper::letterbox($upload_dir['url'].'/eastern.jpg', 500, 500, '#FF0000');
+		$new_file = TimberImageHelper::letterbox($upload_dir['url'].'/eastern.jpg', 500, 500, '#00FF00');
+		$path_to_image = TimberURLHelper::get_rel_url($new_file, true);
+		$location_of_image = ABSPATH.$path_to_image;
+		$size = getimagesize($location_of_image);
+		$this->assertEquals(500, $size[0]);
+		$this->assertEquals(500, $size[1]);
+		//whats the bg/color of the image
+		$image = imagecreatefromjpeg($location_of_image);
+		$pixel_rgb = imagecolorat($image, 1, 1);
+		$colors = imagecolorsforindex($image, $pixel_rgb);
+		$this->assertEquals(0, $colors['red']);
+		$this->assertEquals(255, $colors['green']);
+	}
 
 	function testLetterboxSixCharHex(){
 		$data = array();

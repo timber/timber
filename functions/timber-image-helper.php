@@ -20,22 +20,24 @@
 			return self::get_rel_path($src);
 		}
 
-		public static function get_letterbox_file_rel($src, $w, $h) {
+		public static function get_letterbox_file_rel($src, $w, $h, $color) {
 			$path_parts = pathinfo($src);
 			$basename = $path_parts['filename'];
 			$ext = $path_parts['extension'];
 			$dir = $path_parts['dirname'];
-			$newbase = $basename . '-lbox-' . $w . 'x' . $h;
+			$color = str_replace('#', '', $color);
+			$newbase = $basename . '-lbox-' . $w . 'x' . $h . '-' . $color;
 			$new_path = $dir . '/' . $newbase . '.' . $ext;
 			return $new_path;
 		}
 
-		public static function get_letterbox_file_path($src, $w, $h) {
+		public static function get_letterbox_file_path($src, $w, $h, $color) {
 			$path_parts = pathinfo($src);
 			$basename = $path_parts['filename'];
 			$ext = $path_parts['extension'];
 			$dir = $path_parts['dirname'];
-			$newbase = $basename . '-lbox-' . $w . 'x' . $h;
+			$color = str_replace('#', '', $color);
+			$newbase = $basename . '-lbox-' . $w . 'x' . $h . '-' . $color;
 			$new_path = $dir . '/' . $newbase . '.' . $ext;
 			$new_root_path = ABSPATH . $new_path;
 			$new_root_path = str_replace('//', '/', $new_root_path);
@@ -50,9 +52,9 @@
 				$urlinfo['path'] = str_replace('/'.$subdir.'/', '', $urlinfo['path']);
 			}
 			$old_file = ABSPATH.$urlinfo['path'];
-			$new_file = self::get_letterbox_file_path($urlinfo['path'], $w, $h);
+			$new_file = self::get_letterbox_file_path($urlinfo['path'], $w, $h, $color);
 			$urlinfo = parse_url($src);
-			$new_file_rel = self::get_letterbox_file_rel($urlinfo['path'], $w, $h);
+			$new_file_rel = self::get_letterbox_file_rel($urlinfo['path'], $w, $h, $color);
 			if (file_exists($new_file_rel) && !$force) {
 				return $new_file_rel;
 			}
@@ -85,6 +87,7 @@
 					$owt = $w;
 					$image->crop(0, 0, $ow, $oh, $owt, $oht);
 				}
+
 				$image->save($new_file);
 				$func = 'imagecreatefromjpeg';
 				$ext = pathinfo($new_file, PATHINFO_EXTENSION);
@@ -95,7 +98,6 @@
 				}
 				$image = $func($new_file);
 				imagecopy($bg, $image, $x, $y, 0, 0, $owt, $oht);
-				$new_file = str_replace('-lb-', '-lbox-', $new_file);
 				imagejpeg($bg, $new_file);
 				return TimberURLHelper::get_rel_path($new_file);
 			} else {
