@@ -369,7 +369,13 @@ class TimberPost extends TimberCore {
 	function get_display_date($use = 'post_date') {
 		return date(get_option('date_format'), strtotime($this->$use));
 	}
-
+	
+	function get_month_lang($lang="en_EN",$use = 'post_date') {
+		setlocale(LC_ALL,$lang);
+		return strftime("%B",strtotime($this->$use));
+		/*{{item.get_month_lang("es_ES")}}*/
+	}
+	
 	function get_children($post_type = 'any', $childPostClass = false) {
 		if ($childPostClass == false) {
 			$childPostClass = $this->PostClass;
