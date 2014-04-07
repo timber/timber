@@ -165,7 +165,6 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testLetterbox(){
-		$data = array();
 		$file_loc = $this->copyTestImage('eastern.jpg');
 		$upload_dir = wp_upload_dir();
 		$new_file = TimberImageHelper::letterbox($upload_dir['url'].'/eastern.jpg', 500, 500, '#CCC', true);
@@ -184,7 +183,6 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testLetterboxColorChange(){
-		$data = array();
 		$file_loc = $this->copyTestImage('eastern.jpg');
 		$upload_dir = wp_upload_dir();
 		$new_file_red = TimberImageHelper::letterbox($upload_dir['url'].'/eastern.jpg', 500, 500, '#FF0000');
@@ -197,6 +195,24 @@ class TimberImageTest extends WP_UnitTestCase {
 		//whats the bg/color of the image
 		$image = imagecreatefromjpeg($location_of_image);
 		$pixel_rgb = imagecolorat($image, 1, 1);
+		$colors = imagecolorsforindex($image, $pixel_rgb);
+		$this->assertEquals(0, $colors['red']);
+		$this->assertEquals(255, $colors['green']);
+	}
+
+	function testLetterboxTransparent(){
+		$base_file = 'eastern-trans.png';
+		$file_loc = $this->copyTestImage($base_file);
+		$upload_dir = wp_upload_dir();
+		$new_file = TimberImageHelper::letterbox($upload_dir['url'].'/'.$base_file, 500, 500, '#00FF00', true);
+		$path_to_image = TimberURLHelper::get_rel_url($new_file, true);
+		$location_of_image = ABSPATH.$path_to_image;
+		$size = getimagesize($location_of_image);
+		$this->assertEquals(500, $size[0]);
+		$this->assertEquals(500, $size[1]);
+		//whats the bg/color of the image
+		$image = imagecreatefromjpeg($location_of_image);
+		$pixel_rgb = imagecolorat($image, 250, 250);
 		$colors = imagecolorsforindex($image, $pixel_rgb);
 		$this->assertEquals(0, $colors['red']);
 		$this->assertEquals(255, $colors['green']);
