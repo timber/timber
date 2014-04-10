@@ -11,7 +11,6 @@ class TimberHelper {
      * @return mixed
      */
 	public static function transient( $slug, $callback, $transient_time = 0, $lock_timeout = 5, $force = false ) {
-
         if ( $transient_time === false || ( defined( 'WP_DISABLE_TRANSIENTS' ) && WP_DISABLE_TRANSIENTS ) ) {
             $enable_transients = false;
         } else {
@@ -417,11 +416,7 @@ class TimberHelper {
      * @return string
      */
 	public static function get_comment_form($post_id = null, $args = array()) {
-		ob_start();
-		comment_form($args, $post_id);
-		$ret = ob_get_contents();
-		ob_end_clean();
-		return $ret;
+		return self::ob_function('comment_form', array($args, $post_id));
 	}
 
 	/**
