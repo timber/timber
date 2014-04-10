@@ -10,22 +10,35 @@ class TimberImage extends TimberCore {
 
 	public static $representation = 'image';
 
-	function __construct($iid) {
+    /**
+     * @param int $iid
+     */
+    function __construct($iid) {
 		$this->init($iid);
 	}
 
-	function __toString() {
+    /**
+     * @return string
+     */
+    function __toString() {
 		if ($this->get_src()){
 			return $this->get_src();
 		}
 		return '';
 	}
 
-	function get_pathinfo(){
+    /**
+     * @return mixed
+     */
+    function get_pathinfo(){
 		return pathinfo($this->file);
 	}
 
-	function get_dimensions($dim = null){
+    /**
+     * @param string $dim
+     * @return array|int
+     */
+    function get_dimensions($dim = null){
 		if (isset($this->_dimensions)){
 			return $this->get_dimensions_loaded($dim);
 		}
@@ -37,7 +50,11 @@ class TimberImage extends TimberCore {
 		return $this->get_dimensions_loaded($dim);
 	}
 
-	function get_dimensions_loaded($dim){
+    /**
+     * @param string $dim
+     * @return array|int
+     */
+    function get_dimensions_loaded($dim){
 		if ($dim == null){
 			return $this->_dimensions;
 		}
@@ -49,15 +66,25 @@ class TimberImage extends TimberCore {
 		}
 	}
 
-	function get_width(){
+    /**
+     * @return int
+     */
+    function get_width(){
 		return $this->get_dimensions('width');
 	}
 
-	function get_height(){
+    /**
+     * @return int
+     */
+    function get_height(){
 		return $this->get_dimensions('height');
 	}
 
-	function get_src( $size = '' ) {
+    /**
+     * @param string $size
+     * @return bool|string
+     */
+    function get_src( $size = '' ) {
 		if (isset($this->abs_url)) {
 			return $this->_maybe_secure_url( $this->abs_url );
 		}
@@ -80,6 +107,7 @@ class TimberImage extends TimberCore {
         return trailingslashit( $this->_maybe_secure_url( $base ) ) . $this->file;
   	}
 
+<<<<<<< HEAD
         private static function _maybe_secure_url( $url ) {
             if ( is_ssl() && strpos( $url, 'https' ) !== 0 && strpos( $url, 'http' ) === 0 )
                 $url = 'https' . substr( $url, strlen( 'http' ) );
@@ -97,25 +125,41 @@ class TimberImage extends TimberCore {
     }
 
 	function get_path() {
+=======
+    /**
+     * @return string
+     */
+    function get_path() {
+>>>>>>> bc9b427a682643f675a3581ecb230727cecc2981
 		if (strlen($this->abs_url)) {
 			return $this->abs_url;
 		}
 		return get_permalink($this->ID);
 	}
 
-	function get_parent() {
+    /**
+     * @return bool|TimberImage
+     */
+    function get_parent() {
 		if (!$this->post_parent) {
 			return false;
 		}
 		return new $this->PostClass($this->post_parent);
 	}
 
+<<<<<<< HEAD
 	function get_alt() {
 		$alt = trim(strip_tags(get_post_meta($this->ID, '_wp_attachment_image_alt', true)));
 		return $alt;
 	}
 
 	function init($iid) {
+=======
+    /**
+     * @param int $iid
+     */
+    function init($iid) {
+>>>>>>> bc9b427a682643f675a3581ecb230727cecc2981
 		if (!is_numeric($iid) && is_string($iid)) {
 			if (strstr($iid, '://')) {
 				$this->init_with_url($iid);
@@ -173,7 +217,10 @@ class TimberImage extends TimberCore {
 		}
 	}
 
-	function init_with_url($url) {
+    /**
+     * @param string $url
+     */
+    function init_with_url($url) {
 		$this->abs_url = $url;
 		$this->file_loc = $url;
 		if (TimberURLHelper::is_local($url)){
@@ -181,28 +228,44 @@ class TimberImage extends TimberCore {
 		}
 	}
 
-	/* deprecated */
-	function get_url() {
+    /**
+     * @deprecated
+     * @return string
+     */
+    function get_url() {
 		return $this->get_src();
 	}
 
 	/* Alias */
 
-	public function aspect(){
+    /**
+     * @return float
+     */
+    public function aspect(){
 		$w = intval($this->width());
 		$h = intval($this->height());
 		return $w/$h;
 	}
 
-	public function height(){
+    /**
+     * @return int
+     */
+    public function height(){
 		return $this->get_height();
 	}
 
-	public function src($size = '') {
+    /**
+     * @param string $size
+     * @return bool|string
+     */
+    public function src($size = '') {
 		return $this->get_src($size);
 	}
 
-	public function width(){
+    /**
+     * @return int
+     */
+    public function width(){
 		return $this->get_width();
 	}
 
