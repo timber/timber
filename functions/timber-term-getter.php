@@ -2,13 +2,21 @@
 
 class TimberTermGetter {
 
-	public static function get_term_query_from_query_string($query_string){
+    /**
+     * @param string $query_string
+     * @return stdClass
+     */
+    public static function get_term_query_from_query_string($query_string){
         $args = array();
         parse_str($query_string, $args);
         $ret = self::get_term_query_from_assoc_array($args);
         return $ret;
     }
 
+    /**
+     * @param string $taxs
+     * @return stdClass
+     */
     public static function get_term_query_from_string($taxs){
         $ret = new stdClass();
         $ret->args = array();
@@ -19,6 +27,10 @@ class TimberTermGetter {
         return $ret;
     }
 
+    /**
+     * @param array $args
+     * @return stdClass
+     */
     public static function get_term_query_from_assoc_array($args){
         $ret = new stdClass();
         $ret->args = $args;
@@ -40,6 +52,10 @@ class TimberTermGetter {
         return $ret;
     }
 
+    /**
+     * @param array $args
+     * @return stdClass
+     */
     public static function get_term_query_from_array($args){
     	if (is_array($args) && !empty($args)){
     		//okay its an array with content
@@ -51,6 +67,10 @@ class TimberTermGetter {
     	}
     }
 
+    /**
+     * @param array $args
+     * @return stdClass
+     */
     public static function get_term_query_from_array_of_ids($args){
     	$ret = new stdClass();
     	$ret->taxonomies = get_taxonomies();
@@ -58,6 +78,10 @@ class TimberTermGetter {
     	return $ret;
     }
 
+    /**
+     * @param array $args
+     * @return stdClass
+     */
     public static function get_term_query_from_array_of_strings($args){
     	$ret = new stdClass();
     	$ret->taxonomies = self::correct_taxonomy_names($args);
@@ -65,6 +89,10 @@ class TimberTermGetter {
     	return $ret;
     }
 
+    /**
+     * @param string|array $taxs
+     * @return array
+     */
     private static function correct_taxonomy_names($taxs){
         if (is_string($taxs)){
             $taxs = array($taxs);

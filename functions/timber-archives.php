@@ -7,18 +7,36 @@ class TimberArchives extends TimberCore {
 		$this->init($args, $base);
 	}
 
-	function init($args, $base = ''){
+    /**
+     * @param array|string $args
+     * @param string $base
+     */
+    function init($args, $base = ''){
 		$this->base = $base;
 		$this->items = $this->get_items($args);
 	}
 
-	function get_archives_link($url, $text) {
+    /**
+     * @param string $url
+     * @param string $text
+     * @return mixed
+     */
+    function get_archives_link($url, $text) {
 		$ret['text'] = $ret['title'] = $ret['name'] = wptexturize($text);
 		$ret['url'] = $ret['link'] = esc_url(TimberURLHelper::prepend_to_url($url, $this->base));
 		return $ret;
 	}
 
-	function get_items_yearly($args, $last_changed, $join, $where, $order, $limit){
+    /**
+     * @param array|string $args
+     * @param string $last_changed
+     * @param string $join
+     * @param string $where
+     * @param string $order
+     * @param string $limit
+     * @return array
+     */
+    function get_items_yearly($args, $last_changed, $join, $where, $order, $limit){
 		global $wpdb;
 		$output = array();
 		$query = "SELECT YEAR(post_date) AS `year`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date) ORDER BY post_date $order $limit";
@@ -38,7 +56,17 @@ class TimberArchives extends TimberCore {
 		return $output;
 	}
 
-	function get_items_montly($args, $last_changed, $join, $where, $order, $limit, $nested = true){
+    /**
+     * @param array|string $args
+     * @param string $last_changed
+     * @param string $join
+     * @param string $where
+     * @param string $order
+     * @param string $limit
+     * @param bool $nested
+     * @return array
+     */
+    function get_items_montly($args, $last_changed, $join, $where, $order, $limit, $nested = true){
 		global $wpdb, $wp_locale;
 		$output = array();
 		$defaults = array(
@@ -82,7 +110,11 @@ class TimberArchives extends TimberCore {
 		return $output;
 	}
 
-	function get_items($args){
+    /**
+     * @param array|string $args
+     * @return array|string
+     */
+    function get_items($args){
 		global $wpdb, $wp_locale;
 
 		$defaults = array(

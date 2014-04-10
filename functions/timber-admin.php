@@ -9,7 +9,12 @@ class TimberAdmin {
 		add_filter( 'plugin_action_links', array(&$this, 'settings_link'), 10, 2 );
 	}
 
-	function settings_link( $links, $file ) {
+    /**
+     * @param array $links
+     * @param string $file
+     * @return array
+     */
+    function settings_link( $links, $file ) {
 		if (strstr($file, '/timber.php')){
 		    return array_merge(
 		        array(

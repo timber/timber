@@ -7,10 +7,16 @@ class TimberUser extends TimberCore {
 
     public static $representation = 'user';
 
+    /**
+     * @param int|bool $uid
+     */
     function __construct($uid = false) {
         $this->init($uid);
     }
 
+    /**
+     * @return string
+     */
     function __toString(){
         $name = $this->name();
         if (strlen($name)){
@@ -22,6 +28,10 @@ class TimberUser extends TimberCore {
         return '';
     }
 
+    /**
+     * @param string $field_name
+     * @return null
+     */
     function get_meta($field_name){
         $value = null;
         $value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
@@ -32,6 +42,10 @@ class TimberUser extends TimberCore {
         return $value;
     }
 
+    /**
+     * @param string $field
+     * @param mixed $value
+     */
     function __set($field, $value){
         if ($field == 'name'){
             $this->display_name = $value;
@@ -39,6 +53,9 @@ class TimberUser extends TimberCore {
         $this->$field = $value;
     }
 
+    /**
+     * @return string
+     */
     public function get_link() {
         if (!$this->_link){
             $this->_link = get_author_posts_url($this->ID);
@@ -46,6 +63,9 @@ class TimberUser extends TimberCore {
         return $this->_link;
     }
 
+    /**
+     * @param int|bool $uid
+     */
     function init($uid = false) {
         if ($uid === false) {
             $uid = get_current_user_id();
@@ -60,6 +80,10 @@ class TimberUser extends TimberCore {
         }
     }
 
+    /**
+     * @param string $field_name
+     * @return mixed
+     */
     function get_meta_field($field_name){
         $value = null;
         $value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
@@ -70,6 +94,9 @@ class TimberUser extends TimberCore {
         return $value;
     }
 
+    /**
+     * @return array|null
+     */
     function get_custom() {
         if ($this->ID) {
             $um = array();
@@ -95,34 +122,59 @@ class TimberUser extends TimberCore {
         $this->import($custom);
     }
 
+    /**
+     * @return string
+     */
     function name() {
         return $this->display_name;
     }
 
+    /**
+     * @return string
+     */
     function get_permalink(){
         return $this->get_link();
     }
 
+    /**
+     * @return string
+     */
     function permalink() {
         return $this->get_link();
     }
 
+    /**
+     * @return string
+     */
     function get_path() {
         return $this->get_link();
     }
 
+    /**
+     * @param string $field_name
+     * @return mixed
+     */
     function meta($field_name){
         return $this->get_meta_field($field_name);
     }
 
+    /**
+     * @return string
+     */
     function path() {
         return $this->get_path();
     }
 
+    /**
+     * @return string
+     */
     function slug() {
         return $this->user_nicename;
     }
 
+    /**
+     * @return string
+     */
     function link(){
         return $this->get_link();
     }

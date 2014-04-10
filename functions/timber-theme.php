@@ -2,11 +2,17 @@
 
 	class TimberTheme extends TimberCore {
 
-		function __construct($slug = null){
+        /**
+         * @param string $slug
+         */
+        function __construct($slug = null){
 			$this->init($slug);
 		}
 
-		function init($slug = null){
+        /**
+         * @param string $slug
+         */
+        function init($slug = null){
 			$data = wp_get_theme($slug);
 			$this->name = $data->get('Name');
 			$ss = $data->get_stylesheet();
@@ -24,11 +30,19 @@
 			}
 		}
 
-		public function theme_mod($name, $default = false){
+        /**
+         * @param string $name
+         * @param bool $default
+         * @return string
+         */
+        public function theme_mod($name, $default = false){
 			return get_theme_mod($name, $default);
 		}
 
-		public function theme_mods(){
+        /**
+         * @return string
+         */
+        public function theme_mods(){
 			return get_theme_mods();
 		}
 
