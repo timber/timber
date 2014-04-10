@@ -13,6 +13,8 @@
 			if (strlen($hexstr) == 4){
 				$hexstr = '#' . $hexstr[1] . $hexstr[1] . $hexstr[2] . $hexstr[2] . $hexstr[3] . $hexstr[3];
 			}
+			$int = hexdec($hexstr);
+		    return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
 		}
 
         /**
@@ -71,7 +73,7 @@
 		 * @param string $color
 		 * @return mixed|null|string
 		 */
-		function letterbox($src, $w, $h, $color = '#000000', $force = false) {
+		public static function letterbox($src, $w, $h, $color = '#000000', $force = false) {
 			$abspath = substr(ABSPATH, 0, -1);
 			$urlinfo = parse_url($src);
 			if( $_SERVER['DOCUMENT_ROOT'] != $abspath ) {
@@ -87,10 +89,8 @@
 			}
 			$bg = imagecreatetruecolor($w, $h);
 			$c = self::hexrgb($color);
-
 			$white = imagecolorallocate($bg, $c['red'], $c['green'], $c['blue']);
 			imagefill($bg, 0, 0, $white);
-
 			$image = wp_get_image_editor($old_file);
 			if (!is_wp_error($image)) {
 				$current_size = $image->get_size();
@@ -114,7 +114,6 @@
 					$owt = $w;
 					$image->crop(0, 0, $ow, $oh, $owt, $oht);
 				}
-
 				$image->save($new_file);
 				$func = 'imagecreatefromjpeg';
 				$ext = pathinfo($new_file, PATHINFO_EXTENSION);
@@ -138,7 +137,7 @@
          * @param string $bghex
          * @return string
          */
-        function img_to_jpg($src, $bghex = '#FFFFFF'){
+        public static function img_to_jpg($src, $bghex = '#FFFFFF'){
 			$src = str_replace(site_url(), '', $src);
 			$output = str_replace('.png', '.jpg', $src);
         	$input_file = ABSPATH . $src;
