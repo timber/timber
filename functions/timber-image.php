@@ -107,7 +107,6 @@ class TimberImage extends TimberCore {
         return trailingslashit( $this->_maybe_secure_url( $base ) ) . $this->file;
   	}
 
-<<<<<<< HEAD
         private static function _maybe_secure_url( $url ) {
             if ( is_ssl() && strpos( $url, 'https' ) !== 0 && strpos( $url, 'http' ) === 0 )
                 $url = 'https' . substr( $url, strlen( 'http' ) );
@@ -124,13 +123,10 @@ class TimberImage extends TimberCore {
         return $wp_upload_dir;
     }
 
-	function get_path() {
-=======
     /**
      * @return string
      */
     function get_path() {
->>>>>>> bc9b427a682643f675a3581ecb230727cecc2981
 		if (strlen($this->abs_url)) {
 			return $this->abs_url;
 		}
@@ -147,19 +143,16 @@ class TimberImage extends TimberCore {
 		return new $this->PostClass($this->post_parent);
 	}
 
-<<<<<<< HEAD
 	function get_alt() {
 		$alt = trim(strip_tags(get_post_meta($this->ID, '_wp_attachment_image_alt', true)));
 		return $alt;
 	}
 
-	function init($iid) {
-=======
+
     /**
      * @param int $iid
      */
     function init($iid) {
->>>>>>> bc9b427a682643f675a3581ecb230727cecc2981
 		if (!is_numeric($iid) && is_string($iid)) {
 			if (strstr($iid, '://')) {
 				$this->init_with_url($iid);
