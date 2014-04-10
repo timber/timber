@@ -54,6 +54,17 @@
 		}
 
 		/**
+	     * @param int $iid
+	     * @return string
+	     */
+	    public static function get_image_path($iid) {
+			$size = 'full';
+			$src = wp_get_attachment_image_src($iid, $size);
+			$src = $src[0];
+			return self::get_rel_path($src);
+		}
+
+		/**
 		 * @param string $src
 		 * @param int $w
 		 * @param int $h

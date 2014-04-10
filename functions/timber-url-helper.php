@@ -2,6 +2,9 @@
 
 	class TimberURLHelper {
 
+		/**
+	     * @return string
+	     */
 		public static function get_current_url() {
 			$pageURL = "http://";
 			if (isset($_SERVER['HTTPS']) && $_SERVER["HTTPS"] == "on"){
@@ -15,6 +18,10 @@
 			return $pageURL;
 		}
 
+		/**
+	     * @param string $url
+	     * @return bool
+	     */
 		public static function is_url($url) {
 			if (!is_string($url)){
 				return false;
@@ -26,6 +33,9 @@
 			return false;
 		}
 
+		/**
+    	 * @return string
+    	 */
 		public static function get_path_base() {
 			$struc = get_option('permalink_structure');
 			$struc = explode('/', $struc);
@@ -38,6 +48,11 @@
 			return $p;
 		}
 
+		/**
+	     * @param string $url
+	     * @param bool $force
+	     * @return string
+	     */
 		public static function get_rel_url($url, $force = false){
 			if (!strstr($url, $_SERVER['HTTP_HOST']) && !$force){
 				return $url;
@@ -50,6 +65,10 @@
 			return $link;
 		}
 
+		/**
+	     * @param string $url
+	     * @return bool
+	     */
 		public static function is_local($url){
 			if (strstr($url, $_SERVER['HTTP_HOST'])){
 				return true;
@@ -57,6 +76,10 @@
 			return false;
 		}
 
+		/**
+	     * @param string $src
+	     * @return string
+	     */
 		public static function get_full_path($src) {
 			$root = ABSPATH;
 			$old_root_path = $root . $src;
@@ -64,10 +87,18 @@
 			return $old_root_path;
 		}
 
+		/**
+	     * @param string $src
+	     * @return string
+	     */
 		public static function get_rel_path($src) {
 			return str_replace(ABSPATH, '', $src);
 		}
 
+	 	/**
+	     * @param string $url
+	     * @return string
+	     */
 		public static function remove_double_slashes($url){
 			$url = str_replace('//', '/', $url);
 			if (strstr($url, 'http:') && !strstr($url, 'http://')){
@@ -76,6 +107,11 @@
 			return $url;
 		}
 
+	    /**
+	     * @param string $url
+	     * @param string $path
+	     * @return string
+	     */
 		public static function prepend_to_url($url, $path){
 			if (strstr(strtolower($url), 'http')){
 				$url_parts = parse_url($url);
@@ -86,6 +122,10 @@
 			return self::remove_double_slashes($url);
 		}
 
+		/**
+     	 * @param string $path
+     	 * @return string
+    	 */
 		public static function preslashit($path){
 			if (strpos($path, '/') != 0) {
 				$path = '/' . $path;
@@ -93,6 +133,10 @@
 			return $path;
 		}
 
+		/**
+	     * @param string $url
+	     * @return bool
+	     */
 		public static function is_external($url){
 			$has_http = strstr(strtolower($url), 'http');
 	        $on_domain = strstr($url, $_SERVER['HTTP_HOST']);
@@ -102,6 +146,11 @@
 	        return false;
 		}
 
+		/**
+		 * @param string $url
+		 * @param int $timeout
+		 * @return string|WP_Error
+		 */
 		public static function download_url($url, $timeout = 300) {
 			if (!$url) {
 				return new WP_Error('http_no_url', __('Invalid URL Provided.'));
@@ -131,6 +180,10 @@
 			});
 		}
 
+		/**
+	     * @param int $i
+	     * @return array
+	     */
 		public static function get_params($i = -1) {
 			$args = explode('/', trim(strtolower($_SERVER['REQUEST_URI'])));
 			$newargs = array();
