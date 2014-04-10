@@ -64,7 +64,9 @@ class TimberHelper {
 
     /* These are for measuring page render time */
 
-
+    /**
+     * @return float
+     */
 	public static function start_timer(){
 		$time = microtime();
 		$time = explode(' ', $time);
@@ -72,6 +74,10 @@ class TimberHelper {
 		return $time;
 	}
 
+	/**
+     * @param int $start
+     * @return string
+     */
 	public static function stop_timer($start){
 		$time = microtime();
 		$time = explode(' ', $time);
@@ -84,6 +90,11 @@ class TimberHelper {
 	/* Function Utilities
 	======================== */
 
+	/**
+     * @param callback $function
+     * @param array $args
+     * @return string
+     */
 	public static function ob_function($function, $args = array(null)) {
 		ob_start();
 		call_user_func_array($function, $args);
@@ -92,10 +103,20 @@ class TimberHelper {
 		return $data;
 	}
 
+	/**
+     * @param string $function_name
+     * @param array $defaults
+     * @param bool $return_output_buffer
+     * @return TimberFunctionWrapper
+     */
     public static function function_wrapper($function_name, $defaults = array(), $return_output_buffer = false) {
         return new TimberFunctionWrapper($function_name, $defaults, $return_output_buffer);
     }
 
+    /**
+     * @param $arg
+     * @return void
+     */
 	public static function error_log($arg) {
 		if (!WP_DEBUG){
 			return;
@@ -106,6 +127,9 @@ class TimberHelper {
 		error_log($arg);
 	}
 
+	/**
+     * @return string
+     */
 	public static function get_wp_title() {
 		add_filter('wp_title', function($title) {
 			return $title . get_bloginfo('name');
@@ -117,6 +141,13 @@ class TimberHelper {
 	/* Text Utilities
 	======================== */
 
+	/**
+     * @param string $text
+     * @param int $num_words
+     * @param string $more
+     * @param string $allowed_tags
+     * @return string
+     */
 	public static function trim_words($text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br') {
 		if (null === $more) {
 			$more = __('&hellip;');
@@ -149,6 +180,10 @@ class TimberHelper {
 		return apply_filters('wp_trim_words', $text, $num_words, $more, $original_text);
 	}
 
+	/**
+     * @param string $html
+     * @return string
+     */
 	public static function close_tags($html) {
 		#put all opened tags into an array
 		preg_match_all('#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
@@ -173,6 +208,10 @@ class TimberHelper {
 		return $html;
 	}
 
+	/**
+     * @param string $ret
+     * @return mixed
+     */
 	public static function twitterify($ret) {
 		$ret = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t< ]*)#", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $ret);
 		$ret = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r< ]*)#", "\\1<a href=\"http://\\2\" target=\"_blank\">\\2</a>", $ret);
@@ -187,6 +226,11 @@ class TimberHelper {
 	/* WordPress Query Utilities
 	======================== */
 
+	/**
+     * @param string $key
+     * @param string $value
+     * @return array|int
+     */
 	public static function get_posts_by_meta($key, $value) {
 		global $wpdb;
 		$query = $wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $key, $value);
@@ -203,6 +247,11 @@ class TimberHelper {
 		return 0;
 	}
 
+	/**
+     * @param string $key
+     * @param string $value
+     * @return int
+     */
 	public static function get_post_by_meta($key, $value) {
 		global $wpdb;
 		$query = $wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s ORDER BY post_id", $key, $value);
@@ -215,6 +264,10 @@ class TimberHelper {
 		return 0;
 	}
 
+	/**
+	 * @param int $ttid
+	 * @return mixed
+	 */
 	public static function get_term_id_by_term_taxonomy_id($ttid){
 		global $wpdb;
 		$query = $wpdb->prepare("SELECT term_id FROM $wpdb->term_taxonomy WHERE term_taxonomy_id = %s", $ttid);
@@ -224,12 +277,21 @@ class TimberHelper {
 	/* Object Utilities
 	======================== */
 
+	/**
+     * @param array $array
+     * @param string $prop
+     * @return void
+     */
 	public static function osort(&$array, $prop) {
 		usort($array, function ($a, $b) use ($prop) {
 			return $a->$prop > $b->$prop ? 1 : -1;
 		});
 	}
 
+	/**
+     * @param array $arr
+     * @return bool
+     */
 	public static function is_array_assoc($arr) {
 		if (!is_array($arr)) {
 			return false;
@@ -237,6 +299,10 @@ class TimberHelper {
 		return (bool)count(array_filter(array_keys($arr), 'is_string'));
 	}
 
+	/**
+     * @param array $array
+     * @return stdClass
+     */
 	public static function array_to_object($array) {
 		$obj = new stdClass;
 		foreach ($array as $k => $v) {
@@ -249,6 +315,12 @@ class TimberHelper {
 		return $obj;
 	}
 
+	/**
+     * @param array $array
+     * @param string $key
+     * @param mixed $value
+     * @return bool|int
+     */
 	public static function get_object_index_by_property($array, $key, $value) {
 		if (is_array($array)) {
 			$i = 0;
@@ -268,6 +340,13 @@ class TimberHelper {
 		return false;
 	}
 
+	/**
+     * @param array $array
+     * @param string $key
+     * @param mixed $value
+     * @return array|null
+     * @throws Exception
+     */
 	public static function get_object_by_property($array, $key, $value) {
 		if (is_array($array)) {
 			foreach ($array as $arr) {
@@ -281,6 +360,11 @@ class TimberHelper {
 		return null;
 	}
 
+	/**
+     * @param array $array
+     * @param int $len
+     * @return array
+     */
 	public static function array_truncate($array, $len) {
 		if (sizeof($array) > $len) {
 			$array = array_splice($array, 0, $len);
@@ -291,6 +375,10 @@ class TimberHelper {
 	/* Bool Utilities
 	======================== */
 
+	/**
+     * @param mixed $property
+     * @return bool
+     */
 	public static function is_true($property) {
 		if (isset($property)) {
 			if ($property == 'true' || $property == 1 || $property == '1' || $property == true) {
@@ -300,10 +388,18 @@ class TimberHelper {
 		return false;
 	}
 
+	/**
+     * @param int $i
+     * @return bool
+     */
 	public static function iseven($i) {
 		return ($i % 2) == 0;
 	}
 
+	/**
+     * @param int $i
+     * @return bool
+     */
 	public static function isodd($i) {
 		return ($i % 2) != 0;
 	}
@@ -315,6 +411,11 @@ class TimberHelper {
 
 	http://codex.wordpress.org/Function_Reference/comment_form */
 
+	/**
+     * @param int $post_id
+     * @param array $args
+     * @return string
+     */
 	public static function get_comment_form($post_id = null, $args = array()) {
 		ob_start();
 		comment_form($args, $post_id);
@@ -323,6 +424,10 @@ class TimberHelper {
 		return $ret;
 	}
 
+	/**
+     * @param string $args
+     * @return array
+     */
 	public static function paginate_links( $args = '' ) {
 		$defaults = array(
 			'base' => '%_%', // http://example.com/all_posts.php%_% : %_% is replaced by format (below)
