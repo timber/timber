@@ -2,6 +2,10 @@
 
 	class TimberImageHelper {
 
+		/**
+         * @param string $hexstr
+         * @return array
+         */
 		public static function hexrgb($hexstr) {
 			if (!strstr($hexstr, '#')){
 				$hexstr = '#'.$hexstr;
@@ -9,18 +13,16 @@
 			if (strlen($hexstr) == 4){
 				$hexstr = '#' . $hexstr[1] . $hexstr[1] . $hexstr[2] . $hexstr[2] . $hexstr[3] . $hexstr[3];
 			}
-		    $int = hexdec($hexstr);
-		    return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
 		}
 
-		public static function get_image_path($iid) {
-			$size = 'full';
-			$src = wp_get_attachment_image_src($iid, $size);
-			$src = $src[0];
-			return self::get_rel_path($src);
-		}
-
-		public static function get_letterbox_file_rel($src, $w, $h, $color) {
+        /**
+         * @param string $src
+         * @param int $w
+         * @param int $h
+         * @param string $color
+         * @return string
+         */
+        public static function get_letterbox_file_rel($src, $w, $h, $color) {
 			$path_parts = pathinfo($src);
 			$basename = $path_parts['filename'];
 			$ext = $path_parts['extension'];
@@ -31,7 +33,14 @@
 			return $new_path;
 		}
 
-		public static function get_letterbox_file_path($src, $w, $h, $color) {
+        /**
+         * @param string $src
+         * @param int $w
+         * @param int $h
+         * @param string $color
+         * @return string
+         */
+        public static function get_letterbox_file_path($src, $w, $h, $color) {
 			$path_parts = pathinfo($src);
 			$basename = $path_parts['filename'];
 			$ext = $path_parts['extension'];
@@ -44,6 +53,13 @@
 			return $new_root_path;
 		}
 
+		/**
+		 * @param string $src
+		 * @param int $w
+		 * @param int $h
+		 * @param string $color
+		 * @return mixed|null|string
+		 */
 		function letterbox($src, $w, $h, $color = '#000000', $force = false) {
 			$abspath = substr(ABSPATH, 0, -1);
 			$urlinfo = parse_url($src);
@@ -106,7 +122,12 @@
 			return null;
 		}
 
-		function img_to_jpg($src, $bghex = '#FFFFFF'){
+        /**
+         * @param string $src
+         * @param string $bghex
+         * @return string
+         */
+        function img_to_jpg($src, $bghex = '#FFFFFF'){
 			$src = str_replace(site_url(), '', $src);
 			$output = str_replace('.png', '.jpg', $src);
         	$input_file = ABSPATH . $src;
@@ -126,7 +147,11 @@
 			return $filename;
 		}
 
-		public static function get_sideloaded_file_loc($file){
+        /**
+         * @param string $file
+         * @return string
+         */
+        public static function get_sideloaded_file_loc($file){
 			$upload = wp_upload_dir();
 			$dir = $upload['path'];
 			$filename = $file;
@@ -140,7 +165,11 @@
 			return $dir . '/' . $basename. '.' . $ext;
 		}
 
-		public static function sideload_image($file) {
+        /**
+         * @param string $file
+         * @return string
+         */
+        public static function sideload_image($file) {
 			$loc = self::get_sideloaded_file_loc($file);
 			if (file_exists($loc)){
 				return str_replace(ABSPATH, '', $loc);
@@ -164,7 +193,15 @@
 			return $file['url'];
 		}
 
-		public static function resize($src, $w, $h = 0, $crop = 'default', $force_resize = false ){
+        /**
+         * @param string $src
+         * @param int $w
+         * @param int $h
+         * @param string $crop
+         * @param bool $force_resize
+         * @return string
+         */
+        public static function resize($src, $w, $h = 0, $crop = 'default', $force_resize = false ){
 			if (empty($src)){
 				return '';
 			}
