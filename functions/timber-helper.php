@@ -129,12 +129,9 @@ class TimberHelper {
 	/**
      * @return string
      */
-	public static function get_wp_title() {
-		add_filter('wp_title', function($title) {
-			return $title . get_bloginfo('name');
-		}, 0);
-
-		return wp_title('|', false, 'right');
+	public static function get_wp_title($seperator = '', $seplocation = 'left') {
+		$seperator = apply_filters('timber_wp_title_seperator', $seperator);
+		return wp_title($seperator, false, $seplocation);
 	}
 
 	/* Text Utilities
