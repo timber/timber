@@ -2,8 +2,8 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.17.2
-Tested up to: 3.8.1
+Stable tag: 0.18.0
+Tested up to: 3.9
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -40,6 +40,14 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.18.0 =
+* BREAKING CHANGE ALERT wp_title no longer appends bloginfo('name') to end of string (thanks @aduth)
+* BREAKING CHANGE ALERT get_preview now respects <!-- more --> tag (thanks @jnweaver)
+* TimberHelper::transient is more reliable (thanks @mgmartel)
+* Secure urls in TimberImage if current page is served over SSL (thanks @mgmartel)
+* Re-wrote most of letterboxing functionality
+* Re-organized Helper functions
 
 = 0.17.2 =
 * TimberPost::children() now sorts by menu_order, title as WordPress core does (thanks @aduth)
