@@ -196,16 +196,6 @@ function twig_get_type($this) {
 	return gettype($this);
 }
 
-/**
- * @param string $hexstr
- * @return array
- */
-function hexrgb($hexstr) {
-	$int = hexdec($hexstr);
-	return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
-}
-
-
 
 /**
  * @param int|string $from
