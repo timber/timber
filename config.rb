@@ -1,8 +1,8 @@
 # Require any additional compass plugins here.
 # Set this to the root of your project when deployed:
-http_path = "/"
-css_dir = "_css"
-sass_dir = "_src"
+http_path = "/timber/"
+css_dir = "css"
+sass_dir = "src"
 images_dir = "_img"
 javascripts_dir = "_js"
 fonts_dir = "_fonts"

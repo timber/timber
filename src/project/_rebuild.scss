@@ -1,6 +1,6 @@
 /* ============================================= */
-/*	Header					   		*/ 
-/* ============================================= */ 
+/*	Header					   		*/
+/* ============================================= */
 
 .header {
 	.logo {
@@ -80,7 +80,7 @@
 	font-size:12px;
 	border:1px solid;
 	border-color:rgba(black, .1) rgba(black, .1), rgba(black, .25);
-	@include border-radius(5px); 
+	@include border-radius(5px);
 	i {
 		font-style:normal;
 	}
@@ -94,7 +94,7 @@
 	@media (min-width:500px){
 		font-size:13px;
 		height:32px;
-		
+
 	}
 	@media (min-width:900px){
 		font-size:15px;
@@ -108,7 +108,7 @@
 	&:hover {
 		color:$light-green;
 		background-color:lighten($evergreen, 10);
-		background-color:$bright-green; 
+		background-color:$bright-green;
 		@include background-image(linear-gradient(lighten($bright-green, 3), darken($bright-green, 0)));
 	}
 
@@ -132,6 +132,7 @@
 .showcase-mod {
 	padding-top:10px;
 	@include media-grid(2);
+	min-height:215px;
 	@media (min-width:600px){
 		@include media-grid(3, em(40));
 		.media-block:nth-child(2n+3) {
@@ -178,10 +179,10 @@
 		img {
 			max-width:100%;
 			display:block;
-			
+
 			background-color:gray;
 		}
-		
+
 	}
 	margin-bottom:20px;
 }
@@ -224,12 +225,12 @@
 		margin:auto;
 
 	}
-	
+
 	.headline-s {
 		color:$light-green;
 	}
 
-	
+
 }
 
 .features {
@@ -383,6 +384,7 @@ code.php, code.twig {
 		top:-5px;
 	}
 }
+
 
 .feature-icon-mod {
 	margin:auto;
