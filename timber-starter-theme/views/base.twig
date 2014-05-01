@@ -1,14 +1,16 @@
-{% include 'html-header.twig' %}
-{% block head %}
+{% block html_head_container %}
+    {% include 'html-header.twig' %}
+    {% block head %}
+    {% endblock %}
+    </head>
 {% endblock %}
-</head>
-    <body class="{{body_class}}" data-source="base.twig">
+    <body class="{{body_class}}" data-template="base.twig">
         <header class="header" >
             {% block header %}
             <div class="wrapper">
 
                 <h1 class="hdr-logo" role="banner">
-                    <a class="hdr-logo-link" href="/" title="Timber" rel="home">{{bloginfo('name')}}</a>
+                    <a class="hdr-logo-link" href="/" title="Timber" rel="home">{{site.name}}</a>
                 </h1>
                 <nav id="access" class="main-navigation" role="navigation">
                     <ul>
@@ -39,9 +41,11 @@
             {% endif %}
         </section>
 
-        <footer id="footer">
-            {% include 'footer.twig' %}
-        </footer>
-        {{ function('wp_footer') }}
+        {% block footer %}
+            <footer id="footer">
+                {% include 'footer.twig' %}
+            </footer>
+            {{ function('wp_footer') }}
+        {% endblock }
     </body>
 </html>
