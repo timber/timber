@@ -58,7 +58,4 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 #### Should I use it?
 Well, it's **free**! And it's GPL-licensed, so use in personal or commercial work. Just don't re-sell it. Timber is still in development. While much has been stabalized since the first major push back in June 2013, you should expect some breaking changes as development progresses towards a version 1.0.
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jarednova/timber/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
-
 
