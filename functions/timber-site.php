@@ -30,6 +30,7 @@ class TimberSite extends TimberCore {
         $this->name = $this->blogname;
         $this->title = $this->blogname;
         $this->url = $this->siteurl;
+        $this->id = $this->ID;
         $theme_slug = get_blog_option($info->blog_id, 'stylesheet');
         $this->theme = new TimberTheme($theme_slug);
         $this->description = get_blog_option($info->blog_id, 'blogdescription');
