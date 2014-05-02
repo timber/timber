@@ -20,8 +20,7 @@
         	remove_all_filters('wp_title');
         	$post_id = $this->factory->post->create(array('post_title' => 'My New Post'));
         	$post = get_post($post_id);
-        	global $wp_query;
-        	$wp_query = new WP_Query('p='.$post_id);
+            $this->go_to( site_url( '?p='.$post_id ) );
         	$this->assertEquals('My New Post', TimberHelper::get_wp_title());
         }
     }
