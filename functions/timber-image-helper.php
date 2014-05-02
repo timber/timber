@@ -171,7 +171,11 @@
 			$new_root_path = str_replace('//', '/', $new_root_path);
 			$urlinfo = parse_url($src);
 			if (file_exists($new_root_path) && !$force) {
-				return $new_file_rel;
+				if ($abs){
+					return untrailingslashit(content_url()).$new_file_rel;
+				} else {
+					return TimberURLHelper::preslashit($new_file_rel);
+				}
 			}
 			$bg = imagecreatetruecolor($w, $h);
 			$c = self::hexrgb($color);
