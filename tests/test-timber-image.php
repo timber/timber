@@ -284,7 +284,22 @@ class TimberImageTest extends WP_UnitTestCase {
 		//Have the children been deleted as well?
 		$this->assertFileNotExists($resized_520_file);
 		$this->assertFileNotExists($resized_500_file);
+	}
 
+
+	function testLetterboxImageDeletion(){
+		$data = array();
+		$file = $this->copyTestImage('city-museum.jpg');
+		$upload_dir = wp_upload_dir();
+		$data['test_image'] = $upload_dir['url'].'/city-museum.jpg';
+		$new_file = TimberImageHelper::letterbox($data['test_image'], 500, 500, '#00FF00');
+		$letterboxed_file = TimberImageHelper::get_letterbox_file_path($data['test_image'], 500, 500, '#00FF00');
+		$this->assertFileExists($letterboxed_file);
+		//Now delete the "parent" image
+		echo 'delete for'.$file;
+		TimberImageHelper::delete_letterboxed_files($file);
+		//Have the children been deleted as well?
+		$this->assertFileNotExists($letterboxed_file);
 	}
 
 	public static function is_connected() {

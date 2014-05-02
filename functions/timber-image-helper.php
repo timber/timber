@@ -5,9 +5,11 @@
 		public static function add_actions(){
 			add_action('delete_post', function($post_id){
 				$post = get_post($post_id);
-				if ($post->post_type == 'attachment' && $post->post_mime_type == 'image/jpeg'){
+				error_log(print_r($post, true));
+				$image_types = array('image/jpeg', 'image/png', 'image/gif', 'image/jpg');
+				if ($post->post_type == 'attachment' && in_array($post->post_mime_type, $image_types)){
 					self::delete_resized_files_from_url($post->guid);
-					self::delete_letterboxed_files($post->guid);
+					self::delete_letterboxed_files_from_url($post->guid);
 				}
 			});
 		}
@@ -27,19 +29,25 @@
 		    return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
 		}
 
-		public static function delete_resized_files_from_url($src){
+		private static function delete_resized_files_from_url($src){
 			$local = TimberURLHelper::url_to_file_system($src);
 			self::delete_resized_files($local);
 		}
 
-		public static function delete_resized_files($local_file){
+		private static function delete_letterboxed_files_from_url($src){
+			$local = TimberURLHelper::url_to_file_system($src);
+			self::delete_letterboxed_files($local);
+		}
+
+		static function delete_resized_files($local_file){
 			$info = pathinfo($local_file);
 			$dir = $info['dirname'];
+			$ext = $info['extension'];
 			$filename = $info['filename'];
 			$searcher = '/'.$filename.'-[0-9999999]*';
 			foreach (glob($dir.$searcher) as $found_file){
 				$regexdir = str_replace('/', '\/', $dir);
-				$pattern = '/'.($regexdir).'\/'.$filename.'-[0-9]*x[0-9]*-c-[a-z]*.jpg/';
+				$pattern = '/'.($regexdir).'\/'.$filename.'-[0-9]*x[0-9]*-c-[a-z]*.'.$ext.'/';
 				$match = preg_match($pattern, $found_file);
 				//$match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/$filename-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $found_file);
 				//$match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/arch-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $filename);
@@ -47,8 +55,22 @@
 					unlink($found_file);
 				}
 			}
+		}
 
-
+		static function delete_letterboxed_files($local_file){
+			$info = pathinfo($local_file);
+			$dir = $info['dirname'];
+			$ext = $info['extension'];
+			$filename = $info['filename'];
+			$searcher = '/'.$filename.'-lbox-[0-9999999]*';
+			foreach (glob($dir.$searcher) as $found_file){
+				$regexdir = str_replace('/', '\/', $dir);
+				$pattern = '/'.($regexdir).'\/'.$filename.'-lbox-[0-9]*x[0-9]*-[a-zA-Z0-9]*.'.$ext.'/';
+				$match = preg_match($pattern, $found_file);
+				if ($match){
+					unlink($found_file);
+				}
+			}
 		}
 
         /**
@@ -66,6 +88,7 @@
 			$color = str_replace('#', '', $color);
 			$newbase = $basename . '-lbox-' . $w . 'x' . $h . '-' . $color;
 			$new_path = $dir . '/' . $newbase . '.' . $ext;
+			$new_path = str_replace(content_url(), '', $new_path);
 			return $new_path;
 		}
 
@@ -77,14 +100,8 @@
          * @return string
          */
         public static function get_letterbox_file_path($src, $w, $h, $color) {
-			$path_parts = pathinfo($src);
-			$basename = $path_parts['filename'];
-			$ext = $path_parts['extension'];
-			$dir = $path_parts['dirname'];
-			$color = str_replace('#', '', $color);
-			$newbase = $basename . '-lbox-' . $w . 'x' . $h . '-' . $color;
-			$new_path = $dir . '/' . $newbase . '.' . $ext;
-			$new_root_path = ABSPATH . $new_path;
+			$new_path = self::get_letterbox_file_rel($src, $w, $h, $color);
+			$new_root_path = WP_CONTENT_DIR . $new_path;
 			$new_root_path = str_replace('//', '/', $new_root_path);
 			return $new_root_path;
 		}
