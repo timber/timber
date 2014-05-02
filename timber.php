@@ -685,8 +685,9 @@ class Timber {
     public static function get_pagination($prefs = array()){
         global $wp_query;
         global $paged;
+        global $wp_rewrite;
         $args['total'] = ceil($wp_query->found_posts / $wp_query->query_vars['posts_per_page']);
-        if (strlen(trim(get_option('permalink_structure')))){
+        if ($wp_rewrite->using_permalinks()){
             $url = explode('?', get_pagenum_link(0));
             if (isset($url[1])){
                parse_str($url[1], $query);
@@ -699,7 +700,6 @@ class Timber {
             $args['base'] = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
         }
         $args['type'] = 'array';
-
         $args['current'] = max( 1, get_query_var('paged') );
         $args['mid_size'] = max(9 - $args['current'], 3);
         $args['prev_next'] = false;
@@ -709,7 +709,7 @@ class Timber {
             $args = array_merge($args, $prefs);
         }
         $data['pages'] = TimberHelper::paginate_links($args);
-        $next = next_posts($args['total'], false);
+        $next = get_next_posts_page_link($args['total']);
         if ($next){
             $data['next'] = array('link' => $next, 'class' => 'page-numbers next');
         }
