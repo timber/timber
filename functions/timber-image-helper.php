@@ -2,6 +2,16 @@
 
 	class TimberImageHelper {
 
+		public static function add_actions(){
+			add_action('delete_post', function($post_id){
+				$post = get_post($post_id);
+				if ($post->post_type == 'attachment' && $post->post_mime_type == 'image/jpeg'){
+					self::delete_resized_files($post->guid);
+					self::delete_letterboxed_files($post->guid);
+				}
+			});
+		}
+
 		/**
          * @param string $hexstr
          * @return array
@@ -15,6 +25,14 @@
 			}
 			$int = hexdec($hexstr);
 		    return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
+		}
+
+		public static function delete_resized_files($src){
+			$path_parts = pathinfo($src);
+			$basename = $path_parts['filename'];
+			$ext = $path_parts['extension'];
+			$dir = $path_parts['dirname'];
+			//foreach (glob("*.txt") as $filename)
 		}
 
         /**
@@ -322,3 +340,5 @@
 			return $src;
 		}
 	}
+
+	TimberImageHelper::add_actions();
