@@ -475,6 +475,7 @@ class TimberHelper {
 					if ( $add_args ) {
 						$link = rtrim(add_query_arg( $add_args, $link ), '/');
 					}
+					$link = untrailingslashit($link);
 					$page_links[] = array('class' => 'page-number page-numbers', 'link' => esc_url( apply_filters( 'paginate_links', $link ) ), 'title' => $n_display,  'current' => $current == $n);
 					$dots = true;
 				} elseif ( $dots && !$show_all ) {
