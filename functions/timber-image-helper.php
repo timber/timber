@@ -134,6 +134,7 @@
         public static function get_resize_file_path($src, $w, $h, $crop){
 			$new_path = self::get_resize_file_rel($src, $w, $h, $crop);
 			$new_root_path = WP_CONTENT_DIR . $new_path;
+			$new_root_path = str_replace('//', '/', $new_root_path);
 			return $new_root_path;
         }
 
@@ -156,24 +157,27 @@
 		 * @return mixed|null|string
 		 */
 		public static function letterbox($src, $w, $h, $color = '#000000', $force = false) {
-			$abspath = substr(ABSPATH, 0, -1);
-			$urlinfo = parse_url($src);
-			if( $_SERVER['DOCUMENT_ROOT'] != $abspath ) {
-				$subdir = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $abspath);
-				$urlinfo['path'] = str_replace('/'.$subdir.'/', '', $urlinfo['path']);
+			if (strstr($src, 'http') && !strstr($src, content_url())) {
+				$src = self::sideload_image($src);
 			}
-			$old_file = ABSPATH.$urlinfo['path'];
-			$new_file = self::get_letterbox_file_path($urlinfo['path'], $w, $h, $color);
+			$abs = false;
+			if (strstr($src, 'http')){
+				$abs = true;
+			}
+			$new_file_rel = self::get_letterbox_file_rel($src, $w, $h, $color);
+			$new_root_path = self::get_letterbox_file_path($src, $w, $h, $color);
+			$old_root_path = WP_CONTENT_DIR . str_replace(content_url(), '', $src);
+			$old_root_path = str_replace('//', '/', $old_root_path);
+			$new_root_path = str_replace('//', '/', $new_root_path);
 			$urlinfo = parse_url($src);
-			$new_file_rel = self::get_letterbox_file_rel($urlinfo['path'], $w, $h, $color);
-			if (file_exists($new_file_rel) && !$force) {
+			if (file_exists($new_root_path) && !$force) {
 				return $new_file_rel;
 			}
 			$bg = imagecreatetruecolor($w, $h);
 			$c = self::hexrgb($color);
 			$white = imagecolorallocate($bg, $c['red'], $c['green'], $c['blue']);
 			imagefill($bg, 0, 0, $white);
-			$image = wp_get_image_editor($old_file);
+			$image = wp_get_image_editor($old_root_path);
 			if (!is_wp_error($image)) {
 				$current_size = $image->get_size();
 				$ow = $current_size['width'];
@@ -196,18 +200,18 @@
 					$owt = $w;
 					$image->crop(0, 0, $ow, $oh, $owt, $oht);
 				}
-				$image->save($new_file);
+				$image->save($new_root_path);
 				$func = 'imagecreatefromjpeg';
-				$ext = pathinfo($new_file, PATHINFO_EXTENSION);
+				$ext = pathinfo($new_root_path, PATHINFO_EXTENSION);
 				if ($ext == 'gif') {
 					$func = 'imagecreatefromgif';
 				} else if ($ext == 'png') {
 					$func = 'imagecreatefrompng';
 				}
-				$image = $func($new_file);
+				$image = $func($new_root_path);
 				imagecopy($bg, $image, $x, $y, 0, 0, $owt, $oht);
-				imagejpeg($bg, $new_file);
-				return TimberURLHelper::get_rel_path($new_file);
+				imagejpeg($bg, $new_root_path);
+				return TimberURLHelper::get_rel_path($new_root_path);
 			} else {
 				TimberHelper::error_log($image);
 			}
