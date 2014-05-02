@@ -90,6 +90,37 @@
 		}
 
 		/**
+         * @param string $src
+         * @param int $w
+         * @param int $h
+         * @param string $crop
+         * @return string
+         */
+        public static function get_resize_file_rel($src, $w, $h, $crop){
+        	$path_parts = pathinfo($src);
+        	$basename = $path_parts['filename'];
+        	$ext = $path_parts['extension'];
+			$dir = $path_parts['dirname'];
+			$newbase = $basename . '-' . $w . 'x' . $h . '-c-' . ( $crop ? $crop : 'f' ); // Crop will be either user named or f (false)
+			$new_path = $dir . '/' . $newbase . '.' . $ext;
+			$new_path = str_replace(content_url(), '', $new_path);
+			return $new_path;
+        }
+
+		/**
+         * @param string $src
+         * @param int $w
+         * @param int $h
+         * @param string $crop
+         * @return string
+         */
+        public static function get_resize_file_path($src, $w, $h, $crop){
+			$new_path = self::get_resize_file_rel($src, $w, $h, $crop);
+			$new_root_path = WP_CONTENT_DIR . $new_path;
+			return $new_root_path;
+        }
+
+		/**
 	     * @param int $iid
 	     * @return string
 	     */
@@ -262,14 +293,8 @@
 				$crop = $allowed_crop_positions[ 0 ];
 			}
 			//oh good, it's a relative image in the uploads folder!
-			$path_parts = pathinfo($src);
-			$basename = $path_parts['filename'];
-			$ext = $path_parts['extension'];
-			$dir = $path_parts['dirname'];
-			$newbase = $basename . '-' . $w . 'x' . $h . '-c-' . ( $crop ? $crop : 'f' ); // Crop will be either d (default), c (center) or f (false)
-			$new_path = $dir . '/' . $newbase . '.' . $ext;
-			$new_path = str_replace(content_url(), '', $new_path);
-			$new_root_path = WP_CONTENT_DIR . $new_path;
+			$new_path = self::get_resize_file_rel($src, $w, $h, $crop);
+			$new_root_path = self::get_resize_file_path($src, $w, $h, $crop);
 			$old_root_path = WP_CONTENT_DIR . str_replace(content_url(), '', $src);
 			$old_root_path = str_replace('//', '/', $old_root_path);
 			$new_root_path = str_replace('//', '/', $new_root_path);

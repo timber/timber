@@ -265,7 +265,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data['size'] = array('width' => 520, 'height' => 250);
 		$data['crop'] = 'left';
 		Timber::compile('assets/image-test.twig', $data);
-		$this->assertFileExists()
+		//$this->assertFileExists();
 		TimberImageHelper::delete_resized_files($file);
 
 	}
