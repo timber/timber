@@ -6,7 +6,7 @@
 			add_action('delete_post', function($post_id){
 				$post = get_post($post_id);
 				if ($post->post_type == 'attachment' && $post->post_mime_type == 'image/jpeg'){
-					self::delete_resized_files($post->guid);
+					self::delete_resized_files_from_url($post->guid);
 					self::delete_letterboxed_files($post->guid);
 				}
 			});
@@ -27,12 +27,28 @@
 		    return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
 		}
 
-		public static function delete_resized_files($src){
-			$path_parts = pathinfo($src);
-			$basename = $path_parts['filename'];
-			$ext = $path_parts['extension'];
-			$dir = $path_parts['dirname'];
-			//foreach (glob("*.txt") as $filename)
+		public static function delete_resized_files_from_url($src){
+			$local = TimberURLHelper::url_to_file_system($src);
+			self::delete_resized_files($local);
+		}
+
+		public static function delete_resized_files($local_file){
+			$info = pathinfo($local_file);
+			$dir = $info['dirname'];
+			$filename = $info['filename'];
+			$searcher = '/'.$filename.'-[0-9999999]*';
+			foreach (glob($dir.$searcher) as $found_file){
+				$regexdir = str_replace('/', '\/', $dir);
+				$pattern = '/'.($regexdir).'\/'.$filename.'-[0-9]*x[0-9]*-c-[a-z]*.jpg/';
+				$match = preg_match($pattern, $found_file);
+				//$match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/$filename-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $found_file);
+				//$match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/arch-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $filename);
+				if ($match){
+					unlink($found_file);
+				}
+			}
+
+
 		}
 
         /**

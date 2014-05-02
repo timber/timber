@@ -79,7 +79,6 @@ class TimberImageTest extends WP_UnitTestCase {
 		sleep(1);
 		Timber::render('assets/image-test.twig', $data);
 		$new_time = filemtime($resized_path);
-		error_log('time is '.$old_time);
 		$this->assertEquals($old_time, $new_time);
 	}
 
@@ -236,6 +235,41 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals(255, $colors['green']);
 	}
 
+	function testImageDeletionSimilarNames(){
+		$data = array();
+		$data['size'] = array('width' => 500, 'height' => 300);
+		$upload_dir = wp_upload_dir();
+		$file = $this->copyTestImage('arch-2night.jpg');
+		$data['test_image'] = $upload_dir['url'].'/arch-night.jpg';
+
+		$data['crop'] = 'default';
+		Timber::compile('assets/image-test.twig', $data);
+
+		$file = $this->copyTestImage('arch.jpg');
+		$data['test_image'] = $upload_dir['url'].'/arch.jpg';
+		$data['size'] = array('width' => 520, 'height' => 250);
+		$data['crop'] = 'left';
+		Timber::compile('assets/image-test.twig', $data);
+		TimberImageHelper::delete_resized_files($file);
+	}
+
+	function testImageDeletion(){
+		$data = array();
+		$data['size'] = array('width' => 500, 'height' => 300);
+		$upload_dir = wp_upload_dir();
+		$file = $this->copyTestImage('city-museum.jpg');
+		$data['test_image'] = $upload_dir['url'].'/city-museum.jpg';
+		$data['crop'] = 'default';
+		Timber::compile('assets/image-test.twig', $data);
+
+		$data['size'] = array('width' => 520, 'height' => 250);
+		$data['crop'] = 'left';
+		Timber::compile('assets/image-test.twig', $data);
+		$this->assertFileExists()
+		TimberImageHelper::delete_resized_files($file);
+
+	}
+
 	public static function is_connected() {
 	    $connected = @fsockopen("www.google.com", [80|443]);
 	    if ($connected){
@@ -245,7 +279,6 @@ class TimberImageTest extends WP_UnitTestCase {
 	        $is_conn = false; //action in connection failure
 	    }
 	    return $is_conn;
-
 	}
 
 
