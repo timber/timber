@@ -251,6 +251,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data['crop'] = 'left';
 		Timber::compile('assets/image-test.twig', $data);
 		TimberImageHelper::delete_resized_files($file);
+
 	}
 
 	function testImageDeletion(){
@@ -261,12 +262,19 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data['test_image'] = $upload_dir['url'].'/city-museum.jpg';
 		$data['crop'] = 'default';
 		Timber::compile('assets/image-test.twig', $data);
-
+		$resized_500_file = TimberImageHelper::get_resize_file_path($data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop']);
 		$data['size'] = array('width' => 520, 'height' => 250);
 		$data['crop'] = 'left';
 		Timber::compile('assets/image-test.twig', $data);
-		//$this->assertFileExists();
+		$resized_520_file = TimberImageHelper::get_resize_file_path($data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop']);
+		//make sure it generated the sizes we're expecting
+		$this->assertFileExists($resized_500_file);
+		$this->assertFileExists($resized_520_file);
+		//Now delete the "parent" image
 		TimberImageHelper::delete_resized_files($file);
+		//Have the children been deleted as well?
+		$this->assertFileNotExists($resized_520_file);
+		$this->assertFileNotExists($resized_500_file);
 
 	}
 
