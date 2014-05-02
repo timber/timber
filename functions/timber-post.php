@@ -68,7 +68,7 @@ class TimberPost extends TimberCore {
 	 * @param string $field
 	 * @param mixed $value
 	 */
-	function update($field, $value) {
+	public function update($field, $value) {
 		if (isset($this->ID)) {
 			update_post_meta($this->ID, $field, $value);
 			$this->$field = $value;
