@@ -88,7 +88,7 @@
 			$color = str_replace('#', '', $color);
 			$newbase = $basename . '-lbox-' . $w . 'x' . $h . '-' . $color;
 			$new_path = $dir . '/' . $newbase . '.' . $ext;
-			$new_path = str_replace(content_url(), '', $new_path);
+			$new_path = str_replace(site_url(), '', $new_path);
 			return $new_path;
 		}
 
@@ -101,7 +101,7 @@
          */
         public static function get_letterbox_file_path($src, $w, $h, $color) {
 			$new_path = self::get_letterbox_file_rel($src, $w, $h, $color);
-			$new_root_path = WP_CONTENT_DIR . $new_path;
+			$new_root_path = ABSPATH . $new_path;
 			$new_root_path = str_replace('//', '/', $new_root_path);
 			return $new_root_path;
 		}
@@ -120,7 +120,7 @@
 			$dir = $path_parts['dirname'];
 			$newbase = $basename . '-' . $w . 'x' . $h . '-c-' . ( $crop ? $crop : 'f' ); // Crop will be either user named or f (false)
 			$new_path = $dir . '/' . $newbase . '.' . $ext;
-			$new_path = str_replace(content_url(), '', $new_path);
+			$new_path = str_replace(site_url(), '', $new_path);
 			return $new_path;
         }
 
@@ -133,7 +133,7 @@
          */
         public static function get_resize_file_path($src, $w, $h, $crop){
 			$new_path = self::get_resize_file_rel($src, $w, $h, $crop);
-			$new_root_path = WP_CONTENT_DIR . $new_path;
+			$new_root_path = ABSPATH . $new_path;
 			$new_root_path = str_replace('//', '/', $new_root_path);
 			return $new_root_path;
         }
@@ -166,13 +166,13 @@
 			}
 			$new_file_rel = self::get_letterbox_file_rel($src, $w, $h, $color);
 			$new_root_path = self::get_letterbox_file_path($src, $w, $h, $color);
-			$old_root_path = WP_CONTENT_DIR . str_replace(content_url(), '', $src);
+			$old_root_path = ABSPATH . str_replace(site_url(), '', $src);
 			$old_root_path = str_replace('//', '/', $old_root_path);
 			$new_root_path = str_replace('//', '/', $new_root_path);
 			$urlinfo = parse_url($src);
 			if (file_exists($new_root_path) && !$force) {
 				if ($abs){
-					return untrailingslashit(content_url()).$new_file_rel;
+					return untrailingslashit(site_url()).$new_file_rel;
 				} else {
 					return TimberURLHelper::preslashit($new_file_rel);
 				}
@@ -320,7 +320,11 @@
 			//oh good, it's a relative image in the uploads folder!
 			$new_path = self::get_resize_file_rel($src, $w, $h, $crop);
 			$new_root_path = self::get_resize_file_path($src, $w, $h, $crop);
-			$old_root_path = WP_CONTENT_DIR . str_replace(content_url(), '', $src);
+			if ($abs){
+				$old_root_path = ABSPATH . str_replace(site_url(), '', $src);
+			} else {
+				$old_root_path = ABSPATH . $src;
+			}
 			$old_root_path = str_replace('//', '/', $old_root_path);
 			$new_root_path = str_replace('//', '/', $new_root_path);
 			if ( file_exists($new_root_path) ) {
@@ -329,14 +333,14 @@
 					unlink( $new_root_path );
 				} else {
 					if ($abs){
-						return untrailingslashit(content_url()).$new_path;
+						return untrailingslashit(site_url()).$new_path;
 					} else {
-						return TimberURLHelper::preslashit($new_path);
+						$returning = TimberURLHelper::preslashit($new_path);
+						return $returning;
 					}
 					return $new_path;
 				}
 			}
-
 			$image = wp_get_image_editor($old_root_path);
 
 			if (!is_wp_error($image)) {
