@@ -5,7 +5,6 @@
 		public static function add_actions(){
 			add_action('delete_post', function($post_id){
 				$post = get_post($post_id);
-				error_log(print_r($post, true));
 				$image_types = array('image/jpeg', 'image/png', 'image/gif', 'image/jpg');
 				if ($post->post_type == 'attachment' && in_array($post->post_mime_type, $image_types)){
 					self::delete_resized_files_from_url($post->guid);
@@ -134,7 +133,7 @@
         public static function get_resize_file_path($src, $w, $h, $crop){
 			$new_path = self::get_resize_file_rel($src, $w, $h, $crop);
 			$new_root_path = ABSPATH . $new_path;
-			$new_root_path = str_replace('//', '/', $new_root_path);
+			$new_root_path = TimberURLHelper::remove_double_slashes($new_root_path);
 			return $new_root_path;
         }
 
@@ -157,7 +156,7 @@
 		 * @return mixed|null|string
 		 */
 		public static function letterbox($src, $w, $h, $color = '#000000', $force = false) {
-			if (strstr($src, 'http') && !strstr($src, content_url())) {
+			if (strstr($src, 'http') && !strstr($src, home_url())) {
 				$src = self::sideload_image($src);
 			}
 			$abs = false;
@@ -305,7 +304,7 @@
 			if (empty($src)){
 				return '';
 			}
-			if (strstr($src, 'http') && !strstr($src, content_url())) {
+			if (strstr($src, 'http') && !strstr($src, home_url())) {
 				$src = self::sideload_image($src);
 			}
 			$abs = false;
@@ -325,8 +324,8 @@
 			} else {
 				$old_root_path = ABSPATH . $src;
 			}
-			$old_root_path = str_replace('//', '/', $old_root_path);
-			$new_root_path = str_replace('//', '/', $new_root_path);
+			$old_root_path = TimberURLHelper::remove_double_slashes($old_root_path);
+			$new_root_path = TimberURLHelper::remove_double_slashes($new_root_path);
 			if ( file_exists($new_root_path) ) {
 				if ( $force_resize ) {
 					// Force resize - warning: will regenerate the image on every pageload, use for testing purposes only!
@@ -373,8 +372,6 @@
 						$src_x = round( ( $src_w - $src_wt ) / 2 );
 						$src_y = round( ( $src_h - $src_ht ) / 2 );
 					} else if ($crop == 'top') {
-
-						error_log('found it on top');
 						$src_y = 0;
 					} else if ($crop == 'bottom') {
 						$src_y = $src_h - $src_ht;
@@ -399,7 +396,7 @@
 					error_log(print_r($result, true));
 				}
 				if ($abs){
-					return untrailingslashit(content_url()).$new_path;
+					return untrailingslashit(home_url()).$new_path;
 				}
 				return $new_path;
 			} else if (isset($image->error_data['error_loading_image'])) {
