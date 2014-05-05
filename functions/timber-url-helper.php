@@ -87,6 +87,13 @@
 			return $old_root_path;
 		}
 
+		public static function url_to_file_system($url){
+			$url_parts = parse_url($url);
+			$path = ABSPATH . $url_parts['path'];
+			$path = str_replace('//', '/', $path);
+			return $path;
+		}
+
 		/**
 	     * @param string $src
 	     * @return string

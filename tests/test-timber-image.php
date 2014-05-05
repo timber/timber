@@ -12,7 +12,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$filename = 'St._Louis_Gateway_Arch.jpg';
 		$data['test_image'] = 'http://upload.wikimedia.org/wikipedia/commons/a/aa/'.$filename;
 		$md5 = md5($data['test_image']);
-		Timber::render('assets/image-test.twig', $data);
+		Timber::compile('assets/image-test.twig', $data);
 		$upload_dir = wp_upload_dir();
 		$path = $upload_dir['path'].'/'.$md5;
 		$exists = file_exists($path.'.jpg');
@@ -24,7 +24,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertTrue($exists);
 		$old_time = filemtime($resized_path);
 		sleep(1);
-		Timber::render('assets/image-test.twig', $data);
+		Timber::compile('assets/image-test.twig', $data);
 		$new_time = filemtime($resized_path);
 		$this->assertEquals($old_time, $new_time);
 	}
@@ -62,6 +62,25 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 
+	function testImageResizeRelative(){
+		$upload_dir = wp_upload_dir();
+		$this->copyTestImage();
+		$url = $upload_dir['url'].'/arch.jpg';
+		$url = str_replace('http://example.org', '', $url);
+		$data = array('crop' => 'default', 'test_image' => $url);
+		$data['size'] = array('width' => 300, 'height' => 300);
+		Timber::compile('assets/image-test.twig', $data);
+		$resized_path = $upload_dir['path'].'/arch-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.jpg';
+		$this->assertFileExists($resized_path);
+		//Now make sure it doesnt regenerage
+		$old_time = filemtime($resized_path);
+		sleep(1);
+		Timber::compile('assets/image-test.twig', $data);
+		$new_time = filemtime($resized_path);
+		$this->assertEquals($old_time, $new_time);
+	}
+
+
 	function testImageResize(){
 		$data = array();
 		$data['size'] = array('width' => 600, 'height' => 400);
@@ -70,16 +89,14 @@ class TimberImageTest extends WP_UnitTestCase {
 		$url = $upload_dir['url'].'/arch.jpg';
 		$data['test_image'] = $url;
 		$data['crop'] = 'default';
-		Timber::render('assets/image-test.twig', $data);
+		Timber::compile('assets/image-test.twig', $data);
 		$resized_path = $upload_dir['path'].'/arch-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.jpg';
-		$exists = file_exists($resized_path);
-		$this->assertTrue($exists);
+		$this->assertFileExists($resized_path);
 		//Now make sure it doesnt regenerage
 		$old_time = filemtime($resized_path);
 		sleep(1);
-		Timber::render('assets/image-test.twig', $data);
+		Timber::compile('assets/image-test.twig', $data);
 		$new_time = filemtime($resized_path);
-		error_log('time is '.$old_time);
 		$this->assertEquals($old_time, $new_time);
 	}
 
@@ -91,7 +108,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$url = $upload_dir['url'].'/tall.jpg';
 		$data['test_image'] = $url;
 		$data['crop'] = 'default';
-		Timber::render('assets/image-test-one-param.twig', $data);
+		Timber::compile('assets/image-test-one-param.twig', $data);
 		$resized_path = $upload_dir['path'].'/tall-'.$data['size']['width'].'x0'.'-c-'.$data['crop'].'.jpg';
 		$exists = file_exists($resized_path);
 		$this->assertTrue($exists);
@@ -128,7 +145,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data['post'] = new TimberPost($post_id);
 		$data['size'] = array('width' => 100, 'height' => 50);
 		$data['crop'] = 'default';
-		Timber::render('assets/thumb-test.twig', $data);
+		Timber::compile('assets/thumb-test.twig', $data);
 		$exists = file_exists($filename);
 		$this->assertTrue($exists);
 		$resized_path = $upload_dir['path'].'/flag-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.png';
@@ -215,6 +232,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$colors = imagecolorsforindex($image, $pixel_rgb);
 		$this->assertEquals(0, $colors['red']);
 		$this->assertEquals(255, $colors['green']);
+		$this->assertFileExists($location_of_image);
 	}
 
 	function testLetterboxSixCharHex(){
@@ -236,6 +254,71 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals(255, $colors['green']);
 	}
 
+	function testImageDeletionSimilarNames(){
+		$data = array();
+		$data['size'] = array('width' => 500, 'height' => 300);
+		$upload_dir = wp_upload_dir();
+		$file = $this->copyTestImage('arch-2night.jpg');
+		$data['test_image'] = $upload_dir['url'].'/arch-2night.jpg';
+		$data['crop'] = 'default';
+		$arch_2night = TimberImageHelper::get_resize_file_path($data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop']);
+		Timber::compile('assets/image-test.twig', $data);
+
+		$file = $this->copyTestImage('arch.jpg');
+		$data['test_image'] = $upload_dir['url'].'/arch.jpg';
+		$data['size'] = array('width' => 520, 'height' => 250);
+		$data['crop'] = 'left';
+		$arch_regular = TimberImageHelper::get_resize_file_path($data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop']);
+		Timber::compile('assets/image-test.twig', $data);
+		$this->assertFileExists($arch_regular);
+		$this->assertFileExists($arch_2night);
+		//Delte the regular arch image
+		TimberImageHelper::delete_resized_files($file);
+		//The child of the regular arch image should be like
+		//poof-be-gone
+		$this->assertFileNotExists($arch_regular);
+		//...but the night image remains!
+		$this->assertFileExists($arch_2night);
+
+	}
+
+	function testImageDeletion(){
+		$data = array();
+		$data['size'] = array('width' => 500, 'height' => 300);
+		$upload_dir = wp_upload_dir();
+		$file = $this->copyTestImage('city-museum.jpg');
+		$data['test_image'] = $upload_dir['url'].'/city-museum.jpg';
+		$data['crop'] = 'default';
+		Timber::compile('assets/image-test.twig', $data);
+		$resized_500_file = TimberImageHelper::get_resize_file_path($data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop']);
+		$data['size'] = array('width' => 520, 'height' => 250);
+		$data['crop'] = 'left';
+		Timber::compile('assets/image-test.twig', $data);
+		$resized_520_file = TimberImageHelper::get_resize_file_path($data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop']);
+		//make sure it generated the sizes we're expecting
+		$this->assertFileExists($resized_500_file);
+		$this->assertFileExists($resized_520_file);
+		//Now delete the "parent" image
+		TimberImageHelper::delete_resized_files($file);
+		//Have the children been deleted as well?
+		$this->assertFileNotExists($resized_520_file);
+		$this->assertFileNotExists($resized_500_file);
+	}
+
+	function testLetterboxImageDeletion(){
+		$data = array();
+		$file = $this->copyTestImage('city-museum.jpg');
+		$upload_dir = wp_upload_dir();
+		$data['test_image'] = $upload_dir['url'].'/city-museum.jpg';
+		$new_file = TimberImageHelper::letterbox($data['test_image'], 500, 500, '#00FF00');
+		$letterboxed_file = TimberImageHelper::get_letterbox_file_path($data['test_image'], 500, 500, '#00FF00');
+		$this->assertFileExists($letterboxed_file);
+		//Now delete the "parent" image
+		TimberImageHelper::delete_letterboxed_files($file);
+		//Have the children been deleted as well?
+		$this->assertFileNotExists($letterboxed_file);
+	}
+
 	public static function is_connected() {
 	    $connected = @fsockopen("www.google.com", [80|443]);
 	    if ($connected){
@@ -245,7 +328,6 @@ class TimberImageTest extends WP_UnitTestCase {
 	        $is_conn = false; //action in connection failure
 	    }
 	    return $is_conn;
-
 	}
 
 
