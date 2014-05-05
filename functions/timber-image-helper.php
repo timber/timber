@@ -88,7 +88,7 @@
 			$color = str_replace('#', '', $color);
 			$newbase = $basename . '-lbox-' . $w . 'x' . $h . '-' . $color;
 			$new_path = $dir . '/' . $newbase . '.' . $ext;
-			$new_path = str_replace(site_url(), '', $new_path);
+			$new_path = str_replace(home_url(), '', $new_path);
 			return $new_path;
 		}
 
@@ -120,7 +120,7 @@
 			$dir = $path_parts['dirname'];
 			$newbase = $basename . '-' . $w . 'x' . $h . '-c-' . ( $crop ? $crop : 'f' ); // Crop will be either user named or f (false)
 			$new_path = $dir . '/' . $newbase . '.' . $ext;
-			$new_path = str_replace(site_url(), '', $new_path);
+			$new_path = str_replace(home_url(), '', $new_path);
 			return $new_path;
         }
 
@@ -166,13 +166,13 @@
 			}
 			$new_file_rel = self::get_letterbox_file_rel($src, $w, $h, $color);
 			$new_root_path = self::get_letterbox_file_path($src, $w, $h, $color);
-			$old_root_path = ABSPATH . str_replace(site_url(), '', $src);
+			$old_root_path = ABSPATH . str_replace(home_url(), '', $src);
 			$old_root_path = str_replace('//', '/', $old_root_path);
 			$new_root_path = str_replace('//', '/', $new_root_path);
 			$urlinfo = parse_url($src);
 			if (file_exists($new_root_path) && !$force) {
 				if ($abs){
-					return untrailingslashit(site_url()).$new_file_rel;
+					return untrailingslashit(home_url()).$new_file_rel;
 				} else {
 					return TimberURLHelper::preslashit($new_file_rel);
 				}
@@ -228,7 +228,7 @@
          * @return string
          */
         public static function img_to_jpg($src, $bghex = '#FFFFFF'){
-			$src = str_replace(site_url(), '', $src);
+			$src = str_replace(home_url(), '', $src);
 			$output = str_replace('.png', '.jpg', $src);
         	$input_file = ABSPATH . $src;
         	$output_file = ABSPATH . $output;
@@ -321,7 +321,7 @@
 			$new_path = self::get_resize_file_rel($src, $w, $h, $crop);
 			$new_root_path = self::get_resize_file_path($src, $w, $h, $crop);
 			if ($abs){
-				$old_root_path = ABSPATH . str_replace(site_url(), '', $src);
+				$old_root_path = ABSPATH . str_replace(home_url(), '', $src);
 			} else {
 				$old_root_path = ABSPATH . $src;
 			}
@@ -333,7 +333,7 @@
 					unlink( $new_root_path );
 				} else {
 					if ($abs){
-						return untrailingslashit(site_url()).$new_path;
+						return untrailingslashit(home_url()).$new_path;
 					} else {
 						$returning = TimberURLHelper::preslashit($new_path);
 						return $returning;
