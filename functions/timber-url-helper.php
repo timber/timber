@@ -62,6 +62,7 @@
 			if (isset($url_info['query']) && strlen($url_info['query'])){
 				$link .= '?'.$url_info['query'];
 			}
+			$link = TimberURLHelper::remove_double_slashes($link);
 			return $link;
 		}
 
