@@ -882,7 +882,7 @@ class TimberPost extends TimberCore {
      */
     public function post_class($class='') {
 		$pid = $this->ID;
-		echo 'theme='.get_template_directory();
+		remove_filter( 'post_class', 'twentyfourteen_post_classes' );
 		$class_array = get_post_class();
 		$class_array = get_post_class($class, $pid);
 		return implode(' ', $class_array);
