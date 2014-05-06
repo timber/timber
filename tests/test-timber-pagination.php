@@ -34,7 +34,8 @@ class TimberPaginationTest extends WP_UnitTestCase {
 		$posts = $this->factory->post->create_many(55);
 		$this->go_to( site_url( '/' ) );
 		$pagination = Timber::get_pagination();
-		$this->assertEquals('http://example.org/page/2', $pagination['pages'][1]['link']);
+		print_r($pagination);
+		$this->assertEquals('http://example.org/page/3', $pagination['pages'][2]['link']);
 		$this->assertEquals('http://example.org/page/2', $pagination['next']['link']);
 	}
 

@@ -490,7 +490,7 @@ class TimberHelper {
 			if ( $add_args ) {
 				$link = add_query_arg( $add_args, $link );
 			}
-			$link = trailingslashit($link).$add_fragment;
+			$link = untrailingslashit(trailingslashit($link).$add_fragment);
 			$page_links[] = array('class' => 'next page-numbers', 'link' => esc_url( apply_filters( 'paginate_links', $link ) ), 'title' => $next_text);
 		}
 		return $page_links;
