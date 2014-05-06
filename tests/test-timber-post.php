@@ -116,6 +116,10 @@
 		}
 
 		function testGetPreview() {
+			global $wp_rewrite;
+			$struc = false;
+			$wp_rewrite->permalink_structure = $struc;
+			update_option('permalink_structure', $struc);
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost($post_id);
 
