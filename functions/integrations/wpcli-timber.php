@@ -9,25 +9,34 @@
 		 *
 		 *	wp clear_cache
 		 *
-		 * @synopsis <nothing>
 		 */
 		function clear_cache(){
-			$files = glob('../../twig-cache/*');
-			foreach($files as $file){
-  				if (is_file($file)) {
-					unlink($file);
-				}
-			}
+			$cache_path = plugin_dir_path(__FILE__).'../../twig-cache/';
+
+			$loader = new TimberLoader();
+			$twig = $loader->get_twig();
+			$twig->clearCacheFiles();
+			self::rrmdir($cache_path);
+			WP_CLI::success('path='.$cache_path);
 		}
 
-		/**
-		 * ## EXAMPLES
-		 *		wp timber poop
-		 */
-
-		function poop(){
-			WP_CLI::success('HEllo!!! poopy pants');
-		}
+		private function rrmdir($dir) {
+			if (is_dir($dir)) {
+				$objects = scandir($dir);
+				foreach ($objects as $object) {
+					if ($object != "." && $object != "..") {
+						WPCLI::line($object);
+						if (filetype($dir."/".$object) == "dir"){
+							self::rrmdir($dir."/".$object);
+							rmdir($dir."/".$object);
+						} else {
+							unlink($dir."/".$object);
+						}
+    				}
+    			}
+    			reset($objects);
+  			}
+ 		}
 
 	}
 
