@@ -4,11 +4,10 @@
 
 		function testPostMetaFieldFilter(){
 			$post_id = $this->factory->post->create();
-			echo '$post_id='.$post_id;
 			update_post_meta($post_id, 'Frank', 'Drebin');
 			$tp = new TimberPost($post_id);
-			//add_filter('timber_post_get_meta_field', array($this, 'filter_timber_post_get_meta_field'), 10, 4);
-			//$this->assertEquals('Drebin', $tp->meta('Frank'));
+			add_filter('timber_post_get_meta_field', array($this, 'filter_timber_post_get_meta_field'), 10, 4);
+			$this->assertEquals('Drebin', $tp->meta('Frank'));
 		}
 
 		function filter_timber_post_get_meta_field($value, $pid, $field_name, $timber_post){
