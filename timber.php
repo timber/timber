@@ -80,7 +80,6 @@ class Timber {
     }
 
     protected function init_constants() {
-        $timber_loc = str_replace(realpath(ABSPATH), '', realpath(__DIR__));
         $plugin_url_path = str_replace($_SERVER['HTTP_HOST'], '', plugins_url());
         $plugin_url_path = str_replace('https://', '', $plugin_url_path);
         $plugin_url_path = str_replace('http://', '', $plugin_url_path);
@@ -88,9 +87,6 @@ class Timber {
         $timber_dirs = str_replace('\\', '/', $timber_dirs);
         $timber_dirs = explode('/', $timber_dirs);
         $timber_dirname = array_pop($timber_dirs);
-        define("TIMBER", $timber_loc);
-        define("TIMBER_URL_PATH", trailingslashit($plugin_url_path) . trailingslashit($timber_dirname));
-        define("TIMBER_URL", 'http://' . $_SERVER["HTTP_HOST"] . TIMBER);
         define("TIMBER_LOC", realpath(__DIR__));
     }
 
