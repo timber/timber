@@ -320,7 +320,7 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	public static function is_connected() {
-	    $connected = @fsockopen("www.google.com", [80|443]);
+	    $connected = @fsockopen("www.google.com", 80, $errno, $errstr, 3);
 	    if ($connected){
 	        $is_conn = true; //action when connected
 	        fclose($connected);
