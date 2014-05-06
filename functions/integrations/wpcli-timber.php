@@ -3,21 +3,55 @@
 	class Timber_Command extends WP_CLI_Command{
 
 		/**
+		 * Clears Timber and Twig's Cache
+		 *
+		 * ## EXAMPLES
+		 *
+		 *	wp timber clear_cache
+		 *
+		 */
+
+		function clear_cache($mode = 'all'){
+			WP_CLI::line('#mode = '.print_r($mode, true));
+			if ($mode == 'all'){
+				self::clear_cache_twig();
+				self::clear_cache_timber();
+			}
+			if ($mode == 'twig'){
+			}
+			if ($mode == 'timber'){
+
+			}
+		}
+
+		/**
+		 * Clears Timber's Cache
+		 *
+		 * ## EXAMPLES
+		 *
+		 *	wp timber clear_cache_timber
+		 *
+		 */
+
+		function clear_cache_timber(){
+			WP_CLI::success('Cleared contents of Timbers Cache');
+		}
+
+		/**
 		 * Clears Twig's Cache
 		 *
 		 * ## EXAMPLES
 		 *
-		 *	wp clear_cache
+		 *	wp timber clear_cache_twig
 		 *
 		 */
-		function clear_cache(){
-			$cache_path = plugin_dir_path(__FILE__).'../../twig-cache/';
 
+		function clear_cache_twig(){
 			$loader = new TimberLoader();
 			$twig = $loader->get_twig();
 			$twig->clearCacheFiles();
-			self::rrmdir($cache_path);
-			WP_CLI::success('path='.$cache_path);
+			self::rrmdir($twig->getCache());
+			WP_CLI::success('Cleared contents of '.$twig->getCache());
 		}
 
 		private function rrmdir($dir) {
@@ -25,7 +59,6 @@
 				$objects = scandir($dir);
 				foreach ($objects as $object) {
 					if ($object != "." && $object != "..") {
-						WPCLI::line($object);
 						if (filetype($dir."/".$object) == "dir"){
 							self::rrmdir($dir."/".$object);
 							rmdir($dir."/".$object);
