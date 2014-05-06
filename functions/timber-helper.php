@@ -460,6 +460,7 @@ class TimberHelper {
 				$link = add_query_arg( $add_args, $link );
 			}
 			$link .= $add_fragment;
+			$link = untrailingslashit($link);
 			$page_links[] = array('class' => 'prev page-numbers', 'link' => esc_url( apply_filters( 'paginate_links', $link )), 'title' => $prev_text);
 		}
 		for ( $n = 1; $n <= $total; $n++ ) {
@@ -490,13 +491,8 @@ class TimberHelper {
 			if ( $add_args ) {
 				$link = add_query_arg( $add_args, $link );
 			}
-			echo '$link(waaaybefore)='.$link;
 			$link = untrailingslashit(trailingslashit($link).$add_fragment);
-			global $wp_filter;
-			echo '$link(before)='.$link;
- 			print_r( $wp_filter['paginate_links'] );
 			$page_links[] = array('class' => 'next page-numbers', 'link' => esc_url( apply_filters( 'paginate_links', $link ) ), 'title' => $next_text);
-			echo '$link(after)='.$link;
 		}
 		return $page_links;
 	}

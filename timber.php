@@ -700,11 +700,11 @@ class Timber {
         $data['pages'] = TimberHelper::paginate_links($args);
         $next = get_next_posts_page_link($args['total']);
         if ($next){
-            $data['next'] = array('link' => $next, 'class' => 'page-numbers next');
+            $data['next'] = array('link' => untrailingslashit($next), 'class' => 'page-numbers next');
         }
         $prev = previous_posts(false);
         if ($prev){
-            $data['prev'] = array('link' => $prev, 'class' => 'page-numbers prev');
+            $data['prev'] = array('link' => untrailingslashit($prev), 'class' => 'page-numbers prev');
         }
         if ($paged < 2){
             $data['prev'] = '';
