@@ -599,11 +599,13 @@ class Timber {
     }
 
     public static function cancel_query(){
-        add_action('posts_request', function(){
-            if (is_main_query()){
-                wp_reset_query();
-            }
-        });
+        add_action('posts_request', array($this, 'cancel_query_posts_request'));
+    }
+
+    function cancel_query_posts_request(){
+        if (is_main_query()){
+            wp_reset_query();
+        }
     }
 
     /**
