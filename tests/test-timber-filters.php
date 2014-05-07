@@ -8,6 +8,7 @@
 			$tp = new TimberPost($post_id);
 			add_filter('timber_post_get_meta_field', array($this, 'filter_timber_post_get_meta_field'), 10, 4);
 			$this->assertEquals('Drebin', $tp->meta('Frank'));
+			remove_all_filters('timber_post_get_meta_field');
 		}
 
 		function filter_timber_post_get_meta_field($value, $pid, $field_name, $timber_post){

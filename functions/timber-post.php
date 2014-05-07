@@ -804,7 +804,7 @@ class TimberPost extends TimberCore {
      */
     public function meta($field_name = null){
     	if ($field_name == null){
-    		//$field_name = 'meta';
+    		$field_name = 'meta';
     	}
 		return $this->get_field($field_name);
 	}

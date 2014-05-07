@@ -183,15 +183,15 @@
 			$this->assertEquals($post->the_field_name_flat, 'the-value');
 		}
 
-		// function testPostMetaMetaException(){
-		// 	$post_id = $this->factory->post->create();
-		// 	$post = new TimberPost($post_id);
-		// 	$string = Timber::compile_string('My {{post.meta}}', array('post' => $post));
-		// 	$this->assertEquals('My', trim($string));
-		// 	update_post_meta($post_id, 'meta', 'steak');
-		// 	$post = new TimberPost($post_id);
-		// 	$string = Timber::compile_string('My {{post.meta}}', array('post' => $post));
-		// 	$this->assertEquals('My steak', trim($string));
-		// }
+		function testPostMetaMetaException(){
+			$post_id = $this->factory->post->create();
+			$post = new TimberPost($post_id);
+			$string = Timber::compile_string('My {{post.meta}}', array('post' => $post));
+			$this->assertEquals('My', trim($string));
+			update_post_meta($post_id, 'meta', 'steak');
+			$post = new TimberPost($post_id);
+			$string = Timber::compile_string('My {{post.meta}}', array('post' => $post));
+			$this->assertEquals('My steak', trim($string));
+		}
 
 	}
