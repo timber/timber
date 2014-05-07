@@ -516,7 +516,9 @@ class Timber {
      * @return  bool|string
      */
     public static function render_string($string, $data = array()){
-        return echo self::compile_string($string, $data);
+        $compiled = self::compile_string($string, $data);
+        echo $compiled;
+        return $compiled;
     }
 
 
