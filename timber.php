@@ -639,7 +639,13 @@ class Timber {
      * @param bool $tparams
      */
     public static function load_template($template, $query = false, $force_header = 0, $tparams = false) {
-        $template = locate_template($template);
+        
+        $fullPath = is_readable($template);
+
+        if (!$fullPath) {
+            $template = locate_template($template);
+        }
+        
         if ($tparams){
             global $params;
             $params = $tparams;
