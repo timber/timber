@@ -478,6 +478,19 @@ class Timber {
     }
 
     /**
+     * @param  array $string a string with twig variables
+     * @param  array $data an array with data in it
+     * @return  bool|string
+     */
+    public static function compile_string($string, $data = array()){
+        $dummy_loader = new TimberLoader();
+        $dummy_loader->get_twig();
+        $loader = new Twig_Loader_String();
+        $twig = new Twig_Environment($loader);
+        return $twig->render($string, $data);
+    }
+
+    /**
      * @param array $filenames
      * @param array $data
      * @param bool $expires
@@ -495,6 +508,15 @@ class Timber {
         $output = apply_filters('timber_compile_result', $output);
         echo $output;
         return $output;
+    }
+
+    /**
+     * @param  array $string a string with twig variables
+     * @param  array $data an array with data in it
+     * @return  bool|string
+     */
+    public static function render_string($string, $data = array()){
+        return echo self::compile_string($string, $data);
     }
 
 
