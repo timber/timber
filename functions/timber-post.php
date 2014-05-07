@@ -676,6 +676,9 @@ class TimberPost extends TimberCore {
 			if (is_array($value) && count($value) == 1){
 				$value = $value[0];
 			}
+			if (is_array($value) && count($value) == 0){
+				$value = null;
+			}
 		}
 		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
 		return $value;
@@ -799,7 +802,10 @@ class TimberPost extends TimberCore {
      * @param string $field_name
      * @return mixed
      */
-    public function meta($field_name){
+    public function meta($field_name = null){
+    	if ($field_name == null){
+    		$field_name = 'meta';
+    	}
 		return $this->get_field($field_name);
 	}
 
