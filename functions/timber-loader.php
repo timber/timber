@@ -219,7 +219,9 @@ class TimberLoader {
 			$params['cache'] = TIMBER_LOC . '/twig-cache';
 		}
 		$twig = new Twig_Environment($loader, $params);
-		$twig->addExtension(new Twig_Extension_Debug());
+        if (WP_DEBUG){
+			$twig->addExtension(new Twig_Extension_Debug());
+        }
         $twig->addExtension($this->_get_cache_extension());
 
 		$twig = apply_filters('twig_apply_filters', $twig);
