@@ -11,9 +11,9 @@
 		}
 
 		function filter_timber_post_get_meta_field($value, $pid, $field_name, $timber_post){
-			$this->assertEquals($field_name, 'Frank');
-			$this->assertEquals($value, 'Drebin');
-			$this->assertEquals($timber_post->ID, $pid);
+			$this->assertEquals('Frank', $field_name);
+			$this->assertEquals('Drebin', $value);
+			$this->assertSame($timber_post->ID, $pid);
 			return $value;
 		}
 
