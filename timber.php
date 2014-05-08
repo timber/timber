@@ -639,13 +639,11 @@ class Timber {
      * @param bool $tparams
      */
     public static function load_template($template, $query = false, $force_header = 0, $tparams = false) {
-        
-        $fullPath = is_readable($template);
 
+        $fullPath = is_readable($template);
         if (!$fullPath) {
             $template = locate_template($template);
         }
-        
         if ($tparams){
             global $params;
             $params = $tparams;
@@ -672,7 +670,6 @@ class Timber {
         if ($query) {
             add_action('do_parse_request', function() use ($query) {
                 global $wp;
-
                 if ( is_callable($query) )
                     $query = call_user_func($query);
 
@@ -693,7 +690,9 @@ class Timber {
                 load_template($template);
                 die;
             });
+            return true;
         }
+        return false;
     }
 
     /*  Pagination
