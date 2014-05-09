@@ -215,7 +215,10 @@ class TimberLoader {
 		if (isset(Timber::$autoescape)){
 			$params['autoescape'] = Timber::$autoescape;
 		}
-		if (Timber::$cache) {
+        if (Timber::$cache == true){
+            Timber::$twig_cache = true;
+        }
+		if (Timber::$twig_cache) {
 			$params['cache'] = TIMBER_LOC . '/twig-cache';
 		}
 		$twig = new Twig_Environment($loader, $params);

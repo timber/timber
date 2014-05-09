@@ -58,6 +58,7 @@ class Timber {
 
     public static $locations;
     public static $dirname = 'views';
+    public static $twig_cache = false;
     public static $cache = false;
     public static $auto_meta = true;
     public static $autoescape = false;
