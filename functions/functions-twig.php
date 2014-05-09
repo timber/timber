@@ -50,6 +50,14 @@ class TimberTwig {
         $twig->addFunction(new Twig_SimpleFunction('action', function(){
             call_user_func_array('do_action', func_get_args());
         }));
+        $twig->addFunction( new Twig_SimpleFunction('action_test', function($context){
+        	//print_r($context);
+        	$args = func_get_args();
+        	array_shift($args);
+        	$args[] = $context;
+        	call_user_func_array('do_action', $args);
+        }, array('needs_context' => true)));
+
         $twig->addFilter( new Twig_SimpleFilter('apply_filters', function(){
             $args = func_get_args();
             $tag = current(array_splice($args, 1, 1));

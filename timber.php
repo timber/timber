@@ -475,6 +475,7 @@ class Timber {
             }
             $output = $loader->render($file, $data, $expires, $cache_mode);
         }
+        do_action('timber_compile_done');
         return $output;
     }
 
