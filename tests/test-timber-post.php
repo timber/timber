@@ -116,6 +116,10 @@
 		}
 
 		function testGetPreview() {
+			global $wp_rewrite;
+			$struc = false;
+			$wp_rewrite->permalink_structure = $struc;
+			update_option('permalink_structure', $struc);
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost($post_id);
 
@@ -177,6 +181,17 @@
 			$post = new TimberPost($post_id);
 			$this->assertEquals($post->with_underscores_flat, 'the_value');
 			$this->assertEquals($post->the_field_name_flat, 'the-value');
+		}
+
+		function testPostMetaMetaException(){
+			$post_id = $this->factory->post->create();
+			$post = new TimberPost($post_id);
+			$string = Timber::compile_string('My {{post.meta}}', array('post' => $post));
+			$this->assertEquals('My', trim($string));
+			update_post_meta($post_id, 'meta', 'steak');
+			$post = new TimberPost($post_id);
+			$string = Timber::compile_string('My {{post.meta}}', array('post' => $post));
+			$this->assertEquals('My steak', trim($string));
 		}
 
 	}

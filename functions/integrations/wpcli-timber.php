@@ -3,31 +3,73 @@
 	class Timber_Command extends WP_CLI_Command{
 
 		/**
-		 * Clears Twig's Cache
+		 * Clears Timber and Twig's Cache
 		 *
 		 * ## EXAMPLES
 		 *
-		 *	wp clear_cache
+		 *	wp timber clear_cache
 		 *
-		 * @synopsis <nothing>
 		 */
-		function clear_cache(){
-			$files = glob('../../twig-cache/*');
-			foreach($files as $file){
-  				if (is_file($file)) {
-					unlink($file);
-				}
+
+		function clear_cache($mode = 'all'){
+			WP_CLI::line('#mode = '.print_r($mode, true));
+			if ($mode == 'all'){
+				self::clear_cache_twig();
+				self::clear_cache_timber();
+			}
+			if ($mode == 'twig'){
+			}
+			if ($mode == 'timber'){
+
 			}
 		}
 
 		/**
+		 * Clears Timber's Cache
+		 *
 		 * ## EXAMPLES
-		 *		wp timber poop
+		 *
+		 *	wp timber clear_cache_timber
+		 *
 		 */
 
-		function poop(){
-			WP_CLI::success('HEllo!!! poopy pants');
+		function clear_cache_timber(){
+			WP_CLI::success('Cleared contents of Timbers Cache');
 		}
+
+		/**
+		 * Clears Twig's Cache
+		 *
+		 * ## EXAMPLES
+		 *
+		 *	wp timber clear_cache_twig
+		 *
+		 */
+
+		function clear_cache_twig(){
+			$loader = new TimberLoader();
+			$twig = $loader->get_twig();
+			$twig->clearCacheFiles();
+			self::rrmdir($twig->getCache());
+			WP_CLI::success('Cleared contents of '.$twig->getCache());
+		}
+
+		private function rrmdir($dir) {
+			if (is_dir($dir)) {
+				$objects = scandir($dir);
+				foreach ($objects as $object) {
+					if ($object != "." && $object != "..") {
+						if (filetype($dir."/".$object) == "dir"){
+							self::rrmdir($dir."/".$object);
+							rmdir($dir."/".$object);
+						} else {
+							unlink($dir."/".$object);
+						}
+    				}
+    			}
+    			reset($objects);
+  			}
+ 		}
 
 	}
 

@@ -58,6 +58,7 @@ class Timber {
 
     public static $locations;
     public static $dirname = 'views';
+    public static $twig_cache = false;
     public static $cache = false;
     public static $auto_meta = true;
     public static $autoescape = false;
@@ -80,17 +81,6 @@ class Timber {
     }
 
     protected function init_constants() {
-        $timber_loc = str_replace(realpath(ABSPATH), '', realpath(__DIR__));
-        $plugin_url_path = str_replace($_SERVER['HTTP_HOST'], '', plugins_url());
-        $plugin_url_path = str_replace('https://', '', $plugin_url_path);
-        $plugin_url_path = str_replace('http://', '', $plugin_url_path);
-        $timber_dirs = dirname(__FILE__);
-        $timber_dirs = str_replace('\\', '/', $timber_dirs);
-        $timber_dirs = explode('/', $timber_dirs);
-        $timber_dirname = array_pop($timber_dirs);
-        define("TIMBER", $timber_loc);
-        define("TIMBER_URL_PATH", trailingslashit($plugin_url_path) . trailingslashit($timber_dirname));
-        define("TIMBER_URL", 'http://' . $_SERVER["HTTP_HOST"] . TIMBER);
         define("TIMBER_LOC", realpath(__DIR__));
     }
 
@@ -485,7 +475,21 @@ class Timber {
             }
             $output = $loader->render($file, $data, $expires, $cache_mode);
         }
+        do_action('timber_compile_done');
         return $output;
+    }
+
+    /**
+     * @param  array $string a string with twig variables
+     * @param  array $data an array with data in it
+     * @return  bool|string
+     */
+    public static function compile_string($string, $data = array()){
+        $dummy_loader = new TimberLoader();
+        $dummy_loader->get_twig();
+        $loader = new Twig_Loader_String();
+        $twig = new Twig_Environment($loader);
+        return $twig->render($string, $data);
     }
 
     /**
@@ -506,6 +510,17 @@ class Timber {
         $output = apply_filters('timber_compile_result', $output);
         echo $output;
         return $output;
+    }
+
+    /**
+     * @param  array $string a string with twig variables
+     * @param  array $data an array with data in it
+     * @return  bool|string
+     */
+    public static function render_string($string, $data = array()){
+        $compiled = self::compile_string($string, $data);
+        echo $compiled;
+        return $compiled;
     }
 
 
@@ -610,11 +625,13 @@ class Timber {
     }
 
     public static function cancel_query(){
-        add_action('posts_request', function(){
-            if (is_main_query()){
-                wp_reset_query();
-            }
-        });
+        add_action('posts_request', array($this, 'cancel_query_posts_request'));
+    }
+
+    function cancel_query_posts_request(){
+        if (is_main_query()){
+            wp_reset_query();
+        }
     }
 
     /**
@@ -624,7 +641,11 @@ class Timber {
      * @param bool $tparams
      */
     public static function load_template($template, $query = false, $force_header = 0, $tparams = false) {
-        $template = locate_template($template);
+
+        $fullPath = is_readable($template);
+        if (!$fullPath) {
+            $template = locate_template($template);
+        }
         if ($tparams){
             global $params;
             $params = $tparams;
@@ -651,7 +672,6 @@ class Timber {
         if ($query) {
             add_action('do_parse_request', function() use ($query) {
                 global $wp;
-
                 if ( is_callable($query) )
                     $query = call_user_func($query);
 
@@ -672,7 +692,9 @@ class Timber {
                 load_template($template);
                 die;
             });
+            return true;
         }
+        return false;
     }
 
     /*  Pagination
@@ -711,11 +733,11 @@ class Timber {
         $data['pages'] = TimberHelper::paginate_links($args);
         $next = get_next_posts_page_link($args['total']);
         if ($next){
-            $data['next'] = array('link' => $next, 'class' => 'page-numbers next');
+            $data['next'] = array('link' => untrailingslashit($next), 'class' => 'page-numbers next');
         }
         $prev = previous_posts(false);
         if ($prev){
-            $data['prev'] = array('link' => $prev, 'class' => 'page-numbers prev');
+            $data['prev'] = array('link' => untrailingslashit($prev), 'class' => 'page-numbers prev');
         }
         if ($paged < 2){
             $data['prev'] = '';

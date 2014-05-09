@@ -104,7 +104,8 @@ class TimberImage extends TimberCore {
         $dir = self::wp_upload_dir();
         $base = ($dir["baseurl"]);
 
-        return trailingslashit( $this->_maybe_secure_url( $base ) ) . $this->file;
+		$src = trailingslashit( $this->_maybe_secure_url( $base ) ) . $this->file;
+		return apply_filters('timber_image_src', $src);
   	}
 
         private static function _maybe_secure_url( $url ) {

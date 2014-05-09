@@ -207,8 +207,11 @@ class TimberLoader {
      */
     function get_twig() {
         if (!class_exists('Twig_Autoloader')){
+            echo "LOADD!!!!!!'";
 		    $loader_loc = trailingslashit(TIMBER_LOC) . 'vendor/twig/twig/lib/Twig/Autoloader.php';
 	        require_once($loader_loc);
+        } else {
+            echo 'dont worry, it exists';
         }
 		Twig_Autoloader::register();
 		$loader = $this->get_loader();
@@ -216,7 +219,10 @@ class TimberLoader {
 		if (isset(Timber::$autoescape)){
 			$params['autoescape'] = Timber::$autoescape;
 		}
-		if (Timber::$cache) {
+        if (Timber::$cache == true){
+            Timber::$twig_cache = true;
+        }
+		if (Timber::$twig_cache) {
             $twig_cache_loc = TIMBER_LOC . '/cache/twig';
             if (!file_exists($twig_cache_loc)) {
                 mkdir($twig_cache_loc, 0777, true);
@@ -224,7 +230,9 @@ class TimberLoader {
 			$params['cache'] = $twig_cache_loc;
 		}
 		$twig = new Twig_Environment($loader, $params);
-		$twig->addExtension(new Twig_Extension_Debug());
+        if (WP_DEBUG){
+			$twig->addExtension(new Twig_Extension_Debug());
+        }
         $twig->addExtension($this->_get_cache_extension());
 
 		$twig = apply_filters('twig_apply_filters', $twig);

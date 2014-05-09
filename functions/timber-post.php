@@ -46,7 +46,8 @@ class TimberPost extends TimberCore {
 		$post_info = $this->get_info($pid);
 		$this->import($post_info);
 		//cant have a function, so gots to do it this way
-		$this->class = $this->post_class();
+		$post_class = $this->post_class();
+		$this->class = $post_class;
 	}
 
 	/**
@@ -675,6 +676,9 @@ class TimberPost extends TimberCore {
 			if (is_array($value) && count($value) == 1){
 				$value = $value[0];
 			}
+			if (is_array($value) && count($value) == 0){
+				$value = null;
+			}
 		}
 		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
 		return $value;
@@ -798,7 +802,10 @@ class TimberPost extends TimberCore {
      * @param string $field_name
      * @return mixed
      */
-    public function meta($field_name){
+    public function meta($field_name = null){
+    	if ($field_name == null){
+    		$field_name = 'meta';
+    	}
 		return $this->get_field($field_name);
 	}
 
@@ -880,8 +887,11 @@ class TimberPost extends TimberCore {
      * @return string
      */
     public function post_class($class='') {
-		$pid = $this->ID;
-		$class_array = get_post_class($class, $pid);
+    	global $post;
+    	$old_global_post = $post;
+    	$post = $this;
+		$class_array = get_post_class($class, $this->ID);
+		$post = $old_global_post;
 		return implode(' ', $class_array);
 	}
 

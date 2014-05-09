@@ -53,9 +53,10 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 #### Related Projects
 * [**Timber Debug Bar**](https://github.com/upstatement/debug-bar-timber) Adds a debug bar panel that will show you want template is in-use and the data sent to your twig file.
+* [**TimberPhoton**](https://github.com/slimndap/TimberPhoton) Plug-in to use JetPack's free Photon image maninpulation and CDN with Timber.
 * [**Twig**](https://github.com/fabpot/Twig) The template language used by Timber.
 
 #### Should I use it?
-It's GPL-licensed, so please use in personal or commercial work. Just don't re-sell it. While Timber is still in development, it's also in-use on [hundreds of sites](http://jarednova.github.io/timber/#showcase). While much has been stabalized since the first major push back in June 2013, you should expect some breaking changes as development progresses towards a version 1.0. 
+It's GPL-licensed, so please use in personal or commercial work. Just don't re-sell it. While Timber is still in development, it's also in-use on [hundreds of sites](http://jarednova.github.io/timber/#showcase). While much has been stabalized since the first major push back in June 2013, you should expect some breaking changes as development progresses towards a version 1.0.
 
 

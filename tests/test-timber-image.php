@@ -319,8 +319,20 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertFileNotExists($letterboxed_file);
 	}
 
+	function testThemeImageResize(){
+		$dest = get_template_directory().'/images/cardinals.jpg';
+		copy(__DIR__.'/assets/cardinals.jpg', $dest);
+		$image = get_template_directory_uri().'/images/cardinals.jpg';
+		$image = str_replace('http://example.org', '', $image);
+		$data = array();
+		$data['test_image'] = $image;
+		$data['size'] = array('width' => 120, 'height' => 120);
+		$str = Timber::compile('assets/image-test.twig', $data);
+		$this->assertFileExists(get_template_directory().'/images/cardinals-120x120-c-default.jpg');
+	}
+
 	public static function is_connected() {
-	    $connected = @fsockopen("www.google.com", [80|443]);
+	    $connected = @fsockopen("www.google.com", 80, $errno, $errstr, 3);
 	    if ($connected){
 	        $is_conn = true; //action when connected
 	        fclose($connected);
