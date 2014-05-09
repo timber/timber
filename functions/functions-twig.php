@@ -47,11 +47,7 @@ class TimberTwig {
 		}));
 
         /* actions and filters */
-        $twig->addFunction(new Twig_SimpleFunction('action', function(){
-            call_user_func_array('do_action', func_get_args());
-        }));
-        $twig->addFunction( new Twig_SimpleFunction('action_test', function($context){
-        	//print_r($context);
+        $twig->addFunction( new Twig_SimpleFunction('action', function($context){
         	$args = func_get_args();
         	array_shift($args);
         	$args[] = $context;
