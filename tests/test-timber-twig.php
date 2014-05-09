@@ -30,7 +30,15 @@
 		function testDoActionContext(){
 			global $action_context_tally;
 			$action_context_tally = array();
-			add_action('my_action_context_vars', function($foo, $context) {
+			add_action('my_action_context_vars', function($foo, $bar, $context) {
+				$this->assertEquals('foo', $foo);
+				$this->assertEquals('bar', $bar);
+				$this->assertEquals('Jaredz Post', $context['post']->post_title);
+				global $action_context_tally;
+				$action_context_tally[] = 'my_action_context_vars';
+			}, 10, 3);
+
+			add_action('my_action_context_var', function($foo, $context) {
 				$this->assertEquals('foo', $foo);
 				$this->assertEquals('Jaredz Post', $context['post']->post_title);
 				global $action_context_tally;
