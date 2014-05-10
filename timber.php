@@ -489,6 +489,7 @@ class Timber {
         $dummy_loader->get_twig();
         $loader = new Twig_Loader_String();
         $twig = new Twig_Environment($loader);
+        $twig = apply_filters('twig_apply_filters', $twig);
         return $twig->render($string, $data);
     }
 
