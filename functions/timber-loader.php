@@ -223,13 +223,10 @@ class TimberLoader {
      */
     function get_twig() {
         if (!class_exists('Twig_Autoloader')){
-            echo "LOADD!!!!!!'";
 		    $loader_loc = trailingslashit(TIMBER_LOC) . 'vendor/twig/twig/lib/Twig/Autoloader.php';
 	        require_once($loader_loc);
-        } else {
-            echo 'dont worry, it exists';
+	        Twig_Autoloader::register();
         }
-		Twig_Autoloader::register();
 		$loader = $this->get_loader();
 		$params = array('debug' => WP_DEBUG, 'autoescape' => false);
 		if (isset(Timber::$autoescape)){
