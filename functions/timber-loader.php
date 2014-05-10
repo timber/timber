@@ -126,9 +126,7 @@ class TimberLoader {
 			}
 		}
 		//now make sure theres a trailing slash on everything
-		foreach ($theme_locs as &$tl) {
-			$tl = trailingslashit($tl);
-		}
+		$theme_locs = array_map('trailingslashit', $theme_locs);
 		return $theme_locs;
 	}
 
