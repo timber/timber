@@ -238,7 +238,7 @@ function twig_body_class($body_classes) {
 
 /**
  * @param string $date
- * @param string format (optional)
+ * @param string $format (optional)
  * @return string
  */
 function twig_intl_date($date, $format = null) {
