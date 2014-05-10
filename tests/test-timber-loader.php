@@ -3,7 +3,6 @@
 	class TestTimberLoader extends WP_UnitTestCase {
 
 		function testTwigLoadsFromChildTheme(){
-			return;
 			$this->_setupParentTheme();
 			$this->_setupChildTheme();
 			$this->assertFileExists(WP_CONTENT_DIR.'/themes/fake-child-theme/style.css');
@@ -28,30 +27,49 @@
 		}
 
 		function testTwigLoadsFromParentTheme(){
-			return;
 			$this->_setupParentTheme();
 			$this->_setupChildTheme();
 			switch_theme('fake-child-theme');
-			$templates = array('single-parent.twig', 'single.twig');
+			$templates = array('single-parent.twig');
 			$str = Timber::compile($templates, array());
-			$this->assertEquals('I am single.twig in twentyfourteen', trim($str));
+			$this->assertEquals('I am single.twig in parent theme', trim($str));
 		}
 
 		function _setupParentTheme(){
-			$dest_dir = WP_CONTENT_DIR.'/themes/twentyfourteen';
+			$dest_dir = WP_CONTENT_DIR.'/themes/twentythirteen';
 			if (!file_exists($dest_dir.'/views')) {
     			mkdir($dest_dir.'/views', 0777, true);
 			}
 			copy(__DIR__.'/assets/single-parent.twig', $dest_dir.'/views/single.twig');
-			copy(__DIR__.'/assets/single-parent.twig', $dest_dir.'/views/single-post.twig');
+			copy(__DIR__.'/assets/single-parent.twig', $dest_dir.'/views/single-parent.twig');
+		}
+
+		function _setupRelativeViews(){
+			if (!file_exists(__DIR__.'/views')) {
+    			mkdir(__DIR__.'/views', 0777, true);
+			}
+			copy(__DIR__.'/assets/relative.twig', __DIR__.'/views/single.twig');
+		}
+
+		function _teardownRelativeViews(){
+			if (file_exists(__DIR__.'/views/single.twig')){
+				unlink(__DIR__.'/views/single.twig');
+			}
+			if (file_exists(__DIR__.'/views')) {
+    			rmdir(__DIR__.'/views');
+			}
 		}
 
 		function testTwigLoadsFromRelativeToScript(){
-
+			$this->_setupRelativeViews();
+			$str = Timber::compile('single.twig');
+			$this->assertEquals('I am in the assets directory', trim($str));
+			$this->_teardownRelativeViews();
 		}
 
 		function testTwigLoadsFromAbsolutePathOnServer(){
-
+			$str = Timber::compile(__DIR__.'/assets/image-test.twig');
+			$this->assertEquals('<img src="" />', trim($str));
 		}
 
 		function testTwigLoadsFromAlternateDirName(){
