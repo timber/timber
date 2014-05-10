@@ -69,4 +69,20 @@
 			$str = Timber::compile('assets/test-action-context.twig', $context);
 			$this->assertEquals('Here: stuff to say', trim($str));
 		}
+
+		function testWordPressPasswordFilters(){
+			$post_id = $this->factory->post->create(array('post_title' => 'My Private Post', 'post_password' => 'abc123'));
+			$context = array();
+			add_filter('protected_title_format', function($title){
+				return 'Protected: '.$title;
+			});
+			$context['post'] = new TimberPost($post_id);
+			if (post_password_required($post_id)){
+				$this->assertTrue(true);
+				$str = Timber::compile('assets/test-wp-filters.twig', $context);
+				$this->assertEquals('Protected: My Private Post', trim($str));
+			} else {
+				$this->assertTrue(false, 'Something wrong with the post password reqd');
+			}
+		}
 	}
