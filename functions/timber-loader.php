@@ -116,10 +116,14 @@ class TimberLoader {
 			$parent_loc = str_replace('/', '\\', $parent_loc);
 		}
 		$theme_locs[] = $child_loc;
-		$theme_locs[] = trailingslashit($child_loc) . trailingslashit(Timber::$dirname);
+		foreach($this->get_locations_theme_dir() as $dirname){
+			$theme_locs[] = trailingslashit($child_loc) . trailingslashit($dirname);
+		}
 		if ($child_loc != $parent_loc) {
 			$theme_locs[] = $parent_loc;
-			$theme_locs[] = trailingslashit($parent_loc) . trailingslashit(Timber::$dirname);
+			foreach($this->get_locations_theme_dir() as $dirname){
+				$theme_locs[] = trailingslashit($parent_loc) . trailingslashit($dirname);
+			}
 		}
 		//now make sure theres a trailing slash on everything
 		foreach ($theme_locs as &$tl) {
@@ -127,6 +131,17 @@ class TimberLoader {
 		}
 		return $theme_locs;
 	}
+
+    /**
+     * returns an array of the directory inside themes that holds twig files
+     * @return array the names of directores, ie: array('templats', 'views');
+     */
+    private function get_locations_theme_dir(){
+        if (is_string(Timber::$dirname)){
+            return array(Timber::$dirname);
+        }
+        return Timber::$dirname;
+    }
 
     /**
      * @return array
@@ -158,10 +173,12 @@ class TimberLoader {
 			if (is_dir($caller)) {
 				$locs[] = $caller;
 			}
-			$caller_sub = $caller . trailingslashit(Timber::$dirname);
-			if (is_dir($caller_sub)) {
-				$locs[] = $caller_sub;
-			}
+            foreach($this->get_locations_theme_dir() as $dirname){
+				$caller_sub = $caller . trailingslashit($dirname);
+			    if (is_dir($caller_sub)) {
+					$locs[] = $caller_sub;
+			    }
+            }
 		}
 		return $locs;
 	}

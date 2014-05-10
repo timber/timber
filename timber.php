@@ -57,7 +57,7 @@ require_once(__DIR__ . '/functions/timber-admin.php');
 class Timber {
 
     public static $locations;
-    public static $dirname = 'views';
+    public static $dirname;
     public static $twig_cache = false;
     public static $cache = false;
     public static $auto_meta = true;
@@ -805,4 +805,4 @@ class Timber {
 
 $timber = new Timber();
 $GLOBALS['timber'] = $timber;
-Timber::$dirname = 'views';
+Timber::$dirname = array('templates', 'views');
