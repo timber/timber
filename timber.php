@@ -805,4 +805,4 @@ class Timber {
 
 $timber = new Timber();
 $GLOBALS['timber'] = $timber;
-Timber::$dirname = array('templates', 'views');
+Timber::$dirname = 'views';
