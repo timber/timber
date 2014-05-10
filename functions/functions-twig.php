@@ -41,6 +41,7 @@ class TimberTwig {
 		$twig->addFilter('relative', new Twig_Filter_Function(function($link){
 			return TimberURLHelper::get_rel_url($link, true);
 		}));
+        $twig->addFilter('date', new Twig_Filter_Function('twig_intl_date'));
 
 		$twig->addFilter('truncate', new Twig_Filter_Function(function($text, $len){
 			return TimberHelper::trim_words($text, $len);
@@ -233,6 +234,18 @@ function twig_body_class($body_classes) {
 	$return = ob_get_contents();
 	ob_end_clean();
 	return $return;
+}
+
+/**
+ * @param string $date
+ * @param string format (optional)
+ * @return string
+ */
+function twig_intl_date($date, $format = null) {
+    if ($format === null) {
+        $format = get_option('date_format');
+    }
+    return date_i18n($format, strtotime($date));
 }
 
 /**
