@@ -604,10 +604,10 @@ class Timber {
     public static function add_route($route, $callback, $args = array()) {
         global $timber;
         if (!isset($timber->router)) {
-            require_once(__DIR__.'/functions/router/Router.php');
-            require_once(__DIR__.'/functions/router/Route.php');
-            if (class_exists('Router')){
-                $timber->router = new Router();
+            require_once(__DIR__.'/vendor/dannyvankooten/php-router/src/PHPRouter/Router.php');
+            require_once(__DIR__.'/vendor/dannyvankooten/php-router/src/PHPRouter/Route.php');
+            if (class_exists('PHPRouter\Router')){
+                $timber->router = new PHPRouter\Router();
                 $site_url = get_bloginfo('url');
                 $site_url_parts = explode('/', $site_url);
                 $site_url_parts = array_slice($site_url_parts, 3);
@@ -620,7 +620,7 @@ class Timber {
                 $timber->router->setBasePath($base_path);
             }
         }
-        if (class_exists('Router')){
+        if (class_exists('PHPRouter\Router')){
             $timber->router->map($route, $callback, $args);
         }
     }
