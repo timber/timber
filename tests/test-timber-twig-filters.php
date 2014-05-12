@@ -39,4 +39,20 @@
 				$this->assertEquals('septiembre 28th, 1983 8:14pm', $str);
 			}
 		}
+
+		function testTwigFilterDateI18nWordPressOption(){
+			if (WPLANG == 'es_ES'){
+				global $wp_locale;
+				$data['day'] = '1983-09-28';
+				$str = Timber::compile_string("{{day|date}}", $data);
+				$this->assertEquals('28 septiembre, 1983', $str);
+			}
+		}
+
+		function testTwigFilterDateWordPressOption(){
+			$format = get_option('date_format');
+			$str = Timber::compile_string("{{now|date('".$format."')}}");
+			$empty = Timber::compile_string("{{now|date}}");
+			$this->assertSame($str, $empty);
+		}
 	}
