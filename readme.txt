@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.18.0
+Stable tag: 0.18.1
 Tested up to: 3.9
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,15 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.18.1 =
+* Dates now use date_i18n filter (thanks @jamesagreenleaf)
+* The twig |date filter now defaults to your WP Admin settings (thanks @jamesagreenleaf)
+* You can send Timber::$dirname an array to specify multiple locations of twig files within a theme
+* Load views from anywhere on the server (thanks @th3fallen)
+* Load twig files from anywhere on the server using an absolute path
+* Use another version of Twig if you have it loaded (thanks @ButlerPCnet)
+* more tests!
 
 = 0.18.0 =
 * BREAKING CHANGE ALERT wp_title no longer appends bloginfo('name') to end of string (thanks @aduth)
