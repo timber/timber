@@ -27,6 +27,8 @@
 			$this->assertSame($now, $str);
 			$str = Timber::compile_string("{{null|date('M jS, Y')}}");
 			$this->assertSame($now, $str);
+			$str = Timber::compile_string("{{'now'|date('M jS, Y')}}");
+			$this->assertSame($now, $str);
 		}
 
 		function testTwigFilterDateI18n(){
