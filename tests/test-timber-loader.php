@@ -73,7 +73,7 @@
 		}
 
 		function testTwigLoadsFromAbsolutePathOnServerWithSecurityRestriction(){
-			ini_set('open_basedir', '/srv:/usr');
+			ini_set('open_basedir', '/srv:/usr:/home/travis');
 			$str = Timber::compile('assets/single-foo.twig');
 			ini_set('open_basedir', '/');
 		}
