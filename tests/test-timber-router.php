@@ -25,8 +25,6 @@ class TimberTestRouter extends WP_UnitTestCase {
 	}
 
 	function testRouterClass(){
-		$this->assertFalse(class_exists('PHPRouter\Router'), 'PHP Router shout not be loaded yet');
-		Timber::add_route('foo', 'print');
 		$this->assertTrue(class_exists('PHPRouter\Router'));
 	}
 }
