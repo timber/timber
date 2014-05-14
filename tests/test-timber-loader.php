@@ -73,12 +73,9 @@
 		}
 
 		function testTwigLoadsFromAbsolutePathOnServerWithSecurityRestriction(){
-			echo '__DIR__='.__DIR__;
-			ini_set('open_basedir', __DIR__);
-			echo 'ini='.ini_get('open_basedir');
-			$str = Timber::compile(__DIR__.'/assets/image-test.twig');
-			$this->assertEquals('<img src="" />', trim($str));
-			ini_set('open_basedir', '');
+			ini_set('open_basedir', '/srv:/usr');
+			$str = Timber::compile('assets/single-foo.twig');
+			ini_set('open_basedir', '/');
 		}
 
 		function testTwigLoadsFromAlternateDirName(){

@@ -194,7 +194,6 @@ class TimberLoader {
 		$locs = array_diff($locs, $this->get_locations_theme());
 		$locs = array_merge($locs, $this->get_locations_theme());
 		$locs = array_merge($locs, $this->get_locations_caller($caller));
-        $locs[] = '/';
 		$locs = array_unique($locs);
 		$locs = apply_filters('timber_locations', $locs);
 		return $locs;
@@ -213,6 +212,11 @@ class TimberLoader {
 			} else {
 				//error_log($loc.' is not a directory');
 			}
+		}
+		if (!ini_get('open_basedir')){
+			$loaders[] = new Twig_Loader_Filesystem('/');
+		} else {
+			$loaders[] = new Twig_Loader_Filesystem(ABSPATH);;
 		}
 		$loader = new Twig_Loader_Chain($loaders);
 		return $loader;
