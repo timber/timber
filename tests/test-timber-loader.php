@@ -72,6 +72,15 @@
 			$this->assertEquals('<img src="" />', trim($str));
 		}
 
+		function testTwigLoadsFromAbsolutePathOnServerWithSecurityRestriction(){
+			echo '__DIR__='.__DIR__;
+			ini_set('open_basedir', __DIR__);
+			echo 'ini='.ini_get('open_basedir');
+			$str = Timber::compile(__DIR__.'/assets/image-test.twig');
+			$this->assertEquals('<img src="" />', trim($str));
+			ini_set('open_basedir', '');
+		}
+
 		function testTwigLoadsFromAlternateDirName(){
 			Timber::$dirname = array('foo', 'views');
 			if (!file_exists(get_template_directory().'/foo')) {
