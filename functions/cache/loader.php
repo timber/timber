@@ -13,7 +13,7 @@ class TimberCache_Loader
 
     public static function autoload($class)
     {
-        if (0 === strpos($class, 'Timber\Cache') || 0 === strpos($class, 'Asm89\Twig\CacheExtension')) {
+        if ( 0 === strpos($class, 'Timber\Cache') ) {
             $classes = explode( '\\', $class );
             array_splice( $classes, 0, 2 );
             $path = implode( $classes, '/' );
