@@ -11,6 +11,8 @@ Author URI: http://upstatement.com/
 global $wp_version;
 global $timber;
 
+require_once(__DIR__ . '/vendor/autoload.php');
+
 require_once(__DIR__ . '/functions/functions-twig.php');
 require_once(__DIR__ . '/functions/timber-helper.php');
 require_once(__DIR__ . '/functions/timber-url-helper.php');
@@ -604,8 +606,6 @@ class Timber {
     public static function add_route($route, $callback, $args = array()) {
         global $timber;
         if (!isset($timber->router)) {
-            require_once(__DIR__.'/vendor/dannyvankooten/php-router/src/PHPRouter/Router.php');
-            require_once(__DIR__.'/vendor/dannyvankooten/php-router/src/PHPRouter/Route.php');
             if (class_exists('PHPRouter\Router')){
                 $timber->router = new PHPRouter\Router();
                 $site_url = get_bloginfo('url');
