@@ -11,5 +11,4 @@
 			$result = Timber::compile('assets/main-w-sidebar.twig', $context);
 			$this->assertEquals('I am the main stuff <h4>Sidebar post content</h4>', trim($result));
 		}
-
 	}
