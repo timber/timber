@@ -545,7 +545,7 @@ class Timber {
         if (strstr(strtolower($sidebar), '.php')) {
             return self::get_sidebar_from_php($sidebar, $data);
         }
-        return self::render($sidebar, $data, false);
+        return self::compile($sidebar, $data);
     }
 
     /**
