@@ -23,4 +23,8 @@ class TimberTestRouter extends WP_UnitTestCase {
 		$template = Timber::load_template($hello);
 		$this->assertFalse($template);
 	}
+
+	function testRouterClass(){
+		$this->assertTrue(class_exists('PHPRouter\Router'));
+	}
 }

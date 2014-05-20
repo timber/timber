@@ -226,12 +226,11 @@ class TimberLoader {
      * @return Twig_Environment
      */
     function get_twig() {
-		if (!class_exists('Twig_Autoloader')) {
-			$loader_loc = trailingslashit(TIMBER_LOC) . 'Twig/lib/Twig/Autoloader.php';
-			require_once($loader_loc);
-			Twig_Autoloader::register();
-		}
-
+		// if (!class_exists('Twig_Autoloader')) {
+		// 	$loader_loc = trailingslashit(TIMBER_LOC) . 'Twig/lib/Twig/Autoloader.php';
+		// 	require_once($loader_loc);
+		// 	Twig_Autoloader::register();
+		// }
 		$loader = $this->get_loader();
 		$params = array('debug' => WP_DEBUG, 'autoescape' => false);
 		if (isset(Timber::$autoescape)){
@@ -241,7 +240,11 @@ class TimberLoader {
             Timber::$twig_cache = true;
         }
 		if (Timber::$twig_cache) {
-			$params['cache'] = TIMBER_LOC . '/twig-cache';
+            $twig_cache_loc = TIMBER_LOC . '/cache/twig';
+            if (!file_exists($twig_cache_loc)) {
+                mkdir($twig_cache_loc, 0777, true);
+            }
+			$params['cache'] = $twig_cache_loc;
 		}
 		$twig = new Twig_Environment($loader, $params);
         if (WP_DEBUG){
