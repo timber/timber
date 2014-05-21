@@ -11,7 +11,10 @@ Author URI: http://upstatement.com/
 global $wp_version;
 global $timber;
 
-include_once(__DIR__ . '/vendor/autoload.php');
+$composer_autoload = __DIR__ . '/vendor/autoload.php';
+if (file_exists($composer_autoload)){
+	require_once($composer_autoload);
+}
 
 require_once(__DIR__ . '/functions/functions-twig.php');
 require_once(__DIR__ . '/functions/timber-helper.php');
@@ -81,7 +84,7 @@ class Timber {
             trigger_error('Timber requires PHP 5.3.0 or greater. You have '.phpversion(), E_USER_ERROR);
         }
         if (!class_exists('Twig_Autoloader')) {
-        	trigger_error('You have not run "composer install" to download required dependencies for Timber, you can read more on github.com/jarednova/timber', E_USER_ERROR);
+        	trigger_error('You have not run "composer install" to download required dependencies for Timber, you can read more on https://github.com/jarednova/timber#installation', E_USER_ERROR);
         }
     }
 

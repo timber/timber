@@ -34,7 +34,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 #### Want to read more?
 * [Timber on WordPress.org](http://wordpress.org/plugins/timber-library/)
-* [Timber Overview on WP Mayor](http://www.wpmayor.com/articles/timber-templating-language-wordpress/)
+* [Timber Overview on Tidy Repo](http://www.wpmayor.com/articles/timber-templating-language-wordpress/)
 * ["What is WordPress Missing? A Template Language" on Torque](http://torquemag.io/what-is-wordpress-lacking-a-template-language/)
 
 
