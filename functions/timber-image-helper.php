@@ -7,8 +7,8 @@
 				$post = get_post($post_id);
 				$image_types = array('image/jpeg', 'image/png', 'image/gif', 'image/jpg');
 				if ($post->post_type == 'attachment' && in_array($post->post_mime_type, $image_types)){
-					self::delete_resized_files_from_url($post->guid);
-					self::delete_letterboxed_files_from_url($post->guid);
+					TimberImageHelper::delete_resized_files_from_url($post->guid);
+					TimberImageHelper::delete_letterboxed_files_from_url($post->guid);
 				}
 			});
 		}
@@ -28,12 +28,12 @@
 		    return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
 		}
 
-		private static function delete_resized_files_from_url($src){
+		public static function delete_resized_files_from_url($src){
 			$local = TimberURLHelper::url_to_file_system($src);
 			self::delete_resized_files($local);
 		}
 
-		private static function delete_letterboxed_files_from_url($src){
+		public static function delete_letterboxed_files_from_url($src){
 			$local = TimberURLHelper::url_to_file_system($src);
 			self::delete_letterboxed_files($local);
 		}
