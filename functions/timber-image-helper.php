@@ -28,12 +28,12 @@
 		    return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
 		}
 
-		private static function delete_resized_files_from_url($src){
+		static function delete_resized_files_from_url($src){
 			$local = TimberURLHelper::url_to_file_system($src);
 			self::delete_resized_files($local);
 		}
 
-		private static function delete_letterboxed_files_from_url($src){
+		static function delete_letterboxed_files_from_url($src){
 			$local = TimberURLHelper::url_to_file_system($src);
 			self::delete_letterboxed_files($local);
 		}
