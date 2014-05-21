@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.18.1
+Stable tag: 0.19.0
 Tested up to: 3.9
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.19.0 =
+* Reorganized dependencies into /vendor directories based on composer (thanks @mgmartel, @rarst, @bryanaka)
+* Fixed issues with image library deletion (thanks @thetmkay)
+* Fixed issues with sidebar output
 
 = 0.18.1 =
 * Dates now use date_i18n filter (thanks @jamesagreenleaf)
