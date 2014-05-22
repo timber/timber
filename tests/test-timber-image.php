@@ -331,7 +331,9 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data = array();
 		$data['test_image'] = $image;
 		$data['size'] = array('width' => 120, 'height' => 120);
-		$str = Timber::compile('assets/image-test.twig', $data);
+		//$str = Timber::compile('assets/image-test.twig', $data);
+		$resized = TimberImageHelper::resize($image, 120, 120);
+		echo $resized;
 		$this->assertFileExists(get_template_directory().'/images/cardinals-120x120-c-default.jpg');
 	}
 

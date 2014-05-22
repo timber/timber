@@ -399,6 +399,8 @@
 			//oh good, it's a relative image in the uploads folder!
 			$new_path = self::get_resize_file_rel($src, $w, $h, $crop);
 			$new_root_path = self::get_resize_file_path($src, $w, $h, $crop);
+			echo 'NEW_ROOT_PATH='.$new_root_path;
+			echo "\n";
 			$old_root_path = self::get_server_location($src);
 			$old_root_path = TimberURLHelper::remove_double_slashes($old_root_path);
 			$new_root_path = TimberURLHelper::remove_double_slashes($new_root_path);
@@ -407,13 +409,10 @@
 					// Force resize - warning: will regenerate the image on every pageload, use for testing purposes only!
 					unlink( $new_root_path );
 				} else {
-					if ($abs){
-						return untrailingslashit(home_url()).$new_path;
-					} else {
-						$returning = TimberURLHelper::preslashit($new_path);
-						return $returning;
+					if (!$abs){
+						return TimberURLHelper::preslashit($new_path);
 					}
-					return $new_path;
+					return untrailingslashit(home_url()).$new_path;
 				}
 			} 
 			$image = wp_get_image_editor($old_root_path);
