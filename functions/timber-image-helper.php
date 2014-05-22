@@ -112,8 +112,12 @@
          * @param string $crop
          * @return string
          */
-        public static function get_resize_file_rel($src, $w, $h, $crop){
+        static function get_resize_file_rel($src, $w, $h, $crop){
+        	if (!strlen($src)){
+        		return null;
+        	}
         	$path_parts = pathinfo($src);
+        	print_r($path_parts);
         	$basename = $path_parts['filename'];
         	$ext = $path_parts['extension'];
 			$dir = $path_parts['dirname'];
@@ -130,7 +134,7 @@
          * @param string $crop
          * @return string
          */
-        public static function get_resize_file_path($src, $w, $h, $crop){
+        static function get_resize_file_path($src, $w, $h, $crop){
 			$new_path = self::get_resize_file_rel($src, $w, $h, $crop);
 			$new_root_path = ABSPATH . $new_path;
 			$new_root_path = TimberURLHelper::remove_double_slashes($new_root_path);
