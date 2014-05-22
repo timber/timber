@@ -204,21 +204,22 @@ class TimberLoader {
      */
     function get_loader() {
 		$loaders = array();
+		$paths = array();
 		foreach ($this->locations as $loc) {
 			$loc = realpath($loc);
 			if (is_dir($loc)) {
 				$loc = realpath($loc);
-				$loaders[] = new Twig_Loader_Filesystem($loc);
+				$paths[] = $loc;
 			} else {
 				//error_log($loc.' is not a directory');
 			}
 		}
 		if (!ini_get('open_basedir')){
-			$loaders[] = new Twig_Loader_Filesystem('/');
+			$paths[] = '/';
 		} else {
-			$loaders[] = new Twig_Loader_Filesystem(ABSPATH);;
+			$paths[] = ABSPATH;
 		}
-		$loader = new Twig_Loader_Chain($loaders);
+		$loader = new Twig_Loader_Filesystem($paths);
 		return $loader;
 	}
 
