@@ -8,7 +8,7 @@
 			$this->assertFileExists(WP_CONTENT_DIR.'/themes/fake-child-theme/style.css');
 			switch_theme('fake-child-theme');
 			$child_theme = get_stylesheet_directory_uri();
-			$this->assertEquals('http://example.org/wp-content/themes/fake-child-theme', $child_theme);
+			$this->assertEquals(WP_CONTENT_URL.'/themes/fake-child-theme', $child_theme);
 			$context = array();
 			$str = Timber::compile('single.twig', $context);
 			$this->assertEquals('I am single.twig', trim($str));

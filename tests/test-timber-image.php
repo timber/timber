@@ -15,13 +15,11 @@ class TimberImageTest extends WP_UnitTestCase {
 		Timber::compile('assets/image-test.twig', $data);
 		$upload_dir = wp_upload_dir();
 		$path = $upload_dir['path'].'/'.$md5;
-		$exists = file_exists($path.'.jpg');
 		/* was the external image D/Ld to the location? */
-		$this->assertTrue($exists);
+		$this->assertFileExists($path.'.jpg');
 		/* does resize work on external image? */
 		$resized_path = $path.'-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.jpg';
-		$exists = file_exists($resized_path);
-		$this->assertTrue($exists);
+		$this->assertFileExists($resized_path);
 		$old_time = filemtime($resized_path);
 		sleep(1);
 		Timber::compile('assets/image-test.twig', $data);

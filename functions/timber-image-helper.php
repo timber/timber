@@ -331,6 +331,7 @@
 			// do the validation and storage stuff
 			$locinfo = pathinfo($loc);
 			$file = wp_upload_bits($locinfo['basename'], null, file_get_contents($file_array['tmp_name']));
+			print_r($file);
 			return $file['url'];
 		}
 
