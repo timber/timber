@@ -27,6 +27,7 @@ class TimberTwig {
 		/* other filters */
 		$twig->addFilter('stripshortcodes', new Twig_Filter_Function('strip_shortcodes'));
 		$twig->addFilter('array', new Twig_Filter_Function(array($this, 'to_array')));
+		$twig->addFilter('string', new Twig_Filter_Function(array($this, 'to_string')));
 		$twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
 		$twig->addFilter('function', new Twig_Filter_Function(array($this, 'exec_function')));
 		$twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
@@ -116,6 +117,22 @@ class TimberTwig {
 		}
 		$arr = array($arr);
 		return $arr;
+	}
+
+	/**
+     * @param mixed $arr
+     * @return string
+     */
+	function to_string($arr, $glue = ' '){
+		if (is_string($arr)){
+			return $arr;
+		}
+		if (is_array($arr) && count($arr) == 1){
+			return $arr[0];
+		}
+		if (is_array($arr)){
+			return implode($glue, $arr);
+		}
 	}
 
     /**

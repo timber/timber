@@ -2,10 +2,22 @@
 
 	class TimberTermTwigFilters extends WP_UnitTestCase {
 
-		function testTwigFitlerSanitize(){
+		function testTimberFitlerSanitize(){
 			$data['title'] = "Jared's Big Adventure";
 			$str = Timber::compile_string('{{title|sanitize}}', $data);
 			$this->assertEquals('jareds-big-adventure', $str);
+		}
+
+		function testTimberFilterString(){
+			$data['arr'] = array('foo', 'foo');
+			$str = Timber::compile_string('{{arr|string}}', $data);
+			$this->assertEquals('foo foo', trim($str));
+			$data['arr'] = array('bar');
+			$str = Timber::compile_string('{{arr|string}}', $data);
+			$this->assertEquals('bar', trim($str));
+			$data['arr'] = array('foo', 'bar');
+			$str = Timber::compile_string('{{arr|string(", ")}}', $data);
+			$this->assertEquals('foo, bar', trim($str));
 		}
 
 		function testTwigFilterDate(){
@@ -57,4 +69,6 @@
 			$empty = Timber::compile_string("{{now|date}}");
 			$this->assertSame($str, $empty);
 		}
+
+
 	}
