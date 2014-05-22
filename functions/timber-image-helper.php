@@ -135,9 +135,10 @@
          * @return string
          */
         public static function get_letterbox_file_path($src, $w, $h, $color) {
-			$new_path = self::get_letterbox_file_rel($src, $w, $h, $color);
-			$new_root_path = ABSPATH . $new_path;
-			$new_root_path = str_replace('//', '/', $new_root_path);
+			$new_name = self::get_letterbox_file_name_relative_to_uploads($src, $w, $h, $color);
+			$upload_dir = wp_upload_dir();
+			$new_root_path = $upload_dir['basedir'] . $new_name;
+			$new_root_path = TimberURLHelper::remove_double_slashes($new_root_path);
 			return $new_root_path;
 		}
 
@@ -244,9 +245,9 @@
 			}
 			$new_file_rel = self::get_letterbox_file_rel($src, $w, $h, $color);
 			$new_root_path = self::get_letterbox_file_path($src, $w, $h, $color);
-			$old_root_path = ABSPATH . str_replace(home_url(), '', $src);
-			$old_root_path = str_replace('//', '/', $old_root_path);
-			$new_root_path = str_replace('//', '/', $new_root_path);
+			$old_root_path = self::get_server_location($src);
+			$old_root_path = TimberURLHelper::remove_double_slashes($old_root_path);
+			$new_root_path = TimberURLHelper::remove_double_slashes($new_root_path);
 			if (file_exists($new_root_path) && !$force) {
 				if ($abs){
 					return untrailingslashit(home_url()).$new_file_rel;
