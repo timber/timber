@@ -13,6 +13,13 @@
 			});
 		}
 
+		static function add_filters(){
+			add_filter('upload_dir', function($arr){
+				$arr['relative'] = str_replace(home_url(), '', $arr['baseurl']);
+				return $arr;
+			});
+		}
+
 		/**
          * @param string $hexstr
          * @return array
@@ -48,6 +55,7 @@
 				$regexdir = str_replace('/', '\/', $dir);
 				$pattern = '/'.($regexdir).'\/'.$filename.'-[0-9]*x[0-9]*-c-[a-z]*.'.$ext.'/';
 				$match = preg_match($pattern, $found_file);
+				//keeping these here so I know what the hell we're matching
 				//$match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/$filename-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $found_file);
 				//$match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/arch-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $filename);
 				if ($match){
@@ -116,14 +124,23 @@
         	if (!strlen($src)){
         		return null;
         	}
+        	$new_path = self::get_resize_file_name_relative_to_uploads($src, $w, $h, $crop);
+        	$upload_dir = wp_upload_dir();
+			return $upload_dir['relative'].$new_path;
+        }
+
+        static function get_resize_file_name_relative_to_uploads($src, $w, $h, $crop){
+        	if (!strlen($src)){
+        		return null;
+        	}
         	$path_parts = pathinfo($src);
         	$basename = $path_parts['filename'];
         	$ext = $path_parts['extension'];
-			$dir = $path_parts['dirname'];
+        	$upload_dir = wp_upload_dir();
+        	$dir_relative_to_uploads = str_replace($upload_dir['baseurl'], '', $path_parts['dirname']);
 			$newbase = $basename . '-' . $w . 'x' . $h . '-c-' . ( $crop ? $crop : 'f' ); // Crop will be either user named or f (false)
-			$new_path = $dir . '/' . $newbase . '.' . $ext;
-			$new_path = str_replace(home_url(), '', $new_path);
-			return $new_path;
+			$new_name = $newbase . '.' . $ext;
+			return $dir_relative_to_uploads.'/'.$new_name;
         }
 
 		/**
@@ -134,8 +151,9 @@
          * @return string
          */
         static function get_resize_file_path($src, $w, $h, $crop){
-			$new_path = self::get_resize_file_rel($src, $w, $h, $crop);
-			$new_root_path = ABSPATH . $new_path;
+			$new_name = self::get_resize_file_name_relative_to_uploads($src, $w, $h, $crop);
+			$upload_dir = wp_upload_dir();
+			$new_root_path = $upload_dir['basedir'] . $new_name;
 			$new_root_path = TimberURLHelper::remove_double_slashes($new_root_path);
 			return $new_root_path;
         }
@@ -149,6 +167,12 @@
 			$src = wp_get_attachment_image_src($iid, $size);
 			$src = $src[0];
 			return self::get_rel_path($src);
+		}
+
+		public static function get_server_location($url){
+			$upload_dir = wp_upload_dir();
+			$relative_to_uploads_dir = str_replace($upload_dir['baseurl'], '', $url);
+			return $upload_dir['basedir'].$relative_to_uploads_dir;
 		}
 
 		/**
@@ -171,8 +195,8 @@
 			$old_root_path = ABSPATH . str_replace(home_url(), '', $src);
 			$old_root_path = str_replace('//', '/', $old_root_path);
 			$new_root_path = str_replace('//', '/', $new_root_path);
-			$urlinfo = parse_url($src);
 			if (file_exists($new_root_path) && !$force) {
+				echo 'exists';
 				if ($abs){
 					return untrailingslashit(home_url()).$new_file_rel;
 				} else {
@@ -323,7 +347,7 @@
 			$new_path = self::get_resize_file_rel($src, $w, $h, $crop);
 			$new_root_path = self::get_resize_file_path($src, $w, $h, $crop);
 			if ($abs){
-				$old_root_path = ABSPATH . str_replace(home_url(), '', $src);
+				$old_root_path = self::get_server_location($src);
 			} else {
 				$old_root_path = ABSPATH . $src;
 			}
@@ -342,7 +366,7 @@
 					}
 					return $new_path;
 				}
-			}
+			} 
 			$image = wp_get_image_editor($old_root_path);
 
 			if (!is_wp_error($image)) {
@@ -356,7 +380,6 @@
 				if ( ! $h ) {
 					$h = round( $w / $src_ratio);
 				}
-
 				// Get ratios
 				$dest_ratio = $w / $h;
 				$src_wt = $src_h * $dest_ratio;
@@ -392,7 +415,6 @@
 					}
 
 				}
-
 				$result = $image->save($new_root_path);
 				if (is_wp_error($result)){
 					error_log('Error resizing image');
@@ -412,3 +434,4 @@
 	}
 
 	TimberImageHelper::add_actions();
+	TimberImageHelper::add_filters();
