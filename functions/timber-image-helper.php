@@ -88,15 +88,43 @@
          * @return string
          */
         public static function get_letterbox_file_rel($src, $w, $h, $color) {
-			$path_parts = pathinfo($src);
-			$basename = $path_parts['filename'];
-			$ext = $path_parts['extension'];
-			$dir = $path_parts['dirname'];
+			if (!strlen($src)){
+        		return null;
+        	}
+        	$new_path = self::get_letterbox_file_name_relative_to_uploads($src, $w, $h, $color);
+        	$upload_dir = wp_upload_dir();
+			return $upload_dir['relative'].$new_path;
+		}
+
+		/**
+         * @param string $src
+         * @param int $w
+         * @param int $h
+         * @param string $crop
+         * @return string
+         */
+		static function get_letterbox_file_name_relative_to_uploads($src, $w, $h, $color){
+			if (!strlen($src)){
+        		return null;
+        	}
+        	$abs = false;
+			if (strstr($src, 'http')){
+				$abs = true;
+			}
+        	$path_parts = pathinfo($src);
+        	$basename = $path_parts['filename'];
+        	$ext = $path_parts['extension'];
+        	$upload_dir = wp_upload_dir();
+        	if ($abs){
+        		$dir_relative_to_uploads = str_replace($upload_dir['baseurl'], '', $path_parts['dirname']);
+        	} else {
+        		$dir_relative_to_uploads = str_replace($upload_dir['basedir'], '', $path_parts['dirname']);
+        		$dir_relative_to_uploads = str_replace($upload_dir['relative'], '', $dir_relative_to_uploads);
+        	}
 			$color = str_replace('#', '', $color);
 			$newbase = $basename . '-lbox-' . $w . 'x' . $h . '-' . $color;
-			$new_path = $dir . '/' . $newbase . '.' . $ext;
-			$new_path = str_replace(home_url(), '', $new_path);
-			return $new_path;
+			$new_name = $newbase . '.' . $ext;
+			return $dir_relative_to_uploads.'/'.$new_name;
 		}
 
         /**
@@ -129,6 +157,13 @@
 			return $upload_dir['relative'].$new_path;
         }
 
+        /**
+         * @param string $src
+         * @param int $w
+         * @param int $h
+         * @param string $crop
+         * @return string
+         */
         static function get_resize_file_name_relative_to_uploads($src, $w, $h, $crop){
         	if (!strlen($src)){
         		return null;
@@ -144,7 +179,8 @@
         	if ($abs){
         		$dir_relative_to_uploads = str_replace($upload_dir['baseurl'], '', $path_parts['dirname']);
         	} else {
-        		$dir_relative_to_uploads = str_replace($upload_dir['relative'], '', $path_parts['dirname']);
+        		$dir_relative_to_uploads = str_replace($upload_dir['basedir'], '', $path_parts['dirname']);
+        		$dir_relative_to_uploads = str_replace($upload_dir['relative'], '', $dir_relative_to_uploads);
         	}
 			$newbase = $basename . '-' . $w . 'x' . $h . '-c-' . ( $crop ? $crop : 'f' ); // Crop will be either user named or f (false)
 			$new_name = $newbase . '.' . $ext;

@@ -169,11 +169,19 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals($data['post']->thumbnail()->alt(), $thumb_alt);
 	}
 
+	function testResizeFileNaming(){
+		$file_loc = $this->copyTestImage('eastern.jpg');
+		$filename = TimberImageHelper::get_resize_file_rel($file_loc, 300, 500, 'default');
+		$upload_dir = wp_upload_dir();
+		$this->assertEquals($upload_dir['relative'].$upload_dir['subdir'].'/eastern-300x500-c-default.jpg', $filename);
+	}
+
 	function testLetterboxFileNaming(){
 		$file_loc = $this->copyTestImage('eastern.jpg');
 		$filename = TimberImageHelper::get_letterbox_file_rel($file_loc, 300, 500, '#FFFFFF');
 		$filename = str_replace(ABSPATH, '', $filename);
-		$this->assertEquals('wp-content/uploads/'.date('Y/m').'/eastern-lbox-300x500-FFFFFF.jpg', $filename);
+		$upload_dir = wp_upload_dir();
+		$this->assertEquals($upload_dir['relative'].$upload_dir['subdir'].'/eastern-lbox-300x500-FFFFFF.jpg', $filename);
 	}
 
 	function testLetterbox(){
