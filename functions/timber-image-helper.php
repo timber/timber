@@ -133,11 +133,19 @@
         	if (!strlen($src)){
         		return null;
         	}
+        	$abs = false;
+			if (strstr($src, 'http')){
+				$abs = true;
+			}
         	$path_parts = pathinfo($src);
         	$basename = $path_parts['filename'];
         	$ext = $path_parts['extension'];
         	$upload_dir = wp_upload_dir();
-        	$dir_relative_to_uploads = str_replace($upload_dir['baseurl'], '', $path_parts['dirname']);
+        	if ($abs){
+        		$dir_relative_to_uploads = str_replace($upload_dir['baseurl'], '', $path_parts['dirname']);
+        	} else {
+        		$dir_relative_to_uploads = str_replace($upload_dir['relative'], '', $path_parts['dirname']);
+        	}
 			$newbase = $basename . '-' . $w . 'x' . $h . '-c-' . ( $crop ? $crop : 'f' ); // Crop will be either user named or f (false)
 			$new_name = $newbase . '.' . $ext;
 			return $dir_relative_to_uploads.'/'.$new_name;
@@ -171,7 +179,15 @@
 
 		public static function get_server_location($url){
 			$upload_dir = wp_upload_dir();
-			$relative_to_uploads_dir = str_replace($upload_dir['baseurl'], '', $url);
+			$abs = false;
+			if (strstr($url, 'http')){
+				$abs = true;
+			}
+			if ($abs){
+				$relative_to_uploads_dir = str_replace($upload_dir['baseurl'], '', $url);
+			} else {
+				$relative_to_uploads_dir = str_replace($upload_dir['relative'], '', $url);
+			}
 			return $upload_dir['basedir'].$relative_to_uploads_dir;
 		}
 
@@ -196,7 +212,6 @@
 			$old_root_path = str_replace('//', '/', $old_root_path);
 			$new_root_path = str_replace('//', '/', $new_root_path);
 			if (file_exists($new_root_path) && !$force) {
-				echo 'exists';
 				if ($abs){
 					return untrailingslashit(home_url()).$new_file_rel;
 				} else {
@@ -346,11 +361,7 @@
 			//oh good, it's a relative image in the uploads folder!
 			$new_path = self::get_resize_file_rel($src, $w, $h, $crop);
 			$new_root_path = self::get_resize_file_path($src, $w, $h, $crop);
-			if ($abs){
-				$old_root_path = self::get_server_location($src);
-			} else {
-				$old_root_path = ABSPATH . $src;
-			}
+			$old_root_path = self::get_server_location($src);
 			$old_root_path = TimberURLHelper::remove_double_slashes($old_root_path);
 			$new_root_path = TimberURLHelper::remove_double_slashes($new_root_path);
 			if ( file_exists($new_root_path) ) {

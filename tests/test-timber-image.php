@@ -67,7 +67,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$url = str_replace('http://example.org', '', $url);
 		$data = array('crop' => 'default', 'test_image' => $url);
 		$data['size'] = array('width' => 300, 'height' => 300);
-		Timber::compile('assets/image-test.twig', $data);
+		$html = Timber::compile('assets/image-test.twig', $data);
 		$resized_path = $upload_dir['path'].'/arch-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.jpg';
 		$this->assertFileExists($resized_path);
 		//Now make sure it doesnt regenerage
