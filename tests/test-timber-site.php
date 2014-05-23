@@ -3,8 +3,9 @@
 	class TimberSiteTest extends WP_UnitTestCase {
 
 		function testStandardThemeLocation(){
+			switch_theme('twentythirteen');
 			$site = new TimberSite();
-			$this->assertEquals(WP_CONTENT_SUBDIR.'/themes/twentyfourteen', $site->theme->path);
+			$this->assertEquals(WP_CONTENT_SUBDIR.'/themes/twentythirteen', $site->theme->path);
 		}
 
 		function testChildParentThemeLocation(){
@@ -18,20 +19,20 @@
 
 		function testLegacyThemeDir(){
 			$context = Timber::get_context();
-			switch_theme('twentyfourteen');
-			$this->assertEquals(WP_CONTENT_SUBDIR.'/themes/twentyfourteen', $context['theme_dir']);
+			switch_theme('twentythirteen');
+			$this->assertEquals(WP_CONTENT_SUBDIR.'/themes/twentythirteen', $context['theme_dir']);
 		}
 
 		function testThemeFromContext(){
 			$context = Timber::get_context();
-			switch_theme('twentyfourteen');
-			$this->assertEquals('twentyfourteen', $context['theme']->slug);
+			switch_theme('twentythirteen');
+			$this->assertEquals('twentythirteen', $context['theme']->slug);
 		}
 
 		function testThemeFromSiteContext(){
 			$context = Timber::get_context();
-			switch_theme('twentyfourteen');
-			$this->assertEquals('twentyfourteen', $context['site']->theme->slug);
+			switch_theme('twentythirteen');
+			$this->assertEquals('twentythirteen', $context['site']->theme->slug);
 		}
 
 
