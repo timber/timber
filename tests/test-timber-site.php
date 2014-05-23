@@ -18,20 +18,20 @@
 		}
 
 		function testLegacyThemeDir(){
-			$context = Timber::get_context();
 			switch_theme('twentythirteen');
+			$context = Timber::get_context();
 			$this->assertEquals(WP_CONTENT_SUBDIR.'/themes/twentythirteen', $context['theme_dir']);
 		}
 
 		function testThemeFromContext(){
-			$context = Timber::get_context();
 			switch_theme('twentythirteen');
+			$context = Timber::get_context();
 			$this->assertEquals('twentythirteen', $context['theme']->slug);
 		}
 
 		function testThemeFromSiteContext(){
-			$context = Timber::get_context();
 			switch_theme('twentythirteen');
+			$context = Timber::get_context();
 			$this->assertEquals('twentythirteen', $context['site']->theme->slug);
 		}
 
