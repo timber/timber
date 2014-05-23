@@ -331,10 +331,19 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data = array();
 		$data['test_image'] = $image;
 		$data['size'] = array('width' => 120, 'height' => 120);
-		//$str = Timber::compile('assets/image-test.twig', $data);
-		$resized = TimberImageHelper::resize($image, 120, 120);
+		$str = Timber::compile('assets/image-test.twig', $data);
 		$this->assertFileExists(get_template_directory().'/images/cardinals-120x120-c-default.jpg');
 		unlink(get_template_directory().'/images/cardinals-120x120-c-default.jpg');
+	}
+
+	function testThemeImageLetterbox(){
+		$dest = get_template_directory().'/images/cardinals.jpg';
+		copy(__DIR__.'/assets/cardinals.jpg', $dest);
+		$image = get_template_directory_uri().'/images/cardinals.jpg';
+		$image = str_replace('http://example.org', '', $image);
+		$letterboxed = TimberImageHelper::letterbox($image, 600, 300, '#FF0000');
+		$this->assertFileExists(get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg');
+		unlink(get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg');
 	}
 
 	public static function is_connected() {
