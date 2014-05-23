@@ -2,7 +2,7 @@
 
 	class TimberImageHelper {
 
-		public static function add_actions(){
+		static function add_actions(){
 			add_action('delete_post', function($post_id){
 				$post = get_post($post_id);
 				$image_types = array('image/jpeg', 'image/png', 'image/gif', 'image/jpg');
@@ -11,6 +11,17 @@
 					TimberImageHelper::delete_letterboxed_files_from_url($post->guid);
 				}
 			});
+		}
+
+		/**
+		 * Adds a constant defining the path to the content directory relative to the site
+		 * for example /wp-content or /content
+		 */
+		static function add_constants(){
+			if (!defined('WP_CONTENT_SUBDIR')) {
+				$wp_content_path = str_replace(home_url(), '', WP_CONTENT_URL);
+				define('WP_CONTENT_SUBDIR', $wp_content_path);
+			}
 		}
 
 		static function add_filters(){
@@ -153,9 +164,8 @@
         	if (!strlen($src)){
         		return null;
         	}
-        	$new_path = self::get_resize_file_name_relative_to_uploads($src, $w, $h, $crop);
-        	$upload_dir = wp_upload_dir();
-			return $upload_dir['relative'].$new_path;
+        	$new_path = self::get_resize_file_name_relative_to_content($src, $w, $h, $crop);
+			return WP_CONTENT_SUBDIR.$new_path;
         }
 
         /**
@@ -165,7 +175,7 @@
          * @param string $crop
          * @return string
          */
-        static function get_resize_file_name_relative_to_uploads($src, $w, $h, $crop){
+        static function get_resize_file_name_relative_to_content($src, $w, $h, $crop){
         	if (!strlen($src)){
         		return null;
         	}
@@ -178,14 +188,22 @@
         	$ext = $path_parts['extension'];
         	$upload_dir = wp_upload_dir();
         	if ($abs){
-        		$dir_relative_to_uploads = str_replace($upload_dir['baseurl'], '', $path_parts['dirname']);
+        		$dir_relative_to_content = str_replace(WP_CONTENT_URL, '', $path_parts['dirname']);
         	} else {
-        		$dir_relative_to_uploads = str_replace($upload_dir['basedir'], '', $path_parts['dirname']);
-        		$dir_relative_to_uploads = str_replace($upload_dir['relative'], '', $dir_relative_to_uploads);
+        		$dir_relative_to_content = str_replace(WP_CONTENT_DIR, '', $path_parts['dirname']);
+        		$dir_relative_to_content = str_replace(WP_CONTENT_SUBDIR, '', $dir_relative_to_content);
         	}
 			$newbase = $basename . '-' . $w . 'x' . $h . '-c-' . ( $crop ? $crop : 'f' ); // Crop will be either user named or f (false)
 			$new_name = $newbase . '.' . $ext;
-			return $dir_relative_to_uploads.'/'.$new_name;
+			return $dir_relative_to_content.'/'.$new_name;
+        }
+
+        public static function in_uploads($src){
+        	$upload_dir = wp_upload_dir();
+        	if (strstr($src, $upload_dir['relative'])){
+        		return true;
+        	}
+        	return false;
         }
 
 		/**
@@ -195,10 +213,9 @@
          * @param string $crop
          * @return string
          */
-        static function get_resize_file_path($src, $w, $h, $crop){
-			$new_name = self::get_resize_file_name_relative_to_uploads($src, $w, $h, $crop);
-			$upload_dir = wp_upload_dir();
-			$new_root_path = $upload_dir['basedir'] . $new_name;
+        static function get_resize_file_path($src, $w, $h, $crop){  	
+			$new_name = self::get_resize_file_name_relative_to_content($src, $w, $h, $crop);
+			$new_root_path = WP_CONTENT_DIR . $new_name;
 			$new_root_path = TimberURLHelper::remove_double_slashes($new_root_path);
 			return $new_root_path;
         }
@@ -220,12 +237,23 @@
 			if (strstr($url, 'http')){
 				$abs = true;
 			}
-			if ($abs){
-				$relative_to_uploads_dir = str_replace($upload_dir['baseurl'], '', $url);
+			if (self::in_uploads($url)){
+				if ($abs){
+					$relative_to_uploads_dir = str_replace($upload_dir['baseurl'], '', $url);
+				} else {
+					$relative_to_uploads_dir = str_replace($upload_dir['relative'], '', $url);
+				}
+				return $upload_dir['basedir'].$relative_to_uploads_dir;
 			} else {
-				$relative_to_uploads_dir = str_replace($upload_dir['relative'], '', $url);
+				if ($abs){
+					$relative_to_wp_content = str_replace(WP_CONTENT_URL, '', $url);
+				} else {
+					$relative_to_wp_content = str_replace(WP_CONTENT_SUBDIR, '', $url);
+				}
+				return WP_CONTENT_DIR.$relative_to_wp_content;
 			}
-			return $upload_dir['basedir'].$relative_to_uploads_dir;
+			
+			return $url;
 		}
 
 		/**
@@ -399,8 +427,6 @@
 			//oh good, it's a relative image in the uploads folder!
 			$new_path = self::get_resize_file_rel($src, $w, $h, $crop);
 			$new_root_path = self::get_resize_file_path($src, $w, $h, $crop);
-			echo 'NEW_ROOT_PATH='.$new_root_path;
-			echo "\n";
 			$old_root_path = self::get_server_location($src);
 			$old_root_path = TimberURLHelper::remove_double_slashes($old_root_path);
 			$new_root_path = TimberURLHelper::remove_double_slashes($new_root_path);
@@ -418,7 +444,6 @@
 			$image = wp_get_image_editor($old_root_path);
 
 			if (!is_wp_error($image)) {
-
 				$current_size = $image->get_size();
 
 				$src_w = $current_size['width'];
@@ -480,6 +505,6 @@
 			return $src;
 		}
 	}
-
+	TimberImageHelper::add_constants();
 	TimberImageHelper::add_actions();
 	TimberImageHelper::add_filters();
