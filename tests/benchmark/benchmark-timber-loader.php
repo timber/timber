@@ -9,6 +9,19 @@
 			}
 		}
 
+		static function testImageResize(){
+			$img = 'arch.jpg';
+			$upload_dir = wp_upload_dir();
+			$destination = $upload_dir['path'].'/'.$img;
+			if (!file_exists($destination)){
+				copy(__DIR__.'/../assets/'.$img, $destination);
+			}
+			for ($i = 0; $i<20; $i++){
+				$upload_dir = wp_upload_dir();
+				$img = TimberImageHelper::resize($upload_dir['url'].'/arch.jpg', 500, 200, 'default', true);
+			}
+		}
+
 		public static function run($function){
 			$start_time = microtime(true);
 			self::$function();
