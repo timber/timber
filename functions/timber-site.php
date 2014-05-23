@@ -44,6 +44,7 @@ class TimberSite extends TimberCore {
         $this->language = get_bloginfo('language');
         $this->charset = get_bloginfo('charset');
         $this->pingback_url = get_bloginfo('pingback_url');
+        $this->theme = new TimberTheme();
         $this->language_attributes = TimberHelper::function_wrapper('language_attributes');
     }
 

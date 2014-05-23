@@ -14,7 +14,7 @@
 			$this->assertEquals('I am single.twig', trim($str));
 		}
 
-		function _setupChildTheme(){
+		static function _setupChildTheme(){
 			$dest_dir = WP_CONTENT_DIR.'/themes/fake-child-theme';
 			if (!file_exists($dest_dir)) {
     			mkdir($dest_dir, 0777, true);
