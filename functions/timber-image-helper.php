@@ -313,7 +313,11 @@
 				$image = $func($new_server_path);
 				imagecopy($bg, $image, $x, $y, 0, 0, $owt, $oht);
 				imagejpeg($bg, $new_server_path);
-				return TimberURLHelper::get_rel_path($new_server_path);
+				$new_relative_path = TimberURLHelper::get_rel_path($new_server_path);
+				if ($abs){
+					return home_url($new_relative_path);
+				} 
+				return $new_relative_path;
 			} else {
 				TimberHelper::error_log($image);
 			}

@@ -13,13 +13,13 @@ class TimberTestRouter extends WP_UnitTestCase {
 	}
 
 	function testFullPathRoute(){
-		$hello = ABSPATH.'wp-content/plugins/hello.php';
+		$hello = WP_CONTENT_DIR.'/plugins/hello.php';
 		$template = Timber::load_template($hello);
 		$this->assertTrue($template);
 	}
 
 	function testFullPathRouteDoesntExist(){
-		$hello = ABSPATH.'wp-content/plugins/hello-foo.php';
+		$hello = WP_CONTENT_DIR.'/plugins/hello-foo.php';
 		$template = Timber::load_template($hello);
 		$this->assertFalse($template);
 	}

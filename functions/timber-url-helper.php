@@ -100,7 +100,12 @@
 	     * @return string
 	     */
 		public static function get_rel_path($src) {
-			return str_replace(ABSPATH, '', $src);
+			if (strstr($src, ABSPATH)){
+				return str_replace(ABSPATH, '', $src);
+			}
+			//its outside the wordpress directory, alternate setups:
+			$src = str_replace(WP_CONTENT_DIR, '', $src);
+			return WP_CONTENT_SUBDIR.$src;
 		}
 
 	 	/**

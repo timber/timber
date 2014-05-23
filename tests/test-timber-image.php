@@ -187,9 +187,9 @@ class TimberImageTest extends WP_UnitTestCase {
 	function testLetterbox(){
 		$file_loc = $this->copyTestImage('eastern.jpg');
 		$upload_dir = wp_upload_dir();
-		$new_file = TimberImageHelper::letterbox($upload_dir['url'].'/eastern.jpg', 500, 500, '#CCC', true);
-		$path_to_image = TimberURLHelper::get_rel_url($new_file, true);
-		$location_of_image = ABSPATH.$path_to_image;
+		$image = $upload_dir['url'].'/eastern.jpg';
+		$new_file = TimberImageHelper::letterbox($image, 500, 500, '#CCC', true);
+		$location_of_image = TimberImageHelper::get_server_location($new_file);
 		$size = getimagesize($location_of_image);
 		$this->assertEquals(500, $size[0]);
 		$this->assertEquals(500, $size[1]);
@@ -207,8 +207,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$upload_dir = wp_upload_dir();
 		$new_file_red = TimberImageHelper::letterbox($upload_dir['url'].'/eastern.jpg', 500, 500, '#FF0000');
 		$new_file = TimberImageHelper::letterbox($upload_dir['url'].'/eastern.jpg', 500, 500, '#00FF00');
-		$path_to_image = TimberURLHelper::get_rel_url($new_file, true);
-		$location_of_image = ABSPATH.$path_to_image;
+		$location_of_image = TimberImageHelper::get_server_location($new_file);
 		$size = getimagesize($location_of_image);
 		$this->assertEquals(500, $size[0]);
 		$this->assertEquals(500, $size[1]);
@@ -225,8 +224,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$file_loc = $this->copyTestImage($base_file);
 		$upload_dir = wp_upload_dir();
 		$new_file = TimberImageHelper::letterbox($upload_dir['url'].'/'.$base_file, 500, 500, '#00FF00', true);
-		$path_to_image = TimberURLHelper::get_rel_url($new_file, true);
-		$location_of_image = ABSPATH.$path_to_image;
+		$location_of_image = TimberImageHelper::get_server_location($new_file);
 		$size = getimagesize($location_of_image);
 		$this->assertEquals(500, $size[0]);
 		$this->assertEquals(500, $size[1]);
@@ -244,8 +242,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$file_loc = $this->copyTestImage('eastern.jpg');
 		$upload_dir = wp_upload_dir();
 		$new_file = TimberImageHelper::letterbox($upload_dir['url'].'/eastern.jpg', 500, 500, '#FFFFFF', true);
-		$path_to_image = TimberURLHelper::get_rel_url($new_file, true);
-		$location_of_image = ABSPATH.$path_to_image;
+		$location_of_image = TimberImageHelper::get_server_location($new_file);
 		$size = getimagesize($location_of_image);
 		$this->assertEquals(500, $size[0]);
 		$this->assertEquals(500, $size[1]);
