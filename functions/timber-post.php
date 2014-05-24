@@ -56,11 +56,7 @@ class TimberPost extends TimberCore {
      * @return bool|string
      */
     function get_edit_url() {
-		if ($this->can_edit()) {
-			return get_edit_post_link($this->ID);
-			return '/wp-admin/post.php?post=' . $this->ID . '&action=edit';
-		}
-		return false;
+        return ($this->can_edit() ? get_edit_post_link($this->ID) : false);
 	}
 
 	/**
