@@ -439,8 +439,8 @@ class TimberPost extends TimberCore {
      * @return string
      */
     function get_modified_time($time_format = '') {
-        $time_format = $time_format ? $time_format : get_option('time_format');
-        $the_time = get_post_modified_time($time_format, false, $this->ID, true);
+        $tf = $time_format ? $time_format : get_option('time_format');
+        $the_time = get_post_modified_time($tf, false, $this->ID, true);
         return apply_filters('get_the_modified_time', $the_time, $time_format);
     }
 
