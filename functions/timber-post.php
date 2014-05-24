@@ -435,6 +435,16 @@ class TimberPost extends TimberCore {
     }
 
     /**
+     * @param  string $date_format
+     * @return string
+     */
+    function get_modified_date($date_format = '') {
+        $df = $date_format ? $date_format : get_option('date_format');
+        $the_time = $this->get_modified_time($df, null, $this->ID, true)
+        return apply_filters('get_the_modified_date', $the_time, $date_format);
+    }
+
+    /**
      * @param string $time_format
      * @return string
      */
@@ -799,6 +809,13 @@ class TimberPost extends TimberCore {
      */
     public function date($date_format = '') {
         return $this->get_date($date_format);
+    }
+
+    /**
+     * @return string
+     */
+    public function modified_date($date_format = '') {
+        return $this->get_modified_date($date_format);
     }
 
     /**
