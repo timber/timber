@@ -687,12 +687,9 @@ class Timber {
             });
         }
         if ($template) {
-            add_action('wp_loaded', function() use ($template) {
-                wp();
-                do_action('template_redirect');
-                load_template($template);
-                die;
-            });
+        	add_filter('template_include', function($t) use ($template) {
+        		return $template;
+        	});
             return true;
         }
         return false;
