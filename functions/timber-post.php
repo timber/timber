@@ -425,6 +425,16 @@ class TimberPost extends TimberCore {
 	}
 
     /**
+     * @param  string $date_format
+     * @return string
+     */
+    function get_date($date_format = '') {
+        $df = $date_format ? $date_format : get_option('date_format');
+        $the_date = (string) mysql2date($df, $this->post_date);
+        return apply_filters('get_the_date', $the_date, $date_format);
+    }
+
+    /**
      * @param string $time_format
      * @return string
      */
@@ -783,6 +793,13 @@ class TimberPost extends TimberCore {
     public function display_date(){
 		return date_i18n(get_option('date_format') , strtotime($this->post_date));
 	}
+
+    /**
+     * @return string
+     */
+    public function date($date_format = '') {
+        return $this->get_date($date_format);
+    }
 
     /**
      * @return bool|string
