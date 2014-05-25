@@ -440,7 +440,7 @@ class TimberPost extends TimberCore {
      */
     function get_modified_date($date_format = '') {
         $df = $date_format ? $date_format : get_option('date_format');
-        $the_time = $this->get_modified_time($df, null, $this->ID, true)
+        $the_time = $this->get_modified_time($df, null, $this->ID, true);
         return apply_filters('get_the_modified_date', $the_time, $date_format);
     }
 
