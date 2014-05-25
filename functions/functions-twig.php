@@ -111,6 +111,11 @@ class TimberTwig {
                 return _n($single, $plural, $number, $domain);
             }
         ));
+        $twig->addFunction('_nx', new Twig_SimpleFunction('_nx',
+            function($single, $plural, $number, $context, $domain = 'default') {
+                return _nx($single, $plural, $number, $context, $domain);
+            }
+        ));
 
 		$twig = apply_filters('get_twig', $twig);
 
