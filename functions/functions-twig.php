@@ -101,6 +101,16 @@ class TimberTwig {
 		$twig->addFunction('__', new Twig_SimpleFunction('__', function($text, $domain = 'default'){
 			return __($text, $domain);
 		}));
+        $twig->addFunction('_x', new Twig_SimpleFunction('_x',
+            function($text, $context, $domain = 'default') {
+                return _x($text, $context, $domain);
+            }
+        ));
+        $twig->addFunction('_n', new Twig_SimpleFunction('_n',
+            function($single, $plural, $number, $domain = 'default') {
+                return _n($single, $plural, $number, $domain);
+            }
+        ));
 
 		$twig = apply_filters('get_twig', $twig);
 
