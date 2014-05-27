@@ -1,4 +1,5 @@
 <?php
+if (class_exists('WP_CLI_Command') && class_exists(WP_CLI)){
 
 	class Timber_Command extends WP_CLI_Command{
 
@@ -74,3 +75,4 @@
 	}
 
 	WP_CLI::add_command( 'timber', 'Timber_Command' );
+}
