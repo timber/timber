@@ -19,3 +19,6 @@ before_script:
     - composer install
 
 script: phpunit
+
+after_script:
+    - php vendor/bin/coveralls
