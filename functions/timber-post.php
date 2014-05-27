@@ -56,7 +56,10 @@ class TimberPost extends TimberCore {
      * @return bool|string
      */
     function get_edit_url() {
-        return ($this->can_edit() ? get_edit_post_link($this->ID) : false);
+        if ($this->can_edit()){
+        	return get_edit_post_link($this->ID)
+        }
+        return false;
 	}
 
 	/**
@@ -417,6 +420,7 @@ class TimberPost extends TimberCore {
 	}
 
     /**
+     * This is deprecated!
      * @param string $use
      * @return bool|string
      */
@@ -798,6 +802,8 @@ class TimberPost extends TimberCore {
 	}
 
     /**
+     * This is deprecated and will be removed in 1.0
+     * Please use {{post.date}}
      * @return mixed
      */
     public function display_date(){
