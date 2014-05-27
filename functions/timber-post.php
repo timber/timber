@@ -57,7 +57,7 @@ class TimberPost extends TimberCore {
      */
     function get_edit_url() {
         if ($this->can_edit()){
-        	return get_edit_post_link($this->ID)
+        	return get_edit_post_link($this->ID);
         }
         return false;
 	}
