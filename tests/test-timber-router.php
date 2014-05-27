@@ -32,9 +32,10 @@ class TimberTestRouter extends WP_UnitTestCase {
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 		global $matches;
 		$matches = array();
-		Timber::add_route('foo', function(){
+		$phpunit = $this;
+		Timber::add_route('foo', function() use ($phpunit) {
 			global $matches;
-			$this->assertTrue(true);
+			$phpunit->assertTrue(true);
 			$matches[] = true;
 		});
 		$this->go_to(home_url('foo'));
@@ -47,8 +48,9 @@ class TimberTestRouter extends WP_UnitTestCase {
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 		global $matches;
 		$matches = array();
-		Timber::add_route('foo', function(){
-			$this->assertTrue(false);
+		$phpunit = $this;
+		Timber::add_route('foo', function() use ($phpunit){
+			$phpunit->assertTrue(false);
 			$matches[] = true;
 		});
 		$this->go_to(home_url('bar'));
