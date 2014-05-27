@@ -16,7 +16,14 @@
 			$twig = 'I am from {{post.post_date}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
 			$this->assertEquals('I am from '.$post->post_date, $str);
-			echo $str;
+		}
+
+		function testPostDateWithFilter(){
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+			$twig = 'I am from {{post.post_date|date}}';
+			$str = Timber::compile_string($twig, array('post' => $post));
+			$this->assertEquals('I am from '.date('F j, Y'), $str);
 		}
 
 		function testModifiedDate(){
