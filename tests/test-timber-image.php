@@ -12,7 +12,6 @@ class TimberImageTest extends WP_UnitTestCase {
 		$filename = 'St._Louis_Gateway_Arch.jpg';
 		$data['test_image'] = 'http://upload.wikimedia.org/wikipedia/commons/a/aa/'.$filename;
 		$md5 = md5($data['test_image']);
-		error_log('image test one');
 		Timber::compile('assets/image-test.twig', $data);
 		$upload_dir = wp_upload_dir();
 		$path = $upload_dir['path'].'/'.$md5;
@@ -23,10 +22,10 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertFileExists($resized_path);
 		$old_time = filemtime($resized_path);
 		sleep(1);
-		error_log('image test two');
-		Timber::compile('assets/image-test.twig', $data);
+		$str = Timber::compile('assets/image-test.twig', $data);
 		$new_time = filemtime($resized_path);
 		$this->assertEquals($old_time, $new_time);
+		echo $str;
 	}
 
 	function copyTestImage($img = 'arch.jpg'){

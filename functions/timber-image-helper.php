@@ -374,7 +374,7 @@
         public static function sideload_image($file) {
 			$loc = self::get_sideloaded_file_loc($file);
 			if (file_exists($loc)){
-				return str_replace(ABSPATH, '', $loc);
+				return TimberURLHelper::preslashit(TimberURLHelper::get_rel_path($loc));
 			}
 			// Download file to temp location
 			if (!function_exists('download_url')){
@@ -392,7 +392,6 @@
 			// do the validation and storage stuff
 			$locinfo = pathinfo($loc);
 			$file = wp_upload_bits($locinfo['basename'], null, file_get_contents($file_array['tmp_name']));
-			print_r($file);
 			return $file['url'];
 		}
 
