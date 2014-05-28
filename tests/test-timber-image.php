@@ -25,7 +25,6 @@ class TimberImageTest extends WP_UnitTestCase {
 		$str = Timber::compile('assets/image-test.twig', $data);
 		$new_time = filemtime($resized_path);
 		$this->assertEquals($old_time, $new_time);
-		echo $str;
 	}
 
 	function copyTestImage($img = 'arch.jpg'){
