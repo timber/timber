@@ -124,7 +124,7 @@ class Timber {
             $query = false;
         }
         if (TimberHelper::is_array_assoc($query) || (is_string($query) && strstr($query, '='))) {
-        // we have a regularly formed WP query string or array to use
+            // we have a regularly formed WP query string or array to use
             $posts = self::get_posts_from_wp_query($query, $PostClass);
         } else if (is_string($query) && !is_integer($query)) {
             // we have what could be a post name to pull out
@@ -135,7 +135,7 @@ class Timber {
         } else if (is_array($query) && count($query) && isset($query[0]) && is_object($query[0])) {
             // maybe its an array of post objects that already have data
             $posts = self::handle_post_results($query, $PostClass);
-        } else if (have_posts()) {
+        } else if (self::wp_query_has_posts()) {
             //lets just use the default WordPress current query
             $posts = self::get_posts_from_loop($PostClass);
         } else if (!$query) {
@@ -180,18 +180,12 @@ class Timber {
      * @return array
      */
     public static function get_pids_from_loop() {
-        $posts = array();
-        $i = 0;
-        ob_start();
-        while (have_posts() && $i < 99999) {
-            the_post();
-            $posts[] = get_the_ID();
-            $i++;
-        }
-        //why is this here? seems to only cause pain.
-        //wp_reset_query();
-        ob_end_clean();
-        return $posts;
+        if (!self::wp_query_has_posts()) { return array(); }
+
+        global $wp_query;
+        return array_filter(array_map(function($p) {
+            return ($p && property_exists($p, 'ID')) ? $p->ID : null;
+        }, $wp_query->posts));
     }
 
     /**
@@ -281,6 +275,11 @@ class Timber {
         return $post->ID;
     }
 
+    public function wp_query_has_posts() {
+        global $wp_query;
+        return ($wp_query && property_exists($wp_query, 'posts') && $wp_query->posts);
+    }
+
     /* Post Previews
     ================================ */
 
@@ -336,12 +335,17 @@ class Timber {
      * @return bool|int
      */
     public function loop_to_id() {
-        if (have_posts()) {
-            the_post();
-            wp_reset_query();
-            return get_the_ID();
-        }
-        return false;
+        if (!self::wp_query_has_posts()) { return false; }
+
+        global $wp_query;
+        $post_num = property_exists($wp_query, 'current_post')
+                  ? $wp_query->current_post + 1
+                  : 0
+                  ;
+
+        if (!isset($wp_query->posts[$post_num])) { return false; }
+
+        return $wp_query->posts[$post_num]->ID;
     }
 
 

@@ -15,7 +15,7 @@ class TimberPost extends TimberCore {
 
 
 	/**
-	 *  If you send the contructor nothing it will try to figure out the current post id based on being inside The_Loop
+	 *  If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
 	 * @param mixed $pid
 	 * @return \TimberPost TimberPost object -- woo!
 	 */
@@ -23,12 +23,8 @@ class TimberPost extends TimberCore {
 		if ($pid === null && get_the_ID()){
 			$pid = get_the_ID();
 			$this->ID = $pid;
-		} else if ($pid === null && have_posts()) {
-			ob_start();
-			the_post();
-			$pid = get_the_ID();
-			$this->ID = $pid;
-			ob_end_clean();
+		} else if ($pid === null && ($pid_from_loop = Timber::loop_to_id())) {
+            $this->ID = $pid_from_loop;
 		}
 		if (is_numeric($pid)) {
 			$this->ID = $pid;
