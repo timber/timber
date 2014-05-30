@@ -194,4 +194,96 @@
 			$this->assertEquals('My steak', trim($string));
 		}
 
+		function testPostParent(){
+			$parent_id = $this->factory->post->create();
+			$child_id = $this->factory->post->create(array('post_parent' => $parent_id));
+			$child_post = new TimberPost($child_id);
+			$this->assertEquals($parent_id, $child_post->parent()->ID);
+		}
+
+		function testPostAuthor(){
+			$author_id = $this->factory->user->create();
+			$pid = $this->factory->post->create(array('post_author' => $author_id));
+			$post = new TimberPost($pid);
+			$this->assertEquals('user-1', $post->author()->slug());
+			$this->assertEquals('User 1', $post->author()->name());
+		}
+
+		function testPostChildren(){
+			$parent_id = $this->factory->post->create();
+			$children = $this->factory->post->create_many(8, array('post_parent' => $parent_id));
+			$parent = new TimberPost($parent_id);
+			$this->assertEquals(8, count($parent->children()));
+		}
+
+		function testPostNoConstructorArgument(){
+			$pid = $this->factory->post->create();
+			$this->go_to('?p='.$pid);
+			$post = new TimberPost();
+			$this->assertEquals($pid, $post->ID);
+		}
+
+		function testPostPathUglyPermalinks(){
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+			$this->assertEquals('http://example.org/?p='.$pid, $post->link());
+			$this->assertEquals('/?p='.$pid, $post->path());
+			$struc = '/blog/%year%/%monthnum%/%postname%/';
+		}
+
+		function testPostPathPrettyPermalinks(){
+			$struc = '/blog/%year%/%monthnum%/%postname%/';
+			update_option('permalink_structure', $struc);
+			$pid = $this->factory->post->create(array('post_date' => '2014-05-28'));
+			$post = new TimberPost($pid);
+			$this->assertStringStartsWith('http://example.org/blog/2014/05/post-title', $post->permalink());
+			$this->assertStringStartsWith('/blog/2014/05/post-title', $post->path());
+		}
+
+		function testPostCategory(){
+			$cat = wp_insert_term('News', 'category');
+			$pid = $this->factory->post->create();
+			wp_set_object_terms($pid, $cat['term_id'], 'category');
+			$post = new TimberPost($pid);
+			$this->assertEquals('News', $post->category()->name);
+		}
+
+		function testPostCategories(){
+			$cats = array('News', 'Sports', 'Obits');
+			foreach($cats as &$cat){
+				$cat = wp_insert_term($cat, 'category');
+			}
+			$pid = $this->factory->post->create();
+			foreach($cats as $cat){
+				wp_set_object_terms($pid, $cat['term_id'], 'category', true);
+			}
+			$post = new TimberPost($pid);
+			$this->assertEquals(3, count($post->categories()));
+		}
+
+		function testPostTerms(){
+			register_taxonomy('team', 'post');
+			$teams = array('Patriots', 'Bills', 'Dolphins', 'Jets');
+			foreach($teams as &$team){
+				$team_terms[] = wp_insert_term($team, 'team');
+			}
+			$pid = $this->factory->post->create();
+			foreach($team_terms as $team){
+				wp_set_object_terms($pid, $team['term_id'], 'team', true);
+			}
+			$post = new TimberPost($pid);
+			$teams = $post->terms('team');
+			$this->assertEquals(4, count($teams));
+			$tag = wp_insert_term('whatever', 'post_tag');
+			wp_set_object_terms($pid, $tag['term_id'], 'post_tag', true);
+			$post = new TimberPost($pid);
+			$this->assertEquals(6, count($post->terms()));
+			$tags = $post->tags();
+			$this->assertEquals('whatever', $tags[0]->slug);
+			$tags = $post->terms('tag');
+			$this->assertEquals('whatever', $tags[0]->slug);
+			$this->assertTrue($post->has_term('Dolphins'));
+			$this->assertTrue($post->has_term('Patriots', 'team'));
+		}
+
 	}

@@ -14,8 +14,8 @@
 			}
 			$end = microtime(true);
 			$diff = $end - $start;
-			//if this takes more than 3 seconds, we're in trouble
-			$this->assertLessThan(3, $diff);
+			//if this takes more than 10 seconds, we're in trouble
+			$this->assertLessThan(10, $diff);
 		}
 
 	}

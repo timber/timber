@@ -24,10 +24,11 @@
 	     */
 		public static function is_url($url) {
 			if (!is_string($url)){
+				echo 'but i am not a string';
 				return false;
 			}
 			$url = strtolower($url);
-			if (strstr('://', $url)) {
+			if (strstr($url, '://')) {
 				return true;
 			}
 			return false;
@@ -185,12 +186,6 @@
 				return new WP_Error('http_404', trim(wp_remote_retrieve_response_message($response)));
 			}
 			return $tmpfname;
-		}
-
-		public static function osort(&$array, $prop) {
-			usort($array, function ($a, $b) use ($prop) {
-				return $a->$prop > $b->$prop ? 1 : -1;
-			});
 		}
 
 		/**
