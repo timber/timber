@@ -24,7 +24,6 @@
 	     */
 		public static function is_url($url) {
 			if (!is_string($url)){
-				echo 'but i am not a string';
 				return false;
 			}
 			$url = strtolower($url);

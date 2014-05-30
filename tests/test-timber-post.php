@@ -224,11 +224,11 @@
 		}
 
 		function testPostPathUglyPermalinks(){
+			update_option('permalink_structure', '');
 			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
 			$this->assertEquals('http://example.org/?p='.$pid, $post->link());
 			$this->assertEquals('/?p='.$pid, $post->path());
-			$struc = '/blog/%year%/%monthnum%/%postname%/';
 		}
 
 		function testPostPathPrettyPermalinks(){

@@ -12,7 +12,12 @@
         }
 
         function testCurrentURL(){
-            $_SERVER['SERVER_PORT'] = 80;
+            if (!isset($_SERVER['SERVER_PORT'])){
+                $_SERVER['SERVER_PORT'] = 80;
+            }
+            if (!isset($_SERVER['SERVER_NAME'])){
+                $_SERVER['SERVER_NAME'] = 'example.org';
+            }
             $this->go_to('/');
             $url = TimberURLHelper::get_current_url();
             $this->assertEquals('http://example.org/', $url);
