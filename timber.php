@@ -275,7 +275,7 @@ class Timber {
         return $post->ID;
     }
 
-    public function wp_query_has_posts() {
+    public static function wp_query_has_posts() {
         global $wp_query;
         return ($wp_query && property_exists($wp_query, 'posts') && $wp_query->posts);
     }
