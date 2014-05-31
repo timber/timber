@@ -32,7 +32,36 @@
 			$twig = "I was modified {{post.modified_date('F j, Y @ g:i a')}}";
 			$str = Timber::compile_string($twig, array('post' => $post));
 			$this->assertEquals('I was modified '.date('F j, Y @ g:i a'), $str);
+		}
 
+		function testModifiedDateFilter() {
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+			add_filter('get_the_modified_date', function($the_date) {
+				return 'foobar';
+			});
+			$twig = "I was modified {{post.modified_date('F j, Y @ g:i a')}}";
+			$str = Timber::compile_string($twig, array('post' => $post));
+			$this->assertEquals('I was modified foobar', $str);
+		}
+
+		function testModifiedTime(){
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+			$twig = "I was modified {{post.modified_time('F j, Y @ g:i a')}}";
+			$str = Timber::compile_string($twig, array('post' => $post));
+			$this->assertEquals('I was modified '.date('F j, Y @ g:i a'), $str);
+		}
+
+		function testModifiedTimeFilter() {
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+			add_filter('get_the_modified_time', function($the_date) {
+				return 'foobar';
+			});
+			$twig = "I was modified {{post.modified_time('F j, Y @ g:i a')}}";
+			$str = Timber::compile_string($twig, array('post' => $post));
+			$this->assertEquals('I was modified foobar', $str);
 		}
 
 	}
