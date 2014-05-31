@@ -400,6 +400,14 @@ class TimberPost extends TimberCore {
 	}
 
     /**
+     * @return bool|TimberUser
+     */
+    function get_modified_author() {
+        $user_id = get_post_meta($this->ID, '_edit_last', true);
+        return ($user_id ? new TimberUser($user_id) : $this->get_author());
+    }
+
+    /**
      * @param int $pid
      * @return null|object|WP_Post
      */
@@ -760,6 +768,13 @@ class TimberPost extends TimberCore {
     public function author() {
 		return $this->get_author();
 	}
+
+    /**
+     * @return bool|TimberUser
+     */
+    public function modified_author() {
+        return $this->get_modified_author();
+    }
 
     /**
      * @return array
