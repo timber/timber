@@ -741,7 +741,6 @@ class TimberPost extends TimberCore
         return get_post_format($this->ID);
     }
 
-<<<<<<< HEAD
 	/**
      * @param string $class
      * @return string
@@ -755,10 +754,7 @@ class TimberPost extends TimberCore
 		return implode(' ', $class_array);
 	}
 
-	// Docs
-=======
     // Docs
->>>>>>> c8347fc1da6501d83c0a331e15dc7955fcf53cf1
 
     /**
      * @return array
@@ -839,19 +835,7 @@ class TimberPost extends TimberCore
     }
 
     /**
-<<<<<<< HEAD
-=======
-     * This is deprecated and will be removed in 1.0
-     * Please use {{post.date}}
-     * @return mixed
-     */
-    public function display_date() {
-        return date_i18n(get_option('date_format'), strtotime($this->post_date));
-    }
-
-    /**
      * @param string $date_format
->>>>>>> c8347fc1da6501d83c0a331e15dc7955fcf53cf1
      * @return string
      */
     public function date($date_format = '') {
@@ -859,17 +843,6 @@ class TimberPost extends TimberCore
     }
 
     /**
-<<<<<<< HEAD
-=======
-     * @param string $date_format
-     * @return string
-     */
-    public function modified_date($date_format = '') {
-        return $this->get_modified_date($date_format);
-    }
-
-    /**
->>>>>>> c8347fc1da6501d83c0a331e15dc7955fcf53cf1
      * @return bool|string
      */
     public function edit_link() {
@@ -987,21 +960,5 @@ class TimberPost extends TimberCore
     public function title() {
         return $this->get_title();
     }
-
-<<<<<<< HEAD
-=======
-    /**
-     * @param string $class
-     * @return string
-     */
-    public function post_class($class = '') {
-        global $post;
-        $old_global_post = $post;
-        $post = $this;
-        $class_array = get_post_class($class, $this->ID);
-        $post = $old_global_post;
-        return implode(' ', $class_array);
-    }
->>>>>>> c8347fc1da6501d83c0a331e15dc7955fcf53cf1
 
 }

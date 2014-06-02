@@ -228,11 +228,6 @@ class TimberLoader
      * @return Twig_Environment
      */
     function get_twig() {
-        // if (!class_exists('Twig_Autoloader')) {
-        // 	$loader_loc = trailingslashit(TIMBER_LOC) . 'Twig/lib/Twig/Autoloader.php';
-        // 	require_once($loader_loc);
-        // 	Twig_Autoloader::register();
-        // }
         $loader = $this->get_loader();
         $params = array('debug' => WP_DEBUG, 'autoescape' => false);
         if (isset(Timber::$autoescape)) {

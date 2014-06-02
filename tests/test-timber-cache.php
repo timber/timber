@@ -127,6 +127,16 @@
             $this->assertTrue( $get_transient );
         }
 
+        function testKeyGenerator(){
+        	$loader = new TimberLoader();
+        	$twig = $loader->get_twig();
+        	$kg = new Timber\Cache\KeyGenerator();
+        	$post_id = $this->factory->post->create(array('post_title' => 'My Test Post'));
+        	$post = new TimberPost($post_id);
+        	$key = $kg->generateKey($post);
+        	$this->assertStringStartsWith('TimberPost|', $key);
+        }
+
         function testTransientForceFilter() {
             $transient = $this->_generate_transient_name();
 
