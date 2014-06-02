@@ -209,6 +209,22 @@
 			$this->assertEquals('Jared Novack', $post->author()->name());
 		}
 
+		function testPostModifiedAuthor() {
+			$author_id = $this->factory->user->create();
+			$mod_author_id = $this->factory->user->create();
+			$pid = $this->factory->post->create(array('post_author' => $author_id));
+			$post = new TimberPost($pid);
+			$this->assertEquals('user-1', $post->author()->slug());
+			$this->assertEquals('user-1', $post->modified_author()->slug());
+			$this->assertEquals('User 1', $post->author()->name());
+			$this->assertEquals('User 1', $post->modified_author()->name());
+			update_post_meta($pid, '_edit_last', $mod_author_id);
+			$this->assertEquals('user-1', $post->author()->slug());
+			$this->assertEquals('user-2', $post->modified_author()->slug());
+			$this->assertEquals('User 1', $post->author()->name());
+			$this->assertEquals('User 2', $post->modified_author()->name());
+		}
+
 		function testPostChildren(){
 			$parent_id = $this->factory->post->create();
 			$children = $this->factory->post->create_many(8, array('post_parent' => $parent_id));
