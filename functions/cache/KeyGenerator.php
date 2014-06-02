@@ -16,7 +16,7 @@ class KeyGenerator implements KeyGeneratorInterface
 
         $key = md5( json_encode( $value ) );
         if ( is_object( $value ) )
-            $key = get_class( $key ) . '|' . $key;
+            $key = get_class( $value ) . '|' . $key;
 
         return $key;
     }
