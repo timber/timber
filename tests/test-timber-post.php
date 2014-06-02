@@ -202,11 +202,11 @@
 		}
 
 		function testPostAuthor(){
-			$author_id = $this->factory->user->create();
+			$author_id = $this->factory->user->create(array('display_name' => 'Jared Novack'));
 			$pid = $this->factory->post->create(array('post_author' => $author_id));
 			$post = new TimberPost($pid);
 			$this->assertEquals('user-1', $post->author()->slug());
-			$this->assertEquals('User 1', $post->author()->name());
+			$this->assertEquals('Jared Novack', $post->author()->name());
 		}
 
 		function testPostChildren(){
