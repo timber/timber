@@ -1,12 +1,16 @@
 <?php
 
-class TimberUser extends TimberCore {
+class TimberUser extends TimberCore
+{
 
     var $_link;
     var $object_type = 'user';
 
     public static $representation = 'user';
+
     public $name;
+    public $display_name;
+    public $user_nicename;
 
     /**
      * @param int|bool $uid
@@ -18,12 +22,12 @@ class TimberUser extends TimberCore {
     /**
      * @return string
      */
-    function __toString(){
+    function __toString() {
         $name = $this->name();
-        if (strlen($name)){
+        if (strlen($name)) {
             return $name;
         }
-        if (strlen($this->name)){
+        if (strlen($this->name)) {
             return $this->name;
         }
         return '';
@@ -33,10 +37,10 @@ class TimberUser extends TimberCore {
      * @param string $field_name
      * @return null
      */
-    function get_meta($field_name){
+    function get_meta($field_name) {
         $value = null;
         $value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
-        if ($value === null){
+        if ($value === null) {
             $value = get_post_meta($this->ID, $field_name, true);
         }
         $value = apply_filters('timber_user_get_meta_field', $value, $this->ID, $field_name, $this);
@@ -47,8 +51,8 @@ class TimberUser extends TimberCore {
      * @param string $field
      * @param mixed $value
      */
-    function __set($field, $value){
-        if ($field == 'name'){
+    function __set($field, $value) {
+        if ($field == 'name') {
             $this->display_name = $value;
         }
         $this->$field = $value;
@@ -58,7 +62,7 @@ class TimberUser extends TimberCore {
      * @return string
      */
     public function get_link() {
-        if (!$this->_link){
+        if (!$this->_link) {
             $this->_link = get_author_posts_url($this->ID);
         }
         return $this->_link;
@@ -71,7 +75,7 @@ class TimberUser extends TimberCore {
         if ($uid === false) {
             $uid = get_current_user_id();
         }
-        if ($uid){
+        if ($uid) {
             $data = get_userdata($uid);
             if (is_object($data) && isset($data)) {
                 $this->import($data->data);
@@ -85,10 +89,10 @@ class TimberUser extends TimberCore {
      * @param string $field_name
      * @return mixed
      */
-    function get_meta_field($field_name){
+    function get_meta_field($field_name) {
         $value = null;
         $value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
-        if ($value === null){
+        if ($value === null) {
             $value = get_user_meta($this->ID, $field_name, true);
         }
         $value = apply_filters('timber_user_get_meta_field', $value, $this->ID, $field_name, $this);
@@ -102,12 +106,12 @@ class TimberUser extends TimberCore {
         if ($this->ID) {
             $um = array();
             $um = apply_filters('timber_user_get_meta_pre', $um, $this->ID, $this);
-            if (empty($um)){
+            if (empty($um)) {
                 $um = get_user_meta($this->ID);
             }
             $custom = array();
             foreach ($um as $key => $value) {
-                if (is_array($value) && count($value) == 1){
+                if (is_array($value) && count($value) == 1) {
                     $value = $value[0];
                 }
                 $custom[$key] = maybe_unserialize($value);
@@ -133,7 +137,7 @@ class TimberUser extends TimberCore {
     /**
      * @return string
      */
-    function get_permalink(){
+    function get_permalink() {
         return $this->get_link();
     }
 
@@ -155,7 +159,7 @@ class TimberUser extends TimberCore {
      * @param string $field_name
      * @return mixed
      */
-    function meta($field_name){
+    function meta($field_name) {
         return $this->get_meta_field($field_name);
     }
 
@@ -176,7 +180,7 @@ class TimberUser extends TimberCore {
     /**
      * @return string
      */
-    function link(){
+    function link() {
         return $this->get_link();
     }
 

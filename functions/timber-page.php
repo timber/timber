@@ -1,5 +1,6 @@
 <?php
 
-class TimberPage extends TimberPost {
+class TimberPage extends TimberPost
+{
 
 }
