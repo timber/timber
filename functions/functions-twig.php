@@ -119,8 +119,9 @@ class TimberTwig {
 		return $arr;
 	}
 
-	/**
+    /**
      * @param mixed $arr
+     * @param string $glue
      * @return string
      */
 	function to_string($arr, $glue = ' '){
@@ -133,6 +134,7 @@ class TimberTwig {
 		if (is_array($arr)){
 			return implode($glue, $arr);
 		}
+        return null;
 	}
 
     /**

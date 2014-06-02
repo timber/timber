@@ -57,6 +57,7 @@ class TimberMenu extends TimberCore {
         if (isset($locations[$slug])) {
             return $locations[$slug];
         }
+        return null;
     }
 
     /**

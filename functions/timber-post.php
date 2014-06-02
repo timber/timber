@@ -223,7 +223,7 @@ class TimberPost extends TimberCore {
 		$customs = apply_filters('timber_post_get_meta_pre', array(), $pid, $this);
 		$customs = get_post_custom($pid);
 		if (!is_array($customs) || empty($customs)){
-			return;
+			return array();
 		}
 		foreach ($customs as $key => $value) {
 			if (is_array($value) && count($value) == 1 && isset($value[0])){

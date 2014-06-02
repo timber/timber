@@ -65,6 +65,7 @@ class TimberTermGetter {
     			return self::get_term_query_from_array_of_strings($args);
     		}
     	}
+        return null;
     }
 
     /**

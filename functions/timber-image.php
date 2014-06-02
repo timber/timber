@@ -64,6 +64,7 @@ class TimberImage extends TimberCore {
 		if ($dim == 'h' || $dim == 'height'){
 			return $this->_dimensions[1];
 		}
+        return null;
 	}
 
     /**

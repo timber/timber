@@ -393,8 +393,8 @@ class Timber {
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else {
             //no clue, what you talkin' bout?
+            return null;
         }
-
     }
 
     /**
