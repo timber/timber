@@ -807,6 +807,7 @@ class TimberPost extends TimberCore {
 	}
 
     /**
+     * @param string $date_format
      * @return string
      */
     public function date($date_format = '') {
@@ -814,6 +815,7 @@ class TimberPost extends TimberCore {
     }
 
     /**
+     * @param string $date_format
      * @return string
      */
     public function modified_date($date_format = '') {

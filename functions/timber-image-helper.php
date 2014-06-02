@@ -131,11 +131,11 @@
         	return $dir_relative_to_content;
 		}
 
-		/**
+        /**
          * @param string $src
          * @param int $w
          * @param int $h
-         * @param string $crop
+         * @param $color
          * @return string
          */
 		static function get_letterbox_file_name_relative_to_content($src, $w, $h, $color){
@@ -247,13 +247,14 @@
 			}
 		}
 
-		/**
-		 * @param string $src
-		 * @param int $w
-		 * @param int $h
-		 * @param string $color
-		 * @return mixed|null|string
-		 */
+        /**
+         * @param string $src
+         * @param int $w
+         * @param int $h
+         * @param string $color
+         * @param bool $force
+         * @return mixed|null|string
+         */
 		public static function letterbox($src, $w, $h, $color = '#000000', $force = false) {
 			if (strstr($src, 'http') && !strstr($src, home_url())) {
 				$src = self::sideload_image($src);

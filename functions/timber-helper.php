@@ -126,7 +126,9 @@ class TimberHelper {
 		error_log($arg);
 	}
 
-	/**
+    /**
+     * @param string $seperator
+     * @param string $seplocation
      * @return string
      */
 	public static function get_wp_title($seperator = ' ', $seplocation = 'left') {
