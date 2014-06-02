@@ -41,6 +41,8 @@ class TimberPost extends TimberCore {
 		}
 		$post_info = $this->get_info($pid);
 		$this->import($post_info);
+		/* deprecated, adding for support for older themes */
+		$this->display_date = $this->date();
 		//cant have a function, so gots to do it this way
 		$post_class = $this->post_class();
 		$this->class = $post_class;
@@ -810,15 +812,6 @@ class TimberPost extends TimberCore {
      */
     public function content($page  = 0) {
 		return $this->get_content(0, $page);
-	}
-
-    /**
-     * This is deprecated and will be removed in 1.0
-     * Please use {{post.date}}
-     * @return mixed
-     */
-    public function display_date(){
-		return date_i18n(get_option('date_format') , strtotime($this->post_date));
 	}
 
     /**

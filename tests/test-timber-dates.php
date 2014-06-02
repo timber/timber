@@ -10,6 +10,14 @@
 			$this->assertEquals('I am from '.date('F j, Y'), $str);
 		}
 
+		function testPostDisplayDate(){
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+			$twig = 'I am from {{post.display_date}}';
+			$str = Timber::compile_string($twig, array('post' => $post));
+			$this->assertEquals('I am from '.date('F j, Y'), $str);
+		}
+
 		function testPostDate(){
 			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
