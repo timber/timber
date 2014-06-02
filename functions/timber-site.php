@@ -1,12 +1,24 @@
 <?php
 
-class TimberSite extends TimberCore {
+class TimberSite extends TimberCore
+{
+    public $name;
+    public $title;
+    public $id;
+    public $theme;
+    public $description;
+    public $language;
+    public $charset;
+    public $pingback_url;
+    public $language_attributes;
+    public $blogname;
+    public $siteurl;
 
     /**
      * @param string|int $site_name_or_id
      */
-    function __construct($site_name_or_id = null){
-        if (is_multisite()){
+    function __construct($site_name_or_id = null) {
+        if (is_multisite()) {
             $this->init_with_multisite($site_name_or_id);
         } else {
             $this->init();
@@ -16,10 +28,10 @@ class TimberSite extends TimberCore {
     /**
      * @param string|int $site_name_or_id
      */
-    function init_with_multisite($site_name_or_id){
-        if ($site_name_or_id === null){
+    function init_with_multisite($site_name_or_id) {
+        if ($site_name_or_id === null) {
             //this is necessary for some reason, otherwise returns 1 all the time
-            if (is_multisite()){
+            if (is_multisite()) {
                 restore_current_blog();
                 $site_name_or_id = get_current_blog_id();
             }
@@ -36,7 +48,7 @@ class TimberSite extends TimberCore {
         $this->description = get_blog_option($info->blog_id, 'blogdescription');
     }
 
-    function init(){
+    function init() {
         $this->name = get_bloginfo('name');
         $this->title = $this->name;
         $this->description = get_bloginfo('description');
@@ -52,8 +64,8 @@ class TimberSite extends TimberCore {
      * @param string $field
      * @return mixed
      */
-    function __get($field){
-        if (!isset($this->$field)){
+    function __get($field) {
+        if (!isset($this->$field)) {
             $this->$field = get_blog_option($this->ID, $field);
         }
         return $this->$field;
@@ -62,28 +74,29 @@ class TimberSite extends TimberCore {
     /**
      * @return string
      */
-    function get_link(){
+    function get_link() {
         return $this->siteurl;
     }
 
     /**
      * @return string
      */
-    function get_url(){
+    function get_url() {
         return $this->get_link();
     }
 
     /**
      * @return string
      */
-    function link(){
+    function link() {
         return $this->get_link();
     }
 
     /**
      * @return string
      */
-    function url(){
+    function url() {
         return $this->get_link();
     }
+
 }

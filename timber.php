@@ -327,14 +327,14 @@ class Timber {
      * @param string $PostClass
      * @return bool|null
      */
-    public function loop_to_posts($PostClass = 'TimberPost') {
+    public static function loop_to_posts($PostClass = 'TimberPost') {
         return self::get_posts(false, $PostClass);
     }
 
     /**
      * @return bool|int
      */
-    public function loop_to_id() {
+    public static function loop_to_id() {
         if (!self::wp_query_has_posts()) { return false; }
 
         global $wp_query;
@@ -393,8 +393,8 @@ class Timber {
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else {
             //no clue, what you talkin' bout?
+            return null;
         }
-
     }
 
     /**
@@ -424,7 +424,7 @@ class Timber {
     public static function get_sites($blog_ids = false){
         if (!is_array($blog_ids)){
             global $wpdb;
-            $site_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
+            $blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
         }
         $return = array();
         foreach($blog_ids as $blog_id){
@@ -637,7 +637,7 @@ class Timber {
         }
     }
 
-    public static function cancel_query(){
+    public function cancel_query(){
         add_action('posts_request', array($this, 'cancel_query_posts_request'));
     }
 
@@ -649,9 +649,10 @@ class Timber {
 
     /**
      * @param array $template
-     * @param bool $query
+     * @param mixed $query
      * @param int $force_header
      * @param bool $tparams
+     * @return bool
      */
     public static function load_template($template, $query = false, $force_header = 0, $tparams = false) {
 

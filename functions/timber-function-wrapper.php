@@ -1,6 +1,7 @@
 <?php
 
-class TimberFunctionWrapper {
+class TimberFunctionWrapper
+{
 
     private $_function;
     private $_args;
@@ -15,24 +16,24 @@ class TimberFunctionWrapper {
      * @param array $args
      * @param bool $return_output_buffer
      */
-    public function __construct( $function, $args = array( ), $return_output_buffer = false ) {
+    public function __construct($function, $args = array(), $return_output_buffer = false) {
         $this->_function = $function;
-        $this->_args     = $args;
-        $this->_use_ob   = $return_output_buffer;
+        $this->_args = $args;
+        $this->_use_ob = $return_output_buffer;
 
-        add_filter( 'get_twig', array( &$this, 'add_to_twig' ) );
+        add_filter('get_twig', array(&$this, 'add_to_twig'));
     }
 
     /**
      * @param Twig_Environment $twig
      * @return Twig_Environment
      */
-    public function add_to_twig( $twig ) {
+    public function add_to_twig($twig) {
         $wrapper = $this;
 
-        $twig->addFunction( new Twig_SimpleFunction( $this->_function, function() use ( $wrapper ) {
-            return call_user_func_array( array( $wrapper, 'call' ), func_get_args() );
-        } ) );
+        $twig->addFunction(new Twig_SimpleFunction($this->_function, function () use ($wrapper) {
+            return call_user_func_array(array($wrapper, 'call'), func_get_args());
+        }));
 
         return $twig;
     }
@@ -41,12 +42,13 @@ class TimberFunctionWrapper {
      * @return string
      */
     public function call() {
-        $args = $this->_parse_args( func_get_args(), $this->_args );
+        $args = $this->_parse_args(func_get_args(), $this->_args);
 
-        if ( $this->_use_ob )
-            return WPHelper::ob_function( $this->_function, $args );
-        else
-            return (string) call_user_func_array( $this->_function, $args );
+        if ($this->_use_ob) {
+            return WPHelper::ob_function($this->_function, $args);
+        } else {
+            return (string)call_user_func_array($this->_function, $args);
+        }
     }
 
     /**
@@ -54,12 +56,12 @@ class TimberFunctionWrapper {
      * @param array $defaults
      * @return array
      */
-    private function _parse_args( $args, $defaults ) {
-        $_arg = reset( $defaults );
+    private function _parse_args($args, $defaults) {
+        $_arg = reset($defaults);
 
-        foreach ( $args as $index => $arg ) {
-            $defaults[$index] = is_null( $arg ) ? $_arg : $arg;
-            $_arg             = next( $defaults );
+        foreach ($args as $index => $arg) {
+            $defaults[$index] = is_null($arg) ? $_arg : $arg;
+            $_arg = next($defaults);
         }
 
         return $defaults;
