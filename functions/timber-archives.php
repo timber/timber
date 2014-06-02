@@ -114,7 +114,7 @@ class TimberArchives extends TimberCore {
      * @return array|string
      */
     function get_items($args){
-		global $wpdb, $wp_locale;
+		global $wpdb;
 
 		$defaults = array(
 			'type' => 'monthly', 'limit' => '',
@@ -192,7 +192,6 @@ class TimberArchives extends TimberCore {
 				wp_cache_set( $key, $results, 'posts' );
 			}
 			if ( $results ) {
-				$afterafter = $after;
 				foreach ( (array) $results as $result ) {
 					$url	= get_day_link($result->year, $result->month, $result->dayofmonth);
 					$date = sprintf('%1$d-%2$02d-%3$02d 00:00:00', $result->year, $result->month, $result->dayofmonth);
@@ -210,7 +209,6 @@ class TimberArchives extends TimberCore {
 				wp_cache_set( $key, $results, 'posts' );
 			}
 			$arc_w_last = '';
-			$afterafter = $after;
 			if ( $results ) {
 					foreach ( (array) $results as $result ) {
 						if ( $result->week != $arc_w_last ) {

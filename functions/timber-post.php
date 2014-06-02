@@ -301,8 +301,7 @@ class TimberPost extends TimberCore {
      * @return array
      */
     public function get_pagination(){
-		global $post, $page, $numpages, $multipage, $more, $pagenow;
-		$old_global_post = $post;
+		global $post, $page, $numpages, $multipage;
 		$post = $this;
 		$ret = array();
 		if ($multipage){

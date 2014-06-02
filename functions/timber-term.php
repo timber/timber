@@ -46,7 +46,6 @@ class TimberTerm extends TimberCore {
      * @param int $tid
      */
     private function init($tid) {
-		global $wpdb;
 		$term = $this->get_term($tid);
 		if (isset($term->id)) {
 			$term->ID = $term->id;

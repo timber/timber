@@ -451,9 +451,7 @@ class TimberHelper {
 		$end_size = 0  < (int) $end_size ? (int) $end_size : 1; // Out of bounds?  Make it the default.
 		$mid_size = 0 <= (int) $mid_size ? (int) $mid_size : 2;
 		$add_args = is_array($add_args) ? $add_args : false;
-		$r = '';
 		$page_links = array();
-		$n = 0;
 		$dots = false;
 		if ( $prev_next && $current && 1 < $current ){
 			$link = str_replace('%_%', 2 == $current ? '' : $format, $base);

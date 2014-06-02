@@ -203,7 +203,6 @@ class TimberLoader {
      * @return Twig_Loader_Chain
      */
     function get_loader() {
-		$loaders = array();
 		$paths = array();
 		foreach ($this->locations as $loc) {
 			$loc = realpath($loc);

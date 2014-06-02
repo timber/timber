@@ -104,14 +104,14 @@ class TimberComment extends TimberCore {
             $comment_id = $this->ID;
         }
         //Could not find a WP function to fetch all comment meta data, so I made one.
-        $comment_metas = apply_filters('timber_comment_get_meta_pre', array(), $this->ID);
-        $comment_metas = get_comment_meta($this->ID);
+        $comment_metas = apply_filters('timber_comment_get_meta_pre', array(), $comment_id);
+        $comment_metas = get_comment_meta($comment_id);
         foreach($comment_metas as &$cm){
             if (is_array($cm) && count($cm) == 1){
                 $cm = $cm[0];
             }
         }
-        $comment_metas = apply_filters('timber_comment_get_meta', $comment_metas, $this->ID);
+        $comment_metas = apply_filters('timber_comment_get_meta', $comment_metas, $comment_id);
         return $comment_metas;
     }
 
@@ -135,7 +135,6 @@ class TimberComment extends TimberCore {
      * @return string
      */
     private function avatar_email(){
-		$email = '';
 		$id = (int) $this->user_id;
 		$user = get_userdata($id);
 		if ($user){
