@@ -327,14 +327,14 @@ class Timber {
      * @param string $PostClass
      * @return bool|null
      */
-    public function loop_to_posts($PostClass = 'TimberPost') {
+    public static function loop_to_posts($PostClass = 'TimberPost') {
         return self::get_posts(false, $PostClass);
     }
 
     /**
      * @return bool|int
      */
-    public function loop_to_id() {
+    public static function loop_to_id() {
         if (!self::wp_query_has_posts()) { return false; }
 
         global $wp_query;
