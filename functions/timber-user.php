@@ -3,8 +3,8 @@
 class TimberUser extends TimberCore
 {
 
-    var $_link;
-    var $object_type = 'user';
+    public $_link;
+    public $object_type = 'user';
 
     public static $representation = 'user';
 

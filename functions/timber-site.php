@@ -11,6 +11,8 @@ class TimberSite extends TimberCore
     public $charset;
     public $pingback_url;
     public $language_attributes;
+    public $blogname;
+    public $siteurl;
 
     /**
      * @param string|int $site_name_or_id

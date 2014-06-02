@@ -3,11 +3,12 @@
 class TimberMenu extends TimberCore
 {
 
-    var $MenuItemClass = 'TimberMenuItem';
+    public $MenuItemClass = 'TimberMenuItem';
 
-    var $items = null;
-    var $name = null;
-    var $ID = null;
+    public $items = null;
+    public $name = null;
+    public $ID = null;
+    public $term_id;
 
     /**
      * @param int $slug
@@ -135,8 +136,8 @@ class TimberMenu extends TimberCore
 class TimberMenuItem extends TimberCore
 {
 
-    var $children;
-    var $has_child_class = false;
+    public $children;
+    public $has_child_class = false;
 
     public $classes = array();
     public $class;

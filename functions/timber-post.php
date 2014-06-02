@@ -3,14 +3,14 @@
 class TimberPost extends TimberCore
 {
 
-    var $ImageClass = 'TimberImage';
-    var $PostClass = 'TimberPost';
-    var $_can_edit;
-    var $_get_terms;
-    var $_content;
-    var $object_type = 'post';
+    public $ImageClass = 'TimberImage';
+    public $PostClass = 'TimberPost';
+    public $_can_edit;
+    public $_get_terms;
+    public $_content;
+    public $object_type = 'post';
 
-    var $_custom_imported = false;
+    public $_custom_imported = false;
 
     public static $representation = 'post';
 

@@ -22,7 +22,7 @@ class TimberLoader
 
     protected $cache_mode = self::CACHE_TRANSIENT;
 
-    var $locations;
+    public $locations;
 
     /**
      * @param bool $caller

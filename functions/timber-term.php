@@ -3,11 +3,11 @@
 class TimberTerm extends TimberCore
 {
 
-    var $taxonomy;
-    var $_children;
-    var $PostClass = 'TimberPost';
-    var $TermClass = 'TimberTerm';
-    var $object_type = 'term';
+    public $taxonomy;
+    public $_children;
+    public $PostClass = 'TimberPost';
+    public $TermClass = 'TimberTerm';
+    public $object_type = 'term';
 
     public static $representation = 'term';
 

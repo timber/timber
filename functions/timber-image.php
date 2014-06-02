@@ -3,11 +3,11 @@
 class TimberImage extends TimberCore
 {
 
-    var $_can_edit;
-    var $_dimensions;
-    var $abs_url;
-    var $PostClass = 'TimberPost';
-    var $object_type = 'image';
+    public $_can_edit;
+    public $_dimensions;
+    public $abs_url;
+    public $PostClass = 'TimberPost';
+    public $object_type = 'image';
 
     public static $representation = 'image';
 

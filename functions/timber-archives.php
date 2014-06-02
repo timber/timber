@@ -3,7 +3,7 @@
 class TimberArchives extends TimberCore
 {
 
-    var $base = '';
+    public $base = '';
     public $items;
 
     function __construct($args, $base = '') {

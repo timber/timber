@@ -3,8 +3,8 @@
 class TimberComment extends TimberCore
 {
 
-    var $PostClass = 'TimberPost';
-    var $object_type = 'comment';
+    public $PostClass = 'TimberPost';
+    public $object_type = 'comment';
 
     public static $representation = 'comment';
 
