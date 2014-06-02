@@ -652,6 +652,7 @@ class Timber {
      * @param bool $query
      * @param int $force_header
      * @param bool $tparams
+     * @return bool
      */
     public static function load_template($template, $query = false, $force_header = 0, $tparams = false) {
 

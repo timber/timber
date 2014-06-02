@@ -17,8 +17,9 @@ class TimberCache_Loader
             $classes = explode( '\\', $class );
             array_splice( $classes, 0, 2 );
             $path = implode( $classes, '/' );
-            if ( is_file($file = dirname(__FILE__) . '/' . $path . '.php'))
+            if ( is_file($file = dirname(__FILE__) . '/' . $path . '.php')) {
                 require $file;
+            }
         }
     }
 }

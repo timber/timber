@@ -106,9 +106,10 @@
 			return WP_CONTENT_SUBDIR.$new_path;
 		}
 
-		/**
-  		 * @param string $src The src of an image can be absolute, relative or server location
-		 */
+        /**
+         * @param string $src The src of an image can be absolute, relative or server location
+         * @return mixed|null
+         */
 		static function get_directory_relative_to_content($src){
 			if (!strlen($src)){
         		return null;
