@@ -73,7 +73,10 @@ class TimberArchives extends TimberCore {
 			'show_year' => true,
 		);
 		$r = wp_parse_args( $args, $defaults );
+
+        $show_year = null;
 		extract( $r, EXTR_SKIP );
+
 		//will need to specify which year we're looking for
 		$query = "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date $order $limit";
 		$key = md5( $query );
@@ -126,6 +129,7 @@ class TimberArchives extends TimberCore {
 		);
 
 		$r = wp_parse_args( $args, $defaults );
+        $type = $limit = $order = $post_type = $nested = $format = $before = $after = null;
 		extract( $r, EXTR_SKIP );
 
 		if ( '' == $type )

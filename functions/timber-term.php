@@ -76,7 +76,7 @@ class TimberTerm extends TimberCore {
 
     /**
      * @param int $tid
-     * @return int|null
+     * @return mixed
      */
     private function get_term($tid) {
 		if (is_object($tid) || is_array($tid)) {
@@ -91,8 +91,7 @@ class TimberTerm extends TimberCore {
 			$query = $wpdb->prepare("SELECT taxonomy FROM $wpdb->term_taxonomy WHERE term_id = %d LIMIT 1", $tid);
 			$tax = $wpdb->get_var($query);
 			if (isset($tax) && strlen($tax)) {
-				$term = get_term($tid, $tax);
-				return $term;
+				return get_term($tid, $tax);
 			}
 		}
 		return null;

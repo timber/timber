@@ -13,8 +13,10 @@ class TimberPost extends TimberCore {
 
 	public static $representation = 'post';
 
+    public $post_type;
 
-	/**
+
+    /**
 	 *  If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
 	 * @param mixed $pid
 	 * @return \TimberPost TimberPost object -- woo!
@@ -220,7 +222,7 @@ class TimberPost extends TimberCore {
      * @return array
      */
     function get_post_custom($pid) {
-		$customs = apply_filters('timber_post_get_meta_pre', array(), $pid, $this);
+		apply_filters('timber_post_get_meta_pre', array(), $pid, $this);
 		$customs = get_post_custom($pid);
 		if (!is_array($customs) || empty($customs)){
 			return array();

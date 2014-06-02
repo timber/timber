@@ -2,6 +2,10 @@
 
 class TimberCore {
 
+    public $ID;
+    public $object_type;
+    public $url;
+
     /**
      * @param array|object $info
      */
@@ -64,4 +68,5 @@ class TimberCore {
 		$url_info = parse_url($url);
 		return $url_info['path'];
 	}
+
 }

@@ -6,6 +6,7 @@ class TimberUser extends TimberCore {
     var $object_type = 'user';
 
     public static $representation = 'user';
+    public $name;
 
     /**
      * @param int|bool $uid

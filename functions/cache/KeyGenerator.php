@@ -7,6 +7,10 @@ use Asm89\Twig\CacheExtension\CacheStrategy\KeyGeneratorInterface;
 class KeyGenerator implements KeyGeneratorInterface
 {
 
+    /**
+     * @param mixed $value
+     * @return string
+     */
     public function generateKey( $value ) {
         if ( is_a( $value, 'TimberKeyGeneratorInterface' ) )
             return $value->_get_cache_key();

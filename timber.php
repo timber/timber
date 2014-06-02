@@ -649,7 +649,7 @@ class Timber {
 
     /**
      * @param array $template
-     * @param bool $query
+     * @param mixed $query
      * @param int $force_header
      * @param bool $tparams
      * @return bool

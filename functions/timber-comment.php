@@ -7,6 +7,13 @@ class TimberComment extends TimberCore {
 
     public static $representation = 'comment';
 
+    public $ID;
+    public $comment_author_email;
+    public $comment_content;
+    public $comment_date;
+    public $comment_ID;
+    public $user_id;
+
     /**
      * @param int $cid
      */
@@ -15,7 +22,7 @@ class TimberComment extends TimberCore {
     }
 
     /**
-     * @param int $cid
+     * @param mixed $cid
      */
     function init($cid) {
         $comment_data = $cid;
@@ -55,8 +62,12 @@ class TimberComment extends TimberCore {
         // use it like this
         // {{comment.avatar(36,template_uri~"/img/dude.jpg")}}
 
-        if ( ! get_option('show_avatars') ) return false;
-        if ( !is_numeric($size) ) $size = '92';
+        if ( !get_option('show_avatars') ) {
+            return false;
+        }
+        if ( !is_numeric($size) ) {
+            $size = '92';
+        }
 
         $email = $this->avatar_email();
         $email_hash = '';
@@ -65,7 +76,7 @@ class TimberComment extends TimberCore {
         }
         $host = $this->avatar_host($email_hash);
         $default = $this->avatar_default($default, $email, $size, $host);
-        if( !empty($email) ) {
+        if ( !empty($email) ) {
             $avatar = $this->avatar_out($email, $default, $host, $email_hash, $size);
         } else {
             $avatar = $default;
@@ -104,7 +115,7 @@ class TimberComment extends TimberCore {
             $comment_id = $this->ID;
         }
         //Could not find a WP function to fetch all comment meta data, so I made one.
-        $comment_metas = apply_filters('timber_comment_get_meta_pre', array(), $comment_id);
+        apply_filters('timber_comment_get_meta_pre', array(), $comment_id);
         $comment_metas = get_comment_meta($comment_id);
         foreach($comment_metas as &$cm){
             if (is_array($cm) && count($cm) == 1){
@@ -184,16 +195,16 @@ class TimberComment extends TimberCore {
         	}
 		}
       	if ( 'mystery' == $default ) {
-			$default = "$host/avatar/ad516503a11cd5ca435acc9bb6523536?s={$size}";
+			$default = $host . '/avatar/ad516503a11cd5ca435acc9bb6523536?s=' . $size;
 			// ad516503a11cd5ca435acc9bb6523536 == md5('unknown@gravatar.com')
 		} elseif ( 'blank' == $default ) {
           	$default = $email ? 'blank' : includes_url( 'images/blank.gif' );
       	} elseif ( !empty($email) && 'gravatar_default' == $default ) {
           	$default = '';
       	} elseif ( 'gravatar_default' == $default ) {
-          	$default = "$host/avatar/?s={$size}";
+          	$default = $host . '/avatar/?s=' . $size;
       	} elseif ( empty($email) && !strstr($default, 'http://') ) {
-          	$default = "$host/avatar/?d=$default&amp;s={$size}";
+          	$default = $host . '/avatar/?d=' . $default . '&amp;s=' . $size;
       	} elseif ( strpos($default, 'http://') === 0 ) {
             //theyre just linking to an image so don't do anything else
           	//$default = add_query_arg( 's', $size, $default );
@@ -210,10 +221,7 @@ class TimberComment extends TimberCore {
      * @return mixed
      */
     private function avatar_out($email, $default, $host, $email_hash, $size){
-        $out = "$host/avatar/";
-        $out .= $email_hash;
-        $out .= '?s='.$size;
-        $out .= '&amp;d=' . urlencode( $default );
+        $out = $host . '/avatar/' . $email_hash .'?s='.$size .'&amp;d=' . urlencode( $default );
         $rating = get_option('avatar_rating');
         if ( !empty( $rating ) ) $out .= "&amp;r={$rating}";
         return str_replace( '&#038;', '&amp;', esc_url( $out ) );
