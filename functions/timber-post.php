@@ -41,6 +41,8 @@ class TimberPost extends TimberCore {
 		}
 		$post_info = $this->get_info($pid);
 		$this->import($post_info);
+		/* deprecated, adding for support for older themes */
+		$this->display_date = $this->date();
 		//cant have a function, so gots to do it this way
 		$post_class = $this->post_class();
 		$this->class = $post_class;
@@ -732,6 +734,19 @@ class TimberPost extends TimberCore {
 		return get_post_format($this->ID);
 	}
 
+	/**
+     * @param string $class
+     * @return string
+     */
+    public function post_class($class='') {
+    	global $post;
+    	$old_global_post = $post;
+    	$post = $this;
+		$class_array = get_post_class($class, $this->ID);
+		$post = $old_global_post;
+		return implode(' ', $class_array);
+	}
+
 	// Docs
 
     /**
@@ -813,26 +828,10 @@ class TimberPost extends TimberCore {
 	}
 
     /**
-     * This is deprecated and will be removed in 1.0
-     * Please use {{post.date}}
-     * @return mixed
-     */
-    public function display_date(){
-		return date_i18n(get_option('date_format') , strtotime($this->post_date));
-	}
-
-    /**
      * @return string
      */
     public function date($date_format = '') {
         return $this->get_date($date_format);
-    }
-
-    /**
-     * @return string
-     */
-    public function modified_date($date_format = '') {
-        return $this->get_modified_date($date_format);
     }
 
     /**
@@ -865,6 +864,20 @@ class TimberPost extends TimberCore {
     	}
 		return $this->get_field($field_name);
 	}
+
+	/**
+     * @return string
+     */
+    public function modified_date($date_format = '') {
+        return $this->get_modified_date($date_format);
+    }
+
+    /**
+     * @return string
+     */
+    public function modified_time($time_format = '') {
+        return $this->get_modified_time($time_format);
+    }
 
     /**
      * @param bool $in_same_cat
@@ -937,19 +950,6 @@ class TimberPost extends TimberCore {
      */
     public function title() {
 		return $this->get_title();
-	}
-
-    /**
-     * @param string $class
-     * @return string
-     */
-    public function post_class($class='') {
-    	global $post;
-    	$old_global_post = $post;
-    	$post = $this;
-		$class_array = get_post_class($class, $this->ID);
-		$post = $old_global_post;
-		return implode(' ', $class_array);
 	}
 
 
