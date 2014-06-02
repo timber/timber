@@ -836,6 +836,13 @@ class TimberPost extends TimberCore {
     }
 
     /**
+     * @return string
+     */
+    public function modified_time($time_format = '') {
+        return $this->get_modified_time($time_format);
+    }
+
+    /**
      * @return bool|string
      */
     public function edit_link(){
