@@ -637,7 +637,7 @@ class Timber {
         }
     }
 
-    public static function cancel_query(){
+    public function cancel_query(){
         add_action('posts_request', array($this, 'cancel_query_posts_request'));
     }
 
