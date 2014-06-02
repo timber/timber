@@ -734,6 +734,19 @@ class TimberPost extends TimberCore {
 		return get_post_format($this->ID);
 	}
 
+	/**
+     * @param string $class
+     * @return string
+     */
+    public function post_class($class='') {
+    	global $post;
+    	$old_global_post = $post;
+    	$post = $this;
+		$class_array = get_post_class($class, $this->ID);
+		$post = $old_global_post;
+		return implode(' ', $class_array);
+	}
+
 	// Docs
 
     /**
@@ -822,20 +835,6 @@ class TimberPost extends TimberCore {
     }
 
     /**
-     * @return string
-     */
-    public function modified_date($date_format = '') {
-        return $this->get_modified_date($date_format);
-    }
-
-    /**
-     * @return string
-     */
-    public function modified_time($time_format = '') {
-        return $this->get_modified_time($time_format);
-    }
-
-    /**
      * @return bool|string
      */
     public function edit_link(){
@@ -865,6 +864,20 @@ class TimberPost extends TimberCore {
     	}
 		return $this->get_field($field_name);
 	}
+
+	/**
+     * @return string
+     */
+    public function modified_date($date_format = '') {
+        return $this->get_modified_date($date_format);
+    }
+
+    /**
+     * @return string
+     */
+    public function modified_time($time_format = '') {
+        return $this->get_modified_time($time_format);
+    }
 
     /**
      * @param bool $in_same_cat
@@ -937,19 +950,6 @@ class TimberPost extends TimberCore {
      */
     public function title() {
 		return $this->get_title();
-	}
-
-    /**
-     * @param string $class
-     * @return string
-     */
-    public function post_class($class='') {
-    	global $post;
-    	$old_global_post = $post;
-    	$post = $this;
-		$class_array = get_post_class($class, $this->ID);
-		$post = $old_global_post;
-		return implode(' ', $class_array);
 	}
 
 
