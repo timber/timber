@@ -244,8 +244,6 @@
 				}
 				return WP_CONTENT_DIR.$relative_to_wp_content;
 			}
-			
-			return $url;
 		}
 
 		/**

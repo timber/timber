@@ -324,9 +324,7 @@ function twig_make_excerpt($text, $length = 55){
  * @return mixed
  */
 function twig_print_r($arr) {
-	//$rets = twig_object_docs($obj, false);
 	return print_r($arr, true);
-	return $rets;
 }
 
 /**
