@@ -22,7 +22,7 @@
 			$pids[] = $this->factory->post->create(array('post_date' => '2014-01-08 19:46:41'));
 			$this->go_to('/');
 			$archives = new TimberArchives();
-			$this->assertEquals(3, count($archives->items));
+			$this->assertEquals(4, count($archives->items));
 		}
 
 	}
