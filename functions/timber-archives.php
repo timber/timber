@@ -6,7 +6,7 @@ class TimberArchives extends TimberCore
     public $base = '';
     public $items;
 
-    function __construct($args, $base = '') {
+    function __construct($args = null, $base = '') {
         $this->init($args, $base);
     }
 
@@ -14,7 +14,7 @@ class TimberArchives extends TimberCore
      * @param array|string $args
      * @param string $base
      */
-    function init($args, $base = '') {
+    function init($args = null, $base = '') {
         $this->base = $base;
         $this->items = $this->get_items($args);
     }
@@ -69,7 +69,7 @@ class TimberArchives extends TimberCore
      * @param bool $nested
      * @return array
      */
-    function get_items_montly($args, $last_changed, $join, $where, $order, $limit, $nested = true) {
+    function get_items_montly($args, $last_changed, $join, $where, $order, $limit = 1000, $nested = true) {
         global $wpdb, $wp_locale;
         $output = array();
         $defaults = array(
@@ -121,7 +121,7 @@ class TimberArchives extends TimberCore
      * @param array|string $args
      * @return array|string
      */
-    function get_items($args) {
+    function get_items($args = null) {
         global $wpdb;
 
         $defaults = array(
@@ -137,11 +137,18 @@ class TimberArchives extends TimberCore
         $type = $limit = $order = $post_type = $nested = $format = $before = $after = null;
         extract($r, EXTR_SKIP);
 
+        if (empty($order)){
+        	$order = 'DESC';
+        }
+
+        if (empty($post_type)){
+        	$post_type = 'post';
+        }
         if (empty($type)) {
             $type = 'monthly';
         }
 
-        if (empty($limit)) {
+        if (!empty($limit)) {
             $limit = absint($limit);
             $limit = ' LIMIT ' . $limit;
         }
@@ -180,7 +187,6 @@ class TimberArchives extends TimberCore
             $last_changed = microtime();
             wp_cache_set('last_changed', $last_changed, 'posts');
         }
-
         if ('monthly' == $type) {
             $output = $this->get_items_montly($args, $last_changed, $join, $where, $order, $limit, $nested);
         } elseif ('yearly' == $type) {
