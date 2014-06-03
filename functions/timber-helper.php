@@ -440,39 +440,35 @@ class TimberHelper
             'add_args' => false, // array of query args to add
             'add_fragment' => ''
         );
-
         $args = wp_parse_args($args, $defaults);
-        $total = $current = $end_size = $mid_size = $add_args = $prev_next = $format = $base = $add_fragment = $show_all = $prev_text = $next_text = null;
-        extract($args, EXTR_SKIP);
-
         // Who knows what else people pass in $args
-        $total = (int)$total;
-        if ($total < 2) {
+        $args['total'] = intval((int)$args['total']);
+        if ($args['total'] < 2) {
             return array();
         }
-        $current = (int)$current;
-        $end_size = 0 < (int)$end_size ? (int)$end_size : 1; // Out of bounds?  Make it the default.
-        $mid_size = 0 <= (int)$mid_size ? (int)$mid_size : 2;
-        $add_args = is_array($add_args) ? $add_args : false;
+        $args['current'] = (int)$args['current'];
+        $args['end_size'] = 0 < (int)$args['end_size'] ? (int)$args['end_size'] : 1; // Out of bounds?  Make it the default.
+        $args['mid_size'] = 0 <= (int)$args['mid_size'] ? (int)$args['mid_size'] : 2;
+        $args['add_args'] = is_array($args['add_args']) ? $args['add_args'] : false;
         $page_links = array();
         $dots = false;
-        if ($prev_next && $current && 1 < $current) {
-            $link = str_replace('%_%', 2 == $current ? '' : $format, $base);
-            $link = str_replace('%#%', $current - 1, $link);
-            if ($add_args) {
-                $link = add_query_arg($add_args, $link);
+        if ($args['prev_next'] && $args['current'] && 1 < $args['current']) {
+            $link = str_replace('%_%', 2 == $args['current'] ? '' : $args['format'], $args['base']);
+            $link = str_replace('%#%', $args['current'] - 1, $link);
+            if ($args['add_args']) {
+                $link = add_query_arg($args['add_args'], $link);
             }
-            $link .= $add_fragment;
+            $link .= $args['add_fragment'];
             $link = untrailingslashit($link);
             $page_links[] = array(
                 'class' => 'prev page-numbers',
                 'link' => esc_url(apply_filters('paginate_links', $link)),
-                'title' => $prev_text
+                'title' => $args['prev_text']
             );
         }
-        for ($n = 1; $n <= $total; $n++) {
+        for ($n = 1; $n <= $args['total']; $n++) {
             $n_display = number_format_i18n($n);
-            if ($n == $current) {
+            if ($n == $args['current']) {
                 $page_links[] = array(
                     'class' => 'page-number page-numbers current',
                     'title' => $n_display,
@@ -482,22 +478,22 @@ class TimberHelper
                 );
                 $dots = true;
             } else {
-                if ($show_all || ($n <= $end_size || ($current && $n >= $current - $mid_size && $n <= $current + $mid_size) || $n > $total - $end_size)) {
-                    $link = str_replace('%_%', 1 == $n ? '' : $format, $base);
+                if ($args['show_all'] || ($n <= $args['end_size'] || ($args['current'] && $n >= $args['current'] - $args['mid_size'] && $n <= $args['current'] + $args['mid_size']) || $n > $args['total'] - $args['end_size'])) {
+                    $link = str_replace('%_%', 1 == $n ? '' : $args['format'], $args['base']);
                     $link = str_replace('%#%', $n, $link);
-                    $link = trailingslashit($link) . ltrim($add_fragment, '/');
-                    if ($add_args) {
-                        $link = rtrim(add_query_arg($add_args, $link), '/');
+                    $link = trailingslashit($link) . ltrim($args['add_fragment'], '/');
+                    if ($args['add_args']) {
+                        $link = rtrim(add_query_arg($args['add_args'], $link), '/');
                     }
                     $link = untrailingslashit($link);
                     $page_links[] = array(
                         'class' => 'page-number page-numbers',
                         'link' => esc_url(apply_filters('paginate_links', $link)),
                         'title' => $n_display,
-                        'current' => $current == $n
+                        'current' => $args['current'] == $n
                     );
                     $dots = true;
-                } elseif ($dots && !$show_all) {
+                } elseif ($dots && !$args['show_all']) {
                     $page_links[] = array(
                         'class' => 'dots',
                         'title' => __('&hellip;')
@@ -506,17 +502,17 @@ class TimberHelper
                 }
             }
         }
-        if ($prev_next && $current && ($current < $total || -1 == $total)) {
-            $link = str_replace('%_%', $format, $base);
-            $link = str_replace('%#%', $current + 1, $link);
-            if ($add_args) {
-                $link = add_query_arg($add_args, $link);
+        if ($args['prev_next'] && $args['current'] && ($args['current'] < $args['total'] || -1 == $args['total'])) {
+            $link = str_replace('%_%', $args['format'], $args['base']);
+            $link = str_replace('%#%', $args['current'] + 1, $link);
+            if ($args['add_args']) {
+                $link = add_query_arg($args['add_args'], $link);
             }
-            $link = untrailingslashit(trailingslashit($link) . $add_fragment);
+            $link = untrailingslashit(trailingslashit($link) . $args['add_fragment']);
             $page_links[] = array(
                 'class' => 'next page-numbers',
                 'link' => esc_url(apply_filters('paginate_links', $link)),
-                'title' => $next_text
+                'title' => $args['next_text']
             );
         }
         return $page_links;
