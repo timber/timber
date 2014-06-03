@@ -16,6 +16,7 @@ class TimberPost extends TimberCore
 
     public $post_type;
     public $class;
+    public $id;
     public $post_parent;
     public $post_date;
     public $post_title;
@@ -426,6 +427,7 @@ class TimberPost extends TimberCore
             return null;
         }
         $post->slug = $post->post_name;
+        $post->id = $post->ID;
         $post->status = $post->post_status;
         $customs = $this->get_post_custom($post->ID);
         $post = (object)array_merge((array)$post, (array)$customs);

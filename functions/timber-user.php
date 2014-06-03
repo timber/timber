@@ -8,8 +8,8 @@ class TimberUser extends TimberCore
 
     public static $representation = 'user';
 
-    public $name;
     public $display_name;
+    public $name;
     public $user_nicename;
 
     /**
@@ -81,6 +81,7 @@ class TimberUser extends TimberCore
                 $this->import($data->data);
             }
             $this->ID = $uid;
+            $this->id = $uid;
             $this->import_custom();
         }
     }

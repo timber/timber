@@ -59,6 +59,7 @@ class TimberTerm extends TimberCore
             //echo 'bad call using '.$tid;
             //TimberHelper::error_log(debug_backtrace());
         }
+        $term->id = $term->ID;
         $this->import($term);
         if (isset($term->term_id)) {
             $custom = $this->get_term_meta($term->term_id);
@@ -121,6 +122,7 @@ class TimberTerm extends TimberCore
         $result = $wpdb->get_row($query);
         if (isset($result->term_id)) {
             $result->ID = $result->term_id;
+            $result->id = $result->term_id;
             return $result->ID;
         }
         return 0;

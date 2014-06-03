@@ -9,6 +9,7 @@ class TimberComment extends TimberCore
     public static $representation = 'comment';
 
     public $ID;
+    public $id;
     public $comment_author_email;
     public $comment_content;
     public $comment_date;
@@ -32,6 +33,7 @@ class TimberComment extends TimberCore
         }
         $this->import($comment_data);
         $this->ID = $this->comment_ID;
+        $this->id = $this->comment_ID;
         $comment_meta_data = $this->get_meta_fields($this->ID);
         $this->import($comment_meta_data);
     }
