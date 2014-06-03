@@ -253,6 +253,35 @@ class TimberLoader
         return $twig;
     }
 
+    public function clear_cache_twig() {
+        $twig = $this->get_twig();
+        $twig->clearCacheFiles();
+        $cache = $twig->getCache();
+        if ($cache){
+        	self::rrmdir($twig->getCache());
+        	return true;
+    	}
+    	return false;
+    }
+
+    public static function rrmdir($dirPath) {
+	    if (! is_dir($dirPath)) {
+	        throw new InvalidArgumentException("$dirPath must be a directory");
+	    }
+	    if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+	        $dirPath .= '/';
+	    }
+	    $files = glob($dirPath . '*', GLOB_MARK);
+	    foreach ($files as $file) {
+	        if (is_dir($file)) {
+	            self::rrmdir($file);
+	        } else {
+	            unlink($file);
+	        }
+	    }
+	    rmdir($dirPath);
+	}
+
     /**
      * @return \Asm89\Twig\CacheExtension\Extension
      */

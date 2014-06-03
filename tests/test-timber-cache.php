@@ -165,6 +165,24 @@
             $this->assertEquals( 'second_value', $second_value );
         }
 
+        function testTwigCache(){
+        	$cache_dir = __DIR__.'/../cache/twig';
+        	if (is_dir($cache_dir)){
+        		TimberLoader::rrmdir($cache_dir);
+        	}
+        	$this->assertFileNotExists($cache_dir);
+        	Timber::$cache = true;
+        	$pid = $this->factory->post->create();
+        	$post = new TimberPost($pid);
+        	Timber::compile('assets/single-post.twig', array('post' => $post));
+        	sleep(1);
+        	$this->assertFileExists($cache_dir);
+        	Timber::$cache = false;
+        	$loader = new TimberLoader();
+        	$loader->clear_cache_twig();
+        	$this->assertFileNotExists($cache_dir);
+        }
+
 	}
 
 	function my_test_callback(){
