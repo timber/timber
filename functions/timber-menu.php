@@ -6,8 +6,9 @@ class TimberMenu extends TimberCore
     public $MenuItemClass = 'TimberMenuItem';
 
     public $items = null;
-    public $name = null;
+    public $id = null;
     public $ID = null;
+    public $name = null;
     public $term_id;
 
     /**
@@ -42,6 +43,7 @@ class TimberMenu extends TimberCore
         $menu_info = wp_get_nav_menu_object($menu_id);
         $this->import($menu_info);
         $this->ID = $this->term_id;
+        $this->id = $this->term_id;
     }
 
     /**
