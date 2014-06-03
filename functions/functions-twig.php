@@ -1,12 +1,12 @@
 <?php
 
-class TimberTwig
+class TimberTwig 
 {
 
     public static $dir_name;
 
     function __construct() {
-        add_action('twig_apply_filters', array(&$this, 'add_twig_filters'));
+        add_action('twig_apply_filters', array($this, 'add_twig_filters'));
     }
 
     /**
