@@ -225,6 +225,12 @@
 			$this->assertEquals('Bernstein', $post->modified_author()->name());
 		}
 
+		function testPostClass(){
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $post->class);
+		}
+
 		function testPostChildren(){
 			$parent_id = $this->factory->post->create();
 			$children = $this->factory->post->create_many(8, array('post_parent' => $parent_id));
