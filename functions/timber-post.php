@@ -753,7 +753,10 @@ class TimberPost extends TimberCore
     	$post = $this;
 		$class_array = get_post_class($class, $this->ID);
 		$post = $old_global_post;
-		return implode(' ', $class_array);
+        if (is_array($class_array)){
+            return implode(' ', $class_array);
+        }
+        return $class_array;
 	}
 
     // Docs
