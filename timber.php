@@ -479,6 +479,9 @@ class Timber {
         $loader = new TimberLoader($caller);
         $file = $loader->choose_template($filenames);
         $output = '';
+        if (is_null($data)){
+            $data = array();
+        }
         if (strlen($file)) {
             if ($via_render){
                 $file = apply_filters('timber_render_file', $file);
