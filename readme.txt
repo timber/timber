@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.19.0
+Stable tag: 0.19.1
 Tested up to: 3.9
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,15 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.19.1
+* Removed .git folder hiding in php-router
+* Added support for WooCommerce and other plugins in starter theme (thanks @jamesagreenleaf)
+* Starter theme now based on OO-style TimberSite convention
+* You can not get the modified_author (thanks @jamesagreenleaf)
+* ...oh and the modified date (thanks @jamesagreenleaf)
+* Code clean-up like mad (thanks @hsz)
+* Fixed bug when calling Timber::get_posts in loop (thanks @jamesagreenleaf)
 
 = 0.19.0 =
 * Reorganized dependencies into /vendor directories based on composer (thanks @mgmartel, @rarst, @bryanaka)
