@@ -35,5 +35,8 @@
 			$this->assertEquals('twentythirteen', $context['site']->theme->slug);
 		}
 
+		function testMultiSite(){
+		}
+
 
 	}
