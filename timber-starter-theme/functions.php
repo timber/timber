@@ -1,7 +1,9 @@
 <?php
 	
 	if (!class_exists('Timber')){
-		echo 'Timber not activated. Make sure you activate the plugin in <a href="/wp-admin/plugins.php#timber">/wp-admin/plugins.php</a>';
+		add_action( 'admin_notices', function() use ($text, $class){
+			echo '<div class="error"><p>Timber not activated. Make sure you activate the plugin in <a href="/wp-admin/plugins.php#timber">/wp-admin/plugins.php</a></p></div>';
+		});
 		return;
 	}
 
