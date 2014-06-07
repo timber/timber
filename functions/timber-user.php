@@ -82,6 +82,7 @@ class TimberUser extends TimberCore
             }
             $this->ID = $uid;
             $this->id = $uid;
+            $this->name = $this->name();
             $this->import_custom();
         }
     }
