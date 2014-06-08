@@ -21,6 +21,7 @@ class TimberPost extends TimberCore
     public $post_date;
     public $post_title;
     public $post_content;
+    public $display_date;
 
 
     /**

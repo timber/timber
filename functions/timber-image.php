@@ -15,6 +15,7 @@ class TimberImage extends TimberCore
     public $file;
     public $sizes = array();
     public $post_parent;
+    public $caption;
 
     /**
      * @param int $iid

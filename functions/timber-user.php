@@ -11,6 +11,7 @@ class TimberUser extends TimberCore
     public $display_name;
     public $name;
     public $user_nicename;
+    public $id;
 
     /**
      * @param int|bool $uid
