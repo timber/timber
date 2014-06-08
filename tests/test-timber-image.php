@@ -117,7 +117,8 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testInitFromURL(){
 		$destination_path = $this->copyTestImage();
-		$destination_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $destination_path);
+		$destination_path = TimberURLHelper::get_rel_path($destination_path);
+		$destination_url = 'http://'.$_SERVER['HTTP_HOST'].$destination_path;
 		$image = new TimberImage($destination_url);
 		$this->assertEquals($destination_url, $image->get_src());
 		$this->assertEquals($destination_url, (string)$image);
