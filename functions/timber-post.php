@@ -879,7 +879,8 @@ class TimberPost extends TimberCore
         return $this->get_field($field_name);
     }
 
-	/**
+    /**
+     * @param string $date_format
      * @return string
      */
     public function modified_date($date_format = '') {
@@ -887,6 +888,7 @@ class TimberPost extends TimberCore
     }
 
     /**
+     * @param string $time_format
      * @return string
      */
     public function modified_time($time_format = '') {
