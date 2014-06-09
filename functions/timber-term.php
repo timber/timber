@@ -3,15 +3,15 @@
 class TimberTerm extends TimberCore
 {
 
-    public $taxonomy;
-    public $_children;
     public $PostClass = 'TimberPost';
     public $TermClass = 'TimberTerm';
-    public $object_type = 'term';
 
+    public $object_type = 'term';
     public static $representation = 'term';
 
+    public $_children;
     public $name;
+    public $taxonomy;
 
     /**
      * @param int $tid

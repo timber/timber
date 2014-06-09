@@ -3,13 +3,13 @@
 class TimberTheme extends TimberCore
 {
 
-    public $name;
-    public $slug;
-    public $path;
-    public $uri;
     public $link;
-    public $parent_slug;
+    public $name;
+    public $path;
     public $parent;
+    public $parent_slug;
+    public $slug;
+    public $uri;
 
     /**
      * @param string $slug

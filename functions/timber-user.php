@@ -3,16 +3,16 @@
 class TimberUser extends TimberCore
 {
 
-    public $_link;
     public $object_type = 'user';
-
     public static $representation = 'user';
 
+    public $_link;
+
     public $display_name;
+    public $id;
     public $name;
     public $user_nicename;
-    public $id;
-
+    
     /**
      * @param int|bool $uid
      */
