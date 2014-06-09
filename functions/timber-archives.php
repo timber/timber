@@ -65,7 +65,7 @@ class TimberArchives extends TimberCore
      * @param string $join
      * @param string $where
      * @param string $order
-     * @param string $limit
+     * @param int $limit
      * @param bool $nested
      * @return array
      */
