@@ -100,6 +100,15 @@ class TimberTwig
             }
             return new $TermClass($pid);
         }));
+        $twig->addFunction(new Twig_SimpleFunction('TimberUser', function ($pid, $UserClass = 'TimberUser') {
+            if (is_array($pid) && !TimberHelper::is_array_assoc($pid)) {
+                foreach ($pid as &$p) {
+                    $p = new $UserClass($p);
+                }
+                return $pid;
+            }
+            return new $UserClass($pid);
+        }));
 
         /* bloginfo and translate */
         $twig->addFunction('bloginfo', new Twig_SimpleFunction('bloginfo', function ($show = '', $filter = 'raw') {
@@ -237,11 +246,9 @@ class TimberTwig
         }
     }
 
-
 }
 
-
-
+new TimberTwig();
 
 
 /* deprecated */
@@ -256,5 +263,3 @@ function render_twig_string($string, $data = array()) {
 }
 
 
-
-new TimberTwig();

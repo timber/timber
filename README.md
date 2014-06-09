@@ -13,7 +13,7 @@ This cleans-up your theme code so, for example, your php file can focus on being
 
 This is what Timber's `.twig` files look like:
 
-```html
+```html+django
 {% extends "base.twig" %}
 {% block content %}
 <h1 class="big-title">{{foo}}</h1>
