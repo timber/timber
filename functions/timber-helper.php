@@ -129,13 +129,13 @@ class TimberHelper
     }
 
     /**
-     * @param string $seperator
+     * @param string $separator
      * @param string $seplocation
      * @return string
      */
-    public static function get_wp_title($seperator = ' ', $seplocation = 'left') {
-        $seperator = apply_filters('timber_wp_title_seperator', $seperator);
-        return trim(wp_title($seperator, false, $seplocation));
+    public static function get_wp_title($separator = ' ', $seplocation = 'left') {
+        $separator = apply_filters('timber_wp_title_seperator', $separator);
+        return trim(wp_title($separator, false, $seplocation));
     }
 
     /* Text Utilities
@@ -518,7 +518,7 @@ class TimberHelper
         return $page_links;
     }
 
-    /* LEGACY These have since been re-organized; but keeping linkages for backwards-compatability */
+    /* LEGACY These have since been re-organized; but keeping linkages for backwards-compatibility */
 
     public static function get_image_path($iid) {
         return TimberImageHelper::get_image_path($iid);
@@ -580,5 +580,5 @@ class TimberHelper
 
 class WPHelper extends TimberHelper
 {
-    //for backwards compat, will remove eventually
+    //for backwards compatibility, will remove eventually
 }

@@ -5,24 +5,24 @@ class TimberPost extends TimberCore
 
     public $ImageClass = 'TimberImage';
     public $PostClass = 'TimberPost';
-    public $_can_edit;
-    public $_get_terms;
-    public $_content;
+
     public $object_type = 'post';
-
-    public $_custom_imported = false;
-
     public static $representation = 'post';
 
-    public $post_type;
+    public $_can_edit;
+    public $_custom_imported = false;
+    public $_content;
+    public $_get_terms;
+    
     public $class;
+    public $display_date;
     public $id;
-    public $post_parent;
-    public $post_date;
-    public $post_title;
     public $post_content;
-
-
+    public $post_date;
+    public $post_parent;
+    public $post_title;
+    public $post_type;
+   
     /**
      *  If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
      * @param mixed $pid
@@ -772,7 +772,6 @@ class TimberPost extends TimberCore
         $ret['children'] = $this->children();
         $ret['comments'] = $this->comments();
         $ret['content'] = $this->content();
-        $ret['display_date'] = $this->display_date();
         $ret['edit_link'] = $this->edit_link();
         $ret['format'] = $this->format();
         $ret['link'] = $this->link();
@@ -879,7 +878,8 @@ class TimberPost extends TimberCore
         return $this->get_field($field_name);
     }
 
-	/**
+    /**
+     * @param string $date_format
      * @return string
      */
     public function modified_date($date_format = '') {
@@ -887,6 +887,7 @@ class TimberPost extends TimberCore
     }
 
     /**
+     * @param string $time_format
      * @return string
      */
     public function modified_time($time_format = '') {

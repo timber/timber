@@ -22,30 +22,34 @@ class TimberTwig
 
         /* debugging filters */
         $twig->addFilter('docs', new Twig_Filter_function('twig_object_docs'));
-        $twig->addFilter('get_class', new Twig_Filter_Function('twig_get_class'));
-        $twig->addFilter('get_type', new Twig_Filter_Function('twig_get_type'));
-        $twig->addFilter('print_r', new Twig_Filter_Function('twig_print_r'));
-        $twig->addFilter('print_a', new Twig_Filter_Function('twig_print_a'));
+        $twig->addFilter('get_class', new Twig_Filter_Function('get_class'));
+        $twig->addFilter('get_type', new Twig_Filter_Function('get_type'));
+        $twig->addFilter('print_r', new Twig_Filter_Function(function($arr){
+            return print_r($arr, true);
+        }));
+        $twig->addFilter('print_a', new Twig_Filter_Function(function($arr){
+            return '<pre>' . self::object_docs($arr, true) . '</pre>';
+        }));
 
         /* other filters */
         $twig->addFilter('stripshortcodes', new Twig_Filter_Function('strip_shortcodes'));
         $twig->addFilter('array', new Twig_Filter_Function(array($this, 'to_array')));
         $twig->addFilter('string', new Twig_Filter_Function(array($this, 'to_string')));
-        $twig->addFilter('excerpt', new Twig_Filter_Function('twig_make_excerpt'));
+        $twig->addFilter('excerpt', new Twig_Filter_Function('wp_trim_words'));
         $twig->addFilter('function', new Twig_Filter_Function(array($this, 'exec_function')));
         $twig->addFilter('path', new Twig_Filter_Function('twig_get_path'));
         $twig->addFilter('pretags', new Twig_Filter_Function(array($this, 'twig_pretags')));
         $twig->addFilter('sanitize', new Twig_Filter_Function('sanitize_title'));
-        $twig->addFilter('shortcodes', new Twig_Filter_Function('twig_shortcodes'));
-        $twig->addFilter('time_ago', new Twig_Filter_Function('twig_time_ago'));
+        $twig->addFilter('shortcodes', new Twig_Filter_Function('do_shortcode'));
+        $twig->addFilter('time_ago', new Twig_Filter_Function(array($this, 'time_ago')));
         $twig->addFilter('twitterify', new Twig_Filter_Function(array('TimberHelper', 'twitterify')));
         $twig->addFilter('twitterfy', new Twig_Filter_Function(array('TimberHelper', 'twitterify')));
-        $twig->addFilter('wp_body_class', new Twig_Filter_Function('twig_body_class'));
+        $twig->addFilter('wp_body_class', new Twig_Filter_Function(array($this, 'body_class')));
         $twig->addFilter('wpautop', new Twig_Filter_Function('wpautop'));
         $twig->addFilter('relative', new Twig_Filter_Function(function ($link) {
             return TimberURLHelper::get_rel_url($link, true);
         }));
-        $twig->addFilter('date', new Twig_Filter_Function('twig_intl_date'));
+        $twig->addFilter('date', new Twig_Filter_Function(array($this, 'intl_date')));
 
         $twig->addFilter('truncate', new Twig_Filter_Function(function ($text, $len) {
             return TimberHelper::trim_words($text, $len);
@@ -95,6 +99,15 @@ class TimberTwig
                 return $pid;
             }
             return new $TermClass($pid);
+        }));
+        $twig->addFunction(new Twig_SimpleFunction('TimberUser', function ($pid, $UserClass = 'TimberUser') {
+            if (is_array($pid) && !TimberHelper::is_array_assoc($pid)) {
+                foreach ($pid as &$p) {
+                    $p = new $UserClass($p);
+                }
+                return $pid;
+            }
+            return new $UserClass($pid);
         }));
 
         /* bloginfo and translate */
@@ -167,108 +180,78 @@ class TimberTwig
     }
 
     /**
-     * @param array $locs
-     * @return array
+     * @param mixed $body_classes
+     * @return string
      */
-    function add_dir_name_to_locations($locs) {
-        $locs = array_filter($locs);
-        foreach ($locs as &$loc) {
-            $loc = trailingslashit($loc) . trailingslashit(self::$dir_name);
+    function body_class($body_classes) {
+        ob_start();
+        if (is_array($body_classes)) {
+            $body_classes = explode(' ', $body_classes);
         }
-        return $locs;
+        body_class($body_classes);
+        $return = ob_get_contents();
+        ob_end_clean();
+        return $return;
     }
 
     /**
-     * @param string $file
-     * @param array|string $dirs
-     * @return bool
+     * @param string $date
+     * @param string $format (optional)
+     * @return string
      */
-    function template_exists($file, $dirs) {
-        if (is_string($dirs)) {
-            $dirs = array($dirs);
+    function intl_date($date, $format = null) {
+        if ($format === null) {
+            $format = get_option('date_format');
         }
-        foreach ($dirs as $dir) {
-            $look_for = trailingslashit($dir) . trailingslashit(self::$dir_name) . $file;
-            if (file_exists($look_for)) {
-                return true;
-            }
+        return date_i18n($format, strtotime($date));
+    }
+
+    //debug
+
+    /**
+     * @param mixed $obj
+     * @param bool $methods
+     * @return string
+     */
+    function object_docs($obj, $methods = true) {
+        $class = get_class($obj);
+        $properties = (array)$obj;
+        if ($methods) {
+            /** @var array $methods */
+            $methods = $obj->get_method_values();
         }
-        return false;
+        $rets = array_merge($properties, $methods);
+        ksort($rets);
+        $str = print_r($rets, true);
+        $str = str_replace('Array', $class . ' Object', $str);
+        return $str;
+    }
+
+    /**
+     * @param int|string $from
+     * @param int|string $to
+     * @param string $format_past
+     * @param string $format_future
+     * @return string
+     */
+    function time_ago($from, $to = null, $format_past = '%s ago', $format_future = '%s from now') {
+        $to = $to === null ? time() : $to;
+        $to = is_int($to) ? $to : strtotime($to);
+        $from = is_int($from) ? $from : strtotime($from);
+
+        if ($from < $to) {
+            return sprintf($format_past, human_time_diff($from, $to));
+        } else {
+            return sprintf($format_future, human_time_diff($to, $from));
+        }
     }
 
 }
 
-/**
- * @param string $text
- * @return string
- */
-function twig_shortcodes($text) {
-    return do_shortcode($text);
-    //apply_filters('the_content', ($text));
-}
-
-/**
- * @param mixed $this
- * @return string
- */
-function twig_get_class($this) {
-    return get_class($this);
-}
-
-/**
- * @param mixed $this
- * @return string
- */
-function twig_get_type($this) {
-    return gettype($this);
-}
+new TimberTwig();
 
 
-/**
- * @param int|string $from
- * @param int|string $to
- * @param string $format_past
- * @param string $format_future
- * @return string
- */
-function twig_time_ago($from, $to = null, $format_past = '%s ago', $format_future = '%s from now') {
-    $to = $to === null ? time() : $to;
-    $to = is_int($to) ? $to : strtotime($to);
-    $from = is_int($from) ? $from : strtotime($from);
-
-    if ($from < $to) {
-        return sprintf($format_past, human_time_diff($from, $to));
-    } else {
-        return sprintf($format_future, human_time_diff($to, $from));
-    }
-}
-
-/**
- * @param mixed $body_classes
- * @return string
- */
-function twig_body_class($body_classes) {
-    ob_start();
-    if (is_array($body_classes)) {
-        $body_classes = explode(' ', $body_classes);
-    }
-    body_class($body_classes);
-    $return = ob_get_contents();
-    ob_end_clean();
-    return $return;
-}
-
-/**
- * @param string $date
- * @param string $format (optional)
- * @return string
- */
-function twig_intl_date($date, $format = null) {
-    if ($format === null) {
-        $format = get_option('date_format');
-    }
-    return date_i18n($format, strtotime($date));
-}
+/* deprecated */
 
 /**
  * @param string $string
@@ -276,85 +259,7 @@ function twig_intl_date($date, $format = null) {
  * @return string
  */
 function render_twig_string($string, $data = array()) {
-    $timber_loader = new TimberLoader();
-    $timber_loader->get_twig();
-    $loader = new Twig_Loader_String();
-    $twig = new Twig_Environment($loader);
-    return $twig->render($string, $data);
+    return Timber::render_string($string, $data);
 }
 
-/**
- * @param array $backtrace
- * @return string
- */
-function get_calling_script_dir($backtrace) {
-    $caller = $backtrace[0]['file'];
-    $pathinfo = pathinfo($caller);
-    $dir = $pathinfo['dirname'];
-    return $dir . '/';
-}
 
-//deprecated
-
-/**
- * @param int $aid
- * @return string
- */
-function twig_get_src_from_attachment_id($aid) {
-    return TimberImageHelper::get_image_path($aid);
-}
-
-/**
- * @param string $url
- * @return mixed
- */
-function twig_get_path($url) {
-    $url = parse_url($url);
-    return $url['path'];
-}
-
-/**
- * @param string $text
- * @param int $length
- * @return string
- */
-function twig_make_excerpt($text, $length = 55) {
-    return wp_trim_words($text, $length);
-}
-
-/**
- * @param array $arr
- * @return mixed
- */
-function twig_print_r($arr) {
-    return print_r($arr, true);
-}
-
-/**
- * @param array $arr
- * @return string
- */
-function twig_print_a($arr) {
-    return '<pre>' . twig_object_docs($arr, true) . '</pre>';
-}
-
-/**
- * @param mixed $obj
- * @param bool $methods
- * @return string
- */
-function twig_object_docs($obj, $methods = true) {
-    $class = get_class($obj);
-    $properties = (array)$obj;
-    if ($methods) {
-        /** @var array $methods */
-        $methods = $obj->get_method_values();
-    }
-    $rets = array_merge($properties, $methods);
-    ksort($rets);
-    $str = print_r($rets, true);
-    $str = str_replace('Array', $class . ' Object', $str);
-    return $str;
-}
-
-new TimberTwig();
