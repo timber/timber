@@ -41,7 +41,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
-= 0.19.1
+= 0.19.1 =
 * Removed .git folder hiding in php-router
 * Added support for WooCommerce and other plugins in starter theme (thanks @jamesagreenleaf)
 * Starter theme now based on OO-style TimberSite convention
