@@ -207,6 +207,26 @@
 			$post = new TimberPost($pid);
 			$this->assertEquals('user-1', $post->author()->slug());
 			$this->assertEquals('Jared Novack', $post->author()->name());
+			$template = 'By {{post.author}}';
+			$authorCompile = Timber::compile_string($template, array('post' => $post));
+			$template = 'By {{post.author.name}}';
+			$authorNameCompile = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals($authorCompile, $authorNameCompile);
+			$this->assertEquals('By Jared Novack', $authorCompile);
+		}
+
+		function testPostAuthorInTwig(){
+			$author_id = $this->factory->user->create();
+			$pid = $this->factory->post->create(array('post_author' => $author_id));
+			$post = new TimberPost($pid);
+			$this->assertEquals('user-1', $post->author()->slug());
+			$this->assertEquals('User 1', $post->author()->name());
+			$template = 'By {{post.author}}';
+			$authorCompile = Timber::compile_string($template, array('post' => $post));
+			$template = 'By {{post.author.name}}';
+			$authorNameCompile = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals($authorCompile, $authorNameCompile);
+			$this->assertEquals('By User 1', $authorCompile);
 		}
 
 		function testPostModifiedAuthor() {
