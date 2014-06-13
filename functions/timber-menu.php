@@ -112,10 +112,12 @@ class TimberMenu extends TimberCore
         $menu = array();
         _wp_menu_item_classes_by_context($items);
         foreach ($items as $item) {
-            $index[$item->ID] = new $this->MenuItemClass($item);
+            if(isset($item->ID)){
+                $index[$item->ID] = new $this->MenuItemClass($item);
+            }
         }
         foreach ($index as $item) {
-            if ($item->menu_item_parent && isset($index[$item->menu_item_parent])) {
+            if (isset($item->menu_item_parent) && $item->menu_item_parent && isset($index[$item->menu_item_parent])) {
                 $index[$item->menu_item_parent]->add_child($item);
             } else {
                 $menu[] = $item;
@@ -174,7 +176,10 @@ class TimberMenuItem extends TimberCore
         if (isset($this->title)) {
             return $this->title;
         }
-        return $this->_name;
+        if (isset($this->_name)){
+            return $this->_name;
+        }
+        return '';
     }
 
     /**
