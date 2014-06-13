@@ -216,7 +216,7 @@
 		}
 
 		function testPostAuthorInTwig(){
-			$author_id = $this->factory->user->create();
+			$author_id = $this->factory->user->create(array('display_name' => 'User 1'));
 			$pid = $this->factory->post->create(array('post_author' => $author_id));
 			$post = new TimberPost($pid);
 			$this->assertEquals('user-1', $post->author()->slug());
