@@ -444,7 +444,7 @@ class Timber {
     /*  Routes
     ================================ */
 
-    public function init_routes() {
+    function init_routes() {
         global $timber;
         if (isset($timber->router)) {
             $route = $timber->router->matchCurrentRequest();

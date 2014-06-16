@@ -64,7 +64,7 @@ class TimberPostGetter
      * @param string $PostClass
      * @return array
      */
-    public static function get_posts_from_slug($slug, $PostClass) {
+    static function get_posts_from_slug($slug, $PostClass) {
         global $wpdb;
         $query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s", $slug);
         if (strstr($slug, '#')) {
@@ -88,7 +88,7 @@ class TimberPostGetter
      * @param $query
      * @return int
      */
-    public function get_pid($query) {
+    static function get_pid($query) {
         $post = self::get_posts($query);
         return $post->ID;
     }
@@ -97,7 +97,7 @@ class TimberPostGetter
      * @param array|string $query
      * @return array
      */
-    public static function get_pids($query = null) {
+    static function get_pids($query = null) {
         $posts = self::get_posts($query);
         $pids = array();
         foreach ($posts as $post) {
@@ -111,7 +111,7 @@ class TimberPostGetter
     /**
      * @return array
      */
-    public static function get_pids_from_loop() {
+    static function get_pids_from_loop() {
         if (!self::wp_query_has_posts()) { return array(); }
 
         global $wp_query;
@@ -124,7 +124,7 @@ class TimberPostGetter
      * @param string $PostClass
      * @return array
      */
-    public static function get_posts_from_loop($PostClass) {
+    static function get_posts_from_loop($PostClass) {
         $results = self::get_pids_from_loop();
         return self::handle_post_results($results, $PostClass);
     }
@@ -134,7 +134,7 @@ class TimberPostGetter
      * @param string $PostClass
      * @return array
      */
-	 public static function get_posts_from_wp_query($query = array(), $PostClass = 'TimberPost') {
+	static function get_posts_from_wp_query($query = array(), $PostClass = 'TimberPost') {
         $results = get_posts($query);
         return self::handle_post_results($results, $PostClass);
     }
@@ -144,7 +144,7 @@ class TimberPostGetter
      * @param string $PostClass
      * @return array|null
      */
-    public static function get_posts_from_array_of_ids($query = array(), $PostClass = 'TimberPost') {
+    static function get_posts_from_array_of_ids($query = array(), $PostClass = 'TimberPost') {
         if (!is_array($query) || !count($query)) {
             return null;
         }
@@ -157,7 +157,7 @@ class TimberPostGetter
      * @param string $PostClass
      * @return array
      */
-    public static function handle_post_results($results, $PostClass = 'TimberPost') {
+    static function handle_post_results($results, $PostClass = 'TimberPost') {
         $posts = array();
         foreach ($results as $rid) {
             $PostClassUse = $PostClass;
@@ -185,7 +185,7 @@ class TimberPostGetter
     /**
      * @return bool
      */
-    public static function wp_query_has_posts() {
+    static function wp_query_has_posts() {
         global $wp_query;
         return ($wp_query && property_exists($wp_query, 'posts') && $wp_query->posts);
     }
@@ -194,7 +194,7 @@ class TimberPostGetter
      * @param array $posts
      * @return array
      */
-    public static function maybe_set_preview( $posts ) {
+    static function maybe_set_preview( $posts ) {
         if ( is_array( $posts ) && isset( $_GET['preview'] ) && $_GET['preview']
                && isset( $_GET['preview_id'] ) && $_GET['preview_id']
                && current_user_can( 'edit_post', $_GET['preview_id'] ) ) {
@@ -232,7 +232,7 @@ class TimberPostGetter
     /**
      * @return bool|int
      */
-    public static function loop_to_id() {
+    static function loop_to_id() {
         if (!self::wp_query_has_posts()) { return false; }
 
         global $wp_query;
@@ -250,7 +250,7 @@ class TimberPostGetter
      * @param string|array $arg
      * @return bool
      */
-    public static function is_post_class_or_class_map($arg){
+    static function is_post_class_or_class_map($arg){
         if (is_string($arg) && class_exists($arg)) {
             return true;
         }
