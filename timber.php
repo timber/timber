@@ -113,7 +113,7 @@ class Timber {
      */
     public static function get_posts($query = false, $PostClass = 'TimberPost'){
         $posts = TimberPostGetter::get_posts($query, $PostClass);
-        return self::maybe_set_preview( $posts );
+        return TimberPostGetter::maybe_set_preview( $posts );
     }
 
     /**
