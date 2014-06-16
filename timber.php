@@ -233,7 +233,7 @@ class Timber {
      * @param string $TermClass
      * @return mixed
      */
-    public static function get_terms($args, $maybe_args = array(), $TermClass = 'TimberTerm'){
+    public static function get_terms($args = null, $maybe_args = array(), $TermClass = 'TimberTerm'){
         return TimberTermGetter::get_terms($args, $maybe_args, $TermClass);
     }
 

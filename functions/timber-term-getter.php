@@ -9,7 +9,7 @@ class TimberTermGetter
      * @param string $TermClass
      * @return mixed
      */
-    public static function get_terms($args, $maybe_args = array(), $TermClass = 'TimberTerm'){
+    public static function get_terms($args = null, $maybe_args = array(), $TermClass = 'TimberTerm'){
         if (is_string($maybe_args) && !strstr($maybe_args, '=')){
             //the user is sending the $TermClass in the second argument
             $TermClass = $maybe_args;
@@ -42,10 +42,10 @@ class TimberTermGetter
                 $parsed->args = array_merge($parsed->args, $maybe_args);
             }
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
-        } else {
-            //no clue, what you talkin' bout?
-            return null;
+        } else if (is_null($args)) {
+            return self::handle_term_query(get_taxonomies(), array(), $TermClass);
         }
+        return null;
     }
 
     /**
@@ -57,6 +57,12 @@ class TimberTermGetter
     public static function handle_term_query($taxonomies, $args, $TermClass){
         if (!isset($args['hide_empty'])){
             $args['hide_empty'] = false;
+        }
+        if (isset($args['term_id']) && is_int($args['term_id'])){
+            $args['term_id'] = array($args['term_id']);
+        }
+        if (isset($args['term_id'])){
+            $args['include'] = $args['term_id'];
         }
         $terms = get_terms($taxonomies, $args);
         foreach($terms as &$term){
@@ -111,6 +117,8 @@ class TimberTermGetter
                 $ret->taxonomies = array($ret->taxonomies);
             }
             $ret->taxonomies = self::correct_taxonomy_names($ret->taxonomies);
+        } else {
+            $ret->taxonomies = get_taxonomies();
         }
         return $ret;
     }
