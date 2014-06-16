@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.19.1
+Stable tag: 0.19.2
 Tested up to: 3.9
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -16,7 +16,7 @@ Timber cleans-up your theme code so, for example, your php file can focus on bei
 Once Timber is installed and activated in your plugin directory, it gives any WordPress theme the ability to take advantage of the power of Twig and other Timber features.
 
 ### Looking for docs?
-* **[Project Page](http://timber.upstatement.com)**
+* **[Project Page](http://upstatement.com/timber)**
 * [Timber Documentation](https://github.com/jarednova/timber/wiki/)
 * [Twig Reference (from SensioLabs)](http://twig.sensiolabs.org/doc/templates.html)
 _Twig is the template language powering Timber; if you need a little background on what a template language is, [Twig's homepage has an overview](http://twig.sensiolabs.org/)_
@@ -33,7 +33,7 @@ Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https:
 Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because not everyone knows the ins-and-outs of the_loop(), WordPress codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .twig files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
 
 #### Want to read more?
-* [Timber on WordPress.org](http://wordpress.org/plugins/timber-library/)
+* [Timber on GitHub](http://github.com/jarednova/timber/)
 * [Timber Overview on Tidy Repo](http://www.wpmayor.com/articles/timber-templating-language-wordpress/)
 * ["What is WordPress Missing? A Template Language" on Torque](http://torquemag.io/what-is-wordpress-lacking-a-template-language/)
 
@@ -41,7 +41,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
-= 0.19.1
+= 0.19.2 =
+* Fixed issue with {{post.author.name}}
+* Bug fixes and code organization (@hsz, @jaredNova)
+
+= 0.19.1 =
 * Removed .git folder hiding in php-router
 * Added support for WooCommerce and other plugins in starter theme (thanks @jamesagreenleaf)
 * Starter theme now based on OO-style TimberSite convention
