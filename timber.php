@@ -223,6 +223,15 @@ class Timber {
         return TimberPostGetter::loop_to_id();
     }
 
+    /**
+     * @param string $PostClass
+     * @return bool|null
+     * @deprecated since long ago
+     */
+    public static function loop_to_posts($PostClass = 'TimberPost') {
+        return self::get_posts(false, $PostClass);
+    }
+
 
     /* Term Retrieval
     ================================ */
