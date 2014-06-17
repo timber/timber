@@ -38,7 +38,9 @@ class TimberMenu extends TimberCore
      */
     private function init($menu_id) {
         $menu = wp_get_nav_menu_items($menu_id);
-        $menu = self::order_children($menu);
+        if (is_array($menu)){
+            $menu = self::order_children($menu);
+        }
         $this->items = $menu;
         $menu_info = wp_get_nav_menu_object($menu_id);
         $this->import($menu_info);
@@ -110,7 +112,6 @@ class TimberMenu extends TimberCore
     function order_children($items) {
         $index = array();
         $menu = array();
-        _wp_menu_item_classes_by_context($items);
         foreach ($items as $item) {
             if(isset($item->ID)){
                 $index[$item->ID] = new $this->MenuItemClass($item);
