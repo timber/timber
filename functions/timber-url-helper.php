@@ -208,10 +208,8 @@ class TimberURLHelper
             //count from end
             $i = count($newargs) + $i;
         }
-        if (is_int($newargs)) {
-            if (isset($newargs[$i])) {
-                return $newargs[$i];
-            }
+        if (isset($newargs[$i])) {
+            return $newargs[$i];
         }
     }
 

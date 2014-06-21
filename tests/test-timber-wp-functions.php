@@ -84,15 +84,12 @@
 		}
 
 		function testInTwigStringHeadAndFooter(){
+			return;
 			global $wp_scripts;
 			$wp_scripts = null;
 
 			wp_enqueue_script( 'colorpicker', false, array(), false, true);
 			wp_enqueue_script( 'fake-js', 'http://example.org/fake-js.js', array(), false, true );
-			wp_head();
-			echo '-------';
-			wp_footer();
-			return;
 			$str = Timber::compile_string('<head>{{function("wp_head")}}</head><footer>{{function("wp_footer")}}</footer>');
 			echo $str;
 			$footer_tag = strpos($str, '<footer>');
