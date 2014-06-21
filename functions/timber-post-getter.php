@@ -10,6 +10,9 @@ class TimberPostGetter
      */
     public static function get_post($query = false, $PostClass = 'TimberPost') {
         $posts = self::get_posts( $query, $PostClass );
+        error_log('--------');
+        error_log(print_r($posts, true));
+        error_log('--------');
         if ( $post = reset( $posts ) ) {
             return $post;
         }
@@ -27,7 +30,6 @@ class TimberPostGetter
      * @return array|bool|null
      */
     public static function query_posts($query = false, $PostClass = 'TimberPost'){
-        
         if (self::is_post_class_or_class_map($query)) {
             $PostClass = $query;
             $query = false;
@@ -43,62 +45,12 @@ class TimberPostGetter
             return new TimberPostsCollection( $query, $PostClass );
         } else {
             // We have a query (of sorts) to work with
-            return new TimberQueryIterator( $query, $PostClass );
+            $tqi = new TimberQueryIterator( $query, $PostClass );
+            self::maybe_set_preview($tqi->get_posts(false));
+            
+            return $tqi;
         }
-
-        /*
-        if (TimberHelper::is_array_assoc($query) || (is_string($query) && strstr($query, '='))) {
-            // we have a regularly formed WP query string or array to use
-            $posts = self::get_posts_from_wp_query($query, $PostClass);
-        } else if (is_string($query) && !is_integer($query)) {
-            // we have what could be a post name to pull out
-            $posts = self::get_posts_from_slug($query, $PostClass);
-        } else if (is_array($query) && count($query) && (is_integer($query[0]) || is_string($query[0]))) {
-            // we have a list of pids (post IDs) to extract from
-            $posts = self::get_posts_from_array_of_ids($query, $PostClass);
-        } else if (is_array($query) && count($query) && isset($query[0]) && is_object($query[0])) {
-            // maybe its an array of post objects that already have data
-            $posts = self::handle_post_results($query, $PostClass);
-        } else if (self::wp_query_has_posts()) {
-            //lets just use the default WordPress current query
-            $posts = self::get_posts_from_loop($PostClass);
-        } else if (!$query) {
-            //okay, everything failed lets just return some posts so that the user has something to work with
-            //this turns out to cause all kinds of awful behavior
-            //return self::get_posts_from_wp_query(array(), $PostClass);
-            return null;
-        } else {
-            TimberHelper::error_log('I have failed you! in timber.php::94');
-            TimberHelper::error_log($query);
-            return $query;
-        }*/
-
         return self::maybe_set_preview( $posts );
-    }
-
-    /**
-     * @param string $slug
-     * @param string $PostClass
-     * @return array
-     */
-    static function get_posts_from_slug($slug, $PostClass) {
-        global $wpdb;
-        $query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s", $slug);
-        if (strstr($slug, '#')) {
-            //we have a post_type directive here
-            $q = explode('#', $slug);
-            $q = array_filter($q);
-            $q = array_values($q);
-            if (count($q) == 1){
-                $query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s", $q[0]);
-            } else if (count($q) == 2){
-                $query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = %s LIMIT 1", $q[1], $q[0]);
-            } else {
-                TimberHelper::error_log('something we dont understand about '.$slug);
-            }
-        }
-        $results = $wpdb->get_col($query);
-        return self::handle_post_results($results, $PostClass);
     }
 
     /**
@@ -215,7 +167,6 @@ class TimberPostGetter
         if ( is_array( $posts ) && isset( $_GET['preview'] ) && $_GET['preview']
                && isset( $_GET['preview_id'] ) && $_GET['preview_id']
                && current_user_can( 'edit_post', $_GET['preview_id'] ) ) {
-
             // No need to check the nonce, that already happened in _show_post_preview on init
 
             $preview_id = $_GET['preview_id'];
@@ -223,7 +174,6 @@ class TimberPostGetter
                 if ( is_object( $post ) && $post->ID == $preview_id ) {
                     // Based on _set_preview( $post ), but adds import_custom
                     $preview = wp_get_post_autosave( $preview_id );
-
                     if ( is_object($preview) ) {
 
                         $preview = sanitize_post($preview);
@@ -238,6 +188,8 @@ class TimberPostGetter
                 }
             }
 
+        } else {
+            error_log('sorry, else');
         }
 
         return $posts;
