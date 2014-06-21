@@ -39,5 +39,22 @@
             $this->assertTrue(TimberURLHelper::is_external($external));
         }
 
+        function testDownloadURL(){
+            $url = 'http://i1.nyt.com/images/misc/nytlogo379x64.gif';
+            $result = TimberURLHelper::download_url($url);
+            $this->assertStringStartsWith('/tmp/nytlogo379x64', $result);
+            $this->assertStringEndsWith('.tmp', $result);
+        }
+
+        function testGetParams(){
+            $_SERVER['REQUEST_URI'] = 'http://example.org/blog/post/news/2014/whatever';
+            $params = TimberURLHelper::get_params();
+            $this->assertEquals(7, count($params));
+            $whatever = TimberURLHelper::get_params(-1);
+            $blog = TimberURLHelper::get_params(2);
+            $this->assertEquals('whatever', $whatever);
+            $this->assertEquals('blog', $blog);
+        }
+
 
     }

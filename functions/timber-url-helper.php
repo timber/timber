@@ -164,8 +164,9 @@ class TimberURLHelper
      * @param string $url
      * @param int $timeout
      * @return string|WP_Error
+     * @deprecated since 0.20.0
      */
-    public static function download_url($url, $timeout = 300) {
+    static function download_url($url, $timeout = 300) {
         if (!$url) {
             return new WP_Error('http_no_url', __('Invalid URL Provided.'));
         }
@@ -192,7 +193,7 @@ class TimberURLHelper
      * @param int $i
      * @return array
      */
-    public static function get_params($i = -1) {
+    public static function get_params($i = false) {
         $args = explode('/', trim(strtolower($_SERVER['REQUEST_URI'])));
         $newargs = array();
         foreach ($args as $arg) {
@@ -200,12 +201,18 @@ class TimberURLHelper
                 $newargs[] = $arg;
             }
         }
-        if ($i > -1) {
+        if ($i === false){
+            return $newargs;
+        }
+        if ($i < 0){
+            //count from end
+            $i = count($newargs) + $i;
+        }
+        if (is_int($newargs)) {
             if (isset($newargs[$i])) {
                 return $newargs[$i];
             }
         }
-        return $newargs;
     }
 
 }
