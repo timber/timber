@@ -120,12 +120,11 @@
 			$struc = false;
 			$wp_rewrite->permalink_structure = $struc;
 			update_option('permalink_structure', $struc);
-			$post_id = $this->factory->post->create();
+			$post_id = $this->factory->post->create(array('post_content' => 'this is super dooper trooper long words'));
 			$post = new TimberPost($post_id);
 
 			// no excerpt
 			$post->post_excerpt = '';
-			$post->post_content = 'this is super dooper trooper long words';
 			$preview = $post->get_preview(3);
 			$this->assertRegExp('/this is super &hellip;  <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Read More<\/a>/', $preview);
 
@@ -142,7 +141,7 @@
 			// content with <!--more--> tag, force false
 			$post->post_content = 'this is super dooper<!--more--> trooper long words';
 			$preview = $post->get_preview(2, false, '');
-			$this->assertEquals($preview, 'this is super dooper');
+			$this->assertEquals('this is super dooper', $preview);
 		}
 
 		function testTitle(){

@@ -127,8 +127,8 @@ class TimberTest extends WP_UnitTestCase {
         $_GET['preview'] = true;
         $_GET['preview_id'] = $post_id;
 
-        $the_post = Timber::get_post( $post_id );
-
+        //$the_post = Timber::get_post( $post_id );
+        $the_post = new TimberPost($post_id);
         $this->assertEquals( 'autosave_content', $the_post->post_content );
     }
 
