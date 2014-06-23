@@ -23,4 +23,30 @@
             $this->go_to( site_url( '?p='.$post_id ) );
         	$this->assertEquals('My New Post', TimberHelper::get_wp_title());
         }
+
+        function testCloseTags(){
+            $str = '<a href="http://wordpress.org">Hi!';
+            $closed = TimberHelper::close_tags($str);
+            $this->assertEquals($str.'</a>', $closed);
+        }
+
+        function testArrayToObject(){
+            $arr = array('jared' => 'super cool');
+            $obj = TimberHelper::array_to_object($arr);
+            $this->assertEquals('super cool', $obj->jared);
+        }
+
+        function testGetObjectIndexByProperty(){
+            $obj1 = new stdClass();
+            $obj1->name = 'mark';
+            $obj1->skill = 'acro yoga';
+            $obj2 = new stdClass();
+            $obj2->name = 'austin';
+            $obj2->skill = 'cooking';
+            $arr = array($obj1, $obj2);
+            $index = TimberHelper::get_object_index_by_property($arr, 'skill', 'cooking');
+            $this->assertEquals(1, $index);
+            $obj = TimberHelper::get_object_by_property($arr, 'skill', 'cooking');
+            $this->assertEquals('austin', $obj->name);
+        }
     }
