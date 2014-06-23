@@ -45,7 +45,7 @@ class TimberFunctionWrapper
         $args = $this->_parse_args(func_get_args(), $this->_args);
 
         if ($this->_use_ob) {
-            return WPHelper::ob_function($this->_function, $args);
+            return TimberHelper::ob_function($this->_function, $args);
         } else {
             return (string)call_user_func_array($this->_function, $args);
         }
