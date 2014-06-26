@@ -32,22 +32,66 @@ class TestTimberIntegrations extends WP_UnitTestCase {
 		$this->assertInstanceOf( 'ACFTimber', $acf );
 	}
 
-	// function testWPCLI(){
-	// 	$str = Timber::compile_string('whatever {{rand}}', array('rand' => 4004), 600);
-	// 	$wp_path = '/tmp/wordpress';
-	// 	if (file_exists('/srv/www/wordpress-develop/src')){
-	// 		$wp_path = '/srv/www/wordpress-develop/src';
-	// 	}
-	// 	if (class_exists('WP_CLI_Command')){
-	// 		error_log('class exists');
-	// 	} else {
-	// 		error_log('NOT THERE');
-	// 	}
-	// 	///exec('wp timber clear_cache_timber --path='.$wp_path);
-		
-	// 	require_once dirname( __FILE__ ) . '/../functions/integrations/wpcli-timber.php';
-	// 	$success = Timber_Command::clear_cache_timber();
-	// 	$this->assertEquals("Success: Cleared contents of Timber's Cache", $success);
-	// }
+	function testWPCLIClearCacheTimber(){
+		$str = Timber::compile('assets/single.twig', array('rand' => 4004), 600);
+		$success = TimberCommand::clear_cache('timber');
+		$this->assertTrue($success);
+	}
+
+	function testWPCLIClearCacheTwig(){
+		$cache_dir = __DIR__.'/../cache/twig';
+    	if (is_dir($cache_dir)){
+    		TimberLoader::rrmdir($cache_dir);
+    	}
+    	$this->assertFileNotExists($cache_dir);
+    	Timber::$cache = true;
+    	$pid = $this->factory->post->create();
+    	$post = new TimberPost($pid);
+    	Timber::compile('assets/single-post.twig', array('post' => $post));
+    	sleep(1);
+    	$this->assertFileExists($cache_dir);
+    	$success = TimberCommand::clear_cache('twig');
+		$this->assertTrue($success);
+    	Timber::$cache = false;
+	}
+
+	function testWPCLIClearCacheAll(){
+		$cache_dir = __DIR__.'/../cache/twig';
+    	if (is_dir($cache_dir)){
+    		TimberLoader::rrmdir($cache_dir);
+    	}
+    	$this->assertFileNotExists($cache_dir);
+    	Timber::$cache = true;
+    	$pid = $this->factory->post->create();
+    	$post = new TimberPost($pid);
+    	Timber::compile('assets/single-post.twig', array('post' => $post));
+    	sleep(1);
+    	$this->assertFileExists($cache_dir);
+    	Timber::compile('assets/single.twig', array('data' => 'foobar'), 600);
+    	$success = TimberCommand::clear_cache('all');
+		$this->assertTrue($success);
+    	Timber::$cache = false;
+	}
+
+	function testWPCLIClearCacheAllArray(){
+		$cache_dir = __DIR__.'/../cache/twig';
+    	if (is_dir($cache_dir)){
+    		TimberLoader::rrmdir($cache_dir);
+    	}
+    	$this->assertFileNotExists($cache_dir);
+    	Timber::$cache = true;
+    	$pid = $this->factory->post->create();
+    	$post = new TimberPost($pid);
+    	Timber::compile('assets/single-post.twig', array('post' => $post));
+    	sleep(1);
+    	$this->assertFileExists($cache_dir);
+    	Timber::compile('assets/single.twig', array('data' => 'foobar'), 600);
+    	$success = TimberCommand::clear_cache(array('all'));
+		$this->assertTrue($success);
+    	Timber::$cache = false;
+
+    	$success = TimberCommand::clear_cache('bunk');
+    	$this->assertNull($success);
+	}
 
 }

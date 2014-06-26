@@ -252,12 +252,29 @@ class TimberLoader {
         return $twig;
     }
 
-    public function clear_cache_timber(){
+    public function clear_cache_timber($cache_mode = self::CACHE_USE_DEFAULT){
         //_transient_timberloader
-        global $wp_object_cache;
-        if (isset($wp_object_cache->cache[self::CACHEGROUP])){
-            unset($wp_object_cache->cache[self::CACHEGROUP]);
+        $object_cache = false;
+        if (isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache'])) {
+            $object_cache = true;
+        }
+        $cache_mode = $this->_get_cache_mode($cache_mode);
+        if (self::CACHE_TRANSIENT === $cache_mode) {
+            global $wpdb;
+            $query = $wpdb->prepare("DELETE FROM $wpdb->options WHERE option_name LIKE '%s'", '_transient_timberloader_%');
+            $wpdb->query( $query );
             return true;
+        } else if (self::CACHE_SITE_TRANSIENT === $cache_mode) {
+            global $wpdb;
+            $query = $wpdb->prepare("DELETE FROM $wpdb->options WHERE option_name LIKE '%s'", '_transient_timberloader_%');
+            $wpdb->query( $query );
+            return true;
+        } else if (self::CACHE_OBJECT === $cache_mode && $object_cache) {
+            global $wp_object_cache;
+            if (isset($wp_object_cache->cache[self::CACHEGROUP])){
+                unset($wp_object_cache->cache[self::CACHEGROUP]);
+                return true;
+            }
         }
         return false;
     }
