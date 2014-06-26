@@ -1,12 +1,13 @@
 <?php
 // Exit if accessed directly
-if ( !defined ( 'ABSPATH' ) )
+if ( !defined( 'ABSPATH' ) )
     exit;
 
-class TimberQueryIterator implements Iterator
-{
+class TimberQueryIterator implements Iterator {
 
     /**
+     *
+     *
      * @var WP_Query
      */
     private $_query = null;
@@ -26,7 +27,7 @@ class TimberQueryIterator implements Iterator
             global $wp_query;
             $the_query =& $wp_query;
 
-        } elseif (TimberHelper::is_array_assoc($query) || (is_string($query) && strstr($query, '='))) {
+        } elseif ( TimberHelper::is_array_assoc( $query ) || ( is_string( $query ) && strstr( $query, '=' ) ) ) {
             // We have a regularly formed WP query string or array to use
             $the_query = new WP_Query( $query );
 
@@ -34,13 +35,13 @@ class TimberQueryIterator implements Iterator
             // We have what could be a post name or post ID to pull out
             $the_query = self::get_query_from_string( $query );
 
-        } elseif (is_array($query) && count($query) && (is_integer($query[0]) || is_string($query[0]))) {
+        } elseif ( is_array( $query ) && count( $query ) && ( is_integer( $query[0] ) || is_string( $query[0] ) ) ) {
             // We have a list of pids (post IDs) to extract from
             $the_query = self::get_query_from_array_of_ids( $query );
 
         } else {
-            TimberHelper::error_log('I have failed you! in ' . basename( __FILE__ ) . '::' . __LINE__ );
-            TimberHelper::error_log($query);
+            TimberHelper::error_log( 'I have failed you! in ' . basename( __FILE__ ) . '::' . __LINE__ );
+            TimberHelper::error_log( $query );
 
             // We have failed hard, at least let get something.
             $the_query = new WP_Query();
@@ -59,23 +60,23 @@ class TimberQueryIterator implements Iterator
     // GET POSTS
     //
     public static function get_query_from_array_of_ids( $query = array() ) {
-        if (!is_array($query) || !count($query))
+        if ( !is_array( $query ) || !count( $query ) )
             return null;
 
         return new WP_Query( array(
-            'post_type'=> 'any',
-            'post__in' => $query,
-            'orderby'  => 'post__in',
-            'numberposts' => -1
-        ) );
+                'post_type'=> 'any',
+                'post__in' => $query,
+                'orderby'  => 'post__in',
+                'numberposts' => -1
+            ) );
     }
 
     public static function get_query_from_string( $string = '' ) {
         $post_type = false;
-        
-        if ( is_string( $string ) && strstr($string, '#') ) {
+
+        if ( is_string( $string ) && strstr( $string, '#' ) ) {
             //we have a post_type directive here
-            list( $post_type, $string ) = explode('#', $string);
+            list( $post_type, $string ) = explode( '#', $string );
         }
 
         $query = array(
