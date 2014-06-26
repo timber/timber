@@ -209,6 +209,12 @@
 			$this->assertEquals($parent_id, $child_post->parent()->ID);
 		}
 
+		function testPostSlug(){
+			$pid = $this->factory->post->create(array('post_name' => 'the-adventures-of-tom-sawyer'));
+			$post = new TimberPost($pid);
+			$this->assertEquals('the-adventures-of-tom-sawyer', $post->slug);
+		}
+
 		function testPostAuthor(){
 			$author_id = $this->factory->user->create(array('display_name' => 'Jared Novack'));
 			$pid = $this->factory->post->create(array('post_author' => $author_id));

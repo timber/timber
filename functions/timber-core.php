@@ -1,54 +1,99 @@
 <?php
 
-class TimberCore
-{
+class TimberCore {
 
     public $ID;
     public $object_type;
     public $url;
 
     /**
+     *
+     *
+     * @return boolean
+     */
+    function __isset( $field ) {
+        if ( isset( $this->$field ) ) {
+            return $this->$field;
+        }
+        return false;
+    }
+
+    /**
+     * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2 
+     * @return mixed
+     */
+    function __call( $field, $args ) {
+        return $this->__get( $field );
+    }
+
+    /**
+     * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2 
+     *
+     * @return mixed
+     */
+    function __get( $field ) {
+        if ( !isset( $this->$field ) ) {
+            if ( $meta_value = $this->meta( $field ) ) {
+                $this->$field = $meta_value;
+            } else if (method_exists($this, $field)){
+                $this->$field = $this->$field();
+            }
+        }
+        return $this->$field;
+    }
+
+    /**
+     *
+     *
      * @param array|object $info
      */
-    function import($info) {
-        if (is_object($info)) {
-            $info = get_object_vars($info);
+    function import( $info ) {
+        if ( is_object( $info ) ) {
+            $info = get_object_vars( $info );
         }
-        if (is_array($info)) {
-            foreach ($info as $key => $value) {
-                if (!empty($key)) {
+        if ( is_array( $info ) ) {
+            foreach ( $info as $key => $value ) {
+                if ( !empty( $key ) ) {
                     $this->$key = $value;
                 }
             }
         }
     }
 
+
+
     /**
-     * @param string $key
-     * @param mixed $value
+     *
+     *
+     * @param string  $key
+     * @param mixed   $value
      */
-    function update($key, $value) {
-        update_metadata($this->object_type, $this->ID, $key, $value);
+    function update( $key, $value ) {
+        update_metadata( $this->object_type, $this->ID, $key, $value );
     }
 
     /**
+     *
+     *
      * @return bool
      */
     function can_edit() {
-        if (isset($this->_can_edit)) {
+        if ( isset( $this->_can_edit ) ) {
             return $this->_can_edit;
         }
         $this->_can_edit = false;
-        if (!function_exists('current_user_can')) {
+        if ( !function_exists( 'current_user_can' ) ) {
             return false;
         }
-        if (current_user_can('edit_post', $this->ID)) {
+        if ( current_user_can( 'edit_post', $this->ID ) ) {
             $this->_can_edit = true;
         }
         return $this->_can_edit;
     }
 
     /**
+     *
+     *
      * @return array
      */
     function get_method_values() {
@@ -58,15 +103,17 @@ class TimberCore
     }
 
     /**
+     *
+     *
      * @deprecated
-     * @param string $url
+     * @param string  $url
      * @return mixed
      */
-    function url_to_path($url = '') {
-        if (!strlen($url) && $this->url) {
+    function url_to_path( $url = '' ) {
+        if ( !strlen( $url ) && $this->url ) {
             $url = $this->url;
         }
-        $url_info = parse_url($url);
+        $url_info = parse_url( $url );
         return $url_info['path'];
     }
 

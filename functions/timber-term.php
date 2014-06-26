@@ -33,31 +33,7 @@ class TimberTerm extends TimberCore {
         return $this->name;
     }
 
-    function __isset( $field ){
-        if (isset($this->$field)){
-            return $this->$field;
-        }
-        return false;
-    }
-
-    /**
-     * @return mixed
-     */
-    function __call( $field, $args ) {
-        return $this->__get($field);
-    }
-
-    /**
-     * @return mixed
-     */
-    function __get( $field ) {
-        if ( !isset( $this->$field ) ) {
-            if ($meta_value = $this->meta($field)){
-                $this->$field = $meta_value;
-            }
-        }
-        return $this->$field;
-    }
+    
 
     /* Setup
     ===================== */

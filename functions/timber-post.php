@@ -1,7 +1,6 @@
 <?php
 
-class TimberPost extends TimberCore
-{
+class TimberPost extends TimberCore implements TimberCoreInterface {
 
     public $ImageClass = 'TimberImage';
     public $PostClass = 'TimberPost';
@@ -16,7 +15,6 @@ class TimberPost extends TimberCore
     
     public $class;
     public $display_date;
-    public $id;
     public $post_content;
     public $post_date;
     public $post_parent;
@@ -426,8 +424,6 @@ class TimberPost extends TimberCore
         if (!isset($post->post_status)) {
             return null;
         }
-        $post->slug = $post->post_name;
-        $post->id = $post->ID;
         $post->status = $post->post_status;
         $customs = $this->get_post_custom($post->ID);
         $post = (object)array_merge((array)$post, (array)$customs);
@@ -861,6 +857,13 @@ class TimberPost extends TimberCore
     }
 
     /**
+     * @return int
+     */
+    public function id(){
+        return $this->ID;
+    }
+
+    /**
      * @return string
      */
     public function link() {
@@ -876,6 +879,13 @@ class TimberPost extends TimberCore
             $field_name = 'meta';
         }
         return $this->get_field($field_name);
+    }
+
+    /**
+     * @return string
+     */
+    public function name(){
+        return $this->title();
     }
 
     /**
@@ -936,6 +946,13 @@ class TimberPost extends TimberCore
      */
     public function prev($in_same_cat = false) {
         return $this->get_prev($in_same_cat);
+    }
+
+    /**
+     * @return string
+     */
+    public function slug() {
+        return $this->post_name;
     }
 
     /**
