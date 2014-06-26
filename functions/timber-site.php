@@ -1,7 +1,7 @@
 <?php
 
-class TimberSite extends TimberCore {
-    
+class TimberSite extends TimberCore implements TimberCoreInterface {
+
     public $blogname;
     public $charset;
     public $description;
@@ -109,6 +109,29 @@ class TimberSite extends TimberCore {
      */
     function link() {
         return $this->get_link();
+    }
+
+    /**
+     *
+     */
+    function meta( $field ) {
+        return $this->__get( $field );
+    }
+
+    /**
+     *
+     *
+     * @param string  $key
+     * @param mixed   $value
+     */
+    function update( $key, $value ) {
+        $value = apply_filters( 'timber_site_set_meta', $value, $key, $this->ID, $this );
+        if ( is_multisite() ) {
+            update_blog_option( $this->ID, $key, $value );
+        } else {
+            update_option( $key, $value );
+        }
+        $this->$key = $value;
     }
 
     /**
