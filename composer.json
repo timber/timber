@@ -27,7 +27,8 @@
 	"require-dev": {
 		"phpunit/phpunit": "3.7.*",
         "satooshi/php-coveralls": "dev-master",
-        "AdvancedCustomFields/acf5-beta" : "5.0"
+        "AdvancedCustomFields/acf5-beta" : "5.0",
+        "wp-cli/wp-cli" : "*"
 	},
 	"repositories": [
         {
