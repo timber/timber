@@ -165,7 +165,7 @@ class TimberMenuItem extends TimberCore
         $this->name = $this->name();
         $this->add_class('menu-item-' . $this->ID);
         if (method_exists($data, 'get_link')){
-            $this->url = $data->get_link(); 
+            $this->url = untrailingslashit($data->get_link()); 
         }
     }
 
@@ -279,7 +279,7 @@ class TimberMenuItem extends TimberCore
      * @return string
      */
     public function path() {
-        return $this->get_path();
+        return untrailingslashit($this->get_path());
     }
 
     /**
