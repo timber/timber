@@ -28,7 +28,7 @@ class TimberMenu extends TimberCore
         if ($menu_id) {
             $this->init($menu_id);
         } else {
-            TimberHelper::error_log("Sorry, the menu you were looking for wasn't found ('" . $slug . "'). Here's what Timber did find:");
+            //TimberHelper::error_log("Sorry, the menu you were looking for wasn't found ('" . $slug . "'). Here's what Timber did find:");
         }
         return null;
     }

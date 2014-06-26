@@ -18,6 +18,7 @@
     <filter>
     	<whitelist processUncoveredFilesFromWhitelist="true">
     		<directory suffix=".php">functions</directory>
+    		<file>timber.php</file>
   		</whitelist>
 	</filter>
 </phpunit>
