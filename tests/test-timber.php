@@ -94,7 +94,7 @@ class TimberTest extends WP_UnitTestCase {
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
-		$pidz = Timber::get_pids('post_type=post');
+		$pidz = TimberPostGetter::get_pids('post_type=post');
 		sort($pidz, SORT_NUMERIC);
 		$this->assertTrue(arrays_are_similar($pids, $pidz));
 	}

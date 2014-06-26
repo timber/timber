@@ -4,7 +4,7 @@ class TimberIteratorTest extends WP_UnitTestCase {
 
     function testQueryPosts(){
         $this->factory->post->create();
-        $posts = Timber::query_posts('post_type=post');
+        $posts = TimberPostGetter::query_posts('post_type=post');
         $this->assertInstanceOf( 'TimberQueryIterator', $posts );
     }
 
@@ -15,7 +15,7 @@ class TimberIteratorTest extends WP_UnitTestCase {
             ) );
         }
         $results = Timber::compile('assets/iterator-test.twig', array(
-            'posts' => Timber::query_posts( 'post_type=post' )
+            'posts' => TimberPostGetter::query_posts( 'post_type=post' )
         ) );
 
         $results = trim( $results );
