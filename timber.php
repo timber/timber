@@ -116,7 +116,7 @@ class Timber {
         return TimberPostGetter::get_posts($query, $PostClass, $return_collection);
     }
 
-    public static function query_posts($query, $PostClass = 'TimberPost') {
+    static function query_posts($query, $PostClass = 'TimberPost') {
         return TimberPostGetter::query_posts( $query, $PostClass );
     }
 
@@ -125,7 +125,7 @@ class Timber {
      * @return array
      * @deprecated since 0.20.0
      */
-    public static function get_pids($query = null) {
+    static function get_pids($query = null) {
         return TimberPostGetter::get_pids($query);
     }
 
@@ -134,7 +134,7 @@ class Timber {
      * @return array
      * @deprecated since 0.20.0
      */
-    public static function get_posts_from_loop($PostClass) {
+    static function get_posts_from_loop($PostClass) {
         return TimberPostGetter::get_posts_from_loop($PostClass);
     }
 
@@ -142,7 +142,7 @@ class Timber {
      * @return array
      * @deprecated since 0.20.0
      */
-    public static function get_pids_from_loop() {
+    static function get_pids_from_loop() {
         return TimberPostGetter::get_pids_from_loop();
     }
 
@@ -152,7 +152,7 @@ class Timber {
      * @return array
      * @deprecated since 0.20.0
      */
-    public static function get_posts_from_slug($slug, $PostClass) {
+    static function get_posts_from_slug($slug, $PostClass) {
         return TimberPostGetter::get_posts_from_slug($slug, $PostClass);
     }
 
@@ -162,7 +162,7 @@ class Timber {
      * @return array
      * @deprecated since 0.20.0
      */
-    public static function get_posts_from_wp_query($query = array(), $PostClass = 'TimberPost') {
+    static function get_posts_from_wp_query($query = array(), $PostClass = 'TimberPost') {
         return TimberPostGetter::get_posts_from_wp_query($query, $PostClass);
     }
 
@@ -172,7 +172,7 @@ class Timber {
      * @return array|null
      * @deprecated since 0.20.0
      */
-    public static function get_posts_from_array_of_ids($query = array(), $PostClass = 'TimberPost') {
+    static function get_posts_from_array_of_ids($query = array(), $PostClass = 'TimberPost') {
         return TimberPostGetter::get_posts_from_array_of_ids($query, $PostClass);
     }
 
@@ -182,7 +182,7 @@ class Timber {
      * @return array
      * @deprecated since 0.20.0
      */
-    public static function handle_post_results($results, $PostClass = 'TimberPost') {
+    static function handle_post_results($results, $PostClass = 'TimberPost') {
         return TimberPostGetter::handle_post_results($results, $PostClass);
     }
 
@@ -191,7 +191,7 @@ class Timber {
      * @return int
      * @deprecated since 0.20.0
      */
-    public function get_pid($query) {
+    static function get_pid($query) {
         return TimberPostGetter::get_pid($query);
     }
 
@@ -199,7 +199,7 @@ class Timber {
      * @return bool
      * @deprecated since 0.20.0
      */
-    public static function wp_query_has_posts() {
+    static function wp_query_has_posts() {
         return TimberPostGetter::wp_query_has_posts();
     }
 
@@ -211,7 +211,7 @@ class Timber {
      * @return array
      * @deprecated since 0.20.0
      */
-    public static function maybe_set_preview( $posts ) {
+    static function maybe_set_preview( $posts ) {
         return TimberPostGetter::maybe_set_preview($posts);
     }
 
@@ -223,7 +223,7 @@ class Timber {
      * @return bool|int
      * @deprecated since long ago
      */
-    public static function loop_to_id() {
+    static function loop_to_id() {
         return TimberPostGetter::loop_to_id();
     }
 
@@ -232,7 +232,7 @@ class Timber {
      * @return bool|null
      * @deprecated since long ago
      */
-    public static function loop_to_posts($PostClass = 'TimberPost') {
+    static function loop_to_posts($PostClass = 'TimberPost') {
         return self::get_posts(false, $PostClass);
     }
 
