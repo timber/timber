@@ -115,6 +115,14 @@
 			$this->assertEquals(1, substr_count($prev, '&hellip;'));
 		}
 
+		function testCanEdit(){
+			wp_set_current_user(1);
+			$post_id = $this->factory->post->create(array('post_author' => 1));
+			$post = new TimberPost($post_id);
+			$this->assertTrue($post->can_edit());
+			wp_set_current_user(0);
+		}
+
 		function testGetPreview() {
 			global $wp_rewrite;
 			$struc = false;

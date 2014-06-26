@@ -326,15 +326,15 @@ class TimberImageHelper
     }
 
     /**
-     * @param string $src
+     * @param string $src a url or path to the image (http://example.org/wp-content/uploads/2014/image.jpg) or (/wp-content/uploads/2014/image.jpg)
      * @param string $bghex
      * @return string
      */
     public static function img_to_jpg($src, $bghex = '#FFFFFF') {
-        $src = str_replace(home_url(), '', $src);
-        $output = str_replace('.png', '.jpg', $src);
-        $input_file = ABSPATH . $src;
-        $output_file = ABSPATH . $output;
+        $path = str_replace(home_url(), '', $src);
+        $output = str_replace('.png', '.jpg', $path);
+        $input_file = self::get_server_location($path);
+        $output_file = self::get_server_location($output);
         if (file_exists($output_file)) {
             return $output;
         }

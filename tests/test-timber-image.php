@@ -256,6 +256,20 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals(255, $colors['green']);
 	}
 
+	function testPNGtoJPG(){
+		$file_loc = $this->copyTestImage('eastern-trans.png');
+		$upload_dir = wp_upload_dir();
+		$new_file = TimberImageHelper::img_to_jpg($upload_dir['url'].'/eastern-trans.png', '#FFFF00');
+		$location_of_image = TimberImageHelper::get_server_location($new_file);
+		$this->assertFileExists($location_of_image);
+		$image = imagecreatefromjpeg($location_of_image);
+		$pixel_rgb = imagecolorat($image, 1, 1);
+		$colors = imagecolorsforindex($image, $pixel_rgb);
+		$this->assertEquals(255, $colors['red']);
+		$this->assertEquals(255, $colors['green']);
+		$this->assertEquals(0, $colors['blue']);
+	}
+
 	function testImageDeletionSimilarNames(){
 		$data = array();
 		$data['size'] = array('width' => 500, 'height' => 300);
@@ -343,6 +357,8 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertFileExists(get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg');
 		unlink(get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg');
 	}
+
+
 
 	public static function is_connected() {
 	    $connected = @fsockopen("www.google.com", 80, $errno, $errstr, 3);
