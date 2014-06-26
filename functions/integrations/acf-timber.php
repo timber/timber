@@ -8,6 +8,8 @@ class ACFTimber {
         add_filter( 'timber_term_get_meta', array( $this, 'term_get_meta' ), 10, 3 );
         add_filter( 'timber_term_get_meta_field', array( $this, 'term_get_meta_field' ), 10, 4 );
         add_filter( 'timber_user_get_meta_field_pre', array( $this, 'user_get_meta_field' ), 10, 3 );
+
+        add_filter( 'timber_term_set_meta', array( $this, 'term_set_meta'), 10, 4 );
     }
 
     function post_get_meta( $customs, $post_id ) {
@@ -21,6 +23,12 @@ class ACFTimber {
     function term_get_meta_field( $value, $term_id, $field_name, $term ) {
         $searcher = $term->taxonomy . "_" . $term->ID;
         return get_field( $field_name, $searcher );
+    }
+
+    function term_set_meta( $value, $field, $term_id, $term ) {
+        $searcher = $term->taxonomy . "_" . $term->ID;
+        update_field( $field, $value, $searcher );
+        return $value;
     }
 
     function term_get_meta( $fields, $term_id, $term ) {
@@ -49,7 +57,7 @@ class ACFTimber {
 }
 
 add_action( 'init', function () {
-    if ( class_exists( 'ACF' ) ) {
-        new ACFTimber();
-    }
-} );
+        if ( class_exists( 'ACF' ) ) {
+            new ACFTimber();
+        }
+    } );

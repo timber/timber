@@ -61,7 +61,6 @@ abstract class TimberCore {
     }
 
 
-
     /**
      *
      *

@@ -8,7 +8,7 @@ class TestTimberFilters extends WP_UnitTestCase {
 		$tp = new TimberPost( $post_id );
 		add_filter( 'timber_post_get_meta_field', array( $this, 'filter_timber_post_get_meta_field' ), 10, 4 );
 		$this->assertEquals( 'Drebin', $tp->meta( 'Frank' ) );
-		remove_all_filters( 'timber_post_get_meta_field' );
+		remove_filter( 'timber_post_get_meta_field', array( $this, 'filter_timber_post_get_meta_field' ) );
 	}
 
 	function filter_timber_post_get_meta_field( $value, $pid, $field_name, $timber_post ) {
@@ -25,6 +25,7 @@ class TestTimberFilters extends WP_UnitTestCase {
 		$comment->update( 'ghost', 'busters' );
 		add_filter( 'timber_comment_get_meta_field', array( $this, 'filter_timber_comment_get_meta_field' ), 10, 4 );
 		$this->assertEquals( $comment->meta( 'ghost' ), 'busters' );
+		remove_filter( 'timber_comment_get_meta_field', array( $this, 'filter_timber_comment_get_meta_field' ) );
 	}
 
 	function filter_timber_comment_get_meta_field( $value, $cid, $field_name, $timber_comment ) {
@@ -40,11 +41,12 @@ class TestTimberFilters extends WP_UnitTestCase {
 		$user->update( 'jared', 'novack' );
 		add_filter( 'timber_user_get_meta_field', array( $this, 'filter_timber_user_get_meta_field' ), 10, 4 );
 		$this->assertEquals( $user->meta( 'jared' ), 'novack' );
+		remove_filter( 'timber_user_get_meta_field', array( $this, 'filter_timber_user_get_meta_field' ) );
 	}
 
 	function filter_timber_user_get_meta_field( $value, $uid, $field_name, $timber_user ) {
-		$this->assertEquals( $field_name, 'jared' );
-		$this->assertEquals( $value, 'novack' );
+		$this->assertEquals( 'jared', $field_name );
+		$this->assertEquals( 'novack', $value );
 		$this->assertEquals( $timber_user->ID, $uid );
 		return $value;
 	}

@@ -232,6 +232,17 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
         return $this->_children;
     }
 
+    /**
+     *
+     *
+     * @param string  $key
+     * @param mixed   $value
+     */
+    function update( $key, $value ) {
+        $value = apply_filters( 'timber_term_set_meta', $value, $key, $this->ID, $this );
+        $this->$key = $value;
+    }
+
     /* Alias
     ====================== */
 
