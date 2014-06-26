@@ -12,6 +12,7 @@
 			$user = new TimberUser($user_id);
 			$term = new TimberTerm($term_id);
 			$comment = new TimberComment($comment_id);
+			
 			$this->assertEquals($post_id, $post->ID);
 			$this->assertEquals($post_id, $post->id);
 			$this->assertEquals($user_id, $user->ID);

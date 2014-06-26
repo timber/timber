@@ -1,6 +1,6 @@
 <?php
 
-class TimberTerm extends TimberCore {
+class TimberTerm extends TimberCore implements TimberCoreInterface {
 
     public $PostClass = 'TimberPost';
     public $TermClass = 'TimberTerm';

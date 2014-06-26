@@ -1,10 +1,10 @@
 <?php
 
-class TimberCore {
+abstract class TimberCore {
 
+    public $id;
     public $ID;
     public $object_type;
-    public $url;
 
     /**
      *
