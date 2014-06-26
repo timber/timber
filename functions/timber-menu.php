@@ -4,6 +4,7 @@ class TimberMenu extends TimberCore
 {
 
     public $MenuItemClass = 'TimberMenuItem';
+    public $PostClass = 'TimberPost';
 
     public $items = null;
     public $id = null;
@@ -114,6 +115,9 @@ class TimberMenu extends TimberCore
         $menu = array();
         foreach ($items as $item) {
             if(isset($item->ID)){
+                if (is_object($item) && get_class($item) == 'WP_Post'){
+                    $item = new $this->PostClass($item);
+                }
                 $index[$item->ID] = new $this->MenuItemClass($item);
             }
         }
@@ -160,6 +164,9 @@ class TimberMenuItem extends TimberCore
         }
         $this->name = $this->name();
         $this->add_class('menu-item-' . $this->ID);
+        if (method_exists($data, 'get_link')){
+            $this->url = $data->get_link(); 
+        }
     }
 
     /**
