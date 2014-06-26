@@ -201,14 +201,14 @@ class TimberMenuItem extends TimberCore
      * @return string
      */
     function get_link() {
-        return $this->url;
+        return untrailingslashit($this->url);
     }
 
     /**
      * @return string
      */
     function get_path() {
-        return TimberURLHelper::get_rel_url($this->url);
+        return untrailingslashit(TimberURLHelper::get_rel_url($this->url));
     }
 
     /**

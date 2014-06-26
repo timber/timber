@@ -1,7 +1,6 @@
 <?php
 
-class TimberTerm extends TimberCore
-{
+class TimberTerm extends TimberCore {
 
     public $PostClass = 'TimberPost';
     public $TermClass = 'TimberTerm';
@@ -32,6 +31,32 @@ class TimberTerm extends TimberCore
      */
     function __toString() {
         return $this->name;
+    }
+
+    function __isset( $field ){
+        if (isset($this->$field)){
+            return $this->$field;
+        }
+        return false;
+    }
+
+    /**
+     * @return mixed
+     */
+    function __call( $field, $args ) {
+        return $this->__get($field);
+    }
+
+    /**
+     * @return mixed
+     */
+    function __get( $field ) {
+        if ( !isset( $this->$field ) ) {
+            if ($meta_value = $this->meta($field)){
+                $this->$field = $meta_value;
+            }
+        }
+        return $this->$field;
     }
 
     /* Setup
@@ -144,9 +169,9 @@ class TimberTerm extends TimberCore
      */
     public function get_meta_field($field_name) {
         if (!isset($this->$field_name)) {
-            $field = '';
-            $field = apply_filters('timber_term_get_meta_field', $field, $this->ID, $field_name, $this);
-            $this->$field_name = $field;
+            $field_value = '';
+            $field_value = apply_filters('timber_term_get_meta_field', $field_value, $this->ID, $field_name, $this);
+            $this->$field_name = $field_value;
         }
         return $this->$field_name;
     }
