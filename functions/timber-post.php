@@ -15,11 +15,14 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     
     public $class;
     public $display_date;
+    public $id;
+    public $ID;
     public $post_content;
     public $post_date;
     public $post_parent;
     public $post_title;
     public $post_type;
+    public $slug;
    
     /**
      *  If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
@@ -425,6 +428,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
             return null;
         }
         $post->status = $post->post_status;
+        $post->id = $post->ID;
+        $post->slug = $post->post_name;
         $customs = $this->get_post_custom($post->ID);
         $post = (object)array_merge((array)$post, (array)$customs);
         return $post;
@@ -857,13 +862,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     }
 
     /**
-     * @return int
-     */
-    public function id(){
-        return $this->ID;
-    }
-
-    /**
      * @return string
      */
     public function link() {
@@ -946,13 +944,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      */
     public function prev($in_same_cat = false) {
         return $this->get_prev($in_same_cat);
-    }
-
-    /**
-     * @return string
-     */
-    public function slug() {
-        return $this->post_name;
     }
 
     /**
