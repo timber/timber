@@ -1,7 +1,6 @@
 <?php
 
-class TimberLoader
-{
+class TimberLoader {
 
     const CACHEGROUP = 'timberloader';
 
@@ -251,6 +250,16 @@ class TimberLoader
 
         $twig = apply_filters('twig_apply_filters', $twig);
         return $twig;
+    }
+
+    public function clear_cache_timber(){
+        //_transient_timberloader
+        global $wp_object_cache;
+        if (isset($wp_object_cache->cache[self::CACHEGROUP])){
+            unset($wp_object_cache->cache[self::CACHEGROUP]);
+            return true;
+        }
+        return false;
     }
 
     public function clear_cache_twig() {

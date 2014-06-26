@@ -32,7 +32,7 @@ if (class_exists('WP_CLI_Command')) {
         	if ($clear){
         		WP_CLI::success('Cleared contents of twig cache');
         	} else {
-        		WP_CLI::failure('Failed to clear cache');
+        		WP_CLI::warning('Failed to clear twig cache');
         	}
         }
 
@@ -45,7 +45,16 @@ if (class_exists('WP_CLI_Command')) {
          *
          */
         function clear_cache_timber() {
-            WP_CLI::success("Cleared contents of Timber's Cache");
+            $loader = new TimberLoader();
+            $clear = $loader->clear_cache_timber();
+            $message = 'Failed to clear timber cache';
+            if ($clear){
+                $message = "Cleared contents of Timber's Cache";
+                WP_CLI::success($messsage);
+            } else {
+                return WP_CLI::warning($message);
+            }
+            return $message;
         }
 
         /**
