@@ -49,6 +49,11 @@
 			$this->assertEquals('lincoln', $term->abraham);
 			$this->assertEquals('roosevelt', $user->teddy);
 			$this->assertEquals('washington', $comment->george);
+
+			$this->assertEquals('jefferson', Timber::compile_string('{{post.thomas}}', array('post' => $post)));
+			$this->assertEquals('lincoln', Timber::compile_string('{{term.abraham}}', array('term' => $term)));
+			$this->assertEquals('roosevelt', Timber::compile_string('{{user.teddy}}', array('user' => $user)));
+			$this->assertEquals('washington', Timber::compile_string('{{comment.george}}', array('comment' => $comment)));
 		}
 
 	}
