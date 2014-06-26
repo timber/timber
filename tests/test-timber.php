@@ -134,7 +134,6 @@ class TimberTest extends WP_UnitTestCase {
         $_GET['preview_id'] = $post_id;
 
         $the_post = Timber::get_post( $post_id );
-        error_log(print_r($the_post, true));
         $this->assertEquals( 'New Stuff Goes here', $the_post->post_content );
     }
 
