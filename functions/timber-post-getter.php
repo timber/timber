@@ -89,7 +89,13 @@ class TimberPostGetter
         return new TimberPostsCollection( $posts, $PostClass );
     }
 
-  
+    /**
+     * @return bool
+     */
+    static function wp_query_has_posts() {
+        global $wp_query;
+        return ($wp_query && property_exists($wp_query, 'posts') && $wp_query->posts);
+    }
 
     /**
      * @param string|array $arg

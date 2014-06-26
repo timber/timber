@@ -4,8 +4,7 @@
 if ( !defined( 'ABSPATH' ) )
     exit;
 
-class TimberPostsCollection extends ArrayObject
-{
+class TimberPostsCollection extends ArrayObject {
 
     public function __construct( $array = array(), $post_class = 'TimberPost' ) {
         $posts = array();
@@ -23,10 +22,8 @@ class TimberPostsCollection extends ArrayObject
                 } else {
                     if ( is_array( $post_class ) ) {
                         TimberHelper::error_log( $post_type . ' of ' . $rid . ' not found in ' . print_r( $post_class, true ) );
-
                     } else {
                         TimberHelper::error_log( $post_type . ' not found in ' . $post_class );
-
                     }
                 }
             }
@@ -88,12 +85,11 @@ class TimberPostsCollection extends ArrayObject
 
 }
 
-class TimberPostsIterator extends ArrayIterator
-{
+class TimberPostsIterator extends ArrayIterator {
+
     public function current() {
         global $post;
         $post = parent::current();
-
         return $post;
     }
 }

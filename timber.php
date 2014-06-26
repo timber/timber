@@ -184,7 +184,10 @@ class Timber {
      * @deprecated since 0.20.0
      */
     static function get_pid($query) {
-        return TimberPostGetter::get_pid($query);
+        $pids = TimberPostGetter::get_pids($query);
+        if (is_array($pids) && count($pids)){
+            return $pids[0];
+        }
     }
 
     /**

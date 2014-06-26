@@ -137,6 +137,14 @@ class TimberTest extends WP_UnitTestCase {
         $this->assertEquals( 'New Stuff Goes here', $the_post->post_content );
     }
 
+    function testGetPid(){
+    	$post_id = $this->factory->post->create(array('post_name' => 'test-get-pid-slug'));
+    	$pid = Timber::get_pid('test-get-pid-slug');
+    	$this->assertEquals($post_id, $pid);
+    	$pid = Timber::get_pid('dfsfsdfdsfs');
+    	$this->assertNull($pid);
+    }
+
 }
 
 function arrays_are_similar($a, $b) {
