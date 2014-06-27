@@ -22,6 +22,10 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
         $this->init($cid);
     }
 
+    function __toString(){
+        return $this->content();
+    }
+
     /**
      * @param mixed $cid
      */

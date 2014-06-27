@@ -1,7 +1,6 @@
 <?php
 
-class TimberImage extends TimberCore
-{
+class TimberImage extends TimberCore implements TimberCoreInterface {
 
     public $_can_edit;
     public $_dimensions;
@@ -125,6 +124,10 @@ class TimberImage extends TimberCore
         return $url;
     }
 
+    public function meta( $key ){
+        return $this->__get($key);
+    }
+
     public static function wp_upload_dir() {
         static $wp_upload_dir = false;
 
@@ -225,7 +228,7 @@ class TimberImage extends TimberCore
     /**
      * @param string $url
      */
-    function init_with_url($url) {
+    private function init_with_url($url) {
         $this->abs_url = $url;
         $this->file_loc = $url;
         if (TimberURLHelper::is_local($url)) {

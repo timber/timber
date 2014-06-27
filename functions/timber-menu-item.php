@@ -31,6 +31,10 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
         $this->parent_object = $data;
     }
 
+    function __toString(){
+        return $this->name();
+    }
+
     /**
      *
      *
