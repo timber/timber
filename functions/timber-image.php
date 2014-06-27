@@ -1,6 +1,6 @@
 <?php
 
-class TimberImage extends TimberCore implements TimberCoreInterface {
+class TimberImage extends TimberPost implements TimberCoreInterface {
 
     public $_can_edit;
     public $_dimensions;
@@ -52,7 +52,6 @@ class TimberImage extends TimberCore implements TimberCoreInterface {
         $this->_dimensions = array();
         $this->_dimensions[0] = $width;
         $this->_dimensions[1] = $height;
-        TimberHelper::error_log($this->_dimensions);
         return $this->get_dimensions_loaded($dim);
     }
 
@@ -124,10 +123,6 @@ class TimberImage extends TimberCore implements TimberCoreInterface {
         return $url;
     }
 
-    public function meta( $key ){
-        return $this->__get($key);
-    }
-
     public static function wp_upload_dir() {
         static $wp_upload_dir = false;
 
@@ -167,7 +162,7 @@ class TimberImage extends TimberCore implements TimberCoreInterface {
     /**
      * @param int $iid
      */
-    function init($iid) {
+    function init( $iid = false ) {
         if (!is_numeric($iid) && is_string($iid)) {
             if (strstr($iid, '://')) {
                 $this->init_with_url($iid);

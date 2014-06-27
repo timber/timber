@@ -13,6 +13,18 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals( 'Eero Saarinen', $image->architect );
 	}
 
+	function testImageSizes() {
+		$pid = $this->factory->post->create();
+		$filename = $this->copyTestImage( 'arch.jpg' );
+		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+		$iid = wp_insert_attachment( $attachment, $filename, $pid );
+		$image = new TimberImage( $iid );
+		$this->assertEquals( 1500, $image->width() );
+		$this->assertEquals( 1000, $image->height() );
+		$this->assertEquals( $pid, $image->parent()->id );
+		$this->assertEquals( 1.5, $image->aspect() );
+	}
+
 	function testExternalImageResize() {
 		if ( !self::is_connected() ) {
 			return null;

@@ -11,14 +11,4 @@
 			<directory prefix="test-" suffix=".php">./tests/</directory>
 		</testsuite>
 	</testsuites>
-	<logging>
-		<log type="coverage-clover" target="build/logs/clover.xml"/>
-		<log type="coverage-html" target="build/logs/html"/>
-    </logging>
-    <filter>
-    	<whitelist processUncoveredFilesFromWhitelist="true">
-    		<directory suffix=".php">functions</directory>
-    		<file>timber.php</file>
-  		</whitelist>
-	</filter>
 </phpunit>

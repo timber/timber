@@ -9,6 +9,18 @@
 			$this->assertEquals($post_id, $post->ID);
 		}
 
+		function testNonexistentProperty(){
+			$post_id = $this->factory->post->create();
+			$post = new TimberPost( $post_id );
+			// $this->assertFalse( $post->zebra );
+		}
+
+		function testNonexistentMethod(){
+			$post_id = $this->factory->post->create();
+			$post = new TimberPost( $post_id );
+			// $this->assertFalse( $post->donkey() );
+		}
+
 		function testNext(){
 			$posts = array();
 			for($i = 0; $i<2; $i++){
