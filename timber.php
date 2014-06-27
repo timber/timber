@@ -30,6 +30,7 @@ require_once(__DIR__ . '/functions/timber-user.php');
 require_once(__DIR__ . '/functions/timber-term.php');
 require_once(__DIR__ . '/functions/timber-term-getter.php');
 require_once(__DIR__ . '/functions/timber-image.php');
+require_once(__DIR__ . '/functions/timber-menu-item.php');
 require_once(__DIR__ . '/functions/timber-menu.php');
 
 //Other 2nd-class citizens
