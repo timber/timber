@@ -116,7 +116,7 @@ class Timber {
         return TimberPostGetter::get_posts($query, $PostClass, $return_collection);
     }
 
-    public static function query_posts($query, $PostClass = 'TimberPost') {
+    public static function query_posts($query = false, $PostClass = 'TimberPost') {
         return TimberPostGetter::query_posts( $query, $PostClass );
     }
 
@@ -244,7 +244,7 @@ class Timber {
         $data['wp_head'] = TimberHelper::function_wrapper('wp_head');
         $data['wp_footer'] = TimberHelper::function_wrapper('wp_footer');
         $data['body_class'] = implode(' ', get_body_class());
-        
+
         $data['site'] = new TimberSite();
         $data['theme'] = $data['site']->theme;
         //deprecated, these should be fetched via TimberSite or TimberTheme
