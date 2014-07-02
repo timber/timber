@@ -1,6 +1,6 @@
 <?php
 
-class TimberTwig 
+class TimberTwig
 {
 
     public static $dir_name;
@@ -203,7 +203,14 @@ class TimberTwig
         if ($format === null) {
             $format = get_option('date_format');
         }
-        return date_i18n($format, strtotime($date));
+
+        if ($date instanceof DateTime) {
+            $timestamp = $date->getTimestamp();
+        } else {
+            $timestamp = strtotime($date);
+        }
+
+        return date_i18n($format, $timestamp);
     }
 
     //debug
