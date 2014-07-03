@@ -43,6 +43,7 @@ require_once(__DIR__ . '/functions/timber-routes.php');
 require_once(__DIR__ . '/functions/timber-site.php');
 require_once(__DIR__ . '/functions/timber-theme.php');
 require_once(__DIR__ . '/functions/timber-loader.php');
+require_once(__DIR__ . '/functions/timber-template-loader.php');
 require_once(__DIR__ . '/functions/timber-function-wrapper.php');
 require_once(__DIR__ . '/functions/integrations/acf-timber.php');
 require_once(__DIR__ . '/functions/integrations/wpcli-timber.php');
@@ -266,7 +267,7 @@ class Timber {
         $data['template_uri'] = get_template_directory_uri();
 
         $data['posts'] = Timber::query_posts();
-        
+
         //deprecated, this should be fetched via TimberMenu
         if (function_exists('wp_nav_menu')) {
             $locations = get_nav_menu_locations();
