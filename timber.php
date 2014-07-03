@@ -268,6 +268,9 @@ class Timber {
 
         $data['posts'] = Timber::query_posts();
 
+        if ( is_singular() && $posts = $data['posts']->get_posts() )
+            $data['post'] = reset( $posts );
+
         //deprecated, this should be fetched via TimberMenu
         if (function_exists('wp_nav_menu')) {
             $locations = get_nav_menu_locations();
