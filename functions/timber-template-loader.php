@@ -5,6 +5,9 @@ if ( !defined ( 'ABSPATH' ) )
 
 class TimberTemplateLoader
 {
+    /**
+     * @return TimberTemplateLoader
+     */
     public static function get_instance() {
         static $instance = false;
 
@@ -19,12 +22,41 @@ class TimberTemplateLoader
 
     protected function __construct(){}
 
-    public function init() {
+    protected function init() {
         add_filter( 'index_template', array( $this, 'template_loader' ) );
         add_filter( 'home_template',  array( $this, 'home_template_loader' ) );
     }
 
-    public function template_loader( $wp_template ) {
+    public static function load_template( $context = array() ) {
+        $located = self::get_instance()->locate_template();
+
+        if ( $located )
+            self::_render( $located, $context );
+    }
+
+    public function template_loader( $wp_template = false ) {
+        $located = $this->locate_template( $wp_template );
+
+        // If located is true, that means that index.php has been manually included.
+        if ( true === $located )
+            return false;
+
+        /**
+         * Filter the path of the current template before including it.
+         *
+         * @param string $template The path of the template to include.
+         */
+        if ( !$located = apply_filters( 'timber/template_include', $located ) )
+            return $wp_template;
+
+        self::_render( $located );
+        return false; // If false is returned, WP won't try to render a template on its own
+                      // (unless the template_include filter returns something..)
+                      // @todo Check for plugin conflicts (WooCommerce? BuddyPress?)
+
+    }
+
+    public function locate_template( $wp_template = false ) {
         // Based on WP_INC . template-loader.php
         // The rest is from WP_INC . template.php
         if     ( is_404()            && $template = $this->get_404_template()            ) :
@@ -48,34 +80,29 @@ class TimberTemplateLoader
             $template = $this->get_index_template( $wp_template );
         endif;
 
-        if ( true === $template )
-            return false;
+        if ( true !== $template ) {
+            /**
+             * Filter the path of the current template
+             *
+             * @param string $template The path of the found template.
+             */
+            $template = apply_filters( 'timber/locate_template', $template );
+        }
 
-        /**
-         * Filter the path of the current template before including it.
-         *
-         * @since 3.0.0
-         *
-         * @param string $template The path of the template to include.
-         */
-        if ( !$template = apply_filters( 'timber/template_include', $template ) )
-            return $wp_template;
-
-        $this->_render( $template );
-        return false; // If false is returned, WP won't try to render a template on its own
-                      // (unless the template_include filter returns something..)
-                      // @todo Check for plugin conflicts (WooCommerce? BuddyPress?)
+        return $template;
     }
 
     /**
      * WPs template loader includes index.php for the home template so index.php
      * has first priority after home.php. This is a little hack to undo that hack.
      */
-    public function home_template_loader( $template ) {
+    public function home_template_loader( $wp_template ) {
         // Fastest way to check if string ends with index.php :)
-        if ( stripos( strrev( $template ), 'php.xedni' ) ) {
-            return $this->template_loader( 'home' );
+        if ( 0 === stripos( strrev( $wp_template ), 'php.xedni' ) ) {
+            return $this->template_loader( $wp_template );
         }
+
+        return $wp_template;
     }
 
     /**
@@ -87,8 +114,8 @@ class TimberTemplateLoader
      *
      * @param string $template
      */
-    protected function _render( $template ) {
-        $context = Timber::get_context();
+    protected static function _render( $template, $context = array() ) {
+        $context = array_merge( Timber::get_context(), $context );
         $context = apply_filters( 'timber/context/template_loader', $context );
 
         Timber::render( $template, $context );
@@ -142,23 +169,25 @@ class TimberTemplateLoader
      * @param string The full path to the found WordPress template
      * @return bool|string
      */
-    function get_index_template( $wp_template ) {
+    function get_index_template( $wp_template = false ) {
         static $use_wp_index_template = null;
 
-        if ( $use_wp_index_template || apply_filters( 'timber_use_wp_index_template', null ) )
-            return false;
+        if ( $wp_template ) {
 
-        if ( is_null( $use_wp_index_template ) ) {
+            if ( $use_wp_index_template || apply_filters( 'timber_use_wp_index_template', null ) )
+                return false;
 
-            ob_start();
-            include $wp_template;
+            if ( is_null( $use_wp_index_template ) ) {
 
-            if ( ob_get_flush() === '' ) {
-                $use_wp_index_template = true;
-                return true;
+                ob_start();
+                include $wp_template;
+
+                if ( ob_get_flush() !== '' ) {
+                    $use_wp_index_template = true;
+                    return true;
+                }
+                $use_wp_index_template = false;
             }
-            $use_wp_index_template = false;
-
         }
 
         return $this->get_query_template('index');
@@ -321,8 +350,10 @@ class TimberTemplateLoader
      *
      * @return string
      */
-    function get_home_template( $wp_template ) {
-        if ( !$template = $this->get_query_template( 'home' ) )
+    function get_home_template( $wp_template = false ) {
+        $template = $this->get_query_template( 'home' );
+
+        if ( $wp_template )
             return $this->get_index_template( $wp_template );
 
         return $template;
