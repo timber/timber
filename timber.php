@@ -251,33 +251,39 @@ class Timber {
      * @return array
      */
     public static function get_context() {
-        $data = array();
-        $data['http_host'] = 'http://' . $_SERVER['HTTP_HOST'];
-        $data['wp_title'] = TimberHelper::get_wp_title();
-        $data['wp_head'] = TimberHelper::function_wrapper('wp_head');
-        $data['wp_footer'] = TimberHelper::function_wrapper('wp_footer');
-        $data['body_class'] = implode(' ', get_body_class());
+        static $context = false;
 
-        $data['site'] = new TimberSite();
-        $data['theme'] = $data['site']->theme;
-        //deprecated, these should be fetched via TimberSite or TimberTheme
-        $data['theme_dir'] = WP_CONTENT_SUBDIR.str_replace(WP_CONTENT_DIR, '', get_stylesheet_directory());
-        $data['language_attributes'] = TimberHelper::function_wrapper('language_attributes');
-        $data['stylesheet_uri'] = get_stylesheet_uri();
-        $data['template_uri'] = get_template_directory_uri();
+        if ( !$context ) {
+            $context = array();
 
-        $data['posts'] = Timber::query_posts();
-        $data['post'] = $data['posts']->current();
+            $context['http_host']  = 'http://' . $_SERVER['HTTP_HOST'];
+            $context['wp_title']   = TimberHelper::get_wp_title();
+            $context['wp_head']    = TimberHelper::function_wrapper( 'wp_head' );
+            $context['wp_footer']  = TimberHelper::function_wrapper( 'wp_footer' );
+            $context['body_class'] = implode( ' ', get_body_class() );
 
-        //deprecated, this should be fetched via TimberMenu
-        if (function_exists('wp_nav_menu')) {
-            $locations = get_nav_menu_locations();
-            if (count($locations)){
-                $data['wp_nav_menu'] = wp_nav_menu(array('container_class' => 'menu-header', 'echo' => false, 'menu_class' => 'nav-menu'));
+            $context['site']  = new TimberSite();
+            $context['theme'] = $context['site']->theme;
+            $context['posts'] = Timber::query_posts();
+            $context['post']  = $context['posts']->current();
+
+            //deprecated, these should be fetched via TimberSite or TimberTheme
+            $context['theme_dir']           = WP_CONTENT_SUBDIR . str_replace( WP_CONTENT_DIR, '', get_stylesheet_directory() );
+            $context['language_attributes'] = TimberHelper::function_wrapper( 'language_attributes' );
+            $context['stylesheet_uri']      = get_stylesheet_uri();
+            $context['template_uri']        = get_template_directory_uri();
+
+            //deprecated, this should be fetched via TimberMenu
+            if ( function_exists( 'wp_nav_menu' ) ) {
+                $locations = get_nav_menu_locations();
+                if ( count( $locations ) ) {
+                    $context['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'echo' => false, 'menu_class' => 'nav-menu' ) );
+                }
             }
+            $context = apply_filters( 'timber_context', $context );
         }
-        $data = apply_filters('timber_context', $data);
-        return $data;
+
+        return $context;
     }
 
     /**
