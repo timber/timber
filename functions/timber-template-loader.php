@@ -45,9 +45,6 @@ class TimberTemplateLoader
         elseif ( is_archive()        && $template = $this->get_archive_template()        ) :
         elseif ( is_paged()          && $template = $this->get_paged_template()          ) :
         else :
-            // @todo Check if index.php has any output? Or make this a setting?
-            // This will circumvent index.php even in the scenario where index.php
-            // actually is the appropriate template.
             $template = $this->get_index_template( $wp_template );
         endif;
 
@@ -156,12 +153,9 @@ class TimberTemplateLoader
             ob_start();
             include $wp_template;
 
-            $output = ob_get_contents();
-            if ( !empty( $output ) ) {
-                ob_end_flush();
+            if ( ob_get_flush() === '' ) {
                 $use_wp_index_template = true;
                 return true;
-
             }
             $use_wp_index_template = false;
 
