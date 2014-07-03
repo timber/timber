@@ -64,7 +64,7 @@ class TimberTemplateLoader
         if ( !$template = apply_filters( 'timber/template_include', $template ) )
             return $wp_template;
 
-        $this->render( $template );
+        $this->_render( $template );
         return false; // If false is returned, WP won't try to render a template on its own
                       // (unless the template_include filter returns something..)
                       // @todo Check for plugin conflicts (WooCommerce? BuddyPress?)
@@ -81,8 +81,19 @@ class TimberTemplateLoader
         }
     }
 
-    public function render( $template ) {
+    /**
+     * Renders the template with default context
+     *
+     * @uses apply_filters Calls 'timber/context/template_loader' on the context so
+     *                      the user can set extra context vars for use only with the
+     *                      template loader
+     *
+     * @param string $template
+     */
+    protected function _render( $template ) {
         $context = Timber::get_context();
+        $context = apply_filters( 'timber/context/template_loader', $context );
+
         Timber::render( $template, $context );
     }
 
