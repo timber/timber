@@ -5,6 +5,8 @@ if ( !defined ( 'ABSPATH' ) )
 
 class TimberTemplateLoader
 {
+    const USING_TIMBER_TEMPLATE = 'using_timber_template';
+
     /**
      * @return TimberTemplateLoader
      */
@@ -25,6 +27,7 @@ class TimberTemplateLoader
     protected function init() {
         add_filter( 'index_template', array( $this, 'template_loader' ) );
         add_filter( 'home_template',  array( $this, 'home_template_loader' ) );
+        add_filter( 'template_include', array( &$this, 'maybe_prevent_template_include' ), 999 );
     }
 
     public static function load_template( $context = array() ) {
@@ -39,7 +42,7 @@ class TimberTemplateLoader
 
         // If located is true, that means that index.php has been manually included.
         if ( true === $located )
-            return false;
+            return self::USING_TIMBER_TEMPLATE;
 
         /**
          * Filter the path of the current template before including it.
@@ -50,10 +53,29 @@ class TimberTemplateLoader
             return $wp_template;
 
         self::_render( $located );
-        return false; // If false is returned, WP won't try to render a template on its own
-                      // (unless the template_include filter returns something..)
-                      // @todo Check for plugin conflicts (WooCommerce? BuddyPress?)
 
+        return self::USING_TIMBER_TEMPLATE;
+        // If self::USING_TIMBER_TEMPLATE is returned, we will prevent WP
+        // from trying to render a template on its own
+        // @todo Check for plugin conflicts (WooCommerce? BuddyPress?)
+
+    }
+
+    /**
+     * WPs template loader includes index.php for the home template so index.php
+     * has first priority after home.php. This is a little hack to undo that hack.
+     */
+    public function home_template_loader( $wp_template ) {
+        // Fastest way to check if string ends with index.php :)
+        if ( 0 === stripos( strrev( $wp_template ), 'php.xedni' ) ) {
+            return $this->template_loader( $wp_template );
+        }
+
+        return $wp_template;
+    }
+
+    public function maybe_prevent_template_include( $template ) {
+        return ( self::USING_TIMBER_TEMPLATE === $template ) ? false : $template;
     }
 
     public function locate_template( $wp_template = false ) {
@@ -90,19 +112,6 @@ class TimberTemplateLoader
         }
 
         return $template;
-    }
-
-    /**
-     * WPs template loader includes index.php for the home template so index.php
-     * has first priority after home.php. This is a little hack to undo that hack.
-     */
-    public function home_template_loader( $wp_template ) {
-        // Fastest way to check if string ends with index.php :)
-        if ( 0 === stripos( strrev( $wp_template ), 'php.xedni' ) ) {
-            return $this->template_loader( $wp_template );
-        }
-
-        return $wp_template;
     }
 
     /**
