@@ -353,7 +353,7 @@ class TimberTemplateLoader
     function get_home_template( $wp_template = false ) {
         $template = $this->get_query_template( 'home' );
 
-        if ( $wp_template )
+        if ( !$template && $wp_template )
             return $this->get_index_template( $wp_template );
 
         return $template;
