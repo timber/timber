@@ -1,6 +1,6 @@
 <?php
 
-class TimberPostGetter 
+class TimberPostGetter
 {
 
     /**
@@ -42,10 +42,9 @@ class TimberPostGetter
             return new TimberPostsCollection( $query, $PostClass );
         } else {
             // We have a query (of sorts) to work with
-            $tqi = new TimberQueryIterator( $query, $PostClass );            
+            $tqi = new TimberQueryIterator( $query, $PostClass );
             return $tqi;
         }
-        return $posts;
     }
 
     public static function get_pids($query){

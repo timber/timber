@@ -99,6 +99,12 @@ class TimberTest extends WP_UnitTestCase {
 		$this->assertTrue(arrays_are_similar($pids, $pidz));
 	}
 
+	function testQueryPostsInContext(){
+        $context = Timber::get_context();
+        $this->assertArrayHasKey( 'posts', $context );
+        $this->assertInstanceOf( 'TimberQueryIterator', $context['posts'] );
+	}
+
 	/* Terms */
 	function testGetTerms(){
 		$posts = $this->factory->post->create_many(15, array( 'post_type' => 'post' ) );

@@ -114,7 +114,7 @@ class Timber {
         return TimberPostGetter::get_posts($query, $PostClass, $return_collection);
     }
 
-    public static function query_posts($query, $PostClass = 'TimberPost') {
+    public static function query_posts($query = false, $PostClass = 'TimberPost') {
         return TimberPostGetter::query_posts( $query, $PostClass );
     }
 
@@ -242,7 +242,7 @@ class Timber {
         $data['wp_head'] = TimberHelper::function_wrapper('wp_head');
         $data['wp_footer'] = TimberHelper::function_wrapper('wp_footer');
         $data['body_class'] = implode(' ', get_body_class());
-        
+
         $data['site'] = new TimberSite();
         $data['theme'] = $data['site']->theme;
         //deprecated, these should be fetched via TimberSite or TimberTheme
@@ -250,6 +250,9 @@ class Timber {
         $data['language_attributes'] = TimberHelper::function_wrapper('language_attributes');
         $data['stylesheet_uri'] = get_stylesheet_uri();
         $data['template_uri'] = get_template_directory_uri();
+
+        $data['posts'] = Timber::query_posts();
+        
         //deprecated, this should be fetched via TimberMenu
         if (function_exists('wp_nav_menu')) {
             $locations = get_nav_menu_locations();
