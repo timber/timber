@@ -4,7 +4,7 @@
 By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a href="http://upstatement.com">Upstatement</a> (<a href="http://twitter.com/upstatement">@Upstatement</a>)</div>
 </div>
 
-[![Build Status](https://travis-ci.org/jarednova/timber.png)](https://travis-ci.org/jarednova/timber)
+[![Build Status](https://travis-ci.org/jarednova/timber.png?branch=master)](https://travis-ci.org/jarednova/timber)
 
 ### Because WordPress is awesome, but the_loop isn't
 Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](http://twig.sensiolabs.org/) separate from your PHP files.
