@@ -12,7 +12,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     public $_custom_imported = false;
     public $_content;
     public $_get_terms;
-    
+
     public $class;
     public $display_date;
     public $id;
@@ -23,7 +23,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     public $post_title;
     public $post_type;
     public $slug;
-   
+
     /**
      *  If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
      * @param mixed $pid
@@ -694,6 +694,13 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @return string
+     */
+    function get_paged_content() {
+        global $page;
+        return $this->get_content(0,$page);
+    }
+    /**
      * @return mixed
      */
     public function get_post_type() {
@@ -837,6 +844,13 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      */
     public function content($page = 0) {
         return $this->get_content(0, $page);
+    }
+
+    /**
+     * @return string
+     */
+    public function paged_content() {
+        return $this->get_paged_content();
     }
 
     /**
