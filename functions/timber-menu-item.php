@@ -25,13 +25,10 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
         }
         $this->name = $this->name();
         $this->add_class( 'menu-item-' . $this->ID );
-        if ( method_exists( $data, 'get_link' ) ) {
-            $this->url = untrailingslashit( $data->get_link() );
-        }
         $this->parent_object = $data;
     }
 
-    function __toString(){
+    function __toString() {
         return $this->name();
     }
 
@@ -75,6 +72,13 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
      * @return string
      */
     function get_link() {
+        if (!isset($this->url)){
+            if ( isset( $this->_menu_item_type ) && $this->_menu_item_type == 'custom' ) {
+                $this->url = $this->_menu_item_url;
+            } else if ( isset($this->parent_object) && method_exists( $this->parent_object, 'get_link' ) ) {
+                $this->url = untrailingslashit( $this->parent_object->get_link() );
+            }
+        }
         return untrailingslashit( $this->url );
     }
 
