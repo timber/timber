@@ -19,6 +19,12 @@ class TimberTest extends WP_UnitTestCase {
 		$this->assertEquals('TimberPost', get_class($post));
 	}
 
+	function testGetPostBySlug(){
+		$this->factory->post->create(array('post_name' => 'kill-bill'));
+		$post = Timber::get_post('kill-bill');
+		$this->assertEquals('kill-bill', $post->post_name);
+	}
+
 	function testGetPostsQueryString(){
 		$this->factory->post->create();
 		$this->factory->post->create();
@@ -93,6 +99,12 @@ class TimberTest extends WP_UnitTestCase {
 		$this->assertTrue(arrays_are_similar($pids, $pidz));
 	}
 
+	function testQueryPostsInContext(){
+        $context = Timber::get_context();
+        $this->assertArrayHasKey( 'posts', $context );
+        $this->assertInstanceOf( 'TimberQueryIterator', $context['posts'] );
+	}
+
 	/* Terms */
 	function testGetTerms(){
 		$posts = $this->factory->post->create_many(15, array( 'post_type' => 'post' ) );
@@ -122,14 +134,21 @@ class TimberTest extends WP_UnitTestCase {
         wp_set_current_user( $editor_user_id );
 
         $post_id = $this->factory->post->create( array( 'post_author' => $editor_user_id ) );
-        _wp_put_post_revision( array( 'ID' => $post_id, 'post_content' => 'autosave_content'), true );
+        _wp_put_post_revision( array( 'ID' => $post_id, 'post_content' => 'New Stuff Goes here'), true );
 
         $_GET['preview'] = true;
         $_GET['preview_id'] = $post_id;
 
         $the_post = Timber::get_post( $post_id );
+        $this->assertEquals( 'New Stuff Goes here', $the_post->post_content );
+    }
 
-        $this->assertEquals( 'autosave_content', $the_post->post_content );
+    function testGetPid(){
+    	$post_id = $this->factory->post->create(array('post_name' => 'test-get-pid-slug'));
+    	$pid = Timber::get_pid('test-get-pid-slug');
+    	$this->assertEquals($post_id, $pid);
+    	$pid = Timber::get_pid('dfsfsdfdsfs');
+    	$this->assertNull($pid);
     }
 
 }
