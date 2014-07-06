@@ -184,6 +184,46 @@
 			$this->assertEquals($quote, trim(strip_tags($post->get_content())));
 		}
 
+		function testContentPaged(){
+            $quote = $page1 = 'The way to do well is to do well.';
+            $quote .= '<!--nextpage-->';
+            $quote .= $page2 = "And do not let your tongue get ahead of your mind.";
+
+            $post_id = $this->factory->post->create();
+            $post = new TimberPost($post_id);
+            $post->post_content = $quote;
+            wp_update_post($post);
+
+            $this->assertEquals($page1, trim(strip_tags($post->content(1))));
+            $this->assertEquals($page2, trim(strip_tags($post->content(2))));
+            $this->assertEquals($page1, trim(strip_tags($post->get_content(0,1))));
+            $this->assertEquals($page2, trim(strip_tags($post->get_content(0,2))));
+		}
+
+        function testPagedContent(){
+            $quote = $page1 = 'Named must your fear be before banish it you can.';
+            $quote .= '<!--nextpage-->';
+            $quote .= $page2 = "No, try not. Do or do not. There is no try.";
+
+            $post_id = $this->factory->post->create(array('post_content' => $quote));
+
+            $this->go_to( get_permalink( $post_id ) );
+
+            // @todo The below should work magically when the iterators are merged
+            setup_postdata( get_post( $post_id ) );
+
+            $post = Timber::get_post();
+			$this->assertEquals($page1, trim(strip_tags($post->get_paged_content())));
+
+            $pagination = $post->get_pagination();
+            $this->go_to( $pagination['pages'][1]['link'] );
+
+            setup_postdata( get_post( $post_id ) );
+            $post = Timber::get_post();
+
+			$this->assertEquals($page2, trim(strip_tags($post->get_paged_content())));
+		}
+
 		function testMetaCustomArrayFilter(){
 			add_filter('timber_post_get_meta', function($customs){
 				foreach($customs as $key=>$value){
