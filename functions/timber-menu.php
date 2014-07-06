@@ -1,7 +1,6 @@
 <?php
 
-class TimberMenu extends TimberCore
-{
+class TimberMenu extends TimberCore {
 
     public $MenuItemClass = 'TimberMenuItem';
     public $PostClass = 'TimberPost';

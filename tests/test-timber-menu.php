@@ -3,14 +3,17 @@ class TimberMenuTest extends WP_UnitTestCase {
 
 	function testBlankMenu() {
 		$struc = '/%postname%/';
+		global $wp_rewrite;
+    	$wp_rewrite->set_permalink_structure($struc);
+    	$wp_rewrite->flush_rules();
 		update_option( 'permalink_structure', $struc );
+		flush_rewrite_rules(true);
 		$this->_createTestMenu();
 		$menu = new TimberMenu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
 		$this->assertEquals( 2, count( $menu->get_items() ) );
-		$this->assertEquals( count( $menu->get_items() ), substr_count( $nav_menu, '<li' ) );
 		$items = $menu->get_items();
-		$item = $items[1];
+		$item = $items[0];
 		$this->assertEquals( 'home', $item->slug() );
 		$this->assertFalse( $item->is_external() );
 		$struc = get_option( 'permalink_structure' );
@@ -22,11 +25,17 @@ class TimberMenuTest extends WP_UnitTestCase {
 	}
 
 	function testMenuTwig() {
+		$struc = '/%postname%/';
+		global $wp_rewrite;
+    	$wp_rewrite->set_permalink_structure($struc);
+    	$wp_rewrite->flush_rules();
+		update_option( 'permalink_structure', $struc );
 		$context = Timber::get_context();
 		$this->_createTestMenu();
 		$context['menu'] = new TimberMenu();
 		$str = Timber::compile( 'assets/child-menu.twig', $context );
-		echo $str;
+		$str = preg_replace('/\s+/', '', $str);
+		$this->assertEquals('<ulclass="navnavbar-nav"><li><ahref="http://example.org/home"class="has-children">Home</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page">ChildPage</a></li></ul><li><ahref="http://upstatement.com"class="no-children">Upstatement</a></ul>', $str);
 	}
 
 	function testMenuItemLink() {
@@ -36,9 +45,8 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$menu = new TimberMenu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
 		$this->assertEquals( 2, count( $menu->get_items() ) );
-		$this->assertEquals( count( $menu->get_items() ), substr_count( $nav_menu, '<li' ) );
 		$items = $menu->get_items();
-		$item = $items[0];
+		$item = $items[1];
 		$this->assertTrue( $item->is_external() );
 		$struc = get_option( 'permalink_structure' );
 		$this->assertEquals( 'http://upstatement.com', $item->permalink() );
@@ -72,7 +80,8 @@ class TimberMenuTest extends WP_UnitTestCase {
 				'post_title' => 'Home',
 				'post_status' => 'publish',
 				'post_name' => 'home',
-				'post_type' => 'page'
+				'post_type' => 'page',
+				'menu_order' => 1
 			)
 		);
 		$parent_id = wp_insert_post( array(
@@ -90,8 +99,8 @@ class TimberMenuTest extends WP_UnitTestCase {
 			array(
 				'post_title' => 'Upstatement',
 				'post_status' => 'publish',
-				'post_name' => '',
-				'post_type' => 'nav_menu_item'
+				'post_type' => 'nav_menu_item',
+				'menu_order' => 2
 			)
 		);
 
@@ -104,18 +113,21 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$child_id = wp_insert_post( array(
 				'post_title' => 'Child Page',
 				'post_status' => 'publish',
+				'post_name' => 'child-page',
 				'post_type' => 'page',
+				'menu_order' => 3,
 			) );
 		$child_menu_item = wp_insert_post( array(
 				'post_title' => '',
+				'post_status' => 'publish',
 				'post_type' => 'nav_menu_item',
-				'menu_order' => 2,
 			) );
 		update_post_meta( $child_menu_item, '_menu_item_type', 'post_type' );
 		update_post_meta( $child_menu_item, '_menu_item_menu_item_parent', $parent_id );
 		update_post_meta( $child_menu_item, '_menu_item_object_id', $child_id );
 		update_post_meta( $child_menu_item, '_menu_item_object', 'page' );
 		update_post_meta( $child_menu_item, '_menu_item_url', '' );
+		$post = new TimberPost($child_menu_item);
 		$menu_items[] = $child_menu_item;
 		foreach ( $menu_items as $object_id ) {
 			$query = "INSERT INTO $wpdb->term_relationships (object_id, term_taxonomy_id, term_order) VALUES ($object_id, $menu_id, 0);";
