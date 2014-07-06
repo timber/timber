@@ -1,7 +1,6 @@
 <?php
 
-class TimberImage extends TimberCore
-{
+class TimberImage extends TimberPost implements TimberCoreInterface {
 
     public $_can_edit;
     public $_dimensions;
@@ -53,7 +52,6 @@ class TimberImage extends TimberCore
         $this->_dimensions = array();
         $this->_dimensions[0] = $width;
         $this->_dimensions[1] = $height;
-        TimberHelper::error_log($this->_dimensions);
         return $this->get_dimensions_loaded($dim);
     }
 
@@ -164,7 +162,7 @@ class TimberImage extends TimberCore
     /**
      * @param int $iid
      */
-    function init($iid) {
+    function init( $iid = false ) {
         if (!is_numeric($iid) && is_string($iid)) {
             if (strstr($iid, '://')) {
                 $this->init_with_url($iid);
@@ -225,7 +223,7 @@ class TimberImage extends TimberCore
     /**
      * @param string $url
      */
-    function init_with_url($url) {
+    private function init_with_url($url) {
         $this->abs_url = $url;
         $this->file_loc = $url;
         if (TimberURLHelper::is_local($url)) {

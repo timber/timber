@@ -4,21 +4,18 @@
 
         private function _generate_transient_name() {
             static $i = 0;
-
             $i++;
             return 'timber_test_transient_' . $i;
         }
 
         function testTransientLock() {
             $transient = $this->_generate_transient_name();
-
             TimberHelper::_lock_transient( $transient, 5 );
             $this->assertTrue( TimberHelper::_is_transient_locked( $transient ) );
         }
 
         function testTransientUnlock() {
             $transient = $this->_generate_transient_name();
-
             TimberHelper::_lock_transient( $transient, 5 );
             TimberHelper::_unlock_transient( $transient, 5 );
             $this->assertFalse( TimberHelper::_is_transient_locked( $transient ) );
@@ -181,6 +178,24 @@
         	$loader = new TimberLoader();
         	$loader->clear_cache_twig();
         	$this->assertFileNotExists($cache_dir);
+        }
+
+        function testTimberLoaderCache(){
+            global $wp_object_cache;
+            $pid = $this->factory->post->create();
+            $post = new TimberPost($pid);
+            $str_old = Timber::compile('assets/single-post.twig', array('post' => $post), 600);
+            sleep(1);
+            $str_new = Timber::compile('assets/single-post.twig', array('post' => $post), 600);
+            $this->assertEquals($str_old, $str_new);
+            $loader = new TimberLoader();
+            $clear = $loader->clear_cache_timber();
+            $this->assertTrue($clear);
+            global $wpdb;
+            $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
+            $wpdb->query( $query );
+            $this->assertEquals(0, $wpdb->num_rows);
+
         }
 
 	}

@@ -1,7 +1,6 @@
 <?php
 
-class TimberUser extends TimberCore
-{
+class TimberUser extends TimberCore implements TimberCoreInterface {
 
     public $object_type = 'user';
     public static $representation = 'user';

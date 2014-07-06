@@ -9,6 +9,18 @@
 			$this->assertEquals($post_id, $post->ID);
 		}
 
+		function testNonexistentProperty(){
+			$post_id = $this->factory->post->create();
+			$post = new TimberPost( $post_id );
+			// $this->assertFalse( $post->zebra );
+		}
+
+		function testNonexistentMethod(){
+			$post_id = $this->factory->post->create();
+			$post = new TimberPost( $post_id );
+			// $this->assertFalse( $post->donkey() );
+		}
+
 		function testNext(){
 			$posts = array();
 			for($i = 0; $i<2; $i++){
@@ -206,6 +218,12 @@
 			$child_id = $this->factory->post->create(array('post_parent' => $parent_id));
 			$child_post = new TimberPost($child_id);
 			$this->assertEquals($parent_id, $child_post->parent()->ID);
+		}
+
+		function testPostSlug(){
+			$pid = $this->factory->post->create(array('post_name' => 'the-adventures-of-tom-sawyer'));
+			$post = new TimberPost($pid);
+			$this->assertEquals('the-adventures-of-tom-sawyer', $post->slug);
 		}
 
 		function testPostAuthor(){

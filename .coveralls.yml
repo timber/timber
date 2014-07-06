@@ -1,0 +1,2 @@
+coverage_clover: build/logs/clover.xml
+service_name: travis-ci

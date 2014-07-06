@@ -1,7 +1,6 @@
 <?php
 
-class TimberComment extends TimberCore
-{
+class TimberComment extends TimberCore implements TimberCoreInterface {
 
     public $PostClass = 'TimberPost';
     public $object_type = 'comment';
@@ -21,6 +20,10 @@ class TimberComment extends TimberCore
      */
     function __construct($cid) {
         $this->init($cid);
+    }
+
+    function __toString(){
+        return $this->content();
     }
 
     /**

@@ -1,10 +1,46 @@
 <?php
 
-class TimberCore {
+abstract class TimberCore {
 
+    public $id;
     public $ID;
     public $object_type;
-    public $url;
+
+    /**
+     *
+     *
+     * @return boolean
+     */
+    function __isset( $field ) {
+        if ( isset( $this->$field ) ) {
+            return $this->$field;
+        }
+        return false;
+    }
+
+    /**
+     * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2 
+     * @return mixed
+     */
+    function __call( $field, $args ) {
+        return $this->__get( $field );
+    }
+
+    /**
+     * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2 
+     *
+     * @return mixed
+     */
+    function __get( $field ) {
+        if ( !isset( $this->$field ) ) {
+            if ( $meta_value = $this->meta( $field ) ) {
+                $this->$field = $meta_value;
+            } else if (method_exists($this, $field)){
+                $this->$field = $this->$field();
+            }
+        }
+        return $this->$field;
+    }
 
     /**
      *
@@ -23,6 +59,7 @@ class TimberCore {
             }
         }
     }
+
 
     /**
      *
