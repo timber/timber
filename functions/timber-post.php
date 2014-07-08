@@ -698,7 +698,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      */
     function get_paged_content() {
         global $page;
-        return $this->get_content(0,$page);
+        return $this->get_content(0, $page);
     }
     /**
      * @return mixed

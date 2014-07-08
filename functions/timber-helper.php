@@ -571,58 +571,100 @@ class TimberHelper {
 
     /* LEGACY These have since been re-organized; but keeping linkages for backwards-compatibility */
     
+    /**
+     * @deprecated
+     */
     static function get_image_path( $iid ) {
         return TimberImageHelper::get_image_path( $iid );
     }
 
+    /**
+     * @deprecated
+     */
     static function get_current_url() {
         return TimberURLHelper::get_current_url();
     }
 
+    /**
+     * @deprecated
+     */
     static function is_url( $url ) {
         return TimberURLHelper::is_url( $url );
     }
 
+    /**
+     * @deprecated
+     */
     static function get_path_base() {
         return TimberURLHelper::get_path_base();
     }
 
+    /**
+     * @deprecated
+     */
     static function get_rel_url( $url, $force = false ) {
         return TimberURLHelper::get_rel_url( $url, $force );
     }
 
+    /**
+     * @deprecated
+     */
     static function is_local( $url ) {
         return TimberURLHelper::is_local( $url );
     }
 
+    /**
+     * @deprecated
+     */
     static function get_full_path( $src ) {
         return TimberURLHelper::get_full_path( $src );
     }
 
+    /**
+     * @deprecated
+     */
     static function get_rel_path( $src ) {
         return TimberURLHelper::get_rel_path( $src );
     }
 
+    /**
+     * @deprecated
+     */
     static function remove_double_slashes( $url ) {
         return TimberURLHelper::remove_double_slashes( $url );
     }
 
+    /**
+     * @deprecated
+     */
     static function prepend_to_url( $url, $path ) {
         return TimberURLHelper::prepend_to_url( $url, $path );
     }
 
+    /**
+     * @deprecated
+     */
     static function preslashit( $path ) {
         return TimberURLHelper::preslashit( $path );
     }
 
+    /**
+     * @deprecated
+     */
     static function is_external( $url ) {
         return TimberURLHelper::is_external( $url );
     }
 
+    /**
+     * @deprecated
+     */
     static function download_url( $url, $timeout = 300 ) {
         return TimberURLHelper::download_url( $url, $timeout );
     }
 
+    /**
+     * @deprecated
+     */
     static function get_params( $i = -1 ) {
         return TimberURLHelper::get_params( $i );
     }
