@@ -540,6 +540,7 @@ class TimberHelper {
                         'class' => 'page-number page-numbers',
                         'link' => esc_url( apply_filters( 'paginate_links', $link ) ),
                         'title' => $n_display,
+                        'name' => $n_display,
                         'current' => $args['current'] == $n
                     );
                     $dots = true;
