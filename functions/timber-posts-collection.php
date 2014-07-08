@@ -8,7 +8,9 @@ class TimberPostsCollection extends ArrayObject {
 
     public function __construct( $array = array(), $post_class = 'TimberPost' ) {
         $posts = array();
-
+        if ( is_null( $array ) ){
+            $array = array();
+        }
         foreach ( $array as $rid ) {
             $post_class_use = $post_class;
 
