@@ -12,13 +12,13 @@
 		function testNonexistentProperty(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost( $post_id );
-			// $this->assertFalse( $post->zebra );
+			$this->assertFalse( $post->zebra );
 		}
 
 		function testNonexistentMethod(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost( $post_id );
-			// $this->assertFalse( $post->donkey() );
+			$this->assertFalse( $post->donkey() );
 		}
 
 		function testNext(){

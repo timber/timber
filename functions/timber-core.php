@@ -37,6 +37,8 @@ abstract class TimberCore {
                 $this->$field = $meta_value;
             } else if (method_exists($this, $field)){
                 $this->$field = $this->$field();
+            } else {
+                $this->$field = false;
             }
         }
         return $this->$field;
