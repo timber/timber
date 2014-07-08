@@ -672,6 +672,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      * @return string
      */
     function get_content($len = 0, $page = 0) {
+        if (post_password_required($this)) {
+            return get_the_password_form($this);
+        }
         if ($len == 0 && $page == 0 && $this->_content) {
             return $this->_content;
         }
