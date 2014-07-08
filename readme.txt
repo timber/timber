@@ -41,6 +41,14 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 0.20.0 =
+* Iterators! You can now get data using query_posts which hooks into WP loop. Methods like get_the_title() now work (big thanks to @mgmartel)
+* Fixed img_to_jpg issue with alternate WP setups (@thetmkay)
+* Fixed issue with links in TimberMenuItem
+* post.date now supports a DateTime object (@aduth)
+* removal of long-since deprecated functions
+* Massive code clean-up and bug fixes (@jaredNova, @mgmartel)
+
 = 0.19.2 =
 * Fixed issue with {{post.author.name}}
 * Bug fixes and code organization (@hsz, @jaredNova)
