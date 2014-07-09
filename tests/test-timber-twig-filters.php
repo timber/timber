@@ -25,7 +25,7 @@
 			$data['bday'] = $date;
 			$str = Timber::compile_string("{{bday|date('M j, Y')}}", $data);
 			$this->assertEquals('Sep 28, 1983', trim($str));
-			$date = new DateTime($date);
+			$data['bday'] = new DateTime($date);
 			$str = Timber::compile_string("{{bday|date('M j, Y')}}", $data);
 			$this->assertEquals('Sep 28, 1983', trim($str));
 		}
