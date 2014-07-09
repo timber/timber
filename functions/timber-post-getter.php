@@ -88,6 +88,20 @@ class TimberPostGetter
         return new TimberPostsCollection( $posts, $PostClass );
     }
 
+    static function loop_to_id() {
+        if (!self::wp_query_has_posts()) { return false; }
+
+        global $wp_query;
+        $post_num = property_exists($wp_query, 'current_post')
+                  ? $wp_query->current_post + 1
+                  : 0
+                  ;
+
+        if (!isset($wp_query->posts[$post_num])) { return false; }
+
+        return $wp_query->posts[$post_num]->ID;
+    }
+
     /**
      * @return bool
      */

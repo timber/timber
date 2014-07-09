@@ -33,7 +33,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
         if ($pid === null && get_the_ID()) {
             $pid = get_the_ID();
             $this->ID = $pid;
-        } else if ($pid === null && ($pid_from_loop = Timber::loop_to_id())) {
+        } else if ($pid === null && ($pid_from_loop = TimberPostGetter::loop_to_id())) {
             $this->ID = $pid_from_loop;
         }
         if (is_numeric($pid)) {
@@ -827,8 +827,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     /**
      * @return array
      */
-    public function children() {
-        return $this->get_children();
+    public function children( $post_type = 'any', $childPostClass = false ) {
+        return $this->get_children( $post_type, $childPostClass );
     }
 
     /**

@@ -9,6 +9,23 @@
 			$this->assertEquals($post_id, $post->ID);
 		}
 
+		function testPostOnSingle(){
+			$post_id = $this->factory->post->create();
+			$this->go_to(home_url('/?p='.$post_id));
+			$post = new TimberPost();
+			$this->assertEquals($post_id, $post->ID);
+		}
+
+		function testPostOnBuddyPressPage(){
+			$post_id = $this->factory->post->create();
+			global $post;
+			$this->go_to(home_url('/?p='.$post_id));
+			$_post = $post;
+			$post = null;
+			$my_post = new TimberPost();
+			$this->assertEquals($post_id, $my_post->ID);
+		}
+
 		function testNonexistentProperty(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost( $post_id );
