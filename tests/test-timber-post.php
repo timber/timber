@@ -224,6 +224,20 @@
 			$this->assertEquals($page2, trim(strip_tags($post->get_paged_content())));
 		}
 
+		function testPasswordedContent(){
+			$quote = 'The way to do well is to do well.';
+			$post_id = $this->factory->post->create();
+			$post = new TimberPost($post_id);
+			$post->post_content = $quote;
+			$post->post_password = 'burrito';
+			wp_update_post($post);
+			ob_start();
+			get_the_password_form($post);
+			$password_form = ob_end_clean();
+			$this->assertEquals($password_form, $post->content());
+			$this->assertEquals($password_form, $post->get_content());
+		}
+
 		function testMetaCustomArrayFilter(){
 			add_filter('timber_post_get_meta', function($customs){
 				foreach($customs as $key=>$value){
