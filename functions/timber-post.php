@@ -560,6 +560,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      * @return array
      */
     function get_terms($tax = '', $merge = true, $TermClass = 'TimberTerm') {
+        if (is_string($merge) && class_exists($merge)){
+            $TermClass = $merge;
+        }
         if (is_string($tax)) {
             if (isset($this->_get_terms) && isset($this->_get_terms[$tax])) {
                 return $this->_get_terms[$tax];
