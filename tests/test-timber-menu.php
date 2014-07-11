@@ -32,10 +32,33 @@ class TimberMenuTest extends WP_UnitTestCase {
 		update_option( 'permalink_structure', $struc );
 		$context = Timber::get_context();
 		$this->_createTestMenu();
+		$this->go_to(home_url('/child-page'));
 		$context['menu'] = new TimberMenu();
 		$str = Timber::compile( 'assets/child-menu.twig', $context );
 		$str = preg_replace('/\s+/', '', $str);
 		$this->assertEquals('<ulclass="navnavbar-nav"><li><ahref="http://example.org/home"class="has-children">Home</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page">ChildPage</a></li></ul><li><ahref="http://upstatement.com"class="no-children">Upstatement</a></ul>', $str);
+	}
+
+	function testMenuTwigWithClasses(){
+		$struc = '/%postname%/';
+		global $wp_rewrite;
+    	$wp_rewrite->set_permalink_structure($struc);
+    	$wp_rewrite->flush_rules();
+		update_option( 'permalink_structure', $struc );
+		$this->_createTestMenu();
+		$this->go_to(home_url('/home'));
+		$context = Timber::get_context();
+
+		
+
+		$context['menu'] = new TimberMenu();
+		$str = Timber::compile( 'assets/menu-classes.twig', $context );
+		$str = trim($str);
+		$this->assertContains('current_page_item', $str);
+		$this->assertContains('current-menu-item', $str);
+		$this->assertContains('menu-item-object-page', $str);
+		$this->assertNotContains('foobar', $str);
+		
 	}
 
 	function testMenuItemLink() {

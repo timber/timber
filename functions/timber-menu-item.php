@@ -6,7 +6,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
     public $has_child_class = false;
 
     public $classes = array();
-    public $class;
+    public $class = '';
     public $post_name;
     public $type;
 
@@ -131,7 +131,9 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
      * @param object  $data
      */
     function import_classes( $data ) {
-        $this->class = trim( implode( ' ', $data->classes ) );
+        $this->classes = array_merge($this->classes, $data->classes);
+        $this->classes = array_unique($this->classes);
+        $this->class = trim( implode( ' ', $this->classes ) );
     }
 
     /**
