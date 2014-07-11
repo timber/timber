@@ -18,7 +18,7 @@ class TimberPostGetter
 
     public static function get_posts( $query = false, $PostClass = 'TimberPost', $return_collection = false ) {
         $posts = self::query_posts( $query, $PostClass );
-        return $posts->get_posts( $return_collection );
+        return apply_filters('timber_post_getter_posts',$posts->get_posts( $return_collection ));
     }
 
 	/**
