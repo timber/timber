@@ -1,7 +1,6 @@
 <?php
 
-class TimberPostGetter
-{
+class TimberPostGetter {
 
     /**
      * @param mixed $query
@@ -11,14 +10,14 @@ class TimberPostGetter
     public static function get_post($query = false, $PostClass = 'TimberPost') {
         $posts = self::get_posts( $query, $PostClass );
         if ( $post = reset( $posts ) ) {
-            return $post;
+            return apply_filters('timber_post_getter_get_post', $post);
         }
         return false;
     }
 
     public static function get_posts( $query = false, $PostClass = 'TimberPost', $return_collection = false ) {
         $posts = self::query_posts( $query, $PostClass );
-        return apply_filters('timber_post_getter_posts',$posts->get_posts( $return_collection ));
+        return apply_filters('timber_post_getter_get_posts', $posts->get_posts( $return_collection ));
     }
 
 	/**
