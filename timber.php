@@ -54,7 +54,7 @@ require_once(__DIR__ . '/functions/timber-admin.php');
  *  $posts = Timber::get_posts(array(23,24,35,67), 'InkwellArticle');
  *
  *  $context = Timber::get_context(); // returns wp favorites!
- *
+ *  $context['posts'] = $posts;
  *  Timber::render('index.twig', $context);
  */
 
@@ -114,6 +114,11 @@ class Timber {
         return TimberPostGetter::get_posts($query, $PostClass, $return_collection);
     }
 
+    /**
+     * @param mixed $query
+     * @param string $PostClass
+     * @return array|bool|null
+     */
     public static function query_posts($query = false, $PostClass = 'TimberPost') {
         return TimberPostGetter::query_posts( $query, $PostClass );
     }

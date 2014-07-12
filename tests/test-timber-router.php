@@ -44,6 +44,23 @@ class TimberTestRouter extends WP_UnitTestCase {
 		$this->assertEquals(1, count($matches));
 	}
 
+	function testRouteAgainstPostName(){
+		$post_name = 'jared';
+		$post = $this->factory->post->create(array('post_title' => 'Jared', 'post_name' => $post_name));
+		global $matches;
+		$matches = array();
+		$phpunit = $this;
+		Timber::add_route('randomthing/'.$post_name, function() use ($phpunit) {
+			global $matches;
+			$phpunit->assertTrue(true);
+			$matches[] = true; 
+		});
+		$this->go_to(home_url('/randomthing/'.$post_name));
+		global $timber;
+		$timber->init_routes();
+		$this->assertEquals(1, count($matches));
+	}
+
 	function testFailedRoute(){
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 		global $matches;
