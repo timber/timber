@@ -49,7 +49,7 @@ class TimberRoutes {
      * @param bool $tparams
      * @return bool
      */
-    public static function load_view($template, $query = false, $force_header = 0, $tparams = false) {
+    public static function load_view($template, $query = false, $force_header = 200, $tparams = false) {
         $fullPath = is_readable($template);
         if (!$fullPath) {
             $template = locate_template($template);
