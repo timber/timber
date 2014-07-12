@@ -9,16 +9,33 @@
 			$this->assertEquals($post_id, $post->ID);
 		}
 
+		function testPostOnSingle(){
+			$post_id = $this->factory->post->create();
+			$this->go_to(home_url('/?p='.$post_id));
+			$post = new TimberPost();
+			$this->assertEquals($post_id, $post->ID);
+		}
+
+		function testPostOnBuddyPressPage(){
+			$post_id = $this->factory->post->create();
+			global $post;
+			$this->go_to(home_url('/?p='.$post_id));
+			$_post = $post;
+			$post = null;
+			$my_post = new TimberPost();
+			$this->assertEquals($post_id, $my_post->ID);
+		}
+
 		function testNonexistentProperty(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost( $post_id );
-			// $this->assertFalse( $post->zebra );
+			$this->assertFalse( $post->zebra );
 		}
 
 		function testNonexistentMethod(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost( $post_id );
-			// $this->assertFalse( $post->donkey() );
+			$this->assertFalse( $post->donkey() );
 		}
 
 		function testNext(){
@@ -140,12 +157,11 @@
 			$struc = false;
 			$wp_rewrite->permalink_structure = $struc;
 			update_option('permalink_structure', $struc);
-			$post_id = $this->factory->post->create();
+			$post_id = $this->factory->post->create(array('post_content' => 'this is super dooper trooper long words'));
 			$post = new TimberPost($post_id);
 
 			// no excerpt
 			$post->post_excerpt = '';
-			$post->post_content = 'this is super dooper trooper long words';
 			$preview = $post->get_preview(3);
 			$this->assertRegExp('/this is super &hellip;  <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Read More<\/a>/', $preview);
 
@@ -162,7 +178,7 @@
 			// content with <!--more--> tag, force false
 			$post->post_content = 'this is super dooper<!--more--> trooper long words';
 			$preview = $post->get_preview(2, false, '');
-			$this->assertEquals($preview, 'this is super dooper');
+			$this->assertEquals('this is super dooper', $preview);
 		}
 
 		function testTitle(){
@@ -183,6 +199,46 @@
 			wp_update_post($post);
 			$this->assertEquals($quote, trim(strip_tags($post->content())));
 			$this->assertEquals($quote, trim(strip_tags($post->get_content())));
+		}
+
+		function testContentPaged(){
+            $quote = $page1 = 'The way to do well is to do well.';
+            $quote .= '<!--nextpage-->';
+            $quote .= $page2 = "And do not let your tongue get ahead of your mind.";
+
+            $post_id = $this->factory->post->create();
+            $post = new TimberPost($post_id);
+            $post->post_content = $quote;
+            wp_update_post($post);
+
+            $this->assertEquals($page1, trim(strip_tags($post->content(1))));
+            $this->assertEquals($page2, trim(strip_tags($post->content(2))));
+            $this->assertEquals($page1, trim(strip_tags($post->get_content(0,1))));
+            $this->assertEquals($page2, trim(strip_tags($post->get_content(0,2))));
+		}
+
+        function testPagedContent(){
+            $quote = $page1 = 'Named must your fear be before banish it you can.';
+            $quote .= '<!--nextpage-->';
+            $quote .= $page2 = "No, try not. Do or do not. There is no try.";
+
+            $post_id = $this->factory->post->create(array('post_content' => $quote));
+
+            $this->go_to( get_permalink( $post_id ) );
+
+            // @todo The below should work magically when the iterators are merged
+            setup_postdata( get_post( $post_id ) );
+
+            $post = Timber::get_post();
+			$this->assertEquals($page1, trim(strip_tags($post->get_paged_content())));
+
+            $pagination = $post->get_pagination();
+            $this->go_to( $pagination['pages'][1]['link'] );
+
+            setup_postdata( get_post( $post_id ) );
+            $post = Timber::get_post();
+
+			$this->assertEquals($page2, trim(strip_tags($post->get_paged_content())));
 		}
 
 		function testMetaCustomArrayFilter(){

@@ -25,6 +25,9 @@
 			$data['bday'] = $date;
 			$str = Timber::compile_string("{{bday|date('M j, Y')}}", $data);
 			$this->assertEquals('Sep 28, 1983', trim($str));
+			$data['bday'] = new DateTime($date);
+			$str = Timber::compile_string("{{bday|date('M j, Y')}}", $data);
+			$this->assertEquals('Sep 28, 1983', trim($str));
 		}
 
 		function testTwigFilterDateWordPressFormat(){

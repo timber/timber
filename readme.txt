@@ -2,8 +2,8 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.19.2
-Tested up to: 3.9
+Stable tag: 0.20.1
+Tested up to: 3.9.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -40,6 +40,17 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.20.1 =
+* Hotfix to ensure non-exitent properties don't throw exception (thanks @kylehotchkiss)
+
+= 0.20.0 =
+* Iterators! You can now get data using query_posts which hooks into WP loop. Methods like get_the_title() now work (big thanks to @mgmartel)
+* Fixed img_to_jpg issue with alternate WP setups (@thetmkay)
+* Fixed issue with links in TimberMenuItem
+* post.date now supports a DateTime object (@aduth)
+* removal of long-since deprecated functions
+* Massive code clean-up and bug fixes (@jaredNova, @mgmartel)
 
 = 0.19.2 =
 * Fixed issue with {{post.author.name}}

@@ -12,7 +12,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     public $_custom_imported = false;
     public $_content;
     public $_get_terms;
-    
+
     public $class;
     public $display_date;
     public $id;
@@ -23,7 +23,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     public $post_title;
     public $post_type;
     public $slug;
-   
+
     /**
      *  If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
      * @param mixed $pid
@@ -33,7 +33,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
         if ($pid === null && get_the_ID()) {
             $pid = get_the_ID();
             $this->ID = $pid;
-        } else if ($pid === null && ($pid_from_loop = Timber::loop_to_id())) {
+        } else if ($pid === null && ($pid_from_loop = TimberPostGetter::loop_to_id())) {
             $this->ID = $pid_from_loop;
         }
         if (is_numeric($pid)) {
@@ -560,6 +560,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      * @return array
      */
     function get_terms($tax = '', $merge = true, $TermClass = 'TimberTerm') {
+        if (is_string($merge) && class_exists($merge)){
+            $TermClass = $merge;
+        }
         if (is_string($tax)) {
             if (isset($this->_get_terms) && isset($this->_get_terms[$tax])) {
                 return $this->_get_terms[$tax];
@@ -694,6 +697,13 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @return string
+     */
+    function get_paged_content() {
+        global $page;
+        return $this->get_content(0, $page);
+    }
+    /**
      * @return mixed
      */
     public function get_post_type() {
@@ -820,8 +830,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     /**
      * @return array
      */
-    public function children() {
-        return $this->get_children();
+    public function children( $post_type = 'any', $childPostClass = false ) {
+        return $this->get_children( $post_type, $childPostClass );
     }
 
     /**
@@ -837,6 +847,13 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      */
     public function content($page = 0) {
         return $this->get_content(0, $page);
+    }
+
+    /**
+     * @return string
+     */
+    public function paged_content() {
+        return $this->get_paged_content();
     }
 
     /**

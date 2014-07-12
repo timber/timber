@@ -37,6 +37,8 @@ abstract class TimberCore {
                 $this->$field = $meta_value;
             } else if (method_exists($this, $field)){
                 $this->$field = $this->$field();
+            } else {
+                $this->$field = false;
             }
         }
         return $this->$field;
@@ -45,7 +47,7 @@ abstract class TimberCore {
     /**
      *
      *
-     * @param array|object $info
+     * @param array|object $info an object or array you want to grab data from to attach to the Timber object
      */
     function import( $info ) {
         if ( is_object( $info ) ) {
@@ -99,21 +101,6 @@ abstract class TimberCore {
         $ret = array();
         $ret['can_edit'] = $this->can_edit();
         return $ret;
-    }
-
-    /**
-     *
-     *
-     * @deprecated
-     * @param string  $url
-     * @return mixed
-     */
-    function url_to_path( $url = '' ) {
-        if ( !strlen( $url ) && $this->url ) {
-            $url = $this->url;
-        }
-        $url_info = parse_url( $url );
-        return $url_info['path'];
     }
 
 }

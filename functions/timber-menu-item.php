@@ -6,10 +6,13 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
     public $has_child_class = false;
 
     public $classes = array();
-    public $class;
+    public $class = '';
     public $post_name;
     public $type;
 
+    public $PostClass = 'TimberPost';
+
+    private $menu_object;
     private $parent_object;
 
     /**
@@ -25,13 +28,13 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
         }
         $this->name = $this->name();
         $this->add_class( 'menu-item-' . $this->ID );
-        if ( method_exists( $data, 'get_link' ) ) {
-            $this->url = untrailingslashit( $data->get_link() );
+        $this->menu_object = $data;
+        if ( isset( $this->url ) && $this->url ) {
+            $this->url = untrailingslashit( $this->url );
         }
-        $this->parent_object = $data;
     }
 
-    function __toString(){
+    function __toString() {
         return $this->name();
     }
 
@@ -66,7 +69,19 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
      * @return string
      */
     function slug() {
+        if ( !isset( $this->parent_object ) ) {
+            $this->parent_object = $this->get_parent_object();
+        }
+        if ( isset( $this->parent_object->post_name ) && $this->parent_object->post_name ) {
+            return $this->parent_object->post_name;
+        }
         return $this->post_name;
+    }
+
+    function get_parent_object() {
+        if ( isset( $this->_menu_item_object_id ) ) {
+            return new $this->PostClass( $this->_menu_item_object_id );
+        }
     }
 
     /**
@@ -75,6 +90,13 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
      * @return string
      */
     function get_link() {
+        if ( !isset( $this->url ) || !$this->url ) {
+            if ( isset( $this->_menu_item_type ) && $this->_menu_item_type == 'custom' ) {
+                $this->url = $this->_menu_item_url;
+            } else if ( isset( $this->menu_object ) && method_exists( $this->menu_object, 'get_link' ) ) {
+                    $this->url = untrailingslashit( $this->menu_object->get_link() );
+                }
+        }
         return untrailingslashit( $this->url );
     }
 
@@ -84,7 +106,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
      * @return string
      */
     function get_path() {
-        return untrailingslashit( TimberURLHelper::get_rel_url( $this->url ) );
+        return untrailingslashit( TimberURLHelper::get_rel_url( $this->get_link() ) );
     }
 
     /**
@@ -109,7 +131,9 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
      * @param object  $data
      */
     function import_classes( $data ) {
-        $this->class = trim( implode( ' ', $data->classes ) );
+        $this->classes = array_merge($this->classes, $data->classes);
+        $this->classes = array_unique($this->classes);
+        $this->class = trim( implode( ' ', $this->classes ) );
     }
 
     /**
@@ -137,8 +161,8 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
     }
 
     public function meta( $key ) {
-        if ( is_object( $this->parent_object ) && method_exists( $this->parent_object, 'meta' ) ) {
-            return $this->meta( $key );
+        if ( is_object( $this->menu_object ) && method_exists( $this->menu_object, 'meta' ) ) {
+            return $this->menu_object->meta( $key );
         }
         if ( isset( $this->$key ) ) {
             return $this->$key;

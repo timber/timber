@@ -1,0 +1,15 @@
+<ul class="nav navbar-nav">
+     {% for item in menu.items %}
+     <li>
+          {% if item.get_children %}
+               <a href="{{item.link}}" class="has-children">{{item.title}}</a>
+               <ul class="dropdown-menu" role="menu">
+               {% for child in item.get_children %}
+                    <li><a href="{{child.link}}">{{child.title}}</a></li>
+               {% endfor %}
+               </ul>
+          {% else %}
+               <a href="{{item.url}}" class="no-children">{{item.title}}</a>
+          {% endif %}
+     {% endfor %}
+</ul>
