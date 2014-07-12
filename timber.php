@@ -433,6 +433,13 @@ class Timber {
     public static function load_template($template, $query = false, $force_header = 0, $tparams = false) {
         return TimberRoutes::load_view($template, $query, $force_header, $tparams);
     }
+
+    /**
+     * @deprecated since 0.20.2
+     */
+    public static function load_view($template, $query = false, $force_header = 0, $tparams = false) {
+        return TimberRoutes::load_view($template, $query, $force_header, $tparams);
+    }
     
 
     /*  Pagination
