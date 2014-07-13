@@ -309,19 +309,23 @@ Then create a subdirectory called `views` in your theme folder. The make this fi
 
 That's Timber!
 
+== Support ==
+
+Please use the [GitHub repo](https://github.com/jarednova/timber/issues?state=open) to file bugs or questions.
+
 == Frequently Asked Questions ==
 
 = Can it be used in an existing theme? =
 You bet! Watch these **[video tutorials](https://github.com/jarednova/timber/wiki/Video-Tutorials)** to see how.
 
 = Is it used in production? =
-At Upstatement we've now used it on more than a dozen client sites. You can check them out in the showcase here: http://jarednova.github.io/timber/
+At Upstatement we've now used it on more than a dozen client sites. Hundreds of other sites use it too. You can check some of them out in the **[showcase](http://upstatement.com/timber/#showcase)**.
 
 = Doesn't this all make WordPress harder since there's more to learn? =
 Does jQuery make JavaScript harder? Yes, it's an extra piece to learn -- but it super-charges your ability to write unencumbered JavaScript (and prevents you from having to learn lots of the messy internals). If your answer is "jQuery sucks and everyone should learn how to write vanilla JS or they're rotten stupid people," this tool isn't for you.
 
 = Oh, Timber is simple code so it's for making simple themes =
-Whatever. It simplifies the silly stuff so that you can focus on building more complicated sites and apps. Django simplifies Python, but you can still use the full range of Python's abilities.
+Whatever. It simplifies the silly stuff so that you can focus on building more complicated sites and apps. jQuery simplifies Javascript, but you can still use the full range of JS's abilities.
 
 = Will you support it? =
 As stated above, we're using it in dozens of sites (and dozens more planned) -- dozens of other developers are using it too. This isn't going anywhere. Twig is the chosen language for other PHP platforms like Symfony, Drupal 8 and Craft. WordPress will eventually adopt Twig too, I promise you that.
