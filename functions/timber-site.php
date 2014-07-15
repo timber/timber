@@ -2,6 +2,7 @@
 
 class TimberSite extends TimberCore implements TimberCoreInterface {
 
+    public $admin_email;
     public $blogname;
     public $charset;
     public $description;
@@ -55,6 +56,7 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
     }
 
     function init() {
+        $this->admin_email = get_bloginfo( 'admin_email' );
         $this->name = get_bloginfo( 'name' );
         $this->title = $this->name;
         $this->description = get_bloginfo( 'description' );
