@@ -75,16 +75,17 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
         if ($uid === false) {
             $uid = get_current_user_id();
         }
-        if ($uid) {
+        if (is_int($uid) || is_string($uid)) {
             $data = get_userdata($uid);
-            if (is_object($data) && isset($data)) {
-                $this->import($data->data);
-            }
-            $this->ID = $uid;
-            $this->id = $uid;
-            $this->name = $this->name();
-            $this->import_custom();
+        } else if (is_object($uid)){
+            $data = $uid;
         }
+        if (is_object($data) && isset($data)) {
+            $this->import($data->data);
+        }
+        $this->id = $this->ID;
+        $this->name = $this->name();
+        $this->import_custom();
     }
 
     /**
