@@ -21,7 +21,7 @@
 			global $post;
 			$this->go_to(home_url('/?p='.$post_id));
 			$_post = $post;
-			$post = null;
+			$post = false;
 			$my_post = new TimberPost();
 			$this->assertEquals($post_id, $my_post->ID);
 		}
