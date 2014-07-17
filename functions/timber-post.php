@@ -42,6 +42,14 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
         $this->init($pid);
     }
 
+     /**
+     * @return string
+     */
+    function __toString() {
+        return $this->title();
+    }
+
+
     /**
      * @param int|bool $pid
      */
