@@ -2,7 +2,7 @@
 
 	if (!class_exists('Timber')){
 		add_action( 'admin_notices', function(){
-			echo '<div class="error"><p>Timber not activated. Make sure you activate the plugin in <a href="/wp-admin/plugins.php#timber">/wp-admin/plugins.php</a></p></div>';
+			echo '<div class="error"><p>Timber not activated. Make sure you activate the plugin in <a href="' . admin_url() . 'plugins.php#timber">' . admin_url() . 'plugins.php</a></p></div>';
 		});
 		return;
 	}
