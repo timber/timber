@@ -16,7 +16,7 @@ class TimberPostGetter {
     }
 
     static function get_posts( $query = false, $PostClass = 'TimberPost', $return_collection = false ) {
-        $posts = self::query_posts( $query, $PostClass );
+        $posts = self::query_posts( $query, $PostClass, false );
         return apply_filters('timber_post_getter_get_posts', $posts->get_posts( $return_collection ));
     }
 
@@ -33,7 +33,7 @@ class TimberPostGetter {
      * @param string $PostClass
      * @return array|bool|null
      */
-    static function query_posts($query = false, $PostClass = 'TimberPost'){
+    static function query_posts($query = false, $PostClass = 'TimberPost', $via_query = true ){
         if (self::is_post_class_or_class_map($query)) {
             $PostClass = $query;
             $query = false;
@@ -49,6 +49,10 @@ class TimberPostGetter {
             return new TimberPostsCollection( $query, $PostClass );
         } else {
             // We have a query (of sorts) to work with
+            if ( $via_query ) {
+                global $timber;
+                $timber->active_query = $query;
+            }
             $tqi = new TimberQueryIterator( $query, $PostClass );
             return $tqi;
         }

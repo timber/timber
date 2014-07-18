@@ -12,6 +12,34 @@ class TimberPaginationTest extends WP_UnitTestCase {
 		$this->assertEquals( home_url().'/?s=post&#038;paged=5', $pagination['pages'][4]['link'] );
 	}
 
+	function testPaginationWithQueryPosts() {
+		register_post_type( 'portfolio' );
+		$pids = $this->factory->post->create_many( 33 );
+		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
+		$this->go_to( home_url( '/' ) );
+		Timber::query_posts('post_type=portfolio');
+		$pagination = Timber::get_pagination();
+		
+		global $timber;
+		$timber->active_query = false;
+		unset($timber->active_query);
+		$this->assertEquals(6, count($pagination['pages']));
+	}
+
+	function testPaginationWithGetPosts() {
+		register_post_type( 'portfolio' );
+		$pids = $this->factory->post->create_many( 33 );
+		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
+		$this->go_to( home_url( '/' ) );
+		Timber::get_posts('post_type=portfolio');
+		$pagination = Timber::get_pagination();
+		
+		global $timber;
+		$timber->active_query = false;
+		unset($timber->active_query);
+		$this->assertEquals(4, count($pagination['pages']));
+	}
+
 	function testPaginationSearchPrettyWithPostname() {
 		$struc = '/%postname%/';
 		global $wp_rewrite;
@@ -20,6 +48,7 @@ class TimberPaginationTest extends WP_UnitTestCase {
 		$posts = $this->factory->post->create_many( 55 );
 		$archive = home_url( '?s=post' );
 		$this->go_to( $archive );
+		query_posts( 's=post' );
 		$pagination = Timber::get_pagination();
 		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination['pages'][4]['link'] );
 	}
@@ -58,7 +87,7 @@ class TimberPaginationTest extends WP_UnitTestCase {
 			wp_set_object_terms( $post, $news_id, 'category' );
 		}
 		$this->go_to( home_url( '/category/news' ) );
-		$post_objects = Timber::get_posts(false);
+		$post_objects = Timber::get_posts( false );
 		$pagination = Timber::get_pagination();
 		//need to complete test
 	}

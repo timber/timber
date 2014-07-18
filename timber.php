@@ -464,6 +464,10 @@ class Timber {
         global $wp_query;
         global $paged;
         global $wp_rewrite;
+        global $timber;
+        if ( isset( $timber->active_query ) && $timber->active_query ){
+            query_posts( $timber->active_query );
+        }
         $args['total'] = ceil($wp_query->found_posts / $wp_query->query_vars['posts_per_page']);
         if ($wp_rewrite->using_permalinks()){
             $url = explode('?', get_pagenum_link(0));
