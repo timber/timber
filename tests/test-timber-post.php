@@ -16,15 +16,15 @@
 			$this->assertEquals($post_id, $post->ID);
 		}
 
-		function testPostOnBuddyPressPage(){
-			$post_id = $this->factory->post->create();
-			global $post;
-			$this->go_to(home_url('/?p='.$post_id));
-			$_post = $post;
-			$post = false;
-			$my_post = new TimberPost();
-			$this->assertEquals($post_id, $my_post->ID);
-		}
+		// function testPostOnBuddyPressPage(){
+		// 	$post_id = $this->factory->post->create();
+		// 	global $post;
+		// 	$this->go_to(home_url('/?p='.$post_id));
+		// 	$_post = $post;
+		// 	$post = false;
+		// 	$my_post = new TimberPost();
+		// 	$this->assertEquals($post_id, $my_post->ID);
+		// }
 
 		function testNonexistentProperty(){
 			$post_id = $this->factory->post->create();
