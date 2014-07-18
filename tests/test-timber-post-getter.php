@@ -29,6 +29,13 @@ class TestTimberPostGetter extends WP_UnitTestCase {
 		$this->assertEquals( 'TimberPostSubclass', get_class( $posts[0] ) );
 	}
 
+	function testGetPostsFromArray(){
+		$pids = $this->factory->post->create_many( 15 );
+		$posts = Timber::get_posts($pids);
+		$this->assertEquals(15, count($posts));
+		$this->assertEquals($pids[3], $posts[3]->ID);
+	}
+
 	function testGetPostsFromSlug() {
 		$post = $this->factory->post->create( array( 'post_name' => 'silly-post' ) );
 		$posts = Timber::get_posts_from_slug( 'silly-post' );

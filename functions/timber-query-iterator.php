@@ -67,7 +67,7 @@ class TimberQueryIterator implements Iterator {
                 'post_type'=> 'any',
                 'post__in' => $query,
                 'orderby'  => 'post__in',
-                'numberposts' => -1
+                'nopaging' => true
             ) );
     }
 
