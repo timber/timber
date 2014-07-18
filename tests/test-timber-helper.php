@@ -2,6 +2,12 @@
 
 	class TestTimberHelper extends WP_UnitTestCase {
 
+        function testCloseTagsWithSelfClosingTags(){
+            $p = '<p>My thing is this <hr>Whatever';
+            $html = TimberHelper::close_tags($p);
+            $this->assertEquals('<p>My thing is this <hr />Whatever</p>', $html);
+        }
+
         function testCommentForm() {
             $post_id = $this->factory->post->create();
             $form = TimberHelper::get_comment_form($post_id);

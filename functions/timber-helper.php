@@ -222,7 +222,8 @@ class TimberHelper {
                 unset( $closedtags[array_search( $openedtags[$i], $closedtags )] );
             }
         }
-        $html = str_replace(array('</br>','</hr>','</wbr>'), array('<br />','<hr />','<wbr />'), $html);
+        $html = str_replace(array('</br>','</hr>','</wbr>'), '', $html);
+        $html = str_replace(array('<br>','<hr>','<wbr>'), array('<br />','<hr />','<wbr />'), $html);
         return $html;
     }
 
