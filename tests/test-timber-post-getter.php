@@ -2,6 +2,14 @@
 
 class TestTimberPostGetter extends WP_UnitTestCase {
 
+	function testQueryPost() {
+		$posts = $this->factory->post->create_many( 6 );
+		$post = Timber::get_post($posts[3]);
+		$this->assertNotEquals(get_the_ID(), $post->ID);
+		$post = Timber::query_post($posts[3]);
+		$this->assertEquals(get_the_ID(), $post->ID);
+	}
+
 	function testGetPostsInLoop() {
 		$posts = $this->factory->post->create_many( 55 );
 		$this->go_to( '/' );

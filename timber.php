@@ -117,6 +117,15 @@ class Timber {
      * @param string $PostClass
      * @return array|bool|null
      */
+    public static function query_post($query = false, $PostClass = 'TimberPost') {
+        return TimberPostGetter::query_post($query, $PostClass);
+    }
+
+    /**
+     * @param mixed $query
+     * @param string $PostClass
+     * @return array|bool|null
+     */
     public static function query_posts($query = false, $PostClass = 'TimberPost') {
         return TimberPostGetter::query_posts( $query, $PostClass );
     }
