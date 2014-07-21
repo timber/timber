@@ -10,6 +10,13 @@ class TestTimberPostGetter extends WP_UnitTestCase {
 		$this->assertEquals(get_the_ID(), $post->ID);
 	}
 
+	function testBlankQueryPost(){
+		$pid = $this->factory->post->create( );
+		$this->go_to( home_url('/?p='.$pid) );
+		$post = Timber::query_post();
+		$this->assertEquals($pid, $post->ID);
+	}
+
 	function testGetPostsInLoop() {
 		$posts = $this->factory->post->create_many( 55 );
 		$this->go_to( '/' );
