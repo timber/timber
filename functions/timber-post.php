@@ -64,6 +64,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		//cant have a function, so gots to do it this way
 		$post_class = $this->post_class();
 		$this->class = $post_class;
+
+		do_action('timber_post_init',$this);
 	}
 
     /**
