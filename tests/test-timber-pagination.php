@@ -12,6 +12,7 @@ class TimberPaginationTest extends WP_UnitTestCase {
 		$this->assertEquals( home_url().'/?s=post&#038;paged=5', $pagination['pages'][4]['link'] );
 	}
 
+	/* This test is for the concept of linking query_posts and get_pagination
 	function testPaginationWithQueryPosts() {
 		register_post_type( 'portfolio' );
 		$pids = $this->factory->post->create_many( 33 );
@@ -25,6 +26,7 @@ class TimberPaginationTest extends WP_UnitTestCase {
 		unset($timber->active_query);
 		$this->assertEquals(6, count($pagination['pages']));
 	}
+	*/
 
 	function testPaginationWithGetPosts() {
 		register_post_type( 'portfolio' );
