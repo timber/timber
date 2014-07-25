@@ -58,8 +58,8 @@
 		function testNext(){
 			$posts = array();
 			for($i = 0; $i<2; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+				$j = $i + 1;
+				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
 			$firstPost = new TimberPost($posts[0]);
 			$nextPost = new TimberPost($posts[1]);
@@ -68,9 +68,9 @@
 
 		function testNextCategory(){
 			$posts = array();
-			for($i = 0; $i<3; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+			for($i = 0; $i<4; $i++){
+				$j = $i + 1;
+				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
 			wp_set_object_terms($posts[0], 'TestMe', 'category', false);
 			wp_set_object_terms($posts[2], 'TestMe', 'category', false);
@@ -83,8 +83,8 @@
 			register_taxonomy('pizza', 'post');
 			$posts = array();
 			for($i = 0; $i<4; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+				$j = $i + 1;
+				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
 			wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
 			wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
@@ -97,8 +97,8 @@
 		function testPrev(){
 			$posts = array();
 			for($i = 0; $i<2; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+				$j = $i + 1;
+				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
 			$lastPost = new TimberPost($posts[1]);
 			$prevPost = new TimberPost($posts[0]);
@@ -109,8 +109,8 @@
 			register_taxonomy('pizza', 'post');
 			$posts = array();
 			for($i = 0; $i<3; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+				$j = $i + 1;
+				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
 			wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
 			wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
@@ -122,8 +122,8 @@
 		function testPrevCategory(){
 			$posts = array();
 			for($i = 0; $i<3; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+				$j = $i + 1;
+				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
 			wp_set_object_terms($posts[0], 'TestMe', 'category', false);
 			wp_set_object_terms($posts[2], 'TestMe', 'category', false);
@@ -135,8 +135,8 @@
 		function testNextWithDraftAndFallover(){
 			$posts = array();
 			for($i = 0; $i<3; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+				$j = $i + 1;
+				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
 			$firstPost = new TimberPost($posts[0]);
 			$nextPost = new TimberPost($posts[1]);
@@ -149,8 +149,8 @@
 		function testNextWithDraft(){
 			$posts = array();
 			for($i = 0; $i<2; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+				$j = $i + 1;
+				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
 			$firstPost = new TimberPost($posts[0]);
 			$nextPost = new TimberPost($posts[1]);
