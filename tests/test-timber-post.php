@@ -80,18 +80,23 @@
 		}
 
 		function testNextCustomTax(){
-			register_taxonomy('pizza', 'post');
-			$posts = array();
-			for($i = 0; $i<4; $i++){
-				$j = $i + 1;
-				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
+			$v = get_bloginfo('version');
+			if (version_compare($v, '3.8', '<')) {
+           		$this->markTestSkipped('Custom taxonomy prev/next not supported until 3.8');
+        	} else {
+				register_taxonomy('pizza', 'post');
+				$posts = array();
+				for($i = 0; $i<4; $i++){
+					$j = $i + 1;
+					$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
+				}
+				wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
+				wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
+				wp_set_object_terms($posts[3], 'Mushroom', 'pizza', false);
+				$firstPost = new TimberPost($posts[0]);
+				$nextPost = new TimberPost($posts[2]);
+				$this->assertEquals($firstPost->next('pizza')->ID, $nextPost->ID);
 			}
-			wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
-			wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
-			wp_set_object_terms($posts[3], 'Mushroom', 'pizza', false);
-			$firstPost = new TimberPost($posts[0]);
-			$nextPost = new TimberPost($posts[2]);
-			$this->assertEquals($firstPost->next('pizza')->ID, $nextPost->ID);
 		}
 
 		function testPrev(){
@@ -106,17 +111,22 @@
 		}
 
 		function testPrevCustomTax(){
-			register_taxonomy('pizza', 'post');
-			$posts = array();
-			for($i = 0; $i<3; $i++){
-				$j = $i + 1;
-				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
+			$v = get_bloginfo('version');
+			if (version_compare($v, '3.8', '<')) {
+           		$this->markTestSkipped('Custom taxonomy prev/next not supported until 3.8');
+        	} else {
+				register_taxonomy('pizza', 'post');
+				$posts = array();
+				for($i = 0; $i<3; $i++){
+					$j = $i + 1;
+					$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
+				}
+				wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
+				wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
+				$lastPost = new TimberPost($posts[2]);
+				$prevPost = new TimberPost($posts[0]);
+				$this->assertEquals($lastPost->prev('pizza')->ID, $prevPost->ID);
 			}
-			wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
-			wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
-			$lastPost = new TimberPost($posts[2]);
-			$prevPost = new TimberPost($posts[0]);
-			$this->assertEquals($lastPost->prev('pizza')->ID, $prevPost->ID);
 		}
 
 		function testPrevCategory(){
