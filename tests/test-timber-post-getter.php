@@ -5,7 +5,7 @@ class TestTimberPostGetter extends WP_UnitTestCase {
 	function testQueryPost() {
 		$posts = $this->factory->post->create_many( 6 );
 		$post = Timber::get_post( $posts[3] );
-		$this->go_to( home_url( '/?p='.$post[2] ) );
+		$this->go_to( home_url( '/?p='.$posts[2] ) );
 		$this->assertNotEquals( get_the_ID(), $post->ID );
 		$post = Timber::query_post( $posts[3] );
 		$this->assertEquals( get_the_ID(), $post->ID );
