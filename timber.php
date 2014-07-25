@@ -117,6 +117,15 @@ class Timber {
      * @param string $PostClass
      * @return array|bool|null
      */
+    public static function query_post($query = false, $PostClass = 'TimberPost') {
+        return TimberPostGetter::query_post($query, $PostClass);
+    }
+
+    /**
+     * @param mixed $query
+     * @param string $PostClass
+     * @return array|bool|null
+     */
     public static function query_posts($query = false, $PostClass = 'TimberPost') {
         return TimberPostGetter::query_posts( $query, $PostClass );
     }
@@ -277,6 +286,8 @@ class Timber {
      */
     public static function compile($filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT, $via_render = false) {
         $caller = self::get_calling_script_dir();
+        $caller_file = self::get_calling_script_file();
+        $caller_file = apply_filters('timber_calling_php_file', $caller_file);
         $loader = new TimberLoader($caller);
         $file = $loader->choose_template($filenames);
         $output = '';
@@ -503,12 +514,22 @@ class Timber {
         return str_replace(ABSPATH, '', realpath($dir));
     }
 
+    public static function get_calling_script_dir($offset = 0) {
+        $caller = self::get_calling_script_file($offset);
+        if (!is_null($caller)){
+            $pathinfo = pathinfo($caller);
+            $dir = $pathinfo['dirname'];
+            return $dir;
+        }
+        return null;
+    }
+
     /**
      * @param int $offset
      * @return string|null
      * @deprecated since 0.20.0
      */
-    public static function get_calling_script_dir($offset = 0) {
+    public static function get_calling_script_file($offset = 0) {
         $caller = null;
         $backtrace = debug_backtrace();
         $i = 0;
@@ -522,12 +543,7 @@ class Timber {
         if ($offset){
             $caller = $backtrace[$i + $offset]['file'];
         }
-        if ($caller !== null) {
-            $pathinfo = pathinfo($caller);
-            $dir = $pathinfo['dirname'];
-            return $dir;
-        }
-        return null;
+        return $caller;
     }
 
     /**

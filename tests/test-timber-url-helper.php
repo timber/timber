@@ -39,6 +39,17 @@
             $this->assertTrue(TimberURLHelper::is_external($external));
         }
 
+        function testGetRelURL(){
+            $local = 'http://example.org/directory';
+            $subdomain = 'http://cdn.example.org/directory';
+            $external = 'http://upstatement.com';
+            $rel_url = '/directory';
+            $this->assertEquals('/directory', TimberURLHelper::get_rel_url($local));
+            $this->assertEquals($subdomain, TimberURLHelper::get_rel_url($subdomain));
+            $this->assertEquals($external, TimberURLHelper::get_rel_url($external));
+            $this->assertEquals($rel_url, TimberURLHelper::get_rel_url($rel_url));
+        }
+
         function testDownloadURL(){
             if (TimberImageTest::is_connected()){
                 $url = 'http://i1.nyt.com/images/misc/nytlogo379x64.gif';

@@ -2,6 +2,21 @@
 
 class TestTimberPostGetter extends WP_UnitTestCase {
 
+	function testQueryPost() {
+		$posts = $this->factory->post->create_many( 6 );
+		$post = Timber::get_post($posts[3]);
+		$this->assertNotEquals(get_the_ID(), $post->ID);
+		$post = Timber::query_post($posts[3]);
+		$this->assertEquals(get_the_ID(), $post->ID);
+	}
+
+	function testBlankQueryPost(){
+		$pid = $this->factory->post->create( );
+		$this->go_to( home_url('/?p='.$pid) );
+		$post = Timber::query_post();
+		$this->assertEquals($pid, $post->ID);
+	}
+
 	function testGetPostsInLoop() {
 		$posts = $this->factory->post->create_many( 55 );
 		$this->go_to( '/' );
@@ -27,6 +42,13 @@ class TestTimberPostGetter extends WP_UnitTestCase {
 		$posts = Timber::get_posts_from_loop( 'TimberPostSubclass' );
 		$this->assertEquals( 10, count( $posts ) );
 		$this->assertEquals( 'TimberPostSubclass', get_class( $posts[0] ) );
+	}
+
+	function testGetPostsFromArray(){
+		$pids = $this->factory->post->create_many( 15 );
+		$posts = Timber::get_posts($pids);
+		$this->assertEquals(15, count($posts));
+		$this->assertEquals($pids[3], $posts[3]->ID);
 	}
 
 	function testGetPostsFromSlug() {

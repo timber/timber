@@ -47,6 +47,7 @@ class TimberMenu extends TimberCore {
         $this->import($menu_info);
         $this->ID = $this->term_id;
         $this->id = $this->term_id;
+        $this->title = $this->name;
     }
 
     /**

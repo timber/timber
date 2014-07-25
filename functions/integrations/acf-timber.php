@@ -50,7 +50,7 @@ class ACFTimber {
         return $fields;
     }
 
-    function user_get_meta_field( $value, $field, $uid ) {
+    function user_get_meta_field( $value, $uid, $field ) {
         return get_field( $field, 'user_' . $uid );
     }
 }

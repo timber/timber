@@ -38,13 +38,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
      * @return null
      */
     function get_meta($field_name) {
-        $value = null;
-        $value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
-        if ($value === null) {
-            $value = get_post_meta($this->ID, $field_name, true);
-        }
-        $value = apply_filters('timber_user_get_meta_field', $value, $this->ID, $field_name, $this);
-        return $value;
+        return $this->get_meta_field( $field_name );
     }
 
     /**
@@ -75,16 +69,26 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
         if ($uid === false) {
             $uid = get_current_user_id();
         }
-        if ($uid) {
-            $data = get_userdata($uid);
-            if (is_object($data) && isset($data)) {
-                $this->import($data->data);
+        if (is_object($uid) || is_array($uid)){
+            $data = $uid;
+            if (is_array($uid)){
+                $data =  (object) $uid;
             }
-            $this->ID = $uid;
-            $this->id = $uid;
-            $this->name = $this->name();
-            $this->import_custom();
+            $uid = $data->ID;
         }
+        if (is_numeric($uid)) {
+            $data = get_userdata($uid);
+        }
+        if (isset($data) && is_object($data)) {
+            if (isset($data->data)){
+                $this->import($data->data);
+            } else {
+                $this->import($data);
+            }
+        }
+        $this->id = $this->ID;
+        $this->name = $this->name();
+        $this->import_custom();
     }
 
     /**

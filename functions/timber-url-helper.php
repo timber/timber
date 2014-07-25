@@ -55,10 +55,10 @@ class TimberURLHelper
      * @return string
      */
     public static function get_rel_url($url, $force = false) {
-        if (!strstr($url, $_SERVER['HTTP_HOST']) && !$force) {
+        $url_info = parse_url($url);
+        if (isset($url_info['host']) && $url_info['host'] != $_SERVER['HTTP_HOST'] && !$force) {
             return $url;
         }
-        $url_info = parse_url($url);
         $link = $url_info['path'];
         if (isset($url_info['query']) && strlen($url_info['query'])) {
             $link .= '?' . $url_info['query'];
