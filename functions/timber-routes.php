@@ -45,11 +45,11 @@ class TimberRoutes {
     /**
      * @param array $template
      * @param mixed $query
-     * @param int $force_header
+     * @param int $status_code
      * @param bool $tparams
      * @return bool
      */
-    public static function load_view($template, $query = false, $force_header = 200, $tparams = false) {
+    public static function load_view($template, $query = false, $status_code = 200, $tparams = false) {
         $fullPath = is_readable($template);
         if (!$fullPath) {
             $template = locate_template($template);
@@ -58,13 +58,13 @@ class TimberRoutes {
             global $params;
             $params = $tparams;
         }
-        if ($force_header) {
-            add_filter('status_header', function($status_header, $header, $text, $protocol) use ($force_header) {
-                $text = get_status_header_desc($force_header);
-                $header_string = "$protocol $force_header $text";
+        if ($status_code) {
+            add_filter('status_header', function($status_header, $header, $text, $protocol) use ($status_code) {
+                $text = get_status_header_desc($status_code);
+                $header_string = "$protocol $status_code $text";
                 return $header_string;
             }, 10, 4 );
-            if (404 != $force_header) {
+            if (404 != $status_code) {
                 add_action('parse_query', function($query) {
                     if ($query->is_main_query()){
                         $query->is_404 = false;
