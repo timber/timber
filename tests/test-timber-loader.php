@@ -26,6 +26,15 @@
 			copy(__DIR__.'/assets/single.twig', $dest_dir.'/views/single.twig');
 		}
 
+		static function _setupParentTheme(){
+			$dest_dir = WP_CONTENT_DIR.'/themes/twentythirteen';
+			if (!file_exists($dest_dir.'/views')) {
+    			mkdir($dest_dir.'/views', 0777, true);
+			}
+			copy(__DIR__.'/assets/single-parent.twig', $dest_dir.'/views/single.twig');
+			copy(__DIR__.'/assets/single-parent.twig', $dest_dir.'/views/single-parent.twig');
+		}
+
 		function testTwigLoadsFromParentTheme(){
 			$this->_setupParentTheme();
 			$this->_setupChildTheme();
@@ -33,15 +42,6 @@
 			$templates = array('single-parent.twig');
 			$str = Timber::compile($templates, array());
 			$this->assertEquals('I am single.twig in parent theme', trim($str));
-		}
-
-		function _setupParentTheme(){
-			$dest_dir = WP_CONTENT_DIR.'/themes/twentythirteen';
-			if (!file_exists($dest_dir.'/views')) {
-    			mkdir($dest_dir.'/views', 0777, true);
-			}
-			copy(__DIR__.'/assets/single-parent.twig', $dest_dir.'/views/single.twig');
-			copy(__DIR__.'/assets/single-parent.twig', $dest_dir.'/views/single-parent.twig');
 		}
 
 		function _setupRelativeViews(){
