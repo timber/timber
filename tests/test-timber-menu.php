@@ -11,7 +11,7 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->_createTestMenu();
 		$menu = new TimberMenu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
-		$this->assertEquals( 2, count( $menu->get_items() ) );
+		$this->assertEquals( 3, count( $menu->get_items() ) );
 		$items = $menu->get_items();
 		$item = $items[0];
 		$this->assertEquals( 'home', $item->slug() );
@@ -36,7 +36,7 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$context['menu'] = new TimberMenu();
 		$str = Timber::compile( 'assets/child-menu.twig', $context );
 		$str = preg_replace('/\s+/', '', $str);
-		$this->assertEquals('<ulclass="navnavbar-nav"><li><ahref="http://example.org/home"class="has-children">Home</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page">ChildPage</a></li></ul><li><ahref="http://upstatement.com"class="no-children">Upstatement</a></ul>', $str);
+		$this->assertEquals('<ulclass="navnavbar-nav"><li><ahref="http://example.org/home"class="has-children">Home</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page">ChildPage</a></li></ul><li><ahref="http://upstatement.com"class="no-children">Upstatement</a><li><ahref="/"class="no-children">RootHome</a></ul>', $str);
 	}
 
 	function testMenuTwigWithClasses(){
@@ -67,7 +67,7 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->_createTestMenu();
 		$menu = new TimberMenu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
-		$this->assertEquals( 2, count( $menu->get_items() ) );
+		$this->assertEquals( 3, count( $menu->get_items() ) );
 		$items = $menu->get_items();
 		$item = $items[1];
 		$this->assertTrue( $item->is_external() );
@@ -152,6 +152,21 @@ class TimberMenuTest extends WP_UnitTestCase {
 		update_post_meta( $child_menu_item, '_menu_item_url', '' );
 		$post = new TimberPost($child_menu_item);
 		$menu_items[] = $child_menu_item;
+		$root_url_link_id = wp_insert_post(
+			array(
+				'post_title' => 'Root Home',
+				'post_status' => 'publish',
+				'post_type' => 'nav_menu_item',
+				'menu_order' => 4
+			)
+		);
+
+		$menu_items[] = $root_url_link_id;
+		update_post_meta( $root_url_link_id, '_menu_item_type', 'custom' );
+		update_post_meta( $root_url_link_id, '_menu_item_object_id', $root_url_link_id );
+		update_post_meta( $root_url_link_id, '_menu_item_url', '/' );
+		update_post_meta( $root_url_link_id, '_menu_item_xfn', '' );
+		update_post_meta( $root_url_link_id, '_menu_item_menu_item_parent', 0 );
 		foreach ( $menu_items as $object_id ) {
 			$query = "INSERT INTO $wpdb->term_relationships (object_id, term_taxonomy_id, term_order) VALUES ($object_id, $menu_id, 0);";
 			$wpdb->query( $query );

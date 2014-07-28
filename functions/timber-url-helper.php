@@ -161,6 +161,18 @@ class TimberURLHelper
     }
 
     /**
+     * Pass links through untrailingslashit unless they are a single /
+     *
+     * @param  string $link
+     * @return string
+     */
+    public static function remove_trailing_slash($link) {
+        if ( $link != "/")
+            $link = untrailingslashit( $link );
+        return $link;
+    }
+
+    /**
      * @param string $url
      * @param int $timeout
      * @return string|WP_Error
