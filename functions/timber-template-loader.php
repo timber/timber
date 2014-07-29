@@ -5,7 +5,7 @@ if ( !defined ( 'ABSPATH' ) )
 
 class TimberTemplateLoader
 {
-    const TEMPLATE_IN_OB = 'template_in_ob'; /**< Flag to indicate to-be-rendered template sits in the output buffer
+    const TEMPLATE_IN_OB = 'template_in_ob'; /**< Flag to indicate to-be-rendered template sits in the output buffer **/
 
     /**
      * @return TimberTemplateLoader
@@ -172,7 +172,6 @@ class TimberTemplateLoader
         if ( empty( $templates ) )
             $templates = array("{$type}.twig");
 
-        //$template = locate_template( $templates );
         $template = $timber_loader->choose_template( $templates );
 
         /**
