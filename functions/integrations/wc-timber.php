@@ -23,11 +23,17 @@ class WooCommerceTimber
     /**
      * Looks for a twig template corresponding to the current WooCommerce view
      *
+     * Loads WooCommerce templates in the same order as WC itself, and following
+     * the same logic as TimberTemplateLoader. If no template is found, it starts
+     * looking for woocommerce.twig and page-plugin.twig. If one of these is found,
+     * the WooCommerce template will be loaded in the template context as `content`.
+     *
      * @see WC_Template_Loader::template_loader()
      */
     public function template_loader( $template ) {
         $find = array( 'woocommerce.twig' );
 		$file = '';
+        $found = false;
 
 		if ( is_single() && get_post_type() == 'product' ) {
 
@@ -53,9 +59,10 @@ class WooCommerceTimber
 
 		}
 
+        // Start looking for the template!
+        
+        $timber_loader = new TimberLoader();
 		if ( $file ) {
-            
-            $timber_loader = new TimberLoader();
 
             if ( $found = $timber_loader->choose_template( $find ) ) {
                 $template = $found;
@@ -63,8 +70,33 @@ class WooCommerceTimber
 
 		}
 
+        // If no alternative template has been found, do desperate measures
+        if ( !$found ) {
+
+            $find  = array( 'woocommerce.twig', 'page-plugin.twig' );
+            $found = $timber_loader->choose_template( $find );
+
+            if ( $found ) {
+
+                $this->_setup_plugin_compat();
+                $template = $found;
+
+            }
+
+        }
+
 		return $template;
     }
+
+        /**
+         * Adds the woocommerce_content function to Timber context as content
+         */
+        private function _setup_plugin_compat() {
+            add_filter( 'timber_context', function( $context ){
+                $context['content'] = TimberHelper::function_wrapper( 'woocommerce_content' );
+                return $context;
+            } );
+        }
 }
 
 add_action( 'woocommerce_init', function(){
