@@ -265,7 +265,9 @@ class Timber {
             $context['site']  = new TimberSite();
             $context['theme'] = $context['site']->theme;
             $context['posts'] = Timber::query_posts();
+
             $context['post']  = $context['posts']->current();
+            $context['posts']->rewind();
 
             //deprecated, these should be fetched via TimberSite or TimberTheme
             $context['theme_dir']           = WP_CONTENT_SUBDIR . str_replace( WP_CONTENT_DIR, '', get_stylesheet_directory() );
@@ -461,7 +463,7 @@ class Timber {
     public static function load_view($template, $query = false, $status_code = 200, $tparams = false) {
         return TimberRoutes::load_view($template, $query, $status_code, $tparams);
     }
-    
+
 
     /*  Pagination
     ================================ */
