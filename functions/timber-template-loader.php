@@ -5,7 +5,7 @@ if ( !defined ( 'ABSPATH' ) )
 
 class TimberTemplateLoader
 {
-    const USING_TIMBER_TEMPLATE = 'using_timber_template';
+    const TEMPLATE_IN_OB = 'template_in_ob'; /**< Flag to indicate to-be-rendered template sits in the output buffer
 
     /**
      * @return TimberTemplateLoader
@@ -27,7 +27,7 @@ class TimberTemplateLoader
     protected function init() {
         add_filter( 'index_template', array( $this, 'template_loader' ) );
         add_filter( 'home_template',  array( $this, 'home_template_loader' ) );
-        add_filter( 'template_include', array( &$this, 'maybe_prevent_template_include' ), 999 );
+        add_filter( 'template_include', array( &$this, 'template_include' ), 999 );
     }
 
     public static function load_template( $context = array() ) {
@@ -40,24 +40,22 @@ class TimberTemplateLoader
     public function template_loader( $wp_template = false ) {
         $located = $this->locate_template( $wp_template );
 
-        // If located is true, that means that index.php has been manually included.
-        if ( true === $located )
-            return self::USING_TIMBER_TEMPLATE;
-
         /**
          * Filter the path of the current template before including it.
+         *
+         * Param is either a twig template or TimberTemplateLoader::TEMPLATE_IN_OB
          *
          * @param string $template The path of the template to include.
          */
         if ( !$located = apply_filters( 'timber/template_include', $located ) )
             return $wp_template;
 
-        self::_render( $located );
-
-        return self::USING_TIMBER_TEMPLATE;
-        // If self::USING_TIMBER_TEMPLATE is returned, we will prevent WP
-        // from trying to render a template on its own
-        // @todo Check for plugin conflicts (WooCommerce? BuddyPress?)
+        /**
+         * Returns the .twig template
+         *
+         * @see TimberTemplateLoader::template_include()
+         */
+        return $located;
 
     }
 
@@ -74,8 +72,32 @@ class TimberTemplateLoader
         return $wp_template;
     }
 
-    public function maybe_prevent_template_include( $template ) {
-        return ( self::USING_TIMBER_TEMPLATE === $template ) ? false : $template;
+    /**
+     * Checks if the to be rendered template is a twig file and renders it.
+     *
+     * If the template has been loaded into the output buffer (ie. index.php),
+     * the output buffer flushed here. If other plugins have overridden the
+     * template during the meanwhile, the output buffer will be silently cleaned
+     * by the anonymous fn in get_index_template.
+     *
+     * @param string $template
+     * @return string|boolean
+     */
+    public function template_include( $template ) {
+
+        if ( self::TEMPLATE_IN_OB === $template ) {
+
+            ob_flush();
+            $template = false;
+
+        } elseif ( 0 === stripos( strrev( $template ), 'giwt.' ) ) {
+
+            self::_render( $template );
+            $template = false;
+
+        }
+
+        return $template;
     }
 
     public function locate_template( $wp_template = false ) {
@@ -188,13 +210,31 @@ class TimberTemplateLoader
 
             if ( is_null( $use_wp_index_template ) ) {
 
+                // Load index.php into the output buffer
                 ob_start();
                 include $wp_template;
 
-                if ( ob_get_flush() !== '' ) {
+                if ( ob_get_contents() !== '' ) {
+
+                    // We  have the template in the output buffer
+                    // If another plugin provides WP with a template file during the
+                    // meanwhiles, the ob should be flushed after Timber Template Loader
+                    // has decided on what content to render in ::template_include.
+                    add_filter( 'template_include', function( $template ) {
+
+                        ob_end_clean();
+                        return $template;
+
+                    }, 1000 );
+
                     $use_wp_index_template = true;
-                    return true;
+                    return self::TEMPLATE_IN_OB;
+
+                } else {
+                    ob_end_clean();
+
                 }
+
                 $use_wp_index_template = false;
             }
         }
