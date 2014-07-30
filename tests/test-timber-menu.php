@@ -11,7 +11,7 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->_createTestMenu();
 		$menu = new TimberMenu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
-		$this->assertGreaterThanOrEqual( 2, count( $menu->get_items() ) );
+		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 		$items = $menu->get_items();
 		$item = $items[0];
 		$this->assertEquals( 'home', $item->slug() );
@@ -23,6 +23,8 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->assertEquals( 'http://example.org/home', $item->link() );
 		$this->assertEquals( '/home', $item->path() );
 	}
+
+	
 
 	function testMenuTwig() {
 		$struc = '/%postname%/';
@@ -36,7 +38,8 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$context['menu'] = new TimberMenu();
 		$str = Timber::compile( 'assets/child-menu.twig', $context );
 		$str = preg_replace( '/\s+/', '', $str );
-		$this->assertStringStartsWith( '<ulclass="navnavbar-nav"><li><ahref="http://example.org/home"class="has-children">Home</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page">ChildPage</a></li></ul><li>', $str );
+		$str = preg_replace('/\s+/', '', $str);
+		$this->assertStringStartsWith('<ulclass="navnavbar-nav"><li><ahref="http://example.org/home"class="has-children">Home</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page">ChildPage</a></li></ul><li><ahref="http://upstatement.com"class="no-children">Upstatement</a><li><ahref="/"class="no-children">RootHome</a>', $str);
 	}
 
 	function testMenuTwigWithClasses() {
@@ -48,9 +51,6 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->_createTestMenu();
 		$this->go_to( home_url( '/home' ) );
 		$context = Timber::get_context();
-
-
-
 		$context['menu'] = new TimberMenu();
 		$str = Timber::compile( 'assets/menu-classes.twig', $context );
 		$str = trim( $str );
@@ -67,7 +67,7 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->_createTestMenu();
 		$menu = new TimberMenu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
-		$this->assertGreaterThanOrEqual( 2, count( $menu->get_items() ) );
+		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 		$items = $menu->get_items();
 		$item = $items[1];
 		$this->assertTrue( $item->is_external() );
@@ -91,11 +91,25 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->_createTestMenu();
 		$menu = new TimberMenu();
 		$items = $menu->get_items();
-		$item = $items[2];
-		$this->assertEquals( '#people', $item->link() );
 		$item = $items[3];
+		$this->assertEquals( '#people', $item->link() );
+		$item = $items[4];
 		$this->assertEquals( 'http://example.org/#people', $item->link() );
 		$this->assertEquals( '/#people', $item->path() );
+	}
+
+	function testMenuHome() {
+		$this->_createTestMenu();
+		$menu = new TimberMenu();
+		$items = $menu->get_items();
+		$item = $items[2];
+		$this->assertEquals('/', $item->link() );
+		$this->assertEquals('/', $item->path() );
+
+		$item = $items[5];
+		$this->assertEquals('http://example.org', $item->link() );
+		//I'm unsure what the expected behavior should be here, so commenting-out for now.
+		//$this->assertEquals('/', $item->path() );
 	}
 
 
@@ -166,6 +180,25 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$menu_items[] = $child_menu_item;
 
 
+		
+
+
+		$root_url_link_id = wp_insert_post(
+			array(
+				'post_title' => 'Root Home',
+				'post_status' => 'publish',
+				'post_type' => 'nav_menu_item',
+				'menu_order' => 4
+			)
+		);
+
+		$menu_items[] = $root_url_link_id;
+		update_post_meta( $root_url_link_id, '_menu_item_type', 'custom' );
+		update_post_meta( $root_url_link_id, '_menu_item_object_id', $root_url_link_id );
+		update_post_meta( $root_url_link_id, '_menu_item_url', '/' );
+		update_post_meta( $root_url_link_id, '_menu_item_xfn', '' );
+		update_post_meta( $root_url_link_id, '_menu_item_menu_item_parent', 0 );
+
 		$link_id = wp_insert_post(
 			array(
 				'post_title' => 'People',
@@ -198,8 +231,21 @@ class TimberMenuTest extends WP_UnitTestCase {
 		update_post_meta( $link_id, '_menu_item_xfn', '' );
 		update_post_meta( $link_id, '_menu_item_menu_item_parent', 0 );
 
+		$link_id = wp_insert_post(
+			array(
+				'post_title' => 'Manual Home',
+				'post_status' => 'publish',
+				'post_type' => 'nav_menu_item',
+				'menu_order' => 8
+			)
+		);
 
-
+		$menu_items[] = $link_id;
+		update_post_meta( $link_id, '_menu_item_type', 'custom' );
+		update_post_meta( $link_id, '_menu_item_object_id', $link_id );
+		update_post_meta( $link_id, '_menu_item_url', 'http://example.org' );
+		update_post_meta( $link_id, '_menu_item_xfn', '' );
+		update_post_meta( $link_id, '_menu_item_menu_item_parent', 0 );
 
 		foreach ( $menu_items as $object_id ) {
 			$query = "INSERT INTO $wpdb->term_relationships (object_id, term_taxonomy_id, term_order) VALUES ($object_id, $menu_id, 0);";

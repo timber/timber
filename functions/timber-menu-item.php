@@ -30,7 +30,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
         $this->add_class( 'menu-item-' . $this->ID );
         $this->menu_object = $data;
         if ( isset( $this->url ) && $this->url ) {
-            $this->url = untrailingslashit( $this->url );
+            $this->url = TimberURLHelper::remove_trailing_slash( $this->url );
         }
     }
 
@@ -94,10 +94,10 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
             if ( isset( $this->_menu_item_type ) && $this->_menu_item_type == 'custom' ) {
                 $this->url = $this->_menu_item_url;
             } else if ( isset( $this->menu_object ) && method_exists( $this->menu_object, 'get_link' ) ) {
-                    $this->url = untrailingslashit( $this->menu_object->get_link() );
+                    $this->url = $this->menu_object->get_link();
                 }
         }
-        return untrailingslashit( $this->url );
+        return TimberURLHelper::remove_trailing_slash( $this->url );
     }
 
     /**
@@ -106,7 +106,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
      * @return string
      */
     function get_path() {
-        return untrailingslashit( TimberURLHelper::get_rel_url( $this->get_link() ) );
+        return TimberURLHelper::remove_trailing_slash( TimberURLHelper::get_rel_url( $this->get_link() ) );
     }
 
     /**
@@ -204,7 +204,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
      * @return string
      */
     public function path() {
-        return untrailingslashit( $this->get_path() );
+        return $this->get_path();
     }
 
     /**
