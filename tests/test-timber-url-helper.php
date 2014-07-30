@@ -43,11 +43,18 @@
             $local = 'http://example.org/directory';
             $subdomain = 'http://cdn.example.org/directory';
             $external = 'http://upstatement.com';
-            $rel_url = '/directory';
+            $rel_url = '/directory/';
             $this->assertEquals('/directory', TimberURLHelper::get_rel_url($local));
             $this->assertEquals($subdomain, TimberURLHelper::get_rel_url($subdomain));
             $this->assertEquals($external, TimberURLHelper::get_rel_url($external));
             $this->assertEquals($rel_url, TimberURLHelper::get_rel_url($rel_url));
+        }
+
+        function testRemoveTrailingSlash(){
+            $url_with_trailing_slash = 'http://example.org/directory/';
+            $root_url = "/";
+            $this->assertEquals('http://example.org/directory', TimberURLHelper::remove_trailing_slash($url_with_trailing_slash));
+            $this->assertEquals('/', TimberURLHelper::remove_trailing_slash($root_url));
         }
 
         function testDownloadURL(){
