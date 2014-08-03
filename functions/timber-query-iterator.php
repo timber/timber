@@ -108,8 +108,9 @@ class TimberQueryIterator implements Iterator {
 
     public function current() {
         global $post;
-
-        $this->_query->the_post();
+        if ( $this->_query->have_posts() ) {
+            $this->_query->the_post();
+        }
 
         // Sets up the global post, but also return the post, for use in Twig template
         $posts_class = $this->_posts_class;

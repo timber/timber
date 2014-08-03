@@ -269,10 +269,9 @@ class Timber {
             $context['site']  = new TimberSite();
             $context['theme'] = $context['site']->theme;
             $context['posts'] = Timber::query_posts();
-
             $context['post']  = $context['posts']->current();
             $context['posts']->rewind();
-
+            
             //deprecated, these should be fetched via TimberSite or TimberTheme
             $context['theme_dir']           = WP_CONTENT_SUBDIR . str_replace( WP_CONTENT_DIR, '', get_stylesheet_directory() );
             $context['language_attributes'] = TimberHelper::function_wrapper( 'language_attributes' );
@@ -301,10 +300,13 @@ class Timber {
      * @return bool|string
      */
     public static function compile( $filenames = TimberLoader::AUTOLOAD_TEMPLATE, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT, $via_render = false ) {
-
         // Maybe overload arguments
         if ( TimberHelper::is_array_assoc( $filenames ) ) {
-            list( $data, $expires, $cache_mode, $via_render ) = array_slice( func_get_args(), 0, 4 );
+            //the user has sent $data into $filenames, so bump everything to the right;
+            $via_render = $cache_mode;
+            $cache_mode = $expires;
+            $expires = $data;
+            $data = $filenames;
             $filenames = TimberLoader::AUTOLOAD_TEMPLATE;
         }
 

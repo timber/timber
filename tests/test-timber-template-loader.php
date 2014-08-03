@@ -11,7 +11,7 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
 		$this->orig_theme_dir = $GLOBALS['wp_theme_directories'];
 		$GLOBALS['wp_theme_directories'] = array( WP_CONTENT_DIR . '/themes', $this->theme_root );
 
-		add_filter('theme_root', array(&$this, '_theme_root'));
+		add_filter( 'theme_root', array(&$this, '_theme_root') );
 		add_filter( 'stylesheet_root', array(&$this, '_theme_root') );
 		add_filter( 'template_root', array(&$this, '_theme_root') );
 
@@ -35,7 +35,7 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
 
 	function tearDown() {
 		$GLOBALS['wp_theme_directories'] = $this->orig_theme_dir;
-		remove_filter('theme_root', array(&$this, '_theme_root'));
+		remove_filter( 'theme_root', array(&$this, '_theme_root'));
 		remove_filter( 'stylesheet_root', array(&$this, '_theme_root') );
 		remove_filter( 'template_root', array(&$this, '_theme_root') );
 
@@ -57,33 +57,44 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
         return $this->go_to( $url );
     }
 
+    /**
+     *  @expectedDeprecated get_theme
+     *  @expectedDeprecated get_themes
+     */
     function testTestTheme() {
         $theme = get_theme('Timber Template Loader Theme');
         $this->assertFalse( empty($theme) );
-
         $this->assertEquals( $theme['Stylesheet'], get_stylesheet() );
     }
 
+    /**
+     *  @expectedDeprecated get_theme
+     *  @expectedDeprecated get_themes
+     */
     function testRenderCustom() {
-
+        ob_start();
         Timber::render( 'page-custom-render.twig', array(
             'render_me' => 'Custom content'
         ));
-
         $content = ob_get_clean();
-
         $this->assertEquals( 'Render me: Custom content', $content );
     }
 
+    /**
+     *  @expectedDeprecated get_theme
+     *  @expectedDeprecated get_themes
+     */
     function testCompileCustom() {
-
         $content = Timber::compile( 'page-custom-render.twig', array(
             'render_me' => 'Custom content'
         ));
-
         $this->assertEquals( 'Render me: Custom content', $content );
     }
 
+    /**
+     *  @expectedDeprecated get_theme
+     *  @expectedDeprecated get_themes
+     */
     function testRenderAutoload() {
         $this->go_to_page( $this->custom_render_pid );
 
@@ -97,6 +108,10 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
         $this->assertEquals( 'Render me: Custom content', $content );
     }
 
+    /**
+     *  @expectedDeprecated get_theme
+     *  @expectedDeprecated get_themes
+     */
     function testCompileAutoload() {
         $this->go_to_page( $this->custom_render_pid );
 
@@ -107,6 +122,19 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
         $this->assertEquals( 'Render me: Custom content', $content );
     }
 
+    /**
+     *  @expectedDeprecated get_theme
+     *  @expectedDeprecated get_themes
+     */
+    function testCompileArgs(){
+        $this->go_to( home_url('/?p=1') );
+        $whatever = Timber::compile(array('stuff' => 'stuffyes'));
+    }
+
+    /**
+     *  @expectedDeprecated get_theme
+     *  @expectedDeprecated get_themes
+     */
     function testRenderOverload() {
         $this->go_to_page( $this->custom_render_pid );
 
@@ -120,6 +148,10 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
         $this->assertEquals( 'Render me: Custom content', $content );
     }
 
+    /**
+     *  @expectedDeprecated get_theme
+     *  @expectedDeprecated get_themes
+     */
     function testCompileOverload() {
         $this->go_to_page( $this->custom_render_pid );
 
@@ -130,7 +162,10 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
         $this->assertEquals( 'Render me: Custom content', $content );
     }
 
-
+    /**
+     *  @expectedDeprecated get_theme
+     *  @expectedDeprecated get_themes
+     */
     function testLoadTemplate() {
 
         // expected template => new post args
