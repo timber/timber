@@ -49,6 +49,21 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
 		return $this->theme_root;
 	}
 
+    function go_to_page( $pid ) {
+        $url = add_query_arg( array(
+            'page_id' => $pid,
+        ), '/' );
+
+        return $this->go_to( $url );
+    }
+
+    function testTestTheme() {
+        $theme = get_theme('Timber Template Loader Theme');
+        $this->assertFalse( empty($theme) );
+
+        $this->assertEquals( $theme['Stylesheet'], get_stylesheet() );
+    }
+
     function testRenderCustom() {
 
         Timber::render( 'page-custom-render.twig', array(
@@ -70,7 +85,7 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
     }
 
     function testRenderAutoload() {
-        $this->go_to( get_permalink( $this->custom_render_pid ) );
+        $this->go_to_page( $this->custom_render_pid );
 
         ob_start();
         Timber::render( TimberLoader::AUTOLOAD_TEMPLATE, array(
@@ -83,7 +98,7 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
     }
 
     function testCompileAutoload() {
-        $this->go_to( get_permalink( $this->custom_render_pid ) );
+        $this->go_to_page( $this->custom_render_pid );
 
         $content = Timber::compile( TimberLoader::AUTOLOAD_TEMPLATE, array(
             'render_me' => 'Custom content'
@@ -93,7 +108,7 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
     }
 
     function testRenderOverload() {
-        $this->go_to( get_permalink( $this->custom_render_pid ) );
+        $this->go_to_page( $this->custom_render_pid );
 
         ob_start();
         Timber::render( array(
@@ -106,7 +121,7 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
     }
 
     function testCompileOverload() {
-        $this->go_to( get_permalink( $this->custom_render_pid ) );
+        $this->go_to_page( $this->custom_render_pid );
 
         $content = Timber::compile( array(
             'render_me' => 'Custom content'
@@ -148,8 +163,10 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
 
             // @see https://unit-tests.trac.wordpress.org/ticket/106
             $post_type = isset( $args['post_type'] ) ? $args['post_type'] : 'post';
-            if ( in_array( $post_type, array( 'page', 'post' ) ) ) {
-                $url = get_permalink( $pid );
+            if ( in_array( $post_type, array( 'page' ) ) ) {
+                $url = add_query_arg( array(
+                    'page_id' => $pid,
+                ), '/' );
 
             } else {
                 $url = add_query_arg( array(
