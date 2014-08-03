@@ -2,6 +2,8 @@
 
 class TestTimberTemplateLoader extends WP_UnitTestCase
 {
+    var $custom_render_pid;
+
 	function setUp() {
 		parent::setUp();
 		$this->theme_root = plugin_dir_path( __FILE__ ) . '/assets/themes';
@@ -19,6 +21,15 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
 
         // Setup CPT
         register_post_type( 'course', array( 'public' => true ) );
+
+        // Setup custom render page
+        $this->custom_render_pid = $this->factory->post->create( array(
+            'post_type' => 'page',
+            'post_name' => 'custom-render'
+        ) );
+
+        $theme = get_theme('Timber Template Loader Theme');
+		switch_theme($theme['Template'], $theme['Stylesheet']);
 
 	}
 
@@ -38,12 +49,74 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
 		return $this->theme_root;
 	}
 
+    function testRenderCustom() {
+
+        Timber::render( 'page-custom-render.twig', array(
+            'render_me' => 'Custom content'
+        ));
+
+        $content = ob_get_clean();
+
+        $this->assertEquals( 'Render me: Custom content', $content );
+    }
+
+    function testCompileCustom() {
+
+        $content = Timber::compile( 'page-custom-render.twig', array(
+            'render_me' => 'Custom content'
+        ));
+
+        $this->assertEquals( 'Render me: Custom content', $content );
+    }
+
+    function testRenderAutoload() {
+        $this->go_to( get_permalink( $this->custom_render_pid ) );
+
+        ob_start();
+        Timber::render( TimberLoader::AUTOLOAD_TEMPLATE, array(
+            'render_me' => 'Custom content'
+        ));
+
+        $content = ob_get_clean();
+
+        $this->assertEquals( 'Render me: Custom content', $content );
+    }
+
+    function testCompileAutoload() {
+        $this->go_to( get_permalink( $this->custom_render_pid ) );
+
+        $content = Timber::compile( TimberLoader::AUTOLOAD_TEMPLATE, array(
+            'render_me' => 'Custom content'
+        ));
+
+        $this->assertEquals( 'Render me: Custom content', $content );
+    }
+
+    function testRenderOverload() {
+        $this->go_to( get_permalink( $this->custom_render_pid ) );
+
+        ob_start();
+        Timber::render( array(
+            'render_me' => 'Custom content'
+        ));
+
+        $content = ob_get_clean();
+
+        $this->assertEquals( 'Render me: Custom content', $content );
+    }
+
+    function testCompileOverload() {
+        $this->go_to( get_permalink( $this->custom_render_pid ) );
+
+        $content = Timber::compile( array(
+            'render_me' => 'Custom content'
+        ));
+
+        $this->assertEquals( 'Render me: Custom content', $content );
+    }
+
+
     function testLoadTemplate() {
-
-        $theme = get_theme('Timber Template Loader Theme');
-		$this->assertFalse( empty($theme) );
-
-		switch_theme($theme['Template'], $theme['Stylesheet']);
 
         // expected template => new post args
         $test_posts = array(
@@ -93,15 +166,12 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
 
     }
 
-        /**
-         * @todo Change this method when template loader API has been set
-         */
         function _get_contents_with_template_loader( $url ) {
             $this->go_to( $url );
 
-            ob_start();
-            TimberTemplateLoader::load_template();
-            return ob_get_clean();
+            $context = Timber::get_context( true );
+            return Timber::compile( $context );
 
         }
+
 }
