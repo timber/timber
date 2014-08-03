@@ -99,12 +99,18 @@
 			copy(__DIR__.'/assets/single-foo.twig', get_template_directory().'/foo/single-foo.twig');
 			$str = Timber::compile('single-foo.twig');
 			$this->assertEquals('I am single-foo', trim($str));
+
+            // Reset
+            Timber::$dirname = 'views';
 		}
 
 		function testTwigLoadsFromLocation(){
 			Timber::$locations = __DIR__.'/assets';
 			$str = Timber::compile('thumb-test.twig');
 			$this->assertEquals('<img src="" />', trim($str));
+
+            // Reset
+            Timber::$locations = null;
 		}
 
 
