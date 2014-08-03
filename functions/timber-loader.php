@@ -21,6 +21,8 @@ class TimberLoader {
 
     protected $cache_mode = self::CACHE_TRANSIENT;
 
+    const AUTOLOAD_TEMPLATE = 'autoload_template';
+
     public $locations;
 
     /**
@@ -41,11 +43,11 @@ class TimberLoader {
      */
     function render($file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT) {
         // Different $expires if user is anonymous or logged in
-        if (is_array($expires)) {
+        if ( is_array($expires) ) {
             if (is_user_logged_in() && isset($expires[1])) {
                 $expires = $expires[1];
             } else {
-                $expires = $expires[0];
+                $expires = ( isset( $expires[0] ) ) ? $expires[0] : false;
             }
         }
 
@@ -77,11 +79,18 @@ class TimberLoader {
     }
 
     /**
-     * @param array $filenames
-     * @return bool
+     * @param array|string $filenames
+     * @return string|bool String: template path, False: no template found
      */
-    function choose_template($filenames) {
-        if (is_array($filenames)) {
+    function choose_template( $filenames ) {
+
+        if ( self::AUTOLOAD_TEMPLATE === $filenames ) {
+
+            $template_loader = new TimberTemplateLoader( $this );
+            return $template_loader->locate_template();
+
+        } elseif (is_array($filenames)) {
+
             /* its an array so we have to figure out which one the dev wants */
             foreach ($filenames as $filename) {
                 if ($this->template_exists($filename)) {
@@ -89,7 +98,9 @@ class TimberLoader {
                 }
             }
             return false;
+
         }
+
         return $filenames;
     }
 
