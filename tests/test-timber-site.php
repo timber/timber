@@ -19,19 +19,19 @@ class TimberSiteTest extends WP_UnitTestCase {
 
 	function testLegacyThemeDir() {
 		switch_theme( 'twentythirteen' );
-		$context = Timber::get_context();
+		$context = Timber::get_context( true );
 		$this->assertEquals( WP_CONTENT_SUBDIR.'/themes/twentythirteen', $context['theme_dir'] );
 	}
 
 	function testThemeFromContext() {
 		switch_theme( 'twentythirteen' );
-		$context = Timber::get_context();
+		$context = Timber::get_context( true );
 		$this->assertEquals( 'twentythirteen', $context['theme']->slug );
 	}
 
 	function testThemeFromSiteContext() {
 		switch_theme( 'twentythirteen' );
-		$context = Timber::get_context();
+		$context = Timber::get_context( true );
 		$this->assertEquals( 'twentythirteen', $context['site']->theme->slug );
 	}
 
