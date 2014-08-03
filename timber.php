@@ -256,7 +256,7 @@ class Timber {
 
         if ( $force )
             $context = false;
-        
+
         if ( !$context ) {
             $context = array();
 
@@ -300,27 +300,46 @@ class Timber {
      * @param bool $via_render
      * @return bool|string
      */
-    public static function compile($filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT, $via_render = false) {
+    public static function compile( $filenames = TimberLoader::AUTOLOAD_TEMPLATE, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT, $via_render = false ) {
+
+        // Maybe overload arguments
+        if ( TimberHelper::is_array_assoc( $filenames ) ) {
+            list( $data, $expires, $cache_mode, $via_render ) = array_slice( func_get_args(), 0, 4 );
+            $filenames = TimberLoader::AUTOLOAD_TEMPLATE;
+        }
+
+        // If this is reading as true; the user probably is using the old $echo param
+        // so we should move all vars up by a spot
+        if ( true === $expires ) {
+            $expires    = $cache_mode;
+            $cache_mode = TimberLoader::CACHE_USE_DEFAULT;
+        }
+
+        // Setup TimberLoader
         $caller = self::get_calling_script_dir();
-        $caller_file = self::get_calling_script_file();
-        $caller_file = apply_filters('timber_calling_php_file', $caller_file);
-        $loader = new TimberLoader($caller);
-        $file = $loader->choose_template($filenames);
+
+        // @todo $caller_file is unused. Remove or reintroduce?
+        //$caller_file = self::get_calling_script_file();
+        //$caller_file = apply_filters('timber_calling_php_file', $caller_file);
+
+        $loader = new TimberLoader( $caller );
+        $file   = $loader->choose_template( $filenames );
+
         $output = '';
-        if (is_null($data)){
+        if ( is_null( $data ) ) {
             $data = array();
         }
-        if (strlen($file)) {
-            if ($via_render){
-                $file = apply_filters('timber_render_file', $file);
-                $data = apply_filters('timber_render_data', $data);
+        if ( strlen( $file ) ) { // @todo Check if WP_DEBUG is enabled, and warn the developer?
+            if ( $via_render ) {
+                $file = apply_filters( 'timber_render_file', $file );
+                $data = apply_filters( 'timber_render_data', $data );
             } else {
-                $file = apply_filters('timber_compile_file', $file);
-                $data = apply_filters('timber_compile_data', $data);
+                $file = apply_filters( 'timber_compile_file', $file );
+                $data = apply_filters( 'timber_compile_data', $data );
             }
-            $output = $loader->render($file, $data, $expires, $cache_mode);
+            $output = $loader->render( $file, $data, $expires, $cache_mode );
         }
-        do_action('timber_compile_done');
+        do_action( 'timber_compile_done' );
         return $output;
     }
 
@@ -345,14 +364,8 @@ class Timber {
      * @param string $cache_mode
      * @return bool|string
      */
-    public static function render($filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT) {
-        if ($expires === true){
-            //if this is reading as true; the user probably is using the old $echo param
-            //so we should move all vars up by a spot
-            $expires = $cache_mode;
-            $cache_mode = TimberLoader::CACHE_USE_DEFAULT;
-        }
-        $output = self::compile($filenames, $data, $expires, $cache_mode, true);
+    public static function render( $filenames = TimberLoader::AUTOLOAD_TEMPLATE, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT ) {
+        $output = self::compile( $filenames, $data, $expires, $cache_mode, true );
         $output = apply_filters('timber_compile_result', $output);
         echo $output;
         return $output;
