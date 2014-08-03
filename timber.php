@@ -251,9 +251,12 @@ class Timber {
     /**
      * @return array
      */
-    public static function get_context() {
+    public static function get_context( $force = false ) {
         static $context = false;
 
+        if ( $force )
+            $context = false;
+        
         if ( !$context ) {
             $context = array();
 
