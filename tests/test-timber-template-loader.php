@@ -1,12 +1,12 @@
 <?php
 
-class TestTimberTemplateLoader extends WP_UnitTestCase
-{
+class TestTimberTemplateLoader extends WP_UnitTestCase {
+
     var $custom_render_pid;
 
 	function setUp() {
 		parent::setUp();
-		$this->theme_root = plugin_dir_path( __FILE__ ) . '/assets/themes';
+		$this->theme_root = TimberURLHelper::remove_double_slashes(plugin_dir_path( __FILE__ ) . '/assets/themes');
 
 		$this->orig_theme_dir = $GLOBALS['wp_theme_directories'];
 		$GLOBALS['wp_theme_directories'] = array( WP_CONTENT_DIR . '/themes', $this->theme_root );
@@ -30,7 +30,6 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
 
         $theme = get_theme('Timber Template Loader Theme');
 		switch_theme($theme['Template'], $theme['Stylesheet']);
-
 	}
 
 	function tearDown() {
@@ -160,6 +159,19 @@ class TestTimberTemplateLoader extends WP_UnitTestCase
         ));
 
         $this->assertEquals( 'Render me: Custom content', $content );
+    }
+
+    /**
+     *  @expectedDeprecated get_theme
+     *  @expectedDeprecated get_themes
+     */
+    function testLoadHomeInIndex() {
+        $theme = get_theme('Home Timber Template Loader Theme');
+        switch_theme($theme['Template'], $theme['Stylesheet']);
+        $this->assertFalse( is_home() );
+        $this->go_to( home_url('/') );
+        $this->assertTrue( is_home() );
+        require_once($this->theme_root.'/'.$theme['Template'].'/index.php');
     }
 
     /**
