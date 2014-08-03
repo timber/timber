@@ -7,31 +7,27 @@ class TimberTemplateLoader
 {
     const TEMPLATE_IN_OB = 'template_in_ob'; /**< Flag to indicate to-be-rendered template sits in the output buffer **/
 
-    /**
-     * @return TimberTemplateLoader
-     */
-    public static function get_instance() {
-        static $instance = false;
+    private $_timber_loader;
 
-        if ( !$instance ) {
-            $class = get_class();
-            $instance = new $class();
-            $instance->init();
-        }
+    public function __construct( $timber_loader = null ){
 
-        return $instance;
+        if ( !$timber_loader )
+            $timber_loader = new TimberLoader;
+
+        $this->_timber_loader = $timber_loader;
     }
 
-    protected function __construct(){}
+    public static function setup() {
+        $loader = new self();
 
-    protected function init() {
-        add_filter( 'index_template', array( $this, 'template_loader' ) );
-        add_filter( 'home_template',  array( $this, 'home_template_loader' ) );
-        add_filter( 'template_include', array( &$this, 'template_include' ), 999 );
+        add_filter( 'index_template',   array( $loader, 'template_loader' ) );
+        add_filter( 'home_template',    array( $loader, 'home_template_loader' ) );
+        add_filter( 'template_include', array( $loader, 'template_include' ), 999 );
     }
 
     public static function load_template( $context = array() ) {
-        $located = self::get_instance()->locate_template();
+        $self = new self();
+        $located = $self->locate_template();
 
         if ( $located )
             self::_render( $located, $context );
@@ -163,16 +159,13 @@ class TimberTemplateLoader
      * @return string Full path to file.
      */
     function get_query_template( $type, $templates = array() ) {
-        static $timber_loader = false;
-        if ( !$timber_loader )
-            $timber_loader = new TimberLoader();
 
         $type = preg_replace( '|[^a-z0-9-]+|', '', $type );
 
         if ( empty( $templates ) )
             $templates = array("{$type}.twig");
 
-        $template = $timber_loader->choose_template( $templates );
+        $template = $this->_timber_loader->choose_template( $templates );
 
         /**
          * Filter the path of the queried template by type.
@@ -522,5 +515,4 @@ class TimberTemplateLoader
 
 }
 
-// Init ourselves
-TimberTemplateLoader::get_instance();
+add_action( 'template_redirect', array( 'TimberTemplateLoader', 'setup' ) );
