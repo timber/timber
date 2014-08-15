@@ -14,7 +14,7 @@ class TimberQueryIterator implements Iterator {
     private $_posts_class = 'TimberPost';
 
     public function __construct( $query = false, $posts_class = 'TimberPost' ) {
-
+        add_action( 'pre_get_posts', array($this, 'fix_number_posts_wp_quirk' ));
         if ( $posts_class )
             $this->_posts_class = $posts_class;
 
@@ -122,6 +122,14 @@ class TimberQueryIterator implements Iterator {
 
     public function key() {
         $this->_query->current_post;
+    }
+
+    //get_posts users numberposts
+    static function fix_number_posts_wp_quirk( $query ) {
+        if (isset($query->query) && isset($query->query['numberposts'])) {
+            $query->set( 'posts_per_page', $query->query['numberposts'] );
+        }
+        return $query;
     }
 
 }

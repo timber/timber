@@ -29,7 +29,52 @@ class TestTimberPostGetter extends WP_UnitTestCase {
 		$attachments = Timber::get_posts('post_type=attachment&post_status=inherit');
 		$this->assertGreaterThan(0, count($attachments));
 	}
-	
+
+	function testNumberPosts() {
+		$pids = $this->factory->post->create_many( 15 );
+		$query = 'post_type=post&numberposts=7';
+		$posts = Timber::get_posts($query);
+		$this->assertEquals(7, count($posts));
+
+	}
+
+	function testNumberPostsBig() {
+		$pids = $this->factory->post->create_many( 15 );
+		$query = 'post_type=post&numberposts=15';
+		$posts = Timber::get_posts($query);
+		$this->assertEquals(15, count($posts));
+
+	}
+
+	function testNumberPostsAll() {
+		$pids = $this->factory->post->create_many( 17 );
+		$query = 'post_type=post&numberposts=-1';
+		$posts = Timber::get_posts($query);
+		$this->assertEquals(17, count($posts));
+
+	}
+
+	function testPostsPerPage() {
+		$pids = $this->factory->post->create_many( 15 );
+		$query = 'post_type=post&posts_per_page=7';
+		$posts = Timber::get_posts($query);
+		$this->assertEquals(7, count($posts));
+	}
+
+	function testPostsPerPageAll() {
+		$pids = $this->factory->post->create_many( 23 );
+		$query = 'post_type=post&posts_per_page=-1';
+		$posts = Timber::get_posts($query);
+		$this->assertEquals(23, count($posts));
+	}
+
+	function testPostsPerPageBig() {
+		$pids = $this->factory->post->create_many( 15 );
+		$query = 'post_type=post&posts_per_page=15';
+		$posts = Timber::get_posts($query);
+		$this->assertEquals(15, count($posts));
+	}
+
 	function testQueryPost() {
 		$posts = $this->factory->post->create_many( 6 );
 		$post = Timber::get_post( $posts[3] );
