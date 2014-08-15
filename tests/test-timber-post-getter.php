@@ -2,6 +2,34 @@
 
 class TestTimberPostGetter extends WP_UnitTestCase {
 
+	function testGetAttachment() {
+		$upload_dir = wp_upload_dir();
+		$post_id = $this->factory->post->create();
+		$filename = TimberImageTest::copyTestImage( 'flag.png' );
+		$destination_url = str_replace( ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename );
+		$wp_filetype = wp_check_filetype( basename( $filename ), null );
+		$attachment = array(
+			'post_mime_type' => $wp_filetype['type'],
+			'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
+			'post_content' => '',
+			'post_status' => 'inherit'
+		);
+		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
+		add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
+		$data = array();
+		$data['post'] = new TimberPost( $post_id );
+		$data['size'] = array( 'width' => 100, 'height' => 50 );
+		$data['crop'] = 'default';
+		Timber::compile( 'assets/thumb-test.twig', $data );
+		$exists = file_exists( $filename );
+		$this->assertTrue( $exists );
+		$resized_path = $upload_dir['path'].'/flag-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.png';
+		$exists = file_exists( $resized_path );
+		$this->assertTrue( $exists );
+		$attachments = Timber::get_posts('post_type=attachment&post_status=inherit');
+		$this->assertGreaterThan(0, count($attachments));
+	}
+	
 	function testQueryPost() {
 		$posts = $this->factory->post->create_many( 6 );
 		$post = Timber::get_post( $posts[3] );
