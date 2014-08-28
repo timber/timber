@@ -258,7 +258,7 @@ class Timber {
             $context = false;
 
         if ( !$context ) {
-            $context = array();
+            $context = self::get_context_from_theme();
 
             $context['http_host']  = 'http://' . $_SERVER['HTTP_HOST'];
             $context['wp_title']   = TimberHelper::get_wp_title();
