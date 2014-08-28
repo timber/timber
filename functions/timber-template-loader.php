@@ -22,7 +22,7 @@ class TimberTemplateLoader
 
         add_filter( 'index_template',   array( $loader, 'template_loader' ) );
         add_filter( 'home_template',    array( $loader, 'home_template_loader' ) );
-        add_filter( 'template_include', array( $loader, 'template_include' ), 999 );
+        add_filter( 'template_include', array( $loader, '_template_include' ), 999 );
     }
 
     public static function load_template( $context = array() ) {
@@ -76,10 +76,14 @@ class TimberTemplateLoader
      * template during the meanwhile, the output buffer will be silently cleaned
      * by the anonymous fn in get_index_template.
      *
+     * Should only be used by the template_include hook
+     *
      * @param string $template
      * @return string|boolean
+     *
+     * @access private
      */
-    public function template_include( $template ) {
+    public function _template_include( $template ) {
 
         if ( self::TEMPLATE_IN_OB === $template ) {
 
