@@ -271,7 +271,7 @@ class Timber {
             $context['posts'] = Timber::query_posts();
             $context['post']  = $context['posts']->current();
             $context['posts']->rewind();
-            
+
             //deprecated, these should be fetched via TimberSite or TimberTheme
             $context['theme_dir']           = WP_CONTENT_SUBDIR . str_replace( WP_CONTENT_DIR, '', get_stylesheet_directory() );
             $context['language_attributes'] = TimberHelper::function_wrapper( 'language_attributes' );
@@ -285,6 +285,7 @@ class Timber {
                     $context['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'echo' => false, 'menu_class' => 'nav-menu' ) );
                 }
             }
+
             $context = apply_filters( 'timber_context', $context );
         }
 
@@ -293,20 +294,20 @@ class Timber {
 
     /**
      * @param array $filenames
-     * @param array $data
+     * @param array $context
      * @param bool $expires
      * @param string $cache_mode
      * @param bool $via_render
      * @return bool|string
      */
-    public static function compile( $filenames = TimberLoader::AUTOLOAD_TEMPLATE, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT, $via_render = false ) {
+    public static function compile( $filenames = TimberLoader::AUTOLOAD_TEMPLATE, $context = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT, $via_render = false ) {
         // Maybe overload arguments
         if ( TimberHelper::is_array_assoc( $filenames ) ) {
             //the user has sent $data into $filenames, so bump everything to the right;
             $via_render = $cache_mode;
             $cache_mode = $expires;
-            $expires = $data;
-            $data = $filenames;
+            $expires = $context;
+            $context = $filenames;
             $filenames = TimberLoader::AUTOLOAD_TEMPLATE;
         }
 
@@ -328,18 +329,19 @@ class Timber {
         $file   = $loader->choose_template( $filenames );
 
         $output = '';
-        if ( is_null( $data ) ) {
-            $data = array();
+        if ( is_null( $context ) ) {
+            $context = array();
         }
+
         if ( strlen( $file ) ) { // @todo Check if WP_DEBUG is enabled, and warn the developer?
             if ( $via_render ) {
-                $file = apply_filters( 'timber_render_file', $file );
-                $data = apply_filters( 'timber_render_data', $data );
+                $file    = apply_filters( 'timber_render_file', $file );
+                $context = apply_filters( 'timber_render_data', $context );
             } else {
-                $file = apply_filters( 'timber_compile_file', $file );
-                $data = apply_filters( 'timber_compile_data', $data );
+                $file    = apply_filters( 'timber_compile_file', $file );
+                $context = apply_filters( 'timber_compile_data', $context );
             }
-            $output = $loader->render( $file, $data, $expires, $cache_mode );
+            $output = $loader->render( $file, $context, $expires, $cache_mode );
         }
         do_action( 'timber_compile_done' );
         return $output;
@@ -384,6 +386,49 @@ class Timber {
         return $compiled;
     }
 
+    /* Context.php
+    ================================ */
+
+    /**
+     * Gets the context from context.php in the current theme if available
+     *
+     * @return array
+     */
+    public static function get_context_from_theme() {
+
+        $context = array();
+
+        if ( $context_template = locate_template( 'context.php' ) ) {
+            $context = self::get_context_from_file( $context_template );
+        }
+
+        return $context;
+    }
+
+    /**
+     * Get the $context variable from a template file.
+     *
+     * Normally used to grab the context out of context.php, but can be used
+     * to grab context from any other template file. Output is suppressed.
+     *
+     * @param string $file
+     * @return array
+     */
+    public static function get_context_from_file( $file ) {
+        // Give the file access to the same globals as normal template files
+        global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
+
+        if ( is_array( $wp_query->query_vars ) )
+            extract( $wp_query->query_vars, EXTR_SKIP );
+
+        $context = array();
+
+        ob_start();
+        require $file;
+        ob_end_clean();
+
+        return $context;
+    }
 
     /*  Sidebar
     ================================ */
