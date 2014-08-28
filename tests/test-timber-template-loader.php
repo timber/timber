@@ -4,7 +4,7 @@ class TestTimberTemplateLoader extends WP_UnitTestCase {
 
     var $custom_render_pid;
 
-	function setUp() {
+    function setUp() {
 		parent::setUp();
 		$this->theme_root = TimberURLHelper::remove_double_slashes(plugin_dir_path( __FILE__ ) . '/assets/themes');
 
@@ -193,6 +193,26 @@ class TestTimberTemplateLoader extends WP_UnitTestCase {
 
         }
 
+    }
+
+    function testContextFile() {
+        $pid = $this->factory->post->create( array(
+            'post_type' => 'page',
+            'post_name' => 'inspirationless'
+        ) );
+
+        $url = add_query_arg( array(
+            'page_id' => $pid,
+        ), '/' );
+        $this->go_to( $url );
+
+        // Can't locate context.php because STYLESHEETPATH and TEMPLATEPATH are constants,
+        // so we have to do it in a roundabout way
+        $context_file = wp_get_theme()->get_template_directory() . '/context.php';
+        $context = array_merge(Timber::get_context( true ), Timber::get_context_from_file( $context_file ) );
+
+        $test = Timber::compile( $context );
+        $this->assertEquals( 'This is from context.php', $test );
     }
 
         function _get_contents_with_template_loader( $url ) {
