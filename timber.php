@@ -73,6 +73,7 @@ class Timber {
     public static $cache = false;
     public static $auto_meta = true;
     public static $autoescape = false;
+    public static $twig_template_hierarchy = false;
 
     public function __construct(){
         $this->test_compatibility();

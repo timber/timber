@@ -18,6 +18,10 @@ class TimberTemplateLoader
     }
 
     public static function setup() {
+
+        if ( !Timber::$twig_template_hierarchy )
+            return;
+
         $loader = new self();
 
         add_filter( 'index_template',   array( $loader, 'template_loader' ) );
