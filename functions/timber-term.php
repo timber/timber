@@ -60,13 +60,13 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
             //echo 'bad call using '.$tid;
             //TimberHelper::error_log(debug_backtrace());
         }
-        $term->id = $term->ID;
-        $this->import($term);
-        if (isset($term->term_id)) {
-            $custom = $this->get_term_meta($term->term_id);
-            $this->import($custom);
-        } else {
-            //print_r($term);
+        if (isset($term->ID)){
+            $term->id = $term->ID;
+            $this->import($term);
+            if (isset($term->term_id)) {
+                $custom = $this->get_term_meta($term->term_id);
+                $this->import($custom);
+            }
         }
     }
 
