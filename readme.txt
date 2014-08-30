@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.20.3
+Stable tag: 0.20.4
 Tested up to: 3.9.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,9 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.20.4 =
+* Fixed issue with Timber::get_posts and Timber::query_posts using numberposts in args
 
 = 0.20.3 = 
 * Fixed some issues with linking to menu items with a hash
