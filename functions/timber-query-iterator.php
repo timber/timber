@@ -38,7 +38,9 @@ class TimberQueryIterator implements Iterator {
         } elseif ( is_array( $query ) && count( $query ) && ( is_integer( $query[0] ) || is_string( $query[0] ) ) ) {
             // We have a list of pids (post IDs) to extract from
             $the_query = self::get_query_from_array_of_ids( $query );
-
+        } elseif ( is_array($query) && empty($query)) {
+            // it's an empty array
+            $the_query = array();
         } else {
             TimberHelper::error_log( 'I have failed you! in ' . basename( __FILE__ ) . '::' . __LINE__ );
             TimberHelper::error_log( $query );
@@ -52,8 +54,10 @@ class TimberQueryIterator implements Iterator {
     }
 
     public function get_posts( $return_collection = false ) {
-        $posts = new TimberPostsCollection( $this->_query->posts, $this->_posts_class );
-        return ( $return_collection ) ? $posts : $posts->get_posts();
+        if (isset($this->_query->posts)){
+            $posts = new TimberPostsCollection( $this->_query->posts, $this->_posts_class );
+            return ( $return_collection ) ? $posts : $posts->get_posts();
+        }
     }
 
     //

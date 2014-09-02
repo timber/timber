@@ -2,6 +2,18 @@
 
 class TestTimberPostGetter extends WP_UnitTestCase {
 
+	function testGettingEmptyArray(){
+		$pids = $this->factory->post->create_many( 15 );
+		$posts = Timber::get_posts(array());
+		$this->assertEquals(0, count($posts));
+	}
+
+	function testGettingWithFalse(){
+		$pids = $this->factory->post->create_many( 15 );
+		$posts = Timber::get_posts(false);
+		$this->assertEquals(0, count($posts));
+	}
+
 	function testGetAttachment() {
 		$upload_dir = wp_upload_dir();
 		$post_id = $this->factory->post->create();
