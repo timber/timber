@@ -537,6 +537,7 @@ class TimberHelper {
                     if ( $args['add_args'] ) {
                         $link = rtrim( add_query_arg( $args['add_args'], $link ), '/' );
                     }
+                    $link = str_replace(' ', '+', $link);
                     $link = untrailingslashit( $link );
                     $page_links[] = array(
                         'class' => 'page-number page-numbers',
