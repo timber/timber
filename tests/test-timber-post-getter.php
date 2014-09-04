@@ -2,6 +2,20 @@
 
 class TestTimberPostGetter extends WP_UnitTestCase {
 
+	function testGettingArrayWithSticky(){
+		$pids = $this->factory->post->create_many(6);
+		$sticky_id = $this->factory->post->create();
+		$sticky = array($sticky_id, $pids[0]);
+		update_option('sticky_posts', $sticky);
+		$posts = Timber::get_posts($pids);
+		$post_ids_gotten = array();
+		foreach($posts as $post) {
+			$post_ids_gotten[] = $post->ID;
+		}
+		$this->assertNotContains($sticky_id, $post_ids_gotten);
+		$this->assertContains($pids[0], $post_ids_gotten);
+	}
+
 	function testGettingEmptyArray(){
 		$pids = $this->factory->post->create_many( 15 );
 		$posts = Timber::get_posts(array());

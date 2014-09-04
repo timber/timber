@@ -69,6 +69,7 @@ class TimberQueryIterator implements Iterator {
 
         return new WP_Query( array(
                 'post_type'=> 'any',
+                'ignore_sticky_posts' => true,
                 'post__in' => $query,
                 'orderby'  => 'post__in',
                 'nopaging' => true

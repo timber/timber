@@ -2,8 +2,8 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.20.4
-Tested up to: 3.9.1
+Stable tag: 0.20.5
+Tested up to: 4.0
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -40,6 +40,10 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.20.5 =
+* Fixed issue with sticky posts being included when just feeding an array of ids
+* Fix for pagination links with search terms (thanks @matthewsoares)
 
 = 0.20.4 =
 * Fixed issue with Timber::get_posts and Timber::query_posts using numberposts in args
