@@ -3,7 +3,7 @@
 class TimberAdmin {
 
 	function __construct() {
-		add_filter( 'plugin_row_meta', array( $this, 'meta_links' ), 10, 3 );
+		add_filter( 'plugin_row_meta', array( $this, 'meta_links' ), 10, 2 );
 	}
 
 	/**
@@ -13,7 +13,7 @@ class TimberAdmin {
 	 * @param string  $file
 	 * @return array
 	 */
-	function meta_links( $links, $file, $data ) {
+	function meta_links( $links, $file ) {
 		if ( strstr( $file, '/timber.php' ) ) {
 			unset($links[2]);
 			$links[] = '<a href="http://localhost/wp-admin/plugin-install.php?tab=plugin-information&amp;plugin=timber-library&amp;TB_iframe=true&amp;width=600&amp;height=550" class="thickbox" aria-label="More information about Timber" data-title="Timber">View details</a>';
