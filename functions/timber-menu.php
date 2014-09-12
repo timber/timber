@@ -38,16 +38,18 @@ class TimberMenu extends TimberCore {
      */
     private function init($menu_id) {
         $menu = wp_get_nav_menu_items($menu_id);
-        _wp_menu_item_classes_by_context($menu);
-        if (is_array($menu)){
-            $menu = self::order_children($menu);
+        if ($menu) {
+            _wp_menu_item_classes_by_context($menu);
+            if (is_array($menu)){
+                $menu = self::order_children($menu);
+            }
+            $this->items = $menu;
+            $menu_info = wp_get_nav_menu_object($menu_id);
+            $this->import($menu_info);
+            $this->ID = $this->term_id;
+            $this->id = $this->term_id;
+            $this->title = $this->name;
         }
-        $this->items = $menu;
-        $menu_info = wp_get_nav_menu_object($menu_id);
-        $this->import($menu_info);
-        $this->ID = $this->term_id;
-        $this->id = $this->term_id;
-        $this->title = $this->name;
     }
 
     /**
