@@ -131,7 +131,8 @@ class TimberQueryIterator implements Iterator {
 
     //get_posts users numberposts
     static function fix_number_posts_wp_quirk( $query ) {
-        if (isset($query->query) && isset($query->query['numberposts'])) {
+        if (isset($query->query) && isset($query->query['numberposts'])
+                && !isset($query->query['posts_per_page'])) {
             $query->set( 'posts_per_page', $query->query['numberposts'] );
         }
         return $query;
