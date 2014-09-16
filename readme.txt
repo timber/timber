@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.20.5
+Stable tag: 0.20.6
 Tested up to: 4.0
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,12 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.20.6
+* Fixed some resulting bugs from numberposts vs. posts_per_page change as relates to galleries (thanks @IJMacD)
+* Fixed issue with author.php in starter theme (thanks @dmtroyer)
+* Added some sanity checks when menus are missing (thanks @jaredNova)
+* New tests, yay!
 
 = 0.20.5 =
 * Fixed issue with sticky posts being included when just feeding an array of ids
