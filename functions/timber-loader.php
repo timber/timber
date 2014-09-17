@@ -71,7 +71,7 @@ class TimberLoader {
             $this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
         }
 
-        return $output;
+        return apply_filters('timber_output', $output);
     }
 
     /**
