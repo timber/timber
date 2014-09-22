@@ -19,14 +19,13 @@
 			<section class="comments">
 				<div class="respond">
 					<h3 class="h2">Comments</h3>
-						{{ comment_form }}
-					</div>
-					<div class="responses">
-
-						{% for cmt in post.get_comments() %}
-							{% include "comment.twig" with {comment:cmt} %}
-						{% endfor %}
-					</div>
+					{{ comment_form }}
+				</div>
+				<div class="responses">
+					{% for cmt in post.get_comments() %}
+						{% include "comment.twig" with {comment:cmt} %}
+					{% endfor %}
+				</div>
 
 			</section>
 
