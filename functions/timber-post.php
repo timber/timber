@@ -30,7 +30,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      * @return \TimberPost TimberPost object -- woo!
      */
     function __construct($pid = null) {
-        if ($pid === null && get_the_ID()) {
+        global $wp_query;
+        if ($pid === null && isset($wp_query->queried_object_id) && $wp_query->queried_object_id) {
+            $pid = $wp_query->queried_object_id;
+            $this->ID = $pid;
+        } else if ($pid === null && get_the_ID()) {
             $pid = get_the_ID();
             $this->ID = $pid;
         } else if ($pid === null && ($pid_from_loop = TimberPostGetter::loop_to_id())) {
