@@ -55,7 +55,7 @@ abstract class TimberCore {
         }
         if ( is_array( $info ) ) {
             foreach ( $info as $key => $value ) {
-                if ( !empty( $key ) && !method_exists($this, $key)) {
+                if ( !empty( $key ) && !method_exists($this, $key) ) {
                     $this->$key = $value;
                 }
             }

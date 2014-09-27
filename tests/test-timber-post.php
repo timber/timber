@@ -322,7 +322,8 @@
 			$this->assertEquals('My', trim($string));
 			update_post_meta($post_id, 'meta', 'steak');
 			$post = new TimberPost($post_id);
-			$string = Timber::compile_string('My {{post.meta}}', array('post' => $post));
+			$string = Timber::compile_string('My {{post.custom.meta}}', array('post' => $post));
+			//sorry you can't over-write methods now
 			$this->assertEquals('My steak', trim($string));
 		}
 
