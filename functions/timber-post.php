@@ -669,9 +669,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      * @return string
      */
     function get_title() {
-        $title = $this->post_title;
-        $id = $this->post_id;
-        return apply_filters('the_title', $title, $id);
+        return apply_filters('the_title', $this->post_title, $this->ID);
     }
 
     /**
