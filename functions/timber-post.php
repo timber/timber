@@ -306,6 +306,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
             } else {
                 $adjacent = get_adjacent_post(false, '', false);
             }
+
             if ($adjacent) {
                 $this->_next[$taxonomy] = new $this->PostClass($adjacent);
             } else {
@@ -382,7 +383,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
             } else {
                 $adjacent = get_adjacent_post(false, '', true);
             }
-            
+
             if ($adjacent) {
                 $this->_prev[$taxonomy] = new $this->PostClass($adjacent);
             } else {
@@ -669,7 +670,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      */
     function get_title() {
         $title = $this->post_title;
-        return apply_filters('the_title', $title);
+        $id = $this->post_id;
+        return apply_filters('the_title', $title, $id);
     }
 
     /**
