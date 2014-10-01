@@ -49,13 +49,15 @@ abstract class TimberCore {
      *
      * @param array|object $info an object or array you want to grab data from to attach to the Timber object
      */
-    function import( $info ) {
+    function import( $info, $force = false ) {
         if ( is_object( $info ) ) {
             $info = get_object_vars( $info );
         }
         if ( is_array( $info ) ) {
             foreach ( $info as $key => $value ) {
-                if ( !empty( $key ) ) {
+                if ( !empty( $key ) && $force ) {
+                    $this->$key = $value;
+                } else if ( !empty( $key ) && !method_exists($this, $key) ){
                     $this->$key = $value;
                 }
             }

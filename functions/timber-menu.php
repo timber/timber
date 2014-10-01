@@ -117,6 +117,11 @@ class TimberMenu extends TimberCore {
         $index = array();
         $menu = array();
         foreach ($items as $item) {
+            if (isset($item->title)) {
+                //items from wp can come with a $title property which conflicts with methods
+                $item->__title = $item->title;
+                unset($item->title);
+            }
             if(isset($item->ID)){
                 if (is_object($item) && get_class($item) == 'WP_Post'){
                     $old_menu_item = $item;

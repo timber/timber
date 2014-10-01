@@ -444,7 +444,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
         $post->id = $post->ID;
         $post->slug = $post->post_name;
         $customs = $this->get_post_custom($post->ID);
-        $post = (object)array_merge((array)$post, (array)$customs);
+        $post->custom = $customs;
+        $post = (object)array_merge((array)$customs, (array)$post);
         return $post;
     }
 
