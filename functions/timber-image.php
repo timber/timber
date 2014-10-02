@@ -242,7 +242,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
     /* Alias */
 
     /**
-     * @return float
+     * @return integer
      */
     public function aspect() {
         $w = intval($this->width());

@@ -34,7 +34,7 @@ class TimberImageHelper
 
     /**
      * @param string $hexstr
-     * @return array
+     * @return resource
      */
     public static function hexrgb($hexstr) {
         if (!strstr($hexstr, '#')) {
@@ -57,6 +57,9 @@ class TimberImageHelper
         self::delete_letterboxed_files($local);
     }
 
+    /**
+     * @param string $local_file
+     */
     static function delete_resized_files($local_file) {
         $info = pathinfo($local_file);
         $dir = $info['dirname'];
@@ -76,6 +79,9 @@ class TimberImageHelper
         }
     }
 
+    /**
+     * @param string $local_file
+     */
     static function delete_letterboxed_files($local_file) {
         $info = pathinfo($local_file);
         $dir = $info['dirname'];
@@ -136,7 +142,7 @@ class TimberImageHelper
      * @param string $src
      * @param int $w
      * @param int $h
-     * @param $color
+     * @param string $color
      * @return string
      */
     static function get_letterbox_file_name_relative_to_content($src, $w, $h, $color) {
@@ -225,6 +231,9 @@ class TimberImageHelper
         return self::get_rel_path($src);
     }
 
+    /**
+     * @param string $url
+     */
     public static function get_server_location($url) {
         $upload_dir = wp_upload_dir();
         $abs = false;
