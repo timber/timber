@@ -312,7 +312,7 @@ class Timber {
     }
 
     /**
-     * @param  array $string a string with twig variables
+     * @param  string $string a string with twig variables
      * @param  array $data an array with data in it
      * @return  bool|string
      */
