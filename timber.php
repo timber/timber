@@ -88,6 +88,9 @@ class Timber {
     }
 
     protected function init_constants() {
+        if (defined("TIMBER_LOC")) {
+            return;
+        }
         define("TIMBER_LOC", realpath(__DIR__));
     }
 
