@@ -36,6 +36,16 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 	}
 
+	/*
+	 * Make sure we still get back nothing even though we have a fallback present 
+	 */
+	function testMissingMenu() {
+		$pg_1 = $this->factory->post->create(array('post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10));
+		$pg_2 = $this->factory->post->create(array('post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1));
+		$missing_menu = new TimberMenu(14);
+		$this->assertTrue(empty($missing_menu->items));
+	}
+
 	function testMenuTwig() {
 		$struc = '/%postname%/';
 		global $wp_rewrite;
