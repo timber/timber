@@ -27,7 +27,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     }
 
     /**
-     * @param mixed $cid
+     * @param integer $cid
      */
     function init($cid) {
         $comment_data = $cid;
