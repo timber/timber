@@ -363,7 +363,7 @@ class TimberLoader {
      * @param string $group
      * @param int $expires
      * @param string $cache_mode
-     * @return mixed
+     * @return string|boolean
      */
     public function set_cache($key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT) {
         $object_cache = false;

@@ -198,6 +198,9 @@ class TimberImageHelper
         return $dir_relative_to_content . '/' . $new_name;
     }
 
+    /**
+     * @param string $src
+     */
     public static function in_uploads($src) {
         $upload_dir = wp_upload_dir();
         if (strstr($src, $upload_dir['relative'])) {
