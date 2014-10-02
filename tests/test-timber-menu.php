@@ -24,7 +24,17 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->assertEquals( '/home', $item->path() );
 	}
 
-	
+	function testPagesMenu() {
+		$pg_1 = $this->factory->post->create(array('post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10));
+		$pg_2 = $this->factory->post->create(array('post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1));
+		$page_menu = new TimberMenu();
+		$this->assertEquals(2, count($page_menu->items));
+		$this->assertEquals('Bar Page', $page_menu->items[0]->title());
+		$this->_createTestMenu();
+		//make sure other menus are still more powerful
+		$menu = new TimberMenu();
+		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
+	}
 
 	function testMenuTwig() {
 		$struc = '/%postname%/';
