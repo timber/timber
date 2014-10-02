@@ -52,14 +52,24 @@ class TimberHelper {
         return $data;
     }
 
+    /**
+     * @param string $slug
+     * @param integer $lock_timeout
+     */
     public static function _lock_transient( $slug, $lock_timeout ) {
         set_transient( $slug . '_lock', true, $lock_timeout );
     }
 
+    /**
+     * @param string $slug
+     */
     public static function _unlock_transient( $slug ) {
         delete_transient( $slug . '_lock', true );
     }
 
+    /**
+     * @param string $slug
+     */
     public static function _is_transient_locked( $slug ) {
         return (bool)get_transient( $slug . '_lock' );
     }
@@ -115,7 +125,7 @@ class TimberHelper {
      *
      *
      * @param string  $function_name
-     * @param array   $defaults
+     * @param integer[]   $defaults
      * @param bool    $return_output_buffer
      * @return TimberFunctionWrapper
      */
@@ -231,7 +241,7 @@ class TimberHelper {
      *
      *
      * @param string  $ret
-     * @return mixed
+     * @return string
      * @deprecated since 0.20.0
      */
     public static function twitterify( $ret ) {

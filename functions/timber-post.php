@@ -99,7 +99,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     /**
      *  takes a mix of integer (post ID), string (post slug), or object to return a WordPress post object from WP's built-in get_post() function
      *
-     * @param mixed $pid
+     * @param integer $pid
      * @return WP_Post on success
      */
     private function prepare_post_info($pid = 0) {
@@ -121,7 +121,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     /**
      *  helps you find the post id regardless of whetehr you send a string or whatever
      *
-     * @param mixed $pid ;
+     * @param integer $pid ;
      * @return integer ID number of a post
      */
     private function check_post_id($pid) {
@@ -143,7 +143,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     /**
      *  get_post_id_by_name($post_name)
      *
-     * @param $post_name
+     * @param string $post_name
      * @return int
      */
     public static function get_post_id_by_name($post_name) {
@@ -452,7 +452,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     /**
      * This is deprecated!
      * @param string $use
-     * @return bool|string
+     * @return string
      */
     function get_display_date($use = 'post_date') {
         return date(get_option('date_format'), strtotime($this->$use));
