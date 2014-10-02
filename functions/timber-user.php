@@ -67,6 +67,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
      */
     function init($uid = false) {
         $uid = ($uid === false) ? get_current_user_id : $uid;
+        $data = null;
         if (is_object($uid) || is_array($uid)){
             $data = $uid;
             if (is_array($uid)){
