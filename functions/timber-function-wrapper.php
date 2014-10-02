@@ -13,7 +13,7 @@ class TimberFunctionWrapper
 
     /**
      * @param callable $function
-     * @param array $args
+     * @param integer[] $args
      * @param bool $return_output_buffer
      */
     public function __construct($function, $args = array(), $return_output_buffer = false) {
