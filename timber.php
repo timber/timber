@@ -181,7 +181,7 @@ class Timber {
     /**
      * @param array $results
      * @param string $PostClass
-     * @return array
+     * @return TimberPostsCollection
      * @deprecated since 0.20.0
      */
     static function handle_post_results($results, $PostClass = 'TimberPost') {
@@ -343,7 +343,7 @@ class Timber {
     }
 
     /**
-     * @param  array $string a string with twig variables
+     * @param  string $string a string with twig variables
      * @param  array $data an array with data in it
      * @return  bool|string
      */
@@ -514,6 +514,9 @@ class Timber {
         return str_replace(ABSPATH, '', realpath($dir));
     }
 
+    /**
+     * @return boolean|string
+     */
     public static function get_calling_script_dir($offset = 0) {
         $caller = self::get_calling_script_file($offset);
         if (!is_null($caller)){

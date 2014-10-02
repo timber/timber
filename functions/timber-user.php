@@ -11,7 +11,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
     public $id;
     public $name;
     public $user_nicename;
-    
+
     /**
      * @param int|bool $uid
      */
@@ -66,9 +66,8 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
      * @param int|bool $uid
      */
     function init($uid = false) {
-        if ($uid === false) {
-            $uid = get_current_user_id();
-        }
+        $uid = ($uid === false) ? get_current_user_id : $uid;
+        $data = null;
         if (is_object($uid) || is_array($uid)){
             $data = $uid;
             if (is_array($uid)){
@@ -76,15 +75,9 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
             }
             $uid = $data->ID;
         }
-        if (is_numeric($uid)) {
-            $data = get_userdata($uid);
-        }
+        $data = (is_numeric($uid)) ? get_userdata($uid) : $data;
         if (isset($data) && is_object($data)) {
-            if (isset($data->data)){
-                $this->import($data->data);
-            } else {
-                $this->import($data);
-            }
+            $this->import((isset($data->data)) ? $data->data : $data);
         }
         $this->id = $this->ID;
         $this->name = $this->name();

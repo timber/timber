@@ -70,7 +70,7 @@ class TimberMenu extends TimberCore {
     /**
      * @param string $slug
      * @param array $locations
-     * @return mixed
+     * @return integer
      */
     private function get_menu_id_from_locations($slug, $locations) {
         if ($slug === 0) {

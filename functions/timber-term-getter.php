@@ -51,7 +51,7 @@ class TimberTermGetter
     /**
      * @param string|array $taxonomies
      * @param string|array $args
-     * @param $TermClass
+     * @param string $TermClass
      * @return mixed
      */
     public static function handle_term_query($taxonomies, $args, $TermClass){
@@ -140,7 +140,7 @@ class TimberTermGetter
     }
 
     /**
-     * @param array $args
+     * @param integer[] $args
      * @return stdClass
      */
     public static function get_term_query_from_array_of_ids($args) {
@@ -151,7 +151,7 @@ class TimberTermGetter
     }
 
     /**
-     * @param array $args
+     * @param string[] $args
      * @return stdClass
      */
     public static function get_term_query_from_array_of_strings($args) {
