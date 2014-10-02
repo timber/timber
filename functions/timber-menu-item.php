@@ -226,7 +226,9 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
     }
 
     public function title() {
-        return $this->__title;
+        if (isset($this->__title)){
+            return $this->__title;
+        }
     }
 
 }
