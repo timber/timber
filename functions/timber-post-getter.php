@@ -68,7 +68,7 @@ class TimberPostGetter {
     /**
      * @param array $results
      * @param string $PostClass
-     * @return array
+     * @return TimberPostsCollection
      */
     static function handle_post_results($results, $PostClass = 'TimberPost') {
         $posts = array();

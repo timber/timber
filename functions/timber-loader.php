@@ -133,7 +133,7 @@ class TimberLoader {
 
     /**
      * returns an array of the directory inside themes that holds twig files
-     * @return array the names of directores, ie: array('templats', 'views');
+     * @return string[] the names of directores, ie: array('templats', 'views');
      */
     private function get_locations_theme_dir() {
         if (is_string(Timber::$dirname)) {
@@ -201,7 +201,7 @@ class TimberLoader {
     }
 
     /**
-     * @return Twig_Loader_Chain
+     * @return Twig_Loader_Filesystem
      */
     function get_loader() {
         $paths = array();
@@ -290,6 +290,9 @@ class TimberLoader {
     	return false;
     }
 
+    /**
+     * @param string|false $dirPath
+     */
     public static function rrmdir($dirPath) {
 	    if (! is_dir($dirPath)) {
 	        throw new InvalidArgumentException("$dirPath must be a directory");
@@ -356,7 +359,7 @@ class TimberLoader {
 
     /**
      * @param string $key
-     * @param mixed $value
+     * @param string|boolean $value
      * @param string $group
      * @param int $expires
      * @param string $cache_mode
