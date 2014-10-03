@@ -29,6 +29,7 @@ class TimberMenu extends TimberCore {
         if ($menu_id) {
             $this->init($menu_id);
         } else {
+            $this->init_as_page_menu();
             //TimberHelper::error_log("Sorry, the menu you were looking for wasn't found ('" . $slug . "'). Here's what Timber did find:");
         }
         return null;
@@ -50,6 +51,20 @@ class TimberMenu extends TimberCore {
             $this->ID = $this->term_id;
             $this->id = $this->term_id;
             $this->title = $this->name;
+        }
+    }
+
+    private function init_as_page_menu() {
+        $menu = get_pages();
+        if ($menu) {
+            foreach($menu as $mi) {
+                $mi->__title = $mi->post_title;
+            }
+            _wp_menu_item_classes_by_context($menu);
+            if (is_array($menu)){
+                $menu = self::order_children($menu);
+            }
+            $this->items = $menu;
         }
     }
 
