@@ -10,6 +10,7 @@ class TimberMenu extends TimberCore {
     public $ID = null;
     public $name = null;
     public $term_id;
+    public $title;
 
     /**
      * @param int $slug
