@@ -61,7 +61,7 @@
             if (TimberImageTest::is_connected()){
                 $url = 'http://i1.nyt.com/images/misc/nytlogo379x64.gif';
                 $result = TimberURLHelper::download_url($url);
-                $this->assertStringStartsWith('/tmp/nytlogo379x64', $result);
+                $this->assertContains('/nytlogo379x64', $result);
                 $this->assertStringEndsWith('.tmp', $result);
             }
         }
