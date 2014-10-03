@@ -53,7 +53,7 @@ class TimberFunctionWrapper
 
     /**
      * @param array $args
-     * @param array $defaults
+     * @param integer[] $defaults
      * @return array
      */
     private function _parse_args($args, $defaults) {
