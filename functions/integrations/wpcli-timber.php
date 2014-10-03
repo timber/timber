@@ -44,7 +44,7 @@ if (class_exists('WP_CLI_Command')) {
             $message = 'Failed to clear timber cache';
             if ($clear){
                 $message = "Cleared contents of Timber's Cache";
-                WP_CLI::success($messsage);
+                WP_CLI::success($message);
             } else {
                 WP_CLI::warning($message);
             }
