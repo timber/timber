@@ -25,6 +25,7 @@ class TimberArchives extends TimberCore
      * @return mixed
      */
     function get_archives_link($url, $text) {
+        $ret = array();
         $ret['text'] = $ret['title'] = $ret['name'] = wptexturize($text);
         $ret['url'] = $ret['link'] = esc_url(TimberURLHelper::prepend_to_url($url, $this->base));
         return $ret;
