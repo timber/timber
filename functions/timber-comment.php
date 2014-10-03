@@ -14,6 +14,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     public $comment_date;
     public $comment_ID;
     public $user_id;
+    public $comment_author;
 
     /**
      * @param int $cid
