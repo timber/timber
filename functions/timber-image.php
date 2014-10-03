@@ -15,6 +15,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
     public $sizes = array();
     public $post_parent;
     public $caption;
+    public $_wp_attached_file;
 
     /**
      * @param int $iid
