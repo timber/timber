@@ -205,6 +205,7 @@ class TimberArchives extends TimberCore
             $key = "wp_get_archives:$key:$last_changed";
             if (!$results = wp_cache_get($key, 'posts')) {
                 $results = $wpdb->get_results($query);
+                $cache = array();
                 $cache[$key] = $results;
                 wp_cache_set($key, $results, 'posts');
             }
