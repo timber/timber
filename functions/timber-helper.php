@@ -13,11 +13,7 @@ class TimberHelper {
      * @return mixed
      */
     public static function transient( $slug, $callback, $transient_time = 0, $lock_timeout = 5, $force = false ) {
-        if ( $transient_time === false || ( defined( 'WP_DISABLE_TRANSIENTS' ) && WP_DISABLE_TRANSIENTS ) ) {
-            $enable_transients = false;
-        } else {
-            $enable_transients = true;
-        }
+        $enable_transients = !( $transient_time === false || ( defined( 'WP_DISABLE_TRANSIENTS' ) && WP_DISABLE_TRANSIENTS ) );
 
         $data = $enable_transients ? get_transient( $slug ) : false;
 
@@ -583,7 +579,7 @@ class TimberHelper {
     }
 
     /* LEGACY These have since been re-organized; but keeping linkages for backwards-compatibility */
-    
+
     /**
      * @deprecated
      */
