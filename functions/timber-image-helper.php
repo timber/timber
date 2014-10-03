@@ -395,6 +395,7 @@ class TimberImageHelper
         }
         $tmp = download_url($file);
         preg_match('/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches);
+        $file_array = array();
         $file_array['name'] = basename($matches[0]);
         $file_array['tmp_name'] = $tmp;
         // If error storing temporarily, unlink
