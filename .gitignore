@@ -6,3 +6,5 @@ vendor
 composer.lock
 build
 /cache
+*.swp
+*~
