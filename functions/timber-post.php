@@ -381,7 +381,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
             $this->_prev = array();
             $old_global = $post;
             $post = $this;
-            $in_same_cat = false;
             $within_taxonomy = ($taxonomy) ? $taxonomy : 'category';
             $adjacent = get_adjacent_post(($taxonomy), '', true, $within_taxonomy);
 
