@@ -382,17 +382,13 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
             $old_global = $post;
             $post = $this;
             $in_same_cat = false;
-            if ($taxonomy) {
-                $adjacent = get_adjacent_post(true, '', true, $taxonomy);
-            } else {
-                $adjacent = get_adjacent_post(false, '', true);
-            }
+            $adjacent = get_adjacent_post(isset($taxonomy), '', true, $taxonomy);
 
+            $prev_in_taxonomy = false;
             if ($adjacent) {
-                $this->_prev[$taxonomy] = new $this->PostClass($adjacent);
-            } else {
-                $this->_prev[$taxonomy] = false;
+                $prev_in_taxonomy = new $this->PostClass($adjacent);
             }
+            $this->_prev[$taxonomy] = $prev_in_taxonomy;
             $post = $old_global;
         }
         return $this->_prev[$taxonomy];
