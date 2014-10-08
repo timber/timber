@@ -99,7 +99,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     /**
      *  takes a mix of integer (post ID), string (post slug), or object to return a WordPress post object from WP's built-in get_post() function
      *
-     * @param integer $pid
+     * @param mixed $pid
      * @return WP_Post on success
      */
     private function prepare_post_info($pid = 0) {

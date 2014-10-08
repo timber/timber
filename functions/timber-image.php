@@ -205,8 +205,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
         }
     }
 
-    private function get_image_info($iid)
-    {
+    private function get_image_info($iid) {
         $image_info = $iid;
         if (is_numeric($iid)) {
             $image_info = wp_get_attachment_metadata($iid);
@@ -254,7 +253,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
     /* Alias */
 
     /**
-     * @return integer
+     * @return float
      */
     public function aspect() {
         $w = intval($this->width());

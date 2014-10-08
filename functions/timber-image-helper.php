@@ -34,7 +34,7 @@ class TimberImageHelper
 
     /**
      * @param string $hexstr
-     * @return resource
+     * @return array
      */
     public static function hexrgb($hexstr) {
         if (!strstr($hexstr, '#')) {

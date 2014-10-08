@@ -48,7 +48,7 @@ class TimberRoutes {
 
     /**
      * @param array $template
-     * @param boolean $query
+     * @param mixed $query
      * @param int $status_code
      * @param bool $tparams
      * @return bool
