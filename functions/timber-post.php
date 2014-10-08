@@ -376,21 +376,22 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      * @return mixed
      */
     function get_prev($taxonomy = false) {
-        if (!isset($this->_prev) || !isset($this->_prev[$taxonomy])) {
-            global $post;
-            $this->_prev = array();
-            $old_global = $post;
-            $post = $this;
-            $within_taxonomy = ($taxonomy) ? $taxonomy : 'category';
-            $adjacent = get_adjacent_post(($taxonomy), '', true, $within_taxonomy);
-
-            $prev_in_taxonomy = false;
-            if ($adjacent) {
-                $prev_in_taxonomy = new $this->PostClass($adjacent);
-            }
-            $this->_prev[$taxonomy] = $prev_in_taxonomy;
-            $post = $old_global;
+        if (isset($this->_prev) && isset($this->_prev[$taxonomy])) {
+          return $this->_prev[$taxonomy];
         }
+        global $post;
+        $this->_prev = array();
+        $old_global = $post;
+        $post = $this;
+        $within_taxonomy = ($taxonomy) ? $taxonomy : 'category';
+        $adjacent = get_adjacent_post(($taxonomy), '', true, $within_taxonomy);
+
+        $prev_in_taxonomy = false;
+        if ($adjacent) {
+            $prev_in_taxonomy = new $this->PostClass($adjacent);
+        }
+        $this->_prev[$taxonomy] = $prev_in_taxonomy;
+        $post = $old_global;
         return $this->_prev[$taxonomy];
     }
 
