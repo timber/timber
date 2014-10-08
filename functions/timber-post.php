@@ -13,6 +13,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     public $_content;
     public $_get_terms;
 
+    private $_prev = array();
+
     public $class;
     public $display_date;
     public $id;
