@@ -382,7 +382,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
           return $this->_prev[$taxonomy];
         }
         global $post;
-        $this->_prev = array();
         $old_global = $post;
         $post = $this;
         $within_taxonomy = ($taxonomy) ? $taxonomy : 'category';
