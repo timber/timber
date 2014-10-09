@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.20.6
+Stable tag: 0.20.7
 Tested up to: 4.0
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -41,7 +41,18 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
-= 0.20.6
+= 0.20.7 =
+* Cleaned-up logic for {{post.next}} and {{post.prev}} (thanks @alexlrobertson)
+* Simplifiying internals of TimberCore, TimberPost (thanks @alexlrobertson)
+* Initialization of variables from stolen WP functions (thanks @alexlrobertson)
+* Fixed Twitter API call (thanks @asecondwill)
+* Matched TimberMenu fallback behavior to grab pages_men (@jaredNova)
+* Fixed a bug with the_title filter (thanks @kuus)
+* Fixed weird conflicts when ACF names match methods (@jaredNova)
+* Added a filter for timber_output (thanks @aristath)
+* Fix for galleries showing only 5 images (thanks @IJMacD)
+
+= 0.20.6 =
 * Fixed some resulting bugs from numberposts vs. posts_per_page change as relates to galleries (thanks @IJMacD)
 * Fixed issue with author.php in starter theme (thanks @dmtroyer)
 * Added some sanity checks when menus are missing (thanks @jaredNova)
