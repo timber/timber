@@ -13,11 +13,8 @@ class TimberHelper {
      * @return mixed
      */
     public static function transient( $slug, $callback, $transient_time = 0, $lock_timeout = 5, $force = false ) {
-        $enable_transients = true;
-        if ( $transient_time === false || ( defined( 'WP_DISABLE_TRANSIENTS' ) && WP_DISABLE_TRANSIENTS ) ) {
-            $enable_transients = false;
-        }
 
+        $enable_transients = ( $transient_time === false || ( defined( 'WP_DISABLE_TRANSIENTS' ) && WP_DISABLE_TRANSIENTS ) ) ? false : true;
         $data = $enable_transients ? get_transient( $slug ) : false;
 
         if ( false === $data ) {
@@ -47,8 +44,11 @@ class TimberHelper {
                 set_transient( $slug, $data, $transient_time );
                 self::_unlock_transient( $slug );
             }
+
         }
+
         return $data;
+
     }
 
     /**
