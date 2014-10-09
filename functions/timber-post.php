@@ -13,6 +13,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     public $_content;
     public $_get_terms;
 
+    private $_next = array();
+    private $_prev = array();
+
     public $class;
     public $display_date;
     public $id;
@@ -376,25 +379,21 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      * @return mixed
      */
     function get_prev($taxonomy = false) {
-        if (!isset($this->_prev) || !isset($this->_prev[$taxonomy])) {
-            global $post;
-            $this->_prev = array();
-            $old_global = $post;
-            $post = $this;
-            $in_same_cat = false;
-            if ($taxonomy) {
-                $adjacent = get_adjacent_post(true, '', true, $taxonomy);
-            } else {
-                $adjacent = get_adjacent_post(false, '', true);
-            }
-
-            if ($adjacent) {
-                $this->_prev[$taxonomy] = new $this->PostClass($adjacent);
-            } else {
-                $this->_prev[$taxonomy] = false;
-            }
-            $post = $old_global;
+        if (isset($this->_prev) && isset($this->_prev[$taxonomy])) {
+            return $this->_prev[$taxonomy];
         }
+        global $post;
+        $old_global = $post;
+        $post = $this;
+        $within_taxonomy = ($taxonomy) ? $taxonomy : 'category';
+        $adjacent = get_adjacent_post(($taxonomy), '', true, $within_taxonomy);
+
+        $prev_in_taxonomy = false;
+        if ($adjacent) {
+            $prev_in_taxonomy = new $this->PostClass($adjacent);
+        }
+        $this->_prev[$taxonomy] = $prev_in_taxonomy;
+        $post = $old_global;
         return $this->_prev[$taxonomy];
     }
 
