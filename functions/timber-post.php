@@ -13,6 +13,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     public $_content;
     public $_get_terms;
 
+    private $_next = array();
     private $_prev = array();
 
     public $class;
@@ -379,7 +380,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      */
     function get_prev($taxonomy = false) {
         if (isset($this->_prev) && isset($this->_prev[$taxonomy])) {
-          return $this->_prev[$taxonomy];
+            return $this->_prev[$taxonomy];
         }
         global $post;
         $old_global = $post;
