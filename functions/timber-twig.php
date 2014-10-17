@@ -2,9 +2,16 @@
 
 class TimberTwig {
 
+    /**
+     * TimberTwigHelper
+     */
+    private $_helper;
+
     public static $dir_name;
 
-    function __construct() {
+    function __construct(TimberTwigHelper $helper = null) {
+        $this->_helper = ($helper) ? $helper : new TimberTwigHelper();
+
         add_action( 'twig_apply_filters', array( $this, 'add_timber_filters_deprecated' ) );
         add_action( 'twig_apply_filters', array( $this, 'add_timber_filters' ) );
     }
@@ -18,7 +25,7 @@ class TimberTwig {
      */
     function add_timber_filters_deprecated( $twig ) {
         $twig->addFilter( new Twig_SimpleFilter( 'get_src_from_attachment_id', 'twig_get_src_from_attachment_id' ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'wp_body_class', array( $this, 'body_class' ) ) );
+        $twig->addFilter( new Twig_SimpleFilter( 'wp_body_class', array( $this->_helper, 'body_class' ) ) );
         $twig->addFilter( new Twig_SimpleFilter( 'twitterify', array( 'TimberHelper', 'twitterify' ) ) );
         $twig->addFilter( new Twig_SimpleFilter( 'twitterfy', array( 'TimberHelper', 'twitterify' ) ) );
         return $twig;
@@ -54,13 +61,13 @@ class TimberTwig {
             /* other filters */
             array( 'stripshortcodes', 'strip_shortcodes' ),
             array( 'array', array( $this, 'to_array' ) ),
-            array( 'string', array( $this, 'to_string' ) ),
+            array( 'string', array( $this->_helper, 'to_string' ) ),
             array( 'excerpt', 'wp_trim_words' ),
             array( 'function', array( $this, 'exec_function' ) ),
             array( 'pretags', array( $this, 'twig_pretags' ) ),
             array( 'sanitize', 'sanitize_title' ),
             array( 'shortcodes', 'do_shortcode' ),
-            array( 'time_ago', array( $this, 'time_ago' ) ),
+            array( 'time_ago', array( $this->_helper, 'time_ago' ) ),
             array( 'wpautop', 'wpautop' ),
 
             array(
@@ -70,7 +77,7 @@ class TimberTwig {
                 }
             ),
 
-            array( 'date', array( $this, 'intl_date' ) ),
+            array( 'date', array( $this->_helper, 'intl_date' ) ),
 
             array(
                 'truncate',
@@ -273,44 +280,6 @@ class TimberTwig {
         return str_replace( $matches[1], htmlentities( $matches[1] ), $matches[0] );
     }
 
-    /**
-     *
-     *
-     * @param mixed   $body_classes
-     * @return string
-     */
-    function body_class( $body_classes ) {
-        ob_start();
-        if ( is_array( $body_classes ) ) {
-            $body_classes = explode( ' ', $body_classes );
-        }
-        body_class( $body_classes );
-        $return = ob_get_contents();
-        ob_end_clean();
-        return $return;
-    }
-
-    /**
-     *
-     *
-     * @param string  $date
-     * @param string  $format (optional)
-     * @return string
-     */
-    function intl_date( $date, $format = null ) {
-        if ( $format === null ) {
-            $format = get_option( 'date_format' );
-        }
-
-        if ( $date instanceof DateTime ) {
-            $timestamp = $date->getTimestamp();
-        } else {
-            $timestamp = strtotime( $date );
-        }
-
-        return date_i18n( $format, $timestamp );
-    }
-
     //debug
 
     /**
@@ -332,25 +301,6 @@ class TimberTwig {
         $str = print_r( $rets, true );
         $str = str_replace( 'Array', $class . ' Object', $str );
         return $str;
-    }
-
-    /**
-     * @param int|string $from
-     * @param int|string $to
-     * @param string $format_past
-     * @param string $format_future
-     * @return string
-     */
-    function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
-        $to = $to === null ? time() : $to;
-        $to = is_int( $to ) ? $to : strtotime( $to );
-        $from = is_int( $from ) ? $from : strtotime( $from );
-
-        if ( $from < $to ) {
-            return sprintf( $format_past, human_time_diff( $from, $to ) );
-        } else {
-            return sprintf( $format_future, human_time_diff( $to, $from ) );
-        }
     }
 
 }

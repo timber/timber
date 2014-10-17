@@ -16,6 +16,7 @@ if (file_exists($composer_autoload)){
 	require_once($composer_autoload);
 }
 
+require_once(__DIR__ . '/functions/timber-twig-helper.php');
 require_once(__DIR__ . '/functions/timber-twig.php');
 require_once(__DIR__ . '/functions/timber-helper.php');
 require_once(__DIR__ . '/functions/timber-url-helper.php');
@@ -264,7 +265,7 @@ class Timber {
         $data['template_uri'] = get_template_directory_uri();
 
         $data['posts'] = Timber::query_posts();
-        
+
         //deprecated, this should be fetched via TimberMenu
         if (function_exists('wp_nav_menu')) {
             $locations = get_nav_menu_locations();
@@ -451,7 +452,7 @@ class Timber {
     public static function load_view($template, $query = false, $status_code = 200, $tparams = false) {
         return TimberRoutes::load_view($template, $query, $status_code, $tparams);
     }
-    
+
 
     /*  Pagination
     ================================ */
