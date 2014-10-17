@@ -62,7 +62,7 @@ class TimberTwigHelper {
     function body_class( $body_classes ) {
         ob_start();
         if ( is_array( $body_classes ) ) {
-            $body_classes = explode( ' ', $body_classes );
+            $body_classes = implode( ' ', $body_classes );
         }
         body_class( $body_classes );
         $return = ob_get_contents();
