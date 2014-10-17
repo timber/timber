@@ -83,61 +83,71 @@ class TimberTwig {
           $twig->addFilter( new Twig_SimpleFilter( $filter[0], $filter[1] ) );
         }
 
-        $twig->addFunction( new Twig_SimpleFunction( 'action', function ( $context ) {
-                    $args = func_get_args();
-                    array_shift( $args );
-                    $args[] = $context;
-                    call_user_func_array( 'do_action', $args );
-                }, array( 'needs_context' => true ) ) );
+        $functions = array(
+            array( 'action', function ( $context ) {
+                $args = func_get_args();
+                array_shift( $args );
+                $args[] = $context;
+                call_user_func_array( 'do_action', $args );
+            }, array( 'needs_context' => true ) ),
 
-        $twig->addFunction( new Twig_SimpleFunction( 'function', array( &$this, 'exec_function' ) ) );
-        $twig->addFunction( new Twig_SimpleFunction( 'fn', array( &$this, 'exec_function' ) ) );
+            array( 'function', array( &$this, 'exec_function' ) ),
+            array( 'fn', array( &$this, 'exec_function' ) ),
 
-        /* TimberObjects */
-        $twig->addFunction( new Twig_SimpleFunction( 'TimberPost', function ( $pid, $PostClass = 'TimberPost' ) {
-                    if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
-                        foreach ( $pid as &$p ) {
-                            $p = new $PostClass( $p );
-                        }
-                        return $pid;
+            /* TimberObjects */
+            array( 'TimberPost', function ( $pid, $PostClass = 'TimberPost' ) {
+                if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
+                    foreach ( $pid as &$p ) {
+                        $p = new $PostClass( $p );
                     }
-                    return new $PostClass( $pid );
-                } ) );
-        $twig->addFunction( new Twig_SimpleFunction( 'TimberImage', function ( $pid, $ImageClass = 'TimberImage' ) {
-                    if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
-                        foreach ( $pid as &$p ) {
-                            $p = new $ImageClass( $p );
-                        }
-                        return $pid;
+                    return $pid;
+                }
+                return new $PostClass( $pid );
+            } ),
+            array( 'TimberImage', function ( $pid, $ImageClass = 'TimberImage' ) {
+                if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
+                    foreach ( $pid as &$p ) {
+                        $p = new $ImageClass( $p );
                     }
-                    return new $ImageClass( $pid );
-                } ) );
-        $twig->addFunction( new Twig_SimpleFunction( 'TimberTerm', function ( $pid, $TermClass = 'TimberTerm' ) {
-                    if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
-                        foreach ( $pid as &$p ) {
-                            $p = new $TermClass( $p );
-                        }
-                        return $pid;
+                    return $pid;
+                }
+                return new $ImageClass( $pid );
+            } ),
+            array( 'TimberTerm', function ( $pid, $TermClass = 'TimberTerm' ) {
+                if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
+                    foreach ( $pid as &$p ) {
+                        $p = new $TermClass( $p );
                     }
-                    return new $TermClass( $pid );
-                } ) );
-        $twig->addFunction( new Twig_SimpleFunction( 'TimberUser', function ( $pid, $UserClass = 'TimberUser' ) {
-                    if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
-                        foreach ( $pid as &$p ) {
-                            $p = new $UserClass( $p );
-                        }
-                        return $pid;
+                    return $pid;
+                }
+                return new $TermClass( $pid );
+            } ),
+            array( 'TimberUser', function ( $pid, $UserClass = 'TimberUser' ) {
+                if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
+                    foreach ( $pid as &$p ) {
+                        $p = new $UserClass( $p );
                     }
-                    return new $UserClass( $pid );
-                } ) );
+                    return $pid;
+                }
+                return new $UserClass( $pid );
+            } ),
 
-        /* bloginfo and translate */
-        $twig->addFunction( 'bloginfo', new Twig_SimpleFunction( 'bloginfo', function ( $show = '', $filter = 'raw' ) {
-                    return get_bloginfo( $show, $filter );
-                } ) );
-        $twig->addFunction( '__', new Twig_SimpleFunction( '__', function ( $text, $domain = 'default' ) {
-                    return __( $text, $domain );
-                } ) );
+                    /* bloginfo and translate */
+            array( 'bloginfo', function ( $show = '', $filter = 'raw' ) {
+                return get_bloginfo( $show, $filter );
+            } ),
+            array( '__', function ( $text, $domain = 'default' ) {
+                return __( $text, $domain );
+            } ),
+        );
+
+        foreach ($functions as $function) {
+            $simpleFunction = new ReflectionClass('Twig_SimpleFunction');
+
+            $twig->addFunction(
+                $simpleFunction->newInstanceArgs($function)
+            );
+        }
 
         $twig = apply_filters( 'get_twig', $twig );
 
