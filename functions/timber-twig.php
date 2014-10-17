@@ -95,42 +95,10 @@ class TimberTwig {
             array( 'fn', array( &$this, 'exec_function' ) ),
 
             /* TimberObjects */
-            array( 'TimberPost', function ( $pid, $PostClass = 'TimberPost' ) {
-                if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
-                    foreach ( $pid as &$p ) {
-                        $p = new $PostClass( $p );
-                    }
-                    return $pid;
-                }
-                return new $PostClass( $pid );
-            } ),
-            array( 'TimberImage', function ( $pid, $ImageClass = 'TimberImage' ) {
-                if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
-                    foreach ( $pid as &$p ) {
-                        $p = new $ImageClass( $p );
-                    }
-                    return $pid;
-                }
-                return new $ImageClass( $pid );
-            } ),
-            array( 'TimberTerm', function ( $pid, $TermClass = 'TimberTerm' ) {
-                if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
-                    foreach ( $pid as &$p ) {
-                        $p = new $TermClass( $p );
-                    }
-                    return $pid;
-                }
-                return new $TermClass( $pid );
-            } ),
-            array( 'TimberUser', function ( $pid, $UserClass = 'TimberUser' ) {
-                if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
-                    foreach ( $pid as &$p ) {
-                        $p = new $UserClass( $p );
-                    }
-                    return $pid;
-                }
-                return new $UserClass( $pid );
-            } ),
+            array( 'TimberPost', array( $this, 'timber_post_factory' ) ),
+            array( 'TimberImage', array( $this, 'timber_image_factory' ) ),
+            array( 'TimberTerm', array( $this, 'timber_term_factory' ) ),
+            array( 'TimberUser', array( $this, 'timber_user_factory' ) ),
 
                     /* bloginfo and translate */
             array( 'bloginfo', function ( $show = '', $filter = 'raw' ) {
@@ -152,6 +120,32 @@ class TimberTwig {
         $twig = apply_filters( 'get_twig', $twig );
 
         return $twig;
+    }
+
+    public function timber_post_factory( $pid, $ObjectClass = 'TimberPost' ) {
+        return $this->timber_object_factory($pid, $ObjectClass);
+    }
+
+    public function timber_image_factory( $pid, $ObjectClass = 'TimberImage' ) {
+        return $this->timber_object_factory($pid, $ObjectClass);
+    }
+
+    public function timber_term_factory( $pid, $ObjectClass = 'TimberTerm' ) {
+        return $this->timber_object_factory($pid, $ObjectClass);
+    }
+
+    public function timber_user_factory( $pid, $ObjectClass = 'TimberUser' ) {
+        return $this->timber_object_factory($pid, $ObjectClass);
+    }
+
+    public function timber_object_factory($pid, $ObjectClass) {
+        if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
+            foreach ( $pid as &$p ) {
+                $p = new $ObjectClass( $p );
+            }
+            return $pid;
+        }
+        return new $ObjectClass( $pid );
     }
 
     /**
