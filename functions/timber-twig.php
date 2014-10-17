@@ -25,13 +25,10 @@ class TimberTwig {
     }
 
     /**
-     *
-     *
-     * @param Twig_Environment $twig
-     * @return Twig_Environment
+     * @return array
      */
-    function add_timber_filters( $twig ) {
-        $filters = array(
+    private function get_timber_filters() {
+        return array(
             /* image filters */
             array( 'resize', array( 'TimberImageHelper', 'resize' ) ),
             array( 'letterbox', array( 'TimberImageHelper', 'letterbox' ) ),
@@ -93,12 +90,13 @@ class TimberTwig {
                 }
             ),
         );
+    }
 
-        foreach ($filters as $filter) {
-          $twig->addFilter( new Twig_SimpleFilter( $filter[0], $filter[1] ) );
-        }
-
-        $functions = array(
+    /**
+     * @return array
+     */
+    private function get_timber_functions() {
+        return array(
             array(
                 'action',
                 function ( $context ) {
@@ -133,6 +131,22 @@ class TimberTwig {
                 }
             ),
         );
+    }
+
+    /**
+     *
+     *
+     * @param Twig_Environment $twig
+     * @return Twig_Environment
+     */
+    function add_timber_filters( $twig ) {
+        $filters = $this->get_timber_filters();
+
+        foreach ($filters as $filter) {
+          $twig->addFilter( new Twig_SimpleFilter( $filter[0], $filter[1] ) );
+        }
+
+        $functions = $this->get_timber_functions();
 
         foreach ($functions as $function) {
             $simpleFunction = new ReflectionClass('Twig_SimpleFunction');
