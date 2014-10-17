@@ -138,6 +138,9 @@ class TimberTwig {
         return $this->timber_object_factory($pid, $ObjectClass);
     }
 
+    /**
+     * @param string $ObjectClass
+     */
     public function timber_object_factory($pid, $ObjectClass) {
         if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
             foreach ( $pid as &$p ) {
