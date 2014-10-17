@@ -41,12 +41,18 @@ class TimberTwig {
             array( 'docs', 'twig_object_docs' ),
             array( 'get_class',  'get_class' ),
             array( 'get_type', 'get_type' ),
-            array( 'print_r', function( $arr ) {
-                return print_r( $arr, true );
-            } ),
-            array( 'print_a', function( $arr ) {
-                return '<pre>' . self::object_docs( $arr, true ) . '</pre>';
-            } ),
+            array(
+                'print_r',
+                function( $arr ) {
+                    return print_r( $arr, true );
+                }
+            ),
+            array(
+                'print_a',
+                function( $arr ) {
+                    return '<pre>' . self::object_docs( $arr, true ) . '</pre>';
+                }
+            ),
 
             /* other filters */
             array( 'stripshortcodes', 'strip_shortcodes' ),
@@ -60,23 +66,32 @@ class TimberTwig {
             array( 'time_ago', array( $this, 'time_ago' ) ),
             array( 'wpautop', 'wpautop' ),
 
-            array( 'relative', function ( $link ) {
-                return TimberURLHelper::get_rel_url( $link, true );
-            } ),
+            array(
+                'relative',
+                function ( $link ) {
+                    return TimberURLHelper::get_rel_url( $link, true );
+                }
+            ),
 
             array( 'date', array( $this, 'intl_date' ) ),
 
-            array( 'truncate', function ( $text, $len ) {
-                return TimberHelper::trim_words( $text, $len );
-            } ),
+            array(
+                'truncate',
+                function ( $text, $len ) {
+                    return TimberHelper::trim_words( $text, $len );
+                }
+            ),
 
             /* actions and filters */
-            array( 'apply_filters', function () {
-                $args = func_get_args();
-                $tag = current( array_splice( $args, 1, 1 ) );
+            array(
+                'apply_filters',
+                function () {
+                    $args = func_get_args();
+                    $tag = current( array_splice( $args, 1, 1 ) );
 
-                return apply_filters_ref_array( $tag, $args );
-            } ),
+                    return apply_filters_ref_array( $tag, $args );
+                }
+            ),
         );
 
         foreach ($filters as $filter) {
@@ -84,12 +99,16 @@ class TimberTwig {
         }
 
         $functions = array(
-            array( 'action', function ( $context ) {
-                $args = func_get_args();
-                array_shift( $args );
-                $args[] = $context;
-                call_user_func_array( 'do_action', $args );
-            }, array( 'needs_context' => true ) ),
+            array(
+                'action',
+                function ( $context ) {
+                    $args = func_get_args();
+                    array_shift( $args );
+                    $args[] = $context;
+                    call_user_func_array( 'do_action', $args );
+                },
+                array( 'needs_context' => true )
+            ),
 
             array( 'function', array( &$this, 'exec_function' ) ),
             array( 'fn', array( &$this, 'exec_function' ) ),
@@ -100,13 +119,19 @@ class TimberTwig {
             array( 'TimberTerm', array( $this, 'timber_term_factory' ) ),
             array( 'TimberUser', array( $this, 'timber_user_factory' ) ),
 
-                    /* bloginfo and translate */
-            array( 'bloginfo', function ( $show = '', $filter = 'raw' ) {
-                return get_bloginfo( $show, $filter );
-            } ),
-            array( '__', function ( $text, $domain = 'default' ) {
-                return __( $text, $domain );
-            } ),
+            /* bloginfo and translate */
+            array(
+                'bloginfo',
+                function ( $show = '', $filter = 'raw' ) {
+                    return get_bloginfo( $show, $filter );
+                }
+            ),
+            array(
+                '__',
+                function ( $text, $domain = 'default' ) {
+                    return __( $text, $domain );
+                }
+            ),
         );
 
         foreach ($functions as $function) {
