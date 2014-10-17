@@ -231,26 +231,6 @@ class TimberTwig {
     /**
      *
      *
-     * @param mixed   $arr
-     * @param string  $glue
-     * @return string
-     */
-    function to_string( $arr, $glue = ' ' ) {
-        if ( is_string( $arr ) ) {
-            return $arr;
-        }
-        if ( is_array( $arr ) && count( $arr ) == 1 ) {
-            return $arr[0];
-        }
-        if ( is_array( $arr ) ) {
-            return implode( $glue, $arr );
-        }
-        return null;
-    }
-
-    /**
-     *
-     *
      * @param string  $function_name
      * @return mixed
      */
