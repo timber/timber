@@ -31,45 +31,58 @@ class TimberTwig {
      * @return Twig_Environment
      */
     function add_timber_filters( $twig ) {
-        /* image filters */
-        $twig->addFilter( new Twig_SimpleFilter( 'resize', array( 'TimberImageHelper', 'resize' ) ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'letterbox', array( 'TimberImageHelper', 'letterbox' ) ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'tojpg', array( 'TimberImageHelper', 'img_to_jpg' ) ) );
+        $filters = array(
+            /* image filters */
+            array( 'resize', array( 'TimberImageHelper', 'resize' ) ),
+            array( 'letterbox', array( 'TimberImageHelper', 'letterbox' ) ),
+            array( 'tojpg', array( 'TimberImageHelper', 'img_to_jpg' ) ),
 
-        /* debugging filters */
-        $twig->addFilter( new Twig_SimpleFilter( 'docs', 'twig_object_docs' ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'get_class',  'get_class' ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'get_type', 'get_type' ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'print_r', function( $arr ) {
-                    return print_r( $arr, true );
-                } ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'print_a', function( $arr ) {
-                    return '<pre>' . self::object_docs( $arr, true ) . '</pre>';
-                } ) );
+            /* debugging filters */
+            array( 'docs', 'twig_object_docs' ),
+            array( 'get_class',  'get_class' ),
+            array( 'get_type', 'get_type' ),
+            array( 'print_r', function( $arr ) {
+                return print_r( $arr, true );
+            } ),
+            array( 'print_a', function( $arr ) {
+                return '<pre>' . self::object_docs( $arr, true ) . '</pre>';
+            } ),
 
-        /* other filters */
-        $twig->addFilter( new Twig_SimpleFilter( 'stripshortcodes', 'strip_shortcodes' ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'array', array( $this, 'to_array' ) ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'string', array( $this, 'to_string' ) ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'excerpt', 'wp_trim_words' ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'function', array( $this, 'exec_function' ) ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'pretags', array( $this, 'twig_pretags' ) ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'sanitize', 'sanitize_title' ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'shortcodes', 'do_shortcode' ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'time_ago', array( $this, 'time_ago' ) ) );
-        $twig->addFilter( new Twig_SimpleFilter( 'wpautop', 'wpautop' ) );
+            /* other filters */
+            array( 'stripshortcodes', 'strip_shortcodes' ),
+            array( 'array', array( $this, 'to_array' ) ),
+            array( 'string', array( $this, 'to_string' ) ),
+            array( 'excerpt', 'wp_trim_words' ),
+            array( 'function', array( $this, 'exec_function' ) ),
+            array( 'pretags', array( $this, 'twig_pretags' ) ),
+            array( 'sanitize', 'sanitize_title' ),
+            array( 'shortcodes', 'do_shortcode' ),
+            array( 'time_ago', array( $this, 'time_ago' ) ),
+            array( 'wpautop', 'wpautop' ),
 
-        $twig->addFilter( new Twig_SimpleFilter( 'relative', function ( $link ) {
-                    return TimberURLHelper::get_rel_url( $link, true );
-                } ) );
+            array( 'relative', function ( $link ) {
+                return TimberURLHelper::get_rel_url( $link, true );
+            } ),
 
-        $twig->addFilter( new Twig_SimpleFilter( 'date', array( $this, 'intl_date' ) ) );
+            array( 'date', array( $this, 'intl_date' ) ),
 
-        $twig->addFilter( new Twig_SimpleFilter( 'truncate', function ( $text, $len ) {
-                    return TimberHelper::trim_words( $text, $len );
-                } ) );
+            array( 'truncate', function ( $text, $len ) {
+                return TimberHelper::trim_words( $text, $len );
+            } ),
 
-        /* actions and filters */
+            /* actions and filters */
+            array( 'apply_filters', function () {
+                $args = func_get_args();
+                $tag = current( array_splice( $args, 1, 1 ) );
+
+                return apply_filters_ref_array( $tag, $args );
+            } ),
+        );
+
+        foreach ($filters as $filter) {
+          $twig->addFilter( new Twig_SimpleFilter( $filter[0], $filter[1] ) );
+        }
+
         $twig->addFunction( new Twig_SimpleFunction( 'action', function ( $context ) {
                     $args = func_get_args();
                     array_shift( $args );
@@ -77,12 +90,6 @@ class TimberTwig {
                     call_user_func_array( 'do_action', $args );
                 }, array( 'needs_context' => true ) ) );
 
-        $twig->addFilter( new Twig_SimpleFilter( 'apply_filters', function () {
-                    $args = func_get_args();
-                    $tag = current( array_splice( $args, 1, 1 ) );
-
-                    return apply_filters_ref_array( $tag, $args );
-                } ) );
         $twig->addFunction( new Twig_SimpleFunction( 'function', array( &$this, 'exec_function' ) ) );
         $twig->addFunction( new Twig_SimpleFunction( 'fn', array( &$this, 'exec_function' ) ) );
 
