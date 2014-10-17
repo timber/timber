@@ -12,13 +12,13 @@ class TimberTwigHelper {
         if ( is_string( $arr ) ) {
             return $arr;
         }
-        if ( is_array( $arr ) && count( $arr ) == 1 ) {
+        if ( ! is_array( $arr ) ) {
+            return null;
+        }
+        if ( count( $arr ) == 1 ) {
             return $arr[0];
         }
-        if ( is_array( $arr ) ) {
-            return implode( $glue, $arr );
-        }
-        return null;
+        return implode( $glue, $arr );
     }
 
     /**
