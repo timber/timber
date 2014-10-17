@@ -122,22 +122,42 @@ class TimberTwig {
         return $twig;
     }
 
+    /**
+     * @param mixed $pid
+     * @param string $ObjectClass
+     */
     public function timber_post_factory( $pid, $ObjectClass = 'TimberPost' ) {
         return $this->timber_object_factory($pid, $ObjectClass);
     }
 
+    /**
+     * @param mixed $pid
+     * @param string $ObjectClass
+     */
     public function timber_image_factory( $pid, $ObjectClass = 'TimberImage' ) {
         return $this->timber_object_factory($pid, $ObjectClass);
     }
 
+    /**
+     * @param mixed $pid
+     * @param string $ObjectClass
+     */
     public function timber_term_factory( $pid, $ObjectClass = 'TimberTerm' ) {
         return $this->timber_object_factory($pid, $ObjectClass);
     }
 
+    /**
+     * @param mixed $pid
+     * @param string $ObjectClass
+     */
     public function timber_user_factory( $pid, $ObjectClass = 'TimberUser' ) {
         return $this->timber_object_factory($pid, $ObjectClass);
     }
 
+    /**
+     * @param mixed $pid
+     * @param string $ObjectClass
+     */
     public function timber_object_factory($pid, $ObjectClass) {
         if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
             foreach ( $pid as &$p ) {
