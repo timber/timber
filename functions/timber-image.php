@@ -164,9 +164,13 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
      * @param int $iid
      */
     function init( $iid = false ) {
-        if (!is_numeric($iid) && is_string($iid)) {
+        if ( !is_numeric( $iid ) && is_string( $iid ) ) {
             if (strstr($iid, '://')) {
                 $this->init_with_url($iid);
+                return;
+            }
+            if ( strstr($iid, ABSPATH) ) {
+                $this->init_with_file_path($iid);
                 return;
             }
             if (strstr(strtolower($iid), '.jpg')) {
@@ -205,7 +209,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
         }
     }
 
-    private function get_image_info($iid) {
+    private function get_image_info( $iid ) {
         $image_info = $iid;
         if (is_numeric($iid)) {
             $image_info = wp_get_attachment_metadata($iid);
@@ -229,6 +233,13 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
            return get_object_vars($image_info);
         }
         return $iid;
+    }
+
+    private function init_with_file_path( $file_path ) {
+        $url = TimberURLHelper::file_system_to_url( $file_path );
+        $this->abs_url = $url;
+        $this->file_loc = $file_path;
+        $this->file = $file_path;
     }
 
     /**

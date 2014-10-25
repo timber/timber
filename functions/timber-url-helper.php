@@ -94,11 +94,24 @@ class TimberURLHelper {
         return $old_root_path;
     }
 
+    /**
+     * Takes a url and figures out its place based in the file system based on path
+     * NOTE: Not fool-proof, makes a lot of assumptions about the file path 
+     * matching the URL path
+     * @param string $url
+     * @return string
+     */
     public static function url_to_file_system($url) {
         $url_parts = parse_url($url);
         $path = ABSPATH . $url_parts['path'];
         $path = str_replace('//', '/', $path);
         return $path;
+    }
+
+    public static function file_system_to_url( $fs ) {
+        $relative_path = self::get_rel_path($fs);
+        $home = home_url('/'.$relative_path);
+        return $home;
     }
 
     /**

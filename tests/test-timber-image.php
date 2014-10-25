@@ -138,6 +138,28 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals( $w, 600 );
 	}
 
+	function testInitFromRelativePath() {
+		$filename = self::copyTestImage( 'arch.jpg' );
+		$path = TimberURLHelper::get_rel_url( $filename );
+		$image = new TimberImage( $path );
+		$this->assertEquals( 1500, $image->width() );
+	}
+
+	function testInitFromID() {
+		$pid = $this->factory->post->create();
+		$filename = self::copyTestImage( 'arch.jpg' );
+		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+		$iid = wp_insert_attachment( $attachment, $filename, $pid );
+		$image = new TimberImage( $iid );
+		$this->assertEquals( 1500, $image->width() );
+	}
+
+	function testInitFromFilePath() {
+		$image_file = self::copyTestImage();
+		$image = new TimberImage( $image_file );
+		$this->assertEquals( 1500, $image->width() );
+	}
+
 	function testInitFromURL() {
 		$destination_path = self::copyTestImage();
 		$destination_path = TimberURLHelper::get_rel_path( $destination_path );
@@ -381,7 +403,16 @@ class TimberImageTest extends WP_UnitTestCase {
 		unlink( get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg' );
 	}
 
-
+	function _testImageWidthWithFilter() {
+		$pid = $this->factory->post->create();
+		$photo = $this->copyTestImage();
+		$photo = TimberURLHelper::get_rel_path($photo);
+		update_post_meta($pid, 'custom_photo', '/'.$photo);
+		$str = '{{TimberImage(post.custom_photo).width}}';
+		$post = new TimberPost($pid);
+		$rendered = Timber::compile_string( $str, array('post' => $post) );
+		echo $rendered;
+	}
 
 	public static function is_connected() {
 		$connected = @fsockopen( "www.google.com", 80, $errno, $errstr, 3 );
