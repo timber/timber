@@ -174,7 +174,8 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
                 return;
             }
             if (strstr(strtolower($iid), '.jpg')) {
-                $this->init_with_url($iid);
+                $this->init_with_relative_path($iid);
+                return;
             }
         }
 
@@ -233,6 +234,13 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
            return get_object_vars($image_info);
         }
         return $iid;
+    }
+
+    private function init_with_relative_path( $relative_path ) {
+        $this->abs_url = home_url( $relative_path );
+        $file_path = TimberURLHelper::get_full_path( $relative_path );
+        $this->file_loc = $file_path;
+        $this->file = $file_path;
     }
 
     private function init_with_file_path( $file_path ) {

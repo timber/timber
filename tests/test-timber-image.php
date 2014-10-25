@@ -140,7 +140,7 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testInitFromRelativePath() {
 		$filename = self::copyTestImage( 'arch.jpg' );
-		$path = TimberURLHelper::get_rel_url( $filename );
+		$path = str_replace(ABSPATH, '/', $filename);
 		$image = new TimberImage( $path );
 		$this->assertEquals( 1500, $image->width() );
 	}
@@ -403,7 +403,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		unlink( get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg' );
 	}
 
-	function _testImageWidthWithFilter() {
+	function testImageWidthWithFilter() {
 		$pid = $this->factory->post->create();
 		$photo = $this->copyTestImage();
 		$photo = TimberURLHelper::get_rel_path($photo);
@@ -411,7 +411,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$str = '{{TimberImage(post.custom_photo).width}}';
 		$post = new TimberPost($pid);
 		$rendered = Timber::compile_string( $str, array('post' => $post) );
-		echo $rendered;
+		$this->assertEquals( 1500, $rendered );
 	}
 
 	public static function is_connected() {
