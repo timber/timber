@@ -359,6 +359,9 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testThemeImageResize() {
+		if (!file_exists(get_template_directory().'/images')) {
+    		mkdir(get_template_directory().'/images', 0777, true);
+		}
 		$dest = get_template_directory().'/images/cardinals.jpg';
 		copy( __DIR__.'/assets/cardinals.jpg', $dest );
 		$image = get_template_directory_uri().'/images/cardinals.jpg';
