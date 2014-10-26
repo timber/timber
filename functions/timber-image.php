@@ -255,9 +255,9 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
      */
     private function init_with_url($url) {
         $this->abs_url = $url;
-        $this->file_loc = $url;
         if (TimberURLHelper::is_local($url)) {
             $this->file = ABSPATH . TimberURLHelper::get_rel_url($url);
+            $this->file_loc = ABSPATH . TimberURLHelper::get_rel_url($url);
         }
     }
 
