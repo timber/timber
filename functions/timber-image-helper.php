@@ -265,7 +265,7 @@ class TimberImageHelper {
      * @param string  $url
      */
     public static function get_server_location( $url ) {
-        if ( strpos( $url, ABSPATH ) == 0 ) {
+        if ( strpos( $url, ABSPATH ) === 0 ) {
             return $url;
         }
         $upload_dir = wp_upload_dir();

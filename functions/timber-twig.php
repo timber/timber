@@ -33,6 +33,7 @@ class TimberTwig {
     function add_timber_filters( $twig ) {
         /* image filters */
         $twig->addFilter( new Twig_SimpleFilter( 'resize', array( 'TimberImageHelper', 'resize' ) ) );
+        $twig->addFilter( new Twig_SimpleFilter( 'retina', array( 'TimberImageHelper', 'retina_resize' ) ) );
         $twig->addFilter( new Twig_SimpleFilter( 'letterbox', array( 'TimberImageHelper', 'letterbox' ) ) );
         $twig->addFilter( new Twig_SimpleFilter( 'tojpg', array( 'TimberImageHelper', 'img_to_jpg' ) ) );
 
