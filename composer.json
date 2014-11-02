@@ -14,13 +14,37 @@
 	],
 	"support"    : {
 		"issues": "https://github.com/jarednova/timber/issues",
-		"wiki"  : "https://github.com/jarednova/timber/wiki"
+		"wiki"  : "https://github.com/jarednova/timber/wiki",
+		"source": "https://github.com/jarednova/timber"
 	},
 	"require"    : {
-		"php"                : ">=5.3.0",
-		"composer/installers": "~1.0"
+		"php"                		: ">=5.3.0",
+		"twig/twig"			 		: "~1.15",
+		"dannyvankooten/php-router"	: "dev-master#e9a479820b871ae4493fec30d5e433456767a505",
+		"composer/installers"		: "~1.0",
+		"asm89/twig-cache-extension": "~0.1"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "3.7.*"
-	}
+		"phpunit/phpunit": "3.7.*",
+        "satooshi/php-coveralls": "dev-master",
+        "AdvancedCustomFields/acf5-beta" : "5.0",
+        "wp-cli/wp-cli" : "*"
+	},
+	"repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "AdvancedCustomFields/acf5-beta",
+                "version": "5.0",
+                "dist": {
+                    "url": "https://www.dropbox.com/s/763lrwuvonk0prb/advanced-custom-fields-pro.zip?dl=1",
+                    "type": "zip"
+                },
+                "autoload": {
+                    "psr-0": { "acf\\advanced-custom-fields-pro": "" }
+                },
+                "target-dir": "acf/advanced-custom-fields-pro"
+            }
+        }
+    ]
 }

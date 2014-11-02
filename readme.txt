@@ -2,8 +2,8 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.17.2
-Tested up to: 3.8.1
+Stable tag: 0.20.7
+Tested up to: 4.0
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -16,7 +16,7 @@ Timber cleans-up your theme code so, for example, your php file can focus on bei
 Once Timber is installed and activated in your plugin directory, it gives any WordPress theme the ability to take advantage of the power of Twig and other Timber features.
 
 ### Looking for docs?
-* **[Project Page](http://timber.upstatement.com)**
+* **[Project Page](http://upstatement.com/timber)**
 * [Timber Documentation](https://github.com/jarednova/timber/wiki/)
 * [Twig Reference (from SensioLabs)](http://twig.sensiolabs.org/doc/templates.html)
 _Twig is the template language powering Timber; if you need a little background on what a template language is, [Twig's homepage has an overview](http://twig.sensiolabs.org/)_
@@ -33,13 +33,91 @@ Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https:
 Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because not everyone knows the ins-and-outs of the_loop(), WordPress codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .twig files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
 
 #### Want to read more?
-* [Timber on WordPress.org](http://wordpress.org/plugins/timber-library/)
-* [Timber Overview on WP Mayor](http://www.wpmayor.com/articles/timber-templating-language-wordpress/)
+* [Timber on GitHub](http://github.com/jarednova/timber/)
+* [Timber Overview on Tidy Repo](http://www.wpmayor.com/articles/timber-templating-language-wordpress/)
 * ["What is WordPress Missing? A Template Language" on Torque](http://torquemag.io/what-is-wordpress-lacking-a-template-language/)
 
 
 
 == Changelog ==
+
+= 0.20.7 =
+* Cleaned-up logic for {{post.next}} and {{post.prev}} (thanks @alexlrobertson)
+* Simplifiying internals of TimberCore, TimberPost (thanks @alexlrobertson)
+* Initialization of variables from stolen WP functions (thanks @alexlrobertson)
+* Fixed Twitter API call (thanks @asecondwill)
+* Matched TimberMenu fallback behavior to grab pages_men (@jaredNova)
+* Fixed a bug with the_title filter (thanks @kuus)
+* Fixed weird conflicts when ACF names match methods (@jaredNova)
+* Added a filter for timber_output (thanks @aristath)
+* Fix for galleries showing only 5 images (thanks @IJMacD)
+
+= 0.20.6 =
+* Fixed some resulting bugs from numberposts vs. posts_per_page change as relates to galleries (thanks @IJMacD)
+* Fixed issue with author.php in starter theme (thanks @dmtroyer)
+* Added some sanity checks when menus are missing (thanks @jaredNova)
+* New tests, yay!
+
+= 0.20.5 =
+* Fixed issue with sticky posts being included when just feeding an array of ids
+* Fix for pagination links with search terms (thanks @matthewsoares)
+
+= 0.20.4 =
+* Fixed issue with Timber::get_posts and Timber::query_posts using numberposts in args
+
+= 0.20.3 = 
+* Fixed some issues with linking to menu items with a hash
+
+= 0.20.2 =
+* Change default response code on load_view to be 200
+* Fixed error with relpath and subdomains (thanks @jnweaver)
+* Various bug fixes (thanks @andyford, @discern)
+
+= 0.20.1 =
+* Hotfix to ensure non-exitent properties don't throw exception (thanks @kylehotchkiss)
+
+= 0.20.0 =
+* Iterators! You can now get data using query_posts which hooks into WP loop. Methods like get_the_title() now work (big thanks to @mgmartel)
+* Fixed img_to_jpg issue with alternate WP setups (@thetmkay)
+* Fixed issue with links in TimberMenuItem
+* post.date now supports a DateTime object (@aduth)
+* removal of long-since deprecated functions
+* Massive code clean-up and bug fixes (@jaredNova, @mgmartel)
+
+= 0.19.2 =
+* Fixed issue with {{post.author.name}}
+* Bug fixes and code organization (@hsz, @jaredNova)
+
+= 0.19.1 =
+* Removed .git folder hiding in php-router
+* Added support for WooCommerce and other plugins in starter theme (thanks @jamesagreenleaf)
+* Starter theme now based on OO-style TimberSite convention
+* You can not get the modified_author (thanks @jamesagreenleaf)
+* ...oh and the modified date (thanks @jamesagreenleaf)
+* Code clean-up like mad (thanks @hsz)
+* Fixed bug when calling Timber::get_posts in loop (thanks @jamesagreenleaf)
+
+= 0.19.0 =
+* Reorganized dependencies into /vendor directories based on composer (thanks @mgmartel, @rarst, @bryanaka)
+* Fixed issues with image library deletion (thanks @thetmkay)
+* Fixed issues with sidebar output
+
+= 0.18.1 =
+* Dates now use date_i18n filter (thanks @jamesagreenleaf)
+* The twig |date filter now defaults to your WP Admin settings (thanks @jamesagreenleaf)
+* You can send Timber::$dirname an array to specify multiple locations of twig files within a theme
+* Load views from anywhere on the server (thanks @th3fallen)
+* Load twig files from anywhere on the server using an absolute path
+* Use another version of Twig if you have it loaded (thanks @ButlerPCnet)
+* more tests!
+
+= 0.18.0 =
+* BREAKING CHANGE ALERT wp_title no longer appends bloginfo('name') to end of string (thanks @aduth)
+* BREAKING CHANGE ALERT get_preview now respects <!-- more --> tag (thanks @jnweaver)
+* TimberHelper::transient is more reliable (thanks @mgmartel)
+* Secure urls in TimberImage if current page is served over SSL (thanks @mgmartel)
+* Re-wrote most of letterboxing functionality
+* Re-organized Helper functions
 
 = 0.17.2 =
 * TimberPost::children() now sorts by menu_order, title as WordPress core does (thanks @aduth)
@@ -263,19 +341,23 @@ Then create a subdirectory called `views` in your theme folder. The make this fi
 
 That's Timber!
 
+== Support ==
+
+Please use the [GitHub repo](https://github.com/jarednova/timber/issues?state=open) to file bugs or questions.
+
 == Frequently Asked Questions ==
 
 = Can it be used in an existing theme? =
 You bet! Watch these **[video tutorials](https://github.com/jarednova/timber/wiki/Video-Tutorials)** to see how.
 
 = Is it used in production? =
-At Upstatement we've now used it on more than a dozen client sites. You can check them out in the showcase here: http://jarednova.github.io/timber/
+At Upstatement we've now used it on more than a dozen client sites. Hundreds of other sites use it too. You can check some of them out in the **[showcase](http://upstatement.com/timber/#showcase)**.
 
 = Doesn't this all make WordPress harder since there's more to learn? =
 Does jQuery make JavaScript harder? Yes, it's an extra piece to learn -- but it super-charges your ability to write unencumbered JavaScript (and prevents you from having to learn lots of the messy internals). If your answer is "jQuery sucks and everyone should learn how to write vanilla JS or they're rotten stupid people," this tool isn't for you.
 
 = Oh, Timber is simple code so it's for making simple themes =
-Whatever. It simplifies the silly stuff so that you can focus on building more complicated sites and apps. Django simplifies Python, but you can still use the full range of Python's abilities.
+Whatever. It simplifies the silly stuff so that you can focus on building more complicated sites and apps. jQuery simplifies Javascript, but you can still use the full range of JS's abilities.
 
 = Will you support it? =
 As stated above, we're using it in dozens of sites (and dozens more planned) -- dozens of other developers are using it too. This isn't going anywhere. Twig is the chosen language for other PHP platforms like Symfony, Drupal 8 and Craft. WordPress will eventually adopt Twig too, I promise you that.

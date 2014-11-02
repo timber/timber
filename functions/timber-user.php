@@ -1,85 +1,123 @@
 <?php
 
-class TimberUser extends TimberCore {
+class TimberUser extends TimberCore implements TimberCoreInterface {
 
-    var $_link;
-    var $object_type = 'user';
-
+    public $object_type = 'user';
     public static $representation = 'user';
 
+    public $_link;
+
+    public $display_name;
+    public $id;
+    public $name;
+    public $user_nicename;
+    
+    /**
+     * @param int|bool $uid
+     */
     function __construct($uid = false) {
         $this->init($uid);
     }
 
-    function __toString(){
+    /**
+     * @return string
+     */
+    function __toString() {
         $name = $this->name();
-        if (strlen($name)){
+        if (strlen($name)) {
             return $name;
         }
-        if (strlen($this->name)){
+        if (strlen($this->name)) {
             return $this->name;
         }
         return '';
     }
 
-    function get_meta($field_name){
-        $value = null;
-        $value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
-        if ($value === null){
-            $value = get_post_meta($this->ID, $field_name, true);
-        }
-        $value = apply_filters('timber_user_get_meta_field', $value, $this->ID, $field_name, $this);
-        return $value;
+    /**
+     * @param string $field_name
+     * @return null
+     */
+    function get_meta($field_name) {
+        return $this->get_meta_field( $field_name );
     }
 
-    function __set($field, $value){
-        if ($field == 'name'){
+    /**
+     * @param string $field
+     * @param mixed $value
+     */
+    function __set($field, $value) {
+        if ($field == 'name') {
             $this->display_name = $value;
         }
         $this->$field = $value;
     }
 
+    /**
+     * @return string
+     */
     public function get_link() {
-        if (!$this->_link){
+        if (!$this->_link) {
             $this->_link = get_author_posts_url($this->ID);
         }
         return $this->_link;
     }
 
+    /**
+     * @param int|bool $uid
+     */
     function init($uid = false) {
         if ($uid === false) {
             $uid = get_current_user_id();
         }
-        if ($uid){
-            $data = get_userdata($uid);
-            if (is_object($data) && isset($data)) {
-                $this->import($data->data);
+        if (is_object($uid) || is_array($uid)){
+            $data = $uid;
+            if (is_array($uid)){
+                $data =  (object) $uid;
             }
-            $this->ID = $uid;
-            $this->import_custom();
+            $uid = $data->ID;
         }
+        if (is_numeric($uid)) {
+            $data = get_userdata($uid);
+        }
+        if (isset($data) && is_object($data)) {
+            if (isset($data->data)){
+                $this->import($data->data);
+            } else {
+                $this->import($data);
+            }
+        }
+        $this->id = $this->ID;
+        $this->name = $this->name();
+        $this->import_custom();
     }
 
-    function get_meta_field($field_name){
+    /**
+     * @param string $field_name
+     * @return mixed
+     */
+    function get_meta_field($field_name) {
         $value = null;
         $value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
-        if ($value === null){
+        if ($value === null) {
             $value = get_user_meta($this->ID, $field_name, true);
         }
         $value = apply_filters('timber_user_get_meta_field', $value, $this->ID, $field_name, $this);
         return $value;
     }
 
+    /**
+     * @return array|null
+     */
     function get_custom() {
         if ($this->ID) {
             $um = array();
             $um = apply_filters('timber_user_get_meta_pre', $um, $this->ID, $this);
-            if (empty($um)){
+            if (empty($um)) {
                 $um = get_user_meta($this->ID);
             }
             $custom = array();
             foreach ($um as $key => $value) {
-                if (is_array($value) && count($value) == 1){
+                if (is_array($value) && count($value) == 1) {
                     $value = $value[0];
                 }
                 $custom[$key] = maybe_unserialize($value);
@@ -95,35 +133,60 @@ class TimberUser extends TimberCore {
         $this->import($custom);
     }
 
+    /**
+     * @return string
+     */
     function name() {
         return $this->display_name;
     }
 
-    function get_permalink(){
+    /**
+     * @return string
+     */
+    function get_permalink() {
         return $this->get_link();
     }
 
+    /**
+     * @return string
+     */
     function permalink() {
         return $this->get_link();
     }
 
+    /**
+     * @return string
+     */
     function get_path() {
         return $this->get_link();
     }
 
-    function meta($field_name){
+    /**
+     * @param string $field_name
+     * @return mixed
+     */
+    function meta($field_name) {
         return $this->get_meta_field($field_name);
     }
 
+    /**
+     * @return string
+     */
     function path() {
         return $this->get_path();
     }
 
+    /**
+     * @return string
+     */
     function slug() {
         return $this->user_nicename;
     }
 
-    function link(){
+    /**
+     * @return string
+     */
+    function link() {
         return $this->get_link();
     }
 
