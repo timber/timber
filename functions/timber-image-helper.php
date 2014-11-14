@@ -551,6 +551,10 @@ class TimberImageHelper {
             if ( !$h ) {
                 $h = round( $w / $src_ratio );
             }
+            if ( !$w ) {
+                //the user wants to resize based on constant height
+                $w = round( $h * $src_ratio );
+            }
             // Get ratios
             $dest_ratio = $w / $h;
             $src_wt = $src_h * $dest_ratio;
