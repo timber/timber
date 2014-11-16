@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.20.7
+Stable tag: 0.20.8
 Tested up to: 4.0
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,10 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.20.8 =
+* Fixed some Twig deprecation (thanks @alexlrobertson)
+* Support for {{img.src|retina}} filter (@jarednova)
 
 = 0.20.7 =
 * Cleaned-up logic for {{post.next}} and {{post.prev}} (thanks @alexlrobertson)
