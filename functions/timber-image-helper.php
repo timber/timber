@@ -33,6 +33,20 @@ class TimberImageHelper {
             } );
     }
 
+    /*
+     * @return boolean true if $path is an absolute url, false if relative.
+     */
+    protected static function is_absolute($path) {
+        return (boolean) (strstr($path, 'http' ));
+    }
+
+    /*
+     * @return boolean true if $path is an external url, false if relative or local.
+     */
+    protected static function is_external($path) {
+        return self::is_absolute($path) && !strstr($path, content_url());
+    }
+
     /**
      *
      *
@@ -204,19 +218,6 @@ class TimberImageHelper {
      *
      *
      * @param string  $src
-     */
-    public static function in_uploads( $src ) {
-        $upload_dir = wp_upload_dir();
-        if ( strstr( $src, $upload_dir['relative'] ) ) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     *
-     *
-     * @param string  $src
      * @param int     $w
      * @param int     $h
      * @param string  $crop
@@ -230,6 +231,35 @@ class TimberImageHelper {
     }
 
     /**
+     * Computes the proper URL for the resized image
+     */
+    static function get_resize_file_url( $src, $w, $h, $crop ) {
+        $path = self::get_resize_file_name_relative_to_content( $src, $w, $h, $crop );
+        $url = '';
+        if ( self::is_absolute($src) ) {
+            $url = untrailingslashit( content_url() ) . $path;
+        } else {
+            $url = TimberURLHelper::preslashit( WP_CONTENT_SUBDIR .$path );
+        }
+        return $url;
+    }
+
+    /**
+     *
+     *
+     * @param string  $src
+     */
+    public static function in_uploads( $src ) {
+        $upload_dir = wp_upload_dir();
+        if ( strstr( $src, $upload_dir['relative'] ) ) {
+            return true;
+        }
+        return false;
+    }
+
+
+
+    /**
      *
      *
      * @param int     $iid
@@ -240,13 +270,6 @@ class TimberImageHelper {
         $src = wp_get_attachment_image_src( $iid, $size );
         $src = $src[0];
         return self::get_rel_path( $src );
-    }
-
-    /*
-     * @return boolean true if $path is an absolute url, false if relative.
-     */
-    protected static function is_absolute($path) {
-        return (boolean) (strstr( $path, 'http' ));
     }
 
     /**
@@ -500,9 +523,8 @@ class TimberImageHelper {
         if ( empty( $src ) ) {
             return '';
         }
-        $abs = self::is_absolute($src);
-        // if ( strstr( $src, 'http' ) && !strstr( $src, home_url() ) ) {
-        if ( $abs && !strstr( $src, content_url() ) ) {
+        // if external image, load it first
+        if ( self::is_external( $src ) ) {
             $src = self::sideload_image( $src );
         }
 
@@ -512,16 +534,7 @@ class TimberImageHelper {
             $crop = $allowed_crop_positions[0];
         }
 
-        //oh good, it's a relative image in the uploads folder!
-        $new_path = self::get_resize_file_name_relative_to_content( $src, $w, $h, $crop );
-
-        $new_url = '';
-        if ( $abs ) {
-            $new_url = untrailingslashit( content_url() ) . $new_path;
-        } else {
-            $new_url = TimberURLHelper::preslashit( WP_CONTENT_SUBDIR .$new_path );
-        }
-
+        $new_url = self::get_resize_file_url($src, $w, $h, $crop);
         $new_server_path = self::get_resize_file_path( $src, $w, $h, $crop );
         $old_server_path = self::get_server_location( $src );
         $old_server_path = TimberURLHelper::remove_double_slashes( $old_server_path );
