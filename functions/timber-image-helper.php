@@ -192,23 +192,6 @@ class TimberImageHelper {
      * @param string  $crop
      * @return string
      */
-    static function get_resize_file_rel( $src, $w, $h, $crop ) {
-        if ( !strlen( $src ) ) {
-            return null;
-        }
-        $new_path = self::get_resize_file_name_relative_to_content( $src, $w, $h, $crop );
-        return WP_CONTENT_SUBDIR . $new_path;
-    }
-
-    /**
-     *
-     *
-     * @param string  $src
-     * @param int     $w
-     * @param int     $h
-     * @param string  $crop
-     * @return string
-     */
     static function get_resize_file_name_relative_to_content( $src, $w, $h, $crop ) {
         $path_parts = pathinfo( $src );
         $dir_relative_to_content = self::get_directory_relative_to_content( $src );
@@ -257,6 +240,13 @@ class TimberImageHelper {
         $src = wp_get_attachment_image_src( $iid, $size );
         $src = $src[0];
         return self::get_rel_path( $src );
+    }
+
+    /*
+     * @return boolean true if $path is an absolute url, false if relative.
+     */
+    protected static function is_absolute($path) {
+        return (boolean) (strstr( $path, 'http' ));
     }
 
     /**
@@ -510,20 +500,28 @@ class TimberImageHelper {
         if ( empty( $src ) ) {
             return '';
         }
-        if ( strstr( $src, 'http' ) && !strstr( $src, home_url() ) ) {
+        $abs = self::is_absolute($src);
+        // if ( strstr( $src, 'http' ) && !strstr( $src, home_url() ) ) {
+        if ( $abs && !strstr( $src, content_url() ) ) {
             $src = self::sideload_image( $src );
         }
-        $abs = false;
-        if ( strstr( $src, 'http' ) ) {
-            $abs = true;
-        }
+
         // Sanitize crop position
         $allowed_crop_positions = array( 'default', 'center', 'top', 'bottom', 'left', 'right' );
         if ( $crop !== false && !in_array( $crop, $allowed_crop_positions ) ) {
             $crop = $allowed_crop_positions[0];
         }
+
         //oh good, it's a relative image in the uploads folder!
-        $new_path = self::get_resize_file_rel( $src, $w, $h, $crop );
+        $new_path = self::get_resize_file_name_relative_to_content( $src, $w, $h, $crop );
+
+        $new_url = '';
+        if ( $abs ) {
+            $new_url = untrailingslashit( content_url() ) . $new_path;
+        } else {
+            $new_url = TimberURLHelper::preslashit( WP_CONTENT_SUBDIR .$new_path );
+        }
+
         $new_server_path = self::get_resize_file_path( $src, $w, $h, $crop );
         $old_server_path = self::get_server_location( $src );
         $old_server_path = TimberURLHelper::remove_double_slashes( $old_server_path );
@@ -533,10 +531,7 @@ class TimberImageHelper {
                 // Force resize - warning: will regenerate the image on every pageload, use for testing purposes only!
                 unlink( $new_server_path );
             } else {
-                if ( !$abs ) {
-                    return TimberURLHelper::preslashit( $new_path );
-                }
-                return untrailingslashit( home_url() ) . $new_path;
+                return $new_url;
             }
         }
         $image = wp_get_image_editor( $old_server_path );
@@ -595,13 +590,10 @@ class TimberImageHelper {
                 error_log( 'Error resizing image' );
                 error_log( print_r( $result, true ) );
             }
-            if ( $abs ) {
-                return untrailingslashit( home_url() ) . $new_path;
-            }
-            return $new_path;
+            return $new_url;
         } else if ( isset( $image->error_data['error_loading_image'] ) ) {
-                TimberHelper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
-            } else {
+            TimberHelper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
+        } else {
             TimberHelper::error_log( $image );
         }
         return $src;
