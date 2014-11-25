@@ -11,9 +11,12 @@ Author URI: http://upstatement.com/
 global $wp_version;
 global $timber;
 
-$composer_autoload = __DIR__ . '/vendor/autoload.php';
-if (file_exists($composer_autoload)){
-	require_once($composer_autoload);
+// we look for Composer files first in the theme (theme install)
+// then in the wp-content dir (site install)
+if (file_exists($composer_autoload = __DIR__ . '/vendor/autoload.php')){
+  require_once($composer_autoload);
+} else if(file_exists($composer_autoload = WP_CONTENT_DIR.'/vendor/autoload.php')){
+  require_once($composer_autoload);
 }
 
 require_once(__DIR__ . '/functions/timber-twig.php');
