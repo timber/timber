@@ -133,6 +133,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
     function import_classes( $data ) {
         $this->classes = array_merge($this->classes, $data->classes);
         $this->classes = array_unique($this->classes);
+        $this->classes = apply_filters( 'nav_menu_css_class', $this->classes, $this );
         $this->class = trim( implode( ' ', $this->classes ) );
     }
 
