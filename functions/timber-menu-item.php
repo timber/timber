@@ -106,7 +106,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
      * @return string
      */
     function get_path() {
-        return TimberURLHelper::remove_trailing_slash( TimberURLHelper::get_rel_url( $this->get_link() ) );
+        return TimberURLHelper::get_rel_url( $this->get_link() );
     }
 
     /**
