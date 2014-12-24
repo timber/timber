@@ -29,9 +29,6 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
         $this->name = $this->name();
         $this->add_class( 'menu-item-' . $this->ID );
         $this->menu_object = $data;
-        if ( isset( $this->url ) && $this->url ) {
-            $this->url = TimberURLHelper::remove_trailing_slash( $this->url );
-        }
     }
 
     function __toString() {
