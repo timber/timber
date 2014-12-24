@@ -39,10 +39,7 @@ Once Timber is installed and activated in your plugin directory, it gives any Wo
 **NEW!** The GitHub version of Timber now requires [Composer](https://getcomposer.org/download/). If you'd prefer one-click installation, you should use the [WordPress.org](http://wordpress.org/plugins/timber-library/) version.
 
 ```shell
-cd ~/MYSITE/wp-content/plugins
-git clone git@github.com:jarednova/timber.git
-cd timber
-composer install
+composer create-project --no-dev jarednova/timber ~/MYSITE/wp-content/plugins/timber
 ```
 
 Once this is complete, activate Timber your WordPress admin. If you're looking for a 'blank' theme to start developing with, drag the `timber-starter-theme` from the timber directory into your themes directory.

@@ -25,11 +25,11 @@ class TimberMenuTest extends WP_UnitTestCase {
 	}
 
 	function testPagesMenu() {
-		$pg_1 = $this->factory->post->create(array('post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10));
-		$pg_2 = $this->factory->post->create(array('post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1));
+		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
+		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
 		$page_menu = new TimberMenu();
-		$this->assertEquals(2, count($page_menu->items));
-		$this->assertEquals('Bar Page', $page_menu->items[0]->title());
+		$this->assertEquals( 2, count( $page_menu->items ) );
+		$this->assertEquals( 'Bar Page', $page_menu->items[0]->title() );
 		$this->_createTestMenu();
 		//make sure other menus are still more powerful
 		$menu = new TimberMenu();
@@ -37,13 +37,13 @@ class TimberMenuTest extends WP_UnitTestCase {
 	}
 
 	/*
-	 * Make sure we still get back nothing even though we have a fallback present 
+	 * Make sure we still get back nothing even though we have a fallback present
 	 */
 	function testMissingMenu() {
-		$pg_1 = $this->factory->post->create(array('post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10));
-		$pg_2 = $this->factory->post->create(array('post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1));
-		$missing_menu = new TimberMenu(14);
-		$this->assertTrue(empty($missing_menu->items));
+		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
+		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
+		$missing_menu = new TimberMenu( 14 );
+		$this->assertTrue( empty( $missing_menu->items ) );
 	}
 
 	function testMenuTwig() {
@@ -58,8 +58,8 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$context['menu'] = new TimberMenu();
 		$str = Timber::compile( 'assets/child-menu.twig', $context );
 		$str = preg_replace( '/\s+/', '', $str );
-		$str = preg_replace('/\s+/', '', $str);
-		$this->assertStringStartsWith('<ulclass="navnavbar-nav"><li><ahref="http://example.org/home"class="has-children">Home</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page">ChildPage</a></li></ul><li><ahref="http://upstatement.com"class="no-children">Upstatement</a><li><ahref="/"class="no-children">RootHome</a>', $str);
+		$str = preg_replace( '/\s+/', '', $str );
+		$this->assertStringStartsWith( '<ulclass="navnavbar-nav"><li><ahref="http://example.org/home"class="has-children">Home</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page">ChildPage</a></li></ul><li><ahref="http://upstatement.com"class="no-children">Upstatement</a><li><ahref="/"class="no-children">RootHome</a>', $str );
 	}
 
 	function testMenuTwigWithClasses() {
@@ -123,11 +123,11 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$menu = new TimberMenu();
 		$items = $menu->get_items();
 		$item = $items[2];
-		$this->assertEquals('/', $item->link() );
-		$this->assertEquals('/', $item->path() );
+		$this->assertEquals( '/', $item->link() );
+		$this->assertEquals( '/', $item->path() );
 
 		$item = $items[5];
-		$this->assertEquals('http://example.org', $item->link() );
+		$this->assertEquals( 'http://example.org', $item->link() );
 		//I'm unsure what the expected behavior should be here, so commenting-out for now.
 		//$this->assertEquals('/', $item->path() );
 	}
@@ -200,7 +200,7 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$menu_items[] = $child_menu_item;
 
 
-		
+
 
 
 		$root_url_link_id = wp_insert_post(
@@ -278,4 +278,62 @@ class TimberMenuTest extends WP_UnitTestCase {
 		return $menu_term;
 	}
 
+	function setPermalinkStructure( $struc = '/%postname%/' ) {
+		global $wp_rewrite;
+		$wp_rewrite->set_permalink_structure( $struc );
+		$wp_rewrite->flush_rules();
+		update_option( 'permalink_structure', $struc );
+	}
+
+	function testCustomArchivePage() {
+		$this->setPermalinkStructure();
+		add_filter( 'nav_menu_css_class', function( $classes, $menu_item ) {
+				if ( trailingslashit( $menu_item->link() ) == trailingslashit( 'http://example.org/gallery' ) ) {
+					$classes[] = 'current-page-item';
+				}
+				return $classes;
+			}, 10, 2 );
+		global $wpdb;
+		register_post_type( 'gallery',
+			array(
+				'labels' => array(
+					'name' => __( 'Gallery' ),
+					'singular_name' => __( 'Gallery' )
+				),
+				'taxonomies' => array( 'post_tag' ),
+				'supports' => array( 'title', 'editor', 'thumbnail', 'revisions' ),
+				'public' => true,
+				'has_archive' => true,
+				'rewrite' => array( 'slug' => 'gallery' ),
+			)
+		);
+		$menu = $this->_createTestMenu();
+		$menu_item_id = wp_insert_post( array(
+				'post_title' => 'Gallery',
+				'post_name' => 'gallery',
+				'post_status' => 'publish',
+				'post_type' => 'nav_menu_item'
+			) );
+		update_post_meta( $menu_item_id, '_menu_item_type', 'post_type_archive' );
+		update_post_meta( $menu_item_id, '_menu_item_object', 'gallery' );
+		update_post_meta( $menu_item_id, '_menu_item_menu_item_parent', 0 );
+		update_post_meta( $menu_item_id, '_menu_item_object_id', 0 );
+		update_post_meta( $menu_item_id, '_menu_item_url', '' );
+		$mid = $menu['term_id'];
+		$query = "INSERT INTO $wpdb->term_relationships (object_id, term_taxonomy_id, term_order) VALUES ($menu_item_id, $mid, 0);";
+
+		$wpdb->query( $query );
+		$this->go_to( home_url( '/gallery' ) );
+		$menu = new TimberMenu();
+		$this->assertContains( 'current-page-item', $menu->items[0]->classes );
+		//print_r( $menu->items );
+
+	}
+
+
+
+
 }
+
+
+
