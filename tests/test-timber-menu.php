@@ -2,12 +2,7 @@
 class TimberMenuTest extends WP_UnitTestCase {
 
 	function testBlankMenu() {
-		$struc = '/%postname%/';
-		global $wp_rewrite;
-		$wp_rewrite->set_permalink_structure( $struc );
-		$wp_rewrite->flush_rules();
-		update_option( 'permalink_structure', $struc );
-		flush_rewrite_rules( true );
+		$this->setPermalinkStructure();
 		$this->_createTestMenu();
 		$menu = new TimberMenu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
@@ -22,6 +17,10 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->assertEquals( 'http://example.org/home', $item->url );
 		$this->assertEquals( 'http://example.org/home', $item->link() );
 		$this->assertEquals( '/home', $item->path() );
+	}
+
+	function testTrailingSlashesOrNot() {
+		$this->setPermalinkStructure();
 	}
 
 	function testPagesMenu() {
@@ -47,11 +46,7 @@ class TimberMenuTest extends WP_UnitTestCase {
 	}
 
 	function testMenuTwig() {
-		$struc = '/%postname%/';
-		global $wp_rewrite;
-		$wp_rewrite->set_permalink_structure( $struc );
-		$wp_rewrite->flush_rules();
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure();
 		$context = Timber::get_context();
 		$this->_createTestMenu();
 		$this->go_to( home_url( '/child-page' ) );
@@ -63,11 +58,7 @@ class TimberMenuTest extends WP_UnitTestCase {
 	}
 
 	function testMenuTwigWithClasses() {
-		$struc = '/%postname%/';
-		global $wp_rewrite;
-		$wp_rewrite->set_permalink_structure( $struc );
-		$wp_rewrite->flush_rules();
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure();
 		$this->_createTestMenu();
 		$this->go_to( home_url( '/home' ) );
 		$context = Timber::get_context();
@@ -82,8 +73,7 @@ class TimberMenuTest extends WP_UnitTestCase {
 	}
 
 	function testMenuItemLink() {
-		$struc = '/%postname%/';
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure();
 		$this->_createTestMenu();
 		$menu = new TimberMenu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
@@ -199,10 +189,6 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$post = new TimberPost( $child_menu_item );
 		$menu_items[] = $child_menu_item;
 
-
-
-
-
 		$root_url_link_id = wp_insert_post(
 			array(
 				'post_title' => 'Root Home',
@@ -283,6 +269,7 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$wp_rewrite->set_permalink_structure( $struc );
 		$wp_rewrite->flush_rules();
 		update_option( 'permalink_structure', $struc );
+		flush_rewrite_rules( true );
 	}
 
 	function testCustomArchivePage() {
