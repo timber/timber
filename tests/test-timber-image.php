@@ -27,7 +27,7 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testExternalImageResize() {
 		if ( !self::is_connected() ) {
-			return null;
+			$this->markTestSkipped('Cannot test external images when not connected to internet');
 		}
 		$data = array();
 		$data['size'] = array( 'width' => 600, 'height' => 400 );
