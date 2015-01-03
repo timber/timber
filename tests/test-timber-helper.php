@@ -18,6 +18,8 @@
         function testWPTitle(){
         	//since we're testing with twentyfourteen -- need to remove its filters on wp_title
         	remove_all_filters('wp_title');
+            remove_theme_support( 'title-tag' );
+
         	$this->assertEquals('', TimberHelper::get_wp_title());
         }
 

@@ -2,12 +2,7 @@
 class TimberMenuTest extends WP_UnitTestCase {
 
 	function testBlankMenu() {
-		$struc = '/%postname%/';
-		global $wp_rewrite;
-		$wp_rewrite->set_permalink_structure( $struc );
-		$wp_rewrite->flush_rules();
-		update_option( 'permalink_structure', $struc );
-		flush_rewrite_rules( true );
+		$this->setPermalinkStructure();
 		$this->_createTestMenu();
 		$menu = new TimberMenu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
@@ -17,11 +12,25 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->assertEquals( 'home', $item->slug() );
 		$this->assertFalse( $item->is_external() );
 		$struc = get_option( 'permalink_structure' );
-		$this->assertEquals( 'http://example.org/home', $item->permalink() );
-		$this->assertEquals( 'http://example.org/home', $item->get_permalink() );
-		$this->assertEquals( 'http://example.org/home', $item->url );
-		$this->assertEquals( 'http://example.org/home', $item->link() );
-		$this->assertEquals( '/home', $item->path() );
+		$this->assertEquals( 'http://example.org/home/', $item->permalink() );
+		$this->assertEquals( 'http://example.org/home/', $item->get_permalink() );
+		$this->assertEquals( 'http://example.org/home/', $item->url );
+		$this->assertEquals( 'http://example.org/home/', $item->link() );
+		$this->assertEquals( '/home/', $item->path() );
+	}
+
+	function testTrailingSlashesOrNot() {
+		$this->setPermalinkStructure();
+		$items = array();
+		$items[] = (object) array('type' => 'link', 'link' => '/');
+		$items[] = (object) array('type' => 'link', 'link' => '/foo');
+		$items[] = (object) array('type' => 'link', 'link' => '/bar/');
+		$mid = $this->buildMenu('Blanky', $items);
+		$menu = new TimberMenu($mid);
+		$items = $menu->get_items();
+		$this->assertEquals('/', $items[0]->path());
+		$this->assertEquals('/foo', $items[1]->path());
+		$this->assertEquals('/bar/', $items[2]->path());
 	}
 
 	function testPagesMenu() {
@@ -47,11 +56,7 @@ class TimberMenuTest extends WP_UnitTestCase {
 	}
 
 	function testMenuTwig() {
-		$struc = '/%postname%/';
-		global $wp_rewrite;
-		$wp_rewrite->set_permalink_structure( $struc );
-		$wp_rewrite->flush_rules();
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure();
 		$context = Timber::get_context();
 		$this->_createTestMenu();
 		$this->go_to( home_url( '/child-page' ) );
@@ -59,15 +64,11 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$str = Timber::compile( 'assets/child-menu.twig', $context );
 		$str = preg_replace( '/\s+/', '', $str );
 		$str = preg_replace( '/\s+/', '', $str );
-		$this->assertStringStartsWith( '<ulclass="navnavbar-nav"><li><ahref="http://example.org/home"class="has-children">Home</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page">ChildPage</a></li></ul><li><ahref="http://upstatement.com"class="no-children">Upstatement</a><li><ahref="/"class="no-children">RootHome</a>', $str );
+		$this->assertStringStartsWith( '<ulclass="navnavbar-nav"><li><ahref="http://example.org/home/"class="has-children">Home</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page/">ChildPage</a></li></ul><li><ahref="http://upstatement.com"class="no-children">Upstatement</a><li><ahref="/"class="no-children">RootHome</a>', $str );
 	}
 
 	function testMenuTwigWithClasses() {
-		$struc = '/%postname%/';
-		global $wp_rewrite;
-		$wp_rewrite->set_permalink_structure( $struc );
-		$wp_rewrite->flush_rules();
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure();
 		$this->_createTestMenu();
 		$this->go_to( home_url( '/home' ) );
 		$context = Timber::get_context();
@@ -78,12 +79,10 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->assertContains( 'current-menu-item', $str );
 		$this->assertContains( 'menu-item-object-page', $str );
 		$this->assertNotContains( 'foobar', $str );
-
 	}
 
 	function testMenuItemLink() {
-		$struc = '/%postname%/';
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure();
 		$this->_createTestMenu();
 		$menu = new TimberMenu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
@@ -132,15 +131,27 @@ class TimberMenuTest extends WP_UnitTestCase {
 		//$this->assertEquals('/', $item->path() );
 	}
 
-
-	// function testMenuAtLocation(){
-	//  register_nav_menu('theme-menu-location', 'A Nice Place to Put a Menu');
-	//  $menu = $this->_createTestMenu();
-	//  print_r($menu);
-	// }
+	function buildMenu($name, $items) {
+		$menu_term = wp_insert_term( $name, 'nav_menu' );
+		$menu_items = array();
+		$i = 0;
+		foreach($items as $item) {
+			if ($item->type == 'link') {
+				$pid = wp_insert_post(array('post_title' => '', 'post_status' => 'publish', 'post_type' => 'nav_menu_item', 'menu_order' => $i));
+				update_post_meta( $pid, '_menu_item_type', 'custom' );
+				update_post_meta( $pid, '_menu_item_object_id', $pid );
+				update_post_meta( $pid, '_menu_item_url', $item->link );
+				update_post_meta( $pid, '_menu_item_xfn', '' );
+				update_post_meta( $pid, '_menu_item_menu_item_parent', 0 );
+				$menu_items[] = $pid;
+			}
+			$i++;
+		}
+		$this->insertIntoMenu($menu_term['term_id'], $menu_items);
+		return $menu_term;
+	}
 
 	function _createTestMenu() {
-		global $wpdb;
 		$menu_term = wp_insert_term( 'Menu One', 'nav_menu' );
 		$menu_id = $menu_term['term_id'];
 		$menu_items = array();
@@ -198,10 +209,6 @@ class TimberMenuTest extends WP_UnitTestCase {
 		update_post_meta( $child_menu_item, '_menu_item_url', '' );
 		$post = new TimberPost( $child_menu_item );
 		$menu_items[] = $child_menu_item;
-
-
-
-
 
 		$root_url_link_id = wp_insert_post(
 			array(
@@ -267,6 +274,12 @@ class TimberMenuTest extends WP_UnitTestCase {
 		update_post_meta( $link_id, '_menu_item_xfn', '' );
 		update_post_meta( $link_id, '_menu_item_menu_item_parent', 0 );
 
+		$this->insertIntoMenu($menu_id, $menu_items);
+		return $menu_term;
+	}
+
+	function insertIntoMenu($menu_id, $menu_items) {
+		global $wpdb;
 		foreach ( $menu_items as $object_id ) {
 			$query = "INSERT INTO $wpdb->term_relationships (object_id, term_taxonomy_id, term_order) VALUES ($object_id, $menu_id, 0);";
 			$wpdb->query( $query );
@@ -274,8 +287,6 @@ class TimberMenuTest extends WP_UnitTestCase {
 		}
 		$menu_items_count = count( $menu_items );
 		$wpdb->query( "UPDATE $wpdb->term_taxonomy SET count = $menu_items_count WHERE taxonomy = 'nav_menu'; " );
-		$results = $wpdb->get_results( "SELECT * FROM $wpdb->term_taxonomy" );
-		return $menu_term;
 	}
 
 	function setPermalinkStructure( $struc = '/%postname%/' ) {
@@ -283,6 +294,7 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$wp_rewrite->set_permalink_structure( $struc );
 		$wp_rewrite->flush_rules();
 		update_option( 'permalink_structure', $struc );
+		flush_rewrite_rules( true );
 	}
 
 	function testCustomArchivePage() {
@@ -330,10 +342,4 @@ class TimberMenuTest extends WP_UnitTestCase {
 
 	}
 
-
-
-
 }
-
-
-
