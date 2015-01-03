@@ -158,6 +158,11 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
         return TimberURLHelper::is_external( $this->url );
     }
 
+    /**
+     *
+     * @param $key string lookup key
+     * @return mixed whatever value is storied in the database
+     */
     public function meta( $key ) {
         if ( is_object( $this->menu_object ) && method_exists( $this->menu_object, 'meta' ) ) {
             return $this->menu_object->meta( $key );
@@ -190,7 +195,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
     /**
      *
      *
-     * @return string
+     * @return string a full URL like http://mysite.com/thing/
      */
     public function link() {
         return $this->get_link();
@@ -198,8 +203,8 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 
     /**
      *
-     *
-     * @return string
+     * @see get_path()
+     * @return string the path of a URL like /foo
      */
     public function path() {
         return $this->get_path();
@@ -207,8 +212,8 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 
     /**
      *
-     *
-     * @return string
+     * @see link()
+     * @return string a full URL like http://mysite.com/thing/
      */
     public function permalink() {
         return $this->get_link();
@@ -216,13 +221,18 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 
     /**
      *
-     *
-     * @return string
+     * @see link()
+     * @return string a full URL like http://mysite.com/thing/
      */
     public function get_permalink() {
         return $this->get_link();
     }
 
+    /**
+     *
+     *
+     * @return string the public label like Foo
+     */
     public function title() {
         if (isset($this->__title)){
             return $this->__title;
