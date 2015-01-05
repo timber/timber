@@ -41,6 +41,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 0.20.9 =
+* Twig goes from 1.6.2 to 1.6.3 (thanks @fabpot)
+* Some clean-up items on Menus (thanks @oskarrough)
+* Simplified composer installation (thanks @lucasmichot)
+
 = 0.20.8 =
 * Fixed some Twig deprecation (thanks @alexlrobertson)
 * Support for {{img.src|retina}} filter (@jarednova)
