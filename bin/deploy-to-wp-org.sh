@@ -3,6 +3,7 @@ echo "Setting up version " $1
 echo "You still need to use Versions to send to WP.org"
 
 function deploy () {
+	git checkout master
 	rm -rf ~/Sites/timber/vendor
 	cd ..
 	composer install --no-dev
