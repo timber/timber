@@ -219,6 +219,7 @@ class TimberLoader {
         } else {
             $paths[] = ABSPATH;
         }
+        $paths = apply_filters('timber/loader/paths', $paths);
         $loader = new Twig_Loader_Filesystem($paths);
         return $loader;
     }
@@ -249,6 +250,7 @@ class TimberLoader {
         $twig->addExtension($this->_get_cache_extension());
 
         $twig = apply_filters('twig_apply_filters', $twig);
+        $twig = apply_filters('timber/loader/twig', $twig);
         return $twig;
     }
 
