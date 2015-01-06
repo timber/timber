@@ -78,7 +78,7 @@ class TimberArchives extends TimberCore
         );
         $r = wp_parse_args($args, $defaults);
 
-        $show_year = null;
+        $show_year = $r['show_year'];
         extract($r, EXTR_SKIP);
 
         //will need to specify which year we're looking for
