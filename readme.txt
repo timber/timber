@@ -2,8 +2,8 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.20.1
-Tested up to: 3.9.1
+Stable tag: 0.20.9
+Tested up to: 4.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -40,6 +40,47 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.20.9 =
+* Twig goes from 1.6.2 to 1.6.3 (thanks @fabpot)
+* Some clean-up items on Menus (thanks @oskarrough)
+* Simplified composer installation (thanks @lucasmichot)
+
+= 0.20.8 =
+* Fixed some Twig deprecation (thanks @alexlrobertson)
+* Support for {{img.src|retina}} filter (@jarednova)
+
+= 0.20.7 =
+* Cleaned-up logic for {{post.next}} and {{post.prev}} (thanks @alexlrobertson)
+* Simplifiying internals of TimberCore, TimberPost (thanks @alexlrobertson)
+* Initialization of variables from stolen WP functions (thanks @alexlrobertson)
+* Fixed Twitter API call (thanks @asecondwill)
+* Matched TimberMenu fallback behavior to grab pages_men (@jaredNova)
+* Fixed a bug with the_title filter (thanks @kuus)
+* Fixed weird conflicts when ACF names match methods (@jaredNova)
+* Added a filter for timber_output (thanks @aristath)
+* Fix for galleries showing only 5 images (thanks @IJMacD)
+
+= 0.20.6 =
+* Fixed some resulting bugs from numberposts vs. posts_per_page change as relates to galleries (thanks @IJMacD)
+* Fixed issue with author.php in starter theme (thanks @dmtroyer)
+* Added some sanity checks when menus are missing (thanks @jaredNova)
+* New tests, yay!
+
+= 0.20.5 =
+* Fixed issue with sticky posts being included when just feeding an array of ids
+* Fix for pagination links with search terms (thanks @matthewsoares)
+
+= 0.20.4 =
+* Fixed issue with Timber::get_posts and Timber::query_posts using numberposts in args
+
+= 0.20.3 = 
+* Fixed some issues with linking to menu items with a hash
+
+= 0.20.2 =
+* Change default response code on load_view to be 200
+* Fixed error with relpath and subdomains (thanks @jnweaver)
+* Various bug fixes (thanks @andyford, @discern)
 
 = 0.20.1 =
 * Hotfix to ensure non-exitent properties don't throw exception (thanks @kylehotchkiss)

@@ -1,7 +1,6 @@
 <?php
 
-class TimberURLHelper
-{
+class TimberURLHelper {
 
     /**
      * @return string
@@ -55,13 +54,19 @@ class TimberURLHelper
      * @return string
      */
     public static function get_rel_url($url, $force = false) {
-        if (!strstr($url, $_SERVER['HTTP_HOST']) && !$force) {
+        $url_info = parse_url($url);
+        if (isset($url_info['host']) && $url_info['host'] != $_SERVER['HTTP_HOST'] && !$force) {
             return $url;
         }
-        $url_info = parse_url($url);
-        $link = $url_info['path'];
+        $link = '';
+        if (isset($url_info['path'])){ 
+            $link = $url_info['path'];
+        }
         if (isset($url_info['query']) && strlen($url_info['query'])) {
             $link .= '?' . $url_info['query'];
+        }
+        if (isset($url_info['fragment']) && strlen($url_info['fragment'])) {
+            $link .= '#' . $url_info['fragment'];
         }
         $link = TimberURLHelper::remove_double_slashes($link);
         return $link;
@@ -89,11 +94,24 @@ class TimberURLHelper
         return $old_root_path;
     }
 
+    /**
+     * Takes a url and figures out its place based in the file system based on path
+     * NOTE: Not fool-proof, makes a lot of assumptions about the file path 
+     * matching the URL path
+     * @param string $url
+     * @return string
+     */
     public static function url_to_file_system($url) {
         $url_parts = parse_url($url);
         $path = ABSPATH . $url_parts['path'];
         $path = str_replace('//', '/', $path);
         return $path;
+    }
+
+    public static function file_system_to_url( $fs ) {
+        $relative_path = self::get_rel_path($fs);
+        $home = home_url('/'.$relative_path);
+        return $home;
     }
 
     /**
@@ -158,6 +176,18 @@ class TimberURLHelper
             return true;
         }
         return false;
+    }
+
+    /**
+     * Pass links through untrailingslashit unless they are a single /
+     *
+     * @param  string $link
+     * @return string
+     */
+    public static function remove_trailing_slash($link) {
+        if ( $link != "/")
+            $link = untrailingslashit( $link );
+        return $link;
     }
 
     /**

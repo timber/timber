@@ -58,8 +58,8 @@
 		function testNext(){
 			$posts = array();
 			for($i = 0; $i<2; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+				$j = $i + 1;
+				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
 			$firstPost = new TimberPost($posts[0]);
 			$nextPost = new TimberPost($posts[1]);
@@ -68,9 +68,9 @@
 
 		function testNextCategory(){
 			$posts = array();
-			for($i = 0; $i<3; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+			for($i = 0; $i<4; $i++){
+				$j = $i + 1;
+				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
 			wp_set_object_terms($posts[0], 'TestMe', 'category', false);
 			wp_set_object_terms($posts[2], 'TestMe', 'category', false);
@@ -80,25 +80,30 @@
 		}
 
 		function testNextCustomTax(){
-			register_taxonomy('pizza', 'post');
-			$posts = array();
-			for($i = 0; $i<4; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+			$v = get_bloginfo('version');
+			if (version_compare($v, '3.8', '<')) {
+           		$this->markTestSkipped('Custom taxonomy prev/next not supported until 3.8');
+        	} else {
+				register_taxonomy('pizza', 'post');
+				$posts = array();
+				for($i = 0; $i<4; $i++){
+					$j = $i + 1;
+					$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
+				}
+				wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
+				wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
+				wp_set_object_terms($posts[3], 'Mushroom', 'pizza', false);
+				$firstPost = new TimberPost($posts[0]);
+				$nextPost = new TimberPost($posts[2]);
+				$this->assertEquals($firstPost->next('pizza')->ID, $nextPost->ID);
 			}
-			wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
-			wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
-			wp_set_object_terms($posts[3], 'Mushroom', 'pizza', false);
-			$firstPost = new TimberPost($posts[0]);
-			$nextPost = new TimberPost($posts[2]);
-			$this->assertEquals($firstPost->next('pizza')->ID, $nextPost->ID);
 		}
 
 		function testPrev(){
 			$posts = array();
 			for($i = 0; $i<2; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+				$j = $i + 1;
+				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
 			$lastPost = new TimberPost($posts[1]);
 			$prevPost = new TimberPost($posts[0]);
@@ -106,24 +111,29 @@
 		}
 
 		function testPrevCustomTax(){
-			register_taxonomy('pizza', 'post');
-			$posts = array();
-			for($i = 0; $i<3; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+			$v = get_bloginfo('version');
+			if (version_compare($v, '3.8', '<')) {
+           		$this->markTestSkipped('Custom taxonomy prev/next not supported until 3.8');
+        	} else {
+				register_taxonomy('pizza', 'post');
+				$posts = array();
+				for($i = 0; $i<3; $i++){
+					$j = $i + 1;
+					$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
+				}
+				wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
+				wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
+				$lastPost = new TimberPost($posts[2]);
+				$prevPost = new TimberPost($posts[0]);
+				$this->assertEquals($lastPost->prev('pizza')->ID, $prevPost->ID);
 			}
-			wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
-			wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
-			$lastPost = new TimberPost($posts[2]);
-			$prevPost = new TimberPost($posts[0]);
-			$this->assertEquals($lastPost->prev('pizza')->ID, $prevPost->ID);
 		}
 
 		function testPrevCategory(){
 			$posts = array();
 			for($i = 0; $i<3; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+				$j = $i + 1;
+				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
 			wp_set_object_terms($posts[0], 'TestMe', 'category', false);
 			wp_set_object_terms($posts[2], 'TestMe', 'category', false);
@@ -135,8 +145,8 @@
 		function testNextWithDraftAndFallover(){
 			$posts = array();
 			for($i = 0; $i<3; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+				$j = $i + 1;
+				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
 			$firstPost = new TimberPost($posts[0]);
 			$nextPost = new TimberPost($posts[1]);
@@ -149,8 +159,8 @@
 		function testNextWithDraft(){
 			$posts = array();
 			for($i = 0; $i<2; $i++){
-				$posts[] = $this->factory->post->create();
-				sleep(1);
+				$j = $i + 1;
+				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
 			$firstPost = new TimberPost($posts[0]);
 			$nextPost = new TimberPost($posts[1]);
@@ -312,7 +322,8 @@
 			$this->assertEquals('My', trim($string));
 			update_post_meta($post_id, 'meta', 'steak');
 			$post = new TimberPost($post_id);
-			$string = Timber::compile_string('My {{post.meta}}', array('post' => $post));
+			$string = Timber::compile_string('My {{post.custom.meta}}', array('post' => $post));
+			//sorry you can't over-write methods now
 			$this->assertEquals('My steak', trim($string));
 		}
 

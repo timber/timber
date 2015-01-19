@@ -14,7 +14,7 @@ class TimberQueryIterator implements Iterator {
     private $_posts_class = 'TimberPost';
 
     public function __construct( $query = false, $posts_class = 'TimberPost' ) {
-
+        add_action( 'pre_get_posts', array($this, 'fix_number_posts_wp_quirk' ));
         if ( $posts_class )
             $this->_posts_class = $posts_class;
 
@@ -38,7 +38,9 @@ class TimberQueryIterator implements Iterator {
         } elseif ( is_array( $query ) && count( $query ) && ( is_integer( $query[0] ) || is_string( $query[0] ) ) ) {
             // We have a list of pids (post IDs) to extract from
             $the_query = self::get_query_from_array_of_ids( $query );
-
+        } elseif ( is_array($query) && empty($query)) {
+            // it's an empty array
+            $the_query = array();
         } else {
             TimberHelper::error_log( 'I have failed you! in ' . basename( __FILE__ ) . '::' . __LINE__ );
             TimberHelper::error_log( $query );
@@ -52,8 +54,10 @@ class TimberQueryIterator implements Iterator {
     }
 
     public function get_posts( $return_collection = false ) {
-        $posts = new TimberPostsCollection( $this->_query->posts, $this->_posts_class );
-        return ( $return_collection ) ? $posts : $posts->get_posts();
+        if (isset($this->_query->posts)){
+            $posts = new TimberPostsCollection( $this->_query->posts, $this->_posts_class );
+            return ( $return_collection ) ? $posts : $posts->get_posts();
+        }
     }
 
     //
@@ -65,6 +69,7 @@ class TimberQueryIterator implements Iterator {
 
         return new WP_Query( array(
                 'post_type'=> 'any',
+                'ignore_sticky_posts' => true,
                 'post__in' => $query,
                 'orderby'  => 'post__in',
                 'nopaging' => true
@@ -122,6 +127,15 @@ class TimberQueryIterator implements Iterator {
 
     public function key() {
         $this->_query->current_post;
+    }
+
+    //get_posts users numberposts
+    static function fix_number_posts_wp_quirk( $query ) {
+        if (isset($query->query) && isset($query->query['numberposts'])
+                && !isset($query->query['posts_per_page'])) {
+            $query->set( 'posts_per_page', $query->query['numberposts'] );
+        }
+        return $query;
     }
 
 }

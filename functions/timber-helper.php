@@ -13,12 +13,8 @@ class TimberHelper {
      * @return mixed
      */
     public static function transient( $slug, $callback, $transient_time = 0, $lock_timeout = 5, $force = false ) {
-        if ( $transient_time === false || ( defined( 'WP_DISABLE_TRANSIENTS' ) && WP_DISABLE_TRANSIENTS ) ) {
-            $enable_transients = false;
-        } else {
-            $enable_transients = true;
-        }
 
+        $enable_transients = ( $transient_time === false || ( defined( 'WP_DISABLE_TRANSIENTS' ) && WP_DISABLE_TRANSIENTS ) ) ? false : true;
         $data = $enable_transients ? get_transient( $slug ) : false;
 
         if ( false === $data ) {
@@ -48,18 +44,31 @@ class TimberHelper {
                 set_transient( $slug, $data, $transient_time );
                 self::_unlock_transient( $slug );
             }
+
         }
+
         return $data;
+
     }
 
+    /**
+     * @param string $slug
+     * @param integer $lock_timeout
+     */
     public static function _lock_transient( $slug, $lock_timeout ) {
         set_transient( $slug . '_lock', true, $lock_timeout );
     }
 
+    /**
+     * @param string $slug
+     */
     public static function _unlock_transient( $slug ) {
         delete_transient( $slug . '_lock', true );
     }
 
+    /**
+     * @param string $slug
+     */
     public static function _is_transient_locked( $slug ) {
         return (bool)get_transient( $slug . '_lock' );
     }
@@ -115,7 +124,7 @@ class TimberHelper {
      *
      *
      * @param string  $function_name
-     * @param array   $defaults
+     * @param integer[]   $defaults
      * @param bool    $return_output_buffer
      * @return TimberFunctionWrapper
      */
@@ -231,7 +240,7 @@ class TimberHelper {
      *
      *
      * @param string  $ret
-     * @return mixed
+     * @return string
      * @deprecated since 0.20.0
      */
     public static function twitterify( $ret ) {
@@ -241,7 +250,7 @@ class TimberHelper {
         $pattern .= '[a-wyz][a-z](fo|g|l|m|mes|o|op|pa|ro|seum|t|u|v|z)?)#i';
         $ret = preg_replace( $pattern, '<a href="mailto:\\1">\\1</a>', $ret );
         $ret = preg_replace( "/\B@(\w+)/", " <a href=\"http://www.twitter.com/\\1\" target=\"_blank\">@\\1</a>", $ret );
-        $ret = preg_replace( "/\B#(\w+)/", " <a href=\"http://search.twitter.com/search?q=\\1\" target=\"_blank\">#\\1</a>", $ret );
+        $ret = preg_replace( "/\B#(\w+)/", " <a href=\"http://twitter.com/search?q=\\1\" target=\"_blank\">#\\1</a>", $ret );
         return $ret;
     }
 
@@ -537,6 +546,7 @@ class TimberHelper {
                     if ( $args['add_args'] ) {
                         $link = rtrim( add_query_arg( $args['add_args'], $link ), '/' );
                     }
+                    $link = str_replace(' ', '+', $link);
                     $link = untrailingslashit( $link );
                     $page_links[] = array(
                         'class' => 'page-number page-numbers',
@@ -572,7 +582,7 @@ class TimberHelper {
     }
 
     /* LEGACY These have since been re-organized; but keeping linkages for backwards-compatibility */
-    
+
     /**
      * @deprecated
      */

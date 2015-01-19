@@ -4,5 +4,7 @@ twig-cache/*
 .idea
 vendor
 composer.lock
-cache
 build
+/cache
+*.swp
+*~

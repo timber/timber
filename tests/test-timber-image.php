@@ -4,7 +4,7 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testImageMeta() {
 		$pid = $this->factory->post->create();
-		$filename = $this->copyTestImage( 'arch.jpg' );
+		$filename = self::copyTestImage( 'arch.jpg' );
 		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 		$iid = wp_insert_attachment( $attachment, $filename, $pid );
 		update_post_meta( $iid, 'architect', 'Eero Saarinen' );
@@ -15,7 +15,7 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testImageSizes() {
 		$pid = $this->factory->post->create();
-		$filename = $this->copyTestImage( 'arch.jpg' );
+		$filename = self::copyTestImage( 'arch.jpg' );
 		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 		$iid = wp_insert_attachment( $attachment, $filename, $pid );
 		$image = new TimberImage( $iid );
@@ -27,7 +27,7 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testExternalImageResize() {
 		if ( !self::is_connected() ) {
-			return null;
+			$this->markTestSkipped('Cannot test external images when not connected to internet');
 		}
 		$data = array();
 		$data['size'] = array( 'width' => 600, 'height' => 400 );
@@ -50,7 +50,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals( $old_time, $new_time );
 	}
 
-	function copyTestImage( $img = 'arch.jpg' ) {
+	static function copyTestImage( $img = 'arch.jpg' ) {
 		$upload_dir = wp_upload_dir();
 		$destination = $upload_dir['path'].'/'.$img;
 		if ( !file_exists( $destination ) ) {
@@ -61,7 +61,7 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testUpSizing() {
 		$data = array();
-		$file_loc = $this->copyTestImage( 'stl.jpg' );
+		$file_loc = self::copyTestImage( 'stl.jpg' );
 		$upload_dir = wp_upload_dir();
 		$new_file = TimberImageHelper::resize( $upload_dir['url'].'/stl.jpg', 500, 200, 'default', true );
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
@@ -71,7 +71,7 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testUpSizing2Param() {
 		$data = array();
-		$file_loc = $this->copyTestImage( 'stl.jpg' );
+		$file_loc = self::copyTestImage( 'stl.jpg' );
 		$upload_dir = wp_upload_dir();
 		$new_file = TimberImageHelper::resize( $upload_dir['url'].'/stl.jpg', 500, 300, 'default', true );
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
@@ -83,7 +83,7 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testImageResizeRelative() {
 		$upload_dir = wp_upload_dir();
-		$this->copyTestImage();
+		self::copyTestImage();
 		$url = $upload_dir['url'].'/arch.jpg';
 		$url = str_replace( 'http://example.org', '', $url );
 		$data = array( 'crop' => 'default', 'test_image' => $url );
@@ -104,7 +104,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data = array();
 		$data['size'] = array( 'width' => 600, 'height' => 400 );
 		$upload_dir = wp_upload_dir();
-		$this->copyTestImage();
+		self::copyTestImage();
 		$url = $upload_dir['url'].'/arch.jpg';
 		$data['test_image'] = $url;
 		$data['crop'] = 'default';
@@ -123,7 +123,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data = array();
 		$data['size'] = array( 'width' => 600 );
 		$upload_dir = wp_upload_dir();
-		$this->copyTestImage( 'tall.jpg' );
+		self::copyTestImage( 'tall.jpg' );
 		$url = $upload_dir['url'].'/tall.jpg';
 		$data['test_image'] = $url;
 		$data['crop'] = 'default';
@@ -138,8 +138,30 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals( $w, 600 );
 	}
 
+	function testInitFromRelativePath() {
+		$filename = self::copyTestImage( 'arch.jpg' );
+		$path = str_replace(ABSPATH, '/', $filename);
+		$image = new TimberImage( $path );
+		$this->assertEquals( 1500, $image->width() );
+	}
+
+	function testInitFromID() {
+		$pid = $this->factory->post->create();
+		$filename = self::copyTestImage( 'arch.jpg' );
+		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+		$iid = wp_insert_attachment( $attachment, $filename, $pid );
+		$image = new TimberImage( $iid );
+		$this->assertEquals( 1500, $image->width() );
+	}
+
+	function testInitFromFilePath() {
+		$image_file = self::copyTestImage();
+		$image = new TimberImage( $image_file );
+		$this->assertEquals( 1500, $image->width() );
+	}
+
 	function testInitFromURL() {
-		$destination_path = $this->copyTestImage();
+		$destination_path = self::copyTestImage();
 		$destination_path = TimberURLHelper::get_rel_path( $destination_path );
 		$destination_url = 'http://'.$_SERVER['HTTP_HOST'].$destination_path;
 		$image = new TimberImage( $destination_url );
@@ -150,7 +172,7 @@ class TimberImageTest extends WP_UnitTestCase {
 	function testPostThumbnails() {
 		$upload_dir = wp_upload_dir();
 		$post_id = $this->factory->post->create();
-		$filename = $this->copyTestImage( 'flag.png' );
+		$filename = self::copyTestImage( 'flag.png' );
 		$destination_url = str_replace( ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$attachment = array(
@@ -176,7 +198,7 @@ class TimberImageTest extends WP_UnitTestCase {
 	function testImageAltText() {
 		$upload_dir = wp_upload_dir();
 		$thumb_alt = 'Thumb alt';
-		$filename = $this->copyTestImage( 'flag.png' );
+		$filename = self::copyTestImage( 'flag.png' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$post_id = $this->factory->post->create();
 		$attachment = array(
@@ -194,14 +216,35 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testResizeFileNaming() {
-		$file_loc = $this->copyTestImage( 'eastern.jpg' );
-		$filename = TimberImageHelper::get_resize_file_rel( $file_loc, 300, 500, 'default' );
+		$file_loc = self::copyTestImage( 'eastern.jpg' );
+		$filename = TimberImageHelper::get_resize_file_url( $file_loc, 300, 500, 'default' );
 		$upload_dir = wp_upload_dir();
 		$this->assertEquals( $upload_dir['relative'].$upload_dir['subdir'].'/eastern-300x500-c-default.jpg', $filename );
 	}
 
+	function testResizeFileNamingWithAbsoluteURL() {
+		$file_loc = self::copyTestImage( 'eastern.jpg' );
+		$upload_dir = wp_upload_dir();
+		$url_src = $upload_dir['url'].'/eastern.jpg';
+		$filename = TimberImageHelper::get_resize_file_url( $url_src, 300, 500, 'default' );
+		$this->assertEquals( $upload_dir['url'].'/eastern-300x500-c-default.jpg', $filename );
+	}
+
+	function add_lang_to_home( $url, $path, $orig_scheme, $blog_id ){
+		return "$url?lang=en";
+	}
+
+	function testResizeFileNamingWithLangHome() {
+		add_filter( 'home_url', array($this,'add_lang_to_home') , 1, 4 );
+		$file_loc = self::copyTestImage( 'eastern.jpg' );
+		$upload_dir = wp_upload_dir();
+		$url_src = $upload_dir['url'].'/eastern.jpg';
+		$filename = TimberImageHelper::get_resize_file_url( $url_src, 300, 500, 'default' );
+		$this->assertEquals( $upload_dir['url'].'/eastern-300x500-c-default.jpg', $filename );
+	}
+
 	function testLetterboxFileNaming() {
-		$file_loc = $this->copyTestImage( 'eastern.jpg' );
+		$file_loc = self::copyTestImage( 'eastern.jpg' );
 		$filename = TimberImageHelper::get_letterbox_file_rel( $file_loc, 300, 500, '#FFFFFF' );
 		$filename = str_replace( ABSPATH, '', $filename );
 		$upload_dir = wp_upload_dir();
@@ -209,7 +252,7 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testLetterbox() {
-		$file_loc = $this->copyTestImage( 'eastern.jpg' );
+		$file_loc = self::copyTestImage( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
 		$image = $upload_dir['url'].'/eastern.jpg';
 		$new_file = TimberImageHelper::letterbox( $image, 500, 500, '#CCC', true );
@@ -227,7 +270,7 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testLetterboxColorChange() {
-		$file_loc = $this->copyTestImage( 'eastern.jpg' );
+		$file_loc = self::copyTestImage( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
 		$new_file_red = TimberImageHelper::letterbox( $upload_dir['url'].'/eastern.jpg', 500, 500, '#FF0000' );
 		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/eastern.jpg', 500, 500, '#00FF00' );
@@ -245,7 +288,7 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testLetterboxTransparent() {
 		$base_file = 'eastern-trans.png';
-		$file_loc = $this->copyTestImage( $base_file );
+		$file_loc = self::copyTestImage( $base_file );
 		$upload_dir = wp_upload_dir();
 		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/'.$base_file, 500, 500, '#00FF00', true );
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
@@ -263,7 +306,7 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testLetterboxSixCharHex() {
 		$data = array();
-		$file_loc = $this->copyTestImage( 'eastern.jpg' );
+		$file_loc = self::copyTestImage( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
 		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/eastern.jpg', 500, 500, '#FFFFFF', true );
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
@@ -280,7 +323,7 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testPNGtoJPG() {
-		$file_loc = $this->copyTestImage( 'eastern-trans.png' );
+		$file_loc = self::copyTestImage( 'eastern-trans.png' );
 		$upload_dir = wp_upload_dir();
 		$new_file = TimberImageHelper::img_to_jpg( $upload_dir['url'].'/eastern-trans.png', '#FFFF00' );
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
@@ -297,13 +340,13 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data = array();
 		$data['size'] = array( 'width' => 500, 'height' => 300 );
 		$upload_dir = wp_upload_dir();
-		$file = $this->copyTestImage( 'arch-2night.jpg' );
+		$file = self::copyTestImage( 'arch-2night.jpg' );
 		$data['test_image'] = $upload_dir['url'].'/arch-2night.jpg';
 		$data['crop'] = 'default';
 		$arch_2night = TimberImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
 		Timber::compile( 'assets/image-test.twig', $data );
 
-		$file = $this->copyTestImage( 'arch.jpg' );
+		$file = self::copyTestImage( 'arch.jpg' );
 		$data['test_image'] = $upload_dir['url'].'/arch.jpg';
 		$data['size'] = array( 'width' => 520, 'height' => 250 );
 		$data['crop'] = 'left';
@@ -325,7 +368,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$data = array();
 		$data['size'] = array( 'width' => 500, 'height' => 300 );
 		$upload_dir = wp_upload_dir();
-		$file = $this->copyTestImage( 'city-museum.jpg' );
+		$file = self::copyTestImage( 'city-museum.jpg' );
 		$data['test_image'] = $upload_dir['url'].'/city-museum.jpg';
 		$data['crop'] = 'default';
 		Timber::compile( 'assets/image-test.twig', $data );
@@ -346,7 +389,7 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testLetterboxImageDeletion() {
 		$data = array();
-		$file = $this->copyTestImage( 'city-museum.jpg' );
+		$file = self::copyTestImage( 'city-museum.jpg' );
 		$upload_dir = wp_upload_dir();
 		$data['test_image'] = $upload_dir['url'].'/city-museum.jpg';
 		$new_file = TimberImageHelper::letterbox( $data['test_image'], 500, 500, '#00FF00' );
@@ -359,6 +402,9 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testThemeImageResize() {
+		if (!file_exists(get_template_directory().'/images')) {
+    		mkdir(get_template_directory().'/images', 0777, true);
+		}
 		$dest = get_template_directory().'/images/cardinals.jpg';
 		copy( __DIR__.'/assets/cardinals.jpg', $dest );
 		$image = get_template_directory_uri().'/images/cardinals.jpg';
@@ -381,7 +427,16 @@ class TimberImageTest extends WP_UnitTestCase {
 		unlink( get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg' );
 	}
 
-
+	function testImageWidthWithFilter() {
+		$pid = $this->factory->post->create();
+		$photo = $this->copyTestImage();
+		$photo = TimberURLHelper::get_rel_path($photo);
+		update_post_meta($pid, 'custom_photo', '/'.$photo);
+		$str = '{{TimberImage(post.custom_photo).width}}';
+		$post = new TimberPost($pid);
+		$rendered = Timber::compile_string( $str, array('post' => $post) );
+		$this->assertEquals( 1500, $rendered );
+	}
 
 	public static function is_connected() {
 		$connected = @fsockopen( "www.google.com", 80, $errno, $errstr, 3 );

@@ -13,6 +13,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     public $_content;
     public $_get_terms;
 
+    private $_next = array();
+    private $_prev = array();
+
     public $class;
     public $display_date;
     public $id;
@@ -30,7 +33,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      * @return \TimberPost TimberPost object -- woo!
      */
     function __construct($pid = null) {
-        if ($pid === null && get_the_ID()) {
+        global $wp_query;
+        if ($pid === null && isset($wp_query->queried_object_id) && $wp_query->queried_object_id) {
+            $pid = $wp_query->queried_object_id;
+            $this->ID = $pid;
+        } else if ($pid === null && get_the_ID()) {
             $pid = get_the_ID();
             $this->ID = $pid;
         } else if ($pid === null && ($pid_from_loop = TimberPostGetter::loop_to_id())) {
@@ -117,7 +124,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     /**
      *  helps you find the post id regardless of whetehr you send a string or whatever
      *
-     * @param mixed $pid ;
+     * @param integer $pid ;
      * @return integer ID number of a post
      */
     private function check_post_id($pid) {
@@ -139,7 +146,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     /**
      *  get_post_id_by_name($post_name)
      *
-     * @param $post_name
+     * @param string $post_name
      * @return int
      */
     public static function get_post_id_by_name($post_name) {
@@ -306,6 +313,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
             } else {
                 $adjacent = get_adjacent_post(false, '', false);
             }
+
             if ($adjacent) {
                 $this->_next[$taxonomy] = new $this->PostClass($adjacent);
             } else {
@@ -371,25 +379,21 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      * @return mixed
      */
     function get_prev($taxonomy = false) {
-        if (!isset($this->_prev) || !isset($this->_prev[$taxonomy])) {
-            global $post;
-            $this->_prev = array();
-            $old_global = $post;
-            $post = $this;
-            $in_same_cat = false;
-            if ($taxonomy) {
-                $adjacent = get_adjacent_post(true, '', true, $taxonomy);
-            } else {
-                $adjacent = get_adjacent_post(false, '', true);
-            }
-            
-            if ($adjacent) {
-                $this->_prev[$taxonomy] = new $this->PostClass($adjacent);
-            } else {
-                $this->_prev[$taxonomy] = false;
-            }
-            $post = $old_global;
+        if (isset($this->_prev) && isset($this->_prev[$taxonomy])) {
+            return $this->_prev[$taxonomy];
         }
+        global $post;
+        $old_global = $post;
+        $post = $this;
+        $within_taxonomy = ($taxonomy) ? $taxonomy : 'category';
+        $adjacent = get_adjacent_post(($taxonomy), '', true, $within_taxonomy);
+
+        $prev_in_taxonomy = false;
+        if ($adjacent) {
+            $prev_in_taxonomy = new $this->PostClass($adjacent);
+        }
+        $this->_prev[$taxonomy] = $prev_in_taxonomy;
+        $post = $old_global;
         return $this->_prev[$taxonomy];
     }
 
@@ -439,14 +443,15 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
         $post->id = $post->ID;
         $post->slug = $post->post_name;
         $customs = $this->get_post_custom($post->ID);
-        $post = (object)array_merge((array)$post, (array)$customs);
+        $post->custom = $customs;
+        $post = (object)array_merge((array)$customs, (array)$post);
         return $post;
     }
 
     /**
      * This is deprecated!
      * @param string $use
-     * @return bool|string
+     * @return string
      */
     function get_display_date($use = 'post_date') {
         return date(get_option('date_format'), strtotime($this->$use));
@@ -668,8 +673,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      * @return string
      */
     function get_title() {
-        $title = $this->post_title;
-        return apply_filters('the_title', $title);
+        return apply_filters('the_title', $this->post_title, $this->ID);
     }
 
     /**

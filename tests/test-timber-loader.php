@@ -2,6 +2,19 @@
 
 	class TestTimberLoader extends WP_UnitTestCase {
 
+		function testTwigPathFilter() {
+			$php_unit = $this;
+			add_filter('timber/loader/paths', function($paths) use ($php_unit) {
+				$count = count($paths);
+				$php_unit->assertEquals(3, count($paths));
+				$pos = array_search('/', $paths);
+				unset($paths[$pos]);
+				$php_unit->assertEquals(2, count($paths));
+				return $paths;
+			});
+			$str = Timber::compile('assets/single.twig', array());
+		}
+
 		function testTwigLoadsFromChildTheme(){
 			$this->_setupParentTheme();
 			$this->_setupChildTheme();
@@ -26,6 +39,15 @@
 			copy(__DIR__.'/assets/single.twig', $dest_dir.'/views/single.twig');
 		}
 
+		static function _setupParentTheme(){
+			$dest_dir = WP_CONTENT_DIR.'/themes/twentythirteen';
+			if (!file_exists($dest_dir.'/views')) {
+    			mkdir($dest_dir.'/views', 0777, true);
+			}
+			copy(__DIR__.'/assets/single-parent.twig', $dest_dir.'/views/single.twig');
+			copy(__DIR__.'/assets/single-parent.twig', $dest_dir.'/views/single-parent.twig');
+		}
+
 		function testTwigLoadsFromParentTheme(){
 			$this->_setupParentTheme();
 			$this->_setupChildTheme();
@@ -33,15 +55,6 @@
 			$templates = array('single-parent.twig');
 			$str = Timber::compile($templates, array());
 			$this->assertEquals('I am single.twig in parent theme', trim($str));
-		}
-
-		function _setupParentTheme(){
-			$dest_dir = WP_CONTENT_DIR.'/themes/twentythirteen';
-			if (!file_exists($dest_dir.'/views')) {
-    			mkdir($dest_dir.'/views', 0777, true);
-			}
-			copy(__DIR__.'/assets/single-parent.twig', $dest_dir.'/views/single.twig');
-			copy(__DIR__.'/assets/single-parent.twig', $dest_dir.'/views/single-parent.twig');
 		}
 
 		function _setupRelativeViews(){

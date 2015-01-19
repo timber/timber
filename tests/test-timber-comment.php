@@ -12,7 +12,7 @@ class TimberCommentTest extends WP_UnitTestCase {
 
 	function testAvatar(){
 		if (!TimberImageTest::is_connected()){
-			return;
+			$this->markTestSkipped('Cannot test avatar images when not connected to internet');
 		}
 		$post_id = $this->factory->post->create();
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));

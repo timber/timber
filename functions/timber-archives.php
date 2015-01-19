@@ -25,6 +25,7 @@ class TimberArchives extends TimberCore
      * @return mixed
      */
     function get_archives_link($url, $text) {
+        $ret = array();
         $ret['text'] = $ret['title'] = $ret['name'] = wptexturize($text);
         $ret['url'] = $ret['link'] = esc_url(TimberURLHelper::prepend_to_url($url, $this->base));
         return $ret;
@@ -77,7 +78,7 @@ class TimberArchives extends TimberCore
         );
         $r = wp_parse_args($args, $defaults);
 
-        $show_year = null;
+        $show_year = $r['show_year'];
         extract($r, EXTR_SKIP);
 
         //will need to specify which year we're looking for
@@ -204,6 +205,7 @@ class TimberArchives extends TimberCore
             $key = "wp_get_archives:$key:$last_changed";
             if (!$results = wp_cache_get($key, 'posts')) {
                 $results = $wpdb->get_results($query);
+                $cache = array();
                 $cache[$key] = $results;
                 wp_cache_set($key, $results, 'posts');
             }

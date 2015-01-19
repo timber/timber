@@ -15,6 +15,7 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
     public $siteurl;
     public $theme;
     public $title;
+    public $url;
 
     /**
      *

@@ -39,13 +39,33 @@
             $this->assertTrue(TimberURLHelper::is_external($external));
         }
 
+        function testGetRelURL(){
+            $local = 'http://example.org/directory';
+            $subdomain = 'http://cdn.example.org/directory';
+            $external = 'http://upstatement.com';
+            $rel_url = '/directory/';
+            $this->assertEquals('/directory', TimberURLHelper::get_rel_url($local));
+            $this->assertEquals($subdomain, TimberURLHelper::get_rel_url($subdomain));
+            $this->assertEquals($external, TimberURLHelper::get_rel_url($external));
+            $this->assertEquals($rel_url, TimberURLHelper::get_rel_url($rel_url));
+        }
+
+        function testRemoveTrailingSlash(){
+            $url_with_trailing_slash = 'http://example.org/directory/';
+            $root_url = "/";
+            $this->assertEquals('http://example.org/directory', TimberURLHelper::remove_trailing_slash($url_with_trailing_slash));
+            $this->assertEquals('/', TimberURLHelper::remove_trailing_slash($root_url));
+        }
+
         function testDownloadURL(){
-            if (TimberImageTest::is_connected()){
-                $url = 'http://i1.nyt.com/images/misc/nytlogo379x64.gif';
-                $result = TimberURLHelper::download_url($url);
-                $this->assertStringStartsWith('/tmp/nytlogo379x64', $result);
-                $this->assertStringEndsWith('.tmp', $result);
+            if ( !TimberImageTest::is_connected() ){
+                $this->markTestSkipped('Cannot test external images when not connected to internet');
+                return;
             }
+            $url = 'http://i1.nyt.com/images/misc/nytlogo379x64.gif';
+            $result = TimberURLHelper::download_url($url);
+            $this->assertContains('/nytlogo379x64', $result);
+            $this->assertStringEndsWith('.tmp', $result);
         }
 
         function testGetParams(){

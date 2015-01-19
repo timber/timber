@@ -71,7 +71,7 @@ class TimberLoader {
             $this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
         }
 
-        return $output;
+        return apply_filters('timber_output', $output);
     }
 
     /**
@@ -133,7 +133,7 @@ class TimberLoader {
 
     /**
      * returns an array of the directory inside themes that holds twig files
-     * @return array the names of directores, ie: array('templats', 'views');
+     * @return string[] the names of directores, ie: array('templats', 'views');
      */
     private function get_locations_theme_dir() {
         if (is_string(Timber::$dirname)) {
@@ -201,7 +201,7 @@ class TimberLoader {
     }
 
     /**
-     * @return Twig_Loader_Chain
+     * @return Twig_Loader_Filesystem
      */
     function get_loader() {
         $paths = array();
@@ -219,6 +219,7 @@ class TimberLoader {
         } else {
             $paths[] = ABSPATH;
         }
+        $paths = apply_filters('timber/loader/paths', $paths);
         $loader = new Twig_Loader_Filesystem($paths);
         return $loader;
     }
@@ -249,6 +250,7 @@ class TimberLoader {
         $twig->addExtension($this->_get_cache_extension());
 
         $twig = apply_filters('twig_apply_filters', $twig);
+        $twig = apply_filters('timber/loader/twig', $twig);
         return $twig;
     }
 
@@ -290,6 +292,9 @@ class TimberLoader {
     	return false;
     }
 
+    /**
+     * @param string|false $dirPath
+     */
     public static function rrmdir($dirPath) {
 	    if (! is_dir($dirPath)) {
 	        throw new InvalidArgumentException("$dirPath must be a directory");
@@ -356,11 +361,11 @@ class TimberLoader {
 
     /**
      * @param string $key
-     * @param mixed $value
+     * @param string|boolean $value
      * @param string $group
      * @param int $expires
      * @param string $cache_mode
-     * @return mixed
+     * @return string|boolean
      */
     public function set_cache($key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT) {
         $object_cache = false;
