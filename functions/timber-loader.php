@@ -237,7 +237,7 @@ class TimberLoader {
             Timber::$twig_cache = true;
         }
         if (Timber::$twig_cache) {
-            $twig_cache_loc = TIMBER_LOC . '/cache/twig';
+            $twig_cache_loc = apply_filters( 'timber_cache_loc', TIMBER_LOC . '/cache/twig' );
             if (!file_exists($twig_cache_loc)) {
                 mkdir($twig_cache_loc, 0777, true);
             }
