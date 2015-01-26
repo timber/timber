@@ -29,6 +29,7 @@ class TimberLoader {
     function __construct($caller = false) {
         $this->locations = $this->get_locations($caller);
         $this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
+        $this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
     }
 
     /**
@@ -64,14 +65,15 @@ class TimberLoader {
                 do_action('timber_loader_render_file', $result);
             }
             $data = apply_filters('timber_loader_render_data', $data);
+            $data = apply_filters('timber/loader/render_data', $data);
             $output = $twig->render($file, $data);
         }
 
         if (false !== $output && false !== $expires && null !== $key) {
             $this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
         }
-
-        return apply_filters('timber_output', $output);
+        $output = apply_filters('timber_output', $output);
+        return apply_filters('timber/output', $output);
     }
 
     /**
@@ -197,6 +199,7 @@ class TimberLoader {
         $locs = array_merge($locs, $this->get_locations_caller($caller));
         $locs = array_unique($locs);
         $locs = apply_filters('timber_locations', $locs);
+        $locs = apply_filters('timber/locations', $locs);
         return $locs;
     }
 
@@ -237,7 +240,7 @@ class TimberLoader {
             Timber::$twig_cache = true;
         }
         if (Timber::$twig_cache) {
-            $twig_cache_loc = apply_filters( 'timber_cache_loc', TIMBER_LOC . '/cache/twig' );
+            $twig_cache_loc = apply_filters( 'timber/cache/location', TIMBER_LOC . '/cache/twig' );
             if (!file_exists($twig_cache_loc)) {
                 mkdir($twig_cache_loc, 0777, true);
             }
