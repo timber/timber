@@ -29,6 +29,7 @@ class TimberLoader {
     function __construct($caller = false) {
         $this->locations = $this->get_locations($caller);
         $this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
+        $this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
     }
 
     /**
@@ -64,14 +65,15 @@ class TimberLoader {
                 do_action('timber_loader_render_file', $result);
             }
             $data = apply_filters('timber_loader_render_data', $data);
+            $data = apply_filters('timber/loader/render_data', $data);
             $output = $twig->render($file, $data);
         }
 
         if (false !== $output && false !== $expires && null !== $key) {
             $this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
         }
-
-        return apply_filters('timber_output', $output);
+        $output = apply_filters('timber_output', $output);
+        return apply_filters('timber/output', $output);
     }
 
     /**
@@ -133,7 +135,7 @@ class TimberLoader {
 
     /**
      * returns an array of the directory inside themes that holds twig files
-     * @return array the names of directores, ie: array('templats', 'views');
+     * @return string[] the names of directores, ie: array('templats', 'views');
      */
     private function get_locations_theme_dir() {
         if (is_string(Timber::$dirname)) {
@@ -197,11 +199,12 @@ class TimberLoader {
         $locs = array_merge($locs, $this->get_locations_caller($caller));
         $locs = array_unique($locs);
         $locs = apply_filters('timber_locations', $locs);
+        $locs = apply_filters('timber/locations', $locs);
         return $locs;
     }
 
     /**
-     * @return Twig_Loader_Chain
+     * @return Twig_Loader_Filesystem
      */
     function get_loader() {
         $paths = array();
@@ -219,6 +222,7 @@ class TimberLoader {
         } else {
             $paths[] = ABSPATH;
         }
+        $paths = apply_filters('timber/loader/paths', $paths);
         $loader = new Twig_Loader_Filesystem($paths);
         return $loader;
     }
@@ -236,7 +240,7 @@ class TimberLoader {
             Timber::$twig_cache = true;
         }
         if (Timber::$twig_cache) {
-            $twig_cache_loc = TIMBER_LOC . '/cache/twig';
+            $twig_cache_loc = apply_filters( 'timber/cache/location', TIMBER_LOC . '/cache/twig' );
             if (!file_exists($twig_cache_loc)) {
                 mkdir($twig_cache_loc, 0777, true);
             }
@@ -249,6 +253,7 @@ class TimberLoader {
         $twig->addExtension($this->_get_cache_extension());
 
         $twig = apply_filters('twig_apply_filters', $twig);
+        $twig = apply_filters('timber/loader/twig', $twig);
         return $twig;
     }
 
@@ -290,6 +295,9 @@ class TimberLoader {
     	return false;
     }
 
+    /**
+     * @param string|false $dirPath
+     */
     public static function rrmdir($dirPath) {
 	    if (! is_dir($dirPath)) {
 	        throw new InvalidArgumentException("$dirPath must be a directory");
@@ -356,11 +364,11 @@ class TimberLoader {
 
     /**
      * @param string $key
-     * @param mixed $value
+     * @param string|boolean $value
      * @param string $group
      * @param int $expires
      * @param string $cache_mode
-     * @return mixed
+     * @return string|boolean
      */
     public function set_cache($key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT) {
         $object_cache = false;

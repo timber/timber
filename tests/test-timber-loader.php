@@ -2,6 +2,19 @@
 
 	class TestTimberLoader extends WP_UnitTestCase {
 
+		function testTwigPathFilter() {
+			$php_unit = $this;
+			add_filter('timber/loader/paths', function($paths) use ($php_unit) {
+				$count = count($paths);
+				$php_unit->assertEquals(3, count($paths));
+				$pos = array_search('/', $paths);
+				unset($paths[$pos]);
+				$php_unit->assertEquals(2, count($paths));
+				return $paths;
+			});
+			$str = Timber::compile('assets/single.twig', array());
+		}
+
 		function testTwigLoadsFromChildTheme(){
 			$this->_setupParentTheme();
 			$this->_setupChildTheme();

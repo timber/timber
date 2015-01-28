@@ -100,8 +100,15 @@
 		}
 
 		function testTimberUserInTwig(){
-			$uid = $this->factory->user->create(array('display_name' => 'Peter Karl'));
+			$uid = $this->factory->user->create(array('display_name' => 'Pete Karl'));
 			$str = '{{TimberUser('.$uid.').name}}';
-			$this->assertEquals('Peter Karl', Timber::compile_string($str));
+			$this->assertEquals('Pete Karl', Timber::compile_string($str));
+		}
+
+		function testFilterFunction() {
+			$pid = $this->factory->post->create(array('post_title' => 'Foo'));
+			$post = new TimberPost( $pid );
+			$str = 'I am a {{post | get_class }}';
+			$this->assertEquals('I am a TimberPost', Timber::compile_string($str, array('post' => $post)));
 		}
 	}

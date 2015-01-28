@@ -39,7 +39,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
     ===================== */
 
     /**
-     * @return mixed
+     * @return integer
      */
     private function get_term_from_query() {
         global $wp_query;
@@ -276,7 +276,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 
     /**
      * @param string $field_name
-     * @return mixed
+     * @return string
      */
     public function meta($field_name) {
         return $this->get_meta_field($field_name);

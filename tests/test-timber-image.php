@@ -27,7 +27,7 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testExternalImageResize() {
 		if ( !self::is_connected() ) {
-			return null;
+			$this->markTestSkipped('Cannot test external images when not connected to internet');
 		}
 		$data = array();
 		$data['size'] = array( 'width' => 600, 'height' => 400 );
@@ -138,6 +138,28 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals( $w, 600 );
 	}
 
+	function testInitFromRelativePath() {
+		$filename = self::copyTestImage( 'arch.jpg' );
+		$path = str_replace(ABSPATH, '/', $filename);
+		$image = new TimberImage( $path );
+		$this->assertEquals( 1500, $image->width() );
+	}
+
+	function testInitFromID() {
+		$pid = $this->factory->post->create();
+		$filename = self::copyTestImage( 'arch.jpg' );
+		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+		$iid = wp_insert_attachment( $attachment, $filename, $pid );
+		$image = new TimberImage( $iid );
+		$this->assertEquals( 1500, $image->width() );
+	}
+
+	function testInitFromFilePath() {
+		$image_file = self::copyTestImage();
+		$image = new TimberImage( $image_file );
+		$this->assertEquals( 1500, $image->width() );
+	}
+
 	function testInitFromURL() {
 		$destination_path = self::copyTestImage();
 		$destination_path = TimberURLHelper::get_rel_path( $destination_path );
@@ -195,9 +217,30 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testResizeFileNaming() {
 		$file_loc = self::copyTestImage( 'eastern.jpg' );
-		$filename = TimberImageHelper::get_resize_file_rel( $file_loc, 300, 500, 'default' );
+		$filename = TimberImageHelper::get_resize_file_url( $file_loc, 300, 500, 'default' );
 		$upload_dir = wp_upload_dir();
 		$this->assertEquals( $upload_dir['relative'].$upload_dir['subdir'].'/eastern-300x500-c-default.jpg', $filename );
+	}
+
+	function testResizeFileNamingWithAbsoluteURL() {
+		$file_loc = self::copyTestImage( 'eastern.jpg' );
+		$upload_dir = wp_upload_dir();
+		$url_src = $upload_dir['url'].'/eastern.jpg';
+		$filename = TimberImageHelper::get_resize_file_url( $url_src, 300, 500, 'default' );
+		$this->assertEquals( $upload_dir['url'].'/eastern-300x500-c-default.jpg', $filename );
+	}
+
+	function add_lang_to_home( $url, $path, $orig_scheme, $blog_id ){
+		return "$url?lang=en";
+	}
+
+	function testResizeFileNamingWithLangHome() {
+		add_filter( 'home_url', array($this,'add_lang_to_home') , 1, 4 );
+		$file_loc = self::copyTestImage( 'eastern.jpg' );
+		$upload_dir = wp_upload_dir();
+		$url_src = $upload_dir['url'].'/eastern.jpg';
+		$filename = TimberImageHelper::get_resize_file_url( $url_src, 300, 500, 'default' );
+		$this->assertEquals( $upload_dir['url'].'/eastern-300x500-c-default.jpg', $filename );
 	}
 
 	function testLetterboxFileNaming() {
@@ -359,6 +402,9 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testThemeImageResize() {
+		if (!file_exists(get_template_directory().'/images')) {
+    		mkdir(get_template_directory().'/images', 0777, true);
+		}
 		$dest = get_template_directory().'/images/cardinals.jpg';
 		copy( __DIR__.'/assets/cardinals.jpg', $dest );
 		$image = get_template_directory_uri().'/images/cardinals.jpg';
@@ -381,7 +427,16 @@ class TimberImageTest extends WP_UnitTestCase {
 		unlink( get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg' );
 	}
 
-
+	function testImageWidthWithFilter() {
+		$pid = $this->factory->post->create();
+		$photo = $this->copyTestImage();
+		$photo = TimberURLHelper::get_rel_path($photo);
+		update_post_meta($pid, 'custom_photo', '/'.$photo);
+		$str = '{{TimberImage(post.custom_photo).width}}';
+		$post = new TimberPost($pid);
+		$rendered = Timber::compile_string( $str, array('post' => $post) );
+		$this->assertEquals( 1500, $rendered );
+	}
 
 	public static function is_connected() {
 		$connected = @fsockopen( "www.google.com", 80, $errno, $errstr, 3 );

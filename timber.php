@@ -4,16 +4,18 @@ Plugin Name: Timber
 Plugin URI: http://timber.upstatement.com
 Description: The WordPress Timber Library allows you to write themes using the power Twig templates
 Author: Jared Novack + Upstatement
-Version: 0.20.6
+Version: 0.20.9
 Author URI: http://upstatement.com/
 */
 
 global $wp_version;
 global $timber;
 
-$composer_autoload = __DIR__ . '/vendor/autoload.php';
-if (file_exists($composer_autoload)){
-	require_once($composer_autoload);
+// we look for Composer files first in the theme (theme install)
+// then in the wp-content dir (site install)
+if (    file_exists($composer_autoload = __DIR__ . '/vendor/autoload.php')
+        || file_exists($composer_autoload = WP_CONTENT_DIR.'/vendor/autoload.php')){
+  require_once($composer_autoload);
 }
 
 require_once(__DIR__ . '/functions/timber-twig.php');
@@ -87,8 +89,8 @@ class Timber {
         }
     }
 
-    protected function init_constants() {
-        define("TIMBER_LOC", realpath(__DIR__));
+    function init_constants() {
+        defined("TIMBER_LOC") or define("TIMBER_LOC", realpath(__DIR__));
     }
 
     /*  Post Retrieval
@@ -181,7 +183,7 @@ class Timber {
     /**
      * @param array $results
      * @param string $PostClass
-     * @return array
+     * @return TimberPostsCollection
      * @deprecated since 0.20.0
      */
     static function handle_post_results($results, $PostClass = 'TimberPost') {
@@ -309,7 +311,7 @@ class Timber {
     }
 
     /**
-     * @param  array $string a string with twig variables
+     * @param  string $string a string with twig variables
      * @param  array $data an array with data in it
      * @return  bool|string
      */
@@ -343,7 +345,7 @@ class Timber {
     }
 
     /**
-     * @param  array $string a string with twig variables
+     * @param  string $string a string with twig variables
      * @param  array $data an array with data in it
      * @return  bool|string
      */
@@ -514,6 +516,9 @@ class Timber {
         return str_replace(ABSPATH, '', realpath($dir));
     }
 
+    /**
+     * @return boolean|string
+     */
     public static function get_calling_script_dir($offset = 0) {
         $caller = self::get_calling_script_file($offset);
         if (!is_null($caller)){

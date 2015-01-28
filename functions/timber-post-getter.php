@@ -39,7 +39,7 @@ class TimberPostGetter {
             $query = false;
         }
 
-        if (is_object($query) && !is_a('WP_Query' ) ){
+        if (is_object($query) && !is_a($query, 'WP_Query') ){
             // The only object other than a query is a type of post object
             $query = array( $query );
         }
@@ -68,7 +68,7 @@ class TimberPostGetter {
     /**
      * @param array $results
      * @param string $PostClass
-     * @return array
+     * @return TimberPostsCollection
      */
     static function handle_post_results($results, $PostClass = 'TimberPost') {
         $posts = array();

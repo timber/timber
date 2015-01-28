@@ -20,6 +20,10 @@ class TimberRoutes {
         }
     }
 
+    /**
+     * @param string $route
+     * @param callable $callback
+     */
     public static function add_route($route, $callback, $args = array()) {
         global $timber;
         if (!isset($timber->router)) {

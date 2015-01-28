@@ -10,6 +10,7 @@ class TimberMenu extends TimberCore {
     public $ID = null;
     public $name = null;
     public $term_id;
+    public $title;
 
     /**
      * @param int $slug
@@ -28,6 +29,7 @@ class TimberMenu extends TimberCore {
         if ($menu_id) {
             $this->init($menu_id);
         } else {
+            $this->init_as_page_menu();
             //TimberHelper::error_log("Sorry, the menu you were looking for wasn't found ('" . $slug . "'). Here's what Timber did find:");
         }
         return null;
@@ -52,10 +54,24 @@ class TimberMenu extends TimberCore {
         }
     }
 
+    private function init_as_page_menu() {
+        $menu = get_pages();
+        if ($menu) {
+            foreach($menu as $mi) {
+                $mi->__title = $mi->post_title;
+            }
+            _wp_menu_item_classes_by_context($menu);
+            if (is_array($menu)){
+                $menu = self::order_children($menu);
+            }
+            $this->items = $menu;
+        }
+    }
+
     /**
      * @param string $slug
      * @param array $locations
-     * @return mixed
+     * @return integer
      */
     private function get_menu_id_from_locations($slug, $locations) {
         if ($slug === 0) {
@@ -117,6 +133,11 @@ class TimberMenu extends TimberCore {
         $index = array();
         $menu = array();
         foreach ($items as $item) {
+            if (isset($item->title)) {
+                //items from wp can come with a $title property which conflicts with methods
+                $item->__title = $item->title;
+                unset($item->title);
+            }
             if(isset($item->ID)){
                 if (is_object($item) && get_class($item) == 'WP_Post'){
                     $old_menu_item = $item;

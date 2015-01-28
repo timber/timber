@@ -15,6 +15,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
     public $sizes = array();
     public $post_parent;
     public $caption;
+    public $_wp_attached_file;
 
     /**
      * @param int $iid
@@ -163,34 +164,23 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
      * @param int $iid
      */
     function init( $iid = false ) {
-        if (!is_numeric($iid) && is_string($iid)) {
+        if ( !is_numeric( $iid ) && is_string( $iid ) ) {
             if (strstr($iid, '://')) {
                 $this->init_with_url($iid);
                 return;
-            } else if (strstr(strtolower($iid), '.jpg')) {
-                $this->init_with_url($iid);
+            }
+            if ( strstr($iid, ABSPATH) ) {
+                $this->init_with_file_path($iid);
+                return;
+            }
+            if (strstr(strtolower($iid), '.jpg')) {
+                $this->init_with_relative_path($iid);
+                return;
             }
         }
-        $image_info = $iid;
-        if (is_numeric($iid)) {
-            $image_info = wp_get_attachment_metadata($iid);
-            if (!is_array($image_info)) {
-                $image_info = array();
-            }
-            $image_custom = get_post_custom($iid);
-            $basic = get_post($iid);
-            if ($basic) {
-                if (isset($basic->post_excerpt)) {
-                    $this->caption = $basic->post_excerpt;
-                }
-                $image_custom = array_merge($image_custom, get_object_vars($basic));
-            }
-            $image_info = array_merge($image_info, $image_custom);
-        } else if (is_array($image_info) && isset($image_info['image'])) {
-            $image_info = $image_info['image'];
-        } else if (is_object($image_info)) {
-            $image_info = get_object_vars($image_info);
-        }
+
+        $image_info = $this->get_image_info($iid);
+
         $this->import($image_info);
         $basedir = self::wp_upload_dir();
         $basedir = $basedir['basedir'];
@@ -220,14 +210,54 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
         }
     }
 
+    private function get_image_info( $iid ) {
+        $image_info = $iid;
+        if (is_numeric($iid)) {
+            $image_info = wp_get_attachment_metadata($iid);
+            if (!is_array($image_info)) {
+                $image_info = array();
+            }
+            $image_custom = get_post_custom($iid);
+            $basic = get_post($iid);
+            if ($basic) {
+                if (isset($basic->post_excerpt)) {
+                    $this->caption = $basic->post_excerpt;
+                }
+                $image_custom = array_merge($image_custom, get_object_vars($basic));
+            }
+            return array_merge($image_info, $image_custom);
+        }
+        if (is_array($image_info) && isset($image_info['image'])) {
+            return $image_info['image'];
+        }
+        if (is_object($image_info)) {
+           return get_object_vars($image_info);
+        }
+        return $iid;
+    }
+
+    private function init_with_relative_path( $relative_path ) {
+        $this->abs_url = home_url( $relative_path );
+        $file_path = TimberURLHelper::get_full_path( $relative_path );
+        $this->file_loc = $file_path;
+        $this->file = $file_path;
+    }
+
+    private function init_with_file_path( $file_path ) {
+        $url = TimberURLHelper::file_system_to_url( $file_path );
+        $this->abs_url = $url;
+        $this->file_loc = $file_path;
+        $this->file = $file_path;
+    }
+
     /**
      * @param string $url
      */
     private function init_with_url($url) {
         $this->abs_url = $url;
-        $this->file_loc = $url;
         if (TimberURLHelper::is_local($url)) {
             $this->file = ABSPATH . TimberURLHelper::get_rel_url($url);
+            $this->file_loc = ABSPATH . TimberURLHelper::get_rel_url($url);
         }
     }
 
