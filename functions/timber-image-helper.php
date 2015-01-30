@@ -563,7 +563,6 @@ class TimberImageOperationLetterbox extends TimberImageOperation {
     }
 }
 
-
 class TimberImageOperationResize extends TimberImageOperation {
     private $w, $h, $crop;
 
@@ -652,7 +651,6 @@ class TimberImageOperationResize extends TimberImageOperation {
         return false;
     }
 }
-
 
 TimberImageHelper::add_constants();
 TimberImageHelper::add_actions();
