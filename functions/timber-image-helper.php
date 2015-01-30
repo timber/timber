@@ -3,6 +3,65 @@
 require_once 'timber-image-retina-helper.php';
 
 class TimberImageHelper {
+    /**
+     * Twig filter that generates a new image with increased size, for display on Retina screens.
+     *
+     * @param string  $src
+     * @param float   $multiplier
+     * @param boolean $force
+     *
+     * @return string url to the new image
+     */
+    public static function retina_resize( $src, $factor = 2, $force = false) {
+        $op = new TimberImageOperationRetina($factor);
+        return self::_operate($src, $op, $force);
+    }
+
+    /**
+     * Twig filter to generate a new image with the specified dimensions.
+     * New dimensions are achieved by adding colored bands to maintain ratio.
+     *
+     * @param string  $src
+     * @param int     $w
+     * @param int     $h
+     * @param string  $color
+     * @param bool    $force
+     * @return mixed|null|string
+     */
+    public static function letterbox( $src, $w, $h, $color = '#000000', $force = false ) {
+        $op = new TimberImageOperationLetterbox($w, $h, $color);
+        return self::_operate($src, $op, $force);
+    }
+
+    /**
+     * Twig filter to convert a PNG image to JPG
+     *
+     * @param string  $src   a url or path to the image (http://example.org/wp-content/uploads/2014/image.jpg) or (/wp-content/uploads/2014/image.jpg)
+     * @param string  $bghex
+     * @return string
+     */
+    public static function img_to_jpg( $src, $bghex = '#FFFFFF', $force = false ) {
+        $op = new TimberImageOperationPngToJpg($bghex);
+        return self::_operate($src, $op, $force);
+    }
+
+    /**
+     * Twig filter to generate a new image with the specified dimensions.
+     * New dimensions are achieved by cropping to maintain ratio.
+     * 
+     * @param string  $src an URL (absolute or relative)
+     * @param int     $w
+     * @param int     $h
+     * @param string  $crop
+     * @param bool    $force_resize
+     * @return string
+     */
+    public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
+        $op = new TimberImageOperationResize($w, $h, $crop);
+        return self::_operate($src, $op, $force);
+    }
+
+
     static function add_actions() {
         add_action( 'delete_post', function ( $post_id ) {
                 $post = get_post( $post_id );
@@ -44,33 +103,6 @@ class TimberImageHelper {
      */
     protected static function is_external($path) {
         return self::is_absolute($path) && !strstr($path, home_url());
-    }
-
-    /**
-     *
-     *
-     * @param string  $hexstr
-     * @return array
-     */
-    public static function hexrgb( $hexstr ) {
-        if ( !strstr( $hexstr, '#' ) ) {
-            $hexstr = '#' . $hexstr;
-        }
-        if ( strlen( $hexstr ) == 4 ) {
-            $hexstr = '#' . $hexstr[1] . $hexstr[1] . $hexstr[2] . $hexstr[2] . $hexstr[3] . $hexstr[3];
-        }
-        $int = hexdec( $hexstr );
-        return array( "red" => 0xFF & ( $int >> 0x10 ), "green" => 0xFF & ( $int >> 0x8 ), "blue" => 0xFF & $int );
-    }
-
-    static function delete_resized_files_from_url( $src ) {
-        $local = TimberURLHelper::url_to_file_system( $src );
-        self::delete_resized_files( $local );
-    }
-
-    static function delete_letterboxed_files_from_url( $src ) {
-        $local = TimberURLHelper::url_to_file_system( $src );
-        self::delete_letterboxed_files( $local );
     }
 
     /**
@@ -121,21 +153,6 @@ class TimberImageHelper {
     /**
      *
      *
-     * @param string  $src
-     */
-    public static function in_uploads( $src ) {
-        $upload_dir = wp_upload_dir();
-        if ( strstr( $src, $upload_dir['relative'] ) ) {
-            return true;
-        }
-        return false;
-    }
-
-
-
-    /**
-     *
-     *
      * @param int     $iid
      * @return string
      */
@@ -163,49 +180,7 @@ class TimberImageHelper {
     }
 
     /**
-     *
-     *
-     * @param string  $src
-     * @param int     $w
-     * @param int     $h
-     * @param string  $color
-     * @param bool    $force
-     * @return mixed|null|string
-     */
-    public static function letterbox( $src, $w, $h, $color = '#000000', $force = false ) {
-        $op = new TimberImageOperationLetterbox($w, $h, $color);
-        return self::_operate($src, $op, $force);
-    }
-
-    /**
-     *
-     *
-     * @param string  $src   a url or path to the image (http://example.org/wp-content/uploads/2014/image.jpg) or (/wp-content/uploads/2014/image.jpg)
-     * @param string  $bghex
-     * @return string
-     */
-    public static function img_to_jpg( $src, $bghex = '#FFFFFF' ) {
-        $path = str_replace( home_url(), '', $src );
-        $output = str_replace( '.png', '.jpg', $path );
-        $input_file = self::get_server_location( $path );
-        $output_file = self::get_server_location( $output );
-        if ( file_exists( $output_file ) ) {
-            return $output;
-        }
-        $filename = $output;
-        $input = imagecreatefrompng( $input_file );
-        list( $width, $height ) = getimagesize( $input_file );
-        $output = imagecreatetruecolor( $width, $height );
-        $c = self::hexrgb( $bghex );
-        $white = imagecolorallocate( $output, $c['red'], $c['green'], $c['blue'] );
-        imagefilledrectangle( $output, 0, 0, $width, $height, $white );
-        imagecopy( $output, $input, 0, 0, 0, 0, $width, $height );
-        imagejpeg( $output, $output_file );
-        return $filename;
-    }
-
-    /**
-     *
+     * downloads an external image to the server
      *
      * @param string  $file
      * @return string
@@ -253,57 +228,6 @@ class TimberImageHelper {
         $locinfo = pathinfo( $loc );
         $file = wp_upload_bits( $locinfo['basename'], null, file_get_contents( $file_array['tmp_name'] ) );
         return $file['url'];
-    }
-
-    /**
-     *
-     *
-     * @param string  $src
-     * @param float   $multiplier
-     */
-    public static function retina_resize( $src, $factor = 2, $force = false) {
-        $op = new TimberImageOperationRetina($factor);
-        return self::_operate($src, $op, $force);
-        // if ( empty( $src ) ) {
-        //     return '';
-        // }
-        // $abs = false;
-        // if ( strstr( $src, 'http' ) ) {
-        //     $abs = true;
-        // }
-        // if ( strstr( $src, 'http' ) && !strstr( $src, home_url() ) ) {
-        //     $src = self::sideload_image( $src );
-        // }
-        // $old_server_path = self::get_server_location( $src );
-        // $new_path = TimberImageRetinaHelper::get_retina_file_rel( $src, $factor );
-        // $new_server_path = TimberImageRetinaHelper::get_retina_file_path( $src, $factor );
-
-        // $old_server_path = TimberURLHelper::remove_double_slashes( $old_server_path );
-        // $new_server_path = TimberURLHelper::remove_double_slashes( $new_server_path );
-        // if ( file_exists( $new_server_path ) ) {
-        //     if ( !$abs ) {
-        //         return TimberURLHelper::preslashit( $new_path );
-        //     }
-        //     return untrailingslashit( home_url() ) . $new_path;
-        // }
-        // $image = wp_get_image_editor( $old_server_path );
-        // if ( !is_wp_error( $image ) ) {
-        //     $current_size = $image->get_size();
-
-        //     $src_w = $current_size['width'];
-        //     $src_h = $current_size['height'];
-
-        //     $src_ratio = $src_w / $src_h;
-
-        //     // Get ratios
-        //     $w = $src_w * $factor;
-        //     $h = $src_h * $factor;
-        //     $image->crop( 0, 0, $src_w, $src_h, $w, $h );
-        //     $result = $image->save( $new_server_path );
-        //     return $new_path;
-        // }
-        // return $src;
-
     }
 
     /**
@@ -440,24 +364,11 @@ class TimberImageHelper {
         return $new_path;
     }
 
-
     /**
-     * @param string  $src an URL (absolute or relative)
-     * @param int     $w
-     * @param int     $h
-     * @param string  $crop
-     * @param bool    $force_resize
-     * @return string
-     */
-    public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
-        $op = new TimberImageOperationResize($w, $h, $crop);
-        return self::_operate($src, $op, $force);
-    }
-
-    /**
-     * Applies supplied operator to src image
+     * Applies operation to src image
+     * 
      * @param  string  $src   an URL (absolute or relative) to an image
-     * @param  [type]  $op    [description]
+     * @param  object  $op    of class TimberImageOperation
      * @param  boolean $force if true, remove any already existing result file
      * @return string         URL to the new image - or the source one if error
      */
@@ -519,6 +430,31 @@ abstract class TimberImageOperation {
         }
         $int = hexdec( $hexstr );
         return array( "red" => 0xFF & ( $int >> 0x10 ), "green" => 0xFF & ( $int >> 0x8 ), "blue" => 0xFF & $int );
+    }
+}
+
+class TimberImageOperationPngToJpg extends TimberImageOperation {
+    private $color;
+
+    function __construct($color) {
+        $this->color = $color;
+    }
+
+    function filename($src_filename, $src_extension) {
+        $new_name = $src_filename . '.jpg';
+        return $new_name;
+    }
+
+    function run($load_filename, $save_filename){
+        $input = imagecreatefrompng( $load_filename );
+        list( $width, $height ) = getimagesize( $load_filename );
+        $output = imagecreatetruecolor( $width, $height );
+        $c = self::hexrgb( $this->color );
+        $color = imagecolorallocate( $output, $c['red'], $c['green'], $c['blue'] );
+        imagefilledrectangle( $output, 0, 0, $width, $height, $color );
+        imagecopy( $output, $input, 0, 0, 0, 0, $width, $height );
+        imagejpeg( $output, $save_filename );
+        return true;
     }
 }
 
