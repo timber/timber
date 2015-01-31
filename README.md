@@ -5,6 +5,7 @@ By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a h
 </div>
 
 [![Build Status](https://travis-ci.org/jarednova/timber.png?branch=master)](https://travis-ci.org/jarednova/timber)
+[![Coverage Status](https://coveralls.io/repos/jarednova/timber/badge.svg?branch=master)](https://coveralls.io/r/jarednova/timber?branch=master)
 
 ### Because WordPress is awesome, but the_loop isn't
 Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](http://twig.sensiolabs.org/) separate from your PHP files.
