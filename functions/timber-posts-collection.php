@@ -23,7 +23,7 @@ class TimberPostsCollection extends ArrayObject {
 
                 } else {
                     if ( is_array( $post_class ) ) {
-                        TimberHelper::error_log( $post_type . ' of ' . $rid . ' not found in ' . print_r( $post_class, true ) );
+                        TimberHelper::error_log( $post_type . ' of ' . $rid->ID . ' not found in ' . print_r( $post_class, true ) );
                     } else {
                         TimberHelper::error_log( $post_type . ' not found in ' . $post_class );
                     }
