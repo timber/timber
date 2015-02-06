@@ -6,16 +6,16 @@ if ( !defined( 'ABSPATH' ) )
 
 class TimberPostsCollection extends ArrayObject {
 
-    public function __construct( $array = array(), $post_class = 'TimberPost' ) {
-        $posts = array();
-        if ( is_null( $array ) ){
-            $array = array();
+    public function __construct( $posts = array(), $post_class = 'TimberPost' ) {
+        $returned_posts = array();
+        if ( is_null( $posts ) ){
+            $posts = array();
         }
-        foreach ( $array as $rid ) {
+        foreach ( $posts as $post_object ) {
             $post_class_use = $post_class;
 
             if ( is_array( $post_class ) ) {
-                $post_type      = get_post_type( $rid );
+                $post_type      = get_post_type( $post_object );
                 $post_class_use = 'TimberPost';
 
                 if ( isset( $post_class[$post_type] ) ) {
@@ -23,28 +23,28 @@ class TimberPostsCollection extends ArrayObject {
 
                 } else {
                     if ( is_array( $post_class ) ) {
-                        TimberHelper::error_log( $post_type . ' of ' . $rid->ID . ' not found in ' . print_r( $post_class, true ) );
+                        TimberHelper::error_log( $post_type . ' of ' . $post_object->ID . ' not found in ' . print_r( $post_class, true ) );
                     } else {
                         TimberHelper::error_log( $post_type . ' not found in ' . $post_class );
                     }
                 }
             }
 
-            // Don't create yet another object if $rid is already of the right type
-            if ( is_a( $rid, $post_class_use ) ) {
-                $post = $rid;
+            // Don't create yet another object if $post_object is already of the right type
+            if ( is_a( $post_object, $post_class_use ) ) {
+                $post = $post_object;
             } else {
-                $post = new $post_class_use( $rid );
+                $post = new $post_class_use( $post_object );
             }
 
             if ( isset( $post->ID ) ) {
-                $posts[] = $post;
+                $returned_posts[] = $post;
             }
         }
 
-        $posts = self::maybe_set_preview($posts);
+        $returned_posts = self::maybe_set_preview($returned_posts);
 
-        parent::__construct( $posts, $flags = 0, 'TimberPostsIterator' );
+        parent::__construct( $returned_posts, $flags = 0, 'TimberPostsIterator' );
     }
 
     public function get_posts() {
