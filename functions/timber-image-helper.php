@@ -1,8 +1,37 @@
 <?php
 
+/**
+ * Implements the Twig image filters:
+ * https://github.com/jarednova/timber/wiki/Image-cookbook#arbitrary-resizing-of-images
+ * - resize
+ * - retina
+ * - letterbox
+ * - tojpg
+ *
+ * Implementation:
+ * - public static functions provide the methods that are called by the filter
+ * - most of the work is common to all filters (URL analysis, directory gymnastics, file caching, error management) and done by private static functions
+ * - the specific part (actual image processing) is delegated to dedicated subclasses of TimberImageOperation
+ */
 class TimberImageHelper {
     /**
-     * Twig filter that generates a new image with increased size, for display on Retina screens.
+     * Generates a new image with the specified dimensions.
+     * New dimensions are achieved by cropping to maintain ratio.
+     * 
+     * @param string  $src an URL (absolute or relative) to the original image
+     * @param int     $w target width
+     * @param int     $h target heighth
+     * @param string  $crop
+     * @param bool    $force_resize
+     * @return string
+     */
+    public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
+        $op = new TimberImageOperationResize($w, $h, $crop);
+        return self::_operate($src, $op, $force);
+    }
+
+    /**
+     * Generates a new image with increased size, for display on Retina screens.
      *
      * @param string  $src
      * @param float   $multiplier
@@ -16,7 +45,7 @@ class TimberImageHelper {
     }
 
     /**
-     * Twig filter to generate a new image with the specified dimensions.
+     * Generate a new image with the specified dimensions.
      * New dimensions are achieved by adding colored bands to maintain ratio.
      *
      * @param string  $src
@@ -32,7 +61,7 @@ class TimberImageHelper {
     }
 
     /**
-     * Twig filter to convert a PNG image to JPG
+     * Generates a new image by converting the source PNG into JPG
      *
      * @param string  $src   a url or path to the image (http://example.org/wp-content/uploads/2014/image.jpg) or (/wp-content/uploads/2014/image.jpg)
      * @param string  $bghex
@@ -44,22 +73,8 @@ class TimberImageHelper {
     }
 
     /**
-     * Twig filter to generate a new image with the specified dimensions.
-     * New dimensions are achieved by cropping to maintain ratio.
-     * 
-     * @param string  $src an URL (absolute or relative)
-     * @param int     $w
-     * @param int     $h
-     * @param string  $crop
-     * @param bool    $force_resize
-     * @return string
+     * Deletes all resized versions of an image when the source is deleted
      */
-    public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
-        $op = new TimberImageOperationResize($w, $h, $crop);
-        return self::_operate($src, $op, $force);
-    }
-
-
     static function add_actions() {
         add_action( 'delete_post', function ( $post_id ) {
                 $post = get_post( $post_id );
@@ -82,12 +97,19 @@ class TimberImageHelper {
         }
     }
 
+    /**
+     * adds a 'relative' key to wp_upload_dir() result.
+     * It will contain the relative url to upload dir.
+     * 
+     */
     static function add_filters() {
         add_filter( 'upload_dir', function ( $arr ) {
             $arr['relative'] = str_replace( home_url(), '', $arr['baseurl'] );
             return $arr;
         } );
     }
+
+//-- end of public methots
 
     /*
      * @return boolean true if $path is an absolute url, false if relative.
@@ -104,7 +126,7 @@ class TimberImageHelper {
     }
 
     /**
-     *
+     * Deletes resized versions of the supplied file name
      *
      * @param string  $local_file
      */
@@ -128,7 +150,7 @@ class TimberImageHelper {
     }
 
     /**
-     *
+     * Deletes letterboxed versions of the supplied file name
      *
      * @param string  $local_file
      */
@@ -148,23 +170,12 @@ class TimberImageHelper {
         }
     }
 
-    /**
-     *
-     *
-     * @param int     $iid
-     * @return string
-     */
-    public static function get_image_path( $iid ) {
-        $size = 'full';
-        $src = wp_get_attachment_image_src( $iid, $size );
-        $src = $src[0];
-        return self::get_rel_path( $src );
-    }
 
     /**
-     *
+     * Determines the filepath corresponding to a given URL
      *
      * @param string  $url
+     * @return string
      */
     public static function get_server_location( $url ) {
         // if we're already an absolute dir, just return
@@ -178,7 +189,7 @@ class TimberImageHelper {
     }
 
     /**
-     * downloads an external image to the server
+     * Determines the filepath where a given external file will be stored.
      *
      * @param string  $file
      * @return string
@@ -198,10 +209,10 @@ class TimberImageHelper {
     }
 
     /**
+     * downloads an external image to the server and stores it on the server
      *
-     *
-     * @param string  $file
-     * @return string
+     * @param string  $file the URL to the original file
+     * @return string the URL to the downloaded file
      */
     public static function sideload_image( $file ) {
         $loc = self::get_sideloaded_file_loc( $file );
@@ -229,8 +240,8 @@ class TimberImageHelper {
     }
 
     /**
-     * Takes in an URL and analyzes it to determine all info needed to operate
-     * (resize, letterbox or retina-resize) on the underlying image.
+     * Takes in an URL and breaks it into components,
+     * that will then be used in the different steps of image processing.
      * The image is expected to be either part of a theme, plugin, or an upload.
      * 
      * @param  string $url an URL (absolute or relative) pointing to an image
@@ -282,6 +293,15 @@ class TimberImageHelper {
     const BASE_UPLOADS = 1;
     const BASE_CONTENT = 2;
 
+    /**
+     * Builds the public URL of a file based on its different components
+     * 
+     * @param  int    $base     one of self::BASE_UPLOADS, self::BASE_CONTENT to indicate if file is an upload or a content (theme or plugin)
+     * @param  string $subdir   subdirectory in which file is stored, relative to $base root folder
+     * @param  string $filename file name, including extension (but no path)
+     * @param  bool   $absolute should the returned URL be absolute (include protocol+host), or relative
+     * @return string           the URL
+     */
     private static function _get_file_url($base, $subdir, $filename, $absolute) {
         $url = '';
         if(self::BASE_UPLOADS == $base) {
@@ -301,6 +321,14 @@ class TimberImageHelper {
         return $url;
     }
 
+    /**
+     * Builds the absolute file system location of a file based on its different components
+     * 
+     * @param  int    $base     one of self::BASE_UPLOADS, self::BASE_CONTENT to indicate if file is an upload or a content (theme or plugin)
+     * @param  string $subdir   subdirectory in which file is stored, relative to $base root folder
+     * @param  string $filename file name, including extension (but no path)
+     * @return string           the file location
+     */
     private static function _get_file_path($base, $subdir, $filename) {
         $path = '';
         if(self::BASE_UPLOADS == $base) {
@@ -316,9 +344,68 @@ class TimberImageHelper {
         return $path;
     }
 
-    /*
-     * to help with unit testing...
+
+    /**
+     * Main method that applies operation to src image:
+     * 1. break down supplied URL into components
+     * 2. use components to determine result file and URL
+     * 3. check if a result file already exists
+     * 4. otherwise, delegate to supplied TimberImageOperation
+     * 
+     * @param  string  $src   an URL (absolute or relative) to an image
+     * @param  object  $op    object of class TimberImageOperation
+     * @param  boolean $force if true, remove any already existing result file and forces file generation
+     * @return string         URL to the new image - or the source one if error
      */
+    private static function _operate( $src, $op, $force = false ) {
+        if ( empty( $src ) ) {
+            return '';
+        }
+        // if external image, load it first
+        if ( self::is_external( $src ) ) {
+            $src = self::sideload_image( $src );
+        }
+        // break down URL into components
+        $au = self::analyze_url($src);
+        // build URL and filenames
+        $new_url = self::_get_file_url(
+            $au['base'],
+            $au['subdir'],
+            $op->filename($au['filename'], $au['extension']),
+            $au['absolute']
+        );
+        $new_server_path = self::_get_file_path(
+            $au['base'],
+            $au['subdir'],
+            $op->filename($au['filename'], $au['extension'])
+        );
+        $old_server_path = self::_get_file_path(
+            $au['base'],
+            $au['subdir'],
+            $au['basename']
+        );
+        // if already exists...
+        if ( file_exists( $new_server_path ) ) {
+            if ( $force ) {
+                // Force operation - warning: will regenerate the image on every pageload, use for testing purposes only!
+                unlink( $new_server_path );
+            } else {
+                // return existing file (caching)
+                return $new_url;
+            }
+        }
+        // otherwise generate result file
+        if($op->run($old_server_path, $new_server_path)) {
+            return $new_url;
+        } else {
+            // in case of error, we return source file itself
+            return $src;
+        }
+    }
+
+
+// -- the below methods are just used for unit testing the URL generation code
+// 
     static function get_letterbox_file_url($url, $w, $h, $color) {
         $au = self::analyze_url($url);
         $op = new TimberImageOperationLetterbox($w, $h, $color);
@@ -362,63 +449,44 @@ class TimberImageHelper {
         return $new_path;
     }
 
-    /**
-     * Applies operation to src image
-     * 
-     * @param  string  $src   an URL (absolute or relative) to an image
-     * @param  object  $op    of class TimberImageOperation
-     * @param  boolean $force if true, remove any already existing result file
-     * @return string         URL to the new image - or the source one if error
-     */
-    private static function _operate( $src, $op, $force = false ) {
-        if ( empty( $src ) ) {
-            return '';
-        }
-        // if external image, load it first
-        if ( self::is_external( $src ) ) {
-            $src = self::sideload_image( $src );
-        }
 
-        $au = self::analyze_url($src);
-
-        $new_url = self::_get_file_url(
-            $au['base'],
-            $au['subdir'],
-            $op->filename($au['filename'], $au['extension']),
-            $au['absolute']
-        );
-        $new_server_path = self::_get_file_path(
-            $au['base'],
-            $au['subdir'],
-            $op->filename($au['filename'], $au['extension'])
-        );
-        $old_server_path = self::_get_file_path(
-            $au['base'],
-            $au['subdir'],
-            $au['basename']
-        );
-        if ( file_exists( $new_server_path ) ) {
-            if ( $force ) {
-                // Force operation - warning: will regenerate the image on every pageload, use for testing purposes only!
-                unlink( $new_server_path );
-            } else {
-                return $new_url;
-            }
-        }
-
-        if($op->run($old_server_path, $new_server_path)) {
-            return $new_url;
-        } else {
-            return $src;
-        }
-    }
 }
 
-
+/**
+ * Each image filter is represented by a subclass of this class,m
+ * and each filter call is a new instance, with call arguments as properties.
+ * 
+ * Only 3 methods need to be implemented:
+ * - constructor, storing all filter arguments
+ * - filename
+ * - run
+ */
 abstract class TimberImageOperation {
+    /**
+     * Builds the result filename, based on source filename and extension
+     * 
+     * @param  string $src_filename  source filename (excluding extension and path)
+     * @param  string $src_extension source file extension
+     * @return string                resulting filename (including extension but excluding path)
+     */
     public abstract function filename($src_filename, $src_extension);
+
+    /**
+     * Performs the actual image manipulation,
+     * including saving the target file.
+     * 
+     * @param  string $load_filename filepath (not URL) to source file
+     * @param  string $save_filename filepath (not URL) where result file should be saved
+     * @return bool                  true if everything went fine, false otherwise
+     */
     public abstract function run($load_filename, $save_filename);
 
+    /**
+     * Helper method to convert hex string to rgb array
+     * 
+     * @param  string $hexstr hex color string (like '#FF1455')
+     * @return array          array('red', 'green', 'blue') to int
+     */
     public static function hexrgb( $hexstr ) {
         if ( !strstr( $hexstr, '#' ) ) {
             $hexstr = '#' . $hexstr;
@@ -431,9 +499,17 @@ abstract class TimberImageOperation {
     }
 }
 
+/**
+ * Implements converting a PNG file to JPG.
+ * Argument:
+ * - color to fill transparent zones
+ */
 class TimberImageOperationPngToJpg extends TimberImageOperation {
     private $color;
 
+    /**
+     * @param string $color hex string of color to use for transparent zones
+     */
     function __construct($color) {
         $this->color = $color;
     }
@@ -456,9 +532,17 @@ class TimberImageOperationPngToJpg extends TimberImageOperation {
     }
 }
 
+/**
+ * Increases image size by a given factor
+ * Arguments:
+ * - factor by which to multiply image dimensions
+ */
 class TimberImageOperationRetina extends TimberImageOperation {
     private $factor;
 
+    /**
+     * @param int $factor to multiply original dimensions by
+     */
     function __construct($factor) {
         $this->factor = $factor;
     }
@@ -497,9 +581,23 @@ class TimberImageOperationRetina extends TimberImageOperation {
     }
 }
 
+/**
+ * Changes image to new size, by shrinking/enlarging then padding with colored bands,
+ * so that no part of the image is cropped or stretched.
+ * 
+ * Arguments:
+ * - width of new image
+ * - height of new image
+ * - color of padding 
+ */
 class TimberImageOperationLetterbox extends TimberImageOperation {
     private $w, $h, $color;
 
+    /**
+     * @param int    $w     width of result image
+     * @param int    $h     height
+     * @param string $color hex string, for color of padding bands
+     */
     function __construct($w, $h, $color) {
         $this->w = $w;
         $this->h = $h;
@@ -563,9 +661,23 @@ class TimberImageOperationLetterbox extends TimberImageOperation {
     }
 }
 
+/**
+ * Changes image to new size, by shrinking/enlarging
+ * then cropping to respect new ratio.
+ * 
+ * Arguments:
+ * - width of new image
+ * - height of new image
+ * - crop method 
+ */
 class TimberImageOperationResize extends TimberImageOperation {
     private $w, $h, $crop;
 
+    /**
+     * @param int    $w    width of new image
+     * @param int    $h    height of new image
+     * @param string $crop cropping method, one of: 'default', 'center', 'top', 'bottom', 'left', 'right'.
+     */
     function __construct($w, $h, $crop) {
         $this->w = $w;
         $this->h = $h;
