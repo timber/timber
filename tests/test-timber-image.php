@@ -2,6 +2,48 @@
 
 class TimberImageTest extends WP_UnitTestCase {
 
+/* ----------------
+ * Helper functions
+ ---------------- */
+
+	static function copyTestImage( $img = 'arch.jpg' ) {
+		$upload_dir = wp_upload_dir();
+		$destination = $upload_dir['path'].'/'.$img;
+		if ( !file_exists( $destination ) ) {
+			copy( __DIR__.'/assets/'.$img, $destination );
+		}
+		return $destination;
+	}
+
+	static function getTestImageURL( $img = 'arch.jpg', $relative = false) {
+		$upload_dir = wp_upload_dir();
+		$result = $upload_dir['url'].'/'.$img;;
+		if ( $relative ) {
+			$result = str_replace(home_url(), '', $result);
+		}
+		return $result;
+	}
+
+
+	public static function is_connected() {
+		$connected = @fsockopen( "www.google.com", 80, $errno, $errstr, 3 );
+		if ( $connected ) {
+			$is_conn = true; //action when connected
+			fclose( $connected );
+		} else {
+			$is_conn = false; //action in connection failure
+		}
+		return $is_conn;
+	}
+
+	function add_lang_to_home( $url, $path, $orig_scheme, $blog_id ){
+		return "$url?lang=en";
+	}
+
+/* ----------------
+ * Tests
+ ---------------- */
+
 	function testImageMeta() {
 		$pid = $this->factory->post->create();
 		$filename = self::copyTestImage( 'arch.jpg' );
@@ -48,15 +90,6 @@ class TimberImageTest extends WP_UnitTestCase {
 		$str = Timber::compile( 'assets/image-test.twig', $data );
 		$new_time = filemtime( $resized_path );
 		$this->assertEquals( $old_time, $new_time );
-	}
-
-	static function copyTestImage( $img = 'arch.jpg' ) {
-		$upload_dir = wp_upload_dir();
-		$destination = $upload_dir['path'].'/'.$img;
-		if ( !file_exists( $destination ) ) {
-			copy( __DIR__.'/assets/'.$img, $destination );
-		}
-		return $destination;
 	}
 
 	function testUpSizing() {
@@ -216,10 +249,12 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testResizeFileNaming() {
-		$file_loc = self::copyTestImage( 'eastern.jpg' );
-		$filename = TimberImageHelper::get_resize_file_url( $file_loc, 300, 500, 'default' );
+		$file = 'eastern.jpg';
+		$file_loc = self::copyTestImage( $file );
 		$upload_dir = wp_upload_dir();
-		$this->assertEquals( $upload_dir['relative'].$upload_dir['subdir'].'/eastern-300x500-c-default.jpg', $filename );
+		$filename = TimberImageHelper::get_resize_file_url( self::getTestImageURL($file, true), 300, 500, 'default' );
+		$expected = $upload_dir['relative'].$upload_dir['subdir'].'/eastern-300x500-c-default.jpg';
+		$this->assertEquals( $expected, $filename );
 	}
 
 	function testResizeFileNamingWithAbsoluteURL() {
@@ -228,10 +263,6 @@ class TimberImageTest extends WP_UnitTestCase {
 		$url_src = $upload_dir['url'].'/eastern.jpg';
 		$filename = TimberImageHelper::get_resize_file_url( $url_src, 300, 500, 'default' );
 		$this->assertEquals( $upload_dir['url'].'/eastern-300x500-c-default.jpg', $filename );
-	}
-
-	function add_lang_to_home( $url, $path, $orig_scheme, $blog_id ){
-		return "$url?lang=en";
 	}
 
 	function testResizeFileNamingWithLangHome() {
@@ -245,10 +276,11 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	function testLetterboxFileNaming() {
 		$file_loc = self::copyTestImage( 'eastern.jpg' );
-		$filename = TimberImageHelper::get_letterbox_file_rel( $file_loc, 300, 500, '#FFFFFF' );
-		$filename = str_replace( ABSPATH, '', $filename );
 		$upload_dir = wp_upload_dir();
-		$this->assertEquals( $upload_dir['relative'].$upload_dir['subdir'].'/eastern-lbox-300x500-FFFFFF.jpg', $filename );
+		$url_src = $upload_dir['url'].'/eastern.jpg';
+		$filename = TimberImageHelper::get_letterbox_file_url( $url_src, 300, 500, '#FFFFFF' );
+		// $filename = str_replace( ABSPATH, '', $filename );
+		$this->assertEquals( $upload_dir['url'].'/eastern-lbox-300x500-FFFFFF.jpg', $filename );
 	}
 
 	function testLetterbox() {
@@ -437,17 +469,4 @@ class TimberImageTest extends WP_UnitTestCase {
 		$rendered = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals( 1500, $rendered );
 	}
-
-	public static function is_connected() {
-		$connected = @fsockopen( "www.google.com", 80, $errno, $errstr, 3 );
-		if ( $connected ) {
-			$is_conn = true; //action when connected
-			fclose( $connected );
-		} else {
-			$is_conn = false; //action in connection failure
-		}
-		return $is_conn;
-	}
-
-
 }
