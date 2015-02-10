@@ -257,12 +257,13 @@ class TimberImageHelper {
             'extension' => '', // the file extension
             'basename' => '', // full file name
         );
+        $upload_dir = wp_upload_dir();
         $tmp = $url;
         if(0 === strpos($tmp, ABSPATH)){ // we've been given a dir, not an url
             $result['absolute'] = true;
-            if(0 === strpos($tmp, wp_upload_dir()['basedir'])) {
+            if(0 === strpos($tmp, $upload_dir['basedir'])) {
                 $result['base']= self::BASE_UPLOADS; // upload based
-                $tmp = str_replace(wp_upload_dir()['basedir'], '', $tmp);
+                $tmp = str_replace($upload_dir['basedir'], '', $tmp);
             }
             if(0 === strpos($tmp, WP_CONTENT_DIR)) {
                 $result['base']= self::BASE_CONTENT; // content based
@@ -272,9 +273,9 @@ class TimberImageHelper {
             if(!$result['absolute']) {
                 $tmp = home_url().$tmp;
             }
-            if(0 === strpos($tmp, wp_upload_dir()['baseurl'])) {
+            if(0 === strpos($tmp, $upload_dir['baseurl'])) {
                 $result['base']= self::BASE_UPLOADS; // upload based
-                $tmp = str_replace(wp_upload_dir()['baseurl'], '', $tmp);
+                $tmp = str_replace($upload_dir['baseurl'], '', $tmp);
             }
             if(0 === strpos($tmp, content_url())) {
                 $result['base']= self::BASE_CONTENT; // content-based
@@ -305,7 +306,8 @@ class TimberImageHelper {
     private static function _get_file_url($base, $subdir, $filename, $absolute) {
         $url = '';
         if(self::BASE_UPLOADS == $base) {
-            $url = wp_upload_dir()['baseurl'];
+            $upload_dir = wp_upload_dir();
+            $url = $upload_dir['baseurl'];
         }
         if(self::BASE_CONTENT == $base) {
             $url = content_url();
@@ -332,7 +334,8 @@ class TimberImageHelper {
     private static function _get_file_path($base, $subdir, $filename) {
         $path = '';
         if(self::BASE_UPLOADS == $base) {
-            $path = wp_upload_dir()['basedir'];
+            $upload_dir = wp_upload_dir();
+            $path = $upload_dir['basedir'];
         }
         if(self::BASE_CONTENT == $base) {
             $path = WP_CONTENT_DIR;
