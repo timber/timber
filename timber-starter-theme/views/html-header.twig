@@ -5,7 +5,13 @@
 <!--[if gt IE 8]><!--><html class="no-js" {{site.language_attributes}}> <!--<![endif]-->
     <head>
     <meta charset="{{site.charset}}" />
-    <title>{{wp_title}}</title>
+        <title>   
+            {% if wp_title|length is same as(0) %}
+                {{ site.name }}
+            {% else %}
+                {{ wp_title }} - {{ site.name }}
+            {% endif %}
+        </title>
     <meta name="description" content="{{site.description}}">
     <link rel="stylesheet" href="{{site.theme.link}}/style.css" type="text/css" media="screen" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
