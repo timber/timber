@@ -17,7 +17,7 @@ class TimberImageOperationPngToJpg extends TimberImageOperation {
     }
 
     function filename($src_filename, $src_extension = 'jpg') {
-        $new_name = $src_filename . '.'.$src_extension;
+        $new_name = $src_filename . '.jpg';
         return $new_name;
     }
 
