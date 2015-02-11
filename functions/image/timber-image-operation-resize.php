@@ -28,6 +28,11 @@ class TimberImageOperationResize extends TimberImageOperation {
         $this->crop = $crop;
     }
 
+    /**
+     * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
+     * @param   string    $src_extension    the extension (ex: .jpg)
+     * @return  string    the final filename to be used (ex: my-awesome-pic-300x200-c-default.jpg) 
+     */
     public function filename($src_filename, $src_extension) {
         $result = $src_filename . '-' . $this->w . 'x' . $this->h . '-c-' . ( $this->crop ? $this->crop : 'f' ); // Crop will be either user named or f (false)
         if($src_extension) {
@@ -36,6 +41,16 @@ class TimberImageOperationResize extends TimberImageOperation {
         return $result;
     }
 
+    /**
+     * Performs the actual image manipulation,
+     * including saving the target file.
+     * 
+     * @param  string $load_filename filepath (not URL) to source file 
+     *                               (ex: /src/var/www/wp-content/uploads/my-pic.jpg)
+     * @param  string $save_filename filepath (not URL) where result file should be saved 
+     *                               (ex: /src/var/www/wp-content/uploads/my-pic-300x200-c-default.jpg)
+     * @return bool                  true if everything went fine, false otherwise
+     */
     public function run($load_filename, $save_filename) {
         $image = wp_get_image_editor( $load_filename );
         if ( !is_wp_error( $image ) ) {

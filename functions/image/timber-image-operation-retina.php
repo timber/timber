@@ -31,7 +31,8 @@ class TimberImageOperationRetina extends TimberImageOperation {
      * Performs the actual image manipulation,
      * including saving the target file.
      * 
-     * @param  string $load_filename filepath (not URL) to source file (ex: /src/var/www/wp-content/uploads/my-pic.jpg)
+     * @param  string $load_filename filepath (not URL) to source file 
+     *                               (ex: /src/var/www/wp-content/uploads/my-pic.jpg)
      * @param  string $save_filename filepath (not URL) where result file should be saved 
      *                               (ex: /src/var/www/wp-content/uploads/my-pic@2x.jpg)
      * @return bool                  true if everything went fine, false otherwise

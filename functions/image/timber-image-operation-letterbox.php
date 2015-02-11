@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Changes image to new size, by shrinking/enlarging then padding with colored bands,
  * so that no part of the image is cropped or stretched.
  * 
@@ -23,6 +23,12 @@ class TimberImageOperationLetterbox extends TimberImageOperation {
         $this->color = $color;
     }
 
+    /**
+     * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
+     * @param   string    $src_extension    the extension (ex: .jpg)
+     * @return  string    the final filename to be used 
+     *                    (ex: my-awesome-pic-lbox-300x200-FF3366.jpg) 
+     */
     public function filename($src_filename, $src_extension) {
         $color = str_replace( '#', '', $this->color );
         $newbase = $src_filename . '-lbox-' . $this->w . 'x' . $this->h . '-' . $color;
@@ -30,6 +36,16 @@ class TimberImageOperationLetterbox extends TimberImageOperation {
         return $new_name;
     }
 
+    /**
+     * Performs the actual image manipulation,
+     * including saving the target file.
+     * 
+     * @param  string $load_filename filepath (not URL) to source file 
+     *                               (ex: /src/var/www/wp-content/uploads/my-pic.jpg)
+     * @param  string $save_filename filepath (not URL) where result file should be saved 
+     *                               (ex: /src/var/www/wp-content/uploads/my-pic-lbox-300x200-FF3366.jpg)
+     * @return bool                  true if everything went fine, false otherwise
+     */
     public function run($load_filename, $save_filename) {
         $w = $this->w;
         $h = $this->h;
