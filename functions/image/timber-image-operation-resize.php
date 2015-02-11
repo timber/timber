@@ -9,7 +9,8 @@
  * - crop method 
  */
 class TimberImageOperationResize extends TimberImageOperation {
-    private $w, $h, $crop;
+   
+   private $w, $h, $crop;
 
     /**
      * @param int    $w    width of new image

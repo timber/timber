@@ -166,8 +166,16 @@ class TimberURLHelper {
     }
 
     /**
+     * @return boolean true if $path is an absolute url, false if relative.
+     */
+    public static function is_absolute($path) {
+        return (boolean) (strstr($path, 'http' ));
+    }
+
+    /**
      * @param string $url
-     * @return bool
+     * @return bool     true if $path is an external url, false if relative or local.
+     *                  true if it's a subdomain (http://cdn.example.org = true)  
      */
     public static function is_external($url) {
         $has_http = strstr(strtolower($url), 'http');

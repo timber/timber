@@ -14,6 +14,9 @@
  * - the specific part (actual image processing) is delegated to dedicated subclasses of TimberImageOperation
  */
 class TimberImageHelper {
+
+    const BASE_UPLOADS = 1;
+    const BASE_CONTENT = 2;
     
     /**
      * Generates a new image with the specified dimensions.
@@ -125,18 +128,14 @@ class TimberImageHelper {
 
 //-- end of public methots --//
 
-    /**
-     * @return boolean true if $path is an absolute url, false if relative.
-     */
-    protected static function is_absolute($path) {
-        return (boolean) (strstr($path, 'http' ));
-    }
+    
+    
 
     /**
      * @return boolean true if $path is an external url, false if relative or local.
      */
     protected static function is_external($path) {
-        return self::is_absolute($path) && !strstr($path, home_url());
+        return TimberURLHelper::is_absolute($path) && !strstr($path, home_url());
     }
 
     /**
@@ -264,7 +263,7 @@ class TimberImageHelper {
     private static function analyze_url($url) {
         $result = array(
             'url' => $url, // the initial url
-            'absolute' => self::is_absolute($url), // is the url absolute or relative (to home_url)
+            'absolute' => TimberURLHelper::is_absolute($url), // is the url absolute or relative (to home_url)
             'base' => 0, // is the image in uploads dir, or in content dir (theme or plugin)
             'subdir' => '', // the path between base (uploads or content) and file
             'filename' => '', // the filename, without extension
@@ -273,25 +272,25 @@ class TimberImageHelper {
         );
         $upload_dir = wp_upload_dir();
         $tmp = $url;
-        if(0 === strpos($tmp, ABSPATH)){ // we've been given a dir, not an url
+        if ( 0 === strpos($tmp, ABSPATH) ) { // we've been given a dir, not an url
             $result['absolute'] = true;
-            if(0 === strpos($tmp, $upload_dir['basedir'])) {
+            if ( 0 === strpos($tmp, $upload_dir['basedir']) ) {
                 $result['base']= self::BASE_UPLOADS; // upload based
                 $tmp = str_replace($upload_dir['basedir'], '', $tmp);
             }
-            if(0 === strpos($tmp, WP_CONTENT_DIR)) {
+            if ( 0 === strpos($tmp, WP_CONTENT_DIR) ) {
                 $result['base']= self::BASE_CONTENT; // content based
                 $tmp = str_replace(WP_CONTENT_DIR, '', $tmp);
             }
         } else {
-            if(!$result['absolute']) {
+            if (!$result['absolute']) {
                 $tmp = home_url().$tmp;
             }
-            if(0 === strpos($tmp, $upload_dir['baseurl'])) {
+            if (0 === strpos($tmp, $upload_dir['baseurl'])) {
                 $result['base']= self::BASE_UPLOADS; // upload based
                 $tmp = str_replace($upload_dir['baseurl'], '', $tmp);
             }
-            if(0 === strpos($tmp, content_url())) {
+            if (0 === strpos($tmp, content_url())) {
                 $result['base']= self::BASE_CONTENT; // content-based
                 $tmp = str_replace(content_url(), '', $tmp);
             }
@@ -305,9 +304,6 @@ class TimberImageHelper {
         return $result;
     }
 
-    const BASE_UPLOADS = 1;
-    const BASE_CONTENT = 2;
-
     /**
      * Builds the public URL of a file based on its different components
      * 
@@ -319,11 +315,11 @@ class TimberImageHelper {
      */
     private static function _get_file_url($base, $subdir, $filename, $absolute) {
         $url = '';
-        if(self::BASE_UPLOADS == $base) {
+        if( self::BASE_UPLOADS == $base ) {
             $upload_dir = wp_upload_dir();
             $url = $upload_dir['baseurl'];
         }
-        if(self::BASE_CONTENT == $base) {
+        if( self::BASE_CONTENT == $base ) {
             $url = content_url();
         }
         if(!empty($subdir)) {

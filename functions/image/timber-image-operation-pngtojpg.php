@@ -6,6 +6,7 @@
  * - color to fill transparent zones
  */
 class TimberImageOperationPngToJpg extends TimberImageOperation {
+    
     private $color;
 
     /**
@@ -15,8 +16,8 @@ class TimberImageOperationPngToJpg extends TimberImageOperation {
         $this->color = $color;
     }
 
-    function filename($src_filename, $src_extension) {
-        $new_name = $src_filename . '.jpg';
+    function filename($src_filename, $src_extension = 'jpg') {
+        $new_name = $src_filename . '.'.$src_extension;
         return $new_name;
     }
 
