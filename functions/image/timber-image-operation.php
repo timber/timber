@@ -15,6 +15,7 @@ abstract class TimberImageOperation {
      * @param  string $src_filename  source filename (excluding extension and path)
      * @param  string $src_extension source file extension
      * @return string                resulting filename (including extension but excluding path)
+     *                               ex: my-awesome-file.jpg
      */
     public abstract function filename($src_filename, $src_extension);
 
@@ -33,6 +34,7 @@ abstract class TimberImageOperation {
      * 
      * @param  string $hexstr hex color string (like '#FF1455')
      * @return array          array('red', 'green', 'blue') to int
+     *                        ex: array('red' => 255, 'green' => 20, 'blue' => 85);
      */
     public static function hexrgb( $hexstr ) {
         if ( !strstr( $hexstr, '#' ) ) {

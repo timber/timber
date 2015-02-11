@@ -14,6 +14,7 @@
  * - the specific part (actual image processing) is delegated to dedicated subclasses of TimberImageOperation
  */
 class TimberImageHelper {
+    
     /**
      * Generates a new image with the specified dimensions.
      * New dimensions are achieved by cropping to maintain ratio.
@@ -97,6 +98,11 @@ class TimberImageHelper {
         }
     }
 
+
+    /**
+     * load the dependencies of TimberImageOperations
+     * @return void
+     */
     static function load_dependencies() {
         require_once('image/timber-image-operation.php');   
         require_once('image/timber-image-operation-pngtojpg.php');   
@@ -108,7 +114,7 @@ class TimberImageHelper {
     /**
      * adds a 'relative' key to wp_upload_dir() result.
      * It will contain the relative url to upload dir.
-     * 
+     * @return void
      */
     static function add_filters() {
         add_filter( 'upload_dir', function ( $arr ) {
@@ -117,16 +123,16 @@ class TimberImageHelper {
         } );
     }
 
-//-- end of public methots
+//-- end of public methots --//
 
-    /*
+    /**
      * @return boolean true if $path is an absolute url, false if relative.
      */
     protected static function is_absolute($path) {
         return (boolean) (strstr($path, 'http' ));
     }
 
-    /*
+    /**
      * @return boolean true if $path is an external url, false if relative or local.
      */
     protected static function is_external($path) {
@@ -367,6 +373,7 @@ class TimberImageHelper {
      * @param  object  $op    object of class TimberImageOperation
      * @param  boolean $force if true, remove any already existing result file and forces file generation
      * @return string         URL to the new image - or the source one if error
+     *                        
      */
     private static function _operate( $src, $op, $force = false ) {
         if ( empty( $src ) ) {

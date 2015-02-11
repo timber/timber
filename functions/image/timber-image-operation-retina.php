@@ -10,18 +10,32 @@ class TimberImageOperationRetina extends TimberImageOperation {
     private $factor;
 
     /**
-     * @param int $factor to multiply original dimensions by
+     * @param int   $factor to multiply original dimensions by
      */
     function __construct($factor) {
         $this->factor = $factor;
     }
 
+    /**
+     * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
+     * @param   string    $src_extension    the extension (ex: .jpg)
+     * @return  string    the final filename to be used (ex: my-awesome-pic@2x.jpg) 
+     */
     function filename($src_filename, $src_extension) {
         $newbase = $src_filename . '@' . $this->factor . 'x'; // add @2x, @3x, @1.5x, etc.
         $new_name = $newbase . '.' . $src_extension;
         return $new_name;
     }
 
+    /**
+     * Performs the actual image manipulation,
+     * including saving the target file.
+     * 
+     * @param  string $load_filename filepath (not URL) to source file (ex: /src/var/www/wp-content/uploads/my-pic.jpg)
+     * @param  string $save_filename filepath (not URL) where result file should be saved 
+     *                               (ex: /src/var/www/wp-content/uploads/my-pic@2x.jpg)
+     * @return bool                  true if everything went fine, false otherwise
+     */
     function run($load_filename, $save_filename){
         $image = wp_get_image_editor( $load_filename );
         if ( !is_wp_error( $image ) ) {
