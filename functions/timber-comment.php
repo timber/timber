@@ -101,6 +101,13 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     /**
      * @return string
      */
+    public function status() {
+        return $this->comment_status;
+    }
+
+    /**
+     * @return string
+     */
     public function date() {
         return $this->comment_date;
     }
