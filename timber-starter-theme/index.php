@@ -8,9 +8,9 @@
  *
  * Methods for TimberHelper can be found in the /functions sub-directory
  *
- * @package 	WordPress
- * @subpackage 	Timber
- * @since 		Timber 0.1
+ * @package  WordPress
+ * @subpackage  Timber
+ * @since   Timber 0.1
  */
 
 if ( ! class_exists( 'Timber' ) ) {
@@ -20,7 +20,7 @@ if ( ! class_exists( 'Timber' ) ) {
 $context = Timber::get_context();
 $context['posts'] = Timber::get_posts();
 $context['foo'] = 'bar';
-$templates = array('index.twig');
+$templates = array( 'index.twig' );
 if ( is_home() ) {
 	array_unshift( $templates, 'home.twig' );
 }
