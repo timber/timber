@@ -331,7 +331,7 @@ class TimberLoader {
      * @return \Asm89\Twig\CacheExtension\Extension
      */
     private function _get_cache_extension() {
-        $loader_loc = trailingslashit(TIMBER_LOC) . 'functions/cache/loader.php';
+        $loader_loc = trailingslashit(TIMBER_LOC) . 'lib/cache/loader.php';
         require_once($loader_loc);
         TimberCache_Loader::register();
 

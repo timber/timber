@@ -11,7 +11,7 @@ function deploy () {
 	cd ~/Sites/timber-wp
 	mkdir tags/$1
 	
-	cp -r ~/Sites/timber/functions tags/$1/functions
+	cp -r ~/Sites/timber/lib tags/$1/lib
 	cp -r ~/Sites/timber/timber-starter-theme tags/$1/timber-starter-theme
 	cp -r ~/Sites/timber/vendor tags/$1/vendor
 	cp ~/Sites/timber/LICENSE.txt tags/$1/LICENSE.txt
