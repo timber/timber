@@ -18,36 +18,36 @@ if (    file_exists($composer_autoload = __DIR__ . '/vendor/autoload.php')
   require_once($composer_autoload);
 }
 
-require_once(__DIR__ . '/functions/timber-twig.php');
-require_once(__DIR__ . '/functions/timber-helper.php');
-require_once(__DIR__ . '/functions/timber-url-helper.php');
-require_once(__DIR__ . '/functions/timber-image-helper.php');
+require_once(__DIR__ . '/lib/timber-twig.php');
+require_once(__DIR__ . '/lib/timber-helper.php');
+require_once(__DIR__ . '/lib/timber-url-helper.php');
+require_once(__DIR__ . '/lib/timber-image-helper.php');
 
-require_once(__DIR__ . '/functions/timber-core-interface.php');
-require_once(__DIR__ . '/functions/timber-core.php');
-require_once(__DIR__ . '/functions/timber-post.php');
-require_once(__DIR__ . '/functions/timber-post-getter.php');
-require_once(__DIR__ . '/functions/timber-comment.php');
-require_once(__DIR__ . '/functions/timber-user.php');
-require_once(__DIR__ . '/functions/timber-term.php');
-require_once(__DIR__ . '/functions/timber-term-getter.php');
-require_once(__DIR__ . '/functions/timber-image.php');
-require_once(__DIR__ . '/functions/timber-menu-item.php');
-require_once(__DIR__ . '/functions/timber-menu.php');
-require_once(__DIR__ . '/functions/timber-query-iterator.php');
-require_once(__DIR__ . '/functions/timber-posts-collection.php');
+require_once(__DIR__ . '/lib/timber-core-interface.php');
+require_once(__DIR__ . '/lib/timber-core.php');
+require_once(__DIR__ . '/lib/timber-post.php');
+require_once(__DIR__ . '/lib/timber-post-getter.php');
+require_once(__DIR__ . '/lib/timber-comment.php');
+require_once(__DIR__ . '/lib/timber-user.php');
+require_once(__DIR__ . '/lib/timber-term.php');
+require_once(__DIR__ . '/lib/timber-term-getter.php');
+require_once(__DIR__ . '/lib/timber-image.php');
+require_once(__DIR__ . '/lib/timber-menu-item.php');
+require_once(__DIR__ . '/lib/timber-menu.php');
+require_once(__DIR__ . '/lib/timber-query-iterator.php');
+require_once(__DIR__ . '/lib/timber-posts-collection.php');
 
 //Other 2nd-class citizens
-require_once(__DIR__ . '/functions/timber-archives.php');
-require_once(__DIR__ . '/functions/timber-routes.php');
-require_once(__DIR__ . '/functions/timber-site.php');
-require_once(__DIR__ . '/functions/timber-theme.php');
-require_once(__DIR__ . '/functions/timber-loader.php');
-require_once(__DIR__ . '/functions/timber-function-wrapper.php');
-require_once(__DIR__ . '/functions/integrations/acf-timber.php');
-require_once(__DIR__ . '/functions/integrations/wpcli-timber.php');
+require_once(__DIR__ . '/lib/timber-archives.php');
+require_once(__DIR__ . '/lib/timber-routes.php');
+require_once(__DIR__ . '/lib/timber-site.php');
+require_once(__DIR__ . '/lib/timber-theme.php');
+require_once(__DIR__ . '/lib/timber-loader.php');
+require_once(__DIR__ . '/lib/timber-function-wrapper.php');
+require_once(__DIR__ . '/lib/integrations/acf-timber.php');
+require_once(__DIR__ . '/lib/integrations/wpcli-timber.php');
 
-require_once(__DIR__ . '/functions/timber-admin.php');
+require_once(__DIR__ . '/lib/timber-admin.php');
 
 /** Usage:
  *
