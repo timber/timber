@@ -269,6 +269,8 @@ class Timber {
 
             $context['site']  = new TimberSite();
             $context['theme'] = $context['site']->theme;
+
+            // Setup the query for the template hierarchy
             $context['posts'] = Timber::query_posts();
             $context['post']  = $context['posts']->current();
             $context['posts']->rewind();
@@ -287,10 +289,9 @@ class Timber {
                 }
             }
 
-            $context = apply_filters( 'timber_context', $context );
         }
 
-        return $context;
+        return apply_filters( 'timber_context', $context );
     }
 
     /**
