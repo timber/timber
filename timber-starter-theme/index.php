@@ -6,7 +6,7 @@
  * It is used to display a page when nothing more specific matches a query.
  * E.g., it puts together the home page when no home.php file exists
  *
- * Methods for TimberHelper can be found in the /functions sub-directory
+ * Methods for TimberHelper can be found in the /lib sub-directory
  *
  * @package  WordPress
  * @subpackage  Timber
