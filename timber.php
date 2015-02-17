@@ -389,6 +389,7 @@ class Timber {
      * @return string
      */
     public static function get_sidebar_from_php($sidebar = '', $data) {
+		$caller = self::get_calling_script_dir();
         $loader = self::get_loader();
         $uris = $loader->get_locations($caller);
         ob_start();
