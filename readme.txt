@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.20.9
+Stable tag: 0.20.10
 Tested up to: 4.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,14 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.20.10 =
+* Resolved lingering composer issues (thanks @austinpray, @lucasmichot)
+* You can now access `{{comment.status}}` when working with comments (thanks @simonmilz)
+* Better support for alternate setups with uploads directory (thanks @xavierpriour)
+* Major clean-up of image-handling classes (thanks @xavierpriour)
+* Starter theme now follows WP coding standards (thanks @kuus)
+* A slew of other bugs and clean-up (thanks @JeyKeu, @quinn and @jaredNova)
 
 = 0.20.9 =
 * Twig goes from 1.6.2 to 1.6.3 (thanks @fabpot)
