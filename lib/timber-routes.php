@@ -27,23 +27,19 @@ class TimberRoutes {
     public static function add_route($route, $callback, $args = array()) {
         global $timber;
         if (!isset($timber->router)) {
-            if (class_exists('PHPRouter\Router')){
-                $timber->router = new PHPRouter\Router();
-                $site_url = get_bloginfo('url');
-                $site_url_parts = explode('/', $site_url);
-                $site_url_parts = array_slice($site_url_parts, 3);
-                $base_path = implode('/', $site_url_parts);
-                if (!$base_path || strpos($route, $base_path) === 0) {
-                    $base_path = '/';
-                } else {
-                    $base_path = '/' . $base_path . '/';
-                }
-                $timber->router->setBasePath($base_path);
+            $timber->router = new PHPRouter\Router();
+            $site_url = get_bloginfo('url');
+            $site_url_parts = explode('/', $site_url);
+            $site_url_parts = array_slice($site_url_parts, 3);
+            $base_path = implode('/', $site_url_parts);
+            if (!$base_path || strpos($route, $base_path) === 0) {
+                $base_path = '/';
+            } else {
+                $base_path = '/' . $base_path . '/';
             }
+            $timber->router->setBasePath($base_path);
         }
-        if (class_exists('PHPRouter\Router')){
-            $timber->router->map($route, $callback, $args);
-        }
+        $timber->router->map($route, $callback, $args);
     }
 
     /**
