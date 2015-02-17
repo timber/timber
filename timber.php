@@ -49,6 +49,8 @@ require_once(__DIR__ . '/lib/integrations/wpcli-timber.php');
 
 require_once(__DIR__ . '/lib/timber-admin.php');
 
+require_once(__DIR__ . '/vendor/upstatement/routes/routes.php');
+
 /** Usage:
  *
  *  $posts = Timber::get_posts();
@@ -415,11 +417,6 @@ class Timber {
     /*  Routes
     ================================ */
 
-    function init_routes(){
-        global $timberRoutes;
-        $timberRoutes->init();
-    }
-
     /**
      * @param string $route
      * @param callable $callback
@@ -427,7 +424,7 @@ class Timber {
      * @deprecated since 0.20.0
      */
     public static function add_route($route, $callback, $args = array()) {
-        TimberRoutes::add_route($route, $callback, $args);
+        Routes::map($route, $callback, $args);
     }
 
     public function cancel_query(){
@@ -444,14 +441,14 @@ class Timber {
      * @deprecated since 0.20.0
      */
     public static function load_template($template, $query = false, $status_code = 200, $tparams = false) {
-        return TimberRoutes::load_view($template, $query, $status_code, $tparams);
+        return Routes::load($template, $tparams, $query, $status_code);
     }
 
     /**
      * @deprecated since 0.20.2
      */
     public static function load_view($template, $query = false, $status_code = 200, $tparams = false) {
-        return TimberRoutes::load_view($template, $query, $status_code, $tparams);
+        return Routes::load($template, $tparams, $query, $status_code);
     }
     
 

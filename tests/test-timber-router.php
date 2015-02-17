@@ -33,14 +33,15 @@ class TimberTestRouter extends WP_UnitTestCase {
 		global $matches;
 		$matches = array();
 		$phpunit = $this;
+		error_log('got it?');
 		Timber::add_route('foo', function() use ($phpunit) {
+			error_log('hit it!');
 			global $matches;
 			$phpunit->assertTrue(true);
 			$matches[] = true;
 		});
 		$this->go_to(home_url('foo'));
-		global $timber;
-		$timber->init_routes();
+		$this->matchRoutes();
 		$this->assertEquals(1, count($matches));
 	}
 
@@ -56,8 +57,7 @@ class TimberTestRouter extends WP_UnitTestCase {
 			$matches[] = true; 
 		});
 		$this->go_to(home_url('/randomthing/'.$post_name));
-		global $timber;
-		$timber->init_routes();
+		$this->matchRoutes();
 		$this->assertEquals(1, count($matches));
 	}
 
@@ -71,8 +71,12 @@ class TimberTestRouter extends WP_UnitTestCase {
 			$matches[] = true;
 		});
 		$this->go_to(home_url('bar'));
-		global $timber;
-		$timber->init_routes();
+		$this->matchRoutes();
 		$this->assertEquals(0, count($matches));
 	}
+
+	function matchRoutes() {
+        global $upstatement_routes;
+        $upstatement_routes->init();
+    }
 }

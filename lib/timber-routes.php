@@ -21,6 +21,3 @@ class TimberRoutes {
         Routes::load($template, $tparams, $query, $status_code);
     }
 }
-
-global $timberRoutes;
-$timberRoutes = new TimberRoutes();

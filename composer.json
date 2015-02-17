@@ -20,7 +20,7 @@
 	"require": {
 		"php": ">=5.3.0",
 		"twig/twig": "~1.15",
-		"upstatement/routes": "0.1",
+		"upstatement/routes": "dev-master",
 		"composer/installers": "~1.0",
 		"asm89/twig-cache-extension": "~1.0"
 	},
