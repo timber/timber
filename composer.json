@@ -20,7 +20,7 @@
 	"require": {
 		"php": ">=5.3.0",
 		"twig/twig": "~1.15",
-		"dannyvankooten/php-router": "dev-master#e9a479820b871ae4493fec30d5e433456767a505",
+		"jarednova/php-router": "1.0.1",
 		"composer/installers": "~1.0",
 		"asm89/twig-cache-extension": "~0.1"
 	},
@@ -46,6 +46,22 @@
 					}
 				},
 				"target-dir": "acf/advanced-custom-fields-pro"
+			}
+		},
+		{
+			"type" : "package",
+			"package" : {
+				"name" : "jarednova/php-router",
+				"version" : "1.0.1",
+				"dist" : {
+					"url" : "https://github.com/jarednova/PHP-Router/archive/fix_psr_0.zip",
+					"type" : "zip"
+				},
+				"autoload": {
+					"psr-0": {
+						"PHPRouter": "src/"
+					}
+				}
 			}
 		}
 	]
