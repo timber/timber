@@ -20,7 +20,7 @@
 	"require": {
 		"php": ">=5.3.0",
 		"twig/twig": "~1.15",
-		"dannyvankooten/php-router": "dev-master#e9a479820b871ae4493fec30d5e433456767a505",
+		"dannyvankooten/php-router": "1.0.0-alpha",
 		"composer/installers": "~1.0",
 		"asm89/twig-cache-extension": "~0.1"
 	},
