@@ -84,8 +84,8 @@ class TimberImageHelper {
                 $post = get_post( $post_id );
                 $image_types = array( 'image/jpeg', 'image/png', 'image/gif', 'image/jpg' );
                 if ( $post->post_type == 'attachment' && in_array( $post->post_mime_type, $image_types ) ) {
-                    TimberImageHelper::delete_resized_files_from_url( $post->guid );
-                    TimberImageHelper::delete_letterboxed_files_from_url( $post->guid );
+                    TimberImageHelper::delete_resized_files( $post->guid );
+                    TimberImageHelper::delete_letterboxed_files( $post->guid );
                 }
             } );
     }
