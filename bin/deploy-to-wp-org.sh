@@ -22,7 +22,9 @@ function deploy () {
 	cd tags/$1
 	svn commit -m "updating to $1"
 	cd ~/Sites/timber-wp/trunk
-	svn commit -m "updating to $1"
+	svn commit -m "updating to $1" readme.txt
+	svn commit -m "updating to $1" README.md
+	svn commit -m "updating to $1" timber.php
 }
 
 deploy $1
