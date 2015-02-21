@@ -84,8 +84,8 @@ class TimberImageHelper {
                 $post = get_post( $post_id );
                 $image_types = array( 'image/jpeg', 'image/png', 'image/gif', 'image/jpg' );
                 if ( $post->post_type == 'attachment' && in_array( $post->post_mime_type, $image_types ) ) {
-                    TimberImageHelper::delete_resized_files( $post->guid );
-                    TimberImageHelper::delete_letterboxed_files( $post->guid );
+                    TimberImageHelper::delete_resized_file( $local );
+                    TimberImageHelper::delete_letterboxed_file( $local );
                 }
             } );
     }
@@ -139,11 +139,16 @@ class TimberImageHelper {
     }
 
     /**
-     * Deletes resized versions of the supplied file name
+     * Deletes resized versions of the supplied file name.
+     * So if passed a value like my-pic.jpg, this function will delete my-pic-500x200-c-left.jpg, my-pic-400x400-c-default.jpg, etc.
      *
-     * @param string  $local_file
+     * @param string  $local_file   ex: /var/www/wp-content/uploads/2015/my-pic.jpg 
+     *                              ex: http://example.org/wp-content/uploads/2015/foo.png
      */
     static function delete_resized_files( $local_file ) {
+        // if (TimberURLHelper::is_absolute( $local_file ) ) {
+        //     $local_file = TimberURLHelper::url_to_file_system( $local_file );
+        // }
         $info = pathinfo( $local_file );
         $dir = $info['dirname'];
         $ext = $info['extension'];
