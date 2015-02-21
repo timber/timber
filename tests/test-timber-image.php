@@ -419,7 +419,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertFileNotExists( $resized_500_file );
 	}
 
-	function testImageDeletionByUrl() {
+	function testImageDeletionByURL() {
 		$post_id = $this->factory->post->create();
 		$filename = self::copyTestImage( 'flag.png' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
@@ -445,8 +445,40 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertFileExists( $resized_500_file );
 		$this->assertFileExists( $resized_520_file );
 		//Now delete the "parent" image
-		$post = get_post( $attach_id );
-		TimberImageHelper::delete_resized_files( $post->guid );
+		TimberImageHelper::delete_resized_files( $data['test_image'] );
+		//Have the children been deleted as well?
+		$this->assertFileNotExists( $resized_520_file );
+		$this->assertFileNotExists( $resized_500_file );
+	}
+
+	function testImageDeletionByAttachmentLocation() {
+		$post_id = $this->factory->post->create();
+		$filename = self::copyTestImage( 'flag.png' );
+		$wp_filetype = wp_check_filetype( basename( $filename ), null );
+		$attachment = array(
+			'post_mime_type' => $wp_filetype['type'],
+			'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
+			'post_content' => '',
+			'post_status' => 'inherit'
+		);
+		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
+		$data = array();
+		$data['size'] = array( 'width' => 500, 'height' => 300 );
+		$upload_dir = wp_upload_dir();
+		$data['test_image'] = $upload_dir['url'].'/flag.png';
+		$data['crop'] = 'default';
+		Timber::compile( 'assets/image-test.twig', $data );
+		$resized_500_file = TimberImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
+		$data['size'] = array( 'width' => 520, 'height' => 250 );
+		$data['crop'] = 'left';
+		Timber::compile( 'assets/image-test.twig', $data );
+		$resized_520_file = TimberImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
+		//make sure it generated the sizes we're expecting
+		$this->assertFileExists( $resized_500_file );
+		$this->assertFileExists( $resized_520_file );
+		//Now delete the "parent" image
+		$post = new TimberImage( $attach_id );
+		TimberImageHelper::delete_resized_files( $post->file_loc );
 		//Have the children been deleted as well?
 		$this->assertFileNotExists( $resized_520_file );
 		$this->assertFileNotExists( $resized_500_file );

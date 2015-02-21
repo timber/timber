@@ -84,8 +84,9 @@ class TimberImageHelper {
                 $post = get_post( $post_id );
                 $image_types = array( 'image/jpeg', 'image/png', 'image/gif', 'image/jpg' );
                 if ( $post->post_type == 'attachment' && in_array( $post->post_mime_type, $image_types ) ) {
-                    TimberImageHelper::delete_resized_file( $local );
-                    TimberImageHelper::delete_letterboxed_file( $local );
+                    $attachment = new TimberImage( $post_id );
+                    TimberImageHelper::delete_resized_file( $attachment->file_loc );
+                    TimberImageHelper::delete_letterboxed_file( $attachment->file_loc );
                 }
             } );
     }
@@ -146,9 +147,9 @@ class TimberImageHelper {
      *                              ex: http://example.org/wp-content/uploads/2015/foo.png
      */
     static function delete_resized_files( $local_file ) {
-        // if (TimberURLHelper::is_absolute( $local_file ) ) {
-        //     $local_file = TimberURLHelper::url_to_file_system( $local_file );
-        // }
+        if (TimberURLHelper::is_absolute( $local_file ) ) {
+            $local_file = TimberURLHelper::url_to_file_system( $local_file );
+        }
         $info = pathinfo( $local_file );
         $dir = $info['dirname'];
         $ext = $info['extension'];
@@ -173,6 +174,9 @@ class TimberImageHelper {
      * @param string  $local_file
      */
     static function delete_letterboxed_files( $local_file ) {
+        if (TimberURLHelper::is_absolute( $local_file ) ) {
+            $local_file = TimberURLHelper::url_to_file_system( $local_file );
+        }
         $info = pathinfo( $local_file );
         $dir = $info['dirname'];
         $ext = $info['extension'];
