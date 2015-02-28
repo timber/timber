@@ -122,12 +122,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 
     /**
-     *  helps you find the post id regardless of whetehr you send a string or whatever
+     *  helps you find the post id regardless of whether you send a string or whatever
      *
      * @param integer $pid ;
      * @return integer ID number of a post
      */
-    private function check_post_id($pid) {
+    protected function check_post_id($pid) {
         if (is_numeric($pid) && $pid === 0) {
             $pid = get_the_ID();
             return $pid;
