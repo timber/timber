@@ -42,6 +42,16 @@ class Timber {
     public static $auto_meta = true;
     public static $autoescape = false;
 
+    /**
+     * @var PHPRouter\Router
+     */
+    public $router;
+
+    /**
+     * @var TimberRoutes
+     */
+    public $routes;
+
     public function __construct(){
         $this->test_compatibility();
         $this->init_constants();
@@ -66,8 +76,9 @@ class Timber {
 
     protected function init() {
         TimberTwig::init();
+        TimberRoutes::init( $this );
+
         TimberImageHelper::init();
-        TimberRoutes::init();
         TimberAdmin::init();
         TimberIntegrations::init();
     }
@@ -395,8 +406,7 @@ class Timber {
     ================================ */
 
     function init_routes(){
-        global $timberRoutes;
-        $timberRoutes->init();
+        $this->routes->match_current_request();
     }
 
     /**
