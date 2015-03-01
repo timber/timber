@@ -2,18 +2,16 @@
 
 class TimberAdmin {
 
-	function __construct() {
-		add_filter( 'plugin_row_meta', array( $this, 'meta_links' ), 10, 2 );
-	}
+    public static function init() {
+        add_filter( 'plugin_row_meta', array( __CLASS__, 'meta_links' ), 10, 2 );
+    }
 
 	/**
-	 *
-	 *
 	 * @param array   $links
 	 * @param string  $file
 	 * @return array
 	 */
-	function meta_links( $links, $file ) {
+	public static function meta_links( $links, $file ) {
 		if ( strstr( $file, '/timber.php' ) ) {
 			unset($links[2]);
 			$links[] = '<a href="/wp-admin/plugin-install.php?tab=plugin-information&amp;plugin=timber-library&amp;TB_iframe=true&amp;width=600&amp;height=550" class="thickbox" aria-label="More information about Timber" data-title="Timber">View details</a>';
@@ -26,6 +24,3 @@ class TimberAdmin {
 	}
 
 }
-
-global $timber_admin;
-$timber_admin = new TimberAdmin();

@@ -55,8 +55,4 @@ class ACFTimber {
     }
 }
 
-add_action( 'init', function () {
-        if ( class_exists( 'ACF' ) ) {
-            new ACFTimber();
-        }
-    } );
+
