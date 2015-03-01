@@ -6,11 +6,12 @@ function deploy () {
 	git checkout master
 	rm -rf ~/Sites/timber/vendor
 	cd ..
+	git clone git@github.com:Upstatement/timber-starter-theme.git
 	composer install --no-dev
 	rm -rf ~/Sites/timber/vendor/dannyvankooten/php-router/.git
 	cd ~/Sites/timber-wp
 	mkdir tags/$1
-	
+
 	cp -r ~/Sites/timber/lib tags/$1/lib
 	cp -r ~/Sites/timber/timber-starter-theme tags/$1/timber-starter-theme
 	cp -r ~/Sites/timber/vendor tags/$1/vendor

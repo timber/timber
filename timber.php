@@ -14,7 +14,7 @@ global $timber;
 // we look for Composer files first in the theme (theme install)
 // then in the wp-content dir (site install)
 if (    file_exists($composer_autoload = __DIR__ . '/vendor/autoload.php')
-        || file_exists($composer_autoload = WP_CONTENT_DIR.'/vendor/autoload.php')){
+        || file_exists($composer_autoload = WP_CONTENT_DIR.'/vendor/autoload.php')) {
   require_once($composer_autoload);
 }
 
@@ -266,7 +266,7 @@ class Timber {
         $data['template_uri'] = get_template_directory_uri();
 
         $data['posts'] = Timber::query_posts();
-        
+
         //deprecated, this should be fetched via TimberMenu
         if (function_exists('wp_nav_menu')) {
             $locations = get_nav_menu_locations();
@@ -453,7 +453,7 @@ class Timber {
     public static function load_view($template, $query = false, $status_code = 200, $tparams = false) {
         return TimberRoutes::load_view($template, $query, $status_code, $tparams);
     }
-    
+
 
     /*  Pagination
     ================================ */
