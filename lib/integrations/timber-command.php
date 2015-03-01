@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * These are methods that can be executed by WPCLI, other CLI mechanism or other external controllers
+ * @package  timber
+ */
 class TimberCommand {
 
     public static function clear_cache($mode = 'all'){

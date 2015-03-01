@@ -1,6 +1,10 @@
 <?php
-class TimberIntegrations
-{
+
+/**
+ * This is for integrating external plugins into timber
+ * @package  timber
+ */
+class TimberIntegrations {
     public static function init() {
 
         add_action( 'init', array( __CLASS__, 'maybe_init_acftimber' ) );
