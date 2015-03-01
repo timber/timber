@@ -320,14 +320,11 @@ class TimberLoader {
      * @return \Asm89\Twig\CacheExtension\Extension
      */
     private function _get_cache_extension() {
-        $loader_loc = trailingslashit(TIMBER_LOC) . 'lib/cache/loader.php';
-        require_once($loader_loc);
-        TimberCache_Loader::register();
 
-        $key_generator = new \Timber\Cache\KeyGenerator();
-        $cache_provider = new \Timber\Cache\WPObjectCacheAdapter($this);
-        $cache_strategy = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator);
-        $cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
+        $key_generator   = new \Timber\Cache\KeyGenerator();
+        $cache_provider  = new \Timber\Cache\WPObjectCacheAdapter( $this );
+        $cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy( $cache_provider, $key_generator );
+        $cache_extension = new \Asm89\Twig\CacheExtension\Extension( $cache_strategy );
 
         return $cache_extension;
     }

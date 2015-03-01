@@ -18,36 +18,8 @@ if (    file_exists($composer_autoload = __DIR__ . '/vendor/autoload.php')
   require_once($composer_autoload);
 }
 
-require_once(__DIR__ . '/lib/timber-twig.php');
-require_once(__DIR__ . '/lib/timber-helper.php');
-require_once(__DIR__ . '/lib/timber-url-helper.php');
-require_once(__DIR__ . '/lib/timber-image-helper.php');
-
-require_once(__DIR__ . '/lib/timber-core-interface.php');
-require_once(__DIR__ . '/lib/timber-core.php');
-require_once(__DIR__ . '/lib/timber-post.php');
-require_once(__DIR__ . '/lib/timber-post-getter.php');
-require_once(__DIR__ . '/lib/timber-comment.php');
-require_once(__DIR__ . '/lib/timber-user.php');
-require_once(__DIR__ . '/lib/timber-term.php');
-require_once(__DIR__ . '/lib/timber-term-getter.php');
-require_once(__DIR__ . '/lib/timber-image.php');
-require_once(__DIR__ . '/lib/timber-menu-item.php');
-require_once(__DIR__ . '/lib/timber-menu.php');
-require_once(__DIR__ . '/lib/timber-query-iterator.php');
-require_once(__DIR__ . '/lib/timber-posts-collection.php');
-
-//Other 2nd-class citizens
-require_once(__DIR__ . '/lib/timber-archives.php');
-require_once(__DIR__ . '/lib/timber-routes.php');
-require_once(__DIR__ . '/lib/timber-site.php');
-require_once(__DIR__ . '/lib/timber-theme.php');
-require_once(__DIR__ . '/lib/timber-loader.php');
-require_once(__DIR__ . '/lib/timber-function-wrapper.php');
-require_once(__DIR__ . '/lib/integrations/acf-timber.php');
-require_once(__DIR__ . '/lib/integrations/wpcli-timber.php');
-
-require_once(__DIR__ . '/lib/timber-admin.php');
+$timber = new Timber();
+Timber::$dirname = 'views';
 
 /** Usage:
  *
@@ -61,8 +33,6 @@ require_once(__DIR__ . '/lib/timber-admin.php');
  *  Timber::render('index.twig', $context);
  */
 
-
-
 class Timber {
 
     public static $locations;
@@ -72,9 +42,20 @@ class Timber {
     public static $auto_meta = true;
     public static $autoescape = false;
 
+    /**
+     * @var PHPRouter\Router
+     */
+    public $router;
+
+    /**
+     * @var TimberRoutes
+     */
+    public $routes;
+
     public function __construct(){
         $this->test_compatibility();
         $this->init_constants();
+        $this->init();
     }
 
     protected function test_compatibility(){
@@ -91,6 +72,15 @@ class Timber {
 
     function init_constants() {
         defined("TIMBER_LOC") or define("TIMBER_LOC", realpath(__DIR__));
+    }
+
+    protected function init() {
+        TimberTwig::init();
+        TimberRoutes::init( $this );
+
+        TimberImageHelper::init();
+        TimberAdmin::init();
+        TimberIntegrations::init();
     }
 
     /*  Post Retrieval
@@ -266,7 +256,7 @@ class Timber {
         $data['template_uri'] = get_template_directory_uri();
 
         $data['posts'] = Timber::query_posts();
-        
+
         //deprecated, this should be fetched via TimberMenu
         if (function_exists('wp_nav_menu')) {
             $locations = get_nav_menu_locations();
@@ -416,8 +406,7 @@ class Timber {
     ================================ */
 
     function init_routes(){
-        global $timberRoutes;
-        $timberRoutes->init();
+        $this->routes->match_current_request();
     }
 
     /**
@@ -453,7 +442,7 @@ class Timber {
     public static function load_view($template, $query = false, $status_code = 200, $tparams = false) {
         return TimberRoutes::load_view($template, $query, $status_code, $tparams);
     }
-    
+
 
     /*  Pagination
     ================================ */
@@ -561,7 +550,3 @@ class Timber {
     }
 
 }
-
-$timber = new Timber();
-$GLOBALS['timber'] = $timber;
-Timber::$dirname = 'views';
