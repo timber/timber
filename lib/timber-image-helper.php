@@ -19,7 +19,6 @@ class TimberImageHelper {
     const BASE_CONTENT = 2;
 
     public static function init() {
-        //self::load_dependencies();
         self::add_constants();
         self::add_actions();
         self::add_filters();
@@ -109,19 +108,6 @@ class TimberImageHelper {
         }
     }
 
-
-    /**
-     * load the dependencies of TimberImageOperations
-     * @return void
-     */
-    static function load_dependencies() {
-        require_once('image/timber-image-operation.php');
-        require_once('image/timber-image-operation-pngtojpg.php');
-        require_once('image/timber-image-operation-retina.php');
-        require_once('image/timber-image-operation-letterbox.php');
-        require_once('image/timber-image-operation-resize.php');
-    }
-
     /**
      * adds a 'relative' key to wp_upload_dir() result.
      * It will contain the relative url to upload dir.
@@ -134,7 +120,7 @@ class TimberImageHelper {
         } );
     }
 
-//-- end of public methots --//
+//-- end of public methods --//
 
 
 
