@@ -182,6 +182,14 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
     function slug() {
         return $this->user_nicename;
     }
+    
+    
+    /**
+     * @return string
+     */
+    function email() {
+        return $this->user_email;
+    }
 
     /**
      * @return string
