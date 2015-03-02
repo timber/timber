@@ -4,11 +4,16 @@ class TimberRoutes {
 
 	protected $router;
 
-	function __construct(){
-		add_action('init', array($this, 'init'));
-	}
+    public static function init( $timber ) {
+        // Install ourselves in Timber
+        $timber->routes = new TimberRoutes();
+    }
 
-	function init() {
+	protected function __construct(){
+		add_action( 'init', array( $this, 'match_current_request' ) );
+    }
+
+	public function match_current_request() {
         global $timber;
         if (isset($timber->router)) {
             $route = $timber->router->matchCurrentRequest();
@@ -102,6 +107,3 @@ class TimberRoutes {
         return false;
     }
 }
-
-global $timberRoutes;
-$timberRoutes = new TimberRoutes();

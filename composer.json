@@ -30,6 +30,9 @@
 		"AdvancedCustomFields/acf5-beta": "5.0",
 		"wp-cli/wp-cli": "*"
 	},
+    "autoload": {
+        "classmap": ["lib/"]
+    },
 	"repositories": [
 		{
 			"type": "package",

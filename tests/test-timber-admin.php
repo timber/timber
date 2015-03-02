@@ -3,20 +3,15 @@
 class TestTimberAdmin extends WP_UnitTestCase {
 
 	function testSettingsLinks() {
-		global $timber_admin;
-		$links = $timber_admin->meta_links( array(), 'timber/timber.php' );
-		$links = implode(' ', $links);
-		$this->assertContains( 'Documentation', $links);
+        $links = apply_filters( 'plugin_row_meta', array(), 'timber/timber.php' );
 
-		$links = $timber_admin->meta_links( array(), '/foo.php' );
-		if ( isset( $links ) ) {
-			$this->assertNotContains( 'Documentation', $links);
-		}
-	}
+        $links = implode( ' ', $links );
+        $this->assertContains( 'Documentation', $links );
 
-	function testAdminConstruct() {
-		global $timber_admin;
-		$this->assertInstanceOf( 'TimberAdmin', $timber_admin );
-	}
+        $links = apply_filters( 'plugin_row_meta', array(), 'foo/bar.php' );
+        if ( isset( $links ) ) {
+            $this->assertNotContains( 'Documentation', $links );
+        }
+    }
 
 }

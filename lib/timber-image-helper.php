@@ -17,11 +17,17 @@ class TimberImageHelper {
 
     const BASE_UPLOADS = 1;
     const BASE_CONTENT = 2;
-    
+
+    public static function init() {
+        self::add_constants();
+        self::add_actions();
+        self::add_filters();
+    }
+
     /**
      * Generates a new image with the specified dimensions.
      * New dimensions are achieved by cropping to maintain ratio.
-     * 
+     *
      * @param string  $src an URL (absolute or relative) to the original image
      * @param int     $w target width
      * @param int     $h target heighth
@@ -102,19 +108,6 @@ class TimberImageHelper {
         }
     }
 
-
-    /**
-     * load the dependencies of TimberImageOperations
-     * @return void
-     */
-    static function load_dependencies() {
-        require_once('image/timber-image-operation.php');   
-        require_once('image/timber-image-operation-pngtojpg.php');   
-        require_once('image/timber-image-operation-retina.php');   
-        require_once('image/timber-image-operation-letterbox.php');   
-        require_once('image/timber-image-operation-resize.php');   
-    }
-
     /**
      * adds a 'relative' key to wp_upload_dir() result.
      * It will contain the relative url to upload dir.
@@ -127,10 +120,10 @@ class TimberImageHelper {
         } );
     }
 
-//-- end of public methots --//
+//-- end of public methods --//
 
-    
-    
+
+
 
     /**
      * @return boolean true if $path is an external url, false if relative or local.
@@ -143,7 +136,7 @@ class TimberImageHelper {
      * Deletes resized versions of the supplied file name.
      * So if passed a value like my-pic.jpg, this function will delete my-pic-500x200-c-left.jpg, my-pic-400x400-c-default.jpg, etc.
      *
-     * @param string  $local_file   ex: /var/www/wp-content/uploads/2015/my-pic.jpg 
+     * @param string  $local_file   ex: /var/www/wp-content/uploads/2015/my-pic.jpg
      *                              ex: http://example.org/wp-content/uploads/2015/foo.png
      */
     static function delete_resized_files( $local_file ) {
@@ -265,7 +258,7 @@ class TimberImageHelper {
      * Takes in an URL and breaks it into components,
      * that will then be used in the different steps of image processing.
      * The image is expected to be either part of a theme, plugin, or an upload.
-     * 
+     *
      * @param  string $url an URL (absolute or relative) pointing to an image
      * @return array       an array (see keys in code below)
      */
@@ -315,7 +308,7 @@ class TimberImageHelper {
 
     /**
      * Builds the public URL of a file based on its different components
-     * 
+     *
      * @param  int    $base     one of self::BASE_UPLOADS, self::BASE_CONTENT to indicate if file is an upload or a content (theme or plugin)
      * @param  string $subdir   subdirectory in which file is stored, relative to $base root folder
      * @param  string $filename file name, including extension (but no path)
@@ -344,7 +337,7 @@ class TimberImageHelper {
 
     /**
      * Builds the absolute file system location of a file based on its different components
-     * 
+     *
      * @param  int    $base     one of self::BASE_UPLOADS, self::BASE_CONTENT to indicate if file is an upload or a content (theme or plugin)
      * @param  string $subdir   subdirectory in which file is stored, relative to $base root folder
      * @param  string $filename file name, including extension (but no path)
@@ -373,12 +366,12 @@ class TimberImageHelper {
      * 2. use components to determine result file and URL
      * 3. check if a result file already exists
      * 4. otherwise, delegate to supplied TimberImageOperation
-     * 
+     *
      * @param  string  $src   an URL (absolute or relative) to an image
      * @param  object  $op    object of class TimberImageOperation
      * @param  boolean $force if true, remove any already existing result file and forces file generation
      * @return string         URL to the new image - or the source one if error
-     *                        
+     *
      */
     private static function _operate( $src, $op, $force = false ) {
         if ( empty( $src ) ) {
@@ -428,7 +421,7 @@ class TimberImageHelper {
 
 
 // -- the below methods are just used for unit testing the URL generation code
-// 
+//
     static function get_letterbox_file_url($url, $w, $h, $color) {
         $au = self::analyze_url($url);
         $op = new TimberImageOperationLetterbox($w, $h, $color);
@@ -474,9 +467,3 @@ class TimberImageHelper {
 
 
 }
-
-
-TimberImageHelper::load_dependencies();
-TimberImageHelper::add_constants();
-TimberImageHelper::add_actions();
-TimberImageHelper::add_filters();
