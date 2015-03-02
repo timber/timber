@@ -25,6 +25,8 @@ require_once(__DIR__ . '/lib/timber-image-helper.php');
 
 require_once(__DIR__ . '/lib/timber-core-interface.php');
 require_once(__DIR__ . '/lib/timber-core.php');
+require_once(__DIR__ . '/lib/timber-wp-object-interface.php');
+require_once(__DIR__ . '/lib/timber-wp-object.php');
 require_once(__DIR__ . '/lib/timber-post.php');
 require_once(__DIR__ . '/lib/timber-post-getter.php');
 require_once(__DIR__ . '/lib/timber-comment.php');
@@ -266,7 +268,7 @@ class Timber {
         $data['template_uri'] = get_template_directory_uri();
 
         $data['posts'] = Timber::query_posts();
-        
+
         //deprecated, this should be fetched via TimberMenu
         if (function_exists('wp_nav_menu')) {
             $locations = get_nav_menu_locations();
@@ -453,7 +455,7 @@ class Timber {
     public static function load_view($template, $query = false, $status_code = 200, $tparams = false) {
         return TimberRoutes::load_view($template, $query, $status_code, $tparams);
     }
-    
+
 
     /*  Pagination
     ================================ */
