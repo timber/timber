@@ -10,7 +10,11 @@ class TimberRoutes {
     }
 
 	protected function __construct(){
-		add_action( 'init', array( 'Routes', 'match_current_request' ) );
+		add_action( 'init', array( $this, 'match_current_request' ) );
+    }
+
+    public static function match_current_request() {
+    	Routes::match_current_request();
     }
 
     /**

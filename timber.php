@@ -43,8 +43,6 @@ class Timber {
 	public static $autoescape = false;
 
 	/**
-	 *
-	 *
 	 * @var TimberRoutes
 	 */
 	public $routes;
@@ -84,8 +82,6 @@ class Timber {
 	================================ */
 
 	/**
-	 *
-	 *
 	 * @param mixed   $query
 	 * @param string  $PostClass
 	 * @return array|bool|null
@@ -95,8 +91,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param mixed   $query
 	 * @param string  $PostClass
 	 * @return array|bool|null
@@ -106,8 +100,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param mixed   $query
 	 * @param string  $PostClass
 	 * @return array|bool|null
@@ -117,8 +109,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param mixed   $query
 	 * @param string  $PostClass
 	 * @return array|bool|null
@@ -128,8 +118,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param array|string $query
 	 * @return array
 	 * @deprecated since 0.20.0
@@ -139,8 +127,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param string  $PostClass
 	 * @return array
 	 * @deprecated since 0.20.0
@@ -150,8 +136,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param string  $slug
 	 * @param string  $PostClass
 	 * @return array
@@ -162,8 +146,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param array   $query
 	 * @param string  $PostClass
 	 * @return array
@@ -174,8 +156,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param array   $query
 	 * @param string  $PostClass
 	 * @return array|null
@@ -186,8 +166,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param array   $results
 	 * @param string  $PostClass
 	 * @return TimberPostsCollection
@@ -198,8 +176,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param unknown $query
 	 * @return int
 	 * @deprecated since 0.20.0
@@ -212,8 +188,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @return bool
 	 * @deprecated since 0.20.0
 	 */
@@ -225,8 +199,6 @@ class Timber {
 	================================ */
 
 	/**
-	 *
-	 *
 	 * @param string|array $args
 	 * @param array   $maybe_args
 	 * @param string  $TermClass
@@ -240,8 +212,6 @@ class Timber {
 	================================ */
 
 	/**
-	 *
-	 *
 	 * @param array|bool $blog_ids
 	 * @return array
 	 */
@@ -262,8 +232,6 @@ class Timber {
 	================================ */
 
 	/**
-	 *
-	 *
 	 * @return array
 	 */
 	public static function get_context() {
@@ -296,8 +264,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param array   $filenames
 	 * @param array   $data
 	 * @param bool    $expires
@@ -330,8 +296,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param string  $string a string with twig variables
 	 * @param array   $data   an array with data in it
 	 * @return  bool|string
@@ -346,8 +310,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param array   $filenames
 	 * @param array   $data
 	 * @param bool    $expires
@@ -368,8 +330,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param string  $string a string with twig variables
 	 * @param array   $data   an array with data in it
 	 * @return  bool|string
@@ -385,8 +345,6 @@ class Timber {
 	================================ */
 
 	/**
-	 *
-	 *
 	 * @param string  $sidebar
 	 * @param array   $data
 	 * @return bool|string
@@ -402,8 +360,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param string  $sidebar
 	 * @param array   $data
 	 * @return string
@@ -433,8 +389,6 @@ class Timber {
 	================================ */
 
 	/**
-	 *
-	 *
 	 * @param int     $widget_id
 	 * @return TimberFunctionWrapper
 	 */
@@ -447,8 +401,6 @@ class Timber {
 	================================ */
 
 	/**
-	 *
-	 *
 	 * @param string  $route
 	 * @param callable $callback
 	 * @param array   $args
@@ -469,8 +421,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @deprecated since 0.20.0
 	 */
 	public static function load_template( $template, $query = false, $status_code = 200, $tparams = false ) {
@@ -478,8 +428,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @deprecated since 0.20.2
 	 */
 	public static function load_view( $template, $query = false, $status_code = 200, $tparams = false ) {
@@ -491,8 +439,6 @@ class Timber {
 	================================ */
 
 	/**
-	 *
-	 *
 	 * @param array   $prefs
 	 * @return array mixed
 	 */
@@ -541,8 +487,6 @@ class Timber {
 	================================ */
 
 	/**
-	 *
-	 *
 	 * @param int     $offset
 	 * @return string
 	 * @deprecated since 0.20.0
@@ -553,8 +497,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @return boolean|string
 	 */
 	public static function get_calling_script_dir( $offset = 0 ) {
@@ -568,8 +510,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param int     $offset
 	 * @return string|null
 	 * @deprecated since 0.20.0
@@ -592,8 +532,6 @@ class Timber {
 	}
 
 	/**
-	 *
-	 *
 	 * @param string|array $args
 	 * @return bool
 	 * @deprecated since 0.20.0
