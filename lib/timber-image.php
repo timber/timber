@@ -189,6 +189,10 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
         } else if (isset($this->_wp_attached_file)) {
             $this->file = reset($this->_wp_attached_file);
             $this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
+        } else if ( isset( $this->guid ) ) {
+            if ( TimberURLHelper::is_absolute( $this->guid ) ) {
+                $this->file_loc = TimberURLHelper::url_to_file_system( $this->guid );
+            }
         }
         if (isset($image_info['id'])) {
             $this->ID = $image_info['id'];

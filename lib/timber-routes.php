@@ -2,6 +2,29 @@
 
 class TimberRoutes {
 
+	protected $router;
+
+    public static function init( $timber ) {
+        // Install ourselves in Timber
+        $timber->routes = new TimberRoutes();
+    }
+
+	protected function __construct(){
+		add_action( 'init', array( $this, 'match_current_request' ) );
+    }
+
+	public function match_current_request() {
+        global $timber;
+        if (isset($timber->router)) {
+            $route = $timber->router->matchCurrentRequest();
+            if ($route) {
+                $callback = $route->getTarget();
+                $params = $route->getParameters();
+                $callback($params);
+            }
+        }
+    }
+
     /**
      * @param string $route
      * @param callable $callback
