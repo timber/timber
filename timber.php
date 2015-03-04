@@ -21,7 +21,7 @@ if (    file_exists( $composer_autoload = __DIR__ . '/vendor/autoload.php' )
 $timber = new Timber();
 Timber::$dirname = 'views';
 
-	* * * * /** Usage:
+/** Usage:
  *
  *  $posts = Timber::get_posts();
  *  $posts = Timber::get_posts('post_type = article')
