@@ -45,13 +45,6 @@ class Timber {
 	/**
 	 *
 	 *
-	 * @var PHPRouter\Router
-	 */
-	public $router;
-
-	/**
-	 *
-	 *
 	 * @var TimberRoutes
 	 */
 	public $routes;

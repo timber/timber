@@ -147,7 +147,7 @@ class TimberTestRouter extends WP_UnitTestCase {
 
 
 	function matchRoutes() {
-        global $upstatement_routes;
-        $upstatement_routes->init();
+		global $timber;
+        $timber->routes->match_current_request();
     }
 }
