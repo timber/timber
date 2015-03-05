@@ -8,3 +8,4 @@ build
 /cache
 *.swp
 *~
+wp-content

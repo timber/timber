@@ -33,6 +33,11 @@
     "autoload": {
         "classmap": ["lib/"]
     },
+    "extra" : {
+        "installer-paths" : {
+            "vendor/{$vendor}/{$name}/": ["upstatement/routes"]
+        }
+    },
 	"repositories": [
 		{
 			"type": "package",
