@@ -42,11 +42,6 @@ class Timber {
 	public static $auto_meta = true;
 	public static $autoescape = false;
 
-	/**
-	 * @var TimberRoutes
-	 */
-	public $routes;
-
 	public function __construct() {
 		$this->test_compatibility();
 		$this->init_constants();

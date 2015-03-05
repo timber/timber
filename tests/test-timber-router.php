@@ -1,4 +1,4 @@
-<?php
+s<?php
 
 class TimberTestRouter extends WP_UnitTestCase {
 
@@ -145,9 +145,85 @@ class TimberTestRouter extends WP_UnitTestCase {
 		$this->assertEquals(2, count($matches));
 	}
 
+	function testVerySimpleRoute(){
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		global $matches;
+		$matches = array();
+		$phpunit = $this;
+		Timber::add_route('crackers', function() use ($phpunit) {
+			global $matches;
+			$matches = array();
+			$matches[] = true;
+		});
+		$this->go_to(home_url('crackers'));
+		$this->matchRoutes();
+		$this->assertEquals(1, count($matches));
+	}
+
+	function testVerySimpleRouteTrailingSlash(){
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		global $matches;
+		$matches = array();
+		$phpunit = $this;
+		Timber::add_route('bip/', function() use ($phpunit) {
+			global $matches;
+			$matches = array();
+			$matches[] = true;
+		});
+		$this->go_to(home_url('bip'));
+		$this->matchRoutes();
+		$this->assertEquals(1, count($matches));
+	}
+
+	function testVerySimpleRouteTrailingSlashInRequest(){
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		global $matches;
+		$matches = array();
+		$phpunit = $this;
+		Timber::add_route('bopp', function() use ($phpunit) {
+			global $matches;
+			$matches = array();
+			$matches[] = true;
+		});
+		$this->go_to(home_url('bopp/'));
+		$this->matchRoutes();
+		$this->assertEquals(1, count($matches));
+	}
+
+
+	function testVerySimpleRouteTrailingSlashInRequestAndMapping(){
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		global $matches;
+		$matches = array();
+		$phpunit = $this;
+		Timber::add_route('zappers', function() use ($phpunit) {
+			global $matches;
+			$matches = array();
+			$matches[] = true;
+		});
+		$this->go_to(home_url('zappers/'));
+		$this->matchRoutes();
+		$this->assertEquals(1, count($matches));
+	}
+
+	function testVerySimpleRoutePreceedingSlash(){
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		global $matches;
+		$matches = array();
+		$phpunit = $this;
+		Timber::add_route('/gobbles', function() use ($phpunit) {
+			global $matches;
+			$matches = array();
+			$matches[] = true;
+		});
+		$this->go_to(home_url('gobbles'));
+		$this->matchRoutes();
+		$this->assertEquals(1, count($matches));
+	}
+
+
 
 	function matchRoutes() {
-		global $timber;
-        $timber->routes->match_current_request();
+		Routes::match_current_request();
     }
 }
