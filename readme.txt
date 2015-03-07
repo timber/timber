@@ -41,6 +41,12 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 0.21.0 =
+* Routes is now its own independent repo
+* Timber Starter Theme is now its own independent repo
+* Improved loading of files (thanks @mgmartel)
+* Fixed some errors with TimberImages (thanks @imranismail)
+
 = 0.20.10 =
 * Resolved lingering composer issues (thanks @austinpray, @lucasmichot)
 * You can now access `{{comment.status}}` when working with comments (thanks @simonmilz)
