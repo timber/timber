@@ -9,6 +9,7 @@ function deploy () {
 	git clone git@github.com:Upstatement/timber-starter-theme.git
 	rm -rf ~/Sites/timber/timber-starter-theme/.git
 	composer install --no-dev
+	rm -rf ~/Sites/timber/vendor/upstatement/routes/.git
 	cd ~/Sites/timber-wp
 	mkdir tags/$1
 
