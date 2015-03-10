@@ -57,7 +57,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
      */
     public function get_link() {
         if (!$this->_link) {
-            $this->_link = get_author_posts_url($this->ID);
+            $this->_link = untrailingslashit(get_author_posts_url($this->ID));
         }
         return $this->_link;
     }
