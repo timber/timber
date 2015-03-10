@@ -9,6 +9,49 @@
 			$this->assertEquals($post_id, $post->ID);
 		}
 
+		function testComments() {
+			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
+			$comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
+			$post = new TimberPost($post_id);
+			$this->assertEquals( 5, count($post->get_comments()) );
+		}
+
+		function testNameMethod() {
+			$post_id = $this->factory->post->create(array('post_title' => 'Battlestar Galactica'));
+			$post = new TimberPost($post_id);
+			$this->assertEquals('Battlestar Galactica', $post->name());
+		}
+
+		function testGetImage() {
+			$post_id = $this->factory->post->create(array('post_title' => 'St. Louis History'));
+			$filename = TimberImageTest::copyTestImage( 'arch.jpg' );
+			$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+			$iid = wp_insert_attachment( $attachment, $filename, $post_id );
+			update_post_meta($post_id, 'landmark', $iid);
+			$post = new TimberPost($post_id);
+			$image = $post->get_image('landmark');
+			$this->assertEquals('The Arch', $image->title());
+		}
+
+		function testPostString() {
+			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
+			$post = new TimberPost($post_id);
+			$str = Timber::compile_string('<h1>{{post}}</h1>', array('post' => $post));
+			$this->assertEquals('<h1>Gobbles</h1>', $str);
+		}
+
+		function testFalseParent() {
+			$pid = $this->factory->post->create();
+			$filename = TimberImageTest::copyTestImage( 'arch.jpg' );
+			$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+			$iid = wp_insert_attachment( $attachment, $filename, $pid );
+			update_post_meta( $iid, 'architect', 'Eero Saarinen' );
+			$image = new TimberImage( $iid );
+			$parent = $image->parent();
+			$this->assertEquals($pid, $parent->ID);
+			$this->assertFalse($parent->parent());
+		}
+
 		function testPostOnSingle(){
 			$post_id = $this->factory->post->create();
 			$this->go_to(home_url('/?p='.$post_id));
@@ -288,7 +331,7 @@
             $post = Timber::get_post();
 			$this->assertEquals($page1, trim(strip_tags($post->get_paged_content())));
 
-            $pagination = $post->get_pagination();
+            $pagination = $post->pagination();
             $this->go_to( $pagination['pages'][1]['link'] );
 
             setup_postdata( get_post( $post_id ) );

@@ -419,7 +419,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
         if (isset($this->post_author)) {
             return new TimberUser($this->post_author);
         }
-        return false;
     }
 
     /**
