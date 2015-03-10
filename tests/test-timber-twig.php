@@ -1,6 +1,6 @@
 <?php
 
-	class TimberTermTwig extends WP_UnitTestCase {
+	class TimberTestTwig extends WP_UnitTestCase {
 
 		function testDoAction(){
 			global $action_tally;
@@ -99,10 +99,37 @@
 			$this->assertEquals('FooBar', Timber::compile_string($str, array('pids' => $pids)));
 		}
 
+		function testToArrayWithString() {
+			$thing = 'thing';
+			$str = '{% for thing in things|array %}{{thing}}{% endfor %}';
+			$this->assertEquals('thing', Timber::compile_string($str, array('things' => $thing)));
+		}
+
+		function testToArrayWithArray() {
+			$thing = array('thing', 'thang');
+			$str = '{% for thing in things|array %}{{thing}}{% endfor %}';
+			$this->assertEquals('thingthang', Timber::compile_string($str, array('things' => $thing)));
+		}
+
 		function testTimberUserInTwig(){
 			$uid = $this->factory->user->create(array('display_name' => 'Pete Karl'));
 			$str = '{{TimberUser('.$uid.').name}}';
 			$this->assertEquals('Pete Karl', Timber::compile_string($str));
+		}
+
+		function testTimberUsersInTwig() {
+			$uids[] = $this->factory->user->create(array('display_name' => 'Estelle Getty'));
+			$uids[] = $this->factory->user->create(array('display_name' => 'Bea Arthur'));
+			$str = '{% for user in TimberUser(uids) %}{{user.name}} {% endfor %}';
+			$this->assertEquals('Estelle Getty Bea Arthur', trim(Timber::compile_string($str, array('uids' => $uids))));
+		}
+
+		function testTwigString() {
+			$str = 'Foo';
+			$arr = array('Bar', 'Quack');
+			$twig = '{{string|string}}x{{array|string("x")}}';
+			$this->assertEquals('FooxBarxQuack', trim(Timber::compile_string($twig, array('string' => $str, 'array' => $arr))));
+
 		}
 
 		function testFilterFunction() {
@@ -110,5 +137,11 @@
 			$post = new TimberPost( $pid );
 			$str = 'I am a {{post | get_class }}';
 			$this->assertEquals('I am a TimberPost', Timber::compile_string($str, array('post' => $post)));
+		}
+
+		function testFilterTruncate() {
+			$gettysburg = 'Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.';
+			$str = Timber::compile_string("{{address | truncate(6)}}", array('address' => $gettysburg));
+			$this->assertEquals('Four score and seven years ago&amp;hellip;', $str);
 		}
 	}
