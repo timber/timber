@@ -57,4 +57,40 @@
             $obj = TimberHelper::get_object_by_property($arr, 'skill', 'cooking');
             $this->assertEquals('austin', $obj->name);
         }
+
+        function testTimers() {
+        	$start = TimberHelper::start_timer();
+        	sleep(1);
+        	$end = TimberHelper::stop_timer($start);
+        	$this->assertContains(' seconds.', $end);
+        	$time = str_replace(' seconds.', '', $end);
+        	$this->assertGreaterThan(1, $time);
+        }
+
+        function testArrayTruncate() {
+        	$arr = array('Buster', 'GOB', 'Michael', 'Lindsay');
+        	$arr = TimberHelper::array_truncate($arr, 2);
+        	$this->assertContains('Buster', $arr);
+        	$this->assertEquals(2, count($arr));
+        	$this->assertFalse(in_array('Lindsay', $arr));
+        }
+
+        function testIsTrue() {
+        	$true = TimberHelper::is_true('true');
+        	$this->assertTrue($true);
+        	$false = TimberHelper::is_true('false');
+        	$this->assertFalse($false);
+        	$estelleGetty = TimberHelper::is_true('Estelle Getty');
+        	$this->assertTrue($estelleGetty);
+        }
+
+        function testIsEven() {
+        	$this->assertTrue(TimberHelper::iseven(2));
+        	$this->assertFalse(TimberHelper::iseven(7));
+        }
+
+        function testIsOdd() {
+        	$this->assertFalse(TimberHelper::isodd(2));
+        	$this->assertTrue(TimberHelper::isodd(7));
+        }
     }

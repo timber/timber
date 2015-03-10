@@ -429,12 +429,15 @@ class TimberHelper {
     /**
      *
      *
-     * @param mixed   $property
+     * @param mixed   $value
      * @return bool
      */
-    public static function is_true( $property ) {
-        if ( isset( $property ) ) {
-            if ( $property == 'true' || $property == 1 || $property == '1' || $property == true ) {
+    public static function is_true( $value ) {
+        if ( isset( $value ) ) {
+        	if (is_string($value)) {
+        		$value = strtolower($value);
+        	}
+            if ( ($value == 'true' || $value === 1 || $value === '1' || $value == true) && $value !== false && $value !== 'false') {
                 return true;
             }
         }
