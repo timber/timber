@@ -82,7 +82,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
         if ($this->can_edit()) {
             return get_edit_post_link($this->ID);
         }
-        return false;
     }
 
     /**
@@ -277,7 +276,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
                 return new $this->ImageClass($tid);
             }
         }
-        return null;
     }
 
     /**
@@ -558,7 +556,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
         if (count($cats) && isset($cats[0])) {
             return $cats[0];
         }
-        return null;
     }
 
     /** # get terms is good
