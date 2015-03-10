@@ -11,7 +11,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
     public $id;
     public $name;
     public $user_nicename;
-    
+
     /**
      * @param int|bool $uid
      */
@@ -151,14 +151,14 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
      * @return string
      */
     function permalink() {
-        return $this->get_link();
+        return $this->get_permalink();
     }
 
     /**
-     * @return string
+     * @return string ex: /author/lincoln
      */
     function get_path() {
-        return $this->get_link();
+        return TimberURLHelper::get_rel_url($this->get_link());
     }
 
     /**
