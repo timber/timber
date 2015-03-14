@@ -129,7 +129,11 @@ class TimberImageHelper {
      * @return boolean true if $path is an external url, false if relative or local.
      */
     protected static function is_external($path) {
-        return TimberURLHelper::is_absolute($path) && !strstr($path, home_url());
+        $is_external = TimberURLHelper::is_absolute($path) && !strstr($path, site_url());
+        if ($is_external) {
+            $is_external = TimberURLHelper::is_absolute($path) && !strstr($path, home_url());
+        }
+        return $is_external;
     }
 
     /**
