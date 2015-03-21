@@ -40,30 +40,34 @@ class TimberImageTest extends WP_UnitTestCase {
 		return "$url?lang=en";
 	}
 
+	function get_post_with_image() {
+		$pid = $this->factory->post->create();
+		$filename = self::copyTestImage( 'arch.jpg' );
+		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+		$iid = wp_insert_attachment( $attachment, $filename, $pid );
+		add_post_meta( $pid, '_thumbnail_id', $iid, true );
+		$post = new TimberPost($pid);
+		return $post;
+	}
+
 /* ----------------
  * Tests
  ---------------- */
 
 	function testImageMeta() {
-		$pid = $this->factory->post->create();
-		$filename = self::copyTestImage( 'arch.jpg' );
-		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
-		$iid = wp_insert_attachment( $attachment, $filename, $pid );
-		update_post_meta( $iid, 'architect', 'Eero Saarinen' );
-		$image = new TimberImage( $iid );
+		$post = $this->get_post_with_image();
+		$image = $post->thumbnail();
+		update_post_meta( $image->ID, 'architect', 'Eero Saarinen' );
 		$this->assertEquals( 'Eero Saarinen', $image->meta( 'architect' ) );
 		$this->assertEquals( 'Eero Saarinen', $image->architect );
 	}
 
 	function testImageSizes() {
-		$pid = $this->factory->post->create();
-		$filename = self::copyTestImage( 'arch.jpg' );
-		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
-		$iid = wp_insert_attachment( $attachment, $filename, $pid );
-		$image = new TimberImage( $iid );
+		$post = $this->get_post_with_image();
+		$image = $post->thumbnail();
 		$this->assertEquals( 1500, $image->width() );
 		$this->assertEquals( 1000, $image->height() );
-		$this->assertEquals( $pid, $image->parent()->id );
+		$this->assertEquals( $post->ID, $image->parent()->id );
 		$this->assertEquals( 1.5, $image->aspect() );
 	}
 
@@ -534,4 +538,5 @@ class TimberImageTest extends WP_UnitTestCase {
 		$rendered = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals( 1500, $rendered );
 	}
+
 }
