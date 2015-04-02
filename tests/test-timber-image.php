@@ -546,7 +546,8 @@ class TimberImageTest extends WP_UnitTestCase {
 		Timber::render_string($str, array('post' => $post));
 		$result = ob_get_contents();
 		ob_end_clean();
-		$this->assertEquals('<img src="http://example.org/wp-content/uploads/2015/03/arch-510x280-c-default.jpg" />', $result);
+		$m = date('m');
+		$this->assertEquals('<img src="http://example.org/wp-content/uploads/2015/'.$m.'/arch-510x280-c-default.jpg" />', $result);
 	}
 
 }

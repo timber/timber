@@ -9,6 +9,17 @@
 			$this->assertEquals($uid, $user->id);
 		}
 
+		function testDescription() {
+			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln'));
+			update_user_meta($uid, 'description', 'Sixteenth President');
+			$user = new TimberUser($uid);
+			$this->assertEquals('Sixteenth President', $user->description);
+			$pid = $this->factory->post->create(array('post_author' => $uid));
+			$post = new TimberPost($pid);
+			$str = Timber::compile_string('{{post.author.description}}', array('post' => $post));
+			$this->assertEquals('Sixteenth President', $str);
+		}
+
 		function testInitWithObject(){
 			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln'));
 			$uid = get_user_by('id', $uid);
