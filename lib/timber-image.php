@@ -266,11 +266,19 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
     }
 
     /**
-     * @deprecated
+     * @deprecated; use src() instead
      * @return string
      */
     function get_url() {
         return $this->get_src();
+    }
+
+    /**
+     * @deprecated; use src() instead
+     * @return string
+     */
+    function url() {
+    	return $this->get_src();
     }
 
     /* Alias */
@@ -306,6 +314,9 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
         return $this->get_width();
     }
 
+    /**
+     * @return string alt text stored in WordPress
+     */
     public function alt() {
         return $this->get_alt();
     }

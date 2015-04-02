@@ -539,4 +539,14 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals( 1500, $rendered );
 	}
 
+	function testWithOutputBuffer() {
+		ob_start();
+		$post = $this->get_post_with_image();
+		$str = '<img src="{{ post.thumbnail.url|resize(510, 280) }}" />';
+		Timber::render_string($str, array('post' => $post));
+		$result = ob_get_contents();
+		ob_end_clean();
+		$this->assertEquals('<img src="http://example.org/wp-content/uploads/2015/03/arch-510x280-c-default.jpg" />', $result);
+	}
+
 }
