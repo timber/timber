@@ -2,13 +2,30 @@
 
 	class TimberTestTwig extends WP_UnitTestCase {
 
+		function tearDown() {
+			$lang_dir = get_stylesheet_directory().'/languages';
+			if (file_exists($lang_dir.'/en_US.po' )) {
+				unlink($lang_dir.'/en_US.po');
+			}
+			if (file_exists($lang_dir.'/en_US.mo' )) {
+				unlink($lang_dir.'/en_US.mo');
+			}
+
+		}
+
 		function _setupTranslationFiles() {
 			$lang_dir = get_stylesheet_directory().'/languages';
+			if (file_exists($lang_dir.'/en_US.po' )) {
+				return;
+			}
 			if(!is_dir($lang_dir)) {
 				mkdir($lang_dir , 0777);
         	}
 			copy( __DIR__.'/assets/languages/en_US.po', $lang_dir.'/en_US.po' );
 			copy( __DIR__.'/assets/languages/en_US.mo', $lang_dir.'/en_US.mo' );
+			$theme = wp_get_theme();
+			$td = $theme->get('TextDomain');
+			load_theme_textdomain($td, $lang_dir);
 		}
 
 		function testFormat() {
@@ -19,6 +36,7 @@
 
 		function testTranslate() {
 			$this->_setupTranslationFiles();
+
 			$theme = wp_get_theme();
 			$td = $theme->get('TextDomain');
 			$str = "I like {{ __('thingy', '$td')}}";
@@ -32,6 +50,7 @@
 
 		function testTranslateAndFormat() {
 			$this->_setupTranslationFiles();
+			sleep(1);
 			$theme = wp_get_theme();
 			$td = $theme->get('TextDomain');
 
