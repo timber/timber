@@ -2,6 +2,34 @@
 
 	class TimberTestTwig extends WP_UnitTestCase {
 
+		function testFormat() {
+			$str = '{{ "I like %s and %s"|format(foo, "bar") }}';
+			$return = Timber::compile_string($str, array('foo' => 'foo'));
+			$this->assertEquals('I like foo and bar', $return);
+		}
+
+		function _setupTranslationFiles() {
+			$lang_dir = get_stylesheet_directory().'/languages';
+			if(!is_dir($lang_dir)) {
+				mkdir($lang_dir , 0777);
+        	}
+			copy( __DIR__.'/assets/languages/en_US.po', $lang_dir.'/en_US.po' );
+			copy( __DIR__.'/assets/languages/en_US.mo', $lang_dir.'/en_US.mo' );
+		}
+
+		function testTranslate() {
+			$this->_setupTranslationFiles();
+			$theme = wp_get_theme();
+			$td = $theme->get('TextDomain');
+			$str = "I like {{ __('thingy', '$td')}}";
+			$return = Timber::compile_string($str, array('foo' => 'foo'));
+			$this->assertEquals('I like Cheesy Poofs', $return);
+
+			$str = "I like {{ __('doobie', '$td')}}";
+			$return = Timber::compile_string($str, array('foo' => 'foo'));
+			$this->assertEquals('I like doobie', $return);
+		}
+
 		function testDoAction(){
 			global $action_tally;
 			global $php_unit;
