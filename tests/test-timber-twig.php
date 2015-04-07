@@ -2,12 +2,6 @@
 
 	class TimberTestTwig extends WP_UnitTestCase {
 
-		function testFormat() {
-			$str = '{{ "I like %s and %s"|format(foo, "bar") }}';
-			$return = Timber::compile_string($str, array('foo' => 'foo'));
-			$this->assertEquals('I like foo and bar', $return);
-		}
-
 		function _setupTranslationFiles() {
 			$lang_dir = get_stylesheet_directory().'/languages';
 			if(!is_dir($lang_dir)) {
@@ -15,6 +9,12 @@
         	}
 			copy( __DIR__.'/assets/languages/en_US.po', $lang_dir.'/en_US.po' );
 			copy( __DIR__.'/assets/languages/en_US.mo', $lang_dir.'/en_US.mo' );
+		}
+
+		function testFormat() {
+			$str = '{{ "I like %s and %s"|format(foo, "bar") }}';
+			$return = Timber::compile_string($str, array('foo' => 'foo'));
+			$this->assertEquals('I like foo and bar', $return);
 		}
 
 		function testTranslate() {
@@ -28,6 +28,21 @@
 			$str = "I like {{ __('doobie', '$td')}}";
 			$return = Timber::compile_string($str, array('foo' => 'foo'));
 			$this->assertEquals('I like doobie', $return);
+		}
+
+		function testTranslateAndFormat() {
+			$this->_setupTranslationFiles();
+			$theme = wp_get_theme();
+			$td = $theme->get('TextDomain');
+
+			$str = "You like {{__('%s', '$td')|format('thingy')}}";
+			$return = Timber::compile_string($str);
+			$this->assertEquals('You like thingy', $return);
+
+			$str = "You like {{__('%s'|format('thingy'), '$td')}}";
+			$return = Timber::compile_string($str);
+			$this->assertEquals('You like Cheesy Poofs', $return);
+
 		}
 
 		function testDoAction(){
