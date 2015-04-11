@@ -33,7 +33,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
         return $this->name;
     }
 
-    
+
 
     /* Setup
     ===================== */
@@ -43,8 +43,13 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
      */
     private function get_term_from_query() {
         global $wp_query;
-        $qo = $wp_query->queried_object;
-        return $qo->term_id;
+        if (isset($wp_query->queried_object)) {
+        	$qo = $wp_query->queried_object;
+        	return $qo->term_id;
+    	}
+    	if (isset($wp_query->tax_query->queries[0]['terms'][0])) {
+    		return $wp_query->tax_query->queries[0]['terms'][0];
+    	}
     }
 
     /**
