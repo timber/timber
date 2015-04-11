@@ -153,6 +153,7 @@ class TimberArchives extends TimberCore
             $limit = absint($limit);
             $limit = ' LIMIT ' . $limit;
         }
+        echo 'post_type='.$post_type;
 
         $order = strtoupper($order);
         if ($order !== 'ASC') {
