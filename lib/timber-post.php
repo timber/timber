@@ -33,23 +33,37 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
      * @return \TimberPost TimberPost object -- woo!
      */
     function __construct($pid = null) {
-        global $wp_query;
-        if ($pid === null && isset($wp_query->queried_object_id) && $wp_query->queried_object_id) {
-            $pid = $wp_query->queried_object_id;
-            $this->ID = $pid;
-        } else if ($pid === null && get_the_ID()) {
-            $pid = get_the_ID();
-            $this->ID = $pid;
-        } else if ($pid === null && ($pid_from_loop = TimberPostGetter::loop_to_id())) {
-            $this->ID = $pid_from_loop;
-        }
-        if (is_numeric($pid)) {
-            $this->ID = $pid;
-        }
+    	$pid = $this->determine_id( $pid );
         $this->init($pid);
     }
 
-     /**
+    /**
+     * @param mixed a value to test against
+     * @return int the numberic id we should be using for this post object
+     */
+
+    protected function determine_id($pid) {
+    	global $wp_query;
+        if ($pid === null &&
+        	isset($wp_query->queried_object_id)
+        	&& $wp_query->queried_object_id
+        	&& isset($wp_query->queried_object)
+        	&& is_object($wp_query->queried_object)
+        	&& get_class($wp_query->queried_object) == 'WP_Post'
+        	) {
+            $pid = $wp_query->queried_object_id;
+    	} else if ($wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id )  {
+    		//hack for static page as home page
+    		$pid = $wp_query->queried_object_id;
+        } else if ($pid === null && get_the_ID()) {
+            $pid = get_the_ID();
+        } else if ($pid === null && ($pid_from_loop = TimberPostGetter::loop_to_id())) {
+            $pid = $pid_from_loop;
+        }
+        return $pid;
+    }
+
+    /**
      * @return string
      */
     function __toString() {
@@ -64,6 +78,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		if ($pid === false) {
 			$pid = get_the_ID();
 		}
+		if (is_numeric($pid)) {
+            $this->ID = $pid;
+        }
 		$post_info = $this->get_info($pid);
 		$this->import($post_info);
 		/* deprecated, adding for support for older themes */
