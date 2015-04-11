@@ -8,8 +8,11 @@
 				$this->factory->post->create(array('post_date' => $date.' 19:46:41'));
 			}
 			$this->go_to('/');
-			$archives = new TimberArchives();
+			$archives = new TimberArchives(array('nested' => false, 'show_year' => false));
+			$this->assertEquals('December', $archives->items[0]['name']);
 			$this->assertEquals(3, count($archives->items));
+			$archives = new TimberArchives(array('nested' => false, 'show_year' => true));
+			$this->assertEquals('December 2013', $archives->items[0]['name']);
 		}
 
 		function testArchiveYearlyMonthly(){
@@ -19,8 +22,8 @@
 				$this->factory->post->create(array('post_date' => $date.' 19:46:41'));
 			}
 			$this->go_to('/');
-			$archives = new TimberArchives();
-			$this->assertEquals(4, count($archives->items));
+			$archives = new TimberArchives(array('nested' => true));
+			$this->assertEquals(2, count($archives->items));
 		}
 
 		function testArchivesWithArgs() {
@@ -36,8 +39,9 @@
 			}
 			$this->go_to('/');
 			$archives = new TimberArchives();
-			$this->assertEquals(4, count($archives->items));
-			$archives = new TimberArchives(array('post_type' => 'book'));
+
+			$this->assertEquals(2, count($archives->items));
+			$archives = new TimberArchives(array('post_type' => 'book', 'nested' => false));
 			$this->assertEquals(5, count($archives->items));
 		}
 
