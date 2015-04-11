@@ -130,16 +130,20 @@ class TimberArchives extends TimberCore
             'order' => 'DESC',
             'post_type' => 'post',
             'show_year' => false,
+            'nested' => false
         );
 
         $args = wp_parse_args($args, $defaults);
         $post_type = $args['post_type'];
         $order = $args['order'];
+        $nested = $args['nested'];
         $type = $args['type'];
         $limit = '';
-        $nested = true;
-        if ($type == 'monthly' || $type == 'yearly') {
-        	$nested = false;
+        if ( $type == 'yearlymonthly' || $type == 'yearmonth' ) {
+        	$type = 'monthly-nested';
+        }
+        if ( $type == 'monthly-nested' ) {
+        	$nested = true;
         }
         $before = $args['before'];
         $after = $args['after'];
@@ -186,7 +190,7 @@ class TimberArchives extends TimberCore
             $output = $this->get_items_montly($args, $last_changed, $join, $where, $order, $limit, $nested);
         } elseif ('yearly' == $type) {
             $output = $this->get_items_yearly($args, $last_changed, $join, $where, $order, $limit);
-        } elseif ('yearlymonthly' == $type || 'yearmonth' == $type || 'monthly-nested') {
+        } elseif ('monthly-nested' == $type) {
             $years = $this->get_items_yearly($args, $last_changed, $join, $where, $order, $limit);
             foreach ($years as &$year) {
                 $args = array('show_year' => false);

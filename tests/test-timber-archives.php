@@ -25,6 +25,17 @@
 			$this->assertEquals(3, count($archives->items));
 		}
 
+		function testArchiveDaily(){
+			$dates = array('2013-11-08', '2013-12-08', '2013-11-09', '2013-11-09', '2013-06-08', '2014-01-08'
+				);
+			foreach( $dates as $date ) {
+				$this->factory->post->create(array('post_date' => $date.' 19:46:41'));
+			}
+			$this->go_to('/');
+			$archives = new TimberArchives(array('type' => 'daily'));
+			$this->assertEquals(5, count($archives->items));
+		}
+
 		function testArchiveYearlyMonthly(){
 			$dates = array('2013-11-08', '2013-12-08', '2013-11-09', '2013-06-08', '2014-01-08'
 				);
