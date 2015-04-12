@@ -124,8 +124,6 @@ class TimberArchives extends TimberCore
         $defaults = array(
             'type' => 'monthly-nested',
             'limit' => '',
-            'before' => '',
-            'after' => '',
             'show_post_count' => false,
             'order' => 'DESC',
             'post_type' => 'post',
@@ -145,8 +143,6 @@ class TimberArchives extends TimberCore
         if ( $type == 'monthly-nested' ) {
         	$nested = true;
         }
-        $before = $args['before'];
-        $after = $args['after'];
 
         if (!empty($args['limit'])) {
             $limit = absint($limit);
@@ -259,7 +255,7 @@ class TimberArchives extends TimberCore
                         } else {
                             $text = $result->ID;
                         }
-                        $output .= get_archives_link($url, $text, 'html', $before, $after);
+             			$output[] = $this->get_archives_link($url, $text);
                     }
                 }
             }

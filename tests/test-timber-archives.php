@@ -45,6 +45,35 @@
 			$this->go_to('/');
 			$archives = new TimberArchives(array('type' => 'monthly-nested'));
 			$this->assertEquals(2, count($archives->items));
+			$archives = new TimberArchives(array('type' => 'yearlymonthly'));
+			$this->assertEquals(2, count($archives->items));
+		}
+
+		function testArchiveWeekly(){
+			$dates = array('2015-03-02', '2015-03-09', '2015-03-16', '2015-03-21', '2015-03-22'
+				);
+			foreach( $dates as $date ) {
+				$this->factory->post->create(array('post_date' => $date.' 19:46:41'));
+			}
+			$this->go_to('/');
+			$archives = new TimberArchives(array('type' => 'weekly'));
+			$this->assertEquals(3, count($archives->items));
+		}
+
+		function testArchiveAlpha(){
+			$posts = array(
+				array('date' => '2015-03-02', 'post_title' => 'Jared loves Lauren'),
+				array('date' => '2015-03-02', 'post_title' => 'Another fantastic post'),
+				array('date' => '2015-03-02', 'post_title' => 'Foobar'),
+				array('date' => '2015-03-02', 'post_title' => 'Quack Quack'),
+			);
+			foreach( $posts as $post ) {
+				$this->factory->post->create(array('post_date' => $post['date'].' 19:46:41', 'post_title' => $post['post_title']));
+			}
+			$this->go_to('/');
+			$archives = new TimberArchives(array('type' => 'alpha'));
+			$this->assertEquals(4, count($archives->items));
+			$this->assertEquals('Quack Quack', $archives->items[3]['name']);
 		}
 
 		function testArchivesWithArgs() {
