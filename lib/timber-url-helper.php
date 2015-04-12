@@ -59,7 +59,7 @@ class TimberURLHelper {
             return $url;
         }
         $link = '';
-        if (isset($url_info['path'])){ 
+        if (isset($url_info['path'])){
             $link = $url_info['path'];
         }
         if (isset($url_info['query']) && strlen($url_info['query'])) {
@@ -96,7 +96,7 @@ class TimberURLHelper {
 
     /**
      * Takes a url and figures out its place based in the file system based on path
-     * NOTE: Not fool-proof, makes a lot of assumptions about the file path 
+     * NOTE: Not fool-proof, makes a lot of assumptions about the file path
      * matching the URL path
      * @param string $url
      * @return string
@@ -148,6 +148,12 @@ class TimberURLHelper {
         if (strstr(strtolower($url), 'http')) {
             $url_parts = parse_url($url);
             $url = $url_parts['scheme'] . '://' . $url_parts['host'] . $path . $url_parts['path'];
+            if ( isset($url_parts['query']) ) {
+            	$url .= $url_parts['query'];
+            }
+            if ( isset($url_parts['fragment']) ) {
+            	$url .= $url_parts['fragment'];
+            }
         } else {
             $url = $url . $path;
         }
@@ -175,7 +181,7 @@ class TimberURLHelper {
     /**
      * @param string $url
      * @return bool     true if $path is an external url, false if relative or local.
-     *                  true if it's a subdomain (http://cdn.example.org = true)  
+     *                  true if it's a subdomain (http://cdn.example.org = true)
      */
     public static function is_external($url) {
         $has_http = strstr(strtolower($url), 'http');
