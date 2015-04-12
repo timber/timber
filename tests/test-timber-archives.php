@@ -48,6 +48,7 @@
 		}
 
 		function testArchivesWithArgs() {
+			register_post_type('book');
 			$dates = array('2013-11-08', '2013-12-08', '2013-11-09', '2013-06-08', '2014-01-08'
 				);
 			foreach($dates as $date) {
