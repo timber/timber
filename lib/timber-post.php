@@ -55,9 +55,17 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     	} else if ($wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id )  {
     		//hack for static page as home page
     		$pid = $wp_query->queried_object_id;
-        } else if ($pid === null && get_the_ID()) {
-            $pid = get_the_ID();
-        } else if ($pid === null && ($pid_from_loop = TimberPostGetter::loop_to_id())) {
+        } else if ($pid === null) {
+        	$gtid = false;
+    		$maybe_post = get_post();
+    		if (isset($maybe_post->ID)){
+    			$gtid = true;
+    		}
+    		if ( $gtid ) {
+        	    $pid = get_the_ID();
+    		}
+        }
+        if ($pid === null && ($pid_from_loop = TimberPostGetter::loop_to_id())) {
             $pid = $pid_from_loop;
         }
         return $pid;
