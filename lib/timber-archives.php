@@ -74,13 +74,11 @@ class TimberArchives extends TimberCore
         global $wpdb, $wp_locale;
         $output = array();
         $defaults = array(
-            'show_year' => true,
+            'show_year' => false,
         );
         $r = wp_parse_args($args, $defaults);
 
         $show_year = $r['show_year'];
-        extract($r, EXTR_SKIP);
-
         //will need to specify which year we're looking for
         $query = "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts "
             . "FROM $wpdb->posts $join $where GROUP BY YEAR(post_date), MONTH(post_date) "
@@ -94,8 +92,6 @@ class TimberArchives extends TimberCore
         if ($results) {
             foreach ((array)$results as $result) {
                 $url = get_month_link($result->year, $result->month);
-                /* translators: 1: month name, 2: 4-digit year */
-
                 if ($show_year && !$nested) {
                     $text = sprintf(__('%1$s %2$d'), $wp_locale->get_month($result->month), $result->year);
                 } else {
@@ -126,30 +122,29 @@ class TimberArchives extends TimberCore
         global $wpdb;
 
         $defaults = array(
-            'type' => 'monthly', 'limit' => '',
-            'format' => 'html', 'before' => '',
-            'after' => '', 'show_post_count' => false,
+            'type' => 'monthly-nested',
+            'limit' => '',
+            'show_post_count' => false,
             'order' => 'DESC',
             'post_type' => 'post',
-            'nested' => true
+            'show_year' => false,
+            'nested' => false
         );
 
-        $r = wp_parse_args($args, $defaults);
-        $type = $limit = $order = $post_type = $nested = $format = $before = $after = null;
-        extract($r, EXTR_SKIP);
-
-        if (empty($order)){
-        	$order = 'DESC';
+        $args = wp_parse_args($args, $defaults);
+        $post_type = $args['post_type'];
+        $order = $args['order'];
+        $nested = $args['nested'];
+        $type = $args['type'];
+        $limit = '';
+        if ( $type == 'yearlymonthly' || $type == 'yearmonth' ) {
+        	$type = 'monthly-nested';
+        }
+        if ( $type == 'monthly-nested' ) {
+        	$nested = true;
         }
 
-        if (empty($post_type)){
-        	$post_type = 'post';
-        }
-        if (empty($type)) {
-            $type = 'monthly';
-        }
-
-        if (!empty($limit)) {
+        if (!empty($args['limit'])) {
             $limit = absint($limit);
             $limit = ' LIMIT ' . $limit;
         }
@@ -178,11 +173,10 @@ class TimberArchives extends TimberCore
             $archive_week_end_date_format = get_option('date_format');
         }
 
-        $where = apply_filters('getarchives_where', 'WHERE post_type = "' . $post_type . '" AND post_status = "publish"', $r);
-        $join = apply_filters('getarchives_join', '', $r);
+        $where = apply_filters('getarchives_where', 'WHERE post_type = "' . $post_type . '" AND post_status = "publish"', $args);
+        $join = apply_filters('getarchives_join', '', $args);
 
         $output = array();
-
         $last_changed = wp_cache_get('last_changed', 'posts');
         if (!$last_changed) {
             $last_changed = microtime();
@@ -192,7 +186,7 @@ class TimberArchives extends TimberCore
             $output = $this->get_items_montly($args, $last_changed, $join, $where, $order, $limit, $nested);
         } elseif ('yearly' == $type) {
             $output = $this->get_items_yearly($args, $last_changed, $join, $where, $order, $limit);
-        } elseif ('yearlymonthly' == $type || 'yearmonth' == $type) {
+        } elseif ('monthly-nested' == $type) {
             $years = $this->get_items_yearly($args, $last_changed, $join, $where, $order, $limit);
             foreach ($years as &$year) {
                 $args = array('show_year' => false);
@@ -261,7 +255,7 @@ class TimberArchives extends TimberCore
                         } else {
                             $text = $result->ID;
                         }
-                        $output .= get_archives_link($url, $text, $format, $before, $after);
+             			$output[] = $this->get_archives_link($url, $text);
                     }
                 }
             }
