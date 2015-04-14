@@ -11,10 +11,12 @@ Author URI: http://upstatement.com/
 global $wp_version;
 global $timber;
 
-// we look for Composer files first in the theme (theme install)
+// we look for Composer files first in the plugins dir
 // then in the wp-content dir (site install)
-if (    file_exists( $composer_autoload = __DIR__ . '/vendor/autoload.php' )
-	|| file_exists( $composer_autoload = WP_CONTENT_DIR.'/vendor/autoload.php' ) ) {
+// and finally in the current themes directory
+if (   file_exists( $composer_autoload = __DIR__ . '/vendor/autoload.php' )
+	|| file_exists( $composer_autoload = WP_CONTENT_DIR.'/vendor/autoload.php')
+	|| file_exists( $composer_autoload = get_template_directory().'/vendor/autoload.php')) {
 	require_once $composer_autoload;
 }
 
