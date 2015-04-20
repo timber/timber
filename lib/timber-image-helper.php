@@ -36,6 +36,10 @@ class TimberImageHelper {
      * @return string (ex: )
      */
     public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
+        if (!is_numeric($w)) {
+            // throw new InvalidArgumentException('Resize by named size is not implemented yet');
+            return null;
+        }
         $op = new TimberImageOperationResize($w, $h, $crop);
         return self::_operate($src, $op, $force);
     }
