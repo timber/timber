@@ -70,7 +70,7 @@ class TimberArchives extends TimberCore
      * @param bool $nested
      * @return array
      */
-    function get_items_montly($args, $last_changed, $join, $where, $order, $limit = 1000, $nested = true) {
+    function get_items_monthly($args, $last_changed, $join, $where, $order, $limit = 1000, $nested = true) {
         global $wpdb, $wp_locale;
         $output = array();
         $defaults = array(
@@ -183,14 +183,14 @@ class TimberArchives extends TimberCore
             wp_cache_set('last_changed', $last_changed, 'posts');
         }
         if ('monthly' == $type) {
-            $output = $this->get_items_montly($args, $last_changed, $join, $where, $order, $limit, $nested);
+            $output = $this->get_items_monthly($args, $last_changed, $join, $where, $order, $limit, $nested);
         } elseif ('yearly' == $type) {
             $output = $this->get_items_yearly($args, $last_changed, $join, $where, $order, $limit);
         } elseif ('monthly-nested' == $type) {
             $years = $this->get_items_yearly($args, $last_changed, $join, $where, $order, $limit);
             foreach ($years as &$year) {
                 $args = array('show_year' => false);
-                $year['children'] = $this->get_items_montly($args, $last_changed, $join, $where, $order, $limit);
+                $year['children'] = $this->get_items_monthly($args, $last_changed, $join, $where, $order, $limit);
             }
             $output = $years;
         } elseif ('daily' == $type) {
