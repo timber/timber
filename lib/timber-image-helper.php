@@ -51,19 +51,31 @@ class TimberImageHelper {
     /**
      * Find the sizes of an image based on a defined image size
      * @param  string $size the image size to search for
-     *                      can be WordPress-defined ("medium") or user-defined ("my-awesome-size")
+     *                      can be WordPress-defined ("medium")
+     *                      or user-defined ("my-awesome-size")
      * @return array {
+     *     @type int w
+     *     @type int h
      * }
      */
     private static function find_wp_dimensions($size) {
+
+    	// if ( in_array( $_size, array( 'thumbnail', 'medium', 'large' ) ) ) {
+
+     //                    $sizes[ $_size ]['width'] = get_option( $_size . '_size_w' );
+     //                    $sizes[ $_size ]['height'] = get_option( $_size . '_size_h' );
     	global $_wp_additional_image_sizes;
     	if (isset($_wp_additional_image_sizes[$size])) {
-    		$h = $_wp_additional_image_sizes[$size]['height'];
     		$w = $_wp_additional_image_sizes[$size]['width'];
-    		return array('w' => $w, 'h' => $h);
-    	} else {
-    		return false;
+    		$h = $_wp_additional_image_sizes[$size]['height'];
+    	} else if (in_array($size, array('thumbnail', 'medium', 'large'))) {
+    		$w = get_option($size.'_size_w');
+    		$h = get_option($size.'_size_h');
     	}
+    	if (isset($w) && isset($h) && ($w || $h)) {
+    		return array('w' => $w, 'h' => $h);
+    	}
+    	return false;
     }
 
     /**

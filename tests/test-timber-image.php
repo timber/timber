@@ -603,4 +603,28 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertFileExists($resized_path);
 	}
 
+	function testPostThumbnailsWithWPName() {
+		$upload_dir = wp_upload_dir();
+		$post_id = $this->factory->post->create();
+		$filename = self::copyTestImage('flag.png');
+		$destination_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
+		$wp_filetype = wp_check_filetype(basename($filename), null);
+		$attachment = array(
+			'post_mime_type' => $wp_filetype['type'],
+			'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
+			'post_content' => '',
+			'post_status' => 'inherit',
+		);
+		$attach_id = wp_insert_attachment($attachment, $filename, $post_id);
+		add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
+		$data = array();
+		$data['post'] = new TimberPost($post_id);
+		$data['size'] = 'medium';
+		$result = Timber::compile('assets/image-thumb-named.twig', $data);
+		$filename = 'flag-300x300-c-default.png';
+		$resized_path = $upload_dir['path'].'/'.$filename;
+		$this->assertFileExists($resized_path);
+		$this->assertEquals('<img src="'.$upload_dir['url'].'/'.$filename.'" />', trim($result));
+	}
+
 }
