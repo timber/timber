@@ -28,17 +28,21 @@ class TimberImageHelper {
      * Generates a new image with the specified dimensions.
      * New dimensions are achieved by cropping to maintain ratio.
      *
-     * @param string  $src an URL (absolute or relative) to the original image
-     * @param int     $w target width
-     * @param int     $h target heighth
-     * @param string  $crop
-     * @param bool    $force_resize
+     * @param string  		$src an URL (absolute or relative) to the original image
+     * @param int|string	$w target width(int) or WordPress image size (WP-set or user-defined)
+     * @param int     		$h target height (ignored if $w is WP image size)
+     * @param string  		$crop
+     * @param bool    		$force_resize
      * @return string (ex: )
      */
     public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
-        if (!is_numeric($w)) {
-            // throw new InvalidArgumentException('Resize by named size is not implemented yet');
-            return null;
+    	error_log('resize w = ' .$w);
+        if (!is_numeric($w) && is_string($w)) {
+        	global $_wp_additional_image_sizes;
+        	if (isset($_wp_additional_image_sizes[$w])) {
+        		$h = $_wp_additional_image_sizes[$w]['height'];
+        		$w = $_wp_additional_image_sizes[$w]['width'];
+        	}
         }
         $op = new TimberImageOperationResize($w, $h, $crop);
         return self::_operate($src, $op, $force);

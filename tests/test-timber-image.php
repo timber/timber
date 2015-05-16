@@ -559,7 +559,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$url = $upload_dir['url'].'/arch.jpg';
 		$data['test_image'] = $url;
 		Timber::compile('assets/image-resize-named.twig', $data);
-		$resized_path = $upload_dir['path'].'/arch-'.$width.'x'.$height.'.jpg';
+		$resized_path = $upload_dir['path'].'/arch-'.$width.'x'.$height.'-c-default.jpg';
 		$this->assertFileExists($resized_path);
 		//Now make sure it doesn't regenerate
 		$old_time = filemtime($resized_path);
