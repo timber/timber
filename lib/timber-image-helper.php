@@ -36,16 +36,34 @@ class TimberImageHelper {
      * @return string (ex: )
      */
     public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
-    	error_log('resize w = ' .$w);
         if (!is_numeric($w) && is_string($w)) {
-        	global $_wp_additional_image_sizes;
-        	if (isset($_wp_additional_image_sizes[$w])) {
-        		$h = $_wp_additional_image_sizes[$w]['height'];
-        		$w = $_wp_additional_image_sizes[$w]['width'];
+        	if ($sizes = self::find_wp_dimensions($w)) {
+        		$w = $sizes['w'];
+        		$h = $sizes['h'];
+        	} else {
+        		return $src;
         	}
         }
         $op = new TimberImageOperationResize($w, $h, $crop);
         return self::_operate($src, $op, $force);
+    }
+
+    /**
+     * Find the sizes of an image based on a defined image size
+     * @param  string $size the image size to search for
+     *                      can be WordPress-defined ("medium") or user-defined ("my-awesome-size")
+     * @return array {
+     * }
+     */
+    private static function find_wp_dimensions($size) {
+    	global $_wp_additional_image_sizes;
+    	if (isset($_wp_additional_image_sizes[$size])) {
+    		$h = $_wp_additional_image_sizes[$size]['height'];
+    		$w = $_wp_additional_image_sizes[$size]['width'];
+    		return array('w' => $w, 'h' => $h);
+    	} else {
+    		return false;
+    	}
     }
 
     /**

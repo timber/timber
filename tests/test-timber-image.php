@@ -569,6 +569,17 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals($old_time, $new_time);
 	}
 
+	function testBogusResizeNamed() {
+		$data = array();
+		$data['size'] = 'timber-foobar';
+		$upload_dir = wp_upload_dir();
+		self::copyTestImage();
+		$url = $upload_dir['url'].'/arch.jpg';
+		$data['test_image'] = $url;
+		$result = Timber::compile('assets/image-resize-named.twig', $data);
+		$this->assertEquals('<img src="'.$url.'" />', trim($result));
+	}
+
 	function testPostThumbnailsNamed() {
 		add_image_size('timber-testPostThumbnailsNamed', $width = 100, $height = 50, $crop = true);
 		$upload_dir = wp_upload_dir();
@@ -586,9 +597,9 @@ class TimberImageTest extends WP_UnitTestCase {
 		add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
 		$data = array();
 		$data['post'] = new TimberPost($post_id);
-		$data['size'] = 'testPostThumbnailsNamed';
+		$data['size'] = 'timber-testPostThumbnailsNamed';
 		Timber::compile('assets/image-thumb-named.twig', $data);
-		$resized_path = $upload_dir['path'].'/flag-'.$width.'x'.$height.'.png';
+		$resized_path = $upload_dir['path'].'/flag-'.$width.'x'.$height.'-c-default.png';
 		$this->assertFileExists($resized_path);
 	}
 

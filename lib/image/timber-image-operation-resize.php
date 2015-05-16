@@ -2,14 +2,14 @@
 /**
  * Changes image to new size, by shrinking/enlarging
  * then cropping to respect new ratio.
- * 
+ *
  * Arguments:
  * - width of new image
  * - height of new image
- * - crop method 
+ * - crop method
  */
 class TimberImageOperationResize extends TimberImageOperation {
-   
+
    private $w, $h, $crop;
 
     /**
@@ -31,7 +31,7 @@ class TimberImageOperationResize extends TimberImageOperation {
     /**
      * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
      * @param   string    $src_extension    the extension (ex: .jpg)
-     * @return  string    the final filename to be used (ex: my-awesome-pic-300x200-c-default.jpg) 
+     * @return  string    the final filename to be used (ex: my-awesome-pic-300x200-c-default.jpg)
      */
     public function filename($src_filename, $src_extension) {
         $result = $src_filename . '-' . $this->w . 'x' . $this->h . '-c-' . ( $this->crop ? $this->crop : 'f' ); // Crop will be either user named or f (false)
@@ -44,10 +44,10 @@ class TimberImageOperationResize extends TimberImageOperation {
     /**
      * Performs the actual image manipulation,
      * including saving the target file.
-     * 
-     * @param  string $load_filename filepath (not URL) to source file 
+     *
+     * @param  string $load_filename filepath (not URL) to source file
      *                               (ex: /src/var/www/wp-content/uploads/my-pic.jpg)
-     * @param  string $save_filename filepath (not URL) where result file should be saved 
+     * @param  string $save_filename filepath (not URL) where result file should be saved
      *                               (ex: /src/var/www/wp-content/uploads/my-pic-300x200-c-default.jpg)
      * @return bool                  true if everything went fine, false otherwise
      */
