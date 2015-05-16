@@ -550,4 +550,46 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals('<img src="http://example.org/wp-content/uploads/2015/'.$m.'/arch-510x280-c-default.jpg" />', $result);
 	}
 
+	function testResizeNamed() {
+		add_image_size('timber-testResizeNamed', $width = 600, $height = 400, $crop = true);
+		$data = array();
+		$data['size'] = 'timber-testResizeNamed';
+		$upload_dir = wp_upload_dir();
+		self::copyTestImage();
+		$url = $upload_dir['url'].'/arch.jpg';
+		$data['test_image'] = $url;
+		Timber::compile('assets/image-resize-named.twig', $data);
+		$resized_path = $upload_dir['path'].'/arch-'.$width.'x'.$height.'.jpg';
+		$this->assertFileExists($resized_path);
+		//Now make sure it doesn't regenerate
+		$old_time = filemtime($resized_path);
+		sleep(1);
+		Timber::compile('assets/image-resize-named.twig', $data);
+		$new_time = filemtime($resized_path);
+		$this->assertEquals($old_time, $new_time);
+	}
+
+	function testPostThumbnailsNamed() {
+		add_image_size('timber-testPostThumbnailsNamed', $width = 100, $height = 50, $crop = true);
+		$upload_dir = wp_upload_dir();
+		$post_id = $this->factory->post->create();
+		$filename = self::copyTestImage('flag.png');
+		$destination_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
+		$wp_filetype = wp_check_filetype(basename($filename), null);
+		$attachment = array(
+			'post_mime_type' => $wp_filetype['type'],
+			'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
+			'post_content' => '',
+			'post_status' => 'inherit',
+		);
+		$attach_id = wp_insert_attachment($attachment, $filename, $post_id);
+		add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
+		$data = array();
+		$data['post'] = new TimberPost($post_id);
+		$data['size'] = 'testPostThumbnailsNamed';
+		Timber::compile('assets/image-thumb-named.twig', $data);
+		$resized_path = $upload_dir['path'].'/flag-'.$width.'x'.$height.'.png';
+		$this->assertFileExists($resized_path);
+	}
+
 }
