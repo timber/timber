@@ -28,16 +28,54 @@ class TimberImageHelper {
      * Generates a new image with the specified dimensions.
      * New dimensions are achieved by cropping to maintain ratio.
      *
-     * @param string  $src an URL (absolute or relative) to the original image
-     * @param int     $w target width
-     * @param int     $h target heighth
-     * @param string  $crop
-     * @param bool    $force_resize
+     * @param string  		$src an URL (absolute or relative) to the original image
+     * @param int|string	$w target width(int) or WordPress image size (WP-set or user-defined)
+     * @param int     		$h target height (ignored if $w is WP image size)
+     * @param string  		$crop
+     * @param bool    		$force_resize
      * @return string (ex: )
      */
     public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
+        if (!is_numeric($w) && is_string($w)) {
+        	if ($sizes = self::find_wp_dimensions($w)) {
+        		$w = $sizes['w'];
+        		$h = $sizes['h'];
+        	} else {
+        		return $src;
+        	}
+        }
         $op = new TimberImageOperationResize($w, $h, $crop);
         return self::_operate($src, $op, $force);
+    }
+
+    /**
+     * Find the sizes of an image based on a defined image size
+     * @param  string $size the image size to search for
+     *                      can be WordPress-defined ("medium")
+     *                      or user-defined ("my-awesome-size")
+     * @return array {
+     *     @type int w
+     *     @type int h
+     * }
+     */
+    private static function find_wp_dimensions($size) {
+
+    	// if ( in_array( $_size, array( 'thumbnail', 'medium', 'large' ) ) ) {
+
+     //                    $sizes[ $_size ]['width'] = get_option( $_size . '_size_w' );
+     //                    $sizes[ $_size ]['height'] = get_option( $_size . '_size_h' );
+    	global $_wp_additional_image_sizes;
+    	if (isset($_wp_additional_image_sizes[$size])) {
+    		$w = $_wp_additional_image_sizes[$size]['width'];
+    		$h = $_wp_additional_image_sizes[$size]['height'];
+    	} else if (in_array($size, array('thumbnail', 'medium', 'large'))) {
+    		$w = get_option($size.'_size_w');
+    		$h = get_option($size.'_size_h');
+    	}
+    	if (isset($w) && isset($h) && ($w || $h)) {
+    		return array('w' => $w, 'h' => $h);
+    	}
+    	return false;
     }
 
     /**
