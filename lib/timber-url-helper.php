@@ -179,6 +179,22 @@ class TimberURLHelper {
     }
 
     /**
+     * This function is slightly different from the one below in the case of:
+     * an image hosted on the same domain BUT on a different site than the
+     * Wordpress install will be reported as external content.
+     * 
+     * @param  [type]  $url [description]
+     * @return boolean      if $url points to 
+     */
+    public static function is_external_content($url) {
+        // using content_url() instead of site_url or home_url is IMPORTANT
+        // otherwise you run into errors with sites that:
+        // 1. use WPML plugin
+        // 2. or redefine upload directory
+        $is_external = TimberURLHelper::is_absolute($path) && !strstr($path, content_url());
+    }
+
+    /**
      * @param string $url
      * @return bool     true if $path is an external url, false if relative or local.
      *                  true if it's a subdomain (http://cdn.example.org = true)

@@ -160,21 +160,6 @@ class TimberImageHelper {
 
 //-- end of public methods --//
 
-
-
-
-    /**
-     * @return boolean true if $path is an external url, false if relative or local.
-     */
-    protected static function is_external($path) {
-        // using content_url() instead of site_url or home_url is IMPORTANT
-        // otherwise you run into errors with sites that:
-        // 1. use WPML plugin
-        // 2. or redefine upload directory
-        $is_external = TimberURLHelper::is_absolute($path) && !strstr($path, content_url());
-        return $is_external;
-    }
-
     /**
      * Deletes resized versions of the supplied file name.
      * So if passed a value like my-pic.jpg, this function will delete my-pic-500x200-c-left.jpg, my-pic-400x400-c-default.jpg, etc.
@@ -421,7 +406,7 @@ class TimberImageHelper {
             return '';
         }
         // if external image, load it first
-        if ( self::is_external( $src ) ) {
+        if ( TimberURLHelper::is_external_content( $src ) ) {
             $src = self::sideload_image( $src );
         }
         // break down URL into components
