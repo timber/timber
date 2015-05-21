@@ -191,7 +191,7 @@ class TimberURLHelper {
         // otherwise you run into errors with sites that:
         // 1. use WPML plugin
         // 2. or redefine upload directory
-        $is_external = TimberURLHelper::is_absolute($path) && !strstr($path, content_url());
+        $is_external = TimberURLHelper::is_absolute($url) && !strstr($url, content_url());
     }
 
     /**
