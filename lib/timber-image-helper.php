@@ -167,10 +167,11 @@ class TimberImageHelper {
      * @return boolean true if $path is an external url, false if relative or local.
      */
     protected static function is_external($path) {
-        $is_external = TimberURLHelper::is_absolute($path) && !strstr($path, site_url());
-        if ($is_external) {
-            $is_external = TimberURLHelper::is_absolute($path) && !strstr($path, home_url());
-        }
+        // using content_url() instead of site_url or home_url is IMPORTANT
+        // otherwise you run into errors with sites that:
+        // 1. use WPML plugin
+        // 2. or redefine upload directory
+        $is_external = TimberURLHelper::is_absolute($path) && !strstr($path, content_url());
         return $is_external;
     }
 
