@@ -97,7 +97,14 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
         }
 
         if ($size && is_string($size) && isset($this->sizes[$size])) {
-            $image = image_downsize($this->ID, $size);
+            $imageUrl = wp_get_attachment_url($this->ID);
+            $filetype = wp_check_filetype($imageUrl);
+            if ($filetype['ext'] == 'gif') {
+                $image = image_downsize($this->ID, 'full');
+            }
+            else {
+                $image = image_downsize($this->ID, $size);
+            }
             return $this->_maybe_secure_url(reset($image));
         }
 
@@ -189,10 +196,6 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
         } else if (isset($this->_wp_attached_file)) {
             $this->file = reset($this->_wp_attached_file);
             $this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
-        } else if ( isset( $this->guid ) ) {
-            if ( TimberURLHelper::is_absolute( $this->guid ) ) {
-                $this->file_loc = TimberURLHelper::url_to_file_system( $this->guid );
-            }
         }
         if (isset($image_info['id'])) {
             $this->ID = $image_info['id'];
