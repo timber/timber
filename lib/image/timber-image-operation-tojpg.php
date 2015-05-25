@@ -48,7 +48,8 @@ class TimberImageOperationToJpg extends TimberImageOperation {
 	}
 
 	/**
-	 * @return  [description]
+	 * @return resource an image identifier representing the image obtained from the given filename
+	 *                  will return the same data type regardless of whether the source is gif or png
 	 */
 	function image_create( $filename, $ext = 'auto' ) {
 		if ( $ext == 'auto' ) {

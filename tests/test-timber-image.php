@@ -636,4 +636,15 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals('<img src="'.$jpg_url.'" />', $result);
 	}
 
+	function testResizeAnimatedGif() {
+		$filename = self::copyTestImage('loading.gif');
+		$gif_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
+		$str = '<img src="{{'."'$gif_url'".'|resize(200)}}" />';
+		$result = Timber::compile_string($str);
+		$resized_url = str_replace('loading.gif', 'loading-200x0-c-default.gif', $gif_url);
+		$resized_path = str_replace('http://example.org', ABSPATH, $resized_url);
+		$resized_path = TimberURLHelper::remove_double_slashes($resized_path);
+		$this->assertFileExists($resized_path);
+	}
+
 }
