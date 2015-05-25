@@ -47,9 +47,15 @@ class TimberImageOperationToJpg extends TimberImageOperation {
 		return true;
 	}
 
+	/**
+	 * @return  [description]
+	 */
 	function image_create( $filename, $ext = 'auto' ) {
 		if ( $ext == 'auto' ) {
-			//get file ext from file name
+			$ext = wp_check_filetype($filename);
+			if (isset($ext['ext'])) {
+				$ext = $ext['ext'];
+			}
 		}
 		if ( $ext == 'gif' ) {
 			return imagecreatefromgif($filename);

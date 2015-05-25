@@ -628,11 +628,12 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testGifToJpg() {
-		$gif = self::copyTestImage('loading.png');
+		$filename = self::copyTestImage('loading.gif');
 		$gif_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
 		$str = '<img src="{{'."'$gif_url'".'|tojpg}}" />';
 		$result = Timber::compile_string($str);
-		error_log($result);
+		$jpg_url = str_replace('.gif', '.jpg', $gif_url);
+		$this->assertEquals('<img src="'.$jpg_url.'" />', $result);
 	}
 
 }

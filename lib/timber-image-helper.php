@@ -116,8 +116,7 @@ class TimberImageHelper {
 	 * @return string
 	 */
 	public static function img_to_jpg( $src, $bghex = '#FFFFFF', $force = false ) {
-		if (strstr(strtolower($src), '.gif'))
-		$op = new TimberImageOperationPngToJpg($bghex);
+		$op = new TimberImageOperationToJpg($bghex);
 		return self::_operate($src, $op, $force);
 	}
 
