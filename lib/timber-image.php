@@ -97,13 +97,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
         }
 
         if ($size && is_string($size) && isset($this->sizes[$size])) {
-            $imageUrl = wp_get_attachment_url($this->ID);
-            $filetype = wp_check_filetype($imageUrl);
-            if ( $filetype['ext'] == 'gif' ) {
-                $image = image_downsize($this->ID, 'full');
-            } else {
-                $image = image_downsize($this->ID, $size);
-            }
+            $image = image_downsize($this->ID, $size);
             return $this->_maybe_secure_url(reset($image));
         }
 

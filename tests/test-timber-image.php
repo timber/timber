@@ -17,7 +17,7 @@ class TimberImageTest extends WP_UnitTestCase {
 
 	static function getTestImageURL( $img = 'arch.jpg', $relative = false) {
 		$upload_dir = wp_upload_dir();
-		$result = $upload_dir['url'].'/'.$img;;
+		$result = $upload_dir['url'].'/'.$img;
 		if ( $relative ) {
 			$result = str_replace(home_url(), '', $result);
 		}
@@ -627,6 +627,42 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals('<img src="'.$upload_dir['url'].'/'.$filename.'" />', trim($result));
 	}
 
+	function testImageSizeWithWPNameUsingNative(){
+		if (function_exists('override_function')) {
+			override_function('is_uploaded_file', '$filename', 'return file_exists($filename);');
+			override_function('move_uploaded_file', '$filename, $destination', 'return copy($filename, $destination);');
+		}
+		$filename = __DIR__.'/assets/tom-brady.jpg';
+		$filesize = filesize($filename);
+		$data = array('tmp_name' => $filename, 'name' => 'tom-brady.jpg', 'type' => 'image/jpg', 'size' => $filesize, 'error' => 0);
+		$this->assertTrue(file_exists($filename));
+		$_FILES['tester'] = $data;
+		$file_id = media_handle_upload('tester', 0, array(), array( 'test_form' => false));
+		$image = new TimberImage($file_id);
+		$str = '<img src="{{image.src(\'medium\')}}" />';
+		$result = Timber::compile_string($str, array('image' => $image));
+		$upload_dir = wp_upload_dir();
+		$this->assertEquals('<img src="'.$upload_dir['url'].'/'.$image->sizes['medium']['file'].'" />', trim($result));
+	}
+
+	function testImageSizeWithWPNameUsingNativeGif(){
+		if (function_exists('override_function')) {
+			override_function('is_uploaded_file', '$filename', 'return file_exists($filename);');
+			override_function('move_uploaded_file', '$filename, $destination', 'return copy($filename, $destination);');
+		}
+		$filename = __DIR__.'/assets/boyer.gif';
+		$filesize = filesize($filename);
+		$data = array('tmp_name' => $filename, 'name' => 'boyer.gif', 'type' => 'image/gif', 'size' => $filesize, 'error' => 0);
+		$this->assertTrue(file_exists($filename));
+		$_FILES['tester'] = $data;
+		$file_id = media_handle_upload('tester', 0, array(), array( 'test_form' => false));
+		$image = new TimberImage($file_id);
+		$str = '<img src="{{image.src(\'medium\')}}" />';
+		$result = Timber::compile_string($str, array('image' => $image));
+		$upload_dir = wp_upload_dir();
+		$this->assertEquals('<img src="'.$upload_dir['url'].'/'.$image->sizes['medium']['file'].'" />', trim($result));
+	}
+
 	function testGifToJpg() {
 		$filename = self::copyTestImage('loading.gif');
 		$gif_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
@@ -636,7 +672,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals('<img src="'.$jpg_url.'" />', $result);
 	}
 
-	function testResizeAnimatedGif() {
+	function testResizeGif() {
 		$filename = self::copyTestImage('loading.gif');
 		$gif_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
 		$str = '<img src="{{'."'$gif_url'".'|resize(200)}}" />';
