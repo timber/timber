@@ -638,6 +638,9 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertTrue(file_exists($filename));
 		$_FILES['tester'] = $data;
 		$file_id = media_handle_upload('tester', 0, array(), array( 'test_form' => false));
+		if (!is_int($file_id)) {
+			error_log(print_r($file_id, true));
+		}
 		$image = new TimberImage($file_id);
 		$str = '<img src="{{image.src(\'medium\')}}" />';
 		$result = Timber::compile_string($str, array('image' => $image));
@@ -656,6 +659,9 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertTrue(file_exists($filename));
 		$_FILES['tester'] = $data;
 		$file_id = media_handle_upload('tester', 0, array(), array( 'test_form' => false));
+		if (!is_int($file_id)) {
+			error_log(print_r($file_id, true));
+		}
 		$image = new TimberImage($file_id);
 		$str = '<img src="{{image.src(\'medium\')}}" />';
 		$result = Timber::compile_string($str, array('image' => $image));
