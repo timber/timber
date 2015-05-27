@@ -628,16 +628,13 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testImageSizeWithWPNameUsingNative(){
-		if (function_exists('override_function')) {
-			override_function('is_uploaded_file', '$filename', 'return file_exists($filename);');
-			override_function('move_uploaded_file', '$filename, $destination', 'return copy($filename, $destination);');
-		}
+		require_once('wp-overrides.php');
 		$filename = __DIR__.'/assets/tom-brady.jpg';
 		$filesize = filesize($filename);
 		$data = array('tmp_name' => $filename, 'name' => 'tom-brady.jpg', 'type' => 'image/jpg', 'size' => $filesize, 'error' => 0);
 		$this->assertTrue(file_exists($filename));
 		$_FILES['tester'] = $data;
-		$file_id = media_handle_upload('tester', 0, array(), array( 'test_form' => false));
+		$file_id = WP_Overrides::media_handle_upload('tester', 0, array(), array( 'test_form' => false));
 		if (!is_int($file_id)) {
 			error_log(print_r($file_id, true));
 		}
@@ -649,16 +646,13 @@ class TimberImageTest extends WP_UnitTestCase {
 	}
 
 	function testImageSizeWithWPNameUsingNativeGif(){
-		if (function_exists('override_function')) {
-			override_function('is_uploaded_file', '$filename', 'return file_exists($filename);');
-			override_function('move_uploaded_file', '$filename, $destination', 'return copy($filename, $destination);');
-		}
+		require_once('wp-overrides.php');
 		$filename = __DIR__.'/assets/boyer.gif';
 		$filesize = filesize($filename);
 		$data = array('tmp_name' => $filename, 'name' => 'boyer.gif', 'type' => 'image/gif', 'size' => $filesize, 'error' => 0);
 		$this->assertTrue(file_exists($filename));
 		$_FILES['tester'] = $data;
-		$file_id = media_handle_upload('tester', 0, array(), array( 'test_form' => false));
+		$file_id = WP_Overrides::media_handle_upload('tester', 0, array(), array( 'test_form' => false));
 		if (!is_int($file_id)) {
 			error_log(print_r($file_id, true));
 		}
