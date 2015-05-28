@@ -206,4 +206,21 @@
 			$str = Timber::compile_string("{{address | truncate(6)}}", array('address' => $gettysburg));
 			$this->assertEquals('Four score and seven years ago&amp;hellip;', $str);
 		}
+
+		function testSetSimple() {
+			$result = Timber::compile('assets/set-simple.twig', array('foo' => 'bar'));
+			$this->assertEquals('jiggy', trim($result));
+		}
+
+		/**
+     	* @expectedException Twig_Error_Syntax
+     	*/
+		function testSetObject() {
+			$pid = $this->factory->post->create(array('post_title' => 'Spaceballs'));
+			$post = new TimberPost( $pid );
+			$result = Timber::compile('assets/set-object.twig', array('post' => $post));
+			$this->assertEquals('Spaceballs: may the schwartz be with you', trim($result));
+		}
+
+
 	}
