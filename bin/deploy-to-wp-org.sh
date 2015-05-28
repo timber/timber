@@ -5,6 +5,7 @@ echo "You still need to use Versions to send to WP.org"
 function deploy () {
 	git checkout master
 	rm -rf ~/Sites/timber/vendor
+	rm -rf ~/Sites/timber/wp-content
 	cd ..
 	git clone git@github.com:Upstatement/timber-starter-theme.git
 	rm -rf ~/Sites/timber/timber-starter-theme/.git
