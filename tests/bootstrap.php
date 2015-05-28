@@ -7,7 +7,7 @@ require_once $_tests_dir . '/includes/functions.php';
 
 function _manually_load_plugin() {
 	require dirname( __FILE__ ) . '/../timber.php';
-	require dirname( __FILE__ ) . '/../vendor/AdvancedCustomFields/acf5-beta/acf/advanced-custom-fields-pro/acf.php';
+	require dirname( __FILE__ ) . '/../wp-content/plugins/advanced-custom-fields/acf.php';
 }
 
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );

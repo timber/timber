@@ -27,7 +27,7 @@
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",
 		"satooshi/php-coveralls": "dev-master",
-		"AdvancedCustomFields/acf5-beta": "5.0",
+		"wpackagist-plugin/advanced-custom-fields": "4.*",
 		"wp-cli/wp-cli": "*"
 	},
     "autoload": {
@@ -35,21 +35,8 @@
     },
 	"repositories": [
 		{
-			"type": "package",
-			"package": {
-				"name": "AdvancedCustomFields/acf5-beta",
-				"version": "5.0",
-				"dist": {
-					"url": "https://www.dropbox.com/s/763lrwuvonk0prb/advanced-custom-fields-pro.zip?dl=1",
-					"type": "zip"
-				},
-				"autoload": {
-					"psr-0": {
-						"acf\\advanced-custom-fields-pro": ""
-					}
-				},
-				"target-dir": "acf/advanced-custom-fields-pro"
-			}
-		}
+            "type":"composer",
+            "url":"http://wpackagist.org"
+        }
 	]
 }
