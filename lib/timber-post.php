@@ -52,7 +52,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
         	&& get_class($wp_query->queried_object) == 'WP_Post'
         	) {
             $pid = $wp_query->queried_object_id;
-    	} else if ($wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id )  {
+    	} else if ($pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id )  {
     		//hack for static page as home page
     		$pid = $wp_query->queried_object_id;
         } else if ($pid === null) {
