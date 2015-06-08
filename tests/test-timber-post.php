@@ -14,6 +14,7 @@
 			$comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
 			$post = new TimberPost($post_id);
 			$this->assertEquals( 5, count($post->get_comments()) );
+			$this->assertEquals( 5, $post->get_comment_count() );
 		}
 
 		function testNameMethod() {
@@ -508,6 +509,21 @@
 			$this->assertEquals('whatever', $tags[0]->slug);
 			$this->assertTrue($post->has_term('Dolphins'));
 			$this->assertTrue($post->has_term('Patriots', 'team'));
+		}
+
+		function testPostContentLength() {
+			$crawl = "The evil leaders of Planet Spaceball having foolishly spuandered their precious atmosphere, have devised a secret plan to take every breath of air away from their peace-loving neighbor, Planet Druidia. Today is Princess Vespa's wedding day. Unbeknownest to the princess, but knowest to us, danger lurks in the stars above...";
+			$pid = $this->factory->post->create(array('post_content' => $crawl));
+			$post = new TimberPost($pid);
+			$content = trim(strip_tags($post->get_content(6)));
+			$this->assertEquals("The evil leaders of Planet Spaceball&hellip;", $content);
+		}
+
+		function testPostTypeObject() {
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+			$pto = $post->get_post_type();
+			$this->assertEquals('Posts', $pto->label);
 		}
 
 	}
