@@ -64,6 +64,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     		if ( $gtid ) {
         	    $pid = get_the_ID();
     		}
+    		if ( !$pid ) {
+    			global $wp_query;
+    			if ( isset($wp_query->query['p']) ) {
+    				$pid = $wp_query->query['p'];
+    			}
+    		}
         }
         if ($pid === null && ($pid_from_loop = TimberPostGetter::loop_to_id())) {
             $pid = $pid_from_loop;
