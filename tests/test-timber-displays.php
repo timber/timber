@@ -18,7 +18,7 @@
 			$this->assertEquals($page_id, $post->ID);
 		}
 
-		function testSpecialPostPage() {
+		function testStaticPostPage() {
 			$page_id = $this->factory->post->create(array('post_title' => 'Gobbles', 'post_type' => 'page'));
 			update_option('page_for_posts', $page_id);
 			$this->go_to(home_url('/?p='.$page_id));
@@ -26,5 +26,14 @@
 			$posts = Timber::get_posts();
 			$first_post = $posts[0];
 			$this->assertEquals('Timmy', $first_post->title());
+		}
+
+		function testOtherPostOnStaticPostPage() {
+			$page_id = $this->factory->post->create(array('post_title' => 'Gobbles', 'post_type' => 'page'));
+			update_option('page_for_posts', $page_id);
+			$this->go_to(home_url('/?p='.$page_id));
+			$post_id = $this->factory->post->create(array('post_title' => 'My Real post', 'post_type' => 'post'));
+			$post = new TimberPost($post_id);
+			$this->assertEquals($post_id, $post->ID);
 		}
 	}

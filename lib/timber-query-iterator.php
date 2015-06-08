@@ -145,11 +145,12 @@ class TimberQueryIterator implements Iterator {
      * @return WP_Query
      */
     static function handle_maybe_custom_posts_page( $query ) {
-    	 if ($custom_posts_page = get_option('page_for_posts')) {
+    	if ($custom_posts_page = get_option('page_for_posts')) {
         	if ($query->query['p'] == $custom_posts_page) {
         		return new WP_Query(array('post_type' => 'post'));
         	}
         }
+        return $query;
     }
 
 }
