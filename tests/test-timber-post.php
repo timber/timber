@@ -13,7 +13,7 @@
 			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
 			$comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
 			$post = new TimberPost($post_id);
-			$this->assertEquals( 5, count($post->get_comments()) );
+			$this->assertEquals( 5, count($post->comments()) );
 			$this->assertEquals( 5, $post->get_comment_count() );
 		}
 
@@ -524,6 +524,18 @@
 			$post = new TimberPost($pid);
 			$pto = $post->get_post_type();
 			$this->assertEquals('Posts', $pto->label);
+		}
+
+		function testEditUrl() {
+			$pid = $this->factory->post->create(array('post_author' => 1));
+			$post = new TimberPost($pid);
+			$edit_url = $post->get_edit_url();
+			$this->assertEquals('', $edit_url);
+			wp_set_current_user(1);
+			$data = get_userdata(1);
+			$this->assertTrue($post->can_edit());
+			$this->assertEquals('http://example.org/wp-admin/post.php?post='.$pid.'&amp;action=edit', $post->get_edit_url());
+			//
 		}
 
 	}

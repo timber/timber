@@ -8,7 +8,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	public $object_type = 'post';
 	public static $representation = 'post';
 
-	public $_can_edit;
 	public $_custom_imported = false;
 	public $_content;
 	public $_get_terms;
