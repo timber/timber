@@ -43,7 +43,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	protected function determine_id($pid) {
 		global $wp_query;
-		if ($pid === null &&
+		if(!empty($pid)){
+        		// use pid passed
+		}elseif ($pid === null &&
 			isset($wp_query->queried_object_id)
 			&& $wp_query->queried_object_id
 			&& isset($wp_query->queried_object)
