@@ -145,7 +145,7 @@ class TimberHelper {
 		if ( is_object( $arg ) || is_array( $arg ) ) {
 			$arg = print_r( $arg, true );
 		}
-		error_log( $arg );
+		return error_log( $arg );
 	}
 
 	/**
@@ -237,8 +237,6 @@ class TimberHelper {
 	}
 
 	/**
-	 *
-	 *
 	 * @param string  $ret
 	 * @return string
 	 * @deprecated since 0.20.0
@@ -251,15 +249,13 @@ class TimberHelper {
 		$ret = preg_replace( $pattern, '<a href="mailto:\\1">\\1</a>', $ret );
 		$ret = preg_replace( "/\B@(\w+)/", " <a href=\"http://www.twitter.com/\\1\" target=\"_blank\">@\\1</a>", $ret );
 		$ret = preg_replace( "/\B#(\w+)/", " <a href=\"http://twitter.com/search?q=\\1\" target=\"_blank\">#\\1</a>", $ret );
-		return $ret;
+		return trim($ret);
 	}
 
 	/* WordPress Query Utilities
 	======================== */
 
 	/**
-	 *
-	 *
 	 * @param string  $key
 	 * @param string  $value
 	 * @return array|int
@@ -583,101 +579,99 @@ class TimberHelper {
 		return $page_links;
 	}
 
-	/* LEGACY These have since been re-organized; but keeping linkages for backwards-compatibility */
-
 	/**
-	 * @deprecated
+	 * @deprecated since 0.18.0
 	 */
 	static function get_image_path( $iid ) {
 		return TimberImageHelper::get_image_path( $iid );
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since 0.18.0
 	 */
 	static function get_current_url() {
 		return TimberURLHelper::get_current_url();
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since 0.18.0
 	 */
 	static function is_url( $url ) {
 		return TimberURLHelper::is_url( $url );
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since 0.18.0
 	 */
 	static function get_path_base() {
 		return TimberURLHelper::get_path_base();
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since 0.18.0
 	 */
 	static function get_rel_url( $url, $force = false ) {
 		return TimberURLHelper::get_rel_url( $url, $force );
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since 0.18.0
 	 */
 	static function is_local( $url ) {
 		return TimberURLHelper::is_local( $url );
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since 0.18.0
 	 */
 	static function get_full_path( $src ) {
 		return TimberURLHelper::get_full_path( $src );
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since 0.18.0
 	 */
 	static function get_rel_path( $src ) {
 		return TimberURLHelper::get_rel_path( $src );
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since 0.18.0
 	 */
 	static function remove_double_slashes( $url ) {
 		return TimberURLHelper::remove_double_slashes( $url );
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since 0.18.0
 	 */
 	static function prepend_to_url( $url, $path ) {
 		return TimberURLHelper::prepend_to_url( $url, $path );
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since 0.18.0
 	 */
 	static function preslashit( $path ) {
 		return TimberURLHelper::preslashit( $path );
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since 0.18.0
 	 */
 	static function is_external( $url ) {
 		return TimberURLHelper::is_external( $url );
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since 0.18.0
 	 */
 	static function download_url( $url, $timeout = 300 ) {
 		return TimberURLHelper::download_url( $url, $timeout );
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated since 0.18.0
 	 */
 	static function get_params( $i = -1 ) {
 		return TimberURLHelper::get_params( $i );

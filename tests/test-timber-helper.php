@@ -93,4 +93,11 @@
         	$this->assertFalse(TimberHelper::isodd(2));
         	$this->assertTrue(TimberHelper::isodd(7));
         }
+
+        function testErrorLog() {
+        	ob_start();
+        	$this->assertTrue(TimberHelper::error_log('foo'));
+        	$this->assertTrue(TimberHelper::error_log(array('Dark Helmet', 'Barf')));
+        	$data = ob_get_flush();
+        }
     }
