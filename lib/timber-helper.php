@@ -145,7 +145,7 @@ class TimberHelper {
 		if ( is_object( $arg ) || is_array( $arg ) ) {
 			$arg = print_r( $arg, true );
 		}
-		error_log( $arg );
+		return error_log( $arg );
 	}
 
 	/**
@@ -249,7 +249,7 @@ class TimberHelper {
 		$ret = preg_replace( $pattern, '<a href="mailto:\\1">\\1</a>', $ret );
 		$ret = preg_replace( "/\B@(\w+)/", " <a href=\"http://www.twitter.com/\\1\" target=\"_blank\">@\\1</a>", $ret );
 		$ret = preg_replace( "/\B#(\w+)/", " <a href=\"http://twitter.com/search?q=\\1\" target=\"_blank\">#\\1</a>", $ret );
-		return $ret;
+		return trim($ret);
 	}
 
 	/* WordPress Query Utilities
