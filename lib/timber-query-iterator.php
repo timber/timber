@@ -26,7 +26,8 @@ class TimberQueryIterator implements Iterator {
             // If query is explicitly set to false, use the main loop
             global $wp_query;
             $the_query =& $wp_query;
-
+            //if we're on a custom posts page?
+            $the_query = self::handle_maybe_custom_posts_page($the_query);
         } elseif ( TimberHelper::is_array_assoc( $query ) || ( is_string( $query ) && strstr( $query, '=' ) ) ) {
             // We have a regularly formed WP query string or array to use
             $the_query = new WP_Query( $query );
@@ -134,6 +135,20 @@ class TimberQueryIterator implements Iterator {
         if (isset($query->query) && isset($query->query['numberposts'])
                 && !isset($query->query['posts_per_page'])) {
             $query->set( 'posts_per_page', $query->query['numberposts'] );
+        }
+        return $query;
+    }
+
+    /**
+     * this will test for whether a custom page to display posts is active, and if so, set the query to the default
+     * @param  WP_Query $query the original query recived from WordPress
+     * @return WP_Query
+     */
+    static function handle_maybe_custom_posts_page( $query ) {
+    	if ($custom_posts_page = get_option('page_for_posts')) {
+        	if ( isset($query->query['p']) && $query->query['p'] == $custom_posts_page ) {
+        		return new WP_Query(array('post_type' => 'post'));
+        	}
         }
         return $query;
     }

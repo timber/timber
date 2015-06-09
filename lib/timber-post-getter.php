@@ -33,7 +33,7 @@ class TimberPostGetter {
      * @param string $PostClass
      * @return array|bool|null
      */
-    static function query_posts($query = false, $PostClass = 'TimberPost' ){
+    static function query_posts($query = false, $PostClass = 'TimberPost' ) {
         if (self::is_post_class_or_class_map($query)) {
             $PostClass = $query;
             $query = false;
