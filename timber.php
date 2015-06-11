@@ -117,76 +117,6 @@ class Timber {
 	}
 
 	/**
-	 * @param array|string $query
-	 * @return array
-	 * @deprecated since 0.20.0
-	 */
-	static function get_pids( $query = null ) {
-		return TimberPostGetter::get_pids( $query );
-	}
-
-	/**
-	 * @param string  $PostClass
-	 * @return array
-	 * @deprecated since 0.20.0
-	 */
-	static function get_posts_from_loop( $PostClass ) {
-		return TimberPostGetter::get_posts( $PostClass );
-	}
-
-	/**
-	 * @param string  $slug
-	 * @param string  $PostClass
-	 * @return array
-	 * @deprecated since 0.20.0
-	 */
-	static function get_posts_from_slug( $slug, $PostClass = 'TimberPost' ) {
-		return TimberPostGetter::get_posts( $slug, $PostClass );
-	}
-
-	/**
-	 * @param array   $query
-	 * @param string  $PostClass
-	 * @return array
-	 * @deprecated since 0.20.0
-	 */
-	static function get_posts_from_wp_query( $query = array(), $PostClass = 'TimberPost' ) {
-		return TimberPostGetter::query_posts( $query, $PostClass );
-	}
-
-	/**
-	 * @param array   $query
-	 * @param string  $PostClass
-	 * @return array|null
-	 * @deprecated since 0.20.0
-	 */
-	static function get_posts_from_array_of_ids( $query = array(), $PostClass = 'TimberPost' ) {
-		return TimberPostGetter::get_posts( $query, $PostClass );
-	}
-
-	/**
-	 * @param array   $results
-	 * @param string  $PostClass
-	 * @return TimberPostsCollection
-	 * @deprecated since 0.20.0
-	 */
-	static function handle_post_results( $results, $PostClass = 'TimberPost' ) {
-		return TimberPostGetter::handle_post_results( $results, $PostClass );
-	}
-
-	/**
-	 * @param unknown $query
-	 * @return int
-	 * @deprecated since 0.20.0
-	 */
-	static function get_pid( $query ) {
-		$pids = TimberPostGetter::get_pids( $query );
-		if ( is_array( $pids ) && count( $pids ) ) {
-			return $pids[0];
-		}
-	}
-
-	/**
 	 * @return bool
 	 * @deprecated since 0.20.0
 	 */
@@ -490,7 +420,7 @@ class Timber {
 	 * @return string
 	 * @deprecated since 0.20.0
 	 */
-	public static function get_calling_script_path( $offset = 0 ) {
+	protected static function get_calling_script_path( $offset = 0 ) {
 		$dir = self::get_calling_script_dir( $offset );
 		return str_replace( ABSPATH, '', realpath( $dir ) );
 	}
@@ -498,7 +428,7 @@ class Timber {
 	/**
 	 * @return boolean|string
 	 */
-	public static function get_calling_script_dir( $offset = 0 ) {
+	protected static function get_calling_script_dir( $offset = 0 ) {
 		$caller = self::get_calling_script_file( $offset );
 		if ( !is_null( $caller ) ) {
 			$pathinfo = pathinfo( $caller );
@@ -513,7 +443,7 @@ class Timber {
 	 * @return string|null
 	 * @deprecated since 0.20.0
 	 */
-	public static function get_calling_script_file( $offset = 0 ) {
+	protected static function get_calling_script_file( $offset = 0 ) {
 		$caller = null;
 		$backtrace = debug_backtrace();
 		$i = 0;
@@ -528,15 +458,6 @@ class Timber {
 			$caller = $backtrace[$i + $offset]['file'];
 		}
 		return $caller;
-	}
-
-	/**
-	 * @param string|array $args
-	 * @return bool
-	 * @deprecated since 0.20.0
-	 */
-	public static function is_post_class_or_class_map( $args ) {
-		return TimberPostGetter::is_post_class_or_class_map( $args );
 	}
 
 }

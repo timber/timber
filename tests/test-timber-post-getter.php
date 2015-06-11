@@ -139,7 +139,7 @@ class TestTimberPostGetter extends WP_UnitTestCase {
 		$this->go_to( '/' );
 		$posts = Timber::get_posts();
 		$this->assertEquals( 10, count( $posts ) );
-		$posts = Timber::get_posts_from_loop( 'TimberPostSubclass' );
+		$posts = Timber::get_posts( 'TimberPostSubclass' );
 		$this->assertEquals( 10, count( $posts ) );
 		$this->assertEquals( 'TimberPostSubclass', get_class( $posts[0] ) );
 	}
@@ -151,11 +151,11 @@ class TestTimberPostGetter extends WP_UnitTestCase {
 		$this->assertEquals( $pids[3], $posts[3]->ID );
 	}
 
-	function testGetPostsFromSlug() {
-		$post = $this->factory->post->create( array( 'post_name' => 'silly-post' ) );
-		$posts = Timber::get_posts_from_slug( 'silly-post' );
-		$this->assertEquals( 1, count( $posts ) );
-		$this->assertEquals( 'silly-post', $posts[0]->slug );
+	function testGetPostFromSlug() {
+		$pid = $this->factory->post->create( array( 'post_name' => 'silly-post' ) );
+		$post = Timber::get_post( 'silly-post' );
+		$this->assertEquals( $pid, $post->ID );
+		$this->assertEquals( 'silly-post', $post->slug );
 	}
 
 }
