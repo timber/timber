@@ -70,8 +70,6 @@ class Timber {
 
 	protected function init() {
 		TimberTwig::init();
-		TimberRoutes::init( $this );
-
 		TimberImageHelper::init();
 		TimberAdmin::init();
 		TimberIntegrations::init();
@@ -114,14 +112,6 @@ class Timber {
 	 */
 	public static function query_posts( $query = false, $PostClass = 'TimberPost' ) {
 		return TimberPostGetter::query_posts( $query, $PostClass );
-	}
-
-	/**
-	 * @return bool
-	 * @deprecated since 0.20.0
-	 */
-	static function wp_query_has_posts() {
-		return TimberPostGetter::wp_query_has_posts();
 	}
 
 	/* Term Retrieval
@@ -174,10 +164,7 @@ class Timber {
 		$data['site'] = new TimberSite();
 		$data['theme'] = $data['site']->theme;
 		//deprecated, these should be fetched via TimberSite or TimberTheme
-		$data['theme_dir'] = WP_CONTENT_SUBDIR.str_replace( WP_CONTENT_DIR, '', get_stylesheet_directory() );
 		$data['language_attributes'] = TimberHelper::function_wrapper( 'language_attributes' );
-		$data['stylesheet_uri'] = get_stylesheet_uri();
-		$data['template_uri'] = get_template_directory_uri();
 
 		$data['posts'] = Timber::query_posts();
 

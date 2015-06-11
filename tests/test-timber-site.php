@@ -17,12 +17,6 @@ class TimberSiteTest extends WP_UnitTestCase {
 		$this->assertEquals( WP_CONTENT_SUBDIR.'/themes/twentythirteen', $site->theme->parent->path );
 	}
 
-	function testLegacyThemeDir() {
-		switch_theme( 'twentythirteen' );
-		$context = Timber::get_context();
-		$this->assertEquals( WP_CONTENT_SUBDIR.'/themes/twentythirteen', $context['theme_dir'] );
-	}
-
 	function testThemeFromContext() {
 		switch_theme( 'twentythirteen' );
 		$context = Timber::get_context();
