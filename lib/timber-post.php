@@ -556,12 +556,28 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		if ($order == 'wp') {
 			$args['order'] = get_option('comment_order');
 		}
-		$comments = get_comments($args);
-		foreach ($comments as &$comment) {
-			$comment = new $CommentClass($comment);
-		}
-		return $comments;
-	}
+
+        $comments = get_comments($args);
+        $tComments = array();
+
+        foreach($comments as $key => &$comment) {
+            $tComment = new $CommentClass($comment);
+            $tComments[$tComment->id] = $tComment;
+        }
+
+        foreach($tComments as $key => $comment) {
+            if ($comment->is_child()) {
+                unset($tComments[$comment->id]);
+
+                if (isset($tComments[$comment->comment_parent])) {
+                    $tComments[$comment->comment_parent]->children[] = $comment;
+                }
+            }
+        }
+        $tComments = array_values($tComments);
+
+        return $tComments;
+    }
 
 	/**
 	 *  <ul class="categories">
