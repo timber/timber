@@ -237,68 +237,6 @@ class TimberHelper {
 	}
 
 	/**
-	 * @param string  $ret
-	 * @return string
-	 * @deprecated since 0.20.0
-	 */
-	public static function twitterify( $ret ) {
-		$ret = preg_replace( "#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t< ]*)#", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $ret );
-		$ret = preg_replace( "#(^|[\n ])((www|ftp)\.[^ \"\t\n\r< ]*)#", "\\1<a href=\"http://\\2\" target=\"_blank\">\\2</a>", $ret );
-		$pattern = '#([0-9a-z]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.';
-		$pattern .= '[a-wyz][a-z](fo|g|l|m|mes|o|op|pa|ro|seum|t|u|v|z)?)#i';
-		$ret = preg_replace( $pattern, '<a href="mailto:\\1">\\1</a>', $ret );
-		$ret = preg_replace( "/\B@(\w+)/", " <a href=\"http://www.twitter.com/\\1\" target=\"_blank\">@\\1</a>", $ret );
-		$ret = preg_replace( "/\B#(\w+)/", " <a href=\"http://twitter.com/search?q=\\1\" target=\"_blank\">#\\1</a>", $ret );
-		return trim($ret);
-	}
-
-	/* WordPress Query Utilities
-	======================== */
-
-	/**
-	 * @param string  $key
-	 * @param string  $value
-	 * @return array|int
-	 * @deprecated since 0.20.0
-	 */
-	public static function get_posts_by_meta( $key, $value ) {
-		global $wpdb;
-		$query = $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $key, $value );
-		$results = $wpdb->get_col( $query );
-		$pids = array();
-		foreach ( $results as $result ) {
-			if ( get_post( $result ) ) {
-				$pids[] = $result;
-			}
-		}
-		if ( count( $pids ) ) {
-			return $pids;
-		}
-		return 0;
-	}
-
-	/**
-	 *
-	 *
-	 * @param string  $key
-	 * @param string  $value
-	 * @return int
-	 * @deprecated since 0.20.0
-	 */
-	public static function get_post_by_meta( $key, $value ) {
-		global $wpdb;
-		$query = $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s ORDER BY post_id", $key, $value );
-		$results = $wpdb->get_col( $query );
-		foreach ( $results as $result ) {
-			if ( $result && get_post( $result ) ) {
-				return $result;
-			}
-		}
-		return 0;
-	}
-
-	/**
-	 *
 	 *
 	 * @param int     $ttid
 	 * @return mixed
@@ -313,7 +251,6 @@ class TimberHelper {
 	======================== */
 
 	/**
-	 *
 	 *
 	 * @param array   $array
 	 * @param string  $prop
@@ -577,104 +514,6 @@ class TimberHelper {
 			);
 		}
 		return $page_links;
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
-	static function get_image_path( $iid ) {
-		return TimberImageHelper::get_image_path( $iid );
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
-	static function get_current_url() {
-		return TimberURLHelper::get_current_url();
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
-	static function is_url( $url ) {
-		return TimberURLHelper::is_url( $url );
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
-	static function get_path_base() {
-		return TimberURLHelper::get_path_base();
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
-	static function get_rel_url( $url, $force = false ) {
-		return TimberURLHelper::get_rel_url( $url, $force );
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
-	static function is_local( $url ) {
-		return TimberURLHelper::is_local( $url );
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
-	static function get_full_path( $src ) {
-		return TimberURLHelper::get_full_path( $src );
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
-	static function get_rel_path( $src ) {
-		return TimberURLHelper::get_rel_path( $src );
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
-	static function remove_double_slashes( $url ) {
-		return TimberURLHelper::remove_double_slashes( $url );
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
-	static function prepend_to_url( $url, $path ) {
-		return TimberURLHelper::prepend_to_url( $url, $path );
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
-	static function preslashit( $path ) {
-		return TimberURLHelper::preslashit( $path );
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
-	static function is_external( $url ) {
-		return TimberURLHelper::is_external( $url );
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
-	static function download_url( $url, $timeout = 300 ) {
-		return TimberURLHelper::download_url( $url, $timeout );
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
-	static function get_params( $i = -1 ) {
-		return TimberURLHelper::get_params( $i );
 	}
 
 }

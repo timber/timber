@@ -96,8 +96,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		}
 		$post_info = $this->get_info($pid);
 		$this->import($post_info);
-		/* deprecated, adding for support for older themes */
-		$this->display_date = $this->date();
 		//cant have a function, so gots to do it this way
 		$post_class = $this->post_class();
 		$this->class = $post_class;
@@ -473,15 +471,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		$post->custom = $customs;
 		$post = (object)array_merge((array)$customs, (array)$post);
 		return $post;
-	}
-
-	/**
-	 * This is deprecated!
-	 * @param string $use
-	 * @return string
-	 */
-	function get_display_date($use = 'post_date') {
-		return date(get_option('date_format'), strtotime($this->$use));
 	}
 
 	/**
