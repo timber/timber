@@ -16,6 +16,8 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     public $user_id;
     public $comment_author;
 
+    public $children = array();
+
     /**
      * @param int $cid
      */
@@ -118,6 +120,13 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
      */
     public function meta($field_name) {
         return $this->get_meta_field($field_name);
+    }
+
+    /**
+     * @return bool
+     */
+    public function is_child() {
+        return $this->comment_parent > 0;
     }
 
     /**

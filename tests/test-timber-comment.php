@@ -10,6 +10,32 @@ class TimberCommentTest extends WP_UnitTestCase {
 		$this->assertEquals($comment_id, $comment->ID);
 	}
 
+	function testAnonymousComment() {
+		$post_id = $this->factory->post->create();
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'Mystery', 'user_id' => 0, 'comment_author' => false));
+		$comment = new TimberComment($comment_id);
+		$twig_string = '{{comment.author.name}}';
+		$result = Timber::compile_string($twig_string, array('comment' => $comment));
+		$this->assertEquals('Anonymous', $result);
+	}
+
+	function testCommentWithChildren() {
+		$kramer = $this->factory->user->create(array('display_name' => 'Cosmo Kramer'));
+		$post_id = $this->factory->post->create();
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'These pretzels are making me thirsty.', 'user_id' => $kramer));
+		sleep(2);
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'Perhaps there’s more to Newman than meets the eye.'));
+		$child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'No, there’s less.', 'comment_parent' => $comment_id));
+		$post = new TimberPost($post_id);
+		$comments = $post->get_comments();
+		$this->assertEquals(2, count($comments));
+		$this->assertEquals(1, count($comments[1]->children));
+		$twig_string = '{{comment.author.name}}';
+		$result = Timber::compile_string($twig_string, array('comment' => $comments[0]));
+		$this->assertEquals('Cosmo Kramer', $result);
+	}
+
+
 	function testAvatar(){
 		if (!TimberImageTest::is_connected()){
 			$this->markTestSkipped('Cannot test avatar images when not connected to internet');
@@ -20,7 +46,7 @@ class TimberCommentTest extends WP_UnitTestCase {
 
 		# test default gravatr holding image
 		$avatar = $comment->avatar(32, "mystery");
-		
+
 		$this->assertTrue(substr ( $avatar , 0, 5 ) == "http:");
 
 		# does it work if its SSL?
