@@ -188,7 +188,10 @@ class TimberTwig {
     function exec_function( $function_name ) {
         $args = func_get_args();
         array_shift( $args );
-        return call_user_func_array( trim( $function_name ), ( $args ) );
+        if ( is_string($function_name) ) {
+        	$function_name = trim( $function_name );
+        }
+        return call_user_func_array( $function_name, ( $args ) );
     }
 
     /**
