@@ -150,8 +150,10 @@ class TimberMenu extends TimberCore {
 		foreach ($index as $item) {
 			if (isset($item->menu_item_parent) && $item->menu_item_parent && isset($index[$item->menu_item_parent])) {
 				$index[$item->menu_item_parent]->add_child($item);
+				$item->level = $index[$item->menu_item_parent]->level + 1;
 			} else {
 				$menu[] = $item;
+				$item->level = 0;
 			}
 		}
 		return $menu;
