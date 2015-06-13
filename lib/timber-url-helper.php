@@ -193,7 +193,7 @@ class TimberURLHelper {
 	}
 
 	/**
-	 *
+	 * This will evaluate wheter a URL is at an aboslute location (like http://example.org/whatever)
 	 *
 	 * @return boolean true if $path is an absolute url, false if relative.
 	 */
@@ -206,8 +206,8 @@ class TimberURLHelper {
 	 * an image hosted on the same domain BUT on a different site than the
 	 * Wordpress install will be reported as external content.
 	 *
-	 * @param [type]  $url [description]
-	 * @return boolean      if $url points to
+	 * @param string  $url a URL to evaluate against
+	 * @return boolean if $url points to an external location returns true
 	 */
 	public static function is_external_content( $url ) {
 		// using content_url() instead of site_url or home_url is IMPORTANT
@@ -215,10 +215,6 @@ class TimberURLHelper {
 		// 1. use WPML plugin
 		// 2. or redefine upload directory
 		$is_external = TimberURLHelper::is_absolute( $url ) && !strstr( $url, content_url() );
-		// $is_external = TimberURLHelper::is_absolute($url) && !strstr($url, site_url());
-		//     if ($is_external) {
-		//        $is_external = TimberURLHelper::is_absolute($url) && !strstr($url, home_url());
-		//       }
 		return $is_external;
 	}
 
@@ -251,11 +247,11 @@ class TimberURLHelper {
 	}
 
 	/**
-	 *
+	 * Download an external file via a URL
 	 *
 	 * @param string  $url
 	 * @param int     $timeout
-	 * @return string|WP_Error
+	 * @return string|WP_Error the location of the temporay file name or an error
 	 * @deprecated since 0.20.0
 	 */
 	static function download_url( $url, $timeout = 300 ) {
@@ -282,10 +278,12 @@ class TimberURLHelper {
 	}
 
 	/**
+	 * Returns the url parameters, for example for url http://example.org/blog/post/news/2014/whatever
+	 * this will return array('blog', 'post', 'news', '2014', 'whatever');
+	 * OR if sent an integer like: TimberUrlHelper::get_params(2); this will return 'news';
 	 *
-	 *
-	 * @param int     $i
-	 * @return array
+	 * @param int $i the position of the parameter to grab.
+	 * @return array|string
 	 */
 	public static function get_params( $i = false ) {
 		$args = explode( '/', trim( strtolower( $_SERVER['REQUEST_URI'] ) ) );
