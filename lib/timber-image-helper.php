@@ -158,21 +158,8 @@ class TimberImageHelper {
 		} );
 	}
 
-//-- end of public methods --//
+	//-- end of public methods --//
 
-
-
-
-	/**
-	 * @return boolean true if $path is an external url, false if relative or local.
-	 */
-	protected static function is_external($path) {
-		$is_external = TimberURLHelper::is_absolute($path) && !strstr($path, site_url());
-		if ($is_external) {
-			$is_external = TimberURLHelper::is_absolute($path) && !strstr($path, home_url());
-		}
-		return $is_external;
-	}
 
 	/**
 	 * Deletes resized versions of the supplied file name.
@@ -420,7 +407,7 @@ class TimberImageHelper {
 			return '';
 		}
 		// if external image, load it first
-		if ( self::is_external( $src ) ) {
+		if ( TimberURLHelper::is_external_content( $src ) ) {
 			$src = self::sideload_image( $src );
 		}
 		// break down URL into components
