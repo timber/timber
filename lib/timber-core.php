@@ -5,7 +5,6 @@ abstract class TimberCore {
     public $id;
     public $ID;
     public $object_type;
-    public $_can_edit;
 
     /**
      *
@@ -77,22 +76,16 @@ abstract class TimberCore {
     }
 
     /**
-     *
-     *
      * @return bool
      */
     function can_edit() {
-        if ( isset( $this->_can_edit ) ) {
-            return $this->_can_edit;
-        }
-        $this->_can_edit = false;
         if ( !function_exists( 'current_user_can' ) ) {
             return false;
         }
         if ( current_user_can( 'edit_post', $this->ID ) ) {
-            $this->_can_edit = true;
+            return true;
         }
-        return $this->_can_edit;
+        return false;
     }
 
     /**

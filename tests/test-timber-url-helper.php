@@ -11,6 +11,14 @@
             $this->assertNotContains($file, '//');
         }
 
+        function testPathBase() {
+        	$this->assertEquals('/', TimberURLHelper::get_path_base());
+        }
+
+        function testIsLocal() {
+        	$this->assertFalse(TimberURLHelper::is_local('http://wordpress.org'));
+        }
+
         function testCurrentURL(){
             if (!isset($_SERVER['SERVER_PORT'])){
                 $_SERVER['SERVER_PORT'] = 80;
@@ -28,6 +36,7 @@
             $not_url = '/blog/2014/05/whatever';
             $this->assertTrue(TimberURLHelper::is_url($url));
             $this->assertFalse(TimberURLHelper::is_url($not_url));
+      		$this->assertFalse(TimberURLHelper::is_url(8000));
         }
 
         function testIsExternal(){

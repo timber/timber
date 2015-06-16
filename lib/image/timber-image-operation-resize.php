@@ -114,6 +114,5 @@ class TimberImageOperationResize extends TimberImageOperation {
         } else {
             TimberHelper::error_log( $image );
         }
-        return false;
     }
 }
