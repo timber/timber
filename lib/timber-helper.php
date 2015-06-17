@@ -168,7 +168,7 @@ class TimberHelper {
 	 *
 	 * @param string  $text
 	 * @param int     $num_words
-	 * @param string  $more
+	 * @param string|null|false  $more text to appear in "Read more...". Null to use default, false to hide
 	 * @param string  $allowed_tags
 	 * @return string
 	 */

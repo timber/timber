@@ -8,10 +8,10 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	public $object_type = 'post';
 	public static $representation = 'post';
 
-	public $_custom_imported = false;
-	public $_content;
-	public $_get_terms;
-
+	private $_custom_imported = false;
+	private $_content;
+	private $_get_terms;
+	private $_permalink;
 	private $_next = array();
 	private $_prev = array();
 
@@ -19,8 +19,10 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	public $display_date;
 	public $id;
 	public $ID;
+	public $post_author;
 	public $post_content;
 	public $post_date;
+	public $post_excerpt;
 	public $post_parent;
 	public $post_title;
 	public $post_type;
@@ -29,7 +31,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	/**
 	 *  If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
 	 * @param mixed $pid
-	 * @return \TimberPost TimberPost object -- woo!
 	 */
 	function __construct($pid = null) {
 		$pid = $this->determine_id( $pid );
@@ -312,11 +313,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @return string
 	 */
 	function get_permalink() {
-		if (isset($this->permalink)) {
-			return $this->permalink;
+		if (isset($this->_permalink)) {
+			return $this->_permalink;
 		}
-		$this->permalink = get_permalink($this->ID);
-		return $this->permalink;
+		$this->_permalink = get_permalink($this->ID);
+		return $this->_permalink;
 	}
 
 	/**
@@ -520,7 +521,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @return array
 	 */
 	function get_children($post_type = 'any', $childPostClass = false) {
-		if ($childPostClass == false) {
+		if ($childPostClass === false) {
 			$childPostClass = $this->PostClass;
 		}
 		if ($post_type == 'parent') {
@@ -827,6 +828,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * @return array
+	 * @codeCoverageIgnore
 	 */
 	public function get_method_values() {
 		$ret = parent::get_method_values();
