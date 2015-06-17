@@ -14,4 +14,9 @@ class TestTimberAdmin extends WP_UnitTestCase {
         }
     }
 
+    function testAdminInit() {
+    	$admin = TimberAdmin::init();
+    	$this->assertTrue($admin);
+    }
+
 }

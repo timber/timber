@@ -672,6 +672,11 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals('<img src="'.$jpg_url.'" />', $result);
 	}
 
+	function testImageHelperInit() {
+		$helper = TimberImageHelper::init();
+		$this->assertTrue(defined('WP_CONTENT_SUBDIR'));
+	}
+
 	function testResizeGif() {
 		$filename = self::copyTestImage('loading.gif');
 		$gif_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);

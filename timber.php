@@ -435,6 +435,7 @@ class Timber {
 		global $wp_query;
 		global $paged;
 		global $wp_rewrite;
+		$args = array();
 		$args['total'] = ceil( $wp_query->found_posts / $wp_query->query_vars['posts_per_page'] );
 		if ( $wp_rewrite->using_permalinks() ) {
 			$url = explode( '?', get_pagenum_link( 0 ) );
@@ -457,6 +458,7 @@ class Timber {
 		} else {
 			$args = array_merge( $args, $prefs );
 		}
+		$data = array();
 		$data['pages'] = TimberHelper::paginate_links( $args );
 		$next = get_next_posts_page_link( $args['total'] );
 		if ( $next ) {

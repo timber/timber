@@ -529,7 +529,7 @@
 		function testEditUrl() {
 			$pid = $this->factory->post->create(array('post_author' => 1));
 			$post = new TimberPost($pid);
-			$edit_url = $post->get_edit_url();
+			$edit_url = $post->edit_link();
 			$this->assertEquals('', $edit_url);
 			wp_set_current_user(1);
 			$data = get_userdata(1);

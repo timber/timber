@@ -135,7 +135,7 @@ class TimberHelper {
 	/**
 	 *
 	 *
-	 * @param unknown $arg
+	 * @param unknown|string|array $arg that you want to error_log
 	 * @return void
 	 */
 	public static function error_log( $arg ) {
@@ -168,7 +168,7 @@ class TimberHelper {
 	 *
 	 * @param string  $text
 	 * @param int     $num_words
-	 * @param string  $more
+	 * @param string|null|false  $more text to appear in "Read more...". Null to use default, false to hide
 	 * @param string  $allowed_tags
 	 * @return string
 	 */

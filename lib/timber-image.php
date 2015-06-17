@@ -31,7 +31,6 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 		if ($this->get_src()) {
 			return $this->get_src();
 		}
-		return '';
 	}
 
 	/**
