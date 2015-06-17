@@ -12,11 +12,11 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 
 	public $PostClass = 'TimberPost';
 
-	private $_name;
-	private $_menu_item_object_id;
-	private $_menu_item_url;
-	private $menu_object;
-	private $parent_object;
+	protected $_name;
+	protected $_menu_item_object_id;
+	protected $_menu_item_url;
+	protected $menu_object;
+	protected $parent_object;
 
 	/**
 	 *

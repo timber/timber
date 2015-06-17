@@ -3,7 +3,7 @@
 class TimberAdmin {
 
     public static function init() {
-        add_filter( 'plugin_row_meta', array( __CLASS__, 'meta_links' ), 10, 2 );
+        return add_filter( 'plugin_row_meta', array( __CLASS__, 'meta_links' ), 10, 2 );
     }
 
 	/**
