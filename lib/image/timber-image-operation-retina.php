@@ -19,7 +19,7 @@ class TimberImageOperationRetina extends TimberImageOperation {
     /**
      * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
      * @param   string    $src_extension    the extension (ex: .jpg)
-     * @return  string    the final filename to be used (ex: my-awesome-pic@2x.jpg) 
+     * @return  string    the final filename to be used (ex: my-awesome-pic@2x.jpg)
      */
     function filename($src_filename, $src_extension) {
         $newbase = $src_filename . '@' . $this->factor . 'x'; // add @2x, @3x, @1.5x, etc.
@@ -30,10 +30,10 @@ class TimberImageOperationRetina extends TimberImageOperation {
     /**
      * Performs the actual image manipulation,
      * including saving the target file.
-     * 
-     * @param  string $load_filename filepath (not URL) to source file 
+     *
+     * @param  string $load_filename filepath (not URL) to source file
      *                               (ex: /src/var/www/wp-content/uploads/my-pic.jpg)
-     * @param  string $save_filename filepath (not URL) where result file should be saved 
+     * @param  string $save_filename filepath (not URL) where result file should be saved
      *                               (ex: /src/var/www/wp-content/uploads/my-pic@2x.jpg)
      * @return bool                  true if everything went fine, false otherwise
      */
@@ -43,7 +43,6 @@ class TimberImageOperationRetina extends TimberImageOperation {
             $current_size = $image->get_size();
             $src_w = $current_size['width'];
             $src_h = $current_size['height'];
-            $src_ratio = $src_w / $src_h;
             // Get ratios
             $w = $src_w * $this->factor;
             $h = $src_h * $this->factor;
