@@ -165,16 +165,6 @@ class Timber {
 	}
 
 	/**
-	 * @param array   $results
-	 * @param string  $PostClass
-	 * @return TimberPostsCollection
-	 * @deprecated since 0.20.0
-	 */
-	static function handle_post_results( $results, $PostClass = 'TimberPost' ) {
-		return TimberPostGetter::handle_post_results( $results, $PostClass );
-	}
-
-	/**
 	 * @param unknown $query
 	 * @return int
 	 * @deprecated since 0.20.0

@@ -63,37 +63,6 @@ class TimberPostGetter {
 		return $pids;
 	}
 
-	/**
-	 * @param array $results
-	 * @param string $PostClass
-	 * @return TimberPostsCollection
-	 * @deprecated since 0.21.1
-	 */
-	static function handle_post_results($results, $PostClass = 'TimberPost') {
-		$posts = array();
-		foreach ($results as $rid) {
-			$PostClassUse = $PostClass;
-			if (is_array($PostClass)) {
-				$post_type = get_post_type($rid);
-				$PostClassUse = 'TimberPost';
-				if (isset($PostClass[$post_type])) {
-					$PostClassUse = $PostClass[$post_type];
-				} else {
-					if (is_array($PostClass)) {
-						TimberHelper::error_log($post_type.' of '.$rid.' not found in ' . print_r($PostClass, true));
-					} else {
-						TimberHelper::error_log($post_type.' not found in '.$PostClass);
-					}
-				}
-			}
-			$post = new $PostClassUse($rid);
-			if (isset($post->ID)) {
-				$posts[] = $post;
-			}
-		}
-		return new TimberPostsCollection( $posts, $PostClass );
-	}
-
 	static function loop_to_id() {
 		if (!self::wp_query_has_posts()) { return false; }
 
