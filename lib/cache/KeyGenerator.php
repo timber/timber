@@ -4,13 +4,14 @@ namespace Timber\Cache;
 
 use Asm89\Twig\CacheExtension\CacheStrategy\KeyGeneratorInterface;
 
-class KeyGenerator implements KeyGeneratorInterface {
-
+class KeyGenerator implements KeyGeneratorInterface
+{
     /**
      * @param mixed $value
      * @return string
      */
-    public function generateKey($value) {
+    public function generateKey($value)
+    {
         if (is_a($value, 'TimberKeyGeneratorInterface')) {
             return $value->_get_cache_key();
         }
@@ -26,5 +27,4 @@ class KeyGenerator implements KeyGeneratorInterface {
 
         return $key;
     }
-
 }

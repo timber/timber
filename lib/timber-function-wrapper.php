@@ -2,12 +2,12 @@
 
 class TimberFunctionWrapper
 {
-
     private $_function;
     private $_args;
     private $_use_ob;
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->call();
     }
 
@@ -16,7 +16,8 @@ class TimberFunctionWrapper
      * @param array $args
      * @param bool $return_output_buffer
      */
-    public function __construct($function, $args = array(), $return_output_buffer = false) {
+    public function __construct($function, $args = array(), $return_output_buffer = false)
+    {
         $this->_function = $function;
         $this->_args = $args;
         $this->_use_ob = $return_output_buffer;
@@ -28,7 +29,8 @@ class TimberFunctionWrapper
      * @param Twig_Environment $twig
      * @return Twig_Environment
      */
-    public function add_to_twig($twig) {
+    public function add_to_twig($twig)
+    {
         $wrapper = $this;
 
         $twig->addFunction(new Twig_SimpleFunction($this->_function, function () use ($wrapper) {
@@ -41,7 +43,8 @@ class TimberFunctionWrapper
     /**
      * @return string
      */
-    public function call() {
+    public function call()
+    {
         $args = $this->_parse_args(func_get_args(), $this->_args);
 
         if ($this->_use_ob) {
@@ -56,7 +59,8 @@ class TimberFunctionWrapper
      * @param array $defaults
      * @return array
      */
-    private function _parse_args($args, $defaults) {
+    private function _parse_args($args, $defaults)
+    {
         $_arg = reset($defaults);
 
         foreach ($args as $index => $arg) {
@@ -66,5 +70,4 @@ class TimberFunctionWrapper
 
         return $defaults;
     }
-
 }

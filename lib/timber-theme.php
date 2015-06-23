@@ -2,7 +2,6 @@
 
 class TimberTheme extends TimberCore
 {
-
     public $link;
     public $name;
     public $path;
@@ -14,14 +13,16 @@ class TimberTheme extends TimberCore
     /**
      * @param string $slug
      */
-    function __construct($slug = null) {
+    public function __construct($slug = null)
+    {
         $this->init($slug);
     }
 
     /**
      * @param string $slug
      */
-    function init($slug = null) {
+    public function init($slug = null)
+    {
         $data = wp_get_theme($slug);
         $this->name = $data->get('Name');
         $ss = $data->get_stylesheet();
@@ -44,15 +45,16 @@ class TimberTheme extends TimberCore
      * @param bool $default
      * @return string
      */
-    public function theme_mod($name, $default = false) {
+    public function theme_mod($name, $default = false)
+    {
         return get_theme_mod($name, $default);
     }
 
     /**
      * @return string
      */
-    public function theme_mods() {
+    public function theme_mods()
+    {
         return get_theme_mods();
     }
-
 }

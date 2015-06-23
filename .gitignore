@@ -2,6 +2,7 @@
 twig-cache/*
 .DS_Store
 .idea
+.php_cs.cache
 vendor
 composer.lock
 build

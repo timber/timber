@@ -1,12 +1,13 @@
 <?php
 
-	class TestTimberShortcodes extends WP_UnitTestCase {
-
-		function testShortcodes(){
-			add_shortcode('timber_shortcode', function($text){
-				return 'timber '.$text[0];
-			});
-			$return = Timber::compile('assets/test-shortcodes.twig');
-			$this->assertEquals('hello timber foo', trim($return));
-		}
-	}
+    class TestTimberShortcodes extends WP_UnitTestCase
+    {
+        public function testShortcodes()
+        {
+            add_shortcode('timber_shortcode', function ($text) {
+                return 'timber '.$text[0];
+            });
+            $return = Timber::compile('assets/test-shortcodes.twig');
+            $this->assertEquals('hello timber foo', trim($return));
+        }
+    }
