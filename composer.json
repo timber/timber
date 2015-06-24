@@ -1,42 +1,47 @@
 {
-	"name": "jarednova/timber",
-	"type": "wordpress-plugin",
-	"description": "Plugin to write WordPress themes w Object-Oriented Code and the Twig Template Engine",
-	"keywords": ["timber", "twig", "themes", "templating"],
-	"homepage": "http://timber.upstatement.com",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Jared Novack",
-			"email": "jared@upstatement.com",
-			"homepage": "http://upstatement.com"
-		}
-	],
-	"support": {
-		"issues": "https://github.com/jarednova/timber/issues",
-		"wiki": "https://github.com/jarednova/timber/wiki",
-		"source": "https://github.com/jarednova/timber"
-	},
-	"require": {
-		"php": ">=5.3.0",
-		"twig/twig": "~1.15",
-		"upstatement/routes": "0.3",
-		"composer/installers": "~1.0",
-		"asm89/twig-cache-extension": "~1.0"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "~4.0",
-		"satooshi/php-coveralls": "dev-master",
-		"wpackagist-plugin/advanced-custom-fields": "4.*",
-		"wp-cli/wp-cli": "*"
-	},
+    "name": "jarednova/timber",
+    "type": "wordpress-plugin",
+    "description": "Plugin to write WordPress themes w Object-Oriented Code and the Twig Template Engine",
+    "keywords": [
+        "timber",
+        "twig",
+        "themes",
+        "templating"
+    ],
+    "homepage": "http://timber.upstatement.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jared Novack",
+            "email": "jared@upstatement.com",
+            "homepage": "http://upstatement.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/jarednova/timber/issues",
+        "wiki": "https://github.com/jarednova/timber/wiki",
+        "source": "https://github.com/jarednova/timber"
+    },
+    "require": {
+        "php": ">=5.3.0",
+        "twig/twig": "~1.15",
+        "upstatement/routes": "0.3",
+        "composer/installers": "~1.0",
+        "asm89/twig-cache-extension": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0",
+        "satooshi/php-coveralls": "dev-master",
+        "wpackagist-plugin/advanced-custom-fields": "4.*",
+        "wp-cli/wp-cli": "*"
+    },
     "autoload": {
         "classmap": ["lib/"]
     },
-	"repositories": [
-		{
-            "type":"composer",
-            "url":"http://wpackagist.org"
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://wpackagist.org"
         }
-	]
+    ]
 }

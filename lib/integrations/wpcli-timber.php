@@ -1,10 +1,10 @@
 <?php
 if (!class_exists('WP_CLI_Command')) {
-	return;
+    return;
 }
 
-class Timber_WP_CLI_Command extends WP_CLI_Command {
-
+class Timber_WP_CLI_Command extends WP_CLI_Command
+{
     /**
      * Clears Timber and Twig's Cache
      *
@@ -13,7 +13,8 @@ class Timber_WP_CLI_Command extends WP_CLI_Command {
      *    wp timber clear_cache
      *
      */
-    public function clear_cache($mode = 'all') {
+    public function clear_cache($mode = 'all')
+    {
         TimberCommand::clear_cache($mode);
     }
 
@@ -25,9 +26,10 @@ class Timber_WP_CLI_Command extends WP_CLI_Command {
      *    wp timber clear_cache_twig
      *
      */
-    function clear_cache_twig(){
+    public function clear_cache_twig()
+    {
         $clear = TimberCommand::clear_cache_twig();
-        if ($clear){
+        if ($clear) {
             WP_CLI::success('Cleared contents of twig cache');
         } else {
             WP_CLI::warning('Failed to clear twig cache');
@@ -42,10 +44,11 @@ class Timber_WP_CLI_Command extends WP_CLI_Command {
      *    wp timber clear_cache_timber
      *
      */
-    function clear_cache_timber() {
+    public function clear_cache_timber()
+    {
         $clear = TimberCommand::clear_cache_timber();
         $message = 'Failed to clear timber cache';
-        if ($clear){
+        if ($clear) {
             $message = "Cleared contents of Timber's Cache";
             WP_CLI::success($message);
         } else {
@@ -53,5 +56,4 @@ class Timber_WP_CLI_Command extends WP_CLI_Command {
         }
         return $message;
     }
-
 }

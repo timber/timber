@@ -2,11 +2,11 @@
 
 class TimberArchives extends TimberCore
 {
-
     public $base = '';
     public $items;
 
-    function __construct($args = null, $base = '') {
+    public function __construct($args = null, $base = '')
+    {
         $this->init($args, $base);
     }
 
@@ -14,7 +14,8 @@ class TimberArchives extends TimberCore
      * @param array|string $args
      * @param string $base
      */
-    function init($args = null, $base = '') {
+    public function init($args = null, $base = '')
+    {
         $this->base = $base;
         $this->items = $this->get_items($args);
     }
@@ -24,7 +25,8 @@ class TimberArchives extends TimberCore
      * @param string $text
      * @return mixed
      */
-    function get_archives_link($url, $text) {
+    public function get_archives_link($url, $text)
+    {
         $ret = array();
         $ret['text'] = $ret['title'] = $ret['name'] = wptexturize($text);
         $ret['url'] = $ret['link'] = esc_url(TimberURLHelper::prepend_to_url($url, $this->base));
@@ -40,7 +42,8 @@ class TimberArchives extends TimberCore
      * @param string $limit
      * @return array
      */
-    function get_items_yearly($args, $last_changed, $join, $where, $order, $limit) {
+    public function get_items_yearly($args, $last_changed, $join, $where, $order, $limit)
+    {
         global $wpdb;
         $output = array();
         $query = "SELECT YEAR(post_date) AS `year`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date) ORDER BY post_date $order $limit";
@@ -70,7 +73,8 @@ class TimberArchives extends TimberCore
      * @param bool $nested
      * @return array
      */
-    function get_items_monthly($args, $last_changed, $join, $where, $order, $limit = 1000, $nested = true) {
+    public function get_items_monthly($args, $last_changed, $join, $where, $order, $limit = 1000, $nested = true)
+    {
         global $wpdb, $wp_locale;
         $output = array();
         $defaults = array(
@@ -118,7 +122,8 @@ class TimberArchives extends TimberCore
      * @param array|string $args
      * @return array|string
      */
-    function get_items($args = null) {
+    public function get_items($args = null)
+    {
         global $wpdb;
 
         $defaults = array(
@@ -137,11 +142,11 @@ class TimberArchives extends TimberCore
         $nested = $args['nested'];
         $type = $args['type'];
         $limit = '';
-        if ( $type == 'yearlymonthly' || $type == 'yearmonth' ) {
-        	$type = 'monthly-nested';
+        if ($type == 'yearlymonthly' || $type == 'yearmonth') {
+            $type = 'monthly-nested';
         }
-        if ( $type == 'monthly-nested' ) {
-        	$nested = true;
+        if ($type == 'monthly-nested') {
+            $nested = true;
         }
 
         if (!empty($args['limit'])) {
@@ -255,12 +260,11 @@ class TimberArchives extends TimberCore
                         } else {
                             $text = $result->ID;
                         }
-             			$output[] = $this->get_archives_link($url, $text);
+                        $output[] = $this->get_archives_link($url, $text);
                     }
                 }
             }
         }
         return $output;
     }
-
 }

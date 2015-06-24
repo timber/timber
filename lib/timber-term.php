@@ -1,7 +1,7 @@
 <?php
 
-class TimberTerm extends TimberCore implements TimberCoreInterface {
-
+class TimberTerm extends TimberCore implements TimberCoreInterface
+{
     public $PostClass = 'TimberPost';
     public $TermClass = 'TimberTerm';
 
@@ -16,7 +16,8 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
      * @param int $tid
      * @param string $tax
      */
-    function __construct($tid = null, $tax = '') {
+    public function __construct($tid = null, $tax = '')
+    {
         if ($tid === null) {
             $tid = $this->get_term_from_query();
         }
@@ -29,7 +30,8 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
     /**
      * @return string
      */
-    function __toString() {
+    public function __toString()
+    {
         return $this->name;
     }
 
@@ -41,31 +43,33 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
     /**
      * @return integer
      */
-    private function get_term_from_query() {
+    private function get_term_from_query()
+    {
         global $wp_query;
         if (isset($wp_query->queried_object)) {
-        	$qo = $wp_query->queried_object;
-        	return $qo->term_id;
-    	}
-    	if (isset($wp_query->tax_query->queries[0]['terms'][0])) {
-    		return $wp_query->tax_query->queries[0]['terms'][0];
-    	}
+            $qo = $wp_query->queried_object;
+            return $qo->term_id;
+        }
+        if (isset($wp_query->tax_query->queries[0]['terms'][0])) {
+            return $wp_query->tax_query->queries[0]['terms'][0];
+        }
     }
 
     /**
      * @param int $tid
      */
-    private function init($tid) {
+    private function init($tid)
+    {
         $term = $this->get_term($tid);
         if (isset($term->id)) {
             $term->ID = $term->id;
-        } else if (isset($term->term_id)) {
+        } elseif (isset($term->term_id)) {
             $term->ID = $term->term_id;
-        } else if (is_string($tid)) {
+        } elseif (is_string($tid)) {
             //echo 'bad call using '.$tid;
             //TimberHelper::error_log(debug_backtrace());
         }
-        if (isset($term->ID)){
+        if (isset($term->ID)) {
             $term->id = $term->ID;
             $this->import($term);
             if (isset($term->term_id)) {
@@ -79,7 +83,8 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
      * @param int $tid
      * @return array
      */
-    private function get_term_meta($tid) {
+    private function get_term_meta($tid)
+    {
         $customs = array();
         $customs = apply_filters('timber_term_get_meta', $customs, $tid, $this);
         return $customs;
@@ -89,7 +94,8 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
      * @param int $tid
      * @return mixed
      */
-    private function get_term($tid) {
+    private function get_term($tid)
+    {
         if (is_object($tid) || is_array($tid)) {
             return $tid;
         }
@@ -112,7 +118,8 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
      * @param int $tid
      * @return int
      */
-    private function get_tid($tid) {
+    private function get_tid($tid)
+    {
         global $wpdb;
         if (is_numeric($tid)) {
             return $tid;
@@ -140,7 +147,8 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
     /**
      * @return string
      */
-    public function get_edit_url() {
+    public function get_edit_url()
+    {
         return get_edit_term_link($this->ID, $this->taxonomy);
     }
 
@@ -148,7 +156,8 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
      * @param string $field_name
      * @return string
      */
-    public function get_meta_field($field_name) {
+    public function get_meta_field($field_name)
+    {
         if (!isset($this->$field_name)) {
             $field_value = '';
             $field_value = apply_filters('timber_term_get_meta_field', $field_value, $this->ID, $field_name, $this);
@@ -160,7 +169,8 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
     /**
      * @return string
      */
-    public function get_path() {
+    public function get_path()
+    {
         $link = $this->get_link();
         $rel = TimberURLHelper::get_rel_url($link, true);
         return apply_filters('timber_term_path', $rel, $this);
@@ -169,7 +179,8 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
     /**
      * @return string
      */
-    public function get_link() {
+    public function get_link()
+    {
         $link = get_term_link($this);
         return apply_filters('timber_term_link', $link, $this);
     }
@@ -180,7 +191,8 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
      * @param string $PostClass
      * @return array|bool|null
      */
-    public function get_posts($numberposts = 10, $post_type = 'any', $PostClass = '') {
+    public function get_posts($numberposts = 10, $post_type = 'any', $PostClass = '')
+    {
         if (!strlen($PostClass)) {
             $PostClass = $this->PostClass;
         }
@@ -201,7 +213,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
             if (class_exists($post_type)) {
                 $PostClass = $post_type;
             }
-        } else if (is_array($numberposts)) {
+        } elseif (is_array($numberposts)) {
             //they sent us an array already baked
             $args = $numberposts;
             if (!isset($args['tax_query'])) {
@@ -226,7 +238,8 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
     /**
      * @return array
      */
-    public function get_children() {
+    public function get_children()
+    {
         if (!isset($this->_children)) {
             $children = get_term_children($this->ID, $this->taxonomy);
             foreach ($children as &$child) {
@@ -243,8 +256,9 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
      * @param string  $key
      * @param mixed   $value
      */
-    function update( $key, $value ) {
-        $value = apply_filters( 'timber_term_set_meta', $value, $key, $this->ID, $this );
+    public function update($key, $value)
+    {
+        $value = apply_filters('timber_term_set_meta', $value, $key, $this->ID, $this);
         $this->$key = $value;
     }
 
@@ -254,28 +268,32 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
     /**
      * @return array
      */
-    public function children() {
+    public function children()
+    {
         return $this->get_children();
     }
 
     /**
      * @return string
      */
-    public function edit_link() {
+    public function edit_link()
+    {
         return $this->get_edit_url();
     }
 
     /**
      * @return string
      */
-    public function get_url() {
+    public function get_url()
+    {
         return $this->get_link();
     }
 
     /**
      * @return string
      */
-    public function link() {
+    public function link()
+    {
         return $this->get_link();
     }
 
@@ -283,14 +301,16 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
      * @param string $field_name
      * @return string
      */
-    public function meta($field_name) {
+    public function meta($field_name)
+    {
         return $this->get_meta_field($field_name);
     }
 
     /**
      * @return string
      */
-    public function path() {
+    public function path()
+    {
         return $this->get_path();
     }
 
@@ -300,21 +320,24 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
      * @param string $post_class
      * @return array|bool|null
      */
-    public function posts($numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '') {
+    public function posts($numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '')
+    {
         return $this->get_posts($numberposts_or_args, $post_type_or_class, $post_class);
     }
 
     /**
      * @return string
      */
-    public function title() {
+    public function title()
+    {
         return $this->name;
     }
 
     /**
      * @return string
      */
-    public function url() {
+    public function url()
+    {
         return $this->get_url();
     }
 
@@ -326,8 +349,8 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
      * @param int $i
      * @return string
      */
-    function get_page($i) {
+    public function get_page($i)
+    {
         return $this->get_path() . '/page/' . $i;
     }
-
 }

@@ -1,16 +1,15 @@
 <?php
 
-interface TimberCoreInterface {
+interface TimberCoreInterface
+{
+    public function __call($field, $args);
 
-	public function __call( $field, $args );
+    public function __get($field);
 
-	public function __get( $field );
+    /**
+     * @return boolean
+     */
+    public function __isset($field);
 
-	/**
-	 * @return boolean
-	 */
-	public function __isset( $field );
-
-	public function meta( $key );
-
+    public function meta($key);
 }
