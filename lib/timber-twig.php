@@ -191,7 +191,6 @@ class TimberTwig {
 		if ( is_string($function_name) ) {
 			$function_name = trim( $function_name );
 		}
-		return TimberHelper::function_wrapper($function_name, $args);
 		return call_user_func_array( $function_name, ( $args ) );
 	}
 

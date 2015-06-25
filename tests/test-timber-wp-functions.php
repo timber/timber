@@ -84,24 +84,24 @@
 		}
 
 		function testInTwigStringHeadAndFooter(){
-			return;
 			global $wp_scripts;
 			$wp_scripts = null;
-
+			//send colorpicker to the header
 			wp_enqueue_script( 'colorpicker', false, array(), false, true);
+			//send fake-js to the footer
 			wp_enqueue_script( 'fake-js', 'http://example.org/fake-js.js', array(), false, true );
 			$str = Timber::compile_string('<head>{{function("wp_head")}}</head><footer>{{function("wp_footer")}}</footer>');
-			echo $str;
 			$footer_tag = strpos($str, '<footer>');
-			$iris = strpos($str, 'iris');
-			$this->assertGreaterThan(1, $iris);
-			$this->assertGreaterThan($footer_tag, $iris);
+			$colorpicker = strpos($str, 'colorpicker');
+			$this->assertGreaterThan(1, $colorpicker);
+			//make sure that footer appears after colorpicker
+			$this->assertGreaterThan($colorpicker, $footer_tag);
 
 		}
 
 
 
-		
+
 
 
 	}
