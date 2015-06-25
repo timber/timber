@@ -135,7 +135,7 @@ class TimberHelper {
 	/**
 	 *
 	 *
-	 * @param unknown|string|array $arg that you want to error_log
+	 * @param mixed $arg that you want to error_log
 	 * @return void
 	 */
 	public static function error_log( $arg ) {
