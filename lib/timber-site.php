@@ -35,7 +35,7 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
      *
      * @param string|int $site_name_or_id
      */
-    function init_with_multisite( $site_name_or_id ) {
+    protected function init_with_multisite( $site_name_or_id ) {
         if ( $site_name_or_id === null ) {
             //this is necessary for some reason, otherwise returns 1 all the time
             if ( is_multisite() ) {
@@ -56,7 +56,7 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
         $this->multisite = true;
     }
 
-    function init() {
+    protected function init() {
         $this->admin_email = get_bloginfo( 'admin_email' );
         $this->name = get_bloginfo( 'name' );
         $this->title = $this->name;
@@ -110,14 +110,14 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
      *
      * @return string
      */
-    function link() {
+    public function link() {
         return $this->get_link();
     }
 
     /**
      *
      */
-    function meta( $field ) {
+    public function meta( $field ) {
         return $this->__get( $field );
     }
 
@@ -127,7 +127,7 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
      * @param string  $key
      * @param mixed   $value
      */
-    function update( $key, $value ) {
+    public function update( $key, $value ) {
         $value = apply_filters( 'timber_site_set_meta', $value, $key, $this->ID, $this );
         if ( is_multisite() ) {
             update_blog_option( $this->ID, $key, $value );
