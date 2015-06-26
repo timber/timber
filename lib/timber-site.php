@@ -48,12 +48,17 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
         $this->ID = $info->blog_id;
         $this->name = $this->blogname;
         $this->title = $this->blogname;
-        $this->url = $this->siteurl;
+        $this->url = get_bloginfo( 'url' );
         $this->id = $this->ID;
         $theme_slug = get_blog_option( $info->blog_id, 'stylesheet' );
         $this->theme = new TimberTheme( $theme_slug );
+        $this->language = get_bloginfo( 'language' );
+        $this->charset = get_bloginfo( 'charset' );
+        $this->pingback_url = get_bloginfo( 'pingback_url' );
+        $this->language_attributes = TimberHelper::function_wrapper( 'language_attributes' );
         $this->description = get_blog_option( $info->blog_id, 'blogdescription' );
         $this->multisite = true;
+        $this->admin_email = get_blog_option( $info->blog_id, 'admin_email' );
     }
 
     protected function init() {
