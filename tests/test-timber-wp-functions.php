@@ -87,7 +87,7 @@
 			global $wp_scripts;
 			$wp_scripts = null;
 			//send colorpicker to the header
-			wp_enqueue_script( 'colorpicker', false, array(), false, true);
+			wp_enqueue_script( 'colorpicker', false, array(), false, false);
 			//send fake-js to the footer
 			wp_enqueue_script( 'fake-js', 'http://example.org/fake-js.js', array(), false, true );
 			$str = Timber::compile_string('<head>{{function("wp_head")}}</head><footer>{{function("wp_footer")}}</footer>');
