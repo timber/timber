@@ -191,7 +191,6 @@
 			$arr = array('Bar', 'Quack');
 			$twig = '{{string|string}}x{{array|string("x")}}';
 			$this->assertEquals('FooxBarxQuack', trim(Timber::compile_string($twig, array('string' => $str, 'array' => $arr))));
-
 		}
 
 		function testFilterFunction() {

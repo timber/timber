@@ -8,7 +8,7 @@ class TimberFunctionWrapper
     private $_use_ob;
 
     public function __toString() {
-        return $this->call();
+        return (string)$this->call();
     }
 
     /**
@@ -47,7 +47,7 @@ class TimberFunctionWrapper
         if ($this->_use_ob) {
             return TimberHelper::ob_function($this->_function, $args);
         } else {
-            return (string)call_user_func_array($this->_function, $args);
+            return call_user_func_array($this->_function, $args);
         }
     }
 
