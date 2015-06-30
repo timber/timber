@@ -25,7 +25,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
 	function __toString() {
 		if ($this->get_src()) {
@@ -56,7 +56,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
-	 * @param string $dim
+	 * @param string|null $dim
 	 * @return array|int
 	 */
 	function get_dimensions_loaded($dim) {
