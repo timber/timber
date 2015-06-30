@@ -59,8 +59,8 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 * @param string|null $dim
 	 * @return array|int
 	 */
-	function get_dimensions_loaded($dim) {
-		if ($dim == null) {
+	protected function get_dimensions_loaded($dim) {
+		if ($dim === null) {
 			return $this->_dimensions;
 		}
 		if ($dim == 'w' || $dim == 'width') {

@@ -41,6 +41,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 0.21.4 =
+* Fixed issue with multisite variables
+* Fixed issue with string conversion on function output
+*
+
 = 0.21.3 =
 * Fixed issues with static post pages
 * Fixed issues with front pages with static pages
