@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.21.4
+Stable tag: 0.21.5
 Tested up to: 4.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -41,10 +41,12 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 0.21.5 =
+* Patch for method property visibility in TimberPost
+
 = 0.21.4 =
 * Fixed issue with multisite variables
 * Fixed issue with string conversion on function output
-*
 
 = 0.21.3 =
 * Fixed issues with static post pages
