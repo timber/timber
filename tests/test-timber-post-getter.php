@@ -16,6 +16,15 @@ class TestTimberPostGetter extends WP_UnitTestCase {
 		$this->assertContains($pids[0], $post_ids_gotten);
 	}
 
+	function test587() {
+		register_post_type('product');
+		$pids = $this->factory->post->create_many(6, array('post_type' => 'product'));
+		$args = array(
+        	'post_type' => 'project'
+    	);
+		$context['projects'] = Timber::get_posts($args);
+	}
+
 	function testGettingEmptyArray(){
 		$pids = $this->factory->post->create_many( 15 );
 		$posts = Timber::get_posts(array());
