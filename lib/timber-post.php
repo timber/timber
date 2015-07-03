@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * This is the object you use to access or extend WordPress posts,
+ * Think of it as Timber's (more accessible) version of WP_Post
+ * @package  timber
+ */
+
 class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	public $ImageClass = 'TimberImage';
@@ -41,7 +47,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param mixed a value to test against
 	 * @return int the numberic id we should be using for this post object
 	 */
-
 	protected function determine_id($pid) {
 		global $wp_query;
 		if ($pid === null &&
@@ -78,6 +83,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Outputs the title of the post if you do something like `<h1>{{post}}</h1>`
 	 * @return string
 	 */
 	function __toString() {
@@ -86,6 +92,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 
 	/**
+	 * Initializes a TimberPost
 	 * @param int|bool $pid
 	 */
 	function init($pid = false) {
@@ -179,7 +186,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param string $post_name
 	 * @return int
 	 */
-	public static function get_post_id_by_name($post_name) {
+	static function get_post_id_by_name($post_name) {
 		global $wpdb;
 		$query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s LIMIT 1", $post_name);
 		$result = $wpdb->get_row($query);
@@ -189,15 +196,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		return $result->ID;
 	}
 
-
 	/**
-	 *  ## get a preview of your post, if you have an excerpt it will use that,
-	 *  ## otherwise it will pull from the post_content.
-	 *  ## If there's a <!-- more --> tag it will use that to mark where to pull through.
-	 *  <p>{{post.get_preview(50)}}</p>
-	 */
-
-	/**
+	 * get a preview of your post, if you have an excerpt it will use that,
+	 * otherwise it will pull from the post_content.
+	 * If there's a <!-- more --> tag it will use that to mark where to pull through.
+	 * <p>{{post.get_preview(50)}}</p>
 	 * @param int $len
 	 * @param bool $force
 	 * @param string $readmore
@@ -260,7 +263,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *  gets the post custom and attaches it to the current object
+	 * gets the post custom and attaches it to the current object
 	 * @param bool|int $pid a post ID number
 	 * @nodoc
 	 */
@@ -273,10 +276,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Used internally to fetch the metadata fields (wp_postmeta table)
+	 * and attach them to our TimberPost object
 	 * @param int $pid
 	 * @return array
 	 */
-	function get_post_custom($pid) {
+	protected function get_post_custom($pid) {
 		apply_filters('timber_post_get_meta_pre', array(), $pid, $this);
 		$customs = get_post_custom($pid);
 		if (!is_array($customs) || empty($customs)) {
@@ -293,11 +298,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *  ## get the featured image as a TimberImage
-	 *  <img src="{{post.get_thumbnail.get_src}}" />
-	 */
-
-	/**
+	 * get the featured image as a TimberImage
+	 * In your templates you should just use thumbnail though:
+	 * <img src="{{post.thumbnail.get_src}}" />
 	 * @return null|TimberImage
 	 */
 	function get_thumbnail() {
@@ -310,6 +313,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * get the permalink for a post object
+	 * In your templates you should use link:
+	 * <a href="{{post.link}}">Read my post</a>
 	 * @return string
 	 */
 	function get_permalink() {
@@ -321,6 +327,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * get the permalink for a post object
+	 * In your templates you should use link:
+	 * <a href="{{post.link}}">Read my post</a>
 	 * @return string
 	 */
 	function get_link() {
@@ -328,8 +337,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Get the next post in WordPress's ordering
 	 * @param bool $taxonomy
-	 * @return mixed
+	 * @return TimberPost|boolean
 	 */
 	function get_next($taxonomy = false) {
 		if (!isset($this->_next) || !isset($this->_next[$taxonomy])) {
@@ -354,6 +364,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Get a data array of pagination so you can navigate to the previous/next for a paginated post
 	 * @return array
 	 */
 	public function get_pagination() {
@@ -397,6 +408,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Get the permalink for a post, but as a relative path
+	 * For example, where {{post.link}} would return "http://example.org/2015/07/04/my-cool-post"
+	 * this will return the relative version: "/2015/07/04/my-cool-post"
 	 * @return string
 	 */
 	function get_path() {
@@ -404,8 +418,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Get the next post in WordPress's ordering
 	 * @param bool $taxonomy
-	 * @return mixed
+	 * @return TimberPost|boolean
 	 */
 	function get_prev($taxonomy = false) {
 		if (isset($this->_prev) && isset($this->_prev[$taxonomy])) {
@@ -427,6 +442,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Get the parent post of the post
 	 * @return bool|TimberPost
 	 */
 	function get_parent() {
@@ -437,11 +453,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *  ## Gets a User object from the author of the post
-	 *  <p class="byline">{{post.get_author.name}}</p>
-	 */
-
-	/**
+	 * Gets a User object from the author of the post
+	 * <p class="byline">{{post.get_author.name}}</p>
 	 * @return bool|TimberUser
 	 */
 	function get_author() {
@@ -451,6 +464,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Get the author (WordPress user) who last modified the post
 	 * @return bool|TimberUser
 	 */
 	function get_modified_author() {
@@ -459,10 +473,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Used internally by init, etc. to build TimberPost object
 	 * @param int $pid
 	 * @return null|object|WP_Post
 	 */
-	function get_info($pid) {
+	protected function get_info($pid) {
 		$post = $this->prepare_post_info($pid);
 		if (!isset($post->post_status)) {
 			return null;
@@ -478,6 +493,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * This is deprecated!
+	 * But it would get the human-friendly date that should actually display in a .twig template
 	 * @param string $use
 	 * @return string
 	 */
@@ -536,18 +552,16 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Get the comments for a post
 	 *  {% for comment in post.get_comments %}
 	 *    <p>{{comment.content}}</p>
 	 *  {% endfor %}
-	 */
-
-	/**
 	 * @param int $ct
 	 * @param string $order
 	 * @param string $type
 	 * @param string $status
 	 * @param string $CommentClass
-	 * @return mixed
+	 * @return array|mixed
 	 */
 	function get_comments($ct = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
 		$args = array('post_id' => $this->ID, 'status' => $status, 'order' => $order);
@@ -581,15 +595,13 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
     }
 
 	/**
+	 * Get the categories for a post
 	 *  <ul class="categories">
 	 *  {% for category in post.get_categories %}
 	 *    <li>{{category.name}}</li>
 	 *  {% endfor %}
 	 *  </ul>
-	 */
-
-	/**
-	 * @return array
+	 * @return array of TimberTerms
 	 */
 	function get_categories() {
 		return $this->get_terms('category');
