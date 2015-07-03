@@ -1,22 +1,29 @@
 <?php
+/**
+ * Contains the class for running image retina-izing operations
+ */
 
 /**
  * Increases image size by a given factor
  * Arguments:
  * - factor by which to multiply image dimensions
+ * @property float $factor the factor (ex: 2, 1.5, 1.75) to multiply dimension by
  */
 class TimberImageOperationRetina extends TimberImageOperation {
 
     private $factor;
 
     /**
-     * @param int   $factor to multiply original dimensions by
+     * Construct our operation
+     * @param float   $factor to multiply original dimensions by
      */
     function __construct($factor) {
         $this->factor = $factor;
     }
 
     /**
+     * Generates the final filename based on the source's name and extension
+     *
      * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
      * @param   string    $src_extension    the extension (ex: .jpg)
      * @return  string    the final filename to be used (ex: my-awesome-pic@2x.jpg)
