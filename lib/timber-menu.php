@@ -37,7 +37,7 @@ class TimberMenu extends TimberCore {
 	/**
 	 * @param int $menu_id
 	 */
-	private function init($menu_id) {
+	protected function init($menu_id) {
 		$menu = wp_get_nav_menu_items($menu_id);
 		if ($menu) {
 			_wp_menu_item_classes_by_context($menu);
@@ -53,7 +53,7 @@ class TimberMenu extends TimberCore {
 		}
 	}
 
-	private function init_as_page_menu() {
+	protected function init_as_page_menu() {
 		$menu = get_pages();
 		if ($menu) {
 			foreach($menu as $mi) {
@@ -72,7 +72,7 @@ class TimberMenu extends TimberCore {
 	 * @param array $locations
 	 * @return integer
 	 */
-	private function get_menu_id_from_locations($slug, $locations) {
+	protected function get_menu_id_from_locations($slug, $locations) {
 		if ($slug === 0) {
 			$slug = $this->get_menu_id_from_terms($slug);
 		}
@@ -88,7 +88,7 @@ class TimberMenu extends TimberCore {
 	 * @param int $slug
 	 * @return int
 	 */
-	private function get_menu_id_from_terms($slug = 0) {
+	protected function get_menu_id_from_terms($slug = 0) {
 		if (!is_numeric($slug) && is_string($slug)) {
 			//we have a string so lets search for that
 			$menu_id = get_term_by('slug', $slug, 'nav_menu');
