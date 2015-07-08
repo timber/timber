@@ -41,7 +41,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
     /**
      * @return integer
      */
-    private function get_term_from_query() {
+    protected function get_term_from_query() {
         global $wp_query;
         if (isset($wp_query->queried_object)) {
         	$qo = $wp_query->queried_object;
@@ -55,7 +55,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
     /**
      * @param int $tid
      */
-    private function init($tid) {
+    protected function init($tid) {
         $term = $this->get_term($tid);
         if (isset($term->id)) {
             $term->ID = $term->id;
@@ -79,7 +79,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
      * @param int $tid
      * @return array
      */
-    private function get_term_meta($tid) {
+    protected function get_term_meta($tid) {
         $customs = array();
         $customs = apply_filters('timber_term_get_meta', $customs, $tid, $this);
         return $customs;
@@ -89,7 +89,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
      * @param int $tid
      * @return mixed
      */
-    private function get_term($tid) {
+    protected function get_term($tid) {
         if (is_object($tid) || is_array($tid)) {
             return $tid;
         }
@@ -112,7 +112,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
      * @param int $tid
      * @return int
      */
-    private function get_tid($tid) {
+    protected function get_tid($tid) {
         global $wpdb;
         if (is_numeric($tid)) {
             return $tid;

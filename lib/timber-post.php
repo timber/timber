@@ -142,7 +142,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param mixed $pid
 	 * @return WP_Post on success
 	 */
-	private function prepare_post_info($pid = 0) {
+	protected function prepare_post_info($pid = 0) {
 		if (is_string($pid) || is_numeric($pid) || (is_object($pid) && !isset($pid->post_title)) || $pid === 0) {
 			$pid = self::check_post_id($pid);
 			$post = get_post($pid);
@@ -398,7 +398,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param int $i
 	 * @return string
 	 */
-	private static function get_wp_link_page($i) {
+	protected static function get_wp_link_page($i) {
 		$link = _wp_link_page($i);
 		$link = new SimpleXMLElement($link . '</a>');
 		if (isset($link['href'])) {

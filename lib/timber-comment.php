@@ -133,7 +133,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
      * @param int $comment_id
      * @return mixed
      */
-    private function get_meta_fields($comment_id = null) {
+    protected function get_meta_fields($comment_id = null) {
         if ($comment_id === null) {
             $comment_id = $this->ID;
         }
@@ -153,7 +153,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
      * @param string $field_name
      * @return mixed
      */
-    private function get_meta_field($field_name) {
+    protected function get_meta_field($field_name) {
         $value = apply_filters('timber_comment_get_meta_field_pre', null, $this->ID, $field_name, $this);
         if ($value === null) {
             $value = get_comment_meta($this->ID, $field_name, true);
@@ -168,7 +168,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     /**
      * @return string
      */
-    private function avatar_email() {
+    protected function avatar_email() {
         $id = (int)$this->user_id;
         $user = get_userdata($id);
         if ($user) {
@@ -183,7 +183,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
      * @param string $email_hash
      * @return string
      */
-    private function avatar_host($email_hash) {
+    protected function avatar_host($email_hash) {
         if (is_ssl()) {
             $host = 'https://secure.gravatar.com';
         } else {
@@ -203,7 +203,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
      * @param string $host
      * @return string
      */
-    private function avatar_default($default, $email, $size, $host) {
+    protected function avatar_default($default, $email, $size, $host) {
         # what if its relative.
         if (substr($default, 0, 1) == '/') {
             $default = home_url() . $default;
@@ -243,7 +243,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
      * @param string $size
      * @return mixed
      */
-    private function avatar_out($email, $default, $host, $email_hash, $size) {
+    protected function avatar_out($email, $default, $host, $email_hash, $size) {
         $out = $host . '/avatar/' . $email_hash . '?s=' . $size . '&amp;d=' . urlencode($default);
         $rating = get_option('avatar_rating');
         if (!empty($rating)) {
