@@ -154,10 +154,23 @@
 			$this->assertEquals('Foo', Timber::compile_string($str));
 		}
 
+		function testPostInTwig(){
+			$pid = $this->factory->post->create(array('post_title' => 'Foo'));
+			$str = '{{Post('.$pid.').title}}';
+			$this->assertEquals('Foo', Timber::compile_string($str));
+		}
+
 		function testTimberPostsInTwig(){
 			$pids[] = $this->factory->post->create(array('post_title' => 'Foo'));
 			$pids[] = $this->factory->post->create(array('post_title' => 'Bar'));
 			$str = '{% for post in TimberPost(pids) %}{{post.title}}{% endfor %}';
+			$this->assertEquals('FooBar', Timber::compile_string($str, array('pids' => $pids)));
+		}
+
+		function testPostsInTwig(){
+			$pids[] = $this->factory->post->create(array('post_title' => 'Foo'));
+			$pids[] = $this->factory->post->create(array('post_title' => 'Bar'));
+			$str = '{% for post in Post(pids) %}{{post.title}}{% endfor %}';
 			$this->assertEquals('FooBar', Timber::compile_string($str, array('pids' => $pids)));
 		}
 
