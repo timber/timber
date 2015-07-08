@@ -79,6 +79,8 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 		}
 		if (is_numeric($uid)) {
 			$data = get_userdata($uid);
+		} else if (is_string($uid)){ 
+			$data = get_user_by('login', $uid);
 		}
 		if (isset($data) && is_object($data)) {
 			if (isset($data->data)){

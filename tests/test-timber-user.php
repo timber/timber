@@ -9,6 +9,13 @@
 			$this->assertEquals($uid, $user->id);
 		}
 
+		function testInitWithSlug(){
+			$uid = $this->factory->user->create(array('display_name' => 'Tito Bottitta', 'user_login' => 'mbottitta'));
+			$user = new TimberUser('mbottitta');
+			$this->assertEquals('Tito Bottitta', $user->name);
+			$this->assertEquals($uid, $user->id);
+		}
+
 		function testDescription() {
 			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln'));
 			update_user_meta($uid, 'description', 'Sixteenth President');
