@@ -214,8 +214,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 				$text = $this->post_excerpt;
 			}
 		}
-		if (!strlen($text) && strpos($this->post_content, '<!--more-->') !== false) {
-			$pieces = explode('<!--more-->', $this->post_content);
+		if (!strlen($text) && preg_match('/<!--more(.*?)?-->/', $this->post_content, $readmore_matches)) {
+			$pieces = explode($readmore_matches[0], $this->post_content);
 			$text = $pieces[0];
 			if ($force) {
 				$text = TimberHelper::trim_words($text, $len, false);
@@ -248,9 +248,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 				}
 			}
 
-			if ($readmore) {
-				$text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . $readmore . '</a>';
-			}
+			if ($readmore && (isset($readmore_matches) && !empty($readmore_matches[1]))) {
+                $text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . $readmore_matches[1] . '</a>';
+            } elseif ($readmore) {
+                $text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . $readmore . '</a>';
+            }
+            
 			if (!$strip) {
 				$text .= '</p>';
 			}
