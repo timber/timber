@@ -343,4 +343,11 @@ class TimberMenuTest extends WP_UnitTestCase {
 
 	}
 
+	function testMenuLevels() {
+		$this->_createTestMenu();
+		$menu = new TimberMenu();
+		$this->assertEquals(0, $menu->items[0]->level);
+		$this->assertEquals(1, $menu->items[0]->children[0]->level);
+	}
+
 }
