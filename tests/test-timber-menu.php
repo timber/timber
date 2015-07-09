@@ -191,6 +191,8 @@ class TimberMenuTest extends WP_UnitTestCase {
 		update_post_meta( $link_id, '_menu_item_url', 'http://upstatement.com' );
 		update_post_meta( $link_id, '_menu_item_xfn', '' );
 		update_post_meta( $link_id, '_menu_item_menu_item_parent', 0 );
+
+		/* make a child page */
 		$child_id = wp_insert_post( array(
 				'post_title' => 'Child Page',
 				'post_status' => 'publish',
@@ -210,6 +212,27 @@ class TimberMenuTest extends WP_UnitTestCase {
 		update_post_meta( $child_menu_item, '_menu_item_url', '' );
 		$post = new TimberPost( $child_menu_item );
 		$menu_items[] = $child_menu_item;
+
+		/* make a grandchild page */
+		$grandchild_id = wp_insert_post( array(
+				'post_title' => 'Grandchild Page',
+				'post_status' => 'publish',
+				'post_name' => 'grandchild-page',
+				'post_type' => 'page',
+				'menu_order' => 100,
+			) );
+		$grandchild_menu_item = wp_insert_post( array(
+				'post_title' => '',
+				'post_status' => 'publish',
+				'post_type' => 'nav_menu_item',
+			) );
+		update_post_meta( $grandchild_menu_item, '_menu_item_type', 'post_type' );
+		update_post_meta( $grandchild_menu_item, '_menu_item_menu_item_parent', $child_menu_item );
+		update_post_meta( $grandchild_menu_item, '_menu_item_object_id', $grandchild_id );
+		update_post_meta( $grandchild_menu_item, '_menu_item_object', 'page' );
+		update_post_meta( $grandchild_menu_item, '_menu_item_url', '' );
+		$post = new TimberPost( $grandchild_menu_item );
+		$menu_items[] = $grandchild_menu_item;
 
 		$root_url_link_id = wp_insert_post(
 			array(
