@@ -148,6 +148,20 @@
 			}
 		}
 
+		function testTimberImageInTwig() {
+			$iid = TimberImageTest::get_image_attachment();
+			$str = '{{TimberImage('.$iid.').src}}';
+			$compiled = Timber::compile_string($str);
+			$this->assertEquals('http://example.org/wp-content/uploads/2015/07/arch.jpg', $compiled);
+		}
+
+		function testImageInTwig() {
+			$iid = TimberImageTest::get_image_attachment();
+			$str = '{{Image('.$iid.').src}}';
+			$compiled = Timber::compile_string($str);
+			$this->assertEquals('http://example.org/wp-content/uploads/2015/07/arch.jpg', $compiled);
+		}
+
 		function testTimberPostInTwig(){
 			$pid = $this->factory->post->create(array('post_title' => 'Foo'));
 			$str = '{{TimberPost('.$pid.').title}}';

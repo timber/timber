@@ -40,11 +40,16 @@ class TimberImageTest extends WP_UnitTestCase {
 		return "$url?lang=en";
 	}
 
-	function get_post_with_image() {
-		$pid = $this->factory->post->create();
+	public static function get_image_attachment( $pid = 0 ) {
 		$filename = self::copyTestImage( 'arch.jpg' );
 		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 		$iid = wp_insert_attachment( $attachment, $filename, $pid );
+		return $iid;
+	}
+
+	public function get_post_with_image() {
+		$pid = $this->factory->post->create();
+		$iid = self::get_image_attachment( $pid );
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
 		$post = new TimberPost($pid);
 		return $post;
