@@ -249,6 +249,7 @@ class Timber {
 			}
 		}
 		$data = apply_filters( 'timber_context', $data );
+		$data = apply_filters( 'timber/context', $data );
 		return $data;
 	}
 
