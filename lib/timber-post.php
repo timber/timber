@@ -221,9 +221,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 				$text = TimberHelper::trim_words($text, $len, false);
 				$trimmed = true;
 			}
+			$text = do_shortcode($text);
 		}
 		if (!strlen($text)) {
 			$text = TimberHelper::trim_words($this->get_content(), $len, false);
+			$text = do_shortcode($text);
 			$trimmed = true;
 		}
 		if (!strlen(trim($text))) {
@@ -253,7 +255,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
             } elseif ($readmore) {
                 $text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . $readmore . '</a>';
             }
-            
+
 			if (!$strip) {
 				$text .= '</p>';
 			}
