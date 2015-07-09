@@ -6,6 +6,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	public $has_child_class = false;
 	public $classes = array();
 	public $class = '';
+	public $level = 0;
 	public $post_name;
 	public $type;
 	public $url;
@@ -123,6 +124,19 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 			$this->children = array();
 		}
 		$this->children[] = $item;
+		$item->level = $this->level + 1;
+		if ($item->children) {
+			$this->update_child_levels();
+		}
+	}
+
+	public function update_child_levels() {
+		if (is_array($this->children)) {
+			foreach( $this->children as $child ) {
+				$child->level = $this->level + 1;
+				$child->update_child_levels();
+			}
+		}
 	}
 
 	/**
