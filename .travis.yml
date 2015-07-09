@@ -28,10 +28,10 @@ before_script:
 
 script:
     - mkdir -p build/logs
-    - phpunit --coverage-clover build/logs/clover.xml
+    - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] phpunit --coverage-clover build/logs/clover.xml || phpunit -c bin/phpunit-nocover.xml'
 
 after_script:
-    - php vendor/bin/coveralls -v
+    - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] php vendor/bin/coveralls -v || false'
 
 after_success:
-    - coveralls
+    - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] coveralls || false'
