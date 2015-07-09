@@ -218,18 +218,16 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 				$text = $this->post_excerpt;
 			}
 		}
-		if (!strlen($text) && preg_match('/<!--more(.*?)?-->/', $this->post_content, $readmore_matches)) {
-			$pieces = explode($readmore_matches[0], $this->post_content);
+		if (!strlen($text) && strpos($this->post_content, '<!--more-->') !== false) {
+			$pieces = explode('<!--more-->', $this->post_content);
 			$text = $pieces[0];
 			if ($force) {
 				$text = TimberHelper::trim_words($text, $len, false);
 				$trimmed = true;
 			}
-			$text = do_shortcode($text);
 		}
 		if (!strlen($text)) {
 			$text = TimberHelper::trim_words($this->get_content(), $len, false);
-			$text = do_shortcode($text);
 			$trimmed = true;
 		}
 		if (!strlen(trim($text))) {
@@ -254,11 +252,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 				}
 			}
 
-			if ($readmore && (isset($readmore_matches) && !empty($readmore_matches[1]))) {
-                $text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . $readmore_matches[1] . '</a>';
-            } elseif ($readmore) {
-                $text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . $readmore . '</a>';
-            }
+			if ($readmore) {
+				$text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . $readmore . '</a>';
+			}
 
 			if (!$strip) {
 				$text .= '</p>';
