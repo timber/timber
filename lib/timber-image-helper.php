@@ -171,43 +171,29 @@ class TimberImageHelper {
 		$dir = $info['dirname'];
 		$ext = $info['extension'];
 		$filename = $info['filename'];
-		self::delete_resized_files( $filename, $ext, $dir );
-		self::delete_letterboxed_files( $filename, $ext, $dir );
+		self::process_delete_generated_files( $filename, $ext, $dir, '-[0-9999999]*', '-[0-9]*x[0-9]*-c-[a-z]*.' );
+		self::process_delete_generated_files( $filename, $ext, $dir, '-lbox-[0-9999999]*', '-lbox-[0-9]*x[0-9]*-[a-zA-Z0-9]*.' );
 	}
 
 	/**
 	 * Deletes resized versions of the supplied file name.
 	 * So if passed a value like my-pic.jpg, this function will delete my-pic-500x200-c-left.jpg, my-pic-400x400-c-default.jpg, etc.
 	 *
+	 * keeping these here so I know what the hell we're matching
+	 * $match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/$filename-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $found_file);
+	 * $match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/arch-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $filename);	
+	 * 
 	 * @param string 	$filename   ex: my-pic
 	 * @param string 	$ext ex: jpg
 	 * @param string 	$dir var/www/wp-content/uploads/2015/
+	 * @param string 	$search_pattern pattern of files to pluck from
+	 * @param string 	$match_pattern pattern of files to go forth and delete
 	 */
-	protected static function delete_resized_files( $filename, $ext, $dir ) {
-		$searcher = '/' . $filename . '-[0-9999999]*';
+	protected static function process_delete_generated_files( $filename, $ext, $dir, $search_pattern, $match_pattern ) {
+		$searcher = '/' . $filename . $search_pattern;
 		foreach ( glob( $dir . $searcher ) as $found_file ) {
 			$regexdir = str_replace( '/', '\/', $dir );
-			$pattern = '/' . ( $regexdir ) . '\/' . $filename . '-[0-9]*x[0-9]*-c-[a-z]*.' . $ext . '/';
-			$match = preg_match( $pattern, $found_file );
-			//keeping these here so I know what the hell we're matching
-			//$match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/$filename-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $found_file);
-			//$match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/arch-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $filename);
-			if ( $match ) {
-				unlink( $found_file );
-			}
-		}
-	}
-
-	/**
-	 * Deletes letterboxed versions of the supplied file name
-	 *
-	 * @param string  $local_file
-	 */
-	protected static function delete_letterboxed_files( $filename, $ext, $dir ) {
-		$searcher = '/' . $filename . '-lbox-[0-9999999]*';
-		foreach ( glob( $dir . $searcher ) as $found_file ) {
-			$regexdir = str_replace( '/', '\/', $dir );
-			$pattern = '/' . ( $regexdir ) . '\/' . $filename . '-lbox-[0-9]*x[0-9]*-[a-zA-Z0-9]*.' . $ext . '/';
+			$pattern = '/' . ( $regexdir ) . '\/' . $filename . $match_pattern . $ext . '/';
 			$match = preg_match( $pattern, $found_file );
 			if ( $match ) {
 				unlink( $found_file );
