@@ -123,14 +123,13 @@ class TimberImageHelper {
 	/**
 	 * Deletes all resized versions of an image when the source is deleted
 	 */
-	static function add_actions() {
+	protected static function add_actions() {
 		add_action( 'delete_post', function ( $post_id ) {
 				$post = get_post( $post_id );
 				$image_types = array( 'image/jpeg', 'image/png', 'image/gif', 'image/jpg' );
 				if ( $post->post_type == 'attachment' && in_array( $post->post_mime_type, $image_types ) ) {
 					$attachment = new TimberImage( $post_id );
-					TimberImageHelper::delete_resized_files( $attachment->file_loc );
-					TimberImageHelper::delete_letterboxed_files( $attachment->file_loc );
+					TimberImageHelper::delete_generated_files( $attachment->file_loc );
 				}
 			} );
 	}
@@ -139,7 +138,7 @@ class TimberImageHelper {
 	 * Adds a constant defining the path to the content directory relative to the site
 	 * for example /wp-content or /content
 	 */
-	static function add_constants() {
+	protected static function add_constants() {
 		if ( !defined( 'WP_CONTENT_SUBDIR' ) ) {
 			$wp_content_path = str_replace( home_url(), '', WP_CONTENT_URL );
 			define( 'WP_CONTENT_SUBDIR', $wp_content_path );
@@ -160,6 +159,17 @@ class TimberImageHelper {
 
 	//-- end of public methods --//
 
+	static function delete_generated_files( $local_file ) {
+		if (TimberURLHelper::is_absolute( $local_file ) ) {
+			$local_file = TimberURLHelper::url_to_file_system( $local_file );
+		}
+		$info = pathinfo( $local_file );
+		$dir = $info['dirname'];
+		$ext = $info['extension'];
+		$filename = $info['filename'];
+		self::delete_resized_files( $filename, $ext, $dir );
+		self::delete_letterboxed_files( $filename, $ext, $dir );
+	}
 
 	/**
 	 * Deletes resized versions of the supplied file name.
@@ -168,14 +178,7 @@ class TimberImageHelper {
 	 * @param string  $local_file   ex: /var/www/wp-content/uploads/2015/my-pic.jpg
 	 *                              ex: http://example.org/wp-content/uploads/2015/foo.png
 	 */
-	static function delete_resized_files( $local_file ) {
-		if (TimberURLHelper::is_absolute( $local_file ) ) {
-			$local_file = TimberURLHelper::url_to_file_system( $local_file );
-		}
-		$info = pathinfo( $local_file );
-		$dir = $info['dirname'];
-		$ext = $info['extension'];
-		$filename = $info['filename'];
+	protected static function delete_resized_files( $filename, $ext, $dir ) {
 		$searcher = '/' . $filename . '-[0-9999999]*';
 		foreach ( glob( $dir . $searcher ) as $found_file ) {
 			$regexdir = str_replace( '/', '\/', $dir );
@@ -195,14 +198,7 @@ class TimberImageHelper {
 	 *
 	 * @param string  $local_file
 	 */
-	static function delete_letterboxed_files( $local_file ) {
-		if (TimberURLHelper::is_absolute( $local_file ) ) {
-			$local_file = TimberURLHelper::url_to_file_system( $local_file );
-		}
-		$info = pathinfo( $local_file );
-		$dir = $info['dirname'];
-		$ext = $info['extension'];
-		$filename = $info['filename'];
+	protected static function delete_letterboxed_files( $filename, $ext, $dir ) {
 		$searcher = '/' . $filename . '-lbox-[0-9999999]*';
 		foreach ( glob( $dir . $searcher ) as $found_file ) {
 			$regexdir = str_replace( '/', '\/', $dir );
