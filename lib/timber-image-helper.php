@@ -158,7 +158,11 @@ class TimberImageHelper {
 	}
 
 	//-- end of public methods --//
-
+	/**
+	 * Deletes the auto-generated files for resize and letterboxing created by Timber
+	 * @param string  $local_file   ex: /var/www/wp-content/uploads/2015/my-pic.jpg
+	 *                              or: http://example.org/wp-content/uploads/2015/my-pic.jpg
+	 */
 	static function delete_generated_files( $local_file ) {
 		if (TimberURLHelper::is_absolute( $local_file ) ) {
 			$local_file = TimberURLHelper::url_to_file_system( $local_file );
@@ -175,8 +179,9 @@ class TimberImageHelper {
 	 * Deletes resized versions of the supplied file name.
 	 * So if passed a value like my-pic.jpg, this function will delete my-pic-500x200-c-left.jpg, my-pic-400x400-c-default.jpg, etc.
 	 *
-	 * @param string  $local_file   ex: /var/www/wp-content/uploads/2015/my-pic.jpg
-	 *                              ex: http://example.org/wp-content/uploads/2015/foo.png
+	 * @param string 	$filename   ex: my-pic
+	 * @param string 	$ext ex: jpg
+	 * @param string 	$dir var/www/wp-content/uploads/2015/
 	 */
 	protected static function delete_resized_files( $filename, $ext, $dir ) {
 		$searcher = '/' . $filename . '-[0-9999999]*';
