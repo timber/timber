@@ -123,14 +123,13 @@ class TimberImageHelper {
 	/**
 	 * Deletes all resized versions of an image when the source is deleted
 	 */
-	static function add_actions() {
+	protected static function add_actions() {
 		add_action( 'delete_post', function ( $post_id ) {
 				$post = get_post( $post_id );
 				$image_types = array( 'image/jpeg', 'image/png', 'image/gif', 'image/jpg' );
 				if ( $post->post_type == 'attachment' && in_array( $post->post_mime_type, $image_types ) ) {
 					$attachment = new TimberImage( $post_id );
-					TimberImageHelper::delete_resized_files( $attachment->file_loc );
-					TimberImageHelper::delete_letterboxed_files( $attachment->file_loc );
+					TimberImageHelper::delete_generated_files( $attachment->file_loc );
 				}
 			} );
 	}
@@ -139,7 +138,7 @@ class TimberImageHelper {
 	 * Adds a constant defining the path to the content directory relative to the site
 	 * for example /wp-content or /content
 	 */
-	static function add_constants() {
+	protected static function add_constants() {
 		if ( !defined( 'WP_CONTENT_SUBDIR' ) ) {
 			$wp_content_path = str_replace( home_url(), '', WP_CONTENT_URL );
 			define( 'WP_CONTENT_SUBDIR', $wp_content_path );
@@ -159,54 +158,42 @@ class TimberImageHelper {
 	}
 
 	//-- end of public methods --//
-
+	/**
+	 * Deletes the auto-generated files for resize and letterboxing created by Timber
+	 * @param string  $local_file   ex: /var/www/wp-content/uploads/2015/my-pic.jpg
+	 *                              or: http://example.org/wp-content/uploads/2015/my-pic.jpg
+	 */
+	static function delete_generated_files( $local_file ) {
+		if (TimberURLHelper::is_absolute( $local_file ) ) {
+			$local_file = TimberURLHelper::url_to_file_system( $local_file );
+		}
+		$info = pathinfo( $local_file );
+		$dir = $info['dirname'];
+		$ext = $info['extension'];
+		$filename = $info['filename'];
+		self::process_delete_generated_files( $filename, $ext, $dir, '-[0-9999999]*', '-[0-9]*x[0-9]*-c-[a-z]*.' );
+		self::process_delete_generated_files( $filename, $ext, $dir, '-lbox-[0-9999999]*', '-lbox-[0-9]*x[0-9]*-[a-zA-Z0-9]*.' );
+	}
 
 	/**
 	 * Deletes resized versions of the supplied file name.
 	 * So if passed a value like my-pic.jpg, this function will delete my-pic-500x200-c-left.jpg, my-pic-400x400-c-default.jpg, etc.
 	 *
-	 * @param string  $local_file   ex: /var/www/wp-content/uploads/2015/my-pic.jpg
-	 *                              ex: http://example.org/wp-content/uploads/2015/foo.png
+	 * keeping these here so I know what the hell we're matching
+	 * $match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/$filename-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $found_file);
+	 * $match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/arch-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $filename);	
+	 * 
+	 * @param string 	$filename   ex: my-pic
+	 * @param string 	$ext ex: jpg
+	 * @param string 	$dir var/www/wp-content/uploads/2015/
+	 * @param string 	$search_pattern pattern of files to pluck from
+	 * @param string 	$match_pattern pattern of files to go forth and delete
 	 */
-	static function delete_resized_files( $local_file ) {
-		if (TimberURLHelper::is_absolute( $local_file ) ) {
-			$local_file = TimberURLHelper::url_to_file_system( $local_file );
-		}
-		$info = pathinfo( $local_file );
-		$dir = $info['dirname'];
-		$ext = $info['extension'];
-		$filename = $info['filename'];
-		$searcher = '/' . $filename . '-[0-9999999]*';
+	protected static function process_delete_generated_files( $filename, $ext, $dir, $search_pattern, $match_pattern ) {
+		$searcher = '/' . $filename . $search_pattern;
 		foreach ( glob( $dir . $searcher ) as $found_file ) {
 			$regexdir = str_replace( '/', '\/', $dir );
-			$pattern = '/' . ( $regexdir ) . '\/' . $filename . '-[0-9]*x[0-9]*-c-[a-z]*.' . $ext . '/';
-			$match = preg_match( $pattern, $found_file );
-			//keeping these here so I know what the hell we're matching
-			//$match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/$filename-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $found_file);
-			//$match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/arch-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $filename);
-			if ( $match ) {
-				unlink( $found_file );
-			}
-		}
-	}
-
-	/**
-	 * Deletes letterboxed versions of the supplied file name
-	 *
-	 * @param string  $local_file
-	 */
-	static function delete_letterboxed_files( $local_file ) {
-		if (TimberURLHelper::is_absolute( $local_file ) ) {
-			$local_file = TimberURLHelper::url_to_file_system( $local_file );
-		}
-		$info = pathinfo( $local_file );
-		$dir = $info['dirname'];
-		$ext = $info['extension'];
-		$filename = $info['filename'];
-		$searcher = '/' . $filename . '-lbox-[0-9999999]*';
-		foreach ( glob( $dir . $searcher ) as $found_file ) {
-			$regexdir = str_replace( '/', '\/', $dir );
-			$pattern = '/' . ( $regexdir ) . '\/' . $filename . '-lbox-[0-9]*x[0-9]*-[a-zA-Z0-9]*.' . $ext . '/';
+			$pattern = '/' . ( $regexdir ) . '\/' . $filename . $match_pattern . $ext . '/';
 			$match = preg_match( $pattern, $found_file );
 			if ( $match ) {
 				unlink( $found_file );
