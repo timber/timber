@@ -199,8 +199,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	/**
 	 * get a preview of your post, if you have an excerpt it will use that,
 	 * otherwise it will pull from the post_content.
-	 * If there's a <!-- more --> tag it will use that to mark where to pull through.
-	 * <p>{{post.get_preview(50)}}</p>
+	 * @example If there's a <!-- more --> tag it will use that to mark where to pull through.
+	 * @example <p>{{post.get_preview(50)}}</p>
 	 * @param int $len
 	 * @param bool $force
 	 * @param string $readmore
@@ -455,7 +455,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Gets a User object from the author of the post
-	 * <p class="byline">{{post.get_author.name}}</p>
+	 * @example <p class="byline">{{post.get_author.name}}</p>
 	 * @return bool|TimberUser
 	 */
 	function get_author() {
@@ -554,9 +554,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the comments for a post
-	 *  {% for comment in post.get_comments %}
-	 *    <p>{{comment.content}}</p>
-	 *  {% endfor %}
+	 * @example {% for comment in post.get_comments %}
+	 * @example   <p>{{comment.content}}</p>
+	 * @example {% endfor %}
 	 * @param int $ct
 	 * @param string $order
 	 * @param string $type
@@ -597,11 +597,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the categories for a post
-	 *  <ul class="categories">
-	 *  {% for category in post.get_categories %}
-	 *    <li>{{category.name}}</li>
-	 *  {% endfor %}
-	 *  </ul>
+	 * @example "docs/examples/get_categories.twig"
 	 * @return array of TimberTerms
 	 */
 	function get_categories() {
