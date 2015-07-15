@@ -55,8 +55,8 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	 * @return string
 	 */
 	function name() {
-		if ( isset( $this->title ) ) {
-			return $this->title;
+		if ( $title = $this->title() ) {
+			return $title;
 		}
 		if ( isset( $this->_name ) ) {
 			return $this->_name;
