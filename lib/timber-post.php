@@ -299,9 +299,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * get the featured image as a TimberImage
-	 * In your templates you should just use thumbnail though:
-	 * <img src="{{post.thumbnail.get_src}}" />
+	 * @internal
+	 * @see TimberPost::thumbnail
 	 * @return null|TimberImage
 	 */
 	function get_thumbnail() {
@@ -314,9 +313,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * get the permalink for a post object
-	 * In your templates you should use link:
-	 * <a href="{{post.link}}">Read my post</a>
+	 * @internal
+	 * @see TimberPost::link
 	 * @return string
 	 */
 	function get_permalink() {
@@ -700,15 +698,14 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *  ## Gets an array of tags for you to use
-	 *  <ul class="tags">
-	 *  {% for tag in post.tags %}
-	 *    <li>{{tag.name}}</li>
-	 *  {% endfor %}
-	 *  </ul>
-	 */
-
-	/**
+	 * Gets an array of tags for you to use
+	 * ```twig
+	 * <ul class="tags">
+	 *     {% for tag in post.tags %}
+	 *         <li>{{tag.name}}</li>
+	 *     {% endfor %}
+	 * </ul>
+	 * ```
 	 * @return array
 	 */
 	function get_tags() {
@@ -716,11 +713,10 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *  ## Outputs the title with filters applied
-	 *  <h1>{{post.get_title}}</h1>
-	 */
-
-	/**
+	 * Outputs the title with filters applied
+	 * ```twig
+	 * <h1>{{post.get_title}}</h1>
+	 * ```
 	 * @return string
 	 */
 	function get_title() {
@@ -767,9 +763,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		return $this->get_content(0, $page);
 	}
 	/**
-	 * <code>
+	 * ```twig
 	 * This post is from <span>{{ post.get_post_type.labels.plural }}</span>
-	 * </code>
+	 * ```
 	 * @return mixed
 	 */
 	public function get_post_type() {
@@ -888,13 +884,25 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @return mixed
+	 * @api
+	 * Returns a category attached to a post
+	 * If mulitpuile categories are set, it will return just the first one
+	 * @return TimberTerm|null
 	 */
 	public function category() {
 		return $this->get_category();
 	}
 
 	/**
+	 * @api
+	 * ```twig
+	 * {% if post.children %}
+	 *     Here are the child pages:
+	 *     {% for child in page.children %}
+	 *         <a href="{{ child.link }}">{{ child.title }}</a>
+	 *     {% endfor %}
+	 * {% endif %}
+	 * ```
 	 * @return array
 	 */
 	public function children( $post_type = 'any', $childPostClass = false ) {
@@ -902,6 +910,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @return mixed
 	 */
 	public function comments() {
@@ -924,6 +933,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @param string $date_format
 	 * @return string
 	 */
@@ -946,6 +956,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
+	 * get the permalink for a post object
+	 * In your templates you should use link:
+	 * ```twig
+	 * <a href="{{post.link}}">Read my post</a>
+	 * ```
 	 * @return string
 	 */
 	public function link() {
@@ -1023,6 +1039,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @param bool $in_same_cat
 	 * @return mixed
 	 */
@@ -1031,6 +1048,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
+	 * Get the terms associated with the post
+	 * This goes across all taxonomies by default
 	 * @param string $tax
 	 * @return array
 	 */
@@ -1039,6 +1059,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @return array
 	 */
 	public function tags() {
@@ -1046,6 +1067,10 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
+	 * get the featured image as a TimberImage
+	 * In your templates you should just use thumbnail though:
+	 * <img src="{{post.thumbnail.get_src}}" />
 	 * @return null|TimberImage
 	 */
 	public function thumbnail() {
