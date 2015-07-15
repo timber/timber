@@ -771,6 +771,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		return $this->get_content(0, $page);
 	}
 	/**
+	 * <code>
+	 * This post is from <span>{{ post.get_post_type.labels.plural }}</span>
+	 * </code>
 	 * @return mixed
 	 */
 	public function get_post_type() {
