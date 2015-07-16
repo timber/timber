@@ -961,6 +961,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Get the children of a post
 	 * @api
 	 * ```twig
 	 * {% if post.children %}
@@ -981,7 +982,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the comments on your post
-	 * 
+	 * @api
 	 * ```twig
 	 * My Post's Comments:
 	 * {% for comment in post.comments %}
@@ -990,7 +991,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 *     </div>
 	 * {% endfor %}
 	 * ```
-	 * 
 	 * @return bool|array
 	 */
 	public function comments() {
@@ -999,6 +999,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content
+	 * ```twig
+	 * <div class="article">
+	 *     {{ post.content }}
+	 * </div>
+	 * ```
 	 * @param int $page
 	 * @return string
 	 */
@@ -1014,7 +1019,13 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Get the date to use in your template
 	 * @api
+	 * ```twig
+	 * Published on {{ post.date }} // Uses WP's formatting set in Admin
+	 * OR
+	 * Published on {{ post.date|date(' F jS ')}} // Jan 12th
+	 * ```
 	 * @param string $date_format
 	 * @return string
 	 */
@@ -1037,13 +1048,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @api
 	 * get the permalink for a post object
-	 * In your templates you should use link:
+	 * @api
 	 * ```twig
 	 * <a href="{{post.link}}">Read my post</a>
 	 * ```
-	 * @return string
+	 * @return string ex: http://example.org/2015/07/my-awesome-post
 	 */
 	public function link() {
 		return $this->get_permalink();
@@ -1130,7 +1140,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Get the previous post in a set
 	 * @api
+	 * ```twig
+	 * <h4>{{ post.prev.title}}</h4>
+	 * ```
 	 * @param bool $in_same_cat
 	 * @return mixed
 	 */
@@ -1139,9 +1153,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @api
 	 * Get the terms associated with the post
 	 * This goes across all taxonomies by default
+	 * @api
 	 * @param string $tax
 	 * @return array
 	 */
@@ -1150,8 +1164,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @api
 	 * Gets the tags on a post, uses WP's post_tag taxonomy
+	 * @api
 	 * @return array
 	 */
 	public function tags() {
@@ -1159,11 +1173,10 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @api
 	 * get the featured image as a TimberImage
-	 * In your templates you should just use thumbnail use:
+	 * @api
 	 * ```twig
-	 * <img src="{{post.thumbnail.get_src}}" />
+	 * <img src="{{post.thumbnail.src}}" />
 	 * ```
 	 * @return null|TimberImage
 	 */
@@ -1172,8 +1185,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @api
 	 * Returns the processed title to be used in templates
+	 * @api
 	 * @return string
 	 */
 	public function title() {

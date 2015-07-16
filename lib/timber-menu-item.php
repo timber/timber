@@ -202,7 +202,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
+	 * Checks to see if a link is external, helpful when creating rules for the target of a link
 	 *
 	 * @return bool
 	 */
@@ -211,8 +211,13 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * Get the full link to a Menu Item
+	 * @api
+	 * ```twig
+	 * {% for item in menu.items %}
+	 *     <li><a href="{{ item.link }}">{{ item.title }}</a></li>
+	 * {% endfor %}
+	 * ```
 	 * @return string a full URL like http://mysite.com/thing/
 	 */
 	public function link() {
@@ -220,8 +225,13 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * Return the relative path of a Menu Item's link
+	 * @api
+	 * ```twig
+	 * {% for item in menu.items %}
+	 *     <li><a href="{{ item.path }}">{{ item.title }}</a></li>
+	 * {% endfor %}
+	 * ```
 	 * @see get_path()
 	 * @return string the path of a URL like /foo
 	 */
@@ -230,8 +240,8 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * Gets the link a menu item points at
+	 * @deprecated since 0.21.7 use link instead
 	 * @see link()
 	 * @return string a full URL like http://mysite.com/thing/
 	 */
@@ -241,7 +251,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 *
-	 *
+	 * @deprecated since 0.21.7, use link instead
 	 * @see link()
 	 * @return string a full URL like http://mysite.com/thing/
 	 */
@@ -250,8 +260,13 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * Gets the public label for the menu item
+	 * @api
+	 * ```twig
+	 * {% for item in menu.items %}
+	 *     <li><a href="{{ item.link }}">{{ item.title }}</a></li>
+	 * {% endfor %}
+	 * ```
 	 * @return string the public label like Foo
 	 */
 	public function title() {
