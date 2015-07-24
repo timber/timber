@@ -74,5 +74,14 @@ It's GPL-licensed, so please use in personal or commercial work. Just don't re-s
 #### Contributing
 Read the [contributor guidelines](https://github.com/jarednova/timber/wiki#contributing) in the wiki.
 
+## How To...
+
+#### Generate documentation
+```bash
+$ cd /srv/www/timber
+$ phpdoc --template="xml"
+$ vendor/evert/phpdoc-md/bin/phpdocmd docs/output/structure.xml
+```
+
 
 
