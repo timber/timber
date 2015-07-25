@@ -56,8 +56,8 @@ class TimberImageOperationRetina extends TimberImageOperation {
             $image->crop( 0, 0, $src_w, $src_h, $w, $h );
             $result = $image->save( $save_filename );
             if ( is_wp_error( $result ) ) {
-                error_log( 'Error resizing image' );
-                error_log( print_r( $result, true ) );
+                TimberHelper::error_log( 'Error resizing image' );
+                TimberHelper::error_log( print_r( $result, true ) );
                 return false;
             } else {
                 return true;

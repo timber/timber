@@ -214,7 +214,7 @@ class TimberLoader {
                 $loc = realpath($loc);
                 $paths[] = $loc;
             } else {
-                //error_log($loc.' is not a directory');
+                //TimberHelper::error_log($loc.' is not a directory');
             }
         }
         if (!ini_get('open_basedir')) {

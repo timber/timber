@@ -641,7 +641,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$_FILES['tester'] = $data;
 		$file_id = WP_Overrides::media_handle_upload('tester', 0, array(), array( 'test_form' => false));
 		if (!is_int($file_id)) {
-			error_log(print_r($file_id, true));
+			TimberHelper::error_log(print_r($file_id, true));
 		}
 		$image = new TimberImage($file_id);
 		$str = '<img src="{{image.src(\'medium\')}}" />';
@@ -659,7 +659,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$_FILES['tester'] = $data;
 		$file_id = WP_Overrides::media_handle_upload('tester', 0, array(), array( 'test_form' => false));
 		if (!is_int($file_id)) {
-			error_log(print_r($file_id, true));
+			TimberHelper::error_log(print_r($file_id, true));
 		}
 		$image = new TimberImage($file_id);
 		$str = '<img src="{{image.src(\'medium\')}}" />';

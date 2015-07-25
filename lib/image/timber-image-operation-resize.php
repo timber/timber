@@ -103,8 +103,8 @@ class TimberImageOperationResize extends TimberImageOperation {
             }
             $result = $image->save( $save_filename );
             if ( is_wp_error( $result ) ) {
-                error_log( 'Error resizing image' );
-                error_log( print_r( $result, true ) );
+                TimberHelper::error_log( 'Error resizing image' );
+                TimberHelper::error_log( print_r( $result, true ) );
                 return false;
             } else {
                 return true;
