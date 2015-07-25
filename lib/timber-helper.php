@@ -146,9 +146,9 @@ class TimberHelper {
 		}
 		$backtrace = debug_backtrace();
 		if ( !empty(Timber::$log_dir) ) {
-			error_log( $backtrace[1]['class'] . '::' . $backtrace[1]['function'] . '() - ' . $arg, 3, Timber::$log_dir . 'timber-' . date('Y-m-d') . '.log' );
+			error_log( '[' . date('Y-m-d H:i:s') . ']' . $backtrace[1]['class'] . '::' . $backtrace[1]['function'] . '() - ' . $arg, 3, Timber::$log_dir . 'timber-' . date('Y-m-d') . '.log' );
 		} else {
-			error_log( $backtrace[1]['class'] . '::' . $backtrace[1]['function'] . '() - ' . $arg );
+			error_log( '[' . date('Y-m-d H:i:s') . ']' . $backtrace[1]['class'] . '::' . $backtrace[1]['function'] . '() - ' . $arg );
 		}
 		return;
 	}
