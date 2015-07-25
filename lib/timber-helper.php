@@ -133,10 +133,9 @@ class TimberHelper {
 	}
 
 	/**
-	 *
+	 * Adds an error_log to your server log or to a configured folder defined with Timber::$log_dir
 	 *
 	 * @param mixed $arg that you want to error_log
-	 * @return void
 	 */
 	public static function error_log( $arg ) {
 		if ( !WP_DEBUG ) {
@@ -145,7 +144,12 @@ class TimberHelper {
 		if ( is_object( $arg ) || is_array( $arg ) ) {
 			$arg = print_r( $arg, true );
 		}
-		return error_log( $arg );
+		if ( !empty(Timber::$log_dir) ) {
+			error_log( $arg, 3, Timber::$log_dir . 'timber-' . date('Y-m-d') . '.log' );
+		} else {
+			error_log( $arg );
+		}
+		return;
 	}
 
 	/**

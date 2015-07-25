@@ -41,6 +41,7 @@ class Timber {
 
 	public static $locations;
 	public static $dirname;
+	public static $log_dir;
 	public static $twig_cache = false;
 	public static $cache = false;
 	public static $auto_meta = true;
