@@ -428,6 +428,14 @@
 			$this->assertEquals('Bernstein', $post->modified_author()->name());
 		}
 
+		function testPostFormat() {
+			add_theme_support( 'post-formats', array( 'aside', 'gallery' ) );
+			$pid = $this->factory->post->create();
+			set_post_format($pid, 'aside');
+			$post = new TimberPost($pid);
+			$this->assertEquals('aside', $post->format());
+		}
+
 		function testPostClass(){
 			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
