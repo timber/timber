@@ -2,8 +2,8 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.21.7
-Tested up to: 4.2.2
+Stable tag: 0.21.8
+Tested up to: 4.2.3
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -40,6 +40,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.21.8 =
+* Fixes to things in docs
+* Added ID to timber/image/src filter (thanks @aaronhippie)
+* Fixed edgecase with HTTP_HOST vs SERVER_NAME (thanks @maketimetodesign)
 
 = 0.21.7 =
 * Fix for Image src in some situtations
