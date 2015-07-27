@@ -32,7 +32,7 @@ class TimberImageHelper {
 	 * @param int|string	$w target width(int) or WordPress image size (WP-set or user-defined)
 	 * @param int     		$h target height (ignored if $w is WP image size)
 	 * @param string  		$crop
-	 * @param bool    		$force_resize
+	 * @param bool    		$force
 	 * @return string (ex: )
 	 */
 	public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
@@ -58,7 +58,7 @@ class TimberImageHelper {
 	 *     @type int h
 	 * }
 	 */
-	private static function find_wp_dimensions($size) {
+	private static function find_wp_dimensions( $size ) {
 
 		// if ( in_array( $_size, array( 'thumbnail', 'medium', 'large' ) ) ) {
 
@@ -87,8 +87,8 @@ class TimberImageHelper {
 	 *
 	 * @return string url to the new image
 	 */
-	public static function retina_resize( $src, $factor = 2, $force = false) {
-		$op = new TimberImageOperationRetina($factor);
+	public static function retina_resize( $src, $multiplier = 2, $force = false ) {
+		$op = new TimberImageOperationRetina($multiplier);
 		return self::_operate($src, $op, $force);
 	}
 
