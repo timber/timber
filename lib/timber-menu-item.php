@@ -140,11 +140,14 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Imports the classes to be used in CSS
 	 *
-	 *
-	 * @param object  $data
+	 * @param array|object  $data
 	 */
 	function import_classes( $data ) {
+		if ( is_array($data) ) {
+			$data = (object) $data;
+		}
 		$this->classes = array_merge( $this->classes, $data->classes );
 		$this->classes = array_unique( $this->classes );
 		$this->classes = apply_filters( 'nav_menu_css_class', $this->classes, $this );

@@ -24,7 +24,7 @@ class TimberLoader {
     public $locations;
 
     /**
-     * @param bool $caller
+     * @param bool|string   $caller the calling directory or false
      */
     function __construct($caller = false) {
         $this->locations = $this->get_locations($caller);
@@ -33,10 +33,10 @@ class TimberLoader {
     }
 
     /**
-     * @param string $file
-     * @param array $data
-     * @param bool $expires
-     * @param string $cache_mode
+     * @param string        $file
+     * @param array         $data
+     * @param bool          $expires
+     * @param string        $cache_mode
      * @return bool|string
      */
     function render($file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT) {
@@ -164,7 +164,7 @@ class TimberLoader {
     }
 
     /**
-     * @param bool $caller
+     * @param bool|string   $caller the calling directory
      * @return array
      */
     function get_locations_caller($caller = false) {
@@ -185,7 +185,7 @@ class TimberLoader {
     }
 
     /**
-     * @param bool $caller
+     * @param bool|string   $caller the calling directory (or false)
      * @return array
      */
     function get_locations($caller = false) {
