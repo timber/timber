@@ -52,7 +52,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	public $class;
 	/**
 	 * @deprecated since 0.21.7
-	 * @var string $display_date @deprecated stores the display date (ex: "October 6, 1984"), 
+	 * @var string $display_date @deprecated stores the display date (ex: "October 6, 1984"),
 	 */
 	public $display_date;
 	/**
