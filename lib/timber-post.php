@@ -218,32 +218,32 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 				$text = $this->post_excerpt;
 			}
 		}
-		if (!strlen($text) && preg_match('/<!--\s?more(.*?)?-->/', $this->post_content, $readmore_matches)) {
+		if ( !strlen($text) && preg_match('/<!--\s?more(.*?)?-->/', $this->post_content, $readmore_matches) ) {
 			$pieces = explode($readmore_matches[0], $this->post_content);
 			$text = $pieces[0];
 			if ($force) {
 				$text = TimberHelper::trim_words($text, $len, false);
 				$trimmed = true;
 			}
-			$text = do_shortcode($text);
+			$text = do_shortcode( $text );
 		}
-		if (!strlen($text)) {
+		if ( !strlen($text) ) {
 			$text = TimberHelper::trim_words($this->get_content(), $len, false);
 			$trimmed = true;
 		}
-		if (!strlen(trim($text))) {
+		if ( !strlen(trim($text)) ) {
 			return trim($text);
 		}
-		if ($strip) {
+		if ( $strip ) {
 			$text = trim(strip_tags($text));
 		}
-		if (strlen($text)) {
+		if ( strlen($text) ) {
 			$text = trim($text);
 			$last = $text[strlen($text) - 1];
 			if ($last != '.' && $trimmed) {
 				$text .= ' &hellip; ';
 			}
-			if (!$strip) {
+			if ( !$strip ) {
 				$last_p_tag = strrpos($text, '</p>');
 				if ($last_p_tag !== false) {
 					$text = substr($text, 0, $last_p_tag);
@@ -252,12 +252,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 					$text .= ' &hellip; ';
 				}
 			}
-			if ($readmore && (isset($readmore_matches) && !empty($readmore_matches[1]))) {
-                $text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . trim($readmore_matches[1]) . '</a>';
-            } elseif ($readmore) {
-                $text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . trim($readmore) . '</a>';
-            }            
-			if (!$strip) {
+			if ( $readmore && isset($readmore_matches) && !empty($readmore_matches[1]) ) {
+				$text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . trim($readmore_matches[1]) . '</a>';
+			} elseif ( $readmore ) {
+				$text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . trim($readmore) . '</a>';
+			}
+			if ( !$strip ) {
 				$text .= '</p>';
 			}
 		}
