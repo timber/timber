@@ -1,0 +1,4 @@
+tools:
+    php_code_sniffer:
+        config:
+            standard: "WordPress" # Other Values: PSR2, PEAR, Zend, WordPress, Drupal, TYPO3CMS

@@ -177,9 +177,9 @@ class TimberTwig {
 		$twig->addFunction( '__', new Twig_SimpleFunction( '__', function ( $text, $domain = 'default' ) {
 					return __( $text, $domain );
 				} ) );
-
+		/* get_twig is deprecated, use timber/twig */
 		$twig = apply_filters( 'get_twig', $twig );
-
+		$twig = apply_filters( 'timber/twig', $twig );
 		return $twig;
 	}
 

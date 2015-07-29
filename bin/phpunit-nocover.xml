@@ -1,5 +1,5 @@
 <phpunit
-	bootstrap="tests/bootstrap.php"
+	bootstrap="../tests/bootstrap.php"
 	backupGlobals="false"
 	colors="true"
 	convertErrorsToExceptions="true"
@@ -8,13 +8,13 @@
 	>
 	<testsuites>
 		<testsuite>
-			<directory prefix="test-" suffix=".php">./tests/</directory>
+			<directory prefix="test-" suffix=".php">../tests/</directory>
 		</testsuite>
 		<!-- The suite below HAS to be last to run,
 		as it includes a test that sets some const and would contaminate
 		the other tests as well. -->
 		<testsuite>
-			<directory prefix="testX-" suffix=".php">./tests/</directory>
+			<directory prefix="testX-" suffix=".php">../tests/</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

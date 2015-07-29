@@ -396,7 +396,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertFileExists( $arch_regular );
 		$this->assertFileExists( $arch_2night );
 		//Delte the regular arch image
-		TimberImageHelper::delete_resized_files( $file );
+		TimberImageHelper::delete_generated_files( $file );
 		//The child of the regular arch image should be like
 		//poof-be-gone
 		$this->assertFileNotExists( $arch_regular );
@@ -422,7 +422,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertFileExists( $resized_500_file );
 		$this->assertFileExists( $resized_520_file );
 		//Now delete the "parent" image
-		TimberImageHelper::delete_resized_files( $file );
+		TimberImageHelper::delete_generated_files( $file );
 		//Have the children been deleted as well?
 		$this->assertFileNotExists( $resized_520_file );
 		$this->assertFileNotExists( $resized_500_file );
@@ -454,7 +454,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertFileExists( $resized_500_file );
 		$this->assertFileExists( $resized_520_file );
 		//Now delete the "parent" image
-		TimberImageHelper::delete_resized_files( $data['test_image'] );
+		TimberImageHelper::delete_generated_files( $data['test_image'] );
 		//Have the children been deleted as well?
 		$this->assertFileNotExists( $resized_520_file );
 		$this->assertFileNotExists( $resized_500_file );
@@ -487,7 +487,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertFileExists( $resized_520_file );
 		//Now delete the "parent" image
 		$post = new TimberImage( $attach_id );
-		TimberImageHelper::delete_resized_files( $post->file_loc );
+		TimberImageHelper::delete_generated_files( $post->file_loc );
 		//Have the children been deleted as well?
 		$this->assertFileNotExists( $resized_520_file );
 		$this->assertFileNotExists( $resized_500_file );
@@ -502,7 +502,7 @@ class TimberImageTest extends WP_UnitTestCase {
 		$letterboxed_file = TimberImageHelper::get_letterbox_file_path( $data['test_image'], 500, 500, '#00FF00' );
 		$this->assertFileExists( $letterboxed_file );
 		//Now delete the "parent" image
-		TimberImageHelper::delete_letterboxed_files( $file );
+		TimberImageHelper::delete_generated_files( $file );
 		//Have the children been deleted as well?
 		$this->assertFileNotExists( $letterboxed_file );
 	}
