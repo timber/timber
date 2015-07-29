@@ -255,5 +255,27 @@
 			$this->assertEquals('Spaceballs: may the schwartz be with you', trim($result));
 		}
 
+		function testAddToTwig() {
+			add_filter('get_twig', function( $twig ) {
+				$twig->addFilter( new Twig_SimpleFilter( 'foobar', function( $text ) {
+					return $text . 'foobar';
+				}) );
+				return $twig;
+			});
+			$str = Timber::compile_string('{{ "jared" | foobar }}');
+			$this->assertEquals( 'jaredfoobar' , $str );
+		}
+
+		function testTimberTwigObjectFilter() {
+			add_filter('timber/twig', function( $twig ) {
+				$twig->addFilter( new Twig_SimpleFilter( 'quack', function( $text ) {
+					return $text . ' Quack!';
+				}) );
+				return $twig;
+			});
+			$str = Timber::compile_string('{{ "jared" | quack }}');
+			$this->assertEquals( 'jared Quack!' , $str );
+		}
+
 
 	}

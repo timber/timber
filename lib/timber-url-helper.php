@@ -13,9 +13,9 @@ class TimberURLHelper {
 			$pageURL = "https://";;
 		}
 		if ( $_SERVER["SERVER_PORT"] != "80" ) {
-			$pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
+			$pageURL .= self::get_host() . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
 		} else {
-			$pageURL .= $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
+			$pageURL .= self::get_host() . $_SERVER["REQUEST_URI"];
 		}
 		return $pageURL;
 	}
@@ -63,7 +63,7 @@ class TimberURLHelper {
 	 */
 	public static function get_rel_url( $url, $force = false ) {
 		$url_info = parse_url( $url );
-		if ( isset( $url_info['host'] ) && $url_info['host'] != $_SERVER['HTTP_HOST'] && !$force ) {
+		if ( isset( $url_info['host'] ) && $url_info['host'] != self::get_host() && !$force ) {
 			return $url;
 		}
 		$link = '';
@@ -81,13 +81,28 @@ class TimberURLHelper {
 	}
 
 	/**
+	 * Some setups like HTTP_HOST, some like SERVER_NAME, it's complicated
+	 * @link http://stackoverflow.com/questions/2297403/http-host-vs-server-name
+	 * @return string the HTTP_HOST or SERVER_NAME
+	 */
+	public static function get_host() {
+		if (isset($_SERVER['HTTP_HOST'])) {
+			return $_SERVER['HTTP_HOST'];
+		} 
+		if (isset($_SERVER['SERVER_NAME'])) {
+			return $_SERVER['SERVER_NAME'];
+		}
+		return '';
+	}
+
+	/**
 	 *
 	 *
 	 * @param string  $url
 	 * @return bool
 	 */
 	public static function is_local( $url ) {
-		if ( strstr( $url, $_SERVER['HTTP_HOST'] ) ) {
+		if ( strstr( $url, self::get_host() ) ) {
 			return true;
 		}
 		return false;
@@ -227,7 +242,7 @@ class TimberURLHelper {
 	 */
 	public static function is_external( $url ) {
 		$has_http = strstr( strtolower( $url ), 'http' );
-		$on_domain = strstr( $url, $_SERVER['HTTP_HOST'] );
+		$on_domain = strstr( $url, self::get_host() );
 		if ( $has_http && !$on_domain ) {
 			return true;
 		}

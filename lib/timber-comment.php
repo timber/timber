@@ -62,15 +62,15 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * Fetches the Gravatar
+     * ```twig
+     * {{comment.avatar(36,template_uri~"/img/dude.jpg")}}
+     * ```
      * @param int $size
      * @param string $default
      * @return bool|mixed|string
      */
     public function avatar($size = 92, $default = '') {
-        // Fetches the Gravatar
-        // use it like this
-        // {{comment.avatar(36,template_uri~"/img/dude.jpg")}}
-
         if (!get_option('show_avatars')) {
             return false;
         }
@@ -86,7 +86,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
         $host = $this->avatar_host($email_hash);
         $default = $this->avatar_default($default, $email, $size, $host);
         if (!empty($email)) {
-            $avatar = $this->avatar_out($email, $default, $host, $email_hash, $size);
+            $avatar = $this->avatar_out($default, $host, $email_hash, $size);
         } else {
             $avatar = $default;
         }
@@ -197,6 +197,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @todo  what if it's relative?
      * @param string $default
      * @param string $email
      * @param string $size
@@ -204,7 +205,6 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
      * @return string
      */
     protected function avatar_default($default, $email, $size, $host) {
-        # what if its relative.
         if (substr($default, 0, 1) == '/') {
             $default = home_url() . $default;
         }
@@ -228,22 +228,18 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
             $default = $host . '/avatar/?s=' . $size;
         } else if (empty($email) && !strstr($default, 'http://')) {
             $default = $host . '/avatar/?d=' . $default . '&amp;s=' . $size;
-        } else if (strpos($default, 'http://') === 0) {
-            //theyre just linking to an image so don't do anything else
-            //$default = add_query_arg( 's', $size, $default );
         }
         return $default;
     }
 
     /**
-     * @param string $email
      * @param string $default
      * @param string $host
      * @param string $email_hash
      * @param string $size
      * @return mixed
      */
-    protected function avatar_out($email, $default, $host, $email_hash, $size) {
+    protected function avatar_out($default, $host, $email_hash, $size) {
         $out = $host . '/avatar/' . $email_hash . '?s=' . $size . '&amp;d=' . urlencode($default);
         $rating = get_option('avatar_rating');
         if (!empty($rating)) {

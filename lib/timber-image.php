@@ -123,8 +123,8 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 		$base = ($dir["baseurl"]);
 
 		$src = trailingslashit($this->_maybe_secure_url($base)) . $this->file;
-		$src = apply_filters('timber/image/src', $src);
-		return apply_filters('timber_image_src', $src);
+		$src = apply_filters('timber/image/src', $src, $this->ID);
+		return apply_filters('timber_image_src', $src, $this->ID);
 	}
 
 	private static function _maybe_secure_url($url) {
