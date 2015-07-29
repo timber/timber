@@ -218,7 +218,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 				$text = $this->post_excerpt;
 			}
 		}
-		if (!strlen($text) && preg_match('/<!--more(.*?)?-->/', $this->post_content, $readmore_matches)) {
+		if (!strlen($text) && preg_match('/<!--\s?more(.*?)?-->/', $this->post_content, $readmore_matches)) {
 			$pieces = explode($readmore_matches[0], $this->post_content);
 			$text = $pieces[0];
 			if ($force) {
@@ -253,9 +253,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 				}
 			}
 			if ($readmore && (isset($readmore_matches) && !empty($readmore_matches[1]))) {
-                $text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . $readmore_matches[1] . '</a>';
+                $text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . trim($readmore_matches[1]) . '</a>';
             } elseif ($readmore) {
-                $text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . $readmore . '</a>';
+                $text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . trim($readmore) . '</a>';
             }            
 			if (!$strip) {
 				$text .= '</p>';

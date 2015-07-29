@@ -57,4 +57,16 @@
 			$this->assertEquals('jared Quack! <a href="'.$post->link().'" class="read-more">Read More</a>', $post->get_preview());
 		}
 
+		function testPreviewWithSpaceInMoreTag() {
+			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck<!-- more--> Lauren is not a duck', 'post_excerpt' => '') );
+			$post = new TimberPost( $pid );
+			$this->assertEquals('Lauren is a duck <a href="'.$post->link().'" class="read-more">Read More</a>', $post->get_preview());
+		}
+
+		function testPreviewWithCustomMoreTag() {
+			$pid = $this->factory->post->create( array('post_content' => 'Eric is a polar bear <!-- more But what is Elaina? --> Lauren is not a duck', 'post_excerpt' => '') );
+			$post = new TimberPost( $pid );
+			$this->assertEquals('Eric is a polar bear <a href="'.$post->link().'" class="read-more">But what is Elaina?</a>', $post->get_preview());
+		}
+
 	}
