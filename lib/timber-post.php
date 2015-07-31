@@ -60,41 +60,46 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 */
 	public $id;
 	/**
-	 * @var string $ID the numeric WordPress id of a post, capitalized to match WP usage
+	 * @var string 	$ID 			the numeric WordPress id of a post, capitalized to match WP usage
 	 */
 	public $ID;
+
 	/**
-	 * @var int $post_author the numeric ID of the a post's author corresponding to the wp_user dtable
+	 * @var int 	$post_author 	the numeric ID of the a post's author corresponding to the wp_user dtable
 	 */
 	public $post_author;
+
 	/**
-	 * @var string $post_content the raw text of a WP post as stored in the database
+	 * @var string 	$post_content 	the raw text of a WP post as stored in the database
 	 */
 	public $post_content;
 	/**
-	 * @var string $post_date the raw date string as stored in the WP database, ex: 2014-07-05 18:01:39
+	 * @var string 	$post_date 		the raw date string as stored in the WP database, ex: 2014-07-05 18:01:39
 	 */
 	public $post_date;
 	/**
-	 * @var string $post_exceprt the raw text of a manual post exceprt as stored in the database
+	 * @var string 	$post_exceprt 	the raw text of a manual post exceprt as stored in the database
 	 */
 	public $post_excerpt;
 
 	/**
-	* @var int $post_parent the numeric ID of a post's parent post
+	* @var int 		$post_parent 	the numeric ID of a post's parent post
 	*/
 	public $post_parent;
 	/**
-	 * @var string $post_title the raw text of a post's title as stored in the database
+	 * @var string 	$post_title 	the raw text of a post's title as stored in the database
 	 */
 	public $post_title;
+
 	/**
-	 * @var string $post_type the name of the post type, this is the machine name (so "my_custom_post_type" as opposed to "My Custom Post Type")
+	 * @var string 	$post_type 		the name of the post type, this is the machine name (so "my_custom_post_type" as opposed to "My Custom Post Type")
 	 */
 	public $post_type;
 
 	/**
-	 * @var string $slug the URL-safe slug, this corresponds to the poorly-named "post_name" in the WP database, ex: "hello-world"
+	 * A thing
+	 *
+	 * @var string 	$slug 		the URL-safe slug, this corresponds to the poorly-named "post_name" in the WP database, ex: "hello-world"
 	 */
 	public $slug;
 
@@ -764,6 +769,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Gets an array of tags for you to use
+	 *
 	 * ```twig
 	 * <ul class="tags">
 	 *     {% for tag in post.tags %}
@@ -779,8 +785,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Outputs the title with filters applied
+	 *
 	 * ```twig
 	 * <h1>{{post.get_title}}</h1>
+	 * ```
+	 * ```html
+	 * <h1>Hello World!</h1>
 	 * ```
 	 * @return string
 	 */
@@ -789,11 +799,14 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *  ## Displays the content of the post with filters, shortcodes and wpautop applied
-	 *  <div class="article-text">{{post.get_content}}</div>
-	 */
-
-	/**
+	 * Displays the content of the post with filters, shortcodes and wpautop applied
+	 *
+	 * ```twig
+	 * <div class="article-text">{{post.get_content}}</div>
+	 * ```
+	 * ```html
+	 * <div class="article-text"><p>Blah blah blah</p><p>More blah blah blah.</p></div>
+	 * ```
 	 * @param int $len
 	 * @param int $page
 	 * @return string
@@ -828,8 +841,15 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		return $this->get_content(0, $page);
 	}
 	/**
+	 *
+	 * Here is my summary
+	 *
 	 * ```twig
 	 * This post is from <span>{{ post.get_post_type.labels.plural }}</span>
+	 * ```
+	 *
+	 * ```html
+	 * This post is from <span>Recipes</span>
 	 * ```
 	 * @return mixed
 	 */
@@ -1019,12 +1039,18 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * Get the date to use in your template
-	 * @api
+	 * Get the date to use in your template!
+	 *
 	 * ```twig
 	 * Published on {{ post.date }} // Uses WP's formatting set in Admin
 	 * OR
 	 * Published on {{ post.date|date(' F jS ')}} // Jan 12th
+	 * ```
+	 *
+	 * ```html
+	 * Published on January 12, 2015
+	 * OR
+	 * Published on Jan 12th
 	 * ```
 	 * @param string $date_format
 	 * @return string
@@ -1050,6 +1076,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	/**
 	 * get the permalink for a post object
 	 * @api
+	 *
 	 * ```twig
 	 * <a href="{{post.link}}">Read my post</a>
 	 * ```
