@@ -554,6 +554,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @return mixed
 	 */
 	function get_comments($ct = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
+		global $overridden_cpage;
+
 		$args = array('post_id' => $this->ID, 'status' => $status, 'order' => $order);
 		if ($ct > 0) {
 			$args['number'] = $ct;
@@ -564,6 +566,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
         $comments = get_comments($args);
         $tComments = array();
+
+		$overridden_cpage = false;
+		if ( '' == get_query_var('cpage') && get_option('page_comments') ) {
+			set_query_var( 'cpage', 'newest' == get_option('default_comments_page') ? get_comment_pages_count() : 1 );
+			$overridden_cpage = true;
+		}
 
         foreach($comments as $key => &$comment) {
             $tComment = new $CommentClass($comment);
