@@ -34,7 +34,7 @@ script:
     # '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && phpunit --coverage-clover build/logs/clover.xml || phpunit -c bin/phpunit-nocover.xml'
 
 after_script:
-    - if [ "$TRAVIS_BRANCH" != "master" ]; then php vendor/bin/coveralls -v; fi
+    - if [ "$TRAVIS_BRANCH" == "master" ]; then php vendor/bin/coveralls -v; fi
 
 after_success:
-    - if [ "$TRAVIS_BRANCH" != "master" ]; then coveralls; fi
+    - if [ "$TRAVIS_BRANCH" == "master" ]; then coveralls; fi
