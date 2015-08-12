@@ -30,7 +30,8 @@
 		"wpackagist-plugin/advanced-custom-fields": "4.*",
 		"wp-cli/wp-cli": "*",
 		"phpdocumentor/phpdocumentor" : "2.*",
-		"evert/phpdoc-md" : "~0.1.1"
+		"victorjonsson/markdowndocs": "dev-master",
+    "evert/phpdoc-md" : "~0.1.1"
 	},
     "autoload": {
         "classmap": ["lib/"]
