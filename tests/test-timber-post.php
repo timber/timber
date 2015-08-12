@@ -2,7 +2,7 @@
 
 	class TimberPostTest extends WP_UnitTestCase {
 
-		function testPost(){
+		function testPostObject(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost($post_id);
 			$this->assertEquals('TimberPost', get_class($post));

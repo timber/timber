@@ -152,21 +152,21 @@
 			$iid = TimberImageTest::get_image_attachment();
 			$str = '{{TimberImage('.$iid.').src}}';
 			$compiled = Timber::compile_string($str);
-			$this->assertEquals('http://example.org/wp-content/uploads/2015/07/arch.jpg', $compiled);
+			$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpg', $compiled);
 		}
 
 		function testImageInTwig() {
 			$iid = TimberImageTest::get_image_attachment();
 			$str = '{{Image('.$iid.').src}}';
 			$compiled = Timber::compile_string($str);
-			$this->assertEquals('http://example.org/wp-content/uploads/2015/07/arch.jpg', $compiled);
+			$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpg', $compiled);
 		}
 
 		function testTimberImageInTwigToString() {
 			$iid = TimberImageTest::get_image_attachment();
 			$str = '{{TimberImage('.$iid.')}}';
 			$compiled = Timber::compile_string($str);
-			$this->assertEquals('http://example.org/wp-content/uploads/2015/07/arch.jpg', $compiled);
+			$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpg', $compiled);
 		}
 
 		function testTimberPostInTwig(){
