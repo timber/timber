@@ -10,7 +10,6 @@
 			if (file_exists($lang_dir.'/en_US.mo' )) {
 				unlink($lang_dir.'/en_US.mo');
 			}
-
 		}
 
 		function _setupTranslationFiles() {
@@ -275,6 +274,25 @@
 			});
 			$str = Timber::compile_string('{{ "jared" | quack }}');
 			$this->assertEquals( 'jared Quack!' , $str );
+		}
+
+		function testTwigShortcode() {
+			add_shortcode('my_shortcode', function( $atts, $content ) {
+				return 'Jaredfoo';
+			});
+			$str = Timber::compile_string('{{shortcode("[my_shortcode]")}}');
+			$this->assertEquals('Jaredfoo', $str);
+
+		}
+
+		function testTwigShortcodeWithContent() {
+			add_shortcode('duck', function( $atts, $content ) {
+				return $content . ' says quack!';
+			});
+
+			$str = Timber::compile_string('{{shortcode("[duck]Lauren[/duck]")}}');
+			$this->assertEquals('Lauren says quack!', $str);
+
 		}
 
 

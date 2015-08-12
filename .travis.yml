@@ -10,12 +10,12 @@ php:
 env:
     - WP_VERSION=latest WP_MULTISITE=0
     - WP_VERSION=latest WP_MULTISITE=1
-    - WP_VERSION=3.9 WP_MULTISITE=0
-    - WP_VERSION=3.9 WP_MULTISITE=1
-    - WP_VERSION=3.8.3 WP_MULTISITE=0
-    - WP_VERSION=3.8.3 WP_MULTISITE=1
-    - WP_VERSION=3.7.3 WP_MULTISITE=0
-    - WP_VERSION=3.7.3 WP_MULTISITE=1
+    - WP_VERSION=4.1.7 WP_MULTISITE=0
+    - WP_VERSION=4.1.7 WP_MULTISITE=1
+    - WP_VERSION=3.9.8 WP_MULTISITE=0
+    - WP_VERSION=3.9.8 WP_MULTISITE=1
+    - WP_VERSION=3.7.9 WP_MULTISITE=0
+    - WP_VERSION=3.7.9 WP_MULTISITE=1
 
 matrix:
     exclude:
@@ -31,7 +31,6 @@ before_script:
 script:
     - if [ "$TRAVIS_BRANCH" == "master" ]; then mkdir -p build/logs; phpunit --coverage-clover build/logs/clover.xml; fi
     - if [ "$TRAVIS_BRANCH" != "master" ]; then phpunit -c bin/phpunit-nocover.xml; fi
-    # '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && phpunit --coverage-clover build/logs/clover.xml || phpunit -c bin/phpunit-nocover.xml'
 
 after_script:
     - if [ "$TRAVIS_BRANCH" == "master" ]; then php vendor/bin/coveralls -v; fi
