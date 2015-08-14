@@ -114,6 +114,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * tries to figure out what post you want to get if not explictly defined (or if it is, allows it to be passed through)
+	 * @internal
 	 * @param mixed a value to test against
 	 * @return int the numberic id we should be using for this post object
 	 */
@@ -163,6 +164,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Initializes a TimberPost
+	 * @internal
 	 * @param int|bool $pid
 	 */
 	function init($pid = false) {
@@ -401,6 +403,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * get the permalink for a post object
 	 * In your templates you should use link:
 	 * <a href="{{post.link}}">Read my post</a>
+	 * @internal
 	 * @return string
 	 */
 	function get_link() {
@@ -409,6 +412,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the next post in WordPress's ordering
+	 * @internal
 	 * @param bool $taxonomy
 	 * @return TimberPost|boolean
 	 */
@@ -482,6 +486,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * Get the permalink for a post, but as a relative path
 	 * For example, where {{post.link}} would return "http://example.org/2015/07/04/my-cool-post"
 	 * this will return the relative version: "/2015/07/04/my-cool-post"
+	 * @internal
 	 * @return string
 	 */
 	function get_path() {
@@ -490,6 +495,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the next post in WordPress's ordering
+	 * @internal
 	 * @param bool $taxonomy
 	 * @return TimberPost|boolean
 	 */
@@ -514,6 +520,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the parent post of the post
+	 * @internal
 	 * @return bool|TimberPost
 	 */
 	function get_parent() {
@@ -525,7 +532,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Gets a User object from the author of the post
-	 * @example <p class="byline">{{post.get_author.name}}</p>
+	 * @internal
+	 * @see TimberPost::author
 	 * @return bool|TimberUser
 	 */
 	function get_author() {
@@ -535,7 +543,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * Get the author (WordPress user) who last modified the post
+	 * @internal
 	 * @return bool|TimberUser
 	 */
 	function get_modified_author() {
@@ -545,6 +553,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Used internally by init, etc. to build TimberPost object
+	 * @internal
 	 * @param  int $pid
 	 * @return null|object|WP_Post
 	 */
@@ -563,9 +572,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * This is deprecated!
-	 * But it would get the human-friendly date that should actually display in a .twig template
-	 * @deprecated
+	 * Get the human-friendly date that should actually display in a .twig template
+	 * @deprecated since 0.20.0
+	 * @see TimberPost::date
 	 * @param string $use
 	 * @return string
 	 */
@@ -574,6 +583,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
+	 * @see TimberPost::date
 	 * @param  string $date_format
 	 * @return string
 	 */
@@ -604,6 +615,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
+	 * @see TimberPost::children
 	 * @param string $post_type
 	 * @param bool $childPostClass
 	 * @return array
@@ -625,6 +638,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the comments for a post
+	 * @internal
 	 * @see TimberPost::comments
 	 * @param int $ct
 	 * @param string $order
@@ -666,7 +680,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the categories for a post
-	 * @example "docs/examples/get_categories.twig"
+	 * @internal
+	 * @see TimberPost::categories
 	 * @return array of TimberTerms
 	 */
 	function get_categories() {
@@ -674,6 +689,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
+	 * @see TimberPost::category
 	 * @return mixed
 	 */
 	function get_category() {
@@ -688,6 +705,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 */
 
 	/**
+	 * @internal
 	 * @param string $tax
 	 * @param bool $merge
 	 * @param string $TermClass
@@ -770,6 +788,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Gets an array of tags for you to use
+	 * @internal
 	 * @example 
 	 * ```twig
 	 * <ul class="tags">
@@ -786,6 +805,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Outputs the title with filters applied
+	 * @internal
 	 * @example
 	 * ```twig
 	 * <h1>{{post.get_title}}</h1>
@@ -903,8 +923,22 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @param string $class
-	 * @return string
+	 * Get the CSS classes for a post. For usage you should use `{{post.class}}` instead of `{{post.post_class}}`
+	 * @param string $class additional classes you want to add
+	 * @see TimberPost::$class
+	 * @example
+	 * ```twig
+	 * <article class="{{ post.class }}">
+	 *    {# Some stuff here #}
+	 * </article>
+	 * ```
+	 *  
+	 * ```html
+	 * <article class="post-2612 post type-post status-publish format-standard has-post-thumbnail hentry category-data tag-charleston-church-shooting tag-dylann-roof tag-gun-violence tag-hate-crimes tag-national-incident-based-reporting-system">
+	 *    {# Some stuff here #}
+	 * </article>
+	 * ```
+	 * @return string a space-seperated list of classes
 	 */
 	public function post_class($class='') {
 		global $post;
@@ -948,7 +982,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @api
+	 * Return the author of a post
+	 * @example
+	 * ```twig
+	 * By <a href="{{post.author.link}}">{{ post.author.name }}</a>
+	 * ```
 	 * @return bool|TimberUser
 	 */
 	public function author() {
@@ -956,6 +994,14 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Get the author (WordPress user) who last modified the post
+	 * @example
+	 * ```twig
+	 * Last updated by {{ post.modified_author.name }}
+	 * ```
+	 * ```html
+	 * Last updated by Harper Lee
+	 * ```
 	 * @return bool|TimberUser
 	 */
 	public function modified_author() {
@@ -963,7 +1009,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @api
 	 * Get the categoires on a particular post
 	 * @return array of TimberTerms
 	 */
