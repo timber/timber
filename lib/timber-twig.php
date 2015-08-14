@@ -94,6 +94,8 @@ class TimberTwig {
 		$twig->addFunction( new Twig_SimpleFunction( 'function', array( &$this, 'exec_function' ) ) );
 		$twig->addFunction( new Twig_SimpleFunction( 'fn', array( &$this, 'exec_function' ) ) );
 
+		$twig->addFunction( new Twig_SimpleFunction( 'shortcode', 'do_shortcode' ) );
+
 		/* TimberObjects */
 		$twig->addFunction( new Twig_SimpleFunction( 'TimberPost', function ( $pid, $PostClass = 'TimberPost' ) {
 					if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
