@@ -205,8 +205,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 
 	/**
-	 * @internal
 	 * takes a mix of integer (post ID), string (post slug), or object to return a WordPress post object from WP's built-in get_post() function
+	 * @internal
 	 * @param mixed $pid
 	 * @return WP_Post on success
 	 */
@@ -267,11 +267,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	/**
 	 * get a preview of your post, if you have an excerpt it will use that,
 	 * otherwise it will pull from the post_content.
-	 * @example If there's a <!-- more --> tag it will use that to mark where to pull through.
+	 * If there's a <!-- more --> tag it will use that to mark where to pull through.
+	 * @example 
 	 * ```twig
 	 * <p>{{post.get_preview(50)}}</p>
 	 * ```
-	 * @param int $len
+	 * @param int $len the number of words you want
 	 * @param bool $force
 	 * @param string $readmore
 	 * @param bool $strip
@@ -769,7 +770,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Gets an array of tags for you to use
-	 *
+	 * @example 
 	 * ```twig
 	 * <ul class="tags">
 	 *     {% for tag in post.tags %}
@@ -785,7 +786,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Outputs the title with filters applied
-	 *
+	 * @example
 	 * ```twig
 	 * <h1>{{post.get_title}}</h1>
 	 * ```
@@ -800,7 +801,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Displays the content of the post with filters, shortcodes and wpautop applied
-	 *
+	 * @example
 	 * ```twig
 	 * <div class="article-text">{{post.get_content}}</div>
 	 * ```
@@ -843,7 +844,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	/**
 	 *
 	 * Here is my summary
-	 *
+	 * @example
 	 * ```twig
 	 * This post is from <span>{{ post.get_post_type.labels.plural }}</span>
 	 * ```
@@ -982,7 +983,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the children of a post
-	 * @api
+	 * @example
 	 * ```twig
 	 * {% if post.children %}
 	 *     Here are the child pages:
@@ -1002,7 +1003,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the comments on your post
-	 * @api
+	 * @example
 	 * ```twig
 	 * My Post's Comments:
 	 * {% for comment in post.comments %}
@@ -1019,6 +1020,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content
+	 * @example
 	 * ```twig
 	 * <div class="article">
 	 *     {{ post.content }}
@@ -1040,11 +1042,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the date to use in your template!
-	 *
+	 * 
+	 * @example
 	 * ```twig
 	 * Published on {{ post.date }} // Uses WP's formatting set in Admin
 	 * OR
-	 * Published on {{ post.date|date(' F jS ')}} // Jan 12th
+	 * Published on {{ post.date | date('F jS') }} // Jan 12th
 	 * ```
 	 *
 	 * ```html
@@ -1075,8 +1078,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * get the permalink for a post object
-	 * @api
 	 *
+	 * @example
 	 * ```twig
 	 * <a href="{{post.link}}">Read my post</a>
 	 * ```
@@ -1137,6 +1140,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Gets the parent (if one exists) from a post as a TimberPost object (or whatever is set in TimberPost::$PostClass)
+	 * @example
 	 * ```twig
 	 * Parent page: <a href="{{ post.parent.link }}">{{ post.parent.title }}</a>
 	 * ```
@@ -1149,6 +1153,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	/**
 	 * Gets the relative path of a WP Post, so while link() will return http://example.org/2015/07/my-cool-post
 	 * this will return just /2015/07/my-cool-post
+	 *
+	 * @example
 	 * ```twig
 	 * <a href="{{post.path}}">{{post.title}}</a>
 	 * ```
@@ -1168,7 +1174,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the previous post in a set
-	 * @api
+	 *
+	 * @example
 	 * ```twig
 	 * <h4>{{ post.prev.title}}</h4>
 	 * ```
@@ -1192,7 +1199,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Gets the tags on a post, uses WP's post_tag taxonomy
-	 * @api
 	 * @return array
 	 */
 	public function tags() {
@@ -1201,7 +1207,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * get the featured image as a TimberImage
-	 * @api
+	 * @example
 	 * ```twig
 	 * <img src="{{post.thumbnail.src}}" />
 	 * ```
@@ -1213,7 +1219,10 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Returns the processed title to be used in templates
-	 * @api
+	 * @example
+	 * ```twig
+	 * <h1>{{ post.title }}</h1>
+	 * ```
 	 * @return string
 	 */
 	public function title() {
