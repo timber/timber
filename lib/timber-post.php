@@ -105,6 +105,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
+	 * @example
+	 * ```php
+	 * $post = new TimberPost();
+	 * $other_post = new TimberPost($random_post_id);
+	 * ```
 	 * @param mixed $pid
 	 */
 	function __construct($pid = null) {
@@ -185,6 +190,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the URL that will edit the current post/object
+	 * @internal
+	 * @see TimberPost::edit_link
 	 * @return bool|string
 	 */
 	function get_edit_url() {
@@ -207,7 +214,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 
 	/**
-	 * takes a mix of integer (post ID), string (post slug), or object to return a WordPress post object from WP's built-in get_post() function
+	 * takes a mix of integer (post ID), string (post slug), 
+	 * or object to return a WordPress post object from WP's built-in get_post() function
 	 * @internal
 	 * @param mixed $pid
 	 * @return WP_Post on success
@@ -596,6 +604,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @param  string $date_format
 	 * @return string
 	 */
@@ -606,6 +615,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @param  string $time_format
 	 * @return string
 	 */
@@ -917,6 +927,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @return mixed
 	 */
 	function get_format() {
