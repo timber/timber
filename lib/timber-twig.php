@@ -94,6 +94,8 @@ class TimberTwig {
 		$twig->addFunction( new Twig_SimpleFunction( 'function', array( &$this, 'exec_function' ) ) );
 		$twig->addFunction( new Twig_SimpleFunction( 'fn', array( &$this, 'exec_function' ) ) );
 
+		$twig->addFunction( new Twig_SimpleFunction( 'shortcode', 'do_shortcode' ) );
+
 		/* TimberObjects */
 		$twig->addFunction( new Twig_SimpleFunction( 'TimberPost', function ( $pid, $PostClass = 'TimberPost' ) {
 					if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
@@ -177,9 +179,9 @@ class TimberTwig {
 		$twig->addFunction( '__', new Twig_SimpleFunction( '__', function ( $text, $domain = 'default' ) {
 					return __( $text, $domain );
 				} ) );
-
+		/* get_twig is deprecated, use timber/twig */
 		$twig = apply_filters( 'get_twig', $twig );
-
+		$twig = apply_filters( 'timber/twig', $twig );
 		return $twig;
 	}
 

@@ -10,7 +10,6 @@
 			if (file_exists($lang_dir.'/en_US.mo' )) {
 				unlink($lang_dir.'/en_US.mo');
 			}
-
 		}
 
 		function _setupTranslationFiles() {
@@ -152,21 +151,21 @@
 			$iid = TimberImageTest::get_image_attachment();
 			$str = '{{TimberImage('.$iid.').src}}';
 			$compiled = Timber::compile_string($str);
-			$this->assertEquals('http://example.org/wp-content/uploads/2015/07/arch.jpg', $compiled);
+			$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpg', $compiled);
 		}
 
 		function testImageInTwig() {
 			$iid = TimberImageTest::get_image_attachment();
 			$str = '{{Image('.$iid.').src}}';
 			$compiled = Timber::compile_string($str);
-			$this->assertEquals('http://example.org/wp-content/uploads/2015/07/arch.jpg', $compiled);
+			$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpg', $compiled);
 		}
 
 		function testTimberImageInTwigToString() {
 			$iid = TimberImageTest::get_image_attachment();
 			$str = '{{TimberImage('.$iid.')}}';
 			$compiled = Timber::compile_string($str);
-			$this->assertEquals('http://example.org/wp-content/uploads/2015/07/arch.jpg', $compiled);
+			$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpg', $compiled);
 		}
 
 		function testTimberPostInTwig(){
@@ -253,6 +252,47 @@
 			$post = new TimberPost( $pid );
 			$result = Timber::compile('assets/set-object.twig', array('post' => $post));
 			$this->assertEquals('Spaceballs: may the schwartz be with you', trim($result));
+		}
+
+		function testAddToTwig() {
+			add_filter('get_twig', function( $twig ) {
+				$twig->addFilter( new Twig_SimpleFilter( 'foobar', function( $text ) {
+					return $text . 'foobar';
+				}) );
+				return $twig;
+			});
+			$str = Timber::compile_string('{{ "jared" | foobar }}');
+			$this->assertEquals( 'jaredfoobar' , $str );
+		}
+
+		function testTimberTwigObjectFilter() {
+			add_filter('timber/twig', function( $twig ) {
+				$twig->addFilter( new Twig_SimpleFilter( 'quack', function( $text ) {
+					return $text . ' Quack!';
+				}) );
+				return $twig;
+			});
+			$str = Timber::compile_string('{{ "jared" | quack }}');
+			$this->assertEquals( 'jared Quack!' , $str );
+		}
+
+		function testTwigShortcode() {
+			add_shortcode('my_shortcode', function( $atts, $content ) {
+				return 'Jaredfoo';
+			});
+			$str = Timber::compile_string('{{shortcode("[my_shortcode]")}}');
+			$this->assertEquals('Jaredfoo', $str);
+
+		}
+
+		function testTwigShortcodeWithContent() {
+			add_shortcode('duck', function( $atts, $content ) {
+				return $content . ' says quack!';
+			});
+
+			$str = Timber::compile_string('{{shortcode("[duck]Lauren[/duck]")}}');
+			$this->assertEquals('Lauren says quack!', $str);
+
 		}
 
 

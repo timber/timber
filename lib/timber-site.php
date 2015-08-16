@@ -4,16 +4,36 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
 
     public $admin_email;
     public $blogname;
+    /**
+     * @api
+     * @var string
+     */
     public $charset;
+
+    /**
+     * @var string
+     */
     public $description;
     public $id;
     public $language;
     public $language_attributes;
+    /**
+     * @api
+     * @var bool
+     */
     public $multisite;
     public $name;
     public $pingback_url;
     public $siteurl;
+    /**
+     * @api
+     * @var [TimberTheme](#TimberTheme)
+     */
     public $theme;
+    /**
+     * @api
+     * @var string
+     */
     public $title;
     public $url;
 
@@ -31,8 +51,7 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
     }
 
     /**
-     *
-     *
+     * @internal
      * @param string|int $site_name_or_id
      */
     protected function init_with_multisite( $site_name_or_id ) {
@@ -61,6 +80,9 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
         $this->admin_email = get_blog_option( $info->blog_id, 'admin_email' );
     }
 
+    /**
+     * @internal
+     */
     protected function init() {
         $this->admin_email = get_bloginfo( 'admin_email' );
         $this->name = get_bloginfo( 'name' );
@@ -94,7 +116,7 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
 
     /**
      *
-     *
+     * @internal
      * @return string
      */
     function get_link() {
@@ -103,7 +125,7 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
 
     /**
      *
-     *
+     * @internal
      * @return string
      */
     function get_url() {
@@ -112,7 +134,7 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
 
     /**
      *
-     *
+     * @api
      * @return string
      */
     public function link() {
@@ -144,7 +166,8 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
 
     /**
      *
-     *
+     * @api
+     * @see TimberSite::link
      * @return string
      */
     function url() {

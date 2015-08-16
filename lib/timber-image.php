@@ -2,32 +2,40 @@
 
 class TimberImage extends TimberPost implements TimberCoreInterface {
 
-	public $_can_edit;
-	public $_dimensions;
+	protected $_can_edit;
+	protected $_dimensions;
 	public $abs_url;
-	public $PostClass = 'TimberPost';
+	/**
+	 * @var string $object_type what does this class represent in WordPress terms?
+	 */
 	public $object_type = 'image';
-
+	/**
+	 * @var string $representation what does this class represent in WordPress terms?
+	 */
 	public static $representation = 'image';
-
 	public $file_loc;
 	public $file;
 	public $sizes = array();
-	public $post_parent;
+	/**
+	 * @var string $caption the string stored in the WordPress database
+	 */
 	public $caption;
-	public $_wp_attached_file;
+	/**
+	 * @var $_wp_attached_file the file as stored in the WordPress database
+	 */
+	protected $_wp_attached_file;
 
 	/**
 	 * @param int $iid
 	 */
-	function __construct($iid) {
+	public function __construct($iid) {
 		$this->init($iid);
 	}
 
 	/**
 	 * @return string
 	 */
-	function __toString() {
+	public function __toString() {
 		if ($this->get_src()) {
 			return $this->get_src();
 		}
@@ -35,6 +43,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @return mixed
 	 */
 	function get_pathinfo() {
@@ -57,6 +66,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @param string|null $dim
 	 * @return array|int
 	 */
@@ -113,8 +123,8 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 		$base = ($dir["baseurl"]);
 
 		$src = trailingslashit($this->_maybe_secure_url($base)) . $this->file;
-		$src = apply_filters('timber/image/src', $src);
-		return apply_filters('timber_image_src', $src);
+		$src = apply_filters('timber/image/src', $src, $this->ID);
+		return apply_filters('timber_image_src', $src, $this->ID);
 	}
 
 	private static function _maybe_secure_url($url) {
@@ -155,6 +165,10 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 		return new $this->PostClass($this->post_parent);
 	}
 
+	/**
+	 * @see TimberImage::alt
+	 * @return string
+	 */
 	function get_alt() {
 		$alt = trim(strip_tags(get_post_meta($this->ID, '_wp_attachment_image_alt', true)));
 		return $alt;

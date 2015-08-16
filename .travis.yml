@@ -10,30 +10,30 @@ php:
 env:
     - WP_VERSION=latest WP_MULTISITE=0
     - WP_VERSION=latest WP_MULTISITE=1
-    - WP_VERSION=3.9 WP_MULTISITE=0
-    - WP_VERSION=3.9 WP_MULTISITE=1
-    - WP_VERSION=3.8.3 WP_MULTISITE=0
-    - WP_VERSION=3.8.3 WP_MULTISITE=1
-    - WP_VERSION=3.7.3 WP_MULTISITE=0
-    - WP_VERSION=3.7.3 WP_MULTISITE=1
+    - WP_VERSION=4.1.7 WP_MULTISITE=0
+    - WP_VERSION=4.1.7 WP_MULTISITE=1
+    - WP_VERSION=3.9.8 WP_MULTISITE=0
+    - WP_VERSION=3.9.8 WP_MULTISITE=1
+    - WP_VERSION=3.7.9 WP_MULTISITE=0
+    - WP_VERSION=3.7.9 WP_MULTISITE=1
 
 matrix:
     exclude:
         - php: 5.5
-          env: WP_VERSION=3.7.3 WP_MULTISITE=1
+          env: WP_VERSION=3.7.9 WP_MULTISITE=1
         - php: 5.5
-          env: WP_VERSION=3.7.3 WP_MULTISITE=0
+          env: WP_VERSION=3.7.9 WP_MULTISITE=0
 
 before_script:
     - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
     - composer install --dev --prefer-source
 
 script:
-    - mkdir -p build/logs
-    - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] phpunit --coverage-clover build/logs/clover.xml || phpunit -c bin/phpunit-nocover.xml'
+    - if [ "$TRAVIS_BRANCH" == "master" ]; then mkdir -p build/logs; phpunit --coverage-clover build/logs/clover.xml; fi
+    - if [ "$TRAVIS_BRANCH" != "master" ]; then phpunit -c bin/phpunit-nocover.xml; fi
 
 after_script:
-    - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] php vendor/bin/coveralls -v || false'
+    - if [ "$TRAVIS_BRANCH" == "master" ]; then php vendor/bin/coveralls -v; fi
 
 after_success:
-    - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] coveralls || false'
+    - if [ "$TRAVIS_BRANCH" == "master" ]; then coveralls; fi
