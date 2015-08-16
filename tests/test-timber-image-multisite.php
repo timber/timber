@@ -23,6 +23,10 @@
 		}
 
 		function testSubDomainImageLocaion() {
+			if ( !is_multisite() ) {
+				$this->markTestSkipped('Test is only for Multisite');
+				return;
+			}
 			$blog_id = $this->createSubDomainSite();
 			$pretend_image = 'http://example.org/wp-content/2015/08/fake-pic.jpg';
 			$is_external = TimberURLHelper::is_external_content( $pretend_image );
@@ -30,6 +34,10 @@
 		}
 
 		function testSubDirectoryImageLocaion() {
+			if ( !is_multisite() ) {
+				$this->markTestSkipped('Test is only for Multisite');
+				return;
+			}
 			$blog_id = $this->createSubDirectorySite();
 			$blog_details = get_blog_details($blog_id);
 			print_r($blog_details);
