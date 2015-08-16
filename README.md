@@ -79,8 +79,7 @@ Read the [contributor guidelines](https://github.com/jarednova/timber/wiki#contr
 #### Generate documentation
 ```bash
 $ cd /srv/www/timber
-$ phpdoc --template="xml"
-$ vendor/evert/phpdoc-md/bin/phpdocmd docs/output/structure.xml
+$ ./bin/generate-docs.sh
 ```
 
 

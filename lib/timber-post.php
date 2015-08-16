@@ -675,8 +675,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	/**
 	 * @internal
 	 * @see TimberPost::children
-	 * @param string $post_type
-	 * @param bool $childPostClass
+	 * @param string 		$post_type
+	 * @param bool|string 	$childPostClass
 	 * @return array
 	 */
 	function get_children($post_type = 'any', $childPostClass = false) {
