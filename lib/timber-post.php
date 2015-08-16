@@ -171,7 +171,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 */
 	protected function determine_id($pid) {
 		global $wp_query;
-		if ($pid === null &&
+		if ( $pid === null &&
 			isset($wp_query->queried_object_id)
 			&& $wp_query->queried_object_id
 			&& isset($wp_query->queried_object)
@@ -179,13 +179,13 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 			&& get_class($wp_query->queried_object) == 'WP_Post'
 			) {
 			$pid = $wp_query->queried_object_id;
-		} else if ($pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id )  {
+		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id )  {
 			//hack for static page as home page
 			$pid = $wp_query->queried_object_id;
-		} else if ($pid === null) {
+		} else if ( $pid === null ) {
 			$gtid = false;
 			$maybe_post = get_post();
-			if (isset($maybe_post->ID)){
+			if ( isset($maybe_post->ID) ){
 				$gtid = true;
 			}
 			if ( $gtid ) {
@@ -198,7 +198,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 				}
 			}
 		}
-		if ($pid === null && ($pid_from_loop = TimberPostGetter::loop_to_id())) {
+		if ( $pid === null && ($pid_from_loop = TimberPostGetter::loop_to_id()) ) {
 			$pid = $pid_from_loop;
 		}
 		return $pid;
@@ -219,10 +219,10 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param int|bool $pid
 	 */
 	function init($pid = false) {
-		if ($pid === false) {
+		if ( $pid === false ) {
 			$pid = get_the_ID();
 		}
-		if (is_numeric($pid)) {
+		if ( is_numeric($pid) ) {
 			$this->ID = $pid;
 		}
 		$post_info = $this->get_info($pid);
@@ -241,7 +241,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @return bool|string
 	 */
 	function get_edit_url() {
-		if ($this->can_edit()) {
+		if ( $this->can_edit() ) {
 			return get_edit_post_link($this->ID);
 		}
 	}
@@ -251,8 +251,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param string $field
 	 * @param mixed $value
 	 */
-	public function update($field, $value) {
-		if (isset($this->ID)) {
+	public function update( $field, $value ) {
+		if ( isset($this->ID) ) {
 			update_post_meta($this->ID, $field, $value);
 			$this->$field = $value;
 		}
@@ -266,11 +266,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param mixed $pid
 	 * @return WP_Post on success
 	 */
-	protected function prepare_post_info($pid = 0) {
-		if (is_string($pid) || is_numeric($pid) || (is_object($pid) && !isset($pid->post_title)) || $pid === 0) {
+	protected function prepare_post_info( $pid = 0 ) {
+		if ( is_string($pid) || is_numeric($pid) || (is_object($pid) && !isset($pid->post_title)) || $pid === 0 ) {
 			$pid = self::check_post_id($pid);
 			$post = get_post($pid);
-			if ($post) {
+			if ( $post ) {
 				return $post;
 			} else {
 				$post = get_page($pid);
@@ -288,16 +288,16 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @internal
 	 * @return integer ID number of a post
 	 */
-	protected function check_post_id($pid) {
-		if (is_numeric($pid) && $pid === 0) {
+	protected function check_post_id( $pid ) {
+		if ( is_numeric($pid) && $pid === 0 ) {
 			$pid = get_the_ID();
 			return $pid;
 		}
-		if (!is_numeric($pid) && is_string($pid)) {
+		if ( !is_numeric($pid) && is_string($pid) ) {
 			$pid = self::get_post_id_by_name($pid);
 			return $pid;
 		}
-		if (!$pid) {
+		if ( !$pid ) {
 			return null;
 		}
 		return $pid;
@@ -338,8 +338,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	function get_preview($len = 50, $force = false, $readmore = 'Read More', $strip = true) {
 		$text = '';
 		$trimmed = false;
-		if (isset($this->post_excerpt) && strlen($this->post_excerpt)) {
-			if ($force) {
+		if ( isset($this->post_excerpt) && strlen($this->post_excerpt) ) {
+			if ( $force ) {
 				$text = TimberHelper::trim_words($this->post_excerpt, $len, false);
 				$trimmed = true;
 			} else {
@@ -349,7 +349,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		if ( !strlen($text) && preg_match('/<!--\s?more(.*?)?-->/', $this->post_content, $readmore_matches) ) {
 			$pieces = explode($readmore_matches[0], $this->post_content);
 			$text = $pieces[0];
-			if ($force) {
+			if ( $force ) {
 				$text = TimberHelper::trim_words($text, $len, false);
 				$trimmed = true;
 			}
@@ -368,15 +368,15 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		if ( strlen($text) ) {
 			$text = trim($text);
 			$last = $text[strlen($text) - 1];
-			if ($last != '.' && $trimmed) {
+			if ( $last != '.' && $trimmed ) {
 				$text .= ' &hellip; ';
 			}
 			if ( !$strip ) {
 				$last_p_tag = strrpos($text, '</p>');
-				if ($last_p_tag !== false) {
+				if ( $last_p_tag !== false ) {
 					$text = substr($text, 0, $last_p_tag);
 				}
-				if ($last != '.' && $trimmed) {
+				if ( $last != '.' && $trimmed ) {
 					$text .= ' &hellip; ';
 				}
 			}
@@ -397,8 +397,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @internal
 	 * @param bool|int $pid a post ID number
 	 */
-	function import_custom($pid = false) {
-		if (!$pid) {
+	function import_custom( $pid = false ) {
+		if ( !$pid ) {
 			$pid = $this->ID;
 		}
 		$customs = $this->get_post_custom($pid);
@@ -412,14 +412,14 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param int $pid
 	 * @return array
 	 */
-	protected function get_post_custom($pid) {
+	protected function get_post_custom( $pid ) {
 		apply_filters('timber_post_get_meta_pre', array(), $pid, $this);
 		$customs = get_post_custom($pid);
-		if (!is_array($customs) || empty($customs)) {
+		if ( !is_array($customs) || empty($customs) ) {
 			return array();
 		}
-		foreach ($customs as $key => $value) {
-			if (is_array($value) && count($value) == 1 && isset($value[0])) {
+		foreach ( $customs as $key => $value ) {
+			if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
 				$value = $value[0];
 			}
 			$customs[$key] = maybe_unserialize($value);
@@ -434,9 +434,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @return null|TimberImage
 	 */
 	function get_thumbnail() {
-		if (function_exists('get_post_thumbnail_id')) {
+		if ( function_exists('get_post_thumbnail_id') ) {
 			$tid = get_post_thumbnail_id($this->ID);
-			if ($tid) {
+			if ( $tid ) {
 				return new $this->ImageClass($tid);
 			}
 		}
@@ -448,7 +448,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @return string
 	 */
 	function get_permalink() {
-		if (isset($this->_permalink)) {
+		if ( isset($this->_permalink) ) {
 			return $this->_permalink;
 		}
 		$this->_permalink = get_permalink($this->ID);
@@ -472,19 +472,19 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param bool $taxonomy
 	 * @return TimberPost|boolean
 	 */
-	function get_next($taxonomy = false) {
-		if (!isset($this->_next) || !isset($this->_next[$taxonomy])) {
+	function get_next( $taxonomy = false ) {
+		if ( !isset($this->_next) || !isset($this->_next[$taxonomy]) ) {
 			global $post;
 			$this->_next = array();
 			$old_global = $post;
 			$post = $this;
-			if ($taxonomy) {
+			if ( $taxonomy ) {
 				$adjacent = get_adjacent_post(true, '', false, $taxonomy);
 			} else {
 				$adjacent = get_adjacent_post(false, '', false);
 			}
 
-			if ($adjacent) {
+			if ( $adjacent ) {
 				$this->_next[$taxonomy] = new $this->PostClass($adjacent);
 			} else {
 				$this->_next[$taxonomy] = false;
@@ -502,22 +502,22 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		global $post, $page, $numpages, $multipage;
 		$post = $this;
 		$ret = array();
-		if ($multipage) {
-			for ($i = 1; $i <= $numpages; $i++) {
+		if ( $multipage ) {
+			for ( $i = 1; $i <= $numpages; $i++ ) {
 				$link = self::get_wp_link_page($i);
 				$data = array('name' => $i, 'title' => $i, 'text' => $i, 'link' => $link);
-				if ($i == $page) {
+				if ( $i == $page ) {
 					$data['current'] = true;
 				}
 				$ret['pages'][] = $data;
 			}
 			$i = $page - 1;
-			if ($i) {
+			if ( $i ) {
 				$link = self::get_wp_link_page($i);
 				$ret['prev'] = array('link' => $link);
 			}
 			$i = $page + 1;
-			if ($i <= $numpages) {
+			if ( $i <= $numpages ) {
 				$link = self::get_wp_link_page($i);
 				$ret['next'] = array('link' => $link);
 			}
@@ -532,7 +532,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	protected static function get_wp_link_page($i) {
 		$link = _wp_link_page($i);
 		$link = new SimpleXMLElement($link . '</a>');
-		if (isset($link['href'])) {
+		if ( isset($link['href']) ) {
 			return $link['href'];
 		}
 		return '';
@@ -555,8 +555,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param bool $taxonomy
 	 * @return TimberPost|boolean
 	 */
-	function get_prev($taxonomy = false) {
-		if (isset($this->_prev) && isset($this->_prev[$taxonomy])) {
+	function get_prev( $taxonomy = false ) {
+		if ( isset($this->_prev) && isset($this->_prev[$taxonomy]) ) {
 			return $this->_prev[$taxonomy];
 		}
 		global $post;
@@ -564,9 +564,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		$post = $this;
 		$within_taxonomy = ($taxonomy) ? $taxonomy : 'category';
 		$adjacent = get_adjacent_post(($taxonomy), '', true, $within_taxonomy);
-
 		$prev_in_taxonomy = false;
-		if ($adjacent) {
+		if ( $adjacent ) {
 			$prev_in_taxonomy = new $this->PostClass($adjacent);
 		}
 		$this->_prev[$taxonomy] = $prev_in_taxonomy;
@@ -580,7 +579,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @return bool|TimberPost
 	 */
 	function get_parent() {
-		if (!$this->post_parent) {
+		if ( !$this->post_parent ) {
 			return false;
 		}
 		return new $this->PostClass($this->post_parent);
@@ -593,7 +592,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @return bool|TimberUser
 	 */
 	function get_author() {
-		if (isset($this->post_author)) {
+		if ( isset($this->post_author) ) {
 			return new TimberUser($this->post_author);
 		}
 	}
@@ -615,7 +614,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 */
 	protected function get_info($pid) {
 		$post = $this->prepare_post_info($pid);
-		if (!isset($post->post_status)) {
+		if ( !isset($post->post_status) ) {
 			return null;
 		}
 		$post->status = $post->post_status;
@@ -623,7 +622,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		$post->slug = $post->post_name;
 		$customs = $this->get_post_custom($post->ID);
 		$post->custom = $customs;
-		$post = (object)array_merge((array)$customs, (array)$post);
+		$post = (object) array_merge((array)$customs, (array)$post);
 		return $post;
 	}
 
@@ -634,7 +633,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param string $use
 	 * @return string
 	 */
-	function get_display_date($use = 'post_date') {
+	function get_display_date( $use = 'post_date' ) {
 		return date(get_option('date_format'), strtotime($this->$use));
 	}
 
@@ -644,7 +643,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param  string $date_format
 	 * @return string
 	 */
-	function get_date($date_format = '') {
+	function get_date( $date_format = '' ) {
 		$df = $date_format ? $date_format : get_option('date_format');
 		$the_date = (string)mysql2date($df, $this->post_date);
 		return apply_filters('get_the_date', $the_date, $date_format);
@@ -655,7 +654,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param  string $date_format
 	 * @return string
 	 */
-	function get_modified_date($date_format = '') {
+	function get_modified_date( $date_format = '' ) {
 		$df = $date_format ? $date_format : get_option('date_format');
 		$the_time = $this->get_modified_time($df, null, $this->ID, true);
 		return apply_filters('get_the_modified_date', $the_time, $date_format);
@@ -666,7 +665,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param  string $time_format
 	 * @return string
 	 */
-	function get_modified_time($time_format = '') {
+	function get_modified_time( $time_format = '' ) {
 		$tf = $time_format ? $time_format : get_option('time_format');
 		$the_time = get_post_modified_time($tf, false, $this->ID, true);
 		return apply_filters('get_the_modified_time', $the_time, $time_format);
@@ -679,15 +678,15 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param bool|string 	$childPostClass
 	 * @return array
 	 */
-	function get_children($post_type = 'any', $childPostClass = false) {
-		if ($childPostClass === false) {
+	function get_children( $post_type = 'any', $childPostClass = false ) {
+		if ( $childPostClass === false ) {
 			$childPostClass = $this->PostClass;
 		}
-		if ($post_type == 'parent') {
+		if ( $post_type == 'parent' ) {
 			$post_type = $this->post_type;
 		}
 		$children = get_children('post_parent=' . $this->ID . '&post_type=' . $post_type . '&numberposts=-1&orderby=menu_order title&order=ASC');
-		foreach ($children as &$child) {
+		foreach ( $children as &$child ) {
 			$child = new $childPostClass($child->ID);
 		}
 		$children = array_values($children);
@@ -705,28 +704,28 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param string $CommentClass
 	 * @return array|mixed
 	 */
-	function get_comments($ct = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
+	function get_comments( $ct = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment' ) {
 		$args = array('post_id' => $this->ID, 'status' => $status, 'order' => $order);
-		if ($ct > 0) {
+		if ( $ct > 0 ) {
 			$args['number'] = $ct;
 		}
-		if ($order == 'wp') {
+		if ( $order == 'wp' ) {
 			$args['order'] = get_option('comment_order');
 		}
 
 		$comments = get_comments($args);
 		$tComments = array();
 
-		foreach($comments as $key => &$comment) {
+		foreach( $comments as $key => &$comment ) {
 			$tComment = new $CommentClass($comment);
 			$tComments[$tComment->id] = $tComment;
 		}
 
-		foreach($tComments as $key => $comment) {
-			if ($comment->is_child()) {
+		foreach( $tComments as $key => $comment ) {
+			if ( $comment->is_child() ) {
 				unset($tComments[$comment->id]);
 
-				if (isset($tComments[$comment->comment_parent])) {
+				if ( isset($tComments[$comment->comment_parent]) ) {
 					$tComments[$comment->comment_parent]->children[] = $comment;
 				}
 			}
@@ -751,16 +750,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @see TimberPost::category
 	 * @return mixed
 	 */
-	function get_category() {
+	function get_category( ) {
 		$cats = $this->get_categories();
-		if (count($cats) && isset($cats[0])) {
+		if ( count($cats) && isset($cats[0]) ) {
 			return $cats[0];
 		}
 	}
-
-	/** # get terms is good
-	 *
-	 */
 
 	/**
 	 * @internal
@@ -769,47 +764,47 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param string $TermClass
 	 * @return array
 	 */
-	function get_terms($tax = '', $merge = true, $TermClass = 'TimberTerm') {
-		if (is_string($merge) && class_exists($merge)){
+	function get_terms( $tax = '', $merge = true, $TermClass = 'TimberTerm' ) {
+		if ( is_string($merge) && class_exists($merge) ) {
 			$TermClass = $merge;
 		}
-		if (is_string($tax)) {
-			if (isset($this->_get_terms) && isset($this->_get_terms[$tax])) {
+		if ( is_string($tax) ) {
+			if ( isset($this->_get_terms) && isset($this->_get_terms[$tax]) ) {
 				return $this->_get_terms[$tax];
 			}
 		}
-		if (!strlen($tax) || $tax == 'all' || $tax == 'any') {
+		if ( !strlen($tax) || $tax == 'all' || $tax == 'any' ) {
 			$taxs = get_object_taxonomies($this->post_type);
-		} else if (is_array($tax)) {
+		} else if ( is_array($tax) ) {
 			$taxs = $tax;
 		} else {
 			$taxs = array($tax);
 		}
 		$ret = array();
-		foreach ($taxs as $tax) {
-			if ($tax == 'tags' || $tax == 'tag') {
+		foreach ( $taxs as $tax ) {
+			if ( $tax == 'tags' || $tax == 'tag' ) {
 				$tax = 'post_tag';
-			} else if ($tax == 'categories') {
+			} else if ( $tax == 'categories' ) {
 				$tax = 'category';
 			}
 			$terms = wp_get_post_terms($this->ID, $tax);
-			if (!is_array($terms) && is_object($terms) && get_class($terms) == 'WP_Error') {
+			if ( !is_array($terms) && is_object($terms) && get_class($terms) == 'WP_Error' ) {
 				//something is very wrong
 				TimberHelper::error_log('You have an error retrieving terms on a post in timber-post.php:628');
 				TimberHelper::error_log('tax = ' . $tax);
 				TimberHelper::error_log($terms);
 			} else {
-				foreach ($terms as &$term) {
+				foreach ( $terms as &$term ) {
 					$term = new $TermClass($term->term_id, $tax);
 				}
-				if ($merge && is_array($terms)) {
+				if ( $merge && is_array($terms) ) {
 					$ret = array_merge($ret, $terms);
-				} else if (count($terms)) {
+				} else if ( count($terms) ) {
 					$ret[$tax] = $terms;
 				}
 			}
 		}
-		if (!isset($this->_get_terms)) {
+		if ( !isset($this->_get_terms) ) {
 			$this->_get_terms = array();
 		}
 		$this->_get_terms[$tax] = $ret;
@@ -821,12 +816,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param string $taxonomy
 	 * @return bool
 	 */
-	function has_term($term_name_or_id, $taxonomy = 'all') {
-		if ($taxonomy == 'all' || $taxonomy == 'any') {
+	function has_term( $term_name_or_id, $taxonomy = 'all' ) {
+		if ( $taxonomy == 'all' || $taxonomy == 'any' ) {
 			$taxes = get_object_taxonomies($this->post_type, 'names');
 			$ret = false;
-			foreach ($taxes as $tax) {
-				if (has_term($term_name_or_id, $tax, $this->ID)) {
+			foreach ( $taxes as $tax ) {
+				if ( has_term($term_name_or_id, $tax, $this->ID) ) {
 					$ret = true;
 					break;
 				}
@@ -840,7 +835,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param string $field
 	 * @return TimberImage
 	 */
-	function get_image($field) {
+	function get_image( $field ) {
 		return new $this->ImageClass($this->$field);
 	}
 
@@ -890,23 +885,23 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param int $page
 	 * @return string
 	 */
-	function get_content($len = 0, $page = 0) {
-		if ($len == 0 && $page == 0 && $this->_content) {
+	function get_content( $len = 0, $page = 0 ) {
+		if ( $len == 0 && $page == 0 && $this->_content ) {
 			return $this->_content;
 		}
 		$content = $this->post_content;
-		if ($len) {
+		if ( $len ) {
 			$content = wp_trim_words($content, $len);
 		}
-		if ($page) {
+		if ( $page ) {
 			$contents = explode('<!--nextpage-->', $content);
 			$page--;
-			if (count($contents) > $page) {
+			if ( count($contents) > $page ) {
 				$content = $contents[$page];
 			}
 		}
 		$content = apply_filters('the_content', ($content));
-		if ($len == 0 && $page == 0) {
+		if ( $len == 0 && $page == 0 ) {
 			$this->_content = $content;
 		}
 		return $content;
@@ -940,7 +935,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @return int
 	 */
 	public function get_comment_count() {
-		if (isset($this->ID)) {
+		if ( isset($this->ID) ) {
 			return get_comments_number($this->ID);
 		} else {
 			return 0;
@@ -951,14 +946,14 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param string $field_name
 	 * @return mixed
 	 */
-	public function get_field($field_name) {
+	public function get_field( $field_name ) {
 		$value = apply_filters('timber_post_get_meta_field_pre', null, $this->ID, $field_name, $this);
-		if ($value === null) {
+		if ( $value === null ) {
 			$value = get_post_meta($this->ID, $field_name);
-			if (is_array($value) && count($value) == 1) {
+			if ( is_array($value) && count($value) == 1 ) {
 				$value = $value[0];
 			}
-			if (is_array($value) && count($value) == 0) {
+			if ( is_array($value) && count($value) == 0 ) {
 				$value = null;
 			}
 		}
@@ -969,7 +964,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	/**
 	 * @param string $field_name
 	 */
-	function import_field($field_name) {
+	function import_field( $field_name ) {
 		$this->$field_name = $this->get_field($field_name);
 	}
 
@@ -1000,13 +995,13 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * ```
 	 * @return string a space-seperated list of classes
 	 */
-	public function post_class($class='') {
+	public function post_class( $class='' ) {
 		global $post;
 		$old_global_post = $post;
 		$post = $this;
 		$class_array = get_post_class($class, $this->ID);
 		$post = $old_global_post;
-		if (is_array($class_array)){
+		if ( is_array($class_array) ){
 			return implode(' ', $class_array);
 		}
 		return $class_array;
@@ -1116,7 +1111,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * Gets the comments on a TimberPost and returns them as an array of [TimberComments](#TimberComment) (or whatever comment class you set).
 	 * @api
 	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
-	 * @param string $order use WordPress ordering or a different scheme
+	 * @param string $order use ordering set in WordPress admin, or a different scheme
 	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
 	 * @param string $status Could be 'pending', etc.
 	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending TimberComment for your site or app (obviously, totally optional)
@@ -1133,7 +1128,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * ```
 	 * @return bool|array
 	 */
-	public function comments($count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
+	public function comments( $count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment' ) {
 		return $this->get_comments($count, $order, $type, $status, $CommentClass);
 	}
 
@@ -1150,7 +1145,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param int $page
 	 * @return string
 	 */
-	public function content($page = 0) {
+	public function content( $page = 0 ) {
 		return $this->get_content(0, $page);
 	}
 
@@ -1179,7 +1174,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param string $date_format
 	 * @return string
 	 */
-	public function date($date_format = '') {
+	public function date( $date_format = '' ) {
 		return $this->get_date($date_format);
 	}
 
@@ -1215,8 +1210,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param string $field_name
 	 * @return mixed
 	 */
-	public function meta($field_name = null) {
-		if ($field_name == null) {
+	public function meta( $field_name = null ) {
+		if ( $field_name == null ) {
 			$field_name = 'meta';
 		}
 		return $this->get_field($field_name);
@@ -1233,7 +1228,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param string $date_format
 	 * @return string
 	 */
-	public function modified_date($date_format = '') {
+	public function modified_date( $date_format = '' ) {
 		return $this->get_modified_date($date_format);
 	}
 
@@ -1241,7 +1236,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param string $time_format
 	 * @return string
 	 */
-	public function modified_time($time_format = '') {
+	public function modified_time( $time_format = '' ) {
 		return $this->get_modified_time($time_format);
 	}
 
@@ -1250,7 +1245,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param bool $in_same_cat
 	 * @return mixed
 	 */
-	public function next($in_same_cat = false) {
+	public function next( $in_same_cat = false ) {
 		return $this->get_next($in_same_cat);
 	}
 
@@ -1308,7 +1303,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param bool $in_same_cat
 	 * @return mixed
 	 */
-	public function prev($in_same_cat = false) {
+	public function prev( $in_same_cat = false ) {
 		return $this->get_prev($in_same_cat);
 	}
 
@@ -1320,7 +1315,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param bool $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?
 	 * @return array 
 	 */
-	public function terms($tax = '', $merge = true) {
+	public function terms( $tax = '', $merge = true ) {
 		return $this->get_terms($tax, $merge);
 	}
 
