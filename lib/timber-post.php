@@ -1,13 +1,7 @@
 <?php
 
 /**
- * This is the object you use to access or extend WordPress posts,
- * Think of it as Timber's (more accessible) version of WP_Post
- *
- * This is used throughout Timber to represent posts retrieved from WordPress
- * making them available to Twig templates. 
- * See the PHP and Twig examples for an example of what it's like
- * to work with this object in your code.
+ * This is the object you use to access or extend WordPress posts. Think of it as Timber's (more accessible) version of WP_Post. This is used throughout Timber to represent posts retrieved from WordPress making them available to Twig templates. See the PHP and Twig examples for an example of what it's like to work with this object in your code.
  * @example
  * ```php
  * <?php
@@ -27,7 +21,7 @@
  * </article>
  * ```
  *
- * @package  timber
+ * @package Timber
  */
 class TimberPost extends TimberCore implements TimberCoreInterface {
 
