@@ -12,5 +12,10 @@ wp-content
 timber-starter-theme
 docs
 docs/markdown
+<<<<<<< HEAD
+.tmp
+node_modules
+=======
 node_modules
 .tmp
+>>>>>>> master

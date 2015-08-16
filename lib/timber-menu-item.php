@@ -17,14 +17,15 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	protected $_menu_item_object_id;
 	protected $_menu_item_url;
 	protected $menu_object;
-	protected $parent_object;
+	protected $master_object;
 
 	/**
 	 *
 	 *
 	 * @param array|object $data
 	 */
-	function __construct( $data ) {
+	public function __construct( $data ) {
+		$data = (object) $data;
 		$this->import( $data );
 		$this->import_classes( $data );
 		if ( isset( $this->name ) ) {
@@ -35,16 +36,18 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 		$this->menu_object = $data;
 	}
 
-	function __toString() {
+	/**
+	 * @return string the label for the menu item
+	 */
+	public function __toString() {
 		return $this->name();
 	}
 
 	/**
-	 *
-	 *
-	 * @param string  $class_name
+	 * add a class the menu item should have
+	 * @param string  $class_name to be added
 	 */
-	function add_class( $class_name ) {
+	public function add_class( $class_name ) {
 		$this->classes[] = $class_name;
 		$this->class .= ' ' . $class_name;
 	}
@@ -54,7 +57,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	 * @api
 	 * @return string
 	 */
-	function name() {
+	public function name() {
 		if ( $title = $this->title() ) {
 			return $title;
 		}
@@ -76,22 +79,23 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	 *          </li>
 	 *     {% endfor %}
 	 * </ul>
-	 * @return string
+	 * @return string the slug of the menu item kinda-like-this
 	 */
-	function slug() {
-		if ( !isset( $this->parent_object ) ) {
-			$this->parent_object = $this->get_parent_object();
+	public function slug() {
+		if ( !isset( $this->master_object ) ) {
+			$this->master_object = $this->get_master_object();
 		}
-		if ( isset( $this->parent_object->post_name ) && $this->parent_object->post_name ) {
-			return $this->parent_object->post_name;
+		if ( isset( $this->master_object->post_name ) && $this->master_object->post_name ) {
+			return $this->master_object->post_name;
 		}
 		return $this->post_name;
 	}
 
 	/**
 	 * @internal
+	 * @return mixed whatever object (Post, Term, etc.) the menu item represents
 	 */
-	function get_parent_object() {
+	protected function get_master_object() {
 		if ( isset( $this->_menu_item_object_id ) ) {
 			return new $this->PostClass( $this->_menu_item_object_id );
 		}
@@ -100,7 +104,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	/**
 	 * @internal
 	 * @see TimberMenuItem::link
-	 * @return string
+	 * @return string an absolute URL http://example.org/my-page
 	 */
 	function get_link() {
 		if ( !isset( $this->url ) || !$this->url ) {
@@ -116,7 +120,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	/**
 	 * @internal
 	 * @see TimberMenuItem::path()
-	 * @return string
+	 * @return string a relative url /my-page
 	 */
 	function get_path() {
 		return TimberURLHelper::get_rel_url( $this->get_link() );
@@ -185,11 +189,11 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * Checks to see if a link is external, helpful when creating rules for the target of a link
+	 * Checks to see if the menu item is an external link so if my site is `example.org`, `google.com/whatever` is an external link. Helpful when creating rules for the target of a link
 	 * @api
 	 * @example
 	 * ```twig
-	 * 
+	 * <a href="{{ item.link }}" target="{{ item.is_external ? '_blank' : '_self' }}">
 	 * ```
 	 * @return bool
 	 */
@@ -201,9 +205,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
-	 * @param unknown $key string lookup key
+	 * @param string $key lookup key
 	 * @return mixed whatever value is storied in the database
 	 */
 	public function meta( $key ) {
