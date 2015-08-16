@@ -48,7 +48,7 @@
                 "version": "dev-master",
                 "source": {
                     "type": "git",
-                    "url": "git@github.com:jarednova/markdowndocs.git",
+                    "url": "git@github.com:jarednova/PHP-Markdown-Documentation-Generator.git",
                     "reference": "master"
                 }
             }
