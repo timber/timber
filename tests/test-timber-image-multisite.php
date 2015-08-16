@@ -19,7 +19,9 @@
 		}
 
 		function tearDown() {
-			switch_to_blog(1);
+			if (is_multisite()) {
+				switch_to_blog(1);
+			}
 		}
 
 		function testSubDomainImageLocaion() {
