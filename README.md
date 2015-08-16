@@ -74,5 +74,13 @@ It's MIT-licensed, so please use in personal or commercial work. Just don't re-s
 #### Contributing
 Read the [contributor guidelines](https://github.com/jarednova/timber/wiki#contributing) in the wiki.
 
+## How To...
+
+#### Generate documentation
+```bash
+$ cd /srv/www/timber
+$ ./bin/generate-docs.sh
+```
+
 
 

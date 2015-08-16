@@ -76,16 +76,18 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @internal
      * @param int $tid
      * @return array
      */
     protected function get_term_meta($tid) {
         $customs = array();
         $customs = apply_filters('timber_term_get_meta', $customs, $tid, $this);
-        return $customs;
+        return apply_filters('timber/term/meta', $customs, $tid, $this);
     }
 
     /**
+     * @internal
      * @param int $tid
      * @return mixed
      */
@@ -152,26 +154,31 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
         if (!isset($this->$field_name)) {
             $field_value = '';
             $field_value = apply_filters('timber_term_get_meta_field', $field_value, $this->ID, $field_name, $this);
+            $field_value = apply_filters('timber/term/meta/field', $field_value, $this->ID, $field_name, $this);
             $this->$field_name = $field_value;
         }
         return $this->$field_name;
     }
 
     /**
+     * @internal
      * @return string
      */
     public function get_path() {
         $link = $this->get_link();
         $rel = TimberURLHelper::get_rel_url($link, true);
-        return apply_filters('timber_term_path', $rel, $this);
+        $rel = apply_filters('timber_term_path', $rel, $this);
+        return apply_filters('timber/term/path', $rel, $this);
     }
 
     /**
+     * @internal
      * @return string
      */
     public function get_link() {
         $link = get_term_link($this);
-        return apply_filters('timber_term_link', $link, $this);
+        $link = apply_filters('timber_term_link', $link, $this);
+        return apply_filters('timber/term/link', $link, $this);
     }
 
     /**
@@ -224,6 +231,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @internal
      * @return array
      */
     public function get_children() {
@@ -312,6 +320,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @deprecated since 0.21.9
      * @return string
      */
     public function url() {

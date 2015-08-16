@@ -3,12 +3,22 @@
 class TimberHelper {
 
 	/**
-	 *
+	 * A utility for a one-stop shop for Transients
+	 * @api
+	 * @example
+	 * ```php
+	 * $favorites = Timber::transient('user-'.$uid.'-favorites', function() use ($uid) {
+	 *  	//some expensive query here that's doing something you want to store to a transient
+	 *  	return $favorites;
+	 * }, 600);
+	 * Timber::context['favorites'] = $favorites;
+	 * Timber::render('single.twig', $context);
+	 * ```
 	 *
 	 * @param string  $slug           Unique identifier for transient
-	 * @param callable $callback       Callback that generates the data that's to be cached
+	 * @param callable $callback      Callback that generates the data that's to be cached
 	 * @param int     $transient_time (optional) Expiration of transients in seconds
-	 * @param int     $lock_timeout   (optional) How long to lock the transient to prevent race conditions
+	 * @param int     $lock_timeout   (optional) How long (in seconds) to lock the transient to prevent race conditions
 	 * @param bool    $force          (optional) Force callback to be executed when transient is locked
 	 * @return mixed
 	 */
@@ -52,24 +62,27 @@ class TimberHelper {
 	}
 
 	/**
+	 * @internal
 	 * @param string $slug
 	 * @param integer $lock_timeout
 	 */
-	public static function _lock_transient( $slug, $lock_timeout ) {
+	static function _lock_transient( $slug, $lock_timeout ) {
 		set_transient( $slug . '_lock', true, $lock_timeout );
 	}
 
 	/**
+	 * @internal
 	 * @param string $slug
 	 */
-	public static function _unlock_transient( $slug ) {
+	static function _unlock_transient( $slug ) {
 		delete_transient( $slug . '_lock', true );
 	}
 
 	/**
+	 * @internal
 	 * @param string $slug
 	 */
-	public static function _is_transient_locked( $slug ) {
+	static function _is_transient_locked( $slug ) {
 		return (bool)get_transient( $slug . '_lock' );
 	}
 
@@ -299,7 +312,7 @@ class TimberHelper {
 
 	/**
 	 *
-	 *
+	 * @deprecated since 0.21.8
 	 * @param int     $ttid
 	 * @return mixed
 	 */
@@ -462,15 +475,12 @@ class TimberHelper {
 	/* Links, Forms, Etc. Utilities
 	======================== */
 
-	/* this $args thing is a fucking mess, fix at some point:
-
-	http://codex.wordpress.org/Function_Reference/comment_form */
-
 	/**
 	 *
-	 *
-	 * @param int     $post_id
-	 * @param array   $args
+	 * Gets the comment form for use on a single article page
+	 * @deprecated since 0.21.8
+	 * @param int     $post_id which post_id should the form be tied to?
+	 * @param array   $args this $args thing is a fucking mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
 	 * @return string
 	 */
 	public static function get_comment_form( $post_id = null, $args = array() ) {

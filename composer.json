@@ -30,7 +30,7 @@
 		"wpackagist-plugin/advanced-custom-fields": "4.*",
 		"wp-cli/wp-cli": "*",
 		"phpdocumentor/phpdocumentor" : "2.*",
-		"evert/phpdoc-md" : "~0.1.1"
+		"jarednova/markdowndocs": "dev-master"
 	},
     "autoload": {
         "classmap": ["lib/"]
@@ -39,6 +39,19 @@
 		{
             "type":"composer",
             "url":"http://wpackagist.org"
+        },
+        {
+        	"type":"package",
+            "type": "package",
+            "package": {
+                "name": "jarednova/markdowndocs",
+                "version": "dev-master",
+                "source": {
+                    "type": "git",
+                    "url": "git@github.com:jarednova/PHP-Markdown-Documentation-Generator.git",
+                    "reference": "master"
+                }
+            }
         }
 	]
 }

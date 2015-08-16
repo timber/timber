@@ -50,13 +50,13 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * The label for the menu item
+	 * @api
 	 * @return string
 	 */
 	function name() {
-		if ( isset( $this->title ) ) {
-			return $this->title;
+		if ( $title = $this->title() ) {
+			return $title;
 		}
 		if ( isset( $this->_name ) ) {
 			return $this->_name;
@@ -65,8 +65,17 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * The slug for the menu item
+	 * @api
+	 * @example
+	 * ```twig
+	 * <ul>
+	 *     {% for item in menu.items %}
+	 *         <li class="{{item.slug}}">
+	 *             <a href="{{item.link}}">{{item.name}}</a>
+	 *          </li>
+	 *     {% endfor %}
+	 * </ul>
 	 * @return string
 	 */
 	function slug() {
@@ -79,6 +88,9 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 		return $this->post_name;
 	}
 
+	/**
+	 * @internal
+	 */
 	function get_parent_object() {
 		if ( isset( $this->_menu_item_object_id ) ) {
 			return new $this->PostClass( $this->_menu_item_object_id );
@@ -86,8 +98,8 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * @internal
+	 * @see TimberMenuItem::link
 	 * @return string
 	 */
 	function get_link() {
@@ -102,8 +114,8 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * @internal
+	 * @see TimberMenuItem::path()
 	 * @return string
 	 */
 	function get_path() {
@@ -130,18 +142,24 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 		}
 	}
 
-	public function update_child_levels() {
+	/**
+	 *
+	 * @internal
+	 * @return bool 
+	 */
+	function update_child_levels() {
 		if (is_array($this->children)) {
 			foreach( $this->children as $child ) {
 				$child->level = $this->level + 1;
 				$child->update_child_levels();
 			}
+			return true;
 		}
 	}
 
 	/**
 	 * Imports the classes to be used in CSS
-	 *
+	 * @internal
 	 * @param array|object  $data
 	 */
 	function import_classes( $data ) {
@@ -156,7 +174,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 *
-	 *
+	 * @internal
 	 * @return array|bool
 	 */
 	function get_children() {
@@ -167,8 +185,12 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * Checks to see if a link is external, helpful when creating rules for the target of a link
+	 * @api
+	 * @example
+	 * ```twig
+	 * 
+	 * ```
 	 * @return bool
 	 */
 	function is_external() {
@@ -196,8 +218,8 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	/* Aliases */
 
 	/**
-	 *
-	 *
+	 * Get the child [TimberMenuItems](#TimberMenuItem)s of a [TimberMenuItem](#TimberMenuItem)
+	 * @api
 	 * @return array|bool
 	 */
 	public function children() {
@@ -205,8 +227,8 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * Checks to see if a link is external, helpful when creating rules for the target of a link
+	 * @see TimberMenuItem::is_external
 	 * @return bool
 	 */
 	public function external() {
@@ -214,8 +236,14 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * Get the full link to a Menu Item
+	 * @api
+	 * @example
+	 * ```twig
+	 * {% for item in menu.items %}
+	 *     <li><a href="{{ item.link }}">{{ item.title }}</a></li>
+	 * {% endfor %}
+	 * ```
 	 * @return string a full URL like http://mysite.com/thing/
 	 */
 	public function link() {
@@ -223,8 +251,13 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * Return the relative path of a Menu Item's link
+	 * @example
+	 * ```twig
+	 * {% for item in menu.items %}
+	 *     <li><a href="{{ item.path }}">{{ item.title }}</a></li>
+	 * {% endfor %}
+	 * ```
 	 * @see get_path()
 	 * @return string the path of a URL like /foo
 	 */
@@ -233,8 +266,9 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * Gets the link a menu item points at
+	 * @internal
+	 * @deprecated since 0.21.7 use link instead
 	 * @see link()
 	 * @return string a full URL like http://mysite.com/thing/
 	 */
@@ -243,8 +277,8 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * @internal
+	 * @deprecated since 0.21.7, use link instead
 	 * @see link()
 	 * @return string a full URL like http://mysite.com/thing/
 	 */
@@ -253,8 +287,13 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * Gets the public label for the menu item
+	 * @example
+	 * ```twig
+	 * {% for item in menu.items %}
+	 *     <li><a href="{{ item.link }}">{{ item.title }}</a></li>
+	 * {% endfor %}
+	 * ```
 	 * @return string the public label like Foo
 	 */
 	public function title() {

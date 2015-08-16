@@ -378,4 +378,13 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->assertEquals(2, $grandchild->level);
 	}
 
+	function testMenuName() {
+		$this->_createTestMenu();
+		$menu = new TimberMenu();
+		$str = Timber::compile_string('{{menu.items[0].title}}', array('menu' => $menu));
+		$this->assertEquals('Home', $str);
+		$str = Timber::compile_string('{{menu.items[0]}}', array('menu' => $menu));
+		$this->assertEquals('Home', $str);
+	}
+
 }
