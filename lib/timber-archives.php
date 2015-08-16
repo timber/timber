@@ -3,7 +3,11 @@
 class TimberArchives extends TimberCore {
 
 	public $base = '';
-	public $_items;
+	/**
+	 * @api
+	 * @var array the items of the archives to iterate through and markup for your page
+	 */
+	public $items;
 
 	function __construct( $args = null, $base = '' ) {
 		$this->init($args, $base);
@@ -16,7 +20,7 @@ class TimberArchives extends TimberCore {
 	 */
 	function init( $args = null, $base = '' ) {
 		$this->base = $base;
-		$this->_items = $this->get_items($args);
+		$this->items = $this->get_items($args);
 	}
 
 	/**
@@ -119,6 +123,7 @@ class TimberArchives extends TimberCore {
 
 	/**
 	 * @api
+	 * @internal
 	 * @param array|string $args
 	 * @return array|string
 	 */
