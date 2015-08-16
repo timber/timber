@@ -71,6 +71,7 @@ class TimberHelper {
 	}
 
 	/**
+	 * @internal
 	 * @param string $slug
 	 */
 	static function _unlock_transient( $slug ) {
@@ -78,6 +79,7 @@ class TimberHelper {
 	}
 
 	/**
+	 * @internal
 	 * @param string $slug
 	 */
 	static function _is_transient_locked( $slug ) {
