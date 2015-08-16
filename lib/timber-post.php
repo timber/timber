@@ -3,6 +3,29 @@
 /**
  * This is the object you use to access or extend WordPress posts,
  * Think of it as Timber's (more accessible) version of WP_Post
+ *
+ * This is used throughout Timber to represent posts retrieved from WordPress
+ * making them available to Twig templates. 
+ * See the PHP and Twig examples for an example of what it's like
+ * to work with this object in your code.
+ * @example
+ * ```php
+ * <?php
+ * // single.php, see connected twig example
+ * $context = Timber::get_context();
+ * $context['post'] = new TimberPost(); // It's a new TimberPost object, but an existing post from WordPress.
+ * Timber::render('single.twig', $context);
+ * ```
+ * ```twig
+ * {# single.twig #}
+ * <article>
+ *     <h1 class="headline">{{post.post_title}}</h1>
+ *     <div class="body">
+ *         {{post.content}}
+ *     </div>
+ * </article>
+ * ```
+ *
  * @package  timber
  */
 class TimberPost extends TimberCore implements TimberCoreInterface {
@@ -47,6 +70,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	protected $_prev = array();
 
 	/**
+	 * @api
 	 * @var string $class stores the CSS classes for the post (ex: "post post-type-book post-123")
 	 */
 	public $class;
@@ -56,6 +80,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 */
 	public $display_date;
 	/**
+	 * @api
 	 * @var string $id the numeric WordPress id of a post
 	 */
 	public $id;
@@ -92,13 +117,13 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	public $post_title;
 
 	/**
+	 * @api
 	 * @var string 	$post_type 		the name of the post type, this is the machine name (so "my_custom_post_type" as opposed to "My Custom Post Type")
 	 */
 	public $post_type;
 
 	/**
-	 * A thing
-	 *
+	 * @api
 	 * @var string 	$slug 		the URL-safe slug, this corresponds to the poorly-named "post_name" in the WP database, ex: "hello-world"
 	 */
 	public $slug;
@@ -278,6 +303,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * get a preview of your post, if you have an excerpt it will use that,
 	 * otherwise it will pull from the post_content.
 	 * If there's a <!-- more --> tag it will use that to mark where to pull through.
+	 * @api
 	 * @example 
 	 * ```twig
 	 * <p>{{post.get_preview(50)}}</p>
@@ -936,6 +962,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the CSS classes for a post. For usage you should use `{{post.class}}` instead of `{{post.post_class}}`
+	 * @internal
 	 * @param string $class additional classes you want to add
 	 * @see TimberPost::$class
 	 * @example
