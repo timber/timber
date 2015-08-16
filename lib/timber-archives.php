@@ -3,27 +3,29 @@
 class TimberArchives extends TimberCore {
 
 	public $base = '';
-	public $items;
+	public $_items;
 
 	function __construct( $args = null, $base = '' ) {
 		$this->init($args, $base);
 	}
 
 	/**
+	 * @internal
 	 * @param array|string $args
 	 * @param string $base
 	 */
 	function init( $args = null, $base = '' ) {
 		$this->base = $base;
-		$this->items = $this->get_items($args);
+		$this->_items = $this->get_items($args);
 	}
 
 	/**
+	 * @internal
 	 * @param string $url
 	 * @param string $text
 	 * @return mixed
 	 */
-	function get_archives_link( $url, $text ) {
+	protected function get_archives_link( $url, $text ) {
 		$ret = array();
 		$ret['text'] = $ret['title'] = $ret['name'] = wptexturize($text);
 		$ret['url'] = $ret['link'] = esc_url(TimberURLHelper::prepend_to_url($url, $this->base));
@@ -31,6 +33,7 @@ class TimberArchives extends TimberCore {
 	}
 
 	/**
+	 * @internal
 	 * @param array|string $args
 	 * @param string $last_changed
 	 * @param string $join
@@ -39,7 +42,7 @@ class TimberArchives extends TimberCore {
 	 * @param string $limit
 	 * @return array
 	 */
-	function get_items_yearly( $args, $last_changed, $join, $where, $order, $limit ) {
+	protected function get_items_yearly( $args, $last_changed, $join, $where, $order, $limit ) {
 		global $wpdb;
 		$output = array();
 		$query = "SELECT YEAR(post_date) AS `year`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date) ORDER BY post_date $order $limit";
@@ -60,6 +63,7 @@ class TimberArchives extends TimberCore {
 	}
 
 	/**
+	 * @internal
 	 * @param array|string $args
 	 * @param string $last_changed
 	 * @param string $join
@@ -69,7 +73,7 @@ class TimberArchives extends TimberCore {
 	 * @param bool $nested
 	 * @return array
 	 */
-	function get_items_monthly( $args, $last_changed, $join, $where, $order, $limit = 1000, $nested = true ) {
+	protected function get_items_monthly( $args, $last_changed, $join, $where, $order, $limit = 1000, $nested = true ) {
 		global $wpdb, $wp_locale;
 		$output = array();
 		$defaults = array(
@@ -114,6 +118,7 @@ class TimberArchives extends TimberCore {
 	}
 
 	/**
+	 * @api
 	 * @param array|string $args
 	 * @return array|string
 	 */

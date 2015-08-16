@@ -9,7 +9,15 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	public static $representation = 'term';
 
 	public $_children;
+	/**
+	 * @api
+	 * @var string the human-friendly name of the term (ex: French Cuisine)
+	 */
 	public $name;
+	/**
+	 * @api
+	 * @var strng the WordPress taxonomy slug (ex: `post_tag` or `actors`)
+	 */
 	public $taxonomy;
 
 	/**
@@ -39,6 +47,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	===================== */
 
 	/**
+	 * @internal
 	 * @return integer
 	 */
 	protected function get_term_from_query() {
@@ -53,6 +62,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @param int $tid
 	 */
 	protected function init( $tid ) {
@@ -111,6 +121,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @param int $tid
 	 * @return int
 	 */
@@ -140,6 +151,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	===================== */
 
 	/**
+	 * @internal
 	 * @return string
 	 */
 	public function get_edit_url() {
@@ -147,6 +159,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @param string $field_name
 	 * @return string
 	 */
@@ -260,6 +273,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	====================== */
 
 	/**
+	 * @api
 	 * @return array
 	 */
 	public function children() {
@@ -267,6 +281,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @return string
 	 */
 	public function edit_link() {
@@ -274,6 +289,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @deprecated since 0.21.8
 	 * @return string
 	 */
 	public function get_url() {
@@ -281,6 +297,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @return string
 	 */
 	public function link() {
@@ -288,6 +305,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @param string $field_name
 	 * @return string
 	 */
@@ -296,6 +314,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @return string
 	 */
 	public function path() {
@@ -303,9 +322,19 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @param int $numberposts_or_args
 	 * @param string $post_type_or_class
 	 * @param string $post_class
+	 * @example 
+	 * ```twig
+	 * <h4>Recent posts in {{term.name}}</h4>
+	 * <ul>
+	 * {% for post in term.posts(3, 'post') %}
+	 *     <li><a href="{{post.link}}">{{post.title}}</a></li>
+	 * {% endfor %}
+	 * </ul>
+	 * ```
 	 * @return array|bool|null
 	 */
 	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
@@ -326,9 +355,6 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	public function url() {
 		return $this->get_url();
 	}
-
-	/* Deprecated
-	===================== */
 
 	/**
 	 * @deprecated

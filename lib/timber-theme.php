@@ -1,13 +1,41 @@
 <?php
 
-class TimberTheme extends TimberCore
-{
+class TimberTheme extends TimberCore {
 
+    /**
+     * @api
+     * @var string the absolute path to the theme (ex: `http://example.org/wp-content/themes/my-timber-theme`)
+     */
     public $link;
+
+    /**
+     * @api
+     * @var string the human-friendly name of the theme (ex: `My Timber Starter Theme`)
+     */
     public $name;
+
+    /**
+     * @api
+     * @var string the relative path to the theme (ex: `/wp-content/themes/my-timber-theme`)
+     */
     public $path;
-    public $parent;
+    
+    /**
+     * @api
+     * @var TimberTheme|bool the TimberTheme object for the parent theme (if it exists), false otherwise
+     */
+    public $parent = false;
+
+    /**
+     * @api
+     * @var string the slug of the parent theme (ex: `_s`)
+     */
     public $parent_slug;
+
+    /**
+     * @api
+     * @var string the slug of the theme (ex: `my-super-theme`)
+     */
     public $slug;
     public $uri;
 
@@ -19,9 +47,10 @@ class TimberTheme extends TimberCore
     }
 
     /**
+     * @internal
      * @param string $slug
      */
-    function init($slug = null) {
+    protected function init($slug = null) {
         $data = wp_get_theme($slug);
         $this->name = $data->get('Name');
         $ss = $data->get_stylesheet();

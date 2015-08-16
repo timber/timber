@@ -35,6 +35,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @param string $field_name
 	 * @return null
 	 */
@@ -43,6 +44,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @param string $field
 	 * @param mixed $value
 	 */
@@ -54,6 +56,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @return string
 	 */
 	public function get_link() {
@@ -64,9 +67,10 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @param int|bool $uid
 	 */
-	function init($uid = false) {
+	protected function init($uid = false) {
 		if ( $uid === false ) {
 			$uid = get_current_user_id();
 		}
@@ -137,13 +141,15 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @return string
+	 * @api
+	 * @return string the human-friendly name of the user (ex: "Buster Bluth")
 	 */
 	function name() {
 		return $this->display_name;
 	}
 
 	/**
+	 * @deprecated 0.21.8
 	 * @return string
 	 */
 	function get_permalink() {
@@ -151,6 +157,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @deprecated 0.21.8
 	 * @return string
 	 */
 	function permalink() {
@@ -158,6 +165,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @return string ex: /author/lincoln
 	 */
 	function get_path() {
@@ -173,6 +181,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @return string
 	 */
 	function path() {
@@ -180,6 +189,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @return string
 	 */
 	function slug() {
@@ -187,6 +197,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @return string
 	 */
 	function link() {
