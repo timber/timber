@@ -8,6 +8,6 @@ mkdir docs/markdowndocs
 ./vendor/victorjonsson/markdowndocs/bin/phpdoc-md generate TimberTheme > docs/markdowndocs/timbertheme.md
 ./vendor/victorjonsson/markdowndocs/bin/phpdoc-md generate TimberTerm > docs/markdowndocs/timberterm.md
 
-cd /srv/www/slate
-grunt
+./vendor/victorjonsson/markdowndocs/bin/phpdoc-md generate TimberHelper > docs/markdowndocs/timberhelper.md
+
 mv /srv/www/timber/docs/markdowndocs/*.md /srv/www/slate/source/includes
