@@ -15,6 +15,7 @@
  * $context = Timber::get_context();
  * $context['post'] = new TimberPost(); // It's a new TimberPost object, but an existing post from WordPress.
  * Timber::render('single.twig', $context);
+ * ?>
  * ```
  * ```twig
  * {# single.twig #}
@@ -34,36 +35,44 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @var string $ImageClass the name of the class to handle images by default
 	 */
 	public $ImageClass = 'TimberImage';
+	
 	/**
 	 * @var string $PostClass the name of the class to handle posts by default
 	 */
 	public $PostClass = 'TimberPost';
+	
 	/**
 	 * @var string $object_type what does this class represent in WordPress terms?
 	 */
 	public $object_type = 'post';
+	
 	/**
 	 * @var string $representation what does this class represent in WordPress terms?
 	 */
 	public static $representation = 'post';
+	
 	/**
 	 * @internal
 	 * @var string $_content stores the processed content internally
 	 */
 	protected $_content;
+	
 	/**
 	 * @internal
 	 * @var array $_get_terms stores the results of a get_terms method call
 	 */
 	protected $_get_terms;
+	
 	/**
 	 * @var string $_permalink the returned permalink from WP's get_permalink function
 	 */
 	protected $_permalink;
+	
 	/**
 	 * @var array $_next stores the results of the next TimberPost in a set inside an array (in order to manage by-taxonomy)
 	 */
 	protected $_next = array();
+	
 	/**
 	 * @var array $_prev stores the results of the previous TimberPost in a set inside an array (in order to manage by-taxonomy)
 	 */
@@ -74,16 +83,19 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @var string $class stores the CSS classes for the post (ex: "post post-type-book post-123")
 	 */
 	public $class;
+	
 	/**
 	 * @deprecated since 0.21.7
 	 * @var string $display_date @deprecated stores the display date (ex: "October 6, 1984"),
 	 */
 	public $display_date;
+	
 	/**
 	 * @api
 	 * @var string $id the numeric WordPress id of a post
 	 */
 	public $id;
+	
 	/**
 	 * @var string 	$ID 			the numeric WordPress id of a post, capitalized to match WP usage
 	 */
@@ -98,19 +110,28 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @var string 	$post_content 	the raw text of a WP post as stored in the database
 	 */
 	public $post_content;
+	
 	/**
 	 * @var string 	$post_date 		the raw date string as stored in the WP database, ex: 2014-07-05 18:01:39
 	 */
 	public $post_date;
+	
 	/**
 	 * @var string 	$post_exceprt 	the raw text of a manual post exceprt as stored in the database
 	 */
 	public $post_excerpt;
 
 	/**
-	* @var int 		$post_parent 	the numeric ID of a post's parent post
-	*/
+	 * @var int 		$post_parent 	the numeric ID of a post's parent post
+	 */
 	public $post_parent;
+
+	/**
+	 * @api
+	 * @var string 		$post_status 	the status of a post ("draft", "publish", etc.)
+	 */
+	public $post_status;
+
 	/**
 	 * @var string 	$post_title 	the raw text of a post's title as stored in the database
 	 */
@@ -262,9 +283,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 
 	/**
-	 * @internal
 	 * helps you find the post id regardless of whether you send a string or whatever
 	 * @param integer $pid ;
+	 * @internal
 	 * @return integer ID number of a post
 	 */
 	protected function check_post_id($pid) {
@@ -284,8 +305,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 
 	/**
-	 * @internal
 	 * get_post_id_by_name($post_name)
+	 * @internal
 	 * @param string $post_name
 	 * @return int
 	 */
@@ -308,11 +329,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * ```twig
 	 * <p>{{post.get_preview(50)}}</p>
 	 * ```
-	 * @param int $len the number of words you want
-	 * @param bool $force
-	 * @param string $readmore
-	 * @param bool $strip
-	 * @return string
+	 * @param int $len The number of words that WP should use to make the tease. (Isn't this better than [this mess](http://wordpress.org/support/topic/changing-the-default-length-of-the_excerpt-1?replies=14)?). If you've set a post_excerpt on a post, we'll use that for the preview text; otherwise the first X words of the post_content
+	 * @param bool $force What happens if your custom post excerpt is longer then the length requested? By default (`$force = false`) it will use the full `post_excerpt`. However, you can set this to true to *force* your excerpt to be of the desired length
+	 * @param string $readmore The text you want to use on the 'readmore' link
+	 * @param bool $strip Strip tags? yes or no. tell me!
+	 * @return string of the post preview
 	 */
 	function get_preview($len = 50, $force = false, $readmore = 'Read More', $strip = true) {
 		$text = '';
@@ -372,8 +393,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @internal
 	 * gets the post custom and attaches it to the current object
+	 * @internal
 	 * @param bool|int $pid a post ID number
 	 */
 	function import_custom($pid = false) {
@@ -385,9 +406,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @internal
 	 * Used internally to fetch the metadata fields (wp_postmeta table)
 	 * and attach them to our TimberPost object
+	 * @internal
 	 * @param int $pid
 	 * @return array
 	 */
@@ -693,27 +714,27 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 			$args['order'] = get_option('comment_order');
 		}
 
-        $comments = get_comments($args);
-        $tComments = array();
+		$comments = get_comments($args);
+		$tComments = array();
 
-        foreach($comments as $key => &$comment) {
-            $tComment = new $CommentClass($comment);
-            $tComments[$tComment->id] = $tComment;
-        }
+		foreach($comments as $key => &$comment) {
+			$tComment = new $CommentClass($comment);
+			$tComments[$tComment->id] = $tComment;
+		}
 
-        foreach($tComments as $key => $comment) {
-            if ($comment->is_child()) {
-                unset($tComments[$comment->id]);
+		foreach($tComments as $key => $comment) {
+			if ($comment->is_child()) {
+				unset($tComments[$comment->id]);
 
-                if (isset($tComments[$comment->comment_parent])) {
-                    $tComments[$comment->comment_parent]->children[] = $comment;
-                }
-            }
-        }
-        $tComments = array_values($tComments);
+				if (isset($tComments[$comment->comment_parent])) {
+					$tComments[$comment->comment_parent]->children[] = $comment;
+				}
+			}
+		}
+		$tComments = array_values($tComments);
 
-        return $tComments;
-    }
+		return $tComments;
+	}
 
 	/**
 	 * Get the categories for a post
@@ -1022,11 +1043,15 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Return the author of a post
+	 * @api
 	 * @example
 	 * ```twig
-	 * By <a href="{{post.author.link}}">{{ post.author.name }}</a>
+	 * <h1>{{post.title}}</h1>
+	 * <p class="byline">
+	 *     <a href="{{post.author.link}}">{{post.author.name}}</a>
+	 * </p>
 	 * ```
-	 * @return bool|TimberUser
+	 * @return TimberUser|bool A TimberUser object if found, false if not
 	 */
 	public function author() {
 		return $this->get_author();
@@ -1041,7 +1066,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * ```html
 	 * Last updated by Harper Lee
 	 * ```
-	 * @return bool|TimberUser
+	 * @return TimberUser|bool A TimberUser object if found, false if not
 	 */
 	public function modified_author() {
 		return $this->get_modified_author();
@@ -1049,6 +1074,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the categoires on a particular post
+	 * @api
 	 * @return array of TimberTerms
 	 */
 	public function categories() {
@@ -1056,8 +1082,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @api
 	 * Returns a category attached to a post
+	 * @api
 	 * If mulitpuile categories are set, it will return just the first one
 	 * @return TimberTerm|null
 	 */
@@ -1066,7 +1092,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * Get the children of a post
+	 * Returns an array of children on the post as TimberPosts
+	 * (or other claass as you define).
+	 * @api
 	 * @example
 	 * ```twig
 	 * {% if post.children %}
@@ -1076,9 +1104,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 *     {% endfor %}
 	 * {% endif %}
 	 * ```
-	 * @param string $post_type use to find children of a particular post type (attachment vs. page for example)
-	 * @param string|bool $childPostClass a custom post class (ex: 'MyTimberPost') to return the objects as
-	 *                                    by default (false) it will use TimberPost::$post_class value
+	 * @param string $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type
+	 * @param string|bool $childPostClass _optional_ a custom post class (ex: 'MyTimberPost') to return the objects as. By default (false) it will use TimberPost::$post_class value. 
 	 * @return array
 	 */
 	public function children( $post_type = 'any', $childPostClass = false ) {
@@ -1086,28 +1113,38 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * Get the comments on your post
+	 * Gets the comments on a TimberPost and returns them as an array of [TimberComments](#TimberComment) (or whatever comment class you set).
+	 * @api
+	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
+	 * @param string $order use WordPress ordering or a different scheme
+	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
+	 * @param string $status Could be 'pending', etc.
+	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending TimberComment for your site or app (obviously, totally optional)
 	 * @example
 	 * ```twig
-	 * My Post's Comments:
+	 * {# single.twig #}
+	 * <h4>Comments:</h4>
 	 * {% for comment in post.comments %}
-	 *     <div class="comment comment-id-{{comment.id}}">
-	 *         <p>{{ comment.content }}</p>
-	 *     </div>
+	 * 	<div class="comment-{{comment.ID}} comment-order-{{loop.index}}">
+	 * 		<p>{{comment.author.name}} said:</p>
+	 * 		<p>{{comment.content}}</p>
+	 * 	</div>
 	 * {% endfor %}
 	 * ```
 	 * @return bool|array
 	 */
-	public function comments() {
-		return $this->get_comments();
+	public function comments($count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
+		return $this->get_comments($count, $order, $type, $status, $CommentClass);
 	}
 
 	/**
-	 * Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content
+	 * Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).
+	 * @api
 	 * @example
 	 * ```twig
 	 * <div class="article">
-	 *     {{ post.content }}
+	 *     <h2>{{post.title}}</h2>
+	 *     <div class="content">{{ post.content }}</div>
 	 * </div>
 	 * ```
 	 * @param int $page
@@ -1126,7 +1163,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the date to use in your template!
-	 * 
+	 * @api
 	 * @example
 	 * ```twig
 	 * Published on {{ post.date }} // Uses WP's formatting set in Admin
@@ -1154,6 +1191,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @return mixed
 	 */
 	public function format() {
@@ -1162,7 +1200,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * get the permalink for a post object
-	 *
+	 * @api
 	 * @example
 	 * ```twig
 	 * <a href="{{post.link}}">Read my post</a>
@@ -1208,6 +1246,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @param bool $in_same_cat
 	 * @return mixed
 	 */
@@ -1224,6 +1263,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Gets the parent (if one exists) from a post as a TimberPost object (or whatever is set in TimberPost::$PostClass)
+	 * @api
 	 * @example
 	 * ```twig
 	 * Parent page: <a href="{{ post.parent.link }}">{{ post.parent.title }}</a>
@@ -1237,7 +1277,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	/**
 	 * Gets the relative path of a WP Post, so while link() will return http://example.org/2015/07/my-cool-post
 	 * this will return just /2015/07/my-cool-post
-	 *
+	 * @api
 	 * @example
 	 * ```twig
 	 * <a href="{{post.path}}">{{post.title}}</a>
@@ -1258,10 +1298,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the previous post in a set
-	 *
+	 * @api
 	 * @example
 	 * ```twig
-	 * <h4>{{ post.prev.title}}</h4>
+	 * <h4>Prior Entry:</h4>
+	 * <h3>{{post.prev.title}}</h3>
+	 * <p>{{post.prev.get_preview(25)}}</p>
 	 * ```
 	 * @param bool $in_same_cat
 	 * @return mixed
@@ -1274,15 +1316,17 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * Get the terms associated with the post
 	 * This goes across all taxonomies by default
 	 * @api
-	 * @param string $tax
-	 * @return array
+	 * @param string $tax What taxonomy to pull from, defaults to all of them. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you're on your own.
+	 * @param bool $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?
+	 * @return array 
 	 */
-	public function terms($tax = '') {
-		return $this->get_terms($tax);
+	public function terms($tax = '', $merge = true) {
+		return $this->get_terms($tax, $merge);
 	}
 
 	/**
 	 * Gets the tags on a post, uses WP's post_tag taxonomy
+	 * @api
 	 * @return array
 	 */
 	public function tags() {
@@ -1291,18 +1335,20 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * get the featured image as a TimberImage
+	 * @api
 	 * @example
 	 * ```twig
 	 * <img src="{{post.thumbnail.src}}" />
 	 * ```
-	 * @return null|TimberImage
+	 * @return TimberImage|null of your thumbnail
 	 */
 	public function thumbnail() {
 		return $this->get_thumbnail();
 	}
 
 	/**
-	 * Returns the processed title to be used in templates
+	 * Returns the processed title to be used in templates. This returns the title of the post after WP's filters have run. This is analogous to `the_title()` in standard WP template tags. 
+	 * @api
 	 * @example
 	 * ```twig
 	 * <h1>{{ post.title }}</h1>

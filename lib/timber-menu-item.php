@@ -50,8 +50,8 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * The label for the menu item
+	 * @api
 	 * @return string
 	 */
 	function name() {
@@ -65,8 +65,17 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * The slug for the menu item
+	 * @api
+	 * @example
+	 * ```twig
+	 * <ul>
+	 *     {% for item in menu.items %}
+	 *         <li class="{{item.slug}}">
+	 *             <a href="{{item.link}}">{{item.name}}</a>
+	 *          </li>
+	 *     {% endfor %}
+	 * </ul>
 	 * @return string
 	 */
 	function slug() {
@@ -133,7 +142,8 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 		}
 	}
 
-	/*
+	/**
+	 *
 	 * @internal
 	 * @return bool 
 	 */
@@ -175,8 +185,12 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * Checks to see if a link is external, helpful when creating rules for the target of a link
+	 * @api
+	 * @example
+	 * ```twig
+	 * 
+	 * ```
 	 * @return bool
 	 */
 	function is_external() {
@@ -204,8 +218,8 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 	/* Aliases */
 
 	/**
-	 *
-	 * 
+	 * Get the child [TimberMenuItems](#TimberMenuItem)s of a [TimberMenuItem](#TimberMenuItem)
+	 * @api
 	 * @return array|bool
 	 */
 	public function children() {
@@ -214,7 +228,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Checks to see if a link is external, helpful when creating rules for the target of a link
-	 *
+	 * @see TimberMenuItem::is_external
 	 * @return bool
 	 */
 	public function external() {
@@ -223,6 +237,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Get the full link to a Menu Item
+	 * @api
 	 * @example
 	 * ```twig
 	 * {% for item in menu.items %}
@@ -252,6 +267,7 @@ class TimberMenuItem extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * Gets the link a menu item points at
+	 * @internal
 	 * @deprecated since 0.21.7 use link instead
 	 * @see link()
 	 * @return string a full URL like http://mysite.com/thing/
