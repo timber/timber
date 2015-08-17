@@ -152,7 +152,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * ```
 	 * @param mixed $pid
 	 */
-	function __construct($pid = null) {
+	public function __construct($pid = null) {
 		$pid = $this->determine_id( $pid );
 		$this->init($pid);
 	}
@@ -202,7 +202,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * Outputs the title of the post if you do something like `<h1>{{post}}</h1>`
 	 * @return string
 	 */
-	function __toString() {
+	public function __toString() {
 		return $this->title();
 	}
 
@@ -212,7 +212,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @internal
 	 * @param int|bool $pid
 	 */
-	function init($pid = false) {
+	protected function init($pid = false) {
 		if ( $pid === false ) {
 			$pid = get_the_ID();
 		}
@@ -650,7 +650,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 */
 	function get_modified_date( $date_format = '' ) {
 		$df = $date_format ? $date_format : get_option('date_format');
-		$the_time = $this->get_modified_time($df, null, $this->ID, true);
+		$the_time = $this->get_modified_time($df);
 		return apply_filters('get_the_modified_date', $the_time, $date_format);
 	}
 
@@ -1205,7 +1205,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @return mixed
 	 */
 	public function meta( $field_name = null ) {
-		if ( $field_name == null ) {
+		if ( $field_name === null ) {
+			//on the off-chance the field is actually named meta
 			$field_name = 'meta';
 		}
 		return $this->get_field($field_name);

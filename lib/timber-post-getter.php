@@ -21,7 +21,7 @@ class TimberPostGetter {
 
 	static function query_post( $query = false, $PostClass = 'TimberPost' ) {
 		$posts = self::query_posts( $query, $PostClass );
-		if ( $post = $posts->current() ) {
+		if ( method_exists($posts, 'current') && $post = $posts->current() ) {
 			return $post;
 		}
 	}

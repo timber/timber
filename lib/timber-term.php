@@ -24,7 +24,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	 * @param int $tid
 	 * @param string $tax
 	 */
-	function __construct( $tid = null, $tax = '' ) {
+	public function __construct( $tid = null, $tax = '' ) {
 		if ($tid === null) {
 			$tid = $this->get_term_from_query();
 		}
@@ -37,7 +37,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	/**
 	 * @return string
 	 */
-	function __toString() {
+	public function __toString() {
 		return $this->name;
 	}
 

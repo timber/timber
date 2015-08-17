@@ -592,13 +592,6 @@ class TimberHelper {
 	/**
 	 * @deprecated since 0.18.0
 	 */
-	static function get_image_path( $iid ) {
-		return TimberImageHelper::get_image_path( $iid );
-	}
-
-	/**
-	 * @deprecated since 0.18.0
-	 */
 	static function get_current_url() {
 		return TimberURLHelper::get_current_url();
 	}
