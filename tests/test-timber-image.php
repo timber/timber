@@ -698,27 +698,18 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertFileExists($resized_path);
 	}
 
-	/**
-	 * @covers TimberImage::parent();
-	 */
 	function testImageNoParent() {
 		$filename = self::copyTestImage( 'arch.jpg' );
 		$image = new TimberImage( $filename );
 		$this->assertFalse($image->parent());
 	}
 
-	/**
-	 * @covers TimberImage::parent();
-	 */
 	function testImageParent() {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
 		$this->assertEquals($post->ID, $image->parent()->ID);
 	}
 
-	/**
-	 * @covers TimberImage::get_pathinfo();
-	 */
 	function testPathInfo() {
 		$filename = self::copyTestImage( 'arch.jpg' );
 		$image = new TimberImage( $filename );

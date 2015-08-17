@@ -109,25 +109,25 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 * @return bool|string
 	 */
 	function get_src( $size = '' ) {
-		if (isset($this->abs_url)) {
+		if ( isset($this->abs_url) ) {
 			return $this->_maybe_secure_url($this->abs_url);
 		}
 
-		if ($size && is_string($size) && isset($this->sizes[$size])) {
+		if ( $size && is_string($size) && isset($this->sizes[$size]) ) {
 			$image = image_downsize($this->ID, $size);
 			return $this->_maybe_secure_url(reset($image));
 		}
 
-		if (!isset($this->file) && isset($this->_wp_attached_file)) {
+		if ( !isset($this->file) && isset($this->_wp_attached_file) ) {
 			$this->file = $this->_wp_attached_file;
 		}
 
-		if (!isset($this->file)) {
+		if ( !isset($this->file) ) {
 			return false;
 		}
 
 		$dir = self::wp_upload_dir();
-		$base = ($dir["baseurl"]);
+		$base = $dir['baseurl'];
 
 		$src = trailingslashit($this->_maybe_secure_url($base)) . $this->file;
 		$src = apply_filters('timber/image/src', $src, $this->ID);
@@ -343,7 +343,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 * ```twig
 	 * {% if post.thumbnail.aspect < 1 %}
 	 *     {# handle vertical image #}
-	 *     <img 
+	 *     <img
 	 * @return float
 	 */
 	public function aspect() {
