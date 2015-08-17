@@ -187,6 +187,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @deprecated 0.21.8
 	 * @return bool|TimberPost
 	 */
@@ -195,6 +196,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @see TimberImage::alt
 	 * @return string
 	 */

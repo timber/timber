@@ -123,7 +123,6 @@ class TimberArchives extends TimberCore {
 
 	/**
 	 * @api
-	 * @internal
 	 * @param array|string $args
 	 * @return array|string
 	 */
