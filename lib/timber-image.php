@@ -13,6 +13,10 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 * @var string $representation what does this class represent in WordPress terms?
 	 */
 	public static $representation = 'image';
+	/**
+	 * @api
+	 * @var string $file_loc the location of the image file in the filesystem (ex: `/var/www/htdocs/wp-content/uploads/2015/08/my-pic.jpg`)
+	 */
 	public $file_loc;
 	public $file;
 	public $sizes = array();
@@ -84,6 +88,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @return int
 	 */
 	function get_width() {
@@ -91,6 +96,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @return int
 	 */
 	function get_height() {
@@ -98,6 +104,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @param string $size
 	 * @return bool|string
 	 */
@@ -127,11 +134,15 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 		return apply_filters('timber_image_src', $src, $this->ID);
 	}
 
-	private static function _maybe_secure_url($url) {
+	/**
+	 * @internal
+	 * @param  string $url for evaluation
+	 * @return string with http/https corrected depending on what's appropriate for server
+	 */
+	protected static function _maybe_secure_url($url) {
 		if (is_ssl() && strpos($url, 'https') !== 0 && strpos($url, 'http') === 0) {
 			$url = 'https' . substr($url, strlen('http'));
 		}
-
 		return $url;
 	}
 
@@ -146,6 +157,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @return string
 	 */
 	function get_path() {
@@ -156,13 +168,30 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
-	 * @return bool|TimberImage
+	 * @api
+	 * @return  string the /relative/path/to/the/file
 	 */
-	function get_parent() {
+	public function path() {
+		return TimberURLHelper::get_rel_path($this->src());
+	}
+
+	/**
+	 * @api
+	 * @return bool|TimberPost
+	 */
+	function parent() {
 		if (!$this->post_parent) {
 			return false;
 		}
 		return new $this->PostClass($this->post_parent);
+	}
+
+	/**
+	 * @deprecated 0.21.8
+	 * @return bool|TimberPost
+	 */
+	function get_parent() {
+		return $this->parent();
 	}
 
 	/**
@@ -176,6 +205,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 
 
 	/**
+	 * @internal
 	 * @param int $iid
 	 */
 	function init( $iid = false ) {
@@ -225,7 +255,11 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 		}
 	}
 
-	private function get_image_info( $iid ) {
+	/**
+	 * @internal
+	 * @param  int $iid the id number of the image in the WP database
+	 */
+	protected function get_image_info( $iid ) {
 		$image_info = $iid;
 		if (is_numeric($iid)) {
 			$image_info = wp_get_attachment_metadata($iid);
@@ -251,14 +285,20 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 		return $iid;
 	}
 
-	private function init_with_relative_path( $relative_path ) {
+	/**
+	 * @internal
+	 */
+	protected function init_with_relative_path( $relative_path ) {
 		$this->abs_url = home_url( $relative_path );
 		$file_path = TimberURLHelper::get_full_path( $relative_path );
 		$this->file_loc = $file_path;
 		$this->file = $file_path;
 	}
 
-	private function init_with_file_path( $file_path ) {
+	/**
+	 * @internal
+	 */
+	protected function init_with_file_path( $file_path ) {
 		$url = TimberURLHelper::file_system_to_url( $file_path );
 		$this->abs_url = $url;
 		$this->file_loc = $file_path;
@@ -268,7 +308,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	/**
 	 * @param string $url
 	 */
-	private function init_with_url($url) {
+	protected function init_with_url($url) {
 		$this->abs_url = $url;
 		if (TimberURLHelper::is_local($url)) {
 			$this->file = ABSPATH . TimberURLHelper::get_rel_url($url);
@@ -277,7 +317,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
-	 * @deprecated; use src() instead
+	 * @deprecated use src() instead
 	 * @return string
 	 */
 	function get_url() {
@@ -285,16 +325,15 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
-	 * @deprecated; use src() instead
+	 * @deprecated use src() instead
 	 * @return string
 	 */
 	function url() {
 		return $this->get_src();
 	}
 
-	/* Alias */
-
 	/**
+	 * @api
 	 * @return float
 	 */
 	public function aspect() {
@@ -304,6 +343,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @return int
 	 */
 	public function height() {
@@ -311,6 +351,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @param string $size
 	 * @return bool|string
 	 */
@@ -319,6 +360,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @return int
 	 */
 	public function width() {
@@ -326,6 +368,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @return string alt text stored in WordPress
 	 */
 	public function alt() {
