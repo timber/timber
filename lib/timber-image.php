@@ -289,6 +289,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 
 	/**
 	 * @internal
+	 * @param string $relative_path
 	 */
 	protected function init_with_relative_path( $relative_path ) {
 		$this->abs_url = home_url( $relative_path );
@@ -299,6 +300,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 
 	/**
 	 * @internal
+	 * @param string $file_path
 	 */
 	protected function init_with_file_path( $file_path ) {
 		$url = TimberURLHelper::file_system_to_url( $file_path );
@@ -308,6 +310,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @param string $url
 	 */
 	protected function init_with_url($url) {
@@ -336,6 +339,11 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 
 	/**
 	 * @api
+	 * @example
+	 * ```twig
+	 * {% if post.thumbnail.aspect < 1 %}
+	 *     {# handle vertical image #}
+	 *     <img 
 	 * @return float
 	 */
 	public function aspect() {

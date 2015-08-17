@@ -289,7 +289,8 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @deprecated since 0.21.8
+	 * @internal
+	 * @deprecated 0.21.8 use TimberTerm::link() instead
 	 * @return string
 	 */
 	public function get_url() {
@@ -342,6 +343,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @return string
 	 */
 	public function title() {
