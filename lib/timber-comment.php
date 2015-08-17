@@ -30,6 +30,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @internal
      * @param integer $cid
      */
     function init($cid) {
@@ -45,6 +46,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @api
      * @return TimberUser
      */
     public function author() {
@@ -94,6 +96,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @api
      * @return string
      */
     public function content() {
@@ -101,6 +104,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @api
      * @return string
      */
     public function status() {
@@ -108,6 +112,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @api
      * @return string
      */
     public function date() {
@@ -123,6 +128,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @api
      * @return bool
      */
     public function is_child() {
@@ -166,6 +172,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     ======================= */
 
     /**
+     * @internal
      * @return string
      */
     protected function avatar_email() {
@@ -180,6 +187,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @internal
      * @param string $email_hash
      * @return string
      */
@@ -197,6 +205,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @internal
      * @todo  what if it's relative?
      * @param string $default
      * @param string $email
@@ -233,6 +242,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
     }
 
     /**
+     * @internal
      * @param string $default
      * @param string $host
      * @param string $email_hash

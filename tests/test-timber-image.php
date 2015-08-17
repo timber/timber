@@ -122,7 +122,6 @@ class TimberImageTest extends WP_UnitTestCase {
 		$this->assertEquals( 300, $size[1] );
 	}
 
-
 	function testImageResizeRelative() {
 		$upload_dir = wp_upload_dir();
 		self::copyTestImage();
@@ -140,7 +139,6 @@ class TimberImageTest extends WP_UnitTestCase {
 		$new_time = filemtime( $resized_path );
 		$this->assertEquals( $old_time, $new_time );
 	}
-
 
 	function testImageResize() {
 		$data = array();
@@ -185,6 +183,13 @@ class TimberImageTest extends WP_UnitTestCase {
 		$path = str_replace(ABSPATH, '/', $filename);
 		$image = new TimberImage( $path );
 		$this->assertEquals( 1500, $image->width() );
+	}
+
+	function testImagePath() {
+		$filename = self::copyTestImage( 'arch.jpg' );
+		$image = new TimberImage( $filename );
+		$this->assertStringStartsWith('/wp-content', $image->path());
+		$this->assertStringEndsWith('.jpg', $image->path());
 	}
 
 	function testInitFromID() {
@@ -691,6 +696,25 @@ class TimberImageTest extends WP_UnitTestCase {
 		$resized_path = str_replace('http://example.org', ABSPATH, $resized_url);
 		$resized_path = TimberURLHelper::remove_double_slashes($resized_path);
 		$this->assertFileExists($resized_path);
+	}
+
+	function testImageNoParent() {
+		$filename = self::copyTestImage( 'arch.jpg' );
+		$image = new TimberImage( $filename );
+		$this->assertFalse($image->parent());
+	}
+
+	function testImageParent() {
+		$post = $this->get_post_with_image();
+		$image = $post->thumbnail();
+		$this->assertEquals($post->ID, $image->parent()->ID);
+	}
+
+	function testPathInfo() {
+		$filename = self::copyTestImage( 'arch.jpg' );
+		$image = new TimberImage( $filename );
+		$path_parts = $image->get_pathinfo();
+		$this->assertEquals('jpg', $path_parts['extension']);
 	}
 
 }
