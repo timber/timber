@@ -76,7 +76,7 @@
 		function testUsersInTwig(){
 			$uids[] = $this->factory->user->create(array('display_name' => 'Mark Watabe'));
 			$uids[] = $this->factory->user->create(array('display_name' => 'Austin Tzou'));
-			$str = '{% for user in TimberUser(uids) %}{{user.name}} {% endfor %}';
+			$str = '{% for user in User(uids) %}{{user.name}} {% endfor %}';
 			$this->assertEquals('Mark Watabe Austin Tzou', trim(Timber::compile_string($str, array('uids' => $uids))));
 		}
 
