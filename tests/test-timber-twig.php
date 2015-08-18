@@ -222,7 +222,6 @@
 			});
 			$str = Timber::compile_string('{{shortcode("[my_shortcode]")}}');
 			$this->assertEquals('Jaredfoo', $str);
-
 		}
 
 		function testTwigShortcodeWithContent() {

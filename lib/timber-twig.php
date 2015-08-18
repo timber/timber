@@ -12,8 +12,8 @@ class TimberTwig {
 	}
 
 	function __construct() {
-		add_action( 'twig_apply_filters', array( $this, 'add_timber_filters_deprecated' ) );
-		add_action( 'twig_apply_filters', array( $this, 'add_timber_filters' ) );
+		add_action( 'timber/twig/filters', array( $this, 'add_timber_filters_deprecated' ) );
+		add_action( 'timber/twig/filters', array( $this, 'add_timber_filters' ) );
 	}
 
 	/**
@@ -28,6 +28,9 @@ class TimberTwig {
 		$twig->addFilter( new Twig_SimpleFilter( 'wp_body_class', array( $this, 'body_class' ) ) );
 		$twig->addFilter( new Twig_SimpleFilter( 'twitterify', array( 'TimberHelper', 'twitterify' ) ) );
 		$twig->addFilter( new Twig_SimpleFilter( 'twitterfy', array( 'TimberHelper', 'twitterify' ) ) );
+		$twig->addFilter( new Twig_SimpleFilter( 'string', function($arr, $glue = ' '){
+			return twig_join_filter($arr, $glue);
+		} ) );
 		return $twig;
 	}
 
@@ -58,7 +61,6 @@ class TimberTwig {
 		/* other filters */
 		$twig->addFilter( new Twig_SimpleFilter( 'stripshortcodes', 'strip_shortcodes' ) );
 		$twig->addFilter( new Twig_SimpleFilter( 'array', array( $this, 'to_array' ) ) );
-		$twig->addFilter( new Twig_SimpleFilter( 'string', array( $this, 'to_string' ) ) );
 		$twig->addFilter( new Twig_SimpleFilter( 'excerpt', 'wp_trim_words' ) );
 		$twig->addFilter( new Twig_SimpleFilter( 'function', array( $this, 'exec_function' ) ) );
 		$twig->addFilter( new Twig_SimpleFilter( 'pretags', array( $this, 'twig_pretags' ) ) );
@@ -202,26 +204,6 @@ class TimberTwig {
 	/**
 	 *
 	 *
-	 * @param mixed   $arr
-	 * @param string  $glue
-	 * @return string
-	 */
-	function to_string( $arr, $glue = ' ' ) {
-		if ( is_string( $arr ) ) {
-			return $arr;
-		}
-		if ( is_array( $arr ) && count( $arr ) == 1 ) {
-			return $arr[0];
-		}
-		if ( is_array( $arr ) ) {
-			return implode( $glue, $arr );
-		}
-		return null;
-	}
-
-	/**
-	 *
-	 *
 	 * @param string  $function_name
 	 * @return mixed
 	 */
@@ -255,9 +237,8 @@ class TimberTwig {
 	}
 
 	/**
-	 *
-	 *
 	 * @param mixed   $body_classes
+	 * @deprecated 0.20.7
 	 * @return string
 	 */
 	function body_class( $body_classes ) {
