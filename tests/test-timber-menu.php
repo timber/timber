@@ -344,6 +344,8 @@ class TimberMenuTest extends WP_UnitTestCase {
 			)
 		);
 		$menu = $this->_createTestMenu();
+		echo '----testMenu----';
+		print_r($menu);
 		$menu_item_id = wp_insert_post( array(
 				'post_title' => 'Gallery',
 				'post_name' => 'gallery',
@@ -361,9 +363,9 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$wpdb->query( $query );
 		$this->go_to( home_url( '/gallery' ) );
 		$menu = new TimberMenu();
+		echo '-----menu-----';
+		print_r($menu);
 		$this->assertContains( 'current-page-item', $menu->items[0]->classes );
-		//print_r( $menu->items );
-
 	}
 
 	function testMenuLevels() {
