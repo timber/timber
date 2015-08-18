@@ -14,17 +14,18 @@ class TestTimberMultisite extends WP_UnitTestCase {
 		$this->assertEquals("Ducks R Us", $sites[2]->name);
 	}
 
-	// function testGetSubDirectorySites() {
-	// 	if ( !is_multisite()) {
-	// 		$this->markTestSkipped("You can't get sites except on Multisite");
-	// 		return;
-	// 	}
-	// 	$bids[] = self::createSubDomainSite('/bar/', 'My Bar');
-	// 	$bids[] = self::createSubDomainSite('/bark/', "Barks R Us");
-	// 	$sites = Timber::get_sites();
-	// 	$this->assertEquals('http://example.org/bar', $sites[1]->url);
-	// 	$this->assertEquals("http://example.org", $sites[2]->domain);
-	// }
+	function testGetSubDirectorySites() {
+		if ( !is_multisite()) {
+			$this->markTestSkipped("You can't get sites except on Multisite");
+			return;
+		}
+		$bids[] = self::createSubDirectorySite('/bar/', 'My Bar');
+		$bids[] = self::createSubDirectorySite('/bark/', "Barks R Us");
+		$sites = Timber::get_sites();
+		$this->assertEquals('http://example.org/bar', $sites[1]->url);
+		$this->assertEquals("example.org", $sites[2]->domain);
+		$this->assertEquals('http://example.org/bark', $sites[2]->url);
+	}
 
 	public static function createSubDomainSite($domain = 'test.example.org', $title = 'Multisite Test' ) {
 		$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
