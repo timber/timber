@@ -253,6 +253,7 @@ class TimberLoader {
 		$twig->addExtension($this->_get_cache_extension());
 
 		$twig = apply_filters('twig_apply_filters', $twig);
+		$twig = apply_filters('timber/twig/filters', $twig);
 		$twig = apply_filters('timber/loader/twig', $twig);
 		return $twig;
 	}
