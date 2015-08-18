@@ -40,8 +40,8 @@ class TimberImageTest extends WP_UnitTestCase {
 		return "$url?lang=en";
 	}
 
-	public static function get_image_attachment( $pid = 0 ) {
-		$filename = self::copyTestImage( 'arch.jpg' );
+	public static function get_image_attachment( $pid = 0, $file = 'arch.jpg' ) {
+		$filename = self::copyTestImage( $file );
 		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 		$iid = wp_insert_attachment( $attachment, $filename, $pid );
 		return $iid;
