@@ -65,10 +65,10 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
         $info = get_blog_details( $site_name_or_id );
         $this->import( $info );
         $this->ID = $info->blog_id;
+        $this->id = $this->ID;
         $this->name = $this->blogname;
         $this->title = $this->blogname;
-        $this->url = get_bloginfo( 'url' );
-        $this->id = $this->ID;
+        $this->url = $this->siteurl;
         $theme_slug = get_blog_option( $info->blog_id, 'stylesheet' );
         $this->theme = new TimberTheme( $theme_slug );
         $this->language = get_bloginfo( 'language' );
