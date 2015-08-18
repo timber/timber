@@ -20,7 +20,7 @@
 			$images = array();
 			$images[] = TimberImageTest::get_image_attachment( 0, 'arch.jpg' );
 			$images[] = TimberImageTest::get_image_attachment( 0, 'city-museum.jpg' );
-			$str = '{% for image_id in images %}{{Image(image_id).src}}{% endfor %}';
+			$str = '{% for image in Image(images) %}{{image.src}}{% endfor %}';
 			$compiled = Timber::compile_string($str, array('images' => $images));
 			$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpghttp://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/city-museum.jpg', $compiled);
 		}
@@ -29,7 +29,7 @@
 			$images = array();
 			$images[] = TimberImageTest::get_image_attachment( 0, 'arch.jpg' );
 			$images[] = TimberImageTest::get_image_attachment( 0, 'city-museum.jpg' );
-			$str = '{% for image_id in images %}{{TimberImage(image_id).src}}{% endfor %}';
+			$str = '{% for image in TimberImage(images) %}{{image.src}}{% endfor %}';
 			$compiled = Timber::compile_string($str, array('images' => $images));
 			$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpghttp://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/city-museum.jpg', $compiled);
 		}
@@ -91,6 +91,18 @@
 			$uids[] = $this->factory->user->create(array('display_name' => 'Bea Arthur'));
 			$str = '{% for user in TimberUser(uids) %}{{user.name}} {% endfor %}';
 			$this->assertEquals('Estelle Getty Bea Arthur', trim(Timber::compile_string($str, array('uids' => $uids))));
+		}
+
+		function testTimberTermInTwig(){
+			$tid = $this->factory->term->create(array('name' => 'Golden Girls'));
+			$str = '{{TimberTerm(tid).title}}';
+			$this->assertEquals('Golden Girls', Timber::compile_string($str, array('tid' => $tid)));
+		}
+
+		function testTermInTwig(){
+			$tid = $this->factory->term->create(array('name' => 'Mythbusters'));
+			$str = '{{Term(tid).title}}';
+			$this->assertEquals('Mythbusters', Timber::compile_string($str, array('tid' => $tid)));
 		}
 
 		function testTimberTermsInTwig(){
