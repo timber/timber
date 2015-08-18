@@ -208,7 +208,7 @@ class Timber {
 	public static function get_sites( $blog_ids = false ) {
 		if ( !is_array( $blog_ids ) ) {
 			global $wpdb;
-			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs ORDER BY blog_id ASC" );
 		}
 		$return = array();
 		foreach ( $blog_ids as $blog_id ) {
