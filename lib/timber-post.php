@@ -640,7 +640,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	function get_date( $date_format = '' ) {
 		$df = $date_format ? $date_format : get_option('date_format');
 		$the_date = (string)mysql2date($df, $this->post_date);
-		return apply_filters('get_the_date', $the_date, $date_format);
+		return apply_filters('get_the_date', $the_date, $df);
 	}
 
 	/**
