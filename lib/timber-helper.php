@@ -185,13 +185,13 @@ class TimberHelper {
 	 * @param string  $allowed_tags
 	 * @return string
 	 */
-	public static function trim_words( $text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br' ) {
+	public static function trim_words( $text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br blockquote' ) {
 		if ( null === $more ) {
 			$more = __( '&hellip;' );
 		}
 		$original_text = $text;
 		$allowed_tag_string = '';
-		foreach ( explode( ' ', $allowed_tags ) as $tag ) {
+		foreach ( explode( ' ', apply_filters( 'timber/trim_words/allowed_tags', $allowed_tags ) ) as $tag ) {
 			$allowed_tag_string .= '<' . $tag . '>';
 		}
 		$text = strip_tags( $text, $allowed_tag_string );
