@@ -29,44 +29,44 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @var string $ImageClass the name of the class to handle images by default
 	 */
 	public $ImageClass = 'TimberImage';
-	
+
 	/**
 	 * @var string $PostClass the name of the class to handle posts by default
 	 */
 	public $PostClass = 'TimberPost';
-	
+
 	/**
 	 * @var string $object_type what does this class represent in WordPress terms?
 	 */
 	public $object_type = 'post';
-	
+
 	/**
 	 * @var string $representation what does this class represent in WordPress terms?
 	 */
 	public static $representation = 'post';
-	
+
 	/**
 	 * @internal
 	 * @var string $_content stores the processed content internally
 	 */
 	protected $_content;
-	
+
 	/**
 	 * @internal
 	 * @var array $_get_terms stores the results of a get_terms method call
 	 */
 	protected $_get_terms;
-	
+
 	/**
 	 * @var string $_permalink the returned permalink from WP's get_permalink function
 	 */
 	protected $_permalink;
-	
+
 	/**
 	 * @var array $_next stores the results of the next TimberPost in a set inside an array (in order to manage by-taxonomy)
 	 */
 	protected $_next = array();
-	
+
 	/**
 	 * @var array $_prev stores the results of the previous TimberPost in a set inside an array (in order to manage by-taxonomy)
 	 */
@@ -77,19 +77,19 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @var string $class stores the CSS classes for the post (ex: "post post-type-book post-123")
 	 */
 	public $class;
-	
+
 	/**
 	 * @deprecated since 0.21.7
 	 * @var string $display_date @deprecated stores the display date (ex: "October 6, 1984"),
 	 */
 	public $display_date;
-	
+
 	/**
 	 * @api
 	 * @var string $id the numeric WordPress id of a post
 	 */
 	public $id;
-	
+
 	/**
 	 * @var string 	$ID 			the numeric WordPress id of a post, capitalized to match WP usage
 	 */
@@ -104,12 +104,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @var string 	$post_content 	the raw text of a WP post as stored in the database
 	 */
 	public $post_content;
-	
+
 	/**
 	 * @var string 	$post_date 		the raw date string as stored in the WP database, ex: 2014-07-05 18:01:39
 	 */
 	public $post_date;
-	
+
 	/**
 	 * @var string 	$post_exceprt 	the raw text of a manual post exceprt as stored in the database
 	 */
@@ -254,7 +254,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 
 	/**
-	 * takes a mix of integer (post ID), string (post slug), 
+	 * takes a mix of integer (post ID), string (post slug),
 	 * or object to return a WordPress post object from WP's built-in get_post() function
 	 * @internal
 	 * @param mixed $pid
@@ -319,7 +319,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * otherwise it will pull from the post_content.
 	 * If there's a <!-- more --> tag it will use that to mark where to pull through.
 	 * @api
-	 * @example 
+	 * @example
 	 * ```twig
 	 * <p>{{post.get_preview(50)}}</p>
 	 * ```
@@ -698,35 +698,46 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param string $CommentClass
 	 * @return array|mixed
 	 */
-	function get_comments( $ct = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment' ) {
+
+	function get_comments($ct = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
+
+		global $overridden_cpage;
+		$overridden_cpage = false;
+
 		$args = array('post_id' => $this->ID, 'status' => $status, 'order' => $order);
 		if ( $ct > 0 ) {
 			$args['number'] = $ct;
 		}
-		if ( $order == 'wp' ) {
+		if ( strtolower($order) == 'wp' || strtolower($order) == 'wordpress' ) {
 			$args['order'] = get_option('comment_order');
 		}
 
 		$comments = get_comments($args);
-		$tComments = array();
+		$timber_comments = array();
 
-		foreach( $comments as $key => &$comment ) {
-			$tComment = new $CommentClass($comment);
-			$tComments[$tComment->id] = $tComment;
+		if ( '' == get_query_var('cpage') && get_option('page_comments') ) {
+			set_query_var( 'cpage', 'newest' == get_option('default_comments_page') ? get_comment_pages_count() : 1 );
+			$overridden_cpage = true;
 		}
 
-		foreach( $tComments as $key => $comment ) {
-			if ( $comment->is_child() ) {
-				unset($tComments[$comment->id]);
+        foreach($comments as $key => &$comment) {
+            $timber_comment = new $CommentClass($comment);
+            $timber_comments[$timber_comment->id] = $timber_comment;
+        }
 
-				if ( isset($tComments[$comment->comment_parent]) ) {
-					$tComments[$comment->comment_parent]->children[] = $comment;
+		foreach( $timber_comments as $key => $comment ) {
+			if ( $comment->is_child() ) {
+				unset($timber_comments[$comment->id]);
+
+				if ( isset($timber_comments[$comment->comment_parent]) ) {
+					$timber_comments[$comment->comment_parent]->children[] = $comment;
 				}
 			}
 		}
-		$tComments = array_values($tComments);
 
-		return $tComments;
+		$timber_comments = array_values($timber_comments);
+
+		return $timber_comments;
 	}
 
 	/**
@@ -836,7 +847,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	/**
 	 * Gets an array of tags for you to use
 	 * @internal
-	 * @example 
+	 * @example
 	 * ```twig
 	 * <ul class="tags">
 	 *     {% for tag in post.tags %}
@@ -981,7 +992,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 *    {# Some stuff here #}
 	 * </article>
 	 * ```
-	 *  
+	 *
 	 * ```html
 	 * <article class="post-2612 post type-post status-publish format-standard has-post-thumbnail hentry category-data tag-charleston-church-shooting tag-dylann-roof tag-gun-violence tag-hate-crimes tag-national-incident-based-reporting-system">
 	 *    {# Some stuff here #}
@@ -1094,7 +1105,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * {% endif %}
 	 * ```
 	 * @param string $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type
-	 * @param string|bool $childPostClass _optional_ a custom post class (ex: 'MyTimberPost') to return the objects as. By default (false) it will use TimberPost::$post_class value. 
+	 * @param string|bool $childPostClass _optional_ a custom post class (ex: 'MyTimberPost') to return the objects as. By default (false) it will use TimberPost::$post_class value.
 	 * @return array
 	 */
 	public function children( $post_type = 'any', $childPostClass = false ) {
@@ -1308,7 +1319,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @api
 	 * @param string $tax What taxonomy to pull from, defaults to all of them. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you're on your own.
 	 * @param bool $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?
-	 * @return array 
+	 * @return array
 	 */
 	public function terms( $tax = '', $merge = true ) {
 		return $this->get_terms($tax, $merge);
@@ -1337,7 +1348,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * Returns the processed title to be used in templates. This returns the title of the post after WP's filters have run. This is analogous to `the_title()` in standard WP template tags. 
+	 * Returns the processed title to be used in templates. This returns the title of the post after WP's filters have run. This is analogous to `the_title()` in standard WP template tags.
 	 * @api
 	 * @example
 	 * ```twig

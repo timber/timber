@@ -9,6 +9,7 @@ By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a h
 [![Dependency Status](https://www.versioneye.com/user/projects/54e3c717d1ec5734f4000099/badge.svg?style=flat)](https://www.versioneye.com/user/projects/54e3c717d1ec5734f4000099)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jarednova/timber/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jarednova/timber/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/jarednova/timber/v/stable.svg)](https://packagist.org/packages/jarednova/timber)
+[![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg)](https://wordpress.org/plugins/timber-library/)
 
 ### Because WordPress is awesome, but the_loop isn't
 Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](http://twig.sensiolabs.org/) separate from your PHP files.
