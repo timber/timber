@@ -348,7 +348,8 @@ class TimberMenuTest extends WP_UnitTestCase {
 				'post_title' => 'Gallery',
 				'post_name' => 'gallery',
 				'post_status' => 'publish',
-				'post_type' => 'nav_menu_item'
+				'post_type' => 'nav_menu_item',
+				'menu_order' => -100,
 			) );
 		update_post_meta( $menu_item_id, '_menu_item_type', 'post_type_archive' );
 		update_post_meta( $menu_item_id, '_menu_item_object', 'gallery' );
@@ -362,8 +363,6 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->go_to( home_url( '/gallery' ) );
 		$menu = new TimberMenu();
 		$this->assertContains( 'current-page-item', $menu->items[0]->classes );
-		//print_r( $menu->items );
-
 	}
 
 	function testMenuLevels() {
