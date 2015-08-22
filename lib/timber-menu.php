@@ -10,7 +10,7 @@
  * function add_to_context($data){
  *		// So here you are adding data to Timber's context object, i.e...
  *  	$data['foo'] = 'I am some other typical value set in your functions.php file, unrelated to the menu';
- *	  	// Now, in similar fashion, you add a Timber menu and send it along to the context. 
+ *	  	// Now, in similar fashion, you add a Timber menu and send it along to the context.
  * 	  	$data['menu'] = new TimberMenu(); // This is where you can also send a WordPress menu slug or ID
  *	    return $data;
  * }
@@ -22,7 +22,7 @@
  * Timber::render('index.twig', $context);
  * ?>
  * ```
- * 
+ *
  * ```twig
  * <nav>
  * 	<ul class="main-nav">
@@ -53,7 +53,7 @@ class TimberMenu extends TimberCore {
 	public $items = null;
 	/**
 	 * @api
-	 * @var integer $id the ID# of the menu, corresponding to the wp_terms table 
+	 * @var integer $id the ID# of the menu, corresponding to the wp_terms table
 	 */
 	public $id;
 	public $ID;
@@ -90,7 +90,6 @@ class TimberMenu extends TimberCore {
 			$this->init($menu_id);
 		} else {
 			$this->init_as_page_menu();
-			//TimberHelper::error_log("Sorry, the menu you were looking for wasn't found ('" . $slug . "'). Here's what Timber did find:");
 		}
 	}
 
@@ -189,7 +188,7 @@ class TimberMenu extends TimberCore {
 	}
 
 	/**
-	 * @internal 
+	 * @internal
 	 * @param array $items
 	 * @return array
 	 */

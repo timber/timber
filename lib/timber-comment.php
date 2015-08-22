@@ -100,23 +100,25 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
      * @return string
      */
     public function content() {
-        return $this->comment_content;
+        return apply_filters('get_comment_text ', $this->comment_content);
+    }
+
+    /**
+     * @api
+     * @return boolean
+     */
+    public function approved() {
+        return $this->comment_approved;
     }
 
     /**
      * @api
      * @return string
      */
-    public function status() {
-        return $this->comment_status;
-    }
-
-    /**
-     * @api
-     * @return string
-     */
-    public function date() {
-        return $this->comment_date;
+    public function date( $date_format = '' ) {
+    	$df = $date_format ? $date_format : get_option('date_format');
+		$the_date = (string)mysql2date($df, $this->comment_date);
+		return apply_filters('get_comment_date ', $the_date, $df);
     }
 
     /**
