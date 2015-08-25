@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.21.8
+Stable tag: 0.21.9
 Tested up to: 4.2.3
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -34,12 +34,19 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 #### Want to read more?
 * [Timber on GitHub](http://github.com/jarednova/timber/)
-* [Timber Overview on Tidy Repo](http://www.wpmayor.com/articles/timber-templating-language-wordpress/)
-* ["What is WordPress Missing? A Template Language" on Torque](http://torquemag.io/what-is-wordpress-lacking-a-template-language/)
+* [Timber Overview on Tidy Repo](http://tidyrepo.com/timber/)
+* ["Timber and Twig Reignited My Love for WordPress" on CSS-Tricks](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/)
 
 
 
 == Changelog ==
+
+= 0.21.9 =
+* Much much much more inline docs
+* Fix to TimberComment::approved()
+* HHVM support confirmed (it always worked, but now the tests prove it)
+* Fixes to multisite handling of themes
+* Fix to comments pagination (thanks @newkind)
 
 = 0.21.8 =
 * Fixes to things in docs
