@@ -54,7 +54,9 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 		global $wp_query;
 		if ( isset($wp_query->queried_object) ) {
 			$qo = $wp_query->queried_object;
-			return $qo->term_id;
+			if (isset($qo->term_id)) {
+				return $qo->term_id;
+			}
 		}
 		if ( isset($wp_query->tax_query->queries[0]['terms'][0]) ) {
 			return $wp_query->tax_query->queries[0]['terms'][0];
@@ -327,7 +329,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	 * @param int $numberposts_or_args
 	 * @param string $post_type_or_class
 	 * @param string $post_class
-	 * @example 
+	 * @example
 	 * ```twig
 	 * <h4>Recent posts in {{term.name}}</h4>
 	 * <ul>
