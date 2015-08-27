@@ -1,5 +1,35 @@
 <?php
-
+/**
+ * The TimberArchives class is used to generate a menu based on the date archives of your posts.
+ * @example
+ * ```php
+ * $context['archives'] = new TimberArchives( $args );
+ * ```
+ * ```twig
+ * <ul>
+ * {% for item in archives.items %}
+ *     <li><a href="{{item.link}}">{{item.name}}</a></li>
+ *     {% for child item.children %}
+ *         <li class="child"><a href="{{child.link}}">{{child.name}}</a></li>
+ *     {% endfor %}
+ * {% endfor %}
+ * </ul>
+ * ```
+ * ```html
+ * <ul>
+ *     <li>2015</li>
+ *     <li class="child">May</li>
+ *     <li class="child">April</li>
+ *     <li class="child">March</li>
+ *     <li class="child">February</li>
+ *     <li class="child">January</li>
+ *     <li>2014</li>
+ *     <li class="child">December</li>
+ *     <li class="child">November</li>
+ *     <li class="child">October</li>
+ * </ul>
+ * ```
+ */
 class TimberArchives extends TimberCore {
 
 	public $base = '';
@@ -9,6 +39,21 @@ class TimberArchives extends TimberCore {
 	 */
 	public $items;
 
+	/**
+	 * @api
+	 * @param $args array of arguments {
+	 *     @type bool show_year => false
+	 *     @type string
+	 *     @type string type => 'monthly-nested'
+	 *     @type int limit => -1
+	 *     @type bool show_post_count => false
+	 *     @type string order => 'DESC'
+	 *     @type string post_type => 'post'
+	 *     @type bool show_year => false
+	 *     @type bool nested => false
+	 * }
+	 * @param string $base any additional paths that need to be prepended to the URLs that are generated, for example: "tags"
+	 */
 	function __construct( $args = null, $base = '' ) {
 		$this->init($args, $base);
 	}
