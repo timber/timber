@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_timberarchives">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="timberarchives">TimberArchives</h1>
+
+<p>The TimberArchives class is used to generate a menu based on the date archives of your posts.</p>
+<pre class="highlight php"><code>$context['archives'] = new TimberArchives( $args );
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;ul&gt;</span>
+{% for item in archives.items %}
+    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    {% for child item.children %}
+        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    {% endfor %}
+{% endfor %}
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;ul&gt;</span>
+    <span class="nt">&lt;li&gt;</span>2015<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>May<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>April<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>March<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>February<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>January<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span>2014<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>December<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>November<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>October<span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="#__construct">__construct</a></td>
+<td>void</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#get_items">get_items</a></td>
+<td>array/string</td>
+<td></td>
+</tr>
+<tr>
+<td>items</td>
+<td>array</td>
+<td>the items of the archives to iterate through and markup for your page</td>
+</tr>
+</tbody></table>
+
+<h2 id="__construct">__construct</h2>
+
+<p><code class="prettyprint">__construct( mixed $args=null, string $base=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$args</td>
+<td>mixed</td>
+<td>array of arguments {</td>
+</tr>
+<tr>
+<td>$base</td>
+<td>string</td>
+<td>any additional paths that need to be prepended to the URLs that are generated, for example: &ldquo;tags&rdquo;</td>
+</tr>
+</tbody></table>
+
+<h2 id="get_items">get_items</h2>
+
+<p><code class="prettyprint">get_items( mixed/array/string $args=null )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array/string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$args</td>
+<td>mixed/array/string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h3 id="class-timberarchives">Class: TimberArchives</h3>
+
+<blockquote>
+<p>The TimberArchives class is used to generate a menu based on the date archives of your posts.</p>
+</blockquote>
+
+<h6 id="example">Example</h6>
+<pre class="highlight php"><code>$context['archives'] = new TimberArchives( $args );
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;ul&gt;</span>
+{% for item in archives.items %}
+    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    {% for child item.children %}
+        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    {% endfor %}
+{% endfor %}
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;ul&gt;</span>
+    <span class="nt">&lt;li&gt;</span>2015<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>May<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>April<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>March<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>February<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>January<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span>2014<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>December<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>November<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>October<span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre>
+
+<p><em>This class extends \TimberCore</em></p>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

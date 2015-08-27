@@ -1,0 +1,246 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_timberimage">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="timberimage">TimberImage</h1>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="#alt">alt</a></td>
+<td>string alt text stored in WordPress</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#aspect">aspect</a></td>
+<td>\float</td>
+<td></td>
+</tr>
+<tr>
+<td>class</td>
+<td>string</td>
+<td>$class stores the CSS classes for the post (ex: &ldquo;post post-type-book post-123&rdquo;)</td>
+</tr>
+<tr>
+<td>file_loc</td>
+<td>string</td>
+<td>$file_loc the location of the image file in the filesystem (ex: <code class="prettyprint">/var/www/htdocs/wp-content/uploads/2015/08/my-pic.jpg</code>)</td>
+</tr>
+<tr>
+<td><a href="#height">height</a></td>
+<td>int</td>
+<td></td>
+</tr>
+<tr>
+<td>id</td>
+<td>string</td>
+<td>$id the numeric WordPress id of a post</td>
+</tr>
+<tr>
+<td><a href="#parent">parent</a></td>
+<td>bool/\TimberPost</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#path">path</a></td>
+<td>string the /relative/path/to/the/file</td>
+<td></td>
+</tr>
+<tr>
+<td>post_status</td>
+<td>string</td>
+<td>$post_status    the status of a post (&ldquo;draft&rdquo;, &ldquo;publish&rdquo;, etc.)</td>
+</tr>
+<tr>
+<td>post_type</td>
+<td>string</td>
+<td>$post_type      the name of the post type, this is the machine name (so &ldquo;my_custom_post_type&rdquo; as opposed to &ldquo;My Custom Post Type&rdquo;)</td>
+</tr>
+<tr>
+<td>slug</td>
+<td>string</td>
+<td>$slug       the URL-safe slug, this corresponds to the poorly-named &ldquo;post_name&rdquo; in the WP database, ex: &ldquo;hello-world&rdquo;</td>
+</tr>
+<tr>
+<td><a href="#src">src</a></td>
+<td>bool/string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#width">width</a></td>
+<td>int</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__construct">__construct</h2>
+
+<p><code class="prettyprint">__construct( int $iid )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$iid</td>
+<td>int</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__tostring">__toString</h2>
+
+<p><code class="prettyprint">__toString( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="alt">alt</h2>
+
+<p><code class="prettyprint">alt( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string alt text stored in WordPress</code></p>
+
+<h2 id="aspect">aspect</h2>
+
+<p><code class="prettyprint">aspect( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">\float</code></p>
+<pre class="highlight handlebars"><code>    {% if post.thumbnail.aspect <span class="nt">&lt; 1</span> <span class="err">%}</span>
+        <span class="err">{#</span> <span class="na">handle</span> <span class="na">vertical</span> <span class="na">image</span> <span class="err">#}</span>
+        <span class="err">&lt;</span><span class="na">img</span>
+<span class="err">##</span> <span class="na">get_dimensions</span>
+<span class="err">`</span><span class="na">get_dimensions</span><span class="err">(</span> <span class="na">mixed</span><span class="err">/</span><span class="na">string</span> <span class="err">$</span><span class="na">dim=</span><span class="s">null</span> <span class="err">)`</span>
+
+<span class="err">**</span><span class="na">returns:</span><span class="err">**</span> <span class="err">`</span><span class="na">array</span><span class="err">/</span><span class="na">int</span><span class="err">`</span>
+
+
+
+<span class="na">Name</span> <span class="err">|</span> <span class="na">Type</span> <span class="err">|</span> <span class="na">Description</span>
+<span class="na">----</span> <span class="err">|</span> <span class="na">----</span> <span class="err">|</span> <span class="na">-----------</span>
+<span class="err">$</span><span class="na">dim</span> <span class="err">|</span> <span class="na">mixed</span><span class="err">/</span><span class="na">string</span> <span class="err">|</span> 
+
+
+<span class="err">##</span> <span class="na">get_url</span>
+<span class="err">`</span><span class="na">get_url</span><span class="err">(</span> <span class="err">)`</span>
+
+<span class="err">**</span><span class="na">returns:</span><span class="err">**</span> <span class="err">`</span><span class="na">string</span><span class="err">`</span>
+
+
+
+
+<span class="err">##</span> <span class="na">height</span>
+<span class="err">`</span><span class="na">height</span><span class="err">(</span> <span class="err">)`</span>
+
+<span class="err">**</span><span class="na">returns:</span><span class="err">**</span> <span class="err">`</span><span class="na">int</span><span class="err">`</span>
+
+
+
+
+<span class="err">##</span> <span class="na">parent</span>
+<span class="err">`</span><span class="na">parent</span><span class="err">(</span> <span class="err">)`</span>
+
+<span class="err">**</span><span class="na">returns:</span><span class="err">**</span> <span class="err">`</span><span class="na">bool</span><span class="err">/\</span><span class="na">TimberPost</span><span class="err">`</span>
+
+
+
+
+<span class="err">##</span> <span class="na">path</span>
+<span class="err">`</span><span class="na">path</span><span class="err">(</span> <span class="err">)`</span>
+
+<span class="err">**</span><span class="na">returns:</span><span class="err">**</span> <span class="err">`</span><span class="na">string</span> <span class="na">the</span> <span class="err">/</span><span class="na">relative</span><span class="err">/</span><span class="na">path</span><span class="err">/</span><span class="na">to</span><span class="err">/</span><span class="na">the</span><span class="err">/</span><span class="na">file</span><span class="err">`</span>
+
+
+
+
+<span class="err">##</span> <span class="na">src</span>
+<span class="err">`</span><span class="na">src</span><span class="err">(</span> <span class="na">string</span> <span class="err">$</span><span class="na">size=</span><span class="s">`""`</span> <span class="err">)`</span>
+
+<span class="err">**</span><span class="na">returns:</span><span class="err">**</span> <span class="err">`</span><span class="na">bool</span><span class="err">/</span><span class="na">string</span><span class="err">`</span>
+
+
+
+<span class="na">Name</span> <span class="err">|</span> <span class="na">Type</span> <span class="err">|</span> <span class="na">Description</span>
+<span class="na">----</span> <span class="err">|</span> <span class="na">----</span> <span class="err">|</span> <span class="na">-----------</span>
+<span class="err">$</span><span class="na">size</span> <span class="err">|</span> <span class="na">string</span> <span class="err">|</span> 
+
+
+<span class="err">##</span> <span class="na">url</span>
+<span class="err">`</span><span class="na">url</span><span class="err">(</span> <span class="err">)`</span>
+
+<span class="err">**</span><span class="na">returns:</span><span class="err">**</span> <span class="err">`</span><span class="na">string</span><span class="err">`</span>
+
+
+
+
+<span class="err">##</span> <span class="na">width</span>
+<span class="err">`</span><span class="na">width</span><span class="err">(</span> <span class="err">)`</span>
+
+<span class="err">**</span><span class="na">returns:</span><span class="err">**</span> <span class="err">`</span><span class="na">int</span><span class="err">`</span>
+
+
+
+
+<span class="err">##</span> <span class="na">wp_upload_dir</span>
+<span class="err">`</span><span class="na">wp_upload_dir</span><span class="err">(</span> <span class="err">)`</span>
+
+<span class="err">**</span><span class="na">returns:</span><span class="err">**</span> <span class="err">`</span><span class="na">void</span><span class="err">`</span>
+
+
+
+
+
+<span class="err">###</span> <span class="na">Class:</span> <span class="na">TimberImage</span>
+
+
+
+<span class="err">*</span><span class="na">This</span> <span class="na">class</span> <span class="na">extends</span> <span class="err">\</span><span class="na">TimberPost</span><span class="err">*</span>
+
+<span class="err">*</span><span class="na">This</span> <span class="na">class</span> <span class="na">implements</span> <span class="err">\</span><span class="na">TimberCoreInterface</span><span class="err">*</span>
+
+</code></pre>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

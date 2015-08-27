@@ -1,0 +1,238 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_timbercomment">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="timbercomment">TimberComment</h1>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="#approved">approved</a></td>
+<td>boolean</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#author">author</a></td>
+<td>\TimberUser</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#content">content</a></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#date">date</a></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#is_child">is_child</a></td>
+<td>bool</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__construct">__construct</h2>
+
+<p><code class="prettyprint">__construct( int $cid )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$cid</td>
+<td>int</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__tostring">__toString</h2>
+
+<p><code class="prettyprint">__toString( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<h2 id="approved">approved</h2>
+
+<p><code class="prettyprint">approved( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">boolean</code></p>
+
+<h2 id="author">author</h2>
+
+<p><code class="prettyprint">author( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">\TimberUser</code></p>
+
+<h2 id="avatar">avatar</h2>
+
+<p><code class="prettyprint">avatar( mixed/int $size=92, string $default=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool/mixed/string</code></p>
+
+<p>Fetches the Gravatar <code class="prettyprint">handlebars {{comment.avatar(36,template_uri~&quot;/img/dude.jpg&quot;)}}</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$size</td>
+<td>mixed/int</td>
+<td></td>
+</tr>
+<tr>
+<td>$default</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="content">content</h2>
+
+<p><code class="prettyprint">content( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="date">date</h2>
+
+<p><code class="prettyprint">date( string $date_format=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$date_format</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="is_child">is_child</h2>
+
+<p><code class="prettyprint">is_child( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+
+<h2 id="meta">meta</h2>
+
+<p><code class="prettyprint">meta( string $field_name )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field_name</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_meta_field">get_meta_field</h2>
+
+<p><code class="prettyprint">get_meta_field( string $field_name )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field_name</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_meta_fields">get_meta_fields</h2>
+
+<p><code class="prettyprint">get_meta_fields( mixed/int $comment_id=null )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$comment_id</td>
+<td>mixed/int</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h3 id="class-timbercomment">Class: TimberComment</h3>
+
+<p><em>This class extends \TimberCore</em></p>
+
+<p><em>This class implements \TimberCoreInterface</em></p>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>
