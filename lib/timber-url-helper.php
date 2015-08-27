@@ -12,7 +12,7 @@ class TimberURLHelper {
 		if ( isset( $_SERVER['HTTPS'] ) && $_SERVER["HTTPS"] == "on" ) {
 			$pageURL = "https://";;
 		}
-		if ( $_SERVER["SERVER_PORT"] != "80" ) {
+		if ( isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != "80" ) {
 			$pageURL .= self::get_host() . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
 		} else {
 			$pageURL .= self::get_host() . $_SERVER["REQUEST_URI"];
@@ -88,7 +88,7 @@ class TimberURLHelper {
 	public static function get_host() {
 		if (isset($_SERVER['HTTP_HOST'])) {
 			return $_SERVER['HTTP_HOST'];
-		} 
+		}
 		if (isset($_SERVER['SERVER_NAME'])) {
 			return $_SERVER['SERVER_NAME'];
 		}
