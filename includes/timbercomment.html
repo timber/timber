@@ -33,6 +33,18 @@
       <div class="content">
         <h1 id="timbercomment">TimberComment</h1>
 
+<p>The TimberComment class is used to view the output of comments. 99% of the time this will be in the context of the comments on a post. However you can also fetch a comment directly using its comment ID.</p>
+<pre class="highlight php"><code>$comment = new TimberComment($comment_id);
+$context['comment_of_the_day'] = $comment;
+Timber::render('index.twig', $context);
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">comment_of_the_day</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment-attribution"</span><span class="nt">&gt;</span>- <span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>But, O Sarah! If the dead can come back to this earth and flit unseen around those they loved, I shall always be near you; in the garish day and in the darkest night -- amidst your happiest scenes and gloomiest hours - always, always; and if there be a soft breeze upon your cheek, it shall be my breath; or the cool air fans your throbbing temple, it shall be my spirit passing by.<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment-attribution"</span><span class="nt">&gt;</span>- Sullivan Ballou<span class="nt">&lt;/p&gt;</span>
+</code></pre>
+
 <table><thead>
 <tr>
 <th>Name</th>
@@ -49,6 +61,11 @@
 <td><a href="#author">author</a></td>
 <td>\TimberUser</td>
 <td></td>
+</tr>
+<tr>
+<td><a href="#avatar">avatar</a></td>
+<td>bool/mixed/string</td>
+<td>Fetches the Gravatar</td>
 </tr>
 <tr>
 <td><a href="#content">content</a></td>
@@ -104,6 +121,20 @@
 <p><code class="prettyprint">author( )</code></p>
 
 <p><strong>returns:</strong> <code class="prettyprint">\TimberUser</code></p>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;h3&gt;</span>Comments by...<span class="nt">&lt;/h3&gt;</span>
+    <span class="nt">&lt;ol&gt;</span>
+    {% for comment in post.comments %}
+        <span class="nt">&lt;li&gt;</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>, who is a <span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">role</span><span class="k">}}</span><span class="nt">&lt;/li&gt;</span>
+    {% endfor %}
+    <span class="nt">&lt;/ol&gt;</span>
+</code></pre>
+<pre class="highlight html"><code>    <span class="nt">&lt;h3&gt;</span>Comments by...<span class="nt">&lt;/h3&gt;</span>
+    <span class="nt">&lt;ol&gt;</span>
+        <span class="nt">&lt;li&gt;</span>Jared Novack, who is a contributor<span class="nt">&lt;/li&gt;</span>
+        <span class="nt">&lt;li&gt;</span>Katie Ricci, who is a subscriber<span class="nt">&lt;/li&gt;</span>
+        <span class="nt">&lt;li&gt;</span>Rebecca Pearl, who is a author<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;/ol&gt;</span>
+</code></pre>
 
 <h2 id="avatar">avatar</h2>
 
@@ -111,7 +142,7 @@
 
 <p><strong>returns:</strong> <code class="prettyprint">bool/mixed/string</code></p>
 
-<p>Fetches the Gravatar <code class="prettyprint">handlebars {{comment.avatar(36,template_uri~&quot;/img/dude.jpg&quot;)}}</code></p>
+<p>Fetches the Gravatar</p>
 
 <table><thead>
 <tr>
@@ -131,6 +162,10 @@
 <td></td>
 </tr>
 </tbody></table>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">avatar</span><span class="err">(</span><span class="nv">36</span><span class="err">,</span><span class="nv">template_uri</span><span class="err">~</span><span class="s2">"/img/dude.jpg"</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"Image of </span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+</code></pre>
+<pre class="highlight html"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"http://gravatar.com/i/sfsfsdfasdfsfa.jpg"</span> <span class="na">alt=</span><span class="s">"Image of Katherine Rich"</span> <span class="nt">/&gt;</span>
+</code></pre>
 
 <h2 id="content">content</h2>
 
@@ -184,47 +219,23 @@
 </tr>
 </tbody></table>
 
-<h2 id="get_meta_field">get_meta_field</h2>
-
-<p><code class="prettyprint">get_meta_field( string $field_name )</code></p>
-
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
-
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>$field_name</td>
-<td>string</td>
-<td></td>
-</tr>
-</tbody></table>
-
-<h2 id="get_meta_fields">get_meta_fields</h2>
-
-<p><code class="prettyprint">get_meta_fields( mixed/int $comment_id=null )</code></p>
-
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
-
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>$comment_id</td>
-<td>mixed/int</td>
-<td></td>
-</tr>
-</tbody></table>
-
 <h3 id="class-timbercomment">Class: TimberComment</h3>
+
+<blockquote>
+<p>The TimberComment class is used to view the output of comments. 99% of the time this will be in the context of the comments on a post. However you can also fetch a comment directly using its comment ID.</p>
+</blockquote>
+
+<h6 id="example">Example</h6>
+<pre class="highlight php"><code>$comment = new TimberComment($comment_id);
+$context['comment_of_the_day'] = $comment;
+Timber::render('index.twig', $context);
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">comment_of_the_day</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment-attribution"</span><span class="nt">&gt;</span>- <span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>But, O Sarah! If the dead can come back to this earth and flit unseen around those they loved, I shall always be near you; in the garish day and in the darkest night -- amidst your happiest scenes and gloomiest hours - always, always; and if there be a soft breeze upon your cheek, it shall be my breath; or the cool air fans your throbbing temple, it shall be my spirit passing by.<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment-attribution"</span><span class="nt">&gt;</span>- Sullivan Ballou<span class="nt">&lt;/p&gt;</span>
+</code></pre>
 
 <p><em>This class extends \TimberCore</em></p>
 

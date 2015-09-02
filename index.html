@@ -1,15 +1,3492 @@
 <!doctype html>
-<!--[if lt IE 7]> <html class="no-js ie6 lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7 lt-ie9 lt-ie8" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8 lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
-<head>
-	<meta http-equiv="refresh" content="0; url=http://upstatement.com/timber" />
-	<link rel="canonical" href="http://upstatement.com/timber" />
-	<title>Timber: WordPress + Twig</title>
-</head>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Timber Object Reference</title>
 
-<body>
-Timber!!!
-</body>
+    <link href="stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="javascripts/all.js" type="text/javascript"></script>
+
+      <script>
+        $(function() {
+          setupLanguages(["php","handlebars","html"]);
+        });
+      </script>
+  </head>
+
+  <body class="index">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="images/timber-logo-icon.svg" />
+      </div>
+        <div class="lang-selector">
+              <a href="#" data-language-name="php">PHP</a>
+              <a href="#" data-language-name="handlebars">Twig</a>
+              <a href="#" data-language-name="html">HTML</a>
+        </div>
+        <div class="search">
+          <input type="text" class="search" id="input-search" placeholder="Search">
+        </div>
+        <ul class="search-results"></ul>
+        <ul class="toc-header">
+            <li><a href='http://upstatement.com/timber'>Timber Homepage</a></li>
+            <li><a href='http://twig.sensiolabs.org/doc/templates.html'>Twig Documentation</a></li>
+        </ul>
+      <div id="toc">
+      </div>
+        <ul class="toc-footer">
+            <li><a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a></li>
+        </ul>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        
+          <h1 id="timberarchives">TimberArchives</h1>
+
+<p>The TimberArchives class is used to generate a menu based on the date archives of your posts. The <a href="http://nieman.harvard.edu/news/">Nieman Foundation News site</a> has an example of how the output can be used in a real site (<a href="https://cloud.githubusercontent.com/assets/1298086/9610076/3cdca596-50a5-11e5-82fd-acb74c09c482.png">screenshot</a>).</p>
+<pre class="highlight php"><code>$context['archives'] = new TimberArchives( $args );
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;ul&gt;</span>
+{% for item in archives.items %}
+    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    {% for child item.children %}
+        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    {% endfor %}
+{% endfor %}
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;ul&gt;</span>
+    <span class="nt">&lt;li&gt;</span>2015<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>May<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>April<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>March<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>February<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>January<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span>2014<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>December<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>November<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>October<span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="#__construct">__construct</a></td>
+<td>void</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#get_items">get_items</a></td>
+<td>array/string</td>
+<td></td>
+</tr>
+<tr>
+<td>items</td>
+<td>array</td>
+<td>the items of the archives to iterate through and markup for your page</td>
+</tr>
+</tbody></table>
+
+<h2 id="__construct">__construct</h2>
+
+<p><code class="prettyprint">__construct( mixed $args=null, string $base=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$args</td>
+<td>mixed</td>
+<td>array of arguments {</td>
+</tr>
+<tr>
+<td>$base</td>
+<td>string</td>
+<td>any additional paths that need to be prepended to the URLs that are generated, for example: &ldquo;tags&rdquo;</td>
+</tr>
+</tbody></table>
+
+<h2 id="get_items">get_items</h2>
+
+<p><code class="prettyprint">get_items( mixed/array/string $args=null )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array/string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$args</td>
+<td>mixed/array/string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h3 id="class-timberarchives">Class: TimberArchives</h3>
+
+<blockquote>
+<p>The TimberArchives class is used to generate a menu based on the date archives of your posts. The <a href="http://nieman.harvard.edu/news/">Nieman Foundation News site</a> has an example of how the output can be used in a real site (<a href="https://cloud.githubusercontent.com/assets/1298086/9610076/3cdca596-50a5-11e5-82fd-acb74c09c482.png">screenshot</a>).</p>
+</blockquote>
+
+<h6 id="example">Example</h6>
+<pre class="highlight php"><code>$context['archives'] = new TimberArchives( $args );
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;ul&gt;</span>
+{% for item in archives.items %}
+    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    {% for child item.children %}
+        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    {% endfor %}
+{% endfor %}
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;ul&gt;</span>
+    <span class="nt">&lt;li&gt;</span>2015<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>May<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>April<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>March<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>February<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>January<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span>2014<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>December<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>November<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;</span>October<span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre>
+
+<p><em>This class extends \TimberCore</em></p>
+
+          <h1 id="timbercomment">TimberComment</h1>
+
+<p>The TimberComment class is used to view the output of comments. 99% of the time this will be in the context of the comments on a post. However you can also fetch a comment directly using its comment ID.</p>
+<pre class="highlight php"><code>$comment = new TimberComment($comment_id);
+$context['comment_of_the_day'] = $comment;
+Timber::render('index.twig', $context);
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">comment_of_the_day</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment-attribution"</span><span class="nt">&gt;</span>- <span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>But, O Sarah! If the dead can come back to this earth and flit unseen around those they loved, I shall always be near you; in the garish day and in the darkest night -- amidst your happiest scenes and gloomiest hours - always, always; and if there be a soft breeze upon your cheek, it shall be my breath; or the cool air fans your throbbing temple, it shall be my spirit passing by.<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment-attribution"</span><span class="nt">&gt;</span>- Sullivan Ballou<span class="nt">&lt;/p&gt;</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="#approved">approved</a></td>
+<td>boolean</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#author">author</a></td>
+<td>\TimberUser</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#avatar">avatar</a></td>
+<td>bool/mixed/string</td>
+<td>Fetches the Gravatar</td>
+</tr>
+<tr>
+<td><a href="#content">content</a></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#date">date</a></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#is_child">is_child</a></td>
+<td>bool</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__construct">__construct</h2>
+
+<p><code class="prettyprint">__construct( int $cid )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$cid</td>
+<td>int</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__tostring">__toString</h2>
+
+<p><code class="prettyprint">__toString( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<h2 id="approved">approved</h2>
+
+<p><code class="prettyprint">approved( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">boolean</code></p>
+
+<h2 id="author">author</h2>
+
+<p><code class="prettyprint">author( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">\TimberUser</code></p>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;h3&gt;</span>Comments by...<span class="nt">&lt;/h3&gt;</span>
+    <span class="nt">&lt;ol&gt;</span>
+    {% for comment in post.comments %}
+        <span class="nt">&lt;li&gt;</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>, who is a <span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">role</span><span class="k">}}</span><span class="nt">&lt;/li&gt;</span>
+    {% endfor %}
+    <span class="nt">&lt;/ol&gt;</span>
+</code></pre>
+<pre class="highlight html"><code>    <span class="nt">&lt;h3&gt;</span>Comments by...<span class="nt">&lt;/h3&gt;</span>
+    <span class="nt">&lt;ol&gt;</span>
+        <span class="nt">&lt;li&gt;</span>Jared Novack, who is a contributor<span class="nt">&lt;/li&gt;</span>
+        <span class="nt">&lt;li&gt;</span>Katie Ricci, who is a subscriber<span class="nt">&lt;/li&gt;</span>
+        <span class="nt">&lt;li&gt;</span>Rebecca Pearl, who is a author<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;/ol&gt;</span>
+</code></pre>
+
+<h2 id="avatar">avatar</h2>
+
+<p><code class="prettyprint">avatar( mixed/int $size=92, string $default=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool/mixed/string</code></p>
+
+<p>Fetches the Gravatar</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$size</td>
+<td>mixed/int</td>
+<td></td>
+</tr>
+<tr>
+<td>$default</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">avatar</span><span class="err">(</span><span class="nv">36</span><span class="err">,</span><span class="nv">template_uri</span><span class="err">~</span><span class="s2">"/img/dude.jpg"</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"Image of </span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+</code></pre>
+<pre class="highlight html"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"http://gravatar.com/i/sfsfsdfasdfsfa.jpg"</span> <span class="na">alt=</span><span class="s">"Image of Katherine Rich"</span> <span class="nt">/&gt;</span>
+</code></pre>
+
+<h2 id="content">content</h2>
+
+<p><code class="prettyprint">content( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="date">date</h2>
+
+<p><code class="prettyprint">date( string $date_format=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$date_format</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="is_child">is_child</h2>
+
+<p><code class="prettyprint">is_child( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+
+<h2 id="meta">meta</h2>
+
+<p><code class="prettyprint">meta( string $field_name )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field_name</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h3 id="class-timbercomment">Class: TimberComment</h3>
+
+<blockquote>
+<p>The TimberComment class is used to view the output of comments. 99% of the time this will be in the context of the comments on a post. However you can also fetch a comment directly using its comment ID.</p>
+</blockquote>
+
+<h6 id="example">Example</h6>
+<pre class="highlight php"><code>$comment = new TimberComment($comment_id);
+$context['comment_of_the_day'] = $comment;
+Timber::render('index.twig', $context);
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">comment_of_the_day</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment-attribution"</span><span class="nt">&gt;</span>- <span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>But, O Sarah! If the dead can come back to this earth and flit unseen around those they loved, I shall always be near you; in the garish day and in the darkest night -- amidst your happiest scenes and gloomiest hours - always, always; and if there be a soft breeze upon your cheek, it shall be my breath; or the cool air fans your throbbing temple, it shall be my spirit passing by.<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment-attribution"</span><span class="nt">&gt;</span>- Sullivan Ballou<span class="nt">&lt;/p&gt;</span>
+</code></pre>
+
+<p><em>This class extends \TimberCore</em></p>
+
+<p><em>This class implements \TimberCoreInterface</em></p>
+
+          <h1 id="timberimage">TimberImage</h1>
+
+<p>If TimberPost is the class you&rsquo;re going to spend the most time, TimberImage is the class you&rsquo;re going to have the most fun with.</p>
+<pre class="highlight php"><code>$context = Timber::get_context();
+$post = new TimberPost();
+$context['post'] = $post;
+// lets say you have an alternate large 'cover image' for your post stored in a custom field which returns an image ID
+$cover_image_id = $post-&gt;cover_image;
+$context['cover_image'] = new TimberImage($cover_image_id);
+Timber::render('single.twig', $context);
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;article&gt;</span>
+    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">cover_image</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"cover-image"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
+        <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span>
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">Image</span><span class="err">(</span><span class="nv">post</span><span class="p">.</span><span class="nv">custom_field_with_image_id</span><span class="err">)</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"Another way to initialize images as TimberImages, but within Twig"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;article&gt;</span>
+    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"http://example.org/wp-content/uploads/2015/06/nevermind.jpg"</span> <span class="na">class=</span><span class="s">"cover-image"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span>Now you've done it!<span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
+        Whatever whatever
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"http://example.org/wp-content/uploads/2015/06/kurt.jpg"</span> <span class="na">alt=</span><span class="s">"Another way to initialize images as TimberImages, but within Twig"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="#alt">alt</a></td>
+<td>string alt text stored in WordPress</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#aspect">aspect</a></td>
+<td>\float</td>
+<td></td>
+</tr>
+<tr>
+<td>caption</td>
+<td>string</td>
+<td>$caption the string stored in the WordPress database</td>
+</tr>
+<tr>
+<td>class</td>
+<td>string</td>
+<td>$class stores the CSS classes for the post (ex: &ldquo;post post-type-book post-123&rdquo;)</td>
+</tr>
+<tr>
+<td>file_loc</td>
+<td>string</td>
+<td>$file_loc the location of the image file in the filesystem (ex: <code class="prettyprint">/var/www/htdocs/wp-content/uploads/2015/08/my-pic.jpg</code>)</td>
+</tr>
+<tr>
+<td><a href="#height">height</a></td>
+<td>int</td>
+<td></td>
+</tr>
+<tr>
+<td>id</td>
+<td>string</td>
+<td>$id the numeric WordPress id of a post</td>
+</tr>
+<tr>
+<td><a href="#parent">parent</a></td>
+<td>bool/\TimberPost</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#path">path</a></td>
+<td>string the /relative/path/to/the/file</td>
+<td></td>
+</tr>
+<tr>
+<td>post_status</td>
+<td>string</td>
+<td>$post_status    the status of a post (&ldquo;draft&rdquo;, &ldquo;publish&rdquo;, etc.)</td>
+</tr>
+<tr>
+<td>post_type</td>
+<td>string</td>
+<td>$post_type      the name of the post type, this is the machine name (so &ldquo;my_custom_post_type&rdquo; as opposed to &ldquo;My Custom Post Type&rdquo;)</td>
+</tr>
+<tr>
+<td>slug</td>
+<td>string</td>
+<td>$slug       the URL-safe slug, this corresponds to the poorly-named &ldquo;post_name&rdquo; in the WP database, ex: &ldquo;hello-world&rdquo;</td>
+</tr>
+<tr>
+<td><a href="#src">src</a></td>
+<td>bool/string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#width">width</a></td>
+<td>int</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__construct">__construct</h2>
+
+<p><code class="prettyprint">__construct( int $iid )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$iid</td>
+<td>int</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__tostring">__toString</h2>
+
+<p><code class="prettyprint">__toString( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="alt">alt</h2>
+
+<p><code class="prettyprint">alt( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string alt text stored in WordPress</code></p>
+
+<h2 id="aspect">aspect</h2>
+
+<p><code class="prettyprint">aspect( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">\float</code></p>
+<pre class="highlight handlebars"><code>    {% if post.thumbnail.aspect <span class="nt">&lt; 1</span> <span class="err">%}</span>
+        <span class="err">{#</span> <span class="na">handle</span> <span class="na">vertical</span> <span class="na">image</span> <span class="err">#}</span>
+        <span class="err">&lt;</span><span class="na">img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">300</span><span class="err">,</span> <span class="nv">500</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"A basketball player"</span> <span class="nt">/&gt;</span>
+    {% else %}
+           <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">500</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"A sumo wrestler"</span> <span class="nt">/&gt;</span>
+    {% endif %}
+</code></pre>
+
+<h2 id="get_dimensions">get_dimensions</h2>
+
+<p><code class="prettyprint">get_dimensions( mixed/string $dim=null )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array/int</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$dim</td>
+<td>mixed/string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_url">get_url</h2>
+
+<p><code class="prettyprint">get_url( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="height">height</h2>
+
+<p><code class="prettyprint">height( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">int</code></p>
+
+<h2 id="parent">parent</h2>
+
+<p><code class="prettyprint">parent( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool/\TimberPost</code></p>
+
+<h2 id="path">path</h2>
+
+<p><code class="prettyprint">path( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string the /relative/path/to/the/file</code></p>
+
+<h2 id="src">src</h2>
+
+<p><code class="prettyprint">src( string $size=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool/string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$size</td>
+<td>string</td>
+<td>a size known to WordPress (like &ldquo;medium&rdquo;)</td>
+</tr>
+</tbody></table>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+</code></pre>
+
+<h2 id="url">url</h2>
+
+<p><code class="prettyprint">url( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="width">width</h2>
+
+<p><code class="prettyprint">width( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">int</code></p>
+
+<h2 id="wp_upload_dir">wp_upload_dir</h2>
+
+<p><code class="prettyprint">wp_upload_dir( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<h3 id="class-timberimage">Class: TimberImage</h3>
+
+<blockquote>
+<p>If TimberPost is the class you&rsquo;re going to spend the most time, TimberImage is the class you&rsquo;re going to have the most fun with.</p>
+</blockquote>
+
+<h6 id="example">Example</h6>
+<pre class="highlight php"><code>$context = Timber::get_context();
+$post = new TimberPost();
+$context['post'] = $post;
+// lets say you have an alternate large 'cover image' for your post stored in a custom field which returns an image ID
+$cover_image_id = $post-&gt;cover_image;
+$context['cover_image'] = new TimberImage($cover_image_id);
+Timber::render('single.twig', $context);
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;article&gt;</span>
+    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">cover_image</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"cover-image"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
+        <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span>
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">Image</span><span class="err">(</span><span class="nv">post</span><span class="p">.</span><span class="nv">custom_field_with_image_id</span><span class="err">)</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"Another way to initialize images as TimberImages, but within Twig"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;article&gt;</span>
+    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"http://example.org/wp-content/uploads/2015/06/nevermind.jpg"</span> <span class="na">class=</span><span class="s">"cover-image"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span>Now you've done it!<span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
+        Whatever whatever
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"http://example.org/wp-content/uploads/2015/06/kurt.jpg"</span> <span class="na">alt=</span><span class="s">"Another way to initialize images as TimberImages, but within Twig"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+</code></pre>
+
+<p><em>This class extends \TimberPost</em></p>
+
+<p><em>This class implements \TimberCoreInterface</em></p>
+
+          <h1 id="timbermenu">TimberMenu</h1>
+
+<p>In Timber, you can use TimberMenu() to make a standard Wordpress menu available to the Twig template as an object you can loop through. And once the menu becomes available to the context, you can get items from it in a way that is a little smoother and more versatile than Wordpress&rsquo;s wp_nav_menu. (You need never again rely on a crazy &ldquo;Walker Function!&rdquo;). The first thing to do is to initialize the menu using TimberMenu(). This will make the menu available as an object to work with in the context. (TimberMenu can include a Wordpress menu slug or ID, or it can be sent with no parameter&ndash;and guess the right menu.)</p>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="c1"># functions.php
+</span><span class="nx">add_filter</span><span class="p">(</span><span class="s1">'timber/context'</span><span class="p">,</span> <span class="s1">'add_to_context'</span><span class="p">);</span>
+<span class="k">function</span> <span class="nf">add_to_context</span><span class="p">(</span><span class="nv">$data</span><span class="p">){</span>
+    <span class="c1">// So here you are adding data to Timber's context object, i.e...
+</span>    <span class="nv">$data</span><span class="p">[</span><span class="s1">'foo'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'I am some other typical value set in your functions.php file, unrelated to the menu'</span><span class="p">;</span>
+    <span class="c1">// Now, in similar fashion, you add a Timber menu and send it along to the context.
+</span>        <span class="nv">$data</span><span class="p">[</span><span class="s1">'menu'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberMenu</span><span class="p">();</span> <span class="c1">// This is where you can also send a WordPress menu slug or ID
+</span>    <span class="k">return</span> <span class="nv">$data</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1"># index.php (or any PHP file)
+// Since you want a menu object available on every page, I added it to the universal Timber context via the functions.php file. You could also this in each PHP file if you find that too confusing.
+</span><span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'posts'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_posts</span><span class="p">();</span>
+<span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'index.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;nav&gt;</span>
+    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"main-nav"</span><span class="nt">&gt;</span>
+    {% for item in menu.get_items %}
+        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"nav-main-item </span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">classes</span> <span class="err">|</span> <span class="nv">join</span><span class="err">(</span><span class="s1">' '</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;&lt;a</span> <span class="na">class=</span><span class="s">"nav-main-link"</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">get_link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+            {% if item.get_children %}
+            <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav-drop"</span><span class="nt">&gt;</span>
+              {% for child in item.get_children %}
+                <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"nav-drop-item"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">get_link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+              {% endfor %}
+             <span class="nt">&lt;/ul&gt;</span>
+          {% endif %}
+          <span class="nt">&lt;/li&gt;</span>
+   {% endfor %}
+   <span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/nav&gt;</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>$id the ID# of the menu, corresponding to the wp_terms table</td>
+</tr>
+<tr>
+<td>items</td>
+<td>TimberMenuItem[]</td>
+<td>null</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>$name of the menu (ex: <code class="prettyprint">Main Navigation</code>)</td>
+</tr>
+<tr>
+<td>title</td>
+<td>string</td>
+<td>$name of the menu (ex: <code class="prettyprint">Main Navigation</code>)</td>
+</tr>
+</tbody></table>
+
+<h2 id="__construct">__construct</h2>
+
+<p><code class="prettyprint">__construct( int/string $slug )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$slug</td>
+<td>int/string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="find_parent_item_in_menu">find_parent_item_in_menu</h2>
+
+<p><code class="prettyprint">find_parent_item_in_menu( array $menu_items, int $parent_id )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">\TimberMenuItem/null</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$menu_items</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>$parent_id</td>
+<td>int</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_items">get_items</h2>
+
+<p><code class="prettyprint">get_items( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+
+<h3 id="class-timbermenu">Class: TimberMenu</h3>
+
+<blockquote>
+<p>In Timber, you can use TimberMenu() to make a standard Wordpress menu available to the Twig template as an object you can loop through. And once the menu becomes available to the context, you can get items from it in a way that is a little smoother and more versatile than Wordpress&rsquo;s wp_nav_menu. (You need never again rely on a crazy &ldquo;Walker Function!&rdquo;). The first thing to do is to initialize the menu using TimberMenu(). This will make the menu available as an object to work with in the context. (TimberMenu can include a Wordpress menu slug or ID, or it can be sent with no parameter&ndash;and guess the right menu.)</p>
+</blockquote>
+
+<h6 id="example">Example</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="c1"># functions.php
+</span><span class="nx">add_filter</span><span class="p">(</span><span class="s1">'timber/context'</span><span class="p">,</span> <span class="s1">'add_to_context'</span><span class="p">);</span>
+<span class="k">function</span> <span class="nf">add_to_context</span><span class="p">(</span><span class="nv">$data</span><span class="p">){</span>
+    <span class="c1">// So here you are adding data to Timber's context object, i.e...
+</span>    <span class="nv">$data</span><span class="p">[</span><span class="s1">'foo'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'I am some other typical value set in your functions.php file, unrelated to the menu'</span><span class="p">;</span>
+    <span class="c1">// Now, in similar fashion, you add a Timber menu and send it along to the context.
+</span>        <span class="nv">$data</span><span class="p">[</span><span class="s1">'menu'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberMenu</span><span class="p">();</span> <span class="c1">// This is where you can also send a WordPress menu slug or ID
+</span>    <span class="k">return</span> <span class="nv">$data</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1"># index.php (or any PHP file)
+// Since you want a menu object available on every page, I added it to the universal Timber context via the functions.php file. You could also this in each PHP file if you find that too confusing.
+</span><span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'posts'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_posts</span><span class="p">();</span>
+<span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'index.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;nav&gt;</span>
+    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"main-nav"</span><span class="nt">&gt;</span>
+    {% for item in menu.get_items %}
+        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"nav-main-item </span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">classes</span> <span class="err">|</span> <span class="nv">join</span><span class="err">(</span><span class="s1">' '</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;&lt;a</span> <span class="na">class=</span><span class="s">"nav-main-link"</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">get_link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+            {% if item.get_children %}
+            <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav-drop"</span><span class="nt">&gt;</span>
+              {% for child in item.get_children %}
+                <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"nav-drop-item"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">get_link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+              {% endfor %}
+             <span class="nt">&lt;/ul&gt;</span>
+          {% endif %}
+          <span class="nt">&lt;/li&gt;</span>
+   {% endfor %}
+   <span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/nav&gt;</span>
+</code></pre>
+
+<p><em>This class extends \TimberCore</em></p>
+
+          <h1 id="timbermenuitem">TimberMenuItem</h1>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="#children">children</a></td>
+<td>array/bool</td>
+<td>Get the child <a href="#TimberMenuItem">TimberMenuItems</a>s of a <a href="#TimberMenuItem">TimberMenuItem</a></td>
+</tr>
+<tr>
+<td><a href="#is_external">is_external</a></td>
+<td>bool</td>
+<td>Checks to see if the menu item is an external link so if my site is <code class="prettyprint">example.org</code>, <code class="prettyprint">google.com/whatever</code> is an external link. Helpful when creating rules for the target of a link</td>
+</tr>
+<tr>
+<td><a href="#link">link</a></td>
+<td>string a full URL like http://mysite.com/thing/</td>
+<td>Get the full link to a Menu Item</td>
+</tr>
+<tr>
+<td><a href="#name">name</a></td>
+<td>string</td>
+<td>The label for the menu item</td>
+</tr>
+<tr>
+<td><a href="#slug">slug</a></td>
+<td>string the slug of the menu item kinda-like-this</td>
+<td>The slug for the menu item</td>
+</tr>
+</tbody></table>
+
+<h2 id="__construct">__construct</h2>
+
+<p><code class="prettyprint">__construct( array/object $data )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$data</td>
+<td>array/object</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__tostring">__toString</h2>
+
+<p><code class="prettyprint">__toString( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string the label for the menu item</code></p>
+
+<h2 id="add_child">add_child</h2>
+
+<p><code class="prettyprint">add_child( \TimberMenuItem $item )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$item</td>
+<td>\TimberMenuItem</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="add_class">add_class</h2>
+
+<p><code class="prettyprint">add_class( mixed $class_name )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<p>add a class the menu item should have</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$class_name</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="children">children</h2>
+
+<p><code class="prettyprint">children( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array/bool</code></p>
+
+<p>Get the child <a href="#TimberMenuItem">TimberMenuItems</a>s of a <a href="#TimberMenuItem">TimberMenuItem</a></p>
+
+<h2 id="external">external</h2>
+
+<p><code class="prettyprint">external( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+
+<p>Checks to see if a link is external, helpful when creating rules for the target of a link</p>
+
+<h2 id="is_external">is_external</h2>
+
+<p><code class="prettyprint">is_external( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+
+<p>Checks to see if the menu item is an external link so if my site is <code class="prettyprint">example.org</code>, <code class="prettyprint">google.com/whatever</code> is an external link. Helpful when creating rules for the target of a link</p>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span> <span class="na">target=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">is_external</span> <span class="err">?</span> <span class="s1">'_blank'</span> <span class="err">:</span> <span class="s1">'_self'</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
+</code></pre>
+
+<h2 id="link">link</h2>
+
+<p><code class="prettyprint">link( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string a full URL like http://mysite.com/thing/</code></p>
+
+<p>Get the full link to a Menu Item</p>
+<pre class="highlight handlebars"><code>    {% for item in menu.items %}
+        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    {% endfor %}
+</code></pre>
+
+<h2 id="meta">meta</h2>
+
+<p><code class="prettyprint">meta( string $key )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed whatever value is storied in the database</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$key</td>
+<td>string</td>
+<td>lookup key</td>
+</tr>
+</tbody></table>
+
+<h2 id="name">name</h2>
+
+<p><code class="prettyprint">name( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<p>The label for the menu item</p>
+
+<h2 id="path">path</h2>
+
+<p><code class="prettyprint">path( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string the path of a URL like /foo</code></p>
+
+<p>Return the relative path of a Menu Item&rsquo;s link</p>
+<pre class="highlight handlebars"><code>    {% for item in menu.items %}
+        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">path</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    {% endfor %}
+</code></pre>
+
+<h2 id="slug">slug</h2>
+
+<p><code class="prettyprint">slug( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string the slug of the menu item kinda-like-this</code></p>
+
+<p>The slug for the menu item</p>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;ul&gt;</span>
+        {% for item in menu.items %}
+            <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">slug</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+             <span class="nt">&lt;/li&gt;</span>
+        {% endfor %}
+    <span class="nt">&lt;/ul&gt;</span>
+## title
+`title( )`
+
+**returns:** `string the public label like Foo`
+
+Gets the public label for the menu item
+
+```handlebars
+    {% for item in menu.items %}
+        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    {% endfor %}
+</code></pre>
+
+<h3 id="class-timbermenuitem">Class: TimberMenuItem</h3>
+
+<p><em>This class extends \TimberCore</em></p>
+
+<p><em>This class implements \TimberCoreInterface</em></p>
+
+          <h1 id="timberpost">TimberPost</h1>
+
+<p>This is the object you use to access or extend WordPress posts. Think of it as Timber&rsquo;s (more accessible) version of WP_Post. This is used throughout Timber to represent posts retrieved from WordPress making them available to Twig templates. See the PHP and Twig examples for an example of what it&rsquo;s like to work with this object in your code.</p>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="c1">// single.php, see connected twig example
+</span><span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'post'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberPost</span><span class="p">();</span> <span class="c1">// It's a new TimberPost object, but an existing post from WordPress.
+</span><span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'single.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre>
+<pre class="highlight handlebars"><code>{# single.twig #}
+<span class="nt">&lt;article&gt;</span>
+    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
+        <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;article&gt;</span>
+    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span>The Empire Strikes Back<span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
+        It is a dark time for the Rebellion. Although the Death Star has been destroyed, Imperial troops have driven the Rebel forces from their hidden base and pursued them across the galaxy.
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="#author">author</a></td>
+<td>\TimberUser/bool A TimberUser object if found, false if not</td>
+<td>Return the author of a post</td>
+</tr>
+<tr>
+<td><a href="#categories">categories</a></td>
+<td>array of TimberTerms</td>
+<td>Get the categoires on a particular post</td>
+</tr>
+<tr>
+<td><a href="#category">category</a></td>
+<td>\TimberTerm/null</td>
+<td>Returns a category attached to a post</td>
+</tr>
+<tr>
+<td><a href="#children">children</a></td>
+<td>array</td>
+<td>Returns an array of children on the post as TimberPosts (or other claass as you define).</td>
+</tr>
+<tr>
+<td>class</td>
+<td>string</td>
+<td>$class stores the CSS classes for the post (ex: &ldquo;post post-type-book post-123&rdquo;)</td>
+</tr>
+<tr>
+<td><a href="#comments">comments</a></td>
+<td>bool/array</td>
+<td>Gets the comments on a TimberPost and returns them as an array of <a href="#TimberComment">TimberComments</a> (or whatever comment class you set).</td>
+</tr>
+<tr>
+<td><a href="#content">content</a></td>
+<td>string</td>
+<td>Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).</td>
+</tr>
+<tr>
+<td><a href="#date">date</a></td>
+<td>string</td>
+<td>Get the date to use in your template!</td>
+</tr>
+<tr>
+<td><a href="#format">format</a></td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#get_preview">get_preview</a></td>
+<td>string of the post preview</td>
+<td>get a preview of your post, if you have an excerpt it will use that, otherwise it will pull from the post_content. If there&rsquo;s a &lt;!&ndash; more &ndash;&gt; tag it will use that to mark where to pull through.</td>
+</tr>
+<tr>
+<td>id</td>
+<td>string</td>
+<td>$id the numeric WordPress id of a post</td>
+</tr>
+<tr>
+<td><a href="#link">link</a></td>
+<td>string ex: http://example.org/2015/07/my-awesome-post</td>
+<td>get the permalink for a post object</td>
+</tr>
+<tr>
+<td><a href="#next">next</a></td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#parent">parent</a></td>
+<td>bool/<a href="#class-timberpost">\TimberPost</a></td>
+<td>Gets the parent (if one exists) from a post as a TimberPost object (or whatever is set in TimberPost::$PostClass)</td>
+</tr>
+<tr>
+<td><a href="#path">path</a></td>
+<td>string</td>
+<td>Gets the relative path of a WP Post, so while link() will return http://example.org/2015/07/my-cool-post this will return just /2015/07/my-cool-post</td>
+</tr>
+<tr>
+<td>post_status</td>
+<td>string</td>
+<td>$post_status    the status of a post (&ldquo;draft&rdquo;, &ldquo;publish&rdquo;, etc.)</td>
+</tr>
+<tr>
+<td>post_type</td>
+<td>string</td>
+<td>$post_type      the name of the post type, this is the machine name (so &ldquo;my_custom_post_type&rdquo; as opposed to &ldquo;My Custom Post Type&rdquo;)</td>
+</tr>
+<tr>
+<td><a href="#prev">prev</a></td>
+<td>mixed</td>
+<td>Get the previous post in a set</td>
+</tr>
+<tr>
+<td>slug</td>
+<td>string</td>
+<td>$slug       the URL-safe slug, this corresponds to the poorly-named &ldquo;post_name&rdquo; in the WP database, ex: &ldquo;hello-world&rdquo;</td>
+</tr>
+<tr>
+<td><a href="#tags">tags</a></td>
+<td>array</td>
+<td>Gets the tags on a post, uses WP&rsquo;s post_tag taxonomy</td>
+</tr>
+<tr>
+<td><a href="#terms">terms</a></td>
+<td>array</td>
+<td>Get the terms associated with the post This goes across all taxonomies by default</td>
+</tr>
+<tr>
+<td><a href="#thumbnail">thumbnail</a></td>
+<td>\TimberImage/null of your thumbnail</td>
+<td>get the featured image as a TimberImage</td>
+</tr>
+<tr>
+<td><a href="#title">title</a></td>
+<td>string</td>
+<td>Returns the processed title to be used in templates. This returns the title of the post after WP&rsquo;s filters have run. This is analogous to <code class="prettyprint">the_title()</code> in standard WP template tags.</td>
+</tr>
+</tbody></table>
+
+<h2 id="__construct">__construct</h2>
+
+<p><code class="prettyprint">__construct( mixed $pid=null )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<p>If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$pid</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+<pre class="highlight php"><code>    $post = new TimberPost();
+    $other_post = new TimberPost($random_post_id);
+</code></pre>
+
+<h2 id="__tostring">__toString</h2>
+
+<p><code class="prettyprint">__toString( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<p>Outputs the title of the post if you do something like <code class="prettyprint">&lt;h1&gt;{{post}}&lt;/h1&gt;</code></p>
+
+<h2 id="author">author</h2>
+
+<p><code class="prettyprint">author( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">\TimberUser/bool A TimberUser object if found, false if not</code></p>
+
+<p>Return the author of a post</p>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"byline"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+</code></pre>
+
+<h2 id="categories">categories</h2>
+
+<p><code class="prettyprint">categories( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array of TimberTerms</code></p>
+
+<p>Get the categoires on a particular post</p>
+
+<h2 id="category">category</h2>
+
+<p><code class="prettyprint">category( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">\TimberTerm/null</code></p>
+
+<p>Returns a category attached to a post</p>
+
+<h2 id="children">children</h2>
+
+<p><code class="prettyprint">children( string $post_type=</code>&ldquo;any&rdquo;<code class="prettyprint">, bool/string/bool $childPostClass=false )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+
+<p>Returns an array of children on the post as TimberPosts (or other claass as you define).</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$post_type</td>
+<td>string</td>
+<td><em>optional</em> use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use &lsquo;parent&rsquo; to use the parent&rsquo;s post type</td>
+</tr>
+<tr>
+<td>$childPostClass</td>
+<td>bool/string/bool</td>
+<td><em>optional</em> a custom post class (ex: &#39;MyTimberPost&rsquo;) to return the objects as. By default (false) it will use TimberPost::$post_class value.</td>
+</tr>
+</tbody></table>
+<pre class="highlight handlebars"><code>    {% if post.children %}
+        Here are the child pages:
+        {% for child in page.children %}
+            <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">child</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">child</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+        {% endfor %}
+    {% endif %}
+</code></pre>
+
+<h2 id="comments">comments</h2>
+
+<p><code class="prettyprint">comments( int $count, string $order=</code>&ldquo;wp&rdquo;<code class="prettyprint">, string $type=</code>&ldquo;comment&rdquo;<code class="prettyprint">, string $status=</code>&ldquo;approve&rdquo;<code class="prettyprint">, string $CommentClass=</code>&ldquo;TimberComment&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool/array</code></p>
+
+<p>Gets the comments on a TimberPost and returns them as an array of <a href="#TimberComment">TimberComments</a> (or whatever comment class you set).</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$count</td>
+<td>int</td>
+<td>Set the number of comments you want to get. <code class="prettyprint">0</code> is analogous to &ldquo;all&rdquo;</td>
+</tr>
+<tr>
+<td>$order</td>
+<td>string</td>
+<td>use ordering set in WordPress admin, or a different scheme</td>
+</tr>
+<tr>
+<td>$type</td>
+<td>string</td>
+<td>For when other plugins use the comments table for their own special purposes, might be set to &#39;liveblog&rsquo; or other depending on what&rsquo;s stored in yr comments table</td>
+</tr>
+<tr>
+<td>$status</td>
+<td>string</td>
+<td>Could be &#39;pending&rsquo;, etc.</td>
+</tr>
+<tr>
+<td>$CommentClass</td>
+<td>string</td>
+<td>What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending TimberComment for your site or app (obviously, totally optional)</td>
+</tr>
+</tbody></table>
+<pre class="highlight handlebars"><code>    {# single.twig #}
+    <span class="nt">&lt;h4&gt;</span>Comments:<span class="nt">&lt;/h4&gt;</span>
+    {% for comment in post.comments %}
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"comment-</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">ID</span><span class="k">}}</span><span class="s"> comment-order-</span><span class="k">{{</span><span class="nv">loop</span><span class="p">.</span><span class="nv">index</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> said:<span class="nt">&lt;/p&gt;</span>
+            <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+    {% endfor %}
+</code></pre>
+
+<h2 id="content">content</h2>
+
+<p><code class="prettyprint">content( int $page )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<p>Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$page</td>
+<td>int</td>
+<td></td>
+</tr>
+</tbody></table>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"article"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;h2&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h2&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"content"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">content</span> <span class="k">}}</span><span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+</code></pre>
+
+<h2 id="date">date</h2>
+
+<p><code class="prettyprint">date( string $date_format=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<p>Get the date to use in your template!</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$date_format</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+<pre class="highlight handlebars"><code>    Published on <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">date</span> <span class="k">}}</span> // Uses WP's formatting set in Admin
+    OR
+    Published on <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">date</span> <span class="err">|</span> <span class="nv">date</span><span class="err">(</span><span class="s1">'F jS'</span><span class="err">)</span> <span class="k">}}</span> // Jan 12th
+</code></pre>
+<pre class="highlight html"><code>    Published on January 12, 2015
+    OR
+    Published on Jan 12th
+</code></pre>
+
+<h2 id="edit_link">edit_link</h2>
+
+<p><code class="prettyprint">edit_link( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool/string</code></p>
+
+<h2 id="format">format</h2>
+
+<p><code class="prettyprint">format( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<h2 id="get_comment_count">get_comment_count</h2>
+
+<p><code class="prettyprint">get_comment_count( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">int</code></p>
+
+<h2 id="get_content">get_content</h2>
+
+<p><code class="prettyprint">get_content( int $len, int $page )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<p>Displays the content of the post with filters, shortcodes and wpautop applied</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$len</td>
+<td>int</td>
+<td></td>
+</tr>
+<tr>
+<td>$page</td>
+<td>int</td>
+<td></td>
+</tr>
+</tbody></table>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"article-text"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_content</span><span class="k">}}</span><span class="nt">&lt;/div&gt;</span>
+</code></pre>
+<pre class="highlight html"><code>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"article-text"</span><span class="nt">&gt;&lt;p&gt;</span>Blah blah blah<span class="nt">&lt;/p&gt;&lt;p&gt;</span>More blah blah blah.<span class="nt">&lt;/p&gt;&lt;/div&gt;</span>
+</code></pre>
+
+<h2 id="get_display_date">get_display_date</h2>
+
+<p><code class="prettyprint">get_display_date( string $use=</code>&ldquo;post_date&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<p>Get the human-friendly date that should actually display in a .twig template</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$use</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_field">get_field</h2>
+
+<p><code class="prettyprint">get_field( string $field_name )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field_name</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_image">get_image</h2>
+
+<p><code class="prettyprint">get_image( string $field )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">\TimberImage</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_method_values">get_method_values</h2>
+
+<p><code class="prettyprint">get_method_values( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+
+<h2 id="get_paged_content">get_paged_content</h2>
+
+<p><code class="prettyprint">get_paged_content( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="get_pagination">get_pagination</h2>
+
+<p><code class="prettyprint">get_pagination( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+
+<p>Get a data array of pagination so you can navigate to the previous/next for a paginated post</p>
+
+<h2 id="get_post_type">get_post_type</h2>
+
+<p><code class="prettyprint">get_post_type( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<p>Here is my summary</p>
+<pre class="highlight handlebars"><code>    This post is from <span class="nt">&lt;span&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">get_post_type</span><span class="p">.</span><span class="nv">labels</span><span class="p">.</span><span class="nv">plural</span> <span class="k">}}</span><span class="nt">&lt;/span&gt;</span>
+</code></pre>
+<pre class="highlight html"><code>    This post is from <span class="nt">&lt;span&gt;</span>Recipes<span class="nt">&lt;/span&gt;</span>
+</code></pre>
+
+<h2 id="get_preview">get_preview</h2>
+
+<p><code class="prettyprint">get_preview( mixed/int $len=50, bool $force=false, string $readmore=</code>&ldquo;Read More&rdquo;<code class="prettyprint">, bool $strip=true )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string of the post preview</code></p>
+
+<p>get a preview of your post, if you have an excerpt it will use that, otherwise it will pull from the post_content. If there&rsquo;s a &lt;!&ndash; more &ndash;&gt; tag it will use that to mark where to pull through.</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$len</td>
+<td>mixed/int</td>
+<td>The number of words that WP should use to make the tease. (Isn&rsquo;t this better than <a href="http://wordpress.org/support/topic/changing-the-default-length-of-the_excerpt-1?replies=14">this mess</a>?). If you&rsquo;ve set a post_excerpt on a post, we&rsquo;ll use that for the preview text; otherwise the first X words of the post_content</td>
+</tr>
+<tr>
+<td>$force</td>
+<td>bool</td>
+<td>What happens if your custom post excerpt is longer then the length requested? By default (<code class="prettyprint">$force = false</code>) it will use the full <code class="prettyprint">post_excerpt</code>. However, you can set this to true to <em>force</em> your excerpt to be of the desired length</td>
+</tr>
+<tr>
+<td>$readmore</td>
+<td>string</td>
+<td>The text you want to use on the &#39;readmore&rsquo; link</td>
+</tr>
+<tr>
+<td>$strip</td>
+<td>bool</td>
+<td>Strip tags? yes or no. tell me!</td>
+</tr>
+</tbody></table>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_preview</span><span class="err">(</span><span class="nv">50</span><span class="err">)</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+</code></pre>
+
+<h2 id="has_term">has_term</h2>
+
+<p><code class="prettyprint">has_term( string/int $term_name_or_id, string $taxonomy=</code>&ldquo;all&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$term_name_or_id</td>
+<td>string/int</td>
+<td></td>
+</tr>
+<tr>
+<td>$taxonomy</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="import_field">import_field</h2>
+
+<p><code class="prettyprint">import_field( string $field_name )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field_name</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="link">link</h2>
+
+<p><code class="prettyprint">link( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string ex: http://example.org/2015/07/my-awesome-post</code></p>
+
+<p>get the permalink for a post object</p>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>Read my post<span class="nt">&lt;/a&gt;</span>
+</code></pre>
+
+<h2 id="meta">meta</h2>
+
+<p><code class="prettyprint">meta( mixed/string $field_name=null )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field_name</td>
+<td>mixed/string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="modified_author">modified_author</h2>
+
+<p><code class="prettyprint">modified_author( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">\TimberUser/bool A TimberUser object if found, false if not</code></p>
+
+<p>Get the author (WordPress user) who last modified the post</p>
+<pre class="highlight handlebars"><code>    Last updated by <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">modified_author</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span>
+</code></pre>
+<pre class="highlight html"><code>    Last updated by Harper Lee
+</code></pre>
+
+<h2 id="modified_date">modified_date</h2>
+
+<p><code class="prettyprint">modified_date( string $date_format=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$date_format</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="modified_time">modified_time</h2>
+
+<p><code class="prettyprint">modified_time( string $time_format=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$time_format</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="name">name</h2>
+
+<p><code class="prettyprint">name( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="next">next</h2>
+
+<p><code class="prettyprint">next( bool $in_same_cat=false )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$in_same_cat</td>
+<td>bool</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="paged_content">paged_content</h2>
+
+<p><code class="prettyprint">paged_content( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="pagination">pagination</h2>
+
+<p><code class="prettyprint">pagination( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+
+<h2 id="parent">parent</h2>
+
+<p><code class="prettyprint">parent( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool/[\TimberPost](#class-timberpost)</code></p>
+
+<p>Gets the parent (if one exists) from a post as a TimberPost object (or whatever is set in TimberPost::$PostClass)</p>
+<pre class="highlight handlebars"><code>    Parent page: <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">parent</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">parent</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+</code></pre>
+
+<h2 id="path">path</h2>
+
+<p><code class="prettyprint">path( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<p>Gets the relative path of a WP Post, so while link() will return http://example.org/2015/07/my-cool-post this will return just /2015/07/my-cool-post</p>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">path</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+</code></pre>
+
+<h2 id="permalink">permalink</h2>
+
+<p><code class="prettyprint">permalink( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="prev">prev</h2>
+
+<p><code class="prettyprint">prev( bool $in_same_cat=false )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<p>Get the previous post in a set</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$in_same_cat</td>
+<td>bool</td>
+<td></td>
+</tr>
+</tbody></table>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;h4&gt;</span>Prior Entry:<span class="nt">&lt;/h4&gt;</span>
+    <span class="nt">&lt;h3&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h3&gt;</span>
+    <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">get_preview</span><span class="err">(</span><span class="nv">25</span><span class="err">)</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+</code></pre>
+
+<h2 id="tags">tags</h2>
+
+<p><code class="prettyprint">tags( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+
+<p>Gets the tags on a post, uses WP&rsquo;s post_tag taxonomy</p>
+
+<h2 id="terms">terms</h2>
+
+<p><code class="prettyprint">terms( string $tax=</code>&ldquo;&rdquo;<code class="prettyprint">, bool $merge=true )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+
+<p>Get the terms associated with the post This goes across all taxonomies by default</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$tax</td>
+<td>string</td>
+<td>What taxonomy to pull from, defaults to all of them. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you&rsquo;re on your own.</td>
+</tr>
+<tr>
+<td>$merge</td>
+<td>bool</td>
+<td>Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?</td>
+</tr>
+</tbody></table>
+
+<h2 id="thumbnail">thumbnail</h2>
+
+<p><code class="prettyprint">thumbnail( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">\TimberImage/null of your thumbnail</code></p>
+
+<p>get the featured image as a TimberImage</p>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+</code></pre>
+
+<h2 id="title">title</h2>
+
+<p><code class="prettyprint">title( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<p>Returns the processed title to be used in templates. This returns the title of the post after WP&rsquo;s filters have run. This is analogous to <code class="prettyprint">the_title()</code> in standard WP template tags.</p>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
+</code></pre>
+
+<h2 id="update">update</h2>
+
+<p><code class="prettyprint">update( string $field, mixed $value )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<p>updates the post_meta of the current object with the given value</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>$value</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_wp_link_page">get_wp_link_page</h2>
+
+<p><code class="prettyprint">get_wp_link_page( int $i )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$i</td>
+<td>int</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h3 id="class-timberpost">Class: TimberPost</h3>
+
+<blockquote>
+<p>This is the object you use to access or extend WordPress posts. Think of it as Timber&rsquo;s (more accessible) version of WP_Post. This is used throughout Timber to represent posts retrieved from WordPress making them available to Twig templates. See the PHP and Twig examples for an example of what it&rsquo;s like to work with this object in your code.</p>
+</blockquote>
+
+<h6 id="example">Example</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="c1">// single.php, see connected twig example
+</span><span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'post'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberPost</span><span class="p">();</span> <span class="c1">// It's a new TimberPost object, but an existing post from WordPress.
+</span><span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'single.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre>
+<pre class="highlight handlebars"><code>{# single.twig #}
+<span class="nt">&lt;article&gt;</span>
+    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
+        <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;article&gt;</span>
+    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span>The Empire Strikes Back<span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
+        It is a dark time for the Rebellion. Although the Death Star has been destroyed, Imperial troops have driven the Rebel forces from their hidden base and pursued them across the galaxy.
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+</code></pre>
+
+<p><em>This class extends \TimberCore</em></p>
+
+<p><em>This class implements \TimberCoreInterface</em></p>
+
+          <h1 id="timbersite">TimberSite</h1>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>charset</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>description</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#link">link</a></td>
+<td>string</td>
+<td>Returns the link to the site&rsquo;s home. <code class="prettyprint">handlebars &lt;a href=&quot;{{ site.link }}&quot; title=&quot;Home&quot;&gt; &lt;img src=&quot;/wp-content/uploads/logo.png&quot; alt=&quot;Logo for some stupid thing&quot; /&gt; &lt;/a&gt;</code> <code class="prettyprint">html &lt;a href=&quot;http://example.org&quot; title=&quot;Home&quot;&gt; &lt;img src=&quot;/wp-content/uploads/logo.png&quot; alt=&quot;Logo for some stupid thing&quot; /&gt; &lt;/a&gt;</code></td>
+</tr>
+<tr>
+<td>multisite</td>
+<td>bool</td>
+<td></td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>theme</td>
+<td><a href="#TimberTheme">TimberTheme</a></td>
+<td></td>
+</tr>
+<tr>
+<td>title</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#url">url</a></td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__construct">__construct</h2>
+
+<p><code class="prettyprint">__construct( mixed/string/int $site_name_or_id=null )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$site_name_or_id</td>
+<td>mixed/string/int</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__get">__get</h2>
+
+<p><code class="prettyprint">__get( mixed $field )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="link">link</h2>
+
+<p><code class="prettyprint">link( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<p>Returns the link to the site&rsquo;s home. <code class="prettyprint">handlebars &lt;a href=&quot;{{ site.link }}&quot; title=&quot;Home&quot;&gt; &lt;img src=&quot;/wp-content/uploads/logo.png&quot; alt=&quot;Logo for some stupid thing&quot; /&gt; &lt;/a&gt;</code> <code class="prettyprint">html &lt;a href=&quot;http://example.org&quot; title=&quot;Home&quot;&gt; &lt;img src=&quot;/wp-content/uploads/logo.png&quot; alt=&quot;Logo for some stupid thing&quot; /&gt; &lt;/a&gt;</code></p>
+
+<h2 id="meta">meta</h2>
+
+<p><code class="prettyprint">meta( mixed $field )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="update">update</h2>
+
+<p><code class="prettyprint">update( mixed $key, mixed $value )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$key</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$value</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="url">url</h2>
+
+<p><code class="prettyprint">url( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h3 id="class-timbersite">Class: TimberSite</h3>
+
+<p><em>This class extends \TimberCore</em></p>
+
+<p><em>This class implements \TimberCoreInterface</em></p>
+
+          <h1 id="timberterm">TimberTerm</h1>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="#children">children</a></td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#edit_link">edit_link</a></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#link">link</a></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#meta">meta</a></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>the human-friendly name of the term (ex: French Cuisine)</td>
+</tr>
+<tr>
+<td><a href="#path">path</a></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#posts">posts</a></td>
+<td>array/bool/null</td>
+<td></td>
+</tr>
+<tr>
+<td>taxonomy</td>
+<td>strng</td>
+<td>the WordPress taxonomy slug (ex: <code class="prettyprint">post_tag</code> or <code class="prettyprint">actors</code>)</td>
+</tr>
+<tr>
+<td><a href="#title">title</a></td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__construct">__construct</h2>
+
+<p><code class="prettyprint">__construct( mixed/int $tid=null, string $tax=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$tid</td>
+<td>mixed/int</td>
+<td></td>
+</tr>
+<tr>
+<td>$tax</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__tostring">__toString</h2>
+
+<p><code class="prettyprint">__toString( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="children">children</h2>
+
+<p><code class="prettyprint">children( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+
+<h2 id="edit_link">edit_link</h2>
+
+<p><code class="prettyprint">edit_link( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="get_page">get_page</h2>
+
+<p><code class="prettyprint">get_page( int $i )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$i</td>
+<td>int</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_posts">get_posts</h2>
+
+<p><code class="prettyprint">get_posts( mixed/int $numberposts=10, string $post_type=</code>&ldquo;any&rdquo;<code class="prettyprint">, string $PostClass=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array/bool/null</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$numberposts</td>
+<td>mixed/int</td>
+<td></td>
+</tr>
+<tr>
+<td>$post_type</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>$PostClass</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="link">link</h2>
+
+<p><code class="prettyprint">link( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="meta">meta</h2>
+
+<p><code class="prettyprint">meta( string $field_name )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field_name</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="path">path</h2>
+
+<p><code class="prettyprint">path( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="posts">posts</h2>
+
+<p><code class="prettyprint">posts( mixed/int $numberposts_or_args=10, string $post_type_or_class=</code>&ldquo;any&rdquo;<code class="prettyprint">, string $post_class=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array/bool/null</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$numberposts_or_args</td>
+<td>mixed/int</td>
+<td></td>
+</tr>
+<tr>
+<td>$post_type_or_class</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>$post_class</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;h4&gt;</span>Recent posts in <span class="k">{{</span><span class="nv">term</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/h4&gt;</span>
+    <span class="nt">&lt;ul&gt;</span>
+    {% for post in term.posts(3, 'post') %}
+        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    {% endfor %}
+    <span class="nt">&lt;/ul&gt;</span>
+</code></pre>
+
+<h2 id="title">title</h2>
+
+<p><code class="prettyprint">title( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="update">update</h2>
+
+<p><code class="prettyprint">update( mixed $key, mixed $value )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$key</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$value</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="url">url</h2>
+
+<p><code class="prettyprint">url( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h3 id="class-timberterm">Class: TimberTerm</h3>
+
+<p><em>This class extends \TimberCore</em></p>
+
+<p><em>This class implements \TimberCoreInterface</em></p>
+
+          <h1 id="timbertheme">TimberTheme</h1>
+
+<p>Need to display info about your theme? Well you&rsquo;ve come to the right place. By default info on the current theme comes for free with what&rsquo;s fetched by <code class="prettyprint">Timber::get_context()</code> in which case you can access it your theme like so:</p>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
+<span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'index.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">theme</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">/static/js/all.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"http://example.org/wp-content/themes/my-theme/static/js/all.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>link</td>
+<td>string</td>
+<td>the absolute path to the theme (ex: <code class="prettyprint">http://example.org/wp-content/themes/my-timber-theme</code>)</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>the human-friendly name of the theme (ex: <code class="prettyprint">My Timber Starter Theme</code>)</td>
+</tr>
+<tr>
+<td>parent</td>
+<td>TimberTheme</td>
+<td>bool</td>
+</tr>
+<tr>
+<td>parent_slug</td>
+<td>string</td>
+<td>the slug of the parent theme (ex: <code class="prettyprint">_s</code>)</td>
+</tr>
+<tr>
+<td>path</td>
+<td>string</td>
+<td>the relative path to the theme (ex: <code class="prettyprint">/wp-content/themes/my-timber-theme</code>)</td>
+</tr>
+<tr>
+<td>slug</td>
+<td>string</td>
+<td>the slug of the theme (ex: <code class="prettyprint">my-super-theme</code>)</td>
+</tr>
+</tbody></table>
+
+<h2 id="__construct">__construct</h2>
+
+<p><code class="prettyprint">__construct( mixed/string $slug=null )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<p>Constructs a new TimberTheme object. NOTE the TimberTheme object of the current theme comes in the default <code class="prettyprint">Timber::get_context()</code> call. You can access this in your twig template via `{{site.theme}}.</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$slug</td>
+<td>mixed/string</td>
+<td></td>
+</tr>
+</tbody></table>
+<pre class="highlight php"><code>    <span class="cp">&lt;?php</span>
+        <span class="nv">$theme</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberTheme</span><span class="p">(</span><span class="s2">"my-theme"</span><span class="p">);</span>
+        <span class="nv">$context</span><span class="p">[</span><span class="s1">'theme_stuff'</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$theme</span><span class="p">;</span>
+        <span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'single.'</span><span class="p">)</span>
+    <span class="cp">?&gt;</span>
+</code></pre>
+<pre class="highlight handlebars"><code>    We are currently using the <span class="k">{{</span> <span class="nv">theme_stuff</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span> theme.
+</code></pre>
+<pre class="highlight html"><code>    We are currently using the My Theme theme.
+</code></pre>
+
+<h2 id="theme_mod">theme_mod</h2>
+
+<p><code class="prettyprint">theme_mod( string $name, bool $default=false )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$name</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>$default</td>
+<td>bool</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="theme_mods">theme_mods</h2>
+
+<p><code class="prettyprint">theme_mods( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+
+<h3 id="class-timbertheme">Class: TimberTheme</h3>
+
+<blockquote>
+<p>Need to display info about your theme? Well you&rsquo;ve come to the right place. By default info on the current theme comes for free with what&rsquo;s fetched by <code class="prettyprint">Timber::get_context()</code> in which case you can access it your theme like so:</p>
+</blockquote>
+
+<h6 id="example">Example</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
+<span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'index.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">theme</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">/static/js/all.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"http://example.org/wp-content/themes/my-theme/static/js/all.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre>
+
+<p><em>This class extends \TimberCore</em></p>
+
+          <h1 id="timberuser">TimberUser</h1>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="#link">link</a></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#name">name</a></td>
+<td>string the human-friendly name of the user (ex: &ldquo;Buster Bluth&rdquo;)</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#path">path</a></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#slug">slug</a></td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__construct">__construct</h2>
+
+<p><code class="prettyprint">__construct( bool/int/bool $uid=false )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$uid</td>
+<td>bool/int/bool</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="__tostring">__toString</h2>
+
+<p><code class="prettyprint">__toString( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="get_custom">get_custom</h2>
+
+<p><code class="prettyprint">get_custom( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array/null</code></p>
+
+<h2 id="get_meta_field">get_meta_field</h2>
+
+<p><code class="prettyprint">get_meta_field( string $field_name )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field_name</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_permalink">get_permalink</h2>
+
+<p><code class="prettyprint">get_permalink( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="import_custom">import_custom</h2>
+
+<p><code class="prettyprint">import_custom( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<h2 id="link">link</h2>
+
+<p><code class="prettyprint">link( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="meta">meta</h2>
+
+<p><code class="prettyprint">meta( string $field_name )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field_name</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="name">name</h2>
+
+<p><code class="prettyprint">name( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string the human-friendly name of the user (ex: &quot;Buster Bluth&quot;)</code></p>
+
+<h2 id="path">path</h2>
+
+<p><code class="prettyprint">path( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="permalink">permalink</h2>
+
+<p><code class="prettyprint">permalink( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h2 id="slug">slug</h2>
+
+<p><code class="prettyprint">slug( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<h3 id="class-timberuser">Class: TimberUser</h3>
+
+<p><em>This class extends \TimberCore</em></p>
+
+<p><em>This class implements \TimberCoreInterface</em></p>
+
+          <h1 id="timberhelper">TimberHelper</h1>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="#transient">transient</a></td>
+<td>mixed</td>
+<td>A utility for a one-stop shop for Transients</td>
+</tr>
+</tbody></table>
+
+<h2 id="array_to_object">array_to_object</h2>
+
+<p><code class="prettyprint">array_to_object( mixed $array )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">\stdClass</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$array</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="array_truncate">array_truncate</h2>
+
+<p><code class="prettyprint">array_truncate( mixed $array, mixed $len )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$array</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$len</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="close_tags">close_tags</h2>
+
+<p><code class="prettyprint">close_tags( mixed $html )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$html</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="download_url">download_url</h2>
+
+<p><code class="prettyprint">download_url( mixed $url, mixed $timeout=300 )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$url</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$timeout</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="error_log">error_log</h2>
+
+<p><code class="prettyprint">error_log( mixed $arg )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$arg</td>
+<td>mixed</td>
+<td>that you want to error_log</td>
+</tr>
+</tbody></table>
+
+<h2 id="function_wrapper">function_wrapper</h2>
+
+<p><code class="prettyprint">function_wrapper( mixed $function_name, array $defaults=array(), bool $return_output_buffer=false )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">\TimberFunctionWrapper</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$function_name</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$defaults</td>
+<td>array</td>
+<td></td>
+</tr>
+<tr>
+<td>$return_output_buffer</td>
+<td>bool</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_comment_form">get_comment_form</h2>
+
+<p><code class="prettyprint">get_comment_form( mixed $post_id=null, array $args=array() )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<p>Gets the comment form for use on a single article page</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$post_id</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$args</td>
+<td>array</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_current_url">get_current_url</h2>
+
+<p><code class="prettyprint">get_current_url( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<h2 id="get_full_path">get_full_path</h2>
+
+<p><code class="prettyprint">get_full_path( mixed $src )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$src</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_object_by_property">get_object_by_property</h2>
+
+<p><code class="prettyprint">get_object_by_property( mixed $array, mixed $key, mixed $value )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array/null</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$array</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$key</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$value</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_object_index_by_property">get_object_index_by_property</h2>
+
+<p><code class="prettyprint">get_object_index_by_property( mixed $array, mixed $key, mixed $value )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool/int</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$array</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$key</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$value</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_params">get_params</h2>
+
+<p><code class="prettyprint">get_params( mixed $i=-1 )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$i</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_path_base">get_path_base</h2>
+
+<p><code class="prettyprint">get_path_base( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<h2 id="get_post_by_meta">get_post_by_meta</h2>
+
+<p><code class="prettyprint">get_post_by_meta( mixed $key, mixed $value )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">int</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$key</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$value</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_posts_by_meta">get_posts_by_meta</h2>
+
+<p><code class="prettyprint">get_posts_by_meta( mixed $key, mixed $value )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array/int</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$key</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$value</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_rel_path">get_rel_path</h2>
+
+<p><code class="prettyprint">get_rel_path( mixed $src )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$src</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_rel_url">get_rel_url</h2>
+
+<p><code class="prettyprint">get_rel_url( mixed $url, bool $force=false )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$url</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$force</td>
+<td>bool</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_term_id_by_term_taxonomy_id">get_term_id_by_term_taxonomy_id</h2>
+
+<p><code class="prettyprint">get_term_id_by_term_taxonomy_id( mixed $ttid )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$ttid</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="get_wp_title">get_wp_title</h2>
+
+<p><code class="prettyprint">get_wp_title( string $separator=</code>&ldquo; &rdquo;<code class="prettyprint">, string $seplocation=</code>&ldquo;left&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$separator</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>$seplocation</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="is_array_assoc">is_array_assoc</h2>
+
+<p><code class="prettyprint">is_array_assoc( mixed $arr )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$arr</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="is_external">is_external</h2>
+
+<p><code class="prettyprint">is_external( mixed $url )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$url</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="is_local">is_local</h2>
+
+<p><code class="prettyprint">is_local( mixed $url )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$url</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="is_true">is_true</h2>
+
+<p><code class="prettyprint">is_true( mixed $value )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$value</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="is_url">is_url</h2>
+
+<p><code class="prettyprint">is_url( mixed $url )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$url</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="iseven">iseven</h2>
+
+<p><code class="prettyprint">iseven( mixed $i )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$i</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="isodd">isodd</h2>
+
+<p><code class="prettyprint">isodd( mixed $i )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$i</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="ob_function">ob_function</h2>
+
+<p><code class="prettyprint">ob_function( \callback $function, array $args=array() )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$function</td>
+<td>\callback</td>
+<td></td>
+</tr>
+<tr>
+<td>$args</td>
+<td>array</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="osort">osort</h2>
+
+<p><code class="prettyprint">osort( mixed $array, mixed $prop )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$array</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$prop</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="paginate_links">paginate_links</h2>
+
+<p><code class="prettyprint">paginate_links( string $args=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$args</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="prepend_to_url">prepend_to_url</h2>
+
+<p><code class="prettyprint">prepend_to_url( mixed $url, mixed $path )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$url</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$path</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="preslashit">preslashit</h2>
+
+<p><code class="prettyprint">preslashit( mixed $path )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$path</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="remove_double_slashes">remove_double_slashes</h2>
+
+<p><code class="prettyprint">remove_double_slashes( mixed $url )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$url</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="start_timer">start_timer</h2>
+
+<p><code class="prettyprint">start_timer( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">\float</code></p>
+
+<h2 id="stop_timer">stop_timer</h2>
+
+<p><code class="prettyprint">stop_timer( mixed $start )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$start</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="transient">transient</h2>
+
+<p><code class="prettyprint">transient( mixed $slug, \callable $callback, mixed $transient_time, mixed $lock_timeout=5, bool $force=false )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+
+<p>A utility for a one-stop shop for Transients</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$slug</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$callback</td>
+<td>\callable</td>
+<td>Callback that generates the data that&rsquo;s to be cached</td>
+</tr>
+<tr>
+<td>$transient_time</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$lock_timeout</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$force</td>
+<td>bool</td>
+<td></td>
+</tr>
+</tbody></table>
+<pre class="highlight php"><code>    $favorites = Timber::transient('user-'.$uid.'-favorites', function() use ($uid) {
+        //some expensive query here that's doing something you want to store to a transient
+        return $favorites;
+    }, 600);
+    Timber::context['favorites'] = $favorites;
+    Timber::render('single.twig', $context);
+</code></pre>
+
+<h2 id="trim_words">trim_words</h2>
+
+<p><code class="prettyprint">trim_words( mixed $text, mixed $num_words=55, mixed $more=null, string $allowed_tags=</code>&ldquo;p a span b i br blockquote&rdquo;<code class="prettyprint">)</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$text</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$num_words</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$more</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$allowed_tags</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="twitterify">twitterify</h2>
+
+<p><code class="prettyprint">twitterify( mixed $ret )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$ret</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h3 id="class-timberhelper">Class: TimberHelper</h3>
+
+      </div>
+      <div class="dark-box">
+          <div class="lang-selector">
+                <a href="#" data-language-name="php">PHP</a>
+                <a href="#" data-language-name="handlebars">Twig</a>
+                <a href="#" data-language-name="html">HTML</a>
+          </div>
+      </div>
+    </div>
+  </body>
 </html>
