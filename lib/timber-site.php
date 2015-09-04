@@ -11,6 +11,7 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
     public $charset;
 
     /**
+     * @api
      * @var string
      */
     public $description;
@@ -22,6 +23,11 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
      * @var bool
      */
     public $multisite;
+
+    /**
+     * @api
+     * @var string
+     */
     public $name;
     public $pingback_url;
     public $siteurl;
@@ -133,7 +139,17 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
     }
 
     /**
-     *
+     * Returns the link to the site's home.
+     * ```twig
+     * <a href="{{ site.link }}" title="Home">
+     * 	  <img src="/wp-content/uploads/logo.png" alt="Logo for some stupid thing" />
+     * </a>
+     * ```
+     * ```html
+     * <a href="http://example.org" title="Home">
+     * 	  <img src="/wp-content/uploads/logo.png" alt="Logo for some stupid thing" />
+     * </a>
+     * ```
      * @api
      * @return string
      */
