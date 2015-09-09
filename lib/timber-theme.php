@@ -88,7 +88,7 @@ class TimberTheme extends TimberCore {
 		$ss = $data->get_stylesheet();
 		$this->slug = $ss;
 
-		if ( !function_exists('get_home_path') ) {
+		if ( ! function_exists( 'get_home_path' ) ) {
 			require_once(ABSPATH . 'wp-admin/includes/file.php');
 		}
 
