@@ -21,4 +21,11 @@ class TimberIntegrations {
         }
 
     }
+
+	public static function maybe_init_wptypestimber() {
+
+		if ( defined( 'WPCF_META_PREFIX' ) ) {
+			new WpTypesTimber();
+		}
+	}
 }
