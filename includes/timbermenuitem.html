@@ -43,27 +43,27 @@
 <tr>
 <td><a href="#children">children</a></td>
 <td>array/bool</td>
-<td>Get the child <a href="#TimberMenuItem">TimberMenuItems</a>s of a <a href="#TimberMenuItem">TimberMenuItem</a></td>
+<td></td>
 </tr>
 <tr>
 <td><a href="#is_external">is_external</a></td>
 <td>bool</td>
-<td>Checks to see if the menu item is an external link so if my site is <code class="prettyprint">example.org</code>, <code class="prettyprint">google.com/whatever</code> is an external link. Helpful when creating rules for the target of a link</td>
+<td></td>
 </tr>
 <tr>
 <td><a href="#link">link</a></td>
-<td>string a full URL like http://mysite.com/thing/</td>
-<td>Get the full link to a Menu Item</td>
+<td>string</td>
+<td>a full URL like http://mysite.com/thing/</td>
 </tr>
 <tr>
 <td><a href="#name">name</a></td>
 <td>string</td>
-<td>The label for the menu item</td>
+<td></td>
 </tr>
 <tr>
 <td><a href="#slug">slug</a></td>
-<td>string the slug of the menu item kinda-like-this</td>
-<td>The slug for the menu item</td>
+<td>string</td>
+<td>the slug of the menu item kinda-like-this</td>
 </tr>
 </tbody></table>
 
@@ -71,7 +71,7 @@
 
 <p><code class="prettyprint">__construct( array/object $data )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <table><thead>
 <tr>
@@ -91,13 +91,13 @@
 
 <p><code class="prettyprint">__toString( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string the label for the menu item</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> the label for the menu item</p>
 
 <h2 id="add_child">add_child</h2>
 
 <p><code class="prettyprint">add_child( \TimberMenuItem $item )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <table><thead>
 <tr>
@@ -117,7 +117,7 @@
 
 <p><code class="prettyprint">add_class( mixed $class_name )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <p>add a class the menu item should have</p>
 
@@ -139,7 +139,7 @@
 
 <p><code class="prettyprint">children( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array/bool</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array/bool</code> </p>
 
 <p>Get the child <a href="#TimberMenuItem">TimberMenuItems</a>s of a <a href="#TimberMenuItem">TimberMenuItem</a></p>
 
@@ -147,7 +147,7 @@
 
 <p><code class="prettyprint">external( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool</code> </p>
 
 <p>Checks to see if a link is external, helpful when creating rules for the target of a link</p>
 
@@ -155,9 +155,11 @@
 
 <p><code class="prettyprint">is_external( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool</code> </p>
 
 <p>Checks to see if the menu item is an external link so if my site is <code class="prettyprint">example.org</code>, <code class="prettyprint">google.com/whatever</code> is an external link. Helpful when creating rules for the target of a link</p>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span> <span class="na">target=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">is_external</span> <span class="err">?</span> <span class="s1">'_blank'</span> <span class="err">:</span> <span class="s1">'_self'</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
 </code></pre>
 
@@ -165,9 +167,11 @@
 
 <p><code class="prettyprint">link( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string a full URL like http://mysite.com/thing/</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> a full URL like http://mysite.com/thing/</p>
 
 <p>Get the full link to a Menu Item</p>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    {% for item in menu.items %}
         <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
     {% endfor %}
@@ -177,7 +181,7 @@
 
 <p><code class="prettyprint">meta( string $key )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed whatever value is storied in the database</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> whatever value is storied in the database</p>
 
 <table><thead>
 <tr>
@@ -197,7 +201,7 @@
 
 <p><code class="prettyprint">name( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <p>The label for the menu item</p>
 
@@ -205,9 +209,11 @@
 
 <p><code class="prettyprint">path( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string the path of a URL like /foo</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> the path of a URL like /foo</p>
 
 <p>Return the relative path of a Menu Item&rsquo;s link</p>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    {% for item in menu.items %}
         <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">path</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
     {% endfor %}
@@ -217,9 +223,11 @@
 
 <p><code class="prettyprint">slug( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string the slug of the menu item kinda-like-this</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> the slug of the menu item kinda-like-this</p>
 
 <p>The slug for the menu item</p>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;ul&gt;</span>
         {% for item in menu.items %}
             <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">slug</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
@@ -227,13 +235,15 @@
              <span class="nt">&lt;/li&gt;</span>
         {% endfor %}
     <span class="nt">&lt;/ul&gt;</span>
+
 ## title
 `title( )`
 
-**returns:** `string the public label like Foo`
+**returns:** `string` the public label like Foo
 
 Gets the public label for the menu item
 
+###### Twig
 ```handlebars
     {% for item in menu.items %}
         <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>

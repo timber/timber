@@ -33,6 +33,24 @@
       <div class="content">
         <h1 id="timbersite">TimberSite</h1>
 
+<p>TimberSite gives you access to information you need about your site. In Multisite setups, you can get info on other sites in your network.</p>
+
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
+<span class="nv">$other_site_id</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'other_site'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberSite</span><span class="p">(</span><span class="nv">$other_site_id</span><span class="p">);</span>
+<span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'index.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+</code></pre>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>My site is called <span class="k">{{</span><span class="nv">site</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>, another site on my network is <span class="k">{{</span><span class="nv">other_site</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>My site is called Jared's blog, another site on my network is Upstatement.com
+</code></pre>
+
 <table><thead>
 <tr>
 <th>Name</th>
@@ -40,6 +58,11 @@
 <th>Description</th>
 </tr>
 </thead><tbody>
+<tr>
+<td>admin_email</td>
+<td>string</td>
+<td>the admin email address set in the WP admin panel</td>
+</tr>
 <tr>
 <td>charset</td>
 <td>string</td>
@@ -51,19 +74,39 @@
 <td></td>
 </tr>
 <tr>
+<td>id</td>
+<td>int</td>
+<td>the ID of a site in multisite</td>
+</tr>
+<tr>
+<td>language</td>
+<td>string</td>
+<td>the language setting ex: en-US</td>
+</tr>
+<tr>
+<td>language_attributes</td>
+<td>string</td>
+<td>of language attributes for usage in the <html> tag</td>
+</tr>
+<tr>
 <td><a href="#link">link</a></td>
 <td>string</td>
-<td>Returns the link to the site&rsquo;s home. <code class="prettyprint">handlebars &lt;a href=&quot;{{ site.link }}&quot; title=&quot;Home&quot;&gt; &lt;img src=&quot;/wp-content/uploads/logo.png&quot; alt=&quot;Logo for some stupid thing&quot; /&gt; &lt;/a&gt;</code> <code class="prettyprint">html &lt;a href=&quot;http://example.org&quot; title=&quot;Home&quot;&gt; &lt;img src=&quot;/wp-content/uploads/logo.png&quot; alt=&quot;Logo for some stupid thing&quot; /&gt; &lt;/a&gt;</code></td>
+<td></td>
 </tr>
 <tr>
 <td>multisite</td>
 <td>bool</td>
-<td></td>
+<td>true if multisite, false if plain ole&rsquo; WordPress</td>
 </tr>
 <tr>
 <td>name</td>
 <td>string</td>
 <td></td>
+</tr>
+<tr>
+<td>pingback_url</td>
+<td>string</td>
+<td>for people who like trackback spam</td>
 </tr>
 <tr>
 <td>theme</td>
@@ -86,7 +129,9 @@
 
 <p><code class="prettyprint">__construct( mixed/string/int $site_name_or_id=null )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
+
+<p>Constructs a TimberSite object</p>
 
 <table><thead>
 <tr>
@@ -102,86 +147,75 @@
 </tr>
 </tbody></table>
 
-<h2 id="__get">__get</h2>
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+    <span class="c1">//multisite setup
+</span>    <span class="nv">$site</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberSite</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="nv">$site_two</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberSite</span><span class="p">(</span><span class="s2">"My Cool Site"</span><span class="p">);</span>
+    <span class="c1">//non-multisite
+</span>    <span class="nv">$site</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberSite</span><span class="p">();</span>
+    <span class="sb">```
 
-<p><code class="prettyprint">__get( mixed $field )</code></p>
+## __get
+`</span><span class="nx">__get</span><span class="p">(</span> <span class="nx">mixed</span> <span class="nv">$field</span> <span class="p">)</span><span class="sb">`
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+**returns:** `</span><span class="nx">mixed</span><span class="sb">` 
 
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>$field</td>
-<td>mixed</td>
-<td></td>
-</tr>
-</tbody></table>
+Name | Type | Description
+---- | ---- | -----------
+$field | mixed | 
 
-<h2 id="link">link</h2>
 
-<p><code class="prettyprint">link( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+## link
+`</span><span class="nb">link</span><span class="p">(</span> <span class="p">)</span><span class="sb">`
 
-<p>Returns the link to the site&rsquo;s home. <code class="prettyprint">handlebars &lt;a href=&quot;{{ site.link }}&quot; title=&quot;Home&quot;&gt; &lt;img src=&quot;/wp-content/uploads/logo.png&quot; alt=&quot;Logo for some stupid thing&quot; /&gt; &lt;/a&gt;</code> <code class="prettyprint">html &lt;a href=&quot;http://example.org&quot; title=&quot;Home&quot;&gt; &lt;img src=&quot;/wp-content/uploads/logo.png&quot; alt=&quot;Logo for some stupid thing&quot; /&gt; &lt;/a&gt;</code></p>
+**returns:** `</span><span class="nx">string</span><span class="sb">` 
 
-<h2 id="meta">meta</h2>
+Returns the link to the site's home.
 
-<p><code class="prettyprint">meta( mixed $field )</code></p>
+###### Twig
+```</span><span class="nx">handlebars</span>
+    <span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="s2">"{{ site.link }}"</span> <span class="nx">title</span><span class="o">=</span><span class="s2">"Home"</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"/wp-content/uploads/logo.png"</span> <span class="nx">alt</span><span class="o">=</span><span class="s2">"Logo for some stupid thing"</span> <span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="nx">a</span><span class="o">&gt;</span>
+    <span class="sb">```
+    ###### HTML
+```</span><span class="nx">html</span>
+    <span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="s2">"http://example.org"</span> <span class="nx">title</span><span class="o">=</span><span class="s2">"Home"</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"/wp-content/uploads/logo.png"</span> <span class="nx">alt</span><span class="o">=</span><span class="s2">"Logo for some stupid thing"</span> <span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="nx">a</span><span class="o">&gt;</span>
+    <span class="sb">```
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+## url
+`</span><span class="nx">url</span><span class="p">(</span> <span class="p">)</span><span class="sb">`
 
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>$field</td>
-<td>mixed</td>
-<td></td>
-</tr>
-</tbody></table>
+**returns:** `</span><span class="nx">string</span><span class="sb">` 
 
-<h2 id="update">update</h2>
 
-<p><code class="prettyprint">update( mixed $key, mixed $value )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
 
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>$key</td>
-<td>mixed</td>
-<td></td>
-</tr>
-<tr>
-<td>$value</td>
-<td>mixed</td>
-<td></td>
-</tr>
-</tbody></table>
+### Class: TimberSite
 
-<h2 id="url">url</h2>
+&gt; TimberSite gives you access to information you need about your site. In Multisite setups, you can get info on other sites in your network.
 
-<p><code class="prettyprint">url( )</code></p>
+###### Example
+###### PHP
+```</span><span class="nx">php</span>
+<span class="o">&lt;?</span><span class="nx">php</span>
+<span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
+<span class="nv">$other_site_id</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'other_site'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberSite</span><span class="p">(</span><span class="nv">$other_site_id</span><span class="p">);</span>
+<span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'index.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+</code></pre>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>My site is called <span class="k">{{</span><span class="nv">site</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>, another site on my network is <span class="k">{{</span><span class="nv">other_site</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>
+</code></pre>
 
-<h3 id="class-timbersite">Class: TimberSite</h3>
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>My site is called Jared's blog, another site on my network is Upstatement.com
+</code></pre>
 
 <p><em>This class extends \TimberCore</em></p>
 

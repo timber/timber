@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_sidebars">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="sidebars">Sidebars</h1>
+
+<p>So you want a sidebar?</p>
+
+<h3 id="method-1-php-file">Method 1: PHP file</h3>
+
+<p>Let&rsquo;s say every page on the site has the same content going into its sidebar. If so, you would:
+* Create a <code class="prettyprint">sidebar.php</code> file in your theme directory (so <code class="prettyprint">wp-content/themes/mytheme/sidebar.php</code>)</p>
+<pre class="highlight php"><code># sidebar.php #
+$context = array();
+$context['widget'] = my_function_to_get_widget();
+$context['ad'] = my_function_to_get_an_ad();
+Timber::render('sidebar.twig', $context);
+</code></pre>
+
+<ul>
+<li>Use that php file within your main php file (home.php, single.php, archive.php, etc):</li>
+</ul>
+<pre class="highlight plaintext"><code># single.php #
+$context = Timber::get_context();
+$context['sidebar'] = Timber::get_sidebar('sidebar.php');
+Timber::render('single.twig', $context);
+</code></pre>
+
+<ul>
+<li>In the final twig file make sure you reserve a spot for your sidebar:</li>
+</ul>
+<pre class="highlight html"><code># single.twig #
+<span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"sidebar"</span><span class="nt">&gt;</span>
+    {{sidebar}}
+<span class="nt">&lt;/aside&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="method-2-twig-file">Method 2: Twig file</h3>
+
+<p>In this example, you would populate your sidebar from your main PHP file (home.php, single.php, archive.php, etc).</p>
+
+<ul>
+<li>Make a Twig file for what your sidebar should be&hellip;</li>
+</ul>
+<pre class="highlight html"><code># views/sidebar-related.twig #
+<span class="nt">&lt;h3&gt;</span>Related Stories<span class="nt">&lt;/h3&gt;</span>
+{% for post in related %}
+    <span class="nt">&lt;h4&gt;&lt;a</span> <span class="na">href=</span><span class="s">"{{post.get_path}}"</span><span class="nt">&gt;</span>{{post.post_title}}<span class="nt">&lt;/a&gt;&lt;/h4&gt;</span>
+{% endfor %}
+</code></pre>
+
+<ul>
+<li>Send data to it via your main PHP file</li>
+</ul>
+<pre class="highlight php"><code># single.php #
+$context = Timber::get_context();
+$post = new TimberPost();
+$post_cat = $post-&gt;get_terms('category');
+$post_cat = $post_cat[0]-&gt;ID;
+$context['post'] = $post;
+
+$sidebar_context = array();
+$sidebar_context['related'] = Timber::get_posts('cat='.$post_cat);
+$context['sidebar'] = Timber::get_sidebar('sidebar-related.twig', $sidebar_context);
+Timber::render('single.twig', $context);
+</code></pre>
+
+<ul>
+<li>In the final twig file make sure you have spot for your sidebar</li>
+</ul>
+<pre class="highlight html"><code># single.twig #
+<span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"sidebar"</span><span class="nt">&gt;</span>
+    {{sidebar}}
+<span class="nt">&lt;/aside&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="method-3-dynamic">Method 3: Dynamic</h3>
+
+<p>This is using WordPress&rsquo;s built-in dynamic_sidebar tools (which, confusingly, are referred to as &ldquo;Widgets&rdquo; in the interface). Since sidebar is already used; I used widgets in the code to describe these:</p>
+<pre class="highlight php"><code>$context = array();
+$context['dynamic_sidebar'] = Timber::get_widgets('dynamic_sidebar');
+Timber::render('sidebar.twig', $context);
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"my-sidebar"</span><span class="nt">&gt;</span>
+{{dynamic_sidebar}}
+<span class="nt">&lt;/aside&gt;</span>
+</code></pre>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

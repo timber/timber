@@ -33,6 +33,39 @@
       <div class="content">
         <h1 id="timberterm">TimberTerm</h1>
 
+<p>Terms: WordPress has got &lsquo;em, you want &#39;em. Categories. Tags. Custom Taxonomies. You don&rsquo;t care, you&rsquo;re a fiend. Well let&rsquo;s get this under control</p>
+
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="c1">//Get a term by its ID
+</span><span class="nv">$context</span><span class="p">[</span><span class="s1">'term'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberTerm</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+<span class="c1">//Get a term when on a term archive page
+</span><span class="nv">$context</span><span class="p">[</span><span class="s1">'term_page'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberTerm</span><span class="p">();</span>
+<span class="c1">//Get a term with a slug
+</span><span class="nv">$context</span><span class="p">[</span><span class="s1">'team'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberTerm</span><span class="p">(</span><span class="s1">'patriots'</span><span class="p">);</span>
+<span class="c1">//Get a team with a slug from a specific taxonomy
+</span><span class="nv">$context</span><span class="p">[</span><span class="s1">'st_louis'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberTerm</span><span class="p">(</span><span class="s1">'cardinals'</span><span class="p">,</span> <span class="s1">'baseball'</span><span class="p">);</span>
+<span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'index.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+</code></pre>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code><span class="nt">&lt;h2&gt;</span><span class="k">{{</span><span class="nv">term_page</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> Archives<span class="nt">&lt;/h2&gt;</span>
+<span class="nt">&lt;h3&gt;</span>Teams<span class="nt">&lt;/h3&gt;</span>
+<span class="nt">&lt;ul&gt;</span>
+    <span class="nt">&lt;li&gt;</span><span class="k">{{</span><span class="nv">st_louis</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> - <span class="k">{{</span><span class="nv">st_louis</span><span class="p">.</span><span class="nv">description</span><span class="k">}}</span><span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span><span class="k">{{</span><span class="nv">team</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> - <span class="k">{{</span><span class="nv">team</span><span class="p">.</span><span class="nv">description</span><span class="k">}}</span><span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code><span class="nt">&lt;h2&gt;</span>Team Archives<span class="nt">&lt;/h2&gt;</span>
+<span class="nt">&lt;h3&gt;</span>Teams<span class="nt">&lt;/h3&gt;</span>
+<span class="nt">&lt;ul&gt;</span>
+    <span class="nt">&lt;li&gt;</span>St. Louis Cardinals - Winner of 11 World Series<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span>New England Patriots - Winner of 4 Super Bowls<span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre>
+
 <table><thead>
 <tr>
 <th>Name</th>
@@ -43,6 +76,11 @@
 <tr>
 <td><a href="#children">children</a></td>
 <td>array</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#description">description</a></td>
+<td>string</td>
 <td></td>
 </tr>
 <tr>
@@ -89,9 +127,9 @@
 
 <h2 id="__construct">__construct</h2>
 
-<p><code class="prettyprint">__construct( mixed/int $tid=null, string $tax=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+<p><code class="prettyprint">__construct( mixed/int $tid=null, string $tax=&quot;&quot; )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <table><thead>
 <tr>
@@ -116,25 +154,33 @@
 
 <p><code class="prettyprint">__toString( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h2 id="children">children</h2>
 
 <p><code class="prettyprint">children( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array</code> </p>
+
+<h2 id="description">description</h2>
+
+<p><code class="prettyprint">description( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h2 id="edit_link">edit_link</h2>
 
 <p><code class="prettyprint">edit_link( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
-<h2 id="get_page">get_page</h2>
+<h2 id="get_page"><strike>get_page</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.20.0 this was a dumb idea</em></p>
 
 <p><code class="prettyprint">get_page( int $i )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <table><thead>
 <tr>
@@ -150,47 +196,17 @@
 </tr>
 </tbody></table>
 
-<h2 id="get_posts">get_posts</h2>
-
-<p><code class="prettyprint">get_posts( mixed/int $numberposts=10, string $post_type=</code>&ldquo;any&rdquo;<code class="prettyprint">, string $PostClass=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
-
-<p><strong>returns:</strong> <code class="prettyprint">array/bool/null</code></p>
-
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>$numberposts</td>
-<td>mixed/int</td>
-<td></td>
-</tr>
-<tr>
-<td>$post_type</td>
-<td>string</td>
-<td></td>
-</tr>
-<tr>
-<td>$PostClass</td>
-<td>string</td>
-<td></td>
-</tr>
-</tbody></table>
-
 <h2 id="link">link</h2>
 
 <p><code class="prettyprint">link( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h2 id="meta">meta</h2>
 
 <p><code class="prettyprint">meta( string $field_name )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <table><thead>
 <tr>
@@ -210,13 +226,13 @@
 
 <p><code class="prettyprint">path( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h2 id="posts">posts</h2>
 
-<p><code class="prettyprint">posts( mixed/int $numberposts_or_args=10, string $post_type_or_class=</code>&ldquo;any&rdquo;<code class="prettyprint">, string $post_class=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+<p><code class="prettyprint">posts( mixed/int $numberposts_or_args=10, string $post_type_or_class=&quot;any&quot;, string $post_class=&quot;&quot; )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array/bool/null</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array/bool/null</code> </p>
 
 <table><thead>
 <tr>
@@ -241,6 +257,8 @@
 <td></td>
 </tr>
 </tbody></table>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;h4&gt;</span>Recent posts in <span class="k">{{</span><span class="nv">term</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/h4&gt;</span>
     <span class="nt">&lt;ul&gt;</span>
     {% for post in term.posts(3, 'post') %}
@@ -253,13 +271,13 @@
 
 <p><code class="prettyprint">title( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h2 id="update">update</h2>
 
 <p><code class="prettyprint">update( mixed $key, mixed $value )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <table><thead>
 <tr>
@@ -280,13 +298,52 @@
 </tr>
 </tbody></table>
 
-<h2 id="url">url</h2>
+<h2 id="url"><strike>url</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.21.9 use TimberTerm::link() instead</em></p>
 
 <p><code class="prettyprint">url( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h3 id="class-timberterm">Class: TimberTerm</h3>
+
+<blockquote>
+<p>Terms: WordPress has got &#39;em, you want &#39;em. Categories. Tags. Custom Taxonomies. You don&rsquo;t care, you&rsquo;re a fiend. Well let&rsquo;s get this under control</p>
+</blockquote>
+
+<h6 id="example">Example</h6>
+
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="c1">//Get a term by its ID
+</span><span class="nv">$context</span><span class="p">[</span><span class="s1">'term'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberTerm</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+<span class="c1">//Get a term when on a term archive page
+</span><span class="nv">$context</span><span class="p">[</span><span class="s1">'term_page'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberTerm</span><span class="p">();</span>
+<span class="c1">//Get a term with a slug
+</span><span class="nv">$context</span><span class="p">[</span><span class="s1">'team'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberTerm</span><span class="p">(</span><span class="s1">'patriots'</span><span class="p">);</span>
+<span class="c1">//Get a team with a slug from a specific taxonomy
+</span><span class="nv">$context</span><span class="p">[</span><span class="s1">'st_louis'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberTerm</span><span class="p">(</span><span class="s1">'cardinals'</span><span class="p">,</span> <span class="s1">'baseball'</span><span class="p">);</span>
+<span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'index.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+</code></pre>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code><span class="nt">&lt;h2&gt;</span><span class="k">{{</span><span class="nv">term_page</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> Archives<span class="nt">&lt;/h2&gt;</span>
+<span class="nt">&lt;h3&gt;</span>Teams<span class="nt">&lt;/h3&gt;</span>
+<span class="nt">&lt;ul&gt;</span>
+    <span class="nt">&lt;li&gt;</span><span class="k">{{</span><span class="nv">st_louis</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> - <span class="k">{{</span><span class="nv">st_louis</span><span class="p">.</span><span class="nv">description</span><span class="k">}}</span><span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span><span class="k">{{</span><span class="nv">team</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> - <span class="k">{{</span><span class="nv">team</span><span class="p">.</span><span class="nv">description</span><span class="k">}}</span><span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code><span class="nt">&lt;h2&gt;</span>Team Archives<span class="nt">&lt;/h2&gt;</span>
+<span class="nt">&lt;h3&gt;</span>Teams<span class="nt">&lt;/h3&gt;</span>
+<span class="nt">&lt;ul&gt;</span>
+    <span class="nt">&lt;li&gt;</span>St. Louis Cardinals - Winner of 11 World Series<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span>New England Patriots - Winner of 4 Super Bowls<span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre>
 
 <p><em>This class extends \TimberCore</em></p>
 

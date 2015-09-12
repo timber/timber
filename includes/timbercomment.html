@@ -34,13 +34,20 @@
         <h1 id="timbercomment">TimberComment</h1>
 
 <p>The TimberComment class is used to view the output of comments. 99% of the time this will be in the context of the comments on a post. However you can also fetch a comment directly using its comment ID.</p>
-<pre class="highlight php"><code>$comment = new TimberComment($comment_id);
-$context['comment_of_the_day'] = $comment;
-Timber::render('index.twig', $context);
+
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="nv">$comment</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberComment</span><span class="p">(</span><span class="nv">$comment_id</span><span class="p">);</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'comment_of_the_day'</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$comment</span><span class="p">;</span>
+<span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'index.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
 </code></pre>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">comment_of_the_day</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
 <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment-attribution"</span><span class="nt">&gt;</span>- <span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>But, O Sarah! If the dead can come back to this earth and flit unseen around those they loved, I shall always be near you; in the garish day and in the darkest night -- amidst your happiest scenes and gloomiest hours - always, always; and if there be a soft breeze upon your cheek, it shall be my breath; or the cool air fans your throbbing temple, it shall be my spirit passing by.<span class="nt">&lt;/p&gt;</span>
 <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment-attribution"</span><span class="nt">&gt;</span>- Sullivan Ballou<span class="nt">&lt;/p&gt;</span>
 </code></pre>
@@ -65,7 +72,7 @@ Timber::render('index.twig', $context);
 <tr>
 <td><a href="#avatar">avatar</a></td>
 <td>bool/mixed/string</td>
-<td>Fetches the Gravatar</td>
+<td></td>
 </tr>
 <tr>
 <td><a href="#content">content</a></td>
@@ -88,7 +95,7 @@ Timber::render('index.twig', $context);
 
 <p><code class="prettyprint">__construct( int $cid )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <table><thead>
 <tr>
@@ -108,19 +115,29 @@ Timber::render('index.twig', $context);
 
 <p><code class="prettyprint">__toString( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <h2 id="approved">approved</h2>
 
 <p><code class="prettyprint">approved( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">boolean</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">boolean</code> </p>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>    {% if comment.approved %}
+        Your comment is good
+    {% else %}
+        Do you kiss your mother with that mouth?
+    {% endif %}
+</code></pre>
 
 <h2 id="author">author</h2>
 
 <p><code class="prettyprint">author( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">\TimberUser</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">\TimberUser</code> </p>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;h3&gt;</span>Comments by...<span class="nt">&lt;/h3&gt;</span>
     <span class="nt">&lt;ol&gt;</span>
     {% for comment in post.comments %}
@@ -128,6 +145,8 @@ Timber::render('index.twig', $context);
     {% endfor %}
     <span class="nt">&lt;/ol&gt;</span>
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code>    <span class="nt">&lt;h3&gt;</span>Comments by...<span class="nt">&lt;/h3&gt;</span>
     <span class="nt">&lt;ol&gt;</span>
         <span class="nt">&lt;li&gt;</span>Jared Novack, who is a contributor<span class="nt">&lt;/li&gt;</span>
@@ -138,9 +157,9 @@ Timber::render('index.twig', $context);
 
 <h2 id="avatar">avatar</h2>
 
-<p><code class="prettyprint">avatar( mixed/int $size=92, string $default=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+<p><code class="prettyprint">avatar( mixed/int $size=92, string $default=&quot;&quot; )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool/mixed/string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool/mixed/string</code> </p>
 
 <p>Fetches the Gravatar</p>
 
@@ -162,8 +181,12 @@ Timber::render('index.twig', $context);
 <td></td>
 </tr>
 </tbody></table>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">avatar</span><span class="err">(</span><span class="nv">36</span><span class="err">,</span><span class="nv">template_uri</span><span class="err">~</span><span class="s2">"/img/dude.jpg"</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"Image of </span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"http://gravatar.com/i/sfsfsdfasdfsfa.jpg"</span> <span class="na">alt=</span><span class="s">"Image of Katherine Rich"</span> <span class="nt">/&gt;</span>
 </code></pre>
 
@@ -171,13 +194,13 @@ Timber::render('index.twig', $context);
 
 <p><code class="prettyprint">content( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h2 id="date">date</h2>
 
-<p><code class="prettyprint">date( string $date_format=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+<p><code class="prettyprint">date( string $date_format=&quot;&quot; )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <table><thead>
 <tr>
@@ -193,17 +216,33 @@ Timber::render('index.twig', $context);
 </tr>
 </tbody></table>
 
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>    {% for comment in post.comments %}
+    <span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"date"</span><span class="nt">&gt;</span>Posted on <span class="k">{{</span> <span class="nv">comment</span><span class="p">.</span><span class="nv">date</span> <span class="k">}}</span>:<span class="nt">&lt;/p&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">comment</span><span class="p">.</span><span class="nv">content</span> <span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/article&gt;</span>
+    {% endfor %}
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>    <span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"date"</span><span class="nt">&gt;</span>Posted on September 28, 2015:<span class="nt">&lt;/p&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>Happy Birthday!<span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/article&gt;</span>
+</code></pre>
+
 <h2 id="is_child">is_child</h2>
 
 <p><code class="prettyprint">is_child( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool</code> </p>
 
 <h2 id="meta">meta</h2>
 
 <p><code class="prettyprint">meta( string $field_name )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <table><thead>
 <tr>
@@ -226,13 +265,20 @@ Timber::render('index.twig', $context);
 </blockquote>
 
 <h6 id="example">Example</h6>
-<pre class="highlight php"><code>$comment = new TimberComment($comment_id);
-$context['comment_of_the_day'] = $comment;
-Timber::render('index.twig', $context);
+
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="nv">$comment</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberComment</span><span class="p">(</span><span class="nv">$comment_id</span><span class="p">);</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'comment_of_the_day'</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$comment</span><span class="p">;</span>
+<span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'index.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
 </code></pre>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">comment_of_the_day</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
 <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment-attribution"</span><span class="nt">&gt;</span>- <span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>But, O Sarah! If the dead can come back to this earth and flit unseen around those they loved, I shall always be near you; in the garish day and in the darkest night -- amidst your happiest scenes and gloomiest hours - always, always; and if there be a soft breeze upon your cheek, it shall be my breath; or the cool air fans your throbbing temple, it shall be my spirit passing by.<span class="nt">&lt;/p&gt;</span>
 <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment-attribution"</span><span class="nt">&gt;</span>- Sullivan Ballou<span class="nt">&lt;/p&gt;</span>
 </code></pre>

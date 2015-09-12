@@ -34,7 +34,10 @@
         <h1 id="timbermenu">TimberMenu</h1>
 
 <p>In Timber, you can use TimberMenu() to make a standard Wordpress menu available to the Twig template as an object you can loop through. And once the menu becomes available to the context, you can get items from it in a way that is a little smoother and more versatile than Wordpress&rsquo;s wp_nav_menu. (You need never again rely on a crazy &ldquo;Walker Function!&rdquo;). The first thing to do is to initialize the menu using TimberMenu(). This will make the menu available as an object to work with in the context. (TimberMenu can include a Wordpress menu slug or ID, or it can be sent with no parameter&ndash;and guess the right menu.)</p>
+
+<h6 id="php">PHP</h6>
 <pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="o">&lt;?</span><span class="nx">php</span>
 <span class="c1"># functions.php
 </span><span class="nx">add_filter</span><span class="p">(</span><span class="s1">'timber/context'</span><span class="p">,</span> <span class="s1">'add_to_context'</span><span class="p">);</span>
 <span class="k">function</span> <span class="nf">add_to_context</span><span class="p">(</span><span class="nv">$data</span><span class="p">){</span>
@@ -51,6 +54,8 @@
 <span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'index.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
 <span class="cp">?&gt;</span>
 </code></pre>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code><span class="nt">&lt;nav&gt;</span>
     <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"main-nav"</span><span class="nt">&gt;</span>
     {% for item in menu.get_items %}
@@ -101,7 +106,7 @@
 
 <p><code class="prettyprint">__construct( int/string $slug )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <table><thead>
 <tr>
@@ -121,7 +126,7 @@
 
 <p><code class="prettyprint">find_parent_item_in_menu( array $menu_items, int $parent_id )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">\TimberMenuItem/null</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">\TimberMenuItem/null</code> </p>
 
 <table><thead>
 <tr>
@@ -146,7 +151,7 @@
 
 <p><code class="prettyprint">get_items( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array</code> </p>
 
 <h3 id="class-timbermenu">Class: TimberMenu</h3>
 
@@ -155,7 +160,10 @@
 </blockquote>
 
 <h6 id="example">Example</h6>
+
+<h6 id="php">PHP</h6>
 <pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="o">&lt;?</span><span class="nx">php</span>
 <span class="c1"># functions.php
 </span><span class="nx">add_filter</span><span class="p">(</span><span class="s1">'timber/context'</span><span class="p">,</span> <span class="s1">'add_to_context'</span><span class="p">);</span>
 <span class="k">function</span> <span class="nf">add_to_context</span><span class="p">(</span><span class="nv">$data</span><span class="p">){</span>
@@ -172,6 +180,8 @@
 <span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'index.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
 <span class="cp">?&gt;</span>
 </code></pre>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code><span class="nt">&lt;nav&gt;</span>
     <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"main-nav"</span><span class="nt">&gt;</span>
     {% for item in menu.get_items %}

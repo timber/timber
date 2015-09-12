@@ -34,13 +34,20 @@
         <h1 id="timbertheme">TimberTheme</h1>
 
 <p>Need to display info about your theme? Well you&rsquo;ve come to the right place. By default info on the current theme comes for free with what&rsquo;s fetched by <code class="prettyprint">Timber::get_context()</code> in which case you can access it your theme like so:</p>
+
+<h6 id="php">PHP</h6>
 <pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="o">&lt;?</span><span class="nx">php</span>
 <span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
 <span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'index.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
 <span class="cp">?&gt;</span>
 </code></pre>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">theme</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">/static/js/all.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"http://example.org/wp-content/themes/my-theme/static/js/all.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 </code></pre>
 
@@ -87,7 +94,7 @@
 
 <p><code class="prettyprint">__construct( mixed/string $slug=null )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <p>Constructs a new TimberTheme object. NOTE the TimberTheme object of the current theme comes in the default <code class="prettyprint">Timber::get_context()</code> call. You can access this in your twig template via `{{site.theme}}.</p>
 
@@ -104,14 +111,21 @@
 <td></td>
 </tr>
 </tbody></table>
-<pre class="highlight php"><code>    <span class="cp">&lt;?php</span>
+
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+    <span class="o">&lt;?</span><span class="nx">php</span>
         <span class="nv">$theme</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberTheme</span><span class="p">(</span><span class="s2">"my-theme"</span><span class="p">);</span>
         <span class="nv">$context</span><span class="p">[</span><span class="s1">'theme_stuff'</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$theme</span><span class="p">;</span>
         <span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'single.'</span><span class="p">)</span>
     <span class="cp">?&gt;</span>
 </code></pre>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    We are currently using the <span class="k">{{</span> <span class="nv">theme_stuff</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span> theme.
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code>    We are currently using the My Theme theme.
 </code></pre>
 
@@ -119,7 +133,7 @@
 
 <p><code class="prettyprint">theme_mod( string $name, bool $default=false )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <table><thead>
 <tr>
@@ -144,7 +158,7 @@
 
 <p><code class="prettyprint">theme_mods( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array</code> </p>
 
 <h3 id="class-timbertheme">Class: TimberTheme</h3>
 
@@ -153,13 +167,20 @@
 </blockquote>
 
 <h6 id="example">Example</h6>
+
+<h6 id="php">PHP</h6>
 <pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="o">&lt;?</span><span class="nx">php</span>
 <span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
 <span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'index.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
 <span class="cp">?&gt;</span>
 </code></pre>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">theme</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">/static/js/all.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"http://example.org/wp-content/themes/my-theme/static/js/all.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 </code></pre>
 

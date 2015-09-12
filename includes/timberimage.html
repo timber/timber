@@ -34,14 +34,19 @@
         <h1 id="timberimage">TimberImage</h1>
 
 <p>If TimberPost is the class you&rsquo;re going to spend the most time, TimberImage is the class you&rsquo;re going to have the most fun with.</p>
-<pre class="highlight php"><code>$context = Timber::get_context();
-$post = new TimberPost();
-$context['post'] = $post;
-// lets say you have an alternate large 'cover image' for your post stored in a custom field which returns an image ID
-$cover_image_id = $post-&gt;cover_image;
-$context['cover_image'] = new TimberImage($cover_image_id);
-Timber::render('single.twig', $context);
+
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
+<span class="nv">$post</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberPost</span><span class="p">();</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'post'</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$post</span><span class="p">;</span>
+<span class="c1">// lets say you have an alternate large 'cover image' for your post stored in a custom field which returns an image ID
+</span><span class="nv">$cover_image_id</span> <span class="o">=</span> <span class="nv">$post</span><span class="o">-&gt;</span><span class="na">cover_image</span><span class="p">;</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'cover_image'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberImage</span><span class="p">(</span><span class="nv">$cover_image_id</span><span class="p">);</span>
+<span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'single.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
 </code></pre>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code><span class="nt">&lt;article&gt;</span>
     <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">cover_image</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"cover-image"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
@@ -51,6 +56,8 @@ Timber::render('single.twig', $context);
     <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">Image</span><span class="err">(</span><span class="nv">post</span><span class="p">.</span><span class="nv">custom_field_with_image_id</span><span class="err">)</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"Another way to initialize images as TimberImages, but within Twig"</span> <span class="nt">/&gt;</span>
 <span class="nt">&lt;/article&gt;</span>
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code><span class="nt">&lt;article&gt;</span>
     <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"http://example.org/wp-content/uploads/2015/06/nevermind.jpg"</span> <span class="na">class=</span><span class="s">"cover-image"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span>Now you've done it!<span class="nt">&lt;/h1&gt;</span>
@@ -70,8 +77,8 @@ Timber::render('single.twig', $context);
 </thead><tbody>
 <tr>
 <td><a href="#alt">alt</a></td>
-<td>string alt text stored in WordPress</td>
-<td></td>
+<td>string</td>
+<td>alt text stored in WordPress</td>
 </tr>
 <tr>
 <td><a href="#aspect">aspect</a></td>
@@ -104,14 +111,19 @@ Timber::render('single.twig', $context);
 <td>$id the numeric WordPress id of a post</td>
 </tr>
 <tr>
+<td><a href="#link">link</a></td>
+<td>void</td>
+<td></td>
+</tr>
+<tr>
 <td><a href="#parent">parent</a></td>
 <td>bool/\TimberPost</td>
 <td></td>
 </tr>
 <tr>
 <td><a href="#path">path</a></td>
-<td>string the /relative/path/to/the/file</td>
-<td></td>
+<td>string</td>
+<td>the /relative/path/to/the/file</td>
 </tr>
 <tr>
 <td>post_status</td>
@@ -142,9 +154,11 @@ Timber::render('single.twig', $context);
 
 <h2 id="__construct">__construct</h2>
 
-<p><code class="prettyprint">__construct( int $iid )</code></p>
+<p><code class="prettyprint">__construct( int/string $iid )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
+
+<p>Creates a new TimberImage object</p>
 
 <table><thead>
 <tr>
@@ -155,28 +169,46 @@ Timber::render('single.twig', $context);
 </thead><tbody>
 <tr>
 <td>$iid</td>
-<td>int</td>
+<td>int/string</td>
 <td></td>
 </tr>
 </tbody></table>
+
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+    <span class="c1">// You can pass it an ID number
+</span>    <span class="nv">$myImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberImage</span><span class="p">(</span><span class="mi">552</span><span class="p">);</span>
+        <span class="c1">//Or send it a URL to an image
+</span>    <span class="nv">$myImage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberImage</span><span class="p">(</span><span class="s1">'http://google.com/logo.jpg'</span><span class="p">);</span>
+</code></pre>
 
 <h2 id="__tostring">__toString</h2>
 
 <p><code class="prettyprint">__toString( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> the src of the file</p>
 
 <h2 id="alt">alt</h2>
 
 <p><code class="prettyprint">alt( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string alt text stored in WordPress</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> alt text stored in WordPress</p>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">alt</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"http://example.org/wp-content/uploads/2015/08/pic.jpg"</span> <span class="na">alt=</span><span class="s">"W3 Checker told me to add alt text, so I am"</span> <span class="nt">/&gt;</span>
+</code></pre>
 
 <h2 id="aspect">aspect</h2>
 
 <p><code class="prettyprint">aspect( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">\float</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">\float</code> </p>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    {% if post.thumbnail.aspect <span class="nt">&lt; 1</span> <span class="err">%}</span>
         <span class="err">{#</span> <span class="na">handle</span> <span class="na">vertical</span> <span class="na">image</span> <span class="err">#}</span>
         <span class="err">&lt;</span><span class="na">img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">300</span><span class="err">,</span> <span class="nv">500</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"A basketball player"</span> <span class="nt">/&gt;</span>
@@ -185,55 +217,77 @@ Timber::render('single.twig', $context);
     {% endif %}
 </code></pre>
 
-<h2 id="get_dimensions">get_dimensions</h2>
+<h2 id="get_pathinfo">get_pathinfo</h2>
 
-<p><code class="prettyprint">get_dimensions( mixed/string $dim=null )</code></p>
+<p><code class="prettyprint">get_pathinfo( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array/int</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array</code> </p>
 
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>$dim</td>
-<td>mixed/string</td>
-<td></td>
-</tr>
-</tbody></table>
+<p>Get a PHP array with pathinfo() info from the file</p>
 
-<h2 id="get_url">get_url</h2>
+<h2 id="get_url"><strike>get_url</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> use src() instead</em></p>
 
 <p><code class="prettyprint">get_url( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h2 id="height">height</h2>
 
 <p><code class="prettyprint">height( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">int</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">int</code> </p>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">height=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">height</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"http://example.org/wp-content/uploads/2015/08/pic.jpg"</span> <span class="na">height=</span><span class="s">"900"</span> <span class="nt">/&gt;</span>
+</code></pre>
+
+<h2 id="link">link</h2>
+
+<p><code class="prettyprint">link( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
+
+<p>Returns the link to an image attachment&rsquo;s Permalink page (NOT the link for the image itself!!)</p>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s"> "</span><span class="nt">/&gt;&lt;/a&gt;</span>
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://example.org/my-cool-picture"</span><span class="nt">&gt;&lt;img</span> <span class="na">src=</span><span class="s">"http://example.org/wp-content/uploads/2015/whatever.jpg"</span><span class="nt">/&gt;&lt;/a&gt;</span>
+</code></pre>
 
 <h2 id="parent">parent</h2>
 
 <p><code class="prettyprint">parent( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool/\TimberPost</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool/\TimberPost</code> </p>
 
 <h2 id="path">path</h2>
 
 <p><code class="prettyprint">path( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string the /relative/path/to/the/file</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> the /relative/path/to/the/file</p>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">path</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"/wp-content/uploads/2015/08/pic.jpg"</span> <span class="nt">/&gt;</span>
+</code></pre>
 
 <h2 id="src">src</h2>
 
-<p><code class="prettyprint">src( string $size=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+<p><code class="prettyprint">src( string $size=&quot;&quot; )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool/string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool/string</code> </p>
 
 <table><thead>
 <tr>
@@ -248,27 +302,43 @@ Timber::render('single.twig', $context);
 <td>a size known to WordPress (like &ldquo;medium&rdquo;)</td>
 </tr>
 </tbody></table>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
     <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
 </code></pre>
 
-<h2 id="url">url</h2>
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"http://example.org/wp-content/uploads/2015/08/pic.jpg"</span> <span class="nt">/&gt;</span>
+</code></pre>
+
+<h2 id="url"><strike>url</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> use src() instead</em></p>
 
 <p><code class="prettyprint">url( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h2 id="width">width</h2>
 
 <p><code class="prettyprint">width( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">int</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">int</code> </p>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">width=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">width</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"http://example.org/wp-content/uploads/2015/08/pic.jpg"</span> <span class="na">width=</span><span class="s">"1600"</span> <span class="nt">/&gt;</span>
+</code></pre>
 
 <h2 id="wp_upload_dir">wp_upload_dir</h2>
 
 <p><code class="prettyprint">wp_upload_dir( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <h3 id="class-timberimage">Class: TimberImage</h3>
 
@@ -277,14 +347,19 @@ Timber::render('single.twig', $context);
 </blockquote>
 
 <h6 id="example">Example</h6>
-<pre class="highlight php"><code>$context = Timber::get_context();
-$post = new TimberPost();
-$context['post'] = $post;
-// lets say you have an alternate large 'cover image' for your post stored in a custom field which returns an image ID
-$cover_image_id = $post-&gt;cover_image;
-$context['cover_image'] = new TimberImage($cover_image_id);
-Timber::render('single.twig', $context);
+
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
+<span class="nv">$post</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberPost</span><span class="p">();</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'post'</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$post</span><span class="p">;</span>
+<span class="c1">// lets say you have an alternate large 'cover image' for your post stored in a custom field which returns an image ID
+</span><span class="nv">$cover_image_id</span> <span class="o">=</span> <span class="nv">$post</span><span class="o">-&gt;</span><span class="na">cover_image</span><span class="p">;</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'cover_image'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberImage</span><span class="p">(</span><span class="nv">$cover_image_id</span><span class="p">);</span>
+<span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'single.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
 </code></pre>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code><span class="nt">&lt;article&gt;</span>
     <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">cover_image</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"cover-image"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
@@ -294,6 +369,8 @@ Timber::render('single.twig', $context);
     <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">Image</span><span class="err">(</span><span class="nv">post</span><span class="p">.</span><span class="nv">custom_field_with_image_id</span><span class="err">)</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"Another way to initialize images as TimberImages, but within Twig"</span> <span class="nt">/&gt;</span>
 <span class="nt">&lt;/article&gt;</span>
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code><span class="nt">&lt;article&gt;</span>
     <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"http://example.org/wp-content/uploads/2015/06/nevermind.jpg"</span> <span class="na">class=</span><span class="s">"cover-image"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span>Now you've done it!<span class="nt">&lt;/h1&gt;</span>

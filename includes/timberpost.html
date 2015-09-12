@@ -34,13 +34,18 @@
         <h1 id="timberpost">TimberPost</h1>
 
 <p>This is the object you use to access or extend WordPress posts. Think of it as Timber&rsquo;s (more accessible) version of WP_Post. This is used throughout Timber to represent posts retrieved from WordPress making them available to Twig templates. See the PHP and Twig examples for an example of what it&rsquo;s like to work with this object in your code.</p>
+
+<h6 id="php">PHP</h6>
 <pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="o">&lt;?</span><span class="nx">php</span>
 <span class="c1">// single.php, see connected twig example
 </span><span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
 <span class="nv">$context</span><span class="p">[</span><span class="s1">'post'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberPost</span><span class="p">();</span> <span class="c1">// It's a new TimberPost object, but an existing post from WordPress.
 </span><span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'single.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
 <span class="cp">?&gt;</span>
 </code></pre>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>{# single.twig #}
 <span class="nt">&lt;article&gt;</span>
     <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
@@ -49,6 +54,8 @@
     <span class="nt">&lt;/div&gt;</span>
 <span class="nt">&lt;/article&gt;</span>
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code><span class="nt">&lt;article&gt;</span>
     <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span>The Empire Strikes Back<span class="nt">&lt;/h1&gt;</span>
     <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
@@ -66,23 +73,23 @@
 </thead><tbody>
 <tr>
 <td><a href="#author">author</a></td>
-<td>\TimberUser/bool A TimberUser object if found, false if not</td>
-<td>Return the author of a post</td>
+<td>\TimberUser/bool</td>
+<td>A TimberUser object if found, false if not</td>
 </tr>
 <tr>
 <td><a href="#categories">categories</a></td>
-<td>array of TimberTerms</td>
-<td>Get the categoires on a particular post</td>
+<td>array</td>
+<td>of TimberTerms</td>
 </tr>
 <tr>
 <td><a href="#category">category</a></td>
 <td>\TimberTerm/null</td>
-<td>Returns a category attached to a post</td>
+<td></td>
 </tr>
 <tr>
 <td><a href="#children">children</a></td>
 <td>array</td>
-<td>Returns an array of children on the post as TimberPosts (or other claass as you define).</td>
+<td></td>
 </tr>
 <tr>
 <td>class</td>
@@ -92,17 +99,17 @@
 <tr>
 <td><a href="#comments">comments</a></td>
 <td>bool/array</td>
-<td>Gets the comments on a TimberPost and returns them as an array of <a href="#TimberComment">TimberComments</a> (or whatever comment class you set).</td>
+<td></td>
 </tr>
 <tr>
 <td><a href="#content">content</a></td>
 <td>string</td>
-<td>Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).</td>
+<td></td>
 </tr>
 <tr>
 <td><a href="#date">date</a></td>
 <td>string</td>
-<td>Get the date to use in your template!</td>
+<td></td>
 </tr>
 <tr>
 <td><a href="#format">format</a></td>
@@ -111,8 +118,8 @@
 </tr>
 <tr>
 <td><a href="#get_preview">get_preview</a></td>
-<td>string of the post preview</td>
-<td>get a preview of your post, if you have an excerpt it will use that, otherwise it will pull from the post_content. If there&rsquo;s a &lt;!&ndash; more &ndash;&gt; tag it will use that to mark where to pull through.</td>
+<td>string</td>
+<td>of the post preview</td>
 </tr>
 <tr>
 <td>id</td>
@@ -121,8 +128,8 @@
 </tr>
 <tr>
 <td><a href="#link">link</a></td>
-<td>string ex: http://example.org/2015/07/my-awesome-post</td>
-<td>get the permalink for a post object</td>
+<td>string</td>
+<td>ex: http://example.org/2015/07/my-awesome-post</td>
 </tr>
 <tr>
 <td><a href="#next">next</a></td>
@@ -132,12 +139,12 @@
 <tr>
 <td><a href="#parent">parent</a></td>
 <td>bool/<a href="#class-timberpost">\TimberPost</a></td>
-<td>Gets the parent (if one exists) from a post as a TimberPost object (or whatever is set in TimberPost::$PostClass)</td>
+<td></td>
 </tr>
 <tr>
 <td><a href="#path">path</a></td>
 <td>string</td>
-<td>Gets the relative path of a WP Post, so while link() will return http://example.org/2015/07/my-cool-post this will return just /2015/07/my-cool-post</td>
+<td></td>
 </tr>
 <tr>
 <td>post_status</td>
@@ -152,7 +159,7 @@
 <tr>
 <td><a href="#prev">prev</a></td>
 <td>mixed</td>
-<td>Get the previous post in a set</td>
+<td></td>
 </tr>
 <tr>
 <td>slug</td>
@@ -162,22 +169,22 @@
 <tr>
 <td><a href="#tags">tags</a></td>
 <td>array</td>
-<td>Gets the tags on a post, uses WP&rsquo;s post_tag taxonomy</td>
+<td></td>
 </tr>
 <tr>
 <td><a href="#terms">terms</a></td>
 <td>array</td>
-<td>Get the terms associated with the post This goes across all taxonomies by default</td>
+<td></td>
 </tr>
 <tr>
 <td><a href="#thumbnail">thumbnail</a></td>
-<td>\TimberImage/null of your thumbnail</td>
-<td>get the featured image as a TimberImage</td>
+<td>\TimberImage/null</td>
+<td>of your thumbnail</td>
 </tr>
 <tr>
 <td><a href="#title">title</a></td>
 <td>string</td>
-<td>Returns the processed title to be used in templates. This returns the title of the post after WP&rsquo;s filters have run. This is analogous to <code class="prettyprint">the_title()</code> in standard WP template tags.</td>
+<td></td>
 </tr>
 </tbody></table>
 
@@ -185,7 +192,7 @@
 
 <p><code class="prettyprint">__construct( mixed $pid=null )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <p>If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop</p>
 
@@ -202,15 +209,18 @@
 <td></td>
 </tr>
 </tbody></table>
-<pre class="highlight php"><code>    $post = new TimberPost();
-    $other_post = new TimberPost($random_post_id);
+
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+    <span class="nv">$post</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberPost</span><span class="p">();</span>
+    <span class="nv">$other_post</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberPost</span><span class="p">(</span><span class="nv">$random_post_id</span><span class="p">);</span>
 </code></pre>
 
 <h2 id="__tostring">__toString</h2>
 
 <p><code class="prettyprint">__toString( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <p>Outputs the title of the post if you do something like <code class="prettyprint">&lt;h1&gt;{{post}}&lt;/h1&gt;</code></p>
 
@@ -218,9 +228,11 @@
 
 <p><code class="prettyprint">author( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">\TimberUser/bool A TimberUser object if found, false if not</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">\TimberUser/bool</code> A TimberUser object if found, false if not</p>
 
 <p>Return the author of a post</p>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
     <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"byline"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
@@ -231,7 +243,7 @@
 
 <p><code class="prettyprint">categories( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array of TimberTerms</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array</code> of TimberTerms</p>
 
 <p>Get the categoires on a particular post</p>
 
@@ -239,15 +251,15 @@
 
 <p><code class="prettyprint">category( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">\TimberTerm/null</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">\TimberTerm/null</code> </p>
 
 <p>Returns a category attached to a post</p>
 
 <h2 id="children">children</h2>
 
-<p><code class="prettyprint">children( string $post_type=</code>&ldquo;any&rdquo;<code class="prettyprint">, bool/string/bool $childPostClass=false )</code></p>
+<p><code class="prettyprint">children( string $post_type=&quot;any&quot;, bool/string/bool $childPostClass=false )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array</code> </p>
 
 <p>Returns an array of children on the post as TimberPosts (or other claass as you define).</p>
 
@@ -269,6 +281,8 @@
 <td><em>optional</em> a custom post class (ex: &#39;MyTimberPost&rsquo;) to return the objects as. By default (false) it will use TimberPost::$post_class value.</td>
 </tr>
 </tbody></table>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    {% if post.children %}
         Here are the child pages:
         {% for child in page.children %}
@@ -279,9 +293,9 @@
 
 <h2 id="comments">comments</h2>
 
-<p><code class="prettyprint">comments( int $count, string $order=</code>&ldquo;wp&rdquo;<code class="prettyprint">, string $type=</code>&ldquo;comment&rdquo;<code class="prettyprint">, string $status=</code>&ldquo;approve&rdquo;<code class="prettyprint">, string $CommentClass=</code>&ldquo;TimberComment&rdquo;<code class="prettyprint">)</code></p>
+<p><code class="prettyprint">comments( int $count, string $order=&quot;wp&quot;, string $type=&quot;comment&quot;, string $status=&quot;approve&quot;, string $CommentClass=&quot;TimberComment&quot; )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool/array</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool/array</code> </p>
 
 <p>Gets the comments on a TimberPost and returns them as an array of <a href="#TimberComment">TimberComments</a> (or whatever comment class you set).</p>
 
@@ -318,6 +332,8 @@
 <td>What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending TimberComment for your site or app (obviously, totally optional)</td>
 </tr>
 </tbody></table>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    {# single.twig #}
     <span class="nt">&lt;h4&gt;</span>Comments:<span class="nt">&lt;/h4&gt;</span>
     {% for comment in post.comments %}
@@ -332,7 +348,7 @@
 
 <p><code class="prettyprint">content( int $page )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <p>Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).</p>
 
@@ -349,6 +365,8 @@
 <td></td>
 </tr>
 </tbody></table>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"article"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;h2&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h2&gt;</span>
         <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"content"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">content</span> <span class="k">}}</span><span class="nt">&lt;/div&gt;</span>
@@ -357,9 +375,9 @@
 
 <h2 id="date">date</h2>
 
-<p><code class="prettyprint">date( string $date_format=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+<p><code class="prettyprint">date( string $date_format=&quot;&quot; )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <p>Get the date to use in your template!</p>
 
@@ -376,10 +394,14 @@
 <td></td>
 </tr>
 </tbody></table>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    Published on <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">date</span> <span class="k">}}</span> // Uses WP's formatting set in Admin
     OR
     Published on <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">date</span> <span class="err">|</span> <span class="nv">date</span><span class="err">(</span><span class="s1">'F jS'</span><span class="err">)</span> <span class="k">}}</span> // Jan 12th
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code>    Published on January 12, 2015
     OR
     Published on Jan 12th
@@ -389,25 +411,25 @@
 
 <p><code class="prettyprint">edit_link( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool/string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool/string</code> </p>
 
 <h2 id="format">format</h2>
 
 <p><code class="prettyprint">format( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <h2 id="get_comment_count">get_comment_count</h2>
 
 <p><code class="prettyprint">get_comment_count( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">int</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">int</code> </p>
 
 <h2 id="get_content">get_content</h2>
 
 <p><code class="prettyprint">get_content( int $len, int $page )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <p>Displays the content of the post with filters, shortcodes and wpautop applied</p>
 
@@ -429,16 +451,22 @@
 <td></td>
 </tr>
 </tbody></table>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"article-text"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_content</span><span class="k">}}</span><span class="nt">&lt;/div&gt;</span>
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"article-text"</span><span class="nt">&gt;&lt;p&gt;</span>Blah blah blah<span class="nt">&lt;/p&gt;&lt;p&gt;</span>More blah blah blah.<span class="nt">&lt;/p&gt;&lt;/div&gt;</span>
 </code></pre>
 
-<h2 id="get_display_date">get_display_date</h2>
+<h2 id="get_display_date"><strike>get_display_date</strike></h2>
 
-<p><code class="prettyprint">get_display_date( string $use=</code>&ldquo;post_date&rdquo;<code class="prettyprint">)</code></p>
+<p><em><strong>DEPRECATED</strong> since 0.20.0</em></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><code class="prettyprint">get_display_date( string $use=&quot;post_date&quot; )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <p>Get the human-friendly date that should actually display in a .twig template</p>
 
@@ -460,7 +488,7 @@
 
 <p><code class="prettyprint">get_field( string $field_name )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <table><thead>
 <tr>
@@ -480,7 +508,7 @@
 
 <p><code class="prettyprint">get_image( string $field )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">\TimberImage</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">\TimberImage</code> </p>
 
 <table><thead>
 <tr>
@@ -500,19 +528,19 @@
 
 <p><code class="prettyprint">get_method_values( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array</code> </p>
 
 <h2 id="get_paged_content">get_paged_content</h2>
 
 <p><code class="prettyprint">get_paged_content( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h2 id="get_pagination">get_pagination</h2>
 
 <p><code class="prettyprint">get_pagination( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array</code> </p>
 
 <p>Get a data array of pagination so you can navigate to the previous/next for a paginated post</p>
 
@@ -520,19 +548,23 @@
 
 <p><code class="prettyprint">get_post_type( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <p>Here is my summary</p>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    This post is from <span class="nt">&lt;span&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">get_post_type</span><span class="p">.</span><span class="nv">labels</span><span class="p">.</span><span class="nv">plural</span> <span class="k">}}</span><span class="nt">&lt;/span&gt;</span>
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code>    This post is from <span class="nt">&lt;span&gt;</span>Recipes<span class="nt">&lt;/span&gt;</span>
 </code></pre>
 
 <h2 id="get_preview">get_preview</h2>
 
-<p><code class="prettyprint">get_preview( mixed/int $len=50, bool $force=false, string $readmore=</code>&ldquo;Read More&rdquo;<code class="prettyprint">, bool $strip=true )</code></p>
+<p><code class="prettyprint">get_preview( mixed/int $len=50, bool $force=false, string $readmore=&quot;Read More&quot;, bool $strip=true )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string of the post preview</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> of the post preview</p>
 
 <p>get a preview of your post, if you have an excerpt it will use that, otherwise it will pull from the post_content. If there&rsquo;s a &lt;!&ndash; more &ndash;&gt; tag it will use that to mark where to pull through.</p>
 
@@ -564,14 +596,16 @@
 <td>Strip tags? yes or no. tell me!</td>
 </tr>
 </tbody></table>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_preview</span><span class="err">(</span><span class="nv">50</span><span class="err">)</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
 </code></pre>
 
 <h2 id="has_term">has_term</h2>
 
-<p><code class="prettyprint">has_term( string/int $term_name_or_id, string $taxonomy=</code>&ldquo;all&rdquo;<code class="prettyprint">)</code></p>
+<p><code class="prettyprint">has_term( string/int $term_name_or_id, string $taxonomy=&quot;all&quot; )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool</code> </p>
 
 <table><thead>
 <tr>
@@ -596,7 +630,7 @@
 
 <p><code class="prettyprint">import_field( string $field_name )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <table><thead>
 <tr>
@@ -616,9 +650,11 @@
 
 <p><code class="prettyprint">link( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string ex: http://example.org/2015/07/my-awesome-post</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> ex: http://example.org/2015/07/my-awesome-post</p>
 
 <p>get the permalink for a post object</p>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>Read my post<span class="nt">&lt;/a&gt;</span>
 </code></pre>
 
@@ -626,7 +662,7 @@
 
 <p><code class="prettyprint">meta( mixed/string $field_name=null )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <table><thead>
 <tr>
@@ -646,19 +682,23 @@
 
 <p><code class="prettyprint">modified_author( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">\TimberUser/bool A TimberUser object if found, false if not</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">\TimberUser/bool</code> A TimberUser object if found, false if not</p>
 
 <p>Get the author (WordPress user) who last modified the post</p>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    Last updated by <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">modified_author</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span>
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code>    Last updated by Harper Lee
 </code></pre>
 
 <h2 id="modified_date">modified_date</h2>
 
-<p><code class="prettyprint">modified_date( string $date_format=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+<p><code class="prettyprint">modified_date( string $date_format=&quot;&quot; )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <table><thead>
 <tr>
@@ -676,9 +716,9 @@
 
 <h2 id="modified_time">modified_time</h2>
 
-<p><code class="prettyprint">modified_time( string $time_format=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+<p><code class="prettyprint">modified_time( string $time_format=&quot;&quot; )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <table><thead>
 <tr>
@@ -698,13 +738,13 @@
 
 <p><code class="prettyprint">name( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h2 id="next">next</h2>
 
 <p><code class="prettyprint">next( bool $in_same_cat=false )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <table><thead>
 <tr>
@@ -724,21 +764,23 @@
 
 <p><code class="prettyprint">paged_content( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h2 id="pagination">pagination</h2>
 
 <p><code class="prettyprint">pagination( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array</code> </p>
 
 <h2 id="parent">parent</h2>
 
 <p><code class="prettyprint">parent( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool/[\TimberPost](#class-timberpost)</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool/[\TimberPost](#class-timberpost)</code> </p>
 
 <p>Gets the parent (if one exists) from a post as a TimberPost object (or whatever is set in TimberPost::$PostClass)</p>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    Parent page: <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">parent</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">parent</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
 </code></pre>
 
@@ -746,23 +788,27 @@
 
 <p><code class="prettyprint">path( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <p>Gets the relative path of a WP Post, so while link() will return http://example.org/2015/07/my-cool-post this will return just /2015/07/my-cool-post</p>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">path</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
 </code></pre>
 
-<h2 id="permalink">permalink</h2>
+<h2 id="permalink"><strike>permalink</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.20.0 use link() instead</em></p>
 
 <p><code class="prettyprint">permalink( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h2 id="prev">prev</h2>
 
 <p><code class="prettyprint">prev( bool $in_same_cat=false )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <p>Get the previous post in a set</p>
 
@@ -779,6 +825,8 @@
 <td></td>
 </tr>
 </tbody></table>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;h4&gt;</span>Prior Entry:<span class="nt">&lt;/h4&gt;</span>
     <span class="nt">&lt;h3&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h3&gt;</span>
     <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">get_preview</span><span class="err">(</span><span class="nv">25</span><span class="err">)</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
@@ -788,15 +836,15 @@
 
 <p><code class="prettyprint">tags( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array</code> </p>
 
 <p>Gets the tags on a post, uses WP&rsquo;s post_tag taxonomy</p>
 
 <h2 id="terms">terms</h2>
 
-<p><code class="prettyprint">terms( string $tax=</code>&ldquo;&rdquo;<code class="prettyprint">, bool $merge=true )</code></p>
+<p><code class="prettyprint">terms( string $tax=&quot;&quot;, bool $merge=true )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array</code> </p>
 
 <p>Get the terms associated with the post This goes across all taxonomies by default</p>
 
@@ -823,9 +871,11 @@
 
 <p><code class="prettyprint">thumbnail( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">\TimberImage/null of your thumbnail</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">\TimberImage/null</code> of your thumbnail</p>
 
 <p>get the featured image as a TimberImage</p>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
 </code></pre>
 
@@ -833,9 +883,11 @@
 
 <p><code class="prettyprint">title( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <p>Returns the processed title to be used in templates. This returns the title of the post after WP&rsquo;s filters have run. This is analogous to <code class="prettyprint">the_title()</code> in standard WP template tags.</p>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
 </code></pre>
 
@@ -843,7 +895,7 @@
 
 <p><code class="prettyprint">update( string $field, mixed $value )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <p>updates the post_meta of the current object with the given value</p>
 
@@ -870,7 +922,7 @@
 
 <p><code class="prettyprint">get_wp_link_page( int $i )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <table><thead>
 <tr>
@@ -893,13 +945,18 @@
 </blockquote>
 
 <h6 id="example">Example</h6>
+
+<h6 id="php">PHP</h6>
 <pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="o">&lt;?</span><span class="nx">php</span>
 <span class="c1">// single.php, see connected twig example
 </span><span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
 <span class="nv">$context</span><span class="p">[</span><span class="s1">'post'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberPost</span><span class="p">();</span> <span class="c1">// It's a new TimberPost object, but an existing post from WordPress.
 </span><span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'single.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
 <span class="cp">?&gt;</span>
 </code></pre>
+
+<h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>{# single.twig #}
 <span class="nt">&lt;article&gt;</span>
     <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
@@ -908,6 +965,8 @@
     <span class="nt">&lt;/div&gt;</span>
 <span class="nt">&lt;/article&gt;</span>
 </code></pre>
+
+<h6 id="html">HTML</h6>
 <pre class="highlight html"><code><span class="nt">&lt;article&gt;</span>
     <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span>The Empire Strikes Back<span class="nt">&lt;/h1&gt;</span>
     <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>

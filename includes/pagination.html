@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_pagination">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="pagination">Pagination</h1>
+
+<p>Do you like pagination? Stupid question, of course you do. Well, here&rsquo;s how you do it.</p>
+
+<p>This will only work in a php file with an active query (like <code class="prettyprint">archive.php</code> or <code class="prettyprint">home.php</code>):</p>
+<pre class="highlight php"><code>    $context = Timber::get_context();
+    $context['posts'] = Timber::get_posts();
+    $context['pagination'] = Timber::get_pagination();
+    Timber::render('archive.twig', $context);
+</code></pre>
+
+<p>You can then markup the output like so  (of course, the exact markup is up to YOU):</p>
+<pre class="highlight handlebars"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"tool-pagination"</span><span class="nt">&gt;</span>
+    {% if pagination.prev %}
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"prev </span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">link</span><span class="err">|</span><span class="nv">length</span> <span class="err">?</span> <span class="s1">''</span> <span class="err">:</span> <span class="s1">'invisible'</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>Prev<span class="nt">&lt;/a&gt;</span>
+    {% endif %}
+    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"pages"</span><span class="nt">&gt;</span>
+        {% for page in pagination.pages %}
+            <span class="nt">&lt;li&gt;</span>
+                {% if page.link %}
+                    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">class</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+                {% else %}
+                    <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">class</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/span&gt;</span>
+                {% endif %}
+            <span class="nt">&lt;/li&gt;</span>
+        {% endfor %}
+    <span class="nt">&lt;/ul&gt;</span>
+    {% if pagination.next %}
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">next</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"next </span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">next</span><span class="p">.</span><span class="nv">link</span><span class="err">|</span><span class="nv">length</span> <span class="err">?</span> <span class="s1">''</span> <span class="err">:</span> <span class="s1">'invisible'</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>Next<span class="nt">&lt;/a&gt;</span>
+    {% endif %}
+<span class="nt">&lt;/div&gt;</span>
+</code></pre>
+
+<h3 id="what-if-i-39-m-not-using-the-default-query">What if I&rsquo;m not using the default query?</h3>
+
+<p>So let&rsquo;s say you want to paginate things on <code class="prettyprint">page-events.php</code> where you list items from a custom post type of <code class="prettyprint">event</code>. Because the default query is just the request for the page&rsquo;s info <strong>pagination will not work</strong>. You need to <em>make</em> it the default query by using the dreaded <code class="prettyprint">query_posts</code> like so:</p>
+<pre class="highlight php"><code>    global $paged;
+    if (!isset($paged) || !$paged){
+        $paged = 1;
+    }
+    $context = Timber::get_context();
+    $args = array(
+        'post_type' =&gt; 'event',
+        'posts_per_page' =&gt; 5,
+        'paged' =&gt; $paged
+    );
+    /* THIS LINE IS CRUCIAL */
+    /* in order for WordPress to know what to paginate */
+    /* your args have to be the defualt query */
+        query_posts($args);
+    /* make sure you've got query_posts in your .php file */
+    $context['posts'] = Timber::get_posts();
+    $context['pagination'] = Timber::get_pagination();
+    Timber::render('page-events.twig', $context);
+</code></pre>
+
+<h3 id="the-pre_get_posts-way">The pre_get_posts Way</h3>
+
+<p>Custom <code class="prettyprint">query_posts</code> sometimes shows 404 on example.com/page/2
+In that case you can also use <code class="prettyprint">pre_get_posts</code> in your functions.php file
+<code class="prettyprint">php
+    function my_home_query( $query ) {
+      if ( $query-&gt;is_main_query() &amp;&amp; !is_admin() ) {
+        $query-&gt;set( &#39;post_type&#39;, array( &#39;movie&#39;, &#39;post&#39; ));
+      }
+    }
+    add_action( &#39;pre_get_posts&#39;, &#39;my_home_query&#39; );
+</code>
+In your archive.php or home.php template
+<code class="prettyprint">php
+    $context = Timber::get_context();
+    $context[&#39;posts&#39;] = Timber::get_posts();
+    $context[&#39;pagination&#39;] = Timber::get_pagination();
+    Timber::render(&#39;archive.twig&#39;, $context);
+</code></p>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

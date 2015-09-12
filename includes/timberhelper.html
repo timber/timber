@@ -33,6 +33,8 @@
       <div class="content">
         <h1 id="timberhelper">TimberHelper</h1>
 
+<p>As the name suggests these are helpers for Timber (and you!) when developing. You can find additional (mainly internally-focused helpers) in TimberURLHelper</p>
+
 <table><thead>
 <tr>
 <th>Name</th>
@@ -41,9 +43,19 @@
 </tr>
 </thead><tbody>
 <tr>
+<td><a href="#ob_function">ob_function</a></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#start_timer">start_timer</a></td>
+<td>\float</td>
+<td></td>
+</tr>
+<tr>
 <td><a href="#transient">transient</a></td>
 <td>mixed</td>
-<td>A utility for a one-stop shop for Transients</td>
+<td></td>
 </tr>
 </tbody></table>
 
@@ -51,7 +63,7 @@
 
 <p><code class="prettyprint">array_to_object( mixed $array )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">\stdClass</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">\stdClass</code> </p>
 
 <table><thead>
 <tr>
@@ -71,7 +83,7 @@
 
 <p><code class="prettyprint">array_truncate( mixed $array, mixed $len )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array</code> </p>
 
 <table><thead>
 <tr>
@@ -96,7 +108,7 @@
 
 <p><code class="prettyprint">close_tags( mixed $html )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <table><thead>
 <tr>
@@ -112,11 +124,13 @@
 </tr>
 </tbody></table>
 
-<h2 id="download_url">download_url</h2>
+<h2 id="download_url"><strike>download_url</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
 
 <p><code class="prettyprint">download_url( mixed $url, mixed $timeout=300 )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <table><thead>
 <tr>
@@ -141,7 +155,7 @@
 
 <p><code class="prettyprint">error_log( mixed $arg )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <table><thead>
 <tr>
@@ -161,7 +175,7 @@
 
 <p><code class="prettyprint">function_wrapper( mixed $function_name, array $defaults=array(), bool $return_output_buffer=false )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">\TimberFunctionWrapper</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">\TimberFunctionWrapper</code> </p>
 
 <table><thead>
 <tr>
@@ -187,11 +201,13 @@
 </tr>
 </tbody></table>
 
-<h2 id="get_comment_form">get_comment_form</h2>
+<h2 id="get_comment_form"><strike>get_comment_form</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.21.8 use `{{ function(&lsquo;comment</em>form&rsquo;) }}` instead_</p>
 
 <p><code class="prettyprint">get_comment_form( mixed $post_id=null, array $args=array() )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <p>Gets the comment form for use on a single article page</p>
 
@@ -214,17 +230,21 @@
 </tr>
 </tbody></table>
 
-<h2 id="get_current_url">get_current_url</h2>
+<h2 id="get_current_url"><strike>get_current_url</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
 
 <p><code class="prettyprint">get_current_url( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
-<h2 id="get_full_path">get_full_path</h2>
+<h2 id="get_full_path"><strike>get_full_path</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
 
 <p><code class="prettyprint">get_full_path( mixed $src )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <table><thead>
 <tr>
@@ -244,7 +264,7 @@
 
 <p><code class="prettyprint">get_object_by_property( mixed $array, mixed $key, mixed $value )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array/null</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array/null</code> </p>
 
 <table><thead>
 <tr>
@@ -274,7 +294,7 @@
 
 <p><code class="prettyprint">get_object_index_by_property( mixed $array, mixed $key, mixed $value )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool/int</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool/int</code> </p>
 
 <table><thead>
 <tr>
@@ -300,11 +320,13 @@
 </tr>
 </tbody></table>
 
-<h2 id="get_params">get_params</h2>
+<h2 id="get_params"><strike>get_params</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
 
 <p><code class="prettyprint">get_params( mixed $i=-1 )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <table><thead>
 <tr>
@@ -320,17 +342,21 @@
 </tr>
 </tbody></table>
 
-<h2 id="get_path_base">get_path_base</h2>
+<h2 id="get_path_base"><strike>get_path_base</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
 
 <p><code class="prettyprint">get_path_base( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
-<h2 id="get_post_by_meta">get_post_by_meta</h2>
+<h2 id="get_post_by_meta"><strike>get_post_by_meta</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.20.0</em></p>
 
 <p><code class="prettyprint">get_post_by_meta( mixed $key, mixed $value )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">int</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">int</code> </p>
 
 <table><thead>
 <tr>
@@ -351,11 +377,13 @@
 </tr>
 </tbody></table>
 
-<h2 id="get_posts_by_meta">get_posts_by_meta</h2>
+<h2 id="get_posts_by_meta"><strike>get_posts_by_meta</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.20.0</em></p>
 
 <p><code class="prettyprint">get_posts_by_meta( mixed $key, mixed $value )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array/int</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array/int</code> </p>
 
 <table><thead>
 <tr>
@@ -376,11 +404,13 @@
 </tr>
 </tbody></table>
 
-<h2 id="get_rel_path">get_rel_path</h2>
+<h2 id="get_rel_path"><strike>get_rel_path</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
 
 <p><code class="prettyprint">get_rel_path( mixed $src )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <table><thead>
 <tr>
@@ -396,11 +426,13 @@
 </tr>
 </tbody></table>
 
-<h2 id="get_rel_url">get_rel_url</h2>
+<h2 id="get_rel_url"><strike>get_rel_url</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
 
 <p><code class="prettyprint">get_rel_url( mixed $url, bool $force=false )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <table><thead>
 <tr>
@@ -421,11 +453,13 @@
 </tr>
 </tbody></table>
 
-<h2 id="get_term_id_by_term_taxonomy_id">get_term_id_by_term_taxonomy_id</h2>
+<h2 id="get_term_id_by_term_taxonomy_id"><strike>get_term_id_by_term_taxonomy_id</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.21.8</em></p>
 
 <p><code class="prettyprint">get_term_id_by_term_taxonomy_id( mixed $ttid )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <table><thead>
 <tr>
@@ -443,9 +477,9 @@
 
 <h2 id="get_wp_title">get_wp_title</h2>
 
-<p><code class="prettyprint">get_wp_title( string $separator=</code>&ldquo; &rdquo;<code class="prettyprint">, string $seplocation=</code>&ldquo;left&rdquo;<code class="prettyprint">)</code></p>
+<p><code class="prettyprint">get_wp_title( string $separator=&quot; &quot;, string $seplocation=&quot;left&quot; )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <table><thead>
 <tr>
@@ -470,7 +504,7 @@
 
 <p><code class="prettyprint">is_array_assoc( mixed $arr )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool</code> </p>
 
 <table><thead>
 <tr>
@@ -486,11 +520,13 @@
 </tr>
 </tbody></table>
 
-<h2 id="is_external">is_external</h2>
+<h2 id="is_external"><strike>is_external</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
 
 <p><code class="prettyprint">is_external( mixed $url )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool</code> </p>
 
 <table><thead>
 <tr>
@@ -506,11 +542,13 @@
 </tr>
 </tbody></table>
 
-<h2 id="is_local">is_local</h2>
+<h2 id="is_local"><strike>is_local</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
 
 <p><code class="prettyprint">is_local( mixed $url )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool</code> </p>
 
 <table><thead>
 <tr>
@@ -530,7 +568,7 @@
 
 <p><code class="prettyprint">is_true( mixed $value )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool</code> </p>
 
 <table><thead>
 <tr>
@@ -546,11 +584,13 @@
 </tr>
 </tbody></table>
 
-<h2 id="is_url">is_url</h2>
+<h2 id="is_url"><strike>is_url</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
 
 <p><code class="prettyprint">is_url( mixed $url )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool</code> </p>
 
 <table><thead>
 <tr>
@@ -570,7 +610,7 @@
 
 <p><code class="prettyprint">iseven( mixed $i )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool</code> </p>
 
 <table><thead>
 <tr>
@@ -590,7 +630,7 @@
 
 <p><code class="prettyprint">isodd( mixed $i )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">bool</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">bool</code> </p>
 
 <table><thead>
 <tr>
@@ -610,7 +650,9 @@
 
 <p><code class="prettyprint">ob_function( \callback $function, array $args=array() )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
+
+<p>Calls a function with an output buffer. This is useful if you have a function that outputs text that you want to capture and use within a twig template.</p>
 
 <table><thead>
 <tr>
@@ -631,11 +673,32 @@
 </tr>
 </tbody></table>
 
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+    <span class="k">function</span> <span class="nf">the_form</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">echo</span> <span class="s1">'&lt;form action="form.php"&gt;&lt;input type="text" /&gt;&lt;input type="submit /&gt;&lt;/form&gt;'</span><span class="p">;</span>
+    <span class="p">}</span>
+        <span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
+    <span class="nv">$context</span><span class="p">[</span><span class="s1">'post'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberPost</span><span class="p">();</span>
+    <span class="nv">$context</span><span class="p">[</span><span class="s1">'my_form'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">TimberHelper</span><span class="o">::</span><span class="na">ob_function</span><span class="p">(</span><span class="s1">'the_form'</span><span class="p">);</span>
+    <span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'single-form.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+</code></pre>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
+    <span class="k">{{</span> <span class="nv">my_form</span> <span class="k">}}</span>
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>    <span class="nt">&lt;h1&gt;</span>Apply to my contest!<span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"form.php"</span><span class="nt">&gt;&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="nt">/&gt;&lt;input</span> <span class="na">type=</span><span class="s">"submit /&gt;&lt;/form&gt;
+</span></code></pre>
+
 <h2 id="osort">osort</h2>
 
 <p><code class="prettyprint">osort( mixed $array, mixed $prop )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <table><thead>
 <tr>
@@ -658,9 +721,9 @@
 
 <h2 id="paginate_links">paginate_links</h2>
 
-<p><code class="prettyprint">paginate_links( string $args=</code>&ldquo;&rdquo;<code class="prettyprint">)</code></p>
+<p><code class="prettyprint">paginate_links( string $args=&quot;&quot; )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array</code> </p>
 
 <table><thead>
 <tr>
@@ -676,11 +739,13 @@
 </tr>
 </tbody></table>
 
-<h2 id="prepend_to_url">prepend_to_url</h2>
+<h2 id="prepend_to_url"><strike>prepend_to_url</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
 
 <p><code class="prettyprint">prepend_to_url( mixed $url, mixed $path )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <table><thead>
 <tr>
@@ -701,11 +766,13 @@
 </tr>
 </tbody></table>
 
-<h2 id="preslashit">preslashit</h2>
+<h2 id="preslashit"><strike>preslashit</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
 
 <p><code class="prettyprint">preslashit( mixed $path )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <table><thead>
 <tr>
@@ -721,11 +788,13 @@
 </tr>
 </tbody></table>
 
-<h2 id="remove_double_slashes">remove_double_slashes</h2>
+<h2 id="remove_double_slashes"><strike>remove_double_slashes</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
 
 <p><code class="prettyprint">remove_double_slashes( mixed $url )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <table><thead>
 <tr>
@@ -745,13 +814,17 @@
 
 <p><code class="prettyprint">start_timer( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">\float</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">\float</code> </p>
+
+<p>For measuring time, this will start a timer</p>
 
 <h2 id="stop_timer">stop_timer</h2>
 
 <p><code class="prettyprint">stop_timer( mixed $start )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
+
+<p>For stopping time and getting the data</p>
 
 <table><thead>
 <tr>
@@ -767,11 +840,18 @@
 </tr>
 </tbody></table>
 
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+    <span class="nv">$start</span> <span class="o">=</span> <span class="nx">TimberHelper</span><span class="o">::</span><span class="na">start_timer</span><span class="p">();</span>
+    <span class="c1">// do some stuff that takes awhile
+</span>    <span class="k">echo</span> <span class="nx">TimberHelper</span><span class="o">::</span><span class="na">stop_timer</span><span class="p">(</span> <span class="nv">$start</span> <span class="p">);</span>
+</code></pre>
+
 <h2 id="transient">transient</h2>
 
 <p><code class="prettyprint">transient( mixed $slug, \callable $callback, mixed $transient_time, mixed $lock_timeout=5, bool $force=false )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <p>A utility for a one-stop shop for Transients</p>
 
@@ -808,19 +888,22 @@
 <td></td>
 </tr>
 </tbody></table>
-<pre class="highlight php"><code>    $favorites = Timber::transient('user-'.$uid.'-favorites', function() use ($uid) {
-        //some expensive query here that's doing something you want to store to a transient
-        return $favorites;
-    }, 600);
-    Timber::context['favorites'] = $favorites;
-    Timber::render('single.twig', $context);
+
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+    <span class="nv">$favorites</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">transient</span><span class="p">(</span><span class="s1">'user-'</span><span class="o">.</span><span class="nv">$uid</span><span class="o">.</span><span class="s1">'-favorites'</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="k">use</span> <span class="p">(</span><span class="nv">$uid</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">//some expensive query here that's doing something you want to store to a transient
+</span>        <span class="k">return</span> <span class="nv">$favorites</span><span class="p">;</span>
+    <span class="p">},</span> <span class="mi">600</span><span class="p">);</span>
+    <span class="nx">Timber</span><span class="o">::</span><span class="na">context</span><span class="p">[</span><span class="s1">'favorites'</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$favorites</span><span class="p">;</span>
+    <span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'single.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
 </code></pre>
 
 <h2 id="trim_words">trim_words</h2>
 
-<p><code class="prettyprint">trim_words( mixed $text, mixed $num_words=55, mixed $more=null, string $allowed_tags=</code>&ldquo;p a span b i br blockquote&rdquo;<code class="prettyprint">)</code></p>
+<p><code class="prettyprint">trim_words( mixed $text, mixed $num_words=55, mixed $more=null, string $allowed_tags=&quot;p a span b i br blockquote&quot; )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <table><thead>
 <tr>
@@ -851,27 +934,11 @@
 </tr>
 </tbody></table>
 
-<h2 id="twitterify">twitterify</h2>
-
-<p><code class="prettyprint">twitterify( mixed $ret )</code></p>
-
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
-
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>$ret</td>
-<td>mixed</td>
-<td></td>
-</tr>
-</tbody></table>
-
 <h3 id="class-timberhelper">Class: TimberHelper</h3>
+
+<blockquote>
+<p>As the name suggests these are helpers for Timber (and you!) when developing. You can find additional (mainly internally-focused helpers) in TimberURLHelper</p>
+</blockquote>
 
       </div>
       <div class="dark-box">

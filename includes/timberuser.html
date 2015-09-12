@@ -33,6 +33,25 @@
       <div class="content">
         <h1 id="timberuser">TimberUser</h1>
 
+<p>This is used in Timber to represent users retrived from WordPress. You can call <code class="prettyprint">$my_user = new TimberUser(123);</code> directly, or access it through the <code class="prettyprint">{{ post.author }}</code> method.</p>
+
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'current_user'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberUser</span><span class="p">();</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'post'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberPost</span><span class="p">();</span>
+<span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'single.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+</code></pre>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"current-user-info"</span><span class="nt">&gt;</span>Your name is <span class="k">{{</span> <span class="nv">current_user</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"article-info"</span><span class="nt">&gt;</span>This article is called "<span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span>" and it's by <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span>
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"current-user-info"</span><span class="nt">&gt;</span>Your name is Jesse Eisenberg<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"article-info"</span><span class="nt">&gt;</span>This article is called "Consider the Lobster" and it's by David Foster Wallace
+</code></pre>
+
 <table><thead>
 <tr>
 <th>Name</th>
@@ -41,24 +60,44 @@
 </tr>
 </thead><tbody>
 <tr>
+<td>description</td>
+<td>string</td>
+<td>The description from WordPress</td>
+</tr>
+<tr>
+<td>first_name</td>
+<td>string</td>
+<td>The first name of the user</td>
+</tr>
+<tr>
+<td>id</td>
+<td>int</td>
+<td>The ID from WordPress</td>
+</tr>
+<tr>
+<td>last_name</td>
+<td>string</td>
+<td>The last name of the user</td>
+</tr>
+<tr>
 <td><a href="#link">link</a></td>
 <td>string</td>
-<td></td>
+<td>http://example.org/author/lincoln</td>
 </tr>
 <tr>
 <td><a href="#name">name</a></td>
-<td>string the human-friendly name of the user (ex: &ldquo;Buster Bluth&rdquo;)</td>
-<td></td>
+<td>string</td>
+<td>the human-friendly name of the user (ex: &ldquo;Buster Bluth&rdquo;)</td>
 </tr>
 <tr>
 <td><a href="#path">path</a></td>
 <td>string</td>
-<td></td>
+<td>ex: /author/lincoln</td>
 </tr>
 <tr>
 <td><a href="#slug">slug</a></td>
 <td>string</td>
-<td></td>
+<td>ex baberaham-lincoln</td>
 </tr>
 </tbody></table>
 
@@ -66,7 +105,7 @@
 
 <p><code class="prettyprint">__construct( bool/int/bool $uid=false )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">void</code> </p>
 
 <table><thead>
 <tr>
@@ -86,19 +125,35 @@
 
 <p><code class="prettyprint">__toString( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> a fallback for TimberUser::name()</p>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>    This post is by <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">author</span> <span class="k">}}</span>
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>    This post is by Jared Novack
+</code></pre>
 
 <h2 id="get_custom">get_custom</h2>
 
 <p><code class="prettyprint">get_custom( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">array/null</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">array/null</code> </p>
+
+<h2 id="get_link"><strike>get_link</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.21.9</em></p>
+
+<p><code class="prettyprint">get_link( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code> The link to a user&rsquo;s profile page</p>
 
 <h2 id="get_meta_field">get_meta_field</h2>
 
 <p><code class="prettyprint">get_meta_field( string $field_name )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <table><thead>
 <tr>
@@ -114,29 +169,33 @@
 </tr>
 </tbody></table>
 
-<h2 id="get_permalink">get_permalink</h2>
+<h2 id="get_path"><strike>get_path</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.21.8</em></p>
+
+<p><code class="prettyprint">get_path( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code> ex: /author/lincoln</p>
+
+<h2 id="get_permalink"><strike>get_permalink</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.21.8</em></p>
 
 <p><code class="prettyprint">get_permalink( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
-
-<h2 id="import_custom">import_custom</h2>
-
-<p><code class="prettyprint">import_custom( )</code></p>
-
-<p><strong>returns:</strong> <code class="prettyprint">void</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h2 id="link">link</h2>
 
 <p><code class="prettyprint">link( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> http://example.org/author/lincoln</p>
 
 <h2 id="meta">meta</h2>
 
 <p><code class="prettyprint">meta( string $field_name )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">mixed</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
 <table><thead>
 <tr>
@@ -156,27 +215,52 @@
 
 <p><code class="prettyprint">name( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string the human-friendly name of the user (ex: &quot;Buster Bluth&quot;)</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> the human-friendly name of the user (ex: &ldquo;Buster Bluth&rdquo;)</p>
 
 <h2 id="path">path</h2>
 
 <p><code class="prettyprint">path( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> ex: /author/lincoln</p>
 
-<h2 id="permalink">permalink</h2>
+<h2 id="permalink"><strike>permalink</strike></h2>
+
+<p><em><strong>DEPRECATED</strong> 0.21.8</em></p>
 
 <p><code class="prettyprint">permalink( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
 <h2 id="slug">slug</h2>
 
 <p><code class="prettyprint">slug( )</code></p>
 
-<p><strong>returns:</strong> <code class="prettyprint">string</code></p>
+<p><strong>returns:</strong> <code class="prettyprint">string</code> ex baberaham-lincoln</p>
 
 <h3 id="class-timberuser">Class: TimberUser</h3>
+
+<blockquote>
+<p>This is used in Timber to represent users retrived from WordPress. You can call <code class="prettyprint">$my_user = new TimberUser(123);</code> directly, or access it through the <code class="prettyprint">{{ post.author }}</code> method.</p>
+</blockquote>
+
+<h6 id="example">Example</h6>
+
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'current_user'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberUser</span><span class="p">();</span>
+<span class="nv">$context</span><span class="p">[</span><span class="s1">'post'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberPost</span><span class="p">();</span>
+<span class="nx">Timber</span><span class="o">::</span><span class="na">render</span><span class="p">(</span><span class="s1">'single.twig'</span><span class="p">,</span> <span class="nv">$context</span><span class="p">);</span>
+</code></pre>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"current-user-info"</span><span class="nt">&gt;</span>Your name is <span class="k">{{</span> <span class="nv">current_user</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"article-info"</span><span class="nt">&gt;</span>This article is called "<span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span>" and it's by <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span>
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"current-user-info"</span><span class="nt">&gt;</span>Your name is Jesse Eisenberg<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"article-info"</span><span class="nt">&gt;</span>This article is called "Consider the Lobster" and it's by David Foster Wallace
+</code></pre>
 
 <p><em>This class extends \TimberCore</em></p>
 
