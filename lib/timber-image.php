@@ -110,11 +110,13 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 		if (isset($this->_dimensions)) {
 			return $this->get_dimensions_loaded($dim);
 		}
-		list($width, $height) = getimagesize($this->file_loc);
-		$this->_dimensions = array();
-		$this->_dimensions[0] = $width;
-		$this->_dimensions[1] = $height;
-		return $this->get_dimensions_loaded($dim);
+		if ( file_exists($this->file_loc) && filesize($this->file_loc) ) {
+			list($width, $height) = getimagesize($this->file_loc);
+			$this->_dimensions = array();
+			$this->_dimensions[0] = $width;
+			$this->_dimensions[1] = $height;
+			return $this->get_dimensions_loaded($dim);
+		}
 	}
 
 	/**

@@ -1299,7 +1299,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @deprecated use link() instead
+	 * @deprecated 0.20.0 use link() instead
 	 * @return string
 	 */
 	public function permalink() {

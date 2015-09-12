@@ -146,6 +146,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * @api
+	 * @example
 	 * ```twig
 	 * {% if comment.approved %}
 	 * 	Your comment is good
@@ -161,6 +162,21 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * @api
+	 * @example
+	 * ```twig
+	 * {% for comment in post.comments %}
+	 * <article class="comment">
+	 *   <p class="date">Posted on {{ comment.date }}:</p>
+	 *   <p class="comment">{{ comment.content }}</p>
+	 * </article>
+	 * {% endfor %}
+	 * ```
+	 * ```html
+	 * <article class="comment">
+	 *   <p class="date">Posted on September 28, 2015:</p>
+	 *   <p class="comment">Happy Birthday!</p>
+	 * </article>
+	 * ```
 	 * @return string
 	 */
 	public function date( $date_format = '' ) {
