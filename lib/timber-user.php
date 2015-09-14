@@ -1,5 +1,22 @@
 <?php
 
+/**
+ * This is used in Timber to represent users retrived from WordPress. You can call `$my_user = new TimberUser(123);` directly, or access it through the `{{ post.author }}` method.
+ * @example
+ * ```php
+ * $context['current_user'] = new TimberUser();
+ * $context['post'] = new TimberPost();
+ * Timber::render('single.twig', $context);
+ * ```
+ * ```twig
+ * <p class="current-user-info">Your name is {{ current_user.name }}</p>
+ * <p class="article-info">This article is called "{{ post.title }}" and it's by {{ post.author.name }}
+ * ```
+ * ```html
+ * <p class="current-user-info">Your name is Jesse Eisenberg</p>
+ * <p class="article-info">This article is called "Consider the Lobster" and it's by David Foster Wallace
+ * ```
+ */
 class TimberUser extends TimberCore implements TimberCoreInterface {
 
 	public $object_type = 'user';
@@ -7,10 +24,30 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 
 	public $_link;
 
+	/**
+	 * @api
+	 * @var string The description from WordPress
+	 */
 	public $description;
 	public $display_name;
+
+	/**
+	 * @api
+	 * @var  string The first name of the user
+	 */
+	public $first_name;
+
+	/**
+	 * @api
+	 * @var  string The last name of the user
+	 */
+	public $last_name;
+
+	/**
+	 * @api
+	 * @var int The ID from WordPress
+	 */
 	public $id;
-	public $name;
 	public $user_nicename;
 
 	/**
@@ -21,7 +58,15 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @return string
+	 * @example
+	 * ```twig
+	 * This post is by {{ post.author }}
+	 * ```
+	 * ```html
+	 * This post is by Jared Novack
+	 * ```
+	 *
+	 * @return string a fallback for TimberUser::name()
 	 */
 	function __toString() {
 		$name = $this->name();
@@ -45,8 +90,8 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * @internal
-	 * @param string $field
-	 * @param mixed $value
+	 * @param string 	$field
+	 * @param mixed 	$value
 	 */
 	function __set($field, $value) {
 		if ( $field == 'name' ) {
@@ -57,18 +102,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * @internal
-	 * @return string
-	 */
-	public function get_link() {
-		if ( !$this->_link ) {
-			$this->_link = untrailingslashit(get_author_posts_url($this->ID));
-		}
-		return $this->_link;
-	}
-
-	/**
-	 * @internal
-	 * @param int|bool $uid
+	 * @param int|bool $uid The user ID to use
 	 */
 	protected function init($uid = false) {
 		if ( $uid === false ) {
@@ -83,7 +117,7 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 		}
 		if ( is_numeric($uid) ) {
 			$data = get_userdata($uid);
-		} else if ( is_string($uid) ) { 
+		} else if ( is_string($uid) ) {
 			$data = get_user_by('login', $uid);
 		}
 		if ( isset($data) && is_object($data) ) {
@@ -95,7 +129,8 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 		}
 		$this->id = $this->ID;
 		$this->name = $this->name();
-		$this->import_custom();
+		$custom = $this->get_custom();
+		$this->import($custom);
 	}
 
 	/**
@@ -135,9 +170,15 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 		return null;
 	}
 
-	function import_custom() {
-		$custom = $this->get_custom();
-		$this->import($custom);
+	/**
+	 * @api
+	 * @return string http://example.org/author/lincoln
+	 */
+	public function link() {
+		if ( !$this->_link ) {
+			$this->_link = untrailingslashit(get_author_posts_url($this->ID));
+		}
+		return $this->_link;
 	}
 
 	/**
@@ -146,6 +187,46 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	 */
 	function name() {
 		return $this->display_name;
+	}
+
+	/**
+	 * @param string $field_name
+	 * @return mixed
+	 */
+	function meta($field_name) {
+		return $this->get_meta_field($field_name);
+	}
+
+	/**
+	 * @api
+	 * @return string ex: /author/lincoln
+	 */
+	public function path() {
+		return TimberURLHelper::get_rel_url($this->get_link());
+	}
+
+	/**
+	 * @api
+	 * @return string ex baberaham-lincoln
+	 */
+	public function slug() {
+		return $this->user_nicename;
+	}
+
+	/**
+	 * @deprecated 0.21.9
+	 * @return string The link to a user's profile page
+	 */
+	function get_link() {
+		return $this->link();
+	}
+
+	/**
+	 * @deprecated 0.21.8
+	 * @return string ex: /author/lincoln
+	 */
+	function get_path() {
+		return $this->path();
 	}
 
 	/**
@@ -162,46 +243,6 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	 */
 	function permalink() {
 		return $this->get_permalink();
-	}
-
-	/**
-	 * @internal
-	 * @return string ex: /author/lincoln
-	 */
-	function get_path() {
-		return TimberURLHelper::get_rel_url($this->get_link());
-	}
-
-	/**
-	 * @param string $field_name
-	 * @return mixed
-	 */
-	function meta($field_name) {
-		return $this->get_meta_field($field_name);
-	}
-
-	/**
-	 * @api
-	 * @return string
-	 */
-	function path() {
-		return $this->get_path();
-	}
-
-	/**
-	 * @api
-	 * @return string
-	 */
-	function slug() {
-		return $this->user_nicename;
-	}
-
-	/**
-	 * @api
-	 * @return string
-	 */
-	function link() {
-		return $this->get_link();
 	}
 
 }

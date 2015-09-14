@@ -1,5 +1,35 @@
 <?php
-
+/**
+ * Terms: WordPress has got 'em, you want 'em. Categories. Tags. Custom Taxonomies. You don't care, you're a fiend. Well let's get this under control
+ * @example
+ * ```php
+ * //Get a term by its ID
+ * $context['term'] = new TimberTerm(6);
+ * //Get a term when on a term archive page
+ * $context['term_page'] = new TimberTerm();
+ * //Get a term with a slug
+ * $context['team'] = new TimberTerm('patriots');
+ * //Get a team with a slug from a specific taxonomy
+ * $context['st_louis'] = new TimberTerm('cardinals', 'baseball');
+ * Timber::render('index.twig', $context);
+ * ```
+ * ```twig
+ * <h2>{{term_page.name}} Archives</h2>
+ * <h3>Teams</h3>
+ * <ul>
+ *     <li>{{st_louis.name}} - {{st_louis.description}}</li>
+ *     <li>{{team.name}} - {{team.description}}</li>
+ * </ul>
+ * ```
+ * ```html
+ * <h2>Team Archives</h2>
+ * <h3>Teams</h3>
+ * <ul>
+ *     <li>St. Louis Cardinals - Winner of 11 World Series</li>
+ *     <li>New England Patriots - Winner of 4 Super Bowls</li>
+ * </ul>
+ * ```
+ */
 class TimberTerm extends TimberCore implements TimberCoreInterface {
 
 	public $PostClass = 'TimberPost';
@@ -116,6 +146,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 			$query = $wpdb->prepare("SELECT taxonomy FROM $wpdb->term_taxonomy WHERE term_id = %d LIMIT 1", $tid);
 			$tax = $wpdb->get_var($query);
 			if (isset($tax) && strlen($tax)) {
+				$this->taxonomy = $tax;
 				return get_term($tid, $tax);
 			}
 		}
@@ -197,6 +228,8 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Get Posts that have been "tagged" with the particular term
+	 * @internal
 	 * @param int $numberposts
 	 * @param string $post_type
 	 * @param string $PostClass
@@ -286,6 +319,21 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	 * @api
 	 * @return string
 	 */
+	public function description() {
+		$prefix = '<p>';
+		$suffix = '</p>';
+		$desc = term_description( $this->ID, $this->taxonomy );
+		if (substr($desc, 0, strlen($prefix)) == $prefix) {
+    		$desc = substr($desc, strlen($prefix));
+		}
+		$desc = preg_replace('/'. preg_quote('</p>', '/') . '$/', '', $desc);
+		return trim($desc);
+	}
+
+	/**
+	 * @api
+	 * @return string
+	 */
 	public function edit_link() {
 		return $this->get_edit_url();
 	}
@@ -353,7 +401,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @deprecated since 0.21.9
+	 * @deprecated 0.21.9 use TimberTerm::link() instead
 	 * @return string
 	 */
 	public function url() {
@@ -361,7 +409,7 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated 0.20.0 this was a dumb idea
 	 * @param int $i
 	 * @return string
 	 */
