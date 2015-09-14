@@ -48,6 +48,9 @@ class Timber {
 	public static $autoescape = false;
 
 	public function __construct() {
+		if ( !defined('ABSPATH') ) {
+			return;
+		}
 		$this->test_compatibility();
 		$this->init_constants();
 		$this->init();
@@ -72,7 +75,6 @@ class Timber {
 	protected function init() {
 		TimberTwig::init();
 		TimberRoutes::init( $this );
-
 		TimberImageHelper::init();
 		TimberAdmin::init();
 		TimberIntegrations::init();

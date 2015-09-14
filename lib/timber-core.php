@@ -45,8 +45,14 @@ abstract class TimberCore {
     }
 
     /**
-     *
-     *
+     * Takes an array or object and adds the properties to the parent object
+     * @example
+     * ```php
+     * $data = array('airplane' => '757-200', 'flight' => '5316');
+     * $post = new TimberPost()
+     * $post->import(data);
+     * echo $post->airplane; //757-200
+     * ```
      * @param array|object $info an object or array you want to grab data from to attach to the Timber object
      */
     function import( $info, $force = false ) {
@@ -66,8 +72,7 @@ abstract class TimberCore {
 
 
     /**
-     *
-     *
+     * @ignore
      * @param string  $key
      * @param mixed   $value
      */
@@ -76,6 +81,16 @@ abstract class TimberCore {
     }
 
     /**
+     * Can you edit this post/term/user? Well good for you. You're no better than me.
+     * @example
+     * ```twig
+     * {% if post.can_edit %}
+     * <a href="{{ post.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * ```html
+     * <a href="http://example.org/wp-admin/edit.php?p=242">Edit</a>
+     * ```
      * @return bool
      */
     function can_edit() {

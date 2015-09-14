@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * As the name suggests these are helpers for Timber (and you!) when developing. You can find additional (mainly internally-focused helpers) in TimberURLHelper
+ */
 class TimberHelper {
 
 	/**
@@ -89,8 +92,8 @@ class TimberHelper {
 	/* These are for measuring page render time */
 
 	/**
-	 *
-	 *
+	 * For measuring time, this will start a timer
+	 * @api
 	 * @return float
 	 */
 	public static function start_timer() {
@@ -101,8 +104,13 @@ class TimberHelper {
 	}
 
 	/**
-	 *
-	 *
+	 * For stopping time and getting the data
+	 * @example
+	 * ```php
+	 * $start = TimberHelper::start_timer();
+	 * // do some stuff that takes awhile
+	 * echo TimberHelper::stop_timer( $start );
+	 * ```
 	 * @param int     $start
 	 * @return string
 	 */
@@ -119,8 +127,27 @@ class TimberHelper {
 	======================== */
 
 	/**
+	 * Calls a function with an output buffer. This is useful if you have a function that outputs text that you want to capture and use within a twig template.
+	 * @example
+	 * ```php
+	 * function the_form() {
+	 *     echo '<form action="form.php"><input type="text" /><input type="submit /></form>';
+	 * }
 	 *
-	 *
+	 * $context = Timber::get_context();
+	 * $context['post'] = new TimberPost();
+	 * $context['my_form'] = TimberHelper::ob_function('the_form');
+	 * Timber::render('single-form.twig', $context);
+	 * ```
+	 * ```twig
+	 * <h1>{{ post.title }}</h1>
+	 * {{ my_form }}
+	 * ```
+	 * ```html
+	 * <h1>Apply to my contest!</h1>
+	 * <form action="form.php"><input type="text" /><input type="submit /></form>
+	 * ```
+	 * @api
 	 * @param callback $function
 	 * @param array   $args
 	 * @return string
@@ -249,22 +276,6 @@ class TimberHelper {
 		return $html;
 	}
 
-	/**
-	 * @param string  $ret
-	 * @return string
-	 * @deprecated since 0.20.0
-	 */
-	public static function twitterify( $ret ) {
-		$ret = preg_replace( "#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t< ]*)#", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $ret );
-		$ret = preg_replace( "#(^|[\n ])((www|ftp)\.[^ \"\t\n\r< ]*)#", "\\1<a href=\"http://\\2\" target=\"_blank\">\\2</a>", $ret );
-		$pattern = '#([0-9a-z]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.';
-		$pattern .= '[a-wyz][a-z](fo|g|l|m|mes|o|op|pa|ro|seum|t|u|v|z)?)#i';
-		$ret = preg_replace( $pattern, '<a href="mailto:\\1">\\1</a>', $ret );
-		$ret = preg_replace( "/\B@(\w+)/", " <a href=\"http://www.twitter.com/\\1\" target=\"_blank\">@\\1</a>", $ret );
-		$ret = preg_replace( "/\B#(\w+)/", " <a href=\"http://twitter.com/search?q=\\1\" target=\"_blank\">#\\1</a>", $ret );
-		return trim($ret);
-	}
-
 	/* WordPress Query Utilities
 	======================== */
 
@@ -272,7 +283,7 @@ class TimberHelper {
 	 * @param string  $key
 	 * @param string  $value
 	 * @return array|int
-	 * @deprecated since 0.20.0
+	 * @deprecated 0.20.0
 	 */
 	public static function get_posts_by_meta( $key, $value ) {
 		global $wpdb;
@@ -296,7 +307,7 @@ class TimberHelper {
 	 * @param string  $key
 	 * @param string  $value
 	 * @return int
-	 * @deprecated since 0.20.0
+	 * @deprecated 0.20.0
 	 */
 	public static function get_post_by_meta( $key, $value ) {
 		global $wpdb;
@@ -312,7 +323,7 @@ class TimberHelper {
 
 	/**
 	 *
-	 * @deprecated since 0.21.8
+	 * @deprecated 0.21.8
 	 * @param int     $ttid
 	 * @return mixed
 	 */
@@ -478,7 +489,7 @@ class TimberHelper {
 	/**
 	 *
 	 * Gets the comment form for use on a single article page
-	 * @deprecated since 0.21.8
+	 * @deprecated 0.21.8 use `{{ function('comment_form') }}` instead
 	 * @param int     $post_id which post_id should the form be tied to?
 	 * @param array   $args this $args thing is a fucking mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
 	 * @return string
@@ -590,91 +601,91 @@ class TimberHelper {
 	}
 
 	/**
-	 * @deprecated since 0.18.0
+	 * @deprecated 0.18.0
 	 */
 	static function get_current_url() {
 		return TimberURLHelper::get_current_url();
 	}
 
 	/**
-	 * @deprecated since 0.18.0
+	 * @deprecated 0.18.0
 	 */
 	static function is_url( $url ) {
 		return TimberURLHelper::is_url( $url );
 	}
 
 	/**
-	 * @deprecated since 0.18.0
+	 * @deprecated 0.18.0
 	 */
 	static function get_path_base() {
 		return TimberURLHelper::get_path_base();
 	}
 
 	/**
-	 * @deprecated since 0.18.0
+	 * @deprecated 0.18.0
 	 */
 	static function get_rel_url( $url, $force = false ) {
 		return TimberURLHelper::get_rel_url( $url, $force );
 	}
 
 	/**
-	 * @deprecated since 0.18.0
+	 * @deprecated 0.18.0
 	 */
 	static function is_local( $url ) {
 		return TimberURLHelper::is_local( $url );
 	}
 
 	/**
-	 * @deprecated since 0.18.0
+	 * @deprecated 0.18.0
 	 */
 	static function get_full_path( $src ) {
 		return TimberURLHelper::get_full_path( $src );
 	}
 
 	/**
-	 * @deprecated since 0.18.0
+	 * @deprecated 0.18.0
 	 */
 	static function get_rel_path( $src ) {
 		return TimberURLHelper::get_rel_path( $src );
 	}
 
 	/**
-	 * @deprecated since 0.18.0
+	 * @deprecated 0.18.0
 	 */
 	static function remove_double_slashes( $url ) {
 		return TimberURLHelper::remove_double_slashes( $url );
 	}
 
 	/**
-	 * @deprecated since 0.18.0
+	 * @deprecated 0.18.0
 	 */
 	static function prepend_to_url( $url, $path ) {
 		return TimberURLHelper::prepend_to_url( $url, $path );
 	}
 
 	/**
-	 * @deprecated since 0.18.0
+	 * @deprecated 0.18.0
 	 */
 	static function preslashit( $path ) {
 		return TimberURLHelper::preslashit( $path );
 	}
 
 	/**
-	 * @deprecated since 0.18.0
+	 * @deprecated 0.18.0
 	 */
 	static function is_external( $url ) {
 		return TimberURLHelper::is_external( $url );
 	}
 
 	/**
-	 * @deprecated since 0.18.0
+	 * @deprecated 0.18.0
 	 */
 	static function download_url( $url, $timeout = 300 ) {
 		return TimberURLHelper::download_url( $url, $timeout );
 	}
 
 	/**
-	 * @deprecated since 0.18.0
+	 * @deprecated 0.18.0
 	 */
 	static function get_params( $i = -1 ) {
 		return TimberURLHelper::get_params( $i );

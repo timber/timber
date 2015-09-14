@@ -23,9 +23,7 @@
 		}
 
 		function testTwitterify() {
-			$tweet = '@jaredNova says new version of #timberwp is out!';
-			$tweeted = TimberHelper::twitterify($tweet);
-			$this->assertEquals('<a href="http://www.twitter.com/jaredNova" target="_blank">@jaredNova</a> says new version of  <a href="http://twitter.com/search?q=timberwp" target="_blank">#timberwp</a> is out!', $tweeted);
+			$this->markTestSkipped('It belongs to the ages now');
 		}
 
 	}
