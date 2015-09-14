@@ -225,14 +225,25 @@ class TimberURLHelper {
 	 * @return boolean if $url points to an external location returns true
 	 */
 	public static function is_external_content( $url ) {
-		// using content_url() instead of site_url or home_url is IMPORTANT
-		// otherwise you run into errors with sites that:
-		// 1. use WPML plugin
-		// 2. or redefine upload directory
-		$is_external = TimberURLHelper::is_absolute( $url ) && !strstr( $url, content_url() );
+		$is_external = TimberURLHelper::is_absolute( $url ) && ! TimberURLHelper::is_internal_content( $url );
+
 		return $is_external;
 	}
 
+	private static function is_internal_content($url) {
+		// using content_url() instead of site_url or home_url is IMPORTANT
+		// otherwise you run into errors with sites that:
+		// 1. use WPML plugin
+		// 2. or redefine content directory
+		$is_content_url = strstr( $url, content_url() );
+
+		// this case covers when the upload directory has been redefined
+		$upload_dir = wp_upload_dir();
+		$is_upload_url = strstr( $url, $upload_dir['baseurl'] );
+
+		return $is_content_url || $is_upload_url;
+	}
+    
 	/**
 	 *
 	 *

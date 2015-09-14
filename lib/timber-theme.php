@@ -87,15 +87,21 @@ class TimberTheme extends TimberCore {
 		$this->name = $data->get('Name');
 		$ss = $data->get_stylesheet();
 		$this->slug = $ss;
-		$this->path = WP_CONTENT_SUBDIR . str_replace(WP_CONTENT_DIR, '', get_stylesheet_directory());
+
+		if ( ! function_exists( 'get_home_path' ) ) {
+			require_once(ABSPATH . 'wp-admin/includes/file.php');
+		}
+
+		$this->path = str_replace(get_home_path(), '/', get_stylesheet_directory());
+
 		$this->uri = get_stylesheet_directory_uri();
 		$this->link = $this->uri;
 		$this->parent_slug = $data->get('Template');
-		if (!$this->parent_slug) {
-			$this->path = WP_CONTENT_SUBDIR . str_replace(WP_CONTENT_DIR, '', get_template_directory());
+		if ( !$this->parent_slug ) {
+			$this->path = str_replace(get_home_path(), '/', get_template_directory());
 			$this->uri = get_template_directory_uri();
 		}
-		if ($this->parent_slug && $this->parent_slug != $this->slug) {
+		if ( $this->parent_slug && $this->parent_slug != $this->slug ) {
 			$this->parent = new TimberTheme($this->parent_slug);
 		}
 	}
