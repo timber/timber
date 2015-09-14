@@ -66,7 +66,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 #### Related Projects
 * [**Timber Starter Theme**](https://github.com/upstatement/timber-starter-theme) The "_s" of Timber to give you an easy start to the most basic theme you can build upon and customize.
-* [**Timber Debug Bar**](https://github.com/upstatement/debug-bar-timber) Adds a debug bar panel that will show you want template is in-use and the data sent to your twig file.
+* [**Timber Debug Bar**](https://github.com/upstatement/debug-bar-timber) Adds a debug bar panel that will show you which template is in-use and the data sent to your twig file.
 * [**TimberPhoton**](https://github.com/slimndap/TimberPhoton) Plug-in to use JetPack's free Photon image manipulation and CDN with Timber.
 * [**Timber Sugar**](https://github.com/Upstatement/timber-sugar) A catch-all for goodies to use w Timber.
 * [**Twig**](https://github.com/fabpot/Twig) The template language used by Timber.
