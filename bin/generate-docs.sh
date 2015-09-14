@@ -17,4 +17,6 @@ cd /srv/www/timber
 
 ./vendor/jarednova/markdowndocs/bin/phpdoc-md generate --bootstrap=timber.php TimberHelper > docs/markdowndocs/timberhelper.md
 
+cp /srv/www/timber/docs/wiki/*.md /srv/www/slate/source/includes
+
 mv /srv/www/timber/docs/markdowndocs/*.md /srv/www/slate/source/includes
