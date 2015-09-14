@@ -52,8 +52,8 @@
 
 		function testIsExternalContent() {
 			$internal = 'http://example.org/wp-content/uploads/my-image.png';
-			$internal_in_abspath = 'http://example.com/wp/uploads/my-image.png';
-			$internal_in_uploads = 'http://example.com/uploads/uploads/my-image.png';
+			$internal_in_abspath = 'http://example.org/wp/uploads/my-image.png';
+			$internal_in_uploads = 'http://example.org/uploads/uploads/my-image.png';
 			$external = 'http://upstatement.com/my-image.png';
 
 			$this->assertFalse( TimberURLHelper::is_external_content( $internal ) );
