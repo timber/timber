@@ -1,6 +1,6 @@
 <?php
 
-class TimberPagesTest extends WP_UnitTestCase {
+class TestTimberPages extends WP_UnitTestCase {
 
 	function testTimberPostOnCategoryPage() {
 		$post_id = $this->factory->post->create();

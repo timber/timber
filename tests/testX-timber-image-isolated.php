@@ -1,6 +1,6 @@
 <?php
 
-class TimberImageIsolatedTest extends WP_UnitTestCase {
+class TestTimberImageIsolated extends WP_UnitTestCase {
 
 /* ----------------
  * Helper functions

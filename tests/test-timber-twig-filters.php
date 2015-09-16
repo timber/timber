@@ -1,6 +1,6 @@
 <?php
 
-	class TimberTermTwigFilters extends WP_UnitTestCase {
+	class TestTimberTermTwigFilters extends WP_UnitTestCase {
 
 		function testTimberFitlerSanitize(){
 			$data['title'] = "Jared's Big Adventure";

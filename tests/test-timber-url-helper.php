@@ -119,7 +119,7 @@
         }
 
         function testDownloadURL(){
-            if ( !TimberImageTest::is_connected() ){
+            if ( !TestTimberImage::is_connected() ){
                 $this->markTestSkipped('Cannot test external images when not connected to internet');
                 return;
             }

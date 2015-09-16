@@ -1,6 +1,6 @@
 <?php
 
-	class TimberPostTitleTest extends WP_UnitTestCase {
+	class TestTimberPostTitle extends WP_UnitTestCase {
 
 		function testAmpersandInTitle() {
 			$post_id = $this->factory->post->create(array('post_title' => 'Jared & Lauren'));

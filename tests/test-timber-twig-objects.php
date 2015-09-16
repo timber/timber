@@ -1,16 +1,16 @@
 <?php
 
-	class TimberTestTwigObjects extends WP_UnitTestCase {
+	class TestTimberTwigObjects extends WP_UnitTestCase {
 
 		function testTimberImageInTwig() {
-			$iid = TimberImageTest::get_image_attachment();
+			$iid = TestTimberImage::get_image_attachment();
 			$str = '{{TimberImage('.$iid.').src}}';
 			$compiled = Timber::compile_string($str);
 			$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpg', $compiled);
 		}
 
 		function testImageInTwig() {
-			$iid = TimberImageTest::get_image_attachment();
+			$iid = TestTimberImage::get_image_attachment();
 			$str = '{{Image('.$iid.').src}}';
 			$compiled = Timber::compile_string($str);
 			$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpg', $compiled);
@@ -18,8 +18,8 @@
 
 		function testImagesInTwig() {
 			$images = array();
-			$images[] = TimberImageTest::get_image_attachment( 0, 'arch.jpg' );
-			$images[] = TimberImageTest::get_image_attachment( 0, 'city-museum.jpg' );
+			$images[] = TestTimberImage::get_image_attachment( 0, 'arch.jpg' );
+			$images[] = TestTimberImage::get_image_attachment( 0, 'city-museum.jpg' );
 			$str = '{% for image in Image(images) %}{{image.src}}{% endfor %}';
 			$compiled = Timber::compile_string($str, array('images' => $images));
 			$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpghttp://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/city-museum.jpg', $compiled);
@@ -27,15 +27,15 @@
 
 		function testTimberImagesInTwig() {
 			$images = array();
-			$images[] = TimberImageTest::get_image_attachment( 0, 'arch.jpg' );
-			$images[] = TimberImageTest::get_image_attachment( 0, 'city-museum.jpg' );
+			$images[] = TestTimberImage::get_image_attachment( 0, 'arch.jpg' );
+			$images[] = TestTimberImage::get_image_attachment( 0, 'city-museum.jpg' );
 			$str = '{% for image in TimberImage(images) %}{{image.src}}{% endfor %}';
 			$compiled = Timber::compile_string($str, array('images' => $images));
 			$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpghttp://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/city-museum.jpg', $compiled);
 		}
 
 		function testTimberImageInTwigToString() {
-			$iid = TimberImageTest::get_image_attachment();
+			$iid = TestTimberImage::get_image_attachment();
 			$str = '{{TimberImage('.$iid.')}}';
 			$compiled = Timber::compile_string($str);
 			$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpg', $compiled);

@@ -1,23 +1,23 @@
 <?php
 
-class TimberImageRetinaTest extends WP_UnitTestCase {
+class TestTimberImageRetina extends WP_UnitTestCase {
 
 	function testImageRetina() {
-		$file = TimberImageTest::copyTestImage();
+		$file = TestTimberImage::copyTestImage();
 		$ret = TimberImageHelper::retina_resize($file, 2);
 		$image = new TimberImage( $ret );
 		$this->assertEquals( 3000, $image->width() );
 	}
 
 	function testImageBiggerRetina() {
-		$file = TimberImageTest::copyTestImage();
+		$file = TestTimberImage::copyTestImage();
 		$ret = TimberImageHelper::retina_resize($file, 3);
 		$image = new TimberImage( $ret );
 		$this->assertEquals( 4500, $image->width() );
 	}
 
 	function testImageRetinaFilter() {
-		$filename = TimberImageTest::copyTestImage( 'eastern.jpg' );
+		$filename = TestTimberImage::copyTestImage( 'eastern.jpg' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$post_id = $this->factory->post->create( array( 'post_title' => 'Thing One' ) );
 		$attachment = array(
@@ -39,7 +39,7 @@ class TimberImageRetinaTest extends WP_UnitTestCase {
 	}
 
 	function testImageRetinaFloatFilter() {
-		$filename = TimberImageTest::copyTestImage( 'eastern.jpg' );
+		$filename = TestTimberImage::copyTestImage( 'eastern.jpg' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$post_id = $this->factory->post->create( array( 'post_title' => 'Thing One' ) );
 		$attachment = array(
@@ -61,7 +61,7 @@ class TimberImageRetinaTest extends WP_UnitTestCase {
 	}
 
 	function testImageResizeRetinaFilter() {
-		$filename = TimberImageTest::copyTestImage( 'eastern.jpg' );
+		$filename = TestTimberImage::copyTestImage( 'eastern.jpg' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$post_id = $this->factory->post->create();
 		$attachment = array(

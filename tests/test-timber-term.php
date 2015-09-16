@@ -1,6 +1,6 @@
 <?php
 
-	class TimberTermTest extends WP_UnitTestCase {
+	class TestTimberTerm extends WP_UnitTestCase {
 
 		function testTerm() {
 			$term_id = $this->factory->term->create();
