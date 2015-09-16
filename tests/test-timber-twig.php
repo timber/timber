@@ -1,6 +1,6 @@
 <?php
 
-	class TimberTestTwig extends WP_UnitTestCase {
+	class TestTimberTwig extends WP_UnitTestCase {
 
 		function tearDown() {
 			$lang_dir = get_stylesheet_directory().'/languages';

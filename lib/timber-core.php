@@ -32,13 +32,13 @@ abstract class TimberCore {
      * @return mixed
      */
     function __get( $field ) {
-        if ( isset( $this->$field ) ) {
-            return $this->$field;
-        }
-        if ( $meta_value = $this->meta( $field ) ) {
+    	if ( property_exists($this, $field) ) {
+    		return $this->$field;
+    	}
+        if ( method_exists($this, 'meta') && $meta_value = $this->meta( $field ) ) {
             return $this->$field = $meta_value;
         }
-        if (method_exists($this, $field)) {
+        if ( method_exists($this, $field) ) {
             return $this->$field = $this->$field();
         }
         return $this->$field = false;

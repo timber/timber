@@ -1,6 +1,6 @@
 <?php
 
-class TimberMenuTest extends WP_UnitTestCase {
+class TestTimberMenu extends WP_UnitTestCase {
 
 	function testBlankMenu() {
 		$this->setPermalinkStructure();
