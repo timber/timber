@@ -13,28 +13,32 @@
 
 		function testPath() {
 			$context = Timber::get_context();
+			$theme = $context['site']->theme;
 			$output = Timber::compile_string('{{site.theme.path}}', $context);
-			$this->assertEquals('/wp-content/themes/twentyfifteen', $output);
+			$this->assertEquals('/wp-content/themes/'.$theme->slug, $output);
 		}
 
 		function testPathOnSubdirectoryInstall() {
 			update_option( 'siteurl', 'http://example.org/wordpress', true );
 			$context = Timber::get_context();
+			$theme = $context['site']->theme;
 			$output = Timber::compile_string('{{site.theme.path}}', $context);
-			$this->assertEquals('/wp-content/themes/twentyfifteen', $output);
+			$this->assertEquals('/wp-content/themes/'.$theme->slug, $output);
 		}
 
 		function testLink() {
 			$context = Timber::get_context();
+			$theme = $context['site']->theme;
 			$output = Timber::compile_string('{{site.theme.link}}', $context);
-			$this->assertEquals('http://example.org/wp-content/themes/twentyfifteen', $output);
+			$this->assertEquals('http://example.org/wp-content/themes/'.$theme->slug, $output);
 		}
 
 		function testLinkOnSubdirectoryInstall() {
 			update_option( 'siteurl', 'http://example.org/wordpress', true );
 			$context = Timber::get_context();
+			$theme = $context['site']->theme;
 			$output = Timber::compile_string('{{site.theme.link}}', $context);
-			$this->assertEquals('http://example.org/wp-content/themes/twentyfifteen', $output);
+			$this->assertEquals('http://example.org/wp-content/themes/'.$theme->slug, $output);
 		}
 
 		function tearDown() {
