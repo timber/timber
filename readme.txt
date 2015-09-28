@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.21.9
+Stable tag: 0.21.10
 Tested up to: 4.2.3
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.21.10 =
+* Removed deprecated twitterify function
+* Much more docs (and deprecation docs)
+* Fixed issues with using constants (thanks @xavivars)
 
 = 0.21.9 =
 * Much much much more inline docs

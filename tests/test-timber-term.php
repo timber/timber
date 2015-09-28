@@ -1,35 +1,54 @@
 <?php
 
-	class TimberTermTest extends WP_UnitTestCase {
+	class TestTimberTerm extends WP_UnitTestCase {
 
-		function testTerm(){
+		function testTerm() {
 			$term_id = $this->factory->term->create();
 			$term = new TimberTerm($term_id);
 			$this->assertEquals('TimberTerm', get_class($term));
 		}
 
-		function testTermInitObject(){
+		function testTermConstructWithSlug() {
+			$term_id = $this->factory->term->create(array('name' => 'New England Patriots'));
+			$term = new TimberTerm('new-england-patriots');
+			$this->assertEquals($term->ID, $term_id);
+		}
+
+		function testTermDescription() {
+			$desc = 'An honest football team';
+			$term_id = $this->factory->term->create(array('name' => 'New England Patriots', 'description' => $desc));
+			$term = new TimberTerm($term_id, 'post_tag');
+			$this->assertEquals($desc, $term->description());
+		}
+
+		function testTermConstructWithName() {
+			$term_id = $this->factory->term->create(array('name' => 'St. Louis Cardinals'));
+			$term = new TimberTerm('St. Louis Cardinals');
+			$this->assertNull($term->ID);
+		}
+
+		function testTermInitObject() {
 			$term_id = $this->factory->term->create();
 			$term = get_term($term_id, 'post_tag');
 			$term = new TimberTerm($term);
 			$this->assertEquals($term->ID, $term_id);
 		}
 
-		function testTermLink(){
+		function testTermLink() {
 			$term_id = $this->factory->term->create();
 			$term = new TimberTerm($term_id);
 			$this->assertContains('http://', $term->link());
 			$this->assertContains('http://', $term->get_link());
 		}
 
-		function testTermPath(){
+		function testTermPath() {
 			$term_id = $this->factory->term->create();
 			$term = new TimberTerm($term_id);
 			$this->assertFalse(strstr($term->path(), 'http://'));
 			$this->assertFalse(strstr($term->get_path(), 'http://'));
 		}
 
-		function testGetPostsOld(){
+		function testGetPostsOld() {
 			$term_id = $this->factory->term->create();
 			$posts = array();
 			$posts[] = $this->factory->post->create();
@@ -43,7 +62,7 @@
 			$this->assertEquals(count($posts), count($gotten_posts));
 		}
 
-		function testGetPostsAsPageOld(){
+		function testGetPostsAsPageOld() {
 			$term_id = $this->factory->term->create();
 			$posts = array();
 			$posts[] = $this->factory->post->create();
@@ -62,7 +81,7 @@
 			$this->assertEquals(0, count($gotten_posts));
 		}
 
-		function testGetPostsNew(){
+		function testGetPostsNew() {
 			require_once('php/timber-post-subclass.php');
 			$term_id = $this->factory->term->create();
 			$posts = array();

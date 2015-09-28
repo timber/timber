@@ -14,9 +14,18 @@
  * ```twig
  * {# single.twig #}
  * <article>
- *     <h1 class="headline">{{post.post_title}}</h1>
+ *     <h1 class="headline">{{post.title}}</h1>
  *     <div class="body">
  *         {{post.content}}
+ *     </div>
+ * </article>
+ * ```
+ *
+ * ```html
+ * <article>
+ *     <h1 class="headline">The Empire Strikes Back</h1>
+ *     <div class="body">
+ *         It is a dark time for the Rebellion. Although the Death Star has been destroyed, Imperial troops have driven the Rebel forces from their hidden base and pursued them across the galaxy.
  *     </div>
  * </article>
  * ```
@@ -1290,7 +1299,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @deprecated use link() instead
+	 * @deprecated 0.20.0 use link() instead
 	 * @return string
 	 */
 	public function permalink() {

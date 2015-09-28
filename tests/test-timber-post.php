@@ -1,6 +1,6 @@
 <?php
 
-	class TimberPostTest extends WP_UnitTestCase {
+	class TestTimberPost extends WP_UnitTestCase {
 
 		function testPostObject(){
 			$post_id = $this->factory->post->create();
@@ -25,7 +25,7 @@
 
 		function testGetImage() {
 			$post_id = $this->factory->post->create(array('post_title' => 'St. Louis History'));
-			$filename = TimberImageTest::copyTestImage( 'arch.jpg' );
+			$filename = TestTimberImage::copyTestImage( 'arch.jpg' );
 			$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 			$iid = wp_insert_attachment( $attachment, $filename, $post_id );
 			update_post_meta($post_id, 'landmark', $iid);
@@ -43,7 +43,7 @@
 
 		function testFalseParent() {
 			$pid = $this->factory->post->create();
-			$filename = TimberImageTest::copyTestImage( 'arch.jpg' );
+			$filename = TestTimberImage::copyTestImage( 'arch.jpg' );
 			$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 			$iid = wp_insert_attachment( $attachment, $filename, $pid );
 			update_post_meta( $iid, 'architect', 'Eero Saarinen' );
@@ -244,7 +244,7 @@
 			wp_set_current_user(0);
 		}
 
-		
+
 
 		function testTitle(){
 			$title = 'Fifteen Million Merits';

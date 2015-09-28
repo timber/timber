@@ -2,7 +2,7 @@
 
 /**
  * Need to display info about your theme? Well you've come to the right place. By default info on the current theme comes for free with what's fetched by `Timber::get_context()` in which case you can access it your theme like so:
- * @example 
+ * @example
  * ```php
  * <?php
  * $context = Timber::get_context();
@@ -21,22 +21,10 @@ class TimberTheme extends TimberCore {
 
 	/**
 	 * @api
-	 * @var string the absolute path to the theme (ex: `http://example.org/wp-content/themes/my-timber-theme`)
-	 */
-	public $link;
-
-	/**
-	 * @api
 	 * @var string the human-friendly name of the theme (ex: `My Timber Starter Theme`)
 	 */
 	public $name;
 
-	/**
-	 * @api
-	 * @var string the relative path to the theme (ex: `/wp-content/themes/my-timber-theme`)
-	 */
-	public $path;
-	
 	/**
 	 * @api
 	 * @var TimberTheme|bool the TimberTheme object for the parent theme (if it exists), false otherwise
@@ -87,17 +75,35 @@ class TimberTheme extends TimberCore {
 		$this->name = $data->get('Name');
 		$ss = $data->get_stylesheet();
 		$this->slug = $ss;
-		$this->path = WP_CONTENT_SUBDIR . str_replace(WP_CONTENT_DIR, '', get_stylesheet_directory());
+
+		if ( ! function_exists( 'get_home_path' ) ) {
+			require_once(ABSPATH . 'wp-admin/includes/file.php');
+		}
+
 		$this->uri = get_stylesheet_directory_uri();
-		$this->link = $this->uri;
 		$this->parent_slug = $data->get('Template');
-		if (!$this->parent_slug) {
-			$this->path = WP_CONTENT_SUBDIR . str_replace(WP_CONTENT_DIR, '', get_template_directory());
+		if ( !$this->parent_slug ) {
 			$this->uri = get_template_directory_uri();
 		}
-		if ($this->parent_slug && $this->parent_slug != $this->slug) {
+		if ( $this->parent_slug && $this->parent_slug != $this->slug ) {
 			$this->parent = new TimberTheme($this->parent_slug);
 		}
+	}
+
+	/**
+	 * @api
+	 * @return string the absolute path to the theme (ex: `http://example.org/wp-content/themes/my-timber-theme`)
+	 */
+	public function link() {
+		return $this->uri;
+	}
+
+	/**
+	 * @api
+	 * @return  string the relative path to the theme (ex: `/wp-content/themes/my-timber-theme`)
+	 */
+	public function path() {
+		return TimberURLHelper::get_rel_url( $this->link() );
 	}
 
 	/**

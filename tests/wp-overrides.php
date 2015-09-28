@@ -1,4 +1,5 @@
 <?php
+
 class WP_Overrides {
 
 	public static function media_handle_upload( $file_id, $post_id, $post_data = array(), $overrides = array( 'test_form' => false ) ) {

@@ -1,6 +1,6 @@
 <?php
 
-class TimberPaginationTest extends WP_UnitTestCase {
+class TestTimberPagination extends WP_UnitTestCase {
 
 	function testPaginationSearch() {
 		update_option( 'permalink_structure', '' );
@@ -20,7 +20,7 @@ class TimberPaginationTest extends WP_UnitTestCase {
 		$this->go_to( home_url( '/' ) );
 		Timber::query_posts('post_type=portfolio');
 		$pagination = Timber::get_pagination();
-		
+
 		global $timber;
 		$timber->active_query = false;
 		unset($timber->active_query);
@@ -35,7 +35,7 @@ class TimberPaginationTest extends WP_UnitTestCase {
 		$this->go_to( home_url( '/' ) );
 		Timber::get_posts('post_type=portfolio');
 		$pagination = Timber::get_pagination();
-		
+
 		global $timber;
 		$timber->active_query = false;
 		unset($timber->active_query);

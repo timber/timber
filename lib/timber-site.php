@@ -1,7 +1,27 @@
 <?php
 
+/**
+ * TimberSite gives you access to information you need about your site. In Multisite setups, you can get info on other sites in your network.
+ * @example
+ * ```php
+ * $context = Timber::get_context();
+ * $other_site_id = 2;
+ * $context['other_site'] = new TimberSite($other_site_id);
+ * Timber::render('index.twig', $context);
+ * ```
+ * ```twig
+ * My site is called {{site.name}}, another site on my network is {{other_site.name}}
+ * ```
+ * ```html
+ * My site is called Jared's blog, another site on my network is Upstatement.com
+ * ```
+ */
 class TimberSite extends TimberCore implements TimberCoreInterface {
 
+	/**
+	 * @api
+	 * @var string the admin email address set in the WP admin panel
+	 */
     public $admin_email;
     public $blogname;
     /**
@@ -11,18 +31,40 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
     public $charset;
 
     /**
+     * @api
      * @var string
      */
     public $description;
+    /**
+     * @api
+     * @var int the ID of a site in multisite
+     */
     public $id;
+    /**
+     * @api
+     * @var string the language setting ex: en-US
+     */
     public $language;
+    /**
+     * @api
+     * @var string of language attributes for usage in the <html> tag
+     */
     public $language_attributes;
     /**
      * @api
-     * @var bool
+     * @var bool true if multisite, false if plain ole' WordPress
      */
     public $multisite;
+
+    /**
+     * @api
+     * @var string
+     */
     public $name;
+
+    /** @api
+	 * @var string for people who like trackback spam
+    */
     public $pingback_url;
     public $siteurl;
     /**
@@ -38,8 +80,15 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
     public $url;
 
     /**
-     *
-     *
+     * Constructs a TimberSite object
+     * @example
+     * ```php
+     * //multisite setup
+     * $site = new TimberSite(1);
+     * $site_two = new TimberSite("My Cool Site");
+     * //non-multisite
+     * $site = new TimberSite();
+     * ```
      * @param string|int $site_name_or_id
      */
     function __construct( $site_name_or_id = null ) {
@@ -115,16 +164,16 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
     }
 
     /**
-     *
+     * @deprecated 0.21.9
      * @internal
      * @return string
      */
     function get_link() {
-        return $this->url;
+        return $this->link();
     }
 
     /**
-     *
+     * @deprecated 0.21.9
      * @internal
      * @return string
      */
@@ -133,16 +182,27 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
     }
 
     /**
-     *
+     * Returns the link to the site's home.
+     * @example
+     * ```twig
+     * <a href="{{ site.link }}" title="Home">
+     * 	  <img src="/wp-content/uploads/logo.png" alt="Logo for some stupid thing" />
+     * </a>
+     * ```
+     * ```html
+     * <a href="http://example.org" title="Home">
+     * 	  <img src="/wp-content/uploads/logo.png" alt="Logo for some stupid thing" />
+     * </a>
+     * ```
      * @api
      * @return string
      */
     public function link() {
-        return $this->get_link();
+    	return $this->url;
     }
 
     /**
-     *
+     * @ignore
      */
     public function meta( $field ) {
         return $this->__get( $field );
@@ -150,7 +210,7 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
 
     /**
      *
-     *
+     * @ignore
      * @param string  $key
      * @param mixed   $value
      */

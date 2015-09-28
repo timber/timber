@@ -1,6 +1,6 @@
 <?php
 
-class TimberCommentTest extends WP_UnitTestCase {
+class TestTimberComment extends WP_UnitTestCase {
 
 	function testComment(){
 		$post_id = $this->factory->post->create();
@@ -64,6 +64,9 @@ class TimberCommentTest extends WP_UnitTestCase {
 	}
 
 	function testGravatar() {
+		if (!TestTimberImage::is_connected()){
+			$this->markTestSkipped('Cannot test avatar images when not connected to internet');
+		}
 		$post_id = $this->factory->post->create();
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_author' => 'jarednova', 'comment_author_email' => 'jarednova@upstatement.com'));
 		$comment = new TimberComment($comment_id);
@@ -77,7 +80,7 @@ class TimberCommentTest extends WP_UnitTestCase {
 	}
 
 	function testAvatar(){
-		if (!TimberImageTest::is_connected()){
+		if (!TestTimberImage::is_connected()){
 			$this->markTestSkipped('Cannot test avatar images when not connected to internet');
 		}
 		$post_id = $this->factory->post->create();

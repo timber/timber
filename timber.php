@@ -4,7 +4,7 @@ Plugin Name: Timber
 Plugin URI: http://timber.upstatement.com
 Description: The WordPress Timber Library allows you to write themes using the power Twig templates
 Author: Jared Novack + Upstatement
-Version: 0.21.9
+Version: 0.21.10
 Author URI: http://upstatement.com/
 */
 
@@ -48,6 +48,9 @@ class Timber {
 	public static $autoescape = false;
 
 	public function __construct() {
+		if ( !defined('ABSPATH') ) {
+			return;
+		}
 		$this->test_compatibility();
 		$this->init_constants();
 		$this->init();
@@ -72,7 +75,6 @@ class Timber {
 	protected function init() {
 		TimberTwig::init();
 		TimberRoutes::init( $this );
-
 		TimberImageHelper::init();
 		TimberAdmin::init();
 		TimberIntegrations::init();

@@ -28,11 +28,19 @@ class TimberImageHelper {
 	 * Generates a new image with the specified dimensions.
 	 * New dimensions are achieved by cropping to maintain ratio.
 	 *
+	 * @api
 	 * @param string  		$src an URL (absolute or relative) to the original image
 	 * @param int|string	$w target width(int) or WordPress image size (WP-set or user-defined)
 	 * @param int     		$h target height (ignored if $w is WP image size)
-	 * @param string  		$crop
+	 * @param string  		$crop your choices are 'default', 'center', 'top', 'bottom', 'left', 'right'
 	 * @param bool    		$force
+	 * @example
+	 * ```twig
+	 * <img src="{{ image.src | resize(300, 200, 'top') }}" />
+	 * ```
+	 * ```html
+	 * <img src="http://example.org/wp-content/uploads/pic-300x200-c-top.jpg" />
+	 * ```
 	 * @return string (ex: )
 	 */
 	public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
@@ -59,11 +67,6 @@ class TimberImageHelper {
 	 * }
 	 */
 	private static function find_wp_dimensions( $size ) {
-
-		// if ( in_array( $_size, array( 'thumbnail', 'medium', 'large' ) ) ) {
-
-	 //                    $sizes[ $_size ]['width'] = get_option( $_size . '_size_w' );
-	 //                    $sizes[ $_size ]['height'] = get_option( $_size . '_size_h' );
 		global $_wp_additional_image_sizes;
 		if (isset($_wp_additional_image_sizes[$size])) {
 			$w = $_wp_additional_image_sizes[$size]['width'];
@@ -181,8 +184,8 @@ class TimberImageHelper {
 	 *
 	 * keeping these here so I know what the hell we're matching
 	 * $match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/$filename-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $found_file);
-	 * $match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/arch-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $filename);	
-	 * 
+	 * $match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/arch-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $filename);
+	 *
 	 * @param string 	$filename   ex: my-pic
 	 * @param string 	$ext ex: jpg
 	 * @param string 	$dir var/www/wp-content/uploads/2015/
