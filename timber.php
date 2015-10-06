@@ -464,6 +464,8 @@ class Timber {
 			$args = array_merge( $args, $prefs );
 		}
 		$data = array();
+		$data['current'] = $args['current'];
+		$data['total'] = $args['total'];
 		$data['pages'] = TimberHelper::paginate_links( $args );
 		$next = get_next_posts_page_link( $args['total'] );
 		if ( $next ) {
