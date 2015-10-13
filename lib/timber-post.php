@@ -696,7 +696,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		return $children;
 	}
 	
-		/**
+	/**
 	 * Enqueue the WP threaded comments javascript,
 	 * and fetch the reply link for various comments.
 	 * @internal
@@ -705,8 +705,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @return mixed
 	 */
 	function TimberComment_reply_link($comment_id, $post_id) {
-
-		wp_enqueue_script( 'comment-reply' );
+		if (is_singular() && comments_open() && get_option('thread_comments')) {
+			wp_enqueue_script( 'comment-reply' );
+		}
 
 		// Get the comments depth option from the admin panel
 		$max_depth = get_option('thread_comments_depth');
