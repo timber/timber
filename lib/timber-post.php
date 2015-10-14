@@ -729,7 +729,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 			$overridden_cpage = true;
 		}
 
-        foreach($comments as $key => &$comment) {
+        foreach( $comments as $key => &$comment ) {
             $timber_comment = new $CommentClass($comment);
             $timber_comments[$timber_comment->id] = $timber_comment;
         }
