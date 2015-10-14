@@ -236,6 +236,34 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
 		return $value;
 	}
 
+	/**
+	 * Enqueue the WP threaded comments javascript,
+	 * and fetch the reply link for various comments.
+	 * @api
+	 * @param int $comment_id
+	 * @param int $post_id
+	 * @return string
+	 */
+	public function reply_link( $reply_text = 'Reply' ) {
+		if ( is_singular() && comments_open() && get_option('thread_comments') ) {
+			wp_enqueue_script( 'comment-reply' );
+		}
+
+		// Get the comments depth option from the admin panel
+		$max_depth = get_option('thread_comments_depth');
+
+		// Default args
+		$args = array(
+			'add_below' => 'comment',
+			'respond_id' => 'respond',
+			'reply_text' => $reply_text,
+			'depth' => 1,
+			'max_depth' => $max_depth,
+		);
+
+		return get_comment_reply_link( $args, $this->ID, $this->post_id );
+	}
+
 	/* AVATAR Stuff
 	======================= */
 

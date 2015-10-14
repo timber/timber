@@ -38,6 +38,15 @@ class TestTimberComment extends WP_UnitTestCase {
 		$comment->assertEquals('August 21, 2015', $comment->date());
 	}
 
+	function testCommentReplyLink() {
+		$comment_text = "Try the soup";
+		$post_id = $this->factory->post->create();
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $comment_text, 'comment_date' => '2015-08-21 03:24:07'));
+		$comment = new TimberComment($comment_id);
+		$link = $comment->reply_link('Respond');
+		$this->assertEquals('Respond', strip_tags($link));
+	}
+
 	function testAnonymousComment() {
 		$post_id = $this->factory->post->create();
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'Mystery', 'user_id' => 0, 'comment_author' => false));
