@@ -71,6 +71,13 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Timber Sugar**](https://github.com/Upstatement/timber-sugar) A catch-all for goodies to use w Timber.
 * [**Twig**](https://github.com/fabpot/Twig) The template language used by Timber.
 
+#### Projects that use Timber
+* [**Gantry5**](https://wordpress.org/plugins/gantry5/) a framework for theme development
+
+#### Helpful Links
+* [**CSS Tricks**](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/) introduction to Timber
+* [**Twig for Timber Cheatsheet**](http://notlaura.com/the-twig-for-timber-cheatsheet/) by @laras126
+
 #### Should I use it?
 It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. While Timber is still in development, it's also in-use on [hundreds of sites](http://jarednova.github.io/timber/#showcase). While much has been stabilized since the first major push back in June 2013, you should expect some breaking changes as development progresses towards a version 1.0.
 
