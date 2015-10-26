@@ -330,7 +330,7 @@ class Timber {
 	 * @return bool|string
 	 */
 	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT ) {
-		$output = static::fetch( $filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT );
+		$output = static::fetch( $filenames, $data, $expires, $cache_mode);
 		echo $output;
 		return $output;
 	}
