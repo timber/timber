@@ -310,7 +310,7 @@ class Timber {
 	 * @param string  $cache_mode
 	 * @return bool|string
 	 */
-	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT ) {
+	public static function fetch( $filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT ) {
 		if ( $expires === true ) {
 			//if this is reading as true; the user probably is using the old $echo param
 			//so we should move all vars up by a spot
@@ -319,6 +319,18 @@ class Timber {
 		}
 		$output = self::compile( $filenames, $data, $expires, $cache_mode, true );
 		$output = apply_filters( 'timber_compile_result', $output );
+		return $output;
+	}
+
+	/**
+	 * @param array   $filenames
+	 * @param array   $data
+	 * @param bool    $expires
+	 * @param string  $cache_mode
+	 * @return bool|string
+	 */
+	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT ) {
+		$output = static::fetch( $filenames, $data, $expires, $cache_mode );
 		echo $output;
 		return $output;
 	}
