@@ -16,6 +16,15 @@ class TestTimberPostGetter extends WP_UnitTestCase {
 		$this->assertContains($pids[0], $post_ids_gotten);
 	}
 
+	function test587() {
+		register_post_type('product');
+		$pids = $this->factory->post->create_many(6, array('post_type' => 'product'));
+		$args = array(
+        	'post_type' => 'project'
+    	);
+		$context['projects'] = Timber::get_posts($args);
+	}
+
 	function testGettingEmptyArray(){
 		$pids = $this->factory->post->create_many( 15 );
 		$posts = Timber::get_posts(array());
@@ -31,7 +40,7 @@ class TestTimberPostGetter extends WP_UnitTestCase {
 	function testGetAttachment() {
 		$upload_dir = wp_upload_dir();
 		$post_id = $this->factory->post->create();
-		$filename = TimberImageTest::copyTestImage( 'flag.png' );
+		$filename = TestTimberImage::copyTestImage( 'flag.png' );
 		$destination_url = str_replace( ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$attachment = array(

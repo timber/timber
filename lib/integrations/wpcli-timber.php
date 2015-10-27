@@ -1,4 +1,8 @@
 <?php
+if (!class_exists('WP_CLI_Command')) {
+	return;
+}
+
 class Timber_WP_CLI_Command extends WP_CLI_Command {
 
     /**

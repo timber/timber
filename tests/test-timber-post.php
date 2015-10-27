@@ -1,12 +1,56 @@
 <?php
 
-	class TimberPostTest extends WP_UnitTestCase {
+	class TestTimberPost extends WP_UnitTestCase {
 
-		function testPost(){
+		function testPostObject(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost($post_id);
 			$this->assertEquals('TimberPost', get_class($post));
 			$this->assertEquals($post_id, $post->ID);
+		}
+
+		function testComments() {
+			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
+			$comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
+			$post = new TimberPost($post_id);
+			$this->assertEquals( 5, count($post->comments()) );
+			$this->assertEquals( 5, $post->get_comment_count() );
+		}
+
+		function testNameMethod() {
+			$post_id = $this->factory->post->create(array('post_title' => 'Battlestar Galactica'));
+			$post = new TimberPost($post_id);
+			$this->assertEquals('Battlestar Galactica', $post->name());
+		}
+
+		function testGetImage() {
+			$post_id = $this->factory->post->create(array('post_title' => 'St. Louis History'));
+			$filename = TestTimberImage::copyTestImage( 'arch.jpg' );
+			$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+			$iid = wp_insert_attachment( $attachment, $filename, $post_id );
+			update_post_meta($post_id, 'landmark', $iid);
+			$post = new TimberPost($post_id);
+			$image = $post->get_image('landmark');
+			$this->assertEquals('The Arch', $image->title());
+		}
+
+		function testPostString() {
+			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
+			$post = new TimberPost($post_id);
+			$str = Timber::compile_string('<h1>{{post}}</h1>', array('post' => $post));
+			$this->assertEquals('<h1>Gobbles</h1>', $str);
+		}
+
+		function testFalseParent() {
+			$pid = $this->factory->post->create();
+			$filename = TestTimberImage::copyTestImage( 'arch.jpg' );
+			$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+			$iid = wp_insert_attachment( $attachment, $filename, $pid );
+			update_post_meta( $iid, 'architect', 'Eero Saarinen' );
+			$image = new TimberImage( $iid );
+			$parent = $image->parent();
+			$this->assertEquals($pid, $parent->ID);
+			$this->assertFalse($parent->parent());
 		}
 
 		function testPostOnSingle(){
@@ -192,14 +236,6 @@
 			$this->assertEquals($rand, $post->test_meta);
 		}
 
-		function testDoubleEllipsis(){
-			$post_id = $this->factory->post->create();
-			$post = new TimberPost($post_id);
-			$post->post_excerpt = 'this is super dooper trooper long words';
-			$prev = $post->get_preview(3, true);
-			$this->assertEquals(1, substr_count($prev, '&hellip;'));
-		}
-
 		function testCanEdit(){
 			wp_set_current_user(1);
 			$post_id = $this->factory->post->create(array('post_author' => 1));
@@ -208,34 +244,7 @@
 			wp_set_current_user(0);
 		}
 
-		function testGetPreview() {
-			global $wp_rewrite;
-			$struc = false;
-			$wp_rewrite->permalink_structure = $struc;
-			update_option('permalink_structure', $struc);
-			$post_id = $this->factory->post->create(array('post_content' => 'this is super dooper trooper long words'));
-			$post = new TimberPost($post_id);
 
-			// no excerpt
-			$post->post_excerpt = '';
-			$preview = $post->get_preview(3);
-			$this->assertRegExp('/this is super &hellip;  <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Read More<\/a>/', $preview);
-
-			// excerpt set, force is false, no read more
-			$post->post_excerpt = 'this is excerpt longer than three words';
-			$preview = $post->get_preview(3, false, '');
-			$this->assertEquals($preview, $post->post_excerpt);
-
-			// custom read more set
-			$post->post_excerpt = '';
-			$preview = $post->get_preview(3, false, 'Custom more');
-			$this->assertRegExp('/this is super &hellip;  <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Custom more<\/a>/', $preview);
-
-			// content with <!--more--> tag, force false
-			$post->post_content = 'this is super dooper<!--more--> trooper long words';
-			$preview = $post->get_preview(2, false, '');
-			$this->assertEquals('this is super dooper', $preview);
-		}
 
 		function testTitle(){
 			$title = 'Fifteen Million Merits';
@@ -288,7 +297,7 @@
             $post = Timber::get_post();
 			$this->assertEquals($page1, trim(strip_tags($post->get_paged_content())));
 
-            $pagination = $post->get_pagination();
+            $pagination = $post->pagination();
             $this->go_to( $pagination['pages'][1]['link'] );
 
             setup_postdata( get_post( $post_id ) );
@@ -384,6 +393,14 @@
 			$this->assertEquals('Bernstein', $post->modified_author()->name());
 		}
 
+		function testPostFormat() {
+			add_theme_support( 'post-formats', array( 'aside', 'gallery' ) );
+			$pid = $this->factory->post->create();
+			set_post_format($pid, 'aside');
+			$post = new TimberPost($pid);
+			$this->assertEquals('aside', $post->format());
+		}
+
 		function testPostClass(){
 			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
@@ -465,6 +482,33 @@
 			$this->assertEquals('whatever', $tags[0]->slug);
 			$this->assertTrue($post->has_term('Dolphins'));
 			$this->assertTrue($post->has_term('Patriots', 'team'));
+		}
+
+		function testPostContentLength() {
+			$crawl = "The evil leaders of Planet Spaceball having foolishly spuandered their precious atmosphere, have devised a secret plan to take every breath of air away from their peace-loving neighbor, Planet Druidia. Today is Princess Vespa's wedding day. Unbeknownest to the princess, but knowest to us, danger lurks in the stars above...";
+			$pid = $this->factory->post->create(array('post_content' => $crawl));
+			$post = new TimberPost($pid);
+			$content = trim(strip_tags($post->get_content(6)));
+			$this->assertEquals("The evil leaders of Planet Spaceball&hellip;", $content);
+		}
+
+		function testPostTypeObject() {
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+			$pto = $post->get_post_type();
+			$this->assertEquals('Posts', $pto->label);
+		}
+
+		function testEditUrl() {
+			$pid = $this->factory->post->create(array('post_author' => 1));
+			$post = new TimberPost($pid);
+			$edit_url = $post->edit_link();
+			$this->assertEquals('', $edit_url);
+			wp_set_current_user(1);
+			$data = get_userdata(1);
+			$this->assertTrue($post->can_edit());
+			$this->assertEquals('http://example.org/wp-admin/post.php?post='.$pid.'&amp;action=edit', $post->get_edit_url());
+			//
 		}
 
 	}

@@ -8,3 +8,11 @@ build
 /cache
 *.swp
 *~
+wp-content
+timber-starter-theme
+docs/markdown
+.tmp
+node_modules
+docs/cache
+docs/mkdocs
+docs/output

@@ -3,12 +3,14 @@ echo "Setting up version " $1
 echo "You still need to use Versions to send to WP.org"
 
 function deploy () {
+	cd ~/Sites/timber
 	git checkout master
 	rm -rf ~/Sites/timber/vendor
-	cd ..
+	rm -rf ~/Sites/timber/wp-content
 	git clone git@github.com:Upstatement/timber-starter-theme.git
+	rm -rf ~/Sites/timber/timber-starter-theme/.git
 	composer install --no-dev
-	rm -rf ~/Sites/timber/vendor/dannyvankooten/php-router/.git
+	rm -rf ~/Sites/timber/vendor/upstatement/routes/.git
 	cd ~/Sites/timber-wp
 	mkdir tags/$1
 

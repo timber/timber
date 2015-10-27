@@ -2,8 +2,8 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.21.0
-Tested up to: 4.1
+Stable tag: 0.22.0
+Tested up to: 4.2.3
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -34,12 +34,69 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 #### Want to read more?
 * [Timber on GitHub](http://github.com/jarednova/timber/)
-* [Timber Overview on Tidy Repo](http://www.wpmayor.com/articles/timber-templating-language-wordpress/)
-* ["What is WordPress Missing? A Template Language" on Torque](http://torquemag.io/what-is-wordpress-lacking-a-template-language/)
+* [Timber Overview on Tidy Repo](http://tidyrepo.com/timber/)
+* ["Timber and Twig Reignited My Love for WordPress" on CSS-Tricks](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/)
 
 
 
 == Changelog ==
+
+= 0.22.0 =
+* Added fetch method to Timber (thanks @xaivars and @erik-landvall)
+* Added a total to the pagination data array (thanks @lggorman)
+* Threaded comments get some love! (thanks @josephbergdoll)
+* A fix to date parsing when handling numeric timestamps (thanks @xaivars)
+
+= 0.21.10 =
+* Removed deprecated twitterify function
+* Much more docs (and deprecation docs)
+* Fixed issues with using constants (thanks @xavivars)
+
+= 0.21.9 =
+* Much much much more inline docs
+* Fix to TimberComment::approved()
+* HHVM support confirmed (it always worked, but now the tests prove it)
+* Fixes to multisite handling of themes
+* Fix to comments pagination (thanks @newkind)
+
+= 0.21.8 =
+* Fixes to things in docs
+* Added ID to timber/image/src filter (thanks @aaronhippie)
+* Fixed edgecase with HTTP_HOST vs SERVER_NAME (thanks @maketimetodesign)
+
+= 0.21.7 =
+* Fix for Image src in some situtations
+
+= 0.21.6 =
+* Fix for TimberMenu visiblility
+* Fix for TimberComment visibility
+
+= 0.21.5 =
+* Patch for method property visibility in TimberPost
+
+= 0.21.4 =
+* Fixed issue with multisite variables
+* Fixed issue with string conversion on function output
+
+= 0.21.3 =
+* Fixed issues with static post pages
+* Fixed issues with front pages with static pages
+
+= 0.21.2 =
+* Fixed GIF handling (thanks @josephbergdoll and @jarednova)
+* Improved handling of diff't image sizes
+* Timber Archives are now tested and much improved (thanks @KLVTZ)
+* Image fixing (thanks @marciojcoelho)
+* More tests and improving coverage to 77%
+
+= 0.21.1 =
+* Fixed capitalization problem for WP.org version
+
+= 0.21.0 =
+* Routes is now its own independent repo
+* Timber Starter Theme is now its own independent repo
+* Improved loading of files (thanks @mgmartel)
+* Fixed some errors with TimberImages (thanks @imranismail)
 
 = 0.20.10 =
 * Resolved lingering composer issues (thanks @austinpray, @lucasmichot)

@@ -2,6 +2,13 @@
 
 	class TestTimberLoader extends WP_UnitTestCase {
 
+		/**
+     	 * @expectedException Twig_Error_Loader
+     	 */
+		function testBogusTemplate() {
+			$str = Timber::compile('assets/darkhelmet.twig');
+		}
+
 		function testTwigPathFilter() {
 			$php_unit = $this;
 			add_filter('timber/loader/paths', function($paths) use ($php_unit) {

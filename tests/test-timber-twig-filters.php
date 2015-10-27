@@ -1,6 +1,6 @@
 <?php
 
-	class TimberTermTwigFilters extends WP_UnitTestCase {
+	class TestTimberTermTwigFilters extends WP_UnitTestCase {
 
 		function testTimberFitlerSanitize(){
 			$data['title'] = "Jared's Big Adventure";
@@ -18,7 +18,11 @@
 			$data['arr'] = array('foo', 'bar');
 			$str = Timber::compile_string('{{arr|string(", ")}}', $data);
 			$this->assertEquals('foo, bar', trim($str));
+			$data['arr'] = 6;
+			$str = Timber::compile_string('{{arr}}', $data);
+			$this->assertEquals('6', trim($str));
 		}
+
 
 		function testTwigFilterDate(){
 			$date = '1983-09-28';

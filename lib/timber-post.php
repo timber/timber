@@ -1,68 +1,232 @@
 <?php
 
+/**
+ * This is the object you use to access or extend WordPress posts. Think of it as Timber's (more accessible) version of WP_Post. This is used throughout Timber to represent posts retrieved from WordPress making them available to Twig templates. See the PHP and Twig examples for an example of what it's like to work with this object in your code.
+ * @example
+ * ```php
+ * <?php
+ * // single.php, see connected twig example
+ * $context = Timber::get_context();
+ * $context['post'] = new TimberPost(); // It's a new TimberPost object, but an existing post from WordPress.
+ * Timber::render('single.twig', $context);
+ * ?>
+ * ```
+ * ```twig
+ * {# single.twig #}
+ * <article>
+ *     <h1 class="headline">{{post.title}}</h1>
+ *     <div class="body">
+ *         {{post.content}}
+ *     </div>
+ * </article>
+ * ```
+ *
+ * ```html
+ * <article>
+ *     <h1 class="headline">The Empire Strikes Back</h1>
+ *     <div class="body">
+ *         It is a dark time for the Rebellion. Although the Death Star has been destroyed, Imperial troops have driven the Rebel forces from their hidden base and pursued them across the galaxy.
+ *     </div>
+ * </article>
+ * ```
+ *
+ * @package Timber
+ */
 class TimberPost extends TimberCore implements TimberCoreInterface {
 
-    public $ImageClass = 'TimberImage';
-    public $PostClass = 'TimberPost';
+	/**
+	 * @var string $ImageClass the name of the class to handle images by default
+	 */
+	public $ImageClass = 'TimberImage';
 
-    public $object_type = 'post';
-    public static $representation = 'post';
+	/**
+	 * @var string $PostClass the name of the class to handle posts by default
+	 */
+	public $PostClass = 'TimberPost';
 
-    public $_can_edit;
-    public $_custom_imported = false;
-    public $_content;
-    public $_get_terms;
+	/**
+	 * @var string $object_type what does this class represent in WordPress terms?
+	 */
+	public $object_type = 'post';
 
-    private $_next = array();
-    private $_prev = array();
+	/**
+	 * @var string $representation what does this class represent in WordPress terms?
+	 */
+	public static $representation = 'post';
 
-    public $class;
-    public $display_date;
-    public $id;
-    public $ID;
-    public $post_content;
-    public $post_date;
-    public $post_parent;
-    public $post_title;
-    public $post_type;
-    public $slug;
+	/**
+	 * @internal
+	 * @var string $_content stores the processed content internally
+	 */
+	protected $_content;
 
-    /**
-     *  If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
-     * @param mixed $pid
-     * @return \TimberPost TimberPost object -- woo!
-     */
-    function __construct($pid = null) {
-        global $wp_query;
-        if ($pid === null && isset($wp_query->queried_object_id) && $wp_query->queried_object_id) {
-            $pid = $wp_query->queried_object_id;
-            $this->ID = $pid;
-        } else if ($pid === null && get_the_ID()) {
-            $pid = get_the_ID();
-            $this->ID = $pid;
-        } else if ($pid === null && ($pid_from_loop = TimberPostGetter::loop_to_id())) {
-            $this->ID = $pid_from_loop;
-        }
-        if (is_numeric($pid)) {
-            $this->ID = $pid;
-        }
-        $this->init($pid);
-    }
+	/**
+	 * @internal
+	 * @var array $_get_terms stores the results of a get_terms method call
+	 */
+	protected $_get_terms;
 
-     /**
-     * @return string
-     */
-    function __toString() {
-        return $this->title();
-    }
+	/**
+	 * @var string $_permalink the returned permalink from WP's get_permalink function
+	 */
+	protected $_permalink;
+
+	/**
+	 * @var array $_next stores the results of the next TimberPost in a set inside an array (in order to manage by-taxonomy)
+	 */
+	protected $_next = array();
+
+	/**
+	 * @var array $_prev stores the results of the previous TimberPost in a set inside an array (in order to manage by-taxonomy)
+	 */
+	protected $_prev = array();
+
+	/**
+	 * @api
+	 * @var string $class stores the CSS classes for the post (ex: "post post-type-book post-123")
+	 */
+	public $class;
+
+	/**
+	 * @deprecated since 0.21.7
+	 * @var string $display_date @deprecated stores the display date (ex: "October 6, 1984"),
+	 */
+	public $display_date;
+
+	/**
+	 * @api
+	 * @var string $id the numeric WordPress id of a post
+	 */
+	public $id;
+
+	/**
+	 * @var string 	$ID 			the numeric WordPress id of a post, capitalized to match WP usage
+	 */
+	public $ID;
+
+	/**
+	 * @var int 	$post_author 	the numeric ID of the a post's author corresponding to the wp_user dtable
+	 */
+	public $post_author;
+
+	/**
+	 * @var string 	$post_content 	the raw text of a WP post as stored in the database
+	 */
+	public $post_content;
+
+	/**
+	 * @var string 	$post_date 		the raw date string as stored in the WP database, ex: 2014-07-05 18:01:39
+	 */
+	public $post_date;
+
+	/**
+	 * @var string 	$post_exceprt 	the raw text of a manual post exceprt as stored in the database
+	 */
+	public $post_excerpt;
+
+	/**
+	 * @var int 		$post_parent 	the numeric ID of a post's parent post
+	 */
+	public $post_parent;
+
+	/**
+	 * @api
+	 * @var string 		$post_status 	the status of a post ("draft", "publish", etc.)
+	 */
+	public $post_status;
+
+	/**
+	 * @var string 	$post_title 	the raw text of a post's title as stored in the database
+	 */
+	public $post_title;
+
+	/**
+	 * @api
+	 * @var string 	$post_type 		the name of the post type, this is the machine name (so "my_custom_post_type" as opposed to "My Custom Post Type")
+	 */
+	public $post_type;
+
+	/**
+	 * @api
+	 * @var string 	$slug 		the URL-safe slug, this corresponds to the poorly-named "post_name" in the WP database, ex: "hello-world"
+	 */
+	public $slug;
+
+	/**
+	 * If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
+	 * @example
+	 * ```php
+	 * $post = new TimberPost();
+	 * $other_post = new TimberPost($random_post_id);
+	 * ```
+	 * @param mixed $pid
+	 */
+	public function __construct($pid = null) {
+		$pid = $this->determine_id( $pid );
+		$this->init($pid);
+	}
+
+	/**
+	 * tries to figure out what post you want to get if not explictly defined (or if it is, allows it to be passed through)
+	 * @internal
+	 * @param mixed a value to test against
+	 * @return int the numberic id we should be using for this post object
+	 */
+	protected function determine_id($pid) {
+		global $wp_query;
+		if ( $pid === null &&
+			isset($wp_query->queried_object_id)
+			&& $wp_query->queried_object_id
+			&& isset($wp_query->queried_object)
+			&& is_object($wp_query->queried_object)
+			&& get_class($wp_query->queried_object) == 'WP_Post'
+			) {
+			$pid = $wp_query->queried_object_id;
+		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id )  {
+			//hack for static page as home page
+			$pid = $wp_query->queried_object_id;
+		} else if ( $pid === null ) {
+			$gtid = false;
+			$maybe_post = get_post();
+			if ( isset($maybe_post->ID) ){
+				$gtid = true;
+			}
+			if ( $gtid ) {
+				$pid = get_the_ID();
+			}
+			if ( !$pid ) {
+				global $wp_query;
+				if ( isset($wp_query->query['p']) ) {
+					$pid = $wp_query->query['p'];
+				}
+			}
+		}
+		if ( $pid === null && ($pid_from_loop = TimberPostGetter::loop_to_id()) ) {
+			$pid = $pid_from_loop;
+		}
+		return $pid;
+	}
+
+	/**
+	 * Outputs the title of the post if you do something like `<h1>{{post}}</h1>`
+	 * @return string
+	 */
+	public function __toString() {
+		return $this->title();
+	}
 
 
-    /**
-     * @param int|bool $pid
-     */
-    function init($pid = false) {
-		if ($pid === false) {
+	/**
+	 * Initializes a TimberPost
+	 * @internal
+	 * @param int|bool $pid
+	 */
+	protected function init($pid = false) {
+		if ( $pid === false ) {
 			$pid = get_the_ID();
+		}
+		if ( is_numeric($pid) ) {
+			$this->ID = $pid;
 		}
 		$post_info = $this->get_info($pid);
 		$this->import($post_info);
@@ -73,935 +237,1136 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		$this->class = $post_class;
 	}
 
-    /**
-     * Get the URL that will edit the current post/object
-     *
-     * @return bool|string
-     */
-    function get_edit_url() {
-        if ($this->can_edit()) {
-            return get_edit_post_link($this->ID);
-        }
-        return false;
-    }
-
-    /**
-     * updates the post_meta of the current object with the given value
-     *
-     * @param string $field
-     * @param mixed $value
-     */
-    public function update($field, $value) {
-        if (isset($this->ID)) {
-            update_post_meta($this->ID, $field, $value);
-            $this->$field = $value;
-        }
-    }
-
-
-    /**
-     *  takes a mix of integer (post ID), string (post slug), or object to return a WordPress post object from WP's built-in get_post() function
-     *
-     * @param mixed $pid
-     * @return WP_Post on success
-     */
-    private function prepare_post_info($pid = 0) {
-        if (is_string($pid) || is_numeric($pid) || (is_object($pid) && !isset($pid->post_title)) || $pid === 0) {
-            $pid = self::check_post_id($pid);
-            $post = get_post($pid);
-            if ($post) {
-                return $post;
-            } else {
-                $post = get_page($pid);
-                return $post;
-            }
-        }
-        //we can skip if already is WP_Post
-        return $pid;
-    }
-
-
-    /**
-     *  helps you find the post id regardless of whetehr you send a string or whatever
-     *
-     * @param integer $pid ;
-     * @return integer ID number of a post
-     */
-    private function check_post_id($pid) {
-        if (is_numeric($pid) && $pid === 0) {
-            $pid = get_the_ID();
-            return $pid;
-        }
-        if (!is_numeric($pid) && is_string($pid)) {
-            $pid = self::get_post_id_by_name($pid);
-            return $pid;
-        }
-        if (!$pid) {
-            return null;
-        }
-        return $pid;
-    }
-
-
-    /**
-     *  get_post_id_by_name($post_name)
-     *
-     * @param string $post_name
-     * @return int
-     */
-    public static function get_post_id_by_name($post_name) {
-        global $wpdb;
-        $query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s LIMIT 1", $post_name);
-        $result = $wpdb->get_row($query);
-        if (!$result) {
-            return null;
-        }
-        return $result->ID;
-    }
-
-
-    /**
-     *  ## get a preview of your post, if you have an excerpt it will use that,
-     *  ## otherwise it will pull from the post_content.
-     *  ## If there's a <!-- more --> tag it will use that to mark where to pull through.
-     *  <p>{{post.get_preview(50)}}</p>
-     */
-
-    /**
-     * @param int $len
-     * @param bool $force
-     * @param string $readmore
-     * @param bool $strip
-     * @return string
-     */
-    function get_preview($len = 50, $force = false, $readmore = 'Read More', $strip = true) {
-        $text = '';
-        $trimmed = false;
-        if (isset($this->post_excerpt) && strlen($this->post_excerpt)) {
-            if ($force) {
-                $text = TimberHelper::trim_words($this->post_excerpt, $len, false);
-                $trimmed = true;
-            } else {
-                $text = $this->post_excerpt;
-            }
-        }
-        if (!strlen($text) && strpos($this->post_content, '<!--more-->') !== false) {
-            $pieces = explode('<!--more-->', $this->post_content);
-            $text = $pieces[0];
-            if ($force) {
-                $text = TimberHelper::trim_words($text, $len, false);
-                $trimmed = true;
-            }
-        }
-        if (!strlen($text)) {
-            $text = TimberHelper::trim_words($this->get_content(), $len, false);
-            $trimmed = true;
-        }
-        if (!strlen(trim($text))) {
-            return $text;
-        }
-        if ($strip) {
-            $text = trim(strip_tags($text));
-        }
-        if (strlen($text)) {
-            $text = trim($text);
-            $last = $text[strlen($text) - 1];
-            if ($last != '.' && $trimmed) {
-                $text .= ' &hellip; ';
-            }
-            if (!$strip) {
-                $last_p_tag = strrpos($text, '</p>');
-                if ($last_p_tag !== false) {
-                    $text = substr($text, 0, $last_p_tag);
-                }
-                if ($last != '.' && $trimmed) {
-                    $text .= ' &hellip; ';
-                }
-            }
-
-            if ($readmore) {
-                $text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . $readmore . '</a>';
-            }
-            if (!$strip) {
-                $text .= '</p>';
-            }
-        }
-        return $text;
-    }
-
-    /**
-     *  gets the post custom and attaches it to the current object
-     * @param bool|int $pid a post ID number
-     * @nodoc
-     */
-    function import_custom($pid = false) {
-        if (!$pid) {
-            $pid = $this->ID;
-        }
-        $customs = $this->get_post_custom($pid);
-        $this->import($customs);
-    }
-
-    /**
-     * @param int $pid
-     * @return array
-     */
-    function get_post_custom($pid) {
-        apply_filters('timber_post_get_meta_pre', array(), $pid, $this);
-        $customs = get_post_custom($pid);
-        if (!is_array($customs) || empty($customs)) {
-            return array();
-        }
-        foreach ($customs as $key => $value) {
-            if (is_array($value) && count($value) == 1 && isset($value[0])) {
-                $value = $value[0];
-            }
-            $customs[$key] = maybe_unserialize($value);
-        }
-        $customs = apply_filters('timber_post_get_meta', $customs, $pid, $this);
-        return $customs;
-    }
-
-    /**
-     *  ## get the featured image as a TimberImage
-     *  <img src="{{post.get_thumbnail.get_src}}" />
-     */
-
-    /**
-     * @return null|TimberImage
-     */
-    function get_thumbnail() {
-        if (function_exists('get_post_thumbnail_id')) {
-            $tid = get_post_thumbnail_id($this->ID);
-            if ($tid) {
-                return new $this->ImageClass($tid);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @return string
-     */
-    function get_permalink() {
-        if (isset($this->permalink)) {
-            return $this->permalink;
-        }
-        $this->permalink = get_permalink($this->ID);
-        return $this->permalink;
-    }
-
-    /**
-     * @return string
-     */
-    function get_link() {
-        return $this->get_permalink();
-    }
-
-    /**
-     * @param bool $taxonomy
-     * @return mixed
-     */
-    function get_next($taxonomy = false) {
-        if (!isset($this->_next) || !isset($this->_next[$taxonomy])) {
-            global $post;
-            $this->_next = array();
-            $old_global = $post;
-            $post = $this;
-            if ($taxonomy) {
-                $adjacent = get_adjacent_post(true, '', false, $taxonomy);
-            } else {
-                $adjacent = get_adjacent_post(false, '', false);
-            }
-
-            if ($adjacent) {
-                $this->_next[$taxonomy] = new $this->PostClass($adjacent);
-            } else {
-                $this->_next[$taxonomy] = false;
-            }
-            $post = $old_global;
-        }
-        return $this->_next[$taxonomy];
-    }
-
-    /**
-     * @return array
-     */
-    public function get_pagination() {
-        global $post, $page, $numpages, $multipage;
-        $post = $this;
-        $ret = array();
-        if ($multipage) {
-            for ($i = 1; $i <= $numpages; $i++) {
-                $link = self::get_wp_link_page($i);
-                $data = array('name' => $i, 'title' => $i, 'text' => $i, 'link' => $link);
-                if ($i == $page) {
-                    $data['current'] = true;
-                }
-                $ret['pages'][] = $data;
-            }
-            $i = $page - 1;
-            if ($i) {
-                $link = self::get_wp_link_page($i);
-                $ret['prev'] = array('link' => $link);
-            }
-            $i = $page + 1;
-            if ($i <= $numpages) {
-                $link = self::get_wp_link_page($i);
-                $ret['next'] = array('link' => $link);
-            }
-        }
-        return $ret;
-    }
-
-    /**
-     * @param int $i
-     * @return string
-     */
-    private static function get_wp_link_page($i) {
-        $link = _wp_link_page($i);
-        $link = new SimpleXMLElement($link . '</a>');
-        if (isset($link['href'])) {
-            return $link['href'];
-        }
-        return '';
-    }
-
-    /**
-     * @return string
-     */
-    function get_path() {
-        return TimberURLHelper::get_rel_url($this->get_link());
-    }
-
-    /**
-     * @param bool $taxonomy
-     * @return mixed
-     */
-    function get_prev($taxonomy = false) {
-        if (isset($this->_prev) && isset($this->_prev[$taxonomy])) {
-            return $this->_prev[$taxonomy];
-        }
-        global $post;
-        $old_global = $post;
-        $post = $this;
-        $within_taxonomy = ($taxonomy) ? $taxonomy : 'category';
-        $adjacent = get_adjacent_post(($taxonomy), '', true, $within_taxonomy);
-
-        $prev_in_taxonomy = false;
-        if ($adjacent) {
-            $prev_in_taxonomy = new $this->PostClass($adjacent);
-        }
-        $this->_prev[$taxonomy] = $prev_in_taxonomy;
-        $post = $old_global;
-        return $this->_prev[$taxonomy];
-    }
-
-    /**
-     * @return bool|TimberPost
-     */
-    function get_parent() {
-        if (!$this->post_parent) {
-            return false;
-        }
-        return new $this->PostClass($this->post_parent);
-    }
-
-    /**
-     *  ## Gets a User object from the author of the post
-     *  <p class="byline">{{post.get_author.name}}</p>
-     */
-
-    /**
-     * @return bool|TimberUser
-     */
-    function get_author() {
-        if (isset($this->post_author)) {
-            return new TimberUser($this->post_author);
-        }
-        return false;
-    }
-
-    /**
-     * @return bool|TimberUser
-     */
-    function get_modified_author() {
-        $user_id = get_post_meta($this->ID, '_edit_last', true);
-        return ($user_id ? new TimberUser($user_id) : $this->get_author());
-    }
-
-    /**
-     * @param int $pid
-     * @return null|object|WP_Post
-     */
-    function get_info($pid) {
-        $post = $this->prepare_post_info($pid);
-        if (!isset($post->post_status)) {
-            return null;
-        }
-        $post->status = $post->post_status;
-        $post->id = $post->ID;
-        $post->slug = $post->post_name;
-        $customs = $this->get_post_custom($post->ID);
-        $post->custom = $customs;
-        $post = (object)array_merge((array)$customs, (array)$post);
-        return $post;
-    }
-
-    /**
-     * This is deprecated!
-     * @param string $use
-     * @return string
-     */
-    function get_display_date($use = 'post_date') {
-        return date(get_option('date_format'), strtotime($this->$use));
-    }
-
-    /**
-     * @param  string $date_format
-     * @return string
-     */
-    function get_date($date_format = '') {
-        $df = $date_format ? $date_format : get_option('date_format');
-        $the_date = (string)mysql2date($df, $this->post_date);
-        return apply_filters('get_the_date', $the_date, $date_format);
-    }
-
-    /**
-     * @param  string $date_format
-     * @return string
-     */
-    function get_modified_date($date_format = '') {
-        $df = $date_format ? $date_format : get_option('date_format');
-        $the_time = $this->get_modified_time($df, null, $this->ID, true);
-        return apply_filters('get_the_modified_date', $the_time, $date_format);
-    }
-
-    /**
-     * @param string $time_format
-     * @return string
-     */
-    function get_modified_time($time_format = '') {
-        $tf = $time_format ? $time_format : get_option('time_format');
-        $the_time = get_post_modified_time($tf, false, $this->ID, true);
-        return apply_filters('get_the_modified_time', $the_time, $time_format);
-    }
-
-    /**
-     * @param string $post_type
-     * @param bool $childPostClass
-     * @return array
-     */
-    function get_children($post_type = 'any', $childPostClass = false) {
-        if ($childPostClass == false) {
-            $childPostClass = $this->PostClass;
-        }
-        if ($post_type == 'parent') {
-            $post_type = $this->post_type;
-        }
-        $children = get_children('post_parent=' . $this->ID . '&post_type=' . $post_type . '&numberposts=-1&orderby=menu_order title&order=ASC');
-        foreach ($children as &$child) {
-            $child = new $childPostClass($child->ID);
-        }
-        $children = array_values($children);
-        return $children;
-    }
-
-    /**
-     *  {% for comment in post.get_comments %}
-     *    <p>{{comment.content}}</p>
-     *  {% endfor %}
-     */
-
-    /**
-     * @param int $ct
-     * @param string $order
-     * @param string $type
-     * @param string $status
-     * @param string $CommentClass
-     * @return mixed
-     */
-    function get_comments($ct = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
-        $args = array('post_id' => $this->ID, 'status' => $status, 'order' => $order);
-        if ($ct > 0) {
-            $args['number'] = $ct;
-        }
-        if ($order == 'wp') {
-            $args['order'] = get_option('comment_order');
-        }
-        $comments = get_comments($args);
-        foreach ($comments as &$comment) {
-            $comment = new $CommentClass($comment);
-        }
-        return $comments;
-    }
-
-    /**
-     *  <ul class="categories">
-     *  {% for category in post.get_categories %}
-     *    <li>{{category.name}}</li>
-     *  {% endfor %}
-     *  </ul>
-     */
-
-    /**
-     * @return array
-     */
-    function get_categories() {
-        return $this->get_terms('category');
-    }
-
-    /**
-     * @return mixed
-     */
-    function get_category() {
-        $cats = $this->get_categories();
-        if (count($cats) && isset($cats[0])) {
-            return $cats[0];
-        }
-        return null;
-    }
-
-    /** # get terms is good
-     *
-     */
-
-    /**
-     * @param string $tax
-     * @param bool $merge
-     * @param string $TermClass
-     * @return array
-     */
-    function get_terms($tax = '', $merge = true, $TermClass = 'TimberTerm') {
-        if (is_string($merge) && class_exists($merge)){
-            $TermClass = $merge;
-        }
-        if (is_string($tax)) {
-            if (isset($this->_get_terms) && isset($this->_get_terms[$tax])) {
-                return $this->_get_terms[$tax];
-            }
-        }
-        if (!strlen($tax) || $tax == 'all' || $tax == 'any') {
-            $taxs = get_object_taxonomies($this->post_type);
-        } else if (is_array($tax)) {
-            $taxs = $tax;
-        } else {
-            $taxs = array($tax);
-        }
-        $ret = array();
-        foreach ($taxs as $tax) {
-            if ($tax == 'tags' || $tax == 'tag') {
-                $tax = 'post_tag';
-            } else if ($tax == 'categories') {
-                $tax = 'category';
-            }
-            $terms = wp_get_post_terms($this->ID, $tax);
-            if (!is_array($terms) && is_object($terms) && get_class($terms) == 'WP_Error') {
-                //something is very wrong
-                TimberHelper::error_log('You have an error retrieving terms on a post in timber-post.php:367');
-                TimberHelper::error_log('tax = ' . $tax);
-                TimberHelper::error_log($terms);
-
-            } else {
-                foreach ($terms as &$term) {
-                    $term = new $TermClass($term->term_id, $tax);
-                }
-                if ($merge && is_array($terms)) {
-                    $ret = array_merge($ret, $terms);
-                } else if (count($terms)) {
-                    $ret[$tax] = $terms;
-                }
-            }
-        }
-        if (!isset($this->_get_terms)) {
-            $this->_get_terms = array();
-        }
-        $this->_get_terms[$tax] = $ret;
-        return $ret;
-    }
-
-    /**
-     * @param string|int $term_name_or_id
-     * @param string $taxonomy
-     * @return bool
-     */
-    function has_term($term_name_or_id, $taxonomy = 'all') {
-        if ($taxonomy == 'all' || $taxonomy == 'any') {
-            $taxes = get_object_taxonomies($this->post_type, 'names');
-            $ret = false;
-            foreach ($taxes as $tax) {
-                if (has_term($term_name_or_id, $tax, $this->ID)) {
-                    $ret = true;
-                    break;
-                }
-            }
-            return $ret;
-        }
-        return has_term($term_name_or_id, $taxonomy, $this->ID);
-    }
-
-    /**
-     * @param string $field
-     * @return TimberImage
-     */
-    function get_image($field) {
-        return new $this->ImageClass($this->$field);
-    }
-
-    /**
-     *  ## Gets an array of tags for you to use
-     *  <ul class="tags">
-     *  {% for tag in post.tags %}
-     *    <li>{{tag.name}}</li>
-     *  {% endfor %}
-     *  </ul>
-     */
-
-    /**
-     * @return array
-     */
-    function get_tags() {
-        return $this->get_terms('tags');
-    }
-
-    /**
-     *  ## Outputs the title with filters applied
-     *  <h1>{{post.get_title}}</h1>
-     */
-
-    /**
-     * @return string
-     */
-    function get_title() {
-        return apply_filters('the_title', $this->post_title, $this->ID);
-    }
-
-    /**
-     *  ## Displays the content of the post with filters, shortcodes and wpautop applied
-     *  <div class="article-text">{{post.get_content}}</div>
-     */
-
-    /**
-     * @param int $len
-     * @param int $page
-     * @return string
-     */
-    function get_content($len = 0, $page = 0) {
-        if ($len == 0 && $page == 0 && $this->_content) {
-            return $this->_content;
-        }
-        $content = $this->post_content;
-        if ($len) {
-            $content = wp_trim_words($content, $len);
-        }
-        if ($page) {
-            $contents = explode('<!--nextpage-->', $content);
-            $page--;
-            if (count($contents) > $page) {
-                $content = $contents[$page];
-            }
-        }
-        $content = apply_filters('the_content', ($content));
-        if ($len == 0 && $page == 0) {
-            $this->_content = $content;
-        }
-        return $content;
-    }
-
-    /**
-     * @return string
-     */
-    function get_paged_content() {
-        global $page;
-        return $this->get_content(0, $page);
-    }
-    /**
-     * @return mixed
-     */
-    public function get_post_type() {
-        return get_post_type_object($this->post_type);
-    }
-
-    /**
-     * @return int
-     */
-    public function get_comment_count() {
-        if (isset($this->ID)) {
-            return get_comments_number($this->ID);
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * @param string $field_name
-     * @return mixed
-     */
-    public function get_field($field_name) {
-        $value = apply_filters('timber_post_get_meta_field_pre', null, $this->ID, $field_name, $this);
-        if ($value === null) {
-            $value = get_post_meta($this->ID, $field_name);
-            if (is_array($value) && count($value) == 1) {
-                $value = $value[0];
-            }
-            if (is_array($value) && count($value) == 0) {
-                $value = null;
-            }
-        }
-        $value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
-        return $value;
-    }
-
-    /**
-     * @param string $field_name
-     */
-    function import_field($field_name) {
-        $this->$field_name = $this->get_field($field_name);
-    }
-
-    /**
-     * @return mixed
-     */
-    function get_format() {
-        return get_post_format($this->ID);
-    }
-
 	/**
-     * @param string $class
-     * @return string
-     */
-    public function post_class($class='') {
-    	global $post;
-    	$old_global_post = $post;
-    	$post = $this;
-		$class_array = get_post_class($class, $this->ID);
-		$post = $old_global_post;
-        if (is_array($class_array)){
-            return implode(' ', $class_array);
-        }
-        return $class_array;
+	 * Get the URL that will edit the current post/object
+	 * @internal
+	 * @see TimberPost::edit_link
+	 * @return bool|string
+	 */
+	function get_edit_url() {
+		if ( $this->can_edit() ) {
+			return get_edit_post_link($this->ID);
+		}
 	}
 
-    // Docs
+	/**
+	 * updates the post_meta of the current object with the given value
+	 * @param string $field
+	 * @param mixed $value
+	 */
+	public function update( $field, $value ) {
+		if ( isset($this->ID) ) {
+			update_post_meta($this->ID, $field, $value);
+			$this->$field = $value;
+		}
+	}
 
-    /**
-     * @return array
-     */
-    public function get_method_values() {
-        $ret = parent::get_method_values();
-        $ret['author'] = $this->author();
-        $ret['categories'] = $this->categories();
-        $ret['category'] = $this->category();
-        $ret['children'] = $this->children();
-        $ret['comments'] = $this->comments();
-        $ret['content'] = $this->content();
-        $ret['edit_link'] = $this->edit_link();
-        $ret['format'] = $this->format();
-        $ret['link'] = $this->link();
-        $ret['next'] = $this->next();
-        $ret['pagination'] = $this->pagination();
-        $ret['parent'] = $this->parent();
-        $ret['path'] = $this->path();
-        $ret['prev'] = $this->prev();
-        $ret['terms'] = $this->terms();
-        $ret['tags'] = $this->tags();
-        $ret['thumbnail'] = $this->thumbnail();
-        $ret['title'] = $this->title();
-        return $ret;
-    }
 
-    // Aliases
-    /**
-     * @return bool|TimberUser
-     */
-    public function author() {
-        return $this->get_author();
-    }
+	/**
+	 * takes a mix of integer (post ID), string (post slug),
+	 * or object to return a WordPress post object from WP's built-in get_post() function
+	 * @internal
+	 * @param mixed $pid
+	 * @return WP_Post on success
+	 */
+	protected function prepare_post_info( $pid = 0 ) {
+		if ( is_string($pid) || is_numeric($pid) || (is_object($pid) && !isset($pid->post_title)) || $pid === 0 ) {
+			$pid = self::check_post_id($pid);
+			$post = get_post($pid);
+			if ( $post ) {
+				return $post;
+			} else {
+				$post = get_page($pid);
+				return $post;
+			}
+		}
+		//we can skip if already is WP_Post
+		return $pid;
+	}
 
-    /**
-     * @return bool|TimberUser
-     */
-    public function modified_author() {
-        return $this->get_modified_author();
-    }
 
-    /**
-     * @return array
-     */
-    public function categories() {
-        return $this->get_terms('category');
-    }
+	/**
+	 * helps you find the post id regardless of whether you send a string or whatever
+	 * @param integer $pid ;
+	 * @internal
+	 * @return integer ID number of a post
+	 */
+	protected function check_post_id( $pid ) {
+		if ( is_numeric($pid) && $pid === 0 ) {
+			$pid = get_the_ID();
+			return $pid;
+		}
+		if ( !is_numeric($pid) && is_string($pid) ) {
+			$pid = self::get_post_id_by_name($pid);
+			return $pid;
+		}
+		if ( !$pid ) {
+			return null;
+		}
+		return $pid;
+	}
 
-    /**
-     * @return mixed
-     */
-    public function category() {
-        return $this->get_category();
-    }
 
-    /**
-     * @return array
-     */
-    public function children( $post_type = 'any', $childPostClass = false ) {
-        return $this->get_children( $post_type, $childPostClass );
-    }
+	/**
+	 * get_post_id_by_name($post_name)
+	 * @internal
+	 * @param string $post_name
+	 * @return int
+	 */
+	static function get_post_id_by_name($post_name) {
+		global $wpdb;
+		$query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s LIMIT 1", $post_name);
+		$result = $wpdb->get_row($query);
+		if (!$result) {
+			return null;
+		}
+		return $result->ID;
+	}
 
-    /**
-     * @return mixed
-     */
-    public function comments() {
-        return $this->get_comments();
-    }
+	/**
+	 * get a preview of your post, if you have an excerpt it will use that,
+	 * otherwise it will pull from the post_content.
+	 * If there's a <!-- more --> tag it will use that to mark where to pull through.
+	 * @api
+	 * @example
+	 * ```twig
+	 * <p>{{post.get_preview(50)}}</p>
+	 * ```
+	 * @param int $len The number of words that WP should use to make the tease. (Isn't this better than [this mess](http://wordpress.org/support/topic/changing-the-default-length-of-the_excerpt-1?replies=14)?). If you've set a post_excerpt on a post, we'll use that for the preview text; otherwise the first X words of the post_content
+	 * @param bool $force What happens if your custom post excerpt is longer then the length requested? By default (`$force = false`) it will use the full `post_excerpt`. However, you can set this to true to *force* your excerpt to be of the desired length
+	 * @param string $readmore The text you want to use on the 'readmore' link
+	 * @param bool $strip Strip tags? yes or no. tell me!
+	 * @return string of the post preview
+	 */
+	function get_preview($len = 50, $force = false, $readmore = 'Read More', $strip = true) {
+		$text = '';
+		$trimmed = false;
+		if ( isset($this->post_excerpt) && strlen($this->post_excerpt) ) {
+			if ( $force ) {
+				$text = TimberHelper::trim_words($this->post_excerpt, $len, false);
+				$trimmed = true;
+			} else {
+				$text = $this->post_excerpt;
+			}
+		}
+		if ( !strlen($text) && preg_match('/<!--\s?more(.*?)?-->/', $this->post_content, $readmore_matches) ) {
+			$pieces = explode($readmore_matches[0], $this->post_content);
+			$text = $pieces[0];
+			if ( $force ) {
+				$text = TimberHelper::trim_words($text, $len, false);
+				$trimmed = true;
+			}
+			$text = do_shortcode( $text );
+		}
+		if ( !strlen($text) ) {
+			$text = TimberHelper::trim_words($this->get_content(), $len, false);
+			$trimmed = true;
+		}
+		if ( !strlen(trim($text)) ) {
+			return trim($text);
+		}
+		if ( $strip ) {
+			$text = trim(strip_tags($text));
+		}
+		if ( strlen($text) ) {
+			$text = trim($text);
+			$last = $text[strlen($text) - 1];
+			if ( $last != '.' && $trimmed ) {
+				$text .= ' &hellip; ';
+			}
+			if ( !$strip ) {
+				$last_p_tag = strrpos($text, '</p>');
+				if ( $last_p_tag !== false ) {
+					$text = substr($text, 0, $last_p_tag);
+				}
+				if ( $last != '.' && $trimmed ) {
+					$text .= ' &hellip; ';
+				}
+			}
+			if ( $readmore && isset($readmore_matches) && !empty($readmore_matches[1]) ) {
+				$text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . trim($readmore_matches[1]) . '</a>';
+			} elseif ( $readmore ) {
+				$text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . trim($readmore) . '</a>';
+			}
+			if ( !$strip ) {
+				$text .= '</p>';
+			}
+		}
+		return trim($text);
+	}
 
-    /**
-     * @param int $page
-     * @return string
-     */
-    public function content($page = 0) {
-        return $this->get_content(0, $page);
-    }
+	/**
+	 * gets the post custom and attaches it to the current object
+	 * @internal
+	 * @param bool|int $pid a post ID number
+	 */
+	function import_custom( $pid = false ) {
+		if ( !$pid ) {
+			$pid = $this->ID;
+		}
+		$customs = $this->get_post_custom($pid);
+		$this->import($customs);
+	}
 
-    /**
-     * @return string
-     */
-    public function paged_content() {
-        return $this->get_paged_content();
-    }
+	/**
+	 * Used internally to fetch the metadata fields (wp_postmeta table)
+	 * and attach them to our TimberPost object
+	 * @internal
+	 * @param int $pid
+	 * @return array
+	 */
+	protected function get_post_custom( $pid ) {
+		apply_filters('timber_post_get_meta_pre', array(), $pid, $this);
+		$customs = get_post_custom($pid);
+		if ( !is_array($customs) || empty($customs) ) {
+			return array();
+		}
+		foreach ( $customs as $key => $value ) {
+			if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
+				$value = $value[0];
+			}
+			$customs[$key] = maybe_unserialize($value);
+		}
+		$customs = apply_filters('timber_post_get_meta', $customs, $pid, $this);
+		return $customs;
+	}
 
-    /**
-     * @param string $date_format
-     * @return string
-     */
-    public function date($date_format = '') {
-        return $this->get_date($date_format);
-    }
+	/**
+	 * @internal
+	 * @see TimberPost::thumbnail
+	 * @return null|TimberImage
+	 */
+	function get_thumbnail() {
+		if ( function_exists('get_post_thumbnail_id') ) {
+			$tid = get_post_thumbnail_id($this->ID);
+			if ( $tid ) {
+				return new $this->ImageClass($tid);
+			}
+		}
+	}
 
-    /**
-     * @return bool|string
-     */
-    public function edit_link() {
-        return $this->get_edit_url();
-    }
+	/**
+	 * @internal
+	 * @see TimberPost::link
+	 * @return string
+	 */
+	function get_permalink() {
+		if ( isset($this->_permalink) ) {
+			return $this->_permalink;
+		}
+		$this->_permalink = get_permalink($this->ID);
+		return $this->_permalink;
+	}
 
-    /**
-     * @return mixed
-     */
-    public function format() {
-        return $this->get_format();
-    }
+	/**
+	 * get the permalink for a post object
+	 * In your templates you should use link:
+	 * <a href="{{post.link}}">Read my post</a>
+	 * @internal
+	 * @return string
+	 */
+	function get_link() {
+		return $this->get_permalink();
+	}
 
-    /**
-     * @return string
-     */
-    public function link() {
-        return $this->get_permalink();
-    }
+	/**
+	 * Get the next post in WordPress's ordering
+	 * @internal
+	 * @param bool $taxonomy
+	 * @return TimberPost|boolean
+	 */
+	function get_next( $taxonomy = false ) {
+		if ( !isset($this->_next) || !isset($this->_next[$taxonomy]) ) {
+			global $post;
+			$this->_next = array();
+			$old_global = $post;
+			$post = $this;
+			if ( $taxonomy ) {
+				$adjacent = get_adjacent_post(true, '', false, $taxonomy);
+			} else {
+				$adjacent = get_adjacent_post(false, '', false);
+			}
 
-    /**
-     * @param string $field_name
-     * @return mixed
-     */
-    public function meta($field_name = null) {
-        if ($field_name == null) {
-            $field_name = 'meta';
+			if ( $adjacent ) {
+				$this->_next[$taxonomy] = new $this->PostClass($adjacent);
+			} else {
+				$this->_next[$taxonomy] = false;
+			}
+			$post = $old_global;
+		}
+		return $this->_next[$taxonomy];
+	}
+
+	/**
+	 * Get a data array of pagination so you can navigate to the previous/next for a paginated post
+	 * @return array
+	 */
+	public function get_pagination() {
+		global $post, $page, $numpages, $multipage;
+		$post = $this;
+		$ret = array();
+		if ( $multipage ) {
+			for ( $i = 1; $i <= $numpages; $i++ ) {
+				$link = self::get_wp_link_page($i);
+				$data = array('name' => $i, 'title' => $i, 'text' => $i, 'link' => $link);
+				if ( $i == $page ) {
+					$data['current'] = true;
+				}
+				$ret['pages'][] = $data;
+			}
+			$i = $page - 1;
+			if ( $i ) {
+				$link = self::get_wp_link_page($i);
+				$ret['prev'] = array('link' => $link);
+			}
+			$i = $page + 1;
+			if ( $i <= $numpages ) {
+				$link = self::get_wp_link_page($i);
+				$ret['next'] = array('link' => $link);
+			}
+		}
+		return $ret;
+	}
+
+	/**
+	 * @param int $i
+	 * @return string
+	 */
+	protected static function get_wp_link_page($i) {
+		$link = _wp_link_page($i);
+		$link = new SimpleXMLElement($link . '</a>');
+		if ( isset($link['href']) ) {
+			return $link['href'];
+		}
+		return '';
+	}
+
+	/**
+	 * Get the permalink for a post, but as a relative path
+	 * For example, where {{post.link}} would return "http://example.org/2015/07/04/my-cool-post"
+	 * this will return the relative version: "/2015/07/04/my-cool-post"
+	 * @internal
+	 * @return string
+	 */
+	function get_path() {
+		return TimberURLHelper::get_rel_url($this->get_link());
+	}
+
+	/**
+	 * Get the next post in WordPress's ordering
+	 * @internal
+	 * @param bool $taxonomy
+	 * @return TimberPost|boolean
+	 */
+	function get_prev( $taxonomy = false ) {
+		if ( isset($this->_prev) && isset($this->_prev[$taxonomy]) ) {
+			return $this->_prev[$taxonomy];
+		}
+		global $post;
+		$old_global = $post;
+		$post = $this;
+		$within_taxonomy = ($taxonomy) ? $taxonomy : 'category';
+		$adjacent = get_adjacent_post(($taxonomy), '', true, $within_taxonomy);
+		$prev_in_taxonomy = false;
+		if ( $adjacent ) {
+			$prev_in_taxonomy = new $this->PostClass($adjacent);
+		}
+		$this->_prev[$taxonomy] = $prev_in_taxonomy;
+		$post = $old_global;
+		return $this->_prev[$taxonomy];
+	}
+
+	/**
+	 * Get the parent post of the post
+	 * @internal
+	 * @return bool|TimberPost
+	 */
+	function get_parent() {
+		if ( !$this->post_parent ) {
+			return false;
+		}
+		return new $this->PostClass($this->post_parent);
+	}
+
+	/**
+	 * Gets a User object from the author of the post
+	 * @internal
+	 * @see TimberPost::author
+	 * @return bool|TimberUser
+	 */
+	function get_author() {
+		if ( isset($this->post_author) ) {
+			return new TimberUser($this->post_author);
+		}
+	}
+
+	/**
+	 * @internal
+	 * @return bool|TimberUser
+	 */
+	function get_modified_author() {
+		$user_id = get_post_meta($this->ID, '_edit_last', true);
+		return ($user_id ? new TimberUser($user_id) : $this->get_author());
+	}
+
+	/**
+	 * Used internally by init, etc. to build TimberPost object
+	 * @internal
+	 * @param  int $pid
+	 * @return null|object|WP_Post
+	 */
+	protected function get_info($pid) {
+		$post = $this->prepare_post_info($pid);
+		if ( !isset($post->post_status) ) {
+			return null;
+		}
+		$post->status = $post->post_status;
+		$post->id = $post->ID;
+		$post->slug = $post->post_name;
+		$customs = $this->get_post_custom($post->ID);
+		$post->custom = $customs;
+		$post = (object) array_merge((array)$customs, (array)$post);
+		return $post;
+	}
+
+	/**
+	 * Get the human-friendly date that should actually display in a .twig template
+	 * @deprecated since 0.20.0
+	 * @see TimberPost::date
+	 * @param string $use
+	 * @return string
+	 */
+	function get_display_date( $use = 'post_date' ) {
+		return date(get_option('date_format'), strtotime($this->$use));
+	}
+
+	/**
+	 * @internal
+	 * @see TimberPost::date
+	 * @param  string $date_format
+	 * @return string
+	 */
+	function get_date( $date_format = '' ) {
+		$df = $date_format ? $date_format : get_option('date_format');
+		$the_date = (string)mysql2date($df, $this->post_date);
+		return apply_filters('get_the_date', $the_date, $df);
+	}
+
+	/**
+	 * @internal
+	 * @param  string $date_format
+	 * @return string
+	 */
+	function get_modified_date( $date_format = '' ) {
+		$df = $date_format ? $date_format : get_option('date_format');
+		$the_time = $this->get_modified_time($df);
+		return apply_filters('get_the_modified_date', $the_time, $date_format);
+	}
+
+	/**
+	 * @internal
+	 * @param  string $time_format
+	 * @return string
+	 */
+	function get_modified_time( $time_format = '' ) {
+		$tf = $time_format ? $time_format : get_option('time_format');
+		$the_time = get_post_modified_time($tf, false, $this->ID, true);
+		return apply_filters('get_the_modified_time', $the_time, $time_format);
+	}
+
+	/**
+	 * @internal
+	 * @see TimberPost::children
+	 * @param string 		$post_type
+	 * @param bool|string 	$childPostClass
+	 * @return array
+	 */
+	function get_children( $post_type = 'any', $childPostClass = false ) {
+		if ( $childPostClass === false ) {
+			$childPostClass = $this->PostClass;
+		}
+		if ( $post_type == 'parent' ) {
+			$post_type = $this->post_type;
+		}
+		$children = get_children('post_parent=' . $this->ID . '&post_type=' . $post_type . '&numberposts=-1&orderby=menu_order title&order=ASC');
+		foreach ( $children as &$child ) {
+			$child = new $childPostClass($child->ID);
+		}
+		$children = array_values($children);
+		return $children;
+	}
+
+	/**
+	 * Get the comments for a post
+	 * @internal
+	 * @see TimberPost::comments
+	 * @param int $ct
+	 * @param string $order
+	 * @param string $type
+	 * @param string $status
+	 * @param string $CommentClass
+	 * @return array|mixed
+	 */
+
+	function get_comments($ct = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
+
+		global $overridden_cpage;
+		$overridden_cpage = false;
+
+		$args = array('post_id' => $this->ID, 'status' => $status, 'order' => $order);
+		if ( $ct > 0 ) {
+			$args['number'] = $ct;
+		}
+		if ( strtolower($order) == 'wp' || strtolower($order) == 'wordpress' ) {
+			$args['order'] = get_option('comment_order');
+		}
+
+		$comments = get_comments($args);
+		$timber_comments = array();
+
+		if ( '' == get_query_var('cpage') && get_option('page_comments') ) {
+			set_query_var( 'cpage', 'newest' == get_option('default_comments_page') ? get_comment_pages_count() : 1 );
+			$overridden_cpage = true;
+		}
+
+        foreach( $comments as $key => &$comment ) {
+            $timber_comment = new $CommentClass($comment);
+            $timber_comments[$timber_comment->id] = $timber_comment;
         }
-        return $this->get_field($field_name);
-    }
 
-    /**
-     * @return string
-     */
-    public function name(){
-        return $this->title();
-    }
+		foreach( $timber_comments as $key => $comment ) {
+			if ( $comment->is_child() ) {
+				unset($timber_comments[$comment->id]);
 
-    /**
-     * @param string $date_format
-     * @return string
-     */
-    public function modified_date($date_format = '') {
-        return $this->get_modified_date($date_format);
-    }
+				if ( isset($timber_comments[$comment->comment_parent]) ) {
+					$timber_comments[$comment->comment_parent]->children[] = $comment;
+				}
+			}
+		}
 
-    /**
-     * @param string $time_format
-     * @return string
-     */
-    public function modified_time($time_format = '') {
-        return $this->get_modified_time($time_format);
-    }
+		$timber_comments = array_values($timber_comments);
 
-    /**
-     * @param bool $in_same_cat
-     * @return mixed
-     */
-    public function next($in_same_cat = false) {
-        return $this->get_next($in_same_cat);
-    }
+		return $timber_comments;
+	}
 
-    /**
-     * @return array
-     */
-    public function pagination() {
-        return $this->get_pagination();
-    }
+	/**
+	 * Get the categories for a post
+	 * @internal
+	 * @see TimberPost::categories
+	 * @return array of TimberTerms
+	 */
+	function get_categories() {
+		return $this->get_terms('category');
+	}
 
-    /**
-     * @return bool|TimberPost
-     */
-    public function parent() {
-        return $this->get_parent();
-    }
+	/**
+	 * @internal
+	 * @see TimberPost::category
+	 * @return mixed
+	 */
+	function get_category( ) {
+		$cats = $this->get_categories();
+		if ( count($cats) && isset($cats[0]) ) {
+			return $cats[0];
+		}
+	}
 
-    /**
-     * @return string
-     */
-    public function path() {
-        return $this->get_path();
-    }
+	/**
+	 * @internal
+	 * @param string $tax
+	 * @param bool $merge
+	 * @param string $TermClass
+	 * @return array
+	 */
+	function get_terms( $tax = '', $merge = true, $TermClass = 'TimberTerm' ) {
+		if ( is_string($merge) && class_exists($merge) ) {
+			$TermClass = $merge;
+		}
+		if ( is_string($tax) ) {
+			if ( isset($this->_get_terms) && isset($this->_get_terms[$tax]) ) {
+				return $this->_get_terms[$tax];
+			}
+		}
+		if ( !strlen($tax) || $tax == 'all' || $tax == 'any' ) {
+			$taxs = get_object_taxonomies($this->post_type);
+		} else if ( is_array($tax) ) {
+			$taxs = $tax;
+		} else {
+			$taxs = array($tax);
+		}
+		$ret = array();
+		foreach ( $taxs as $tax ) {
+			if ( $tax == 'tags' || $tax == 'tag' ) {
+				$tax = 'post_tag';
+			} else if ( $tax == 'categories' ) {
+				$tax = 'category';
+			}
+			$terms = wp_get_post_terms($this->ID, $tax);
+			if ( !is_array($terms) && is_object($terms) && get_class($terms) == 'WP_Error' ) {
+				//something is very wrong
+				TimberHelper::error_log('You have an error retrieving terms on a post in timber-post.php:628');
+				TimberHelper::error_log('tax = ' . $tax);
+				TimberHelper::error_log($terms);
+			} else {
+				foreach ( $terms as &$term ) {
+					$term = new $TermClass($term->term_id, $tax);
+				}
+				if ( $merge && is_array($terms) ) {
+					$ret = array_merge($ret, $terms);
+				} else if ( count($terms) ) {
+					$ret[$tax] = $terms;
+				}
+			}
+		}
+		if ( !isset($this->_get_terms) ) {
+			$this->_get_terms = array();
+		}
+		$this->_get_terms[$tax] = $ret;
+		return $ret;
+	}
 
-    /**
-     * @return string
-     */
-    public function permalink() {
-        return $this->get_permalink();
-    }
+	/**
+	 * @param string|int $term_name_or_id
+	 * @param string $taxonomy
+	 * @return bool
+	 */
+	function has_term( $term_name_or_id, $taxonomy = 'all' ) {
+		if ( $taxonomy == 'all' || $taxonomy == 'any' ) {
+			$taxes = get_object_taxonomies($this->post_type, 'names');
+			$ret = false;
+			foreach ( $taxes as $tax ) {
+				if ( has_term($term_name_or_id, $tax, $this->ID) ) {
+					$ret = true;
+					break;
+				}
+			}
+			return $ret;
+		}
+		return has_term($term_name_or_id, $taxonomy, $this->ID);
+	}
 
-    /**
-     * @param bool $in_same_cat
-     * @return mixed
-     */
-    public function prev($in_same_cat = false) {
-        return $this->get_prev($in_same_cat);
-    }
+	/**
+	 * @param string $field
+	 * @return TimberImage
+	 */
+	function get_image( $field ) {
+		return new $this->ImageClass($this->$field);
+	}
 
-    /**
-     * @param string $tax
-     * @return array
-     */
-    public function terms($tax = '') {
-        return $this->get_terms($tax);
-    }
+	/**
+	 * Gets an array of tags for you to use
+	 * @internal
+	 * @example
+	 * ```twig
+	 * <ul class="tags">
+	 *     {% for tag in post.tags %}
+	 *         <li>{{tag.name}}</li>
+	 *     {% endfor %}
+	 * </ul>
+	 * ```
+	 * @return array
+	 */
+	function get_tags() {
+		return $this->get_terms('tags');
+	}
 
-    /**
-     * @return array
-     */
-    public function tags() {
-        return $this->get_tags();
-    }
+	/**
+	 * Outputs the title with filters applied
+	 * @internal
+	 * @example
+	 * ```twig
+	 * <h1>{{post.get_title}}</h1>
+	 * ```
+	 * ```html
+	 * <h1>Hello World!</h1>
+	 * ```
+	 * @return string
+	 */
+	function get_title() {
+		return apply_filters('the_title', $this->post_title, $this->ID);
+	}
 
-    /**
-     * @return null|TimberImage
-     */
-    public function thumbnail() {
-        return $this->get_thumbnail();
-    }
+	/**
+	 * Displays the content of the post with filters, shortcodes and wpautop applied
+	 * @example
+	 * ```twig
+	 * <div class="article-text">{{post.get_content}}</div>
+	 * ```
+	 * ```html
+	 * <div class="article-text"><p>Blah blah blah</p><p>More blah blah blah.</p></div>
+	 * ```
+	 * @param int $len
+	 * @param int $page
+	 * @return string
+	 */
+	function get_content( $len = 0, $page = 0 ) {
+		if ( $len == 0 && $page == 0 && $this->_content ) {
+			return $this->_content;
+		}
+		$content = $this->post_content;
+		if ( $len ) {
+			$content = wp_trim_words($content, $len);
+		}
+		if ( $page ) {
+			$contents = explode('<!--nextpage-->', $content);
+			$page--;
+			if ( count($contents) > $page ) {
+				$content = $contents[$page];
+			}
+		}
+		$content = apply_filters('the_content', ($content));
+		if ( $len == 0 && $page == 0 ) {
+			$this->_content = $content;
+		}
+		return $content;
+	}
 
-    /**
-     * @return string
-     */
-    public function title() {
-        return $this->get_title();
-    }
+	/**
+	 * @return string
+	 */
+	function get_paged_content() {
+		global $page;
+		return $this->get_content(0, $page);
+	}
+	/**
+	 *
+	 * Here is my summary
+	 * @example
+	 * ```twig
+	 * This post is from <span>{{ post.get_post_type.labels.plural }}</span>
+	 * ```
+	 *
+	 * ```html
+	 * This post is from <span>Recipes</span>
+	 * ```
+	 * @return mixed
+	 */
+	public function get_post_type() {
+		return get_post_type_object($this->post_type);
+	}
+
+	/**
+	 * @return int
+	 */
+	public function get_comment_count() {
+		if ( isset($this->ID) ) {
+			return get_comments_number($this->ID);
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * @param string $field_name
+	 * @return mixed
+	 */
+	public function get_field( $field_name ) {
+		$value = apply_filters('timber_post_get_meta_field_pre', null, $this->ID, $field_name, $this);
+		if ( $value === null ) {
+			$value = get_post_meta($this->ID, $field_name);
+			if ( is_array($value) && count($value) == 1 ) {
+				$value = $value[0];
+			}
+			if ( is_array($value) && count($value) == 0 ) {
+				$value = null;
+			}
+		}
+		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
+		return $value;
+	}
+
+	/**
+	 * @param string $field_name
+	 */
+	function import_field( $field_name ) {
+		$this->$field_name = $this->get_field($field_name);
+	}
+
+	/**
+	 * @internal
+	 * @return mixed
+	 */
+	function get_format() {
+		return get_post_format($this->ID);
+	}
+
+	/**
+	 * Get the CSS classes for a post. For usage you should use `{{post.class}}` instead of `{{post.post_class}}`
+	 * @internal
+	 * @param string $class additional classes you want to add
+	 * @see TimberPost::$class
+	 * @example
+	 * ```twig
+	 * <article class="{{ post.class }}">
+	 *    {# Some stuff here #}
+	 * </article>
+	 * ```
+	 *
+	 * ```html
+	 * <article class="post-2612 post type-post status-publish format-standard has-post-thumbnail hentry category-data tag-charleston-church-shooting tag-dylann-roof tag-gun-violence tag-hate-crimes tag-national-incident-based-reporting-system">
+	 *    {# Some stuff here #}
+	 * </article>
+	 * ```
+	 * @return string a space-seperated list of classes
+	 */
+	public function post_class( $class='' ) {
+		global $post;
+		$old_global_post = $post;
+		$post = $this;
+		$class_array = get_post_class($class, $this->ID);
+		$post = $old_global_post;
+		if ( is_array($class_array) ){
+			return implode(' ', $class_array);
+		}
+		return $class_array;
+	}
+
+	// Docs
+
+	/**
+	 * @return array
+	 * @codeCoverageIgnore
+	 */
+	public function get_method_values() {
+		$ret = parent::get_method_values();
+		$ret['author'] = $this->author();
+		$ret['categories'] = $this->categories();
+		$ret['category'] = $this->category();
+		$ret['children'] = $this->children();
+		$ret['comments'] = $this->comments();
+		$ret['content'] = $this->content();
+		$ret['edit_link'] = $this->edit_link();
+		$ret['format'] = $this->format();
+		$ret['link'] = $this->link();
+		$ret['next'] = $this->next();
+		$ret['pagination'] = $this->pagination();
+		$ret['parent'] = $this->parent();
+		$ret['path'] = $this->path();
+		$ret['prev'] = $this->prev();
+		$ret['terms'] = $this->terms();
+		$ret['tags'] = $this->tags();
+		$ret['thumbnail'] = $this->thumbnail();
+		$ret['title'] = $this->title();
+		return $ret;
+	}
+
+	/**
+	 * Return the author of a post
+	 * @api
+	 * @example
+	 * ```twig
+	 * <h1>{{post.title}}</h1>
+	 * <p class="byline">
+	 *     <a href="{{post.author.link}}">{{post.author.name}}</a>
+	 * </p>
+	 * ```
+	 * @return TimberUser|bool A TimberUser object if found, false if not
+	 */
+	public function author() {
+		return $this->get_author();
+	}
+
+	/**
+	 * Get the author (WordPress user) who last modified the post
+	 * @example
+	 * ```twig
+	 * Last updated by {{ post.modified_author.name }}
+	 * ```
+	 * ```html
+	 * Last updated by Harper Lee
+	 * ```
+	 * @return TimberUser|bool A TimberUser object if found, false if not
+	 */
+	public function modified_author() {
+		return $this->get_modified_author();
+	}
+
+	/**
+	 * Get the categoires on a particular post
+	 * @api
+	 * @return array of TimberTerms
+	 */
+	public function categories() {
+		return $this->get_terms('category');
+	}
+
+	/**
+	 * Returns a category attached to a post
+	 * @api
+	 * If mulitpuile categories are set, it will return just the first one
+	 * @return TimberTerm|null
+	 */
+	public function category() {
+		return $this->get_category();
+	}
+
+	/**
+	 * Returns an array of children on the post as TimberPosts
+	 * (or other claass as you define).
+	 * @api
+	 * @example
+	 * ```twig
+	 * {% if post.children %}
+	 *     Here are the child pages:
+	 *     {% for child in page.children %}
+	 *         <a href="{{ child.link }}">{{ child.title }}</a>
+	 *     {% endfor %}
+	 * {% endif %}
+	 * ```
+	 * @param string $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type
+	 * @param string|bool $childPostClass _optional_ a custom post class (ex: 'MyTimberPost') to return the objects as. By default (false) it will use TimberPost::$post_class value.
+	 * @return array
+	 */
+	public function children( $post_type = 'any', $childPostClass = false ) {
+		return $this->get_children( $post_type, $childPostClass );
+	}
+
+	/**
+	 * Gets the comments on a TimberPost and returns them as an array of [TimberComments](#TimberComment) (or whatever comment class you set).
+	 * @api
+	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
+	 * @param string $order use ordering set in WordPress admin, or a different scheme
+	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
+	 * @param string $status Could be 'pending', etc.
+	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending TimberComment for your site or app (obviously, totally optional)
+	 * @example
+	 * ```twig
+	 * {# single.twig #}
+	 * <h4>Comments:</h4>
+	 * {% for comment in post.comments %}
+	 * 	<div class="comment-{{comment.ID}} comment-order-{{loop.index}}">
+	 * 		<p>{{comment.author.name}} said:</p>
+	 * 		<p>{{comment.content}}</p>
+	 * 	</div>
+	 * {% endfor %}
+	 * ```
+	 * @return bool|array
+	 */
+	public function comments( $count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment' ) {
+		return $this->get_comments($count, $order, $type, $status, $CommentClass);
+	}
+
+	/**
+	 * Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).
+	 * @api
+	 * @example
+	 * ```twig
+	 * <div class="article">
+	 *     <h2>{{post.title}}</h2>
+	 *     <div class="content">{{ post.content }}</div>
+	 * </div>
+	 * ```
+	 * @param int $page
+	 * @return string
+	 */
+	public function content( $page = 0 ) {
+		return $this->get_content(0, $page);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function paged_content() {
+		return $this->get_paged_content();
+	}
+
+	/**
+	 * Get the date to use in your template!
+	 * @api
+	 * @example
+	 * ```twig
+	 * Published on {{ post.date }} // Uses WP's formatting set in Admin
+	 * OR
+	 * Published on {{ post.date | date('F jS') }} // Jan 12th
+	 * ```
+	 *
+	 * ```html
+	 * Published on January 12, 2015
+	 * OR
+	 * Published on Jan 12th
+	 * ```
+	 * @param string $date_format
+	 * @return string
+	 */
+	public function date( $date_format = '' ) {
+		return $this->get_date($date_format);
+	}
+
+	/**
+	 * @return bool|string
+	 */
+	public function edit_link() {
+		return $this->get_edit_url();
+	}
+
+	/**
+	 * @api
+	 * @return mixed
+	 */
+	public function format() {
+		return $this->get_format();
+	}
+
+	/**
+	 * get the permalink for a post object
+	 * @api
+	 * @example
+	 * ```twig
+	 * <a href="{{post.link}}">Read my post</a>
+	 * ```
+	 * @return string ex: http://example.org/2015/07/my-awesome-post
+	 */
+	public function link() {
+		return $this->get_permalink();
+	}
+
+	/**
+	 * @param string $field_name
+	 * @return mixed
+	 */
+	public function meta( $field_name = null ) {
+		if ( $field_name === null ) {
+			//on the off-chance the field is actually named meta
+			$field_name = 'meta';
+		}
+		return $this->get_field($field_name);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function name(){
+		return $this->title();
+	}
+
+	/**
+	 * @param string $date_format
+	 * @return string
+	 */
+	public function modified_date( $date_format = '' ) {
+		return $this->get_modified_date($date_format);
+	}
+
+	/**
+	 * @param string $time_format
+	 * @return string
+	 */
+	public function modified_time( $time_format = '' ) {
+		return $this->get_modified_time($time_format);
+	}
+
+	/**
+	 * @api
+	 * @param bool $in_same_cat
+	 * @return mixed
+	 */
+	public function next( $in_same_cat = false ) {
+		return $this->get_next($in_same_cat);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function pagination() {
+		return $this->get_pagination();
+	}
+
+	/**
+	 * Gets the parent (if one exists) from a post as a TimberPost object (or whatever is set in TimberPost::$PostClass)
+	 * @api
+	 * @example
+	 * ```twig
+	 * Parent page: <a href="{{ post.parent.link }}">{{ post.parent.title }}</a>
+	 * ```
+	 * @return bool|TimberPost
+	 */
+	public function parent() {
+		return $this->get_parent();
+	}
+
+	/**
+	 * Gets the relative path of a WP Post, so while link() will return http://example.org/2015/07/my-cool-post
+	 * this will return just /2015/07/my-cool-post
+	 * @api
+	 * @example
+	 * ```twig
+	 * <a href="{{post.path}}">{{post.title}}</a>
+	 * ```
+	 * @return string
+	 */
+	public function path() {
+		return $this->get_path();
+	}
+
+	/**
+	 * @deprecated 0.20.0 use link() instead
+	 * @return string
+	 */
+	public function permalink() {
+		return $this->get_permalink();
+	}
+
+	/**
+	 * Get the previous post in a set
+	 * @api
+	 * @example
+	 * ```twig
+	 * <h4>Prior Entry:</h4>
+	 * <h3>{{post.prev.title}}</h3>
+	 * <p>{{post.prev.get_preview(25)}}</p>
+	 * ```
+	 * @param bool $in_same_cat
+	 * @return mixed
+	 */
+	public function prev( $in_same_cat = false ) {
+		return $this->get_prev($in_same_cat);
+	}
+
+	/**
+	 * Get the terms associated with the post
+	 * This goes across all taxonomies by default
+	 * @api
+	 * @param string $tax What taxonomy to pull from, defaults to all of them. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you're on your own.
+	 * @param bool $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?
+	 * @return array
+	 */
+	public function terms( $tax = '', $merge = true ) {
+		return $this->get_terms($tax, $merge);
+	}
+
+	/**
+	 * Gets the tags on a post, uses WP's post_tag taxonomy
+	 * @api
+	 * @return array
+	 */
+	public function tags() {
+		return $this->get_tags();
+	}
+
+	/**
+	 * get the featured image as a TimberImage
+	 * @api
+	 * @example
+	 * ```twig
+	 * <img src="{{post.thumbnail.src}}" />
+	 * ```
+	 * @return TimberImage|null of your thumbnail
+	 */
+	public function thumbnail() {
+		return $this->get_thumbnail();
+	}
+
+	/**
+	 * Returns the processed title to be used in templates. This returns the title of the post after WP's filters have run. This is analogous to `the_title()` in standard WP template tags.
+	 * @api
+	 * @example
+	 * ```twig
+	 * <h1>{{ post.title }}</h1>
+	 * ```
+	 * @return string
+	 */
+	public function title() {
+		return $this->get_title();
+	}
 
 }

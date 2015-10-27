@@ -2,6 +2,8 @@
 
 	class TestTimberURLHelper extends WP_UnitTestCase {
 
+		private $mockUploadDir = false;
+
         function testURLToFileSystem() {
             $url = 'http://example.org/wp-content/uploads/2012/06/mypic.jpg';
             $file = TimberURLHelper::url_to_file_system($url);
@@ -9,6 +11,14 @@
             $this->assertStringEndsWith('/2012/06/mypic.jpg', $file);
             $this->assertNotContains($file, 'http://example.org');
             $this->assertNotContains($file, '//');
+        }
+
+        function testPathBase() {
+        	$this->assertEquals('/', TimberURLHelper::get_path_base());
+        }
+
+        function testIsLocal() {
+        	$this->assertFalse(TimberURLHelper::is_local('http://wordpress.org'));
         }
 
         function testCurrentURL(){
@@ -28,6 +38,7 @@
             $not_url = '/blog/2014/05/whatever';
             $this->assertTrue(TimberURLHelper::is_url($url));
             $this->assertFalse(TimberURLHelper::is_url($not_url));
+      		$this->assertFalse(TimberURLHelper::is_url(8000));
         }
 
         function testIsExternal(){
@@ -38,6 +49,56 @@
             $this->assertFalse(TimberURLHelper::is_external($subdomain));
             $this->assertTrue(TimberURLHelper::is_external($external));
         }
+
+		function testIsExternalContent() {
+			$internal = 'http://example.org/wp-content/uploads/my-image.png';
+			$internal_in_abspath = 'http://example.org/wp/uploads/my-image.png';
+			$internal_in_uploads = 'http://example.org/uploads/uploads/my-image.png';
+			$external = 'http://upstatement.com/my-image.png';
+
+			$this->assertFalse( TimberURLHelper::is_external_content( $internal ) );
+			$this->assertTrue( TimberURLHelper::is_external_content( $internal_in_uploads ) );
+			$this->assertTrue( TimberURLHelper::is_external_content( $internal_in_abspath ) );
+			$this->assertTrue( TimberURLHelper::is_external_content( $external ) );
+		}
+
+		function testIsExternalContentMovingFolders() {
+			$internal = 'http://example.org/wp-content/uploads/my-image.png';
+			$internal_in_abspath = 'http://example.org/wp/uploads/my-image.png';
+			$internal_in_uploads = 'http://example.org/uploads/my-image.png';
+			$external = 'http://upstatement.com/my-image.png';
+
+			add_filter( 'upload_dir', array( &$this, 'mockUploadDir' ) );
+			add_filter( 'content_url', array( &$this, 'mockContentUrl' ) );
+
+			$this->mockUploadDir = true;
+
+			$this->assertFalse( TimberURLHelper::is_external_content( $internal ) );
+			$this->assertFalse( TimberURLHelper::is_external_content( $internal_in_uploads ) );
+			$this->assertFalse( TimberURLHelper::is_external_content( $internal_in_abspath ) );
+			$this->assertTrue( TimberURLHelper::is_external_content( $external ) );
+
+			$this->mockUploadDir = false;
+		}
+
+		function mockContentUrl($url) {
+			return ( $this->mockUploadDir ) ? site_url( 'wp' ) : $url;
+		}
+
+		function mockUploadDir($path) {
+			if ( $this->mockUploadDir ) {
+
+				$path['url'] = str_replace( $path['baseurl'], site_url().'/uploads', $path['url'] );
+				$path['baseurl'] = site_url().'/uploads';
+
+				$path['path'] = str_replace( $path['basedir'], ABSPATH.'uploads', $path['path'] );
+				$path['basedir'] = ABSPATH . 'uploads';
+
+				$path['relative'] = '/uploads';
+			}
+
+			return $path;
+		}
 
         function testGetRelURL(){
             $local = 'http://example.org/directory';
@@ -58,7 +119,7 @@
         }
 
         function testDownloadURL(){
-            if ( !TimberImageTest::is_connected() ){
+            if ( !TestTimberImage::is_connected() ){
                 $this->markTestSkipped('Cannot test external images when not connected to internet');
                 return;
             }

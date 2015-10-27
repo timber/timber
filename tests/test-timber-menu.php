@@ -1,5 +1,6 @@
 <?php
-class TimberMenuTest extends WP_UnitTestCase {
+
+class TestTimberMenu extends WP_UnitTestCase {
 
 	function testBlankMenu() {
 		$this->setPermalinkStructure();
@@ -190,6 +191,8 @@ class TimberMenuTest extends WP_UnitTestCase {
 		update_post_meta( $link_id, '_menu_item_url', 'http://upstatement.com' );
 		update_post_meta( $link_id, '_menu_item_xfn', '' );
 		update_post_meta( $link_id, '_menu_item_menu_item_parent', 0 );
+
+		/* make a child page */
 		$child_id = wp_insert_post( array(
 				'post_title' => 'Child Page',
 				'post_status' => 'publish',
@@ -209,6 +212,27 @@ class TimberMenuTest extends WP_UnitTestCase {
 		update_post_meta( $child_menu_item, '_menu_item_url', '' );
 		$post = new TimberPost( $child_menu_item );
 		$menu_items[] = $child_menu_item;
+
+		/* make a grandchild page */
+		$grandchild_id = wp_insert_post( array(
+				'post_title' => 'Grandchild Page',
+				'post_status' => 'publish',
+				'post_name' => 'grandchild-page',
+				'post_type' => 'page',
+				'menu_order' => 100,
+			) );
+		$grandchild_menu_item = wp_insert_post( array(
+				'post_title' => '',
+				'post_status' => 'publish',
+				'post_type' => 'nav_menu_item',
+			) );
+		update_post_meta( $grandchild_menu_item, '_menu_item_type', 'post_type' );
+		update_post_meta( $grandchild_menu_item, '_menu_item_menu_item_parent', $child_menu_item );
+		update_post_meta( $grandchild_menu_item, '_menu_item_object_id', $grandchild_id );
+		update_post_meta( $grandchild_menu_item, '_menu_item_object', 'page' );
+		update_post_meta( $grandchild_menu_item, '_menu_item_url', '' );
+		$post = new TimberPost( $grandchild_menu_item );
+		$menu_items[] = $grandchild_menu_item;
 
 		$root_url_link_id = wp_insert_post(
 			array(
@@ -324,7 +348,8 @@ class TimberMenuTest extends WP_UnitTestCase {
 				'post_title' => 'Gallery',
 				'post_name' => 'gallery',
 				'post_status' => 'publish',
-				'post_type' => 'nav_menu_item'
+				'post_type' => 'nav_menu_item',
+				'menu_order' => -100,
 			) );
 		update_post_meta( $menu_item_id, '_menu_item_type', 'post_type_archive' );
 		update_post_meta( $menu_item_id, '_menu_item_object', 'gallery' );
@@ -338,8 +363,27 @@ class TimberMenuTest extends WP_UnitTestCase {
 		$this->go_to( home_url( '/gallery' ) );
 		$menu = new TimberMenu();
 		$this->assertContains( 'current-page-item', $menu->items[0]->classes );
-		//print_r( $menu->items );
+	}
 
+	function testMenuLevels() {
+		$this->_createTestMenu();
+		$menu = new TimberMenu();
+		$parent = $menu->items[0];
+		$this->assertEquals(0, $parent->level);
+		$child = $parent->children[0];
+		$this->assertEquals(1, $child->level);
+		$grandchild = $child->children[0];
+		$this->assertEquals('Grandchild Page', $grandchild->title());
+		$this->assertEquals(2, $grandchild->level);
+	}
+
+	function testMenuName() {
+		$this->_createTestMenu();
+		$menu = new TimberMenu();
+		$str = Timber::compile_string('{{menu.items[0].title}}', array('menu' => $menu));
+		$this->assertEquals('Home', $str);
+		$str = Timber::compile_string('{{menu.items[0]}}', array('menu' => $menu));
+		$this->assertEquals('Home', $str);
 	}
 
 }

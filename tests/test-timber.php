@@ -1,6 +1,6 @@
 <?php
 
-class TimberTest extends WP_UnitTestCase {
+class TestTimber extends WP_UnitTestCase {
 
 	function testSample() {
 		// replace this with some actual testing code
@@ -149,6 +149,26 @@ class TimberTest extends WP_UnitTestCase {
     	$this->assertEquals($post_id, $pid);
     	$pid = Timber::get_pid('dfsfsdfdsfs');
     	$this->assertNull($pid);
+    }
+
+    function testTimberRenderString() {
+    	$pid = $this->factory->post->create(array('post_title' => 'Zoogats'));
+        $post = new TimberPost($pid);
+        ob_start();
+        Timber::render_string('<h2>{{post.title}}</h2>', array('post' => $post));
+       	$data = ob_get_contents();
+        ob_end_clean();
+        $this->assertEquals('<h2>Zoogats</h2>', trim($data));
+    }
+
+    function testTimberRender() {
+    	$pid = $this->factory->post->create(array('post_title' => 'Foobar'));
+        $post = new TimberPost($pid);
+        ob_start();
+        Timber::render('assets/single-post.twig', array('post' => $post));
+       	$data = ob_get_contents();
+        ob_end_clean();
+        $this->assertEquals('<h1>Foobar</h1>', trim($data));
     }
 
 }

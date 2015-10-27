@@ -7,6 +7,10 @@ By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a h
 [![Build Status](https://travis-ci.org/jarednova/timber.png?branch=master)](https://travis-ci.org/jarednova/timber)
 [![Coverage Status](https://coveralls.io/repos/jarednova/timber/badge.svg?branch=master)](https://coveralls.io/r/jarednova/timber?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/54e3c717d1ec5734f4000099/badge.svg?style=flat)](https://www.versioneye.com/user/projects/54e3c717d1ec5734f4000099)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jarednova/timber/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jarednova/timber/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/jarednova/timber/v/stable.svg)](https://packagist.org/packages/jarednova/timber)
+[![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg)](https://wordpress.org/plugins/timber-library/)
+[![HHVM Status](http://hhvm.h4cc.de/badge/jarednova/timber.svg)](http://hhvm.h4cc.de/package/jarednova/timber)
 
 ### Because WordPress is awesome, but the_loop isn't
 Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](http://twig.sensiolabs.org/) separate from your PHP files.
@@ -15,7 +19,7 @@ This cleans-up your theme code so, for example, your php file can focus on being
 
 This is what Timber's `.twig` files look like:
 
-```html+django
+```twig
 {% extends "base.twig" %}
 {% block content %}
 <h1 class="big-title">{{foo}}</h1>
@@ -62,16 +66,31 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 #### Related Projects
 * [**Timber Starter Theme**](https://github.com/upstatement/timber-starter-theme) The "_s" of Timber to give you an easy start to the most basic theme you can build upon and customize.
-* [**Timber Debug Bar**](https://github.com/upstatement/debug-bar-timber) Adds a debug bar panel that will show you want template is in-use and the data sent to your twig file.
+* [**Timber Debug Bar**](https://github.com/upstatement/debug-bar-timber) Adds a debug bar panel that will show you which template is in-use and the data sent to your twig file.
 * [**TimberPhoton**](https://github.com/slimndap/TimberPhoton) Plug-in to use JetPack's free Photon image manipulation and CDN with Timber.
 * [**Timber Sugar**](https://github.com/Upstatement/timber-sugar) A catch-all for goodies to use w Timber.
 * [**Twig**](https://github.com/fabpot/Twig) The template language used by Timber.
 
+#### Projects that use Timber
+* [**Gantry5**](https://wordpress.org/plugins/gantry5/) a framework for theme development
+
+#### Helpful Links
+* [**CSS Tricks**](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/) introduction to Timber
+* [**Twig for Timber Cheatsheet**](http://notlaura.com/the-twig-for-timber-cheatsheet/) by @laras126
+
 #### Should I use it?
-It's GPL-licensed, so please use in personal or commercial work. Just don't re-sell it. While Timber is still in development, it's also in-use on [hundreds of sites](http://jarednova.github.io/timber/#showcase). While much has been stabilized since the first major push back in June 2013, you should expect some breaking changes as development progresses towards a version 1.0.
+It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. While Timber is still in development, it's also in-use on [hundreds of sites](http://jarednova.github.io/timber/#showcase). While much has been stabilized since the first major push back in June 2013, you should expect some breaking changes as development progresses towards a version 1.0.
 
 #### Contributing
 Read the [contributor guidelines](https://github.com/jarednova/timber/wiki#contributing) in the wiki.
+
+## How To...
+
+#### Generate documentation
+```bash
+$ cd /srv/www/timber
+$ ./bin/generate-docs.sh
+```
 
 
 

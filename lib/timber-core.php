@@ -5,7 +5,6 @@ abstract class TimberCore {
     public $id;
     public $ID;
     public $object_type;
-    public $_can_edit;
 
     /**
      *
@@ -33,21 +32,27 @@ abstract class TimberCore {
      * @return mixed
      */
     function __get( $field ) {
-        if ( isset( $this->$field ) ) {
-            return $this->$field;
-        }
-        if ( $meta_value = $this->meta( $field ) ) {
+    	if ( property_exists($this, $field) ) {
+    		return $this->$field;
+    	}
+        if ( method_exists($this, 'meta') && $meta_value = $this->meta( $field ) ) {
             return $this->$field = $meta_value;
         }
-        if (method_exists($this, $field)) {
+        if ( method_exists($this, $field) ) {
             return $this->$field = $this->$field();
         }
         return $this->$field = false;
     }
 
     /**
-     *
-     *
+     * Takes an array or object and adds the properties to the parent object
+     * @example
+     * ```php
+     * $data = array('airplane' => '757-200', 'flight' => '5316');
+     * $post = new TimberPost()
+     * $post->import(data);
+     * echo $post->airplane; //757-200
+     * ```
      * @param array|object $info an object or array you want to grab data from to attach to the Timber object
      */
     function import( $info, $force = false ) {
@@ -67,8 +72,7 @@ abstract class TimberCore {
 
 
     /**
-     *
-     *
+     * @ignore
      * @param string  $key
      * @param mixed   $value
      */
@@ -77,22 +81,26 @@ abstract class TimberCore {
     }
 
     /**
-     *
-     *
+     * Can you edit this post/term/user? Well good for you. You're no better than me.
+     * @example
+     * ```twig
+     * {% if post.can_edit %}
+     * <a href="{{ post.edit_link }}">Edit</a>
+     * {% endif %}
+     * ```
+     * ```html
+     * <a href="http://example.org/wp-admin/edit.php?p=242">Edit</a>
+     * ```
      * @return bool
      */
     function can_edit() {
-        if ( isset( $this->_can_edit ) ) {
-            return $this->_can_edit;
-        }
-        $this->_can_edit = false;
         if ( !function_exists( 'current_user_can' ) ) {
             return false;
         }
         if ( current_user_can( 'edit_post', $this->ID ) ) {
-            $this->_can_edit = true;
+            return true;
         }
-        return $this->_can_edit;
+        return false;
     }
 
     /**
