@@ -42,10 +42,10 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 == Changelog ==
 
 = 0.22.0 =
-* Added fetch method to Timber (thanks @xaivars and @erik-landvall)
+* Added fetch method to Timber (thanks @xavivars and @erik-landvall)
 * Added a total to the pagination data array (thanks @lggorman)
 * Threaded comments get some love! (thanks @josephbergdoll)
-* A fix to date parsing when handling numeric timestamps (thanks @xaivars)
+* A fix to date parsing when handling numeric timestamps (thanks @xavivars)
 
 = 0.21.10 =
 * Removed deprecated twitterify function
