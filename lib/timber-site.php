@@ -80,6 +80,16 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
     public $url;
 
     /**
+     * @api
+     * @var string
+     */
+
+    public $rdf;
+    public $rss;
+    public $rss2;
+    public $atom;
+
+    /**
      * Constructs a TimberSite object
      * @example
      * ```php
@@ -125,6 +135,10 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
         $this->pingback_url = get_bloginfo( 'pingback_url' );
         $this->language_attributes = TimberHelper::function_wrapper( 'language_attributes' );
         $this->description = get_blog_option( $info->blog_id, 'blogdescription' );
+        $this->rdf = get_bloginfo( 'rdf_url' );
+        $this->rss = get_bloginfo( 'rss_url' );
+        $this->rss2 = get_bloginfo( 'rss2_url' );
+        $this->atom = get_bloginfo( 'atom_url' );
         $this->multisite = true;
         $this->admin_email = get_blog_option( $info->blog_id, 'admin_email' );
     }
@@ -143,6 +157,10 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
         $this->pingback_url = get_bloginfo( 'pingback_url' );
         $this->theme = new TimberTheme();
         $this->language_attributes = TimberHelper::function_wrapper( 'language_attributes' );
+        $this->rdf = get_bloginfo( 'rdf_url' );
+        $this->rss = get_bloginfo( 'rss_url' );
+        $this->rss2 = get_bloginfo( 'rss2_url' );
+        $this->atom = get_bloginfo( 'atom_url' );
         $this->multisite = false;
     }
 
