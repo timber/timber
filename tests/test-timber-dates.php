@@ -74,4 +74,16 @@
 			$this->assertEquals('I was modified foobar', $str);
 		}
 
+		function testACFDate() {
+			$twig = "Thing is on {{'20150928'|date('M j, Y')}}";
+			$str = Timber::compile_string($twig);
+			$this->assertEquals('Thing is on Sep 28, 2015', $str);
+		}
+
+		function testUnixDate() {
+			$twig = "Thing is on {{'1446127859'|date('M j, Y')}}";
+			$str = Timber::compile_string($twig);
+			$this->assertEquals('Thing is on Oct 29, 2015', $str);
+		}
+
 	}
