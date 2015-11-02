@@ -350,10 +350,10 @@
 		}
 
 		function testPostAuthor(){
-			$author_id = $this->factory->user->create(array('display_name' => 'Jared Novack'));
+			$author_id = $this->factory->user->create(array('display_name' => 'Jared Novack', 'user_login' => 'jared-novack'));
 			$pid = $this->factory->post->create(array('post_author' => $author_id));
 			$post = new TimberPost($pid);
-			$this->assertEquals('user-1', $post->author()->slug());
+			$this->assertEquals('jared-novack', $post->author()->slug());
 			$this->assertEquals('Jared Novack', $post->author()->name());
 			$template = 'By {{post.author}}';
 			$authorCompile = Timber::compile_string($template, array('post' => $post));
@@ -364,33 +364,39 @@
 		}
 
 		function testPostAuthorInTwig(){
-			$author_id = $this->factory->user->create(array('display_name' => 'User 1'));
+			$author_id = $this->factory->user->create(array('display_name' => 'Jon Stewart', 'user_login' => 'jon-stewart'));
 			$pid = $this->factory->post->create(array('post_author' => $author_id));
 			$post = new TimberPost($pid);
-			$this->assertEquals('user-1', $post->author()->slug());
-			$this->assertEquals('User 1', $post->author()->name());
+			$this->assertEquals('jon-stewart', $post->author()->slug());
+			$this->assertEquals('Jon Stewart', $post->author()->name());
 			$template = 'By {{post.author}}';
 			$authorCompile = Timber::compile_string($template, array('post' => $post));
 			$template = 'By {{post.author.name}}';
 			$authorNameCompile = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals($authorCompile, $authorNameCompile);
-			$this->assertEquals('By User 1', $authorCompile);
+			$this->assertEquals('By Jon Stewart', $authorCompile);
 		}
 
 		function testPostModifiedAuthor() {
-			$author_id = $this->factory->user->create(array('display_name' => 'Woodward'));
-			$mod_author_id = $this->factory->user->create(array('display_name' => 'Bernstein'));
+			$author_id = $this->factory->user->create(array('display_name' => 'Woodward', 'user_login' => 'bob-woodward'));
+			$mod_author_id = $this->factory->user->create(array('display_name' => 'Bernstein', 'user_login' => 'carl-bernstein'));
 			$pid = $this->factory->post->create(array('post_author' => $author_id));
 			$post = new TimberPost($pid);
-			$this->assertEquals('user-1', $post->author()->slug());
-			$this->assertEquals('user-1', $post->modified_author()->slug());
+			$this->assertEquals('bob-woodward', $post->author()->slug());
+			$this->assertEquals('bob-woodward', $post->modified_author()->slug());
 			$this->assertEquals('Woodward', $post->author()->name());
 			$this->assertEquals('Woodward', $post->modified_author()->name());
 			update_post_meta($pid, '_edit_last', $mod_author_id);
-			$this->assertEquals('user-1', $post->author()->slug());
-			$this->assertEquals('user-2', $post->modified_author()->slug());
+			$this->assertEquals('bob-woodward', $post->author()->slug());
+			$this->assertEquals('carl-bernstein', $post->modified_author()->slug());
 			$this->assertEquals('Woodward', $post->author()->name());
 			$this->assertEquals('Bernstein', $post->modified_author()->name());
+		}
+
+		function tearDown() {
+			global $wpdb;
+			$query = "DELETE from $wpdb->users WHERE ID > 1";
+			$wpdb->query($query);
 		}
 
 		function testPostFormat() {
