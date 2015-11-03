@@ -16,6 +16,8 @@
 		}
 
 		function testWPTitleSingle(){
+			//remove filters from twentyfourteen or other default themes
+			remove_all_filters('wp_title');
 			$post_id = $this->factory->post->create(array('post_title' => 'My New Post'));
 			$post = get_post($post_id);
 			$this->go_to( site_url( '?p='.$post_id ) );
