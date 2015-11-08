@@ -45,6 +45,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	public $PostClass = 'TimberPost';
 
 	/**
+	 * @var string $TermClass the name of the class to handle terms by default
+	 */
+	public $TermClass = 'TimberTerm';
+
+	/**
 	 * @var string $object_type what does this class represent in WordPress terms?
 	 */
 	public $object_type = 'post';
@@ -778,7 +783,10 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param string $TermClass
 	 * @return array
 	 */
-	function get_terms( $tax = '', $merge = true, $TermClass = 'TimberTerm' ) {
+	function get_terms( $tax = '', $merge = true, $TermClass = '' ) {
+
+		$TermClass = $TermClass ?: $this->TermClass;
+
 		if ( is_string($merge) && class_exists($merge) ) {
 			$TermClass = $merge;
 		}
