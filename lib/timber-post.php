@@ -68,6 +68,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	/**
 	 * @internal
 	 * @var array $_get_terms stores the results of a get_terms method call
+	 * @deprecated
 	 */
 	protected $_get_terms;
 
@@ -778,7 +779,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * @internal
-	 * @param string $tax
+	 * @param string|array $tax
 	 * @param bool $merge
 	 * @param string $TermClass
 	 * @return array
@@ -790,47 +791,51 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		if ( is_string($merge) && class_exists($merge) ) {
 			$TermClass = $merge;
 		}
+		if ( is_array($tax) ) {
+			$taxonomies = $tax;
+		}
 		if ( is_string($tax) ) {
-			if ( isset($this->_get_terms) && isset($this->_get_terms[$tax]) ) {
-				return $this->_get_terms[$tax];
-			}
-		}
-		if ( !strlen($tax) || $tax == 'all' || $tax == 'any' ) {
-			$taxs = get_object_taxonomies($this->post_type);
-		} else if ( is_array($tax) ) {
-			$taxs = $tax;
-		} else {
-			$taxs = array($tax);
-		}
-		$ret = array();
-		foreach ( $taxs as $tax ) {
-			if ( $tax == 'tags' || $tax == 'tag' ) {
-				$tax = 'post_tag';
-			} else if ( $tax == 'categories' ) {
-				$tax = 'category';
-			}
-			$terms = wp_get_post_terms($this->ID, $tax);
-			if ( !is_array($terms) && is_object($terms) && get_class($terms) == 'WP_Error' ) {
-				//something is very wrong
-				TimberHelper::error_log('You have an error retrieving terms on a post in timber-post.php:628');
-				TimberHelper::error_log('tax = ' . $tax);
-				TimberHelper::error_log($terms);
+			if ( in_array($tax, array('all','any','')) ) {
+				$taxonomies = get_object_taxonomies($this->post_type);
 			} else {
-				foreach ( $terms as &$term ) {
-					$term = new $TermClass($term->term_id, $tax);
-				}
-				if ( $merge && is_array($terms) ) {
-					$ret = array_merge($ret, $terms);
-				} else if ( count($terms) ) {
-					$ret[$tax] = $terms;
-				}
+				$taxonomies = array($tax);
 			}
 		}
-		if ( !isset($this->_get_terms) ) {
-			$this->_get_terms = array();
+
+		$term_class_objects = array();
+
+		foreach ( $taxonomies as $taxonomy ) {
+			if ( in_array($taxonomy, array('tag','tags')) ) {
+				$taxonomy = 'post_tag';
+			}
+			if ( $taxonomy == 'categories' ) {
+				$taxonomy = 'category';
+			}
+
+			$terms = wp_get_post_terms($this->ID, $taxonomy);
+
+			if ( is_wp_error($terms) ) {
+				/* @var $terms WP_Error */
+				TimberHelper::error_log("Error retrieving terms for taxonomy '$taxonomy' on a post in timber-post.php");
+				TimberHelper::error_log('tax = ' . print_r($tax, true));
+				TimberHelper::error_log('WP_Error: ' . $terms->get_error_message());
+
+				return $term_class_objects;
+			}
+
+			// map over array of wordpress terms, and transform them into instances of the TermClass
+			$terms = array_map(function($term) use ($TermClass, $taxonomy) {
+				return call_user_func(array($TermClass, 'from'), $term->term_id, $taxonomy);
+			}, $terms);
+
+			if ( $merge && is_array($terms) ) {
+				$term_class_objects = array_merge($term_class_objects, $terms);
+			} else if ( count($terms) ) {
+				$term_class_objects[$taxonomy] = $terms;
+			}
 		}
-		$this->_get_terms[$tax] = $ret;
-		return $ret;
+
+		return $term_class_objects;
 	}
 
 	/**
@@ -1334,7 +1339,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * Get the terms associated with the post
 	 * This goes across all taxonomies by default
 	 * @api
-	 * @param string $tax What taxonomy to pull from, defaults to all of them. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you're on your own.
+	 * @param string|array $tax What taxonom(y|ies) to pull from. Defaults to all registered taxonomies for the post type. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you're on your own.
 	 * @param bool $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?
 	 * @return array
 	 */
