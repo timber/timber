@@ -71,6 +71,15 @@ class TimberTerm extends TimberCore implements TimberCoreInterface {
 		return $this->name;
 	}
 
+	/**
+	 * @param $tid
+	 * @param $taxonomy
+	 *
+	 * @return static
+	 */
+	public static function from( $tid, $taxonomy ) {
+		return new static($tid, $taxonomy);
+	}
 
 
 	/* Setup
