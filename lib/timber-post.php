@@ -880,7 +880,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @return array
 	 */
 	function get_tags() {
-		return $this->get_terms('tags');
+		return $this->get_terms('post_tag');
 	}
 
 	/**
