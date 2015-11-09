@@ -15,14 +15,21 @@
 			$this->assertStringStartsWith('<div id="respond"', $form);
 		}
 
-		function testWPTitleSingle(){
-			//remove filters from twentyfourteen or other default themes
-			remove_all_filters('wp_title');
-			$post_id = $this->factory->post->create(array('post_title' => 'My New Post'));
-			$post = get_post($post_id);
-			$this->go_to( site_url( '?p='.$post_id ) );
-			$this->assertEquals('My New Post &#8211; Test Blog', TimberHelper::get_wp_title('-'));
-		}
+		function testWPTitle(){
+        	//since we're testing with twentyfourteen -- need to remove its filters on wp_title
+        	remove_all_filters('wp_title');
+            remove_theme_support( 'title-tag' );
+        	$this->assertEquals('', TimberHelper::get_wp_title());
+        }
+
+        function testWPTitleSingle(){
+        	//since we're testing with twentyfourteen -- need to remove its filters on wp_title
+        	remove_all_filters('wp_title');
+        	$post_id = $this->factory->post->create(array('post_title' => 'My New Post'));
+        	$post = get_post($post_id);
+            $this->go_to( site_url( '?p='.$post_id ) );
+        	$this->assertEquals('My New Post', TimberHelper::get_wp_title());
+        }
 
 		function testCloseTags(){
 			$str = '<a href="http://wordpress.org">Hi!';

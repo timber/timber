@@ -195,14 +195,8 @@ class TimberHelper {
 	 * @param string  $seplocation
 	 * @return string
 	 */
-	public static function get_wp_title( $separator = '', $seplocation = 'left' ) {
+	public static function get_wp_title( $separator = ' ', $seplocation = 'left' ) {
 		$separator = apply_filters( 'timber_wp_title_seperator', $separator );
-		if ( function_exists('wp_get_document_title') ) {
-			add_filter('document_title_separator', function($old_sep) use ($separator) {
-				return trim($separator);
-			} );
-			return trim( wp_get_document_title() );
-		}
 		return trim( wp_title( $separator, false, $seplocation ) );
 	}
 
