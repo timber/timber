@@ -58,9 +58,15 @@ class TimberImageOperationToJpg extends TimberImageOperation {
 				$ext = $ext['ext'];
 			}
 		}
+		$ext = strtolower($ext);
 		if ( $ext == 'gif' ) {
 			return imagecreatefromgif($filename);
 		}
-		return imagecreatefrompng($filename);
+		if ( $ext == 'png' ) {
+			return imagecreatefrompng($filename);
+		}
+		if ( $ext == 'jpg' || $ext == 'jpeg') {
+			return imagecreatefromjpeg($filename);
+		}
 	}
 }
