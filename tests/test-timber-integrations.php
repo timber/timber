@@ -1,6 +1,6 @@
 <?php
 
-class TestTimberIntegrations extends WP_UnitTestCase {
+class TestTimberIntegrations extends Timber_UnitTestCase {
 
 	function testACFGetFieldPost() {
 		$pid = $this->factory->post->create();

@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberPost extends WP_UnitTestCase {
+	class TestTimberPost extends Timber_UnitTestCase {
 
 		function testPostObject(){
 			$post_id = $this->factory->post->create();

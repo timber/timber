@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberLoader extends WP_UnitTestCase {
+	class TestTimberLoader extends Timber_UnitTestCase {
 
 		/**
      	 * @expectedException Twig_Error_Loader

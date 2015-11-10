@@ -1,6 +1,6 @@
 <?php
 
-class TestTimberCustomFields extends WP_UnitTestCase {
+class TestTimberCustomFields extends Timber_UnitTestCase {
 
 	function testPostCustomField(){
 		$post_id = $this->factory->post->create();

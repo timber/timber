@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberURLHelper extends WP_UnitTestCase {
+	class TestTimberURLHelper extends Timber_UnitTestCase {
 
 		private $mockUploadDir = false;
 

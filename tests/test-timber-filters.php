@@ -1,6 +1,6 @@
 <?php
 
-class TestTimberFilters extends WP_UnitTestCase {
+class TestTimberFilters extends Timber_UnitTestCase {
 
 	function testPostMetaFieldFilter() {
 		$post_id = $this->factory->post->create();

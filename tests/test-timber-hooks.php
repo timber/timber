@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberHooks extends WP_UnitTestCase {
+	class TestTimberHooks extends Timber_UnitTestCase {
 
 		function testTimberContext() {
 			add_filter('timber/context', function($context) {

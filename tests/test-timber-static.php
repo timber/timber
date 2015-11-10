@@ -1,6 +1,6 @@
 <?php
 
-class TestTimberStaticPages extends WP_UnitTestCase {
+class TestTimberStaticPages extends Timber_UnitTestCase {
 
 	function tearDown() {
 		update_option('show_on_front', 'posts');

@@ -1,6 +1,6 @@
 <?php
 
-class TestTimberImageRetina extends WP_UnitTestCase {
+class TestTimberImageRetina extends Timber_UnitTestCase {
 
 	function testImageRetina() {
 		$file = TestTimberImage::copyTestImage();

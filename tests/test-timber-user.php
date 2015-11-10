@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberUser extends WP_UnitTestCase {
+	class TestTimberUser extends Timber_UnitTestCase {
 
 		function testInitWithID(){
 			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln'));

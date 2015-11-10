@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberTheme extends WP_UnitTestCase {
+	class TestTimberTheme extends Timber_UnitTestCase {
 
 		function testThemeMods(){
 			set_theme_mod('foo', 'bar');

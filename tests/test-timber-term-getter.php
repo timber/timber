@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberTermGetter extends WP_UnitTestCase {
+	class TestTimberTermGetter extends Timber_UnitTestCase {
 
 		function testGetArrayOfTerms(){
 			$term_ids = array();

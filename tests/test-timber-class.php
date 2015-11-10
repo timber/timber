@@ -1,6 +1,6 @@
 <?php
 
-class TestTimberClass extends WP_UnitTestCase {
+class TestTimberClass extends Timber_UnitTestCase {
 
 	function testConstantsDefining() {
 		$timber = $GLOBALS['timber'];

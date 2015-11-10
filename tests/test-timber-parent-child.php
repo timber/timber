@@ -1,6 +1,6 @@
 <?php
-	
-	class TestTimberParentChild extends WP_UnitTestCase {
+
+	class TestTimberParentChild extends Timber_UnitTestCase {
 
 		function testParentChildGeneral(){
 			TestTimberLoader::_setupParentTheme();

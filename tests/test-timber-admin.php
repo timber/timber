@@ -1,6 +1,6 @@
 <?php
 
-class TestTimberAdmin extends WP_UnitTestCase {
+class TestTimberAdmin extends Timber_UnitTestCase {
 
 	function testSettingsLinks() {
         $links = apply_filters( 'plugin_row_meta', array(), 'timber/timber.php' );

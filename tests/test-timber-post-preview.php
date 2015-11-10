@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberPostPreview extends WP_UnitTestCase {
+	class TestTimberPostPreview extends Timber_UnitTestCase {
 
 		function testDoubleEllipsis(){
 			$post_id = $this->factory->post->create();
