@@ -452,42 +452,88 @@
 			$this->assertEquals('News', $post->category()->name);
 		}
 
-		function testPostCategories(){
-			$cats = array('News', 'Sports', 'Obits');
-			foreach($cats as &$cat){
-				$cat = wp_insert_term($cat, 'category');
-			}
+		function testPostCategories() {
 			$pid = $this->factory->post->create();
-			foreach($cats as $cat){
-				wp_set_object_terms($pid, $cat['term_id'], 'category', true);
-			}
 			$post = new TimberPost($pid);
-			$this->assertEquals(3, count($post->categories()));
+			$category_names = array('News', 'Sports', 'Obits');
+
+			// Uncategorized is applied by default
+			$default_categories = $post->categories();
+			$this->assertEquals('uncategorized', $default_categories[0]->slug);
+
+			foreach ( $category_names as $category_name ) {
+				$category_name = wp_insert_term($category_name, 'category');
+				wp_set_object_terms($pid, $category_name['term_id'], 'category', true);
+			}
+
+			$this->assertEquals(count($default_categories) + count($category_names), count($post->categories()));
 		}
 
-		function testPostTerms(){
-			register_taxonomy('team', 'post');
-			$teams = array('Patriots', 'Bills', 'Dolphins', 'Jets');
-			foreach($teams as &$team){
-				$team_terms[] = wp_insert_term($team, 'team');
-			}
+		function testPostTags() {
 			$pid = $this->factory->post->create();
-			foreach($team_terms as $team){
-				wp_set_object_terms($pid, $team['term_id'], 'team', true);
+			$post = new TimberPost($pid);
+			$tag_names = array('News', 'Sports', 'Obits');
+
+			foreach ( $tag_names as $tag_name ) {
+				$tag = wp_insert_term($tag_name, 'post_tag');
+				wp_set_object_terms($pid, $tag['term_id'], 'post_tag', true);
 			}
+
+			$this->assertEquals(count($tag_names), count($post->tags()));
+		}
+
+		function testPostTerms() {
+			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
-			$teams = $post->terms('team');
-			$this->assertEquals(4, count($teams));
-			$tag = wp_insert_term('whatever', 'post_tag');
-			wp_set_object_terms($pid, $tag['term_id'], 'post_tag', true);
-			$post = new TimberPost($pid);
-			$this->assertEquals(6, count($post->terms()));
-			$tags = $post->tags();
-			$this->assertEquals('whatever', $tags[0]->slug);
-			$tags = $post->terms('tag');
-			$this->assertEquals('whatever', $tags[0]->slug);
+
+			// create a new tag and associate it with the post
+			$dummy_tag = wp_insert_term('whatever', 'post_tag');
+			wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);
+
+			// test expected tags
+			$timber_tags = $post->terms('post_tag');
+			$dummy_timber_tag = new TimberTerm($dummy_tag['term_id'], 'post_tag');
+			$this->assertEquals('whatever', $timber_tags[0]->slug);
+			$this->assertEquals($dummy_timber_tag, $timber_tags[0]);
+
+			// register a custom taxonomy, create some terms in it and associate to post
+			register_taxonomy('team', 'post');
+			$team_names = array('Patriots', 'Bills', 'Dolphins', 'Jets');
+
+			foreach ( $team_names as $team_name ) {
+				$team_term = wp_insert_term($team_name, 'team');
+				wp_set_object_terms($pid, $team_term['term_id'], 'team', true);
+			}
+
+			$this->assertEquals(count($team_names), count($post->terms('team')));
+
+			// check presence of specific terms
+			$this->assertTrue($post->has_term('Uncategorized'));
+			$this->assertTrue($post->has_term('whatever'));
 			$this->assertTrue($post->has_term('Dolphins'));
 			$this->assertTrue($post->has_term('Patriots', 'team'));
+
+			// 4 teams + 1 tag + default category (Uncategorized)
+			$this->assertEquals(6, count($post->terms()));
+
+			// test tags method - wrapper for $this->get_terms('tags')
+			$this->assertEquals($post->tags(), $post->terms('tag'));
+			$this->assertEquals($post->tags(), $post->terms('tags'));
+			$this->assertEquals($post->tags(), $post->terms('post_tag'));
+
+			// test categories method - wrapper for $this->get_terms('category')
+			$this->assertEquals($post->categories(), $post->terms('category'));
+			$this->assertEquals($post->categories(), $post->terms('categories'));
+
+			// test using an array of taxonomies
+			$post_tag_terms = $post->terms(array('post_tag'));
+			$this->assertEquals(1, count($post_tag_terms));
+			$post_team_terms = $post->terms(array('team'));
+			$this->assertEquals(count($team_names), count($post_team_terms));
+
+			// test multiple taxonomies
+			$post_tag_and_team_terms = $post->terms(array('post_tag','team'));
+			$this->assertEquals(count($post_tag_terms) + count($post_team_terms), count($post_tag_and_team_terms));
 		}
 
 		function testPostContentLength() {
