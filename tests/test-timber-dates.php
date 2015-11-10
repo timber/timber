@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberDates extends WP_UnitTestCase {
+	class TestTimberDates extends Timber_UnitTestCase {
 
 		function testDate(){
 			$pid = $this->factory->post->create();

@@ -1,6 +1,6 @@
 <?php
 
-class TestTimberPagination extends WP_UnitTestCase {
+class TestTimberPagination extends Timber_UnitTestCase {
 
 	function testPaginationSearch() {
 		update_option( 'permalink_structure', '' );

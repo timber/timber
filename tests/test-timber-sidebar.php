@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberSidebar extends WP_UnitTestCase {
+	class TestTimberSidebar extends Timber_UnitTestCase {
 
 		function testTwigSidebar(){
 			$context = Timber::get_context();

@@ -1,6 +1,6 @@
 <?php
 
-class TestTimberMultisite extends WP_UnitTestCase {
+class TestTimberMultisite extends Timber_UnitTestCase {
 
 	function testGetSubDomainSites() {
 		if ( !is_multisite()) {

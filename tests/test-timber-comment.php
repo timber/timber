@@ -1,6 +1,6 @@
 <?php
 
-class TestTimberComment extends WP_UnitTestCase {
+class TestTimberComment extends Timber_UnitTestCase {
 
 	function testComment(){
 		$post_id = $this->factory->post->create();

@@ -6,7 +6,7 @@ class TimberCoreTester extends TimberPost {
 	}
 }
 
-class TestTimberCore extends WP_UnitTestCase {
+class TestTimberCore extends Timber_UnitTestCase {
 
 	function testCoreImport() {
 		$post_id = $this->factory->post->create();

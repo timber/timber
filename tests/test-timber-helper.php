@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberHelper extends WP_UnitTestCase {
+	class TestTimberHelper extends Timber_UnitTestCase {
 
 		function testCloseTagsWithSelfClosingTags(){
 			$p = '<p>My thing is this <hr>Whatever';

@@ -1,6 +1,6 @@
 <?php
 
-class TestTimberPostGetter extends WP_UnitTestCase {
+class TestTimberPostGetter extends Timber_UnitTestCase {
 
 	function testGettingArrayWithSticky(){
 		$pids = $this->factory->post->create_many(6);

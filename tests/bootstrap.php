@@ -15,8 +15,9 @@ tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
 require $_tests_dir . '/includes/bootstrap.php';
 
+require_once __DIR__.'/Timber_UnitTestCase.php';
+
 if ( !function_exists('is_post_type_viewable') ) {
-	echo 'add dat babe';
 	function is_post_type_viewable( $post_type_object ) {
  		return $post_type_object->publicly_queryable || ( $post_type_object->_builtin && $post_type_object->public );
  	}

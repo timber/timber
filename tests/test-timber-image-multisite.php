@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberImageMultisite extends WP_UnitTestCase {
+	class TestTimberImageMultisite extends Timber_UnitTestCase {
 
 		function tearDown() {
 			if (is_multisite()) {

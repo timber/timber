@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberImageToJPG extends WP_UnitTestCase {
+	class TestTimberImageToJPG extends Timber_UnitTestCase {
 
 		function remove($file) {
 

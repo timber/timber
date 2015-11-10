@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberWPFunctions extends WP_UnitTestCase {
+	class TestTimberWPFunctions extends Timber_UnitTestCase {
 
 		function testFunctionFire(){
 			$str = '{{function("my_test_function")}}';

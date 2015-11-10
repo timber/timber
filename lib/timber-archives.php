@@ -94,7 +94,8 @@ class TimberArchives extends TimberCore {
 	protected function get_items_yearly( $args, $last_changed, $join, $where, $order, $limit ) {
 		global $wpdb;
 		$output = array();
-		$query = "SELECT YEAR(post_date) AS `year`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date) ORDER BY post_date $order $limit";
+		//$query = "SELECT YEAR(post_date) AS `year`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date) ORDER BY post_date $order $limit";
+		$query = $wpdb->prepare("SELECT YEAR(post_date) AS `year`, count(ID) as posts FROM {$wpdb->posts} %s %s GROUP BY YEAR(post_date) ORDER BY post_date %s %s", $join, $where, $order, $limit);
 		$key = md5($query);
 		$key = "wp_get_archives:$key:$last_changed";
 		if (!$results = wp_cache_get($key, 'posts')) {

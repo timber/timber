@@ -1,6 +1,6 @@
 <?php
 
-class TestTimberIterator extends WP_UnitTestCase {
+class TestTimberIterator extends Timber_UnitTestCase {
 
     function testQueryPosts(){
         $this->factory->post->create();

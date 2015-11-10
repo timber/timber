@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberCache extends WP_UnitTestCase {
+	class TestTimberCache extends Timber_UnitTestCase {
 
         private function _generate_transient_name() {
             static $i = 0;

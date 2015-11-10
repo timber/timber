@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberDeprecated extends WP_UnitTestCase {
+	class TestTimberDeprecated extends Timber_UnitTestCase {
 
 		function testGetPostByMeta() {
 			$post_id = $this->factory->post->create(array('post_title' => 'Hugh Abbot'));

@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberShortcodes extends WP_UnitTestCase {
+	class TestTimberShortcodes extends Timber_UnitTestCase {
 
 		function testShortcodes(){
 			add_shortcode('timber_shortcode', function($text){

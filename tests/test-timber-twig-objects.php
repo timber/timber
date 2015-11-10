@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberTwigObjects extends WP_UnitTestCase {
+	class TestTimberTwigObjects extends Timber_UnitTestCase {
 
 		function testTimberImageInTwig() {
 			$iid = TestTimberImage::get_image_attachment();

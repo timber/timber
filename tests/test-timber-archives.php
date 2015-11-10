@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberArchives extends WP_UnitTestCase {
+	class TestTimberArchives extends Timber_UnitTestCase {
 
 		function testArchiveMonthly(){
 			$dates = array('2013-11-08', '2013-12-08', '2013-11-09', '2013-06-08');
