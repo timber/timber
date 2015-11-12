@@ -4,7 +4,7 @@ Plugin Name: Timber
 Description: The WordPress Timber Library allows you to write themes using the power Twig templates.
 Plugin URI: http://timber.upstatement.com
 Author: Jared Novack + Upstatement
-Version: 0.22.0
+Version: 0.22.1
 Author URI: http://upstatement.com/
 */
 
@@ -26,11 +26,11 @@ if (   file_exists( $composer_autoload = __DIR__ . '/vendor/autoload.php' ) /* c
 $timber = new Timber();
 Timber::$dirname = 'views';
 
-/** 
+/**
  * Timber Class.
  *
  * Main class called Timber for this plugin.
- * 
+ *
  * Usage:
  *  $posts = Timber::get_posts();
  *  $posts = Timber::get_posts('post_type = article')
@@ -88,7 +88,7 @@ class Timber {
 
 	/**
 	 * Get post.
-	 * 
+	 *
 	 * @param mixed   $query
 	 * @param string  $PostClass
 	 * @return array|bool|null
@@ -99,7 +99,7 @@ class Timber {
 
 	/**
 	 * Get posts.
-	 * 
+	 *
 	 * @param mixed   $query
 	 * @param string  $PostClass
 	 * @return array|bool|null
@@ -110,7 +110,7 @@ class Timber {
 
 	/**
 	 * Query post.
-	 * 
+	 *
 	 * @param mixed   $query
 	 * @param string  $PostClass
 	 * @return array|bool|null
@@ -121,7 +121,7 @@ class Timber {
 
 	/**
 	 * Query posts.
-	 * 
+	 *
 	 * @param mixed   $query
 	 * @param string  $PostClass
 	 * @return array|bool|null
@@ -132,7 +132,7 @@ class Timber {
 
 	/**
 	 * Get pids.
-	 * 
+	 *
 	 * @param array|string $query
 	 * @return array
 	 * @deprecated since 0.20.0
@@ -143,7 +143,7 @@ class Timber {
 
 	/**
 	 * Get posts from loop.
-	 * 
+	 *
 	 * @param string  $PostClass
 	 * @return array
 	 * @deprecated since 0.20.0
@@ -154,7 +154,7 @@ class Timber {
 
 	/**
 	 * Get posts from slug.
-	 * 
+	 *
 	 * @param string  $slug
 	 * @param string  $PostClass
 	 * @return array
@@ -166,7 +166,7 @@ class Timber {
 
 	/**
 	 * Get posts from WP_Query.
-	 * 
+	 *
 	 * @param array   $query
 	 * @param string  $PostClass
 	 * @return array
@@ -178,7 +178,7 @@ class Timber {
 
 	/**
 	 * Get posts from array of ids.
-	 * 
+	 *
 	 * @param array   $query
 	 * @param string  $PostClass
 	 * @return array|null
@@ -190,7 +190,7 @@ class Timber {
 
 	/**
 	 * Get pid.
-	 * 
+	 *
 	 * @param unknown $query
 	 * @return int
 	 * @deprecated since 0.20.0
@@ -204,7 +204,7 @@ class Timber {
 
 	/**
 	 * WP_Query has posts.
-	 * 
+	 *
 	 * @return bool
 	 * @deprecated since 0.20.0
 	 */
@@ -217,7 +217,7 @@ class Timber {
 
 	/**
 	 * Get terms.
-	 * 
+	 *
 	 * @param string|array $args
 	 * @param array   $maybe_args
 	 * @param string  $TermClass
@@ -232,7 +232,7 @@ class Timber {
 
 	/**
 	 * Get sites.
-	 * 
+	 *
 	 * @param array|bool $blog_ids
 	 * @return array
 	 */
@@ -254,7 +254,7 @@ class Timber {
 
 	/**
 	 * Get context.
-	 * 
+	 *
 	 * @return array
 	 */
 	public static function get_context() {
@@ -289,7 +289,7 @@ class Timber {
 
 	/**
 	 * Compile function.
-	 * 
+	 *
 	 * @param array   $filenames
 	 * @param array   $data
 	 * @param bool    $expires
@@ -323,7 +323,7 @@ class Timber {
 
 	/**
 	 * Compile string.
-	 * 
+	 *
 	 * @param string  $string a string with twig variables.
 	 * @param array   $data   an array with data in it.
 	 * @return  bool|string
@@ -340,7 +340,7 @@ class Timber {
 
 	/**
 	 * Fetch function.
-	 * 
+	 *
 	 * @param array   $filenames
 	 * @param array   $data
 	 * @param bool    $expires
@@ -361,7 +361,7 @@ class Timber {
 
 	/**
 	 * Render function.
-	 * 
+	 *
 	 * @param array   $filenames
 	 * @param array   $data
 	 * @param bool    $expires
@@ -376,7 +376,7 @@ class Timber {
 
 	/**
 	 * Render string.
-	 * 
+	 *
 	 * @param string  $string a string with twig variables.
 	 * @param array   $data   an array with data in it.
 	 * @return  bool|string
@@ -393,7 +393,7 @@ class Timber {
 
 	/**
 	 * Get sidebar.
-	 * 
+	 *
 	 * @param string  $sidebar
 	 * @param array   $data
 	 * @return bool|string
@@ -410,7 +410,7 @@ class Timber {
 
 	/**
 	 * Get sidebar from PHP
-	 * 
+	 *
 	 * @param string  $sidebar
 	 * @param array   $data
 	 * @return string
@@ -441,7 +441,7 @@ class Timber {
 
 	/**
 	 * Get widgets.
-	 * 
+	 *
 	 * @param int     $widget_id
 	 * @return TimberFunctionWrapper
 	 */
@@ -455,7 +455,7 @@ class Timber {
 
 	/**
 	 * Add route.
-	 * 
+	 *
 	 * @param string  $route
 	 * @param callable $callback
 	 * @param array   $args
@@ -477,7 +477,7 @@ class Timber {
 
 	/**
 	 * Load template.
-	 * 
+	 *
 	 * @deprecated since 0.20.0
 	 */
 	public static function load_template( $template, $query = false, $status_code = 200, $tparams = false ) {
@@ -486,7 +486,7 @@ class Timber {
 
 	/**
 	 * Load view.
-	 * 
+	 *
 	 * @deprecated since 0.20.2
 	 */
 	public static function load_view( $template, $query = false, $status_code = 200, $tparams = false ) {
@@ -499,7 +499,7 @@ class Timber {
 
 	/**
 	 * Get pagination.
-	 * 
+	 *
 	 * @param array   $prefs
 	 * @return array mixed
 	 */
@@ -553,7 +553,7 @@ class Timber {
 
 	/**
 	 * Get calling script path.
-	 * 
+	 *
 	 * @param int     $offset
 	 * @return string
 	 * @deprecated since 0.20.0
@@ -565,7 +565,7 @@ class Timber {
 
 	/**
 	 * Get calling script dir.
-	 * 
+	 *
 	 * @return boolean|string
 	 */
 	public static function get_calling_script_dir( $offset = 0 ) {
@@ -580,7 +580,7 @@ class Timber {
 
 	/**
 	 * Get calling script file.
-	 * 
+	 *
 	 * @param int     $offset
 	 * @return string|null
 	 * @deprecated since 0.20.0
@@ -604,7 +604,7 @@ class Timber {
 
 	/**
 	 * Is post class or class map.
-	 * 
+	 *
 	 * @param string|array $args
 	 * @return bool
 	 * @deprecated since 0.20.0
