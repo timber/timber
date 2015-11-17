@@ -76,6 +76,8 @@ class TestTimberImage extends Timber_UnitTestCase {
 		$this->assertEquals( 1.5, $image->aspect() );
 	}
 
+
+
 	function testExternalImageResize() {
 		if ( !self::is_connected() ) {
 			$this->markTestSkipped('Cannot test external images when not connected to internet');
@@ -157,6 +159,19 @@ class TestTimberImage extends Timber_UnitTestCase {
 		Timber::compile( 'assets/image-test.twig', $data );
 		$new_time = filemtime( $resized_path );
 		$this->assertEquals( $old_time, $new_time );
+	}
+
+	function testAnimatedGifResize() {
+		$image = self::copyTestImage('robocop.gif');
+		$data = array('crop' => 'default');
+		$data['size'] = array('width' => 90, 'height' => 90);
+		$upload_dir = wp_upload_dir();
+		$url = $upload_dir['url'].'/robocop.gif';
+		$data['test_image'] = $url;
+		Timber::compile( 'assets/image-test.twig', $data );
+		$resized_path = $upload_dir['path'].'/robocop-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.gif';
+		$this->assertFileExists( $resized_path );
+		$this->assertTrue(TimberImageHelper::is_animated_gif($resized_path));
 	}
 
 	function testResizeTallImage() {

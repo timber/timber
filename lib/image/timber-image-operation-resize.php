@@ -41,6 +41,30 @@ class TimberImageOperationResize extends TimberImageOperation {
 		return $result;
 	}
 
+	protected function run_animated_gif( $load_filename, $save_filename ) {
+		$image = wp_get_image_editor( $load_filename );
+		$current_size = $image->get_size();
+		$src_w = $current_size['width'];
+		$src_h = $current_size['height'];
+		$w = $this->w;
+		$h = $this->h;
+		// exec("sudo convert ".$load_filename." -coalesce coalesce.gif");
+		// return exec("sudo convert -size ".$src_w."x".$src_h." coalesce.gif -resize ".$w."x".$h." ".$save_filename);$image = new Imagick($file_src);
+		$image = new Imagick($load_filename);
+		$image = $image->coalesceImages();
+		$crop_x = 0;
+		$crop_y = 0;
+		foreach ($image as $frame) {
+
+			$frame->cropImage($src_w, $src_h, $crop_x, $crop_y);
+			$frame->thumbnailImage($w, $h);
+			$frame->setImagePage($w, $h, 0, 0);
+		}
+
+		$image = $image->deconstructImages();
+		return $image->writeImages($save_filename, true);
+	}
+
 	/**
 	 * Performs the actual image manipulation,
 	 * including saving the target file.
@@ -52,6 +76,16 @@ class TimberImageOperationResize extends TimberImageOperation {
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
 	public function run($load_filename, $save_filename) {
+		//should be resized by gif resizer
+		if ( TimberImageHelper::is_animated_gif($load_filename) ) {
+			//attempt to resize
+			//return if successful
+			//proceed if not
+			$gif = self::run_animated_gif($load_filename, $save_filename);
+			if ($gif) {
+				return true;
+			}
+		}
 		$image = wp_get_image_editor( $load_filename );
 		if ( !is_wp_error( $image ) ) {
 			$w = $this->w;
