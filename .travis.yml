@@ -26,7 +26,7 @@ matrix:
           env: WP_VERSION=latest WP_MULTISITE=1
 
 before_script:
-    - if [[ "$TRAVIS_PHP_VERSION" != 5.3 ] && ["$TRAVIS_PHP_VERSION" != "hhvm" ]]; then autodetect | pecl install imagick
+    - if [ "$TRAVIS_PHP_VERSION" != 5.3 ] && ["$TRAVIS_PHP_VERSION" != "hhvm" ]; then autodetect | pecl install imagick
     - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
     - composer install --dev --prefer-source
 
