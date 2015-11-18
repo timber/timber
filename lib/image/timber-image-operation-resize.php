@@ -80,13 +80,17 @@ class TimberImageOperationResize extends TimberImageOperation {
 			//the user wants to resize based on constant height
 			$w = round( $h * $src_ratio );
 		}
+		if ( !$crop ) {
+			return array(
+				'x' => 0, 'y' => 0,
+				'src_w' => $src_w, 'src_h' => $src_h,
+				'target_w' => $w, 'target_h' => $h
+			);
+		}
 		// Get ratios
 		$dest_ratio = $w / $h;
 		$src_wt = $src_h * $dest_ratio;
 		$src_ht = $src_w / $dest_ratio;
-		if ( !$crop ) {
-			return array('x' => 0, 'y' => 0, 'src_w' => $src_w, 'src_h' => $src_h, 'target_w' => $w, 'target_h' => $h);
-		}
 		$src_x = $src_w / 2 - $src_wt / 2;
 		$src_y = ( $src_h - $src_ht ) / 6;
 		//now specific overrides based on options:
@@ -95,19 +99,27 @@ class TimberImageOperationResize extends TimberImageOperation {
 			$src_x = round( ( $src_w - $src_wt ) / 2 );
 			$src_y = round( ( $src_h - $src_ht ) / 2 );
 		} else if ( $crop == 'top' ) {
-				$src_y = 0;
-			} else if ( $crop == 'bottom' ) {
-				$src_y = $src_h - $src_ht;
-			} else if ( $crop == 'left' ) {
-				$src_x = 0;
-			} else if ( $crop == 'right' ) {
-				$src_x = $src_w - $src_wt;
-			}
+			$src_y = 0;
+		} else if ( $crop == 'bottom' ) {
+			$src_y = $src_h - $src_ht;
+		} else if ( $crop == 'left' ) {
+			$src_x = 0;
+		} else if ( $crop == 'right' ) {
+			$src_x = $src_w - $src_wt;
+		}
 		// Crop the image
 		if ( $dest_ratio > $src_ratio ) {
-			return array('x' => 0, 'y' => $src_y, 'src_w' => $src_w, 'src_h' => $src_ht, 'target_w' => $w, 'target_h' => $h);
+			return array(
+				'x' => 0, 'y' => $src_y,
+				'src_w' => $src_w, 'src_h' => $src_ht,
+				'target_w' => $w, 'target_h' => $h
+			);
 		}
-		return array('x' => $src_x, 'y' => 0, 'src_w' => $src_wt, 'src_h' => $src_h, 'target_w' => $w, 'target_h' => $h);
+		return array(
+			'x' => $src_x, 'y' => 0,
+			'src_w' => $src_wt, 'src_h' => $src_h,
+			'target_w' => $w, 'target_h' => $h
+		);
 	}
 
 	/**
