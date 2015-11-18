@@ -41,6 +41,75 @@ class TimberImageOperationResize extends TimberImageOperation {
 		return $result;
 	}
 
+	protected function run_animated_gif( $load_filename, $save_filename ) {
+		$image = wp_get_image_editor( $load_filename );
+		$current_size = $image->get_size();
+		$src_w = $current_size['width'];
+		$src_h = $current_size['height'];
+		$w = $this->w;
+		$h = $this->h;
+		if ( !class_exists('Imagick') ) {
+			return false;
+		}
+		$image = new Imagick($load_filename);
+		$image = $image->coalesceImages();
+		$crop = self::get_target_sizes( $load_filename );
+		foreach ($image as $frame) {
+			$frame->cropImage($crop['src_w'], $crop['src_h'], $crop['x'], $crop['y']);
+			$frame->thumbnailImage($w, $h);
+			$frame->setImagePage($w, $h, 0, 0);
+		}
+		$image = $image->deconstructImages();
+		return $image->writeImages($save_filename, true);
+	}
+
+	protected function get_target_sizes( $load_filename ) {
+		$image = wp_get_image_editor( $load_filename );
+		$w = $this->w;
+		$h = $this->h;
+		$crop = $this->crop;
+
+		$current_size = $image->get_size();
+		$src_w = $current_size['width'];
+		$src_h = $current_size['height'];
+		$src_ratio = $src_w / $src_h;
+		if ( !$h ) {
+			$h = round( $w / $src_ratio );
+		}
+		if ( !$w ) {
+			//the user wants to resize based on constant height
+			$w = round( $h * $src_ratio );
+		}
+		// Get ratios
+		$dest_ratio = $w / $h;
+		$src_wt = $src_h * $dest_ratio;
+		$src_ht = $src_w / $dest_ratio;
+		if ( !$crop ) {
+			return array('x' => 0, 'y' => 0, 'src_w' => $src_w, 'src_h' => $src_h, 'target_w' => $w, 'target_h' => $h);
+		}
+		$src_x = $src_w / 2 - $src_wt / 2;
+		$src_y = ( $src_h - $src_ht ) / 6;
+		//now specific overrides based on options:
+		if ( $crop == 'center' ) {
+			// Get source x and y
+			$src_x = round( ( $src_w - $src_wt ) / 2 );
+			$src_y = round( ( $src_h - $src_ht ) / 2 );
+		} else if ( $crop == 'top' ) {
+				$src_y = 0;
+			} else if ( $crop == 'bottom' ) {
+				$src_y = $src_h - $src_ht;
+			} else if ( $crop == 'left' ) {
+				$src_x = 0;
+			} else if ( $crop == 'right' ) {
+				$src_x = $src_w - $src_wt;
+			}
+		// Crop the image
+		if ( $dest_ratio > $src_ratio ) {
+			return array('x' => 0, 'y' => $src_y, 'src_w' => $src_w, 'src_h' => $src_ht, 'target_w' => $w, 'target_h' => $h);
+		}
+		return array('x' => $src_x, 'y' => 0, 'src_w' => $src_wt, 'src_h' => $src_h, 'target_w' => $w, 'target_h' => $h);
+	}
+
 	/**
 	 * Performs the actual image manipulation,
 	 * including saving the target file.
@@ -52,55 +121,26 @@ class TimberImageOperationResize extends TimberImageOperation {
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
 	public function run($load_filename, $save_filename) {
+		//should be resized by gif resizer
+		if ( TimberImageHelper::is_animated_gif($load_filename) ) {
+			//attempt to resize
+			//return if successful
+			//proceed if not
+			$gif = self::run_animated_gif($load_filename, $save_filename);
+			if ($gif) {
+				return true;
+			}
+		}
 		$image = wp_get_image_editor( $load_filename );
 		if ( !is_wp_error( $image ) ) {
-			$w = $this->w;
-			$h = $this->h;
-			$crop = $this->crop;
-
-			$current_size = $image->get_size();
-			$src_w = $current_size['width'];
-			$src_h = $current_size['height'];
-			$src_ratio = $src_w / $src_h;
-			if ( !$h ) {
-				$h = round( $w / $src_ratio );
-			}
-			if ( !$w ) {
-				//the user wants to resize based on constant height
-				$w = round( $h * $src_ratio );
-			}
-			// Get ratios
-			$dest_ratio = $w / $h;
-			$src_wt = $src_h * $dest_ratio;
-			$src_ht = $src_w / $dest_ratio;
-			if ( !$crop ) {
-				// Always crop, to allow resizing upwards
-				$image->crop( 0, 0, $src_w, $src_h, $w, $h );
-			} else {
-				//start with defaults:
-				$src_x = $src_w / 2 - $src_wt / 2;
-				$src_y = ( $src_h - $src_ht ) / 6;
-				//now specific overrides based on options:
-				if ( $crop == 'center' ) {
-					// Get source x and y
-					$src_x = round( ( $src_w - $src_wt ) / 2 );
-					$src_y = round( ( $src_h - $src_ht ) / 2 );
-				} else if ( $crop == 'top' ) {
-						$src_y = 0;
-					} else if ( $crop == 'bottom' ) {
-						$src_y = $src_h - $src_ht;
-					} else if ( $crop == 'left' ) {
-						$src_x = 0;
-					} else if ( $crop == 'right' ) {
-						$src_x = $src_w - $src_wt;
-					}
-				// Crop the image
-				if ( $dest_ratio > $src_ratio ) {
-					$image->crop( 0, $src_y, $src_w, $src_ht, $w, $h );
-				} else {
-					$image->crop( $src_x, 0, $src_wt, $src_h, $w, $h );
-				}
-			}
+			$crop = self::get_target_sizes( $load_filename );
+			$image->crop( 	$crop['x'],
+							$crop['y'],
+							$crop['src_w'],
+							$crop['src_h'],
+							$crop['target_w'],
+							$crop['target_h']
+			);
 			$result = $image->save( $save_filename );
 			if ( is_wp_error( $result ) ) {
 				error_log( 'Error resizing image' );

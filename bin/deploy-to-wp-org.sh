@@ -25,8 +25,14 @@ function deploy () {
 	cd tags/$1
 	svn commit -m "updating to $1"
 	cd ~/Sites/timber-wp/trunk
+	cp -r ~/Sites/timber/lib ~/Sites/timber-wp/trunk/lib
+	cp -r ~/Sites/timber/timber-starter-theme ~/Sites/timber-wp/trunk/timber-starter-theme
+	cp -r ~/Sites/timber/vendor ~/Sites/timber-wp/trunk/vendor
+	cp ~/Sites/timber/LICENSE.txt ~/Sites/timber-wp/trunk/LICENSE.txt
+	cp ~/Sites/timber/README.md ~/Sites/timber-wp/trunk/README.md
+	cp ~/Sites/timber/readme.txt ~/Sites/timber-wp/trunk/readme.txt
+	cp ~/Sites/timber/timber.php ~/Sites/timber-wp/trunk/timber.php
 	svn commit -m "updating to $1" readme.txt
-	svn commit -m "updating to $1" README.md
 	svn commit -m "updating to $1" timber.php
 }
 
