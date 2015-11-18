@@ -394,7 +394,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 			} elseif ( $readmore ) {
 				$text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . trim($readmore) . '</a>';
 			}
-			if ( !$strip ) {
+			if ( !$strip && $last_p_tag && ( strpos($text, '<p>') || strpos($text, '<p ') ) ) {
 				$text .= '</p>';
 			}
 		}

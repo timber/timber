@@ -10,6 +10,13 @@
 			$this->assertEquals(1, substr_count($prev, '&hellip;'));
 		}
 
+		function testPreviewTags() {
+			$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
+			$post = new TimberPost($post_id);
+			$text = $post->get_preview(20, false, '', false);
+			$this->assertNotContains('</p>', $text);
+		}
+
 		function testGetPreview() {
 			global $wp_rewrite;
 			$struc = false;
