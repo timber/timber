@@ -207,7 +207,6 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
 	public function time( $time_format = '' ) {
 		$tf = $time_format ? $time_format : get_option('time_format');
 		$the_time = (string)mysql2date($tf, $this->comment_date);
-		echo $this->comment_time;
 		return apply_filters('get_comment_time', $the_time, $tf);
 	}
 
