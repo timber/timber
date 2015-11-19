@@ -57,6 +57,7 @@ class TimberImageOperationLetterbox extends TimberImageOperation {
 		$image = wp_get_image_editor( $load_filename );
 		if ( !is_wp_error( $image ) ) {
 			$current_size = $image->get_size();
+			$quality = $image->get_quality();
 			$ow = $current_size['width'];
 			$oh = $current_size['height'];
 			$new_aspect = $w / $h;
@@ -87,7 +88,7 @@ class TimberImageOperationLetterbox extends TimberImageOperation {
 			}
 			$image = $func( $save_filename );
 			imagecopy( $bg, $image, $x, $y, 0, 0, $owt, $oht );
-			imagejpeg( $bg, $save_filename );
+			imagejpeg( $bg, $save_filename, $quality );
 			return true;
 		} else {
 			TimberHelper::error_log( $image );
