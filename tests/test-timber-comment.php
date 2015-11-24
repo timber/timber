@@ -38,6 +38,14 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$comment->assertEquals('August 21, 2015', $comment->date());
 	}
 
+	function testCommentTime(){
+		$quote = "My grandmother used to swear by this, but personally I was always skeptical.";
+		$post_id = $this->factory->post->create();
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote, 'comment_date' => '2015-08-21 03:24:07'));
+		$comment = new TimberComment($comment_id);
+		$comment->assertEquals('3:24 am', $comment->time());
+	}
+
 	function testCommentReplyLink() {
 		$comment_text = "Try the soup";
 		$post_id = $this->factory->post->create();
