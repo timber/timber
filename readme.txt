@@ -2,7 +2,7 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.22.1
+Stable tag: 0.22.2
 Tested up to: 4.2.3
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.22.2 =
+* New .time method for TimberPost and TimberComment (thanks @lggorman)
+* Added support for WordPress's quality filter when resizing (thanks @t-wright)
+* Added support for animated gifs
 
 = 0.22.1 =
 * Added better support for [post.get_terms](https://github.com/jarednova/timber/pull/737) (thanks @aaemnnosttv)
