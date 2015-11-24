@@ -660,18 +660,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	/**
 	 * @internal
-	 * @see TimberPost::time
-	 * @param  string $time_format
-	 * @return string
-	 */
-	function get_time( $time_format = '' ) {
-		$tf = $time_format ? $time_format : get_option('time_format');
-	 	$the_time = (string)mysql2date($tf, $this->post_date);
-	 	return apply_filters('get_the_time', $the_time, $tf);
-	}
-
-	/**
-	 * @internal
 	 * @param  string $date_format
 	 * @return string
 	 */
@@ -1236,7 +1224,9 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @return string
 	 */
 	public function time( $time_format = '' ) {
-		return $this->get_time($time_format);
+		$tf = $time_format ? $time_format : get_option('time_format');
+	 	$the_time = (string)mysql2date($tf, $this->post_date);
+	 	return apply_filters('get_the_time', $the_time, $tf);
 	}
 
 	/**
