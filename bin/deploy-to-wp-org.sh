@@ -7,6 +7,7 @@ function deploy () {
 	git checkout master
 	rm -rf ~/Sites/timber/vendor
 	rm -rf ~/Sites/timber/wp-content
+	rm -rf ~/Sites/timber/timber-starter-theme
 	git clone git@github.com:Upstatement/timber-starter-theme.git
 	rm -rf ~/Sites/timber/timber-starter-theme/.git
 	composer install --no-dev
@@ -25,9 +26,12 @@ function deploy () {
 	cd tags/$1
 	svn commit -m "updating to $1"
 	cd ~/Sites/timber-wp/trunk
-	cp -r ~/Sites/timber/lib ~/Sites/timber-wp/trunk/lib
-	cp -r ~/Sites/timber/timber-starter-theme ~/Sites/timber-wp/trunk/timber-starter-theme
-	cp -r ~/Sites/timber/vendor ~/Sites/timber-wp/trunk/vendor
+	rm -rf ~/Sites/timber-wp/trunk/lib
+	rm -rf ~/Sites/timber-wp/trunk/timber-starter-theme
+	rm -rf ~/Sites/timber-wp/trunk/vendor
+	cp -r ~/Sites/timber/lib ~/Sites/timber-wp/trunk
+	cp -r ~/Sites/timber/timber-starter-theme ~/Sites/timber-wp/trunk
+	cp -r ~/Sites/timber/vendor ~/Sites/timber-wp/trunk
 	cp ~/Sites/timber/LICENSE.txt ~/Sites/timber-wp/trunk/LICENSE.txt
 	cp ~/Sites/timber/README.md ~/Sites/timber-wp/trunk/README.md
 	cp ~/Sites/timber/readme.txt ~/Sites/timber-wp/trunk/readme.txt
