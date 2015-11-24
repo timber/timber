@@ -1206,6 +1206,30 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * Get the time to use in your template
+	 * @api
+	 * @example
+	 * ```twig
+	 * Published at {{ post.time }} // Uses WP's formatting set in Admin
+	 * OR
+	 * Published at {{ post.time | time('G:i') }} // 13:25
+	 * ```
+	 *
+	 * ```html
+	 * Published at 1:25 pm
+	 * OR
+	 * Published at 13:25
+	 * ```
+	 * @param string $time_format
+	 * @return string
+	 */
+	public function time( $time_format = '' ) {
+		$tf = $time_format ? $time_format : get_option('time_format');
+	 	$the_time = (string)mysql2date($tf, $this->post_date);
+	 	return apply_filters('get_the_time', $the_time, $tf);
+	}
+
+	/**
 	 * @return bool|string
 	 */
 	public function edit_link() {

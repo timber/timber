@@ -186,6 +186,31 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
+	 * @api
+	 * @example
+	 * ```twig
+	 * {% for comment in post.comments %}
+	 * <article class="comment">
+	 *   <p class="date">Posted on {{ comment.date }} at {{comment.time}}:</p>
+	 *   <p class="comment">{{ comment.content }}</p>
+	 * </article>
+	 * {% endfor %}
+	 * ```
+	 * ```html
+	 * <article class="comment">
+	 *   <p class="date">Posted on September 28, 2015 at 12:45 am:</p>
+	 *   <p class="comment">Happy Birthday!</p>
+	 * </article>
+	 * ```
+	 * @return string
+	 */
+	public function time( $time_format = '' ) {
+		$tf = $time_format ? $time_format : get_option('time_format');
+		$the_time = (string)mysql2date($tf, $this->comment_date);
+		return apply_filters('get_comment_time', $the_time, $tf);
+	}
+
+	/**
 	 * @param string $field_name
 	 * @return mixed
 	 */
