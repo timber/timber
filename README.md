@@ -4,13 +4,13 @@
 By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a href="http://upstatement.com">Upstatement</a> (<a href="http://twitter.com/upstatement">@Upstatement</a>)</div>
 </div>
 
-[![Build Status](https://travis-ci.org/jarednova/timber.png?branch=master)](https://travis-ci.org/jarednova/timber)
-[![Coverage Status](https://coveralls.io/repos/jarednova/timber/badge.svg?branch=master)](https://coveralls.io/r/jarednova/timber?branch=master)
-[![Dependency Status](https://www.versioneye.com/user/projects/54e3c717d1ec5734f4000099/badge.svg?style=flat)](https://www.versioneye.com/user/projects/54e3c717d1ec5734f4000099)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jarednova/timber/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jarednova/timber/?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/jarednova/timber/v/stable.svg)](https://packagist.org/packages/jarednova/timber)
-[![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg)](https://wordpress.org/plugins/timber-library/)
-[![HHVM Status](http://hhvm.h4cc.de/badge/jarednova/timber.svg)](http://hhvm.h4cc.de/package/jarednova/timber)
+[![Build Status](https://img.shields.io/travis/jarednova/timber.svg?style=flat-square)](https://travis-ci.org/jarednova/timber)
+[![Coverage Status](https://img.shields.io/coveralls/jarednova/timber.svg?style=flat-square)](https://coveralls.io/r/jarednova/timber?branch=master)
+[![Dependency Status](https://img.shields.io/versioneye/d/ruby/rails.svg?style=flat-square)](https://www.versioneye.com/user/projects/54e3c717d1ec5734f4000099)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/jarednova/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/jarednova/timber/?branch=master)
+[![Latest Stable Version](https://img.shields.io/packagist/v/jarednova/timber.svg?style=flat-square)](https://packagist.org/packages/jarednova/timber)
+[![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg?style=flat-square)](https://wordpress.org/plugins/timber-library/)
+[![HHVM Status](https://img.shields.io/hhvm/jarednova/timber.svg?style=flat-square)](http://hhvm.h4cc.de/package/jarednova/timber)
 
 ### Because WordPress is awesome, but the_loop isn't
 Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](http://twig.sensiolabs.org/) separate from your PHP files.

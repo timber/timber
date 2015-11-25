@@ -389,10 +389,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 					$text .= ' &hellip; ';
 				}
 			}
+			$read_more_class = apply_filters('timber/post/get_preview/read_more_class', "read-more");
 			if ( $readmore && isset($readmore_matches) && !empty($readmore_matches[1]) ) {
-				$text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . trim($readmore_matches[1]) . '</a>';
+				$text .= ' <a href="' . $this->get_permalink() . '" class="'.$read_more_class .'">' . trim($readmore_matches[1]) . '</a>';
 			} elseif ( $readmore ) {
-				$text .= ' <a href="' . $this->get_permalink() . '" class="read-more">' . trim($readmore) . '</a>';
+				$text .= ' <a href="' . $this->get_permalink() . '" class="'.$read_more_class .'">' . trim($readmore) . '</a>';
 			}
 			if ( !$strip && $last_p_tag && ( strpos($text, '<p>') || strpos($text, '<p ') ) ) {
 				$text .= '</p>';
