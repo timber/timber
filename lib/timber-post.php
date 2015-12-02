@@ -717,8 +717,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 	function get_comments($ct = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
 
-		global $overridden_cpage;
+		global $overridden_cpage, $user_ID;
 		$overridden_cpage = false;
+
+		$commenter = wp_get_current_commenter();
+		$comment_author_email = $commenter['comment_author_email'];
 
 		$args = array('post_id' => $this->ID, 'status' => $status, 'order' => $order);
 		if ( $ct > 0 ) {
@@ -726,6 +729,12 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		}
 		if ( strtolower($order) == 'wp' || strtolower($order) == 'wordpress' ) {
 			$args['order'] = get_option('comment_order');
+		}
+
+		if ( $user_ID ) {
+			$args['include_unapproved'] = array( $user_ID );
+		} elseif ( ! empty( $comment_author_email ) ) {
+			$args['include_unapproved'] = array( $comment_author_email );
 		}
 
 		$comments = get_comments($args);

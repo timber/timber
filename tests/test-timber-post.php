@@ -9,6 +9,25 @@
 			$this->assertEquals($post_id, $post->ID);
 		}
 
+		function testComments() {
+			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
+			$comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
+			$post = new TimberPost($post_id);
+			$this->assertEquals( 5, count($post->comments()) );
+			$this->assertEquals( 5, $post->get_comment_count() );
+		}
+
+		function testShowUnmoderatedCommentIfCurrentUser() {
+			$post_id = $this->factory->post->create();
+			$uid = $this->factory->user->create();
+			wp_set_current_user( $uid );
+			$quote = "You know, I always wanted to pretend I was an architect";
+			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote, 'user_id' => $uid, 'comment_approved' => false));
+			$comment = new TimberComment($comment_id);
+			$new_post = new TimberPost($post_id);
+			var_dump($new_post->comments());
+		}
+
 		function testNameMethod() {
 			$post_id = $this->factory->post->create(array('post_title' => 'Battlestar Galactica'));
 			$post = new TimberPost($post_id);
