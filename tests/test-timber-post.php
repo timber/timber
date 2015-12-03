@@ -22,10 +22,9 @@
 			$uid = $this->factory->user->create();
 			wp_set_current_user( $uid );
 			$quote = "You know, I always wanted to pretend I was an architect";
-			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote, 'user_id' => $uid, 'comment_approved' => false));
-			$comment = new TimberComment($comment_id);
-			$new_post = new TimberPost($post_id);
-			var_dump($new_post->comments());
+			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote, 'user_id' => $uid, 'comment_approved' => 0));
+			$post = new TimberPost($post_id);
+			$this->assertEquals(1, count($post->comments()));
 		}
 
 		function testNameMethod() {
