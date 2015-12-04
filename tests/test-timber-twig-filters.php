@@ -77,5 +77,11 @@
 			$this->assertSame($str, $empty);
 		}
 
+		function testTwigFilterList() {
+			$data['authors'] = array('Tom','Rick','Harry','Mike');
+			$str = Timber::compile_string("{{authors|list}}", $data);
+			$this->assertEquals('Tom, Rick, Harry and Mike', $str);
+		}
+
 
 	}
