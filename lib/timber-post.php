@@ -835,7 +835,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 				$term_class_objects[$taxonomy] = $terms;
 			}
 		}
-
 		return $term_class_objects;
 	}
 
@@ -960,14 +959,13 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	}
 
 	/**
-	 * @return int
+	 * @return int the number of comments on a post
 	 */
 	public function get_comment_count() {
 		if ( isset($this->ID) ) {
 			return get_comments_number($this->ID);
-		} else {
-			return 0;
 		}
+		return 0;
 	}
 
 	/**

@@ -9,14 +9,6 @@
 			$this->assertEquals($post_id, $post->ID);
 		}
 
-		function testComments() {
-			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
-			$comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
-			$post = new TimberPost($post_id);
-			$this->assertEquals( 5, count($post->comments()) );
-			$this->assertEquals( 5, $post->get_comment_count() );
-		}
-
 		function testNameMethod() {
 			$post_id = $this->factory->post->create(array('post_title' => 'Battlestar Galactica'));
 			$post = new TimberPost($post_id);
@@ -295,7 +287,7 @@
             setup_postdata( get_post( $post_id ) );
 
             $post = Timber::get_post();
-			$this->assertEquals($page1, trim(strip_tags($post->get_paged_content())));
+			$this->assertEquals($page1, trim(strip_tags( $post->paged_content() )));
 
             $pagination = $post->pagination();
             $this->go_to( $pagination['pages'][1]['link'] );
@@ -303,7 +295,7 @@
             setup_postdata( get_post( $post_id ) );
             $post = Timber::get_post();
 
-			$this->assertEquals($page2, trim(strip_tags($post->get_paged_content())));
+			$this->assertEquals($page2, trim(strip_tags( $post->get_paged_content() )));
 		}
 
 		function testMetaCustomArrayFilter(){
