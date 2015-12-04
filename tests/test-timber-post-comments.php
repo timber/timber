@@ -25,8 +25,4 @@
             $this->assertEquals(0, $post->get_comment_count());
 		}
 
-
-
-
-
 	}
