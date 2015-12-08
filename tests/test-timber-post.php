@@ -17,12 +17,26 @@
 			$this->assertEquals( 5, $post->get_comment_count() );
 		}
 
-		function testShowUnmoderatedCommentIfCurrentUser() {
+		function testShowUnmoderatedCommentIfByLoggedInUser() {
 			$post_id = $this->factory->post->create();
 			$uid = $this->factory->user->create();
 			wp_set_current_user( $uid );
 			$quote = "You know, I always wanted to pretend I was an architect";
 			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote, 'user_id' => $uid, 'comment_approved' => 0));
+			$post = new TimberPost($post_id);
+			$this->assertEquals(1, count($post->comments()));
+			wp_set_current_user( 0 );
+		}
+
+		function testShowUnmoderatedCommentIfByCurrentUser() {
+			$post_id = $this->factory->post->create();
+			add_filter('wp_get_current_commenter', function($author_data) {
+				$author_data['comment_author_email'] = 'jarednova@upstatement.com';
+				return $author_data;
+			});
+			$commenter = wp_get_current_commenter();
+			$quote = "And in that moment, I was a marine biologist";
+			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote,'comment_approved' => 0, 'comment_author_email' => 'jarednova@upstatement.com'));
 			$post = new TimberPost($post_id);
 			$this->assertEquals(1, count($post->comments()));
 		}
