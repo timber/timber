@@ -50,6 +50,9 @@ class Timber {
 	public static $auto_meta = true;
 	public static $autoescape = false;
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function __construct() {
 		if ( !defined('ABSPATH') ) {
 			return;
@@ -59,6 +62,11 @@ class Timber {
 		$this->init();
 	}
 
+	/**
+	 * Tests whether we can use Timber
+	 * @codeCoverageIgnore
+	 * @return
+	 */
 	protected function test_compatibility() {
 		if ( is_admin() || $_SERVER['PHP_SELF'] == '/wp-login.php' ) {
 			return;
@@ -75,6 +83,9 @@ class Timber {
 		defined( "TIMBER_LOC" ) or define( "TIMBER_LOC", realpath( __DIR__ ) );
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	protected function init() {
 		TimberTwig::init();
 		TimberRoutes::init( $this );
@@ -572,7 +583,7 @@ class Timber {
 	/**
 	 * Get calling script dir.
 	 *
-	 * @return boolean|string
+	 * @return string
 	 */
 	public static function get_calling_script_dir( $offset = 0 ) {
 		$caller = self::get_calling_script_file( $offset );
@@ -581,7 +592,6 @@ class Timber {
 			$dir = $pathinfo['dirname'];
 			return $dir;
 		}
-		return null;
 	}
 
 	/**
