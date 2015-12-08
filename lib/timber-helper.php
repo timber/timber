@@ -222,8 +222,7 @@ class TimberHelper {
 			$allowed_tag_string .= '<' . $tag . '>';
 		}
 		$text = strip_tags( $text, $allowed_tag_string );
-		/* translators: If your word count is based on single characters (East Asian characters),
-		enter 'characters'. Otherwise, enter 'words'. Do not translate into your own language. */
+		/* translators: If your word count is based on single characters (East Asian characters), enter 'characters'. Otherwise, enter 'words'. Do not translate into your own language. */
 		if ( 'characters' == _x( 'words', 'word count: words or characters?' ) && preg_match( '/^utf\-?8$/i', get_option( 'blog_charset' ) ) ) {
 			$text = trim( preg_replace( "/[\n\r\t ]+/", ' ', $text ), ' ' );
 			preg_match_all( '/./u', $text, $words_array );

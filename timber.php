@@ -465,10 +465,16 @@ class Timber {
 		Routes::map( $route, $callback, $args );
 	}
 
+	/**
+	 * @deprecated since 0.22.2
+	 */
 	public function cancel_query() {
 		add_action( 'posts_request', array( $this, 'cancel_query_posts_request' ) );
 	}
 
+	/**
+	 * @deprecated since 0.22.2
+	 */
 	function cancel_query_posts_request() {
 		if ( is_main_query() ) {
 			wp_reset_query();
