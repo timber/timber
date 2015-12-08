@@ -1,5 +1,5 @@
 === Timber ===
-Contributors: jarednova
+Contributors: jarednova, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
 Stable tag: 0.22.2
