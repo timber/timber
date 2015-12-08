@@ -2,7 +2,7 @@
 Contributors: jarednova, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.22.2
+Stable tag: 0.22.3
 Tested up to: 4.3.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 0.22.3 =
+* Fixed-up conditional for when comments are being moderated (thanks @lggorman)
+* Fixed hooks for when attachments are deleted (thanks @lgaechter)
+* Added a new filter for `list` (thanks @lggorman)
 
 = 0.22.2 =
 * New .time method for TimberPost and TimberComment (thanks @lggorman)
