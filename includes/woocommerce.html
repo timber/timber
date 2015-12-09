@@ -1,0 +1,214 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_woocommerce">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h2 id="woocommerce">WooCommerce</h2>
+
+<h3 id="point-of-entry-main-woocommerce-php-file">Point of entry - main WooCommerce PHP file</h3>
+
+<p>The first step to get your WooCommerce project integrated with Timber is creating a file named <code class="prettyprint">woocommerce.php</code> in the root of your theme. That will establish the context and data to be passed to your twig files:</p>
+<pre class="highlight php"><code>
+if (!class_exists('Timber')){
+    echo 'Timber not activated. Make sure you activate the plugin in <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"/wp-admin/plugins.php#timber"</span><span class="nt">&gt;</span>/wp-admin/plugins.php<span class="nt">&lt;/a&gt;</span>';
+    return;
+}
+
+$context            = Timber::get_context();
+$context['sidebar'] = Timber::get_widgets('shop-sidebar');
+
+if (is_singular('product')) {
+
+    $context['post']    = Timber::get_post();
+    $product            = get_product( $context['post']-&gt;ID );
+    $context['product'] = $product;
+
+    Timber::render('views/woo/single-product.twig', $context);
+
+} else {
+
+    $posts = Timber::get_posts();
+    $context['products'] = $posts;
+
+    if ( is_product_category() ) {
+        $queried_object = get_queried_object();
+        $term_id = $queried_object-&gt;term_id;
+        $context['category'] = get_term( $term_id, 'product_cat' );
+        $context['title'] = single_term_title('', false);
+    }
+
+    Timber::render('views/woo/archive.twig', $context);
+
+}
+</code></pre>
+
+<p>You will now need the two twig files loaded from <code class="prettyprint">woocommerce.php</code>:</p>
+
+<h3 id="archives">Archives</h3>
+
+<p>Create a Twig file accordingly to the location asked by the above file, in this example that would be <code class="prettyprint">views/woo/archive.twig</code>:</p>
+<pre class="highlight handlebars"><code>{% extends "base.twig" %}
+
+{% block content %}
+
+    {% do action('woocommerce_before_main_content') %}
+
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"before-shop-loop"</span><span class="nt">&gt;</span>
+        {% do action( 'woocommerce_before_shop_loop') %}
+    <span class="nt">&lt;/div&gt;</span>
+
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"loop"</span><span class="nt">&gt;</span>
+        {% for post in products %}
+
+            {% include ["partials/tease-product.twig"] %}
+
+        {% endfor %}
+    <span class="nt">&lt;/div&gt;</span>
+
+    {% do action('woocommerce_after_shop_loop') %}
+    {% do action('woocommerce_after_main_content') %}
+
+{% endblock  %}
+</code></pre>
+
+<p>You&rsquo;ll notice the inclusion of several woocommerce&rsquo;s default hooks, which you&rsquo;ll need to keep the integration seamless and allow any WooCommerce extension plugin to still work.</p>
+
+<p>Next, we&rsquo;ll take care of the single product view.</p>
+
+<h3 id="single-product">Single Product</h3>
+
+<p>Create a Twig file accordingly to the location asked by the above file, in this example that would be <code class="prettyprint">views/woo/single-product.twig</code>:</p>
+<pre class="highlight handlebars"><code>{% extends "base.twig" %}
+
+{% block content %}
+
+    {% do action('woocommerce_before_single_product') %}
+
+    <span class="nt">&lt;article</span> <span class="na">itemscope</span> <span class="na">itemtype=</span><span class="s">"http://schema.org/Product"</span> <span class="na">class=</span><span class="s">"single-product-details </span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">class</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
+
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"entry-images"</span><span class="nt">&gt;</span>
+            {% do action('woocommerce_before_single_product_summary') %}
+            <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">(</span><span class="s1">'shop_single'</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"summary entry-summary"</span><span class="nt">&gt;</span>
+            {% do action('woocommerce_single_product_summary') %}
+        <span class="nt">&lt;/div&gt;</span>
+
+        {% do action('woocommerce_after_single_product_summary') %}
+
+        <span class="nt">&lt;meta</span> <span class="na">itemprop=</span><span class="s">"url"</span> <span class="na">content=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;/article&gt;</span>
+
+    {% do action('woocommerce_after_single_product') %}
+
+{% endblock  %}
+</code></pre>
+
+<p>Again we are keep things simple by using WooCommerce&rsquo;s default hooks.
+If you need to override the output of any of those hooks, my advice would be to remove and add the relevant actions using PHP, keeping your upgrade path simple.</p>
+
+<p>Finally, we&rsquo;ll need to create a teaser file for product in the loops. Considering the code above that  would be <code class="prettyprint">views/partials/tease-product.twig</code>:</p>
+
+<h3 id="tease-product">Tease Product</h3>
+<pre class="highlight handlebars"><code>
+<span class="nt">&lt;article</span> <span class="k">{{</span> <span class="nv">fn</span><span class="err">(</span><span class="s1">'post_class'</span><span class="err">,</span> <span class="p">[</span><span class="s1">'$classes'</span><span class="err">,</span> <span class="s1">'entry'</span><span class="p">]</span> <span class="err">)</span> <span class="k">}}</span><span class="nt">&gt;</span>
+
+    <span class="k">{{</span> <span class="nv">fn</span><span class="err">(</span><span class="s1">'timber_set_product'</span><span class="err">,</span> <span class="nv">post</span><span class="err">)</span><span class="k">}}</span>
+
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"Media"</span><span class="nt">&gt;</span>
+
+        {% if showthumb %}
+            <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"Media-figure {% if not post.thumbnail %}placeholder{% endif %}"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
+                    {% if post.thumbnail %}
+                        <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">post_thumb_size</span><span class="p">[</span><span class="nv">0</span><span class="p">]</span><span class="err">,</span> <span class="nv">post_thumb_size</span><span class="p">[</span><span class="nv">1</span><span class="p">]</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+                    {% else %}
+                        <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"thumb-placeholder"</span><span class="nt">&gt;&lt;i</span> <span class="na">class=</span><span class="s">"icon-camera"</span><span class="nt">&gt;&lt;/i&gt;&lt;/span&gt;</span>
+                    {% endif %}
+                <span class="nt">&lt;/a&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+        {% endif %}
+
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"Media-content"</span><span class="nt">&gt;</span>
+            {% do action('woocommerce_before_shop_loop_item_title') %}
+            {% if post.title %}
+                <span class="nt">&lt;h3</span> <span class="na">class=</span><span class="s">"entry-title"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/h3&gt;</span>
+            {% else %}
+                <span class="nt">&lt;h3</span> <span class="na">class=</span><span class="s">"entry-title"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">fn</span><span class="err">(</span><span class="s1">'the_title'</span><span class="err">)</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/h3&gt;</span>
+            {% endif %}
+            {% do action( 'woocommerce_after_shop_loop_item_title' ) %}
+            {% do action( 'woocommerce_after_shop_loop_item' ) %}
+        <span class="nt">&lt;/div&gt;</span>
+
+    <span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;/article&gt;</span>
+
+</code></pre>
+
+<p>This should all sound familiar by now, except for one line:
+<code class="prettyprint">
+{{ fn(&#39;timber_set_product&#39;, post)}}
+</code></p>
+
+<p>For some reason products in the loop don&rsquo;t get the right context by default. This line will call the following function that you need to add somewhere in your <code class="prettyprint">functions.php</code> file:</p>
+<pre class="highlight php"><code>function timber_set_product( $post ) {
+    global $product;
+    if ( is_woocommerce() ) {
+        $product = get_product($post-&gt;ID);
+    }
+}
+</code></pre>
+
+<p>Without this, some elements of the listed products would show the same information as the first product in the loop.</p>
+
+<p><em>Note:</em> Some users reported issues with the loop context even when using the <code class="prettyprint">timber_set_product</code> helper function. Turns out the default WooCommerce hooks interfere with the output of the aforementioned function.</p>
+
+<p>One way to get around this is by building your own image calls, that means removing WooCommerce&rsquo;s default hooks and declare on your template the html to show the image:</p>
+<pre class="highlight handlebars"><code>{% if post.thumbnail %}
+   <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">shop_thumbnail_image_size</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+{% endif %}
+</code></pre>
+
+<p>To remove the default image, add the following to your <code class="prettyprint">functions.php</code> file:</p>
+<pre class="highlight php"><code>remove_action('woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail');
+</code></pre>
+
+<p>This comes with the added benefit that you&rsquo;ll have total control over where your image is created in the markup.</p>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

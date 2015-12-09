@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_cookbook-images">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="cookbook-images">Cookbook: Images</h1>
+
+<p>Timber makes it damn easy to use an image in a tag. Automatically, Timber will interpret images attached to a post&rsquo;s thumbnail field (&ldquo;Featured Image&rdquo; in the admin) and treat them as <a href="TimberImage">TimberImages</a>. Then, in your Twig templates, you can access them via <code class="prettyprint">{{post.thumbnail}}</code>. If you want to see what&rsquo;s inside the TimberImage object you can run a&hellip;</p>
+<pre class="highlight json"><code><span class="p">{</span><span class="err">{post.thumbnail|print_r</span><span class="p">}</span><span class="err">}</span><span class="w">
+</span></code></pre>
+
+<p>&hellip;inside one of your Twig templates.</p>
+
+<h4 id="basic-image-stuff">Basic Image stuff</h4>
+
+<p>Again, pretty damn easy:</p>
+<pre class="highlight plaintext"><code>&lt;img src="{{post.thumbnail.src}}" class="my-thumb-class" alt="Image for {{post.title}}" /&gt;
+</code></pre>
+
+<h4 id="use-a-wp-image-size">Use a WP image size</h4>
+
+<p>You can use WP&rsquo;s image sizes (including ones you register with your theme/plugin) by passing the name of the size to <code class="prettyprint">src</code> like so:</p>
+<pre class="highlight plaintext"><code>&lt;img src="{{post.thumbnail.src('medium')}}" class="my-thumb-class" alt="Image for {{post.title}}" /&gt;
+</code></pre>
+
+<h4 id="arbitrary-resizing-of-images">Arbitrary Resizing of Images</h4>
+
+<p>Want to resize an image? Easy! Here we&rsquo;re going to use <a href="http://twig.sensiolabs.org/doc/filters/index.html">Twig Filters</a>.
+<code class="prettyprint">
+&lt;img src=&quot;{{post.thumbnail.src|resize(300, 200)}}&quot; /&gt;
+</code></p>
+
+<p>The first parameter is <code class="prettyprint">width</code> the second is <code class="prettyprint">height</code> (but it&rsquo;s optional) so if you don&rsquo;t know the height but just want to scale proportionally:
+<code class="prettyprint">
+&lt;img src=&quot;{{post.thumbnail.src|resize(640)}}&quot; /&gt;
+</code></p>
+
+<p>All of these filters are written specifically to interact with WordPress&rsquo;s image API. (So don&rsquo;t worry, no weird TimThumb stuff going on &ndash; this is all using WP&rsquo;s internal image sizing stuff).</p>
+
+<h4 id="letterboxing-images">Letterboxing Images</h4>
+
+<p>Let&rsquo;s say you have an image that you want to contain to a certain size without any cropping. If the proportions don&rsquo;t fit you&rsquo;ll letterbox the extra space. I find this is really useful when getting logos to all appear next to eachother. You can do this with:</p>
+<pre class="highlight plaintext"><code>&lt;img src="{{post.thumbnail.src|letterbox(400, 400, '#FFFFFF')}}" /&gt;
+</code></pre>
+
+<p>Here <code class="prettyprint">width</code> and <code class="prettyprint">height</code> are required. The third argument is the background color in hex format (default is #000000)</p>
+
+<h4 id="converting-images">Converting images</h4>
+
+<p>Let&rsquo;s say your client or editor can be a bit lazy (no!), resorting to PNGs where only JPGs are required. I&rsquo;ve seen this a lot. People will just upload screenshots that are saved by default as PNGs. No problemo!</p>
+<pre class="highlight plaintext"><code>&lt;img src="{{post.thumbnail.src|tojpg}}" /&gt;
+</code></pre>
+
+<p>You can use this in conjunction with other filters</p>
+<pre class="highlight plaintext"><code>&lt;img src="{{post.thumbnail.src|tojpg|resize(300, 300)}}" /&gt;
+</code></pre>
+
+<p>Filters are executed from left to right. You&rsquo;ll probably want to convert to JPG before running the resizing, etc.</p>
+
+<h4 id="generating-retina-sizes">Generating Retina Sizes</h4>
+
+<p>You can use Timber to generat @2x image sizes for retina devices. For example, using <code class="prettyprint">srcset</code>:</p>
+<pre class="highlight handlebars"><code><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">srcset=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">1</span><span class="err">)</span> <span class="k">}}</span><span class="s"> 1x,
+    </span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">2</span><span class="err">)</span> <span class="k">}}</span><span class="s">  2x,
+    </span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">3</span><span class="err">)</span> <span class="k">}}</span><span class="s">  3x,
+    </span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">4</span><span class="err">)</span> <span class="k">}}</span><span class="s">  4x"</span><span class="nt">&gt;</span>
+</code></pre>
+
+<p>This can be used in conjunction with other filters, so for example:</p>
+<pre class="highlight handlebars"><code><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">400</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="na">srcset=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">400</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">1</span><span class="err">)</span> <span class="k">}}</span><span class="s"> 1x,
+    </span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span> <span class="nv">resize</span><span class="err">(</span><span class="nv">400</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">2</span><span class="err">)</span> <span class="k">}}</span><span class="s">  2x,
+    </span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span> <span class="nv">resize</span><span class="err">(</span><span class="nv">400</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">3</span><span class="err">)</span> <span class="k">}}</span><span class="s">  3x,
+    </span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span> <span class="nv">resize</span><span class="err">(</span><span class="nv">400</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">4</span><span class="err">)</span> <span class="k">}}</span><span class="s">  4x"</span><span class="nt">&gt;</span>
+</code></pre>
+
+<hr>
+
+<h4 id="using-images-in-custom-fields">Using images in custom fields:</h4>
+
+<p>Let&rsquo;s say you&rsquo;re using a custom field plugin (like the amazing <a href="http://www.advancedcustomfields.com/">Advanced Custom Fields</a>). You can use the resulting images in your Twig templates very easily.</p>
+
+<p>When setting up your custom fields you&rsquo;ll want to save the <code class="prettyprint">image_id</code> to the field. The image object, url, etc. <em>will</em> work but it&rsquo;s not as fool-proof.</p>
+
+<h5 id="the-quick-way-for-most-situations">The quick way (for most situations)</h5>
+<pre class="highlight plaintext"><code>&lt;img src="{{Image(post.hero_image).src}}" /&gt;
+</code></pre>
+
+<h5 id="the-long-way-for-some-special-situations">The long way (for some special situations)</h5>
+
+<p>This is where we&rsquo;ll start in PHP.</p>
+<pre class="highlight plaintext"><code>/* single.php */
+$post = new TimberPost();
+if (isset($post-&gt;hero_image) &amp;&amp; strlen($post-&gt;hero_image)){
+    $post-&gt;hero_image = new TimberImage($post-&gt;hero_image);
+}
+$data = Timber::get_context();
+$data['post'] = $post;
+Timber::render('single.twig', $data);
+</code></pre>
+
+<p><code class="prettyprint">TimberImage</code> should be initialized using a WordPress image ID#. It can also take URLs and image objects, but that requires extra processing.</p>
+
+<p>You can now use all the above functions to transform your custom images in the same way, the format will be:</p>
+<pre class="highlight plaintext"><code>&lt;img src="{{post.hero_image.src|resize(500, 300)}}" /&gt;
+</code></pre>
+
+<p>&hellip;etc</p>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

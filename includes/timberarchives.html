@@ -44,7 +44,7 @@
 <pre class="highlight handlebars"><code><span class="nt">&lt;ul&gt;</span>
 {% for item in archives.items %}
     <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-    {% for child item.children %}
+    {% for child in item.children %}
         <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
     {% endfor %}
 {% endfor %}
@@ -152,7 +152,7 @@
 <pre class="highlight handlebars"><code><span class="nt">&lt;ul&gt;</span>
 {% for item in archives.items %}
     <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-    {% for child item.children %}
+    {% for child in item.children %}
         <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
     {% endfor %}
 {% endfor %}

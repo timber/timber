@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_extending-timber">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="extending-timber">Extending Timber</h1>
+
+<p>Myth: Timber is for making simple themes. Fact: It&rsquo;s for making incredibly complex themes <em>look</em> easy. But yes, you can also make simple sites from it.</p>
+
+<h2 id="extending-objects">Extending Objects</h2>
+
+<p>The beauty of Timber is that the object-oriented nature lets you extend it to match the exact requirements of your theme.</p>
+
+<p>Timber&rsquo;s objects like <code class="prettyprint">TimberPost</code>, <code class="prettyprint">TimberTerm</code>, etc. are a great starting point to build your own subclass from. For example, on this project each post was a part of an &ldquo;issue&rdquo; of a magazine. I wanted an easy way to reference the issue in the twig file:</p>
+<pre class="highlight html"><code><span class="nt">&lt;h1&gt;</span>{{ post.title }}<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;h3&gt;</span>From the {{ post.issue.title }} issue<span class="nt">&lt;/h3&gt;</span>
+</code></pre>
+
+<p>Of course, <code class="prettyprint">TimberPost</code> has no built-in concept of an issue (which I&rsquo;ve built as a custom taxonomy called &ldquo;issues&rdquo;). So we&rsquo;re going to extend TimberPost to give it one&hellip;</p>
+<pre class="highlight php"><code>class MySitePost extends TimberPost {
+
+    var $_issue;
+
+    public function issue() {
+        $issues = $this-&gt;get_terms('issues');
+        if (is_array($issues) <span class="err">&amp;&amp;</span> count($issues)) {
+            return $issues[0];
+        }
+    }
+}
+</code></pre>
+
+<p>So now I&rsquo;ve got an easy way to refer to the {{ post.issue }} in our twig templates. If you want to make this production-ready I recommend a bit of internal caching so that you don&rsquo;t re-query every time you need to get the
+issue data:</p>
+<pre class="highlight php"><code>class MySitePost extends TimberPost {
+
+    var $_issue;
+
+    public function issue() {
+        if (!$this-&gt;_issue) {
+            $issues = $this-&gt;get_terms('issues');
+            if (is_array($issues) <span class="err">&amp;&amp;</span> count($issues)) {
+                $this-&gt;_issue = $issues[0];
+            }
+        }
+        return $this-&gt;_issue;
+    }
+}
+</code></pre>
+
+<p>Right now I&rsquo;m in the midst of building a complex site for a hybrid foundation and publication. The posts on the site have some very specific requirements that requires a fair amount of logic. I can take the simple <code class="prettyprint">TimberPost</code> object and extend it to make it work perfectly for this theme.</p>
+
+<p>For example, I have a plugin that let&rsquo;s people insert manually related posts, but if they don&rsquo;t, WordPress will pull some automatically based on how the post is tagged.</p>
+<pre class="highlight php"><code>
+    class MySitePost extends TimberPost {
+
+        function get_related_auto() {
+            $tags = $this-&gt;tags();
+            if (is_array($tags) <span class="err">&amp;&amp;</span> count($tags)) {
+                $search_tag = $tags[0];
+                $related = Timber::get_posts('tag_id='.$search_tag-&gt;ID);
+                return $related;
+            } else {
+                //not tagged, cant do related on it
+                return false;
+            }
+        }
+
+        function get_related_manual() {
+            if (isset($this-&gt;related_manual) <span class="err">&amp;&amp;</span> is_array($this-&gt;related_manual)){
+                foreach($this-&gt;related_manual as <span class="err">&amp;</span>$related){
+                    $related = new MySitePost($related);
+                }
+                return $this-&gt;related_manual;
+            }
+            return false;
+        }
+
+        function related($limit = 3) {
+            $related = $this-&gt;get_related_manual();
+            if (!$related){
+                $related = $this-&gt;get_related_auto();
+            }
+            if (is_array($related)) {
+                array_splice($related, 0, $limit);
+            }
+            return $related;
+        }
+    }
+</code></pre>
+
+<p>These can get pretty complex. And that&rsquo;s the beauty. The complexity lives inside the context of the object, but very simple when it comes to your templates.</p>
+
+<h2 id="adding-to-twig">Adding to Twig</h2>
+
+<p>This is the correct formation for when you need to add custom functions, filters to twig:</p>
+<pre class="highlight php"><code>
+/* functions.php */
+
+add_filter('get_twig', 'add_to_twig');
+
+function add_to_twig($twig) {
+    /* this is where you can add your own fuctions to twig */
+    $twig-&gt;addExtension(new Twig_Extension_StringLoader());
+    $twig-&gt;addFilter('whatever', new Twig_Filter_Function('my_whatever'));
+    return $twig;
+}
+
+function my_whatever($text) {
+    $text .= ' or whatever';
+    return $text;
+}
+</code></pre>
+
+<p>This can now be called in your twig files with:</p>
+<pre class="highlight html"><code><span class="nt">&lt;h2&gt;</span>{{ post.title|whatever }}<span class="nt">&lt;/h2&gt;</span>
+</code></pre>
+
+<p>Which will output:</p>
+<pre class="highlight html"><code><span class="nt">&lt;h2&gt;</span>Hello World! or whatever<span class="nt">&lt;/h2&gt;</span>
+</code></pre>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

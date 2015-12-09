@@ -53,6 +53,1828 @@
       <div class="dark-box"></div>
       <div class="content">
         
+          <h1 id="getting-started">Getting Started</h1>
+
+          <h1 id="video-tutorials">Video Tutorials</h1>
+
+<p>I&rsquo;m in the midst of an install and walk-through on Timber, here are the screencasts thus far:</p>
+
+<h3 id="1-install-timber">1. Install Timber</h3>
+
+<h4 id="option-1-via-github-for-developers">Option 1: Via GitHub (for developers)</h4>
+
+<h5 id="1-navigate-to-your-wordpress-plugins-directory">1) Navigate to your WordPress plugins directory</h5>
+
+<p>$ cd ~/Sites/mywordpress/wp-content/plugins</p>
+
+<h5 id="2-use-git-to-grab-the-repo">2) Use git to grab the repo</h5>
+
+<p>$ git clone git@github.com:jarednova/timber.git</p>
+
+<h5 id="3-use-composer-to-download-the-dependencies-twig-etc">3) Use <a href="https://getcomposer.org/doc/00-intro.md">Composer</a> to download the dependencies (Twig, etc.)</h5>
+
+<p>$ cd timber
+    $ composer install</p>
+
+<h4 id="option-2-via-composer-for-developers">Option 2: Via Composer (for developers)</h4>
+
+<h5 id="1-navigate-to-your-wordpress-plugins-directory">1) Navigate to your WordPress plugins directory</h5>
+
+<p>$ cd ~/Sites/mywordpress/wp-content/plugins</p>
+
+<h5 id="2-use-composer-to-create-project-and-download-the-dependencies-twig-etc">2) Use <a href="https://getcomposer.org/doc/00-intro.md">Composer</a> to create project and download the dependencies (Twig, etc.)</h5>
+
+<p>$ composer create-project &ndash;no-dev jarednova/timber ./timber</p>
+
+<h4 id="option-3-via-wordpress-plugins-directory-for-non-developers">Option 3: Via WordPress plugins directory (for non-developers)</h4>
+
+<h5 id="if-you-39-d-prefer-one-click-installation-you-should-use-the-wordpress-org-version">If you&rsquo;d prefer one-click installation, you should use the <a href="http://wordpress.org/plugins/timber-library/">WordPress.org</a> version.</h5>
+
+<hr>
+
+<p>Now just activate in your WordPress admin screen. Inside of the timber directory there&rsquo;s a timber-starter-theme. To use this move it into your <code class="prettyprint">themes</code> directory (probably want to rename it too) and select it.</p>
+
+<hr>
+
+<h3 id="2-including-a-twig-template-and-sending-data">2. Including a Twig template and sending data</h3>
+
+<p><a href="http://www.youtube.com/watch?v=SlMonnwVi5M"><img alt="Installing Timber" src="http://img.youtube.com/vi/SlMonnwVi5M/0.jpg" /></a></p>
+
+<p>In which we use an existing WordPress template and implement a very simple Timber usage.</p>
+
+<p>Here&rsquo;s the relevant code:</p>
+<pre class="highlight php"><code>/* index.php */
+$context = array();
+$context['headline'] = 'Welcome to my new Timber Blog!';
+Timber::render('welcome.twig', $context);
+</code></pre>
+<pre class="highlight handlebars"><code>{# welcome.twig #}
+<span class="nt">&lt;section</span> <span class="na">class=</span><span class="s">"welcome-block"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"inner"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;h3&gt;</span><span class="k">{{</span><span class="nv">headline</span><span class="k">}}</span><span class="nt">&lt;/h3&gt;</span>
+        <span class="nt">&lt;p&gt;</span>This will be a superb blog, I will inform you every day<span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/section&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="3-connecting-twig-to-your-wordpress-admin">3. Connecting Twig to your WordPress Admin</h3>
+
+<p><a href="http://www.youtube.com/watch?v=C7HtYkaG2DQ"><img alt="Connecting Timber" src="http://img.youtube.com/vi/C7HtYkaG2DQ/0.jpg" /></a></p>
+<pre class="highlight php"><code>$context = array();
+$context['welcome'] = Timber::get_post(56);
+Timber::render('welcome.twig', $context);
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;section</span> <span class="na">class=</span><span class="s">"welcome-block"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"inner"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;h3&gt;</span><span class="k">{{</span><span class="nv">welcome</span><span class="p">.</span><span class="nv">post_title</span><span class="k">}}</span><span class="nt">&lt;/h3&gt;</span>
+        <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">welcome</span><span class="p">.</span><span class="nv">get_content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;p&gt;</span>Follow me on <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"https://twitter.com/</span><span class="k">{{</span><span class="nv">welcome</span><span class="p">.</span><span class="nv">twitter_handle</span><span class="k">}}</span><span class="s">"</span> <span class="na">target=</span><span class="s">"_blank"</span><span class="nt">&gt;</span>Twitter!<span class="nt">&lt;/a&gt;&lt;/p&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/section&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="4-converting-html-to-twig-templates">4. Converting HTML to Twig Templates</h3>
+
+<p><a href="http://www.youtube.com/watch?v=BxazrNBLK-0"><img alt="Connecting HTML Templates" src="http://img.youtube.com/vi/BxazrNBLK-0/0.jpg" /></a></p>
+<pre class="highlight php"><code>$context['posts'] = Timber::get_posts();
+Timber::render('home-main.twig', $context);
+</code></pre>
+<pre class="highlight handlebars"><code>{# home-main.twig #}
+{% for post in posts %}
+    {% include "tz-post.twig" %}
+{% endfor %}
+</code></pre>
+
+<hr>
+
+<h3 id="5-using-custom-post-types-with-timber-twig">5. Using Custom Post Types with Timber + Twig</h3>
+
+<p><a href="http://www.youtube.com/watch?v=19T0MStDLSQ"><img alt="Using Custom Post Types with Timber" src="http://img.youtube.com/vi/19T0MStDLSQ/0.jpg" /></a></p>
+<pre class="highlight handlebars"><code>{# home-main.twig #}
+{% for post in posts %}
+    {# you can send includes an array, in order of precedence #}
+    {% include ["tz-"~post.post_type~".twig", "tz-post.twig"] %}
+{% endfor %}
+</code></pre>
+<pre class="highlight handlebars"><code>{# tz-recipe.twig #}
+<span class="nt">&lt;article</span> <span class="na">id=</span><span class="s">"post-</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">ID</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"post-</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">ID</span><span class="k">}}</span><span class="s"> </span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">post_type</span><span class="k">}}</span><span class="s"> type-</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">post_type</span><span class="k">}}</span><span class="s"> status-publish hentry"</span><span class="nt">&gt;</span>
+    {% if post.get_thumbnail %}
+        <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_thumbnail</span><span class="p">.</span><span class="nv">get_src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">600</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+    {% endif %}
+    <span class="nt">&lt;h2&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">post_title</span><span class="k">}}</span><span class="nt">&lt;/h2&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"post-body"</span><span class="nt">&gt;</span>
+        <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_content</span><span class="k">}}</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="6-extending-templates">6. Extending Templates</h3>
+
+<p><em>Todo: Record Screencast showing this</em></p>
+
+<p>This is a <strong>really</strong> important concept for DRY. I&rsquo;ll show how to create a base template that can power your site:</p>
+
+<h5 id="create-a-base-twig-file">Create a <code class="prettyprint">base.twig</code> file:</h5>
+<pre class="highlight handlebars"><code>{# base.twig #}
+{% include "html-header.twig" %}
+{% block head %}
+    <span class="c">&lt;!-- This is where you'll put template-specific stuff that needs to go in the head tags like custom meta tags, etc. --&gt;</span>
+{% endblock %}
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body</span> <span class="na">class=</span><span class="s">"</span><span class="k">{{</span><span class="nv">body_class</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
+{% block content %}
+    <span class="c">&lt;!-- The template's main content will go here. --&gt;</span>
+{% endblock %}
+{% include "footer.twig" %}
+<span class="k">{{</span><span class="nv">wp_footer</span><span class="k">}}</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre>
+
+<h5 id="you-can-use-this-in-a-custom-single-twig-file">You can use this in a custom <code class="prettyprint">single.twig</code> file:</h5>
+<pre class="highlight handlebars"><code>{# single.twig #}
+{% extends "base.twig" %}
+{% block head %}
+    <span class="nt">&lt;meta</span> <span class="na">property=</span><span class="s">"og:title"</span> <span class="na">value=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+{% endblock %}
+{% block content %}
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"main"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;h1&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
+        <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+{% endblock %}
+</code></pre>
+
+          <h1 id="getting-started-setup">Getting Started: Setup</h1>
+
+<h2 id="installation">Installation</h2>
+
+<h4 id="via-wordpress-org-easy">Via WordPress.org (easy)</h4>
+
+<p>You can just grab the all-things-included plugin at <a href="http://wordpress.org/plugins/timber-library/">WordPress.org</a> either through the WP site or your Plugins-&gt;Add New in wp-admin. Then skip ahead to <a href="#use-the-starter-theme">using the starter theme</a>.</p>
+
+<h4 id="via-github-for-developers">Via GitHub (for developers)</h4>
+
+<h5 id="1-navigate-to-your-wordpress-plugins-directory">1) Navigate to your WordPress plugins directory</h5>
+
+<p>$ cd ~/Sites/mywordpress/wp-content/plugins</p>
+
+<h5 id="2-use-git-to-grab-the-repo">2) Use git to grab the repo</h5>
+
+<p>$ git clone git@github.com:jarednova/timber.git</p>
+
+<h5 id="3-use-composer-to-download-the-dependencies-twig-etc">3) Use <a href="https://getcomposer.org/doc/00-intro.md">Composer</a> to download the dependencies (Twig, etc.)</h5>
+
+<p>$ cd timber
+    $ composer install</p>
+
+<hr>
+
+<h2 id="use-the-starter-theme">Use the starter theme</h2>
+
+<p>This is for starting a project from scratch. You can also use Timber in an existing theme.</p>
+
+<h5 id="navigate-to-your-wordpress-themes-directory">Navigate to your WordPress themes directory</h5>
+
+<p>Like where twentyeleven and twentytwelve live. The Timber Starter will live at the same level.</p>
+
+<p>/wp-content/themes  /twentyeleven
+                        /twentytwelve
+                        /timber-starter-theme</p>
+
+<p>You should now have</p>
+
+<p>/wp-content/themes/timber-starter-theme</p>
+
+<p>You should probably <strong>rename</strong> this to something better</p>
+
+<h3 id="1-activate-timber">1. Activate Timber</h3>
+
+<p>It will be in wp-admin/plugins.php</p>
+
+<h3 id="2-select-your-theme-in-wordpress">2. Select your theme in WordPress</h3>
+
+<p>Make sure you select the Timber-enabled theme <strong>after</strong> you activate the plugin. The theme will crash unless Timber is activated. Use the <strong>timber-starter-theme</strong> theme from the step above (or whatever you renamed it).</p>
+
+<h3 id="3-let-39-s-write-our-theme">3. Let&rsquo;s write our theme!</h3>
+
+<p>Continue ahead in <a href="getting-started">Part 2</a></p>
+
+          <h1 id="getting-started-themeing">Getting Started: Themeing</h1>
+
+<h2 id="your-first-timber-project">Your first Timber project</h2>
+
+<h3 id="let-39-s-start-with-your-single-post">Let&rsquo;s start with your single post</h3>
+
+<p>Find this file: (btw if you have no idea what I&rsquo;m talking about you should go to the <a href="Getting-Started%3A-Setup">setup article</a>
+<code class="prettyprint">html
+    wp-content/themes/{timber-starter-theme}/views/single.twig
+</code></p>
+
+<p>Brilliant! Open it up.</p>
+<pre class="highlight html"><code>{% extends "base.twig" %}
+{% block content %}
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"content-wrapper"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"post-type-{{post.post_type}}"</span> <span class="na">id=</span><span class="s">"post-{{post.ID}}"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;section</span> <span class="na">class=</span><span class="s">"article-content"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"article-h1"</span><span class="nt">&gt;</span>{{post.title}}<span class="nt">&lt;/h1&gt;</span>
+                <span class="nt">&lt;h2</span> <span class="na">class=</span><span class="s">"article-h2"</span><span class="nt">&gt;</span>{{post.subtitle}}<span class="nt">&lt;/h2&gt;</span>
+                <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"blog-author"</span><span class="nt">&gt;&lt;span&gt;</span>By<span class="nt">&lt;/span&gt;</span> {{ post.author.name }} <span class="nt">&lt;span&gt;</span><span class="ni">&amp;bull;</span><span class="nt">&lt;/span&gt;</span> {{ post.post_date|date }}<span class="nt">&lt;/p&gt;</span>
+                {{post.content}}
+            <span class="nt">&lt;/section&gt;</span>
+        <span class="nt">&lt;/article&gt;</span>
+    <span class="nt">&lt;/div&gt;</span> <span class="c">&lt;!-- /content-wrapper --&gt;</span>
+{% endblock %}
+</code></pre>
+
+<h4 id="this-is-the-fun-part">This is the fun part.</h4>
+<pre class="highlight html"><code><span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"article-h1"</span><span class="nt">&gt;</span>{{post.title}}<span class="nt">&lt;/h1&gt;</span>
+</code></pre>
+
+<p>This is now how we now call stuff from the WordPress API. Instead of this familiar face:</p>
+<pre class="highlight html"><code><span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"article-h1"</span><span class="nt">&gt;</span><span class="cp">&lt;?php the_title(); ?&gt;</span><span class="nt">&lt;/h1&gt;</span>
+</code></pre>
+
+<p>This is how WordPress wants you to interact with its API. Which sucks. Because soon you get things like:</p>
+<pre class="highlight html"><code><span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"article-h1"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"&lt;?php get_permalink(); ?&gt;"</span><span class="nt">&gt;</span><span class="cp">&lt;?php the_title(); ?&gt;</span><span class="nt">&lt;/a&gt;&lt;/h1&gt;</span>
+</code></pre>
+
+<p>Okay, not <em>too</em> terrible, but doesn&rsquo;t this (Timber) way look so much nicer:
+<code class="prettyprint">html
+&lt;h1 class=&quot;article-h1&quot;&gt;&lt;a href=&quot;{{post.permalink}}&quot;&gt;{{post.title}}&lt;/a&gt;&lt;/h1&gt;
+</code></p>
+
+<p>It gets better. Let&rsquo;s explain some other concepts.
+<code class="prettyprint">html
+{% extends &quot;base.twig&quot; %}
+</code></p>
+
+<p>This means that <code class="prettyprint">single.twig</code> is using <code class="prettyprint">base.twig</code> as its parent template. That&rsquo;s why you don&rsquo;t see any <code class="prettyprint">&lt;head&gt;</code>, <code class="prettyprint">&lt;header&gt;</code>, or <code class="prettyprint">&lt;footer&gt;</code> tags, those site-wide (usually) things are all controlled in <code class="prettyprint">base.twig</code>. You can create any number of base files to extend from (the &ldquo;base&rdquo; naming convention is recommended, but not requrired).</p>
+
+<p>What if you want modify <code class="prettyprint">&lt;head&gt;</code>, etc? Read on to learn all about blocks.</p>
+
+<h3 id="blocks">Blocks</h3>
+
+<p>Blocks are the single most important and powerful concept in managing your templates. The <a href="http://twig.sensiolabs.org/doc/templates.html#template-inheritance">official Twig Documentationn</a> has more details. Let&rsquo;s cover the basics.</p>
+
+<p>In <code class="prettyprint">single.twig</code> you see opening and closing block declarations that surround the main page contents.</p>
+<pre class="highlight html"><code>{% block content %} {# other stuff here ... #} {% endblock %}
+</code></pre>
+
+<p>If you were to peek into <strong>base.twig</strong> you would see a matching set of <code class="prettyprint">{% block content %} / {% endblock %}</code> tags. <strong>single.twig</strong> is replacing the content of base&rsquo;s <code class="prettyprint">{% block content %}</code> with its own.</p>
+
+<h5 id="nesting-blocks-multiple-inheritance">Nesting Blocks, Multiple Inheritance</h5>
+
+<p>This is when things get really cool. Whereas most people use PHP includes in a linear fashion, you can create infinite levels of nested blocks to particularly control your page templates. For example, let&rsquo;s say you occasionally want to replace the title/headline on your <code class="prettyprint">single.twig</code> template with a custom image or typography.</p>
+
+<p>For this demo let&rsquo;s assume that the name of the page is &ldquo;All about Jared&rdquo; (making its slug <code class="prettyprint">all-about-jared</code>). First, I&rsquo;m going to surround the part of the template I want to control with block declarations:</p>
+<pre class="highlight html"><code>{# single.twig #}
+{% extends "base.twig" %}
+{% block content %}
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"content-wrapper"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"post-type-{{post.post_type}}"</span> <span class="na">id=</span><span class="s">"post-{{post.ID}}"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;section</span> <span class="na">class=</span><span class="s">"article-content"</span><span class="nt">&gt;</span>
+                {% block headline %}
+                    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"article-h1"</span><span class="nt">&gt;</span>{{post.title}}<span class="nt">&lt;/h1&gt;</span>
+                    <span class="nt">&lt;h2</span> <span class="na">class=</span><span class="s">"article-h2"</span><span class="nt">&gt;</span>{{post.subtitle}}<span class="nt">&lt;/h2&gt;</span>
+                {% endblock %}
+                <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"blog-author"</span><span class="nt">&gt;&lt;span&gt;</span>By<span class="nt">&lt;/span&gt;</span> {{ post.author.name }} <span class="nt">&lt;span&gt;</span><span class="ni">&amp;bull;</span><span class="nt">&lt;/span&gt;</span> {{ post.post_date|date }}<span class="nt">&lt;/p&gt;</span>
+                {{post.content}}
+            <span class="nt">&lt;/section&gt;</span>
+        <span class="nt">&lt;/article&gt;</span>
+    <span class="nt">&lt;/div&gt;</span> <span class="c">&lt;!-- /content-wrapper --&gt;</span>
+{% endblock %}
+</code></pre>
+
+<p>Compared to the earlier example of this page, we now have the <code class="prettyprint">{% block headline %}</code> bit surrounding the <code class="prettyprint">&lt;h1&gt;</code> and <code class="prettyprint">&lt;h2&gt;</code>.</p>
+
+<p>To inject my custom bit of markup, I&rsquo;m going to create a file called <code class="prettyprint">single-all-about-jared.twig</code> in the <code class="prettyprint">views</code> directory. The logic for which template should be selected is controlled in <code class="prettyprint">single.php</code> but generally follows WordPress conventions on Template Hierarchy. Inside that file, all I need is&hellip;</p>
+<pre class="highlight php"><code>{# single-all-about-jared.twig #}
+{% extends "single.twig" %}
+{% block headline %}
+    <span class="nt">&lt;h1&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/wp-content/uploads/2014/05/jareds-face.jpg"</span> <span class="na">alt=</span><span class="s">"Jared's Mug"</span><span class="nt">/&gt;&lt;/h1&gt;</span>
+{% endblock %}
+</code></pre>
+
+<p>So two big concepts going on here:</p>
+
+<ol>
+<li><strong>Multiple Inheritance</strong> I&rsquo;m extending <code class="prettyprint">{% single.twig %}</code>, which itself extends <code class="prettyprint">{% base.twig %}</code>. Thus we stay true to DRY and don&rsquo;t have very similar code between my two templates hanging around.</li>
+<li><strong>Nested Blocks</strong> <code class="prettyprint">{% block headline %}</code> is located inside <code class="prettyprint">{% block content %}</code>. So while I&rsquo;m replacing the headline, I get to keep all the other markup and variables found in the parent template.</li>
+</ol>
+
+<p>What if you want to <strong>add</strong> to the block as opposed to replace? No prob, just call <code class="prettyprint">{{ parent() }}</code> where the parent&rsquo;s content should go.</p>
+
+<h3 id="loop-index-page">Loop / Index page</h3>
+
+<p>Let&rsquo;s crack open <strong>index.php</strong> and see what&rsquo;s inside:</p>
+<pre class="highlight php"><code>$context = Timber::get_context();
+$context['posts'] = Timber::get_posts();
+Timber::render('index.twig', $context);
+</code></pre>
+
+<p>This is where we are going to handle the logic that powers our index file. Let&rsquo;s go step-by-step</p>
+
+<h4 id="get-the-starter">Get the starter</h4>
+<pre class="highlight php"><code>$context = Timber::get_context();
+</code></pre>
+
+<p>This is going to return an object with a lot of the common things we need across the site. Things like your nav, wp_head and wp_footer you&rsquo;ll want to start with each time (even if you over-write them later). You can do a <code class="prettyprint">print_r($context);</code> to see what&rsquo;s inside or open-up <strong>timber.php</strong> to inspect for yourself</p>
+
+<h4 id="grab-your-posts">Grab your posts</h4>
+<pre class="highlight php"><code>$context['posts'] = Timber::get_posts();
+</code></pre>
+
+<p>We&rsquo;re now going to grab the posts that are inside the loop and stick them inside our data object under the <strong>posts</strong> key.</p>
+
+<h5 id="timber-get_posts-usage">Timber::get_posts() usage</h5>
+
+<h6 id="use-a-wp_query-array">Use a <a href="http://codex.wordpress.org/Class_Reference/WP_Query">WP_Query</a> array</h6>
+<pre class="highlight php"><code>    $args = array(
+        'post_type' =&gt; 'post',
+        'tax_query' =&gt; array(
+            'relation' =&gt; 'AND',
+            array(
+                'taxonomy' =&gt; 'movie_genre',
+                'field' =&gt; 'slug',
+                'terms' =&gt; array( 'action', 'comedy' )
+            ),
+            array(
+                'taxonomy' =&gt; 'actor',
+                'field' =&gt; 'id',
+                'terms' =&gt; array( 103, 115, 206 ),
+                'operator' =&gt; 'NOT IN'
+            )
+        )
+    );
+    $context['posts'] = Timber::get_posts($args);
+</code></pre>
+
+<h5 id="use-a-wp_query-string">Use a <a href="http://codex.wordpress.org/Class_Reference/WP_Query">WP_Query</a> string</h5>
+<pre class="highlight php"><code>    $args = 'post_type=movies<span class="ni">&amp;numberposts=8&amp;orderby=rand';</span>
+    $context['posts'] = Timber::get_posts($args);
+</code></pre>
+
+<h5 id="use-post-id-numbers">Use Post ID numbers</h5>
+<pre class="highlight php"><code>    $ids = array(14, 123, 234, 421, 811, 6);
+    $context['posts'] = Timber::get_posts($ids);
+</code></pre>
+
+<h4 id="render">Render</h4>
+<pre class="highlight php"><code>Timber::render('index.twig', $context);
+</code></pre>
+
+<p>We&rsquo;re now telling Twig to find <strong>index.twig</strong> and send it our data object.</p>
+
+<p>Timber will look first in the child theme and then falls back to the parent theme (same as WordPress logic). The official load order is&hellip;</p>
+
+<ol>
+<li>User-defined locations</li>
+<li>Directory of calling PHP script (but not theme)</li>
+<li>Child theme</li>
+<li>Parent theme</li>
+<li>Directory of calling PHP script (including the theme)</li>
+</ol>
+
+<p>&hellip; item 2 is inserted above others so that if you&rsquo;re using Timber in a plugin it will use the twig files in the plugin&rsquo;s directory.</p>
+
+          <h1 id="tools-for-working-with-twig">Tools for Working with Twig</h1>
+
+<h2 id="text-editor-add-ons">Text editor add-ons</h2>
+
+<ul>
+<li>Text Mate &amp; Sublime text bundle - <a href="https://github.com/Anomareh/PHP-Twig.tmbundle">Anomareh&rsquo;s PHP-Twig</a></li>
+<li>Emacs - <a href="http://web-mode.org/">Web Mode</a></li>
+<li>Geany - add <a href="https://wiki.geany.org/howtos/geany_and_django#twigsymfony2_support">Twig/Symfony2 detection and highlighting</a></li>
+<li>PHPStorm - Built in coloring and code hinting. The twig extension is recognized and has been for some time. <a href="http://blog.jetbrains.com/phpstorm/2013/06/twig-support-in-phpstorm/">Twig Details for PHPStorm</a></li>
+<li>Atom - Syntax Highlighting for Atom <a href="https://atom.io/packages/php-twig">Atom Component</a></li>
+</ul>
+
+<h2 id="other">Other</h2>
+
+<ul>
+<li><a href="http://goosecode.com/watson/">Watson-Ruby</a> (inline issue manager - put tags like [todo] in a Twig comment and find it easily later!). Watson supports Twig as of version 1.6.3.</li>
+</ul>
+
+<h2 id="javascript">JavaScript</h2>
+
+<ul>
+<li><a href="https://github.com/justjohn/twig.js">Twig.js</a> use those <code class="prettyprint">.twig</code> files in the Javascript and AJAX components of your site.</li>
+<li><a href="http://mozilla.github.io/nunjucks/">Nunjucks</a> another JS template language that is also based on <a href="http://jinja.pocoo.org/docs/">Jinja2</a></li>
+</ul>
+
+          <h1 id="guides">Guides</h1>
+
+          <h1 id="acf-cookbook">ACF Cookbook</h1>
+
+<p>Timber is designed to play nicely with (the amazing) <a href="http://www.advancedcustomfields.com/">Advanced Custom Fields</a>. It&rsquo;s not a requirement, of course.</p>
+
+<p>While data saved by ACF is available via <code class="prettyprint">{{post.my_acf_field}}</code> you will often need to do some additional work to get back the <em>kind</em> of data you want. For example, images are stored as image ID#s which you might want to translate into a specific image object. Read on to learn more about those specific exceptions.</p>
+
+<h3 id="wysiwyg-field-and-other-requiring-text">WYSIWYG field (and other requiring text):</h3>
+<pre class="highlight handlebars"><code><span class="nt">&lt;h3&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h3&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"intro-text"</span><span class="nt">&gt;</span>
+     <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_field</span><span class="err">(</span><span class="s1">'my_wysiwyg_field'</span><span class="err">)</span><span class="k">}}</span>
+<span class="nt">&lt;/div&gt;</span>
+</code></pre>
+
+<p>This will apply your expected paragraph breaks and other pre-processing to the text.</p>
+
+<h3 id="image-field-type">Image field type:</h3>
+
+<p>You can retrieve an image from a custom field, then use it in a Twig template. The most reliable approach is this: When setting up your custom fields you&rsquo;ll want to save the <code class="prettyprint">image_id</code> to the field. The image object, url, etc. <em>will</em> work but it&rsquo;s not as fool-proof.</p>
+
+<h5 id="the-quick-way-for-most-situations">The quick way (for most situations)</h5>
+<pre class="highlight handlebars"><code><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">TimberImage</span><span class="err">(</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_field</span><span class="err">(</span><span class="s1">'hero_image'</span><span class="err">))</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+</code></pre>
+
+<h5 id="the-long-way-for-some-special-situations">The long way (for some special situations)</h5>
+
+<p>This is where we&rsquo;ll start in PHP.</p>
+<pre class="highlight php"><code>/* single.php */
+$post = new TimberPost();
+if (isset($post-&gt;hero_image) <span class="err">&amp;&amp;</span> strlen($post-&gt;hero_image)){
+    $post-&gt;hero_image = new TimberImage($post-&gt;hero_image);
+}
+$data = Timber::get_context();
+$data['post'] = $post;
+Timber::render('single.twig', $data);
+</code></pre>
+
+<p><code class="prettyprint">TimberImage</code> should be initialized using a WordPress image ID#. It can also take URLs and image objects, but that requires extra processing.</p>
+
+<p>You can now use all the above functions to transform your custom images in the same way, the format will be:</p>
+<pre class="highlight handlebars"><code><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">hero_image</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">500</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="repeater-field">Repeater field</h3>
+
+<p>You can access repeater fields within in twig files:
+<code class="prettyprint">handlebars
+{# single.twig #}
+&lt;h2&gt;{{post.title}}&lt;/h2&gt;
+&lt;div class=&quot;my-list&quot;&gt;
+    {% for item in post.get_field(&#39;my_repeater&#39;) %}
+        &lt;div class=&quot;item&quot;&gt;
+            &lt;h4&gt;{{item.name}}&lt;/h4&gt;
+            &lt;h6&gt;{{item.info}}&lt;/h6&gt;
+            &lt;img src=&quot;{{TimberImage(item.picture).src}}&quot; /&gt;
+        &lt;/div&gt;
+    {% endfor %}
+&lt;/div&gt;
+</code></p>
+
+<h5 id="nested">Nested?</h5>
+
+<p>When you run <code class="prettyprint">get_field</code> on an outer ACF field, everything inside is ready to be traversed. You can refer to nested fields via outer_item.inner_repeater</p>
+<pre class="highlight handlebars"><code>{% for item_outer in post.get_field('outer') %}
+     <span class="k">{{</span><span class="nv">item_outer</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span>
+
+     {% for item_inner in item_outer.inner_repeater %}
+          <span class="k">{{</span><span class="nv">item_inner</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span>
+     {% endfor %}
+
+{% endfor %}
+</code></pre>
+
+<h5 id="troubleshooting">Troubleshooting</h5>
+
+<p>A common problem in working with repeaters is that you should only call the <code class="prettyprint">get_field</code> method <strong>once</strong> on an item. In other words if you have a field inside a field (for example, a relationship inside a repeater or a repeater inside a repeater, <strong>do not</strong> call <code class="prettyprint">get_field</code> on the inner field). More:</p>
+
+<h6 id="don-39-t-do-this-bad">DON&rsquo;T DO THIS (Bad)</h6>
+<pre class="highlight handlebars"><code>{% for gear in post.get_field('gear_items') %}
+    <span class="nt">&lt;h3&gt;</span> <span class="k">{{</span> <span class="nv">gear</span><span class="p">.</span><span class="nv">brand_name</span> <span class="k">}}</span> <span class="nt">&lt;/h3&gt;</span>
+    {% for gear_feature in gear.get_field('features') %}
+        <span class="nt">&lt;li&gt;</span> <span class="k">{{</span><span class="nv">gear_feature</span><span class="k">}}</span> <span class="nt">&lt;/li&gt;</span>
+    {% endfor %}
+{% endfor %}
+</code></pre>
+
+<h6 id="do-this-good">Do THIS: (Good)</h6>
+<pre class="highlight handlebars"><code>{% for gear in post.get_field('gear_items') %}
+    <span class="nt">&lt;h3&gt;</span> <span class="k">{{</span> <span class="nv">gear</span><span class="p">.</span><span class="nv">brand_name</span> <span class="k">}}</span> <span class="nt">&lt;/h3&gt;</span>
+    {% for gear_feature in gear.features %}
+        <span class="nt">&lt;li&gt;</span> <span class="k">{{</span><span class="nv">gear_feature</span><span class="k">}}</span> <span class="nt">&lt;/li&gt;</span>
+    {% endfor %}
+{% endfor %}
+</code></pre>
+
+<hr>
+
+<h3 id="flexible-content-field">Flexible content field</h3>
+
+<p>Similar to repeaters, get the field by the name of the flexible content field:</p>
+<pre class="highlight handlebars"><code>{% for media_item in post.get_field('media_set') %}
+    {% if media_item.acf_fc_layout == 'image_set' %}
+        <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">TimberImage</span><span class="err">(</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">image</span><span class="err">)</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"caption"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">TimberImage</span><span class="err">(</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">image</span><span class="err">)</span><span class="p">.</span><span class="nv">caption</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"notes"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">notes</span><span class="k">}}</span><span class="nt">&lt;/aside&gt;</span>
+    {% elseif media_item.acf_fc_layout == 'video_set' %}
+        <span class="nt">&lt;iframe</span> <span class="na">width=</span><span class="s">"560"</span> <span class="na">height=</span><span class="s">"315"</span> <span class="na">src=</span><span class="s">"http://www.youtube.com/embed/</span><span class="k">{{</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">youtube_id</span><span class="k">}}</span><span class="s">"</span> <span class="na">frameborder=</span><span class="s">"0"</span> <span class="na">allowfullscreen</span><span class="nt">&gt;&lt;/iframe&gt;</span>
+        <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"caption"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">caption</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+    {% endif %}
+{% endfor %}
+</code></pre>
+
+<hr>
+
+<h3 id="options-page">Options Page</h3>
+<pre class="highlight php"><code>    $context['site_copyright_info'] = get_field('copyright_info', 'options');
+    Timber::render('index.twig', $context);
+</code></pre>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;footer&gt;</span><span class="k">{{</span><span class="nv">site_copyright_info</span><span class="k">}}</span><span class="nt">&lt;/footer&gt;</span>
+</code></pre>
+
+<h6 id="get-all-info-from-your-options-page">Get all info from your options page</h6>
+<pre class="highlight php"><code>    $context['options'] = get_fields('options');
+    Timber::render('index.twig', $context);
+</code></pre>
+
+<p>ACF Pro has a built in options page, and changes the <code class="prettyprint">get_fields(&#39;options&#39;)</code> to <code class="prettyprint">get_fields(&#39;option&#39;)</code>.</p>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;footer&gt;</span><span class="k">{{</span><span class="nv">options</span><span class="p">.</span><span class="nv">copyright_info</span><span class="k">}}</span><span class="nt">&lt;/footer&gt;</span>
+</code></pre>
+
+<h6 id="use-options-info-site-wide">Use options info site wide</h6>
+
+<p>To use any options fields site wide, add the <code class="prettyprint">option</code> context to your functions.php file</p>
+<pre class="highlight php"><code>/* functions.php */
+add_filter( 'timber_context', 'mytheme_timber_context'  );
+
+function mytheme_timber_context( $context ) {
+    $context['option'] = get_fields('option');
+    return $context;
+}
+</code></pre>
+
+<p>Now, you can use any of the option fields across the site instead of per template.</p>
+<pre class="highlight handlebars"><code>/* footer.twig */
+<span class="nt">&lt;footer&gt;</span><span class="k">{{</span><span class="nv">options</span><span class="p">.</span><span class="nv">copyright_info</span><span class="k">}}</span><span class="nt">&lt;/footer&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="getting-acf-info">Getting ACF info:</h3>
+
+<p>You can grab specific field label data like so:</p>
+<pre class="highlight php"><code>/* single.php */
+$context["acf"] = get_field_objects($data["post"]-&gt;ID);
+</code></pre>
+<pre class="highlight handlebars"><code><span class="k">{{</span> <span class="nv">acf</span><span class="p">.</span><span class="nv">your_field_name_here</span><span class="p">.</span><span class="nv">label</span> <span class="k">}}</span>
+</code></pre>
+
+<hr>
+
+<h3 id="query-by-custom-field-value">Query by custom field value:</h3>
+
+<h6 id="use-a-wp_query-array">Use a <a href="http://codex.wordpress.org/Class_Reference/WP_Query">WP_Query</a> array</h6>
+
+<h4 id="basic-example">Basic Example</h4>
+
+<p>This example shows the arguments to find all posts where a custom field called ‘color’ has a value of ‘red’.</p>
+<pre class="highlight php"><code>$args = array(
+    'numberposts' =&gt; -1,
+    'post_type' =&gt; 'post',
+    'meta_key' =&gt; 'color',
+    'meta_value' =&gt; 'red'
+));
+$context['posts'] = Timber::get_posts($args);
+</code></pre>
+
+<hr>
+
+          <h1 id="custom-page-templates">Custom Page Templates</h1>
+
+<p>There are a few ways to manage custom pages in WordPress and Timber, in order from simple-to-complex:</p>
+
+<h3 id="custom-twig-file">Custom Twig File</h3>
+
+<p>Say you&rsquo;ve created a page called &ldquo;About Us&rdquo; and WordPress has given it the slug <code class="prettyprint">about-us</code>. If you&rsquo;re using the <a href="https://github.com/Upstatement/timber-starter-theme">Timber Starter Theme</a> you can simply&hellip;
+- Create a file called <code class="prettyprint">page-about-us.twig</code> inside your <code class="prettyprint">views</code> and go crazy.
+- I recommend copying-and-pasting the contents of <a href="https://github.com/Upstatement/timber-starter-theme/blob/master/views/page.twig"><code class="prettyprint">page.twig</code></a> into here so you have something to work from.</p>
+
+<h5 id="how-does-this-work">How does this work?</h5>
+
+<p>In the <code class="prettyprint">page.php</code> file you&rsquo;ll see this code&hellip;
+<code class="prettyprint">php
+Timber::render(array(&#39;page-&#39; . $post-&gt;post_name . &#39;.twig&#39;, &#39;page.twig&#39;), $context);
+</code>
+Which is telling PHP to first look for a twig file named <code class="prettyprint">page-{{slug}}.twig</code> and falling back to <a href="https://github.com/Upstatement/timber-starter-theme/blob/master/views/page.twig"><code class="prettyprint">page.twig</code></a> if that doesn&rsquo;t exist.</p>
+
+<hr>
+
+<h3 id="custom-php-file">Custom PHP File</h3>
+
+<p>If you need to do something special for this page in PHP, you can use standard WordPress <a href="http://codex.wordpress.org/Template_Hierarchy">template hierarchy</a> to gather and manipulate data for this page. In the above example, you would create a file called <code class="prettyprint">/wp-content/themes/my-theme/page-about-us.php</code> and populate it with the necessary PHP. Again, you can use the contents of the starter theme&rsquo;s <a href="https://github.com/Upstatement/timber-starter-theme/blob/master/page.php"><code class="prettyprint">page.php</code></a> file as a guide.</p>
+
+<hr>
+
+<h3 id="custom-page-template">Custom Page Template</h3>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="cm">/*
+ * Template Name: My Custom Page
+ * Description: A Page Template with a darker design.
+ */</span>
+
+<span class="c1">// Code to display Page goes here...
+</span></code></pre>
+
+<p>In the WordPress admin, this will now display in your page&rsquo;s list of available templates like so:</p>
+
+<p><img alt="wordpress custom page template chooser" src="http://codex.wordpress.org/images/thumb/a/a3/page-templates-pulldown-screenshot.png/180px-page-templates-pulldown-screenshot.png" /></p>
+
+<p>I recommend naming it something like <code class="prettyprint">/wp-content/themes/my-theme/template-my-custom-page.php</code>. Do NOT name it something beginning with <code class="prettyprint">page-</code> or WP will get very confused. Here&rsquo;s <a href="https://github.com/Upstatement/blades/blob/master/template-person.php">an example of what the PHP in this file</a> looks like.</p>
+
+          <h1 id="debugging">Debugging</h1>
+
+<h3 id="using-twig-39-s-native-functions">Using Twig&rsquo;s native functions</h3>
+
+<p>Twig includes a <code class="prettyprint">dump</code> function that can output the properties of an object. To use <code class="prettyprint">WP_DEBUG</code> must be set to true.</p>
+
+<h5 id="wp-config-php">wp-config.php</h5>
+<pre class="highlight php"><code>define('WP_DEBUG', true);
+</code></pre>
+
+<h5 id="single-twig">single.twig</h5>
+<pre class="highlight html"><code>{{dump(post)}}
+</code></pre>
+
+<p>Which will give you:</p>
+
+<p><a href="http://imgur.com/5Xu53Fk"><img src="http://i.imgur.com/5Xu53Fk.png" title="Hosted by imgur.com"/></a></p>
+
+<p>You can also dump <em>everything</em> sent to your template via:</p>
+<pre class="highlight html"><code>{{dump()}}
+</code></pre>
+
+<p>This will give you something like:</p>
+
+<p><a href="http://imgur.com/5ZD8VDd"><img src="http://i.imgur.com/5ZD8VDd.png" title="Hosted by imgur.com"/></a></p>
+
+<hr>
+
+<h3 id="using-timber-debug-bar-plugin">Using Timber Debug Bar plugin</h3>
+
+<p>There&rsquo;s a <a href="http://wordpress.org/plugins/debug-bar-timber/">Timber add-on</a> for the <a href="https://wordpress.org/plugins/debug-bar/">WordPress debug bar</a>. Warning: this currently requries PHP 5.4. I&rsquo;m working on fixing whatever&rsquo;s going on for PHP 5.3</p>
+
+<h3 id="using-legacy-timber-filters">Using (Legacy) Timber Filters</h3>
+
+<p>You can also use some quick filters on an object. These are legacy and will be removed in favor of using Twig&rsquo;s built-in functionality. However, these do not require that WP_DEBUG be turned on.
+<code class="prettyprint">html
+    {{post|print_r}}
+</code></p>
+
+          <h1 id="extending-timber">Extending Timber</h1>
+
+<p>Myth: Timber is for making simple themes. Fact: It&rsquo;s for making incredibly complex themes <em>look</em> easy. But yes, you can also make simple sites from it.</p>
+
+<h2 id="extending-objects">Extending Objects</h2>
+
+<p>The beauty of Timber is that the object-oriented nature lets you extend it to match the exact requirements of your theme.</p>
+
+<p>Timber&rsquo;s objects like <code class="prettyprint">TimberPost</code>, <code class="prettyprint">TimberTerm</code>, etc. are a great starting point to build your own subclass from. For example, on this project each post was a part of an &ldquo;issue&rdquo; of a magazine. I wanted an easy way to reference the issue in the twig file:</p>
+<pre class="highlight html"><code><span class="nt">&lt;h1&gt;</span>{{ post.title }}<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;h3&gt;</span>From the {{ post.issue.title }} issue<span class="nt">&lt;/h3&gt;</span>
+</code></pre>
+
+<p>Of course, <code class="prettyprint">TimberPost</code> has no built-in concept of an issue (which I&rsquo;ve built as a custom taxonomy called &ldquo;issues&rdquo;). So we&rsquo;re going to extend TimberPost to give it one&hellip;</p>
+<pre class="highlight php"><code>class MySitePost extends TimberPost {
+
+    var $_issue;
+
+    public function issue() {
+        $issues = $this-&gt;get_terms('issues');
+        if (is_array($issues) <span class="err">&amp;&amp;</span> count($issues)) {
+            return $issues[0];
+        }
+    }
+}
+</code></pre>
+
+<p>So now I&rsquo;ve got an easy way to refer to the {{ post.issue }} in our twig templates. If you want to make this production-ready I recommend a bit of internal caching so that you don&rsquo;t re-query every time you need to get the
+issue data:</p>
+<pre class="highlight php"><code>class MySitePost extends TimberPost {
+
+    var $_issue;
+
+    public function issue() {
+        if (!$this-&gt;_issue) {
+            $issues = $this-&gt;get_terms('issues');
+            if (is_array($issues) <span class="err">&amp;&amp;</span> count($issues)) {
+                $this-&gt;_issue = $issues[0];
+            }
+        }
+        return $this-&gt;_issue;
+    }
+}
+</code></pre>
+
+<p>Right now I&rsquo;m in the midst of building a complex site for a hybrid foundation and publication. The posts on the site have some very specific requirements that requires a fair amount of logic. I can take the simple <code class="prettyprint">TimberPost</code> object and extend it to make it work perfectly for this theme.</p>
+
+<p>For example, I have a plugin that let&rsquo;s people insert manually related posts, but if they don&rsquo;t, WordPress will pull some automatically based on how the post is tagged.</p>
+<pre class="highlight php"><code>
+    class MySitePost extends TimberPost {
+
+        function get_related_auto() {
+            $tags = $this-&gt;tags();
+            if (is_array($tags) <span class="err">&amp;&amp;</span> count($tags)) {
+                $search_tag = $tags[0];
+                $related = Timber::get_posts('tag_id='.$search_tag-&gt;ID);
+                return $related;
+            } else {
+                //not tagged, cant do related on it
+                return false;
+            }
+        }
+
+        function get_related_manual() {
+            if (isset($this-&gt;related_manual) <span class="err">&amp;&amp;</span> is_array($this-&gt;related_manual)){
+                foreach($this-&gt;related_manual as <span class="err">&amp;</span>$related){
+                    $related = new MySitePost($related);
+                }
+                return $this-&gt;related_manual;
+            }
+            return false;
+        }
+
+        function related($limit = 3) {
+            $related = $this-&gt;get_related_manual();
+            if (!$related){
+                $related = $this-&gt;get_related_auto();
+            }
+            if (is_array($related)) {
+                array_splice($related, 0, $limit);
+            }
+            return $related;
+        }
+    }
+</code></pre>
+
+<p>These can get pretty complex. And that&rsquo;s the beauty. The complexity lives inside the context of the object, but very simple when it comes to your templates.</p>
+
+<h2 id="adding-to-twig">Adding to Twig</h2>
+
+<p>This is the correct formation for when you need to add custom functions, filters to twig:</p>
+<pre class="highlight php"><code>
+/* functions.php */
+
+add_filter('get_twig', 'add_to_twig');
+
+function add_to_twig($twig) {
+    /* this is where you can add your own fuctions to twig */
+    $twig-&gt;addExtension(new Twig_Extension_StringLoader());
+    $twig-&gt;addFilter('whatever', new Twig_Filter_Function('my_whatever'));
+    return $twig;
+}
+
+function my_whatever($text) {
+    $text .= ' or whatever';
+    return $text;
+}
+</code></pre>
+
+<p>This can now be called in your twig files with:</p>
+<pre class="highlight html"><code><span class="nt">&lt;h2&gt;</span>{{ post.title|whatever }}<span class="nt">&lt;/h2&gt;</span>
+</code></pre>
+
+<p>Which will output:</p>
+<pre class="highlight html"><code><span class="nt">&lt;h2&gt;</span>Hello World! or whatever<span class="nt">&lt;/h2&gt;</span>
+</code></pre>
+
+          <h1 id="filters">Filters</h1>
+
+<p>Twig offers a variety of <a href="http://twig.sensiolabs.org/doc/filters/index.html">filters</a> to transform text and other information into the desired output. In addition, Timber has some valuable for your WP theme:</p>
+
+<h3 id="excerpt">excerpt</h3>
+
+<p>When you need to trim text to a desired length (in words)</p>
+
+<h6 id="twig">Twig:</h6>
+<pre class="highlight plaintext"><code>&lt;p class="intro"&gt;{{post.post_content|excerpt(30)}}...&lt;/p&gt;
+</code></pre>
+
+<h6 id="output">Output:</h6>
+<pre class="highlight plaintext"><code>&lt;p class="intro"&gt;Steve-O was born in London, England. His mother, Donna Gay (née Wauthier), was Canadian, and his father, Richard Glover, was American. His paternal grandfather was English and his maternal step-grandfather ...&lt;/p&gt;
+</code></pre>
+
+<hr>
+
+<h3 id="function">function</h3>
+
+<p>Runs a function where you need. Really valuable for integrating plugins or existing themes</p>
+
+<h6 id="twig">Twig:</h6>
+<pre class="highlight plaintext"><code>&lt;div class="entry-meta"&gt;{{function('twenty_ten_entry_meta')}}&lt;/div&gt;
+</code></pre>
+
+<h6 id="output">Output</h6>
+<pre class="highlight plaintext"><code>&lt;div class="entry-meta"&gt;Posted on September 6, 2013&lt;/div&gt;
+</code></pre>
+
+<h3 id="function-deprecated">function (deprecated)</h3>
+
+<p>Runs a function where you need. Really valuable for integrating plugins or existing themes</p>
+
+<h6 id="twig">Twig:</h6>
+<pre class="highlight plaintext"><code>&lt;div class="entry-meta"&gt;{{'twenty_ten_entry_meta'|function}}&lt;/div&gt;
+</code></pre>
+
+<h6 id="output">Output</h6>
+<pre class="highlight plaintext"><code>&lt;div class="entry-meta"&gt;Posted on September 6, 2013&lt;/div&gt;
+</code></pre>
+
+<hr>
+
+<h3 id="relative">relative</h3>
+
+<p>Converts an absolute URL into a relative one, for example:</p>
+<pre class="highlight handlebars"><code>My custom link is <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="s1">'http://example.org/2015/08/my-blog-post'</span> <span class="err">|</span> <span class="nv">relative</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>here!<span class="nt">&lt;/a&gt;</span>
+</code></pre>
+<pre class="highlight html"><code>My custom link is <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"/2015/08/my-blog-post"</span><span class="nt">&gt;</span>here!<span class="nt">&lt;/a&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="pretags">pretags</h3>
+
+<p>Converts tags like <code class="prettyprint">&lt;span&gt;</code> into <code class="prettyprint">&amp;lt;span&amp;gt;</code>, but only inside of <code class="prettyprint">&lt;pre&gt;</code> tags. Great for code samples when you need to preserve other formatting in the non-code sample content.</p>
+
+<hr>
+
+<h3 id="sanitize">sanitize</h3>
+
+<p>Converts Titles like this into <code class="prettyprint">titles-like-this</code></p>
+
+<h6 id="twig">Twig:</h6>
+<pre class="highlight json"><code><span class="p">{</span><span class="err">{post.title|sanitize</span><span class="p">}</span><span class="err">}</span><span class="w">
+</span></code></pre>
+
+<h6 id="output">Output:</h6>
+<pre class="highlight plaintext"><code>my-awesome-post
+</code></pre>
+
+<hr>
+
+<h3 id="shortcodes">shortcodes</h3>
+
+<p>Runs text through WordPress&rsquo;s shortcodes filter. In this example imagine that you&rsquo;ve added a shortcode to a custom field like <code class="prettyprint">[gallery id=&quot;123&quot; size=&quot;medium&quot;]</code></p>
+
+<h6 id="twig">Twig:</h6>
+<pre class="highlight plaintext"><code>&lt;section class="gallery"&gt;
+{{post.custom_shortcode_field|shortcodes}}
+&lt;/section&gt;
+</code></pre>
+
+<h6 id="output">Output</h6>
+<pre class="highlight plaintext"><code>&lt;section class="gallery"&gt;
+Here is my gallery &lt;div class="gallery" id="gallery-123"&gt;&lt;img src="...." /&gt;...&lt;/div&gt;
+&lt;/section&gt;
+</code></pre>
+
+<hr>
+
+<h3 id="time_ago">time_ago</h3>
+
+<p>Displays a date in timeago format:</p>
+
+<h6 id="twig">Twig:</h6>
+<pre class="highlight plaintext"><code>&lt;p class="entry-meta"&gt;Posted: &lt;time&gt;{{post.post_date_gmt|time_ago}}&lt;/time&gt;&lt;/p&gt;
+</code></pre>
+
+<h6 id="output">Output:</h6>
+<pre class="highlight plaintext"><code>&lt;p class="entry-meta"&gt;Posted: &lt;time&gt;3 days ago&lt;/time&gt;&lt;/p&gt;
+</code></pre>
+
+<hr>
+
+<h3 id="truncate">truncate</h3>
+
+<h6 id="twig">Twig:</h6>
+<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"entry-meta"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">character</span><span class="p">.</span><span class="nv">origin_story</span> <span class="err">|</span> <span class="nv">truncate</span><span class="err">(</span><span class="nv">8</span><span class="err">)</span> <span class="k">}}</span> ...<span class="nt">&lt;/p&gt;</span>
+</code></pre>
+
+<h6 id="output">Output:</h6>
+<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"entry-meta"</span><span class="nt">&gt;</span>Bruce Wayne's parents were shot outside the opera ...<span class="nt">&lt;/p&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="wpautop">wpautop</h3>
+
+<p>Adds paragraph breaks to new lines</p>
+
+<h6 id="twig">Twig:</h6>
+<pre class="highlight handlebars"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
+    <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">custom_text_area</span><span class="err">|</span><span class="nv">wpautop</span><span class="k">}}</span>
+<span class="nt">&lt;/div&gt;</span>
+</code></pre>
+
+<h6 id="output">Output:</h6>
+<pre class="highlight plaintext"><code>&lt;div class="body"&gt;
+    &lt;p&gt;Sinatra said, "What do you do?"&lt;/p&gt;
+    &lt;p&gt;"I'm a plumber," Ellison said.&lt;/p&gt;
+    &lt;p&gt;"No, no, he's not," another young man quickly yelled from across the table. "He wrote The Oscar."&lt;/p&gt;
+    &lt;p&gt;"Oh, yeah," Sinatra said, "well I've seen it, and it's a piece of crap."&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+
+<hr>
+
+<h3 id="list">list</h3>
+
+<p>Converts an array of strings into a comma-separated list.</p>
+
+<h6 id="php">PHP:</h6>
+<pre class="highlight php"><code>$context['contributors'] = array('Blake Allen','Rachel White','Maddy May');
+</code></pre>
+
+<h6 id="twig">Twig:</h6>
+<pre class="highlight handlebars"><code>Contributions made by <span class="k">{{</span><span class="nv">contributors</span><span class="err">|</span><span class="nv">list</span><span class="err">(</span><span class="s1">','</span><span class="err">,</span><span class="s1">'&amp;'</span><span class="err">)</span><span class="k">}}</span>
+</code></pre>
+
+<h6 id="output">Output:</h6>
+<pre class="highlight html"><code>Contributions made by Blake Allen, Rachel White <span class="err">&amp;</span> Maddy May
+</code></pre>
+
+          <h1 id="pagination">Pagination</h1>
+
+<p>Do you like pagination? Stupid question, of course you do. Well, here&rsquo;s how you do it.</p>
+
+<p>This will only work in a php file with an active query (like <code class="prettyprint">archive.php</code> or <code class="prettyprint">home.php</code>):</p>
+<pre class="highlight php"><code>    $context = Timber::get_context();
+    $context['posts'] = Timber::get_posts();
+    $context['pagination'] = Timber::get_pagination();
+    Timber::render('archive.twig', $context);
+</code></pre>
+
+<p>You can then markup the output like so  (of course, the exact markup is up to YOU):</p>
+<pre class="highlight handlebars"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"tool-pagination"</span><span class="nt">&gt;</span>
+    {% if pagination.prev %}
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"prev </span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">link</span><span class="err">|</span><span class="nv">length</span> <span class="err">?</span> <span class="s1">''</span> <span class="err">:</span> <span class="s1">'invisible'</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>Prev<span class="nt">&lt;/a&gt;</span>
+    {% endif %}
+    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"pages"</span><span class="nt">&gt;</span>
+        {% for page in pagination.pages %}
+            <span class="nt">&lt;li&gt;</span>
+                {% if page.link %}
+                    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">class</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+                {% else %}
+                    <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">class</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/span&gt;</span>
+                {% endif %}
+            <span class="nt">&lt;/li&gt;</span>
+        {% endfor %}
+    <span class="nt">&lt;/ul&gt;</span>
+    {% if pagination.next %}
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">next</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"next </span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">next</span><span class="p">.</span><span class="nv">link</span><span class="err">|</span><span class="nv">length</span> <span class="err">?</span> <span class="s1">''</span> <span class="err">:</span> <span class="s1">'invisible'</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>Next<span class="nt">&lt;/a&gt;</span>
+    {% endif %}
+<span class="nt">&lt;/div&gt;</span>
+</code></pre>
+
+<h3 id="what-if-i-39-m-not-using-the-default-query">What if I&rsquo;m not using the default query?</h3>
+
+<p>So let&rsquo;s say you want to paginate things on <code class="prettyprint">page-events.php</code> where you list items from a custom post type of <code class="prettyprint">event</code>. Because the default query is just the request for the page&rsquo;s info <strong>pagination will not work</strong>. You need to <em>make</em> it the default query by using the dreaded <code class="prettyprint">query_posts</code> like so:</p>
+<pre class="highlight php"><code>    global $paged;
+    if (!isset($paged) || !$paged){
+        $paged = 1;
+    }
+    $context = Timber::get_context();
+    $args = array(
+        'post_type' =&gt; 'event',
+        'posts_per_page' =&gt; 5,
+        'paged' =&gt; $paged
+    );
+    /* THIS LINE IS CRUCIAL */
+    /* in order for WordPress to know what to paginate */
+    /* your args have to be the defualt query */
+        query_posts($args);
+    /* make sure you've got query_posts in your .php file */
+    $context['posts'] = Timber::get_posts();
+    $context['pagination'] = Timber::get_pagination();
+    Timber::render('page-events.twig', $context);
+</code></pre>
+
+<h3 id="the-pre_get_posts-way">The pre_get_posts Way</h3>
+
+<p>Custom <code class="prettyprint">query_posts</code> sometimes shows 404 on example.com/page/2
+In that case you can also use <code class="prettyprint">pre_get_posts</code> in your functions.php file
+<code class="prettyprint">php
+    function my_home_query( $query ) {
+      if ( $query-&gt;is_main_query() &amp;&amp; !is_admin() ) {
+        $query-&gt;set( &#39;post_type&#39;, array( &#39;movie&#39;, &#39;post&#39; ));
+      }
+    }
+    add_action( &#39;pre_get_posts&#39;, &#39;my_home_query&#39; );
+</code>
+In your archive.php or home.php template
+<code class="prettyprint">php
+    $context = Timber::get_context();
+    $context[&#39;posts&#39;] = Timber::get_posts();
+    $context[&#39;pagination&#39;] = Timber::get_pagination();
+    Timber::render(&#39;archive.twig&#39;, $context);
+</code></p>
+
+          <h1 id="performance">Performance</h1>
+
+<p>Timber, especially in conjunction with WordPress and Twig, offers a variety of caching strategies to optimize performance. Here&rsquo;s a quick rundown of some of the options, ranked in order of most-broad to most-focused.</p>
+
+<h3 id="tl-dr">tl;dr</h3>
+
+<p>In my tests with Debug Bar, Timber has no measurable performance hit. Everything compiles to PHP. @fabpot has an <a href="http://fabien.potencier.org/article/34/templating-engines-in-php">overview of the performance costs on his blog</a> (scroll down to the table)</p>
+
+<h2 id="cache-everything">Cache Everything</h2>
+
+<p>You can still use plugins like <a href="https://wordpress.org/plugins/w3-total-cache/">W3 Total Cache</a> in conjunction with Timber. In most settings, this will <em>skip</em> the Twig/Timber layer of your files and serve static pages via whatever mechanism the plugin or settings dictate</p>
+
+<h2 id="cache-the-entire-twig-file-and-data">Cache the Entire Twig File and Data</h2>
+
+<p>When rendering, use the <code class="prettyprint">$expires</code> argument in <code class="prettyprint">Timber::render</code>. For example:</p>
+<pre class="highlight php"><code>$data['posts'] = Timber::get_posts();
+Timber::render('index.twig', $data, 600);
+</code></pre>
+
+<p>Timber will cache the template for 10 minutes (600 / 60 = 10). But here&rsquo;s the cool part. Timber hashes the fields in the view context. This means that as soon as the data changes, the cache is automatically invalidated (yay!).</p>
+
+<p>Full Parameters:</p>
+<pre class="highlight php"><code>Timber::render(
+    $filenames,
+    $data,
+    $expires, /** Default: false. False disables cache altogether. When passed an array, the first value is used for non-logged in visitors, the second for users **/
+    $cache_mode /** Any of the cache mode constants defined in TimberLoader **/
+);
+</code></pre>
+
+<p>The cache modes are:</p>
+<pre class="highlight php"><code>TimberLoader::CACHE_NONE /** Disable caching **/
+TimberLoader::CACHE_OBJECT /** WP Object Cache **/
+TimberLoader::CACHE_TRANSIENT  /** Transients **/
+TimberLoader::CACHE_SITE_TRANSIENT /** Network wide transients **/
+TimberLoader::CACHE_USE_DEFAULT /** Use whatever caching mechanism is set as the default for TimberLoader, the default is transient **/
+</code></pre>
+
+<p>This method is very effective, but crude - the whole template is cached. So if you have any context dependent sub-views (eg. current user), this mode won&rsquo;t do.</p>
+
+<h2 id="cache-parts-of-the-twig-file-and-data">Cache <em>Parts</em> of the Twig File and Data</h2>
+
+<p>This method implements the Twig Cache Extension. It adds the cache tag, for use in templates. Best shown by example:</p>
+<pre class="highlight json"><code><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">cache</span><span class="w"> </span><span class="err">'index/content'</span><span class="w"> </span><span class="err">posts</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+    </span><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">post</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">posts</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+        </span><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">include</span><span class="w"> </span><span class="err">['tease-'~post.post_type~'.twig',</span><span class="w"> </span><span class="err">'tease.twig']</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+    </span><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">endfor</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+</span><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">endcache</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p><code class="prettyprint">&#39;index/content&#39;</code> will be used as annotation (ie. label) for the cache, while <code class="prettyprint">posts</code> will be encoded with all its public fields. You can use anything for the label (&ldquo;foo&rdquo;, &ldquo;elephant&rdquo;, &ldquo;single-posts&rdquo;, whatever).</p>
+
+<p>The mechanism behind it is the same as with render - the cache key is determined based on a hash of the object/array passed in (in the above example posts).</p>
+
+<p>The cache method used is always the default mode, set using the bespoke filter (by default, transient cache).</p>
+
+<p>This method allows for very fine-grained control over what parts of templates are being cached and which are not. When applied on resource-intensive sections, the performance difference is huge.</p>
+
+<p>In your cache, the eventual key will be:
+<code class="prettyprint">php
+$annotation . &#39;__GCS__&#39; . $key
+</code>
+that is in this scenario
+<code class="prettyprint">php
+&#39;index/content__GCS__&#39; . md5( json_encode( $context[&#39;post&#39;] ) )
+</code></p>
+
+<h6 id="extra-timberkeygeneratorinterface">Extra: TimberKeyGeneratorInterface</h6>
+
+<p>Instead of hashing a whole object, you can specify the cache key in the object itself. If the object implements TimberKeyGeneratorInterface, it can pass a unique key through the method get_cache_key. That way a class can for example simply pass last_updated as the unique key.
+If arrays contain the key _cache_key, that one is used as cache key.</p>
+
+<p>This may save yet another few processor cycles.</p>
+
+<h2 id="cache-the-twig-file-but-not-the-data">Cache the Twig File (but not the data)</h2>
+
+<p>Every time you render a <code class="prettyprint">.twig</code> file, Twig compiles all the html tags and variables into a big, nasty blob of function calls and echo statements that actually gets run by PHP. In general, this is pretty efficient. However, you can cache the resulting PHP blob by turning on Twig&rsquo;s cache via:</p>
+<pre class="highlight php"><code>/* functions.php */
+if (class_exists('Timber')){
+    Timber::$cache = true;
+}
+</code></pre>
+
+<p>You can look in your your <code class="prettyprint">/wp-content/plugins/timber/twig-cache</code> directory to see what these files look like.</p>
+
+<p>This does not cache the <em>contents</em> of the variables. This is recommended as a last-step in the production process. Once enabled, any change you make to a <code class="prettyprint">.twig</code> file (just tweaking the html for example) will not go live until the cache is flushed.</p>
+
+<h2 id="cache-the-php-data">Cache the PHP data</h2>
+
+<p>Sometimes the most expensive parts of the operations are generating the data needed to populate the twig template. You can of course use WordPress&rsquo;s default <a href="http://codex.wordpress.org/Transients_API">Transient API</a> to store this data.</p>
+
+<p>You can also use some <a href="http://en.wikipedia.org/wiki/Syntactic_sugar">syntactic sugar</a> to make the checking/saving/retrieving of transient data a bit easier:</p>
+<pre class="highlight php"><code>/* home.php */
+
+$context = Timber::get_context();
+$context['main_stories'] = TimberHelper::transient('main_stories', function(){
+    $posts = Timber::get_posts();
+    //do something expensive with these posts
+    $extra_teases = get_field('my_extra_teases', 'options');
+    foreach($extra_teases as <span class="err">&amp;</span>$tease){
+        $tease = new TimberPost($tease);
+    }
+    $main_stories = array();
+    $main_stories['posts'] = $posts;
+    $main_stories['extra_teases'] = $extra_teases;
+    return $main_stories;
+}, 600);
+Timber::render('home.twig', $context);
+</code></pre>
+
+<p>Here <code class="prettyprint">main_stories</code> is a totally made-up variable. It could be called <code class="prettyprint">foo</code>, <code class="prettyprint">bar</code>, <code class="prettyprint">elephant</code>, etc.</p>
+
+<h2 id="measuring-performance">Measuring Performance</h2>
+
+<p>Some tools like Debug Bar may not properly measure performance because its data (as in, the actual HTML it&rsquo;s generating to tell you the timing, number of queries, etc.) is swept-up by the page&rsquo;s cache.</p>
+
+<p>Timber provides some quick shortcuts to measure page timing. Here&rsquo;s an example of them in action&hellip;</p>
+<pre class="highlight php"><code>/* single.php */
+$start = TimberHelper::start_timer(); //this generates a starting time
+$context = Timber::get_context();
+$context['post'] = new TimberPost();
+$context['whatever'] = get_my_foo();
+Timber::render('single.twig', $context, 600);
+echo TimberHelper::stop_timer($start); //this reports the time diff by passing the $start time
+</code></pre>
+
+          <h1 id="routing">Routing</h1>
+
+<p>Among its other special powers, Timber implements modern routing in the Express.js/Ruby on Rails mold, making it easy for you to implement custom pagination&ndash;and anything else you might imagine in your wildest dreams of URLs and parameters. OMG so easy!</p>
+
+<h4 id="some-examples">Some examples</h4>
+
+<p>In your functions.php file, this can be called anywhere (don&rsquo;t hook it to init or another action or it might be called too late)
+&ldquo;`php
+Timber::add_route(&lsquo;blog/:name&rsquo;, function($params){
+    $query = &#39;posts_per_page=3&amp;post_type=&rsquo;.$params[&#39;name&rsquo;];
+    Timber::load_template(&#39;archive.php&rsquo;, $query);
+});</p>
+
+<p>Timber::add_route(&#39;blog/:name/page/:pg&rsquo;, function($params){
+    $query = &#39;posts_per_page=3&amp;post_type=&rsquo;.$params[&#39;name&rsquo;].&rsquo;&amp;paged=&rsquo;.$params[&#39;pg&rsquo;];
+    Timber::load_template(&#39;archive.php&rsquo;, $query);
+});
+&rdquo;`</p>
+
+<h4 id="add_route">add_route</h4>
+
+<h6 id="add_route-pattern-callback"><code class="prettyprint">add_route($pattern, $callback)</code></h6>
+
+<h6 id="usage">Usage:</h6>
+
+<p>A <code class="prettyprint">functions.php</code> where I want to display custom paginated content:</p>
+<pre class="highlight php"><code>Timber::add_route('info/:name/page/:pg', function($params){
+    //make a custom query based on incoming path and run it...
+    $query = 'posts_per_page=3<span class="ni">&amp;post_type='.$params['name'].'&amp;paged='.intval($params['pg']);</span>
+
+    //load up a template which will use that query
+    Timber::load_template('archive.php', $query);
+});
+</code></pre>
+
+<h6 id="arguments">Arguments:</h6>
+
+<p><code class="prettyprint">$pattern</code> (required)
+Set a pattern for Timber to match on, by default everything is handled as a string. Any segment that begins with a <code class="prettyprint">:</code> is handled as a variable, for example:</p>
+
+<p><strong>To paginate:</strong>
+<code class="prettyprint">
+page/:pagenum
+</code></p>
+
+<p><strong>To edit a user:</strong>
+<code class="prettyprint">
+my-users/:userid/edit
+</code></p>
+
+<p><code class="prettyprint">$callback</code>
+A function that should fire when the pattern matches the request. Callback takes one argument which is an array of the parameters passed in the URL.</p>
+
+<p>So in this example: <code class="prettyprint">&#39;info/:name/page/:pg&#39;</code>, $params would have data for:
+* <code class="prettyprint">$data[&#39;name&#39;]</code>
+* <code class="prettyprint">$data[&#39;pg&#39;]</code></p>
+
+<p>&hellip; which you can use in the callback function as a part of your query</p>
+
+<hr>
+
+<h4 id="load_template">load_template</h4>
+
+<h6 id="load_template-php_file-query-null-force_header-200-template_params"><code class="prettyprint">load_template($php_file, $query = null, $force_header = 200, $template_params)</code></h6>
+
+<h6 id="arguments">Arguments:</h6>
+
+<p><code class="prettyprint">$php_file</code> (required)
+A PHP file to load, in my experience this is usually your archive.php or a generic listing page (but don&rsquo;t worry it can be anything!)</p>
+
+<p><code class="prettyprint">$query</code>
+The query you want to use, it can accept a string or array just like Timber::get_posts &ndash; use the standard WP_Query syntax</p>
+
+<p><code class="prettyprint">$force_header</code>
+Send an optional header. Defaults to 200 for &#39;Success/OK&rsquo;</p>
+
+<p><code class="prettyprint">$template_params</code>
+Any data you want to send to the resulting view. Example:</p>
+<pre class="highlight php"><code>/* functions.php */
+
+Timber::add_route('info/:name/page/:pg', function($params){
+    //make a custom query based on incoming path and run it...
+    $query = 'posts_per_page=3<span class="ni">&amp;post_type='.$params['name'].'&amp;paged='.intval($params['pg']);</span>
+
+    //load up a template which will use that query
+    $params = array();
+    $params['my_title'] = 'This is my custom title';
+    Timber::load_template('archive.php', $query, 200, $params);
+});
+</code></pre>
+<pre class="highlight php"><code>/* archive.php */
+
+global $params;
+$context['wp_title'] = $params['my_title']; // "This is my custom title"
+/* the rest as normal... */
+Timber::render('archive.twig', $context)
+</code></pre>
+
+          <h1 id="sidebars">Sidebars</h1>
+
+<p>So you want a sidebar?</p>
+
+<h3 id="method-1-php-file">Method 1: PHP file</h3>
+
+<p>Let&rsquo;s say every page on the site has the same content going into its sidebar. If so, you would:
+* Create a <code class="prettyprint">sidebar.php</code> file in your theme directory (so <code class="prettyprint">wp-content/themes/mytheme/sidebar.php</code>)</p>
+<pre class="highlight php"><code># sidebar.php #
+$context = array();
+$context['widget'] = my_function_to_get_widget();
+$context['ad'] = my_function_to_get_an_ad();
+Timber::render('sidebar.twig', $context);
+</code></pre>
+
+<ul>
+<li>Use that php file within your main php file (home.php, single.php, archive.php, etc):</li>
+</ul>
+<pre class="highlight plaintext"><code># single.php #
+$context = Timber::get_context();
+$context['sidebar'] = Timber::get_sidebar('sidebar.php');
+Timber::render('single.twig', $context);
+</code></pre>
+
+<ul>
+<li>In the final twig file make sure you reserve a spot for your sidebar:</li>
+</ul>
+<pre class="highlight html"><code># single.twig #
+<span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"sidebar"</span><span class="nt">&gt;</span>
+    {{sidebar}}
+<span class="nt">&lt;/aside&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="method-2-twig-file">Method 2: Twig file</h3>
+
+<p>In this example, you would populate your sidebar from your main PHP file (home.php, single.php, archive.php, etc).</p>
+
+<ul>
+<li>Make a Twig file for what your sidebar should be&hellip;</li>
+</ul>
+<pre class="highlight html"><code># views/sidebar-related.twig #
+<span class="nt">&lt;h3&gt;</span>Related Stories<span class="nt">&lt;/h3&gt;</span>
+{% for post in related %}
+    <span class="nt">&lt;h4&gt;&lt;a</span> <span class="na">href=</span><span class="s">"{{post.get_path}}"</span><span class="nt">&gt;</span>{{post.post_title}}<span class="nt">&lt;/a&gt;&lt;/h4&gt;</span>
+{% endfor %}
+</code></pre>
+
+<ul>
+<li>Send data to it via your main PHP file</li>
+</ul>
+<pre class="highlight php"><code># single.php #
+$context = Timber::get_context();
+$post = new TimberPost();
+$post_cat = $post-&gt;get_terms('category');
+$post_cat = $post_cat[0]-&gt;ID;
+$context['post'] = $post;
+
+$sidebar_context = array();
+$sidebar_context['related'] = Timber::get_posts('cat='.$post_cat);
+$context['sidebar'] = Timber::get_sidebar('sidebar-related.twig', $sidebar_context);
+Timber::render('single.twig', $context);
+</code></pre>
+
+<ul>
+<li>In the final twig file make sure you have spot for your sidebar</li>
+</ul>
+<pre class="highlight html"><code># single.twig #
+<span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"sidebar"</span><span class="nt">&gt;</span>
+    {{sidebar}}
+<span class="nt">&lt;/aside&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="method-3-dynamic">Method 3: Dynamic</h3>
+
+<p>This is using WordPress&rsquo;s built-in dynamic_sidebar tools (which, confusingly, are referred to as &ldquo;Widgets&rdquo; in the interface). Since sidebar is already used; I used widgets in the code to describe these:</p>
+<pre class="highlight php"><code>$context = array();
+$context['dynamic_sidebar'] = Timber::get_widgets('dynamic_sidebar');
+Timber::render('sidebar.twig', $context);
+</code></pre>
+<pre class="highlight html"><code><span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"my-sidebar"</span><span class="nt">&gt;</span>
+{{dynamic_sidebar}}
+<span class="nt">&lt;/aside&gt;</span>
+</code></pre>
+
+          <h1 id="template-locations">Template Locations</h1>
+
+<p>You can set arbitrary locations for your twig files with&hellip;</p>
+<pre class="highlight php"><code>/* functions.php */
+Timber::$locations = '/Users/jared/Sandbox/templates';
+</code></pre>
+
+<p>Use the full file path to make sure Timber knows what you&rsquo;re trying to draw from. You can also send an array for multiple locations..</p>
+<pre class="highlight php"><code>/* functions.php */
+Timber::$locations = array( '/Users/jared/Sandbox/templates',
+                            '~/Sites/timber-templates/',
+                            ABSPATH.'/wp-content/templates'
+                        );
+</code></pre>
+
+<p>You only need to do this once in your project (like in <code class="prettyprint">functions.php</code>) then when you call from a PHP file (say <code class="prettyprint">single.php</code>) Timber will look for twig files in these locations before the child/parent theme.</p>
+
+<hr>
+
+<h3 id="changing-the-default-folder-for-twig-files">Changing the default folder for .twig files</h3>
+
+<p>By default, Timber looks in your child and parent theme&rsquo;s <code class="prettyprint">views</code> directory to pull <code class="prettyprint">.twig</code> files. If you don&rsquo;t like the default <code class="prettyprint">views</code> directory (which by default resides in your theme folder) you can change that to. Example: I want to use <code class="prettyprint">/wp-content/themes/my-theme/twigs</code>&hellip;</p>
+
+<h6 id="configure-with-a-string">Configure with a string:</h6>
+<pre class="highlight php"><code>/* functions.php */
+Timber::$dirname = 'twigs';
+</code></pre>
+
+<h6 id="you-can-also-send-an-array-with-fallbacks">You can also send an array with fallbacks:</h6>
+<pre class="highlight php"><code>/* functions.php */
+Timber::$dirname = array('templates', 'templates/shared/mods', 'twigs', 'views');
+</code></pre>
+
+<p>A quick note on <strong>subdirectories</strong>: you can always reference these relatively. For example:</p>
+<pre class="highlight php"><code>Timber::render('shared/headers/header-home.twig');
+</code></pre>
+
+<p>&hellip; might correspond to a file in <code class="prettyprint">/wp-content/themes/my-theme/views/shared/headers/header-home.twig</code>.</p>
+
+          <h2 id="woocommerce">WooCommerce</h2>
+
+<h3 id="point-of-entry-main-woocommerce-php-file">Point of entry - main WooCommerce PHP file</h3>
+
+<p>The first step to get your WooCommerce project integrated with Timber is creating a file named <code class="prettyprint">woocommerce.php</code> in the root of your theme. That will establish the context and data to be passed to your twig files:</p>
+<pre class="highlight php"><code>
+if (!class_exists('Timber')){
+    echo 'Timber not activated. Make sure you activate the plugin in <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"/wp-admin/plugins.php#timber"</span><span class="nt">&gt;</span>/wp-admin/plugins.php<span class="nt">&lt;/a&gt;</span>';
+    return;
+}
+
+$context            = Timber::get_context();
+$context['sidebar'] = Timber::get_widgets('shop-sidebar');
+
+if (is_singular('product')) {
+
+    $context['post']    = Timber::get_post();
+    $product            = get_product( $context['post']-&gt;ID );
+    $context['product'] = $product;
+
+    Timber::render('views/woo/single-product.twig', $context);
+
+} else {
+
+    $posts = Timber::get_posts();
+    $context['products'] = $posts;
+
+    if ( is_product_category() ) {
+        $queried_object = get_queried_object();
+        $term_id = $queried_object-&gt;term_id;
+        $context['category'] = get_term( $term_id, 'product_cat' );
+        $context['title'] = single_term_title('', false);
+    }
+
+    Timber::render('views/woo/archive.twig', $context);
+
+}
+</code></pre>
+
+<p>You will now need the two twig files loaded from <code class="prettyprint">woocommerce.php</code>:</p>
+
+<h3 id="archives">Archives</h3>
+
+<p>Create a Twig file accordingly to the location asked by the above file, in this example that would be <code class="prettyprint">views/woo/archive.twig</code>:</p>
+<pre class="highlight handlebars"><code>{% extends "base.twig" %}
+
+{% block content %}
+
+    {% do action('woocommerce_before_main_content') %}
+
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"before-shop-loop"</span><span class="nt">&gt;</span>
+        {% do action( 'woocommerce_before_shop_loop') %}
+    <span class="nt">&lt;/div&gt;</span>
+
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"loop"</span><span class="nt">&gt;</span>
+        {% for post in products %}
+
+            {% include ["partials/tease-product.twig"] %}
+
+        {% endfor %}
+    <span class="nt">&lt;/div&gt;</span>
+
+    {% do action('woocommerce_after_shop_loop') %}
+    {% do action('woocommerce_after_main_content') %}
+
+{% endblock  %}
+</code></pre>
+
+<p>You&rsquo;ll notice the inclusion of several woocommerce&rsquo;s default hooks, which you&rsquo;ll need to keep the integration seamless and allow any WooCommerce extension plugin to still work.</p>
+
+<p>Next, we&rsquo;ll take care of the single product view.</p>
+
+<h3 id="single-product">Single Product</h3>
+
+<p>Create a Twig file accordingly to the location asked by the above file, in this example that would be <code class="prettyprint">views/woo/single-product.twig</code>:</p>
+<pre class="highlight handlebars"><code>{% extends "base.twig" %}
+
+{% block content %}
+
+    {% do action('woocommerce_before_single_product') %}
+
+    <span class="nt">&lt;article</span> <span class="na">itemscope</span> <span class="na">itemtype=</span><span class="s">"http://schema.org/Product"</span> <span class="na">class=</span><span class="s">"single-product-details </span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">class</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
+
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"entry-images"</span><span class="nt">&gt;</span>
+            {% do action('woocommerce_before_single_product_summary') %}
+            <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">(</span><span class="s1">'shop_single'</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"summary entry-summary"</span><span class="nt">&gt;</span>
+            {% do action('woocommerce_single_product_summary') %}
+        <span class="nt">&lt;/div&gt;</span>
+
+        {% do action('woocommerce_after_single_product_summary') %}
+
+        <span class="nt">&lt;meta</span> <span class="na">itemprop=</span><span class="s">"url"</span> <span class="na">content=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;/article&gt;</span>
+
+    {% do action('woocommerce_after_single_product') %}
+
+{% endblock  %}
+</code></pre>
+
+<p>Again we are keep things simple by using WooCommerce&rsquo;s default hooks.
+If you need to override the output of any of those hooks, my advice would be to remove and add the relevant actions using PHP, keeping your upgrade path simple.</p>
+
+<p>Finally, we&rsquo;ll need to create a teaser file for product in the loops. Considering the code above that  would be <code class="prettyprint">views/partials/tease-product.twig</code>:</p>
+
+<h3 id="tease-product">Tease Product</h3>
+<pre class="highlight handlebars"><code>
+<span class="nt">&lt;article</span> <span class="k">{{</span> <span class="nv">fn</span><span class="err">(</span><span class="s1">'post_class'</span><span class="err">,</span> <span class="p">[</span><span class="s1">'$classes'</span><span class="err">,</span> <span class="s1">'entry'</span><span class="p">]</span> <span class="err">)</span> <span class="k">}}</span><span class="nt">&gt;</span>
+
+    <span class="k">{{</span> <span class="nv">fn</span><span class="err">(</span><span class="s1">'timber_set_product'</span><span class="err">,</span> <span class="nv">post</span><span class="err">)</span><span class="k">}}</span>
+
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"Media"</span><span class="nt">&gt;</span>
+
+        {% if showthumb %}
+            <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"Media-figure {% if not post.thumbnail %}placeholder{% endif %}"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
+                    {% if post.thumbnail %}
+                        <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">post_thumb_size</span><span class="p">[</span><span class="nv">0</span><span class="p">]</span><span class="err">,</span> <span class="nv">post_thumb_size</span><span class="p">[</span><span class="nv">1</span><span class="p">]</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+                    {% else %}
+                        <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"thumb-placeholder"</span><span class="nt">&gt;&lt;i</span> <span class="na">class=</span><span class="s">"icon-camera"</span><span class="nt">&gt;&lt;/i&gt;&lt;/span&gt;</span>
+                    {% endif %}
+                <span class="nt">&lt;/a&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+        {% endif %}
+
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"Media-content"</span><span class="nt">&gt;</span>
+            {% do action('woocommerce_before_shop_loop_item_title') %}
+            {% if post.title %}
+                <span class="nt">&lt;h3</span> <span class="na">class=</span><span class="s">"entry-title"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/h3&gt;</span>
+            {% else %}
+                <span class="nt">&lt;h3</span> <span class="na">class=</span><span class="s">"entry-title"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">fn</span><span class="err">(</span><span class="s1">'the_title'</span><span class="err">)</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/h3&gt;</span>
+            {% endif %}
+            {% do action( 'woocommerce_after_shop_loop_item_title' ) %}
+            {% do action( 'woocommerce_after_shop_loop_item' ) %}
+        <span class="nt">&lt;/div&gt;</span>
+
+    <span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;/article&gt;</span>
+
+</code></pre>
+
+<p>This should all sound familiar by now, except for one line:
+<code class="prettyprint">
+{{ fn(&#39;timber_set_product&#39;, post)}}
+</code></p>
+
+<p>For some reason products in the loop don&rsquo;t get the right context by default. This line will call the following function that you need to add somewhere in your <code class="prettyprint">functions.php</code> file:</p>
+<pre class="highlight php"><code>function timber_set_product( $post ) {
+    global $product;
+    if ( is_woocommerce() ) {
+        $product = get_product($post-&gt;ID);
+    }
+}
+</code></pre>
+
+<p>Without this, some elements of the listed products would show the same information as the first product in the loop.</p>
+
+<p><em>Note:</em> Some users reported issues with the loop context even when using the <code class="prettyprint">timber_set_product</code> helper function. Turns out the default WooCommerce hooks interfere with the output of the aforementioned function.</p>
+
+<p>One way to get around this is by building your own image calls, that means removing WooCommerce&rsquo;s default hooks and declare on your template the html to show the image:</p>
+<pre class="highlight handlebars"><code>{% if post.thumbnail %}
+   <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">shop_thumbnail_image_size</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+{% endif %}
+</code></pre>
+
+<p>To remove the default image, add the following to your <code class="prettyprint">functions.php</code> file:</p>
+<pre class="highlight php"><code>remove_action('woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail');
+</code></pre>
+
+<p>This comes with the added benefit that you&rsquo;ll have total control over where your image is created in the markup.</p>
+
+          <h2 id="wp-integration">WP Integration</h2>
+
+<p>Timber plays nice with your existing WordPress setup. You can still use other plugins, etc. Here&rsquo;s a rundown of the key points:</p>
+
+<ul>
+<li><a href="#the_content">the_content</a></li>
+<li><a href="#hooks">WordPress Hooks</a></li>
+<li><a href="#scripts--stylesheets">Scripts + Stylesheets</a></li>
+<li><a href="#functions">Functions</a></li>
+<li><a href="#actions">Actions</a></li>
+<li><a href="WP-Integration#filters">Filters</a></li>
+<li><a href="WP-Integration#widgets">Widgets</a></li>
+<li><a href="WP-Integration#shortcodes">Shortcodes</a></li>
+</ul>
+
+<hr>
+
+<h3 id="the_content">the_content</h3>
+
+<p>You&rsquo;re probably used to calling <code class="prettyprint">the_content()</code> in your theme file. This is good. Before outputting, WordPress will run all the filters and actions that your plugins and themes are using. If you want to get this into your new Timber theme (and you probably do). Call it like this:</p>
+<pre class="highlight php"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"my-article"</span><span class="nt">&gt;</span>
+   {{post.content}}
+<span class="nt">&lt;/div&gt;</span>
+</code></pre>
+
+<p>This differs from <code class="prettyprint">{{post.post_content}}</code> which is the raw text stored in your database</p>
+
+<hr>
+
+<h3 id="hooks">Hooks</h3>
+
+<p>Timber hooks to interact with WordPress use <code class="prettyprint">this/style/of_hooks</code> instead of <code class="prettyprint">this_style_of_hooks</code>. This matches the same methodology as <a href="http://www.advancedcustomfields.com/resources/#actions">Advanced Custom Fields</a>.</p>
+
+<p>Full documentation to come</p>
+
+<hr>
+
+<h3 id="scripts-stylesheets">Scripts + Stylesheets</h3>
+
+<p>What happened to <code class="prettyprint">wp_head()</code> and <code class="prettyprint">wp_footer()</code>? Don&rsquo;t worry, they haven&rsquo;t gone away. In fact, they have a home now in the <code class="prettyprint">Timber::get_context()</code> object. When you setup your PHP file, you should do something like this:</p>
+<pre class="highlight php"><code>/* single.php */
+$data = Timber::get_context();
+$data['post'] = new TimberPost();
+Timber::render('single.twig', $data);
+</code></pre>
+
+<p>Now in the corresponding Twig file:</p>
+<pre class="highlight php"><code>{# single.twig #}
+<span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+    <span class="c">&lt;!-- Add whatever you need in the head, and then...--&gt;</span>
+    {{wp_head}}
+    <span class="nt">&lt;/head&gt;</span>
+
+    <span class="c">&lt;!-- etc... --&gt;</span>
+
+    <span class="nt">&lt;footer&gt;</span>
+        Copyright <span class="ni">&amp;copy;</span> {{"now"|date('Y')}}
+    <span class="nt">&lt;/footer&gt;</span>
+    {{wp_footer}}
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre>
+
+<p>WordPress will inject whatever output had been loaded into <code class="prettyprint">wp_head()</code> and <code class="prettyprint">wp_footer()</code> through these variables.</p>
+
+<hr>
+
+<h4 id="functions">Functions</h4>
+
+<p>But my theme/plugin has some functions I need! Do I really have to re-write all of them?</p>
+
+<p>No.</p>
+
+<p>Let&rsquo;s say you modified twentyeleven and need some of the functions back. Here&rsquo;s the quick-and-dirty way:</p>
+<pre class="highlight php"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"posted-on"</span><span class="nt">&gt;</span>{{function("twentyeleven_posted_on")}}<span class="nt">&lt;/div&gt;</span>
+</code></pre>
+
+<p>Oh. That&rsquo;s not so bad. What if there are arguments? Easy:</p>
+<pre class="highlight php"><code>{# single.twig #}
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"admin-tools"</span><span class="nt">&gt;</span>
+    {{function('edit_post_link', 'Edit', '<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"edit-link"</span><span class="nt">&gt;</span>', '<span class="nt">&lt;/span&gt;</span>')}}
+<span class="nt">&lt;/div&gt;</span>
+</code></pre>
+
+<p>Nice! Any gotchas? Unfortunately yes. While the above example will totally work in a single.twig file it will not in a loop. Why? Single.twig/single.php retain the context of the current post. Thus for a function like <code class="prettyprint">edit_post_link</code> (which will try to guess the ID# of the post you want to edit, based on the current post in the loop), the same function requires some modification in a file like <code class="prettyprint">archive.twig</code> or <code class="prettyprint">index.twig</code>. There, you will need to explicitly set the post ID:</p>
+<pre class="highlight php"><code>{# index.twig #}
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"admin-tools"</span><span class="nt">&gt;</span>
+    {{function('edit_post_link', 'Edit', '<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"edit-link"</span><span class="nt">&gt;</span>', '<span class="nt">&lt;/span&gt;</span>', post.ID)}}
+<span class="nt">&lt;/div&gt;</span>
+</code></pre>
+
+<p>You can also use <code class="prettyprint">fn(&#39;my_function&#39;)</code> as an alias.</p>
+
+<p>For a less quick-and-dirty way, you can use the TimberFunctionWrapper. This class sets up your PHP functions as functions you can use in your Twig templates. It will execute them only when you actually call them in your template. You can quickly set up a TimberFunctionWrapper using <code class="prettyprint">TimberHelper</code>:</p>
+<pre class="highlight php"><code>/**
+ * @param string $function_name
+ * @param array (optional) $defaults
+ * @param bool (optional) $return_output_buffer Return function output instead of return value (default: false)
+ * @return \TimberFunctionWrapper
+ */
+TimberHelper::function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false );
+</code></pre>
+
+<p>So if you want to add <code class="prettyprint">edit_post_link</code> to your context, you can do something like this:</p>
+<pre class="highlight php"><code>/* single.php */
+$data = Timber::get_context();
+$data['post'] = new TimberPost();
+$data['edit_post_link'] = TimberHelper::function_wrapper( 'edit_post_link', array( __( 'Edit' ), '<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"edit-link"</span><span class="nt">&gt;</span>', '<span class="nt">&lt;/span&gt;</span>' ) );
+Timber::render('single.twig', $data);
+</code></pre>
+
+<p>Now you can use it like a &lsquo;normal&rsquo; function:</p>
+<pre class="highlight php"><code>{# single.twig #}
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"admin-tools"</span><span class="nt">&gt;</span>
+    {{edit_post_link}}
+<span class="nt">&lt;/div&gt;</span>
+{# Calls edit_post_link using default arguments #}
+
+{# single-my-post-type.twig #}
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"admin-tools"</span><span class="nt">&gt;</span>
+    {{edit_post_link(null, '<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"edit-my-post-type-link"</span><span class="nt">&gt;</span>')}}
+<span class="nt">&lt;/div&gt;</span>
+{# Calls edit_post_link with all defaults, except for second argument #}
+</code></pre>
+
+<h2 id="actions">Actions</h2>
+
+<p>Call them in your Twig template&hellip;</p>
+<pre class="highlight php"><code>{% do action('my_action') %}
+{% do action('my_action_with_args', 'foo', 'bar') %}
+</code></pre>
+
+<p>&hellip; in your <code class="prettyprint">functions.php</code> file:</p>
+<pre class="highlight php"><code>add_action('my_action', 'my_function');
+
+function my_function($context){
+    //$context stores the template context in case you need to reference it
+    echo $context['post']-&gt;post_title; //outputs title of yr post
+}
+</code></pre>
+<pre class="highlight php"><code>add_action('my_action_with_args', 'my_function_with_args', 10, 2);
+
+function my_function_with_args($foo, $bar){
+    echo 'I say '.$foo.' and '.$bar;
+}
+</code></pre>
+
+<p>You can still get the context object when passing args, it&rsquo;s always the <em>last</em> argument&hellip;</p>
+<pre class="highlight php"><code>add_action('my_action_with_args', 'my_function_with_args', 10, 3);
+
+function my_function_with_args($foo, $bar, $context){
+    echo 'I say '.$foo.' and '.$bar;
+    echo 'For the post with title '.$context['post']-&gt;post_title;
+}
+</code></pre>
+
+<p>Please note the argument count that WordPress requires for <code class="prettyprint">add_action</code></p>
+
+<hr>
+
+<h3 id="filters">Filters</h3>
+<pre class="highlight json"><code><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">post.content|apply_filters('my_filter')</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="w">
+</span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="nt">"my custom string"</span><span class="err">|apply_filters('my_filter',param1,param2,...)</span><span class="w"> </span><span class="err">}}</span><span class="w">
+</span></code></pre>
+
+<hr>
+
+<h3 id="widgets">Widgets</h3>
+
+<p>Everyone loves widgets!
+Of course they do&hellip;</p>
+<pre class="highlight php"><code>$data['footer_widgets'] = Timber::get_widgets('footer_widgets');
+</code></pre>
+
+<p>&hellip;where &#39;footer_widgets&rsquo; is the registered name of the widgets you want to get(in twentythirteen these are called <code class="prettyprint">sidebar-1</code> and <code class="prettyprint">sidebar-2</code> )</p>
+
+<p>Then use it in your template:</p>
+<pre class="highlight php"><code>{# base.twig #}
+<span class="nt">&lt;footer&gt;</span>
+    {{footer_widgets}}
+<span class="nt">&lt;/footer&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="using-timber-inside-your-own-widgets">Using Timber inside your own widgets</h3>
+
+<p>You can also use twig templates for your widgets!
+Let&rsquo;s imagine we want a widget that shows a random number each time it is rendered.</p>
+
+<p>Inside the widget class, the widget function is used to show the widget:
+<code class="prettyprint">php
+public function widget($args, $instance) {
+    $number = rand();
+    Timber::render(&#39;random-widget.twig&#39;, array(&#39;args&#39; =&gt; $args, &#39;instance&#39; =&gt; $instance, &#39;number&#39; =&gt; $number));
+}
+</code>
+The corresponding template file <code class="prettyprint">random-widget.twig</code> looks like this:
+&ldquo;`
+{{ args.before_widget | raw }}
+{{ args.before_title | raw }}{{ instance.title | apply_filters(&#39;widget_title&rsquo;) }}{{ args.after_title | raw }}</p>
+
+<p>Your magic number is: <strong>{{ number }}</strong></p>
+
+<p>{{ args.after_widget | raw }}
+&rdquo;`
+The raw filter is needed here to embed the widget properly.</p>
+
+<p>You may also want to check if the Timber plugin was loaded before using it:</p>
+<pre class="highlight php"><code>public function widget($args, $instance) {
+    if (!class_exists('Timber')) {
+        // if you want to show some error message, this is the right place
+        return;
+    }
+    $number = rand();
+    Timber::render('random-widget.twig', array('args' =&gt; $args, 'instance' =&gt; $instance, 'number' =&gt; $number));
+}
+</code></pre>
+
+<hr>
+
+<h4 id="shortcodes">Shortcodes</h4>
+
+<p>Well, if it works for widgets, why shouldn&rsquo;t it work for shortcodes ?
+Of course it does !</p>
+
+<p>Let&rsquo;s implement a <code class="prettyprint">[youtube]</code> shorttag which embeds a youtube video.
+For the desired usage of <code class="prettyprint">[youtube id=xxxx]</code> we only need a few lines of code:
+&ldquo;`
+// should be called from within an init action hook
+add_shortcode(&#39;youtube&rsquo;, &#39;youtube_shorttag&rsquo;);</p>
+
+<p>function youtube_shorttag($atts) {
+    if(isset($atts[&#39;id&rsquo;])) {
+        $id = sanitize_text_field($atts[&#39;id&rsquo;]);
+    } else {
+        $id = false;
+    }
+    // this time we use Timber::compile since shorttags should return the code
+    return Timber::compile(&#39;youtube-short.twig&rsquo;, array(&#39;id&rsquo; =&gt; $id));
+}
+&rdquo;`</p>
+
+<p>In <code class="prettyprint">youtube-short.twig</code> we have the following template:
+<code class="prettyprint">
+{% if id %}
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;//www.youtube.com/embed/{{ id }}&quot; frameborder=&quot;0&quot; allowfullscreen&gt;&lt;/iframe&gt;
+{% endif %}
+</code>
+Now, when the YouTube embed code changes, we only need to edit the <code class="prettyprint">youtube-short.twig</code> template. No need to search your PHP files for this one particular line.</p>
+
+<h5 id="layouts-with-shortcodes">Layouts with Shortcodes</h5>
+
+<p>Timber and Twig can process your shortcodes by using the <code class="prettyprint">{% filter shortcodes %}</code> tag. Let&rsquo;s say you&rsquo;re using a <code class="prettyprint">[tab]</code> shortcode, for example:</p>
+<pre class="highlight html"><code>{% filter shortcodes %}
+    [tabs tab1="Tab 1 title" tab2="Tab 2 title" layout="horizontal" backgroundcolor="" inactivecolor=""]
+        [tab id=1]
+            Something something something
+        [/tab]
+
+        [tab id=2]
+            Tab 2 content here
+        [/tab]
+    [/tabs]
+{% endfilter %}
+</code></pre>
+
+          <h1 id="object-reference">Object Reference</h1>
+
           <h1 id="timberarchives">TimberArchives</h1>
 
 <p>The TimberArchives class is used to generate a menu based on the date archives of your posts. The <a href="http://nieman.harvard.edu/news/">Nieman Foundation News site</a> has an example of how the output can be used in a real site (<a href="https://cloud.githubusercontent.com/assets/1298086/9610076/3cdca596-50a5-11e5-82fd-acb74c09c482.png">screenshot</a>).</p>
@@ -66,7 +1888,7 @@
 <pre class="highlight handlebars"><code><span class="nt">&lt;ul&gt;</span>
 {% for item in archives.items %}
     <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-    {% for child item.children %}
+    {% for child in item.children %}
         <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
     {% endfor %}
 {% endfor %}
@@ -174,7 +1996,7 @@
 <pre class="highlight handlebars"><code><span class="nt">&lt;ul&gt;</span>
 {% for item in archives.items %}
     <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-    {% for child item.children %}
+    {% for child in item.children %}
         <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
     {% endfor %}
 {% endfor %}
@@ -254,6 +2076,16 @@
 <tr>
 <td><a href="#is_child">is_child</a></td>
 <td>bool</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#reply_link">reply_link</a></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#time">time</a></td>
+<td>string</td>
 <td></td>
 </tr>
 </tbody></table>
@@ -424,6 +2256,64 @@
 <td></td>
 </tr>
 </tbody></table>
+
+<h2 id="reply_link">reply_link</h2>
+
+<p><code class="prettyprint">reply_link( string $reply_text=&quot;Reply&quot; )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
+
+<p>Enqueue the WP threaded comments javascript, and fetch the reply link for various comments.</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$reply_text</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="time">time</h2>
+
+<p><code class="prettyprint">time( string $time_format=&quot;&quot; )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$time_format</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>    {% for comment in post.comments %}
+    <span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"date"</span><span class="nt">&gt;</span>Posted on <span class="k">{{</span> <span class="nv">comment</span><span class="p">.</span><span class="nv">date</span> <span class="k">}}</span> at <span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">time</span><span class="k">}}</span>:<span class="nt">&lt;/p&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">comment</span><span class="p">.</span><span class="nv">content</span> <span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/article&gt;</span>
+    {% endfor %}
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>    <span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"date"</span><span class="nt">&gt;</span>Posted on September 28, 2015 at 12:45 am:<span class="nt">&lt;/p&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>Happy Birthday!<span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/article&gt;</span>
+</code></pre>
 
 <h3 id="class-timbercomment">Class: TimberComment</h3>
 
@@ -1354,6 +3244,11 @@ Gets the public label for the menu item
 <td>of your thumbnail</td>
 </tr>
 <tr>
+<td><a href="#time">time</a></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
 <td><a href="#title">title</a></td>
 <td>string</td>
 <td></td>
@@ -2014,7 +3909,7 @@ Gets the public label for the menu item
 
 <h2 id="terms">terms</h2>
 
-<p><code class="prettyprint">terms( string $tax=&quot;&quot;, bool $merge=true )</code></p>
+<p><code class="prettyprint">terms( string/string/array $tax=&quot;&quot;, bool $merge=true )</code></p>
 
 <p><strong>returns:</strong> <code class="prettyprint">array</code> </p>
 
@@ -2029,8 +3924,8 @@ Gets the public label for the menu item
 </thead><tbody>
 <tr>
 <td>$tax</td>
-<td>string</td>
-<td>What taxonomy to pull from, defaults to all of them. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you&rsquo;re on your own.</td>
+<td>string/string/array</td>
+<td>What taxonom(y</td>
 </tr>
 <tr>
 <td>$merge</td>
@@ -2049,6 +3944,40 @@ Gets the public label for the menu item
 
 <h6 id="twig">Twig</h6>
 <pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+</code></pre>
+
+<h2 id="time">time</h2>
+
+<p><code class="prettyprint">time( string $time_format=&quot;&quot; )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
+
+<p>Get the time to use in your template</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$time_format</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>    Published at <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">time</span> <span class="k">}}</span> // Uses WP's formatting set in Admin
+    OR
+    Published at <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">time</span> <span class="err">|</span> <span class="nv">time</span><span class="err">(</span><span class="s1">'G:i'</span><span class="err">)</span> <span class="k">}}</span> // 13:25
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>    Published at 1:25 pm
+    OR
+    Published at 13:25
 </code></pre>
 
 <h2 id="title">title</h2>
@@ -2229,6 +4158,11 @@ Gets the public label for the menu item
 <td>for people who like trackback spam</td>
 </tr>
 <tr>
+<td>rdf</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
 <td>theme</td>
 <td><a href="#TimberTheme">TimberTheme</a></td>
 <td></td>
@@ -2274,55 +4208,64 @@ Gets the public label for the menu item
     <span class="nv">$site_two</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberSite</span><span class="p">(</span><span class="s2">"My Cool Site"</span><span class="p">);</span>
     <span class="c1">//non-multisite
 </span>    <span class="nv">$site</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberSite</span><span class="p">();</span>
-    <span class="sb">```
+</code></pre>
 
-## __get
-`</span><span class="nx">__get</span><span class="p">(</span> <span class="nx">mixed</span> <span class="nv">$field</span> <span class="p">)</span><span class="sb">`
+<h2 id="__get">__get</h2>
 
-**returns:** `</span><span class="nx">mixed</span><span class="sb">` 
+<p><code class="prettyprint">__get( mixed $field )</code></p>
 
-Name | Type | Description
----- | ---- | -----------
-$field | mixed | 
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
 
+<h2 id="link">link</h2>
 
-## link
-`</span><span class="nb">link</span><span class="p">(</span> <span class="p">)</span><span class="sb">`
+<p><code class="prettyprint">link( )</code></p>
 
-**returns:** `</span><span class="nx">string</span><span class="sb">` 
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
-Returns the link to the site's home.
+<p>Returns the link to the site&rsquo;s home.</p>
 
-###### Twig
-```</span><span class="nx">handlebars</span>
-    <span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="s2">"{{ site.link }}"</span> <span class="nx">title</span><span class="o">=</span><span class="s2">"Home"</span><span class="o">&gt;</span>
-          <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"/wp-content/uploads/logo.png"</span> <span class="nx">alt</span><span class="o">=</span><span class="s2">"Logo for some stupid thing"</span> <span class="o">/&gt;</span>
-    <span class="o">&lt;/</span><span class="nx">a</span><span class="o">&gt;</span>
-    <span class="sb">```
-    ###### HTML
-```</span><span class="nx">html</span>
-    <span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="s2">"http://example.org"</span> <span class="nx">title</span><span class="o">=</span><span class="s2">"Home"</span><span class="o">&gt;</span>
-          <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"/wp-content/uploads/logo.png"</span> <span class="nx">alt</span><span class="o">=</span><span class="s2">"Logo for some stupid thing"</span> <span class="o">/&gt;</span>
-    <span class="o">&lt;/</span><span class="nx">a</span><span class="o">&gt;</span>
-    <span class="sb">```
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">site</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span> <span class="na">title=</span><span class="s">"Home"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"/wp-content/uploads/logo.png"</span> <span class="na">alt=</span><span class="s">"Logo for some stupid thing"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/a&gt;</span>
+</code></pre>
 
-## url
-`</span><span class="nx">url</span><span class="p">(</span> <span class="p">)</span><span class="sb">`
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://example.org"</span> <span class="na">title=</span><span class="s">"Home"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"/wp-content/uploads/logo.png"</span> <span class="na">alt=</span><span class="s">"Logo for some stupid thing"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/a&gt;</span>
+</code></pre>
 
-**returns:** `</span><span class="nx">string</span><span class="sb">` 
+<h2 id="url">url</h2>
 
+<p><code class="prettyprint">url( )</code></p>
 
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
+<h3 id="class-timbersite">Class: TimberSite</h3>
 
-### Class: TimberSite
+<blockquote>
+<p>TimberSite gives you access to information you need about your site. In Multisite setups, you can get info on other sites in your network.</p>
+</blockquote>
 
-&gt; TimberSite gives you access to information you need about your site. In Multisite setups, you can get info on other sites in your network.
+<h6 id="example">Example</h6>
 
-###### Example
-###### PHP
-```</span><span class="nx">php</span>
-<span class="o">&lt;?</span><span class="nx">php</span>
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
 <span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
 <span class="nv">$other_site_id</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
 <span class="nv">$context</span><span class="p">[</span><span class="s1">'other_site'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberSite</span><span class="p">(</span><span class="nv">$other_site_id</span><span class="p">);</span>
@@ -2483,6 +4426,31 @@ Returns the link to the site's home.
 <p><code class="prettyprint">edit_link( )</code></p>
 
 <p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
+
+<h2 id="from">from</h2>
+
+<p><code class="prettyprint">from( mixed $tid, mixed $taxonomy )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">\static</code> </p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$tid</td>
+<td>mixed</td>
+<td></td>
+</tr>
+<tr>
+<td>$taxonomy</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
 
 <h2 id="get_page"><strike>get_page</strike></h2>
 
@@ -2687,7 +4655,7 @@ Returns the link to the site's home.
 </tr>
 </thead><tbody>
 <tr>
-<td>link</td>
+<td><a href="#link">link</a></td>
 <td>string</td>
 <td>the absolute path to the theme (ex: <code class="prettyprint">http://example.org/wp-content/themes/my-timber-theme</code>)</td>
 </tr>
@@ -2707,7 +4675,7 @@ Returns the link to the site's home.
 <td>the slug of the parent theme (ex: <code class="prettyprint">_s</code>)</td>
 </tr>
 <tr>
-<td>path</td>
+<td><a href="#path">path</a></td>
 <td>string</td>
 <td>the relative path to the theme (ex: <code class="prettyprint">/wp-content/themes/my-timber-theme</code>)</td>
 </tr>
@@ -2756,6 +4724,18 @@ Returns the link to the site's home.
 <h6 id="html">HTML</h6>
 <pre class="highlight html"><code>    We are currently using the My Theme theme.
 </code></pre>
+
+<h2 id="link">link</h2>
+
+<p><code class="prettyprint">link( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code> the absolute path to the theme (ex: <code class="prettyprint">http://example.org/wp-content/themes/my-timber-theme</code>)</p>
+
+<h2 id="path">path</h2>
+
+<p><code class="prettyprint">path( )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code> the relative path to the theme (ex: <code class="prettyprint">/wp-content/themes/my-timber-theme</code>)</p>
 
 <h2 id="theme_mod">theme_mod</h2>
 
@@ -3957,349 +5937,6 @@ Returns the link to the site's home.
 <blockquote>
 <p>As the name suggests these are helpers for Timber (and you!) when developing. You can find additional (mainly internally-focused helpers) in TimberURLHelper</p>
 </blockquote>
-
-          <h1 id="acf-cookbook">ACF Cookbook</h1>
-
-<p>Timber is designed to play nicely with (the amazing) <a href="http://www.advancedcustomfields.com/">Advanced Custom Fields</a>. It&rsquo;s not a requirement, of course.</p>
-
-<p>While data saved by ACF is available via <code class="prettyprint">{{post.my_acf_field}}</code> you will often need to do some additional work to get back the <em>kind</em> of data you want. For example, images are stored as image ID#s which you might want to translate into a specific image object. Read on to learn more about those specific exceptions.</p>
-
-<h3 id="wysiwyg-field-and-other-requiring-text">WYSIWYG field (and other requiring text):</h3>
-<pre class="highlight handlebars"><code><span class="nt">&lt;h3&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h3&gt;</span>
-<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"intro-text"</span><span class="nt">&gt;</span>
-     <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_field</span><span class="err">(</span><span class="s1">'my_wysiwyg_field'</span><span class="err">)</span><span class="k">}}</span>
-<span class="nt">&lt;/div&gt;</span>
-</code></pre>
-
-<p>This will apply your expected paragraph breaks and other pre-processing to the text.</p>
-
-<h3 id="image-field-type">Image field type:</h3>
-
-<p>You can retrieve an image from a custom field, then use it in a Twig template. The most reliable approach is this: When setting up your custom fields you&rsquo;ll want to save the <code class="prettyprint">image_id</code> to the field. The image object, url, etc. <em>will</em> work but it&rsquo;s not as fool-proof.</p>
-
-<h5 id="the-quick-way-for-most-situations">The quick way (for most situations)</h5>
-<pre class="highlight handlebars"><code><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">TimberImage</span><span class="err">(</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_field</span><span class="err">(</span><span class="s1">'hero_image'</span><span class="err">))</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
-</code></pre>
-
-<h5 id="the-long-way-for-some-special-situations">The long way (for some special situations)</h5>
-
-<p>This is where we&rsquo;ll start in PHP.</p>
-<pre class="highlight php"><code>/* single.php */
-$post = new TimberPost();
-if (isset($post-&gt;hero_image) <span class="err">&amp;&amp;</span> strlen($post-&gt;hero_image)){
-    $post-&gt;hero_image = new TimberImage($post-&gt;hero_image);
-}
-$data = Timber::get_context();
-$data['post'] = $post;
-Timber::render('single.twig', $data);
-</code></pre>
-
-<p><code class="prettyprint">TimberImage</code> should be initialized using a WordPress image ID#. It can also take URLs and image objects, but that requires extra processing.</p>
-
-<p>You can now use all the above functions to transform your custom images in the same way, the format will be:</p>
-<pre class="highlight handlebars"><code><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">hero_image</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">500</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
-</code></pre>
-
-<hr>
-
-<h3 id="repeater-field">Repeater field</h3>
-
-<p>You can access repeater fields within in twig files:
-<code class="prettyprint">handlebars
-{# single.twig #}
-&lt;h2&gt;{{post.title}}&lt;/h2&gt;
-&lt;div class=&quot;my-list&quot;&gt;
-    {% for item in post.get_field(&#39;my_repeater&#39;) %}
-        &lt;div class=&quot;item&quot;&gt;
-            &lt;h4&gt;{{item.name}}&lt;/h4&gt;
-            &lt;h6&gt;{{item.info}}&lt;/h6&gt;
-            &lt;img src=&quot;{{TimberImage(item.picture).src}}&quot; /&gt;
-        &lt;/div&gt;
-    {% endfor %}
-&lt;/div&gt;
-</code></p>
-
-<h5 id="nested">Nested?</h5>
-
-<p>When you run <code class="prettyprint">get_field</code> on an outer ACF field, everything inside is ready to be traversed. You can refer to nested fields via outer_item.inner_repeater</p>
-<pre class="highlight handlebars"><code>{% for item_outer in post.get_field('outer') %}
-     <span class="k">{{</span><span class="nv">item_outer</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span>
-
-     {% for item_inner in item_outer.inner_repeater %}
-          <span class="k">{{</span><span class="nv">item_inner</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span>
-     {% endfor %}
-
-{% endfor %}
-</code></pre>
-
-<h5 id="troubleshooting">Troubleshooting</h5>
-
-<p>A common problem in working with repeaters is that you should only call the <code class="prettyprint">get_field</code> method <strong>once</strong> on an item. In other words if you have a field inside a field (for example, a relationship inside a repeater or a repeater inside a repeater, <strong>do not</strong> call <code class="prettyprint">get_field</code> on the inner field). More:</p>
-
-<h6 id="don-39-t-do-this-bad">DON&rsquo;T DO THIS (Bad)</h6>
-<pre class="highlight handlebars"><code>{% for gear in post.get_field('gear_items') %}
-    <span class="nt">&lt;h3&gt;</span> <span class="k">{{</span> <span class="nv">gear</span><span class="p">.</span><span class="nv">brand_name</span> <span class="k">}}</span> <span class="nt">&lt;/h3&gt;</span>
-    {% for gear_feature in gear.get_field('features') %}
-        <span class="nt">&lt;li&gt;</span> <span class="k">{{</span><span class="nv">gear_feature</span><span class="k">}}</span> <span class="nt">&lt;/li&gt;</span>
-    {% endfor %}
-{% endfor %}
-</code></pre>
-
-<h6 id="do-this-good">Do THIS: (Good)</h6>
-<pre class="highlight handlebars"><code>{% for gear in post.get_field('gear_items') %}
-    <span class="nt">&lt;h3&gt;</span> <span class="k">{{</span> <span class="nv">gear</span><span class="p">.</span><span class="nv">brand_name</span> <span class="k">}}</span> <span class="nt">&lt;/h3&gt;</span>
-    {% for gear_feature in gear.features %}
-        <span class="nt">&lt;li&gt;</span> <span class="k">{{</span><span class="nv">gear_feature</span><span class="k">}}</span> <span class="nt">&lt;/li&gt;</span>
-    {% endfor %}
-{% endfor %}
-</code></pre>
-
-<hr>
-
-<h3 id="flexible-content-field">Flexible content field</h3>
-
-<p>Similar to repeaters, get the field by the name of the flexible content field:</p>
-<pre class="highlight handlebars"><code>{% for media_item in post.get_field('media_set') %}
-    {% if media_item.acf_fc_layout == 'image_set' %}
-        <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">TimberImage</span><span class="err">(</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">image</span><span class="err">)</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"caption"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">TimberImage</span><span class="err">(</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">image</span><span class="err">)</span><span class="p">.</span><span class="nv">caption</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
-        <span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"notes"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">notes</span><span class="k">}}</span><span class="nt">&lt;/aside&gt;</span>
-    {% elseif media_item.acf_fc_layout == 'video_set' %}
-        <span class="nt">&lt;iframe</span> <span class="na">width=</span><span class="s">"560"</span> <span class="na">height=</span><span class="s">"315"</span> <span class="na">src=</span><span class="s">"http://www.youtube.com/embed/</span><span class="k">{{</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">youtube_id</span><span class="k">}}</span><span class="s">"</span> <span class="na">frameborder=</span><span class="s">"0"</span> <span class="na">allowfullscreen</span><span class="nt">&gt;&lt;/iframe&gt;</span>
-        <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"caption"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">caption</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
-    {% endif %}
-{% endfor %}
-</code></pre>
-
-<hr>
-
-<h3 id="options-page">Options Page</h3>
-<pre class="highlight php"><code>    $context['site_copyright_info'] = get_field('copyright_info', 'options');
-    Timber::render('index.twig', $context);
-</code></pre>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;footer&gt;</span><span class="k">{{</span><span class="nv">site_copyright_info</span><span class="k">}}</span><span class="nt">&lt;/footer&gt;</span>
-</code></pre>
-
-<h6 id="get-all-info-from-your-options-page">Get all info from your options page</h6>
-<pre class="highlight php"><code>    $context['options'] = get_fields('options');
-    Timber::render('index.twig', $context);
-</code></pre>
-
-<p>ACF Pro has a built in options page, and changes the <code class="prettyprint">get_fields(&#39;options&#39;)</code> to <code class="prettyprint">get_fields(&#39;option&#39;)</code>.</p>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;footer&gt;</span><span class="k">{{</span><span class="nv">options</span><span class="p">.</span><span class="nv">copyright_info</span><span class="k">}}</span><span class="nt">&lt;/footer&gt;</span>
-</code></pre>
-
-<h6 id="use-options-info-site-wide">Use options info site wide</h6>
-
-<p>To use any options fields site wide, add the <code class="prettyprint">option</code> context to your functions.php file</p>
-<pre class="highlight php"><code>/* functions.php */
-add_filter( 'timber_context', 'mytheme_timber_context'  );
-
-function mytheme_timber_context( $context ) {
-    $context['option'] = get_fields('option');
-    return $context;
-}
-</code></pre>
-
-<p>Now, you can use any of the option fields across the site instead of per template.</p>
-<pre class="highlight handlebars"><code>/* footer.twig */
-<span class="nt">&lt;footer&gt;</span><span class="k">{{</span><span class="nv">options</span><span class="p">.</span><span class="nv">copyright_info</span><span class="k">}}</span><span class="nt">&lt;/footer&gt;</span>
-</code></pre>
-
-<hr>
-
-<h3 id="getting-acf-info">Getting ACF info:</h3>
-
-<p>You can grab specific field label data like so:</p>
-<pre class="highlight php"><code>/* single.php */
-$context["acf"] = get_field_objects($data["post"]-&gt;ID);
-</code></pre>
-<pre class="highlight handlebars"><code><span class="k">{{</span> <span class="nv">acf</span><span class="p">.</span><span class="nv">your_field_name_here</span><span class="p">.</span><span class="nv">label</span> <span class="k">}}</span>
-</code></pre>
-
-<hr>
-
-<h3 id="query-by-custom-field-value">Query by custom field value:</h3>
-
-<h6 id="use-a-wp_query-array">Use a <a href="http://codex.wordpress.org/Class_Reference/WP_Query">WP_Query</a> array</h6>
-
-<h4 id="basic-example">Basic Example</h4>
-
-<p>This example shows the arguments to find all posts where a custom field called ‘color’ has a value of ‘red’.</p>
-<pre class="highlight php"><code>$args = array(
-    'numberposts' =&gt; -1,
-    'post_type' =&gt; 'post',
-    'meta_key' =&gt; 'color',
-    'meta_value' =&gt; 'red'
-));
-$context['posts'] = Timber::get_posts($args);
-</code></pre>
-
-<hr>
-
-          <h1 id="pagination">Pagination</h1>
-
-<p>Do you like pagination? Stupid question, of course you do. Well, here&rsquo;s how you do it.</p>
-
-<p>This will only work in a php file with an active query (like <code class="prettyprint">archive.php</code> or <code class="prettyprint">home.php</code>):</p>
-<pre class="highlight php"><code>    $context = Timber::get_context();
-    $context['posts'] = Timber::get_posts();
-    $context['pagination'] = Timber::get_pagination();
-    Timber::render('archive.twig', $context);
-</code></pre>
-
-<p>You can then markup the output like so  (of course, the exact markup is up to YOU):</p>
-<pre class="highlight handlebars"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"tool-pagination"</span><span class="nt">&gt;</span>
-    {% if pagination.prev %}
-        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"prev </span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">link</span><span class="err">|</span><span class="nv">length</span> <span class="err">?</span> <span class="s1">''</span> <span class="err">:</span> <span class="s1">'invisible'</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>Prev<span class="nt">&lt;/a&gt;</span>
-    {% endif %}
-    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"pages"</span><span class="nt">&gt;</span>
-        {% for page in pagination.pages %}
-            <span class="nt">&lt;li&gt;</span>
-                {% if page.link %}
-                    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">class</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
-                {% else %}
-                    <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">class</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/span&gt;</span>
-                {% endif %}
-            <span class="nt">&lt;/li&gt;</span>
-        {% endfor %}
-    <span class="nt">&lt;/ul&gt;</span>
-    {% if pagination.next %}
-        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">next</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"next </span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">next</span><span class="p">.</span><span class="nv">link</span><span class="err">|</span><span class="nv">length</span> <span class="err">?</span> <span class="s1">''</span> <span class="err">:</span> <span class="s1">'invisible'</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>Next<span class="nt">&lt;/a&gt;</span>
-    {% endif %}
-<span class="nt">&lt;/div&gt;</span>
-</code></pre>
-
-<h3 id="what-if-i-39-m-not-using-the-default-query">What if I&rsquo;m not using the default query?</h3>
-
-<p>So let&rsquo;s say you want to paginate things on <code class="prettyprint">page-events.php</code> where you list items from a custom post type of <code class="prettyprint">event</code>. Because the default query is just the request for the page&rsquo;s info <strong>pagination will not work</strong>. You need to <em>make</em> it the default query by using the dreaded <code class="prettyprint">query_posts</code> like so:</p>
-<pre class="highlight php"><code>    global $paged;
-    if (!isset($paged) || !$paged){
-        $paged = 1;
-    }
-    $context = Timber::get_context();
-    $args = array(
-        'post_type' =&gt; 'event',
-        'posts_per_page' =&gt; 5,
-        'paged' =&gt; $paged
-    );
-    /* THIS LINE IS CRUCIAL */
-    /* in order for WordPress to know what to paginate */
-    /* your args have to be the defualt query */
-        query_posts($args);
-    /* make sure you've got query_posts in your .php file */
-    $context['posts'] = Timber::get_posts();
-    $context['pagination'] = Timber::get_pagination();
-    Timber::render('page-events.twig', $context);
-</code></pre>
-
-<h3 id="the-pre_get_posts-way">The pre_get_posts Way</h3>
-
-<p>Custom <code class="prettyprint">query_posts</code> sometimes shows 404 on example.com/page/2
-In that case you can also use <code class="prettyprint">pre_get_posts</code> in your functions.php file
-<code class="prettyprint">php
-    function my_home_query( $query ) {
-      if ( $query-&gt;is_main_query() &amp;&amp; !is_admin() ) {
-        $query-&gt;set( &#39;post_type&#39;, array( &#39;movie&#39;, &#39;post&#39; ));
-      }
-    }
-    add_action( &#39;pre_get_posts&#39;, &#39;my_home_query&#39; );
-</code>
-In your archive.php or home.php template
-<code class="prettyprint">php
-    $context = Timber::get_context();
-    $context[&#39;posts&#39;] = Timber::get_posts();
-    $context[&#39;pagination&#39;] = Timber::get_pagination();
-    Timber::render(&#39;archive.twig&#39;, $context);
-</code></p>
-
-          <h1 id="sidebars">Sidebars</h1>
-
-<p>So you want a sidebar?</p>
-
-<h3 id="method-1-php-file">Method 1: PHP file</h3>
-
-<p>Let&rsquo;s say every page on the site has the same content going into its sidebar. If so, you would:
-* Create a <code class="prettyprint">sidebar.php</code> file in your theme directory (so <code class="prettyprint">wp-content/themes/mytheme/sidebar.php</code>)</p>
-<pre class="highlight php"><code># sidebar.php #
-$context = array();
-$context['widget'] = my_function_to_get_widget();
-$context['ad'] = my_function_to_get_an_ad();
-Timber::render('sidebar.twig', $context);
-</code></pre>
-
-<ul>
-<li>Use that php file within your main php file (home.php, single.php, archive.php, etc):</li>
-</ul>
-<pre class="highlight plaintext"><code># single.php #
-$context = Timber::get_context();
-$context['sidebar'] = Timber::get_sidebar('sidebar.php');
-Timber::render('single.twig', $context);
-</code></pre>
-
-<ul>
-<li>In the final twig file make sure you reserve a spot for your sidebar:</li>
-</ul>
-<pre class="highlight html"><code># single.twig #
-<span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"sidebar"</span><span class="nt">&gt;</span>
-    {{sidebar}}
-<span class="nt">&lt;/aside&gt;</span>
-</code></pre>
-
-<hr>
-
-<h3 id="method-2-twig-file">Method 2: Twig file</h3>
-
-<p>In this example, you would populate your sidebar from your main PHP file (home.php, single.php, archive.php, etc).</p>
-
-<ul>
-<li>Make a Twig file for what your sidebar should be&hellip;</li>
-</ul>
-<pre class="highlight html"><code># views/sidebar-related.twig #
-<span class="nt">&lt;h3&gt;</span>Related Stories<span class="nt">&lt;/h3&gt;</span>
-{% for post in related %}
-    <span class="nt">&lt;h4&gt;&lt;a</span> <span class="na">href=</span><span class="s">"{{post.get_path}}"</span><span class="nt">&gt;</span>{{post.post_title}}<span class="nt">&lt;/a&gt;&lt;/h4&gt;</span>
-{% endfor %}
-</code></pre>
-
-<ul>
-<li>Send data to it via your main PHP file</li>
-</ul>
-<pre class="highlight php"><code># single.php #
-$context = Timber::get_context();
-$post = new TimberPost();
-$post_cat = $post-&gt;get_terms('category');
-$post_cat = $post_cat[0]-&gt;ID;
-$context['post'] = $post;
-
-$sidebar_context = array();
-$sidebar_context['related'] = Timber::get_posts('cat='.$post_cat);
-$context['sidebar'] = Timber::get_sidebar('sidebar-related.twig', $sidebar_context);
-Timber::render('single.twig', $context);
-</code></pre>
-
-<ul>
-<li>In the final twig file make sure you have spot for your sidebar</li>
-</ul>
-<pre class="highlight html"><code># single.twig #
-<span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"sidebar"</span><span class="nt">&gt;</span>
-    {{sidebar}}
-<span class="nt">&lt;/aside&gt;</span>
-</code></pre>
-
-<hr>
-
-<h3 id="method-3-dynamic">Method 3: Dynamic</h3>
-
-<p>This is using WordPress&rsquo;s built-in dynamic_sidebar tools (which, confusingly, are referred to as &ldquo;Widgets&rdquo; in the interface). Since sidebar is already used; I used widgets in the code to describe these:</p>
-<pre class="highlight php"><code>$context = array();
-$context['dynamic_sidebar'] = Timber::get_widgets('dynamic_sidebar');
-Timber::render('sidebar.twig', $context);
-</code></pre>
-<pre class="highlight html"><code><span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"my-sidebar"</span><span class="nt">&gt;</span>
-{{dynamic_sidebar}}
-<span class="nt">&lt;/aside&gt;</span>
-</code></pre>
 
       </div>
       <div class="dark-box">

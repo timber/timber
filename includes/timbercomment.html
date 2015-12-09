@@ -89,6 +89,16 @@
 <td>bool</td>
 <td></td>
 </tr>
+<tr>
+<td><a href="#reply_link">reply_link</a></td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="#time">time</a></td>
+<td>string</td>
+<td></td>
+</tr>
 </tbody></table>
 
 <h2 id="__construct">__construct</h2>
@@ -257,6 +267,64 @@
 <td></td>
 </tr>
 </tbody></table>
+
+<h2 id="reply_link">reply_link</h2>
+
+<p><code class="prettyprint">reply_link( string $reply_text=&quot;Reply&quot; )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
+
+<p>Enqueue the WP threaded comments javascript, and fetch the reply link for various comments.</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$reply_text</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="time">time</h2>
+
+<p><code class="prettyprint">time( string $time_format=&quot;&quot; )</code></p>
+
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$time_format</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>    {% for comment in post.comments %}
+    <span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"date"</span><span class="nt">&gt;</span>Posted on <span class="k">{{</span> <span class="nv">comment</span><span class="p">.</span><span class="nv">date</span> <span class="k">}}</span> at <span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">time</span><span class="k">}}</span>:<span class="nt">&lt;/p&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">comment</span><span class="p">.</span><span class="nv">content</span> <span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/article&gt;</span>
+    {% endfor %}
+</code></pre>
+
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>    <span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"date"</span><span class="nt">&gt;</span>Posted on September 28, 2015 at 12:45 am:<span class="nt">&lt;/p&gt;</span>
+      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>Happy Birthday!<span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/article&gt;</span>
+</code></pre>
 
 <h3 id="class-timbercomment">Class: TimberComment</h3>
 

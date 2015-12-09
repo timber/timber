@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_cookbook-twig">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="cookbook-twig">Cookbook: Twig</h1>
+
+<h2 id="using-twig-vars-in-live-type">Using Twig vars in live type</h2>
+
+<p>Imagine this scenario, I let the users set this in the Admin panel:
+<code class="prettyprint">
+Copyright {{year}} by Upstatement, LLC. All Rights Reserved
+</code>
+But on the site I want it to render as:
+<code class="prettyprint">
+Copyright 2013 by Upstatement, LLC. All Rights Reserved
+</code>
+Ready? There are a bunch of ways, but my favorite is:</p>
+
+<h4 id="in-your-php-file">In your PHP file</h4>
+<pre class="highlight php"><code>$data['year'] = date('Y');
+$data['copyright'] = get_option("footer_message"); //"Copyright {{year}} by Upstatement, LLC. All Rights Reserved"
+render_twig('footer.twig', $data);
+</code></pre>
+
+<h4 id="in-your-html-file-let-39-s-say-footer-twig">In your HTML file (let&rsquo;s say <strong>footer.twig</strong>)</h4>
+<pre class="highlight html"><code>{% include template_from_string(copyright) %}
+</code></pre>
+
+<h2 id="includes">Includes</h2>
+
+<h3 id="simple-include">Simple include</h3>
+<pre class="highlight json"><code><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">include</span><span class="w"> </span><span class="nt">"footer.twig"</span><span class="w"> </span><span class="err">%}</span><span class="w">
+</span></code></pre>
+
+<h4 id="notes">Notes</h4>
+
+<ul>
+<li>Make sure your file actually exists or you&rsquo;re going to have a bad time</li>
+<li>Timber will look in your <code class="prettyprint">child-theme/views</code> directory first, then <code class="prettyprint">timber/views</code> directory</li>
+<li>Don&rsquo;t forget the quote marks!</li>
+</ul>
+
+<h3 id="dynamic-includes">Dynamic includes</h3>
+
+<p>Use a variable to determine the included file!
+<code class="prettyprint">html
+{% include [&#39;blocks/block-&#39;~block.slug~&#39;.twig&#39;, &#39;blocks/blog.twig&#39;] ignore missing %}
+</code></p>
+
+<h4 id="huh">Huh?</h4>
+
+<ul>
+<li>You&rsquo;re telling Twig to include an array of files</li>
+<li>Same rules as above</li>
+<li>~ (tilda) is what twig uses to concatenate a string with your variable</li>
+</ul>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

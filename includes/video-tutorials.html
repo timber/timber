@@ -1,0 +1,195 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_video-tutorials">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="video-tutorials">Video Tutorials</h1>
+
+<p>I&rsquo;m in the midst of an install and walk-through on Timber, here are the screencasts thus far:</p>
+
+<h3 id="1-install-timber">1. Install Timber</h3>
+
+<h4 id="option-1-via-github-for-developers">Option 1: Via GitHub (for developers)</h4>
+
+<h5 id="1-navigate-to-your-wordpress-plugins-directory">1) Navigate to your WordPress plugins directory</h5>
+
+<p>$ cd ~/Sites/mywordpress/wp-content/plugins</p>
+
+<h5 id="2-use-git-to-grab-the-repo">2) Use git to grab the repo</h5>
+
+<p>$ git clone git@github.com:jarednova/timber.git</p>
+
+<h5 id="3-use-composer-to-download-the-dependencies-twig-etc">3) Use <a href="https://getcomposer.org/doc/00-intro.md">Composer</a> to download the dependencies (Twig, etc.)</h5>
+
+<p>$ cd timber
+    $ composer install</p>
+
+<h4 id="option-2-via-composer-for-developers">Option 2: Via Composer (for developers)</h4>
+
+<h5 id="1-navigate-to-your-wordpress-plugins-directory">1) Navigate to your WordPress plugins directory</h5>
+
+<p>$ cd ~/Sites/mywordpress/wp-content/plugins</p>
+
+<h5 id="2-use-composer-to-create-project-and-download-the-dependencies-twig-etc">2) Use <a href="https://getcomposer.org/doc/00-intro.md">Composer</a> to create project and download the dependencies (Twig, etc.)</h5>
+
+<p>$ composer create-project &ndash;no-dev jarednova/timber ./timber</p>
+
+<h4 id="option-3-via-wordpress-plugins-directory-for-non-developers">Option 3: Via WordPress plugins directory (for non-developers)</h4>
+
+<h5 id="if-you-39-d-prefer-one-click-installation-you-should-use-the-wordpress-org-version">If you&rsquo;d prefer one-click installation, you should use the <a href="http://wordpress.org/plugins/timber-library/">WordPress.org</a> version.</h5>
+
+<hr>
+
+<p>Now just activate in your WordPress admin screen. Inside of the timber directory there&rsquo;s a timber-starter-theme. To use this move it into your <code class="prettyprint">themes</code> directory (probably want to rename it too) and select it.</p>
+
+<hr>
+
+<h3 id="2-including-a-twig-template-and-sending-data">2. Including a Twig template and sending data</h3>
+
+<p><a href="http://www.youtube.com/watch?v=SlMonnwVi5M"><img alt="Installing Timber" src="http://img.youtube.com/vi/SlMonnwVi5M/0.jpg" /></a></p>
+
+<p>In which we use an existing WordPress template and implement a very simple Timber usage.</p>
+
+<p>Here&rsquo;s the relevant code:</p>
+<pre class="highlight php"><code>/* index.php */
+$context = array();
+$context['headline'] = 'Welcome to my new Timber Blog!';
+Timber::render('welcome.twig', $context);
+</code></pre>
+<pre class="highlight handlebars"><code>{# welcome.twig #}
+<span class="nt">&lt;section</span> <span class="na">class=</span><span class="s">"welcome-block"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"inner"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;h3&gt;</span><span class="k">{{</span><span class="nv">headline</span><span class="k">}}</span><span class="nt">&lt;/h3&gt;</span>
+        <span class="nt">&lt;p&gt;</span>This will be a superb blog, I will inform you every day<span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/section&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="3-connecting-twig-to-your-wordpress-admin">3. Connecting Twig to your WordPress Admin</h3>
+
+<p><a href="http://www.youtube.com/watch?v=C7HtYkaG2DQ"><img alt="Connecting Timber" src="http://img.youtube.com/vi/C7HtYkaG2DQ/0.jpg" /></a></p>
+<pre class="highlight php"><code>$context = array();
+$context['welcome'] = Timber::get_post(56);
+Timber::render('welcome.twig', $context);
+</code></pre>
+<pre class="highlight handlebars"><code><span class="nt">&lt;section</span> <span class="na">class=</span><span class="s">"welcome-block"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"inner"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;h3&gt;</span><span class="k">{{</span><span class="nv">welcome</span><span class="p">.</span><span class="nv">post_title</span><span class="k">}}</span><span class="nt">&lt;/h3&gt;</span>
+        <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">welcome</span><span class="p">.</span><span class="nv">get_content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;p&gt;</span>Follow me on <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"https://twitter.com/</span><span class="k">{{</span><span class="nv">welcome</span><span class="p">.</span><span class="nv">twitter_handle</span><span class="k">}}</span><span class="s">"</span> <span class="na">target=</span><span class="s">"_blank"</span><span class="nt">&gt;</span>Twitter!<span class="nt">&lt;/a&gt;&lt;/p&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/section&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="4-converting-html-to-twig-templates">4. Converting HTML to Twig Templates</h3>
+
+<p><a href="http://www.youtube.com/watch?v=BxazrNBLK-0"><img alt="Connecting HTML Templates" src="http://img.youtube.com/vi/BxazrNBLK-0/0.jpg" /></a></p>
+<pre class="highlight php"><code>$context['posts'] = Timber::get_posts();
+Timber::render('home-main.twig', $context);
+</code></pre>
+<pre class="highlight handlebars"><code>{# home-main.twig #}
+{% for post in posts %}
+    {% include "tz-post.twig" %}
+{% endfor %}
+</code></pre>
+
+<hr>
+
+<h3 id="5-using-custom-post-types-with-timber-twig">5. Using Custom Post Types with Timber + Twig</h3>
+
+<p><a href="http://www.youtube.com/watch?v=19T0MStDLSQ"><img alt="Using Custom Post Types with Timber" src="http://img.youtube.com/vi/19T0MStDLSQ/0.jpg" /></a></p>
+<pre class="highlight handlebars"><code>{# home-main.twig #}
+{% for post in posts %}
+    {# you can send includes an array, in order of precedence #}
+    {% include ["tz-"~post.post_type~".twig", "tz-post.twig"] %}
+{% endfor %}
+</code></pre>
+<pre class="highlight handlebars"><code>{# tz-recipe.twig #}
+<span class="nt">&lt;article</span> <span class="na">id=</span><span class="s">"post-</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">ID</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"post-</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">ID</span><span class="k">}}</span><span class="s"> </span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">post_type</span><span class="k">}}</span><span class="s"> type-</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">post_type</span><span class="k">}}</span><span class="s"> status-publish hentry"</span><span class="nt">&gt;</span>
+    {% if post.get_thumbnail %}
+        <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_thumbnail</span><span class="p">.</span><span class="nv">get_src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">600</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+    {% endif %}
+    <span class="nt">&lt;h2&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">post_title</span><span class="k">}}</span><span class="nt">&lt;/h2&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"post-body"</span><span class="nt">&gt;</span>
+        <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_content</span><span class="k">}}</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="6-extending-templates">6. Extending Templates</h3>
+
+<p><em>Todo: Record Screencast showing this</em></p>
+
+<p>This is a <strong>really</strong> important concept for DRY. I&rsquo;ll show how to create a base template that can power your site:</p>
+
+<h5 id="create-a-base-twig-file">Create a <code class="prettyprint">base.twig</code> file:</h5>
+<pre class="highlight handlebars"><code>{# base.twig #}
+{% include "html-header.twig" %}
+{% block head %}
+    <span class="c">&lt;!-- This is where you'll put template-specific stuff that needs to go in the head tags like custom meta tags, etc. --&gt;</span>
+{% endblock %}
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body</span> <span class="na">class=</span><span class="s">"</span><span class="k">{{</span><span class="nv">body_class</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
+{% block content %}
+    <span class="c">&lt;!-- The template's main content will go here. --&gt;</span>
+{% endblock %}
+{% include "footer.twig" %}
+<span class="k">{{</span><span class="nv">wp_footer</span><span class="k">}}</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre>
+
+<h5 id="you-can-use-this-in-a-custom-single-twig-file">You can use this in a custom <code class="prettyprint">single.twig</code> file:</h5>
+<pre class="highlight handlebars"><code>{# single.twig #}
+{% extends "base.twig" %}
+{% block head %}
+    <span class="nt">&lt;meta</span> <span class="na">property=</span><span class="s">"og:title"</span> <span class="na">value=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+{% endblock %}
+{% block content %}
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"main"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;h1&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
+        <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+{% endblock %}
+</code></pre>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

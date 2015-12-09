@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_performance">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="performance">Performance</h1>
+
+<p>Timber, especially in conjunction with WordPress and Twig, offers a variety of caching strategies to optimize performance. Here&rsquo;s a quick rundown of some of the options, ranked in order of most-broad to most-focused.</p>
+
+<h3 id="tl-dr">tl;dr</h3>
+
+<p>In my tests with Debug Bar, Timber has no measurable performance hit. Everything compiles to PHP. @fabpot has an <a href="http://fabien.potencier.org/article/34/templating-engines-in-php">overview of the performance costs on his blog</a> (scroll down to the table)</p>
+
+<h2 id="cache-everything">Cache Everything</h2>
+
+<p>You can still use plugins like <a href="https://wordpress.org/plugins/w3-total-cache/">W3 Total Cache</a> in conjunction with Timber. In most settings, this will <em>skip</em> the Twig/Timber layer of your files and serve static pages via whatever mechanism the plugin or settings dictate</p>
+
+<h2 id="cache-the-entire-twig-file-and-data">Cache the Entire Twig File and Data</h2>
+
+<p>When rendering, use the <code class="prettyprint">$expires</code> argument in <code class="prettyprint">Timber::render</code>. For example:</p>
+<pre class="highlight php"><code>$data['posts'] = Timber::get_posts();
+Timber::render('index.twig', $data, 600);
+</code></pre>
+
+<p>Timber will cache the template for 10 minutes (600 / 60 = 10). But here&rsquo;s the cool part. Timber hashes the fields in the view context. This means that as soon as the data changes, the cache is automatically invalidated (yay!).</p>
+
+<p>Full Parameters:</p>
+<pre class="highlight php"><code>Timber::render(
+    $filenames,
+    $data,
+    $expires, /** Default: false. False disables cache altogether. When passed an array, the first value is used for non-logged in visitors, the second for users **/
+    $cache_mode /** Any of the cache mode constants defined in TimberLoader **/
+);
+</code></pre>
+
+<p>The cache modes are:</p>
+<pre class="highlight php"><code>TimberLoader::CACHE_NONE /** Disable caching **/
+TimberLoader::CACHE_OBJECT /** WP Object Cache **/
+TimberLoader::CACHE_TRANSIENT  /** Transients **/
+TimberLoader::CACHE_SITE_TRANSIENT /** Network wide transients **/
+TimberLoader::CACHE_USE_DEFAULT /** Use whatever caching mechanism is set as the default for TimberLoader, the default is transient **/
+</code></pre>
+
+<p>This method is very effective, but crude - the whole template is cached. So if you have any context dependent sub-views (eg. current user), this mode won&rsquo;t do.</p>
+
+<h2 id="cache-parts-of-the-twig-file-and-data">Cache <em>Parts</em> of the Twig File and Data</h2>
+
+<p>This method implements the Twig Cache Extension. It adds the cache tag, for use in templates. Best shown by example:</p>
+<pre class="highlight json"><code><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">cache</span><span class="w"> </span><span class="err">'index/content'</span><span class="w"> </span><span class="err">posts</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+    </span><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">post</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">posts</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+        </span><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">include</span><span class="w"> </span><span class="err">['tease-'~post.post_type~'.twig',</span><span class="w"> </span><span class="err">'tease.twig']</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+    </span><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">endfor</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+</span><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">endcache</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p><code class="prettyprint">&#39;index/content&#39;</code> will be used as annotation (ie. label) for the cache, while <code class="prettyprint">posts</code> will be encoded with all its public fields. You can use anything for the label (&ldquo;foo&rdquo;, &ldquo;elephant&rdquo;, &ldquo;single-posts&rdquo;, whatever).</p>
+
+<p>The mechanism behind it is the same as with render - the cache key is determined based on a hash of the object/array passed in (in the above example posts).</p>
+
+<p>The cache method used is always the default mode, set using the bespoke filter (by default, transient cache).</p>
+
+<p>This method allows for very fine-grained control over what parts of templates are being cached and which are not. When applied on resource-intensive sections, the performance difference is huge.</p>
+
+<p>In your cache, the eventual key will be:
+<code class="prettyprint">php
+$annotation . &#39;__GCS__&#39; . $key
+</code>
+that is in this scenario
+<code class="prettyprint">php
+&#39;index/content__GCS__&#39; . md5( json_encode( $context[&#39;post&#39;] ) )
+</code></p>
+
+<h6 id="extra-timberkeygeneratorinterface">Extra: TimberKeyGeneratorInterface</h6>
+
+<p>Instead of hashing a whole object, you can specify the cache key in the object itself. If the object implements TimberKeyGeneratorInterface, it can pass a unique key through the method get_cache_key. That way a class can for example simply pass last_updated as the unique key.
+If arrays contain the key _cache_key, that one is used as cache key.</p>
+
+<p>This may save yet another few processor cycles.</p>
+
+<h2 id="cache-the-twig-file-but-not-the-data">Cache the Twig File (but not the data)</h2>
+
+<p>Every time you render a <code class="prettyprint">.twig</code> file, Twig compiles all the html tags and variables into a big, nasty blob of function calls and echo statements that actually gets run by PHP. In general, this is pretty efficient. However, you can cache the resulting PHP blob by turning on Twig&rsquo;s cache via:</p>
+<pre class="highlight php"><code>/* functions.php */
+if (class_exists('Timber')){
+    Timber::$cache = true;
+}
+</code></pre>
+
+<p>You can look in your your <code class="prettyprint">/wp-content/plugins/timber/twig-cache</code> directory to see what these files look like.</p>
+
+<p>This does not cache the <em>contents</em> of the variables. This is recommended as a last-step in the production process. Once enabled, any change you make to a <code class="prettyprint">.twig</code> file (just tweaking the html for example) will not go live until the cache is flushed.</p>
+
+<h2 id="cache-the-php-data">Cache the PHP data</h2>
+
+<p>Sometimes the most expensive parts of the operations are generating the data needed to populate the twig template. You can of course use WordPress&rsquo;s default <a href="http://codex.wordpress.org/Transients_API">Transient API</a> to store this data.</p>
+
+<p>You can also use some <a href="http://en.wikipedia.org/wiki/Syntactic_sugar">syntactic sugar</a> to make the checking/saving/retrieving of transient data a bit easier:</p>
+<pre class="highlight php"><code>/* home.php */
+
+$context = Timber::get_context();
+$context['main_stories'] = TimberHelper::transient('main_stories', function(){
+    $posts = Timber::get_posts();
+    //do something expensive with these posts
+    $extra_teases = get_field('my_extra_teases', 'options');
+    foreach($extra_teases as <span class="err">&amp;</span>$tease){
+        $tease = new TimberPost($tease);
+    }
+    $main_stories = array();
+    $main_stories['posts'] = $posts;
+    $main_stories['extra_teases'] = $extra_teases;
+    return $main_stories;
+}, 600);
+Timber::render('home.twig', $context);
+</code></pre>
+
+<p>Here <code class="prettyprint">main_stories</code> is a totally made-up variable. It could be called <code class="prettyprint">foo</code>, <code class="prettyprint">bar</code>, <code class="prettyprint">elephant</code>, etc.</p>
+
+<h2 id="measuring-performance">Measuring Performance</h2>
+
+<p>Some tools like Debug Bar may not properly measure performance because its data (as in, the actual HTML it&rsquo;s generating to tell you the timing, number of queries, etc.) is swept-up by the page&rsquo;s cache.</p>
+
+<p>Timber provides some quick shortcuts to measure page timing. Here&rsquo;s an example of them in action&hellip;</p>
+<pre class="highlight php"><code>/* single.php */
+$start = TimberHelper::start_timer(); //this generates a starting time
+$context = Timber::get_context();
+$context['post'] = new TimberPost();
+$context['whatever'] = get_my_foo();
+Timber::render('single.twig', $context, 600);
+echo TimberHelper::stop_timer($start); //this reports the time diff by passing the $start time
+</code></pre>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

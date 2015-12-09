@@ -109,6 +109,11 @@
 <td>for people who like trackback spam</td>
 </tr>
 <tr>
+<td>rdf</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
 <td>theme</td>
 <td><a href="#TimberTheme">TimberTheme</a></td>
 <td></td>
@@ -154,55 +159,64 @@
     <span class="nv">$site_two</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberSite</span><span class="p">(</span><span class="s2">"My Cool Site"</span><span class="p">);</span>
     <span class="c1">//non-multisite
 </span>    <span class="nv">$site</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberSite</span><span class="p">();</span>
-    <span class="sb">```
+</code></pre>
 
-## __get
-`</span><span class="nx">__get</span><span class="p">(</span> <span class="nx">mixed</span> <span class="nv">$field</span> <span class="p">)</span><span class="sb">`
+<h2 id="__get">__get</h2>
 
-**returns:** `</span><span class="nx">mixed</span><span class="sb">` 
+<p><code class="prettyprint">__get( mixed $field )</code></p>
 
-Name | Type | Description
----- | ---- | -----------
-$field | mixed | 
+<p><strong>returns:</strong> <code class="prettyprint">mixed</code> </p>
 
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>$field</td>
+<td>mixed</td>
+<td></td>
+</tr>
+</tbody></table>
 
+<h2 id="link">link</h2>
 
-## link
-`</span><span class="nb">link</span><span class="p">(</span> <span class="p">)</span><span class="sb">`
+<p><code class="prettyprint">link( )</code></p>
 
-**returns:** `</span><span class="nx">string</span><span class="sb">` 
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
-Returns the link to the site's home.
+<p>Returns the link to the site&rsquo;s home.</p>
 
-###### Twig
-```</span><span class="nx">handlebars</span>
-    <span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="s2">"{{ site.link }}"</span> <span class="nx">title</span><span class="o">=</span><span class="s2">"Home"</span><span class="o">&gt;</span>
-          <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"/wp-content/uploads/logo.png"</span> <span class="nx">alt</span><span class="o">=</span><span class="s2">"Logo for some stupid thing"</span> <span class="o">/&gt;</span>
-    <span class="o">&lt;/</span><span class="nx">a</span><span class="o">&gt;</span>
-    <span class="sb">```
-    ###### HTML
-```</span><span class="nx">html</span>
-    <span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="s2">"http://example.org"</span> <span class="nx">title</span><span class="o">=</span><span class="s2">"Home"</span><span class="o">&gt;</span>
-          <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"/wp-content/uploads/logo.png"</span> <span class="nx">alt</span><span class="o">=</span><span class="s2">"Logo for some stupid thing"</span> <span class="o">/&gt;</span>
-    <span class="o">&lt;/</span><span class="nx">a</span><span class="o">&gt;</span>
-    <span class="sb">```
+<h6 id="twig">Twig</h6>
+<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">site</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span> <span class="na">title=</span><span class="s">"Home"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"/wp-content/uploads/logo.png"</span> <span class="na">alt=</span><span class="s">"Logo for some stupid thing"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/a&gt;</span>
+</code></pre>
 
-## url
-`</span><span class="nx">url</span><span class="p">(</span> <span class="p">)</span><span class="sb">`
+<h6 id="html">HTML</h6>
+<pre class="highlight html"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"http://example.org"</span> <span class="na">title=</span><span class="s">"Home"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"/wp-content/uploads/logo.png"</span> <span class="na">alt=</span><span class="s">"Logo for some stupid thing"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/a&gt;</span>
+</code></pre>
 
-**returns:** `</span><span class="nx">string</span><span class="sb">` 
+<h2 id="url">url</h2>
 
+<p><code class="prettyprint">url( )</code></p>
 
+<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
 
+<h3 id="class-timbersite">Class: TimberSite</h3>
 
-### Class: TimberSite
+<blockquote>
+<p>TimberSite gives you access to information you need about your site. In Multisite setups, you can get info on other sites in your network.</p>
+</blockquote>
 
-&gt; TimberSite gives you access to information you need about your site. In Multisite setups, you can get info on other sites in your network.
+<h6 id="example">Example</h6>
 
-###### Example
-###### PHP
-```</span><span class="nx">php</span>
-<span class="o">&lt;?</span><span class="nx">php</span>
+<h6 id="php">PHP</h6>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
 <span class="nv">$context</span> <span class="o">=</span> <span class="nx">Timber</span><span class="o">::</span><span class="na">get_context</span><span class="p">();</span>
 <span class="nv">$other_site_id</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
 <span class="nv">$context</span><span class="p">[</span><span class="s1">'other_site'</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TimberSite</span><span class="p">(</span><span class="nv">$other_site_id</span><span class="p">);</span>

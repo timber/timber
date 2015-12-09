@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_custom-page-templates">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="custom-page-templates">Custom Page Templates</h1>
+
+<p>There are a few ways to manage custom pages in WordPress and Timber, in order from simple-to-complex:</p>
+
+<h3 id="custom-twig-file">Custom Twig File</h3>
+
+<p>Say you&rsquo;ve created a page called &ldquo;About Us&rdquo; and WordPress has given it the slug <code class="prettyprint">about-us</code>. If you&rsquo;re using the <a href="https://github.com/Upstatement/timber-starter-theme">Timber Starter Theme</a> you can simply&hellip;
+- Create a file called <code class="prettyprint">page-about-us.twig</code> inside your <code class="prettyprint">views</code> and go crazy.
+- I recommend copying-and-pasting the contents of <a href="https://github.com/Upstatement/timber-starter-theme/blob/master/views/page.twig"><code class="prettyprint">page.twig</code></a> into here so you have something to work from.</p>
+
+<h5 id="how-does-this-work">How does this work?</h5>
+
+<p>In the <code class="prettyprint">page.php</code> file you&rsquo;ll see this code&hellip;
+<code class="prettyprint">php
+Timber::render(array(&#39;page-&#39; . $post-&gt;post_name . &#39;.twig&#39;, &#39;page.twig&#39;), $context);
+</code>
+Which is telling PHP to first look for a twig file named <code class="prettyprint">page-{{slug}}.twig</code> and falling back to <a href="https://github.com/Upstatement/timber-starter-theme/blob/master/views/page.twig"><code class="prettyprint">page.twig</code></a> if that doesn&rsquo;t exist.</p>
+
+<hr>
+
+<h3 id="custom-php-file">Custom PHP File</h3>
+
+<p>If you need to do something special for this page in PHP, you can use standard WordPress <a href="http://codex.wordpress.org/Template_Hierarchy">template hierarchy</a> to gather and manipulate data for this page. In the above example, you would create a file called <code class="prettyprint">/wp-content/themes/my-theme/page-about-us.php</code> and populate it with the necessary PHP. Again, you can use the contents of the starter theme&rsquo;s <a href="https://github.com/Upstatement/timber-starter-theme/blob/master/page.php"><code class="prettyprint">page.php</code></a> file as a guide.</p>
+
+<hr>
+
+<h3 id="custom-page-template">Custom Page Template</h3>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="cm">/*
+ * Template Name: My Custom Page
+ * Description: A Page Template with a darker design.
+ */</span>
+
+<span class="c1">// Code to display Page goes here...
+</span></code></pre>
+
+<p>In the WordPress admin, this will now display in your page&rsquo;s list of available templates like so:</p>
+
+<p><img alt="wordpress custom page template chooser" src="http://codex.wordpress.org/images/thumb/a/a3/page-templates-pulldown-screenshot.png/180px-page-templates-pulldown-screenshot.png" /></p>
+
+<p>I recommend naming it something like <code class="prettyprint">/wp-content/themes/my-theme/template-my-custom-page.php</code>. Do NOT name it something beginning with <code class="prettyprint">page-</code> or WP will get very confused. Here&rsquo;s <a href="https://github.com/Upstatement/blades/blob/master/template-person.php">an example of what the PHP in this file</a> looks like.</p>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

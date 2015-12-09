@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_debugging">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="debugging">Debugging</h1>
+
+<h3 id="using-twig-39-s-native-functions">Using Twig&rsquo;s native functions</h3>
+
+<p>Twig includes a <code class="prettyprint">dump</code> function that can output the properties of an object. To use <code class="prettyprint">WP_DEBUG</code> must be set to true.</p>
+
+<h5 id="wp-config-php">wp-config.php</h5>
+<pre class="highlight php"><code>define('WP_DEBUG', true);
+</code></pre>
+
+<h5 id="single-twig">single.twig</h5>
+<pre class="highlight html"><code>{{dump(post)}}
+</code></pre>
+
+<p>Which will give you:</p>
+
+<p><a href="http://imgur.com/5Xu53Fk"><img src="http://i.imgur.com/5Xu53Fk.png" title="Hosted by imgur.com"/></a></p>
+
+<p>You can also dump <em>everything</em> sent to your template via:</p>
+<pre class="highlight html"><code>{{dump()}}
+</code></pre>
+
+<p>This will give you something like:</p>
+
+<p><a href="http://imgur.com/5ZD8VDd"><img src="http://i.imgur.com/5ZD8VDd.png" title="Hosted by imgur.com"/></a></p>
+
+<hr>
+
+<h3 id="using-timber-debug-bar-plugin">Using Timber Debug Bar plugin</h3>
+
+<p>There&rsquo;s a <a href="http://wordpress.org/plugins/debug-bar-timber/">Timber add-on</a> for the <a href="https://wordpress.org/plugins/debug-bar/">WordPress debug bar</a>. Warning: this currently requries PHP 5.4. I&rsquo;m working on fixing whatever&rsquo;s going on for PHP 5.3</p>
+
+<h3 id="using-legacy-timber-filters">Using (Legacy) Timber Filters</h3>
+
+<p>You can also use some quick filters on an object. These are legacy and will be removed in favor of using Twig&rsquo;s built-in functionality. However, these do not require that WP_DEBUG be turned on.
+<code class="prettyprint">html
+    {{post|print_r}}
+</code></p>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

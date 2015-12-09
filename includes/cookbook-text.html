@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_cookbook-text">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="cookbook-text">Cookbook: Text!</h1>
+
+<p>There&rsquo;s tons of stuff you can do with Twig and Timber filters to make complex transformations easy (and fun!)</p>
+
+<h4 id="dates">Dates</h4>
+
+<h5 id="timber-does-bylines-like-a-boss">Timber does bylines like a boss:</h5>
+<pre class="highlight html"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"byline"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"name"</span><span class="nt">&gt;</span>By {{post.author.name}}<span class="nt">&lt;/span&gt;</span>
+    <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"date"</span><span class="nt">&gt;</span>{{post.post_date|date('F j, Y')}}<span class="nt">&lt;/span&gt;</span>
+<span class="nt">&lt;/p&gt;</span>
+</code></pre>
+
+<h6 id="renders">Renders:</h6>
+<pre class="highlight html"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"byline"</span><span class="nt">&gt;&lt;span</span> <span class="na">class=</span><span class="s">"name"</span><span class="nt">&gt;</span>By Mr. WordPress<span class="nt">&lt;/span&gt;&lt;span</span> <span class="na">class=</span><span class="s">"date"</span><span class="nt">&gt;</span>September 28, 2013<span class="nt">&lt;/span&gt;&lt;/p&gt;</span>
+</code></pre>
+
+<h5 id="nothing-is-worse-than-an-out-of-date-copyright-year-in-the-footer-nothing">Nothing is worse than an out-of-date copyright year in the footer. Nothing.</h5>
+<pre class="highlight html"><code><span class="nt">&lt;footer&gt;</span>
+    <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"copyright"</span><span class="nt">&gt;</span><span class="ni">&amp;copy;</span> {{now|date('Y')}} by {{bloginfo('name')}}<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/footer&gt;</span>
+</code></pre>
+
+<h6 id="renders">Renders:</h6>
+<pre class="highlight html"><code><span class="nt">&lt;footer&gt;&lt;p</span> <span class="na">class=</span><span class="s">"copyright"</span><span class="nt">&gt;</span><span class="ni">&amp;copy;</span> 2015 by The Daily Orange<span class="nt">&lt;/p&gt;&lt;/footer&gt;</span>
+</code></pre>
+
+<hr>
+
+<h4 id="standard-transforms">Standard transforms</h4>
+
+<h5 id="run-wordpress-39-s-auto-paragraph-filter">Run WordPress&rsquo;s auto-paragraph filter</h5>
+<pre class="highlight html"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"content"</span><span class="nt">&gt;</span>{{post.my_custom_text|wpautop}}<span class="nt">&lt;/p&gt;</span>
+</code></pre>
+
+<h5 id="run-wordpress-shortcodes-over-a-block-of-text">Run WordPress shortcodes over a block of text</h5>
+<pre class="highlight html"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"content"</span><span class="nt">&gt;</span>{{post.my_custom_text|shortcodes}}<span class="nt">&lt;/p&gt;</span>
+</code></pre>
+
+<h5 id="code-samples-lord-knows-i-39-ve-got-39-em">Code samples? Lord knows I&rsquo;ve got &lsquo;em:</h5>
+<pre class="highlight html"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"code-sample"</span><span class="nt">&gt;</span>{{post.code_samples|pretags}}<span class="nt">&lt;/div&gt;</span>
+</code></pre>
+
+<h5 id="functions-inside-of-your-templates-plugin-calls">Functions inside of your templates, plugin calls:</h5>
+
+<p>Old template:
+<code class="prettyprint">html
+&lt;p class=&quot;entry-meta&quot;&gt;&lt;?php twentytwelve_entry_meta(); ?&gt;&lt;/p&gt;
+</code></p>
+
+<p>Timber-fied template:
+<code class="prettyprint">html
+&lt;p class=&quot;entry-meta&quot;&gt;{{function(&#39;twentytwelve_entry_meta&#39;)}}&lt;/p&gt;
+</code></p>
+
+<h5 id="functions-quot-with-params-quot-inside-of-your-templates-plugin-calls">Functions &ldquo;with params&rdquo; inside of your templates, plugin calls:</h5>
+
+<p>Old template:
+<code class="prettyprint">html
+&lt;p class=&quot;entry-meta&quot;&gt;&lt;?php get_the_title($post-&gt;ID); ?&gt;&lt;/p&gt;
+</code></p>
+
+<p>Timber-fied template:
+<code class="prettyprint">html
+&lt;p class=&quot;entry-meta&quot;&gt;{{function(&#39;get_the_title&#39;, post.ID)}}&lt;/p&gt;
+</code></p>
+
+<hr>
+
+<h3 id="internationalization">Internationalization</h3>
+
+<h4 id="__">__()</h4>
+
+<p>Timber comes built-in with your ordinary gettext function __() for l10n.</p>
+
+<p>Old template:
+<code class="prettyprint">html
+&lt;p class=&quot;entry-meta&quot;&gt;&lt;?php _e(&#39;Posted on&#39;, &#39;my-text-domain&#39;) ?&gt; [...]&lt;/p&gt;
+</code></p>
+
+<p>Timber-fied template:
+<code class="prettyprint">html
+&lt;p class=&quot;entry-meta&quot;&gt;{{__(&#39;Posted on&#39;, &#39;my-text-domain&#39;)}} [...]&lt;/p&gt;
+</code></p>
+
+<h4 id="sprintf-notation">sprintf notation</h4>
+
+<p>You can even use sprintf-type placeholders, using the <code class="prettyprint">format</code> filter:</p>
+
+<p>Old template:
+<code class="prettyprint">html
+&lt;p class=&quot;entry-meta&quot;&gt;&lt;?php printf( __(&#39;Posted on %s&#39;, &#39;my-text-domain&#39;), $posted_on_date ) ?&gt;&lt;/p&gt;
+</code></p>
+
+<p>Timber-fied template:
+<code class="prettyprint">html
+&lt;p class=&quot;entry-meta&quot;&gt;{{__(&#39;Posted on %s&#39;, &#39;my-text-domain&#39;)|format(posted_on_date)}}&lt;/p&gt;
+</code></p>
+
+<h4 id="generating-po-files-using-poedit">Generating .po files using POEdit</h4>
+
+<p>Unfortunately, Twig files with the above functions are not automatically parsed by gettext in POEdit. The quick and dirty workaround is to start each .twig file with <code class="prettyprint">{#&lt;?php#}</code> (by doing this, gettext will interpret whatever comes next as php, and start looking for <code class="prettyprint">__</code>).</p>
+
+<p>A nicer solution is to add a special Twig parser to POEdit using the parser for Python. This will throw a warning or two, but your strings are extracted! To add the parser, follow these steps:</p>
+
+<ol>
+<li>Create a POEdit project for your theme if you haven&rsquo;t already, and make sure to add <code class="prettyprint">__</code> on the <em>Sources keywords</em> tab.</li>
+<li>Go to <em>Edit</em>-&gt;<em>Preferences</em>.</li>
+<li>On the <em>Parsers</em> tab, add a new parser with these settings:
+
+<ul>
+<li>Language: <code class="prettyprint">Timber</code></li>
+<li>List of extensions: <code class="prettyprint">*.twig</code></li>
+<li>Parser command: <code class="prettyprint">xgettext --language=Python --add-comments=TRANSLATORS --force-po -o %o %C %K %F</code></li>
+<li>An item in keyword list: <code class="prettyprint">-k%k</code></li>
+<li>An item in input files list: <code class="prettyprint">%f</code></li>
+<li>Source code charset: <code class="prettyprint">--from-code=%c</code></li>
+</ul></li>
+<li>Save and Update!</li>
+</ol>
+
+<hr>
+
+<h3 id="debugging">Debugging</h3>
+
+<h5 id="what-properties-are-inside-my-object">What properties are inside my object?</h5>
+<pre class="highlight html"><code>{{dump(post)}}
+</code></pre>
+
+<h5 id="what-properties-and-methods-are-inside-my-object">What properties and <em>methods</em> are inside my object?</h5>
+
+<p>Warning: Experimental!
+<code class="prettyprint">html
+{{post|print_a}}
+</code>
+This outputs both the database stuff (like {{post.post_content}}) and the contents of methods (like {{post.thumbnail}})</p>
+
+<h5 id="what-type-of-object-am-i-working-with">What type of object am I working with?</h5>
+<pre class="highlight html"><code>{{post|get_class}}
+</code></pre>
+
+<p>&hellip; will output something like <code class="prettyprint">TimberPost</code> or your custom wrapper object</p>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

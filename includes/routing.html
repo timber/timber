@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_routing">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="routing">Routing</h1>
+
+<p>Among its other special powers, Timber implements modern routing in the Express.js/Ruby on Rails mold, making it easy for you to implement custom pagination&ndash;and anything else you might imagine in your wildest dreams of URLs and parameters. OMG so easy!</p>
+
+<h4 id="some-examples">Some examples</h4>
+
+<p>In your functions.php file, this can be called anywhere (don&rsquo;t hook it to init or another action or it might be called too late)
+&ldquo;`php
+Timber::add_route(&lsquo;blog/:name&rsquo;, function($params){
+    $query = &#39;posts_per_page=3&amp;post_type=&rsquo;.$params[&#39;name&rsquo;];
+    Timber::load_template(&#39;archive.php&rsquo;, $query);
+});</p>
+
+<p>Timber::add_route(&#39;blog/:name/page/:pg&rsquo;, function($params){
+    $query = &#39;posts_per_page=3&amp;post_type=&rsquo;.$params[&#39;name&rsquo;].&rsquo;&amp;paged=&rsquo;.$params[&#39;pg&rsquo;];
+    Timber::load_template(&#39;archive.php&rsquo;, $query);
+});
+&rdquo;`</p>
+
+<h4 id="add_route">add_route</h4>
+
+<h6 id="add_route-pattern-callback"><code class="prettyprint">add_route($pattern, $callback)</code></h6>
+
+<h6 id="usage">Usage:</h6>
+
+<p>A <code class="prettyprint">functions.php</code> where I want to display custom paginated content:</p>
+<pre class="highlight php"><code>Timber::add_route('info/:name/page/:pg', function($params){
+    //make a custom query based on incoming path and run it...
+    $query = 'posts_per_page=3<span class="ni">&amp;post_type='.$params['name'].'&amp;paged='.intval($params['pg']);</span>
+
+    //load up a template which will use that query
+    Timber::load_template('archive.php', $query);
+});
+</code></pre>
+
+<h6 id="arguments">Arguments:</h6>
+
+<p><code class="prettyprint">$pattern</code> (required)
+Set a pattern for Timber to match on, by default everything is handled as a string. Any segment that begins with a <code class="prettyprint">:</code> is handled as a variable, for example:</p>
+
+<p><strong>To paginate:</strong>
+<code class="prettyprint">
+page/:pagenum
+</code></p>
+
+<p><strong>To edit a user:</strong>
+<code class="prettyprint">
+my-users/:userid/edit
+</code></p>
+
+<p><code class="prettyprint">$callback</code>
+A function that should fire when the pattern matches the request. Callback takes one argument which is an array of the parameters passed in the URL.</p>
+
+<p>So in this example: <code class="prettyprint">&#39;info/:name/page/:pg&#39;</code>, $params would have data for:
+* <code class="prettyprint">$data[&#39;name&#39;]</code>
+* <code class="prettyprint">$data[&#39;pg&#39;]</code></p>
+
+<p>&hellip; which you can use in the callback function as a part of your query</p>
+
+<hr>
+
+<h4 id="load_template">load_template</h4>
+
+<h6 id="load_template-php_file-query-null-force_header-200-template_params"><code class="prettyprint">load_template($php_file, $query = null, $force_header = 200, $template_params)</code></h6>
+
+<h6 id="arguments">Arguments:</h6>
+
+<p><code class="prettyprint">$php_file</code> (required)
+A PHP file to load, in my experience this is usually your archive.php or a generic listing page (but don&rsquo;t worry it can be anything!)</p>
+
+<p><code class="prettyprint">$query</code>
+The query you want to use, it can accept a string or array just like Timber::get_posts &ndash; use the standard WP_Query syntax</p>
+
+<p><code class="prettyprint">$force_header</code>
+Send an optional header. Defaults to 200 for &#39;Success/OK&rsquo;</p>
+
+<p><code class="prettyprint">$template_params</code>
+Any data you want to send to the resulting view. Example:</p>
+<pre class="highlight php"><code>/* functions.php */
+
+Timber::add_route('info/:name/page/:pg', function($params){
+    //make a custom query based on incoming path and run it...
+    $query = 'posts_per_page=3<span class="ni">&amp;post_type='.$params['name'].'&amp;paged='.intval($params['pg']);</span>
+
+    //load up a template which will use that query
+    $params = array();
+    $params['my_title'] = 'This is my custom title';
+    Timber::load_template('archive.php', $query, 200, $params);
+});
+</code></pre>
+<pre class="highlight php"><code>/* archive.php */
+
+global $params;
+$context['wp_title'] = $params['my_title']; // "This is my custom title"
+/* the rest as normal... */
+Timber::render('archive.twig', $context)
+</code></pre>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

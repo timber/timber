@@ -1,0 +1,307 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Documentation</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="includes includes_wp-integration">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <div class="logo-wrapper">
+        <img src="../images/timber-logo-icon.svg" />
+      </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h2 id="wp-integration">WP Integration</h2>
+
+<p>Timber plays nice with your existing WordPress setup. You can still use other plugins, etc. Here&rsquo;s a rundown of the key points:</p>
+
+<ul>
+<li><a href="#the_content">the_content</a></li>
+<li><a href="#hooks">WordPress Hooks</a></li>
+<li><a href="#scripts--stylesheets">Scripts + Stylesheets</a></li>
+<li><a href="#functions">Functions</a></li>
+<li><a href="#actions">Actions</a></li>
+<li><a href="WP-Integration#filters">Filters</a></li>
+<li><a href="WP-Integration#widgets">Widgets</a></li>
+<li><a href="WP-Integration#shortcodes">Shortcodes</a></li>
+</ul>
+
+<hr>
+
+<h3 id="the_content">the_content</h3>
+
+<p>You&rsquo;re probably used to calling <code class="prettyprint">the_content()</code> in your theme file. This is good. Before outputting, WordPress will run all the filters and actions that your plugins and themes are using. If you want to get this into your new Timber theme (and you probably do). Call it like this:</p>
+<pre class="highlight php"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"my-article"</span><span class="nt">&gt;</span>
+   {{post.content}}
+<span class="nt">&lt;/div&gt;</span>
+</code></pre>
+
+<p>This differs from <code class="prettyprint">{{post.post_content}}</code> which is the raw text stored in your database</p>
+
+<hr>
+
+<h3 id="hooks">Hooks</h3>
+
+<p>Timber hooks to interact with WordPress use <code class="prettyprint">this/style/of_hooks</code> instead of <code class="prettyprint">this_style_of_hooks</code>. This matches the same methodology as <a href="http://www.advancedcustomfields.com/resources/#actions">Advanced Custom Fields</a>.</p>
+
+<p>Full documentation to come</p>
+
+<hr>
+
+<h3 id="scripts-stylesheets">Scripts + Stylesheets</h3>
+
+<p>What happened to <code class="prettyprint">wp_head()</code> and <code class="prettyprint">wp_footer()</code>? Don&rsquo;t worry, they haven&rsquo;t gone away. In fact, they have a home now in the <code class="prettyprint">Timber::get_context()</code> object. When you setup your PHP file, you should do something like this:</p>
+<pre class="highlight php"><code>/* single.php */
+$data = Timber::get_context();
+$data['post'] = new TimberPost();
+Timber::render('single.twig', $data);
+</code></pre>
+
+<p>Now in the corresponding Twig file:</p>
+<pre class="highlight php"><code>{# single.twig #}
+<span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+    <span class="c">&lt;!-- Add whatever you need in the head, and then...--&gt;</span>
+    {{wp_head}}
+    <span class="nt">&lt;/head&gt;</span>
+
+    <span class="c">&lt;!-- etc... --&gt;</span>
+
+    <span class="nt">&lt;footer&gt;</span>
+        Copyright <span class="ni">&amp;copy;</span> {{"now"|date('Y')}}
+    <span class="nt">&lt;/footer&gt;</span>
+    {{wp_footer}}
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre>
+
+<p>WordPress will inject whatever output had been loaded into <code class="prettyprint">wp_head()</code> and <code class="prettyprint">wp_footer()</code> through these variables.</p>
+
+<hr>
+
+<h4 id="functions">Functions</h4>
+
+<p>But my theme/plugin has some functions I need! Do I really have to re-write all of them?</p>
+
+<p>No.</p>
+
+<p>Let&rsquo;s say you modified twentyeleven and need some of the functions back. Here&rsquo;s the quick-and-dirty way:</p>
+<pre class="highlight php"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"posted-on"</span><span class="nt">&gt;</span>{{function("twentyeleven_posted_on")}}<span class="nt">&lt;/div&gt;</span>
+</code></pre>
+
+<p>Oh. That&rsquo;s not so bad. What if there are arguments? Easy:</p>
+<pre class="highlight php"><code>{# single.twig #}
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"admin-tools"</span><span class="nt">&gt;</span>
+    {{function('edit_post_link', 'Edit', '<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"edit-link"</span><span class="nt">&gt;</span>', '<span class="nt">&lt;/span&gt;</span>')}}
+<span class="nt">&lt;/div&gt;</span>
+</code></pre>
+
+<p>Nice! Any gotchas? Unfortunately yes. While the above example will totally work in a single.twig file it will not in a loop. Why? Single.twig/single.php retain the context of the current post. Thus for a function like <code class="prettyprint">edit_post_link</code> (which will try to guess the ID# of the post you want to edit, based on the current post in the loop), the same function requires some modification in a file like <code class="prettyprint">archive.twig</code> or <code class="prettyprint">index.twig</code>. There, you will need to explicitly set the post ID:</p>
+<pre class="highlight php"><code>{# index.twig #}
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"admin-tools"</span><span class="nt">&gt;</span>
+    {{function('edit_post_link', 'Edit', '<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"edit-link"</span><span class="nt">&gt;</span>', '<span class="nt">&lt;/span&gt;</span>', post.ID)}}
+<span class="nt">&lt;/div&gt;</span>
+</code></pre>
+
+<p>You can also use <code class="prettyprint">fn(&#39;my_function&#39;)</code> as an alias.</p>
+
+<p>For a less quick-and-dirty way, you can use the TimberFunctionWrapper. This class sets up your PHP functions as functions you can use in your Twig templates. It will execute them only when you actually call them in your template. You can quickly set up a TimberFunctionWrapper using <code class="prettyprint">TimberHelper</code>:</p>
+<pre class="highlight php"><code>/**
+ * @param string $function_name
+ * @param array (optional) $defaults
+ * @param bool (optional) $return_output_buffer Return function output instead of return value (default: false)
+ * @return \TimberFunctionWrapper
+ */
+TimberHelper::function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false );
+</code></pre>
+
+<p>So if you want to add <code class="prettyprint">edit_post_link</code> to your context, you can do something like this:</p>
+<pre class="highlight php"><code>/* single.php */
+$data = Timber::get_context();
+$data['post'] = new TimberPost();
+$data['edit_post_link'] = TimberHelper::function_wrapper( 'edit_post_link', array( __( 'Edit' ), '<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"edit-link"</span><span class="nt">&gt;</span>', '<span class="nt">&lt;/span&gt;</span>' ) );
+Timber::render('single.twig', $data);
+</code></pre>
+
+<p>Now you can use it like a &lsquo;normal&rsquo; function:</p>
+<pre class="highlight php"><code>{# single.twig #}
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"admin-tools"</span><span class="nt">&gt;</span>
+    {{edit_post_link}}
+<span class="nt">&lt;/div&gt;</span>
+{# Calls edit_post_link using default arguments #}
+
+{# single-my-post-type.twig #}
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"admin-tools"</span><span class="nt">&gt;</span>
+    {{edit_post_link(null, '<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"edit-my-post-type-link"</span><span class="nt">&gt;</span>')}}
+<span class="nt">&lt;/div&gt;</span>
+{# Calls edit_post_link with all defaults, except for second argument #}
+</code></pre>
+
+<h2 id="actions">Actions</h2>
+
+<p>Call them in your Twig template&hellip;</p>
+<pre class="highlight php"><code>{% do action('my_action') %}
+{% do action('my_action_with_args', 'foo', 'bar') %}
+</code></pre>
+
+<p>&hellip; in your <code class="prettyprint">functions.php</code> file:</p>
+<pre class="highlight php"><code>add_action('my_action', 'my_function');
+
+function my_function($context){
+    //$context stores the template context in case you need to reference it
+    echo $context['post']-&gt;post_title; //outputs title of yr post
+}
+</code></pre>
+<pre class="highlight php"><code>add_action('my_action_with_args', 'my_function_with_args', 10, 2);
+
+function my_function_with_args($foo, $bar){
+    echo 'I say '.$foo.' and '.$bar;
+}
+</code></pre>
+
+<p>You can still get the context object when passing args, it&rsquo;s always the <em>last</em> argument&hellip;</p>
+<pre class="highlight php"><code>add_action('my_action_with_args', 'my_function_with_args', 10, 3);
+
+function my_function_with_args($foo, $bar, $context){
+    echo 'I say '.$foo.' and '.$bar;
+    echo 'For the post with title '.$context['post']-&gt;post_title;
+}
+</code></pre>
+
+<p>Please note the argument count that WordPress requires for <code class="prettyprint">add_action</code></p>
+
+<hr>
+
+<h3 id="filters">Filters</h3>
+<pre class="highlight json"><code><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">post.content|apply_filters('my_filter')</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="w">
+</span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="nt">"my custom string"</span><span class="err">|apply_filters('my_filter',param1,param2,...)</span><span class="w"> </span><span class="err">}}</span><span class="w">
+</span></code></pre>
+
+<hr>
+
+<h3 id="widgets">Widgets</h3>
+
+<p>Everyone loves widgets!
+Of course they do&hellip;</p>
+<pre class="highlight php"><code>$data['footer_widgets'] = Timber::get_widgets('footer_widgets');
+</code></pre>
+
+<p>&hellip;where &#39;footer_widgets&rsquo; is the registered name of the widgets you want to get(in twentythirteen these are called <code class="prettyprint">sidebar-1</code> and <code class="prettyprint">sidebar-2</code> )</p>
+
+<p>Then use it in your template:</p>
+<pre class="highlight php"><code>{# base.twig #}
+<span class="nt">&lt;footer&gt;</span>
+    {{footer_widgets}}
+<span class="nt">&lt;/footer&gt;</span>
+</code></pre>
+
+<hr>
+
+<h3 id="using-timber-inside-your-own-widgets">Using Timber inside your own widgets</h3>
+
+<p>You can also use twig templates for your widgets!
+Let&rsquo;s imagine we want a widget that shows a random number each time it is rendered.</p>
+
+<p>Inside the widget class, the widget function is used to show the widget:
+<code class="prettyprint">php
+public function widget($args, $instance) {
+    $number = rand();
+    Timber::render(&#39;random-widget.twig&#39;, array(&#39;args&#39; =&gt; $args, &#39;instance&#39; =&gt; $instance, &#39;number&#39; =&gt; $number));
+}
+</code>
+The corresponding template file <code class="prettyprint">random-widget.twig</code> looks like this:
+&ldquo;`
+{{ args.before_widget | raw }}
+{{ args.before_title | raw }}{{ instance.title | apply_filters(&#39;widget_title&rsquo;) }}{{ args.after_title | raw }}</p>
+
+<p>Your magic number is: <strong>{{ number }}</strong></p>
+
+<p>{{ args.after_widget | raw }}
+&rdquo;`
+The raw filter is needed here to embed the widget properly.</p>
+
+<p>You may also want to check if the Timber plugin was loaded before using it:</p>
+<pre class="highlight php"><code>public function widget($args, $instance) {
+    if (!class_exists('Timber')) {
+        // if you want to show some error message, this is the right place
+        return;
+    }
+    $number = rand();
+    Timber::render('random-widget.twig', array('args' =&gt; $args, 'instance' =&gt; $instance, 'number' =&gt; $number));
+}
+</code></pre>
+
+<hr>
+
+<h4 id="shortcodes">Shortcodes</h4>
+
+<p>Well, if it works for widgets, why shouldn&rsquo;t it work for shortcodes ?
+Of course it does !</p>
+
+<p>Let&rsquo;s implement a <code class="prettyprint">[youtube]</code> shorttag which embeds a youtube video.
+For the desired usage of <code class="prettyprint">[youtube id=xxxx]</code> we only need a few lines of code:
+&ldquo;`
+// should be called from within an init action hook
+add_shortcode(&#39;youtube&rsquo;, &#39;youtube_shorttag&rsquo;);</p>
+
+<p>function youtube_shorttag($atts) {
+    if(isset($atts[&#39;id&rsquo;])) {
+        $id = sanitize_text_field($atts[&#39;id&rsquo;]);
+    } else {
+        $id = false;
+    }
+    // this time we use Timber::compile since shorttags should return the code
+    return Timber::compile(&#39;youtube-short.twig&rsquo;, array(&#39;id&rsquo; =&gt; $id));
+}
+&rdquo;`</p>
+
+<p>In <code class="prettyprint">youtube-short.twig</code> we have the following template:
+<code class="prettyprint">
+{% if id %}
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;//www.youtube.com/embed/{{ id }}&quot; frameborder=&quot;0&quot; allowfullscreen&gt;&lt;/iframe&gt;
+{% endif %}
+</code>
+Now, when the YouTube embed code changes, we only need to edit the <code class="prettyprint">youtube-short.twig</code> template. No need to search your PHP files for this one particular line.</p>
+
+<h5 id="layouts-with-shortcodes">Layouts with Shortcodes</h5>
+
+<p>Timber and Twig can process your shortcodes by using the <code class="prettyprint">{% filter shortcodes %}</code> tag. Let&rsquo;s say you&rsquo;re using a <code class="prettyprint">[tab]</code> shortcode, for example:</p>
+<pre class="highlight html"><code>{% filter shortcodes %}
+    [tabs tab1="Tab 1 title" tab2="Tab 2 title" layout="horizontal" backgroundcolor="" inactivecolor=""]
+        [tab id=1]
+            Something something something
+        [/tab]
+
+        [tab id=2]
+            Tab 2 content here
+        [/tab]
+    [/tabs]
+{% endfilter %}
+</code></pre>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>
