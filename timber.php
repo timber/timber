@@ -541,7 +541,6 @@ class Timber {
 		$args['type'] = 'array';
 		$args['current'] = max( 1, get_query_var( 'paged' ) );
 		$args['mid_size'] = max( 9 - $args['current'], 3 );
-		$args['prev_next'] = false;
 		if ( is_int( $prefs ) ) {
 			$args['mid_size'] = $prefs - 2;
 		} else {

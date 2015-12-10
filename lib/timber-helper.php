@@ -511,7 +511,7 @@ class TimberHelper {
 			'total' => 1,
 			'current' => 0,
 			'show_all' => false,
-			'prev_next' => true,
+			'prev_next' => false,
 			'prev_text' => __( '&laquo; Previous' ),
 			'next_text' => __( 'Next &raquo;' ),
 			'end_size' => 1,
@@ -532,20 +532,6 @@ class TimberHelper {
 		$args['add_args'] = is_array( $args['add_args'] ) ? $args['add_args'] : false;
 		$page_links = array();
 		$dots = false;
-		if ( $args['prev_next'] && $args['current'] && 1 < $args['current'] ) {
-			$link = str_replace( '%_%', 2 == $args['current'] ? '' : $args['format'], $args['base'] );
-			$link = str_replace( '%#%', $args['current'] - 1, $link );
-			if ( $args['add_args'] ) {
-				$link = add_query_arg( $args['add_args'], $link );
-			}
-			$link .= $args['add_fragment'];
-			$link = untrailingslashit( $link );
-			$page_links[] = array(
-				'class' => 'prev page-numbers',
-				'link' => esc_url( apply_filters( 'paginate_links', $link ) ),
-				'title' => $args['prev_text']
-			);
-		}
 		for ( $n = 1; $n <= $args['total']; $n++ ) {
 			$n_display = number_format_i18n( $n );
 			if ( $n == $args['current'] ) {
@@ -583,19 +569,6 @@ class TimberHelper {
 					$dots = false;
 				}
 			}
-		}
-		if ( $args['prev_next'] && $args['current'] && ( $args['current'] < $args['total'] || -1 == $args['total'] ) ) {
-			$link = str_replace( '%_%', $args['format'], $args['base'] );
-			$link = str_replace( '%#%', $args['current'] + 1, $link );
-			if ( $args['add_args'] ) {
-				$link = add_query_arg( $args['add_args'], $link );
-			}
-			$link = untrailingslashit( trailingslashit( $link ) . $args['add_fragment'] );
-			$page_links[] = array(
-				'class' => 'next page-numbers',
-				'link' => esc_url( apply_filters( 'paginate_links', $link ) ),
-				'title' => $args['next_text']
-			);
 		}
 		return $page_links;
 	}

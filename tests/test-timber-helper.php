@@ -119,7 +119,7 @@
 		function testOSort() {
 			$michael = new stdClass();
 			$michael->name = 'Michael';
-			$michael->year = 1980;
+			$michael->year = 1981;
 			$lauren = new stdClass();
 			$lauren->name = 'Lauren';
 			$lauren->year = 1984;
