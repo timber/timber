@@ -43,6 +43,12 @@
 			$this->assertEquals('super cool', $obj->jared);
 		}
 
+		function testArrayArrayToObject() {
+			$arr = array('jared' => 'super cool', 'prefs' => array('food' => 'spicy', 'women' => 'spicier'));
+			$obj = TimberHelper::array_to_object($arr);
+			$this->assertEquals('spicy', $obj->prefs->food);
+		}
+
 		function testGetObjectIndexByProperty(){
 			$obj1 = new stdClass();
 			$obj1->name = 'mark';
@@ -55,6 +61,16 @@
 			$this->assertEquals(1, $index);
 			$obj = TimberHelper::get_object_by_property($arr, 'skill', 'cooking');
 			$this->assertEquals('austin', $obj->name);
+		}
+
+		/**
+     	 * @expectedException InvalidArgumentException
+     	 */
+		function testGetObjectByPropertyButNo() {
+			$obj1 = new stdClass();
+			$obj1->name = 'mark';
+			$obj1->skill = 'acro yoga';
+			$obj = TimberHelper::get_object_by_property($obj1, 'skill', 'cooking');
 		}
 
 		function testTimers() {
@@ -98,5 +114,23 @@
 			$this->assertTrue(TimberHelper::error_log('foo'));
 			$this->assertTrue(TimberHelper::error_log(array('Dark Helmet', 'Barf')));
 			$data = ob_get_flush();
+		}
+
+		function testOSort() {
+			$michael = new stdClass();
+			$michael->name = 'Michael';
+			$michael->year = 1980;
+			$lauren = new stdClass();
+			$lauren->name = 'Lauren';
+			$lauren->year = 1984;
+			$boo = new stdClass();
+			$boo->name = 'Robbie';
+			$boo->year = 1989;
+			$people = array($lauren, $michael, $boo);
+			TimberHelper::osort($people, 'year');
+			$this->assertEquals('Michael', $people[0]->name);
+			$this->assertEquals('Lauren', $people[1]->name);
+			$this->assertEquals('Robbie', $people[2]->name);
+			$this->assertEquals(1984, $people[1]->year);
 		}
 	}

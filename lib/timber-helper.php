@@ -423,7 +423,8 @@ class TimberHelper {
 				}
 			}
 		} else {
-			throw new Exception( '$array is not an array, given value: ' . $array );
+			throw new InvalidArgumentException( '$array is not an array, got:' );
+			TimberHelper::error_log( $array );
 		}
 	}
 
