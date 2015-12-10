@@ -51,6 +51,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->go_to( home_url( '/portfolio/page/3' ) );
 		query_posts('post_type=portfolio&paged=3');
 		$pagination = Timber::get_pagination();
+		print_r($pagination);
 		$this->assertEquals(6, count($pagination['pages']));
 	}
 
@@ -63,7 +64,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$archive = home_url( '?s=post' );
 		$this->go_to( $archive );
 		query_posts( 's=post' );
-		$pagination = Timber::get_pagination();
+		$pagination = Timber::get_pagination(array('prev_next' => true));
 		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination['pages'][4]['link'] );
 	}
 
