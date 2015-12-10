@@ -49,4 +49,30 @@
 			$this->assertEquals(1, count($post->comments()));
 		}
 
+		function testMultilevelThreadedComments() {
+			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
+			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
+			$comment_child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $comment_id));
+			$comment_grandchild_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $comment_child_id));
+			$post = new TimberPost($post_id);
+			$comments = $post->get_comments();
+			$this->assertEquals(1, count($comments));
+			$children = $comments[0]->children();
+			$this->assertEquals(2, count($children));
+		}
+
+		function testMultilevelThreadedCommentsCorrectParents(){
+			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
+			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
+			$comment2_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
+			$comment2_child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $comment2_id));
+			$comment2_grandchild_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $comment2_child_id));
+			$post = new TimberPost($post_id);
+			$comments = $post->get_comments();
+			$children = $comments[1]->children();
+			$this->assertEquals($comment2_id, $children[0]->comment_parent);
+			$grandchild = $children[1];
+			$this->assertEquals($comment2_child_id, $grandchild->comment_parent);
+		}
+
 	}
