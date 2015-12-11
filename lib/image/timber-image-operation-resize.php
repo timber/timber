@@ -155,9 +155,11 @@ class TimberImageOperationResize extends TimberImageOperation {
 			);
 			$result = $image->save( $save_filename );
 			if ( is_wp_error( $result ) ) {
-				error_log( 'Error resizing image' );
-				error_log( print_r( $result, true ) );
+				// @codeCoverageIgnoreStart
+				TimberHelper::error_log( 'Error resizing image' );
+				TimberHelper::error_log( $result );
 				return false;
+				// @codeCoverageIgnoreEnd
 			} else {
 				return true;
 			}

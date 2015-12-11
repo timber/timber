@@ -152,6 +152,32 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		return $menu_term;
 	}
 
+	function _createSimpleMenu( $name = 'My Menu' ) {
+		$menu_term = wp_insert_term( $name, 'nav_menu' );
+		$menu_items = array();
+		$parent_page = wp_insert_post(
+			array(
+				'post_title' => 'Home',
+				'post_status' => 'publish',
+				'post_name' => 'home',
+				'post_type' => 'page',
+				'menu_order' => 1
+			)
+		);
+		$parent_id = wp_insert_post( array(
+				'post_title' => '',
+				'post_status' => 'publish',
+				'post_type' => 'nav_menu_item'
+			) );
+		update_post_meta( $parent_id, '_menu_item_type', 'post_type' );
+		update_post_meta( $parent_id, '_menu_item_object', 'page' );
+		update_post_meta( $parent_id, '_menu_item_menu_item_parent', 0 );
+		update_post_meta( $parent_id, '_menu_item_object_id', $parent_page );
+		update_post_meta( $parent_id, '_menu_item_url', '' );
+		$menu_items[] = $parent_id;
+		return $menu_term;
+	}
+
 	function _createTestMenu() {
 		$menu_term = wp_insert_term( 'Menu One', 'nav_menu' );
 		$menu_id = $menu_term['term_id'];
@@ -384,6 +410,32 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals('Home', $str);
 		$str = Timber::compile_string('{{menu.items[0]}}', array('menu' => $menu));
 		$this->assertEquals('Home', $str);
+	}
+
+	function testMenuLocations() {
+		$items = array();
+		$items[] = (object) array('type' => 'link', 'link' => '/');
+		$items[] = (object) array('type' => 'link', 'link' => '/foo');
+		$items[] = (object) array('type' => 'link', 'link' => '/bar/');
+
+		$this->buildMenu('Froggy', $items);
+
+		$built_menu = $this->buildMenu('Ziggy', $items);
+		$built_menu_id = $built_menu['term_id'];
+
+		$this->buildMenu('Zappy', $items);
+		$theme = new TimberTheme();
+		$data = array('nav_menu_locations' => array('header-menu' => 0, 'extra-menu' => $built_menu_id, 'bonus' => 0));
+		update_option('theme_mods_'.$theme->slug, $data);
+		register_nav_menus(
+		    array(
+		    	'header-menu' => 'Header Menu',
+				'extra-menu' => 'Extra Menu',
+				'bonus' => 'The Bonus'
+		    )
+		);
+		$menu = new TimberMenu('extra-menu');
+		$this->assertEquals('Ziggy', $menu->name);
 	}
 
 }

@@ -10,6 +10,15 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$this->assertEquals($comment_id, $comment->ID);
 	}
 
+	function testCommentToString(){
+		$quote = 'Jerry, just remember, it’s not a lie if you believe it.';
+		$post_id = $this->factory->post->create();
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote));
+		$comment = new TimberComment($comment_id);
+		$str = Timber::compile_string('{{comment}}', array('comment' => $comment));
+		$this->assertEquals($quote, $str);
+	}
+
 	function testCommentContent(){
 		$costanza_quote = "Divorce is always hard. Especially on the kids. ‘Course I am the result of my parents having stayed together so ya never know.";
 		$post_id = $this->factory->post->create();

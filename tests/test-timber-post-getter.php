@@ -16,6 +16,16 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertContains($pids[0], $post_ids_gotten);
 	}
 
+	function testGetPostsWithClassMap() {
+		register_post_type('portfolio', array('public' => true));
+		register_post_type('alert', array('public' => true));
+		$this->factory->post->create(array('post_type' => 'portfolio', 'post_title' => 'A portfolio item', 'post_date' => '2015-04-23 15:13:52'));
+		$this->factory->post->create(array('post_type' => 'alert', 'post_title' => 'An alert', 'post_date' => '2015-06-23 15:13:52'));
+		$posts = Timber::get_posts('post_type=any', array('portfolio' => 'TimberPortfolio', 'alert' => 'TimberAlert'));
+		$this->assertEquals( 'TimberAlert', get_class($posts[0]) );
+		$this->assertEquals( 'TimberPortfolio', get_class($posts[1]) );
+	}
+
 	function test587() {
 		register_post_type('product');
 		$pids = $this->factory->post->create_many(6, array('post_type' => 'product'));
@@ -166,5 +176,13 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals( 1, count( $posts ) );
 		$this->assertEquals( 'silly-post', $posts[0]->slug );
 	}
+
+}
+
+class TimberAlert extends TimberPost {
+
+}
+
+class TimberPortfolio extends TimberPost {
 
 }
