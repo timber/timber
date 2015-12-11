@@ -59,6 +59,13 @@ class TestTimberImage extends Timber_UnitTestCase {
  * Tests
  ---------------- */
 
+ 	function testImageLink() {
+ 		self::setPermalinkStructure();
+ 		$attach = self::get_image_attachment();
+ 		$image = new TimberImage($attach);
+ 		$this->assertEquals('http://example.org/the-arch/', $image->link());
+ 	}
+
 	function testImageMeta() {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
@@ -75,8 +82,6 @@ class TestTimberImage extends Timber_UnitTestCase {
 		$this->assertEquals( $post->ID, $image->parent()->id );
 		$this->assertEquals( 1.5, $image->aspect() );
 	}
-
-
 
 	function testExternalImageResize() {
 		if ( !self::is_connected() ) {
@@ -360,7 +365,7 @@ class TestTimberImage extends Timber_UnitTestCase {
 		$base_file = 'eastern-trans.png';
 		$file_loc = self::copyTestImage( $base_file );
 		$upload_dir = wp_upload_dir();
-		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/'.$base_file, 500, 500, '#00FF00', true );
+		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/'.$base_file, 500, 500, '00FF00', true );
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
 		$size = getimagesize( $location_of_image );
 		$this->assertEquals( 500, $size[0] );

@@ -3,7 +3,7 @@
 class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testBlankMenu() {
-		$this->setPermalinkStructure();
+		self::setPermalinkStructure();
 		$this->_createTestMenu();
 		$menu = new TimberMenu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
@@ -21,7 +21,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testTrailingSlashesOrNot() {
-		$this->setPermalinkStructure();
+		self::setPermalinkStructure();
 		$items = array();
 		$items[] = (object) array('type' => 'link', 'link' => '/');
 		$items[] = (object) array('type' => 'link', 'link' => '/foo');
@@ -57,7 +57,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuTwig() {
-		$this->setPermalinkStructure();
+		self::setPermalinkStructure();
 		$context = Timber::get_context();
 		$this->_createTestMenu();
 		$this->go_to( home_url( '/child-page' ) );
@@ -69,7 +69,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuTwigWithClasses() {
-		$this->setPermalinkStructure();
+		self::setPermalinkStructure();
 		$this->_createTestMenu();
 		$this->go_to( home_url( '/home' ) );
 		$context = Timber::get_context();
@@ -83,7 +83,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuItemLink() {
-		$this->setPermalinkStructure();
+		self::setPermalinkStructure();
 		$this->_createTestMenu();
 		$menu = new TimberMenu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
@@ -339,7 +339,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$wpdb->query( "UPDATE $wpdb->term_taxonomy SET count = $menu_items_count WHERE taxonomy = 'nav_menu'; " );
 	}
 
-	function setPermalinkStructure( $struc = '/%postname%/' ) {
+	static function setPermalinkStructure( $struc = '/%postname%/' ) {
 		global $wp_rewrite;
 		$wp_rewrite->set_permalink_structure( $struc );
 		$wp_rewrite->flush_rules();
@@ -348,7 +348,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testCustomArchivePage() {
-		$this->setPermalinkStructure();
+		self::setPermalinkStructure();
 		add_filter( 'nav_menu_css_class', function( $classes, $menu_item ) {
 				if ( trailingslashit( $menu_item->link() ) == trailingslashit( 'http://example.org/gallery' ) ) {
 					$classes[] = 'current-page-item';

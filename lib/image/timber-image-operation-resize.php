@@ -164,9 +164,11 @@ class TimberImageOperationResize extends TimberImageOperation {
 				return true;
 			}
 		} else if ( isset( $image->error_data['error_loading_image'] ) ) {
+			// @codeCoverageIgnoreStart
 			TimberHelper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
 		} else {
 			TimberHelper::error_log( $image );
+			// @codeCoverageIgnoreEnd
 		}
 	}
 }
