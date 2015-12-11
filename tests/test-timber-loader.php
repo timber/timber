@@ -9,6 +9,13 @@
 			$str = Timber::compile('assets/darkhelmet.twig');
 		}
 
+		/**
+     	 * @expectedException Twig_Error_Loader
+     	 */
+		function testBogusTemplates() {
+			$str = Timber::compile( array('assets/barf.twig', 'assets/lonestar.twig') );
+		}
+
 		function testTwigPathFilter() {
 			$php_unit = $this;
 			add_filter('timber/loader/paths', function($paths) use ($php_unit) {
