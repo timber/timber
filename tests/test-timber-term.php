@@ -14,6 +14,13 @@
 			$this->assertEquals($term->ID, $term_id);
 		}
 
+		function testTermToString() {
+			$term_id = $this->factory->term->create(array('name' => 'New England Patriots'));
+			$term = new TimberTerm('new-england-patriots');
+			$str = Timber::compile_string('{{term}}', array('term' => $term));
+			$this->assertEquals('New England Patriots', $str);
+		}
+
 		function testTermDescription() {
 			$desc = 'An honest football team';
 			$term_id = $this->factory->term->create(array('name' => 'New England Patriots', 'description' => $desc));
@@ -73,11 +80,11 @@
 				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
 			}
 			$term = new TimberTerm($term_id);
-			$gotten_posts = $term->get_posts(count($posts), 'page');
+			$gotten_posts = $term->posts(count($posts), 'page');
 			$this->assertEquals(count($posts), count($gotten_posts));
-			$gotten_posts = $term->get_posts(count($posts), 'any');
+			$gotten_posts = $term->posts(count($posts), 'any');
 			$this->assertEquals(count($posts), count($gotten_posts));
-			$gotten_posts = $term->get_posts(count($posts), 'post');
+			$gotten_posts = $term->posts(count($posts), 'post');
 			$this->assertEquals(0, count($gotten_posts));
 		}
 
@@ -101,6 +108,17 @@
 			$gotten_posts = $term->get_posts(array('post_type' => 'page'), 'TimberPostSubclass');
 			$this->assertEquals($gotten_posts[0]->foo(), 'bar');
 			$this->assertEquals(count($posts), count($gotten_posts));
+		}
+
+		function testTermChildren() {
+			$parent_id = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+			$local = $this->factory->term->create(array('name' => 'Local', 'parent' => $parent_id, 'taxonomy' => 'category'));
+			$int = $this->factory->term->create(array('name' => 'International', 'parent' => $parent_id, 'taxonomy' => 'category'));
+
+			$term = new TimberTerm($parent_id);
+			$children = $term->children();
+			$this->assertEquals(2, count($children));
+			$this->assertEquals('Local', $children[0]->name);
 		}
 
 	}
