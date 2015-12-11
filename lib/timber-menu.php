@@ -144,7 +144,8 @@ class TimberMenu extends TimberCore {
 			$slug = array_search($slug, $locations);
 		}
 		if (isset($locations[$slug])) {
-			return $locations[$slug];
+			$menu_id = $locations[$slug];
+			return $menu_id;
 		}
 	}
 

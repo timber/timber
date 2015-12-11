@@ -161,6 +161,15 @@ class TestTimberImage extends Timber_UnitTestCase {
 		$this->assertEquals( $old_time, $new_time );
 	}
 
+	function testIsNotAGif() {
+		$image = self::copyTestImage('arch.jpg');
+		$this->assertFalse( TimberImageHelper::is_animated_gif($image) );
+	}
+
+	function testIsNotAGifFile() {
+		$this->assertFalse( TimberImageHelper::is_animated_gif('notreal.gif') );
+	}
+
 	function testAnimatedGifResize() {
 		$image = self::copyTestImage('robocop.gif');
 		$data = array('crop' => 'default');

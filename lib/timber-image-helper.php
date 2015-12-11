@@ -106,7 +106,7 @@ class TimberImageHelper {
 			return false;
 		}
 		//its a gif so test
-		if(!($fh = @fopen($file, 'rb'))) {
+		if( !($fh = @fopen($file, 'rb')) ) {
 		  	return false;
 	    }
 	    $count = 0;
