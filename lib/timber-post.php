@@ -378,7 +378,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 			$text = trim($text);
 			$last = $text[strlen($text) - 1];
 			if ( $last != '.' && $trimmed ) {
-				$text .= ' &hellip; ';
+				$text .= ' &hellip;';
 			}
 			if ( !$strip ) {
 				$last_p_tag = strrpos($text, '</p>');
