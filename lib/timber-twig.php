@@ -5,12 +5,15 @@ class TimberTwig {
 	public static $dir_name;
 
 	/**
-	 * Initialization
+	 * @codeCoverageIgnore
 	 */
 	public static function init() {
 		new TimberTwig();
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	function __construct() {
 		add_action( 'timber/twig/filters', array( $this, 'add_timber_filters_deprecated' ) );
 		add_action( 'timber/twig/filters', array( $this, 'add_timber_filters' ) );
@@ -283,6 +286,7 @@ class TimberTwig {
 	 *
 	 * @param mixed   $obj
 	 * @param bool    $methods
+	 * @deprecated since 0.20.7
 	 * @return string
 	 */
 	function object_docs( $obj, $methods = true ) {

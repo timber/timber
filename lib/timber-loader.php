@@ -80,15 +80,15 @@ class TimberLoader {
 	 * @param array $filenames
 	 * @return bool
 	 */
-	function choose_template($filenames) {
+	public function choose_template($filenames) {
 		if (is_array($filenames)) {
 			/* its an array so we have to figure out which one the dev wants */
 			foreach ($filenames as $filename) {
-				if ($this->template_exists($filename)) {
+				if (self::template_exists($filename)) {
 					return $filename;
 				}
 			}
-			return false;
+			return $filenames[0];
 		}
 		return $filenames;
 	}
@@ -97,7 +97,7 @@ class TimberLoader {
 	 * @param string $file
 	 * @return bool
 	 */
-	function template_exists($file) {
+	protected function template_exists($file) {
 		foreach ($this->locations as $dir) {
 			$look_for = trailingslashit($dir) . $file;
 			if (file_exists($look_for)) {

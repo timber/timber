@@ -378,7 +378,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 			$text = trim($text);
 			$last = $text[strlen($text) - 1];
 			if ( $last != '.' && $trimmed ) {
-				$text .= ' &hellip; ';
+				$text .= ' &hellip;';
 			}
 			if ( !$strip ) {
 				$last_p_tag = strrpos($text, '</p>');
@@ -745,33 +745,34 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 			$overridden_cpage = true;
 		}
 
-    foreach($comments as $key => &$comment) {
-      $timber_comment = new $CommentClass($comment);
-      $timber_comment->reply_link = $this->TimberComment_reply_link($comment->comment_ID, $this->ID);
-      $timber_comments[$timber_comment->id] = $timber_comment;
-    }
+		foreach($comments as $key => &$comment) {
+			$timber_comment = new $CommentClass($comment);
+			$timber_comment->reply_link = $this->TimberComment_reply_link($comment->comment_ID, $this->ID);
+			$timber_comments[$timber_comment->id] = $timber_comment;
+		}
 
 		// Build a flattened (depth=1) comment tree
 		$comments_tree = array();
-    foreach( $timber_comments as $key => $comment ) {
-      if ( ! $comment->is_child() ) {
-         continue;
-      }
+		foreach( $timber_comments as $key => $comment ) {
+			if ( ! $comment->is_child() ) {
+				continue;
+			}
 
-      $tree_element = $comment;
-      do {
-        $tree_element = $timber_comments[$tree_element->comment_parent];
-      } while($tree_element->is_child());
-      $comments_tree[$tree_element->id][] = $comment->id;
-    }
+			$tree_element = $comment;
+			do {
+				$tree_element = $timber_comments[$tree_element->comment_parent];
+			} while( $tree_element->is_child() );
 
-    // Add child comments to the relative "super parents"
-    foreach($comments_tree as $comment_parent => $comment_children) {
-      foreach($comment_children as $comment_child) {
-        $timber_comments[$comment_parent]->children[] = $timber_comments[$comment_child];
-        unset($timber_comments[$comment_child]);
-      }
-    }
+			$comments_tree[$tree_element->id][] = $comment->id;
+		}
+
+		// Add child comments to the relative "super parents"
+		foreach($comments_tree as $comment_parent => $comment_children) {
+			foreach($comment_children as $comment_child) {
+				$timber_comments[$comment_parent]->children[] = $timber_comments[$comment_child];
+				unset($timber_comments[$comment_child]);
+			}
+		}
 
 		$timber_comments = array_values($timber_comments);
 
@@ -984,10 +985,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @return int the number of comments on a post
 	 */
 	public function get_comment_count() {
-		if ( isset($this->ID) ) {
-			return get_comments_number($this->ID);
-		}
-		return 0;
+		return get_comments_number($this->ID);
 	}
 
 	/**
