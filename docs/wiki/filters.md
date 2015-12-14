@@ -1,6 +1,8 @@
 # Filters
 
-Twig offers a variety of [filters](http://twig.sensiolabs.org/doc/filters/index.html) to transform text and other information into the desired output. In addition, Timber has some valuable for your WP theme:
+Twig offers a variety of [filters](http://twig.sensiolabs.org/doc/filters/index.html) to transform text and other information into the desired output. If you wish to create your own custom filters visit [Extending Timber](https://github.com/jarednova/timber/wiki/Extending-Timber).
+
+Timber includes following filters out-of-the box for your WP theme:
 
 ### excerpt
 When you need to trim text to a desired length (in words)
