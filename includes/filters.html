@@ -33,7 +33,9 @@
       <div class="content">
         <h1 id="filters">Filters</h1>
 
-<p>Twig offers a variety of <a href="http://twig.sensiolabs.org/doc/filters/index.html">filters</a> to transform text and other information into the desired output. In addition, Timber has some valuable for your WP theme:</p>
+<p>Twig offers a variety of <a href="http://twig.sensiolabs.org/doc/filters/index.html">filters</a> to transform text and other information into the desired output. If you wish to create your own custom filters visit <a href="https://jarednova.github.io/timber/#extending-timber">Extending Timber</a>.</p>
+
+<p>Timber includes following filters out-of-the box for your WP theme:</p>
 
 <h3 id="excerpt">excerpt</h3>
 
@@ -166,24 +168,6 @@ Here is my gallery &lt;div class="gallery" id="gallery-123"&gt;&lt;img src="....
     &lt;p&gt;"No, no, he's not," another young man quickly yelled from across the table. "He wrote The Oscar."&lt;/p&gt;
     &lt;p&gt;"Oh, yeah," Sinatra said, "well I've seen it, and it's a piece of crap."&lt;/p&gt;
 &lt;/div&gt;
-</code></pre>
-
-<hr>
-
-<h3 id="list">list</h3>
-
-<p>Converts an array of strings into a comma-separated list.</p>
-
-<h6 id="php">PHP:</h6>
-<pre class="highlight php"><code>$context['contributors'] = array('Blake Allen','Rachel White','Maddy May');
-</code></pre>
-
-<h6 id="twig">Twig:</h6>
-<pre class="highlight handlebars"><code>Contributions made by <span class="k">{{</span><span class="nv">contributors</span><span class="err">|</span><span class="nv">list</span><span class="err">(</span><span class="s1">','</span><span class="err">,</span><span class="s1">'&amp;'</span><span class="err">)</span><span class="k">}}</span>
-</code></pre>
-
-<h6 id="output">Output:</h6>
-<pre class="highlight html"><code>Contributions made by Blake Allen, Rachel White <span class="err">&amp;</span> Maddy May
 </code></pre>
 
       </div>

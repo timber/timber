@@ -31,7 +31,7 @@
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h2 id="woocommerce">WooCommerce</h2>
+        <h1 id="woocommerce">WooCommerce</h1>
 
 <h3 id="point-of-entry-main-woocommerce-php-file">Point of entry - main WooCommerce PHP file</h3>
 
@@ -72,7 +72,7 @@ if (is_singular('product')) {
 
 <p>You will now need the two twig files loaded from <code class="prettyprint">woocommerce.php</code>:</p>
 
-<h3 id="archives">Archives</h3>
+<h2 id="archives">Archives</h2>
 
 <p>Create a Twig file accordingly to the location asked by the above file, in this example that would be <code class="prettyprint">views/woo/archive.twig</code>:</p>
 <pre class="highlight handlebars"><code>{% extends "base.twig" %}
@@ -103,7 +103,7 @@ if (is_singular('product')) {
 
 <p>Next, we&rsquo;ll take care of the single product view.</p>
 
-<h3 id="single-product">Single Product</h3>
+<h2 id="single-product">Single Product</h2>
 
 <p>Create a Twig file accordingly to the location asked by the above file, in this example that would be <code class="prettyprint">views/woo/single-product.twig</code>:</p>
 <pre class="highlight handlebars"><code>{% extends "base.twig" %}
@@ -139,7 +139,7 @@ If you need to override the output of any of those hooks, my advice would be to 
 
 <p>Finally, we&rsquo;ll need to create a teaser file for product in the loops. Considering the code above that  would be <code class="prettyprint">views/partials/tease-product.twig</code>:</p>
 
-<h3 id="tease-product">Tease Product</h3>
+<h2 id="tease-product">Tease Product</h2>
 <pre class="highlight handlebars"><code>
 <span class="nt">&lt;article</span> <span class="k">{{</span> <span class="nv">fn</span><span class="err">(</span><span class="s1">'post_class'</span><span class="err">,</span> <span class="p">[</span><span class="s1">'$classes'</span><span class="err">,</span> <span class="s1">'entry'</span><span class="p">]</span> <span class="err">)</span> <span class="k">}}</span><span class="nt">&gt;</span>
 
