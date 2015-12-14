@@ -1,6 +1,6 @@
 # Filters
 
-Twig offers a variety of [filters](http://twig.sensiolabs.org/doc/filters/index.html) to transform text and other information into the desired output. If you wish to create your own custom filters visit [Extending Timber](https://github.com/jarednova/timber/wiki/Extending-Timber).
+Twig offers a variety of [filters](http://twig.sensiolabs.org/doc/filters/index.html) to transform text and other information into the desired output. If you wish to create your own custom filters visit [Extending Timber](https://jarednova.github.io/timber/#extending-timber).
 
 Timber includes following filters out-of-the box for your WP theme:
 
