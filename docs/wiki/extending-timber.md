@@ -109,14 +109,62 @@ add_filter('get_twig', 'add_to_twig');
 function add_to_twig($twig) {
 	/* this is where you can add your own fuctions to twig */
 	$twig->addExtension(new Twig_Extension_StringLoader());
-	$twig->addFilter('whatever', new Twig_Filter_Function('my_whatever'));
-	return $twig;
+  /**
+   * Depreciated: Twig_Filter_Function, use Twig_SimpleFilter
+   * http://twig.sensiolabs.org/doc/deprecated.html#filters
+   * $twig->addFilter('whatever', new Twig_Filter_Function('my_whatever'));
+   */
+  $twig->addFilter('myfoo', new Twig_SimpleFilter('myfoo', 'my_whatever'));
+  return $twig;
 }
 
 function my_whatever($text) {
 	$text .= ' or whatever';
 	return $text;
 }
+```
+
+Following is shortened version of [Timber Starter Theme](https://github.com/upstatement/timber-starter-theme) class definition using methods to add filters.
+
+```php
+
+/* functions.php */
+
+class StarterSite extends TimberSite {
+
+  function __construct() {
+    add_filter( 'timber_context', array( $this, 'add_to_context' ) );
+    add_filter( 'get_twig', array( $this, 'add_to_twig' ) );
+    parent::__construct();
+  }
+
+  function add_to_context( $context ) {
+    $context['menu'] = new TimberMenu();
+    $context['site'] = $this;
+    return $context;
+  }
+
+  function my_whatever( $text ) {
+    $text .= ' or whatever';
+    return $text;
+  }
+
+  function add_to_twig( $twig ) {
+    /* this is where you can add your own functions to twig */
+    $twig->addExtension( new Twig_Extension_StringLoader() );
+    /**
+     * Depreciated: Twig_Filter_Function, use Twig_SimpleFilter
+     * http://twig.sensiolabs.org/doc/deprecated.html#filters
+     * $twig->addFilter( 'whatever', new Twig_Filter_Function( 'whatever' ) );
+     */
+    $twig->addFilter('whatever', new Twig_SimpleFilter('whatever', array($this, 'my_whatever')));
+    return $twig;
+  }
+
+}
+
+new StarterSite();
+
 ```
 
 This can now be called in your twig files with:
