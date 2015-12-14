@@ -110,7 +110,7 @@ function add_to_twig($twig) {
 	/* this is where you can add your own fuctions to twig */
 	$twig->addExtension(new Twig_Extension_StringLoader());
   /**
-   * Depreciated: Twig_Filter_Function, use Twig_SimpleFilter
+   * Deprecated: Twig_Filter_Function, use Twig_SimpleFilter
    * http://twig.sensiolabs.org/doc/deprecated.html#filters
    * $twig->addFilter('whatever', new Twig_Filter_Function('my_whatever'));
    */
@@ -153,7 +153,7 @@ class StarterSite extends TimberSite {
     /* this is where you can add your own functions to twig */
     $twig->addExtension( new Twig_Extension_StringLoader() );
     /**
-     * Depreciated: Twig_Filter_Function, use Twig_SimpleFilter
+     * Deprecated: Twig_Filter_Function, use Twig_SimpleFilter
      * http://twig.sensiolabs.org/doc/deprecated.html#filters
      * $twig->addFilter( 'whatever', new Twig_Filter_Function( 'whatever' ) );
      */
