@@ -605,7 +605,7 @@ class Timber {
 		$backtrace = debug_backtrace();
 		$i = 0;
 		foreach ( $backtrace as $trace ) {
-			if ( $trace['file'] != __FILE__ ) {
+			if ( array_key_exists('file', $trace) && $trace['file'] != __FILE__ ) {
 				$caller = $trace['file'];
 				break;
 			}

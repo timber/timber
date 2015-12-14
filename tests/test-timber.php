@@ -171,6 +171,12 @@ class TestTimber extends Timber_UnitTestCase {
         $this->assertEquals('<h1>Foobar</h1>', trim($data));
     }
 
+    function testTimberGetCallingScriptFile() {
+    	$calling_file = Timber::get_calling_script_file();
+    	$file = getcwd().'/tests/test-timber.php';
+    	$this->assertEquals($calling_file, $file);
+    }
+
 }
 
 function arrays_are_similar($a, $b) {
