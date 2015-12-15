@@ -342,7 +342,7 @@ class TestTimberImage extends Timber_UnitTestCase {
 		return false;
 	}
 
-	public static function testSize( $file, $width, $height ) {
+	public static function checkSize( $file, $width, $height ) {
 		$size = getimagesize( $file );
 		if ($width === $size[0] && $height === $size[1]) {
 			return true;
@@ -350,7 +350,7 @@ class TestTimberImage extends Timber_UnitTestCase {
 		return false;
 	}
 
-	public static function testPixel($file, $x, $y, $color = '#FFFFFF') {
+	public static function checkPixel($file, $x, $y, $color = '#FFFFFF') {
 		if ( self::is_png($file)) {
 			$image = imagecreatefrompng($file);
 		} else {
@@ -374,9 +374,9 @@ class TestTimberImage extends Timber_UnitTestCase {
 		$new_file = TimberImageHelper::letterbox( $image, 500, 500, '#CCC', true );
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
 
-		$this->assertTrue (self::testSize($location_of_image, 500, 500));
+		$this->assertTrue (self::checkSize($location_of_image, 500, 500));
 		//whats the bg/color of the image
-		$this->assertTrue( self::testPixel($location_of_image, 1, 1, "#CCC") );
+		$this->assertTrue( self::checkPixel($location_of_image, 1, 1, "#CCC") );
 	}
 
 	function testLetterboxColorChange() {

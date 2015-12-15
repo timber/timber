@@ -4,14 +4,14 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 	function testCropCenter() {
 		$cropper = TestTimberImage::copyTestImage('cropper.png');
-		$resized = TimberImageHelper::resize($cropper, 1, 3, 'center');
+		$resized = TimberImageHelper::resize($cropper, 100, 300, 'center');
 
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
 
-		$is_black = TestTimberImage::testPixel($resized, 0, 0, '#000');
-		$is_white = TestTimberImage::testPixel($resized, 0, 1, '#FFFFFF');
-		$is_gray = TestTimberImage::testPixel($resized, 0, 2, '#aaaaaa');
+		$is_black = TestTimberImage::checkPixel($resized, 10, 20, '#000');
+		$is_white = TestTimberImage::checkPixel($resized, 10, 120, '#FFFFFF');
+		$is_gray = TestTimberImage::checkPixel($resized, 10, 220, '#aaaaaa');
 
 		$this->assertTrue( $is_white );
 		$this->assertTrue( $is_black );
@@ -20,28 +20,32 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 	function testCropFalse() {
 		$cropper = TestTimberImage::copyTestImage('cropper.png');
-		$resized = TimberImageHelper::resize($cropper, 1, 2, false);
+		$resized = TimberImageHelper::resize($cropper, 100, 200, false);
 
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
 
-		$is_redish = TestTimberImage::testPixel($resized, 0, 0, '#aa5755');
-		$is_greenish = TestTimberImage::testPixel($resized, 0, 1, '#6bbbbb');
-		$this->assertTrue( $is_redish );
-		$this->assertTrue( $is_greenish );
+		$is_red = TestTimberImage::checkPixel($resized, 20, 20, '#ff0800');
+		$is_green = TestTimberImage::checkPixel($resized, 0, 100, '#00ff00');
+		$is_magenta = TestTimberImage::checkPixel($resized, 90, 10, '#ff00ff');
+		$is_cyan = TestTimberImage::checkPixel($resized, 90, 199, '#00ffff');
+		$this->assertTrue( $is_red );
+		$this->assertTrue( $is_green );
+		$this->assertTrue( $is_magenta );
+		$this->assertTrue( $is_cyan );
 
-		$is_1by2 = TestTimberImage::testSize($resized, 1, 2);
+		$is_1by2 = TestTimberImage::checkSize($resized, 100, 200);
 		$this->assertTrue( $is_1by2 );
 	}
 
 	function testCropRight() {
 		$cropper = TestTimberImage::copyTestImage('cropper.png');
-		$resized = TimberImageHelper::resize($cropper, 1, 3, 'right');
+		$resized = TimberImageHelper::resize($cropper, 100, 300, 'right');
 
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
 
-		$is_magenta = TestTimberImage::testPixel($resized, 0, 0, '#ff00ff');
+		$is_magenta = TestTimberImage::checkPixel($resized, 50, 50, '#ff00ff');
 		$this->assertTrue( $is_magenta );
 	}
 
@@ -52,7 +56,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
 
-		$is_sized = TestTimberImage::testSize($resized, 375, 250);
+		$is_sized = TestTimberImage::checkSize($resized, 375, 250);
 		$this->assertTrue( $is_sized );
 	}
 
