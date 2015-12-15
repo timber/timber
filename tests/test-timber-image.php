@@ -55,6 +55,11 @@ class TestTimberImage extends Timber_UnitTestCase {
 		return $post;
 	}
 
+	public static function get_timber_image_object($file = 'cropper.png') {
+		$iid = self::get_image_attachment(0, $file);
+		return new TimberImage($iid);
+	}
+
 /* ----------------
  * Tests
  ---------------- */
@@ -329,6 +334,31 @@ class TestTimberImage extends Timber_UnitTestCase {
 		$this->assertEquals( $upload_dir['url'].'/eastern-lbox-300x500-FFFFFF.jpg', $filename );
 	}
 
+	public static function is_png($file) {
+		$file = strtolower($file);
+		if (strpos($file, '.png') > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static function testPixel($file, $x, $y, $color = '#FFFFFF') {
+		if ( self::is_png($file)) {
+			$image = imagecreatefrompng($file);
+		} else {
+			$image = imagecreatefromjpeg( $file );
+		}
+		$pixel_rgb = imagecolorat( $image, $x, $y );
+		$colors = imagecolorsforindex( $image, $pixel_rgb );
+		$imgcolors = TimberImageOperation::hexrgb($color);
+		if ( $imgcolors['red'] === $colors['red'] &&
+			 $imgcolors['blue'] === $colors['blue'] &&
+			 $imgcolors['green'] === $colors['green']) {
+			return true;
+		}
+		return false;
+	}
+
 	function testLetterbox() {
 		$file_loc = self::copyTestImage( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
@@ -339,12 +369,7 @@ class TestTimberImage extends Timber_UnitTestCase {
 		$this->assertEquals( 500, $size[0] );
 		$this->assertEquals( 500, $size[1] );
 		//whats the bg/color of the image
-		$image = imagecreatefromjpeg( $location_of_image );
-		$pixel_rgb = imagecolorat( $image, 1, 1 );
-		$colors = imagecolorsforindex( $image, $pixel_rgb );
-		$this->assertEquals( 204, $colors['red'] );
-		$this->assertEquals( 204, $colors['blue'] );
-		$this->assertEquals( 204, $colors['green'] );
+		$this->assertTrue( self::testPixel($location_of_image, 1, 1, "#CCC") );
 	}
 
 	function testLetterboxColorChange() {
