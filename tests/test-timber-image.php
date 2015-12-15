@@ -350,7 +350,19 @@ class TestTimberImage extends Timber_UnitTestCase {
 		return false;
 	}
 
-	public static function checkPixel($file, $x, $y, $color = '#FFFFFF') {
+	public static function checkChannel($channel, $base, $compare, $upper = false) {
+		if ($base[$channel] === $base[$channel]) {
+			return true;
+		}
+		if ($upper) {
+			if ( ($base[$channel] <= $compare[$channel]) && ($compare[$channel] <= $upper[$channel])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static function checkPixel($file, $x, $y, $color = '#FFFFFF', $upper_color = false) {
 		if ( self::is_png($file)) {
 			$image = imagecreatefrompng($file);
 		} else {
@@ -358,7 +370,19 @@ class TestTimberImage extends Timber_UnitTestCase {
 		}
 		$pixel_rgb = imagecolorat( $image, $x, $y );
 		$colors = imagecolorsforindex( $image, $pixel_rgb );
+		if ($upper_color) {
+			$upper_colors = TimberImageOperation::hexrgb($upper_color);
+		}
 		$imgcolors = TimberImageOperation::hexrgb($color);
+		if ( isset($upper_colors) && $upper_colors ) {
+			if (self::checkChannel('red', $imgcolors, $colors, $upper_colors) &&
+				self::checkChannel('green', $imgcolors, $colors, $upper_colors) &&
+				self::checkChannel('blue', $imgcolors, $colors, $upper_colors)
+				) {
+				return true;
+			}
+			return false;
+		}
 		if ( $imgcolors['red'] === $colors['red'] &&
 			 $imgcolors['blue'] === $colors['blue'] &&
 			 $imgcolors['green'] === $colors['green']) {
