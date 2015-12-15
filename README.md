@@ -4,7 +4,7 @@
 By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a href="http://upstatement.com">Upstatement</a> (<a href="http://twitter.com/upstatement">@Upstatement</a>)</div>
 </div>
 
-[![Build Status](https://img.shields.io/travis/jarednova/timber.svg?style=flat-square)](https://travis-ci.org/jarednova/timber)
+[![Build Status](https://img.shields.io/travis/jarednova/timber/master.svg?style=flat-square&branch=master)](https://travis-ci.org/jarednova/timber)
 [![Coverage Status](https://img.shields.io/coveralls/jarednova/timber.svg?style=flat-square)](https://coveralls.io/r/jarednova/timber?branch=master)
 [![Dependency Status](https://img.shields.io/versioneye/d/ruby/rails.svg?style=flat-square)](https://www.versioneye.com/user/projects/54e3c717d1ec5734f4000099)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/jarednova/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/jarednova/timber/?branch=master)
