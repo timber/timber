@@ -342,6 +342,14 @@ class TestTimberImage extends Timber_UnitTestCase {
 		return false;
 	}
 
+	public static function testSize( $file, $width, $height ) {
+		$size = getimagesize( $file );
+		if ($width === $size[0] && $height === $size[1]) {
+			return true;
+		}
+		return false;
+	}
+
 	public static function testPixel($file, $x, $y, $color = '#FFFFFF') {
 		if ( self::is_png($file)) {
 			$image = imagecreatefrompng($file);
@@ -365,9 +373,8 @@ class TestTimberImage extends Timber_UnitTestCase {
 		$image = $upload_dir['url'].'/eastern.jpg';
 		$new_file = TimberImageHelper::letterbox( $image, 500, 500, '#CCC', true );
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
-		$size = getimagesize( $location_of_image );
-		$this->assertEquals( 500, $size[0] );
-		$this->assertEquals( 500, $size[1] );
+
+		$this->assertTrue (self::testSize($location_of_image, 500, 500));
 		//whats the bg/color of the image
 		$this->assertTrue( self::testPixel($location_of_image, 1, 1, "#CCC") );
 	}

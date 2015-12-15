@@ -34,7 +34,15 @@ class TimberImageOperationResize extends TimberImageOperation {
 	 * @return  string    the final filename to be used (ex: my-awesome-pic-300x200-c-default.jpg)
 	 */
 	public function filename($src_filename, $src_extension) {
-		$result = $src_filename . '-' . $this->w . 'x' . $this->h . '-c-' . ( $this->crop ? $this->crop : 'f' ); // Crop will be either user named or f (false)
+		$w = 0;
+		$h = 0;
+		if ( $this->w ) {
+			$w = $this->w;
+		}
+		if ( $this->h ) {
+			$h = $this->h;
+		}
+		$result = $src_filename . '-' . $w . 'x' . $h . '-c-' . ( $this->crop ? $this->crop : 'f' ); // Crop will be either user named or f (false)
 		if($src_extension) {
 			$result .= '.'.$src_extension;
 		}
