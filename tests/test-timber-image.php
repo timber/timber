@@ -55,6 +55,11 @@ class TestTimberImage extends Timber_UnitTestCase {
 		return $post;
 	}
 
+	public static function get_timber_image_object($file = 'cropper.png') {
+		$iid = self::get_image_attachment(0, $file);
+		return new TimberImage($iid);
+	}
+
 /* ----------------
  * Tests
  ---------------- */
@@ -329,22 +334,73 @@ class TestTimberImage extends Timber_UnitTestCase {
 		$this->assertEquals( $upload_dir['url'].'/eastern-lbox-300x500-FFFFFF.jpg', $filename );
 	}
 
+	public static function is_png($file) {
+		$file = strtolower($file);
+		if (strpos($file, '.png') > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static function checkSize( $file, $width, $height ) {
+		$size = getimagesize( $file );
+		if ($width === $size[0] && $height === $size[1]) {
+			return true;
+		}
+		return false;
+	}
+
+	public static function checkChannel($channel, $base, $compare, $upper = false) {
+		if ($base[$channel] === $base[$channel]) {
+			return true;
+		}
+		if ($upper) {
+			if ( ($base[$channel] <= $compare[$channel]) && ($compare[$channel] <= $upper[$channel])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static function checkPixel($file, $x, $y, $color = '#FFFFFF', $upper_color = false) {
+		if ( self::is_png($file)) {
+			$image = imagecreatefrompng($file);
+		} else {
+			$image = imagecreatefromjpeg( $file );
+		}
+		$pixel_rgb = imagecolorat( $image, $x, $y );
+		$colors = imagecolorsforindex( $image, $pixel_rgb );
+		if ($upper_color) {
+			$upper_colors = TimberImageOperation::hexrgb($upper_color);
+		}
+		$imgcolors = TimberImageOperation::hexrgb($color);
+		if ( isset($upper_colors) && $upper_colors ) {
+			if (self::checkChannel('red', $imgcolors, $colors, $upper_colors) &&
+				self::checkChannel('green', $imgcolors, $colors, $upper_colors) &&
+				self::checkChannel('blue', $imgcolors, $colors, $upper_colors)
+				) {
+				return true;
+			}
+			return false;
+		}
+		if ( $imgcolors['red'] === $colors['red'] &&
+			 $imgcolors['blue'] === $colors['blue'] &&
+			 $imgcolors['green'] === $colors['green']) {
+			return true;
+		}
+		return false;
+	}
+
 	function testLetterbox() {
 		$file_loc = self::copyTestImage( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
 		$image = $upload_dir['url'].'/eastern.jpg';
 		$new_file = TimberImageHelper::letterbox( $image, 500, 500, '#CCC', true );
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
-		$size = getimagesize( $location_of_image );
-		$this->assertEquals( 500, $size[0] );
-		$this->assertEquals( 500, $size[1] );
+
+		$this->assertTrue (self::checkSize($location_of_image, 500, 500));
 		//whats the bg/color of the image
-		$image = imagecreatefromjpeg( $location_of_image );
-		$pixel_rgb = imagecolorat( $image, 1, 1 );
-		$colors = imagecolorsforindex( $image, $pixel_rgb );
-		$this->assertEquals( 204, $colors['red'] );
-		$this->assertEquals( 204, $colors['blue'] );
-		$this->assertEquals( 204, $colors['green'] );
+		$this->assertTrue( self::checkPixel($location_of_image, 1, 1, "#CCC") );
 	}
 
 	function testLetterboxColorChange() {
