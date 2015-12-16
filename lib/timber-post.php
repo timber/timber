@@ -281,9 +281,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 			$post = get_post($pid);
 			if ( $post ) {
 				return $post;
-			} else {
-				$post = get_page($pid);
-				return $post;
 			}
 		}
 		//we can skip if already is WP_Post

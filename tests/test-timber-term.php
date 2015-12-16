@@ -121,4 +121,12 @@
 			$this->assertEquals('Local', $children[0]->name);
 		}
 
+		function testTermEditLink() {
+			wp_set_current_user(1);
+			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+			$term = new TimberTerm($tid);
+			$link = 'http://example.org/wp-admin/edit-tags.php?action=edit&taxonomy=category&tag_ID='.$tid.'&post_type=post';
+			$this->assertEquals($link, $term->edit_link());
+		}
+
 	}
