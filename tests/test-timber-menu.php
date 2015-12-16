@@ -174,7 +174,9 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $parent_id, '_menu_item_menu_item_parent', 0 );
 		update_post_meta( $parent_id, '_menu_item_object_id', $parent_page );
 		update_post_meta( $parent_id, '_menu_item_url', '' );
+		update_post_meta( $parent_id, 'flood', 'molasses' );
 		$menu_items[] = $parent_id;
+		$this->insertIntoMenu($menu_term['term_id'], $menu_items);
 		return $menu_term;
 	}
 
@@ -411,6 +413,13 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$children = $parent->children();
 		$this->assertEquals(1, count($children));
 		$this->assertEquals('Child Page', $children[0]->title());
+	}
+
+	function testMenuItemMeta() {
+		$menu_info = $this->_createSimpleMenu();
+		$menu = new TimberMenu($menu_info['term_id']);
+		$item = $menu->items[0];
+		$this->assertEquals('molasses', $item->meta('flood'));
 	}
 
 	function testMenuName() {
