@@ -551,6 +551,13 @@
 			$this->assertEquals('Posts', $pto->label);
 		}
 
+		function testPage() {
+			$pid = $this->factory->post->create(array('post_type' => 'page', 'post_title' => 'My Page'));
+			$post = new TimberPost($pid);
+			$this->assertEquals($pid, $post->ID);
+			$this->assertEquals('My Page', $post->title());
+		}
+
 		function testEditUrl() {
 			$pid = $this->factory->post->create(array('post_author' => 1));
 			$post = new TimberPost($pid);
