@@ -11,7 +11,7 @@
 		function testGetTermWithObject() {
 			$term_id = $this->factory->term->create(array('name' => 'Famous Commissioners'));
 			$term_data = get_term($term_id, 'post_tag');
-			$this->assertEquals('WP_Term', get_class($term_data));
+			$this->assertTrue( in_array( get_class($term_data), array('WP_Term', 'stdClass') ) );
 			$term = new TimberTerm($term_id);
 			$this->assertEquals('Famous Commissioners', $term->name());
 			$this->assertEquals('TimberTerm', get_class($term));
