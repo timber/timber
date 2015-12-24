@@ -35,7 +35,7 @@ class TimberImageOperationToJpg extends TimberImageOperation {
 	 *                               (ex: /src/var/www/wp-content/uploads/my-pic.png)
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
-	function run($load_filename, $save_filename){
+	function run($load_filename, $save_filename) {
 		$input = self::image_create( $load_filename );
 		list( $width, $height ) = getimagesize( $load_filename );
 		$output = imagecreatetruecolor( $width, $height );
@@ -48,6 +48,7 @@ class TimberImageOperationToJpg extends TimberImageOperation {
 	}
 
 	/**
+	 * @param string $filename
 	 * @return resource an image identifier representing the image obtained from the given filename
 	 *                  will return the same data type regardless of whether the source is gif or png
 	 */

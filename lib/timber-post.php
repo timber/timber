@@ -188,13 +188,13 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 			&& get_class($wp_query->queried_object) == 'WP_Post'
 			) {
 			$pid = $wp_query->queried_object_id;
-		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id )  {
+		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id ) {
 			//hack for static page as home page
 			$pid = $wp_query->queried_object_id;
 		} else if ( $pid === null ) {
 			$gtid = false;
 			$maybe_post = get_post();
-			if ( isset($maybe_post->ID) ){
+			if ( isset($maybe_post->ID) ) {
 				$gtid = true;
 			}
 			if ( $gtid ) {
@@ -1044,7 +1044,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		$post = $this;
 		$class_array = get_post_class($class, $this->ID);
 		$post = $old_global_post;
-		if ( is_array($class_array) ){
+		if ( is_array($class_array) ) {
 			return implode(' ', $class_array);
 		}
 		return $class_array;
@@ -1288,7 +1288,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	/**
 	 * @return string
 	 */
-	public function name(){
+	public function name() {
 		return $this->title();
 	}
 

@@ -87,7 +87,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 * @return string the src of the file
 	 */
 	public function __toString() {
-		if ($this->get_src()) {
+		if ( $this->get_src() ) {
 			return $this->get_src();
 		}
 		return '';
@@ -107,7 +107,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 * @return array|int
 	 */
 	protected function get_dimensions($dim = null) {
-		if (isset($this->_dimensions)) {
+		if ( isset($this->_dimensions) ) {
 			return $this->get_dimensions_loaded($dim);
 		}
 		if ( file_exists($this->file_loc) && filesize($this->file_loc) ) {
@@ -125,13 +125,13 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 * @return array|int
 	 */
 	protected function get_dimensions_loaded($dim) {
-		if ($dim === null) {
+		if ( $dim === null ) {
 			return $this->_dimensions;
 		}
-		if ($dim == 'w' || $dim == 'width') {
+		if ( $dim == 'w' || $dim == 'width' ) {
 			return $this->_dimensions[0];
 		}
-		if ($dim == 'h' || $dim == 'height') {
+		if ( $dim == 'h' || $dim == 'height' ) {
 			return $this->_dimensions[1];
 		}
 		return null;
@@ -173,7 +173,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 * @return string with http/https corrected depending on what's appropriate for server
 	 */
 	protected static function _maybe_secure_url($url) {
-		if (is_ssl() && strpos($url, 'https') !== 0 && strpos($url, 'http') === 0) {
+		if ( is_ssl() && strpos($url, 'https') !== 0 && strpos($url, 'http') === 0 ) {
 			$url = 'https' . substr($url, strlen('http'));
 		}
 		return $url;
@@ -182,7 +182,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	public static function wp_upload_dir() {
 		static $wp_upload_dir = false;
 
-		if (!$wp_upload_dir) {
+		if ( !$wp_upload_dir ) {
 			$wp_upload_dir = wp_upload_dir();
 		}
 
@@ -203,7 +203,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 				$this->init_with_file_path($iid);
 				return;
 			}
-			if (strstr(strtolower($iid), '.jpg')) {
+			if ( strstr(strtolower($iid), '.jpg') ) {
 				$this->init_with_relative_path($iid);
 				return;
 			}
@@ -214,24 +214,24 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 		$this->import($image_info);
 		$basedir = self::wp_upload_dir();
 		$basedir = $basedir['basedir'];
-		if (isset($this->file)) {
+		if ( isset($this->file) ) {
 			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
-		} else if (isset($this->_wp_attached_file)) {
+		} else if ( isset($this->_wp_attached_file) ) {
 			$this->file = reset($this->_wp_attached_file);
 			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
 		}
-		if (isset($image_info['id'])) {
+		if ( isset($image_info['id']) ) {
 			$this->ID = $image_info['id'];
-		} else if (is_numeric($iid)) {
+		} else if ( is_numeric($iid) ) {
 			$this->ID = $iid;
 		}
-		if (isset($this->ID)) {
+		if ( isset($this->ID) ) {
 			$custom = get_post_custom($this->ID);
 			foreach ($custom as $key => $value) {
 				$this->$key = $value[0];
 			}
 		} else {
-			if (is_array($iid) || is_object($iid)) {
+			if ( is_array($iid) || is_object($iid) ) {
 				TimberHelper::error_log('Not able to init in TimberImage with iid=');
 				TimberHelper::error_log($iid);
 			} else {
@@ -268,7 +268,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 */
 	protected function init_with_url($url) {
 		$this->abs_url = $url;
-		if (TimberURLHelper::is_local($url)) {
+		if ( TimberURLHelper::is_local($url) ) {
 			$this->file = ABSPATH . TimberURLHelper::get_rel_url($url);
 			$this->file_loc = ABSPATH . TimberURLHelper::get_rel_url($url);
 		}
@@ -336,7 +336,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 * ```
 	 */
 	public function link() {
-		if (strlen($this->abs_url)) {
+		if ( strlen($this->abs_url) ) {
 			return $this->abs_url;
 		}
 		return get_permalink($this->ID);
@@ -347,7 +347,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 * @return bool|TimberPost
 	 */
 	public function parent() {
-		if (!$this->post_parent) {
+		if ( !$this->post_parent ) {
 			return false;
 		}
 		return new $this->PostClass($this->post_parent);
@@ -373,8 +373,8 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 * @api
 	 * @example
 	 * ```twig
- 	 * <h1>{{post.title}}</h1>
- 	 * <img src="{{post.thumbnail.src}}" />
+	 * <h1>{{post.title}}</h1>
+	 * <img src="{{post.thumbnail.src}}" />
 	 * ```
 	 * ```html
 	 * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" />
