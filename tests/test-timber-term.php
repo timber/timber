@@ -8,6 +8,15 @@
 			$this->assertEquals('TimberTerm', get_class($term));
 		}
 
+		function testGetTermWithObject() {
+			$term_id = $this->factory->term->create(array('name' => 'Famous Commissioners'));
+			$term_data = get_term($term_id, 'post_tag');
+			$this->assertEquals('WP_Term', get_class($term_data));
+			$term = new TimberTerm($term_id);
+			$this->assertEquals('Famous Commissioners', $term->name());
+			$this->assertEquals('TimberTerm', get_class($term));
+		}
+
 		function testTermConstructWithSlug() {
 			$term_id = $this->factory->term->create(array('name' => 'New England Patriots'));
 			$term = new TimberTerm('new-england-patriots');
