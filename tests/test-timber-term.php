@@ -64,6 +64,20 @@
 			$this->assertFalse(strstr($term->get_path(), 'http://'));
 		}
 
+		function testGetPostsWithPostTypesString() {
+			register_post_type('portfolio', array('taxonomies' => array('post_tag'), 'public' => true));
+			$term_id = $this->factory->term->create(array('name' => 'Zong'));
+			$posts = $this->factory->post->create_many(3, array('post_type' => 'post', 'tags_input' => 'zong') );
+			$posts = $this->factory->post->create_many(5, array('post_type' => 'portfolio', 'tags_input' => 'zong') );
+			$term = new TimberTerm($term_id);
+			$posts_gotten = $term->posts('posts_per_page=4');
+			$this->assertEquals(4, count($posts_gotten));
+
+			$posts_gotten = $term->posts(array('posts_per_page' => 7));
+			$this->assertEquals(7, count($posts_gotten));
+
+		}
+
 		function testGetPostsOld() {
 			$term_id = $this->factory->term->create();
 			$posts = array();
