@@ -2,8 +2,12 @@
 
 	class TestTimberImageToJPG extends Timber_UnitTestCase {
 
-		function remove($file) {
-
+		/**
+     	 * @expectedException Twig_Error_Runtime
+     	 */
+		function testTIFtoJPG() {
+			$filename = TestTimberImage::copyTestImage( 'white-castle.tif' );
+			$str = Timber::compile_string('{{file|tojpg}}', array('file' => $filename));
 		}
 
 		function testPNGtoJPG() {

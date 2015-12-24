@@ -46,6 +46,18 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 	}
 
+	function testPagesMenuWithFalse() {
+		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
+		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
+		$page_menu = new TimberMenu();
+		$this->assertEquals( 2, count( $page_menu->items ) );
+		$this->assertEquals( 'Bar Page', $page_menu->items[0]->title() );
+		$this->_createTestMenu();
+		//make sure other menus are still more powerful
+		$menu = new TimberMenu(false);
+		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
+	}
+
 	/*
 	 * Make sure we still get back nothing even though we have a fallback present
 	 */
@@ -455,6 +467,30 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		);
 		$menu = new TimberMenu('extra-menu');
 		$this->assertEquals('Ziggy', $menu->name);
+	}
+
+	function testConstructMenuByName() {
+		$items = array();
+		$items[] = (object) array('type' => 'link', 'link' => '/');
+		$items[] = (object) array('type' => 'link', 'link' => '/foo');
+		$items[] = (object) array('type' => 'link', 'link' => '/bar/');
+
+		$this->buildMenu('Fancy Suit', $items);
+
+		$menu = new TimberMenu('Fancy Suit');
+		$this->assertEquals( 3, count($menu->get_items()) );
+	}
+
+	function testConstructMenuBySlug() {
+		$items = array();
+		$items[] = (object) array('type' => 'link', 'link' => '/');
+		$items[] = (object) array('type' => 'link', 'link' => '/foo');
+		$items[] = (object) array('type' => 'link', 'link' => '/bar/');
+
+		$this->buildMenu('Jolly Jeepers', $items);
+
+		$menu = new TimberMenu('jolly-jeepers');
+		$this->assertEquals( 3, count($menu->get_items()) );
 	}
 
 }

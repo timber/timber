@@ -8,6 +8,15 @@
 			$this->assertEquals('TimberTerm', get_class($term));
 		}
 
+		function testGetTermWithObject() {
+			$term_id = $this->factory->term->create(array('name' => 'Famous Commissioners'));
+			$term_data = get_term($term_id, 'post_tag');
+			$this->assertTrue( in_array( get_class($term_data), array('WP_Term', 'stdClass') ) );
+			$term = new TimberTerm($term_id);
+			$this->assertEquals('Famous Commissioners', $term->name());
+			$this->assertEquals('TimberTerm', get_class($term));
+		}
+
 		function testTermConstructWithSlug() {
 			$term_id = $this->factory->term->create(array('name' => 'New England Patriots'));
 			$term = new TimberTerm('new-england-patriots');
@@ -53,6 +62,20 @@
 			$term = new TimberTerm($term_id);
 			$this->assertFalse(strstr($term->path(), 'http://'));
 			$this->assertFalse(strstr($term->get_path(), 'http://'));
+		}
+
+		function testGetPostsWithPostTypesString() {
+			register_post_type('portfolio', array('taxonomies' => array('post_tag'), 'public' => true));
+			$term_id = $this->factory->term->create(array('name' => 'Zong'));
+			$posts = $this->factory->post->create_many(3, array('post_type' => 'post', 'tags_input' => 'zong') );
+			$posts = $this->factory->post->create_many(5, array('post_type' => 'portfolio', 'tags_input' => 'zong') );
+			$term = new TimberTerm($term_id);
+			$posts_gotten = $term->posts('posts_per_page=4');
+			$this->assertEquals(4, count($posts_gotten));
+
+			$posts_gotten = $term->posts(array('posts_per_page' => 7));
+			$this->assertEquals(7, count($posts_gotten));
+
 		}
 
 		function testGetPostsOld() {
