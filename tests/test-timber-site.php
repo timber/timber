@@ -48,5 +48,11 @@ class TestTimberSite extends Timber_UnitTestCase {
 		$this->assertEquals( 'bar', $site->foo );
 	}
 
+	function testSiteMeta() {
+		$ts = new TimberSite();
+		update_option('foo', 'magoo');
+		$this->assertEquals('magoo', $ts->meta('foo'));
+	}
+
 
 }

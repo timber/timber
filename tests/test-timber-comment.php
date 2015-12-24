@@ -10,6 +10,15 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$this->assertEquals($comment_id, $comment->ID);
 	}
 
+	function testCommentWithMeta(){
+		$post_id = $this->factory->post->create();
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
+		update_comment_meta( $comment_id, 'rebney', 'Winnebago Man');
+		update_comment_meta( $comment_id, 'quote', 'Will you do me a kindness?');
+		$comment = new TimberComment($comment_id);
+		$this->assertEquals('Winnebago Man', $comment->rebney);
+	}
+
 	function testCommentToString(){
 		$quote = 'Jerry, just remember, it’s not a lie if you believe it.';
 		$post_id = $this->factory->post->create();
@@ -97,6 +106,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$result = Timber::compile_string($twig_string, array('comment' => $comments[0]));
 		$this->assertEquals('Cosmo Kramer', $result);
 	}
+
 
 
 

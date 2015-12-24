@@ -12,6 +12,16 @@
 			$this->assertEquals(count($term_ids), count($terms));
 		}
 
+		function testGetTermsByString() {
+			$term_ids = $this->factory->term->create_many(17);
+			$terms = Timber::get_terms('tag');
+			$this->assertEquals(17, count($terms));
+			$terms = Timber::get_terms(array('taxonomies' => 'tag'));
+			$this->assertEquals(17, count($terms));
+			$terms = Timber::get_terms('taxonomies=tag');
+			$this->assertEquals(17, count($terms));
+		}
+
 		function testSubclass(){
 			$term_ids = array();
 			$class_name = 'TimberTermSubclass';

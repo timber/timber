@@ -68,5 +68,6 @@ class TimberImageOperationToJpg extends TimberImageOperation {
 		if ( $ext == 'jpg' || $ext == 'jpeg') {
 			return imagecreatefromjpeg($filename);
 		}
+		throw new InvalidArgumentException('image_create only accepts PNG, GIF and JPGs. File extension was: '.$ext);
 	}
 }

@@ -1,7 +1,6 @@
 <?php
 
-class TimberTermGetter
-{
+class TimberTermGetter {
 
     /**
      * @param string|array $args
@@ -19,25 +18,25 @@ class TimberTermGetter
         }
         if (is_string($args) && strstr($args, '=')){
             //a string and a query string!
-            $parsed = TimberTermGetter::get_term_query_from_query_string($args);
+            $parsed = self::get_term_query_from_query_string($args);
             if (is_array($maybe_args)){
                 $parsed->args = array_merge($parsed->args, $maybe_args);
             }
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else if (is_string($args)){
             //its just a string with a single taxonomy
-            $parsed = TimberTermGetter::get_term_query_from_string($args);
+            $parsed = self::get_term_query_from_string($args);
             if (is_array($maybe_args)){
                 $parsed->args = array_merge($parsed->args, $maybe_args);
             }
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else if (is_array($args) && TimberHelper::is_array_assoc($args)){
             //its an associative array, like a good ole query
-            $parsed = TimberTermGetter::get_term_query_from_assoc_array($args);
+            $parsed = self::get_term_query_from_assoc_array($args);
             return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
         } else if (is_array($args)){
             //its just an array of strings or IDs (hopefully)
-            $parsed = TimberTermGetter::get_term_query_from_array($args);
+            $parsed = self::get_term_query_from_array($args);
             if (is_array($maybe_args)){
                 $parsed->args = array_merge($parsed->args, $maybe_args);
             }
@@ -75,7 +74,7 @@ class TimberTermGetter
      * @param string $query_string
      * @return stdClass
      */
-    public static function get_term_query_from_query_string($query_string) {
+    protected static function get_term_query_from_query_string($query_string) {
         $args = array();
         parse_str($query_string, $args);
         $ret = self::get_term_query_from_assoc_array($args);
@@ -86,7 +85,7 @@ class TimberTermGetter
      * @param string $taxs
      * @return stdClass
      */
-    public static function get_term_query_from_string($taxs) {
+    protected static function get_term_query_from_string($taxs) {
         $ret = new stdClass();
         $ret->args = array();
         if (is_string($taxs)) {
