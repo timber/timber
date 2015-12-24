@@ -44,7 +44,7 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
 		$this->init($cid);
 	}
 
-	function __toString(){
+	function __toString() {
 		return $this->content();
 	}
 
@@ -265,8 +265,6 @@ class TimberComment extends TimberCore implements TimberCoreInterface {
 	 * Enqueue the WP threaded comments javascript,
 	 * and fetch the reply link for various comments.
 	 * @api
-	 * @param int $comment_id
-	 * @param int $post_id
 	 * @return string
 	 */
 	public function reply_link( $reply_text = 'Reply' ) {
