@@ -49,6 +49,10 @@ class TimberImageOperationResize extends TimberImageOperation {
 		return $result;
 	}
 
+	/**
+	 * @param string $load_filename
+	 * @param string $save_filename
+	 */
 	protected function run_animated_gif( $load_filename, $save_filename ) {
 		$image = wp_get_image_editor( $load_filename );
 		$current_size = $image->get_size();
