@@ -188,13 +188,13 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 			&& get_class($wp_query->queried_object) == 'WP_Post'
 			) {
 			$pid = $wp_query->queried_object_id;
-		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id ) {
+		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id )  {
 			//hack for static page as home page
 			$pid = $wp_query->queried_object_id;
 		} else if ( $pid === null ) {
 			$gtid = false;
 			$maybe_post = get_post();
-			if ( isset($maybe_post->ID) ) {
+			if ( isset($maybe_post->ID) ){
 				$gtid = true;
 			}
 			if ( $gtid ) {
@@ -700,35 +700,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		return $children;
 	}
 
-	/**
-	 * Enqueue the WP threaded comments javascript,
-	 * and fetch the reply link for various comments.
-	 * @internal
-	 * @param int $comment_id
-	 * @param int $post_id
-	 * @return mixed
-	 */
-	function TimberComment_reply_link($comment_id, $post_id) {
-		if (is_singular() && comments_open() && get_option('thread_comments')) {
-			wp_enqueue_script( 'comment-reply' );
-		}
-
-		// Get the comments depth option from the admin panel
-		$max_depth = get_option('thread_comments_depth');
-
-		// Default args
-		$args = array(
-			'add_below' => 'comment',
-			'respond_id' => 'respond',
-			'reply_text' => 'Reply',
-			'depth' => 1,
-			'max_depth' => $max_depth,
-		);
-
-		$reply_link = get_comment_reply_link( $args, $comment_id, $post_id );
-
-		return $reply_link;
-	}
 
 	/**
 	 * Get the comments for a post
@@ -774,7 +745,6 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 
 		foreach($comments as $key => &$comment) {
 			$timber_comment = new $CommentClass($comment);
-			$timber_comment->reply_link = $this->TimberComment_reply_link($comment->comment_ID, $this->ID);
 			$timber_comments[$timber_comment->id] = $timber_comment;
 		}
 
@@ -1074,7 +1044,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		$post = $this;
 		$class_array = get_post_class($class, $this->ID);
 		$post = $old_global_post;
-		if ( is_array($class_array) ) {
+		if ( is_array($class_array) ){
 			return implode(' ', $class_array);
 		}
 		return $class_array;
@@ -1318,7 +1288,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	/**
 	 * @return string
 	 */
-	public function name() {
+	public function name(){
 		return $this->title();
 	}
 
