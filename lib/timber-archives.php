@@ -83,7 +83,7 @@ class TimberArchives extends TimberCore {
 
 	/**
 	 * @internal
-	 * @param array|string $args
+	 * @param array $args
 	 * @param string $last_changed
 	 * @param string $join
 	 * @param string $where
@@ -102,8 +102,8 @@ class TimberArchives extends TimberCore {
 			wp_cache_set($key, $results, 'posts');
 		}
 		if ($results) {
-			foreach ((array)$results as $result) {
-				$url = get_year_link($result->year);
+			foreach ( (array)$results as $result ) {
+				$url = get_year_link( $result->year );
 				$text = sprintf('%d', $result->year);
 				$output[] = $this->get_archives_link($url, $text);
 			}
