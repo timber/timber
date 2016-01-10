@@ -612,7 +612,7 @@ class TestTimberImage extends Timber_UnitTestCase {
 		$result = ob_get_contents();
 		ob_end_clean();
 		$m = date('m');
-		$y = date('Y')''
+		$y = date('Y');
 		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.$y.'/'.$m.'/arch-510x280-c-default.jpg" />', $result);
 	}
 
