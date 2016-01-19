@@ -241,12 +241,7 @@ class TimberArchives extends TimberCore {
 		} elseif ( 'yearly' == $type ) {
 			$output = $this->get_items_yearly($args, $last_changed, $join, $where, $order, $limit);
 		} elseif ( 'monthly-nested' == $type ) {
-			$years = $this->get_items_yearly($args, $last_changed, $join, $where, $order, $limit);
-			foreach ( $years as &$year ) {
-				$args = array('show_year' => false);
-				$year['children'] = $this->get_items_monthly($args, $last_changed, $join, $where, $order, $limit);
-			}
-			$output = $years;
+			$output = $this->get_items_monthly($args, $last_changed, $join, $where, $order, $limit);
 		} elseif ( 'daily' == $type ) {
 			$query = "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, DAYOFMONTH(post_date) AS `dayofmonth`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date), MONTH(post_date), DAYOFMONTH(post_date) ORDER BY post_date $order $limit";
 			$key = md5($query);
