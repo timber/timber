@@ -2,14 +2,14 @@
 /*
  * Changes image to new size, by shrinking/enlarging then padding with colored bands,
  * so that no part of the image is cropped or stretched.
- * 
+ *
  * Arguments:
  * - width of new image
  * - height of new image
- * - color of padding 
+ * - color of padding
  */
 class TimberImageOperationLetterbox extends TimberImageOperation {
-    
+
 	private $w, $h, $color;
 
 	/**
@@ -26,8 +26,8 @@ class TimberImageOperationLetterbox extends TimberImageOperation {
 	/**
 	 * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
 	 * @param   string    $src_extension    the extension (ex: .jpg)
-	 * @return  string    the final filename to be used 
-	 *                    (ex: my-awesome-pic-lbox-300x200-FF3366.jpg) 
+	 * @return  string    the final filename to be used
+	 *                    (ex: my-awesome-pic-lbox-300x200-FF3366.jpg)
 	 */
 	public function filename($src_filename, $src_extension) {
 		$color = str_replace( '#', '', $this->color );
@@ -39,10 +39,10 @@ class TimberImageOperationLetterbox extends TimberImageOperation {
 	/**
 	 * Performs the actual image manipulation,
 	 * including saving the target file.
-	 * 
-	 * @param  string $load_filename filepath (not URL) to source file 
+	 *
+	 * @param  string $load_filename filepath (not URL) to source file
 	 *                               (ex: /src/var/www/wp-content/uploads/my-pic.jpg)
-	 * @param  string $save_filename filepath (not URL) where result file should be saved 
+	 * @param  string $save_filename filepath (not URL) where result file should be saved
 	 *                               (ex: /src/var/www/wp-content/uploads/my-pic-lbox-300x200-FF3366.jpg)
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
@@ -78,17 +78,20 @@ class TimberImageOperationLetterbox extends TimberImageOperation {
 				$owt = $w;
 				$image->crop( 0, 0, $ow, $oh, $owt, $oht );
 			}
-			$image->save( $save_filename );
+			$result = $image->save( $save_filename );
 			$func = 'imagecreatefromjpeg';
+			$save_func = 'imagejpeg';
 			$ext = pathinfo( $save_filename, PATHINFO_EXTENSION );
 			if ( $ext == 'gif' ) {
 				$func = 'imagecreatefromgif';
+				$save_func = 'imagegif';
 			} else if ( $ext == 'png' ) {
 				$func = 'imagecreatefrompng';
+				$save_func = 'imagepng';
 			}
 			$image = $func( $save_filename );
 			imagecopy( $bg, $image, $x, $y, 0, 0, $owt, $oht );
-			imagejpeg( $bg, $save_filename, $quality );
+			$save_func( $bg, $save_filename, $quality );
 			return true;
 		} else {
 			TimberHelper::error_log( $image );
