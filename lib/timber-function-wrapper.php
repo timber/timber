@@ -7,7 +7,11 @@ class TimberFunctionWrapper {
 	private $_use_ob;
 
 	public function __toString() {
-		return (string)$this->call();
+		 try {
+			return (string)$this->call();
+		 } catch (Exception $e) {
+		 	return 'Caught exception: ' . $e->getMessage() . "\n";
+		 }
 	}
 
 	/**

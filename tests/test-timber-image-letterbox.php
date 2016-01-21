@@ -1,6 +1,6 @@
 <?php
 
-class TestTimberImageLetterbox extends Timber_UnitTestCase {
+class TestTimberImageLetterbox extends TimberImage_UnitTestCase {
 
 	function testLetterbox() {
 		$file_loc = TestTimberImage::copyTestImage( 'eastern.jpg' );
@@ -8,7 +8,7 @@ class TestTimberImageLetterbox extends Timber_UnitTestCase {
 		$image = $upload_dir['url'].'/eastern.jpg';
 		$new_file = TimberImageHelper::letterbox( $image, 500, 500, '#CCC', true );
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
-
+		$this->addFile( $location_of_image );
 		$this->assertTrue (TestTimberImage::checkSize($location_of_image, 500, 500));
 		//whats the bg/color of the image
 		$this->assertTrue( TestTimberImage::checkPixel($location_of_image, 1, 1, "#CCC") );
@@ -20,6 +20,7 @@ class TestTimberImageLetterbox extends Timber_UnitTestCase {
 		$new_file_red = TimberImageHelper::letterbox( $upload_dir['url'].'/eastern.jpg', 500, 500, '#FF0000' );
 		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/eastern.jpg', 500, 500, '#00FF00' );
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
+		$this->addFile( $location_of_image );
 		$this->assertTrue (TestTimberImage::checkSize($location_of_image, 500, 500));
 		//whats the bg/color of the image
 		$image = imagecreatefromjpeg( $location_of_image );
@@ -35,13 +36,11 @@ class TestTimberImageLetterbox extends Timber_UnitTestCase {
 		$upload_dir = wp_upload_dir();
 		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/'.$base_file, 500, 500, '00FF00', true );
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
+		$this->addFile( $location_of_image );
 		$this->assertTrue (TestTimberImage::checkSize($location_of_image, 500, 500));
 		//whats the bg/color of the image
-		$image = imagecreatefromjpeg( $location_of_image );
-		$pixel_rgb = imagecolorat( $image, 250, 250 );
-		$colors = imagecolorsforindex( $image, $pixel_rgb );
-		$this->assertEquals( 0, $colors['red'] );
-		$this->assertEquals( 255, $colors['green'] );
+		$is_green = TestTimberImage::checkPixel($location_of_image, 250, 250, '#00FF00');
+		$this->assertTrue( $is_green );
 		$this->assertFileExists( $location_of_image );
 	}
 
@@ -51,6 +50,7 @@ class TestTimberImageLetterbox extends Timber_UnitTestCase {
 		$upload_dir = wp_upload_dir();
 		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/'.$base_file, 300, 100, '00FF00', true );
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
+		$this->addFile( $location_of_image );
 		$this->assertTrue (TestTimberImage::checkSize($location_of_image, 300, 100));
 		//whats the bg/color of the image
 		$this->assertTrue( TestTimberImage::checkPixel($location_of_image, 50, 10, "#00FF00", "#00FF10") );
@@ -63,6 +63,7 @@ class TestTimberImageLetterbox extends Timber_UnitTestCase {
 		$upload_dir = wp_upload_dir();
 		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/eastern.jpg', 500, 500, '#FFFFFF', true );
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
+		$this->addFile( $location_of_image );
 		$this->assertTrue (TestTimberImage::checkSize($location_of_image, 500, 500));
 		//whats the bg/color of the image
 		$image = imagecreatefromjpeg( $location_of_image );

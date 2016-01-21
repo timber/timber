@@ -3,22 +3,14 @@ sudo: false
 language: php
 
 php:
-    - 5.3
     - 5.4
     - 5.5
 
 env:
     - WP_VERSION=latest WP_MULTISITE=0
     - WP_VERSION=latest WP_MULTISITE=1
-    - WP_VERSION=4.1.7 WP_MULTISITE=0
-    - WP_VERSION=4.1.7 WP_MULTISITE=1
 
 matrix:
-    exclude:
-        - php: 5.5
-          env: WP_VERSION=3.7.9 WP_MULTISITE=1
-        - php: 5.5
-          env: WP_VERSION=3.7.9 WP_MULTISITE=0
     include:
         - php: hhvm
           env: WP_VERSION=latest WP_MULTISITE=0

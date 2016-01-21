@@ -1,6 +1,6 @@
 <?php
 
-class TestTimberImage extends Timber_UnitTestCase {
+class TestTimberImage extends TimberImage_UnitTestCase {
 
 /* ----------------
  * Helper functions
@@ -192,6 +192,7 @@ class TestTimberImage extends Timber_UnitTestCase {
 		$data['test_image'] = $url;
 		Timber::compile( 'assets/image-test.twig', $data );
 		$resized_path = $upload_dir['path'].'/robocop-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.gif';
+		$this->addFile( $resized_path );
 		$this->assertFileExists( $resized_path );
 		$this->assertTrue(TimberImageHelper::is_animated_gif($resized_path));
 	}
@@ -317,12 +318,13 @@ class TestTimberImage extends Timber_UnitTestCase {
 	}
 
 	function testResizeFileNamingWithLangHome() {
-		add_filter( 'home_url', array($this,'add_lang_to_home') , 1, 4 );
+		add_filter( 'home_url', array($this, 'add_lang_to_home') , 1, 4 );
 		$file_loc = self::copyTestImage( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
 		$url_src = $upload_dir['url'].'/eastern.jpg';
 		$filename = TimberImageHelper::get_resize_file_url( $url_src, 300, 500, 'default' );
 		$this->assertEquals( $upload_dir['url'].'/eastern-300x500-c-default.jpg', $filename );
+		remove_filter( 'home_url', array($this, 'add_lang_to_home'), 1 );
 	}
 
 	function testLetterboxFileNaming() {
@@ -330,13 +332,20 @@ class TestTimberImage extends Timber_UnitTestCase {
 		$upload_dir = wp_upload_dir();
 		$url_src = $upload_dir['url'].'/eastern.jpg';
 		$filename = TimberImageHelper::get_letterbox_file_url( $url_src, 300, 500, '#FFFFFF' );
-		// $filename = str_replace( ABSPATH, '', $filename );
 		$this->assertEquals( $upload_dir['url'].'/eastern-lbox-300x500-FFFFFF.jpg', $filename );
 	}
 
 	public static function is_png($file) {
 		$file = strtolower($file);
 		if (strpos($file, '.png') > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static function is_gif($file) {
+		$file = strtolower($file);
+		if (strpos($file, '.gif') > 0) {
 			return true;
 		}
 		return false;
@@ -363,29 +372,31 @@ class TestTimberImage extends Timber_UnitTestCase {
 	}
 
 	public static function checkPixel($file, $x, $y, $color = '#FFFFFF', $upper_color = false) {
-		if ( self::is_png($file)) {
-			$image = imagecreatefrompng($file);
+		if ( self::is_png($file) ) {
+			$image = imagecreatefrompng( $file );
+		} else if ( self::is_gif($file) ) {
+			$image = imagecreatefromgif( $file );
 		} else {
 			$image = imagecreatefromjpeg( $file );
 		}
 		$pixel_rgb = imagecolorat( $image, $x, $y );
-		$colors = imagecolorsforindex( $image, $pixel_rgb );
+		$colors_of_file = imagecolorsforindex( $image, $pixel_rgb );
 		if ($upper_color) {
 			$upper_colors = TimberImageOperation::hexrgb($upper_color);
 		}
-		$imgcolors = TimberImageOperation::hexrgb($color);
+		$test_colors = TimberImageOperation::hexrgb($color);
 		if ( isset($upper_colors) && $upper_colors ) {
-			if (self::checkChannel('red', $imgcolors, $colors, $upper_colors) &&
-				self::checkChannel('green', $imgcolors, $colors, $upper_colors) &&
-				self::checkChannel('blue', $imgcolors, $colors, $upper_colors)
+			if (self::checkChannel('red', $test_colors, $colors_of_file, $upper_colors) &&
+				self::checkChannel('green', $test_colors, $colors_of_file, $upper_colors) &&
+				self::checkChannel('blue', $test_colors, $colors_of_file, $upper_colors)
 				) {
 				return true;
 			}
 			return false;
 		}
-		if ( $imgcolors['red'] === $colors['red'] &&
-			 $imgcolors['blue'] === $colors['blue'] &&
-			 $imgcolors['green'] === $colors['green']) {
+		if ( $test_colors['red'] === $colors_of_file['red'] &&
+			 $test_colors['blue'] === $colors_of_file['blue'] &&
+			 $test_colors['green'] === $colors_of_file['green']) {
 			return true;
 		}
 		return false;
@@ -579,8 +590,9 @@ class TestTimberImage extends Timber_UnitTestCase {
 		$data['test_image'] = $image;
 		$data['size'] = array( 'width' => 120, 'height' => 120 );
 		$str = Timber::compile( 'assets/image-test.twig', $data );
-		$this->assertFileExists( get_template_directory().'/images/cardinals-120x120-c-default.jpg' );
-		unlink( get_template_directory().'/images/cardinals-120x120-c-default.jpg' );
+		$file_location = get_template_directory().'/images/cardinals-120x120-c-default.jpg';
+		$this->assertFileExists( $file_location );
+		$this->addFile( $file_location );
 	}
 
 	function testThemeImageLetterbox() {
