@@ -19,6 +19,7 @@
 		function testTwigPathFilter() {
 			$php_unit = $this;
 			add_filter('timber/loader/paths', function($paths) use ($php_unit) {
+				print_r($paths);
 				$count = count($paths);
 				$php_unit->assertEquals(3, count($paths));
 				$pos = array_search('/', $paths);
