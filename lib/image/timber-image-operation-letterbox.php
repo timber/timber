@@ -95,7 +95,7 @@ class TimberImageOperationLetterbox extends TimberImageOperation {
 			}
 			$image = $func( $save_filename );
 			imagecopy( $bg, $image, $x, $y, 0, 0, $owt, $oht );
-			if ($save_func === 'imagegif') {
+			if ($save_func == 'imagegif') {
 				$save_func( $bg, $save_filename );
 			}
 			$save_func( $bg, $save_filename, $quality );
