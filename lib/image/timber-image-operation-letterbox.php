@@ -88,6 +88,10 @@ class TimberImageOperationLetterbox extends TimberImageOperation {
 			} else if ( $ext == 'png' ) {
 				$func = 'imagecreatefrompng';
 				$save_func = 'imagepng';
+				if ($quality > 9) {
+					$quality = $quality/10;
+					$quality = round(10 - $quality);
+				}
 			}
 			$image = $func( $save_filename );
 			imagecopy( $bg, $image, $x, $y, 0, 0, $owt, $oht );

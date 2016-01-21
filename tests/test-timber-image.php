@@ -342,6 +342,14 @@ class TestTimberImage extends Timber_UnitTestCase {
 		return false;
 	}
 
+	public static function is_gif($file) {
+		$file = strtolower($file);
+		if (strpos($file, '.gif') > 0) {
+			return true;
+		}
+		return false;
+	}
+
 	public static function checkSize( $file, $width, $height ) {
 		$size = getimagesize( $file );
 		if ($width === $size[0] && $height === $size[1]) {
@@ -363,29 +371,31 @@ class TestTimberImage extends Timber_UnitTestCase {
 	}
 
 	public static function checkPixel($file, $x, $y, $color = '#FFFFFF', $upper_color = false) {
-		if ( self::is_png($file)) {
-			$image = imagecreatefrompng($file);
+		if ( self::is_png($file) ) {
+			$image = imagecreatefrompng( $file );
+		} else if ( self::is_gif($file) ) {
+			$image = imagecreatefromgif( $file );
 		} else {
 			$image = imagecreatefromjpeg( $file );
 		}
 		$pixel_rgb = imagecolorat( $image, $x, $y );
-		$colors = imagecolorsforindex( $image, $pixel_rgb );
+		$colors_of_file = imagecolorsforindex( $image, $pixel_rgb );
 		if ($upper_color) {
 			$upper_colors = TimberImageOperation::hexrgb($upper_color);
 		}
-		$imgcolors = TimberImageOperation::hexrgb($color);
+		$test_colors = TimberImageOperation::hexrgb($color);
 		if ( isset($upper_colors) && $upper_colors ) {
-			if (self::checkChannel('red', $imgcolors, $colors, $upper_colors) &&
-				self::checkChannel('green', $imgcolors, $colors, $upper_colors) &&
-				self::checkChannel('blue', $imgcolors, $colors, $upper_colors)
+			if (self::checkChannel('red', $test_colors, $colors_of_file, $upper_colors) &&
+				self::checkChannel('green', $test_colors, $colors_of_file, $upper_colors) &&
+				self::checkChannel('blue', $test_colors, $colors_of_file, $upper_colors)
 				) {
 				return true;
 			}
 			return false;
 		}
-		if ( $imgcolors['red'] === $colors['red'] &&
-			 $imgcolors['blue'] === $colors['blue'] &&
-			 $imgcolors['green'] === $colors['green']) {
+		if ( $test_colors['red'] === $colors_of_file['red'] &&
+			 $test_colors['blue'] === $colors_of_file['blue'] &&
+			 $test_colors['green'] === $colors_of_file['green']) {
 			return true;
 		}
 		return false;
