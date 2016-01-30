@@ -183,20 +183,6 @@ class Timber {
 
 		$data['posts'] = Timber::query_posts();
 
-		//deprecated, these should be fetched via TimberSite or TimberTheme
-		$data['theme_dir'] = WP_CONTENT_SUBDIR.str_replace( WP_CONTENT_DIR, '', get_stylesheet_directory() );
-		$data['language_attributes'] = TimberHelper::function_wrapper( 'language_attributes' );
-		$data['stylesheet_uri'] = get_stylesheet_uri();
-		$data['template_uri'] = get_template_directory_uri();
-
-		//deprecated, this should be fetched via TimberMenu
-		if ( function_exists( 'wp_nav_menu' ) ) {
-			$locations = get_nav_menu_locations();
-			if ( count( $locations ) ) {
-				$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'echo' => false, 'menu_class' => 'nav-menu' ) );
-			}
-		}
-
 		$data = apply_filters( 'timber_context', $data );
 		$data = apply_filters( 'timber/context', $data );
 		return $data;
