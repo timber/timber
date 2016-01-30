@@ -116,78 +116,6 @@ class Timber {
 	}
 
 	/**
-	 * Get pids.
-	 *
-	 * @param array|string $query
-	 * @return array
-	 * @deprecated since 0.20.0
-	 */
-	static function get_pids( $query = null ) {
-		return TimberPostGetter::get_pids( $query );
-	}
-
-	/**
-	 * Get posts from loop.
-	 *
-	 * @param string  $PostClass
-	 * @return array
-	 * @deprecated since 0.20.0
-	 */
-	static function get_posts_from_loop( $PostClass ) {
-		return TimberPostGetter::get_posts( $PostClass );
-	}
-
-	/**
-	 * Get posts from slug.
-	 *
-	 * @param string  $slug
-	 * @param string  $PostClass
-	 * @return array
-	 * @deprecated since 0.20.0
-	 */
-	static function get_posts_from_slug( $slug, $PostClass = 'TimberPost' ) {
-		return TimberPostGetter::get_posts( $slug, $PostClass );
-	}
-
-	/**
-	 * Get posts from WP_Query.
-	 *
-	 * @param array   $query
-	 * @param string  $PostClass
-	 * @return array
-	 * @deprecated since 0.20.0
-	 */
-	static function get_posts_from_wp_query( $query = array(), $PostClass = 'TimberPost' ) {
-		return TimberPostGetter::query_posts( $query, $PostClass );
-	}
-
-	/**
-	 * Get posts from array of ids.
-	 *
-	 * @param array   $query
-	 * @param string  $PostClass
-	 * @return array|null
-	 * @deprecated since 0.20.0
-	 */
-	static function get_posts_from_array_of_ids( $query = array(), $PostClass = 'TimberPost' ) {
-		return TimberPostGetter::get_posts( $query, $PostClass );
-	}
-
-	/**
-	 * Get pid.
-	 *
-	 * @param unknown $query
-	 * @return int
-	 * @deprecated since 0.20.0
-	 */
-	static function get_pid( $query ) {
-		$pids = TimberPostGetter::get_pids( $query );
-		if ( is_array( $pids ) && count( $pids ) ) {
-			return $pids[0];
-		}
-	}
-
-	/**
 	 * WP_Query has posts.
 	 *
 	 * @return bool
@@ -252,13 +180,14 @@ class Timber {
 
 		$data['site'] = new TimberSite();
 		$data['theme'] = $data['site']->theme;
+
+		$data['posts'] = Timber::query_posts();
+
 		//deprecated, these should be fetched via TimberSite or TimberTheme
 		$data['theme_dir'] = WP_CONTENT_SUBDIR.str_replace( WP_CONTENT_DIR, '', get_stylesheet_directory() );
 		$data['language_attributes'] = TimberHelper::function_wrapper( 'language_attributes' );
 		$data['stylesheet_uri'] = get_stylesheet_uri();
 		$data['template_uri'] = get_template_directory_uri();
-
-		$data['posts'] = Timber::query_posts();
 
 		//deprecated, this should be fetched via TimberMenu
 		if ( function_exists( 'wp_nav_menu' ) ) {
@@ -267,6 +196,7 @@ class Timber {
 				$data['wp_nav_menu'] = wp_nav_menu( array( 'container_class' => 'menu-header', 'echo' => false, 'menu_class' => 'nav-menu' ) );
 			}
 		}
+
 		$data = apply_filters( 'timber_context', $data );
 		$data = apply_filters( 'timber/context', $data );
 		return $data;
@@ -451,22 +381,6 @@ class Timber {
 	}
 
 	/**
-	 * @deprecated since 0.22.2
-	 */
-	public function cancel_query() {
-		add_action( 'posts_request', array( $this, 'cancel_query_posts_request' ) );
-	}
-
-	/**
-	 * @deprecated since 0.22.2
-	 */
-	function cancel_query_posts_request() {
-		if ( is_main_query() ) {
-			wp_reset_query();
-		}
-	}
-
-	/**
 	 * Load template.
 	 *
 	 * @deprecated since 0.20.0
@@ -542,18 +456,6 @@ class Timber {
 	================================ */
 
 	/**
-	 * Get calling script path.
-	 *
-	 * @param int     $offset
-	 * @return string
-	 * @deprecated since 0.20.0
-	 */
-	public static function get_calling_script_path( $offset = 0 ) {
-		$dir = self::get_calling_script_dir( $offset );
-		return str_replace( ABSPATH, '', realpath( $dir ) );
-	}
-
-	/**
 	 * Get calling script dir.
 	 *
 	 * @return string
@@ -591,15 +493,5 @@ class Timber {
 		return $caller;
 	}
 
-	/**
-	 * Is post class or class map.
-	 *
-	 * @param string|array $args
-	 * @return bool
-	 * @deprecated since 0.20.0
-	 */
-	public static function is_post_class_or_class_map( $args ) {
-		return TimberPostGetter::is_post_class_or_class_map( $args );
-	}
 
 }

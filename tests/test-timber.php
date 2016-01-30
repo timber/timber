@@ -89,16 +89,6 @@ class TestTimber extends Timber_UnitTestCase {
 		$this->assertEquals(3, count($posts));
 	}
 
-	function testGetPids(){
-		$pids = array();
-		$pids[] = $this->factory->post->create();
-		$pids[] = $this->factory->post->create();
-		$pids[] = $this->factory->post->create();
-		$pidz = Timber::get_pids('post_type=post');
-		sort($pidz, SORT_NUMERIC);
-		$this->assertTrue(arrays_are_similar($pids, $pidz));
-	}
-
 	function testQueryPostsInContext(){
         $context = Timber::get_context();
         $this->assertArrayHasKey( 'posts', $context );
@@ -141,14 +131,6 @@ class TestTimber extends Timber_UnitTestCase {
 
         $the_post = Timber::get_post( $post_id );
         $this->assertEquals( 'New Stuff Goes here', $the_post->post_content );
-    }
-
-    function testGetPid(){
-    	$post_id = $this->factory->post->create(array('post_name' => 'test-get-pid-slug'));
-    	$pid = Timber::get_pid('test-get-pid-slug');
-    	$this->assertEquals($post_id, $pid);
-    	$pid = Timber::get_pid('dfsfsdfdsfs');
-    	$this->assertNull($pid);
     }
 
     function testTimberRenderString() {
