@@ -441,7 +441,7 @@ That's Timber!
 
 == Support ==
 
-Please use the [GitHub repo](https://github.com/jarednova/timber/issues?state=open) to file bugs or questions.
+Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/questions/tagged/timber). Please use GitHub issues only for specific bugs, feature requests and other types of issues.
 
 == Frequently Asked Questions ==
 

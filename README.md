@@ -78,11 +78,16 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**CSS Tricks**](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/) introduction to Timber
 * [**Twig for Timber Cheatsheet**](http://notlaura.com/the-twig-for-timber-cheatsheet/) by @laras126
 
+#### Support
+Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/questions/tagged/timber). Please use GitHub issues only for specific bugs, feature requests and other types of issues.
+
 #### Should I use it?
 It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. While Timber is still in development, it's also in-use on [hundreds of sites](http://jarednova.github.io/timber/#showcase). While much has been stabilized since the first major push back in June 2013, you should expect some breaking changes as development progresses towards a version 1.0.
 
 #### Contributing
 Read the [contributor guidelines](https://github.com/jarednova/timber/wiki#contributing) in the wiki.
+
+
 
 ## How To...
 
