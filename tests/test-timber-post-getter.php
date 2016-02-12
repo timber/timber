@@ -158,9 +158,6 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->go_to( '/' );
 		$posts = Timber::get_posts();
 		$this->assertEquals( 10, count( $posts ) );
-		$posts = Timber::get_posts_from_loop( 'TimberPostSubclass' );
-		$this->assertEquals( 10, count( $posts ) );
-		$this->assertEquals( 'TimberPostSubclass', get_class( $posts[0] ) );
 	}
 
 	function testGetPostsFromArray() {
@@ -170,9 +167,9 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals( $pids[3], $posts[3]->ID );
 	}
 
-	function testGetPostsFromSlug() {
+	function testGetPostWithSlug() {
 		$post = $this->factory->post->create( array( 'post_name' => 'silly-post' ) );
-		$posts = Timber::get_posts_from_slug( 'silly-post' );
+		$posts = Timber::get_posts( 'silly-post' );
 		$this->assertEquals( 1, count( $posts ) );
 		$this->assertEquals( 'silly-post', $posts[0]->slug );
 	}

@@ -21,7 +21,7 @@
 		function testPostDisplayDate(){
 			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
-			$twig = 'I am from {{post.display_date}}';
+			$twig = 'I am from {{post.date}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
 			$this->assertEquals('I am from '.date('F j, Y'), $str);
 		}
