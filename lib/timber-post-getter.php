@@ -95,7 +95,7 @@ class TimberPostGetter {
 		}
 		if (is_array($arg)) {
 			foreach ($arg as $item) {
-				if (is_string($item) && class_exists($item)) {
+				if (is_string($item) && (class_exists($item) && is_subclass_of($item, 'TimberPost'))) {
 					return true;
 				}
 			}
