@@ -56,6 +56,11 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 */
 	public $file_loc;
 	public $file;
+	/**
+	 * @api
+	 * @var integer the ID of the image (which is a WP_Post)
+	 */
+	public $id;
 	public $sizes = array();
 	/**
 	 * @api
