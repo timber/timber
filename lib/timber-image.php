@@ -51,6 +51,10 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 */
 	public static $representation = 'image';
 	/**
+	 * @var array of supported relative file types
+	 */
+	private $file_types = array('jpg', 'jpeg', 'png', 'svg', 'bmp', 'ico', 'gif', 'tiff', 'pdf');
+	/**
 	 * @api
 	 * @var string $file_loc the location of the image file in the filesystem (ex: `/var/www/htdocs/wp-content/uploads/2015/08/my-pic.jpg`)
 	 */
@@ -203,8 +207,12 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 				$this->init_with_file_path($iid);
 				return;
 			}
-			if ( strstr(strtolower($iid), '.jpg') ) {
-				$this->init_with_relative_path($iid);
+			
+			$relative = false;
+			$iid_lower = strtolower($iid);
+			foreach( $this->file_types as $type ) { if( strstr( $iid_lower, $type ) ) { $relative = true; break; } };
+			if ( $relative ) {
+				$this->init_with_relative_path( $iid );
 				return;
 			}
 		}
