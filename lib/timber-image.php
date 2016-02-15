@@ -56,6 +56,11 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 */
 	public $file_loc;
 	public $file;
+	/**
+	 * @api
+	 * @var integer the ID of the image (which is a WP_Post)
+	 */
+	public $id;
 	public $sizes = array();
 	/**
 	 * @api
@@ -230,6 +235,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 			foreach ($custom as $key => $value) {
 				$this->$key = $value[0];
 			}
+			$this->id = $this->ID;
 		} else {
 			if ( is_array($iid) || is_object($iid) ) {
 				TimberHelper::error_log('Not able to init in TimberImage with iid=');
