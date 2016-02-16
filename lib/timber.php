@@ -251,6 +251,7 @@ class Timber {
 		$data['body_class'] = implode( ' ', get_body_class() );
 
 		$data['site'] = new TimberSite();
+		$data['request'] = new TimberRequest();
 		$data['theme'] = $data['site']->theme;
 		//deprecated, these should be fetched via TimberSite or TimberTheme
 		$data['theme_dir'] = WP_CONTENT_SUBDIR.str_replace( WP_CONTENT_DIR, '', get_stylesheet_directory() );
