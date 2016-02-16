@@ -88,6 +88,8 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
 	public $rss;
 	public $rss2;
 	public $atom;
+	
+	public $request = array('get' => array(), 'post' => array());
 
 	/**
 	 * Constructs a TimberSite object
@@ -166,6 +168,8 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
 		$this->language_attributes = TimberHelper::function_wrapper( 'language_attributes' );
 		/* deprecated benath this comment */
 		$this->pingback_url = get_bloginfo( 'pingback_url' );
+		$this->request['get'] = $_GET;
+		$this->request['post'] = $_POST;
 	}
 
 	/**
