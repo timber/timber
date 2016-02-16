@@ -5,8 +5,8 @@
  */
 class TimberRequest extends TimberCore implements TimberCoreInterface {
 
-	$post = array();
-	$get = array();
+	public $post = array();
+	public $get = array();
 	
 	/**
 	 * Constructs a TimberRequest object
