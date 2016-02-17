@@ -227,13 +227,13 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 				return $this->init((int) $post->_thumbnail_id);
 			}
 			return $this->init($iid->ID);
-		// } else if ( $iid instanceof TimberPost ) {
-		// 	/**
-		// 	 * This will catch TimberPost and any post classes that extend TimberPost,
-		// 	 * see http://php.net/manual/en/internals2.opcodes.instanceof.php#109108
-		// 	 * and https://github.com/jarednova/timber/wiki/Extending-Timber
-		// 	 */
-		// 	$iid = (int) $iid->_thumbnail_id;
+		} else if ( $iid instanceof TimberPost ) {
+			/**
+			 * This will catch TimberPost and any post classes that extend TimberPost,
+			 * see http://php.net/manual/en/internals2.opcodes.instanceof.php#109108
+			 * and https://github.com/jarednova/timber/wiki/Extending-Timber
+			 */
+			$iid = (int) $iid->_thumbnail_id;
 		}
 
 		$image_info = $this->get_image_info($iid);
