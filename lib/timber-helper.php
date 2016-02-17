@@ -26,6 +26,7 @@ class TimberHelper {
 	 * @return mixed
 	 */
 	public static function transient( $slug, $callback, $transient_time = 0, $lock_timeout = 5, $force = false ) {
+		$slug = apply_filters( 'timber/transient/slug', $slug );
 
 		$enable_transients = ( $transient_time === false || ( defined( 'WP_DISABLE_TRANSIENTS' ) && WP_DISABLE_TRANSIENTS ) ) ? false : true;
 		$data = $enable_transients ? get_transient( $slug ) : false;
