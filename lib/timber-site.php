@@ -88,7 +88,7 @@ class TimberSite extends TimberCore implements TimberCoreInterface {
 	public $rss;
 	public $rss2;
 	public $atom;
-
+	
 	/**
 	 * Constructs a TimberSite object
 	 * @example

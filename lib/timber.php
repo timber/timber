@@ -179,6 +179,7 @@ class Timber {
 		$data['body_class'] = implode( ' ', get_body_class() );
 
 		$data['site'] = new TimberSite();
+		$data['request'] = new TimberRequest();
 		$data['theme'] = $data['site']->theme;
 
 		$data['posts'] = Timber::query_posts();
