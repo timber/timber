@@ -212,7 +212,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 				$this->init_with_file_path($iid);
 				return;
 			}
-			
+
 			$relative = false;
 			$iid_lower = strtolower($iid);
 			foreach( $this->file_types as $type ) { if( strstr( $iid_lower, $type ) ) { $relative = true; break; } };
@@ -226,7 +226,14 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 			if (isset($post->_thumbnail_id) && $post->_thumbnail_id) {
 				return $this->init((int) $post->_thumbnail_id);
 			}
-			return $this->init($post->ID);
+			return $this->init($iid->ID);
+		// } else if ( $iid instanceof TimberPost ) {
+		// 	/**
+		// 	 * This will catch TimberPost and any post classes that extend TimberPost,
+		// 	 * see http://php.net/manual/en/internals2.opcodes.instanceof.php#109108
+		// 	 * and https://github.com/jarednova/timber/wiki/Extending-Timber
+		// 	 */
+		// 	$iid = (int) $iid->_thumbnail_id;
 		}
 
 		$image_info = $this->get_image_info($iid);
