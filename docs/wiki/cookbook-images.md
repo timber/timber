@@ -85,7 +85,7 @@ This can be used in conjunction with other filters, so for example:
 #### Using images in custom fields:
 Let's say you're using a custom field plugin (like the amazing [Advanced Custom Fields](http://www.advancedcustomfields.com/)). You can use the resulting images in your Twig templates very easily.
 
-When setting up your custom fields you'll want to save the `image_id` to the field. The image object, url, etc. _will_ work but it's not as fool-proof.
+When setting up your custom fields you'll want to save the `image_id` to the field. The image object, post object, url, etc. _will_ work but it's not as fool-proof.
 
 ##### The quick way (for most situations)
 
@@ -108,7 +108,7 @@ $data['post'] = $post;
 Timber::render('single.twig', $data);
 ```
 
-`TimberImage` should be initialized using a WordPress image ID#. It can also take URLs and image objects, but that requires extra processing.
+`TimberImage` should be initialized using a WordPress image ID#. It can also take URLs, image objects and post objects, but that requires extra processing.
 
 You can now use all the above functions to transform your custom images in the same way, the format will be:
 
