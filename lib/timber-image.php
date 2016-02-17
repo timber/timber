@@ -210,7 +210,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 		} else if ( $iid instanceof WP_Post ) {
 			$ref = new ReflectionClass($this);
 			$post = $ref->getParentClass()->newInstance($iid->ID);
-			if (isset($post->_thumbnail_id) && $post->thumbnail_id) {
+			if (isset($post->_thumbnail_id) && $post->_thumbnail_id) {
 				return $this->init((int) $post->_thumbnail_id);
 			}
 			return $this->init($post->ID);
