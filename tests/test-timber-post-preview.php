@@ -38,7 +38,7 @@
 			// no excerpt
 			$post->post_excerpt = '';
 			$preview = $post->get_preview(3);
-			$this->assertRegExp('/this is super &hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Read More<\/a>/', $preview);
+			$this->assertRegExp('/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Read More<\/a>/', $preview);
 
 			// excerpt set, force is false, no read more
 			$post->post_excerpt = 'this is excerpt longer than three words';
@@ -48,7 +48,7 @@
 			// custom read more set
 			$post->post_excerpt = '';
 			$preview = $post->get_preview(3, false, 'Custom more');
-			$this->assertRegExp('/this is super &hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Custom more<\/a>/', $preview);
+			$this->assertRegExp('/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Custom more<\/a>/', $preview);
 
 			// content with <!--more--> tag, force false
 			$post->post_content = 'this is super dooper<!--more--> trooper long words';
@@ -62,7 +62,7 @@
 			});
 			$pid = $this->factory->post->create( array('post_content' => 'jared [mythang]', 'post_excerpt' => '') );
 			$post = new TimberPost( $pid );
-			$this->assertEquals('jared mythangy &hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $post->get_preview());
+			$this->assertEquals('jared mythangy&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $post->get_preview());
 		}
 
 		function testShortcodesInPreviewFromContentWithMoreTag() {
@@ -77,7 +77,7 @@
 		function testPreviewWithSpaceInMoreTag() {
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck, but a great duck let me tell you why <!--more--> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = new TimberPost( $pid );
-			$this->assertEquals('Lauren is a &hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $post->get_preview(3, true));
+			$this->assertEquals('Lauren is a&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $post->get_preview(3, true));
 		}
 
 		function testPreviewWithMoreTagAndForcedLength() {
