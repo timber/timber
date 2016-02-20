@@ -13,6 +13,8 @@ By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a h
 [![HHVM Status](https://img.shields.io/hhvm/jarednova/timber.svg?style=flat-square)](http://hhvm.h4cc.de/package/jarednova/timber)
 
 ### Because WordPress is awesome, but the_loop isn't
+
+[![Join the chat at https://gitter.im/jarednova/timber](https://badges.gitter.im/jarednova/timber.svg)](https://gitter.im/jarednova/timber?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](http://twig.sensiolabs.org/) separate from your PHP files.
 
 This cleans-up your theme code so, for example, your php file can focus on being the data/logic, while your twig file can focus 100% on the HTML and display.
