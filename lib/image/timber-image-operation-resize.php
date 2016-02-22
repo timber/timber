@@ -106,7 +106,7 @@ class TimberImageOperationResize extends TimberImageOperation {
 		$src_x = $src_w / 2 - $src_wt / 2;
 		$src_y = ( $src_h - $src_ht ) / 6;
 		//now specific overrides based on options:
-		switch ($crop) {
+		switch ( $crop ) {
 			case 'center':
 				// Get source x and y
 				$src_x = round( ( $src_w - $src_wt ) / 2 );
