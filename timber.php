@@ -8,6 +8,8 @@ Version: 1.0-rc
 Author URI: http://upstatement.com/
 */
 
+echo 'poo';
+
 global $wp_version;
 global $timber;
 
