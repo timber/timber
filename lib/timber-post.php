@@ -333,7 +333,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param bool $strip Strip tags? yes or no. tell me!
 	 * @return string of the post preview
 	 */
-	function get_preview($len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = ' &hellip;') {
+	function get_preview($len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;') {
 		$text = '';
 		$trimmed = false;
 		if ( isset($this->post_excerpt) && strlen($this->post_excerpt) ) {
