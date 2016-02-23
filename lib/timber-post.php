@@ -333,7 +333,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param bool $strip Strip tags? yes or no. tell me!
 	 * @return string of the post preview
 	 */
-	function get_preview($len = 50, $force = false, $readmore = 'Read More', $strip = true) {
+	function get_preview($len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;') {
 		$text = '';
 		$trimmed = false;
 		if ( isset($this->post_excerpt) && strlen($this->post_excerpt) ) {
@@ -367,7 +367,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 			$text = trim($text);
 			$last = $text[strlen($text) - 1];
 			if ( $last != '.' && $trimmed ) {
-				$text .= ' &hellip;';
+				$text .= $end;
 			}
 			if ( !$strip ) {
 				$last_p_tag = strrpos($text, '</p>');
@@ -375,7 +375,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 					$text = substr($text, 0, $last_p_tag);
 				}
 				if ( $last != '.' && $trimmed ) {
-					$text .= ' &hellip; ';
+					$text .= $end . ' ';
 				}
 			}
 			$read_more_class = apply_filters('timber/post/get_preview/read_more_class', "read-more");
