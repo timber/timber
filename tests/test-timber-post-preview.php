@@ -92,4 +92,10 @@
 			$this->assertEquals('Eric is a polar bear <a href="'.$post->link().'" class="read-more">But what is Elaina?</a>', $post->get_preview());
 		}
 
+		function testPreviewWithCustomEnd() {
+			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck, but a great duck let me tell you why Lauren is a duck', 'post_excerpt' => '') );
+			$post = new TimberPost( $pid );
+			$this->assertEquals('Lauren is a ??? <a href="'.$post->link().'" class="read-more">Read More</a>', $post->get_preview(3, true, 'Read More', true, ' ???'));
+		}
+
 	}
