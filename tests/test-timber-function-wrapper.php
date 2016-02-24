@@ -26,7 +26,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 		echo $wrapper;
 		$content = trim(ob_get_contents());
 		ob_end_clean();
-		$this->assetEquals(1, $content);
+		$this->assertEquals(1, $content);
 	}
 
 	/* Sample function to test exception handling */
