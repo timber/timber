@@ -73,6 +73,28 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		$this->assertTrue( $is_teal );
 	}
 
+	function testCropBottomCenter() {
+		$cropper = TestTimberImage::copyTestImage('cropper.png');
+		$resized = TimberImageHelper::resize($cropper, 300, 100, 'bottom-center');
+
+		$resized = str_replace('http://example.org', '', $resized);
+		$resized = TimberUrlHelper::url_to_file_system( $resized );
+
+		$is_teal = TestTimberImage::checkPixel($resized, 200, 50, '#00ffff');
+		$this->assertTrue( $is_teal );
+	}
+
+	function testCropTopCenter() {
+		$cropper = TestTimberImage::copyTestImage('cropper.png');
+		$resized = TimberImageHelper::resize($cropper, 300, 100, 'top-center');
+
+		$resized = str_replace('http://example.org', '', $resized);
+		$resized = TimberUrlHelper::url_to_file_system( $resized );
+
+		$is_red = TestTimberImage::checkPixel($resized, 100, 50, '#ff0000', '#ff0800');
+		$this->assertTrue( $is_red );
+	}
+
 	function testCropHeight() {
 		$arch = TestTimberImage::copyTestImage('arch.jpg');
 		$resized = TimberImageHelper::resize($arch, false, 250);
