@@ -2,6 +2,7 @@
 
 class TimberFunctionWrapper {
 
+	private $_class;
 	private $_function;
 	private $_args;
 	private $_use_ob;
@@ -22,7 +23,16 @@ class TimberFunctionWrapper {
 	 * @param bool    $return_output_buffer
 	 */
 	public function __construct( $function, $args = array(), $return_output_buffer = false ) {
-		$this->_function = $function;
+		if( is_array( $function ) ) {
+			if( (is_string( $function[0] ) && class_exists( $function[0] ) ) || gettype( $function[0] ) === 'object' ) {
+				$this->_class = $function[0];
+			}
+			
+			if( is_string( $function[1] ) ) $this->_function = $function[1];
+		} else {
+			$this->_function = $function;
+		}
+
 		$this->_args = $args;
 		$this->_use_ob = $return_output_buffer;
 
@@ -52,11 +62,12 @@ class TimberFunctionWrapper {
 	 */
 	public function call() {
 		$args = $this->_parse_args( func_get_args(), $this->_args );
+		$callable = ( isset( $this->_class ) ) ? array( $this->_class, $this->_function ) : $this->_function;
 
 		if ( $this->_use_ob ) {
-			return TimberHelper::ob_function( $this->_function, $args );
+			return TimberHelper::ob_function( $callable, $args );
 		} else {
-			return call_user_func_array( $this->_function, $args );
+			return call_user_func_array( $callable, $args );
 		}
 	}
 
