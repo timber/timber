@@ -331,6 +331,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param bool $force What happens if your custom post excerpt is longer then the length requested? By default (`$force = false`) it will use the full `post_excerpt`. However, you can set this to true to *force* your excerpt to be of the desired length
 	 * @param string $readmore The text you want to use on the 'readmore' link
 	 * @param bool $strip Strip tags? yes or no. tell me!
+	 * @param string $end The text to end the preview with (defaults to ...)
 	 * @return string of the post preview
 	 */
 	function get_preview($len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;') {
