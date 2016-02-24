@@ -102,13 +102,25 @@ For a less quick-and-dirty way, you can use the TimberFunctionWrapper. This clas
 
 ```php
 /**
- * @param string $function_name
+ * @param mixed $function_name or array( $class( string|object ), $function_name )
  * @param array (optional) $defaults
  * @param bool (optional) $return_output_buffer Return function output instead of return value (default: false)
  * @return \TimberFunctionWrapper
  */
 TimberHelper::function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false );
 ```
+
+Classes (including namespaced) are also support for `function_wrapper`:
+
+```php
+# Namespaced has to be a string
+TimberHelper::function_wrapper('Example\Class', 'function_in_class');
+
+# Otherwise, you can pass the object of the class
+TimberHelper::function_wrapper($this, 'function_in_class');
+```
+
+You can then call the function like so `{{function_in_class}}`
 
 So if you want to add `edit_post_link` to your context, you can do something like this:
 
