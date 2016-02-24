@@ -110,7 +110,7 @@ For a less quick-and-dirty way, you can use the TimberFunctionWrapper. This clas
 TimberHelper::function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false );
 ```
 
-Classes (including namespaced) are also support for `function_wrapper`:
+Classes (including namespaced) are also supported for `function_wrapper`:
 
 ```php
 # Namespaced has to be a string
