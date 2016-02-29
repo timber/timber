@@ -430,9 +430,12 @@ class TimberImageHelper {
 		if ( empty( $src ) ) {
 			return '';
 		}
+		$external = false;
+
 		// if external image, load it first
 		if ( TimberURLHelper::is_external_content( $src ) ) {
 			$src = self::sideload_image( $src );
+			$external = true;
 		}
 		// break down URL into components
 		$au = self::analyze_url($src);
@@ -465,6 +468,9 @@ class TimberImageHelper {
 		}
 		// otherwise generate result file
 		if($op->run($old_server_path, $new_server_path)) {
+			if( get_class( $op ) === 'TimberImageOperationResize' && $external ) {
+				$new_url = strtolower( $new_url );
+			}
 			return $new_url;
 		} else {
 			// in case of error, we return source file itself
