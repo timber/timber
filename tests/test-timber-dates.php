@@ -75,7 +75,7 @@
 			$date = new DateTime('2015-09-28 05:00:00', new DateTimeZone('europe/amsterdam'));
 			$twig = "{{'" . $date->format('g:i') . "'|date('g:i')}}";
 			$str = Timber::compile_string($twig);
-			$this->assertEquals('05:00', $str);
+			$this->assertEquals('5:00', $str);
 		}
 
 		function testModifiedTimeFilter() {
