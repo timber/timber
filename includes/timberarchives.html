@@ -41,14 +41,14 @@
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;ul&gt;</span>
+<pre class="highlight plaintext"><code>&lt;ul&gt;
 {% for item in archives.items %}
-    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    &lt;li&gt;&lt;a href="{{item.link}}"&gt;{{item.name}}&lt;/a&gt;&lt;/li&gt;
     {% for child in item.children %}
-        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+        &lt;li class="child"&gt;&lt;a href="{{child.link}}"&gt;{{child.name}}&lt;/a&gt;&lt;/li&gt;
     {% endfor %}
 {% endfor %}
-<span class="nt">&lt;/ul&gt;</span>
+&lt;/ul&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -149,14 +149,14 @@
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;ul&gt;</span>
+<pre class="highlight plaintext"><code>&lt;ul&gt;
 {% for item in archives.items %}
-    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    &lt;li&gt;&lt;a href="{{item.link}}"&gt;{{item.name}}&lt;/a&gt;&lt;/li&gt;
     {% for child in item.children %}
-        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+        &lt;li class="child"&gt;&lt;a href="{{child.link}}"&gt;{{child.name}}&lt;/a&gt;&lt;/li&gt;
     {% endfor %}
 {% endfor %}
-<span class="nt">&lt;/ul&gt;</span>
+&lt;/ul&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>

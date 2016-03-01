@@ -38,10 +38,10 @@
 <p>While data saved by ACF is available via <code class="prettyprint">{{post.my_acf_field}}</code> you will often need to do some additional work to get back the <em>kind</em> of data you want. For example, images are stored as image ID#s which you might want to translate into a specific image object. Read on to learn more about those specific exceptions.</p>
 
 <h3 id="wysiwyg-field-and-other-requiring-text">WYSIWYG field (and other requiring text):</h3>
-<pre class="highlight handlebars"><code><span class="nt">&lt;h3&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h3&gt;</span>
-<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"intro-text"</span><span class="nt">&gt;</span>
-     <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_field</span><span class="err">(</span><span class="s1">'my_wysiwyg_field'</span><span class="err">)</span><span class="k">}}</span>
-<span class="nt">&lt;/div&gt;</span>
+<pre class="highlight plaintext"><code>&lt;h3&gt;{{post.title}}&lt;/h3&gt;
+&lt;div class="intro-text"&gt;
+     {{post.get_field('my_wysiwyg_field')}}
+&lt;/div&gt;
 </code></pre>
 
 <p>This will apply your expected paragraph breaks and other pre-processing to the text.</p>
@@ -51,7 +51,7 @@
 <p>You can retrieve an image from a custom field, then use it in a Twig template. The most reliable approach is this: When setting up your custom fields you&rsquo;ll want to save the <code class="prettyprint">image_id</code> to the field. The image object, url, etc. <em>will</em> work but it&rsquo;s not as fool-proof.</p>
 
 <h5 id="the-quick-way-for-most-situations">The quick way (for most situations)</h5>
-<pre class="highlight handlebars"><code><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">TimberImage</span><span class="err">(</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_field</span><span class="err">(</span><span class="s1">'hero_image'</span><span class="err">))</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>&lt;img src="{{TimberImage(post.get_field('hero_image')).src}}" /&gt;
 </code></pre>
 
 <h5 id="the-long-way-for-some-special-situations">The long way (for some special situations)</h5>
@@ -70,7 +70,7 @@ Timber::render('single.twig', $data);
 <p><code class="prettyprint">TimberImage</code> should be initialized using a WordPress image ID#. It can also take URLs and image objects, but that requires extra processing.</p>
 
 <p>You can now use all the above functions to transform your custom images in the same way, the format will be:</p>
-<pre class="highlight handlebars"><code><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">hero_image</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">500</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>&lt;img src="{{post.hero_image.src|resize(500, 300)}}" /&gt;
 </code></pre>
 
 <hr>
@@ -78,7 +78,7 @@ Timber::render('single.twig', $data);
 <h3 id="repeater-field">Repeater field</h3>
 
 <p>You can access repeater fields within in twig files:
-<code class="prettyprint">handlebars
+<code class="prettyprint">twig
 {# single.twig #}
 &lt;h2&gt;{{post.title}}&lt;/h2&gt;
 &lt;div class=&quot;my-list&quot;&gt;
@@ -95,11 +95,11 @@ Timber::render('single.twig', $data);
 <h5 id="nested">Nested?</h5>
 
 <p>When you run <code class="prettyprint">get_field</code> on an outer ACF field, everything inside is ready to be traversed. You can refer to nested fields via outer_item.inner_repeater</p>
-<pre class="highlight handlebars"><code>{% for item_outer in post.get_field('outer') %}
-     <span class="k">{{</span><span class="nv">item_outer</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span>
+<pre class="highlight plaintext"><code>{% for item_outer in post.get_field('outer') %}
+     {{item_outer.title}}
 
      {% for item_inner in item_outer.inner_repeater %}
-          <span class="k">{{</span><span class="nv">item_inner</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span>
+          {{item_inner.title}}
      {% endfor %}
 
 {% endfor %}
@@ -110,19 +110,19 @@ Timber::render('single.twig', $data);
 <p>A common problem in working with repeaters is that you should only call the <code class="prettyprint">get_field</code> method <strong>once</strong> on an item. In other words if you have a field inside a field (for example, a relationship inside a repeater or a repeater inside a repeater, <strong>do not</strong> call <code class="prettyprint">get_field</code> on the inner field). More:</p>
 
 <h6 id="don-39-t-do-this-bad">DON&rsquo;T DO THIS (Bad)</h6>
-<pre class="highlight handlebars"><code>{% for gear in post.get_field('gear_items') %}
-    <span class="nt">&lt;h3&gt;</span> <span class="k">{{</span> <span class="nv">gear</span><span class="p">.</span><span class="nv">brand_name</span> <span class="k">}}</span> <span class="nt">&lt;/h3&gt;</span>
+<pre class="highlight plaintext"><code>{% for gear in post.get_field('gear_items') %}
+    &lt;h3&gt; {{ gear.brand_name }} &lt;/h3&gt;
     {% for gear_feature in gear.get_field('features') %}
-        <span class="nt">&lt;li&gt;</span> <span class="k">{{</span><span class="nv">gear_feature</span><span class="k">}}</span> <span class="nt">&lt;/li&gt;</span>
+        &lt;li&gt; {{gear_feature}} &lt;/li&gt;
     {% endfor %}
 {% endfor %}
 </code></pre>
 
 <h6 id="do-this-good">Do THIS: (Good)</h6>
-<pre class="highlight handlebars"><code>{% for gear in post.get_field('gear_items') %}
-    <span class="nt">&lt;h3&gt;</span> <span class="k">{{</span> <span class="nv">gear</span><span class="p">.</span><span class="nv">brand_name</span> <span class="k">}}</span> <span class="nt">&lt;/h3&gt;</span>
+<pre class="highlight plaintext"><code>{% for gear in post.get_field('gear_items') %}
+    &lt;h3&gt; {{ gear.brand_name }} &lt;/h3&gt;
     {% for gear_feature in gear.features %}
-        <span class="nt">&lt;li&gt;</span> <span class="k">{{</span><span class="nv">gear_feature</span><span class="k">}}</span> <span class="nt">&lt;/li&gt;</span>
+        &lt;li&gt; {{gear_feature}} &lt;/li&gt;
     {% endfor %}
 {% endfor %}
 </code></pre>
@@ -132,14 +132,14 @@ Timber::render('single.twig', $data);
 <h3 id="flexible-content-field">Flexible content field</h3>
 
 <p>Similar to repeaters, get the field by the name of the flexible content field:</p>
-<pre class="highlight handlebars"><code>{% for media_item in post.get_field('media_set') %}
+<pre class="highlight plaintext"><code>{% for media_item in post.get_field('media_set') %}
     {% if media_item.acf_fc_layout == 'image_set' %}
-        <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">TimberImage</span><span class="err">(</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">image</span><span class="err">)</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"caption"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">TimberImage</span><span class="err">(</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">image</span><span class="err">)</span><span class="p">.</span><span class="nv">caption</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
-        <span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"notes"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">notes</span><span class="k">}}</span><span class="nt">&lt;/aside&gt;</span>
+        &lt;img src="{{TimberImage(media_item.image).src}}" /&gt;
+        &lt;p class="caption"&gt;{{TimberImage(media_item.image).caption}}&lt;/p&gt;
+        &lt;aside class="notes"&gt;{{media_item.notes}}&lt;/aside&gt;
     {% elseif media_item.acf_fc_layout == 'video_set' %}
-        <span class="nt">&lt;iframe</span> <span class="na">width=</span><span class="s">"560"</span> <span class="na">height=</span><span class="s">"315"</span> <span class="na">src=</span><span class="s">"http://www.youtube.com/embed/</span><span class="k">{{</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">youtube_id</span><span class="k">}}</span><span class="s">"</span> <span class="na">frameborder=</span><span class="s">"0"</span> <span class="na">allowfullscreen</span><span class="nt">&gt;&lt;/iframe&gt;</span>
-        <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"caption"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">caption</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+        &lt;iframe width="560" height="315" src="http://www.youtube.com/embed/{{media_item.youtube_id}}" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+        &lt;p class="caption"&gt;{{media_item.caption}}&lt;/p&gt;
     {% endif %}
 {% endfor %}
 </code></pre>
@@ -150,7 +150,7 @@ Timber::render('single.twig', $data);
 <pre class="highlight php"><code>    $context['site_copyright_info'] = get_field('copyright_info', 'options');
     Timber::render('index.twig', $context);
 </code></pre>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;footer&gt;</span><span class="k">{{</span><span class="nv">site_copyright_info</span><span class="k">}}</span><span class="nt">&lt;/footer&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;footer&gt;{{site_copyright_info}}&lt;/footer&gt;
 </code></pre>
 
 <h6 id="get-all-info-from-your-options-page">Get all info from your options page</h6>
@@ -159,7 +159,7 @@ Timber::render('single.twig', $data);
 </code></pre>
 
 <p>ACF Pro has a built in options page, and changes the <code class="prettyprint">get_fields(&#39;options&#39;)</code> to <code class="prettyprint">get_fields(&#39;option&#39;)</code>.</p>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;footer&gt;</span><span class="k">{{</span><span class="nv">options</span><span class="p">.</span><span class="nv">copyright_info</span><span class="k">}}</span><span class="nt">&lt;/footer&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;footer&gt;{{options.copyright_info}}&lt;/footer&gt;
 </code></pre>
 
 <h6 id="use-options-info-site-wide">Use options info site wide</h6>
@@ -175,8 +175,8 @@ function mytheme_timber_context( $context ) {
 </code></pre>
 
 <p>Now, you can use any of the option fields across the site instead of per template.</p>
-<pre class="highlight handlebars"><code>/* footer.twig */
-<span class="nt">&lt;footer&gt;</span><span class="k">{{</span><span class="nv">options</span><span class="p">.</span><span class="nv">copyright_info</span><span class="k">}}</span><span class="nt">&lt;/footer&gt;</span>
+<pre class="highlight plaintext"><code>/* footer.twig */
+&lt;footer&gt;{{options.copyright_info}}&lt;/footer&gt;
 </code></pre>
 
 <hr>
@@ -187,7 +187,7 @@ function mytheme_timber_context( $context ) {
 <pre class="highlight php"><code>/* single.php */
 $context["acf"] = get_field_objects($data["post"]-&gt;ID);
 </code></pre>
-<pre class="highlight handlebars"><code><span class="k">{{</span> <span class="nv">acf</span><span class="p">.</span><span class="nv">your_field_name_here</span><span class="p">.</span><span class="nv">label</span> <span class="k">}}</span>
+<pre class="highlight plaintext"><code>{{ acf.your_field_name_here.label }}
 </code></pre>
 
 <hr>

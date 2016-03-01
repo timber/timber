@@ -56,21 +56,21 @@
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;nav&gt;</span>
-    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"main-nav"</span><span class="nt">&gt;</span>
+<pre class="highlight plaintext"><code>&lt;nav&gt;
+    &lt;ul class="main-nav"&gt;
     {% for item in menu.get_items %}
-        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"nav-main-item </span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">classes</span> <span class="err">|</span> <span class="nv">join</span><span class="err">(</span><span class="s1">' '</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;&lt;a</span> <span class="na">class=</span><span class="s">"nav-main-link"</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">get_link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+        &lt;li class="nav-main-item {{item.classes | join(' ')}}"&gt;&lt;a class="nav-main-link" href="{{item.get_link}}"&gt;{{item.title}}&lt;/a&gt;
             {% if item.get_children %}
-            <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav-drop"</span><span class="nt">&gt;</span>
+            &lt;ul class="nav-drop"&gt;
               {% for child in item.get_children %}
-                <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"nav-drop-item"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">get_link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+                &lt;li class="nav-drop-item"&gt;&lt;a href="{{child.get_link}}"&gt;{{child.title}}&lt;/a&gt;&lt;/li&gt;
               {% endfor %}
-             <span class="nt">&lt;/ul&gt;</span>
+             &lt;/ul&gt;
           {% endif %}
-          <span class="nt">&lt;/li&gt;</span>
+          &lt;/li&gt;
    {% endfor %}
-   <span class="nt">&lt;/ul&gt;</span>
-<span class="nt">&lt;/nav&gt;</span>
+   &lt;/ul&gt;
+&lt;/nav&gt;
 </code></pre>
 
 <table><thead>
@@ -182,21 +182,21 @@
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;nav&gt;</span>
-    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"main-nav"</span><span class="nt">&gt;</span>
+<pre class="highlight plaintext"><code>&lt;nav&gt;
+    &lt;ul class="main-nav"&gt;
     {% for item in menu.get_items %}
-        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"nav-main-item </span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">classes</span> <span class="err">|</span> <span class="nv">join</span><span class="err">(</span><span class="s1">' '</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;&lt;a</span> <span class="na">class=</span><span class="s">"nav-main-link"</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">get_link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+        &lt;li class="nav-main-item {{item.classes | join(' ')}}"&gt;&lt;a class="nav-main-link" href="{{item.get_link}}"&gt;{{item.title}}&lt;/a&gt;
             {% if item.get_children %}
-            <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav-drop"</span><span class="nt">&gt;</span>
+            &lt;ul class="nav-drop"&gt;
               {% for child in item.get_children %}
-                <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"nav-drop-item"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">get_link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+                &lt;li class="nav-drop-item"&gt;&lt;a href="{{child.get_link}}"&gt;{{child.title}}&lt;/a&gt;&lt;/li&gt;
               {% endfor %}
-             <span class="nt">&lt;/ul&gt;</span>
+             &lt;/ul&gt;
           {% endif %}
-          <span class="nt">&lt;/li&gt;</span>
+          &lt;/li&gt;
    {% endfor %}
-   <span class="nt">&lt;/ul&gt;</span>
-<span class="nt">&lt;/nav&gt;</span>
+   &lt;/ul&gt;
+&lt;/nav&gt;
 </code></pre>
 
 <p><em>This class extends \TimberCore</em></p>

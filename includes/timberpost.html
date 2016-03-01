@@ -46,13 +46,13 @@
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>{# single.twig #}
-<span class="nt">&lt;article&gt;</span>
-    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
-        <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span>
-    <span class="nt">&lt;/div&gt;</span>
-<span class="nt">&lt;/article&gt;</span>
+<pre class="highlight plaintext"><code>{# single.twig #}
+&lt;article&gt;
+    &lt;h1 class="headline"&gt;{{post.title}}&lt;/h1&gt;
+    &lt;div class="body"&gt;
+        {{post.content}}
+    &lt;/div&gt;
+&lt;/article&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -238,10 +238,10 @@
 <p>Return the author of a post</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"byline"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
-    <span class="nt">&lt;/p&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;h1&gt;{{post.title}}&lt;/h1&gt;
+    &lt;p class="byline"&gt;
+        &lt;a href="{{post.author.link}}"&gt;{{post.author.name}}&lt;/a&gt;
+    &lt;/p&gt;
 </code></pre>
 
 <h2 id="categories">categories</h2>
@@ -288,10 +288,10 @@
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    {% if post.children %}
+<pre class="highlight plaintext"><code>    {% if post.children %}
         Here are the child pages:
         {% for child in page.children %}
-            <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">child</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">child</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+            &lt;a href="{{ child.link }}"&gt;{{ child.title }}&lt;/a&gt;
         {% endfor %}
     {% endif %}
 </code></pre>
@@ -339,13 +339,13 @@
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    {# single.twig #}
-    <span class="nt">&lt;h4&gt;</span>Comments:<span class="nt">&lt;/h4&gt;</span>
+<pre class="highlight plaintext"><code>    {# single.twig #}
+    &lt;h4&gt;Comments:&lt;/h4&gt;
     {% for comment in post.comments %}
-        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"comment-</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">ID</span><span class="k">}}</span><span class="s"> comment-order-</span><span class="k">{{</span><span class="nv">loop</span><span class="p">.</span><span class="nv">index</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> said:<span class="nt">&lt;/p&gt;</span>
-            <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
-        <span class="nt">&lt;/div&gt;</span>
+        &lt;div class="comment-{{comment.ID}} comment-order-{{loop.index}}"&gt;
+            &lt;p&gt;{{comment.author.name}} said:&lt;/p&gt;
+            &lt;p&gt;{{comment.content}}&lt;/p&gt;
+        &lt;/div&gt;
     {% endfor %}
 </code></pre>
 
@@ -372,10 +372,10 @@
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"article"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;h2&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h2&gt;</span>
-        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"content"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">content</span> <span class="k">}}</span><span class="nt">&lt;/div&gt;</span>
-    <span class="nt">&lt;/div&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;div class="article"&gt;
+        &lt;h2&gt;{{post.title}}&lt;/h2&gt;
+        &lt;div class="content"&gt;{{ post.content }}&lt;/div&gt;
+    &lt;/div&gt;
 </code></pre>
 
 <h2 id="date">date</h2>
@@ -401,9 +401,9 @@
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    Published on <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">date</span> <span class="k">}}</span> // Uses WP's formatting set in Admin
+<pre class="highlight plaintext"><code>    Published on {{ post.date }} // Uses WP's formatting set in Admin
     OR
-    Published on <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">date</span> <span class="err">|</span> <span class="nv">date</span><span class="err">(</span><span class="s1">'F jS'</span><span class="err">)</span> <span class="k">}}</span> // Jan 12th
+    Published on {{ post.date | date('F jS') }} // Jan 12th
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -458,36 +458,12 @@
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"article-text"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_content</span><span class="k">}}</span><span class="nt">&lt;/div&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;div class="article-text"&gt;{{post.get_content}}&lt;/div&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
 <pre class="highlight html"><code>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"article-text"</span><span class="nt">&gt;&lt;p&gt;</span>Blah blah blah<span class="nt">&lt;/p&gt;&lt;p&gt;</span>More blah blah blah.<span class="nt">&lt;/p&gt;&lt;/div&gt;</span>
 </code></pre>
-
-<h2 id="get_display_date"><strike>get_display_date</strike></h2>
-
-<p><em><strong>DEPRECATED</strong> since 0.20.0</em></p>
-
-<p><code class="prettyprint">get_display_date( string $use=&quot;post_date&quot; )</code></p>
-
-<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
-
-<p>Get the human-friendly date that should actually display in a .twig template</p>
-
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>$use</td>
-<td>string</td>
-<td></td>
-</tr>
-</tbody></table>
 
 <h2 id="get_field">get_field</h2>
 
@@ -558,7 +534,7 @@
 <p>Here is my summary</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    This post is from <span class="nt">&lt;span&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">get_post_type</span><span class="p">.</span><span class="nv">labels</span><span class="p">.</span><span class="nv">plural</span> <span class="k">}}</span><span class="nt">&lt;/span&gt;</span>
+<pre class="highlight plaintext"><code>    This post is from &lt;span&gt;{{ post.get_post_type.labels.plural }}&lt;/span&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -567,7 +543,7 @@
 
 <h2 id="get_preview">get_preview</h2>
 
-<p><code class="prettyprint">get_preview( mixed/int $len=50, bool $force=false, string $readmore=&quot;Read More&quot;, bool $strip=true )</code></p>
+<p><code class="prettyprint">get_preview( mixed/int $len=50, bool $force=false, string $readmore=&quot;Read More&quot;, bool $strip=true, string $end=&quot;&amp;hellip;&quot; )</code></p>
 
 <p><strong>returns:</strong> <code class="prettyprint">string</code> of the post preview</p>
 
@@ -600,10 +576,15 @@
 <td>bool</td>
 <td>Strip tags? yes or no. tell me!</td>
 </tr>
+<tr>
+<td>$end</td>
+<td>string</td>
+<td>The text to end the preview with (defaults to &hellip;)</td>
+</tr>
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_preview</span><span class="err">(</span><span class="nv">50</span><span class="err">)</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;p&gt;{{post.get_preview(50)}}&lt;/p&gt;
 </code></pre>
 
 <h2 id="has_term">has_term</h2>
@@ -660,7 +641,7 @@
 <p>get the permalink for a post object</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>Read my post<span class="nt">&lt;/a&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;a href="{{post.link}}"&gt;Read my post&lt;/a&gt;
 </code></pre>
 
 <h2 id="meta">meta</h2>
@@ -692,7 +673,7 @@
 <p>Get the author (WordPress user) who last modified the post</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    Last updated by <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">modified_author</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span>
+<pre class="highlight plaintext"><code>    Last updated by {{ post.modified_author.name }}
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -786,7 +767,7 @@
 <p>Gets the parent (if one exists) from a post as a TimberPost object (or whatever is set in TimberPost::$PostClass)</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    Parent page: <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">parent</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">parent</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+<pre class="highlight plaintext"><code>    Parent page: &lt;a href="{{ post.parent.link }}"&gt;{{ post.parent.title }}&lt;/a&gt;
 </code></pre>
 
 <h2 id="path">path</h2>
@@ -798,12 +779,12 @@
 <p>Gets the relative path of a WP Post, so while link() will return http://example.org/2015/07/my-cool-post this will return just /2015/07/my-cool-post</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">path</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;a href="{{post.path}}"&gt;{{post.title}}&lt;/a&gt;
 </code></pre>
 
 <h2 id="permalink"><strike>permalink</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.20.0 use link() instead</em></p>
+<p><strong>DEPRECATED</strong> 0.20.0 use link() instead</p>
 
 <p><code class="prettyprint">permalink( )</code></p>
 
@@ -832,9 +813,9 @@
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;h4&gt;</span>Prior Entry:<span class="nt">&lt;/h4&gt;</span>
-    <span class="nt">&lt;h3&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h3&gt;</span>
-    <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">get_preview</span><span class="err">(</span><span class="nv">25</span><span class="err">)</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;h4&gt;Prior Entry:&lt;/h4&gt;
+    &lt;h3&gt;{{post.prev.title}}&lt;/h3&gt;
+    &lt;p&gt;{{post.prev.get_preview(25)}}&lt;/p&gt;
 </code></pre>
 
 <h2 id="tags">tags</h2>
@@ -881,7 +862,7 @@
 <p>get the featured image as a TimberImage</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;img src="{{post.thumbnail.src}}" /&gt;
 </code></pre>
 
 <h2 id="time">time</h2>
@@ -907,9 +888,9 @@
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    Published at <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">time</span> <span class="k">}}</span> // Uses WP's formatting set in Admin
+<pre class="highlight plaintext"><code>    Published at {{ post.time }} // Uses WP's formatting set in Admin
     OR
-    Published at <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">time</span> <span class="err">|</span> <span class="nv">time</span><span class="err">(</span><span class="s1">'G:i'</span><span class="err">)</span> <span class="k">}}</span> // 13:25
+    Published at {{ post.time | time('G:i') }} // 13:25
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -927,7 +908,7 @@
 <p>Returns the processed title to be used in templates. This returns the title of the post after WP&rsquo;s filters have run. This is analogous to <code class="prettyprint">the_title()</code> in standard WP template tags.</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;h1&gt;{{ post.title }}&lt;/h1&gt;
 </code></pre>
 
 <h2 id="update">update</h2>
@@ -996,13 +977,13 @@
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>{# single.twig #}
-<span class="nt">&lt;article&gt;</span>
-    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
-        <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span>
-    <span class="nt">&lt;/div&gt;</span>
-<span class="nt">&lt;/article&gt;</span>
+<pre class="highlight plaintext"><code>{# single.twig #}
+&lt;article&gt;
+    &lt;h1 class="headline"&gt;{{post.title}}&lt;/h1&gt;
+    &lt;div class="body"&gt;
+        {{post.content}}
+    &lt;/div&gt;
+&lt;/article&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>

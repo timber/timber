@@ -80,7 +80,7 @@
 <h3 id="relative">relative</h3>
 
 <p>Converts an absolute URL into a relative one, for example:</p>
-<pre class="highlight handlebars"><code>My custom link is <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="s1">'http://example.org/2015/08/my-blog-post'</span> <span class="err">|</span> <span class="nv">relative</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>here!<span class="nt">&lt;/a&gt;</span>
+<pre class="highlight plaintext"><code>My custom link is &lt;a href="{{ 'http://example.org/2015/08/my-blog-post' | relative }}"&gt;here!&lt;/a&gt;
 </code></pre>
 <pre class="highlight html"><code>My custom link is <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"/2015/08/my-blog-post"</span><span class="nt">&gt;</span>here!<span class="nt">&lt;/a&gt;</span>
 </code></pre>
@@ -142,11 +142,11 @@ Here is my gallery &lt;div class="gallery" id="gallery-123"&gt;&lt;img src="....
 <h3 id="truncate">truncate</h3>
 
 <h6 id="twig">Twig:</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"entry-meta"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">character</span><span class="p">.</span><span class="nv">origin_story</span> <span class="err">|</span> <span class="nv">truncate</span><span class="err">(</span><span class="nv">8</span><span class="err">)</span> <span class="k">}}</span> ...<span class="nt">&lt;/p&gt;</span>
+<pre class="highlight plaintext"><code>&lt;p class="entry-meta"&gt;{{ post.character.origin_story | truncate(8) }} ...&lt;/p&gt;
 </code></pre>
 
 <h6 id="output">Output:</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"entry-meta"</span><span class="nt">&gt;</span>Bruce Wayne's parents were shot outside the opera ...<span class="nt">&lt;/p&gt;</span>
+<pre class="highlight plaintext"><code>&lt;p class="entry-meta"&gt;Bruce Wayne's parents were shot outside the opera ...&lt;/p&gt;
 </code></pre>
 
 <hr>
@@ -156,9 +156,9 @@ Here is my gallery &lt;div class="gallery" id="gallery-123"&gt;&lt;img src="....
 <p>Adds paragraph breaks to new lines</p>
 
 <h6 id="twig">Twig:</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
-    <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">custom_text_area</span><span class="err">|</span><span class="nv">wpautop</span><span class="k">}}</span>
-<span class="nt">&lt;/div&gt;</span>
+<pre class="highlight plaintext"><code>&lt;div class="body"&gt;
+    {{post.custom_text_area|wpautop}}
+&lt;/div&gt;
 </code></pre>
 
 <h6 id="output">Output:</h6>

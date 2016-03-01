@@ -47,14 +47,14 @@
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;article&gt;</span>
-    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">cover_image</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"cover-image"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
-        <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span>
-    <span class="nt">&lt;/div&gt;</span>
-    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">Image</span><span class="err">(</span><span class="nv">post</span><span class="p">.</span><span class="nv">custom_field_with_image_id</span><span class="err">)</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"Another way to initialize images as TimberImages, but within Twig"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/article&gt;</span>
+<pre class="highlight plaintext"><code>&lt;article&gt;
+    &lt;img src="{{cover_image.src}}" class="cover-image" /&gt;
+    &lt;h1 class="headline"&gt;{{post.title}}&lt;/h1&gt;
+    &lt;div class="body"&gt;
+        {{post.content}}
+    &lt;/div&gt;
+    &lt;img src="{{ Image(post.custom_field_with_image_id).src }}" alt="Another way to initialize images as TimberImages, but within Twig" /&gt;
+&lt;/article&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -107,8 +107,8 @@
 </tr>
 <tr>
 <td>id</td>
-<td>string</td>
-<td>$id the numeric WordPress id of a post</td>
+<td>integer</td>
+<td>the ID of the image (which is a WP_Post)</td>
 </tr>
 <tr>
 <td><a href="#link">link</a></td>
@@ -195,7 +195,7 @@
 <p><strong>returns:</strong> <code class="prettyprint">string</code> alt text stored in WordPress</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">alt</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;img src="{{ image.src }}" alt="{{ image.alt }}" /&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -209,11 +209,11 @@
 <p><strong>returns:</strong> <code class="prettyprint">\float</code> </p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    {% if post.thumbnail.aspect <span class="nt">&lt; 1</span> <span class="err">%}</span>
-        <span class="err">{#</span> <span class="na">handle</span> <span class="na">vertical</span> <span class="na">image</span> <span class="err">#}</span>
-        <span class="err">&lt;</span><span class="na">img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">300</span><span class="err">,</span> <span class="nv">500</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"A basketball player"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    {% if post.thumbnail.aspect &lt; 1 %}
+        {# handle vertical image #}
+        &lt;img src="{{ post.thumbnail.src|resize(300, 500) }}" alt="A basketball player" /&gt;
     {% else %}
-           <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">500</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"A sumo wrestler"</span> <span class="nt">/&gt;</span>
+           &lt;img src="{{ post.thumbnail.src|resize(500) }}" alt="A sumo wrestler" /&gt;
     {% endif %}
 </code></pre>
 
@@ -227,7 +227,7 @@
 
 <h2 id="get_url"><strike>get_url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> use src() instead</em></p>
+<p><strong>DEPRECATED</strong> use src() instead</p>
 
 <p><code class="prettyprint">get_url( )</code></p>
 
@@ -240,7 +240,7 @@
 <p><strong>returns:</strong> <code class="prettyprint">int</code> </p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">height=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">height</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;img src="{{ image.src }}" height="{{ image.height }}" /&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -256,7 +256,7 @@
 <p>Returns the link to an image attachment&rsquo;s Permalink page (NOT the link for the image itself!!)</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s"> "</span><span class="nt">/&gt;&lt;/a&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;a href="{{ image.link }}"&gt;&lt;img src="{{ image.src }} "/&gt;&lt;/a&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -276,7 +276,7 @@
 <p><strong>returns:</strong> <code class="prettyprint">string</code> the /relative/path/to/the/file</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">path</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;img src="{{ image.path }}" /&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -304,8 +304,8 @@
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;h1&gt;{{post.title}}&lt;/h1&gt;
+    &lt;img src="{{post.thumbnail.src}}" /&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -314,7 +314,7 @@
 
 <h2 id="url"><strike>url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> use src() instead</em></p>
+<p><strong>DEPRECATED</strong> use src() instead</p>
 
 <p><code class="prettyprint">url( )</code></p>
 
@@ -327,7 +327,7 @@
 <p><strong>returns:</strong> <code class="prettyprint">int</code> </p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">width=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">width</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;img src="{{ image.src }}" width="{{ image.width }}" /&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -360,14 +360,14 @@
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;article&gt;</span>
-    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">cover_image</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"cover-image"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
-        <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span>
-    <span class="nt">&lt;/div&gt;</span>
-    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">Image</span><span class="err">(</span><span class="nv">post</span><span class="p">.</span><span class="nv">custom_field_with_image_id</span><span class="err">)</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"Another way to initialize images as TimberImages, but within Twig"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/article&gt;</span>
+<pre class="highlight plaintext"><code>&lt;article&gt;
+    &lt;img src="{{cover_image.src}}" class="cover-image" /&gt;
+    &lt;h1 class="headline"&gt;{{post.title}}&lt;/h1&gt;
+    &lt;div class="body"&gt;
+        {{post.content}}
+    &lt;/div&gt;
+    &lt;img src="{{ Image(post.custom_field_with_image_id).src }}" alt="Another way to initialize images as TimberImages, but within Twig" /&gt;
+&lt;/article&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>

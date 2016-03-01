@@ -88,17 +88,17 @@
 <h4 id="generating-retina-sizes">Generating Retina Sizes</h4>
 
 <p>You can use Timber to generat @2x image sizes for retina devices. For example, using <code class="prettyprint">srcset</code>:</p>
-<pre class="highlight handlebars"><code><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">srcset=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">1</span><span class="err">)</span> <span class="k">}}</span><span class="s"> 1x,
-    </span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">2</span><span class="err">)</span> <span class="k">}}</span><span class="s">  2x,
-    </span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">3</span><span class="err">)</span> <span class="k">}}</span><span class="s">  3x,
-    </span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">4</span><span class="err">)</span> <span class="k">}}</span><span class="s">  4x"</span><span class="nt">&gt;</span>
+<pre class="highlight plaintext"><code>&lt;img src="{{ post.thumbnail.src }}" srcset="{{ post.thumbnail.src | retina(1) }} 1x,
+    {{ post.thumbnail.src | retina(2) }}  2x,
+    {{ post.thumbnail.src | retina(3) }}  3x,
+    {{ post.thumbnail.src | retina(4) }}  4x"&gt;
 </code></pre>
 
 <p>This can be used in conjunction with other filters, so for example:</p>
-<pre class="highlight handlebars"><code><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">400</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="na">srcset=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">400</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">1</span><span class="err">)</span> <span class="k">}}</span><span class="s"> 1x,
-    </span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span> <span class="nv">resize</span><span class="err">(</span><span class="nv">400</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">2</span><span class="err">)</span> <span class="k">}}</span><span class="s">  2x,
-    </span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span> <span class="nv">resize</span><span class="err">(</span><span class="nv">400</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">3</span><span class="err">)</span> <span class="k">}}</span><span class="s">  3x,
-    </span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span> <span class="err">|</span> <span class="nv">resize</span><span class="err">(</span><span class="nv">400</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span> <span class="err">|</span> <span class="nv">retina</span><span class="err">(</span><span class="nv">4</span><span class="err">)</span> <span class="k">}}</span><span class="s">  4x"</span><span class="nt">&gt;</span>
+<pre class="highlight plaintext"><code>&lt;img src="{{ post.thumbnail.src|resize(400, 300) }}" srcset="{{ post.thumbnail.src |resize(400, 300) | retina(1) }} 1x,
+    {{ post.thumbnail.src | resize(400, 300) | retina(2) }}  2x,
+    {{ post.thumbnail.src | resize(400, 300) | retina(3) }}  3x,
+    {{ post.thumbnail.src | resize(400, 300) | retina(4) }}  4x"&gt;
 </code></pre>
 
 <hr>
@@ -107,7 +107,7 @@
 
 <p>Let&rsquo;s say you&rsquo;re using a custom field plugin (like the amazing <a href="http://www.advancedcustomfields.com/">Advanced Custom Fields</a>). You can use the resulting images in your Twig templates very easily.</p>
 
-<p>When setting up your custom fields you&rsquo;ll want to save the <code class="prettyprint">image_id</code> to the field. The image object, url, etc. <em>will</em> work but it&rsquo;s not as fool-proof.</p>
+<p>When setting up your custom fields you&rsquo;ll want to save the <code class="prettyprint">image_id</code> to the field. The image object, post object, url, etc. <em>will</em> work but it&rsquo;s not as fool-proof.</p>
 
 <h5 id="the-quick-way-for-most-situations">The quick way (for most situations)</h5>
 <pre class="highlight plaintext"><code>&lt;img src="{{Image(post.hero_image).src}}" /&gt;
@@ -126,7 +126,7 @@ $data['post'] = $post;
 Timber::render('single.twig', $data);
 </code></pre>
 
-<p><code class="prettyprint">TimberImage</code> should be initialized using a WordPress image ID#. It can also take URLs and image objects, but that requires extra processing.</p>
+<p><code class="prettyprint">TimberImage</code> should be initialized using a WordPress image ID#. It can also take URLs, image objects and post objects, but that requires extra processing.</p>
 
 <p>You can now use all the above functions to transform your custom images in the same way, the format will be:</p>
 <pre class="highlight plaintext"><code>&lt;img src="{{post.hero_image.src|resize(500, 300)}}" /&gt;

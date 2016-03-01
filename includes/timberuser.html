@@ -43,8 +43,8 @@
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"current-user-info"</span><span class="nt">&gt;</span>Your name is <span class="k">{{</span> <span class="nv">current_user</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
-<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"article-info"</span><span class="nt">&gt;</span>This article is called "<span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span>" and it's by <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span>
+<pre class="highlight plaintext"><code>&lt;p class="current-user-info"&gt;Your name is {{ current_user.name }}&lt;/p&gt;
+&lt;p class="article-info"&gt;This article is called "{{ post.title }}" and it's by {{ post.author.name }}
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -128,7 +128,7 @@
 <p><strong>returns:</strong> <code class="prettyprint">string</code> a fallback for TimberUser::name()</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    This post is by <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">author</span> <span class="k">}}</span>
+<pre class="highlight plaintext"><code>    This post is by {{ post.author }}
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -143,7 +143,7 @@
 
 <h2 id="get_link"><strike>get_link</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.21.9</em></p>
+<p><strong>DEPRECATED</strong> 0.21.9</p>
 
 <p><code class="prettyprint">get_link( )</code></p>
 
@@ -171,7 +171,7 @@
 
 <h2 id="get_path"><strike>get_path</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.21.8</em></p>
+<p><strong>DEPRECATED</strong> 0.21.8</p>
 
 <p><code class="prettyprint">get_path( )</code></p>
 
@@ -179,7 +179,7 @@
 
 <h2 id="get_permalink"><strike>get_permalink</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.21.8</em></p>
+<p><strong>DEPRECATED</strong> 0.21.8</p>
 
 <p><code class="prettyprint">get_permalink( )</code></p>
 
@@ -225,7 +225,7 @@
 
 <h2 id="permalink"><strike>permalink</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.21.8</em></p>
+<p><strong>DEPRECATED</strong> 0.21.8</p>
 
 <p><code class="prettyprint">permalink( )</code></p>
 
@@ -253,8 +253,8 @@
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"current-user-info"</span><span class="nt">&gt;</span>Your name is <span class="k">{{</span> <span class="nv">current_user</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
-<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"article-info"</span><span class="nt">&gt;</span>This article is called "<span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span>" and it's by <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span>
+<pre class="highlight plaintext"><code>&lt;p class="current-user-info"&gt;Your name is {{ current_user.name }}&lt;/p&gt;
+&lt;p class="article-info"&gt;This article is called "{{ post.title }}" and it's by {{ post.author.name }}
 </code></pre>
 
 <h6 id="html">HTML</h6>

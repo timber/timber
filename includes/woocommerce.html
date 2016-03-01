@@ -75,23 +75,23 @@ if (is_singular('product')) {
 <h2 id="archives">Archives</h2>
 
 <p>Create a Twig file accordingly to the location asked by the above file, in this example that would be <code class="prettyprint">views/woo/archive.twig</code>:</p>
-<pre class="highlight handlebars"><code>{% extends "base.twig" %}
+<pre class="highlight plaintext"><code>{% extends "base.twig" %}
 
 {% block content %}
 
     {% do action('woocommerce_before_main_content') %}
 
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"before-shop-loop"</span><span class="nt">&gt;</span>
+    &lt;div class="before-shop-loop"&gt;
         {% do action( 'woocommerce_before_shop_loop') %}
-    <span class="nt">&lt;/div&gt;</span>
+    &lt;/div&gt;
 
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"loop"</span><span class="nt">&gt;</span>
+    &lt;div class="loop"&gt;
         {% for post in products %}
 
             {% include ["partials/tease-product.twig"] %}
 
         {% endfor %}
-    <span class="nt">&lt;/div&gt;</span>
+    &lt;/div&gt;
 
     {% do action('woocommerce_after_shop_loop') %}
     {% do action('woocommerce_after_main_content') %}
@@ -106,28 +106,28 @@ if (is_singular('product')) {
 <h2 id="single-product">Single Product</h2>
 
 <p>Create a Twig file accordingly to the location asked by the above file, in this example that would be <code class="prettyprint">views/woo/single-product.twig</code>:</p>
-<pre class="highlight handlebars"><code>{% extends "base.twig" %}
+<pre class="highlight plaintext"><code>{% extends "base.twig" %}
 
 {% block content %}
 
     {% do action('woocommerce_before_single_product') %}
 
-    <span class="nt">&lt;article</span> <span class="na">itemscope</span> <span class="na">itemtype=</span><span class="s">"http://schema.org/Product"</span> <span class="na">class=</span><span class="s">"single-product-details </span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">class</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
+    &lt;article itemscope itemtype="http://schema.org/Product" class="single-product-details {{post.class}}"&gt;
 
-        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"entry-images"</span><span class="nt">&gt;</span>
+        &lt;div class="entry-images"&gt;
             {% do action('woocommerce_before_single_product_summary') %}
-            <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">(</span><span class="s1">'shop_single'</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;/div&gt;</span>
+            &lt;img src="{{ post.thumbnail.src('shop_single') }}" /&gt;
+        &lt;/div&gt;
 
-        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"summary entry-summary"</span><span class="nt">&gt;</span>
+        &lt;div class="summary entry-summary"&gt;
             {% do action('woocommerce_single_product_summary') %}
-        <span class="nt">&lt;/div&gt;</span>
+        &lt;/div&gt;
 
         {% do action('woocommerce_after_single_product_summary') %}
 
-        <span class="nt">&lt;meta</span> <span class="na">itemprop=</span><span class="s">"url"</span> <span class="na">content=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+        &lt;meta itemprop="url" content="{{ post.link }}" /&gt;
 
-    <span class="nt">&lt;/article&gt;</span>
+    &lt;/article&gt;
 
     {% do action('woocommerce_after_single_product') %}
 
@@ -140,39 +140,39 @@ If you need to override the output of any of those hooks, my advice would be to 
 <p>Finally, we&rsquo;ll need to create a teaser file for product in the loops. Considering the code above that  would be <code class="prettyprint">views/partials/tease-product.twig</code>:</p>
 
 <h2 id="tease-product">Tease Product</h2>
-<pre class="highlight handlebars"><code>
-<span class="nt">&lt;article</span> <span class="k">{{</span> <span class="nv">fn</span><span class="err">(</span><span class="s1">'post_class'</span><span class="err">,</span> <span class="p">[</span><span class="s1">'$classes'</span><span class="err">,</span> <span class="s1">'entry'</span><span class="p">]</span> <span class="err">)</span> <span class="k">}}</span><span class="nt">&gt;</span>
+<pre class="highlight plaintext"><code>
+&lt;article {{ fn('post_class', ['$classes', 'entry'] ) }}&gt;
 
-    <span class="k">{{</span> <span class="nv">fn</span><span class="err">(</span><span class="s1">'timber_set_product'</span><span class="err">,</span> <span class="nv">post</span><span class="err">)</span><span class="k">}}</span>
+    {{ fn('timber_set_product', post)}}
 
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"Media"</span><span class="nt">&gt;</span>
+    &lt;div class="Media"&gt;
 
         {% if showthumb %}
-            <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"Media-figure {% if not post.thumbnail %}placeholder{% endif %}"</span><span class="nt">&gt;</span>
-                <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
+            &lt;div class="Media-figure {% if not post.thumbnail %}placeholder{% endif %}"&gt;
+                &lt;a href="{{post.link}}"&gt;
                     {% if post.thumbnail %}
-                        <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">post_thumb_size</span><span class="p">[</span><span class="nv">0</span><span class="p">]</span><span class="err">,</span> <span class="nv">post_thumb_size</span><span class="p">[</span><span class="nv">1</span><span class="p">]</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+                        &lt;img src="{{ post.thumbnail.src|resize(post_thumb_size[0], post_thumb_size[1]) }}" /&gt;
                     {% else %}
-                        <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"thumb-placeholder"</span><span class="nt">&gt;&lt;i</span> <span class="na">class=</span><span class="s">"icon-camera"</span><span class="nt">&gt;&lt;/i&gt;&lt;/span&gt;</span>
+                        &lt;span class="thumb-placeholder"&gt;&lt;i class="icon-camera"&gt;&lt;/i&gt;&lt;/span&gt;
                     {% endif %}
-                <span class="nt">&lt;/a&gt;</span>
-            <span class="nt">&lt;/div&gt;</span>
+                &lt;/a&gt;
+            &lt;/div&gt;
         {% endif %}
 
-        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"Media-content"</span><span class="nt">&gt;</span>
+        &lt;div class="Media-content"&gt;
             {% do action('woocommerce_before_shop_loop_item_title') %}
             {% if post.title %}
-                <span class="nt">&lt;h3</span> <span class="na">class=</span><span class="s">"entry-title"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/h3&gt;</span>
+                &lt;h3 class="entry-title"&gt;&lt;a href="{{post.link}}"&gt;{{ post.title }}&lt;/a&gt;&lt;/h3&gt;
             {% else %}
-                <span class="nt">&lt;h3</span> <span class="na">class=</span><span class="s">"entry-title"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">fn</span><span class="err">(</span><span class="s1">'the_title'</span><span class="err">)</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/h3&gt;</span>
+                &lt;h3 class="entry-title"&gt;&lt;a href="{{post.link}}"&gt;{{ fn('the_title') }}&lt;/a&gt;&lt;/h3&gt;
             {% endif %}
             {% do action( 'woocommerce_after_shop_loop_item_title' ) %}
             {% do action( 'woocommerce_after_shop_loop_item' ) %}
-        <span class="nt">&lt;/div&gt;</span>
+        &lt;/div&gt;
 
-    <span class="nt">&lt;/div&gt;</span>
+    &lt;/div&gt;
 
-<span class="nt">&lt;/article&gt;</span>
+&lt;/article&gt;
 
 </code></pre>
 
@@ -195,8 +195,8 @@ If you need to override the output of any of those hooks, my advice would be to 
 <p><em>Note:</em> Some users reported issues with the loop context even when using the <code class="prettyprint">timber_set_product</code> helper function. Turns out the default WooCommerce hooks interfere with the output of the aforementioned function.</p>
 
 <p>One way to get around this is by building your own image calls, that means removing WooCommerce&rsquo;s default hooks and declare on your template the html to show the image:</p>
-<pre class="highlight handlebars"><code>{% if post.thumbnail %}
-   <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">shop_thumbnail_image_size</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>{% if post.thumbnail %}
+   &lt;img src="{{ post.thumbnail.src|resize(shop_thumbnail_image_size) }}" /&gt;
 {% endif %}
 </code></pre>
 

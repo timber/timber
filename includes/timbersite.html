@@ -44,7 +44,7 @@
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>My site is called <span class="k">{{</span><span class="nv">site</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>, another site on my network is <span class="k">{{</span><span class="nv">other_site</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>
+<pre class="highlight plaintext"><code>My site is called {{site.name}}, another site on my network is {{other_site.name}}
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -190,9 +190,9 @@
 <p>Returns the link to the site&rsquo;s home.</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">site</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span> <span class="na">title=</span><span class="s">"Home"</span><span class="nt">&gt;</span>
-          <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"/wp-content/uploads/logo.png"</span> <span class="na">alt=</span><span class="s">"Logo for some stupid thing"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;/a&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;a href="{{ site.link }}" title="Home"&gt;
+          &lt;img src="/wp-content/uploads/logo.png" alt="Logo for some stupid thing" /&gt;
+    &lt;/a&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -224,7 +224,7 @@
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>My site is called <span class="k">{{</span><span class="nv">site</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>, another site on my network is <span class="k">{{</span><span class="nv">other_site</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>
+<pre class="highlight plaintext"><code>My site is called {{site.name}}, another site on my network is {{other_site.name}}
 </code></pre>
 
 <h6 id="html">HTML</h6>

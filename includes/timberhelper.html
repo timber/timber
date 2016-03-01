@@ -126,7 +126,7 @@
 
 <h2 id="download_url"><strike>download_url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">download_url( mixed $url, mixed $timeout=300 )</code></p>
 
@@ -203,7 +203,7 @@
 
 <h2 id="get_comment_form"><strike>get_comment_form</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.21.8 use `{{ function(&lsquo;comment</em>form&rsquo;) }}` instead_</p>
+<p><strong>DEPRECATED</strong> 0.21.8 use <code class="prettyprint">{{ function(&#39;comment_form&#39;) }}</code> instead</p>
 
 <p><code class="prettyprint">get_comment_form( mixed $post_id=null, array $args=array() )</code></p>
 
@@ -232,7 +232,7 @@
 
 <h2 id="get_current_url"><strike>get_current_url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">get_current_url( )</code></p>
 
@@ -240,7 +240,7 @@
 
 <h2 id="get_full_path"><strike>get_full_path</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">get_full_path( mixed $src )</code></p>
 
@@ -322,7 +322,7 @@
 
 <h2 id="get_params"><strike>get_params</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">get_params( mixed $i=-1 )</code></p>
 
@@ -344,7 +344,7 @@
 
 <h2 id="get_path_base"><strike>get_path_base</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">get_path_base( )</code></p>
 
@@ -352,7 +352,7 @@
 
 <h2 id="get_post_by_meta"><strike>get_post_by_meta</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.20.0</em></p>
+<p><strong>DEPRECATED</strong> 0.20.0</p>
 
 <p><code class="prettyprint">get_post_by_meta( mixed $key, mixed $value )</code></p>
 
@@ -379,7 +379,7 @@
 
 <h2 id="get_posts_by_meta"><strike>get_posts_by_meta</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.20.0</em></p>
+<p><strong>DEPRECATED</strong> 0.20.0</p>
 
 <p><code class="prettyprint">get_posts_by_meta( mixed $key, mixed $value )</code></p>
 
@@ -406,7 +406,7 @@
 
 <h2 id="get_rel_path"><strike>get_rel_path</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">get_rel_path( mixed $src )</code></p>
 
@@ -428,7 +428,7 @@
 
 <h2 id="get_rel_url"><strike>get_rel_url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">get_rel_url( mixed $url, bool $force=false )</code></p>
 
@@ -455,7 +455,7 @@
 
 <h2 id="get_term_id_by_term_taxonomy_id"><strike>get_term_id_by_term_taxonomy_id</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.21.8</em></p>
+<p><strong>DEPRECATED</strong> 0.21.8</p>
 
 <p><code class="prettyprint">get_term_id_by_term_taxonomy_id( mixed $ttid )</code></p>
 
@@ -522,7 +522,7 @@
 
 <h2 id="is_external"><strike>is_external</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">is_external( mixed $url )</code></p>
 
@@ -544,7 +544,7 @@
 
 <h2 id="is_local"><strike>is_local</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">is_local( mixed $url )</code></p>
 
@@ -586,7 +586,7 @@
 
 <h2 id="is_url"><strike>is_url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">is_url( mixed $url )</code></p>
 
@@ -685,8 +685,8 @@
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
-    <span class="k">{{</span> <span class="nv">my_form</span> <span class="k">}}</span>
+<pre class="highlight plaintext"><code>    &lt;h1&gt;{{ post.title }}&lt;/h1&gt;
+    {{ my_form }}
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -741,7 +741,7 @@
 
 <h2 id="prepend_to_url"><strike>prepend_to_url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">prepend_to_url( mixed $url, mixed $path )</code></p>
 
@@ -768,7 +768,7 @@
 
 <h2 id="preslashit"><strike>preslashit</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">preslashit( mixed $path )</code></p>
 
@@ -790,7 +790,7 @@
 
 <h2 id="remove_double_slashes"><strike>remove_double_slashes</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">remove_double_slashes( mixed $url )</code></p>
 

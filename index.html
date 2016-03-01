@@ -478,10 +478,10 @@ Timber::render('index.twig', $context);
 <p>While data saved by ACF is available via <code class="prettyprint">{{post.my_acf_field}}</code> you will often need to do some additional work to get back the <em>kind</em> of data you want. For example, images are stored as image ID#s which you might want to translate into a specific image object. Read on to learn more about those specific exceptions.</p>
 
 <h3 id="wysiwyg-field-and-other-requiring-text">WYSIWYG field (and other requiring text):</h3>
-<pre class="highlight handlebars"><code><span class="nt">&lt;h3&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h3&gt;</span>
-<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"intro-text"</span><span class="nt">&gt;</span>
-     <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_field</span><span class="err">(</span><span class="s1">'my_wysiwyg_field'</span><span class="err">)</span><span class="k">}}</span>
-<span class="nt">&lt;/div&gt;</span>
+<pre class="highlight plaintext"><code>&lt;h3&gt;{{post.title}}&lt;/h3&gt;
+&lt;div class="intro-text"&gt;
+     {{post.get_field('my_wysiwyg_field')}}
+&lt;/div&gt;
 </code></pre>
 
 <p>This will apply your expected paragraph breaks and other pre-processing to the text.</p>
@@ -491,7 +491,7 @@ Timber::render('index.twig', $context);
 <p>You can retrieve an image from a custom field, then use it in a Twig template. The most reliable approach is this: When setting up your custom fields you&rsquo;ll want to save the <code class="prettyprint">image_id</code> to the field. The image object, url, etc. <em>will</em> work but it&rsquo;s not as fool-proof.</p>
 
 <h5 id="the-quick-way-for-most-situations">The quick way (for most situations)</h5>
-<pre class="highlight handlebars"><code><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">TimberImage</span><span class="err">(</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_field</span><span class="err">(</span><span class="s1">'hero_image'</span><span class="err">))</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>&lt;img src="{{TimberImage(post.get_field('hero_image')).src}}" /&gt;
 </code></pre>
 
 <h5 id="the-long-way-for-some-special-situations">The long way (for some special situations)</h5>
@@ -510,7 +510,7 @@ Timber::render('single.twig', $data);
 <p><code class="prettyprint">TimberImage</code> should be initialized using a WordPress image ID#. It can also take URLs and image objects, but that requires extra processing.</p>
 
 <p>You can now use all the above functions to transform your custom images in the same way, the format will be:</p>
-<pre class="highlight handlebars"><code><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">hero_image</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">500</span><span class="err">,</span> <span class="nv">300</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>&lt;img src="{{post.hero_image.src|resize(500, 300)}}" /&gt;
 </code></pre>
 
 <hr>
@@ -518,7 +518,7 @@ Timber::render('single.twig', $data);
 <h3 id="repeater-field">Repeater field</h3>
 
 <p>You can access repeater fields within in twig files:
-<code class="prettyprint">handlebars
+<code class="prettyprint">twig
 {# single.twig #}
 &lt;h2&gt;{{post.title}}&lt;/h2&gt;
 &lt;div class=&quot;my-list&quot;&gt;
@@ -535,11 +535,11 @@ Timber::render('single.twig', $data);
 <h5 id="nested">Nested?</h5>
 
 <p>When you run <code class="prettyprint">get_field</code> on an outer ACF field, everything inside is ready to be traversed. You can refer to nested fields via outer_item.inner_repeater</p>
-<pre class="highlight handlebars"><code>{% for item_outer in post.get_field('outer') %}
-     <span class="k">{{</span><span class="nv">item_outer</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span>
+<pre class="highlight plaintext"><code>{% for item_outer in post.get_field('outer') %}
+     {{item_outer.title}}
 
      {% for item_inner in item_outer.inner_repeater %}
-          <span class="k">{{</span><span class="nv">item_inner</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span>
+          {{item_inner.title}}
      {% endfor %}
 
 {% endfor %}
@@ -550,19 +550,19 @@ Timber::render('single.twig', $data);
 <p>A common problem in working with repeaters is that you should only call the <code class="prettyprint">get_field</code> method <strong>once</strong> on an item. In other words if you have a field inside a field (for example, a relationship inside a repeater or a repeater inside a repeater, <strong>do not</strong> call <code class="prettyprint">get_field</code> on the inner field). More:</p>
 
 <h6 id="don-39-t-do-this-bad">DON&rsquo;T DO THIS (Bad)</h6>
-<pre class="highlight handlebars"><code>{% for gear in post.get_field('gear_items') %}
-    <span class="nt">&lt;h3&gt;</span> <span class="k">{{</span> <span class="nv">gear</span><span class="p">.</span><span class="nv">brand_name</span> <span class="k">}}</span> <span class="nt">&lt;/h3&gt;</span>
+<pre class="highlight plaintext"><code>{% for gear in post.get_field('gear_items') %}
+    &lt;h3&gt; {{ gear.brand_name }} &lt;/h3&gt;
     {% for gear_feature in gear.get_field('features') %}
-        <span class="nt">&lt;li&gt;</span> <span class="k">{{</span><span class="nv">gear_feature</span><span class="k">}}</span> <span class="nt">&lt;/li&gt;</span>
+        &lt;li&gt; {{gear_feature}} &lt;/li&gt;
     {% endfor %}
 {% endfor %}
 </code></pre>
 
 <h6 id="do-this-good">Do THIS: (Good)</h6>
-<pre class="highlight handlebars"><code>{% for gear in post.get_field('gear_items') %}
-    <span class="nt">&lt;h3&gt;</span> <span class="k">{{</span> <span class="nv">gear</span><span class="p">.</span><span class="nv">brand_name</span> <span class="k">}}</span> <span class="nt">&lt;/h3&gt;</span>
+<pre class="highlight plaintext"><code>{% for gear in post.get_field('gear_items') %}
+    &lt;h3&gt; {{ gear.brand_name }} &lt;/h3&gt;
     {% for gear_feature in gear.features %}
-        <span class="nt">&lt;li&gt;</span> <span class="k">{{</span><span class="nv">gear_feature</span><span class="k">}}</span> <span class="nt">&lt;/li&gt;</span>
+        &lt;li&gt; {{gear_feature}} &lt;/li&gt;
     {% endfor %}
 {% endfor %}
 </code></pre>
@@ -572,14 +572,14 @@ Timber::render('single.twig', $data);
 <h3 id="flexible-content-field">Flexible content field</h3>
 
 <p>Similar to repeaters, get the field by the name of the flexible content field:</p>
-<pre class="highlight handlebars"><code>{% for media_item in post.get_field('media_set') %}
+<pre class="highlight plaintext"><code>{% for media_item in post.get_field('media_set') %}
     {% if media_item.acf_fc_layout == 'image_set' %}
-        <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">TimberImage</span><span class="err">(</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">image</span><span class="err">)</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"caption"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">TimberImage</span><span class="err">(</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">image</span><span class="err">)</span><span class="p">.</span><span class="nv">caption</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
-        <span class="nt">&lt;aside</span> <span class="na">class=</span><span class="s">"notes"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">notes</span><span class="k">}}</span><span class="nt">&lt;/aside&gt;</span>
+        &lt;img src="{{TimberImage(media_item.image).src}}" /&gt;
+        &lt;p class="caption"&gt;{{TimberImage(media_item.image).caption}}&lt;/p&gt;
+        &lt;aside class="notes"&gt;{{media_item.notes}}&lt;/aside&gt;
     {% elseif media_item.acf_fc_layout == 'video_set' %}
-        <span class="nt">&lt;iframe</span> <span class="na">width=</span><span class="s">"560"</span> <span class="na">height=</span><span class="s">"315"</span> <span class="na">src=</span><span class="s">"http://www.youtube.com/embed/</span><span class="k">{{</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">youtube_id</span><span class="k">}}</span><span class="s">"</span> <span class="na">frameborder=</span><span class="s">"0"</span> <span class="na">allowfullscreen</span><span class="nt">&gt;&lt;/iframe&gt;</span>
-        <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"caption"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">media_item</span><span class="p">.</span><span class="nv">caption</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+        &lt;iframe width="560" height="315" src="http://www.youtube.com/embed/{{media_item.youtube_id}}" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+        &lt;p class="caption"&gt;{{media_item.caption}}&lt;/p&gt;
     {% endif %}
 {% endfor %}
 </code></pre>
@@ -590,7 +590,7 @@ Timber::render('single.twig', $data);
 <pre class="highlight php"><code>    $context['site_copyright_info'] = get_field('copyright_info', 'options');
     Timber::render('index.twig', $context);
 </code></pre>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;footer&gt;</span><span class="k">{{</span><span class="nv">site_copyright_info</span><span class="k">}}</span><span class="nt">&lt;/footer&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;footer&gt;{{site_copyright_info}}&lt;/footer&gt;
 </code></pre>
 
 <h6 id="get-all-info-from-your-options-page">Get all info from your options page</h6>
@@ -599,7 +599,7 @@ Timber::render('single.twig', $data);
 </code></pre>
 
 <p>ACF Pro has a built in options page, and changes the <code class="prettyprint">get_fields(&#39;options&#39;)</code> to <code class="prettyprint">get_fields(&#39;option&#39;)</code>.</p>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;footer&gt;</span><span class="k">{{</span><span class="nv">options</span><span class="p">.</span><span class="nv">copyright_info</span><span class="k">}}</span><span class="nt">&lt;/footer&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;footer&gt;{{options.copyright_info}}&lt;/footer&gt;
 </code></pre>
 
 <h6 id="use-options-info-site-wide">Use options info site wide</h6>
@@ -615,8 +615,8 @@ function mytheme_timber_context( $context ) {
 </code></pre>
 
 <p>Now, you can use any of the option fields across the site instead of per template.</p>
-<pre class="highlight handlebars"><code>/* footer.twig */
-<span class="nt">&lt;footer&gt;</span><span class="k">{{</span><span class="nv">options</span><span class="p">.</span><span class="nv">copyright_info</span><span class="k">}}</span><span class="nt">&lt;/footer&gt;</span>
+<pre class="highlight plaintext"><code>/* footer.twig */
+&lt;footer&gt;{{options.copyright_info}}&lt;/footer&gt;
 </code></pre>
 
 <hr>
@@ -627,7 +627,7 @@ function mytheme_timber_context( $context ) {
 <pre class="highlight php"><code>/* single.php */
 $context["acf"] = get_field_objects($data["post"]-&gt;ID);
 </code></pre>
-<pre class="highlight handlebars"><code><span class="k">{{</span> <span class="nv">acf</span><span class="p">.</span><span class="nv">your_field_name_here</span><span class="p">.</span><span class="nv">label</span> <span class="k">}}</span>
+<pre class="highlight plaintext"><code>{{ acf.your_field_name_here.label }}
 </code></pre>
 
 <hr>
@@ -943,7 +943,7 @@ new StarterSite();
 <h3 id="relative">relative</h3>
 
 <p>Converts an absolute URL into a relative one, for example:</p>
-<pre class="highlight handlebars"><code>My custom link is <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="s1">'http://example.org/2015/08/my-blog-post'</span> <span class="err">|</span> <span class="nv">relative</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>here!<span class="nt">&lt;/a&gt;</span>
+<pre class="highlight plaintext"><code>My custom link is &lt;a href="{{ 'http://example.org/2015/08/my-blog-post' | relative }}"&gt;here!&lt;/a&gt;
 </code></pre>
 <pre class="highlight html"><code>My custom link is <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"/2015/08/my-blog-post"</span><span class="nt">&gt;</span>here!<span class="nt">&lt;/a&gt;</span>
 </code></pre>
@@ -1005,11 +1005,11 @@ Here is my gallery &lt;div class="gallery" id="gallery-123"&gt;&lt;img src="....
 <h3 id="truncate">truncate</h3>
 
 <h6 id="twig">Twig:</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"entry-meta"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">character</span><span class="p">.</span><span class="nv">origin_story</span> <span class="err">|</span> <span class="nv">truncate</span><span class="err">(</span><span class="nv">8</span><span class="err">)</span> <span class="k">}}</span> ...<span class="nt">&lt;/p&gt;</span>
+<pre class="highlight plaintext"><code>&lt;p class="entry-meta"&gt;{{ post.character.origin_story | truncate(8) }} ...&lt;/p&gt;
 </code></pre>
 
 <h6 id="output">Output:</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"entry-meta"</span><span class="nt">&gt;</span>Bruce Wayne's parents were shot outside the opera ...<span class="nt">&lt;/p&gt;</span>
+<pre class="highlight plaintext"><code>&lt;p class="entry-meta"&gt;Bruce Wayne's parents were shot outside the opera ...&lt;/p&gt;
 </code></pre>
 
 <hr>
@@ -1019,9 +1019,9 @@ Here is my gallery &lt;div class="gallery" id="gallery-123"&gt;&lt;img src="....
 <p>Adds paragraph breaks to new lines</p>
 
 <h6 id="twig">Twig:</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
-    <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">custom_text_area</span><span class="err">|</span><span class="nv">wpautop</span><span class="k">}}</span>
-<span class="nt">&lt;/div&gt;</span>
+<pre class="highlight plaintext"><code>&lt;div class="body"&gt;
+    {{post.custom_text_area|wpautop}}
+&lt;/div&gt;
 </code></pre>
 
 <h6 id="output">Output:</h6>
@@ -1045,25 +1045,25 @@ Here is my gallery &lt;div class="gallery" id="gallery-123"&gt;&lt;img src="....
 </code></pre>
 
 <p>You can then markup the output like so  (of course, the exact markup is up to YOU):</p>
-<pre class="highlight handlebars"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"tool-pagination"</span><span class="nt">&gt;</span>
+<pre class="highlight plaintext"><code>&lt;div class="tool-pagination"&gt;
     {% if pagination.prev %}
-        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"prev </span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">link</span><span class="err">|</span><span class="nv">length</span> <span class="err">?</span> <span class="s1">''</span> <span class="err">:</span> <span class="s1">'invisible'</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>Prev<span class="nt">&lt;/a&gt;</span>
+        &lt;a href="{{pagination.prev.link}}" class="prev {{pagination.prev.link|length ? '' : 'invisible'}}"&gt;Prev&lt;/a&gt;
     {% endif %}
-    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"pages"</span><span class="nt">&gt;</span>
+    &lt;ul class="pages"&gt;
         {% for page in pagination.pages %}
-            <span class="nt">&lt;li&gt;</span>
+            &lt;li&gt;
                 {% if page.link %}
-                    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">class</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+                    &lt;a href="{{page.link}}" class="{{page.class}}"&gt;{{page.title}}&lt;/a&gt;
                 {% else %}
-                    <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">class</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">page</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/span&gt;</span>
+                    &lt;span class="{{page.class}}"&gt;{{page.title}}&lt;/span&gt;
                 {% endif %}
-            <span class="nt">&lt;/li&gt;</span>
+            &lt;/li&gt;
         {% endfor %}
-    <span class="nt">&lt;/ul&gt;</span>
+    &lt;/ul&gt;
     {% if pagination.next %}
-        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">next</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"next </span><span class="k">{{</span><span class="nv">pagination</span><span class="p">.</span><span class="nv">next</span><span class="p">.</span><span class="nv">link</span><span class="err">|</span><span class="nv">length</span> <span class="err">?</span> <span class="s1">''</span> <span class="err">:</span> <span class="s1">'invisible'</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>Next<span class="nt">&lt;/a&gt;</span>
+        &lt;a href="{{pagination.next.link}}" class="next {{pagination.next.link|length ? '' : 'invisible'}}"&gt;Next&lt;/a&gt;
     {% endif %}
-<span class="nt">&lt;/div&gt;</span>
+&lt;/div&gt;
 </code></pre>
 
 <h3 id="what-if-i-39-m-not-using-the-default-query">What if I&rsquo;m not using the default query?</h3>
@@ -1504,23 +1504,23 @@ if (is_singular('product')) {
 <h2 id="archives">Archives</h2>
 
 <p>Create a Twig file accordingly to the location asked by the above file, in this example that would be <code class="prettyprint">views/woo/archive.twig</code>:</p>
-<pre class="highlight handlebars"><code>{% extends "base.twig" %}
+<pre class="highlight plaintext"><code>{% extends "base.twig" %}
 
 {% block content %}
 
     {% do action('woocommerce_before_main_content') %}
 
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"before-shop-loop"</span><span class="nt">&gt;</span>
+    &lt;div class="before-shop-loop"&gt;
         {% do action( 'woocommerce_before_shop_loop') %}
-    <span class="nt">&lt;/div&gt;</span>
+    &lt;/div&gt;
 
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"loop"</span><span class="nt">&gt;</span>
+    &lt;div class="loop"&gt;
         {% for post in products %}
 
             {% include ["partials/tease-product.twig"] %}
 
         {% endfor %}
-    <span class="nt">&lt;/div&gt;</span>
+    &lt;/div&gt;
 
     {% do action('woocommerce_after_shop_loop') %}
     {% do action('woocommerce_after_main_content') %}
@@ -1535,28 +1535,28 @@ if (is_singular('product')) {
 <h2 id="single-product">Single Product</h2>
 
 <p>Create a Twig file accordingly to the location asked by the above file, in this example that would be <code class="prettyprint">views/woo/single-product.twig</code>:</p>
-<pre class="highlight handlebars"><code>{% extends "base.twig" %}
+<pre class="highlight plaintext"><code>{% extends "base.twig" %}
 
 {% block content %}
 
     {% do action('woocommerce_before_single_product') %}
 
-    <span class="nt">&lt;article</span> <span class="na">itemscope</span> <span class="na">itemtype=</span><span class="s">"http://schema.org/Product"</span> <span class="na">class=</span><span class="s">"single-product-details </span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">class</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
+    &lt;article itemscope itemtype="http://schema.org/Product" class="single-product-details {{post.class}}"&gt;
 
-        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"entry-images"</span><span class="nt">&gt;</span>
+        &lt;div class="entry-images"&gt;
             {% do action('woocommerce_before_single_product_summary') %}
-            <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">(</span><span class="s1">'shop_single'</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;/div&gt;</span>
+            &lt;img src="{{ post.thumbnail.src('shop_single') }}" /&gt;
+        &lt;/div&gt;
 
-        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"summary entry-summary"</span><span class="nt">&gt;</span>
+        &lt;div class="summary entry-summary"&gt;
             {% do action('woocommerce_single_product_summary') %}
-        <span class="nt">&lt;/div&gt;</span>
+        &lt;/div&gt;
 
         {% do action('woocommerce_after_single_product_summary') %}
 
-        <span class="nt">&lt;meta</span> <span class="na">itemprop=</span><span class="s">"url"</span> <span class="na">content=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+        &lt;meta itemprop="url" content="{{ post.link }}" /&gt;
 
-    <span class="nt">&lt;/article&gt;</span>
+    &lt;/article&gt;
 
     {% do action('woocommerce_after_single_product') %}
 
@@ -1569,39 +1569,39 @@ If you need to override the output of any of those hooks, my advice would be to 
 <p>Finally, we&rsquo;ll need to create a teaser file for product in the loops. Considering the code above that  would be <code class="prettyprint">views/partials/tease-product.twig</code>:</p>
 
 <h2 id="tease-product">Tease Product</h2>
-<pre class="highlight handlebars"><code>
-<span class="nt">&lt;article</span> <span class="k">{{</span> <span class="nv">fn</span><span class="err">(</span><span class="s1">'post_class'</span><span class="err">,</span> <span class="p">[</span><span class="s1">'$classes'</span><span class="err">,</span> <span class="s1">'entry'</span><span class="p">]</span> <span class="err">)</span> <span class="k">}}</span><span class="nt">&gt;</span>
+<pre class="highlight plaintext"><code>
+&lt;article {{ fn('post_class', ['$classes', 'entry'] ) }}&gt;
 
-    <span class="k">{{</span> <span class="nv">fn</span><span class="err">(</span><span class="s1">'timber_set_product'</span><span class="err">,</span> <span class="nv">post</span><span class="err">)</span><span class="k">}}</span>
+    {{ fn('timber_set_product', post)}}
 
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"Media"</span><span class="nt">&gt;</span>
+    &lt;div class="Media"&gt;
 
         {% if showthumb %}
-            <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"Media-figure {% if not post.thumbnail %}placeholder{% endif %}"</span><span class="nt">&gt;</span>
-                <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
+            &lt;div class="Media-figure {% if not post.thumbnail %}placeholder{% endif %}"&gt;
+                &lt;a href="{{post.link}}"&gt;
                     {% if post.thumbnail %}
-                        <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">post_thumb_size</span><span class="p">[</span><span class="nv">0</span><span class="p">]</span><span class="err">,</span> <span class="nv">post_thumb_size</span><span class="p">[</span><span class="nv">1</span><span class="p">]</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+                        &lt;img src="{{ post.thumbnail.src|resize(post_thumb_size[0], post_thumb_size[1]) }}" /&gt;
                     {% else %}
-                        <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"thumb-placeholder"</span><span class="nt">&gt;&lt;i</span> <span class="na">class=</span><span class="s">"icon-camera"</span><span class="nt">&gt;&lt;/i&gt;&lt;/span&gt;</span>
+                        &lt;span class="thumb-placeholder"&gt;&lt;i class="icon-camera"&gt;&lt;/i&gt;&lt;/span&gt;
                     {% endif %}
-                <span class="nt">&lt;/a&gt;</span>
-            <span class="nt">&lt;/div&gt;</span>
+                &lt;/a&gt;
+            &lt;/div&gt;
         {% endif %}
 
-        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"Media-content"</span><span class="nt">&gt;</span>
+        &lt;div class="Media-content"&gt;
             {% do action('woocommerce_before_shop_loop_item_title') %}
             {% if post.title %}
-                <span class="nt">&lt;h3</span> <span class="na">class=</span><span class="s">"entry-title"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/h3&gt;</span>
+                &lt;h3 class="entry-title"&gt;&lt;a href="{{post.link}}"&gt;{{ post.title }}&lt;/a&gt;&lt;/h3&gt;
             {% else %}
-                <span class="nt">&lt;h3</span> <span class="na">class=</span><span class="s">"entry-title"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">fn</span><span class="err">(</span><span class="s1">'the_title'</span><span class="err">)</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/h3&gt;</span>
+                &lt;h3 class="entry-title"&gt;&lt;a href="{{post.link}}"&gt;{{ fn('the_title') }}&lt;/a&gt;&lt;/h3&gt;
             {% endif %}
             {% do action( 'woocommerce_after_shop_loop_item_title' ) %}
             {% do action( 'woocommerce_after_shop_loop_item' ) %}
-        <span class="nt">&lt;/div&gt;</span>
+        &lt;/div&gt;
 
-    <span class="nt">&lt;/div&gt;</span>
+    &lt;/div&gt;
 
-<span class="nt">&lt;/article&gt;</span>
+&lt;/article&gt;
 
 </code></pre>
 
@@ -1624,8 +1624,8 @@ If you need to override the output of any of those hooks, my advice would be to 
 <p><em>Note:</em> Some users reported issues with the loop context even when using the <code class="prettyprint">timber_set_product</code> helper function. Turns out the default WooCommerce hooks interfere with the output of the aforementioned function.</p>
 
 <p>One way to get around this is by building your own image calls, that means removing WooCommerce&rsquo;s default hooks and declare on your template the html to show the image:</p>
-<pre class="highlight handlebars"><code>{% if post.thumbnail %}
-   <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">shop_thumbnail_image_size</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>{% if post.thumbnail %}
+   &lt;img src="{{ post.thumbnail.src|resize(shop_thumbnail_image_size) }}" /&gt;
 {% endif %}
 </code></pre>
 
@@ -1731,13 +1731,23 @@ Timber::render('single.twig', $data);
 
 <p>For a less quick-and-dirty way, you can use the TimberFunctionWrapper. This class sets up your PHP functions as functions you can use in your Twig templates. It will execute them only when you actually call them in your template. You can quickly set up a TimberFunctionWrapper using <code class="prettyprint">TimberHelper</code>:</p>
 <pre class="highlight php"><code>/**
- * @param string $function_name
+ * @param mixed $function_name or array( $class( string|object ), $function_name )
  * @param array (optional) $defaults
  * @param bool (optional) $return_output_buffer Return function output instead of return value (default: false)
  * @return \TimberFunctionWrapper
  */
 TimberHelper::function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false );
 </code></pre>
+
+<p>Classes (including namespaced) are also supported for <code class="prettyprint">function_wrapper</code>:</p>
+<pre class="highlight php"><code># Namespaced has to be a string
+TimberHelper::function_wrapper('Example\Class', 'function_in_class');
+
+# Otherwise, you can pass the object of the class
+TimberHelper::function_wrapper($this, 'function_in_class');
+</code></pre>
+
+<p>You can then call the function like so <code class="prettyprint">{{function_in_class}}</code></p>
 
 <p>So if you want to add <code class="prettyprint">edit_post_link</code> to your context, you can do something like this:</p>
 <pre class="highlight php"><code>/* single.php */
@@ -1915,14 +1925,14 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;ul&gt;</span>
+<pre class="highlight plaintext"><code>&lt;ul&gt;
 {% for item in archives.items %}
-    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    &lt;li&gt;&lt;a href="{{item.link}}"&gt;{{item.name}}&lt;/a&gt;&lt;/li&gt;
     {% for child in item.children %}
-        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+        &lt;li class="child"&gt;&lt;a href="{{child.link}}"&gt;{{child.name}}&lt;/a&gt;&lt;/li&gt;
     {% endfor %}
 {% endfor %}
-<span class="nt">&lt;/ul&gt;</span>
+&lt;/ul&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -2023,14 +2033,14 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;ul&gt;</span>
+<pre class="highlight plaintext"><code>&lt;ul&gt;
 {% for item in archives.items %}
-    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    &lt;li&gt;&lt;a href="{{item.link}}"&gt;{{item.name}}&lt;/a&gt;&lt;/li&gt;
     {% for child in item.children %}
-        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"child"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+        &lt;li class="child"&gt;&lt;a href="{{child.link}}"&gt;{{child.name}}&lt;/a&gt;&lt;/li&gt;
     {% endfor %}
 {% endfor %}
-<span class="nt">&lt;/ul&gt;</span>
+&lt;/ul&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -2062,8 +2072,8 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">comment_of_the_day</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
-<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment-attribution"</span><span class="nt">&gt;</span>- <span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+<pre class="highlight plaintext"><code>&lt;p class="comment"&gt;{{comment_of_the_day.content}}&lt;/p&gt;
+&lt;p class="comment-attribution"&gt;- {{comment.author.name}}&lt;/p&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -2153,7 +2163,7 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 <p><strong>returns:</strong> <code class="prettyprint">boolean</code> </p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    {% if comment.approved %}
+<pre class="highlight plaintext"><code>    {% if comment.approved %}
         Your comment is good
     {% else %}
         Do you kiss your mother with that mouth?
@@ -2167,12 +2177,12 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 <p><strong>returns:</strong> <code class="prettyprint">\TimberUser</code> </p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;h3&gt;</span>Comments by...<span class="nt">&lt;/h3&gt;</span>
-    <span class="nt">&lt;ol&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;h3&gt;Comments by...&lt;/h3&gt;
+    &lt;ol&gt;
     {% for comment in post.comments %}
-        <span class="nt">&lt;li&gt;</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>, who is a <span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">role</span><span class="k">}}</span><span class="nt">&lt;/li&gt;</span>
+        &lt;li&gt;{{comment.author.name}}, who is a {{comment.author.role}}&lt;/li&gt;
     {% endfor %}
-    <span class="nt">&lt;/ol&gt;</span>
+    &lt;/ol&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -2212,7 +2222,7 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">avatar</span><span class="err">(</span><span class="nv">36</span><span class="err">,</span><span class="nv">template_uri</span><span class="err">~</span><span class="s2">"/img/dude.jpg"</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"Image of </span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;img src="{{comment.avatar(36,template_uri~"/img/dude.jpg")}}" alt="Image of {{comment.author.name}}" /&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -2246,11 +2256,11 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    {% for comment in post.comments %}
-    <span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>
-      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"date"</span><span class="nt">&gt;</span>Posted on <span class="k">{{</span> <span class="nv">comment</span><span class="p">.</span><span class="nv">date</span> <span class="k">}}</span>:<span class="nt">&lt;/p&gt;</span>
-      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">comment</span><span class="p">.</span><span class="nv">content</span> <span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
-    <span class="nt">&lt;/article&gt;</span>
+<pre class="highlight plaintext"><code>    {% for comment in post.comments %}
+    &lt;article class="comment"&gt;
+      &lt;p class="date"&gt;Posted on {{ comment.date }}:&lt;/p&gt;
+      &lt;p class="comment"&gt;{{ comment.content }}&lt;/p&gt;
+    &lt;/article&gt;
     {% endfor %}
 </code></pre>
 
@@ -2330,11 +2340,11 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    {% for comment in post.comments %}
-    <span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>
-      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"date"</span><span class="nt">&gt;</span>Posted on <span class="k">{{</span> <span class="nv">comment</span><span class="p">.</span><span class="nv">date</span> <span class="k">}}</span> at <span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">time</span><span class="k">}}</span>:<span class="nt">&lt;/p&gt;</span>
-      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">comment</span><span class="p">.</span><span class="nv">content</span> <span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
-    <span class="nt">&lt;/article&gt;</span>
+<pre class="highlight plaintext"><code>    {% for comment in post.comments %}
+    &lt;article class="comment"&gt;
+      &lt;p class="date"&gt;Posted on {{ comment.date }} at {{comment.time}}:&lt;/p&gt;
+      &lt;p class="comment"&gt;{{ comment.content }}&lt;/p&gt;
+    &lt;/article&gt;
     {% endfor %}
 </code></pre>
 
@@ -2361,8 +2371,8 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">comment_of_the_day</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
-<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"comment-attribution"</span><span class="nt">&gt;</span>- <span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+<pre class="highlight plaintext"><code>&lt;p class="comment"&gt;{{comment_of_the_day.content}}&lt;/p&gt;
+&lt;p class="comment-attribution"&gt;- {{comment.author.name}}&lt;/p&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -2390,14 +2400,14 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;article&gt;</span>
-    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">cover_image</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"cover-image"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
-        <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span>
-    <span class="nt">&lt;/div&gt;</span>
-    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">Image</span><span class="err">(</span><span class="nv">post</span><span class="p">.</span><span class="nv">custom_field_with_image_id</span><span class="err">)</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"Another way to initialize images as TimberImages, but within Twig"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/article&gt;</span>
+<pre class="highlight plaintext"><code>&lt;article&gt;
+    &lt;img src="{{cover_image.src}}" class="cover-image" /&gt;
+    &lt;h1 class="headline"&gt;{{post.title}}&lt;/h1&gt;
+    &lt;div class="body"&gt;
+        {{post.content}}
+    &lt;/div&gt;
+    &lt;img src="{{ Image(post.custom_field_with_image_id).src }}" alt="Another way to initialize images as TimberImages, but within Twig" /&gt;
+&lt;/article&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -2450,8 +2460,8 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 </tr>
 <tr>
 <td>id</td>
-<td>string</td>
-<td>$id the numeric WordPress id of a post</td>
+<td>integer</td>
+<td>the ID of the image (which is a WP_Post)</td>
 </tr>
 <tr>
 <td><a href="#link">link</a></td>
@@ -2538,7 +2548,7 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 <p><strong>returns:</strong> <code class="prettyprint">string</code> alt text stored in WordPress</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">alt</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;img src="{{ image.src }}" alt="{{ image.alt }}" /&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -2552,11 +2562,11 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 <p><strong>returns:</strong> <code class="prettyprint">\float</code> </p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    {% if post.thumbnail.aspect <span class="nt">&lt; 1</span> <span class="err">%}</span>
-        <span class="err">{#</span> <span class="na">handle</span> <span class="na">vertical</span> <span class="na">image</span> <span class="err">#}</span>
-        <span class="err">&lt;</span><span class="na">img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">300</span><span class="err">,</span> <span class="nv">500</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"A basketball player"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    {% if post.thumbnail.aspect &lt; 1 %}
+        {# handle vertical image #}
+        &lt;img src="{{ post.thumbnail.src|resize(300, 500) }}" alt="A basketball player" /&gt;
     {% else %}
-           <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="err">|</span><span class="nv">resize</span><span class="err">(</span><span class="nv">500</span><span class="err">)</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"A sumo wrestler"</span> <span class="nt">/&gt;</span>
+           &lt;img src="{{ post.thumbnail.src|resize(500) }}" alt="A sumo wrestler" /&gt;
     {% endif %}
 </code></pre>
 
@@ -2570,7 +2580,7 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 
 <h2 id="get_url"><strike>get_url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> use src() instead</em></p>
+<p><strong>DEPRECATED</strong> use src() instead</p>
 
 <p><code class="prettyprint">get_url( )</code></p>
 
@@ -2583,7 +2593,7 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 <p><strong>returns:</strong> <code class="prettyprint">int</code> </p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">height=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">height</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;img src="{{ image.src }}" height="{{ image.height }}" /&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -2599,7 +2609,7 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 <p>Returns the link to an image attachment&rsquo;s Permalink page (NOT the link for the image itself!!)</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s"> "</span><span class="nt">/&gt;&lt;/a&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;a href="{{ image.link }}"&gt;&lt;img src="{{ image.src }} "/&gt;&lt;/a&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -2619,7 +2629,7 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 <p><strong>returns:</strong> <code class="prettyprint">string</code> the /relative/path/to/the/file</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">path</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;img src="{{ image.path }}" /&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -2647,8 +2657,8 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;h1&gt;{{post.title}}&lt;/h1&gt;
+    &lt;img src="{{post.thumbnail.src}}" /&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -2657,7 +2667,7 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 
 <h2 id="url"><strike>url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> use src() instead</em></p>
+<p><strong>DEPRECATED</strong> use src() instead</p>
 
 <p><code class="prettyprint">url( )</code></p>
 
@@ -2670,7 +2680,7 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 <p><strong>returns:</strong> <code class="prettyprint">int</code> </p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">width=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">image</span><span class="p">.</span><span class="nv">width</span> <span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;img src="{{ image.src }}" width="{{ image.width }}" /&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -2703,14 +2713,14 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;article&gt;</span>
-    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">cover_image</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="na">class=</span><span class="s">"cover-image"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
-        <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span>
-    <span class="nt">&lt;/div&gt;</span>
-    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">Image</span><span class="err">(</span><span class="nv">post</span><span class="p">.</span><span class="nv">custom_field_with_image_id</span><span class="err">)</span><span class="p">.</span><span class="nv">src</span> <span class="k">}}</span><span class="s">"</span> <span class="na">alt=</span><span class="s">"Another way to initialize images as TimberImages, but within Twig"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/article&gt;</span>
+<pre class="highlight plaintext"><code>&lt;article&gt;
+    &lt;img src="{{cover_image.src}}" class="cover-image" /&gt;
+    &lt;h1 class="headline"&gt;{{post.title}}&lt;/h1&gt;
+    &lt;div class="body"&gt;
+        {{post.content}}
+    &lt;/div&gt;
+    &lt;img src="{{ Image(post.custom_field_with_image_id).src }}" alt="Another way to initialize images as TimberImages, but within Twig" /&gt;
+&lt;/article&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -2753,21 +2763,21 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;nav&gt;</span>
-    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"main-nav"</span><span class="nt">&gt;</span>
+<pre class="highlight plaintext"><code>&lt;nav&gt;
+    &lt;ul class="main-nav"&gt;
     {% for item in menu.get_items %}
-        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"nav-main-item </span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">classes</span> <span class="err">|</span> <span class="nv">join</span><span class="err">(</span><span class="s1">' '</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;&lt;a</span> <span class="na">class=</span><span class="s">"nav-main-link"</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">get_link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+        &lt;li class="nav-main-item {{item.classes | join(' ')}}"&gt;&lt;a class="nav-main-link" href="{{item.get_link}}"&gt;{{item.title}}&lt;/a&gt;
             {% if item.get_children %}
-            <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav-drop"</span><span class="nt">&gt;</span>
+            &lt;ul class="nav-drop"&gt;
               {% for child in item.get_children %}
-                <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"nav-drop-item"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">get_link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+                &lt;li class="nav-drop-item"&gt;&lt;a href="{{child.get_link}}"&gt;{{child.title}}&lt;/a&gt;&lt;/li&gt;
               {% endfor %}
-             <span class="nt">&lt;/ul&gt;</span>
+             &lt;/ul&gt;
           {% endif %}
-          <span class="nt">&lt;/li&gt;</span>
+          &lt;/li&gt;
    {% endfor %}
-   <span class="nt">&lt;/ul&gt;</span>
-<span class="nt">&lt;/nav&gt;</span>
+   &lt;/ul&gt;
+&lt;/nav&gt;
 </code></pre>
 
 <table><thead>
@@ -2879,21 +2889,21 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;nav&gt;</span>
-    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"main-nav"</span><span class="nt">&gt;</span>
+<pre class="highlight plaintext"><code>&lt;nav&gt;
+    &lt;ul class="main-nav"&gt;
     {% for item in menu.get_items %}
-        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"nav-main-item </span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">classes</span> <span class="err">|</span> <span class="nv">join</span><span class="err">(</span><span class="s1">' '</span><span class="err">)</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;&lt;a</span> <span class="na">class=</span><span class="s">"nav-main-link"</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">get_link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+        &lt;li class="nav-main-item {{item.classes | join(' ')}}"&gt;&lt;a class="nav-main-link" href="{{item.get_link}}"&gt;{{item.title}}&lt;/a&gt;
             {% if item.get_children %}
-            <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"nav-drop"</span><span class="nt">&gt;</span>
+            &lt;ul class="nav-drop"&gt;
               {% for child in item.get_children %}
-                <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"nav-drop-item"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">get_link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">child</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+                &lt;li class="nav-drop-item"&gt;&lt;a href="{{child.get_link}}"&gt;{{child.title}}&lt;/a&gt;&lt;/li&gt;
               {% endfor %}
-             <span class="nt">&lt;/ul&gt;</span>
+             &lt;/ul&gt;
           {% endif %}
-          <span class="nt">&lt;/li&gt;</span>
+          &lt;/li&gt;
    {% endfor %}
-   <span class="nt">&lt;/ul&gt;</span>
-<span class="nt">&lt;/nav&gt;</span>
+   &lt;/ul&gt;
+&lt;/nav&gt;
 </code></pre>
 
 <p><em>This class extends \TimberCore</em></p>
@@ -3027,7 +3037,7 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 <p>Checks to see if the menu item is an external link so if my site is <code class="prettyprint">example.org</code>, <code class="prettyprint">google.com/whatever</code> is an external link. Helpful when creating rules for the target of a link</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span> <span class="na">target=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">is_external</span> <span class="err">?</span> <span class="s1">'_blank'</span> <span class="err">:</span> <span class="s1">'_self'</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;a href="{{ item.link }}" target="{{ item.is_external ? '_blank' : '_self' }}"&gt;
 </code></pre>
 
 <h2 id="link">link</h2>
@@ -3039,8 +3049,8 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 <p>Get the full link to a Menu Item</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    {% for item in menu.items %}
-        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+<pre class="highlight plaintext"><code>    {% for item in menu.items %}
+        &lt;li&gt;&lt;a href="{{ item.link }}"&gt;{{ item.title }}&lt;/a&gt;&lt;/li&gt;
     {% endfor %}
 </code></pre>
 
@@ -3081,8 +3091,8 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 <p>Return the relative path of a Menu Item&rsquo;s link</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    {% for item in menu.items %}
-        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">path</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+<pre class="highlight plaintext"><code>    {% for item in menu.items %}
+        &lt;li&gt;&lt;a href="{{ item.path }}"&gt;{{ item.title }}&lt;/a&gt;&lt;/li&gt;
     {% endfor %}
 </code></pre>
 
@@ -3095,13 +3105,13 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 <p>The slug for the menu item</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;ul&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;ul&gt;
         {% for item in menu.items %}
-            <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">slug</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
-                <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">item</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
-             <span class="nt">&lt;/li&gt;</span>
+            &lt;li class="{{item.slug}}"&gt;
+                &lt;a href="{{item.link}}"&gt;{{item.name}}&lt;/a&gt;
+             &lt;/li&gt;
         {% endfor %}
-    <span class="nt">&lt;/ul&gt;</span>
+    &lt;/ul&gt;
 
 ## title
 `title( )`
@@ -3111,9 +3121,9 @@ Now, when the YouTube embed code changes, we only need to edit the <code class="
 Gets the public label for the menu item
 
 ###### Twig
-```handlebars
+```twig
     {% for item in menu.items %}
-        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">item</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+        &lt;li&gt;&lt;a href="{{ item.link }}"&gt;{{ item.title }}&lt;/a&gt;&lt;/li&gt;
     {% endfor %}
 </code></pre>
 
@@ -3138,13 +3148,13 @@ Gets the public label for the menu item
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>{# single.twig #}
-<span class="nt">&lt;article&gt;</span>
-    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
-        <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span>
-    <span class="nt">&lt;/div&gt;</span>
-<span class="nt">&lt;/article&gt;</span>
+<pre class="highlight plaintext"><code>{# single.twig #}
+&lt;article&gt;
+    &lt;h1 class="headline"&gt;{{post.title}}&lt;/h1&gt;
+    &lt;div class="body"&gt;
+        {{post.content}}
+    &lt;/div&gt;
+&lt;/article&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -3330,10 +3340,10 @@ Gets the public label for the menu item
 <p>Return the author of a post</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"byline"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
-    <span class="nt">&lt;/p&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;h1&gt;{{post.title}}&lt;/h1&gt;
+    &lt;p class="byline"&gt;
+        &lt;a href="{{post.author.link}}"&gt;{{post.author.name}}&lt;/a&gt;
+    &lt;/p&gt;
 </code></pre>
 
 <h2 id="categories">categories</h2>
@@ -3380,10 +3390,10 @@ Gets the public label for the menu item
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    {% if post.children %}
+<pre class="highlight plaintext"><code>    {% if post.children %}
         Here are the child pages:
         {% for child in page.children %}
-            <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">child</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">child</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+            &lt;a href="{{ child.link }}"&gt;{{ child.title }}&lt;/a&gt;
         {% endfor %}
     {% endif %}
 </code></pre>
@@ -3431,13 +3441,13 @@ Gets the public label for the menu item
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    {# single.twig #}
-    <span class="nt">&lt;h4&gt;</span>Comments:<span class="nt">&lt;/h4&gt;</span>
+<pre class="highlight plaintext"><code>    {# single.twig #}
+    &lt;h4&gt;Comments:&lt;/h4&gt;
     {% for comment in post.comments %}
-        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"comment-</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">ID</span><span class="k">}}</span><span class="s"> comment-order-</span><span class="k">{{</span><span class="nv">loop</span><span class="p">.</span><span class="nv">index</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> said:<span class="nt">&lt;/p&gt;</span>
-            <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">comment</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
-        <span class="nt">&lt;/div&gt;</span>
+        &lt;div class="comment-{{comment.ID}} comment-order-{{loop.index}}"&gt;
+            &lt;p&gt;{{comment.author.name}} said:&lt;/p&gt;
+            &lt;p&gt;{{comment.content}}&lt;/p&gt;
+        &lt;/div&gt;
     {% endfor %}
 </code></pre>
 
@@ -3464,10 +3474,10 @@ Gets the public label for the menu item
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"article"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;h2&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h2&gt;</span>
-        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"content"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">content</span> <span class="k">}}</span><span class="nt">&lt;/div&gt;</span>
-    <span class="nt">&lt;/div&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;div class="article"&gt;
+        &lt;h2&gt;{{post.title}}&lt;/h2&gt;
+        &lt;div class="content"&gt;{{ post.content }}&lt;/div&gt;
+    &lt;/div&gt;
 </code></pre>
 
 <h2 id="date">date</h2>
@@ -3493,9 +3503,9 @@ Gets the public label for the menu item
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    Published on <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">date</span> <span class="k">}}</span> // Uses WP's formatting set in Admin
+<pre class="highlight plaintext"><code>    Published on {{ post.date }} // Uses WP's formatting set in Admin
     OR
-    Published on <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">date</span> <span class="err">|</span> <span class="nv">date</span><span class="err">(</span><span class="s1">'F jS'</span><span class="err">)</span> <span class="k">}}</span> // Jan 12th
+    Published on {{ post.date | date('F jS') }} // Jan 12th
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -3550,36 +3560,12 @@ Gets the public label for the menu item
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"article-text"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_content</span><span class="k">}}</span><span class="nt">&lt;/div&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;div class="article-text"&gt;{{post.get_content}}&lt;/div&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
 <pre class="highlight html"><code>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"article-text"</span><span class="nt">&gt;&lt;p&gt;</span>Blah blah blah<span class="nt">&lt;/p&gt;&lt;p&gt;</span>More blah blah blah.<span class="nt">&lt;/p&gt;&lt;/div&gt;</span>
 </code></pre>
-
-<h2 id="get_display_date"><strike>get_display_date</strike></h2>
-
-<p><em><strong>DEPRECATED</strong> since 0.20.0</em></p>
-
-<p><code class="prettyprint">get_display_date( string $use=&quot;post_date&quot; )</code></p>
-
-<p><strong>returns:</strong> <code class="prettyprint">string</code> </p>
-
-<p>Get the human-friendly date that should actually display in a .twig template</p>
-
-<table><thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>$use</td>
-<td>string</td>
-<td></td>
-</tr>
-</tbody></table>
 
 <h2 id="get_field">get_field</h2>
 
@@ -3650,7 +3636,7 @@ Gets the public label for the menu item
 <p>Here is my summary</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    This post is from <span class="nt">&lt;span&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">get_post_type</span><span class="p">.</span><span class="nv">labels</span><span class="p">.</span><span class="nv">plural</span> <span class="k">}}</span><span class="nt">&lt;/span&gt;</span>
+<pre class="highlight plaintext"><code>    This post is from &lt;span&gt;{{ post.get_post_type.labels.plural }}&lt;/span&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -3659,7 +3645,7 @@ Gets the public label for the menu item
 
 <h2 id="get_preview">get_preview</h2>
 
-<p><code class="prettyprint">get_preview( mixed/int $len=50, bool $force=false, string $readmore=&quot;Read More&quot;, bool $strip=true )</code></p>
+<p><code class="prettyprint">get_preview( mixed/int $len=50, bool $force=false, string $readmore=&quot;Read More&quot;, bool $strip=true, string $end=&quot;&amp;hellip;&quot; )</code></p>
 
 <p><strong>returns:</strong> <code class="prettyprint">string</code> of the post preview</p>
 
@@ -3692,10 +3678,15 @@ Gets the public label for the menu item
 <td>bool</td>
 <td>Strip tags? yes or no. tell me!</td>
 </tr>
+<tr>
+<td>$end</td>
+<td>string</td>
+<td>The text to end the preview with (defaults to &hellip;)</td>
+</tr>
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">get_preview</span><span class="err">(</span><span class="nv">50</span><span class="err">)</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;p&gt;{{post.get_preview(50)}}&lt;/p&gt;
 </code></pre>
 
 <h2 id="has_term">has_term</h2>
@@ -3752,7 +3743,7 @@ Gets the public label for the menu item
 <p>get the permalink for a post object</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span>Read my post<span class="nt">&lt;/a&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;a href="{{post.link}}"&gt;Read my post&lt;/a&gt;
 </code></pre>
 
 <h2 id="meta">meta</h2>
@@ -3784,7 +3775,7 @@ Gets the public label for the menu item
 <p>Get the author (WordPress user) who last modified the post</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    Last updated by <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">modified_author</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span>
+<pre class="highlight plaintext"><code>    Last updated by {{ post.modified_author.name }}
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -3878,7 +3869,7 @@ Gets the public label for the menu item
 <p>Gets the parent (if one exists) from a post as a TimberPost object (or whatever is set in TimberPost::$PostClass)</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    Parent page: <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">parent</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">parent</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+<pre class="highlight plaintext"><code>    Parent page: &lt;a href="{{ post.parent.link }}"&gt;{{ post.parent.title }}&lt;/a&gt;
 </code></pre>
 
 <h2 id="path">path</h2>
@@ -3890,12 +3881,12 @@ Gets the public label for the menu item
 <p>Gets the relative path of a WP Post, so while link() will return http://example.org/2015/07/my-cool-post this will return just /2015/07/my-cool-post</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">path</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;a href="{{post.path}}"&gt;{{post.title}}&lt;/a&gt;
 </code></pre>
 
 <h2 id="permalink"><strike>permalink</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.20.0 use link() instead</em></p>
+<p><strong>DEPRECATED</strong> 0.20.0 use link() instead</p>
 
 <p><code class="prettyprint">permalink( )</code></p>
 
@@ -3924,9 +3915,9 @@ Gets the public label for the menu item
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;h4&gt;</span>Prior Entry:<span class="nt">&lt;/h4&gt;</span>
-    <span class="nt">&lt;h3&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h3&gt;</span>
-    <span class="nt">&lt;p&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">prev</span><span class="p">.</span><span class="nv">get_preview</span><span class="err">(</span><span class="nv">25</span><span class="err">)</span><span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;h4&gt;Prior Entry:&lt;/h4&gt;
+    &lt;h3&gt;{{post.prev.title}}&lt;/h3&gt;
+    &lt;p&gt;{{post.prev.get_preview(25)}}&lt;/p&gt;
 </code></pre>
 
 <h2 id="tags">tags</h2>
@@ -3973,7 +3964,7 @@ Gets the public label for the menu item
 <p>get the featured image as a TimberImage</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">thumbnail</span><span class="p">.</span><span class="nv">src</span><span class="k">}}</span><span class="s">"</span> <span class="nt">/&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;img src="{{post.thumbnail.src}}" /&gt;
 </code></pre>
 
 <h2 id="time">time</h2>
@@ -3999,9 +3990,9 @@ Gets the public label for the menu item
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    Published at <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">time</span> <span class="k">}}</span> // Uses WP's formatting set in Admin
+<pre class="highlight plaintext"><code>    Published at {{ post.time }} // Uses WP's formatting set in Admin
     OR
-    Published at <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">time</span> <span class="err">|</span> <span class="nv">time</span><span class="err">(</span><span class="s1">'G:i'</span><span class="err">)</span> <span class="k">}}</span> // 13:25
+    Published at {{ post.time | time('G:i') }} // 13:25
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -4019,7 +4010,7 @@ Gets the public label for the menu item
 <p>Returns the processed title to be used in templates. This returns the title of the post after WP&rsquo;s filters have run. This is analogous to <code class="prettyprint">the_title()</code> in standard WP template tags.</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;h1&gt;{{ post.title }}&lt;/h1&gt;
 </code></pre>
 
 <h2 id="update">update</h2>
@@ -4088,13 +4079,13 @@ Gets the public label for the menu item
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>{# single.twig #}
-<span class="nt">&lt;article&gt;</span>
-    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"headline"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"body"</span><span class="nt">&gt;</span>
-        <span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">content</span><span class="k">}}</span>
-    <span class="nt">&lt;/div&gt;</span>
-<span class="nt">&lt;/article&gt;</span>
+<pre class="highlight plaintext"><code>{# single.twig #}
+&lt;article&gt;
+    &lt;h1 class="headline"&gt;{{post.title}}&lt;/h1&gt;
+    &lt;div class="body"&gt;
+        {{post.content}}
+    &lt;/div&gt;
+&lt;/article&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -4123,7 +4114,7 @@ Gets the public label for the menu item
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>My site is called <span class="k">{{</span><span class="nv">site</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>, another site on my network is <span class="k">{{</span><span class="nv">other_site</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>
+<pre class="highlight plaintext"><code>My site is called {{site.name}}, another site on my network is {{other_site.name}}
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -4269,9 +4260,9 @@ Gets the public label for the menu item
 <p>Returns the link to the site&rsquo;s home.</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span> <span class="nv">site</span><span class="p">.</span><span class="nv">link</span> <span class="k">}}</span><span class="s">"</span> <span class="na">title=</span><span class="s">"Home"</span><span class="nt">&gt;</span>
-          <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"/wp-content/uploads/logo.png"</span> <span class="na">alt=</span><span class="s">"Logo for some stupid thing"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;/a&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;a href="{{ site.link }}" title="Home"&gt;
+          &lt;img src="/wp-content/uploads/logo.png" alt="Logo for some stupid thing" /&gt;
+    &lt;/a&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -4303,7 +4294,7 @@ Gets the public label for the menu item
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>My site is called <span class="k">{{</span><span class="nv">site</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>, another site on my network is <span class="k">{{</span><span class="nv">other_site</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span>
+<pre class="highlight plaintext"><code>My site is called {{site.name}}, another site on my network is {{other_site.name}}
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -4332,12 +4323,12 @@ Gets the public label for the menu item
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;h2&gt;</span><span class="k">{{</span><span class="nv">term_page</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> Archives<span class="nt">&lt;/h2&gt;</span>
-<span class="nt">&lt;h3&gt;</span>Teams<span class="nt">&lt;/h3&gt;</span>
-<span class="nt">&lt;ul&gt;</span>
-    <span class="nt">&lt;li&gt;</span><span class="k">{{</span><span class="nv">st_louis</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> - <span class="k">{{</span><span class="nv">st_louis</span><span class="p">.</span><span class="nv">description</span><span class="k">}}</span><span class="nt">&lt;/li&gt;</span>
-    <span class="nt">&lt;li&gt;</span><span class="k">{{</span><span class="nv">team</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> - <span class="k">{{</span><span class="nv">team</span><span class="p">.</span><span class="nv">description</span><span class="k">}}</span><span class="nt">&lt;/li&gt;</span>
-<span class="nt">&lt;/ul&gt;</span>
+<pre class="highlight plaintext"><code>&lt;h2&gt;{{term_page.name}} Archives&lt;/h2&gt;
+&lt;h3&gt;Teams&lt;/h3&gt;
+&lt;ul&gt;
+    &lt;li&gt;{{st_louis.name}} - {{st_louis.description}}&lt;/li&gt;
+    &lt;li&gt;{{team.name}} - {{team.description}}&lt;/li&gt;
+&lt;/ul&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -4484,7 +4475,7 @@ Gets the public label for the menu item
 
 <h2 id="get_page"><strike>get_page</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.20.0 this was a dumb idea</em></p>
+<p><strong>DEPRECATED</strong> 0.20.0 this was a dumb idea</p>
 
 <p><code class="prettyprint">get_page( int $i )</code></p>
 
@@ -4567,12 +4558,12 @@ Gets the public label for the menu item
 </tbody></table>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;h4&gt;</span>Recent posts in <span class="k">{{</span><span class="nv">term</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span><span class="nt">&lt;/h4&gt;</span>
-    <span class="nt">&lt;ul&gt;</span>
+<pre class="highlight plaintext"><code>    &lt;h4&gt;Recent posts in {{term.name}}&lt;/h4&gt;
+    &lt;ul&gt;
     {% for post in term.posts(3, 'post') %}
-        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">"</span><span class="nt">&gt;</span><span class="k">{{</span><span class="nv">post</span><span class="p">.</span><span class="nv">title</span><span class="k">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+        &lt;li&gt;&lt;a href="{{post.link}}"&gt;{{post.title}}&lt;/a&gt;&lt;/li&gt;
     {% endfor %}
-    <span class="nt">&lt;/ul&gt;</span>
+    &lt;/ul&gt;
 </code></pre>
 
 <h2 id="title">title</h2>
@@ -4608,7 +4599,7 @@ Gets the public label for the menu item
 
 <h2 id="url"><strike>url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.21.9 use TimberTerm::link() instead</em></p>
+<p><strong>DEPRECATED</strong> 0.21.9 use TimberTerm::link() instead</p>
 
 <p><code class="prettyprint">url( )</code></p>
 
@@ -4636,12 +4627,12 @@ Gets the public label for the menu item
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;h2&gt;</span><span class="k">{{</span><span class="nv">term_page</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> Archives<span class="nt">&lt;/h2&gt;</span>
-<span class="nt">&lt;h3&gt;</span>Teams<span class="nt">&lt;/h3&gt;</span>
-<span class="nt">&lt;ul&gt;</span>
-    <span class="nt">&lt;li&gt;</span><span class="k">{{</span><span class="nv">st_louis</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> - <span class="k">{{</span><span class="nv">st_louis</span><span class="p">.</span><span class="nv">description</span><span class="k">}}</span><span class="nt">&lt;/li&gt;</span>
-    <span class="nt">&lt;li&gt;</span><span class="k">{{</span><span class="nv">team</span><span class="p">.</span><span class="nv">name</span><span class="k">}}</span> - <span class="k">{{</span><span class="nv">team</span><span class="p">.</span><span class="nv">description</span><span class="k">}}</span><span class="nt">&lt;/li&gt;</span>
-<span class="nt">&lt;/ul&gt;</span>
+<pre class="highlight plaintext"><code>&lt;h2&gt;{{term_page.name}} Archives&lt;/h2&gt;
+&lt;h3&gt;Teams&lt;/h3&gt;
+&lt;ul&gt;
+    &lt;li&gt;{{st_louis.name}} - {{st_louis.description}}&lt;/li&gt;
+    &lt;li&gt;{{team.name}} - {{team.description}}&lt;/li&gt;
+&lt;/ul&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -4670,7 +4661,7 @@ Gets the public label for the menu item
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">theme</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">/static/js/all.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<pre class="highlight plaintext"><code>&lt;script src="{{theme.link}}/static/js/all.js"&gt;&lt;/script&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -4748,7 +4739,7 @@ Gets the public label for the menu item
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    We are currently using the <span class="k">{{</span> <span class="nv">theme_stuff</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span> theme.
+<pre class="highlight plaintext"><code>    We are currently using the {{ theme_stuff.name }} theme.
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -4815,7 +4806,7 @@ Gets the public label for the menu item
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"</span><span class="k">{{</span><span class="nv">theme</span><span class="p">.</span><span class="nv">link</span><span class="k">}}</span><span class="s">/static/js/all.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<pre class="highlight plaintext"><code>&lt;script src="{{theme.link}}/static/js/all.js"&gt;&lt;/script&gt;
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -4836,8 +4827,8 @@ Gets the public label for the menu item
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"current-user-info"</span><span class="nt">&gt;</span>Your name is <span class="k">{{</span> <span class="nv">current_user</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
-<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"article-info"</span><span class="nt">&gt;</span>This article is called "<span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span>" and it's by <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span>
+<pre class="highlight plaintext"><code>&lt;p class="current-user-info"&gt;Your name is {{ current_user.name }}&lt;/p&gt;
+&lt;p class="article-info"&gt;This article is called "{{ post.title }}" and it's by {{ post.author.name }}
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -4921,7 +4912,7 @@ Gets the public label for the menu item
 <p><strong>returns:</strong> <code class="prettyprint">string</code> a fallback for TimberUser::name()</p>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    This post is by <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">author</span> <span class="k">}}</span>
+<pre class="highlight plaintext"><code>    This post is by {{ post.author }}
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -4936,7 +4927,7 @@ Gets the public label for the menu item
 
 <h2 id="get_link"><strike>get_link</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.21.9</em></p>
+<p><strong>DEPRECATED</strong> 0.21.9</p>
 
 <p><code class="prettyprint">get_link( )</code></p>
 
@@ -4964,7 +4955,7 @@ Gets the public label for the menu item
 
 <h2 id="get_path"><strike>get_path</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.21.8</em></p>
+<p><strong>DEPRECATED</strong> 0.21.8</p>
 
 <p><code class="prettyprint">get_path( )</code></p>
 
@@ -4972,7 +4963,7 @@ Gets the public label for the menu item
 
 <h2 id="get_permalink"><strike>get_permalink</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.21.8</em></p>
+<p><strong>DEPRECATED</strong> 0.21.8</p>
 
 <p><code class="prettyprint">get_permalink( )</code></p>
 
@@ -5018,7 +5009,7 @@ Gets the public label for the menu item
 
 <h2 id="permalink"><strike>permalink</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.21.8</em></p>
+<p><strong>DEPRECATED</strong> 0.21.8</p>
 
 <p><code class="prettyprint">permalink( )</code></p>
 
@@ -5046,8 +5037,8 @@ Gets the public label for the menu item
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code><span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"current-user-info"</span><span class="nt">&gt;</span>Your name is <span class="k">{{</span> <span class="nv">current_user</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span><span class="nt">&lt;/p&gt;</span>
-<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"article-info"</span><span class="nt">&gt;</span>This article is called "<span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span>" and it's by <span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">author</span><span class="p">.</span><span class="nv">name</span> <span class="k">}}</span>
+<pre class="highlight plaintext"><code>&lt;p class="current-user-info"&gt;Your name is {{ current_user.name }}&lt;/p&gt;
+&lt;p class="article-info"&gt;This article is called "{{ post.title }}" and it's by {{ post.author.name }}
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -5154,7 +5145,7 @@ Gets the public label for the menu item
 
 <h2 id="download_url"><strike>download_url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">download_url( mixed $url, mixed $timeout=300 )</code></p>
 
@@ -5231,7 +5222,7 @@ Gets the public label for the menu item
 
 <h2 id="get_comment_form"><strike>get_comment_form</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.21.8 use `{{ function(&lsquo;comment</em>form&rsquo;) }}` instead_</p>
+<p><strong>DEPRECATED</strong> 0.21.8 use <code class="prettyprint">{{ function(&#39;comment_form&#39;) }}</code> instead</p>
 
 <p><code class="prettyprint">get_comment_form( mixed $post_id=null, array $args=array() )</code></p>
 
@@ -5260,7 +5251,7 @@ Gets the public label for the menu item
 
 <h2 id="get_current_url"><strike>get_current_url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">get_current_url( )</code></p>
 
@@ -5268,7 +5259,7 @@ Gets the public label for the menu item
 
 <h2 id="get_full_path"><strike>get_full_path</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">get_full_path( mixed $src )</code></p>
 
@@ -5350,7 +5341,7 @@ Gets the public label for the menu item
 
 <h2 id="get_params"><strike>get_params</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">get_params( mixed $i=-1 )</code></p>
 
@@ -5372,7 +5363,7 @@ Gets the public label for the menu item
 
 <h2 id="get_path_base"><strike>get_path_base</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">get_path_base( )</code></p>
 
@@ -5380,7 +5371,7 @@ Gets the public label for the menu item
 
 <h2 id="get_post_by_meta"><strike>get_post_by_meta</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.20.0</em></p>
+<p><strong>DEPRECATED</strong> 0.20.0</p>
 
 <p><code class="prettyprint">get_post_by_meta( mixed $key, mixed $value )</code></p>
 
@@ -5407,7 +5398,7 @@ Gets the public label for the menu item
 
 <h2 id="get_posts_by_meta"><strike>get_posts_by_meta</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.20.0</em></p>
+<p><strong>DEPRECATED</strong> 0.20.0</p>
 
 <p><code class="prettyprint">get_posts_by_meta( mixed $key, mixed $value )</code></p>
 
@@ -5434,7 +5425,7 @@ Gets the public label for the menu item
 
 <h2 id="get_rel_path"><strike>get_rel_path</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">get_rel_path( mixed $src )</code></p>
 
@@ -5456,7 +5447,7 @@ Gets the public label for the menu item
 
 <h2 id="get_rel_url"><strike>get_rel_url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">get_rel_url( mixed $url, bool $force=false )</code></p>
 
@@ -5483,7 +5474,7 @@ Gets the public label for the menu item
 
 <h2 id="get_term_id_by_term_taxonomy_id"><strike>get_term_id_by_term_taxonomy_id</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.21.8</em></p>
+<p><strong>DEPRECATED</strong> 0.21.8</p>
 
 <p><code class="prettyprint">get_term_id_by_term_taxonomy_id( mixed $ttid )</code></p>
 
@@ -5550,7 +5541,7 @@ Gets the public label for the menu item
 
 <h2 id="is_external"><strike>is_external</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">is_external( mixed $url )</code></p>
 
@@ -5572,7 +5563,7 @@ Gets the public label for the menu item
 
 <h2 id="is_local"><strike>is_local</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">is_local( mixed $url )</code></p>
 
@@ -5614,7 +5605,7 @@ Gets the public label for the menu item
 
 <h2 id="is_url"><strike>is_url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">is_url( mixed $url )</code></p>
 
@@ -5713,8 +5704,8 @@ Gets the public label for the menu item
 </code></pre>
 
 <h6 id="twig">Twig</h6>
-<pre class="highlight handlebars"><code>    <span class="nt">&lt;h1&gt;</span><span class="k">{{</span> <span class="nv">post</span><span class="p">.</span><span class="nv">title</span> <span class="k">}}</span><span class="nt">&lt;/h1&gt;</span>
-    <span class="k">{{</span> <span class="nv">my_form</span> <span class="k">}}</span>
+<pre class="highlight plaintext"><code>    &lt;h1&gt;{{ post.title }}&lt;/h1&gt;
+    {{ my_form }}
 </code></pre>
 
 <h6 id="html">HTML</h6>
@@ -5769,7 +5760,7 @@ Gets the public label for the menu item
 
 <h2 id="prepend_to_url"><strike>prepend_to_url</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">prepend_to_url( mixed $url, mixed $path )</code></p>
 
@@ -5796,7 +5787,7 @@ Gets the public label for the menu item
 
 <h2 id="preslashit"><strike>preslashit</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">preslashit( mixed $path )</code></p>
 
@@ -5818,7 +5809,7 @@ Gets the public label for the menu item
 
 <h2 id="remove_double_slashes"><strike>remove_double_slashes</strike></h2>
 
-<p><em><strong>DEPRECATED</strong> 0.18.0</em></p>
+<p><strong>DEPRECATED</strong> 0.18.0</p>
 
 <p><code class="prettyprint">remove_double_slashes( mixed $url )</code></p>
 
