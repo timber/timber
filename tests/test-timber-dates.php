@@ -71,6 +71,13 @@
 			$this->assertEquals('I was modified '.$date, $str);
 		}
 
+		function testInternationalTime(){
+			$date = new DateTime('2015-09-28 05:00:00', new DateTimeZone('europe/amsterdam'));
+			$twig = "{{'" . $date->format('g:i') . "'|date('g:i')}}";
+			$str = Timber::compile_string($twig);
+			$this->assertEquals('05:00', $str);
+		}
+
 		function testModifiedTimeFilter() {
 			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
