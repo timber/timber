@@ -269,7 +269,7 @@ class TimberTwig {
 		}
 
 		if ( $date instanceof DateTime ) {
-			$timestamp = $date->getTimestamp();
+			$timestamp = $date->getTimestamp() + $date->getOffset();
 		} else if (is_numeric( $date ) && strtotime( $date ) === false ) {
 			$timestamp = intval( $date );
 		} else {
