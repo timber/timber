@@ -249,20 +249,38 @@
 		}
 
 		function testPreviewContent(){
+			global $current_user;
+			global $wp_query;
+
 			$quote = 'The way to do well is to do well.';
 			$post_id = $this->factory->post->create(array(
-				'post_content' => $quote
+				'post_content' => $quote,
+				'post_author' => 5
 			));
 			$revision_id = $this->factory->post->create(array(
 				'post_type' => 'revision',
+				'post_status' => 'inherit',
 				'post_parent' => $post_id,
 				'post_content' => $quote . 'Yes'
 			));
 
-			$_GET['preview'] = true;
-			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
-			$post = new TimberPost($post_id);
-			$this->assertEquals($post->post_content, $quote . 'Yes');
+			$uid = $this->factory->user->create(array(
+				'user_login' => 'timber',
+				'user_pass' => 'timber',
+			));
+			$auth = wp_authenticate('timber', 'timber');
+
+			if(!is_wp_error($auth)) {
+				$auth->add_role('administrator');
+				$current_user = $auth;
+				$wp_query->queried_object_id = $post_id;
+				$wp_query->queried_object = get_post($post_id);
+				$revisions = wp_get_post_revisions($post_id);
+				$_GET['preview'] = true;
+				$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
+				$post = new TimberPost();
+				$this->assertEquals($post->post_content, $quote . 'Yes');
+			}
 		}
 
 		function testContent(){
