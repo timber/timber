@@ -248,6 +248,23 @@
 			$this->assertEquals($title, trim(strip_tags($post->get_title())));
 		}
 
+		function testPreviewContent(){
+			$quote = 'The way to do well is to do well.';
+			$post_id = $this->factory->post->create(array(
+				'post_content' => $quote
+			));
+			$revision_id = $this->factory->post->create(array(
+				'post_type' => 'revision',
+				'post_parent' => $post_id,
+				'post_content' => $quote . 'Yes'
+			));
+
+			$_GET['preview'] = true;
+			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
+			$post = new TimberPost($post_id);
+			$this->assertEquals($post->post_content, $quote . 'Yes');
+		}
+
 		function testContent(){
 			$quote = 'The way to do well is to do well.';
 			$post_id = $this->factory->post->create();
