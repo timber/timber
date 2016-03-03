@@ -15,13 +15,13 @@ class TimberImageOperationResize extends TimberImageOperation {
 	/**
 	 * @param int    $w    width of new image
 	 * @param int    $h    height of new image
-	 * @param string $crop cropping method, one of: 'default', 'center', 'top', 'bottom', 'left', 'right'.
+	 * @param string $crop cropping method, one of: 'default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center'.
 	 */
 	function __construct($w, $h, $crop) {
 		$this->w = $w;
 		$this->h = $h;
 		// Sanitize crop position
-		$allowed_crop_positions = array( 'default', 'center', 'top', 'bottom', 'left', 'right' );
+		$allowed_crop_positions = array( 'default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center' );
 		if ( $crop !== false && !in_array( $crop, $allowed_crop_positions ) ) {
 			$crop = $allowed_crop_positions[0];
 		}
@@ -106,32 +106,49 @@ class TimberImageOperationResize extends TimberImageOperation {
 		$src_x = $src_w / 2 - $src_wt / 2;
 		$src_y = ( $src_h - $src_ht ) / 6;
 		//now specific overrides based on options:
-		if ( $crop == 'center' ) {
-			// Get source x and y
-			$src_x = round( ( $src_w - $src_wt ) / 2 );
-			$src_y = round( ( $src_h - $src_ht ) / 2 );
-		} else if ( $crop == 'top' ) {
-			$src_y = 0;
-		} else if ( $crop == 'bottom' ) {
-			$src_y = $src_h - $src_ht;
-		} else if ( $crop == 'left' ) {
-			$src_x = 0;
-		} else if ( $crop == 'right' ) {
-			$src_x = $src_w - $src_wt;
+		switch ( $crop ) {
+			case 'center':
+				// Get source x and y
+				$src_x = round( ( $src_w - $src_wt ) / 2 );
+				$src_y = round( ( $src_h - $src_ht ) / 2 );
+				break;
+
+			case 'top':
+				$src_y = 0;
+				break;
+
+			case 'bottom':
+				$src_y = $src_h - $src_ht;
+				break;
+
+			case 'top-center':
+				$src_y = round( ( $src_h - $src_ht ) / 4 );
+				break;
+
+			case 'bottom-center':
+				$src_y = $src_h - $src_ht - round( ( $src_h - $src_ht ) / 4 );
+				break;
+
+			case 'left':
+				$src_x = 0;
+				break;
+
+			case 'right':
+				$src_x = $src_w - $src_wt;
+				break;
 		}
 		// Crop the image
-		if ( $dest_ratio > $src_ratio ) {
-			return array(
+		return ( $dest_ratio > $src_ratio )
+			? array(
 				'x' => 0, 'y' => $src_y,
 				'src_w' => $src_w, 'src_h' => $src_ht,
 				'target_w' => $w, 'target_h' => $h
+			)
+			: array(
+				'x' => $src_x, 'y' => 0,
+				'src_w' => $src_wt, 'src_h' => $src_h,
+				'target_w' => $w, 'target_h' => $h
 			);
-		}
-		return array(
-			'x' => $src_x, 'y' => 0,
-			'src_w' => $src_wt, 'src_h' => $src_h,
-			'target_w' => $w, 'target_h' => $h
-		);
 	}
 
 	/**
