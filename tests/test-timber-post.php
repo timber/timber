@@ -273,7 +273,6 @@
 			$user->add_role('administrator');
 			$wp_query->queried_object_id = $post_id;
 			$wp_query->queried_object = get_post($post_id);
-			$revisions = wp_get_post_revisions($post_id);
 			$_GET['preview'] = true;
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
 			$post = new TimberPost();
