@@ -181,7 +181,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 			&& is_object($wp_query->queried_object)
 			&& get_class($wp_query->queried_object) == 'WP_Post'
 			) {
-			$pid = $wp_query->queried_object_id;
+				if( isset( $_GET['preview'] ) && isset( $_GET['preview_nonce'] ) && wp_verify_nonce( $_GET['preview_nonce'], 'post_preview_' . $wp_query->queried_object_id ) ) {
+					$pid = $this->get_post_preview_id( $wp_query );
+				} else if ( !$pid ) {
+					$pid = $wp_query->queried_object_id;
+				}
 		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id )  {
 			//hack for static page as home page
 			$pid = $wp_query->queried_object_id;
@@ -215,6 +219,35 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		return $this->title();
 	}
 
+	protected function get_post_preview_id( $query ) {
+		$can = array(
+	 		'edit_' . $query->queried_object->post_type . 's',
+	 	);
+
+	 	if ( $query->queried_object->author_id !== get_current_user_id() ) {
+	 		$can[] = 'edit_others_' . $query->queried_object->post_type . 's';
+	 	}
+
+	 	$continue = true;
+
+	 	foreach( $can as $type ) {
+	 		if( !current_user_can( $type ) ) {
+	 			$continue = false;
+	 			break;
+	 		}
+	 	}
+		
+		if( $continue ) {
+			$revisions = wp_get_post_revisions( $query->queried_object_id );
+
+			if( !empty( $revisions ) ) {
+				$last = end($revisions);
+				return $last->ID;
+			} else {
+				return false;
+			}
+		}
+	}
 
 	/**
 	 * Initializes a TimberPost
