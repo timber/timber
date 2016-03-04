@@ -348,7 +348,7 @@ class Timber {
 	 * @return TimberFunctionWrapper
 	 */
 	public static function get_widgets( $widget_id ) {
-		return TimberHelper::function_wrapper( 'dynamic_sidebar', array( $widget_id ), true );
+		return trim( TimberHelper::function_wrapper( 'dynamic_sidebar', array( $widget_id ), true ) );
 	}
 
 
