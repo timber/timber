@@ -674,7 +674,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		if ( $post_type == 'parent' ) {
 			$post_type = $this->post_type;
 		}
-		$children = get_children('post_parent=' . $this->ID . '&post_type=' . $post_type . '&numberposts=-1&orderby=menu_order title&order=ASC');
+		$children = get_children('post_parent=' . $this->ID . '&post_type=' . $post_type . '&numberposts=-1&orderby=menu_order title&order=ASC&post_status=publish');
 		foreach ( $children as &$child ) {
 			$child = new $childPostClass($child->ID);
 		}
