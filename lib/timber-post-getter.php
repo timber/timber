@@ -32,8 +32,8 @@ class TimberPostGetter {
 	 * @return array|bool|null
 	 */
 	static function query_posts($query = false, $PostClass = 'TimberPost' ) {
-		if (self::is_post_class_or_class_map($query)) {
-			$PostClass = $query;
+		if ($type = self::is_post_class_or_class_map($query)) {
+			$PostClass = $type;
 			$query = false;
 		}
 
@@ -90,15 +90,12 @@ class TimberPostGetter {
 	 * @return bool
 	 */
 	static function is_post_class_or_class_map($arg){
-		if (is_string($arg) && class_exists($arg)) {
-			return true;
-		}
-		if (is_array($arg)) {
-			foreach ($arg as $item) {
-				if (is_string($item) && (class_exists($item) && is_subclass_of($item, 'TimberPost'))) {
-					return true;
-				}
-			}
+		$type = (is_string($arg)) ? $arg : (is_array($arg) && isset($arg['post_type'])) ? $arg['post_type'] : false;
+
+		if(!$check) return false;
+
+		if (class_exists($type) && is_subclass_of($type, 'TimberPost')) {
+			return $type;
 		}
 	}
 }
