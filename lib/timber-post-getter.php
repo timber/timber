@@ -90,7 +90,13 @@ class TimberPostGetter {
 	 * @return bool
 	 */
 	static function is_post_class_or_class_map($arg){
-		$type = (is_string($arg)) ? $arg : (is_array($arg) && isset($arg['post_type'])) ? $arg['post_type'] : false;
+		$type = false;
+
+		if(is_string($arg)) {
+			$type = $arg;
+		} else if(is_array($arg) && isset($arg['post_type'])) {
+			$type = $arg['post_type'];
+		}
 
 		if(!$check) return false;
 
