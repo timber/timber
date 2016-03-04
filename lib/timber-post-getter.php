@@ -90,7 +90,7 @@ class TimberPostGetter {
 	 * @return bool
 	 */
 	static function is_post_class_or_class_map($arg){
-		if (is_string($arg) && class_exists($arg)) {
+		if (is_string($arg) && (class_exists($arg) && is_subclass_of($arg, 'TimberPost'))) {
 			return true;
 		}
 		if (is_array($arg)) {
