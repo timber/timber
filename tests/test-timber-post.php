@@ -276,7 +276,7 @@
 			$_GET['preview'] = true;
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
 			$post = new TimberPost();
-			$this->assertEquals($post->post_content, $quote . 'Yes');
+			$this->assertEquals( $quote . 'Yes', $post->post_content );
 		}
 
 		function testContent(){
@@ -595,7 +595,7 @@
 		function testEditUrl() {
 			ini_set("log_errors", 1);
 			ini_set("error_log", "/tmp/php-error.log");
-			
+
 			global $current_user;
 			$current_user = array();
 

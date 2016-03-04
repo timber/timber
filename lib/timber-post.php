@@ -228,25 +228,27 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 		$can[] = 'edit_others_' . $query->queried_object->post_type . 's';
 	 	}
 
-	 	$continue = true;
+	 	$can_preview = false;
 
 	 	foreach( $can as $type ) {
-	 		if( !current_user_can( $type ) ) {
-	 			$continue = false;
+	 		if( current_user_can( $type ) ) {
+	 			$can_preview = true;
 	 			break;
 	 		}
 	 	}
-		
-		if( $continue ) {
-			$revisions = wp_get_post_revisions( $query->queried_object_id );
 
-			if( !empty( $revisions ) ) {
-				$last = end($revisions);
-				return $last->ID;
-			} else {
-				return false;
-			}
+	 	if ( !$can_preview ) {
+	 		return;
+	 	}
+
+		$revisions = wp_get_post_revisions( $query->queried_object_id );
+
+		if( !empty( $revisions ) ) {
+			$last = end($revisions);
+			return $last->ID;
 		}
+
+		return false;
 	}
 
 	/**
