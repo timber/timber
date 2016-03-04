@@ -30,8 +30,8 @@ class TimberImageHelper {
 	 *
 	 * @api
 	 * @param string  		$src an URL (absolute or relative) to the original image
-	 * @param int|string	$w target width(int) or WordPress image size (WP-set or user-defined)
-	 * @param int     		$h target height (ignored if $w is WP image size)
+	 * @param int|string	$w target width(int) or WordPress image size (WP-set or user-defined). If not set, will ignore and resize based on $h only.
+	 * @param int     		$h target height (ignored if $w is WP image size). If not set, will ignore and resize based on $h only.
 	 * @param string  		$crop your choices are 'default', 'center', 'top', 'bottom', 'left', 'right'
 	 * @param bool    		$force
 	 * @example
