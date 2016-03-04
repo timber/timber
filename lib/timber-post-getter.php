@@ -92,7 +92,7 @@ class TimberPostGetter {
 	static function is_post_class_or_class_map($arg){
 		$type = (is_string($arg)) ? $arg : (is_array($arg) && isset($arg['post_type'])) ? $arg['post_type'] : false;
 
-		if(!$check) return false;
+		if(!$type) return false;
 
 		if (class_exists($type) && is_subclass_of($type, 'TimberPost')) {
 			return $type;
