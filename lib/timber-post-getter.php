@@ -98,7 +98,7 @@ class TimberPostGetter {
 			$type = $arg['post_type'];
 		}
 
-		if(!$check) return false;
+		if(!$type) return false;
 
 		if (class_exists($type) && is_subclass_of($type, 'TimberPost')) {
 			return $type;
