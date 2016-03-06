@@ -29,6 +29,15 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 		$this->assertEquals(1, $content);
 	}
 
+	function testToStringWithClassString() {
+		ob_start();
+		$wrapper = new TimberFunctionWrapper(array(get_class($this), 'isNum'), array(4));
+		echo $wrapper;
+		$content = trim(ob_get_contents());
+		ob_end_clean();
+		$this->assertEquals(1, $content);
+	}
+
 	/* Sample function to test exception handling */
 
 	static function isNum($num) {
