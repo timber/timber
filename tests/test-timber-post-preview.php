@@ -98,4 +98,17 @@
 			$this->assertEquals('Lauren is a ??? <a href="'.$post->link().'" class="read-more">Read More</a>', $post->get_preview(3, true, 'Read More', true, ' ???'));
 		}
 
+		/**
+		 * @group failing
+		 */
+		function testPreviewWithCustomStripTags() {
+			$pid = $this->factory->post->create(array(
+				'post_content' => '<span>Even in the <a href="">world</a> of make-believe there have to be rules. The parts have to be consistent and belong together</span>'
+			));
+			$post = new TimberPost($pid);
+			$post->post_excerpt = '';
+			$preview = $post->get_preview(6, true, 'Read More', '<span>');
+			$this->assertEquals('<span>Even in the world of</span>&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $preview);
+		}
+
 	}
