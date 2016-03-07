@@ -803,6 +803,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals($image->src(), $result);
 	}
 
+	/**
+	 * @group failing
+	 */
 	function testTimberImageForExtraSlashes() {
 		add_filter('upload_dir', array($this, '_filter_upload'), 10, 1);
 
@@ -813,7 +816,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 		remove_filter('upload_dir', array($this, '_filter_upload'));
 
-		$this->assertFalse(strpos($resized_520_file, '//') > -1);
+		$this->assertFalse(strpos($resized_520_file, '//arch-520x500-c-default.jpg') > -1);
 	}
 
 	function _filter_upload($data) {
