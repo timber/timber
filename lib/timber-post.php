@@ -228,18 +228,17 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 		$can[] = 'edit_others_' . $query->queried_object->post_type . 's';
 	 	}
 
-	 	$can_preview = false;
+	 	$can_preview = array();
 
-	 	foreach( $can as $type ) {
-	 		if( current_user_can( $type ) ) {
-	 			$can_preview = true;
-	 			break;
-	 		}
-	 	}
+		foreach( $can as $type ) {
+		     if( current_user_can( $type ) ) {
+		        $can_preview[] = true;
+		     }
+		}
 
-	 	if ( !$can_preview ) {
-	 		return;
-	 	}
+		if ( count( $can_preview ) !== count( $can ) ) {
+		     return;
+		}
 
 		$revisions = wp_get_post_revisions( $query->queried_object_id );
 
