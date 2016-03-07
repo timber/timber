@@ -803,9 +803,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals($image->src(), $result);
 	}
 
-	/**
-	 * @group failing
-	 */
 	function testTimberImageForExtraSlashes() {
 		add_filter('upload_dir', array($this, '_filter_upload'), 10, 1);
 
