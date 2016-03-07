@@ -804,14 +804,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testTimberImageForExtraSlashes() {
-		require_once('wp-overrides.php');
-
-		$dir = wp_upload_dir();
-		$originals = array(
-			'dir' => $dir['path'],
-			'url' => $dir['url']
-		);
-
 		add_filter('upload_dir', array($this, '_filter_upload'), 10, 1);
 
 		$post = $this->get_post_with_image();
