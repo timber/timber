@@ -364,7 +364,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param int $len The number of words that WP should use to make the tease. (Isn't this better than [this mess](http://wordpress.org/support/topic/changing-the-default-length-of-the_excerpt-1?replies=14)?). If you've set a post_excerpt on a post, we'll use that for the preview text; otherwise the first X words of the post_content
 	 * @param bool $force What happens if your custom post excerpt is longer then the length requested? By default (`$force = false`) it will use the full `post_excerpt`. However, you can set this to true to *force* your excerpt to be of the desired length
 	 * @param string $readmore The text you want to use on the 'readmore' link
-	 * @param bool $strip true for default, false for none, string for list of custom attributes
+	 * @param bool|string $strip true for default, false for none, string for list of custom attributes
 	 * @param string $end The text to end the preview with (defaults to ...)
 	 * @return string of the post preview
 	 */
