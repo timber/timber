@@ -248,6 +248,37 @@
 			$this->assertEquals($title, trim(strip_tags($post->get_title())));
 		}
 
+		function testPreviewContent(){
+			global $current_user;
+			global $wp_query;
+
+			$quote = 'The way to do well is to do well.';
+			$post_id = $this->factory->post->create(array(
+				'post_content' => $quote,
+				'post_author' => 5
+			));
+			$revision_id = $this->factory->post->create(array(
+				'post_type' => 'revision',
+				'post_status' => 'inherit',
+				'post_parent' => $post_id,
+				'post_content' => $quote . 'Yes'
+			));
+
+			$uid = $this->factory->user->create(array(
+				'user_login' => 'timber',
+				'user_pass' => 'timber',
+			));
+			$user = wp_set_current_user($uid);
+
+			$user->add_role('administrator');
+			$wp_query->queried_object_id = $post_id;
+			$wp_query->queried_object = get_post($post_id);
+			$_GET['preview'] = true;
+			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
+			$post = new TimberPost();
+			$this->assertEquals( $quote . 'Yes', $post->post_content );
+		}
+
 		function testContent(){
 			$quote = 'The way to do well is to do well.';
 			$post_id = $this->factory->post->create();
@@ -558,13 +589,24 @@
 			$this->assertEquals('My Page', $post->title());
 		}
 
+		/**
+		 * @group failing
+		 */
 		function testEditUrl() {
-			$pid = $this->factory->post->create(array('post_author' => 1));
+			ini_set("log_errors", 1);
+			ini_set("error_log", "/tmp/php-error.log");
+
+			global $current_user;
+			$current_user = array();
+
+			$uid = $this->factory->user->create();
+			$pid = $this->factory->post->create(array('post_author' => $uid));
 			$post = new TimberPost($pid);
 			$edit_url = $post->edit_link();
 			$this->assertEquals('', $edit_url);
-			wp_set_current_user(1);
-			$data = get_userdata(1);
+			$user = wp_set_current_user($uid);
+			$user->add_role('administrator');
+			$data = get_userdata($uid);
 			$this->assertTrue($post->can_edit());
 			$this->assertEquals('http://example.org/wp-admin/post.php?post='.$pid.'&amp;action=edit', $post->get_edit_url());
 			//

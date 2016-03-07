@@ -181,7 +181,11 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 			&& is_object($wp_query->queried_object)
 			&& get_class($wp_query->queried_object) == 'WP_Post'
 			) {
-			$pid = $wp_query->queried_object_id;
+				if( isset( $_GET['preview'] ) && isset( $_GET['preview_nonce'] ) && wp_verify_nonce( $_GET['preview_nonce'], 'post_preview_' . $wp_query->queried_object_id ) ) {
+					$pid = $this->get_post_preview_id( $wp_query );
+				} else if ( !$pid ) {
+					$pid = $wp_query->queried_object_id;
+				}
 		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id )  {
 			//hack for static page as home page
 			$pid = $wp_query->queried_object_id;
@@ -215,6 +219,36 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 		return $this->title();
 	}
 
+	protected function get_post_preview_id( $query ) {
+		$can = array(
+	 		'edit_' . $query->queried_object->post_type . 's',
+	 	);
+
+	 	if ( $query->queried_object->author_id !== get_current_user_id() ) {
+	 		$can[] = 'edit_others_' . $query->queried_object->post_type . 's';
+	 	}
+
+	 	$can_preview = array();
+
+		foreach( $can as $type ) {
+		     if( current_user_can( $type ) ) {
+		        $can_preview[] = true;
+		     }
+		}
+
+		if ( count( $can_preview ) !== count( $can ) ) {
+		     return;
+		}
+
+		$revisions = wp_get_post_revisions( $query->queried_object_id );
+
+		if( !empty( $revisions ) ) {
+			$last = end($revisions);
+			return $last->ID;
+		}
+
+		return false;
+	}
 
 	/**
 	 * Initializes a TimberPost
@@ -330,7 +364,7 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 	 * @param int $len The number of words that WP should use to make the tease. (Isn't this better than [this mess](http://wordpress.org/support/topic/changing-the-default-length-of-the_excerpt-1?replies=14)?). If you've set a post_excerpt on a post, we'll use that for the preview text; otherwise the first X words of the post_content
 	 * @param bool $force What happens if your custom post excerpt is longer then the length requested? By default (`$force = false`) it will use the full `post_excerpt`. However, you can set this to true to *force* your excerpt to be of the desired length
 	 * @param string $readmore The text you want to use on the 'readmore' link
-	 * @param bool $strip Strip tags? yes or no. tell me!
+	 * @param bool|string $strip true for default, false for none, string for list of custom attributes
 	 * @param string $end The text to end the preview with (defaults to ...)
 	 * @return string of the post preview
 	 */
@@ -362,7 +396,8 @@ class TimberPost extends TimberCore implements TimberCoreInterface {
 			return trim($text);
 		}
 		if ( $strip ) {
-			$text = trim(strip_tags($text));
+			$allowable_tags = (is_string($strip)) ? $strip : null;
+			$text = trim(strip_tags($text, $allowable_tags));
 		}
 		if ( strlen($text) ) {
 			$text = trim($text);
