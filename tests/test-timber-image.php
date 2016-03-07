@@ -803,4 +803,24 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals($image->src(), $result);
 	}
 
+	function testTimberImageForExtraSlashes() {
+		add_filter('upload_dir', array($this, '_filter_upload'), 10, 1);
+
+		$post = $this->get_post_with_image();
+		$image = $post->thumbnail();
+
+		$resized_520_file = TimberImageHelper::resize($image->src, 520, 500);
+
+		remove_filter('upload_dir', array($this, '_filter_upload'));
+
+		$this->assertFalse(strpos($resized_520_file, '//arch-520x500-c-default.jpg') > -1);
+	}
+
+	function _filter_upload($data) {
+		$data['path'] = $data['basedir'];
+		$data['url'] = $data['baseurl'];
+
+		return $data;
+	}
+
 }
