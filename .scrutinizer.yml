@@ -16,7 +16,7 @@ checks:
         psr2_class_declaration: false
         no_underscore_prefix_in_properties: false
         no_underscore_prefix_in_methods: false
-        blank_line_after_namespace_declaration: false
+        blank_line_after_namespace_declaration: true
         single_namespace_per_use: false
         psr2_switch_declaration: false
         psr2_control_structure_declaration: false
@@ -25,9 +25,14 @@ checks:
         no_exit: false
         return_doc_comments: true
         parameter_doc_comments: true
+        uppercase_constants: true
+        avoid_perl_style_comments: true
 
 coding_style:
     php:
+        indentation:
+            general:
+                use_tabs: true
         spaces:
             within:
                 function_declaration: true
