@@ -34,7 +34,7 @@ class TimberPostGetter {
 	static function query_posts($query = false, $PostClass = 'TimberPost' ) {
 		if ($type = self::is_post_class_or_class_map($query)) {
 			$PostClass = $type;
-			$query = false;
+			//$query = false;
 		}
 
 		if (is_object($query) && !is_a($query, 'WP_Query') ){
@@ -92,9 +92,9 @@ class TimberPostGetter {
 	static function is_post_class_or_class_map($arg){
 		$type = false;
 
-		if(is_string($arg)) {
+		if ( is_string($arg) ) {
 			$type = $arg;
-		} else if(is_array($arg) && isset($arg['post_type'])) {
+		} else if ( is_array($arg) && isset($arg['post_type']) ) {
 			$type = $arg['post_type'];
 		}
 
