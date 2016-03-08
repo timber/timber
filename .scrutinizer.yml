@@ -47,6 +47,7 @@ coding_style:
                 function: end-of-line
             if:
                 opening: end-of-line
+                always: true
             for:
                 opening: end-of-line
             while:
