@@ -32,9 +32,11 @@ class TimberPostGetter {
 	 * @return array|bool|null
 	 */
 	static function query_posts($query = false, $PostClass = 'TimberPost' ) {
-		if ($type = self::is_post_class_or_class_map($query)) {
+		if ( $type = self::get_class_for_use_as_timber_post($query) ) {
 			$PostClass = $type;
-			//$query = false;
+			if ( self::is_post_class_or_class_map($query) ) {
+				$query = false;
+			}
 		}
 
 		if (is_object($query) && !is_a($query, 'WP_Query') ){
@@ -90,6 +92,21 @@ class TimberPostGetter {
 	 * @return bool
 	 */
 	static function is_post_class_or_class_map($arg){
+		$maybe_type = self::get_class_for_use_as_timber_post( $arg );
+		if ( is_array($arg) && isset($arg['post_type'])) {
+			//the user has passed a true WP_Query-style query array that needs to be used later, so the $arg is not a class map or post class
+			return false;
+		}
+		if ( $maybe_type ) {
+			return true;
+		}
+	}
+
+	/**
+	 * @param string|array $arg
+	 * @return string|bool if a $type is found; false if not
+	 */
+	static function get_class_for_use_as_timber_post($arg) {
 		$type = false;
 
 		if ( is_string($arg) ) {
