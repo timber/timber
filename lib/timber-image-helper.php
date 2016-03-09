@@ -210,6 +210,8 @@ class TimberImageHelper {
 		$filename = $info['filename'];
 		self::process_delete_generated_files( $filename, $ext, $dir, '-[0-9999999]*', '-[0-9]*x[0-9]*-c-[a-z]*.' );
 		self::process_delete_generated_files( $filename, $ext, $dir, '-lbox-[0-9999999]*', '-lbox-[0-9]*x[0-9]*-[a-zA-Z0-9]*.' );
+		self::process_delete_generated_files( $filename, 'jpg', $dir, '-tojpg.*' );
+		self::process_delete_generated_files( $filename, 'jpg', $dir, '-tojpg-[0-9999999]*' );
 	}
 
 	/**
@@ -226,13 +228,13 @@ class TimberImageHelper {
 	 * @param string 	$search_pattern pattern of files to pluck from
 	 * @param string 	$match_pattern pattern of files to go forth and delete
 	 */
-	protected static function process_delete_generated_files( $filename, $ext, $dir, $search_pattern, $match_pattern ) {
+	protected static function process_delete_generated_files( $filename, $ext, $dir, $search_pattern, $match_pattern = null ) {
 		$searcher = '/' . $filename . $search_pattern;
 		foreach ( glob( $dir . $searcher ) as $found_file ) {
 			$regexdir = str_replace( '/', '\/', $dir );
 			$pattern = '/' . ( $regexdir ) . '\/' . $filename . $match_pattern . $ext . '/';
 			$match = preg_match( $pattern, $found_file );
-			if ( $match ) {
+			if ( ! $match_pattern || $match ) {
 				unlink( $found_file );
 			}
 		}
