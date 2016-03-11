@@ -305,10 +305,9 @@ Timber::render('home-main.twig', $context);
 <pre class="highlight html"><code><span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"article-h1"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"&lt;?php get_permalink(); ?&gt;"</span><span class="nt">&gt;</span><span class="cp">&lt;?php the_title(); ?&gt;</span><span class="nt">&lt;/a&gt;&lt;/h1&gt;</span>
 </code></pre>
 
-<p>Okay, not <em>too</em> terrible, but doesn&rsquo;t this (Timber) way look so much nicer:
-<code class="prettyprint">html
-&lt;h1 class=&quot;article-h1&quot;&gt;&lt;a href=&quot;{{post.permalink}}&quot;&gt;{{post.title}}&lt;/a&gt;&lt;/h1&gt;
-</code></p>
+<p>Okay, not <em>too</em> terrible, but doesn&rsquo;t this (Timber) way look so much nicer:</p>
+
+<pre class="highlight html"><code><span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"article-h1"</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">"</span>{{post.permalink}}<span class="s">"</span><span class="nt">&gt;</span>{{post.title}}<span class="nt">&lt;/a&gt;&lt;/h1&gt;</span></code></pre>
 
 <p>It gets better. Let&rsquo;s explain some other concepts.
 <code class="prettyprint">html
