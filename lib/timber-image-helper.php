@@ -353,7 +353,7 @@ class TimberImageHelper {
 			}
 		}
 		$parts = pathinfo($tmp);
-		$result['subdir'] = $parts['dirname'];
+		$result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
 		$result['filename'] = $parts['filename'];
 		$result['extension'] = $parts['extension'];
 		$result['basename'] = $parts['basename'];

@@ -1,6 +1,6 @@
 {
-  "name": "jarednova/timber",
-  "type": "wordpress-plugin",
+  "name": "connorjburton/timber",
+  "type": "library",
   "description": "Plugin to write WordPress themes w Object-Oriented Code and the Twig Template Engine",
   "keywords": [
     "timber",

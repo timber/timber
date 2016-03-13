@@ -7,7 +7,7 @@ if ( !$_tests_dir ) $_tests_dir = '/tmp/wordpress-tests-lib';
 require_once $_tests_dir . '/includes/functions.php';
 
 function _manually_load_plugin() {
-	require dirname( __FILE__ ) . '/../timber.php';
+	require dirname( __FILE__ ) . '/../lib/timber.php';
 	require dirname( __FILE__ ) . '/../wp-content/plugins/advanced-custom-fields/acf.php';
 }
 
