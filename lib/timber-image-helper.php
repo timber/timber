@@ -44,8 +44,8 @@ class TimberImageHelper {
 	 * @return string (ex: )
 	 */
 	public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
-		if (!is_numeric($w) && is_string($w)) {
-			if ($sizes = self::find_wp_dimensions($w)) {
+		if ( !is_numeric($w) && is_string($w) ) {
+			if ( $sizes = self::find_wp_dimensions($w) ) {
 				$w = $sizes['w'];
 				$h = $sizes['h'];
 			} else {
@@ -61,21 +61,21 @@ class TimberImageHelper {
 	 * @param  string $size the image size to search for
 	 *                      can be WordPress-defined ("medium")
 	 *                      or user-defined ("my-awesome-size")
-	 * @return array {
+	 * @return false|array {
 	 *     @type int w
 	 *     @type int h
 	 * }
 	 */
 	private static function find_wp_dimensions( $size ) {
 		global $_wp_additional_image_sizes;
-		if (isset($_wp_additional_image_sizes[$size])) {
+		if ( isset($_wp_additional_image_sizes[$size]) ) {
 			$w = $_wp_additional_image_sizes[$size]['width'];
 			$h = $_wp_additional_image_sizes[$size]['height'];
-		} else if (in_array($size, array('thumbnail', 'medium', 'large'))) {
+		} else if ( in_array($size, array('thumbnail', 'medium', 'large')) ) {
 			$w = get_option($size.'_size_w');
 			$h = get_option($size.'_size_h');
 		}
-		if (isset($w) && isset($h) && ($w || $h)) {
+		if ( isset($w) && isset($h) && ($w || $h) ) {
 			return array('w' => $w, 'h' => $h);
 		}
 		return false;
@@ -108,19 +108,19 @@ class TimberImageHelper {
 		//its a gif so test
 		if( !($fh = @fopen($file, 'rb')) ) {
 		  	return false;
-	    }
-	    $count = 0;
-	    //an animated gif contains multiple "frames", with each frame having a
-	    //header made up of:
-	    // * a static 4-byte sequence (\x00\x21\xF9\x04)
-	    // * 4 variable bytes
-	    // * a static 2-byte sequence (\x00\x2C)
+		}
+		$count = 0;
+		//an animated gif contains multiple "frames", with each frame having a
+		//header made up of:
+		// * a static 4-byte sequence (\x00\x21\xF9\x04)
+		// * 4 variable bytes
+		// * a static 2-byte sequence (\x00\x2C)
 
-	    // We read through the file til we reach the end of the file, or we've found
-	    // at least 2 frame headers
-	    while(!feof($fh) && $count < 2) {
-	        $chunk = fread($fh, 1024 * 100); //read 100kb at a time
-	        $count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00[\x2C\x21]#s', $chunk, $matches);
+		// We read through the file til we reach the end of the file, or we've found
+		// at least 2 frame headers
+		while(!feof($fh) && $count < 2) {
+			$chunk = fread($fh, 1024 * 100); //read 100kb at a time
+			$count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00[\x2C\x21]#s', $chunk, $matches);
 	    }
 
 	    fclose($fh);
@@ -198,7 +198,7 @@ class TimberImageHelper {
 	/**
 	 * Deletes the auto-generated files for resize and letterboxing created by Timber
 	 * @param string  $local_file   ex: /var/www/wp-content/uploads/2015/my-pic.jpg
-	 *                              or: http://example.org/wp-content/uploads/2015/my-pic.jpg
+	 *	                            or: http://example.org/wp-content/uploads/2015/my-pic.jpg
 	 */
 	static function delete_generated_files( $local_file ) {
 		if (TimberURLHelper::is_absolute( $local_file ) ) {
@@ -210,6 +210,8 @@ class TimberImageHelper {
 		$filename = $info['filename'];
 		self::process_delete_generated_files( $filename, $ext, $dir, '-[0-9999999]*', '-[0-9]*x[0-9]*-c-[a-z]*.' );
 		self::process_delete_generated_files( $filename, $ext, $dir, '-lbox-[0-9999999]*', '-lbox-[0-9]*x[0-9]*-[a-zA-Z0-9]*.' );
+		self::process_delete_generated_files( $filename, 'jpg', $dir, '-tojpg.*' );
+		self::process_delete_generated_files( $filename, 'jpg', $dir, '-tojpg-[0-9999999]*' );
 	}
 
 	/**
@@ -226,13 +228,13 @@ class TimberImageHelper {
 	 * @param string 	$search_pattern pattern of files to pluck from
 	 * @param string 	$match_pattern pattern of files to go forth and delete
 	 */
-	protected static function process_delete_generated_files( $filename, $ext, $dir, $search_pattern, $match_pattern ) {
+	protected static function process_delete_generated_files( $filename, $ext, $dir, $search_pattern, $match_pattern = null ) {
 		$searcher = '/' . $filename . $search_pattern;
 		foreach ( glob( $dir . $searcher ) as $found_file ) {
 			$regexdir = str_replace( '/', '\/', $dir );
 			$pattern = '/' . ( $regexdir ) . '\/' . $filename . $match_pattern . $ext . '/';
 			$match = preg_match( $pattern, $found_file );
-			if ( $match ) {
+			if ( ! $match_pattern || $match ) {
 				unlink( $found_file );
 			}
 		}
