@@ -1,5 +1,5 @@
 {
-  "name": "connorjburton/timber",
+  "name": "timber/timber",
   "type": "library",
   "description": "Plugin to write WordPress themes w Object-Oriented Code and the Twig Template Engine",
   "keywords": [
@@ -18,9 +18,9 @@
     }
   ],
   "support": {
-    "issues": "https://github.com/jarednova/timber/issues",
-    "wiki": "https://github.com/jarednova/timber/wiki",
-    "source": "https://github.com/jarednova/timber"
+    "issues": "https://github.com/timber/timber/issues",
+    "wiki": "https://github.com/timber/timber/wiki",
+    "source": "https://github.com/timber/timber"
   },
   "require": {
     "php": ">=5.3.0",
