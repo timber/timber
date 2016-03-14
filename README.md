@@ -1,5 +1,5 @@
 <div style="text-align:center">
-<a href="http://jarednova.github.com/timber"><img src="http://i.imgur.com/oM1AHrz.jpg" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
+<a href="http://timber.github.com/timber"><img src="http://i.imgur.com/oM1AHrz.jpg" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
 <div>
 By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a href="http://upstatement.com">Upstatement</a> (<a href="http://twitter.com/upstatement">@Upstatement</a>)</div>
 </div>
@@ -72,10 +72,11 @@ Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https:
 Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because while our entire team needs to participate in building WordPress sites, not everyone knows the ins-and-outs of the_loop(),  codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .twig files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
 
 #### Related Projects
-* [**Timber Starter Theme**](https://github.com/upstatement/timber-starter-theme) The "_s" of Timber to give you an easy start to the most basic theme you can build upon and customize.
-* [**Timber Debug Bar**](https://github.com/upstatement/debug-bar-timber) Adds a debug bar panel that will show you which template is in-use and the data sent to your twig file.
+* [**Timber Starter Theme**](https://github.com/timber/timber-starter-theme) The "_s" of Timber to give you an easy start to the most basic theme you can build upon and customize.
+* [**Timber Debug Bar**](https://github.com/timber/debug-bar-timber) Adds a debug bar panel that will show you which template is in-use and the data sent to your twig file.
 * [**TimberPhoton**](https://github.com/slimndap/TimberPhoton) Plug-in to use JetPack's free Photon image manipulation and CDN with Timber.
-* [**Timber Sugar**](https://github.com/Upstatement/timber-sugar) A catch-all for goodies to use w Timber.
+* [**Timber Sugar**](https://github.com/timber/timber-sugar) A catch-all for goodies to use w Timber.
+* [**Timmy**](https://github.com/MINDKomm/Timmy) Advanced image manipulation for Timber.
 * [**Twig**](https://github.com/fabpot/Twig) The template language used by Timber.
 
 #### Projects that use Timber
@@ -89,7 +90,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/questions/tagged/timber). Please use GitHub issues only for specific bugs, feature requests and other types of issues.
 
 #### Should I use it?
-It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. While Timber is still in development, it's also in-use on [hundreds of sites](http://jarednova.github.io/timber/#showcase). While much has been stabilized since the first major push back in June 2013, you should expect some breaking changes as development progresses towards a version 1.0.
+It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. While Timber is still in development, it's also in-use on [hundreds of sites](http://timber.github.io/timber/#showcase). While much has been stabilized since the first major push back in June 2013, you should expect some breaking changes as development progresses towards a version 1.0.
 
 #### Contributing
 Read the [contributor guidelines](https://github.com/timber/timber/wiki#contributing) in the wiki.
