@@ -5,7 +5,7 @@
 To setup tests
 
 - Git clone VVV: `git clone git@github.com:Varying-Vagrant-Vagrants/VVV.git`
-- Navigate into the `www` folder and git clone timber `git clone git@github.com:jarednova/timber.git`
+- Navigate into the `www` folder and git clone timber `git clone git@github.com:timber/timber.git`
 - Login to Vagrant SSH: `vagrant ssh`
 - Navigate to your Timber folder `cd /srv/www/timber`
 - Install dependencies `composer install`
@@ -17,7 +17,7 @@ To setup tests
 cd ~/Sites
 git clone git@github.com:Varying-Vagrant-Vagrants/VVV.git
 cd VVV/www
-git clone git@github.com:jarednova/timber.git
+git clone git@github.com:timber/timber.git
 vagrant ssh
 cd /srv/www/timber
 composer install

@@ -231,7 +231,7 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 			/**
 			 * This will catch TimberPost and any post classes that extend TimberPost,
 			 * see http://php.net/manual/en/internals2.opcodes.instanceof.php#109108
-			 * and https://github.com/jarednova/timber/wiki/Extending-Timber
+			 * and https://github.com/timber/timber/wiki/Extending-Timber
 			 */
 			$iid = (int) $iid->_thumbnail_id;
 		}
