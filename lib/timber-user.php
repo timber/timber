@@ -213,6 +213,14 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 		return $this->user_nicename;
 	}
 
+	public function get_context() {
+		if( ! $this->id ) {
+			return false;
+		} else {
+			return get_userdata($this->id);
+		}
+	}
+
 	/**
 	 * @deprecated 0.21.9
 	 * @return string The link to a user's profile page
@@ -244,5 +252,4 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	function permalink() {
 		return $this->get_permalink();
 	}
-
 }

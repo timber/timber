@@ -180,6 +180,8 @@ class Timber {
 
 		$data['site'] = new TimberSite();
 		$data['request'] = new TimberRequest();
+		$user = new TimberUser();
+		$data['user'] = $user->get_context();
 		$data['theme'] = $data['site']->theme;
 
 		$data['posts'] = Timber::query_posts();
