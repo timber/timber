@@ -11,7 +11,7 @@ You can just grab the all-things-included plugin at [WordPress.org](http://wordp
 	$ cd ~/Sites/mywordpress/wp-content/plugins
 
 ##### 2) Use git to grab the repo
-	$ git clone git@github.com:jarednova/timber.git
+	$ git clone git@github.com:timber/timber.git
 
 ##### 3) Use [Composer](https://getcomposer.org/doc/00-intro.md) to download the dependencies (Twig, etc.)
 	$ cd timber
