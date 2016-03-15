@@ -436,6 +436,9 @@ class Timber {
 		if ( $paged < 2 ) {
 			$data['prev'] = '';
 		}
+		if ( $data['total'] === ( double ) 0 ) {
+			$data['next'] = '';
+		}
 		return $data;
 	}
 
@@ -482,3 +485,6 @@ class Timber {
 
 
 }
+
+$timber = new Timber();
+Timber::$dirname = 'views';

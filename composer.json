@@ -1,6 +1,6 @@
 {
-  "name": "jarednova/timber",
-  "type": "wordpress-plugin",
+  "name": "timber/timber",
+  "type": "library",
   "description": "Plugin to write WordPress themes w Object-Oriented Code and the Twig Template Engine",
   "keywords": [
     "timber",
@@ -15,12 +15,17 @@
       "name": "Jared Novack",
       "email": "jared@upstatement.com",
       "homepage": "http://upstatement.com"
+    },
+    {
+      "name": "Connor J. Burton",
+      "email" : "connorjburton@gmail.com",
+      "homepage": "http://connorburton.com"
     }
   ],
   "support": {
-    "issues": "https://github.com/jarednova/timber/issues",
-    "wiki": "https://github.com/jarednova/timber/wiki",
-    "source": "https://github.com/jarednova/timber"
+    "issues": "https://github.com/timber/timber/issues",
+    "wiki": "https://github.com/timber/timber/wiki",
+    "source": "https://github.com/timber/timber"
   },
   "require": {
     "php": ">=5.3.0",
