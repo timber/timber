@@ -1,11 +1,11 @@
 ## Here are ways to get involved:
 
-1. [Star](https://github.com/jarednova/timber/stargazers) the project!
-2. Answer questions that come through [GitHub issues](https://github.com/jarednova/timber/issues?state=open)
-3. [Report a bug](https://github.com/jarednova/timber/issues/new) that you find
-4. Share a [theme](https://github.com/Upstatement/blades) you've built with Timber. This helps transfer knowledge about best practices, etc. _Add it to the [Showcase list](https://github.com/jarednova/timber/wiki/Showcase)_
+1. [Star](https://github.com/timber/timber/stargazers) the project!
+2. Answer questions that come through [GitHub issues](https://github.com/timber/timber/issues?state=open)
+3. [Report a bug](https://github.com/timber/timber/issues/new) that you find
+4. Share a [theme](https://github.com/Upstatement/blades) you've built with Timber. This helps transfer knowledge about best practices, etc. _Add it to the [Showcase list](https://github.com/timber/timber/wiki/Showcase)_
 5. Tweet and [blog](http://www.oomphinc.com/blog/2013-10/php-templating-wordpress/#post-content) about the advantages (and criticisms) of the project and Twig
-6. Browse [contrib opportunities](https://github.com/jarednova/timber/issues?labels=contrib-opportunity&page=1&state=open) for areas of WordPress/PHP/code you know well to consider, build or document.
+6. Browse [contrib opportunities](https://github.com/timber/timber/issues?labels=contrib-opportunity&page=1&state=open) for areas of WordPress/PHP/code you know well to consider, build or document.
 
 
 ### Pull Requests

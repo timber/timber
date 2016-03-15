@@ -4,14 +4,14 @@
 By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a href="http://upstatement.com">Upstatement</a> (<a href="http://twitter.com/upstatement">@Upstatement</a>)</div>
 </div>
 
-[![Build Status](https://img.shields.io/travis/jarednova/timber/master.svg?style=flat-square)](https://travis-ci.org/jarednova/timber)
-[![Coverage Status](https://img.shields.io/coveralls/jarednova/timber.svg?style=flat-square)](https://coveralls.io/r/jarednova/timber?branch=master)
+[![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.org/jarednova/timber)
+[![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg?style=flat-square)](https://coveralls.io/r/jarednova/timber?branch=master)
 [![Dependency Status](https://img.shields.io/versioneye/d/ruby/rails.svg?style=flat-square)](https://www.versioneye.com/user/projects/54e3c717d1ec5734f4000099)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/jarednova/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/jarednova/timber/?branch=master)
-[![Latest Stable Version](https://img.shields.io/packagist/v/jarednova/timber.svg?style=flat-square)](https://packagist.org/packages/jarednova/timber)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/jarednova/timber/?branch=master)
+[![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
 [![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg?style=flat-square)](https://wordpress.org/plugins/timber-library/)
-[![HHVM Status](https://img.shields.io/hhvm/jarednova/timber.svg?style=flat-square)](http://hhvm.h4cc.de/package/jarednova/timber)
-[![Join the chat at https://gitter.im/jarednova/timber](https://img.shields.io/gitter/room/jarednova/timber.svg?style=flat-square)](https://gitter.im/jarednova/timber?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![HHVM Status](https://img.shields.io/hhvm/timber/timber.svg?style=flat-square)](http://hhvm.h4cc.de/package/timber/timber)
+[![Join the chat at https://gitter.im/timber/timber](https://img.shields.io/gitter/room/timber/timber.svg?style=flat-square)](https://gitter.im/timber/timber?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
 ### Because WordPress is awesome, but the_loop isn't
@@ -35,10 +35,10 @@ This is what Timber's `.twig` files look like:
 Once Timber is installed and activated in your plugin directory, it gives any WordPress theme the ability to take advantage of the power of Twig and other Timber features.
 
 ### Looking for docs?
-* [Timber Documentation](https://github.com/jarednova/timber/wiki/)
+* [Timber Documentation](https://github.com/timber/timber/wiki/)
 * [Twig Reference](http://twig.sensiolabs.org/doc/templates.html)
-* [Video Tutorials](https://github.com/jarednova/timber/wiki/Video-Tutorials)
-* [Overview / Getting Started Guide](https://github.com/jarednova/timber/wiki/getting-started)
+* [Video Tutorials](https://github.com/timber/timber/wiki/Video-Tutorials)
+* [Overview / Getting Started Guide](https://github.com/timber/timber/wiki/getting-started)
 
 * * *
 
@@ -47,11 +47,16 @@ Once Timber is installed and activated in your plugin directory, it gives any Wo
 The GitHub version of Timber requires [Composer](https://getcomposer.org/download/). If you'd prefer one-click installation, you should use the [WordPress.org](http://wordpress.org/plugins/timber-library/) version.
 
 ```shell
-composer create-project --no-dev jarednova/timber ~/MYSITE/wp-content/plugins/timber
+composer require timber/timber
 ```
 
-Once this is complete, activate Timber your WordPress admin. If you're looking for a 'blank' theme to start developing with, download the [timber-starter-theme](https://github.com/upstatement/timber-starter-theme) into your themes directory.
+If your theme is not setup to pull in composers autoload file, you will need to
 
+```php
+require_once(__DIR__ . '/vendor/autoload.php');
+```
+
+At the top of your `functions.php` file.
 * * *
 
 ### Mission Statement
@@ -67,10 +72,11 @@ Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https:
 Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because while our entire team needs to participate in building WordPress sites, not everyone knows the ins-and-outs of the_loop(),  codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .twig files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
 
 #### Related Projects
-* [**Timber Starter Theme**](https://github.com/upstatement/timber-starter-theme) The "_s" of Timber to give you an easy start to the most basic theme you can build upon and customize.
-* [**Timber Debug Bar**](https://github.com/upstatement/debug-bar-timber) Adds a debug bar panel that will show you which template is in-use and the data sent to your twig file.
+* [**Timber Starter Theme**](https://github.com/timber/timber-starter-theme) The "_s" of Timber to give you an easy start to the most basic theme you can build upon and customize.
+* [**Timber Debug Bar**](https://github.com/timber/debug-bar-timber) Adds a debug bar panel that will show you which template is in-use and the data sent to your twig file.
 * [**TimberPhoton**](https://github.com/slimndap/TimberPhoton) Plug-in to use JetPack's free Photon image manipulation and CDN with Timber.
-* [**Timber Sugar**](https://github.com/Upstatement/timber-sugar) A catch-all for goodies to use w Timber.
+* [**Timber Sugar**](https://github.com/timber/timber-sugar) A catch-all for goodies to use w Timber.
+* [**Timmy**](https://github.com/MINDKomm/Timmy) Advanced image manipulation for Timber.
 * [**Twig**](https://github.com/fabpot/Twig) The template language used by Timber.
 
 #### Projects that use Timber
@@ -84,10 +90,10 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/questions/tagged/timber). Please use GitHub issues only for specific bugs, feature requests and other types of issues.
 
 #### Should I use it?
-It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. While Timber is still in development, it's also in-use on [hundreds of sites](http://jarednova.github.io/timber/#showcase). While much has been stabilized since the first major push back in June 2013, you should expect some breaking changes as development progresses towards a version 1.0.
+It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. While Timber is still in development, it's also in-use on [hundreds of sites](http://timber.github.io/timber/#showcase). While much has been stabilized since the first major push back in June 2013, you should expect some breaking changes as development progresses towards a version 1.0.
 
 #### Contributing
-Read the [contributor guidelines](https://github.com/jarednova/timber/wiki#contributing) in the wiki.
+Read the [contributor guidelines](https://github.com/timber/timber/wiki#contributing) in the wiki.
 
 
 

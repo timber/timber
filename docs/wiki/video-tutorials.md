@@ -10,7 +10,7 @@ I'm in the midst of an install and walk-through on Timber, here are the screenca
 	$ cd ~/Sites/mywordpress/wp-content/plugins
 
 ##### 2) Use git to grab the repo
-	$ git clone git@github.com:jarednova/timber.git
+	$ git clone git@github.com:timber/timber.git
 
 ##### 3) Use [Composer](https://getcomposer.org/doc/00-intro.md) to download the dependencies (Twig, etc.)
 	$ cd timber
@@ -22,7 +22,7 @@ I'm in the midst of an install and walk-through on Timber, here are the screenca
     $ cd ~/Sites/mywordpress/wp-content/plugins
 
 ##### 2) Use [Composer](https://getcomposer.org/doc/00-intro.md) to create project and download the dependencies (Twig, etc.)
-    $ composer create-project --no-dev jarednova/timber ./timber
+    $ composer create-project --no-dev timber/timber ./timber
 
 #### Option 3: Via WordPress plugins directory (for non-developers)
 
