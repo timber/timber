@@ -174,6 +174,27 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals( 'silly-post', $posts[0]->slug );
 	}
 
+	function testCustomPostTypeAndClass() {
+		register_post_type('job');
+		$jobs = $this->factory->post->create_many( 10, array('post_type' => 'job'));
+		$jobPosts = Timber::get_posts(array('post_type' => 'job'));
+		$this->assertEquals(10, count($jobPosts));
+	}
+
+	function testCustomPostTypeAndClassOnSinglePage() {
+		register_post_type('job');
+		$post_id = $this->factory->post->create( array( 'post_type' => 'job' ) );
+		$post = new TimberPost($post_id);
+		$this->go_to('?p='.$post->ID);
+		$jobs = $this->factory->post->create_many( 10, array('post_type' => 'job'));
+		$jobPosts = Timber::get_posts(array('post_type' => 'job'));
+		$this->assertEquals(10, count($jobPosts));
+	}
+
+}
+
+class job extends TimberPost {
+
 }
 
 class TimberAlert extends TimberPost {
