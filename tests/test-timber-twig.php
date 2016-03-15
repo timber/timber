@@ -176,7 +176,7 @@
 		function testFilterTruncate() {
 			$gettysburg = 'Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.';
 			$str = Timber::compile_string("{{address | truncate(6)}}", array('address' => $gettysburg));
-			$this->assertEquals('Four score and seven years ago&amp;hellip;', $str);
+			$this->assertEquals('Four score and seven years ago&hellip;', $str);
 		}
 
 		function testSetSimple() {
