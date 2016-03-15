@@ -84,9 +84,15 @@ class Timber {
 
 	/**
 	 * Get posts.
-	 *
+	 * @example
+	 * ```php
+	 * $posts = Timber::get_posts();
+ 	 *  $posts = Timber::get_posts('post_type = article')
+ 	 *  $posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format.
+ 	 *  $posts = Timber::get_posts('post_type=any', array('portfolio' => 'MyPortfolioClass', 'alert' => 'MyAlertClass')); //use a classmap for the $PostClass
+	 * ```
 	 * @param mixed   $query
-	 * @param string  $PostClass
+	 * @param string|array  $PostClass
 	 * @return array|bool|null
 	 */
 	public static function get_posts( $query = false, $PostClass = 'TimberPost', $return_collection = false ) {
