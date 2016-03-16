@@ -49,7 +49,7 @@ class Timber {
 			trigger_error( 'Timber requires PHP 5.3.0 or greater. You have '.phpversion(), E_USER_ERROR );
 		}
 		if ( !class_exists( 'Twig_Autoloader' ) ) {
-			trigger_error( 'You have not run "composer install" to download required dependencies for Timber, you can read more on https://github.com/jarednova/timber#installation', E_USER_ERROR );
+			trigger_error( 'You have not run "composer install" to download required dependencies for Timber, you can read more on https://github.com/timber/timber#installation', E_USER_ERROR );
 		}
 	}
 
@@ -84,9 +84,15 @@ class Timber {
 
 	/**
 	 * Get posts.
-	 *
+	 * @example
+	 * ```php
+	 * $posts = Timber::get_posts();
+ 	 *  $posts = Timber::get_posts('post_type = article')
+ 	 *  $posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format.
+ 	 *  $posts = Timber::get_posts('post_type=any', array('portfolio' => 'MyPortfolioClass', 'alert' => 'MyAlertClass')); //use a classmap for the $PostClass
+	 * ```
 	 * @param mixed   $query
-	 * @param string  $PostClass
+	 * @param string|array  $PostClass
 	 * @return array|bool|null
 	 */
 	public static function get_posts( $query = false, $PostClass = 'TimberPost', $return_collection = false ) {
@@ -234,12 +240,9 @@ class Timber {
 	 */
 	public static function compile_string( $string, $data = array() ) {
 		$dummy_loader = new TimberLoader();
-		$dummy_loader->get_twig();
-		$loader = new Twig_Loader_String();
-		$twig = new Twig_Environment( $loader );
-		$twig = apply_filters( 'timber/twig/filters', $twig );
-		$twig = apply_filters( 'twig_apply_filters', $twig );
-		return $twig->render( $string, $data );
+		$twig = $dummy_loader->get_twig();
+		$template = $twig->createTemplate($string);
+		return $template->render( $data );
 	}
 
 	/**

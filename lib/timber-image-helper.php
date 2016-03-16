@@ -2,7 +2,7 @@
 
 /**
  * Implements the Twig image filters:
- * https://github.com/jarednova/timber/wiki/Image-cookbook#arbitrary-resizing-of-images
+ * https://github.com/timber/timber/wiki/Image-cookbook#arbitrary-resizing-of-images
  * - resize
  * - retina
  * - letterbox
