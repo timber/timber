@@ -89,6 +89,24 @@ class TestTimber extends Timber_UnitTestCase {
 		$this->assertEquals(3, count($posts));
 	}
 
+	function testUserInContextAnon() {
+		$context = Timber::get_context();
+		$this->assertArrayHasKey( 'user', $context );
+		$this->assertFalse($context['user']);
+	}
+
+	function testUserInContextLoggedIn() {
+		$uid = $this->factory->user->create(array(
+			'user_login' => 'timber',
+			'user_pass' => 'timber',
+		));
+		$user = wp_set_current_user($uid);
+
+		$context = Timber::get_context();
+		$this->assertArrayHasKey( 'user', $context );
+		$this->assertInstanceOf( 'TimberUser', $context['user'] );
+	}
+
 	function testQueryPostsInContext(){
         $context = Timber::get_context();
         $this->assertArrayHasKey( 'posts', $context );
