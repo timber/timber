@@ -162,12 +162,10 @@ class TimberHelper {
 	}
 
 	/**
-	 *
-	 *
-	 * @param string  $function_name
-	 * @param integer[]   $defaults
-	 * @param bool    $return_output_buffer
-	 * @return TimberFunctionWrapper
+	 * @param mixed $function_name or array( $class( string|object ), $function_name )
+	 * @param array (optional) $defaults
+	 * @param bool (optional) $return_output_buffer Return function output instead of return value (default: false)
+	 * @return \TimberFunctionWrapper
 	 */
 	public static function function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false ) {
 		return new TimberFunctionWrapper( $function_name, $defaults, $return_output_buffer );
