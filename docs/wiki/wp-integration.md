@@ -114,10 +114,10 @@ Classes (including namespaced) are also supported for `function_wrapper`:
 
 ```php
 # Namespaced has to be a string
-TimberHelper::function_wrapper('Example\Class', 'function_in_class');
+TimberHelper::function_wrapper(array('Example\Class', 'function_in_class'));
 
 # Otherwise, you can pass the object of the class
-TimberHelper::function_wrapper($this, 'function_in_class');
+TimberHelper::function_wrapper(array($this, 'function_in_class'));
 ```
 
 You can then call the function like so `{{function_in_class}}`
