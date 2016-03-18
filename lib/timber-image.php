@@ -203,6 +203,8 @@ class TimberImage extends TimberPost implements TimberCoreInterface {
 	 * @param int $iid
 	 */
 	function init( $iid = false ) {
+		if(!$iid) { TimberHelper::error_log('Initalized TimberImage without providing first parameter.'); return; }
+		
 		if ( !is_numeric( $iid ) && is_string( $iid ) ) {
 			if (strstr($iid, '://')) {
 				$this->init_with_url($iid);
