@@ -244,5 +244,4 @@ class TimberUser extends TimberCore implements TimberCoreInterface {
 	function permalink() {
 		return $this->get_permalink();
 	}
-
 }

@@ -186,6 +186,8 @@ class Timber {
 
 		$data['site'] = new TimberSite();
 		$data['request'] = new TimberRequest();
+		$user = new TimberUser();
+		$data['user'] = ($user->ID) ? $user : false;
 		$data['theme'] = $data['site']->theme;
 
 		$data['posts'] = Timber::query_posts();
