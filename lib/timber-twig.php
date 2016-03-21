@@ -112,7 +112,7 @@ class TimberTwig {
 					}
 					return new $PostClass( $pid );
 				} ) );
-		$twig->addFunction( new Twig_SimpleFunction( 'TimberImage', function ( $pid, $ImageClass = 'TimberImage' ) {
+		$twig->addFunction( new Twig_SimpleFunction( 'TimberImage', function ( $pid = false, $ImageClass = 'TimberImage' ) {
 					if ( is_array( $pid ) && !TimberHelper::is_array_assoc( $pid ) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $ImageClass( $p );
