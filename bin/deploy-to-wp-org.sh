@@ -21,7 +21,7 @@ function deploy () {
 	cp ~/Sites/timber/LICENSE.txt tags/$1/LICENSE.txt
 	cp ~/Sites/timber/README.md tags/$1/README.md
 	cp ~/Sites/timber/readme.txt tags/$1/readme.txt
-	cp ~/Sites/timber/timber.php tags/$1/timber.php
+	cp ~/Sites/timber/bin/timber.php tags/$1/timber.php
 	svn add tags/$1
 	cd tags/$1
 	svn commit -m "updating to $1"
@@ -35,7 +35,7 @@ function deploy () {
 	cp ~/Sites/timber/LICENSE.txt ~/Sites/timber-wp/trunk/LICENSE.txt
 	cp ~/Sites/timber/README.md ~/Sites/timber-wp/trunk/README.md
 	cp ~/Sites/timber/readme.txt ~/Sites/timber-wp/trunk/readme.txt
-	cp ~/Sites/timber/timber.php ~/Sites/timber-wp/trunk/timber.php
+	cp ~/Sites/timber/bin/timber.php ~/Sites/timber-wp/trunk/timber.php
 	svn commit -m "updating to $1" readme.txt
 	svn commit -m "updating to $1" timber.php
 }
