@@ -185,6 +185,33 @@ class TimberTwig {
 		$twig->addFunction( '__', new Twig_SimpleFunction( '__', function ( $text, $domain = 'default' ) {
 					return __( $text, $domain );
 				} ) );
+		$twig->addFunction( 'translate', new Twig_SimpleFunction( 'translate', function ( $text, $domain = 'default' ) {
+					return translate( $text, $domain );
+				} ) );
+		$twig->addFunction( '_e', new Twig_SimpleFunction( '_e', function ( $text, $domain = 'default' ) {
+					return _e( $text, $domain );
+				} ) );
+		$twig->addFunction( '_n', new Twig_SimpleFunction( '_n', function ( $single, $plural, $number, $domain = 'default' ) {
+					return _n( $single, $plural, $number, $domain );
+				} ) );
+		$twig->addFunction( '_x', new Twig_SimpleFunction( '_x', function ( $text, $context, $domain = 'default' ) {
+					return _x( $text, $context, $domain );
+				} ) );
+		$twig->addFunction( '_ex', new Twig_SimpleFunction( '_ex', function ( $text, $context, $domain = 'default' ) {
+					return _ex( $text, $context, $domain );
+				} ) );
+		$twig->addFunction( '_nx', new Twig_SimpleFunction( '_nx', function ( $single, $plural, $number, $context, $domain = 'default' ) {
+					return _nx( $single, $plural, $number, $context, $domain );
+				} ) );
+		$twig->addFunction( '_n_noop', new Twig_SimpleFunction( '_n_noop', function ( $singular, $plural, $domain = 'default' ) {
+					return _n_noop( $singular, $plural, $domain );
+				} ) );
+		$twig->addFunction( '_nx_noop', new Twig_SimpleFunction( '_nx_noop', function ( $singular, $plural, $context, $domain = 'default' ) {
+					return _nx_noop( $singular, $plural, $context, $domain );
+				} ) );
+		$twig->addFunction( 'translate_nooped_plural', new Twig_SimpleFunction( 'translate_nooped_plural', function ( $nooped_plural, $count, $domain = 'default' ) {
+					return translate_nooped_plural( $nooped_plural, $count, $domain );
+				} ) );
 		/* get_twig is deprecated, use timber/twig */
 		$twig = apply_filters( 'get_twig', $twig );
 		$twig = apply_filters( 'timber/twig', $twig );
