@@ -1,10 +1,12 @@
 <?php
 
+namespace Timber;
+
 /**
  * These are methods that can be executed by WPCLI, other CLI mechanism or other external controllers
  * @package  timber
  */
-class TimberCommand {
+class Command {
 
     public static function clear_cache($mode = 'all'){
         if (is_array($mode)){
