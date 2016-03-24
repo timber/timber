@@ -275,37 +275,6 @@ class URLHelper {
 	}
 
 	/**
-	 * Download an external file via a URL
-	 *
-	 * @param string  $url
-	 * @param int     $timeout
-	 * @return string|WP_Error the location of the temporay file name or an error
-	 * @deprecated since 0.20.0
-	 */
-	static function download_url( $url, $timeout = 300 ) {
-		if ( !$url ) {
-			return new \WP_Error( 'http_no_url', __( 'Invalid URL Provided.' ) );
-		}
-
-		$tmpfname = wp_tempnam( $url );
-		if ( !$tmpfname ) {
-			return new \WP_Error( 'http_no_file', __( 'Could not create Temporary file.' ) );
-		}
-
-		$response = wp_remote_get( $url, array( 'timeout' => $timeout, 'stream' => true, 'filename' => $tmpfname ) );
-
-		if ( is_wp_error( $response ) ) {
-			unlink( $tmpfname );
-			return $response;
-		}
-		if ( 200 != wp_remote_retrieve_response_code( $response ) ) {
-			unlink( $tmpfname );
-			return new \WP_Error( 'http_404', trim( wp_remote_retrieve_response_message( $response ) ) );
-		}
-		return $tmpfname;
-	}
-
-	/**
 	 * Returns the url parameters, for example for url http://example.org/blog/post/news/2014/whatever
 	 * this will return array('blog', 'post', 'news', '2014', 'whatever');
 	 * OR if sent an integer like: TimberUrlHelper::get_params(2); this will return 'news';

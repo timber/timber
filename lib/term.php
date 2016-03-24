@@ -357,14 +357,6 @@ class Term extends Timber\Core implements Timber\CoreInterface {
 		return $this->get_edit_url();
 	}
 
-	/**
-	 * @internal
-	 * @deprecated 0.21.8 use TimberTerm::link() instead
-	 * @return string
-	 */
-	public function get_url() {
-		return $this->get_link();
-	}
 
 	/**
 	 * @api
@@ -418,22 +410,4 @@ class Term extends Timber\Core implements Timber\CoreInterface {
 	public function title() {
 		return $this->name;
 	}
-
-	/**
-	 * @deprecated 0.21.9 use TimberTerm::link() instead
-	 * @return string
-	 */
-	public function url() {
-		return $this->get_url();
-	}
-
-	/**
-	 * @deprecated 0.20.0 this was a dumb idea
-	 * @param int $i
-	 * @return string
-	 */
-	function get_page( $i ) {
-		return $this->get_path() . '/page/' . $i;
-	}
-
 }

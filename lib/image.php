@@ -444,14 +444,6 @@ class Image extends Timber\Post implements Timber\CoreInterface {
 	}
 
 	/**
-	 * @deprecated use src() instead
-	 * @return string
-	 */
-	function url() {
-		return $this->get_src();
-	}
-
-	/**
 	 * @api
 	 * @example
 	 * ```twig
@@ -465,70 +457,4 @@ class Image extends Timber\Post implements Timber\CoreInterface {
 	public function width() {
 		return $this->get_dimensions('width');
 	}
-
-
-	/**
-	 * @deprecated 0.21.9 use TimberImage::width() instead
-	 * @internal
-	 * @return int
-	 */
-	function get_width() {
-		return $this->width();
-	}
-
-	/**
-	 * @deprecated 0.21.9 use TimberImage::height() instead
-	 * @internal
-	 * @return int
-	 */
-	function get_height() {
-		return $this->height();
-	}
-
-	/**
-	 * @deprecated 0.21.9 use TimberImage::src
-	 * @internal
-	 * @param string $size
-	 * @return bool|string
-	 */
-	function get_src( $size = '' ) {
-		return $this->src( $size );
-	}
-
-	/**
-	 * @deprecated 0.21.9 use TimberImage::path()
-	 * @internal
-	 * @return string
-	 */
-	function get_path() {
-		return $this->link();
-	}
-
-	/**
-	 * @deprecated use src() instead
-	 * @return string
-	 */
-	function get_url() {
-		return $this->get_src();
-	}
-
-	/**
-	 * @internal
-	 * @deprecated 0.21.8
-	 * @return bool|TimberPost
-	 */
-	function get_parent() {
-		return $this->parent();
-	}
-
-	/**
-	 * @internal
-	 * @deprecated 0.21.9
-	 * @see TimberImage::alt
-	 * @return string
-	 */
-	function get_alt() {
-		return $this->alt();
-	}
-
 }

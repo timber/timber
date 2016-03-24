@@ -79,13 +79,6 @@ class Post extends Timber\Core implements Timber\CoreInterface {
 	protected $_content;
 
 	/**
-	 * @internal
-	 * @var array $_get_terms stores the results of a get_terms method call
-	 * @deprecated
-	 */
-	protected $_get_terms;
-
-	/**
 	 * @var string $_permalink the returned permalink from WP's get_permalink function
 	 */
 	protected $_permalink;
@@ -1379,14 +1372,6 @@ class Post extends Timber\Core implements Timber\CoreInterface {
 	 */
 	public function path() {
 		return $this->get_path();
-	}
-
-	/**
-	 * @deprecated 0.20.0 use link() instead
-	 * @return string
-	 */
-	public function permalink() {
-		return $this->get_permalink();
 	}
 
 	/**

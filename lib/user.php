@@ -219,36 +219,4 @@ class User extends Timber\Core implements Timber\CoreInterface {
 	public function slug() {
 		return $this->user_nicename;
 	}
-
-	/**
-	 * @deprecated 0.21.9
-	 * @return string The link to a user's profile page
-	 */
-	function get_link() {
-		return $this->link();
-	}
-
-	/**
-	 * @deprecated 0.21.8
-	 * @return string ex: /author/lincoln
-	 */
-	function get_path() {
-		return $this->path();
-	}
-
-	/**
-	 * @deprecated 0.21.8
-	 * @return string
-	 */
-	function get_permalink() {
-		return $this->get_link();
-	}
-
-	/**
-	 * @deprecated 0.21.8
-	 * @return string
-	 */
-	function permalink() {
-		return $this->get_permalink();
-	}
 }

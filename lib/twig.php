@@ -25,26 +25,7 @@ class Twig {
 	 * @codeCoverageIgnore
 	 */
 	function __construct() {
-		add_action( 'timber/twig/filters', array( $this, 'add_timber_filters_deprecated' ) );
 		add_action( 'timber/twig/filters', array( $this, 'add_timber_filters' ) );
-	}
-
-	/**
-	 * These are all deprecated and will be removed in 0.21.0
-	 *
-	 * @param Twig_Environment $twig
-	 * @deprecated since 0.20.7
-	 * @return Twig_Environment
-	 */
-	function add_timber_filters_deprecated( $twig ) {
-		$twig->addFilter( new \Twig_SimpleFilter( 'get_src_from_attachment_id', 'twig_get_src_from_attachment_id' ) );
-		$twig->addFilter( new \Twig_SimpleFilter( 'wp_body_class', array( $this, 'body_class' ) ) );
-		$twig->addFilter( new \Twig_SimpleFilter( 'twitterify', array( 'TimberHelper', 'twitterify' ) ) );
-		$twig->addFilter( new \Twig_SimpleFilter( 'twitterfy', array( 'TimberHelper', 'twitterify' ) ) );
-		$twig->addFilter( new \Twig_SimpleFilter( 'string', function($arr, $glue = ' '){
-			return twig_join_filter($arr, $glue);
-		} ) );
-		return $twig;
 	}
 
 	/**
@@ -222,8 +203,6 @@ class Twig {
 		$twig->addFunction( 'translate_nooped_plural', new \Twig_SimpleFunction( 'translate_nooped_plural', function ( $nooped_plural, $count, $domain = 'default' ) {
 					return translate_nooped_plural( $nooped_plural, $count, $domain );
 				} ) );
-		/* get_twig is deprecated, use timber/twig */
-		$twig = apply_filters( 'get_twig', $twig );
 		$twig = apply_filters( 'timber/twig', $twig );
 		return $twig;
 	}
@@ -278,22 +257,6 @@ class Twig {
 	}
 
 	/**
-	 * @param mixed   $body_classes
-	 * @deprecated 0.20.7
-	 * @return string
-	 */
-	function body_class( $body_classes ) {
-		ob_start();
-		if ( is_array( $body_classes ) ) {
-			$body_classes = explode( ' ', $body_classes );
-		}
-		body_class( $body_classes );
-		$return = ob_get_contents();
-		ob_end_clean();
-		return $return;
-	}
-
-	/**
 	 *
 	 *
 	 * @param string  $date
@@ -314,30 +277,6 @@ class Twig {
 		}
 
 		return date_i18n( $format, $timestamp );
-	}
-
-	//debug
-
-	/**
-	 *
-	 *
-	 * @param mixed   $obj
-	 * @param bool    $methods
-	 * @deprecated since 0.20.7
-	 * @return string
-	 */
-	function object_docs( $obj, $methods = true ) {
-		$class = get_class( $obj );
-		$properties = (array)$obj;
-		if ( $methods ) {
-			/** @var array $methods */
-			$methods = $obj->get_method_values();
-		}
-		$rets = array_merge( $properties, $methods );
-		ksort( $rets );
-		$str = print_r( $rets, true );
-		$str = str_replace( 'Array', $class . ' Object', $str );
-		return $str;
 	}
 
 	/**

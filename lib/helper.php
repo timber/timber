@@ -279,63 +279,6 @@ class Helper {
 		return $html;
 	}
 
-	/* WordPress Query Utilities
-	======================== */
-
-	/**
-	 * @param string  $key
-	 * @param string  $value
-	 * @return array|int
-	 * @deprecated 0.20.0
-	 */
-	public static function get_posts_by_meta( $key, $value ) {
-		global $wpdb;
-		$query = $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $key, $value );
-		$results = $wpdb->get_col( $query );
-		$pids = array();
-		foreach ( $results as $result ) {
-			if ( get_post( $result ) ) {
-				$pids[] = $result;
-			}
-		}
-		if ( count( $pids ) ) {
-			return $pids;
-		}
-		return 0;
-	}
-
-	/**
-	 *
-	 *
-	 * @param string  $key
-	 * @param string  $value
-	 * @return int
-	 * @deprecated 0.20.0
-	 */
-	public static function get_post_by_meta( $key, $value ) {
-		global $wpdb;
-		$query = $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s ORDER BY post_id", $key, $value );
-		$results = $wpdb->get_col( $query );
-		foreach ( $results as $result ) {
-			if ( $result && get_post( $result ) ) {
-				return $result;
-			}
-		}
-		return 0;
-	}
-
-	/**
-	 *
-	 * @deprecated 0.21.8
-	 * @param int     $ttid
-	 * @return mixed
-	 */
-	public static function get_term_id_by_term_taxonomy_id( $ttid ) {
-		global $wpdb;
-		$query = $wpdb->prepare( "SELECT term_id FROM $wpdb->term_taxonomy WHERE term_taxonomy_id = %s", $ttid );
-		return $wpdb->get_var( $query );
-	}
-
 	/* Object Utilities
 	======================== */
 
@@ -492,18 +435,6 @@ class Helper {
 
 	/**
 	 *
-	 * Gets the comment form for use on a single article page
-	 * @deprecated 0.21.8 use `{{ function('comment_form') }}` instead
-	 * @param int     $post_id which post_id should the form be tied to?
-	 * @param array   $args this $args thing is a fucking mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
-	 * @return string
-	 */
-	public static function get_comment_form( $post_id = null, $args = array() ) {
-		return self::ob_function( 'comment_form', array( $args, $post_id ) );
-	}
-
-	/**
-	 *
 	 *
 	 * @param string  $args
 	 * @return array
@@ -576,96 +507,4 @@ class Helper {
 		}
 		return $page_links;
 	}
-
-	/**
-	 * @deprecated 0.18.0
-	 */
-	static function get_current_url() {
-		return Timber\URLHelper::get_current_url();
-	}
-
-	/**
-	 * @deprecated 0.18.0
-	 */
-	static function is_url( $url ) {
-		return Timber\URLHelper::is_url( $url );
-	}
-
-	/**
-	 * @deprecated 0.18.0
-	 */
-	static function get_path_base() {
-		return Timber\URLHelper::get_path_base();
-	}
-
-	/**
-	 * @deprecated 0.18.0
-	 */
-	static function get_rel_url( $url, $force = false ) {
-		return Timber\URLHelper::get_rel_url( $url, $force );
-	}
-
-	/**
-	 * @deprecated 0.18.0
-	 */
-	static function is_local( $url ) {
-		return Timber\URLHelper::is_local( $url );
-	}
-
-	/**
-	 * @deprecated 0.18.0
-	 */
-	static function get_full_path( $src ) {
-		return Timber\URLHelper::get_full_path( $src );
-	}
-
-	/**
-	 * @deprecated 0.18.0
-	 */
-	static function get_rel_path( $src ) {
-		return Timber\URLHelper::get_rel_path( $src );
-	}
-
-	/**
-	 * @deprecated 0.18.0
-	 */
-	static function remove_double_slashes( $url ) {
-		return Timber\URLHelper::remove_double_slashes( $url );
-	}
-
-	/**
-	 * @deprecated 0.18.0
-	 */
-	static function prepend_to_url( $url, $path ) {
-		return Timber\URLHelper::prepend_to_url( $url, $path );
-	}
-
-	/**
-	 * @deprecated 0.18.0
-	 */
-	static function preslashit( $path ) {
-		return Timber\URLHelper::preslashit( $path );
-	}
-
-	/**
-	 * @deprecated 0.18.0
-	 */
-	static function is_external( $url ) {
-		return Timber\URLHelper::is_external( $url );
-	}
-
-	/**
-	 * @deprecated 0.18.0
-	 */
-	static function download_url( $url, $timeout = 300 ) {
-		return Timber\URLHelper::download_url( $url, $timeout );
-	}
-
-	/**
-	 * @deprecated 0.18.0
-	 */
-	static function get_params( $i = -1 ) {
-		return Timber\URLHelper::get_params( $i );
-	}
-
 }

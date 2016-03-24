@@ -172,8 +172,6 @@ class Site extends Timber\Core implements Timber\CoreInterface {
 		$this->charset = get_bloginfo( 'charset' );
 		$this->pingback = get_bloginfo( 'pingback_url' );
 		$this->language_attributes = Timber\Helper::function_wrapper( 'language_attributes' );
-		/* deprecated benath this comment */
-		$this->pingback_url = get_bloginfo( 'pingback_url' );
 	}
 
 	/**
@@ -191,24 +189,6 @@ class Site extends Timber\Core implements Timber\CoreInterface {
 			}
 		}
 		return $this->$field;
-	}
-
-	/**
-	 * @deprecated 0.21.9
-	 * @internal
-	 * @return string
-	 */
-	function get_link() {
-		return $this->link();
-	}
-
-	/**
-	 * @deprecated 0.21.9
-	 * @internal
-	 * @return string
-	 */
-	function get_url() {
-		return $this->get_link();
 	}
 
 	/**

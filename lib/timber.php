@@ -137,16 +137,6 @@ class Timber {
 		return Timber\PostGetter::query_posts( $query, $PostClass );
 	}
 
-	/**
-	 * WP_Query has posts.
-	 *
-	 * @return bool
-	 * @deprecated since 0.20.0
-	 */
-	static function wp_query_has_posts() {
-		return Timber\PostGetter::wp_query_has_posts();
-	}
-
 	/* Term Retrieval
 	================================ */
 
@@ -372,41 +362,6 @@ class Timber {
 		return trim( Timber\Helper::function_wrapper( 'dynamic_sidebar', array( $widget_id ), true ) );
 	}
 
-
-	/*  Routes
-	================================ */
-
-	/**
-	 * Add route.
-	 *
-	 * @param string  $route
-	 * @param callable $callback
-	 * @param array   $args
-	 * @deprecated since 0.20.0
-	 */
-	public static function add_route( $route, $callback, $args = array() ) {
-		Routes::map( $route, $callback, $args );
-	}
-
-	/**
-	 * Load template.
-	 *
-	 * @deprecated since 0.20.0
-	 */
-	public static function load_template( $template, $query = false, $status_code = 200, $tparams = false ) {
-		return Routes::load( $template, $tparams, $query, $status_code );
-	}
-
-	/**
-	 * Load view.
-	 *
-	 * @deprecated since 0.20.2
-	 */
-	public static function load_view( $template, $query = false, $status_code = 200, $tparams = false ) {
-		return Routes::load( $template, $tparams, $query, $status_code );
-	}
-
-
 	/*  Pagination
 	================================ */
 
@@ -479,32 +434,6 @@ class Timber {
 			return $dir;
 		}
 	}
-
-	/**
-	 * Get calling script file.
-	 *
-	 * @param int     $offset
-	 * @return string|null
-	 * @deprecated since 0.20.0
-	 */
-	public static function get_calling_script_file( $offset = 0 ) {
-		$caller = null;
-		$backtrace = debug_backtrace();
-		$i = 0;
-		foreach ( $backtrace as $trace ) {
-			if ( array_key_exists('file', $trace) && $trace['file'] != __FILE__ ) {
-				$caller = $trace['file'];
-				break;
-			}
-			$i++;
-		}
-		if ( $offset ) {
-			$caller = $backtrace[$i + $offset]['file'];
-		}
-		return $caller;
-	}
-
-
 }
 
 $timber = new Timber();

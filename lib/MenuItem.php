@@ -275,27 +275,6 @@ class MenuItem extends Timber\Core implements Timber\CoreInterface {
 	}
 
 	/**
-	 * Gets the link a menu item points at
-	 * @internal
-	 * @deprecated since 0.21.7 use link instead
-	 * @see link()
-	 * @return string a full URL like http://mysite.com/thing/
-	 */
-	public function permalink() {
-		return $this->get_link();
-	}
-
-	/**
-	 * @internal
-	 * @deprecated since 0.21.7, use link instead
-	 * @see link()
-	 * @return string a full URL like http://mysite.com/thing/
-	 */
-	public function get_permalink() {
-		return $this->get_link();
-	}
-
-	/**
 	 * Gets the public label for the menu item
 	 * @example
 	 * ```twig
@@ -310,5 +289,4 @@ class MenuItem extends Timber\Core implements Timber\CoreInterface {
 			return $this->__title;
 		}
 	}
-
 }
