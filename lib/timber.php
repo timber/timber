@@ -1,5 +1,21 @@
 <?php
 
+namespace Timber;
+
+use Timber\Twig;
+use Timber\Routes;
+use Timber\ImageHelper;
+use Timber\Admin;
+use Timber\Integrations;
+use Timber\PostGetter;
+use Timber\TermGetter;
+use Timber\Site;
+use Timber\URLHelper;
+use Timber\Helper;
+use Timber\Request;
+use Timber\User;
+use Timber\Loader;
+
 /**
  * Timber Class.
  *
@@ -61,11 +77,11 @@ class Timber {
 	 * @codeCoverageIgnore
 	 */
 	protected function init() {
-		TimberTwig::init();
-		TimberRoutes::init( $this );
-		TimberImageHelper::init();
-		TimberAdmin::init();
-		TimberIntegrations::init();
+		Timber\Twig::init();
+		Timber\Routes::init( $this );
+		Timber\ImageHelper::init();
+		Timber\Admin::init();
+		Timber\Integrations::init();
 	}
 
 	/* Post Retrieval Routine
@@ -79,7 +95,7 @@ class Timber {
 	 * @return array|bool|null
 	 */
 	public static function get_post( $query = false, $PostClass = 'TimberPost' ) {
-		return TimberPostGetter::get_post( $query, $PostClass );
+		return Timber\PostGetter::get_post( $query, $PostClass );
 	}
 
 	/**
@@ -96,7 +112,7 @@ class Timber {
 	 * @return array|bool|null
 	 */
 	public static function get_posts( $query = false, $PostClass = 'TimberPost', $return_collection = false ) {
-		return TimberPostGetter::get_posts( $query, $PostClass, $return_collection );
+		return Timber\PostGetter::get_posts( $query, $PostClass, $return_collection );
 	}
 
 	/**
@@ -107,7 +123,7 @@ class Timber {
 	 * @return array|bool|null
 	 */
 	public static function query_post( $query = false, $PostClass = 'TimberPost' ) {
-		return TimberPostGetter::query_post( $query, $PostClass );
+		return Timber\PostGetter::query_post( $query, $PostClass );
 	}
 
 	/**
@@ -118,17 +134,7 @@ class Timber {
 	 * @return array|bool|null
 	 */
 	public static function query_posts( $query = false, $PostClass = 'TimberPost' ) {
-		return TimberPostGetter::query_posts( $query, $PostClass );
-	}
-
-	/**
-	 * WP_Query has posts.
-	 *
-	 * @return bool
-	 * @deprecated since 0.20.0
-	 */
-	static function wp_query_has_posts() {
-		return TimberPostGetter::wp_query_has_posts();
+		return Timber\PostGetter::query_posts( $query, $PostClass );
 	}
 
 	/* Term Retrieval
@@ -143,7 +149,7 @@ class Timber {
 	 * @return mixed
 	 */
 	public static function get_terms( $args = null, $maybe_args = array(), $TermClass = 'TimberTerm' ) {
-		return TimberTermGetter::get_terms( $args, $maybe_args, $TermClass );
+		return Timber\TermGetter::get_terms( $args, $maybe_args, $TermClass );
 	}
 
 	/* Site Retrieval
@@ -162,7 +168,7 @@ class Timber {
 		}
 		$return = array();
 		foreach ( $blog_ids as $blog_id ) {
-			$return[] = new TimberSite( $blog_id );
+			$return[] = new Timber\Site( $blog_id );
 		}
 		return $return;
 	}
@@ -178,15 +184,15 @@ class Timber {
 	 */
 	public static function get_context() {
 		$data = array();
-		$data['http_host'] = 'http://' . TimberURLHelper::get_host();
-		$data['wp_title'] = TimberHelper::get_wp_title();
-		$data['wp_head'] = TimberHelper::function_wrapper( 'wp_head' );
-		$data['wp_footer'] = TimberHelper::function_wrapper( 'wp_footer' );
+		$data['http_host'] = 'http://' . Timber\URLHelper::get_host();
+		$data['wp_title'] = Timber\Helper::get_wp_title();
+		$data['wp_head'] = Timber\Helper::function_wrapper( 'wp_head' );
+		$data['wp_footer'] = Timber\Helper::function_wrapper( 'wp_footer' );
 		$data['body_class'] = implode( ' ', get_body_class() );
 
-		$data['site'] = new TimberSite();
-		$data['request'] = new TimberRequest();
-		$user = new TimberUser();
+		$data['site'] = new Timber\Site();
+		$data['request'] = new Timber\Request();
+		$user = new Timber\User();
 		$data['user'] = ($user->ID) ? $user : false;
 		$data['theme'] = $data['site']->theme;
 
@@ -207,11 +213,11 @@ class Timber {
 	 * @param bool    $via_render
 	 * @return bool|string
 	 */
-	public static function compile( $filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT, $via_render = false ) {
+	public static function compile( $filenames, $data = array(), $expires = false, $cache_mode = Timber\Loader::CACHE_USE_DEFAULT, $via_render = false ) {
 		$caller = self::get_calling_script_dir();
 		$caller_file = self::get_calling_script_file();
 		$caller_file = apply_filters( 'timber_calling_php_file', $caller_file );
-		$loader = new TimberLoader( $caller );
+		$loader = new Timber\Loader( $caller );
 		$file = $loader->choose_template( $filenames );
 		$output = '';
 		if ( is_null( $data ) ) {
@@ -239,7 +245,7 @@ class Timber {
 	 * @return  bool|string
 	 */
 	public static function compile_string( $string, $data = array() ) {
-		$dummy_loader = new TimberLoader();
+		$dummy_loader = new Timber\Loader();
 		$twig = $dummy_loader->get_twig();
 		$template = $twig->createTemplate($string);
 		return $template->render( $data );
@@ -254,12 +260,12 @@ class Timber {
 	 * @param string  $cache_mode
 	 * @return bool|string
 	 */
-	public static function fetch( $filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT ) {
+	public static function fetch( $filenames, $data = array(), $expires = false, $cache_mode = Timber\Loader::CACHE_USE_DEFAULT ) {
 		if ( $expires === true ) {
 			//if this is reading as true; the user probably is using the old $echo param
 			//so we should move all vars up by a spot
 			$expires = $cache_mode;
-			$cache_mode = TimberLoader::CACHE_USE_DEFAULT;
+			$cache_mode = Timber\Loader::CACHE_USE_DEFAULT;
 		}
 		$output = self::compile( $filenames, $data, $expires, $cache_mode, true );
 		$output = apply_filters( 'timber_compile_result', $output );
@@ -275,7 +281,7 @@ class Timber {
 	 * @param string  $cache_mode
 	 * @return bool|string
 	 */
-	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = TimberLoader::CACHE_USE_DEFAULT ) {
+	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = Timber\Loader::CACHE_USE_DEFAULT ) {
 		$output = static::fetch( $filenames, $data, $expires, $cache_mode );
 		echo $output;
 		return $output;
@@ -324,7 +330,7 @@ class Timber {
 	 */
 	public static function get_sidebar_from_php( $sidebar = '', $data ) {
 		$caller = self::get_calling_script_dir();
-		$loader = new TimberLoader();
+		$loader = new Timber\Loader();
 		$uris = $loader->get_locations( $caller );
 		ob_start();
 		$found = false;
@@ -336,7 +342,7 @@ class Timber {
 			}
 		}
 		if ( !$found ) {
-			TimberHelper::error_log( 'error loading your sidebar, check to make sure the file exists' );
+			Timber\Helper::error_log( 'error loading your sidebar, check to make sure the file exists' );
 		}
 		$ret = ob_get_contents();
 		ob_end_clean();
@@ -353,43 +359,8 @@ class Timber {
 	 * @return TimberFunctionWrapper
 	 */
 	public static function get_widgets( $widget_id ) {
-		return trim( TimberHelper::function_wrapper( 'dynamic_sidebar', array( $widget_id ), true ) );
+		return trim( Timber\Helper::function_wrapper( 'dynamic_sidebar', array( $widget_id ), true ) );
 	}
-
-
-	/*  Routes
-	================================ */
-
-	/**
-	 * Add route.
-	 *
-	 * @param string  $route
-	 * @param callable $callback
-	 * @param array   $args
-	 * @deprecated since 0.20.0
-	 */
-	public static function add_route( $route, $callback, $args = array() ) {
-		Routes::map( $route, $callback, $args );
-	}
-
-	/**
-	 * Load template.
-	 *
-	 * @deprecated since 0.20.0
-	 */
-	public static function load_template( $template, $query = false, $status_code = 200, $tparams = false ) {
-		return Routes::load( $template, $tparams, $query, $status_code );
-	}
-
-	/**
-	 * Load view.
-	 *
-	 * @deprecated since 0.20.2
-	 */
-	public static function load_view( $template, $query = false, $status_code = 200, $tparams = false ) {
-		return Routes::load( $template, $tparams, $query, $status_code );
-	}
-
 
 	/*  Pagination
 	================================ */
@@ -429,7 +400,7 @@ class Timber {
 		$data = array();
 		$data['current'] = $args['current'];
 		$data['total'] = $args['total'];
-		$data['pages'] = TimberHelper::paginate_links( $args );
+		$data['pages'] = Timber\Helper::paginate_links( $args );
 		$next = get_next_posts_page_link( $args['total'] );
 		if ( $next ) {
 			$data['next'] = array( 'link' => untrailingslashit( $next ), 'class' => 'page-numbers next' );
@@ -463,32 +434,6 @@ class Timber {
 			return $dir;
 		}
 	}
-
-	/**
-	 * Get calling script file.
-	 *
-	 * @param int     $offset
-	 * @return string|null
-	 * @deprecated since 0.20.0
-	 */
-	public static function get_calling_script_file( $offset = 0 ) {
-		$caller = null;
-		$backtrace = debug_backtrace();
-		$i = 0;
-		foreach ( $backtrace as $trace ) {
-			if ( array_key_exists('file', $trace) && $trace['file'] != __FILE__ ) {
-				$caller = $trace['file'];
-				break;
-			}
-			$i++;
-		}
-		if ( $offset ) {
-			$caller = $backtrace[$i + $offset]['file'];
-		}
-		return $caller;
-	}
-
-
 }
 
 $timber = new Timber();
