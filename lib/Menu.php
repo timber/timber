@@ -48,8 +48,8 @@ use Timber\Post;
  */
 class Menu extends Core {
 
-	public $MenuItemClass = 'MenuItem';
-	public $PostClass = 'Post';
+	public $MenuItemClass = 'Timber\MenuItem';
+	public $PostClass = 'Timber\Post';
 
 	/**
 	 * @api

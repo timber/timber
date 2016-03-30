@@ -3,7 +3,6 @@
 namespace Timber;
 
 use Timber\Twig;
-use Timber\Routes;
 use Timber\ImageHelper;
 use Timber\Admin;
 use Timber\Integrations;
@@ -78,7 +77,6 @@ class Timber {
 	 */
 	protected function init() {
 		Twig::init();
-		Routes::init( $this );
 		ImageHelper::init();
 		Admin::init();
 		Integrations::init();
@@ -427,7 +425,8 @@ class Timber {
 	 * @return string
 	 */
 	public static function get_calling_script_dir( $offset = 0 ) {
-		$caller = self::get_calling_script_file( $offset );
+		$func = __FUNCTION__;
+		$caller = self::$func( $offset );
 		if ( !is_null( $caller ) ) {
 			$pathinfo = pathinfo( $caller );
 			$dir = $pathinfo['dirname'];

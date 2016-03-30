@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Timber\Helper;
+use Timber\Post;
 
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) )
@@ -10,7 +11,7 @@ if ( !defined( 'ABSPATH' ) )
 
 class PostsCollection extends \ArrayObject {
 
-    public function __construct( $posts = array(), $post_class = 'TimberPost' ) {
+    public function __construct( $posts = array(), $post_class = 'Timber\Post' ) {
         $returned_posts = array();
         if ( is_null( $posts ) ){
             $posts = array();
@@ -20,7 +21,7 @@ class PostsCollection extends \ArrayObject {
 
             if ( is_array( $post_class ) ) {
                 $post_type      = get_post_type( $post_object );
-                $post_class_use = 'TimberPost';
+                $post_class_use = 'Timber\Post';
 
                 if ( isset( $post_class[$post_type] ) ) {
                     $post_class_use = $post_class[$post_type];
@@ -48,7 +49,7 @@ class PostsCollection extends \ArrayObject {
 
         $returned_posts = self::maybe_set_preview($returned_posts);
 
-        parent::__construct( $returned_posts, $flags = 0, 'TimberPostsIterator' );
+        parent::__construct( $returned_posts, $flags = 0, 'Timber\PostsIterator' );
     }
 
     public function get_posts() {
