@@ -69,7 +69,7 @@ class FunctionWrapper {
 		$callable = ( isset( $this->_class ) ) ? array( $this->_class, $this->_function ) : $this->_function;
 
 		if ( $this->_use_ob ) {
-			return Timber\Helper::ob_function( $callable, $args );
+			return Helper::ob_function( $callable, $args );
 		} else {
 			return call_user_func_array( $callable, $args );
 		}

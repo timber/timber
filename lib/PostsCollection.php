@@ -27,9 +27,9 @@ class PostsCollection extends \ArrayObject {
 
                 } else {
                     if ( is_array( $post_class ) ) {
-                        Timber\Helper::error_log( $post_type . ' of ' . $post_object->ID . ' not found in ' . print_r( $post_class, true ) );
+                        Helper::error_log( $post_type . ' of ' . $post_object->ID . ' not found in ' . print_r( $post_class, true ) );
                     } else {
-                        Timber\Helper::error_log( $post_type . ' not found in ' . $post_class );
+                        Helper::error_log( $post_type . ' not found in ' . $post_class );
                     }
                 }
             }

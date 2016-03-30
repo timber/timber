@@ -24,7 +24,7 @@ use Timber\URLHelper;
  * <p class="article-info">This article is called "Consider the Lobster" and it's by David Foster Wallace
  * ```
  */
-class User extends Timber\Core implements Timber\CoreInterface {
+class User extends Core implements CoreInterface {
 
 	public $object_type = 'user';
 	public static $representation = 'user';
@@ -209,7 +209,7 @@ class User extends Timber\Core implements Timber\CoreInterface {
 	 * @return string ex: /author/lincoln
 	 */
 	public function path() {
-		return Timber\URLHelper::get_rel_url($this->get_link());
+		return URLHelper::get_rel_url($this->get_link());
 	}
 
 	/**

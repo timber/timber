@@ -43,7 +43,7 @@ use Timber\CoreInterface;
  * </article>
  * ```
  */
-class Image extends Timber\Post implements Timber\CoreInterface {
+class Image extends Post implements CoreInterface {
 
 	protected $_can_edit;
 	protected $_dimensions;
@@ -209,7 +209,7 @@ class Image extends Timber\Post implements Timber\CoreInterface {
 	 * @param int $iid
 	 */
 	function init( $iid = false ) {
-		if(!$iid) { Timber\Helper::error_log('Initalized TimberImage without providing first parameter.'); return; }
+		if(!$iid) { Helper::error_log('Initalized TimberImage without providing first parameter.'); return; }
 		
 		if ( !is_numeric( $iid ) && is_string( $iid ) ) {
 			if (strstr($iid, '://')) {
@@ -235,7 +235,7 @@ class Image extends Timber\Post implements Timber\CoreInterface {
 				return $this->init((int) $post->_thumbnail_id);
 			}
 			return $this->init($iid->ID);
-		} else if ( $iid instanceof Timber\Post ) {
+		} else if ( $iid instanceof Post ) {
 			/**
 			 * This will catch TimberPost and any post classes that extend TimberPost,
 			 * see http://php.net/manual/en/internals2.opcodes.instanceof.php#109108
@@ -268,10 +268,10 @@ class Image extends Timber\Post implements Timber\CoreInterface {
 			$this->id = $this->ID;
 		} else {
 			if ( is_array($iid) || is_object($iid) ) {
-				Timber\Helper::error_log('Not able to init in TimberImage with iid=');
-				Timber\Helper::error_log($iid);
+				Helper::error_log('Not able to init in TimberImage with iid=');
+				Helper::error_log($iid);
 			} else {
-				Timber\Helper::error_log('Not able to init in TimberImage with iid=' . $iid);
+				Helper::error_log('Not able to init in TimberImage with iid=' . $iid);
 			}
 		}
 	}
@@ -282,7 +282,7 @@ class Image extends Timber\Post implements Timber\CoreInterface {
 	 */
 	protected function init_with_relative_path( $relative_path ) {
 		$this->abs_url = home_url( $relative_path );
-		$file_path = Timber\URLHelper::get_full_path( $relative_path );
+		$file_path = URLHelper::get_full_path( $relative_path );
 		$this->file_loc = $file_path;
 		$this->file = $file_path;
 	}
@@ -292,7 +292,7 @@ class Image extends Timber\Post implements Timber\CoreInterface {
 	 * @param string $file_path
 	 */
 	protected function init_with_file_path( $file_path ) {
-		$url = Timber\URLHelper::file_system_to_url( $file_path );
+		$url = URLHelper::file_system_to_url( $file_path );
 		$this->abs_url = $url;
 		$this->file_loc = $file_path;
 		$this->file = $file_path;
@@ -304,9 +304,9 @@ class Image extends Timber\Post implements Timber\CoreInterface {
 	 */
 	protected function init_with_url($url) {
 		$this->abs_url = $url;
-		if ( Timber\URLHelper::is_local($url) ) {
-			$this->file = ABSPATH . Timber\URLHelper::get_rel_url($url);
-			$this->file_loc = ABSPATH . Timber\URLHelper::get_rel_url($url);
+		if ( URLHelper::is_local($url) ) {
+			$this->file = ABSPATH . URLHelper::get_rel_url($url);
+			$this->file_loc = ABSPATH . URLHelper::get_rel_url($url);
 		}
 	}
 
@@ -401,7 +401,7 @@ class Image extends Timber\Post implements Timber\CoreInterface {
 	 * @return  string the /relative/path/to/the/file
 	 */
 	public function path() {
-		return Timber\URLHelper::get_rel_path($this->src());
+		return URLHelper::get_rel_path($this->src());
 	}
 
 	/**

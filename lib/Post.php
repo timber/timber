@@ -45,22 +45,22 @@ use Timber\PostGetter;
  *
  * @package Timber
  */
-class Post extends Timber\Core implements Timber\CoreInterface {
+class Post extends Core implements CoreInterface {
 
 	/**
 	 * @var string $ImageClass the name of the class to handle images by default
 	 */
-	public $ImageClass = 'Timber\Image';
+	public $ImageClass = 'Image';
 
 	/**
 	 * @var string $PostClass the name of the class to handle posts by default
 	 */
-	public $PostClass = 'Timber\Post';
+	public $PostClass = 'Post';
 
 	/**
 	 * @var string $TermClass the name of the class to handle terms by default
 	 */
-	public $TermClass = 'Timber\Term';
+	public $TermClass = 'Term';
 
 	/**
 	 * @var string $object_type what does this class represent in WordPress terms?
@@ -211,7 +211,7 @@ class Post extends Timber\Core implements Timber\CoreInterface {
 				}
 			}
 		}
-		if ( $pid === null && ($pid_from_loop = Timber\PostGetter::loop_to_id()) ) {
+		if ( $pid === null && ($pid_from_loop = PostGetter::loop_to_id()) ) {
 			$pid = $pid_from_loop;
 		}
 		return $pid;
@@ -379,7 +379,7 @@ class Post extends Timber\Core implements Timber\CoreInterface {
 		$trimmed = false;
 		if ( isset($this->post_excerpt) && strlen($this->post_excerpt) ) {
 			if ( $force ) {
-				$text = Timber\Helper::trim_words($this->post_excerpt, $len, false);
+				$text = Helper::trim_words($this->post_excerpt, $len, false);
 				$trimmed = true;
 			} else {
 				$text = $this->post_excerpt;
@@ -389,13 +389,13 @@ class Post extends Timber\Core implements Timber\CoreInterface {
 			$pieces = explode($readmore_matches[0], $this->post_content);
 			$text = $pieces[0];
 			if ( $force ) {
-				$text = Timber\Helper::trim_words($text, $len, false);
+				$text = Helper::trim_words($text, $len, false);
 				$trimmed = true;
 			}
 			$text = do_shortcode( $text );
 		}
 		if ( !strlen($text) ) {
-			$text = Timber\Helper::trim_words($this->get_content(), $len, false);
+			$text = Helper::trim_words($this->get_content(), $len, false);
 			$trimmed = true;
 		}
 		if ( !strlen(trim($text)) ) {
@@ -587,7 +587,7 @@ class Post extends Timber\Core implements Timber\CoreInterface {
 	 * @return string
 	 */
 	function get_path() {
-		return Timber\URLHelper::get_rel_url($this->get_link());
+		return URLHelper::get_rel_url($this->get_link());
 	}
 
 	/**
@@ -634,7 +634,7 @@ class Post extends Timber\Core implements Timber\CoreInterface {
 	 */
 	function get_author() {
 		if ( isset($this->post_author) ) {
-			return new Timber\User($this->post_author);
+			return new User($this->post_author);
 		}
 	}
 
@@ -644,7 +644,7 @@ class Post extends Timber\Core implements Timber\CoreInterface {
 	 */
 	function get_modified_author() {
 		$user_id = get_post_meta($this->ID, '_edit_last', true);
-		return ($user_id ? new Timber\User($user_id) : $this->get_author());
+		return ($user_id ? new User($user_id) : $this->get_author());
 	}
 
 	/**
@@ -860,9 +860,9 @@ class Post extends Timber\Core implements Timber\CoreInterface {
 
 			if ( is_wp_error($terms) ) {
 				/* @var $terms WP_Error */
-				Timber\Helper::error_log("Error retrieving terms for taxonomy '$taxonomy' on a post in timber-post.php");
-				Timber\Helper::error_log('tax = ' . print_r($tax, true));
-				Timber\Helper::error_log('WP_Error: ' . $terms->get_error_message());
+				Helper::error_log("Error retrieving terms for taxonomy '$taxonomy' on a post in timber-post.php");
+				Helper::error_log('tax = ' . print_r($tax, true));
+				Helper::error_log('WP_Error: ' . $terms->get_error_message());
 
 				return $term_class_objects;
 			}

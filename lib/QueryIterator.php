@@ -3,7 +3,7 @@
 namespace Timber;
 
 use Timber\Helper;
-use Timbre\PostsCollection;
+use Timber\PostsCollection;
 
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) )
@@ -34,7 +34,7 @@ class QueryIterator implements \Iterator {
             $the_query =& $wp_query;
             //if we're on a custom posts page?
             $the_query = self::handle_maybe_custom_posts_page($the_query);
-        } elseif ( Timber\Helper::is_array_assoc( $query ) || ( is_string( $query ) && strstr( $query, '=' ) ) ) {
+        } elseif ( Helper::is_array_assoc( $query ) || ( is_string( $query ) && strstr( $query, '=' ) ) ) {
             // We have a regularly formed WP query string or array to use
             $the_query = new \WP_Query( $query );
 
@@ -49,8 +49,8 @@ class QueryIterator implements \Iterator {
             // it's an empty array
             $the_query = array();
         } else {
-            Timber\Helper::error_log( 'I have failed you! in ' . basename( __FILE__ ) . '::' . __LINE__ );
-            Timber\Helper::error_log( $query );
+            Helper::error_log( 'I have failed you! in ' . basename( __FILE__ ) . '::' . __LINE__ );
+            Helper::error_log( $query );
 
             // We have failed hard, at least let get something.
             $the_query = new \WP_Query();
@@ -62,7 +62,7 @@ class QueryIterator implements \Iterator {
 
     public function get_posts( $return_collection = false ) {
         if (isset($this->_query->posts)){
-            $posts = new Timber\PostsCollection( $this->_query->posts, $this->_posts_class );
+            $posts = new PostsCollection( $this->_query->posts, $this->_posts_class );
             return ( $return_collection ) ? $posts : $posts->get_posts();
         }
     }

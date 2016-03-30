@@ -173,7 +173,7 @@ class Helper {
 	 * @return \TimberFunctionWrapper
 	 */
 	public static function function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false ) {
-		return new Timber\FunctionWrapper( $function_name, $defaults, $return_output_buffer );
+		return new FunctionWrapper( $function_name, $defaults, $return_output_buffer );
 	}
 
 	/**
@@ -371,7 +371,7 @@ class Helper {
 			}
 		} else {
 			throw new \InvalidArgumentException( '$array is not an array, got:' );
-			Timber\Helper::error_log( $array );
+			Helper::error_log( $array );
 		}
 	}
 

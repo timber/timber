@@ -24,7 +24,7 @@ use Timber\Helper;
  * My site is called Jared's blog, another site on my network is Upstatement.com
  * ```
  */
-class Site extends Timber\Core implements Timber\CoreInterface {
+class Site extends Core implements CoreInterface {
 
 	/**
 	 * @api
@@ -138,7 +138,7 @@ class Site extends Timber\Core implements Timber\CoreInterface {
 		$this->title = $this->blogname;
 		$this->url = $this->siteurl;
 		$theme_slug = get_blog_option( $info->blog_id, 'stylesheet' );
-		$this->theme = new Timber\Theme( $theme_slug );
+		$this->theme = new Theme( $theme_slug );
 		$this->description = get_blog_option( $info->blog_id, 'blogdescription' );
 		$this->admin_email = get_blog_option( $info->blog_id, 'admin_email' );
 		$this->multisite = true;
@@ -154,8 +154,8 @@ class Site extends Timber\Core implements Timber\CoreInterface {
 		$this->title = $this->name;
 		$this->description = get_bloginfo( 'description' );
 		$this->url = get_bloginfo( 'url' );
-		$this->theme = new Timber\Theme();
-		$this->language_attributes = Timber\Helper::function_wrapper( 'language_attributes' );
+		$this->theme = new Theme();
+		$this->language_attributes = Helper::function_wrapper( 'language_attributes' );
 		$this->multisite = false;
 	}
 
@@ -171,7 +171,7 @@ class Site extends Timber\Core implements Timber\CoreInterface {
 		$this->language = get_bloginfo( 'language' );
 		$this->charset = get_bloginfo( 'charset' );
 		$this->pingback = get_bloginfo( 'pingback_url' );
-		$this->language_attributes = Timber\Helper::function_wrapper( 'language_attributes' );
+		$this->language_attributes = Helper::function_wrapper( 'language_attributes' );
 	}
 
 	/**

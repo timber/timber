@@ -23,7 +23,7 @@ use Timber\URLHelper;
  * ```
  * @package Timber
  */
-class Theme extends Timber\Core {
+class Theme extends Core {
 
 	/**
 	 * @api
@@ -109,7 +109,7 @@ class Theme extends Timber\Core {
 	 * @return  string the relative path to the theme (ex: `/wp-content/themes/my-timber-theme`)
 	 */
 	public function path() {
-		return Timber\URLHelper::get_rel_url( $this->link() );
+		return URLHelper::get_rel_url( $this->link() );
 	}
 
 	/**

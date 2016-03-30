@@ -25,9 +25,9 @@ use Timber\CoreInterface;
  * <p class="comment-attribution">- Sullivan Ballou</p>
  * ```
  */
-class Comment extends Timber\Core implements Timber\CoreInterface {
+class Comment extends Core implements CoreInterface {
 
-	public $PostClass = 'Timber\Post';
+	public $PostClass = 'Post';
 	public $object_type = 'comment';
 
 	public static $representation = 'comment';
@@ -93,9 +93,9 @@ class Comment extends Timber\Core implements Timber\CoreInterface {
 	 */
 	public function author() {
 		if ($this->user_id) {
-			return new Timber\User($this->user_id);
+			return new User($this->user_id);
 		} else {
-			$author = new Timber\User(0);
+			$author = new User(0);
 			if (isset($this->comment_author) && $this->comment_author) {
 				$author->name = $this->comment_author;
 			} else {

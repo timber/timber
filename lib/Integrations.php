@@ -21,7 +21,7 @@ class Integrations {
     public static function maybe_init_acftimber() {
 
         if ( class_exists( 'ACF' ) ) {
-            new Timber\ACF();
+            new ACF();
         }
 
     }

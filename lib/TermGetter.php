@@ -13,7 +13,7 @@ class TermGetter {
 	 * @param string $TermClass
 	 * @return mixed
 	 */
-	public static function get_terms($args = null, $maybe_args = array(), $TermClass = 'Timber\Term') {
+	public static function get_terms($args = null, $maybe_args = array(), $TermClass = 'Term') {
 		if ( is_string($maybe_args) && !strstr($maybe_args, '=') ) {
 			//the user is sending the $TermClass in the second argument
 			$TermClass = $maybe_args;
@@ -35,7 +35,7 @@ class TermGetter {
 				$parsed->args = array_merge($parsed->args, $maybe_args);
 			}
 			return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);
-		} else if ( is_array($args) && Timber\Helper::is_array_assoc($args) ) {
+		} else if ( is_array($args) && Helper::is_array_assoc($args) ) {
 			//its an associative array, like a good ole query
 			$parsed = self::get_term_query_from_assoc_array($args);
 			return self::handle_term_query($parsed->taxonomies, $parsed->args, $TermClass);

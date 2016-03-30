@@ -36,7 +36,7 @@ use Timber\URLHelper;
  * </ul>
  * ```
  */
-class Archives extends Timber\Core {
+class Archives extends Core {
 
 	public $base = '';
 	/**
@@ -83,7 +83,7 @@ class Archives extends Timber\Core {
 	protected function get_archives_link( $url, $text ) {
 		$ret = array();
 		$ret['text'] = $ret['title'] = $ret['name'] = wptexturize($text);
-		$ret['url'] = $ret['link'] = esc_url(Timber\URLHelper::prepend_to_url($url, $this->base));
+		$ret['url'] = $ret['link'] = esc_url(URLHelper::prepend_to_url($url, $this->base));
 		return $ret;
 	}
 

@@ -7,7 +7,7 @@ use Timber\CoreInterface;
 
 use Timber\URLHelper;
 
-class MenuItem extends Timber\Core implements Timber\CoreInterface {
+class MenuItem extends Core implements CoreInterface {
 
 	public $children;
 	public $has_child_class = false;
@@ -130,7 +130,7 @@ class MenuItem extends Timber\Core implements Timber\CoreInterface {
 	 * @return string a relative url /my-page
 	 */
 	function get_path() {
-		return Timber\URLHelper::get_rel_url( $this->get_link() );
+		return URLHelper::get_rel_url( $this->get_link() );
 	}
 
 	/**
@@ -208,7 +208,7 @@ class MenuItem extends Timber\Core implements Timber\CoreInterface {
 		if ( $this->type != 'custom' ) {
 			return false;
 		}
-		return Timber\URLHelper::is_external( $this->url );
+		return URLHelper::is_external( $this->url );
 	}
 
 	/**

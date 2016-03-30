@@ -62,7 +62,7 @@ class ImageHelper {
 				return $src;
 			}
 		}
-		$op = new Timber\Image\Operation\Resize($w, $h, $crop);
+		$op = new Image\Operation\Resize($w, $h, $crop);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -101,7 +101,7 @@ class ImageHelper {
 	 * @return string url to the new image
 	 */
 	public static function retina_resize( $src, $multiplier = 2, $force = false ) {
-		$op = new Timber\Image\Operation\Retina($multiplier);
+		$op = new Image\Operation\Retina($multiplier);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -149,7 +149,7 @@ class ImageHelper {
 	 * @return mixed|null|string
 	 */
 	public static function letterbox( $src, $w, $h, $color = '#000000', $force = false ) {
-		$op = new Timber\Image\Operation\Letterbox($w, $h, $color);
+		$op = new Image\Operation\Letterbox($w, $h, $color);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -161,7 +161,7 @@ class ImageHelper {
 	 * @return string
 	 */
 	public static function img_to_jpg( $src, $bghex = '#FFFFFF', $force = false ) {
-		$op = new Timber\Image\Operation\ToJpg($bghex);
+		$op = new Image\Operation\ToJpg($bghex);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -173,7 +173,7 @@ class ImageHelper {
 			$post = get_post( $post_id );
 			$image_types = array( 'image/jpeg', 'image/png', 'image/gif', 'image/jpg' );
 			if ( in_array( $post->post_mime_type, $image_types ) ) {
-				$attachment = new Timber\Image( $post_id );
+				$attachment = new Image( $post_id );
 				if ( $attachment->file_loc ) {
 					self::delete_generated_files( $attachment->file_loc );
 				}
@@ -211,8 +211,8 @@ class ImageHelper {
 	 *	                            or: http://example.org/wp-content/uploads/2015/my-pic.jpg
 	 */
 	static function delete_generated_files( $local_file ) {
-		if (Timber\URLHelper::is_absolute( $local_file ) ) {
-			$local_file = Timber\URLHelper::url_to_file_system( $local_file );
+		if (URLHelper::is_absolute( $local_file ) ) {
+			$local_file = URLHelper::url_to_file_system( $local_file );
 		}
 		$info = pathinfo( $local_file );
 		$dir = $info['dirname'];
@@ -296,7 +296,7 @@ class ImageHelper {
 	public static function sideload_image( $file ) {
 		$loc = self::get_sideloaded_file_loc( $file );
 		if ( file_exists( $loc ) ) {
-			return Timber\URLHelper::preslashit( Timber\URLHelper::get_rel_path( $loc ) );
+			return URLHelper::preslashit( URLHelper::get_rel_path( $loc ) );
 		}
 		// Download file to temp location
 		if ( !function_exists( 'download_url' ) ) {
@@ -329,7 +329,7 @@ class ImageHelper {
 	private static function analyze_url($url) {
 		$result = array(
 			'url' => $url, // the initial url
-			'absolute' => Timber\URLHelper::is_absolute($url), // is the url absolute or relative (to home_url)
+			'absolute' => URLHelper::is_absolute($url), // is the url absolute or relative (to home_url)
 			'base' => 0, // is the image in uploads dir, or in content dir (theme or plugin)
 			'subdir' => '', // the path between base (uploads or content) and file
 			'filename' => '', // the filename, without extension
@@ -444,7 +444,7 @@ class ImageHelper {
 		$external = false;
 
 		// if external image, load it first
-		if ( Timber\URLHelper::is_external_content( $src ) ) {
+		if ( URLHelper::is_external_content( $src ) ) {
 			$src = self::sideload_image( $src );
 			$external = true;
 		}
@@ -494,7 +494,7 @@ class ImageHelper {
 //
 	static function get_letterbox_file_url($url, $w, $h, $color) {
 		$au = self::analyze_url($url);
-		$op = new Timber\Image\Operation\Letterbox($w, $h, $color);
+		$op = new Image\Operation\Letterbox($w, $h, $color);
 		$new_url = self::_get_file_url(
 			$au['base'],
 			$au['subdir'],
@@ -505,7 +505,7 @@ class ImageHelper {
 	}
 	public static function get_letterbox_file_path($url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
-		$op = new Timber\Image\Operation\Letterbox($w, $h, $color);
+		$op = new Image\Operation\Letterbox($w, $h, $color);
 		$new_path = self::_get_file_path(
 			$au['base'],
 			$au['subdir'],
@@ -515,7 +515,7 @@ class ImageHelper {
 	}
 	static function get_resize_file_url($url, $w, $h, $crop) {
 		$au = self::analyze_url($url);
-		$op = new Timber\Image\Operation\Resize($w, $h, $crop);
+		$op = new Image\Operation\Resize($w, $h, $crop);
 		$new_url = self::_get_file_url(
 			$au['base'],
 			$au['subdir'],
@@ -526,7 +526,7 @@ class ImageHelper {
 	}
 	static function get_resize_file_path($url, $w, $h, $crop) {
 		$au = self::analyze_url($url);
-		$op = new Timber\Image\Operation\Resize($w, $h, $crop);
+		$op = new Image\Operation\Resize($w, $h, $crop);
 		$new_path = self::_get_file_path(
 			$au['base'],
 			$au['subdir'],

@@ -46,10 +46,10 @@ use Timber\Post;
  * </nav>
  * ```
  */
-class Menu extends Timber\Core {
+class Menu extends Core {
 
-	public $MenuItemClass = 'Timber\MenuItem';
-	public $PostClass = 'Timber\Post';
+	public $MenuItemClass = 'MenuItem';
+	public $PostClass = 'Post';
 
 	/**
 	 * @api

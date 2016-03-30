@@ -40,10 +40,10 @@ use Timber\URLHelper;
  * </ul>
  * ```
  */
-class Term extends Timber\Core implements Timber\CoreInterface {
+class Term extends Core implements CoreInterface {
 
-	public $PostClass = 'Timber\Post';
-	public $TermClass = 'Timber\Term';
+	public $PostClass = 'Post';
+	public $TermClass = 'Term';
 
 	public $object_type = 'term';
 	public static $representation = 'term';
@@ -231,7 +231,7 @@ class Term extends Timber\Core implements Timber\CoreInterface {
 	 */
 	public function get_path() {
 		$link = $this->get_link();
-		$rel = Timber\URLHelper::get_rel_url($link, true);
+		$rel = URLHelper::get_rel_url($link, true);
 		$rel = apply_filters('timber_term_path', $rel, $this);
 		return apply_filters('timber/term/path', $rel, $this);
 	}
@@ -305,7 +305,7 @@ class Term extends Timber\Core implements Timber\CoreInterface {
 		if ( !isset($this->_children) ) {
 			$children = get_term_children($this->ID, $this->taxonomy);
 			foreach ($children as &$child) {
-				$child = new Timber\Term($child);
+				$child = new Term($child);
 			}
 			$this->_children = $children;
 		}
