@@ -280,7 +280,7 @@ class Timber {
 	 * @return bool|string
 	 */
 	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
-		$output = static::fetch( $filenames, $data, $expires, $cache_mode );
+		$output = self::fetch( $filenames, $data, $expires, $cache_mode );
 		echo $output;
 		return $output;
 	}
@@ -425,12 +425,35 @@ class Timber {
 	 * @return string
 	 */
 	public static function get_calling_script_dir( $offset = 0 ) {
-		$func = __FUNCTION__;
-		$caller = self::$func( $offset );
+		$caller = self::get_calling_script_file( $offset );
 		if ( !is_null( $caller ) ) {
 			$pathinfo = pathinfo( $caller );
 			$dir = $pathinfo['dirname'];
 			return $dir;
 		}
+	}
+
+	/**
+	 * Get calling script file.
+	 *
+	 * @param int     $offset
+	 * @return string|null
+	 * @deprecated since 0.20.0
+	 */
+	public static function get_calling_script_file( $offset = 0 ) {
+		$caller = null;
+		$backtrace = debug_backtrace();
+		$i = 0;
+		foreach ( $backtrace as $trace ) {
+			if ( array_key_exists('file', $trace) && $trace['file'] != __FILE__ ) {
+				$caller = $trace['file'];
+				break;
+			}
+			$i++;
+		}
+		if ( $offset ) {
+			$caller = $backtrace[$i + $offset]['file'];
+		}
+		return $caller;
 	}
 }
