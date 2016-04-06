@@ -12,7 +12,6 @@ use Timber\Helper;
 use Timber\URLHelper;
 use Timber\PostGetter;
 
-
 /**
  * This is the object you use to access or extend WordPress posts. Think of it as Timber's (more accessible) version of WP_Post. This is used throughout Timber to represent posts retrieved from WordPress making them available to Twig templates. See the PHP and Twig examples for an example of what it's like to work with this object in your code.
  * @example
@@ -46,7 +45,7 @@ use Timber\PostGetter;
  * @package Timber
  */
 class Post extends Core implements CoreInterface {
-
+	
 	/**
 	 * @var string $ImageClass the name of the class to handle images by default
 	 */
@@ -168,6 +167,8 @@ class Post extends Core implements CoreInterface {
 	 * @param mixed $pid
 	 */
 	public function __construct($pid = null) {
+		$this->namespacing();
+
 		$pid = $this->determine_id( $pid );
 		$this->init($pid);
 	}

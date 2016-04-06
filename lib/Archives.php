@@ -37,7 +37,7 @@ use Timber\URLHelper;
  * ```
  */
 class Archives extends Core {
-
+	
 	public $base = '';
 	/**
 	 * @api
@@ -61,6 +61,8 @@ class Archives extends Core {
 	 * @param string $base any additional paths that need to be prepended to the URLs that are generated, for example: "tags"
 	 */
 	function __construct( $args = null, $base = '' ) {
+
+
 		$this->init($args, $base);
 	}
 

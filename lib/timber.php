@@ -47,6 +47,7 @@ class Timber {
 			return;
 		}
 		$this->test_compatibility();
+		$this->backwards_compatibility();
 		$this->init_constants();
 		$this->init();
 	}
@@ -65,6 +66,15 @@ class Timber {
 		}
 		if ( !class_exists( 'Twig_Autoloader' ) ) {
 			trigger_error( 'You have not run "composer install" to download required dependencies for Timber, you can read more on https://github.com/timber/timber#installation', E_USER_ERROR );
+		}
+	}
+
+	private function backwards_compatibility() {
+		$names = array('Archives', 'Comment', 'Core', 'FunctionWrapper', 'Helper', 'Image', 'ImageHelper', 'Integrations', 'Loader', 'Menu', 'MenuItem', 'Post', 'PostGetter', 'PostsCollection', 'QueryIterator', 'Request', 'Site', 'Term', 'TermGetter', 'Theme', 'Twig', 'URLHelper', 'User');
+
+		class_alias(get_class($this), 'Timber');
+		foreach($names as $name) {
+			class_alias('Timber\\' . $name, 'Timber' . $name);
 		}
 	}
 
