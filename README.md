@@ -1,7 +1,7 @@
 <div style="text-align:center">
 <a href="http://timber.github.io/timber"><img src="http://i.imgur.com/oM1AHrz.jpg" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
 <div>
-By Jared Novack (<a href="http://twitter.com/jarednova">@JaredNova</a>) and <a href="http://upstatement.com">Upstatement</a> (<a href="http://twitter.com/upstatement">@Upstatement</a>)</div>
+By Jared Novack (<a href="https://twitter.com/jarednova">@JaredNova</a>) and <a href="http://upstatement.com">Upstatement</a> (<a href="https://twitter.com/upstatement">@Upstatement</a>)</div>
 </div>
 
 [![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.org/timber/timber)
@@ -35,7 +35,7 @@ This is what Timber's `.twig` files look like:
 Once Timber is installed and activated in your plugin directory, it gives any WordPress theme the ability to take advantage of the power of Twig and other Timber features.
 
 ### Looking for docs?
-* [Timber Documentation](https://github.com/timber/timber/wiki/)
+* [Timber Documentation](https://github.com/timber/timber/wiki)
 * [Twig Reference](http://twig.sensiolabs.org/doc/templates.html)
 * [Video Tutorials](https://github.com/timber/timber/wiki/Video-Tutorials)
 * [Overview / Getting Started Guide](https://github.com/timber/timber/wiki/getting-started)
@@ -44,7 +44,7 @@ Once Timber is installed and activated in your plugin directory, it gives any Wo
 
 ### Installation
 
-The GitHub version of Timber requires [Composer](https://getcomposer.org/download/). If you'd prefer one-click installation, you should use the [WordPress.org](http://wordpress.org/plugins/timber-library/) version.
+The GitHub version of Timber requires [Composer](https://getcomposer.org/download/). If you'd prefer one-click installation, you should use the [WordPress.org](https://wordpress.org/plugins/timber-library/) version.
 
 ```shell
 composer require timber/timber
@@ -72,10 +72,10 @@ Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https:
 Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because while our entire team needs to participate in building WordPress sites, not everyone knows the ins-and-outs of the_loop(),  codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .twig files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
 
 #### Related Projects
-* [**Timber Starter Theme**](https://github.com/timber/timber-starter-theme) The "_s" of Timber to give you an easy start to the most basic theme you can build upon and customize.
+* [**Timber Starter Theme**](https://github.com/timber/starter-theme) The "_s" of Timber to give you an easy start to the most basic theme you can build upon and customize.
 * [**Timber Debug Bar**](https://github.com/timber/debug-bar-timber) Adds a debug bar panel that will show you which template is in-use and the data sent to your twig file.
 * [**TimberPhoton**](https://github.com/slimndap/TimberPhoton) Plug-in to use JetPack's free Photon image manipulation and CDN with Timber.
-* [**Timber Sugar**](https://github.com/timber/timber-sugar) A catch-all for goodies to use w Timber.
+* [**Timber Sugar**](https://github.com/timber/sugar) A catch-all for goodies to use w Timber.
 * [**Timmy**](https://github.com/MINDKomm/Timmy) Advanced image manipulation for Timber.
 * [**Twig**](https://github.com/fabpot/Twig) The template language used by Timber.
 
