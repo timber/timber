@@ -42,7 +42,7 @@ use Timber\URLHelper;
  */
 class Term extends Core implements CoreInterface {
 
-	public $PostClass = 'Post';
+	public $PostClass = 'Timber\Post';
 	public $TermClass = 'Term';
 
 	public $object_type = 'term';

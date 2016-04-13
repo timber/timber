@@ -94,7 +94,7 @@ class Twig {
 		$twig->addFunction( new \Twig_SimpleFunction( 'shortcode', 'do_shortcode' ) );
 
 		/* TimberObjects */
-		$twig->addFunction( new \Twig_SimpleFunction( 'TimberPost', function ( $pid, $PostClass = 'Post' ) {
+		$twig->addFunction( new \Twig_SimpleFunction( 'TimberPost', function ( $pid, $PostClass = 'Timber\Post' ) {
 					if ( is_array( $pid ) && !Helper::is_array_assoc( $pid ) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $PostClass( $p );
@@ -103,7 +103,7 @@ class Twig {
 					}
 					return new $PostClass( $pid );
 				} ) );
-		$twig->addFunction( new \Twig_SimpleFunction( 'Image', function ( $pid = false, $ImageClass = 'TimberImage' ) {
+		$twig->addFunction( new \Twig_SimpleFunction( 'Image', function ( $pid = false, $ImageClass = 'Timber\Image' ) {
 					if ( is_array( $pid ) && !Helper::is_array_assoc( $pid ) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $ImageClass( $p );
@@ -112,7 +112,7 @@ class Twig {
 					}
 					return new $ImageClass( $pid );
 				} ) );
-		$twig->addFunction( new \Twig_SimpleFunction( 'Term', function ( $pid, $TermClass = 'TimberTerm' ) {
+		$twig->addFunction( new \Twig_SimpleFunction( 'Term', function ( $pid, $TermClass = 'Timber\Term' ) {
 					if ( is_array( $pid ) && !Helper::is_array_assoc( $pid ) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $TermClass( $p );
@@ -121,7 +121,7 @@ class Twig {
 					}
 					return new $TermClass( $pid );
 				} ) );
-		$twig->addFunction( new \Twig_SimpleFunction( 'User', function ( $pid, $UserClass = 'User' ) {
+		$twig->addFunction( new \Twig_SimpleFunction( 'User', function ( $pid, $UserClass = 'Timber\User' ) {
 					if ( is_array( $pid ) && !Helper::is_array_assoc( $pid ) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $UserClass( $p );
@@ -132,7 +132,7 @@ class Twig {
 				} ) );
 
 		/* TimberObjects Alias */
-		$twig->addFunction( new \Twig_SimpleFunction( 'Post', function ( $pid, $PostClass = 'Post' ) {
+		$twig->addFunction( new \Twig_SimpleFunction( 'Post', function ( $pid, $PostClass = 'Timber\Post' ) {
 					if ( is_array( $pid ) && !Helper::is_array_assoc( $pid ) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $PostClass( $p );
@@ -141,7 +141,7 @@ class Twig {
 					}
 					return new $PostClass( $pid );
 				} ) );
-		$twig->addFunction( new \Twig_SimpleFunction( 'Image', function ( $pid, $ImageClass = 'Image' ) {
+		$twig->addFunction( new \Twig_SimpleFunction( 'Image', function ( $pid, $ImageClass = 'Timber\Image' ) {
 					if ( is_array( $pid ) && !Helper::is_array_assoc( $pid ) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $ImageClass( $p );
@@ -150,7 +150,7 @@ class Twig {
 					}
 					return new $ImageClass( $pid );
 				} ) );
-		$twig->addFunction( new \Twig_SimpleFunction( 'Term', function ( $pid, $TermClass = 'Term' ) {
+		$twig->addFunction( new \Twig_SimpleFunction( 'Term', function ( $pid, $TermClass = 'Timber\Term' ) {
 					if ( is_array( $pid ) && !Helper::is_array_assoc( $pid ) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $TermClass( $p );
@@ -159,7 +159,7 @@ class Twig {
 					}
 					return new $TermClass( $pid );
 				} ) );
-		$twig->addFunction( new \Twig_SimpleFunction( 'User', function ( $pid, $UserClass = 'User' ) {
+		$twig->addFunction( new \Twig_SimpleFunction( 'User', function ( $pid, $UserClass = 'Timber\User' ) {
 					if ( is_array( $pid ) && !Helper::is_array_assoc( $pid ) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $UserClass( $p );
