@@ -1,6 +1,6 @@
 <?php
 
-namespace Timber;
+namespace Timber\Integratons;
 
 if (!class_exists('WP_CLI_Command')) {
 	return;

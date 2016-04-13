@@ -49,12 +49,12 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * @var string $ImageClass the name of the class to handle images by default
 	 */
-	public $ImageClass = 'Image';
+	public $ImageClass = 'Timber\Image';
 
 	/**
 	 * @var string $PostClass the name of the class to handle posts by default
 	 */
-	public $PostClass = 'Post';
+	public $PostClass = 'Timber\Post';
 
 	/**
 	 * @var string $TermClass the name of the class to handle terms by default
@@ -479,6 +479,7 @@ class Post extends Core implements CoreInterface {
 		if ( function_exists('get_post_thumbnail_id') ) {
 			$tid = get_post_thumbnail_id($this->ID);
 			if ( $tid ) {
+				//return new Image($tid);
 				return new $this->ImageClass($tid);
 			}
 		}

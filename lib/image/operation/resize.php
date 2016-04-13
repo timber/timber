@@ -68,7 +68,7 @@ class Resize extends ImageOperation {
 		if ( !class_exists('Imagick') ) {
 			return false;
 		}
-		$image = new Imagick($load_filename);
+		$image = new \Imagick($load_filename);
 		$image = $image->coalesceImages();
 		$crop = self::get_target_sizes( $load_filename );
 		foreach ($image as $frame) {

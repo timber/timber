@@ -1,6 +1,8 @@
 <?php
 
-namespace Timber;
+namespace Timber\Integrations;
+
+use Timber\Loader;
 
 /**
  * These are methods that can be executed by WPCLI, other CLI mechanism or other external controllers
@@ -26,12 +28,12 @@ class Command {
     }
 
     static function clear_cache_timber(){
-        $loader = new TimberLoader();
+        $loader = new Loader();
         return $loader->clear_cache_timber();
     }
 
     static function clear_cache_twig(){
-        $loader = new TimberLoader();
+        $loader = new Loader();
         return $loader->clear_cache_twig();
     }
 
