@@ -70,8 +70,11 @@ class Timber {
 	}
 
 	private function backwards_compatibility() {
-		$names = array('Archives', 'Comment', 'Core', 'FunctionWrapper', 'Helper', 'Image', 'ImageHelper', 'Integrations', 'Loader', 'Menu', 'MenuItem', 'Post', 'PostGetter', 'PostsCollection', 'QueryIterator', 'Request', 'Site', 'Term', 'TermGetter', 'Theme', 'Twig', 'URLHelper', 'User');
-
+		if (class_exists('TimberArchives')) {
+			//already run, so bail
+			return;
+		}
+		$names = array('Admin', 'Archives', 'Comment', 'Core', 'FunctionWrapper', 'Helper', 'Image', 'ImageHelper', 'Integrations', 'Loader', 'Menu', 'MenuItem', 'Post', 'PostGetter', 'PostsCollection', 'QueryIterator', 'Request', 'Site', 'Term', 'TermGetter', 'Theme', 'Twig', 'URLHelper', 'User');
 		class_alias(get_class($this), 'Timber');
 		foreach($names as $name) {
 			class_alias('Timber\\' . $name, 'Timber' . $name);

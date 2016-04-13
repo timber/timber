@@ -2,13 +2,14 @@
 
 namespace Timber;
 
-use Timber\ACF;
+use Timber\Integrations\ACF;
 
 /**
  * This is for integrating external plugins into timber
  * @package  timber
  */
 class Integrations {
+    
     public static function init() {
 
         add_action( 'init', array( __CLASS__, 'maybe_init_acftimber' ) );

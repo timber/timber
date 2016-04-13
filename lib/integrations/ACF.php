@@ -1,6 +1,6 @@
 <?php
 
-namespace Timber;
+namespace Timber\Integrations;
 
 class ACF {
 
