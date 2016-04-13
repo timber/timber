@@ -1,5 +1,7 @@
 <?php
 
+use Timber\Image\Operation as ImageOperation;
+
 class TestTimberImage extends TimberImage_UnitTestCase {
 
 /* ----------------
@@ -382,9 +384,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$pixel_rgb = imagecolorat( $image, $x, $y );
 		$colors_of_file = imagecolorsforindex( $image, $pixel_rgb );
 		if ($upper_color) {
-			$upper_colors = TimberImageOperation::hexrgb($upper_color);
+			$upper_colors = ImageOperation::hexrgb($upper_color);
 		}
-		$test_colors = TimberImageOperation::hexrgb($color);
+		$test_colors = ImageOperation::hexrgb($color);
 		if ( isset($upper_colors) && $upper_colors ) {
 			if (self::checkChannel('red', $test_colors, $colors_of_file, $upper_colors) &&
 				self::checkChannel('green', $test_colors, $colors_of_file, $upper_colors) &&

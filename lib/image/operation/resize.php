@@ -2,6 +2,8 @@
 
 namespace Timber\Image\Operation;
 
+use Timber\Image\Operation as ImageOperation;
+
 /**
 	 * Changes image to new size, by shrinking/enlarging
 	 * then cropping to respect new ratio.
@@ -11,7 +13,7 @@ namespace Timber\Image\Operation;
 	 * - height of new image
 	 * - crop method
 	 */
-class Resize extends TimberImageOperation {
+class Resize extends ImageOperation {
 
    private $w, $h, $crop;
 
@@ -166,7 +168,7 @@ class Resize extends TimberImageOperation {
 	 */
 	public function run($load_filename, $save_filename) {
 		//should be resized by gif resizer
-		if ( TimberImageHelper::is_animated_gif($load_filename) ) {
+		if ( \Timber\ImageHelper::is_animated_gif($load_filename) ) {
 			//attempt to resize
 			//return if successful
 			//proceed if not

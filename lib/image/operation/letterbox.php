@@ -2,6 +2,8 @@
 
 namespace Timber\Image\Operation;
 
+use Timber\Image\Operation as ImageOperation;
+
 /*
  * Changes image to new size, by shrinking/enlarging then padding with colored bands,
  * so that no part of the image is cropped or stretched.
@@ -11,7 +13,7 @@ namespace Timber\Image\Operation;
  * - height of new image
  * - color of padding
  */
-class Letterbox extends TimberImageOperation {
+class Letterbox extends ImageOperation {
 
 	private $w, $h, $color;
 

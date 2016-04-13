@@ -2,6 +2,8 @@
 
 namespace Timber\Image\Operation;
 
+use Timber\Image\Operation as ImageOperation;
+
 /**
  * Contains the class for running image retina-izing operations
  */
@@ -12,7 +14,7 @@ namespace Timber\Image\Operation;
  * - factor by which to multiply image dimensions
  * @property float $factor the factor (ex: 2, 1.5, 1.75) to multiply dimension by
  */
-class Retina extends TimberImageOperation {
+class Retina extends ImageOperation {
 
     private $factor;
 

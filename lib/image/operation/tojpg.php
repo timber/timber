@@ -2,12 +2,14 @@
 
 namespace Timber\Image\Operation;
 
+use Timber\Image\Operation as ImageOperation;
+
 /**
  * Implements converting a PNG file to JPG.
  * Argument:
  * - color to fill transparent zones
  */
-class ToJpg extends TimberImageOperation {
+class ToJpg extends ImageOperation {
 
 	private $color;
 

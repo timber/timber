@@ -149,7 +149,7 @@ class ImageHelper {
 	 * @return mixed|null|string
 	 */
 	public static function letterbox( $src, $w, $h, $color = '#000000', $force = false ) {
-		$op = new Image\Operation\Letterbox($w, $h, $color);
+		$op = new Letterbox($w, $h, $color);
 		return self::_operate($src, $op, $force);
 	}
 
