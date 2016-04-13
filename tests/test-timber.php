@@ -10,13 +10,13 @@ class TestTimber extends Timber_UnitTestCase {
 	function testGetPostNumeric(){
 		$post_id = $this->factory->post->create();
 		$post = Timber::get_post($post_id);
-		$this->assertEquals('TimberPost', get_class($post));
+		$this->assertEquals('Timber\Post', get_class($post));
 	}
 
 	function testGetPostString(){
 		$this->factory->post->create();
 		$post = Timber::get_post('post_type=post');
-		$this->assertEquals('TimberPost', get_class($post));
+		$this->assertEquals('Timber\Post', get_class($post));
 	}
 
 	function testGetPostBySlug(){
@@ -36,7 +36,7 @@ class TestTimber extends Timber_UnitTestCase {
 		$this->factory->post->create();
 		$query = array('post_type' => 'post');
 		$posts = Timber::get_posts($query);
-		$this->assertEquals('TimberPost', get_class($posts[0]));
+		$this->assertEquals('Timber\Post', get_class($posts[0]));
 	}
 
 	function testGetPostsFromSlugWithHash(){
@@ -68,7 +68,7 @@ class TestTimber extends Timber_UnitTestCase {
 		$this->factory->post->create();
 		$posts = Timber::get_posts('post_type=post');
 		$post = $posts[0];
-		$this->assertEquals('TimberPost', get_class($post));
+		$this->assertEquals('Timber\Post', get_class($post));
 	}
 
 	function testGetPostsFromArrayOfIds(){
@@ -77,7 +77,7 @@ class TestTimber extends Timber_UnitTestCase {
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
 		$posts = Timber::get_posts($pids);
-		$this->assertEquals('TimberPost', get_class($posts[0]));
+		$this->assertEquals('Timber\Post', get_class($posts[0]));
 	}
 
 	function testGetPostsArrayCount(){
@@ -124,7 +124,7 @@ class TestTimber extends Timber_UnitTestCase {
 		}
 		sort($tags);
 		$terms = Timber::get_terms('tag');
-		$this->assertEquals('TimberTerm', get_class($terms[0]));
+		$this->assertEquals('Timber\Term', get_class($terms[0]));
 		$results = array();
 		foreach($terms as $term){
 			$results[] = $term->name;

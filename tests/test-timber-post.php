@@ -5,7 +5,7 @@
 		function testPostObject(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost($post_id);
-			$this->assertEquals('TimberPost', get_class($post));
+			$this->assertEquals('Timber\Post', get_class($post));
 			$this->assertEquals($post_id, $post->ID);
 		}
 

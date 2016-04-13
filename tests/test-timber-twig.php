@@ -170,7 +170,7 @@
 			$pid = $this->factory->post->create(array('post_title' => 'Foo'));
 			$post = new TimberPost( $pid );
 			$str = 'I am a {{post | get_class }}';
-			$this->assertEquals('I am a TimberPost', Timber::compile_string($str, array('post' => $post)));
+			$this->assertEquals('I am a Timber\Post', Timber::compile_string($str, array('post' => $post)));
 		}
 
 		function testFilterTruncate() {

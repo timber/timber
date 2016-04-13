@@ -5,7 +5,7 @@
 		function testTerm() {
 			$term_id = $this->factory->term->create();
 			$term = new TimberTerm($term_id);
-			$this->assertEquals('TimberTerm', get_class($term));
+			$this->assertEquals('Timber\Term', get_class($term));
 		}
 
 		function testGetTermWithObject() {
@@ -14,7 +14,7 @@
 			$this->assertTrue( in_array( get_class($term_data), array('WP_Term', 'stdClass') ) );
 			$term = new TimberTerm($term_id);
 			$this->assertEquals('Famous Commissioners', $term->name());
-			$this->assertEquals('TimberTerm', get_class($term));
+			$this->assertEquals('Timber\Term', get_class($term));
 		}
 
 		function testTermConstructWithSlug() {
