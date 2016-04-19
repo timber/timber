@@ -1026,7 +1026,30 @@ class Post extends Core implements CoreInterface {
 			}
 		}
 		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
+		$value = $this->convert($value);
 		return $value;
+	}
+
+	/**
+	 * Finds any WP_Post objects and converts them to Timber\Posts
+	 * @param array $data
+	 */
+	public function convert($data) {
+		if(is_array($data)) {
+			$class = __CLASS__;
+			$func = __FUNCTION__;
+			foreach($data as &$ele) {
+				if(gettype($ele) === 'array') {
+					$ele = $this->$func($ele);
+				} else {
+					if($ele instanceof WP_Post) {
+						$ele = new $class($ele);
+					}
+				}
+			}
+		}
+
+		return $data;
 	}
 
 	/**
