@@ -2,9 +2,11 @@
 
 namespace Timber;
 
-use Timber\Post;
-use Timber\Helper;
 use Timber\CoreInterface;
+use Timber\Helper;
+use Timber\Post;
+use Timber\URLHelper;
+
 
 /**
  * If TimberPost is the class you're going to spend the most time, TimberImage is the class you're going to have the most fun with.
@@ -305,8 +307,8 @@ class Image extends Post implements CoreInterface {
 	protected function init_with_url($url) {
 		$this->abs_url = $url;
 		if ( URLHelper::is_local($url) ) {
-			$this->file = ABSPATH . URLHelper::get_rel_url($url);
-			$this->file_loc = ABSPATH . URLHelper::get_rel_url($url);
+			$this->file = URLHelper::remove_double_slashes(ABSPATH . URLHelper::get_rel_url($url));
+			$this->file_loc = URLHelper::remove_double_slashes(ABSPATH . URLHelper::get_rel_url($url));
 		}
 	}
 
@@ -418,7 +420,9 @@ class Image extends Post implements CoreInterface {
 	 * @return bool|string
 	 */
 	public function src($size = '') {
+		error_log('423...');
 		if ( isset($this->abs_url) ) {
+			error_log('abs');
 			return $this->_maybe_secure_url($this->abs_url);
 		}
 
@@ -430,6 +434,8 @@ class Image extends Post implements CoreInterface {
 		if ( !isset($this->file) && isset($this->_wp_attached_file) ) {
 			$this->file = $this->_wp_attached_file;
 		}
+
+		error_log('here!!!');
 
 		if ( !isset($this->file) ) {
 			return false;
