@@ -193,6 +193,14 @@ class Helper {
 	}
 
 	/**
+	 * @param string $message that you want to output
+	 * @return void
+	 */
+	public static function warn( $message )  {
+		return trigger_error($message, E_WARNING);
+	}
+	
+	/**
 	 *
 	 *
 	 * @param string  $separator

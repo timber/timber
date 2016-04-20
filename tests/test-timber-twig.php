@@ -162,7 +162,7 @@
 		function testTwigString() {
 			$str = 'Foo';
 			$arr = array('Bar', 'Quack');
-			$twig = '{{string|string}}x{{array|string("x")}}';
+			$twig = '{{string|join}}x{{array|join("x")}}';
 			$this->assertEquals('FooxBarxQuack', trim(Timber::compile_string($twig, array('string' => $str, 'array' => $arr))));
 		}
 

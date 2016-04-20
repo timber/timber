@@ -1439,4 +1439,11 @@ class Post extends Core implements CoreInterface {
 		return $this->get_title();
 	}
 
+	/**
+	*/
+	public function permalink() {
+		trigger_error('post.permalink has been removed, please use post.link', E_WARNING);
+		return $this->link();
+	}
+
 }
