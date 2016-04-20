@@ -212,6 +212,18 @@ class Site extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @deprecated 0.21.9
+	 * @internal
+	 * @return string
+	 */
+	function get_link() {
+		
+		Helper::warn('{{site.get_link}} is deprecated, use {{site.link}}');
+		return $this->link();
+	}
+
+
+	/**
 	 * @ignore
 	 */
 	public function meta( $field ) {
@@ -241,7 +253,17 @@ class Site extends Core implements CoreInterface {
 	 * @return string
 	 */
 	function url() {
-		return $this->get_link();
+		return $this->link();
+	}
+
+	/**
+	 * @deprecated 0.21.9
+	 * @internal
+	 * @return string
+	 */
+	function get_url() {
+		Helper::warn('{{site.get_url}} is deprecated, use {{site.link}} instead');
+		return $this->link();
 	}
 
 }

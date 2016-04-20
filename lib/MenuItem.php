@@ -260,6 +260,18 @@ class MenuItem extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Gets the link a menu item points at
+	 * @internal
+	 * @deprecated since 0.21.7 use link instead
+	 * @see link()
+	 * @return string a full URL like http://mysite.com/thing/
+	 */
+	public function permalink() {
+		Helper::warn('{{item.permalink}} is deprecated, use {{item.link}} instead');
+		return $this->link();
+	}
+
+	/**
 	 * Return the relative path of a Menu Item's link
 	 * @example
 	 * ```twig

@@ -423,9 +423,9 @@ class Post extends Core implements CoreInterface {
 			}
 			$read_more_class = apply_filters('timber/post/get_preview/read_more_class', "read-more");
 			if ( $readmore && isset($readmore_matches) && !empty($readmore_matches[1]) ) {
-				$text .= ' <a href="' . $this->get_permalink() . '" class="'.$read_more_class .'">' . trim($readmore_matches[1]) . '</a>';
+				$text .= ' <a href="' . $this->link() . '" class="'.$read_more_class .'">' . trim($readmore_matches[1]) . '</a>';
 			} elseif ( $readmore ) {
-				$text .= ' <a href="' . $this->get_permalink() . '" class="'.$read_more_class .'">' . trim($readmore) . '</a>';
+				$text .= ' <a href="' . $this->link() . '" class="'.$read_more_class .'">' . trim($readmore) . '</a>';
 			}
 			if ( !$strip && $last_p_tag && ( strpos($text, '<p>') || strpos($text, '<p ') ) ) {
 				$text .= '</p>';
@@ -473,29 +473,21 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * @internal
 	 * @see TimberPost::thumbnail
+	 * @deprecated since 1.0
 	 * @return null|TimberImage
 	 */
 	function get_thumbnail() {
-		if ( function_exists('get_post_thumbnail_id') ) {
-			$tid = get_post_thumbnail_id($this->ID);
-			if ( $tid ) {
-				//return new Image($tid);
-				return new $this->ImageClass($tid);
-			}
-		}
+		return $this->thumbnail();
 	}
 
 	/**
 	 * @internal
 	 * @see TimberPost::link
+	 * @deprecated since 1.0
 	 * @return string
 	 */
 	function get_permalink() {
-		if ( isset($this->_permalink) ) {
-			return $this->_permalink;
-		}
-		$this->_permalink = get_permalink($this->ID);
-		return $this->_permalink;
+		return $this->link();
 	}
 
 	/**
@@ -503,6 +495,7 @@ class Post extends Core implements CoreInterface {
 	 * In your templates you should use link:
 	 * <a href="{{post.link}}">Read my post</a>
 	 * @internal
+	 * @deprecated since 1.0
 	 * @return string
 	 */
 	function get_link() {
@@ -586,15 +579,17 @@ class Post extends Core implements CoreInterface {
 	 * For example, where {{post.link}} would return "http://example.org/2015/07/04/my-cool-post"
 	 * this will return the relative version: "/2015/07/04/my-cool-post"
 	 * @internal
+	 * @deprecated since 1.0
 	 * @return string
 	 */
 	function get_path() {
-		return URLHelper::get_rel_url($this->get_link());
+		return $this->path();
 	}
 
 	/**
 	 * Get the next post in WordPress's ordering
 	 * @internal
+	 * @deprecated since 1.0
 	 * @param bool $taxonomy
 	 * @return TimberPost|boolean
 	 */
@@ -619,18 +614,17 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Get the parent post of the post
 	 * @internal
+	 * @deprecated since 1.0
 	 * @return bool|TimberPost
 	 */
 	function get_parent() {
-		if ( !$this->post_parent ) {
-			return false;
-		}
-		return new $this->PostClass($this->post_parent);
+		return $this->parent();
 	}
 
 	/**
 	 * Gets a User object from the author of the post
 	 * @internal
+	 * @deprecated since 1.0
 	 * @see TimberPost::author
 	 * @return bool|TimberUser
 	 */
@@ -931,6 +925,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Outputs the title with filters applied
 	 * @internal
+	 * @deprecated since 1.0
 	 * @example
 	 * ```twig
 	 * <h1>{{post.get_title}}</h1>
@@ -941,7 +936,7 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	function get_title() {
-		return apply_filters('the_title', $this->post_title, $this->ID);
+		return $this->title();
 	}
 
 	/**
@@ -1038,10 +1033,11 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * @internal
+	 * @deprecated since 1.0
 	 * @return mixed
 	 */
 	function get_format() {
-		return get_post_format($this->ID);
+		return $this->format();
 	}
 
 	/**
@@ -1282,7 +1278,7 @@ class Post extends Core implements CoreInterface {
 	 * @return mixed
 	 */
 	public function format() {
-		return $this->get_format();
+		return get_post_format($this->ID);
 	}
 
 	/**
@@ -1295,7 +1291,11 @@ class Post extends Core implements CoreInterface {
 	 * @return string ex: http://example.org/2015/07/my-awesome-post
 	 */
 	public function link() {
-		return $this->get_permalink();
+		if ( isset($this->_permalink) ) {
+			return $this->_permalink;
+		}
+		$this->_permalink = get_permalink($this->ID);
+		return $this->_permalink;
 	}
 
 	/**
@@ -1359,7 +1359,10 @@ class Post extends Core implements CoreInterface {
 	 * @return bool|TimberPost
 	 */
 	public function parent() {
-		return $this->get_parent();
+		if ( !$this->post_parent ) {
+			return false;
+		}
+		return new $this->PostClass($this->post_parent);
 	}
 
 	/**
@@ -1373,7 +1376,7 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function path() {
-		return $this->get_path();
+		return URLHelper::get_rel_url($this->get_link());
 	}
 
 	/**
@@ -1423,7 +1426,13 @@ class Post extends Core implements CoreInterface {
 	 * @return TimberImage|null of your thumbnail
 	 */
 	public function thumbnail() {
-		return $this->get_thumbnail();
+		if ( function_exists('get_post_thumbnail_id') ) {
+			$tid = get_post_thumbnail_id($this->ID);
+			if ( $tid ) {
+				//return new Image($tid);
+				return new $this->ImageClass($tid);
+			}
+		}
 	}
 
 	/**
@@ -1436,13 +1445,15 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function title() {
-		return $this->get_title();
+		return apply_filters('the_title', $this->post_title, $this->ID);
 	}
 
 	/**
-	*/
+	 * @deprecated 0.20.0 use link() instead
+	 * @return string
+	 */
 	public function permalink() {
-		trigger_error('post.permalink has been removed, please use post.link', E_WARNING);
+		Helper::warn('post.permalink has been removed, please use post.link');
 		return $this->link();
 	}
 

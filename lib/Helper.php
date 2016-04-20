@@ -197,7 +197,7 @@ class Helper {
 	 * @return void
 	 */
 	public static function warn( $message )  {
-		return trigger_error($message, E_WARNING);
+		return trigger_error($message, E_USER_WARNING);
 	}
 	
 	/**
