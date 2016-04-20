@@ -10,7 +10,6 @@ abstract class Core {
 
     /**
      *
-     *
      * @return boolean
      */
     function __isset( $field ) {
