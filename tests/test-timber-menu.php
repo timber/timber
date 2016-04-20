@@ -13,9 +13,6 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( 'home', $item->slug() );
 		$this->assertFalse( $item->is_external() );
 		$struc = get_option( 'permalink_structure' );
-		$this->assertEquals( 'http://example.org/home/', $item->permalink() );
-		$this->assertEquals( 'http://example.org/home/', $item->get_permalink() );
-		$this->assertEquals( 'http://example.org/home/', $item->url );
 		$this->assertEquals( 'http://example.org/home/', $item->link() );
 		$this->assertEquals( '/home/', $item->path() );
 	}
@@ -104,8 +101,6 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$item = $items[1];
 		$this->assertTrue( $item->external() );
 		$struc = get_option( 'permalink_structure' );
-		$this->assertEquals( 'http://upstatement.com', $item->permalink() );
-		$this->assertEquals( 'http://upstatement.com', $item->get_permalink() );
 		$this->assertEquals( 'http://upstatement.com', $item->url );
 		$this->assertEquals( 'http://upstatement.com', $item->link() );
 	}

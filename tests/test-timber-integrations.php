@@ -32,7 +32,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 
 	function testACFInit() {
 		$acf = new ACF();
-		$this->assertInstanceOf( 'ACF', $acf );
+		$this->assertInstanceOf( 'Timber\Integrations\ACF', $acf );
 	}
 
 	function testWPCLIClearCacheTimber(){

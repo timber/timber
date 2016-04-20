@@ -621,7 +621,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testWithOutputBuffer() {
 		ob_start();
 		$post = $this->get_post_with_image();
-		$str = '<img src="{{ post.thumbnail.url|resize(510, 280) }}" />';
+		$str = '<img src="{{ post.thumbnail.src|resize(510, 280) }}" />';
 		Timber::render_string($str, array('post' => $post));
 		$result = ob_get_contents();
 		ob_end_clean();

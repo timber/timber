@@ -459,4 +459,35 @@ class Image extends Post implements CoreInterface {
 	public function width() {
 		return $this->get_dimensions('width');
 	}
+
+	/**
+	 * @deprecated 0.21.9 use TimberImage::src
+	 * @internal
+	 * @param string $size
+	 * @return bool|string
+	 */
+	public function get_src($size = '') {
+		Helper::warn('{{image.get_src}} is deprecated and will be removed in 1.1; use {{image.src}}');
+		return $this->src($size);
+	}
+
+
+	/**
+	 * @deprecated since 0.21.9 use src() instead
+	 * @return string
+	 */
+	public function url($size = '') {
+		Helper::warn('{{image.url}} is deprecated and will be removed in 1.1; use {{image.src}}');
+		return $this->src($size);
+	}
+
+
+	/**
+	 * @deprecated since 0.21.9 use src() instead
+	 * @return string
+	 */
+	public function get_url($size = '') {
+		Helper::warn('{{image.get_url}} is deprecated and will be removed in 1.1; use {{image.src}}');
+		return $this->src($size);
+	}
 }
