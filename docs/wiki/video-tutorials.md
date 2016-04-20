@@ -110,7 +110,7 @@ Timber::render('home-main.twig', $context);
 {# tz-recipe.twig #}
 <article id="post-{{post.ID}}" class="post-{{post.ID}} {{post.post_type}} type-{{post.post_type}} status-publish hentry">
 	{% if post.get_thumbnail %}
-		<img src="{{post.get_thumbnail.get_src|resize(600, 300)}}" />
+		<img src="{{post.thumbnail.src|resize(600, 300)}}" />
 	{% endif %}
 	<h2>{{post.post_title}}</h2>
 	<div class="post-body">
