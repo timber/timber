@@ -111,26 +111,21 @@ class MenuItem extends Core implements CoreInterface {
 	/**
 	 * @internal
 	 * @see TimberMenuItem::link
+	 * @deprecated 1.0
 	 * @return string an absolute URL http://example.org/my-page
 	 */
 	function get_link() {
-		if ( !isset( $this->url ) || !$this->url ) {
-			if ( isset( $this->_menu_item_type ) && $this->_menu_item_type == 'custom' ) {
-				$this->url = $this->_menu_item_url;
-			} else if ( isset( $this->menu_object ) && method_exists( $this->menu_object, 'get_link' ) ) {
-					$this->url = $this->menu_object->get_link();
-				}
-		}
-		return $this->url;
+		return $this->link();
 	}
 
 	/**
 	 * @internal
 	 * @see TimberMenuItem::path()
+	 * @deprecated 1.0
 	 * @return string a relative url /my-page
 	 */
 	function get_path() {
-		return URLHelper::get_rel_url( $this->get_link() );
+		return $this->path();
 	}
 
 	/**
@@ -256,7 +251,14 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string a full URL like http://mysite.com/thing/
 	 */
 	public function link() {
-		return $this->get_link();
+		if ( !isset( $this->url ) || !$this->url ) {
+			if ( isset( $this->_menu_item_type ) && $this->_menu_item_type == 'custom' ) {
+				$this->url = $this->_menu_item_url;
+			} else if ( isset( $this->menu_object ) && method_exists( $this->menu_object, 'get_link' ) ) {
+					$this->url = $this->menu_object->get_link();
+				}
+		}
+		return $this->url;
 	}
 
 	/**
@@ -283,7 +285,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string the path of a URL like /foo
 	 */
 	public function path() {
-		return $this->get_path();
+		return URLHelper::get_rel_url( $this->link() );
 	}
 
 	/**

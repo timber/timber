@@ -209,7 +209,7 @@ class User extends Core implements CoreInterface {
 	 * @return string ex: /author/lincoln
 	 */
 	public function path() {
-		return URLHelper::get_rel_url($this->get_link());
+		return URLHelper::get_rel_url($this->link());
 	}
 
 	/**
