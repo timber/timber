@@ -59,7 +59,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * @var string $TermClass the name of the class to handle terms by default
 	 */
-	public $TermClass = 'Term';
+	public $TermClass = 'Timber\Term';
 
 	/**
 	 * @var string $object_type what does this class represent in WordPress terms?
