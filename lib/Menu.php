@@ -32,11 +32,11 @@ use Timber\Post;
  * <nav>
  * 	<ul class="main-nav">
  *		{% for item in menu.get_items %}
- *      	<li class="nav-main-item {{item.classes | join(' ')}}"><a class="nav-main-link" href="{{item.get_link}}">{{item.title}}</a>
+ *      	<li class="nav-main-item {{item.classes | join(' ')}}"><a class="nav-main-link" href="{{item.link}}">{{item.title}}</a>
  *         	{% if item.get_children %}
  *           	<ul class="nav-drop">
  *               {% for child in item.get_children %}
- *               	<li class="nav-drop-item"><a href="{{child.get_link}}">{{child.title}}</a></li>
+ *               	<li class="nav-drop-item"><a href="{{child.link}}">{{child.title}}</a></li>
  *               {% endfor %}
  *              </ul>
  *           {% endif %}

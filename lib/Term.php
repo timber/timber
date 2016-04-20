@@ -227,23 +227,20 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 * @internal
+	 * @deprecated since 1.0
 	 * @return string
 	 */
 	public function get_path() {
-		$link = $this->get_link();
-		$rel = URLHelper::get_rel_url($link, true);
-		$rel = apply_filters('timber_term_path', $rel, $this);
-		return apply_filters('timber/term/path', $rel, $this);
+		return $this->path();
 	}
 
 	/**
 	 * @internal
+	 * @deprecated since 1.0
 	 * @return string
 	 */
 	public function get_link() {
-		$link = get_term_link($this);
-		$link = apply_filters('timber_term_link', $link, $this);
-		return apply_filters('timber/term/link', $link, $this);
+		return $this->link();
 	}
 
 	/**
@@ -363,7 +360,9 @@ class Term extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function link() {
-		return $this->get_link();
+		$link = get_term_link($this);
+		$link = apply_filters('timber_term_link', $link, $this);
+		return apply_filters('timber/term/link', $link, $this);
 	}
 
 	/**
@@ -380,7 +379,10 @@ class Term extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function path() {
-		return $this->get_path();
+		$link = $this->get_link();
+		$rel = URLHelper::get_rel_url($link, true);
+		$rel = apply_filters('timber_term_path', $rel, $this);
+		return apply_filters('timber/term/path', $rel, $this);
 	}
 
 	/**

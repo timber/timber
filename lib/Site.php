@@ -217,7 +217,6 @@ class Site extends Core implements CoreInterface {
 	 * @return string
 	 */
 	function get_link() {
-		
 		Helper::warn('{{site.get_link}} is deprecated, use {{site.link}}');
 		return $this->link();
 	}
