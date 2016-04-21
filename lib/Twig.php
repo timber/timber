@@ -42,14 +42,10 @@ class Twig {
 		$twig->addFilter( new \Twig_SimpleFilter( 'tojpg', array( 'TimberImageHelper', 'img_to_jpg' ) ) );
 
 		/* debugging filters */
-		$twig->addFilter( new \Twig_SimpleFilter( 'docs', 'twig_object_docs' ) );
 		$twig->addFilter( new \Twig_SimpleFilter( 'get_class',  'get_class' ) );
 		$twig->addFilter( new \Twig_SimpleFilter( 'get_type', 'get_type' ) );
 		$twig->addFilter( new \Twig_SimpleFilter( 'print_r', function( $arr ) {
 					return print_r( $arr, true );
-				} ) );
-		$twig->addFilter( new \Twig_SimpleFilter( 'print_a', function( $arr ) {
-					return '<pre>' . self::object_docs( $arr, true ) . '</pre>';
 				} ) );
 
 		/* other filters */
