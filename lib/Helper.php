@@ -31,17 +31,17 @@ class Helper {
 	 * @return mixed
 	 */
 	public static function transient( $slug, $callback, $transient_time = 0, $lock_timeout = 5, $force = false ) {
-		$slug = apply_filters( 'timber/transient/slug', $slug );
+		$slug = apply_filters('timber/transient/slug', $slug);
 
-		$enable_transients = ( $transient_time === false || ( defined( 'WP_DISABLE_TRANSIENTS' ) && WP_DISABLE_TRANSIENTS ) ) ? false : true;
-		$data = $enable_transients ? get_transient( $slug ) : false;
+		$enable_transients = ($transient_time === false || (defined('WP_DISABLE_TRANSIENTS') && WP_DISABLE_TRANSIENTS)) ? false : true;
+		$data = $enable_transients ? get_transient($slug) : false;
 
 		if ( false === $data ) {
 
-			if ( $enable_transients && self::_is_transient_locked( $slug ) ) {
+			if ( $enable_transients && self::_is_transient_locked($slug) ) {
 
-				$force = apply_filters( 'timber_force_transients', $force );
-				$force = apply_filters( 'timber_force_transient_' . $slug, $force );
+				$force = apply_filters('timber_force_transients', $force);
+				$force = apply_filters('timber_force_transient_'.$slug, $force);
 
 				if ( !$force ) {
 					//the server is currently executing the process.
@@ -55,13 +55,13 @@ class Helper {
 			// lock timeout shouldn't be higher than 5 seconds, unless
 			// remote calls with high timeouts are made here
 			if ( $enable_transients )
-				self::_lock_transient( $slug, $lock_timeout );
+				self::_lock_transient($slug, $lock_timeout);
 
 			$data = $callback();
 
 			if ( $enable_transients ) {
-				set_transient( $slug, $data, $transient_time );
-				self::_unlock_transient( $slug );
+				set_transient($slug, $data, $transient_time);
+				self::_unlock_transient($slug);
 			}
 
 		}
@@ -76,7 +76,7 @@ class Helper {
 	 * @param integer $lock_timeout
 	 */
 	static function _lock_transient( $slug, $lock_timeout ) {
-		set_transient( $slug . '_lock', true, $lock_timeout );
+		set_transient($slug.'_lock', true, $lock_timeout);
 	}
 
 	/**
@@ -84,7 +84,7 @@ class Helper {
 	 * @param string $slug
 	 */
 	static function _unlock_transient( $slug ) {
-		delete_transient( $slug . '_lock', true );
+		delete_transient($slug.'_lock', true);
 	}
 
 	/**
@@ -92,7 +92,7 @@ class Helper {
 	 * @param string $slug
 	 */
 	static function _is_transient_locked( $slug ) {
-		return (bool)get_transient( $slug . '_lock' );
+		return (bool) get_transient($slug.'_lock');
 	}
 
 	/* These are for measuring page render time */
@@ -104,7 +104,7 @@ class Helper {
 	 */
 	public static function start_timer() {
 		$time = microtime();
-		$time = explode( ' ', $time );
+		$time = explode(' ', $time);
 		$time = $time[1] + $time[0];
 		return $time;
 	}
@@ -122,11 +122,11 @@ class Helper {
 	 */
 	public static function stop_timer( $start ) {
 		$time = microtime();
-		$time = explode( ' ', $time );
+		$time = explode(' ', $time);
 		$time = $time[1] + $time[0];
 		$finish = $time;
-		$total_time = round( ( $finish - $start ), 4 );
-		return $total_time . ' seconds.';
+		$total_time = round(($finish - $start), 4);
+		return $total_time.' seconds.';
 	}
 
 	/* Function Utilities
@@ -158,9 +158,9 @@ class Helper {
 	 * @param array   $args
 	 * @return string
 	 */
-	public static function ob_function( $function, $args = array( null ) ) {
+	public static function ob_function( $function, $args = array(null) ) {
 		ob_start();
-		call_user_func_array( $function, $args );
+		call_user_func_array($function, $args);
 		$data = ob_get_contents();
 		ob_end_clean();
 		return $data;
@@ -173,7 +173,7 @@ class Helper {
 	 * @return \TimberFunctionWrapper
 	 */
 	public static function function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false ) {
-		return new FunctionWrapper( $function_name, $defaults, $return_output_buffer );
+		return new FunctionWrapper($function_name, $defaults, $return_output_buffer);
 	}
 
 	/**
@@ -186,17 +186,17 @@ class Helper {
 		if ( !WP_DEBUG ) {
 			return;
 		}
-		if ( is_object( $arg ) || is_array( $arg ) ) {
-			$arg = print_r( $arg, true );
+		if ( is_object($arg) || is_array($arg) ) {
+			$arg = print_r($arg, true);
 		}
-		return error_log( $arg );
+		return error_log($arg);
 	}
 
 	/**
 	 * @param string $message that you want to output
 	 * @return void
 	 */
-	public static function warn( $message )  {
+	public static function warn( $message ) {
 		return trigger_error($message, E_USER_WARNING);
 	}
 	
@@ -208,8 +208,8 @@ class Helper {
 	 * @return string
 	 */
 	public static function get_wp_title( $separator = ' ', $seplocation = 'left' ) {
-		$separator = apply_filters( 'timber_wp_title_seperator', $separator );
-		return trim( wp_title( $separator, false, $seplocation ) );
+		$separator = apply_filters('timber_wp_title_seperator', $separator);
+		return trim(wp_title($separator, false, $seplocation));
 	}
 
 	/* Text Utilities
@@ -226,33 +226,33 @@ class Helper {
 	 */
 	public static function trim_words( $text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br blockquote' ) {
 		if ( null === $more ) {
-			$more = __( '&hellip;' );
+			$more = __('&hellip;');
 		}
 		$original_text = $text;
 		$allowed_tag_string = '';
-		foreach ( explode( ' ', apply_filters( 'timber/trim_words/allowed_tags', $allowed_tags ) ) as $tag ) {
-			$allowed_tag_string .= '<' . $tag . '>';
+		foreach ( explode(' ', apply_filters('timber/trim_words/allowed_tags', $allowed_tags)) as $tag ) {
+			$allowed_tag_string .= '<'.$tag.'>';
 		}
-		$text = strip_tags( $text, $allowed_tag_string );
+		$text = strip_tags($text, $allowed_tag_string);
 		/* translators: If your word count is based on single characters (East Asian characters), enter 'characters'. Otherwise, enter 'words'. Do not translate into your own language. */
-		if ( 'characters' == _x( 'words', 'word count: words or characters?' ) && preg_match( '/^utf\-?8$/i', get_option( 'blog_charset' ) ) ) {
-			$text = trim( preg_replace( "/[\n\r\t ]+/", ' ', $text ), ' ' );
-			preg_match_all( '/./u', $text, $words_array );
-			$words_array = array_slice( $words_array[0], 0, $num_words + 1 );
+		if ( 'characters' == _x('words', 'word count: words or characters?') && preg_match('/^utf\-?8$/i', get_option('blog_charset')) ) {
+			$text = trim(preg_replace("/[\n\r\t ]+/", ' ', $text), ' ');
+			preg_match_all('/./u', $text, $words_array);
+			$words_array = array_slice($words_array[0], 0, $num_words + 1);
 			$sep = '';
 		} else {
-			$words_array = preg_split( "/[\n\r\t ]+/", $text, $num_words + 1, PREG_SPLIT_NO_EMPTY );
+			$words_array = preg_split("/[\n\r\t ]+/", $text, $num_words + 1, PREG_SPLIT_NO_EMPTY);
 			$sep = ' ';
 		}
-		if ( count( $words_array ) > $num_words ) {
-			array_pop( $words_array );
-			$text = implode( $sep, $words_array );
-			$text = $text . $more;
+		if ( count($words_array) > $num_words ) {
+			array_pop($words_array);
+			$text = implode($sep, $words_array);
+			$text = $text.$more;
 		} else {
-			$text = implode( $sep, $words_array );
+			$text = implode($sep, $words_array);
 		}
-		$text = self::close_tags( $text );
-		return apply_filters( 'wp_trim_words', $text, $num_words, $more, $original_text );
+		$text = self::close_tags($text);
+		return apply_filters('wp_trim_words', $text, $num_words, $more, $original_text);
 	}
 
 	/**
@@ -263,27 +263,27 @@ class Helper {
 	 */
 	public static function close_tags( $html ) {
 		//put all opened tags into an array
-		preg_match_all( '#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result );
+		preg_match_all('#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
 		$openedtags = $result[1];
 		//put all closed tags into an array
-		preg_match_all( '#</([a-z]+)>#iU', $html, $result );
+		preg_match_all('#</([a-z]+)>#iU', $html, $result);
 		$closedtags = $result[1];
-		$len_opened = count( $openedtags );
+		$len_opened = count($openedtags);
 		// all tags are closed
-		if ( count( $closedtags ) == $len_opened ) {
+		if ( count($closedtags) == $len_opened ) {
 			return $html;
 		}
-		$openedtags = array_reverse( $openedtags );
+		$openedtags = array_reverse($openedtags);
 		// close tags
 		for ( $i = 0; $i < $len_opened; $i++ ) {
-			if ( !in_array( $openedtags[$i], $closedtags ) ) {
-				$html .= '</' . $openedtags[$i] . '>';
+			if ( !in_array($openedtags[$i], $closedtags) ) {
+				$html .= '</'.$openedtags[$i].'>';
 			} else {
-				unset( $closedtags[array_search( $openedtags[$i], $closedtags )] );
+				unset($closedtags[array_search($openedtags[$i], $closedtags)]);
 			}
 		}
-		$html = str_replace(array('</br>','</hr>','</wbr>'), '', $html);
-		$html = str_replace(array('<br>','<hr>','<wbr>'), array('<br />','<hr />','<wbr />'), $html);
+		$html = str_replace(array('</br>', '</hr>', '</wbr>'), '', $html);
+		$html = str_replace(array('<br>', '<hr>', '<wbr>'), array('<br />', '<hr />', '<wbr />'), $html);
 		return $html;
 	}
 
@@ -298,7 +298,7 @@ class Helper {
 	 * @return void
 	 */
 	public static function osort( &$array, $prop ) {
-		usort( $array, function ( $a, $b ) use ( $prop ) {
+		usort($array, function( $a, $b ) use ($prop) {
 				return $a->$prop > $b->$prop ? 1 : -1;
 			} );
 	}
@@ -310,10 +310,10 @@ class Helper {
 	 * @return bool
 	 */
 	public static function is_array_assoc( $arr ) {
-		if ( !is_array( $arr ) ) {
+		if ( !is_array($arr) ) {
 			return false;
 		}
-		return (bool)count( array_filter( array_keys( $arr ), 'is_string' ) );
+		return (bool) count(array_filter(array_keys($arr), 'is_string'));
 	}
 
 	/**
@@ -325,8 +325,8 @@ class Helper {
 	public static function array_to_object( $array ) {
 		$obj = new \stdClass;
 		foreach ( $array as $k => $v ) {
-			if ( is_array( $v ) ) {
-				$obj->{$k} = self::array_to_object( $v ); //RECURSION
+			if ( is_array($v) ) {
+				$obj->{$k} = self::array_to_object($v); //RECURSION
 			} else {
 				$obj->{$k} = $v;
 			}
@@ -343,10 +343,10 @@ class Helper {
 	 * @return bool|int
 	 */
 	public static function get_object_index_by_property( $array, $key, $value ) {
-		if ( is_array( $array ) ) {
+		if ( is_array($array) ) {
 			$i = 0;
 			foreach ( $array as $arr ) {
-				if ( is_array( $arr ) ) {
+				if ( is_array($arr) ) {
 					if ( $arr[$key] == $value ) {
 						return $i;
 					}
@@ -371,15 +371,15 @@ class Helper {
 	 * @throws Exception
 	 */
 	public static function get_object_by_property( $array, $key, $value ) {
-		if ( is_array( $array ) ) {
+		if ( is_array($array) ) {
 			foreach ( $array as $arr ) {
 				if ( $arr->$key == $value ) {
 					return $arr;
 				}
 			}
 		} else {
-			throw new \InvalidArgumentException( '$array is not an array, got:' );
-			Helper::error_log( $array );
+			throw new \InvalidArgumentException('$array is not an array, got:');
+			Helper::error_log($array);
 		}
 	}
 
@@ -391,8 +391,8 @@ class Helper {
 	 * @return array
 	 */
 	public static function array_truncate( $array, $len ) {
-		if ( sizeof( $array ) > $len ) {
-			$array = array_splice( $array, 0, $len );
+		if ( sizeof($array) > $len ) {
+			$array = array_splice($array, 0, $len);
 		}
 		return $array;
 	}
@@ -407,11 +407,11 @@ class Helper {
 	 * @return bool
 	 */
 	public static function is_true( $value ) {
-		if ( isset( $value ) ) {
-			if (is_string($value)) {
+		if ( isset($value) ) {
+			if ( is_string($value) ) {
 				$value = strtolower($value);
 			}
-			if ( ($value == 'true' || $value === 1 || $value === '1' || $value == true) && $value !== false && $value !== 'false') {
+			if ( ($value == 'true' || $value === 1 || $value === '1' || $value == true) && $value !== false && $value !== 'false' ) {
 				return true;
 			}
 		}
@@ -425,7 +425,7 @@ class Helper {
 	 * @return bool
 	 */
 	public static function iseven( $i ) {
-		return ( $i % 2 ) == 0;
+		return ($i % 2) == 0;
 	}
 
 	/**
@@ -435,7 +435,7 @@ class Helper {
 	 * @return bool
 	 */
 	public static function isodd( $i ) {
-		return ( $i % 2 ) != 0;
+		return ($i % 2) != 0;
 	}
 
 	/* Links, Forms, Etc. Utilities
@@ -455,28 +455,28 @@ class Helper {
 			'current' => 0,
 			'show_all' => false,
 			'prev_next' => false,
-			'prev_text' => __( '&laquo; Previous' ),
-			'next_text' => __( 'Next &raquo;' ),
+			'prev_text' => __('&laquo; Previous'),
+			'next_text' => __('Next &raquo;'),
 			'end_size' => 1,
 			'mid_size' => 2,
 			'type' => 'array',
 			'add_args' => false, // array of query args to add
 			'add_fragment' => ''
 		);
-		$args = wp_parse_args( $args, $defaults );
+		$args = wp_parse_args($args, $defaults);
 		// Who knows what else people pass in $args
-		$args['total'] = intval( (int)$args['total'] );
+		$args['total'] = intval((int) $args['total']);
 		if ( $args['total'] < 2 ) {
 			return array();
 		}
-		$args['current'] = (int)$args['current'];
-		$args['end_size'] = 0 < (int)$args['end_size'] ? (int)$args['end_size'] : 1; // Out of bounds?  Make it the default.
-		$args['mid_size'] = 0 <= (int)$args['mid_size'] ? (int)$args['mid_size'] : 2;
-		$args['add_args'] = is_array( $args['add_args'] ) ? $args['add_args'] : false;
+		$args['current'] = (int) $args['current'];
+		$args['end_size'] = 0 < (int) $args['end_size'] ? (int) $args['end_size'] : 1; // Out of bounds?  Make it the default.
+		$args['mid_size'] = 0 <= (int) $args['mid_size'] ? (int) $args['mid_size'] : 2;
+		$args['add_args'] = is_array($args['add_args']) ? $args['add_args'] : false;
 		$page_links = array();
 		$dots = false;
 		for ( $n = 1; $n <= $args['total']; $n++ ) {
-			$n_display = number_format_i18n( $n );
+			$n_display = number_format_i18n($n);
 			if ( $n == $args['current'] ) {
 				$page_links[] = array(
 					'class' => 'page-number page-numbers current',
@@ -487,18 +487,18 @@ class Helper {
 				);
 				$dots = true;
 			} else {
-				if ( $args['show_all'] || ( $n <= $args['end_size'] || ( $args['current'] && $n >= $args['current'] - $args['mid_size'] && $n <= $args['current'] + $args['mid_size'] ) || $n > $args['total'] - $args['end_size'] ) ) {
-					$link = str_replace( '%_%', 1 == $n ? '' : $args['format'], $args['base'] );
-					$link = str_replace( '%#%', $n, $link );
-					$link = trailingslashit( $link ) . ltrim( $args['add_fragment'], '/' );
+				if ( $args['show_all'] || ($n <= $args['end_size'] || ($args['current'] && $n >= $args['current'] - $args['mid_size'] && $n <= $args['current'] + $args['mid_size']) || $n > $args['total'] - $args['end_size']) ) {
+					$link = str_replace('%_%', 1 == $n ? '' : $args['format'], $args['base']);
+					$link = str_replace('%#%', $n, $link);
+					$link = trailingslashit($link).ltrim($args['add_fragment'], '/');
 					if ( $args['add_args'] ) {
-						$link = rtrim( add_query_arg( $args['add_args'], $link ), '/' );
+						$link = rtrim(add_query_arg($args['add_args'], $link), '/');
 					}
 					$link = str_replace(' ', '+', $link);
-					$link = untrailingslashit( $link );
+					$link = untrailingslashit($link);
 					$page_links[] = array(
 						'class' => 'page-number page-numbers',
-						'link' => esc_url( apply_filters( 'paginate_links', $link ) ),
+						'link' => esc_url(apply_filters('paginate_links', $link)),
 						'title' => $n_display,
 						'name' => $n_display,
 						'current' => $args['current'] == $n
@@ -507,7 +507,7 @@ class Helper {
 				} elseif ( $dots && !$args['show_all'] ) {
 					$page_links[] = array(
 						'class' => 'dots',
-						'title' => __( '&hellip;' )
+						'title' => __('&hellip;')
 					);
 					$dots = false;
 				}
