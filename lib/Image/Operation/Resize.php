@@ -2,6 +2,7 @@
 
 namespace Timber\Image\Operation;
 
+use Timber\Helper;
 use Timber\Image\Operation as ImageOperation;
 
 /**
@@ -199,9 +200,9 @@ class Resize extends ImageOperation {
 			}
 		} else if ( isset( $image->error_data['error_loading_image'] ) ) {
 			// @codeCoverageIgnoreStart
-			TimberHelper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
+			Helper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
 		} else {
-			TimberHelper::error_log( $image );
+			Helper::error_log( $image );
 			// @codeCoverageIgnoreEnd
 		}
 	}

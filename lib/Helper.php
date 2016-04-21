@@ -515,4 +515,12 @@ class Helper {
 		}
 		return $page_links;
 	}
+
+	/**
+	 *
+	 */
+	function get_current_url() {
+		Helper::warn('TimberHelper::get_current_url() is deprecated and will be removed in future versions, use Timber\URLHelper::get_current_url()');
+		return URLHelper::get_current_url();
+	}
 }
