@@ -3,6 +3,7 @@
 namespace Timber;
 
 class Admin {
+	
     public static function init() {
         return add_filter( 'plugin_row_meta', array( __CLASS__, 'meta_links' ), 10, 2 );
     }
