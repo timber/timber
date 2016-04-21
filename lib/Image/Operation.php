@@ -13,6 +13,7 @@ namespace Timber\Image;
  */
 abstract class Operation {
 	/**
+	 *
 	 * Builds the result filename, based on source filename and extension
 	 * 
 	 * @param  string $src_filename  source filename (excluding extension and path)
