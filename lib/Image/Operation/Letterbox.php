@@ -2,6 +2,7 @@
 
 namespace Timber\Image\Operation;
 
+use Timber\Helper;
 use Timber\Image\Operation as ImageOperation;
 
 /*
@@ -105,7 +106,7 @@ class Letterbox extends ImageOperation {
 			}
 			return $save_func( $bg, $save_filename, $quality );
 		} else {
-			TimberHelper::error_log( $image );
+			Helper::error_log( $image );
 		}
 		return false;
 	}

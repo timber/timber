@@ -2,6 +2,7 @@
 
 namespace Timber\Image\Operation;
 
+use Timber\Helper;
 use Timber\Image\Operation as ImageOperation;
 
 /**
@@ -62,17 +63,17 @@ class Retina extends ImageOperation {
             $result = $image->save( $save_filename );
             if ( is_wp_error( $result ) ) {
             	// @codeCoverageIgnoreStart
-				TimberHelper::error_log( 'Error resizing image' );
-				TimberHelper::error_log( $result );
+				Helper::error_log( 'Error resizing image' );
+				Helper::error_log( $result );
 				return false;
 				// @codeCoverageIgnoreEnd
             } else {
                 return true;
             }
         } else if ( isset( $image->error_data['error_loading_image'] ) ) {
-            TimberHelper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
+            Helper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
         } else {
-            TimberHelper::error_log( $image );
+            Helper::error_log( $image );
         }
         return false;
     }

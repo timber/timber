@@ -7,6 +7,7 @@ use Timber\CoreInterface;
 
 use Timber\Post;
 use TImber\Term;
+use Timber\Helper;
 use Timber\URLHelper;
 
 /**
@@ -124,7 +125,7 @@ class Term extends Core implements CoreInterface {
 			$term->ID = $term->term_id;
 		} else if ( is_string($tid) ) {
 			//echo 'bad call using '.$tid;
-			//TimberHelper::error_log(debug_backtrace());
+			//Helper::error_log(debug_backtrace());
 		}
 		if ( isset($term->ID) ){
 			$term->id = $term->ID;
