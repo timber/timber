@@ -15,7 +15,7 @@ class Integrations {
         add_action( 'init', array( __CLASS__, 'maybe_init_acftimber' ) );
 
         if ( class_exists( 'WP_CLI_Command' ) ) {
-            \WP_CLI::add_command( 'timber', 'Timber_WP_CLI_Command' );
+            \WP_CLI::add_command( 'timber', 'Timber\Integrations\Timber_WP_CLI_Command' );
         }
     }
 
