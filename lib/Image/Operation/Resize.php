@@ -22,12 +22,12 @@ class Resize extends ImageOperation {
 	 * @param int    $h    height of new image
 	 * @param string $crop cropping method, one of: 'default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center'.
 	 */
-	function __construct($w, $h, $crop) {
+	function __construct( $w, $h, $crop ) {
 		$this->w = $w;
 		$this->h = $h;
 		// Sanitize crop position
-		$allowed_crop_positions = array( 'default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center' );
-		if ( $crop !== false && !in_array( $crop, $allowed_crop_positions ) ) {
+		$allowed_crop_positions = array('default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center');
+		if ( $crop !== false && !in_array($crop, $allowed_crop_positions) ) {
 			$crop = $allowed_crop_positions[0];
 		}
 		$this->crop = $crop;
@@ -38,7 +38,7 @@ class Resize extends ImageOperation {
 	 * @param   string    $src_extension    the extension (ex: .jpg)
 	 * @return  string    the final filename to be used (ex: my-awesome-pic-300x200-c-default.jpg)
 	 */
-	public function filename($src_filename, $src_extension) {
+	public function filename( $src_filename, $src_extension ) {
 		$w = 0;
 		$h = 0;
 		if ( $this->w ) {
@@ -47,8 +47,8 @@ class Resize extends ImageOperation {
 		if ( $this->h ) {
 			$h = $this->h;
 		}
-		$result = $src_filename . '-' . $w . 'x' . $h . '-c-' . ( $this->crop ? $this->crop : 'f' ); // Crop will be either user named or f (false)
-		if($src_extension) {
+		$result = $src_filename.'-'.$w.'x'.$h.'-c-'.($this->crop ? $this->crop : 'f'); // Crop will be either user named or f (false)
+		if ( $src_extension ) {
 			$result .= '.'.$src_extension;
 		}
 		return $result;
@@ -59,7 +59,7 @@ class Resize extends ImageOperation {
 	 * @param string $save_filename
 	 */
 	protected function run_animated_gif( $load_filename, $save_filename ) {
-		$image = wp_get_image_editor( $load_filename );
+		$image = wp_get_image_editor($load_filename);
 		$current_size = $image->get_size();
 		$src_w = $current_size['width'];
 		$src_h = $current_size['height'];
@@ -70,8 +70,8 @@ class Resize extends ImageOperation {
 		}
 		$image = new \Imagick($load_filename);
 		$image = $image->coalesceImages();
-		$crop = self::get_target_sizes( $load_filename );
-		foreach ($image as $frame) {
+		$crop = self::get_target_sizes($load_filename);
+		foreach ( $image as $frame ) {
 			$frame->cropImage($crop['src_w'], $crop['src_h'], $crop['x'], $crop['y']);
 			$frame->thumbnailImage($w, $h);
 			$frame->setImagePage($w, $h, 0, 0);
@@ -80,8 +80,11 @@ class Resize extends ImageOperation {
 		return $image->writeImages($save_filename, true);
 	}
 
+	/**
+	 * @param string $load_filename
+	 */
 	protected function get_target_sizes( $load_filename ) {
-		$image = wp_get_image_editor( $load_filename );
+		$image = wp_get_image_editor($load_filename);
 		$w = $this->w;
 		$h = $this->h;
 		$crop = $this->crop;
@@ -91,11 +94,11 @@ class Resize extends ImageOperation {
 		$src_h = $current_size['height'];
 		$src_ratio = $src_w / $src_h;
 		if ( !$h ) {
-			$h = round( $w / $src_ratio );
+			$h = round($w / $src_ratio);
 		}
 		if ( !$w ) {
 			//the user wants to resize based on constant height
-			$w = round( $h * $src_ratio );
+			$w = round($h * $src_ratio);
 		}
 		if ( !$crop ) {
 			return array(
@@ -109,13 +112,13 @@ class Resize extends ImageOperation {
 		$src_wt = $src_h * $dest_ratio;
 		$src_ht = $src_w / $dest_ratio;
 		$src_x = $src_w / 2 - $src_wt / 2;
-		$src_y = ( $src_h - $src_ht ) / 6;
+		$src_y = ($src_h - $src_ht) / 6;
 		//now specific overrides based on options:
 		switch ( $crop ) {
 			case 'center':
 				// Get source x and y
-				$src_x = round( ( $src_w - $src_wt ) / 2 );
-				$src_y = round( ( $src_h - $src_ht ) / 2 );
+				$src_x = round(($src_w - $src_wt) / 2);
+				$src_y = round(($src_h - $src_ht) / 2);
 				break;
 
 			case 'top':
@@ -127,11 +130,11 @@ class Resize extends ImageOperation {
 				break;
 
 			case 'top-center':
-				$src_y = round( ( $src_h - $src_ht ) / 4 );
+				$src_y = round(($src_h - $src_ht) / 4);
 				break;
 
 			case 'bottom-center':
-				$src_y = $src_h - $src_ht - round( ( $src_h - $src_ht ) / 4 );
+				$src_y = $src_h - $src_ht - round(($src_h - $src_ht) / 4);
 				break;
 
 			case 'left':
@@ -143,7 +146,7 @@ class Resize extends ImageOperation {
 				break;
 		}
 		// Crop the image
-		return ( $dest_ratio > $src_ratio )
+		return ($dest_ratio > $src_ratio)
 			? array(
 				'x' => 0, 'y' => $src_y,
 				'src_w' => $src_w, 'src_h' => $src_ht,
@@ -164,7 +167,7 @@ class Resize extends ImageOperation {
 	 *                               (ex: /src/var/www/wp-content/uploads/my-pic.jpg)
 	 * @param  string $save_filename filepath (not URL) where result file should be saved
 	 *                               (ex: /src/var/www/wp-content/uploads/my-pic-300x200-c-default.jpg)
-	 * @return bool                  true if everything went fine, false otherwise
+	 * @return boolean|null                  true if everything went fine, false otherwise
 	 */
 	public function run($load_filename, $save_filename) {
 		//should be resized by gif resizer

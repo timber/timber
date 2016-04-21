@@ -96,7 +96,7 @@ class Image extends Post implements CoreInterface {
 	 * ```
 	 * @param int|string $iid
 	 */
-	public function __construct($iid) {
+	public function __construct( $iid ) {
 		$this->init($iid);
 	}
 
@@ -123,7 +123,7 @@ class Image extends Post implements CoreInterface {
 	 * @param string $dim
 	 * @return array|int
 	 */
-	protected function get_dimensions($dim = null) {
+	protected function get_dimensions( $dim = null ) {
 		if ( isset($this->_dimensions) ) {
 			return $this->get_dimensions_loaded($dim);
 		}
@@ -141,7 +141,7 @@ class Image extends Post implements CoreInterface {
 	 * @param string|null $dim
 	 * @return array|int
 	 */
-	protected function get_dimensions_loaded($dim) {
+	protected function get_dimensions_loaded( $dim ) {
 		if ( $dim === null ) {
 			return $this->_dimensions;
 		}
@@ -160,25 +160,25 @@ class Image extends Post implements CoreInterface {
 	 */
 	protected function get_image_info( $iid ) {
 		$image_info = $iid;
-		if (is_numeric($iid)) {
+		if ( is_numeric($iid) ) {
 			$image_info = wp_get_attachment_metadata($iid);
-			if (!is_array($image_info)) {
+			if ( !is_array($image_info) ) {
 				$image_info = array();
 			}
 			$image_custom = get_post_custom($iid);
 			$basic = get_post($iid);
-			if ($basic) {
-				if (isset($basic->post_excerpt)) {
+			if ( $basic ) {
+				if ( isset($basic->post_excerpt) ) {
 					$this->caption = $basic->post_excerpt;
 				}
 				$image_custom = array_merge($image_custom, get_object_vars($basic));
 			}
 			return array_merge($image_info, $image_custom);
 		}
-		if (is_array($image_info) && isset($image_info['image'])) {
+		if ( is_array($image_info) && isset($image_info['image']) ) {
 			return $image_info['image'];
 		}
-		if (is_object($image_info)) {
+		if ( is_object($image_info) ) {
 		   return get_object_vars($image_info);
 		}
 		return $iid;
@@ -189,9 +189,9 @@ class Image extends Post implements CoreInterface {
 	 * @param  string $url for evaluation
 	 * @return string with http/https corrected depending on what's appropriate for server
 	 */
-	protected static function _maybe_secure_url($url) {
+	protected static function _maybe_secure_url( $url ) {
 		if ( is_ssl() && strpos($url, 'https') !== 0 && strpos($url, 'http') === 0 ) {
-			$url = 'https' . substr($url, strlen('http'));
+			$url = 'https'.substr($url, strlen('http'));
 		}
 		return $url;
 	}
@@ -211,10 +211,10 @@ class Image extends Post implements CoreInterface {
 	 * @param int $iid
 	 */
 	function init( $iid = false ) {
-		if(!$iid) { Helper::error_log('Initalized TimberImage without providing first parameter.'); return; }
+		if ( !$iid ) { Helper::error_log('Initalized TimberImage without providing first parameter.'); return; }
 		
-		if ( !is_numeric( $iid ) && is_string( $iid ) ) {
-			if (strstr($iid, '://')) {
+		if ( !is_numeric($iid) && is_string($iid) ) {
+			if ( strstr($iid, '://') ) {
 				$this->init_with_url($iid);
 				return;
 			}
@@ -225,15 +225,15 @@ class Image extends Post implements CoreInterface {
 
 			$relative = false;
 			$iid_lower = strtolower($iid);
-			foreach( $this->file_types as $type ) { if( strstr( $iid_lower, $type ) ) { $relative = true; break; } };
+			foreach ( $this->file_types as $type ) { if ( strstr($iid_lower, $type) ) { $relative = true; break; } };
 			if ( $relative ) {
-				$this->init_with_relative_path( $iid );
+				$this->init_with_relative_path($iid);
 				return;
 			}
 		} else if ( $iid instanceof \WP_Post ) {
 			$ref = new \ReflectionClass($this);
 			$post = $ref->getParentClass()->newInstance($iid->ID);
-			if (isset($post->_thumbnail_id) && $post->_thumbnail_id) {
+			if ( isset($post->_thumbnail_id) && $post->_thumbnail_id ) {
 				return $this->init((int) $post->_thumbnail_id);
 			}
 			return $this->init($iid->ID);
@@ -252,10 +252,10 @@ class Image extends Post implements CoreInterface {
 		$basedir = self::wp_upload_dir();
 		$basedir = $basedir['basedir'];
 		if ( isset($this->file) ) {
-			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
+			$this->file_loc = $basedir.DIRECTORY_SEPARATOR.$this->file;
 		} else if ( isset($this->_wp_attached_file) ) {
 			$this->file = reset($this->_wp_attached_file);
-			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
+			$this->file_loc = $basedir.DIRECTORY_SEPARATOR.$this->file;
 		}
 		if ( isset($image_info['id']) ) {
 			$this->ID = $image_info['id'];
@@ -264,7 +264,7 @@ class Image extends Post implements CoreInterface {
 		}
 		if ( isset($this->ID) ) {
 			$custom = get_post_custom($this->ID);
-			foreach ($custom as $key => $value) {
+			foreach ( $custom as $key => $value ) {
 				$this->$key = $value[0];
 			}
 			$this->id = $this->ID;
@@ -273,7 +273,7 @@ class Image extends Post implements CoreInterface {
 				Helper::error_log('Not able to init in TimberImage with iid=');
 				Helper::error_log($iid);
 			} else {
-				Helper::error_log('Not able to init in TimberImage with iid=' . $iid);
+				Helper::error_log('Not able to init in TimberImage with iid='.$iid);
 			}
 		}
 	}
@@ -283,8 +283,8 @@ class Image extends Post implements CoreInterface {
 	 * @param string $relative_path
 	 */
 	protected function init_with_relative_path( $relative_path ) {
-		$this->abs_url = home_url( $relative_path );
-		$file_path = URLHelper::get_full_path( $relative_path );
+		$this->abs_url = home_url($relative_path);
+		$file_path = URLHelper::get_full_path($relative_path);
 		$this->file_loc = $file_path;
 		$this->file = $file_path;
 	}
@@ -294,7 +294,7 @@ class Image extends Post implements CoreInterface {
 	 * @param string $file_path
 	 */
 	protected function init_with_file_path( $file_path ) {
-		$url = URLHelper::file_system_to_url( $file_path );
+		$url = URLHelper::file_system_to_url($file_path);
 		$this->abs_url = $url;
 		$this->file_loc = $file_path;
 		$this->file = $file_path;
@@ -304,11 +304,11 @@ class Image extends Post implements CoreInterface {
 	 * @internal
 	 * @param string $url
 	 */
-	protected function init_with_url($url) {
+	protected function init_with_url( $url ) {
 		$this->abs_url = $url;
 		if ( URLHelper::is_local($url) ) {
-			$this->file = URLHelper::remove_double_slashes(ABSPATH . URLHelper::get_rel_url($url));
-			$this->file_loc = URLHelper::remove_double_slashes(ABSPATH . URLHelper::get_rel_url($url));
+			$this->file = URLHelper::remove_double_slashes(ABSPATH.URLHelper::get_rel_url($url));
+			$this->file_loc = URLHelper::remove_double_slashes(ABSPATH.URLHelper::get_rel_url($url));
 		}
 	}
 
@@ -419,7 +419,7 @@ class Image extends Post implements CoreInterface {
 	 * ```
 	 * @return bool|string
 	 */
-	public function src($size = '') {
+	public function src( $size = '' ) {
 		if ( isset($this->abs_url) ) {
 			return $this->_maybe_secure_url($this->abs_url);
 		}
@@ -440,7 +440,7 @@ class Image extends Post implements CoreInterface {
 		$dir = self::wp_upload_dir();
 		$base = $dir['baseurl'];
 
-		$src = trailingslashit($this->_maybe_secure_url($base)) . $this->file;
+		$src = trailingslashit($this->_maybe_secure_url($base)).$this->file;
 		$src = apply_filters('timber/image/src', $src, $this->ID);
 		return apply_filters('timber_image_src', $src, $this->ID);
 	}
@@ -466,7 +466,7 @@ class Image extends Post implements CoreInterface {
 	 * @param string $size
 	 * @return bool|string
 	 */
-	public function get_src($size = '') {
+	public function get_src( $size = '' ) {
 		Helper::warn('{{image.get_src}} is deprecated and will be removed in 1.1; use {{image.src}}');
 		return $this->src($size);
 	}
@@ -476,7 +476,7 @@ class Image extends Post implements CoreInterface {
 	 * @deprecated since 0.21.9 use src() instead
 	 * @return string
 	 */
-	public function url($size = '') {
+	public function url( $size = '' ) {
 		Helper::warn('{{image.url}} is deprecated and will be removed in 1.1; use {{image.src}}');
 		return $this->src($size);
 	}
@@ -486,7 +486,7 @@ class Image extends Post implements CoreInterface {
 	 * @deprecated since 0.21.9 use src() instead
 	 * @return string
 	 */
-	public function get_url($size = '') {
+	public function get_url( $size = '' ) {
 		Helper::warn('{{image.get_url}} is deprecated and will be removed in 1.1; use {{image.src}}');
 		return $this->src($size);
 	}
