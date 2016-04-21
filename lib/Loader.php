@@ -147,6 +147,7 @@ class Loader {
 	}
 
 	/**
+	 *
 	 * @return array
 	 */
 	function get_locations_user() {

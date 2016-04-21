@@ -254,6 +254,7 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
+	 *
 	 * @internal
 	 * @param string $field_name
 	 * @return mixed
