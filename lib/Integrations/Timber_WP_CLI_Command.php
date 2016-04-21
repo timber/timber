@@ -2,11 +2,13 @@
 
 namespace Timber\Integrations;
 
+use Timber\Command;
+
 if (!class_exists('WP_CLI_Command')) {
 	return;
 }
 
-class WP_CLI_Command extends WP_CLI_Command {
+class Timber_WP_CLI_Command extends WP_CLI_Command {
 
     /**
      * Clears Timber and Twig's Cache
@@ -17,7 +19,7 @@ class WP_CLI_Command extends WP_CLI_Command {
      *
      */
     public function clear_cache($mode = 'all') {
-        TimberCommand::clear_cache($mode);
+        Command::clear_cache($mode);
     }
 
     /**
@@ -29,7 +31,7 @@ class WP_CLI_Command extends WP_CLI_Command {
      *
      */
     function clear_cache_twig(){
-        $clear = TimberCommand::clear_cache_twig();
+        $clear = Command::clear_cache_twig();
         if ($clear){
             WP_CLI::success('Cleared contents of twig cache');
         } else {
@@ -46,7 +48,7 @@ class WP_CLI_Command extends WP_CLI_Command {
      *
      */
     function clear_cache_timber() {
-        $clear = TimberCommand::clear_cache_timber();
+        $clear = Command::clear_cache_timber();
         $message = 'Failed to clear timber cache';
         if ($clear){
             $message = "Cleared contents of Timber's Cache";
