@@ -881,12 +881,12 @@ class Post extends Core implements CoreInterface {
 	 * @param int $page
 	 * @return string
 	 */
-	public function content( $page = 0, $len = 0 ) {
-		if ( $len == 0 && $page == 0 && $this->_content ) {
+	public function content( $page = 0, $len = -1 ) {
+		if ( $len == -1 && $page == 0 && $this->_content ) {
 			return $this->_content;
 		}
 		$content = $this->post_content;
-		if ( $len ) {
+		if ( $len > 0 ) {
 			$content = wp_trim_words($content, $len);
 		}
 		if ( $page ) {
@@ -897,7 +897,7 @@ class Post extends Core implements CoreInterface {
 			}
 		}
 		$content = apply_filters('the_content', ($content));
-		if ( $len == 0 && $page == 0 ) {
+		if ( $len == -1 && $page == 0 ) {
 			$this->_content = $content;
 		}
 		return $content;
@@ -908,7 +908,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function paged_content() {
 		global $page;
-		return $this->content($page, 0);
+		return $this->content($page, -1);
 	}
 
 	/**
@@ -1306,7 +1306,10 @@ class Post extends Core implements CoreInterface {
 	 * @param int $page
 	 * @return string
 	 */
-	function get_content( $len = 0, $page = 0 ) {
+	function get_content( $len = -1, $page = 0 ) {
+		if ($len === 0) {
+			$len = -1;
+		}
 		return $this->content($page, $len);
 	}
 
