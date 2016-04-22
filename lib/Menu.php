@@ -80,18 +80,18 @@ class Menu extends Core {
 	/**
 	 * @param int|string $slug
 	 */
-	function __construct($slug = 0) {
+	function __construct( $slug = 0 ) {
 		$locations = get_nav_menu_locations();
-		if ($slug != 0 && is_numeric($slug)) {
+		if ( $slug != 0 && is_numeric($slug) ) {
 			$menu_id = $slug;
-		} else if (is_array($locations) && count($locations)) {
+		} else if ( is_array($locations) && count($locations) ) {
 			$menu_id = $this->get_menu_id_from_locations($slug, $locations);
-		} else if ($slug === false) {
+		} else if ( $slug === false ) {
 			$menu_id = false;
 		} else {
 			$menu_id = $this->get_menu_id_from_terms($slug);
 		}
-		if ($menu_id) {
+		if ( $menu_id ) {
 			$this->init($menu_id);
 		} else {
 			$this->init_as_page_menu();
@@ -102,11 +102,11 @@ class Menu extends Core {
 	 * @internal
 	 * @param int $menu_id
 	 */
-	protected function init($menu_id) {
+	protected function init( $menu_id ) {
 		$menu = wp_get_nav_menu_items($menu_id);
-		if ($menu) {
+		if ( $menu ) {
 			_wp_menu_item_classes_by_context($menu);
-			if (is_array($menu)){
+			if ( is_array($menu) ) {
 				$menu = self::order_children($menu);
 			}
 			$this->items = $menu;
@@ -123,12 +123,12 @@ class Menu extends Core {
 	 */
 	protected function init_as_page_menu() {
 		$menu = get_pages();
-		if ($menu) {
-			foreach($menu as $mi) {
+		if ( $menu ) {
+			foreach ( $menu as $mi ) {
 				$mi->__title = $mi->post_title;
 			}
 			_wp_menu_item_classes_by_context($menu);
-			if (is_array($menu)){
+			if ( is_array($menu) ) {
 				$menu = self::order_children($menu);
 			}
 			$this->items = $menu;
@@ -141,14 +141,14 @@ class Menu extends Core {
 	 * @param array $locations
 	 * @return integer
 	 */
-	protected function get_menu_id_from_locations($slug, $locations) {
-		if ($slug === 0) {
+	protected function get_menu_id_from_locations( $slug, $locations ) {
+		if ( $slug === 0 ) {
 			$slug = $this->get_menu_id_from_terms($slug);
 		}
-		if (is_numeric($slug)) {
+		if ( is_numeric($slug) ) {
 			$slug = array_search($slug, $locations);
 		}
-		if (isset($locations[$slug])) {
+		if ( isset($locations[$slug]) ) {
 			$menu_id = $locations[$slug];
 			return $menu_id;
 		}
@@ -159,21 +159,21 @@ class Menu extends Core {
 	 * @param int $slug
 	 * @return int
 	 */
-	protected function get_menu_id_from_terms($slug = 0) {
-		if (!is_numeric($slug) && is_string($slug)) {
+	protected function get_menu_id_from_terms( $slug = 0 ) {
+		if ( !is_numeric($slug) && is_string($slug) ) {
 			//we have a string so lets search for that
 			$menu_id = get_term_by('slug', $slug, 'nav_menu');
-			if ($menu_id) {
+			if ( $menu_id ) {
 				return $menu_id;
 			}
 			$menu_id = get_term_by('name', $slug, 'nav_menu');
-			if ($menu_id) {
+			if ( $menu_id ) {
 				return $menu_id;
 			}
 		}
 		$menus = get_terms('nav_menu', array('hide_empty' => true));
-		if (is_array($menus) && count($menus)) {
-			if (isset($menus[0]->term_id)) {
+		if ( is_array($menus) && count($menus) ) {
+			if ( isset($menus[0]->term_id) ) {
 				return $menus[0]->term_id;
 			}
 		}
@@ -185,9 +185,9 @@ class Menu extends Core {
 	 * @param int $parent_id
 	 * @return TimberMenuItem|null
 	 */
-	function find_parent_item_in_menu($menu_items, $parent_id) {
-		foreach ($menu_items as &$item) {
-			if ($item->ID == $parent_id) {
+	function find_parent_item_in_menu( $menu_items, $parent_id ) {
+		foreach ( $menu_items as &$item ) {
+			if ( $item->ID == $parent_id ) {
 				return $item;
 			}
 		}
@@ -198,29 +198,29 @@ class Menu extends Core {
 	 * @param array $items
 	 * @return array
 	 */
-	protected function order_children($items) {
+	protected function order_children( $items ) {
 		$index = array();
 		$menu = array();
-		foreach ($items as $item) {
-			if (isset($item->title)) {
+		foreach ( $items as $item ) {
+			if ( isset($item->title) ) {
 				//items from wp can come with a $title property which conflicts with methods
 				$item->__title = $item->title;
 				unset($item->title);
 			}
-			if(isset($item->ID)){
-				if (is_object($item) && get_class($item) == 'WP_Post'){
+			if ( isset($item->ID) ) {
+				if ( is_object($item) && get_class($item) == 'WP_Post' ) {
 					$old_menu_item = $item;
 					$item = new $this->PostClass($item);
 				}
 				$menu_item = new $this->MenuItemClass($item);
-				if (isset($old_menu_item)){
+				if ( isset($old_menu_item) ) {
 					$menu_item->import_classes($old_menu_item);
 				}
 				$index[$item->ID] = $menu_item;
 			}
 		}
-		foreach ($index as $item) {
-			if (isset($item->menu_item_parent) && $item->menu_item_parent && isset($index[$item->menu_item_parent])) {
+		foreach ( $index as $item ) {
+			if ( isset($item->menu_item_parent) && $item->menu_item_parent && isset($index[$item->menu_item_parent]) ) {
 				$index[$item->menu_item_parent]->add_child($item);
 			} else {
 				$menu[] = $item;
@@ -233,7 +233,7 @@ class Menu extends Core {
 	 * @return array
 	 */
 	function get_items() {
-		if (is_array($this->items)) {
+		if ( is_array($this->items) ) {
 			return $this->items;
 		}
 		return array();

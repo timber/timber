@@ -13,7 +13,7 @@ class TermGetter {
 	 * @param string $TermClass
 	 * @return mixed
 	 */
-	public static function get_terms($args = null, $maybe_args = array(), $TermClass = 'Term') {
+	public static function get_terms( $args = null, $maybe_args = array(), $TermClass = 'Term' ) {
 		if ( is_string($maybe_args) && !strstr($maybe_args, '=') ) {
 			//the user is sending the $TermClass in the second argument
 			$TermClass = $maybe_args;
@@ -58,7 +58,7 @@ class TermGetter {
 	 * @param string $TermClass
 	 * @return mixed
 	 */
-	public static function handle_term_query($taxonomies, $args, $TermClass) {
+	public static function handle_term_query( $taxonomies, $args, $TermClass ) {
 		if ( !isset($args['hide_empty']) ) {
 			$args['hide_empty'] = false;
 		}
@@ -69,7 +69,7 @@ class TermGetter {
 			$args['include'] = $args['term_id'];
 		}
 		$terms = get_terms($taxonomies, $args);
-		foreach ($terms as &$term) {
+		foreach ( $terms as &$term ) {
 			$term = new $TermClass($term->term_id, $term->taxonomy);
 		}
 		return $terms;
@@ -79,7 +79,7 @@ class TermGetter {
 	 * @param string $query_string
 	 * @return stdClass
 	 */
-	protected static function get_term_query_from_query_string($query_string) {
+	protected static function get_term_query_from_query_string( $query_string ) {
 		$args = array();
 		parse_str($query_string, $args);
 		$ret = self::get_term_query_from_assoc_array($args);
@@ -90,7 +90,7 @@ class TermGetter {
 	 * @param string $taxs
 	 * @return stdClass
 	 */
-	protected static function get_term_query_from_string($taxs) {
+	protected static function get_term_query_from_string( $taxs ) {
 		$ret = new \stdClass();
 		$ret->args = array();
 		if ( is_string($taxs) ) {
@@ -104,7 +104,7 @@ class TermGetter {
 	 * @param array $args
 	 * @return stdClass
 	 */
-	public static function get_term_query_from_assoc_array($args) {
+	public static function get_term_query_from_assoc_array( $args ) {
 		$ret = new \stdClass();
 		$ret->args = $args;
 		if ( isset($ret->args['tax']) ) {
@@ -131,7 +131,7 @@ class TermGetter {
 	 * @param array $args
 	 * @return stdClass
 	 */
-	public static function get_term_query_from_array($args) {
+	public static function get_term_query_from_array( $args ) {
 		if ( is_array($args) && !empty($args) ) {
 			//okay its an array with content
 			if ( is_int($args[0]) ) {
@@ -147,7 +147,7 @@ class TermGetter {
 	 * @param integer[] $args
 	 * @return stdClass
 	 */
-	public static function get_term_query_from_array_of_ids($args) {
+	public static function get_term_query_from_array_of_ids( $args ) {
 		$ret = new \stdClass();
 		$ret->taxonomies = get_taxonomies();
 		$ret->args['include'] = $args;
@@ -158,7 +158,7 @@ class TermGetter {
 	 * @param string[] $args
 	 * @return stdClass
 	 */
-	public static function get_term_query_from_array_of_strings($args) {
+	public static function get_term_query_from_array_of_strings( $args ) {
 		$ret = new \stdClass();
 		$ret->taxonomies = self::correct_taxonomy_names($args);
 		$ret->args = array();
@@ -169,11 +169,11 @@ class TermGetter {
 	 * @param string|array $taxs
 	 * @return array
 	 */
-	private static function correct_taxonomy_names($taxs) {
+	private static function correct_taxonomy_names( $taxs ) {
 		if ( is_string($taxs) ) {
 			$taxs = array($taxs);
 		}
-		foreach ($taxs as &$tax) {
+		foreach ( $taxs as &$tax ) {
 			if ( $tax == 'tags' || $tax == 'tag' ) {
 				$tax = 'post_tag';
 			} else if ( $tax == 'categories' ) {
