@@ -14,7 +14,7 @@
 			$this->assertEquals( 'MyTimberTerm', get_class($terms[0]) );
 
 			$post = new TimberPost($pid);
-			$terms = $post->get_terms('post_tag', true, 'MyTimberTerm');
+			$terms = $post->terms('post_tag', true, 'MyTimberTerm');
 			$this->assertEquals( 'MyTimberTerm', get_class($terms[0]) );
 
 		}

@@ -19,7 +19,7 @@ use Timber\PostGetter;
  * <?php
  * // single.php, see connected twig example
  * $context = Timber::get_context();
- * $context['post'] = new TimberPost(); // It's a new TimberPost object, but an existing post from WordPress.
+ * $context['post'] = new Timber\Post(); // It's a new Timber\Post object, but an existing post from WordPress.
  * Timber::render('single.twig', $context);
  * ?>
  * ```
@@ -83,12 +83,12 @@ class Post extends Core implements CoreInterface {
 	protected $_permalink;
 
 	/**
-	 * @var array $_next stores the results of the next TimberPost in a set inside an array (in order to manage by-taxonomy)
+	 * @var array $_next stores the results of the next Timber\Post in a set inside an array (in order to manage by-taxonomy)
 	 */
 	protected $_next = array();
 
 	/**
-	 * @var array $_prev stores the results of the previous TimberPost in a set inside an array (in order to manage by-taxonomy)
+	 * @var array $_prev stores the results of the previous Timber\Post in a set inside an array (in order to manage by-taxonomy)
 	 */
 	protected $_prev = array();
 
@@ -161,8 +161,8 @@ class Post extends Core implements CoreInterface {
 	 * If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
 	 * @example
 	 * ```php
-	 * $post = new TimberPost();
-	 * $other_post = new TimberPost($random_post_id);
+	 * $post = new Timber\Post();
+	 * $other_post = new Timber\Post($random_post_id);
 	 * ```
 	 * @param mixed $pid
 	 */
@@ -258,7 +258,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Initializes a TimberPost
+	 * Initializes a Post
 	 * @internal
 	 * @param int|bool $pid
 	 */
@@ -279,13 +279,13 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Get the URL that will edit the current post/object
 	 * @internal
-	 * @see TimberPost::edit_link
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @see Timber\Post::edit_link
 	 * @return bool|string
 	 */
 	function get_edit_url() {
-		if ( $this->can_edit() ) {
-			return get_edit_post_link($this->ID);
-		}
+		return $this->edit_link();
 	}
 
 	/**
@@ -471,97 +471,6 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @internal
-	 * @see TimberPost::thumbnail
-	 * @deprecated since 1.0
-	 * @return null|TimberImage
-	 */
-	function get_thumbnail() {
-		return $this->thumbnail();
-	}
-
-	/**
-	 * @internal
-	 * @see TimberPost::link
-	 * @deprecated since 1.0
-	 * @return string
-	 */
-	function get_permalink() {
-		return $this->link();
-	}
-
-	/**
-	 * get the permalink for a post object
-	 * In your templates you should use link:
-	 * <a href="{{post.link}}">Read my post</a>
-	 * @internal
-	 * @deprecated since 1.0
-	 * @return string
-	 */
-	function get_link() {
-		return $this->get_permalink();
-	}
-
-	/**
-	 * Get the next post in WordPress's ordering
-	 * @internal
-	 * @param bool $taxonomy
-	 * @return TimberPost|boolean
-	 */
-	function get_next( $taxonomy = false ) {
-		if ( !isset($this->_next) || !isset($this->_next[$taxonomy]) ) {
-			global $post;
-			$this->_next = array();
-			$old_global = $post;
-			$post = $this;
-			if ( $taxonomy ) {
-				$adjacent = get_adjacent_post(true, '', false, $taxonomy);
-			} else {
-				$adjacent = get_adjacent_post(false, '', false);
-			}
-
-			if ( $adjacent ) {
-				$this->_next[$taxonomy] = new $this->PostClass($adjacent);
-			} else {
-				$this->_next[$taxonomy] = false;
-			}
-			$post = $old_global;
-		}
-		return $this->_next[$taxonomy];
-	}
-
-	/**
-	 * Get a data array of pagination so you can navigate to the previous/next for a paginated post
-	 * @return array
-	 */
-	public function get_pagination() {
-		global $post, $page, $numpages, $multipage;
-		$post = $this;
-		$ret = array();
-		if ( $multipage ) {
-			for ( $i = 1; $i <= $numpages; $i++ ) {
-				$link = self::get_wp_link_page($i);
-				$data = array('name' => $i, 'title' => $i, 'text' => $i, 'link' => $link);
-				if ( $i == $page ) {
-					$data['current'] = true;
-				}
-				$ret['pages'][] = $data;
-			}
-			$i = $page - 1;
-			if ( $i ) {
-				$link = self::get_wp_link_page($i);
-				$ret['prev'] = array('link' => $link);
-			}
-			$i = $page + 1;
-			if ( $i <= $numpages ) {
-				$link = self::get_wp_link_page($i);
-				$ret['next'] = array('link' => $link);
-			}
-		}
-		return $ret;
-	}
-
-	/**
 	 * @param int $i
 	 * @return string
 	 */
@@ -572,75 +481,6 @@ class Post extends Core implements CoreInterface {
 			return $link['href'];
 		}
 		return '';
-	}
-
-	/**
-	 * Get the permalink for a post, but as a relative path
-	 * For example, where {{post.link}} would return "http://example.org/2015/07/04/my-cool-post"
-	 * this will return the relative version: "/2015/07/04/my-cool-post"
-	 * @internal
-	 * @deprecated since 1.0
-	 * @return string
-	 */
-	function get_path() {
-		return $this->path();
-	}
-
-	/**
-	 * Get the next post in WordPress's ordering
-	 * @internal
-	 * @deprecated since 1.0
-	 * @param bool $taxonomy
-	 * @return TimberPost|boolean
-	 */
-	function get_prev( $taxonomy = false ) {
-		if ( isset($this->_prev) && isset($this->_prev[$taxonomy]) ) {
-			return $this->_prev[$taxonomy];
-		}
-		global $post;
-		$old_global = $post;
-		$post = $this;
-		$within_taxonomy = ($taxonomy) ? $taxonomy : 'category';
-		$adjacent = get_adjacent_post(($taxonomy), '', true, $within_taxonomy);
-		$prev_in_taxonomy = false;
-		if ( $adjacent ) {
-			$prev_in_taxonomy = new $this->PostClass($adjacent);
-		}
-		$this->_prev[$taxonomy] = $prev_in_taxonomy;
-		$post = $old_global;
-		return $this->_prev[$taxonomy];
-	}
-
-	/**
-	 * Get the parent post of the post
-	 * @internal
-	 * @deprecated since 1.0
-	 * @return bool|TimberPost
-	 */
-	function get_parent() {
-		return $this->parent();
-	}
-
-	/**
-	 * Gets a User object from the author of the post
-	 * @internal
-	 * @deprecated since 1.0
-	 * @see TimberPost::author
-	 * @return bool|TimberUser
-	 */
-	function get_author() {
-		if ( isset($this->post_author) ) {
-			return new User($this->post_author);
-		}
-	}
-
-	/**
-	 * @internal
-	 * @return bool|TimberUser
-	 */
-	function get_modified_author() {
-		$user_id = get_post_meta($this->ID, '_edit_last', true);
-		return ($user_id ? new User($user_id) : $this->get_author());
 	}
 
 	/**
@@ -663,168 +503,16 @@ class Post extends Core implements CoreInterface {
 		return $post;
 	}
 
-	/**
-	 * @internal
-	 * @see TimberPost::date
-	 * @param  string $date_format
-	 * @return string
-	 */
-	function get_date( $date_format = '' ) {
-		$df = $date_format ? $date_format : get_option('date_format');
-		$the_date = (string)mysql2date($df, $this->post_date);
-		return apply_filters('get_the_date', $the_date, $df);
-	}
 
 	/**
-	 * @internal
-	 * @param  string $date_format
-	 * @return string
-	 */
-	function get_modified_date( $date_format = '' ) {
-		$df = $date_format ? $date_format : get_option('date_format');
-		$the_time = $this->get_modified_time($df);
-		return apply_filters('get_the_modified_date', $the_time, $date_format);
-	}
-
-	/**
-	 * @internal
-	 * @param  string $time_format
-	 * @return string
-	 */
-	function get_modified_time( $time_format = '' ) {
-		$tf = $time_format ? $time_format : get_option('time_format');
-		$the_time = get_post_modified_time($tf, false, $this->ID, true);
-		return apply_filters('get_the_modified_time', $the_time, $time_format);
-	}
-
-	/**
-	 * @internal
-	 * @see TimberPost::children
-	 * @param string 		$post_type
-	 * @param bool|string 	$childPostClass
+	 * Get the terms associated with the post
+	 * This goes across all taxonomies by default
+	 * @api
+	 * @param string|array $tax What taxonom(y|ies) to pull from. Defaults to all registered taxonomies for the post type. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you're on your own.
+	 * @param bool $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?
 	 * @return array
 	 */
-	function get_children( $post_type = 'any', $childPostClass = false ) {
-		if ( $childPostClass === false ) {
-			$childPostClass = $this->PostClass;
-		}
-		if ( $post_type == 'parent' ) {
-			$post_type = $this->post_type;
-		}
-		$children = get_children('post_parent=' . $this->ID . '&post_type=' . $post_type . '&numberposts=-1&orderby=menu_order title&order=ASC&post_status=publish');
-		foreach ( $children as &$child ) {
-			$child = new $childPostClass($child->ID);
-		}
-		$children = array_values($children);
-		return $children;
-	}
-
-
-	/**
-	 * Get the comments for a post
-	 * @internal
-	 * @see TimberPost::comments
-	 * @param int $ct
-	 * @param string $order
-	 * @param string $type
-	 * @param string $status
-	 * @param string $CommentClass
-	 * @return array|mixed
-	 */
-
-	function get_comments($ct = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
-
-		global $overridden_cpage, $user_ID;
-		$overridden_cpage = false;
-
-		$commenter = wp_get_current_commenter();
-		$comment_author_email = $commenter['comment_author_email'];
-
-		$args = array('post_id' => $this->ID, 'status' => $status, 'order' => $order);
-		if ( $ct > 0 ) {
-			$args['number'] = $ct;
-		}
-		if ( strtolower($order) == 'wp' || strtolower($order) == 'wordpress' ) {
-			$args['order'] = get_option('comment_order');
-		}
-
-		if ( $user_ID ) {
-			$args['include_unapproved'] = array( $user_ID );
-		} elseif ( ! empty( $comment_author_email ) ) {
-			$args['include_unapproved'] = array( $comment_author_email );
-		}
-
-		$comments = get_comments($args);
-		$timber_comments = array();
-
-		if ( '' == get_query_var('cpage') && get_option('page_comments') ) {
-			set_query_var( 'cpage', 'newest' == get_option('default_comments_page') ? get_comment_pages_count() : 1 );
-			$overridden_cpage = true;
-		}
-
-		foreach($comments as $key => &$comment) {
-			$timber_comment = new $CommentClass($comment);
-			$timber_comments[$timber_comment->id] = $timber_comment;
-		}
-
-		// Build a flattened (depth=1) comment tree
-		$comments_tree = array();
-		foreach( $timber_comments as $key => $comment ) {
-			if ( ! $comment->is_child() ) {
-				continue;
-			}
-
-			$tree_element = $comment;
-			do {
-				$tree_element = $timber_comments[$tree_element->comment_parent];
-			} while( $tree_element->is_child() );
-
-			$comments_tree[$tree_element->id][] = $comment->id;
-		}
-
-		// Add child comments to the relative "super parents"
-		foreach($comments_tree as $comment_parent => $comment_children) {
-			foreach($comment_children as $comment_child) {
-				$timber_comments[$comment_parent]->children[] = $timber_comments[$comment_child];
-				unset($timber_comments[$comment_child]);
-			}
-		}
-
-		$timber_comments = array_values($timber_comments);
-
-		return $timber_comments;
-	}
-
-	/**
-	 * Get the categories for a post
-	 * @internal
-	 * @see TimberPost::categories
-	 * @return array of TimberTerms
-	 */
-	function get_categories() {
-		return $this->get_terms('category');
-	}
-
-	/**
-	 * @internal
-	 * @see TimberPost::category
-	 * @return mixed
-	 */
-	function get_category( ) {
-		$cats = $this->get_categories();
-		if ( count($cats) && isset($cats[0]) ) {
-			return $cats[0];
-		}
-	}
-
-	/**
-	 * @internal
-	 * @param string|array $tax
-	 * @param bool $merge
-	 * @param string $TermClass
-	 * @return array
-	 */
-	function get_terms( $tax = '', $merge = true, $TermClass = '' ) {
+	public function terms( $tax = '', $merge = true, $TermClass = '' ) {
 
 		$TermClass = $TermClass ?: $this->TermClass;
 
@@ -898,88 +586,10 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @param string $field
-	 * @return TimberImage
-	 */
-	function get_image( $field ) {
-		return new $this->ImageClass($this->$field);
-	}
-
-	/**
-	 * Gets an array of tags for you to use
-	 * @internal
-	 * @example
-	 * ```twig
-	 * <ul class="tags">
-	 *     {% for tag in post.tags %}
-	 *         <li>{{tag.name}}</li>
-	 *     {% endfor %}
-	 * </ul>
-	 * ```
-	 * @return array
-	 */
-	function get_tags() {
-		return $this->get_terms('post_tag');
-	}
-
-	/**
-	 * Outputs the title with filters applied
-	 * @internal
-	 * @deprecated since 1.0
-	 * @example
-	 * ```twig
-	 * <h1>{{post.get_title}}</h1>
-	 * ```
-	 * ```html
-	 * <h1>Hello World!</h1>
-	 * ```
-	 * @return string
-	 */
-	function get_title() {
-		return $this->title();
-	}
-
-	/**
-	 * Displays the content of the post with filters, shortcodes and wpautop applied
-	 * @example
-	 * ```twig
-	 * <div class="article-text">{{post.get_content}}</div>
-	 * ```
-	 * ```html
-	 * <div class="article-text"><p>Blah blah blah</p><p>More blah blah blah.</p></div>
-	 * ```
-	 * @param int $len
-	 * @param int $page
-	 * @return string
-	 */
-	function get_content( $len = 0, $page = 0 ) {
-		if ( $len == 0 && $page == 0 && $this->_content ) {
-			return $this->_content;
-		}
-		$content = $this->post_content;
-		if ( $len ) {
-			$content = wp_trim_words($content, $len);
-		}
-		if ( $page ) {
-			$contents = explode('<!--nextpage-->', $content);
-			$page--;
-			if ( count($contents) > $page ) {
-				$content = $contents[$page];
-			}
-		}
-		$content = apply_filters('the_content', ($content));
-		if ( $len == 0 && $page == 0 ) {
-			$this->_content = $content;
-		}
-		return $content;
-	}
-
-	/**
 	 * @return string
 	 */
 	function get_paged_content() {
-		global $page;
-		return $this->get_content(0, $page);
+		return $this->paged_content();
 	}
 	/**
 	 *
@@ -1032,19 +642,10 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @internal
-	 * @deprecated since 1.0
-	 * @return mixed
-	 */
-	function get_format() {
-		return $this->format();
-	}
-
-	/**
 	 * Get the CSS classes for a post. For usage you should use `{{post.class}}` instead of `{{post.post_class}}`
 	 * @internal
 	 * @param string $class additional classes you want to add
-	 * @see TimberPost::$class
+	 * @see Timber\Post::$class
 	 * @example
 	 * ```twig
 	 * <article class="{{ post.class }}">
@@ -1128,7 +729,8 @@ class Post extends Core implements CoreInterface {
 	 * @return TimberUser|bool A TimberUser object if found, false if not
 	 */
 	public function modified_author() {
-		return $this->get_modified_author();
+		$user_id = get_post_meta($this->ID, '_edit_last', true);
+		return ($user_id ? new User($user_id) : $this->get_author());
 	}
 
 	/**
@@ -1151,7 +753,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Returns an array of children on the post as TimberPosts
+	 * Returns an array of children on the post as Timber\Posts
 	 * (or other claass as you define).
 	 * @api
 	 * @example
@@ -1164,15 +766,26 @@ class Post extends Core implements CoreInterface {
 	 * {% endif %}
 	 * ```
 	 * @param string $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type
-	 * @param string|bool $childPostClass _optional_ a custom post class (ex: 'MyTimberPost') to return the objects as. By default (false) it will use TimberPost::$post_class value.
+	 * @param string|bool $childPostClass _optional_ a custom post class (ex: 'MyTimber\Post') to return the objects as. By default (false) it will use Timber\Post::$post_class value.
 	 * @return array
 	 */
 	public function children( $post_type = 'any', $childPostClass = false ) {
-		return $this->get_children( $post_type, $childPostClass );
+		if ( $childPostClass === false ) {
+			$childPostClass = $this->PostClass;
+		}
+		if ( $post_type == 'parent' ) {
+			$post_type = $this->post_type;
+		}
+		$children = get_children('post_parent=' . $this->ID . '&post_type=' . $post_type . '&numberposts=-1&orderby=menu_order title&order=ASC&post_status=publish');
+		foreach ( $children as &$child ) {
+			$child = new $childPostClass($child->ID);
+		}
+		$children = array_values($children);
+		return $children;
 	}
 
 	/**
-	 * Gets the comments on a TimberPost and returns them as an array of [TimberComments](#TimberComment) (or whatever comment class you set).
+	 * Gets the comments on a Timber\Post and returns them as an array of [TimberComments](#TimberComment) (or whatever comment class you set).
 	 * @api
 	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
 	 * @param string $order use ordering set in WordPress admin, or a different scheme
@@ -1193,7 +806,65 @@ class Post extends Core implements CoreInterface {
 	 * @return bool|array
 	 */
 	public function comments( $count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment' ) {
-		return $this->get_comments($count, $order, $type, $status, $CommentClass);
+		global $overridden_cpage, $user_ID;
+		$overridden_cpage = false;
+
+		$commenter = wp_get_current_commenter();
+		$comment_author_email = $commenter['comment_author_email'];
+
+		$args = array('post_id' => $this->ID, 'status' => $status, 'order' => $order);
+		if ( $count > 0 ) {
+			$args['number'] = $count;
+		}
+		if ( strtolower($order) == 'wp' || strtolower($order) == 'wordpress' ) {
+			$args['order'] = get_option('comment_order');
+		}
+
+		if ( $user_ID ) {
+			$args['include_unapproved'] = array( $user_ID );
+		} elseif ( ! empty( $comment_author_email ) ) {
+			$args['include_unapproved'] = array( $comment_author_email );
+		}
+
+		$comments = get_comments($args);
+		$timber_comments = array();
+
+		if ( '' == get_query_var('cpage') && get_option('page_comments') ) {
+			set_query_var( 'cpage', 'newest' == get_option('default_comments_page') ? get_comment_pages_count() : 1 );
+			$overridden_cpage = true;
+		}
+
+		foreach($comments as $key => &$comment) {
+			$timber_comment = new $CommentClass($comment);
+			$timber_comments[$timber_comment->id] = $timber_comment;
+		}
+
+		// Build a flattened (depth=1) comment tree
+		$comments_tree = array();
+		foreach( $timber_comments as $key => $comment ) {
+			if ( ! $comment->is_child() ) {
+				continue;
+			}
+
+			$tree_element = $comment;
+			do {
+				$tree_element = $timber_comments[$tree_element->comment_parent];
+			} while( $tree_element->is_child() );
+
+			$comments_tree[$tree_element->id][] = $comment->id;
+		}
+
+		// Add child comments to the relative "super parents"
+		foreach($comments_tree as $comment_parent => $comment_children) {
+			foreach($comment_children as $comment_child) {
+				$timber_comments[$comment_parent]->children[] = $timber_comments[$comment_child];
+				unset($timber_comments[$comment_child]);
+			}
+		}
+
+		$timber_comments = array_values($timber_comments);
+
+		return $timber_comments;
 	}
 
 	/**
@@ -1209,15 +880,34 @@ class Post extends Core implements CoreInterface {
 	 * @param int $page
 	 * @return string
 	 */
-	public function content( $page = 0 ) {
-		return $this->get_content(0, $page);
+	public function content( $page = 0, $len = 0 ) {
+		if ( $len == 0 && $page == 0 && $this->_content ) {
+			return $this->_content;
+		}
+		$content = $this->post_content;
+		if ( $len ) {
+			$content = wp_trim_words($content, $len);
+		}
+		if ( $page ) {
+			$contents = explode('<!--nextpage-->', $content);
+			$page--;
+			if ( count($contents) > $page ) {
+				$content = $contents[$page];
+			}
+		}
+		$content = apply_filters('the_content', ($content));
+		if ( $len == 0 && $page == 0 ) {
+			$this->_content = $content;
+		}
+		return $content;
 	}
 
 	/**
 	 * @return string
 	 */
 	public function paged_content() {
-		return $this->get_paged_content();
+		global $page;
+		return $this->content($page, 0);
 	}
 
 	/**
@@ -1239,7 +929,9 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function date( $date_format = '' ) {
-		return $this->get_date($date_format);
+		$df = $date_format ? $date_format : get_option('date_format');
+		$the_date = (string)mysql2date($df, $this->post_date);
+		return apply_filters('get_the_date', $the_date, $df);
 	}
 
 	/**
@@ -1267,10 +959,13 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @return bool|string
+	 * Returns the edit URL of a post if the user has access to it
+	 * @return bool|string the edit URL of a post in the WordPress admin 
 	 */
 	public function edit_link() {
-		return $this->get_edit_url();
+		if ( $this->can_edit() ) {
+			return get_edit_post_link($this->ID);
+		}
 	}
 
 	/**
@@ -1322,7 +1017,9 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function modified_date( $date_format = '' ) {
-		return $this->get_modified_date($date_format);
+		$df = $date_format ? $date_format : get_option('date_format');
+		$the_time = $this->get_modified_time($df);
+		return apply_filters('get_the_modified_date', $the_time, $date_format);
 	}
 
 	/**
@@ -1338,25 +1035,67 @@ class Post extends Core implements CoreInterface {
 	 * @param bool $in_same_cat
 	 * @return mixed
 	 */
-	public function next( $in_same_cat = false ) {
-		return $this->get_next($in_same_cat);
+	public function next( $in_same_term = false ) {
+		if ( !isset($this->_next) || !isset($this->_next[$in_same_term]) ) {
+			global $post;
+			$this->_next = array();
+			$old_global = $post;
+			$post = $this;
+			if ( $in_same_term ) {
+				$adjacent = get_adjacent_post(true, '', false, $in_same_term);
+			} else {
+				$adjacent = get_adjacent_post(false, '', false);
+			}
+
+			if ( $adjacent ) {
+				$this->_next[$in_same_term] = new $this->PostClass($adjacent);
+			} else {
+				$this->_next[$in_same_term] = false;
+			}
+			$post = $old_global;
+		}
+		return $this->_next[$in_same_term];
 	}
 
 	/**
+	 * Get a data array of pagination so you can navigate to the previous/next for a paginated post
 	 * @return array
 	 */
 	public function pagination() {
-		return $this->get_pagination();
+		global $post, $page, $numpages, $multipage;
+		$post = $this;
+		$ret = array();
+		if ( $multipage ) {
+			for ( $i = 1; $i <= $numpages; $i++ ) {
+				$link = self::get_wp_link_page($i);
+				$data = array('name' => $i, 'title' => $i, 'text' => $i, 'link' => $link);
+				if ( $i == $page ) {
+					$data['current'] = true;
+				}
+				$ret['pages'][] = $data;
+			}
+			$i = $page - 1;
+			if ( $i ) {
+				$link = self::get_wp_link_page($i);
+				$ret['prev'] = array('link' => $link);
+			}
+			$i = $page + 1;
+			if ( $i <= $numpages ) {
+				$link = self::get_wp_link_page($i);
+				$ret['next'] = array('link' => $link);
+			}
+		}
+		return $ret;
 	}
 
 	/**
-	 * Gets the parent (if one exists) from a post as a TimberPost object (or whatever is set in TimberPost::$PostClass)
+	 * Gets the parent (if one exists) from a post as a Timber\Post object (or whatever is set in Timber\Post::$PostClass)
 	 * @api
 	 * @example
 	 * ```twig
 	 * Parent page: <a href="{{ post.parent.link }}">{{ post.parent.title }}</a>
 	 * ```
-	 * @return bool|TimberPost
+	 * @return bool|Timber\Post
 	 */
 	public function parent() {
 		if ( !$this->post_parent ) {
@@ -1388,23 +1127,25 @@ class Post extends Core implements CoreInterface {
 	 * <h3>{{post.prev.title}}</h3>
 	 * <p>{{post.prev.get_preview(25)}}</p>
 	 * ```
-	 * @param bool $in_same_cat
+	 * @param bool $in_same_term
 	 * @return mixed
 	 */
-	public function prev( $in_same_cat = false ) {
-		return $this->get_prev($in_same_cat);
-	}
-
-	/**
-	 * Get the terms associated with the post
-	 * This goes across all taxonomies by default
-	 * @api
-	 * @param string|array $tax What taxonom(y|ies) to pull from. Defaults to all registered taxonomies for the post type. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you're on your own.
-	 * @param bool $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?
-	 * @return array
-	 */
-	public function terms( $tax = '', $merge = true ) {
-		return $this->get_terms($tax, $merge);
+	public function prev( $in_same_term = false ) {
+		if ( isset($this->_prev) && isset($this->_prev[$in_same_term]) ) {
+			return $this->_prev[$in_same_term];
+		}
+		global $post;
+		$old_global = $post;
+		$post = $this;
+		$within_taxonomy = ($in_same_term) ? $in_same_term : 'category';
+		$adjacent = get_adjacent_post(($in_same_term), '', true, $within_taxonomy);
+		$prev_in_taxonomy = false;
+		if ( $adjacent ) {
+			$prev_in_taxonomy = new $this->PostClass($adjacent);
+		}
+		$this->_prev[$in_same_term] = $prev_in_taxonomy;
+		$post = $old_global;
+		return $this->_prev[$in_same_term];
 	}
 
 	/**
@@ -1448,13 +1189,316 @@ class Post extends Core implements CoreInterface {
 		return apply_filters('the_title', $this->post_title, $this->ID);
 	}
 
+	/** 
+	 *
+	 * ===================================
+	 * DEPRECATED FUNCTIONS LIVE DOWN HERE
+	 * ===================================
+	 * 
+	 */
+
+	/**
+	 * Get the categories for a post
+	 * @internal
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @see Timber\Post::categories
+	 * @return array of TimberTerms
+	 */
+	function get_categories() {
+		return $this->get_terms('category');
+	}
+
+	/**
+	 * @internal
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @see Timber\Post::category
+	 * @return mixed
+	 */
+	function get_category( ) {
+		$cats = $this->get_categories();
+		if ( count($cats) && isset($cats[0]) ) {
+			return $cats[0];
+		}
+	}
+
+	/**
+	 * @param string $field
+	 * @return TimberImage
+	 */
+	function get_image( $field ) {
+		return new $this->ImageClass($this->$field);
+	}
+
+	/**
+	 * Gets an array of tags for you to use
+	 * @internal
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @example
+	 * ```twig
+	 * <ul class="tags">
+	 *     {% for tag in post.tags %}
+	 *         <li>{{tag.name}}</li>
+	 *     {% endfor %}
+	 * </ul>
+	 * ```
+	 * @return array
+	 */
+	function get_tags() {
+		return $this->get_terms('post_tag');
+	}
+
+	/**
+	 * Outputs the title with filters applied
+	 * @internal
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @example
+	 * ```twig
+	 * <h1>{{post.get_title}}</h1>
+	 * ```
+	 * ```html
+	 * <h1>Hello World!</h1>
+	 * ```
+	 * @return string
+	 */
+	function get_title() {
+		return $this->title();
+	}
+
+		/**
+	 * Displays the content of the post with filters, shortcodes and wpautop applied
+	 * @example
+	 * ```twig
+	 * <div class="article-text">{{post.get_content}}</div>
+	 * ```
+	 * ```html
+	 * <div class="article-text"><p>Blah blah blah</p><p>More blah blah blah.</p></div>
+	 * ```
+	 * @param int $len
+	 * @param int $page
+	 * @return string
+	 */
+	function get_content( $len = 0, $page = 0 ) {
+		return $this->content($page, $len);
+	}
+
+	/**
+	 * @internal
+	 * @deprecated since 1.0
+	 * @return mixed
+	 */
+	function get_format() {
+		return $this->format();
+	}
+
+	/**
+	 * Get the terms associated with the post
+	 * This goes across all taxonomies by default
+	 * @internal
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @param string|array $tax What taxonom(y|ies) to pull from. Defaults to all registered taxonomies for the post type. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you're on your own.
+	 * @param bool $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?
+	 * @return array
+	 */
+	public function get_terms( $tax = '', $merge = true ) {
+		return $this->terms($tax, $merge);
+	}
+
 	/**
 	 * @deprecated 0.20.0 use link() instead
+	 * @codeCoverageIgnore
 	 * @return string
 	 */
 	public function permalink() {
 		Helper::warn('post.permalink has been removed, please use post.link');
 		return $this->link();
+	}
+
+		/**
+	 * @internal
+	 * @see Timber\Post::date
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @param  string $date_format
+	 * @return string
+	 */
+	function get_date( $date_format = '' ) {
+		return $this->date($date_format);
+	}
+
+	/**
+	 * @internal
+	 * @see Timber\Post::modified_date
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @param  string $date_format
+	 * @return string
+	 */
+	function get_modified_date( $date_format = '' ) {
+		return $this->modified_date($date_format);
+	}
+
+	/**
+	 * @internal
+	 * @param  string $time_format
+	 * @return string
+	 */
+	function get_modified_time( $time_format = '' ) {
+		$tf = $time_format ? $time_format : get_option('time_format');
+		$the_time = get_post_modified_time($tf, false, $this->ID, true);
+		return apply_filters('get_the_modified_time', $the_time, $time_format);
+	}
+
+	/**
+	 * @internal
+	 * @see Timber\Post::children
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @param string 		$post_type
+	 * @param bool|string 	$childPostClass
+	 * @return array
+	 */
+	function get_children( $post_type = 'any', $childPostClass = false ) {
+		return $this->children($post_type, $childPostClass);
+	}
+
+		/**
+	 * Get the permalink for a post, but as a relative path
+	 * For example, where {{post.link}} would return "http://example.org/2015/07/04/my-cool-post"
+	 * this will return the relative version: "/2015/07/04/my-cool-post"
+	 * @internal
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @return string
+	 */
+	function get_path() {
+		return $this->path();
+	}
+
+	/**
+	 * Get the next post in WordPress's ordering
+	 * @internal
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @param bool $taxonomy
+	 * @return TimberPost|boolean
+	 */
+	function get_prev( $in_same_term = false ) {
+		return $this->prev($in_same_term);
+	}
+
+	/**
+	 * Get the parent post of the post
+	 * @internal
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @return bool|TimberPost
+	 */
+	function get_parent() {
+		return $this->parent();
+	}
+
+	/**
+	 * Gets a User object from the author of the post
+	 * @internal
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @see TimberPost::author
+	 * @return bool|TimberUser
+	 */
+	function get_author() {
+		if ( isset($this->post_author) ) {
+			return new User($this->post_author);
+		}
+	}
+
+	/**
+	 * @internal
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @return bool|TimberUser
+	 */
+	function get_modified_author() {
+		return $this->modified_author();
+	}
+
+		/**
+	 * @internal
+	 * @see TimberPost::thumbnail
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @return null|TimberImage
+	 */
+	function get_thumbnail() {
+		return $this->thumbnail();
+	}
+
+	/**
+	 * @internal
+	 * @see TimberPost::link
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @return string
+	 */
+	function get_permalink() {
+		return $this->link();
+	}
+
+	/**
+	 * get the permalink for a post object
+	 * In your templates you should use link:
+	 * <a href="{{post.link}}">Read my post</a>
+	 * @internal
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @return string
+	 */
+	function get_link() {
+		return $this->get_permalink();
+	}
+
+	/**
+	 * Get the next post in WordPress's ordering
+	 * @internal
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @param bool $taxonomy
+	 * @return TimberPost|boolean
+	 */
+	function get_next( $taxonomy = false ) {
+		return $this->next($taxonomy);
+	}
+
+	/**
+	 * Get a data array of pagination so you can navigate to the previous/next for a paginated post
+	 * @internal
+	 * @see Timber\Post::pagination();
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @return array
+	 */
+	public function get_pagination() {
+		return $this->pagination();
+	}
+
+
+	/**
+	 * Get the comments for a post
+	 * @internal
+	 * @see Timber\Post::comments
+	 * @param int $count
+	 * @param string $order
+	 * @param string $type
+	 * @param string $status
+	 * @param string $CommentClass
+	 * @return array|mixed
+	 */
+	function get_comments($count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
+		return $this->comments($count, $order, $type, $status, $CommentClass);
 	}
 
 }
