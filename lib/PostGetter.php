@@ -12,20 +12,20 @@ class PostGetter {
 	 * @param string $PostClass
 	 * @return array|bool|null
 	 */
-	static function get_post($query = false, $PostClass = 'TimberPost') {
-		$posts = self::get_posts( $query, $PostClass );
-		if ( $post = reset($posts ) ) {
+	static function get_post( $query = false, $PostClass = 'TimberPost' ) {
+		$posts = self::get_posts($query, $PostClass);
+		if ( $post = reset($posts) ) {
 			return $post;
 		}
 	}
 
 	static function get_posts( $query = false, $PostClass = 'TimberPost', $return_collection = false ) {
-		$posts = self::query_posts( $query, $PostClass );
-		return apply_filters('timber_post_getter_get_posts', $posts->get_posts( $return_collection ));
+		$posts = self::query_posts($query, $PostClass);
+		return apply_filters('timber_post_getter_get_posts', $posts->get_posts($return_collection));
 	}
 
 	static function query_post( $query = false, $PostClass = 'TimberPost' ) {
-		$posts = self::query_posts( $query, $PostClass );
+		$posts = self::query_posts($query, $PostClass);
 		if ( method_exists($posts, 'current') && $post = $posts->current() ) {
 			return $post;
 		}
@@ -36,7 +36,7 @@ class PostGetter {
 	 * @param string $PostClass
 	 * @return array|bool|null
 	 */
-	static function query_posts($query = false, $PostClass = 'TimberPost' ) {
+	static function query_posts( $query = false, $PostClass = 'TimberPost' ) {
 		if ( $type = self::get_class_for_use_as_timber_post($query) ) {
 			$PostClass = $type;
 			if ( self::is_post_class_or_class_map($query) ) {
@@ -44,26 +44,26 @@ class PostGetter {
 			}
 		}
 
-		if (is_object($query) && !is_a($query, 'WP_Query') ){
+		if ( is_object($query) && !is_a($query, 'WP_Query') ) {
 			// The only object other than a query is a type of post object
-			$query = array( $query );
+			$query = array($query);
 		}
 
-		if ( is_array( $query ) && count( $query ) && isset( $query[0] ) && is_object( $query[0] ) ) {
+		if ( is_array($query) && count($query) && isset($query[0]) && is_object($query[0]) ) {
 			// We have an array of post objects that already have data
-			return new PostsCollection( $query, $PostClass );
+			return new PostsCollection($query, $PostClass);
 		} else {
 			// We have a query (of sorts) to work with
-			$tqi = new QueryIterator( $query, $PostClass );
+			$tqi = new QueryIterator($query, $PostClass);
 			return $tqi;
 		}
 	}
 
-	static function get_pids($query){
+	static function get_pids( $query ) {
 		$posts = self::get_posts($query);
 		$pids = array();
-		foreach($posts as $post){
-			if (isset($post->ID)){
+		foreach ( $posts as $post ) {
+			if ( isset($post->ID) ) {
 				$pids[] = $post->ID;
 			}
 		}
@@ -71,7 +71,7 @@ class PostGetter {
 	}
 
 	static function loop_to_id() {
-		if (!self::wp_query_has_posts()) { return false; }
+		if ( !self::wp_query_has_posts() ) { return false; }
 
 		global $wp_query;
 		$post_num = property_exists($wp_query, 'current_post')
@@ -79,7 +79,7 @@ class PostGetter {
 				  : 0
 				  ;
 
-		if (!isset($wp_query->posts[$post_num])) { return false; }
+		if ( !isset($wp_query->posts[$post_num]) ) { return false; }
 
 		return $wp_query->posts[$post_num]->ID;
 	}
@@ -96,9 +96,9 @@ class PostGetter {
 	 * @param string|array $arg
 	 * @return bool
 	 */
-	static function is_post_class_or_class_map($arg){
-		$maybe_type = self::get_class_for_use_as_timber_post( $arg );
-		if ( is_array($arg) && isset($arg['post_type'])) {
+	static function is_post_class_or_class_map( $arg ) {
+		$maybe_type = self::get_class_for_use_as_timber_post($arg);
+		if ( is_array($arg) && isset($arg['post_type']) ) {
 			//the user has passed a true WP_Query-style query array that needs to be used later, so the $arg is not a class map or post class
 			return false;
 		}
@@ -111,7 +111,7 @@ class PostGetter {
 	 * @param string|array $arg
 	 * @return string|bool if a $type is found; false if not
 	 */
-	static function get_class_for_use_as_timber_post($arg) {
+	static function get_class_for_use_as_timber_post( $arg ) {
 		$type = false;
 
 		if ( is_string($arg) ) {
@@ -120,9 +120,9 @@ class PostGetter {
 			$type = $arg['post_type'];
 		}
 
-		if(!$type) return false;
+		if ( !$type ) return false;
 
-		if (class_exists($type) && is_subclass_of($type, 'TimberPost')) {
+		if ( class_exists($type) && is_subclass_of($type, 'TimberPost') ) {
 			return $type;
 		}
 	}

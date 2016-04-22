@@ -631,6 +631,7 @@ class Post extends Core implements CoreInterface {
 			}
 		}
 		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
+		$value = $this->convert( $value, __CLASS__ );
 		return $value;
 	}
 
@@ -1088,6 +1089,29 @@ class Post extends Core implements CoreInterface {
 		return $ret;
 	}
 
+
+
+	/**
+	 * Finds any WP_Post objects and converts them to Timber\Posts
+	 * @param array $data
+	 */
+	public function convert( $data, $class ) {
+		if( is_array( $data ) ) {
+			$func = __FUNCTION__;
+			foreach( $data as &$ele ) {
+				if( gettype( $ele ) === 'array' ) {
+					$ele = $this->$func( $ele, $class );
+				} else {
+					if( $ele instanceof WP_Post ) {
+						$ele = new $class( $ele );
+					}
+				}
+			}
+		}
+
+		return $data;
+	}
+
 	/**
 	 * Gets the parent (if one exists) from a post as a Timber\Post object (or whatever is set in Timber\Post::$PostClass)
 	 * @api
@@ -1096,6 +1120,7 @@ class Post extends Core implements CoreInterface {
 	 * Parent page: <a href="{{ post.parent.link }}">{{ post.parent.title }}</a>
 	 * ```
 	 * @return bool|Timber\Post
+	 * @param string $field_name
 	 */
 	public function parent() {
 		if ( !$this->post_parent ) {

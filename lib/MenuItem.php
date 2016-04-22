@@ -33,13 +33,13 @@ class MenuItem extends Core implements CoreInterface {
 	 */
 	public function __construct( $data ) {
 		$data = (object) $data;
-		$this->import( $data );
-		$this->import_classes( $data );
-		if ( isset( $this->name ) ) {
+		$this->import($data);
+		$this->import_classes($data);
+		if ( isset($this->name) ) {
 			$this->_name = $this->name;
 		}
 		$this->name = $this->name();
-		$this->add_class( 'menu-item-' . $this->ID );
+		$this->add_class('menu-item-'.$this->ID);
 		$this->menu_object = $data;
 	}
 
@@ -56,7 +56,7 @@ class MenuItem extends Core implements CoreInterface {
 	 */
 	public function add_class( $class_name ) {
 		$this->classes[] = $class_name;
-		$this->class .= ' ' . $class_name;
+		$this->class .= ' '.$class_name;
 	}
 
 	/**
@@ -68,7 +68,7 @@ class MenuItem extends Core implements CoreInterface {
 		if ( $title = $this->title() ) {
 			return $title;
 		}
-		if ( isset( $this->_name ) ) {
+		if ( isset($this->_name) ) {
 			return $this->_name;
 		}
 		return '';
@@ -89,10 +89,10 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string the slug of the menu item kinda-like-this
 	 */
 	public function slug() {
-		if ( !isset( $this->master_object ) ) {
+		if ( !isset($this->master_object) ) {
 			$this->master_object = $this->get_master_object();
 		}
-		if ( isset( $this->master_object->post_name ) && $this->master_object->post_name ) {
+		if ( isset($this->master_object->post_name) && $this->master_object->post_name ) {
 			return $this->master_object->post_name;
 		}
 		return $this->post_name;
@@ -103,8 +103,8 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return mixed whatever object (Post, Term, etc.) the menu item represents
 	 */
 	protected function get_master_object() {
-		if ( isset( $this->_menu_item_object_id ) ) {
-			return new $this->PostClass( $this->_menu_item_object_id );
+		if ( isset($this->_menu_item_object_id) ) {
+			return new $this->PostClass($this->_menu_item_object_id);
 		}
 	}
 
@@ -135,15 +135,15 @@ class MenuItem extends Core implements CoreInterface {
 	 */
 	function add_child( $item ) {
 		if ( !$this->has_child_class ) {
-			$this->add_class( 'menu-item-has-children' );
+			$this->add_class('menu-item-has-children');
 			$this->has_child_class = true;
 		}
-		if ( !isset( $this->children ) ) {
+		if ( !isset($this->children) ) {
 			$this->children = array();
 		}
 		$this->children[] = $item;
 		$item->level = $this->level + 1;
-		if ($item->children) {
+		if ( $item->children ) {
 			$this->update_child_levels();
 		}
 	}
@@ -154,8 +154,8 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return bool 
 	 */
 	function update_child_levels() {
-		if (is_array($this->children)) {
-			foreach( $this->children as $child ) {
+		if ( is_array($this->children) ) {
+			foreach ( $this->children as $child ) {
 				$child->level = $this->level + 1;
 				$child->update_child_levels();
 			}
@@ -172,10 +172,10 @@ class MenuItem extends Core implements CoreInterface {
 		if ( is_array($data) ) {
 			$data = (object) $data;
 		}
-		$this->classes = array_merge( $this->classes, $data->classes );
-		$this->classes = array_unique( $this->classes );
-		$this->classes = apply_filters( 'nav_menu_css_class', $this->classes, $this );
-		$this->class = trim( implode( ' ', $this->classes ) );
+		$this->classes = array_merge($this->classes, $data->classes);
+		$this->classes = array_unique($this->classes);
+		$this->classes = apply_filters('nav_menu_css_class', $this->classes, $this);
+		$this->class = trim(implode(' ', $this->classes));
 	}
 
 	/**
@@ -184,7 +184,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return array|bool
 	 */
 	function get_children() {
-		if ( isset( $this->children ) ) {
+		if ( isset($this->children) ) {
 			return $this->children;
 		}
 		return false;
@@ -203,7 +203,7 @@ class MenuItem extends Core implements CoreInterface {
 		if ( $this->type != 'custom' ) {
 			return false;
 		}
-		return URLHelper::is_external( $this->url );
+		return URLHelper::is_external($this->url);
 	}
 
 	/**
@@ -211,10 +211,10 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return mixed whatever value is storied in the database
 	 */
 	public function meta( $key ) {
-		if ( is_object( $this->menu_object ) && method_exists( $this->menu_object, 'meta' ) ) {
-			return $this->menu_object->meta( $key );
+		if ( is_object($this->menu_object) && method_exists($this->menu_object, 'meta') ) {
+			return $this->menu_object->meta($key);
 		}
-		if ( isset( $this->$key ) ) {
+		if ( isset($this->$key) ) {
 			return $this->$key;
 		}
 	}
@@ -251,10 +251,10 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string a full URL like http://mysite.com/thing/
 	 */
 	public function link() {
-		if ( !isset( $this->url ) || !$this->url ) {
-			if ( isset( $this->_menu_item_type ) && $this->_menu_item_type == 'custom' ) {
+		if ( !isset($this->url) || !$this->url ) {
+			if ( isset($this->_menu_item_type) && $this->_menu_item_type == 'custom' ) {
 				$this->url = $this->_menu_item_url;
-			} else if ( isset( $this->menu_object ) && method_exists( $this->menu_object, 'get_link' ) ) {
+			} else if ( isset($this->menu_object) && method_exists($this->menu_object, 'get_link') ) {
 					$this->url = $this->menu_object->get_link();
 				}
 		}
@@ -285,7 +285,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string the path of a URL like /foo
 	 */
 	public function path() {
-		return URLHelper::get_rel_url( $this->link() );
+		return URLHelper::get_rel_url($this->link());
 	}
 
 	/**
@@ -299,7 +299,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string the public label like Foo
 	 */
 	public function title() {
-		if ( isset( $this->__title ) ) {
+		if ( isset($this->__title) ) {
 			return $this->__title;
 		}
 	}
