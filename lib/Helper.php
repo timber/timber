@@ -54,8 +54,9 @@ class Helper {
 
 			// lock timeout shouldn't be higher than 5 seconds, unless
 			// remote calls with high timeouts are made here
-			if ( $enable_transients )
-				self::_lock_transient($slug, $lock_timeout);
+			if ( $enable_transients ) {
+							self::_lock_transient($slug, $lock_timeout);
+			}
 
 			$data = $callback();
 
