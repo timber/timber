@@ -5,8 +5,11 @@ namespace Timber;
 class Admin {
 	
     public static function init() {
-        add_filter('plugin_row_meta', array( __CLASS__, 'meta_links' ), 10, 2);
-        add_action('in_plugin_update_message-timber-library/timber.php', array('Timber\Admin', 'in_plugin_update_message'), 10, 2);
+        $filter = add_filter('plugin_row_meta', array( __CLASS__, 'meta_links' ), 10, 2);
+        $action = add_action('in_plugin_update_message-timber-library/timber.php', array('Timber\Admin', 'in_plugin_update_message'), 10, 2);
+        if ($filter && $action) {
+        	return true;
+        }
     }
 
 	/**
