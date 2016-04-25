@@ -457,7 +457,7 @@ class Timber {
 	 */
 	public static function add_route( $route, $callback, $args = array() ) {
 		Helper::warn('Timber::add_route (and accompanying methods for load_view, etc. Have been deprecated and will soon be removed. Please update your theme with Route::map. You can read more in the 1.0 Upgrade Guide: https://github.com/timber/timber/wiki/1.0-Upgrade-Guide');
-		Routes::map( $route, $callback, $args );
+		Routes::map($route, $callback, $args);
 	}
 
 	/**

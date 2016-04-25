@@ -166,10 +166,10 @@ class Post extends Core implements CoreInterface {
 	 * ```
 	 * @param mixed $pid
 	 */
-	public function __construct($pid = null) {
+	public function __construct( $pid = null ) {
 		$this->namespacing();
 
-		$pid = $this->determine_id( $pid );
+		$pid = $this->determine_id($pid);
 		$this->init($pid);
 	}
 
@@ -179,7 +179,7 @@ class Post extends Core implements CoreInterface {
 	 * @param mixed a value to test against
 	 * @return int the numberic id we should be using for this post object
 	 */
-	protected function determine_id($pid) {
+	protected function determine_id( $pid ) {
 		global $wp_query;
 		if ( $pid === null &&
 			isset($wp_query->queried_object_id)
@@ -188,18 +188,18 @@ class Post extends Core implements CoreInterface {
 			&& is_object($wp_query->queried_object)
 			&& get_class($wp_query->queried_object) == 'WP_Post'
 			) {
-				if( isset( $_GET['preview'] ) && isset( $_GET['preview_nonce'] ) && wp_verify_nonce( $_GET['preview_nonce'], 'post_preview_' . $wp_query->queried_object_id ) ) {
-					$pid = $this->get_post_preview_id( $wp_query );
+				if ( isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id) ) {
+					$pid = $this->get_post_preview_id($wp_query);
 				} else if ( !$pid ) {
 					$pid = $wp_query->queried_object_id;
 				}
-		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id )  {
+		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id ) {
 			//hack for static page as home page
 			$pid = $wp_query->queried_object_id;
 		} else if ( $pid === null ) {
 			$gtid = false;
 			$maybe_post = get_post();
-			if ( isset($maybe_post->ID) ){
+			if ( isset($maybe_post->ID) ) {
 				$gtid = true;
 			}
 			if ( $gtid ) {
@@ -238,13 +238,13 @@ class Post extends Core implements CoreInterface {
 	 	$can_preview = array();
 
 		foreach( $can as $type ) {
-		     if( current_user_can( $type ) ) {
-		        $can_preview[] = true;
-		     }
+			 if( current_user_can( $type ) ) {
+				$can_preview[] = true;
+			 }
 		}
 
 		if ( count( $can_preview ) !== count( $can ) ) {
-		     return;
+			 return;
 		}
 
 		$revisions = wp_get_post_revisions( $query->queried_object_id );
@@ -262,7 +262,7 @@ class Post extends Core implements CoreInterface {
 	 * @internal
 	 * @param int|bool $pid
 	 */
-	protected function init($pid = false) {
+	protected function init( $pid = false ) {
 		if ( $pid === false ) {
 			$pid = get_the_ID();
 		}
@@ -349,11 +349,11 @@ class Post extends Core implements CoreInterface {
 	 * @param string $post_name
 	 * @return int
 	 */
-	static function get_post_id_by_name($post_name) {
+	static function get_post_id_by_name( $post_name ) {
 		global $wpdb;
 		$query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s LIMIT 1", $post_name);
 		$result = $wpdb->get_row($query);
-		if (!$result) {
+		if ( !$result ) {
 			return null;
 		}
 		return $result->ID;
@@ -375,7 +375,7 @@ class Post extends Core implements CoreInterface {
 	 * @param string $end The text to end the preview with (defaults to ...)
 	 * @return string of the post preview
 	 */
-	function get_preview($len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;') {
+	function get_preview( $len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;' ) {
 		$text = '';
 		$trimmed = false;
 		if ( isset($this->post_excerpt) && strlen($this->post_excerpt) ) {
@@ -393,7 +393,7 @@ class Post extends Core implements CoreInterface {
 				$text = Helper::trim_words($text, $len, false);
 				$trimmed = true;
 			}
-			$text = do_shortcode( $text );
+			$text = do_shortcode($text);
 		}
 		if ( !strlen($text) ) {
 			$text = Helper::trim_words($this->get_content(), $len, false);
@@ -418,16 +418,16 @@ class Post extends Core implements CoreInterface {
 					$text = substr($text, 0, $last_p_tag);
 				}
 				if ( $last != '.' && $trimmed ) {
-					$text .= $end . ' ';
+					$text .= $end.' ';
 				}
 			}
 			$read_more_class = apply_filters('timber/post/get_preview/read_more_class', "read-more");
 			if ( $readmore && isset($readmore_matches) && !empty($readmore_matches[1]) ) {
-				$text .= ' <a href="' . $this->link() . '" class="'.$read_more_class .'">' . trim($readmore_matches[1]) . '</a>';
+				$text .= ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore_matches[1]).'</a>';
 			} elseif ( $readmore ) {
-				$text .= ' <a href="' . $this->link() . '" class="'.$read_more_class .'">' . trim($readmore) . '</a>';
+				$text .= ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore).'</a>';
 			}
-			if ( !$strip && $last_p_tag && ( strpos($text, '<p>') || strpos($text, '<p ') ) ) {
+			if ( !$strip && $last_p_tag && (strpos($text, '<p>') || strpos($text, '<p ')) ) {
 				$text .= '</p>';
 			}
 		}
@@ -474,9 +474,9 @@ class Post extends Core implements CoreInterface {
 	 * @param int $i
 	 * @return string
 	 */
-	protected static function get_wp_link_page($i) {
+	protected static function get_wp_link_page( $i ) {
 		$link = _wp_link_page($i);
-		$link = new \SimpleXMLElement($link . '</a>');
+		$link = new \SimpleXMLElement($link.'</a>');
 		if ( isset($link['href']) ) {
 			return $link['href'];
 		}
@@ -489,7 +489,7 @@ class Post extends Core implements CoreInterface {
 	 * @param  int $pid
 	 * @return null|object|WP_Post
 	 */
-	protected function get_info($pid) {
+	protected function get_info( $pid ) {
 		$post = $this->prepare_post_info($pid);
 		if ( !isset($post->post_status) ) {
 			return null;
@@ -499,7 +499,7 @@ class Post extends Core implements CoreInterface {
 		$post->slug = $post->post_name;
 		$customs = $this->get_post_custom($post->ID);
 		$post->custom = $customs;
-		$post = (object) array_merge((array)$customs, (array)$post);
+		$post = (object) array_merge((array) $customs, (array) $post);
 		return $post;
 	}
 
@@ -523,7 +523,7 @@ class Post extends Core implements CoreInterface {
 			$taxonomies = $tax;
 		}
 		if ( is_string($tax) ) {
-			if ( in_array($tax, array('all','any','')) ) {
+			if ( in_array($tax, array('all', 'any', '')) ) {
 				$taxonomies = get_object_taxonomies($this->post_type);
 			} else {
 				$taxonomies = array($tax);
@@ -533,7 +533,7 @@ class Post extends Core implements CoreInterface {
 		$term_class_objects = array();
 
 		foreach ( $taxonomies as $taxonomy ) {
-			if ( in_array($taxonomy, array('tag','tags')) ) {
+			if ( in_array($taxonomy, array('tag', 'tags')) ) {
 				$taxonomy = 'post_tag';
 			}
 			if ( $taxonomy == 'categories' ) {
@@ -545,14 +545,14 @@ class Post extends Core implements CoreInterface {
 			if ( is_wp_error($terms) ) {
 				/* @var $terms WP_Error */
 				Helper::error_log("Error retrieving terms for taxonomy '$taxonomy' on a post in timber-post.php");
-				Helper::error_log('tax = ' . print_r($tax, true));
-				Helper::error_log('WP_Error: ' . $terms->get_error_message());
+				Helper::error_log('tax = '.print_r($tax, true));
+				Helper::error_log('WP_Error: '.$terms->get_error_message());
 
 				return $term_class_objects;
 			}
 
 			// map over array of wordpress terms, and transform them into instances of the TermClass
-			$terms = array_map(function($term) use ($TermClass, $taxonomy) {
+			$terms = array_map(function( $term ) use ($TermClass, $taxonomy) {
 				return call_user_func(array($TermClass, 'from'), $term->term_id, $taxonomy);
 			}, $terms);
 
@@ -631,7 +631,7 @@ class Post extends Core implements CoreInterface {
 			}
 		}
 		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
-		$value = $this->convert( $value, __CLASS__ );
+		$value = $this->convert($value, __CLASS__);
 		return $value;
 	}
 
@@ -661,13 +661,13 @@ class Post extends Core implements CoreInterface {
 	 * ```
 	 * @return string a space-seperated list of classes
 	 */
-	public function post_class( $class='' ) {
+	public function post_class( $class = '' ) {
 		global $post;
 		$old_global_post = $post;
 		$post = $this;
 		$class_array = get_post_class($class, $this->ID);
 		$post = $old_global_post;
-		if ( is_array($class_array) ){
+		if ( is_array($class_array) ) {
 			return implode(' ', $class_array);
 		}
 		return $class_array;
@@ -777,7 +777,7 @@ class Post extends Core implements CoreInterface {
 		if ( $post_type == 'parent' ) {
 			$post_type = $this->post_type;
 		}
-		$children = get_children('post_parent=' . $this->ID . '&post_type=' . $post_type . '&numberposts=-1&orderby=menu_order title&order=ASC&post_status=publish');
+		$children = get_children('post_parent='.$this->ID.'&post_type='.$post_type.'&numberposts=-1&orderby=menu_order title&order=ASC&post_status=publish');
 		foreach ( $children as &$child ) {
 			$child = new $childPostClass($child->ID);
 		}
@@ -822,42 +822,42 @@ class Post extends Core implements CoreInterface {
 		}
 
 		if ( $user_ID ) {
-			$args['include_unapproved'] = array( $user_ID );
-		} elseif ( ! empty( $comment_author_email ) ) {
-			$args['include_unapproved'] = array( $comment_author_email );
+			$args['include_unapproved'] = array($user_ID);
+		} elseif ( !empty($comment_author_email) ) {
+			$args['include_unapproved'] = array($comment_author_email);
 		}
 
 		$comments = get_comments($args);
 		$timber_comments = array();
 
 		if ( '' == get_query_var('cpage') && get_option('page_comments') ) {
-			set_query_var( 'cpage', 'newest' == get_option('default_comments_page') ? get_comment_pages_count() : 1 );
+			set_query_var('cpage', 'newest' == get_option('default_comments_page') ? get_comment_pages_count() : 1);
 			$overridden_cpage = true;
 		}
 
-		foreach($comments as $key => &$comment) {
+		foreach ( $comments as $key => &$comment ) {
 			$timber_comment = new $CommentClass($comment);
 			$timber_comments[$timber_comment->id] = $timber_comment;
 		}
 
 		// Build a flattened (depth=1) comment tree
 		$comments_tree = array();
-		foreach( $timber_comments as $key => $comment ) {
-			if ( ! $comment->is_child() ) {
+		foreach ( $timber_comments as $key => $comment ) {
+			if ( !$comment->is_child() ) {
 				continue;
 			}
 
 			$tree_element = $comment;
 			do {
 				$tree_element = $timber_comments[$tree_element->comment_parent];
-			} while( $tree_element->is_child() );
+			} while ( $tree_element->is_child() );
 
 			$comments_tree[$tree_element->id][] = $comment->id;
 		}
 
 		// Add child comments to the relative "super parents"
-		foreach($comments_tree as $comment_parent => $comment_children) {
-			foreach($comment_children as $comment_child) {
+		foreach ( $comments_tree as $comment_parent => $comment_children ) {
+			foreach ( $comment_children as $comment_child ) {
 				$timber_comments[$comment_parent]->children[] = $timber_comments[$comment_child];
 				unset($timber_comments[$comment_child]);
 			}
@@ -931,7 +931,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function date( $date_format = '' ) {
 		$df = $date_format ? $date_format : get_option('date_format');
-		$the_date = (string)mysql2date($df, $this->post_date);
+		$the_date = (string) mysql2date($df, $this->post_date);
 		return apply_filters('get_the_date', $the_date, $df);
 	}
 
@@ -955,7 +955,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function time( $time_format = '' ) {
 		$tf = $time_format ? $time_format : get_option('time_format');
-	 	$the_time = (string)mysql2date($tf, $this->post_date);
+	 	$the_time = (string) mysql2date($tf, $this->post_date);
 	 	return apply_filters('get_the_time', $the_time, $tf);
 	}
 
@@ -1009,7 +1009,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * @return string
 	 */
-	public function name(){
+	public function name() {
 		return $this->title();
 	}
 
@@ -1096,14 +1096,14 @@ class Post extends Core implements CoreInterface {
 	 * @param array $data
 	 */
 	public function convert( $data, $class ) {
-		if( is_array( $data ) ) {
+		if ( is_array($data) ) {
 			$func = __FUNCTION__;
-			foreach( $data as &$ele ) {
-				if( gettype( $ele ) === 'array' ) {
-					$ele = $this->$func( $ele, $class );
+			foreach ( $data as &$ele ) {
+				if ( gettype($ele) === 'array' ) {
+					$ele = $this->$func($ele, $class);
 				} else {
-					if( $ele instanceof WP_Post ) {
-						$ele = new $class( $ele );
+					if ( $ele instanceof WP_Post ) {
+						$ele = new $class($ele);
 					}
 				}
 			}
@@ -1294,20 +1294,20 @@ class Post extends Core implements CoreInterface {
 	}
 
 		/**
-	 * Displays the content of the post with filters, shortcodes and wpautop applied
-	 * @example
-	 * ```twig
-	 * <div class="article-text">{{post.get_content}}</div>
-	 * ```
-	 * ```html
-	 * <div class="article-text"><p>Blah blah blah</p><p>More blah blah blah.</p></div>
-	 * ```
-	 * @param int $len
-	 * @param int $page
-	 * @return string
-	 */
+		 * Displays the content of the post with filters, shortcodes and wpautop applied
+		 * @example
+		 * ```twig
+		 * <div class="article-text">{{post.get_content}}</div>
+		 * ```
+		 * ```html
+		 * <div class="article-text"><p>Blah blah blah</p><p>More blah blah blah.</p></div>
+		 * ```
+		 * @param int $len
+		 * @param int $page
+		 * @return string
+		 */
 	function get_content( $len = -1, $page = 0 ) {
-		if ($len === 0) {
+		if ( $len === 0 ) {
 			$len = -1;
 		}
 		return $this->content($page, $len);
@@ -1347,13 +1347,13 @@ class Post extends Core implements CoreInterface {
 	}
 
 		/**
-	 * @internal
-	 * @see Timber\Post::date
-	 * @deprecated since 1.0
-	 * @codeCoverageIgnore
-	 * @param  string $date_format
-	 * @return string
-	 */
+		 * @internal
+		 * @see Timber\Post::date
+		 * @deprecated since 1.0
+		 * @codeCoverageIgnore
+		 * @param  string $date_format
+		 * @return string
+		 */
 	function get_date( $date_format = '' ) {
 		return $this->date($date_format);
 	}
@@ -1395,14 +1395,14 @@ class Post extends Core implements CoreInterface {
 	}
 
 		/**
-	 * Get the permalink for a post, but as a relative path
-	 * For example, where {{post.link}} would return "http://example.org/2015/07/04/my-cool-post"
-	 * this will return the relative version: "/2015/07/04/my-cool-post"
-	 * @internal
-	 * @deprecated since 1.0
-	 * @codeCoverageIgnore
-	 * @return string
-	 */
+		 * Get the permalink for a post, but as a relative path
+		 * For example, where {{post.link}} would return "http://example.org/2015/07/04/my-cool-post"
+		 * this will return the relative version: "/2015/07/04/my-cool-post"
+		 * @internal
+		 * @deprecated since 1.0
+		 * @codeCoverageIgnore
+		 * @return string
+		 */
 	function get_path() {
 		return $this->path();
 	}
@@ -1455,12 +1455,12 @@ class Post extends Core implements CoreInterface {
 	}
 
 		/**
-	 * @internal
-	 * @see TimberPost::thumbnail
-	 * @deprecated since 1.0
-	 * @codeCoverageIgnore
-	 * @return null|TimberImage
-	 */
+		 * @internal
+		 * @see TimberPost::thumbnail
+		 * @deprecated since 1.0
+		 * @codeCoverageIgnore
+		 * @return null|TimberImage
+		 */
 	function get_thumbnail() {
 		return $this->thumbnail();
 	}
@@ -1525,7 +1525,7 @@ class Post extends Core implements CoreInterface {
 	 * @param string $CommentClass
 	 * @return array|mixed
 	 */
-	function get_comments($count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment') {
+	function get_comments( $count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment' ) {
 		return $this->comments($count, $order, $type, $status, $CommentClass);
 	}
 

@@ -16,7 +16,7 @@ class ToJpg extends ImageOperation {
 	/**
 	 * @param string $color hex string of color to use for transparent zones
 	 */
-	function __construct($color) {
+	function __construct( $color ) {
 		$this->color = $color;
 	}
 
@@ -25,8 +25,8 @@ class ToJpg extends ImageOperation {
 	 * @param   string    $src_extension    ignored
 	 * @return  string    the final filename to be used (ex: my-awesome-pic.jpg)
 	 */
-	function filename($src_filename, $src_extension = 'jpg') {
-		$new_name = $src_filename . '.jpg';
+	function filename( $src_filename, $src_extension = 'jpg' ) {
+		$new_name = $src_filename.'.jpg';
 		return $new_name;
 	}
 
@@ -39,15 +39,15 @@ class ToJpg extends ImageOperation {
 	 *                               (ex: /src/var/www/wp-content/uploads/my-pic.png)
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
-	function run($load_filename, $save_filename) {
-		$input = self::image_create( $load_filename );
-		list( $width, $height ) = getimagesize( $load_filename );
-		$output = imagecreatetruecolor( $width, $height );
-		$c = self::hexrgb( $this->color );
-		$color = imagecolorallocate( $output, $c['red'], $c['green'], $c['blue'] );
-		imagefilledrectangle( $output, 0, 0, $width, $height, $color );
-		imagecopy( $output, $input, 0, 0, 0, 0, $width, $height );
-		imagejpeg( $output, $save_filename );
+	function run( $load_filename, $save_filename ) {
+		$input = self::image_create($load_filename);
+		list($width, $height) = getimagesize($load_filename);
+		$output = imagecreatetruecolor($width, $height);
+		$c = self::hexrgb($this->color);
+		$color = imagecolorallocate($output, $c['red'], $c['green'], $c['blue']);
+		imagefilledrectangle($output, 0, 0, $width, $height, $color);
+		imagecopy($output, $input, 0, 0, 0, 0, $width, $height);
+		imagejpeg($output, $save_filename);
 		return true;
 	}
 
@@ -59,7 +59,7 @@ class ToJpg extends ImageOperation {
 	function image_create( $filename, $ext = 'auto' ) {
 		if ( $ext == 'auto' ) {
 			$ext = wp_check_filetype($filename);
-			if (isset($ext['ext'])) {
+			if ( isset($ext['ext']) ) {
 				$ext = $ext['ext'];
 			}
 		}
@@ -73,6 +73,6 @@ class ToJpg extends ImageOperation {
 		if ( $ext == 'jpg' || $ext == 'jpeg' ) {
 			return imagecreatefromjpeg($filename);
 		}
-		throw new \InvalidArgumentException( 'image_create only accepts PNG, GIF and JPGs. File extension was: '.$ext );
+		throw new \InvalidArgumentException('image_create only accepts PNG, GIF and JPGs. File extension was: '.$ext);
 	}
 }

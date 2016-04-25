@@ -92,11 +92,11 @@ class Comment extends Core implements CoreInterface {
 	 * @return User
 	 */
 	public function author() {
-		if ($this->user_id) {
+		if ( $this->user_id ) {
 			return new User($this->user_id);
 		} else {
 			$author = new User(0);
-			if (isset($this->comment_author) && $this->comment_author) {
+			if ( isset($this->comment_author) && $this->comment_author ) {
 				$author->name = $this->comment_author;
 			} else {
 				$author->name = 'Anonymous';

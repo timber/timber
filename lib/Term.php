@@ -66,10 +66,10 @@ class Term extends Core implements CoreInterface {
 	 * @param string $tax
 	 */
 	public function __construct( $tid = null, $tax = '' ) {
-		if ($tid === null) {
+		if ( $tid === null ) {
 			$tid = $this->get_term_from_query();
 		}
-		if (strlen($tax)) {
+		if ( strlen($tax) ) {
 			$this->taxonomy = $tax;
 		}
 		$this->init($tid);
@@ -104,7 +104,7 @@ class Term extends Core implements CoreInterface {
 		global $wp_query;
 		if ( isset($wp_query->queried_object) ) {
 			$qo = $wp_query->queried_object;
-			if (isset($qo->term_id)) {
+			if ( isset($qo->term_id) ) {
 				return $qo->term_id;
 			}
 		}
@@ -127,7 +127,7 @@ class Term extends Core implements CoreInterface {
 			//echo 'bad call using '.$tid;
 			//Helper::error_log(debug_backtrace());
 		}
-		if ( isset($term->ID) ){
+		if ( isset($term->ID) ) {
 			$term->id = $term->ID;
 			$this->import($term);
 			if ( isset($term->term_id) ) {
@@ -142,7 +142,7 @@ class Term extends Core implements CoreInterface {
 	 * @param int $tid
 	 * @return array
 	 */
-	protected function get_term_meta($tid) {
+	protected function get_term_meta( $tid ) {
 		$customs = array();
 		$customs = apply_filters('timber_term_get_meta', $customs, $tid, $this);
 		return apply_filters('timber/term/meta', $customs, $tid, $this);
@@ -165,7 +165,7 @@ class Term extends Core implements CoreInterface {
 			global $wpdb;
 			$query = $wpdb->prepare("SELECT taxonomy FROM $wpdb->term_taxonomy WHERE term_id = %d LIMIT 1", $tid);
 			$tax = $wpdb->get_var($query);
-			if (isset($tax) && strlen($tax)) {
+			if ( isset($tax) && strlen($tax) ) {
 				$this->taxonomy = $tax;
 				return get_term($tid, $tax);
 			}
@@ -217,7 +217,7 @@ class Term extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function get_meta_field( $field_name ) {
-		if (!isset($this->$field_name)) {
+		if ( !isset($this->$field_name) ) {
 			$field_value = '';
 			$field_value = apply_filters('timber_term_get_meta_field', $field_value, $this->ID, $field_name, $this);
 			$field_value = apply_filters('timber/term/meta/field', $field_value, $this->ID, $field_name, $this);
@@ -253,7 +253,7 @@ class Term extends Core implements CoreInterface {
 	 * @return array|bool|null
 	 */
 	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
-		if (!strlen($PostClass)) {
+		if ( !strlen($PostClass) ) {
 			$PostClass = $this->PostClass;
 		}
 		$default_tax_query = array(array(
@@ -267,10 +267,10 @@ class Term extends Core implements CoreInterface {
 			parse_str($args, $new_args);
 			$args = $new_args;
 			$args['tax_query'] = $default_tax_query;
-			if (!isset($args['post_type'])) {
+			if ( !isset($args['post_type']) ) {
 				$args['post_type'] = 'any';
 			}
-			if (class_exists($post_type)) {
+			if ( class_exists($post_type) ) {
 				$PostClass = $post_type;
 			}
 		} else if ( is_array($numberposts) ) {
@@ -302,7 +302,7 @@ class Term extends Core implements CoreInterface {
 	public function get_children() {
 		if ( !isset($this->_children) ) {
 			$children = get_term_children($this->ID, $this->taxonomy);
-			foreach ($children as &$child) {
+			foreach ( $children as &$child ) {
 				$child = new Term($child);
 			}
 			$this->_children = $children;
@@ -317,7 +317,7 @@ class Term extends Core implements CoreInterface {
 	 * @param mixed   $value
 	 */
 	function update( $key, $value ) {
-		$value = apply_filters( 'timber_term_set_meta', $value, $key, $this->ID, $this );
+		$value = apply_filters('timber_term_set_meta', $value, $key, $this->ID, $this);
 		$this->$key = $value;
 	}
 
@@ -339,11 +339,11 @@ class Term extends Core implements CoreInterface {
 	public function description() {
 		$prefix = '<p>';
 		$suffix = '</p>';
-		$desc = term_description( $this->ID, $this->taxonomy );
-		if (substr($desc, 0, strlen($prefix)) == $prefix) {
+		$desc = term_description($this->ID, $this->taxonomy);
+		if ( substr($desc, 0, strlen($prefix)) == $prefix ) {
     		$desc = substr($desc, strlen($prefix));
 		}
-		$desc = preg_replace('/'. preg_quote('</p>', '/') . '$/', '', $desc);
+		$desc = preg_replace('/'.preg_quote('</p>', '/').'$/', '', $desc);
 		return trim($desc);
 	}
 
