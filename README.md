@@ -5,7 +5,7 @@ By Jared Novack (<a href="https://twitter.com/jarednova">@JaredNova</a>) and <a 
 </div>
 
 [![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.org/timber/timber)
-[![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg?style=flat-square)](https://coveralls.io/r/timber/timber?branch=master)
+[![Coverage Status](https://img.shields.io/coveralls/jarednova/timber.svg?style=flat-square)](https://coveralls.io/r/timber/timber?branch=master)
 [![Dependency Status](https://img.shields.io/versioneye/d/ruby/rails.svg?style=flat-square)](https://www.versioneye.com/user/projects/54e3c717d1ec5734f4000099)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
 [![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
