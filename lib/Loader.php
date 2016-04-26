@@ -302,16 +302,16 @@ class Loader {
 	/**
 	 * @param string|false $dirPath
 	 */
-	public static function rrmdir($dirPath) {
-		if (! is_dir($dirPath)) {
+	public static function rrmdir( $dirPath ) {
+		if ( !is_dir($dirPath) ) {
 			throw new \InvalidArgumentException("$dirPath must be a directory");
 		}
-		if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+		if ( substr($dirPath, strlen($dirPath) - 1, 1) != '/' ) {
 			$dirPath .= '/';
 		}
-		$files = glob($dirPath . '*', GLOB_MARK);
-		foreach ($files as $file) {
-			if (is_dir($file)) {
+		$files = glob($dirPath.'*', GLOB_MARK);
+		foreach ( $files as $file ) {
+			if ( is_dir($file) ) {
 				self::rrmdir($file);
 			} else {
 				unlink($file);
@@ -351,14 +351,13 @@ class Loader {
 		$value = false;
 
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-		if ( self::CACHE_TRANSIENT === $cache_mode )
-			$value = get_transient($trans_key);
-
-		elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode )
-			$value = get_site_transient($trans_key);
-
-		elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache )
-			$value = wp_cache_get($key, $group);
+		if ( self::CACHE_TRANSIENT === $cache_mode ) {
+					$value = get_transient($trans_key);
+		} elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode ) {
+					$value = get_site_transient($trans_key);
+		} elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
+					$value = wp_cache_get($key, $group);
+		}
 
 		return $value;
 	}
@@ -378,20 +377,20 @@ class Loader {
 			$object_cache = true;
 		}
 
-		if ( (int) $expires < 1 )
-			$expires = 0;
+		if ( (int) $expires < 1 ) {
+					$expires = 0;
+		}
 
 		$cache_mode = self::_get_cache_mode($cache_mode);
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 
-		if ( self::CACHE_TRANSIENT === $cache_mode )
-			set_transient($trans_key, $value, $expires);
-
-		elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode )
-			set_site_transient($trans_key, $value, $expires);
-
-		elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache )
-			wp_cache_set($key, $value, $group, $expires);
+		if ( self::CACHE_TRANSIENT === $cache_mode ) {
+					set_transient($trans_key, $value, $expires);
+		} elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode ) {
+					set_site_transient($trans_key, $value, $expires);
+		} elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
+					wp_cache_set($key, $value, $group, $expires);
+		}
 
 		return $value;
 	}

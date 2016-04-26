@@ -170,42 +170,42 @@ class Resize extends ImageOperation {
 	 *                               (ex: /src/var/www/wp-content/uploads/my-pic-300x200-c-default.jpg)
 	 * @return boolean|null                  true if everything went fine, false otherwise
 	 */
-	public function run($load_filename, $save_filename) {
+	public function run( $load_filename, $save_filename ) {
 		//should be resized by gif resizer
 		if ( \Timber\ImageHelper::is_animated_gif($load_filename) ) {
 			//attempt to resize
 			//return if successful
 			//proceed if not
 			$gif = self::run_animated_gif($load_filename, $save_filename);
-			if ($gif) {
+			if ( $gif ) {
 				return true;
 			}
 		}
-		$image = wp_get_image_editor( $load_filename );
-		if ( !is_wp_error( $image ) ) {
-			$crop = self::get_target_sizes( $load_filename );
-			$image->crop( 	$crop['x'],
+		$image = wp_get_image_editor($load_filename);
+		if ( !is_wp_error($image) ) {
+			$crop = self::get_target_sizes($load_filename);
+			$image->crop($crop['x'],
 							$crop['y'],
 							$crop['src_w'],
 							$crop['src_h'],
 							$crop['target_w'],
 							$crop['target_h']
 			);
-			$result = $image->save( $save_filename );
-			if ( is_wp_error( $result ) ) {
+			$result = $image->save($save_filename);
+			if ( is_wp_error($result) ) {
 				// @codeCoverageIgnoreStart
-				Helper::error_log( 'Error resizing image' );
-				Helper::error_log( $result );
+				Helper::error_log('Error resizing image');
+				Helper::error_log($result);
 				return false;
 				// @codeCoverageIgnoreEnd
 			} else {
 				return true;
 			}
-		} else if ( isset( $image->error_data['error_loading_image'] ) ) {
+		} else if ( isset($image->error_data['error_loading_image']) ) {
 			// @codeCoverageIgnoreStart
-			Helper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
+			Helper::error_log('Error loading '.$image->error_data['error_loading_image']);
 		} else {
-			Helper::error_log( $image );
+			Helper::error_log($image);
 			// @codeCoverageIgnoreEnd
 		}
 	}

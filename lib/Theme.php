@@ -68,7 +68,7 @@ class Theme extends Core {
 	 * We are currently using the My Theme theme.
 	 * ```
 	 */
-	function __construct($slug = null) {
+	function __construct( $slug = null ) {
 		$this->init($slug);
 	}
 
@@ -76,14 +76,14 @@ class Theme extends Core {
 	 * @internal
 	 * @param string $slug
 	 */
-	protected function init($slug = null) {
+	protected function init( $slug = null ) {
 		$data = wp_get_theme($slug);
 		$this->name = $data->get('Name');
 		$ss = $data->get_stylesheet();
 		$this->slug = $ss;
 
-		if ( ! function_exists( 'get_home_path' ) ) {
-			require_once(ABSPATH . 'wp-admin/includes/file.php');
+		if ( !function_exists('get_home_path') ) {
+			require_once(ABSPATH.'wp-admin/includes/file.php');
 		}
 
 		$this->uri = get_stylesheet_directory_uri();
@@ -109,7 +109,7 @@ class Theme extends Core {
 	 * @return  string the relative path to the theme (ex: `/wp-content/themes/my-timber-theme`)
 	 */
 	public function path() {
-		return URLHelper::get_rel_url( $this->link() );
+		return URLHelper::get_rel_url($this->link());
 	}
 
 	/**
@@ -117,7 +117,7 @@ class Theme extends Core {
 	 * @param bool $default
 	 * @return string
 	 */
-	public function theme_mod($name, $default = false) {
+	public function theme_mod( $name, $default = false ) {
 		return get_theme_mod($name, $default);
 	}
 
