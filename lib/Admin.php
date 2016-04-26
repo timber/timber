@@ -4,13 +4,13 @@ namespace Timber;
 
 class Admin {
 	
-    public static function init() {
-        $filter = add_filter('plugin_row_meta', array( __CLASS__, 'meta_links' ), 10, 2);
-        $action = add_action('in_plugin_update_message-timber-library/timber.php', array('Timber\Admin', 'in_plugin_update_message'), 10, 2);
-        if ($filter && $action) {
-        	return true;
-        }
-    }
+	public static function init() {
+		$filter = add_filter('plugin_row_meta', array( __CLASS__, 'meta_links' ), 10, 2);
+		$action = add_action('in_plugin_update_message-timber-library/timber.php', array('Timber\Admin', 'in_plugin_update_message'), 10, 2);
+		if ($filter && $action) {
+			return true;
+		}
+	}
 
 	/**
 	 * @param array   $links
@@ -18,7 +18,7 @@ class Admin {
 	 * @return array
 	 */
 	public static function meta_links( $links, $file ) {
-		if ( strstr( $file, '/timber.php' ) ) {
+		if ( strstr($file, '/timber.php') ) {
 			unset($links[2]);
 			$links[] = '<a href="/wp-admin/plugin-install.php?tab=plugin-information&amp;plugin=timber-library&amp;TB_iframe=true&amp;width=600&amp;height=550" class="thickbox" aria-label="More information about Timber" data-title="Timber">View details</a>';
 			$links[] = '<a href="http://upstatement.com/timber" target="_blank">Homepage</a>';
@@ -29,7 +29,7 @@ class Admin {
 		return $links;
 	}
 
-    /**
+	/**
 	 *  in_plugin_update_message
 	 *
 	 *  Displays an update message for plugin list screens.
@@ -52,7 +52,7 @@ class Admin {
 		
 		
 		// show message
-		echo '<br />' . sprintf( $m, admin_url('edit.php?post_type=acf-field-group&page=acf-settings-updates'), 'http://www.advancedcustomfields.com/pro');
+		echo '<br />'.sprintf($m, admin_url('edit.php?post_type=acf-field-group&page=acf-settings-updates'), 'http://www.advancedcustomfields.com/pro');
 	
 	}
 

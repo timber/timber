@@ -228,28 +228,28 @@ class Post extends Core implements CoreInterface {
 
 	protected function get_post_preview_id( $query ) {
 		$can = array(
-	 		'edit_' . $query->queried_object->post_type . 's',
+	 		'edit_'.$query->queried_object->post_type.'s',
 	 	);
 
 	 	if ( $query->queried_object->author_id !== get_current_user_id() ) {
-	 		$can[] = 'edit_others_' . $query->queried_object->post_type . 's';
+	 		$can[] = 'edit_others_'.$query->queried_object->post_type.'s';
 	 	}
 
 	 	$can_preview = array();
 
-		foreach( $can as $type ) {
-			 if( current_user_can( $type ) ) {
+		foreach ( $can as $type ) {
+			 if ( current_user_can($type) ) {
 				$can_preview[] = true;
 			 }
 		}
 
-		if ( count( $can_preview ) !== count( $can ) ) {
+		if ( count($can_preview) !== count($can) ) {
 			 return;
 		}
 
-		$revisions = wp_get_post_revisions( $query->queried_object_id );
+		$revisions = wp_get_post_revisions($query->queried_object_id);
 
-		if( !empty( $revisions ) ) {
+		if ( !empty($revisions) ) {
 			$last = end($revisions);
 			return $last->ID;
 		}
