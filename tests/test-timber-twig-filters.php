@@ -10,13 +10,13 @@
 
 		function testTimberFilterString(){
 			$data['arr'] = array('foo', 'foo');
-			$str = Timber::compile_string('{{arr|string}}', $data);
+			$str = Timber::compile_string('{{arr|join(" ")}}', $data);
 			$this->assertEquals('foo foo', trim($str));
 			$data['arr'] = array('bar');
-			$str = Timber::compile_string('{{arr|string}}', $data);
+			$str = Timber::compile_string('{{arr|join}}', $data);
 			$this->assertEquals('bar', trim($str));
 			$data['arr'] = array('foo', 'bar');
-			$str = Timber::compile_string('{{arr|string(", ")}}', $data);
+			$str = Timber::compile_string('{{arr|join(", ")}}', $data);
 			$this->assertEquals('foo, bar', trim($str));
 			$data['arr'] = 6;
 			$str = Timber::compile_string('{{arr}}', $data);

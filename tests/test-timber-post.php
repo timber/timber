@@ -5,7 +5,7 @@
 		function testPostObject(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost($post_id);
-			$this->assertEquals('TimberPost', get_class($post));
+			$this->assertEquals('Timber\Post', get_class($post));
 			$this->assertEquals($post_id, $post->ID);
 		}
 
@@ -471,7 +471,7 @@
 			update_option('permalink_structure', $struc);
 			$pid = $this->factory->post->create(array('post_date' => '2014-05-28'));
 			$post = new TimberPost($pid);
-			$this->assertStringStartsWith('http://example.org/blog/2014/05/post-title', $post->permalink());
+			$this->assertStringStartsWith('http://example.org/blog/2014/05/post-title', $post->link());
 			$this->assertStringStartsWith('/blog/2014/05/post-title', $post->path());
 		}
 

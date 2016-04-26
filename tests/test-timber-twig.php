@@ -162,7 +162,7 @@
 		function testTwigString() {
 			$str = 'Foo';
 			$arr = array('Bar', 'Quack');
-			$twig = '{{string|string}}x{{array|string("x")}}';
+			$twig = '{{string|join}}x{{array|join("x")}}';
 			$this->assertEquals('FooxBarxQuack', trim(Timber::compile_string($twig, array('string' => $str, 'array' => $arr))));
 		}
 
@@ -170,7 +170,7 @@
 			$pid = $this->factory->post->create(array('post_title' => 'Foo'));
 			$post = new TimberPost( $pid );
 			$str = 'I am a {{post | get_class }}';
-			$this->assertEquals('I am a TimberPost', Timber::compile_string($str, array('post' => $post)));
+			$this->assertEquals('I am a Timber\Post', Timber::compile_string($str, array('post' => $post)));
 		}
 
 		function testFilterTruncate() {

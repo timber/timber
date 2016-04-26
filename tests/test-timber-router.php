@@ -1,26 +1,26 @@
-s<?php
+<?php
 
 class TestTimberRouter extends Timber_UnitTestCase {
 
 	function testThemeRoute(){
-		$template = Timber::load_template('single.php');
+		$template = Routes::load('single.php');
 		$this->assertTrue($template);
 	}
 
 	function testThemeRouteDoesntExist(){
-		$template = Timber::load_template('singlefoo.php');
+		$template = Routes::load('singlefoo.php');
 		$this->assertFalse($template);
 	}
 
 	function testFullPathRoute(){
 		$hello = WP_CONTENT_DIR.'/plugins/hello.php';
-		$template = Timber::load_template($hello);
+		$template = Routes::load($hello);
 		$this->assertTrue($template);
 	}
 
 	function testFullPathRouteDoesntExist(){
 		$hello = WP_CONTENT_DIR.'/plugins/hello-foo.php';
-		$template = Timber::load_template($hello);
+		$template = Routes::load($hello);
 		$this->assertFalse($template);
 	}
 
@@ -33,7 +33,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 		global $matches;
 		$matches = array();
 		$phpunit = $this;
-		Timber::add_route('foo', function() use ($phpunit) {
+		Routes::map('foo', function() use ($phpunit) {
 			global $matches;
 			$phpunit->assertTrue(true);
 			$matches[] = true;
@@ -49,7 +49,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 		global $matches;
 		$matches = array();
 		$phpunit = $this;
-		Timber::add_route('randomthing/'.$post_name, function() use ($phpunit) {
+		Routes::map('randomthing/'.$post_name, function() use ($phpunit) {
 			global $matches;
 			$phpunit->assertTrue(true);
 			$matches[] = true;
@@ -64,7 +64,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 		global $matches;
 		$matches = array();
 		$phpunit = $this;
-		Timber::add_route('foo', function() use ($phpunit){
+		Routes::map('foo', function() use ($phpunit){
 			$phpunit->assertTrue(false);
 			$matches[] = true;
 		});
@@ -79,7 +79,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 		global $matches;
 		$matches = array();
 		$phpunit = $this;
-		Timber::add_route('mything/:slug', function($params) use ($phpunit) {
+		Routes::map('mything/:slug', function($params) use ($phpunit) {
 			global $matches;
 			$matches = array();
 			if ('ziggy' == $params['slug']) {
@@ -97,7 +97,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 		global $matches;
 		$matches = array();
 		$phpunit = $this;
-		Timber::add_route('mything/[*:slug]', function($params) use ($phpunit) {
+		Routes::map('mything/[*:slug]', function($params) use ($phpunit) {
 			global $matches;
 			$matches = array();
 			if ('ziggy' == $params['slug']) {
@@ -111,7 +111,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 
 	function testRouteWithMultiArguments() {
 		$phpunit = $this;
-		Timber::add_route('artist/[:artist]/song/[:song]', function($params) use ($phpunit) {
+		Routes::map('artist/[:artist]/song/[:song]', function($params) use ($phpunit) {
 			global $matches;
 			$matches = array();
 			if ($params['artist'] == 'smashing-pumpkins') {
@@ -130,7 +130,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 	function testRouteWithMultiArgumentsOldStyle() {
 		$phpunit = $this;
 		global $matches;
-		Timber::add_route('studio/:studio/movie/:movie', function($params) use ($phpunit) {
+		Routes::map('studio/:studio/movie/:movie', function($params) use ($phpunit) {
 			global $matches;
 			$matches = array();
 			if ($params['studio'] == 'universal') {
@@ -150,7 +150,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 		global $matches;
 		$matches = array();
 		$phpunit = $this;
-		Timber::add_route('crackers', function() use ($phpunit) {
+		Routes::map('crackers', function() use ($phpunit) {
 			global $matches;
 			$matches = array();
 			$matches[] = true;
@@ -165,7 +165,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 		global $matches;
 		$matches = array();
 		$phpunit = $this;
-		Timber::add_route('bip/', function() use ($phpunit) {
+		Routes::map('bip/', function() use ($phpunit) {
 			global $matches;
 			$matches = array();
 			$matches[] = true;
@@ -180,7 +180,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 		global $matches;
 		$matches = array();
 		$phpunit = $this;
-		Timber::add_route('bopp', function() use ($phpunit) {
+		Routes::map('bopp', function() use ($phpunit) {
 			global $matches;
 			$matches = array();
 			$matches[] = true;
@@ -196,7 +196,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 		global $matches;
 		$matches = array();
 		$phpunit = $this;
-		Timber::add_route('zappers', function() use ($phpunit) {
+		Routes::map('zappers', function() use ($phpunit) {
 			global $matches;
 			$matches = array();
 			$matches[] = true;
@@ -211,7 +211,7 @@ class TestTimberRouter extends Timber_UnitTestCase {
 		global $matches;
 		$matches = array();
 		$phpunit = $this;
-		Timber::add_route('/gobbles', function() use ($phpunit) {
+		Routes::map('/gobbles', function() use ($phpunit) {
 			global $matches;
 			$matches = array();
 			$matches[] = true;
