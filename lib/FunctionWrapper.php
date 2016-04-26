@@ -32,7 +32,9 @@ class FunctionWrapper {
 				$this->_class = $function[0];
 			}
 			
-			if ( is_string($function[1]) ) $this->_function = $function[1];
+			if ( is_string($function[1]) ) {
+				$this->_function = $function[1];
+			}
 		} else {
 			$this->_function = $function;
 		}

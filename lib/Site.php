@@ -72,7 +72,7 @@ class Site extends Core implements CoreInterface {
 
 	/** @api
 	 * @var string for people who like trackback spam
-	*/
+	 */
 	public $pingback_url;
 	public $siteurl;
 	/**
@@ -112,7 +112,7 @@ class Site extends Core implements CoreInterface {
 	function __construct( $site_name_or_id = null ) {
 		$this->init();
 		if ( is_multisite() ) {
-			$this->init_as_multisite( $site_name_or_id );
+			$this->init_as_multisite($site_name_or_id);
 		} else {
 			$this->init_as_singlesite();
 		}
@@ -130,17 +130,17 @@ class Site extends Core implements CoreInterface {
 				$site_name_or_id = get_current_blog_id();
 			}
 		}
-		$info = get_blog_details( $site_name_or_id );
-		$this->import( $info );
+		$info = get_blog_details($site_name_or_id);
+		$this->import($info);
 		$this->ID = $info->blog_id;
 		$this->id = $this->ID;
 		$this->name = $this->blogname;
 		$this->title = $this->blogname;
 		$this->url = $this->siteurl;
-		$theme_slug = get_blog_option( $info->blog_id, 'stylesheet' );
-		$this->theme = new Theme( $theme_slug );
-		$this->description = get_blog_option( $info->blog_id, 'blogdescription' );
-		$this->admin_email = get_blog_option( $info->blog_id, 'admin_email' );
+		$theme_slug = get_blog_option($info->blog_id, 'stylesheet');
+		$this->theme = new Theme($theme_slug);
+		$this->description = get_blog_option($info->blog_id, 'blogdescription');
+		$this->admin_email = get_blog_option($info->blog_id, 'admin_email');
 		$this->multisite = true;
 	}
 
@@ -149,13 +149,13 @@ class Site extends Core implements CoreInterface {
 	 * @internal
 	 */
 	protected function init_as_singlesite() {
-		$this->admin_email = get_bloginfo( 'admin_email' );
-		$this->name = get_bloginfo( 'name' );
+		$this->admin_email = get_bloginfo('admin_email');
+		$this->name = get_bloginfo('name');
 		$this->title = $this->name;
-		$this->description = get_bloginfo( 'description' );
-		$this->url = get_bloginfo( 'url' );
+		$this->description = get_bloginfo('description');
+		$this->url = get_bloginfo('url');
 		$this->theme = new Theme();
-		$this->language_attributes = Helper::function_wrapper( 'language_attributes' );
+		$this->language_attributes = Helper::function_wrapper('language_attributes');
 		$this->multisite = false;
 	}
 
@@ -164,14 +164,14 @@ class Site extends Core implements CoreInterface {
 	 * @internal
 	 */
 	protected function init() {
-		$this->rdf = get_bloginfo( 'rdf_url' );
-		$this->rss = get_bloginfo( 'rss_url' );
-		$this->rss2 = get_bloginfo( 'rss2_url' );
-		$this->atom = get_bloginfo( 'atom_url' );
-		$this->language = get_bloginfo( 'language' );
-		$this->charset = get_bloginfo( 'charset' );
-		$this->pingback = get_bloginfo( 'pingback_url' );
-		$this->language_attributes = Helper::function_wrapper( 'language_attributes' );
+		$this->rdf = get_bloginfo('rdf_url');
+		$this->rss = get_bloginfo('rss_url');
+		$this->rss2 = get_bloginfo('rss2_url');
+		$this->atom = get_bloginfo('atom_url');
+		$this->language = get_bloginfo('language');
+		$this->charset = get_bloginfo('charset');
+		$this->pingback = get_bloginfo('pingback_url');
+		$this->language_attributes = Helper::function_wrapper('language_attributes');
 	}
 
 	/**
@@ -181,11 +181,11 @@ class Site extends Core implements CoreInterface {
 	 * @return mixed
 	 */
 	function __get( $field ) {
-		if ( !isset( $this->$field ) ) {
+		if ( !isset($this->$field) ) {
 			if ( is_multisite() ) {
-				$this->$field = get_blog_option( $this->ID, $field );
+				$this->$field = get_blog_option($this->ID, $field);
 			} else {
-				$this->$field = get_option( $field );
+				$this->$field = get_option($field);
 			}
 		}
 		return $this->$field;
@@ -226,7 +226,7 @@ class Site extends Core implements CoreInterface {
 	 * @ignore
 	 */
 	public function meta( $field ) {
-		return $this->__get( $field );
+		return $this->__get($field);
 	}
 
 	/**
@@ -236,11 +236,11 @@ class Site extends Core implements CoreInterface {
 	 * @param mixed   $value
 	 */
 	public function update( $key, $value ) {
-		$value = apply_filters( 'timber_site_set_meta', $value, $key, $this->ID, $this );
+		$value = apply_filters('timber_site_set_meta', $value, $key, $this->ID, $this);
 		if ( is_multisite() ) {
-			update_blog_option( $this->ID, $key, $value );
+			update_blog_option($this->ID, $key, $value);
 		} else {
-			update_option( $key, $value );
+			update_option($key, $value);
 		}
 		$this->$key = $value;
 	}

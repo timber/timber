@@ -60,7 +60,7 @@ class User extends Core implements CoreInterface {
 	/**
 	 * @param int|bool $uid
 	 */
-	function __construct($uid = false) {
+	function __construct( $uid = false ) {
 		$this->init($uid);
 	}
 
@@ -91,7 +91,7 @@ class User extends Core implements CoreInterface {
 	 * @param string $field_name
 	 * @return null
 	 */
-	function get_meta($field_name) {
+	function get_meta( $field_name ) {
 		return $this->get_meta_field($field_name);
 	}
 
@@ -100,7 +100,7 @@ class User extends Core implements CoreInterface {
 	 * @param string 	$field
 	 * @param mixed 	$value
 	 */
-	function __set($field, $value) {
+	function __set( $field, $value ) {
 		if ( $field == 'name' ) {
 			$this->display_name = $value;
 		}
@@ -111,7 +111,7 @@ class User extends Core implements CoreInterface {
 	 * @internal
 	 * @param int|bool $uid The user ID to use
 	 */
-	protected function init($uid = false) {
+	protected function init( $uid = false ) {
 		if ( $uid === false ) {
 			$uid = get_current_user_id();
 		}
@@ -144,7 +144,7 @@ class User extends Core implements CoreInterface {
 	 * @param string $field_name
 	 * @return mixed
 	 */
-	function get_meta_field($field_name) {
+	function get_meta_field( $field_name ) {
 		$value = null;
 		$value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
 		if ( $value === null ) {
@@ -165,7 +165,7 @@ class User extends Core implements CoreInterface {
 				$um = get_user_meta($this->ID);
 			}
 			$custom = array();
-			foreach ($um as $key => $value) {
+			foreach ( $um as $key => $value ) {
 				if ( is_array($value) && count($value) == 1 ) {
 					$value = $value[0];
 				}
@@ -200,7 +200,7 @@ class User extends Core implements CoreInterface {
 	 * @param string $field_name
 	 * @return mixed
 	 */
-	function meta($field_name) {
+	function meta( $field_name ) {
 		return $this->get_meta_field($field_name);
 	}
 
