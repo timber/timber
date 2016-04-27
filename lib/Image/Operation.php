@@ -21,7 +21,7 @@ abstract class Operation {
 	 * @return string                resulting filename (including extension but excluding path)
 	 *                               ex: my-awesome-file.jpg
 	 */
-	public abstract function filename($src_filename, $src_extension);
+	public abstract function filename( $src_filename, $src_extension );
 
 	/**
 	 * Performs the actual image manipulation,
@@ -31,7 +31,7 @@ abstract class Operation {
 	 * @param  string $save_filename filepath (not URL) where result file should be saved
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
-	public abstract function run($load_filename, $save_filename);
+	public abstract function run( $load_filename, $save_filename );
 
 	/**
 	 * Helper method to convert hex string to rgb array
@@ -41,13 +41,13 @@ abstract class Operation {
 	 *                        ex: array('red' => 255, 'green' => 20, 'blue' => 85);
 	 */
 	public static function hexrgb( $hexstr ) {
-		if ( !strstr( $hexstr, '#' ) ) {
-			$hexstr = '#' . $hexstr;
+		if ( !strstr($hexstr, '#') ) {
+			$hexstr = '#'.$hexstr;
 		}
-		if ( strlen( $hexstr ) == 4 ) {
-			$hexstr = '#' . $hexstr[1] . $hexstr[1] . $hexstr[2] . $hexstr[2] . $hexstr[3] . $hexstr[3];
+		if ( strlen($hexstr) == 4 ) {
+			$hexstr = '#'.$hexstr[1].$hexstr[1].$hexstr[2].$hexstr[2].$hexstr[3].$hexstr[3];
 		}
-		$int = hexdec( $hexstr );
-		return array( "red" => 0xFF & ( $int >> 0x10 ), "green" => 0xFF & ( $int >> 0x8 ), "blue" => 0xFF & $int );
+		$int = hexdec($hexstr);
+		return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
 	}
 }
