@@ -13,7 +13,7 @@ abstract class Core {
 	 * @return boolean
 	 */
 	function __isset( $field ) {
-		if ( isset( $this->$field ) ) {
+		if ( isset($this->$field) ) {
 			return $this->$field;
 		}
 		return false;
@@ -24,7 +24,7 @@ abstract class Core {
 	 * @return mixed
 	 */
 	function __call( $field, $args ) {
-		return $this->__get( $field );
+		return $this->__get($field);
 	}
 
 	/**
@@ -36,7 +36,7 @@ abstract class Core {
 		if ( property_exists($this, $field) ) {
 			return $this->$field;
 		}
-		if ( method_exists($this, 'meta') && $meta_value = $this->meta( $field ) ) {
+		if ( method_exists($this, 'meta') && $meta_value = $this->meta($field) ) {
 			return $this->$field = $meta_value;
 		}
 		if ( method_exists($this, $field) ) {
@@ -57,14 +57,14 @@ abstract class Core {
 	 * @param array|object $info an object or array you want to grab data from to attach to the Timber object
 	 */
 	function import( $info, $force = false ) {
-		if ( is_object( $info ) ) {
-			$info = get_object_vars( $info );
+		if ( is_object($info) ) {
+			$info = get_object_vars($info);
 		}
-		if ( is_array( $info ) ) {
+		if ( is_array($info) ) {
 			foreach ( $info as $key => $value ) {
-				if ( !empty( $key ) && $force ) {
+				if ( !empty($key) && $force ) {
 					$this->$key = $value;
-				} else if ( !empty( $key ) && !method_exists($this, $key) ){
+				} else if ( !empty($key) && !method_exists($this, $key) ) {
 					$this->$key = $value;
 				}
 			}
@@ -78,7 +78,7 @@ abstract class Core {
 	 * @param mixed   $value
 	 */
 	function update( $key, $value ) {
-		update_metadata( $this->object_type, $this->ID, $key, $value );
+		update_metadata($this->object_type, $this->ID, $key, $value);
 	}
 
 	/**
@@ -95,10 +95,10 @@ abstract class Core {
 	 * @return bool
 	 */
 	function can_edit() {
-		if ( !function_exists( 'current_user_can' ) ) {
+		if ( !function_exists('current_user_can') ) {
 			return false;
 		}
-		if ( current_user_can( 'edit_post', $this->ID ) ) {
+		if ( current_user_can('edit_post', $this->ID) ) {
 			return true;
 		}
 		return false;
