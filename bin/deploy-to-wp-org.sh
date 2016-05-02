@@ -5,6 +5,7 @@ echo "You still need to use Versions to send to WP.org"
 function deploy () {
 	cd ~/Sites/timber
 	git checkout master
+	rm ~/Sites/timber/timber.php
 	rm -rf ~/Sites/timber/vendor
 	rm -rf ~/Sites/timber/wp-content
 	rm -rf ~/Sites/timber/timber-starter-theme
