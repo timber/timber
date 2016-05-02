@@ -7,6 +7,7 @@ class Admin {
 	public static function init() {
 		$filter = add_filter('plugin_row_meta', array( __CLASS__, 'meta_links' ), 10, 2);
 		$action = add_action('in_plugin_update_message-timber-library/timber.php', array('Timber\Admin', 'in_plugin_update_message'), 10, 2);
+		$action = add_action('in_plugin_update_message-timber/timber.php', array('Timber\Admin', 'in_plugin_update_message'), 10, 2);
 		if ($filter && $action) {
 			return true;
 		}
@@ -42,13 +43,23 @@ class Admin {
 	 *  @param	{object}	$r
 	 */
 	function in_plugin_update_message( $plugin_data, $r ) {
+
 		
+		//print_r($r);
 		// vars
-		$m = __('<p><b>Warning:</b> Timber 1.0 removed a number of features and methods. Before upgrading please test your theme on a local or staging site to ensure that your theme will work with the newest version.</p> 
+		if ( version_compare("1.0", $plugin_data->Version) > 0 ) {
+			$m = '<p><b>Warning:</b> Timber 1.0 removed a number of features and methods. Before upgrading please test your theme on a local or staging site to ensure that your theme will work with the newest version.</p> 
 
-			<p><strong>Is your theme in active development?</strong> That is, is someone actively in PHP files writing new code? If you answered "no", then <i>do not upgrade</i>. You will not benefit from Timber 1.0</p>
+			<p><strong>Is your theme in active development?</strong> That is, is someone actively in PHP files writing new code? If you answered "no", then <i>do not upgrade</i>. You will not benefit from Timber 1.0</p>';
 
-			<p>Read the <strong><a href="https://github.com/timber/timber/wiki/1.0-Upgrade-Guide">Upgrade Guide</a></strong> for more information</p>', 'acf');
+			$m .= '<p>Read the <strong><a href="https://github.com/timber/timber/wiki/1.0-Upgrade-Guide">Upgrade Guide</a></strong> for more information</p>';
+
+			if ( version_compare("0.22.6", $plugin_data->Version) > 0 ) {
+				$m .= "<p>You can also <b><a href='https://downloads.wordpress.org/plugin/timber-library.0.22.6.zip'>upgrade to version 0.22.6</a></b> if you want to upgrade, but are unsure if you're ready for 1.0";
+			}
+		}
+
+		
 		
 		
 		// show message
