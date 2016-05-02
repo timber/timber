@@ -118,17 +118,6 @@
             $this->assertEquals('/', TimberURLHelper::remove_trailing_slash($root_url));
         }
 
-        function testDownloadURL(){
-            if ( !TestTimberImage::is_connected() ){
-                $this->markTestSkipped('Cannot test external images when not connected to internet');
-                return;
-            }
-            $url = 'http://i1.nyt.com/images/misc/nytlogo379x64.gif';
-            $result = TimberURLHelper::download_url($url);
-            $this->assertContains('/nytlogo379x64', $result);
-            $this->assertStringEndsWith('.tmp', $result);
-        }
-
         function testGetParams(){
             $_SERVER['REQUEST_URI'] = 'http://example.org/blog/post/news/2014/whatever';
             $params = TimberURLHelper::get_params();

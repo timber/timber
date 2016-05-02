@@ -1,5 +1,7 @@
 <?php
 
+use Timber\Image\Operation as ImageOperation;
+
 class TestTimberImage extends TimberImage_UnitTestCase {
 
 /* ----------------
@@ -250,7 +252,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$destination_path = TimberURLHelper::get_rel_path( $destination_path );
 		$destination_url = 'http://'.$_SERVER['HTTP_HOST'].$destination_path;
 		$image = new TimberImage( $destination_url );
-		$this->assertEquals( $destination_url, $image->get_src() );
+		$this->assertEquals( $destination_url, $image->src() );
 		$this->assertEquals( $destination_url, (string)$image );
 	}
 
@@ -382,9 +384,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$pixel_rgb = imagecolorat( $image, $x, $y );
 		$colors_of_file = imagecolorsforindex( $image, $pixel_rgb );
 		if ($upper_color) {
-			$upper_colors = TimberImageOperation::hexrgb($upper_color);
+			$upper_colors = ImageOperation::hexrgb($upper_color);
 		}
-		$test_colors = TimberImageOperation::hexrgb($color);
+		$test_colors = ImageOperation::hexrgb($color);
 		if ( isset($upper_colors) && $upper_colors ) {
 			if (self::checkChannel('red', $test_colors, $colors_of_file, $upper_colors) &&
 				self::checkChannel('green', $test_colors, $colors_of_file, $upper_colors) &&
@@ -619,7 +621,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testWithOutputBuffer() {
 		ob_start();
 		$post = $this->get_post_with_image();
-		$str = '<img src="{{ post.thumbnail.url|resize(510, 280) }}" />';
+		$str = '<img src="{{ post.thumbnail.src|resize(510, 280) }}" />';
 		Timber::render_string($str, array('post' => $post));
 		$result = ob_get_contents();
 		ob_end_clean();

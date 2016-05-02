@@ -1,5 +1,8 @@
 <?php
 
+use Timber\Integrations\ACF;
+use Timber\Integrations\Command;
+
 class TestTimberIntegrations extends Timber_UnitTestCase {
 
 	function testACFGetFieldPost() {
@@ -28,13 +31,13 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	}
 
 	function testACFInit() {
-		$acf = new ACFTimber();
-		$this->assertInstanceOf( 'ACFTimber', $acf );
+		$acf = new ACF();
+		$this->assertInstanceOf( 'Timber\Integrations\ACF', $acf );
 	}
 
 	function testWPCLIClearCacheTimber(){
 		$str = Timber::compile('assets/single.twig', array('rand' => 4004), 600);
-		$success = TimberCommand::clear_cache('timber');
+		$success = Command::clear_cache('timber');
 		$this->assertTrue($success);
 	}
 
@@ -50,7 +53,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
     	Timber::compile('assets/single-post.twig', array('post' => $post));
     	sleep(1);
     	$this->assertFileExists($cache_dir);
-    	$success = TimberCommand::clear_cache('twig');
+    	$success = Command::clear_cache('twig');
 		$this->assertTrue($success);
     	Timber::$cache = false;
 	}
@@ -68,7 +71,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
     	sleep(1);
     	$this->assertFileExists($cache_dir);
     	Timber::compile('assets/single.twig', array('data' => 'foobar'), 600);
-    	$success = TimberCommand::clear_cache('all');
+    	$success = Command::clear_cache('all');
 		$this->assertTrue($success);
     	Timber::$cache = false;
 	}
@@ -86,11 +89,11 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
     	sleep(1);
     	$this->assertFileExists($cache_dir);
     	Timber::compile('assets/single.twig', array('data' => 'foobar'), 600);
-    	$success = TimberCommand::clear_cache(array('all'));
+    	$success = Command::clear_cache(array('all'));
 		$this->assertTrue($success);
     	Timber::$cache = false;
 
-    	$success = TimberCommand::clear_cache('bunk');
+    	$success = Command::clear_cache('bunk');
     	$this->assertNull($success);
 	}
 

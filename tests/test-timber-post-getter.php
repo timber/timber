@@ -191,9 +191,22 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals(10, count($jobPosts));
 	}
 
+	function testPostTypeReturnAgainstArgType() {
+		register_post_type('person');
+		$jobs = $this->factory->post->create_many( 4, array('post_type' => 'person'));
+		$personPostsArray = Timber::get_posts(array('post_type' => 'person'), 'Person');
+		$personPostsString = Timber::get_posts('post_type=person', 'Person');
+		$this->assertEquals(4, count($personPostsArray));
+		$this->assertEquals(4, count($personPostsString));
+	}
+
 }
 
 class job extends TimberPost {
+
+}
+
+class Person extends TimberPost {
 
 }
 

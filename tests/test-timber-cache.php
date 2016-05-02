@@ -131,7 +131,7 @@
         	$post_id = $this->factory->post->create(array('post_title' => 'My Test Post'));
         	$post = new TimberPost($post_id);
         	$key = $kg->generateKey($post);
-        	$this->assertStringStartsWith('TimberPost|', $key);
+        	$this->assertStringStartsWith('Timber\Post|', $key);
         }
 
         function testTransientForceFilter() {

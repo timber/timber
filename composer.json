@@ -43,9 +43,10 @@
     "jarednova/markdowndocs": "dev-master"
   },
   "autoload": {
-    "classmap": [
-      "lib/"
-    ]
+    "psr-4": {
+      "Timber\\": "lib/"
+    },
+    "files": ["init.php"]
   },
   "repositories": [
     {

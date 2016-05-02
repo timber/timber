@@ -6,7 +6,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$post_id = $this->factory->post->create();
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
 		$comment = new TimberComment($comment_id);
-		$this->assertEquals('TimberComment', get_class($comment));
+		$this->assertEquals('Timber\Comment', get_class($comment));
 		$this->assertEquals($comment_id, $comment->ID);
 	}
 

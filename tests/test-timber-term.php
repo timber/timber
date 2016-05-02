@@ -5,7 +5,7 @@
 		function testTerm() {
 			$term_id = $this->factory->term->create();
 			$term = new TimberTerm($term_id);
-			$this->assertEquals('TimberTerm', get_class($term));
+			$this->assertEquals('Timber\Term', get_class($term));
 		}
 
 		function testGetTermWithObject() {
@@ -14,7 +14,7 @@
 			$this->assertTrue( in_array( get_class($term_data), array('WP_Term', 'stdClass') ) );
 			$term = new TimberTerm($term_id);
 			$this->assertEquals('Famous Commissioners', $term->name());
-			$this->assertEquals('TimberTerm', get_class($term));
+			$this->assertEquals('Timber\Term', get_class($term));
 		}
 
 		function testTermConstructWithSlug() {
@@ -149,7 +149,8 @@
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
 			$term = new TimberTerm($tid);
 			$links = array();
-			$links[] = 'http://example.org/wp-admin/term.php?taxonomy=category&tag_ID=2&post_type=post';
+
+			$links[] = 'http://example.org/wp-admin/term.php?taxonomy=category&tag_ID='.$tid.'&post_type=post';
 			$links[] = 'http://example.org/wp-admin/edit-tags.php?action=edit&taxonomy=category&tag_ID='.$tid.'&post_type=post';
 			$links[] = 'http://example.org/wp-admin/edit-tags.php?action=edit&taxonomy=category&tag_ID='.$tid;
 			$links[] = 'http://example.org/wp-admin/term.php?taxonomy=category&term_id='.$tid.'&post_type=post';
