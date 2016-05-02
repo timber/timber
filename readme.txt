@@ -2,8 +2,8 @@
 Contributors: jarednova, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 0.22.5
-Tested up to: 4.4.1
+Stable tag: 1.0.0
+Tested up to: 4.5.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
