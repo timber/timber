@@ -494,6 +494,10 @@ class Post extends Core implements CoreInterface {
 		if ( !isset($post->post_status) ) {
 			return null;
 		}
+
+		// This is required for WPBakery Visual Composer's front end editor to be able to inject its inline editing anchors
+		do_action_ref_array( 'the_post', array( &$post, &$GLOBALS['wp_query'] ) );
+
 		$post->status = $post->post_status;
 		$post->id = $post->ID;
 		$post->slug = $post->post_name;
