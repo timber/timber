@@ -124,7 +124,7 @@ class PostGetter {
 			return false;
 		}
 
-		if ( class_exists($type) && is_subclass_of($type, '\Timber\Post') ) {
+		if ( !is_array($type) && class_exists($type) && is_subclass_of($type, '\Timber\Post') ) {
 			return $type;
 		}
 	}
