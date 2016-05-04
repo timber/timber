@@ -394,7 +394,7 @@ class Timber {
 				parse_str($url[1], $query);
 				$args['add_args'] = $query;
 			}
-			$args['format'] = 'page/%#%';
+			$args['format'] = $wp_rewrite->pagination_base . '/%#%';
 			$args['base'] = trailingslashit($url[0]).'%_%';
 		} else {
 			$big = 999999999;
