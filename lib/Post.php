@@ -494,6 +494,9 @@ class Post extends Core implements CoreInterface {
 		if ( !isset($post->post_status) ) {
 			return null;
 		}
+
+		do_action_ref_array( 'the_post', array( &$post, &$GLOBALS['wp_query'] ) );
+
 		$post->status = $post->post_status;
 		$post->id = $post->ID;
 		$post->slug = $post->post_name;
