@@ -12,19 +12,19 @@ class PostGetter {
 	 * @param string $PostClass
 	 * @return array|bool|null
 	 */
-	static function get_post( $query = false, $PostClass = 'TimberPost' ) {
+	static function get_post( $query = false, $PostClass = '\Timber\Post' ) {
 		$posts = self::get_posts($query, $PostClass);
 		if ( $post = reset($posts) ) {
 			return $post;
 		}
 	}
 
-	static function get_posts( $query = false, $PostClass = 'TimberPost', $return_collection = false ) {
+	static function get_posts( $query = false, $PostClass = '\Timber\Post', $return_collection = false ) {
 		$posts = self::query_posts($query, $PostClass);
 		return apply_filters('timber_post_getter_get_posts', $posts->get_posts($return_collection));
 	}
 
-	static function query_post( $query = false, $PostClass = 'TimberPost' ) {
+	static function query_post( $query = false, $PostClass = '\Timber\Post' ) {
 		$posts = self::query_posts($query, $PostClass);
 		if ( method_exists($posts, 'current') && $post = $posts->current() ) {
 			return $post;
@@ -36,7 +36,7 @@ class PostGetter {
 	 * @param string $PostClass
 	 * @return array|bool|null
 	 */
-	static function query_posts( $query = false, $PostClass = 'TimberPost' ) {
+	static function query_posts( $query = false, $PostClass = '\Timber\Post' ) {
 		if ( $type = self::get_class_for_use_as_timber_post($query) ) {
 			$PostClass = $type;
 			if ( self::is_post_class_or_class_map($query) ) {
@@ -124,7 +124,7 @@ class PostGetter {
 			return false;
 		}
 
-		if ( class_exists($type) && is_subclass_of($type, 'TimberPost') ) {
+		if ( class_exists($type) && is_subclass_of($type, '\Timber\Post') ) {
 			return $type;
 		}
 	}
