@@ -41,8 +41,15 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 1.0.1 =
+* {{ user.avatar }} property is now available (thanks @connorjburton) d21eb85
+* #947: Fix to pagination base (thanks @matsrietdijk) 270d7c2
+* Fix to some namespacing issues (thanks @connorjburton) 0a8346a
+* #958: Call the_post action to help other plugins (thanks @felthy) 4442703
+* #976: Fixed problem with static declaration (@jarednova) c888606
+* #978: Bug with arrays for post types (thanks @connorjburton) 571f6f8
+
 = 1.0.0 =
-* Added 
 * Added `{{ user }}` object to context
 * Exposed translation functions
 * Added better error reporting/warnings
