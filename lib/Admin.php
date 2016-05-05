@@ -6,8 +6,8 @@ class Admin {
 	
 	public static function init() {
 		$filter = add_filter('plugin_row_meta', array( __CLASS__, 'meta_links' ), 10, 2);
-		$action = add_action('in_plugin_update_message-timber-library/timber.php', array('Timber\Admin', 'in_plugin_update_message'), 10, 2);
-		$action = add_action('in_plugin_update_message-timber/timber.php', array('Timber\Admin', 'in_plugin_update_message'), 10, 2);
+		$action = add_action('in_plugin_update_message-timber-library/timber.php', array( __CLASS__, 'in_plugin_update_message'), 10, 2);
+		$action = add_action('in_plugin_update_message-timber/timber.php', array( __CLASS__, 'in_plugin_update_message'), 10, 2);
 		if ($filter && $action) {
 			return true;
 		}
@@ -43,7 +43,7 @@ class Admin {
 	 *  @param	{array}		$plugin_data
 	 *  @param	{object}	$r
 	 */
-	function in_plugin_update_message( $plugin_data, $r ) {
+	public static function in_plugin_update_message( $plugin_data, $r ) {
 		$m = '';
 
 		if ( version_compare("1.0.0", $plugin_data->new_version) <= 0 ) {
