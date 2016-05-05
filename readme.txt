@@ -1,8 +1,8 @@
 === Timber ===
-Contributors: jarednova, lggorman
+Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 Tested up to: 4.5.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,27 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 1.0.0 =
+* Added 
+* Added `{{ user }}` object to context
+* Exposed translation functions
+* Added better error reporting/warnings
+* Fixed some things with function wrapper
+* Timber is now namespaced, big big thanks to @connorjburton
+* Cleanup of spacing
+* Removed deprecated functions, added warning for key functions
+* Updated version numbers and build script (@jarednova) 81a281e
+* Corrected Routes -> /Routes which threw a fatal error (@jarednova) 26b6585
+
+= 0.22.6 = 
+* New {{request}} object for post/get variables (thanks @connorjburton) #856
+* New crop positions (thanks @salaros) #861
+* Bug Fixes
+
+* Fix to "next" in pagination (thanks @connorjburton) #900
+* Fix to issue with tojpg filter's images not being deleted (thanks @connorjburton) #897
+* `{{post.parent.children}}` used to return unpublished posts due to underlying behavior in WordPress, it now only returns published posts (thanks @connorjburton) #883
 
 = 0.22.5 =
 * Fixed errors in tests (thanks @lggorman)
