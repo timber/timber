@@ -6,7 +6,6 @@ use Timber\Core;
 use Timber\CoreInterface;
 
 use Timber\Post;
-use TImber\Term;
 use Timber\Helper;
 use Timber\URLHelper;
 
