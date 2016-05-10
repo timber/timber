@@ -42,7 +42,7 @@ class User extends Core implements CoreInterface {
 
 	/**
 	 * @api
-	 * @var string The URL of the author's avatar
+	 * @var string|Image The URL of the author's avatar
 	 */
 	public $avatar;
 
