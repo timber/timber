@@ -21,4 +21,9 @@
 			flush_rewrite_rules( true );
 		}
 
+		function tearDown() {
+			parent::tearDown();
+			Timber::$context_cache = [];
+		}
+
 	}

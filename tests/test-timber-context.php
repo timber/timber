@@ -2,6 +2,9 @@
 
 class TestTimberContext extends Timber_UnitTestCase {
 
+	/**
+	 * This throws an infite loop if memorization isn't working
+	 */
 	function testContextLoop() {
 		add_filter('timber_context', function($context) {
 			$context = Timber::get_context();
@@ -9,7 +12,7 @@ class TestTimberContext extends Timber_UnitTestCase {
 			return $context;
 		});
 		$context = Timber::get_context();
-
+		$this->assertEquals('http://example.org', $context['http_host']);
 	}
 
 

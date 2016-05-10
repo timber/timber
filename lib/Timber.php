@@ -39,6 +39,8 @@ class Timber {
 	public static $auto_meta = true;
 	public static $autoescape = false;
 
+	public static $context_cache = [];
+
 	/**
 	 * @codeCoverageIgnore
 	 */
@@ -194,28 +196,27 @@ class Timber {
 	 * @return array
 	 */
 	public static function get_context() {
-		static $cache = [];
-		
-		if(empty($cache)) {
-			$cache['http_host'] = 'http://'.URLHelper::get_host();
-			$cache['wp_title'] = Helper::get_wp_title();
-			$cache['wp_head'] = Helper::function_wrapper('wp_head');
-			$cache['wp_footer'] = Helper::function_wrapper('wp_footer');
-			$cache['body_class'] = implode(' ', get_body_class());
+		if( empty(self::$context_cache) ) {
+			self::$context_cache['http_host'] = 'http://'.URLHelper::get_host();
+			self::$context_cache['wp_title'] = Helper::get_wp_title();
+			self::$context_cache['wp_head'] = Helper::function_wrapper('wp_head');
+			self::$context_cache['wp_footer'] = Helper::function_wrapper('wp_footer');
+			self::$context_cache['body_class'] = implode(' ', get_body_class());
 			
-			$cache['site'] = new Site();
-			$cache['request'] = new Request();
+			self::$context_cache['site'] = new Site();
+			self::$context_cache['request'] = new Request();
 			$user = new User();
-			$cache['user'] = ($user->ID) ? $user : false;
-			$cache['theme'] = $cache['site']->theme;
+			self::$context_cache['user'] = ($user->ID) ? $user : false;
+			self::$context_cache['theme'] = self::$context_cache['site']->theme;
 			
-			$cache['posts'] = Timber::query_posts();
+			self::$context_cache['posts'] = Timber::query_posts();
 
-			$cache = apply_filters('timber_context', $cache);
-			$cache = apply_filters('timber/context', $cache);
+			self::$context_cache = apply_filters('timber_context', self::$context_cache);
+			self::$context_cache = apply_filters('timber/context', self::$context_cache);
 		}
 
-		return $cache;
+		
+		return self::$context_cache;
 	}
 
 	/**
