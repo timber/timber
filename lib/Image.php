@@ -223,7 +223,7 @@ class Image extends Post implements CoreInterface {
 	 */
 	function init( $iid = false ) {
 		if ( !$iid ) { Helper::error_log('Initalized TimberImage without providing first parameter.'); return; }
-		if ( $iid instanceof Image ) {
+		if ( $iid instanceof self ) {
 			$iid = (int) $iid->ID;
 		}
 		if ( !is_numeric($iid) && is_string($iid) ) {
