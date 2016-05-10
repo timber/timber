@@ -7,6 +7,8 @@ use Timber\CoreInterface;
 
 use Timber\URLHelper;
 
+use Timber\Image;
+
 /**
  * This is used in Timber to represent users retrived from WordPress. You can call `$my_user = new TimberUser(123);` directly, or access it through the `{{ post.author }}` method.
  * @example
@@ -40,7 +42,7 @@ class User extends Core implements CoreInterface {
 
 	/**
 	 * @api
-	 * @var string The URL of the author's avatar
+	 * @var string|Image The URL of the author's avatar
 	 */
 	public $avatar;
 
@@ -142,7 +144,7 @@ class User extends Core implements CoreInterface {
 		}
 		$this->id = $this->ID;
 		$this->name = $this->name();
-		$this->avatar = get_avatar_url($this->id);
+		$this->avatar = new Image(get_avatar_url($this->id));
 		$custom = $this->get_custom();
 		$this->import($custom);
 	}
