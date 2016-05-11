@@ -2,6 +2,13 @@
 
 	class TestTimberHelper extends Timber_UnitTestCase {
 
+		function testCommentFormPHP() {
+			$post_id = $this->factory->post->create();
+			$form = TimberHelper::get_comment_form($post_id);
+			$form = trim($form);
+			$this->assertStringStartsWith('<div id="respond"', $form);
+		}
+
 		function testCloseTagsWithSelfClosingTags(){
 			$p = '<p>My thing is this <hr>Whatever';
 			$html = TimberHelper::close_tags($p);
