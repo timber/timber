@@ -155,6 +155,17 @@ class Image extends Post implements CoreInterface {
 	}
 
 	/**
+	 * @return array
+	 */
+	protected function get_post_custom($iid) {
+		$pc = get_post_custom($iid);
+		if ( is_bool($pc) ) {
+			return array();
+		}
+		return $pc;
+	}
+
+	/**
 	 * @internal
 	 * @param  int $iid the id number of the image in the WP database
 	 */
@@ -165,7 +176,7 @@ class Image extends Post implements CoreInterface {
 			if ( !is_array($image_info) ) {
 				$image_info = array();
 			}
-			$image_custom = get_post_custom($iid);
+			$image_custom = self::get_post_custom($iid);
 			$basic = get_post($iid);
 			if ( $basic ) {
 				if ( isset($basic->post_excerpt) ) {
@@ -212,7 +223,9 @@ class Image extends Post implements CoreInterface {
 	 */
 	function init( $iid = false ) {
 		if ( !$iid ) { Helper::error_log('Initalized TimberImage without providing first parameter.'); return; }
-		
+		if ( $iid instanceof self ) {
+			$iid = (int) $iid->ID;
+		}
 		if ( !is_numeric($iid) && is_string($iid) ) {
 			if ( strstr($iid, '://') ) {
 				$this->init_with_url($iid);
@@ -263,7 +276,7 @@ class Image extends Post implements CoreInterface {
 			$this->ID = $iid;
 		}
 		if ( isset($this->ID) ) {
-			$custom = get_post_custom($this->ID);
+			$custom = self::get_post_custom($this->ID);
 			foreach ( $custom as $key => $value ) {
 				$this->$key = $value[0];
 			}
