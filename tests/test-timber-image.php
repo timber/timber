@@ -796,6 +796,33 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals($image->src(), $result);
 	}
 
+	function testTimberImageFromTimberImage() {
+		$post = $this->get_post_with_image();
+		$image = $post->thumbnail();
+		$post = new TimberImage($image);
+		$str = '{{ TimberImage(post).src }}';
+		$result = Timber::compile_string( $str, array('post' => $post) );
+		$this->assertEquals($image->src(), $result);
+	}
+
+	function testTimberImageFromTimberImageID() {
+		$post = $this->get_post_with_image();
+		$image = $post->thumbnail();
+		$post = new TimberImage($image->ID);
+		$str = '{{ TimberImage(post).src }}';
+		$result = Timber::compile_string( $str, array('post' => $post) );
+		$this->assertEquals($image->src(), $result);
+	}
+
+	function testTimberImageFromImageID() {
+		$post = $this->get_post_with_image();
+		$image = $post->thumbnail();
+		$post = $image->ID;
+		$str = '{{ TimberImage(post).src }}';
+		$result = Timber::compile_string( $str, array('post' => $post) );
+		$this->assertEquals($image->src(), $result);
+	}
+
 	function testTimberImageFromAttachment() {
 		$iid = self::get_image_attachment();
 		$image = new TimberImage($iid);
