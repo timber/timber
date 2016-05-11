@@ -506,6 +506,16 @@ class Post extends Core implements CoreInterface {
 		return $post;
 	}
 
+	/**
+	 *
+	 * Gets the comment form for use on a single article page
+	 * @param array   $args this $args thing is a fucking mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
+	 * @return string of HTML for the form
+	 */
+	public function comment_form( $args = array() ) {
+		return Helper::get_comment_form( $this->ID, $args );
+	}
+
 
 	/**
 	 * Get the terms associated with the post
