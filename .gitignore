@@ -16,4 +16,4 @@ node_modules
 docs/cache
 docs/mkdocs
 docs/output
-timber.php
+/Timber.php
