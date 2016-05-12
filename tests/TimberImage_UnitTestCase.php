@@ -13,6 +13,7 @@
 		}
 
 		function tearDown() {
+			parent::tearDown();
 			if (isset($this->_files) && is_array($this->_files)) {
 				foreach($this->_files as $file) {
 					if (file_exists($file)) {
