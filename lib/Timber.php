@@ -97,7 +97,7 @@ class Timber {
 			Admin::init();
 			Integrations::init();
 
-			defined('TIMBER_LOADED', true);
+			define('TIMBER_LOADED', true);
 		}
 	}
 
