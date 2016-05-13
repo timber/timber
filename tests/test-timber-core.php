@@ -16,7 +16,7 @@ class TestTimberCore extends Timber_UnitTestCase {
 		$object->foo = 'Dark Helmet';
 		$tc->import($object);
 		$this->assertEquals('Drebin', $tc->frank);
-		$this->assertEquals('bar', $tc->foo);
+		$this->assertEquals('Dark Helmet', $tc->foo);
 		$tc->import($object, true);
 		$this->assertEquals('Dark Helmet', $tc->foo);
 		$this->assertEquals('Drebin', $tc->frank);
