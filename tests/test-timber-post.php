@@ -589,6 +589,13 @@
 			$this->assertEquals('My Page', $post->title());
 		}
 
+		function testCommentFormOnPost() {
+			$post_id = $this->factory->post->create();
+			$post = new Timber\Post($post_id);
+			$form = $post->comment_form();
+			$this->assertStringStartsWith('<div id="respond"', trim($form));
+		}
+
 		/**
 		 * @group failing
 		 */
