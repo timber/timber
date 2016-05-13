@@ -23,7 +23,7 @@
 
 		function tearDown() {
 			parent::tearDown();
-			Timber::$context_cache = [];
+			Timber::$context_cache = array();
 		}
 
 	}

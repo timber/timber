@@ -12,12 +12,12 @@ env:
 
 matrix:
     include:
+        - php: 5.3
+          env: WP_VERSION=latest WP_MULTISITE=0
         - php: hhvm
           env: WP_VERSION=latest WP_MULTISITE=0
         - php: hhvm
           env: WP_VERSION=latest WP_MULTISITE=1
-        - php: 5.3
-          env: WP_VERSION=latest WP_MULTISITE=0
 
 before_script:
     - if [ "$TRAVIS_PHP_VERSION" != "hhvm" && "$TRAVIS_PHP_VERSION" != "5.3"]; then autodetect | pecl install imagick; fi
