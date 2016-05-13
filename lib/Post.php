@@ -167,8 +167,6 @@ class Post extends Core implements CoreInterface {
 	 * @param mixed $pid
 	 */
 	public function __construct( $pid = null ) {
-		$this->namespacing();
-
 		$pid = $this->determine_id($pid);
 		$this->init($pid);
 	}
