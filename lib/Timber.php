@@ -39,7 +39,7 @@ class Timber {
 	public static $auto_meta = true;
 	public static $autoescape = false;
 
-	public static $context_cache = [];
+	public static $context_cache = array();
 
 	/**
 	 * @codeCoverageIgnore
