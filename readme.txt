@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 Tested up to: 4.5.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,16 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 1.0.3 =
+* Hot fix for PHP 5.3 error
+
+= 1.0.2 =
+* Fixed possible infinite loop with Timber::get_context (thanks @connorjburton) 376928d59dd5f2dd2f389c61217530ba54e40b24
+* Removed bug in Term (thanks @Jmayhak) a5e3c30b9eb12acea06bc914cd6b3673ead06012
+* {{ user.avatar }} now returns an Image object (thanks @connorjburton) 51dd7329aee6212490daee5742280286e221f2e8
+* Attention Comment Form fans! {{ post.comment_form }} now gives you a friggin' comment form 9009ac12536a0199a1bb071ac41b2e91152bef4d
+* Helper\comment_form also gives you a comment form. 9009ac12536a0199a1bb071ac41b2e91152bef4d
 
 = 1.0.1 =
 * {{ user.avatar }} property is now available (thanks @connorjburton) d21eb85
