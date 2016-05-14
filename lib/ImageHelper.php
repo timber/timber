@@ -175,7 +175,7 @@ class ImageHelper {
 			if ( in_array($post->post_mime_type, $image_types) ) {
 				$attachment = new Image($post_id);
 				if ( $attachment->file_loc ) {
-					self::delete_generated_files($attachment->file_loc);
+					ImageHelper::delete_generated_files($attachment->file_loc);
 				}
 			}
 		} );
