@@ -444,6 +444,18 @@ class Helper {
 
 	/**
 	 *
+	 * Gets the comment form for use on a single article page
+	 * @deprecated 0.21.8 use `{{ function('comment_form') }}` instead
+	 * @param int     $post_id which post_id should the form be tied to?
+	 * @param array   $args this $args thing is a fucking mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
+	 * @return string
+	 */
+	public static function get_comment_form( $post_id = null, $args = array() ) {
+		return self::ob_function( 'comment_form', array( $args, $post_id ) );
+	}
+
+	/**
+	 *
 	 *
 	 * @param string  $args
 	 * @return array
