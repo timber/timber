@@ -39,6 +39,7 @@ class Comment extends Core implements CoreInterface {
 	public $comment_date;
 	public $comment_ID;
 	public $user_id;
+	public $post_id;
 	public $comment_author;
 
 	public $children = array();
@@ -163,7 +164,7 @@ class Comment extends Core implements CoreInterface {
 	 * @return boolean
 	 */
 	public function approved() {
-		return $this->comment_approved;
+		return Helper::is_true($this->comment_approved);		
 	}
 
 	/**
