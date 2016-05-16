@@ -15,7 +15,6 @@ class PostType {
 
 	protected function init( $post_type ) {
 		$obj = get_post_type_object($post_type);
-		print_r($obj);
 		foreach (get_object_vars($obj) as $key => $value) {
 			$this->$key = $value;
 		}

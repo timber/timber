@@ -42,7 +42,7 @@ class Comment extends Core implements CoreInterface {
 	public $post_id;
 	public $comment_author;
 
-	public $children = array();
+	protected $children = array();
 
 	/**
 	 * @param int $cid
@@ -149,6 +149,23 @@ class Comment extends Core implements CoreInterface {
 	 */
 	public function content() {
 		return apply_filters('get_comment_text ', $this->comment_content);
+	}
+
+	/**
+	 * @api
+	 * @return array Comments
+	 */
+	public function children() {
+		return $this->children;
+	}
+
+	/**
+	 */
+	public function add_child( Comment $child_comment ) {
+		if ( !is_array($this->children) ) {
+			$this->children = array();
+		}
+		return $this->children[] = $child_comment;
 	}
 
 	/**

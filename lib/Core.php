@@ -23,27 +23,27 @@ abstract class Core {
 	 * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2
 	 * @return mixed
 	 */
-	// function __call( $field, $args ) {
-	// 	return $this->__get($field);
-	// }
+	function __call( $field, $args ) {
+		return $this->__get($field);
+	}
 
 	/**
 	 * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2
 	 *
 	 * @return mixed
 	 */
-	// function __get( $field ) {
-	// 	if ( method_exists($this, $field) ) {
-	// 		return $this->$field = $this->$field();
-	// 	}
-	// 	if ( property_exists($this, $field) ) {
-	// 		return $this->$field;
-	// 	}
-	// 	if ( method_exists($this, 'meta') && $meta_value = $this->meta($field) ) {
-	// 		return $this->$field = $meta_value;
-	// 	}
-	// 	return $this->$field = false;
-	// }
+	function __get( $field ) {
+		if ( method_exists($this, $field) ) {
+			return $this->$field = $this->$field();
+		}
+		if ( property_exists($this, $field) ) {
+			return $this->$field;
+		}
+		if ( method_exists($this, 'meta') && $meta_value = $this->meta($field) ) {
+			return $this->$field = $meta_value;
+		}
+		return $this->$field = false;
+	}
 
 	/**
 	 * Takes an array or object and adds the properties to the parent object

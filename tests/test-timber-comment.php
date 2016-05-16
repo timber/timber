@@ -101,7 +101,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$post = new TimberPost($post_id);
 		$comments = $post->get_comments();
 		$this->assertEquals(2, count($comments));
-		$this->assertEquals(1, count($comments[1]->children));
+		$this->assertEquals(1, count($comments[1]->children()));
 		$twig_string = '{{comment.author.name}}';
 		$result = Timber::compile_string($twig_string, array('comment' => $comments[0]));
 		$this->assertEquals('Cosmo Kramer', $result);

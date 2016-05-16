@@ -876,7 +876,7 @@ class Post extends Core implements CoreInterface {
 		// Add child comments to the relative "super parents"
 		foreach ( $comments_tree as $comment_parent => $comment_children ) {
 			foreach ( $comment_children as $comment_child ) {
-				$timber_comments[$comment_parent]->children[] = $timber_comments[$comment_child];
+				$timber_comments[$comment_parent]->add_child( $timber_comments[$comment_child] );
 				unset($timber_comments[$comment_child]);
 			}
 		}
