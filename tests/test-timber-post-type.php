@@ -9,7 +9,7 @@
 		function testPostTypeProperty(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost($post_id);
-			$this->assertEquals('post', $post->post_type);
+			$this->assertEquals('post', $post->post_type());
 		}
 
 		function testPostTypeMethodInTwig() {

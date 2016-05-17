@@ -150,7 +150,7 @@ class Post extends Core implements CoreInterface {
 	 * @api
 	 * @var string 	$post_type 		the name of the post type, this is the machine name (so "my_custom_post_type" as opposed to "My Custom Post Type")
 	 */
-	public $post_type;
+	protected $post_type;
 
 	/**
 	 * @api
@@ -1115,7 +1115,6 @@ class Post extends Core implements CoreInterface {
 	}
 
 
-
 	/**
 	 * Finds any WP_Post objects and converts them to Timber\Posts
 	 * @param array $data
@@ -1137,6 +1136,7 @@ class Post extends Core implements CoreInterface {
 		return $data;
 	}
 
+
 	/**
 	 * Gets the parent (if one exists) from a post as a Timber\Post object (or whatever is set in Timber\Post::$PostClass)
 	 * @api
@@ -1154,6 +1154,7 @@ class Post extends Core implements CoreInterface {
 		return new $this->PostClass($this->post_parent);
 	}
 
+
 	/**
 	 * Gets the relative path of a WP Post, so while link() will return http://example.org/2015/07/my-cool-post
 	 * this will return just /2015/07/my-cool-post
@@ -1167,6 +1168,7 @@ class Post extends Core implements CoreInterface {
 	public function path() {
 		return URLHelper::get_rel_url($this->get_link());
 	}
+
 
 	/**
 	 * Get the previous post in a set
@@ -1226,6 +1228,7 @@ class Post extends Core implements CoreInterface {
 		}
 	}
 
+
 	/**
 	 * Returns the processed title to be used in templates. This returns the title of the post after WP's filters have run. This is analogous to `the_title()` in standard WP template tags.
 	 * @api
@@ -1236,9 +1239,9 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function title() {
-		error_log('calling title()');
 		return apply_filters('the_title', $this->post_title, $this->ID);
 	}
+
 
 	/** 
 	 *
