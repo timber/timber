@@ -76,10 +76,10 @@ class Timber {
 			//already run, so bail
 			return;
 		}
-		$names = array('Archives', 'Comment', 'Core', 'FunctionWrapper', 'Helper', 'Image', 'ImageHelper', 'Integrations', 'Loader', 'Menu', 'MenuItem', 'Post', 'PostGetter', 'PostsCollection', 'QueryIterator', 'Request', 'Site', 'Term', 'TermGetter', 'Theme', 'Twig', 'URLHelper', 'User');
+		$names = array('Archives', 'Comment', 'Core', 'FunctionWrapper', 'Helper', 'Image', 'ImageHelper', 'Integrations', 'Loader', 'Menu', 'MenuItem', 'Post', 'PostGetter', 'PostsCollection', 'QueryIterator', 'Request', 'Site', 'Term', 'TermGetter', 'Theme', 'Twig', 'URLHelper', 'User', 'Integrations\Command', 'Integrations\ACF', 'Integrations\Timber_WP_CLI_Command');
 		class_alias(get_class($this), 'Timber');
 		foreach ( $names as $name ) {
-			class_alias('Timber\\'.$name, 'Timber'.$name);
+			class_alias('Timber\\'.$name, 'Timber'.str_replace(['Integrations\\'], '', $name));
 		}
 	}
 
