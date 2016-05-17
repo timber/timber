@@ -4,12 +4,13 @@
 
 		function testPostTypeObject() {
 			$obj = get_post_type_object('post');
+			$this->assertEquals('Posts', $obj->labels->name);
 		}
 
 		function testPostTypeProperty(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost($post_id);
-			$this->assertEquals('post', $post->post_type());
+			$this->assertEquals('post', $post->post_type);
 		}
 
 		function testPostTypeMethodInTwig() {
@@ -26,14 +27,6 @@
 			$template = '{{post.type}}';
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('post', $str);
-		}
-
-		function testPostTypeMethodInTwigLabels() {
-			$post_id = $this->factory->post->create();
-			$post = new TimberPost($post_id);
-			$template = '{{post.post_type.labels.name}}';
-			$str = Timber::compile_string($template, array('post' => $post));
-			$this->assertEquals('Posts', $str);
 		}
 
 		function testTypeMethodInTwigLabels() {

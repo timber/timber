@@ -150,7 +150,7 @@ class Post extends Core implements CoreInterface {
 	 * @api
 	 * @var string 	$post_type 		the name of the post type, this is the machine name (so "my_custom_post_type" as opposed to "My Custom Post Type")
 	 */
-	protected $post_type;
+	public $post_type;
 
 	/**
 	 * @api
@@ -603,9 +603,11 @@ class Post extends Core implements CoreInterface {
 	function get_paged_content() {
 		return $this->paged_content();
 	}
+
+
 	/**
-	 *
-	 * Here is my summary
+	 * Returns the post_type object with labels and other info
+	 * 
 	 * @deprecated since 1.0.3
 	 * @example
 	 * 
@@ -616,15 +618,12 @@ class Post extends Core implements CoreInterface {
 	 * ```html
 	 * This post is from <span>Recipes</span>
 	 * ```
-	 * @return mixed
+	 * @return PostType
 	 */
 	public function get_post_type() {
 		return $this->type();
 	}
 
-	public function post_type() {
-		return $this->type();
-	}
 
 	/**
 	 * @return int the number of comments on a post
@@ -632,6 +631,7 @@ class Post extends Core implements CoreInterface {
 	public function get_comment_count() {
 		return get_comments_number($this->ID);
 	}
+
 
 	/**
 	 * @param string $field_name
@@ -977,11 +977,27 @@ class Post extends Core implements CoreInterface {
 	 	return apply_filters('get_the_time', $the_time, $tf);
 	}
 
+
+	/**
+	 * Returns the post_type object with labels and other info
+	 * 
+	 * @deprecated since 1.0.3
+	 * @example
+	 * 
+	 * ```twig
+	 * This post is from <span>{{ post.type.labels.name }}</span>
+	 * ```
+	 *
+	 * ```html
+	 * This post is from <span>Recipes</span>
+	 * ```
+	 * @return PostType
+	 */
 	public function type() {
-		if ( !$this->post_type instanceof PostType ) {
-			$this->post_type = new PostType($this->post_type);
+		if ( !$this->_type instanceof PostType ) {
+			$this->_type = new PostType($this->post_type);
 		}
-		return $this->post_type;
+		return $this->_type;
 	}
 
 	/**

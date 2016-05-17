@@ -33,14 +33,14 @@ abstract class Core {
 	 * @return mixed
 	 */
 	function __get( $field ) {
-		if ( method_exists($this, $field) ) {
-			return $this->$field = $this->$field();
-		}
 		if ( property_exists($this, $field) ) {
 			return $this->$field;
 		}
 		if ( method_exists($this, 'meta') && $meta_value = $this->meta($field) ) {
 			return $this->$field = $meta_value;
+		}
+		if ( method_exists($this, $field) ) {
+			return $this->$field = $this->$field();
 		}
 		return $this->$field = false;
 	}
@@ -56,18 +56,17 @@ abstract class Core {
 	 * ```
 	 * @param array|object $info an object or array you want to grab data from to attach to the Timber object
 	 */
-	function import( $info, $force = true ) {
+	function import( $info, $force = false ) {
 		if ( is_object($info) ) {
 			$info = get_object_vars($info);
 		}
 		if ( is_array($info) ) {
 			foreach ( $info as $key => $value ) {
-				$this->$key = $value;
-				// if ( !empty($key) && $force ) {
-				// 	$this->$key = $value;
-				// } else if ( !empty($key) && !method_exists($this, $key) ) {
-				// 	$this->$key = $value;
-				// }
+				if ( !empty($key) && $force ) {
+					$this->$key = $value;
+				} else if ( !empty($key) && !method_exists($this, $key) ) {
+					$this->$key = $value;
+				}
 			}
 		}
 	}

@@ -99,6 +99,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 		$items = $menu->get_items();
 		$item = $items[1];
+		print_r($item);
 		$this->assertTrue( $item->external() );
 		$struc = get_option( 'permalink_structure' );
 		$this->assertEquals( 'http://upstatement.com', $item->url );

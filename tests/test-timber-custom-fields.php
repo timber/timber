@@ -17,14 +17,14 @@ class TestTimberCustomFields extends Timber_UnitTestCase {
 		$result = Timber::compile_string($str, array('post' => $post));
 		$this->assertEquals('foo', $result);
 		//
-		// $str = '{{post.post_title}}';
-		// update_post_meta($post_id, 'post_title', 'jiggypoof');
-		// $post = new TimberPost($post_id);
-		// $result = Timber::compile_string($str, array('post' => $post));
-		// $this->assertEquals('foo', $result);
-		// $str = '{{post.custom.post_title}}';
-		// $result = Timber::compile_string($str, array('post' => $post));
-		// $this->assertEquals('jiggypoof', $result);
+		$str = '{{post.post_title}}';
+		update_post_meta($post_id, 'post_title', 'jiggypoof');
+		$post = new TimberPost($post_id);
+		$result = Timber::compile_string($str, array('post' => $post));
+		$this->assertEquals('foo', $result);
+		$str = '{{post.custom.post_title}}';
+		$result = Timber::compile_string($str, array('post' => $post));
+		$this->assertEquals('jiggypoof', $result);
 	}
 
 	function testPostCustomFieldPropertyConflict(){
