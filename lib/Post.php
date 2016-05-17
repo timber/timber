@@ -608,7 +608,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Returns the post_type object with labels and other info
 	 * 
-	 * @deprecated since 1.0.3
+	 * @deprecated since 1.0.4
 	 * @example
 	 * 
 	 * ```twig
@@ -981,7 +981,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Returns the post_type object with labels and other info
 	 * 
-	 * @deprecated since 1.0.3
+	 * @since 1.0.4
 	 * @example
 	 * 
 	 * ```twig

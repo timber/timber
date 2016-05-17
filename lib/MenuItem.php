@@ -15,7 +15,6 @@ class MenuItem extends Core implements CoreInterface {
 	public $class = '';
 	public $level = 0;
 	public $post_name;
-	public $type;
 	public $url;
 
 	public $PostClass = 'TimberPost';
@@ -200,10 +199,19 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return bool
 	 */
 	function is_external() {
-		if ( $this->type != 'custom' ) {
+		if ( $this->type() != 'custom' ) {
 			return false;
 		}
 		return URLHelper::is_external($this->url);
+	}
+
+	/**
+	 * Return the type of the menu item
+	 * @since 1.0.4
+	 * @return string
+	 */
+	public function type() {
+		return $this->_menu_item_type;
 	}
 
 	/**
