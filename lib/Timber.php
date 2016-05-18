@@ -39,7 +39,7 @@ class Timber {
 	public static $auto_meta = true;
 	public static $autoescape = false;
 
-	public static $context_cache = [];
+	public static $context_cache = array();
 
 	/**
 	 * @codeCoverageIgnore
@@ -94,12 +94,11 @@ class Timber {
 	 * @codeCoverageIgnore
 	 */
 	protected function init() {
-		if(class_exists('\WP') && !defined('TIMBER_LOADED')) {
+		if( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
 			Twig::init();
 			ImageHelper::init();
 			Admin::init();
 			Integrations::init();
-
 			define('TIMBER_LOADED', true);
 		}
 	}
@@ -237,7 +236,9 @@ class Timber {
 	 * @return bool|string
 	 */
 	public static function compile( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false ) {
-		if(!defined('TIMBER_LOADED')) self::init();
+		if( !defined('TIMBER_LOADED') ) {
+			self::init();
+		}
 		$caller = self::get_calling_script_dir();
 		$caller_file = self::get_calling_script_file();
 		$caller_file = apply_filters('timber_calling_php_file', $caller_file);
