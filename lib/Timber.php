@@ -48,10 +48,13 @@ class Timber {
 		if ( !defined('ABSPATH') ) {
 			return;
 		}
-		$this->test_compatibility();
-		$this->backwards_compatibility();
-		$this->init_constants();
-		$this->init();
+		if( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
+			$this->test_compatibility();
+			$this->backwards_compatibility();
+			$this->init_constants();
+			$this->init();
+			define('TIMBER_LOADED', true);
+		}
 	}
 
 	/**
