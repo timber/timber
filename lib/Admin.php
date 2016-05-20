@@ -3,7 +3,7 @@
 namespace Timber;
 
 class Admin {
-	
+
 	public static function init() {
 		$filter = add_filter('plugin_row_meta', array( __CLASS__, 'meta_links' ), 10, 2);
 		$action = add_action('in_plugin_update_message-timber-library/timber.php', array( __CLASS__, 'in_plugin_update_message'), 10, 2);
@@ -46,9 +46,9 @@ class Admin {
 	public static function in_plugin_update_message( $plugin_data, $r ) {
 		$m = '';
 
-		if ( version_compare("1.0.0", $plugin_data->new_version) <= 0 ) {
+		if ( version_compare("1.0.0", $plugin_data['new_version']) <= 0 ) {
 			//a version of 1.0.0 or greater is availalbe
-			$m .= '<p><b>Warning:</b> Timber 1.0 removed a number of features and methods. Before upgrading please test your theme on a local or staging site to ensure that your theme will work with the newest version.</p> 
+			$m .= '<p><b>Warning:</b> Timber 1.0 removed a number of features and methods. Before upgrading please test your theme on a local or staging site to ensure that your theme will work with the newest version.</p>
 
 			<p><strong>Is your theme in active development?</strong> That is, is someone actively in PHP files writing new code? If you answered "no", then <i>do not upgrade</i>. You will not benefit from Timber 1.0</p>';
 
@@ -58,13 +58,13 @@ class Admin {
 
 		}
 
-		if ( version_compare("1.0.0", $plugin_data->Version) <= 0 ) {
+		if ( version_compare("1.0.0", $plugin_data['Version']) <= 0 ) {
 			$m .= "<p>Are you seeing errors since upgrading to 1.0? Download <b><a href='https://downloads.wordpress.org/plugin/timber-library.0.22.6.zip'>Version 0.22.6</a></b> to bring things back to stability.";
 		}
-		
+
 		// show message
 		echo '<br />'.sprintf($m);
-	
+
 	}
 
 }
