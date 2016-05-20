@@ -11,6 +11,7 @@ use Timber\Image;
 use Timber\Helper;
 use Timber\URLHelper;
 use Timber\PostGetter;
+use Timber\PostType;
 
 /**
  * This is the object you use to access or extend WordPress posts. Think of it as Timber's (more accessible) version of WP_Post. This is used throughout Timber to represent posts retrieved from WordPress making them available to Twig templates. See the PHP and Twig examples for an example of what it's like to work with this object in your code.
@@ -602,10 +603,14 @@ class Post extends Core implements CoreInterface {
 	function get_paged_content() {
 		return $this->paged_content();
 	}
+
+
 	/**
-	 *
-	 * Here is my summary
+	 * Returns the post_type object with labels and other info
+	 * 
+	 * @deprecated since 1.0.4
 	 * @example
+	 * 
 	 * ```twig
 	 * This post is from <span>{{ post.get_post_type.labels.plural }}</span>
 	 * ```
@@ -613,11 +618,12 @@ class Post extends Core implements CoreInterface {
 	 * ```html
 	 * This post is from <span>Recipes</span>
 	 * ```
-	 * @return mixed
+	 * @return PostType
 	 */
 	public function get_post_type() {
-		return get_post_type_object($this->post_type);
+		return $this->type();
 	}
+
 
 	/**
 	 * @return int the number of comments on a post
@@ -625,6 +631,7 @@ class Post extends Core implements CoreInterface {
 	public function get_comment_count() {
 		return get_comments_number($this->ID);
 	}
+
 
 	/**
 	 * @param string $field_name
@@ -869,7 +876,7 @@ class Post extends Core implements CoreInterface {
 		// Add child comments to the relative "super parents"
 		foreach ( $comments_tree as $comment_parent => $comment_children ) {
 			foreach ( $comment_children as $comment_child ) {
-				$timber_comments[$comment_parent]->children[] = $timber_comments[$comment_child];
+				$timber_comments[$comment_parent]->add_child( $timber_comments[$comment_child] );
 				unset($timber_comments[$comment_child]);
 			}
 		}
@@ -968,6 +975,29 @@ class Post extends Core implements CoreInterface {
 		$tf = $time_format ? $time_format : get_option('time_format');
 	 	$the_time = (string) mysql2date($tf, $this->post_date);
 	 	return apply_filters('get_the_time', $the_time, $tf);
+	}
+
+
+	/**
+	 * Returns the post_type object with labels and other info
+	 * 
+	 * @since 1.0.4
+	 * @example
+	 * 
+	 * ```twig
+	 * This post is from <span>{{ post.type.labels.name }}</span>
+	 * ```
+	 *
+	 * ```html
+	 * This post is from <span>Recipes</span>
+	 * ```
+	 * @return PostType
+	 */
+	public function type() {
+		if ( !$this->_type instanceof PostType ) {
+			$this->_type = new PostType($this->post_type);
+		}
+		return $this->_type;
 	}
 
 	/**
@@ -1101,7 +1131,6 @@ class Post extends Core implements CoreInterface {
 	}
 
 
-
 	/**
 	 * Finds any WP_Post objects and converts them to Timber\Posts
 	 * @param array $data
@@ -1123,6 +1152,7 @@ class Post extends Core implements CoreInterface {
 		return $data;
 	}
 
+
 	/**
 	 * Gets the parent (if one exists) from a post as a Timber\Post object (or whatever is set in Timber\Post::$PostClass)
 	 * @api
@@ -1140,6 +1170,7 @@ class Post extends Core implements CoreInterface {
 		return new $this->PostClass($this->post_parent);
 	}
 
+
 	/**
 	 * Gets the relative path of a WP Post, so while link() will return http://example.org/2015/07/my-cool-post
 	 * this will return just /2015/07/my-cool-post
@@ -1153,6 +1184,7 @@ class Post extends Core implements CoreInterface {
 	public function path() {
 		return URLHelper::get_rel_url($this->get_link());
 	}
+
 
 	/**
 	 * Get the previous post in a set
@@ -1212,6 +1244,7 @@ class Post extends Core implements CoreInterface {
 		}
 	}
 
+
 	/**
 	 * Returns the processed title to be used in templates. This returns the title of the post after WP's filters have run. This is analogous to `the_title()` in standard WP template tags.
 	 * @api
@@ -1224,6 +1257,7 @@ class Post extends Core implements CoreInterface {
 	public function title() {
 		return apply_filters('the_title', $this->post_title, $this->ID);
 	}
+
 
 	/** 
 	 *
