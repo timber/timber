@@ -3,7 +3,8 @@
 namespace Timber;
 
 /**
- * Wrapper for the post_type object provided by WordPress
+ * An object that lets a user easily modify the post preview to their
+ * liking
  * @since 1.0.4
 */
 class PostPreview {
@@ -11,7 +12,7 @@ class PostPreview {
 	protected $post;
 	protected $end = '&hellip;';
 	protected $force = false;
-	protected $lenth = 50;
+	protected $length = 50;
 	protected $readmore = 'Read More';
 	protected $strip = true;
 
@@ -28,13 +29,27 @@ class PostPreview {
 		return $this;
 	}
 
+	public function end( $end = '&hellip;' ) {
+		$this->end = $end;
+		return $this;
+	}
+
+	public function force( $force = true ) {
+		$this->force = $force;
+		return $this;
+	}
+
+	public function read_more( $readmore = 'Read More' ) {
+		$this->readmore = $readmore;
+		return $this;
+	}
+
 	protected function run() {
 		$end = $this->end;
 		$force = $this->force;
 		$len = $this->length;
 		$readmore = $this->readmore;
 		$strip = $this->strip;
-		
 
 		$text = '';
 		$trimmed = false;
