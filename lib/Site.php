@@ -246,8 +246,7 @@ class Site extends Core implements CoreInterface {
 	}
 
 	/**
-	 *
-	 * @api
+	 * @deprecated 1.0.4
 	 * @see TimberSite::link
 	 * @return string
 	 */
