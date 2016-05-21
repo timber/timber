@@ -54,7 +54,6 @@ class Timber {
 			$this->backwards_compatibility();
 			$this->init_constants();
 			$this->init();
-			define('TIMBER_LOADED', true);
 		}
 	}
 
