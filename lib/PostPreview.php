@@ -44,6 +44,11 @@ class PostPreview {
 		return $this;
 	}
 
+	public function strip( $strip = true ) {
+		$this->strip = $strip;
+		return $this;
+	}
+
 	protected function run() {
 		$end = $this->end;
 		$force = $this->force;
