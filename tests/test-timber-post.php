@@ -88,7 +88,10 @@
 		function testNonexistentMethod(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost( $post_id );
-			$this->assertFalse( $post->donkey() );
+			$template = '{{post.donkey}}';
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('', $str);
+			//$this->assertFalse( $post->donkey() );
 		}
 
 		function testNext(){

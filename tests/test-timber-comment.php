@@ -41,11 +41,11 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$post_id = $this->factory->post->create();
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $kramer_quote));
 		$comment = new TimberComment($comment_id);
-		$comment->assertTrue($comment->approved());
+		$this->assertTrue($comment->approved());
 
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'You ever dream in 3-D? It’s like the Boogie Man is coming RIGHT AT YOU.', 'comment_approved' => false));
 		$comment = new TimberComment($comment_id);
-		$comment->assertFalse($comment->approved());
+		$this->assertFalse($comment->approved());
 	}
 
 	function testCommentDate(){
@@ -53,7 +53,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$post_id = $this->factory->post->create();
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote, 'comment_date' => '2015-08-21 03:24:07'));
 		$comment = new TimberComment($comment_id);
-		$comment->assertEquals('August 21, 2015', $comment->date());
+		$this->assertEquals('August 21, 2015', $comment->date());
 	}
 
 	function testCommentTime(){
@@ -61,7 +61,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$post_id = $this->factory->post->create();
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote, 'comment_date' => '2015-08-21 03:24:07'));
 		$comment = new TimberComment($comment_id);
-		$comment->assertEquals('3:24 am', $comment->time());
+		$this->assertEquals('3:24 am', $comment->time());
 	}
 
 	function testCommentReplyLink() {
@@ -101,7 +101,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$post = new TimberPost($post_id);
 		$comments = $post->get_comments();
 		$this->assertEquals(2, count($comments));
-		$this->assertEquals(1, count($comments[1]->children));
+		$this->assertEquals(1, count($comments[1]->children()));
 		$twig_string = '{{comment.author.name}}';
 		$result = Timber::compile_string($twig_string, array('comment' => $comments[0]));
 		$this->assertEquals('Cosmo Kramer', $result);
