@@ -126,7 +126,7 @@ class Post extends Core implements CoreInterface {
 	public $post_date;
 
 	/**
-	 * @var string 	$post_exceprt 	the raw text of a manual post exceprt as stored in the database
+	 * @var string 	$post_excerpt 	the raw text of a manual post excerpt as stored in the database
 	 */
 	public $post_excerpt;
 
@@ -356,6 +356,10 @@ class Post extends Core implements CoreInterface {
 			return null;
 		}
 		return $result->ID;
+	}
+
+	public function preview() {
+		return new PostPreview( $this );
 	}
 
 	/**
