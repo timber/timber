@@ -79,10 +79,17 @@ class Timber {
 			//already run, so bail
 			return;
 		}
-		$names = array('Archives', 'Comment', 'Core', 'FunctionWrapper', 'Helper', 'Image', 'ImageHelper', 'Integrations', 'Loader', 'Menu', 'MenuItem', 'Post', 'PostGetter', 'PostsCollection', 'QueryIterator', 'Request', 'Site', 'Term', 'TermGetter', 'Theme', 'Twig', 'URLHelper', 'User', 'Integrations\Command', 'Integrations\ACF', 'Integrations\Timber_WP_CLI_Command');
-		class_alias(get_class($this), 'Timber');
+		$names = array('Archives', 'Comment', 'Core', 'FunctionWrapper', 'Helper', 'Image', 'ImageHelper', 'Integrations', 'Loader', 'Menu', 'MenuItem', 'Post', 'PostGetter', 'PostsCollection', 'QueryIterator', 'Request', 'Site', 'Term', 'TermGetter', 'Theme', 'Twig', 'URLHelper', 'User', 'Integrations\Command', 'Integrations\ACF');
 		foreach ( $names as $name ) {
-			class_alias('Timber\\'.$name, 'Timber'.str_replace('Integrations\\', '', $name));
+			$old_class_name = 'Timber'.str_replace('Integrations\\', '', $name);
+			$new_class_name = 'Timber\\'.$name;
+			if ( class_exists($new_class_name) ) {
+				class_alias($new_class_name, $old_class_name);
+			}
+		}
+		class_alias(get_class($this), 'Timber');
+		if (class_exists('Timber\\'.'Integrations\Timber_WP_CLI_Command')) {
+			class_alias('Timber\\'.'Integrations\Timber_WP_CLI_Command', 'Timber_WP_CLI_Command');
 		}
 	}
 
