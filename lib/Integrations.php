@@ -12,18 +12,26 @@ class Integrations {
     
 	public static function init() {
 
-		add_action( 'init', array( __CLASS__, 'maybe_init_acftimber' ) );
+		add_action( 'init', array( __CLASS__, 'maybe_init_acf' ) );
+
+		add_action( 'init', array( __CLASS__, 'maybe_init_wp_types' ) );
 
 		if ( class_exists( 'WP_CLI_Command' ) ) {
 			\WP_CLI::add_command( 'timber', 'Timber\Integrations\Timber_WP_CLI_Command' );
 		}
 	}
 
-	public static function maybe_init_acftimber() {
+	public static function maybe_init_acf() {
 
 		if ( class_exists( 'ACF' ) ) {
 			new ACF();
 		}
 
+	}
+
+	public static function maybe_init_wptypestimber() {
+		if ( defined( 'WPCF_META_PREFIX' ) ) {
+			new WPTypes();
+		}
 	}
 }
