@@ -2,6 +2,14 @@
 
 	class TestTimberPostPreviewObject extends Timber_UnitTestCase {
 
+		function testPreviewTags() {
+			$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
+			$post = new TimberPost($post_id);
+			$template = '{{post.preview.length(3).read_more(false).strip(false)}}';
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertNotContains('</p>', $str);
+		}
+
 		function testPostPreviewObjectWithLength() {
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck she a big ole duck!', 'post_excerpt' => '') );
 			$template = '{{ post.preview.length(4) }}';
@@ -61,6 +69,14 @@
 			$pid = $this->factory->post->create( array('post_content' => 'Eric is a polar bear <!-- more But what is Elaina? --> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = new TimberPost( $pid );
 			$this->assertEquals('Eric is a polar bear <a href="'.$post->link().'" class="read-more">But what is Elaina?</a>', $post->preview());
+		}
+
+		function testPreviewWithSpaceInMoreTag() {
+			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck, but a great duck let me tell you why <!--more--> Lauren is not a duck', 'post_excerpt' => '') );
+			$post = new TimberPost( $pid );
+			$template = '{{post.preview.length(3).force}}';
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('Lauren is a&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $str);
 		}
 
 
