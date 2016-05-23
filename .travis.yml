@@ -5,6 +5,7 @@ language: php
 php:
     - 5.4
     - 5.5
+    - 7.0
 
 env:
     - WP_VERSION=latest WP_MULTISITE=0
@@ -13,8 +14,6 @@ env:
 matrix:
     include:
         - php: 5.3
-          env: WP_VERSION=latest WP_MULTISITE=0
-        - php: hhvm
           env: WP_VERSION=latest WP_MULTISITE=0
         - php: hhvm
           env: WP_VERSION=latest WP_MULTISITE=1
