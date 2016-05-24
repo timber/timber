@@ -29,7 +29,7 @@ class Integrations {
 
 	}
 
-	public static function maybe_init_wptypestimber() {
+	public static function maybe_init_wp_types() {
 		if ( defined( 'WPCF_META_PREFIX' ) ) {
 			new WPTypes();
 		}
