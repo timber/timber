@@ -640,7 +640,7 @@ class Post extends Core implements CoreInterface {
 	 * @param string $field_name
 	 * @return boolean
 	 */
-	public function has_field( $fied_name ) {
+	public function has_field( $field_name ) {
 		return (!$this->get_field( $field_name )) ? false : true;
 	}
 
