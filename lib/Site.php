@@ -136,7 +136,7 @@ class Site extends Core implements CoreInterface {
 		$this->id = $this->ID;
 		$this->name = $this->blogname;
 		$this->title = $this->blogname;
-		$this->url = $this->siteurl;
+		$this->url = get_bloginfo('url');
 		$theme_slug = get_blog_option($info->blog_id, 'stylesheet');
 		$this->theme = new Theme($theme_slug);
 		$this->description = get_blog_option($info->blog_id, 'blogdescription');
