@@ -14,12 +14,21 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		$this->assertEquals( 'foobar', $str );
 	}
 
-	function testACFHasFieldPost() {
+	function testACFHasFieldPostFalse() {
 		$pid = $this->factory->post->create();
-		$str = '{{post.has_field("heythisdoesntexist")}}';
+		$str = '{% if post.has_field("heythisdoesntexist") %}FAILED{% else %}WORKS{% endif %}';
 		$post = new TimberPost( $pid );
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
-		$this->assertFalse($str);
+		$this->assertEquals('WORKS', $str);
+	}
+
+	function testACFHasFieldPostTrue() {
+		$pid = $this->factory->post->create();
+		update_post_meta($pid, 'best_radiohead_album', 'in_rainbows');
+		$str = '{% if post.has_field("best_radiohead_album") %}In Rainbows{% else %}OK Computer{% endif %}';
+		$post = new TimberPost( $pid );
+		$str = Timber::compile_string( $str, array( 'post' => $post ) );
+		$this->assertEquals('In Rainbows', $str);
 	}
 
 	function testACFGetFieldTermCategory() {
