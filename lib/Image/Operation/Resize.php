@@ -3,6 +3,7 @@
 namespace Timber\Image\Operation;
 
 use Timber\Helper;
+use Timber\ImageHelper;
 use Timber\Image\Operation as ImageOperation;
 
 /**
@@ -82,9 +83,9 @@ class Resize extends ImageOperation {
 			return $image->writeImages($save_filename, true);
 		} else if ( isset( $image->error_data['error_loading_image'] ) ) {
 			// @codeCoverageIgnoreStart
-			TimberHelper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
+			Helper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
 		} else {
-			TimberHelper::error_log( $image );
+			Helper::error_log( $image );
 			// @codeCoverageIgnoreEnd
 		}
 	}
@@ -181,7 +182,7 @@ class Resize extends ImageOperation {
 		$image = wp_get_image_editor( $load_filename );
 		if ( !is_wp_error( $image ) ) {
 			//should be resized by gif resizer
-			if ( TimberImageHelper::is_animated_gif($image) ) {
+			if ( ImageHelper::is_animated_gif($image) ) {
 				//attempt to resize
 				//return if successful
 				//proceed if not
@@ -202,8 +203,8 @@ class Resize extends ImageOperation {
 			$result = $image->save( $save_filename );
 			if ( is_wp_error( $result ) ) {
 				// @codeCoverageIgnoreStart
-				TimberHelper::error_log( 'Error resizing image' );
-				TimberHelper::error_log( $result );
+				Helper::error_log( 'Error resizing image' );
+				Helper::error_log( $result );
 				return false;
 				// @codeCoverageIgnoreEnd
 			} else {
@@ -211,9 +212,9 @@ class Resize extends ImageOperation {
 			}
 		} else if ( isset( $image->error_data['error_loading_image'] ) ) {
 			// @codeCoverageIgnoreStart
-			TimberHelper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
+			Helper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
 		} else {
-			TimberHelper::error_log( $image );
+			Helper::error_log( $image );
 			// @codeCoverageIgnoreEnd
 		}
 	}
