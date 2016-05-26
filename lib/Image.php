@@ -232,7 +232,7 @@ class Image extends Post implements CoreInterface {
 
 		//If passed ACF image array
 		if(is_array($iid) && isset($iid['ID'])) {
-			$iid = $iid['id'];
+			$iid = $iid['ID'];
 		}
 
 		if ( !is_numeric($iid) && is_string($iid) ) {
