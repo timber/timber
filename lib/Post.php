@@ -636,6 +636,13 @@ class Post extends Core implements CoreInterface {
 		return get_comments_number($this->ID);
 	}
 
+	/**
+	 * @param string $field_name
+	 * @return boolean
+	 */
+	public function has_field( $field_name ) {
+		return (!$this->get_field( $field_name )) ? false : true;
+	}
 
 	/**
 	 * @param string $field_name
