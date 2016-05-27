@@ -60,6 +60,10 @@ class QueryIterator implements \Iterator {
 
 	}
 
+	public function post_count() {
+	    return $this->_query->post_count;
+	}
+
 	public function get_posts( $return_collection = false ) {
 		if ( isset($this->_query->posts) ) {
 			$posts = new PostsCollection($this->_query->posts, $this->_posts_class);
