@@ -59,17 +59,9 @@ class PostGetter {
 		}
 	}
 
-	static function get_pids( $query ) {
-		$posts = self::get_posts($query);
-		$pids = array();
-		foreach ( $posts as $post ) {
-			if ( isset($post->ID) ) {
-				$pids[] = $post->ID;
-			}
-		}
-		return $pids;
-	}
-
+	/**
+	 * @return integer the ID of the post in the loop
+	 */
 	static function loop_to_id() {
 		if ( !self::wp_query_has_posts() ) { return false; }
 
