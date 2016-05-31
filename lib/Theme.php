@@ -68,7 +68,7 @@ class Theme extends Core {
 	 * We are currently using the My Theme theme.
 	 * ```
 	 */
-	function __construct( $slug = null ) {
+	public function __construct( $slug = null ) {
 		$this->init($slug);
 	}
 

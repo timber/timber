@@ -23,7 +23,7 @@ class Letterbox extends ImageOperation {
 	 * @param int    $h     height
 	 * @param string $color hex string, for color of padding bands
 	 */
-	function __construct( $w, $h, $color ) {
+	public function __construct( $w, $h, $color ) {
 		$this->w = $w;
 		$this->h = $h;
 		$this->color = $color;
