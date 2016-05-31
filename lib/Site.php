@@ -109,7 +109,7 @@ class Site extends Core implements CoreInterface {
 	 * ```
 	 * @param string|int $site_name_or_id
 	 */
-	function __construct( $site_name_or_id = null ) {
+	public function __construct( $site_name_or_id = null ) {
 		$this->init();
 		if ( is_multisite() ) {
 			$this->init_as_multisite($site_name_or_id);
@@ -180,7 +180,7 @@ class Site extends Core implements CoreInterface {
 	 * @param string  $field
 	 * @return mixed
 	 */
-	function __get( $field ) {
+	public function __get( $field ) {
 		if ( !isset($this->$field) ) {
 			if ( is_multisite() ) {
 				$this->$field = get_blog_option($this->ID, $field);
@@ -216,7 +216,7 @@ class Site extends Core implements CoreInterface {
 	 * @internal
 	 * @return string
 	 */
-	function get_link() {
+	public function get_link() {
 		Helper::warn('{{site.get_link}} is deprecated, use {{site.link}}');
 		return $this->link();
 	}
@@ -250,7 +250,7 @@ class Site extends Core implements CoreInterface {
 	 * @see TimberSite::link
 	 * @return string
 	 */
-	function url() {
+	public function url() {
 		return $this->link();
 	}
 
@@ -259,7 +259,7 @@ class Site extends Core implements CoreInterface {
 	 * @internal
 	 * @return string
 	 */
-	function get_url() {
+	public function get_url() {
 		Helper::warn('{{site.get_url}} is deprecated, use {{site.link}} instead');
 		return $this->link();
 	}
