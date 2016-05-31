@@ -222,10 +222,19 @@ class Image extends Post implements CoreInterface {
 	 * @param int $iid
 	 */
 	public function init( $iid = false ) {
+		//Make sure we actually have something to work with
 		if ( !$iid ) { Helper::error_log('Initalized TimberImage without providing first parameter.'); return; }
+		
+		//If passed TimberImage, grab the ID and continue
 		if ( $iid instanceof self ) {
 			$iid = (int) $iid->ID;
 		}
+
+		//If passed ACF image array
+		if(is_array($iid) && isset($iid['ID'])) {
+			$iid = $iid['ID'];
+		}
+
 		if ( !is_numeric($iid) && is_string($iid) ) {
 			if ( strstr($iid, '://') ) {
 				$this->init_with_url($iid);
