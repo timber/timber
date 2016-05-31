@@ -315,7 +315,7 @@ class Term extends Core implements CoreInterface {
 	 * @param string  $key
 	 * @param mixed   $value
 	 */
-	function update( $key, $value ) {
+	public function update( $key, $value ) {
 		$value = apply_filters('timber_term_set_meta', $value, $key, $this->ID, $this);
 		$this->$key = $value;
 	}

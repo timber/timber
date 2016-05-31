@@ -68,7 +68,7 @@ class User extends Core implements CoreInterface {
 	/**
 	 * @param int|bool $uid
 	 */
-	function __construct( $uid = false ) {
+	public function __construct( $uid = false ) {
 		$this->init($uid);
 	}
 
@@ -83,7 +83,7 @@ class User extends Core implements CoreInterface {
 	 *
 	 * @return string a fallback for TimberUser::name()
 	 */
-	function __toString() {
+	public function __toString() {
 		$name = $this->name();
 		if ( strlen($name) ) {
 			return $name;
@@ -99,7 +99,7 @@ class User extends Core implements CoreInterface {
 	 * @param string $field_name
 	 * @return null
 	 */
-	function get_meta( $field_name ) {
+	public function get_meta( $field_name ) {
 		return $this->get_meta_field($field_name);
 	}
 
@@ -108,7 +108,7 @@ class User extends Core implements CoreInterface {
 	 * @param string 	$field
 	 * @param mixed 	$value
 	 */
-	function __set( $field, $value ) {
+	public function __set( $field, $value ) {
 		if ( $field == 'name' ) {
 			$this->display_name = $value;
 		}
@@ -153,7 +153,7 @@ class User extends Core implements CoreInterface {
 	 * @param string $field_name
 	 * @return mixed
 	 */
-	function get_meta_field( $field_name ) {
+	public function get_meta_field( $field_name ) {
 		$value = null;
 		$value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
 		if ( $value === null ) {
@@ -166,7 +166,7 @@ class User extends Core implements CoreInterface {
 	/**
 	 * @return array|null
 	 */
-	function get_custom() {
+	public function get_custom() {
 		if ( $this->ID ) {
 			$um = array();
 			$um = apply_filters('timber_user_get_meta_pre', $um, $this->ID, $this);
@@ -201,7 +201,7 @@ class User extends Core implements CoreInterface {
 	 * @api
 	 * @return string the human-friendly name of the user (ex: "Buster Bluth")
 	 */
-	function name() {
+	public function name() {
 		return $this->display_name;
 	}
 
@@ -209,7 +209,7 @@ class User extends Core implements CoreInterface {
 	 * @param string $field_name
 	 * @return mixed
 	 */
-	function meta( $field_name ) {
+	public function meta( $field_name ) {
 		return $this->get_meta_field($field_name);
 	}
 

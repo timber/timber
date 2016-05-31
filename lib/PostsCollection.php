@@ -58,7 +58,7 @@ class PostsCollection extends \ArrayObject {
 	  * @param array $posts
 	  * @return array
 	  */
-	static function maybe_set_preview( $posts ) {
+	public static function maybe_set_preview( $posts ) {
 		if ( is_array($posts) && isset($_GET['preview']) && $_GET['preview']
 			   && isset($_GET['preview_id']) && $_GET['preview_id']
 			   && current_user_can('edit_post', $_GET['preview_id']) ) {

@@ -23,7 +23,7 @@ class Resize extends ImageOperation {
 	 * @param int    $h    height of new image
 	 * @param string $crop cropping method, one of: 'default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center'.
 	 */
-	function __construct( $w, $h, $crop ) {
+	public function __construct( $w, $h, $crop ) {
 		$this->w = $w;
 		$this->h = $h;
 		// Sanitize crop position
