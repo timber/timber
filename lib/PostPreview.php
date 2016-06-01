@@ -24,35 +24,50 @@ class PostPreview {
 		return $this->run();
 	}
 
-	public function length( $len = 50 ) {
-		$this->length = $len;
+	/**
+	 * @param integer $length (in words) of the target preview
+	 */
+	public function length( $length = 50 ) {
+		$this->length = $length;
 		return $this;
 	}
 
+	/**
+	 * @param string $end how should the text in the preview end
+	 */
 	public function end( $end = '&hellip;' ) {
 		$this->end = $end;
 		return $this;
 	}
 
+	/**
+	 * @param boolean $force If the editor wrote a manual excerpt longer than the set length, should it be "forced" to the size specified?
+	 */
 	public function force( $force = true ) {
 		$this->force = $force;
 		return $this;
 	}
 
+	/**
+	 * @param string $read_more What the text displays as to the reader inside of the <a> tag
+	 */
 	public function read_more( $readmore = 'Read More' ) {
 		$this->readmore = $readmore;
 		return $this;
 	}
 
+	/**
+	 * @param boolean|string $strip strip the tags or what? You can also provide a list of allowed tags
+	 */
 	public function strip( $strip = true ) {
 		$this->strip = $strip;
 		return $this;
 	}
 
 	/**
-	 * @param $text string
-	 * @param $readmore_matches array|booelan
-	 * @param $trimmed boolean
+	 * @param string $text
+	 * @param array|booelan $readmore_matches
+	 * @param boolean $trimmed was the text trimmed?
 	 */
 	protected function assemble( $text, $readmore_matches, $trimmed ) {
 		$text = trim($text);
