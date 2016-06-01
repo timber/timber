@@ -1163,7 +1163,7 @@ class Post extends Core implements CoreInterface {
 				if ( gettype($ele) === 'array' ) {
 					$ele = $this->$func($ele, $class);
 				} else {
-					if ( $ele instanceof \WP_Post ) {
+					if ( $ele instanceof WP_Post ) {
 						$ele = new $class($ele);
 					}
 				}
