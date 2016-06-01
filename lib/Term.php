@@ -56,7 +56,7 @@ class Term extends Core implements CoreInterface {
 	public $name;
 	/**
 	 * @api
-	 * @var strng the WordPress taxonomy slug (ex: `post_tag` or `actors`)
+	 * @var string the WordPress taxonomy slug (ex: `post_tag` or `actors`)
 	 */
 	public $taxonomy;
 
@@ -337,7 +337,6 @@ class Term extends Core implements CoreInterface {
 	 */
 	public function description() {
 		$prefix = '<p>';
-		$suffix = '</p>';
 		$desc = term_description($this->ID, $this->taxonomy);
 		if ( substr($desc, 0, strlen($prefix)) == $prefix ) {
     		$desc = substr($desc, strlen($prefix));

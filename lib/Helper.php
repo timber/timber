@@ -171,7 +171,7 @@ class Helper {
 	 * @param mixed $function_name or array( $class( string|object ), $function_name )
 	 * @param array (optional) $defaults
 	 * @param bool (optional) $return_output_buffer Return function output instead of return value (default: false)
-	 * @return \TimberFunctionWrapper
+	 * @return Timber\FunctionWrapper|mixed
 	 */
 	public static function function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false ) {
 		return new FunctionWrapper($function_name, $defaults, $return_output_buffer);
@@ -195,7 +195,7 @@ class Helper {
 
 	/**
 	 * @param string $message that you want to output
-	 * @return void
+	 * @return boolean
 	 */
 	public static function warn( $message ) {
 		return trigger_error($message, E_USER_WARNING);
@@ -321,7 +321,7 @@ class Helper {
 	 *
 	 *
 	 * @param array   $array
-	 * @return stdClass
+	 * @return \stdClass
 	 */
 	public static function array_to_object( $array ) {
 		$obj = new \stdClass;
@@ -530,7 +530,7 @@ class Helper {
 	}
 
 	/**
-	 *
+	 * @return string
 	 */
 	public function get_current_url() {
 		Helper::warn('TimberHelper::get_current_url() is deprecated and will be removed in future versions, use Timber\URLHelper::get_current_url()');
