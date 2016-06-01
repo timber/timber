@@ -159,6 +159,11 @@ class Post extends Core implements CoreInterface {
 	public $slug;
 
 	/**
+     * @var PostType $_type stores the PostType object for the Post
+	 */
+	private $_type;
+
+	/**
 	 * If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
 	 * @example
 	 * ```php
@@ -381,6 +386,7 @@ class Post extends Core implements CoreInterface {
 	public function get_preview( $len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;' ) {
 		$text = '';
 		$trimmed = false;
+		$last_p_tag = null;
 		if ( isset($this->post_excerpt) && strlen($this->post_excerpt) ) {
 			if ( $force ) {
 				$text = Helper::trim_words($this->post_excerpt, $len, false);
@@ -529,7 +535,7 @@ class Post extends Core implements CoreInterface {
 	 * @return array
 	 */
 	public function terms( $tax = '', $merge = true, $TermClass = '' ) {
-
+		$taxonomies = array();
 		$TermClass = $TermClass ?: $this->TermClass;
 
 		if ( is_string($merge) && class_exists($merge) ) {
@@ -1155,7 +1161,7 @@ class Post extends Core implements CoreInterface {
 				if ( gettype($ele) === 'array' ) {
 					$ele = $this->$func($ele, $class);
 				} else {
-					if ( $ele instanceof WP_Post ) {
+					if ( $ele instanceof \WP_Post ) {
 						$ele = new $class($ele);
 					}
 				}

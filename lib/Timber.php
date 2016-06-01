@@ -247,8 +247,6 @@ class Timber {
 			self::init();
 		}
 		$caller = self::get_calling_script_dir();
-		$caller_file = self::get_calling_script_file();
-		$caller_file = apply_filters('timber_calling_php_file', $caller_file);
 		$loader = new Loader($caller);
 		$file = $loader->choose_template($filenames);
 		$output = '';
