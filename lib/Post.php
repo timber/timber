@@ -161,7 +161,7 @@ class Post extends Core implements CoreInterface {
 	public $slug;
 
 	/**
-     * @var PostType $_type stores the PostType object for the Post
+	 * @var PostType $_type stores the PostType object for the Post
 	 */
 	private $_type;
 

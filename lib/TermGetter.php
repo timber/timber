@@ -77,7 +77,7 @@ class TermGetter {
 
 	/**
 	 * @param string $query_string
-	 * @return stdClass
+	 * @return \stdClass
 	 */
 	protected static function get_term_query_from_query_string( $query_string ) {
 		$args = array();
@@ -88,7 +88,7 @@ class TermGetter {
 
 	/**
 	 * @param string $taxs
-	 * @return stdClass
+	 * @return \stdClass
 	 */
 	protected static function get_term_query_from_string( $taxs ) {
 		$ret = new \stdClass();
@@ -102,7 +102,7 @@ class TermGetter {
 
 	/**
 	 * @param array $args
-	 * @return stdClass
+	 * @return \stdClass
 	 */
 	public static function get_term_query_from_assoc_array( $args ) {
 		$ret = new \stdClass();
@@ -129,7 +129,7 @@ class TermGetter {
 
 	/**
 	 * @param array $args
-	 * @return stdClass
+	 * @return \stdClass|null
 	 */
 	public static function get_term_query_from_array( $args ) {
 		if ( is_array($args) && !empty($args) ) {
@@ -145,7 +145,7 @@ class TermGetter {
 
 	/**
 	 * @param integer[] $args
-	 * @return stdClass
+	 * @return \stdClass
 	 */
 	public static function get_term_query_from_array_of_ids( $args ) {
 		$ret = new \stdClass();
@@ -156,7 +156,7 @@ class TermGetter {
 
 	/**
 	 * @param string[] $args
-	 * @return stdClass
+	 * @return \stdClass
 	 */
 	public static function get_term_query_from_array_of_strings( $args ) {
 		$ret = new \stdClass();
