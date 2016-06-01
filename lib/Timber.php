@@ -49,7 +49,7 @@ class Timber {
 		if ( !defined('ABSPATH') ) {
 			return;
 		}
-		if( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
+		if ( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
 			$this->test_compatibility();
 			$this->backwards_compatibility();
 			$this->init_constants();
@@ -88,7 +88,7 @@ class Timber {
 			}
 		}
 		class_alias(get_class($this), 'Timber');
-		if (class_exists('Timber\\'.'Integrations\Timber_WP_CLI_Command')) {
+		if ( class_exists('Timber\\'.'Integrations\Timber_WP_CLI_Command') ) {
 			class_alias('Timber\\'.'Integrations\Timber_WP_CLI_Command', 'Timber_WP_CLI_Command');
 		}
 	}
@@ -101,7 +101,7 @@ class Timber {
 	 * @codeCoverageIgnore
 	 */
 	protected function init() {
-		if( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
+		if ( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
 			Twig::init();
 			ImageHelper::init();
 			Admin::init();
@@ -209,7 +209,7 @@ class Timber {
 	 * @return array
 	 */
 	public static function get_context() {
-		if( empty(self::$context_cache) ) {
+		if ( empty(self::$context_cache) ) {
 			self::$context_cache['http_host'] = 'http://'.URLHelper::get_host();
 			self::$context_cache['wp_title'] = Helper::get_wp_title();
 			self::$context_cache['wp_head'] = Helper::function_wrapper('wp_head');
@@ -243,12 +243,10 @@ class Timber {
 	 * @return bool|string
 	 */
 	public static function compile( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false ) {
-		if( !defined('TIMBER_LOADED') ) {
+		if ( !defined('TIMBER_LOADED') ) {
 			self::init();
 		}
 		$caller = self::get_calling_script_dir();
-		$caller_file = self::get_calling_script_file();
-		$caller_file = apply_filters('timber_calling_php_file', $caller_file);
 		$loader = new Loader($caller);
 		$file = $loader->choose_template($filenames);
 		$output = '';
@@ -415,7 +413,7 @@ class Timber {
 				parse_str($url[1], $query);
 				$args['add_args'] = $query;
 			}
-			$args['format'] = $wp_rewrite->pagination_base . '/%#%';
+			$args['format'] = $wp_rewrite->pagination_base.'/%#%';
 			$args['base'] = trailingslashit($url[0]).'%_%';
 		} else {
 			$big = 999999999;

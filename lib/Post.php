@@ -13,6 +13,8 @@ use Timber\URLHelper;
 use Timber\PostGetter;
 use Timber\PostType;
 
+use WP_Post;
+
 /**
  * This is the object you use to access or extend WordPress posts. Think of it as Timber's (more accessible) version of WP_Post. This is used throughout Timber to represent posts retrieved from WordPress making them available to Twig templates. See the PHP and Twig examples for an example of what it's like to work with this object in your code.
  * @example
@@ -157,6 +159,11 @@ class Post extends Core implements CoreInterface {
 	 * @var string 	$slug 		the URL-safe slug, this corresponds to the poorly-named "post_name" in the WP database, ex: "hello-world"
 	 */
 	public $slug;
+
+	/**
+	 * @var PostType $_type stores the PostType object for the Post
+	 */
+	private $_type;
 
 	/**
 	 * If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
@@ -358,6 +365,9 @@ class Post extends Core implements CoreInterface {
 		return $result->ID;
 	}
 
+	/**
+	 * @return PostPreview
+	 */
 	public function preview() {
 		return new PostPreview( $this );
 	}
@@ -381,6 +391,7 @@ class Post extends Core implements CoreInterface {
 	public function get_preview( $len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;' ) {
 		$text = '';
 		$trimmed = false;
+		$last_p_tag = null;
 		if ( isset($this->post_excerpt) && strlen($this->post_excerpt) ) {
 			if ( $force ) {
 				$text = Helper::trim_words($this->post_excerpt, $len, false);
@@ -529,7 +540,7 @@ class Post extends Core implements CoreInterface {
 	 * @return array
 	 */
 	public function terms( $tax = '', $merge = true, $TermClass = '' ) {
-
+		$taxonomies = array();
 		$TermClass = $TermClass ?: $this->TermClass;
 
 		if ( is_string($merge) && class_exists($merge) ) {
@@ -743,7 +754,7 @@ class Post extends Core implements CoreInterface {
 	 *     <a href="{{post.author.link}}">{{post.author.name}}</a>
 	 * </p>
 	 * ```
-	 * @return TimberUser|bool A TimberUser object if found, false if not
+	 * @return User|bool A User object if found, false if not
 	 */
 	public function author() {
 		return $this->get_author();
@@ -758,7 +769,7 @@ class Post extends Core implements CoreInterface {
 	 * ```html
 	 * Last updated by Harper Lee
 	 * ```
-	 * @return TimberUser|bool A TimberUser object if found, false if not
+	 * @return User|bool A User object if found, false if not
 	 */
 	public function modified_author() {
 		$user_id = get_post_meta($this->ID, '_edit_last', true);
@@ -1493,8 +1504,8 @@ class Post extends Core implements CoreInterface {
 	 * @internal
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @see TimberPost::author
-	 * @return bool|TimberUser
+	 * @see Timber\Post::author
+	 * @return User|boolean
 	 */
 	public function get_author() {
 		if ( isset($this->post_author) ) {
@@ -1506,7 +1517,7 @@ class Post extends Core implements CoreInterface {
 	 * @internal
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @return bool|TimberUser
+	 * @return User|boolean
 	 */
 	public function get_modified_author() {
 		return $this->modified_author();
@@ -1517,7 +1528,7 @@ class Post extends Core implements CoreInterface {
 	 * @see TimberPost::thumbnail
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @return null|TimberImage
+	 * @return Image|null
 	 */
 	public function get_thumbnail() {
 		return $this->thumbnail();

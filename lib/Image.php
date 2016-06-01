@@ -157,7 +157,7 @@ class Image extends Post implements CoreInterface {
 	/**
 	 * @return array
 	 */
-	protected function get_post_custom($iid) {
+	protected function get_post_custom( $iid ) {
 		$pc = get_post_custom($iid);
 		if ( is_bool($pc) ) {
 			return array();
@@ -231,7 +231,7 @@ class Image extends Post implements CoreInterface {
 		}
 
 		//If passed ACF image array
-		if(is_array($iid) && isset($iid['ID'])) {
+		if ( is_array($iid) && isset($iid['ID']) ) {
 			$iid = $iid['ID'];
 		}
 

@@ -86,7 +86,7 @@ class PostGetter {
 
 	/**
 	 * @param string|array $arg
-	 * @return bool
+	 * @return boolean
 	 */
 	public static function is_post_class_or_class_map( $arg ) {
 		$maybe_type = self::get_class_for_use_as_timber_post($arg);
@@ -97,6 +97,7 @@ class PostGetter {
 		if ( $maybe_type ) {
 			return true;
 		}
+		return false;
 	}
 
 	/**

@@ -469,8 +469,8 @@ class ImageHelper {
 			$au['basename']
 		);
 		
-		$new_url = apply_filters( 'timber/image/new_url', $new_url );
-		$new_server_path = apply_filters( 'timber/image/new_path', $new_server_path );
+		$new_url = apply_filters('timber/image/new_url', $new_url);
+		$new_server_path = apply_filters('timber/image/new_path', $new_server_path);
 		
 		// if already exists...
 		if ( file_exists($new_server_path) ) {
