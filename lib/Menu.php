@@ -80,7 +80,7 @@ class Menu extends Core {
 	/**
 	 * @param int|string $slug
 	 */
-	function __construct( $slug = 0 ) {
+	public function __construct( $slug = 0 ) {
 		$locations = get_nav_menu_locations();
 		if ( $slug != 0 && is_numeric($slug) ) {
 			$menu_id = $slug;
@@ -185,7 +185,7 @@ class Menu extends Core {
 	 * @param int $parent_id
 	 * @return TimberMenuItem|null
 	 */
-	function find_parent_item_in_menu( $menu_items, $parent_id ) {
+	public function find_parent_item_in_menu( $menu_items, $parent_id ) {
 		foreach ( $menu_items as &$item ) {
 			if ( $item->ID == $parent_id ) {
 				return $item;
@@ -232,12 +232,10 @@ class Menu extends Core {
 	/**
 	 * @return array
 	 */
-	function get_items() {
+	public function get_items() {
 		if ( is_array($this->items) ) {
 			return $this->items;
 		}
 		return array();
 	}
 }
-
-

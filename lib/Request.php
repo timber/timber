@@ -17,7 +17,7 @@ class Request extends Core implements CoreInterface {
 	 * Constructs a TimberRequest object
 	 * @example
 	 */
-	function __construct() {
+	public function __construct() {
 		$this->init();
 	}
 	/**

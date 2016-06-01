@@ -47,11 +47,11 @@ class Comment extends Core implements CoreInterface {
 	/**
 	 * @param int $cid
 	 */
-	function __construct( $cid ) {
+	public function __construct( $cid ) {
 		$this->init($cid);
 	}
 
-	function __toString() {
+	public function __toString() {
 		return $this->content();
 	}
 
@@ -59,7 +59,7 @@ class Comment extends Core implements CoreInterface {
 	 * @internal
 	 * @param integer $cid
 	 */
-	function init( $cid ) {
+	public function init( $cid ) {
 		$comment_data = $cid;
 		if ( is_integer($cid) ) {
 			$comment_data = get_comment($cid);

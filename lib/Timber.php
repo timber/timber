@@ -93,7 +93,7 @@ class Timber {
 		}
 	}
 
-	function init_constants() {
+	public function init_constants() {
 		defined("TIMBER_LOC") or define("TIMBER_LOC", realpath(dirname(__DIR__)));
 	}
 
