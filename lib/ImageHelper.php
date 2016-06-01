@@ -394,7 +394,7 @@ class ImageHelper {
 		}
 		$url .= '/'.$filename;
 		if ( !$absolute ) {
-			$url = str_replace(home_url(), '', $url);
+			$url = str_replace(site_url(), '', $url);
 		}
 		// $url = TimberURLHelper::remove_double_slashes( $url);
 		return $url;
@@ -497,7 +497,7 @@ class ImageHelper {
 
 // -- the below methods are just used for unit testing the URL generation code
 //
-	static function get_letterbox_file_url( $url, $w, $h, $color ) {
+	public static function get_letterbox_file_url( $url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Letterbox($w, $h, $color);
 		$new_url = self::_get_file_url(
@@ -508,6 +508,7 @@ class ImageHelper {
 		);
 		return $new_url;
 	}
+
 	public static function get_letterbox_file_path( $url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Letterbox($w, $h, $color);
@@ -518,7 +519,8 @@ class ImageHelper {
 		);
 		return $new_path;
 	}
-	static function get_resize_file_url( $url, $w, $h, $crop ) {
+
+	public static function get_resize_file_url( $url, $w, $h, $crop ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Resize($w, $h, $crop);
 		$new_url = self::_get_file_url(
@@ -529,7 +531,8 @@ class ImageHelper {
 		);
 		return $new_url;
 	}
-	static function get_resize_file_path( $url, $w, $h, $crop ) {
+
+	public static function get_resize_file_path( $url, $w, $h, $crop ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Resize($w, $h, $crop);
 		$new_path = self::_get_file_path(

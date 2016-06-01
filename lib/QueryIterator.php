@@ -141,7 +141,7 @@ class QueryIterator implements \Iterator {
 	}
 
 	//get_posts users numberposts
-	static function fix_number_posts_wp_quirk( $query ) {
+	public static function fix_number_posts_wp_quirk( $query ) {
 		if ( isset($query->query) && isset($query->query['numberposts'])
 				&& !isset($query->query['posts_per_page']) ) {
 			$query->set('posts_per_page', $query->query['numberposts']);
@@ -154,7 +154,7 @@ class QueryIterator implements \Iterator {
 	 * @param  WP_Query $query the original query recived from WordPress
 	 * @return WP_Query
 	 */
-	static function handle_maybe_custom_posts_page( $query ) {
+	public static function handle_maybe_custom_posts_page( $query ) {
 		if ( $custom_posts_page = get_option('page_for_posts') ) {
 			if ( isset($query->query['p']) && $query->query['p'] == $custom_posts_page ) {
 				return new \WP_Query(array('post_type' => 'post'));

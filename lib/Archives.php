@@ -61,7 +61,7 @@ class Archives extends Core {
 	 * }
 	 * @param string $base any additional paths that need to be prepended to the URLs that are generated, for example: "tags"
 	 */
-	function __construct( $args = null, $base = '' ) {
+	public function __construct( $args = null, $base = '' ) {
 
 
 		$this->init($args, $base);
@@ -72,7 +72,7 @@ class Archives extends Core {
 	 * @param array|string $args
 	 * @param string $base
 	 */
-	function init( $args = null, $base = '' ) {
+	public function init( $args = null, $base = '' ) {
 		$this->base = $base;
 		$this->items = $this->get_items($args);
 	}
@@ -180,7 +180,7 @@ class Archives extends Core {
 	 * @param array|string $args
 	 * @return array|string
 	 */
-	function get_items( $args = null ) {
+	public function get_items( $args = null ) {
 		global $wpdb;
 
 		$defaults = array(

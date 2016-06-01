@@ -22,9 +22,10 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		$bids[] = self::createSubDirectorySite('/bar/', 'My Bar');
 		$bids[] = self::createSubDirectorySite('/bark/', "Barks R Us");
 		$sites = Timber::get_sites();
+		$this->assertEquals('http://example.org/bark', $sites[2]->url);
 		$this->assertEquals('http://example.org/bar', $sites[1]->url);
 		$this->assertEquals("example.org", $sites[2]->domain);
-		$this->assertEquals('http://example.org/bark', $sites[2]->url);
+		
 	}
 
 	public static function createSubDomainSite($domain = 'test.example.org', $title = 'Multisite Test' ) {

@@ -16,7 +16,7 @@ class PostPreview {
 	protected $readmore = 'Read More';
 	protected $strip = true;
 
-	function __construct( $post ) {
+	public function __construct( $post ) {
 		$this->post = $post;
 	}
 

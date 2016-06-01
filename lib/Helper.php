@@ -76,7 +76,7 @@ class Helper {
 	 * @param string $slug
 	 * @param integer $lock_timeout
 	 */
-	static function _lock_transient( $slug, $lock_timeout ) {
+	public static function _lock_transient( $slug, $lock_timeout ) {
 		set_transient($slug.'_lock', true, $lock_timeout);
 	}
 
@@ -84,7 +84,7 @@ class Helper {
 	 * @internal
 	 * @param string $slug
 	 */
-	static function _unlock_transient( $slug ) {
+	public static function _unlock_transient( $slug ) {
 		delete_transient($slug.'_lock', true);
 	}
 
@@ -92,7 +92,7 @@ class Helper {
 	 * @internal
 	 * @param string $slug
 	 */
-	static function _is_transient_locked( $slug ) {
+	public static function _is_transient_locked( $slug ) {
 		return (bool) get_transient($slug.'_lock');
 	}
 
@@ -532,7 +532,7 @@ class Helper {
 	/**
 	 *
 	 */
-	function get_current_url() {
+	public function get_current_url() {
 		Helper::warn('TimberHelper::get_current_url() is deprecated and will be removed in future versions, use Timber\URLHelper::get_current_url()');
 		return URLHelper::get_current_url();
 	}
