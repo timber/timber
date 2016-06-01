@@ -33,7 +33,7 @@ class Request extends Core implements CoreInterface {
 	public function __get( $field ) {}
 
 	/**
-	 * @return boolean
+	 * @return boolean|null
 	 */
 	public function __isset( $field ) {}
 
