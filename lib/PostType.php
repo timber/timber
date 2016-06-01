@@ -8,7 +8,7 @@ namespace Timber;
 */
 class PostType {
 
-	function __construct( $post_type ) {
+	public function __construct( $post_type ) {
 		$this->slug = $post_type;
 		$this->init( $post_type );
 	}

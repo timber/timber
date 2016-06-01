@@ -27,12 +27,12 @@ class Command {
 		}
 	}
 
-	static function clear_cache_timber() {
+	public static function clear_cache_timber() {
 		$loader = new Loader();
 		return $loader->clear_cache_timber();
 	}
 
-	static function clear_cache_twig() {
+	public static function clear_cache_twig() {
 		$loader = new Loader();
 		return $loader->clear_cache_twig();
 	}

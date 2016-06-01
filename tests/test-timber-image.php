@@ -199,6 +199,25 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertTrue(TimberImageHelper::is_animated_gif($resized_path));
 	}
 
+	function testImageArray() {
+		$post_id = $this->factory->post->create();
+		$filename = self::copyTestImage('arch.jpg');
+		$wp_filetype = wp_check_filetype( basename( $filename ), null );
+		$attachment = array(
+			'post_mime_type' => $wp_filetype['type'],
+			'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
+			'post_content' => '',
+			'post_status' => 'inherit'
+		);
+		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
+		$data = array('ID' => $attach_id);
+		$image = new Timber\Image($data);
+		$filename = explode('/', $image->file);
+		$filename = array_pop($filename);
+		$this->assertEquals('arch.jpg', $filename);
+
+	}
+
 	function testResizeTallImage() {
 		$data = array();
 		$data['size'] = array( 'width' => 600 );

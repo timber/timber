@@ -28,7 +28,7 @@ class Loader {
 	/**
 	 * @param bool|string   $caller the calling directory or false
 	 */
-	function __construct( $caller = false ) {
+	public function __construct( $caller = false ) {
 		$this->locations = $this->get_locations($caller);
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
@@ -41,7 +41,7 @@ class Loader {
 	 * @param string        $cache_mode
 	 * @return bool|string
 	 */
-	function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	public function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
 		// Different $expires if user is anonymous or logged in
 		if ( is_array($expires) ) {
 			if ( is_user_logged_in() && isset($expires[1]) ) {
@@ -114,7 +114,7 @@ class Loader {
 	/**
 	 * @return array
 	 */
-	function get_locations_theme() {
+	public function get_locations_theme() {
 		$theme_locs = array();
 		$child_loc = get_stylesheet_directory();
 		$parent_loc = get_template_directory();
@@ -152,7 +152,7 @@ class Loader {
 	 *
 	 * @return array
 	 */
-	function get_locations_user() {
+	public function get_locations_user() {
 		$locs = array();
 		if ( isset(Timber::$locations) ) {
 			if ( is_string(Timber::$locations) ) {
@@ -172,7 +172,7 @@ class Loader {
 	 * @param bool|string   $caller the calling directory
 	 * @return array
 	 */
-	function get_locations_caller( $caller = false ) {
+	public function get_locations_caller( $caller = false ) {
 		$locs = array();
 		if ( $caller && is_string($caller) ) {
 			$caller = trailingslashit($caller);
@@ -193,7 +193,7 @@ class Loader {
 	 * @param bool|string   $caller the calling directory (or false)
 	 * @return array
 	 */
-	function get_locations( $caller = false ) {
+	public function get_locations( $caller = false ) {
 		//prioirty: user locations, caller (but not theme), child theme, parent theme, caller
 		$locs = array();
 		$locs = array_merge($locs, $this->get_locations_user());
@@ -211,7 +211,7 @@ class Loader {
 	/**
 	 * @return \Twig_Loader_Filesystem
 	 */
-	function get_loader() {
+	public function get_loader() {
 		$paths = array();
 		foreach ( $this->locations as $loc ) {
 			$loc = realpath($loc);
@@ -235,7 +235,7 @@ class Loader {
 	/**
 	 * @return Twig_Environment
 	 */
-	function get_twig() {
+	public function get_twig() {
 		$loader = $this->get_loader();
 		$params = array('debug' => WP_DEBUG, 'autoescape' => false);
 		if ( isset(Timber::$autoescape) ) {

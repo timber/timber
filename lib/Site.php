@@ -109,7 +109,7 @@ class Site extends Core implements CoreInterface {
 	 * ```
 	 * @param string|int $site_name_or_id
 	 */
-	function __construct( $site_name_or_id = null ) {
+	public function __construct( $site_name_or_id = null ) {
 		$this->init();
 		if ( is_multisite() ) {
 			$this->init_as_multisite($site_name_or_id);
@@ -122,7 +122,7 @@ class Site extends Core implements CoreInterface {
 	 * @internal
 	 * @param string|int $site_name_or_id
 	 */
-	protected function init_as_multisite( $site_name_or_id ) {
+	protected function init_as_multisite( $site_name_or_id = null ) {
 		if ( $site_name_or_id === null ) {
 			//this is necessary for some reason, otherwise returns 1 all the time
 			if ( is_multisite() ) {
@@ -130,18 +130,25 @@ class Site extends Core implements CoreInterface {
 				$site_name_or_id = get_current_blog_id();
 			}
 		}
+		/* we need to store the current blog, but switch things to the blog id of the Site object requested */
+		$old_id = get_current_blog_id();
 		$info = get_blog_details($site_name_or_id);
+		switch_to_blog($info->blog_id);
+
 		$this->import($info);
 		$this->ID = $info->blog_id;
 		$this->id = $this->ID;
 		$this->name = $this->blogname;
 		$this->title = $this->blogname;
-		$this->url = $this->siteurl;
+		$this->url = get_bloginfo('url');
 		$theme_slug = get_blog_option($info->blog_id, 'stylesheet');
 		$this->theme = new Theme($theme_slug);
 		$this->description = get_blog_option($info->blog_id, 'blogdescription');
 		$this->admin_email = get_blog_option($info->blog_id, 'admin_email');
 		$this->multisite = true;
+
+		//switch back to the before time
+		switch_to_blog($old_id);
 	}
 
 	/**
@@ -180,7 +187,7 @@ class Site extends Core implements CoreInterface {
 	 * @param string  $field
 	 * @return mixed
 	 */
-	function __get( $field ) {
+	public function __get( $field ) {
 		if ( !isset($this->$field) ) {
 			if ( is_multisite() ) {
 				$this->$field = get_blog_option($this->ID, $field);
@@ -216,7 +223,7 @@ class Site extends Core implements CoreInterface {
 	 * @internal
 	 * @return string
 	 */
-	function get_link() {
+	public function get_link() {
 		Helper::warn('{{site.get_link}} is deprecated, use {{site.link}}');
 		return $this->link();
 	}
@@ -250,7 +257,7 @@ class Site extends Core implements CoreInterface {
 	 * @see TimberSite::link
 	 * @return string
 	 */
-	function url() {
+	public function url() {
 		return $this->link();
 	}
 
@@ -259,7 +266,7 @@ class Site extends Core implements CoreInterface {
 	 * @internal
 	 * @return string
 	 */
-	function get_url() {
+	public function get_url() {
 		Helper::warn('{{site.get_url}} is deprecated, use {{site.link}} instead');
 		return $this->link();
 	}
