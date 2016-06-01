@@ -13,6 +13,8 @@ use Timber\URLHelper;
 use Timber\PostGetter;
 use Timber\PostType;
 
+use WP_Post;
+
 /**
  * This is the object you use to access or extend WordPress posts. Think of it as Timber's (more accessible) version of WP_Post. This is used throughout Timber to represent posts retrieved from WordPress making them available to Twig templates. See the PHP and Twig examples for an example of what it's like to work with this object in your code.
  * @example
@@ -749,7 +751,7 @@ class Post extends Core implements CoreInterface {
 	 *     <a href="{{post.author.link}}">{{post.author.name}}</a>
 	 * </p>
 	 * ```
-	 * @return Timber\User|bool A Timber\User object if found, false if not
+	 * @return User|bool A User object if found, false if not
 	 */
 	public function author() {
 		return $this->get_author();
@@ -764,7 +766,7 @@ class Post extends Core implements CoreInterface {
 	 * ```html
 	 * Last updated by Harper Lee
 	 * ```
-	 * @return Timber\User|bool A Timber\User object if found, false if not
+	 * @return User|bool A User object if found, false if not
 	 */
 	public function modified_author() {
 		$user_id = get_post_meta($this->ID, '_edit_last', true);
@@ -1500,7 +1502,7 @@ class Post extends Core implements CoreInterface {
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
 	 * @see Timber\Post::author
-	 * @return bool|Timber\User
+	 * @return User|boolean
 	 */
 	public function get_author() {
 		if ( isset($this->post_author) ) {
@@ -1512,7 +1514,7 @@ class Post extends Core implements CoreInterface {
 	 * @internal
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @return bool|Timber\User
+	 * @return User|boolean
 	 */
 	public function get_modified_author() {
 		return $this->modified_author();
@@ -1523,7 +1525,7 @@ class Post extends Core implements CoreInterface {
 	 * @see TimberPost::thumbnail
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @return null|Timber\Image
+	 * @return Image|null
 	 */
 	public function get_thumbnail() {
 		return $this->thumbnail();
