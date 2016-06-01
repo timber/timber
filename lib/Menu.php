@@ -78,7 +78,7 @@ class Menu extends Core {
 	public $title;
 
 	/**
-	 * @param int|string $slug
+	 * @param integer|string $slug
 	 */
 	public function __construct( $slug = 0 ) {
 		$locations = get_nav_menu_locations();

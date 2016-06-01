@@ -749,7 +749,7 @@ class Post extends Core implements CoreInterface {
 	 *     <a href="{{post.author.link}}">{{post.author.name}}</a>
 	 * </p>
 	 * ```
-	 * @return TimberUser|bool A TimberUser object if found, false if not
+	 * @return Timber\User|bool A Timber\User object if found, false if not
 	 */
 	public function author() {
 		return $this->get_author();
@@ -764,7 +764,7 @@ class Post extends Core implements CoreInterface {
 	 * ```html
 	 * Last updated by Harper Lee
 	 * ```
-	 * @return TimberUser|bool A TimberUser object if found, false if not
+	 * @return Timber\User|bool A Timber\User object if found, false if not
 	 */
 	public function modified_author() {
 		$user_id = get_post_meta($this->ID, '_edit_last', true);
@@ -1499,8 +1499,8 @@ class Post extends Core implements CoreInterface {
 	 * @internal
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @see TimberPost::author
-	 * @return bool|TimberUser
+	 * @see Timber\Post::author
+	 * @return bool|Timber\User
 	 */
 	public function get_author() {
 		if ( isset($this->post_author) ) {
@@ -1512,7 +1512,7 @@ class Post extends Core implements CoreInterface {
 	 * @internal
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @return bool|TimberUser
+	 * @return bool|Timber\User
 	 */
 	public function get_modified_author() {
 		return $this->modified_author();
@@ -1523,7 +1523,7 @@ class Post extends Core implements CoreInterface {
 	 * @see TimberPost::thumbnail
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @return null|TimberImage
+	 * @return null|Timber\Image
 	 */
 	public function get_thumbnail() {
 		return $this->thumbnail();

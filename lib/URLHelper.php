@@ -138,6 +138,9 @@ class URLHelper {
 		return $path;
 	}
 
+	/**
+	 * @param string $fs
+	 */
 	public static function file_system_to_url( $fs ) {
 		$relative_path = self::get_rel_path($fs);
 		$home = home_url('/'.$relative_path);
@@ -212,11 +215,13 @@ class URLHelper {
 	/**
 	 * This will evaluate wheter a URL is at an aboslute location (like http://example.org/whatever)
 	 *
+	 * @param string $path
 	 * @return boolean true if $path is an absolute url, false if relative.
 	 */
 	public static function is_absolute( $path ) {
 		return (boolean) (strstr($path, 'http'));
 	}
+
 
 	/**
 	 * This function is slightly different from the one below in the case of:
@@ -232,6 +237,9 @@ class URLHelper {
 		return $is_external;
 	}
 
+	/**
+	 * @param string $url
+	 */
 	private static function is_internal_content( $url ) {
 		// using content_url() instead of site_url or home_url is IMPORTANT
 		// otherwise you run into errors with sites that:
@@ -269,8 +277,9 @@ class URLHelper {
 	 * @return string
 	 */
 	public static function remove_trailing_slash( $link ) {
-		if ( $link != "/" )
+		if ( $link != "/" ) {
 			$link = untrailingslashit($link);
+		}
 		return $link;
 	}
 
