@@ -122,7 +122,7 @@ class Site extends Core implements CoreInterface {
 	 * @internal
 	 * @param string|int $site_name_or_id
 	 */
-	protected function init_as_multisite( $site_name_or_id ) {
+	protected function init_as_multisite( $site_name_or_id = null ) {
 		if ( $site_name_or_id === null ) {
 			//this is necessary for some reason, otherwise returns 1 all the time
 			if ( is_multisite() ) {
@@ -130,7 +130,11 @@ class Site extends Core implements CoreInterface {
 				$site_name_or_id = get_current_blog_id();
 			}
 		}
+		/* we need to store the current blog, but switch things to the blog id of the Site object requested */
+		$old_id = get_current_blog_id();
 		$info = get_blog_details($site_name_or_id);
+		switch_to_blog($info->blog_id);
+
 		$this->import($info);
 		$this->ID = $info->blog_id;
 		$this->id = $this->ID;
@@ -142,6 +146,9 @@ class Site extends Core implements CoreInterface {
 		$this->description = get_blog_option($info->blog_id, 'blogdescription');
 		$this->admin_email = get_blog_option($info->blog_id, 'admin_email');
 		$this->multisite = true;
+
+		//switch back to the before time
+		switch_to_blog($old_id);
 	}
 
 	/**
