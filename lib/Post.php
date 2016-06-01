@@ -365,6 +365,9 @@ class Post extends Core implements CoreInterface {
 		return $result->ID;
 	}
 
+	/**
+	 * @return PostPreview
+	 */
 	public function preview() {
 		return new PostPreview( $this );
 	}

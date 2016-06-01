@@ -49,13 +49,44 @@ class PostPreview {
 		return $this;
 	}
 
+	/**
+	 * @param $text string
+	 * @param $readmore_matches array|booelan
+	 * @param $trimmed boolean
+	 */
+	protected function assemble( $text, $readmore_matches, $trimmed ) {
+		$text = trim($text);
+		$last = $text[strlen($text) - 1];
+		$last_p_tag = null;
+		if ( $last != '.' && $trimmed ) {
+			$text .= $this->end;
+		}
+		if ( !$this->strip ) {
+			$last_p_tag = strrpos($text, '</p>');
+			if ( $last_p_tag !== false ) {
+				$text = substr($text, 0, $last_p_tag);
+			}
+			if ( $last != '.' && $trimmed ) {
+				$text .= $this->end.' ';
+			}
+		}
+		$read_more_class = apply_filters('timber/post/preview/read_more_class', "read-more");
+		if ( $this->readmore && !empty($readmore_matches) && !empty($readmore_matches[1]) ) {
+			$text .= ' <a href="'.$this->post->link().'" class="'.$read_more_class.'">'.trim($readmore_matches[1]).'</a>';
+		} elseif ( $this->readmore ) {
+			$text .= ' <a href="'.$this->post->link().'" class="'.$read_more_class.'">'.trim($this->readmore).'</a>';
+		}
+		if ( !$this->strip && $last_p_tag && (strpos($text, '<p>') || strpos($text, '<p ')) ) {
+			$text .= '</p>';
+		}
+		return trim($text);
+	}
+
 	protected function run() {
-		$end = $this->end;
 		$force = $this->force;
 		$len = $this->length;
-		$readmore = $this->readmore;
 		$strip = $this->strip;
-
+		$readmore_matches = array();
 		$text = '';
 		$trimmed = false;
 		if ( isset($this->post->post_excerpt) && strlen($this->post->post_excerpt) ) {
@@ -87,29 +118,7 @@ class PostPreview {
 			$text = trim(strip_tags($text, $allowable_tags));
 		}
 		if ( strlen($text) ) {
-			$text = trim($text);
-			$last = $text[strlen($text) - 1];
-			if ( $last != '.' && $trimmed ) {
-				$text .= $end;
-			}
-			if ( !$strip ) {
-				$last_p_tag = strrpos($text, '</p>');
-				if ( $last_p_tag !== false ) {
-					$text = substr($text, 0, $last_p_tag);
-				}
-				if ( $last != '.' && $trimmed ) {
-					$text .= $end.' ';
-				}
-			}
-			$read_more_class = apply_filters('timber/post/get_preview/read_more_class', "read-more");
-			if ( $readmore && isset($readmore_matches) && !empty($readmore_matches[1]) ) {
-				$text .= ' <a href="'.$this->post->link().'" class="'.$read_more_class.'">'.trim($readmore_matches[1]).'</a>';
-			} elseif ( $readmore ) {
-				$text .= ' <a href="'.$this->post->link().'" class="'.$read_more_class.'">'.trim($readmore).'</a>';
-			}
-			if ( !$strip && $last_p_tag && (strpos($text, '<p>') || strpos($text, '<p ')) ) {
-				$text .= '</p>';
-			}
+			return $this->assemble($text, $readmore_matches, $trimmed);
 		}
 		return trim($text);
 	}
