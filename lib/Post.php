@@ -266,7 +266,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Initializes a Post
 	 * @internal
-	 * @param int|bool $pid
+	 * @param integer $pid
 	 */
 	protected function init( $pid = false ) {
 		if ( $pid === false ) {
@@ -311,7 +311,7 @@ class Post extends Core implements CoreInterface {
 	 * takes a mix of integer (post ID), string (post slug),
 	 * or object to return a WordPress post object from WP's built-in get_post() function
 	 * @internal
-	 * @param mixed $pid
+	 * @param integer $pid
 	 * @return WP_Post on success
 	 */
 	protected function prepare_post_info( $pid = 0 ) {
@@ -754,7 +754,7 @@ class Post extends Core implements CoreInterface {
 	 *     <a href="{{post.author.link}}">{{post.author.name}}</a>
 	 * </p>
 	 * ```
-	 * @return User|bool A User object if found, false if not
+	 * @return User|null A User object if found, false if not
 	 */
 	public function author() {
 		return $this->get_author();
@@ -769,7 +769,7 @@ class Post extends Core implements CoreInterface {
 	 * ```html
 	 * Last updated by Harper Lee
 	 * ```
-	 * @return User|bool A User object if found, false if not
+	 * @return User|null A User object if found, false if not
 	 */
 	public function modified_author() {
 		$user_id = get_post_meta($this->ID, '_edit_last', true);
@@ -848,7 +848,7 @@ class Post extends Core implements CoreInterface {
 	 * ```
 	 * @return bool|array
 	 */
-	public function comments( $count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment' ) {
+	public function comments( $count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
 		global $overridden_cpage, $user_ID;
 		$overridden_cpage = false;
 
@@ -1098,7 +1098,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * @api
-	 * @param bool $in_same_cat
+	 * @param bool $in_same_term
 	 * @return mixed
 	 */
 	public function next( $in_same_term = false ) {
@@ -1158,6 +1158,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Finds any WP_Post objects and converts them to Timber\Posts
 	 * @param array $data
+	 * @param string $class
 	 */
 	public function convert( $data, $class ) {
 		if ( is_array($data) ) {
@@ -1185,7 +1186,6 @@ class Post extends Core implements CoreInterface {
 	 * Parent page: <a href="{{ post.parent.link }}">{{ post.parent.title }}</a>
 	 * ```
 	 * @return bool|Timber\Post
-	 * @param string $field_name
 	 */
 	public function parent() {
 		if ( !$this->post_parent ) {
@@ -1481,7 +1481,6 @@ class Post extends Core implements CoreInterface {
 	 * @internal
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @param bool $taxonomy
 	 * @return TimberPost|boolean
 	 */
 	public function get_prev( $in_same_term = false ) {
@@ -1505,7 +1504,7 @@ class Post extends Core implements CoreInterface {
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
 	 * @see Timber\Post::author
-	 * @return User|boolean
+	 * @return User|null
 	 */
 	public function get_author() {
 		if ( isset($this->post_author) ) {
@@ -1517,7 +1516,7 @@ class Post extends Core implements CoreInterface {
 	 * @internal
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @return User|boolean
+	 * @return User|null
 	 */
 	public function get_modified_author() {
 		return $this->modified_author();
@@ -1594,7 +1593,7 @@ class Post extends Core implements CoreInterface {
 	 * @param string $CommentClass
 	 * @return array|mixed
 	 */
-	public function get_comments( $count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment' ) {
+	public function get_comments( $count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
 		return $this->comments($count, $order, $type, $status, $CommentClass);
 	}
 

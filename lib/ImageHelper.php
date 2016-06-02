@@ -146,7 +146,7 @@ class ImageHelper {
 	 * @param int     $h
 	 * @param string  $color
 	 * @param bool    $force
-	 * @return mixed|null|string
+	 * @return string
 	 */
 	public static function letterbox( $src, $w, $h, $color = '#000000', $force = false ) {
 		$op = new Letterbox($w, $h, $color);
@@ -484,7 +484,7 @@ class ImageHelper {
 		}
 		// otherwise generate result file
 		if ( $op->run($old_server_path, $new_server_path) ) {
-			if ( get_class($op) === 'TimberImageOperationResize' && $external ) {
+			if ( get_class($op) === 'Timber\Image\Operation\Resize' && $external ) {
 				$new_url = strtolower($new_url);
 			}
 			return $new_url;

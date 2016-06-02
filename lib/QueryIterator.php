@@ -6,8 +6,9 @@ use Timber\Helper;
 use Timber\PostsCollection;
 
 // Exit if accessed directly
-if ( !defined('ABSPATH') )
+if ( !defined('ABSPATH') ) {
 	exit;
+}
 
 class QueryIterator implements \Iterator {
 
@@ -17,9 +18,9 @@ class QueryIterator implements \Iterator {
 	 * @var WP_Query
 	 */
 	private $_query = null;
-	private $_posts_class = 'TimberPost';
+	private $_posts_class = 'Timber\Post';
 
-	public function __construct( $query = false, $posts_class = 'TimberPost' ) {
+	public function __construct( $query = false, $posts_class = 'Timber\Post' ) {
 		add_action('pre_get_posts', array($this, 'fix_number_posts_wp_quirk'));
 		if ( $posts_class )
 			$this->_posts_class = $posts_class;
