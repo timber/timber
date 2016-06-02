@@ -6,8 +6,9 @@ use Timber\Helper;
 use Timber\PostsCollection;
 
 // Exit if accessed directly
-if ( !defined('ABSPATH') )
+if ( !defined('ABSPATH') ) {
 	exit;
+}
 
 class QueryIterator implements \Iterator {
 
