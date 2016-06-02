@@ -16,6 +16,9 @@ class PostPreview {
 	protected $readmore = 'Read More';
 	protected $strip = true;
 
+	/**
+	 * @param Post $post
+	 */
 	public function __construct( $post ) {
 		$this->post = $post;
 	}
@@ -49,7 +52,7 @@ class PostPreview {
 	}
 
 	/**
-	 * @param string $read_more What the text displays as to the reader inside of the <a> tag
+	 * @param string $readmore What the text displays as to the reader inside of the <a> tag
 	 */
 	public function read_more( $readmore = 'Read More' ) {
 		$this->readmore = $readmore;

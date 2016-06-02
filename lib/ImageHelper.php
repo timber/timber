@@ -146,7 +146,7 @@ class ImageHelper {
 	 * @param int     $h
 	 * @param string  $color
 	 * @param bool    $force
-	 * @return mixed|null|string
+	 * @return string
 	 */
 	public static function letterbox( $src, $w, $h, $color = '#000000', $force = false ) {
 		$op = new Letterbox($w, $h, $color);
