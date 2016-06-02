@@ -256,8 +256,8 @@ class Post extends Core implements CoreInterface {
 		$revisions = wp_get_post_revisions($query->queried_object_id);
 
 		if ( !empty($revisions) ) {
-			$last = reset($revisions);
-			return $last->ID;
+			$revision = reset($revisions);
+			return $revision->ID;
 		}
 
 		return false;
