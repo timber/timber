@@ -34,7 +34,7 @@ class Timber {
 
 	public static $version = '1.0.3';
 	public static $locations;
-	public static $dirname;
+	public static $dirname = 'views';
 	public static $twig_cache = false;
 	public static $cache = false;
 	public static $auto_meta = true;
@@ -215,20 +215,20 @@ class Timber {
 			self::$context_cache['wp_head'] = Helper::function_wrapper('wp_head');
 			self::$context_cache['wp_footer'] = Helper::function_wrapper('wp_footer');
 			self::$context_cache['body_class'] = implode(' ', get_body_class());
-			
+
 			self::$context_cache['site'] = new Site();
 			self::$context_cache['request'] = new Request();
 			$user = new User();
 			self::$context_cache['user'] = ($user->ID) ? $user : false;
 			self::$context_cache['theme'] = self::$context_cache['site']->theme;
-			
+
 			self::$context_cache['posts'] = Timber::query_posts();
 
 			self::$context_cache = apply_filters('timber_context', self::$context_cache);
 			self::$context_cache = apply_filters('timber/context', self::$context_cache);
 		}
 
-		
+
 		return self::$context_cache;
 	}
 
