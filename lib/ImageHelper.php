@@ -484,7 +484,7 @@ class ImageHelper {
 		}
 		// otherwise generate result file
 		if ( $op->run($old_server_path, $new_server_path) ) {
-			if ( get_class($op) === 'TimberImageOperationResize' && $external ) {
+			if ( get_class($op) === 'Timber\Image\Operation\Resize' && $external ) {
 				$new_url = strtolower($new_url);
 			}
 			return $new_url;
