@@ -24,4 +24,10 @@ class TestTimberIterator extends Timber_UnitTestCase {
 
     }
 
+    function testPostCount() {
+    	$posts = $this->factory->post->create_many( 8 );
+        $posts = TimberPostGetter::query_posts('post_type=post');
+        $this->assertEquals( 8, $posts->post_count() );
+    }
+
 }

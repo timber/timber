@@ -17,7 +17,7 @@ class MenuItem extends Core implements CoreInterface {
 	public $post_name;
 	public $url;
 
-	public $PostClass = 'TimberPost';
+	public $PostClass = 'Timber\Post';
 
 	protected $_name;
 	protected $_menu_item_object_id;
@@ -150,7 +150,7 @@ class MenuItem extends Core implements CoreInterface {
 	/**
 	 *
 	 * @internal
-	 * @return bool 
+	 * @return boolean|null  
 	 */
 	public function update_child_levels() {
 		if ( is_array($this->children) ) {

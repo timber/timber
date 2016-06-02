@@ -13,6 +13,8 @@ use Timber\URLHelper;
 use Timber\PostGetter;
 use Timber\PostType;
 
+use WP_Post;
+
 /**
  * This is the object you use to access or extend WordPress posts. Think of it as Timber's (more accessible) version of WP_Post. This is used throughout Timber to represent posts retrieved from WordPress making them available to Twig templates. See the PHP and Twig examples for an example of what it's like to work with this object in your code.
  * @example
@@ -159,6 +161,11 @@ class Post extends Core implements CoreInterface {
 	public $slug;
 
 	/**
+	 * @var PostType $_type stores the PostType object for the Post
+	 */
+	private $_type;
+
+	/**
 	 * If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
 	 * @example
 	 * ```php
@@ -259,7 +266,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Initializes a Post
 	 * @internal
-	 * @param int|bool $pid
+	 * @param integer $pid
 	 */
 	protected function init( $pid = false ) {
 		if ( $pid === false ) {
@@ -304,7 +311,7 @@ class Post extends Core implements CoreInterface {
 	 * takes a mix of integer (post ID), string (post slug),
 	 * or object to return a WordPress post object from WP's built-in get_post() function
 	 * @internal
-	 * @param mixed $pid
+	 * @param integer $pid
 	 * @return WP_Post on success
 	 */
 	protected function prepare_post_info( $pid = 0 ) {
@@ -358,6 +365,9 @@ class Post extends Core implements CoreInterface {
 		return $result->ID;
 	}
 
+	/**
+	 * @return PostPreview
+	 */
 	public function preview() {
 		return new PostPreview( $this );
 	}
@@ -381,6 +391,7 @@ class Post extends Core implements CoreInterface {
 	public function get_preview( $len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;' ) {
 		$text = '';
 		$trimmed = false;
+		$last_p_tag = null;
 		if ( isset($this->post_excerpt) && strlen($this->post_excerpt) ) {
 			if ( $force ) {
 				$text = Helper::trim_words($this->post_excerpt, $len, false);
@@ -529,7 +540,7 @@ class Post extends Core implements CoreInterface {
 	 * @return array
 	 */
 	public function terms( $tax = '', $merge = true, $TermClass = '' ) {
-
+		$taxonomies = array();
 		$TermClass = $TermClass ?: $this->TermClass;
 
 		if ( is_string($merge) && class_exists($merge) ) {
@@ -743,7 +754,7 @@ class Post extends Core implements CoreInterface {
 	 *     <a href="{{post.author.link}}">{{post.author.name}}</a>
 	 * </p>
 	 * ```
-	 * @return TimberUser|bool A TimberUser object if found, false if not
+	 * @return User|null A User object if found, false if not
 	 */
 	public function author() {
 		return $this->get_author();
@@ -758,7 +769,7 @@ class Post extends Core implements CoreInterface {
 	 * ```html
 	 * Last updated by Harper Lee
 	 * ```
-	 * @return TimberUser|bool A TimberUser object if found, false if not
+	 * @return User|null A User object if found, false if not
 	 */
 	public function modified_author() {
 		$user_id = get_post_meta($this->ID, '_edit_last', true);
@@ -837,7 +848,7 @@ class Post extends Core implements CoreInterface {
 	 * ```
 	 * @return bool|array
 	 */
-	public function comments( $count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment' ) {
+	public function comments( $count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
 		global $overridden_cpage, $user_ID;
 		$overridden_cpage = false;
 
@@ -1087,7 +1098,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * @api
-	 * @param bool $in_same_cat
+	 * @param bool $in_same_term
 	 * @return mixed
 	 */
 	public function next( $in_same_term = false ) {
@@ -1147,6 +1158,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Finds any WP_Post objects and converts them to Timber\Posts
 	 * @param array $data
+	 * @param string $class
 	 */
 	public function convert( $data, $class ) {
 		if ( is_array($data) ) {
@@ -1174,7 +1186,6 @@ class Post extends Core implements CoreInterface {
 	 * Parent page: <a href="{{ post.parent.link }}">{{ post.parent.title }}</a>
 	 * ```
 	 * @return bool|Timber\Post
-	 * @param string $field_name
 	 */
 	public function parent() {
 		if ( !$this->post_parent ) {
@@ -1470,7 +1481,6 @@ class Post extends Core implements CoreInterface {
 	 * @internal
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @param bool $taxonomy
 	 * @return TimberPost|boolean
 	 */
 	public function get_prev( $in_same_term = false ) {
@@ -1493,8 +1503,8 @@ class Post extends Core implements CoreInterface {
 	 * @internal
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @see TimberPost::author
-	 * @return bool|TimberUser
+	 * @see Timber\Post::author
+	 * @return User|null
 	 */
 	public function get_author() {
 		if ( isset($this->post_author) ) {
@@ -1506,7 +1516,7 @@ class Post extends Core implements CoreInterface {
 	 * @internal
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @return bool|TimberUser
+	 * @return User|null
 	 */
 	public function get_modified_author() {
 		return $this->modified_author();
@@ -1517,7 +1527,7 @@ class Post extends Core implements CoreInterface {
 	 * @see TimberPost::thumbnail
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @return null|TimberImage
+	 * @return Image|null
 	 */
 	public function get_thumbnail() {
 		return $this->thumbnail();
@@ -1583,7 +1593,7 @@ class Post extends Core implements CoreInterface {
 	 * @param string $CommentClass
 	 * @return array|mixed
 	 */
-	public function get_comments( $count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'TimberComment' ) {
+	public function get_comments( $count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
 		return $this->comments($count, $order, $type, $status, $CommentClass);
 	}
 

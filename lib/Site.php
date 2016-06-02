@@ -177,7 +177,7 @@ class Site extends Core implements CoreInterface {
 		$this->atom = get_bloginfo('atom_url');
 		$this->language = get_bloginfo('language');
 		$this->charset = get_bloginfo('charset');
-		$this->pingback = get_bloginfo('pingback_url');
+		$this->pingback = $this->pingback_url = get_bloginfo('pingback_url');
 		$this->language_attributes = Helper::function_wrapper('language_attributes');
 	}
 
