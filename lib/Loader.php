@@ -83,7 +83,7 @@ class Loader {
 	 * @return bool
 	 */
 	public function choose_template( $filenames ) {
-		if(is_string($filenames) && !self::template_exists($filenames) && !stripos(strrev($filenames), strrev('.twig'))) {
+		if(is_string($filenames) && !self::template_exists($filenames) && stripos(strrev($filenames), strrev('.twig')) === false) {
 			$filenames .= '.twig';
 		} else if ( is_array($filenames) ) {
 			/* its an array so we have to figure out which one the dev wants */
