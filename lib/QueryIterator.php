@@ -6,8 +6,9 @@ use Timber\Helper;
 use Timber\PostsCollection;
 
 // Exit if accessed directly
-if ( !defined('ABSPATH') )
+if ( !defined('ABSPATH') ) {
 	exit;
+}
 
 class QueryIterator implements \Iterator {
 
@@ -17,9 +18,9 @@ class QueryIterator implements \Iterator {
 	 * @var WP_Query
 	 */
 	private $_query = null;
-	private $_posts_class = 'TimberPost';
+	private $_posts_class = 'Timber\Post';
 
-	public function __construct( $query = false, $posts_class = 'TimberPost' ) {
+	public function __construct( $query = false, $posts_class = 'Timber\Post' ) {
 		add_action('pre_get_posts', array($this, 'fix_number_posts_wp_quirk'));
 		if ( $posts_class )
 			$this->_posts_class = $posts_class;
@@ -58,6 +59,10 @@ class QueryIterator implements \Iterator {
 
 		$this->_query = $the_query;
 
+	}
+
+	public function post_count() {
+	    return $this->_query->post_count;
 	}
 
 	public function get_posts( $return_collection = false ) {
@@ -137,7 +142,7 @@ class QueryIterator implements \Iterator {
 	}
 
 	//get_posts users numberposts
-	static function fix_number_posts_wp_quirk( $query ) {
+	public static function fix_number_posts_wp_quirk( $query ) {
 		if ( isset($query->query) && isset($query->query['numberposts'])
 				&& !isset($query->query['posts_per_page']) ) {
 			$query->set('posts_per_page', $query->query['numberposts']);
@@ -150,7 +155,7 @@ class QueryIterator implements \Iterator {
 	 * @param  WP_Query $query the original query recived from WordPress
 	 * @return WP_Query
 	 */
-	static function handle_maybe_custom_posts_page( $query ) {
+	public static function handle_maybe_custom_posts_page( $query ) {
 		if ( $custom_posts_page = get_option('page_for_posts') ) {
 			if ( isset($query->query['p']) && $query->query['p'] == $custom_posts_page ) {
 				return new \WP_Query(array('post_type' => 'post'));

@@ -23,11 +23,11 @@ class Helper {
 	 * Timber::render('single.twig', $context);
 	 * ```
 	 *
-	 * @param string  $slug           Unique identifier for transient
-	 * @param callable $callback      Callback that generates the data that's to be cached
-	 * @param int     $transient_time (optional) Expiration of transients in seconds
-	 * @param int     $lock_timeout   (optional) How long (in seconds) to lock the transient to prevent race conditions
-	 * @param bool    $force          (optional) Force callback to be executed when transient is locked
+	 * @param string  	$slug           Unique identifier for transient
+	 * @param callable 	$callback      Callback that generates the data that's to be cached
+	 * @param integer  	$transient_time (optional) Expiration of transients in seconds
+	 * @param integer 	$lock_timeout   (optional) How long (in seconds) to lock the transient to prevent race conditions
+	 * @param boolean 	$force          (optional) Force callback to be executed when transient is locked
 	 * @return mixed
 	 */
 	public static function transient( $slug, $callback, $transient_time = 0, $lock_timeout = 5, $force = false ) {
@@ -37,38 +37,42 @@ class Helper {
 		$data = $enable_transients ? get_transient($slug) : false;
 
 		if ( false === $data ) {
-
-			if ( $enable_transients && self::_is_transient_locked($slug) ) {
-
-				$force = apply_filters('timber_force_transients', $force);
-				$force = apply_filters('timber_force_transient_'.$slug, $force);
-
-				if ( !$force ) {
-					//the server is currently executing the process.
-					//We're just gonna dump these users. Sorry!
-					return false;
-				}
-
-				$enable_transients = false;
-			}
-
-			// lock timeout shouldn't be higher than 5 seconds, unless
-			// remote calls with high timeouts are made here
-			if ( $enable_transients ) {
-							self::_lock_transient($slug, $lock_timeout);
-			}
-
-			$data = $callback();
-
-			if ( $enable_transients ) {
-				set_transient($slug, $data, $transient_time);
-				self::_unlock_transient($slug);
-			}
-
+			$data = self::handle_transient_locking($slug, $callback, $transient_time, $lock_timeout, $force, $enable_transients);
 		}
-
 		return $data;
+	}
 
+	/**
+	 * Does the dirty work of locking the transient, running the callback and unlocking
+	 * @param string 	$slug
+	 * @param callable 	$callback
+	 * @param integer  	$transient_time Expiration of transients in seconds
+	 * @param integer 	$lock_timeout   How long (in seconds) to lock the transient to prevent race conditions
+	 * @param boolean 	$force          Force callback to be executed when transient is locked
+	 * @param boolean 	$enable_transients Force callback to be executed when transient is locked
+	 */
+	protected static function handle_transient_locking( $slug, $callback, $transient_time, $lock_timeout, $force, $enable_transients ) {
+		if ( $enable_transients && self::_is_transient_locked($slug) ) {
+			$force = apply_filters('timber_force_transients', $force);
+			$force = apply_filters('timber_force_transient_'.$slug, $force);
+			if ( !$force ) {
+				//the server is currently executing the process.
+				//We're just gonna dump these users. Sorry!
+				return false;
+			}
+			$enable_transients = false;
+		}
+		// lock timeout shouldn't be higher than 5 seconds, unless
+		// remote calls with high timeouts are made here
+		if ( $enable_transients ) {
+			self::_lock_transient($slug, $lock_timeout);
+		}
+		$data = $callback();
+		if ( $enable_transients ) {
+			set_transient($slug, $data, $transient_time);
+			self::_unlock_transient($slug);
+		}
+		return $data;
 	}
 
 	/**
@@ -76,7 +80,7 @@ class Helper {
 	 * @param string $slug
 	 * @param integer $lock_timeout
 	 */
-	static function _lock_transient( $slug, $lock_timeout ) {
+	public static function _lock_transient( $slug, $lock_timeout ) {
 		set_transient($slug.'_lock', true, $lock_timeout);
 	}
 
@@ -84,7 +88,7 @@ class Helper {
 	 * @internal
 	 * @param string $slug
 	 */
-	static function _unlock_transient( $slug ) {
+	public static function _unlock_transient( $slug ) {
 		delete_transient($slug.'_lock', true);
 	}
 
@@ -92,7 +96,7 @@ class Helper {
 	 * @internal
 	 * @param string $slug
 	 */
-	static function _is_transient_locked( $slug ) {
+	public static function _is_transient_locked( $slug ) {
 		return (bool) get_transient($slug.'_lock');
 	}
 
@@ -171,7 +175,7 @@ class Helper {
 	 * @param mixed $function_name or array( $class( string|object ), $function_name )
 	 * @param array (optional) $defaults
 	 * @param bool (optional) $return_output_buffer Return function output instead of return value (default: false)
-	 * @return \TimberFunctionWrapper
+	 * @return Timber\FunctionWrapper|mixed
 	 */
 	public static function function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false ) {
 		return new FunctionWrapper($function_name, $defaults, $return_output_buffer);
@@ -195,7 +199,7 @@ class Helper {
 
 	/**
 	 * @param string $message that you want to output
-	 * @return void
+	 * @return boolean
 	 */
 	public static function warn( $message ) {
 		return trigger_error($message, E_USER_WARNING);
@@ -321,7 +325,7 @@ class Helper {
 	 *
 	 *
 	 * @param array   $array
-	 * @return stdClass
+	 * @return \stdClass
 	 */
 	public static function array_to_object( $array ) {
 		$obj = new \stdClass;
@@ -451,7 +455,7 @@ class Helper {
 	 * @return string
 	 */
 	public static function get_comment_form( $post_id = null, $args = array() ) {
-		return self::ob_function( 'comment_form', array( $args, $post_id ) );
+		return self::ob_function('comment_form', array($args, $post_id));
 	}
 
 	/**
@@ -530,9 +534,9 @@ class Helper {
 	}
 
 	/**
-	 *
+	 * @return string
 	 */
-	function get_current_url() {
+	public function get_current_url() {
 		Helper::warn('TimberHelper::get_current_url() is deprecated and will be removed in future versions, use Timber\URLHelper::get_current_url()');
 		return URLHelper::get_current_url();
 	}

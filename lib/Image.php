@@ -114,7 +114,7 @@ class Image extends Post implements CoreInterface {
 	 * Get a PHP array with pathinfo() info from the file
 	 * @return array
 	 */
-	function get_pathinfo() {
+	public function get_pathinfo() {
 		return pathinfo($this->file);
 	}
 
@@ -157,7 +157,7 @@ class Image extends Post implements CoreInterface {
 	/**
 	 * @return array
 	 */
-	protected function get_post_custom($iid) {
+	protected function get_post_custom( $iid ) {
 		$pc = get_post_custom($iid);
 		if ( is_bool($pc) ) {
 			return array();
@@ -221,7 +221,7 @@ class Image extends Post implements CoreInterface {
 	 * @internal
 	 * @param int $iid
 	 */
-	function init( $iid = false ) {
+	public function init( $iid = false ) {
 		//Make sure we actually have something to work with
 		if ( !$iid ) { Helper::error_log('Initalized TimberImage without providing first parameter.'); return; }
 		
@@ -231,7 +231,7 @@ class Image extends Post implements CoreInterface {
 		}
 
 		//If passed ACF image array
-		if(is_array($iid) && isset($iid['ID'])) {
+		if ( is_array($iid) && isset($iid['ID']) ) {
 			$iid = $iid['ID'];
 		}
 

@@ -11,7 +11,6 @@ use Timber\Integrations\ACF;
 class Integrations {
     
 	public static function init() {
-
 		add_action( 'init', array( __CLASS__, 'maybe_init_acftimber' ) );
 
 		if ( class_exists( 'WP_CLI_Command' ) ) {
@@ -20,10 +19,8 @@ class Integrations {
 	}
 
 	public static function maybe_init_acftimber() {
-
 		if ( class_exists( 'ACF' ) ) {
 			new ACF();
 		}
-
 	}
 }

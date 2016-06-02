@@ -146,7 +146,7 @@ class ImageHelper {
 	 * @param int     $h
 	 * @param string  $color
 	 * @param bool    $force
-	 * @return mixed|null|string
+	 * @return string
 	 */
 	public static function letterbox( $src, $w, $h, $color = '#000000', $force = false ) {
 		$op = new Letterbox($w, $h, $color);
@@ -394,7 +394,7 @@ class ImageHelper {
 		}
 		$url .= '/'.$filename;
 		if ( !$absolute ) {
-			$url = str_replace(home_url(), '', $url);
+			$url = str_replace(site_url(), '', $url);
 		}
 		// $url = TimberURLHelper::remove_double_slashes( $url);
 		return $url;
@@ -469,8 +469,8 @@ class ImageHelper {
 			$au['basename']
 		);
 		
-		$new_url = apply_filters( 'timber/image/new_url', $new_url );
-		$new_server_path = apply_filters( 'timber/image/new_path', $new_server_path );
+		$new_url = apply_filters('timber/image/new_url', $new_url);
+		$new_server_path = apply_filters('timber/image/new_path', $new_server_path);
 		
 		// if already exists...
 		if ( file_exists($new_server_path) ) {
@@ -484,7 +484,7 @@ class ImageHelper {
 		}
 		// otherwise generate result file
 		if ( $op->run($old_server_path, $new_server_path) ) {
-			if ( get_class($op) === 'TimberImageOperationResize' && $external ) {
+			if ( get_class($op) === 'Timber\Image\Operation\Resize' && $external ) {
 				$new_url = strtolower($new_url);
 			}
 			return $new_url;
@@ -497,7 +497,7 @@ class ImageHelper {
 
 // -- the below methods are just used for unit testing the URL generation code
 //
-	static function get_letterbox_file_url( $url, $w, $h, $color ) {
+	public static function get_letterbox_file_url( $url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Letterbox($w, $h, $color);
 		$new_url = self::_get_file_url(
@@ -508,6 +508,7 @@ class ImageHelper {
 		);
 		return $new_url;
 	}
+
 	public static function get_letterbox_file_path( $url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Letterbox($w, $h, $color);
@@ -518,7 +519,8 @@ class ImageHelper {
 		);
 		return $new_path;
 	}
-	static function get_resize_file_url( $url, $w, $h, $crop ) {
+
+	public static function get_resize_file_url( $url, $w, $h, $crop ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Resize($w, $h, $crop);
 		$new_url = self::_get_file_url(
@@ -529,7 +531,8 @@ class ImageHelper {
 		);
 		return $new_url;
 	}
-	static function get_resize_file_path( $url, $w, $h, $crop ) {
+
+	public static function get_resize_file_path( $url, $w, $h, $crop ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Resize($w, $h, $crop);
 		$new_path = self::_get_file_path(

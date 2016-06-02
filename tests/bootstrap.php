@@ -10,7 +10,7 @@ function _manually_load_plugin() {
 	global $timber;
 
 	require dirname( __FILE__ ) . '/../vendor/autoload.php';
-	$timber = new Timber();
+	$timber = new \Timber\Timber();
 	require dirname( __FILE__ ) . '/../wp-content/plugins/advanced-custom-fields/acf.php';
 }
 
