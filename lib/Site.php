@@ -140,7 +140,6 @@ class Site extends Core implements CoreInterface {
 		$this->id = $this->ID;
 		$this->name = $this->blogname;
 		$this->title = $this->blogname;
-		$this->url = get_bloginfo('url');
 		$theme_slug = get_blog_option($info->blog_id, 'stylesheet');
 		$this->theme = new Theme($theme_slug);
 		$this->description = get_blog_option($info->blog_id, 'blogdescription');
@@ -160,7 +159,6 @@ class Site extends Core implements CoreInterface {
 		$this->name = get_bloginfo('name');
 		$this->title = $this->name;
 		$this->description = get_bloginfo('description');
-		$this->url = get_bloginfo('url');
 		$this->theme = new Theme();
 		$this->language_attributes = Helper::function_wrapper('language_attributes');
 		$this->multisite = false;
@@ -171,6 +169,7 @@ class Site extends Core implements CoreInterface {
 	 * @internal
 	 */
 	protected function init() {
+		$this->url = home_url();
 		$this->rdf = get_bloginfo('rdf_url');
 		$this->rss = get_bloginfo('rss_url');
 		$this->rss2 = get_bloginfo('rss2_url');
