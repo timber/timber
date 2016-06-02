@@ -94,6 +94,13 @@
 			$this->_teardownRelativeViews();
 		}
 
+		function testTwigLoadsFromRelativeToScriptWithNoExtension(){
+			$this->_setupRelativeViews();
+			$str = Timber::compile('single');
+			$this->assertEquals('I am in the assets directory', trim($str));
+			$this->_teardownRelativeViews();
+		}
+
 		function testTwigLoadsFromAbsolutePathOnServer(){
 			$str = Timber::compile(__DIR__.'/assets/image-test.twig');
 			$this->assertEquals('<img src="" />', trim($str));
