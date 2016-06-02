@@ -60,8 +60,8 @@ class Resize extends ImageOperation {
 	 * @param string $load_filename
 	 * @param string $save_filename
 	 */
-	protected function run_animated_gif( $load_filename, $save_filename ) {
-		$current_size = $image->get_size();
+	protected function run_animated_gif( $load_filename, $save_filename, $editor ) {
+		$current_size = $editor->get_size();
 		$src_w = $current_size['width'];
 		$src_h = $current_size['height'];
 		$w = $this->w;
@@ -173,12 +173,12 @@ class Resize extends ImageOperation {
 		$image = wp_get_image_editor( $load_filename );
 		if ( !is_wp_error( $image ) ) {
 			//should be resized by gif resizer
-			if ( ImageHelper::is_animated_gif($load_filename) ) {
+			if ( ImageHelper::is_animated_gif( $load_filename ) ) {
 				//attempt to resize
 				//return if successful
 				//proceed if not
-				$gif = self::run_animated_gif($image, $save_filename);
-				if ($gif) {
+				$gif = self::run_animated_gif( $load_filename, $save_filename, $editor );
+				if ( $gif ) {
 					return true;
 				}
 			}
