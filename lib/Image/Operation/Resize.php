@@ -61,33 +61,24 @@ class Resize extends ImageOperation {
 	 * @param string $save_filename
 	 */
 	protected function run_animated_gif( $load_filename, $save_filename ) {
-		$image = wp_get_image_editor( $load_filename );
-		if ( !is_wp_error( $image ) ) {
-			$current_size = $image->get_size();
-			$src_w = $current_size['width'];
-			$src_h = $current_size['height'];
-			$w = $this->w;
-			$h = $this->h;
-			if ( !class_exists('Imagick') ) {
-				return false;
-			}
-			$image = new \Imagick($load_filename);
-			$image = $image->coalesceImages();
-			$crop = self::get_target_sizes($load_filename);
-			foreach ( $image as $frame ) {
-				$frame->cropImage($crop['src_w'], $crop['src_h'], $crop['x'], $crop['y']);
-				$frame->thumbnailImage($w, $h);
-				$frame->setImagePage($w, $h, 0, 0);
-			}
-			$image = $image->deconstructImages();
-			return $image->writeImages($save_filename, true);
-		} else if ( isset( $image->error_data['error_loading_image'] ) ) {
-			// @codeCoverageIgnoreStart
-			Helper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
-		} else {
-			Helper::error_log( $image );
-			// @codeCoverageIgnoreEnd
+		$current_size = $image->get_size();
+		$src_w = $current_size['width'];
+		$src_h = $current_size['height'];
+		$w = $this->w;
+		$h = $this->h;
+		if ( !class_exists('Imagick') ) {
+			Helper::error_log( 'Can not resize GIF, Imagick is not installed' );
 		}
+		$image = new \Imagick($load_filename);
+		$image = $image->coalesceImages();
+		$crop = self::get_target_sizes($load_filename);
+		foreach ( $image as $frame ) {
+			$frame->cropImage($crop['src_w'], $crop['src_h'], $crop['x'], $crop['y']);
+			$frame->thumbnailImage($w, $h);
+			$frame->setImagePage($w, $h, 0, 0);
+		}
+		$image = $image->deconstructImages();
+		return $image->writeImages($save_filename, true);
 	}
 
 	/**
