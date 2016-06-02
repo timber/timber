@@ -11,7 +11,7 @@ class KeyGenerator implements KeyGeneratorInterface {
 	 * @return string
 	 */
 	public function generateKey($value) {
-		if (is_a($value, 'TimberKeyGeneratorInterface')) {
+		if (is_a($value, 'Timber\Cache\TimberKeyGeneratorInterface')) {
 			return $value->_get_cache_key();
 		}
 

@@ -17,7 +17,7 @@ class MenuItem extends Core implements CoreInterface {
 	public $post_name;
 	public $url;
 
-	public $PostClass = 'TimberPost';
+	public $PostClass = 'Timber\Post';
 
 	protected $_name;
 	protected $_menu_item_object_id;

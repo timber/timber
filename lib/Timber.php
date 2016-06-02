@@ -120,7 +120,7 @@ class Timber {
 	 * @param string  $PostClass
 	 * @return array|bool|null
 	 */
-	public static function get_post( $query = false, $PostClass = 'TimberPost' ) {
+	public static function get_post( $query = false, $PostClass = 'Timber\Post' ) {
 		return PostGetter::get_post($query, $PostClass);
 	}
 
@@ -137,7 +137,7 @@ class Timber {
 	 * @param string|array  $PostClass
 	 * @return array|bool|null
 	 */
-	public static function get_posts( $query = false, $PostClass = 'TimberPost', $return_collection = false ) {
+	public static function get_posts( $query = false, $PostClass = 'Timber\Post', $return_collection = false ) {
 		return PostGetter::get_posts($query, $PostClass, $return_collection);
 	}
 
@@ -148,7 +148,7 @@ class Timber {
 	 * @param string  $PostClass
 	 * @return array|bool|null
 	 */
-	public static function query_post( $query = false, $PostClass = 'TimberPost' ) {
+	public static function query_post( $query = false, $PostClass = 'Timber\Post' ) {
 		return PostGetter::query_post($query, $PostClass);
 	}
 
@@ -159,7 +159,7 @@ class Timber {
 	 * @param string  $PostClass
 	 * @return array|bool|null
 	 */
-	public static function query_posts( $query = false, $PostClass = 'TimberPost' ) {
+	public static function query_posts( $query = false, $PostClass = 'Timber\Post' ) {
 		return PostGetter::query_posts($query, $PostClass);
 	}
 
@@ -174,7 +174,7 @@ class Timber {
 	 * @param string  $TermClass
 	 * @return mixed
 	 */
-	public static function get_terms( $args = null, $maybe_args = array(), $TermClass = 'TimberTerm' ) {
+	public static function get_terms( $args = null, $maybe_args = array(), $TermClass = 'Timber\Term' ) {
 		return TermGetter::get_terms($args, $maybe_args, $TermClass);
 	}
 
