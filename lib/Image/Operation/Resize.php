@@ -182,7 +182,7 @@ class Resize extends ImageOperation {
 		$image = wp_get_image_editor( $load_filename );
 		if ( !is_wp_error( $image ) ) {
 			//should be resized by gif resizer
-			if ( ImageHelper::is_animated_gif($image) ) {
+			if ( ImageHelper::is_animated_gif($load_filename) ) {
 				//attempt to resize
 				//return if successful
 				//proceed if not
