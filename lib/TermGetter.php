@@ -7,6 +7,11 @@ use Timber\Helper;
 
 class TermGetter {
 
+	public static function get_term( $term, $taxonomy, $output = OBJECT, $filter = 'raw', $TermClass = 'Term' ) {
+		$term = get_term($term, $taxonomy, $output, $filter);
+		return new $TermClass($term->term_id, $term->taxonomy);
+	}
+
 	/**
 	 * @param string|array $args
 	 * @param array $maybe_args
