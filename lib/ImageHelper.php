@@ -365,7 +365,7 @@ class ImageHelper {
 		$parts = pathinfo($tmp);
 		$result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
 		$result['filename'] = $parts['filename'];
-		$result['extension'] = $parts['extension'];
+		$result['extension'] = strtolower($parts['extension']);
 		$result['basename'] = $parts['basename'];
 		// todo filename
 		return $result;
