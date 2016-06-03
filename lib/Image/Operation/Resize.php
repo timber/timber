@@ -71,7 +71,7 @@ class Resize extends ImageOperation {
 		}
 		$image = new \Imagick($load_filename);
 		$image = $image->coalesceImages();
-		$crop = self::get_target_sizes($load_filename);
+		$crop = self::get_target_sizes($editor);
 		foreach ( $image as $frame ) {
 			$frame->cropImage($crop['src_w'], $crop['src_h'], $crop['x'], $crop['y']);
 			$frame->thumbnailImage($w, $h);
@@ -82,9 +82,9 @@ class Resize extends ImageOperation {
 	}
 
 	/**
-	 * @param string $image
+	 * @param WP_Image_Editor $image
 	 */
-	protected function get_target_sizes( $image ) {
+	protected function get_target_sizes( \WP_Image_Editor $image ) {
 		$w = $this->w;
 		$h = $this->h;
 		$crop = $this->crop;
@@ -177,7 +177,7 @@ class Resize extends ImageOperation {
 				//attempt to resize
 				//return if successful
 				//proceed if not
-				$gif = self::run_animated_gif( $load_filename, $save_filename, $editor );
+				$gif = self::run_animated_gif( $load_filename, $save_filename, $image );
 				if ( $gif ) {
 					return true;
 				}
