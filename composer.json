@@ -38,7 +38,6 @@
     "phpunit/phpunit": "~4.0",
     "satooshi/php-coveralls": "1.0.*",
     "wpackagist-plugin/advanced-custom-fields": "4.*",
-    "wp-cli/wp-cli": "*",
     "phpdocumentor/phpdocumentor": "2.*",
     "jarednova/markdowndocs": "dev-master"
   },

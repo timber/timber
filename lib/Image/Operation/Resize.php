@@ -3,6 +3,7 @@
 namespace Timber\Image\Operation;
 
 use Timber\Helper;
+use Timber\ImageHelper;
 use Timber\Image\Operation as ImageOperation;
 
 /**
@@ -59,19 +60,18 @@ class Resize extends ImageOperation {
 	 * @param string $load_filename
 	 * @param string $save_filename
 	 */
-	protected function run_animated_gif( $load_filename, $save_filename ) {
-		$image = wp_get_image_editor($load_filename);
-		$current_size = $image->get_size();
+	protected function run_animated_gif( $load_filename, $save_filename, $editor ) {
+		$current_size = $editor->get_size();
 		$src_w = $current_size['width'];
 		$src_h = $current_size['height'];
 		$w = $this->w;
 		$h = $this->h;
 		if ( !class_exists('Imagick') ) {
-			return false;
+			Helper::error_log( 'Can not resize GIF, Imagick is not installed' );
 		}
 		$image = new \Imagick($load_filename);
 		$image = $image->coalesceImages();
-		$crop = self::get_target_sizes($load_filename);
+		$crop = self::get_target_sizes($editor);
 		foreach ( $image as $frame ) {
 			$frame->cropImage($crop['src_w'], $crop['src_h'], $crop['x'], $crop['y']);
 			$frame->thumbnailImage($w, $h);
@@ -82,10 +82,9 @@ class Resize extends ImageOperation {
 	}
 
 	/**
-	 * @param string $load_filename
+	 * @param WP_Image_Editor $image
 	 */
-	protected function get_target_sizes( $load_filename ) {
-		$image = wp_get_image_editor($load_filename);
+	protected function get_target_sizes( \WP_Image_Editor $image ) {
 		$w = $this->w;
 		$h = $this->h;
 		$crop = $this->crop;
@@ -171,41 +170,46 @@ class Resize extends ImageOperation {
 	 * @return boolean|null                  true if everything went fine, false otherwise
 	 */
 	public function run( $load_filename, $save_filename ) {
-		//should be resized by gif resizer
-		if ( \Timber\ImageHelper::is_animated_gif($load_filename) ) {
-			//attempt to resize
-			//return if successful
-			//proceed if not
-			$gif = self::run_animated_gif($load_filename, $save_filename);
-			if ( $gif ) {
-				return true;
+		$image = wp_get_image_editor( $load_filename );
+		if ( !is_wp_error( $image ) ) {
+			//should be resized by gif resizer
+			if ( ImageHelper::is_animated_gif( $load_filename ) ) {
+				//attempt to resize
+				//return if successful
+				//proceed if not
+				$gif = self::run_animated_gif( $load_filename, $save_filename, $image );
+				if ( $gif ) {
+					return true;
+				}
 			}
-		}
-		$image = wp_get_image_editor($load_filename);
-		if ( !is_wp_error($image) ) {
-			$crop = self::get_target_sizes($load_filename);
-			$image->crop($crop['x'],
+
+			$crop = self::get_target_sizes( $image );
+			$image->crop( 	$crop['x'],
 							$crop['y'],
 							$crop['src_w'],
 							$crop['src_h'],
 							$crop['target_w'],
 							$crop['target_h']
 			);
-			$result = $image->save($save_filename);
-			if ( is_wp_error($result) ) {
+			$result = $image->save( $save_filename );
+			if ( is_wp_error( $result ) ) {
 				// @codeCoverageIgnoreStart
-				Helper::error_log('Error resizing image');
-				Helper::error_log($result);
+				Helper::error_log( 'Error resizing image' );
+				Helper::error_log( $result );
 				return false;
 				// @codeCoverageIgnoreEnd
 			} else {
 				return true;
 			}
-		} else if ( isset($image->error_data['error_loading_image']) ) {
+		} else if ( isset( $image->error_data['error_loading_image'] ) ) {
 			// @codeCoverageIgnoreStart
-			Helper::error_log('Error loading '.$image->error_data['error_loading_image']);
+			Helper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
 		} else {
-			Helper::error_log($image);
+			if(!extension_loaded('gd')) {
+				Helper::error_log( 'Can not resize image, please installed php-gd' );
+			} else {
+				Helper::error_log( $image );
+			}
 			// @codeCoverageIgnoreEnd
 		}
 	}

@@ -104,8 +104,8 @@ class Image extends Post implements CoreInterface {
 	 * @return string the src of the file
 	 */
 	public function __toString() {
-		if ( $this->src() ) {
-			return $this->src();
+		if ( $src = $this->src() ) {
+			return $src;
 		}
 		return '';
 	}
