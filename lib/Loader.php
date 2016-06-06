@@ -78,23 +78,32 @@ class Loader {
 		return apply_filters('timber/output', $output);
 	}
 
+	private function maybe_add_twig_extension( string $filename ) {
+		$with_extension = $filename . '.twig';
+
+		return (
+			!self::template_exists( $filenames ) &&
+			stripos( strrev( $filenames ), strrev( '.twig' ) ) === false &&
+			self::template_exists( $with_extension )
+		) ? $with_extension : false;
+	}
+
 	/**
 	 * @param array $filenames
 	 * @return bool
 	 */
 	public function choose_template( $filenames ) {
-		if(is_string($filenames) && !self::template_exists($filenames) && stripos(strrev($filenames), strrev('.twig')) === false) {
-			$filenames .= '.twig';
+		if( is_string( $filenames ) ) {
+			return $this->maybe_add_twig_extension( $filenames );
 		} else if ( is_array($filenames) ) {
 			/* its an array so we have to figure out which one the dev wants */
 			foreach ( $filenames as $filename ) {
-				if ( self::template_exists($filename) ) {
-					return $filename;
+				if ( $file = $this->maybe_add_twig_extension( $filename ) ) {
+					return $file;
 				}
 			}
 			return $filenames[0];
 		}
-		return $filenames;
 	}
 
 	/**
