@@ -78,27 +78,33 @@ class Loader {
 		return apply_filters('timber/output', $output);
 	}
 
-	private function maybe_add_twig_extension( string $filename ) {
+	private function maybe_add_twig_extension( $filename ) {
 		$with_extension = $filename . '.twig';
 
 		return (
-			!self::template_exists( $filenames ) &&
-			stripos( strrev( $filenames ), strrev( '.twig' ) ) === false &&
+			!self::template_exists( $filename ) &&
+			stripos( strrev( $filename ), strrev( '.twig' ) ) === false &&
 			self::template_exists( $with_extension )
 		) ? $with_extension : false;
 	}
 
 	/**
-	 * @param array $filenames
-	 * @return bool
+	 * @param string|array $filenames
+	 * @return string|boolean
 	 */
 	public function choose_template( $filenames ) {
 		if( is_string( $filenames ) ) {
-			return $this->maybe_add_twig_extension( $filenames );
+			if( $file = self::template_exists($filenames) ) {
+				return $file;
+			} else if( $file = $this->maybe_add_twig_extension( $filenames ) ) {
+				return $file;
+			}
 		} else if ( is_array($filenames) ) {
 			/* its an array so we have to figure out which one the dev wants */
 			foreach ( $filenames as $filename ) {
-				if ( $file = $this->maybe_add_twig_extension( $filename ) ) {
+				if ( $file = $this->template_exists( $filename ) ) {
+					return $file;
+				} else if( $file = $this->maybe_add_twig_extension( $filename ) ) {
 					return $file;
 				}
 			}
@@ -114,7 +120,7 @@ class Loader {
 		foreach ( $this->locations as $dir ) {
 			$look_for = trailingslashit($dir).$file;
 			if ( file_exists($look_for) ) {
-				return true;
+				return $file;
 			}
 		}
 		return false;
