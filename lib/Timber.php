@@ -183,12 +183,10 @@ class Timber {
 	 *
 	 * @param int|WP_Term|object $term
 	 * @param string     $taxonomy
-	 * @param string     $output
-	 * @param string     $filter
 	 * @return Timber\Term|WP_Error|null
 	 */
-	public static function get_term( $term, $taxonomy, $output = OBJECT, $filter = 'raw', $TermClass = 'Timber\Term' ) {
-		return TermGetter::get_term( $term, $taxonomy, $output, $filter, $TermClass );
+	public static function get_term( $term, $taxonomy, $TermClass = 'Timber\Term' ) {
+		return TermGetter::get_term( $term, $taxonomy, $TermClass );
 	}
 
 	/* Site Retrieval
