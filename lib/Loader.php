@@ -82,7 +82,6 @@ class Loader {
 		$with_extension = $filename . '.twig';
 
 		return (
-			!self::template_exists( $filename ) &&
 			stripos( strrev( $filename ), strrev( '.twig' ) ) === false &&
 			self::template_exists( $with_extension )
 		) ? $with_extension : false;
@@ -93,23 +92,26 @@ class Loader {
 	 * @return string|boolean
 	 */
 	public function choose_template( $filenames ) {
-		if( is_string( $filenames ) ) {
-			if( $file = self::template_exists($filenames) ) {
-				return $file;
-			} else if( $file = $this->maybe_add_twig_extension( $filenames ) ) {
-				return $file;
+		static $func = __FUNCTION__;
+
+		if( is_array($filenames ) ) {
+			//if array, default to first element by default
+			$file = $filenames[0];
+			foreach( $filenames as $name ) {
+				//loop over array, call this func, if we find a template that exists, exit out the loop
+				if( $file = $this->$func($name) ) break;
 			}
-		} else if ( is_array($filenames) ) {
-			/* its an array so we have to figure out which one the dev wants */
-			foreach ( $filenames as $filename ) {
-				if ( $file = $this->template_exists( $filename ) ) {
-					return $file;
-				} else if( $file = $this->maybe_add_twig_extension( $filename ) ) {
-					return $file;
-				}
-			}
-			return $filenames[0];
+		} elseif ( is_string($filenames) ) {
+			/**
+			 * first checks if the template provided doesn't exist, if so, try and add `.twig`, if that fails return false which
+			 * will continue the recursion if we are looping over an array this point
+			 *
+			 * if it does exist, return the filename
+			 */
+			$file = ( !$this->template_exists($filenames) ) ? $this->maybe_add_twig_extension( $filenames ) : $filenames;
 		}
+
+		return $file;
 	}
 
 	/**
@@ -119,9 +121,7 @@ class Loader {
 	protected function template_exists( $file ) {
 		foreach ( $this->locations as $dir ) {
 			$look_for = trailingslashit($dir).$file;
-			if ( file_exists($look_for) ) {
-				return $file;
-			}
+			if ( file_exists($look_for) ) return $file;
 		}
 		return false;
 	}
