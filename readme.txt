@@ -42,6 +42,8 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 == Changelog ==
 
 = 1.0.4 =
+* New method for `{{ post.type }}` this makes it easy to access things like `{{post.type.labels.name}}` right in Twig https://github.com/timber/timber/pull/1003
+* New method for `{{ post.preview }}` which makes it easy to customize like `{{post.preview.length(50).read_more("Keep Reading").end('........')}}` https://github.com/timber/timber/pull/1015
 * Added `Timber::get_term` (thanks @connorjburton!) 58fe671757b30a8eb9de2589bbb817448662e121
 * Fix for revision issue (thanks @dknoben!) 70de6640c68a1321394aaa95202dea70e0755664
 * Fix for issue with uppercase file extensions (thanks @connorjburton) 5632359329894d1b95cd643470950d319628f4c6
