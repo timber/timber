@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 Tested up to: 4.5.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,17 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 1.0.4 =
+* Added `Timber::get_term` (thanks @connorjburton!) 58fe671757b30a8eb9de2589bbb817448662e121
+* Fix for revision issue (thanks @dknoben!) 70de6640c68a1321394aaa95202dea70e0755664
+* Fix for issue with uppercase file extensions (thanks @connorjburton) 5632359329894d1b95cd643470950d319628f4c6
+* Better handling for gifs (thanks @connorjburton) 91c40b852c056e0f096345d976767f2e5e993ce9
+* Fix on some old class names in there (thanks @mrgrain) 63fe60ba18c6fce5d545983334af3f752c7c2755
+* Pagination with post counts (thanks @lggorman) 2bcacbe50c90c7936da61d29238e3b52910a3ff9
+* Remove `Timber::get_pids` (@jarednova) 4278d11d25aaca0d60cbde32c32783dc0effac6b
+* Fixed deprecation in Twig (thanks @simonmilz) 6c80f1d5fd48b8fcbd335f6c8e9c6fed1b008e26
+* Handle ACF image arrays (thanks @connorjburton) 039be5d880fa7f9c9763f4ebd6c40863f4820e0a
 
 = 1.0.3 =
 * Hot fix for PHP 5.3 error
