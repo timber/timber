@@ -255,7 +255,7 @@ class Timber {
 	 */
 	public static function compile( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false ) {
 		if ( !defined('TIMBER_LOADED') ) {
-			self::init();
+			$this->init();
 		}
 		$caller = self::get_calling_script_dir();
 		$loader = new Loader($caller);
