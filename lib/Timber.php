@@ -178,6 +178,17 @@ class Timber {
 		return TermGetter::get_terms($args, $maybe_args, $TermClass);
 	}
 
+	/**
+	 * Get term.
+	 *
+	 * @param int|WP_Term|object $term
+	 * @param string     $taxonomy
+	 * @return Timber\Term|WP_Error|null
+	 */
+	public static function get_term( $term, $taxonomy = 'post_tag', $TermClass = 'Timber\Term' ) {
+		return TermGetter::get_term( $term, $taxonomy, $TermClass );
+	}
+
 	/* Site Retrieval
 	================================ */
 
