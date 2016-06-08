@@ -2,6 +2,19 @@
 
 	class TestTimberTermGetter extends Timber_UnitTestCase {
 
+		function testGetSingleTerm() {
+			$term_id = $this->factory->term->create( array('name' => 'Toyota') );
+			$term = Timber::get_term($term_id);
+			$this->assertEquals($term_id, $term->ID);
+		}
+
+		function testGetSingleTermInTaxonomy() {
+			register_taxonomy('cars', 'post');
+			$term_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'cars') );
+			$term = Timber::get_term($term_id, 'cars');
+			$this->assertEquals($term_id, $term->ID);
+		}
+
 		function testGetArrayOfTerms(){
 			$term_ids = array();
 			$term_ids[] = $this->factory->term->create();

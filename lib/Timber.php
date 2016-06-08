@@ -185,7 +185,7 @@ class Timber {
 	 * @param string     $taxonomy
 	 * @return Timber\Term|WP_Error|null
 	 */
-	public static function get_term( $term, $taxonomy, $TermClass = 'Timber\Term' ) {
+	public static function get_term( $term, $taxonomy = 'post_tag', $TermClass = 'Timber\Term' ) {
 		return TermGetter::get_term( $term, $taxonomy, $TermClass );
 	}
 
