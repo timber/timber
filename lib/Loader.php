@@ -37,13 +37,14 @@ class Loader {
 	/**
 	 * @param string        $file
 	 * @param array         $data
-	 * @param bool          $expires
+	 * @param array|bool    $expires
 	 * @param string        $cache_mode
 	 * @return bool|string
 	 */
 	public function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
 		// Different $expires if user is anonymous or logged in
 		if ( is_array($expires) ) {
+			/** @var array $expires */
 			if ( is_user_logged_in() && isset($expires[1]) ) {
 				$expires = $expires[1];
 			} else {
@@ -224,7 +225,7 @@ class Loader {
 	}
 
 	/**
-	 * @return Twig_Environment
+	 * @return \Twig_Environment
 	 */
 	public function get_twig() {
 		$loader = $this->get_loader();
