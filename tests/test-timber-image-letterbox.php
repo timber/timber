@@ -2,6 +2,13 @@
 
 class TestTimberImageLetterbox extends TimberImage_UnitTestCase {
 
+	function setUp() {
+		parent::setUp();
+		if ( ! extension_loaded( 'gd' ) ) {
+			self::markTestSkipped( 'Letterbox image operation tests requires GD extension' );
+		}
+	}
+
 	function testLetterbox() {
 		$file_loc = TestTimberImage::copyTestImage( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
