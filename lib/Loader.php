@@ -23,7 +23,7 @@ class Loader {
 
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
-	public $locations;
+	private $locations;
 
 	/**
 	 * @param bool|string   $caller the calling directory or false
@@ -101,8 +101,8 @@ class Loader {
 	 */
 	protected function template_exists( $file ) {
 		foreach ( $this->locations as $dir ) {
-			$look_for = trailingslashit($dir).$file;
-			if ( file_exists($look_for) ) {
+			$look_for = $dir . $file;
+			if ( file_exists( $look_for ) ) {
 				return true;
 			}
 		}
@@ -112,7 +112,7 @@ class Loader {
 	/**
 	 * @return array
 	 */
-	public function get_locations_theme() {
+	private function get_locations_theme() {
 		$theme_locs = array();
 		$child_loc  = realpath( get_stylesheet_directory() );
 		$parent_loc = realpath( get_template_directory() );
@@ -155,7 +155,7 @@ class Loader {
 	 *
 	 * @return array
 	 */
-	public function get_locations_user() {
+	private function get_locations_user() {
 		$locs = array();
 		if ( isset(Timber::$locations) ) {
 			if ( is_string(Timber::$locations) ) {
@@ -175,7 +175,7 @@ class Loader {
 	 * @param bool|string   $caller the calling directory
 	 * @return array
 	 */
-	public function get_locations_caller( $caller = false ) {
+	private function get_locations_caller( $caller = false ) {
 		$locs = array();
 		if ( $caller && is_string($caller) ) {
 			$caller = realpath( $caller );
@@ -218,24 +218,9 @@ class Loader {
 	 * @return \Twig_Loader_Filesystem
 	 */
 	public function get_loader() {
-		$paths = array();
-		foreach ( $this->locations as $loc ) {
-			$loc = realpath($loc);
-			if ( is_dir($loc) ) {
-				$loc = realpath($loc);
-				$paths[] = $loc;
-			} else {
-				//error_log($loc.' is not a directory');
-			}
-		}
-		if ( !ini_get('open_basedir') ) {
-			$paths[] = '/';
-		} else {
-			$paths[] = ABSPATH;
-		}
+		$paths = array_merge( $this->locations, array( ini_get( 'open_basedir' ) ? ABSPATH : '/' ) );
 		$paths = apply_filters('timber/loader/paths', $paths);
-		$loader = new \Twig_Loader_Filesystem($paths);
-		return $loader;
+		return new \Twig_Loader_Filesystem($paths);
 	}
 
 	/**
