@@ -114,24 +114,29 @@ class Loader {
 	 */
 	public function get_locations_theme() {
 		$theme_locs = array();
-		$child_loc = get_stylesheet_directory();
-		$parent_loc = get_template_directory();
-		if ( DIRECTORY_SEPARATOR == '\\' ) {
-			$child_loc = str_replace('/', '\\', $child_loc);
-			$parent_loc = str_replace('/', '\\', $parent_loc);
-		}
-		$theme_locs[] = $child_loc;
-		foreach ( $this->get_locations_theme_dir() as $dirname ) {
-			$theme_locs[] = trailingslashit($child_loc).trailingslashit($dirname);
-		}
-		if ( $child_loc != $parent_loc ) {
-			$theme_locs[] = $parent_loc;
+		$child_loc  = realpath( get_stylesheet_directory() );
+		$parent_loc = realpath( get_template_directory() );
+		if ( is_dir( $child_loc ) ) {
+			$theme_locs[] = $child_loc;
+			$child_loc    = trailingslashit( $child_loc );
 			foreach ( $this->get_locations_theme_dir() as $dirname ) {
-				$theme_locs[] = trailingslashit($parent_loc).trailingslashit($dirname);
+				$tloc = realpath( $child_loc . $dirname );
+				if ( is_dir( $tloc ) ) {
+					$theme_locs[] = $tloc;
+				}
 			}
 		}
-		//now make sure theres a trailing slash on everything
-		$theme_locs = array_map('trailingslashit', $theme_locs);
+		if ( $child_loc !== $parent_loc && is_dir( $parent_loc ) ) {
+			$theme_locs[] = $parent_loc;
+			$parent_loc   = trailingslashit( $parent_loc );
+			foreach ( $this->get_locations_theme_dir() as $dirname ) {
+				$tloc = realpath( $parent_loc . $dirname );
+				if ( is_dir( $tloc ) ) {
+					$theme_locs[] = $tloc;
+				}
+			}
+		}
+
 		return $theme_locs;
 	}
 
@@ -173,12 +178,13 @@ class Loader {
 	public function get_locations_caller( $caller = false ) {
 		$locs = array();
 		if ( $caller && is_string($caller) ) {
-			$caller = trailingslashit($caller);
+			$caller = realpath( $caller );
 			if ( is_dir($caller) ) {
 				$locs[] = $caller;
 			}
+			$caller = trailingslashit( $caller );
 			foreach ( $this->get_locations_theme_dir() as $dirname ) {
-				$caller_sub = $caller.trailingslashit($dirname);
+				$caller_sub = realpath( $caller . $dirname );
 				if ( is_dir($caller_sub) ) {
 					$locs[] = $caller_sub;
 				}
@@ -201,6 +207,8 @@ class Loader {
 		$locs = array_merge($locs, $this->get_locations_theme());
 		$locs = array_merge($locs, $this->get_locations_caller($caller));
 		$locs = array_unique($locs);
+		//now make sure theres a trailing slash on everything
+		$locs = array_map( 'trailingslashit', $locs );
 		$locs = apply_filters('timber_locations', $locs);
 		$locs = apply_filters('timber/locations', $locs);
 		return $locs;
