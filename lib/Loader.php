@@ -115,23 +115,18 @@ class Loader {
 	 */
 	private function get_locations_theme() {
 		$theme_locs = array();
-		$child_loc  = realpath( get_stylesheet_directory() );
-		$parent_loc = realpath( get_template_directory() );
-		if ( is_dir( $child_loc ) ) {
-			$theme_locs[] = $child_loc;
-			$child_loc    = trailingslashit( $child_loc );
-			foreach ( $this->get_locations_theme_dir() as $dirname ) {
-				$tloc = realpath( $child_loc . $dirname );
-				if ( is_dir( $tloc ) ) {
-					$theme_locs[] = $tloc;
-				}
+		$theme_dirs = $this->get_locations_theme_dir();
+		$roots      = array( get_stylesheet_directory(), get_template_directory() );
+		$roots      = array_map( 'realpath', $roots );
+		$roots      = array_unique( $roots );
+		foreach ( $roots as $root ) {
+			if ( !is_dir( $root ) ) {
+				continue;
 			}
-		}
-		if ( $child_loc !== $parent_loc && is_dir( $parent_loc ) ) {
-			$theme_locs[] = $parent_loc;
-			$parent_loc   = trailingslashit( $parent_loc );
-			foreach ( $this->get_locations_theme_dir() as $dirname ) {
-				$tloc = realpath( $parent_loc . $dirname );
+			$theme_locs[] = $root;
+			$root         = trailingslashit( $root );
+			foreach ( $theme_dirs as $dirname ) {
+				$tloc = realpath( $root . $dirname );
 				if ( is_dir( $tloc ) ) {
 					$theme_locs[] = $tloc;
 				}
