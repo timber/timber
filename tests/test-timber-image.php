@@ -186,6 +186,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testAnimatedGifResize() {
+		if ( ! extension_loaded( 'imagick' ) ) {
+			self::markTestSkipped( 'Animated GIF resizing test requires Imagick extension' );
+		}
 		$image = self::copyTestImage('robocop.gif');
 		$data = array('crop' => 'default');
 		$data['size'] = array('width' => 90, 'height' => 90);
@@ -792,6 +795,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testResizeGif() {
+		if ( ! extension_loaded( 'imagick' ) ) {
+			self::markTestSkipped( 'Animated GIF resizing test requires Imagick extension' );
+		}
 		$filename = self::copyTestImage('loading.gif');
 		$gif_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
 		$str = '<img src="{{'."'$gif_url'".'|resize(200)}}" />';
