@@ -186,6 +186,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testAnimatedGifResize() {
+		if ( ! extension_loaded( 'imagick' ) ) {
+			self::markTestSkipped( 'Animated GIF resizing test requires Imagick extension' );
+		}
 		$image = self::copyTestImage('robocop.gif');
 		$data = array('crop' => 'default');
 		$data['size'] = array('width' => 90, 'height' => 90);
@@ -232,6 +235,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertTrue( $exists );
 		//make sure it's the width it's supposed to be
 		$image = wp_get_image_editor( $resized_path );
+		if ( $image instanceof WP_Error ) {
+			self::markTestSkipped( 'Tall image resizing test is skipped because no image editor is provided by WordPress, make sure that either GD or Imagick extension is installed' );
+		}
 		$current_size = $image->get_size();
 		$w = $current_size['width'];
 		$this->assertEquals( $w, 600 );
@@ -424,6 +430,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testPNGtoJPG() {
+		if ( ! extension_loaded( 'gd' ) ) {
+			self::markTestSkipped( 'PNG to JPEG conversion test requires GD extension' );
+		}
 		$file_loc = self::copyTestImage( 'eastern-trans.png' );
 		$upload_dir = wp_upload_dir();
 		$new_file = TimberImageHelper::img_to_jpg( $upload_dir['url'].'/eastern-trans.png', '#FFFF00' );
@@ -586,6 +595,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testLetterboxImageDeletion() {
+		if ( ! extension_loaded( 'gd' ) ) {
+			self::markTestSkipped( 'Letterbox image test requires GD extension' );
+		}
 		$data = array();
 		$file = self::copyTestImage( 'city-museum.jpg' );
 		$upload_dir = wp_upload_dir();
@@ -617,6 +629,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testThemeImageLetterbox() {
+		if ( ! extension_loaded( 'gd' ) ) {
+			self::markTestSkipped( 'Letterbox image test requires GD extension' );
+		}
 		$dest = get_template_directory().'/images/cardinals.jpg';
 		copy( __DIR__.'/assets/cardinals.jpg', $dest );
 		$image = get_template_directory_uri().'/images/cardinals.jpg';
@@ -763,6 +778,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testGifToJpg() {
+		if ( ! extension_loaded( 'gd' ) ) {
+			self::markTestSkipped( 'JPEG conversion test requires GD extension' );
+		}
 		$filename = self::copyTestImage('loading.gif');
 		$gif_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
 		$str = '<img src="{{'."'$gif_url'".'|tojpg}}" />';
@@ -777,6 +795,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testResizeGif() {
+		if ( ! extension_loaded( 'imagick' ) ) {
+			self::markTestSkipped( 'Animated GIF resizing test requires Imagick extension' );
+		}
 		$filename = self::copyTestImage('loading.gif');
 		$gif_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
 		$str = '<img src="{{'."'$gif_url'".'|resize(200)}}" />';
