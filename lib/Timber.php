@@ -53,7 +53,7 @@ class Timber {
 			$this->test_compatibility();
 			$this->backwards_compatibility();
 			$this->init_constants();
-			$this->init();
+			$this::init();
 		}
 	}
 
@@ -100,7 +100,7 @@ class Timber {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	protected function init() {
+	protected static function init() {
 		if ( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
 			Twig::init();
 			ImageHelper::init();
