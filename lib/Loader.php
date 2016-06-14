@@ -227,6 +227,7 @@ class Loader {
 		}
 		$paths = apply_filters('timber/loader/paths', $paths);
 		$loader = new \Twig_Loader_Filesystem($paths);
+		$loader = apply_filters('timber/loader/loader', $loader);
 		return $loader;
 	}
 
