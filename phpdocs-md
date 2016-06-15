@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+
+$autoLoadPaths = array(__DIR__.'/vendor/autoload.php', __DIR__.'/../vendor/autoload.php', getcwd().'/vendor/autoload.php');
+foreach($autoLoadPaths as $autoloader) {
+    if( file_exists($autoloader) ) {
+        require $autoloader;
+        break;
+    }
+}
+
+use PHPDocsMD\Console\CLI;
+
+$cli = new CLI();
+$code = $cli->run();
+exit($code);
+

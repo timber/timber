@@ -39,7 +39,7 @@
     "satooshi/php-coveralls": "1.0.*",
     "wpackagist-plugin/advanced-custom-fields": "4.*",
     "phpdocumentor/phpdocumentor": "2.*",
-    "jarednova/markdowndocs": "dev-master"
+    "victorjonsson/markdowndocs": "dev-master"
   },
   "autoload": {
     "psr-4": {
@@ -51,18 +51,6 @@
     {
       "type": "composer",
       "url": "https://wpackagist.org"
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "jarednova/markdowndocs",
-        "version": "dev-master",
-        "source": {
-          "type": "git",
-          "url": "https://github.com/jarednova/PHP-Markdown-Documentation-Generator.git",
-          "reference": "master"
-        }
-      }
     }
   ]
 }
