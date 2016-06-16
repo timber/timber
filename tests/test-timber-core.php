@@ -6,6 +6,12 @@ class TimberCoreTester extends TimberPost {
 	}
 }
 
+class IHavePrivates {
+
+	public $foo = 'foo';
+	private $bar = 'bar';
+}
+
 class TestTimberCore extends Timber_UnitTestCase {
 
 	function testCoreImport() {
@@ -20,6 +26,15 @@ class TestTimberCore extends Timber_UnitTestCase {
 		$tc->import($object, true);
 		$this->assertEquals('Dark Helmet', $tc->foo);
 		$this->assertEquals('Drebin', $tc->frank);
+	}
+
+	function testCoreImportWithPrivateProperties() {
+		$post_id = $this->factory->post->create();
+		$tc = new TimberPost($post_id);
+		$object = new IHavePrivates();
+		$tc->import($object);
+		$this->assertEquals($tc->foo, 'foo');
+		$this->assertEquals($tc->bar, false);
 	}
 
 }
