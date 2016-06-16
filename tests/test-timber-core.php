@@ -42,7 +42,6 @@ class TestTimberCore extends Timber_UnitTestCase {
 		$object = new ClassB();
 		$tc->import((object) (array) $object);
 		$this->assertEquals('public B', $tc->public);
-		$this->assertEquals('protected B', $tc->protected);
 		$this->assertEquals('value from B', $tc->existing);
 	}
 
