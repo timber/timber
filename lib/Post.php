@@ -163,7 +163,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * @var PostType $_type stores the PostType object for the Post
 	 */
-	private $_type;
+	protected $__type;
 
 	/**
 	 * If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
@@ -1018,10 +1018,13 @@ class Post extends Core implements CoreInterface {
 	 * @return PostType
 	 */
 	public function type() {
-		if ( !$this->_type instanceof PostType ) {
-			$this->_type = new PostType($this->post_type);
+		if ( isset($this->custom['type']) ) {
+			return $this->custom['type'];
 		}
-		return $this->_type;
+		if ( !$this->__type instanceof PostType ) {
+			$this->__type = new PostType($this->post_type);
+		}
+		return $this->__type;
 	}
 
 	/**
