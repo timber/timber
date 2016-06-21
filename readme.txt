@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 Tested up to: 4.5.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 1.0.5 =
+* Restored prior `{{ post.type }}` behavior for existing custom fields (@jarednova) 6c9574912e526b8589eb134b79820c7e239a1dda
+* Fixed errors in PHP 7 (@FlyingDR) 48ba0fc125c2d19eeb0de0a895a83a9d3bb5a398
+* Misc bug fixes and upkeep (@connorjburton + @jarednova)
 
 = 1.0.4 =
 * New method for `{{ post.type }}` this makes it easy to access things like `{{post.type.labels.name}}` right in Twig https://github.com/timber/timber/pull/1003
