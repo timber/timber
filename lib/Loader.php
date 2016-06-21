@@ -23,7 +23,7 @@ class Loader {
 
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
-	private $locations;
+	protected $locations;
 
 	/**
 	 * @param bool|string   $caller the calling directory or false
@@ -113,7 +113,7 @@ class Loader {
 	/**
 	 * @return array
 	 */
-	private function get_locations_theme() {
+	protected function get_locations_theme() {
 		$theme_locs = array();
 		$theme_dirs = $this->get_locations_theme_dir();
 		$roots      = array( get_stylesheet_directory(), get_template_directory() );
@@ -140,7 +140,7 @@ class Loader {
 	 * returns an array of the directory inside themes that holds twig files
 	 * @return string[] the names of directores, ie: array('templats', 'views');
 	 */
-	private function get_locations_theme_dir() {
+	protected function get_locations_theme_dir() {
 		if ( is_string(Timber::$dirname) ) {
 			return array(Timber::$dirname);
 		}
@@ -151,7 +151,7 @@ class Loader {
 	 *
 	 * @return array
 	 */
-	private function get_locations_user() {
+	protected function get_locations_user() {
 		$locs = array();
 		if ( isset(Timber::$locations) ) {
 			if ( is_string(Timber::$locations) ) {
@@ -171,7 +171,7 @@ class Loader {
 	 * @param bool|string   $caller the calling directory
 	 * @return array
 	 */
-	private function get_locations_caller( $caller = false ) {
+	protected function get_locations_caller( $caller = false ) {
 		$locs = array();
 		if ( $caller && is_string($caller) ) {
 			$caller = realpath( $caller );
