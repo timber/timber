@@ -18,3 +18,4 @@ if ( file_exists( $composer_autoload = __DIR__ . '/vendor/autoload.php' ) /* che
 ) {
 	require_once $composer_autoload;
 }
+new \Timber\Timber;
