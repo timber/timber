@@ -44,8 +44,7 @@
   "autoload": {
     "psr-4": {
       "Timber\\": "lib/"
-    },
-    "files": ["init.php"]
+    }
   },
   "repositories": [
     {

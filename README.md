@@ -56,7 +56,12 @@ If your theme is not setup to pull in Composer's autoload file, you will need to
 require_once(__DIR__ . '/vendor/autoload.php');
 ```
 
-At the top of your `functions.php` file.
+at the top of your `functions.php` file.
+
+Initialize Timber with
+```php
+$timber = new \Timber\Timber();
+```
 * * *
 
 ### Mission Statement
