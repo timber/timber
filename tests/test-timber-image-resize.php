@@ -2,6 +2,13 @@
 
 class TestTimberImageResize extends Timber_UnitTestCase {
 
+	function setUp() {
+		parent::setUp();
+		if ( ! extension_loaded( 'gd' ) ) {
+			self::markTestSkipped( 'Image resizing tests requires GD extension' );
+		}
+	}
+
 	function testCropCenter() {
 		$cropper = TestTimberImage::copyTestImage('cropper.png');
 		$resized = TimberImageHelper::resize($cropper, 100, 300, 'center');

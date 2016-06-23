@@ -2,6 +2,13 @@
 
 	class TestTimberImageToJPG extends Timber_UnitTestCase {
 
+		function setUp() {
+			parent::setUp();
+			if ( ! extension_loaded( 'gd' ) ) {
+				self::markTestSkipped( 'JPEG conversion tests requires GD extension' );
+			}
+		}
+
 		/**
      	 * @expectedException Twig_Error_Runtime
      	 */

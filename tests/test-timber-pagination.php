@@ -128,6 +128,16 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( '/apricot/page=2', $pagination['prev']['link'] );
 	}
 
+	function testPaginationWithMoreThan10Pages( $struc = '/%postname%/' ) {
+		global $wp_rewrite;
+		$wp_rewrite->permalink_structure = $struc;
+		update_option( 'permalink_structure', $struc );
+		$posts = $this->factory->post->create_many( 150 );
+		$this->go_to( home_url( '/page/13' ) );
+		$pagination = Timber::get_pagination();
+		$this->assertEquals( 'http://example.org/page/14', $pagination['next']['link'] );
+	}
+
 
 
 }
