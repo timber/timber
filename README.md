@@ -6,7 +6,7 @@ By Jared Novack (<a href="https://twitter.com/jarednova">@JaredNova</a>) and <a 
 
 [![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.org/timber/timber)
 [![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg?style=flat-square)](https://coveralls.io/r/timber/timber?branch=master)
-[![Dependency Status](https://img.shields.io/versioneye/d/timber/timber.svg?style=flat-square)](https://www.versioneye.com/user/projects/574e40e6e298f30048059b9f)
+[![Dependency Status](https://www.versioneye.com/user/projects/574e40e6e298f30048059b9f/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/574e40e6e298f30048059b9f)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
 [![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
 [![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg?style=flat-square)](https://wordpress.org/plugins/timber-library/)
