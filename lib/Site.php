@@ -123,7 +123,7 @@ class Site extends Core implements CoreInterface {
 	/**
 	 * Switches to the blog requested in the request
 	 * @param string|integer|null $site_name_or_id
-	 * @return integer the ID of the existing blog currently being hanlded by WP
+	 * @return array with the ID of the old and new blogs
 	 */
 	protected static function switch_to_blog( $site_name_or_id ) {
 		if ( $site_name_or_id === null ) {
