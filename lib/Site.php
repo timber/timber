@@ -110,19 +110,22 @@ class Site extends Core implements CoreInterface {
 	 * @param string|int $site_name_or_id
 	 */
 	public function __construct( $site_name_or_id = null ) {
-		$this->init();
 		if ( is_multisite() ) {
-			$this->init_as_multisite($site_name_or_id);
-		} else {
-			$this->init_as_singlesite();
-		}
+			$blog_ids = $this->switch_to_blog($site_name_or_id);
+			$this->init();
+			$this->init_as_multisite($blog_ids['new']);
+			return switch_to_blog($blog_ids['old']);
+		} 
+		$this->init();
+		$this->init_as_singlesite();
 	}
 
 	/**
-	 * @internal
-	 * @param string|int $site_name_or_id
+	 * Switches to the blog requested in the request
+	 * @param string|integer|null $site_name_or_id
+	 * @return integer the ID of the existing blog currently being hanlded by WP
 	 */
-	protected function init_as_multisite( $site_name_or_id = null ) {
+	protected static function switch_to_blog( $site_name_or_id ) {
 		if ( $site_name_or_id === null ) {
 			//this is necessary for some reason, otherwise returns 1 all the time
 			if ( is_multisite() ) {
@@ -134,7 +137,15 @@ class Site extends Core implements CoreInterface {
 		$old_id = get_current_blog_id();
 		$info = get_blog_details($site_name_or_id);
 		switch_to_blog($info->blog_id);
+		return array('old' => $old_id, 'new' => $info->blog_id);
+	}
 
+	/**
+	 * @internal
+	 * @param integer $site_id
+	 */
+	protected function init_as_multisite( $site_id ) {
+		$info = get_blog_details($site_id);
 		$this->import($info);
 		$this->ID = $info->blog_id;
 		$this->id = $this->ID;
@@ -147,7 +158,7 @@ class Site extends Core implements CoreInterface {
 		$this->multisite = true;
 
 		//switch back to the before time
-		switch_to_blog($old_id);
+		
 	}
 
 	/**
