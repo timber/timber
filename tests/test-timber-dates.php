@@ -101,4 +101,10 @@
 			$this->assertEquals('Thing is on Oct 29, 2015', $str);
 		}
 
+		function testUnixDateEdgeCase() {
+			$twig = "Thing is on {{'1457395200'|date('M j, Y')}}";
+			$str = Timber::compile_string($twig);
+			$this->assertEquals('Thing is on Mar 8, 2016', $str);
+		}
+
 	}
