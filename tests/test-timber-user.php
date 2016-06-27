@@ -27,6 +27,12 @@
 			$this->assertEquals('Sixteenth President', $str);
 		}
 
+		function testInitShouldUnsetPassword() {
+			$uid = $this->factory->user->create(array('display_name' => 'Tom Riddle'));
+			$user = new TimberUser($uid );
+			$this->assertFalse(property_exists( $user, 'user_pass'));
+		}
+
 		function testInitWithObject(){
 			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln'));
 			$uid = get_user_by('id', $uid);
