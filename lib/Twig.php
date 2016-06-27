@@ -271,7 +271,7 @@ class Twig {
 
 		if ( $date instanceof \DateTime ) {
 			$timestamp = $date->getTimestamp() + $date->getOffset();
-		} else if ( is_numeric($date) && strtotime($date) === false ) {
+		} else if ( is_numeric($date) && (strtotime($date) === false || strlen($date) !== 8) ) {
 			$timestamp = intval($date);
 		} else {
 			$timestamp = strtotime($date);
