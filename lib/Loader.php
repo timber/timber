@@ -79,21 +79,40 @@ class Loader {
 		return apply_filters('timber/output', $output);
 	}
 
+	private function maybe_add_twig_extension( $filename ) {
+		$with_extension = $filename . '.twig';
+
+		return (
+			stripos( strrev( $filename ), strrev( '.twig' ) ) === false &&
+			self::template_exists( $with_extension )
+		) ? $with_extension : false;
+	}
+
 	/**
-	 * @param array $filenames
-	 * @return bool
+	 * @param string|array $filenames
+	 * @return string|boolean
 	 */
 	public function choose_template( $filenames ) {
-		if ( is_array($filenames) ) {
-			/* its an array so we have to figure out which one the dev wants */
-			foreach ( $filenames as $filename ) {
-				if ( self::template_exists($filename) ) {
-					return $filename;
-				}
+		static $func = __FUNCTION__;
+
+		if( is_array($filenames ) ) {
+			//if array, default to first element by default
+			$file = $filenames[0];
+			foreach( $filenames as $name ) {
+				//loop over array, call this func, if we find a template that exists, exit out the loop
+				if( $file = $this->$func($name) ) break;
 			}
-			return $filenames[0];
+		} elseif ( is_string($filenames) ) {
+			/**
+			 * first checks if the template provided doesn't exist, if so, try and add `.twig`, if that fails return false which
+			 * will continue the recursion if we are looping over an array this point
+			 *
+			 * if it does exist, return the filename
+			 */
+			$file = ( !$this->template_exists($filenames) ) ? $this->maybe_add_twig_extension( $filenames ) : $filenames;
 		}
-		return $filenames;
+
+		return $file;
 	}
 
 	/**
@@ -104,7 +123,7 @@ class Loader {
 		foreach ( $this->locations as $dir ) {
 			$look_for = $dir . $file;
 			if ( file_exists( $look_for ) ) {
-				return true;
+				return $file;
 			}
 		}
 		return false;
