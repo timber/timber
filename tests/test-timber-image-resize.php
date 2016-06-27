@@ -116,10 +116,22 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 	function testWPMLurls() {
 		// this could be used to test the url issue caused by the WPML language identifier in the url
 		// However, WPML can't be installed with composer so this test doesn't accomplish much
-		$arch = TestTimberImage::copyTestImage('arch.jpg');
-		$resized = TimberImageHelper::resize($arch, 50, 50);
-		// make sure the base url has not been duplicated (https://github.com/timber/timber/issues/405)
-		$this->assertEquals( substr_count($resized, 'example.org'), 1 );
+
+		// test with a local and external file
+		foreach ([
+					'arch.jpg',
+					'https://raw.githubusercontent.com/timber/timber/master/tests/assets/arch-2night.jpg'
+				] as $img) {
+
+			// copy image if it's local
+			if (strpos($img, '://') === false) {
+				$img = TestTimberImage::copyTestImage($img);
+			}
+			$resized = TimberImageHelper::resize($img, 50, 50);
+
+			// make sure the base url has not been duplicated (https://github.com/timber/timber/issues/405)
+			$this->assertLessThanOrEqual( 1, substr_count($resized, 'example.org') );
+		}
 	}
 
 }
