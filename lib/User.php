@@ -67,10 +67,9 @@ class User extends Core implements CoreInterface {
 
 	/**
 	 * @param int|bool $uid
-	 * @param bool $include_pass Whether to include the user's hashed password
 	 */
-	public function __construct( $uid = false, $include_pass = false ) {
-		$this->init($uid, $include_pass);
+	public function __construct( $uid = false ) {
+		$this->init($uid);
 	}
 
 	/**
@@ -119,9 +118,8 @@ class User extends Core implements CoreInterface {
 	/**
 	 * @internal
 	 * @param int|bool $uid The user ID to use
-	 * @param bool $include_pass Whether to include the user's hashed password
 	 */
-	protected function init( $uid = false, $include_pass = false ) {
+	protected function init( $uid = false ) {
 		if ( $uid === false ) {
 			$uid = get_current_user_id();
 		}
@@ -144,9 +142,7 @@ class User extends Core implements CoreInterface {
 				$this->import($data);
 			}
 		}
-		if ( ! $include_pass ) {
-			unset( $this->user_pass );
-		}
+		unset($this->user_pass);
 		$this->id = $this->ID;
 		$this->name = $this->name();
 		$this->avatar = new Image(get_avatar_url($this->id));
