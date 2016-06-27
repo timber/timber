@@ -187,7 +187,7 @@ class ImageHelper {
 	 */
 	protected static function add_constants() {
 		if ( !defined('WP_CONTENT_SUBDIR') ) {
-			$wp_content_path = str_replace(home_url(), '', WP_CONTENT_URL);
+			$wp_content_path = str_replace(site_url(), '', WP_CONTENT_URL);
 			define('WP_CONTENT_SUBDIR', $wp_content_path);
 		}
 	}
@@ -199,7 +199,7 @@ class ImageHelper {
 	 */
 	static function add_filters() {
 		add_filter('upload_dir', function( $arr ) {
-			$arr['relative'] = str_replace(home_url(), '', $arr['baseurl']);
+			$arr['relative'] = str_replace(site_url(), '', $arr['baseurl']);
 			return $arr;
 		} );
 	}
@@ -351,7 +351,7 @@ class ImageHelper {
 			}
 		} else {
 			if ( !$result['absolute'] ) {
-				$tmp = home_url().$tmp;
+				$tmp = site_url().$tmp;
 			}
 			if ( 0 === strpos($tmp, $upload_dir['baseurl']) ) {
 				$result['base'] = self::BASE_UPLOADS; // upload based
