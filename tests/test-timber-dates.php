@@ -107,4 +107,22 @@
 			$this->assertEquals('Thing is on Mar 8, 2016', $str);
 		}
 
+		function testEightDigitsString() {
+			$twig = "Thing is on {{'20160505'|date('M j, Y')}}";
+			$str = Timber::compile_string($twig);
+			$this->assertEquals('Thing is on May 5, 2016', $str);
+		}
+
+		function testEightDigits() {
+			$twig = "Thing is on {{20160505|date('M j, Y')}}";
+			$str = Timber::compile_string($twig);
+			$this->assertEquals('Thing is on May 5, 2016', $str);
+		}
+
+		function testSeventiesDates() {
+			$twig = "Nixon was re-elected on {{'89942400'|date('M j, Y')}}, long may he reign!";
+			$str = Timber::compile_string($twig);
+			$this->assertEquals('Nixon was re-elected on Nov 7, 1972, long may he reign!', $str);
+		}
+
 	}
