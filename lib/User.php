@@ -142,6 +142,7 @@ class User extends Core implements CoreInterface {
 				$this->import($data);
 			}
 		}
+		unset($this->user_pass);
 		$this->id = $this->ID;
 		$this->name = $this->name();
 		$this->avatar = new Image(get_avatar_url($this->id));
