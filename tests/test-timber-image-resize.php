@@ -118,17 +118,17 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		// However, WPML can't be installed with composer so this test mocks the WPML plugin
 
 		// WPML uses a filter to alter the home_url
-		$home_url_filter = function($url){ return $url.'/en'; };
+		$home_url_filter = function( $url ) { return $url.'/en'; };
 		add_filter( 'home_url', $home_url_filter, -10, 4 );
 
 		// test with a local and external file
-		foreach ([
+		foreach ( [
 					'arch.jpg',
 					'https://raw.githubusercontent.com/timber/timber/master/tests/assets/arch-2night.jpg'
-				] as $img) {
+				] as $img ) {
 
 			// copy image if it's local
-			if (strpos($img, '://') === false) {
+			if ( strpos($img, '://') === false ) {
 				$img = TestTimberImage::copyTestImage($img);
 			}
 
