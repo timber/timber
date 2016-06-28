@@ -68,7 +68,7 @@ class Loader {
 				do_action('timber_loader_render_file', $result);
 			}
 			$data = apply_filters('timber_loader_render_data', $data);
-			$data = apply_filters('timber/loader/render_data', $data);
+			$data = apply_filters( 'timber/loader/render_data', $data, $file );
 			$output = $twig->render($file, $data);
 		}
 
@@ -76,7 +76,7 @@ class Loader {
 			$this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
 		}
 		$output = apply_filters('timber_output', $output);
-		return apply_filters('timber/output', $output);
+		return apply_filters( 'timber/output', $output, $file, $data );
 	}
 
 	/**
