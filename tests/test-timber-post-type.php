@@ -37,4 +37,22 @@
 			$this->assertEquals('Posts', $str);
 		}
 
+		function testLegacyTypeCustomField() {
+			$post_id = $this->factory->post->create();
+			update_post_meta($post_id, 'type', 'numberwang');
+			$post = new TimberPost($post_id);
+			$template = '{{post.type}}';
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('numberwang', $str);
+		}
+
+		function testUnderscoreTypeCustomField() {
+			$post_id = $this->factory->post->create();
+			update_post_meta($post_id, '_type', 'numberwang');
+			$post = new TimberPost($post_id);
+			$template = '{{post._type}}';
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('numberwang', $str);
+		}
+
 	}

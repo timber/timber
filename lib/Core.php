@@ -62,6 +62,9 @@ abstract class Core {
 		}
 		if ( is_array($info) ) {
 			foreach ( $info as $key => $value ) {
+				if ( $key === '' || ord($key[0]) === 0 ) {
+					continue;
+				}
 				if ( !empty($key) && $force ) {
 					$this->$key = $value;
 				} else if ( !empty($key) && !method_exists($this, $key) ) {

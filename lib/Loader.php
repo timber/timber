@@ -23,7 +23,7 @@ class Loader {
 
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
-	public $locations;
+	protected $locations;
 
 	/**
 	 * @param bool|string   $caller the calling directory or false
@@ -37,13 +37,14 @@ class Loader {
 	/**
 	 * @param string        $file
 	 * @param array         $data
-	 * @param bool          $expires
+	 * @param array|bool    $expires
 	 * @param string        $cache_mode
 	 * @return bool|string
 	 */
 	public function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
 		// Different $expires if user is anonymous or logged in
 		if ( is_array($expires) ) {
+			/** @var array $expires */
 			if ( is_user_logged_in() && isset($expires[1]) ) {
 				$expires = $expires[1];
 			} else {
@@ -101,7 +102,7 @@ class Loader {
 	 */
 	protected function template_exists( $file ) {
 		foreach ( $this->locations as $dir ) {
-			$look_for = trailingslashit($dir).$file;
+			$look_for = $dir.$file;
 			if ( file_exists($look_for) ) {
 				return true;
 			}
@@ -112,26 +113,26 @@ class Loader {
 	/**
 	 * @return array
 	 */
-	public function get_locations_theme() {
+	protected function get_locations_theme() {
 		$theme_locs = array();
-		$child_loc = get_stylesheet_directory();
-		$parent_loc = get_template_directory();
-		if ( DIRECTORY_SEPARATOR == '\\' ) {
-			$child_loc = str_replace('/', '\\', $child_loc);
-			$parent_loc = str_replace('/', '\\', $parent_loc);
-		}
-		$theme_locs[] = $child_loc;
-		foreach ( $this->get_locations_theme_dir() as $dirname ) {
-			$theme_locs[] = trailingslashit($child_loc).trailingslashit($dirname);
-		}
-		if ( $child_loc != $parent_loc ) {
-			$theme_locs[] = $parent_loc;
-			foreach ( $this->get_locations_theme_dir() as $dirname ) {
-				$theme_locs[] = trailingslashit($parent_loc).trailingslashit($dirname);
+		$theme_dirs = $this->get_locations_theme_dir();
+		$roots      = array(get_stylesheet_directory(), get_template_directory());
+		$roots      = array_map('realpath', $roots);
+		$roots      = array_unique($roots);
+		foreach ( $roots as $root ) {
+			if ( !is_dir($root) ) {
+				continue;
+			}
+			$theme_locs[] = $root;
+			$root         = trailingslashit($root);
+			foreach ( $theme_dirs as $dirname ) {
+				$tloc = realpath($root.$dirname);
+				if ( is_dir($tloc) ) {
+					$theme_locs[] = $tloc;
+				}
 			}
 		}
-		//now make sure theres a trailing slash on everything
-		$theme_locs = array_map('trailingslashit', $theme_locs);
+
 		return $theme_locs;
 	}
 
@@ -139,7 +140,7 @@ class Loader {
 	 * returns an array of the directory inside themes that holds twig files
 	 * @return string[] the names of directores, ie: array('templats', 'views');
 	 */
-	private function get_locations_theme_dir() {
+	protected function get_locations_theme_dir() {
 		if ( is_string(Timber::$dirname) ) {
 			return array(Timber::$dirname);
 		}
@@ -150,7 +151,7 @@ class Loader {
 	 *
 	 * @return array
 	 */
-	public function get_locations_user() {
+	protected function get_locations_user() {
 		$locs = array();
 		if ( isset(Timber::$locations) ) {
 			if ( is_string(Timber::$locations) ) {
@@ -170,15 +171,16 @@ class Loader {
 	 * @param bool|string   $caller the calling directory
 	 * @return array
 	 */
-	public function get_locations_caller( $caller = false ) {
+	protected function get_locations_caller( $caller = false ) {
 		$locs = array();
 		if ( $caller && is_string($caller) ) {
-			$caller = trailingslashit($caller);
+			$caller = realpath($caller);
 			if ( is_dir($caller) ) {
 				$locs[] = $caller;
 			}
+			$caller = trailingslashit($caller);
 			foreach ( $this->get_locations_theme_dir() as $dirname ) {
-				$caller_sub = $caller.trailingslashit($dirname);
+				$caller_sub = realpath($caller.$dirname);
 				if ( is_dir($caller_sub) ) {
 					$locs[] = $caller_sub;
 				}
@@ -201,6 +203,8 @@ class Loader {
 		$locs = array_merge($locs, $this->get_locations_theme());
 		$locs = array_merge($locs, $this->get_locations_caller($caller));
 		$locs = array_unique($locs);
+		//now make sure theres a trailing slash on everything
+		$locs = array_map('trailingslashit', $locs);
 		$locs = apply_filters('timber_locations', $locs);
 		$locs = apply_filters('timber/locations', $locs);
 		return $locs;
@@ -210,28 +214,13 @@ class Loader {
 	 * @return \Twig_Loader_Filesystem
 	 */
 	public function get_loader() {
-		$paths = array();
-		foreach ( $this->locations as $loc ) {
-			$loc = realpath($loc);
-			if ( is_dir($loc) ) {
-				$loc = realpath($loc);
-				$paths[] = $loc;
-			} else {
-				//error_log($loc.' is not a directory');
-			}
-		}
-		if ( !ini_get('open_basedir') ) {
-			$paths[] = '/';
-		} else {
-			$paths[] = ABSPATH;
-		}
+		$paths = array_merge($this->locations, array(ini_get('open_basedir') ? ABSPATH : '/'));
 		$paths = apply_filters('timber/loader/paths', $paths);
-		$loader = new \Twig_Loader_Filesystem($paths);
-		return $loader;
+		return new \Twig_Loader_Filesystem($paths);
 	}
 
 	/**
-	 * @return Twig_Environment
+	 * @return \Twig_Environment
 	 */
 	public function get_twig() {
 		$loader = $this->get_loader();

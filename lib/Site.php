@@ -110,19 +110,22 @@ class Site extends Core implements CoreInterface {
 	 * @param string|int $site_name_or_id
 	 */
 	public function __construct( $site_name_or_id = null ) {
-		$this->init();
 		if ( is_multisite() ) {
-			$this->init_as_multisite($site_name_or_id);
-		} else {
-			$this->init_as_singlesite();
-		}
+			$blog_ids = self::switch_to_blog($site_name_or_id);
+			$this->init();
+			$this->init_as_multisite($blog_ids['new']);
+			return switch_to_blog($blog_ids['old']);
+		} 
+		$this->init();
+		$this->init_as_singlesite();
 	}
 
 	/**
-	 * @internal
-	 * @param string|int $site_name_or_id
+	 * Switches to the blog requested in the request
+	 * @param string|integer|null $site_name_or_id
+	 * @return array with the ID of the old and new blogs
 	 */
-	protected function init_as_multisite( $site_name_or_id = null ) {
+	protected static function switch_to_blog( $site_name_or_id ) {
 		if ( $site_name_or_id === null ) {
 			//this is necessary for some reason, otherwise returns 1 all the time
 			if ( is_multisite() ) {
@@ -134,21 +137,25 @@ class Site extends Core implements CoreInterface {
 		$old_id = get_current_blog_id();
 		$info = get_blog_details($site_name_or_id);
 		switch_to_blog($info->blog_id);
+		return array('old' => $old_id, 'new' => $info->blog_id);
+	}
 
+	/**
+	 * @internal
+	 * @param integer $site_id
+	 */
+	protected function init_as_multisite( $site_id ) {
+		$info = get_blog_details($site_id);
 		$this->import($info);
 		$this->ID = $info->blog_id;
 		$this->id = $this->ID;
 		$this->name = $this->blogname;
 		$this->title = $this->blogname;
-		$this->url = get_bloginfo('url');
 		$theme_slug = get_blog_option($info->blog_id, 'stylesheet');
 		$this->theme = new Theme($theme_slug);
 		$this->description = get_blog_option($info->blog_id, 'blogdescription');
 		$this->admin_email = get_blog_option($info->blog_id, 'admin_email');
 		$this->multisite = true;
-
-		//switch back to the before time
-		switch_to_blog($old_id);
 	}
 
 	/**
@@ -160,7 +167,6 @@ class Site extends Core implements CoreInterface {
 		$this->name = get_bloginfo('name');
 		$this->title = $this->name;
 		$this->description = get_bloginfo('description');
-		$this->url = get_bloginfo('url');
 		$this->theme = new Theme();
 		$this->language_attributes = Helper::function_wrapper('language_attributes');
 		$this->multisite = false;
@@ -171,6 +177,7 @@ class Site extends Core implements CoreInterface {
 	 * @internal
 	 */
 	protected function init() {
+		$this->url = home_url();
 		$this->rdf = get_bloginfo('rdf_url');
 		$this->rss = get_bloginfo('rss_url');
 		$this->rss2 = get_bloginfo('rss2_url');
