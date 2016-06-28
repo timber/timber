@@ -1,3 +1,5 @@
+# ACF Cookbook
+
 Timber is designed to play nicely with (the amazing) [Advanced Custom Fields](http://www.advancedcustomfields.com/). It's not a requirement, of course.
 
 While data saved by ACF is available via `{{post.my_acf_field}}` you will often need to do some additional work to get back the _kind_ of data you want. For example, images are stored as image ID#s which you might want to translate into a specific image object. Read on to learn more about those specific exceptions.
@@ -58,6 +60,7 @@ You can now use all the above functions to transform your custom images in the s
 ### Repeater field
 
 You can access repeater fields within in twig files:
+
 ```twig
 {# single.twig #}
 <h2>{{post.title}}</h2>

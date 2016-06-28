@@ -1,6 +1,8 @@
+# WooCommerce
+
 Someone who has done Timber/WooCommerce integration: help us get this started!
 
-# Point of entry - main WooCommerce PHP file
+## Point of entry - main WooCommerce PHP file
 The first step to get your WooCommerce project integrated with Timber is creating a file named `woocommerce.php` in the root of your theme. That will establish the context and data to be passed to your twig files:
 
 ```php

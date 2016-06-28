@@ -1,3 +1,5 @@
+# Debugging
+
 ### Using Twig's native functions
 Twig includes a `dump` function that can output the properties of an object. To use `WP_DEBUG` must be set to true.
 

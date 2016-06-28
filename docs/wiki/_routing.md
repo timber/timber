@@ -1,3 +1,5 @@
+# Routing
+
 Among its other special powers, Timber includes modern routing in the Express.js/Ruby on Rails mold, making it easy for you to implement custom pagination--and anything else you might imagine in your wildest dreams of URLs and parameters. OMG so easy!
 
 #### Some examples

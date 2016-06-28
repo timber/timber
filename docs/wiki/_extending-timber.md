@@ -1,4 +1,4 @@
-## Extending Objects
+# Extending Objects
 
 Myth: Timber is for making simple themes. Fact: It's for making incredibly complex themes _look_ easy. But yes, you can also make simple sites from it.
 

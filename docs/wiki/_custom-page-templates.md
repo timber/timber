@@ -1,3 +1,5 @@
+# Custom Page Templates
+
 There are a few ways to manage custom pages in WordPress and Timber, in order from simple-to-complex:
 
 ### Custom Twig File

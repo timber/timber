@@ -17,7 +17,7 @@ Timber::render('sidebar.twig', $context);
 
 * Use that php file within your main php file (home.php, single.php, archive.php, etc):
 
-```
+```php
 <?php
 /* single.php */
 $context = Timber::get_context();

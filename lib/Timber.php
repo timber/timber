@@ -20,7 +20,8 @@ use Timber\Loader;
  *
  * Main class called Timber for this plugin.
  *
- * Usage:
+ * @example
+ * ```php
  *  $posts = Timber::get_posts();
  *  $posts = Timber::get_posts('post_type = article')
  *  $posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format.
@@ -29,6 +30,7 @@ use Timber\Loader;
  *  $context = Timber::get_context(); // returns wp favorites!
  *  $context['posts'] = $posts;
  *  Timber::render('index.twig', $context);
+ * ```
  */
 class Timber {
 

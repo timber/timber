@@ -7,15 +7,27 @@ You can just grab the all-things-included plugin at [WordPress.org](http://wordp
 
 #### Via GitHub (for developers)
 
-##### 1) Navigate to your WordPress plugins directory
-	$ cd ~/Sites/mywordpress/wp-content/plugins
+The GitHub version of Timber requires [Composer](https://getcomposer.org/download/). If you'd prefer one-click installation, you should use the [WordPress.org](https://wordpress.org/plugins/timber-library/) version.
 
-##### 2) Use git to grab the repo
-	$ git clone git@github.com:jarednova/timber.git
+```shell
+composer require timber/timber
+```
 
-##### 3) Use [Composer](https://getcomposer.org/doc/00-intro.md) to download the dependencies (Twig, etc.)
-	$ cd timber
-	$ composer install
+If your theme is not setup to pull in Composer's autoload file, you will need to
+
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+```
+
+at the top of your `functions.php` file.
+
+Initialize Timber with
+
+```php
+<?php
+$timber = new \Timber\Timber();
+```
 
 * * *
 

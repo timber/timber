@@ -1,15 +1,18 @@
+# Performance
+
 Timber, especially in conjunction with WordPress and Twig, offers a variety of caching strategies to optimize performance. Here's a quick rundown of some of the options, ranked in order of most-broad to most-focused.
 
 ### tl;dr
 In my tests with Debug Bar, Timber has no measurable performance hit. Everything compiles to PHP. @fabpot has an [overview of the performance costs on his blog](http://fabien.potencier.org/article/34/templating-engines-in-php) (scroll down to the table)
 
 You can...
-- [Cache Everything](Performance#cache-everything)
-- [Cache the Entire Twig File and Data](Performance#cache-the-entire-twig-file-and-data)
-- [Cache Parts of the Twig File and Data](Performance#cache-parts-of-the-twig-file-and-data)
-- [Cache the Twig File](Performance#cache-the-twig-file-but-not-the-data)
-- [Cache the PHP data](Performance#cache-the-php-data)
-- [Measure Performance](Performance#measuring-performance)
+
+- [Cache Everything](#cache-everything)
+- [Cache the Entire Twig File and Data](#cache-the-entire-twig-file-and-data)
+- [Cache Parts of the Twig File and Data](#cache-parts-of-the-twig-file-and-data)
+- [Cache the Twig File](#cache-the-twig-file-but-not-the-data)
+- [Cache the PHP data](#cache-the-php-data)
+- [Measure Performance](#measuring-performance)
 
 * * *
 

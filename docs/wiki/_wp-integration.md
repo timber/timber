@@ -1,3 +1,5 @@
+# WordPress Integration
+
 Timber plays nice with your existing WordPress setup. You can still use other plugins, etc. Here's a rundown of the key points:
 
 - [the_content](WP-Integration#the_content)
@@ -268,6 +270,7 @@ Let's implement a `[youtube]` shorttag which embeds a youtube video.
 For the desired usage of `[youtube id=xxxx]` we only need a few lines of code:
 
 ```php
+<?php
 // should be called from within an init action hook
 add_shortcode('youtube', 'youtube_shorttag');
 
