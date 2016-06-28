@@ -12,8 +12,8 @@ class TermGetter {
 	 * @return Timber\Term|WP_Error|null
 	 */
 	public static function get_term( $term, $taxonomy, $TermClass = 'Term' ) {
-		$term = get_term( $term, $taxonomy );
-		return new $TermClass( $term->term_id, $term->taxonomy );
+		$term = get_term($term, $taxonomy);
+		return new $TermClass($term->term_id, $term->taxonomy);
 	}
 
 	/**

@@ -5,10 +5,10 @@ namespace Timber;
 class Admin {
 
 	public static function init() {
-		$filter = add_filter('plugin_row_meta', array( __CLASS__, 'meta_links' ), 10, 2);
-		$action = add_action('in_plugin_update_message-timber-library/timber.php', array( __CLASS__, 'in_plugin_update_message'), 10, 2);
-		$action = add_action('in_plugin_update_message-timber/timber.php', array( __CLASS__, 'in_plugin_update_message'), 10, 2);
-		if ($filter && $action) {
+		$filter = add_filter('plugin_row_meta', array(__CLASS__, 'meta_links'), 10, 2);
+		$action = add_action('in_plugin_update_message-timber-library/timber.php', array(__CLASS__, 'in_plugin_update_message'), 10, 2);
+		$action = add_action('in_plugin_update_message-timber/timber.php', array(__CLASS__, 'in_plugin_update_message'), 10, 2);
+		if ( $filter && $action ) {
 			return true;
 		}
 	}
