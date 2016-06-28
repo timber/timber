@@ -11,7 +11,7 @@ You can just grab the all-things-included plugin at [WordPress.org](http://wordp
 	$ cd ~/Sites/mywordpress/wp-content/plugins
 
 ##### 2) Use git to grab the repo
-	$ git clone git@github.com:timber/timber.git
+	$ git clone git@github.com:jarednova/timber.git
 
 ##### 3) Use [Composer](https://getcomposer.org/doc/00-intro.md) to download the dependencies (Twig, etc.)
 	$ cd timber
@@ -19,7 +19,7 @@ You can just grab the all-things-included plugin at [WordPress.org](http://wordp
 
 * * *
 
-## Use the starter theme
+## [Use the starter theme](https://github.com/Upstatement/timber-starter-theme)
 This is for starting a project from scratch. You can also use Timber in an existing theme.
 
 ##### Navigate to your WordPress themes directory
@@ -42,4 +42,4 @@ It will be in wp-admin/plugins.php
 Make sure you select the Timber-enabled theme **after** you activate the plugin. The theme will crash unless Timber is activated. Use the **timber-starter-theme** theme from the step above (or whatever you renamed it).
 
 ### 3. Let's write our theme!
-Continue ahead in [Part 2](#getting-started-themeing)
+Continue ahead in [Part 2](getting-started)

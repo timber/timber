@@ -10,7 +10,7 @@ I'm in the midst of an install and walk-through on Timber, here are the screenca
 	$ cd ~/Sites/mywordpress/wp-content/plugins
 
 ##### 2) Use git to grab the repo
-	$ git clone git@github.com:timber/timber.git
+	$ git clone git@github.com:jarednova/timber.git
 
 ##### 3) Use [Composer](https://getcomposer.org/doc/00-intro.md) to download the dependencies (Twig, etc.)
 	$ cd timber
@@ -22,7 +22,7 @@ I'm in the midst of an install and walk-through on Timber, here are the screenca
     $ cd ~/Sites/mywordpress/wp-content/plugins
 
 ##### 2) Use [Composer](https://getcomposer.org/doc/00-intro.md) to create project and download the dependencies (Twig, etc.)
-    $ composer create-project --no-dev timber/timber ./timber
+    $ composer create-project --no-dev jarednova/timber ./timber
 
 #### Option 3: Via WordPress plugins directory (for non-developers)
 
@@ -42,13 +42,14 @@ In which we use an existing WordPress template and implement a very simple Timbe
 Here's the relevant code:
 
 ```php
+<?php
 /* index.php */
 $context = array();
 $context['headline'] = 'Welcome to my new Timber Blog!';
 Timber::render('welcome.twig', $context);
 ```
 
-```handlebars
+```twig
 {# welcome.twig #}
 <section class="welcome-block">
 	<div class="inner">
@@ -62,12 +63,13 @@ Timber::render('welcome.twig', $context);
 [![Connecting Timber](http://img.youtube.com/vi/C7HtYkaG2DQ/0.jpg)](http://www.youtube.com/watch?v=C7HtYkaG2DQ)
 
 ```php
+<?php
 $context = array();
 $context['welcome'] = Timber::get_post(56);
 Timber::render('welcome.twig', $context);
 ```
 
-```handlebars
+```twig
 <section class="welcome-block">
 	<div class="inner">
 		<h3>{{welcome.post_title}}</h3>
@@ -81,11 +83,12 @@ Timber::render('welcome.twig', $context);
 [![Connecting HTML Templates](http://img.youtube.com/vi/BxazrNBLK-0/0.jpg)](http://www.youtube.com/watch?v=BxazrNBLK-0)
 
 ```php
+<?php
 $context['posts'] = Timber::get_posts();
 Timber::render('home-main.twig', $context);
 ```
 
-```handlebars
+```twig
 {# home-main.twig #}
 {% for post in posts %}
     {% include "tz-post.twig" %}
@@ -98,7 +101,7 @@ Timber::render('home-main.twig', $context);
 
 [![Using Custom Post Types with Timber](http://img.youtube.com/vi/19T0MStDLSQ/0.jpg)](http://www.youtube.com/watch?v=19T0MStDLSQ)
 
-```handlebars
+```twig
 {# home-main.twig #}
 {% for post in posts %}
 	{# you can send includes an array, in order of precedence #}
@@ -106,11 +109,11 @@ Timber::render('home-main.twig', $context);
 {% endfor %}
 ```
 
-```handlebars
+```twig
 {# tz-recipe.twig #}
 <article id="post-{{post.ID}}" class="post-{{post.ID}} {{post.post_type}} type-{{post.post_type}} status-publish hentry">
 	{% if post.get_thumbnail %}
-		<img src="{{post.thumbnail.src|resize(600, 300)}}" />
+		<img src="{{post.get_thumbnail.get_src|resize(600, 300)}}" />
 	{% endif %}
 	<h2>{{post.post_title}}</h2>
 	<div class="post-body">
@@ -126,7 +129,7 @@ This is a **really** important concept for DRY. I'll show how to create a base t
 
 ##### Create a `base.twig` file:
 
-```handlebars
+```twig
 {# base.twig #}
 {% include "html-header.twig" %}
 {% block head %}
@@ -145,7 +148,7 @@ This is a **really** important concept for DRY. I'll show how to create a base t
 
 ##### You can use this in a custom `single.twig` file:
 
-```handlebars
+```twig
 {# single.twig #}
 {% extends "base.twig" %}
 {% block head %}

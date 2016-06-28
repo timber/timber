@@ -1,31 +1,39 @@
-# Cookbook: Twig
+# Twig Cookbook
 
 ## Using Twig vars in live type
 Imagine this scenario, I let the users set this in the Admin panel:
+
 ```
 Copyright {{year}} by Upstatement, LLC. All Rights Reserved
 ```
+
 But on the site I want it to render as:
+
 ```
 Copyright 2013 by Upstatement, LLC. All Rights Reserved
 ```
+
 Ready? There are a bunch of ways, but my favorite is:
 
 #### In your PHP file
+
 ```php
+<?php
 $data['year'] = date('Y');
 $data['copyright'] = get_option("footer_message"); //"Copyright {{year}} by Upstatement, LLC. All Rights Reserved"
 render_twig('footer.twig', $data);
 ```
 
 #### In your HTML file (let's say **footer.twig**)
-```html
+
+```twig
 {% include template_from_string(copyright) %}
 ```
 
 ## Includes
 ### Simple include
-```
+
+```twig
 {% include "footer.twig" %}
 ```
 #### Notes
@@ -35,7 +43,8 @@ render_twig('footer.twig', $data);
 
 ### Dynamic includes
 Use a variable to determine the included file!
-```html
+
+```twig
 {% include ['blocks/block-'~block.slug~'.twig', 'blocks/blog.twig'] ignore missing %}
 ```
 
