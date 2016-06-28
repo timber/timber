@@ -111,7 +111,7 @@ class Site extends Core implements CoreInterface {
 	 */
 	public function __construct( $site_name_or_id = null ) {
 		if ( is_multisite() ) {
-			$blog_ids = $this->switch_to_blog($site_name_or_id);
+			$blog_ids = self::switch_to_blog($site_name_or_id);
 			$this->init();
 			$this->init_as_multisite($blog_ids['new']);
 			return switch_to_blog($blog_ids['old']);
@@ -156,9 +156,6 @@ class Site extends Core implements CoreInterface {
 		$this->description = get_blog_option($info->blog_id, 'blogdescription');
 		$this->admin_email = get_blog_option($info->blog_id, 'admin_email');
 		$this->multisite = true;
-
-		//switch back to the before time
-		
 	}
 
 	/**
