@@ -368,7 +368,7 @@ class Post extends Core implements CoreInterface {
 	 * @return PostPreview
 	 */
 	public function preview() {
-		return new PostPreview( $this );
+		return new PostPreview($this);
 	}
 
 	/**
@@ -508,7 +508,7 @@ class Post extends Core implements CoreInterface {
 			return null;
 		}
 
-		do_action_ref_array( 'the_post', array( &$post, &$GLOBALS['wp_query'] ) );
+		do_action_ref_array('the_post', array(&$post, &$GLOBALS['wp_query']));
 
 		$post->status = $post->post_status;
 		$post->id = $post->ID;
@@ -526,7 +526,7 @@ class Post extends Core implements CoreInterface {
 	 * @return string of HTML for the form
 	 */
 	public function comment_form( $args = array() ) {
-		return Helper::get_comment_form( $this->ID, $args );
+		return Helper::get_comment_form($this->ID, $args);
 	}
 
 
@@ -899,7 +899,7 @@ class Post extends Core implements CoreInterface {
 		// Add child comments to the relative "super parents"
 		foreach ( $comments_tree as $comment_parent => $comment_children ) {
 			foreach ( $comment_children as $comment_child ) {
-				$timber_comments[$comment_parent]->add_child( $timber_comments[$comment_child] );
+				$timber_comments[$comment_parent]->add_child($timber_comments[$comment_child]);
 				unset($timber_comments[$comment_child]);
 			}
 		}
