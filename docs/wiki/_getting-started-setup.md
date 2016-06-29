@@ -54,4 +54,3 @@ It will be in wp-admin/plugins.php
 Make sure you select the Timber-enabled theme **after** you activate the plugin. The theme will crash unless Timber is activated. Use the **timber-starter-theme** theme from the step above (or whatever you renamed it).
 
 ### 3. Let's write our theme!
-Continue ahead in [Part 2](getting-started)

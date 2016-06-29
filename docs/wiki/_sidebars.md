@@ -52,6 +52,7 @@ In this example, you would populate your sidebar from your main PHP file (home.p
 * Send data to it via your main PHP file
 
 ```php
+<?php
 /* single.php */
 $context = Timber::get_context();
 $post = new TimberPost();

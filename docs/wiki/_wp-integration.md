@@ -2,14 +2,14 @@
 
 Timber plays nice with your existing WordPress setup. You can still use other plugins, etc. Here's a rundown of the key points:
 
-- [the_content](WP-Integration#the_content)
-- [WordPress Hooks](WP-Integration#hooks)
-- [Scripts + Stylesheets](WP-Integration#scripts--stylesheets)
-- [Functions](WP-Integration#functions)
-- [Actions](WP-Integration#actions)
-- [Filters](WP-Integration#filters)
-- [Widgets](WP-Integration#widgets)
-- [Shortcodes](WP-Integration#shortcodes)
+- [the_content](#the_content)
+- [WordPress Hooks](#hooks)
+- [Scripts + Stylesheets](#scripts--stylesheets)
+- [Functions](#functions)
+- [Actions](#actions)
+- [Filters](#filters)
+- [Widgets](#widgets)
+- [Shortcodes](#shortcodes)
 
 * * *
 

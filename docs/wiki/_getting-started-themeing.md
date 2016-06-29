@@ -2,7 +2,7 @@
 
 ## Your first Timber project
 ### Let's start with your single post
-Find this file: (btw if you have no idea what I'm talking about you should go to the [setup article](Getting-Started%3A-Setup)
+Find this file:
 
 ```html
 	wp-content/themes/{timber-starter-theme}/views/single.twig
