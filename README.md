@@ -87,6 +87,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 #### Projects that use Timber
 * [**Gantry5**](https://wordpress.org/plugins/gantry5/) a framework for theme development
+* [**Branch**](https://github.com/JeyKeu/branch/) Bootstrap + Timber = Branch starter theme!
 
 #### Helpful Links
 * [**CSS Tricks**](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/) introduction to Timber by [@tjFogarty](https://github.com/tjFogarty)
