@@ -13,7 +13,7 @@ The GitHub version of Timber requires [Composer](https://getcomposer.org/downloa
 composer require timber/timber
 ```
 
-If your theme is not setup to pull in Composer's autoload file, you will need to
+If your theme is not setup to pull in Composer's autoload file, you will need to:
 
 ```php
 <?php
@@ -22,7 +22,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 at the top of your `functions.php` file.
 
-Initialize Timber with
+Initialize Timber with:
 
 ```php
 <?php
@@ -41,11 +41,11 @@ Like where twentyeleven and twentytwelve live. The Timber Starter will live at t
 						/twentytwelve
 						/timber-starter-theme
 
-You should now have
+You should now have:
 
 	/wp-content/themes/timber-starter-theme
 
-You should probably **rename** this to something better
+You should probably **rename** this to something better.
 
 ### 1. Activate Timber
 It will be in wp-admin/plugins.php

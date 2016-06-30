@@ -94,7 +94,7 @@ When you run `get_field` on an outer ACF field, everything inside is ready to be
 
 A common problem in working with repeaters is that you should only call the `get_field` method **once** on an item. In other words if you have a field inside a field (for example, a relationship inside a repeater or a repeater inside a repeater, **do not** call `get_field` on the inner field). More:
 
-###### DON'T DO THIS (Bad)
+###### DON'T DO THIS: (Bad)
 
 ```twig
 {% for gear in post.get_field('gear_items') %}

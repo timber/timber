@@ -40,7 +40,7 @@ The first parameter is `width` the second is `height` (but it's optional) so if 
 <img src="{{post.thumbnail.src|resize(640)}}" />
 ```
 
-All of these filters are written specifically to interact with WordPress's image API. (So don't worry, no weird TimThumb stuff going on -- this is all using WP's internal image sizing stuff).
+All of these filters are written specifically to interact with WordPress's image API. (So don't worry, no weird TimThumb stuff going on—this is all using WP's internal image sizing stuff).
 
 #### Letterboxing Images
 Let's say you have an image that you want to contain to a certain size without any cropping. If the proportions don't fit you'll letterbox the extra space. I find this is really useful when getting logos to all appear next to eachother. You can do this with:
@@ -48,7 +48,7 @@ Let's say you have an image that you want to contain to a certain size without a
 ```twig
 <img src="{{post.thumbnail.src|letterbox(400, 400, '#FFFFFF')}}" />
 ```
-Here `width` and `height` are required. The third argument is the background color in hex format (default is #000000)
+Here `width` and `height` are required. The third argument is the background color in hex format (default is #000000).
 
 #### Converting images
 Let's say your client or editor can be a bit lazy (no!), resorting to PNGs where only JPGs are required. I've seen this a lot. People will just upload screenshots that are saved by default as PNGs. No problemo!
@@ -57,7 +57,7 @@ Let's say your client or editor can be a bit lazy (no!), resorting to PNGs where
 <img src="{{post.thumbnail.src|tojpg}}" />
 ```
 
-You can use this in conjunction with other filters
+You can use this in conjunction with other filters.
 
 ```twig
 <img src="{{post.thumbnail.src|tojpg|resize(300, 300)}}" />
@@ -66,7 +66,7 @@ You can use this in conjunction with other filters
 Filters are executed from left to right. You'll probably want to convert to JPG before running the resizing, etc.
 
 #### Generating Retina Sizes
-You can use Timber to generat @2x image sizes for retina devices. For example, using `srcset`:
+You can use Timber to generate @2x image sizes for retina devices. For example, using `srcset`:
 
 ```twig
 <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumbnail.src | retina(1) }} 1x,

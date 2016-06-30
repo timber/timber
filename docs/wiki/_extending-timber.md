@@ -12,7 +12,7 @@ Timber's objects like `TimberPost`, `TimberTerm`, etc. are a great starting poin
 <h3>From the {{ post.issue.title }} issue</h3>
 ```
 
-Of course, `TimberPost` has no built-in concept of an issue (which I've built as a custom taxonomy called "issues"). So we're going to extend TimberPost to give it one...
+Of course, `TimberPost` has no built-in concept of an issue (which I've built as a custom taxonomy called "issues"). So we're going to extend TimberPost to give it one:
 
 ```php
 <?php

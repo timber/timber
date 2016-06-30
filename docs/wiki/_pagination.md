@@ -37,7 +37,7 @@ You can then markup the output like so  (of course, the exact markup is up to YO
 ```
 
 ### What if I'm not using the default query?
-So let's say you want to paginate things on `page-events.php` where you list items from a custom post type of `event`. Because the default query is just the request for the page's info **pagination will not work**. You need to _make_ it the default query by using the dreaded `query_posts` like so:
+So let's say you want to paginate things on `page-events.php` where you list items from a custom post type of `event`. Because the default query is just the request for the page's info, **pagination will not work**. You need to _make_ it the default query by using the dreaded `query_posts` like so:
 
 ```php
 	<?php
@@ -62,8 +62,7 @@ So let's say you want to paginate things on `page-events.php` where you list ite
 ```
 
 ### The pre_get_posts Way
-Custom `query_posts` sometimes shows 404 on example.com/page/2
-In that case you can also use `pre_get_posts` in your functions.php file
+Custom `query_posts` sometimes shows 404 on example.com/page/2. In that case you can also use `pre_get_posts` in your functions.php file:
 
 ```php
 	<?php
@@ -74,7 +73,7 @@ In that case you can also use `pre_get_posts` in your functions.php file
 	}
 	add_action( 'pre_get_posts', 'my_home_query' );
 ```
-In your archive.php or home.php template
+In your archive.php or home.php template:
 
 ```php
 	<?php

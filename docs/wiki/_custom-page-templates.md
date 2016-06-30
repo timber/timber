@@ -3,9 +3,7 @@
 There are a few ways to manage custom pages in WordPress and Timber, in order from simple-to-complex:
 
 ### Custom Twig File
-Say you've created a page called "About Us" and WordPress has given it the slug `about-us`. If you're using the [Timber Starter Theme](https://github.com/Upstatement/timber-starter-theme) you can simply...
-- Create a file called `page-about-us.twig` inside your `views` and go crazy.
-- I recommend copying-and-pasting the contents of [`page.twig`](https://github.com/Upstatement/timber-starter-theme/blob/master/views/page.twig) into here so you have something to work from.
+Say you've created a page called "About Us" and WordPress has given it the slug `about-us`. If you're using the [Timber Starter Theme](https://github.com/Upstatement/timber-starter-theme) you can simply create a file called `page-about-us.twig` inside your `views` and go crazy. I recommend copying-and-pasting the contents of [`page.twig`](https://github.com/Upstatement/timber-starter-theme/blob/master/views/page.twig) into here so you have something to work from.
 
 ##### How does this work?
 In the `page.php` file you'll see this code...

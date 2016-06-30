@@ -4,7 +4,7 @@
 
 ### Method 1: PHP file
 Let's say every page on the site has the same content going into its sidebar. If so, you would:
-* Create a `sidebar.php` file in your theme directory (so `wp-content/themes/mytheme/sidebar.php`)
+Create a `sidebar.php` file in your theme directory (so `wp-content/themes/mytheme/sidebar.php`)
 
 ```php
 <?php
@@ -39,7 +39,7 @@ Timber::render('single.twig', $context);
 ### Method 2: Twig file
 In this example, you would populate your sidebar from your main PHP file (home.php, single.php, archive.php, etc).
 
-* Make a Twig file for what your sidebar should be...
+* Make a Twig file for what your sidebar should be:
 
 ```twig
 {# views/sidebar-related.twig #}
@@ -49,7 +49,7 @@ In this example, you would populate your sidebar from your main PHP file (home.p
 {% endfor %}
 ```
 
-* Send data to it via your main PHP file
+* Send data to it via your main PHP file:
 
 ```php
 <?php
@@ -65,7 +65,7 @@ $sidebar_context['related'] = Timber::get_posts('cat='.$post_cat);
 $context['sidebar'] = Timber::get_sidebar('sidebar-related.twig', $sidebar_context);
 Timber::render('single.twig', $context);
 ```
-* In the final twig file make sure you have spot for your sidebar
+* In the final twig file, make sure you have spot for your sidebar:
 
 ```twig
 {# single.twig #}

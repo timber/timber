@@ -44,7 +44,7 @@ There's tons of stuff you can do with Twig and Timber filters to make complex tr
 <p class="tweet">{{post.content|twitterify}}</p>
 ```
 
-##### Run WordPress's auto-paragraph filter
+##### Run WordPress' auto-paragraph filter
 
 ```twig
 <p class="content">{{post.my_custom_text|wpautop}}</p>

@@ -96,7 +96,7 @@ For this demo let's assume that the name of the page is "All about Jared" (makin
 
 Compared to the earlier example of this page, we now have the `{% block headline %}` bit surrounding the `<h1>` and `<h2>`.
 
-To inject my custom bit of markup, I'm going to create a file called `single-all-about-jared.twig` in the `views` directory. The logic for which template should be selected is controlled in `single.php` but generally follows WordPress conventions on Template Hierarchy. Inside that file, all I need is...
+To inject my custom bit of markup, I'm going to create a file called `single-all-about-jared.twig` in the `views` directory. The logic for which template should be selected is controlled in `single.php` but generally follows WordPress conventions on Template Hierarchy. Inside that file, all I need is:
 
 ```twig
 {# single-all-about-jared.twig #}
@@ -123,7 +123,7 @@ $context = Timber::get_context();
 $context['posts'] = Timber::get_posts();
 Timber::render('index.twig', $context);
 ```
-This is where we are going to handle the logic that powers our index file. Let's go step-by-step
+This is where we are going to handle the logic that powers our index file. Let's go step-by-step.
 
 #### Get the starter
 
@@ -193,7 +193,7 @@ Timber::render('index.twig', $context);
 
 We're now telling Twig to find **index.twig** and send it our data object.
 
-Timber will look first in the child theme and then falls back to the parent theme (same as WordPress logic). The official load order is...
+Timber will look first in the child theme and then falls back to the parent theme (same as WordPress logic). The official load order is:
 
 1. User-defined locations
 2. Directory of calling PHP script (but not theme)
@@ -201,4 +201,4 @@ Timber will look first in the child theme and then falls back to the parent them
 4. Parent theme
 5. Directory of calling PHP script (including the theme)
 
-... item 2 is inserted above others so that if you're using Timber in a plugin it will use the twig files in the plugin's directory.
+Item 2 is inserted above others so that if you're using Timber in a plugin it will use the twig files in the plugin's directory.

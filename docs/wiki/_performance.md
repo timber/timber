@@ -17,7 +17,7 @@ You can...
 * * *
 
 ### Cache Everything
-You can still use plugins like [W3 Total Cache](https://wordpress.org/plugins/w3-total-cache/) in conjunction with Timber. In most settings, this will _skip_ the Twig/Timber layer of your files and serve static pages via whatever mechanism the plugin or settings dictate
+You can still use plugins like [W3 Total Cache](https://wordpress.org/plugins/w3-total-cache/) in conjunction with Timber. In most settings, this will _skip_ the Twig/Timber layer of your files and serve static pages via whatever mechanism the plugin or settings dictate.
 
 * * *
 
@@ -87,7 +87,7 @@ In your cache, the eventual key will be:
 $annotation . '__GCS__' . $key
 ```
 
-that is in this scenario
+That is in this scenario:
 
 ```php
 <?php
@@ -149,7 +149,7 @@ Here `main_stories` is a totally made-up variable. It could be called `foo`, `ba
 ### Measuring Performance
 Some tools like Debug Bar may not properly measure performance because its data (as in, the actual HTML it's generating to tell you the timing, number of queries, etc.) is swept-up by the page's cache.
 
-Timber provides some quick shortcuts to measure page timing. Here's an example of them in action...
+Timber provides some quick shortcuts to measure page timing. Here's an example of them in action:
 
 ```php
 <?php
