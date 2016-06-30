@@ -1,25 +1,25 @@
 # Getting Started: Themeing
 
-
 ## Your first Timber project
 ### Let's start with your single post
-Find this file: (btw if you have no idea what I'm talking about you should go to the [setup article](Getting-Started%3A-Setup)
+Find this file:
+
 ```html
 	wp-content/themes/{timber-starter-theme}/views/single.twig
 ```
 
 Brilliant! Open it up.
 
-```html
+```twig
 {% extends "base.twig" %}
 {% block content %}
 	<div class="content-wrapper">
-		<article class="post-type-{{post.post_type}}" id="post-{{post.ID}}">
+		<article class="post-type-{{ post.post_type }}" id="post-{{ post.ID }}">
 			<section class="article-content">
-				<h1 class="article-h1">{{post.title}}</h1>
-				<h2 class="article-h2">{{post.subtitle}}</h2>
+				<h1 class="article-h1">{{ post.title }}</h1>
+				<h2 class="article-h2">{{ post.subtitle }}</h2>
 				<p class="blog-author"><span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.post_date|date }}</p>
-				{{post.content}}
+				{{ post.content }}
 			</section>
 		</article>
 	</div> <!-- /content-wrapper -->
@@ -28,8 +28,8 @@ Brilliant! Open it up.
 
 #### This is the fun part.
 
-```html
-<h1 class="article-h1">{{post.title}}</h1>
+```twig
+<h1 class="article-h1">{{ post.title }}</h1>
 ```
 
 This is now how we now call stuff from the WordPress API. Instead of this familiar face:
@@ -42,13 +42,16 @@ This is how WordPress wants you to interact with its API. Which sucks. Because s
 ```html
 <h1 class="article-h1"><a href="<?php get_permalink(); ?>"><?php the_title(); ?></a></h1>
 ```
+
 Okay, not _too_ terrible, but doesn't this (Timber) way look so much nicer:
-```html
-<h1 class="article-h1"><a href="{{post.permalink}}">{{post.title}}</a></h1>
+
+```twig
+<h1 class="article-h1"><a href="{{ post.link }}">{{ post.title }}</a></h1>
 ```
 
 It gets better. Let's explain some other concepts.
-```html
+
+```twig
 {% extends "base.twig" %}
 ```
 
@@ -57,13 +60,14 @@ This means that `single.twig` is using `base.twig` as its parent template. That'
 What if you want modify `<head>`, etc? Read on to learn all about blocks.
 
 ### Blocks
-Blocks are the single most important and powerful concept in managing your templates. The [official Twig Documentationn](http://twig.sensiolabs.org/doc/templates.html#template-inheritance) has more details. Let's cover the basics.
+Blocks are the single most important and powerful concept in managing your templates. The [official Twig Documentation](http://twig.sensiolabs.org/doc/templates.html#template-inheritance) has more details. Let's cover the basics.
 
 In `single.twig` you see opening and closing block declarations that surround the main page contents.
 
-```html
+```twig
 {% block content %} {# other stuff here ... #} {% endblock %}
 ```
+
 If you were to peek into **base.twig** you would see a matching set of `{% block content %} / {% endblock %}` tags. **single.twig** is replacing the content of base's `{% block content %}` with its own.
 
 ##### Nesting Blocks, Multiple Inheritance
@@ -71,19 +75,19 @@ This is when things get really cool. Whereas most people use PHP includes in a l
 
 For this demo let's assume that the name of the page is "All about Jared" (making its slug `all-about-jared`). First, I'm going to surround the part of the template I want to control with block declarations:
 
-```html
+```twig
 {# single.twig #}
 {% extends "base.twig" %}
 {% block content %}
 	<div class="content-wrapper">
-		<article class="post-type-{{post.post_type}}" id="post-{{post.ID}}">
+		<article class="post-type-{{ post.post_type }}" id="post-{{ post.ID }}">
 			<section class="article-content">
 				{% block headline %}
-					<h1 class="article-h1">{{post.title}}</h1>
-					<h2 class="article-h2">{{post.subtitle}}</h2>
+					<h1 class="article-h1">{{ post.title }}</h1>
+					<h2 class="article-h2">{{ post.subtitle }}</h2>
 				{% endblock %}
 				<p class="blog-author"><span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.post_date|date }}</p>
-				{{post.content}}
+				{{ post.content }}
 			</section>
 		</article>
 	</div> <!-- /content-wrapper -->
@@ -92,9 +96,9 @@ For this demo let's assume that the name of the page is "All about Jared" (makin
 
 Compared to the earlier example of this page, we now have the `{% block headline %}` bit surrounding the `<h1>` and `<h2>`.
 
-To inject my custom bit of markup, I'm going to create a file called `single-all-about-jared.twig` in the `views` directory. The logic for which template should be selected is controlled in `single.php` but generally follows WordPress conventions on Template Hierarchy. Inside that file, all I need is...
+To inject my custom bit of markup, I'm going to create a file called `single-all-about-jared.twig` in the `views` directory. The logic for which template should be selected is controlled in `single.php` but generally follows WordPress conventions on Template Hierarchy. Inside that file, all I need is:
 
-```php
+```twig
 {# single-all-about-jared.twig #}
 {% extends "single.twig" %}
 {% block headline %}
@@ -114,20 +118,26 @@ What if you want to **add** to the block as opposed to replace? No prob, just ca
 Let's crack open **index.php** and see what's inside:
 
 ```php
+<?php
 $context = Timber::get_context();
 $context['posts'] = Timber::get_posts();
 Timber::render('index.twig', $context);
 ```
-This is where we are going to handle the logic that powers our index file. Let's go step-by-step
+This is where we are going to handle the logic that powers our index file. Let's go step-by-step.
 
 #### Get the starter
+
 ```php
+<?php
 $context = Timber::get_context();
 ```
+
 This is going to return an object with a lot of the common things we need across the site. Things like your nav, wp_head and wp_footer you'll want to start with each time (even if you over-write them later). You can do a ```print_r($context);``` to see what's inside or open-up **timber.php** to inspect for yourself
 
 #### Grab your posts
+
 ```php
+<?php
 $context['posts'] = Timber::get_posts();
 ```
 We're now going to grab the posts that are inside the loop and stick them inside our data object under the **posts** key.
@@ -135,7 +145,9 @@ We're now going to grab the posts that are inside the loop and stick them inside
 ##### Timber::get_posts() usage
 
 ###### Use a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) array
+
 ```php
+	<?php
 	$args = array(
 		'post_type' => 'post',
 		'tax_query' => array(
@@ -157,13 +169,17 @@ We're now going to grab the posts that are inside the loop and stick them inside
 ```
 
 ##### Use a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) string
+
 ```php
+	<?php
 	$args = 'post_type=movies&numberposts=8&orderby=rand';
 	$context['posts'] = Timber::get_posts($args);
 ```
 
 ##### Use Post ID numbers
+
 ```php
+	<?php
 	$ids = array(14, 123, 234, 421, 811, 6);
 	$context['posts'] = Timber::get_posts($ids);
 ```
@@ -171,11 +187,13 @@ We're now going to grab the posts that are inside the loop and stick them inside
 #### Render
 
 ```php
+<?php
 Timber::render('index.twig', $context);
 ```
+
 We're now telling Twig to find **index.twig** and send it our data object.
 
-Timber will look first in the child theme and then falls back to the parent theme (same as WordPress logic). The official load order is...
+Timber will look first in the child theme and then falls back to the parent theme (same as WordPress logic). The official load order is:
 
 1. User-defined locations
 2. Directory of calling PHP script (but not theme)
@@ -183,4 +201,4 @@ Timber will look first in the child theme and then falls back to the parent them
 4. Parent theme
 5. Directory of calling PHP script (including the theme)
 
-... item 2 is inserted above others so that if you're using Timber in a plugin it will use the twig files in the plugin's directory.
+Item 2 is inserted above others so that if you're using Timber in a plugin it will use the twig files in the plugin's directory.

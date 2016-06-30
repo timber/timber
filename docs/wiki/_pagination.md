@@ -5,6 +5,7 @@ Do you like pagination? Stupid question, of course you do. Well, here's how you 
 This will only work in a php file with an active query (like `archive.php` or `home.php`):
 
 ```php
+	<?php
 	$context = Timber::get_context();
 	$context['posts'] = Timber::get_posts();
 	$context['pagination'] = Timber::get_pagination();
@@ -36,9 +37,10 @@ You can then markup the output like so  (of course, the exact markup is up to YO
 ```
 
 ### What if I'm not using the default query?
-So let's say you want to paginate things on `page-events.php` where you list items from a custom post type of `event`. Because the default query is just the request for the page's info **pagination will not work**. You need to _make_ it the default query by using the dreaded `query_posts` like so:
+So let's say you want to paginate things on `page-events.php` where you list items from a custom post type of `event`. Because the default query is just the request for the page's info, **pagination will not work**. You need to _make_ it the default query by using the dreaded `query_posts` like so:
 
 ```php
+	<?php
 	global $paged;
 	if (!isset($paged) || !$paged){
 		$paged = 1;
@@ -60,9 +62,10 @@ So let's say you want to paginate things on `page-events.php` where you list ite
 ```
 
 ### The pre_get_posts Way
-Custom `query_posts` sometimes shows 404 on example.com/page/2
-In that case you can also use `pre_get_posts` in your functions.php file
+Custom `query_posts` sometimes shows 404 on example.com/page/2. In that case you can also use `pre_get_posts` in your functions.php file:
+
 ```php
+	<?php
 	function my_home_query( $query ) {
 	  if ( $query->is_main_query() && !is_admin() ) {
 		$query->set( 'post_type', array( 'movie', 'post' ));
@@ -70,8 +73,10 @@ In that case you can also use `pre_get_posts` in your functions.php file
 	}
 	add_action( 'pre_get_posts', 'my_home_query' );
 ```
-In your archive.php or home.php template
+In your archive.php or home.php template:
+
 ```php
+	<?php
 	$context = Timber::get_context();
 	$context['posts'] = Timber::get_posts();
 	$context['pagination'] = Timber::get_pagination();

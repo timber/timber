@@ -20,7 +20,8 @@ use Timber\Loader;
  *
  * Main class called Timber for this plugin.
  *
- * Usage:
+ * @example
+ * ```php
  *  $posts = Timber::get_posts();
  *  $posts = Timber::get_posts('post_type = article')
  *  $posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format.
@@ -29,6 +30,7 @@ use Timber\Loader;
  *  $context = Timber::get_context(); // returns wp favorites!
  *  $context['posts'] = $posts;
  *  Timber::render('index.twig', $context);
+ * ```
  */
 class Timber {
 
@@ -115,7 +117,7 @@ class Timber {
 
 	/**
 	 * Get post.
-	 *
+	 * @api
 	 * @param mixed   $query
 	 * @param string  $PostClass
 	 * @return array|bool|null
@@ -126,6 +128,7 @@ class Timber {
 
 	/**
 	 * Get posts.
+	 * @api
 	 * @example
 	 * ```php
 	 * $posts = Timber::get_posts();
@@ -143,7 +146,7 @@ class Timber {
 
 	/**
 	 * Query post.
-	 *
+	 * @api
 	 * @param mixed   $query
 	 * @param string  $PostClass
 	 * @return array|bool|null
@@ -154,7 +157,7 @@ class Timber {
 
 	/**
 	 * Query posts.
-	 *
+	 * @api
 	 * @param mixed   $query
 	 * @param string  $PostClass
 	 * @return array|bool|null
@@ -168,7 +171,7 @@ class Timber {
 
 	/**
 	 * Get terms.
-	 *
+	 * @api
 	 * @param string|array $args
 	 * @param array   $maybe_args
 	 * @param string  $TermClass
@@ -180,7 +183,7 @@ class Timber {
 
 	/**
 	 * Get term.
-	 *
+	 * @api
 	 * @param int|WP_Term|object $term
 	 * @param string     $taxonomy
 	 * @return Timber\Term|WP_Error|null
@@ -194,7 +197,7 @@ class Timber {
 
 	/**
 	 * Get sites.
-	 *
+	 * @api
 	 * @param array|bool $blog_ids
 	 * @return array
 	 */
@@ -216,7 +219,7 @@ class Timber {
 
 	/**
 	 * Get context.
-	 *
+	 * @api
 	 * @return array
 	 */
 	public static function get_context() {
@@ -245,7 +248,7 @@ class Timber {
 
 	/**
 	 * Compile function.
-	 *
+	 * @api
 	 * @param array   $filenames
 	 * @param array   $data
 	 * @param bool    $expires
@@ -280,7 +283,7 @@ class Timber {
 
 	/**
 	 * Compile string.
-	 *
+	 * @api
 	 * @param string  $string a string with twig variables.
 	 * @param array   $data   an array with data in it.
 	 * @return  bool|string
@@ -294,7 +297,7 @@ class Timber {
 
 	/**
 	 * Fetch function.
-	 *
+	 * @api
 	 * @param array   $filenames
 	 * @param array   $data
 	 * @param bool    $expires
@@ -315,7 +318,7 @@ class Timber {
 
 	/**
 	 * Render function.
-	 *
+	 * @api
 	 * @param array   $filenames
 	 * @param array   $data
 	 * @param bool    $expires
@@ -330,7 +333,7 @@ class Timber {
 
 	/**
 	 * Render string.
-	 *
+	 * @api
 	 * @param string  $string a string with twig variables.
 	 * @param array   $data   an array with data in it.
 	 * @return  bool|string
@@ -347,7 +350,7 @@ class Timber {
 
 	/**
 	 * Get sidebar.
-	 *
+	 * @api
 	 * @param string  $sidebar
 	 * @param array   $data
 	 * @return bool|string
@@ -364,7 +367,7 @@ class Timber {
 
 	/**
 	 * Get sidebar from PHP
-	 *
+	 * @api
 	 * @param string  $sidebar
 	 * @param array   $data
 	 * @return string
@@ -395,7 +398,7 @@ class Timber {
 
 	/**
 	 * Get widgets.
-	 *
+	 * @api
 	 * @param int     $widget_id
 	 * @return TimberFunctionWrapper
 	 */
@@ -408,7 +411,7 @@ class Timber {
 
 	/**
 	 * Get pagination.
-	 *
+	 * @api
 	 * @param array   $prefs
 	 * @return array mixed
 	 */
@@ -478,7 +481,7 @@ class Timber {
 
 	/**
 	 * Get calling script dir.
-	 *
+	 * @api
 	 * @return string
 	 */
 	public static function get_calling_script_dir( $offset = 0 ) {
@@ -506,7 +509,7 @@ class Timber {
 
 	/**
 	 * Get calling script file.
-	 *
+	 * @api
 	 * @param int     $offset
 	 * @return string|null
 	 * @deprecated since 0.20.0

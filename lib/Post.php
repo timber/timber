@@ -19,7 +19,6 @@ use WP_Post;
  * This is the object you use to access or extend WordPress posts. Think of it as Timber's (more accessible) version of WP_Post. This is used throughout Timber to represent posts retrieved from WordPress making them available to Twig templates. See the PHP and Twig examples for an example of what it's like to work with this object in your code.
  * @example
  * ```php
- * <?php
  * // single.php, see connected twig example
  * $context = Timber::get_context();
  * $context['post'] = new Timber\Post(); // It's a new Timber\Post object, but an existing post from WordPress.
@@ -48,7 +47,7 @@ use WP_Post;
  * @package Timber
  */
 class Post extends Core implements CoreInterface {
-	
+
 	/**
 	 * @var string $ImageClass the name of the class to handle images by default
 	 */
@@ -622,10 +621,10 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Returns the post_type object with labels and other info
-	 * 
+	 *
 	 * @deprecated since 1.0.4
 	 * @example
-	 * 
+	 *
 	 * ```twig
 	 * This post is from <span>{{ post.get_post_type.labels.plural }}</span>
 	 * ```
@@ -655,7 +654,7 @@ class Post extends Core implements CoreInterface {
 	public function has_field( $field_name ) {
 		return (!$this->get_field( $field_name )) ? false : true;
 	}
-	
+
 
 	/**
 	 * @param string $field_name
@@ -1004,10 +1003,10 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Returns the post_type object with labels and other info
-	 * 
+	 *
 	 * @since 1.0.4
 	 * @example
-	 * 
+	 *
 	 * ```twig
 	 * This post is from <span>{{ post.type.labels.name }}</span>
 	 * ```
@@ -1029,7 +1028,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Returns the edit URL of a post if the user has access to it
-	 * @return bool|string the edit URL of a post in the WordPress admin 
+	 * @return bool|string the edit URL of a post in the WordPress admin
 	 */
 	public function edit_link() {
 		if ( $this->can_edit() ) {
@@ -1286,12 +1285,12 @@ class Post extends Core implements CoreInterface {
 	}
 
 
-	/** 
+	/**
 	 *
 	 * ===================================
 	 * DEPRECATED FUNCTIONS LIVE DOWN HERE
 	 * ===================================
-	 * 
+	 *
 	 */
 
 	/**

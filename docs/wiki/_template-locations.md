@@ -3,13 +3,15 @@
 You can set arbitrary locations for your twig files with...
 
 ```php
+<?php
 /* functions.php */
 Timber::$locations = '/Users/jared/Sandbox/templates';
 ```
 
-Use the full file path to make sure Timber knows what you're trying to draw from. You can also send an array for multiple locations..
+Use the full file path to make sure Timber knows what you're trying to draw from. You can also send an array for multiple locations:
 
 ```php
+<?php
 /* functions.php */
 Timber::$locations = array(	'/Users/jared/Sandbox/templates',
 							'~/Sites/timber-templates/',
@@ -23,11 +25,12 @@ You only need to do this once in your project (like in `functions.php`) then whe
 
 ### Changing the default folder for .twig files
 
-By default, Timber looks in your child and parent theme's `views` directory to pull `.twig` files. If you don't like the default `views` directory (which by default resides in your theme folder) you can change that to. Example: I want to use `/wp-content/themes/my-theme/twigs`...
+By default, Timber looks in your child and parent theme's `views` directory to pull `.twig` files. If you don't like the default `views` directory (which by default resides in your theme folder) you can change that to. Example: I want to use `/wp-content/themes/my-theme/twigs`:
 
 ###### Configure with a string:
 
 ```php
+<?php
 /* functions.php */
 Timber::$dirname = 'twigs';
 ```
@@ -35,6 +38,7 @@ Timber::$dirname = 'twigs';
 ###### You can also send an array with fallbacks:
 
 ```php
+<?php
 /* functions.php */
 Timber::$dirname = array('templates', 'templates/shared/mods', 'twigs', 'views');
 ```
@@ -42,6 +46,7 @@ Timber::$dirname = array('templates', 'templates/shared/mods', 'twigs', 'views')
 A quick note on **subdirectories**: you can always reference these relatively. For example:
 
 ```php
+<?php
 Timber::render('shared/headers/header-home.twig');
 ```
 ... might correspond to a file in `/wp-content/themes/my-theme/views/shared/headers/header-home.twig`.
