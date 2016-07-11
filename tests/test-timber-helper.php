@@ -155,7 +155,7 @@
 				}
 			}
 
-			resetPermalinks();
+			self::resetPermalinks();
 		}
 
 		function testPaginateLinksWithOutTrailingSlash() {
@@ -172,7 +172,7 @@
 				}
 			}
 
-			resetPermalinks();
+			self::resetPermalinks();
 		}
 
 		function setPermalink($pattern) {
