@@ -105,13 +105,18 @@ Read the [contributor guidelines](https://github.com/timber/timber/wiki#contribu
 
 
 
-## How To...
+## [Documentation](http://timber.github.io/timber/)
 
-#### Generate documentation
-```bash
-$ cd /srv/www/timber
-$ ./bin/generate-docs.sh
-```
+Documentation for Timber classes and functions is [auto generated](https://github.com/jarednova/PHP-Markdown-Documentation-Generator), so any changes to the object reference docs should be made by editing the function's DocBlock.  To make a change to one of the guides, edit the relevant file in the `docs` directory.
+
+To publish docs:
+1. `composer install` if not already run
+2. Clone the [timber/slate](https://github.com/timber/slate) repo at the same directory level as Timber
+3. From the root of the slate directory
+	- `gem install bundler`
+	- `bundle install` (you'll need at least Ruby 2.0 or newer)
+	- `sh publish-docs.sh`
+
 
 
 
