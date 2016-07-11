@@ -141,5 +141,51 @@
 			$this->assertEquals(1984, $people[1]->year);
 		}
 
+		function testPaginateLinksWithTrailingSlash() {
+
+			$args = array('total' => 20);
+
+			$this->setPermalink('/%year%/%post_id%/');
+
+			$pagination = \Timber\Helper::paginate_links($args);
+
+			foreach($pagination as $page) {
+				if(array_key_exists('link', $page) && !empty($page['link'])) {
+					$this->assertStringEndsWith('/', $page['link']);
+				}
+			}
+
+			resetPermalinks();
+		}
+
+		function testPaginateLinksWithOutTrailingSlash() {
+
+			$args = array('total' => 20);
+
+			$this->setPermalink('/%year%/%post_id%');
+
+			$pagination = \Timber\Helper::paginate_links($args);
+
+			foreach($pagination as $page) {
+				if(array_key_exists('link', $page) && !empty($page['link'])) {
+					$this->assertFalse( '/', substr( $page['link'], - 1 ) );
+				}
+			}
+
+			resetPermalinks();
+		}
+
+		function setPermalink($pattern) {
+			global $wp_rewrite;
+			$wp_rewrite->init();
+			$wp_rewrite->set_permalink_structure( $pattern );
+			$wp_rewrite->flush_rules();
+		}
+
+		function resetPermalinks() {
+			global $wp_rewrite;
+			$wp_rewrite->init();
+			$wp_rewrite->flush_rules();
+		}
 
 	}

@@ -79,7 +79,18 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination['pages'][4]['link'] );
 	}
 
-	function testPaginationHomePretty( $struc = '/%postname%/' ) {
+	function testPaginationHomePrettyTrailingSlash( $struc = '/%postname%/' ) {
+		global $wp_rewrite;
+		$wp_rewrite->permalink_structure = $struc;
+		update_option( 'permalink_structure', $struc );
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( home_url( '/' ) );
+		$pagination = Timber::get_pagination();
+		$this->assertEquals( 'http://example.org/page/3/', $pagination['pages'][2]['link'] );
+		$this->assertEquals( 'http://example.org/page/2/', $pagination['next']['link'] );
+	}
+
+	function testPaginationHomePrettyNonTrailingSlash( $struc = '/%postname%' ) {
 		global $wp_rewrite;
 		$wp_rewrite->permalink_structure = $struc;
 		update_option( 'permalink_structure', $struc );
@@ -135,9 +146,6 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$posts = $this->factory->post->create_many( 150 );
 		$this->go_to( home_url( '/page/13' ) );
 		$pagination = Timber::get_pagination();
-		$this->assertEquals( 'http://example.org/page/14', $pagination['next']['link'] );
+		$this->assertEquals( 'http://example.org/page/14/', $pagination['next']['link'] );
 	}
-
-
-
 }
