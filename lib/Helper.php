@@ -513,9 +513,14 @@ class Helper {
 					}
 					$link = str_replace(' ', '+', $link);
 					$link = untrailingslashit($link);
+
+					$link = esc_url(apply_filters('paginate_links', $link));
+
+					$link = user_trailingslashit($link);
+
 					$page_links[] = array(
 						'class' => 'page-number page-numbers',
-						'link' => esc_url(apply_filters('paginate_links', $link)),
+						'link' => $link,
 						'title' => $n_display,
 						'name' => $n_display,
 						'current' => $args['current'] == $n
@@ -530,6 +535,7 @@ class Helper {
 				}
 			}
 		}
+
 		return $page_links;
 	}
 
