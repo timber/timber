@@ -445,7 +445,7 @@ class Timber {
 		$data['current'] = $args['current'];
 		$data['total'] = $args['total'];
 		$data['pages'] = Helper::paginate_links($args);
-
+		$current = null;
 		if ( $data['total'] <= count($data['pages']) ) {
 			// decrement current so that it matches up with the 0 based index used by the pages array
 			$current = $data['current'] - 1;
