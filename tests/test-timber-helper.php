@@ -145,7 +145,7 @@
 
 			$args = array('total' => 20);
 
-			$this->setPermalink('/%year%/%post_id%/');
+			$this->setPermalinkStructure('/%year%/%post_id%/');
 
 			$pagination = \Timber\Helper::paginate_links($args);
 
@@ -155,7 +155,6 @@
 				}
 			}
 
-			self::resetPermalinks();
 		}
 
 		function endsWith($string, $test) {
@@ -169,7 +168,7 @@
 
 			$args = array('total' => 20);
 
-			$this->setPermalink('/%year%/%post_id%');
+			$this->setPermalinkStructure('/%year%/%post_id%');
 
 			$pagination = \Timber\Helper::paginate_links($args);
 
@@ -179,20 +178,6 @@
 				}
 			}
 
-			self::resetPermalinks();
-		}
-
-		function setPermalink($pattern) {
-			global $wp_rewrite;
-			$wp_rewrite->init();
-			$wp_rewrite->set_permalink_structure( $pattern );
-			$wp_rewrite->flush_rules();
-		}
-
-		function resetPermalinks() {
-			global $wp_rewrite;
-			$wp_rewrite->init();
-			$wp_rewrite->flush_rules();
-		}
+		}		
 
 	}
