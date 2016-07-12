@@ -193,7 +193,7 @@ class User extends Core implements CoreInterface {
 	 */
 	public function link() {
 		if ( !$this->_link ) {
-			$this->_link = untrailingslashit(get_author_posts_url($this->ID));
+			$this->_link = user_trailingslashit(get_author_posts_url($this->ID));
 		}
 		return $this->_link;
 	}

@@ -513,9 +513,7 @@ class Helper {
 					}
 					$link = str_replace(' ', '+', $link);
 					$link = untrailingslashit($link);
-
 					$link = esc_url(apply_filters('paginate_links', $link));
-
 					$link = user_trailingslashit($link);
 
 					$page_links[] = array(
