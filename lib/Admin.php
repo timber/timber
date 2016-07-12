@@ -32,10 +32,10 @@ class Admin {
 	}
 
 	/**
-	 *  in_plugin_update_message
-	 *
 	 *  Displays an update message for plugin list screens.
 	 *  Shows only the version updates from the current until the newest version
+	 * 
+	 *	@codeCoverageIgnore
 	 *
 	 *  @type	function
 	 *  @date	4/22/16
