@@ -187,15 +187,15 @@ class Helper {
 	 * @param mixed $arg that you want to error_log
 	 * @return void
 	 */
-	public static function error_log( $arg ) {
+	public static function error_log( $error ) {
 		global $timber_disable_error_log;
 		if ( !WP_DEBUG || $timber_disable_error_log ) {
 			return;
 		}
-		if ( is_object($arg) || is_array($arg) ) {
-			$arg = print_r($arg, true);
+		if ( is_object($error) || is_array($error) ) {
+			$error = print_r($error, true);
 		}
-		return error_log($arg);
+		return error_log($error);
 	}
 
 	/**
