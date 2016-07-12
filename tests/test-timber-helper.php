@@ -158,6 +158,13 @@
 			self::resetPermalinks();
 		}
 
+		function endsWith($string, $test) {
+		    $strlen = strlen($string);
+		    $testlen = strlen($test);
+		    if ($testlen > $strlen) return false;
+		    return substr_compare($string, $test, $strlen - $testlen, $testlen) === 0;
+		}
+
 		function testPaginateLinksWithOutTrailingSlash() {
 
 			$args = array('total' => 20);
@@ -168,7 +175,7 @@
 
 			foreach($pagination as $page) {
 				if(array_key_exists('link', $page) && !empty($page['link'])) {
-					$this->assertFalse( '/', substr( $page['link'], - 1 ) );
+					$this->assertFalse( self::endsWith(substr( $page['link'], - 1 ), '/') );
 				}
 			}
 
