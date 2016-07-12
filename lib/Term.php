@@ -49,6 +49,7 @@ class Term extends Core implements CoreInterface {
 	public static $representation = 'term';
 
 	public $_children;
+	public $_directChildren;
 	/**
 	 * @api
 	 * @var string the human-friendly name of the term (ex: French Cuisine)
@@ -310,6 +311,21 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @internal
+	 * @return array
+	 */
+	public function get_direct_children() {
+		if ( !isset($this->_directChildren) ) {
+			$children = get_terms($this->taxonomy, array('parent' => $this->ID, 'hide_empty' => false));
+			foreach ( $children as &$child ) {
+				$child = new Term($child);
+			}
+			$this->_directChildren = $children;
+		}
+		return $this->_directChildren;
+	}
+
+	/**
 	 *
 	 *
 	 * @param string  $key
@@ -329,6 +345,14 @@ class Term extends Core implements CoreInterface {
 	 */
 	public function children() {
 		return $this->get_children();
+	}
+
+	/**
+	 * @api
+	 * @return array
+	 */
+	public function direct_children() {
+		return $this->get_direct_children();
 	}
 
 	/**
