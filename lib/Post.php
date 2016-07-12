@@ -450,12 +450,9 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * gets the post custom and attaches it to the current object
 	 * @internal
-	 * @param bool|int $pid a post ID number
+	 * @param integer $pid a post ID number
 	 */
-	public function import_custom( $pid = false ) {
-		if ( !$pid ) {
-			$pid = $this->ID;
-		}
+	public function import_custom( $pid ) {
 		$customs = $this->get_post_custom($pid);
 		$this->import($customs);
 	}
@@ -1261,13 +1258,11 @@ class Post extends Core implements CoreInterface {
 	 * @return TimberImage|null of your thumbnail
 	 */
 	public function thumbnail() {
-		if ( function_exists('get_post_thumbnail_id') ) {
-			$tid = get_post_thumbnail_id($this->ID);
-			if ( $tid ) {
-				//return new Image($tid);
-				return new $this->ImageClass($tid);
-			}
-		}
+		$tid = get_post_thumbnail_id($this->ID);
+		if ( $tid ) {
+			//return new Image($tid);
+			return new $this->ImageClass($tid);
+		}	
 	}
 
 

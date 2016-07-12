@@ -872,6 +872,13 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals($image->src(), $result);
 	}
 
+	function testNoThumbnail() {
+		$pid = $this->factory->post->create();
+		$post = new TimberPost($pid);
+		$str = Timber::compile_string('Image?{{post.thumbnail.src}}', array('post' => $post));
+		$this->assertEquals('Image?', $str);
+	}
+
 	function testTimberImageForExtraSlashes() {
 		add_filter('upload_dir', array($this, '_filter_upload'), 10, 1);
 
