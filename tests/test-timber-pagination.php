@@ -9,7 +9,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$posts = $this->factory->post->create_many( 55 );
 		$this->go_to( home_url( '?s=post' ) );
 		$pagination = Timber::get_pagination();
-		$this->assertEquals( home_url().'/?s=post&#038;paged=5', $pagination['pages'][4]['link'] );
+		$this->assertEquals( user_trailingslashit(home_url().'/?s=post&#038;paged=5'), $pagination['pages'][4]['link'] );
 	}
 
 	/* This test is for the concept of linking query_posts and get_pagination
@@ -55,16 +55,13 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testPaginationSearchPrettyWithPostname() {
-		$struc = '/%postname%/';
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = $struc;
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure('/%postname%/');
 		$posts = $this->factory->post->create_many( 55 );
 		$archive = home_url( '?s=post' );
 		$this->go_to( $archive );
 		query_posts( 's=post' );
 		$pagination = Timber::get_pagination();
-		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination['pages'][4]['link'] );
+		$this->assertEquals( user_trailingslashit('http://example.org/page/5/?s=post'), $pagination['pages'][4]['link'] );
 	}
 
 	function testPaginationSearchPretty() {
@@ -79,10 +76,17 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination['pages'][4]['link'] );
 	}
 
-	function testPaginationHomePretty( $struc = '/%postname%/' ) {
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = $struc;
-		update_option( 'permalink_structure', $struc );
+	function testPaginationHomePrettyTrailingSlash() {
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( home_url( '/' ) );
+		$pagination = Timber::get_pagination();
+		$this->assertEquals( user_trailingslashit('http://example.org/page/3/'), $pagination['pages'][2]['link'] );
+		$this->assertEquals( user_trailingslashit('http://example.org/page/2/'), $pagination['next']['link'] );
+	}
+
+	function testPaginationHomePrettyNonTrailingSlash() {
+		$this->setPermalinkStructure('/%postname%');
 		$posts = $this->factory->post->create_many( 55 );
 		$this->go_to( home_url( '/' ) );
 		$pagination = Timber::get_pagination();
@@ -135,9 +139,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$posts = $this->factory->post->create_many( 150 );
 		$this->go_to( home_url( '/page/13' ) );
 		$pagination = Timber::get_pagination();
-		$this->assertEquals( 'http://example.org/page/14', $pagination['next']['link'] );
+		$expected_next_link = user_trailingslashit('http://example.org/page/14/');
+		$this->assertEquals( $expected_next_link, $pagination['next']['link'] );
 	}
-
-
-
 }
