@@ -105,9 +105,8 @@ class Letterbox extends ImageOperation {
 				return $save_func($bg, $save_filename);
 			}
 			return $save_func($bg, $save_filename, $quality);
-		} else {
-			Helper::error_log($image);
 		}
+		Helper::error_log($image);
 		return false;
 	}
 }

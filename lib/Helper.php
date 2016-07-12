@@ -188,7 +188,8 @@ class Helper {
 	 * @return void
 	 */
 	public static function error_log( $arg ) {
-		if ( !WP_DEBUG ) {
+		global $timber_disable_error_log;
+		if ( !WP_DEBUG || $timber_disable_error_log ) {
 			return;
 		}
 		if ( is_object($arg) || is_array($arg) ) {
