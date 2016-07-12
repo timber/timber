@@ -80,4 +80,10 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$this->assertContains('@3x', $compiled);
 		$this->assertEquals(300, $img->width());
 	}
+
+	function testImageResizeRetinaFilterNotAnImage() {
+		$str = 'Image? {{"/wp-content/uploads/2016/07/stuff.jpg"|retina(3)}}';
+		$compiled = Timber::compile_string($str);
+		$this->assertEquals('Image? /wp-content/uploads/2016/07/stuff.jpg', $compiled);
+	}
 }

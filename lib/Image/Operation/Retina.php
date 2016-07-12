@@ -67,14 +67,13 @@ class Retina extends ImageOperation {
 				Helper::error_log($result);
 				return false;
 				// @codeCoverageIgnoreEnd
-			} else {
-				return true;
 			}
+			return true;
 		} else if ( isset($image->error_data['error_loading_image']) ) {
 			Helper::error_log('Error loading '.$image->error_data['error_loading_image']);
-		} else {
-			Helper::error_log($image);
+			return false;
 		}
+		Helper::error_log($image);
 		return false;
 	}
 }
