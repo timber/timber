@@ -11,11 +11,11 @@
 		}
 
 		function testTime(){
-			$pid = $this->factory->post->create();
+			$pid = $this->factory->post->create(array('post_date' => '2016-07-07 20:03:00'));
 			$post = new TimberPost($pid);
 			$twig = 'Posted at {{post.time}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
-			$this->assertEquals('Posted at '.date('g:i a'), $str);
+			$this->assertEquals('Posted at 8:03 pm', $str);
 		}
 
 		function testPostDisplayDate(){

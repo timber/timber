@@ -94,7 +94,7 @@ class PostPreview {
 		} elseif ( $this->readmore ) {
 			$text .= ' <a href="'.$this->post->link().'" class="'.$read_more_class.'">'.trim($this->readmore).'</a>';
 		}
-		if ( !$this->strip && $last_p_tag && (strpos($text, '<p>') || strpos($text, '<p ')) ) {
+		if ( !$this->strip && $last_p_tag && (strpos($text, '<p>') > -1 || strpos($text, '<p ')) ) {
 			$text .= '</p>';
 		}
 		return trim($text);

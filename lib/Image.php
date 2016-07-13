@@ -123,7 +123,7 @@ class Image extends Post implements CoreInterface {
 	 * @param string $dim
 	 * @return array|int
 	 */
-	protected function get_dimensions( $dim = null ) {
+	protected function get_dimensions( $dim ) {
 		if ( isset($this->_dimensions) ) {
 			return $this->get_dimensions_loaded($dim);
 		}
@@ -142,16 +142,11 @@ class Image extends Post implements CoreInterface {
 	 * @return array|int
 	 */
 	protected function get_dimensions_loaded( $dim ) {
-		if ( $dim === null ) {
-			return $this->_dimensions;
-		}
-		if ( $dim == 'w' || $dim == 'width' ) {
-			return $this->_dimensions[0];
-		}
+		$dim = strtolower($dim);
 		if ( $dim == 'h' || $dim == 'height' ) {
 			return $this->_dimensions[1];
 		}
-		return null;
+		return $this->_dimensions[0];
 	}
 
 	/**

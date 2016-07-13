@@ -79,5 +79,29 @@
 			$this->assertEquals('Lauren is a&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $str);
 		}
 
+		function testPreviewWithStripAndClosingPTag() {
+			$pid = $this->factory->post->create( array('post_excerpt' => '<p>Lauren is a duck, but a great duck let me tell you why</p>') );
+			$post = new TimberPost( $pid );
+			$template = '{{post.preview.strip(false)}}';
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('<p>Lauren is a duck, but a great duck let me tell you why <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a></p>', $str);
+		}
+
+		function testPreviewWithStripAndClosingPTagForced() {
+			$pid = $this->factory->post->create( array('post_excerpt' => '<p>Lauren is a duck, but a great duck let me tell you why</p>') );
+			$post = new TimberPost( $pid );
+			$template = '{{post.preview.strip(false).force(4)}}';
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('<p>Lauren is a duck, but a great duck let me tell you why&hellip;  <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a></p>', $str);
+		}
+
+		function testEmptyPreview() {
+			$pid = $this->factory->post->create( array('post_excerpt' => '', 'post_content' => '') );
+			$post = new TimberPost( $pid );
+			$template = '{{ post.preview }}';
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('', $str);
+		}
+
 
 	}

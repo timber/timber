@@ -1,5 +1,7 @@
 <?php
 
+    use Timber\Cache\TimberKeyGeneratorInterface;
+
 	class TestTimberCache extends Timber_UnitTestCase {
 
         private function _generate_transient_name() {
@@ -125,13 +127,25 @@
         }
 
         function testKeyGenerator(){
-        	$loader = new TimberLoader();
-        	$twig = $loader->get_twig();
         	$kg = new Timber\Cache\KeyGenerator();
         	$post_id = $this->factory->post->create(array('post_title' => 'My Test Post'));
         	$post = new TimberPost($post_id);
         	$key = $kg->generateKey($post);
         	$this->assertStringStartsWith('Timber\Post|', $key);
+        }
+
+        function testKeyGeneratorWithTimberKeyGeneratorInterface() {
+            $kg = new Timber\Cache\KeyGenerator();
+            $thing = new MyFakeThing();
+            $key = $kg->generateKey($thing);
+            $this->assertEquals('iamakey', $key);
+        }
+
+        function testKeyGeneratorWithArray() {
+            $kg = new Timber\Cache\KeyGenerator();
+            $thing = array('_cache_key' => 'iAmAKeyButInAnArray');
+            $key = $kg->generateKey($thing);
+            $this->assertEquals('iAmAKeyButInAnArray', $key);
         }
 
         function testTransientForceFilter() {
@@ -199,6 +213,12 @@
         }
 
 	}
+
+    class MyFakeThing implements TimberKeyGeneratorInterface {
+        public function _get_cache_key() {
+            return 'iamakey';
+        }
+    } 
 
 	function my_test_callback(){
 		return "lbj";
