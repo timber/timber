@@ -54,6 +54,15 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals(6, count($pagination['pages']));
 	}
 
+	function testPaginationWithSize() {
+		$this->setPermalinkStructure('/%postname%/');
+		register_post_type( 'portfolio' );
+		$pids = $this->factory->post->create_many( 99, array( 'post_type' => 'portfolio' ) );
+		query_posts('post_type=portfolio');
+		$pagination = Timber::get_pagination(4);
+		$this->assertEquals(5, count($pagination['pages']));
+	}
+
 	function testPaginationSearchPrettyWithPostname() {
 		$this->setPermalinkStructure('/%postname%/');
 		$posts = $this->factory->post->create_many( 55 );

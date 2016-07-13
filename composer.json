@@ -30,7 +30,7 @@
   "require": {
     "php": ">=5.3.0",
     "twig/twig": "1.*",
-    "upstatement/routes": "0.3",
+    "upstatement/routes": "0.4",
     "composer/installers": "~1.0",
     "asm89/twig-cache-extension": "~1.0"
   },

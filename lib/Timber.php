@@ -355,10 +355,7 @@ class Timber {
 	 * @param array   $data
 	 * @return bool|string
 	 */
-	public static function get_sidebar( $sidebar = '', $data = array() ) {
-		if ( $sidebar == '' ) {
-			$sidebar = 'sidebar.php';
-		}
+	public static function get_sidebar( $sidebar = 'sidebar.php', $data = array() ) {
 		if ( strstr(strtolower($sidebar), '.php') ) {
 			return self::get_sidebar_from_php($sidebar, $data);
 		}
