@@ -98,11 +98,10 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/questions/tagged/timber). Please use GitHub issues only for specific bugs, feature requests and other types of issues.
 
 #### Should I use it?
-It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. While Timber is still in development, it's also in-use on [hundreds of sites](http://timber.github.io/timber/#showcase). While much has been stabilized since the first major push back in June 2013, you should expect some breaking changes as development progresses towards a version 1.0.
+It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [hundreds of sites](http://timber.github.io/timber/#showcase) (and tons more we don't know about)
 
 #### Contributing
 Read the [contributor guidelines](https://github.com/timber/timber/wiki#contributing) in the wiki.
-
 
 
 ## [Documentation](http://timber.github.io/timber/)
