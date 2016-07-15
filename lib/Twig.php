@@ -217,10 +217,10 @@ class Twig {
 	 */
 	public function add_timber_escapers( $twig ) {
 
-		$twig->getExtension( 'core' )->setEscaper( 'esc_url', function( \Twig_Environment $env, $string, $charset ) {
+		$twig->getExtension( 'core' )->setEscaper( 'esc_url', function( \Twig_Environment $env, $string ) {
 			return esc_url( $string );
 		} );
-		$twig->getExtension( 'core' )->setEscaper( 'wp_kses_post', function( \Twig_Environment $env, $string, $charset ) {
+		$twig->getExtension( 'core' )->setEscaper( 'wp_kses_post', function( \Twig_Environment $env, $string ) {
 			return wp_kses_post( $string );
 		} );
 
