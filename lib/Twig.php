@@ -26,6 +26,7 @@ class Twig {
 	 */
 	public function __construct() {
 		add_action('timber/twig/filters', array($this, 'add_timber_filters'));
+		add_action('timber/twig/escapers', array($this, 'add_timber_escapers'));
 	}
 
 	/**
@@ -206,6 +207,25 @@ class Twig {
 		 */
 		$twig = apply_filters('get_twig', $twig);
 		return $twig;
+	}
+
+	/**
+	 *
+	 *
+	 * @param Twig_Environment $twig
+	 * @return Twig_Environment
+	 */
+	public function add_timber_escapers( $twig ) {
+
+		$twig->getExtension( 'core' )->setEscaper( 'esc_url', function( \Twig_Environment $env, $string, $charset ) {
+			return esc_url( $string );
+		} );
+		$twig->getExtension( 'core' )->setEscaper( 'wp_kses_post', function( \Twig_Environment $env, $string, $charset ) {
+			return wp_kses_post( $string );
+		} );
+
+		return $twig;
+
 	}
 
 	/**
