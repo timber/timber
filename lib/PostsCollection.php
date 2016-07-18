@@ -12,7 +12,13 @@ if ( !defined('ABSPATH') ) {
 
 class PostsCollection extends \ArrayObject {
 
-	public function __construct( $posts = array(), $post_class = '\Timber\Post' ) {
+	//maintain reference to $query object
+	private $query;
+	private $pagination;
+
+	public function __construct( $posts = array(), $post_class = '\Timber\Post', $query = null ) {
+		$this->query = $query;
+
 		$returned_posts = array();
 		if ( is_null($posts) ) {
 			$posts = array();
@@ -52,7 +58,15 @@ class PostsCollection extends \ArrayObject {
 	}
 
 	public function get_posts() {
-		return $this->getArrayCopy();
+		//return $this->getArrayCopy();
+		return $this;
+	}
+
+	public function pagination( $prefs = array() ) {
+		if ( ! isset($this->pagination) ) {
+			$this->pagination = Timber::get_pagination($prefs, $this->query);
+		}
+		return $this->pagination;
 	}
 
 	 /**
