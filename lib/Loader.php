@@ -246,6 +246,7 @@ class Loader {
 
 		$twig = apply_filters('twig_apply_filters', $twig);
 		$twig = apply_filters('timber/twig/filters', $twig);
+		$twig = apply_filters('timber/twig/escapers', $twig);
 		$twig = apply_filters('timber/loader/twig', $twig);
 		return $twig;
 	}
