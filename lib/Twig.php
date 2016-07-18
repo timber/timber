@@ -36,10 +36,10 @@ class Twig {
 	 */
 	public function add_timber_filters( $twig ) {
 		/* image filters */
-		$twig->addFilter(new \Twig_SimpleFilter('resize', array('TimberImageHelper', 'resize')));
-		$twig->addFilter(new \Twig_SimpleFilter('retina', array('TimberImageHelper', 'retina_resize')));
-		$twig->addFilter(new \Twig_SimpleFilter('letterbox', array('TimberImageHelper', 'letterbox')));
-		$twig->addFilter(new \Twig_SimpleFilter('tojpg', array('TimberImageHelper', 'img_to_jpg')));
+		$twig->addFilter(new \Twig_SimpleFilter('resize', array('Timber\ImageHelper', 'resize')));
+		$twig->addFilter(new \Twig_SimpleFilter('retina', array('Timber\ImageHelper', 'retina_resize')));
+		$twig->addFilter(new \Twig_SimpleFilter('letterbox', array('Timber\ImageHelper', 'letterbox')));
+		$twig->addFilter(new \Twig_SimpleFilter('tojpg', array('Timber\ImageHelper', 'img_to_jpg')));
 
 		/* debugging filters */
 		$twig->addFilter(new \Twig_SimpleFilter('get_class', 'get_class'));
