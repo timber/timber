@@ -184,6 +184,20 @@
 			$this->assertEquals('jiggy', trim($result));
 		}
 
+		function testEscUrl(){
+			$url = 'http://example.com/Mr WordPress';
+			$str = Timber::compile_string( "{{the_url | e('esc_url')}}", array( 'the_url' => $url ) );
+			$this->assertEquals( 'http://example.com/Mr%20WordPress', $str );
+
+		}
+
+		function testWpKsesPost(){
+
+			$evil_script = '<div foo="bar" src="bum">Foo</div><script>DoEvilThing();</script>';
+			$str         = Timber::compile_string( "{{ evil_script | e('wp_kses_post') }}", array( 'evil_script' => $evil_script ) );
+			$this->assertEquals( '<div>Foo</div>DoEvilThing();', $str );
+		}
+
 		/**
      	* @expectedException Twig_Error_Syntax
      	*/
