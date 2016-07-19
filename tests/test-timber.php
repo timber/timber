@@ -25,6 +25,29 @@ class TestTimber extends Timber_UnitTestCase {
 		$this->assertEquals('kill-bill', $post->post_name);
 	}
 
+	function testGetPostByPostObject() {
+		$pid = $this->factory->post->create();
+		$wp_post = get_post($pid);
+		$post = Timber::get_post($wp_post, 'TimberAlert');
+		$this->assertEquals('TimberAlert', get_class($post));
+		$this->assertEquals($pid, $post->ID);
+	}
+
+	function testGetPostByQueryArray() {
+		$pid = $this->factory->post->create();
+		$post = Timber::get_post(array('post_type' => 'post'), 'TimberAlert');
+		$this->assertEquals('TimberAlert', get_class($post));
+		$this->assertEquals($pid, $post->ID);
+	}
+
+	function testGetPostWithCustomPostType() {
+		register_post_type('event');
+		$pid = $this->factory->post->create(array('post_type' => 'event'));
+		$post = Timber::get_post($pid, 'TimberAlert');
+		$this->assertEquals('TimberAlert', get_class($post));
+		$this->assertEquals($pid, $post->ID);
+	}
+
 	function testGetPostsQueryString(){
 		$this->factory->post->create();
 		$this->factory->post->create();
