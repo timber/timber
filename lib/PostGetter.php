@@ -13,6 +13,16 @@ class PostGetter {
 	 * @return array|bool|null
 	 */
 	public static function get_post( $query = false, $PostClass = '\Timber\Post' ) {
+		// if a post id is passed, grab the post directly
+		if ( is_numeric($query) ) {
+			$post = new $PostClass($query);
+			// get the latest revision if we're dealing with a preview
+			$posts = PostsCollection::maybe_set_preview(array($post));
+			if ( $post = reset($posts) ) {
+				return $post;
+			}
+		}
+
 		$posts = self::get_posts($query, $PostClass);
 		if ( $post = reset($posts) ) {
 			return $post;
