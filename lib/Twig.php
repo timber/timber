@@ -26,6 +26,7 @@ class Twig {
 	 */
 	public function __construct() {
 		add_action('timber/twig/filters', array($this, 'add_timber_filters'));
+		add_action('timber/twig/escapers', array($this, 'add_timber_escapers'));
 	}
 
 	/**
@@ -36,10 +37,10 @@ class Twig {
 	 */
 	public function add_timber_filters( $twig ) {
 		/* image filters */
-		$twig->addFilter(new \Twig_SimpleFilter('resize', array('TimberImageHelper', 'resize')));
-		$twig->addFilter(new \Twig_SimpleFilter('retina', array('TimberImageHelper', 'retina_resize')));
-		$twig->addFilter(new \Twig_SimpleFilter('letterbox', array('TimberImageHelper', 'letterbox')));
-		$twig->addFilter(new \Twig_SimpleFilter('tojpg', array('TimberImageHelper', 'img_to_jpg')));
+		$twig->addFilter(new \Twig_SimpleFilter('resize', array('Timber\ImageHelper', 'resize')));
+		$twig->addFilter(new \Twig_SimpleFilter('retina', array('Timber\ImageHelper', 'retina_resize')));
+		$twig->addFilter(new \Twig_SimpleFilter('letterbox', array('Timber\ImageHelper', 'letterbox')));
+		$twig->addFilter(new \Twig_SimpleFilter('tojpg', array('Timber\ImageHelper', 'img_to_jpg')));
 
 		/* debugging filters */
 		$twig->addFilter(new \Twig_SimpleFilter('get_class', 'get_class'));
@@ -206,6 +207,25 @@ class Twig {
 		 */
 		$twig = apply_filters('get_twig', $twig);
 		return $twig;
+	}
+
+	/**
+	 *
+	 *
+	 * @param Twig_Environment $twig
+	 * @return Twig_Environment
+	 */
+	public function add_timber_escapers( $twig ) {
+
+		$twig->getExtension( 'core' )->setEscaper( 'esc_url', function( \Twig_Environment $env, $string ) {
+			return esc_url( $string );
+		} );
+		$twig->getExtension( 'core' )->setEscaper( 'wp_kses_post', function( \Twig_Environment $env, $string ) {
+			return wp_kses_post( $string );
+		} );
+
+		return $twig;
+
 	}
 
 	/**
