@@ -41,7 +41,15 @@ class TestTimber extends Timber_UnitTestCase {
 	}
 
 	function testGetPostWithCustomPostType() {
-		register_post_type('event');
+		register_post_type('event', array('public' => true));
+		$pid = $this->factory->post->create(array('post_type' => 'event'));
+		$post = Timber::get_post($pid, 'TimberAlert');
+		$this->assertEquals('TimberAlert', get_class($post));
+		$this->assertEquals($pid, $post->ID);
+	}
+
+	function testGetPostWithCustomPostTypeNotPublic() {
+		register_post_type('event', array('public' => false));
 		$pid = $this->factory->post->create(array('post_type' => 'event'));
 		$post = Timber::get_post($pid, 'TimberAlert');
 		$this->assertEquals('TimberAlert', get_class($post));
