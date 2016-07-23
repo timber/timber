@@ -68,7 +68,7 @@ class Loader {
 				do_action('timber_loader_render_file', $result);
 			}
 			$data = apply_filters('timber_loader_render_data', $data);
-			$data = apply_filters( 'timber/loader/render_data', $data, $file );
+			$data = apply_filters('timber/loader/render_data', $data, $file);
 			$output = $twig->render($file, $data);
 		}
 

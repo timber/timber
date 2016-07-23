@@ -59,7 +59,6 @@ class LocationManager {
 	 * @api
 	 * @param int     $offset
 	 * @return string|null
-	 * @deprecated since 0.20.0
 	 */
 	public static function get_calling_script_file( $offset = 0 ) {
 		$callers = array();

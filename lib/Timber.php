@@ -264,7 +264,7 @@ class Timber {
 		$loader = new Loader($caller);
 		$file = $loader->choose_template($filenames);
 		$caller_file = LocationManager::get_calling_script_file(1);
-		$caller_file = apply_filters('timber/calling_php_file', $caller_file);
+		apply_filters('timber/calling_php_file', $caller_file);
 		$output = '';
 		if ( is_null($data) ) {
 			$data = array();
