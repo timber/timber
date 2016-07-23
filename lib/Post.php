@@ -476,7 +476,7 @@ class Post extends Core implements CoreInterface {
 			}
 			$customs[$key] = maybe_unserialize($value);
 		}
-		$customs = apply_filters('timber_post_get_meta', $customs, $pid, $this);
+		$customs = apply_filters('timber/post/get_meta', $customs, $pid, $this);
 		return $customs;
 	}
 
@@ -669,6 +669,7 @@ class Post extends Core implements CoreInterface {
 			}
 		}
 		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
+		$value = apply_filters('timber/post/get_meta_field', $value, $this->ID, $field_name, $this);
 		$value = $this->convert($value, __CLASS__);
 		return $value;
 	}

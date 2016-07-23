@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Timber\Integrations\ACF;
+use Timber\Integrations\Types;
 
 /**
  * This is for integrating external plugins into timber
@@ -14,7 +15,7 @@ class Integrations {
 
 		add_action( 'init', array( __CLASS__, 'maybe_init_acf' ) );
 
-		add_action( 'init', array( __CLASS__, 'maybe_init_wp_types' ) );
+		add_action( 'init', array( __CLASS__, 'maybe_init_types' ) );
 
 		if ( class_exists( 'WP_CLI_Command' ) ) {
 			\WP_CLI::add_command( 'timber', 'Timber\Integrations\Timber_WP_CLI_Command' );
@@ -27,9 +28,9 @@ class Integrations {
 		}
 	}
 
-	public static function maybe_init_wp_types() {
+	public static function maybe_init_types() {
 		if ( defined( 'WPCF_META_PREFIX' ) ) {
-			new WPTypes();
+			new Types();
 		}
 	}
 }
