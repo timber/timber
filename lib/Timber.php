@@ -260,10 +260,10 @@ class Timber {
 		if ( !defined('TIMBER_LOADED') ) {
 			self::init();
 		}
-		$caller = Caller::get_calling_script_dir(1);
+		$caller = LocationManager::get_calling_script_dir(1);
 		$loader = new Loader($caller);
 		$file = $loader->choose_template($filenames);
-		$caller_file = Caller::get_calling_script_file(1);
+		$caller_file = LocationManager::get_calling_script_file(1);
 		$caller_file = apply_filters('timber/calling_php_file', $caller_file);
 		$output = '';
 		if ( is_null($data) ) {
@@ -372,7 +372,7 @@ class Timber {
 	 * @return string
 	 */
 	public static function get_sidebar_from_php( $sidebar = '', $data ) {
-		$caller = Caller::get_calling_script_dir(1);
+		$caller = LocationManager::get_calling_script_dir(1);
 		$loader = new Loader();
 		$uris = $loader->get_locations($caller);
 		ob_start();
