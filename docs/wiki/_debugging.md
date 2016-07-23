@@ -6,11 +6,12 @@ Twig includes a `dump` function that can output the properties of an object. To 
 ##### wp-config.php
 
 ```php
+<?php
 define('WP_DEBUG', true);
 ```
 
 ##### single.twig
-```html
+```twig
 {{dump(post)}}
 ```
 
@@ -20,13 +21,15 @@ Which will give you:
 
 You can also dump _everything_ sent to your template via:
 
-```html
+```twig
 {{dump()}}
 ```
 
 This will give you something like:
 
+```html
 <a href="http://imgur.com/5ZD8VDd"><img src="http://i.imgur.com/5ZD8VDd.png" title="Hosted by imgur.com"/></a>
+```
 
 * * *
 
@@ -35,6 +38,7 @@ There's a [Timber add-on](http://wordpress.org/plugins/debug-bar-timber/) for th
 
 ### Using (Legacy) Timber Filters
 You can also use some quick filters on an object. These are legacy and will be removed in favor of using Twig's built-in functionality. However, these do not require that WP_DEBUG be turned on.
-```html
+
+```twig
 	{{post|print_r}}
 ```

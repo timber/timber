@@ -2,6 +2,13 @@
 
 class TestTimberImageLetterbox extends TimberImage_UnitTestCase {
 
+	function setUp() {
+		parent::setUp();
+		if ( ! extension_loaded( 'gd' ) ) {
+			self::markTestSkipped( 'Letterbox image operation tests requires GD extension' );
+		}
+	}
+
 	function testLetterbox() {
 		$file_loc = TestTimberImage::copyTestImage( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
@@ -72,5 +79,13 @@ class TestTimberImageLetterbox extends TimberImage_UnitTestCase {
 		$this->assertEquals( 255, $colors['red'] );
 		$this->assertEquals( 255, $colors['blue'] );
 		$this->assertEquals( 255, $colors['green'] );
+	}
+
+	function testImageLetterboxFilterNotAnImage() {
+		self::enable_error_log(false);
+		$str = 'Image? {{"/wp-content/uploads/2016/07/stuff.jpg"|letterbox(500, 500)}}';
+		$compiled = Timber::compile_string($str);
+		$this->assertEquals('Image? /wp-content/uploads/2016/07/stuff.jpg', $compiled);
+		self::enable_error_log(true);
 	}
 }

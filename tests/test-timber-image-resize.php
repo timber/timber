@@ -2,6 +2,13 @@
 
 class TestTimberImageResize extends Timber_UnitTestCase {
 
+	function setUp() {
+		parent::setUp();
+		if ( ! extension_loaded( 'gd' ) ) {
+			self::markTestSkipped( 'Image resizing tests requires GD extension' );
+		}
+	}
+
 	function testCropCenter() {
 		$cropper = TestTimberImage::copyTestImage('cropper.png');
 		$resized = TimberImageHelper::resize($cropper, 100, 300, 'center');
@@ -104,6 +111,35 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 		$is_sized = TestTimberImage::checkSize($resized, 375, 250);
 		$this->assertTrue( $is_sized );
+	}
+
+	function testWPMLurls() {
+		// this test replicates the url issue caused by the WPML language identifier in the url
+		// However, WPML can't be installed with composer so this test mocks the WPML plugin
+
+		// WPML uses a filter to alter the home_url
+		$home_url_filter = function( $url ) { return $url.'/en'; };
+		add_filter( 'home_url', $home_url_filter, -10, 4 );
+
+		// test with a local and external file
+		foreach ( array(
+					'arch.jpg',
+					'https://raw.githubusercontent.com/timber/timber/master/tests/assets/arch-2night.jpg'
+				) as $img ) {
+
+			// copy image if it's local
+			if ( strpos($img, '://') === false ) {
+				$img = TestTimberImage::copyTestImage($img);
+			}
+
+			$resized = TimberImageHelper::resize($img, 50, 50);
+
+			// make sure the base url has not been duplicated (https://github.com/timber/timber/issues/405)
+			$this->assertLessThanOrEqual( 1, substr_count($resized, 'example.org') );
+			// make sure the image has been resized
+			$resized = TimberUrlHelper::url_to_file_system( $resized );
+			$this->assertTrue( TestTimberImage::checkSize($resized, 50, 50), 'image should be resized' );
+		}
 	}
 
 }

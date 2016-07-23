@@ -16,7 +16,7 @@ class ToJpg extends ImageOperation {
 	/**
 	 * @param string $color hex string of color to use for transparent zones
 	 */
-	function __construct( $color ) {
+	public function __construct( $color ) {
 		$this->color = $color;
 	}
 
@@ -25,7 +25,7 @@ class ToJpg extends ImageOperation {
 	 * @param   string    $src_extension    ignored
 	 * @return  string    the final filename to be used (ex: my-awesome-pic.jpg)
 	 */
-	function filename( $src_filename, $src_extension = 'jpg' ) {
+	public function filename( $src_filename, $src_extension = 'jpg' ) {
 		$new_name = $src_filename.'.jpg';
 		return $new_name;
 	}
@@ -39,7 +39,7 @@ class ToJpg extends ImageOperation {
 	 *                               (ex: /src/var/www/wp-content/uploads/my-pic.png)
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
-	function run( $load_filename, $save_filename ) {
+	public function run( $load_filename, $save_filename ) {
 		$input = self::image_create($load_filename);
 		list($width, $height) = getimagesize($load_filename);
 		$output = imagecreatetruecolor($width, $height);
@@ -56,7 +56,7 @@ class ToJpg extends ImageOperation {
 	 * @return resource an image identifier representing the image obtained from the given filename
 	 *                  will return the same data type regardless of whether the source is gif or png
 	 */
-	function image_create( $filename, $ext = 'auto' ) {
+	public function image_create( $filename, $ext = 'auto' ) {
 		if ( $ext == 'auto' ) {
 			$ext = wp_check_filetype($filename);
 			if ( isset($ext['ext']) ) {

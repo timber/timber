@@ -1,22 +1,21 @@
-# Extending Timber
+# Extending Objects
 
 Myth: Timber is for making simple themes. Fact: It's for making incredibly complex themes _look_ easy. But yes, you can also make simple sites from it.
-
-## Extending Objects
 
 The beauty of Timber is that the object-oriented nature lets you extend it to match the exact requirements of your theme.
 
 Timber's objects like `TimberPost`, `TimberTerm`, etc. are a great starting point to build your own subclass from. For example, on this project each post was a part of an "issue" of a magazine. I wanted an easy way to reference the issue in the twig file:
 
 
-```html
+```twig
 <h1>{{ post.title }}</h1>
 <h3>From the {{ post.issue.title }} issue</h3>
 ```
 
-Of course, `TimberPost` has no built-in concept of an issue (which I've built as a custom taxonomy called "issues"). So we're going to extend TimberPost to give it one...
+Of course, `TimberPost` has no built-in concept of an issue (which I've built as a custom taxonomy called "issues"). So we're going to extend TimberPost to give it one:
 
 ```php
+<?php
 class MySitePost extends TimberPost {
 
 	var $_issue;
@@ -34,6 +33,7 @@ So now I've got an easy way to refer to the {{ post.issue }} in our twig templat
 issue data:
 
 ```php
+<?php
 class MySitePost extends TimberPost {
 
 	var $_issue;
@@ -55,7 +55,7 @@ Right now I'm in the midst of building a complex site for a hybrid foundation an
 For example, I have a plugin that let's people insert manually related posts, but if they don't, WordPress will pull some automatically based on how the post is tagged.
 
 ```php
-
+	<?php
 	class MySitePost extends TimberPost {
 
 		function get_related_auto() {
@@ -101,7 +101,7 @@ These can get pretty complex. And that's the beauty. The complexity lives inside
 This is the correct formation for when you need to add custom functions, filters to twig:
 
 ```php
-
+<?php
 /* functions.php */
 
 add_filter('get_twig', 'add_to_twig');
@@ -109,13 +109,8 @@ add_filter('get_twig', 'add_to_twig');
 function add_to_twig($twig) {
 	/* this is where you can add your own fuctions to twig */
 	$twig->addExtension(new Twig_Extension_StringLoader());
-  /**
-   * Deprecated: Twig_Filter_Function, use Twig_SimpleFilter
-   * http://twig.sensiolabs.org/doc/deprecated.html#filters
-   * $twig->addFilter('whatever', new Twig_Filter_Function('my_whatever'));
-   */
-  $twig->addFilter('myfoo', new Twig_SimpleFilter('myfoo', 'my_whatever'));
-  return $twig;
+	$twig->addFilter(new Twig_SimpleFilter('whatever', 'my_whatever'));
+	return $twig;
 }
 
 function my_whatever($text) {
@@ -124,57 +119,14 @@ function my_whatever($text) {
 }
 ```
 
-Following is shortened version of [Timber Starter Theme](https://github.com/upstatement/timber-starter-theme) class definition using methods to add filters.
-
-```php
-
-/* functions.php */
-
-class StarterSite extends TimberSite {
-
-  function __construct() {
-    add_filter( 'timber_context', array( $this, 'add_to_context' ) );
-    add_filter( 'get_twig', array( $this, 'add_to_twig' ) );
-    parent::__construct();
-  }
-
-  function add_to_context( $context ) {
-    $context['menu'] = new TimberMenu();
-    $context['site'] = $this;
-    return $context;
-  }
-
-  function my_whatever( $text ) {
-    $text .= ' or whatever';
-    return $text;
-  }
-
-  function add_to_twig( $twig ) {
-    /* this is where you can add your own functions to twig */
-    $twig->addExtension( new Twig_Extension_StringLoader() );
-    /**
-     * Deprecated: Twig_Filter_Function, use Twig_SimpleFilter
-     * http://twig.sensiolabs.org/doc/deprecated.html#filters
-     * $twig->addFilter( 'whatever', new Twig_Filter_Function( 'whatever' ) );
-     */
-    $twig->addFilter('whatever', new Twig_SimpleFilter('whatever', array($this, 'my_whatever')));
-    return $twig;
-  }
-
-}
-
-new StarterSite();
-
-```
-
 This can now be called in your twig files with:
 
-```html
+```twig
 <h2>{{ post.title|whatever }}</h2>
 ```
 
 Which will output:
 
-```html
+```twig
 <h2>Hello World! or whatever</h2>
 ```

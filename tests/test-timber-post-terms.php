@@ -20,10 +20,12 @@
 		}
 
 		function testTermExceptions() {
+			self::enable_error_log(false);
 			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
 			$terms = $post->get_terms('foobar');
 			$this->assertEquals(array(), $terms);
+			self::enable_error_log(true);
 		}
 
 		function testTermNotMerged() {

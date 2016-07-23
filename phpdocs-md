@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+
+$autoLoadPaths = array(__DIR__.'/vendor/autoload.php', __DIR__.'/../vendor/autoload.php', __DIR__.'/../vendor/jarednova/markdowndocs/vendor/autoload.php', getcwd().'/vendor/autoload.php');
+foreach($autoLoadPaths as $autoloader) {
+    if( file_exists($autoloader) ) {
+        require $autoloader;
+        break;
+    }
+}
+
+require_once(__DIR__."/vendor/jarednova/markdowndocs/src/PHPDocsMD/CodeEntity.php");
+require_once(__DIR__."/vendor/jarednova/markdowndocs/src/PHPDocsMD/ReflectorInterface.php");
+require_once(__DIR__."/vendor/jarednova/markdowndocs/src/PHPDocsMD/Console/CLI.php");
+require_once(__DIR__."/vendor/jarednova/markdowndocs/src/PHPDocsMD/Console/PHPDocsMDCommand.php");
+$str = __DIR__."/vendor/jarednova/markdowndocs/src/PHPDocsMD/*.php";
+
+foreach (glob($str) as $filename)
+{
+    require_once $filename;
+}
+
+use PHPDocsMD\Console\CLI;
+
+$cli = new CLI();
+$code = $cli->run();
+exit($code);
+

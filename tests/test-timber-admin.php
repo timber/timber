@@ -21,4 +21,8 @@ class TestTimberAdmin extends Timber_UnitTestCase {
     	$this->assertTrue($admin);
     }
 
+    function testUpgradeMessage() {
+        
+    }
+
 }

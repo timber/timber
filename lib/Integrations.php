@@ -22,11 +22,9 @@ class Integrations {
 	}
 
 	public static function maybe_init_acf() {
-
 		if ( class_exists( 'ACF' ) ) {
 			new ACF();
 		}
-
 	}
 
 	public static function maybe_init_wp_types() {

@@ -9,7 +9,6 @@ use Timber\Post;
  * In Timber, you can use TimberMenu() to make a standard Wordpress menu available to the Twig template as an object you can loop through. And once the menu becomes available to the context, you can get items from it in a way that is a little smoother and more versatile than Wordpress's wp_nav_menu. (You need never again rely on a crazy "Walker Function!"). The first thing to do is to initialize the menu using TimberMenu(). This will make the menu available as an object to work with in the context. (TimberMenu can include a Wordpress menu slug or ID, or it can be sent with no parameter--and guess the right menu.)
  * @example
  * ```php
- * <?php
  * # functions.php
  * add_filter('timber/context', 'add_to_context');
  * function add_to_context($data){
@@ -78,9 +77,9 @@ class Menu extends Core {
 	public $title;
 
 	/**
-	 * @param int|string $slug
+	 * @param integer|string $slug
 	 */
-	function __construct( $slug = 0 ) {
+	public function __construct( $slug = 0 ) {
 		$locations = get_nav_menu_locations();
 		if ( $slug != 0 && is_numeric($slug) ) {
 			$menu_id = $slug;
@@ -185,7 +184,7 @@ class Menu extends Core {
 	 * @param int $parent_id
 	 * @return TimberMenuItem|null
 	 */
-	function find_parent_item_in_menu( $menu_items, $parent_id ) {
+	public function find_parent_item_in_menu( $menu_items, $parent_id ) {
 		foreach ( $menu_items as &$item ) {
 			if ( $item->ID == $parent_id ) {
 				return $item;
@@ -232,12 +231,10 @@ class Menu extends Core {
 	/**
 	 * @return array
 	 */
-	function get_items() {
+	public function get_items() {
 		if ( is_array($this->items) ) {
 			return $this->items;
 		}
 		return array();
 	}
 }
-
-

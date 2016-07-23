@@ -28,6 +28,7 @@ You can retrieve an image from a custom field, then use it in a Twig template. T
 This is where we'll start in PHP.
 
 ```php
+<?php
 /* single.php */
 $post = new TimberPost();
 if (isset($post->hero_image) && strlen($post->hero_image)){
@@ -47,10 +48,19 @@ You can now use all the above functions to transform your custom images in the s
 ```
 
 * * *
+### Gallery Field:
+
+```twig
+{% for image in post.get_field('gallery') %}
+    <img src="{{ TimberImage(image) }}" />
+{% endfor %}
+```
+* * *
 
 ### Repeater field
 
 You can access repeater fields within in twig files:
+
 ```twig
 {# single.twig #}
 <h2>{{post.title}}</h2>
@@ -67,7 +77,7 @@ You can access repeater fields within in twig files:
 
 ##### Nested?
 
-When you run `get_field` on an outer ACF field, everything inside is ready to be traversed. You can refer to nested fields via outer_item.inner_repeater
+When you run `get_field` on an outer ACF field, everything inside is ready to be traversed. You can refer to nested fields via item_outer.inner_repeater
 
 ```twig
 {% for item_outer in post.get_field('outer') %}
@@ -84,7 +94,7 @@ When you run `get_field` on an outer ACF field, everything inside is ready to be
 
 A common problem in working with repeaters is that you should only call the `get_field` method **once** on an item. In other words if you have a field inside a field (for example, a relationship inside a repeater or a repeater inside a repeater, **do not** call `get_field` on the inner field). More:
 
-###### DON'T DO THIS (Bad)
+###### DON'T DO THIS: (Bad)
 
 ```twig
 {% for gear in post.get_field('gear_items') %}
@@ -130,6 +140,7 @@ Similar to repeaters, get the field by the name of the flexible content field:
 ### Options Page
 
 ```php
+	<?php
 	$context['site_copyright_info'] = get_field('copyright_info', 'options');
 	Timber::render('index.twig', $context);
 ```
@@ -141,6 +152,7 @@ Similar to repeaters, get the field by the name of the flexible content field:
 ###### Get all info from your options page
 
 ```php
+	<?php
 	$context['options'] = get_fields('options');
 	Timber::render('index.twig', $context);
 ```
@@ -156,11 +168,12 @@ ACF Pro has a built in options page, and changes the `get_fields('options')` to 
 To use any options fields site wide, add the `option` context to your functions.php file
 
 ```php
+<?php
 /* functions.php */
 add_filter( 'timber_context', 'mytheme_timber_context'  );
 
 function mytheme_timber_context( $context ) {
-    $context['option'] = get_fields('option');
+    $context['options'] = get_fields('option');
     return $context;
 }
 ```
@@ -178,6 +191,7 @@ Now, you can use any of the option fields across the site instead of per templat
 You can grab specific field label data like so:
 
 ```php
+<?php
 /* single.php */
 $context["acf"] = get_field_objects($data["post"]->ID);
 ```
@@ -195,12 +209,13 @@ $context["acf"] = get_field_objects($data["post"]->ID);
 This example shows the arguments to find all posts where a custom field called ‘color’ has a value of ‘red’.
 
 ```php
+<?php
 $args = array(
     'numberposts' => -1,
     'post_type' => 'post',
     'meta_key' => 'color',
     'meta_value' => 'red'
-));
+);
 $context['posts'] = Timber::get_posts($args);
 ```
 * * *

@@ -24,8 +24,9 @@ class Twig {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	function __construct() {
+	public function __construct() {
 		add_action('timber/twig/filters', array($this, 'add_timber_filters'));
+		add_action('timber/twig/escapers', array($this, 'add_timber_escapers'));
 	}
 
 	/**
@@ -34,12 +35,12 @@ class Twig {
 	 * @param Twig_Environment $twig
 	 * @return Twig_Environment
 	 */
-	function add_timber_filters( $twig ) {
+	public function add_timber_filters( $twig ) {
 		/* image filters */
-		$twig->addFilter(new \Twig_SimpleFilter('resize', array('TimberImageHelper', 'resize')));
-		$twig->addFilter(new \Twig_SimpleFilter('retina', array('TimberImageHelper', 'retina_resize')));
-		$twig->addFilter(new \Twig_SimpleFilter('letterbox', array('TimberImageHelper', 'letterbox')));
-		$twig->addFilter(new \Twig_SimpleFilter('tojpg', array('TimberImageHelper', 'img_to_jpg')));
+		$twig->addFilter(new \Twig_SimpleFilter('resize', array('Timber\ImageHelper', 'resize')));
+		$twig->addFilter(new \Twig_SimpleFilter('retina', array('Timber\ImageHelper', 'retina_resize')));
+		$twig->addFilter(new \Twig_SimpleFilter('letterbox', array('Timber\ImageHelper', 'letterbox')));
+		$twig->addFilter(new \Twig_SimpleFilter('tojpg', array('Timber\ImageHelper', 'img_to_jpg')));
 
 		/* debugging filters */
 		$twig->addFilter(new \Twig_SimpleFilter('get_class', 'get_class'));
@@ -211,10 +212,29 @@ class Twig {
 	/**
 	 *
 	 *
+	 * @param Twig_Environment $twig
+	 * @return Twig_Environment
+	 */
+	public function add_timber_escapers( $twig ) {
+
+		$twig->getExtension( 'core' )->setEscaper( 'esc_url', function( \Twig_Environment $env, $string ) {
+			return esc_url( $string );
+		} );
+		$twig->getExtension( 'core' )->setEscaper( 'wp_kses_post', function( \Twig_Environment $env, $string ) {
+			return wp_kses_post( $string );
+		} );
+
+		return $twig;
+
+	}
+
+	/**
+	 *
+	 *
 	 * @param mixed   $arr
 	 * @return array
 	 */
-	function to_array( $arr ) {
+	public function to_array( $arr ) {
 		if ( is_array($arr) ) {
 			return $arr;
 		}
@@ -228,7 +248,7 @@ class Twig {
 	 * @param string  $function_name
 	 * @return mixed
 	 */
-	function exec_function( $function_name ) {
+	public function exec_function( $function_name ) {
 		$args = func_get_args();
 		array_shift($args);
 		if ( is_string($function_name) ) {
@@ -243,7 +263,7 @@ class Twig {
 	 * @param string  $content
 	 * @return string
 	 */
-	function twig_pretags( $content ) {
+	public function twig_pretags( $content ) {
 		return preg_replace_callback('|<pre.*>(.*)</pre|isU', array(&$this, 'convert_pre_entities'), $content);
 	}
 
@@ -253,7 +273,7 @@ class Twig {
 	 * @param array   $matches
 	 * @return string
 	 */
-	function convert_pre_entities( $matches ) {
+	public function convert_pre_entities( $matches ) {
 		return str_replace($matches[1], htmlentities($matches[1]), $matches[0]);
 	}
 
@@ -264,14 +284,14 @@ class Twig {
 	 * @param string  $format (optional)
 	 * @return string
 	 */
-	function intl_date( $date, $format = null ) {
+	public function intl_date( $date, $format = null ) {
 		if ( $format === null ) {
 			$format = get_option('date_format');
 		}
 
 		if ( $date instanceof \DateTime ) {
 			$timestamp = $date->getTimestamp() + $date->getOffset();
-		} else if ( is_numeric($date) && strtotime($date) === false ) {
+		} else if ( is_numeric($date) && (strtotime($date) === false || strlen($date) !== 8) ) {
 			$timestamp = intval($date);
 		} else {
 			$timestamp = strtotime($date);
@@ -287,7 +307,7 @@ class Twig {
 	 * @param string $format_future
 	 * @return string
 	 */
-	function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
+	public function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
 		$to = $to === null ? time() : $to;
 		$to = is_int($to) ? $to : strtotime($to);
 		$from = is_int($from) ? $from : strtotime($from);
@@ -305,7 +325,7 @@ class Twig {
 	 * @param string $second_delimiter
 	 * @return string
 	 */
-	function add_list_separators( $arr, $first_delimiter = ',', $second_delimiter = 'and' ) {
+	public function add_list_separators( $arr, $first_delimiter = ',', $second_delimiter = 'and' ) {
 		$length = count($arr);
 		$list = '';
 		foreach ( $arr as $index => $item ) {

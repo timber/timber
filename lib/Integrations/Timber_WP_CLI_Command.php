@@ -30,7 +30,7 @@ class Timber_WP_CLI_Command extends \WP_CLI_Command {
 	 *    wp timber clear_cache_twig
 	 *
 	 */
-	function clear_cache_twig() {
+	public function clear_cache_twig() {
 		$clear = Command::clear_cache_twig();
 		if ( $clear ) {
 			WP_CLI::success('Cleared contents of twig cache');
@@ -47,7 +47,7 @@ class Timber_WP_CLI_Command extends \WP_CLI_Command {
 	 *    wp timber clear_cache_timber
 	 *
 	 */
-	function clear_cache_timber() {
+	public function clear_cache_timber() {
 		$clear = Command::clear_cache_timber();
 		$message = 'Failed to clear timber cache';
 		if ( $clear ) {
@@ -58,5 +58,4 @@ class Timber_WP_CLI_Command extends \WP_CLI_Command {
 		}
 		return $message;
 	}
-
 }

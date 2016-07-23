@@ -23,7 +23,7 @@ class Retina extends ImageOperation {
 	 * Construct our operation
 	 * @param float   $factor to multiply original dimensions by
 	 */
-	function __construct( $factor ) {
+	public function __construct( $factor ) {
 		$this->factor = $factor;
 	}
 
@@ -34,7 +34,7 @@ class Retina extends ImageOperation {
 	 * @param   string    $src_extension    the extension (ex: .jpg)
 	 * @return  string    the final filename to be used (ex: my-awesome-pic@2x.jpg)
 	 */
-	function filename( $src_filename, $src_extension ) {
+	public function filename( $src_filename, $src_extension ) {
 		$newbase = $src_filename.'@'.$this->factor.'x'; // add @2x, @3x, @1.5x, etc.
 		$new_name = $newbase.'.'.$src_extension;
 		return $new_name;
@@ -50,7 +50,7 @@ class Retina extends ImageOperation {
 	 *                               (ex: /src/var/www/wp-content/uploads/my-pic@2x.jpg)
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
-	function run( $load_filename, $save_filename ) {
+	public function run( $load_filename, $save_filename ) {
 		$image = wp_get_image_editor($load_filename);
 		if ( !is_wp_error($image) ) {
 			$current_size = $image->get_size();
@@ -67,14 +67,13 @@ class Retina extends ImageOperation {
 				Helper::error_log($result);
 				return false;
 				// @codeCoverageIgnoreEnd
-			} else {
-				return true;
 			}
+			return true;
 		} else if ( isset($image->error_data['error_loading_image']) ) {
 			Helper::error_log('Error loading '.$image->error_data['error_loading_image']);
-		} else {
-			Helper::error_log($image);
+			return false;
 		}
+		Helper::error_log($image);
 		return false;
 	}
 }

@@ -33,3 +33,4 @@ after_script:
 
 after_success:
     - if [ "$TRAVIS_BRANCH" == "master" ]; then coveralls; fi
+    - bash <(curl -s https://codecov.io/bash)

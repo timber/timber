@@ -12,19 +12,29 @@ class PostGetter {
 	 * @param string $PostClass
 	 * @return array|bool|null
 	 */
-	static function get_post( $query = false, $PostClass = '\Timber\Post' ) {
+	public static function get_post( $query = false, $PostClass = '\Timber\Post' ) {
+		// if a post id is passed, grab the post directly
+		if ( is_numeric($query) ) {
+			$post = new $PostClass($query);
+			// get the latest revision if we're dealing with a preview
+			$posts = PostsCollection::maybe_set_preview(array($post));
+			if ( $post = reset($posts) ) {
+				return $post;
+			}
+		}
+
 		$posts = self::get_posts($query, $PostClass);
 		if ( $post = reset($posts) ) {
 			return $post;
 		}
 	}
 
-	static function get_posts( $query = false, $PostClass = '\Timber\Post', $return_collection = false ) {
+	public static function get_posts( $query = false, $PostClass = '\Timber\Post', $return_collection = false ) {
 		$posts = self::query_posts($query, $PostClass);
 		return apply_filters('timber_post_getter_get_posts', $posts->get_posts($return_collection));
 	}
 
-	static function query_post( $query = false, $PostClass = '\Timber\Post' ) {
+	public static function query_post( $query = false, $PostClass = '\Timber\Post' ) {
 		$posts = self::query_posts($query, $PostClass);
 		if ( method_exists($posts, 'current') && $post = $posts->current() ) {
 			return $post;
@@ -36,7 +46,7 @@ class PostGetter {
 	 * @param string $PostClass
 	 * @return array|bool|null
 	 */
-	static function query_posts( $query = false, $PostClass = '\Timber\Post' ) {
+	public static function query_posts( $query = false, $PostClass = '\Timber\Post' ) {
 		if ( $type = self::get_class_for_use_as_timber_post($query) ) {
 			$PostClass = $type;
 			if ( self::is_post_class_or_class_map($query) ) {
@@ -59,18 +69,10 @@ class PostGetter {
 		}
 	}
 
-	static function get_pids( $query ) {
-		$posts = self::get_posts($query);
-		$pids = array();
-		foreach ( $posts as $post ) {
-			if ( isset($post->ID) ) {
-				$pids[] = $post->ID;
-			}
-		}
-		return $pids;
-	}
-
-	static function loop_to_id() {
+	/**
+	 * @return integer the ID of the post in the loop
+	 */
+	public static function loop_to_id() {
 		if ( !self::wp_query_has_posts() ) { return false; }
 
 		global $wp_query;
@@ -87,16 +89,16 @@ class PostGetter {
 	/**
 	 * @return bool
 	 */
-	static function wp_query_has_posts() {
+	public static function wp_query_has_posts() {
 		global $wp_query;
 		return ($wp_query && property_exists($wp_query, 'posts') && $wp_query->posts);
 	}
 
 	/**
 	 * @param string|array $arg
-	 * @return bool
+	 * @return boolean
 	 */
-	static function is_post_class_or_class_map( $arg ) {
+	public static function is_post_class_or_class_map( $arg ) {
 		$maybe_type = self::get_class_for_use_as_timber_post($arg);
 		if ( is_array($arg) && isset($arg['post_type']) ) {
 			//the user has passed a true WP_Query-style query array that needs to be used later, so the $arg is not a class map or post class
@@ -105,13 +107,14 @@ class PostGetter {
 		if ( $maybe_type ) {
 			return true;
 		}
+		return false;
 	}
 
 	/**
 	 * @param string|array $arg
 	 * @return string|bool if a $type is found; false if not
 	 */
-	static function get_class_for_use_as_timber_post( $arg ) {
+	public static function get_class_for_use_as_timber_post( $arg ) {
 		$type = false;
 
 		if ( is_string($arg) ) {

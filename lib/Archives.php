@@ -61,7 +61,7 @@ class Archives extends Core {
 	 * }
 	 * @param string $base any additional paths that need to be prepended to the URLs that are generated, for example: "tags"
 	 */
-	function __construct( $args = null, $base = '' ) {
+	public function __construct( $args = null, $base = '' ) {
 
 
 		$this->init($args, $base);
@@ -72,7 +72,7 @@ class Archives extends Core {
 	 * @param array|string $args
 	 * @param string $base
 	 */
-	function init( $args = null, $base = '' ) {
+	public function init( $args = null, $base = '' ) {
 		$this->base = $base;
 		$this->items = $this->get_items($args);
 	}
@@ -127,11 +127,11 @@ class Archives extends Core {
 	 * @param string $join
 	 * @param string $where
 	 * @param string $order
-	 * @param int $limit
+	 * @param string $limit
 	 * @param bool $nested
 	 * @return array
 	 */
-	protected function get_items_monthly( $args, $last_changed, $join, $where, $order, $limit = 1000, $nested = true ) {
+	protected function get_items_monthly( $args, $last_changed, $join, $where, $order, $limit = '', $nested = true ) {
 		global $wpdb, $wp_locale;
 		$output = array();
 		$defaults = array(
@@ -180,7 +180,7 @@ class Archives extends Core {
 	 * @param array|string $args
 	 * @return array|string
 	 */
-	function get_items( $args = null ) {
+	public function get_items( $args = null ) {
 		global $wpdb;
 
 		$defaults = array(
@@ -207,10 +207,9 @@ class Archives extends Core {
 		}
 
 		if ( !empty($args['limit']) ) {
-			$limit = absint($limit);
+			$limit = absint($args['limit']);
 			$limit = ' LIMIT '.$limit;
 		}
-
 		$order = strtoupper($order);
 		if ( $order !== 'ASC' ) {
 			$order = 'DESC';
@@ -307,11 +306,10 @@ class Archives extends Core {
 				foreach ( (array) $results as $result ) {
 					if ( $result->post_date != '0000-00-00 00:00:00' ) {
 						$url = get_permalink($result);
+						$text = $result->ID;
 						if ( $result->post_title ) {
 							/** This filter is documented in wp-includes/post-template.php */
 							$text = strip_tags(apply_filters('the_title', $result->post_title, $result->ID));
-						} else {
-							$text = $result->ID;
 						}
 						$output[] = $this->get_archives_link($url, $text);
 					}

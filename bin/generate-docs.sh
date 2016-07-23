@@ -1,22 +1,22 @@
 mkdir docs/markdowndocs
-
 cd vendor/jarednova/markdowndocs/
 composer install
-cd /srv/www/timber
 
-./vendor/jarednova/markdowndocs/bin/phpdoc-md generate --bootstrap=timber.php TimberArchives > docs/markdowndocs/timberarchives.md
-./vendor/jarednova/markdowndocs/bin/phpdoc-md generate --bootstrap=timber.php TimberComment > docs/markdowndocs/timbercomment.md
-./vendor/jarednova/markdowndocs/bin/phpdoc-md generate --bootstrap=timber.php TimberImage > docs/markdowndocs/timberimage.md
-./vendor/jarednova/markdowndocs/bin/phpdoc-md generate --bootstrap=timber.php TimberMenu > docs/markdowndocs/timbermenu.md
-./vendor/jarednova/markdowndocs/bin/phpdoc-md generate --bootstrap=timber.php TimberMenuItem > docs/markdowndocs/timbermenuitem.md
-./vendor/jarednova/markdowndocs/bin/phpdoc-md generate --bootstrap=timber.php TimberPost > docs/markdowndocs/timberpost.md
-./vendor/jarednova/markdowndocs/bin/phpdoc-md generate --bootstrap=timber.php TimberSite > docs/markdowndocs/timbersite.md
-./vendor/jarednova/markdowndocs/bin/phpdoc-md generate --bootstrap=timber.php TimberTheme > docs/markdowndocs/timbertheme.md
-./vendor/jarednova/markdowndocs/bin/phpdoc-md generate --bootstrap=timber.php TimberTerm > docs/markdowndocs/timberterm.md
-./vendor/jarednova/markdowndocs/bin/phpdoc-md generate --bootstrap=timber.php TimberUser > docs/markdowndocs/timberuser.md
+cd ../../..
 
-./vendor/jarednova/markdowndocs/bin/phpdoc-md generate --bootstrap=timber.php TimberHelper > docs/markdowndocs/timberhelper.md
+./phpdocs-md generate Timber\\Archives > ./docs/markdowndocs/_timberarchives.md
+./phpdocs-md generate Timber\\Comment > ./docs/markdowndocs/_timbercomment.md
+./phpdocs-md generate Timber\\Image > ./docs/markdowndocs/_timberimage.md
+./phpdocs-md generate Timber\\Menu > ./docs/markdowndocs/_timbermenu.md
+./phpdocs-md generate Timber\\MenuItem > ./docs/markdowndocs/_timbermenuitem.md
+./phpdocs-md generate Timber\\Post > ./docs/markdowndocs/_timberpost.md
+./phpdocs-md generate Timber\\Site > ./docs/markdowndocs/_timbersite.md
+./phpdocs-md generate Timber\\Theme > ./docs/markdowndocs/_timbertheme.md
+./phpdocs-md generate Timber\\Term > ./docs/markdowndocs/_timberterm.md
+./phpdocs-md generate Timber\\User > ./docs/markdowndocs/_timberuser.md
+./phpdocs-md generate Timber\\Helper > ./docs/markdowndocs/_timberhelper.md
+./phpdocs-md generate Timber\\Timber > ./docs/markdowndocs/_timber.md
 
-cp /srv/www/timber/docs/wiki/*.md /srv/www/slate/source/includes
+cp docs/wiki/*.md ../slate/source/includes
 
-mv /srv/www/timber/docs/markdowndocs/*.md /srv/www/slate/source/includes
+mv docs/markdowndocs/*.md ../slate/source/includes
