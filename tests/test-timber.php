@@ -1,5 +1,7 @@
 <?php
 
+use Timber\Caller;
+
 class TestTimber extends Timber_UnitTestCase {
 
 	function testSample() {
@@ -203,7 +205,7 @@ class TestTimber extends Timber_UnitTestCase {
     }
 
     function testTimberGetCallingScriptFile() {
-    	$calling_file = Timber::get_calling_script_file();
+    	$calling_file = Caller::get_calling_script_file();
     	$file = getcwd().'/tests/test-timber.php';
     	$this->assertEquals($calling_file, $file);
     }

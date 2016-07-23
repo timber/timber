@@ -260,10 +260,10 @@ class Timber {
 		if ( !defined('TIMBER_LOADED') ) {
 			self::init();
 		}
-		$caller = self::get_calling_script_dir();
+		$caller = Caller::get_calling_script_dir(1);
 		$loader = new Loader($caller);
 		$file = $loader->choose_template($filenames);
-		$caller_file = self::get_calling_script_file();
+		$caller_file = Caller::get_calling_script_file(1);
 		$caller_file = apply_filters('timber/calling_php_file', $caller_file);
 		$output = '';
 		if ( is_null($data) ) {
@@ -372,7 +372,7 @@ class Timber {
 	 * @return string
 	 */
 	public static function get_sidebar_from_php( $sidebar = '', $data ) {
-		$caller = self::get_calling_script_dir();
+		$caller = Caller::get_calling_script_dir(1);
 		$loader = new Loader();
 		$uris = $loader->get_locations($caller);
 		ob_start();
@@ -478,43 +478,9 @@ class Timber {
 	/*  Utility
 	================================ */
 
-	/**
-	 * Get calling script dir.
-	 * @api
-	 * @return string
-	 */
-	public static function get_calling_script_dir( $offset = 0 ) {
-		$caller = self::get_calling_script_file($offset);
-		if ( !is_null($caller) ) {
-			$pathinfo = pathinfo($caller);
-			$dir = $pathinfo['dirname'];
-			return $dir;
-		}
-	}
 
-	/**
-	 * Get calling script file.
-	 * @api
-	 * @param int     $offset
-	 * @return string|null
-	 * @deprecated since 0.20.0
-	 */
-	public static function get_calling_script_file( $offset = 0 ) {
-		$caller = null;
-		$backtrace = debug_backtrace();
-		$i = 0;
-		foreach ( $backtrace as $trace ) {
-			if ( array_key_exists('file', $trace) && $trace['file'] != __FILE__ ) {
-				$caller = $trace['file'];
-				break;
-			}
-			$i++;
-		}
-		if ( $offset ) {
-			$caller = $backtrace[$i + $offset]['file'];
-		}
-		return $caller;
-	}
+
+
 
 
 	/**
