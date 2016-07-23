@@ -263,6 +263,8 @@ class Timber {
 		$caller = self::get_calling_script_dir();
 		$loader = new Loader($caller);
 		$file = $loader->choose_template($filenames);
+		$caller_file = self::get_calling_script_file();
+		$caller_file = apply_filters('timber/calling_php_file', $caller_file);
 		$output = '';
 		if ( is_null($data) ) {
 			$data = array();
@@ -490,20 +492,6 @@ class Timber {
 		}
 	}
 
-
-	/**
-	 * Add route.
-	 *
-	 * @param string  $route
-	 * @param callable $callback
-	 * @param array   $args
-	 * @deprecated since 0.20.0 and will be removed in 1.1
-	 */
-	public static function add_route( $route, $callback, $args = array() ) {
-		Helper::warn('Timber::add_route (and accompanying methods for load_view, etc. Have been deprecated and will soon be removed. Please update your theme with Route::map. You can read more in the 1.0 Upgrade Guide: https://github.com/timber/timber/wiki/1.0-Upgrade-Guide');
-		\Routes::map($route, $callback, $args);
-	}
-
 	/**
 	 * Get calling script file.
 	 * @api
@@ -527,4 +515,20 @@ class Timber {
 		}
 		return $caller;
 	}
+
+
+	/**
+	 * Add route.
+	 *
+	 * @param string  $route
+	 * @param callable $callback
+	 * @param array   $args
+	 * @deprecated since 0.20.0 and will be removed in 1.1
+	 */
+	public static function add_route( $route, $callback, $args = array() ) {
+		Helper::warn('Timber::add_route (and accompanying methods for load_view, etc. Have been deprecated and will soon be removed. Please update your theme with Route::map. You can read more in the 1.0 Upgrade Guide: https://github.com/timber/timber/wiki/1.0-Upgrade-Guide');
+		\Routes::map($route, $callback, $args);
+	}
+
+
 }
