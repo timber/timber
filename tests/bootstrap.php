@@ -12,6 +12,7 @@ function _manually_load_plugin() {
 	require dirname( __FILE__ ) . '/../vendor/autoload.php';
 	$timber = new \Timber\Timber();
 	require dirname( __FILE__ ) . '/../wp-content/plugins/advanced-custom-fields/acf.php';
+	require dirname( __FILE__ ) . '/../wp-content/plugins/types/wpcf.php';
 }
 
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
