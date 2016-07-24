@@ -339,7 +339,7 @@ class Term extends Core implements CoreInterface {
 		$prefix = '<p>';
 		$desc = term_description($this->ID, $this->taxonomy);
 		if ( substr($desc, 0, strlen($prefix)) == $prefix ) {
-    		$desc = substr($desc, strlen($prefix));
+			$desc = substr($desc, strlen($prefix));
 		}
 		$desc = preg_replace('/'.preg_quote('</p>', '/').'$/', '', $desc);
 		return trim($desc);
