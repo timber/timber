@@ -73,8 +73,9 @@ class QueryIterator implements \Iterator {
 	// GET POSTS
 	//
 	public static function get_query_from_array_of_ids( $query = array() ) {
-		if ( !is_array($query) || !count($query) )
+		if ( !is_array($query) || !count($query) ) {
 			return null;
+		}
 
 		return new \WP_Query(array(
 				'post_type'=> 'any',

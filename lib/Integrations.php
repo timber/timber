@@ -11,10 +11,10 @@ use Timber\Integrations\ACF;
 class Integrations {
     
 	public static function init() {
-		add_action('init', array( __CLASS__, 'maybe_init_acf'));
+		add_action('init', array(__CLASS__, 'maybe_init_acf'));
 
 		if ( class_exists('WP_CLI_Command') ) {
-			\WP_CLI::add_command( 'timber', 'Timber\Integrations\Timber_WP_CLI_Command');
+			\WP_CLI::add_command('timber', 'Timber\Integrations\Timber_WP_CLI_Command');
 		}
 	}
 
