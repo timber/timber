@@ -462,7 +462,7 @@ class Helper {
 	/**
 	 *
 	 *
-	 * @param string  $args
+	 * @param array  $args
 	 * @return array
 	 */
 	public static function paginate_links( $args = '' ) {

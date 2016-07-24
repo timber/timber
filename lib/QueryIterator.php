@@ -59,7 +59,7 @@ class QueryIterator implements \Iterator {
 	}
 
 	public function post_count() {
-	    return $this->_query->post_count;
+		return $this->_query->post_count;
 	}
 
 	public function get_posts( $return_collection = false ) {
