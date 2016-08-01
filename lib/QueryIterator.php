@@ -22,13 +22,13 @@ class QueryIterator implements \Iterator {
 
 	public function __construct( $query = false, $posts_class = 'Timber\Post' ) {
 		add_action('pre_get_posts', array($this, 'fix_number_posts_wp_quirk'));
-		if ( $posts_class )
+		if ( $posts_class ) {
 			$this->_posts_class = $posts_class;
+		}
 
 		if ( is_a($query, 'WP_Query') ) {
 			// We got a full-fledged WP Query, look no further!
 			$the_query = $query;
-
 		} elseif ( false === $query ) {
 			// If query is explicitly set to false, use the main loop
 			global $wp_query;
@@ -38,11 +38,9 @@ class QueryIterator implements \Iterator {
 		} elseif ( Helper::is_array_assoc($query) || (is_string($query) && strstr($query, '=')) ) {
 			// We have a regularly formed WP query string or array to use
 			$the_query = new \WP_Query($query);
-
 		} elseif ( is_numeric($query) || is_string($query) ) {
 			// We have what could be a post name or post ID to pull out
 			$the_query = self::get_query_from_string($query);
-
 		} elseif ( is_array($query) && count($query) && (is_integer($query[0]) || is_string($query[0])) ) {
 			// We have a list of pids (post IDs) to extract from
 			$the_query = self::get_query_from_array_of_ids($query);
@@ -52,7 +50,6 @@ class QueryIterator implements \Iterator {
 		} else {
 			Helper::error_log('I have failed you! in '.basename(__FILE__).'::'.__LINE__);
 			Helper::error_log($query);
-
 			// We have failed hard, at least let get something.
 			$the_query = new \WP_Query();
 		}
@@ -62,7 +59,7 @@ class QueryIterator implements \Iterator {
 	}
 
 	public function post_count() {
-	    return $this->_query->post_count;
+		return $this->_query->post_count;
 	}
 
 	public function get_posts( $return_collection = false ) {
@@ -76,8 +73,9 @@ class QueryIterator implements \Iterator {
 	// GET POSTS
 	//
 	public static function get_query_from_array_of_ids( $query = array() ) {
-		if ( !is_array($query) || !count($query) )
+		if ( !is_array($query) || !count($query) ) {
 			return null;
+		}
 
 		return new \WP_Query(array(
 				'post_type'=> 'any',

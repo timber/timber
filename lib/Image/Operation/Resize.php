@@ -170,20 +170,20 @@ class Resize extends ImageOperation {
 	 * @return boolean|null                  true if everything went fine, false otherwise
 	 */
 	public function run( $load_filename, $save_filename ) {
-		$image = wp_get_image_editor( $load_filename );
-		if ( !is_wp_error( $image ) ) {
+		$image = wp_get_image_editor($load_filename);
+		if ( !is_wp_error($image) ) {
 			//should be resized by gif resizer
-			if ( ImageHelper::is_animated_gif( $load_filename ) ) {
+			if ( ImageHelper::is_animated_gif($load_filename) ) {
 				//attempt to resize
 				//return if successful
 				//proceed if not
-				$gif = self::run_animated_gif( $load_filename, $save_filename, $image );
+				$gif = self::run_animated_gif($load_filename, $save_filename, $image);
 				if ( $gif ) {
 					return true;
 				}
 			}
 
-			$crop = self::get_target_sizes( $image );
+			$crop = self::get_target_sizes($image);
 			$image->crop( 	$crop['x'],
 							$crop['y'],
 							$crop['src_w'],
@@ -191,24 +191,24 @@ class Resize extends ImageOperation {
 							$crop['target_w'],
 							$crop['target_h']
 			);
-			$result = $image->save( $save_filename );
-			if ( is_wp_error( $result ) ) {
+			$result = $image->save($save_filename);
+			if ( is_wp_error($result) ) {
 				// @codeCoverageIgnoreStart
-				Helper::error_log( 'Error resizing image' );
-				Helper::error_log( $result );
+				Helper::error_log('Error resizing image');
+				Helper::error_log($result);
 				return false;
 				// @codeCoverageIgnoreEnd
 			} else {
 				return true;
 			}
-		} else if ( isset( $image->error_data['error_loading_image'] ) ) {
+		} else if ( isset($image->error_data['error_loading_image']) ) {
 			// @codeCoverageIgnoreStart
-			Helper::error_log( 'Error loading ' . $image->error_data['error_loading_image'] );
+			Helper::error_log('Error loading '.$image->error_data['error_loading_image']);
 		} else {
-			if(!extension_loaded('gd')) {
-				Helper::error_log( 'Can not resize image, please installed php-gd' );
+			if ( !extension_loaded('gd') ) {
+				Helper::error_log('Can not resize image, please installed php-gd');
 			} else {
-				Helper::error_log( $image );
+				Helper::error_log($image);
 			}
 			// @codeCoverageIgnoreEnd
 		}
