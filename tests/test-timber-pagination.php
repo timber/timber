@@ -70,7 +70,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->go_to( $archive );
 		query_posts( 's=post' );
 		$pagination = Timber::get_pagination();
-		$this->assertEquals( user_trailingslashit('http://example.org/page/5/?s=post'), $pagination['pages'][4]['link'] );
+		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination['pages'][4]['link'] );
 	}
 
 	function testPaginationSearchPretty() {

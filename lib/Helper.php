@@ -460,6 +460,17 @@ class Helper {
 	}
 
 	/**
+	 * Checks to see whether the given URL has a search query in it (s=*)
+	 * @param string $url
+	 * @return boolean
+	 */
+	protected static function is_search_query( $url ) {
+		if ( strpos($url, 's=') !== false ) {
+			return true;
+		}
+	}
+
+	/**
 	 *
 	 *
 	 * @param array  $args
@@ -516,7 +527,9 @@ class Helper {
 					$link = untrailingslashit($link);
 					$link = esc_url(apply_filters('paginate_links', $link));
 					$link = user_trailingslashit($link);
-
+					if ( self::is_search_query($link) ) {
+						$link = untrailingslashit($link);
+					}
 					$page_links[] = array(
 						'class' => 'page-number page-numbers',
 						'link' => $link,
