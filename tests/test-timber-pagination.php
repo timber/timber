@@ -73,6 +73,16 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination['pages'][4]['link'] );
 	}
 
+	function testPaginationSearchPrettyWithPostnameNextPrev() {
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$archive = home_url( '?s=post' );
+		$this->go_to( $archive );
+		query_posts( 's=post' );
+		$pagination = Timber::get_pagination();
+		$this->assertEquals( 'http://example.org/page/2/?s=post', $pagination['next']['link'] );
+	}
+
 	function testPaginationSearchPretty() {
 		$struc = '/blog/%year%/%monthnum%/%postname%/';
 		global $wp_rewrite;
