@@ -461,81 +461,13 @@ class Helper {
 
 	/**
 	 *
-	 *
+	 * @deprecated since 1.1.2
 	 * @param array  $args
 	 * @return array
 	 */
 	public static function paginate_links( $args = '' ) {
-		$defaults = array(
-			'base' => '%_%', // http://example.com/all_posts.php%_% : %_% is replaced by format (below)
-			'format' => '?page=%#%', // ?page=%#% : %#% is replaced by the page number
-			'total' => 1,
-			'current' => 0,
-			'show_all' => false,
-			'prev_next' => false,
-			'prev_text' => __('&laquo; Previous'),
-			'next_text' => __('Next &raquo;'),
-			'end_size' => 1,
-			'mid_size' => 2,
-			'type' => 'array',
-			'add_args' => false, // array of query args to add
-			'add_fragment' => ''
-		);
-		$args = wp_parse_args($args, $defaults);
-		// Who knows what else people pass in $args
-		$args['total'] = intval((int) $args['total']);
-		if ( $args['total'] < 2 ) {
-			return array();
-		}
-		$args['current'] = (int) $args['current'];
-		$args['end_size'] = 0 < (int) $args['end_size'] ? (int) $args['end_size'] : 1; // Out of bounds?  Make it the default.
-		$args['mid_size'] = 0 <= (int) $args['mid_size'] ? (int) $args['mid_size'] : 2;
-		$args['add_args'] = is_array($args['add_args']) ? $args['add_args'] : false;
-		$page_links = array();
-		$dots = false;
-		for ( $n = 1; $n <= $args['total']; $n++ ) {
-			$n_display = number_format_i18n($n);
-			if ( $n == $args['current'] ) {
-				$page_links[] = array(
-					'class' => 'page-number page-numbers current',
-					'title' => $n_display,
-					'text' => $n_display,
-					'name' => $n_display,
-					'current' => true
-				);
-				$dots = true;
-			} else {
-				if ( $args['show_all'] || ($n <= $args['end_size'] || ($args['current'] && $n >= $args['current'] - $args['mid_size'] && $n <= $args['current'] + $args['mid_size']) || $n > $args['total'] - $args['end_size']) ) {
-					$link = str_replace('%_%', 1 == $n ? '' : $args['format'], $args['base']);
-					$link = str_replace('%#%', $n, $link);
-					$link = trailingslashit($link).ltrim($args['add_fragment'], '/');
-					if ( $args['add_args'] ) {
-						$link = rtrim(add_query_arg($args['add_args'], $link), '/');
-					}
-					$link = str_replace(' ', '+', $link);
-					$link = untrailingslashit($link);
-					$link = esc_url(apply_filters('paginate_links', $link));
-					$link = user_trailingslashit($link);
-
-					$page_links[] = array(
-						'class' => 'page-number page-numbers',
-						'link' => $link,
-						'title' => $n_display,
-						'name' => $n_display,
-						'current' => $args['current'] == $n
-					);
-					$dots = true;
-				} elseif ( $dots && !$args['show_all'] ) {
-					$page_links[] = array(
-						'class' => 'dots',
-						'title' => __('&hellip;')
-					);
-					$dots = false;
-				}
-			}
-		}
-
-		return $page_links;
+		Helper::warn('Helper/paginate_links has been moved to Pagination/paginate_links');
+		return Pagination::paginate_links($args);
 	}
 
 	/**
