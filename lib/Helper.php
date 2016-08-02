@@ -464,7 +464,7 @@ class Helper {
 	 * @param string $url
 	 * @return boolean
 	 */
-	protected static function is_search_query( $url ) {
+	public static function is_search_query( $url ) {
 		if ( strpos($url, 's=') !== false ) {
 			return true;
 		}
