@@ -198,6 +198,44 @@
 			$this->assertEquals( '<div>Foo</div>DoEvilThing();', $str );
 		}
 
+		function testEscHtml(){
+
+			// Simple string
+			$html = "The quick brown fox.";
+
+			$str = Timber::compile_string( "{{text | e('esc_html')}}", array( 'text' => $html ) );
+
+			$this->assertEquals( $html, $str );
+
+
+			$escaped = "http://localhost/trunk/wp-login.php?action=logout&amp;_wpnonce=cd57d75985";
+
+			$str = Timber::compile_string( "{{text | e('esc_html')}}", array( 'text' => 'http://localhost/trunk/wp-login.php?action=logout&_wpnonce=cd57d75985' ) );
+
+			$this->assertEquals( $escaped, $str );
+
+			// SQL query
+
+			$escaped = "SELECT meta_key, meta_value FROM wp_trunk_sitemeta WHERE meta_key IN (&#039;site_name&#039;, &#039;siteurl&#039;, &#039;active_sitewide_plugins&#039;, &#039;_site_transient_timeout_theme_roots&#039;, &#039;_site_transient_theme_roots&#039;, &#039;site_admins&#039;, &#039;can_compress_scripts&#039;, &#039;global_terms_enabled&#039;) AND site_id = 1";
+
+			$str = Timber::compile_string( "{{text | e('esc_html')}}", array( 'text' =>"SELECT meta_key, meta_value FROM wp_trunk_sitemeta WHERE meta_key IN ('site_name', 'siteurl', 'active_sitewide_plugins', '_site_transient_timeout_theme_roots', '_site_transient_theme_roots', 'site_admins', 'can_compress_scripts', 'global_terms_enabled') AND site_id = 1"));
+			$this->assertEquals( $escaped, $str );
+
+		}
+
+		function testEscJs(){
+			$escaped = 'foo &amp; bar &amp;baz; &nbsp;';
+			$str = Timber::compile_string( "{{text | e('esc_js')}}", array( 'text' => 'foo & bar &baz; &nbsp;' ) );
+
+			$this->assertEquals($escaped, $str);
+
+			$escaped = "foo \\' bar \\' baz &#x26;";
+			$str = Timber::compile_string( "{{text | e('esc_js')}}", array( 'text' => 'foo &#x27; bar &#39; baz &#x26;' ) );
+
+			$this->assertEquals($escaped, $str);
+
+		}
+
 		/**
      	* @expectedException Twig_Error_Syntax
      	*/

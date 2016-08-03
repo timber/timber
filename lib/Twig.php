@@ -224,6 +224,14 @@ class Twig {
 			return wp_kses_post( $string );
 		} );
 
+		$twig->getExtension( 'core' )->setEscaper( 'esc_html', function( \Twig_Environment $env, $string ) {
+			return esc_html( $string );
+		} );
+
+		$twig->getExtension( 'core' )->setEscaper( 'esc_js', function( \Twig_Environment $env, $string ) {
+			return esc_js( $string );
+		} );
+
 		return $twig;
 
 	}
