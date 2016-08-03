@@ -8,6 +8,9 @@ namespace Timber;
 */
 class PostType {
 
+	/**
+	 * @param string $post_type
+	 */
 	public function __construct( $post_type ) {
 		$this->slug = $post_type;
 		$this->init($post_type);
