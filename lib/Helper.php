@@ -465,7 +465,7 @@ class Helper {
 	 * @param array  $args
 	 * @return array
 	 */
-	public static function paginate_links( $args = '' ) {
+	public static function paginate_links( $args = array() ) {
 		Helper::warn('Helper/paginate_links has been moved to Pagination/paginate_links');
 		return Pagination::paginate_links($args);
 	}
