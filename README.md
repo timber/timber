@@ -111,11 +111,12 @@ Documentation for Timber classes and functions is [auto generated](https://githu
 To publish docs:
 1. `composer install` if not already run
 2. Clone the [timber/slate](https://github.com/timber/slate) repo at the same directory level as Timber
-3. From the root of the slate directory
-	- `gem install bundler`
-	- `bundle install` (you'll need at least Ruby 2.0 or newer)
-	- `sh publish-docs.sh`
-
+3. From the root of the slate directory, run these commands:
+```bash
+gem install bundler
+bundle install
+sh publish-docs.sh
+```
 
 
 
