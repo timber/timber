@@ -17,6 +17,7 @@ class Pagination {
 		global $paged;
 		global $wp_rewrite;
 		$args = array();
+		// calculate the total number of pages based on found posts and posts per page
 		$args['total'] = ceil($wp_query->found_posts / $wp_query->query_vars['posts_per_page']);
 		if ( $wp_rewrite->using_permalinks() ) {
 			$url = explode('?', get_pagenum_link(0));
