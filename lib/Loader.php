@@ -29,7 +29,7 @@ class Loader {
 	 * @param bool|string   $caller the calling directory or false
 	 */
 	public function __construct( $caller = false ) {
-		$this->locations = $this->get_locations($caller);
+		$this->locations = LocationManager::get_locations($caller);
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
 	}
@@ -68,7 +68,7 @@ class Loader {
 				do_action('timber_loader_render_file', $result);
 			}
 			$data = apply_filters('timber_loader_render_data', $data);
-			$data = apply_filters( 'timber/loader/render_data', $data, $file );
+			$data = apply_filters('timber/loader/render_data', $data, $file);
 			$output = $twig->render($file, $data);
 		}
 
@@ -76,7 +76,7 @@ class Loader {
 			$this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
 		}
 		$output = apply_filters('timber_output', $output);
-		return apply_filters( 'timber/output', $output, $data, $file );
+		return apply_filters('timber/output', $output, $data, $file);
 	}
 
 	/**
@@ -110,105 +110,6 @@ class Loader {
 		return false;
 	}
 
-	/**
-	 * @return array
-	 */
-	protected function get_locations_theme() {
-		$theme_locs = array();
-		$theme_dirs = $this->get_locations_theme_dir();
-		$roots      = array(get_stylesheet_directory(), get_template_directory());
-		$roots      = array_map('realpath', $roots);
-		$roots      = array_unique($roots);
-		foreach ( $roots as $root ) {
-			if ( !is_dir($root) ) {
-				continue;
-			}
-			$theme_locs[] = $root;
-			$root         = trailingslashit($root);
-			foreach ( $theme_dirs as $dirname ) {
-				$tloc = realpath($root.$dirname);
-				if ( is_dir($tloc) ) {
-					$theme_locs[] = $tloc;
-				}
-			}
-		}
-
-		return $theme_locs;
-	}
-
-	/**
-	 * returns an array of the directory inside themes that holds twig files
-	 * @return string[] the names of directores, ie: array('templats', 'views');
-	 */
-	protected function get_locations_theme_dir() {
-		if ( is_string(Timber::$dirname) ) {
-			return array(Timber::$dirname);
-		}
-		return Timber::$dirname;
-	}
-
-	/**
-	 *
-	 * @return array
-	 */
-	protected function get_locations_user() {
-		$locs = array();
-		if ( isset(Timber::$locations) ) {
-			if ( is_string(Timber::$locations) ) {
-				Timber::$locations = array(Timber::$locations);
-			}
-			foreach ( Timber::$locations as $tloc ) {
-				$tloc = realpath($tloc);
-				if ( is_dir($tloc) ) {
-					$locs[] = $tloc;
-				}
-			}
-		}
-		return $locs;
-	}
-
-	/**
-	 * @param bool|string   $caller the calling directory
-	 * @return array
-	 */
-	protected function get_locations_caller( $caller = false ) {
-		$locs = array();
-		if ( $caller && is_string($caller) ) {
-			$caller = realpath($caller);
-			if ( is_dir($caller) ) {
-				$locs[] = $caller;
-			}
-			$caller = trailingslashit($caller);
-			foreach ( $this->get_locations_theme_dir() as $dirname ) {
-				$caller_sub = realpath($caller.$dirname);
-				if ( is_dir($caller_sub) ) {
-					$locs[] = $caller_sub;
-				}
-			}
-		}
-		return $locs;
-	}
-
-	/**
-	 * @param bool|string   $caller the calling directory (or false)
-	 * @return array
-	 */
-	public function get_locations( $caller = false ) {
-		//prioirty: user locations, caller (but not theme), child theme, parent theme, caller
-		$locs = array();
-		$locs = array_merge($locs, $this->get_locations_user());
-		$locs = array_merge($locs, $this->get_locations_caller($caller));
-		//remove themes from caller
-		$locs = array_diff($locs, $this->get_locations_theme());
-		$locs = array_merge($locs, $this->get_locations_theme());
-		$locs = array_merge($locs, $this->get_locations_caller($caller));
-		$locs = array_unique($locs);
-		//now make sure theres a trailing slash on everything
-		$locs = array_map('trailingslashit', $locs);
-		$locs = apply_filters('timber_locations', $locs);
-		$locs = apply_filters('timber/locations', $locs);
-		return $locs;
-	}
 
 	/**
 	 * @return \Twig_Loader_Filesystem

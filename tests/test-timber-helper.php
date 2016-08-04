@@ -142,19 +142,14 @@
 		}
 
 		function testPaginateLinksWithTrailingSlash() {
-
 			$args = array('total' => 20);
-
 			$this->setPermalinkStructure('/%year%/%post_id%/');
-
-			$pagination = \Timber\Helper::paginate_links($args);
-
+			$pagination = \Timber\Pagination::paginate_links($args);
 			foreach($pagination as $page) {
 				if(array_key_exists('link', $page) && !empty($page['link'])) {
 					$this->assertStringEndsWith('/', $page['link']);
 				}
 			}
-
 		}
 
 		function endsWith($string, $test) {
@@ -165,19 +160,14 @@
 		}
 
 		function testPaginateLinksWithOutTrailingSlash() {
-
 			$args = array('total' => 20);
-
 			$this->setPermalinkStructure('/%year%/%post_id%');
-
-			$pagination = \Timber\Helper::paginate_links($args);
-
+			$pagination = \Timber\Pagination::paginate_links($args);
 			foreach($pagination as $page) {
 				if(array_key_exists('link', $page) && !empty($page['link'])) {
 					$this->assertFalse( self::endsWith(substr( $page['link'], - 1 ), '/') );
 				}
 			}
-
 		}		
 
 	}

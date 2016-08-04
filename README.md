@@ -5,7 +5,7 @@ By Jared Novack (<a href="https://twitter.com/jarednova">@JaredNova</a>) and <a 
 </div>
 
 [![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.org/timber/timber)
-[![Coverage Status](https://img.shields.io/codecov/c/github/timber/timber.svg?style=flat-square)](hhttps://codecov.io/gh/timber/timber)
+[![Coverage Status](https://img.shields.io/codecov/c/github/timber/timber.svg?style=flat-square)](https://codecov.io/gh/timber/timber)
 [![Dependency Status](https://www.versioneye.com/user/projects/574e40e6e298f30048059b9f/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/574e40e6e298f30048059b9f)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
 [![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
@@ -111,11 +111,12 @@ Documentation for Timber classes and functions is [auto generated](https://githu
 To publish docs:
 1. `composer install` if not already run
 2. Clone the [timber/slate](https://github.com/timber/slate) repo at the same directory level as Timber
-3. From the root of the slate directory
-	- `gem install bundler`
-	- `bundle install` (you'll need at least Ruby 2.0 or newer)
-	- `sh publish-docs.sh`
-
+3. From the root of the slate directory, run these commands:
+```bash
+gem install bundler
+bundle install
+sh publish-docs.sh
+```
 
 
 
