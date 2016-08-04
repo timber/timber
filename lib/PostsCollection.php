@@ -58,13 +58,12 @@ class PostsCollection extends \ArrayObject {
 	}
 
 	public function get_posts() {
-		//return $this->getArrayCopy();
-		return $this;
+		return $this->getArrayCopy();
 	}
 
 	public function pagination( $prefs = array() ) {
 		if ( ! isset($this->pagination) ) {
-			$this->pagination = Timber::get_pagination($prefs, $this->query);
+			$this->pagination = new Pagination( $prefs, $this->query);
 		}
 		return $this->pagination;
 	}

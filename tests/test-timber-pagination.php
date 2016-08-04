@@ -154,21 +154,21 @@ class TestTimberPagination extends Timber_UnitTestCase {
 
 	function testPostCollectionPagination() {
 		$pids = $this->factory->post->create_many( 13 );
-		$posts = Timber::get_posts(array('post_type' => 'post'));
+		$posts = Timber::get_posts(array('post_type' => 'post'), null, true);
 		$pagination = $posts->pagination();
-		$this->assertEquals( 2, count( $pagination['pages'] ) );
+		$this->assertEquals( 2, count( $pagination->pages ) );
 	}
 
 	function testPostCollectionPaginationForMultiplePostTypes() {
 		register_post_type( 'recipe' );
 		$pids = $this->factory->post->create_many( 43, array( 'post_type' => 'recipe' ) );
-		$recipes = Timber::get_posts(array('post_type' => 'recipe'));
+		$recipes = Timber::get_posts(array('post_type' => 'recipe'), null, true);
 		$pagination = $recipes->pagination();
-		$this->assertEquals( 5, count( $pagination['pages'] ) );
+		$this->assertEquals( 5, count( $pagination->pages ) );
 		$pids = $this->factory->post->create_many( 13 );
-		$posts = Timber::get_posts(array('post_type' => 'post'));
+		$posts = Timber::get_posts(array('post_type' => 'post'), null, true);
 		$pagination = $posts->pagination();
-		$this->assertEquals( 2, count( $pagination['pages'] ) );
+		$this->assertEquals( 2, count( $pagination->pages ) );
 	}
 
 }
