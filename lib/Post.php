@@ -436,10 +436,11 @@ class Post extends Core implements CoreInterface {
 			}
 			$read_more_class = apply_filters('timber/post/get_preview/read_more_class', "read-more");
 			if ( $readmore && isset($readmore_matches) && !empty($readmore_matches[1]) ) {
-				$text .= ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore_matches[1]).'</a>';
+				$readmorelink = ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore_matches[1]).'</a>';
 			} elseif ( $readmore ) {
-				$text .= ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore).'</a>';
+				$readmorelink = ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore).'</a>';
 			}
+			$text .= apply_filters( 'timber/post/get_preview/read_more_link', $readmorelink );
 			if ( !$strip && $last_p_tag && (strpos($text, '<p>') || strpos($text, '<p ')) ) {
 				$text .= '</p>';
 			}
