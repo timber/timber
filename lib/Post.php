@@ -389,6 +389,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function get_preview( $len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;' ) {
 		$text = '';
+		$link = '';
 		$trimmed = false;
 		$last_p_tag = null;
 		if ( isset($this->post_excerpt) && strlen($this->post_excerpt) ) {
@@ -436,11 +437,11 @@ class Post extends Core implements CoreInterface {
 			}
 			$read_more_class = apply_filters('timber/post/get_preview/read_more_class', "read-more");
 			if ( $readmore && isset($readmore_matches) && !empty($readmore_matches[1]) ) {
-				$readmorelink = ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore_matches[1]).'</a>';
+				$link = ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore_matches[1]).'</a>';
 			} elseif ( $readmore ) {
-				$readmorelink = ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore).'</a>';
+				$link = ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore).'</a>';
 			}
-			$text .= apply_filters( 'timber/post/get_preview/read_more_link', $readmorelink );
+			$text .= apply_filters( 'timber/post/get_preview/read_more_link', $link );
 			if ( !$strip && $last_p_tag && (strpos($text, '<p>') || strpos($text, '<p ')) ) {
 				$text .= '</p>';
 			}
