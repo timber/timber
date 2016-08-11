@@ -391,7 +391,7 @@ class Post extends Core implements CoreInterface {
 		$text = '';
 		$trimmed = false;
 		$last_p_tag = null;
-		if ( isset($this->post_excerpt) && strlen($this->post_excerpt) ) {
+		if ( isset($this->post_excerpt) && strlen( trim($this->post_excerpt) ) ) {
 			if ( $force ) {
 				$text = Helper::trim_words($this->post_excerpt, $len, false);
 				$trimmed = true;
