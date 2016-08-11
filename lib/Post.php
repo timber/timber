@@ -1040,6 +1040,15 @@ class Post extends Core implements CoreInterface {
 	public function format() {
 		return get_post_format($this->ID);
 	}
+	
+	/**
+	 * whether post requires password and correct password has been provided
+	 * @api
+	 * @return bool
+	 */
+	public function password_required() {
+		return post_password_required($this->ID);
+	}
 
 	/**
 	 * get the permalink for a post object
