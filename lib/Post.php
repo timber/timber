@@ -1044,7 +1044,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * whether post requires password and correct password has been provided
 	 * @api
-	 * @return bool
+	 * @return boolean
 	 */
 	public function password_required() {
 		return post_password_required($this->ID);

@@ -9,6 +9,17 @@
 			$this->assertEquals($post_id, $post->ID);
 		}
 
+		function testPostPasswordReqd(){
+			$post_id = $this->factory->post->create();
+			$post = new TimberPost($post_id);
+			$this->assertFalse($post->password_required());
+
+			$post_id = $this->factory->post->create(array('post_password' => 'jiggypoof'));
+			$post = new TimberPost($post_id);
+			$this->assertTrue($post->password_required());
+			
+		}
+
 		function testNameMethod() {
 			$post_id = $this->factory->post->create(array('post_title' => 'Battlestar Galactica'));
 			$post = new TimberPost($post_id);
