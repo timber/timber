@@ -5,6 +5,44 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	/**
 	 * @group wp_query_hacks
 	 */
+	function testGettingWithCatAndOtherStuff() {
+		$pids = $this->factory->post->create_many(6);
+		$cat = $this->factory->term->create(array('name' => 'Something', 'taxonomy' => 'category'));
+		$cat_post = $this->factory->post->create(array('post_title' => 'Germany', 'post_category' => array($cat)) );
+		$cat_post = $this->factory->post->create(array('post_title' => 'France', 'post_category' => array($cat)) );
+		$cat_post = $this->factory->post->create(array('post_title' => 'England', 'post_category' => array($cat)) );
+		$args = array(
+            'post_type' => 'post',
+            'posts_per_page' => 2,
+            'post_status' => 'publish',
+            'cat' => $cat
+        );
+		$posts = Timber::get_posts($args);
+		$this->assertEquals(2, count($posts));
+	}
+
+	/**
+	 * @group wp_query_hacks
+	 */
+	function testGettingWithCategoryAndOtherStuff() {
+		$pids = $this->factory->post->create_many(6);
+		$cat = $this->factory->term->create(array('name' => 'Something', 'taxonomy' => 'category'));
+		$cat_post = $this->factory->post->create(array('post_title' => 'Germany', 'post_category' => array($cat)) );
+		$cat_post = $this->factory->post->create(array('post_title' => 'France', 'post_category' => array($cat)) );
+		$cat_post = $this->factory->post->create(array('post_title' => 'England', 'post_category' => array($cat)) );
+		$args = array(
+            'post_type' => 'post',
+            'posts_per_page' => 2,
+            'post_status' => 'publish',
+            'category' => $cat
+        );
+		$posts = Timber::get_posts($args);
+		$this->assertEquals(2, count($posts));
+	}
+
+	/**
+	 * @group wp_query_hacks
+	 */
 	function testGettingWithCat() {
 		$cat = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
 
