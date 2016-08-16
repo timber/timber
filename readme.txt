@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 Tested up to: 4.5.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,12 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 1.1.3 =
+* Fix to how categories work in Timber::get_posts 49f6007db3f829097f82ed41d389dd39053fb84a
+* Fix to usage of class maps in Timber::get_posts (thanks @vilpersson) b1387e443850aa021a0a70203bc20d238d4b21cb
+* Added Post::password_required method (thanks @marclarr) 2e685ce3d05c50e879817e51256202e032e77122
+* You can filter the link markup for Post::get_preview (thanks @LiljebergXYZ) b8100d7f2601b4da40bcc0a873c071b6ecf267f1
 
 = 1.1.2 =
 * Fix to how post IDs are retrieved (thanks @lggorman) 798acd90ee603de2d009828127bdeaab503beb10
