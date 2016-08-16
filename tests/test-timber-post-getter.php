@@ -2,6 +2,59 @@
 
 class TestTimberPostGetter extends Timber_UnitTestCase {
 
+	function testGettingWithCat() {
+		$cat = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+
+		$pids = $this->factory->post->create_many(6);
+		$cats = $this->factory->post->create_many(3, array('post_category' => array($cat)) );
+		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
+
+		$cat_post = new TimberPost($cat_post);
+		$this->assertEquals('News', $cat_post->category()->name());
+
+		$posts = Timber::get_posts(array('cat' => $cat));
+		$this->assertEquals(4, count($posts));
+	}
+
+	function testGettingWithCatList() {
+		$cat = array();
+		$cat[] = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+		$cat[] = $this->factory->term->create(array('name' => 'Local', 'taxonomy' => 'category'));
+		$pids = $this->factory->post->create_many(6);
+		$cat_post = $this->factory->post->create(array('post_category' => array($cat[0])) );
+		$cat_post = $this->factory->post->create(array('post_category' => array($cat[1])) );
+		$cat_post = $this->factory->post->create(array('post_category' => $cat) );
+
+		$posts = Timber::get_posts( array('cat' => implode(',', $cat)));
+		$this->assertEquals(3, count($posts));
+	}
+
+	function testGettingWithCategory() {
+		$cat = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+		$pids = $this->factory->post->create_many(6);
+		$cats = $this->factory->post->create_many(3, array('post_category' => array($cat)) );
+		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
+
+		$cat_post = new TimberPost($cat_post);
+		$this->assertEquals('News', $cat_post->category()->name());
+
+		$posts = Timber::get_posts(array('category' => $cat));
+		$this->assertEquals(4, count($posts));
+	}
+
+	function testGettingWithCategoryList() {
+		$cat = array();
+		$cat[] = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+		$cat[] = $this->factory->term->create(array('name' => 'Local', 'taxonomy' => 'category'));
+		$pids = $this->factory->post->create_many(6);
+		$cat_post = $this->factory->post->create(array('post_category' => array($cat[0])) );
+		$cat_post = $this->factory->post->create(array('post_category' => array($cat[1])) );
+		$cat_post = $this->factory->post->create(array('post_category' => $cat) );
+
+		$posts = Timber::get_posts( array('category' => implode(',', $cat)));
+		$this->assertEquals(3, count($posts));
+	}
+
 	function testGettingArrayWithSticky(){
 		$pids = $this->factory->post->create_many(6);
 		$sticky_id = $this->factory->post->create();
