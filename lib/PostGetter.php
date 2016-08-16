@@ -102,8 +102,7 @@ class PostGetter {
 	 *
 	 * @return string
 	 */
-	public static function get_post_class( $post_type, $post_class = '\Timber\Post' )
-	{
+	public static function get_post_class( $post_type, $post_class = '\Timber\Post' ) {
 		$post_class = apply_filters( 'Timber\PostClassMap', $post_class );
 		$post_class_use = '\Timber\Post';
 
