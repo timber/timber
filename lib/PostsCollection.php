@@ -18,22 +18,9 @@ class PostsCollection extends \ArrayObject {
 			$posts = array();
 		}
 		foreach ( $posts as $post_object ) {
-			$post_class_use = $post_class;
-			if ( is_array($post_class) ) {
-				$post_type      = get_post_type($post_object);
-				$post_class_use = '\Timber\Post';
+			$post_type      = get_post_type($post_object);
+			$post_class_use = PostGetter::get_post_class($post_type, $post_class);
 
-				if ( isset($post_class[$post_type]) ) {
-					$post_class_use = $post_class[$post_type];
-
-				} else {
-					if ( is_array($post_class) ) {
-						Helper::error_log($post_type.' of '.$post_object->ID.' not found in '.print_r($post_class, true));
-					} else {
-						Helper::error_log($post_type.' not found in '.$post_class);
-					}
-				}
-			}
 			// Don't create yet another object if $post_object is already of the right type
 			if ( is_a($post_object, $post_class_use) ) {
 				$post = $post_object;

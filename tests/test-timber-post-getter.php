@@ -26,6 +26,18 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals( 'TimberPortfolio', get_class($posts[1]) );
 	}
 
+	function testGetPostWithClassMap() {
+		register_post_type('portfolio', array('public' => true));
+		$post_id_portfolio = $this->factory->post->create(array('post_type' => 'portfolio', 'post_title' => 'A portfolio item', 'post_date' => '2015-04-23 15:13:52'));
+		$post_id_alert = $this->factory->post->create(array('post_type' => 'alert', 'post_title' => 'An alert', 'post_date' => '2015-06-23 15:13:52'));
+		$post_portfolio = Timber::get_post($post_id_portfolio, array('portfolio' => 'TimberPortfolio', 'alert' => 'TimberAlert'));
+		$post_alert = Timber::get_post($post_id_alert, array('portfolio' => 'TimberPortfolio', 'alert' => 'TimberAlert'));
+		$this->assertEquals( 'TimberPortfolio', get_class($post_portfolio) );
+		$this->assertEquals( $post_id_portfolio, $post_portfolio->ID );
+		$this->assertEquals( 'TimberAlert', get_class($post_alert) );
+		$this->assertEquals( $post_id_alert, $post_alert->ID );
+	}
+
 	function test587() {
 		register_post_type('product');
 		$pids = $this->factory->post->create_many(6, array('post_type' => 'product'));
@@ -202,18 +214,18 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 
 }
 
-class job extends TimberPost {
+class job extends \Timber\Post {
 
 }
 
-class Person extends TimberPost {
+class Person extends \Timber\Post {
 
 }
 
-class TimberAlert extends TimberPost {
+class TimberAlert extends \Timber\Post {
 
 }
 
-class TimberPortfolio extends TimberPost {
+class TimberPortfolio extends \Timber\Post {
 
 }

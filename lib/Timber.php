@@ -120,7 +120,7 @@ class Timber {
 	 * Get post.
 	 * @api
 	 * @param mixed   $query
-	 * @param string  $PostClass
+	 * @param string|array  $PostClass
 	 * @return array|bool|null
 	 */
 	public static function get_post( $query = false, $PostClass = 'Timber\Post' ) {
