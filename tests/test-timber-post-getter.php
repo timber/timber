@@ -2,6 +2,9 @@
 
 class TestTimberPostGetter extends Timber_UnitTestCase {
 
+	/**
+	 * @group wp_query_hacks
+	 */
 	function testGettingWithCat() {
 		$cat = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
 
@@ -16,6 +19,9 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals(4, count($posts));
 	}
 
+	/**
+	 * @group wp_query_hacks
+	 */
 	function testGettingWithCatList() {
 		$cat = array();
 		$cat[] = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
@@ -29,6 +35,9 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals(3, count($posts));
 	}
 
+	/**
+	 * @group wp_query_hacks
+	 */
 	function testGettingWithCategory() {
 		$cat = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
 		$pids = $this->factory->post->create_many(6);
@@ -42,6 +51,9 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals(4, count($posts));
 	}
 
+	/**
+	 * @group wp_query_hacks
+	 */
 	function testGettingWithCategoryList() {
 		$cat = array();
 		$cat[] = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
@@ -156,6 +168,9 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 
 	}
 
+	/**
+	 * @group wp_query_hacks
+	 */
 	function testNumberPostsAll() {
 		$pids = $this->factory->post->create_many( 17 );
 		$query = 'post_type=post&numberposts=-1';

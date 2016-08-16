@@ -22,6 +22,7 @@ class QueryIterator implements \Iterator {
 
 	public function __construct( $query = false, $posts_class = 'Timber\Post' ) {
 		add_action('pre_get_posts', array($this, 'fix_number_posts_wp_quirk'));
+		add_action('pre_get_posts', array($this, 'fix_cat_wp_quirk'));
 		if ( $posts_class ) {
 			$this->_posts_class = $posts_class;
 		}
@@ -144,6 +145,16 @@ class QueryIterator implements \Iterator {
 		if ( isset($query->query) && isset($query->query['numberposts'])
 				&& !isset($query->query['posts_per_page']) ) {
 			$query->set('posts_per_page', $query->query['numberposts']);
+		}
+		return $query;
+	}
+
+	//get_posts uses category, WP_Query uses cat. Why? who knows...
+	public static function fix_cat_wp_quirk( $query ) {
+		if ( isset($query->query) && isset($query->query['category'])
+				&& !isset($query->query['cat']) ) {
+			$query->set('cat', $query->query['category']);
+			unset($query->query['category']);
 		}
 		return $query;
 	}
