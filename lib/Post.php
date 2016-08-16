@@ -392,7 +392,7 @@ class Post extends Core implements CoreInterface {
 		$link = '';
 		$trimmed = false;
 		$last_p_tag = null;
-		if ( isset($this->post_excerpt) && strlen( trim($this->post_excerpt) ) ) {
+		if ( isset($this->post_excerpt) && strlen(trim($this->post_excerpt)) ) {
 			if ( $force ) {
 				$text = Helper::trim_words($this->post_excerpt, $len, false);
 				$trimmed = true;
@@ -441,7 +441,7 @@ class Post extends Core implements CoreInterface {
 			} elseif ( $readmore ) {
 				$link = ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore).'</a>';
 			}
-			$text .= apply_filters( 'timber/post/get_preview/read_more_link', $link );
+			$text .= apply_filters('timber/post/get_preview/read_more_link', $link);
 			if ( !$strip && $last_p_tag && (strpos($text, '<p>') || strpos($text, '<p ')) ) {
 				$text .= '</p>';
 			}
