@@ -87,7 +87,7 @@ class TestTimberFilters extends Timber_UnitTestCase {
 	}
 
 	function testReadMoreLinkFilter() {
-		$link = "Foobar"
+		$link = "Foobar";
 		add_filter( 'timber/post/get_preview/read_more_link', array( $this, 'filter_timber_post_get_preview_read_more_link' ), 10, 1 );
 		$this->assertEquals( 'Foobar', apply_filters( 'timber/post/get_preview/read_more_link', $link ) );
 		remove_filter( 'timber/post/get_preview/read_more_link', array( $this, 'filter_timber_post_get_preview_read_more_link' ) );
