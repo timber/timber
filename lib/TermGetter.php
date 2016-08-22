@@ -11,7 +11,7 @@ class TermGetter {
 	 * @param string $taxonomy
 	 * @return Timber\Term|WP_Error|null
 	 */
-	public static function get_term( $term, $taxonomy, $TermClass = 'Term' ) {
+	public static function get_term( $term, $taxonomy, $TermClass = '\Timber\Term' ) {
 		$term = get_term($term, $taxonomy);
 		return new $TermClass($term->term_id, $term->taxonomy);
 	}
@@ -22,7 +22,7 @@ class TermGetter {
 	 * @param string $TermClass
 	 * @return mixed
 	 */
-	public static function get_terms( $args = null, $maybe_args = array(), $TermClass = 'Term' ) {
+	public static function get_terms( $args = null, $maybe_args = array(), $TermClass = '\Timber\Term' ) {
 		if ( is_string($maybe_args) && !strstr($maybe_args, '=') ) {
 			//the user is sending the $TermClass in the second argument
 			$TermClass = $maybe_args;
