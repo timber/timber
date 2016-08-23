@@ -910,6 +910,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * If the Password form is to be shown, show it!
+	 * @return string|void
 	 */
 	protected function maybe_show_password_form(){
 		if ( $this->password_required() ) {
