@@ -10,10 +10,7 @@ class URLHelper {
 	 * @return string
 	 */
 	public static function get_current_url() {
-		$pageURL = "http://";
-		if ( isset($_SERVER['HTTPS']) && $_SERVER["HTTPS"] == "on" ) {
-			$pageURL = "https://"; ;
-		}
+		$pageURL = self::get_scheme()."://";
 		if ( isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != "80" ) {
 			$pageURL .= self::get_host().":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
 		} else {
@@ -21,6 +18,17 @@ class URLHelper {
 		}
 		return $pageURL;
 	}
+
+    /**
+     *
+     * Get url scheme
+     * @return string
+     */
+	public static function get_scheme()
+    {
+        return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    }
+
 
 	/**
 	 *
