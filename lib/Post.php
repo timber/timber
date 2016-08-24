@@ -761,8 +761,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	public function authors() {
-		return apply_filters('timber/post/authors', new User($this->post_author), $this);
-
+		return apply_filters('timber/post/authors', array(new User($this->post_author)), $this);
 	}
 
 	/**
