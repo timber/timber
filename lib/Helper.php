@@ -444,6 +444,25 @@ class Helper {
 		return ($i % 2) != 0;
 	}
 
+	/**
+	 * Plucks the values of a certain key from an array of objects
+	 * @param array $array
+	 * @param string $key
+	 */
+	public static function pluck($array, $key) {
+		$return = array();
+		foreach( $array as $obj ) {
+			if ( $value = $obj->$key() ) {
+				$return[] = $value;
+			} elseif ( $value = $obj->key ) {
+				$return[] = $value;
+			} elseif ( $value = $obj[$key] ) {
+				$return[] = $value;
+			}
+		}
+		return $return;
+	}
+
 	/* Links, Forms, Etc. Utilities
 	======================== */
 
