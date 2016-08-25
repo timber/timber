@@ -22,6 +22,8 @@ require $_tests_dir . '/includes/bootstrap.php';
 require_once __DIR__.'/Timber_UnitTestCase.php';
 require_once __DIR__.'/TimberImage_UnitTestCase.php';
 
+error_log('Use http://build.starter-theme.dev/ for testing with UI');
+
 if ( !function_exists('is_post_type_viewable') ) {
 	function is_post_type_viewable( $post_type_object ) {
  		return $post_type_object->publicly_queryable || ( $post_type_object->_builtin && $post_type_object->public );
