@@ -909,6 +909,20 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 * If the Password form is to be shown, show it!
+	 * @return string|void
+	 */
+	protected function maybe_show_password_form(){
+		if ( $this->password_required() ) {
+			$show_pw = false;
+			$show_pw = apply_filters('timber/post/content/show_password_form_for_protected', $show_pw);
+			if ($show_pw) {
+				return apply_filters('timber/post/content/password_form', get_the_password_form($this->ID), $this);
+			}
+		}
+	}
+
+	/**
 	 * Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).
 	 * @api
 	 * @example
@@ -922,6 +936,9 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function content( $page = 0, $len = -1 ) {
+		if ( $form = $this->maybe_show_password_form() ) {
+			return $form;
+		}
 		if ( $len == -1 && $page == 0 && $this->_content ) {
 			return $this->_content;
 		}
