@@ -146,6 +146,23 @@ class Timber {
 	}
 
 	/**
+	 * Get a posts in the form of a PostsCollection object.
+	 * @api
+	 * @example
+	 * ```php
+	 * $posts = Timber::get_post_collection();
+ 	 *  $posts = Timber::get_post_collection('post_type = article')
+ 	 *  $posts = Timber::get_post_collection(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format.
+ 	 *  $posts = Timber::get_post_collection('post_type=any', array('portfolio' => 'MyPortfolioClass', 'alert' => 'MyAlertClass')); //use a classmap for the $PostClass
+	 * ```
+	 * @param mixed   $query
+	 * @param string|array  $PostClass
+	 */
+	public static function get_post_collection( $query = false, $PostClass = 'Timber\Post' ) {
+		return PostGetter::get_posts($query, $PostClass, true);
+	}
+
+	/**
 	 * Query post.
 	 * @api
 	 * @param mixed   $query

@@ -63,7 +63,7 @@ class PostsCollection extends \ArrayObject {
 
 	public function pagination( $prefs = array() ) {
 		if ( ! isset($this->pagination) ) {
-			$this->pagination = new Pagination( $prefs, $this->query);
+			$this->pagination = new Pagination($prefs, $this->query);
 		}
 		return $this->pagination;
 	}
