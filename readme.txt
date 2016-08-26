@@ -42,6 +42,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 == Changelog ==
 
 = 1.1.3 =
+* New escapers! (thanks @matgargano) c7e8ed34da6fcd13bdc9005c04045f3a6b33595b
 * Fix to how categories work in Timber::get_posts 49f6007db3f829097f82ed41d389dd39053fb84a
 * Fix to usage of class maps in Timber::get_posts (thanks @vilpersson) b1387e443850aa021a0a70203bc20d238d4b21cb
 * Added Post::password_required method (thanks @marclarr) 2e685ce3d05c50e879817e51256202e032e77122
