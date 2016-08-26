@@ -158,7 +158,7 @@ class Timber {
 	 * @param mixed   $query
 	 * @param string|array  $PostClass
 	 */
-	public static function get_post_collection( $query = false, $PostClass = 'Timber\Post' ) {
+	public static function get_posts_collection( $query = false, $PostClass = 'Timber\Post' ) {
 		return PostGetter::get_posts($query, $PostClass, true);
 	}
 

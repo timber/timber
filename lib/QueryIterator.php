@@ -65,7 +65,6 @@ class QueryIterator implements \Iterator {
 	public function get_posts( $return_collection = false ) {
 		if ( isset($this->_query->posts) ) {
 			$posts = new PostsCollection($this->_query->posts, $this->_posts_class, $this->_query);
-			var_dump($return_collection);
 			return ($return_collection) ? $posts : $posts->get_posts();
 		}
 	}

@@ -172,21 +172,135 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( $expected_next_link, $pagination['next']['link'] );
 	}
 
-	function testPostCollectionPagination() {
+	// tests for pagination object set on PostCollection
+
+	function testPostsCollectionPagination() {
 		$pids = $this->factory->post->create_many( 13 );
-		$posts = Timber::get_posts(array('post_type' => 'post'), null, true);
+		$posts = Timber::get_posts_collection(array('post_type' => 'post'));
 		$pagination = $posts->pagination();
 		$this->assertEquals( 2, count( $pagination->pages ) );
+	}
+
+	function testCollectionPaginationSearch() {
+		update_option( 'permalink_structure', '' );
+		global $wp_rewrite;
+		$wp_rewrite->permalink_structure = false;
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( home_url( '?s=post' ) );
+		$posts = Timber::get_posts_collection();
+		$pagination = $posts->pagination();
+		$this->assertEquals( user_trailingslashit(home_url().'/?s=post&#038;paged=5'), $pagination->pages[4]['link'] );
+	}
+
+	function testCollectionPaginationOnLaterPage() {
+		$struc = '/%postname%/';
+		global $wp_rewrite;
+		$wp_rewrite->permalink_structure = $struc;
+		register_post_type( 'portfolio' );
+		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
+		$this->go_to( home_url( '/portfolio/page/3' ) );
+		$posts = Timber::get_posts_collection('post_type=portfolio&paged=3');
+		$pagination = $posts->pagination();
+		$this->assertEquals(6, count($pagination->pages));
+	}
+
+	function testCollectionPaginationWithSize() {
+		$this->setPermalinkStructure('/%postname%/');
+		register_post_type( 'portfolio' );
+		$pids = $this->factory->post->create_many( 99, array( 'post_type' => 'portfolio' ) );
+		$posts = Timber::get_posts_collection('post_type=portfolio&posts_per_page=20');
+		$pagination = $posts->pagination();
+		$this->assertEquals(5, count($pagination->pages));
+	}
+
+	function testCollectionPaginationSearchPrettyWithPostname() {
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$archive = home_url( '?s=post' );
+		$this->go_to( $archive );
+		$posts = Timber::get_posts_collection( 's=post');
+		$pagination = $posts->pagination();
+		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination->pages[4]['link'] );
+	}
+
+	function testCollectionPaginationSearchPrettyWithPostnameNext() {
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$archive = home_url( '?s=post' );
+		$this->go_to( $archive );
+		$posts = Timber::get_posts_collection( 's=post' );
+		$pagination = $posts->pagination();
+		$this->assertEquals( 'http://example.org/page/2/?s=post', $pagination->next['link'] );
+	}
+
+	function testCollectionPaginationSearchPrettyWithPostnamePrev() {
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$archive = home_url( 'page/4/?s=post' );
+		$this->go_to( $archive );
+		$posts = Timber::get_posts_collection( 's=post&paged=4' );
+		$pagination = $posts->pagination();
+		$this->assertEquals( 'http://example.org/page/3/?s=post', $pagination->prev['link'] );
+	}
+
+	function testCollectionPaginationSearchPretty() {
+		$struc = '/blog/%year%/%monthnum%/%postname%/';
+		global $wp_rewrite;
+		$wp_rewrite->permalink_structure = $struc;
+		update_option( 'permalink_structure', $struc );
+		$posts = $this->factory->post->create_many( 55 );
+		$archive = home_url( '?s=post' );
+		$this->go_to( $archive );
+		$posts = Timber::get_posts_collection();
+		$pagination = $posts->pagination();
+		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination->pages[4]['link'] );
+	}
+
+	function testCollectionPaginationNextUsesBaseAndFormatArgs( $struc = '/%postname%/' ) {
+		global $wp_rewrite;
+		$wp_rewrite->permalink_structure = $struc;
+		update_option( 'permalink_structure', $struc );
+
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( home_url( '/' ) );
+		$posts = Timber::get_posts_collection();
+		$pagination = $posts->pagination( array( 'base' => '/apricot/%_%', 'format' => 'page=%#%' ) );
+		$this->assertEquals( '/apricot/page=2', $pagination->next['link'] );
+	}
+
+	function testCollectionPaginationPrevUsesBaseAndFormatArgs( $struc = '/%postname%/' ) {
+		global $wp_rewrite;
+		$wp_rewrite->permalink_structure = $struc;
+		update_option( 'permalink_structure', $struc );
+		//$posts = $this->factory->post->create_many( 55 );
+		for($i=0; $i<30; $i++) {
+			$this->factory->post->create(array('post_title' => 'post'.$i, 'post_date' => '2014-02-'.$i));
+		}
+		$posts = Timber::get_posts_collection('paged=3');
+		$pagination = $posts->pagination( array( 'base' => '/apricot/%_%', 'format' => 'page=%#%' ) );
+		$this->assertEquals( '/apricot/page=2', $pagination->prev['link'] );
+	}
+
+	function testCollectionPaginationWithMoreThan10Pages( $struc = '/%postname%/' ) {
+		global $wp_rewrite;
+		$wp_rewrite->permalink_structure = $struc;
+		update_option( 'permalink_structure', $struc );
+		$posts = $this->factory->post->create_many( 150 );
+		$this->go_to( home_url( '/page/13' ) );
+		$posts = Timber::get_posts_collection();
+		$expected_next_link = user_trailingslashit('http://example.org/page/14/');
+		$pagination = $posts->pagination();
+		$this->assertEquals( $expected_next_link, $pagination->next['link'] );
 	}
 
 	function testPostCollectionPaginationForMultiplePostTypes() {
 		register_post_type( 'recipe' );
 		$pids = $this->factory->post->create_many( 43, array( 'post_type' => 'recipe' ) );
-		$recipes = Timber::get_posts(array('post_type' => 'recipe'), null, true);
+		$recipes = Timber::get_posts_collection(array('post_type' => 'recipe'));
 		$pagination = $recipes->pagination();
 		$this->assertEquals( 5, count( $pagination->pages ) );
 		$pids = $this->factory->post->create_many( 13 );
-		$posts = Timber::get_posts(array('post_type' => 'post'), null, true);
+		$posts = Timber::get_posts_collection(array('post_type' => 'post'));
 		$pagination = $posts->pagination();
 		$this->assertEquals( 2, count( $pagination->pages ) );
 	}

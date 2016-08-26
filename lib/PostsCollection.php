@@ -12,7 +12,7 @@ if ( !defined('ABSPATH') ) {
 
 class PostsCollection extends \ArrayObject {
 
-	//maintain reference to $query object
+	//maintain reference to $query object to generate pagination
 	private $query;
 	private $pagination;
 
@@ -61,9 +61,15 @@ class PostsCollection extends \ArrayObject {
 		return $this->getArrayCopy();
 	}
 
+	/**
+	 * Set pagination for the collection. Optionally could be used to get pagination with custom preferences.
+	 *
+	 * @param array $prefs
+	 * @return TimberPagination object
+	 */
 	public function pagination( $prefs = array() ) {
-		if ( ! isset($this->pagination) ) {
-			$this->pagination = new Pagination($prefs, $this->query);
+		if ( ! $this->pagination ) {
+			$this->pagination = new Pagination( $prefs, $this->query );
 		}
 		return $this->pagination;
 	}
