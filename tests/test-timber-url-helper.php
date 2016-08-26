@@ -33,6 +33,31 @@
             $this->assertEquals('http://example.org/', $url);
         }
 
+        function testCurrentURLIsSecure(){
+            if (!isset($_SERVER['SERVER_PORT'])){
+                $_SERVER['SERVER_PORT'] = 443;
+            }
+            if (!isset($_SERVER['SERVER_NAME'])){
+                $_SERVER['SERVER_NAME'] = 'example.org';
+            }
+            $_SERVER['HTTPS'] = 'on';
+            $this->go_to('/');
+            $url = TimberURLHelper::get_current_url();
+            $this->assertEquals('https://example.org/', $url);
+        }
+
+        function testUrlSchemeIsSecure() {
+            $_SERVER['HTTPS'] = 'on';
+            $scheme = TimberURLHelper::get_scheme();
+            $this->assertEquals('https', $scheme);
+        }
+
+        function testUrlSchemeIsNotSecure() {
+            $_SERVER['HTTPS'] = 'off';
+            $scheme = TimberURLHelper::get_scheme();
+            $this->assertEquals('http', $scheme);
+        }
+
         function testIsURL(){
             $url = 'http://example.org';
             $not_url = '/blog/2014/05/whatever';

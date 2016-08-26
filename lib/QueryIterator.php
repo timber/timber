@@ -10,7 +10,7 @@ if ( !defined('ABSPATH') ) {
 	exit;
 }
 
-class QueryIterator implements \Iterator {
+class QueryIterator implements \Iterator, \Countable {
 
 	/**
 	 *
@@ -22,6 +22,7 @@ class QueryIterator implements \Iterator {
 
 	public function __construct( $query = false, $posts_class = 'Timber\Post' ) {
 		add_action('pre_get_posts', array($this, 'fix_number_posts_wp_quirk'));
+		add_action('pre_get_posts', array($this, 'fix_cat_wp_quirk'));
 		if ( $posts_class ) {
 			$this->_posts_class = $posts_class;
 		}
@@ -148,6 +149,16 @@ class QueryIterator implements \Iterator {
 		return $query;
 	}
 
+	//get_posts uses category, WP_Query uses cat. Why? who knows...
+	public static function fix_cat_wp_quirk( $query ) {
+		if ( isset($query->query) && isset($query->query['category'])
+				&& !isset($query->query['cat']) ) {
+			$query->set('cat', $query->query['category']);
+			unset($query->query['category']);
+		}
+		return $query;
+	}
+
 	/**
 	 * this will test for whether a custom page to display posts is active, and if so, set the query to the default
 	 * @param  WP_Query $query the original query recived from WordPress
@@ -162,4 +173,21 @@ class QueryIterator implements \Iterator {
 		return $query;
 	}
 
+	/**
+	 * Count elements of an object.
+	 *
+	 * Necessary for some Twig `loop` variable properties.
+	 * @see http://twig.sensiolabs.org/doc/tags/for.html#the-loop-variable
+	 *
+	 * @link  http://php.net/manual/en/countable.count.php
+	 * @return int The custom count as an integer.
+	 * </p>
+	 * <p>
+	 * The return value is cast to an integer.
+	 * @since 5.1.0
+	 */
+	public function count()
+	{
+		return $this->post_count();
+	}
 }

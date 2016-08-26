@@ -120,7 +120,7 @@ class Timber {
 	 * Get post.
 	 * @api
 	 * @param mixed   $query
-	 * @param string  $PostClass
+	 * @param string|array  $PostClass
 	 * @return array|bool|null
 	 */
 	public static function get_post( $query = false, $PostClass = 'Timber\Post' ) {
@@ -242,7 +242,7 @@ class Timber {
 	 */
 	public static function get_context() {
 		if ( empty(self::$context_cache) ) {
-			self::$context_cache['http_host'] = 'http://'.URLHelper::get_host();
+			self::$context_cache['http_host'] = URLHelper::get_scheme().'://'.URLHelper::get_host();
 			self::$context_cache['wp_title'] = Helper::get_wp_title();
 			self::$context_cache['wp_head'] = Helper::function_wrapper('wp_head');
 			self::$context_cache['wp_footer'] = Helper::function_wrapper('wp_footer');

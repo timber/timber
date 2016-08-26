@@ -1,6 +1,6 @@
 # Cheatsheet
 
-Here are some helpful conversions for functions you're probably well familiar with in WordPress and their Timber equivalents. These assume a PHP file with the `Timber::get_context();` function at the top. For example:
+Here're some helpful conversions for functions you're probably well familiar with in WordPress and their Timber equivalents. These assume a PHP file with the `Timber::get_context();` function at the top. For example:
 
 ```php
 <?php

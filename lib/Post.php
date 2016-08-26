@@ -389,9 +389,10 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function get_preview( $len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;' ) {
 		$text = '';
+		$link = '';
 		$trimmed = false;
 		$last_p_tag = null;
-		if ( isset($this->post_excerpt) && strlen($this->post_excerpt) ) {
+		if ( isset($this->post_excerpt) && strlen(trim($this->post_excerpt)) ) {
 			if ( $force ) {
 				$text = Helper::trim_words($this->post_excerpt, $len, false);
 				$trimmed = true;
@@ -436,10 +437,11 @@ class Post extends Core implements CoreInterface {
 			}
 			$read_more_class = apply_filters('timber/post/get_preview/read_more_class', "read-more");
 			if ( $readmore && isset($readmore_matches) && !empty($readmore_matches[1]) ) {
-				$text .= ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore_matches[1]).'</a>';
+				$link = ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore_matches[1]).'</a>';
 			} elseif ( $readmore ) {
-				$text .= ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore).'</a>';
+				$link = ' <a href="'.$this->link().'" class="'.$read_more_class.'">'.trim($readmore).'</a>';
 			}
+			$text .= apply_filters('timber/post/get_preview/read_more_link', $link);
 			if ( !$strip && $last_p_tag && (strpos($text, '<p>') || strpos($text, '<p ')) ) {
 				$text .= '</p>';
 			}
@@ -907,6 +909,20 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 * If the Password form is to be shown, show it!
+	 * @return string|void
+	 */
+	protected function maybe_show_password_form(){
+		if ( $this->password_required() ) {
+			$show_pw = false;
+			$show_pw = apply_filters('timber/post/content/show_password_form_for_protected', $show_pw);
+			if ($show_pw) {
+				return apply_filters('timber/post/content/password_form', get_the_password_form($this->ID), $this);
+			}
+		}
+	}
+
+	/**
 	 * Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).
 	 * @api
 	 * @example
@@ -920,6 +936,9 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function content( $page = 0, $len = -1 ) {
+		if ( $form = $this->maybe_show_password_form() ) {
+			return $form;
+		}
 		if ( $len == -1 && $page == 0 && $this->_content ) {
 			return $this->_content;
 		}
@@ -1039,6 +1058,15 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function format() {
 		return get_post_format($this->ID);
+	}
+	
+	/**
+	 * whether post requires password and correct password has been provided
+	 * @api
+	 * @return boolean
+	 */
+	public function password_required() {
+		return post_password_required($this->ID);
 	}
 
 	/**

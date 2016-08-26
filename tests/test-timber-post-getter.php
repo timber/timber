@@ -2,6 +2,109 @@
 
 class TestTimberPostGetter extends Timber_UnitTestCase {
 
+	/**
+	 * @group wp_query_hacks
+	 */
+	function testGettingWithCatAndOtherStuff() {
+		$pids = $this->factory->post->create_many(6);
+		$cat = $this->factory->term->create(array('name' => 'Something', 'taxonomy' => 'category'));
+		$cat_post = $this->factory->post->create(array('post_title' => 'Germany', 'post_category' => array($cat)) );
+		$cat_post = $this->factory->post->create(array('post_title' => 'France', 'post_category' => array($cat)) );
+		$cat_post = $this->factory->post->create(array('post_title' => 'England', 'post_category' => array($cat)) );
+		$args = array(
+            'post_type' => 'post',
+            'posts_per_page' => 2,
+            'post_status' => 'publish',
+            'cat' => $cat
+        );
+		$posts = Timber::get_posts($args);
+		$this->assertEquals(2, count($posts));
+	}
+
+	/**
+	 * @group wp_query_hacks
+	 */
+	function testGettingWithCategoryAndOtherStuff() {
+		$pids = $this->factory->post->create_many(6);
+		$cat = $this->factory->term->create(array('name' => 'Something', 'taxonomy' => 'category'));
+		$cat_post = $this->factory->post->create(array('post_title' => 'Germany', 'post_category' => array($cat)) );
+		$cat_post = $this->factory->post->create(array('post_title' => 'France', 'post_category' => array($cat)) );
+		$cat_post = $this->factory->post->create(array('post_title' => 'England', 'post_category' => array($cat)) );
+		$args = array(
+            'post_type' => 'post',
+            'posts_per_page' => 2,
+            'post_status' => 'publish',
+            'category' => $cat
+        );
+		$posts = Timber::get_posts($args);
+		$this->assertEquals(2, count($posts));
+	}
+
+	/**
+	 * @group wp_query_hacks
+	 */
+	function testGettingWithCat() {
+		$cat = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+
+		$pids = $this->factory->post->create_many(6);
+		$cats = $this->factory->post->create_many(3, array('post_category' => array($cat)) );
+		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
+
+		$cat_post = new TimberPost($cat_post);
+		$this->assertEquals('News', $cat_post->category()->name());
+
+		$posts = Timber::get_posts(array('cat' => $cat));
+		$this->assertEquals(4, count($posts));
+	}
+
+	/**
+	 * @group wp_query_hacks
+	 */
+	function testGettingWithCatList() {
+		$cat = array();
+		$cat[] = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+		$cat[] = $this->factory->term->create(array('name' => 'Local', 'taxonomy' => 'category'));
+		$pids = $this->factory->post->create_many(6);
+		$cat_post = $this->factory->post->create(array('post_category' => array($cat[0])) );
+		$cat_post = $this->factory->post->create(array('post_category' => array($cat[1])) );
+		$cat_post = $this->factory->post->create(array('post_category' => $cat) );
+
+		$posts = Timber::get_posts( array('cat' => implode(',', $cat)));
+		$this->assertEquals(3, count($posts));
+	}
+
+	/**
+	 * @group wp_query_hacks
+	 */
+	function testGettingWithCategory() {
+		$cat = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+		$pids = $this->factory->post->create_many(6);
+		$cats = $this->factory->post->create_many(3, array('post_category' => array($cat)) );
+		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
+
+		$cat_post = new TimberPost($cat_post);
+		$this->assertEquals('News', $cat_post->category()->name());
+
+		$posts = Timber::get_posts(array('category' => $cat));
+		$this->assertEquals(4, count($posts));
+	}
+
+	/**
+	 * @group wp_query_hacks
+	 */
+	function testGettingWithCategoryList() {
+		$cat = array();
+		$cat[] = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+		$cat[] = $this->factory->term->create(array('name' => 'Local', 'taxonomy' => 'category'));
+		$pids = $this->factory->post->create_many(6);
+		$cat_post = $this->factory->post->create(array('post_category' => array($cat[0])) );
+		$cat_post = $this->factory->post->create(array('post_category' => array($cat[1])) );
+		$cat_post = $this->factory->post->create(array('post_category' => $cat) );
+
+		$posts = Timber::get_posts( array('category' => implode(',', $cat)));
+		$this->assertEquals(3, count($posts));
+	}
+
 	function testGettingArrayWithSticky(){
 		$pids = $this->factory->post->create_many(6);
 		$sticky_id = $this->factory->post->create();
@@ -24,6 +127,18 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$posts = Timber::get_posts('post_type=any', array('portfolio' => 'TimberPortfolio', 'alert' => 'TimberAlert'));
 		$this->assertEquals( 'TimberAlert', get_class($posts[0]) );
 		$this->assertEquals( 'TimberPortfolio', get_class($posts[1]) );
+	}
+
+	function testGetPostWithClassMap() {
+		register_post_type('portfolio', array('public' => true));
+		$post_id_portfolio = $this->factory->post->create(array('post_type' => 'portfolio', 'post_title' => 'A portfolio item', 'post_date' => '2015-04-23 15:13:52'));
+		$post_id_alert = $this->factory->post->create(array('post_type' => 'alert', 'post_title' => 'An alert', 'post_date' => '2015-06-23 15:13:52'));
+		$post_portfolio = Timber::get_post($post_id_portfolio, array('portfolio' => 'TimberPortfolio', 'alert' => 'TimberAlert'));
+		$post_alert = Timber::get_post($post_id_alert, array('portfolio' => 'TimberPortfolio', 'alert' => 'TimberAlert'));
+		$this->assertEquals( 'TimberPortfolio', get_class($post_portfolio) );
+		$this->assertEquals( $post_id_portfolio, $post_portfolio->ID );
+		$this->assertEquals( 'TimberAlert', get_class($post_alert) );
+		$this->assertEquals( $post_id_alert, $post_alert->ID );
 	}
 
 	function test587() {
@@ -91,6 +206,9 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 
 	}
 
+	/**
+	 * @group wp_query_hacks
+	 */
 	function testNumberPostsAll() {
 		$pids = $this->factory->post->create_many( 17 );
 		$query = 'post_type=post&numberposts=-1';
@@ -202,18 +320,18 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 
 }
 
-class job extends TimberPost {
+class job extends \Timber\Post {
 
 }
 
-class Person extends TimberPost {
+class Person extends \Timber\Post {
 
 }
 
-class TimberAlert extends TimberPost {
+class TimberAlert extends \Timber\Post {
 
 }
 
-class TimberPortfolio extends TimberPost {
+class TimberPortfolio extends \Timber\Post {
 
 }
