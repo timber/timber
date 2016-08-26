@@ -19,7 +19,6 @@ class Pagination {
 	 * @api
 	 * @param array   $prefs
 	 * @return array mixed
-	 * @return array boolean  If true, return an object instead of an array
 	 */
 	public static function get_pagination( $prefs ) {
 		$pagination = new self( $prefs );
