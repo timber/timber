@@ -7,21 +7,28 @@ namespace Timber;
  * @package  timber
  */
 class Integrations {
+
+	var $acf;
+	var $coauthors_plus;
+
+	public function __construct() {
+		$this->init();
+	}
     
-	public static function init() {
-		add_action('init', array(__CLASS__, 'maybe_init_integrations'));
+	public function init() {
+		add_action('init', array($this, 'maybe_init_integrations'));
 
 		if ( class_exists('WP_CLI_Command') ) {
 			\WP_CLI::add_command('timber', 'Timber\Integrations\Timber_WP_CLI_Command');
 		}
 	}
 
-	public static function maybe_init_integrations() {
+	public function maybe_init_integrations() {
 		if ( class_exists('ACF') ) {
-			new Integrations\ACF();
+			$this->acf = new Integrations\ACF();
 		}
 		if ( class_exists('CoAuthors_Plus') ) {
-			new Integrations\CoAuthorsPlus();
+			$this->coauthors_plus = new Integrations\CoAuthorsPlus();
 		}
 	}
 }

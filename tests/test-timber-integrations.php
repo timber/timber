@@ -5,6 +5,13 @@ use Timber\Integrations\Command;
 
 class TestTimberIntegrations extends Timber_UnitTestCase {
 
+	function testIntegrationClasses() {
+		global $timber;
+		$this->assertEquals('Timber\Integrations', get_class($timber->Integrations));
+		$this->assertEquals('Timber\Integrations\ACF', get_class($timber->Integrations->acf));
+		 $this->assertEquals('Timber\Integrations\CoAuthorsPlus', get_class($timber->Integrations->coauthors_plus));
+	}
+
 	function testACFGetFieldPost() {
 		$pid = $this->factory->post->create();
 		update_field( 'subhead', 'foobar', $pid );

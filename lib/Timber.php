@@ -35,7 +35,7 @@ use Timber\Loader;
  */
 class Timber {
 
-	public static $version = '1.1.1';
+	public static $version = '1.1.3';
 	public static $locations;
 	public static $dirname = 'views';
 	public static $twig_cache = false;
@@ -44,6 +44,8 @@ class Timber {
 	public static $autoescape = false;
 
 	public static $context_cache = array();
+
+	var $Integrations;
 
 	/**
 	 * @codeCoverageIgnore
@@ -56,7 +58,7 @@ class Timber {
 			$this->test_compatibility();
 			$this->backwards_compatibility();
 			$this->init_constants();
-			$this::init();
+			$this->init();
 		}
 	}
 
@@ -103,12 +105,12 @@ class Timber {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	protected static function init() {
+	protected function init() {
 		if ( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
 			Twig::init();
 			ImageHelper::init();
 			Admin::init();
-			Integrations::init();
+			$this->Integrations = new Integrations();
 			define('TIMBER_LOADED', true);
 		}
 	}
@@ -258,9 +260,9 @@ class Timber {
 	 * @return bool|string
 	 */
 	public static function compile( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false ) {
-		if ( !defined('TIMBER_LOADED') ) {
-			self::init();
-		}
+		// if ( !defined('TIMBER_LOADED') ) {
+		// 	self::init();
+		// }
 		$caller = LocationManager::get_calling_script_dir(1);
 		$loader = new Loader($caller);
 		$file = $loader->choose_template($filenames);
