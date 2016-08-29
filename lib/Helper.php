@@ -449,9 +449,9 @@ class Helper {
 	 * @param array $array
 	 * @param string $key
 	 */
-	public static function pluck($array, $key) {
+	public static function pluck( $array, $key ) {
 		$return = array();
-		foreach( $array as $obj ) {
+		foreach ( $array as $obj ) {
 			if ( $value = $obj->$key() ) {
 				$return[] = $value;
 			} elseif ( $value = $obj->key ) {
