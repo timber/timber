@@ -17,7 +17,7 @@
 		}
 
 		function testDescription() {
-			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln'));
+			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln', 'user_login' => 'blincoln'));
 			update_user_meta($uid, 'description', 'Sixteenth President');
 			$user = new TimberUser($uid);
 			$this->assertEquals('Sixteenth President', $user->description);

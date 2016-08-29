@@ -39,7 +39,8 @@
     "satooshi/php-coveralls": "1.0.*",
     "wpackagist-plugin/advanced-custom-fields": "4.*",
     "phpdocumentor/phpdocumentor": "2.*",
-    "jarednova/markdowndocs": "dev-master"
+    "jarednova/markdowndocs": "dev-master",
+    "wpackagist-plugin/co-authors-plus" : "3.*" 
   },
   "autoload": {
     "psr-4": {

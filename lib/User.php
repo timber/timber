@@ -203,7 +203,7 @@ class User extends Core implements CoreInterface {
 	 * @return string the human-friendly name of the user (ex: "Buster Bluth")
 	 */
 	public function name() {
-		return $this->display_name;
+		return apply_filters('timber/user/name', $this->display_name, $this);
 	}
 
 	/**

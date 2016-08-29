@@ -658,7 +658,7 @@
 			global $current_user;
 			$current_user = array();
 
-			$uid = $this->factory->user->create();
+			$uid = $this->factory->user->create(array('display_name' => 'Franklin Delano Roosevelt', 'user_login' => 'fdr'));
 			$pid = $this->factory->post->create(array('post_author' => $uid));
 			$post = new TimberPost($pid);
 			$edit_url = $post->edit_link();
