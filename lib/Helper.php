@@ -452,12 +452,12 @@ class Helper {
 	public static function pluck( $array, $key ) {
 		$return = array();
 		foreach ( $array as $obj ) {
-			if ( $value = $obj->$key() ) {
-				$return[] = $value;
-			} elseif ( $value = $obj->key ) {
-				$return[] = $value;
-			} elseif ( $value = $obj[$key] ) {
-				$return[] = $value;
+			if ( is_object($obj) && method_exists($obj, $key) ) {
+				$return[] = $obj->$key();
+			} elseif ( is_object($obj) && property_exists($obj, $key) ) {
+				$return[] = $obj->$key;
+			} elseif ( isset($obj[$key]) ) {
+				$return[] = $obj[$key];
 			}
 		}
 		return $return;
