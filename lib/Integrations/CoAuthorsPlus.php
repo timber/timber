@@ -7,16 +7,16 @@ class CoAuthorsPlus {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function __construct(){
+	public function __construct() {
 		add_filter('timber/post/authors', array($this, 'authors'), 10, 2);
 	}
 
 	/**
 	 * Filters {{ post.authors }} to return authors stored from Co-Authors Plus
 	 * @since 1.1.4
-     * @param array $author
-     * @param Post $post
-     * @return array of User objects
+	 * @param array $author
+	 * @param Post $post
+	 * @return array of User objects
 	 */
 	public function authors( $author, $post ) {
 		$authors = array();
