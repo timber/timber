@@ -1538,7 +1538,7 @@ class Post extends Core implements CoreInterface {
 	 * @return User|null
 	 */
 	public function get_author() {
-		return $post->author();
+		return $this->author();
 	}
 
 	/**

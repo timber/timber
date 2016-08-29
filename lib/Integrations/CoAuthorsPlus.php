@@ -8,7 +8,7 @@ class CoAuthorsPlus {
 		add_filter('timber/post/authors', array($this, 'authors'), 10, 2);
 	}
 
-	function authors($author, $post) {
+	public function authors($author, $post) {
 		$authors = array();
 		$cauthors = get_coauthors( $post->ID );
 		foreach($cauthors as $author){
