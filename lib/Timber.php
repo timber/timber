@@ -45,8 +45,6 @@ class Timber {
 
 	public static $context_cache = array();
 
-	var $Integrations;
-
 	/**
 	 * @codeCoverageIgnore
 	 */
@@ -110,7 +108,7 @@ class Timber {
 			Twig::init();
 			ImageHelper::init();
 			Admin::init();
-			$this->Integrations = new Integrations();
+			new Integrations();
 			define('TIMBER_LOADED', true);
 		}
 	}
@@ -254,15 +252,15 @@ class Timber {
 	 * @api
 	 * @param array   $filenames
 	 * @param array   $data
-	 * @param bool    $expires
+	 * @param boolean|integer    $expires
 	 * @param string  $cache_mode
 	 * @param bool    $via_render
 	 * @return bool|string
 	 */
 	public static function compile( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false ) {
-		// if ( !defined('TIMBER_LOADED') ) {
-		// 	self::init();
-		// }
+		if ( !defined('TIMBER_LOADED') ) {
+			self::init();
+		}
 		$caller = LocationManager::get_calling_script_dir(1);
 		$loader = new Loader($caller);
 		$file = $loader->choose_template($filenames);
@@ -326,9 +324,9 @@ class Timber {
 	 * @api
 	 * @param array   $filenames
 	 * @param array   $data
-	 * @param bool    $expires
+	 * @param boolean|integer    $expires
 	 * @param string  $cache_mode
-	 * @return bool|string
+	 * @return boolean|string
 	 */
 	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
 		$output = self::fetch($filenames, $data, $expires, $cache_mode);
