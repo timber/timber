@@ -2,6 +2,37 @@
 
 	class TestTimberHelper extends Timber_UnitTestCase {
 
+		function testPluckArray() {
+			$arr = array();
+			$arr[] = array('name' => 'Bill', 'number' => 42);
+			$arr[] = array('name' => 'Barack', 'number' => 44);
+			$arr[] = array('name' => 'Hillary', 'number' => 45);
+			$names = \Timber\Helper::pluck($arr, 'name');
+			$this->assertEquals(array('Bill', 'Barack', 'Hillary'), $names);
+		}
+
+		function testPluckArrayMissing() {
+			$arr = array();
+			$arr[] = array('name' => 'Bill', 'number' => 42);
+			$arr[] = array('name' => 'Barack', 'number' => 44);
+			$arr[] = array('name' => 'Hillary', 'number' => 45);
+			$arr[] = array('name' => 'Donald');
+			$names = \Timber\Helper::pluck($arr, 'number');
+			$this->assertEquals(array(42, 44, 45), $names);
+		}
+
+		function testPluckObject() {
+			$billy = new stdClass();
+			$billy->name = 'Billy Corgan';
+			$billy->instrument = 'guitar';
+			$jimmy = new stdClass();
+			$jimmy->name = 'Jimmy Chamberlin';
+			$jimmy->instrument = 'drums';
+			$pumpkins = array($billy, $jimmy);
+			$instruments = \Timber\Helper::pluck($pumpkins, 'instrument');
+			$this->assertEquals(array('guitar', 'drums'), $instruments);
+		}
+
 		function testCommentFormPHP() {
 			$post_id = $this->factory->post->create();
 			$form = TimberHelper::get_comment_form($post_id);

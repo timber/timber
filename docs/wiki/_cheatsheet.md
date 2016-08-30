@@ -1,9 +1,8 @@
 # Cheatsheet
 
-Here're some helpful conversions for functions you're probably well familiar with in WordPress and their Timber equivalents. These assume a PHP file with the `Timber::get_context();` function at the top. For example:
+Here are some helpful conversions for functions you're probably well familiar with in WordPress and their Timber equivalents. These assume a PHP file with the `Timber::get_context();` function at the top. For example:
 
 ```php
-<?php
 $context = Timber::get_context();
 $context['post'] = new TimberPost();
 Timber::render('single.twig', $context);
@@ -22,7 +21,7 @@ Timber::render('single.twig', $context);
 
 ## Post
 * `the_content()` => `{{ post.content }}`
-* `the_permalink()` => `{{ post.permalink }}`
+* `the_permalink()` => `{{ post.link }}`
 * `the_title()` => `{{ post.title }}`
 * `get_the_tags()` => `{{ post.tags }}`
 

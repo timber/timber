@@ -35,10 +35,10 @@ class Loader {
 	}
 
 	/**
-	 * @param string        $file
-	 * @param array         $data
-	 * @param array|bool    $expires
-	 * @param string        $cache_mode
+	 * @param string        	$file
+	 * @param array         	$data
+	 * @param array|boolean    	$expires (array for options, false for none, integer for # of seconds)
+	 * @param string        	$cache_mode
 	 * @return bool|string
 	 */
 	public function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
@@ -112,13 +112,17 @@ class Loader {
 
 
 	/**
-	 * @return \Twig_Loader_Filesystem
+	 * @return \Twig_Loader_Chain
 	 */
 	public function get_loader() {
-		$paths = array_merge($this->locations, array(ini_get('open_basedir') ? ABSPATH : '/'));
-		$paths = apply_filters('timber/loader/paths', $paths);
-		return new \Twig_Loader_Filesystem($paths);
+		$filesystem_paths = array_merge($this->locations, array(ini_get('open_basedir') ? ABSPATH : '/'));
+		$filesystem_paths = apply_filters('timber/loader/paths', $filesystem_paths);
+		$filesystem_loader = array(new \Twig_Loader_Filesystem($filesystem_paths));
+		$custom_loaders = apply_filters('timber/loader/custom', array());
+		$all_loaders = array_merge($custom_loaders, $filesystem_loader);
+		return new \Twig_Loader_Chain($all_loaders);
 	}
+
 
 	/**
 	 * @return \Twig_Environment
@@ -257,7 +261,7 @@ class Loader {
 	 * @param string $key
 	 * @param string|boolean $value
 	 * @param string $group
-	 * @param int $expires
+	 * @param integer $expires
 	 * @param string $cache_mode
 	 * @return string|boolean
 	 */
