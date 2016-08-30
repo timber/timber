@@ -61,6 +61,8 @@ class Twig {
 		$twig->addFilter(new \Twig_SimpleFilter('wpautop', 'wpautop'));
 		$twig->addFilter(new \Twig_SimpleFilter('list', array($this, 'add_list_separators')));
 
+		$twig->addFilter(new \Twig_SimpleFilter('pluck', array('Timber\Helper', 'pluck')));
+
 		$twig->addFilter(new \Twig_SimpleFilter('relative', function( $link ) {
 					return URLHelper::get_rel_url($link, true);
 				} ));

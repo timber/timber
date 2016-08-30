@@ -35,10 +35,10 @@ class Loader {
 	}
 
 	/**
-	 * @param string        $file
-	 * @param array         $data
-	 * @param array|bool    $expires
-	 * @param string        $cache_mode
+	 * @param string        	$file
+	 * @param array         	$data
+	 * @param array|boolean    	$expires (array for options, false for none, integer for # of seconds)
+	 * @param string        	$cache_mode
 	 * @return bool|string
 	 */
 	public function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
@@ -261,7 +261,7 @@ class Loader {
 	 * @param string $key
 	 * @param string|boolean $value
 	 * @param string $group
-	 * @param int $expires
+	 * @param integer $expires
 	 * @param string $cache_mode
 	 * @return string|boolean
 	 */

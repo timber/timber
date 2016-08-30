@@ -755,7 +755,13 @@ class Post extends Core implements CoreInterface {
 	 * @return User|null A User object if found, false if not
 	 */
 	public function author() {
-		return $this->get_author();
+		if ( isset($this->post_author) ) {
+			return new User($this->post_author);
+		}
+	}
+
+	public function authors() {
+		return apply_filters('timber/post/authors', array($this->author()), $this);
 	}
 
 	/**
@@ -771,7 +777,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function modified_author() {
 		$user_id = get_post_meta($this->ID, '_edit_last', true);
-		return ($user_id ? new User($user_id) : $this->get_author());
+		return ($user_id ? new User($user_id) : $this->author());
 	}
 
 	/**
@@ -1532,9 +1538,7 @@ class Post extends Core implements CoreInterface {
 	 * @return User|null
 	 */
 	public function get_author() {
-		if ( isset($this->post_author) ) {
-			return new User($this->post_author);
-		}
+		return $this->author();
 	}
 
 	/**
