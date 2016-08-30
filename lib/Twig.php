@@ -4,6 +4,7 @@ namespace Timber;
 
 use Timber\URLHelper;
 use Timber\Helper;
+use Timber\Filter;
 
 use Timber\Post;
 use Timber\Term;
@@ -53,6 +54,7 @@ class Twig {
 		$twig->addFilter(new \Twig_SimpleFilter('stripshortcodes', 'strip_shortcodes'));
 		$twig->addFilter(new \Twig_SimpleFilter('array', array($this, 'to_array')));
 		$twig->addFilter(new \Twig_SimpleFilter('excerpt', 'wp_trim_words'));
+		$twig->addFilter(new \Twig_SimpleFilter('excerpt_chars', array('Timber\Filter','trim_characters')));
 		$twig->addFilter(new \Twig_SimpleFilter('function', array($this, 'exec_function')));
 		$twig->addFilter(new \Twig_SimpleFilter('pretags', array($this, 'twig_pretags')));
 		$twig->addFilter(new \Twig_SimpleFilter('sanitize', 'sanitize_title'));
