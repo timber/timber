@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.1.4
+Stable tag: 1.1.5
 Tested up to: 4.6
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,9 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 1.1.5 =
+* Removed change for custom loaders due to incompatability with Gantry
 
 = 1.1.4 =
 * Native support for Co-Authors Plus! just use `{{ post.authors }}` 939331e282fd54bf3e210645964504304f2b071b
