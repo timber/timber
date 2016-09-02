@@ -112,15 +112,12 @@ class Loader {
 
 
 	/**
-	 * @return \Twig_Loader_Chain
+	 * @return \Twig_Loader_Filesystem
 	 */
 	public function get_loader() {
-		$filesystem_paths = array_merge($this->locations, array(ini_get('open_basedir') ? ABSPATH : '/'));
-		$filesystem_paths = apply_filters('timber/loader/paths', $filesystem_paths);
-		$filesystem_loader = array(new \Twig_Loader_Filesystem($filesystem_paths));
-		$custom_loaders = apply_filters('timber/loader/custom', array());
-		$all_loaders = array_merge($custom_loaders, $filesystem_loader);
-		return new \Twig_Loader_Chain($all_loaders);
+		$paths = array_merge($this->locations, array(ini_get('open_basedir') ? ABSPATH : '/'));
+		$paths = apply_filters('timber/loader/paths', $paths);
+		return new \Twig_Loader_Filesystem($paths);
 	}
 
 
