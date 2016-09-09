@@ -4,20 +4,23 @@ namespace Timber;
 
 use Timber\Helper;
 use Timber\Post;
+use Timber\PostGetter;
 
 // Exit if accessed directly
 if ( !defined('ABSPATH') ) {
 	exit;
 }
 
-class PostsCollection extends \ArrayObject {
+class PostCollection extends \ArrayObject {
 
 	//maintain reference to $query object to generate pagination
 	private $query;
 	private $pagination;
 
-	public function __construct( $posts = array(), $post_class = '\Timber\Post', $query = null ) {
-		$this->query = $query;
+	public function __construct( $query = array(), $post_class = '\Timber\Post' ) {
+		$this->query = PostGetter::query_posts($query, $post_class);
+
+		$posts = $this->query->get_posts();
 
 		$returned_posts = array();
 		if ( is_null($posts) ) {
@@ -44,10 +47,6 @@ class PostsCollection extends \ArrayObject {
 		parent::__construct($returned_posts, $flags = 0, 'Timber\PostsIterator');
 	}
 
-	public function get_posts() {
-		return $this->getArrayCopy();
-	}
-
 	/**
 	 * Set pagination for the collection. Optionally could be used to get pagination with custom preferences.
 	 *
@@ -56,7 +55,7 @@ class PostsCollection extends \ArrayObject {
 	 */
 	public function pagination( $prefs = array() ) {
 		if ( ! $this->pagination ) {
-			$this->pagination = new Pagination( $prefs, $this->query );
+			$this->pagination = $this->query->get_pagination( $prefs, $this->query );
 		}
 		return $this->pagination;
 	}
@@ -95,13 +94,4 @@ class PostsCollection extends \ArrayObject {
 		return $posts;
 	}
 
-}
-
-class PostsIterator extends \ArrayIterator {
-
-	public function current() {
-		global $post;
-		$post = parent::current();
-		return $post;
-	}
 }
