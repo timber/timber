@@ -14,13 +14,13 @@ if ( !defined('ABSPATH') ) {
 class PostCollection extends \ArrayObject {
 
 	//maintain reference to $query object to generate pagination
-	private $query;
+	private $queryIterator;
 	private $pagination;
 
 	public function __construct( $query = array(), $post_class = '\Timber\Post' ) {
-		$this->query = PostGetter::query_posts($query, $post_class);
+		$this->queryIterator = PostGetter::query_posts($query, $post_class);
 
-		$posts = $this->query->get_posts();
+		$posts = $this->queryIterator->get_posts();
 
 		$returned_posts = array();
 		if ( is_null($posts) ) {
@@ -55,7 +55,7 @@ class PostCollection extends \ArrayObject {
 	 */
 	public function pagination( $prefs = array() ) {
 		if ( ! $this->pagination ) {
-			$this->pagination = $this->query->get_pagination( $prefs, $this->query );
+			$this->pagination = $this->queryIterator->get_pagination($prefs);
 		}
 		return $this->pagination;
 	}
