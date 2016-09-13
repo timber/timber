@@ -59,7 +59,7 @@ You can now use all the above functions to transform your custom images in the s
 
 ### Repeater field
 
-You can access repeater fields within in twig files:
+You can access repeater fields within twig files:
 
 ```twig
 {# single.twig #}
@@ -205,7 +205,7 @@ $context["acf"] = get_field_objects($data["post"]->ID);
 ### Query by custom field value:
 ###### Use a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) array
 
-####Basic Example
+#### Basic Example
 This example shows the arguments to find all posts where a custom field called ‘color’ has a value of ‘red’.
 
 ```php

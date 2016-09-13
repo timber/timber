@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use Timber\Cache\Cleaner;
+
 class Loader {
 
 	const CACHEGROUP = 'timberloader';
@@ -35,10 +37,10 @@ class Loader {
 	}
 
 	/**
-	 * @param string        $file
-	 * @param array         $data
-	 * @param array|bool    $expires
-	 * @param string        $cache_mode
+	 * @param string        	$file
+	 * @param array         	$data
+	 * @param array|boolean    	$expires (array for options, false for none, integer for # of seconds)
+	 * @param string        	$cache_mode
 	 * @return bool|string
 	 */
 	public function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
@@ -73,10 +75,15 @@ class Loader {
 		}
 
 		if ( false !== $output && false !== $expires && null !== $key ) {
+			$this->delete_cache();
 			$this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
 		}
 		$output = apply_filters('timber_output', $output);
 		return apply_filters('timber/output', $output, $data, $file);
+	}
+
+	protected function delete_cache() {
+		Cleaner::delete_transients();
 	}
 
 	/**
@@ -119,6 +126,7 @@ class Loader {
 		$paths = apply_filters('timber/loader/paths', $paths);
 		return new \Twig_Loader_Filesystem($paths);
 	}
+
 
 	/**
 	 * @return \Twig_Environment
@@ -243,11 +251,11 @@ class Loader {
 
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 		if ( self::CACHE_TRANSIENT === $cache_mode ) {
-					$value = get_transient($trans_key);
+			$value = get_transient($trans_key);
 		} elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode ) {
-					$value = get_site_transient($trans_key);
+			$value = get_site_transient($trans_key);
 		} elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
-					$value = wp_cache_get($key, $group);
+			$value = wp_cache_get($key, $group);
 		}
 
 		return $value;
@@ -257,7 +265,7 @@ class Loader {
 	 * @param string $key
 	 * @param string|boolean $value
 	 * @param string $group
-	 * @param int $expires
+	 * @param integer $expires
 	 * @param string $cache_mode
 	 * @return string|boolean
 	 */
@@ -269,18 +277,18 @@ class Loader {
 		}
 
 		if ( (int) $expires < 1 ) {
-					$expires = 0;
+			$expires = 0;
 		}
 
 		$cache_mode = self::_get_cache_mode($cache_mode);
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 
 		if ( self::CACHE_TRANSIENT === $cache_mode ) {
-					set_transient($trans_key, $value, $expires);
+			set_transient($trans_key, $value, $expires);
 		} elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode ) {
-					set_site_transient($trans_key, $value, $expires);
+			set_site_transient($trans_key, $value, $expires);
 		} elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
-					wp_cache_set($key, $value, $group, $expires);
+			wp_cache_set($key, $value, $group, $expires);
 		}
 
 		return $value;
