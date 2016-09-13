@@ -11,6 +11,7 @@
         }
 
         function testTransientLock() {
+
             $transient = $this->_generate_transient_name();
             TimberHelper::_lock_transient( $transient, 5 );
             $this->assertTrue( TimberHelper::_is_transient_locked( $transient ) );
@@ -209,7 +210,36 @@
             $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
             $wpdb->query( $query );
             $this->assertEquals(0, $wpdb->num_rows);
+        }
 
+        function testTimberLoaderCacheTransients() {
+            $time = 2;
+            $pid = $this->factory->post->create();
+            $post = new TimberPost($pid);
+            $str_old = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
+            sleep($time + 2);
+            $str_new = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
+            $this->assertEquals($str_old, $str_new);
+            global $wpdb;
+            $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
+            $data = $wpdb->get_results( $query );
+            $this->assertEquals(1, $wpdb->num_rows);
+        }
+
+        function testTimberLoaderCacheTransientsButKeepOtherTransients() {
+            $time = 2;
+            $pid = $this->factory->post->create();
+            $post = new TimberPost($pid);
+            set_transient( 'random_600', 'foo', 600 );
+            $str_old = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
+            sleep($time + 2);
+            $str_new = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
+            $this->assertEquals($str_old, $str_new);
+            global $wpdb;
+            $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
+            $data = $wpdb->get_results( $query );
+            $this->assertEquals(1, $wpdb->num_rows);
+            $this->assertEquals('foo', get_transient('random_600'));
         }
 
 	}

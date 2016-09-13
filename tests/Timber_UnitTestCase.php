@@ -24,11 +24,6 @@
 			$wp_rewrite->flush_rules();
 			update_option( 'permalink_structure', $struc );
 			flush_rewrite_rules( true );
-
-		// 	$struc = '/%postname%/';
-		// global $wp_rewrite;
-		// $wp_rewrite->permalink_structure = $struc;
-		// update_option( 'permalink_structure', $struc );
 		}
 
 		function tearDown() {
