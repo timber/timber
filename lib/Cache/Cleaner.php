@@ -23,7 +23,7 @@ class Cleaner {
 					)
 				AND b.option_value < UNIX_TIMESTAMP()
 			";
-		return $wpdb -> query( $sql );
+		return $wpdb->query($sql);
 	}
 
 	protected static function delete_transients_multisite() {
@@ -46,7 +46,7 @@ class Cleaner {
 					AND b.meta_value < UNIX_TIMESTAMP()
 				";
 
-				$clean = $wpdb -> query( $sql );
+				$clean = $wpdb->query($sql);
 		return $clean;
 	}
 
