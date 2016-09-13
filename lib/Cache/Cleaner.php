@@ -28,15 +28,16 @@ class Cleaner {
 
 	protected static function delete_transients_multisite() {
 		global $wpdb;
-		$sql = "DELETE
+		$sql = "
+					DELETE
 						a, b
 					FROM
 						{$wpdb->sitemeta} a, {$wpdb->sitemeta} b
 					WHERE
-						a.meta_key LIKE '_site_transient_timberloader_%' AND
-						a.meta_key NOT LIKE '_site_transient_timeout_timberloader_%' AND
+						a.meta_key LIKE '_site_transient_%' AND
+						a.meta_key NOT LIKE '_site_transient_timeout_%' AND
 						b.meta_key = CONCAT(
-							'_site_transient_timeout_timberloader_',
+							'_site_transient_timeout_',
 							SUBSTRING(
 								a.meta_key,
 								CHAR_LENGTH('_site_transient_') + 1

@@ -231,6 +231,7 @@
             $pid = $this->factory->post->create();
             $post = new TimberPost($pid);
             set_transient( 'random_600', 'foo', 600 );
+            $random_post = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), 600);
             $str_old = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
             sleep($time + 2);
             $str_new = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
@@ -238,7 +239,7 @@
             global $wpdb;
             $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
             $data = $wpdb->get_results( $query );
-            $this->assertEquals(1, $wpdb->num_rows);
+            $this->assertEquals(2, $wpdb->num_rows);
             $this->assertEquals('foo', get_transient('random_600'));
         }
 
