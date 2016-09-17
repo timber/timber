@@ -3,7 +3,7 @@
 namespace Timber;
 
 use Timber\Helper;
-use Timber\PostsCollection;
+use Timber\PostsArray;
 
 // Exit if accessed directly
 if ( !defined('ABSPATH') ) {
@@ -63,9 +63,13 @@ class QueryIterator implements \Iterator, \Countable {
 		return $this->_query->post_count;
 	}
 
+	public function get_pagination( $prefs ) {
+		return new Pagination( $prefs, $this->_query);
+	}
+
 	public function get_posts( $return_collection = false ) {
 		if ( isset($this->_query->posts) ) {
-			$posts = new PostsCollection($this->_query->posts, $this->_posts_class, $this->_query);
+			$posts = new PostsArray($this->_query->posts, $this->_posts_class);
 			return ($return_collection) ? $posts : $posts->get_posts();
 		}
 	}

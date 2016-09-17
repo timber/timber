@@ -35,7 +35,7 @@ use Timber\Loader;
  */
 class Timber {
 
-	public static $version = '1.1.4';
+	public static $version = '1.1.6';
 	public static $locations;
 	public static $dirname = 'views';
 	public static $twig_cache = false;
@@ -56,7 +56,7 @@ class Timber {
 			$this->test_compatibility();
 			$this->backwards_compatibility();
 			$this->init_constants();
-			$this->init();
+			self::init();
 		}
 	}
 
@@ -82,7 +82,7 @@ class Timber {
 			//already run, so bail
 			return;
 		}
-		$names = array('Archives', 'Comment', 'Core', 'FunctionWrapper', 'Helper', 'Image', 'ImageHelper', 'Integrations', 'Loader', 'Menu', 'MenuItem', 'Post', 'PostGetter', 'PostsCollection', 'QueryIterator', 'Request', 'Site', 'Term', 'TermGetter', 'Theme', 'Twig', 'URLHelper', 'User', 'Integrations\Command', 'Integrations\ACF');
+		$names = array('Archives', 'Comment', 'Core', 'FunctionWrapper', 'Helper', 'Image', 'ImageHelper', 'Integrations', 'Loader', 'Menu', 'MenuItem', 'Post', 'PostGetter', 'PostsArray', 'QueryIterator', 'Request', 'Site', 'Term', 'TermGetter', 'Theme', 'Twig', 'URLHelper', 'User', 'Integrations\Command', 'Integrations\ACF');
 		foreach ( $names as $name ) {
 			$old_class_name = 'Timber'.str_replace('Integrations\\', '', $name);
 			$new_class_name = 'Timber\\'.$name;
@@ -103,7 +103,7 @@ class Timber {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	protected function init() {
+	protected static function init() {
 		if ( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
 			Twig::init();
 			ImageHelper::init();
@@ -143,23 +143,6 @@ class Timber {
 	 */
 	public static function get_posts( $query = false, $PostClass = 'Timber\Post', $return_collection = false ) {
 		return PostGetter::get_posts($query, $PostClass, $return_collection);
-	}
-
-	/**
-	 * Get a posts in the form of a PostsCollection object.
-	 * @api
-	 * @example
-	 * ```php
-	 * $posts = Timber::get_post_collection();
- 	 *  $posts = Timber::get_post_collection('post_type = article')
- 	 *  $posts = Timber::get_post_collection(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format.
- 	 *  $posts = Timber::get_post_collection('post_type=any', array('portfolio' => 'MyPortfolioClass', 'alert' => 'MyAlertClass')); //use a classmap for the $PostClass
-	 * ```
-	 * @param mixed   $query
-	 * @param string|array  $PostClass
-	 */
-	public static function get_posts_collection( $query = false, $PostClass = 'Timber\Post' ) {
-		return PostGetter::get_posts($query, $PostClass, true);
 	}
 
 	/**

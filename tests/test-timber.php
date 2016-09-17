@@ -127,9 +127,9 @@ class TestTimber extends Timber_UnitTestCase {
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
-		$posts = Timber::get_posts_collection($pids);
+		$posts = new Timber\PostCollection($pids);
 		$this->assertEquals(3, count($posts));
-		$this->assertEquals('Timber\PostsCollection', get_class($posts));
+		$this->assertEquals('Timber\PostCollection', get_class($posts));
 	}
 
 	function testUserInContextAnon() {
