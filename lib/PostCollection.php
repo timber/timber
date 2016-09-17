@@ -17,7 +17,7 @@ class PostCollection extends \ArrayObject {
 	private $queryIterator;
 	private $pagination;
 
-	public function __construct( $query = array(), $post_class = '\Timber\Post' ) {
+	public function __construct( $query = false, $post_class = '\Timber\Post' ) {
 		$this->queryIterator = PostGetter::query_posts($query, $post_class);
 
 		$posts = $this->queryIterator->get_posts();

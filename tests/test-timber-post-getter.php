@@ -271,11 +271,12 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	}
 
 	function testGetPostsFromLoop() {
-		require_once 'php/timber-post-subclass.php';
 		$posts = $this->factory->post->create_many( 15 );
 		$this->go_to( '/' );
 		$posts = Timber::get_posts();
 		$this->assertEquals( 10, count( $posts ) );
+		$pc = new Timber\PostCollection();
+		$this->assertEquals( 10, count( $pc ) );
 	}
 
 	function testGetPostsFromArray() {

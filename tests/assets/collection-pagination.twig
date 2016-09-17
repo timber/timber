@@ -1,0 +1,47 @@
+{% for post in posts %}
+	<h1>POST</h1>
+{% endfor %}
+<div class="l--pagination">
+    <div class="pagination-inner">
+
+        <div class="pagination-previous">
+
+            {% if posts.pagination.prev.link %}
+                <a href="{{ posts.pagination.prev.link}}" class="pagination-previous-link {{ posts.pagination.prev.link|length ? '' : 'invisible'}}">Previous</a>
+            {% else %}
+                <span class="pagination-previous-link {{ posts.pagination.prev.link ?  '' : 'pagination-disabled'}}">Previous</span>
+            {% endif %}
+
+        </div>
+
+        <div class="pagination-pages">
+            <ul class="pagination-pages-list">
+  
+        {% if posts.pagination.pages|length %}
+            {% for page in posts.pagination.pages %}
+                {% if page.current %}
+                    <li class="pagination-list-item pagination-page">{{ page.title }}</li>
+                    <li class="pagination-list-item pagination-seperator">of</li>
+                {% endif %}
+                {% if loop.last %}
+                    <li class="pagination-list-item pagination-page">{{ page.title }}</li>
+                {% endif %}
+        
+            {% endfor %}
+        {% endif %}
+            </ul>
+        </div> 
+
+
+        <div class="pagination-next">
+
+            {% if posts.pagination.next.link %}
+                <a href="{{ posts.pagination.next.link}}" class="pagination-next-link {{ posts.pagination.next.link|length ? '' : 'invisible'}}">Next</a>
+            {% else %}
+                <span class="pagination-next-link {{ posts.pagination.next.link ?  '' : 'pagination-disabled'}}">Next</span>
+            {% endif %}
+
+        </div> 
+
+    </div>
+</div>
