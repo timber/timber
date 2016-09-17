@@ -17,6 +17,8 @@ class TestTimberPostCollection extends Timber_UnitTestCase {
 
 	function testBasicCollectionWithPagination() {
 		$pids = $this->factory->post->create_many(130);
+		$page = $this->factory->post->create(array('post_title' => 'Test', 'post_type' => 'page'));
+		$this->go_to('/test');
 		$pc = new Timber\PostCollection('post_type=post');
 		$str = Timber::compile('assets/collection-pagination.twig', array('posts' => $pc));
 		$str = preg_replace('/\s+/', ' ', $str);
