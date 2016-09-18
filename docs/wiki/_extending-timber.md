@@ -104,7 +104,7 @@ This is the correct formation for when you need to add custom functions, filters
 <?php
 /* functions.php */
 
-add_filter('get_twig', 'add_to_twig');
+add_filter('timber/twig', 'add_to_twig');
 
 function add_to_twig($twig) {
 	/* this is where you can add your own fuctions to twig */
