@@ -43,9 +43,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testPaginationOnLaterPage() {
-		$struc = '/%postname%/';
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = $struc;
+		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );
 		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
 		$this->go_to( home_url( '/portfolio/page/3' ) );

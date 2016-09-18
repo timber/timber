@@ -30,6 +30,7 @@ class Pagination {
 		if ( ! $wp_query) {
 			global $wp_query;
 		}
+
 		// use the current page from the provided query if available; else fall back to the global
 		$paged = isset( $wp_query->query_vars['paged'] ) ? $wp_query->query_vars['paged'] : get_query_var('paged');
 
@@ -65,7 +66,6 @@ class Pagination {
 		$this->current = $args['current'];
 		$this->total = $args['total'];
 		$this->pages = Pagination::paginate_links($args);
-
 		if ( $this->total <= count($this->pages) ) {
 			// decrement current so that it matches up with the 0 based index used by the pages array
 			$current = $this->current - 1;

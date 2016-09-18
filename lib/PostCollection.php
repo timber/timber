@@ -14,10 +14,13 @@ if ( !defined('ABSPATH') ) {
 class PostCollection extends \ArrayObject {
 
 	//maintain reference to $query object to generate pagination
+	
+	private $userQuery;
 	private $queryIterator;
 	private $pagination;
 
 	public function __construct( $query = false, $post_class = '\Timber\Post' ) {
+		$this->userQuery = $query;
 		$this->queryIterator = PostGetter::query_posts($query, $post_class);
 
 		$posts = $this->queryIterator->get_posts();
@@ -47,6 +50,10 @@ class PostCollection extends \ArrayObject {
 		parent::__construct($returned_posts, $flags = 0, 'Timber\PostsIterator');
 	}
 
+	protected function get_query() {
+		return $this->userQuery;
+	}
+
 	/**
 	 * Set pagination for the collection. Optionally could be used to get pagination with custom preferences.
 	 *
@@ -55,7 +62,9 @@ class PostCollection extends \ArrayObject {
 	 */
 	public function pagination( $prefs = array() ) {
 		if ( ! $this->pagination ) {
-			$this->pagination = $this->queryIterator->get_pagination($prefs);
+			// print_r($this->get_query());
+			// exit;
+			$this->pagination = $this->queryIterator->get_pagination($prefs, $this->get_query());
 		}
 		return $this->pagination;
 	}
