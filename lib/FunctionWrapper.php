@@ -42,7 +42,7 @@ class FunctionWrapper {
 		$this->_args = $args;
 		$this->_use_ob = $return_output_buffer;
 
-		add_filter('get_twig', array(&$this, 'add_to_twig'));
+		add_filter('timber/twig', array(&$this, 'add_to_twig'));
 	}
 
 	/**
