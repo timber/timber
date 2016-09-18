@@ -237,7 +237,7 @@ class Timber {
 			self::$context_cache['user'] = ($user->ID) ? $user : false;
 			self::$context_cache['theme'] = self::$context_cache['site']->theme;
 
-			self::$context_cache['posts'] = Timber::query_posts();
+			self::$context_cache['posts'] = new PostCollection();
 
 			self::$context_cache = apply_filters('timber_context', self::$context_cache);
 			self::$context_cache = apply_filters('timber/context', self::$context_cache);
