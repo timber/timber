@@ -64,7 +64,7 @@ class QueryIterator implements \Iterator, \Countable {
 	}
 
 	public function get_pagination( $prefs ) {
-		return new Pagination( $prefs, $this->_query);
+		return new Pagination($prefs, $this->_query);
 	}
 
 	public function get_posts( $return_collection = false ) {

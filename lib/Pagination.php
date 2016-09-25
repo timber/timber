@@ -21,18 +21,18 @@ class Pagination {
 	 * @return array mixed
 	 */
 	public static function get_pagination( $prefs ) {
-		$pagination = new self( $prefs );
+		$pagination = new self($prefs);
 		$pagination = get_object_vars($pagination);
 		return $pagination;
 	}
 
 	private function init( $prefs = array(), $wp_query = null ) {
-		if ( ! $wp_query) {
+		if ( !$wp_query ) {
 			global $wp_query;
 		}
 
 		// use the current page from the provided query if available; else fall back to the global
-		$paged = isset( $wp_query->query_vars['paged'] ) ? $wp_query->query_vars['paged'] : get_query_var('paged');
+		$paged = isset($wp_query->query_vars['paged']) ? $wp_query->query_vars['paged'] : get_query_var('paged');
 
 		global $wp_rewrite;
 		$args = array();

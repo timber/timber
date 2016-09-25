@@ -46,7 +46,7 @@ class PostGetter {
 	/**
 	 * @param mixed $query
 	 * @param string|array $PostClass
-	 * @return array|bool|null
+	 * @return PostsArray | QueryIterator
 	 */
 	public static function query_posts( $query = false, $PostClass = '\Timber\Post' ) {
 		if ( $type = self::get_class_for_use_as_timber_post($query) ) {

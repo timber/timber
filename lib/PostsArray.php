@@ -10,6 +10,11 @@ if ( !defined('ABSPATH') ) {
 	exit;
 }
 
+/**
+ * @deprecated
+ * PostsArray are internal objects used to hold a collection of posts (and indeed, they used to be called PostsCollection)
+ * Why are they still here? To preserve maximum backwards compatibility with PostGetter and Timber::get_posts
+ */
 class PostsArray extends \ArrayObject {
 
 	public function __construct( $posts = array(), $post_class = '\Timber\Post' ) {
@@ -43,10 +48,10 @@ class PostsArray extends \ArrayObject {
 		return $this->getArrayCopy();
 	}
 
-	 /**
-	  * @param array $posts
-	  * @return array
-	  */
+	/**
+	 * @param array $posts
+	 * @return array
+	 */
 	public static function maybe_set_preview( $posts ) {
 		if ( is_array($posts) && isset($_GET['preview']) && $_GET['preview']
 			   && isset($_GET['preview_id']) && $_GET['preview_id']

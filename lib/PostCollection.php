@@ -11,6 +11,12 @@ if ( !defined('ABSPATH') ) {
 	exit;
 }
 
+/**
+ * A PostCollection allows a user to query for a Collection of WordPress Posts.
+ * PostCollections are used directly in Twig templates to iterate through and retrieve
+ * meta information about the collection of posts
+ * @api
+ */
 class PostCollection extends \ArrayObject {
 
 	//maintain reference to $query object to generate pagination
@@ -57,22 +63,20 @@ class PostCollection extends \ArrayObject {
 	/**
 	 * Set pagination for the collection. Optionally could be used to get pagination with custom preferences.
 	 *
-	 * @param array $prefs
-	 * @return TimberPagination object
+	 * @param 	array $prefs
+	 * @return 	Timber\Pagination object
 	 */
 	public function pagination( $prefs = array() ) {
-		if ( ! $this->pagination ) {
-			// print_r($this->get_query());
-			// exit;
+		if ( !$this->pagination ) {
 			$this->pagination = $this->queryIterator->get_pagination($prefs, $this->get_query());
 		}
 		return $this->pagination;
 	}
 
-	 /**
-	  * @param array $posts
-	  * @return array
-	  */
+	/**
+	 * @param 	array $posts
+	 * @return 	array
+	 */
 	public static function maybe_set_preview( $posts ) {
 		if ( is_array($posts) && isset($_GET['preview']) && $_GET['preview']
 			   && isset($_GET['preview_id']) && $_GET['preview_id']
