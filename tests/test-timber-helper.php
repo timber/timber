@@ -42,13 +42,13 @@
 
 		function testTrimCharacters() {
 			$text    = "Sometimes you need to do such weird things like remove all comments from your project.";
-			$trimmed = \Timber\Filter::trim_characters( $text, 20 );
+			$trimmed = \Timber\TextHelper::trim_characters( $text, 20 );
 			$this->assertEquals( "Sometimes yo&hellip;", $trimmed );
 		}
 
 		function testCloseTagsWithSelfClosingTags(){
 			$p = '<p>My thing is this <hr>Whatever';
-			$html = TimberHelper::close_tags($p);
+			$html = \Timber\Helper::close_tags($p);
 			$this->assertEquals('<p>My thing is this <hr />Whatever</p>', $html);
 		}
 
@@ -77,7 +77,7 @@
 
 		function testCloseTags() {
 			$str = '<a href="http://wordpress.org">Hi!';
-			$closed = TimberHelper::close_tags($str);
+			$closed = Timber\TextHelper::close_tags($str);
 			$this->assertEquals($str.'</a>', $closed);
 		}
 

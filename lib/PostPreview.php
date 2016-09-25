@@ -119,9 +119,9 @@ class PostPreview {
 		$trimmed = false;
 		if ( isset($this->post->post_excerpt) && strlen($this->post->post_excerpt) ) {
 			if ( $this->force ) {
-				$text = Helper::trim_words($this->post->post_excerpt, $len, false);
+				$text = TextHelper::trim_words($this->post->post_excerpt, $len, false);
 				if ( $chars !== false ) {
-					$text = Filter::trim_characters($this->post->post_excerpt, $chars, false);
+					$text = TextHelper::trim_characters($this->post->post_excerpt, $chars, false);
 				}
 				$trimmed = true;
 			} else {
@@ -132,18 +132,18 @@ class PostPreview {
 			$pieces = explode($readmore_matches[0], $this->post->post_content);
 			$text = $pieces[0];
 			if ( $force ) {
-				$text = Helper::trim_words($text, $len, false);
+				$text = TextHelper::trim_words($text, $len, false);
 				if ( $chars !== false ) {
-					$text = Filter::trim_characters($text, $chars, false);
+					$text = TextHelper::trim_characters($text, $chars, false);
 				}
 				$trimmed = true;
 			}
 			$text = do_shortcode($text);
 		}
 		if ( !strlen($text) ) {
-			$text = Helper::trim_words($this->post->content(), $len, false);
+			$text = TextHelper::trim_words($this->post->content(), $len, false);
 			if ( $chars !== false ) {
-				$text = Filter::trim_characters($text, $chars, false);
+				$text = TextHelper::trim_characters($text, $chars, false);
 			}
 			$trimmed = true;
 		}

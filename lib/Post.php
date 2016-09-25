@@ -394,7 +394,7 @@ class Post extends Core implements CoreInterface {
 		$last_p_tag = null;
 		if ( isset($this->post_excerpt) && strlen(trim($this->post_excerpt)) ) {
 			if ( $force ) {
-				$text = Helper::trim_words($this->post_excerpt, $len, false);
+				$text = TextHelper::trim_words($this->post_excerpt, $len, false);
 				$trimmed = true;
 			} else {
 				$text = $this->post_excerpt;
@@ -404,13 +404,13 @@ class Post extends Core implements CoreInterface {
 			$pieces = explode($readmore_matches[0], $this->post_content);
 			$text = $pieces[0];
 			if ( $force ) {
-				$text = Helper::trim_words($text, $len, false);
+				$text = TextHelper::trim_words($text, $len, false);
 				$trimmed = true;
 			}
 			$text = do_shortcode($text);
 		}
 		if ( !strlen($text) ) {
-			$text = Helper::trim_words($this->get_content(), $len, false);
+			$text = TextHelper::trim_words($this->get_content(), $len, false);
 			$trimmed = true;
 		}
 		if ( !strlen(trim($text)) ) {
