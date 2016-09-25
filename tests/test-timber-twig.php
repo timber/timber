@@ -179,6 +179,12 @@
 			$this->assertEquals('Four score and seven years ago&hellip;', $str);
 		}
 
+		function testFilterTrimCharacters() {
+			$gettysburg = 'Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.';
+			$str = Timber::compile_string("{{content | excerpt_chars(100)}}", array('content' => $gettysburg));
+			$this->assertEquals('Four score and seven years ago our fathers brought forth on this continent, a new nation, co&hellip;', $str);
+		}
+
 		function testSetSimple() {
 			$result = Timber::compile('assets/set-simple.twig', array('foo' => 'bar'));
 			$this->assertEquals('jiggy', trim($result));
