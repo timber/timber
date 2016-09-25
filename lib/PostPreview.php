@@ -13,6 +13,7 @@ class PostPreview {
 	protected $end = '&hellip;';
 	protected $force = false;
 	protected $length = 50;
+	protected $char_length = false;
 	protected $readmore = 'Read More';
 	protected $strip = true;
 
@@ -32,6 +33,14 @@ class PostPreview {
 	 */
 	public function length( $length = 50 ) {
 		$this->length = $length;
+		return $this;
+	}
+
+	/**
+	 * @param integer $char_length (in characters) of the target preview
+	 */
+	public function chars( $char_length = false ) {
+		$this->char_length = $char_length;
 		return $this;
 	}
 
@@ -103,6 +112,7 @@ class PostPreview {
 	protected function run() {
 		$force = $this->force;
 		$len = $this->length;
+		$chars = $this->char_length;
 		$strip = $this->strip;
 		$readmore_matches = array();
 		$text = '';
@@ -110,6 +120,9 @@ class PostPreview {
 		if ( isset($this->post->post_excerpt) && strlen($this->post->post_excerpt) ) {
 			if ( $this->force ) {
 				$text = Helper::trim_words($this->post->post_excerpt, $len, false);
+				if ( $chars !== false ) {
+					$text = Filter::trim_characters($this->post->post_excerpt, $chars, false);
+				}
 				$trimmed = true;
 			} else {
 				$text = $this->post->post_excerpt;
@@ -120,12 +133,18 @@ class PostPreview {
 			$text = $pieces[0];
 			if ( $force ) {
 				$text = Helper::trim_words($text, $len, false);
+				if ( $chars !== false ) {
+					$text = Filter::trim_characters($text, $chars, false);
+				}
 				$trimmed = true;
 			}
 			$text = do_shortcode($text);
 		}
 		if ( !strlen($text) ) {
 			$text = Helper::trim_words($this->post->content(), $len, false);
+			if ( $chars !== false ) {
+				$text = Filter::trim_characters($text, $chars, false);
+			}
 			$trimmed = true;
 		}
 		if ( !strlen(trim($text)) ) {
@@ -138,6 +157,7 @@ class PostPreview {
 		if ( strlen($text) ) {
 			return $this->assemble($text, $readmore_matches, $trimmed);
 		}
+
 		return trim($text);
 	}
 
