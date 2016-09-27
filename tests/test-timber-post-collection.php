@@ -15,6 +15,15 @@ class TestTimberPostCollection extends Timber_UnitTestCase {
 		$this->assertEquals(6, count($pc));
 	}
 
+	function testCollectionWithWP_PostArray() {
+		$cat = $this->factory->term->create(array('name' => 'Things', 'taxonomy' => 'category'));
+		$pids = $this->factory->post->create_many(4, array('category' => $cat));
+		$posts = get_posts( array('post_category' => array($cat), 'posts_per_page' => 3) );
+		$pc = new Timber\PostCollection($posts);
+		$pagination = $pc->pagination();
+		$this->assertNull($pagination);
+	}
+
 	function testPaginationOnLaterPage() {
 		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );

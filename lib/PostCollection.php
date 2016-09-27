@@ -21,9 +21,9 @@ class PostCollection extends PostsArray {
 
 	//maintain reference to $query object to generate pagination
 	
-	private $userQuery;
-	private $queryIterator;
-	private $pagination;
+	protected $userQuery;
+	protected $queryIterator;
+	protected $pagination = null;
 
 	public function __construct( $query = false, $post_class = '\Timber\Post' ) {
 		$this->userQuery = $query;
@@ -45,7 +45,7 @@ class PostCollection extends PostsArray {
 	 * @return 	Timber\Pagination object
 	 */
 	public function pagination( $prefs = array() ) {
-		if ( !$this->pagination ) {
+		if ( !$this->pagination && is_a($this->queryIterator, 'Timber\QueryIterator')) {
 			$this->pagination = $this->queryIterator->get_pagination($prefs, $this->get_query());
 		}
 		return $this->pagination;
