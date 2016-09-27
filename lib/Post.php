@@ -533,6 +533,29 @@ class Post extends Core implements CoreInterface {
 	 * Get the terms associated with the post
 	 * This goes across all taxonomies by default
 	 * @api
+	 * @example
+	 * ```twig
+	 * <section id="job-feed">
+	 * {% for post in job %}
+	 * <div class="job">
+	 *   <h2>{{ post.title }}</h2> 
+	 *    <p>{{ post.terms('category') | join(', ') }}
+	 *  </div>
+	 * {% endfor %}    
+	 * </section>
+	 * ```
+	 * ```html
+	 * <section id="job-feed">
+	 *   <div class="job">
+	 * 	   <h2>Cheese Maker</h2>
+	 *     <p>Food, Cheese, Fromage</p>
+	 *   </div>
+	 *   <div class="job">
+	 * 	   <h2>Mime</h2>
+	 *     <p>Performance, Silence</p>
+	 *   </div>
+	 * </section>
+	 * ```
 	 * @param string|array $tax What taxonom(y|ies) to pull from. Defaults to all registered taxonomies for the post type. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you're on your own.
 	 * @param bool $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?
 	 * @return array
