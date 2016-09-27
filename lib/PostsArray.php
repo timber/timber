@@ -18,7 +18,11 @@ if ( !defined('ABSPATH') ) {
 class PostsArray extends \ArrayObject {
 
 	public function __construct( $posts = array(), $post_class = '\Timber\Post' ) {
+		$returned_posts = self::init($posts, $post_class);
+		parent::__construct($returned_posts, $flags = 0, 'Timber\PostsIterator');
+	}
 
+	protected static function init($posts, $post_class) {
 		$returned_posts = array();
 		if ( is_null($posts) ) {
 			$posts = array();
@@ -39,10 +43,9 @@ class PostsArray extends \ArrayObject {
 			}
 		}
 
-		$returned_posts = self::maybe_set_preview($returned_posts);
-
-		parent::__construct($returned_posts, $flags = 0, 'Timber\PostsIterator');
+		return self::maybe_set_preview($returned_posts);
 	}
+
 
 	public function get_posts() {
 		return $this->getArrayCopy();
