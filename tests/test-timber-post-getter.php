@@ -275,7 +275,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->go_to( '/' );
 		$posts = Timber::get_posts();
 		$this->assertEquals( 10, count( $posts ) );
-		$pc = new Timber\PostCollection();
+		$pc = new Timber\PostQuery();
 		$this->assertEquals( 10, count( $pc ) );
 	}
 
