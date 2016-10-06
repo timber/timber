@@ -474,7 +474,7 @@ class ImageHelper {
 		
 		// if already exists...
 		if ( file_exists($new_server_path) ) {
-			if ( $force ) {
+			if ( $force || filemtime($old_server_path) > filemtime($new_server_path) ) {
 				// Force operation - warning: will regenerate the image on every pageload, use for testing purposes only!
 				unlink($new_server_path);
 			} else {
