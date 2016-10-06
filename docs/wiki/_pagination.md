@@ -7,7 +7,7 @@ This will only work in a php file with an active query (like `archive.php` or `h
 ```php
 	<?php
 	$context = Timber::get_context();
-	$context['posts'] = new PostCollection();
+	$context['posts'] = new PostQuery();
 	Timber::render('archive.twig', $context);
 ```
 
@@ -50,7 +50,7 @@ No problem!
 		'posts_per_page' => 5,
 		'paged' => $paged
 	);
-	$context['posts'] = new Timber\PostCollection($args);
+	$context['posts'] = new Timber\PostQuery($args);
 	Timber::render('page-events.twig', $context);
 ```
 
@@ -71,6 +71,6 @@ In your archive.php or home.php template:
 ```php
 	<?php
 	$context = Timber::get_context();
-	$context['posts'] = new Timber\PostCollection();
+	$context['posts'] = new Timber\PostQuery();
 	Timber::render('archive.twig', $context);
 ```

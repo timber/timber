@@ -10,7 +10,7 @@ class Pagination {
 	public $next;
 	public $prev;
 
-	function __construct( $prefs = array(), $wp_query = null ) {
+	public function __construct( $prefs = array(), $wp_query = null ) {
 		$this->init($prefs, $wp_query);
 	}
 
@@ -26,7 +26,7 @@ class Pagination {
 		return $pagination;
 	}
 
-	private function init( $prefs = array(), $wp_query = null ) {
+	protected function init( $prefs = array(), $wp_query = null ) {
 		if ( !$wp_query ) {
 			global $wp_query;
 		}

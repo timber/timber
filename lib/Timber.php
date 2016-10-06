@@ -35,7 +35,7 @@ use Timber\Loader;
  */
 class Timber {
 
-	public static $version = '1.2.0';
+	public static $version = '1.1.6';
 	public static $locations;
 	public static $dirname = 'views';
 	public static $twig_cache = false;
@@ -161,7 +161,7 @@ class Timber {
 	 * @api
 	 * @param mixed   $query
 	 * @param string  $PostClass
-	 * @return array|bool|null
+	 * @return PostCollection
 	 */
 	public static function query_posts( $query = false, $PostClass = 'Timber\Post' ) {
 		return PostGetter::query_posts($query, $PostClass);
@@ -237,8 +237,10 @@ class Timber {
 			self::$context_cache['user'] = ($user->ID) ? $user : false;
 			self::$context_cache['theme'] = self::$context_cache['site']->theme;
 
-			self::$context_cache['posts'] = new PostCollection();
-
+			//Not yet! but this will soon be the default...
+			//self::$context_cache['posts'] = new PostQuery();
+			self::$context_cache['posts'] = Timber::query_posts();
+			
 			self::$context_cache = apply_filters('timber_context', self::$context_cache);
 			self::$context_cache = apply_filters('timber/context', self::$context_cache);
 		}
