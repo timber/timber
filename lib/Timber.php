@@ -82,7 +82,7 @@ class Timber {
 			//already run, so bail
 			return;
 		}
-		$names = array('Archives', 'Comment', 'Core', 'FunctionWrapper', 'Helper', 'Image', 'ImageHelper', 'Integrations', 'Loader', 'Menu', 'MenuItem', 'Post', 'PostGetter', 'PostsCollection', 'QueryIterator', 'Request', 'Site', 'Term', 'TermGetter', 'Theme', 'Twig', 'URLHelper', 'User', 'Integrations\Command', 'Integrations\ACF');
+		$names = array('Archives', 'Comment', 'Core', 'FunctionWrapper', 'Helper', 'Image', 'ImageHelper', 'Integrations', 'Loader', 'Menu', 'MenuItem', 'Post', 'PostGetter', 'PostCollection', 'QueryIterator', 'Request', 'Site', 'Term', 'TermGetter', 'Theme', 'Twig', 'URLHelper', 'User', 'Integrations\Command', 'Integrations\ACF');
 		foreach ( $names as $name ) {
 			$old_class_name = 'Timber'.str_replace('Integrations\\', '', $name);
 			$new_class_name = 'Timber\\'.$name;
@@ -161,7 +161,7 @@ class Timber {
 	 * @api
 	 * @param mixed   $query
 	 * @param string  $PostClass
-	 * @return array|bool|null
+	 * @return PostCollection
 	 */
 	public static function query_posts( $query = false, $PostClass = 'Timber\Post' ) {
 		return PostGetter::query_posts($query, $PostClass);
@@ -237,8 +237,10 @@ class Timber {
 			self::$context_cache['user'] = ($user->ID) ? $user : false;
 			self::$context_cache['theme'] = self::$context_cache['site']->theme;
 
+			//Not yet! but this will soon be the default...
+			//self::$context_cache['posts'] = new PostQuery();
 			self::$context_cache['posts'] = Timber::query_posts();
-
+			
 			self::$context_cache = apply_filters('timber_context', self::$context_cache);
 			self::$context_cache = apply_filters('timber/context', self::$context_cache);
 		}

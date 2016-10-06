@@ -122,6 +122,16 @@ class TestTimber extends Timber_UnitTestCase {
 		$this->assertEquals(3, count($posts));
 	}
 
+	function testGetPostsCollection() {
+		$pids = array();
+		$pids[] = $this->factory->post->create();
+		$pids[] = $this->factory->post->create();
+		$pids[] = $this->factory->post->create();
+		$posts = new Timber\PostCollection($pids);
+		$this->assertEquals(3, count($posts));
+		$this->assertEquals('Timber\PostCollection', get_class($posts));
+	}
+
 	function testUserInContextAnon() {
 		$context = Timber::get_context();
 		$this->assertArrayHasKey( 'user', $context );
@@ -143,7 +153,7 @@ class TestTimber extends Timber_UnitTestCase {
 	function testQueryPostsInContext(){
         $context = Timber::get_context();
         $this->assertArrayHasKey( 'posts', $context );
-        $this->assertInstanceOf( 'TimberQueryIterator', $context['posts'] );
+        $this->assertInstanceOf( 'Timber\QueryIterator', $context['posts'] );
 	}
 
 	/* Terms */

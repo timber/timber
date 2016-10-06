@@ -41,6 +41,9 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 1.1.7 =
+* A new PostQuery object that comes _with_ pagination (thanks @lggorman). 
+
 = 1.1.6 = 
 * Kill those transients! Timber now wipes expired ones away 9a5851bf36110dcb399e277d51230f1addb0c53c
 * Fixed a warning that was annoying and nobody liked and didn't have any friends c53b4c832cfced01157f8196688468ad3318d3fb

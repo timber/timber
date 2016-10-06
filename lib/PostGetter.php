@@ -2,7 +2,7 @@
 
 namespace Timber;
 
-use Timber\PostsCollection;
+use Timber\PostCollection;
 use Timber\QueryIterator;
 
 class PostGetter {
@@ -19,7 +19,7 @@ class PostGetter {
 			$PostClass = PostGetter::get_post_class($post_type, $PostClass);
 			$post = new $PostClass($query);
 			// get the latest revision if we're dealing with a preview
-			$posts = PostsCollection::maybe_set_preview(array($post));
+			$posts = PostCollection::maybe_set_preview(array($post));
 			if ( $post = reset($posts) ) {
 				return $post;
 			}
@@ -46,7 +46,7 @@ class PostGetter {
 	/**
 	 * @param mixed $query
 	 * @param string|array $PostClass
-	 * @return array|bool|null
+	 * @return PostCollection | QueryIterator
 	 */
 	public static function query_posts( $query = false, $PostClass = '\Timber\Post' ) {
 		if ( $type = self::get_class_for_use_as_timber_post($query) ) {
@@ -63,7 +63,7 @@ class PostGetter {
 
 		if ( is_array($query) && count($query) && isset($query[0]) && is_object($query[0]) ) {
 			// We have an array of post objects that already have data
-			return new PostsCollection($query, $PostClass);
+			return new PostCollection($query, $PostClass);
 		} else {
 			// We have a query (of sorts) to work with
 			$tqi = new QueryIterator($query, $PostClass);

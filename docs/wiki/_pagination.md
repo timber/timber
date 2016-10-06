@@ -7,8 +7,7 @@ This will only work in a php file with an active query (like `archive.php` or `h
 ```php
 	<?php
 	$context = Timber::get_context();
-	$context['posts'] = Timber::get_posts();
-	$context['pagination'] = Timber::get_pagination();
+	$context['posts'] = new PostQuery();
 	Timber::render('archive.twig', $context);
 ```
 
@@ -16,11 +15,11 @@ You can then markup the output like so  (of course, the exact markup is up to YO
 
 ```twig
 <div class="tool-pagination">
-	{% if pagination.prev %}
-		<a href="{{pagination.prev.link}}" class="prev {{pagination.prev.link|length ? '' : 'invisible'}}">Prev</a>
+	{% if posts.pagination.prev %}
+		<a href="{{posts.pagination.prev.link}}" class="prev {{posts.pagination.prev.link|length ? '' : 'invisible'}}">Prev</a>
 	{% endif %}
 	<ul class="pages">
-		{% for page in pagination.pages %}
+		{% for page in posts.pagination.pages %}
 			<li>
 				{% if page.link %}
 					<a href="{{page.link}}" class="{{page.class}}">{{page.title}}</a>
@@ -30,14 +29,14 @@ You can then markup the output like so  (of course, the exact markup is up to YO
 			</li>
 		{% endfor %}
 	</ul>
-	{% if pagination.next %}
-		<a href="{{pagination.next.link}}" class="next {{pagination.next.link|length ? '' : 'invisible'}}">Next</a>
+	{% if posts.pagination.next %}
+		<a href="{{posts.pagination.next.link}}" class="next {{posts.pagination.next.link|length ? '' : 'invisible'}}">Next</a>
 	{% endif %}
 </div>
 ```
 
 ### What if I'm not using the default query?
-So let's say you want to paginate things on `page-events.php` where you list items from a custom post type of `event`. Because the default query is just the request for the page's info, **pagination will not work**. You need to _make_ it the default query by using the dreaded `query_posts` like so:
+No problem!
 
 ```php
 	<?php
@@ -51,13 +50,7 @@ So let's say you want to paginate things on `page-events.php` where you list ite
 		'posts_per_page' => 5,
 		'paged' => $paged
 	);
-	/* THIS LINE IS CRUCIAL */
-	/* in order for WordPress to know what to paginate */
-	/* your args have to be the defualt query */
-		query_posts($args);
-	/* make sure you've got query_posts in your .php file */
-	$context['posts'] = Timber::get_posts();
-	$context['pagination'] = Timber::get_pagination();
+	$context['posts'] = new Timber\PostQuery($args);
 	Timber::render('page-events.twig', $context);
 ```
 
@@ -78,7 +71,6 @@ In your archive.php or home.php template:
 ```php
 	<?php
 	$context = Timber::get_context();
-	$context['posts'] = Timber::get_posts();
-	$context['pagination'] = Timber::get_pagination();
+	$context['posts'] = new Timber\PostQuery();
 	Timber::render('archive.twig', $context);
 ```

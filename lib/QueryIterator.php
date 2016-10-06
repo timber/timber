@@ -3,7 +3,7 @@
 namespace Timber;
 
 use Timber\Helper;
-use Timber\PostsCollection;
+use Timber\PostCollection;
 
 // Exit if accessed directly
 if ( !defined('ABSPATH') ) {
@@ -63,9 +63,13 @@ class QueryIterator implements \Iterator, \Countable {
 		return $this->_query->post_count;
 	}
 
+	public function get_pagination( $prefs ) {
+		return new Pagination($prefs, $this->_query);
+	}
+
 	public function get_posts( $return_collection = false ) {
 		if ( isset($this->_query->posts) ) {
-			$posts = new PostsCollection($this->_query->posts, $this->_posts_class);
+			$posts = new PostCollection($this->_query->posts, $this->_posts_class);
 			return ($return_collection) ? $posts : $posts->get_posts();
 		}
 	}
@@ -178,16 +182,11 @@ class QueryIterator implements \Iterator, \Countable {
 	 *
 	 * Necessary for some Twig `loop` variable properties.
 	 * @see http://twig.sensiolabs.org/doc/tags/for.html#the-loop-variable
-	 *
 	 * @link  http://php.net/manual/en/countable.count.php
 	 * @return int The custom count as an integer.
-	 * </p>
-	 * <p>
 	 * The return value is cast to an integer.
-	 * @since 5.1.0
 	 */
-	public function count()
-	{
+	public function count() {
 		return $this->post_count();
 	}
 }
