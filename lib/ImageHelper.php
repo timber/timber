@@ -166,7 +166,7 @@ class ImageHelper {
 	}
 
 	/**
-	 * Deletes all resized versions of an image when the source is deleted
+	 * Deletes all resized versions of an image when the source is deleted or its meta data is regenerated
 	 */
 	protected static function add_actions() {
 		add_action('delete_attachment', function( $post_id ) {
@@ -178,6 +178,17 @@ class ImageHelper {
 					ImageHelper::delete_generated_files($attachment->file_loc);
 				}
 			}
+		} );
+		add_filter('wp_generate_attachment_metadata', function( $metadata, $post_id ) {
+			$post = get_post($post_id);
+			$image_types = array('image/jpeg', 'image/png', 'image/gif', 'image/jpg');
+			if ( in_array($post->post_mime_type, $image_types) ) {
+				$attachment = new Image($post_id);
+				if ( $attachment->file_loc ) {
+					ImageHelper::delete_generated_files($attachment->file_loc);
+				}
+			}
+			return $metadata;
 		} );
 	}
 
