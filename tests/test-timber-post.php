@@ -503,6 +503,14 @@
 			$this->assertEquals(4, count($parent->children('parent')));
 		}
 
+		function testPostChildrenWithArray(){
+			$parent_id = $this->factory->post->create(array('post_type' => 'foo'));
+			$children = $this->factory->post->create_many(8, array('post_parent' => $parent_id, 'post_type' => 'bar'));
+			$children = $this->factory->post->create_many(4, array('post_parent' => $parent_id, 'post_type' => 'foo'));
+			$parent = new TimberPost($parent_id);
+			$this->assertEquals(12, count($parent->children(array('foo', 'bar'))));
+		}
+
 		function testPostNoConstructorArgument(){
 			$pid = $this->factory->post->create();
 			$this->go_to('?p='.$pid);

@@ -846,10 +846,11 @@ class Post extends Core implements CoreInterface {
 		if ( $post_type == 'parent' ) {
 			$post_type = $this->post_type;
 		}
-		if (is_array($post_type)) {
+		if ( is_array($post_type) ) {
 			$post_type = implode('&post_type[]=', $post_type);
 		}
-		$children = get_children('post_parent='.$this->ID.'&post_type[]='.$post_type.'&numberposts=-1&orderby=menu_order title&order=ASC&post_status=publish');
+		$query = 'post_parent='.$this->ID.'&post_type[]='.$post_type.'&numberposts=-1&orderby=menu_order title&order=ASC&post_status=publish';
+		$children = get_children($query);
 		foreach ( $children as &$child ) {
 			$child = new $childPostClass($child->ID);
 		}
