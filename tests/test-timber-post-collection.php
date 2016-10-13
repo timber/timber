@@ -9,6 +9,11 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		parent::setUp();
 	}
 
+	function testBackwards() {
+		$pc = new TimberPostsCollection();
+		$pc = new Timber\PostsCollection();
+	}
+
 	function testBasicCollection() {
 		$pids = $this->factory->post->create_many(10);
 		$pc = new Timber\PostQuery('post_type=post&numberposts=6');
