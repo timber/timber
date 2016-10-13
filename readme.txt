@@ -41,6 +41,9 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 1.1.7.1 =
+* Quick fix for backwards compaiblity in some situations
+
 = 1.1.7 =
 * A new PostQuery object that comes _with_ pagination (thanks @lggorman).
 * You can pass an array of post types to `post.children()` (thanks @njbarrett)
