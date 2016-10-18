@@ -23,9 +23,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	static function copyTestImage( $img = 'arch.jpg' ) {
 		$upload_dir = wp_upload_dir();
 		$destination = $upload_dir['path'].'/'.$img;
-		if ( !file_exists( $destination ) ) {
-			copy( __DIR__.'/assets/'.$img, $destination );
-		}
+		copy( __DIR__.'/assets/'.$img, $destination );
 		return $destination;
 	}
 
