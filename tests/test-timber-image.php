@@ -56,7 +56,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	public static function get_image_attachment( $pid = 0, $file = 'arch.jpg' ) {
 		$filename = self::copyTestImage( $file );
-		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+		$filetype = wp_check_filetype( basename( $filename ), null );
+		$attachment = array('post_title' => 'The Arch', 'post_content' => '', 'post_mime_type' => $filetype['type']);
 		$iid = wp_insert_attachment( $attachment, $filename, $pid );
 		return $iid;
 	}
@@ -79,10 +80,11 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  ---------------- */
 
  	function testResizedReplacedImage() {
- 		$attach_id = self::get_image_attachment(0, 'arch.jpg');
+ 		$pid = $this->factory->post->create(array('post_type' => 'post'));
+ 		$attach_id = self::get_image_attachment($pid, 'arch.jpg');
  		$template = '{{Image(img).src|resize(200, 200)}}';
  		$str = Timber::compile_string($template, array('img' => $attach_id));
- 		$new_id = self::get_image_attachment(0, 'pizza.jpg');
+ 		$new_id = self::get_image_attachment($pid, 'pizza.jpg');
  		self::replace_image($attach_id, $new_id);
  		$template = '{{Image(img).src|resize(200, 200)}}';
  		$str = Timber::compile_string($template, array('img' => $attach_id));
