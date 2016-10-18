@@ -8,6 +8,18 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  * Helper functions
  ---------------- */
 
+ 	static function replace_image( $old_id, $new_id ) {
+		$uploadDir = wp_upload_dir();
+		$newFile = $uploadDir['basedir'].'/'.get_post_meta($new_id, '_wp_attached_file', true);
+		$oldFile = $uploadDir['basedir'].'/'.get_post_meta($old_id, '_wp_attached_file', true);
+		if (!file_exists(dirname($oldFile)))
+			mkdir(dirname($oldFile), 0777, true);
+		copy($newFile, $oldFile);
+		$meta = wp_generate_attachment_metadata($old_id, $oldFile);
+		wp_update_attachment_metadata($old_id, $meta);
+		wp_delete_post($new_id, true);
+ 	}
+
 	static function copyTestImage( $img = 'arch.jpg' ) {
 		$upload_dir = wp_upload_dir();
 		$destination = $upload_dir['path'].'/'.$img;
@@ -65,6 +77,21 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 /* ----------------
  * Tests
  ---------------- */
+
+ 	function testResizedReplacedImage() {
+ 		$attach_id = self::get_image_attachment(0, 'arch.jpg');
+ 		$template = '{{Image(img).src|resize(200, 200)}}';
+ 		$str = Timber::compile_string($template, array('img' => $attach_id));
+ 		$new_id = self::get_image_attachment(0, 'pizza.jpg');
+ 		self::replace_image($attach_id, $new_id);
+ 		$template = '{{Image(img).src|resize(200, 200)}}';
+ 		$str = Timber::compile_string($template, array('img' => $attach_id));
+ 		$resized_path = Timber\ImageHelper::get_server_location($str);
+ 		$test_md5 = md5( file_get_contents($resized_path) );
+ 		$pizza_md5 = md5 ( file_get_contents(__DIR__.'/assets/pizza-resized.jpg'));
+ 		$this->assertEquals($pizza_md5, $test_md5);
+
+ 	}
 
  	function testImageLink() {
  		self::setPermalinkStructure();
