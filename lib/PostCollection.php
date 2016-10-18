@@ -93,3 +93,6 @@ class PostsIterator extends \ArrayIterator {
 		return $post;
 	}
 }
+
+class_alias('Timber\PostCollection', 'Timber\PostsCollection');
+class_alias('Timber\PostCollection', 'TimberPostsCollection');
