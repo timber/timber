@@ -167,18 +167,16 @@ class ImageHelper {
 
 	/**
 	 * Deletes all resized versions of an image when the source is deleted
+	 * or its meta data is regenerated
 	 */
 	protected static function add_actions() {
 		add_action('delete_attachment', function( $post_id ) {
-			$post = get_post($post_id);
-			$image_types = array('image/jpeg', 'image/png', 'image/gif', 'image/jpg');
-			if ( in_array($post->post_mime_type, $image_types) ) {
-				$attachment = new Image($post_id);
-				if ( $attachment->file_loc ) {
-					ImageHelper::delete_generated_files($attachment->file_loc);
-				}
-			}
+			\Timber\ImageHelper::_delete_generated_if_image($post_id);
 		} );
+		add_filter('wp_generate_attachment_metadata', function( $metadata, $post_id ) {
+			\Timber\ImageHelper::_delete_generated_if_image($post_id);
+			return $metadata;
+		}, 10, 2);
 	}
 
 	/**
@@ -205,6 +203,24 @@ class ImageHelper {
 	}
 
 	//-- end of public methods --//
+
+	
+	/**
+	 * Checks if attachment is an image before deleting generated files
+	 *
+	 * @param  int  $post_id   an attachment post id
+	 *
+	 */
+	public static function _delete_generated_if_image( $post_id ) {
+		if ( wp_attachment_is_image( $post_id ) ) {
+			$attachment = new Image($post_id);
+			if ( $attachment->file_loc ) {
+				ImageHelper::delete_generated_files($attachment->file_loc);
+			}
+		}
+	}
+	
+	
 	/**
 	 * Deletes the auto-generated files for resize and letterboxing created by Timber
 	 * @param string  $local_file   ex: /var/www/wp-content/uploads/2015/my-pic.jpg
