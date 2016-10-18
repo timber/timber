@@ -835,7 +835,7 @@ class Post extends Core implements CoreInterface {
 	 *     {% endfor %}
 	 * {% endif %}
 	 * ```
-	 * @param string $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type
+	 * @param string|array $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type or you can pass an array of post types.
 	 * @param string|bool $childPostClass _optional_ a custom post class (ex: 'MyTimber\Post') to return the objects as. By default (false) it will use Timber\Post::$post_class value.
 	 * @return array
 	 */
@@ -846,7 +846,11 @@ class Post extends Core implements CoreInterface {
 		if ( $post_type == 'parent' ) {
 			$post_type = $this->post_type;
 		}
-		$children = get_children('post_parent='.$this->ID.'&post_type='.$post_type.'&numberposts=-1&orderby=menu_order title&order=ASC&post_status=publish');
+		if ( is_array($post_type) ) {
+			$post_type = implode('&post_type[]=', $post_type);
+		}
+		$query = 'post_parent='.$this->ID.'&post_type[]='.$post_type.'&numberposts=-1&orderby=menu_order title&order=ASC&post_status=publish';
+		$children = get_children($query);
 		foreach ( $children as &$child ) {
 			$child = new $childPostClass($child->ID);
 		}

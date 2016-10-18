@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.1.6
+Stable tag: 1.1.7
 Tested up to: 4.6
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -41,8 +41,12 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 1.1.7.1 =
+* Quick fix for backwards compaiblity in some situations
+
 = 1.1.7 =
-* A new PostQuery object that comes _with_ pagination (thanks @lggorman). 
+* A new PostQuery object that comes _with_ pagination (thanks @lggorman).
+* You can pass an array of post types to `post.children()` (thanks @njbarrett)
 
 = 1.1.6 = 
 * Kill those transients! Timber now wipes expired ones away 9a5851bf36110dcb399e277d51230f1addb0c53c
