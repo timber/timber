@@ -20,9 +20,12 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		wp_delete_post($new_id, true);
  	}
 
-	static function copyTestImage( $img = 'arch.jpg' ) {
+	static function copyTestImage( $img = 'arch.jpg', $dest_name = null ) {
 		$upload_dir = wp_upload_dir();
-		$destination = $upload_dir['path'].'/'.$img;
+		if ( is_null($dest_name) ) {
+			$dest_name = $img;
+		}
+		$destination = $upload_dir['path'].'/'.$dest_name;
 		copy( __DIR__.'/assets/'.$img, $destination );
 		return $destination;
 	}
@@ -76,6 +79,26 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 /* ----------------
  * Tests
  ---------------- */
+
+ 	function testReplacedImage() {
+ 		$pid = $this->factory->post->create(array('post_type' => 'post'));
+ 		$attach_id = self::get_image_attachment($pid, 'arch.jpg');
+ 		$template = '{{Image(img).src|resize(200, 200)}}';
+ 		$str = Timber::compile_string($template, array('img' => $attach_id));
+ 		$resized_one = Timber\ImageHelper::get_server_location($str);
+ 		sleep(5);
+ 		$filename = self::copyTestImage('cardinals.jpg', 'arch.jpg');
+ 		
+ 		$str = Timber::compile_string($template, array('img' => $attach_id));
+ 		$resized_tester = Timber\ImageHelper::get_server_location($str);
+
+ 		$attach_id = self::get_image_attachment($pid, 'cardinals.jpg');
+ 		$str = Timber::compile_string($template, array('img' => $attach_id));
+ 		$resized_known = Timber\ImageHelper::get_server_location($str);
+ 		//resize original, compare
+ 		$this->assertEquals(md5(file_get_contents($resized_known)), md5(file_get_contents($resized_tester)));
+
+ 	}
 
  	function testResizedReplacedImage() {
  		$pid = $this->factory->post->create(array('post_type' => 'post'));

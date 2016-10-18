@@ -212,7 +212,7 @@ class ImageHelper {
 	 *
 	 */
 	public static function _delete_generated_if_image( $post_id ) {
-		if ( wp_attachment_is_image( $post_id ) ) {
+		if ( wp_attachment_is_image($post_id) ) {
 			$attachment = new Image($post_id);
 			if ( $attachment->file_loc ) {
 				ImageHelper::delete_generated_files($attachment->file_loc);
@@ -474,32 +474,32 @@ class ImageHelper {
 			$op->filename($au['filename'], $au['extension']),
 			$au['absolute']
 		);
-		$new_server_path = self::_get_file_path(
+		$destination_path = self::_get_file_path(
 			$au['base'],
 			$au['subdir'],
 			$op->filename($au['filename'], $au['extension'])
 		);
-		$old_server_path = self::_get_file_path(
+		$source_path = self::_get_file_path(
 			$au['base'],
 			$au['subdir'],
 			$au['basename']
 		);
 		
 		$new_url = apply_filters('timber/image/new_url', $new_url);
-		$new_server_path = apply_filters('timber/image/new_path', $new_server_path);
+		$destination_path = apply_filters('timber/image/new_path', $destination_path);
 		
 		// if already exists...
-		if ( file_exists($new_server_path) ) {
-			if ( $force ) {
+		if ( file_exists($destination_path) ) {
+			if ( $force || filemtime($source_path) > filemtime($destination_path) ) {
 				// Force operation - warning: will regenerate the image on every pageload, use for testing purposes only!
-				unlink($new_server_path);
+				unlink($destination_path);
 			} else {
 				// return existing file (caching)
 				return $new_url;
 			}
 		}
 		// otherwise generate result file
-		if ( $op->run($old_server_path, $new_server_path) ) {
+		if ( $op->run($source_path, $destination_path) ) {
 			if ( get_class($op) === 'Timber\Image\Operation\Resize' && $external ) {
 				$new_url = strtolower($new_url);
 			}
