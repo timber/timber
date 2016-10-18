@@ -84,11 +84,15 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$new_id = self::get_image_attachment($pid, 'pizza.jpg');
  		self::replace_image($attach_id, $new_id);
- 		$template = '{{Image(img).src|resize(200, 200)}}';
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$resized_path = Timber\ImageHelper::get_server_location($str);
  		$test_md5 = md5( file_get_contents($resized_path) );
- 		$pizza_md5 = md5 ( file_get_contents(__DIR__.'/assets/pizza-resized.jpg'));
+
+
+ 		$str_pizza = Timber::compile_string($template, array('img' => $new_id));
+ 		$resized_pizza = Timber\ImageHelper::get_server_location($str);
+
+ 		$pizza_md5 = md5( file_get_contents($resized_pizza) );
  		$this->assertEquals($pizza_md5, $test_md5);
 
  	}
