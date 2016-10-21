@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use Timber\Factory\Factory;
 use Timber\Helper;
 use Timber\PostCollection;
 
@@ -128,7 +129,7 @@ class QueryIterator implements \Iterator, \Countable {
 
 		// Sets up the global post, but also return the post, for use in Twig template
 		$posts_class = $this->_posts_class;
-		return new $posts_class($post);
+		return Factory::get_post( $post, $posts_class );
 	}
 
 	/**

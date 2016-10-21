@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use Timber\Factory\Factory;
 use Timber\URLHelper;
 use Timber\Helper;
 
@@ -97,11 +98,11 @@ class Twig {
 		$twig->addFunction(new \Twig_SimpleFunction('TimberPost', function( $pid, $PostClass = 'Timber\Post' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
-							$p = new $PostClass($p);
+							$p = Factory::get_post( $p, $PostClass );
 						}
 						return $pid;
 					}
-					return new $PostClass($pid);
+					return Factory::get_post( $pid, $PostClass );
 				} ));
 		$twig->addFunction(new \Twig_SimpleFunction('TimberImage', function( $pid = false, $ImageClass = 'Timber\Image' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
@@ -136,11 +137,11 @@ class Twig {
 		$twig->addFunction(new \Twig_SimpleFunction('Post', function( $pid, $PostClass = 'Timber\Post' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
-							$p = new $PostClass($p);
+							$p = Factory::get_post( $p, $PostClass );
 						}
 						return $pid;
 					}
-					return new $PostClass($pid);
+					return Factory::get_post( $pid, $PostClass );
 				} ));
 		$twig->addFunction(new \Twig_SimpleFunction('Image', function( $pid, $ImageClass = 'Timber\Image' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {

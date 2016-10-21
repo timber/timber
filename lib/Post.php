@@ -5,6 +5,7 @@ namespace Timber;
 use Timber\Core;
 use Timber\CoreInterface;
 
+use Timber\Factory\Factory;
 use Timber\Term;
 use Timber\User;
 use Timber\Image;
@@ -173,54 +174,12 @@ class Post extends Core implements CoreInterface {
 	 * ```
 	 * @param mixed $pid
 	 */
-	public function __construct( $pid = null ) {
-		$pid = $this->determine_id($pid);
-		$this->init($pid);
-	}
-
-	/**
-	 * tries to figure out what post you want to get if not explictly defined (or if it is, allows it to be passed through)
-	 * @internal
-	 * @param mixed a value to test against
-	 * @return int the numberic id we should be using for this post object
-	 */
-	protected function determine_id( $pid ) {
-		global $wp_query;
-		if ( $pid === null &&
-			isset($wp_query->queried_object_id)
-			&& $wp_query->queried_object_id
-			&& isset($wp_query->queried_object)
-			&& is_object($wp_query->queried_object)
-			&& get_class($wp_query->queried_object) == 'WP_Post'
-			) {
-				if ( isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id) ) {
-					$pid = $this->get_post_preview_id($wp_query);
-				} else if ( !$pid ) {
-					$pid = $wp_query->queried_object_id;
-				}
-		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id ) {
-			//hack for static page as home page
-			$pid = $wp_query->queried_object_id;
-		} else if ( $pid === null ) {
-			$gtid = false;
-			$maybe_post = get_post();
-			if ( isset($maybe_post->ID) ) {
-				$gtid = true;
-			}
-			if ( $gtid ) {
-				$pid = get_the_ID();
-			}
-			if ( !$pid ) {
-				global $wp_query;
-				if ( isset($wp_query->query['p']) ) {
-					$pid = $wp_query->query['p'];
-				}
-			}
-		}
-		if ( $pid === null && ($pid_from_loop = PostGetter::loop_to_id()) ) {
-			$pid = $pid_from_loop;
-		}
-		return $pid;
+	public function __construct( $post ) {
+		$post_info = $this->get_info( $post );
+		$this->import( $post_info );
+		//cant have a function, so gots to do it this way
+		$post_class  = $this->post_class();
+		$this->class = $post_class;
 	}
 
 	/**
@@ -229,56 +188,6 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function __toString() {
 		return $this->title();
-	}
-
-	protected function get_post_preview_id( $query ) {
-		$can = array(
-	 		'edit_'.$query->queried_object->post_type.'s',
-	 	);
-
-	 	if ( $query->queried_object->author_id !== get_current_user_id() ) {
-	 		$can[] = 'edit_others_'.$query->queried_object->post_type.'s';
-	 	}
-
-	 	$can_preview = array();
-
-		foreach ( $can as $type ) {
-			 if ( current_user_can($type) ) {
-				$can_preview[] = true;
-			 }
-		}
-
-		if ( count($can_preview) !== count($can) ) {
-			 return;
-		}
-
-		$revisions = wp_get_post_revisions($query->queried_object_id);
-
-		if ( !empty($revisions) ) {
-			$revision = reset($revisions);
-			return $revision->ID;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Initializes a Post
-	 * @internal
-	 * @param integer $pid
-	 */
-	protected function init( $pid = false ) {
-		if ( $pid === false ) {
-			$pid = get_the_ID();
-		}
-		if ( is_numeric($pid) ) {
-			$this->ID = $pid;
-		}
-		$post_info = $this->get_info($pid);
-		$this->import($post_info);
-		//cant have a function, so gots to do it this way
-		$post_class = $this->post_class();
-		$this->class = $post_class;
 	}
 
 	/**
@@ -303,65 +212,6 @@ class Post extends Core implements CoreInterface {
 			update_post_meta($this->ID, $field, $value);
 			$this->$field = $value;
 		}
-	}
-
-
-	/**
-	 * takes a mix of integer (post ID), string (post slug),
-	 * or object to return a WordPress post object from WP's built-in get_post() function
-	 * @internal
-	 * @param integer $pid
-	 * @return WP_Post on success
-	 */
-	protected function prepare_post_info( $pid = 0 ) {
-		if ( is_string($pid) || is_numeric($pid) || (is_object($pid) && !isset($pid->post_title)) || $pid === 0 ) {
-			$pid = self::check_post_id($pid);
-			$post = get_post($pid);
-			if ( $post ) {
-				return $post;
-			}
-		}
-		//we can skip if already is WP_Post
-		return $pid;
-	}
-
-
-	/**
-	 * helps you find the post id regardless of whether you send a string or whatever
-	 * @param integer $pid ;
-	 * @internal
-	 * @return integer ID number of a post
-	 */
-	protected function check_post_id( $pid ) {
-		if ( is_numeric($pid) && $pid === 0 ) {
-			$pid = get_the_ID();
-			return $pid;
-		}
-		if ( !is_numeric($pid) && is_string($pid) ) {
-			$pid = self::get_post_id_by_name($pid);
-			return $pid;
-		}
-		if ( !$pid ) {
-			return null;
-		}
-		return $pid;
-	}
-
-
-	/**
-	 * get_post_id_by_name($post_name)
-	 * @internal
-	 * @param string $post_name
-	 * @return int
-	 */
-	public static function get_post_id_by_name( $post_name ) {
-		global $wpdb;
-		$query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s LIMIT 1", $post_name);
-		$result = $wpdb->get_row($query);
-		if ( !$result ) {
-			return null;
-		}
-		return $result->ID;
 	}
 
 	/**
@@ -498,11 +348,10 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Used internally by init, etc. to build TimberPost object
 	 * @internal
-	 * @param  int $pid
+	 * @param \WP_Post $post
 	 * @return null|object|WP_Post
 	 */
-	protected function get_info( $pid ) {
-		$post = $this->prepare_post_info($pid);
+	protected function get_info( $post ) {
 		if ( !isset($post->post_status) ) {
 			return null;
 		}
@@ -601,7 +450,7 @@ class Post extends Core implements CoreInterface {
 
 			// map over array of wordpress terms, and transform them into instances of the TermClass
 			$terms = array_map(function( $term ) use ($TermClass, $taxonomy) {
-				return call_user_func(array($TermClass, 'from'), $term->term_id, $taxonomy);
+				return Factory::get_term( $term, $taxonomy, null, $TermClass );
 			}, $terms);
 
 			if ( $merge && is_array($terms) ) {
@@ -1245,13 +1094,13 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * Parent page: <a href="{{ post.parent.link }}">{{ post.parent.title }}</a>
 	 * ```
-	 * @return bool|Timber\Post
+	 * @return bool|\Timber\Post
 	 */
 	public function parent() {
 		if ( !$this->post_parent ) {
 			return false;
 		}
-		return new $this->PostClass($this->post_parent);
+		return Factory::get_post( $this->post_parent );
 	}
 
 

@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use Timber\Factory\Factory;
 use Timber\PostCollection;
 use Timber\QueryIterator;
 
@@ -17,7 +18,7 @@ class PostGetter {
 		if ( is_numeric($query) ) {
 			$post_type      = get_post_type($query);
 			$PostClass = PostGetter::get_post_class($post_type, $PostClass);
-			$post = new $PostClass($query);
+			$post = Factory::get_post( $query, $PostClass );
 			// get the latest revision if we're dealing with a preview
 			$posts = PostCollection::maybe_set_preview(array($post));
 			if ( $post = reset($posts) ) {
