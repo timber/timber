@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Timber\Core;
+use Timber\Factory\Factory;
 use Timber\Post;
 
 /**
@@ -209,7 +210,7 @@ class Menu extends Core {
 			if ( isset($item->ID) ) {
 				if ( is_object($item) && get_class($item) == 'WP_Post' ) {
 					$old_menu_item = $item;
-					$item = new $this->PostClass($item);
+					$item = Factory::get_post( $item, $this->PostClass );
 				}
 				$menu_item = new $this->MenuItemClass($item);
 				if ( isset($old_menu_item) ) {
