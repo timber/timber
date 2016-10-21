@@ -62,9 +62,16 @@ class Term extends Core implements CoreInterface {
 	public $taxonomy;
 
 	/**
-	 * @param \WP_Term $term
+	 * @param \WP_Term|mixed $term
+	 * @param string $tax Deprecated as of v2.0.0
 	 */
-	public function __construct( $term ) {
+	public function __construct( $term, $tax = 'category' ) {
+
+		if ( ! $term instanceof \WP_Term ) {
+			_doing_it_wrong( 'Timber\Term::__construct', 'Please use Timber\Factory\Factory::get_term() to instantiate Timber Terms', '2.0.0' );
+			$term = Factory::get_term( $term, $tax );
+		}
+
 		if ( isset( $term->id ) ) {
 			$term->ID = $term->id;
 		} else if ( isset( $term->term_id ) ) {
@@ -89,13 +96,16 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
+	 *
+	 * @deprecated Use Factory::get_term()
+	 *
 	 * @param $tid
 	 * @param $taxonomy
 	 *
-	 * @return static
+	 * @return Term
 	 */
 	public static function from( $tid, $taxonomy ) {
-		return new static($tid, $taxonomy);
+		return Factory::get_term( $tid, $taxonomy );
 	}
 
 	/**

@@ -175,6 +175,12 @@ class Post extends Core implements CoreInterface {
 	 * @param mixed $pid
 	 */
 	public function __construct( $post ) {
+
+		if ( ! $post instanceof \WP_Post ) {
+			_doing_it_wrong( 'Timber\Term::__construct', 'Please use Timber\Factory\Factory::get_post() to instantiate Timber Posts', '2.0.0' );
+			$post = Factory::get_post( $post );
+		}
+
 		$post_info = $this->get_info( $post );
 		$this->import( $post_info );
 		//cant have a function, so gots to do it this way

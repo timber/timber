@@ -127,9 +127,7 @@ class Post implements ObjectFactoryInterface {
 		if ( is_string( $identifier ) || is_numeric( $identifier ) || ( is_object( $identifier ) && ! isset( $identifier->post_title ) ) || $identifier === 0 ) {
 			$pid  = self::check_post_id( $identifier );
 			$post = get_post( $pid );
-			if ( $post ) {
-				return $post;
-			}
+			return $post;
 		}
 
 		//we can skip if already is WP_Post
