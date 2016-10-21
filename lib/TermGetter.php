@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use Timber\Factory\Factory;
 use Timber\Term;
 use Timber\Helper;
 
@@ -12,8 +13,7 @@ class TermGetter {
 	 * @return Timber\Term|WP_Error|null
 	 */
 	public static function get_term( $term, $taxonomy, $TermClass = '\Timber\Term' ) {
-		$term = get_term($term, $taxonomy);
-		return new $TermClass($term->term_id, $term->taxonomy);
+		return Factory::get_term( $term, $taxonomy, null, $TermClass );
 	}
 
 	/**
@@ -79,7 +79,7 @@ class TermGetter {
 		}
 		$terms = get_terms($taxonomies, $args);
 		foreach ( $terms as &$term ) {
-			$term = new $TermClass($term->term_id, $term->taxonomy);
+			$term = Factory::get_term( $term, null, null, $TermClass );
 		}
 		return $terms;
 	}

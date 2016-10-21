@@ -117,11 +117,11 @@ class Twig {
 		$twig->addFunction(new \Twig_SimpleFunction('TimberTerm', function( $pid, $TermClass = 'Timber\Term' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
-							$p = new $TermClass($p);
+							$p = Factory::get_term( $p, $TermClass );
 						}
 						return $pid;
 					}
-					return new $TermClass($pid);
+					return Factory::get_term( $pid, $TermClass );
 				} ));
 		$twig->addFunction(new \Twig_SimpleFunction('TimberUser', function( $pid, $UserClass = 'Timber\User' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
@@ -155,11 +155,11 @@ class Twig {
 		$twig->addFunction(new \Twig_SimpleFunction('Term', function( $pid, $TermClass = 'Timber\Term' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
-							$p = new $TermClass($p);
+							$p = Factory::get_term( $p, $TermClass );
 						}
 						return $pid;
 					}
-					return new $TermClass($pid);
+					return Factory::get_term( $pid, $TermClass );
 				} ));
 		$twig->addFunction(new \Twig_SimpleFunction('User', function( $pid, $UserClass = 'Timber\User' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
