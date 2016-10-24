@@ -24,20 +24,26 @@ class ObjectClassFactory {
 
 		$type = ucwords( $type );
 
-		$class_to_use = $default_class = static::${"{$type}Class"};
+		$default_class = static::${"{$type}Class"};
+		$class_to_use = $class;
 
-		$class = apply_filters( "Timber\\${type}ClassMap", $class, $object_type, $object, $default_class );
+		if ( ! $class_to_use || $class_to_use && ! class_exists( $class_to_use ) ) {
 
-		if ( is_string( $class ) ) {
-			$class_to_use = $class;
-		} else if ( is_array( $class ) && is_string( $object_type ) ) {
-			if ( isset( $class[ $object_type ] ) ) {
-				$class_to_use = $class[ $object_type ];
+			$class_to_use = $default_class;
+			$class = apply_filters( "Timber\\${type}ClassMap", $class, $object_type, $object, $default_class );
+
+			if ( is_string( $class ) ) {
+				$class_to_use = $class;
+			} else if ( is_array( $class ) && is_string( $object_type ) ) {
+				if ( isset( $class[ $object_type ] ) ) {
+					$class_to_use = $class[ $object_type ];
+				} else {
+					Helper::error_log( $object_type . ' not found in ' . print_r( $class, true ) );
+				}
 			} else {
-				Helper::error_log( $object_type . ' not found in ' . print_r( $class, true ) );
+				Helper::error_log( "Unexpected value for {$type}Class: " . print_r( $class, true ) );
 			}
-		} else {
-			Helper::error_log( "Unexpected value for {$type}Class: " . print_r( $class, true ) );
+
 		}
 
 		if ( ! class_exists( $class_to_use ) || ! ( is_subclass_of( $class_to_use, $default_class ) || is_a( $class_to_use, $default_class, true ) ) ) {
