@@ -44,7 +44,7 @@ class ObjectClassFactory {
 			Helper::error_log( 'Class ' . $class_to_use . " either does not exist or implement $default_class" );
 		}
 
-		return apply_filters( 'Timber\PostClass', $class_to_use, $object_type, $object_type, $default_class );
+		return apply_filters( "Timber\\${type}Class", $class_to_use, $object_type, $object_type, $default_class );
 	}
 
 }
