@@ -14,7 +14,7 @@ class PostFactory extends Factory implements FactoryInterface {
 	 * @return \Timber\Post|null
 	 */
 	public static function get( $post_identifier = null ) {
-		return ( new self() )->get_object();
+		return ( new self() )->get_object( $post_identifier );
 	}
 
 	/**
