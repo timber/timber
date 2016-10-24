@@ -5,6 +5,7 @@ namespace Timber;
 use Timber\Core;
 use Timber\CoreInterface;
 
+use Timber\Factory\TermFactory;
 use Timber\Post;
 use Timber\Helper;
 use Timber\URLHelper;
@@ -61,17 +62,30 @@ class Term extends Core implements CoreInterface {
 	public $taxonomy;
 
 	/**
-	 * @param int $tid
-	 * @param string $tax
+	 * @param \WP_Term|mixed $term
+	 * @param string $tax Deprecated as of v2.0.0
 	 */
-	public function __construct( $tid = null, $tax = '' ) {
-		if ( $tid === null ) {
-			$tid = $this->get_term_from_query();
+	public function __construct( $term, $tax = 'category' ) {
+
+		if ( ! $term instanceof \WP_Term ) {
+			_doing_it_wrong( 'Timber\Term::__construct', 'Please use Timber\Factory\TermFactory::get() to instantiate Timber Terms', '2.0.0' );
+			$term = TermFactory::get( $term, $tax );
 		}
-		if ( strlen($tax) ) {
-			$this->taxonomy = $tax;
+
+		if ( isset( $term->id ) ) {
+			$term->ID = $term->id;
+		} else if ( isset( $term->term_id ) ) {
+			$term->ID = $term->term_id;
 		}
-		$this->init($tid);
+
+		if ( isset( $term->ID ) ) {
+			$term->id = $term->ID;
+			$this->import( $term );
+			if ( isset( $term->term_id ) ) {
+				$custom = $this->get_term_meta( $term->term_id );
+				$this->import( $custom );
+			}
+		}
 	}
 
 	/**
@@ -82,58 +96,16 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
+	 *
+	 * @deprecated Use Factory::get_term()
+	 *
 	 * @param $tid
 	 * @param $taxonomy
 	 *
-	 * @return static
+	 * @return Term
 	 */
 	public static function from( $tid, $taxonomy ) {
-		return new static($tid, $taxonomy);
-	}
-
-
-	/* Setup
-	===================== */
-
-	/**
-	 * @internal
-	 * @return integer
-	 */
-	protected function get_term_from_query() {
-		global $wp_query;
-		if ( isset($wp_query->queried_object) ) {
-			$qo = $wp_query->queried_object;
-			if ( isset($qo->term_id) ) {
-				return $qo->term_id;
-			}
-		}
-		if ( isset($wp_query->tax_query->queries[0]['terms'][0]) ) {
-			return $wp_query->tax_query->queries[0]['terms'][0];
-		}
-	}
-
-	/**
-	 * @internal
-	 * @param int $tid
-	 */
-	protected function init( $tid ) {
-		$term = $this->get_term($tid);
-		if ( isset($term->id) ) {
-			$term->ID = $term->id;
-		} else if ( isset($term->term_id) ) {
-			$term->ID = $term->term_id;
-		} else if ( is_string($tid) ) {
-			//echo 'bad call using '.$tid;
-			//Helper::error_log(debug_backtrace());
-		}
-		if ( isset($term->ID) ) {
-			$term->id = $term->ID;
-			$this->import($term);
-			if ( isset($term->term_id) ) {
-				$custom = $this->get_term_meta($term->term_id);
-				$this->import($custom);
-			}
-		}
+		return TermFactory::get( $tid, $taxonomy );
 	}
 
 	/**
@@ -145,58 +117,6 @@ class Term extends Core implements CoreInterface {
 		$customs = array();
 		$customs = apply_filters('timber_term_get_meta', $customs, $tid, $this);
 		return apply_filters('timber/term/meta', $customs, $tid, $this);
-	}
-
-	/**
-	 * @internal
-	 * @param int $tid
-	 * @return mixed
-	 */
-	protected function get_term( $tid ) {
-		if ( is_object($tid) || is_array($tid) ) {
-			return $tid;
-		}
-		$tid = self::get_tid($tid);
-
-		if ( isset($this->taxonomy) && strlen($this->taxonomy) ) {
-			return get_term($tid, $this->taxonomy);
-		} else {
-			global $wpdb;
-			$query = $wpdb->prepare("SELECT taxonomy FROM $wpdb->term_taxonomy WHERE term_id = %d LIMIT 1", $tid);
-			$tax = $wpdb->get_var($query);
-			if ( isset($tax) && strlen($tax) ) {
-				$this->taxonomy = $tax;
-				return get_term($tid, $tax);
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * @internal
-	 * @param int $tid
-	 * @return int
-	 */
-	protected function get_tid( $tid ) {
-		global $wpdb;
-		if ( is_numeric($tid) ) {
-			return $tid;
-		}
-		if ( gettype($tid) == 'object' ) {
-			$tid = $tid->term_id;
-		}
-		if ( is_numeric($tid) ) {
-			$query = $wpdb->prepare("SELECT * FROM $wpdb->terms WHERE term_id = %d", $tid);
-		} else {
-			$query = $wpdb->prepare("SELECT * FROM $wpdb->terms WHERE slug = %s", $tid);
-		}
-		$result = $wpdb->get_row($query);
-		if ( isset($result->term_id) ) {
-			$result->ID = $result->term_id;
-			$result->id = $result->term_id;
-			return $result->ID;
-		}
-		return 0;
 	}
 
 	/* Public methods
@@ -302,7 +222,7 @@ class Term extends Core implements CoreInterface {
 		if ( !isset($this->_children) ) {
 			$children = get_term_children($this->ID, $this->taxonomy);
 			foreach ( $children as &$child ) {
-				$child = new Term($child);
+				$child = TermFactory::get( $child );
 			}
 			$this->_children = $children;
 		}

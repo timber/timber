@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Timber\Core;
+use Timber\Factory\PostFactory;
 use Timber\Post;
 
 /**
@@ -48,7 +49,6 @@ use Timber\Post;
 class Menu extends Core {
 
 	public $MenuItemClass = 'Timber\MenuItem';
-	public $PostClass = 'Timber\Post';
 
 	/**
 	 * @api
@@ -209,7 +209,7 @@ class Menu extends Core {
 			if ( isset($item->ID) ) {
 				if ( is_object($item) && get_class($item) == 'WP_Post' ) {
 					$old_menu_item = $item;
-					$item = new $this->PostClass($item);
+					$item = PostFactory::get( $item );
 				}
 				$menu_item = new $this->MenuItemClass($item);
 				if ( isset($old_menu_item) ) {

@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use Timber\Factory\PostFactory;
 use Timber\Helper;
 use Timber\Post;
 
@@ -26,15 +27,8 @@ class PostCollection extends \ArrayObject {
 			$posts = array();
 		}
 		foreach ( $posts as $post_object ) {
-			$post_type      = get_post_type($post_object);
-			$post_class_use = PostGetter::get_post_class($post_type, $post_class);
 
-			// Don't create yet another object if $post_object is already of the right type
-			if ( is_a($post_object, $post_class_use) ) {
-				$post = $post_object;
-			} else {
-				$post = new $post_class_use($post_object);
-			}
+			$post = ( new PostFactory( $post_class ) )->get_object( $post_object );
 
 			if ( isset($post->ID) ) {
 				$returned_posts[] = $post;

@@ -5,6 +5,8 @@ namespace Timber;
 use Timber\Core;
 use Timber\CoreInterface;
 
+use Timber\Factory\PostFactory;
+use Timber\Factory\TermFactory;
 use Timber\URLHelper;
 
 class MenuItem extends Core implements CoreInterface {
@@ -16,8 +18,6 @@ class MenuItem extends Core implements CoreInterface {
 	public $level = 0;
 	public $post_name;
 	public $url;
-
-	public $PostClass = 'Timber\Post';
 
 	protected $_name;
 	protected $_menu_item_object_id;
@@ -40,6 +40,7 @@ class MenuItem extends Core implements CoreInterface {
 		$this->name = $this->name();
 		$this->add_class('menu-item-'.$this->ID);
 		$this->menu_object = $data;
+		$this->master_object = $this->get_master_object();
 	}
 
 	/**
@@ -47,6 +48,27 @@ class MenuItem extends Core implements CoreInterface {
 	 */
 	public function __toString() {
 		return $this->name();
+	}
+
+	/**
+	 * Magic getter
+	 *
+	 * Checks to see if this object has the property/method, via Core::__get
+	 * Falls back to ::__get of the master object of this menu item
+	 *
+	 * @param $field
+	 *
+	 * @return mixed
+	 */
+	public function __get( $field ) {
+		$self = parent::__get( $field );
+		if ( $self ) {
+			return $self;
+		}
+		return (
+			is_object( $this->master_object)
+			&& is_subclass_of( $this->master_object, '\Timber\Core' )
+		) ? $this->master_object->__get( $field ) : null;
 	}
 
 	/**
@@ -102,9 +124,19 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return mixed whatever object (Post, Term, etc.) the menu item represents
 	 */
 	protected function get_master_object() {
-		if ( isset($this->_menu_item_object_id) ) {
-			return new $this->PostClass($this->_menu_item_object_id);
+		if ( isset( $this->_menu_item_type ) ) {
+			switch ( $this->_menu_item_type ) {
+				case 'taxonomy':
+					return TermFactory::get( $this->object_id );
+					break;
+				default:
+					return PostFactory::get( $this->object_id );
+					break;
+			}
 		}
+
+		return null;
+
 	}
 
 	/**

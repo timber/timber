@@ -399,17 +399,6 @@ class Image extends Post implements CoreInterface {
 
 	/**
 	 * @api
-	 * @return bool|TimberPost
-	 */
-	public function parent() {
-		if ( !$this->post_parent ) {
-			return false;
-		}
-		return new $this->PostClass($this->post_parent);
-	}
-
-	/**
-	 * @api
 	 * @example
 	 * ```twig
 	 * <img src="{{ image.path }}" />
