@@ -43,9 +43,6 @@ use Timber\URLHelper;
  */
 class Term extends Core implements CoreInterface {
 
-	public $PostClass = 'Timber\Post';
-	public $TermClass = 'Term';
-
 	public $object_type = 'term';
 	public static $representation = 'term';
 
@@ -172,9 +169,7 @@ class Term extends Core implements CoreInterface {
 	 * @return array|bool|null
 	 */
 	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
-		if ( !strlen($PostClass) ) {
-			$PostClass = $this->PostClass;
-		}
+
 		$default_tax_query = array(array(
 			'field' => 'id',
 			'terms' => $this->ID,
@@ -189,17 +184,11 @@ class Term extends Core implements CoreInterface {
 			if ( !isset($args['post_type']) ) {
 				$args['post_type'] = 'any';
 			}
-			if ( class_exists($post_type) ) {
-				$PostClass = $post_type;
-			}
 		} else if ( is_array($numberposts) ) {
 			//they sent us an array already baked
 			$args = $numberposts;
 			if ( !isset($args['tax_query']) ) {
 				$args['tax_query'] = $default_tax_query;
-			}
-			if ( class_exists($post_type) ) {
-				$PostClass = $post_type;
 			}
 			if ( !isset($args['post_type']) ) {
 				$args['post_type'] = 'any';
@@ -320,8 +309,8 @@ class Term extends Core implements CoreInterface {
 	 * ```
 	 * @return array|bool|null
 	 */
-	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
-		return $this->get_posts($numberposts_or_args, $post_type_or_class, $post_class);
+	public function posts( $numberposts_or_args = 10, $post_type = 'any', $post_class = '' ) {
+		return $this->get_posts($numberposts_or_args, $post_type, $post_class);
 	}
 
 	/**

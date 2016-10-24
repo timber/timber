@@ -123,7 +123,7 @@ class Timber {
 	 * @param string|array  $PostClass
 	 * @return array|bool|null
 	 */
-	public static function get_post( $query = false, $PostClass = 'Timber\Post' ) {
+	public static function get_post( $query = false, $PostClass = '' ) {
 		return PostGetter::get_post($query, $PostClass);
 	}
 
@@ -141,7 +141,7 @@ class Timber {
 	 * @param string|array  $PostClass
 	 * @return array|bool|null
 	 */
-	public static function get_posts( $query = false, $PostClass = 'Timber\Post', $return_collection = false ) {
+	public static function get_posts( $query = false, $PostClass = '', $return_collection = false ) {
 		return PostGetter::get_posts($query, $PostClass, $return_collection);
 	}
 
@@ -152,7 +152,7 @@ class Timber {
 	 * @param string  $PostClass
 	 * @return array|bool|null
 	 */
-	public static function query_post( $query = false, $PostClass = 'Timber\Post' ) {
+	public static function query_post( $query = false, $PostClass = '' ) {
 		return PostGetter::query_post($query, $PostClass);
 	}
 
@@ -163,7 +163,7 @@ class Timber {
 	 * @param string  $PostClass
 	 * @return PostCollection
 	 */
-	public static function query_posts( $query = false, $PostClass = 'Timber\Post' ) {
+	public static function query_posts( $query = false, $PostClass = '' ) {
 		return PostGetter::query_posts($query, $PostClass);
 	}
 
@@ -178,7 +178,7 @@ class Timber {
 	 * @param string  $TermClass
 	 * @return mixed
 	 */
-	public static function get_terms( $args = null, $maybe_args = array(), $TermClass = 'Timber\Term' ) {
+	public static function get_terms( $args = null, $maybe_args = array(), $TermClass = '' ) {
 		return TermGetter::get_terms($args, $maybe_args, $TermClass);
 	}
 
@@ -189,7 +189,7 @@ class Timber {
 	 * @param string     $taxonomy
 	 * @return Timber\Term|WP_Error|null
 	 */
-	public static function get_term( $term, $taxonomy = 'post_tag', $TermClass = 'Timber\Term' ) {
+	public static function get_term( $term, $taxonomy = 'post_tag', $TermClass = '' ) {
 		return TermGetter::get_term($term, $taxonomy, $TermClass);
 	}
 

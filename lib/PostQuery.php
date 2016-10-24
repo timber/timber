@@ -25,7 +25,7 @@ class PostQuery extends PostCollection {
 	protected $queryIterator;
 	protected $pagination = null;
 
-	public function __construct( $query = false, $post_class = '\Timber\Post' ) {
+	public function __construct( $query = false, $post_class = '' ) {
 		$this->userQuery = $query;
 		$this->queryIterator = PostGetter::query_posts($query, $post_class);
 

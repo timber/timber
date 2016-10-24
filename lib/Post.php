@@ -56,16 +56,6 @@ class Post extends Core implements CoreInterface {
 	public $ImageClass = 'Timber\Image';
 
 	/**
-	 * @var string $PostClass the name of the class to handle posts by default
-	 */
-	public $PostClass = 'Timber\Post';
-
-	/**
-	 * @var string $TermClass the name of the class to handle terms by default
-	 */
-	public $TermClass = 'Timber\Term';
-
-	/**
 	 * @var string $object_type what does this class represent in WordPress terms?
 	 */
 	public $object_type = 'post';
@@ -418,7 +408,6 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function terms( $tax = '', $merge = true, $TermClass = '' ) {
 		$taxonomies = array();
-		$TermClass = $TermClass ?: $this->TermClass;
 
 		if ( is_string($merge) && class_exists($merge) ) {
 			$TermClass = $merge;

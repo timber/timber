@@ -19,9 +19,9 @@ class QueryIterator implements \Iterator, \Countable {
 	 * @var WP_Query
 	 */
 	private $_query = null;
-	private $_posts_class = 'Timber\Post';
+	private $_posts_class;
 
-	public function __construct( $query = false, $posts_class = 'Timber\Post' ) {
+	public function __construct( $query = false, $posts_class = '' ) {
 		add_action('pre_get_posts', array($this, 'fix_number_posts_wp_quirk'));
 		add_action('pre_get_posts', array($this, 'fix_cat_wp_quirk'));
 		if ( $posts_class ) {

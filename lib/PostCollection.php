@@ -16,7 +16,7 @@ if ( !defined('ABSPATH') ) {
  */
 class PostCollection extends \ArrayObject {
 
-	public function __construct( $posts = array(), $post_class = '\Timber\Post' ) {
+	public function __construct( $posts = array(), $post_class = '' ) {
 		$returned_posts = self::init($posts, $post_class);
 		parent::__construct($returned_posts, $flags = 0, 'Timber\PostsIterator');
 	}

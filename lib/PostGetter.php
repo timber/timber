@@ -13,7 +13,7 @@ class PostGetter {
 	 * @param string|array $PostClass
 	 * @return array|bool|null
 	 */
-	public static function get_post( $query = false, $PostClass = '\Timber\Post' ) {
+	public static function get_post( $query = false, $PostClass = '' ) {
 		// if a post id is passed, grab the post directly
 		if ( is_numeric($query) ) {
 			$post = ( new PostFactory( $PostClass ) )->get_object( $query );
@@ -30,12 +30,12 @@ class PostGetter {
 		}
 	}
 
-	public static function get_posts( $query = false, $PostClass = '\Timber\Post', $return_collection = false ) {
+	public static function get_posts( $query = false, $PostClass = '', $return_collection = false ) {
 		$posts = self::query_posts($query, $PostClass);
 		return apply_filters('timber_post_getter_get_posts', $posts->get_posts($return_collection));
 	}
 
-	public static function query_post( $query = false, $PostClass = '\Timber\Post' ) {
+	public static function query_post( $query = false, $PostClass = '' ) {
 		$posts = self::query_posts($query, $PostClass);
 		if ( method_exists($posts, 'current') && $post = $posts->current() ) {
 			return $post;
@@ -47,7 +47,7 @@ class PostGetter {
 	 * @param string|array $PostClass
 	 * @return PostCollection | QueryIterator
 	 */
-	public static function query_posts( $query = false, $PostClass = '\Timber\Post' ) {
+	public static function query_posts( $query = false, $PostClass = '' ) {
 		if ( $type = self::get_class_for_use_as_timber_post($query) ) {
 			$PostClass = $type;
 			if ( self::is_post_class_or_class_map($query) ) {
@@ -101,9 +101,9 @@ class PostGetter {
 	 *
 	 * @return string
 	 */
-	public static function get_post_class( $post_type, $post_class = '\Timber\Post' ) {
+	public static function get_post_class( $post_type, $post_class = '' ) {
 		$post_class = apply_filters( 'Timber\PostClassMap', $post_class );
-		$post_class_use = '\Timber\Post';
+		$post_class_use = '';
 
 		if ( is_array($post_class) )  {
 			if ( isset( $post_class[$post_type]) ) {
@@ -117,7 +117,7 @@ class PostGetter {
 			Helper::error_log('Unexpeted value for PostClass: ' . print_r( $post_class, true));
 		}
 
-		if ( !class_exists( $post_class_use ) || !( is_subclass_of($post_class_use, '\Timber\Post') || is_a($post_class_use, '\Timber\Post', true) ) ) {
+		if ( !class_exists( $post_class_use ) || !( is_subclass_of($post_class_use, '') || is_a($post_class_use, '', true) ) ) {
 			Helper::error_log('Class ' . $post_class_use . ' either does not exist or implement \Timber\Post');
 		}
 
@@ -157,7 +157,7 @@ class PostGetter {
 			return false;
 		}
 
-		if ( !is_array($type) && class_exists($type) && is_subclass_of($type, '\Timber\Post') ) {
+		if ( !is_array($type) && class_exists($type) && is_subclass_of($type, '') ) {
 			return $type;
 		}
 	}
