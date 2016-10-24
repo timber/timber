@@ -177,8 +177,8 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function __construct( $post ) {
 
-		if ( ! $post instanceof \WP_Post ) {
-			_doing_it_wrong( 'Timber\Term::__construct', 'Please use Timber\Factory\PostFactory::get() to instantiate Timber Posts', '2.0.0' );
+		if ( ! $post instanceof \WP_Post && ! $post instanceof Post ) {
+			_doing_it_wrong( 'Timber\Post::__construct', 'Please use Timber\Factory\PostFactory::get() to instantiate Timber Posts', '2.0.0' );
 			$post = PostFactory::get( $post );
 		}
 
