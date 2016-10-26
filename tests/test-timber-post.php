@@ -642,6 +642,10 @@
 			// test return class
 			$terms = $post->terms('post_tag', true, $class_name);
 			$this->assertEquals($class_name, get_class($terms[0]));
+
+			// test return class for deprecated $post->get_terms
+			$get_terms = $post->get_terms('post_tag', true, $class_name);
+			$this->assertEquals($class_name, get_class($get_terms[0]));
 		}
 
 		function testPostContentLength() {
