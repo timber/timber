@@ -15,11 +15,11 @@ class Helper {
 	 * @api
 	 * @example
 	 * ```php
-	 * $favorites = Timber::transient('user-'.$uid.'-favorites', function() use ($uid) {
+	 * $context = Timber::get_context();
+	 * $context['favorites'] = Timber\Helper::transient('user-' .$uid. '-favorites', function() use ($uid) {
 	 *  	//some expensive query here that's doing something you want to store to a transient
 	 *  	return $favorites;
 	 * }, 600);
-	 * Timber::context['favorites'] = $favorites;
 	 * Timber::render('single.twig', $context);
 	 * ```
 	 *
