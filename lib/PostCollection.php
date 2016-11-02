@@ -5,11 +5,6 @@ namespace Timber;
 use Timber\Helper;
 use Timber\Post;
 
-// Exit if accessed directly
-if ( !defined('ABSPATH') ) {
-	exit;
-}
-
 /**
  * PostCollections are internal objects used to hold a collection of posts
  */

@@ -124,7 +124,8 @@ class Loader {
 	public function get_loader() {
 		$paths = array_merge($this->locations, array(ini_get('open_basedir') ? ABSPATH : '/'));
 		$paths = apply_filters('timber/loader/paths', $paths);
-		return new \Twig_Loader_Filesystem($paths);
+		$fs = new \Twig_Loader_Filesystem($paths, '/');
+		return $fs;
 	}
 
 
