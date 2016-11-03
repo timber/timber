@@ -207,7 +207,7 @@ class Site extends Core implements CoreInterface {
 
 	public function icon() {
 		if ( is_multisite() ) {
-			return $this->icon_multisite();
+			return $this->icon_multisite( $this->ID );
 		}
 		$iid = get_option('site_icon');
 		if ( $iid ) {
