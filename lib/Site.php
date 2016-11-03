@@ -215,9 +215,9 @@ class Site extends Core implements CoreInterface {
 		}
 	}
 
-	protected function icon_multisite() {
+	protected function icon_multisite( $site_id ) {
 		$image = null;
-		$blog_ids = self::switch_to_blog($site_name_or_id);
+		$blog_ids = self::switch_to_blog($site_id);
 		$iid = get_blog_option($blog_ids['new'], 'site_icon');
 		if ($iid) {
 			$image = new Image($iid);
