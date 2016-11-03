@@ -205,6 +205,27 @@ class Site extends Core implements CoreInterface {
 		return $this->$field;
 	}
 
+	public function icon() {
+		if ( is_multisite() ) {
+			return $this->icon_multisite();
+		}
+		$iid = get_option('site_icon');
+		if ( $iid ) {
+			return new Image($iid);
+		}
+	}
+
+	protected function icon_multisite() {
+		$image = null;
+		$blog_ids = self::switch_to_blog($site_name_or_id);
+		$iid = get_blog_option($blog_ids['new'], 'site_icon');
+		if ($iid) {
+			$image = new Image($iid);
+		}
+		switch_to_blog($blog_ids['old']);
+		return $image;
+	}
+
 	/**
 	 * Returns the link to the site's home.
 	 * @example
