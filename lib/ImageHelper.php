@@ -355,7 +355,7 @@ class ImageHelper {
 		$upload_dir = wp_upload_dir();
 		$tmp = $url;
 		if ( 0 === strpos($tmp, ABSPATH) ) {
-// we've been given a dir, not an url
+		// we've been given a dir, not an url
 			$result['absolute'] = true;
 			if ( 0 === strpos($tmp, $upload_dir['basedir']) ) {
 				$result['base'] = self::BASE_UPLOADS; // upload based
@@ -367,7 +367,7 @@ class ImageHelper {
 			}
 		} else {
 			if ( !$result['absolute'] ) {
-				$tmp = get_home_url().$tmp;
+				$tmp = site_url().$tmp;
 			}
 			if ( 0 === strpos($tmp, $upload_dir['baseurl']) ) {
 				$result['base'] = self::BASE_UPLOADS; // upload based
