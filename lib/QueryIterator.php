@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use Timber\Factory\PostFactory;
 use Timber\Helper;
 use Timber\PostCollection;
 
@@ -18,9 +19,9 @@ class QueryIterator implements \Iterator, \Countable {
 	 * @var WP_Query
 	 */
 	private $_query = null;
-	private $_posts_class = 'Timber\Post';
+	private $_posts_class;
 
-	public function __construct( $query = false, $posts_class = 'Timber\Post' ) {
+	public function __construct( $query = false, $posts_class = '' ) {
 		add_action('pre_get_posts', array($this, 'fix_number_posts_wp_quirk'));
 		add_action('pre_get_posts', array($this, 'fix_cat_wp_quirk'));
 		if ( $posts_class ) {
@@ -128,7 +129,7 @@ class QueryIterator implements \Iterator, \Countable {
 
 		// Sets up the global post, but also return the post, for use in Twig template
 		$posts_class = $this->_posts_class;
-		return new $posts_class($post);
+		return ( new PostFactory( $posts_class ) )->get_object( $post );
 	}
 
 	/**
