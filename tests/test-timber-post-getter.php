@@ -203,7 +203,13 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$query = 'post_type=post&numberposts=15';
 		$posts = Timber::get_posts($query);
 		$this->assertEquals(15, count($posts));
+	}
 
+	function testPostByName(){
+		$post_id = $this->factory->post->create();
+		$post = new TimberPost($post_id);
+		$pid_from_name = Timber\Factory\PostGetter::get_post_id_by_name($post->post_name);
+		$this->assertEquals($pid_from_name, $post_id);
 	}
 
 	/**

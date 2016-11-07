@@ -13,12 +13,14 @@ class ObjectClassFactory {
 	public static $PostClass = '\Timber\Post';
 
 	/**
-	 * @param string $type The object type–"post" or "term"
-	 * @param string|null $object_type The object's internal type–a post type or taxonomy
-	 * @param object|null $object The object for which the class is being retrieved
-	 * @param string|null $class The desired class; overrides results of Timber\${type}ClassMap filter
+	 * @param string 		$type 			The object type: "post" or "term"
+	 * @param string|null 	$object_type	The object's internal type: a post type or taxonomy 
+	 * 										like "portfolio" or "cars")
+	 * @param object|null 	$object 		The object for which the class is being retrieved
+	 * @param string|null 	$class 			The desired class; overrides results of
+	 * 										Timber\${type}ClassMap filter
 	 *
-	 * @return mixed|string
+	 * @return mixed|string a PHP class to use for the object
 	 */
 	public static function get_class( $type, $object_type = null, $object = null, $class = null ) {
 
@@ -26,6 +28,10 @@ class ObjectClassFactory {
 
 		$default_class = static::${"{$type}Class"};
 		$class_to_use = $class;
+
+		if ( is_null($class_to_use) ) {
+			$class_to_use = $default_class;
+		}
 
 		if ( ! $class_to_use || $class_to_use && ! class_exists( $class_to_use ) ) {
 
@@ -49,7 +55,6 @@ class ObjectClassFactory {
 		if ( ! class_exists( $class_to_use ) || ! ( is_subclass_of( $class_to_use, $default_class ) || is_a( $class_to_use, $default_class, true ) ) ) {
 			Helper::error_log( 'Class ' . $class_to_use . " either does not exist or implement $default_class" );
 		}
-
 		return apply_filters( "Timber\\${type}Class", $class_to_use, $object_type, $object_type, $default_class );
 	}
 

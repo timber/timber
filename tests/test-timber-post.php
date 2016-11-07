@@ -226,13 +226,6 @@
 			$this->assertEquals($post->ID, $post_id);
 		}
 
-		function testPostByName(){
-			$post_id = $this->factory->post->create();
-			$post = new TimberPost($post_id);
-			$pid_from_name = TimberPost::get_post_id_by_name($post->post_name);
-			$this->assertEquals($pid_from_name, $post_id);
-		}
-
 		function testUpdate(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost($post_id);

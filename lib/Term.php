@@ -62,20 +62,20 @@ class Term extends Core implements CoreInterface {
 	 * @param \WP_Term|mixed $term
 	 * @param string $tax Deprecated as of v2.0.0
 	 */
-	public function __construct( $term, $tax = 'category' ) {
+	public function __construct( $term = null, $tax = 'category' ) {
 
 		if ( ! $term instanceof \WP_Term ) {
-			_doing_it_wrong( 'Timber\Term::__construct', 'Please use Timber\Factory\TermFactory::get() to instantiate Timber Terms', '2.0.0' );
-			$term = TermFactory::get( $term, $tax );
+			//_doing_it_wrong( 'Timber\Term::__construct', 'Please use Timber\Factory\TermFactory::get() to instantiate Timber Terms', '2.0.0' );
+			$term = TermFactory::get($term, $tax);
 		}
 
-		if ( isset( $term->id ) ) {
+		if ( isset($term->id) ) {
 			$term->ID = $term->id;
-		} else if ( isset( $term->term_id ) ) {
+		} else if ( isset($term->term_id) ) {
 			$term->ID = $term->term_id;
 		}
 
-		if ( isset( $term->ID ) ) {
+		if ( isset($term->ID) ) {
 			$term->id = $term->ID;
 			$this->import( $term );
 			if ( isset( $term->term_id ) ) {
@@ -102,7 +102,7 @@ class Term extends Core implements CoreInterface {
 	 * @return Term
 	 */
 	public static function from( $tid, $taxonomy ) {
-		return TermFactory::get( $tid, $taxonomy );
+		return TermFactory::get($tid, $taxonomy);
 	}
 
 	/**
@@ -168,7 +168,7 @@ class Term extends Core implements CoreInterface {
 	 * @param string $PostClass
 	 * @return array|bool|null
 	 */
-	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
+	public function get_posts( $numberposts = 10, $PostClass = '', $post_type = 'any' ) {
 
 		$default_tax_query = array(array(
 			'field' => 'id',

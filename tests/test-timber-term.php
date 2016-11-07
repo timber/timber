@@ -103,11 +103,11 @@
 				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
 			}
 			$term = new TimberTerm($term_id);
-			$gotten_posts = $term->posts(count($posts), 'page');
+			$gotten_posts = $term->posts(count($posts), null, 'page');
 			$this->assertEquals(count($posts), count($gotten_posts));
-			$gotten_posts = $term->posts(count($posts), 'any');
+			$gotten_posts = $term->posts(count($posts), null, 'any');
 			$this->assertEquals(count($posts), count($gotten_posts));
-			$gotten_posts = $term->posts(count($posts), 'post');
+			$gotten_posts = $term->posts(count($posts), null, 'post');
 			$this->assertEquals(0, count($gotten_posts));
 		}
 
@@ -122,7 +122,7 @@
 				set_post_type($post_id, 'page');
 				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
 			}
-			$term = new TimberTerm($term_id);
+			$term = new TimberTerm($term_id, 'post_tag');
 			$gotten_posts = $term->get_posts('post_type=page');
 			$this->assertEquals(count($posts), count($gotten_posts));
 			$gotten_posts = $term->get_posts('post_type=page', 'TimberPostSubclass');
