@@ -64,7 +64,7 @@ class Term extends Core implements CoreInterface {
 	 */
 	public function __construct( $term, $tax = 'category' ) {
 
-		if ( ! $term instanceof \WP_Term ) {
+		if ( ! $term instanceof \WP_Term && ! $term instanceof Term ) {
 			_doing_it_wrong( 'Timber\Term::__construct', 'Please use Timber\Factory\TermFactory::get() to instantiate Timber Terms', '2.0.0' );
 			$term = TermFactory::get( $term, $tax );
 		}
