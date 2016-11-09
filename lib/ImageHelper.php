@@ -367,7 +367,10 @@ class ImageHelper {
 			}
 		} else {
 			if ( !$result['absolute'] ) {
-				$tmp = site_url().$tmp;
+				$pos = strpos(content_url(), WP_CONTENT_DIR);
+				if ($pos !== false) {
+					$tmp = substr_replace(content_url(), '', $pos, strlen(WP_CONTENT_DIR)) . $tmp;
+				}
 			}
 			if ( 0 === strpos($tmp, $upload_dir['baseurl']) ) {
 				$result['base'] = self::BASE_UPLOADS; // upload based
