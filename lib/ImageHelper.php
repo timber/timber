@@ -367,9 +367,9 @@ class ImageHelper {
 			}
 		} else {
 			if ( !$result['absolute'] ) {
-				$pos = strpos(content_url(), CONTENT_DIR);
+				$pos = strpos(content_url(), WP_CONTENT_DIR);
 				if ($pos !== false) {
-					$tmp = substr_replace(content_url(), '', $pos, strlen(CONTENT_DIR)) . $tmp;
+					$tmp = substr_replace(content_url(), '', $pos, strlen(WP_CONTENT_DIR)) . $tmp;
 				}
 			}
 			if ( 0 === strpos($tmp, $upload_dir['baseurl']) ) {
