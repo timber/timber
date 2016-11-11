@@ -87,7 +87,8 @@ class Menu extends Core {
 			$menu_id = $this->get_menu_id_from_locations($slug, $locations);
 		} else if ( $slug === false ) {
 			$menu_id = false;
-		} else {
+		}
+		if ( !$menu_id ) {
 			$menu_id = $this->get_menu_id_from_terms($slug);
 		}
 		if ( $menu_id ) {
@@ -161,13 +162,13 @@ class Menu extends Core {
 	protected function get_menu_id_from_terms( $slug = 0 ) {
 		if ( !is_numeric($slug) && is_string($slug) ) {
 			//we have a string so lets search for that
-			$menu_id = get_term_by('slug', $slug, 'nav_menu');
-			if ( $menu_id ) {
-				return $menu_id;
+			$menu = get_term_by('slug', $slug, 'nav_menu');
+			if ( $menu ) {
+				return $menu->term_id;
 			}
-			$menu_id = get_term_by('name', $slug, 'nav_menu');
-			if ( $menu_id ) {
-				return $menu_id;
+			$menu = get_term_by('name', $slug, 'nav_menu');
+			if ( $menu ) {
+				return $menu->term_id;
 			}
 		}
 		$menus = get_terms('nav_menu', array('hide_empty' => true));
