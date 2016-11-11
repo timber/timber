@@ -217,9 +217,9 @@ class Term extends Core implements CoreInterface {
 	 */
 	public function get_meta_field( $field_name ) {
 		if ( !isset($this->$field_name) ) {
-			$field_value = '';
-			$field_value = apply_filters('timber_term_get_meta_field', $field_value, $this->ID, $field_name, $this);
+			$field_value = apply_filters('timber_term_get_meta_field', '', $this->ID, $field_name, $this);
 			$field_value = apply_filters('timber/term/meta/field', $field_value, $this->ID, $field_name, $this);
+			$field_value = get_term_meta($this->ID, $field_name, true);
 			$this->$field_name = $field_value;
 		}
 		return $this->$field_name;
