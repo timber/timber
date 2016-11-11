@@ -312,7 +312,7 @@ class ImageHelper {
 	public static function sideload_image( $file ) {
 		$loc = self::get_sideloaded_file_loc($file);
 		if ( file_exists($loc) ) {
-			return URLHelper::preslashit(URLHelper::get_rel_path($loc));
+			return URLHelper::file_system_to_url($loc);
 		}
 		// Download file to temp location
 		if ( !function_exists('download_url') ) {
@@ -367,12 +367,7 @@ class ImageHelper {
 			}
 		} else {
 			if ( !$result['absolute'] ) {
-				$pos = strpos($upload_dir['baseurl'], $upload_dir['relative']);
-				if ($pos !== false) {
-					$tmp = substr_replace($upload_dir['baseurl'], '', $pos, strlen($upload_dir['relative'])) . $tmp;
-				} else {
-					$tmp = site_url().$tmp;
-				}
+				$tmp = site_url().$tmp;
 			}
 			if ( 0 === strpos($tmp, $upload_dir['baseurl']) ) {
 				$result['base'] = self::BASE_UPLOADS; // upload based
