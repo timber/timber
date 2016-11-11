@@ -367,9 +367,11 @@ class ImageHelper {
 			}
 		} else {
 			if ( !$result['absolute'] ) {
-				$pos = strpos(content_url(), CONTENT_DIR);
+				$pos = strpos($upload_dir['baseurl'], $upload_dir['relative']);
 				if ($pos !== false) {
-					$tmp = substr_replace(content_url(), '', $pos, strlen(CONTENT_DIR)) . $tmp;
+					$tmp = substr_replace($upload_dir['baseurl'], '', $pos, strlen($upload_dir['relative'])) . $tmp;
+				} else {
+					$tmp = site_url().$tmp;
 				}
 			}
 			if ( 0 === strpos($tmp, $upload_dir['baseurl']) ) {
