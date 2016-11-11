@@ -312,7 +312,7 @@ class ImageHelper {
 	public static function sideload_image( $file ) {
 		$loc = self::get_sideloaded_file_loc($file);
 		if ( file_exists($loc) ) {
-			return URLHelper::preslashit(URLHelper::get_rel_path($loc));
+			return URLHelper::file_system_to_url($loc);
 		}
 		// Download file to temp location
 		if ( !function_exists('download_url') ) {
