@@ -627,6 +627,27 @@
 			$this->assertEquals(count($post_tag_terms) + count($post_team_terms), count($post_tag_and_team_terms));
 		}
 
+		function testPostTermClass() {
+			$class_name = 'TimberTermSubclass';
+			require_once('php/timber-term-subclass.php');
+
+			// create new post
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+
+			// create a new tag, associate with post
+			$dummy_tag = wp_insert_term('whatever', 'post_tag');
+			wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);
+
+			// test return class
+			$terms = $post->terms('post_tag', true, $class_name);
+			$this->assertEquals($class_name, get_class($terms[0]));
+
+			// test return class for deprecated $post->get_terms
+			$get_terms = $post->get_terms('post_tag', true, $class_name);
+			$this->assertEquals($class_name, get_class($get_terms[0]));
+		}
+
 		function testPostContentLength() {
 			$crawl = "The evil leaders of Planet Spaceball having foolishly spuandered their precious atmosphere, have devised a secret plan to take every breath of air away from their peace-loving neighbor, Planet Druidia. Today is Princess Vespa's wedding day. Unbeknownest to the princess, but knowest to us, danger lurks in the stars above...";
 			$pid = $this->factory->post->create(array('post_content' => $crawl));

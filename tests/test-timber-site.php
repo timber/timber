@@ -34,6 +34,15 @@ class TestTimberSite extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://example.org', $site->link() );
 	}
 
+	function testSiteIcon() {
+		$icon_id = TestTimberImage::get_image_attachment(0, 'cardinals.jpg');
+		update_option('site_icon', $icon_id);
+		$site = new TimberSite();
+		$icon = $site->icon();
+		$this->assertEquals('Timber\Image', get_class($icon));
+		$this->assertContains('cardinals.jpg', $icon->src());
+	}
+
 	function testSiteGet() {
 		update_option( 'foo', 'bar' );
 		$site = new TimberSite();

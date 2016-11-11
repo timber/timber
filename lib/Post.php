@@ -1459,8 +1459,8 @@ class Post extends Core implements CoreInterface {
 	 * @param bool $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?
 	 * @return array
 	 */
-	public function get_terms( $tax = '', $merge = true ) {
-		return $this->terms($tax, $merge);
+	public function get_terms( $tax = '', $merge = true, $TermClass = '' ) {
+		return $this->terms($tax, $merge, $TermClass);
 	}
 
 	/**

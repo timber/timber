@@ -45,7 +45,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * Fixed image generation when images are updated/deleted by WordPress (thanks @dudewithamood)
 
 = 1.1.7.1 =
-* Quick fix for backwards compaiblity in some situations
+* Quick fix for backwards compatibility in some situations
 
 = 1.1.7 =
 * A new PostQuery object that comes _with_ pagination (thanks @lggorman).
