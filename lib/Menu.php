@@ -80,6 +80,7 @@ class Menu extends Core {
 	 * @param integer|string $slug
 	 */
 	public function __construct( $slug = 0 ) {
+		$menu_id = false;
 		$locations = get_nav_menu_locations();
 		if ( $slug != 0 && is_numeric($slug) ) {
 			$menu_id = $slug;
