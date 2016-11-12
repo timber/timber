@@ -144,6 +144,37 @@
 			$this->assertEquals('Local', $children[0]->name);
 		}
 
+		/**
+		 @issue #824
+		 */
+		function testTermWithNativeMeta() {
+			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+			add_term_meta($tid, 'foo', 'bar');
+			$term = new TimberTerm($tid);
+			$template = '{{term.foo}}';
+			$compiled = Timber::compile_string($template, array('term' => $term));
+			$this->assertEquals('bar', $compiled);
+		}
+
+		/**
+		 @issue #824
+		 */
+		function testTermWithNativeMetaFalse() {
+			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+			add_term_meta($tid, 'foo', false);
+			$term = new TimberTerm($tid);
+			$this->assertEquals('', $term->meta('foo'));
+		}
+
+		/**
+		 @issue #824
+		 */
+		function testTermWithNativeMetaNotExisting() {
+			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+			$term = new TimberTerm($tid);
+			$this->assertFalse($term->meta('foo'));
+		}
+
 		function testTermEditLink() {
 			wp_set_current_user(1);
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
