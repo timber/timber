@@ -77,6 +77,9 @@ class Timber {
 		}
 	}
 
+	/**
+	 * @codeCoverageIgnore
+	 */
 	private function backwards_compatibility() {
 		if ( class_exists('TimberArchives') ) {
 			//already run, so bail
@@ -310,12 +313,6 @@ class Timber {
 	 * @return bool|string
 	 */
 	public static function fetch( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
-		if ( $expires === true ) {
-			//if this is reading as true; the user probably is using the old $echo param
-			//so we should move all vars up by a spot
-			$expires = $cache_mode;
-			$cache_mode = Loader::CACHE_USE_DEFAULT;
-		}
 		$output = self::compile($filenames, $data, $expires, $cache_mode, true);
 		$output = apply_filters('timber_compile_result', $output);
 		return $output;

@@ -220,6 +220,11 @@ class TestTimber extends Timber_UnitTestCase {
     	$this->assertEquals($calling_file, $file);
     }
 
+    function testCompileNull() {
+    	$str = Timber::compile('assets/single-course.twig', null);
+    	$this->assertEquals('I am single course', $str);
+    }
+
 }
 
 function arrays_are_similar($a, $b) {
