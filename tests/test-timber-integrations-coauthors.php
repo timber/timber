@@ -104,27 +104,28 @@
 			$user_login = 'truelogin';
 			$display_name = 'True Name';
 
+			$uid = $this->factory->user->create(array('display_name' => $display_name, 'user_login' => $user_login));
+			$user = new Timber\User($uid);
+
 			$guest_login = 'linkguestlogin';
 			$guest_display_name = 'LGuest D Name';
-			$uid = $this->factory->user->create(array('display_name' => $display_name, 'user_login' => $user_login));
-
 			$guest_id = self::create_guest_author(
-				array('user_login' => $user_login, 'display_name' => $guest_display_name)
+				array('user_login' => $guest_login, 'display_name' => $guest_display_name)
 			);
 			add_post_meta($guest_id, 'cap-linked_account', $user_login, true);
 
 			$coauthors_plus->add_coauthors($pid, array($user_login));
 
-			Timber\Integrations\CoAuthorsPlus::$prefer_user = true;
+			$coauthors_plus->force_guest_authors = false;
 			$author = $post->authors()[0];
+			$this->assertEquals($author->display_name, $user->name);
 			$this->assertInstanceOf('Timber\User', $author);
 			$this->assertNotInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
 
-			Timber\Integrations\CoAuthorsPlus::$prefer_user = false;
+			$coauthors_plus->force_guest_authors = true;
 			$author = $post->authors()[0];
 			$this->assertEquals($author->display_name, $guest_display_name);
 			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
-
 		}
 
 		function testGuestAuthorAvatar(){
