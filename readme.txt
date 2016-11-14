@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.1.8
+Stable tag: 1.1.9
 Tested up to: 4.6
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,14 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 1.1.9 =
+* Timber now retrieves native term meta info #824
+* Added site icon support in Theme #1210
+* Fixes to menu getting by slug #1237 (thanks @motia)
+* Fix to off-site image URLs! #1234 (thanks @njbarrett)
+* Fix inconsistency with Post::get_terms #1222 (thanks @haroldangenent)
+
 
 = 1.1.8 =
 * Fixed image generation when images are updated/deleted by WordPress (thanks @dudewithamood)
