@@ -90,7 +90,8 @@
 			global $coauthors_plus;
 			$coauthors_plus->add_coauthors($pid, array($user_login));
 
-			$author = $post->authors()[0];
+			$authors = $post->authors();
+			$author = $authors[0];
 			$this->assertEquals($display_name, $author->display_name);
 			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
 		}
@@ -117,13 +118,15 @@
 			$coauthors_plus->add_coauthors($pid, array($user_login));
 
 			$coauthors_plus->force_guest_authors = false;
-			$author = $post->authors()[0];
+			$authors = $post->authors();
+			$author = $authors[0];
 			$this->assertEquals($author->display_name, $user->name);
 			$this->assertInstanceOf('Timber\User', $author);
 			$this->assertNotInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
 
 			$coauthors_plus->force_guest_authors = true;
-			$author = $post->authors()[0];
+			$authors = $post->authors();
+			$author = $authors[0];
 			$this->assertEquals($author->display_name, $guest_display_name);
 			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
 		}
@@ -147,10 +150,10 @@
 			global $coauthors_plus;
 			$coauthors_plus->add_coauthors($pid, array($user_login));
 
-			$template_string = '{% for author in post.authors %}{{author.avatar.path}}{% endfor %}';
+			$template_string = '{% for author in post.authors %}{{author.avatar.src}}{% endfor %}';
 			Timber\Integrations\CoAuthorsPlus::$prefer_gravatar = false;
 			$str1 = Timber::compile_string($template_string, array('post' => $post));
-			$this->assertEquals($image->path(), $str1);
+			$this->assertEquals($image->src(), $str1);
 
 			Timber\Integrations\CoAuthorsPlus::$prefer_gravatar = true;
 			$str2 = Timber::compile_string($template_string, array('post' => $post));
