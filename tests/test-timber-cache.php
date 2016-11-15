@@ -234,26 +234,48 @@
             $r1 = rand(0, 999999);
             $r2 = rand(0, 999999);
             $str_old = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false));
-            rename(__DIR__.'/assets/single-post-rand.twig', __DIR__.'/assets/single-post-rand.twig.tmp');
-            rename(__DIR__.'/assets/relative.twig', __DIR__.'/assets/single-post-rand.twig');
+            self::_swapFiles();
             sleep($time + 2);
             $str_new = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r2), array(600, false));
             $this->assertNotEquals($str_old, $str_new);
+            self::_unswapFiles();
+            
+        }
 
+        function _swapFiles() {
+            rename(__DIR__.'/assets/single-post-rand.twig', __DIR__.'/assets/single-post-rand.twig.tmp');
+            rename(__DIR__.'/assets/relative.twig', __DIR__.'/assets/single-post-rand.twig');
+        }
+
+        function _unswapFiles() {
             rename(__DIR__.'/assets/single-post-rand.twig', __DIR__.'/assets/relative.twig');
             rename(__DIR__.'/assets/single-post-rand.twig.tmp', __DIR__.'/assets/single-post-rand.twig');
         }
 
         function testTimberLoaderCacheTransientsAdminLoggedOut() {
-            wp_set_current_user(1);
             $time = 1;
             $pid = $this->factory->post->create();
             $post = new TimberPost($pid);
             $r1 = rand(0, 999999);
             $str_old = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false));
+            self::_swapFiles();
             sleep($time + 2);
             $str_new = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false));
             $this->assertEquals($str_old, $str_new);
+            self::_unswapFiles();
+        }
+
+        function testTimberLoaderCacheTransientsAdminLoggedOutWithSiteCache() {
+            $time = 1;
+            $pid = $this->factory->post->create();
+            $post = new TimberPost($pid);
+            $r1 = rand(0, 999999);
+            $str_old = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false));
+            self::_swapFiles();
+            sleep($time + 2);
+            $str_new = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false), \Timber\Loader::CACHE_SITE_TRANSIENT);
+            $this->assertEquals($str_old, $str_new);
+            self::_unswapFiles();
         }
 
 
