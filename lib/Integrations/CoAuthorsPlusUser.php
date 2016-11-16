@@ -3,6 +3,7 @@
 namespace Timber\Integrations;
 
 class CoAuthorsPlusUser extends \Timber\User {
+	
 	/**
 	 * @param object $author co-author object
 	 */
@@ -24,7 +25,7 @@ class CoAuthorsPlusUser extends \Timber\User {
 		/**
 		 * @property string name
 		 */
-		$this->name = $coauthor->display_name;
+		$this->display_name = $coauthor->display_name;
 		$this->_link = get_author_posts_url(null, $coauthor->user_nicename );
 
 		// 96 is the default wordpress avatar size
