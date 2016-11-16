@@ -96,6 +96,29 @@
 			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
 		}
 
+		function testGuestAuthorWithRegularAuthor(){
+			$uid = $this->factory->user->create(array('display_name' => 'Alexander Hamilton', 'user_login' => 'ahamilton'));
+			$pid = $this->factory->post->create(array('post_author' => $uid));
+			$post = new TimberPost($pid);
+
+			$user_login = 'bmotia';
+			$display_name = 'Motia';
+			$guest_id = self::create_guest_author(
+				array('user_login' => $user_login, 'display_name' => $display_name)
+			);
+
+			global $coauthors_plus;
+			$coauthors_plus->add_coauthors($pid, array('ahamilton', $user_login));
+
+			$authors = $post->authors();
+			$author = $authors[1];
+			$this->assertEquals($display_name, $author->display_name);
+			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
+			$template_string = '{% for author in post.authors %}{{author.name}}, {% endfor %}';
+			$str = Timber::compile_string($template_string, array('post' => $post));
+			$this->assertEquals('Alexander Hamilton, Motia,', trim($str));
+		}
+
 		function testLinkedGuestAuthor(){
 			global $coauthors_plus;
 
