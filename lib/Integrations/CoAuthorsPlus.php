@@ -5,6 +5,7 @@ namespace Timber\Integrations;
 class CoAuthorsPlus {
 
 	public static $prefer_gravatar = false;
+	
 	/**
 	 * @codeCoverageIgnore
 	 */
@@ -24,7 +25,7 @@ class CoAuthorsPlus {
 		$cauthors = get_coauthors($post->ID);
 		foreach ( $cauthors as $author ) {
 			$uid = $this->get_user_uid( $author );
-			if($uid){
+			if ( $uid ) {
 				$authors[] = new \Timber\User($uid);
 			} else {
 				$authors[] = new CoAuthorsPlusUser($author);
@@ -41,8 +42,7 @@ class CoAuthorsPlus {
 	 * @param object $cauthor
 	 * @return int|string|null
 	 */
-	protected function get_user_uid( $cauthor )
-	{
+	protected function get_user_uid( $cauthor ) {
 		// if is guest author
 		if( is_object($cauthor) && isset($cauthor->type) && $cauthor->type == 'guest-author'){
 			// if have have a linked user account
