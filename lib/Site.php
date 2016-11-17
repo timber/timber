@@ -124,11 +124,15 @@ class Site extends Core implements CoreInterface {
 	/**
 	 * Switches to the blog requested in the request
 	 * @param string|integer|null $site_name_or_id
-	 * @return array with the ID of the old and new blogs
+	 * @return integer with the ID of the new blog
 	 */
 	protected static function switch_to_blog( $site_name_or_id ) {
 		if ( $site_name_or_id === null ) {
-			$site_name_or_id = get_current_blog_id();
+			/* This is necessary for some reason, otherwise it returns 1 all the time */
+			if ( is_multisite() ) {
+				restore_current_blog();
+				$site_name_or_id = get_current_blog_id();
+			}
 		}
 		$info = get_blog_details($site_name_or_id);
 		switch_to_blog($info->blog_id);
