@@ -96,7 +96,7 @@ class Site extends Core implements CoreInterface {
 	public $rss;
 	public $rss2;
 	public $atom;
-	
+
 	/**
 	 * Constructs a TimberSite object
 	 * @example
@@ -111,33 +111,28 @@ class Site extends Core implements CoreInterface {
 	 */
 	public function __construct( $site_name_or_id = null ) {
 		if ( is_multisite() ) {
-			$blog_ids = self::switch_to_blog($site_name_or_id);
+			$blog_id = self::switch_to_blog($site_name_or_id);
 			$this->init();
-			$this->init_as_multisite($blog_ids['new']);
-			return switch_to_blog($blog_ids['old']);
-		} 
-		$this->init();
-		$this->init_as_singlesite();
+			$this->init_as_multisite($blog_id);
+			restore_current_blog();
+		} else {
+			$this->init();
+			$this->init_as_singlesite();
+		}
 	}
 
 	/**
 	 * Switches to the blog requested in the request
 	 * @param string|integer|null $site_name_or_id
-	 * @return array with the ID of the old and new blogs
+	 * @return integer with the ID of the new blog
 	 */
 	protected static function switch_to_blog( $site_name_or_id ) {
 		if ( $site_name_or_id === null ) {
-			//this is necessary for some reason, otherwise returns 1 all the time
-			if ( is_multisite() ) {
-				restore_current_blog();
-				$site_name_or_id = get_current_blog_id();
-			}
+			$site_name_or_id = get_current_blog_id();
 		}
-		/* we need to store the current blog, but switch things to the blog id of the Site object requested */
-		$old_id = get_current_blog_id();
 		$info = get_blog_details($site_name_or_id);
 		switch_to_blog($info->blog_id);
-		return array('old' => $old_id, 'new' => $info->blog_id);
+		return $info->blog_id;
 	}
 
 	/**
@@ -217,12 +212,12 @@ class Site extends Core implements CoreInterface {
 
 	protected function icon_multisite( $site_id ) {
 		$image = null;
-		$blog_ids = self::switch_to_blog($site_id);
-		$iid = get_blog_option($blog_ids['new'], 'site_icon');
+		$blog_id = self::switch_to_blog($site_id);
+		$iid = get_blog_option($blog_id, 'site_icon');
 		if ( $iid ) {
 			$image = new Image($iid);
 		}
-		switch_to_blog($blog_ids['old']);
+		restore_current_blog();
 		return $image;
 	}
 
