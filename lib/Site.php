@@ -128,11 +128,7 @@ class Site extends Core implements CoreInterface {
 	 */
 	protected static function switch_to_blog( $site_name_or_id ) {
 		if ( $site_name_or_id === null ) {
-			/* This is necessary for some reason, otherwise it returns 1 all the time */
-			if ( is_multisite() ) {
-				restore_current_blog();
-				$site_name_or_id = get_current_blog_id();
-			}
+			$site_name_or_id = get_current_blog_id();
 		}
 		$info = get_blog_details($site_name_or_id);
 		switch_to_blog($info->blog_id);
@@ -216,12 +212,12 @@ class Site extends Core implements CoreInterface {
 
 	protected function icon_multisite( $site_id ) {
 		$image = null;
-		$blog_ids = self::switch_to_blog($site_id);
-		$iid = get_blog_option($blog_ids['new'], 'site_icon');
+		$blog_id = self::switch_to_blog($site_id);
+		$iid = get_blog_option($blog_id, 'site_icon');
 		if ( $iid ) {
 			$image = new Image($iid);
 		}
-		switch_to_blog($blog_ids['old']);
+		restore_current_blog();
 		return $image;
 	}
 
