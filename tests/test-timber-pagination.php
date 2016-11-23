@@ -231,6 +231,17 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://example.org/page/2/?s=post', $pagination->next['link'] );
 	}
 
+	function testCollectionPaginationQueryVars() {
+		global $wp;
+		$wp->add_query_var( 'myvar' );
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( home_url('?myvar=value') );
+		$posts = new Timber\PostQuery();
+		$pagination = $posts->pagination();
+		$this->assertEquals( 'http://example.org/page/2/?myvar=value', $pagination->next['link'] );
+	}
+
 	function testCollectionPaginationSearchPrettyWithPostnamePrev() {
 		$this->setPermalinkStructure('/%postname%/');
 		$posts = $this->factory->post->create_many( 55 );
