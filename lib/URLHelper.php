@@ -292,6 +292,42 @@ class URLHelper {
 	}
 
 	/**
+	 * Pass links through user_trailingslashit handling query strings properly
+	 *
+	 * @param string $link
+	 * @return string
+	 * */
+	public static function user_trailingslashit( $link ) {
+		$link_parts = parse_url( $link );
+
+		if ($link_parts) {
+			// absolute url
+			if( isset( $link_parts['path'] ) && $link_parts['path'] != '/' ) {
+				$new_path = user_trailingslashit( $link_parts['path'] );
+				
+				if ( $new_path != $link_parts['path'] )
+				{
+					$link = str_replace( $link_parts['path'], $new_path, $link );
+				}
+			}
+		} else {
+			// relative url
+			$link_parts = explode( '?', $link );
+			if( isset( $link_parts[1] ) ) {
+				if ( $link_parts[0] != "/" ) {
+					$link = user_trailingslashit( $link_parts[0] ) . '?' . $link_parts[1];
+				}
+			} else {
+				if( $link != "/" ) {
+					$link = user_trailingslashit( $link );
+				}
+			}
+		}
+
+		return $link;
+	}
+
+	/**
 	 * Returns the url parameters, for example for url http://example.org/blog/post/news/2014/whatever
 	 * this will return array('blog', 'post', 'news', '2014', 'whatever');
 	 * OR if sent an integer like: TimberUrlHelper::get_params(2); this will return 'news';
