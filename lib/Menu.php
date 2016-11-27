@@ -122,8 +122,8 @@ class Menu extends Core {
 	/**
 	 * @internal
 	 */
-	protected function init_as_page_menu(array('sort_column' => 'menu_order')) {
-		$menu = get_pages();
+	protected function init_as_page_menu() {
+		$menu = get_pages(array('sort_column' => 'menu_order'));
 		if ( $menu ) {
 			foreach ( $menu as $mi ) {
 				$mi->__title = $mi->post_title;
