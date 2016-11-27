@@ -122,7 +122,7 @@ class Menu extends Core {
 	/**
 	 * @internal
 	 */
-	protected function init_as_page_menu() {
+	protected function init_as_page_menu(array('sort_column' => 'menu_order')) {
 		$menu = get_pages();
 		if ( $menu ) {
 			foreach ( $menu as $mi ) {
