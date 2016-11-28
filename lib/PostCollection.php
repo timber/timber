@@ -5,35 +5,25 @@ namespace Timber;
 use Timber\Helper;
 use Timber\Post;
 
-// Exit if accessed directly
-if ( !defined('ABSPATH') ) {
-	exit;
-}
-
-class PostsCollection extends \ArrayObject {
+/**
+ * PostCollections are internal objects used to hold a collection of posts
+ */
+class PostCollection extends \ArrayObject {
 
 	public function __construct( $posts = array(), $post_class = '\Timber\Post' ) {
+		$returned_posts = self::init($posts, $post_class);
+		parent::__construct($returned_posts, $flags = 0, 'Timber\PostsIterator');
+	}
+
+	protected static function init($posts, $post_class) {
 		$returned_posts = array();
 		if ( is_null($posts) ) {
 			$posts = array();
 		}
 		foreach ( $posts as $post_object ) {
-			$post_class_use = $post_class;
-			if ( is_array($post_class) ) {
-				$post_type      = get_post_type($post_object);
-				$post_class_use = '\Timber\Post';
+			$post_type      = get_post_type($post_object);
+			$post_class_use = PostGetter::get_post_class($post_type, $post_class);
 
-				if ( isset($post_class[$post_type]) ) {
-					$post_class_use = $post_class[$post_type];
-
-				} else {
-					if ( is_array($post_class) ) {
-						Helper::error_log($post_type.' of '.$post_object->ID.' not found in '.print_r($post_class, true));
-					} else {
-						Helper::error_log($post_type.' not found in '.$post_class);
-					}
-				}
-			}
 			// Don't create yet another object if $post_object is already of the right type
 			if ( is_a($post_object, $post_class_use) ) {
 				$post = $post_object;
@@ -46,19 +36,18 @@ class PostsCollection extends \ArrayObject {
 			}
 		}
 
-		$returned_posts = self::maybe_set_preview($returned_posts);
-
-		parent::__construct($returned_posts, $flags = 0, 'Timber\PostsIterator');
+		return self::maybe_set_preview($returned_posts);
 	}
+
 
 	public function get_posts() {
 		return $this->getArrayCopy();
 	}
 
-	 /**
-	  * @param array $posts
-	  * @return array
-	  */
+	/**
+	 * @param array $posts
+	 * @return array
+	 */
 	public static function maybe_set_preview( $posts ) {
 		if ( is_array($posts) && isset($_GET['preview']) && $_GET['preview']
 			   && isset($_GET['preview_id']) && $_GET['preview_id']
@@ -99,3 +88,6 @@ class PostsIterator extends \ArrayIterator {
 		return $post;
 	}
 }
+
+class_alias('Timber\PostCollection', 'Timber\PostsCollection');
+class_alias('Timber\PostCollection', 'TimberPostsCollection');

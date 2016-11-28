@@ -8,12 +8,25 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  * Helper functions
  ---------------- */
 
-	static function copyTestImage( $img = 'arch.jpg' ) {
+ 	static function replace_image( $old_id, $new_id ) {
+		$uploadDir = wp_upload_dir();
+		$newFile = $uploadDir['basedir'].'/'.get_post_meta($new_id, '_wp_attached_file', true);
+		$oldFile = $uploadDir['basedir'].'/'.get_post_meta($old_id, '_wp_attached_file', true);
+		if (!file_exists(dirname($oldFile)))
+			mkdir(dirname($oldFile), 0777, true);
+		copy($newFile, $oldFile);
+		$meta = wp_generate_attachment_metadata($old_id, $oldFile);
+		wp_update_attachment_metadata($old_id, $meta);
+		wp_delete_post($new_id, true);
+ 	}
+
+	static function copyTestImage( $img = 'arch.jpg', $dest_name = null ) {
 		$upload_dir = wp_upload_dir();
-		$destination = $upload_dir['path'].'/'.$img;
-		if ( !file_exists( $destination ) ) {
-			copy( __DIR__.'/assets/'.$img, $destination );
+		if ( is_null($dest_name) ) {
+			$dest_name = $img;
 		}
+		$destination = $upload_dir['path'].'/'.$dest_name;
+		copy( __DIR__.'/assets/'.$img, $destination );
 		return $destination;
 	}
 
@@ -44,7 +57,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	public static function get_image_attachment( $pid = 0, $file = 'arch.jpg' ) {
 		$filename = self::copyTestImage( $file );
-		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+		$filetype = wp_check_filetype( basename( $filename ), null );
+		$attachment = array('post_title' => 'The Arch', 'post_content' => '', 'post_mime_type' => $filetype['type']);
 		$iid = wp_insert_attachment( $attachment, $filename, $pid );
 		return $iid;
 	}
@@ -65,6 +79,46 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 /* ----------------
  * Tests
  ---------------- */
+
+ 	function testReplacedImage() {
+ 		$pid = $this->factory->post->create(array('post_type' => 'post'));
+ 		$attach_id = self::get_image_attachment($pid, 'arch.jpg');
+ 		$template = '{{Image(img).src|resize(200, 200)}}';
+ 		$str = Timber::compile_string($template, array('img' => $attach_id));
+ 		$resized_one = Timber\ImageHelper::get_server_location($str);
+ 		sleep(5);
+ 		$filename = self::copyTestImage('cardinals.jpg', 'arch.jpg');
+ 		
+ 		$str = Timber::compile_string($template, array('img' => $attach_id));
+ 		$resized_tester = Timber\ImageHelper::get_server_location($str);
+
+ 		$attach_id = self::get_image_attachment($pid, 'cardinals.jpg');
+ 		$str = Timber::compile_string($template, array('img' => $attach_id));
+ 		$resized_known = Timber\ImageHelper::get_server_location($str);
+ 		//resize original, compare
+ 		$this->assertEquals(md5(file_get_contents($resized_known)), md5(file_get_contents($resized_tester)));
+
+ 	}
+
+ 	function testResizedReplacedImage() {
+ 		$pid = $this->factory->post->create(array('post_type' => 'post'));
+ 		$attach_id = self::get_image_attachment($pid, 'arch.jpg');
+ 		$template = '{{Image(img).src|resize(200, 200)}}';
+ 		$str = Timber::compile_string($template, array('img' => $attach_id));
+ 		$new_id = self::get_image_attachment($pid, 'pizza.jpg');
+ 		self::replace_image($attach_id, $new_id);
+ 		$str = Timber::compile_string($template, array('img' => $attach_id));
+ 		$resized_path = Timber\ImageHelper::get_server_location($str);
+ 		$test_md5 = md5( file_get_contents($resized_path) );
+
+
+ 		$str_pizza = Timber::compile_string($template, array('img' => $new_id));
+ 		$resized_pizza = Timber\ImageHelper::get_server_location($str);
+
+ 		$pizza_md5 = md5( file_get_contents($resized_pizza) );
+ 		$this->assertEquals($pizza_md5, $test_md5);
+
+ 	}
 
  	function testImageLink() {
  		self::setPermalinkStructure();
@@ -870,6 +924,13 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$str = '{{ TimberImage(post).src }}';
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($image->src(), $result);
+	}
+
+	function testNoThumbnail() {
+		$pid = $this->factory->post->create();
+		$post = new TimberPost($pid);
+		$str = Timber::compile_string('Image?{{post.thumbnail.src}}', array('post' => $post));
+		$this->assertEquals('Image?', $str);
 	}
 
 	function testTimberImageForExtraSlashes() {

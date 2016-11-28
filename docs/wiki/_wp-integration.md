@@ -1,22 +1,22 @@
-## WP Integration
+# WordPress Integration
 
 Timber plays nice with your existing WordPress setup. You can still use other plugins, etc. Here's a rundown of the key points:
 
-* [the_content](#the_content)
-* [WordPress Hooks](\#hooks)
-* [Scripts + Stylesheets](#scripts--stylesheets)
-* [Functions](#functions)
-* [Actions](#actions)
-* [Filters](WP-Integration#filters)
-* [Widgets](WP-Integration#widgets)
-* [Shortcodes](WP-Integration#shortcodes)
+- [the_content](#the_content)
+- [WordPress Hooks](#hooks)
+- [Scripts + Stylesheets](#scripts--stylesheets)
+- [Functions](#functions)
+- [Actions](#actions)
+- [Filters](#filters)
+- [Widgets](#widgets)
+- [Shortcodes](#shortcodes)
 
 * * *
 
 ### the_content
 You're probably used to calling `the_content()` in your theme file. This is good. Before outputting, WordPress will run all the filters and actions that your plugins and themes are using. If you want to get this into your new Timber theme (and you probably do). Call it like this:
 
-```php
+```twig
 <div class="my-article">
    {{post.content}}
 </div>
@@ -37,6 +37,7 @@ Full documentation to come
 What happened to `wp_head()` and `wp_footer()`? Don't worry, they haven't gone away. In fact, they have a home now in the `Timber::get_context()` object. When you setup your PHP file, you should do something like this:
 
 ```php
+<?php
 /* single.php */
 $data = Timber::get_context();
 $data['post'] = new TimberPost();
@@ -45,7 +46,7 @@ Timber::render('single.twig', $data);
 
 Now in the corresponding Twig file:
 
-```php
+```twig
 {# single.twig #}
 <html>
 	<head>
@@ -74,13 +75,13 @@ No.
 
 Let's say you modified twentyeleven and need some of the functions back. Here's the quick-and-dirty way:
 
-```php
+```twig
 <div class="posted-on">{{function("twentyeleven_posted_on")}}</div>
 ```
 
 Oh. That's not so bad. What if there are arguments? Easy:
 
-```php
+```twig
 {# single.twig #}
 <div class="admin-tools">
 	{{function('edit_post_link', 'Edit', '<span class="edit-link">', '</span>')}}
@@ -89,7 +90,7 @@ Oh. That's not so bad. What if there are arguments? Easy:
 
 Nice! Any gotchas? Unfortunately yes. While the above example will totally work in a single.twig file it will not in a loop. Why? Single.twig/single.php retain the context of the current post. Thus for a function like `edit_post_link` (which will try to guess the ID# of the post you want to edit, based on the current post in the loop), the same function requires some modification in a file like `archive.twig` or `index.twig`. There, you will need to explicitly set the post ID:
 
-```php
+```twig
 {# index.twig #}
 <div class="admin-tools">
 	{{function('edit_post_link', 'Edit', '<span class="edit-link">', '</span>', post.ID)}}
@@ -101,8 +102,9 @@ You can also use `fn('my_function')` as an alias.
 For a less quick-and-dirty way, you can use the TimberFunctionWrapper. This class sets up your PHP functions as functions you can use in your Twig templates. It will execute them only when you actually call them in your template. You can quickly set up a TimberFunctionWrapper using `TimberHelper`:
 
 ```php
+<?php
 /**
- * @param mixed $function_name or array( $class( string|object ), $function_name )
+ * @param string $function_name
  * @param array (optional) $defaults
  * @param bool (optional) $return_output_buffer Return function output instead of return value (default: false)
  * @return \TimberFunctionWrapper
@@ -110,21 +112,10 @@ For a less quick-and-dirty way, you can use the TimberFunctionWrapper. This clas
 TimberHelper::function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false );
 ```
 
-Classes (including namespaced) are also supported for `function_wrapper`:
-
-```php
-# Namespaced has to be a string
-TimberHelper::function_wrapper(array('Example\Class', 'function_in_class'));
-
-# Otherwise, you can pass the object of the class
-TimberHelper::function_wrapper(array($this, 'function_in_class'));
-```
-
-You can then call the function like so `{{function_in_class}}`
-
 So if you want to add `edit_post_link` to your context, you can do something like this:
 
 ```php
+<?php
 /* single.php */
 $data = Timber::get_context();
 $data['post'] = new TimberPost();
@@ -134,7 +125,7 @@ Timber::render('single.twig', $data);
 
 Now you can use it like a 'normal' function:
 
-```php
+```twig
 {# single.twig #}
 <div class="admin-tools">
     {{edit_post_link}}
@@ -152,7 +143,7 @@ Now you can use it like a 'normal' function:
 
 Call them in your Twig template...
 
-```php
+```twig
 {% do action('my_action') %}
 {% do action('my_action_with_args', 'foo', 'bar') %}
 ```
@@ -160,6 +151,7 @@ Call them in your Twig template...
 ... in your `functions.php` file:
 
 ```php
+<?php
 add_action('my_action', 'my_function');
 
 function my_function($context){
@@ -169,6 +161,7 @@ function my_function($context){
 ```
 
 ```php
+<?php
 add_action('my_action_with_args', 'my_function_with_args', 10, 2);
 
 function my_function_with_args($foo, $bar){
@@ -179,6 +172,7 @@ function my_function_with_args($foo, $bar){
 You can still get the context object when passing args, it's always the _last_ argument...
 
 ```php
+<?php
 add_action('my_action_with_args', 'my_function_with_args', 10, 3);
 
 function my_function_with_args($foo, $bar, $context){
@@ -191,9 +185,9 @@ Please note the argument count that WordPress requires for `add_action`
 
 * * *
 
-### Filters
+## Filters
 
-```
+```twig
 {{ post.content|apply_filters('my_filter') }}
 {{ "my custom string"|apply_filters('my_filter',param1,param2,...) }}
 ```
@@ -206,6 +200,7 @@ Everyone loves widgets!
 Of course they do...
 
 ```php
+<?php
 $data['footer_widgets'] = Timber::get_widgets('footer_widgets');
 ```
 
@@ -213,7 +208,7 @@ $data['footer_widgets'] = Timber::get_widgets('footer_widgets');
 
 Then use it in your template:
 
-```php
+```twig
 {# base.twig #}
 <footer>
 	{{footer_widgets}}
@@ -229,14 +224,18 @@ You can also use twig templates for your widgets!
 Let's imagine we want a widget that shows a random number each time it is rendered.
 
 Inside the widget class, the widget function is used to show the widget:
+
 ```php
+<?php
 public function widget($args, $instance) {
 	$number = rand();
 	Timber::render('random-widget.twig', array('args' => $args, 'instance' => $instance, 'number' => $number));
 }
 ```
+
 The corresponding template file ```random-widget.twig``` looks like this:
-```
+
+```twig
 {{ args.before_widget | raw }}
 {{ args.before_title | raw }}{{ instance.title | apply_filters('widget_title') }}{{ args.after_title | raw }}
 
@@ -249,6 +248,7 @@ The raw filter is needed here to embed the widget properly.
 You may also want to check if the Timber plugin was loaded before using it:
 
 ```php
+<?php
 public function widget($args, $instance) {
 	if (!class_exists('Timber')) {
 		// if you want to show some error message, this is the right place
@@ -268,7 +268,9 @@ Of course it does !
 
 Let's implement a `[youtube]` shorttag which embeds a youtube video.
 For the desired usage of `[youtube id=xxxx]` we only need a few lines of code:
-```
+
+```php
+<?php
 // should be called from within an init action hook
 add_shortcode('youtube', 'youtube_shorttag');
 
@@ -284,18 +286,20 @@ function youtube_shorttag($atts) {
 ```
 
 In `youtube-short.twig` we have the following template:
-```
+
+```twig
 {% if id %}
 <iframe width="560" height="315" src="//www.youtube.com/embed/{{ id }}" frameborder="0" allowfullscreen></iframe>
 {% endif %}
 ```
+
 Now, when the YouTube embed code changes, we only need to edit the `youtube-short.twig` template. No need to search your PHP files for this one particular line.
 
 ##### Layouts with Shortcodes
 
 Timber and Twig can process your shortcodes by using the `{% filter shortcodes %}` tag. Let's say you're using a `[tab]` shortcode, for example:
 
-```html
+```twig
 {% filter shortcodes %}
 	[tabs tab1="Tab 1 title" tab2="Tab 2 title" layout="horizontal" backgroundcolor="" inactivecolor=""]
 		[tab id=1]
@@ -308,3 +312,4 @@ Timber and Twig can process your shortcodes by using the `{% filter shortcodes %
 	[/tabs]
 {% endfilter %}
 ```
+

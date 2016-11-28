@@ -62,6 +62,9 @@ abstract class Core {
 		}
 		if ( is_array($info) ) {
 			foreach ( $info as $key => $value ) {
+				if ( $key === '' || ord($key[0]) === 0 ) {
+					continue;
+				}
 				if ( !empty($key) && $force ) {
 					$this->$key = $value;
 				} else if ( !empty($key) && !method_exists($this, $key) ) {
@@ -113,5 +116,13 @@ abstract class Core {
 		$ret = array();
 		$ret['can_edit'] = $this->can_edit();
 		return $ret;
+	}
+
+	/**
+	 * @param string $field_name
+	 * @return mixed
+	 */
+	public function get_field( $field_name ) {
+		return $this->get_meta_field($field_name);
 	}
 }

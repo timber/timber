@@ -15,11 +15,11 @@ class Helper {
 	 * @api
 	 * @example
 	 * ```php
-	 * $favorites = Timber::transient('user-'.$uid.'-favorites', function() use ($uid) {
+	 * $context = Timber::get_context();
+	 * $context['favorites'] = Timber\Helper::transient('user-' .$uid. '-favorites', function() use ($uid) {
 	 *  	//some expensive query here that's doing something you want to store to a transient
 	 *  	return $favorites;
 	 * }, 600);
-	 * Timber::context['favorites'] = $favorites;
 	 * Timber::render('single.twig', $context);
 	 * ```
 	 *
@@ -187,14 +187,15 @@ class Helper {
 	 * @param mixed $arg that you want to error_log
 	 * @return void
 	 */
-	public static function error_log( $arg ) {
-		if ( !WP_DEBUG ) {
+	public static function error_log( $error ) {
+		global $timber_disable_error_log;
+		if ( !WP_DEBUG || $timber_disable_error_log ) {
 			return;
 		}
-		if ( is_object($arg) || is_array($arg) ) {
-			$arg = print_r($arg, true);
+		if ( is_object($error) || is_array($error) ) {
+			$error = print_r($error, true);
 		}
-		return error_log($arg);
+		return error_log($error);
 	}
 
 	/**
@@ -217,83 +218,36 @@ class Helper {
 		return trim(wp_title($separator, false, $seplocation));
 	}
 
-	/* Text Utilities
-	======================== */
+	/* Text Utitilites */
 
-	/**
-	 *
-	 *
-	 * @param string  $text
-	 * @param int     $num_words
-	 * @param string|null|false  $more text to appear in "Read more...". Null to use default, false to hide
-	 * @param string  $allowed_tags
-	 * @return string
-	 */
-	public static function trim_words( $text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br blockquote' ) {
-		if ( null === $more ) {
-			$more = __('&hellip;');
-		}
-		$original_text = $text;
-		$allowed_tag_string = '';
-		foreach ( explode(' ', apply_filters('timber/trim_words/allowed_tags', $allowed_tags)) as $tag ) {
-			$allowed_tag_string .= '<'.$tag.'>';
-		}
-		$text = strip_tags($text, $allowed_tag_string);
-		/* translators: If your word count is based on single characters (East Asian characters), enter 'characters'. Otherwise, enter 'words'. Do not translate into your own language. */
-		if ( 'characters' == _x('words', 'word count: words or characters?') && preg_match('/^utf\-?8$/i', get_option('blog_charset')) ) {
-			$text = trim(preg_replace("/[\n\r\t ]+/", ' ', $text), ' ');
-			preg_match_all('/./u', $text, $words_array);
-			$words_array = array_slice($words_array[0], 0, $num_words + 1);
-			$sep = '';
-		} else {
-			$words_array = preg_split("/[\n\r\t ]+/", $text, $num_words + 1, PREG_SPLIT_NO_EMPTY);
-			$sep = ' ';
-		}
-		if ( count($words_array) > $num_words ) {
-			array_pop($words_array);
-			$text = implode($sep, $words_array);
-			$text = $text.$more;
-		} else {
-			$text = implode($sep, $words_array);
-		}
-		$text = self::close_tags($text);
-		return apply_filters('wp_trim_words', $text, $num_words, $more, $original_text);
-	}
 
-	/**
-	 *
-	 *
-	 * @param string  $html
-	 * @return string
-	 */
-	public static function close_tags( $html ) {
-		//put all opened tags into an array
-		preg_match_all('#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
-		$openedtags = $result[1];
-		//put all closed tags into an array
-		preg_match_all('#</([a-z]+)>#iU', $html, $result);
-		$closedtags = $result[1];
-		$len_opened = count($openedtags);
-		// all tags are closed
-		if ( count($closedtags) == $len_opened ) {
-			return $html;
-		}
-		$openedtags = array_reverse($openedtags);
-		// close tags
-		for ( $i = 0; $i < $len_opened; $i++ ) {
-			if ( !in_array($openedtags[$i], $closedtags) ) {
-				$html .= '</'.$openedtags[$i].'>';
-			} else {
-				unset($closedtags[array_search($openedtags[$i], $closedtags)]);
-			}
-		}
-		$html = str_replace(array('</br>', '</hr>', '</wbr>'), '', $html);
-		$html = str_replace(array('<br>', '<hr>', '<wbr>'), array('<br />', '<hr />', '<wbr />'), $html);
-		return $html;
-	}
 
 	/* Object Utilities
 	======================== */
+
+	/**
+     * @deprecated since 1.2.0
+     * @see TextHelper::trim_words
+     * @param string  $text
+     * @param int     $num_words
+     * @param string|null|false  $more text to appear in "Read more...". Null to use default, false to hide
+     * @param string  $allowed_tags
+     * @return string
+     */
+    public static function trim_words( $text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br blockquote' ) {
+        return TextHelper::trim_words($text, $num_words, $more, $allowed_tags);
+    }
+
+     /**
+     * @deprecated since 1.2.0
+     * @see TextHelper::close_tags
+     * @param string  $html
+     * @return string
+     */
+
+    public static function close_tags( $html ) {
+    	return TextHelper::close_tags($html);
+    }
 
 	/**
 	 *
@@ -443,6 +397,25 @@ class Helper {
 		return ($i % 2) != 0;
 	}
 
+	/**
+	 * Plucks the values of a certain key from an array of objects
+	 * @param array $array
+	 * @param string $key
+	 */
+	public static function pluck( $array, $key ) {
+		$return = array();
+		foreach ( $array as $obj ) {
+			if ( is_object($obj) && method_exists($obj, $key) ) {
+				$return[] = $obj->$key();
+			} elseif ( is_object($obj) && property_exists($obj, $key) ) {
+				$return[] = $obj->$key;
+			} elseif ( isset($obj[$key]) ) {
+				$return[] = $obj[$key];
+			}
+		}
+		return $return;
+	}
+
 	/* Links, Forms, Etc. Utilities
 	======================== */
 
@@ -460,77 +433,13 @@ class Helper {
 
 	/**
 	 *
-	 *
-	 * @param string  $args
+	 * @deprecated since 1.1.2
+	 * @param array  $args
 	 * @return array
 	 */
-	public static function paginate_links( $args = '' ) {
-		$defaults = array(
-			'base' => '%_%', // http://example.com/all_posts.php%_% : %_% is replaced by format (below)
-			'format' => '?page=%#%', // ?page=%#% : %#% is replaced by the page number
-			'total' => 1,
-			'current' => 0,
-			'show_all' => false,
-			'prev_next' => false,
-			'prev_text' => __('&laquo; Previous'),
-			'next_text' => __('Next &raquo;'),
-			'end_size' => 1,
-			'mid_size' => 2,
-			'type' => 'array',
-			'add_args' => false, // array of query args to add
-			'add_fragment' => ''
-		);
-		$args = wp_parse_args($args, $defaults);
-		// Who knows what else people pass in $args
-		$args['total'] = intval((int) $args['total']);
-		if ( $args['total'] < 2 ) {
-			return array();
-		}
-		$args['current'] = (int) $args['current'];
-		$args['end_size'] = 0 < (int) $args['end_size'] ? (int) $args['end_size'] : 1; // Out of bounds?  Make it the default.
-		$args['mid_size'] = 0 <= (int) $args['mid_size'] ? (int) $args['mid_size'] : 2;
-		$args['add_args'] = is_array($args['add_args']) ? $args['add_args'] : false;
-		$page_links = array();
-		$dots = false;
-		for ( $n = 1; $n <= $args['total']; $n++ ) {
-			$n_display = number_format_i18n($n);
-			if ( $n == $args['current'] ) {
-				$page_links[] = array(
-					'class' => 'page-number page-numbers current',
-					'title' => $n_display,
-					'text' => $n_display,
-					'name' => $n_display,
-					'current' => true
-				);
-				$dots = true;
-			} else {
-				if ( $args['show_all'] || ($n <= $args['end_size'] || ($args['current'] && $n >= $args['current'] - $args['mid_size'] && $n <= $args['current'] + $args['mid_size']) || $n > $args['total'] - $args['end_size']) ) {
-					$link = str_replace('%_%', 1 == $n ? '' : $args['format'], $args['base']);
-					$link = str_replace('%#%', $n, $link);
-					$link = trailingslashit($link).ltrim($args['add_fragment'], '/');
-					if ( $args['add_args'] ) {
-						$link = rtrim(add_query_arg($args['add_args'], $link), '/');
-					}
-					$link = str_replace(' ', '+', $link);
-					$link = untrailingslashit($link);
-					$page_links[] = array(
-						'class' => 'page-number page-numbers',
-						'link' => esc_url(apply_filters('paginate_links', $link)),
-						'title' => $n_display,
-						'name' => $n_display,
-						'current' => $args['current'] == $n
-					);
-					$dots = true;
-				} elseif ( $dots && !$args['show_all'] ) {
-					$page_links[] = array(
-						'class' => 'dots',
-						'title' => __('&hellip;')
-					);
-					$dots = false;
-				}
-			}
-		}
-		return $page_links;
+	public static function paginate_links( $args = array() ) {
+		Helper::warn('Helper/paginate_links has been moved to Pagination/paginate_links');
+		return Pagination::paginate_links($args);
 	}
 
 	/**

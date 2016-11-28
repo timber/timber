@@ -9,7 +9,6 @@ use Timber\Post;
  * In Timber, you can use TimberMenu() to make a standard Wordpress menu available to the Twig template as an object you can loop through. And once the menu becomes available to the context, you can get items from it in a way that is a little smoother and more versatile than Wordpress's wp_nav_menu. (You need never again rely on a crazy "Walker Function!"). The first thing to do is to initialize the menu using TimberMenu(). This will make the menu available as an object to work with in the context. (TimberMenu can include a Wordpress menu slug or ID, or it can be sent with no parameter--and guess the right menu.)
  * @example
  * ```php
- * <?php
  * # functions.php
  * add_filter('timber/context', 'add_to_context');
  * function add_to_context($data){
@@ -81,6 +80,7 @@ class Menu extends Core {
 	 * @param integer|string $slug
 	 */
 	public function __construct( $slug = 0 ) {
+		$menu_id = false;
 		$locations = get_nav_menu_locations();
 		if ( $slug != 0 && is_numeric($slug) ) {
 			$menu_id = $slug;
@@ -88,7 +88,8 @@ class Menu extends Core {
 			$menu_id = $this->get_menu_id_from_locations($slug, $locations);
 		} else if ( $slug === false ) {
 			$menu_id = false;
-		} else {
+		}
+		if ( !$menu_id ) {
 			$menu_id = $this->get_menu_id_from_terms($slug);
 		}
 		if ( $menu_id ) {
@@ -122,7 +123,7 @@ class Menu extends Core {
 	 * @internal
 	 */
 	protected function init_as_page_menu() {
-		$menu = get_pages();
+		$menu = get_pages(array('sort_column' => 'menu_order'));
 		if ( $menu ) {
 			foreach ( $menu as $mi ) {
 				$mi->__title = $mi->post_title;
@@ -162,13 +163,13 @@ class Menu extends Core {
 	protected function get_menu_id_from_terms( $slug = 0 ) {
 		if ( !is_numeric($slug) && is_string($slug) ) {
 			//we have a string so lets search for that
-			$menu_id = get_term_by('slug', $slug, 'nav_menu');
-			if ( $menu_id ) {
-				return $menu_id;
+			$menu = get_term_by('slug', $slug, 'nav_menu');
+			if ( $menu ) {
+				return $menu->term_id;
 			}
-			$menu_id = get_term_by('name', $slug, 'nav_menu');
-			if ( $menu_id ) {
-				return $menu_id;
+			$menu = get_term_by('name', $slug, 'nav_menu');
+			if ( $menu ) {
+				return $menu->term_id;
 			}
 		}
 		$menus = get_terms('nav_menu', array('hide_empty' => true));

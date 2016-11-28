@@ -9,6 +9,17 @@
 			$this->assertEquals($post_id, $post->ID);
 		}
 
+		function testPostPasswordReqd(){
+			$post_id = $this->factory->post->create();
+			$post = new TimberPost($post_id);
+			$this->assertFalse($post->password_required());
+
+			$post_id = $this->factory->post->create(array('post_password' => 'jiggypoof'));
+			$post = new TimberPost($post_id);
+			$this->assertTrue($post->password_required());
+			
+		}
+
 		function testNameMethod() {
 			$post_id = $this->factory->post->create(array('post_title' => 'Battlestar Galactica'));
 			$post = new TimberPost($post_id);
@@ -492,6 +503,14 @@
 			$this->assertEquals(4, count($parent->children('parent')));
 		}
 
+		function testPostChildrenWithArray(){
+			$parent_id = $this->factory->post->create(array('post_type' => 'foo'));
+			$children = $this->factory->post->create_many(8, array('post_parent' => $parent_id, 'post_type' => 'bar'));
+			$children = $this->factory->post->create_many(4, array('post_parent' => $parent_id, 'post_type' => 'foo'));
+			$parent = new TimberPost($parent_id);
+			$this->assertEquals(12, count($parent->children(array('foo', 'bar'))));
+		}
+
 		function testPostNoConstructorArgument(){
 			$pid = $this->factory->post->create();
 			$this->go_to('?p='.$pid);
@@ -608,6 +627,27 @@
 			$this->assertEquals(count($post_tag_terms) + count($post_team_terms), count($post_tag_and_team_terms));
 		}
 
+		function testPostTermClass() {
+			$class_name = 'TimberTermSubclass';
+			require_once('php/timber-term-subclass.php');
+
+			// create new post
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+
+			// create a new tag, associate with post
+			$dummy_tag = wp_insert_term('whatever', 'post_tag');
+			wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);
+
+			// test return class
+			$terms = $post->terms('post_tag', true, $class_name);
+			$this->assertEquals($class_name, get_class($terms[0]));
+
+			// test return class for deprecated $post->get_terms
+			$get_terms = $post->get_terms('post_tag', true, $class_name);
+			$this->assertEquals($class_name, get_class($get_terms[0]));
+		}
+
 		function testPostContentLength() {
 			$crawl = "The evil leaders of Planet Spaceball having foolishly spuandered their precious atmosphere, have devised a secret plan to take every breath of air away from their peace-loving neighbor, Planet Druidia. Today is Princess Vespa's wedding day. Unbeknownest to the princess, but knowest to us, danger lurks in the stars above...";
 			$pid = $this->factory->post->create(array('post_content' => $crawl));
@@ -647,7 +687,7 @@
 			global $current_user;
 			$current_user = array();
 
-			$uid = $this->factory->user->create();
+			$uid = $this->factory->user->create(array('display_name' => 'Franklin Delano Roosevelt', 'user_login' => 'fdr'));
 			$pid = $this->factory->post->create(array('post_author' => $uid));
 			$post = new TimberPost($pid);
 			$edit_url = $post->edit_link();

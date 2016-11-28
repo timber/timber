@@ -1,5 +1,7 @@
 <?php
 
+    use Timber\Cache\TimberKeyGeneratorInterface;
+
 	class TestTimberCache extends Timber_UnitTestCase {
 
         private function _generate_transient_name() {
@@ -9,6 +11,7 @@
         }
 
         function testTransientLock() {
+
             $transient = $this->_generate_transient_name();
             TimberHelper::_lock_transient( $transient, 5 );
             $this->assertTrue( TimberHelper::_is_transient_locked( $transient ) );
@@ -125,13 +128,25 @@
         }
 
         function testKeyGenerator(){
-        	$loader = new TimberLoader();
-        	$twig = $loader->get_twig();
         	$kg = new Timber\Cache\KeyGenerator();
         	$post_id = $this->factory->post->create(array('post_title' => 'My Test Post'));
         	$post = new TimberPost($post_id);
         	$key = $kg->generateKey($post);
         	$this->assertStringStartsWith('Timber\Post|', $key);
+        }
+
+        function testKeyGeneratorWithTimberKeyGeneratorInterface() {
+            $kg = new Timber\Cache\KeyGenerator();
+            $thing = new MyFakeThing();
+            $key = $kg->generateKey($thing);
+            $this->assertEquals('iamakey', $key);
+        }
+
+        function testKeyGeneratorWithArray() {
+            $kg = new Timber\Cache\KeyGenerator();
+            $thing = array('_cache_key' => 'iAmAKeyButInAnArray');
+            $key = $kg->generateKey($thing);
+            $this->assertEquals('iAmAKeyButInAnArray', $key);
         }
 
         function testTransientForceFilter() {
@@ -195,10 +210,134 @@
             $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
             $wpdb->query( $query );
             $this->assertEquals(0, $wpdb->num_rows);
+        }
 
+        function testTimberLoaderCacheTransients() {
+            $time = 2;
+            $pid = $this->factory->post->create();
+            $post = new TimberPost($pid);
+            $str_old = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
+            sleep($time + 2);
+            $str_new = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
+            $this->assertEquals($str_old, $str_new);
+            global $wpdb;
+            $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
+            $data = $wpdb->get_results( $query );
+            $this->assertEquals(1, $wpdb->num_rows);
+        }
+
+        function testTimberLoaderCacheTransientsAdminLoggedIn() {
+            wp_set_current_user(1);
+            $time = 1;
+            $pid = $this->factory->post->create();
+            $post = new TimberPost($pid);
+            $r1 = rand(0, 999999);
+            $r2 = rand(0, 999999);
+            $str_old = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false));
+            self::_swapFiles();
+            sleep($time + 2);
+            $str_new = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r2), array(600, false));
+            $this->assertNotEquals($str_old, $str_new);
+            self::_unswapFiles();
+            
+        }
+
+        function _swapFiles() {
+            rename(__DIR__.'/assets/single-post-rand.twig', __DIR__.'/assets/single-post-rand.twig.tmp');
+            rename(__DIR__.'/assets/relative.twig', __DIR__.'/assets/single-post-rand.twig');
+        }
+
+        function _unswapFiles() {
+            rename(__DIR__.'/assets/single-post-rand.twig', __DIR__.'/assets/relative.twig');
+            rename(__DIR__.'/assets/single-post-rand.twig.tmp', __DIR__.'/assets/single-post-rand.twig');
+        }
+
+        function testTimberLoaderCacheTransientsAdminLoggedOut() {
+            $time = 1;
+            $pid = $this->factory->post->create();
+            $post = new TimberPost($pid);
+            $r1 = rand(0, 999999);
+            $str_old = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false));
+            self::_swapFiles();
+            sleep($time + 2);
+            $str_new = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false));
+            $this->assertEquals($str_old, $str_new);
+            self::_unswapFiles();
+        }
+
+        function testTimberLoaderCacheTransientsAdminLoggedOutWithSiteCache() {
+            $time = 1;
+            $pid = $this->factory->post->create();
+            $post = new TimberPost($pid);
+            $r1 = rand(0, 999999);
+            $str_old = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false), \Timber\Loader::CACHE_SITE_TRANSIENT);
+            self::_swapFiles();
+            sleep($time + 2);
+            $str_new = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false), \Timber\Loader::CACHE_SITE_TRANSIENT);
+            $this->assertEquals($str_old, $str_new);
+            self::_unswapFiles();
+        }
+
+        function testTimberLoaderCacheTransientsAdminLoggedOutWithObjectCache() {
+            global $_wp_using_ext_object_cache;
+            $_wp_using_ext_object_cache = true;
+            $time = 1;
+            $pid = $this->factory->post->create();
+            $post = new TimberPost($pid);
+            $r1 = rand(0, 999999);
+            $str_old = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false), \Timber\Loader::CACHE_OBJECT);
+            self::_swapFiles();
+            sleep($time + 2);
+            $str_new = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r1), array(600, false), \Timber\Loader::CACHE_OBJECT);
+            $this->assertEquals($str_old, $str_new);
+            self::_unswapFiles();
+            $_wp_using_ext_object_cache = false;
+        }
+
+
+        function testTimberLoaderCacheTransientsWithExtObjectCache() {
+            global $_wp_using_ext_object_cache;
+            $_wp_using_ext_object_cache = true;
+            $time = 2;
+            $pid = $this->factory->post->create();
+            $post = new TimberPost($pid);
+            $r1 = rand(0, 999999);
+            $r2 = rand(0, 999999);
+            $str_old = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => $r1), $time);
+            sleep($time + 2);
+            $str_new = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => $r2), $time);
+            $this->assertEquals($str_old, $str_new);
+            global $wpdb;
+            $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
+            $data = $wpdb->get_results( $query );
+            $this->assertEquals(0, $wpdb->num_rows);
+            $_wp_using_ext_object_cache = false;
+        }
+
+        function testTimberLoaderCacheTransientsButKeepOtherTransients() {
+            $time = 2;
+            $pid = $this->factory->post->create();
+            $post = new TimberPost($pid);
+            set_transient( 'random_600', 'foo', 600 );
+            $random_post = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), 600);
+            $str_old = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
+            sleep($time + 2);
+            $str_new = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
+            $this->assertEquals($str_old, $str_new);
+            global $wpdb;
+            $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
+            $data = $wpdb->get_results( $query );
+            $this->assertEquals(2, $wpdb->num_rows);
+            $this->assertEquals('foo', get_transient('random_600'));
         }
 
 	}
+
+    class MyFakeThing implements TimberKeyGeneratorInterface {
+        public function _get_cache_key() {
+            return 'iamakey';
+        }
+    } 
 
 	function my_test_callback(){
 		return "lbj";

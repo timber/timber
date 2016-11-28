@@ -10,11 +10,11 @@ use Timber\URLHelper;
 use Timber\Image;
 
 /**
- * This is used in Timber to represent users retrived from WordPress. You can call `$my_user = new TimberUser(123);` directly, or access it through the `{{ post.author }}` method.
+ * This is used in Timber to represent users retrived from WordPress. You can call `$my_user = new Timber\User(123);` directly, or access it through the `{{ post.author }}` method.
  * @example
  * ```php
- * $context['current_user'] = new TimberUser();
- * $context['post'] = new TimberPost();
+ * $context['current_user'] = new Timber\User();
+ * $context['post'] = new Timber\Post();
  * Timber::render('single.twig', $context);
  * ```
  * ```twig
@@ -66,7 +66,7 @@ class User extends Core implements CoreInterface {
 	public $user_nicename;
 
 	/**
-	 * @param int|bool $uid
+	 * @param object|int|bool $uid
 	 */
 	public function __construct( $uid = false ) {
 		$this->init($uid);
@@ -117,7 +117,7 @@ class User extends Core implements CoreInterface {
 
 	/**
 	 * @internal
-	 * @param int|bool $uid The user ID to use
+	 * @param object|int|bool $uid The user ID to use
 	 */
 	protected function init( $uid = false ) {
 		if ( $uid === false ) {
@@ -142,6 +142,7 @@ class User extends Core implements CoreInterface {
 				$this->import($data);
 			}
 		}
+		unset($this->user_pass);
 		$this->id = $this->ID;
 		$this->name = $this->name();
 		$this->avatar = new Image(get_avatar_url($this->id));
@@ -192,7 +193,7 @@ class User extends Core implements CoreInterface {
 	 */
 	public function link() {
 		if ( !$this->_link ) {
-			$this->_link = untrailingslashit(get_author_posts_url($this->ID));
+			$this->_link = user_trailingslashit(get_author_posts_url($this->ID));
 		}
 		return $this->_link;
 	}
@@ -202,7 +203,7 @@ class User extends Core implements CoreInterface {
 	 * @return string the human-friendly name of the user (ex: "Buster Bluth")
 	 */
 	public function name() {
-		return $this->display_name;
+		return apply_filters('timber/user/name', $this->display_name, $this);
 	}
 
 	/**

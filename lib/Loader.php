@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use Timber\Cache\Cleaner;
+
 class Loader {
 
 	const CACHEGROUP = 'timberloader';
@@ -23,27 +25,28 @@ class Loader {
 
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
-	public $locations;
+	protected $locations;
 
 	/**
 	 * @param bool|string   $caller the calling directory or false
 	 */
 	public function __construct( $caller = false ) {
-		$this->locations = $this->get_locations($caller);
+		$this->locations = LocationManager::get_locations($caller);
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
 	}
 
 	/**
-	 * @param string        $file
-	 * @param array         $data
-	 * @param bool          $expires
-	 * @param string        $cache_mode
+	 * @param string        	$file
+	 * @param array         	$data
+	 * @param array|boolean    	$expires (array for options, false for none, integer for # of seconds)
+	 * @param string        	$cache_mode
 	 * @return bool|string
 	 */
 	public function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
 		// Different $expires if user is anonymous or logged in
 		if ( is_array($expires) ) {
+			/** @var array $expires */
 			if ( is_user_logged_in() && isset($expires[1]) ) {
 				$expires = $expires[1];
 			} else {
@@ -67,15 +70,20 @@ class Loader {
 				do_action('timber_loader_render_file', $result);
 			}
 			$data = apply_filters('timber_loader_render_data', $data);
-			$data = apply_filters('timber/loader/render_data', $data);
+			$data = apply_filters('timber/loader/render_data', $data, $file);
 			$output = $twig->render($file, $data);
 		}
 
 		if ( false !== $output && false !== $expires && null !== $key ) {
+			$this->delete_cache();
 			$this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
 		}
 		$output = apply_filters('timber_output', $output);
-		return apply_filters('timber/output', $output);
+		return apply_filters('timber/output', $output, $data, $file);
+	}
+
+	protected function delete_cache() {
+		Cleaner::delete_transients();
 	}
 
 	/**
@@ -101,7 +109,7 @@ class Loader {
 	 */
 	protected function template_exists( $file ) {
 		foreach ( $this->locations as $dir ) {
-			$look_for = trailingslashit($dir).$file;
+			$look_for = $dir.$file;
 			if ( file_exists($look_for) ) {
 				return true;
 			}
@@ -109,130 +117,27 @@ class Loader {
 		return false;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function get_locations_theme() {
-		$theme_locs = array();
-		$child_loc = get_stylesheet_directory();
-		$parent_loc = get_template_directory();
-		if ( DIRECTORY_SEPARATOR == '\\' ) {
-			$child_loc = str_replace('/', '\\', $child_loc);
-			$parent_loc = str_replace('/', '\\', $parent_loc);
-		}
-		$theme_locs[] = $child_loc;
-		foreach ( $this->get_locations_theme_dir() as $dirname ) {
-			$theme_locs[] = trailingslashit($child_loc).trailingslashit($dirname);
-		}
-		if ( $child_loc != $parent_loc ) {
-			$theme_locs[] = $parent_loc;
-			foreach ( $this->get_locations_theme_dir() as $dirname ) {
-				$theme_locs[] = trailingslashit($parent_loc).trailingslashit($dirname);
-			}
-		}
-		//now make sure theres a trailing slash on everything
-		$theme_locs = array_map('trailingslashit', $theme_locs);
-		return $theme_locs;
-	}
-
-	/**
-	 * returns an array of the directory inside themes that holds twig files
-	 * @return string[] the names of directores, ie: array('templats', 'views');
-	 */
-	private function get_locations_theme_dir() {
-		if ( is_string(Timber::$dirname) ) {
-			return array(Timber::$dirname);
-		}
-		return Timber::$dirname;
-	}
-
-	/**
-	 *
-	 * @return array
-	 */
-	public function get_locations_user() {
-		$locs = array();
-		if ( isset(Timber::$locations) ) {
-			if ( is_string(Timber::$locations) ) {
-				Timber::$locations = array(Timber::$locations);
-			}
-			foreach ( Timber::$locations as $tloc ) {
-				$tloc = realpath($tloc);
-				if ( is_dir($tloc) ) {
-					$locs[] = $tloc;
-				}
-			}
-		}
-		return $locs;
-	}
-
-	/**
-	 * @param bool|string   $caller the calling directory
-	 * @return array
-	 */
-	public function get_locations_caller( $caller = false ) {
-		$locs = array();
-		if ( $caller && is_string($caller) ) {
-			$caller = trailingslashit($caller);
-			if ( is_dir($caller) ) {
-				$locs[] = $caller;
-			}
-			foreach ( $this->get_locations_theme_dir() as $dirname ) {
-				$caller_sub = $caller.trailingslashit($dirname);
-				if ( is_dir($caller_sub) ) {
-					$locs[] = $caller_sub;
-				}
-			}
-		}
-		return $locs;
-	}
-
-	/**
-	 * @param bool|string   $caller the calling directory (or false)
-	 * @return array
-	 */
-	public function get_locations( $caller = false ) {
-		//prioirty: user locations, caller (but not theme), child theme, parent theme, caller
-		$locs = array();
-		$locs = array_merge($locs, $this->get_locations_user());
-		$locs = array_merge($locs, $this->get_locations_caller($caller));
-		//remove themes from caller
-		$locs = array_diff($locs, $this->get_locations_theme());
-		$locs = array_merge($locs, $this->get_locations_theme());
-		$locs = array_merge($locs, $this->get_locations_caller($caller));
-		$locs = array_unique($locs);
-		$locs = apply_filters('timber_locations', $locs);
-		$locs = apply_filters('timber/locations', $locs);
-		return $locs;
-	}
 
 	/**
 	 * @return \Twig_Loader_Filesystem
 	 */
 	public function get_loader() {
-		$paths = array();
-		foreach ( $this->locations as $loc ) {
-			$loc = realpath($loc);
-			if ( is_dir($loc) ) {
-				$loc = realpath($loc);
-				$paths[] = $loc;
-			} else {
-				//error_log($loc.' is not a directory');
-			}
-		}
-		if ( !ini_get('open_basedir') ) {
-			$paths[] = '/';
-		} else {
-			$paths[] = ABSPATH;
-		}
+		$open_basedir = ini_get('open_basedir');
+		$paths = array_merge($this->locations, array( $open_basedir ? ABSPATH : '/'));
 		$paths = apply_filters('timber/loader/paths', $paths);
-		$loader = new \Twig_Loader_Filesystem($paths);
-		$loader = apply_filters('timber/loader/loader', $loader);
-		return $loader;
+
+		$rootPath = '/';
+		if ( $open_basedir ) {
+			$rootPath = null;
+		}
+		$fs = new \Twig_Loader_Filesystem($paths, $rootPath);
+		$fs = apply_filters('timber/loader/loader', $fs);
+		return $fs;
 	}
 
+
 	/**
-	 * @return Twig_Environment
+	 * @return \Twig_Environment
 	 */
 	public function get_twig() {
 		$loader = $this->get_loader();
@@ -258,6 +163,7 @@ class Loader {
 
 		$twig = apply_filters('twig_apply_filters', $twig);
 		$twig = apply_filters('timber/twig/filters', $twig);
+		$twig = apply_filters('timber/twig/escapers', $twig);
 		$twig = apply_filters('timber/loader/twig', $twig);
 		return $twig;
 	}
@@ -353,11 +259,11 @@ class Loader {
 
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 		if ( self::CACHE_TRANSIENT === $cache_mode ) {
-					$value = get_transient($trans_key);
+			$value = get_transient($trans_key);
 		} elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode ) {
-					$value = get_site_transient($trans_key);
+			$value = get_site_transient($trans_key);
 		} elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
-					$value = wp_cache_get($key, $group);
+			$value = wp_cache_get($key, $group);
 		}
 
 		return $value;
@@ -367,7 +273,7 @@ class Loader {
 	 * @param string $key
 	 * @param string|boolean $value
 	 * @param string $group
-	 * @param int $expires
+	 * @param integer $expires
 	 * @param string $cache_mode
 	 * @return string|boolean
 	 */
@@ -379,18 +285,18 @@ class Loader {
 		}
 
 		if ( (int) $expires < 1 ) {
-					$expires = 0;
+			$expires = 0;
 		}
 
 		$cache_mode = self::_get_cache_mode($cache_mode);
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 
 		if ( self::CACHE_TRANSIENT === $cache_mode ) {
-					set_transient($trans_key, $value, $expires);
+			set_transient($trans_key, $value, $expires);
 		} elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode ) {
-					set_site_transient($trans_key, $value, $expires);
+			set_site_transient($trans_key, $value, $expires);
 		} elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
-					wp_cache_set($key, $value, $group, $expires);
+			wp_cache_set($key, $value, $group, $expires);
 		}
 
 		return $value;

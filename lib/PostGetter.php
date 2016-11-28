@@ -2,17 +2,29 @@
 
 namespace Timber;
 
-use Timber\PostsCollection;
+use Timber\PostCollection;
 use Timber\QueryIterator;
 
 class PostGetter {
 
 	/**
 	 * @param mixed $query
-	 * @param string $PostClass
+	 * @param string|array $PostClass
 	 * @return array|bool|null
 	 */
 	public static function get_post( $query = false, $PostClass = '\Timber\Post' ) {
+		// if a post id is passed, grab the post directly
+		if ( is_numeric($query) ) {
+			$post_type      = get_post_type($query);
+			$PostClass = PostGetter::get_post_class($post_type, $PostClass);
+			$post = new $PostClass($query);
+			// get the latest revision if we're dealing with a preview
+			$posts = PostCollection::maybe_set_preview(array($post));
+			if ( $post = reset($posts) ) {
+				return $post;
+			}
+		}
+
 		$posts = self::get_posts($query, $PostClass);
 		if ( $post = reset($posts) ) {
 			return $post;
@@ -33,8 +45,8 @@ class PostGetter {
 
 	/**
 	 * @param mixed $query
-	 * @param string $PostClass
-	 * @return array|bool|null
+	 * @param string|array $PostClass
+	 * @return PostCollection | QueryIterator
 	 */
 	public static function query_posts( $query = false, $PostClass = '\Timber\Post' ) {
 		if ( $type = self::get_class_for_use_as_timber_post($query) ) {
@@ -51,7 +63,7 @@ class PostGetter {
 
 		if ( is_array($query) && count($query) && isset($query[0]) && is_object($query[0]) ) {
 			// We have an array of post objects that already have data
-			return new PostsCollection($query, $PostClass);
+			return new PostCollection($query, $PostClass);
 		} else {
 			// We have a query (of sorts) to work with
 			$tqi = new QueryIterator($query, $PostClass);
@@ -82,6 +94,35 @@ class PostGetter {
 	public static function wp_query_has_posts() {
 		global $wp_query;
 		return ($wp_query && property_exists($wp_query, 'posts') && $wp_query->posts);
+	}
+
+	/**
+	 * @param string $post_type
+	 * @param string|array $post_class
+	 *
+	 * @return string
+	 */
+	public static function get_post_class( $post_type, $post_class = '\Timber\Post' ) {
+		$post_class = apply_filters( 'Timber\PostClassMap', $post_class );
+		$post_class_use = '\Timber\Post';
+
+		if ( is_array($post_class) )  {
+			if ( isset( $post_class[$post_type]) ) {
+				$post_class_use = $post_class[$post_type];
+			} else {
+				Helper::error_log($post_type . ' not found in ' . print_r($post_class, true));
+			}
+		} elseif ( is_string($post_class) ) {
+			$post_class_use = $post_class;
+		} else {
+			Helper::error_log('Unexpeted value for PostClass: ' . print_r( $post_class, true));
+		}
+
+		if ( !class_exists( $post_class_use ) || !( is_subclass_of($post_class_use, '\Timber\Post') || is_a($post_class_use, '\Timber\Post', true) ) ) {
+			Helper::error_log('Class ' . $post_class_use . ' either does not exist or implement \Timber\Post');
+		}
+
+		return $post_class_use;
 	}
 
 	/**

@@ -12,6 +12,7 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		$sites = Timber::get_sites();
 		$this->assertEquals('http://foo.example.org', $sites[1]->url);
 		$this->assertEquals("Ducks R Us", $sites[2]->name);
+		$this->assertEquals('http://quack.example.org', $sites[2]->link());
 	}
 
 	function testGetSubDirectorySites() {

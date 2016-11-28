@@ -21,7 +21,7 @@ Timber::render('single.twig', $context);
 
 ## Post
 * `the_content()` => `{{ post.content }}`
-* `the_permalink()` => `{{ post.permalink }}`
+* `the_permalink()` => `{{ post.link }}`
 * `the_title()` => `{{ post.title }}`
 * `get_the_tags()` => `{{ post.tags }}`
 

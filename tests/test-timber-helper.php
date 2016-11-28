@@ -2,6 +2,37 @@
 
 	class TestTimberHelper extends Timber_UnitTestCase {
 
+		function testPluckArray() {
+			$arr = array();
+			$arr[] = array('name' => 'Bill', 'number' => 42);
+			$arr[] = array('name' => 'Barack', 'number' => 44);
+			$arr[] = array('name' => 'Hillary', 'number' => 45);
+			$names = \Timber\Helper::pluck($arr, 'name');
+			$this->assertEquals(array('Bill', 'Barack', 'Hillary'), $names);
+		}
+
+		function testPluckArrayMissing() {
+			$arr = array();
+			$arr[] = array('name' => 'Bill', 'number' => 42);
+			$arr[] = array('name' => 'Barack', 'number' => 44);
+			$arr[] = array('name' => 'Hillary', 'number' => 45);
+			$arr[] = array('name' => 'Donald');
+			$names = \Timber\Helper::pluck($arr, 'number');
+			$this->assertEquals(array(42, 44, 45), $names);
+		}
+
+		function testPluckObject() {
+			$billy = new stdClass();
+			$billy->name = 'Billy Corgan';
+			$billy->instrument = 'guitar';
+			$jimmy = new stdClass();
+			$jimmy->name = 'Jimmy Chamberlin';
+			$jimmy->instrument = 'drums';
+			$pumpkins = array($billy, $jimmy);
+			$instruments = \Timber\Helper::pluck($pumpkins, 'instrument');
+			$this->assertEquals(array('guitar', 'drums'), $instruments);
+		}
+
 		function testCommentFormPHP() {
 			$post_id = $this->factory->post->create();
 			$form = TimberHelper::get_comment_form($post_id);
@@ -9,9 +40,15 @@
 			$this->assertStringStartsWith('<div id="respond"', $form);
 		}
 
+		function testTrimCharacters() {
+			$text    = "Sometimes you need to do such weird things like remove all comments from your project.";
+			$trimmed = \Timber\TextHelper::trim_characters( $text, 20 );
+			$this->assertEquals( "Sometimes yo&hellip;", $trimmed );
+		}
+
 		function testCloseTagsWithSelfClosingTags(){
 			$p = '<p>My thing is this <hr>Whatever';
-			$html = TimberHelper::close_tags($p);
+			$html = \Timber\Helper::close_tags($p);
 			$this->assertEquals('<p>My thing is this <hr />Whatever</p>', $html);
 		}
 
@@ -40,7 +77,7 @@
 
 		function testCloseTags() {
 			$str = '<a href="http://wordpress.org">Hi!';
-			$closed = TimberHelper::close_tags($str);
+			$closed = Timber\TextHelper::close_tags($str);
 			$this->assertEquals($str.'</a>', $closed);
 		}
 
@@ -141,5 +178,33 @@
 			$this->assertEquals(1984, $people[1]->year);
 		}
 
+		function testPaginateLinksWithTrailingSlash() {
+			$args = array('total' => 20);
+			$this->setPermalinkStructure('/%year%/%post_id%/');
+			$pagination = \Timber\Pagination::paginate_links($args);
+			foreach($pagination as $page) {
+				if(array_key_exists('link', $page) && !empty($page['link'])) {
+					$this->assertStringEndsWith('/', $page['link']);
+				}
+			}
+		}
+
+		function endsWith($string, $test) {
+		    $strlen = strlen($string);
+		    $testlen = strlen($test);
+		    if ($testlen > $strlen) return false;
+		    return substr_compare($string, $test, $strlen - $testlen, $testlen) === 0;
+		}
+
+		function testPaginateLinksWithOutTrailingSlash() {
+			$args = array('total' => 20);
+			$this->setPermalinkStructure('/%year%/%post_id%');
+			$pagination = \Timber\Pagination::paginate_links($args);
+			foreach($pagination as $page) {
+				if(array_key_exists('link', $page) && !empty($page['link'])) {
+					$this->assertFalse( self::endsWith(substr( $page['link'], - 1 ), '/') );
+				}
+			}
+		}		
 
 	}

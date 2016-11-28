@@ -17,7 +17,7 @@
 		}
 
 		function testDescription() {
-			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln'));
+			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln', 'user_login' => 'blincoln'));
 			update_user_meta($uid, 'description', 'Sixteenth President');
 			$user = new TimberUser($uid);
 			$this->assertEquals('Sixteenth President', $user->description);
@@ -25,6 +25,12 @@
 			$post = new TimberPost($pid);
 			$str = Timber::compile_string('{{post.author.description}}', array('post' => $post));
 			$this->assertEquals('Sixteenth President', $str);
+		}
+
+		function testInitShouldUnsetPassword() {
+			$uid = $this->factory->user->create(array('display_name' => 'Tom Riddle'));
+			$user = new TimberUser($uid );
+			$this->assertFalse(property_exists( $user, 'user_pass'));
 		}
 
 		function testInitWithObject(){

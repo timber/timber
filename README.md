@@ -1,12 +1,12 @@
 <div style="text-align:center">
-<a href="http://timber.github.io/timber"><img src="http://i.imgur.com/oM1AHrz.jpg" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
+<a href="http://timber.github.io/timber"><img src="http://i.imgur.com/PbEwvZ9.png" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
 <div>
 By Jared Novack (<a href="https://twitter.com/jarednova">@JaredNova</a>) and <a href="http://upstatement.com">Upstatement</a> (<a href="https://twitter.com/upstatement">@Upstatement</a>)</div>
 </div>
 
 [![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.org/timber/timber)
-[![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg?style=flat-square)](https://coveralls.io/r/timber/timber?branch=master)
-[![Dependency Status](https://img.shields.io/versioneye/d/timber/timber.svg?style=flat-square)](https://www.versioneye.com/user/projects/574e40e6e298f30048059b9f)
+[![Coverage Status](https://img.shields.io/codecov/c/github/timber/timber.svg?style=flat-square)](https://codecov.io/gh/timber/timber)
+[![Dependency Status](https://www.versioneye.com/user/projects/574e40e6e298f30048059b9f/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/574e40e6e298f30048059b9f)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
 [![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
 [![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg?style=flat-square)](https://wordpress.org/plugins/timber-library/)
@@ -56,7 +56,12 @@ If your theme is not setup to pull in Composer's autoload file, you will need to
 require_once(__DIR__ . '/vendor/autoload.php');
 ```
 
-At the top of your `functions.php` file.
+at the top of your `functions.php` file.
+
+Initialize Timber with
+```php
+$timber = new \Timber\Timber();
+```
 * * *
 
 ### Mission Statement
@@ -82,6 +87,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 #### Projects that use Timber
 * [**Gantry5**](https://wordpress.org/plugins/gantry5/) a framework for theme development
+* [**Branch**](https://github.com/JeyKeu/branch/) Bootstrap + Timber = Branch starter theme!
 
 #### Helpful Links
 * [**CSS Tricks**](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/) introduction to Timber by [@tjFogarty](https://github.com/tjFogarty)
@@ -92,19 +98,24 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/questions/tagged/timber). Please use GitHub issues only for specific bugs, feature requests and other types of issues.
 
 #### Should I use it?
-It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. While Timber is still in development, it's also in-use on [hundreds of sites](http://timber.github.io/timber/#showcase). While much has been stabilized since the first major push back in June 2013, you should expect some breaking changes as development progresses towards a version 1.0.
+It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [hundreds of sites](http://timber.github.io/timber/#showcase) (and tons more we don't know about)
 
 #### Contributing
 Read the [contributor guidelines](https://github.com/timber/timber/wiki#contributing) in the wiki.
 
 
+## [Documentation](http://timber.github.io/timber/)
 
-## How To...
+Documentation for Timber classes and functions is [auto generated](https://github.com/jarednova/PHP-Markdown-Documentation-Generator), so any changes to the object reference docs should be made by editing the function's DocBlock.  To make a change to one of the guides, edit the relevant file in the `docs` directory.
 
-#### Generate documentation
+To publish docs:
+1. `composer install` if not already run
+2. Clone the [timber/slate](https://github.com/timber/slate) repo at the same directory level as Timber
+3. From the root of the slate directory, run these commands:
 ```bash
-$ cd /srv/www/timber
-$ ./bin/generate-docs.sh
+gem install bundler
+bundle install
+sh publish-docs.sh
 ```
 
 

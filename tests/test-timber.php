@@ -1,5 +1,7 @@
 <?php
 
+use Timber\LocationManager;
+
 class TestTimber extends Timber_UnitTestCase {
 
 	function testSample() {
@@ -23,6 +25,37 @@ class TestTimber extends Timber_UnitTestCase {
 		$this->factory->post->create(array('post_name' => 'kill-bill'));
 		$post = Timber::get_post('kill-bill');
 		$this->assertEquals('kill-bill', $post->post_name);
+	}
+
+	function testGetPostByPostObject() {
+		$pid = $this->factory->post->create();
+		$wp_post = get_post($pid);
+		$post = Timber::get_post($wp_post, 'TimberAlert');
+		$this->assertEquals('TimberAlert', get_class($post));
+		$this->assertEquals($pid, $post->ID);
+	}
+
+	function testGetPostByQueryArray() {
+		$pid = $this->factory->post->create();
+		$post = Timber::get_post(array('post_type' => 'post'), 'TimberAlert');
+		$this->assertEquals('TimberAlert', get_class($post));
+		$this->assertEquals($pid, $post->ID);
+	}
+
+	function testGetPostWithCustomPostType() {
+		register_post_type('event', array('public' => true));
+		$pid = $this->factory->post->create(array('post_type' => 'event'));
+		$post = Timber::get_post($pid, 'TimberAlert');
+		$this->assertEquals('TimberAlert', get_class($post));
+		$this->assertEquals($pid, $post->ID);
+	}
+
+	function testGetPostWithCustomPostTypeNotPublic() {
+		register_post_type('event', array('public' => false));
+		$pid = $this->factory->post->create(array('post_type' => 'event'));
+		$post = Timber::get_post($pid, 'TimberAlert');
+		$this->assertEquals('TimberAlert', get_class($post));
+		$this->assertEquals($pid, $post->ID);
 	}
 
 	function testGetPostsQueryString(){
@@ -89,6 +122,16 @@ class TestTimber extends Timber_UnitTestCase {
 		$this->assertEquals(3, count($posts));
 	}
 
+	function testGetPostsCollection() {
+		$pids = array();
+		$pids[] = $this->factory->post->create();
+		$pids[] = $this->factory->post->create();
+		$pids[] = $this->factory->post->create();
+		$posts = new Timber\PostCollection($pids);
+		$this->assertEquals(3, count($posts));
+		$this->assertEquals('Timber\PostCollection', get_class($posts));
+	}
+
 	function testUserInContextAnon() {
 		$context = Timber::get_context();
 		$this->assertArrayHasKey( 'user', $context );
@@ -110,7 +153,7 @@ class TestTimber extends Timber_UnitTestCase {
 	function testQueryPostsInContext(){
         $context = Timber::get_context();
         $this->assertArrayHasKey( 'posts', $context );
-        $this->assertInstanceOf( 'TimberQueryIterator', $context['posts'] );
+        $this->assertInstanceOf( 'Timber\QueryIterator', $context['posts'] );
 	}
 
 	/* Terms */
@@ -172,9 +215,14 @@ class TestTimber extends Timber_UnitTestCase {
     }
 
     function testTimberGetCallingScriptFile() {
-    	$calling_file = Timber::get_calling_script_file();
+    	$calling_file = LocationManager::get_calling_script_file();
     	$file = getcwd().'/tests/test-timber.php';
     	$this->assertEquals($calling_file, $file);
+    }
+
+    function testCompileNull() {
+    	$str = Timber::compile('assets/single-course.twig', null);
+    	$this->assertEquals('I am single course', $str);
     }
 
 }

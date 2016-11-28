@@ -26,6 +26,7 @@ class Twig {
 	 */
 	public function __construct() {
 		add_action('timber/twig/filters', array($this, 'add_timber_filters'));
+		add_action('timber/twig/escapers', array($this, 'add_timber_escapers'));
 	}
 
 	/**
@@ -36,10 +37,10 @@ class Twig {
 	 */
 	public function add_timber_filters( $twig ) {
 		/* image filters */
-		$twig->addFilter(new \Twig_SimpleFilter('resize', array('TimberImageHelper', 'resize')));
-		$twig->addFilter(new \Twig_SimpleFilter('retina', array('TimberImageHelper', 'retina_resize')));
-		$twig->addFilter(new \Twig_SimpleFilter('letterbox', array('TimberImageHelper', 'letterbox')));
-		$twig->addFilter(new \Twig_SimpleFilter('tojpg', array('TimberImageHelper', 'img_to_jpg')));
+		$twig->addFilter(new \Twig_SimpleFilter('resize', array('Timber\ImageHelper', 'resize')));
+		$twig->addFilter(new \Twig_SimpleFilter('retina', array('Timber\ImageHelper', 'retina_resize')));
+		$twig->addFilter(new \Twig_SimpleFilter('letterbox', array('Timber\ImageHelper', 'letterbox')));
+		$twig->addFilter(new \Twig_SimpleFilter('tojpg', array('Timber\ImageHelper', 'img_to_jpg')));
 
 		/* debugging filters */
 		$twig->addFilter(new \Twig_SimpleFilter('get_class', 'get_class'));
@@ -52,6 +53,7 @@ class Twig {
 		$twig->addFilter(new \Twig_SimpleFilter('stripshortcodes', 'strip_shortcodes'));
 		$twig->addFilter(new \Twig_SimpleFilter('array', array($this, 'to_array')));
 		$twig->addFilter(new \Twig_SimpleFilter('excerpt', 'wp_trim_words'));
+		$twig->addFilter(new \Twig_SimpleFilter('excerpt_chars', array('Timber\TextHelper','trim_characters')));
 		$twig->addFilter(new \Twig_SimpleFilter('function', array($this, 'exec_function')));
 		$twig->addFilter(new \Twig_SimpleFilter('pretags', array($this, 'twig_pretags')));
 		$twig->addFilter(new \Twig_SimpleFilter('sanitize', 'sanitize_title'));
@@ -60,6 +62,8 @@ class Twig {
 		$twig->addFilter(new \Twig_SimpleFilter('wpautop', 'wpautop'));
 		$twig->addFilter(new \Twig_SimpleFilter('list', array($this, 'add_list_separators')));
 
+		$twig->addFilter(new \Twig_SimpleFilter('pluck', array('Timber\Helper', 'pluck')));
+
 		$twig->addFilter(new \Twig_SimpleFilter('relative', function( $link ) {
 					return URLHelper::get_rel_url($link, true);
 				} ));
@@ -67,7 +71,7 @@ class Twig {
 		$twig->addFilter(new \Twig_SimpleFilter('date', array($this, 'intl_date')));
 
 		$twig->addFilter(new \Twig_SimpleFilter('truncate', function( $text, $len ) {
-					return Helper::trim_words($text, $len);
+					return TextHelper::trim_words($text, $len);
 				} ));
 
 		/* actions and filters */
@@ -211,6 +215,33 @@ class Twig {
 	/**
 	 *
 	 *
+	 * @param Twig_Environment $twig
+	 * @return Twig_Environment
+	 */
+	public function add_timber_escapers( $twig ) {
+
+		$twig->getExtension('core')->setEscaper('esc_url', function( \Twig_Environment $env, $string ) {
+			return esc_url( $string );
+		});
+		$twig->getExtension('core')->setEscaper('wp_kses_post', function( \Twig_Environment $env, $string ) {
+			return wp_kses_post( $string );
+		});
+
+		$twig->getExtension('core')->setEscaper('esc_html', function( \Twig_Environment $env, $string ) {
+			return esc_html( $string );
+		});
+
+		$twig->getExtension('core')->setEscaper('esc_js', function( \Twig_Environment $env, $string ) {
+			return esc_js( $string );
+		});
+
+		return $twig;
+
+	}
+
+	/**
+	 *
+	 *
 	 * @param mixed   $arr
 	 * @return array
 	 */
@@ -271,7 +302,7 @@ class Twig {
 
 		if ( $date instanceof \DateTime ) {
 			$timestamp = $date->getTimestamp() + $date->getOffset();
-		} else if ( is_numeric($date) && strtotime($date) === false ) {
+		} else if ( is_numeric($date) && (strtotime($date) === false || strlen($date) !== 8) ) {
 			$timestamp = intval($date);
 		} else {
 			$timestamp = strtotime($date);

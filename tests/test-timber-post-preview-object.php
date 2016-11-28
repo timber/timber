@@ -2,12 +2,38 @@
 
 	class TestTimberPostPreviewObject extends Timber_UnitTestCase {
 
+		protected $gettysburg = 'Four score and seven years ago our fathers brought forth on this continent a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal.';
+
 		function testPreviewTags() {
 			$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
 			$post = new TimberPost($post_id);
 			$template = '{{post.preview.length(3).read_more(false).strip(false)}}';
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertNotContains('</p>', $str);
+		}
+
+		function testPostPreviewObjectWithCharAndWordLengthWordsWin() {
+			$pid = $this->factory->post->create( array('post_content' => $this->gettysburg, 'post_excerpt' => '') );
+			$template = '{{ post.preview.length(2).chars(20) }}';
+			$post = new TimberPost($pid);
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('Four score&hellip; <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
+		}
+
+		function testPostPreviewObjectWithCharAndWordLengthCharsWin() {
+			$pid = $this->factory->post->create( array('post_content' => $this->gettysburg, 'post_excerpt' => '') );
+			$template = '{{ post.preview.length(20).chars(20) }}';
+			$post = new TimberPost($pid);
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('Four score and seven&hellip; <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
+		}
+
+		function testPostPreviewObjectWithCharLength() {
+			$pid = $this->factory->post->create( array('post_content' => $this->gettysburg, 'post_excerpt' => '') );
+			$template = '{{ post.preview.chars(20) }}';
+			$post = new TimberPost($pid);
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('Four score and seven&hellip; <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
 		function testPostPreviewObjectWithLength() {
@@ -77,6 +103,30 @@
 			$template = '{{post.preview.length(3).force}}';
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('Lauren is a&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $str);
+		}
+
+		function testPreviewWithStripAndClosingPTag() {
+			$pid = $this->factory->post->create( array('post_excerpt' => '<p>Lauren is a duck, but a great duck let me tell you why</p>') );
+			$post = new TimberPost( $pid );
+			$template = '{{post.preview.strip(false)}}';
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('<p>Lauren is a duck, but a great duck let me tell you why <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a></p>', $str);
+		}
+
+		function testPreviewWithStripAndClosingPTagForced() {
+			$pid = $this->factory->post->create( array('post_excerpt' => '<p>Lauren is a duck, but a great duck let me tell you why</p>') );
+			$post = new TimberPost( $pid );
+			$template = '{{post.preview.strip(false).force(4)}}';
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('<p>Lauren is a duck, but a great duck let me tell you why&hellip;  <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a></p>', $str);
+		}
+
+		function testEmptyPreview() {
+			$pid = $this->factory->post->create( array('post_excerpt' => '', 'post_content' => '') );
+			$post = new TimberPost( $pid );
+			$template = '{{ post.preview }}';
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('', $str);
 		}
 
 

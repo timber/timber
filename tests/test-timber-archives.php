@@ -2,6 +2,17 @@
 
 	class TestTimberArchives extends Timber_UnitTestCase {
 
+		function testArchivesLimit(){
+			$dates = array('2013-11-08', '2013-12-08', '2013-11-09', '2013-06-08', '2013-03-03');
+			foreach( $dates as $date ) {
+				$this->factory->post->create(array('post_date' => $date.' 19:46:41'));
+			}
+			$this->go_to('/');
+			$archives = new TimberArchives(array('type' => 'monthly', 'show_year' => false, 'limit' => 3));
+			$this->assertEquals(3, count($archives->items));
+		}
+
+
 		function testArchiveMonthly(){
 			$dates = array('2013-11-08', '2013-12-08', '2013-11-09', '2013-06-08');
 			foreach( $dates as $date ) {

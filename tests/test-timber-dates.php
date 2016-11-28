@@ -11,11 +11,11 @@
 		}
 
 		function testTime(){
-			$pid = $this->factory->post->create();
+			$pid = $this->factory->post->create(array('post_date' => '2016-07-07 20:03:00'));
 			$post = new TimberPost($pid);
 			$twig = 'Posted at {{post.time}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
-			$this->assertEquals('Posted at '.date('g:i a'), $str);
+			$this->assertEquals('Posted at 8:03 pm', $str);
 		}
 
 		function testPostDisplayDate(){
@@ -99,6 +99,30 @@
 			$twig = "Thing is on {{'1446127859'|date('M j, Y')}}";
 			$str = Timber::compile_string($twig);
 			$this->assertEquals('Thing is on Oct 29, 2015', $str);
+		}
+
+		function testUnixDateEdgeCase() {
+			$twig = "Thing is on {{'1457395200'|date('M j, Y')}}";
+			$str = Timber::compile_string($twig);
+			$this->assertEquals('Thing is on Mar 8, 2016', $str);
+		}
+
+		function testEightDigitsString() {
+			$twig = "Thing is on {{'20160505'|date('M j, Y')}}";
+			$str = Timber::compile_string($twig);
+			$this->assertEquals('Thing is on May 5, 2016', $str);
+		}
+
+		function testEightDigits() {
+			$twig = "Thing is on {{20160505|date('M j, Y')}}";
+			$str = Timber::compile_string($twig);
+			$this->assertEquals('Thing is on May 5, 2016', $str);
+		}
+
+		function testSeventiesDates() {
+			$twig = "Nixon was re-elected on {{'89942400'|date('M j, Y')}}, long may he reign!";
+			$str = Timber::compile_string($twig);
+			$this->assertEquals('Nixon was re-elected on Nov 7, 1972, long may he reign!', $str);
 		}
 
 	}

@@ -2,8 +2,8 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.0.4
-Tested up to: 4.5.1
+Stable tag: 1.1.10
+Tested up to: 4.6
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -40,6 +40,74 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 1.1.10 =
+* Added support for Co-Authors Plus Guest Authors #1239 (thanks @motia)
+* Fix for Yoast SEO with multisite #1244 (thanks @alexandernanberg)
+* Fixes issues with basedir restrictions that arose in Timber 1.1.9 #1245
+
+= 1.1.9 =
+* Timber now retrieves native term meta info #824
+* Added site icon support in Theme #1210
+* Fixes to menu getting by slug #1237 (thanks @motia)
+* Fix to off-site image URLs! #1234 (thanks @njbarrett)
+* Fix inconsistency with Post::get_terms #1222 (thanks @haroldangenent)
+
+= 1.1.8 =
+* Fixed image generation when images are updated/deleted by WordPress (thanks @dudewithamood)
+
+= 1.1.7.1 =
+* Quick fix for backwards compatibility in some situations
+
+= 1.1.7 =
+* A new PostQuery object that comes _with_ pagination (thanks @lggorman).
+* You can pass an array of post types to `post.children()` (thanks @njbarrett)
+
+= 1.1.6 = 
+* Kill those transients! Timber now wipes expired ones away 9a5851bf36110dcb399e277d51230f1addb0c53c
+* Fixed a warning that was annoying and nobody liked and didn't have any friends c53b4c832cfced01157f8196688468ad3318d3fb
+
+= 1.1.5 =
+* Removed change for custom loaders due to incompatability with Gantry
+
+= 1.1.4 =
+* Native support for Co-Authors Plus! just use `{{ post.authors }}` 939331e282fd54bf3e210645964504304f2b071b
+* New filter to enable PW propmpt for PW protected posts (`timber/post/content/show_password_form_for_protected`) 0f9b20ec90b34059634c25bc27671875c18f8fcb
+* New filter for custom loaders (`timber/loader/custom`) (thanks @tnottu!) 9097984a7c3df23068056d7835465e0690338567
+* Fixed some updating bugs with 4.6 (thanks @daronspence) 16b8bd71571be71b298e6306abe2cd4b95d8c9e8
+* You can now count Query results (thanks Evan Mattson) 141624a0ac18d9dcce62a2a681134009a2b79814
+
+= 1.1.3 =
+* New escapers! (thanks @matgargano) c7e8ed34da6fcd13bdc9005c04045f3a6b33595b
+* Fix to how categories work in Timber::get_posts 49f6007db3f829097f82ed41d389dd39053fb84a
+* Fix to usage of class maps in Timber::get_posts (thanks @vilpersson) b1387e443850aa021a0a70203bc20d238d4b21cb
+* Added Post::password_required method (thanks @marclarr) 2e685ce3d05c50e879817e51256202e032e77122
+* You can filter the link markup for Post::get_preview (thanks @LiljebergXYZ) b8100d7f2601b4da40bcc0a873c071b6ecf267f1
+
+= 1.1.2 =
+* Fix to how post IDs are retrieved (thanks @lggorman) 798acd90ee603de2d009828127bdeaab503beb10
+* Fixes to pagination in search (@jarednova) 1d1ab67f124b02d8c60646f7b133abdf68cedc38
+* Fixes to hooks for Timber Debug Bar (@jarednova) 82a914ec0be5be1011a15c1584c2c8e2999f1c1c
+
+= 1.1.1 =
+* Fixed 301 redirects for pagination (thanks @xavivars)
+* Added new escaping filter options for `|e('wp_kses_post')` and `|e('esc_url')`(thanks @matgargano)
+* Fixed pagination warning (thanks @nikola3244)
+* More test coverage
+* Fixed issue with archive limits (@jarednova)
+
+= 1.1.0 =
+* Fixed how Timber loads with Composer (thanks @connorjburton and @mrgrain)
+* Updated docs! (thanks @lggorman and @kateboudreau)
+* Fixed ImageHelper paths (thanks @TuureKaunisto)
+* Added new filters for render (thanks @johnbillion)
+* Fixed issue with timestamp conversion (thanks @thedamon)
+* Fixed localization bugs (thanks @FlyingDR)
+
+= 1.0.5 =
+* Restored prior `{{ post.type }}` behavior for existing custom fields (@jarednova) 6c9574912e526b8589eb134b79820c7e239a1dda
+* Fixed errors in PHP 7 (@FlyingDR) 48ba0fc125c2d19eeb0de0a895a83a9d3bb5a398
+* Misc bug fixes and upkeep (@connorjburton + @jarednova)
 
 = 1.0.4 =
 * New method for `{{ post.type }}` this makes it easy to access things like `{{post.type.labels.name}}` right in Twig https://github.com/timber/timber/pull/1003
