@@ -185,6 +185,9 @@ class Loader {
 			if ( isset($wp_object_cache->cache[self::CACHEGROUP]) ) {
 				$items = $wp_object_cache->cache[self::CACHEGROUP];
 				foreach( $items as $key => $value) {
+					if (is_multisite() ) {
+						$key = preg_replace('/^(.*?):/', '', $key);
+					}
 					wp_cache_delete($key, self::CACHEGROUP);
 				}
 				return true;
