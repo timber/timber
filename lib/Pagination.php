@@ -108,9 +108,8 @@ class Pagination {
 	public static function is_search_query( $url ) {
 		global $wp;
 
-		foreach( $wp->public_query_vars as $public_query_var )
-		{
-		    if ( strpos($url, $public_query_var.'=') !== false ) {
+		foreach( $wp->public_query_vars as $public_query_var ) {
+			if ( strpos($url, $public_query_var.'=') !== false ) {
 				return true;
 			}
 		}
