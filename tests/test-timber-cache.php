@@ -223,8 +223,6 @@
             $str_new = Timber::compile('assets/single-post.twig', array('post' => $post), 600, \Timber\Loader::CACHE_OBJECT);
             $this->assertEquals($str_old, $str_new);
             $loader = new TimberLoader();
-            error_log('\Timber\Loader::CACHEGROUP' . \Timber\Loader::CACHEGROUP);
-            print_r($wp_object_cache->cache);
             $clear = $loader->clear_cache_timber(\Timber\Loader::CACHE_OBJECT);
             $this->assertTrue($clear);
             $works = true;
@@ -233,6 +231,11 @@
                 $works = false;
             }
             $this->assertTrue($works);
+        }
+
+        function tearDown() {
+            global $_wp_using_ext_object_cache;
+            $_wp_using_ext_object_cache = false;
         }
 
         function testTimberLoaderCacheTransients() {
