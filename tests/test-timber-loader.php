@@ -14,7 +14,16 @@
 			$str = Timber::compile('test-chain.twig', array('name' => 'Jared'));
 			$this->assertEquals('Hi Jared', $str);
 		}
-		
+
+		function testTwigLoaderFilter() {
+		    $php_unit = $this;
+		    add_filter('timber/loader/loader', function ($loader) use ($php_unit) {
+		        $php_unit->assertInstanceOf('Twig_Loader_Filesystem', $loader);
+		        return $loader;
+		    });
+		    $str = Timber::compile('assets/single.twig', array());
+		}
+				
 		/**
      	 * @expectedException Twig_Error_Loader
      	 */
