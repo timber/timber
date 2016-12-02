@@ -7,14 +7,14 @@ use Timber\ImageHelper;
 use Timber\Image\Operation as ImageOperation;
 
 /**
-	 * Changes image to new size, by shrinking/enlarging
-	 * then cropping to respect new ratio.
-	 *
-	 * Arguments:
-	 * - width of new image
-	 * - height of new image
-	 * - crop method
-	 */
+ * Changes image to new size, by shrinking/enlarging
+ * then cropping to respect new ratio.
+ *
+ * Arguments:
+ * - width of new image
+ * - height of new image
+ * - crop method
+ */
 class Resize extends ImageOperation {
 
    private $w, $h, $crop;
