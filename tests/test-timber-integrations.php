@@ -71,7 +71,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testWPCLIClearCacheTimber(){
 		$str = Timber::compile('assets/single.twig', array('rand' => 4004), 600);
 		$success = Command::clear_cache('timber');
-		$this->assertTrue($success);
+		$this->assertGreaterThan(0, $success);
 	}
 
 	function testWPCLIClearCacheTwig(){
