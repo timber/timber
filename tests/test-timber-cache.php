@@ -199,12 +199,13 @@
             $pid = $this->factory->post->create();
             $post = new TimberPost($pid);
             $str_old = Timber::compile('assets/single-post.twig', array('post' => $post), 600);
+            $str_another = Timber::compile('assets/single-parent.twig', array('post' => $post, 'rand' => rand(0, 99)), 500);
             sleep(1);
             $str_new = Timber::compile('assets/single-post.twig', array('post' => $post), 600);
             $this->assertEquals($str_old, $str_new);
             $loader = new TimberLoader();
             $clear = $loader->clear_cache_timber();
-            $this->assertTrue($clear);
+            $this->assertGreaterThan(0, $clear);
             global $wpdb;
             $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
             $wpdb->query( $query );
