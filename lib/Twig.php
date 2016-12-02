@@ -318,7 +318,7 @@ class Twig {
 	 * @param string $format_future
 	 * @return string
 	 */
-	public function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
+	public static function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
 		$to = $to === null ? time() : $to;
 		$to = is_int($to) ? $to : strtotime($to);
 		$from = is_int($from) ? $from : strtotime($from);
