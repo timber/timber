@@ -175,12 +175,7 @@ class Loader {
 			$object_cache = true;
 		}
 		$cache_mode = $this->_get_cache_mode($cache_mode);
-		if ( self::CACHE_TRANSIENT === $cache_mode ) {
-			global $wpdb;
-			$query = $wpdb->prepare("DELETE FROM $wpdb->options WHERE option_name LIKE '%s'", '_transient_timberloader_%');
-			$wpdb->query($query);
-			return true;
-		} else if ( self::CACHE_SITE_TRANSIENT === $cache_mode ) {
+		if ( self::CACHE_TRANSIENT === $cache_mode || self::CACHE_SITE_TRANSIENT === $cache_mode) {
 			global $wpdb;
 			$query = $wpdb->prepare("DELETE FROM $wpdb->options WHERE option_name LIKE '%s'", '_transient_timberloader_%');
 			$wpdb->query($query);
@@ -188,7 +183,10 @@ class Loader {
 		} else if ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
 			global $wp_object_cache;
 			if ( isset($wp_object_cache->cache[self::CACHEGROUP]) ) {
-				unset($wp_object_cache->cache[self::CACHEGROUP]);
+				$items = $wp_object_cache->cache[self::CACHEGROUP];
+				foreach( $items as $key => $value) {
+					wp_cache_delete($key, self::CACHEGROUP);
+				}
 				return true;
 			}
 		}
