@@ -107,6 +107,19 @@
 			$this->assertEquals('austin', $obj->name);
 		}
 
+		function testGetArrayIndexByProperty(){
+			$obj1 = array();
+			$obj1['name'] = 'mark';
+			$obj1['skill'] = 'acro yoga';
+			$obj2 = array();
+			$obj2['name'] = 'austin';
+			$obj2['skill'] = 'cooking';
+			$arr = array($obj1, $obj2);
+			$index = \Timber\Helper::get_object_index_by_property($arr, 'skill', 'cooking');
+			$this->assertEquals(1, $index);
+			$this->assertFalse(\Timber\Helper::get_object_index_by_property('butts', 'skill', 'cooking'));
+		}
+
 		/**
      	 * @expectedException InvalidArgumentException
      	 */

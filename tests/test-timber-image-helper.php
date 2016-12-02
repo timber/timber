@@ -17,4 +17,9 @@
 			$this->assertFalse( TimberImageHelper::is_animated_gif($arch) );
 		}
 
+		function testServerLocation() {
+			$arch = TestTimberImage::copyTestImage('arch.jpg');
+			$this->assertEquals($arch, \Timber\ImageHelper::get_server_location($arch));
+		}
+
 	}
