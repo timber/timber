@@ -310,6 +310,16 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals(10, count($jobPosts));
 	}
 
+	function testStringWithPostClass() {
+		$yes = \Timber\PostGetter::is_post_class_or_class_map('job');
+		$this->assertTrue($yes);
+	}
+
+	function testStringWithPostClassBogus() {
+		$no = \Timber\PostGetter::is_post_class_or_class_map('pants');
+		$this->assertFalse($no);
+	}
+
 	function testPostTypeReturnAgainstArgType() {
 		register_post_type('person');
 		$jobs = $this->factory->post->create_many( 4, array('post_type' => 'person'));
