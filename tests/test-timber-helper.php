@@ -177,34 +177,4 @@
 			$this->assertEquals('Robbie', $people[2]->name);
 			$this->assertEquals(1984, $people[1]->year);
 		}
-
-		function testPaginateLinksWithTrailingSlash() {
-			$args = array('total' => 20);
-			$this->setPermalinkStructure('/%year%/%post_id%/');
-			$pagination = \Timber\Pagination::paginate_links($args);
-			foreach($pagination as $page) {
-				if(array_key_exists('link', $page) && !empty($page['link'])) {
-					$this->assertStringEndsWith('/', $page['link']);
-				}
-			}
-		}
-
-		function endsWith($string, $test) {
-		    $strlen = strlen($string);
-		    $testlen = strlen($test);
-		    if ($testlen > $strlen) return false;
-		    return substr_compare($string, $test, $strlen - $testlen, $testlen) === 0;
-		}
-
-		function testPaginateLinksWithOutTrailingSlash() {
-			$args = array('total' => 20);
-			$this->setPermalinkStructure('/%year%/%post_id%');
-			$pagination = \Timber\Pagination::paginate_links($args);
-			foreach($pagination as $page) {
-				if(array_key_exists('link', $page) && !empty($page['link'])) {
-					$this->assertFalse( self::endsWith(substr( $page['link'], - 1 ), '/') );
-				}
-			}
-		}		
-
 	}

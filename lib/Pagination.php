@@ -106,9 +106,14 @@ class Pagination {
 	 * @return boolean
 	 */
 	public static function is_search_query( $url ) {
-		if ( strpos($url, 's=') !== false ) {
-			return true;
+		global $wp;
+
+		foreach( $wp->public_query_vars as $public_query_var ) {
+			if ( strpos($url, $public_query_var.'=') !== false ) {
+				return true;
+			}
 		}
+
 		return false;
 	}
 
@@ -161,17 +166,20 @@ class Pagination {
 				if ( $args['show_all'] || ($n <= $args['end_size'] || ($args['current'] && $n >= $args['current'] - $args['mid_size'] && $n <= $args['current'] + $args['mid_size']) || $n > $args['total'] - $args['end_size']) ) {
 					$link = str_replace('%_%', 1 == $n ? '' : $args['format'], $args['base']);
 					$link = str_replace('%#%', $n, $link);
-					$link = trailingslashit($link).ltrim($args['add_fragment'], '/');
-					if ( $args['add_args'] ) {
-						$link = rtrim(add_query_arg($args['add_args'], $link), '/');
-					}
-					$link = str_replace(' ', '+', $link);
-					$link = untrailingslashit($link);
-					$link = esc_url(apply_filters('paginate_links', $link));
+
+					// we first follow the user trailing slash configuration
 					$link = user_trailingslashit($link);
-					if ( self::is_search_query($link) ) {
-						$link = untrailingslashit($link);
+
+					// then we add all required querystring parameters
+					if ( $args['add_args'] ) {
+						$link = add_query_arg($args['add_args'], $link);
 					}
+
+					// last, we add fragment if needed
+					$link .= $args['add_fragment'];
+
+					$link = esc_url(apply_filters('paginate_links', $link));
+
 					$page_links[] = array(
 						'class' => 'page-number page-numbers',
 						'link' => $link,
