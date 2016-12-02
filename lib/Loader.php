@@ -125,11 +125,13 @@ class Loader {
 		$open_basedir = ini_get('open_basedir');
 		$paths = array_merge($this->locations, array( $open_basedir ? ABSPATH : '/'));
 		$paths = apply_filters('timber/loader/paths', $paths);
+
 		$rootPath = '/';
 		if ( $open_basedir ) {
 			$rootPath = null;
 		}
 		$fs = new \Twig_Loader_Filesystem($paths, $rootPath);
+		$fs = apply_filters('timber/loader/loader', $fs);
 		return $fs;
 	}
 
