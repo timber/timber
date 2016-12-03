@@ -196,20 +196,47 @@
         }
 
         function testTimberLoaderCache(){
-            global $wp_object_cache;
             $pid = $this->factory->post->create();
             $post = new TimberPost($pid);
             $str_old = Timber::compile('assets/single-post.twig', array('post' => $post), 600);
+            $str_another = Timber::compile('assets/single-parent.twig', array('post' => $post, 'rand' => rand(0, 99)), 500);
             sleep(1);
             $str_new = Timber::compile('assets/single-post.twig', array('post' => $post), 600);
             $this->assertEquals($str_old, $str_new);
             $loader = new TimberLoader();
             $clear = $loader->clear_cache_timber();
-            $this->assertTrue($clear);
+            $this->assertGreaterThan(0, $clear);
             global $wpdb;
             $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
             $wpdb->query( $query );
             $this->assertEquals(0, $wpdb->num_rows);
+        }
+
+
+        function testTimberLoaderCacheObject(){
+            global $_wp_using_ext_object_cache;
+            global $wp_object_cache;
+            $_wp_using_ext_object_cache = true;
+            $pid = $this->factory->post->create();
+            $post = new TimberPost($pid);
+            $str_old = Timber::compile('assets/single-post.twig', array('post' => $post), 600, \Timber\Loader::CACHE_OBJECT);
+            sleep(1);
+            $str_new = Timber::compile('assets/single-post.twig', array('post' => $post), 600, \Timber\Loader::CACHE_OBJECT);
+            $this->assertEquals($str_old, $str_new);
+            $loader = new TimberLoader();
+            $clear = $loader->clear_cache_timber(\Timber\Loader::CACHE_OBJECT);
+            $this->assertTrue($clear);
+            $works = true;
+            if ( isset($wp_object_cache->cache[\Timber\Loader::CACHEGROUP]) 
+                && !empty($wp_object_cache->cache[\Timber\Loader::CACHEGROUP]) ) {
+                $works = false;
+            }
+            $this->assertTrue($works);
+        }
+
+        function tearDown() {
+            global $_wp_using_ext_object_cache;
+            $_wp_using_ext_object_cache = false;
         }
 
         function testTimberLoaderCacheTransients() {

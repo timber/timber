@@ -111,7 +111,7 @@ class ImageHelper {
 	 * @return boolean true if it's an animated gif, false if not
 	 */
 	public static function is_animated_gif( $file ) {
-		if ( strpos(strtolower($file), '.gif') == -1 ) {
+		if ( strpos(strtolower($file), '.gif') === false ) {
 			//doesn't have .gif, bail
 			return false;
 		}
