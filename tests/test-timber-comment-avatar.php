@@ -104,6 +104,7 @@
 			#relative
 			$default_url = "/images/default.png";
 			$avatar = $comment->avatar(32, $default_url );
+			print_r($avatar);
 			if (strstr($avatar, '?')){
 	  			list($url, $params) = explode('?', $avatar);
 	  			$default_url = get_template_directory_uri() . $default_url;
@@ -111,7 +112,8 @@
 	  			$this->assertEquals($params, "d=$default_url&amp;s=32");
 	  		}
 	  		# you get back url?
-	  		$this->assertTrue(substr ( get_template_directory_uri() . $avatar , 0, 5 ) == "http:");
+	  		$maybe_url = get_template_directory_uri() . $avatar;
+	  		$this->assertTrue( substr($maybe_url, 0, 5) == "http:");
 		}
 
 

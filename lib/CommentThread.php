@@ -9,7 +9,7 @@ class CommentThread extends \ArrayObject {
 	var $CommentClass = 'Timber\Comment';
 	var $post_id;
 	var $_orderby = '';
-	var $_order = 'DESC';
+	var $_order = 'ASC';
 
 	function __construct( $post_id ) {
 		parent::__construct();
