@@ -4,7 +4,7 @@ namespace Timber;
 
 use Timber\Core;
 use Timber\CoreInterface;
-
+use Timber\CommentThread;
 use Timber\Term;
 use Timber\User;
 use Timber\Image;
@@ -882,7 +882,7 @@ class Post extends Core implements CoreInterface {
 	 * ```
 	 * @return bool|array
 	 */
-	public function comments( $count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
+	public function comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
 		global $overridden_cpage, $user_ID;
 		$overridden_cpage = false;
 
@@ -904,47 +904,9 @@ class Post extends Core implements CoreInterface {
 		}
 
 		$comments = get_comments($args);
-		$timber_comments = array();
 
-		if ( '' == get_query_var('cpage') && get_option('page_comments') ) {
-			set_query_var('cpage', 'newest' == get_option('default_comments_page') ? get_comment_pages_count() : 1);
-			$overridden_cpage = true;
-		}
 
-		foreach ( $comments as $key => &$comment ) {
-			$timber_comment = new $CommentClass($comment);
-			$timber_comments[$timber_comment->id] = $timber_comment;
-		}
-
-		// Build a flattened (depth=1) comment tree
-		$comments_tree = array();
-		foreach ( $timber_comments as $key => $comment ) {
-			$depth = 0;
-			if ( !$comment->is_child() ) {
-				continue;
-			}
-
-			$tree_element = $comment;
-			do {
-				$tree_element = $timber_comments[$tree_element->comment_parent];
-				$depth++;
-			} while ( $tree_element->is_child() );
-
-			$timber_comments[$key]->depth = $depth;
-			$comments_tree[$tree_element->id][] = $comment->id;
-		}
-
-		// Add child comments to the relative "super parents"
-		foreach ( $comments_tree as $comment_parent => $comment_children ) {
-			foreach ( $comment_children as $comment_child ) {
-				$timber_comments[$comment_parent]->add_child($timber_comments[$comment_child]);
-				unset($timber_comments[$comment_child]);
-			}
-		}
-
-		$timber_comments = array_values($timber_comments);
-
-		return $timber_comments;
+		return new CommentThread($this->ID);
 	}
 
 	/**
@@ -1655,7 +1617,7 @@ class Post extends Core implements CoreInterface {
 	 * @param string $CommentClass
 	 * @return array|mixed
 	 */
-	public function get_comments( $count = 0, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
+	public function get_comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
 		return $this->comments($count, $order, $type, $status, $CommentClass);
 	}
 

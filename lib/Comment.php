@@ -41,7 +41,7 @@ class Comment extends Core implements CoreInterface {
 	public $user_id;
 	public $post_id;
 	public $comment_author;
-	public $depth;
+	public $_depth = 0;
 
 	protected $children = array();
 
@@ -161,12 +161,29 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @param Comment $child_comment;
 	 */
 	public function add_child( Comment $child_comment ) {
 		if ( !is_array($this->children) ) {
 			$this->children = array();
 		}
 		return $this->children[] = $child_comment;
+	}
+
+	/**
+	 * @param int $depth
+	 */
+	public function update_depth( $depth = 0 ) {
+		$this->_depth = $depth;
+		$children = $this->children();
+		foreach ( $children as $comment ) {
+			$child_depth = $depth + 1;
+			$comment->update_depth( $child_depth );
+		}
+	}
+
+	public function depth() {
+		return $this->_depth;
 	}
 
 	/**
