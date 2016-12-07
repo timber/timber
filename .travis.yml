@@ -1,4 +1,4 @@
-sudo: true
+sudo: false
 
 language: php
 
