@@ -86,7 +86,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  		$template = '{{Image(img).src|resize(200, 200)}}';
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$resized_one = Timber\ImageHelper::get_server_location($str);
- 		sleep(5);
+ 		sleep(1);
  		$filename = self::copyTestImage('cardinals.jpg', 'arch.jpg');
  		
  		$str = Timber::compile_string($template, array('img' => $attach_id));
@@ -95,12 +95,11 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  		$attach_id = self::get_image_attachment($pid, 'cardinals.jpg');
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$resized_known = Timber\ImageHelper::get_server_location($str);
- 		$pixel = TestTimberImage::getPixel($resized_known, 5, 5);
- 		$is_white = TestTimberImage::checkPixel($resized_known, 5, 5, '#FFFFFF');
+ 		$pixel = TestTimberImage::getPixel($resized_one, 5, 5);
+ 		$is_white = TestTimberImage::checkPixel($resized_one, 5, 5, '#FFFFFF');
  		$this->assertTrue($is_white);
- 		$is_also_white = TestTimberImage::checkPixel($resized_tester, 5,5, '#FFFFFF');
+ 		$is_also_white = TestTimberImage::checkPixel($resized_one, 5,5, '#FFFFFF');
  		$this->assertTrue($is_also_white);
- 		//resize original, compare
  		
 
  	}
