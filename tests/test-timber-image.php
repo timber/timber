@@ -686,13 +686,13 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if ( ! extension_loaded( 'gd' ) ) {
 			self::markTestSkipped( 'Letterbox image test requires GD extension' );
 		}
-		$dest = get_template_directory().'/images/cardinals.jpg';
+		$dest = realpath(get_template_directory()).'/images/cardinals.jpg';
 		copy( __DIR__.'/assets/cardinals.jpg', $dest );
-		$image = get_template_directory_uri().'/images/cardinals.jpg';
+		$image = realpath(get_template_directory_uri()).'/images/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
 		$letterboxed = TimberImageHelper::letterbox( $image, 600, 300, '#FF0000' );
-		$this->assertFileExists( get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg' );
-		unlink( get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg' );
+		$this->assertFileExists( realpath(get_template_directory()).'/images/cardinals-lbox-600x300-FF0000.jpg' );
+		unlink( realpath(get_template_directory()).'/images/cardinals-lbox-600x300-FF0000.jpg' );
 	}
 
 	function testImageWidthWithFilter() {
