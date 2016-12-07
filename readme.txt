@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.1.10
+Stable tag: 1.1.11
 Tested up to: 4.6
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,12 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 1.1.11 =
+* Improved flexibility for public query_vars #1250 (thanks @xavivars)
+* Children should inehrit publish state #1255 (thanks @motia)
+* Pages are sorted by their menu order instead of publish order #1251 (thanks @forgandenny)
+* Fixes to object caching #1259
 
 = 1.1.10 =
 * Added support for Co-Authors Plus Guest Authors #1239 (thanks @motia)
