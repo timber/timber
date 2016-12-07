@@ -95,8 +95,13 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  		$attach_id = self::get_image_attachment($pid, 'cardinals.jpg');
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$resized_known = Timber\ImageHelper::get_server_location($str);
+ 		$pixel = TestTimberImage::getPixel($resized_known, 5, 5);
+ 		$is_white = TestTimberImage::checkPixel($resized_known, 5, 5, '#FFFFFF');
+ 		$this->assertTrue($is_white);
+ 		$is_also_white = TestTimberImage::checkPixel($resized_tester, 5,5, '#FFFFFF');
+ 		$this->assertTrue($is_also_white);
  		//resize original, compare
- 		$this->assertEquals(md5(file_get_contents($resized_known)), md5(file_get_contents($resized_tester)));
+ 		
 
  	}
 
@@ -481,6 +486,21 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 			return true;
 		}
 		return false;
+	}
+
+	function getPixel($file, $x, $y) {
+		if ( self::is_png($file) ) {
+			$image = imagecreatefrompng( $file );
+		} else if ( self::is_gif($file) ) {
+			$image = imagecreatefromgif( $file );
+		} else {
+			$image = imagecreatefromjpeg( $file );
+		}
+		$rgb = imagecolorat( $image, $x, $y );
+		$r = ($rgb >> 16) & 0xFF;
+		$g = ($rgb >> 8) & 0xFF;
+		$b = $rgb & 0xFF;
+		return ImageOperation::rgbhex($r, $g, $b);
 	}
 
 	function testPNGtoJPG() {
