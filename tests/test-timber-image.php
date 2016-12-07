@@ -30,6 +30,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		return $destination;
 	}
 
+
 	static function getTestImageURL( $img = 'arch.jpg', $relative = false) {
 		$upload_dir = wp_upload_dir();
 		$result = $upload_dir['url'].'/'.$img;
@@ -685,18 +686,19 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testThemeImageResize() {
-		if (!file_exists(get_template_directory().'/images')) {
-    		mkdir(get_template_directory().'/images', 0777, true);
+		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
+		if (!file_exists(get_stylesheet_directory_uri().'/images')) {
+    		mkdir($theme_url.'/images', 0777, true);
 		}
-		$dest = get_template_directory().'/images/cardinals.jpg';
+		$dest = get_stylesheet_directory_uri().'/images/cardinals.jpg';
 		copy( __DIR__.'/assets/cardinals.jpg', $dest );
-		$image = get_template_directory_uri().'/images/cardinals.jpg';
+		$image = get_stylesheet_directory_uri().'/images/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
 		$data = array();
 		$data['test_image'] = $image;
 		$data['size'] = array( 'width' => 120, 'height' => 120 );
 		$str = Timber::compile( 'assets/image-test.twig', $data );
-		$file_location = get_template_directory().'/images/cardinals-120x120-c-default.jpg';
+		$file_location = get_stylesheet_directory_uri().'/images/cardinals-120x120-c-default.jpg';
 		$this->assertFileExists( $file_location );
 		$this->addFile( $file_location );
 	}
