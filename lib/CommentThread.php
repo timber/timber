@@ -25,11 +25,13 @@ class CommentThread extends \ArrayObject {
 	public function orderby( $orderby = 'wp' ) {
 		$this->_orderby = $orderby;
 		$this->init();
+		return $this;
 	}
 
-	public function order( $order = 'DESC' ) {
+	public function order( $order = 'ASC' ) {
 		$this->_order = $order;
 		$this->init();
+		return $this;
 	}
 
 	function init() {
@@ -40,7 +42,6 @@ class CommentThread extends \ArrayObject {
 			set_query_var('cpage', 'newest' == get_option('default_comments_page') ? get_comment_pages_count() : 1);
 			$overridden_cpage = true;
 		}
-
 		foreach ( $comments as $key => &$comment ) {
 			$timber_comment = new $this->CommentClass($comment);
 			$tcs[$timber_comment->id] = $timber_comment;
@@ -75,15 +76,25 @@ class CommentThread extends \ArrayObject {
 	}
 
 	protected function clear() {
-		foreach ( $this as $item ) {
-			unset($item);
-		}
+		$iterator = $this->getIterator();
+		$deleteOffset = true;
+		foreach ($iterator as $key => $value) {
+            if ($deleteOffset && $iterator->offsetExists($key) ){
+                 $iterator->offsetUnset($key);                                       
+            }                
+			//if remove last record than the foreach ( $this->next() ) fails so 
+			//we have to break in this case the next ->next call
+			//after any ->offsetUnset calls
+        	if (!$iterator->valid()) break;
+    	}
 	}
 
 	protected function import_comments( $arr ) {
 		$this->clear();
+		$i = 0;
 		foreach ( $arr as $comment ) {
-			$this[] = $comment;
+			$this[$i] = $comment;
+			$i++;
 		}
 	}
 
