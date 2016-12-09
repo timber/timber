@@ -311,4 +311,19 @@ class MenuItem extends Core implements CoreInterface {
 			return $this->__title;
 		}
 	}
+	
+	/**
+	 * Gets the post thumbnail image url
+	 * @example
+	 * ```twig
+	 * {% for item in menu.items %}
+	 *     <li><a href="{{ item.link }}"><img src="{{ item.thumbnail }}"/></a></li>
+	 * {% endfor %}
+	 * ```
+	 * @return string the public thumbnail url
+	 */
+	public function thumbnail() {
+		$postId = get_post_meta( $this->ID, '_menu_item_object_id', true );
+		return get_the_post_thumbnail_url($postId);
+	}
 }
