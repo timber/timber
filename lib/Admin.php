@@ -25,7 +25,6 @@ class Admin {
 			$links[] = '<a href="http://upstatement.com/timber" target="_blank">Homepage</a>';
 			$links[] = '<a href="https://github.com/timber/timber/wiki" target="_blank">Documentation</a>';
 			$links[] = '<a href="https://github.com/timber/timber/wiki/getting-started" target="_blank">Starter Guide</a>';
-			$links[] = '<p><a href="https://downloads.wordpress.org/plugin/timber-library.0.22.6.zip">Site not working on 1.0? Downgrade to version 0.22.6</a></p>';
 			return $links;
 		}
 		return $links;
@@ -45,7 +44,7 @@ class Admin {
 	 */
 	public static function in_plugin_update_message( $plugin_data, $r ) {
 		$m = '';
-
+		print_r($plugin_data);
 		if ( version_compare("1.0.0", $plugin_data['new_version']) <= 0 ) {
 			//a version of 1.0.0 or greater is availalbe
 			$m .= '<br><b>Warning:</b> Timber 1.0 removed a number of features and methods. Before upgrading please test your theme on a local or staging site to ensure that your theme will work with the newest version.<br>
