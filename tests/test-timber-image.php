@@ -30,6 +30,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		return $destination;
 	}
 
+
 	static function getTestImageURL( $img = 'arch.jpg', $relative = false) {
 		$upload_dir = wp_upload_dir();
 		$result = $upload_dir['url'].'/'.$img;
@@ -86,7 +87,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  		$template = '{{Image(img).src|resize(200, 200)}}';
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$resized_one = Timber\ImageHelper::get_server_location($str);
- 		sleep(5);
+ 		sleep(1);
  		$filename = self::copyTestImage('cardinals.jpg', 'arch.jpg');
  		
  		$str = Timber::compile_string($template, array('img' => $attach_id));
@@ -95,8 +96,12 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  		$attach_id = self::get_image_attachment($pid, 'cardinals.jpg');
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$resized_known = Timber\ImageHelper::get_server_location($str);
- 		//resize original, compare
- 		$this->assertEquals(md5(file_get_contents($resized_known)), md5(file_get_contents($resized_tester)));
+ 		$pixel = TestTimberImage::getPixel($resized_one, 5, 5);
+ 		$is_white = TestTimberImage::checkPixel($resized_one, 5, 5, '#FFFFFF');
+ 		$this->assertTrue($is_white);
+ 		$is_also_white = TestTimberImage::checkPixel($resized_one, 5,5, '#FFFFFF');
+ 		$this->assertTrue($is_also_white);
+ 		
 
  	}
 
@@ -483,6 +488,21 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		return false;
 	}
 
+	function getPixel($file, $x, $y) {
+		if ( self::is_png($file) ) {
+			$image = imagecreatefrompng( $file );
+		} else if ( self::is_gif($file) ) {
+			$image = imagecreatefromgif( $file );
+		} else {
+			$image = imagecreatefromjpeg( $file );
+		}
+		$rgb = imagecolorat( $image, $x, $y );
+		$r = ($rgb >> 16) & 0xFF;
+		$g = ($rgb >> 8) & 0xFF;
+		$b = $rgb & 0xFF;
+		return ImageOperation::rgbhex($r, $g, $b);
+	}
+
 	function testPNGtoJPG() {
 		if ( ! extension_loaded( 'gd' ) ) {
 			self::markTestSkipped( 'PNG to JPEG conversion test requires GD extension' );
@@ -666,18 +686,19 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testThemeImageResize() {
-		if (!file_exists(get_template_directory().'/images')) {
-    		mkdir(get_template_directory().'/images', 0777, true);
+		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
+		if (!file_exists(get_stylesheet_directory_uri().'/images')) {
+    		mkdir($theme_url.'/images', 0777, true);
 		}
-		$dest = get_template_directory().'/images/cardinals.jpg';
+		$dest = get_stylesheet_directory_uri().'/images/cardinals.jpg';
 		copy( __DIR__.'/assets/cardinals.jpg', $dest );
-		$image = get_template_directory_uri().'/images/cardinals.jpg';
+		$image = get_stylesheet_directory_uri().'/images/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
 		$data = array();
 		$data['test_image'] = $image;
 		$data['size'] = array( 'width' => 120, 'height' => 120 );
 		$str = Timber::compile( 'assets/image-test.twig', $data );
-		$file_location = get_template_directory().'/images/cardinals-120x120-c-default.jpg';
+		$file_location = get_stylesheet_directory_uri().'/images/cardinals-120x120-c-default.jpg';
 		$this->assertFileExists( $file_location );
 		$this->addFile( $file_location );
 	}
@@ -691,8 +712,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$image = realpath(get_template_directory_uri()).'/images/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
 		$letterboxed = TimberImageHelper::letterbox( $image, 600, 300, '#FF0000' );
-		$this->assertFileExists( realpath(get_template_directory()).'/images/cardinals-lbox-600x300-FF0000.jpg' );
-		unlink( realpath(get_template_directory()).'/images/cardinals-lbox-600x300-FF0000.jpg' );
+		$this->assertFileExists( realpath(get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg') );
+		unlink( realpath(get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg') );
 	}
 
 	function testImageWidthWithFilter() {

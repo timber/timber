@@ -94,10 +94,9 @@ class TestTimberComment extends Timber_UnitTestCase {
 	function testCommentWithChildren() {
 		$kramer = $this->factory->user->create(array('display_name' => 'Cosmo Kramer'));
 		$post_id = $this->factory->post->create();
-		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'These pretzels are making me thirsty.', 'user_id' => $kramer));
-		sleep(2);
-		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'Perhaps there’s more to Newman than meets the eye.'));
-		$child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'No, there’s less.', 'comment_parent' => $comment_id));
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'These pretzels are making me thirsty.', 'user_id' => $kramer, 'comment_date' => '2015-08-21 03:24:07'));
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'Perhaps there’s more to Newman than meets the eye.', 'comment_date' => '2015-08-21 03:25:07'));
+		$child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'No, there’s less.', 'comment_parent' => $comment_id, 'comment_date' => '2015-08-21 03:26:07'));
 		$post = new TimberPost($post_id);
 		$comments = $post->get_comments();
 		$this->assertEquals(2, count($comments));

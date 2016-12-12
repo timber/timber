@@ -50,4 +50,8 @@ abstract class Operation {
 		$int = hexdec($hexstr);
 		return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
 	}
+
+	public static function rgbhex( $r, $g, $b ) {
+		return '#' . sprintf('%02x', $r) . sprintf('%02x', $g) . sprintf('%02x', $b);
+	}
 }
