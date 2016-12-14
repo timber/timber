@@ -123,7 +123,6 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 		$img = 'https://raw.githubusercontent.com/timber/timber/master/tests/assets/arch-2night.jpg';
 		// test with a local and external file
-		
 		$resized = TimberImageHelper::resize($img, 50, 50);
 
 		// make sure the base url has not been duplicated (https://github.com/timber/timber/issues/405)

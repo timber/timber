@@ -17,6 +17,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( '/home/', $item->path() );
 	}
 
+
+
 	function testTrailingSlashesOrNot() {
 		self::setPermalinkStructure();
 		$items = array();
@@ -41,6 +43,19 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		//make sure other menus are still more powerful
 		$menu = new TimberMenu();
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
+	}
+
+	function testMenuWithImage() {
+		add_theme_support('thumbnails');
+		self::setPermalinkStructure();
+		$pid = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
+		$iid = TestTimberImage::get_image_attachment($pid);
+		add_post_meta( $pid, '_thumbnail_id', $iid, true );
+		$post = new \Timber\Post($pid);
+		$page_menu = new TimberMenu();
+		$str = '{% for item in menu.items %}{{item.thumbnail.src}}{% endfor %}';
+		$result = Timber::compile_string($str, array('menu' => $page_menu));
+		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $result);
 	}
 
 	function testPagesMenuWithFalse() {
