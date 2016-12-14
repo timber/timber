@@ -2,9 +2,13 @@
 
 class TestTimberMultisite extends Timber_UnitTestCase {
 
+	function setUp() {
+		self::clear();
+		parent::setUp();
+	}
+
 	function testGetSubDomainSites() {
-		// error_log('################');
-		// error_log('testGetSubDomainSites');
+		self::clear();
 		if ( !is_multisite()) {
 			$this->markTestSkipped("You can't get sites except on Multisite");
 			return;
@@ -18,8 +22,7 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 	}
 
 	function testGetSubDirectorySites() {
-		// error_log('################');
-		// error_log('testGetSubDirectorySites');
+		self::clear();
 		if ( !is_multisite()) {
 			$this->markTestSkipped("You can't get sites except on Multisite");
 			return;
@@ -36,7 +39,6 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 	public static function createSubDomainSite($domain = 'test.example.org', $title = 'Multisite Test' ) {
 		$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 		$blog_id = wpmu_create_blog($domain, '/', $title, 1);
-		//error_log("created $domain at ".$blog_id);
 		switch_to_blog($blog_id);
 		return $blog_id;
 	}
@@ -44,21 +46,20 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 	public static function createSubDirectorySite($dir = '/mysite/', $title = 'Multisite Subdir Test' ) {
 		$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 		$blog_id = wpmu_create_blog('example.org', $dir, $title, 1);
-		//error_log("created $dir at ".$blog_id);
 		switch_to_blog($blog_id);
 		return $blog_id;
 	}
 
+	public static function clear() {
+		global $wpdb;
+		$query = "DELETE FROM $wpdb->blogs WHERE blog_id > 1";
+		$wpdb->query($query);
+		$blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs ORDER BY blog_id ASC");
+	}
+
 	function tearDown() {
-		if (is_multisite()) {
-			switch_to_blog(1);
-			$sites = Timber::get_sites();
-			foreach($sites as $site) {
-				if ($site->ID > 0) {
-					wpmu_delete_blog($site->ID, true);
-				}
-			}
-		}
+		self::clear();
+		parent::tearDown();
 	}
 
 }
