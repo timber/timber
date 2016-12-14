@@ -685,11 +685,19 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertFileNotExists( $letterboxed_file );
 	}
 
-	function testThemeImageResize() {
+	function _makeThemeImageDirectory() {
 		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
-		if (!file_exists(get_stylesheet_directory_uri().'/images')) {
-    		mkdir($theme_url.'/images', 0777, true);
+		$img_dir = get_stylesheet_directory_uri().'/images';
+		if ( !file_exists($img_dir) ) {
+    		mkdir($img_dir, 0777, true);
+    		error_log($img_dir . ' created');
+		} else {
+			error_log($img_dir . ' exists');
 		}
+	}
+
+	function testThemeImageResize() {
+		self::_makeThemeImageDirectory();
 		$dest = get_stylesheet_directory_uri().'/images/cardinals.jpg';
 		$source = __DIR__.'/assets/cardinals.jpg';
 		error_log('source = '.$source);
@@ -707,6 +715,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testThemeImageLetterbox() {
+		self::_makeThemeImageDirectory();
 		if ( ! extension_loaded( 'gd' ) ) {
 			self::markTestSkipped( 'Letterbox image test requires GD extension' );
 		}
