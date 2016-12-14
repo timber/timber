@@ -691,7 +691,10 @@ class TestTimberImage extends TimberImage_UnitTestCase {
     		mkdir($theme_url.'/images', 0777, true);
 		}
 		$dest = get_stylesheet_directory_uri().'/images/cardinals.jpg';
-		copy( __DIR__.'/assets/cardinals.jpg', $dest );
+		$source = __DIR__.'/assets/cardinals.jpg';
+		error_log('source = '.$source);
+		error_log('dest = ' .$dest);
+		copy($source, $dest);
 		$image = get_stylesheet_directory_uri().'/images/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
 		$data = array();
@@ -707,8 +710,11 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if ( ! extension_loaded( 'gd' ) ) {
 			self::markTestSkipped( 'Letterbox image test requires GD extension' );
 		}
+		$source = __DIR__.'/assets/cardinals.jpg';
 		$dest = realpath(get_template_directory()).'/images/cardinals.jpg';
-		copy( __DIR__.'/assets/cardinals.jpg', $dest );
+		error_log('source = '.$source);
+		error_log('dest = ' .$dest);
+		copy($source, $dest);
 		$image = realpath(get_template_directory_uri()).'/images/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
 		$letterboxed = TimberImageHelper::letterbox( $image, 600, 300, '#FF0000' );
