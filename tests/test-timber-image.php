@@ -685,14 +685,31 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertFileNotExists( $letterboxed_file );
 	}
 
+	function _makeThemeImageDirectory() {
+		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
+		$img_dir = get_stylesheet_directory_uri().'/images';
+		if ( !file_exists($img_dir) ) {
+    			mkdir($img_dir, 0777, true);
+		}
+	}
+
+	function tearDown() {
+		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
+		$img_dir = get_stylesheet_directory_uri().'/images';
+		if ( file_exists($img_dir) ) {
+			exec(sprintf("rm -rf %s", escapeshellarg($img_dir)));
+		}
+		parent::tearDown();
+	}
+
 	function testThemeImageResize() {
 		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
-		if (!file_exists(get_stylesheet_directory_uri().'/images')) {
-    		mkdir($theme_url.'/images', 0777, true);
-		}
+		self::_makeThemeImageDirectory();
+		$source = __DIR__.'/assets/cardinals.jpg';
 		$dest = get_stylesheet_directory_uri().'/images/cardinals.jpg';
-		copy( __DIR__.'/assets/cardinals.jpg', $dest );
-		$image = get_stylesheet_directory_uri().'/images/cardinals.jpg';
+		copy($source, $dest);
+		$this->assertTrue(file_exists($dest));
+		$image = $theme_url.'/images/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
 		$data = array();
 		$data['test_image'] = $image;
@@ -704,12 +721,15 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testThemeImageLetterbox() {
+		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
+		self::_makeThemeImageDirectory();
 		if ( ! extension_loaded( 'gd' ) ) {
 			self::markTestSkipped( 'Letterbox image test requires GD extension' );
 		}
+		$source = __DIR__.'/assets/cardinals.jpg';
 		$dest = realpath(get_template_directory()).'/images/cardinals.jpg';
-		copy( __DIR__.'/assets/cardinals.jpg', $dest );
-		$image = realpath(get_template_directory_uri()).'/images/cardinals.jpg';
+		copy($source, $dest);
+		$image = $theme_url.'/images/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
 		$letterboxed = TimberImageHelper::letterbox( $image, 600, 300, '#FF0000' );
 		$this->assertFileExists( realpath(get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg') );

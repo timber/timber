@@ -375,16 +375,35 @@ class ImageHelper {
 			}
 			if ( 0 === strpos($tmp, content_url()) ) {
 				$result['base'] = self::BASE_CONTENT; // content-based
-				$tmp = str_replace(content_url(), '', $tmp);
+				$tmp = self::theme_url_to_dir($tmp);
 			}
 		}
 		$parts = pathinfo($tmp);
+
 		$result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
 		$result['filename'] = $parts['filename'];
 		$result['extension'] = strtolower($parts['extension']);
 		$result['basename'] = $parts['basename'];
-		// todo filename
 		return $result;
+	}
+
+	/**
+	 * Converts a URL located in a theme directory into the raw path
+	 * @param string 	$src a URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg)
+	 * @return string full path to the file in question
+	 */
+	protected static function theme_url_to_dir( $tmp ) 	{
+		$root = trailingslashit(get_theme_root_uri()).get_stylesheet();
+		$tmp = str_replace($root, '', $tmp);
+		$tmp = realpath(get_stylesheet_directory_uri().$tmp);
+		return $tmp;
+	}
+
+	protected static function is_in_theme_dir( $path ) {
+		$root = realpath(get_stylesheet_directory_uri());
+		if ( 0 === strpos($path, $root) ) {
+			return true;
+		}
 	}
 
 	/**
@@ -433,10 +452,15 @@ class ImageHelper {
 		if ( self::BASE_CONTENT == $base ) {
 			$path = WP_CONTENT_DIR;
 		}
+		if ( self::is_in_theme_dir(trailingslashit($subdir).$filename) ) {
+			return trailingslashit($subdir).$filename;
+			$path = $subdir;
+		}
 		if ( !empty($subdir) ) {
 			$path .= $subdir;
 		}
 		$path .= '/'.$filename;
+
 		return $path;
 	}
 
@@ -459,7 +483,6 @@ class ImageHelper {
 			return '';
 		}
 		$external = false;
-
 		// if external image, load it first
 		if ( URLHelper::is_external_content($src) ) {
 			$src = self::sideload_image($src);

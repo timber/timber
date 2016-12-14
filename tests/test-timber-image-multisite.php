@@ -6,6 +6,7 @@
 			if (is_multisite()) {
 				switch_to_blog(1);
 			}
+			TestTimberMultisite::clear();
 		}
 
 		function testSubDomainImageLocaion() {
