@@ -3,8 +3,8 @@ sudo: false
 language: php
 
 php:
-    #- 5.4
-    #- 5.5
+    - 5.4
+    - 5.5
     - 7.0
 
 env:
@@ -13,10 +13,10 @@ env:
 
 matrix:
     include:
-        #- php: 5.3
-          #env: WP_VERSION=latest WP_MULTISITE=0
-        #- php: hhvm
-          #env: WP_VERSION=latest WP_MULTISITE=1
+        - php: 5.3
+          env: WP_VERSION=latest WP_MULTISITE=0
+        - php: hhvm
+          env: WP_VERSION=latest WP_MULTISITE=1
 
 before_script:
     - if [ "$TRAVIS_PHP_VERSION" == 5.5 ] || [ "$TRAVIS_PHP_VERSION" == 5.4 ] || [ "$TRAVIS_PHP_VERSION" == 7.0 ]; then autodetect | pecl install imagick; fi
@@ -25,7 +25,7 @@ before_script:
     - composer install --dev --prefer-source
 
 script:
-    - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.0 ]; then mkdir -p build/logs; phpunit --coverage-clover build/logs/clover.xml --filter testThemeImage; else phpunit -c bin/phpunit-nocover.xml --filter testThemeImage; fi
+    - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.0 ]; then mkdir -p build/logs; phpunit --coverage-clover build/logs/clover.xml; else phpunit -c bin/phpunit-nocover.xml; fi
 
 after_script:
     - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.0 ]; then php vendor/bin/coveralls -v; fi
