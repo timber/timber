@@ -2,7 +2,13 @@
 
 class TestTimberMultisite extends Timber_UnitTestCase {
 
+	function setUp() {
+		self::clear();
+		parent::setUp();
+	}
+
 	function testGetSubDomainSites() {
+		self::clear();
 		if ( !is_multisite()) {
 			$this->markTestSkipped("You can't get sites except on Multisite");
 			return;
@@ -16,6 +22,7 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 	}
 
 	function testGetSubDirectorySites() {
+		self::clear();
 		if ( !is_multisite()) {
 			$this->markTestSkipped("You can't get sites except on Multisite");
 			return;
@@ -43,16 +50,16 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		return $blog_id;
 	}
 
+	public static function clear() {
+		global $wpdb;
+		$query = "DELETE FROM $wpdb->blogs WHERE blog_id > 1";
+		$wpdb->query($query);
+		$blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs ORDER BY blog_id ASC");
+	}
+
 	function tearDown() {
-		if (is_multisite()) {
-			switch_to_blog(1);
-			$sites = Timber::get_sites();
-			foreach($sites as $site) {
-				if ($site->ID > 0) {
-					wpmu_delete_blog($site->ID, true);
-				}
-			}
-		}
+		self::clear();
+		parent::tearDown();
 	}
 
 }
