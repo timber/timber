@@ -689,10 +689,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
 		$img_dir = get_stylesheet_directory_uri().'/images';
 		if ( !file_exists($img_dir) ) {
-    		mkdir($img_dir, 0777, true);
-    		error_log($img_dir . ' created');
-		} else {
-			error_log($img_dir . ' exists');
+    			mkdir($img_dir, 0777, true);
 		}
 	}
 
@@ -710,19 +707,16 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		self::_makeThemeImageDirectory();
 		$source = __DIR__.'/assets/cardinals.jpg';
 		$dest = get_stylesheet_directory_uri().'/images/cardinals.jpg';
-		// error_log('source = '.$source);
-		// error_log('dest = ' .$dest);
 		copy($source, $dest);
 		$this->assertTrue(file_exists($dest));
 		$image = $theme_url.'/images/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
 		$data = array();
 		$data['test_image'] = $image;
-		error_log('$test_image='.$image);
 		$data['size'] = array( 'width' => 120, 'height' => 120 );
 		$str = Timber::compile( 'assets/image-test.twig', $data );
 		$file_location = get_stylesheet_directory_uri().'/images/cardinals-120x120-c-default.jpg';
-		//$this->assertFileExists( $file_location );
+		$this->assertFileExists( $file_location );
 		$this->addFile( $file_location );
 	}
 
@@ -734,8 +728,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		}
 		$source = __DIR__.'/assets/cardinals.jpg';
 		$dest = realpath(get_template_directory()).'/images/cardinals.jpg';
-		error_log('source = '.$source);
-		error_log('dest = ' .$dest);
 		copy($source, $dest);
 		$image = $theme_url.'/images/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
