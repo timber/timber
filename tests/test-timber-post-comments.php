@@ -50,29 +50,34 @@
 		}
 
 		function testMultilevelThreadedComments() {
+			update_option('comment_order', 'ASC');
 			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
 			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
-			$comment_child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $comment_id));
-			$comment_grandchild_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $comment_child_id));
+			$child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $comment_id));
+			$grandchild_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $child_id));
+			$grandchild_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $child_id));
 			$post = new TimberPost($post_id);
 			$comments = $post->get_comments();
 			$this->assertEquals(1, count($comments));
 			$children = $comments[0]->children();
-			$this->assertEquals(2, count($children));
+			$this->assertEquals(1, count($children));
+			$grand_children = $children[0]->children();
+			$this->assertEquals(2, count($grand_children));
 		}
 
 		function testMultilevelThreadedCommentsCorrectParents(){
-			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
-			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
-			$comment2_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
-			$comment2_child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $comment2_id));
-			$comment2_grandchild_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $comment2_child_id));
+			update_option('comment_order', 'ASC');
+			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles', 'post_date' => '2016-11-28 12:00:00'));
+			$uncle_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_date' => '2016-11-28 13:00:00', 'comment_content' => 'i am the UNCLE'));
+			$parent_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_date' => '2016-11-28 14:00:00', 'comment_content' => 'i am the Parent'));
+			$child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $parent_id, 'comment_date' => '2016-11-28 15:00:00', 'comment_content' => 'I am the child'));
+			$grandchild_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $child_id, 'comment_date' => '2016-11-28 16:00:00', 'comment_content' => 'I am the GRANDchild'));
 			$post = new TimberPost($post_id);
 			$comments = $post->get_comments();
 			$children = $comments[1]->children();
-			$this->assertEquals($comment2_id, $children[0]->comment_parent);
-			$grandchild = $children[1];
-			$this->assertEquals($comment2_child_id, $grandchild->comment_parent);
+			$this->assertEquals($parent_id, $children[0]->comment_parent);
+			$grandchild = $children[0]->children()[0];
+			$this->assertEquals($child_id, $grandchild->comment_parent);
 		}
 
 		function testThreadedCommentsWithTemplate() {
@@ -83,7 +88,6 @@
 			$comment2_grandchild_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $comment2_child_id, 'comment_content' => 'Respond2Respond', 'comment_date' => '2016-11-28 15:58:18'));
 			$post = new TimberPost($post_id);
 			$str = Timber::compile('assets/comments-thread.twig', array('post' => $post));
-			echo $str;
 		}
 
 	}

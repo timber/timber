@@ -889,7 +889,7 @@ class Post extends Core implements CoreInterface {
 		$commenter = wp_get_current_commenter();
 		$comment_author_email = $commenter['comment_author_email'];
 
-		$args = array('post_id' => $this->ID, 'status' => $status, 'order' => $order);
+		$args = array('status' => $status, 'order' => $order);
 		if ( $count > 0 ) {
 			$args['number'] = $count;
 		}
@@ -903,10 +903,7 @@ class Post extends Core implements CoreInterface {
 			$args['include_unapproved'] = array($comment_author_email);
 		}
 
-		$comments = get_comments($args);
-
-
-		return new CommentThread($this->ID);
+		return new CommentThread($this->ID, $args);
 	}
 
 	/**

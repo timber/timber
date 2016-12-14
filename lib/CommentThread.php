@@ -11,32 +11,39 @@ class CommentThread extends \ArrayObject {
 	var $_orderby = '';
 	var $_order = 'ASC';
 
-	function __construct( $post_id ) {
+	function __construct( $post_id, $args = array() ) {
 		parent::__construct();
 		$this->post_id = $post_id;
-		$this->init($post_id);
+		$this->init($args);
 	}
 
-	protected function fetch_comments() {
-		$comments = get_comments( array('post_id' => $this->post_id, 'orderby' => $this->_orderby, 'order' => $this->_order) );
+	protected function fetch_comments( $args = array() ) {
+		$args['post_id'] = $this->post_id;
+		$comments = get_comments($args);
 		return $comments;
 	}
 
+	/**
+	 * @experimental
+	 */
 	public function orderby( $orderby = 'wp' ) {
 		$this->_orderby = $orderby;
 		$this->init();
 		return $this;
 	}
 
+	/**
+	 * @experimental
+	 */
 	public function order( $order = 'ASC' ) {
 		$this->_order = $order;
 		$this->init();
 		return $this;
 	}
 
-	function init() {
+	function init( $args = array() ) {
 		$overridden_cpage = false;
-		$comments = $this->fetch_comments();
+		$comments = $this->fetch_comments( $args );
 		$tcs = array();
 		if ( '' == get_query_var('cpage') && get_option('page_comments') ) {
 			set_query_var('cpage', 'newest' == get_option('default_comments_page') ? get_comment_pages_count() : 1);

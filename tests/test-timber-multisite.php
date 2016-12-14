@@ -9,7 +9,7 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 
 	function testGetSubDomainSites() {
 		self::clear();
-		if ( !is_multisite()) {
+		if ( !is_multisite() ) {
 			$this->markTestSkipped("You can't get sites except on Multisite");
 			return;
 		}
@@ -23,7 +23,7 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 
 	function testGetSubDirectorySites() {
 		self::clear();
-		if ( !is_multisite()) {
+		if ( !is_multisite() ) {
 			$this->markTestSkipped("You can't get sites except on Multisite");
 			return;
 		}
@@ -51,6 +51,9 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 	}
 
 	public static function clear() {
+		if ( !is_multisite() ) {
+			return;
+		}
 		global $wpdb;
 		$query = "DELETE FROM $wpdb->blogs WHERE blog_id > 1";
 		$wpdb->query($query);

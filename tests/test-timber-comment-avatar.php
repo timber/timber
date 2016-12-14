@@ -73,7 +73,7 @@
 			$this->assertNotEquals($not_gravatar, md5(file_get_contents(dirname(__FILE__).'/assets/jarednova.jpeg')));
 		}
 
-		function testAvatar(){
+		function testAvatarSimple(){
 			if (!TestTimberImage::is_connected()){
 				$this->markTestSkipped('Cannot test avatar images when not connected to internet');
 			}
@@ -105,7 +105,6 @@
 			#relative
 			$default_url = "/images/default.png";
 			$avatar = $comment->avatar(32, $default_url );
-			print_r($avatar);
 			if (strstr($avatar, '?')){
 	  			list($url, $params) = explode('?', $avatar);
 	  			$default_url = $theme_url . $default_url;
