@@ -696,6 +696,15 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		}
 	}
 
+	function tearDown() {
+		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
+		$img_dir = get_stylesheet_directory_uri().'/images';
+		if ( file_exists($img_dir) ) {
+			exec(sprintf("rm -rf %s", escapeshellarg($img_dir)));
+		}
+		parent::tearDown();
+	}
+
 	function testThemeImageResize() {
 		self::_makeThemeImageDirectory();
 		$dest = get_stylesheet_directory_uri().'/images/cardinals.jpg';
