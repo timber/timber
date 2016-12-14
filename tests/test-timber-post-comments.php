@@ -76,7 +76,8 @@
 			$comments = $post->get_comments();
 			$children = $comments[1]->children();
 			$this->assertEquals($parent_id, $children[0]->comment_parent);
-			$grandchild = $children[0]->children()[0];
+			$grand_children = $children[0]->children();
+			$grandchild = $grand_children[0];
 			$this->assertEquals($child_id, $grandchild->comment_parent);
 		}
 
