@@ -84,6 +84,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Timber Sugar**](https://github.com/timber/sugar) A catch-all for goodies to use w Timber.
 * [**Timmy**](https://github.com/MINDKomm/Timmy) Advanced image manipulation for Timber.
 * [**Twig**](https://github.com/fabpot/Twig) The template language used by Timber.
+* [**Pine**](https://github.com/azeemhassni/pine) A CLI installer for timber
 
 #### Projects that use Timber
 * [**Gantry5**](https://wordpress.org/plugins/gantry5/) a framework for theme development
