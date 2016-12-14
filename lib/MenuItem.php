@@ -313,7 +313,7 @@ class MenuItem extends Core implements CoreInterface {
 	}
 	
 	/**
-	 * Gets the post thumbnail image url
+	 * Gets the post thumbnail image object
 	 * @example
 	 * ```twig
 	 * {% for item in menu.items %}
@@ -323,7 +323,10 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string the public thumbnail url
 	 */
 	public function thumbnail() {
-		$postId = get_post_meta( $this->ID, '_menu_item_object_id', true );
-		return get_the_post_thumbnail_url($postId);
+		if ( $this->menu_object && method_exists($this->menu_object, 'thumbnail')) {
+			return $this->menu_object->thumbnail();
+		} else {
+			error_log('no master object');
+		}
 	}
 }
