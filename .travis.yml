@@ -8,8 +8,9 @@ php:
     - 7.0
 
 env:
-    #- WP_VERSION=latest WP_MULTISITE=0
+    - WP_VERSION=latest WP_MULTISITE=0
     - WP_VERSION=latest WP_MULTISITE=1
+    - WP_VERSION=4.7 WP_MULTISITE=1
     - WP_VERSION=4.5 WP_MULTISITE=1
 
 matrix:
