@@ -32,6 +32,12 @@ class CommentThread extends \ArrayObject {
 		return $this;
 	}
 
+	protected function merge_args( $args ) {
+		$base = array('status' => 'approve');
+		$overrides = array('order' => $this->_order);
+		return array_merge($base, $args, $overrides);
+	}
+
 	/**
 	 * @experimental
 	 */
@@ -43,6 +49,7 @@ class CommentThread extends \ArrayObject {
 
 	function init( $args = array() ) {
 		$overridden_cpage = false;
+		$args = self::merge_args($args);
 		$comments = $this->fetch_comments( $args );
 		$tcs = array();
 		if ( '' == get_query_var('cpage') && get_option('page_comments') ) {
@@ -65,6 +72,8 @@ class CommentThread extends \ArrayObject {
 			}
 		}
 
+		
+
 		foreach ( $children as &$comment ) {
 			$parent_id = $comment->comment_parent;
 			if ( isset($parents[$parent_id]) ) {
@@ -74,26 +83,16 @@ class CommentThread extends \ArrayObject {
 				$children[$parent_id]->add_child( $comment );
 			}
 		}
+		//there's something in update_depth that breaks order?
 
 		foreach ( $parents as $comment ) {
 			$comment->update_depth();
 		}
-		
 		$this->import_comments($parents);
 	}
 
 	protected function clear() {
-		$iterator = $this->getIterator();
-		$deleteOffset = true;
-		foreach ($iterator as $key => $value) {
-            if ($deleteOffset && $iterator->offsetExists($key) ){
-                 $iterator->offsetUnset($key);                                       
-            }                
-			//if remove last record than the foreach ( $this->next() ) fails so 
-			//we have to break in this case the next ->next call
-			//after any ->offsetUnset calls
-        	if (!$iterator->valid()) break;
-    	}
+		$this->exchangeArray(array());
 	}
 
 	protected function import_comments( $arr ) {
