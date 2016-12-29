@@ -92,7 +92,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 	}
 
 	function testCommentWithChildren() {
-		$kramer = $this->factory->user->create(array('display_name' => 'Cosmo Kramer'));
+		$kramer = $this->factory->user->create(array('display_name' => 'Kramer'));
 		$post_id = $this->factory->post->create();
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'These pretzels are making me thirsty.', 'user_id' => $kramer, 'comment_date' => '2015-08-21 03:24:07'));
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'Perhaps there’s more to Newman than meets the eye.', 'comment_date' => '2015-08-21 03:25:07'));
@@ -103,13 +103,15 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$this->assertEquals(1, count($comments[1]->children()));
 		$twig_string = '{{comment.author.name}}';
 		$result = Timber::compile_string($twig_string, array('comment' => $comments[0]));
-		$this->assertEquals('Cosmo Kramer', $result);
+		$this->assertEquals('Kramer', $result);
 	}
 
 	function _makeCommentPost() {
-		$kramer = $this->factory->user->create(array('display_name' => 'Cosmo Kramer'));
 		$elaine = $this->factory->user->create(array('display_name' => 'Elaine Benes'));
+		$kramer = $this->factory->user->create(array('display_name' => 'Kramer'));
 		$peterman = $this->factory->user->create(array('display_name' => 'J. Peterman'));
+		
+		
 		$post_id = $this->factory->post->create(array('post_date' => '2016-11-28 02:58:18'));
 		//1st parent @4:58am
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'These pretzels are making me thirsty.', 'user_id' => $kramer, 'comment_date' => '2016-11-28 04:58:18'));
@@ -140,7 +142,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$twig_string = '{{comment.author.name}}';
 		$comments = $post->get_comments();
 		$result = Timber::compile_string($twig_string, array('comment' => $comments[0]));
-		$this->assertEquals('Cosmo Kramer', $result);
+		$this->assertEquals('Kramer', $result);
 	}
 
 	function testCommentOrder() {
@@ -148,11 +150,24 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$post = new \Timber\Post($post_id);
 		$str = '{% for comment in post.comments %}{{comment.author.name}}, {% endfor %}';
 		$compiled = Timber::compile_string($str, array('post' => $post));
-		$this->assertEquals('Cosmo Kramer, Elaine Benes, J. Peterman, ', $compiled);
+		$this->assertEquals('Kramer, Elaine Benes, J. Peterman, ', $compiled);
 		$str = '{% for comment in post.comments.order("DESC") %}{{comment.author.name}}, {% endfor %}';
 		$compiled = Timber::compile_string($str, array('post' => $post));
-		$this->assertEquals('J. Peterman, Elaine Benes, Cosmo Kramer, ', $compiled);
+		$this->assertEquals('J. Peterman, Elaine Benes, Kramer, ', $compiled);
 	}
+
+	function testCommentOrderBy() {
+		$post_id = $this->_makeCommentPost();
+		$post = new \Timber\Post($post_id);
+		$str = '{% for comment in post.comments %}{{comment.author.name}}, {% endfor %}';
+		$compiled = Timber::compile_string($str, array('post' => $post));
+		$this->assertEquals('Kramer, Elaine Benes, J. Peterman, ', $compiled);
+		$str = '{% for comment in post.comments.orderby("comment_author") %}{{comment.author.name}}, {% endfor %}';
+		$compiled = Timber::compile_string($str, array('post' => $post));
+		$this->assertEquals('Kramer, Elaine Benes, J. Peterman, ', $compiled);
+	}
+
+
 
 
 
