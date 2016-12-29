@@ -41,6 +41,10 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 1.2.0 =
+* Fixed issues with WordPress 4.7
+* Introduced Timber\CommentThread object
+
 = 1.1.12 =
 * Fixed Twig issue with deprecation #1265 (thanks @codesman)!
 * Cleaned-up the warnings for WP.org users and disabled easy updates for major/milestone versions 331314d9aaf90a52ff1c5a213656b8c02a27c60e
