@@ -11,7 +11,7 @@ class CommentThread extends \ArrayObject {
 	var $_orderby = '';
 	var $_order = 'ASC';
 
-	function __construct( $post_id, $args = array() ) {
+	public function __construct( $post_id, $args = array() ) {
 		parent::__construct();
 		$this->post_id = $post_id;
 		$this->init($args);
@@ -47,8 +47,8 @@ class CommentThread extends \ArrayObject {
 		return $this;
 	}
 
-	function init( $args = array() ) {
-		$overridden_cpage = false;
+	protected function init( $args = array() ) {
+		global $overridden_cpage;
 		$args = self::merge_args($args);
 		$comments = $this->fetch_comments( $args );
 		$tcs = array();
