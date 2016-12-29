@@ -146,9 +146,9 @@ class TestTimberComment extends Timber_UnitTestCase {
 	function testCommentOrder() {
 		$post_id = $this->_makeCommentPost();
 		$post = new \Timber\Post($post_id);
-		// $str = '{% for comment in post.comments %}{{comment.author.name}}, {% endfor %}';
-		// $compiled = Timber::compile_string($str, array('post' => $post));
-		//$this->assertEquals('Cosmo Kramer, Elaine Benes, J. Peterman, ', $compiled);
+		$str = '{% for comment in post.comments %}{{comment.author.name}}, {% endfor %}';
+		$compiled = Timber::compile_string($str, array('post' => $post));
+		$this->assertEquals('Cosmo Kramer, Elaine Benes, J. Peterman, ', $compiled);
 		$str = '{% for comment in post.comments.order("DESC") %}{{comment.author.name}}, {% endfor %}';
 		$compiled = Timber::compile_string($str, array('post' => $post));
 		$this->assertEquals('J. Peterman, Elaine Benes, Cosmo Kramer, ', $compiled);
