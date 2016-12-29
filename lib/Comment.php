@@ -41,6 +41,7 @@ class Comment extends Core implements CoreInterface {
 	public $user_id;
 	public $post_id;
 	public $comment_author;
+	public $depth;
 
 	protected $children = array();
 

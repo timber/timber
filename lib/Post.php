@@ -919,6 +919,7 @@ class Post extends Core implements CoreInterface {
 		// Build a flattened (depth=1) comment tree
 		$comments_tree = array();
 		foreach ( $timber_comments as $key => $comment ) {
+			$depth = 0;
 			if ( !$comment->is_child() ) {
 				continue;
 			}
@@ -926,8 +927,10 @@ class Post extends Core implements CoreInterface {
 			$tree_element = $comment;
 			do {
 				$tree_element = $timber_comments[$tree_element->comment_parent];
+				$depth++;
 			} while ( $tree_element->is_child() );
 
+			$timber_comments[$key]->depth = $depth;
 			$comments_tree[$tree_element->id][] = $comment->id;
 		}
 
