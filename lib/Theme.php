@@ -77,17 +77,17 @@ class Theme extends Core {
 	 * @param string $slug
 	 */
 	protected function init( $slug = null ) {
-		$data = wp_get_theme($slug);
-		$this->name = $data->get('Name');
-		$ss = $data->get_stylesheet();
+		$theme = wp_get_theme($slug);
+		$this->name = $theme->get('Name');
+		$ss = $theme->get_stylesheet();
 		$this->slug = $ss;
 
 		if ( !function_exists('get_home_path') ) {
 			require_once(ABSPATH.'wp-admin/includes/file.php');
 		}
-
+		$this->_link = get_theme_root_uri().'/'.$this->slug;
 		$this->uri = get_stylesheet_directory_uri();
-		$this->parent_slug = $data->get('Template');
+		$this->parent_slug = $theme->get('Template');
 		if ( !$this->parent_slug ) {
 			$this->uri = get_template_directory_uri();
 		}
@@ -101,7 +101,7 @@ class Theme extends Core {
 	 * @return string the absolute path to the theme (ex: `http://example.org/wp-content/themes/my-timber-theme`)
 	 */
 	public function link() {
-		return $this->uri;
+		return $this->_link;
 	}
 
 	/**

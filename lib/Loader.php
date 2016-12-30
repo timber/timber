@@ -123,13 +123,15 @@ class Loader {
 	 */
 	public function get_loader() {
 		$open_basedir = ini_get('open_basedir');
-		$paths = array_merge($this->locations, array( $open_basedir ? ABSPATH : '/'));
+		$paths = array_merge($this->locations, array($open_basedir ? ABSPATH : '/'));
 		$paths = apply_filters('timber/loader/paths', $paths);
+
 		$rootPath = '/';
 		if ( $open_basedir ) {
 			$rootPath = null;
 		}
 		$fs = new \Twig_Loader_Filesystem($paths, $rootPath);
+		$fs = apply_filters('timber/loader/loader', $fs);
 		return $fs;
 	}
 
@@ -173,24 +175,32 @@ class Loader {
 			$object_cache = true;
 		}
 		$cache_mode = $this->_get_cache_mode($cache_mode);
-		if ( self::CACHE_TRANSIENT === $cache_mode ) {
-			global $wpdb;
-			$query = $wpdb->prepare("DELETE FROM $wpdb->options WHERE option_name LIKE '%s'", '_transient_timberloader_%');
-			$wpdb->query($query);
-			return true;
-		} else if ( self::CACHE_SITE_TRANSIENT === $cache_mode ) {
-			global $wpdb;
-			$query = $wpdb->prepare("DELETE FROM $wpdb->options WHERE option_name LIKE '%s'", '_transient_timberloader_%');
-			$wpdb->query($query);
-			return true;
+		if ( self::CACHE_TRANSIENT === $cache_mode || self::CACHE_SITE_TRANSIENT === $cache_mode ) {
+			return self::clear_cache_timber_database();
 		} else if ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
-			global $wp_object_cache;
-			if ( isset($wp_object_cache->cache[self::CACHEGROUP]) ) {
-				unset($wp_object_cache->cache[self::CACHEGROUP]);
-				return true;
-			}
+			return self::clear_cache_timber_object();
 		}
 		return false;
+	}
+
+	protected static function clear_cache_timber_database() {
+		global $wpdb;
+		$query = $wpdb->prepare("DELETE FROM $wpdb->options WHERE option_name LIKE '%s'", '_transient_timberloader_%');
+		return $wpdb->query($query);
+	}
+
+	protected static function clear_cache_timber_object() {
+		global $wp_object_cache;
+		if ( isset($wp_object_cache->cache[self::CACHEGROUP]) ) {
+			$items = $wp_object_cache->cache[self::CACHEGROUP];
+			foreach ( $items as $key => $value ) {
+				if ( is_multisite() ) {
+					$key = preg_replace('/^(.*?):/', '', $key);
+				}
+				wp_cache_delete($key, self::CACHEGROUP);
+			}
+			return true;
+		}
 	}
 
 	public function clear_cache_twig() {

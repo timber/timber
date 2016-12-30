@@ -25,10 +25,42 @@ class Admin {
 			$links[] = '<a href="http://upstatement.com/timber" target="_blank">Homepage</a>';
 			$links[] = '<a href="https://github.com/timber/timber/wiki" target="_blank">Documentation</a>';
 			$links[] = '<a href="https://github.com/timber/timber/wiki/getting-started" target="_blank">Starter Guide</a>';
-			$links[] = '<p><a href="https://downloads.wordpress.org/plugin/timber-library.0.22.6.zip">Site not working on 1.0? Downgrade to version 0.22.6</a></p>';
 			return $links;
 		}
 		return $links;
+	}
+
+	protected static function disable_update() {
+		$m = '<br>Is your theme in active development? That is, is someone actively in PHP files writing new code? If you answered "no", then <i>DO NOT UPGRADE</i>. ';
+		$m .= "We're so serious about it, we've even disabled the update link. If you really really think you should upgrade you can still <a href='https://wordpress.org/plugins/timber-library/'>download from WordPress.org</a>, but that's on you!";
+		$m .= '<style>#timber-library-update .update-link {pointer-events: none;
+   cursor: default; opacity:0.3;}</style>';
+   		return $m;
+	}
+
+	protected static function update_message_milestone() {
+		$m = '<br><b>Warning:</b> Timber 1.0 removed a number of features and methods. Before upgrading please test your theme on a local or staging site to ensure that your theme will work with the newest version.<br>
+
+			<br><strong>Is your theme in active development?</strong> That is, is someone actively in PHP files writing new code? If you answered "no", then <i>do not upgrade</i>. You will not benefit from Timber 1.0<br>';
+
+		$m .= '<br>Read the <strong><a href="https://github.com/timber/timber/wiki/1.0-Upgrade-Guide">Upgrade Guide</a></strong> for more information<br>';
+
+		$m .= "<br>You can also <b><a href='https://downloads.wordpress.org/plugin/timber-library.0.22.6.zip'>upgrade to version 0.22.6</a></b> if you want to upgrade, but are unsure if you're ready for 1.0<br>";
+		$m .= self::disable_update();
+		return $m;
+	}
+
+	protected static function update_message_major() {
+		$m = '<br><b>Warning:</b> This new version of Timber introduces some major new features which might have unknown effects on your site.';
+
+			
+		$m .= self::disable_update();
+		return $m;
+	}
+
+	protected static function update_message_minor() {
+		$m = "<br><b>Warning:</b> This new version of Timber introduces some new features which might have unknown effects on your site. We have automated tests to help us catch potential issues, but nothing is 100%. You're likley safe to upgrade, but do so very carefully and only if you have an experienced WordPress developer available to help you debug potential issues.";
+		return $m;
 	}
 
 	/**
@@ -44,26 +76,25 @@ class Admin {
 	 *  @param	{object}	$r
 	 */
 	public static function in_plugin_update_message( $plugin_data, $r ) {
-		$m = '';
-
-		if ( version_compare("1.0.0", $plugin_data['new_version']) <= 0 ) {
-			//a version of 1.0.0 or greater is availalbe
-			$m .= '<br><b>Warning:</b> Timber 1.0 removed a number of features and methods. Before upgrading please test your theme on a local or staging site to ensure that your theme will work with the newest version.<br>
-
-			<br><strong>Is your theme in active development?</strong> That is, is someone actively in PHP files writing new code? If you answered "no", then <i>do not upgrade</i>. You will not benefit from Timber 1.0<br>';
-
-			$m .= '<br>Read the <strong><a href="https://github.com/timber/timber/wiki/1.0-Upgrade-Guide">Upgrade Guide</a></strong> for more information<br>';
-
-			$m .= "<br>You can also <b><a href='https://downloads.wordpress.org/plugin/timber-library.0.22.6.zip'>upgrade to version 0.22.6</a></b> if you want to upgrade, but are unsure if you're ready for 1.0<br>";
-
+		$current_version = $plugin_data['Version'];
+		$current_version_array = explode('.', (string)$current_version);
+		$new_version = $plugin_data['new_version'];
+		$new_version_array = explode('.', (string)$new_version);
+		if ( $new_version_array[0] > $current_version_array[0]) {
+			//milestone version
+			$message = self::update_message_milestone();
+			echo '<br />'.sprintf($message);
+		} elseif ( $new_version_array[1] > $current_version_array[1] ) {
+			//major version
+			$message = self::update_message_major();
+			echo '<br />'.sprintf($message);
+		} elseif ( isset($new_version_array[2]) && isset($current_version_array[2]) &&
+			$new_version_array[2] > $current_version_array[2] ) {
+			$message = self::update_message_minor();
+			echo '<br />'.($message);
 		}
+		return;
 
-		if ( version_compare("1.0.0", $plugin_data['Version']) <= 0 ) {
-			$m .= "<br>Are you seeing errors since upgrading to 1.0? Download <b><a href='https://downloads.wordpress.org/plugin/timber-library.0.22.6.zip'>Version 0.22.6</a></b> to bring things back to stability.";
-		}
-
-		// show message
-		echo '<br />'.sprintf($m);
 
 	}
 

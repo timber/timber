@@ -111,7 +111,7 @@ class ImageHelper {
 	 * @return boolean true if it's an animated gif, false if not
 	 */
 	public static function is_animated_gif( $file ) {
-		if ( strpos(strtolower($file), '.gif') == -1 ) {
+		if ( strpos(strtolower($file), '.gif') === false ) {
 			//doesn't have .gif, bail
 			return false;
 		}
@@ -354,8 +354,8 @@ class ImageHelper {
 		);
 		$upload_dir = wp_upload_dir();
 		$tmp = $url;
-		if ( 0 === strpos($tmp, ABSPATH) ) {
-		// we've been given a dir, not an url
+		if ( 0 === strpos($tmp, ABSPATH) || 0 === strpos($tmp, '/srv/www/') ) {
+			// we've been given a dir, not an url
 			$result['absolute'] = true;
 			if ( 0 === strpos($tmp, $upload_dir['basedir']) ) {
 				$result['base'] = self::BASE_UPLOADS; // upload based
@@ -375,16 +375,35 @@ class ImageHelper {
 			}
 			if ( 0 === strpos($tmp, content_url()) ) {
 				$result['base'] = self::BASE_CONTENT; // content-based
-				$tmp = str_replace(content_url(), '', $tmp);
+				$tmp = self::theme_url_to_dir($tmp);
 			}
 		}
 		$parts = pathinfo($tmp);
+
 		$result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
 		$result['filename'] = $parts['filename'];
 		$result['extension'] = strtolower($parts['extension']);
 		$result['basename'] = $parts['basename'];
-		// todo filename
 		return $result;
+	}
+
+	/**
+	 * Converts a URL located in a theme directory into the raw path
+	 * @param string 	$src a URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg)
+	 * @return string full path to the file in question
+	 */
+	protected static function theme_url_to_dir( $tmp ) 	{
+		$root = trailingslashit(get_theme_root_uri()).get_stylesheet();
+		$tmp = str_replace($root, '', $tmp);
+		$tmp = realpath(get_stylesheet_directory_uri().$tmp);
+		return $tmp;
+	}
+
+	protected static function is_in_theme_dir( $path ) {
+		$root = realpath(get_stylesheet_directory_uri());
+		if ( 0 === strpos($path, $root) ) {
+			return true;
+		}
 	}
 
 	/**
@@ -433,10 +452,15 @@ class ImageHelper {
 		if ( self::BASE_CONTENT == $base ) {
 			$path = WP_CONTENT_DIR;
 		}
+		if ( self::is_in_theme_dir(trailingslashit($subdir).$filename) ) {
+			return trailingslashit($subdir).$filename;
+			$path = $subdir;
+		}
 		if ( !empty($subdir) ) {
 			$path .= $subdir;
 		}
 		$path .= '/'.$filename;
+
 		return $path;
 	}
 
@@ -459,7 +483,6 @@ class ImageHelper {
 			return '';
 		}
 		$external = false;
-
 		// if external image, load it first
 		if ( URLHelper::is_external_content($src) ) {
 			$src = self::sideload_image($src);
@@ -484,10 +507,8 @@ class ImageHelper {
 			$au['subdir'],
 			$au['basename']
 		);
-
 		$new_url = apply_filters('timber/image/new_url', $new_url);
 		$destination_path = apply_filters('timber/image/new_path', $destination_path);
-
 		// if already exists...
 		if ( file_exists($destination_path) ) {
 			if ( $force || filemtime($source_path) > filemtime($destination_path) ) {
