@@ -269,6 +269,17 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( '/apricot/?pagination=2', $pagination->prev['link'] );
 	}
 
+	function testCollectionPaginationPrevUsesBaseAndFormatArgsPage( $struc = '/%postname%/' ) {
+		$this->setPermalinkStructure( $struc );
+		//$posts = $this->factory->post->create_many( 55 );
+		for($i=0; $i<30; $i++) {
+			$this->factory->post->create(array('post_title' => 'post'.$i, 'post_date' => '2014-02-'.$i));
+		}
+		$posts = new Timber\PostQuery('paged=3');
+		$pagination = $posts->pagination( array( 'base' => '/apricot/%_%', 'format' => '?page=%#%' ) );
+		$this->assertEquals( '/apricot/?page=2', $pagination->prev['link'] );
+	}
+
 	function testCollectionPaginationWithMoreThan10Pages( $struc = '/%postname%/' ) {
 		$this->setPermalinkStructure( $struc );
 		$posts = $this->factory->post->create_many( 150 );

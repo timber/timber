@@ -185,25 +185,25 @@ class Pagination {
 		return $page_links;
 	}
 	
-	private static function sanitize_args( $args ) {
+	protected static function sanitize_args( $args ) {
 		
-        $format = explode( '?', str_replace( '%_%', $args['format'], $args['base'] ) );
-        $format_query = isset( $format[1] ) ? $format[1] : '';
-                
-        wp_parse_str( $format_query, $format_args );
-        
-        // Remove the format argument from the array of query arguments, to avoid overwriting custom format.
+		$format = explode( '?', str_replace( '%_%', $args['format'], $args['base'] ) );
+		$format_query = isset( $format[1] ) ? $format[1] : '';
+
+		wp_parse_str( $format_query, $format_args );
+		
+		// Remove the format argument from the array of query arguments, to avoid overwriting custom format.
 		foreach ( $format_args as $format_arg => $format_arg_value ) {
-            unset( $args['add_args'][ $format_arg ] );
-        }
-        
+			unset( $args['add_args'][ $format_arg ] );
+		}
+
 		$url_parts = explode( '?', $args['base']);
 		if ( isset( $url_parts[1] ) ) {
-				// Find the query args of the requested URL.
-				wp_parse_str( $url_parts[1], $url_query_args );
+			// Find the query args of the requested URL.
+			wp_parse_str( $url_parts[1], $url_query_args );
 
-				$args['add_args'] = array_merge( $args['add_args'], urlencode_deep( $url_query_args ));
-				$args['base'] = $url_parts[0] . '%_%';
+			$args['add_args'] = array_merge( $args['add_args'], urlencode_deep( $url_query_args ));
+			$args['base'] = $url_parts[0] . '%_%';
 		}
 		
 		return $args;
