@@ -24,8 +24,7 @@ class URLHelper {
      * Get url scheme
      * @return string
      */
-	public static function get_scheme()
-    {
+	public static function get_scheme() {
         return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
     }
 
@@ -288,6 +287,42 @@ class URLHelper {
 		if ( $link != "/" ) {
 			$link = untrailingslashit($link);
 		}
+		return $link;
+	}
+
+	/**
+	 * Pass links through user_trailingslashit handling query strings properly
+	 *
+	 * @param string $link
+	 * @return string
+	 * */
+	public static function user_trailingslashit( $link ) {
+		$link_parts = parse_url( $link );
+		print_r( $link_parts );
+		if ( $link_parts ) {
+			// absolute url
+			if( isset($link_parts['path']) && $link_parts['path'] != '/' ) {
+				$new_path = user_trailingslashit( $link_parts['path'] );
+				
+				if ( $new_path != $link_parts['path'] )	{
+					$link = str_replace($link_parts['path'], $new_path, $link);
+				}
+			}
+		} else {
+			echo 'relative';
+			// relative url
+			$link_parts = explode( '?', $link );
+			if( isset( $link_parts[1] ) ) {
+				if ( $link_parts[0] != "/" ) {
+					$link = user_trailingslashit( $link_parts[0] ) . '?' . $link_parts[1];
+				}
+			} else {
+				if ( $link != "/" ) {
+					$link = user_trailingslashit( $link );
+				}
+			}
+		}
+
 		return $link;
 	}
 
