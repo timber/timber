@@ -24,8 +24,7 @@ class URLHelper {
      * Get url scheme
      * @return string
      */
-	public static function get_scheme()
-    {
+	public static function get_scheme() {
         return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
     }
 
@@ -299,7 +298,6 @@ class URLHelper {
 	 * */
 	public static function user_trailingslashit( $link ) {
 		$link_parts = parse_url( $link );
-
 		if ( $link_parts ) {
 			// absolute url
 			if( isset($link_parts['path']) && $link_parts['path'] != '/' ) {
