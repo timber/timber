@@ -87,10 +87,10 @@ class Theme extends Core {
 		$this->slug = $this->theme->get_stylesheet();
 
 		$this->uri = $this->theme->get_template_directory_uri();
-		$this->parent_slug = $this->theme->get('Template');
 
 		if ( $this->theme->parent()) {
-			$this->parent = new Theme($this->theme->parent());
+			$this->parent_slug = $this->theme->parent()->get_stylesheet();
+			$this->parent = new Theme($this->parent_slug);
 		}
 	}
 

@@ -76,7 +76,7 @@
 		}
 
 		static function _setupParentTheme(){
-			$dest_dir = WP_CONTENT_DIR.'/themes/twentythirteen';
+			$dest_dir = WP_CONTENT_DIR.'/themes/twentyfifteen';
 			if (!file_exists($dest_dir.'/views')) {
     			mkdir($dest_dir.'/views', 0777, true);
 			}
