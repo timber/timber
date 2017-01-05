@@ -1,197 +1,294 @@
 <?php
 
-	class TestTimberURLHelper extends Timber_UnitTestCase {
+class TestTimberPagination extends Timber_UnitTestCase {
 
-		private $mockUploadDir = false;
+	function testPaginationSearch() {
+		$this->setPermalinkStructure('');
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( home_url( '?s=post' ) );
+		$pagination = Timber::get_pagination();
+		$this->assertEquals( user_trailingslashit(home_url().'/?s=post&#038;paged=5'), $pagination['pages'][4]['link'] );
+	}
 
+	/* This test is for the concept of linking query_posts and get_pagination
+	function testPaginationWithQueryPosts() {
+		register_post_type( 'portfolio' );
+		$pids = $this->factory->post->create_many( 33 );
+		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
+		$this->go_to( home_url( '/' ) );
+		Timber::query_posts('post_type=portfolio');
+		$pagination = Timber::get_pagination();
 
-        function testURLToFileSystem() {
-            $url = 'http://example.org/wp-content/uploads/2012/06/mypic.jpg';
-            $file = TimberURLHelper::url_to_file_system($url);
-            $this->assertStringStartsWith(ABSPATH, $file);
-            $this->assertStringEndsWith('/2012/06/mypic.jpg', $file);
-            $this->assertNotContains($file, 'http://example.org');
-            $this->assertNotContains($file, '//');
-        }
+		global $timber;
+		$timber->active_query = false;
+		unset($timber->active_query);
+		$this->assertEquals(6, count($pagination['pages']));
+	}
+	*/
 
-        function testUserTrailingSlashIt() {
-            global $wp_rewrite;
-            $wp_rewrite->use_trailing_slashes = true;
-            $link = '2016/04/my-silly-story';
-            $url = Timber\URLHelper::user_trailingslashit($link);
-            $this->assertEquals($link.'/', $url);
-            $wp_rewrite->use_trailing_slashes = false;
-        }
+	function testPaginationWithGetPosts() {
+		register_post_type( 'portfolio' );
+		$pids = $this->factory->post->create_many( 33 );
+		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
+		$this->go_to( home_url( '/' ) );
+		Timber::get_posts('post_type=portfolio');
+		$pagination = Timber::get_pagination();
 
-        function testUserTrailingSlashItFailure() {
-            $link = 'http:///example.com';
-            $url = Timber\URLHelper::user_trailingslashit($link);
-            $this->assertEquals($link, $url);
-        }
+		global $timber;
+		$timber->active_query = false;
+		unset($timber->active_query);
+		$this->assertEquals(4, count($pagination['pages']));
+	}
 
-        function testPreSlashIt() {
-            $before = 'thing/foo';
-            $after = Timber\URLHelper::preslashit($before);
-            $this->assertEquals('/'.$before, $after);
-        }
+	function testPaginationOnLaterPage() {
+		$this->setPermalinkStructure('/%postname%/');
+		register_post_type( 'portfolio' );
+		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
+		$this->go_to( home_url( '/portfolio/page/3' ) );
+		query_posts('post_type=portfolio&paged=3');
+		$pagination = Timber::get_pagination();
+		$this->assertEquals(6, count($pagination['pages']));
+	}
 
-        function testPreSlashItNadda() {
-            $before = '/thing/foo';
-            $after = Timber\URLHelper::preslashit($before);
-            $this->assertEquals($before, $after);
-        }
+	function testPaginationWithSize() {
+		$this->setPermalinkStructure('/%postname%/');
+		register_post_type( 'portfolio' );
+		$pids = $this->factory->post->create_many( 99, array( 'post_type' => 'portfolio' ) );
+		query_posts('post_type=portfolio');
+		$pagination = Timber::get_pagination(4);
+		$this->assertEquals(5, count($pagination['pages']));
+	}
 
-        function testPathBase() {
-        	$this->assertEquals('/', TimberURLHelper::get_path_base());
-        }
+	function testPaginationSearchPrettyWithPostname() {
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$archive = home_url( '?s=post' );
+		$this->go_to( $archive );
+		query_posts( 's=post' );
+		$pagination = Timber::get_pagination();
+		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination['pages'][4]['link'] );
+	}
 
-        function testIsLocal() {
-        	$this->assertFalse(TimberURLHelper::is_local('http://wordpress.org'));
-        }
+	function testPaginationSearchPrettyWithPostnameNext() {
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$archive = home_url( '?s=post' );
+		$this->go_to( $archive );
+		query_posts( 's=post' );
+		$pagination = Timber::get_pagination();
+		$this->assertEquals( 'http://example.org/page/2/?s=post', $pagination['next']['link'] );
+	}
 
-        function testCurrentURLWithServerPort(){
-            $old_port = $_SERVER['SERVER_PORT'];
-            $_SERVER['SERVER_PORT'] = 3000;
-            if (!isset($_SERVER['SERVER_NAME'])){
-                $_SERVER['SERVER_NAME'] = 'example.org';
-            }
-            $this->go_to('/');
-            $url = TimberURLHelper::get_current_url();
-            $this->assertEquals('http://example.org:3000/', $url);
-            $_SERVER['SERVER_PORT'] = $old_port;
-        }
+	function testPaginationSearchPrettyWithPostnamePrev() {
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$archive = home_url( 'page/4/?s=post' );
+		$this->go_to( $archive );
+		query_posts( 's=post&paged=4' );
+		$pagination = Timber::get_pagination();
+		$this->assertEquals( 'http://example.org/page/3/?s=post', $pagination['prev']['link'] );
+	}
 
-        function testCurrentURL(){
-            if (!isset($_SERVER['SERVER_PORT'])){
-                $_SERVER['SERVER_PORT'] = 80;
-            }
-            if (!isset($_SERVER['SERVER_NAME'])){
-                $_SERVER['SERVER_NAME'] = 'example.org';
-            }
-            $this->go_to('/');
-            $url = TimberURLHelper::get_current_url();
-            $this->assertEquals('http://example.org/', $url);
-        }
+	function testPaginationSearchPrettyx() {
+		$struc = '/blog/%year%/%monthnum%/%postname%/';
+		$this->setPermalinkStructure( $struc );
+		$posts = $this->factory->post->create_many( 55 );
+		$archive = home_url( '?s=post' );
+		$this->go_to( $archive );
+		$pagination = Timber::get_pagination();
+		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination['pages'][4]['link'] );
+	}
 
-        function testCurrentURLIsSecure(){
-            if (!isset($_SERVER['SERVER_PORT'])){
-                $_SERVER['SERVER_PORT'] = 443;
-            }
-            if (!isset($_SERVER['SERVER_NAME'])){
-                $_SERVER['SERVER_NAME'] = 'example.org';
-            }
-            $_SERVER['HTTPS'] = 'on';
-            $this->go_to('/');
-            $url = TimberURLHelper::get_current_url();
-            $this->assertEquals('https://example.org/', $url);
-        }
+	function testPaginationHomePrettyTrailingSlash() {
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( home_url( '/' ) );
+		$pagination = Timber::get_pagination();
+		$this->assertEquals( user_trailingslashit('http://example.org/page/3/'), $pagination['pages'][2]['link'] );
+		$this->assertEquals( user_trailingslashit('http://example.org/page/2/'), $pagination['next']['link'] );
+	}
 
-        function testUrlSchemeIsSecure() {
-            $_SERVER['HTTPS'] = 'on';
-            $scheme = TimberURLHelper::get_scheme();
-            $this->assertEquals('https', $scheme);
-        }
+	function testPaginationHomePrettyNonTrailingSlash() {
+		$this->setPermalinkStructure('/%postname%');
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( home_url( '/' ) );
+		$pagination = Timber::get_pagination();
+		$this->assertEquals( 'http://example.org/page/3', $pagination['pages'][2]['link'] );
+		$this->assertEquals( 'http://example.org/page/2', $pagination['next']['link'] );
+	}
 
-        function testUrlSchemeIsNotSecure() {
-            $_SERVER['HTTPS'] = 'off';
-            $scheme = TimberURLHelper::get_scheme();
-            $this->assertEquals('http', $scheme);
-        }
-
-        function testIsURL(){
-            $url = 'http://example.org';
-            $not_url = '/blog/2014/05/whatever';
-            $this->assertTrue(TimberURLHelper::is_url($url));
-            $this->assertFalse(TimberURLHelper::is_url($not_url));
-      		$this->assertFalse(TimberURLHelper::is_url(8000));
-        }
-
-        function testIsExternal(){
-            $local = 'http://example.org';
-            $subdomain = 'http://cdn.example.org';
-            $external = 'http://upstatement.com';
-            $this->assertFalse(TimberURLHelper::is_external($local));
-            $this->assertFalse(TimberURLHelper::is_external($subdomain));
-            $this->assertTrue(TimberURLHelper::is_external($external));
-        }
-
-		function testIsExternalContent() {
-			$internal = 'http://example.org/wp-content/uploads/my-image.png';
-			$internal_in_abspath = 'http://example.org/wp/uploads/my-image.png';
-			$internal_in_uploads = 'http://example.org/uploads/uploads/my-image.png';
-			$external = 'http://upstatement.com/my-image.png';
-
-			$this->assertFalse( TimberURLHelper::is_external_content( $internal ) );
-			$this->assertTrue( TimberURLHelper::is_external_content( $internal_in_uploads ) );
-			$this->assertTrue( TimberURLHelper::is_external_content( $internal_in_abspath ) );
-			$this->assertTrue( TimberURLHelper::is_external_content( $external ) );
+	function testPaginationInCategory( $struc = '/%postname%/' ) {
+		$this->setPermalinkStructure( $struc );
+		$no_posts = $this->factory->post->create_many( 25 );
+		$posts = $this->factory->post->create_many( 31 );
+		$news_id = wp_insert_term( 'News', 'category' );
+		foreach ( $posts as $post ) {
+			wp_set_object_terms( $post, $news_id, 'category' );
 		}
+		$this->go_to( home_url( '/category/news' ) );
+		$post_objects = Timber::get_posts( false );
+		$pagination = Timber::get_pagination();
+		//need to complete test
+	}
 
-		function testIsExternalContentMovingFolders() {
-			$internal = 'http://example.org/wp-content/uploads/my-image.png';
-			$internal_in_abspath = 'http://example.org/wp/uploads/my-image.png';
-			$internal_in_uploads = 'http://example.org/uploads/my-image.png';
-			$external = 'http://upstatement.com/my-image.png';
+	function testPaginationNextUsesBaseAndFormatArgs( $struc = '/%postname%/' ) {
+		$this->setPermalinkStructure( $struc );
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( home_url( '/' ) );
+		$pagination = Timber::get_pagination( array( 'base' => '/apricot/%_%', 'format' => 'page=%#%' ) );
+		$this->assertEquals( '/apricot/page=2', $pagination['next']['link'] );
+	}
 
-			add_filter( 'upload_dir', array( &$this, 'mockUploadDir' ) );
-			add_filter( 'content_url', array( &$this, 'mockContentUrl' ) );
+	function testPaginationPrevUsesBaseAndFormatArgs( $struc = '/%postname%/' ) {
+		$this->setPermalinkStructure( $struc );
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( home_url( '/apricot/page=3' ) );
+		query_posts('paged=3');
+		$GLOBALS['paged'] = 3;
+		$pagination = Timber::get_pagination( array( 'base' => '/apricot/%_%', 'format' => 'page=%#%' ) );
+		$this->assertEquals( '/apricot/page=2', $pagination['prev']['link'] );
+	}
 
-			$this->mockUploadDir = true;
+	function testPaginationWithMoreThan10Pages( $struc = '/%postname%/' ) {
+		$this->setPermalinkStructure( $struc );
+		$posts = $this->factory->post->create_many( 150 );
+		$this->go_to( home_url( '/page/13' ) );
+		$pagination = Timber::get_pagination();
+		$expected_next_link = user_trailingslashit('http://example.org/page/14/');
+		$this->assertEquals( $expected_next_link, $pagination['next']['link'] );
+	}
 
-			$this->assertFalse( TimberURLHelper::is_external_content( $internal ) );
-			$this->assertFalse( TimberURLHelper::is_external_content( $internal_in_uploads ) );
-			$this->assertFalse( TimberURLHelper::is_external_content( $internal_in_abspath ) );
-			$this->assertTrue( TimberURLHelper::is_external_content( $external ) );
+	// tests for pagination object set on PostCollection
 
-			$this->mockUploadDir = false;
+	function testPostsCollectionPagination() {
+		$pids = $this->factory->post->create_many( 13 );
+		$posts = new Timber\PostQuery(array('post_type' => 'post'));
+		$pagination = $posts->pagination();
+		$this->assertEquals( 2, count( $pagination->pages ) );
+	}
+
+	function testCollectionPaginationSearch() {
+		$this->setPermalinkStructure('');
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( home_url( '?s=post' ) );
+		$posts = new Timber\PostQuery();
+		$pagination = $posts->pagination();
+		$this->assertEquals( user_trailingslashit(home_url().'/?s=post&#038;paged=5'), $pagination->pages[4]['link'] );
+	}
+
+	function testCollectionPaginationOnLaterPage() {
+		$struc = '/%postname%/';
+		$this->setPermalinkStructure( $struc );
+		register_post_type( 'portfolio' );
+		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
+		$this->go_to( home_url( '/portfolio/page/3' ) );
+		$posts = new Timber\PostQuery('post_type=portfolio&paged=3');
+		$pagination = $posts->pagination();
+		$this->assertEquals(6, count($pagination->pages));
+	}
+
+	function testCollectionPaginationWithSize() {
+		$this->setPermalinkStructure('/%postname%/');
+		register_post_type( 'portfolio' );
+		$pids = $this->factory->post->create_many( 99, array( 'post_type' => 'portfolio' ) );
+		$posts = new Timber\PostQuery('post_type=portfolio&posts_per_page=20');
+		$pagination = $posts->pagination();
+		$this->assertEquals(5, count($pagination->pages));
+	}
+
+	function testCollectionPaginationSearchPrettyWithPostname() {
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$archive = home_url('?s=post');
+		$this->go_to( $archive );
+		$posts = new Timber\PostQuery('s=post');
+		$pagination = $posts->pagination();
+		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination->pages[4]['link'] );
+	}
+
+	function testCollectionPaginationSearchPrettyWithPostnameNext() {
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$archive = home_url( '?s=post' );
+		$this->go_to( $archive );
+		$posts = new Timber\PostQuery('s=post');
+		$pagination = $posts->pagination();
+		$this->assertEquals( 'http://example.org/page/2/?s=post', $pagination->next['link'] );
+	}
+
+	function testCollectionPaginationQueryVars() {
+		global $wp;
+		$wp->add_query_var( 'myvar' );
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( home_url('?myvar=value') );
+		$posts = new Timber\PostQuery();
+		$pagination = $posts->pagination();
+		$this->assertEquals( 'http://example.org/page/2/?myvar=value', $pagination->next['link'] );
+	}
+
+	function testCollectionPaginationSearchPrettyWithPostnamePrev() {
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$archive = home_url( 'page/4/?s=post' );
+		$this->go_to( $archive );
+		$posts = new Timber\PostQuery('s=post&paged=4');
+		$pagination = $posts->pagination();
+		$this->assertEquals( 'http://example.org/page/3/?s=post', $pagination->prev['link'] );
+	}
+
+	function testCollectionPaginationSearchPretty() {
+		$struc = '/blog/%year%/%monthnum%/%postname%/';
+		$this->setPermalinkStructure( $struc );
+		$posts = $this->factory->post->create_many( 55 );
+		$archive = home_url( '?s=post' );
+		$this->go_to( $archive );
+		$posts = new Timber\PostQuery();
+		$pagination = $posts->pagination();
+		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination->pages[4]['link'] );
+	}
+
+	function testCollectionPaginationNextUsesBaseAndFormatArgs( $struc = '/%postname%/' ) {
+		$this->setPermalinkStructure( $struc );
+
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( home_url( '/' ) );
+		$posts = new Timber\PostQuery();
+		$pagination = $posts->pagination( array( 'base' => '/apricot/%_%', 'format' => 'page=%#%' ) );
+		$this->assertEquals( '/apricot/page=2', $pagination->next['link'] );
+	}
+
+	function testCollectionPaginationPrevUsesBaseAndFormatArgs( $struc = '/%postname%/' ) {
+		$this->setPermalinkStructure( $struc );
+		//$posts = $this->factory->post->create_many( 55 );
+		for($i=0; $i<30; $i++) {
+			$this->factory->post->create(array('post_title' => 'post'.$i, 'post_date' => '2014-02-'.$i));
 		}
+		$posts = new Timber\PostQuery('paged=3');
+		$pagination = $posts->pagination( array( 'base' => '/apricot/%_%', 'format' => 'page=%#%' ) );
+		$this->assertEquals( '/apricot/page=2', $pagination->prev['link'] );
+	}
 
-		function mockContentUrl($url) {
-			return ( $this->mockUploadDir ) ? site_url( 'wp' ) : $url;
-		}
+	function testCollectionPaginationWithMoreThan10Pages( $struc = '/%postname%/' ) {
+		$this->setPermalinkStructure( $struc );
+		$posts = $this->factory->post->create_many( 150 );
+		$this->go_to( home_url( '/page/13' ) );
+		$posts = new Timber\PostQuery();
+		$expected_next_link = user_trailingslashit('http://example.org/page/14/');
+		$pagination = $posts->pagination();
+		$this->assertEquals( $expected_next_link, $pagination->next['link'] );
+	}
 
-		function mockUploadDir($path) {
-			if ( $this->mockUploadDir ) {
+	function testPostCollectionPaginationForMultiplePostTypes() {
+		register_post_type( 'recipe' );
+		$pids = $this->factory->post->create_many( 43, array( 'post_type' => 'recipe' ) );
+		$recipes = new Timber\PostQuery(array('post_type' => 'recipe'));
+		$pagination = $recipes->pagination();
+		$this->assertEquals( 5, count( $pagination->pages ) );
+		$pids = $this->factory->post->create_many( 13 );
+		$posts = new Timber\PostQuery(array('post_type' => 'post'));
+		$pagination = $posts->pagination();
+		$this->assertEquals( 2, count( $pagination->pages ) );
+	}
 
-				$path['url'] = str_replace( $path['baseurl'], site_url().'/uploads', $path['url'] );
-				$path['baseurl'] = site_url().'/uploads';
-
-				$path['path'] = str_replace( $path['basedir'], ABSPATH.'uploads', $path['path'] );
-				$path['basedir'] = ABSPATH . 'uploads';
-
-				$path['relative'] = '/uploads';
-			}
-
-			return $path;
-		}
-
-        function testGetRelURL(){
-            $local = 'http://example.org/directory';
-            $subdomain = 'http://cdn.example.org/directory';
-            $external = 'http://upstatement.com';
-            $rel_url = '/directory/';
-            $this->assertEquals('/directory', TimberURLHelper::get_rel_url($local));
-            $this->assertEquals($subdomain, TimberURLHelper::get_rel_url($subdomain));
-            $this->assertEquals($external, TimberURLHelper::get_rel_url($external));
-            $this->assertEquals($rel_url, TimberURLHelper::get_rel_url($rel_url));
-        }
-
-        function testRemoveTrailingSlash(){
-            $url_with_trailing_slash = 'http://example.org/directory/';
-            $root_url = "/";
-            $this->assertEquals('http://example.org/directory', TimberURLHelper::remove_trailing_slash($url_with_trailing_slash));
-            $this->assertEquals('/', TimberURLHelper::remove_trailing_slash($root_url));
-        }
-
-        function testGetParams(){
-            $_SERVER['REQUEST_URI'] = 'http://example.org/blog/post/news/2014/whatever';
-            $params = TimberURLHelper::get_params();
-            $this->assertEquals(7, count($params));
-            $whatever = TimberURLHelper::get_params(-1);
-            $blog = TimberURLHelper::get_params(2);
-            $this->assertEquals('whatever', $whatever);
-            $this->assertEquals('blog', $blog);
-        }
-
-
-    }
+}
