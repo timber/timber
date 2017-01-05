@@ -14,14 +14,15 @@
 
 		function _setupTranslationFiles() {
 			$lang_dir = get_stylesheet_directory().'/languages';
-			if (file_exists($lang_dir.'/en_US.po' )) {
-				return;
+			
+			if (!file_exists($lang_dir.'/en_US.po' )) {
+				if(!is_dir($lang_dir)) {
+					mkdir($lang_dir , 0777, true);
+					copy( __DIR__.'/assets/languages/en_US.po', $lang_dir.'/en_US.po' );
+					copy( __DIR__.'/assets/languages/en_US.mo', $lang_dir.'/en_US.mo' );
+				}
 			}
-			if(!is_dir($lang_dir)) {
-				mkdir($lang_dir , 0777);
-        	}
-			copy( __DIR__.'/assets/languages/en_US.po', $lang_dir.'/en_US.po' );
-			copy( __DIR__.'/assets/languages/en_US.mo', $lang_dir.'/en_US.mo' );
+			
 			$theme = wp_get_theme();
 			$td = $theme->get('TextDomain');
 			load_theme_textdomain($td, $lang_dir);
@@ -56,11 +57,9 @@
 			$str = "You like {{__('%s', '$td')|format('thingy')}}";
 			$return = Timber::compile_string($str);
 			$this->assertEquals('You like thingy', $return);
-
 			$str = "You like {{__('%s'|format('thingy'), '$td')}}";
 			$return = Timber::compile_string($str);
 			$this->assertEquals('You like Cheesy Poofs', $return);
-
 		}
 
 		function testDoAction(){
