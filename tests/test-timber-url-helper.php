@@ -5,7 +5,6 @@
 		private $mockUploadDir = false;
 
 
-
         function testURLToFileSystem() {
             $url = 'http://example.org/wp-content/uploads/2012/06/mypic.jpg';
             $file = TimberURLHelper::url_to_file_system($url);
@@ -36,13 +35,15 @@
         }
 
         function testCurrentURLWithServerPort(){
-             $_SERVER['SERVER_PORT'] = 3000;
+            $old_port = $_SERVER['SERVER_PORT'];
+            $_SERVER['SERVER_PORT'] = 3000;
             if (!isset($_SERVER['SERVER_NAME'])){
                 $_SERVER['SERVER_NAME'] = 'example.org';
             }
             $this->go_to('/');
             $url = TimberURLHelper::get_current_url();
             $this->assertEquals('http://example.org:3000/', $url);
+            $_SERVER['SERVER_PORT'] = $old_port;
         }
 
         function testCurrentURL(){
