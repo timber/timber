@@ -23,6 +23,12 @@
             $wp_rewrite->use_trailing_slashes = false;
         }
 
+        function testUserTrailingSlashItFailure() {
+            $link = 'http:///example.com';
+            $url = Timber\URLHelper::user_trailingslashit($link);
+            $this->assertEquals($link, $url);
+        }
+
         function testPreSlashIt() {
             $before = 'thing/foo';
             $after = Timber\URLHelper::preslashit($before);

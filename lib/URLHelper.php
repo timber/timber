@@ -25,7 +25,7 @@ class URLHelper {
      * @return string
      */
 	public static function get_scheme() {
-        return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+		return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
     }
 
 
@@ -297,32 +297,19 @@ class URLHelper {
 	 * @return string
 	 * */
 	public static function user_trailingslashit( $link ) {
-		$link_parts = parse_url( $link );
-		print_r( $link_parts );
-		if ( $link_parts ) {
-			// absolute url
-			if( isset($link_parts['path']) && $link_parts['path'] != '/' ) {
-				$new_path = user_trailingslashit( $link_parts['path'] );
-				
-				if ( $new_path != $link_parts['path'] )	{
-					$link = str_replace($link_parts['path'], $new_path, $link);
-				}
-			}
-		} else {
-			echo 'relative';
-			// relative url
-			$link_parts = explode( '?', $link );
-			if( isset( $link_parts[1] ) ) {
-				if ( $link_parts[0] != "/" ) {
-					$link = user_trailingslashit( $link_parts[0] ) . '?' . $link_parts[1];
-				}
-			} else {
-				if ( $link != "/" ) {
-					$link = user_trailingslashit( $link );
-				}
+		$link_parts = parse_url($link);
+
+		if ( !$link_parts ) {
+			return $link;
+		}
+		
+		if( isset($link_parts['path']) && $link_parts['path'] != '/' ) {
+			$new_path = user_trailingslashit( $link_parts['path'] );
+			
+			if ( $new_path != $link_parts['path'] )	{
+				$link = str_replace($link_parts['path'], $new_path, $link);
 			}
 		}
-
 		return $link;
 	}
 
