@@ -300,14 +300,13 @@ class URLHelper {
 	public static function user_trailingslashit( $link ) {
 		$link_parts = parse_url( $link );
 
-		if ($link_parts) {
+		if ( $link_parts ) {
 			// absolute url
-			if( isset( $link_parts['path'] ) && $link_parts['path'] != '/' ) {
+			if( isset($link_parts['path']) && $link_parts['path'] != '/' ) {
 				$new_path = user_trailingslashit( $link_parts['path'] );
 				
-				if ( $new_path != $link_parts['path'] )
-				{
-					$link = str_replace( $link_parts['path'], $new_path, $link );
+				if ( $new_path != $link_parts['path'] )	{
+					$link = str_replace($link_parts['path'], $new_path, $link);
 				}
 			}
 		} else {
@@ -318,7 +317,7 @@ class URLHelper {
 					$link = user_trailingslashit( $link_parts[0] ) . '?' . $link_parts[1];
 				}
 			} else {
-				if( $link != "/" ) {
+				if ( $link != "/" ) {
 					$link = user_trailingslashit( $link );
 				}
 			}
