@@ -2,6 +2,13 @@
 
 	class TestTimberTheme extends Timber_UnitTestCase {
 
+		protected $theme_slug = 'twentyeleven';
+		protected $theme_name = 'Twenty Eleven';
+		protected $default_themes = array(
+				'twentyten', 'twentyeleven', 'twentytwelve', 'twentythirteen',
+				'twentyfourteen', 'twentyfifteen', 'twentysixteen', 'twentyseventeen',
+		);
+		
 		function testThemeMods(){
 			set_theme_mod('foo', 'bar');
 			$theme = new TimberTheme();
@@ -41,9 +48,27 @@
 			$this->assertEquals('http://example.org/wp-content/themes/'.$theme->slug, $output);
 		}
 
-		function tearDown() {
-			update_option( 'siteurl', 'http://example.org', true );
+		function setUp() {
+			global $wp_theme_directories;
+
+			parent::setUp();
+
+			$backup_wp_theme_directories = $wp_theme_directories;
+			$wp_theme_directories = array( WP_CONTENT_DIR . '/themes' );
+
+			wp_clean_themes_cache();
+			unset( $GLOBALS['wp_themes'] );
+
 		}
 
+		function tearDown() {
+			global $wp_theme_directories;
 
+			$wp_theme_directories = $this->wp_theme_directories;
+
+			wp_clean_themes_cache();
+			unset( $GLOBALS['wp_themes'] );
+			update_option( 'siteurl', 'http://example.org', true );
+			parent::tearDown();
+		}
 	}
