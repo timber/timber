@@ -13,6 +13,15 @@
             $this->assertNotContains($file, '//');
         }
 
+        function testUserTrailingSlashIt() {
+            global $wp_rewrite;
+            $wp_rewrite->use_trailing_slashes = true;
+            $link = '2016/04/my-silly-story';
+            $url = Timber\URLHelper::user_trailingslashit($link);
+            $this->assertEquals($link.'/', $url);
+            $wp_rewrite->use_trailing_slashes = false;
+        }
+
         function testPreSlashIt() {
             $before = 'thing/foo';
             $after = Timber\URLHelper::preslashit($before);

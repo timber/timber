@@ -46,6 +46,7 @@ class Pagination {
 		if ( $wp_rewrite->using_permalinks() ) {
 			$url = explode('?', get_pagenum_link(0, false));
 			if ( isset($url[1]) ) {
+				$query = array();
 				wp_parse_str($url[1], $query);
 				$args['add_args'] = $query;
 			}
@@ -186,6 +187,8 @@ class Pagination {
 	}
 	
 	protected static function sanitize_args( $args ) {
+
+		$format_args = array();
 		
 		$format = explode( '?', str_replace( '%_%', $args['format'], $args['base'] ) );
 		$format_query = isset( $format[1] ) ? $format[1] : '';
@@ -200,6 +203,7 @@ class Pagination {
 		$url_parts = explode( '?', $args['base']);
 		if ( isset( $url_parts[1] ) ) {
 			// Find the query args of the requested URL.
+			$url_query_args = array();
 			wp_parse_str( $url_parts[1], $url_query_args );
 
 			$args['add_args'] = array_merge( $args['add_args'], urlencode_deep( $url_query_args ));
