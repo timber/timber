@@ -3,7 +3,6 @@ twig-cache/*
 .DS_Store
 .idea
 vendor
-composer.lock
 build
 /cache
 *.swp

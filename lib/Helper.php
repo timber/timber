@@ -226,6 +226,7 @@ class Helper {
 	======================== */
 
 	/**
+	 * @codeCoverageIgnore
      * @deprecated since 1.2.0
      * @see TextHelper::trim_words
      * @param string  $text
@@ -432,7 +433,7 @@ class Helper {
 	}
 
 	/**
-	 *
+	 * @codeCoverageIgnore
 	 * @deprecated since 1.1.2
 	 * @param array  $args
 	 * @return array
@@ -443,6 +444,7 @@ class Helper {
 	}
 
 	/**
+	 * @codeCoverageIgnore
 	 * @return string
 	 */
 	public function get_current_url() {

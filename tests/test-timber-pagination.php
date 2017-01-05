@@ -3,9 +3,7 @@
 class TestTimberPagination extends Timber_UnitTestCase {
 
 	function testPaginationSearch() {
-		update_option( 'permalink_structure', '' );
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = false;
+		$this->setPermalinkStructure('');
 		$posts = $this->factory->post->create_many( 55 );
 		$this->go_to( home_url( '?s=post' ) );
 		$pagination = Timber::get_pagination();
@@ -91,11 +89,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://example.org/page/3/?s=post', $pagination['prev']['link'] );
 	}
 
-	function testPaginationSearchPretty() {
+	function testPaginationSearchPrettyx() {
 		$struc = '/blog/%year%/%monthnum%/%postname%/';
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = $struc;
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure( $struc );
 		$posts = $this->factory->post->create_many( 55 );
 		$archive = home_url( '?s=post' );
 		$this->go_to( $archive );
@@ -122,9 +118,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testPaginationInCategory( $struc = '/%postname%/' ) {
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = $struc;
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure( $struc );
 		$no_posts = $this->factory->post->create_many( 25 );
 		$posts = $this->factory->post->create_many( 31 );
 		$news_id = wp_insert_term( 'News', 'category' );
@@ -138,9 +132,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testPaginationNextUsesBaseAndFormatArgs( $struc = '/%postname%/' ) {
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = $struc;
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure( $struc );
 		$posts = $this->factory->post->create_many( 55 );
 		$this->go_to( home_url( '/' ) );
 		$pagination = Timber::get_pagination( array( 'base' => '/apricot/%_%', 'format' => 'page=%#%' ) );
@@ -148,9 +140,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testPaginationPrevUsesBaseAndFormatArgs( $struc = '/%postname%/' ) {
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = $struc;
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure( $struc );
 		$posts = $this->factory->post->create_many( 55 );
 		$this->go_to( home_url( '/apricot/page=3' ) );
 		query_posts('paged=3');
@@ -160,9 +150,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testPaginationWithMoreThan10Pages( $struc = '/%postname%/' ) {
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = $struc;
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure( $struc );
 		$posts = $this->factory->post->create_many( 150 );
 		$this->go_to( home_url( '/page/13' ) );
 		$pagination = Timber::get_pagination();
@@ -180,9 +168,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testCollectionPaginationSearch() {
-		update_option( 'permalink_structure', '' );
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = false;
+		$this->setPermalinkStructure('');
 		$posts = $this->factory->post->create_many( 55 );
 		$this->go_to( home_url( '?s=post' ) );
 		$posts = new Timber\PostQuery();
@@ -192,8 +178,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 
 	function testCollectionPaginationOnLaterPage() {
 		$struc = '/%postname%/';
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = $struc;
+		$this->setPermalinkStructure( $struc );
 		register_post_type( 'portfolio' );
 		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
 		$this->go_to( home_url( '/portfolio/page/3' ) );
@@ -231,6 +216,17 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://example.org/page/2/?s=post', $pagination->next['link'] );
 	}
 
+	function testCollectionPaginationQueryVars() {
+		global $wp;
+		$wp->add_query_var( 'myvar' );
+		$this->setPermalinkStructure('/%postname%/');
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( home_url('?myvar=value') );
+		$posts = new Timber\PostQuery();
+		$pagination = $posts->pagination();
+		$this->assertEquals( 'http://example.org/page/2/?myvar=value', $pagination->next['link'] );
+	}
+
 	function testCollectionPaginationSearchPrettyWithPostnamePrev() {
 		$this->setPermalinkStructure('/%postname%/');
 		$posts = $this->factory->post->create_many( 55 );
@@ -243,9 +239,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 
 	function testCollectionPaginationSearchPretty() {
 		$struc = '/blog/%year%/%monthnum%/%postname%/';
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = $struc;
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure( $struc );
 		$posts = $this->factory->post->create_many( 55 );
 		$archive = home_url( '?s=post' );
 		$this->go_to( $archive );
@@ -255,9 +249,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testCollectionPaginationNextUsesBaseAndFormatArgs( $struc = '/%postname%/' ) {
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = $struc;
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure( $struc );
 
 		$posts = $this->factory->post->create_many( 55 );
 		$this->go_to( home_url( '/' ) );
@@ -267,9 +259,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testCollectionPaginationPrevUsesBaseAndFormatArgs( $struc = '/%postname%/' ) {
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = $struc;
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure( $struc );
 		//$posts = $this->factory->post->create_many( 55 );
 		for($i=0; $i<30; $i++) {
 			$this->factory->post->create(array('post_title' => 'post'.$i, 'post_date' => '2014-02-'.$i));
@@ -280,9 +270,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testCollectionPaginationWithMoreThan10Pages( $struc = '/%postname%/' ) {
-		global $wp_rewrite;
-		$wp_rewrite->permalink_structure = $struc;
-		update_option( 'permalink_structure', $struc );
+		$this->setPermalinkStructure( $struc );
 		$posts = $this->factory->post->create_many( 150 );
 		$this->go_to( home_url( '/page/13' ) );
 		$posts = new Timber\PostQuery();

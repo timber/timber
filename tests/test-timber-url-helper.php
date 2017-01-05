@@ -13,6 +13,18 @@
             $this->assertNotContains($file, '//');
         }
 
+        function testPreSlashIt() {
+            $before = 'thing/foo';
+            $after = Timber\URLHelper::preslashit($before);
+            $this->assertEquals('/'.$before, $after);
+        }
+
+        function testPreSlashItNadda() {
+            $before = '/thing/foo';
+            $after = Timber\URLHelper::preslashit($before);
+            $this->assertEquals($before, $after);
+        }
+
         function testPathBase() {
         	$this->assertEquals('/', TimberURLHelper::get_path_base());
         }

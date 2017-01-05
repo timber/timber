@@ -35,7 +35,7 @@ use Timber\Loader;
  */
 class Timber {
 
-	public static $version = '1.1.10';
+	public static $version = '1.2.0';
 	public static $locations;
 	public static $dirname = 'views';
 	public static $twig_cache = false;
@@ -420,7 +420,6 @@ class Timber {
 	/*  Utility
 	================================ */
 
-
 	/**
 	 * Add route.
 	 *
@@ -428,6 +427,7 @@ class Timber {
 	 * @param callable $callback
 	 * @param array   $args
 	 * @deprecated since 0.20.0 and will be removed in 1.1
+	 * @codeCoverageIgnore
 	 */
 	public static function add_route( $route, $callback, $args = array() ) {
 		Helper::warn('Timber::add_route (and accompanying methods for load_view, etc. Have been deprecated and will soon be removed. Please update your theme with Route::map. You can read more in the 1.0 Upgrade Guide: https://github.com/timber/timber/wiki/1.0-Upgrade-Guide');
