@@ -53,7 +53,7 @@ class CoAuthorsPlus {
 				return null;
 			}
 		} else {
-			return $cauthor->id;
+			return $cauthor->ID;
 		}
 	}
 }
