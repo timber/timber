@@ -95,10 +95,10 @@ class URLHelper {
 	 * @return string the HTTP_HOST or SERVER_NAME
 	 */
 	public static function get_host() {
-		if ( isset($_SERVER['HTTP_HOST']) ) {
+		if ( isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] ) {
 			return $_SERVER['HTTP_HOST'];
 		}
-		if ( isset($_SERVER['SERVER_NAME']) ) {
+		if ( isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME']) {
 			return $_SERVER['SERVER_NAME'];
 		}
 		return '';

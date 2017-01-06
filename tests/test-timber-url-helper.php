@@ -14,6 +14,28 @@
             $this->assertNotContains($file, '//');
         }
 
+        function testGetHost() {
+            $http_host = $_SERVER['HTTP_HOST'];
+            $server_name = $_SERVER['SERVER_NAME'];
+            $_SERVER['HTTP_HOST'] = '';
+            $_SERVER['SERVER_NAME'] = 'example.org';
+            $host = Timber\URLHelper::get_host();
+            $this->assertEquals('example.org', $host);
+            $_SERVER['HTTP_HOST'] = $http_host;
+            $_SERVER['SERVER_NAME'] = $server_name;
+        }
+
+        function testGetHostEmpty() {
+            $http_host = $_SERVER['HTTP_HOST'];
+            $server_name = $_SERVER['SERVER_NAME'];
+            $_SERVER['HTTP_HOST'] = '';
+            $_SERVER['SERVER_NAME'] = '';
+            $host = Timber\URLHelper::get_host();
+            $this->assertEquals('', $host);
+            $_SERVER['HTTP_HOST'] = $http_host;
+            $_SERVER['SERVER_NAME'] = $server_name;
+        }
+
         function testUserTrailingSlashIt() {
             global $wp_rewrite;
             $wp_rewrite->use_trailing_slashes = true;
