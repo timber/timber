@@ -2,6 +2,8 @@
 
 	class TestTimberTheme extends Timber_UnitTestCase {
 
+		protected $backup_wp_theme_directories;
+		
 		function testThemeMods(){
 			set_theme_mod('foo', 'bar');
 			$theme = new TimberTheme();
@@ -41,9 +43,26 @@
 			$this->assertEquals('http://example.org/wp-content/themes/'.$theme->slug, $output);
 		}
 
-		function tearDown() {
-			update_option( 'siteurl', 'http://example.org', true );
+		function setUp() {
+			global $wp_theme_directories;
+
+			parent::setUp();
+
+			$this->backup_wp_theme_directories = $wp_theme_directories;
+			$wp_theme_directories = array( WP_CONTENT_DIR . '/themes' );
+
+			wp_clean_themes_cache();
+			unset( $GLOBALS['wp_themes'] );
+
 		}
 
+		function tearDown() {
+			global $wp_theme_directories;
 
+			$wp_theme_directories = $this->backup_wp_theme_directories;	
+
+			wp_clean_themes_cache();
+			unset( $GLOBALS['wp_themes'] );
+			parent::tearDown();
+		}
 	}

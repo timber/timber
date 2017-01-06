@@ -51,6 +51,11 @@ class Theme extends Core {
 	public $uri;
 
 	/**
+	 * @var WP_Theme the underlying WordPress native Theme object
+	 */
+	private $theme;
+
+	/**
 	 * Constructs a new TimberTheme object. NOTE the TimberTheme object of the current theme comes in the default `Timber::get_context()` call. You can access this in your twig template via `{{site.theme}}.
 	 * @param string $slug
 	 * @example
@@ -77,21 +82,14 @@ class Theme extends Core {
 	 * @param string $slug
 	 */
 	protected function init( $slug = null ) {
-		$theme = wp_get_theme($slug);
-		$this->name = $theme->get('Name');
-		$ss = $theme->get_stylesheet();
-		$this->slug = $ss;
+		$this->theme = wp_get_theme($slug);
+		$this->name = $this->theme->get('Name');
+		$this->slug = $this->theme->get_stylesheet();
 
-		if ( !function_exists('get_home_path') ) {
-			require_once(ABSPATH.'wp-admin/includes/file.php');
-		}
-		$this->_link = get_theme_root_uri().'/'.$this->slug;
-		$this->uri = get_stylesheet_directory_uri();
-		$this->parent_slug = $theme->get('Template');
-		if ( !$this->parent_slug ) {
-			$this->uri = get_template_directory_uri();
-		}
-		if ( $this->parent_slug && $this->parent_slug != $this->slug ) {
+		$this->uri = $this->theme->get_template_directory_uri();
+
+		if ( $this->theme->parent()) {
+			$this->parent_slug = $this->theme->parent()->get_stylesheet();
 			$this->parent = new Theme($this->parent_slug);
 		}
 	}
@@ -101,7 +99,7 @@ class Theme extends Core {
 	 * @return string the absolute path to the theme (ex: `http://example.org/wp-content/themes/my-timber-theme`)
 	 */
 	public function link() {
-		return $this->_link;
+		return $this->theme->get_stylesheet_directory_uri();
 	}
 
 	/**
@@ -129,3 +127,4 @@ class Theme extends Core {
 	}
 
 }
+
