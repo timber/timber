@@ -36,6 +36,11 @@
             $_SERVER['SERVER_NAME'] = $server_name;
         }
 
+        function testPrepend() {
+            $joined = Timber\URLHelper::prepend_to_url('example.com', '/thing/foo');
+            $this->assertEquals('example.com/thing/foo', $joined);
+        }
+
         function testUserTrailingSlashIt() {
             global $wp_rewrite;
             $wp_rewrite->use_trailing_slashes = true;
