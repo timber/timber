@@ -30,6 +30,9 @@ class Admin {
 		return $links;
 	}
 
+	/**
+	 *	@codeCoverageIgnore
+	 */
 	protected static function disable_update() {
 		$m = '<br>Is your theme in active development? That is, is someone actively in PHP files writing new code? If you answered "no", then <i>DO NOT UPGRADE</i>. ';
 		$m .= "We're so serious about it, we've even disabled the update link. If you really really think you should upgrade you can still <a href='https://wordpress.org/plugins/timber-library/'>download from WordPress.org</a>, but that's on you!";
@@ -38,6 +41,9 @@ class Admin {
    		return $m;
 	}
 
+	/**
+	 *	@codeCoverageIgnore
+	 */
 	protected static function update_message_milestone() {
 		$m = '<br><b>Warning:</b> Timber 1.0 removed a number of features and methods. Before upgrading please test your theme on a local or staging site to ensure that your theme will work with the newest version.<br>
 
@@ -50,6 +56,9 @@ class Admin {
 		return $m;
 	}
 
+	/**
+	 *	@codeCoverageIgnore
+	 */
 	protected static function update_message_major() {
 		$m = '<br><b>Warning:</b> This new version of Timber introduces some major new features which might have unknown effects on your site.';
 
@@ -58,9 +67,25 @@ class Admin {
 		return $m;
 	}
 
-	protected static function update_message_minor() {
+	/**
+	 *	@codeCoverageIgnore
+	 */
+	protected static function udate_message_minor() {
 		$m = "<br><b>Warning:</b> This new version of Timber introduces some new features which might have unknown effects on your site. We have automated tests to help us catch potential issues, but nothing is 100%. You're likley safe to upgrade, but do so very carefully and only if you have an experienced WordPress developer available to help you debug potential issues.";
 		return $m;
+	}
+
+	public static function get_upgrade_magnitude( $current_version, $new_version ) {
+		$current_version_array = explode('.', (string)$current_version);
+		$new_version_array = explode('.', (string)$new_version);
+		if ( $new_version_array[0] > $current_version_array[0]) {
+			return 'milestone';
+		} elseif ( $new_version_array[1] > $current_version_array[1] ) {
+			return 'major';
+		} elseif ( isset($new_version_array[2]) && isset($current_version_array[2]) && $new_version_array[2] > $current_version_array[2] ) { 
+			return 'minor';
+		}
+		return 'unknown';
 	}
 
 	/**
@@ -77,24 +102,21 @@ class Admin {
 	 */
 	public static function in_plugin_update_message( $plugin_data, $r ) {
 		$current_version = $plugin_data['Version'];
-		$current_version_array = explode('.', (string)$current_version);
 		$new_version = $plugin_data['new_version'];
-		$new_version_array = explode('.', (string)$new_version);
-		if ( $new_version_array[0] > $current_version_array[0]) {
-			//milestone version
+		$upgrade_magnitude = self::get_upgrade_magnitude($current_version, $new_version);
+		if ( $upgrade_magnitude == 'milestone' ) {
 			$message = self::update_message_milestone();
 			echo '<br />'.sprintf($message);
-		} elseif ( $new_version_array[1] > $current_version_array[1] ) {
+			return;
+		} elseif ( $upgrade_magnitude == 'major' ) {
 			//major version
 			$message = self::update_message_major();
 			echo '<br />'.sprintf($message);
-		} elseif ( isset($new_version_array[2]) && isset($current_version_array[2]) &&
-			$new_version_array[2] > $current_version_array[2] ) {
-			$message = self::update_message_minor();
-			echo '<br />'.($message);
-		}
+			return;
+		} 
+		$message = self::update_message_minor();
+		echo '<br />'.($message);
 		return;
-
 
 	}
 
