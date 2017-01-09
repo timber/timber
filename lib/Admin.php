@@ -62,7 +62,7 @@ class Admin {
 	protected static function update_message_major() {
 		$m = '<br><b>Warning:</b> This new version of Timber introduces some major new features which might have unknown effects on your site.';
 
-			
+
 		$m .= self::disable_update();
 		return $m;
 	}
@@ -70,7 +70,7 @@ class Admin {
 	/**
 	 *	@codeCoverageIgnore
 	 */
-	protected static function udate_message_minor() {
+	protected static function update_message_minor() {
 		$m = "<br><b>Warning:</b> This new version of Timber introduces some new features which might have unknown effects on your site. We have automated tests to help us catch potential issues, but nothing is 100%. You're likley safe to upgrade, but do so very carefully and only if you have an experienced WordPress developer available to help you debug potential issues.";
 		return $m;
 	}
@@ -82,7 +82,7 @@ class Admin {
 			return 'milestone';
 		} elseif ( $new_version_array[1] > $current_version_array[1] ) {
 			return 'major';
-		} elseif ( isset($new_version_array[2]) && isset($current_version_array[2]) && $new_version_array[2] > $current_version_array[2] ) { 
+		} elseif ( isset($new_version_array[2]) && isset($current_version_array[2]) && $new_version_array[2] > $current_version_array[2] ) {
 			return 'minor';
 		}
 		return 'unknown';
@@ -91,7 +91,7 @@ class Admin {
 	/**
 	 *  Displays an update message for plugin list screens.
 	 *  Shows only the version updates from the current until the newest version
-	 * 
+	 *
 	 *	@codeCoverageIgnore
 	 *
 	 *  @type	function
@@ -113,7 +113,7 @@ class Admin {
 			$message = self::update_message_major();
 			echo '<br />'.sprintf($message);
 			return;
-		} 
+		}
 		$message = self::update_message_minor();
 		echo '<br />'.($message);
 		return;
