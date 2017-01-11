@@ -71,7 +71,7 @@ class Admin {
 	 *	@codeCoverageIgnore
 	 */
 	protected static function update_message_minor() {
-		$m = "<br><b>Warning:</b> This new version of Timber introduces some new features which might have unknown effects on your site. We have automated tests to help us catch potential issues, but nothing is 100%. You're likley safe to upgrade, but do so very carefully and only if you have an experienced WordPress developer available to help you debug potential issues.";
+		$m = "<br><b>Warning:</b> This new version of Timber introduces some new features which might have unknown effects on your site. We have automated tests to help us catch potential issues, but nothing is 100%. You're likely safe to upgrade, but do so very carefully and only if you have an experienced WordPress developer available to help you debug potential issues.";
 		return $m;
 	}
 
