@@ -472,6 +472,10 @@
 			global $wpdb;
 			$query = "DELETE from $wpdb->users WHERE ID > 1";
 			$wpdb->query($query);
+			$wpdb->query("DELETE from $wpdb->terms");
+			$wpdb->query("DELETE from $wpdb->termmeta");
+			$wpdb->query("DELETE from $wpdb->term_taxonomy");
+			$wpdb->query("DELETE from $wpdb->term_relationships");
 		}
 
 		function testPostFormat() {
@@ -551,6 +555,8 @@
 			$post = new TimberPost($pid);
 			$this->assertEquals('News', $post->category()->name);
 		}
+
+
 
 		function testPostCategories() {
 			$pid = $this->factory->post->create();
