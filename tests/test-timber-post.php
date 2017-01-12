@@ -562,8 +562,9 @@
 			$this->assertEquals('uncategorized', $default_categories[0]->slug);
 
 			foreach ( $category_names as $category_name ) {
-				$category_name = wp_insert_term($category_name, 'category');
-				wp_set_object_terms($pid, $category_name['term_id'], 'category', true);
+				$term = wp_insert_term($category_name, 'category');
+				print_r($term);
+				wp_set_object_terms($pid, $term['term_id'], 'category', true);
 			}
 
 			$this->assertEquals(count($default_categories) + count($category_names), count($post->categories()));
