@@ -560,7 +560,9 @@
 			// Uncategorized is applied by default
 			$default_categories = $post->categories();
 			$this->assertEquals('uncategorized', $default_categories[0]->slug);
-
+			echo '=== $category_names ===';
+			print_r($category_names);
+			exit;
 			foreach ( $category_names as $category_name ) {
 				$category_name = wp_insert_term($category_name, 'category');
 				wp_set_object_terms($pid, $category_name['term_id'], 'category', true);
