@@ -175,12 +175,12 @@
 				self::set_object_terms($posts[0], $cat, 'pizza', false);
 				self::set_object_terms($posts[2], $cat, 'pizza', false);
 				$lastPost = new TimberPost($posts[2]);
-				echo "\n".'$lastPost'."\n";
-				print_r($lastPost);
-				echo "\n".'$lastPost->prev(pizza)'."\n";
-				print_r($lastPost->prev('pizza'));
-				echo "posts\n";
-				print_r($posts);
+				// echo "\n".'$lastPost'."\n";
+				// print_r($lastPost);
+				// echo "\n".'$lastPost->prev(pizza)'."\n";
+				// print_r($lastPost->prev('pizza'));
+				// echo "posts\n";
+				// print_r($posts);
 				$this->assertEquals($posts[0], $lastPost->prev('pizza')->ID);
 			}
 		}
