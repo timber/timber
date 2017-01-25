@@ -707,6 +707,10 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		self::_makeThemeImageDirectory();
 		$source = __DIR__.'/assets/cardinals.jpg';
 		$dest = get_stylesheet_directory_uri().'/images/cardinals.jpg';
+		$dest = 'http://example.org/wp-content/themes/twentysixteen/images/cardinals.jpg';
+		if ( strpos($dest, 'http') === 0 ) {
+			$dest = Timber\URLHelper::url_to_file_system($dest);
+		}
 		copy($source, $dest);
 		$this->assertTrue(file_exists($dest));
 		$image = $theme_url.'/images/cardinals.jpg';
