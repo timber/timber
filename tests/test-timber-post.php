@@ -547,7 +547,7 @@
 		function testPostCategory(){
 			$cat = wp_insert_term('News', 'category');
 			$pid = $this->factory->post->create();
-			wp_set_object_terms($pid, $cat['term_id'], 'category');
+			self::set_object_terms($pid, $cat, 'category');
 			$post = new TimberPost($pid);
 			$this->assertEquals('News', $post->category()->name);
 		}
@@ -562,14 +562,7 @@
 			$this->assertEquals('uncategorized', $default_categories[0]->slug);
 			foreach ( $category_names as $category_name ) {
 				$category_name = wp_insert_term($category_name, 'category');
-				if (is_array($category_name)) {
-					$term_id = $category_name['term_id'];
-				} else if ( is_object($category_name) && get_class($category_name) == 'WP_Error') {
-					$term_id = $category_name->error_data['term_exists'];
-				}
-				if ($term_id) {
-					wp_set_object_terms($pid, $term_id, 'category', true);
-				}
+				self::set_object_terms($pid, $category_name, 'category');
 			}
 
 			$this->assertEquals(count($default_categories) + count($category_names), count($post->categories()));
@@ -594,6 +587,7 @@
 
 			// create a new tag and associate it with the post
 			$dummy_tag = wp_insert_term('whatever', 'post_tag');
+			self::set_object_terms($pid, $dummy_tag, 'post_tag');
 			wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);
 
 			// test expected tags
@@ -608,7 +602,7 @@
 
 			foreach ( $team_names as $team_name ) {
 				$team_term = wp_insert_term($team_name, 'team');
-				wp_set_object_terms($pid, $team_term['term_id'], 'team', true);
+				self::set_object_terms($pid, $team_term, 'team');
 			}
 
 			$this->assertEquals(count($team_names), count($post->terms('team')));
@@ -642,6 +636,18 @@
 			$this->assertEquals(count($post_tag_terms) + count($post_team_terms), count($post_tag_and_team_terms));
 		}
 
+		function set_object_terms( $pid, $term_info, $taxonomy = 'post_tag' , $append = true ) {
+			$term_id = 0;
+			if ( is_array($term_info) ) {
+				$term_id = $term_info['term_id'];
+			} else if ( is_object($term_info) && get_class($term_info) == 'WP_Error' ) {
+				$term_id = $term_info->error_data['term_exists'];
+			}
+			if ( $term_id ) {
+				wp_set_object_terms($pid, $term_id, $taxonomy, $append);
+			}
+		}
+
 		function testPostTermClass() {
 			$class_name = 'TimberTermSubclass';
 			require_once('php/timber-term-subclass.php');
@@ -652,7 +658,7 @@
 
 			// create a new tag, associate with post
 			$dummy_tag = wp_insert_term('whatever', 'post_tag');
-			wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);
+			self::set_object_terms($pid, $dummy_tag, 'post_tag');
 
 			// test return class
 			$terms = $post->terms('post_tag', true, $class_name);
