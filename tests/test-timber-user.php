@@ -41,13 +41,12 @@
 		}
 
 		function testLinks() {
-			global $wp_rewrite;
 			$this->setPermalinkStructure('/blog/%year%/%monthnum%/%postname%/');
 			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln', 'user_login' => 'lincoln'));
 			$uid = get_user_by('id', $uid);
 			$user = new TimberUser($uid);
-			$this->assertEquals('http://example.org/author/lincoln', $user->link());
-			$this->assertEquals('/author/lincoln', $user->path());
+			$this->assertEquals('http://example.org/blog/author/lincoln', $user->link());
+			$this->assertEquals('/blog/author/lincoln', $user->path());
 			$user->president = '16th';
 			$this->assertEquals('16th', $user->president);
 
