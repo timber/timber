@@ -688,8 +688,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function _makeThemeImageDirectory() {
 		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
 		$img_dir = get_stylesheet_directory_uri().'/images';
+		error_log('$image_dir='.$img_dir);
 		if ( !file_exists($img_dir) ) {
-    			mkdir($img_dir, 0777, true);
+    		mkdir($img_dir, 0777, true);
 		}
 	}
 
@@ -707,12 +708,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		self::_makeThemeImageDirectory();
 		$source = __DIR__.'/assets/cardinals.jpg';
 		$dest = get_stylesheet_directory_uri().'/images/cardinals.jpg';
-		error_log('$dest='.$dest);
-		error_log('strpost='.strpos($dest, 'http'));
 		if ( strpos($dest, 'http') === 0 ) {
 			$dest = Timber\URLHelper::url_to_file_system($dest);
 		}
-		error_log('$dest='.$dest);
 		copy($source, $dest);
 		$this->assertTrue(file_exists($dest));
 		$image = $theme_url.'/images/cardinals.jpg';
