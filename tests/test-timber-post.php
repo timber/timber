@@ -203,7 +203,7 @@
 			$firstPost = new TimberPost($posts[0]);
 			$nextPost = new TimberPost($posts[1]);
 			$nextPostAfter = new TimberPost($posts[2]);
-			wp_update_post( array('ID' =>$nextPost->ID, 'post_status' => 'draft' );
+			wp_update_post( array('ID' =>$nextPost->ID, 'post_status' => 'draft') );
 			$this->assertEquals($nextPostAfter->ID, $firstPost->next()->ID);
 		}
 
