@@ -476,6 +476,16 @@
 			global $wpdb;
 			$query = "DELETE from $wpdb->users WHERE ID > 1";
 			$wpdb->query($query);
+			$query = "truncate $wpdb->term_relationships";
+			$wpdb->query($query);
+			$query = "truncate $wpdb->term_taxonomy";
+			$wpdb->query($query);
+			$query = "truncate $wpdb->terms";
+			$wpdb->query($query);
+			$query = "truncate $wpdb->termmeta";
+			$wpdb->query($query);
+			$query = "truncate $wpdb->posts";
+			$wpdb->query($query);
 		}
 
 		function testPostFormat() {
@@ -488,6 +498,8 @@
 
 		function testPostClass(){
 			$pid = $this->factory->post->create();
+			$category = wp_insert_term('Uncategorized', 'category');
+			self::set_object_terms($pid, $category, 'category', true);
 			$post = new TimberPost($pid);
 			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $post->class);
 		}
@@ -558,6 +570,8 @@
 
 		function testPostCategories() {
 			$pid = $this->factory->post->create();
+			$cat = wp_insert_term('Uncategorized', 'category');
+			self::set_object_terms($pid, $cat, 'category');
 			$post = new TimberPost($pid);
 			$category_names = array('News', 'Sports', 'Obits');
 
@@ -588,11 +602,12 @@
 		function testPostTerms() {
 			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
+			$category = wp_insert_term('Uncategorized', 'category');
+			self::set_object_terms($pid, $category, 'category');
 
 			// create a new tag and associate it with the post
 			$dummy_tag = wp_insert_term('whatever', 'post_tag');
 			self::set_object_terms($pid, $dummy_tag, 'post_tag');
-			wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);
 
 			// test expected tags
 			$timber_tags = $post->terms('post_tag');
