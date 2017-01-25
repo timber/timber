@@ -171,8 +171,9 @@
 					$j = $i + 1;
 					$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 				}
-				wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
-				wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
+				$cat = wp_insert_term('Cheese', 'pizza');
+				self::set_object_terms($posts[0], $cat, 'pizza', false);
+				self::set_object_terms($posts[2], $cat, 'pizza', false);
 				$lastPost = new TimberPost($posts[2]);
 				$prevPost = new TimberPost($posts[0]);
 				$this->assertEquals($lastPost->prev('pizza')->ID, $prevPost->ID);
@@ -185,8 +186,9 @@
 				$j = $i + 1;
 				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
-			wp_set_object_terms($posts[0], 'TestMe', 'category', false);
-			wp_set_object_terms($posts[2], 'TestMe', 'category', false);
+			$cat = wp_insert_term('TestMe', 'category');
+			self::set_object_terms($posts[0], $cat, 'category', false);
+			self::set_object_terms($posts[2], $cat, 'category', false);
 			$lastPost = new TimberPost($posts[2]);
 			$prevPost = new TimberPost($posts[0]);
 			$this->assertEquals($lastPost->prev('category')->ID, $prevPost->ID);
@@ -201,9 +203,8 @@
 			$firstPost = new TimberPost($posts[0]);
 			$nextPost = new TimberPost($posts[1]);
 			$nextPostAfter = new TimberPost($posts[2]);
-			$nextPost->post_status = 'draft';
-			wp_update_post($nextPost);
-			$this->assertEquals($firstPost->next()->ID, $nextPostAfter->ID);
+			wp_update_post( array('ID' =>$nextPost->ID, 'post_status' => 'draft' );
+			$this->assertEquals($nextPostAfter->ID, $firstPost->next()->ID);
 		}
 
 		function testNextWithDraft(){
