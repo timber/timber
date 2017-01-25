@@ -560,13 +560,16 @@
 			// Uncategorized is applied by default
 			$default_categories = $post->categories();
 			$this->assertEquals('uncategorized', $default_categories[0]->slug);
-			echo '=== $category_names ===';
 			foreach ( $category_names as $category_name ) {
 				$category_name = wp_insert_term($category_name, 'category');
-				echo '----$category_name----';
-				echo "\n";
-				print_r($category_name);
-				wp_set_object_terms($pid, $category_name['term_id'], 'category', true);
+				if (is_array($category_name)) {
+					$term_id = $category_name['term_id'];
+				} else if ( is_object($category_name) && get_class($category_name) == 'WP_Error') {
+					$term_id = $category_name->error_data['term_exists'];
+				}
+				if ($term_id) {
+					wp_set_object_terms($pid, $term_id, 'category', true);
+				}
 			}
 
 			$this->assertEquals(count($default_categories) + count($category_names), count($post->categories()));
