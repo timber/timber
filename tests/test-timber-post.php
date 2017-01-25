@@ -167,16 +167,19 @@
         	} else {
 				register_taxonomy('pizza', 'post');
 				$posts = array();
-				for($i = 0; $i<3; $i++){
+				for( $i = 0; $i < 3; $i++ ){
 					$j = $i + 1;
-					$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
+					$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00', 'post_title' => "Pizza $j is so good!"));
 				}
 				$cat = wp_insert_term('Cheese', 'pizza');
 				self::set_object_terms($posts[0], $cat, 'pizza', false);
 				self::set_object_terms($posts[2], $cat, 'pizza', false);
 				$lastPost = new TimberPost($posts[2]);
-				$prevPost = new TimberPost($posts[0]);
-				$this->assertEquals($lastPost->prev('pizza')->ID, $prevPost->ID);
+				echo '$lastPost->prev(pizza)'."\n";
+				print_r($lastPost->prev('pizza'));
+				echo "posts\n";
+				print_r($posts);
+				$this->assertEquals($posts[0], $lastPost->prev('pizza')->ID);
 			}
 		}
 
