@@ -129,8 +129,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  		self::setPermalinkStructure();
  		$attach = self::get_image_attachment();
  		$image = new TimberImage($attach);
+ 		print_r($image);
  		$links = array();
- 		$links[] = 'http://example.org/the-arch/';
+ 		$links[] = 'http://example.org/'.$image->post_name.'/';
  		$links[] = 'http://example.org/?attachment_id='.$image->ID;
  		$this->assertContains($image->link(), $links);
  	}

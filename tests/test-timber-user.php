@@ -42,9 +42,7 @@
 
 		function testLinks() {
 			global $wp_rewrite;
-			$struc = '/blog/%year%/%monthnum%/%postname%/';
-			$wp_rewrite->permalink_structure = $struc;
-			update_option('permalink_structure', $struc);
+			$this->setPermalinkStructure('/blog/%year%/%monthnum%/%postname%/');
 			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln', 'user_login' => 'lincoln'));
 			$uid = get_user_by('id', $uid);
 			$user = new TimberUser($uid);
