@@ -38,6 +38,7 @@
 			$wp_rewrite->set_permalink_structure( false );
 			$wp_rewrite->init();
 			$wp_rewrite->flush_rules();
+			flush_rewrite_rules( true );
 		}
 
 	}

@@ -237,6 +237,10 @@
         function tearDown() {
             global $_wp_using_ext_object_cache;
             $_wp_using_ext_object_cache = false;
+            global $wpdb;
+            $query = "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
+            $wpdb->query($query);
+            parent::tearDown();
         }
 
         function testTimberLoaderCacheTransients() {
@@ -320,7 +324,6 @@
             self::_unswapFiles();
             $_wp_using_ext_object_cache = false;
         }
-
 
         function testTimberLoaderCacheTransientsWithExtObjectCache() {
             global $_wp_using_ext_object_cache;

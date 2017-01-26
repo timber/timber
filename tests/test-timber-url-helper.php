@@ -69,6 +69,8 @@
         }
 
         function testPathBase() {
+            $struc = '/%year%/%monthnum%/%postname%/';
+            $this->setPermalinkStructure( $struc );
         	$this->assertEquals('/', TimberURLHelper::get_path_base());
         }
 
