@@ -379,9 +379,11 @@ class ImageHelper {
 				$result['base'] = self::BASE_UPLOADS; // upload based
 				$tmp = str_replace($upload_dir['baseurl'], '', $tmp);
 			} else if ( 0 === strpos($tmp, content_url()) ) {
-				error_log('if theem based...');
+				error_log('if theme based...');
+				error_log('383, '.$tmp);
 				$result['base'] = self::BASE_CONTENT; // content-based
 				$tmp = self::theme_url_to_dir($tmp);
+				error_log('386, '.$tmp);
 			} else {
 				error_log('you aint none of htese');
 			}
