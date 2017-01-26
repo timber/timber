@@ -343,6 +343,7 @@ class ImageHelper {
 	 * @return array       an array (see keys in code below)
 	 */
 	private static function analyze_url( $url ) {
+		error_log('$url = ' .$url);
 		$result = array(
 			'url' => $url, // the initial url
 			'absolute' => URLHelper::is_absolute($url), // is the url absolute or relative (to home_url)
@@ -355,6 +356,7 @@ class ImageHelper {
 		$upload_dir = wp_upload_dir();
 		$tmp = $url;
 		if ( 0 === strpos($tmp, ABSPATH) || 0 === strpos($tmp, '/srv/www/') ) {
+			error_log('if 359');
 			// we've been given a dir, not an url
 			$result['absolute'] = true;
 			if ( 0 === strpos($tmp, $upload_dir['basedir']) ) {
@@ -366,6 +368,7 @@ class ImageHelper {
 				$tmp = str_replace(WP_CONTENT_DIR, '', $tmp);
 			}
 		} else {
+			error_log('else');
 			if ( !$result['absolute'] ) {
 				$tmp = site_url().$tmp;
 			}
@@ -381,7 +384,7 @@ class ImageHelper {
 		$parts = pathinfo($tmp);
 		error_log('$tmp = ' .$tmp);
 		error_log('$parts');
-		error_log(print_r($parts));
+		error_log(print_r($parts, true));
 		$result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
 		$result['filename'] = $parts['filename'];
 		$result['extension'] = strtolower($parts['extension']);
