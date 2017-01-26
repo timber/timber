@@ -379,7 +379,9 @@ class ImageHelper {
 			}
 		}
 		$parts = pathinfo($tmp);
-
+		error_log('$tmp = ' .$tmp);
+		error_log('$parts');
+		error_log(print_r($parts));
 		$result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
 		$result['filename'] = $parts['filename'];
 		$result['extension'] = strtolower($parts['extension']);
@@ -434,6 +436,7 @@ class ImageHelper {
 		// $url = TimberURLHelper::remove_double_slashes( $url);
 		return $url;
 	}
+
 
 	/**
 	 * Builds the absolute file system location of a file based on its different components
