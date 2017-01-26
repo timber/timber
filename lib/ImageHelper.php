@@ -370,15 +370,20 @@ class ImageHelper {
 		} else {
 			error_log('else');
 			if ( !$result['absolute'] ) {
+				error_log('if not absolute');
 				$tmp = site_url().$tmp;
+				error_log('$tmp = ' .$tmp);
 			}
 			if ( 0 === strpos($tmp, $upload_dir['baseurl']) ) {
+				error_log('if upload based...');
 				$result['base'] = self::BASE_UPLOADS; // upload based
 				$tmp = str_replace($upload_dir['baseurl'], '', $tmp);
-			}
-			if ( 0 === strpos($tmp, content_url()) ) {
+			} else if ( 0 === strpos($tmp, content_url()) ) {
+				error_log('if theem based...');
 				$result['base'] = self::BASE_CONTENT; // content-based
 				$tmp = self::theme_url_to_dir($tmp);
+			} else {
+				error_log('you aint none of htese');
 			}
 		}
 		$parts = pathinfo($tmp);
