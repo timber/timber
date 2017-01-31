@@ -131,9 +131,8 @@ class Comment extends Core implements CoreInterface {
 
 		$email = $this->avatar_email();
 		
-		$args = array();
-		$args = apply_filters ('pre_get_avatar_data', $args, $email);
-		if( isset($args['url'] ) ) {
+		$args = apply_filters('pre_get_avatar_data', array(), $email);
+		if ( isset($args['url']) ) {
 			return $args['url'];
 		}
 		
