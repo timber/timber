@@ -692,6 +692,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 			$img_dir = Timber\URLHelper::url_to_file_system($img_dir);
 		}
 		if ( !file_exists($img_dir) ) {
+			$parent = dirname($img_dir);
+			// error_log($parent);
+			chmod($parent, 0777);
     		$res = mkdir($img_dir, 0777, true);
 		}
 	}
