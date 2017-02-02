@@ -170,6 +170,8 @@ class Resize extends ImageOperation {
 	 * @return boolean|null                  true if everything went fine, false otherwise
 	 */
 	public function run( $load_filename, $save_filename ) {
+		//here the load filename is bonkers, so we need to fix it before it gets here...
+		// error_log( '$load = '.$load_filename );
 		$image = wp_get_image_editor($load_filename);
 		if ( !is_wp_error($image) ) {
 			//should be resized by gif resizer
@@ -203,7 +205,7 @@ class Resize extends ImageOperation {
 			}
 		} else if ( isset($image->error_data['error_loading_image']) ) {
 			// @codeCoverageIgnoreStart
-			Helper::error_log('Error loading '.$image->error_data['error_loading_image']);
+			Helper::error_log('!!Error loading '.$image->error_data['error_loading_image']);
 		} else {
 			if ( !extension_loaded('gd') ) {
 				Helper::error_log('Can not resize image, please installed php-gd');

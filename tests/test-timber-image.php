@@ -687,12 +687,12 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function _makeThemeImageDirectory() {
 		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
-		$img_dir = get_stylesheet_directory_uri().'/images';
+		$img_dir = realpath(get_stylesheet_directory_uri()).'/images';
 		if ( strpos($img_dir, 'http') === 0 ) {
 			$img_dir = Timber\URLHelper::url_to_file_system($img_dir);
 		}
 		if ( !file_exists($img_dir) ) {
-    		mkdir($img_dir, 0777, true);
+    		$res = mkdir($img_dir, 0777, true);
 		}
 	}
 

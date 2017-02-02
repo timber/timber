@@ -343,7 +343,6 @@ class ImageHelper {
 	 * @return array       an array (see keys in code below)
 	 */
 	private static function analyze_url( $url ) {
-		error_log('$url = ' .$url);
 		$result = array(
 			'url' => $url, // the initial url
 			'absolute' => URLHelper::is_absolute($url), // is the url absolute or relative (to home_url)
@@ -356,7 +355,6 @@ class ImageHelper {
 		$upload_dir = wp_upload_dir();
 		$tmp = $url;
 		if ( 0 === strpos($tmp, ABSPATH) || 0 === strpos($tmp, '/srv/www/') ) {
-			error_log('if 359');
 			// we've been given a dir, not an url
 			$result['absolute'] = true;
 			if ( 0 === strpos($tmp, $upload_dir['basedir']) ) {
@@ -368,31 +366,20 @@ class ImageHelper {
 				$tmp = str_replace(WP_CONTENT_DIR, '', $tmp);
 			}
 		} else {
-			error_log('else');
 			if ( !$result['absolute'] ) {
-				error_log('if not absolute');
 				$tmp = site_url().$tmp;
-				error_log('$tmp = ' .$tmp);
 			}
 			if ( 0 === strpos($tmp, $upload_dir['baseurl']) ) {
-				error_log('if upload based...');
 				$result['base'] = self::BASE_UPLOADS; // upload based
 				$tmp = str_replace($upload_dir['baseurl'], '', $tmp);
 			} else if ( 0 === strpos($tmp, content_url()) ) {
-				error_log('if theme based...');
-				error_log('383, '.$tmp);
 				$result['base'] = self::BASE_CONTENT; // content-based
 				$tmp = self::theme_url_to_dir($tmp);
-				error_log('386, '.$tmp);
-			} else {
-				error_log('you aint none of htese');
 			}
 		}
 		$parts = pathinfo($tmp);
-		error_log('$tmp = ' .$tmp);
-		error_log('$parts');
-		error_log(print_r($parts, true));
 		$result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
+		$result['subdir'] = ($result['subdir']);
 		$result['filename'] = $parts['filename'];
 		$result['extension'] = strtolower($parts['extension']);
 		$result['basename'] = $parts['basename'];
@@ -400,14 +387,14 @@ class ImageHelper {
 	}
 
 	/**
-	 * Converts a URL located in a theme directory into the raw path
+	 * Converts a URL located in a theme directory into the raw file path
 	 * @param string 	$src a URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg)
 	 * @return string full path to the file in question
 	 */
-	protected static function theme_url_to_dir( $tmp ) 	{
-		$root = trailingslashit(get_theme_root_uri()).get_stylesheet();
-		$tmp = str_replace($root, '', $tmp);
-		$tmp = realpath(get_stylesheet_directory_uri().$tmp);
+	public static function theme_url_to_dir( $tmp ) 	{
+		$site_root = trailingslashit(get_theme_root_uri()).get_stylesheet();
+		$tmp = str_replace($site_root, '', $tmp);
+		$tmp = get_stylesheet_directory_uri().$tmp;
 		return $tmp;
 	}
 
@@ -447,6 +434,18 @@ class ImageHelper {
 		return $url;
 	}
 
+	/**
+	 * Runs realpath to resolve symbolic links (../, etc). But only if it's a path and not a URL
+	 * @param  string $path
+	 * @return string 			the resolved path
+	 */
+	protected static function maybe_realpath( $path ) {
+		if ( strstr($path, '../') !== false ) {
+			return realpath($path);
+		}
+		return $path;
+	}
+
 
 	/**
 	 * Builds the absolute file system location of a file based on its different components
@@ -457,6 +456,8 @@ class ImageHelper {
 	 * @return string           the file location
 	 */
 	private static function _get_file_path( $base, $subdir, $filename ) {
+		$subdir = self::maybe_realpath($subdir);
+		
 		$path = '';
 		if ( self::BASE_UPLOADS == $base ) {
 			$upload_dir = wp_upload_dir();

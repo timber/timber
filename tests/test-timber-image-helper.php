@@ -7,6 +7,11 @@
 			$this->assertTrue( TimberImageHelper::is_animated_gif($image) );
 		}
 
+		// function testThemeURLToDir() {
+		// 	$url = 'http://example.org/wp-content/themes/'.get_stylesheet().'/images/cardinals.jpg';
+		// 	$result = Timber\ImageHelper::theme_url_to_dir($url);
+		// }
+
 		function testIsRegularGif() {
 			$image = TestTimberImage::copyTestImage('boyer.gif');
 			$this->assertFalse( TimberImageHelper::is_animated_gif($image) );
