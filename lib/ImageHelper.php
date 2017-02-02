@@ -502,6 +502,7 @@ class ImageHelper {
 			$src = self::sideload_image($src);
 			$external = true;
 		}
+		error_log('$src = ' .$src);
 		// break down URL into components
 		$au = self::analyze_url($src);
 		// build URL and filenames
@@ -521,6 +522,7 @@ class ImageHelper {
 			$au['subdir'],
 			$au['basename']
 		);
+		error_log('$source_path = ' .$source_path);
 		$new_url = apply_filters('timber/image/new_url', $new_url);
 		$destination_path = apply_filters('timber/image/new_path', $destination_path);
 		// if already exists...
