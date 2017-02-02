@@ -21,7 +21,7 @@ before_script:
     - composer install --dev --prefer-source
 
 script:
-    - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.0 ]; then mkdir -p build/logs; phpunit --coverage-clover build/logs/clover.xml; else phpunit --filter testThemeImageResize -c bin/phpunit-nocover.xml; fi
+    - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.0 ]; then mkdir -p build/logs; phpunit --coverage-clover build/logs/clover.xml; else phpunit -c bin/phpunit-nocover.xml; fi
 
 after_script:
     - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.0 ]; then php vendor/bin/coveralls -v; fi
