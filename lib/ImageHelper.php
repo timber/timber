@@ -456,6 +456,10 @@ class ImageHelper {
 	 * @return string           the file location
 	 */
 	private static function _get_file_path( $base, $subdir, $filename ) {
+		error_log('_get_file_path');
+		error_log('$base = ' .$base);
+		error_log('$subdir = ' . $subdir);
+		error_log('$filename = ' . $filename);
 		$subdir = self::maybe_realpath($subdir);
 		
 		$path = '';
@@ -467,6 +471,8 @@ class ImageHelper {
 			$path = WP_CONTENT_DIR;
 		}
 		if ( self::is_in_theme_dir(trailingslashit($subdir).$filename) ) {
+			error_log('it is true, it is me');
+			error_log($subdir . ' . ' .$filename);
 			return trailingslashit($subdir).$filename;
 			$path = $subdir;
 		}
