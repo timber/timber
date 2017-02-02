@@ -460,6 +460,9 @@ class ImageHelper {
 		error_log('$base = ' .$base);
 		error_log('$subdir = ' . $subdir);
 		error_log('$filename = ' . $filename);
+		if ( URLHelper::is_url($subdir) ) {
+			$subdir = URLHelper::url_to_file_system($subdir);
+		}
 		$subdir = self::maybe_realpath($subdir);
 		
 		$path = '';
