@@ -710,7 +710,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testThemeImageResize() {
 		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
-		//self::_makeThemeImageDirectory();
 		$source = __DIR__.'/assets/cardinals.jpg';
 		$dest = get_stylesheet_directory_uri().'/cardinals.jpg';
 		if ( strpos($dest, 'http') === 0 ) {
@@ -731,18 +730,17 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testThemeImageLetterbox() {
 		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
-		self::_makeThemeImageDirectory();
 		if ( ! extension_loaded( 'gd' ) ) {
 			self::markTestSkipped( 'Letterbox image test requires GD extension' );
 		}
 		$source = __DIR__.'/assets/cardinals.jpg';
-		$dest = realpath(get_template_directory()).'/images/cardinals.jpg';
+		$dest = realpath(get_template_directory()).'/cardinals.jpg';
 		copy($source, $dest);
-		$image = $theme_url.'/images/cardinals.jpg';
+		$image = $theme_url.'/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
 		$letterboxed = TimberImageHelper::letterbox( $image, 600, 300, '#FF0000' );
-		$this->assertFileExists( realpath(get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg') );
-		unlink( realpath(get_template_directory().'/images/cardinals-lbox-600x300-FF0000.jpg') );
+		$this->assertFileExists( realpath(get_template_directory().'/cardinals-lbox-600x300-FF0000.jpg') );
+		unlink( realpath(get_template_directory().'/cardinals-lbox-600x300-FF0000.jpg') );
 	}
 
 	function testImageWidthWithFilter() {
