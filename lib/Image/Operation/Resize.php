@@ -171,7 +171,7 @@ class Resize extends ImageOperation {
 	 */
 	public function run( $load_filename, $save_filename ) {
 		//here the load filename is bonkers, so we need to fix it before it gets here...
-		// error_log( '$load = '.$load_filename );
+		error_log( 'Resize::run $load = '.$load_filename );
 		$image = wp_get_image_editor($load_filename);
 		if ( !is_wp_error($image) ) {
 			//should be resized by gif resizer
