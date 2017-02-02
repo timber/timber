@@ -522,6 +522,7 @@ class ImageHelper {
 			$au['subdir'],
 			$au['basename']
 		);
+		error_log(print_r($au, true));
 		error_log('$source_path = ' .$source_path);
 		$new_url = apply_filters('timber/image/new_url', $new_url);
 		$destination_path = apply_filters('timber/image/new_path', $destination_path);
