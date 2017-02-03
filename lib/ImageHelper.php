@@ -478,8 +478,9 @@ class ImageHelper {
 			error_log('WP_CONTENT_DIR = ' .WP_CONTENT_DIR);
 			$path = WP_CONTENT_DIR;
 			$subdir = str_replace(WP_CONTENT_DIR, '', $subdir);
-			error_log('return ' . untrailingslashit($path).'/'.untrailingslashit($subdir).'/'.$filename);
-			return untrailingslashit($path).'/'.untrailingslashit($subdir).'/'.$filename;
+			$return = trailingslashit($path).untrailingslashit($subdir).'/'.$filename);
+			error_log('$retur = ' .$return);
+			return $return;
 		}
 		if ( self::is_in_theme_dir(trailingslashit($subdir).$filename) ) {
 			error_log('it is true, it is me');
