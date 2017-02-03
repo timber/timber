@@ -373,10 +373,8 @@ class ImageHelper {
 				$result['base'] = self::BASE_UPLOADS; // upload based
 				$tmp = str_replace($upload_dir['baseurl'], '', $tmp);
 			} else if ( 0 === strpos($tmp, content_url()) ) {
-				error_log('IFFFFFF 376');
 				$result['base'] = self::BASE_CONTENT; // content-based
 				$tmp = self::theme_url_to_dir($tmp);
-				error_log('$tmp = '. $tmp);
 			}
 		}
 		$parts = pathinfo($tmp);
@@ -384,7 +382,6 @@ class ImageHelper {
 		$result['filename'] = $parts['filename'];
 		$result['extension'] = strtolower($parts['extension']);
 		$result['basename'] = $parts['basename'];
-		error_log('ABSPATH = '.ABSPATH);
 		return $result;
 	}
 
@@ -395,11 +392,8 @@ class ImageHelper {
 	 */
 	public static function theme_url_to_dir( $src ) 	{
 		$site_root = trailingslashit(get_theme_root_uri()).get_stylesheet();
-		error_log('$site_root = '. $site_root);
 		$tmp = str_replace($site_root, '', $src);
-		error_log('now just the src w/o site_root = '.$tmp);
 		$tmp = trailingslashit(get_theme_root()).get_stylesheet().$tmp;
-		error_log('return ...' .$tmp);
 		return $tmp;
 	}
 
@@ -461,10 +455,6 @@ class ImageHelper {
 	 * @return string           the file location
 	 */
 	private static function _get_file_path( $base, $subdir, $filename ) {
-		error_log('_get_file_path');
-		error_log('$base = ' .$base);
-		error_log('$subdir = ' . $subdir);
-		error_log('$filename = ' . $filename);
 		if ( URLHelper::is_url($subdir) ) {
 			$subdir = URLHelper::url_to_file_system($subdir);
 		}
@@ -473,7 +463,6 @@ class ImageHelper {
 		$path = '';
 		if ( self::BASE_UPLOADS == $base ) {
 			//it is in the Uploads directory
-			error_log('iffff');
 			$upload_dir = wp_upload_dir();
 			$path = $upload_dir['basedir'];
 		} else if ( self::BASE_CONTENT == $base ) {
@@ -555,7 +544,6 @@ class ImageHelper {
 			$external = true;
 		}
 
-		error_log('$src = ' .$src);
 		// break down URL into components
 		$au = self::analyze_url($src);
 		//$au['subdir'] = '/themes/twentysixteen';
@@ -577,8 +565,6 @@ class ImageHelper {
 			$au['basename']
 		);
 		
-		error_log(print_r($au, true));
-		error_log('$source_path = ' .$source_path);
 		$new_url = apply_filters('timber/image/new_url', $new_url);
 		$destination_path = apply_filters('timber/image/new_path', $destination_path);
 		// if already exists...
