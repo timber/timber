@@ -722,8 +722,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if ( strpos($dest, 'http') === 0 ) {
 			$dest = Timber\URLHelper::url_to_file_system($dest);
 		}
+		$dest = realpath($dest);
 		copy($source, $dest);
-		error_log('$dest = ' .$dest);
+		error_log('$Dest = ' .$dest);
 		$this->assertTrue(file_exists($dest));
 		$image = $theme_url.'/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
@@ -734,6 +735,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$file_location = get_stylesheet_directory_uri().'/cardinals-120x120-c-default.jpg';
 		if ( strpos($file_location, 'http') === 0 ) {
 			$file_location = Timber\URLHelper::url_to_file_system($file_location);
+		}
+		if ( realpath($file_location) ) {
+			$file_location = realpath($file_location);
 		}
 		$this->assertFileExists( $file_location );
 		$this->addFile( $file_location );
