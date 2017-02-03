@@ -701,9 +701,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testThemeURLToDir() {
 		$src = 'http://example.org/wp-content/themes/'.get_stylesheet().'/cardinals.jpg';
-		error_log(print_r($_SERVER, true));
 		$path = Timber\ImageHelper::theme_url_to_dir($src);
-		error_log('$path = ' .$path);
+		$this->assertEquals(trailingslashit(get_theme_root()).get_stylesheet().'/cardinals.jpg', $path);
 
 	}
 
