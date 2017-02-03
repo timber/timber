@@ -383,6 +383,7 @@ class ImageHelper {
 		$result['filename'] = $parts['filename'];
 		$result['extension'] = strtolower($parts['extension']);
 		$result['basename'] = $parts['basename'];
+		error_log('ABSPATH = '.ABSPATH);
 		return $result;
 	}
 
@@ -515,6 +516,8 @@ class ImageHelper {
 		// break down URL into components
 		$au = self::analyze_url($src);
 		// build URL and filenames
+		$au['subdir'] = '/wp-content/themes/twentysixteen';
+		//$au['subdir'] = '../data/themedir1/default';
 		$new_url = self::_get_file_url(
 			$au['base'],
 			$au['subdir'],
@@ -531,6 +534,7 @@ class ImageHelper {
 			$au['subdir'],
 			$au['basename']
 		);
+		
 		error_log(print_r($au, true));
 		error_log('$source_path = ' .$source_path);
 		$new_url = apply_filters('timber/image/new_url', $new_url);
