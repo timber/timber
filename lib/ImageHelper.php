@@ -477,7 +477,9 @@ class ImageHelper {
 			error_log('else');
 			error_log('WP_CONTENT_DIR = ' .WP_CONTENT_DIR);
 			$path = WP_CONTENT_DIR;
+			error_log('480 $subdir = ' .$subdir);
 			$subdir = str_replace(WP_CONTENT_DIR, '', $subdir);
+			error_log('482 $subdir = ' .$subdir);
 			$path = trailingslashit($path).URLHelper::unpreslashit(untrailingslashit($subdir));
 		}
 		if ( self::is_in_theme_dir(trailingslashit($subdir).$filename) ) {
@@ -523,6 +525,7 @@ class ImageHelper {
 		error_log('$src = ' .$src);
 		// break down URL into components
 		$au = self::analyze_url($src);
+		$au['subdir'] = '/wp-content/themes/twentysixteen';
 		// build URL and filenames
 		$new_url = self::_get_file_url(
 			$au['base'],
