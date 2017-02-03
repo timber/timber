@@ -554,7 +554,7 @@ class ImageHelper {
 		error_log('$src = ' .$src);
 		// break down URL into components
 		$au = self::analyze_url($src);
-		$au['subdir'] = '/themes/twentysixteen';
+		//$au['subdir'] = '/themes/twentysixteen';
 		// build URL and filenames
 		$new_url = self::_get_file_url(
 			$au['base'],
