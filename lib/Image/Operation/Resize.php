@@ -204,7 +204,7 @@ class Resize extends ImageOperation {
 			}
 		} else if ( isset($image->error_data['error_loading_image']) ) {
 			// @codeCoverageIgnoreStart
-			Helper::error_log('!!Error loading '.$image->error_data['error_loading_image']);
+			Helper::error_log('Error loading '.$image->error_data['error_loading_image']);
 		} else {
 			if ( !extension_loaded('gd') ) {
 				Helper::error_log('Can not resize image, please installed php-gd');
