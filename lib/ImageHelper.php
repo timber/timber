@@ -398,7 +398,7 @@ class ImageHelper {
 		error_log('$site_root = '. $site_root);
 		$tmp = str_replace($site_root, '', $src);
 		error_log('now just the src w/o site_root = '.$tmp);
-		$tmp = get_theme_root(get_stylesheet()).$tmp;
+		$tmp = trailingslashit(get_theme_root()).get_stylesheet().$tmp;
 		error_log('return ...' .$tmp);
 		return $tmp;
 	}
