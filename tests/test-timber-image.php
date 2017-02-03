@@ -722,9 +722,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if ( strpos($dest, 'http') === 0 ) {
 			$dest = Timber\URLHelper::url_to_file_system($dest);
 		}
-		if ( realpath($dest) ) {
-			$dest = realpath($dest);
-		}
+		$dest = self::maybe_realpath($dest);
 		copy($source, $dest);
 		error_log('$Dest = ' .$dest);
 		$this->assertTrue(file_exists($dest));
@@ -738,11 +736,16 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if ( strpos($file_location, 'http') === 0 ) {
 			$file_location = Timber\URLHelper::url_to_file_system($file_location);
 		}
-		if ( realpath($file_location) ) {
-			$file_location = realpath($file_location);
-		}
+		$file_location = self::maybe_realpath($file_location);
 		$this->assertFileExists( $file_location );
 		$this->addFile( $file_location );
+	}
+
+	function maybe_realpath( $path ) {
+		if ( realpath($path) ) {
+			return realpath($path);
+		}
+		return $path;
 	}
 
 	function testThemeImageLetterbox() {
@@ -751,7 +754,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 			self::markTestSkipped( 'Letterbox image test requires GD extension' );
 		}
 		$source = __DIR__.'/assets/cardinals.jpg';
-		$dest = realpath(get_template_directory()).'/cardinals.jpg';
+		$dest = self::maybe_realpath(get_template_directory()).'/cardinals.jpg';
 		copy($source, $dest);
 		$image = $theme_url.'/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
