@@ -718,7 +718,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		copy($source, $dest);
 		error_log('$dest = ' .$dest);
 		$this->assertTrue(file_exists($dest));
-		return;
 		$image = $theme_url.'/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
 		$data = array();

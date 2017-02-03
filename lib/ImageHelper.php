@@ -478,7 +478,8 @@ class ImageHelper {
 			error_log('WP_CONTENT_DIR = ' .WP_CONTENT_DIR);
 			$path = WP_CONTENT_DIR;
 			error_log('480 $subdir = ' .$subdir);
-			$subdir = str_replace(WP_CONTENT_DIR, '', $subdir);
+			$subdir = 'themes/twentysixteen'; 
+			//$subdir = str_replace(WP_CONTENT_DIR, '', $subdir);
 			error_log('482 $subdir = ' .$subdir);
 			$path = trailingslashit($path).URLHelper::unpreslashit(untrailingslashit($subdir));
 		}
