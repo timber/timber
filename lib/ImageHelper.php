@@ -393,10 +393,13 @@ class ImageHelper {
 	 * @param string 	$src a URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg)
 	 * @return string full path to the file in question
 	 */
-	public static function theme_url_to_dir( $tmp ) 	{
+	public static function theme_url_to_dir( $src ) 	{
 		$site_root = trailingslashit(get_theme_root_uri()).get_stylesheet();
-		$tmp = str_replace($site_root, '', $tmp);
+		error_log('$site_root = '. $site_root);
+		$tmp = str_replace($site_root, '', $src);
+		error_log('now just the src w/o site_root = '.$tmp);
 		$tmp = get_stylesheet_directory_uri().$tmp;
+		error_log('return ...' .$tmp);
 		return $tmp;
 	}
 
