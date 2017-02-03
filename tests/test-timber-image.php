@@ -722,7 +722,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if ( strpos($dest, 'http') === 0 ) {
 			$dest = Timber\URLHelper::url_to_file_system($dest);
 		}
-		$dest = realpath($dest);
+		if ( realpath($dest) ) {
+			$dest = realpath($dest);
+		}
 		copy($source, $dest);
 		error_log('$Dest = ' .$dest);
 		$this->assertTrue(file_exists($dest));
