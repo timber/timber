@@ -130,6 +130,12 @@ class Comment extends Core implements CoreInterface {
 		}
 
 		$email = $this->avatar_email();
+		
+		$args = apply_filters('pre_get_avatar_data', array(), $email);
+		if ( isset($args['url']) ) {
+			return $args['url'];
+		}
+		
 		$email_hash = '';
 		if ( !empty($email) ) {
 			$email_hash = md5(strtolower(trim($email)));

@@ -342,7 +342,7 @@ class ImageHelper {
 	 * @param  string $url an URL (absolute or relative) pointing to an image
 	 * @return array       an array (see keys in code below)
 	 */
-	private static function analyze_url( $url ) {
+	public static function analyze_url( $url ) {
 		$result = array(
 			'url' => $url, // the initial url
 			'absolute' => URLHelper::is_absolute($url), // is the url absolute or relative (to home_url)
@@ -374,7 +374,13 @@ class ImageHelper {
 				$tmp = str_replace($upload_dir['baseurl'], '', $tmp);
 			} else if ( 0 === strpos($tmp, content_url()) ) {
 				$result['base'] = self::BASE_CONTENT; // content-based
+				//error_log('378 $tmp = ' .$tmp);
 				$tmp = self::theme_url_to_dir($tmp);
+				//error_log('379 $tmp = ' .$tmp);
+				//error_log('WP_CONTENT_DIR ' . WP_CONTENT_DIR);
+				$tmp = str_replace(WP_CONTENT_DIR, '', $tmp);
+				//$tmp = 
+
 			}
 		}
 		$parts = pathinfo($tmp);
@@ -390,10 +396,14 @@ class ImageHelper {
 	 * @param string 	$src a URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg)
 	 * @return string full path to the file in question
 	 */
-	public static function theme_url_to_dir( $src ) 	{
+	protected static function theme_url_to_dir( $src ) 	{
 		$site_root = trailingslashit(get_theme_root_uri()).get_stylesheet();
 		$tmp = str_replace($site_root, '', $src);
-		$tmp = trailingslashit(get_theme_root()).get_stylesheet().$tmp;
+		//$tmp = trailingslashit(get_theme_root()).get_stylesheet().$tmp;
+		$tmp = get_stylesheet_directory().$tmp;
+		if ( realpath($tmp) ) {
+			return realpath($tmp);
+		}
 		return $tmp;
 	}
 
