@@ -491,14 +491,50 @@ class ImageHelper {
 			$path = $subdir;
 		}
 		if ( !empty($subdir) ) {
-			$path .= $subdir;
+			$path = trailingslashit($path).$subdir;
 		}
-		$path .= '/'.$filename;
+		$path = trailingslashit($path).$filename;
 
 		return $path;
 	}
 
-	
+	function findOverlap($str1, $str2){
+	  $return = array();
+	  $sl1 = strlen($str1);
+	  $sl2 = strlen($str2);
+	  $max = $sl1>$sl2?$sl2:$sl1;
+	  $i=1;
+	  while($i<=$max){
+	    $s1 = substr($str1, -$i);
+	    $s2 = substr($str2, 0, $i);
+	    if($s1 == $s2){
+	      $return[] = $s1;
+	    }
+	    $i++;
+	  }
+	  if(!empty($return)){
+	    return $return;
+	  }
+	  return false;
+	}
+
+	function replaceOverlap($str1, $str2, $length = "long"){
+	  if($overlap = findOverlap($str1, $str2)){
+	    switch($length){
+	      case "short":
+	        $overlap = $overlap[0];
+	        break;
+	      case "long":
+	      default:
+	        $overlap = $overlap[count($overlap)-1];
+	        break;
+	    }     
+	    $str1 = substr($str1, 0, -strlen($overlap));
+	    $str2 = substr($str2, strlen($overlap));
+	    return $str1.$overlap.$str2;
+	  }
+	  return false;
+	}
 
 
 	/**
