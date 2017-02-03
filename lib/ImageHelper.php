@@ -474,28 +474,18 @@ class ImageHelper {
 			$path = $upload_dir['basedir'];
 		} else if ( self::BASE_CONTENT == $base ) {
 			//it is in the content directory, somewhere else ...
-			error_log('else');
-			error_log('WP_CONTENT_DIR = ' .WP_CONTENT_DIR);
 			$path = WP_CONTENT_DIR;
-			error_log('480 $subdir = ' .$subdir);
-			//$subdir = 'themes/twentysixteen'; 
-			//$subdir = str_replace(WP_CONTENT_DIR, '', $subdir);
-			// $path = trailingslashit($path).URLHelper::unpreslashit(untrailingslashit($subdir));
 		}
 		if ( self::is_in_theme_dir(trailingslashit($subdir).$filename) ) {
 			//this is for weird installs when the theme folder is outside of /wp-content
 			return trailingslashit($subdir).$filename;
-			$path = $subdir;
 		}
 		if ( !empty($subdir) ) {
-			error_log("add $path . $subdir");
 			$path = trailingslashit($path).$subdir;
-		} else {
-			error_log('subdir is empty');
 		}
 		$path = trailingslashit($path).$filename;
 
-		return $path;
+		return URLHelper::remove_double_slashes($path);
 	}
 
 	static function findOverlap($str1, $str2){
