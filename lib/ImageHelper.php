@@ -479,9 +479,8 @@ class ImageHelper {
 			$path = WP_CONTENT_DIR;
 			error_log('480 $subdir = ' .$subdir);
 			//$subdir = 'themes/twentysixteen'; 
-			$subdir = self::replaceOverlap($path, $subdir);
 			//$subdir = str_replace(WP_CONTENT_DIR, '', $subdir);
-			//$path = trailingslashit($path).URLHelper::unpreslashit(untrailingslashit($subdir));
+			$path = trailingslashit($path).URLHelper::unpreslashit(untrailingslashit($subdir));
 		}
 		if ( self::is_in_theme_dir(trailingslashit($subdir).$filename) ) {
 			//this is for weird installs when the theme folder is outside of /wp-content
