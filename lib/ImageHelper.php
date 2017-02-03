@@ -478,15 +478,13 @@ class ImageHelper {
 			error_log('WP_CONTENT_DIR = ' .WP_CONTENT_DIR);
 			$path = WP_CONTENT_DIR;
 			error_log('480 $subdir = ' .$subdir);
-			$subdir = 'themes/twentysixteen'; 
+			//$subdir = 'themes/twentysixteen'; 
+			$subdir = self::replaceOverlap($path, $subdir);
 			//$subdir = str_replace(WP_CONTENT_DIR, '', $subdir);
-			error_log('482 $subdir = ' .$subdir);
-			//   $path = trailingslashit($path).URLHelper::unpreslashit(untrailingslashit($subdir));
+			//$path = trailingslashit($path).URLHelper::unpreslashit(untrailingslashit($subdir));
 		}
 		if ( self::is_in_theme_dir(trailingslashit($subdir).$filename) ) {
 			//this is for weird installs when the theme folder is outside of /wp-content
-			error_log('it is true, it is me');
-			error_log($subdir . ' . ' .$filename);
 			return trailingslashit($subdir).$filename;
 			$path = $subdir;
 		}
@@ -498,7 +496,7 @@ class ImageHelper {
 		return $path;
 	}
 
-	function findOverlap($str1, $str2){
+	static function findOverlap($str1, $str2){
 	  $return = array();
 	  $sl1 = strlen($str1);
 	  $sl2 = strlen($str2);
@@ -518,8 +516,8 @@ class ImageHelper {
 	  return false;
 	}
 
-	function replaceOverlap($str1, $str2, $length = "long"){
-	  if($overlap = findOverlap($str1, $str2)){
+	static function replaceOverlap($str1, $str2, $length = "long"){
+	  if($overlap = self::findOverlap($str1, $str2)){
 	    switch($length){
 	      case "short":
 	        $overlap = $overlap[0];
