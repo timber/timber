@@ -396,7 +396,7 @@ class ImageHelper {
 	 * @param string 	$src a URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg)
 	 * @return string full path to the file in question
 	 */
-	protected static function theme_url_to_dir( $src ) 	{
+	static function theme_url_to_dir( $src ) 	{
 		$site_root = trailingslashit(get_theme_root_uri()).get_stylesheet();
 		$tmp = str_replace($site_root, '', $src);
 		//$tmp = trailingslashit(get_theme_root()).get_stylesheet().$tmp;
