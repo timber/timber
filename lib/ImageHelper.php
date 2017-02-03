@@ -468,11 +468,18 @@ class ImageHelper {
 		
 		$path = '';
 		if ( self::BASE_UPLOADS == $base ) {
+			//it is in the Uploads directory
+			error_log('iffff');
 			$upload_dir = wp_upload_dir();
 			$path = $upload_dir['basedir'];
-		}
-		if ( self::BASE_CONTENT == $base ) {
+		} else if ( self::BASE_CONTENT == $base ) {
+			//it is in the content directory, somewhere else ...
+			error_log('else');
+			error_log('WP_CONTENT_DIR = ' .WP_CONTENT_DIR);
 			$path = WP_CONTENT_DIR;
+			$subdir = str_replace(WP_CONTENT_DIR, '', $subdir);
+			error_log('return ' . untrailingslashit($path).'/'.untrailingslashit($subdir).'/'.$filename);
+			return untrailingslashit($path).'/'.untrailingslashit($subdir).'/'.$filename;
 		}
 		if ( self::is_in_theme_dir(trailingslashit($subdir).$filename) ) {
 			error_log('it is true, it is me');
@@ -512,6 +519,7 @@ class ImageHelper {
 			$src = self::sideload_image($src);
 			$external = true;
 		}
+
 		error_log('$src = ' .$src);
 		// break down URL into components
 		$au = self::analyze_url($src);
