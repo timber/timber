@@ -725,6 +725,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data['size'] = array( 'width' => 120, 'height' => 120 );
 		$str = Timber::compile( 'assets/image-test.twig', $data );
 		$file_location = get_stylesheet_directory_uri().'/cardinals-120x120-c-default.jpg';
+		if ( strpos($file_location, 'http') === 0 ) {
+			$file_location = Timber\URLHelper::url_to_file_system($file_location);
+		}
 		$this->assertFileExists( $file_location );
 		$this->addFile( $file_location );
 	}
