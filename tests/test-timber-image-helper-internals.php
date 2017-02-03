@@ -32,7 +32,7 @@ class TestTimberImageHelperInternals extends TimberImage_UnitTestCase {
 		$this->assertEquals('http://'.$_SERVER['HTTP_HOST'].'/wp-content/themes/'.get_stylesheet().'/logo.jpg', $parts['url']);
 		$this->assertEquals(1, $parts['absolute']);
 		$this->assertEquals(2, $parts['base']);
-		$this->assertEquals('/themes/default', $parts['subdir']);
+		$this->assertEquals('/themes/'.get_stylesheet(), $parts['subdir']);
 		$this->assertEquals('logo', $parts['filename']);
 		$this->assertEquals('jpg', $parts['extension']);
 		$this->assertEquals('logo.jpg', $parts['basename']);
