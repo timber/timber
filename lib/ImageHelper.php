@@ -376,6 +376,7 @@ class ImageHelper {
 				error_log('IFFFFFF 376');
 				$result['base'] = self::BASE_CONTENT; // content-based
 				$tmp = self::theme_url_to_dir($tmp);
+				error_log('$tmp = '. $tmp);
 			}
 		}
 		$parts = pathinfo($tmp);
