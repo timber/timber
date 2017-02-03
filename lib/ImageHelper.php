@@ -373,13 +373,13 @@ class ImageHelper {
 				$result['base'] = self::BASE_UPLOADS; // upload based
 				$tmp = str_replace($upload_dir['baseurl'], '', $tmp);
 			} else if ( 0 === strpos($tmp, content_url()) ) {
+				error_log('IFFFFFF 376');
 				$result['base'] = self::BASE_CONTENT; // content-based
 				$tmp = self::theme_url_to_dir($tmp);
 			}
 		}
 		$parts = pathinfo($tmp);
 		$result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
-		$result['subdir'] = ($result['subdir']);
 		$result['filename'] = $parts['filename'];
 		$result['extension'] = strtolower($parts['extension']);
 		$result['basename'] = $parts['basename'];
