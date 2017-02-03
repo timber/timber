@@ -516,7 +516,7 @@ class ImageHelper {
 		// break down URL into components
 		$au = self::analyze_url($src);
 		// build URL and filenames
-		$au['subdir'] = '/wp-content/themes/twentysixteen';
+		$au['subdir'] = '/tmp/wordpress/wp-content/themes/twentysixteen';
 		//$au['subdir'] = '../data/themedir1/default';
 		$new_url = self::_get_file_url(
 			$au['base'],
