@@ -478,11 +478,10 @@ class ImageHelper {
 			error_log('WP_CONTENT_DIR = ' .WP_CONTENT_DIR);
 			$path = WP_CONTENT_DIR;
 			$subdir = str_replace(WP_CONTENT_DIR, '', $subdir);
-			$return = trailingslashit($path).URLHelper::unpreslashit(untrailingslashit($subdir)).'/'.$filename;
-			error_log('$return = ' .$return);
-			return $return;
+			$path = trailingslashit($path).URLHelper::unpreslashit(untrailingslashit($subdir));
 		}
 		if ( self::is_in_theme_dir(trailingslashit($subdir).$filename) ) {
+			//this is for weird installs when the theme folder is outside of /wp-content
 			error_log('it is true, it is me');
 			error_log($subdir . ' . ' .$filename);
 			return trailingslashit($subdir).$filename;
@@ -525,8 +524,6 @@ class ImageHelper {
 		// break down URL into components
 		$au = self::analyze_url($src);
 		// build URL and filenames
-		$au['subdir'] = '/tmp/wordpress/wp-content/themes/twentysixteen';
-		//$au['subdir'] = '../data/themedir1/default';
 		$new_url = self::_get_file_url(
 			$au['base'],
 			$au['subdir'],
