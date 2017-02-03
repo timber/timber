@@ -699,13 +699,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		}
 	}
 
-	// function testThemeURLToDir() {
-	// 	$src = 'http://example.org/wp-content/themes/'.get_stylesheet().'/cardinals.jpg';
-	// 	$path = Timber\ImageHelper::theme_url_to_dir($src);
-	// 	$this->assertEquals(trailingslashit(get_theme_root()).get_stylesheet().'/cardinals.jpg', $path);
-
-	// }
-
 	function tearDown() {
 		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
 		$img_dir = get_stylesheet_directory_uri().'/images';
