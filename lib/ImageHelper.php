@@ -374,13 +374,8 @@ class ImageHelper {
 				$tmp = str_replace($upload_dir['baseurl'], '', $tmp);
 			} else if ( 0 === strpos($tmp, content_url()) ) {
 				$result['base'] = self::BASE_CONTENT; // content-based
-				//error_log('378 $tmp = ' .$tmp);
 				$tmp = self::theme_url_to_dir($tmp);
-				//error_log('379 $tmp = ' .$tmp);
-				//error_log('WP_CONTENT_DIR ' . WP_CONTENT_DIR);
 				$tmp = str_replace(WP_CONTENT_DIR, '', $tmp);
-				//$tmp = 
-
 			}
 		}
 		$parts = pathinfo($tmp);
@@ -489,44 +484,6 @@ class ImageHelper {
 		$path = trailingslashit($path).$filename;
 
 		return URLHelper::remove_double_slashes($path);
-	}
-
-	static function findOverlap($str1, $str2){
-	  $return = array();
-	  $sl1 = strlen($str1);
-	  $sl2 = strlen($str2);
-	  $max = $sl1>$sl2?$sl2:$sl1;
-	  $i=1;
-	  while($i<=$max){
-	    $s1 = substr($str1, -$i);
-	    $s2 = substr($str2, 0, $i);
-	    if($s1 == $s2){
-	      $return[] = $s1;
-	    }
-	    $i++;
-	  }
-	  if(!empty($return)){
-	    return $return;
-	  }
-	  return false;
-	}
-
-	static function replaceOverlap($str1, $str2, $length = "long"){
-	  if($overlap = self::findOverlap($str1, $str2)){
-	    switch($length){
-	      case "short":
-	        $overlap = $overlap[0];
-	        break;
-	      case "long":
-	      default:
-	        $overlap = $overlap[count($overlap)-1];
-	        break;
-	    }     
-	    $str1 = substr($str1, 0, -strlen($overlap));
-	    $str2 = substr($str2, strlen($overlap));
-	    return $str1.$overlap.$str2;
-	  }
-	  return false;
 	}
 
 
