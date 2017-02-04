@@ -220,6 +220,16 @@ class URLHelper {
 	}
 
 	/**
+	 *
+	 *
+	 * @param string  $path
+	 * @return string
+	 */
+	public static function unpreslashit( $path ) {
+		return ltrim($path, '/');
+	}
+
+	/**
 	 * This will evaluate wheter a URL is at an aboslute location (like http://example.org/whatever)
 	 *
 	 * @param string $path
