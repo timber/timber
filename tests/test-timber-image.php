@@ -993,6 +993,18 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals('Image?', $str);
 	}
 
+	function testFilteredImageURL() {
+		add_filter('wp_get_attachment_image_src', function($image, $id, $size, $icon) {
+			$image = str_replace('jpg', 'jpeg', $image);
+			return $image;
+		}, 10, 4);
+		$post = $this->get_post_with_image();
+		$image = $post->thumbnail();
+		$str = '{{ post.thumbnail.src }}';
+		$result = Timber::compile_string( $str, array('post' => $post) );
+		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpeg', $result);
+	}
+
 	function testTimberImageForExtraSlashes() {
 		add_filter('upload_dir', array($this, '_filter_upload'), 10, 1);
 
