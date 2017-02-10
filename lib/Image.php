@@ -428,8 +428,8 @@ class Image extends Post implements CoreInterface {
 	 * @api
 	 * @example
 	 * ```twig
-	 * <h1>{{post.title}}</h1>
-	 * <img src="{{post.thumbnail.src}}" />
+	 * <h1>{{ post.title }}</h1>
+	 * <img src="{{ post.thumbnail.src }}" />
 	 * ```
 	 * ```html
 	 * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" />
@@ -441,25 +441,10 @@ class Image extends Post implements CoreInterface {
 			return $this->_maybe_secure_url($this->abs_url);
 		}
 
-		if ( $size && is_string($size) && isset($this->sizes[$size]) ) {
-			$image = image_downsize($this->ID, $size);
-			return $this->_maybe_secure_url(reset($image));
-		}
-
-		if ( !isset($this->file) && isset($this->_wp_attached_file) ) {
-			$this->file = $this->_wp_attached_file;
-		}
-
-		if ( !isset($this->file) ) {
-			return false;
-		}
-
-		$dir = self::wp_upload_dir();
-		$base = $dir['baseurl'];
-
-		$src = trailingslashit($this->_maybe_secure_url($base)).$this->file;
+		$src = wp_get_attachment_image_src($this->ID, $size)[0];
 		$src = apply_filters('timber/image/src', $src, $this->ID);
-		return apply_filters('timber_image_src', $src, $this->ID);
+		$src = apply_filters('timber_image_src', $src, $this->ID);
+    	return $src;
 	}
 
 	/**
