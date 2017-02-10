@@ -441,11 +441,6 @@ class Image extends Post implements CoreInterface {
 			return $this->_maybe_secure_url($this->abs_url);
 		}
 
-		if ( $size && is_string($size) && isset($this->sizes[$size]) ) {
-			$image = image_downsize($this->ID, $size);
-			return $this->_maybe_secure_url(reset($image));
-		}
-
 		$src = wp_get_attachment_image_src($this->ID, $size)[0];
 		$src = apply_filters('timber/image/src', $src, $this->ID);
 		$src = apply_filters('timber_image_src', $src, $this->ID);
