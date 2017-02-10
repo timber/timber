@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.3.0
+Stable tag: 1.2.2
 Tested up to: 4.7.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -41,9 +41,10 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
-= 1.3.0 =
-* Upgrade to Twig 2.0
-* Timber::get_context()['posts'] now returns a `Timber\PostQuery` object instead of a `Timber\QueryIterator`
+= 1.2.2 =
+* A bunch of fixes to how images in themes are handled #1317 #1293 (@jarednova)
+* Fixed filter for avatar images in comments #1310 (@xavivars)
+* Upgrades to PHPUnit and testing suite (@jarednova)
 
 = 1.2.1 =
 * Cleaned-up theme handling #1281 (thanks @xavivars)

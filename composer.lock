@@ -2122,16 +2122,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "5.7.10",
+            "version": "5.7.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "bf0804199f516fe80ffcc48ac6d4741c49baeb6e"
+                "reference": "944600e244f80a5252679878553b95c63dbf978b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/bf0804199f516fe80ffcc48ac6d4741c49baeb6e",
-                "reference": "bf0804199f516fe80ffcc48ac6d4741c49baeb6e",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/944600e244f80a5252679878553b95c63dbf978b",
+                "reference": "944600e244f80a5252679878553b95c63dbf978b",
                 "shasum": ""
             },
             "require": {
@@ -2200,7 +2200,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-02-04 09:03:53"
+            "time": "2017-02-08 05:54:05"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -2973,16 +2973,16 @@
         },
         {
             "name": "symfony/config",
-            "version": "v2.8.16",
+            "version": "v2.8.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "4537f2413348fe271c2c4b09da219ed615d79f9c"
+                "reference": "747fa191136cf798409183c501435aa4c16184df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/4537f2413348fe271c2c4b09da219ed615d79f9c",
-                "reference": "4537f2413348fe271c2c4b09da219ed615d79f9c",
+                "url": "https://api.github.com/repos/symfony/config/zipball/747fa191136cf798409183c501435aa4c16184df",
+                "reference": "747fa191136cf798409183c501435aa4c16184df",
                 "shasum": ""
             },
             "require": {
@@ -3025,20 +3025,20 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-02 20:30:24"
+            "time": "2017-02-05 10:11:19"
         },
         {
             "name": "symfony/console",
-            "version": "v2.8.16",
+            "version": "v2.8.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "2e18b8903d9c498ba02e1dfa73f64d4894bb6912"
+                "reference": "f3c234cd8db9f7e520a91d695db7d8bb5daeb7a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/2e18b8903d9c498ba02e1dfa73f64d4894bb6912",
-                "reference": "2e18b8903d9c498ba02e1dfa73f64d4894bb6912",
+                "url": "https://api.github.com/repos/symfony/console/zipball/f3c234cd8db9f7e520a91d695db7d8bb5daeb7a4",
+                "reference": "f3c234cd8db9f7e520a91d695db7d8bb5daeb7a4",
                 "shasum": ""
             },
             "require": {
@@ -3086,7 +3086,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-08 20:43:03"
+            "time": "2017-02-06 12:04:06"
         },
         {
             "name": "symfony/debug",
@@ -3147,7 +3147,7 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.8.16",
+            "version": "v2.8.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
@@ -3256,7 +3256,7 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v2.8.16",
+            "version": "v2.8.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
@@ -3364,16 +3364,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v2.8.16",
+            "version": "v2.8.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "ebb3c2abe0940a703f08e0cbe373f62d97d40231"
+                "reference": "0110ac49348d14eced7d3278ea7485f22196932e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/ebb3c2abe0940a703f08e0cbe373f62d97d40231",
-                "reference": "ebb3c2abe0940a703f08e0cbe373f62d97d40231",
+                "url": "https://api.github.com/repos/symfony/process/zipball/0110ac49348d14eced7d3278ea7485f22196932e",
+                "reference": "0110ac49348d14eced7d3278ea7485f22196932e",
                 "shasum": ""
             },
             "require": {
@@ -3409,11 +3409,11 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-02 20:30:24"
+            "time": "2017-02-03 12:08:06"
         },
         {
             "name": "symfony/stopwatch",
-            "version": "v2.8.16",
+            "version": "v2.8.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/stopwatch.git",
@@ -3526,16 +3526,16 @@
         },
         {
             "name": "symfony/validator",
-            "version": "v2.8.16",
+            "version": "v2.8.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "3b1a3188efea75ec7c0419a2568b6e5f82031811"
+                "reference": "b04a58dc1f9941c3291f06a496a88393ee64fdf0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/3b1a3188efea75ec7c0419a2568b6e5f82031811",
-                "reference": "3b1a3188efea75ec7c0419a2568b6e5f82031811",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/b04a58dc1f9941c3291f06a496a88393ee64fdf0",
+                "reference": "b04a58dc1f9941c3291f06a496a88393ee64fdf0",
                 "shasum": ""
             },
             "require": {
@@ -3595,20 +3595,20 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-12 19:24:25"
+            "time": "2017-01-31 21:48:58"
         },
         {
             "name": "symfony/yaml",
-            "version": "v3.2.2",
+            "version": "v3.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "50eadbd7926e31842893c957eca362b21592a97d"
+                "reference": "e1718c6bf57e1efbb8793ada951584b2ab27775b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/50eadbd7926e31842893c957eca362b21592a97d",
-                "reference": "50eadbd7926e31842893c957eca362b21592a97d",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/e1718c6bf57e1efbb8793ada951584b2ab27775b",
+                "reference": "e1718c6bf57e1efbb8793ada951584b2ab27775b",
                 "shasum": ""
             },
             "require": {
@@ -3650,7 +3650,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-03 13:51:32"
+            "time": "2017-01-21 17:06:35"
         },
         {
             "name": "wpackagist-plugin/advanced-custom-fields",
