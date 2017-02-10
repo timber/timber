@@ -423,12 +423,6 @@ class Image extends Post implements CoreInterface {
 		return URLHelper::get_rel_path($this->src());
 	}
 
-	public function bogus_src( $size = '' ) {
-		$size = '';
-    	$attachment_src = wp_get_attachment_image_src($this->ID, $size)[0];
-    	$fixed_src = $attachment_src ? $attachment_src : $src;
-	}
-
 	/**
 	 * @param string $size a size known to WordPress (like "medium")
 	 * @api
