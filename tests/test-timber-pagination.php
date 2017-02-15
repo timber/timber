@@ -50,6 +50,16 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals(6, count($pagination['pages']));
 	}
 
+	function testSanitizeNextPagination() {
+		$this->setPermalinkStructure('/%postname%/');
+		register_post_type( 'portfolio' );
+		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
+		$this->go_to( home_url( '/portfolio/page/3?whscheck="><svg/onload=alert()>' ) );
+		query_posts('post_type=portfolio&paged=3');
+		$pagination = Timber::get_pagination();
+		$this->assertEquals('http://example.org/portfolio/page/4/?whscheck=%22%3E%3Csvg%2Fonload%3Dalert%28%29%3E', $pagination['next']['link']);
+	}
+
 	function testPaginationWithSize() {
 		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );
@@ -301,5 +311,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$pagination = $posts->pagination();
 		$this->assertEquals( 2, count( $pagination->pages ) );
 	}
+
+
 
 }

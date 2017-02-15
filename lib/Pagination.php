@@ -185,6 +185,13 @@ class Pagination {
 
 		return $page_links;
 	}
+
+	protected static function sanitize_url_params( $add_args ) {
+		foreach ($add_args as $key => $value ) {
+			$add_args[$key] = urlencode_deep($value);
+		}
+		return $add_args;
+	}
 	
 	protected static function sanitize_args( $args ) {
 
@@ -197,10 +204,11 @@ class Pagination {
 		
 		// Remove the format argument from the array of query arguments, to avoid overwriting custom format.
 		foreach ( $format_args as $format_arg => $format_arg_value ) {
-			unset( $args['add_args'][ $format_arg ] );
+			unset( $args['add_args'][ urlencode_deep($format_arg) ] );
 		}
 
 		$url_parts = explode( '?', $args['base']);
+
 		if ( isset( $url_parts[1] ) ) {
 			// Find the query args of the requested URL.
 			$url_query_args = array();
@@ -209,7 +217,10 @@ class Pagination {
 			$args['add_args'] = array_merge( $args['add_args'], urlencode_deep( $url_query_args ));
 			$args['base'] = $url_parts[0] . '%_%';
 		}
-		
+
+		if ( isset($args['add_args']) ) {
+			$args['add_args'] = self::sanitize_url_params($args['add_args']);
+		}
 		return $args;
 	}
 }
