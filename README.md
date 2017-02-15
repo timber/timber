@@ -108,13 +108,12 @@ Read the [contributor guidelines](https://github.com/timber/timber/wiki#contribu
 
 Documentation for Timber classes and functions is [auto generated](https://github.com/jarednova/PHP-Markdown-Documentation-Generator), so any changes to the object reference docs should be made by editing the function's DocBlock.  To make a change to one of the guides, edit the relevant file in the `docs` directory.
 
-To publish docs:
+####To publish docs:
+
 1. `composer install` if not already run
 2. Clone the [timber/slate](https://github.com/timber/slate) repo at the same directory level as Timber
 3. From the root of the slate directory, run these commands:
 ```bash
-gem install bundler
-bundle install
 sh publish-docs.sh
 ```
 
