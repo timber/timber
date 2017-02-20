@@ -42,7 +42,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 == Changelog ==
 
 = 1.2.3 =
-* Fixed a potentail XSS security issue
+* Fixed a potential XSS security issue
 * Fixed handling of images stored on S3
 
 = 1.2.2 =
