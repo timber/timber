@@ -436,7 +436,7 @@ class Image extends Post implements CoreInterface {
 	 * ```
 	 * @return bool|string
 	 */
-	public function src( $size = '' ) {
+	public function src( $size = 'full' ) {
 		if ( isset($this->abs_url) ) {
 			return $this->_maybe_secure_url($this->abs_url);
 		}
