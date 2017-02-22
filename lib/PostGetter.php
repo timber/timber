@@ -117,13 +117,13 @@ class PostGetter {
 		} else {
 			Helper::error_log('Unexpeted value for PostClass: '.print_r($post_class, true));
 		}
-		
+
 		$test_post = false;
 		if ( class_exists($post_class_use) ) {
-		    $test_post = new $post_class_use();
+			$test_post = new $post_class_use();
 		}
-		if ( !$test_post || !( is_subclass_of( $test_post, '\Timber\Post' ) || is_a( $test_post, '\Timber\Post') ) ) {
-		    Helper::error_log( 'Class ' . $post_class_use . ' either does not exist or implement \Timber\Post' );
+		if ( !$test_post || !(is_subclass_of($test_post, '\Timber\Post') || is_a($test_post, '\Timber\Post')) ) {
+			Helper::error_log('Class ' . $post_class_use . ' either does not exist or implement \Timber\Post');
 		}
 
 		return $post_class_use;
