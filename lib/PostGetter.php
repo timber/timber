@@ -118,8 +118,16 @@ class PostGetter {
 			Helper::error_log('Unexpeted value for PostClass: '.print_r($post_class, true));
 		}
 
-		if ( !class_exists($post_class_use) || !(is_subclass_of($post_class_use, '\Timber\Post') || is_a($post_class_use, '\Timber\Post', true)) ) {
-			Helper::error_log('Class '.$post_class_use.' either does not exist or implement \Timber\Post');
+		// if ( !class_exists($post_class_use) || !(is_subclass_of($post_class_use, '\Timber\Post') || is_a($post_class_use, '\Timber\Post', true)) ) {
+		// 	Helper::error_log('Class '.$post_class_use.' either does not exist or implement \Timber\Post');
+		// }
+
+		$test_post = false;
+		if ( class_exists($post_class_use) ) {
+		    $test_post = new $post_class_use();
+		}
+		if ( !$test_post || !( is_subclass_of( $test_post, '\Timber\Post' ) || is_a( $test_post, '\Timber\Post') ) ) {
+		    Helper::error_log( 'Class ' . $post_class_use . ' either does not exist or implement \Timber\Post' );
 		}
 
 		return $post_class_use;
