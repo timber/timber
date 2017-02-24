@@ -12,20 +12,26 @@
 			}
 		}
 
+		function installTranlsationFiles( $lang_dir ) {
+			if( !is_dir($lang_dir) ) {
+				mkdir($lang_dir , 0777, true);
+			}
+			copy( __DIR__.'/assets/languages/en_US.po', $lang_dir.'/en_US.po' );
+			copy( __DIR__.'/assets/languages/en_US.mo', $lang_dir.'/en_US.mo' );
+			return true;
+		}
+
 		function _setupTranslationFiles() {
 			$lang_dir = get_stylesheet_directory().'/languages';
 			
-			if (!file_exists($lang_dir.'/en_US.po' )) {
-				if(!is_dir($lang_dir)) {
-					mkdir($lang_dir , 0777, true);
-					copy( __DIR__.'/assets/languages/en_US.po', $lang_dir.'/en_US.po' );
-					copy( __DIR__.'/assets/languages/en_US.mo', $lang_dir.'/en_US.mo' );
-				}
+			if ( !file_exists($lang_dir.'/en_US.po') ) {
+				$this->installTranlsationFiles($lang_dir);
 			}
-			
-			$theme = wp_get_theme();
-			$td = $theme->get('TextDomain');
+
+			$td = 'timber_test_theme';
 			load_theme_textdomain($td, $lang_dir);
+
+			return $td;
 		}
 
 		function testFormat() {
@@ -35,24 +41,18 @@
 		}
 
 		function testTranslate() {
-			$this->_setupTranslationFiles();
-
-			$theme = wp_get_theme();
-			$td = $theme->get('TextDomain');
-			$str = "I like {{ __('thingy', '$td')}}";
+			$td = $this->_setupTranslationFiles();
+			$str = "I like {{ __('thingy', '$td') }}";
 			$return = Timber::compile_string($str, array('foo' => 'foo'));
 			$this->assertEquals('I like Cheesy Poofs', $return);
 
-			$str = "I like {{ __('doobie', '$td')}}";
+			$str = "I like {{ __('doobie', '$td') }}";
 			$return = Timber::compile_string($str, array('foo' => 'foo'));
 			$this->assertEquals('I like doobie', $return);
 		}
 
 		function testTranslateAndFormat() {
-			$this->_setupTranslationFiles();
-			sleep(1);
-			$theme = wp_get_theme();
-			$td = $theme->get('TextDomain');
+			$td = $this->_setupTranslationFiles();
 
 			$str = "You like {{__('%s', '$td')|format('thingy')}}";
 			$return = Timber::compile_string($str);
