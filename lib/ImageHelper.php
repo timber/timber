@@ -354,7 +354,7 @@ class ImageHelper {
 		);
 		$upload_dir = wp_upload_dir();
 		$tmp = $url;
-		if ( false === strpos($tmp, ABSPATH) || false === strpos($tmp, '/srv/www/') ) {
+		if ( 0 === strpos($tmp, ABSPATH) || 0 === strpos($tmp, '/srv/www/') ) {
 			// we've been given a dir, not an url
 			$result['absolute'] = true;
 			if ( false === strpos($tmp, $upload_dir['basedir']) ) {
