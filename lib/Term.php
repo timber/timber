@@ -10,7 +10,8 @@ use Timber\Helper;
 use Timber\URLHelper;
 
 /**
- * Terms: WordPress has got 'em, you want 'em. Categories. Tags. Custom Taxonomies. You don't care, you're a fiend. Well let's get this under control
+ * Terms: WordPress has got 'em, you want 'em. Categories. Tags. Custom
+ * Taxonomies. You don't care, you're a fiend. Well let's get this under control
  * @example
  * ```php
  * //Get a term by its ID
@@ -359,7 +360,8 @@ class Term extends Core implements CoreInterface {
 
 
 	/**
-	 * Returns a full link to the term archive page like `http://example.com/category/news`
+	 * Returns a full link to the term archive page like
+	 * `http://example.com/category/news`
 	 * @api
 	 * @example
 	 * ```twig
@@ -374,6 +376,11 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Retrieves and outputs meta information stored with a term. This will use
+	 * both data stored under (old) ACF hacks and new (WP 4.6+) where term meta 
+	 * has its own table. If retrieving a special ACF field (repeater, etc.) you
+	 * can use the output immediately in Twig — no further processing is
+	 * required.
 	 * @api
 	 * @param string $field_name
 	 * @example
@@ -390,7 +397,8 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Returns a relative link (path) to the term archive page like `/category/news`
+	 * Returns a relative link (path) to the term archive page like
+	 * `/category/news`
 	 * @api
 	 * @example
 	 * ```twig
