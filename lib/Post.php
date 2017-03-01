@@ -809,7 +809,7 @@ class Post extends Core implements CoreInterface {
 	 * @return array of TimberTerms
 	 */
 	public function categories() {
-		return $this->get_terms('category');
+		return $this->terms('category');
 	}
 
 	/**
@@ -1323,7 +1323,7 @@ class Post extends Core implements CoreInterface {
 	 * @return array of TimberTerms
 	 */
 	public function get_categories() {
-		return $this->get_terms('category');
+		return $this->terms('category');
 	}
 
 	/**
@@ -1364,7 +1364,7 @@ class Post extends Core implements CoreInterface {
 	 * @return array
 	 */
 	public function get_tags() {
-		return $this->get_terms('post_tag');
+		return $this->terms('post_tag');
 	}
 
 	/**
