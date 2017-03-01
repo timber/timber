@@ -418,6 +418,7 @@ class Post extends Core implements CoreInterface {
 		}
 		if ( $strip ) {
 			$allowable_tags = (is_string($strip)) ? $strip : null;
+			$destroyed_tags = '<style><script>';
 			$text = trim(strip_tags($text, $allowable_tags));
 		}
 		if ( strlen($text) ) {
