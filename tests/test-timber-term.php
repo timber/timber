@@ -75,7 +75,23 @@
 
 			$posts_gotten = $term->posts(array('posts_per_page' => 7));
 			$this->assertEquals(7, count($posts_gotten));
+		}
 
+		function testGetPostsWithAnyAndCustomTax() {
+			register_post_type('portfolio', array('taxonomies' => array('arts'), 'public' => true));
+			register_taxonomy('arts', array('portfolio'));
+
+			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
+			$posts = $this->factory->post->create_many(5, array('post_type' => 'portfolio' ));
+			$term = new TimberTerm($term_id);
+			foreach($posts as $post_id) {
+				wp_set_object_terms($post_id, $term_id, 'arts', true);
+			}
+			$terms = Timber::get_terms('arts');
+			$template = '{% for term in terms %}{% for post in term.posts %}{{post.title}}{% endfor %}{% endfor %}';
+			$template = '{% for term in terms %}{{term.posts|length}}{% endfor %}';
+			$str = Timber::compile_string($template, array('terms' => $terms));
+			$this->assertEquals('5', $str);
 		}
 
 		function testGetPostsOld() {

@@ -257,8 +257,7 @@ class ImageHelper {
 	protected static function process_delete_generated_files( $filename, $ext, $dir, $search_pattern, $match_pattern = null ) {
 		$searcher = '/'.$filename.$search_pattern;
 		foreach ( glob($dir.$searcher) as $found_file ) {
-			$regexdir = str_replace('/', '\/', $dir);
-			$pattern = '/'.($regexdir).'\/'.$filename.$match_pattern.$ext.'/';
+			$pattern = '/'.preg_quote($dir, '/').'\/'.preg_quote($filename, '/').$match_pattern.preg_quote($ext, '/').'/';
 			$match = preg_match($pattern, $found_file);
 			if ( !$match_pattern || $match ) {
 				unlink($found_file);
@@ -354,14 +353,14 @@ class ImageHelper {
 		);
 		$upload_dir = wp_upload_dir();
 		$tmp = $url;
-		if ( 0 === strpos($tmp, ABSPATH) || 0 === strpos($tmp, '/srv/www/') ) {
+		if ( TextHelper::starts_with($tmp, ABSPATH) || TextHelper::starts_with($tmp, '/srv/www/') ) {
 			// we've been given a dir, not an url
 			$result['absolute'] = true;
-			if ( 0 === strpos($tmp, $upload_dir['basedir']) ) {
+			if ( TextHelper::starts_with($tmp, $upload_dir['basedir']) ) {
 				$result['base'] = self::BASE_UPLOADS; // upload based
 				$tmp = str_replace($upload_dir['basedir'], '', $tmp);
 			}
-			if ( 0 === strpos($tmp, WP_CONTENT_DIR) ) {
+			if ( TextHelper::starts_with($tmp, WP_CONTENT_DIR) ) {
 				$result['base'] = self::BASE_CONTENT; // content based
 				$tmp = str_replace(WP_CONTENT_DIR, '', $tmp);
 			}
@@ -374,10 +373,10 @@ class ImageHelper {
 			} else if ( !$result['absolute'] ) {
 				$tmp = site_url().$tmp;
 			}
-			if ( 0 === strpos($tmp, $upload_dir['baseurl']) ) {
+			if ( TextHelper::starts_with($tmp, $upload_dir['baseurl']) ) {
 				$result['base'] = self::BASE_UPLOADS; // upload based
 				$tmp = str_replace($upload_dir['baseurl'], '', $tmp);
-			} else if ( 0 === strpos($tmp, content_url()) ) {
+			} else if ( TextHelper::starts_with($tmp, content_url()) ) {
 				$result['base'] = self::BASE_CONTENT; // content-based
 				$tmp = self::theme_url_to_dir($tmp);
 				$tmp = str_replace(WP_CONTENT_DIR, '', $tmp);

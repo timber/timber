@@ -75,6 +75,18 @@ class TextHelper {
     }
 
     /**
+     * @param string $haystack
+     * @param string $needle
+     * @return boolean
+     */
+    public static function starts_with( $haystack, $needle ) {
+        if ( 0 === strpos($haystack, $needle) ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      *
      *
      * @param string  $html
