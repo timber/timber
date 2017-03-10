@@ -16,6 +16,7 @@ class PostPreview {
 	protected $char_length = false;
 	protected $readmore = 'Read More';
 	protected $strip = true;
+	protected $destroy_tags = array('script', 'style');
 
 	/**
 	 * @param Post $post
@@ -141,7 +142,9 @@ class PostPreview {
 			$text = do_shortcode($text);
 		}
 		if ( !strlen($text) ) {
-			$text = TextHelper::trim_words($this->post->content(), $len, false);
+			$text = $this->post->content();
+			$text = TextHelper::remove_tags($text, $this->destroy_tags);
+			$text = TextHelper::trim_words($text, $len, false);
 			if ( $chars !== false ) {
 				$text = TextHelper::trim_characters($text, $chars, false);
 			}

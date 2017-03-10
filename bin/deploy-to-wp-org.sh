@@ -1,7 +1,3 @@
-#!/usr/bin/env bash
-echo "Setting up version " $1
-echo "You still need to use Versions to send to WP.org"
-
 function deploy () {
 	cd ~/Sites/timber
 	git checkout master
@@ -41,4 +37,16 @@ function deploy () {
 	svn commit -m "updating to $1" timber.php
 }
 
-deploy $1
+#!/usr/bin/env bash
+read -p "Did you update the changelog and version numbers?" -n 1 -r
+echo    # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    echo "Setting up version " $1
+	echo "You still need to use Versions to send to WP.org"
+
+	deploy $1
+fi
+
+
+

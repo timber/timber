@@ -15,7 +15,7 @@ class PostCollection extends \ArrayObject {
 		parent::__construct($returned_posts, $flags = 0, 'Timber\PostsIterator');
 	}
 
-	protected static function init($posts, $post_class) {
+	protected static function init( $posts, $post_class ) {
 		$returned_posts = array();
 		if ( is_null($posts) ) {
 			$posts = array();

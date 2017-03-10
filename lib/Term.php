@@ -10,7 +10,8 @@ use Timber\Helper;
 use Timber\URLHelper;
 
 /**
- * Terms: WordPress has got 'em, you want 'em. Categories. Tags. Custom Taxonomies. You don't care, you're a fiend. Well let's get this under control
+ * Terms: WordPress has got 'em, you want 'em. Categories. Tags. Custom
+ * Taxonomies. You don't care, you're a fiend. Well let's get this under control
  * @example
  * ```php
  * //Get a term by its ID
@@ -320,6 +321,7 @@ class Term extends Core implements CoreInterface {
 	 */
 	public function update( $key, $value ) {
 		$value = apply_filters('timber_term_set_meta', $value, $key, $this->ID, $this);
+		$value = apply_filters('timber/term/meta/set', $value, $key, $this->ID, $this);
 		$this->$key = $value;
 	}
 
@@ -358,7 +360,13 @@ class Term extends Core implements CoreInterface {
 
 
 	/**
+	 * Returns a full link to the term archive page like
+	 * `http://example.com/category/news`
 	 * @api
+	 * @example
+	 * ```twig
+	 * See all posts in: <a href="{{ term.link }}">{{ term.name }}</a>
+	 * ```
 	 * @return string
 	 */
 	public function link() {
@@ -368,8 +376,20 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Retrieves and outputs meta information stored with a term. This will use
+	 * both data stored under (old) ACF hacks and new (WP 4.6+) where term meta 
+	 * has its own table. If retrieving a special ACF field (repeater, etc.) you
+	 * can use the output immediately in Twig — no further processing is
+	 * required.
 	 * @api
 	 * @param string $field_name
+	 * @example
+	 * ```twig
+	 * <div class="location-info">
+	 *   <h2>{{ term.name }}</h2>
+	 *   <p>{{ term.meta('address') }}</p>
+	 * </div>
+	 * ```
 	 * @return string
 	 */
 	public function meta( $field_name ) {
@@ -377,7 +397,13 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Returns a relative link (path) to the term archive page like
+	 * `/category/news`
 	 * @api
+	 * @example
+	 * ```twig
+	 * See all posts in: <a href="{{ term.path }}">{{ term.name }}</a>
+	 * ```
 	 * @return string
 	 */
 	public function path() {
@@ -394,7 +420,7 @@ class Term extends Core implements CoreInterface {
 	 * @param string $post_class
 	 * @example
 	 * ```twig
-	 * <h4>Recent posts in {{term.name}}</h4>
+	 * <h4>Recent posts in {{ term.name }}</h4>
 	 * <ul>
 	 * {% for post in term.posts(3, 'post') %}
 	 *     <li><a href="{{post.link}}">{{post.title}}</a></li>

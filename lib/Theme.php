@@ -63,7 +63,7 @@ class Theme extends Core {
 	 * <?php
 	 *     $theme = new TimberTheme("my-theme");
 	 *     $context['theme_stuff'] = $theme;
-	 *     Timber::render('single.')
+	 *     Timber::render('single.twig', $context);
 	 * ?>
 	 * ```
 	 * ```twig

@@ -55,7 +55,7 @@ class Pagination {
 		} else {
 			$big = 999999999;
 			$pagination_link = get_pagenum_link($big, false);
-			$args['base'] =  str_replace( 'paged='.$big, '', $pagination_link );
+			$args['base'] = str_replace('paged='.$big, '', $pagination_link);
 			$args['format'] = '?paged=%#%';
 		}
 
@@ -149,11 +149,11 @@ class Pagination {
 			} else {
 				if ( $args['show_all'] || ($n <= $args['end_size'] || ($args['current'] && $n >= $args['current'] - $args['mid_size'] && $n <= $args['current'] + $args['mid_size']) || $n > $args['total'] - $args['end_size']) ) {
 					
-					$link = str_replace('%_%', 1 == $n ? '' : $args['format'], $args['base'] );
+					$link = str_replace('%_%', 1 == $n ? '' : $args['format'], $args['base']);
 					$link = str_replace('%#%', $n, $link);
 
 					// we first follow the user trailing slash configuration
-					$link = URLHelper::user_trailingslashit( $link );
+					$link = URLHelper::user_trailingslashit($link);
 
 					// then we add all required querystring parameters
 					if ( $args['add_args'] ) {
@@ -185,31 +185,42 @@ class Pagination {
 
 		return $page_links;
 	}
+
+	protected static function sanitize_url_params( $add_args ) {
+		foreach ( $add_args as $key => $value ) {
+			$add_args[$key] = urlencode_deep($value);
+		}
+		return $add_args;
+	}
 	
 	protected static function sanitize_args( $args ) {
 
 		$format_args = array();
 		
-		$format = explode( '?', str_replace( '%_%', $args['format'], $args['base'] ) );
-		$format_query = isset( $format[1] ) ? $format[1] : '';
+		$format = explode('?', str_replace('%_%', $args['format'], $args['base']));
+		$format_query = isset($format[1]) ? $format[1] : '';
 
-		wp_parse_str( $format_query, $format_args );
+		wp_parse_str($format_query, $format_args);
 		
 		// Remove the format argument from the array of query arguments, to avoid overwriting custom format.
 		foreach ( $format_args as $format_arg => $format_arg_value ) {
-			unset( $args['add_args'][ $format_arg ] );
+			unset($args['add_args'][urlencode_deep($format_arg)]);
 		}
 
-		$url_parts = explode( '?', $args['base']);
-		if ( isset( $url_parts[1] ) ) {
+		$url_parts = explode('?', $args['base']);
+
+		if ( isset($url_parts[1]) ) {
 			// Find the query args of the requested URL.
 			$url_query_args = array();
-			wp_parse_str( $url_parts[1], $url_query_args );
+			wp_parse_str($url_parts[1], $url_query_args);
 
-			$args['add_args'] = array_merge( $args['add_args'], urlencode_deep( $url_query_args ));
-			$args['base'] = $url_parts[0] . '%_%';
+			$args['add_args'] = array_merge($args['add_args'], urlencode_deep($url_query_args));
+			$args['base'] = $url_parts[0].'%_%';
 		}
-		
+
+		if ( isset($args['add_args']) ) {
+			$args['add_args'] = self::sanitize_url_params($args['add_args']);
+		}
 		return $args;
 	}
 }
