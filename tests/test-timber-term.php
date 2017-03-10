@@ -87,9 +87,11 @@
 			foreach($posts as $post_id) {
 				wp_set_object_terms($post_id, $term_id, 'arts', true);
 			}
-			$posts_gotten = $term->posts();
-			$this->assertEquals(5, count($posts_gotten));
-
+			$terms = Timber::get_terms('arts');
+			$template = '{% for term in terms %}{% for post in term.posts %}{{post.title}}{% endfor %}{% endfor %}';
+			$template = '{% for term in terms %}{{term.posts|length}}{% endfor %}';
+			$str = Timber::compile_string($template, array('terms' => $terms));
+			$this->assertEquals('5', $str);
 		}
 
 		function testGetPostsOld() {
