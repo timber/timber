@@ -403,7 +403,7 @@ class Term extends Core implements CoreInterface {
 	 * @example
 	 * ```twig
 	 * See all posts in: <a href="{{ term.path }}">{{ term.name }}</a>
-	 * `
+	 * ```
 	 * @return string
 	 */
 	public function path() {
