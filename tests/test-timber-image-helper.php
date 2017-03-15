@@ -23,6 +23,9 @@
 		}
 
 		function testWeirdImageLocations_PR1343() {
+			$old_WP_CONTENT_URL = WP_CONTENT_URL;
+			$old_WP_CONTENT_DIR = WP_CONTENT_DIR;
+
 			runkit_constant_redefine("WP_CONTENT_URL", 'http://' . $_SERVER['HTTP_HOST'] . '/content');
 			runkit_constant_redefine("WP_CONTENT_DIR", $_SERVER['DOCUMENT_ROOT'] . '/content');
 
@@ -52,6 +55,11 @@
 			$resized_path = $upload_dir['path'].'/flag-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.png';
 			$exists = file_exists( $resized_path );
 			$this->assertTrue( $exists );
+
+			runkit_constant_redefine("WP_CONTENT_URL", $old_WP_CONTENT_URL);
+			runkit_constant_redefine("WP_CONTENT_DIR", $old_WP_CONTENT_DIR);
+			runkit_constant_redefine("WP_SITEURL", null);
+			runkit_constant_redefine("WP_HOME", null);
 	
 		}
 
