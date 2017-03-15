@@ -367,7 +367,7 @@ class ImageHelper {
 		} else {
 			// if upload dir does not contain site_url, the content-directory seems to be outside of the site_url
 			// therefore using site_url() would lead to a wrong content/ path
-			if (false === strpos($upload_dir['baseurl'], site_url())) {
+			if ( false === strpos($upload_dir['baseurl'], site_url()) ) {
 				// use HOME_URL and relative image path
 				$tmp = get_home_url().$tmp;
 			} else if ( !$result['absolute'] ) {

@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberImageHelper extends Timber_UnitTestCase {
+	class TestTimberImageHelper extends TimberImage_UnitTestCase {
 
 		function testIsAnimatedGif() {
 			$image = TestTimberImage::copyTestImage('robocop.gif');
@@ -56,11 +56,26 @@
 			$exists = file_exists( $resized_path );
 			$this->assertTrue( $exists );
 
+
 			runkit_constant_redefine("WP_CONTENT_URL", $old_WP_CONTENT_URL);
 			runkit_constant_redefine("WP_CONTENT_DIR", $old_WP_CONTENT_DIR);
-			runkit_constant_redefine("WP_SITEURL", null);
-			runkit_constant_redefine("WP_HOME", null);
+
+			runkit_constant_redefine("WP_SITEURL", 'http://example.org/');
+
+
 	
+		}
+
+		function testLetterbox() {
+			$file_loc = TestTimberImage::copyTestImage( 'eastern.jpg' );
+			$upload_dir = wp_upload_dir();
+			$image = $upload_dir['url'].'/eastern.jpg';
+			$new_file = TimberImageHelper::letterbox( $image, 500, 500, '#CCC', true );
+			$location_of_image = TimberImageHelper::get_server_location( $new_file );
+			$this->addFile( $location_of_image );
+			$this->assertTrue (TestTimberImage::checkSize($location_of_image, 500, 500));
+			//whats the bg/color of the image
+			$this->assertTrue( TestTimberImage::checkPixel($location_of_image, 1, 1, "#CCC") );
 		}
 
 	}
