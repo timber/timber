@@ -14,6 +14,9 @@ env:
     - WP_VERSION=latest WP_MULTISITE=1
 
 before_script:
+    ## Runkit
+    - pecl install runkit
+    ## Other setup
     - if [ "$TRAVIS_PHP_VERSION" == 5.5 ] || [ "$TRAVIS_PHP_VERSION" == 5.4 ] || [ "$TRAVIS_PHP_VERSION" == 7.0 ]; then autodetect | pecl install imagick; fi
     - if [ "$TRAVIS_PHP_VERSION" == 5.3 ]; then autodetect | pecl install imagick-3.0.1; fi
     - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
