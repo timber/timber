@@ -24,7 +24,9 @@ before_script:
 
 script:
     - which phpunit
-    - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then mkdir -p build/logs; phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml; echo "IF"; else phpunit -c phpunit-nocover.xml; echo "else"; fi
+    - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then mkdir -p build/logs; 
+    vendor/phpunit/phpunit/phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml; echo "IF"; else 
+    vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml; echo "else"; fi
 
 after_script:
     - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then php vendor/bin/coveralls -v; fi
