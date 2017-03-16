@@ -11,7 +11,7 @@ use Timber\URLHelper;
 
 /**
  * Terms: WordPress has got 'em, you want 'em. Categories. Tags. Custom
- * Taxonomies. You don't care, you're a fiend. Well let's get this under control
+ * Taxonomies. You don't care, you're a fiend. Well let's get this under control:
  * @example
  * ```php
  * //Get a term by its ID
