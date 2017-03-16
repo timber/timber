@@ -889,7 +889,7 @@ class Post extends Core implements CoreInterface {
 		$commenter = wp_get_current_commenter();
 		$comment_author_email = $commenter['comment_author_email'];
 
-		$args = array('status' => $status, 'order' => $order);
+		$args = array('status' => $status, 'order' => $order, 'type' => $type);
 		if ( $count > 0 ) {
 			$args['number'] = $count;
 		}
