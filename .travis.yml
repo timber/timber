@@ -7,11 +7,11 @@ php:
     - 7.1
 
 env:
-    #- WP_VERSION=4.6 WP_MULTISITE=0
-    #- WP_VERSION=4.7.2 WP_MULTISITE=0
-    #- WP_VERSION=4.7.2 WP_MULTISITE=1
+    - WP_VERSION=4.6 WP_MULTISITE=0
+    - WP_VERSION=4.7.2 WP_MULTISITE=0
+    - WP_VERSION=4.7.2 WP_MULTISITE=1
     - WP_VERSION=latest WP_MULTISITE=0
-    #- WP_VERSION=latest WP_MULTISITE=1
+    - WP_VERSION=latest WP_MULTISITE=1
 
 before_script:
     ## Runkit
@@ -23,8 +23,7 @@ before_script:
     - composer install --dev --prefer-source
 
 script:
-    - which phpunit
-    - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then mkdir -p build/logs; vendor/phpunit/phpunit/phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml; echo "IF"; else vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml; echo "else"; fi
+    - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then mkdir -p build/logs; vendor/phpunit/phpunit/phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml; else vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml; fi
 
 after_script:
     - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then php vendor/bin/coveralls -v; fi
