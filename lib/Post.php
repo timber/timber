@@ -902,8 +902,10 @@ class Post extends Core implements CoreInterface {
 		} elseif ( !empty($comment_author_email) ) {
 			$args['include_unapproved'] = array($comment_author_email);
 		}
-
-		return new CommentThread($this->ID, $args);
+		$ct = new CommentThread($this->ID, false);
+		$ct->CommentClass = $CommentClass;
+		$ct->init($args);
+		return $ct;
 	}
 
 	/**

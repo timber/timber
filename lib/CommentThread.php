@@ -11,10 +11,17 @@ class CommentThread extends \ArrayObject {
 	var $_orderby = '';
 	var $_order = 'ASC';
 
+	/**
+	 * @param int $post_id
+	 * @param array|boolean $args an array of arguments
+	 * 						or false if to skip initialization
+	 */
 	public function __construct( $post_id, $args = array() ) {
 		parent::__construct();
 		$this->post_id = $post_id;
-		$this->init($args);
+		if ( $args || is_array($args) ) {
+			$this->init($args);
+		}
 	}
 
 	protected function fetch_comments( $args = array() ) {
@@ -47,10 +54,10 @@ class CommentThread extends \ArrayObject {
 		return $this;
 	}
 
-	protected function init( $args = array() ) {
+	public function init( $args = array() ) {
 		global $overridden_cpage;
 		$args = self::merge_args($args);
-		$comments = $this->fetch_comments( $args );
+		$comments = $this->fetch_comments($args);
 		$tcs = array();
 		if ( '' == get_query_var('cpage') && get_option('page_comments') ) {
 			set_query_var('cpage', 'newest' == get_option('default_comments_page') ? get_comment_pages_count() : 1);
@@ -77,10 +84,10 @@ class CommentThread extends \ArrayObject {
 		foreach ( $children as &$comment ) {
 			$parent_id = $comment->comment_parent;
 			if ( isset($parents[$parent_id]) ) {
-				$parents[$parent_id]->add_child( $comment );
+				$parents[$parent_id]->add_child($comment);
 			}
 			if ( isset($children[$parent_id]) ) {
-				$children[$parent_id]->add_child( $comment );
+				$children[$parent_id]->add_child($comment);
 			}
 		}
 		//there's something in update_depth that breaks order?
