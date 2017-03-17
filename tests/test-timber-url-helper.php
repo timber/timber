@@ -238,5 +238,11 @@
             $this->assertEquals('blog', $blog);
         }
 
+        function testGetParamsNadda(){
+            $_SERVER['REQUEST_URI'] = 'http://example.org/blog/post/news/2014/whatever';
+            $params = TimberURLHelper::get_params(93);
+            $this->assertNull($params);
+        }
+
 
     }
