@@ -41,6 +41,16 @@
             $this->assertEquals('example.com/thing/foo', $joined);
         }
 
+        function testPrependWithFragment() {
+            $joined = Timber\URLHelper::prepend_to_url('http://example.com/thing/#foo', '/jiggly');
+            $this->assertEquals('http://example.com/jiggly/thing/#foo', $joined);
+        }
+
+        function testPrependWithQuery() {
+            $joined = Timber\URLHelper::prepend_to_url('http://example.com/?s=foo&jolly=good', '/search');
+            $this->assertEquals('http://example.com/search/?s=foo&jolly=good', $joined);
+        }
+
         function testUserTrailingSlashIt() {
             global $wp_rewrite;
             $wp_rewrite->use_trailing_slashes = true;
@@ -226,6 +236,12 @@
             $blog = TimberURLHelper::get_params(2);
             $this->assertEquals('whatever', $whatever);
             $this->assertEquals('blog', $blog);
+        }
+
+        function testGetParamsNadda(){
+            $_SERVER['REQUEST_URI'] = 'http://example.org/blog/post/news/2014/whatever';
+            $params = TimberURLHelper::get_params(93);
+            $this->assertNull($params);
         }
 
 

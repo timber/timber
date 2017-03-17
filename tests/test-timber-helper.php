@@ -33,6 +33,16 @@
 			$this->assertEquals(array('guitar', 'drums'), $instruments);
 		}
 
+		function testPluckObjectWithMethod() {
+			require_once(__DIR__.'/php/timber-post-subclass.php');
+			$tps = new TimberPostSubclass();
+			$jimmy = new stdClass();
+			$jimmy->name = 'Jimmy';
+			$pumpkins = array($tps, $jimmy);
+			$bar = \Timber\Helper::pluck($pumpkins, 'foo');
+			$this->assertEquals(array('bar'), $bar);
+		}
+
 		function testCommentFormPHP() {
 			$post_id = $this->factory->post->create();
 			$form = TimberHelper::get_comment_form($post_id);
@@ -105,6 +115,15 @@
 			$this->assertEquals(1, $index);
 			$obj = TimberHelper::get_object_by_property($arr, 'skill', 'cooking');
 			$this->assertEquals('austin', $obj->name);
+		}
+
+		function testGetObjectByPropertyButNoMatch() {
+			$obj1 = new stdClass();
+			$obj1->name = 'mark';
+			$obj1->skill = 'acro yoga';
+			$arr = array($obj1);
+			$result = TimberHelper::get_object_by_property($arr, 'skill', 'cooking');
+			$this->assertFalse($result);
 		}
 
 		function testGetArrayIndexByProperty(){

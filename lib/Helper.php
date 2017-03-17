@@ -337,10 +337,10 @@ class Helper {
 					return $arr;
 				}
 			}
-		} else {
-			throw new \InvalidArgumentException('$array is not an array, got:');
-			Helper::error_log($array);
-		}
+			return false;
+		} 
+		throw new \InvalidArgumentException('$array is not an array, got:');
+		Helper::error_log($array);
 	}
 
 	/**
@@ -410,7 +410,7 @@ class Helper {
 				$return[] = $obj->$key();
 			} elseif ( is_object($obj) && property_exists($obj, $key) ) {
 				$return[] = $obj->$key;
-			} elseif ( isset($obj[$key]) ) {
+			} elseif ( is_array($obj) && isset($obj[$key]) ) {
 				$return[] = $obj[$key];
 			}
 		}
