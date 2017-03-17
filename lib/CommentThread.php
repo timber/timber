@@ -14,7 +14,9 @@ class CommentThread extends \ArrayObject {
 	public function __construct( $post_id, $args = array() ) {
 		parent::__construct();
 		$this->post_id = $post_id;
-		$this->init($args);
+		if ( $args ) {
+			$this->init($args);
+		}
 	}
 
 	protected function fetch_comments( $args = array() ) {
@@ -47,7 +49,7 @@ class CommentThread extends \ArrayObject {
 		return $this;
 	}
 
-	protected function init( $args = array() ) {
+	public function init( $args = array() ) {
 		global $overridden_cpage;
 		$args = self::merge_args($args);
 		$comments = $this->fetch_comments( $args );

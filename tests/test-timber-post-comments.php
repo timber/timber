@@ -36,6 +36,15 @@
 			wp_set_current_user( 0 );
 		}
 
+		function testPostWithCustomCommentClass() {
+			require_once(__DIR__.'/php/timber-custom-comment.php');
+			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
+			$comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
+			$post = new TimberPost($post_id);
+			$comments = $post->get_comments(null, 'wp', 'comment', 'approve', 'CustomComment');
+			$this->assertEquals('CustomComment', get_class($comments[0]));
+		}
+
 		function testShowUnmoderatedCommentIfByCurrentUser() {
 			$post_id = $this->factory->post->create();
 			add_filter('wp_get_current_commenter', function($author_data) {
