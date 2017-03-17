@@ -14,7 +14,7 @@ class CommentThread extends \ArrayObject {
 	public function __construct( $post_id, $args = array() ) {
 		parent::__construct();
 		$this->post_id = $post_id;
-		if ( $args ) {
+		if ( $args || is_array($args) ) {
 			$this->init($args);
 		}
 	}
