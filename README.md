@@ -5,12 +5,13 @@ By Jared Novack (<a href="https://twitter.com/jarednova">@JaredNova</a>) and <a 
 </div>
 
 [![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.org/timber/timber)
-[![Coverage Status](https://img.shields.io/codecov/c/github/timber/timber.svg?style=flat-square)](https://codecov.io/gh/timber/timber)
+[![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg?style=flat-square)](https://codecov.io/gh/timber/timber)
 [![Dependency Status](https://www.versioneye.com/user/projects/574e40e6e298f30048059b9f/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/574e40e6e298f30048059b9f)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
 [![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
 [![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg?style=flat-square)](https://wordpress.org/plugins/timber-library/)
 [![Join the chat at https://gitter.im/timber/timber](https://img.shields.io/gitter/room/timber/timber.svg?style=flat-square)](https://gitter.im/timber/timber?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![WordPress Rating](https://img.shields.io/wordpress/plugin/r/timber-library.svg?style=flat-square)](https://wordpress.org/support/plugin/timber-library/reviews/)
 
 
 ### Because WordPress is awesome, but the_loop isn't
