@@ -25,7 +25,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote));
 		$comment = new TimberComment($comment_id);
 		$str = Timber::compile_string('{{comment}}', array('comment' => $comment));
-		$this->assertEquals($quote, $str);
+		$this->assertEquals('<p>'.$quote.'</p>', $str);
 	}
 
 	function testCommentContent(){
@@ -33,7 +33,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$post_id = $this->factory->post->create();
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $costanza_quote));
 		$comment = new TimberComment($comment_id);
-		$this->assertEquals($costanza_quote, $comment->content());
+		$this->assertEquals('<p>'.$costanza_quote.'</p>', $comment->content());
 	}
 
 	function testCommentApproval(){

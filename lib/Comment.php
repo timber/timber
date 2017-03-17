@@ -155,7 +155,7 @@ class Comment extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function content() {
-		return apply_filters('get_comment_text ', $this->comment_content);
+		return trim(apply_filters('comment_text', $this->comment_content));
 	}
 
 	/**
