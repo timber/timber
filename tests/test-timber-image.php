@@ -986,6 +986,20 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals($image->src(), $result);
 	}
 
+  // Test document like pdf, docx
+  function testTimberImageFromDocument() {
+
+    $pid = $this->factory->post->create();
+    $iid = self::get_image_attachment($pid, 'dummy-pdf.pdf');
+
+    $attachment = new TimberImage($iid);
+
+		$post = get_post($iid);
+		$str = '{{ TimberImage(post).src }}';
+		$result = Timber::compile_string( $str, array('post' => $post) );
+		$this->assertEquals($attachment->src(), $result);
+  }
+
 	function testNoThumbnail() {
 		$pid = $this->factory->post->create();
 		$post = new TimberPost($pid);
