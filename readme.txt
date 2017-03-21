@@ -2,8 +2,8 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.2.4
-Tested up to: 4.7.2
+Stable tag: 1.3.0
+Tested up to: 4.7.3
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -40,6 +40,14 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 1.3.0
+* Default $context object now returns a PostQuery for $context['posts'] this is cool because you can use `{{ posts.pagination }}` in your Twig templates without any further PHP work (thanks @lggorman)
+* Timber\Images with PDFs and other content types now return the file instead of null # (thanks @hoandang)
+* Timber\Comments now support different comment types #1364 (thanks @yantei)
+* Timber\Comments {{ comment.content }} now returns processed comment with `<p>` tags
+* Fix for HTTP error when uploading media files in Windows #1346 (thanks Matias Griese)
+* Fix for image resizing on alternative WP setups (thanks @gillesgoetsch)
 
 = 1.2.4 =
 * Fixed regression from S3 handling #1330 (@gchtr)
