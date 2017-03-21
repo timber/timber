@@ -24,7 +24,7 @@ This is what Timber's `.twig` files look like:
 ```twig
 {% extends "base.twig" %}
 {% block content %}
-  <h1 class="big-title">{{foo}}</h1>
+  <h1 class="big-title">{{ foo }}</h1>
   <h2 class="post-title">{{ post.title }}</h2>
   <img src="{{ post.thumbnail.src }}" />
   <div class="body">
