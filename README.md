@@ -24,12 +24,12 @@ This is what Timber's `.twig` files look like:
 ```twig
 {% extends "base.twig" %}
 {% block content %}
-<h1 class="big-title">{{foo}}</h1>
-<h2 class="post-title">{{post.title}}</h2>
-<img src="{{post.thumbnail.src}}" />
-<div class="body">
-	{{post.content}}
-</div>
+  <h1 class="big-title">{{foo}}</h1>
+  <h2 class="post-title">{{ post.title }}</h2>
+  <img src="{{ post.thumbnail.src }}" />
+  <div class="body">
+	{{ post.content }}
+  </div>
 {% endblock %}
 ```
 Once Timber is installed and activated in your plugin directory, it gives any WordPress theme the ability to take advantage of the power of Twig and other Timber features.
