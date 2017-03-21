@@ -153,9 +153,7 @@ class TestTimber extends Timber_UnitTestCase {
 	function testQueryPostsInContext(){
         $context = Timber::get_context();
         $this->assertArrayHasKey( 'posts', $context );
-        /* @todo enable this for 1.3 */
-        // $this->assertInstanceOf( 'Timber\PostCollection', $context['posts'] );
-        $this->assertInstanceOf( 'Timber\QueryIterator', $context['posts'] );
+        $this->assertInstanceOf( 'Timber\PostCollection', $context['posts'] );
 	}
 
 	/* Terms */
