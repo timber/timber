@@ -1,3 +1,5 @@
+Is this a support or usage question? Please post to [StackOverflow](http://stackoverflow.com/questions/tagged/timber) using the Timber tag
+
 ### Expected behavior
 <!-- Please describe what output you expect to see from Timber -->
 
