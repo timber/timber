@@ -205,7 +205,9 @@ class Loader {
 
 	public function clear_cache_twig() {
 		$twig = $this->get_twig();
-		$twig->clearCacheFiles();
+		if ( method_exists($twig, 'clearCacheFiles') ) {
+			$twig->clearCacheFiles();
+		}
 		$cache = $twig->getCache();
 		if ( $cache ) {
 			self::rrmdir($twig->getCache());
