@@ -53,11 +53,11 @@ class FunctionWrapper {
 	 */
 	public function add_to_twig( $twig ) {
 		$wrapper = $this;
-
-		$twig->addFunction(new \Twig_SimpleFunction($this->_function, function() use ($wrapper) {
+		if ( !$twig->getFunction($this->_function) ) {
+			$twig->addFunction(new \Twig_SimpleFunction($this->_function, function() use ($wrapper) {
 					return call_user_func_array(array($wrapper, 'call'), func_get_args());
 				} ));
-
+		}
 		return $twig;
 	}
 
