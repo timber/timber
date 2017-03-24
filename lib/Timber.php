@@ -320,7 +320,7 @@ class Timber {
 	/**
 	 * Render function.
 	 * @api
-	 * @param array   $filenames
+	 * @param array|string   $filenames
 	 * @param array   $data
 	 * @param boolean|integer    $expires
 	 * @param string  $cache_mode
