@@ -9,7 +9,7 @@ In your functions.php file, this can be called anywhere (don't hook it to init o
 <?php
 Routes::map('blog/:name', function($params){
     $query = 'posts_per_page=3&post_type='.$params['name'];
-    Routes::load('archive.php', null, 200, $query);
+    Routes::load('archive.php', null, $query, 200);
 });
 
 Routes::map('blog/:name/page/:pg', function($params){
