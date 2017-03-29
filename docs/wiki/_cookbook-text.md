@@ -93,9 +93,20 @@ Timber-fied template:
 
 ### Internationalization
 
-#### __()
+#### Translation functions
 
-Timber comes built-in with your ordinary gettext function __() for l10n.
+Timber supports the gettext i18n functions used in WordPress:
+
+* __()
+* _x()
+* _n()
+* _nx()
+* _n_noop()
+* _nx_noop()
+* translate()
+* translate_nooped_plural()
+
+While `_e()` and `_ex()` are also supported, you probably won’t need them in Twig, because `{{ }}` already echoes the output.
 
 Old template:
 
@@ -111,7 +122,7 @@ Timber-fied template:
 
 #### sprintf notation
 
-You can even use sprintf-type placeholders, using the `format` filter:
+You can use sprintf-type placeholders, using the `format` filter:
 
 Old template:
 
@@ -125,13 +136,17 @@ Timber-fied template:
 <p class="entry-meta">{{ __('Posted on %s', 'my-text-domain')|format(posted_on_date) }}</p>
 ```
 
-#### Generating .po files using Poedit
+#### Generating .po files with Poedit 2
 
-Unfortunately, Twig files with the above functions are not automatically parsed by gettext in Poedit. The quick and dirty workaround is to start each .twig file with `{#<?php#}` (by doing this, gettext will interpret whatever comes next as php, and start looking for `__`).
+[Poedit 2](https://poedit.net/) fully supports parsing of Twig files (Pro version only) with the following functions: __(), _x(), _n(), _nx().
+
+#### Generating .po files with Poedit 1.x
+
+Internationalization functions in Twig files are not automatically parsed by gettext in Poedit 1.x. The quick and dirty workaround is to start each .twig file with `{#<?php#}`. By doing this, gettext will interpret whatever comes next as php, and start looking for `__`.
 
 A nicer solution is to use [Twig-Gettext-Extractor](https://github.com/umpirsky/Twig-Gettext-Extractor), a special Twig parser to Poedit. The linked page contains instructions on how to set it up.
 
-Alternatively, you can use the parser for Python instead. This will throw a warning or two, but your strings are extracted! To add the parser, follow these steps:
+Alternatively, you can use a custom parser for Python instead. This will throw a warning or two, but your strings are extracted! To add the parser, follow these steps:
 
 1. Create a Poedit project for your theme if you haven't already, and make sure to add `__` on the _Sources keywords_ tab.
 2. Go to _Edit_->_Preferences_.
@@ -143,6 +158,19 @@ Alternatively, you can use the parser for Python instead. This will throw a warn
     * An item in input files list: `%f`
     * Source code charset: `--from-code=%c`
 4. Save and Update!
+
+Be aware that with the Python parser, strings inside HTML attributes will not be recognized. This will not work:
+
+```twig
+<nav aria-label="{{ __('Main Menu', 'my-text-domain') }}">
+```
+
+As a workaround, you can assign the translation to a variable, which you can then use in the attribute.
+
+```twig
+{% set nav_aria_label = __('Main Menu', 'my-text-domain') %}
+<nav aria-label="{{ nav_aria_label }}">
+```
 
 * * *
 
