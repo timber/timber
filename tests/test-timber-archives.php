@@ -60,6 +60,8 @@
 			$this->go_to('/');
 			$archives = new TimberArchives(array('type' => 'monthly-nested'));
 			$this->assertEquals(2, count($archives->items));
+			$this->assertEquals(4, $archives->items[1]['post_count']);
+			$this->assertEquals(2, $archives->items[1]['children'][1]['post_count']);
 			$archives = new TimberArchives(array('type' => 'yearlymonthly'));
 			$this->assertEquals(2, count($archives->items));
 			$this->assertEquals(4, $archives->items[1]['post_count']);
