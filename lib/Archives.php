@@ -87,7 +87,7 @@ class Archives extends Core {
 		$ret = array();
 		$ret['text'] = $ret['title'] = $ret['name'] = wptexturize($text);
 		$ret['url'] = $ret['link'] = esc_url(URLHelper::prepend_to_url($url, $this->base));
-		$ret['post_count'] = $post_count;
+		$ret['post_count'] = (int) $post_count;
 		return $ret;
 	}
 
