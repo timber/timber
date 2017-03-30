@@ -10,6 +10,7 @@
 			$this->go_to('/');
 			$archives = new TimberArchives(array('type' => 'monthly', 'show_year' => false, 'limit' => 3));
 			$this->assertEquals(3, count($archives->items));
+			$this->assertEquals(2, $archives->items[1]['post_count']);
 		}
 
 
@@ -22,6 +23,7 @@
 			$archives = new TimberArchives(array('type' => 'monthly', 'show_year' => false));
 			$this->assertEquals('December', $archives->items[0]['name']);
 			$this->assertEquals(3, count($archives->items));
+			$this->assertEquals(2, $archives->items[1]['post_count']);
 			$archives = new TimberArchives(array('type' => 'monthly', 'show_year' => true));
 			$this->assertEquals('December 2013', $archives->items[0]['name']);
 		}
@@ -34,6 +36,7 @@
 			$this->go_to('/');
 			$archives = new TimberArchives(array('type' => 'yearly', 'show_year' => false));
 			$this->assertEquals(3, count($archives->items));
+			$this->assertEquals(2, $archives->items[2]['post_count']);
 		}
 
 		function testArchiveDaily(){
@@ -45,6 +48,7 @@
 			$this->go_to('/');
 			$archives = new TimberArchives(array('type' => 'daily'));
 			$this->assertEquals(5, count($archives->items));
+			$this->assertEquals(2, $archives->items[2]['post_count']);
 		}
 
 		function testArchiveYearlyMonthly(){
@@ -56,8 +60,12 @@
 			$this->go_to('/');
 			$archives = new TimberArchives(array('type' => 'monthly-nested'));
 			$this->assertEquals(2, count($archives->items));
+			$this->assertEquals(4, $archives->items[1]['post_count']);
+			$this->assertEquals(2, $archives->items[1]['children'][1]['post_count']);
 			$archives = new TimberArchives(array('type' => 'yearlymonthly'));
 			$this->assertEquals(2, count($archives->items));
+			$this->assertEquals(4, $archives->items[1]['post_count']);
+			$this->assertEquals(2, $archives->items[1]['children'][1]['post_count']);
 		}
 
 		function testArchiveWeekly(){
@@ -69,6 +77,7 @@
 			$this->go_to('/');
 			$archives = new TimberArchives(array('type' => 'weekly'));
 			$this->assertEquals(3, count($archives->items));
+			$this->assertEquals(3, $archives->items[0]['post_count']);
 		}
 
 		function testArchiveAlpha(){
