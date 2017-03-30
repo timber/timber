@@ -83,11 +83,13 @@ class Archives extends Core {
 	 * @param string $text
 	 * @return mixed
 	 */
-	protected function get_archives_link( $url, $text, $post_count ) {
+	protected function get_archives_link( $url, $text, $post_count = 0 ) {
 		$ret = array();
 		$ret['text'] = $ret['title'] = $ret['name'] = wptexturize($text);
 		$ret['url'] = $ret['link'] = esc_url(URLHelper::prepend_to_url($url, $this->base));
-		$ret['post_count'] = (int) $post_count;
+		if ($post_count) {
+			$ret['post_count'] = (int) $post_count;
+		}
 		return $ret;
 	}
 
@@ -312,7 +314,7 @@ class Archives extends Core {
 							/** This filter is documented in wp-includes/post-template.php */
 							$text = strip_tags(apply_filters('the_title', $result->post_title, $result->ID));
 						}
-						$output[] = $this->get_archives_link($url, $text, 1);
+						$output[] = $this->get_archives_link($url, $text);
 					}
 				}
 			}
