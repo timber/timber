@@ -28,14 +28,15 @@
     "source": "https://github.com/timber/timber"
   },
   "require": {
-    "php": ">=5.3.0|7.*",
-    "twig/twig": "^1.0|2.*",
+    "php": "^5.3.0|^7.1.2",
+    "twig/twig": "^1.0|^2.1",
     "upstatement/routes": "0.4",
     "composer/installers": "~1.0",
     "asm89/twig-cache-extension": "~1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "5.7.16",
+    "johnpbloch/wordpress": "4.*",
     "satooshi/php-coveralls": "1.0.*",
     "wpackagist-plugin/advanced-custom-fields": "4.*",
     "phpdocumentor/phpdocumentor": "2.*",
