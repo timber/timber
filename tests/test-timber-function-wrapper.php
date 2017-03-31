@@ -41,7 +41,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 	function testWPHead() {
 		$context = Timber::get_context();
 		$str = Timber::compile_string('{{ wp_head }}', $context);
-		$this->assertStringStartsWith('<title>Test Blog</title>', trim($str));
+		$this->assertRegexp('/<title>Test Blog/', trim($str));
 	}
 
 	function testFunctionInTemplate() {
