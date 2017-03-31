@@ -83,10 +83,13 @@ class Archives extends Core {
 	 * @param string $text
 	 * @return mixed
 	 */
-	protected function get_archives_link( $url, $text ) {
+	protected function get_archives_link( $url, $text, $post_count = 0 ) {
 		$ret = array();
 		$ret['text'] = $ret['title'] = $ret['name'] = wptexturize($text);
 		$ret['url'] = $ret['link'] = esc_url(URLHelper::prepend_to_url($url, $this->base));
+		if ($post_count) {
+			$ret['post_count'] = (int) $post_count;
+		}
 		return $ret;
 	}
 
@@ -114,7 +117,7 @@ class Archives extends Core {
 			foreach ( (array) $results as $result ) {
 				$url = get_year_link($result->year);
 				$text = sprintf('%d', $result->year);
-				$output[] = $this->get_archives_link($url, $text);
+				$output[] = $this->get_archives_link($url, $text, $result->posts);
 			}
 		}
 		return $output;
@@ -159,16 +162,16 @@ class Archives extends Core {
 					$text = sprintf(__('%1$s'), $wp_locale->get_month($result->month));
 				}
 				if ( $nested ) {
-					$output[$result->year][] = $this->get_archives_link($url, $text);
+					$output[$result->year][] = $this->get_archives_link($url, $text, $result->posts);
 				} else {
-					$output[] = $this->get_archives_link($url, $text);
+					$output[] = $this->get_archives_link($url, $text, $result->posts);
 				}
 			}
 		}
 		if ( $nested ) {
 			$out2 = array();
 			foreach ( $output as $year => $months ) {
-				$out2[] = array('name' => $year, 'children' => $months);
+				$out2[] = array('name' => $year, 'children' => $months, 'post_count' => array_sum(array_column($months, 'post_count')));
 			}
 			return $out2;
 		}
@@ -265,7 +268,7 @@ class Archives extends Core {
 					$url = get_day_link($result->year, $result->month, $result->dayofmonth);
 					$date = sprintf('%1$d-%2$02d-%3$02d 00:00:00', $result->year, $result->month, $result->dayofmonth);
 					$text = mysql2date($archive_day_date_format, $date);
-					$output[] = $this->get_archives_link($url, $text);
+					$output[] = $this->get_archives_link($url, $text, $result->posts);
 				}
 			}
 		} elseif ( 'weekly' == $type ) {
@@ -289,7 +292,7 @@ class Archives extends Core {
 						$arc_week_end = date_i18n($archive_week_end_date_format, $arc_week['end']);
 						$url = sprintf('%1$s/%2$s%3$sm%4$s%5$s%6$sw%7$s%8$d', home_url(), '', '?', '=', $arc_year, '&amp;', '=', $result->week);
 						$text = $arc_week_start.$archive_week_separator.$arc_week_end;
-						$output[] = $this->get_archives_link($url, $text);
+						$output[] = $this->get_archives_link($url, $text, $result->posts);
 					}
 				}
 			}
