@@ -173,7 +173,7 @@ class MenuItem extends Core implements CoreInterface {
 		}
 		$this->classes = array_merge($this->classes, $data->classes);
 		$this->classes = array_unique($this->classes);
-		$this->classes = apply_filters('nav_menu_css_class', $this->classes, $this);
+		$this->classes = apply_filters('nav_menu_css_class', $this->classes, $this, array(), 0);
 		$this->class = trim(implode(' ', $this->classes));
 	}
 
