@@ -36,11 +36,13 @@
   },
   "require-dev": {
     "phpunit/phpunit": "5.7.16",
-    "satooshi/php-coveralls": "1.0.*",
     "wpackagist-plugin/advanced-custom-fields": "4.*",
-    "phpdocumentor/phpdocumentor": "2.*",
-    "jarednova/markdowndocs": "dev-master",
     "wpackagist-plugin/co-authors-plus" : "3.*" 
+  },
+  "suggest" : {
+    "phpdocumentor/phpdocumentor": "2.* for generating docs",
+    "jarednova/markdowndocs": "dev-master for generating docs",
+    "satooshi/php-coveralls": "1.0.* for code coverage"
   },
   "autoload": {
     "psr-4": {

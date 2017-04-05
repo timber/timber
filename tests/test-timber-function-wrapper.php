@@ -38,6 +38,24 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 		$this->assertEquals(1, $content);
 	}
 
+	function testWPHead() {
+		$context = Timber::get_context();
+		$str = Timber::compile_string('{{ wp_head }}', $context);
+		$this->assertRegexp('/<title>Test Blog/', trim($str));
+	}
+
+	function testFunctionInTemplate() {
+		$context = Timber::get_context();
+		$str = Timber::compile_string("{{ function('my_boo') }}", $context);
+		$this->assertEquals('bar!', trim($str));
+	}
+
+	function testSoloFunction() {
+		new TimberFunctionWrapper('my_boo');
+		$str = Timber::compile_string("{{ my_boo }}");
+		$this->assertEquals('', trim($str));
+	}
+
 	/* Sample function to test exception handling */
 
 	static function isNum($num) {
@@ -48,4 +66,8 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 		}
 	}
 
+}
+
+function my_boo() {
+	return 'bar!';
 }

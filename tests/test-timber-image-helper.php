@@ -26,6 +26,11 @@
 			$old_WP_CONTENT_URL = WP_CONTENT_URL;
 			$old_WP_CONTENT_DIR = WP_CONTENT_DIR;
 
+			if ( version_compare(phpversion(), '7.0', '>=') ) {
+				$this->markTestSkipped('Updates to constants cant be tested in PHP7');
+				return;
+			}
+
 			runkit_constant_redefine("WP_CONTENT_URL", 'http://' . $_SERVER['HTTP_HOST'] . '/content');
 			runkit_constant_redefine("WP_CONTENT_DIR", $_SERVER['DOCUMENT_ROOT'] . '/content');
 

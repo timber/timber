@@ -41,24 +41,6 @@ class FunctionWrapper {
 
 		$this->_args = $args;
 		$this->_use_ob = $return_output_buffer;
-
-		add_filter('timber/twig', array(&$this, 'add_to_twig'));
-	}
-
-	/**
-	 *
-	 *
-	 * @param Twig_Environment $twig
-	 * @return Twig_Environment
-	 */
-	public function add_to_twig( $twig ) {
-		$wrapper = $this;
-
-		$twig->addFunction(new \Twig_SimpleFunction($this->_function, function() use ($wrapper) {
-					return call_user_func_array(array($wrapper, 'call'), func_get_args());
-				} ));
-
-		return $twig;
 	}
 
 	/**
