@@ -40,6 +40,20 @@ class ToJpg extends ImageOperation {
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
 	public function run( $load_filename, $save_filename ) {
+		
+		// First, check if the filetype is a valid one. Processing an invalid filetype
+		// results in an exception, which is not really useful.
+		// See issue: "Timber throw exception when trying to convert TIFF to JPEG #1192"
+
+		$ext = wp_check_filetype($load_filename);
+		if ( isset($ext['ext']) ) {
+			$ext = $ext['ext'];
+		}
+		$ext = strtolower($ext);
+		if (!in_array($ext, ['gif', 'png', 'jpg', 'jpeg'])) {
+			return false;
+		}
+		
 		$input = self::image_create($load_filename);
 		list($width, $height) = getimagesize($load_filename);
 		$output = imagecreatetruecolor($width, $height);
