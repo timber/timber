@@ -10,11 +10,14 @@
 		}
 
 		/**
-     	 * @expectedException Twig_Error_Runtime
-     	 */
+		 * This should fail silently as opposed to throwing an exception
+		 * see #1383 and #1192
+		 */
 		function testTIFtoJPG() {
 			$filename = TestTimberImage::copyTestImage( 'white-castle.tif' );
 			$str = Timber::compile_string('{{file|tojpg}}', array('file' => $filename));
+			$this->assertEquals($filename, $str);
+			unlink($filename);
 		}
 
 		function testPNGtoJPG() {
