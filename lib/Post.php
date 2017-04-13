@@ -830,7 +830,7 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * {% if post.children %}
 	 *     Here are the child pages:
-	 *     {% for child in page.children %}
+	 *     {% for child in post.children %}
 	 *         <a href="{{ child.link }}">{{ child.title }}</a>
 	 *     {% endfor %}
 	 * {% endif %}
