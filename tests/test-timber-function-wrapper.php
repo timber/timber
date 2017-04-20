@@ -50,10 +50,10 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 		$this->assertEquals('bar!', trim($str));
 	}
 
-	function testSoloFunction() {
+	function testSoloFunctionUsingWrapper() {
 		new TimberFunctionWrapper('my_boo');
 		$str = Timber::compile_string("{{ my_boo() }}");
-		$this->assertEquals('', trim($str));
+		$this->assertEquals('bar!', trim($str));
 	}
 
 	function testNakedSoloFunction() {
