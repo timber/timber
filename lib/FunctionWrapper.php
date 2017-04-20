@@ -46,9 +46,7 @@ class FunctionWrapper {
 		 * @deprecated since 1.3.0
 		 * @todo remove in 1.4.0
 		 */
-		error_log('lets add to twig...?');
 		if ( version_compare(\Twig_Environment::VERSION, '2.0.0', '<') ) {
-			error_log('added!');
 			add_filter('timber/twig', array(&$this, 'add_to_twig'));
 		}
 

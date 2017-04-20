@@ -52,18 +52,17 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 
 	function testSoloFunction() {
 		new TimberFunctionWrapper('my_boo');
-		$str = Timber::compile_string("{{ my_boo }}");
+		$str = Timber::compile_string("{{ my_boo() }}");
 		$this->assertEquals('', trim($str));
 	}
 
 	function testNakedSoloFunction() {
-		add_filter('timber/twig', function($twig) {
-			$twig->addFunction(new \Twig_SimpleFunction('your_boo', function() {		
-				return your_boo();		
- 			} ));	
+		add_filter('timber/twig/functions', function( $twig ) {
+			$twig->addFunction(new \Twig_SimpleFunction('your_boo', array($this, 'your_boo')) );
 			return $twig;
 		});
-		$str = Timber::compile_string("{{ your_boo }}");
+		$context = Timber::get_context();
+		$str = Timber::compile_string("{{ your_boo() }}", $context);
 		$this->assertEquals('yourboo', trim($str));
 	}
 
@@ -77,11 +76,13 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 		}
 	}
 
+	function your_boo() {
+		return 'yourboo';
+	}
+
 }
 
-function your_boo() {
-	return 'yourboo';
-}
+
 
 function my_boo() {
 	return 'bar!';
