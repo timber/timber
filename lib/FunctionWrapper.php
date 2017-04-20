@@ -60,11 +60,10 @@ class FunctionWrapper {
 	 * @return Twig_Environment		
 	 */		
 	public function add_to_twig( $twig ) {		
-		
-		if ( $twig->getFunction($this->_function) ) {
-			// bail if function is already present
-			return $twig;
-		}
+		// if ( $twig->getFunction($this->_function) ) {
+		// 	// bail if function is already present
+		// 	return $twig;
+		// }
 
 		$wrapper = $this;		
 		$twig->addFunction(new \Twig_SimpleFunction($this->_function, function() use ($wrapper) {		
