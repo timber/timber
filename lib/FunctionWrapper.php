@@ -41,6 +41,28 @@ class FunctionWrapper {
 
 		$this->_args = $args;
 		$this->_use_ob = $return_output_buffer;
+
+		/**
+		 * @deprecated since 1.3.0
+		 * @todo remove in 1.4.0
+		 */
+		add_filter('timber/twig', array(&$this, 'add_to_twig'));
+	}
+
+	/**		
+	 *		
+	 * @deprecated since 1.3.0
+	 * @todo remove in 1.4.0	
+	 * @param Twig_Environment $twig		
+	 * @return Twig_Environment		
+	 */		
+	public function add_to_twig( $twig ) {
+		$wrapper = $this;		
+		$twig->addFunction(new \Twig_SimpleFunction($this->_function, function() use ($wrapper) {		
+			return call_user_func_array(array($wrapper, 'call'), func_get_args());		
+ 		} ));		
+		
+		return $twig;		
 	}
 
 	/**

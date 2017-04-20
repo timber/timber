@@ -230,8 +230,6 @@ class Timber {
 		if ( empty(self::$context_cache) ) {
 			self::$context_cache['http_host'] = URLHelper::get_scheme().'://'.URLHelper::get_host();
 			self::$context_cache['wp_title'] = Helper::get_wp_title();
-			self::$context_cache['wp_head'] = Helper::function_wrapper('wp_head');
-			self::$context_cache['wp_footer'] = Helper::function_wrapper('wp_footer');
 			self::$context_cache['body_class'] = implode(' ', get_body_class());
 
 			self::$context_cache['site'] = new Site();
@@ -241,7 +239,13 @@ class Timber {
 			self::$context_cache['theme'] = self::$context_cache['site']->theme;
 
 			self::$context_cache['posts'] = new PostQuery();
-			//self::$context_cache['posts'] = Timber::query_posts();
+
+			/**
+			 * @deprecated as of Timber 1.3.0
+			 * @todo remove in Timber 1.4.*
+			 */
+			self::$context_cache['wp_head'] = Helper::function_wrapper('wp_head');
+			self::$context_cache['wp_footer'] = Helper::function_wrapper('wp_footer');
 			
 			self::$context_cache = apply_filters('timber_context', self::$context_cache);
 			self::$context_cache = apply_filters('timber/context', self::$context_cache);

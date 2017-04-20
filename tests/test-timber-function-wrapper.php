@@ -50,10 +50,20 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 		$this->assertEquals('bar!', trim($str));
 	}
 
-	function testSoloFunction() {
+	function testSoloFunctionUsingWrapper() {
 		new TimberFunctionWrapper('my_boo');
-		$str = Timber::compile_string("{{ my_boo }}");
-		$this->assertEquals('', trim($str));
+		$str = Timber::compile_string("{{ my_boo() }}");
+		$this->assertEquals('bar!', trim($str));
+	}
+
+	function testNakedSoloFunction() {
+		add_filter('timber/twig/functions', function( $twig ) {
+			$twig->addFunction(new \Twig_SimpleFunction('your_boo', array($this, 'your_boo')) );
+			return $twig;
+		});
+		$context = Timber::get_context();
+		$str = Timber::compile_string("{{ your_boo() }}", $context);
+		$this->assertEquals('yourboo', trim($str));
 	}
 
 	/* Sample function to test exception handling */
@@ -66,7 +76,13 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 		}
 	}
 
+	function your_boo() {
+		return 'yourboo';
+	}
+
 }
+
+
 
 function my_boo() {
 	return 'bar!';

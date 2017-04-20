@@ -163,7 +163,7 @@ class Site extends Core implements CoreInterface {
 		$this->title = $this->name;
 		$this->description = get_bloginfo('description');
 		$this->theme = new Theme();
-		$this->language_attributes = Helper::function_wrapper('language_attributes');
+		$this->language_attributes = get_language_attributes();
 		$this->multisite = false;
 	}
 
@@ -180,7 +180,7 @@ class Site extends Core implements CoreInterface {
 		$this->language = get_bloginfo('language');
 		$this->charset = get_bloginfo('charset');
 		$this->pingback = $this->pingback_url = get_bloginfo('pingback_url');
-		$this->language_attributes = Helper::function_wrapper('language_attributes');
+		$this->language_attributes = get_language_attributes();
 	}
 
 	/**

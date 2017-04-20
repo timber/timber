@@ -41,13 +41,14 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
-= 1.3.0
+= 1.3.0 =
 * Default $context object now returns a PostQuery for $context['posts'] this is cool because you can use `{{ posts.pagination }}` in your Twig templates without any further PHP work (thanks @lggorman)
 * Timber\Images with PDFs and other content types now return the file instead of null # (thanks @hoandang)
 * Timber\Comments now support different comment types #1364 (thanks @yantei)
 * Timber\Comments {{ comment.content }} now returns processed comment with `<p>` tags
 * Fix for HTTP error when uploading media files in Windows #1346 (thanks Matias Griese)
 * Fix for image resizing on alternative WP setups (thanks @gillesgoetsch)
+* Exposing a function to global Twig scope through Timber\FunctionWrapper is deprecated, the prefered method to do this is through a Twig template like `{{ function('my_cool_function', 'my_argument') }}` (thanks @gchtr)
 
 = 1.2.4 =
 * Fixed regression from S3 handling #1330 (@gchtr)
