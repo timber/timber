@@ -46,10 +46,7 @@ class FunctionWrapper {
 		 * @deprecated since 1.3.0
 		 * @todo remove in 1.4.0
 		 */
-		// if ( version_compare(\Twig_Environment::VERSION, '2.0.0', '<') ) {
-			add_filter('timber/twig', array(&$this, 'add_to_twig'));
-		//}
-
+		add_filter('timber/twig', array(&$this, 'add_to_twig'));
 	}
 
 	/**		
@@ -59,12 +56,7 @@ class FunctionWrapper {
 	 * @param Twig_Environment $twig		
 	 * @return Twig_Environment		
 	 */		
-	public function add_to_twig( $twig ) {		
-		// if ( $twig->getFunction($this->_function) ) {
-		// 	// bail if function is already present
-		// 	return $twig;
-		// }
-
+	public function add_to_twig( $twig ) {
 		$wrapper = $this;		
 		$twig->addFunction(new \Twig_SimpleFunction($this->_function, function() use ($wrapper) {		
 			return call_user_func_array(array($wrapper, 'call'), func_get_args());		
