@@ -56,6 +56,17 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 		$this->assertEquals('', trim($str));
 	}
 
+	function testNakedSoloFunction() {
+		add_filter('timber/twig', function($twig) {
+			$twig->addFunction(new \Twig_SimpleFunction('your_boo', function() {		
+				return your_boo();		
+ 			} ));	
+			return $twig;
+		});
+		$str = Timber::compile_string("{{ your_boo }}");
+		$this->assertEquals('yourboo', trim($str));
+	}
+
 	/* Sample function to test exception handling */
 
 	static function isNum($num) {
@@ -66,6 +77,10 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 		}
 	}
 
+}
+
+function your_boo() {
+	return 'yourboo';
 }
 
 function my_boo() {
