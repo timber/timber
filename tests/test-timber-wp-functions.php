@@ -1,6 +1,9 @@
 <?php
 
-	class TestTimberWPFunctions extends Timber_UnitTestCase {
+use Timber\FunctionWrapper;
+use Timber\Helper;
+
+class TestTimberWPFunctions extends Timber_UnitTestCase {
 
 		function testFunctionFire(){
 			$str = '{{function("my_test_function")}}';
@@ -12,13 +15,13 @@
 			global $wp_scripts;
 			$wp_scripts = null;
 			wp_enqueue_script( 'jquery', false, array(), false, true );
-			$fw1 = TimberHelper::function_wrapper('wp_footer', array(), true);
-			$fw2 = TimberHelper::function_wrapper('wp_footer', array(), true);
+			$fw1 = new FunctionWrapper('wp_footer', array(), true);
+			$fw2 = new FunctionWrapper('wp_footer', array(), true);
 			$this->assertGreaterThan(50, strlen($fw1->call()));
 			//this is bunk because footer scripts will only print once
 			$this->assertEquals(0, strlen($fw2->call()));
 			wp_dequeue_script('jquery');
-			$wp_footer_output1 = TimberHelper::function_wrapper('wp_footer', array(), true);
+			$wp_footer_output1 = new FunctionWrapper('wp_footer', array(), true);
 			$this->assertEquals(0, strlen($wp_footer_output1));
 		}
 
@@ -26,7 +29,7 @@
 			global $wp_scripts;
 			$wp_scripts = null;
 			wp_enqueue_script( 'jquery', false, array(), false, true );
-			$fw1 = TimberHelper::function_wrapper('wp_footer', array(), true);
+			$fw1 = new FunctionWrapper('wp_footer', array(), true);
 			$this->assertGreaterThan(50, strlen($fw1->call()));
 		}
 
@@ -34,8 +37,8 @@
 			add_action('jared_action', function(){
 				echo 'bar';
 			});
-			$fw1 = TimberHelper::function_wrapper('do_jared_action', array(), true);
-			$fw2 = TimberHelper::function_wrapper('do_jared_action', array(), true);
+			$fw1 = new FunctionWrapper('do_jared_action', array(), true);
+			$fw2 = new FunctionWrapper('do_jared_action', array(), true);
 			$this->assertEquals($fw1->call(), $fw2->call());
 			$this->assertEquals('bar', $fw1->call());
 		}
@@ -44,8 +47,8 @@
 			global $wp_scripts;
 			$wp_scripts = null;
 			add_action('wp_footer', 'echo_junk');
-			$fw1 = TimberHelper::function_wrapper('wp_footer', array(), true);
-			$fw2 = TimberHelper::function_wrapper('wp_footer', array(), true);
+			$fw1 = new FunctionWrapper('wp_footer', array(), true);
+			$fw2 = new FunctionWrapper('wp_footer', array(), true);
 			$this->assertEquals($fw1->call(), $fw2->call());
 			$this->stringContains('foo', $fw2->call());
 			remove_action('wp_footer', 'echo_junk');
@@ -72,7 +75,7 @@
 			$wp_scripts = null;
 			wp_enqueue_script( 'colorpicker', false, array(), false, true);
 			wp_enqueue_script( 'fake-js', 'http://example.org/fake-js.js', array(), false, true );
-			$wp_footer = TimberHelper::ob_function('wp_footer');
+			$wp_footer = Helper::ob_function('wp_footer');
 			global $wp_scripts;
 			$wp_scripts = null;
 			wp_enqueue_script( 'colorpicker', false, array(), false, true);
