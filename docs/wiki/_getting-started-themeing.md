@@ -123,6 +123,7 @@ $context = Timber::get_context();
 $context['posts'] = Timber::get_posts();
 Timber::render('index.twig', $context);
 ```
+
 This is where we are going to handle the logic that powers our index file. Let's go step-by-step.
 
 #### Get the starter
@@ -132,7 +133,7 @@ This is where we are going to handle the logic that powers our index file. Let's
 $context = Timber::get_context();
 ```
 
-This is going to return an object with a lot of the common things we need across the site. Things like your nav, wp_head and wp_footer you'll want to start with each time (even if you over-write them later). You can do a ```print_r($context);``` to see what's inside or open-up **timber.php** to inspect for yourself
+This is going to return an object with a lot of the common things we need across the site. Things like the site name, the description or the navigation menu you'll want to start with each time (even if you over-write them later). You can do a ```print_r( $context );``` to see what’s inside or open-up [**Timber.php**](https://github.com/timber/timber/blob/master/lib/Timber.php) to inspect for yourself.
 
 #### Grab your posts
 
