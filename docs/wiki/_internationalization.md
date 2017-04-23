@@ -47,7 +47,7 @@ You can use sprintf-type placeholders, using the `format` filter:
 <p class="entry-meta">{{ __('Posted on %s', 'my-text-domain')|format(posted_on_date) }}</p>
 ```
 
-If you want to use the `sprintf` function in Twig, you have to add it yourself using [`function_wrapper`](http://timber.github.io/timber/#function_wrapper).
+If you want to use the `sprintf` function in Twig, you have to [add it yourself](http://timber.github.io/timber/#make-functions-available-in-twig).
 
 ## Generating localization files
 
