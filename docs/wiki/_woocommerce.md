@@ -17,7 +17,7 @@ $context['sidebar'] = Timber::get_widgets('shop-sidebar');
 if (is_singular('product')) {
 
     $context['post']    = Timber::get_post();
-    $product            = get_product( $context['post']->ID );
+    $product            = wc_get_product( $context['post']->ID );
     $context['product'] = $product;
 
     Timber::render('views/woo/single-product.twig', $context);
@@ -162,7 +162,7 @@ For some reason products in the loop don't get the right context by default. Thi
 function timber_set_product( $post ) {
     global $product;
     if ( is_woocommerce() ) {
-        $product = get_product($post->ID);
+        $product = wc_get_product($post->ID);
     }
 }
 ```

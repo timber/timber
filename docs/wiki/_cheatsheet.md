@@ -1,11 +1,11 @@
 # Cheatsheet
 
-Here are some helpful conversions for functions you're probably well familiar with in WordPress and their Timber equivalents. These assume a PHP file with the `Timber::get_context();` function at the top. For example:
+Here are some helpful conversions for functions you’re probably well familiar with in WordPress and their Timber equivalents. These assume a PHP file with the `Timber::get_context();` function at the top. For example:
 
 ```php
 $context = Timber::get_context();
 $context['post'] = new TimberPost();
-Timber::render('single.twig', $context);
+Timber::render( 'single.twig', $context );
 ```
 
 ## Blog Info
@@ -34,8 +34,3 @@ Timber::render('single.twig', $context);
 * `get_stylesheet_directory()` => `{{ theme.path }}`
 
 In WordPress parlance, stylesheet_directory = child theme, template directory = parent theme. Both WP and Timber functions safely return the current theme info if there's no parent/child going on.
-
-
-## wp_functions
-* `wp_footer()` => `{{ wp_footer }}`
-* `wp_head()` => `{{ wp_head }}`
