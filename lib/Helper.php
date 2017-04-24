@@ -172,13 +172,17 @@ class Helper {
 	}
 
 	/**
-	 * @param mixed $function_name or array( $class( string|object ), $function_name )
-	 * @param array (optional) $defaults
-	 * @param bool (optional) $return_output_buffer Return function output instead of return value (default: false)
-	 * @return Timber\FunctionWrapper|mixed
+	 * @deprecated since 1.3.0
+	 *
+	 * @param mixed $function_name        String or array( $class( string|object ), $function_name ).
+	 * @param array $defaults             Optional.
+	 * @param bool  $return_output_buffer Optional. Return function output instead of return value. Default false.
+	 * @return FunctionWrapper|mixed
 	 */
 	public static function function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false ) {
-		return new FunctionWrapper($function_name, $defaults, $return_output_buffer);
+		Helper::warn( 'function_wrapper is deprecated and will be removed in 1.4. Use {{ function( \'function_to_call\' ) }} instead or use FunctionWrapper directly. For more information refer to http://timber.github.io/timber/#functions' );
+
+		return new FunctionWrapper( $function_name, $defaults, $return_output_buffer );
 	}
 
 	/**
@@ -205,7 +209,7 @@ class Helper {
 	public static function warn( $message ) {
 		return trigger_error($message, E_USER_WARNING);
 	}
-	
+
 	/**
 	 *
 	 *
@@ -338,7 +342,7 @@ class Helper {
 				}
 			}
 			return false;
-		} 
+		}
 		throw new \InvalidArgumentException('$array is not an array, got:');
 		Helper::error_log($array);
 	}

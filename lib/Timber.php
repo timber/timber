@@ -244,9 +244,9 @@ class Timber {
 			 * @deprecated as of Timber 1.3.0
 			 * @todo remove in Timber 1.4.*
 			 */
-			self::$context_cache['wp_head'] = Helper::function_wrapper('wp_head');
-			self::$context_cache['wp_footer'] = Helper::function_wrapper('wp_footer');
-			
+			self::$context_cache['wp_head'] = new FunctionWrapper( 'wp_head' );
+			self::$context_cache['wp_footer'] = new FunctionWrapper( 'wp_footer' );
+
 			self::$context_cache = apply_filters('timber_context', self::$context_cache);
 			self::$context_cache = apply_filters('timber/context', self::$context_cache);
 		}
@@ -399,12 +399,15 @@ class Timber {
 
 	/**
 	 * Get widgets.
+	 *
 	 * @api
-	 * @param int     $widget_id
-	 * @return TimberFunctionWrapper
+	 * @param int|string $widget_id Optional. Index, name or ID of dynamic sidebar. Default 1.
+	 * @return FunctionWrapper
 	 */
 	public static function get_widgets( $widget_id ) {
-		return trim(Helper::function_wrapper('dynamic_sidebar', array($widget_id), true));
+		$output = new FunctionWrapper( 'dynamic_sidebar', array( $widget_id ), true );
+
+		return trim( $output );
 	}
 
 	/*  Pagination
