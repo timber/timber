@@ -22,7 +22,10 @@
 			$this->assertEquals($arch, \Timber\ImageHelper::get_server_location($arch));
 		}
 
-		function testWeirdImageLocations_PR1343() {
+		/**
+     * @dataProvider customDirectoryData
+     */
+		function testCustomWordPressDirectoryStructure($template, $size) {
 			$this->setupCustomWPDirectoryStructure();
 
 			$upload_dir = wp_upload_dir();
@@ -40,9 +43,9 @@
 			add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 			$data = array();
 			$data['post'] = new TimberPost( $post_id );
-			$data['size'] = array( 'width' => 100, 'height' => 50 );
+			$data['size'] = $size;
 			$data['crop'] = 'default';
-			Timber::compile( 'assets/thumb-test.twig', $data );
+			Timber::compile( $template, $data );
 
 			$this->tearDownCustomWPDirectoryStructure();
 
@@ -63,6 +66,18 @@
 			$this->assertTrue (TestTimberImage::checkSize($location_of_image, 500, 500));
 			//whats the bg/color of the image
 			$this->assertTrue( TestTimberImage::checkPixel($location_of_image, 1, 1, "#CCC") );
+		}
+
+		function customDirectoryData() {
+			return [
+				[
+					'assets/thumb-test.twig',
+					['width' => 100, 'height' => 50]
+				], [
+					'assets/thumb-test-relative.twig',
+					['width' => 50, 'height' => 100]
+				]
+			];
 		}
 
 	}
