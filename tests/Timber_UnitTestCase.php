@@ -41,4 +41,36 @@
 			flush_rewrite_rules( true );
 		}
 
+		function setupCustomWPDirectoryStructure() {
+			add_filter('content_url', [$this, 'setContentUrl']);
+			add_filter('option_upload_path', [$this, 'setUploadPath']);
+			add_filter('option_upload_url_path', [$this, 'setUploadUrlPath']);
+			add_filter('option_siteurl', [$this, 'setSiteUrl']);
+			add_filter('option_home_url', [$this, 'setHomeUrl']);
+		}
+
+		function tearDownCustomWPDirectoryStructure() {
+			remove_filter('content_url', [$this, 'setContentUrl']);
+			remove_filter('option_upload_path', [$this, 'setUploadPath']);
+			remove_filter('option_upload_url_path', [$this, 'setUploadUrlPath']);
+			remove_filter('option_siteurl', [$this, 'setSiteUrl']);
+			remove_filter('option_home_url', [$this, 'setHomeUrl']);
+		}
+
+		function setContentUrl($url) {
+			return 'http://' . $_SERVER['HTTP_HOST'] . '/content';
+		}
+
+		function setUploadPath($dir) {
+			return ABSPATH . 'content/uploads';
+		}
+
+		function setUploadUrlPath($dir) {
+			return 'http://' . $_SERVER['HTTP_HOST'] . '/content/uploads';
+		}
+
+		function setSiteUrl($url) {
+			return 'http://' . $_SERVER['HTTP_HOST'] . '/wp';
+		}
+
 	}

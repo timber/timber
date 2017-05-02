@@ -23,19 +23,7 @@
 		}
 
 		function testWeirdImageLocations_PR1343() {
-			$old_WP_CONTENT_URL = WP_CONTENT_URL;
-			$old_WP_CONTENT_DIR = WP_CONTENT_DIR;
-
-			if ( version_compare(phpversion(), '7.0', '>=') ) {
-				$this->markTestSkipped('Updates to constants cant be tested in PHP7');
-				return;
-			}
-
-			runkit_constant_redefine("WP_CONTENT_URL", 'http://' . $_SERVER['HTTP_HOST'] . '/content');
-			runkit_constant_redefine("WP_CONTENT_DIR", $_SERVER['DOCUMENT_ROOT'] . '/content');
-
-			define('WP_SITEURL', 'http://example.org/wp/');
-			define('WP_HOME', 'http://example.org/');
+			$this->setupCustomWPDirectoryStructure();
 
 			$upload_dir = wp_upload_dir();
 			$post_id = $this->factory->post->create();
@@ -55,20 +43,14 @@
 			$data['size'] = array( 'width' => 100, 'height' => 50 );
 			$data['crop'] = 'default';
 			Timber::compile( 'assets/thumb-test.twig', $data );
+
+			$this->tearDownCustomWPDirectoryStructure();
+
 			$exists = file_exists( $filename );
 			$this->assertTrue( $exists );
 			$resized_path = $upload_dir['path'].'/flag-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.png';
 			$exists = file_exists( $resized_path );
 			$this->assertTrue( $exists );
-
-
-			runkit_constant_redefine("WP_CONTENT_URL", $old_WP_CONTENT_URL);
-			runkit_constant_redefine("WP_CONTENT_DIR", $old_WP_CONTENT_DIR);
-
-			runkit_constant_redefine("WP_SITEURL", 'http://example.org/');
-
-
-	
 		}
 
 		function testLetterbox() {
