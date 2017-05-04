@@ -127,8 +127,8 @@ class Image extends Post implements CoreInterface {
 		if ( isset($this->_dimensions) ) {
 			return $this->get_dimensions_loaded($dim);
 		}
-		if ( file_exists($this->file_loc) && filesize($this->file_loc) ) {
-			list($width, $height) = getimagesize($this->file_loc);
+		if ( file_exists($this->location()) && filesize($this->location()) ) {
+			list($width, $height) = getimagesize($this->location());
 			$this->_dimensions = array();
 			$this->_dimensions[0] = $width;
 			$this->_dimensions[1] = $height;
@@ -395,6 +395,12 @@ class Image extends Post implements CoreInterface {
 			return $this->abs_url;
 		}
 		return get_permalink($this->ID);
+	}
+
+	protected function location() {
+		$basedir = self::wp_upload_dir();
+		$basedir = $basedir['basedir'];
+		return $basedir.DIRECTORY_SEPARATOR.$this->file;
 	}
 
 	/**
