@@ -62,7 +62,7 @@
 		}
 
 		function setUploadPath($dir) {
-			return ABSPATH . 'content/uploads';
+			return $_SERVER['DOCUMENT_ROOT'] .'content/uploads';
 		}
 
 		function setUploadUrlPath($dir) {

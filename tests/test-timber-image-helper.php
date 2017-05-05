@@ -23,8 +23,8 @@
 		}
 
 		/**
-     * @dataProvider customDirectoryData
-     */
+     	 * @dataProvider customDirectoryData
+     	 */
 		function testCustomWordPressDirectoryStructure($template, $size) {
 			$this->setupCustomWPDirectoryStructure();
 
