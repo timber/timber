@@ -28,6 +28,22 @@ class URLHelper {
 		return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
     }
 
+    /**
+     * 
+     * Check to see if the URL begins with the string in question
+     * Because it's a URL we don't care about protocol (HTTP vs HTTPS)
+     * Or case (so it's cAsE iNsEnSeTiVe)
+     * @return boolean
+     */
+    public static function starts_with( $haystack, $starts_with ) {
+    	$haystack = str_replace('https', 'http', strtolower($haystack));
+    	$starts_with = str_replace('https', 'http', strtolower($starts_with));
+    	if ( 0 === strpos($haystack, $starts_with) ) {
+            return true;
+        }
+        return false;
+    }
+
 
 	/**
 	 *
