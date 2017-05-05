@@ -18,10 +18,6 @@ matrix:
           env: WP_VERSION=4.6 WP_MULTISITE=0
 
 before_script:
-    ## Runkit
-    - pecl install runkit
-    - if [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then git clone --depth=1 git://github.com/runkit7/runkit7.git runkit; cd runkit; phpize; ./configure; make; make install; cd ../; phpenv config-add tests/travis.php.ini; fi
-    ## Other setup
     - if [ "$TRAVIS_PHP_VERSION" == 5.5 ] || [ "$TRAVIS_PHP_VERSION" == 5.4 ] || [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then autodetect | pecl install imagick; fi
     - if [ "$TRAVIS_PHP_VERSION" == 5.3 ]; then autodetect | pecl install imagick-3.0.1; fi
     - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
