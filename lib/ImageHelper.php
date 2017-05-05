@@ -365,13 +365,8 @@ class ImageHelper {
 				$tmp = str_replace(WP_CONTENT_DIR, '', $tmp);
 			}
 		} else {
-			// if upload dir does not contain site_url, the content-directory seems to be outside of the site_url
-			// therefore using site_url() would lead to a wrong content/ path
-			if ( false === strpos($upload_dir['baseurl'], site_url()) ) {
-				// use HOME_URL and relative image path
-				$tmp = get_home_url().$tmp;
-			} else if ( !$result['absolute'] ) {
-				$tmp = site_url().$tmp;
+			if ( !$result['absolute'] ) {
+				$tmp = untrailingslashit(network_home_url()).$tmp;
 			}
 			if ( TextHelper::starts_with($tmp, $upload_dir['baseurl']) ) {
 				$result['base'] = self::BASE_UPLOADS; // upload based
@@ -468,7 +463,7 @@ class ImageHelper {
 			$subdir = URLHelper::url_to_file_system($subdir);
 		}
 		$subdir = self::maybe_realpath($subdir);
-		
+
 		$path = '';
 		if ( self::BASE_UPLOADS == $base ) {
 			//it is in the Uploads directory
@@ -535,7 +530,7 @@ class ImageHelper {
 			$au['subdir'],
 			$au['basename']
 		);
-		
+
 		$new_url = apply_filters('timber/image/new_url', $new_url);
 		$destination_path = apply_filters('timber/image/new_path', $destination_path);
 		// if already exists...
