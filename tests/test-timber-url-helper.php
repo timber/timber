@@ -5,6 +5,30 @@
 		private $mockUploadDir = false;
 
 
+        function testStartsWith() {
+            $haystack = 'http://nytimes.com/news/reports/2017';
+            $starts_with = 'http://nytimes.com/news';
+            $nope = 'http://bostonglobe.com';
+            $this->assertTrue(Timber\URLHelper::starts_with($haystack, $starts_with));
+            $this->assertFalse(Timber\URLHelper::starts_with($haystack, $nope));
+        }
+
+        function testStartsWithHTTPs() {
+            $haystack = 'http://nytimes.com/news/reports/2017';
+            $starts_with = 'https://nytimes.com/news';
+            $nope = 'http://bostonglobe.com';
+            $this->assertTrue(Timber\URLHelper::starts_with($haystack, $starts_with));
+            $this->assertFalse(Timber\URLHelper::starts_with($haystack, $nope));
+        }
+
+        function testStartsWithHTTPsFlip() {
+            $haystack = 'https://nytimes.com/news/reports/2017';
+            $starts_with = 'http://nytimes.com/news';
+            $nope = 'http://bostonglobe.com';
+            $this->assertTrue(Timber\URLHelper::starts_with($haystack, $starts_with));
+            $this->assertFalse(Timber\URLHelper::starts_with($haystack, $nope));
+        }
+
         function testURLToFileSystem() {
             $url = 'http://example.org/wp-content/uploads/2012/06/mypic.jpg';
             $file = TimberURLHelper::url_to_file_system($url);
