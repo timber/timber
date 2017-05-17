@@ -38,7 +38,7 @@ class FunctionWrapper {
 			if ( (is_string($function[0]) && class_exists($function[0])) || gettype($function[0]) === 'object' ) {
 				$this->_class = $function[0];
 			}
-			
+
 			if ( is_string($function[1]) ) {
 				$this->_function = $function[1];
 			}
@@ -56,20 +56,30 @@ class FunctionWrapper {
 		add_filter('timber/twig', array(&$this, 'add_to_twig'));
 	}
 
-	/**		
-	 *		
+	/**
+	 * Make function available in Twig.
+	 *
+	 * When a function is added more than once, addFunction() will throw a LogicException that states that the function
+	 * is already registered. By catching this exception, we can prevent a fatal error.
+	 * @see Twig_Extension_Staging::addFunction()
+	 *
 	 * @deprecated since 1.3.0
-	 * @todo remove in 1.4.0	
-	 * @param Twig_Environment $twig		
-	 * @return Twig_Environment		
-	 */		
+	 * @todo remove in 1.4.0
+	 * @param \Twig_Environment $twig
+	 * @return \Twig_Environment
+	 */
 	public function add_to_twig( $twig ) {
-		$wrapper = $this;		
-		$twig->addFunction(new \Twig_SimpleFunction($this->_function, function() use ($wrapper) {		
-			return call_user_func_array(array($wrapper, 'call'), func_get_args());		
- 		} ));		
-		
-		return $twig;		
+		$wrapper = $this;
+
+		try {
+			$twig->addFunction( new \Twig_SimpleFunction( $this->_function, function() use ( $wrapper ) {
+				return call_user_func_array( array( $wrapper, 'call' ), func_get_args() );
+			} ) );
+
+		// Use empty 'catch' block and not 'finally', because finally needs PHP 5.5 to work.
+		} catch ( \Exception $e ) {}
+
+		return $twig;
 	}
 
 	/**
