@@ -534,7 +534,7 @@ class ImageHelper {
 		$new_url = apply_filters('timber/image/new_url', $new_url);
 		$destination_path = apply_filters('timber/image/new_path', $destination_path);
 		// if already exists...
-		if ( file_exists($destination_path) ) {
+		if ( file_exists($source_path) && file_exists($destination_path) ) {
 			if ( $force || filemtime($source_path) > filemtime($destination_path) ) {
 				// Force operation - warning: will regenerate the image on every pageload, use for testing purposes only!
 				unlink($destination_path);
