@@ -8,9 +8,9 @@ use Timber\QueryIterator;
 class PostGetter {
 
 	/**
-	 * @param mixed $query
+	 * @param mixed        $query
 	 * @param string|array $PostClass
-	 * @return array|bool|null
+	 * @return \Timber\Post|bool
 	 */
 	public static function get_post( $query = false, $PostClass = '\Timber\Post' ) {
 		// if a post id is passed, grab the post directly
@@ -26,9 +26,12 @@ class PostGetter {
 		}
 
 		$posts = self::get_posts($query, $PostClass);
+
 		if ( $post = reset($posts) ) {
 			return $post;
 		}
+
+		return false;
 	}
 
 	public static function get_posts( $query = false, $PostClass = '\Timber\Post', $return_collection = false ) {
