@@ -41,7 +41,7 @@ class ToJpg extends ImageOperation {
 	 */
 	public function run( $load_filename, $save_filename ) {
 
-		if (!file_exists($load_filename)) {
+		if ( !file_exists($load_filename) ) {
 			return false;
 		}
 
@@ -53,7 +53,7 @@ class ToJpg extends ImageOperation {
 		$ext = str_replace('jpg', 'jpeg', $ext);
 
 		$imagecreate_function = 'imagecreatefrom' . $ext;
-		if (!function_exists( $imagecreate_function )) {
+		if ( !function_exists($imagecreate_function) ) {
 			return false;
 		}
 
