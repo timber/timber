@@ -4,7 +4,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testBlankMenu() {
 		self::setPermalinkStructure();
-		$this->_createTestMenu();
+		self::_createTestMenu();
 		$menu = new TimberMenu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
@@ -39,7 +39,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$page_menu = new TimberMenu();
 		$this->assertEquals( 2, count( $page_menu->items ) );
 		$this->assertEquals( 'Bar Page', $page_menu->items[0]->title() );
-		$this->_createTestMenu();
+		self::_createTestMenu();
 		//make sure other menus are still more powerful
 		$menu = new TimberMenu();
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
@@ -64,7 +64,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$page_menu = new TimberMenu();
 		$this->assertEquals( 2, count( $page_menu->items ) );
 		$this->assertEquals( 'Bar Page', $page_menu->items[0]->title() );
-		$this->_createTestMenu();
+		self::_createTestMenu();
 		//make sure other menus are still more powerful
 		$menu = new TimberMenu(false);
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
@@ -83,7 +83,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	function testMenuTwig() {
 		self::setPermalinkStructure();
 		$context = Timber::get_context();
-		$this->_createTestMenu();
+		self::_createTestMenu();
 		$this->go_to( home_url( '/child-page' ) );
 		$context['menu'] = new TimberMenu();
 		$str = Timber::compile( 'assets/child-menu.twig', $context );
@@ -94,7 +94,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testMenuTwigWithClasses() {
 		self::setPermalinkStructure();
-		$this->_createTestMenu();
+		self::_createTestMenu();
 		$this->go_to( home_url( '/home' ) );
 		$context = Timber::get_context();
 		$context['menu'] = new TimberMenu();
@@ -108,7 +108,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testMenuItemLink() {
 		self::setPermalinkStructure();
-		$this->_createTestMenu();
+		self::_createTestMenu();
 		$menu = new TimberMenu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
@@ -121,7 +121,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuMeta() {
-		$this->_createTestMenu();
+		self::_createTestMenu();
 		$menu = new TimberMenu();
 		$items = $menu->get_items();
 		$item = $items[0];
@@ -130,7 +130,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuItemWithHash() {
-		$this->_createTestMenu();
+		self::_createTestMenu();
 		$menu = new TimberMenu();
 		$items = $menu->get_items();
 		$item = $items[3];
@@ -141,7 +141,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuHome() {
-		$this->_createTestMenu();
+		self::_createTestMenu();
 		$menu = new TimberMenu();
 		$items = $menu->get_items();
 		$item = $items[2];
@@ -154,7 +154,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		//$this->assertEquals('/', $item->path() );
 	}
 
-	function buildMenu($name, $items) {
+	public static function buildMenu($name, $items) {
 		$menu_term = wp_insert_term( $name, 'nav_menu' );
 		$menu_items = array();
 		$i = 0;
@@ -170,11 +170,11 @@ class TestTimberMenu extends Timber_UnitTestCase {
 			}
 			$i++;
 		}
-		$this->insertIntoMenu($menu_term['term_id'], $menu_items);
+		self::insertIntoMenu($menu_term['term_id'], $menu_items);
 		return $menu_term;
 	}
 
-	function _createSimpleMenu( $name = 'My Menu' ) {
+	public static function _createSimpleMenu( $name = 'My Menu' ) {
 		$menu_term = wp_insert_term( $name, 'nav_menu' );
 		$menu_items = array();
 		$parent_page = wp_insert_post(
@@ -198,11 +198,25 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $parent_id, '_menu_item_url', '' );
 		update_post_meta( $parent_id, 'flood', 'molasses' );
 		$menu_items[] = $parent_id;
-		$this->insertIntoMenu($menu_term['term_id'], $menu_items);
+		self::insertIntoMenu($menu_term['term_id'], $menu_items);
 		return $menu_term;
 	}
 
-	function _createTestMenu() {
+	function testWPMLMenu() {
+		self::setPermalinkStructure();
+		self::_createTestMenu();
+		$menu = new TimberMenu();
+		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
+		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
+		$items = $menu->get_items();
+		$item = $items[0];
+		$this->assertEquals( 'home', $item->slug() );
+		$this->assertFalse( $item->is_external() );
+		$this->assertEquals( 'http://example.org/home/', $item->link() );
+		$this->assertEquals( '/home/', $item->path() );
+	}
+
+	public static function _createTestMenu() {
 		$menu_term = wp_insert_term( 'Menu One', 'nav_menu' );
 		$menu_id = $menu_term['term_id'];
 		$menu_items = array();
@@ -348,11 +362,11 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $link_id, '_menu_item_xfn', '' );
 		update_post_meta( $link_id, '_menu_item_menu_item_parent', 0 );
 
-		$this->insertIntoMenu($menu_id, $menu_items);
+		self::insertIntoMenu($menu_id, $menu_items);
 		return $menu_term;
 	}
 
-	function insertIntoMenu($menu_id, $menu_items) {
+	static function insertIntoMenu($menu_id, $menu_items) {
 		global $wpdb;
 		foreach ( $menu_items as $object_id ) {
 			$query = "INSERT INTO $wpdb->term_relationships (object_id, term_taxonomy_id, term_order) VALUES ($object_id, $menu_id, 0);";
@@ -393,7 +407,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 				'rewrite' => array( 'slug' => 'gallery' ),
 			)
 		);
-		$menu = $this->_createTestMenu();
+		$menu = self::_createTestMenu();
 		$menu_item_id = wp_insert_post( array(
 				'post_title' => 'Gallery',
 				'post_name' => 'gallery',
@@ -416,7 +430,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuLevels() {
-		$this->_createTestMenu();
+		self::_createTestMenu();
 		$menu = new TimberMenu();
 		$parent = $menu->items[0];
 		$this->assertEquals(0, $parent->level);
@@ -428,7 +442,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuLevelsChildren() {
-		$this->_createTestMenu();
+		self::_createTestMenu();
 		$menu = new TimberMenu();
 		$parent = $menu->items[0];
 		$this->assertEquals(0, $parent->level);
@@ -445,7 +459,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuName() {
-		$this->_createTestMenu();
+		self::_createTestMenu();
 		$menu = new TimberMenu();
 		$str = Timber::compile_string('{{menu.items[0].title}}', array('menu' => $menu));
 		$this->assertEquals('Home', $str);
