@@ -120,11 +120,14 @@ class Timber {
 	================================ */
 
 	/**
-	 * Get post.
+	 * Get a post by post ID or query (as a query string or an array of arguments).
+	 *
 	 * @api
-	 * @param mixed   $query
-	 * @param string|array  $PostClass
-	 * @return array|bool|null
+	 * @param mixed        $query     Optional. Post ID or query (as query string or an array of arguments for
+	 *                                WP_Query). If a query is provided, only the first post of the result will be
+	 *                                returned. Default false.
+	 * @param string|array $PostClass Optional. Class to use to wrap the returned post object. Default 'Timber\Post'.
+	 * @return \Timber\Post|bool Timber\Post object if a post was found, false if no post was found.
 	 */
 	public static function get_post( $query = false, $PostClass = 'Timber\Post' ) {
 		return PostGetter::get_post($query, $PostClass);
