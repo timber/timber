@@ -151,6 +151,10 @@ class Menu extends Core {
 		}
 		if ( isset($locations[$slug]) ) {
 			$menu_id = $locations[$slug];
+			if ( function_exists('wpml_object_id_filter') ) {
+				$menu_id = wpml_object_id_filter($locations[$slug], 'nav_menu');
+			}
+			
 			return $menu_id;
 		}
 	}
