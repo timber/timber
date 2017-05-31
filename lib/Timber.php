@@ -405,12 +405,10 @@ class Timber {
 	 *
 	 * @api
 	 * @param int|string $widget_id Optional. Index, name or ID of dynamic sidebar. Default 1.
-	 * @return FunctionWrapper
+	 * @return string
 	 */
 	public static function get_widgets( $widget_id ) {
-		$output = new FunctionWrapper( 'dynamic_sidebar', array( $widget_id ), true );
-
-		return trim( $output );
+		return trim( Helper::ob_function( 'dynamic_sidebar', array( $widget_id ) ) );
 	}
 
 	/*  Pagination
