@@ -22,6 +22,25 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		$this->assertEquals( 'foobar', $str );
 	}
 
+	function testWPPostConvert() {
+		$pid = $this->factory->post->create();
+		$wp_post = get_post( $pid );
+		$post = new Post();
+		$timber_post = $post->convert( $wp_post );
+		$this->assertTrue( $timber_post instanceof TimberPost );
+	}
+	function testWPPostArrayConvert() {
+		$pid_1 = $this->factory->post->create();
+		$pid_2 = $this->factory->post->create();
+		$wp_post_1 = get_post( $pid_1 );
+		$wp_post_2 = get_post( $pid_2 );
+		$post = new Post();
+		$timber_posts = $post->convert( [ $wp_post_1, $wp_post_2 ] );
+		foreach ( $timber_posts as $timber_post ) {
+			$this->assertTrue( $timber_post instanceof TimberPost );	
+		}
+	}
+
 	function testACFHasFieldPostFalse() {
 		$pid = $this->factory->post->create();
 		$str = '{% if post.has_field("heythisdoesntexist") %}FAILED{% else %}WORKS{% endif %}';
