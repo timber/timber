@@ -26,7 +26,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		$pid = $this->factory->post->create();
 		$wp_post = get_post( $pid );
 		$post = new TimberPost();
-		$timber_post = $post->convert( $wp_post );
+		$timber_post = $post->convert( $wp_post, 'TimberPost' );
 		$this->assertTrue( $timber_post instanceof TimberPost );
 	}
 
