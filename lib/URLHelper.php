@@ -114,7 +114,7 @@ class URLHelper {
 		if ( isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] ) {
 			return $_SERVER['HTTP_HOST'];
 		}
-		if ( isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME']) {
+		if ( isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] ) {
 			return $_SERVER['SERVER_NAME'];
 		}
 		return '';
@@ -210,6 +210,9 @@ class URLHelper {
 		if ( strstr($url, 'http:') && !strstr($url, 'http://') ) {
 			$url = str_replace('http:/', 'http://', $url);
 		}
+		if ( strstr($url, 'https:') && !strstr($url, 'https://') ) {
+			$url = str_replace('https:/', 'https://', $url);
+		}
 		return $url;
 	}
 
@@ -223,7 +226,14 @@ class URLHelper {
 	public static function prepend_to_url( $url, $path ) {
 		if ( strstr(strtolower($url), 'http') ) {
 			$url_parts = parse_url($url);
-			$url = $url_parts['scheme'].'://'.$url_parts['host'].$path;
+			$url = $url_parts['scheme'].'://'.$url_parts['host'];
+
+			if ( isset($url_parts['port']) ) {
+				$url .= ':'.$url_parts['port'];
+			}
+
+			$url .= $path;
+
 			if ( isset($url_parts['path']) ) {
 				$url .= $url_parts['path'];
 			}
@@ -346,10 +356,10 @@ class URLHelper {
 			return $link;
 		}
 		
-		if( isset($link_parts['path']) && $link_parts['path'] != '/' ) {
-			$new_path = user_trailingslashit( $link_parts['path'] );
+		if ( isset($link_parts['path']) && $link_parts['path'] != '/' ) {
+			$new_path = user_trailingslashit($link_parts['path']);
 			
-			if ( $new_path != $link_parts['path'] )	{
+			if ( $new_path != $link_parts['path'] ) {
 				$link = str_replace($link_parts['path'], $new_path, $link);
 			}
 		}
