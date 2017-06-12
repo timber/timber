@@ -31,6 +31,7 @@ class ImageHelper {
 	public static function init() {
 		self::add_actions();
 		self::add_filters();
+		return true;
 	}
 
 	/**

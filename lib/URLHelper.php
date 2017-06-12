@@ -173,14 +173,14 @@ class URLHelper {
 	}
 
 	/**
-	 * Get the path to the content directory relative to the site
+	 * Get the path to the content directory relative to the site.
+	 * This replaces the WP_CONTENT_SUBDIR constant
 	 * @return string (ex: /wp-content or /content)
 	 */
 	public static function get_content_subdir() {
 		$home_url = get_home_url();
 		$home_url = apply_filters('timber/URLHelper/get_content_subdir/home_url', $home_url);
 		$wp_content_path = str_replace($home_url, '', WP_CONTENT_URL);
-		echo '$wp_content_path='.$wp_content_path;
 		return $wp_content_path;
 	} 
 
