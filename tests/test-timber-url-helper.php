@@ -53,6 +53,11 @@
             remove_filter('home_url', array($this, 'addWPMLHomeFilter'));
         }
 
+        function testContentSubDirectory() {
+            $subdir = Timber\URLHelper::get_content_subdir();
+            $this->assertEquals('/wp-content', $subdir);
+        }
+
         function testURLToFileSystem() {
             $url = 'http://example.org/wp-content/uploads/2012/06/mypic.jpg';
             $file = TimberURLHelper::url_to_file_system($url);
