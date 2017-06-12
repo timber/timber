@@ -114,7 +114,7 @@ class URLHelper {
 		if ( isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] ) {
 			return $_SERVER['HTTP_HOST'];
 		}
-		if ( isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME']) {
+		if ( isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] ) {
 			return $_SERVER['SERVER_NAME'];
 		}
 		return '';
@@ -229,7 +229,7 @@ class URLHelper {
 			$url = $url_parts['scheme'].'://'.$url_parts['host'];
 
 			if ( isset($url_parts['port']) ) {
-				$url .= ':' . $url_parts['port'];
+				$url .= ':'.$url_parts['port'];
 			}
 
 			$url .= $path;
@@ -356,10 +356,10 @@ class URLHelper {
 			return $link;
 		}
 		
-		if( isset($link_parts['path']) && $link_parts['path'] != '/' ) {
-			$new_path = user_trailingslashit( $link_parts['path'] );
+		if ( isset($link_parts['path']) && $link_parts['path'] != '/' ) {
+			$new_path = user_trailingslashit($link_parts['path']);
 			
-			if ( $new_path != $link_parts['path'] )	{
+			if ( $new_path != $link_parts['path'] ) {
 				$link = str_replace($link_parts['path'], $new_path, $link);
 			}
 		}
