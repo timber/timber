@@ -87,8 +87,11 @@ class Loader {
 	}
 
 	/**
-	 * @param array $filenames
-	 * @return bool
+	 * Get first existing template file.
+	 *
+	 * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, the function
+	 *                                 return the first file that exists.
+	 * @return string
 	 */
 	public function choose_template( $filenames ) {
 		if ( is_array($filenames) ) {
