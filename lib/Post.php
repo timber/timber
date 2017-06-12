@@ -1186,11 +1186,13 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Finds any WP_Post objects and converts them to Timber\Posts
-	 * @param array $data
+	 * @param array|WP_Post $data
 	 * @param string $class
 	 */
 	public function convert( $data, $class ) {
-		if ( is_array($data) ) {
+		if ( $data instanceof WP_Post ) {
+			$data = new $class($data);
+		} else if ( is_array($data) ) {
 			$func = __FUNCTION__;
 			foreach ( $data as &$ele ) {
 				if ( gettype($ele) === 'array' ) {
