@@ -118,6 +118,20 @@
             $wp_rewrite->use_trailing_slashes = false;
         }
 
+        function testDoubleSlashesWithHTTP() {
+            $url = 'http://nytimes.com/news//world/thing.html';
+            $expected_url = 'http://nytimes.com/news/world/thing.html';
+            $url = Timber\URLHelper::remove_double_slashes($url);
+            $this->assertEquals($expected_url, $url);
+        }
+
+        function testDoubleSlashesWithHTTPS() {
+            $url = 'https://nytimes.com/news//world/thing.html';
+            $expected_url = 'https://nytimes.com/news/world/thing.html';
+            $url = Timber\URLHelper::remove_double_slashes($url);
+            $this->assertEquals($expected_url, $url);
+        }
+
         function testUserTrailingSlashItFailure() {
             $link = 'http:///example.com';
             $url = Timber\URLHelper::user_trailingslashit($link);
