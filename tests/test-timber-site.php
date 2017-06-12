@@ -5,16 +5,18 @@ class TestTimberSite extends Timber_UnitTestCase {
 	function testStandardThemeLocation() {
 		switch_theme( 'twentyfifteen' );
 		$site = new TimberSite();
-		$this->assertEquals( WP_CONTENT_SUBDIR.'/themes/twentyfifteen', $site->theme->path );
+		$content_subdir = Timber\URLHelper::get_content_subdir();
+		$this->assertEquals( $content_subdir.'/themes/twentyfifteen', $site->theme->path );
 	}
 
 	function testChildParentThemeLocation() {
 		TestTimberLoader::_setupChildTheme();
+		$content_subdir = Timber\URLHelper::get_content_subdir();
 		$this->assertFileExists( WP_CONTENT_DIR.'/themes/fake-child-theme/style.css' );
 		switch_theme( 'fake-child-theme' );
 		$site = new TimberSite();
-		$this->assertEquals( WP_CONTENT_SUBDIR.'/themes/fake-child-theme', $site->theme->path );
-		$this->assertEquals( WP_CONTENT_SUBDIR.'/themes/twentyfifteen', $site->theme->parent->path );
+		$this->assertEquals( $content_subdir.'/themes/fake-child-theme', $site->theme->path );
+		$this->assertEquals( $content_subdir.'/themes/twentyfifteen', $site->theme->parent->path );
 	}
 
 	function testThemeFromContext() {

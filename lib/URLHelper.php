@@ -156,6 +156,7 @@ class URLHelper {
 	 */
 	public static function url_to_file_system( $url ) {
 		$url_parts = parse_url($url);
+		$url_parts['path'] = apply_filters('timber/URLHelper/url_to_file_system/path', $url_parts['path']);
 		$path = ABSPATH.$url_parts['path'];
 		$path = str_replace('//', '/', $path);
 		return $path;
@@ -167,8 +168,21 @@ class URLHelper {
 	public static function file_system_to_url( $fs ) {
 		$relative_path = self::get_rel_path($fs);
 		$home = home_url('/'.$relative_path);
+		$home = apply_filters('timber/URLHelper/file_system_to_url', $home);
 		return $home;
 	}
+
+	/**
+	 * Get the path to the content directory relative to the site.
+	 * This replaces the WP_CONTENT_SUBDIR constant
+	 * @return string (ex: /wp-content or /content)
+	 */
+	public static function get_content_subdir() {
+		$home_url = get_home_url();
+		$home_url = apply_filters('timber/URLHelper/get_content_subdir/home_url', $home_url);
+		$wp_content_path = str_replace($home_url, '', WP_CONTENT_URL);
+		return $wp_content_path;
+	} 
 
 	/**
 	 *
@@ -182,7 +196,7 @@ class URLHelper {
 		}
 		//its outside the wordpress directory, alternate setups:
 		$src = str_replace(WP_CONTENT_DIR, '', $src);
-		return WP_CONTENT_SUBDIR.$src;
+		return self::get_content_subdir().$src;
 	}
 
 	/**
