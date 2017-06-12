@@ -94,6 +94,11 @@
             $this->assertEquals('example.com/thing/foo', $joined);
         }
 
+        function testPrependWithPort() {
+            $joined = Timber\URLHelper::prepend_to_url('http://example.com:8080/thing/', '/jiggly');
+            $this->assertEquals('http://example.com:8080/jiggly/thing/', $joined);
+        }
+
         function testPrependWithFragment() {
             $joined = Timber\URLHelper::prepend_to_url('http://example.com/thing/#foo', '/jiggly');
             $this->assertEquals('http://example.com/jiggly/thing/#foo', $joined);
