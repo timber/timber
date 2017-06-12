@@ -166,8 +166,13 @@ class URLHelper {
 	 */
 	public static function file_system_to_url( $fs ) {
 		$relative_path = self::get_rel_path($fs);
-		$home = home_url('/'.$relative_path);
-		return $home;
+		$home_url = home_url();
+
+		if (defined('ICL_LANGUAGE_CODE')) {
+			$home_url = preg_replace('/' . ICL_LANGUAGE_CODE . '$/', '', $home_url);
+		}
+
+		return $home_url . $relative_path;
 	}
 
 	/**
