@@ -114,7 +114,7 @@ class URLHelper {
 		if ( isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] ) {
 			return $_SERVER['HTTP_HOST'];
 		}
-		if ( isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME']) {
+		if ( isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] ) {
 			return $_SERVER['SERVER_NAME'];
 		}
 		return '';
@@ -156,6 +156,7 @@ class URLHelper {
 	 */
 	public static function url_to_file_system( $url ) {
 		$url_parts = parse_url($url);
+		$url_parts['path'] = apply_filters('timber/URLHelper/url_to_file_system/path', $url_parts['path']);
 		$path = ABSPATH.$url_parts['path'];
 		$path = str_replace('//', '/', $path);
 		return $path;
@@ -167,8 +168,21 @@ class URLHelper {
 	public static function file_system_to_url( $fs ) {
 		$relative_path = self::get_rel_path($fs);
 		$home = home_url('/'.$relative_path);
+		$home = apply_filters('timber/URLHelper/file_system_to_url', $home);
 		return $home;
 	}
+
+	/**
+	 * Get the path to the content directory relative to the site.
+	 * This replaces the WP_CONTENT_SUBDIR constant
+	 * @return string (ex: /wp-content or /content)
+	 */
+	public static function get_content_subdir() {
+		$home_url = get_home_url();
+		$home_url = apply_filters('timber/URLHelper/get_content_subdir/home_url', $home_url);
+		$wp_content_path = str_replace($home_url, '', WP_CONTENT_URL);
+		return $wp_content_path;
+	} 
 
 	/**
 	 *
@@ -182,7 +196,7 @@ class URLHelper {
 		}
 		//its outside the wordpress directory, alternate setups:
 		$src = str_replace(WP_CONTENT_DIR, '', $src);
-		return WP_CONTENT_SUBDIR.$src;
+		return self::get_content_subdir().$src;
 	}
 
 	/**
@@ -195,6 +209,9 @@ class URLHelper {
 		$url = str_replace('//', '/', $url);
 		if ( strstr($url, 'http:') && !strstr($url, 'http://') ) {
 			$url = str_replace('http:/', 'http://', $url);
+		}
+		if ( strstr($url, 'https:') && !strstr($url, 'https://') ) {
+			$url = str_replace('https:/', 'https://', $url);
 		}
 		return $url;
 	}
@@ -209,7 +226,14 @@ class URLHelper {
 	public static function prepend_to_url( $url, $path ) {
 		if ( strstr(strtolower($url), 'http') ) {
 			$url_parts = parse_url($url);
-			$url = $url_parts['scheme'].'://'.$url_parts['host'].$path;
+			$url = $url_parts['scheme'].'://'.$url_parts['host'];
+
+			if ( isset($url_parts['port']) ) {
+				$url .= ':'.$url_parts['port'];
+			}
+
+			$url .= $path;
+
 			if ( isset($url_parts['path']) ) {
 				$url .= $url_parts['path'];
 			}
@@ -332,10 +356,10 @@ class URLHelper {
 			return $link;
 		}
 		
-		if( isset($link_parts['path']) && $link_parts['path'] != '/' ) {
-			$new_path = user_trailingslashit( $link_parts['path'] );
+		if ( isset($link_parts['path']) && $link_parts['path'] != '/' ) {
+			$new_path = user_trailingslashit($link_parts['path']);
 			
-			if ( $new_path != $link_parts['path'] )	{
+			if ( $new_path != $link_parts['path'] ) {
 				$link = str_replace($link_parts['path'], $new_path, $link);
 			}
 		}

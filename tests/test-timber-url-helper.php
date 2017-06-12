@@ -5,6 +5,7 @@
 		private $mockUploadDir = false;
 
 
+
         function testStartsWith() {
             $haystack = 'http://nytimes.com/news/reports/2017';
             $starts_with = 'http://nytimes.com/news';
@@ -27,6 +28,34 @@
             $nope = 'http://bostonglobe.com';
             $this->assertTrue(Timber\URLHelper::starts_with($haystack, $starts_with));
             $this->assertFalse(Timber\URLHelper::starts_with($haystack, $nope));
+        }
+
+        function testFileSystemToURL() {
+            $image = TestTimberImage::copyTestImage();
+            $url = Timber\URLHelper::file_system_to_url($image);
+            $this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
+        }
+
+        function addWPMLHomeFilter($url, $path) {
+            return 'http://example.org/en'.$path;
+        }
+
+        function _setupWPMLDirectory() {
+            define('ICL_LANGUAGE_CODE', 'en');
+            add_filter('home_url', array($this, 'addWPMLHomeFilter'), 10, 2);
+        }
+
+        function testFileSystemToURLWithWPMLPrefix() {
+            self::_setupWPMLDirectory();
+            $image = TestTimberImage::copyTestImage();
+            $url = Timber\URLHelper::file_system_to_url($image);
+            $this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
+            remove_filter('home_url', array($this, 'addWPMLHomeFilter'));
+        }
+
+        function testContentSubDirectory() {
+            $subdir = Timber\URLHelper::get_content_subdir();
+            $this->assertEquals('/wp-content', $subdir);
         }
 
         function testURLToFileSystem() {
@@ -65,6 +94,11 @@
             $this->assertEquals('example.com/thing/foo', $joined);
         }
 
+        function testPrependWithPort() {
+            $joined = Timber\URLHelper::prepend_to_url('http://example.com:8080/thing/', '/jiggly');
+            $this->assertEquals('http://example.com:8080/jiggly/thing/', $joined);
+        }
+
         function testPrependWithFragment() {
             $joined = Timber\URLHelper::prepend_to_url('http://example.com/thing/#foo', '/jiggly');
             $this->assertEquals('http://example.com/jiggly/thing/#foo', $joined);
@@ -82,6 +116,20 @@
             $url = Timber\URLHelper::user_trailingslashit($link);
             $this->assertEquals($link.'/', $url);
             $wp_rewrite->use_trailing_slashes = false;
+        }
+
+        function testDoubleSlashesWithHTTP() {
+            $url = 'http://nytimes.com/news//world/thing.html';
+            $expected_url = 'http://nytimes.com/news/world/thing.html';
+            $url = Timber\URLHelper::remove_double_slashes($url);
+            $this->assertEquals($expected_url, $url);
+        }
+
+        function testDoubleSlashesWithHTTPS() {
+            $url = 'https://nytimes.com/news//world/thing.html';
+            $expected_url = 'https://nytimes.com/news/world/thing.html';
+            $url = Timber\URLHelper::remove_double_slashes($url);
+            $this->assertEquals($expected_url, $url);
         }
 
         function testUserTrailingSlashItFailure() {

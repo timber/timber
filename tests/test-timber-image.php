@@ -905,7 +905,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testImageHelperInit() {
 		$helper = TimberImageHelper::init();
-		$this->assertTrue(defined('WP_CONTENT_SUBDIR'));
+		$this->assertTrue($helper);
 	}
 
 	function testResizeGif() {
