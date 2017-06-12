@@ -29,7 +29,6 @@ class ImageHelper {
 	const BASE_CONTENT = 2;
 
 	public static function init() {
-		self::add_constants();
 		self::add_actions();
 		self::add_filters();
 	}
@@ -177,17 +176,6 @@ class ImageHelper {
 			\Timber\ImageHelper::_delete_generated_if_image($post_id);
 			return $metadata;
 		}, 10, 2);
-	}
-
-	/**
-	 * Adds a constant defining the path to the content directory relative to the site
-	 * for example /wp-content or /content
-	 */
-	protected static function add_constants() {
-		if ( !defined('WP_CONTENT_SUBDIR') ) {
-			$wp_content_path = str_replace(get_home_url(), '', WP_CONTENT_URL);
-			define('WP_CONTENT_SUBDIR', $wp_content_path);
-		}
 	}
 
 	/**
