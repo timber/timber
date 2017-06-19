@@ -2,6 +2,18 @@
 
 	class TestTimberImageHelper extends TimberImage_UnitTestCase {
 
+		function testHTTPAnalyze() {
+			$url = 'http://example.org/wp-content/uploads/2017/06/dog.jpg';
+			$info = Timber\ImageHelper::analyze_url($url);
+			$this->assertEquals('/2017/06', $info['subdir']);
+		}
+
+		function testHTTPSAnalyze() {
+			$url = 'https://example.org/wp-content/uploads/2017/06/dog.jpg';
+			$info = Timber\ImageHelper::analyze_url($url);
+			$this->assertEquals('/2017/06', $info['subdir']);
+		}
+
 		function testIsAnimatedGif() {
 			$image = TestTimberImage::copyTestImage('robocop.gif');
 			$this->assertTrue( TimberImageHelper::is_animated_gif($image) );
