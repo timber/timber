@@ -359,7 +359,7 @@ class ImageHelper {
 			}
 			if ( URLHelper::starts_with($tmp, $upload_dir['baseurl']) ) {
 				$result['base'] = self::BASE_UPLOADS; // upload based
-				$tmp = str_replace($upload_dir['baseurl'], '', $tmp);
+				$tmp = URLHelper::remove_url_component($tmp, $upload_dir['baseurl']);
 			} else if ( URLHelper::starts_with($tmp, content_url()) ) {
 				$result['base'] = self::BASE_CONTENT; // content-based
 				$tmp = self::theme_url_to_dir($tmp);
