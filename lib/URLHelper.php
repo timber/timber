@@ -344,6 +344,38 @@ class URLHelper {
 	}
 
 	/**
+	 * Removes the subcomponent of a URL regardless of protocol
+	 * @since 1.3.3
+	 * @author jarednova
+	 * @param string $haystack ex: http://example.org/wp-content/uploads/dog.jpg
+	 * @param string $needle ex: http://example.org/wp-content
+	 * @return string 
+	 */
+	public static function remove_url_component( $haystack, $needle ) {
+		$haystack = str_replace($needle, '', $haystack);
+		$needle = self::swap_protocol($needle);
+		return str_replace($needle, '', $haystack);
+	}
+
+
+	/**
+	 * Swaps whatever protocol of a URL is sent. http becomes https and vice versa
+	 * @since 1.3.3
+	 * @author jarednova
+	 * @param string $url ex: http://example.org/wp-content/uploads/dog.jpg
+	 * @return string ex: https://example.org/wp-content/uploads/dog.jpg
+	 */
+	public static function swap_protocol( $url ) {
+		if ( stristr($url, 'http:') ) {
+			return str_replace('http:', 'https:', $url);
+		}
+		if ( stristr($url, 'https:') ) {
+			return str_replace('https:', 'http:', $url);
+		}
+		return $url;
+	}
+
+	/**
 	 * Pass links through user_trailingslashit handling query strings properly
 	 *
 	 * @param string $link

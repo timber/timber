@@ -347,11 +347,11 @@ class ImageHelper {
 			$result['absolute'] = true;
 			if ( TextHelper::starts_with($tmp, $upload_dir['basedir']) ) {
 				$result['base'] = self::BASE_UPLOADS; // upload based
-				$tmp = str_replace($upload_dir['basedir'], '', $tmp);
+				$tmp = URLHelper::remove_url_component($tmp, $upload_dir['basedir']);
 			}
 			if ( TextHelper::starts_with($tmp, WP_CONTENT_DIR) ) {
 				$result['base'] = self::BASE_CONTENT; // content based
-				$tmp = str_replace(WP_CONTENT_DIR, '', $tmp);
+				$tmp = URLHelper::remove_url_component($tmp, WP_CONTENT_DIR);
 			}
 		} else {
 			if ( !$result['absolute'] ) {
@@ -359,11 +359,11 @@ class ImageHelper {
 			}
 			if ( URLHelper::starts_with($tmp, $upload_dir['baseurl']) ) {
 				$result['base'] = self::BASE_UPLOADS; // upload based
-				$tmp = str_replace($upload_dir['baseurl'], '', $tmp);
+				$tmp = URLHelper::remove_url_component($tmp, $upload_dir['baseurl']);
 			} else if ( URLHelper::starts_with($tmp, content_url()) ) {
 				$result['base'] = self::BASE_CONTENT; // content-based
 				$tmp = self::theme_url_to_dir($tmp);
-				$tmp = str_replace(WP_CONTENT_DIR, '', $tmp);
+				$tmp = URLHelper::remove_url_component($tmp, WP_CONTENT_DIR);
 			}
 		}
 		$parts = pathinfo($tmp);
