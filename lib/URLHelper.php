@@ -351,7 +351,7 @@ class URLHelper {
 	 * @param string $needle ex: http://example.org/wp-content
 	 * @return string 
 	 */
-	public static function remove_url_component($haystack, $needle) {
+	public static function remove_url_component( $haystack, $needle ) {
 		$haystack = str_replace($needle, '', $haystack);
 		$needle = self::swap_protocol($needle);
 		return str_replace($needle, '', $haystack);
