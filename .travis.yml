@@ -12,10 +12,10 @@ env:
     - WP_VERSION=latest WP_MULTISITE=0
     - WP_VERSION=latest WP_MULTISITE=1
 
-matrix:
-    include:
-        - php: 5.6.30
-          env: WP_VERSION=4.6 WP_MULTISITE=0
+#matrix:
+    #include:
+        # php: 5.6.30
+        #  env: WP_VERSION=4.6 WP_MULTISITE=0
 
 before_script:
     - if [ "$TRAVIS_PHP_VERSION" == 5.5 ] || [ "$TRAVIS_PHP_VERSION" == 5.4 ] || [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then autodetect | pecl install imagick; fi

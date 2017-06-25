@@ -121,6 +121,7 @@ class Timber {
 
 	/**
 	 * Get a post by post ID or query (as a query string or an array of arguments).
+	 * But it's also cool
 	 *
 	 * @api
 	 * @param mixed        $query     Optional. Post ID or query (as query string or an array of arguments for

@@ -4,7 +4,17 @@
 
 		private $mockUploadDir = false;
 
+        function testSwapProtocolHTTPtoHTTPS() {
+            $url = 'http://nytimes.com/news/reports/2017';
+            $url = Timber\URLHelper::swap_protocol($url);
+            $this->assertStringStartsWith('https://', $url);
+        }
 
+        function testSwapProtocolHTTPStoHTTP() {
+            $url = 'https://nytimes.com/news/reports/2017';
+            $url = Timber\URLHelper::swap_protocol($url);
+            $this->assertStringStartsWith('http://', $url);
+        }
 
         function testStartsWith() {
             $haystack = 'http://nytimes.com/news/reports/2017';
