@@ -2,16 +2,6 @@
 
 	class TestTimberLoader extends Timber_UnitTestCase {
 
-		function testLoaderChain() {
-			add_filter('timber/loader/custom', function($loaders) {
-				$arr = array(__DIR__.'/custom_loader_dir');
-				$loaders[] = new \Twig_Loader_Filesystem($arr);
-				return $loaders;
-			});
-			$str = Timber::compile('test-chain.twig', array('name' => 'Jared'));
-			$this->assertFalse($str);
-		}
-
 		function testTwigLoaderFilter() {
 		    $php_unit = $this;
 		    add_filter('timber/loader/loader', function ($loader) use ($php_unit) {
