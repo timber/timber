@@ -25,6 +25,8 @@ class Loader {
 
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
+	private $loader;
+
 	protected $locations;
 
 	/**
@@ -32,6 +34,18 @@ class Loader {
 	 */
 	public function __construct( $caller = false ) {
 		$this->locations = LocationManager::get_locations($caller);
+		
+		$open_basedir = ini_get('open_basedir');
+		$paths = array_merge($this->locations, array($open_basedir ? ABSPATH : '/'));
+		$paths = apply_filters('timber/loader/paths', $paths);
+
+		$rootPath = '/';
+		if ( $open_basedir ) {
+			$rootPath = null;
+		}
+		$this->loader = new \Twig_Loader_Filesystem($paths, $rootPath);
+		$this->loader = apply_filters('timber/loader/loader', $this->loader);
+
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
 	}
@@ -128,17 +142,7 @@ class Loader {
 	 * @return \Twig_LoaderInterface
 	 */
 	public function get_loader() {
-		$open_basedir = ini_get('open_basedir');
-		$paths = array_merge($this->locations, array($open_basedir ? ABSPATH : '/'));
-		$paths = apply_filters('timber/loader/paths', $paths);
-
-		$rootPath = '/';
-		if ( $open_basedir ) {
-			$rootPath = null;
-		}
-		$fs = new \Twig_Loader_Filesystem($paths, $rootPath);
-		$fs = apply_filters('timber/loader/loader', $fs);
-		return $fs;
+		return $this->loader;
 	}
 
 
