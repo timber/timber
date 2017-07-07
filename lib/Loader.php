@@ -27,16 +27,14 @@ class Loader {
 
 	private $loader;
 
-	protected $locations;
-
 	/**
 	 * @param bool|string   $caller the calling directory or false
 	 */
 	public function __construct( $caller = false ) {
-		$this->locations = LocationManager::get_locations($caller);
+		$locations = LocationManager::get_locations($caller);
 		
 		$open_basedir = ini_get('open_basedir');
-		$paths = array_merge($this->locations, array($open_basedir ? ABSPATH : '/'));
+		$paths = array_merge($locations, array($open_basedir ? ABSPATH : '/'));
 		$paths = apply_filters('timber/loader/paths', $paths);
 
 		$rootPath = '/';
