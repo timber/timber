@@ -41,6 +41,9 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 1.3.4 =
+* Resolved some compatability with Twig 2.0
+
 = 1.3.3 =
 * Fix for HTTPs issues with images
 
