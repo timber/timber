@@ -60,7 +60,7 @@ If you have functions that you use a lot and want to improve readability of your
  * @return $twig
  */
 add_filter( 'timber/twig', function( \Twig_Environment $twig ) {
-	$twig->addFunction( new \Timber_Function( 'edit_post_link', 'edit_post_link' ) );
+	$twig->addFunction( new Timber_Function( 'edit_post_link', 'edit_post_link' ) );
 } );
 ```
 
