@@ -96,8 +96,9 @@ class Loader {
 	public function choose_template( $filenames ) {
 		if ( is_array($filenames) ) {
 			/* its an array so we have to figure out which one the dev wants */
+			$loader = $this->get_loader();
 			foreach ( $filenames as $filename ) {
-				if ( self::template_exists($filename) ) {
+				if ( $loader->exists($filename) ) {
 					return $filename;
 				}
 			}
@@ -109,15 +110,10 @@ class Loader {
 	/**
 	 * @param string $file
 	 * @return bool
+	 * @deprecated 1.3.4 No longer used internally
 	 */
 	protected function template_exists( $file ) {
-		foreach ( $this->locations as $dir ) {
-			$look_for = $dir.$file;
-			if ( file_exists($look_for) ) {
-				return true;
-			}
-		}
-		return false;
+		return $this->get_loader()->exists($file);
 	}
 
 
