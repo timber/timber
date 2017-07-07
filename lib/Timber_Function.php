@@ -2,6 +2,6 @@
 
 namespace Timber;
 
-class Timber_Function extends Twig_Function {
+class Timber_Function extends \Twig_Function {
 
 }
