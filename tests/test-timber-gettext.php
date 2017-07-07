@@ -17,7 +17,10 @@ class TestTimberGettext extends Timber_UnitTestCase {
 	function test_e() {
 		$context = Timber::get_context();
 		$str = Timber::compile_string("{{ _e('my_boo') }}", $context);
-		$this->assertEquals(_e('my_boo'), trim($str));
+    ob_start(); 
+    _e('my_boo');
+    $_e = ob_get_clean();
+		$this->assertEquals($_e, trim($str));
 	}
   
 	function test_n() {
@@ -37,7 +40,10 @@ class TestTimberGettext extends Timber_UnitTestCase {
 	function test_ex() {
 		$context = Timber::get_context();
 		$str = Timber::compile_string("{{ _ex('boo', 'my') }}", $context);
-		$this->assertEquals(_ex('boo', 'my'), trim($str));
+    ob_start(); 
+    _ex('boo', 'my');
+    $_ex = ob_get_clean();
+		$this->assertEquals($_ex, trim($str));
 	}
 
 	function test_nx() {
