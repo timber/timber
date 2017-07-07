@@ -87,33 +87,33 @@ class Loader {
 	}
 
 	/**
-	 * Get first existing template file.
+	 * Get first existing template.
 	 *
-	 * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, the function
-	 *                                 return the first file that exists.
+	 * @param array|string $templates  Names of the Twig template to render.
+	 *                                 If this is an array, the first template that exists is returned.
 	 * @return string
 	 */
-	public function choose_template( $filenames ) {
-		if ( is_array($filenames) ) {
+	public function choose_template( $templates ) {
+		if ( is_array($templates) ) {
 			/* its an array so we have to figure out which one the dev wants */
 			$loader = $this->get_loader();
-			foreach ( $filenames as $filename ) {
-				if ( $loader->exists($filename) ) {
-					return $filename;
+			foreach ( $templates as $template ) {
+				if ( $loader->exists($template) ) {
+					return $templates;
 				}
 			}
-			return $filenames[0];
+			return $templates[0];
 		}
-		return $filenames;
+		return $templates;
 	}
 
 	/**
-	 * @param string $file
+	 * @param string $name
 	 * @return bool
 	 * @deprecated 1.3.4 No longer used internally
 	 */
-	protected function template_exists( $file ) {
-		return $this->get_loader()->exists($file);
+	protected function template_exists( $name ) {
+		return $this->get_loader()->exists($name);
 	}
 
 
