@@ -125,7 +125,7 @@ class Loader {
 
 
 	/**
-	 * @return \Twig_Loader_Filesystem
+	 * @return \Twig_LoaderInterface
 	 */
 	public function get_loader() {
 		$open_basedir = ini_get('open_basedir');
