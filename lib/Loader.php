@@ -89,22 +89,29 @@ class Loader {
 	/**
 	 * Get first existing template.
 	 *
-	 * @param array|string $templates  Names of the Twig template to render.
-	 *                                 If this is an array, the first template that exists is returned.
-	 * @return string
+	 * @param array|string $templates  Name(s) of the Twig template(s) to choose from.
+	 * @return string|bool             Name of chosen template, otherwise false.
 	 */
 	public function choose_template( $templates ) {
-		if ( is_array($templates) ) {
-			/* its an array so we have to figure out which one the dev wants */
-			$loader = $this->get_loader();
-			foreach ( $templates as $template ) {
-				if ( $loader->exists($template) ) {
-					return $templates;
-				}
-			}
-			return $templates[0];
+		// Change $templates into array, if needed 
+		if ( !is_array($templates) ) {
+			$templates = (array) $templates;
 		}
-		return $templates;
+		
+		// Get Twig loader
+		$loader = $this->get_loader();
+		
+		// Run through template array
+		foreach ( $templates as $template ) {
+			// Use the Twig loader to test for existance
+			if ( $loader->exists($template) ) {
+				// Return name of existing template
+				return $template;
+			}
+		}
+
+		// No existing template was found
+		return false;
 	}
 
 	/**
