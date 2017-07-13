@@ -1,4 +1,9 @@
-# Testing
+---
+title: "Testing"
+menu:
+  main:
+    parent: "guides"
+---
 
 ### PHPUnit
 
