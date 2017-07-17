@@ -50,7 +50,7 @@ Nice! Any gotchas? Unfortunately yes. While the above example will totally work 
 
 ## Make functions available in Twig
 
-If you have functions that you use a lot and want to improve readability of your code, you can make a function available in Twig by using `Timber_Function` inside the `timber/twig` hook.
+If you have functions that you use a lot and want to improve readability of your code, you can make a function available in Twig by using `Timber\Twig_Function` inside the `timber/twig` hook.
 
 ```php
 /**
@@ -60,7 +60,7 @@ If you have functions that you use a lot and want to improve readability of your
  * @return $twig
  */
 add_filter( 'timber/twig', function( \Twig_Environment $twig ) {
-	$twig->addFunction( new Timber_Function( 'edit_post_link', 'edit_post_link' ) );
+	$twig->addFunction( new Twig_Function( 'edit_post_link', 'edit_post_link' ) );
 } );
 ```
 
