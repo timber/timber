@@ -3,7 +3,6 @@
 namespace Timber;
 
 use Timber\Helper;
-use Timber\Twig_Function;
 
 /**
  * FunctionWrapper Class.
