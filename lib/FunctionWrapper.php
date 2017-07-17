@@ -72,7 +72,7 @@ class FunctionWrapper {
 		$wrapper = $this;
 
 		try {
-			$twig->addFunction( new \Twig_SimpleFunction( $this->_function, function() use ( $wrapper ) {
+			$twig->addFunction( new Twig_Function( $this->_function, function() use ( $wrapper ) {
 				return call_user_func_array( array( $wrapper, 'call' ), func_get_args() );
 			} ) );
 
