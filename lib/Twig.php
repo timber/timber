@@ -10,6 +10,7 @@ use Timber\Term;
 use Timber\Image;
 use Timber\User;
 
+
 class Twig {
 
 	public static $dir_name;
@@ -35,20 +36,20 @@ class Twig {
 	 */
 	public function add_timber_functions( $twig ) {
 		/* actions and filters */
-		$twig->addFunction(new \Twig_SimpleFunction('action', function( $context ) {
+		$twig->addFunction(new Twig_Function('action', function( $context ) {
 					$args = func_get_args();
 					array_shift($args);
 					$args[] = $context;
 					call_user_func_array('do_action', $args);
 				}, array('needs_context' => true)));
 
-		$twig->addFunction(new \Twig_SimpleFunction('function', array(&$this, 'exec_function')));
-		$twig->addFunction(new \Twig_SimpleFunction('fn', array(&$this, 'exec_function')));
+		$twig->addFunction(new Twig_Function('function', array(&$this, 'exec_function')));
+		$twig->addFunction(new Twig_Function('fn', array(&$this, 'exec_function')));
 
-		$twig->addFunction(new \Twig_SimpleFunction('shortcode', 'do_shortcode'));
+		$twig->addFunction(new Twig_Function('shortcode', 'do_shortcode'));
 
 		/* TimberObjects */
-		$twig->addFunction(new \Twig_SimpleFunction('TimberPost', function( $pid, $PostClass = 'Timber\Post' ) {
+		$twig->addFunction(new Twig_Function('TimberPost', function( $pid, $PostClass = 'Timber\Post' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $PostClass($p);
@@ -57,7 +58,7 @@ class Twig {
 					}
 					return new $PostClass($pid);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('TimberImage', function( $pid = false, $ImageClass = 'Timber\Image' ) {
+		$twig->addFunction(new Twig_Function('TimberImage', function( $pid = false, $ImageClass = 'Timber\Image' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $ImageClass($p);
@@ -67,7 +68,7 @@ class Twig {
 					return new $ImageClass($pid);
 				} ));
 
-		$twig->addFunction(new \Twig_SimpleFunction('TimberTerm', function( $pid, $TermClass = 'Timber\Term' ) {
+		$twig->addFunction(new Twig_Function('TimberTerm', function( $pid, $TermClass = 'Timber\Term' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $TermClass($p);
@@ -76,7 +77,7 @@ class Twig {
 					}
 					return new $TermClass($pid);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('TimberUser', function( $pid, $UserClass = 'Timber\User' ) {
+		$twig->addFunction(new Twig_Function('TimberUser', function( $pid, $UserClass = 'Timber\User' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $UserClass($p);
@@ -87,7 +88,7 @@ class Twig {
 				} ));
 
 		/* TimberObjects Alias */
-		$twig->addFunction(new \Twig_SimpleFunction('Post', function( $pid, $PostClass = 'Timber\Post' ) {
+		$twig->addFunction(new Twig_Function('Post', function( $pid, $PostClass = 'Timber\Post' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $PostClass($p);
@@ -96,7 +97,7 @@ class Twig {
 					}
 					return new $PostClass($pid);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('Image', function( $pid, $ImageClass = 'Timber\Image' ) {
+		$twig->addFunction(new Twig_Function('Image', function( $pid, $ImageClass = 'Timber\Image' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $ImageClass($p);
@@ -105,7 +106,7 @@ class Twig {
 					}
 					return new $ImageClass($pid);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('Term', function( $pid, $TermClass = 'Timber\Term' ) {
+		$twig->addFunction(new Twig_Function('Term', function( $pid, $TermClass = 'Timber\Term' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $TermClass($p);
@@ -114,7 +115,7 @@ class Twig {
 					}
 					return new $TermClass($pid);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('User', function( $pid, $UserClass = 'Timber\User' ) {
+		$twig->addFunction(new Twig_Function('User', function( $pid, $UserClass = 'Timber\User' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
 							$p = new $UserClass($p);
@@ -125,37 +126,37 @@ class Twig {
 				} ));
 
 		/* bloginfo and translate */
-		$twig->addFunction(new \Twig_SimpleFunction('bloginfo', function( $show = '', $filter = 'raw' ) {
+		$twig->addFunction(new Twig_Function('bloginfo', function( $show = '', $filter = 'raw' ) {
 					return get_bloginfo($show, $filter);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('__', function( $text, $domain = 'default' ) {
+		$twig->addFunction(new Twig_Function('__', function( $text, $domain = 'default' ) {
 					return __($text, $domain);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('translate', function( $text, $domain = 'default' ) {
+		$twig->addFunction(new Twig_Function('translate', function( $text, $domain = 'default' ) {
 					return translate($text, $domain);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('_e', function( $text, $domain = 'default' ) {
+		$twig->addFunction(new Twig_Function('_e', function( $text, $domain = 'default' ) {
 					return _e($text, $domain);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('_n', function( $single, $plural, $number, $domain = 'default' ) {
+		$twig->addFunction(new Twig_Function('_n', function( $single, $plural, $number, $domain = 'default' ) {
 					return _n($single, $plural, $number, $domain);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('_x', function( $text, $context, $domain = 'default' ) {
+		$twig->addFunction(new Twig_Function('_x', function( $text, $context, $domain = 'default' ) {
 					return _x($text, $context, $domain);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('_ex', function( $text, $context, $domain = 'default' ) {
+		$twig->addFunction(new Twig_Function('_ex', function( $text, $context, $domain = 'default' ) {
 					return _ex($text, $context, $domain);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('_nx', function( $single, $plural, $number, $context, $domain = 'default' ) {
+		$twig->addFunction(new Twig_Function('_nx', function( $single, $plural, $number, $context, $domain = 'default' ) {
 					return _nx($single, $plural, $number, $context, $domain);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('_n_noop', function( $singular, $plural, $domain = 'default' ) {
+		$twig->addFunction(new Twig_Function('_n_noop', function( $singular, $plural, $domain = 'default' ) {
 					return _n_noop($singular, $plural, $domain);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('_nx_noop', function( $singular, $plural, $context, $domain = 'default' ) {
+		$twig->addFunction(new Twig_Function('_nx_noop', function( $singular, $plural, $context, $domain = 'default' ) {
 					return _nx_noop($singular, $plural, $context, $domain);
 				} ));
-		$twig->addFunction(new \Twig_SimpleFunction('translate_nooped_plural', function( $nooped_plural, $count, $domain = 'default' ) {
+		$twig->addFunction(new Twig_Function('translate_nooped_plural', function( $nooped_plural, $count, $domain = 'default' ) {
 					return translate_nooped_plural($nooped_plural, $count, $domain);
 				} ));
 
