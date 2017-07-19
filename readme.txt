@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 Tested up to: 4.8
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -40,6 +40,9 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= 1.3.4 =
+* Fix for Twig 2.0 compatability issue #1464 (thanks @luism-s)
 
 = 1.3.3 =
 * Fix for HTTPs issues with images
