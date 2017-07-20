@@ -1,4 +1,9 @@
-# Twig Cookbook
+---
+title: "Twig Cookbook"
+menu:
+  main:
+    parent: "guides"
+---
 
 ## Using Twig vars in live type
 Imagine this scenario, I let the users set this in the Admin panel:

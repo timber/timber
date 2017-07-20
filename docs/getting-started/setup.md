@@ -1,4 +1,10 @@
-# Getting Started: Setup
+---
+title: "Setup"
+description: "All about setting up Timber with your theme."
+menu:
+  main:
+    parent: "getting-started"
+---
 
 ## Installation
 

@@ -1,4 +1,9 @@
-# Custom Page Templates
+---
+title: "Custom Page Templates"
+menu:
+  main:
+    parent: "guides"
+---
 
 There are a few ways to manage custom pages in WordPress and Timber, in order from simple-to-complex:
 
