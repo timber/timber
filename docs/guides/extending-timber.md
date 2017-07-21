@@ -9,6 +9,8 @@ Myth: Timber is for making simple themes. Fact: It's for making incredibly compl
 
 The beauty of Timber is that the object-oriented nature lets you extend it to match the exact requirements of your theme.
 
+## An example that extends TimberPost
+
 Timber's objects like `TimberPost`, `TimberTerm`, etc. are a great starting point to build your own subclass from. For example, on this project each post was a part of an "issue" of a magazine. I wanted an easy way to reference the issue in the twig file:
 
 

@@ -7,7 +7,7 @@ menu:
 
 Among its other special powers, Timber includes modern routing in the Express.js/Ruby on Rails mold, making it easy for you to implement custom pagination--and anything else you might imagine in your wildest dreams of URLs and parameters. OMG so easy!
 
-#### Some examples
+## Some examples
 In your functions.php file, this can be called anywhere (don't hook it to init or another action or it might be called too late)
 
 ```php
@@ -24,10 +24,12 @@ Routes::map('blog/:name/page/:pg', function($params){
 });
 ```
 
-#### map
-###### `Routes::map($pattern, $callback)`
+## map
 
-###### Usage:
+`Routes::map($pattern, $callback)`
+
+### Usage
+
 A `functions.php` where I want to display custom paginated content:
 
 ```php
@@ -41,17 +43,19 @@ Routes::map('info/:name/page/:pg', function($params){
 });
 ```
 
-###### Arguments:
+### Arguments
 
 `$pattern` (required)
 Set a pattern for Timber to match on, by default everything is handled as a string. Any segment that begins with a `:` is handled as a variable, for example:
 
 **To paginate:**
+
 ```
 page/:pagenum
 ```
 
 **To edit a user:**
+
 ```
 my-users/:userid/edit
 ```
@@ -67,10 +71,11 @@ So in this example: `'info/:name/page/:pg'`, $params would have data for:
 
 * * *
 
-#### load
-###### `Routes::load($php_file, $args, $query = null, $status_code = 200)`
+## load
 
-###### Arguments:
+`Routes::load($php_file, $args, $query = null, $status_code = 200)`
+
+### Arguments
 
 `$php_file` (required)
 A PHP file to load, in my experience this is usually your archive.php or a generic listing page (but don't worry it can be anything!)
@@ -108,7 +113,3 @@ The query you want to use, it can accept a string or array just like `Timber::ge
 
 `$status_code`
 Send an optional status code. Defaults to 200 for 'Success/OK'
-
-
-
-

@@ -7,9 +7,11 @@ menu:
 
 There's tons of stuff you can do with Twig and Timber filters to make complex transformations easy (and fun!)
 
-#### Dates
+## Dates
 
-##### Timber does bylines like a boss:
+### Example 1: Bylines
+
+Timber does bylines like a boss:
 
 ```twig
 <p class="byline">
@@ -18,13 +20,15 @@ There's tons of stuff you can do with Twig and Timber filters to make complex tr
 </p>
 ```
 
-###### Renders:
+**Renders**
 
 ```html
 <p class="byline"><span class="name">By Mr. WordPress</span><span class="date">September 28, 2013</span></p>
 ```
 
-##### Nothing is worse than an out-of-date copyright year in the footer. Nothing.
+### Example 2: Copyright year
+
+Nothing is worse than an out-of-date copyright year in the footer. Nothing.
 
 ```twig
 <footer>
@@ -32,7 +36,7 @@ There's tons of stuff you can do with Twig and Timber filters to make complex tr
 </footer>
 ```
 
-###### Renders:
+**Renders**
 
 ```html
 <footer><p class="copyright">&copy; 2015 by The Daily Orange</p></footer>
@@ -40,33 +44,35 @@ There's tons of stuff you can do with Twig and Timber filters to make complex tr
 
 * * *
 
-#### Standard transforms
+## Standard transforms
 
-##### Automatically link URLs, email addresses, twitter @s and #s
+### Automatically link URLs, email addresses, twitter @s and #s
 
 ```twig
 <p class="tweet">{{ post.content|twitterify }}</p>
 ```
 
-##### Run WordPress' auto-paragraph filter
+### Run WordPress' auto-paragraph filter
 
 ```twig
 <p class="content">{{ post.my_custom_text|wpautop }}</p>
 ```
 
-##### Run WordPress shortcodes over a block of text
+### Run WordPress shortcodes over a block of text
 
 ```twig
 <p class="content">{{ post.my_custom_text|shortcodes }}</p>
 ```
 
-##### Code samples? Lord knows I've got 'em:
+### Code samples
+
+Code Samples? Lord knows I've got 'em:
 
 ```twig
 <div class="code-sample">{{ post.code_samples|pretags }}</div>
 ```
 
-##### Functions inside of your templates, plugin calls:
+### Functions inside of your templates, plugin calls
 
 Old template:
 
@@ -80,7 +86,7 @@ Timber-fied template:
 <p class="entry-meta">{{ function('twentytwelve_entry_meta') }}</p>
 ```
 
-##### Functions "with params" inside of your templates, plugin calls:
+### Functions "with params" inside of your templates, plugin calls:
 
 Old template:
 
@@ -96,15 +102,15 @@ Timber-fied template:
 
 * * *
 
-### Debugging
+## Debugging
 
-##### What properties are inside my object?
+### What properties are inside my object?
 
 ```twig
 {{ dump(post) }}
 ```
 
-##### What properties and _methods_ are inside my object?
+### What properties and methods are inside my object?
 
 Warning: Experimental!
 
@@ -113,7 +119,7 @@ Warning: Experimental!
 ```
 This outputs both the database stuff (like `{{ post.post_content }}`) and the contents of methods (like `{{ post.thumbnail }}`)
 
-##### What type of object am I working with?
+### What type of object am I working with?
 
 ```twig
 {{ post|get_class }}

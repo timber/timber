@@ -5,7 +5,7 @@ menu:
     parent: "guides"
 ---
 
-### PHPUnit
+## PHPUnit
 
 To setup tests
 
@@ -16,7 +16,7 @@ To setup tests
 - Install dependencies `composer install`
 - Run PHPUnit! `phpunit`
 
-##### Full code
+**Full code**
 
 ```
 cd ~/Sites
@@ -29,7 +29,7 @@ composer install
 phpunit
 ```
 
-##### Gotchas!
+## Gotchas!
 
 - You may need to setup authorization between VVV and GitHub. Just follow the prompts to create a token if that interrupts the `composer install`
 
