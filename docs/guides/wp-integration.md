@@ -1,4 +1,9 @@
-# WordPress Integration
+---
+title: "WordPress Integration"
+menu:
+  main:
+    parent: "guides"
+---
 
 Timber plays nice with your existing WordPress setup. You can still use other plugins, etc. Here's a rundown of the key points:
 

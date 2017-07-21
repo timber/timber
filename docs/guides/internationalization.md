@@ -1,4 +1,9 @@
-# Internationalization
+---
+title: "Internationalization"
+menu:
+  main:
+    parent: "guides"
+---
 
 Internationalization of a Timber theme works pretty much the same way as it does for default WordPress themes. Follow the guide in the [WordPress Theme Handbook](https://developer.wordpress.org/themes/functionality/internationalization/) to setup i18n for your theme.
 

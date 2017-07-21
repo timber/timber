@@ -1,4 +1,9 @@
-# Template Locations
+---
+title: "Template Locations"
+menu:
+  main:
+    parent: "guides"
+---
 
 You can set arbitrary locations for your twig files with...
 

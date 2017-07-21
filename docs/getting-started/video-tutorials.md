@@ -1,4 +1,9 @@
-# Video Tutorials
+---
+title: "Video Tutorials"
+menu:
+  main:
+    parent: "getting-started"
+---
 
 I'm in the midst of an install and walk-through on Timber, here are the screencasts thus far:
 

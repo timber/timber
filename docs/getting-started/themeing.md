@@ -1,6 +1,12 @@
-# Getting Started: Themeing
+---
+title: "Themeing"
+menu:
+  main:
+    parent: "getting-started"
+---
 
 ## Your first Timber project
+
 ### Let's start with your single post
 Find this file:
 
