@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 Tested up to: 4.8
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -41,6 +41,9 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 1.3.4 =
+* Fix for Twig 2.0 compatibility issue #1464 (thanks @luism-s)
+
 = 1.3.3 =
 * Fix for HTTPs issues with images
 
@@ -63,11 +66,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * Timber\Comments {{ comment.content }} now returns processed comment with `<p>` tags
 * Fix for HTTP error when uploading media files in Windows #1346 (thanks Matias Griese)
 * Fix for image resizing on alternative WP setups (thanks @gillesgoetsch)
-* Exposing a function to global Twig scope through Timber\FunctionWrapper is deprecated, the prefered method to do this is through a Twig template like `{{ function('my_cool_function', 'my_argument') }}` (thanks @gchtr)
+* Exposing a function to global Twig scope through Timber\FunctionWrapper is deprecated, the preferred method to do this is through a Twig template like `{{ function('my_cool_function', 'my_argument') }}` (thanks @gchtr)
 * Fixed issues with use of Twig 2.0 (#1370)
 * Fixed up some things with Timber/Archives and getting post_count #1376
 * Don't let Timber fail when converting TIFFs or other weird file types, instead return the passed value w/o modifying #1383
-* Updated `FunctionWrapper` with appropriate warnings and Twig 2.0 compat (thank you thank you @gchtr)
+* Updated `FunctionWrapper` with appropriate warnings and Twig 2.0 compatibility (thank you thank you @gchtr)
 Misc fixes to documentation
 
 = 1.2.4 =

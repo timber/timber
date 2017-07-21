@@ -1,4 +1,9 @@
-# Image Cookbook
+---
+title: "Image Cookbook"
+menu:
+  main:
+    parent: "guides"
+---
 
 Timber makes it damn easy to use an image in a tag. Automatically, Timber will interpret images attached to a post's thumbnail field ("Featured Image" in the admin) and treat them as [TimberImages](TimberImage). Then, in your Twig templates, you can access them via `{{post.thumbnail}}`. If you want to see what's inside the TimberImage object you can run a...
 
