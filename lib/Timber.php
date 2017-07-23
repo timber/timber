@@ -292,22 +292,32 @@ class Timber {
 		$caller = LocationManager::get_calling_script_dir(1);
 		$loader = new Loader($caller);
 		$file = $loader->choose_template($filenames);
+
 		$caller_file = LocationManager::get_calling_script_file(1);
 		apply_filters('timber/calling_php_file', $caller_file);
-		$output = '';
-		if ( is_null($data) ) {
-			$data = array();
+
+		if ( $via_render ) {
+			$file = apply_filters('timber_render_file', $file);
+		} else {
+			$file = apply_filters('timber_compile_file', $file);
 		}
-		if ( strlen($file) ) {
+
+		$output = false;
+
+		if ($file !== false) {
+			if ( is_null($data) ) {
+				$data = array();
+			}
+
 			if ( $via_render ) {
-				$file = apply_filters('timber_render_file', $file);
 				$data = apply_filters('timber_render_data', $data);
 			} else {
-				$file = apply_filters('timber_compile_file', $file);
 				$data = apply_filters('timber_compile_data', $data);
 			}
+
 			$output = $loader->render($file, $data, $expires, $cache_mode);
 		}
+		
 		do_action('timber_compile_done');
 		return $output;
 	}

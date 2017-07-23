@@ -25,13 +25,25 @@ class Loader {
 
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
-	protected $locations;
+	private $loader;
 
 	/**
 	 * @param bool|string   $caller the calling directory or false
 	 */
 	public function __construct( $caller = false ) {
-		$this->locations = LocationManager::get_locations($caller);
+		$locations = LocationManager::get_locations($caller);
+		
+		$open_basedir = ini_get('open_basedir');
+		$paths = array_merge($locations, array($open_basedir ? ABSPATH : '/'));
+		$paths = apply_filters('timber/loader/paths', $paths);
+
+		$rootPath = '/';
+		if ( $open_basedir ) {
+			$rootPath = null;
+		}
+		$this->loader = new \Twig_Loader_Filesystem($paths, $rootPath);
+		$this->loader = apply_filters('timber/loader/loader', $this->loader);
+
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
 	}
@@ -87,55 +99,48 @@ class Loader {
 	}
 
 	/**
-	 * Get first existing template file.
+	 * Get first existing template.
 	 *
-	 * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, the function
-	 *                                 return the first file that exists.
-	 * @return string
+	 * @param array|string $templates  Name(s) of the Twig template(s) to choose from.
+	 * @return string|bool             Name of chosen template, otherwise false.
 	 */
-	public function choose_template( $filenames ) {
-		if ( is_array($filenames) ) {
-			/* its an array so we have to figure out which one the dev wants */
-			foreach ( $filenames as $filename ) {
-				if ( self::template_exists($filename) ) {
-					return $filename;
-				}
-			}
-			return $filenames[0];
+	public function choose_template( $templates ) {
+		// Change $templates into array, if needed 
+		if ( !is_array($templates) ) {
+			$templates = (array) $templates;
 		}
-		return $filenames;
-	}
+		
+		// Get Twig loader
+		$loader = $this->get_loader();
+		
+		// Run through template array
+		foreach ( $templates as $template ) {
+			// Use the Twig loader to test for existance
+			if ( $loader->exists($template) ) {
+				// Return name of existing template
+				return $template;
+			}
+		}
 
-	/**
-	 * @param string $file
-	 * @return bool
-	 */
-	protected function template_exists( $file ) {
-		foreach ( $this->locations as $dir ) {
-			$look_for = $dir.$file;
-			if ( file_exists($look_for) ) {
-				return true;
-			}
-		}
+		// No existing template was found
 		return false;
 	}
 
+	/**
+	 * @param string $name
+	 * @return bool
+	 * @deprecated 1.3.4 No longer used internally
+	 */
+	protected function template_exists( $name ) {
+		return $this->get_loader()->exists($name);
+	}
+
 
 	/**
-	 * @return \Twig_Loader_Filesystem
+	 * @return \Twig_LoaderInterface
 	 */
 	public function get_loader() {
-		$open_basedir = ini_get('open_basedir');
-		$paths = array_merge($this->locations, array($open_basedir ? ABSPATH : '/'));
-		$paths = apply_filters('timber/loader/paths', $paths);
-
-		$rootPath = '/';
-		if ( $open_basedir ) {
-			$rootPath = null;
-		}
-		$fs = new \Twig_Loader_Filesystem($paths, $rootPath);
-		$fs = apply_filters('timber/loader/loader', $fs);
-		return $fs;
+		return $this->loader;
 	}
 
 

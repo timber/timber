@@ -2,40 +2,23 @@
 
 	class TestTimberLoader extends Timber_UnitTestCase {
 
-		/**
-		 * @expectedException Twig_Error_Loader
-		 */
-		function testLoaderChain() {
-			add_filter('timber/loader/custom', function($loaders) {
-				$arr = array(__DIR__.'/custom_loader_dir');
-				$loaders[] = new \Twig_Loader_Filesystem($arr);
-				return $loaders;
-			});
-			$str = Timber::compile('test-chain.twig', array('name' => 'Jared'));
-			$this->assertEquals('Hi Jared', $str);
-		}
-
 		function testTwigLoaderFilter() {
 		    $php_unit = $this;
 		    add_filter('timber/loader/loader', function ($loader) use ($php_unit) {
-		        $php_unit->assertInstanceOf('Twig_Loader_Filesystem', $loader);
+		        $php_unit->assertInstanceOf('Twig_LoaderInterface', $loader);
 		        return $loader;
 		    });
 		    $str = Timber::compile('assets/single.twig', array());
 		}
 				
-		/**
-     	 * @expectedException Twig_Error_Loader
-     	 */
 		function testBogusTemplate() {
 			$str = Timber::compile('assets/darkhelmet.twig');
+			$this->assertFalse($str);
 		}
 
-		/**
-     	 * @expectedException Twig_Error_Loader
-     	 */
 		function testBogusTemplates() {
 			$str = Timber::compile( array('assets/barf.twig', 'assets/lonestar.twig') );
+			$this->assertFalse($str);
 		}
 
 		function testTwigPathFilter() {
