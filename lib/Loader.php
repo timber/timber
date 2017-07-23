@@ -87,37 +87,42 @@ class Loader {
 	}
 
 	/**
-	 * Get first existing template file.
+	 * Get first existing template.
 	 *
-	 * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, the function
-	 *                                 return the first file that exists.
-	 * @return string
+	 * @param array|string $templates  Name(s) of the Twig template(s) to choose from.
+	 * @return string|bool             Name of chosen template, otherwise false.
 	 */
-	public function choose_template( $filenames ) {
-		if ( is_array($filenames) ) {
-			/* its an array so we have to figure out which one the dev wants */
-			foreach ( $filenames as $filename ) {
-				if ( self::template_exists($filename) ) {
-					return $filename;
-				}
-			}
-			return $filenames[0];
+	public function choose_template( $templates ) {
+		// Change $templates into array, if needed 
+		if ( !is_array($templates) ) {
+			$templates = (array) $templates;
 		}
-		return $filenames;
+		
+		// Get Twig loader
+		$loader = $this->get_loader();
+		
+		// Run through template array
+		foreach ( $templates as $template ) {
+			// Use the Twig loader to test for existance
+			if ( $loader->exists($template) ) {
+				// Return name of existing template
+				return $template;
+			}
+		}
+
+		// No existing template was found
+		return false;
 	}
 
 	/**
-	 * @param string $file
+	 * @param string $name
 	 * @return bool
+	 * @deprecated 1.3.5 No longer used internally
+	 * @todo remove in 2.x
+	 * @codeCoverageIgnore
 	 */
-	protected function template_exists( $file ) {
-		foreach ( $this->locations as $dir ) {
-			$look_for = $dir.$file;
-			if ( file_exists($look_for) ) {
-				return true;
-			}
-		}
-		return false;
+	protected function template_exists( $name ) {
+		return $this->get_loader()->exists($name);
 	}
 
 
