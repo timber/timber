@@ -5,9 +5,10 @@ menu:
     parent: "guides"
 ---
 
-## So you want a sidebar?
+So you want a sidebar?
 
-### Method 1: PHP file
+## Method 1: PHP file
+
 Let's say every page on the site has the same content going into its sidebar. If so, you would:
 Create a `sidebar.php` file in your theme directory (so `wp-content/themes/mytheme/sidebar.php`)
 
@@ -41,7 +42,8 @@ Timber::render('single.twig', $context);
 
 * * *
 
-### Method 2: Twig file
+## Method 2: Twig file
+
 In this example, you would populate your sidebar from your main PHP file (home.php, single.php, archive.php, etc).
 
 * Make a Twig file for what your sidebar should be:
@@ -78,9 +80,11 @@ Timber::render('single.twig', $context);
 	{{sidebar}}
 </aside>
 ```
+
 * * *
 
-### Method 3: Dynamic
+## Method 3: Dynamic
+
 This is using WordPress's built-in dynamic_sidebar tools (which, confusingly, are referred to as "Widgets" in the interface). Since sidebar is already used; I used widgets in the code to describe these:
 
 ```php
@@ -94,3 +98,4 @@ Timber::render('sidebar.twig', $context);
 <aside class="my-sidebar">
 {{dynamic_sidebar}}
 </aside>
+```

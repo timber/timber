@@ -11,7 +11,6 @@ Twig offers a variety of [escapers](http://twig.sensiolabs.org/doc/filters/escap
 
 This all follows the WordPress (and greater development philosophy) to:
 
-
 1. Never trust user input.
 2. Escape as late as possible.
 3. Escape everything from untrusted sources (like databases and users), third-parties (like Twitter), etc.
@@ -22,14 +21,13 @@ This all follows the WordPress (and greater development philosophy) to:
 
 [Relevant Documentation](https://vip.wordpress.com/documentation/vip/best-practices/security/validating-sanitizing-escaping/)
 
-### wp_kses_post
+## wp_kses_post
 
 Background on KSES. KSES is a recursive acronym for `KSES Kills Evil Scripts`. It's goal is to ensure only  "allowed" HTML element names, attribute names and attribute values plus only sane HTML entities in the string. Allowed is based on a configuration.
 
 This uses ths internal WordPress method that sanitize content for allowed HTML tags for post content. The configuration used can be found by running ` wp_kses_allowed_html( 'post' );` [WordPress Documentation](https://codex.wordpress.org/Function_Reference/wp_kses_post)
 
-
-###### Twig:
+**Twig**
 
 `<p class="intro">{{post.post_content|e('wp_kses_post')}}</p>`
 
@@ -37,51 +35,50 @@ In this example, `post.post_content` is:
 
 `<div foo="bar" src="bum">Foo</div><script>DoEvilThing();</script>`
 
-###### Output:
+**Output**
 
 `<div>Foo</div>DoEvilThing();`
 
 * * *
 
-### esc_url
+## esc_url
 Uses WordPress' internal `esc_url` function on text. This should be used to sanitize URLs. [WordPress Documentation](https://codex.wordpress.org/Function_Reference/esc_url)
 
-###### Twig:
+**Twig**
 
 `<a href="{{ post.get_field('custom_link')|e('esc_url'); }}"></a>`
 
-###### Output
+**Output**
 
 `<a href="http://google.com"></a>`
 
 * * *
 
-### esc_html
+## esc_html
+
 Escaping for HTML blocks. It converts any potentially conflicting HTML entities to their encoded equivalent to prevent them from being rendered as markup by the browser, e.g. converts "<" to "&lt;" and double quotes " to "$quot;"
 
 This is for plain old text. If your content has HTML markup you should not use `esc_html` which will render the HTML as it looks in your code editor -- to preserve the HTML you will want to use `wp_kses_post`
 
-###### Twig:
-
-
+**Twig**
 
 `<div class="equation">{{ post.get_field('equation')|e('esc_html') }}</div>`
 
-###### Output
+**Output**
 
 `<div class="equation">is x &lt; y?</div>`
 
 * * *
 
-### esc_js
+## esc_js
+
 Escapes text strings for echoing in JS. It is intended to be used for inline JS (in a tag attribute, for example onclick=”…”). Note that the strings have to be in single quotes. The filter ‘js_escape’ is also applied.
 
-###### Twig:
-
+**Twig**
 
 `<script>var bar = '{{ post.get_field('name') }}';</script>`
 
-###### Output
+**Output**
 
 `<script>var bar = 'Gabrielle';</script>`
 

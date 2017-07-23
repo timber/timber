@@ -7,6 +7,8 @@ menu:
 
 Do you like pagination? Stupid question, of course you do. Well, here's how you do it.
 
+## Default pagination
+
 This will only work in a php file with an active query (like `archive.php` or `home.php`):
 
 ```php
@@ -40,8 +42,7 @@ You can then markup the output like so  (of course, the exact markup is up to YO
 </div>
 ```
 
-### What if I'm not using the default query?
-No problem!
+## What if I'm not using the default query?
 
 ```php
 	<?php
@@ -59,7 +60,8 @@ No problem!
 	Timber::render('page-events.twig', $context);
 ```
 
-### The pre_get_posts Way
+## Pagination with pre_get_posts
+
 Custom `query_posts` sometimes shows 404 on example.com/page/2. In that case you can also use `pre_get_posts` in your functions.php file:
 
 ```php

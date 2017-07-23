@@ -7,31 +7,40 @@ menu:
 
 I'm in the midst of an install and walk-through on Timber, here are the screencasts thus far:
 
-### 1. Install Timber
+## 1. Install Timber
 
-#### Option 1: Via GitHub (for developers)
+### Option 1: Via GitHub (for developers)
 
-##### 1) Navigate to your WordPress plugins directory
+#### 1) Navigate to your WordPress plugins directory
+
 	$ cd ~/Sites/mywordpress/wp-content/plugins
 
-##### 2) Use git to grab the repo
+#### 2) Use git to grab the repo
+
 	$ git clone git@github.com:jarednova/timber.git
 
-##### 3) Use [Composer](https://getcomposer.org/doc/00-intro.md) to download the dependencies (Twig, etc.)
+#### 3) Use Composer to download the dependencies (Twig, etc.)
+
 	$ cd timber
 	$ composer install
+	
+You can find a guide on [how to get started with Composer](https://getcomposer.org/doc/00-intro.md) in the official documentation.
 
-#### Option 2: Via Composer (for developers)
+### Option 2: Via Composer (for developers)
 
-##### 1) Navigate to your WordPress plugins directory
+#### 1) Navigate to your WordPress plugins directory
+
     $ cd ~/Sites/mywordpress/wp-content/plugins
 
-##### 2) Use [Composer](https://getcomposer.org/doc/00-intro.md) to create project and download the dependencies (Twig, etc.)
-    $ composer create-project --no-dev jarednova/timber ./timber
+#### 2) Use Composer to create project and download the dependencies (Twig, etc.)
 
-#### Option 3: Via WordPress plugins directory (for non-developers)
+	$ composer create-project --no-dev jarednova/timber ./timber
 
-##### If you'd prefer one-click installation, you should use the [WordPress.org](http://wordpress.org/plugins/timber-library/) version.
+You can find a guide on [how to get started with Composer](https://getcomposer.org/doc/00-intro.md) in the official documentation.
+
+### Option 3: Via WordPress plugins directory (for non-developers)
+
+If you'd prefer one-click installation, you should use the [WordPress.org](http://wordpress.org/plugins/timber-library/) version.
 
 * * *
 
@@ -39,7 +48,8 @@ Now just activate in your WordPress admin screen. Inside of the timber directory
 
 * * *
 
-### 2. Including a Twig template and sending data
+## 2. Including a Twig template and sending data
+
 [![Installing Timber](http://img.youtube.com/vi/SlMonnwVi5M/0.jpg)](http://www.youtube.com/watch?v=SlMonnwVi5M)
 
 In which we use an existing WordPress template and implement a very simple Timber usage.
@@ -63,8 +73,11 @@ Timber::render('welcome.twig', $context);
 	</div>
 </section>
 ```
+
 * * *
-### 3. Connecting Twig to your WordPress Admin
+
+## 3. Connecting Twig to your WordPress Admin
+
 [![Connecting Timber](http://img.youtube.com/vi/C7HtYkaG2DQ/0.jpg)](http://www.youtube.com/watch?v=C7HtYkaG2DQ)
 
 ```php
@@ -83,8 +96,11 @@ Timber::render('welcome.twig', $context);
 	</div>
 </section>
 ```
+
 * * *
-### 4. Converting HTML to Twig Templates
+
+## 4. Converting HTML to Twig Templates
+
 [![Connecting HTML Templates](http://img.youtube.com/vi/BxazrNBLK-0/0.jpg)](http://www.youtube.com/watch?v=BxazrNBLK-0)
 
 ```php
@@ -102,7 +118,7 @@ Timber::render('home-main.twig', $context);
 
 * * *
 
-### 5. Using Custom Post Types with Timber + Twig
+## 5. Using Custom Post Types with Timber + Twig
 
 [![Using Custom Post Types with Timber](http://img.youtube.com/vi/19T0MStDLSQ/0.jpg)](http://www.youtube.com/watch?v=19T0MStDLSQ)
 
@@ -126,13 +142,15 @@ Timber::render('home-main.twig', $context);
 	</div>
 </article>
 ```
+
 * * *
-### 6. Extending Templates
+
+## 6. Extending Templates
 _Todo: Record Screencast showing this_
 
 This is a **really** important concept for DRY. I'll show how to create a base template that can power your site:
 
-##### Create a `base.twig` file:
+### Create a `base.twig` file:
 
 ```twig
 {# base.twig #}
@@ -151,7 +169,7 @@ This is a **really** important concept for DRY. I'll show how to create a base t
 </html>
 ```
 
-##### You can use this in a custom `single.twig` file:
+### You can use this in a custom `single.twig` file:
 
 ```twig
 {# single.twig #}

@@ -5,9 +5,8 @@ menu:
     parent: "guides"
 ---
 
-My theme/plugin has some functions I need! Do I really have to re-write all of them?
-
-No.
+My theme/plugin has some functions I need! Do I really have to re-write all of them?  
+No, you don’t.
 
 ## function()
 
