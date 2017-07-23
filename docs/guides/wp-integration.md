@@ -5,19 +5,10 @@ menu:
     parent: "guides"
 ---
 
-Timber plays nice with your existing WordPress setup. You can still use other plugins, etc. Here's a rundown of the key points:
-
-- [the_content](#the_content)
-- [WordPress Hooks](#hooks)
-- [Functions](#functions)
-- [Actions](#actions)
-- [Filters](#filters)
-- [Widgets](#widgets)
-- [Shortcodes](#shortcodes)
-
-* * *
+Timber plays nice with your existing WordPress setup. You can still use other plugins, etc.
 
 ## the_content
+
 You're probably used to calling `the_content()` in your theme file. This is good. Before outputting, WordPress will run all the filters and actions that your plugins and themes are using. If you want to get this into your new Timber theme (and you probably do). Call it like this:
 
 ```twig
@@ -196,7 +187,7 @@ In `youtube-short.twig` we have the following template:
 
 Now, when the YouTube embed code changes, we only need to edit the `youtube-short.twig` template. No need to search your PHP files for this one particular line.
 
-##### Layouts with Shortcodes
+### Layouts with Shortcodes
 
 Timber and Twig can process your shortcodes by using the `{% filter shortcodes %}` tag. Let's say you're using a `[tab]` shortcode, for example:
 

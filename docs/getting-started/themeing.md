@@ -7,8 +7,7 @@ menu:
 
 ## Your first Timber project
 
-### Let's start with your single post
-Find this file:
+Let's start with your single post. Find this file:
 
 ```html
 	wp-content/themes/{timber-starter-theme}/views/single.twig
@@ -32,7 +31,9 @@ Brilliant! Open it up.
 {% endblock %}
 ```
 
-#### This is the fun part.
+**What did we just do?**
+
+This is the fun part.
 
 ```twig
 <h1 class="article-h1">{{ post.title }}</h1>
@@ -65,7 +66,8 @@ This means that `single.twig` is using `base.twig` as its parent template. That'
 
 What if you want modify `<head>`, etc? Read on to learn all about blocks.
 
-### Blocks
+## Blocks
+
 Blocks are the single most important and powerful concept in managing your templates. The [official Twig Documentation](http://twig.sensiolabs.org/doc/templates.html#template-inheritance) has more details. Let's cover the basics.
 
 In `single.twig` you see opening and closing block declarations that surround the main page contents.
@@ -76,7 +78,7 @@ In `single.twig` you see opening and closing block declarations that surround th
 
 If you were to peek into **base.twig** you would see a matching set of `{% block content %} / {% endblock %}` tags. **single.twig** is replacing the content of base's `{% block content %}` with its own.
 
-##### Nesting Blocks, Multiple Inheritance
+### Nesting Blocks, Multiple Inheritance
 This is when things get really cool. Whereas most people use PHP includes in a linear fashion, you can create infinite levels of nested blocks to particularly control your page templates. For example, let's say you occasionally want to replace the title/headline on your `single.twig` template with a custom image or typography.
 
 For this demo let's assume that the name of the page is "All about Jared" (making its slug `all-about-jared`). First, I'm going to surround the part of the template I want to control with block declarations:
@@ -119,7 +121,7 @@ So two big concepts going on here:
 
 What if you want to **add** to the block as opposed to replace? No prob, just call `{{ parent() }}` where the parent's content should go.
 
-### Loop / Index page
+## The index page
 
 Let's crack open **index.php** and see what's inside:
 
@@ -132,7 +134,7 @@ Timber::render('index.twig', $context);
 
 This is where we are going to handle the logic that powers our index file. Let's go step-by-step.
 
-#### Get the starter
+### Get the context
 
 ```php
 <?php
@@ -141,7 +143,7 @@ $context = Timber::get_context();
 
 This is going to return an object with a lot of the common things we need across the site. Things like the site name, the description or the navigation menu you'll want to start with each time (even if you over-write them later). You can do a ```print_r( $context );``` to see what’s inside or open-up [**Timber.php**](https://github.com/timber/timber/blob/master/lib/Timber.php) to inspect for yourself.
 
-#### Grab your posts
+### Grab your posts
 
 ```php
 <?php
@@ -149,9 +151,9 @@ $context['posts'] = Timber::get_posts();
 ```
 We're now going to grab the posts that are inside the loop and stick them inside our data object under the **posts** key.
 
-##### Timber::get_posts() usage
+## How to use Timber::get_posts()
 
-###### Use a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) array
+### Use a WP_Query array
 
 ```php
 	<?php
@@ -175,7 +177,9 @@ We're now going to grab the posts that are inside the loop and stick them inside
 	$context['posts'] = Timber::get_posts($args);
 ```
 
-##### Use a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) string
+You can find all available options in the documentation for [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query).
+
+### Use a WP_Query string
 
 ```php
 	<?php
@@ -183,7 +187,7 @@ We're now going to grab the posts that are inside the loop and stick them inside
 	$context['posts'] = Timber::get_posts($args);
 ```
 
-##### Use Post ID numbers
+### Use Post ID numbers
 
 ```php
 	<?php
@@ -191,7 +195,7 @@ We're now going to grab the posts that are inside the loop and stick them inside
 	$context['posts'] = Timber::get_posts($ids);
 ```
 
-#### Render
+## Render
 
 ```php
 <?php
