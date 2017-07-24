@@ -9,7 +9,8 @@ Timber is designed to play nicely with (the amazing) [Advanced Custom Fields](ht
 
 While data saved by ACF is available via `{{post.my_acf_field}}` you will often need to do some additional work to get back the _kind_ of data you want. For example, images are stored as image ID#s which you might want to translate into a specific image object. Read on to learn more about those specific exceptions.
 
-### WYSIWYG field (and other requiring text):
+## WYSIWYG field (and other requiring text)
+
 ```twig
 <h3>{{post.title}}</h3>
 <div class="intro-text">
@@ -19,16 +20,17 @@ While data saved by ACF is available via `{{post.my_acf_field}}` you will often 
 
 This will apply your expected paragraph breaks and other pre-processing to the text.
 
-### Image field type:
+## Image field
+
 You can retrieve an image from a custom field, then use it in a Twig template. The most reliable approach is this: When setting up your custom fields you'll want to save the `image_id` to the field. The image object, url, etc. _will_ work but it's not as fool-proof.
 
-##### The quick way (for most situations)
+### The quick way (for most situations)
 
 ```twig
 <img src="{{TimberImage(post.get_field('hero_image')).src}}" />
 ```
 
-##### The long way (for some special situations)
+### The long way (for some special situations)
 
 This is where we'll start in PHP.
 
@@ -53,16 +55,18 @@ You can now use all the above functions to transform your custom images in the s
 ```
 
 * * *
-### Gallery Field:
+
+## Gallery field
 
 ```twig
 {% for image in post.get_field('gallery') %}
     <img src="{{ TimberImage(image) }}" />
 {% endfor %}
 ```
+
 * * *
 
-### Repeater field
+## Repeater field
 
 You can access repeater fields within twig files:
 
@@ -80,7 +84,7 @@ You can access repeater fields within twig files:
 </div>
 ```
 
-##### Nested?
+### Nested Repeater fields
 
 When you run `get_field` on an outer ACF field, everything inside is ready to be traversed. You can refer to nested fields via item_outer.inner_repeater
 
@@ -95,11 +99,11 @@ When you run `get_field` on an outer ACF field, everything inside is ready to be
 {% endfor %}
 ```
 
-##### Troubleshooting
+### Troubleshooting Repeaters
 
 A common problem in working with repeaters is that you should only call the `get_field` method **once** on an item. In other words if you have a field inside a field (for example, a relationship inside a repeater or a repeater inside a repeater, **do not** call `get_field` on the inner field). More:
 
-###### DON'T DO THIS: (Bad)
+**DON'T DO THIS: (Bad)**
 
 ```twig
 {% for gear in post.get_field('gear_items') %}
@@ -110,7 +114,7 @@ A common problem in working with repeaters is that you should only call the `get
 {% endfor %}
 ```
 
-###### Do THIS: (Good)
+**DO THIS: (Good)**
 
 ```twig
 {% for gear in post.get_field('gear_items') %}
@@ -123,7 +127,7 @@ A common problem in working with repeaters is that you should only call the `get
 
 * * *
 
-### Flexible content field
+## Flexible Content field
 
 Similar to repeaters, get the field by the name of the flexible content field:
 
@@ -142,7 +146,7 @@ Similar to repeaters, get the field by the name of the flexible content field:
 
 * * *
 
-### Options Page
+## Options Page
 
 ```php
 	<?php
@@ -154,7 +158,7 @@ Similar to repeaters, get the field by the name of the flexible content field:
 	<footer>{{site_copyright_info}}</footer>
 ```
 
-###### Get all info from your options page
+### Get all info from your options page
 
 ```php
 	<?php
@@ -168,7 +172,7 @@ ACF Pro has a built in options page, and changes the `get_fields('options')` to 
 	<footer>{{options.copyright_info}}</footer>
 ```
 
-###### Use options info site wide
+### Use options info site wide
 
 To use any options fields site wide, add the `option` context to your functions.php file
 
@@ -192,7 +196,8 @@ Now, you can use any of the option fields across the site instead of per templat
 
 * * *
 
-### Getting ACF info:
+## Getting ACF info
+
 You can grab specific field label data like so:
 
 ```php
@@ -207,11 +212,9 @@ $context["acf"] = get_field_objects($data["post"]->ID);
 
 * * *
 
-### Query by custom field value:
-###### Use a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) array
+## Query by custom field value
 
-#### Basic Example
-This example shows the arguments to find all posts where a custom field called ‘color’ has a value of ‘red’.
+This example that uses a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) array shows the arguments to find all posts where a custom field called `color` has a value of `red`.
 
 ```php
 <?php

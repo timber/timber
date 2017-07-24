@@ -129,7 +129,9 @@ class Loader {
 	/**
 	 * @param string $name
 	 * @return bool
-	 * @deprecated 1.3.4 No longer used internally
+	 * @deprecated 1.3.5 No longer used internally
+	 * @todo remove in 2.x
+	 * @codeCoverageIgnore
 	 */
 	protected function template_exists( $name ) {
 		return $this->get_loader()->exists($name);
