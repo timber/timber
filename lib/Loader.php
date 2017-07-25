@@ -42,7 +42,11 @@ class Loader {
 			$rootPath = null;
 		}
 		$this->loader = new \Twig_Loader_Filesystem($paths, $rootPath);
+
 		$this->loader = apply_filters('timber/loader/loader', $this->loader);
+		if (! $this->loader instanceof \Twig_LoaderInterface) {			
+			throw new \UnexpectedValueException('Loader must implement \Twig_LoaderInterface');
+		}
 
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
