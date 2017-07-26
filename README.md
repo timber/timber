@@ -1,7 +1,7 @@
 <div style="text-align:center">
 <a href="http://timber.github.io/timber"><img src="http://i.imgur.com/PbEwvZ9.png" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
 <div>
-By Jared Novack (<a href="https://twitter.com/jarednova">@JaredNova</a>) and <a href="http://upstatement.com">Upstatement</a> (<a href="https://twitter.com/upstatement">@Upstatement</a>)</div>
+By [Jared Novack](https://github.com/jarednova), [Lukas Gächter](/gchtr) and <a href="http://upstatement.com">Upstatement</a> (<a href="https://twitter.com/upstatement">@Upstatement</a>)</div>
 </div>
 
 [![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.org/timber/timber)
