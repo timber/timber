@@ -2,7 +2,7 @@
 <a href="http://timber.github.io/timber"><img src="http://i.imgur.com/PbEwvZ9.png" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
 </div>
 
-By [Jared Novack](https://github.com/jarednova) ([@jarednova](https://twitter.com/jarednova)), [Lukas Gächter](/gchtr) ([@lgaechter](https://twitter.com/lgaechter)) and [Upstatement](https://twitter.com/upstatement)
+By [Jared Novack](https://github.com/jarednova) ([@jarednova](https://twitter.com/jarednova)), [Lukas Gächter](/gchtr) ([@lgaechter](https://twitter.com/lgaechter)), [Linda Gorman](/lggorman) ([@lggorman](https://twitter.com/lggorman)) and [Upstatement](https://twitter.com/upstatement)
 
 
 [![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.org/timber/timber)
