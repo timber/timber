@@ -127,7 +127,7 @@ class URLHelper {
 	 * @return bool
 	 */
 	public static function is_local( $url ) {
-		if ( strstr($url, self::get_host()) ) {
+		if ( !empty(self::get_host()) && strstr($url, self::get_host()) ) {
 			return true;
 		}
 		return false;
