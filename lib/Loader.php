@@ -25,14 +25,17 @@ class Loader {
 
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
-	private $loader;
+	protected $loader;
 
 	/**
 	 * @param bool|string   $caller the calling directory or false
 	 */
 	public function __construct( $caller = false ) {
 		$locations = LocationManager::get_locations($caller);
-		
+		$this->init($locations);
+	}
+
+	function init( $locations = array() ) {
 		$open_basedir = ini_get('open_basedir');
 		$paths = array_merge($locations, array($open_basedir ? ABSPATH : '/'));
 		$paths = apply_filters('timber/loader/paths', $paths);
@@ -44,7 +47,7 @@ class Loader {
 		$this->loader = new \Twig_Loader_Filesystem($paths, $rootPath);
 
 		$this->loader = apply_filters('timber/loader/loader', $this->loader);
-		if (! $this->loader instanceof \Twig_LoaderInterface) {			
+		if ( !$this->loader instanceof \Twig_LoaderInterface ) {			
 			throw new \UnexpectedValueException('Loader must implement \Twig_LoaderInterface');
 		}
 
