@@ -51,7 +51,7 @@ class Loader {
 			$rootPath = null;
 		}
 		$loader = new \Twig_Loader_Filesystem($paths, $rootPath);
-		$loader = apply_filters('timber/loader/loader', $this->loader);
+		$loader = apply_filters('timber/loader/loader', $loader);
 		if ( !$loader instanceof \Twig_LoaderInterface ) {
 			throw new \UnexpectedValueException('Loader must implement \Twig_LoaderInterface');
 		}
