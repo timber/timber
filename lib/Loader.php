@@ -35,22 +35,19 @@ class Loader {
 		$this->init($locations);
 	}
 
-	function init( $locations = array() ) {
+	protected function init( $locations = array() ) {
 		$open_basedir = ini_get('open_basedir');
 		$paths = array_merge($locations, array($open_basedir ? ABSPATH : '/'));
 		$paths = apply_filters('timber/loader/paths', $paths);
-
 		$rootPath = '/';
 		if ( $open_basedir ) {
 			$rootPath = null;
 		}
 		$this->loader = new \Twig_Loader_Filesystem($paths, $rootPath);
-
 		$this->loader = apply_filters('timber/loader/loader', $this->loader);
-		if ( !$this->loader instanceof \Twig_LoaderInterface ) {			
+		if ( !$this->loader instanceof \Twig_LoaderInterface ) {
 			throw new \UnexpectedValueException('Loader must implement \Twig_LoaderInterface');
 		}
-
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
 	}
