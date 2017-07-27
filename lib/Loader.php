@@ -25,17 +25,24 @@ class Loader {
 
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
-	protected $loader;
+	private $loader;
 
 	/**
 	 * @param bool|string   $caller the calling directory or false
 	 */
 	public function __construct( $caller = false ) {
 		$locations = LocationManager::get_locations($caller);
-		$this->init($locations);
+
+		$this->loader = $this->create_twig_loader($locations);
+
+		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
+		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
 	}
 
-	protected function init( $locations = array() ) {
+	/**
+	 * @param array   $locations
+	 */
+	protected function create_twig_loader( $locations = array() ) {
 		$open_basedir = ini_get('open_basedir');
 		$paths = array_merge($locations, array($open_basedir ? ABSPATH : '/'));
 		$paths = apply_filters('timber/loader/paths', $paths);
@@ -43,13 +50,12 @@ class Loader {
 		if ( $open_basedir ) {
 			$rootPath = null;
 		}
-		$this->loader = new \Twig_Loader_Filesystem($paths, $rootPath);
-		$this->loader = apply_filters('timber/loader/loader', $this->loader);
+		$loader = new \Twig_Loader_Filesystem($paths, $rootPath);
+		$loader = apply_filters('timber/loader/loader', $this->loader);
 		if ( !$this->loader instanceof \Twig_LoaderInterface ) {
 			throw new \UnexpectedValueException('Loader must implement \Twig_LoaderInterface');
 		}
-		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
-		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
+		return $loader;
 	}
 
 	/**
