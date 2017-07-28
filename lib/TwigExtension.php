@@ -54,7 +54,7 @@ class TwigExtension implements \Twig_ExtensionInterface {
      * @deprecated since Twig v1.23 (to be removed in v2.0)
      * @ignore
      */
-    final public function initRuntime(Twig_Environment $environment) {
+    final public function initRuntime(\Twig_Environment $environment) {
 	}
 
 	/**
