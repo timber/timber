@@ -37,25 +37,30 @@ class Loader {
 		$locations = LocationManager::get_locations($caller);
 
 		$this->loader = $this->create_twig_loader($locations);
+
+		$this->loader = apply_filters('timber/loader/loader', $this->loader);
+// TODO: Consider this new filter as a future replacement for 'timber/loader/loader'
+//		$loader = apply_filters('timber/twig/loader', $loader, $this);
+		if ( !$this->loader instanceof \Twig_LoaderInterface ) {
+			throw new \UnexpectedValueException('Loader must implement \Twig_LoaderInterface');
+		}
 	}
 
 	/**
 	 * @param array   $locations
+	 * @return \Twig_LoaderInterface
 	 */
 	protected function create_twig_loader( $locations = array() ) {
 		$open_basedir = ini_get('open_basedir');
 		$paths = array_merge($locations, array($open_basedir ? ABSPATH : '/'));
 		$paths = apply_filters('timber/loader/paths', $paths);
+// TODO: Consider this new filter as a future replacement for 'timber/loader/paths'
+//		$paths = apply_filters('timber/twig/loader/paths', $paths, $this);
 		$rootPath = '/';
 		if ( $open_basedir ) {
 			$rootPath = null;
 		}
-		$loader = new \Twig_Loader_Filesystem($paths, $rootPath);
-		$loader = apply_filters('timber/loader/loader', $loader);
-		if ( !$loader instanceof \Twig_LoaderInterface ) {
-			throw new \UnexpectedValueException('Loader must implement \Twig_LoaderInterface');
-		}
-		return $loader;
+		return new \Twig_Loader_Filesystem($paths, $rootPath);
 	}
 
 	/**
