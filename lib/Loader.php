@@ -169,6 +169,8 @@ class Loader {
 		}
 		$twig->addExtension($this->_get_cache_extension());
 
+		$twig->addExtension(new TwigExtension($twig));
+		
 		$twig = apply_filters('twig_apply_filters', $twig);
 		$twig = apply_filters('timber/twig/filters', $twig);
 		$twig = apply_filters('timber/twig/functions', $twig);
