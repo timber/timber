@@ -49,6 +49,15 @@ class TwigExtension implements \Twig_ExtensionInterface {
 	}
 
 	/**
+     * This is not used by Twig v2.x, but existence is required to maintain compatibility with Twig v1.x
+     *
+     * @deprecated since Twig v1.23 (to be removed in v2.0)
+     * @ignore
+     */
+    final public function initRuntime(Twig_Environment $environment) {
+	}
+
+	/**
      * Returns the token parser instances to add to the existing list.
      *
      * @return Twig_TokenParserInterface[]
@@ -313,12 +322,30 @@ class TwigExtension implements \Twig_ExtensionInterface {
 		return apply_filters('timber/twig/extension/operators', $operators, $this);
 	}
 
-
-
-
-
-
-
+	/**
+     * This is not used by Twig v2.x, but existence is required to maintain compatibility with Twig v1.x
+     *
+     * @return array An empty array
+     * @deprecated since Twig v1.23 (to be removed in v2.0)
+     * @ignore
+     */
+    final public function getGlobals() {
+		return array();
+	}
+	
+    /**
+     * This is not used by Twig v2.x, but existence is required to maintain compatibility with Twig v1.x
+	 *
+	 * Returns the name of the extension.
+     *
+     * @return string The extension name
+	 * @deprecated since Twig v1.26 (to be removed in Twig v2.0), not used anymore internally
+     * @ignore
+     */
+    final public function getName() {
+		return 'TimberExtension';
+	}
+	
 
 	/**
 	 *
