@@ -361,4 +361,4 @@ function add_timber_filters( $twig ) {
 	$twig = apply_filters('get_twig', $twig);
 	return $twig;
 }
-add_action('timber/twig/filters', array(__NAMESPACE__.'\add_timber_filters'));
+add_action('timber/twig/filters', __NAMESPACE__.'\add_timber_filters');
