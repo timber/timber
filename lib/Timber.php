@@ -337,8 +337,12 @@ class Timber {
 	 * @return  bool|string
 	 */
 	public static function compile_string( $string, $data = array() ) {
-		$dummy_loader = new Loader();
-		$twig = $dummy_loader->get_twig();
+		static $dummy_loader = null;
+		static $twig = null;
+		if ($dummy_loader === null || $twig === null) {
+			$dummy_loader = new Loader();
+			$twig = $dummy_loader->get_twig();
+		}
 		$template = $twig->createTemplate($string);
 		return $template->render($data);
 	}
