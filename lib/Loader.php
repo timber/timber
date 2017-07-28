@@ -31,12 +31,12 @@ class Loader {
 	 * @param bool|string   $caller the calling directory or false
 	 */
 	public function __construct( $caller = false ) {
+		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
+		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
+
 		$locations = LocationManager::get_locations($caller);
 
 		$this->loader = $this->create_twig_loader($locations);
-
-		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
-		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
 	}
 
 	/**
