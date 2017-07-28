@@ -341,3 +341,24 @@ class Loader {
 	}
 
 }
+
+/**
+ * Temporrily moved to here from the Twig class.
+ *
+ * @codeCoverageIgnore
+ *
+ * @param Twig_Environment $twig
+ * @return Twig_Environment
+ * @internal
+ * @ignore
+ */
+function add_timber_filters( $twig ) {
+
+	$twig = apply_filters('timber/twig', $twig);
+	/**
+	 * get_twig is deprecated, use timber/twig
+	 */
+	$twig = apply_filters('get_twig', $twig);
+	return $twig;
+}
+add_action('timber/twig/filters', array(__NAMESPACE__.'\add_timber_filters'));
