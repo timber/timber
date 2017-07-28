@@ -48,12 +48,11 @@ class Loader {
 
 		$this->environment = $this->create_twig_environment($this->loader);
 
-// TODO: Consider changing these two filters into actions, to prevent replacement of the Twig environment object
-		$this->environment = apply_filters('timber/twig', $this->environment);
+		do_action('timber/twig', $this->environment);
 		/**
 		 * get_twig is deprecated, use timber/twig
 		 */
-		$this->environment = apply_filters('get_twig', $this->environment);
+		do_action('get_twig', $this->environment);
 	}
 
 	/**
@@ -381,10 +380,8 @@ class Loader {
  * @internal
  */
 function do_legacy_twig_environment_filters_pre_timber_twig(\Twig_Environment $twig) {
-// TODO: Change these filters into Wordpress actions to avoid replacement of the environment object.
-	$twig = apply_filters('twig_apply_filters', $twig);
-	$twig = apply_filters('timber/twig/filters', $twig);
-	return $twig;
+	do_action('twig_apply_filters', $twig);
+	do_action('timber/twig/filters', $twig);
 }
 // Attach action with lower than default priority to simulate the filters prior location before 'timber/twig' was fired at the bottom of Twig::add_timber_filters()
 add_action('timber/twig', __NAMESPACE__.'\do_legacy_twig_environment_filters_pre_timber_twig', 5);
@@ -395,11 +392,9 @@ add_action('timber/twig', __NAMESPACE__.'\do_legacy_twig_environment_filters_pre
  * @internal
  */
 function do_legacy_twig_environment_filters_post_timber_twig(\Twig_Environment $twig) {
-// TODO: Change these filters into Wordpress actions to avoid replacement of the environment object.
-	$twig = apply_filters('timber/twig/functions', $twig);
-	$twig = apply_filters('timber/twig/escapers', $twig);
-	$twig = apply_filters('timber/loader/twig', $twig);
-	return $twig;
+	do_action('timber/twig/functions', $twig);
+	do_action('timber/twig/escapers', $twig);
+	do_action('timber/loader/twig', $twig);
 }
 // Attach action with higher than default priority to simulate the filters prior location after 'timber/twig' was fired at the bottom of Twig::add_timber_filters()
 add_action('timber/twig', __NAMESPACE__.'\do_legacy_twig_environment_filters_post_timber_twig', 15);

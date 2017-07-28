@@ -159,8 +159,6 @@ class Twig {
 		$twig->addFunction(new Twig_Function('translate_nooped_plural', function( $nooped_plural, $count, $domain = 'default' ) {
 					return translate_nooped_plural($nooped_plural, $count, $domain);
 				} ));
-
-		return $twig;
 	}
 
 	/**
@@ -215,8 +213,6 @@ class Twig {
 
 					return apply_filters_ref_array($tag, $args);
 				} ));
-
-		return $twig;
 	}
 
 	/**
@@ -241,9 +237,6 @@ class Twig {
 		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_js', function( \Twig_Environment $env, $string ) {
 			return esc_js( $string );
 		});
-
-		return $twig;
-
 	}
 
 	/**
