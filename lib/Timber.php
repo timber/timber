@@ -49,15 +49,7 @@ class Timber {
 	 * @codeCoverageIgnore
 	 */
 	public function __construct() {
-		if ( !defined('ABSPATH') ) {
-			return;
-		}
-		if ( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
-			$this->test_compatibility();
-			$this->backwards_compatibility();
-			$this->init_constants();
-			self::init();
-		}
+		static::init();
 	}
 
 	/**
@@ -65,7 +57,7 @@ class Timber {
 	 * @codeCoverageIgnore
 	 * @return
 	 */
-	protected function test_compatibility() {
+	protected static function test_compatibility() {
 		if ( is_admin() || $_SERVER['PHP_SELF'] == '/wp-login.php' ) {
 			return;
 		}
@@ -80,7 +72,7 @@ class Timber {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	private function backwards_compatibility() {
+	private static function backwards_compatibility() {
 		if ( class_exists('TimberArchives') ) {
 			//already run, so bail
 			return;
@@ -93,21 +85,27 @@ class Timber {
 				class_alias($new_class_name, $old_class_name);
 			}
 		}
-		class_alias(get_class($this), 'Timber');
+		class_alias(__CLASS__, 'Timber');
 		if ( class_exists('Timber\\'.'Integrations\Timber_WP_CLI_Command') ) {
 			class_alias('Timber\\'.'Integrations\Timber_WP_CLI_Command', 'Timber_WP_CLI_Command');
 		}
 	}
 
-	public function init_constants() {
+	public static function init_constants() {
 		defined("TIMBER_LOC") or define("TIMBER_LOC", realpath(dirname(__DIR__)));
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	protected static function init() {
+	public static function init() {
+		if ( !defined('ABSPATH') ) {
+			trigger_error('Timber requires Wordpress to be loaded!', E_USER_ERROR);
+		}
 		if ( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
+			static::test_compatibility();
+			static::backwards_compatibility();
+			static::init_constants();
 			Twig::init();
 			ImageHelper::init();
 			Admin::init();
