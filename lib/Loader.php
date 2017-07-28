@@ -48,15 +48,12 @@ class Loader {
 
 		$this->environment = $this->create_twig_environment($this->loader);
 
-// TODO: Move these filters into a static method to be called as a wordpress action 'timber/twig'. NB. This would currently result in a circular bug, since 'timber/twig' is currently called within 'timber/twig/filters'.
-// TODO: Change these filters into Wordpress actions to avoid replacement of the environment object.
-		$this->environment = apply_filters('twig_apply_filters', $this->environment);
-		$this->environment = apply_filters('timber/twig/filters', $this->environment);
-		$this->environment = apply_filters('timber/twig/functions', $this->environment);
-		$this->environment = apply_filters('timber/twig/escapers', $this->environment);
-		$this->environment = apply_filters('timber/loader/twig', $this->environment);
-// TODO: Consider if this is the right future location for this action (which is currently a filter, and called at the bottom of \Timber\Twig::add_timber_filters())
-//		do_action('timber/twig', $twig, $this);
+// TODO: Consider changing these two filters into actions, to prevent replacement of the Twig environment object
+		$this->environment = apply_filters('timber/twig', $this->environment);
+		/**
+		 * get_twig is deprecated, use timber/twig
+		 */
+		$this->environment = apply_filters('get_twig', $this->environment);
 	}
 
 	/**
@@ -376,3 +373,33 @@ class Loader {
 	}
 
 }
+
+
+/**
+ * @param \Twig_Environment $twig
+ * @return \Twig_Environment
+ * @internal
+ */
+function do_legacy_twig_environment_filters_pre_timber_twig(\Twig_Environment $twig) {
+// TODO: Change these filters into Wordpress actions to avoid replacement of the environment object.
+	$twig = apply_filters('twig_apply_filters', $twig);
+	$twig = apply_filters('timber/twig/filters', $twig);
+	return $twig;
+}
+// Attach action with lower than default priority to simulate the filters prior location before 'timber/twig' was fired at the bottom of Twig::add_timber_filters()
+add_action('timber/twig', __NAMESPACE__.'\do_legacy_twig_environment_filters_pre_timber_twig', 5);
+
+/**
+ * @param \Twig_Environment $twig
+ * @return \Twig_Environment
+ * @internal
+ */
+function do_legacy_twig_environment_filters_post_timber_twig(\Twig_Environment $twig) {
+// TODO: Change these filters into Wordpress actions to avoid replacement of the environment object.
+	$twig = apply_filters('timber/twig/functions', $twig);
+	$twig = apply_filters('timber/twig/escapers', $twig);
+	$twig = apply_filters('timber/loader/twig', $twig);
+	return $twig;
+}
+// Attach action with higher than default priority to simulate the filters prior location after 'timber/twig' was fired at the bottom of Twig::add_timber_filters()
+add_action('timber/twig', __NAMESPACE__.'\do_legacy_twig_environment_filters_post_timber_twig', 15);
