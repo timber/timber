@@ -26,6 +26,7 @@ class Loader {
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
 	private $loader;
+	private $environment;
 
 	/**
 	 * @param bool|string   $caller the calling directory or false
@@ -44,6 +45,18 @@ class Loader {
 		if ( !$this->loader instanceof \Twig_LoaderInterface ) {
 			throw new \UnexpectedValueException('Loader must implement \Twig_LoaderInterface');
 		}
+
+		$this->environment = $this->create_twig_environment($this->loader);
+
+// TODO: Move these filters into a static method to be called as a wordpress action 'timber/twig'. NB. This would currently result in a circular bug, since 'timber/twig' is currently called within 'timber/twig/filters'.
+// TODO: Change these filters into Wordpress actions to avoid replacement of the environment object.
+		$this->environment = apply_filters('twig_apply_filters', $this->environment);
+		$this->environment = apply_filters('timber/twig/filters', $this->environment);
+		$this->environment = apply_filters('timber/twig/functions', $this->environment);
+		$this->environment = apply_filters('timber/twig/escapers', $this->environment);
+		$this->environment = apply_filters('timber/loader/twig', $this->environment);
+// TODO: Consider if this is the right future location for this action (which is currently a filter, and called at the bottom of \Timber\Twig::add_timber_filters())
+//		do_action('timber/twig', $twig, $this);
 	}
 
 	/**
@@ -61,6 +74,39 @@ class Loader {
 			$rootPath = null;
 		}
 		return new \Twig_Loader_Filesystem($paths, $rootPath);
+	}
+
+	/**
+	 * @param \Twig_LoaderInterface $loader
+	 * @return \Twig_Environment
+	 */
+	protected function create_twig_environment(\Twig_LoaderInterface $loader) {
+		$options = array('debug' => WP_DEBUG, 'autoescape' => false);
+		if ( isset(Timber::$autoescape) ) {
+			$options['autoescape'] = Timber::$autoescape;
+		}
+
+// TODO: Consider this new (experimental) filter!
+//		$options = apply_filters('timber/twig/options', $options, $this);
+
+		if ( Timber::$cache === true ) {
+			Timber::$twig_cache = true;
+		}
+		if ( Timber::$twig_cache ) {
+			$twig_cache_loc = apply_filters('timber/cache/location', TIMBER_LOC.'/cache/twig');
+			if ( !file_exists($twig_cache_loc) ) {
+				mkdir($twig_cache_loc, 0777, true);
+			}
+			$options['cache'] = $twig_cache_loc;
+		}
+
+		$twig = new \Twig_Environment($loader, $options);
+		if ( WP_DEBUG ) {
+			$twig->addExtension(new \Twig_Extension_Debug());
+		}
+		$twig->addExtension($this->_get_cache_extension());
+
+		return $twig;
 	}
 
 	/**
@@ -165,33 +211,7 @@ class Loader {
 	 * @return \Twig_Environment
 	 */
 	public function get_twig() {
-		$loader = $this->get_loader();
-		$params = array('debug' => WP_DEBUG, 'autoescape' => false);
-		if ( isset(Timber::$autoescape) ) {
-			$params['autoescape'] = Timber::$autoescape;
-		}
-		if ( Timber::$cache === true ) {
-			Timber::$twig_cache = true;
-		}
-		if ( Timber::$twig_cache ) {
-			$twig_cache_loc = apply_filters('timber/cache/location', TIMBER_LOC.'/cache/twig');
-			if ( !file_exists($twig_cache_loc) ) {
-				mkdir($twig_cache_loc, 0777, true);
-			}
-			$params['cache'] = $twig_cache_loc;
-		}
-		$twig = new \Twig_Environment($loader, $params);
-		if ( WP_DEBUG ) {
-			$twig->addExtension(new \Twig_Extension_Debug());
-		}
-		$twig->addExtension($this->_get_cache_extension());
-
-		$twig = apply_filters('twig_apply_filters', $twig);
-		$twig = apply_filters('timber/twig/filters', $twig);
-		$twig = apply_filters('timber/twig/functions', $twig);
-		$twig = apply_filters('timber/twig/escapers', $twig);
-		$twig = apply_filters('timber/loader/twig', $twig);
-		return $twig;
+		return $this->environment;
 	}
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
