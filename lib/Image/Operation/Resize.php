@@ -59,11 +59,9 @@ class Resize extends ImageOperation {
 	/**
 	 * @param string $load_filename
 	 * @param string $save_filename
+	 * @param \WP_Image_Editor $editor
 	 */
-	protected function run_animated_gif( $load_filename, $save_filename, $editor ) {
-		$current_size = $editor->get_size();
-		$src_w = $current_size['width'];
-		$src_h = $current_size['height'];
+	protected function run_animated_gif( $load_filename, $save_filename, \WP_Image_Editor $editor ) {
 		$w = $this->w;
 		$h = $this->h;
 		if ( !class_exists('Imagick') ) {
@@ -82,7 +80,7 @@ class Resize extends ImageOperation {
 	}
 
 	/**
-	 * @param WP_Image_Editor $image
+	 * @param \WP_Image_Editor $image
 	 */
 	protected function get_target_sizes( \WP_Image_Editor $image ) {
 		$w = $this->w;
