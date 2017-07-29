@@ -169,8 +169,6 @@ class Loader {
 		}
 		$twig->addExtension($this->_get_cache_extension());
 
-		$twig->addExtension(new TwigExtension($twig));
-		
 // TODO: Consider changing these two filters into actions, to prevent replacement of the Twig environment object
 		$twig = apply_filters('timber/twig', $twig);
 		/**

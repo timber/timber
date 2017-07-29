@@ -18,6 +18,29 @@ class TwigExtension implements \Twig_ExtensionInterface {
 
 	/**
 	 *
+	 */
+	public static function activate() {
+		\add_action('timber/twig', array(__CLASS__, 'loadIntoEnvironment'), 5);
+	}
+
+	/**
+	 *
+	 *
+	 * @param Twig_Environment $twig
+	 */
+	public static function loadIntoEnvironment(\Twig_Environment $twig) {
+		static $instance = null;
+		if ($instance === null) {
+			$instance = new static($twig);
+		}
+		$twig->addExtension($instance);
+
+// TODO: Remove when 'timber/twig' is changed into an action...
+		return $twig;
+	}
+
+	/**
+	 *
 	 *
 	 * @param Twig_Environment $twig
 	 */
