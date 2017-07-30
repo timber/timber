@@ -98,7 +98,7 @@ class Timber {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public static function init() {
+	protected static function init() {
 		if ( !defined('ABSPATH') ) {
 			trigger_error('Timber requires Wordpress to be loaded!', E_USER_ERROR);
 		}
