@@ -287,10 +287,14 @@ class Timber {
 		if ( !defined('TIMBER_LOADED') ) {
 			self::init();
 		}
-		$caller = LocationManager::get_calling_script_dir(1);
 
-		$locations = LocationManager::get_locations();
-		$loader = new Loader($locations);
+		static $loader = null;
+		if ($loader === null) {
+			$locations = LocationManager::get_locations();
+			$loader = new Loader($locations);
+		}
+
+		$caller = LocationManager::get_calling_script_dir(1);
 		if (true) {
 			$old_caller_paths = $loader->get_caller_loader()->getPaths();
 			$loader->get_caller_loader()->setPaths($caller);
