@@ -45,6 +45,8 @@ class Timber {
 
 	public static $context_cache = array();
 
+	private static $loader;
+
 	/**
 	 * @codeCoverageIgnore
 	 */
@@ -258,6 +260,90 @@ class Timber {
 	}
 
 	/**
+	 * This is an experimental solution to avoid recreation of Twig environments on each template compilation.
+	 * Use with caution in existing projects, since 'timber/twig' is only run once when the loader is created.
+	 * Currently user extensions via 'timber/twig' should therefore be added as hooks/actions before Timber is initialized.
+	 *  
+	 * NB This is a temporary location, and mode change will propably move to the constructor...
+	 *  
+	 * @return \Twig_LoaderInterface
+	 */
+	public static function reuse_loader() {
+		switch (true) {
+			case defined('TIMBER_LOADED'):
+				throw new \LogicException('Can no be changed after Timber is initialized');
+				
+			//
+			case static::$loader === false:
+				throw new \LoginException('Can no longer activate reusable loader');
+				
+			case static::$loader === null:
+				static::$loader = static::create_loader();
+				break;
+				
+			case is_object(static::$loader):
+				return; // Already reloading...
+				break;
+				
+			default:
+				throw new \LoginException('Internal error');
+		}
+	}
+
+	/**
+	 *  
+	 * @return \Twig_LoaderInterface
+	 */
+	protected static function create_loader() {
+		$locations = LocationManager::get_locations();
+		return new Loader($locations);
+	}
+
+	/**
+	 *  
+	 * @return \Twig_LoaderInterface
+	 */
+	protected static function get_loader() {
+		switch (true) {
+			//
+			case static::$loader === null:
+				static::$loader = false;
+				return static::create_loader();
+			
+			//
+			case static::$loader === false:
+				return static::create_loader();
+
+			//
+			case is_object(static::$loader):
+				return static::$loader;
+
+			//
+			default: 
+				throw new \LoginException('Internal error');
+		}
+
+
+
+
+		if ((static::$loader === null) || (static::$reuse_loader === true)) {
+			static::$loader = static::create_loader();
+		}
+		return static::$loader;
+	}
+
+	/**
+	 *  
+	 * @return \Twig_LoaderInterface
+	 */
+	protected static function get_twig_environment() {
+		if (static::$reuse_loader === false) {
+			throw new \LogicException('');
+		}
+		return static::get_loader()->get_twig();
+	}
+
+	/**
 	 * Compile a Twig file.
 	 *
 	 * Passes data to a Twig file and returns the output.
@@ -288,11 +374,7 @@ class Timber {
 			self::init();
 		}
 
-		static $loader = null;
-		if ($loader === null) {
-			$locations = LocationManager::get_locations();
-			$loader = new Loader($locations);
-		}
+		$loader = static::get_loader();
 
 		$caller = LocationManager::get_calling_script_dir(1);
 		if (true) {
@@ -352,12 +434,8 @@ class Timber {
 	 * @return  bool|string
 	 */
 	public static function compile_string( $string, $data = array() ) {
-		static $dummy_loader = null;
-		static $twig = null;
-		if ($dummy_loader === null || $twig === null) {
-			$dummy_loader = new Loader();
-			$twig = $dummy_loader->get_twig();
-		}
+		$loader = static::get_loader();
+		$twig = $loader->get_twig();
 		$template = $twig->createTemplate($string);
 		return $template->render($data);
 	}
