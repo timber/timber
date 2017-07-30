@@ -57,7 +57,7 @@ class Timber {
 	 * @codeCoverageIgnore
 	 * @return
 	 */
-	protected static function test_compatibility() {
+	private static function test_compatibility() {
 		if ( is_admin() || $_SERVER['PHP_SELF'] == '/wp-login.php' ) {
 			return;
 		}
@@ -91,7 +91,7 @@ class Timber {
 		}
 	}
 
-	protected static function init_constants() {
+	private static function init_constants() {
 		defined("TIMBER_LOC") or define("TIMBER_LOC", realpath(dirname(__DIR__)));
 	}
 
