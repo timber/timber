@@ -152,7 +152,7 @@ class Loader {
 		if ( false === $output || null === $output ) {
 			$twig = $this->get_twig();
 			if ( strlen($file) ) {
-				$loader = $this->get_loader();
+				$loader = $this->loader;
 				$result = $loader->getCacheKey($file);
 				do_action('timber_loader_render_file', $result);
 			}
@@ -186,7 +186,7 @@ class Loader {
 		}
 		
 		// Get Twig loader
-		$loader = $this->get_loader();
+		$loader = $this->loader;
 		
 		// Run through template array
 		foreach ( $templates as $template ) {
