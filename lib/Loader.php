@@ -26,16 +26,17 @@ class Loader {
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
 	private $loader;
+	private $filesystem_loader;
+	private $caller_loader;
+
 	private $environment;
 
 	/**
-	 * @param bool|string   $caller the calling directory or false
+	 * @param array $locations
 	 */
-	public function __construct( $caller = false ) {
+	public function __construct($locations = array()) {
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
-
-		$locations = LocationManager::get_locations($caller);
 
 		$this->loader = $this->create_twig_loader($locations);
 
@@ -69,7 +70,24 @@ class Loader {
 		if ( $open_basedir ) {
 			$rootPath = null;
 		}
-		return new \Twig_Loader_Filesystem($paths, $rootPath);
+		$chain = new \Twig_Loader_Chain();
+		$chain->addLoader($this->caller_loader = new \Twig_Loader_Filesystem(array(), $rootPath));
+		$chain->addLoader($this->filesystem_loader = new \Twig_Loader_Filesystem($paths, $rootPath));
+		return $chain;
+	}
+
+	/**
+	 * @return \Twig_Loader_Filesystem
+	 */
+	public function get_filesystem_loader() {
+		return $this->filesystem_loader;
+	}
+
+	/**
+	 * @return \Twig_Loader_Filesystem
+	 */
+	public function get_caller_loader() {
+		return $this->caller_loader;
 	}
 
 	/**
@@ -199,7 +217,8 @@ class Loader {
 	 * @return \Twig_LoaderInterface
 	 */
 	public function get_loader() {
-		return $this->loader;
+// TODO: Change this to return the loaderchin ($this->loader), but for now return the filesystem loader to preserve full backward compatibility
+		return $this->filesystem_loader;
 	}
 
 

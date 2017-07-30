@@ -288,7 +288,14 @@ class Timber {
 			self::init();
 		}
 		$caller = LocationManager::get_calling_script_dir(1);
-		$loader = new Loader($caller);
+
+		$locations = LocationManager::get_locations();
+		$loader = new Loader($locations);
+		if (true) {
+			$old_caller_paths = $loader->get_caller_loader()->getPaths();
+			$loader->get_caller_loader()->setPaths($caller);
+		}
+
 		$file = $loader->choose_template($filenames);
 
 		$caller_file = LocationManager::get_calling_script_file(1);
@@ -316,6 +323,10 @@ class Timber {
 			$output = $loader->render($file, $data, $expires, $cache_mode);
 		}
 		
+		if (true && isset($old_caller_paths)) {
+			$loader->get_caller_loader()->setPaths($old_caller_paths);
+		}
+
 		do_action('timber_compile_done');
 		return $output;
 	}
