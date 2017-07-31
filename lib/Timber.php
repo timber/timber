@@ -321,14 +321,6 @@ class Timber {
 			default: 
 				throw new \LoginException('Internal error');
 		}
-
-
-
-
-		if ((static::$loader === null) || (static::$reuse_loader === true)) {
-			static::$loader = static::create_loader();
-		}
-		return static::$loader;
 	}
 
 	/**
