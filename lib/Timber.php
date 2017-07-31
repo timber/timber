@@ -340,17 +340,6 @@ class Timber {
 	}
 
 	/**
-	 *  
-	 * @return \Twig_LoaderInterface
-	 */
-	protected static function get_twig_environment() {
-		if (static::$reuse_loader === false) {
-			throw new \LogicException('');
-		}
-		return static::get_timber_loader()->get_twig();
-	}
-
-	/**
 	 * Compile a Twig file.
 	 *
 	 * Passes data to a Twig file and returns the output.
