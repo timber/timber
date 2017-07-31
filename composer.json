@@ -24,8 +24,8 @@
   ],
   "support": {
     "issues": "https://github.com/timber/timber/issues",
-    "wiki": "https://github.com/timber/timber/wiki",
     "source": "https://github.com/timber/timber"
+    "docs": "https://timber.github.io/docs/",
   },
   "require": {
     "php": ">=5.3.0|7.*",
