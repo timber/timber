@@ -51,17 +51,28 @@ class Timber {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function __construct(array $options = array()) {
-	
-		if (isset($options['experimental_chained_loader']) && $options['experimental_chained_loader'] === true) {
-			self::$useLegacyFilesystemLoader = false;
-		}
+	public function __construct(array $options = null)
+	{	
+		if (defined('TIMBER_LOADED')) {
 
-		if (isset($options['experimental_reuse_environment']) && $options['experimental_reuse_environment'] === true) {
-			self::experimental_reuse_timber_loader();
+			if ($options !== null) {
+				throw new \LogicException('Creation with $options prohibited, since Timber has already been configured by an other instance.');
+			}
+			
+		} else {
+
+			$options = is_array($options) ? $options : array();
+			
+			static::init($options);
+
+			if (isset($options['experimental_chained_loader']) && $options['experimental_chained_loader'] === true) {
+				self::$useLegacyFilesystemLoader = false;
+			}
+
+			if (isset($options['experimental_reuse_environment']) && $options['experimental_reuse_environment'] === true) {
+				static::$twigEnvironment = static::createTwigEnvironment();
+			}
 		}
-		
-		static::init();
 	}
 
 	/**
