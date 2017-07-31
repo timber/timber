@@ -154,21 +154,28 @@ class ChainLoader
 	/**
 	 * @return \Twig_Loader_Filesystem
 	 */
-	protected function getLocationsLoader() {
+	public function getTemporaryLoader() {
+		return $this->temporaryLoader;
+	}
+
+	/**
+	 * @return \Twig_Loader_Filesystem
+	 */
+	public function getLocationsLoader() {
 		return $this->locationsLoader;
 	}
 
 	/**
 	 * @return \Twig_Loader_Filesystem
 	 */
-	protected function getThemeLoader() {
+	public function getThemeLoader() {
 		return $this->themeLoader;
 	}
 
 	/**
 	 * @return \Twig_Loader_Filesystem
 	 */
-	protected function getBasedirLoader() {
+	public function getBasedirLoader() {
 		return $this->basedirLoader;
 	}
 }
