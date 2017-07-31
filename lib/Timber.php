@@ -58,7 +58,7 @@ class Timber {
 		}
 
 		if (isset($options['experimental_reuse_environment']) && $options['experimental_reuse_environment'] === true) {
-			self::reuse_timber_loader();
+			self::experimental_reuse_timber_loader();
 		}
 		
 		static::init();
@@ -278,7 +278,7 @@ class Timber {
 	 *  
 	 * @return \Twig_LoaderInterface
 	 */
-	public static function reuse_timber_loader() {
+	private static function experimental_reuse_timber_loader() {
 		switch (true) {
 			case defined('TIMBER_LOADED'):
 				throw new \LogicException('Can no be changed after Timber is initialized');
