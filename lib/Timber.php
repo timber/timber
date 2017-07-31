@@ -302,7 +302,7 @@ class Timber {
 
 	/**
 	 *  
-	 * @return \Twig_LoaderInterface
+	 * @return \Twig_Environment
 	 */
 	protected static function createTwigEnvironment($caller = null) {
 		if (self::$useLegacyFilesystemLoader === true) {
@@ -316,7 +316,7 @@ class Timber {
 
 	/**
 	 *  
-	 * @return \Twig_LoaderInterface
+	 * @return \Twig_Environment
 	 */
 	protected static function getTwigEnvironment($caller = null) {
 		switch (true) {
