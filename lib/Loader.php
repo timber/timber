@@ -26,19 +26,23 @@ class Loader {
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
 	private $loader;
-	private $filesystem_loader;
-	private $caller_loader;
+	private $temporaryLoader;
+	private $locationsLoader;
+	private $themeLoader;
+	private $basedirLoader;
+	private $callerLoader;
+	private $caller2Loader;
 
 	private $environment;
 
 	/**
 	 * @param array $locations
 	 */
-	public function __construct($locations = array()) {
+	public function __construct() {
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
 
-		$this->loader = $this->create_twig_loader($locations);
+		$this->loader = $this->create_twig_loader();
 
 		$this->loader = apply_filters('timber/loader/loader', $this->loader);
 // TODO: Consider this new filter as a future replacement for 'timber/loader/loader'
@@ -60,34 +64,100 @@ class Loader {
 	 * @param array   $locations
 	 * @return \Twig_LoaderInterface
 	 */
-	protected function create_twig_loader( $locations = array() ) {
+	protected function create_twig_loader() {
 		$open_basedir = ini_get('open_basedir');
-		$paths = array_merge($locations, array($open_basedir ? ABSPATH : '/'));
-		$paths = apply_filters('timber/loader/paths', $paths);
-// TODO: Consider this new filter as a future replacement for 'timber/loader/paths'
-//		$paths = apply_filters('timber/twig/loader/paths', $paths, $this);
-		$rootPath = '/';
-		if ( $open_basedir ) {
-			$rootPath = null;
-		}
+		$rootPath = $open_basedir ? null : '/';
+
 		$chain = new \Twig_Loader_Chain();
-		$chain->addLoader($this->caller_loader = new \Twig_Loader_Filesystem(array(), $rootPath));
-		$chain->addLoader($this->filesystem_loader = new \Twig_Loader_Filesystem($paths, $rootPath));
+		$chain->addLoader($this->temporaryLoader = new \Twig_Loader_Filesystem(array(), $rootPath));
+		$chain->addLoader($this->locationsLoader = new \Twig_Loader_Filesystem(array(), $rootPath));
+		$chain->addLoader($this->callerLoader = new \Twig_Loader_Filesystem(array(), $rootPath));
+		$chain->addLoader($this->themeLoader = new \Twig_Loader_Filesystem(array(), $rootPath));
+		$chain->addLoader($this->caller2Loader = new \Twig_Loader_Filesystem(array(), $rootPath));
+		$chain->addLoader($this->basedirLoader = new \Twig_Loader_Filesystem(array(), $rootPath));
+
+		$this->updateLoaders();
+		
 		return $chain;
 	}
 
 	/**
+	 *  
+	 */
+	public function updateLoaders() {
+		$open_basedir = ini_get('open_basedir');
+
+		$theme = LocationManager::get_locations_theme();
+		$theme = apply_filters('timber/loader/paths', $theme);
+// TODO: Consider this new filter as a future replacement
+//		$theme = apply_filters('timber/twig/loader/theme', $theme);
+
+		$locations = LocationManager::get_locations_user();
+		$locations = array_diff($locations, $theme);
+		$locations = apply_filters('timber_locations', $locations);
+		$locations = apply_filters('timber/locations', $locations);
+// TODO: Consider this new filter as a future replacement
+//		$locations = apply_filters('timber/twig/loader/locations', $theme);
+
+		$basedir = array($open_basedir ? ABSPATH : '/');
+// TODO: Consider this new filter
+//		$basedir = apply_filters('timber/twig/loader/basedir', $theme);
+
+		$this->locationsLoader->setPaths($locations);
+		$this->themeLoader->setPaths($theme);
+		$this->basedirLoader->setPaths($basedir);
+		$this->resetCallerLoader();
+		
+		$this->resetCallerLoader();
+	} 
+	
+	/**
+	 *  
+	 * @param string $caller
+	 */
+	public function updateCallerLoader($caller) {
+		
+		$locations = $this->locationsLoader->getPaths();
+		$theme = $this->themeLoader->getPaths();
+		
+		$caller1 = LocationManager::get_locations_caller($caller);
+		$caller1 = array_diff($caller1, $locations, $theme);
+		$this->callerLoader->setPaths($caller1);
+		
+		$caller2 = LocationManager::get_locations_caller($caller);
+		$caller2 = array_diff($caller2, $locations, $theme, $caller1);
+		$this->caller2Loader->setPaths($caller2);
+	} 
+	
+	/**
+	 *  
+	 * @param string $CALLER
+	 */
+	public function resetCallerLoader() {
+		
+		$this->callerLoader->setPaths(null);
+		$this->caller2Loader->setPaths(null);
+	} 
+
+	/**
 	 * @return \Twig_Loader_Filesystem
 	 */
-	public function get_filesystem_loader() {
-		return $this->filesystem_loader;
+	protected function getLocationsLoader() {
+		return $this->locationsLoader;
 	}
 
 	/**
 	 * @return \Twig_Loader_Filesystem
 	 */
-	public function get_caller_loader() {
-		return $this->caller_loader;
+	protected function getThemeLoader() {
+		return $this->themeLoader;
+	}
+
+	/**
+	 * @return \Twig_Loader_Filesystem
+	 */
+	protected function getBasedirLoader() {
+		return $this->basedirLoader;
 	}
 
 	/**
@@ -217,8 +287,8 @@ class Loader {
 	 * @return \Twig_LoaderInterface
 	 */
 	public function get_loader() {
-// TODO: Change this to return the loaderchin ($this->loader), but for now return the filesystem loader to preserve full backward compatibility
-		return $this->filesystem_loader;
+// TODO: Change this to return the loaderchin ($this->loader), but for now return the filesystem loader to preserve backward compatibility, by letting users add (but not remove internal) paths.
+		return $this->temporaryLoader;
 	}
 
 

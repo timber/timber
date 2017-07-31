@@ -30,7 +30,7 @@ class LocationManager {
 	/**
 	 * @return array
 	 */
-	protected static function get_locations_theme() {
+	public static function get_locations_theme() {
 		$theme_locs = array();
 		$theme_dirs = LocationManager::get_locations_theme_dir();
 		$roots      = array(get_stylesheet_directory(), get_template_directory());
@@ -103,7 +103,7 @@ class LocationManager {
 	 *
 	 * @return array
 	 */
-	protected static function get_locations_user() {
+	public static function get_locations_user() {
 		$locs = array();
 		if ( isset(Timber::$locations) ) {
 			if ( is_string(Timber::$locations) ) {
@@ -123,7 +123,7 @@ class LocationManager {
 	 * @param bool|string   $caller the calling directory
 	 * @return array
 	 */
-	protected static function get_locations_caller( $caller = false ) {
+	public static function get_locations_caller( $caller = false ) {
 		$locs = array();
 		if ( $caller && is_string($caller) ) {
 			$caller = realpath($caller);

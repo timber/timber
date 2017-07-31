@@ -295,8 +295,7 @@ class Timber {
 	 * @return \Twig_LoaderInterface
 	 */
 	protected static function create_loader() {
-		$locations = LocationManager::get_locations();
-		return new Loader($locations);
+		return new Loader();
 	}
 
 	/**
@@ -378,8 +377,7 @@ class Timber {
 
 		$caller = LocationManager::get_calling_script_dir(1);
 		if (true) {
-			$old_caller_paths = $loader->get_caller_loader()->getPaths();
-			$loader->get_caller_loader()->setPaths($caller);
+			$loader->updateCallerLoader($caller);
 		}
 
 		$file = $loader->choose_template($filenames);
@@ -409,8 +407,8 @@ class Timber {
 			$output = $loader->render($file, $data, $expires, $cache_mode);
 		}
 		
-		if (true && isset($old_caller_paths)) {
-			$loader->get_caller_loader()->setPaths($old_caller_paths);
+		if (true) {
+			$loader->resetCallerLoader();
 		}
 
 		do_action('timber_compile_done');
