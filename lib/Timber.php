@@ -45,7 +45,7 @@ class Timber {
 
 	public static $context_cache = array();
 
-	private static $loader;
+	private static $twigEnvironment;
 	private static $useLegacyFilesystemLoader = true;
 	
 	/**
@@ -275,14 +275,14 @@ class Timber {
 				throw new \LogicException('Can no be changed after Timber is initialized');
 				
 			//
-			case static::$loader === false:
+			case static::$twigEnvironment === false:
 				throw new \LoginException('Can no longer activate reusable loader');
 				
-			case static::$loader === null:
-				static::$loader = static::create_timber_loader();
+			case static::$twigEnvironment === null:
+				static::$twigEnvironment = static::createTwigEnvironment();
 				break;
 				
-			case is_object(static::$loader):
+			case is_object(static::$twigEnvironment):
 				return; // Already reloading...
 				break;
 				
@@ -295,7 +295,7 @@ class Timber {
 	 *  
 	 * @return \Twig_LoaderInterface
 	 */
-	protected static function create_timber_loader($caller = null) {
+	protected static function createTwigEnvironment($caller = null) {
 		if (self::$useLegacyFilesystemLoader === true) {
 			$loader = LegacyLoader::create($caller);
 		} else {
@@ -309,20 +309,20 @@ class Timber {
 	 *  
 	 * @return \Twig_LoaderInterface
 	 */
-	protected static function get_timber_loader($caller = null) {
+	protected static function getTwigEnvironment($caller = null) {
 		switch (true) {
 			//
-			case static::$loader === null:
-				static::$loader = false;
-				return static::create_timber_loader($caller);
+			case static::$twigEnvironment === null:
+				static::$twigEnvironment = false;
+				return static::createTwigEnvironment($caller);
 			
 			//
-			case static::$loader === false:
-				return static::create_timber_loader($caller);
+			case static::$twigEnvironment === false:
+				return static::createTwigEnvironment($caller);
 
 			//
-			case is_object(static::$loader):
-				return static::$loader;
+			case is_object(static::$twigEnvironment):
+				return static::$twigEnvironment;
 
 			//
 			default: 
@@ -374,7 +374,7 @@ class Timber {
 		
 		$caller= LocationManager::get_calling_script_dir(1);
 
-		$loader = static::get_timber_loader($caller);
+		$loader = static::getTwigEnvironment($caller);
 
 		if (self::$useLegacyFilesystemLoader === false) {
 			$loader->get_twig()->getLoader()->updateCaller($caller);
