@@ -56,20 +56,6 @@ class Loader
 			// It's a legacy loader...
 		}
 
-		$this->create_twig_environment($loader, $options);
-
-		do_action('timber/twig', $this);
-		/**
-		 * get_twig is deprecated, use timber/twig
-		 */
-		do_action('get_twig', $this);
-	}
-
-	/**
-	 * @param \Twig_LoaderInterface $loader
-	 * @return \Twig_Environment
-	 */
-	protected function create_twig_environment(\Twig_LoaderInterface $loader, $options) {
 		$options = array('debug' => WP_DEBUG, 'autoescape' => false);
 		if ( isset(Timber::$autoescape) ) {
 			$options['autoescape'] = Timber::$autoescape;
@@ -90,10 +76,17 @@ class Loader
 		}
 
 		parent::__construct($loader, $options);
+
 		if ( WP_DEBUG ) {
 			$this->addExtension(new \Twig_Extension_Debug());
 		}
 		$this->addExtension($this->_get_cache_extension());
+
+		do_action('timber/twig', $this);
+		/**
+		 * get_twig is deprecated, use timber/twig
+		 */
+		do_action('get_twig', $this);
 	}
 
 	/**
