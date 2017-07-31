@@ -51,7 +51,16 @@ class Timber {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function __construct() {
+	public function __construct(array $options = array()) {
+	
+		if (isset($options['experimental_chained_loader']) && $options['experimental_chained_loader'] === true) {
+			self::$useLegacyFilesystemLoader = false;
+		}
+
+		if (isset($options['experimental_reuse_environment']) && $options['experimental_reuse_environment'] === true) {
+			self::reuse_timber_loader();
+		}
+		
 		static::init();
 	}
 
