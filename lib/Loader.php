@@ -279,7 +279,7 @@ class Loader {
 	 * @codeCoverageIgnore
 	 */
 	protected function template_exists( $name ) {
-		return $this->get_loader()->exists($name);
+		return $this->loader->exists($name);
 	}
 
 
