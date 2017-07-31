@@ -281,31 +281,9 @@ class Timber {
 	}
 
 	/**
-	 * This is an experimental solution to avoid recreation of Twig environments on each template compilation.
-	 * Use with caution in existing projects, since 'timber/twig' is only run once when the loader is created.
-	 * Currently user extensions via 'timber/twig' should therefore be added as hooks/actions before Timber is initialized.
-	 *  
-	 * NB This is a temporary location, and mode change will propably move to the constructor...
 	 *  
 	 * @return \Twig_LoaderInterface
 	 */
-	private static function experimental_reuse_timber_loader() {
-		switch (true) {
-			case defined('TIMBER_LOADED'):
-				throw new \LogicException('Can no be changed after Timber is initialized');
-				
-			//
-			case static::$twigEnvironment === false:
-				throw new \LoginException('Can no longer activate reusable loader');
-				
-			case static::$twigEnvironment === null:
-				static::$twigEnvironment = static::createTwigEnvironment();
-				break;
-				
-			case is_object(static::$twigEnvironment):
-				return; // Already reloading...
-				break;
-				
 			default:
 				throw new \LoginException('Internal error');
 		}
