@@ -51,7 +51,16 @@ class Timber {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function __construct() {
+	public function __construct(array $options = array()) {
+	
+		if (isset($options['experimental_chained_loader']) && $options['experimental_chained_loader'] === true) {
+			self::$useLegacyFilesystemLoader = false;
+		}
+
+		if (isset($options['experimental_reuse_environment']) && $options['experimental_reuse_environment'] === true) {
+			self::experimental_reuse_timber_loader();
+		}
+		
 		static::init();
 	}
 
@@ -269,7 +278,7 @@ class Timber {
 	 *  
 	 * @return \Twig_LoaderInterface
 	 */
-	public static function reuse_timber_loader() {
+	private static function experimental_reuse_timber_loader() {
 		switch (true) {
 			case defined('TIMBER_LOADED'):
 				throw new \LogicException('Can no be changed after Timber is initialized');
@@ -338,7 +347,7 @@ class Timber {
 		if (static::$reuse_loader === false) {
 			throw new \LogicException('');
 		}
-		return static::get_loader()->get_twig();
+		return static::get_timber_loader()->get_twig();
 	}
 
 	/**
@@ -369,7 +378,7 @@ class Timber {
 	 */
 	public static function compile( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false ) {
 		if ( !defined('TIMBER_LOADED') ) {
-			self::init();
+			new self();
 		}
 		
 		$caller= LocationManager::get_calling_script_dir(1);
@@ -432,7 +441,7 @@ class Timber {
 	 * @return  bool|string
 	 */
 	public static function compile_string( $string, $data = array() ) {
-		$loader = static::get_loader();
+		$loader = static::get_timber_loader();
 		$twig = $loader->get_twig();
 		$template = $twig->createTemplate($string);
 		return $template->render($data);
