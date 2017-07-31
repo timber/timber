@@ -378,7 +378,7 @@ class Timber {
 	 */
 	public static function compile( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false ) {
 		if ( !defined('TIMBER_LOADED') ) {
-			self::init();
+			new self();
 		}
 		
 		$caller= LocationManager::get_calling_script_dir(1);
