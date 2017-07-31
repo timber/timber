@@ -347,7 +347,7 @@ class Timber {
 		if (static::$reuse_loader === false) {
 			throw new \LogicException('');
 		}
-		return static::get_loader()->get_twig();
+		return static::get_timber_loader()->get_twig();
 	}
 
 	/**
@@ -441,7 +441,7 @@ class Timber {
 	 * @return  bool|string
 	 */
 	public static function compile_string( $string, $data = array() ) {
-		$loader = static::get_loader();
+		$loader = static::get_timber_loader();
 		$twig = $loader->get_twig();
 		$template = $twig->createTemplate($string);
 		return $template->render($data);
