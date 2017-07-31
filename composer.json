@@ -40,8 +40,6 @@
     "wpackagist-plugin/co-authors-plus" : "3.*" 
   },
   "suggest" : {
-    "phpdocumentor/phpdocumentor": "2.* for generating docs",
-    "jarednova/markdowndocs": "dev-master for generating docs",
     "satooshi/php-coveralls": "1.0.* for code coverage"
   },
   "autoload": {
@@ -53,18 +51,6 @@
     {
       "type": "composer",
       "url": "https://wpackagist.org"
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "jarednova/markdowndocs",
-        "version": "dev-master",
-        "source": {
-          "type": "git",
-          "url": "https://github.com/jarednova/PHP-Markdown-Documentation-Generator.git",
-          "reference": "master"
-        }
-      }
     }
   ]
 }
