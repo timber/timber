@@ -383,13 +383,13 @@ class Timber {
 		
 		$caller= LocationManager::get_calling_script_dir(1);
 
-		$loader = static::getTwigEnvironment($caller);
+		$twigEnvironment = static::getTwigEnvironment($caller);
 
 		if (self::$useLegacyFilesystemLoader === false) {
-			$loader->get_twig()->getLoader()->updateCaller($caller);
+			$twigEnvironment->getLoader()->updateCaller($caller);
 		}
 
-		$file = $loader->choose_template($filenames);
+		$file = $twigEnvironment->choose_template($filenames);
 
 		$caller_file = LocationManager::get_calling_script_file(1);
 		apply_filters('timber/calling_php_file', $caller_file);
@@ -413,11 +413,11 @@ class Timber {
 				$data = apply_filters('timber_compile_data', $data);
 			}
 
-			$output = $loader->render($file, $data, $expires, $cache_mode);
+			$output = $twigEnvironment->render($file, $data, $expires, $cache_mode);
 		}
 		
 		if (self::$useLegacyFilesystemLoader !== true) {
-			$loader->get_twig()->getLoader()->resetCaller();
+			$twigEnvironment->getLoader()->resetCaller();
 		}
 
 		do_action('timber_compile_done');
@@ -441,9 +441,8 @@ class Timber {
 	 * @return  bool|string
 	 */
 	public static function compile_string( $string, $data = array() ) {
-		$loader = static::get_timber_loader();
-		$twig = $loader->get_twig();
-		$template = $twig->createTemplate($string);
+		$twigEnvironment = static::getTwigEnvironment();
+		$template = $twigEnvironment->createTemplate($string);
 		return $template->render($data);
 	}
 
