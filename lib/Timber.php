@@ -46,7 +46,8 @@ class Timber {
 	public static $context_cache = array();
 
 	private static $loader;
-
+	private static $useLegacyFilesystemLoader = true;
+	
 	/**
 	 * @codeCoverageIgnore
 	 */
@@ -294,24 +295,30 @@ class Timber {
 	 *  
 	 * @return \Twig_LoaderInterface
 	 */
-	protected static function create_loader() {
-		return new Loader();
+	protected static function create_loader($caller = null) {
+		if (self::$useLegacyFilesystemLoader === true) {
+			$loader = LegacyLoader::create($caller);
+		} else {
+			$loader = ChainLoader::create();
+		}
+
+		return new Loader($loader);
 	}
 
 	/**
 	 *  
 	 * @return \Twig_LoaderInterface
 	 */
-	protected static function get_loader() {
+	protected static function get_loader($caller = null) {
 		switch (true) {
 			//
 			case static::$loader === null:
 				static::$loader = false;
-				return static::create_loader();
+				return static::create_loader($caller);
 			
 			//
 			case static::$loader === false:
-				return static::create_loader();
+				return static::create_loader($caller);
 
 			//
 			case is_object(static::$loader):
@@ -364,12 +371,13 @@ class Timber {
 		if ( !defined('TIMBER_LOADED') ) {
 			self::init();
 		}
+		
+		$caller= LocationManager::get_calling_script_dir(1);
 
-		$loader = static::get_loader();
+		$loader = static::get_loader($caller);
 
-		$caller = LocationManager::get_calling_script_dir(1);
-		if (true) {
-			$loader->updateCallerLoader($caller);
+		if (self::$useLegacyFilesystemLoader === false) {
+			$loader->get_twig()->getLoader()->updateCaller($caller);
 		}
 
 		$file = $loader->choose_template($filenames);
@@ -399,8 +407,8 @@ class Timber {
 			$output = $loader->render($file, $data, $expires, $cache_mode);
 		}
 		
-		if (true) {
-			$loader->resetCallerLoader();
+		if (self::$useLegacyFilesystemLoader !== true) {
+			$loader->get_twig()->getLoader()->resetCaller();
 		}
 
 		do_action('timber_compile_done');

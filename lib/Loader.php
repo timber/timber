@@ -25,6 +25,8 @@ class Loader {
 
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
+	private $legacy = true;
+
 	private $loader;
 	private $temporaryLoader;
 	private $locationsLoader;
@@ -38,126 +40,29 @@ class Loader {
 	/**
 	 * @param array $locations
 	 */
-	public function __construct() {
+	public function __construct(\Twig_LoaderInterface $loader) {
+		
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
 
-		$this->loader = $this->create_twig_loader();
-
-		$this->loader = apply_filters('timber/loader/loader', $this->loader);
+		$loader = apply_filters('timber/loader/loader', $loader);
 // TODO: Consider this new filter as a future replacement for 'timber/loader/loader'
 //		$loader = apply_filters('timber/twig/loader', $loader, $this);
-		if ( !$this->loader instanceof \Twig_LoaderInterface ) {
+		if ( !$loader instanceof \Twig_LoaderInterface ) {
 			throw new \UnexpectedValueException('Loader must implement \Twig_LoaderInterface');
 		}
 
-		$this->environment = $this->create_twig_environment($this->loader);
+		if ($loader instanceof LegacyLoader) {
+			// It's a legacy loader...
+		}
+
+		$this->environment = $this->create_twig_environment($loader);
 
 		do_action('timber/twig', $this->environment);
 		/**
 		 * get_twig is deprecated, use timber/twig
 		 */
 		do_action('get_twig', $this->environment);
-	}
-
-	/**
-	 * @param array   $locations
-	 * @return \Twig_LoaderInterface
-	 */
-	protected function create_twig_loader() {
-		$open_basedir = ini_get('open_basedir');
-		$rootPath = $open_basedir ? null : '/';
-
-		$chain = new \Twig_Loader_Chain();
-		$chain->addLoader($this->temporaryLoader = new \Twig_Loader_Filesystem(array(), $rootPath));
-		$chain->addLoader($this->locationsLoader = new \Twig_Loader_Filesystem(array(), $rootPath));
-		$chain->addLoader($this->callerLoader = new \Twig_Loader_Filesystem(array(), $rootPath));
-		$chain->addLoader($this->themeLoader = new \Twig_Loader_Filesystem(array(), $rootPath));
-		$chain->addLoader($this->caller2Loader = new \Twig_Loader_Filesystem(array(), $rootPath));
-		$chain->addLoader($this->basedirLoader = new \Twig_Loader_Filesystem(array(), $rootPath));
-
-		$this->updateLoaders();
-		
-		return $chain;
-	}
-
-	/**
-	 *  
-	 */
-	public function updateLoaders() {
-		$open_basedir = ini_get('open_basedir');
-
-		$theme = LocationManager::get_locations_theme();
-		$theme = apply_filters('timber/loader/paths', $theme);
-// TODO: Consider this new filter as a future replacement
-//		$theme = apply_filters('timber/twig/loader/theme', $theme);
-
-		$locations = LocationManager::get_locations_user();
-		$locations = array_diff($locations, $theme);
-		$locations = apply_filters('timber_locations', $locations);
-		$locations = apply_filters('timber/locations', $locations);
-// TODO: Consider this new filter as a future replacement
-//		$locations = apply_filters('timber/twig/loader/locations', $theme);
-
-		$basedir = array($open_basedir ? ABSPATH : '/');
-// TODO: Consider this new filter
-//		$basedir = apply_filters('timber/twig/loader/basedir', $theme);
-
-		$this->locationsLoader->setPaths($locations);
-		$this->themeLoader->setPaths($theme);
-		$this->basedirLoader->setPaths($basedir);
-		$this->resetCallerLoader();
-		
-		$this->resetCallerLoader();
-	} 
-	
-	/**
-	 *  
-	 * @param string $caller
-	 */
-	public function updateCallerLoader($caller) {
-		
-		$locations = $this->locationsLoader->getPaths();
-		$theme = $this->themeLoader->getPaths();
-		
-		$caller1 = LocationManager::get_locations_caller($caller);
-		$caller1 = array_diff($caller1, $locations, $theme);
-		$this->callerLoader->setPaths($caller1);
-		
-		$caller2 = LocationManager::get_locations_caller($caller);
-		$caller2 = array_diff($caller2, $locations, $theme, $caller1);
-		$this->caller2Loader->setPaths($caller2);
-	} 
-	
-	/**
-	 *  
-	 * @param string $CALLER
-	 */
-	public function resetCallerLoader() {
-		
-		$this->callerLoader->setPaths(null);
-		$this->caller2Loader->setPaths(null);
-	} 
-
-	/**
-	 * @return \Twig_Loader_Filesystem
-	 */
-	protected function getLocationsLoader() {
-		return $this->locationsLoader;
-	}
-
-	/**
-	 * @return \Twig_Loader_Filesystem
-	 */
-	protected function getThemeLoader() {
-		return $this->themeLoader;
-	}
-
-	/**
-	 * @return \Twig_Loader_Filesystem
-	 */
-	protected function getBasedirLoader() {
-		return $this->basedirLoader;
 	}
 
 	/**
@@ -222,7 +127,7 @@ class Loader {
 		if ( false === $output || null === $output ) {
 			$twig = $this->get_twig();
 			if ( strlen($file) ) {
-				$loader = $this->loader;
+				$loader = $this->environment->getLoader();
 				$result = $loader->getCacheKey($file);
 				do_action('timber_loader_render_file', $result);
 			}
@@ -256,8 +161,8 @@ class Loader {
 		}
 		
 		// Get Twig loader
-		$loader = $this->loader;
-		
+		$loader = $this->environment->getLoader();
+dump($loader);		
 		// Run through template array
 		foreach ( $templates as $template ) {
 			// Use the Twig loader to test for existance
@@ -279,7 +184,7 @@ class Loader {
 	 * @codeCoverageIgnore
 	 */
 	protected function template_exists( $name ) {
-		return $this->loader->exists($name);
+		return $this->environment->getLoader()->exists($name);
 	}
 
 
