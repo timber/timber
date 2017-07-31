@@ -269,7 +269,7 @@ class Timber {
 	 *  
 	 * @return \Twig_LoaderInterface
 	 */
-	public static function reuse_loader() {
+	public static function reuse_timber_loader() {
 		switch (true) {
 			case defined('TIMBER_LOADED'):
 				throw new \LogicException('Can no be changed after Timber is initialized');
@@ -279,7 +279,7 @@ class Timber {
 				throw new \LoginException('Can no longer activate reusable loader');
 				
 			case static::$loader === null:
-				static::$loader = static::create_loader();
+				static::$loader = static::create_timber_loader();
 				break;
 				
 			case is_object(static::$loader):
@@ -295,7 +295,7 @@ class Timber {
 	 *  
 	 * @return \Twig_LoaderInterface
 	 */
-	protected static function create_loader($caller = null) {
+	protected static function create_timber_loader($caller = null) {
 		if (self::$useLegacyFilesystemLoader === true) {
 			$loader = LegacyLoader::create($caller);
 		} else {
@@ -309,16 +309,16 @@ class Timber {
 	 *  
 	 * @return \Twig_LoaderInterface
 	 */
-	protected static function get_loader($caller = null) {
+	protected static function get_timber_loader($caller = null) {
 		switch (true) {
 			//
 			case static::$loader === null:
 				static::$loader = false;
-				return static::create_loader($caller);
+				return static::create_timber_loader($caller);
 			
 			//
 			case static::$loader === false:
-				return static::create_loader($caller);
+				return static::create_timber_loader($caller);
 
 			//
 			case is_object(static::$loader):
@@ -374,7 +374,7 @@ class Timber {
 		
 		$caller= LocationManager::get_calling_script_dir(1);
 
-		$loader = static::get_loader($caller);
+		$loader = static::get_timber_loader($caller);
 
 		if (self::$useLegacyFilesystemLoader === false) {
 			$loader->get_twig()->getLoader()->updateCaller($caller);
