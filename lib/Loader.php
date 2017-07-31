@@ -4,7 +4,9 @@ namespace Timber;
 
 use Timber\Cache\Cleaner;
 
-class Loader {
+class Loader 
+	extends \Twig_Environment
+{
 
 	const CACHEGROUP = 'timberloader';
 
@@ -35,12 +37,10 @@ class Loader {
 	private $callerLoader;
 	private $caller2Loader;
 
-	private $environment;
-
 	/**
 	 * @param array $locations
 	 */
-	public function __construct(\Twig_LoaderInterface $loader) {
+	public function __construct(\Twig_LoaderInterface $loader, $options = array()) {
 		
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
@@ -56,20 +56,20 @@ class Loader {
 			// It's a legacy loader...
 		}
 
-		$this->environment = $this->create_twig_environment($loader);
+		$this->create_twig_environment($loader, $options);
 
-		do_action('timber/twig', $this->environment);
+		do_action('timber/twig', $this);
 		/**
 		 * get_twig is deprecated, use timber/twig
 		 */
-		do_action('get_twig', $this->environment);
+		do_action('get_twig', $this);
 	}
 
 	/**
 	 * @param \Twig_LoaderInterface $loader
 	 * @return \Twig_Environment
 	 */
-	protected function create_twig_environment(\Twig_LoaderInterface $loader) {
+	protected function create_twig_environment(\Twig_LoaderInterface $loader, $options) {
 		$options = array('debug' => WP_DEBUG, 'autoescape' => false);
 		if ( isset(Timber::$autoescape) ) {
 			$options['autoescape'] = Timber::$autoescape;
@@ -89,13 +89,11 @@ class Loader {
 			$options['cache'] = $twig_cache_loc;
 		}
 
-		$twig = new \Twig_Environment($loader, $options);
+		parent::__construct($loader, $options);
 		if ( WP_DEBUG ) {
-			$twig->addExtension(new \Twig_Extension_Debug());
+			$this->addExtension(new \Twig_Extension_Debug());
 		}
-		$twig->addExtension($this->_get_cache_extension());
-
-		return $twig;
+		$this->addExtension($this->_get_cache_extension());
 	}
 
 	/**
@@ -105,7 +103,7 @@ class Loader {
 	 * @param string        	$cache_mode
 	 * @return bool|string
 	 */
-	public function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	public function render( $file, array $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
 		// Different $expires if user is anonymous or logged in
 		if ( is_array($expires) ) {
 			/** @var array $expires */
@@ -125,15 +123,14 @@ class Loader {
 		}
 
 		if ( false === $output || null === $output ) {
-			$twig = $this->get_twig();
 			if ( strlen($file) ) {
-				$loader = $this->environment->getLoader();
+				$loader = $this->getLoader();
 				$result = $loader->getCacheKey($file);
 				do_action('timber_loader_render_file', $result);
 			}
 			$data = apply_filters('timber_loader_render_data', $data);
 			$data = apply_filters('timber/loader/render_data', $data, $file);
-			$output = $twig->render($file, $data);
+			$output = parent::render($file, $data);
 		}
 
 		if ( false !== $output && false !== $expires && null !== $key ) {
@@ -161,7 +158,7 @@ class Loader {
 		}
 		
 		// Get Twig loader
-		$loader = $this->environment->getLoader();
+		$loader = $this->getLoader();
 
 		// Run through template array
 		foreach ( $templates as $template ) {
@@ -184,7 +181,7 @@ class Loader {
 	 * @codeCoverageIgnore
 	 */
 	protected function template_exists( $name ) {
-		return $this->environment->getLoader()->exists($name);
+		return $this->getLoader()->exists($name);
 	}
 
 
@@ -201,7 +198,7 @@ class Loader {
 	 * @return \Twig_Environment
 	 */
 	public function get_twig() {
-		return $this->environment;
+		return $this;
 	}
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
@@ -240,13 +237,12 @@ class Loader {
 	}
 
 	public function clear_cache_twig() {
-		$twig = $this->get_twig();
-		if ( method_exists($twig, 'clearCacheFiles') ) {
-			$twig->clearCacheFiles();
+		if ( method_exists($this, 'clearCacheFiles') ) {
+			$this->clearCacheFiles();
 		}
-		$cache = $twig->getCache();
+		$cache = $this->getCache();
 		if ( $cache ) {
-			self::rrmdir($twig->getCache());
+			self::rrmdir($this->getCache());
 			return true;
 		}
 		return false;
