@@ -180,15 +180,22 @@ class Loader
 
 	/**
 	 * @return \Twig_LoaderInterface
+	 * @deprecated No longer relevant due to Twig_Environment::getLoader().
 	 */
 	public function get_loader() {
-// TODO: Change this to return the loaderchin ($this->loader), but for now return the filesystem loader to preserve backward compatibility, by letting users add (but not remove internal) paths.
-		return $this->temporaryLoader;
+// TODO: Remove.
+		// This returns a proxy filesystem loader to preserve backward compatibility, by letting users add (but not remove internal) paths.
+		if ($this->getLoader() instanceof ChainLoader) {
+			return $this->getLoader()->getTemporaryLoader();
+		}
+		// Just return loader...
+		return $this->getLoader();
 	}
 
 
 	/**
 	 * @return \Twig_Environment
+	 * @deprecated Since class now extends Twig_Environment.
 	 */
 	public function get_twig() {
 		return $this;
