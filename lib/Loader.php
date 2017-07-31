@@ -162,7 +162,7 @@ class Loader {
 		
 		// Get Twig loader
 		$loader = $this->environment->getLoader();
-dump($loader);		
+
 		// Run through template array
 		foreach ( $templates as $template ) {
 			// Use the Twig loader to test for existance
