@@ -28,7 +28,8 @@ class Loader
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
 	/**
-	 * @param array $locations
+     * @param Twig_LoaderInterface $loader
+     * @param array                $options An array of options
 	 */
 	public function __construct(\Twig_LoaderInterface $loader, $options = array()) {
 		
