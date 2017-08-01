@@ -98,32 +98,60 @@ class Loader
 			}
 		}
 
+		// Define variables used below
 		$key = null;
 		$output = false;
+		
+		// Only load cached data when $expires is not false
+		// NB: Caching is disabled, when $expires is false!
 		if ( false !== $expires ) {
-			ksort($context);
+
+			// Sort array by key (to make md5() generate same result on identical context)
+			if (ksort($context) === false ) {
+				// TODO: Handle error...
+			}
+
+			// Generate cache key, by generating a md5 hash of the template name joined with a json version of the array (serializing via json is apparently faster)
 			$key = md5($name.json_encode($context));
+
+			// Load cached output
 			$output = $this->get_cache($key, self::CACHEGROUP, $cache_mode);
 		}
 
+		// If no output at this point, generate some...
 		if ( false === $output || null === $output ) {
+			
+			// Only call this action, if the length of the template name is longer than 0 chars
+// TODO: Consider if this ever evaluates to false.
 			if ( strlen($name) ) {
+				// Get twig loader
 				$loader = $this->getLoader();
+				// Get loaders cache key.
 				$result = $loader->getCacheKey($name);
+				// Call action, exposing the loaders cache key
 				do_action('timber_loader_render_file', $result);
 			}
 			
+			// Create Twig_Template object
 			$template = parent::loadTemplate($name);
 
+			// Filter context data
 			$context = apply_filters('timber_loader_render_data', $context);
 			$context = apply_filters('timber/loader/render_data', $context, $name);
+
+			// Render template
 			$output = $template->render($context);
 		}
 
+		// Update cache, when 3) $key has been ser, 2) $expires != false, and 1) $output has ben changed from the initial false
 		if ( false !== $output && false !== $expires && null !== $key ) {
+			// Erase cache
 			$this->delete_cache();
+			// Store output
 			$this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
 		}
+
+		// Filter and return output
 		$output = apply_filters('timber_output', $output);
 		return apply_filters('timber/output', $output, $context, $name);
 	}
