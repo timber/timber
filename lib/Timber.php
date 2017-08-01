@@ -370,7 +370,7 @@ class Timber {
 		$file = $twigEnvironment->choose_template($filenames);
 
 		$callerFile = LocationManager::get_calling_script_file(1);
-		apply_filters('timber/calling_php_file', $callerFile);
+		do_action('timber/calling_php_file', $callerFile);
 
 		$file = apply_filters($via_render ? 'timber_render_file' : 'timber_compile_file', $file);
 
