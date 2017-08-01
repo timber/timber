@@ -334,7 +334,7 @@ class Timber {
 	 * @param array|string $templates  Name(s) of the Twig template(s) to choose from.
 	 * @return string|bool             Name of chosen template, otherwise false.
 	 */
-	public function choose_template( $templates ) {
+	public static function chooseTemplate(\Twig_LoaderInterface $loader, $templates ) {
 		// Change $templates into array, if needed 
 		if ( !is_array($templates) ) {
 			$templates = (array) $templates;
@@ -472,7 +472,7 @@ class Timber {
 			$loader->setCaller($callerDir);
 		}
 
-		$file = $twigEnvironment->choose_template($filenames);
+		$file = self::chooseTemplate($loader, $filenames);
 
 		$callerFile = LocationManager::get_calling_script_file(1);
 		do_action('timber/calling_php_file', $callerFile);
