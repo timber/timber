@@ -356,11 +356,10 @@ class Timber {
 			new self();
 		}
 		
-		$callerDir = LocationManager::get_calling_script_dir(1);
-
 		$twigEnvironment = static::getTwigEnvironment();
 
 		if (($loader = $twigEnvironment->getLoader()) instanceof CallerCompatibleLoaderInterface) {
+			$callerDir = LocationManager::get_calling_script_dir(1);
 			$loader->setCaller($callerDir);
 		}
 
