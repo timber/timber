@@ -27,8 +27,6 @@ class Loader
 
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
-	private $legacy = true;
-
 	/**
 	 * @param array $locations
 	 */
