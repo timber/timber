@@ -19,8 +19,15 @@ class TwigExtension implements \Twig_ExtensionInterface {
 	/**
 	 *
 	 */
-	public static function activate() {
-		\add_action('timber/twig', array(__CLASS__, 'loadIntoEnvironment'), 5);
+	public static function activateWordpressHook($priority = 5) {
+		\add_action('timber/twig', array(__CLASS__, 'loadIntoEnvironment'), $priority);
+	}
+
+	/**
+	 *
+	 */
+	public static function deactivateWordpressHook($priority = 5) {
+		\remove_action('timber/twig', array(__CLASS__, 'loadIntoEnvironment'), $priority);
 	}
 
 	/**
