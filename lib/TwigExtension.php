@@ -31,9 +31,11 @@ class TwigExtension implements \Twig_ExtensionInterface {
 	public static function loadIntoEnvironment(\Twig_Environment $twig) {
 		static $instance = null;
 		if ($instance === null) {
-			$instance = new static($twig);
+			$instance = new static();
 		}
 		$twig->addExtension($instance);
+
+		$instance->addEscapers($twig);
 
 // TODO: Remove when 'timber/twig' is changed into an action...
 		return $twig;
@@ -44,16 +46,7 @@ class TwigExtension implements \Twig_ExtensionInterface {
 	 *
 	 * @param Twig_Environment $twig
 	 */
-	public function __construct( \Twig_Environment $twig ) {
-		$this->add_timber_escapers( $twig );
-	}
-	
-	/**
-	 *
-	 *
-	 * @param Twig_Environment $twig
-	 */
-	protected function add_timber_escapers( \Twig_Environment $twig ) {
+	protected function addEscapers( \Twig_Environment $twig ) {
 
 		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_url', function( \Twig_Environment $env, $string ) {
 			return esc_url( $string );
