@@ -36,7 +36,7 @@ This is what Timber's `.twig` files look like:
 Once Timber is installed and activated in your plugin directory, it gives any WordPress theme the ability to take advantage of the power of Twig and other Timber features.
 
 ### Looking for docs?
-* [Timber Documentation](https://github.com/timber/timber/wiki)
+* [Timber Documentation](https://timber.github.io/docs/)
 * [Twig Reference](http://twig.sensiolabs.org/doc/templates.html)
 * [Video Tutorials](https://github.com/timber/timber/wiki/Video-Tutorials)
 * [Overview / Getting Started Guide](https://github.com/timber/timber/wiki/getting-started)
@@ -106,18 +106,9 @@ It's MIT-licensed, so please use in personal or commercial work. Just don't re-s
 Read the [contributor guidelines](https://github.com/timber/timber/wiki#contributing) in the wiki.
 
 
-## [Documentation](http://timber.github.io/timber/)
+## Documentation
 
-Documentation for Timber classes and functions is [auto generated](https://github.com/jarednova/PHP-Markdown-Documentation-Generator), so any changes to the object reference docs should be made by editing the function's DocBlock.  To make a change to one of the guides, edit the relevant file in the `docs` directory.
+The [Documentation for Timber](https://timber.github.io/docs/) is generated from the contents of this repository:
 
-#### To publish docs:
-
-1. `composer install` if not already run
-2. Clone the [timber/slate](https://github.com/timber/slate) repo at the same directory level as Timber
-3. From the root of the slate directory, run these commands:
-```bash
-sh publish-docs.sh
-```
-
-
-
+* Documentation for classes and functions is [auto generated](https://github.com/timber/docs). Any changes to the [Reference section](https://timber.github.io/docs/reference/) of the docs should be made by editing the function’s DocBlock. For inline documentation, we follow the [WordPress PHP Documentation Standards](https://make.wordpress.org/core/handbook/best-practices/inline-documentation-standards/php/).
+* To make a change to one of the guides, edit the relevant file in the [`docs` directory](https://github.com/timber/timber/tree/master/docs).
