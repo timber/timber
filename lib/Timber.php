@@ -110,7 +110,6 @@ class Timber {
 		if ( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
 			Twig::init();
 			TwigExtension::activateWordpressHook();
-			TwigExtension::deactivateWordpressHook();
 			ImageHelper::init();
 			Admin::init();
 			new Integrations();
