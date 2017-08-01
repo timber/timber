@@ -181,6 +181,7 @@ class Loader
 	/**
 	 * @return \Twig_LoaderInterface
 	 * @deprecated No longer relevant due to Twig_Environment::getLoader().
+	 * @todo remove
 	 */
 	public function get_loader() {
 // TODO: Remove.
@@ -196,6 +197,7 @@ class Loader
 	/**
 	 * @return \Twig_Environment
 	 * @deprecated Since class now extends Twig_Environment.
+	 * @todo remove
 	 */
 	public function get_twig() {
 		return $this;
