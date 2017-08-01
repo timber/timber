@@ -87,7 +87,7 @@ class Loader
 	 * @param string        	$cache_mode
 	 * @return bool|string
 	 */
-	public function render( $name, array $context = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	public function render( $name, array $context = array(), $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
 		// Different $expires if user is anonymous or logged in
 		if ( is_array($expires) ) {
 			/** @var array $expires */
