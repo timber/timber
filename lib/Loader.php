@@ -29,14 +29,6 @@ class Loader
 
 	private $legacy = true;
 
-	private $loader;
-	private $temporaryLoader;
-	private $locationsLoader;
-	private $themeLoader;
-	private $basedirLoader;
-	private $callerLoader;
-	private $caller2Loader;
-
 	/**
 	 * @param array $locations
 	 */
