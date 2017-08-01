@@ -81,13 +81,13 @@ class Loader
 	}
 
 	/**
-	 * @param string        	$file
-	 * @param array         	$data
+	 * @param string        	$name
+	 * @param array         	$context
 	 * @param array|boolean    	$expires (array for options, false for none, integer for # of seconds)
 	 * @param string        	$cache_mode
 	 * @return bool|string
 	 */
-	public function render( $file, array $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	public function render( $name, array $context = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
 		// Different $expires if user is anonymous or logged in
 		if ( is_array($expires) ) {
 			/** @var array $expires */
@@ -101,23 +101,23 @@ class Loader
 		$key = null;
 		$output = false;
 		if ( false !== $expires ) {
-			ksort($data);
-			$key = md5($file.json_encode($data));
+			ksort($context);
+			$key = md5($name.json_encode($context));
 			$output = $this->get_cache($key, self::CACHEGROUP, $cache_mode);
 		}
 
 		if ( false === $output || null === $output ) {
-			if ( strlen($file) ) {
+			if ( strlen($name) ) {
 				$loader = $this->getLoader();
-				$result = $loader->getCacheKey($file);
+				$result = $loader->getCacheKey($name);
 				do_action('timber_loader_render_file', $result);
 			}
 			
-			$template = parent::loadTemplate($file);
+			$template = parent::loadTemplate($name);
 
-			$data = apply_filters('timber_loader_render_data', $data);
-			$data = apply_filters('timber/loader/render_data', $data, $file);
-			$output = $template->render($data);
+			$context = apply_filters('timber_loader_render_data', $context);
+			$context = apply_filters('timber/loader/render_data', $context, $name);
+			$output = $template->render($context);
 		}
 
 		if ( false !== $output && false !== $expires && null !== $key ) {
@@ -125,7 +125,7 @@ class Loader
 			$this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
 		}
 		$output = apply_filters('timber_output', $output);
-		return apply_filters('timber/output', $output, $data, $file);
+		return apply_filters('timber/output', $output, $context, $name);
 	}
 
 	protected function delete_cache() {
