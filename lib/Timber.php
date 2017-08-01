@@ -360,7 +360,9 @@ class Timber {
 		
 		$twigEnvironment = static::getTwigEnvironment();
 
-		if (($loader = $twigEnvironment->getLoader()) instanceof CallerCompatibleLoaderInterface) {
+		$loader = $twigEnvironment->getLoader();
+		$supportCaller = $loader instanceof CallerCompatibleLoaderInterface;
+		if ($supportCaller) {
 			$callerDir = LocationManager::get_calling_script_dir(1);
 			$loader->setCaller($callerDir);
 		}
@@ -370,11 +372,7 @@ class Timber {
 		$callerFile = LocationManager::get_calling_script_file(1);
 		apply_filters('timber/calling_php_file', $callerFile);
 
-		if ( $via_render ) {
-			$file = apply_filters('timber_render_file', $file);
-		} else {
-			$file = apply_filters('timber_compile_file', $file);
-		}
+		$file = apply_filters($via_render ? 'timber_render_file' : 'timber_compile_file', $file);
 
 		$output = false;
 
@@ -383,16 +381,12 @@ class Timber {
 				$data = array();
 			}
 
-			if ( $via_render ) {
-				$data = apply_filters('timber_render_data', $data);
-			} else {
-				$data = apply_filters('timber_compile_data', $data);
-			}
+			$data = apply_filters($via_render ? 'timber_render_data' : 'timber_compile_data', $data);
 
 			$output = $twigEnvironment->render($file, $data, $expires, $cache_mode);
 		}
 		
-		if (($loader = $twigEnvironment->getLoader()) instanceof CallerCompatibleLoaderInterface) {
+		if ($supportCaller) {
 			$loader->resetCaller();
 		}
 
