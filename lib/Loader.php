@@ -5,7 +5,6 @@ namespace Timber;
 use Timber\Cache\Cleaner;
 
 class Loader 
-	extends \Twig_Environment
 {
 
 	const CACHEGROUP = 'timberloader';
