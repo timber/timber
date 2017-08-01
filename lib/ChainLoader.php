@@ -6,7 +6,7 @@ namespace Timber;
  *
  */
 class ChainLoader
-	implements \Twig_LoaderInterface
+	implements \Twig_LoaderInterface, CallerCompatibleLoaderInterface
 {
 	private $chain;
 	private $temporaryLoader;
@@ -19,7 +19,7 @@ class ChainLoader
 	/**
 	 * 
 	 */
-	private function __construct() {
+	public function __construct() {
 		$open_basedir = ini_get('open_basedir');
 		$rootPath = $open_basedir ? null : '/';
 
@@ -33,16 +33,6 @@ class ChainLoader
 		$this->chain->addLoader($this->basedirLoader = new \Twig_Loader_Filesystem(array(), $rootPath));
 
 		$this->updateLoaders();
-	}
-
-	/**
-	 * 
-	 * 
-	 * @return \Twig_LoaderInterface
-	 */
-	public static function create()
-	{
-		return new static();
 	}
 
 	/**
@@ -125,10 +115,15 @@ class ChainLoader
 	
 	/**
 	 *  
-	 * @param string $caller
+	 * @param string|false $caller
 	 */
-	public function updateCaller($caller) {
-		
+	public function setCaller($caller = false)
+	{
+		if ($caller === false) {
+			$this->resetCaller();
+			return;
+		}
+
 		$locations = $this->locationsLoader->getPaths();
 		$theme = $this->themeLoader->getPaths();
 		
@@ -145,10 +140,10 @@ class ChainLoader
 	 *  
 	 * @param string $CALLER
 	 */
-	public function resetCaller() {
-		
-		$this->callerLoader->setPaths(null);
-		$this->caller2Loader->setPaths(null);
+	public function resetCaller()
+	{
+		$this->callerLoader->setPaths(array());
+		$this->caller2Loader->setPaths(array());
 	} 
 
 	/**
