@@ -46,7 +46,6 @@ class Timber {
 	public static $context_cache = array();
 
 	private static $twigEnvironment;
-	private static $useLegacyFilesystemLoader = true;
 	private static $loaderClassname = __NAMESPACE__.'\LegacyLoader';
 	
 	/**
