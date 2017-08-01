@@ -17,7 +17,7 @@ Once Timber is installed and activated in your plugin directory, it gives any Wo
 
 ### Looking for docs?
 * **[Project Page](http://upstatement.com/timber)**
-* [Timber Documentation](https://github.com/timber/timber/wiki/)
+* [Timber Documentation](https://github.com/timber/docs)
 * [Twig Reference (from SensioLabs)](http://twig.sensiolabs.org/doc/templates.html)
 _Twig is the template language powering Timber; if you need a little background on what a template language is, [Twig's homepage has an overview](http://twig.sensiolabs.org/)_
 * **[Video Tutorials](https://github.com/timber/timber/wiki/Video-Tutorials)**
