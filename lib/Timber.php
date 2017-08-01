@@ -47,6 +47,7 @@ class Timber {
 
 	private static $twigEnvironment;
 	private static $useLegacyFilesystemLoader = true;
+	private static $loaderClassname = __NAMESPACE__.'\LegacyLoader';
 	
 	/**
 	 * @codeCoverageIgnore
@@ -65,12 +66,25 @@ class Timber {
 			
 			static::init($options);
 
-			if (isset($options['experimental_chained_loader']) && $options['experimental_chained_loader'] === true) {
-				self::$useLegacyFilesystemLoader = false;
+			if (isset($options['experimental:loader']) && is_string($options['experimental:loader'])) {
+				switch ($option = $options['experimental:loader']) {
+
+					case 'legacy':
+						self::$loaderClassname = __NAMESPACE__.'\LegacyLoader';
+						break;
+
+					case 'chained':
+						self::$loaderClassname = __NAMESPACE__.'\ChainLoader';
+						break;
+
+					default:
+						throw new \Exception("Configuration error: '${option}' is not a valid loader mode.");
+				}
 			}
 
-			if (isset($options['experimental_reuse_environment']) && $options['experimental_reuse_environment'] === true) {
-				static::$twigEnvironment = static::createTwigEnvironment();
+			if (isset($options['experimental:reuse_environment']) && $options['experimental:reuse_environment'] === true) {
+				$loader = self::createTwigLoader();
+				static::$twigEnvironment = static::createTwigEnvironment($loader , array());
 			}
 		}
 	}
@@ -284,47 +298,30 @@ class Timber {
 	 *  
 	 * @return \Twig_LoaderInterface
 	 */
-			default:
-				throw new \LoginException('Internal error');
-		}
+	protected static function createTwigLoader()
+	{
+		return new self::$loaderClassname();
 	}
 
 	/**
 	 *  
 	 * @return \Twig_Environment
 	 */
-	protected static function createTwigEnvironment($caller = null) {
-		if (self::$useLegacyFilesystemLoader === true) {
-			$loader = LegacyLoader::create($caller);
+	protected static function createTwigEnvironment(\Twig_LoaderInterface $loader, array $options = array())
+	{
+		return new Loader($loader, $options);
+	}
+
+	/**
+	 *  
+	 * @return \Twig_Environment
+	 */
+	protected static function getTwigEnvironment()
+	{
+		if (static::$twigEnvironment !== null) {
+			return static::$twigEnvironment;
 		} else {
-			$loader = ChainLoader::create();
-		}
-
-		return new Loader($loader);
-	}
-
-	/**
-	 *  
-	 * @return \Twig_Environment
-	 */
-	protected static function getTwigEnvironment($caller = null) {
-		switch (true) {
-			//
-			case static::$twigEnvironment === null:
-				static::$twigEnvironment = false;
-				return static::createTwigEnvironment($caller);
-			
-			//
-			case static::$twigEnvironment === false:
-				return static::createTwigEnvironment($caller);
-
-			//
-			case is_object(static::$twigEnvironment):
-				return static::$twigEnvironment;
-
-			//
-			default: 
-				throw new \LoginException('Internal error');
+			return static::createTwigEnvironment(self::createTwigLoader(), array());
 		}
 	}
 
@@ -361,10 +358,10 @@ class Timber {
 		
 		$caller= LocationManager::get_calling_script_dir(1);
 
-		$twigEnvironment = static::getTwigEnvironment($caller);
+		$twigEnvironment = static::getTwigEnvironment();
 
-		if (self::$useLegacyFilesystemLoader === false) {
-			$twigEnvironment->getLoader()->updateCaller($caller);
+		if (($loader = $twigEnvironment->getLoader()) instanceof CallerCompatibleLoaderInterface) {
+			$loader->setCaller($caller);
 		}
 
 		$file = $twigEnvironment->choose_template($filenames);
@@ -394,8 +391,8 @@ class Timber {
 			$output = $twigEnvironment->render($file, $data, $expires, $cache_mode);
 		}
 		
-		if (self::$useLegacyFilesystemLoader !== true) {
-			$twigEnvironment->getLoader()->resetCaller();
+		if (($loader = $twigEnvironment->getLoader()) instanceof CallerCompatibleLoaderInterface) {
+			$loader->resetCaller();
 		}
 
 		do_action('timber_compile_done');
