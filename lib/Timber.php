@@ -49,7 +49,8 @@ class Timber {
 	private static $twigEnvironmentOptions = array();
 	
 	private static $twigLoaderClassname = __NAMESPACE__.'\LegacyLoader';
-	private static $twigEnvironmentClassname = __NAMESPACE__.'\Loader';
+//	private static $twigEnvironmentClassname = __NAMESPACE__.'\Loader';
+	private static $twigEnvironmentClassname = __NAMESPACE__.'\Twig_Environment';
 
 	/**
 	 * @codeCoverageIgnore
