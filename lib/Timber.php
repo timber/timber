@@ -356,18 +356,18 @@ class Timber {
 			new self();
 		}
 		
-		$caller= LocationManager::get_calling_script_dir(1);
+		$callerDir = LocationManager::get_calling_script_dir(1);
 
 		$twigEnvironment = static::getTwigEnvironment();
 
 		if (($loader = $twigEnvironment->getLoader()) instanceof CallerCompatibleLoaderInterface) {
-			$loader->setCaller($caller);
+			$loader->setCaller($callerDir);
 		}
 
 		$file = $twigEnvironment->choose_template($filenames);
 
-		$caller_file = LocationManager::get_calling_script_file(1);
-		apply_filters('timber/calling_php_file', $caller_file);
+		$callerFile = LocationManager::get_calling_script_file(1);
+		apply_filters('timber/calling_php_file', $callerFile);
 
 		if ( $via_render ) {
 			$file = apply_filters('timber_render_file', $file);
@@ -515,8 +515,8 @@ class Timber {
 	 * @return string
 	 */
 	public static function get_sidebar_from_php( $sidebar = '', $data ) {
-		$caller = LocationManager::get_calling_script_dir(1);
-		$uris = LocationManager::get_locations($caller);
+		$callerDir = LocationManager::get_calling_script_dir(1);
+		$uris = LocationManager::get_locations($callerDir);
 		ob_start();
 		$found = false;
 		foreach ( $uris as $uri ) {
