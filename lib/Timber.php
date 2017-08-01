@@ -46,8 +46,9 @@ class Timber {
 	public static $context_cache = array();
 
 	private static $twigEnvironment;
-	private static $loaderClassname = __NAMESPACE__.'\LegacyLoader';
-	
+	private static $twigLoaderClassname = __NAMESPACE__.'\LegacyLoader';
+	private static $twigEnvironmentClassname = __NAMESPACE__.'\Loader';
+
 	/**
 	 * @codeCoverageIgnore
 	 */
@@ -69,11 +70,11 @@ class Timber {
 				switch ($option = $options['experimental:loader']) {
 
 					case 'legacy':
-						self::$loaderClassname = __NAMESPACE__.'\LegacyLoader';
+						self::$twigLoaderClassname = __NAMESPACE__.'\LegacyLoader';
 						break;
 
 					case 'chained':
-						self::$loaderClassname = __NAMESPACE__.'\ChainLoader';
+						self::$twigLoaderClassname = __NAMESPACE__.'\ChainLoader';
 						break;
 
 					default:
@@ -299,7 +300,7 @@ class Timber {
 	 */
 	protected static function createTwigLoader()
 	{
-		return new self::$loaderClassname();
+		return new self::$twigLoaderClassname();
 	}
 
 	/**
@@ -308,7 +309,7 @@ class Timber {
 	 */
 	protected static function createTwigEnvironment(\Twig_LoaderInterface $loader, array $options = array())
 	{
-		return new Loader($loader, $options);
+		return new self::$twigEnvironmentClassname($loader, $options);
 	}
 
 	/**
