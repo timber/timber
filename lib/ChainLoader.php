@@ -6,7 +6,7 @@ namespace Timber;
  *
  */
 class ChainLoader
-	implements \Twig_LoaderInterface
+	implements \Twig_LoaderInterface, CallerCompatibleLoaderInterface
 {
 	private $chain;
 	private $temporaryLoader;
@@ -19,7 +19,7 @@ class ChainLoader
 	/**
 	 * 
 	 */
-	private function __construct() {
+	public function __construct() {
 		$open_basedir = ini_get('open_basedir');
 		$rootPath = $open_basedir ? null : '/';
 
@@ -36,16 +36,6 @@ class ChainLoader
 	}
 
 	/**
-	 * 
-	 * 
-	 * @return \Twig_LoaderInterface
-	 */
-	public static function create()
-	{
-		return new static();
-	}
-
-	/**
      * Returns the source context for a given template logical name.
      *
      * @param string $name The template logical name
@@ -58,6 +48,19 @@ class ChainLoader
 	}
 
     /**
+     * Gets the source code of a template, given its name.
+     *
+     * @param string $name The name of the template to load
+     * @return string The template source code
+     * @throws Twig_Error_Loader When $name is not found
+     * @deprecated since 1.27 (to be removed in 2.0), implement Twig_SourceContextLoaderInterface
+     */
+    public function getSource($name)
+	{
+		return $this->getSourceContext($name)->getCode();
+	}
+
+	/**
      * Gets the cache key to use for the cache for a given template name.
      *
      * @param string $name The name of the template to load
@@ -125,10 +128,15 @@ class ChainLoader
 	
 	/**
 	 *  
-	 * @param string $caller
+	 * @param string|false $caller
 	 */
-	public function updateCaller($caller) {
-		
+	public function setCaller($caller = false)
+	{
+		if ($caller === false) {
+			$this->resetCaller();
+			return;
+		}
+
 		$locations = $this->locationsLoader->getPaths();
 		$theme = $this->themeLoader->getPaths();
 		
@@ -145,30 +153,37 @@ class ChainLoader
 	 *  
 	 * @param string $CALLER
 	 */
-	public function resetCaller() {
-		
-		$this->callerLoader->setPaths(null);
-		$this->caller2Loader->setPaths(null);
+	public function resetCaller()
+	{
+		$this->callerLoader->setPaths(array());
+		$this->caller2Loader->setPaths(array());
 	} 
 
 	/**
 	 * @return \Twig_Loader_Filesystem
 	 */
-	protected function getLocationsLoader() {
+	public function getTemporaryLoader() {
+		return $this->temporaryLoader;
+	}
+
+	/**
+	 * @return \Twig_Loader_Filesystem
+	 */
+	public function getLocationsLoader() {
 		return $this->locationsLoader;
 	}
 
 	/**
 	 * @return \Twig_Loader_Filesystem
 	 */
-	protected function getThemeLoader() {
+	public function getThemeLoader() {
 		return $this->themeLoader;
 	}
 
 	/**
 	 * @return \Twig_Loader_Filesystem
 	 */
-	protected function getBasedirLoader() {
+	public function getBasedirLoader() {
 		return $this->basedirLoader;
 	}
 }
