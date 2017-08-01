@@ -427,9 +427,7 @@ class Timber {
 			$this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
 		}
 
-		// Filter and return output
-		$output = apply_filters('timber_output', $output);
-		return apply_filters('timber/output', $output, $context, $name);
+		return $output;
 	}
 
 	/**
@@ -489,6 +487,9 @@ class Timber {
 			$data = apply_filters($via_render ? 'timber_render_data' : 'timber_compile_data', $data);
 
 			$output = $twigEnvironment->render($file, $data, $expires, $cache_mode);
+			// Filter output
+			$output = apply_filters('timber_output', $output);
+			$output = apply_filters('timber/output', $output, $data, $file);
 		}
 		
 		if ($supportCaller) {
