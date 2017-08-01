@@ -48,6 +48,19 @@ class ChainLoader
 	}
 
     /**
+     * Gets the source code of a template, given its name.
+     *
+     * @param string $name The name of the template to load
+     * @return string The template source code
+     * @throws Twig_Error_Loader When $name is not found
+     * @deprecated since 1.27 (to be removed in 2.0), implement Twig_SourceContextLoaderInterface
+     */
+    public function getSource($name)
+	{
+		return $this->getSourceContext($name)->getCode();
+	}
+
+	/**
      * Gets the cache key to use for the cache for a given template name.
      *
      * @param string $name The name of the template to load
