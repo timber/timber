@@ -46,6 +46,8 @@ class Timber {
 	public static $context_cache = array();
 
 	private static $twigEnvironment;
+	private static $twigEnvironmentOptions = array();
+	
 	private static $twigLoaderClassname = __NAMESPACE__.'\LegacyLoader';
 	private static $twigEnvironmentClassname = __NAMESPACE__.'\Loader';
 
@@ -321,7 +323,7 @@ class Timber {
 		if (static::$twigEnvironment !== null) {
 			return static::$twigEnvironment;
 		} else {
-			return static::createTwigEnvironment(self::createTwigLoader(), array());
+			return static::createTwigEnvironment(self::createTwigLoader(), self::$twigEnvironmentOptions);
 		}
 	}
 
