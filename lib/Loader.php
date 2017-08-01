@@ -112,9 +112,12 @@ class Loader
 				$result = $loader->getCacheKey($file);
 				do_action('timber_loader_render_file', $result);
 			}
+			
+			$template = parent::loadTemplate($file);
+
 			$data = apply_filters('timber_loader_render_data', $data);
 			$data = apply_filters('timber/loader/render_data', $data, $file);
-			$output = parent::render($file, $data);
+			$output = $template->render($data);
 		}
 
 		if ( false !== $output && false !== $expires && null !== $key ) {
