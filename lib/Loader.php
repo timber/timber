@@ -37,8 +37,6 @@ final class Loader
 		if ($caller !== false) {
 			$this->twigEnvironment->getLoader()->setCaller($caller);
 		}
-		
-		$this->cacheInstance = new Cache();
 	}
 
 	/**

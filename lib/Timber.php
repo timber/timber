@@ -471,9 +471,6 @@ class Timber {
 			$key = null;
 			$output = false;
 
-// TODO: This is a temoprary hack!
-			$cache = new Cache();
-
 			// Only load cached data when $expires is not false
 			// NB: Caching is disabled, when $expires is false!
 			if ( false !== $expires ) {
