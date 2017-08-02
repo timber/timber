@@ -90,8 +90,11 @@ class Loader
 			case self::CACHE_SITE_TRANSIENT === $cache_mode:
 				return self::clear_cache_timber_database();
 			
-			case self::CACHE_OBJECT === $cache_mode && $object_cache:
-				return self::clear_cache_timber_object();
+			case self::CACHE_OBJECT === $cache_mode:
+				if ($object_cache) {
+					return self::clear_cache_timber_object();
+				}
+				break;
 			
 			default:
 // TODO:
@@ -190,8 +193,10 @@ class Loader
 				$value = get_site_transient($trans_key);
 				break;
 
-			case ( self::CACHE_OBJECT === $cache_mode && $object_cache ):
-				$value = wp_cache_get($key, $group);
+			case ( self::CACHE_OBJECT === $cache_mode ):
+				if ($object_cache) {
+					$value = wp_cache_get($key, $group);
+				}
 				break;
 				
 			default:
@@ -230,8 +235,12 @@ class Loader
 				set_site_transient($trans_key, $value, $expires);
 				break;
 		
-			case self::CACHE_OBJECT === $cache_mode && $object_cache:
-				wp_cache_set($key, $value, $group, $expires);
+			case self::CACHE_OBJECT === $cache_mode:
+				if ($object_cache) {
+					wp_cache_set($key, $value, $group, $expires);
+				} else {
+					// Do nothing (?)
+				}
 				break;
 
 			default:
