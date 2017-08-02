@@ -4,7 +4,7 @@ namespace Timber;
 
 use Timber\Cache\Cleaner;
 
-class Loader
+final class Loader
 {
 	const CACHEGROUP = Cache::CACHEGROUP;
 
