@@ -348,7 +348,7 @@ class Timber {
 			$twigEnvironment->addExtension(new \Twig_Extension_Debug());
 		}
 
-		$twigEnvironment->addExtension(Loader::createCacheExtension());
+		$twigEnvironment->addExtension(Cache::createCacheExtension());
 
 		do_action('timber/twig', $twigEnvironment);
 		/**
@@ -423,7 +423,7 @@ class Timber {
 	 * @param bool         $via_render Optional. Whether to apply optional render or compile filters. Default false.
 	 * @return bool|string The returned output.
 	 */
-	public static function compile( $names, $context = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false ) {
+	public static function compile( $names, $context = array(), $expires = false, $cache_mode = Cache::CACHE_USE_DEFAULT, $via_render = false ) {
 		if ( !defined('TIMBER_LOADED') ) {
 			new self();
 		}
@@ -487,7 +487,7 @@ class Timber {
 				$key = md5($name.json_encode($context));
 
 				// Load cached output
-				$output = $cache->fetch($key, LOADER::CACHEGROUP, $cache_mode);
+				$output = $cache->fetch($key, Cache::CACHEGROUP, $cache_mode);
 			}
 
 			// If no output at this point, generate some...
@@ -520,7 +520,7 @@ class Timber {
 				// Erase cache
 				$cache->delete_cache();
 				// Store output
-				$cache->save($key, $output, Loader::CACHEGROUP, $expires, $cache_mode);
+				$cache->save($key, $output, Cache::CACHEGROUP, $expires, $cache_mode);
 			}
 //
 // Content from moved Loader::render() ends here.
@@ -574,7 +574,7 @@ class Timber {
 	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in TimberLoader.
 	 * @return bool|string The returned output.
 	 */
-	public static function fetch( $names, $context = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
+	public static function fetch( $names, $context = array(), $expires = false, $cache_mode = Cache::CACHE_USE_DEFAULT ) {
 		$output = self::compile($names, $context, $expires, $cache_mode, true);
 		$output = apply_filters('timber_compile_result', $output);
 		return $output;
@@ -601,7 +601,7 @@ class Timber {
 	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in TimberLoader.
 	 * @return bool|string The echoed output.
 	 */
-	public static function render( $names, $context = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
+	public static function render( $names, $context = array(), $expires = false, $cache_mode = Cache::CACHE_USE_DEFAULT ) {
 		$output = self::fetch($names, $context, $expires, $cache_mode);
 		echo $output;
 		return $output;
