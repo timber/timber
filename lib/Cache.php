@@ -25,23 +25,13 @@ class Cache
 
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
-	private $twigEnvironment;
-	
 	/**
 	 *
-	 * @param \Twig_Environment $twig
 	 */
-	public function __construct(\Twig_Environment $twig = null)
+	public function __construct()
 	{	
-		if ($twig !== null) {
-			$this->twigEnvironment = $twig;
-		}
-		
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
-
-// TODO: Enable this again, somewhere else...
-//		$twig->addExtension($this->_get_cache_extension());
 	}
 
 	public function delete_cache() {
