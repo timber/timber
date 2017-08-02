@@ -472,7 +472,7 @@ class Timber {
 			$output = false;
 
 // TODO: This is a temoprary hack!
-			$cache = new Loader($twigEnvironment);
+			$cache = new Cache($twigEnvironment);
 
 			// Only load cached data when $expires is not false
 			// NB: Caching is disabled, when $expires is false!
