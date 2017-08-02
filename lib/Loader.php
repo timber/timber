@@ -80,10 +80,8 @@ class Loader
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
 		//_transient_timberloader
-		$object_cache = false;
-		if ( isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']) ) {
-			$object_cache = true;
-		}
+		$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
+
 		$cache_mode = $this->_get_cache_mode($cache_mode);
 		
 		switch (true) {
@@ -175,11 +173,7 @@ class Loader
 	 * @return bool
 	 */
 	public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		$object_cache = false;
-
-		if ( isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']) ) {
-			$object_cache = true;
-		}
+		$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
 
 		$cache_mode = $this->_get_cache_mode($cache_mode);
 
@@ -216,11 +210,7 @@ class Loader
 	 * @return string|boolean
 	 */
 	public function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		$object_cache = false;
-
-		if ( isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']) ) {
-			$object_cache = true;
-		}
+		$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
 
 		if ( (int) $expires < 1 ) {
 			$expires = 0;
