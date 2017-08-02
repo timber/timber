@@ -80,6 +80,7 @@ class Loader
 	}
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
+		return parent::clear_cache_timber( $cache_mode);
 	}
 
 	public function clear_cache_twig() {
@@ -119,6 +120,7 @@ class Loader
 	 * @return \Asm89\Twig\CacheExtension\Extension
 	 */
 	public static function createCacheExtension() {
+		return parent::createCacheExtension();
 	}
 
 	/**
