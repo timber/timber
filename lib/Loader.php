@@ -24,8 +24,6 @@ class Loader
 		self::CACHE_SITE_TRANSIENT
 	);
 
-	protected $cache_mode = self::CACHE_TRANSIENT;
-
 	private $twigEnvironment;
 	
 	/**
@@ -43,7 +41,6 @@ class Loader
 // TODO: Enable this again, somewhere else...
 //		$twig->addExtension($this->_get_cache_extension());
 	}
-
 
 	/**
 	 * @param string $name
