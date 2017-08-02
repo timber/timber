@@ -312,7 +312,50 @@ class Timber {
 	 */
 	protected static function createTwigEnvironment(\Twig_LoaderInterface $loader, array $options = array())
 	{
-		return new self::$twigEnvironmentClassname($loader, $options);
+		$loader = apply_filters('timber/loader/loader', $loader);
+// TODO: Consider this new filter as a future replacement for 'timber/loader/loader'
+//		$loader = apply_filters('timber/twig/loader', $loader, $this);
+		if ( !$loader instanceof \Twig_LoaderInterface ) {
+			throw new \UnexpectedValueException('Loader must implement \Twig_LoaderInterface');
+		}
+
+		if ($loader instanceof LegacyLoader) {
+			// It's a legacy loader...
+		}
+
+		$options = array('debug' => WP_DEBUG, 'autoescape' => false);
+		if ( isset(Timber::$autoescape) ) {
+			$options['autoescape'] = Timber::$autoescape;
+		}
+
+// TODO: Consider this new (experimental) filter!
+//		$options = apply_filters('timber/twig/options', $options, $this);
+
+// TODO: Move these if's to Timbers controller / init()
+		if ( Timber::$cache === true ) {
+			Timber::$twig_cache = true;
+		}
+		if ( Timber::$twig_cache ) {
+			$twig_cache_loc = apply_filters('timber/cache/location', TIMBER_LOC.'/cache/twig');
+			if ( !file_exists($twig_cache_loc) ) {
+				mkdir($twig_cache_loc, 0777, true);
+			}
+			$options['cache'] = $twig_cache_loc;
+		}
+
+		$twigEnvironment = new self::$twigEnvironmentClassname($loader, $options);
+
+		if ( WP_DEBUG ) {
+			$twigEnvironment->addExtension(new \Twig_Extension_Debug());
+		}
+
+		do_action('timber/twig', $twigEnvironment);
+		/**
+		 * get_twig is deprecated, use timber/twig
+		 */
+		do_action('get_twig', $twigEnvironment);
+		
+		return $twigEnvironment;
 	}
 
 	/**
