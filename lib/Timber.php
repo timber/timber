@@ -402,7 +402,7 @@ class Timber {
 	 * @param string        	$cache_mode
 	 * @return bool|string
 	 */
-	public function render( $name, array $context = array(), $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	private static function doCachedRender(\Twig_Environment $twig, $name, array $context = array(), $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
 		// Different $expires if user is anonymous or logged in
 		if ( is_array($expires) ) {
 			/** @var array $expires */
@@ -503,6 +503,7 @@ class Timber {
 		$twigEnvironment = static::getTwigEnvironment();
 
 		$loader = $twigEnvironment->getLoader();
+		
 		$supportCaller = $loader instanceof CallerCompatibleLoaderInterface;
 		if ($supportCaller) {
 			$callerDir = LocationManager::get_calling_script_dir(1);
@@ -525,7 +526,9 @@ class Timber {
 
 			$data = apply_filters($via_render ? 'timber_render_data' : 'timber_compile_data', $data);
 
-			$output = $twigEnvironment->render($file, $data, $expires, $cache_mode);
+//			$output = $twigEnvironment->render($file, $data, $expires, $cache_mode);
+			$output = self::doCachedRender($twigEnvironment, $file, $data, $expires, $cache_mode);
+
 			// Filter output
 			$output = apply_filters('timber_output', $output);
 			$output = apply_filters('timber/output', $output, $data, $file);
