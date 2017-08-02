@@ -34,16 +34,25 @@ final class Loader
 	}
 
 	/**
-	 * @param string $name
-	 * @return bool
-	 * @deprecated 1.3.5 No longer used internally
-	 * @todo remove in 2.x
-	 * @codeCoverageIgnore
+	 * @param string        	$file
+	 * @param array         	$data
+	 * @param array|boolean    	$expires (array for options, false for none, integer for # of seconds)
+	 * @param string        	$cache_mode
+	 * @return bool|string
 	 */
-	protected function template_exists( $name ) {
-		return $this->twig->getLoader()->exists($name);
+	public function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
+// TODO: This results in a circularity...
 	}
 
+	/**
+	 * Get first existing template.
+	 *
+	 * @param array|string $templates  Name(s) of the Twig template(s) to choose from.
+	 * @return string|bool             Name of chosen template, otherwise false.
+	 */
+	public function choose_template( $templates ) {
+		$this->cacheInstance->clearCacheTimber();
+	}
 
 	/**
 	 * @return \Twig_LoaderInterface
@@ -107,14 +116,7 @@ final class Loader
 		rmdir($dirPath);
 	}
 
-	/**
-	 * @return \Asm89\Twig\CacheExtension\Extension
-	 */
-	public static function createCacheExtension() {
-		return Cache::createCacheExtension();
-	}
-
-	/**
+	/*
 	 * @param string $key
 	 * @param string $group
 	 * @param string $cache_mode
