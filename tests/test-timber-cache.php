@@ -190,9 +190,9 @@
         	sleep(1);
         	$this->assertFileExists($cache_dir);
         	Timber::$cache = false;
-        	$twig = new TimberLoader(\Timber\Timber::getTwigEnvironment());
-        	$twig->clear_cache_twig();
-        	$this->assertFileNotExists($cache_dir);
+        	$cache = new TimberCache();
+        	$cache->clear_cache_twig();
+        	$cache->assertFileNotExists($cache_dir);
         }
 
         function testTimberLoaderCache(){
@@ -203,8 +203,8 @@
             sleep(1);
             $str_new = Timber::compile('assets/single-post.twig', array('post' => $post), 600);
             $this->assertEquals($str_old, $str_new);
-            $twig = new TimberLoader(\Timber\Timber::getTwigEnvironment());
-            $clear = $twig->clear_cache_timber();
+            $cache = new TimberCache();
+            $clear = $cache->clear_cache_timber();
             $this->assertGreaterThan(0, $clear);
             global $wpdb;
             $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
@@ -223,8 +223,8 @@
             sleep(1);
             $str_new = Timber::compile('assets/single-post.twig', array('post' => $post), 600, \Timber\Loader::CACHE_OBJECT);
             $this->assertEquals($str_old, $str_new);
-            $twig = new TimberLoader(\Timber\Timber::getTwigEnvironment());
-            $clear = $twig->clear_cache_timber(\Timber\Loader::CACHE_OBJECT);
+            $cache = new TimberCache();
+            $clear = $cache->clear_cache_timber(\Timber\Loader::CACHE_OBJECT);
             $this->assertTrue($clear);
             $works = true;
             if ( isset($wp_object_cache->cache[\Timber\Loader::CACHEGROUP]) 

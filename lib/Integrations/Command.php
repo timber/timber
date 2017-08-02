@@ -28,12 +28,12 @@ class Command {
 	}
 
 	public static function clear_cache_timber() {
-		$twig = new Loader(\Timber\Timber::getTwigEnvironment());
-		return $twig->clear_cache_timber();
+		$cache = new Cache();
+		return $cache->clearCacheTimber();
 	}
 
 	public static function clear_cache_twig() {
-		$twig = new Loader(\Timber\Timber::getTwigEnvironment());
+		$twig = new Loader();
 		return $twig->clear_cache_twig();
 	}
 
