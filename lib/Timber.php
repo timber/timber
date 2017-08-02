@@ -363,7 +363,7 @@ class Timber {
 	 *  
 	 * @return \Twig_Environment
 	 */
-	protected static function getTwigEnvironment()
+	public static function getTwigEnvironment()
 	{
 		if (static::$twigEnvironment !== null) {
 			return static::$twigEnvironment;
