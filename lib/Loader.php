@@ -7,15 +7,15 @@ use Timber\Cache\Cleaner;
 class Loader 
 	extends Cache
 {
-	const CACHEGROUP = 'timberloader';
+	const CACHEGROUP = Cache::CACHEGROUP;
 
-	const TRANS_KEY_LEN = 50;
+	const TRANS_KEY_LEN = Cache::TRANS_KEY_LEN;
 
-	const CACHE_NONE = 'none';
-	const CACHE_OBJECT = 'cache';
-	const CACHE_TRANSIENT = 'transient';
-	const CACHE_SITE_TRANSIENT = 'site-transient';
-	const CACHE_USE_DEFAULT = 'default';
+	const CACHE_NONE = Cache::CACHE_NONE;
+	const CACHE_OBJECT = Cache::CACHE_OBJECT;
+	const CACHE_TRANSIENT = Cache::CACHE_TRANSIENT;
+	const CACHE_SITE_TRANSIENT = Cache::CACHE_SITE_TRANSIENT;
+	const CACHE_USE_DEFAULT = Cache::CACHE_USE_DEFAULT;
 
 	public static $cache_modes = array(
 		self::CACHE_NONE,
