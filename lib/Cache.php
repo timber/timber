@@ -79,7 +79,7 @@ final class Cache
 	public static function createCacheExtension() {
 
 		$key_generator   = new \Timber\Cache\KeyGenerator();
-		$cache_provider  = new \Timber\Cache\WPObjectCacheAdapter(new self());
+		$cache_provider  = new \Timber\Cache\WPObjectCacheAdapter();
 		$cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator);
 		$cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
 
