@@ -1,28 +1,28 @@
 <?php namespace Timber\Cache;
 
 use Asm89\Twig\CacheExtension\CacheProviderInterface;
-use Timber\Loader;
+use Timber\Cache;
 
 class WPObjectCacheAdapter implements CacheProviderInterface {
 
 	private $cache_group;
 
 	/**
-	 * @var TimberLoader
+	 * @var TimberCache
 	 */
-	private $timberloader;
+	private $timberCache;
 
-	public function __construct( Loader $timberloader, $cache_group = 'timber' ) {
+	public function __construct( Cache $timberCache, $cache_group = 'timber' ) {
 		$this->cache_group = $cache_group;
-		$this->timberloader = $timberloader;
+		$this->timberCache = $timberCache;
 	}
 
 	public function fetch( $key ) {
-		return $this->timberloader->get_cache($key, $this->cache_group, Loader::CACHE_USE_DEFAULT);
+		return $this->timberCache->get_cache($key, $this->cache_group, Cache::CACHE_USE_DEFAULT);
 	}
 
 	public function save( $key, $value, $expire = 0 ) {
-		return $this->timberloader->set_cache($key, $value, $this->cache_group, $expire, Loader::CACHE_USE_DEFAULT);
+		return $this->timberCache->set_cache($key, $value, $this->cache_group, $expire, Cache::CACHE_USE_DEFAULT);
 	}
 
 }
