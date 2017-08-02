@@ -85,11 +85,20 @@ class Loader
 			$object_cache = true;
 		}
 		$cache_mode = $this->_get_cache_mode($cache_mode);
-		if ( self::CACHE_TRANSIENT === $cache_mode || self::CACHE_SITE_TRANSIENT === $cache_mode ) {
-			return self::clear_cache_timber_database();
-		} else if ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
-			return self::clear_cache_timber_object();
+		
+		switch (true) {
+				
+			case self::CACHE_TRANSIENT === $cache_mode:
+			case self::CACHE_SITE_TRANSIENT === $cache_mode:
+				return self::clear_cache_timber_database();
+			
+			case self::CACHE_OBJECT === $cache_mode && $object_cache:
+				return self::clear_cache_timber_object();
+			
+			default:
+// TODO:
 		}
+
 		return false;
 	}
 
@@ -177,12 +186,22 @@ class Loader
 		$value = false;
 
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-		if ( self::CACHE_TRANSIENT === $cache_mode ) {
-			$value = get_transient($trans_key);
-		} elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode ) {
-			$value = get_site_transient($trans_key);
-		} elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
-			$value = wp_cache_get($key, $group);
+		
+		switch (true) {
+			case ( self::CACHE_TRANSIENT === $cache_mode ):
+				$value = get_transient($trans_key);
+				break;
+				
+			case ( self::CACHE_SITE_TRANSIENT === $cache_mode ):
+				$value = get_site_transient($trans_key);
+				break;
+
+			case ( self::CACHE_OBJECT === $cache_mode && $object_cache ):
+				$value = wp_cache_get($key, $group);
+				break;
+				
+			default:
+// TODO:
 		}
 
 		return $value;
@@ -208,14 +227,25 @@ class Loader
 		}
 
 		$cache_mode = self::_get_cache_mode($cache_mode);
+
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 
-		if ( self::CACHE_TRANSIENT === $cache_mode ) {
-			set_transient($trans_key, $value, $expires);
-		} elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode ) {
-			set_site_transient($trans_key, $value, $expires);
-		} elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
-			wp_cache_set($key, $value, $group, $expires);
+		switch (true) {
+		
+			case self::CACHE_TRANSIENT === $cache_mode:
+				set_transient($trans_key, $value, $expires);
+				break;
+		
+			case self::CACHE_SITE_TRANSIENT === $cache_mode:
+				set_site_transient($trans_key, $value, $expires);
+				break;
+		
+			case self::CACHE_OBJECT === $cache_mode && $object_cache:
+				wp_cache_set($key, $value, $group, $expires);
+				break;
+
+			default:
+// TODO: 
 		}
 
 		return $value;
