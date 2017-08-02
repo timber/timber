@@ -46,8 +46,10 @@ class Timber {
 	public static $context_cache = array();
 
 	private static $twigEnvironment;
+	private static $twigEnvironmentOptions = array();
+	
 	private static $twigLoaderClassname = __NAMESPACE__.'\LegacyLoader';
-	private static $twigEnvironmentClassname = __NAMESPACE__.'\Loader';
+	private static $twigEnvironmentClassname = '\Twig_Environment';
 
 	/**
 	 * @codeCoverageIgnore
@@ -309,20 +311,167 @@ class Timber {
 	 */
 	protected static function createTwigEnvironment(\Twig_LoaderInterface $loader, array $options = array())
 	{
-		return new self::$twigEnvironmentClassname($loader, $options);
+		$loader = apply_filters('timber/loader/loader', $loader);
+// TODO: Consider this new filter as a future replacement for 'timber/loader/loader'
+//		$loader = apply_filters('timber/twig/loader', $loader, $this);
+		if ( !$loader instanceof \Twig_LoaderInterface ) {
+			throw new \UnexpectedValueException('Loader must implement \Twig_LoaderInterface');
+		}
+
+		if ($loader instanceof LegacyLoader) {
+			// It's a legacy loader...
+		}
+
+		$options = array('debug' => WP_DEBUG, 'autoescape' => false);
+		if ( isset(Timber::$autoescape) ) {
+			$options['autoescape'] = Timber::$autoescape;
+		}
+
+// TODO: Consider this new (experimental) filter!
+//		$options = apply_filters('timber/twig/options', $options, $this);
+
+// TODO: Move these if's to Timbers controller / init()
+		if ( Timber::$cache === true ) {
+			Timber::$twig_cache = true;
+		}
+		if ( Timber::$twig_cache ) {
+			$twig_cache_loc = apply_filters('timber/cache/location', TIMBER_LOC.'/cache/twig');
+			if ( !file_exists($twig_cache_loc) ) {
+				mkdir($twig_cache_loc, 0777, true);
+			}
+			$options['cache'] = $twig_cache_loc;
+		}
+
+		$twigEnvironment = new self::$twigEnvironmentClassname($loader, $options);
+
+		if ( WP_DEBUG ) {
+			$twigEnvironment->addExtension(new \Twig_Extension_Debug());
+		}
+
+		$twigEnvironment->addExtension(Loader::createCacheExtension());
+
+		do_action('timber/twig', $twigEnvironment);
+		/**
+		 * get_twig is deprecated, use timber/twig
+		 */
+		do_action('get_twig', $twigEnvironment);
+		
+		return $twigEnvironment;
 	}
 
 	/**
 	 *  
 	 * @return \Twig_Environment
 	 */
-	protected static function getTwigEnvironment()
+	public static function getTwigEnvironment()
 	{
 		if (static::$twigEnvironment !== null) {
 			return static::$twigEnvironment;
 		} else {
-			return static::createTwigEnvironment(self::createTwigLoader(), array());
+			return static::createTwigEnvironment(self::createTwigLoader(), self::$twigEnvironmentOptions);
 		}
+	}
+
+	/**
+	 * Get first existing template.
+	 *
+	 * @param array|string $templates  Name(s) of the Twig template(s) to choose from.
+	 * @return string|bool             Name of chosen template, otherwise false.
+	 */
+	private static function chooseTemplate(\Twig_LoaderInterface $loader, $templates ) {
+		// Change $templates into array, if needed 
+		if ( !is_array($templates) ) {
+			$templates = (array) $templates;
+		}
+		
+		// Run through template array
+		foreach ( $templates as $template ) {
+			// Use the Twig loader to test for existance
+			if ( $loader->exists($template) ) {
+				// Return name of existing template
+				return $template;
+			}
+		}
+
+		// No existing template was found
+		return false;
+	}
+
+	/**
+	 * @param string        	$name
+	 * @param array         	$context
+	 * @param array|boolean    	$expires (array for options, false for none, integer for # of seconds)
+	 * @param string        	$cache_mode
+	 * @return bool|string
+	 */
+	private static function doCachedRender(\Twig_Environment $twig, $name, array $context = array(), $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
+		// Different $expires if user is anonymous or logged in
+		if ( is_array($expires) ) {
+			/** @var array $expires */
+			if ( is_user_logged_in() && isset($expires[1]) ) {
+				$expires = $expires[1];
+			} else {
+				$expires = $expires[0];
+			}
+		}
+
+		// Define variables used below
+		$key = null;
+		$output = false;
+		
+// TODO: This is a temoprary hack!
+		$cache = new Loader($twig);
+		
+		// Only load cached data when $expires is not false
+		// NB: Caching is disabled, when $expires is false!
+		if ( false !== $expires ) {
+
+			// Sort array by key (to make md5() generate same result on identical context)
+			if (ksort($context) === false ) {
+				// TODO: Handle error...
+			}
+
+			// Generate cache key, by generating a md5 hash of the template name joined with a json version of the array (serializing via json is apparently faster)
+			$key = md5($name.json_encode($context));
+
+			// Load cached output
+			$output = $cache->get_cache($key, LOADER::CACHEGROUP, $cache_mode);
+		}
+
+		// If no output at this point, generate some...
+		if ( false === $output || null === $output ) {
+			
+			// Only call this action, if the length of the template name is longer than 0 chars
+// TODO: Consider if this ever evaluates to false.
+			if ( strlen($name) ) {
+				// Get twig loader
+				$loader = $twig->getLoader();
+				// Get loaders cache key.
+				$result = $loader->getCacheKey($name);
+				// Call action, exposing the loaders cache key
+				do_action('timber_loader_render_file', $result);
+			}
+			
+			// Create Twig_Template object
+			$template = $twig->loadTemplate($name);
+
+			// Filter context data
+			$context = apply_filters('timber_loader_render_data', $context);
+			$context = apply_filters('timber/loader/render_data', $context, $name);
+
+			// Render template
+			$output = $template->render($context);
+		}
+
+		// Update cache, when 3) $key has been ser, 2) $expires != false, and 1) $output has ben changed from the initial false
+		if ( false !== $output && false !== $expires && null !== $key ) {
+			// Erase cache
+			$cache->delete_cache();
+			// Store output
+			$cache->set_cache($key, $output, Loader::CACHEGROUP, $expires, $cache_mode);
+		}
+
+		return $output;
 	}
 
 	/**
@@ -358,21 +507,20 @@ class Timber {
 		
 		$twigEnvironment = static::getTwigEnvironment();
 
-		if (($loader = $twigEnvironment->getLoader()) instanceof CallerCompatibleLoaderInterface) {
+		$loader = $twigEnvironment->getLoader();
+		
+		$supportCaller = $loader instanceof CallerCompatibleLoaderInterface;
+		if ($supportCaller) {
 			$callerDir = LocationManager::get_calling_script_dir(1);
 			$loader->setCaller($callerDir);
 		}
 
-		$file = $twigEnvironment->choose_template($filenames);
+		$file = self::chooseTemplate($loader, $filenames);
 
 		$callerFile = LocationManager::get_calling_script_file(1);
-		apply_filters('timber/calling_php_file', $callerFile);
+		do_action('timber/calling_php_file', $callerFile);
 
-		if ( $via_render ) {
-			$file = apply_filters('timber_render_file', $file);
-		} else {
-			$file = apply_filters('timber_compile_file', $file);
-		}
+		$file = apply_filters($via_render ? 'timber_render_file' : 'timber_compile_file', $file);
 
 		$output = false;
 
@@ -381,16 +529,17 @@ class Timber {
 				$data = array();
 			}
 
-			if ( $via_render ) {
-				$data = apply_filters('timber_render_data', $data);
-			} else {
-				$data = apply_filters('timber_compile_data', $data);
-			}
+			$data = apply_filters($via_render ? 'timber_render_data' : 'timber_compile_data', $data);
 
-			$output = $twigEnvironment->render($file, $data, $expires, $cache_mode);
+//			$output = $twigEnvironment->render($file, $data, $expires, $cache_mode);
+			$output = self::doCachedRender($twigEnvironment, $file, $data, $expires, $cache_mode);
+
+			// Filter output
+			$output = apply_filters('timber_output', $output);
+			$output = apply_filters('timber/output', $output, $data, $file);
 		}
 		
-		if (($loader = $twigEnvironment->getLoader()) instanceof CallerCompatibleLoaderInterface) {
+		if ($supportCaller) {
 			$loader->resetCaller();
 		}
 
@@ -579,3 +728,28 @@ class Timber {
 
 
 }
+
+/**
+ * @param \Twig_Environment $twig
+ * @return \Twig_Environment
+ * @internal
+ */
+function do_legacy_twig_environment_filters_pre_timber_twig(\Twig_Environment $twig) {
+	do_action('twig_apply_filters', $twig);
+	do_action('timber/twig/filters', $twig);
+}
+// Attach action with lower than default priority to simulate the filters prior location before 'timber/twig' was fired at the bottom of Twig::add_timber_filters()
+add_action('timber/twig', __NAMESPACE__.'\do_legacy_twig_environment_filters_pre_timber_twig', 5);
+
+/**
+ * @param \Twig_Environment $twig
+ * @return \Twig_Environment
+ * @internal
+ */
+function do_legacy_twig_environment_filters_post_timber_twig(\Twig_Environment $twig) {
+	do_action('timber/twig/functions', $twig);
+	do_action('timber/twig/escapers', $twig);
+	do_action('timber/loader/twig', $twig);
+}
+// Attach action with higher than default priority to simulate the filters prior location after 'timber/twig' was fired at the bottom of Twig::add_timber_filters()
+add_action('timber/twig', __NAMESPACE__.'\do_legacy_twig_environment_filters_post_timber_twig', 15);
