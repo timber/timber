@@ -48,43 +48,6 @@ class Cache
 		Cleaner::delete_transients();
 	}
 
-	/**
-	 * @param string $name
-	 * @return bool
-	 * @deprecated 1.3.5 No longer used internally
-	 * @todo remove in 2.x
-	 * @codeCoverageIgnore
-	 */
-	protected function template_exists( $name ) {
-		return $this->twig->getLoader()->exists($name);
-	}
-
-
-	/**
-	 * @return \Twig_LoaderInterface
-	 * @deprecated No longer relevant due to Twig_Environment::getLoader().
-	 * @todo remove
-	 */
-	public function get_loader() {
-// TODO: Remove.
-		// This returns a proxy filesystem loader to preserve backward compatibility, by letting users add (but not remove internal) paths.
-		if ($this->twig->getLoader() instanceof ChainLoader) {
-			return $this->twig->getLoader()->getTemporaryLoader();
-		}
-		// Just return loader...
-		return $this->twig->getLoader();
-	}
-
-
-	/**
-	 * @return \Twig_Environment
-	 * @deprecated Since class now extends Twig_Environment.
-	 * @todo remove
-	 */
-	public function get_twig() {
-		return $this->twigEnvironment;
-	}
-
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
 		$cache_mode = $this->_get_cache_mode($cache_mode);
 		switch ($cache_mode) {
@@ -125,39 +88,6 @@ class Cache
 			}
 			return true;
 		}
-	}
-
-	public function clear_cache_twig() {
-		if ( method_exists($this, 'clearCacheFiles') ) {
-			$this->clearCacheFiles();
-		}
-		$cache = $this->twigEnvironment->getCache();
-		if ( $cache ) {
-			self::rrmdir($this->twigEnvironment->getCache());
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * @param string|false $dirPath
-	 */
-	public static function rrmdir( $dirPath ) {
-		if ( !is_dir($dirPath) ) {
-			throw new \InvalidArgumentException("$dirPath must be a directory");
-		}
-		if ( substr($dirPath, strlen($dirPath) - 1, 1) != '/' ) {
-			$dirPath .= '/';
-		}
-		$files = glob($dirPath.'*', GLOB_MARK);
-		foreach ( $files as $file ) {
-			if ( is_dir($file) ) {
-				self::rrmdir($file);
-			} else {
-				unlink($file);
-			}
-		}
-		rmdir($dirPath);
 	}
 
 	/**
