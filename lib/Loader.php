@@ -80,7 +80,6 @@ class Loader
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
 		$cache_mode = $this->_get_cache_mode($cache_mode);
-		
 		switch ($cache_mode) {
 				
 			case self::CACHE_TRANSIENT:
@@ -174,12 +173,11 @@ class Loader
 	 * @return bool
 	 */
 	public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		$cache_mode = $this->_get_cache_mode($cache_mode);
-
 		$value = false;
 
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 		
+		$cache_mode = $this->_get_cache_mode($cache_mode);
 		switch ($cache_mode) {
 				
 			case self::CACHE_TRANSIENT:
@@ -217,10 +215,9 @@ class Loader
 			$expires = 0;
 		}
 
-		$cache_mode = self::_get_cache_mode($cache_mode);
-
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 
+		$cache_mode = self::_get_cache_mode($cache_mode);
 		switch ($cache_mode) {
 		
 			case self::CACHE_TRANSIENT:
