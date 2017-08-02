@@ -398,83 +398,6 @@ class Timber {
 	}
 
 	/**
-	 * @param string        	$name
-	 * @param array         	$context
-	 * @param array|boolean    	$expires (array for options, false for none, integer for # of seconds)
-	 * @param string        	$cache_mode
-	 * @return bool|string
-	 */
-	private static function doCachedRender(\Twig_Environment $twig, $name, array $context = array(), $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		// Different $expires if user is anonymous or logged in
-		if ( is_array($expires) ) {
-			/** @var array $expires */
-			if ( is_user_logged_in() && isset($expires[1]) ) {
-				$expires = $expires[1];
-			} else {
-				$expires = $expires[0];
-			}
-		}
-
-		// Define variables used below
-		$key = null;
-		$output = false;
-		
-// TODO: This is a temoprary hack!
-		$cache = new Loader($twig);
-		
-		// Only load cached data when $expires is not false
-		// NB: Caching is disabled, when $expires is false!
-		if ( false !== $expires ) {
-
-			// Sort array by key (to make md5() generate same result on identical context)
-			if (ksort($context) === false ) {
-				// TODO: Handle error...
-			}
-
-			// Generate cache key, by generating a md5 hash of the template name joined with a json version of the array (serializing via json is apparently faster)
-			$key = md5($name.json_encode($context));
-
-			// Load cached output
-			$output = $cache->get_cache($key, LOADER::CACHEGROUP, $cache_mode);
-		}
-
-		// If no output at this point, generate some...
-		if ( false === $output || null === $output ) {
-			
-			// Only call this action, if the length of the template name is longer than 0 chars
-// TODO: Consider if this ever evaluates to false.
-			if ( strlen($name) ) {
-				// Get twig loader
-				$loader = $twig->getLoader();
-				// Get loaders cache key.
-				$result = $loader->getCacheKey($name);
-				// Call action, exposing the loaders cache key
-				do_action('timber_loader_render_file', $result);
-			}
-			
-			// Create Twig_Template object
-			$template = $twig->loadTemplate($name);
-
-			// Filter context data
-			$context = apply_filters('timber_loader_render_data', $context);
-			$context = apply_filters('timber/loader/render_data', $context, $name);
-
-			// Render template
-			$output = $template->render($context);
-		}
-
-		// Update cache, when 3) $key has been ser, 2) $expires != false, and 1) $output has ben changed from the initial false
-		if ( false !== $output && false !== $expires && null !== $key ) {
-			// Erase cache
-			$cache->delete_cache();
-			// Store output
-			$cache->set_cache($key, $output, Loader::CACHEGROUP, $expires, $cache_mode);
-		}
-
-		return $output;
-	}
-
-	/**
 	 * Compile a Twig file.
 	 *
 	 * Passes data to a Twig file and returns the output.
@@ -531,7 +454,77 @@ class Timber {
 
 			$context = apply_filters($via_render ? 'timber_render_data' : 'timber_compile_data', $context);
 
-			$output = self::doCachedRender($twigEnvironment, $name, $context, $expires, $cache_mode);
+//
+// Content from moved Loader::render() begins here.
+//
+			// Different $expires if user is anonymous or logged in
+			if ( is_array($expires) ) {
+				/** @var array $expires */
+				if ( is_user_logged_in() && isset($expires[1]) ) {
+					$expires = $expires[1];
+				} else {
+					$expires = $expires[0];
+				}
+			}
+
+			// Define variables used below
+			$key = null;
+			$output = false;
+
+// TODO: This is a temoprary hack!
+			$cache = new Loader($twigEnvironment);
+
+			// Only load cached data when $expires is not false
+			// NB: Caching is disabled, when $expires is false!
+			if ( false !== $expires ) {
+
+				// Sort array by key (to make md5() generate same result on identical context)
+				if (ksort($context) === false ) {
+					// TODO: Handle error...
+				}
+
+				// Generate cache key, by generating a md5 hash of the template name joined with a json version of the array (serializing via json is apparently faster)
+				$key = md5($name.json_encode($context));
+
+				// Load cached output
+				$output = $cache->get_cache($key, LOADER::CACHEGROUP, $cache_mode);
+			}
+
+			// If no output at this point, generate some...
+			if ( false === $output || null === $output ) {
+
+				// Only call this action, if the length of the template name is longer than 0 chars
+				// TODO: Consider if this ever evaluates to false.
+				if ( strlen($name) ) {
+					// Get twig loader
+					$loader = $twigEnvironment->getLoader();
+					// Get loaders cache key.
+					$result = $loader->getCacheKey($name);
+					// Call action, exposing the loaders cache key
+					do_action('timber_loader_render_file', $result);
+				}
+
+				// Create Twig_Template object
+				$template = $twigEnvironment->loadTemplate($name);
+
+				// Filter context data
+				$context = apply_filters('timber_loader_render_data', $context);
+				$context = apply_filters('timber/loader/render_data', $context, $name);
+
+				// Render template
+				$output = $template->render($context);
+			}
+
+			// Update cache, when 3) $key has been ser, 2) $expires != false, and 1) $output has ben changed from the initial false
+			if ( false !== $output && false !== $expires && null !== $key ) {
+				// Erase cache
+				$cache->delete_cache();
+				// Store output
+				$cache->set_cache($key, $output, Loader::CACHEGROUP, $expires, $cache_mode);
+			}
+//
+// Content from moved Loader::render() ends here.
+//
 
 			// Filter output
 			$output = apply_filters('timber_output', $output);
