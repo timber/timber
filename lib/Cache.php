@@ -23,15 +23,11 @@ class Cache
 		self::CACHE_SITE_TRANSIENT
 	);
 
-	protected $cache_mode = self::CACHE_TRANSIENT;
-
 	/**
 	 *
 	 */
 	public function __construct()
 	{	
-		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
-		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
 	}
 
 	public function deleteCache()
@@ -180,7 +176,9 @@ class Cache
 	private function filterCacheMode( $cache_mode )
 	{
 		if ( empty($cache_mode) || self::CACHE_USE_DEFAULT === $cache_mode ) {
-			$cache_mode = $this->cache_mode;
+			$cache_mode = self::CACHE_TRANSIENT;
+			$cache_mode = apply_filters('timber_cache_mode', $cache_mode);
+			$cache_mode = apply_filters('timber/cache/mode', $cache_mode);
 		}
 
 		// Fallback if self::$cache_mode did not get a valid value
