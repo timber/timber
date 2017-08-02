@@ -5,7 +5,6 @@ namespace Timber;
 use Timber\Cache\Cleaner;
 
 class Loader
-	extends Cache
 {
 	const CACHEGROUP = Cache::CACHEGROUP;
 
@@ -25,6 +24,7 @@ class Loader
 	);
 
 	private $twigEnvironment;
+	private $cacheInstance;
 	
 	/**
 	 *
@@ -36,7 +36,7 @@ class Loader
 			$this->twigEnvironment = $twig;
 		}
 		
-		parent::__construct();
+		$this->cacheInstance = new Cache();
 	}
 
 	/**
@@ -77,7 +77,7 @@ class Loader
 	}
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
-		return parent::clear_cache_timber( $cache_mode);
+		return $this->cacheInstance->clear_cache_timber( $cache_mode);
 	}
 
 	public function clear_cache_twig() {
@@ -117,7 +117,7 @@ class Loader
 	 * @return \Asm89\Twig\CacheExtension\Extension
 	 */
 	public static function createCacheExtension() {
-		return parent::createCacheExtension();
+		return Cache::createCacheExtension();
 	}
 
 	/**
@@ -127,7 +127,7 @@ class Loader
 	 * @return bool
 	 */
 	public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		return parent::fetch( $key, $group, $cache_mode);
+		return $this->cacheInstance->fetch( $key, $group, $cache_mode);
 	}
 
 	/**
@@ -139,6 +139,6 @@ class Loader
 	 * @return string|boolean
 	 */
 	public function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		return parent::save( $key, $value, $group, $expires, $cache_mode);
+		return $this->cacheInstance->save( $key, $value, $group, $expires, $cache_mode);
 	}
 }
