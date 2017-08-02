@@ -34,7 +34,8 @@ class Loader
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
 
-		$this->addExtension($this->_get_cache_extension());
+// TODO: Enable this again, somewhere else...
+//		$twig->addExtension($this->_get_cache_extension());
 	}
 
 	protected function delete_cache() {
