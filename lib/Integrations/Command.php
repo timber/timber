@@ -29,8 +29,7 @@ class Command {
 	}
 
 	public static function clear_cache_timber() {
-		$cache = new Cache();
-		return $cache->clearCacheTimber();
+		return Cache::clearCacheTimber();
 	}
 
 	public static function clear_cache_twig() {

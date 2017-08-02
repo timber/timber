@@ -60,7 +60,7 @@ final class Loader
 	 * @return string|bool             Name of chosen template, otherwise false.
 	 */
 	public function choose_template( $templates ) {
-		$this->cacheInstance->clearCacheTimber();
+		Cache::clearCacheTimber();
 	}
 
 	/**
@@ -89,7 +89,7 @@ final class Loader
 	}
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
-		return $this->cacheInstance->clearCacheTimber( $cache_mode);
+		return Cache::clearCacheTimber( $cache_mode);
 	}
 
 	public function clear_cache_twig() {
@@ -132,7 +132,7 @@ final class Loader
 	 * @return bool
 	 */
 	public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		return $this->cacheInstance->fetch( $key, $group, $cache_mode);
+		return Cache::fetch( $key, $group, $cache_mode);
 	}
 
 	/**
@@ -144,6 +144,6 @@ final class Loader
 	 * @return string|boolean
 	 */
 	public function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		return $this->cacheInstance->save( $key, $value, $group, $expires, $cache_mode);
+		return Cache::save( $key, $value, $group, $expires, $cache_mode);
 	}
 }

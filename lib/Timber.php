@@ -487,7 +487,7 @@ class Timber {
 				$key = md5($name.json_encode($context));
 
 				// Load cached output
-				$output = $cache->fetch($key, Cache::CACHEGROUP, $cache_mode);
+				$output = Cache::fetch($key, Cache::CACHEGROUP, $cache_mode);
 			}
 
 			// If no output at this point, generate some...
@@ -518,9 +518,9 @@ class Timber {
 			// Update cache, when 3) $key has been ser, 2) $expires != false, and 1) $output has ben changed from the initial false
 			if ( false !== $output && false !== $expires && null !== $key ) {
 				// Erase cache
-				$cache->deleteCache();
+				Cache::deleteCache();
 				// Store output
-				$cache->save($key, $output, Cache::CACHEGROUP, $expires, $cache_mode);
+				Cache::save($key, $output, Cache::CACHEGROUP, $expires, $cache_mode);
 			}
 //
 // Content from moved Loader::render() ends here.

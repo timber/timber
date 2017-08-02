@@ -30,14 +30,14 @@ class Cache
 	{	
 	}
 
-	public function deleteCache()
+	public static function deleteCache()
 	{
 		Cleaner::delete_transients();
 	}
 
-	public function clearCacheTimber( $cache_mode = self::CACHE_USE_DEFAULT )
+	public static function clearCacheTimber( $cache_mode = self::CACHE_USE_DEFAULT )
 	{
-		$cache_mode = $this->filterCacheMode($cache_mode);
+		$cache_mode = self::filterCacheMode($cache_mode);
 		switch ($cache_mode) {
 				
 			case self::CACHE_TRANSIENT:
@@ -99,12 +99,12 @@ class Cache
 	 * @param string $cache_mode
 	 * @return bool
 	 */
-	public function fetch( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	public static function fetch( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
 		$value = false;
 
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 		
-		$cache_mode = $this->filterCacheMode($cache_mode);
+		$cache_mode = self::filterCacheMode($cache_mode);
 		switch ($cache_mode) {
 				
 			case self::CACHE_TRANSIENT:
@@ -137,7 +137,7 @@ class Cache
 	 * @param string $cache_mode
 	 * @return string|boolean
 	 */
-	public function save( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	public static function save( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
 		if ( (int) $expires < 1 ) {
 			$expires = 0;
 		}
@@ -173,7 +173,7 @@ class Cache
 	 * @param string $cache_mode
 	 * @return string
 	 */
-	private function filterCacheMode( $cache_mode )
+	private static function filterCacheMode( $cache_mode )
 	{
 		if ( empty($cache_mode) || self::CACHE_USE_DEFAULT === $cache_mode ) {
 			$cache_mode = self::CACHE_TRANSIENT;
