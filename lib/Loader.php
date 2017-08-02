@@ -4,7 +4,7 @@ namespace Timber;
 
 use Timber\Cache\Cleaner;
 
-class Loader 
+class Loader
 	extends Cache
 {
 	const CACHEGROUP = Cache::CACHEGROUP;
@@ -37,9 +37,6 @@ class Loader
 		}
 		
 		parent::__construct();
-		
-// TODO: Enable this again, somewhere else...
-//		$twig->addExtension($this->_get_cache_extension());
 	}
 
 	/**
