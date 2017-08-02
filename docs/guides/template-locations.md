@@ -5,11 +5,10 @@ menu:
     parent: "guides"
 ---
 
-You can set arbitrary locations for your twig files with...
+You can set your own locations for your twig files with...
 
 ```php
 <?php
-/* functions.php */
 Timber::$locations = '/Users/jared/Sandbox/templates';
 ```
 
@@ -17,43 +16,44 @@ Use the full file path to make sure Timber knows what you're trying to draw from
 
 ```php
 <?php
-/* functions.php */
-Timber::$locations = array(	'/Users/jared/Sandbox/templates',
-							'~/Sites/timber-templates/',
-							ABSPATH.'/wp-content/templates'
-						);
+Timber::$locations = array(
+    '/Users/jared/Sandbox/templates',
+    '~/Sites/timber-templates/',
+    ABSPATH.'/wp-content/templates'
+);
 ```
 
-You only need to do this once in your project (like in `functions.php`) then when you call from a PHP file (say `single.php`) Timber will look for twig files in these locations before the child/parent theme.
+You only need to do this once in your project (in `functions.php` of your theme). When you call one of the render or compile functions from a PHP file (say `single.php`), Timber will look for Twig files in these locations before it checks the child or parent theme.
 
-* * *
+## Changing the default folder for Twig files
 
-## Changing the default folder for .twig files
+By default, Timber looks in your child and parent theme’s `views` directory to pull `.twig` files. If you don't like the default `views` directory (which by default resides in your theme folder), you can change that.
 
-By default, Timber looks in your child and parent theme's `views` directory to pull `.twig` files. If you don't like the default `views` directory (which by default resides in your theme folder) you can change that to. Example: I want to use `/wp-content/themes/my-theme/twigs`:
+Example: If I want to use `/wp-content/themes/my-theme/twigs` as my default folder, I can either configure it with a string or use an array with fallbacks.
 
 ### Configure with a string
 
 ```php
 <?php
-/* functions.php */
 Timber::$dirname = 'twigs';
 ```
 
-### Send an array with fallbacks
+### Use an array with fallbacks
 
-This is an alternativ to configuring `$dirnames` with a string.
-
-```php
-<?php
-/* functions.php */
-Timber::$dirname = array('templates', 'templates/shared/mods', 'twigs', 'views');
-```
-
-A quick note on **subdirectories**: you can always reference these relatively. For example:
+This is an alternative to configuring `$dirnames` with a string.
 
 ```php
 <?php
-Timber::render('shared/headers/header-home.twig');
+Timber::$dirname = array( 'templates', 'templates/shared/mods', 'twigs', 'views' );
 ```
-... might correspond to a file in `/wp-content/themes/my-theme/views/shared/headers/header-home.twig`.
+
+## Subdirectories
+
+You can always reference **subdirectories** in your template folders relatively. For example:
+
+```php
+<?php
+Timber::render( 'shared/headers/header-home.twig' );
+```
+... might correspond to a file in  
+`/wp-content/themes/my-theme/views/shared/headers/header-home.twig`.
