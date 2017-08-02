@@ -131,7 +131,7 @@ class Loader
 		if ( method_exists($this, 'clearCacheFiles') ) {
 			$this->clearCacheFiles();
 		}
-		$cache = $this->get_cache();
+		$cache = $this->twig->getCache();
 		if ( $cache ) {
 			self::rrmdir($this->get_cache());
 			return true;
