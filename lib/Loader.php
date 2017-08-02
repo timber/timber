@@ -38,7 +38,7 @@ class Loader
 			$this->twigEnvironment = $twig;
 		}
 		
-
+		parent::__construct();
 		
 // TODO: Enable this again, somewhere else...
 //		$twig->addExtension($this->_get_cache_extension());
