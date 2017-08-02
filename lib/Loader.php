@@ -31,9 +31,11 @@ class Loader
 	 *
      * @param \Twig_Environment $twig
      * @param array                $options An array of options	 */
-	public function __construct(\Twig_Environment $twig)
+	public function __construct(\Twig_Environment $twig = null)
 	{	
-		$this->twigEnvironment = $twig;
+		if ($twig !== null) {
+			$this->twigEnvironment = $twig;
+		}
 		
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
@@ -161,10 +163,10 @@ class Loader
 	/**
 	 * @return \Asm89\Twig\CacheExtension\Extension
 	 */
-	private function _get_cache_extension() {
+	public static function createCacheExtension() {
 
 		$key_generator   = new \Timber\Cache\KeyGenerator();
-		$cache_provider  = new \Timber\Cache\WPObjectCacheAdapter($this);
+		$cache_provider  = new \Timber\Cache\WPObjectCacheAdapter(new self());
 		$cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator);
 		$cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
 

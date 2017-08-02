@@ -348,6 +348,8 @@ class Timber {
 			$twigEnvironment->addExtension(new \Twig_Extension_Debug());
 		}
 
+		$twigEnvironment->addExtension(Loader::createCacheExtension());
+
 		do_action('timber/twig', $twigEnvironment);
 		/**
 		 * get_twig is deprecated, use timber/twig
