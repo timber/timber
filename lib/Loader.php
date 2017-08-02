@@ -34,6 +34,10 @@ final class Loader
 		if (! $this->twigEnvironment->getLoader() instanceof CallerCompatibleLoaderInterface) {
 			throw new \Exception('The Twig Environment loader must implement CallerCompatibleLoaderInterface for the to work.');
 		}
+		if ($caller !== false) {
+			$this->twigEnvironment->getLoader()->setCaller($caller);
+		}
+		
 		$this->cacheInstance = new Cache();
 	}
 
