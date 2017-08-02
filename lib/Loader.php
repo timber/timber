@@ -44,7 +44,7 @@ class Loader
 //		$twig->addExtension($this->_get_cache_extension());
 	}
 
-	protected function delete_cache() {
+	public function delete_cache() {
 		Cleaner::delete_transients();
 	}
 
