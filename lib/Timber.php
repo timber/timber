@@ -490,9 +490,9 @@ class Timber {
 	 *
 	 * $team_member = Timber::compile( 'team-member.twig', $data );
 	 * ```
-	 * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, Timber will
+	 * @param array|string $names      Name of the Twig file to render. If this is an array of files, Timber will
 	 *                                 render the first file that exists.
-	 * @param array        $data       Optional. An array of data to use in Twig template.
+	 * @param array        $context    Optional. An array of data to use in Twig template.
 	 * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
 	 *                                 array, the first value is used for non-logged in visitors, the second for users.
 	 *                                 Default false.
@@ -500,7 +500,7 @@ class Timber {
 	 * @param bool         $via_render Optional. Whether to apply optional render or compile filters. Default false.
 	 * @return bool|string The returned output.
 	 */
-	public static function compile( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false ) {
+	public static function compile( $names, $context = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT, $via_render = false ) {
 		if ( !defined('TIMBER_LOADED') ) {
 			new self();
 		}
@@ -515,28 +515,27 @@ class Timber {
 			$loader->setCaller($callerDir);
 		}
 
-		$file = self::chooseTemplate($loader, $filenames);
+		$name = self::chooseTemplate($loader, $names);
 
 		$callerFile = LocationManager::get_calling_script_file(1);
 		do_action('timber/calling_php_file', $callerFile);
 
-		$file = apply_filters($via_render ? 'timber_render_file' : 'timber_compile_file', $file);
+		$name = apply_filters($via_render ? 'timber_render_file' : 'timber_compile_file', $name);
 
 		$output = false;
 
-		if ($file !== false) {
-			if ( is_null($data) ) {
-				$data = array();
+		if ($name !== false) {
+			if ( is_null($context) ) {
+				$context = array();
 			}
 
-			$data = apply_filters($via_render ? 'timber_render_data' : 'timber_compile_data', $data);
+			$context = apply_filters($via_render ? 'timber_render_data' : 'timber_compile_data', $context);
 
-//			$output = $twigEnvironment->render($file, $data, $expires, $cache_mode);
-			$output = self::doCachedRender($twigEnvironment, $file, $data, $expires, $cache_mode);
+			$output = self::doCachedRender($twigEnvironment, $name, $context, $expires, $cache_mode);
 
 			// Filter output
 			$output = apply_filters('timber_output', $output);
-			$output = apply_filters('timber/output', $output, $data, $file);
+			$output = apply_filters('timber/output', $output, $context, $name);
 		}
 		
 		if ($supportCaller) {
@@ -560,30 +559,30 @@ class Timber {
 	 * $welcome = Timber::compile_string( 'Hi {{ username }}, I’m a string with a custom Twig variable', $data );
 	 * ```
 	 * @param string $string A string with Twig variables.
-	 * @param array  $data   Optional. An array of data to use in Twig template.
+	 * @param array  $context Optional. An array of data to use in Twig template.
 	 * @return  bool|string
 	 */
-	public static function compile_string( $string, $data = array() ) {
+	public static function compile_string( $string, $context = array() ) {
 		$twigEnvironment = static::getTwigEnvironment();
 		$template = $twigEnvironment->createTemplate($string);
-		return $template->render($data);
+		return $template->render($context);
 	}
 
 	/**
 	 * Fetch function.
 	 *
 	 * @api
-	 * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, Timber will
+	 * @param array|string $names      Name of the Twig file to render. If this is an array of files, Timber will
 	 *                                 render the first file that exists.
-	 * @param array        $data       Optional. An array of data to use in Twig template.
+	 * @param array        $context    Optional. An array of data to use in Twig template.
 	 * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
 	 *                                 array, the first value is used for non-logged in visitors, the second for users.
 	 *                                 Default false.
 	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in TimberLoader.
 	 * @return bool|string The returned output.
 	 */
-	public static function fetch( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
-		$output = self::compile($filenames, $data, $expires, $cache_mode, true);
+	public static function fetch( $names, $context = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
+		$output = self::compile($names, $context, $expires, $cache_mode, true);
 		$output = apply_filters('timber_compile_result', $output);
 		return $output;
 	}
@@ -600,17 +599,17 @@ class Timber {
 	 *
 	 * Timber::render( 'index.twig', $context );
 	 * ```
-	 * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, Timber will
+	 * @param array|string $names      Name of the Twig file to render. If this is an array of files, Timber will
 	 *                                 render the first file that exists.
-	 * @param array        $data       Optional. An array of data to use in Twig template.
+	 * @param array        $context    Optional. An array of data to use in Twig template.
 	 * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
 	 *                                 array, the first value is used for non-logged in visitors, the second for users.
 	 *                                 Default false.
 	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in TimberLoader.
 	 * @return bool|string The echoed output.
 	 */
-	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
-		$output = self::fetch($filenames, $data, $expires, $cache_mode);
+	public static function render( $names, $context = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
+		$output = self::fetch($names, $context, $expires, $cache_mode);
 		echo $output;
 		return $output;
 	}
