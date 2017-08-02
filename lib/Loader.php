@@ -25,11 +25,15 @@ class Loader
 
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
+	private $twigEnvironment;
+	
 	/**
-     * @param Twig_LoaderInterface $loader
-     * @param array                $options An array of options
-	 */
-	public function __construct(\Twig_LoaderInterface $loader, $options = array()) {
+	 *
+     * @param \Twig_Environment $twig
+     * @param array                $options An array of options	 */
+	public function __construct(\Twig_Environment $twig)
+	{	
+		$this->twigEnvironment = $twig;
 		
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
@@ -50,7 +54,7 @@ class Loader
 	 * @codeCoverageIgnore
 	 */
 	protected function template_exists( $name ) {
-		return $this->getLoader()->exists($name);
+		return $this->twig->getLoader()->exists($name);
 	}
 
 
@@ -62,11 +66,11 @@ class Loader
 	public function get_loader() {
 // TODO: Remove.
 		// This returns a proxy filesystem loader to preserve backward compatibility, by letting users add (but not remove internal) paths.
-		if ($this->getLoader() instanceof ChainLoader) {
-			return $this->getLoader()->getTemporaryLoader();
+		if ($this->twig->getLoader() instanceof ChainLoader) {
+			return $this->twig->getLoader()->getTemporaryLoader();
 		}
 		// Just return loader...
-		return $this->getLoader();
+		return $this->twig->getLoader();
 	}
 
 
@@ -76,7 +80,7 @@ class Loader
 	 * @todo remove
 	 */
 	public function get_twig() {
-		return $this;
+		return $this->twigEnvironment;
 	}
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
