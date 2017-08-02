@@ -131,9 +131,9 @@ class Loader
 		if ( method_exists($this, 'clearCacheFiles') ) {
 			$this->clearCacheFiles();
 		}
-		$cache = $this->getCache();
+		$cache = $this->get_cache();
 		if ( $cache ) {
-			self::rrmdir($this->getCache());
+			self::rrmdir($this->get_cache());
 			return true;
 		}
 		return false;
