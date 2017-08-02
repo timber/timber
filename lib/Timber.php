@@ -417,6 +417,9 @@ class Timber {
 		$key = null;
 		$output = false;
 		
+// TODO: This is a temoprary hack!
+		$cache = new Loader($twig);
+		
 		// Only load cached data when $expires is not false
 		// NB: Caching is disabled, when $expires is false!
 		if ( false !== $expires ) {
@@ -430,7 +433,7 @@ class Timber {
 			$key = md5($name.json_encode($context));
 
 			// Load cached output
-			$output = $this->get_cache($key, self::CACHEGROUP, $cache_mode);
+			$output = $cache->get_cache($key, self::CACHEGROUP, $cache_mode);
 		}
 
 		// If no output at this point, generate some...
@@ -461,9 +464,9 @@ class Timber {
 		// Update cache, when 3) $key has been ser, 2) $expires != false, and 1) $output has ben changed from the initial false
 		if ( false !== $output && false !== $expires && null !== $key ) {
 			// Erase cache
-			$this->delete_cache();
+			$cache->delete_cache();
 			// Store output
-			$this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
+			$cache->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
 		}
 
 		return $output;
