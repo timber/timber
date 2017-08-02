@@ -26,12 +26,10 @@ final class Loader
 	private $cacheInstance;
 	
 	/**
-	 *
-	 * @param \Twig_Environment $twig
+	 * @param bool|string   $caller the calling directory or false
 	 */
-	public function __construct(\Twig_Environment $twig = null)
-	{	
-		
+	public function __construct( $caller = false )
+	{
 		$this->cacheInstance = new Cache();
 	}
 
