@@ -22,7 +22,6 @@ final class Loader
 	);
 
 	private $twigEnvironment;
-	private $cacheInstance;
 	
 	/**
 	 * @param bool|string   $caller the calling directory or false
