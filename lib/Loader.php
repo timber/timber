@@ -5,6 +5,7 @@ namespace Timber;
 use Timber\Cache\Cleaner;
 
 class Loader 
+	extends Cache
 {
 	const CACHEGROUP = 'timberloader';
 
