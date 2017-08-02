@@ -440,7 +440,7 @@ class Timber {
 // TODO: Consider if this ever evaluates to false.
 			if ( strlen($name) ) {
 				// Get twig loader
-				$loader = $this->getLoader();
+				$loader = $twig->getLoader();
 				// Get loaders cache key.
 				$result = $loader->getCacheKey($name);
 				// Call action, exposing the loaders cache key
@@ -448,7 +448,7 @@ class Timber {
 			}
 			
 			// Create Twig_Template object
-			$template = parent::loadTemplate($name);
+			$template = $twig->loadTemplate($name);
 
 			// Filter context data
 			$context = apply_filters('timber_loader_render_data', $context);
