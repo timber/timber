@@ -39,7 +39,8 @@ final class Loader
 	 * @return bool|string
 	 */
 	public function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
-// TODO: This results in a circularity...
+		// NB: This will trigger a few more filteres that originally.
+		return Timber::compile($file, $data, $expires, $cache_mode);
 	}
 
 	/**
