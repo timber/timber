@@ -5,7 +5,7 @@ namespace Timber;
 /**
  *
  */
-class ChainLoader
+class CompatibleLoader
 	implements \Twig_LoaderInterface, CallerCompatibleLoaderInterface
 {
 	private $chain;

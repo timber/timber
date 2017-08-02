@@ -75,8 +75,8 @@ class Timber {
 						self::$twigLoaderClassname = __NAMESPACE__.'\LegacyLoader';
 						break;
 
-					case 'chained':
-						self::$twigLoaderClassname = __NAMESPACE__.'\ChainLoader';
+					case 'compatible':
+						self::$twigLoaderClassname = __NAMESPACE__.'\CompatibleLoader';
 						break;
 
 					default:

@@ -71,7 +71,7 @@ final class Loader
 	public function get_loader() {
 // TODO: Remove.
 		// This returns a proxy filesystem loader to preserve backward compatibility, by letting users add (but not remove internal) paths.
-		if ($this->twigEnvironment->getLoader() instanceof ChainLoader) {
+		if ($this->twigEnvironment->getLoader() instanceof CompatibleLoader) {
 			return $this->twigEnvironment->getLoader()->getTemporaryLoader();
 		}
 		// Just return loader...
