@@ -34,22 +34,24 @@ class Cache
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
 	}
 
-	public function delete_cache() {
+	public function deleteCache()
+	{
 		Cleaner::delete_transients();
 	}
 
-	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
-		$cache_mode = $this->_get_cache_mode($cache_mode);
+	public function clearCacheTimber( $cache_mode = self::CACHE_USE_DEFAULT )
+	{
+		$cache_mode = $this->filterCacheMode($cache_mode);
 		switch ($cache_mode) {
 				
 			case self::CACHE_TRANSIENT:
 			case self::CACHE_SITE_TRANSIENT:
-				return self::clear_cache_timber_database();
+				return self::clearCacheTimberDatabase();
 			
 			case self::CACHE_OBJECT:
 				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
 				if ($object_cache) {
-					return self::clear_cache_timber_object();
+					return self::clearCacheTimberObject();
 				}
 				break;
 			
@@ -60,13 +62,15 @@ class Cache
 		return false;
 	}
 
-	protected static function clear_cache_timber_database() {
+	protected static function clearCacheTimberDatabase()
+	{
 		global $wpdb;
 		$query = $wpdb->prepare("DELETE FROM $wpdb->options WHERE option_name LIKE '%s'", '_transient_timberloader_%');
 		return $wpdb->query($query);
 	}
 
-	protected static function clear_cache_timber_object() {
+	protected static function clearCacheTimberObject()
+	{
 		global $wp_object_cache;
 		if ( isset($wp_object_cache->cache[self::CACHEGROUP]) ) {
 			$items = $wp_object_cache->cache[self::CACHEGROUP];
@@ -104,7 +108,7 @@ class Cache
 
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 		
-		$cache_mode = $this->_get_cache_mode($cache_mode);
+		$cache_mode = $this->filterCacheMode($cache_mode);
 		switch ($cache_mode) {
 				
 			case self::CACHE_TRANSIENT:
@@ -144,7 +148,7 @@ class Cache
 
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 
-		$cache_mode = self::_get_cache_mode($cache_mode);
+		$cache_mode = self::filterCacheMode($cache_mode);
 		switch ($cache_mode) {
 		
 			case self::CACHE_TRANSIENT:
@@ -173,7 +177,8 @@ class Cache
 	 * @param string $cache_mode
 	 * @return string
 	 */
-	private function _get_cache_mode( $cache_mode ) {
+	private function filterCacheMode( $cache_mode )
+	{
 		if ( empty($cache_mode) || self::CACHE_USE_DEFAULT === $cache_mode ) {
 			$cache_mode = $this->cache_mode;
 		}

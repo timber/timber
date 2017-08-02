@@ -472,7 +472,7 @@ class Timber {
 			$output = false;
 
 // TODO: This is a temoprary hack!
-			$cache = new Cache($twigEnvironment);
+			$cache = new Cache();
 
 			// Only load cached data when $expires is not false
 			// NB: Caching is disabled, when $expires is false!
@@ -518,7 +518,7 @@ class Timber {
 			// Update cache, when 3) $key has been ser, 2) $expires != false, and 1) $output has ben changed from the initial false
 			if ( false !== $output && false !== $expires && null !== $key ) {
 				// Erase cache
-				$cache->delete_cache();
+				$cache->deleteCache();
 				// Store output
 				$cache->save($key, $output, Cache::CACHEGROUP, $expires, $cache_mode);
 			}
