@@ -5,9 +5,7 @@ namespace Timber;
 use Timber\Cache\Cleaner;
 
 class Loader 
-	extends \Twig_Environment
 {
-
 	const CACHEGROUP = 'timberloader';
 
 	const TRANS_KEY_LEN = 50;
@@ -27,165 +25,27 @@ class Loader
 
 	protected $cache_mode = self::CACHE_TRANSIENT;
 
+	private $twigEnvironment;
+	
 	/**
-     * @param Twig_LoaderInterface $loader
-     * @param array                $options An array of options
-	 */
-	public function __construct(\Twig_LoaderInterface $loader, $options = array()) {
+	 *
+     * @param \Twig_Environment $twig
+     * @param array                $options An array of options	 */
+	public function __construct(\Twig_Environment $twig = null)
+	{	
+		if ($twig !== null) {
+			$this->twigEnvironment = $twig;
+		}
 		
 		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
 
-		$loader = apply_filters('timber/loader/loader', $loader);
-// TODO: Consider this new filter as a future replacement for 'timber/loader/loader'
-//		$loader = apply_filters('timber/twig/loader', $loader, $this);
-		if ( !$loader instanceof \Twig_LoaderInterface ) {
-			throw new \UnexpectedValueException('Loader must implement \Twig_LoaderInterface');
-		}
-
-		if ($loader instanceof LegacyLoader) {
-			// It's a legacy loader...
-		}
-
-		$options = array('debug' => WP_DEBUG, 'autoescape' => false);
-		if ( isset(Timber::$autoescape) ) {
-			$options['autoescape'] = Timber::$autoescape;
-		}
-
-// TODO: Consider this new (experimental) filter!
-//		$options = apply_filters('timber/twig/options', $options, $this);
-
-		if ( Timber::$cache === true ) {
-			Timber::$twig_cache = true;
-		}
-		if ( Timber::$twig_cache ) {
-			$twig_cache_loc = apply_filters('timber/cache/location', TIMBER_LOC.'/cache/twig');
-			if ( !file_exists($twig_cache_loc) ) {
-				mkdir($twig_cache_loc, 0777, true);
-			}
-			$options['cache'] = $twig_cache_loc;
-		}
-
-		parent::__construct($loader, $options);
-
-		if ( WP_DEBUG ) {
-			$this->addExtension(new \Twig_Extension_Debug());
-		}
-		$this->addExtension($this->_get_cache_extension());
-
-		do_action('timber/twig', $this);
-		/**
-		 * get_twig is deprecated, use timber/twig
-		 */
-		do_action('get_twig', $this);
+// TODO: Enable this again, somewhere else...
+//		$twig->addExtension($this->_get_cache_extension());
 	}
 
-	/**
-	 * @param string        	$name
-	 * @param array         	$context
-	 * @param array|boolean    	$expires (array for options, false for none, integer for # of seconds)
-	 * @param string        	$cache_mode
-	 * @return bool|string
-	 */
-	public function render( $name, array $context = array(), $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		// Different $expires if user is anonymous or logged in
-		if ( is_array($expires) ) {
-			/** @var array $expires */
-			if ( is_user_logged_in() && isset($expires[1]) ) {
-				$expires = $expires[1];
-			} else {
-				$expires = $expires[0];
-			}
-		}
-
-		// Define variables used below
-		$key = null;
-		$output = false;
-		
-		// Only load cached data when $expires is not false
-		// NB: Caching is disabled, when $expires is false!
-		if ( false !== $expires ) {
-
-			// Sort array by key (to make md5() generate same result on identical context)
-			if (ksort($context) === false ) {
-				// TODO: Handle error...
-			}
-
-			// Generate cache key, by generating a md5 hash of the template name joined with a json version of the array (serializing via json is apparently faster)
-			$key = md5($name.json_encode($context));
-
-			// Load cached output
-			$output = $this->get_cache($key, self::CACHEGROUP, $cache_mode);
-		}
-
-		// If no output at this point, generate some...
-		if ( false === $output || null === $output ) {
-			
-			// Only call this action, if the length of the template name is longer than 0 chars
-// TODO: Consider if this ever evaluates to false.
-			if ( strlen($name) ) {
-				// Get twig loader
-				$loader = $this->getLoader();
-				// Get loaders cache key.
-				$result = $loader->getCacheKey($name);
-				// Call action, exposing the loaders cache key
-				do_action('timber_loader_render_file', $result);
-			}
-			
-			// Create Twig_Template object
-			$template = parent::loadTemplate($name);
-
-			// Filter context data
-			$context = apply_filters('timber_loader_render_data', $context);
-			$context = apply_filters('timber/loader/render_data', $context, $name);
-
-			// Render template
-			$output = $template->render($context);
-		}
-
-		// Update cache, when 3) $key has been ser, 2) $expires != false, and 1) $output has ben changed from the initial false
-		if ( false !== $output && false !== $expires && null !== $key ) {
-			// Erase cache
-			$this->delete_cache();
-			// Store output
-			$this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
-		}
-
-		// Filter and return output
-		$output = apply_filters('timber_output', $output);
-		return apply_filters('timber/output', $output, $context, $name);
-	}
-
-	protected function delete_cache() {
+	public function delete_cache() {
 		Cleaner::delete_transients();
-	}
-
-	/**
-	 * Get first existing template.
-	 *
-	 * @param array|string $templates  Name(s) of the Twig template(s) to choose from.
-	 * @return string|bool             Name of chosen template, otherwise false.
-	 */
-	public function choose_template( $templates ) {
-		// Change $templates into array, if needed 
-		if ( !is_array($templates) ) {
-			$templates = (array) $templates;
-		}
-		
-		// Get Twig loader
-		$loader = $this->getLoader();
-
-		// Run through template array
-		foreach ( $templates as $template ) {
-			// Use the Twig loader to test for existance
-			if ( $loader->exists($template) ) {
-				// Return name of existing template
-				return $template;
-			}
-		}
-
-		// No existing template was found
-		return false;
 	}
 
 	/**
@@ -196,7 +56,7 @@ class Loader
 	 * @codeCoverageIgnore
 	 */
 	protected function template_exists( $name ) {
-		return $this->getLoader()->exists($name);
+		return $this->twig->getLoader()->exists($name);
 	}
 
 
@@ -208,11 +68,11 @@ class Loader
 	public function get_loader() {
 // TODO: Remove.
 		// This returns a proxy filesystem loader to preserve backward compatibility, by letting users add (but not remove internal) paths.
-		if ($this->getLoader() instanceof ChainLoader) {
-			return $this->getLoader()->getTemporaryLoader();
+		if ($this->twig->getLoader() instanceof ChainLoader) {
+			return $this->twig->getLoader()->getTemporaryLoader();
 		}
 		// Just return loader...
-		return $this->getLoader();
+		return $this->twig->getLoader();
 	}
 
 
@@ -222,21 +82,28 @@ class Loader
 	 * @todo remove
 	 */
 	public function get_twig() {
-		return $this;
+		return $this->twigEnvironment;
 	}
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
-		//_transient_timberloader
-		$object_cache = false;
-		if ( isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']) ) {
-			$object_cache = true;
-		}
 		$cache_mode = $this->_get_cache_mode($cache_mode);
-		if ( self::CACHE_TRANSIENT === $cache_mode || self::CACHE_SITE_TRANSIENT === $cache_mode ) {
-			return self::clear_cache_timber_database();
-		} else if ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
-			return self::clear_cache_timber_object();
+		switch ($cache_mode) {
+				
+			case self::CACHE_TRANSIENT:
+			case self::CACHE_SITE_TRANSIENT:
+				return self::clear_cache_timber_database();
+			
+			case self::CACHE_OBJECT:
+				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
+				if ($object_cache) {
+					return self::clear_cache_timber_object();
+				}
+				break;
+			
+			default:
+// TODO:
 		}
+
 		return false;
 	}
 
@@ -264,9 +131,9 @@ class Loader
 		if ( method_exists($this, 'clearCacheFiles') ) {
 			$this->clearCacheFiles();
 		}
-		$cache = $this->getCache();
+		$cache = $this->twigEnvironment->getCache();
 		if ( $cache ) {
-			self::rrmdir($this->getCache());
+			self::rrmdir($this->twigEnvironment->getCache());
 			return true;
 		}
 		return false;
@@ -296,10 +163,10 @@ class Loader
 	/**
 	 * @return \Asm89\Twig\CacheExtension\Extension
 	 */
-	private function _get_cache_extension() {
+	public static function createCacheExtension() {
 
 		$key_generator   = new \Timber\Cache\KeyGenerator();
-		$cache_provider  = new \Timber\Cache\WPObjectCacheAdapter($this);
+		$cache_provider  = new \Timber\Cache\WPObjectCacheAdapter(new self());
 		$cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator);
 		$cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
 
@@ -313,23 +180,30 @@ class Loader
 	 * @return bool
 	 */
 	public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		$object_cache = false;
-
-		if ( isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']) ) {
-			$object_cache = true;
-		}
-
-		$cache_mode = $this->_get_cache_mode($cache_mode);
-
 		$value = false;
 
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-		if ( self::CACHE_TRANSIENT === $cache_mode ) {
-			$value = get_transient($trans_key);
-		} elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode ) {
-			$value = get_site_transient($trans_key);
-		} elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
-			$value = wp_cache_get($key, $group);
+		
+		$cache_mode = $this->_get_cache_mode($cache_mode);
+		switch ($cache_mode) {
+				
+			case self::CACHE_TRANSIENT:
+				$value = get_transient($trans_key);
+				break;
+				
+			case self::CACHE_SITE_TRANSIENT:
+				$value = get_site_transient($trans_key);
+				break;
+
+			case self::CACHE_OBJECT:
+				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
+				if ($object_cache) {
+					$value = wp_cache_get($key, $group);
+				}
+				break;
+				
+			default:
+// TODO:
 		}
 
 		return $value;
@@ -344,25 +218,32 @@ class Loader
 	 * @return string|boolean
 	 */
 	public function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		$object_cache = false;
-
-		if ( isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']) ) {
-			$object_cache = true;
-		}
-
 		if ( (int) $expires < 1 ) {
 			$expires = 0;
 		}
 
-		$cache_mode = self::_get_cache_mode($cache_mode);
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 
-		if ( self::CACHE_TRANSIENT === $cache_mode ) {
-			set_transient($trans_key, $value, $expires);
-		} elseif ( self::CACHE_SITE_TRANSIENT === $cache_mode ) {
-			set_site_transient($trans_key, $value, $expires);
-		} elseif ( self::CACHE_OBJECT === $cache_mode && $object_cache ) {
-			wp_cache_set($key, $value, $group, $expires);
+		$cache_mode = self::_get_cache_mode($cache_mode);
+		switch ($cache_mode) {
+		
+			case self::CACHE_TRANSIENT:
+				set_transient($trans_key, $value, $expires);
+				break;
+		
+			case self::CACHE_SITE_TRANSIENT:
+				set_site_transient($trans_key, $value, $expires);
+				break;
+		
+			case self::CACHE_OBJECT:
+				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
+				if ($object_cache) {
+					wp_cache_set($key, $value, $group, $expires);
+				}
+				break;
+
+			default:
+// TODO: 
 		}
 
 		return $value;
@@ -386,29 +267,3 @@ class Loader
 	}
 
 }
-
-
-/**
- * @param \Twig_Environment $twig
- * @return \Twig_Environment
- * @internal
- */
-function do_legacy_twig_environment_filters_pre_timber_twig(\Twig_Environment $twig) {
-	do_action('twig_apply_filters', $twig);
-	do_action('timber/twig/filters', $twig);
-}
-// Attach action with lower than default priority to simulate the filters prior location before 'timber/twig' was fired at the bottom of Twig::add_timber_filters()
-add_action('timber/twig', __NAMESPACE__.'\do_legacy_twig_environment_filters_pre_timber_twig', 5);
-
-/**
- * @param \Twig_Environment $twig
- * @return \Twig_Environment
- * @internal
- */
-function do_legacy_twig_environment_filters_post_timber_twig(\Twig_Environment $twig) {
-	do_action('timber/twig/functions', $twig);
-	do_action('timber/twig/escapers', $twig);
-	do_action('timber/loader/twig', $twig);
-}
-// Attach action with higher than default priority to simulate the filters prior location after 'timber/twig' was fired at the bottom of Twig::add_timber_filters()
-add_action('timber/twig', __NAMESPACE__.'\do_legacy_twig_environment_filters_post_timber_twig', 15);
