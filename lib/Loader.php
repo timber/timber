@@ -21,6 +21,7 @@ final class Loader
 		self::CACHE_SITE_TRANSIENT
 	);
 
+	private $twigEnvironment;
 	private $cacheInstance;
 	
 	/**
@@ -28,6 +29,8 @@ final class Loader
 	 */
 	public function __construct( $caller = false )
 	{
+		$this->twigEnvironment = Timber::getTwigEnvironment();
+		
 		$this->cacheInstance = new Cache();
 	}
 
@@ -61,11 +64,11 @@ final class Loader
 	public function get_loader() {
 // TODO: Remove.
 		// This returns a proxy filesystem loader to preserve backward compatibility, by letting users add (but not remove internal) paths.
-		if ($this->twig->getLoader() instanceof ChainLoader) {
-			return $this->twig->getLoader()->getTemporaryLoader();
+		if ($this->twigEnvironment->getLoader() instanceof ChainLoader) {
+			return $this->twigEnvironment->getLoader()->getTemporaryLoader();
 		}
 		// Just return loader...
-		return $this->twig->getLoader();
+		return $this->twigEnvironment->getLoader();
 	}
 
 
@@ -75,7 +78,7 @@ final class Loader
 	 * @todo remove
 	 */
 	public function get_twig() {
-		return Timber::getTwigEnvironment();
+		return $this->twigEnvironment;
 	}
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
@@ -86,9 +89,9 @@ final class Loader
 		if ( method_exists($this, 'clearCacheFiles') ) {
 			$this->clearCacheFiles();
 		}
-		$cache = Timber::getTwigEnvironment()->getCache();
+		$cache = $this->twigEnvironment->getCache();
 		if ( $cache ) {
-			self::rrmdir(Timber::getTwigEnvironment()->getCache());
+			self::rrmdir($this->twigEnvironment->getCache());
 			return true;
 		}
 		return false;
