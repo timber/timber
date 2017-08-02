@@ -84,13 +84,13 @@ class Loader
 
 		$cache_mode = $this->_get_cache_mode($cache_mode);
 		
-		switch (true) {
+		switch ($cache_mode) {
 				
-			case self::CACHE_TRANSIENT === $cache_mode:
-			case self::CACHE_SITE_TRANSIENT === $cache_mode:
+			case self::CACHE_TRANSIENT:
+			case self::CACHE_SITE_TRANSIENT:
 				return self::clear_cache_timber_database();
 			
-			case self::CACHE_OBJECT === $cache_mode:
+			case self::CACHE_OBJECT:
 				if ($object_cache) {
 					return self::clear_cache_timber_object();
 				}
@@ -184,16 +184,17 @@ class Loader
 
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 		
-		switch (true) {
-			case ( self::CACHE_TRANSIENT === $cache_mode ):
+		switch ($cache_mode) {
+				
+			case self::CACHE_TRANSIENT:
 				$value = get_transient($trans_key);
 				break;
 				
-			case ( self::CACHE_SITE_TRANSIENT === $cache_mode ):
+			case self::CACHE_SITE_TRANSIENT:
 				$value = get_site_transient($trans_key);
 				break;
 
-			case ( self::CACHE_OBJECT === $cache_mode ):
+			case self::CACHE_OBJECT:
 				if ($object_cache) {
 					$value = wp_cache_get($key, $group);
 				}
@@ -225,21 +226,19 @@ class Loader
 
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 
-		switch (true) {
+		switch ($cache_mode) {
 		
-			case self::CACHE_TRANSIENT === $cache_mode:
+			case self::CACHE_TRANSIENT:
 				set_transient($trans_key, $value, $expires);
 				break;
 		
-			case self::CACHE_SITE_TRANSIENT === $cache_mode:
+			case self::CACHE_SITE_TRANSIENT:
 				set_site_transient($trans_key, $value, $expires);
 				break;
 		
-			case self::CACHE_OBJECT === $cache_mode:
+			case self::CACHE_OBJECT:
 				if ($object_cache) {
 					wp_cache_set($key, $value, $group, $expires);
-				} else {
-					// Do nothing (?)
 				}
 				break;
 
