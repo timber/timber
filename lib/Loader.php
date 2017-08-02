@@ -23,7 +23,6 @@ final class Loader
 		self::CACHE_SITE_TRANSIENT
 	);
 
-	private $twigEnvironment;
 	private $cacheInstance;
 	
 	/**
@@ -32,9 +31,6 @@ final class Loader
 	 */
 	public function __construct(\Twig_Environment $twig = null)
 	{	
-		if ($twig !== null) {
-			$this->twigEnvironment = $twig;
-		}
 		
 		$this->cacheInstance = new Cache();
 	}
@@ -73,7 +69,7 @@ final class Loader
 	 * @todo remove
 	 */
 	public function get_twig() {
-		return $this->twigEnvironment;
+		return Timber::getTwigEnvironment();
 	}
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
@@ -84,9 +80,9 @@ final class Loader
 		if ( method_exists($this, 'clearCacheFiles') ) {
 			$this->clearCacheFiles();
 		}
-		$cache = $this->twigEnvironment->getCache();
+		$cache = Timber::getTwigEnvironment()->getCache();
 		if ( $cache ) {
-			self::rrmdir($this->twigEnvironment->getCache());
+			self::rrmdir(Timber::getTwigEnvironment()->getCache());
 			return true;
 		}
 		return false;
