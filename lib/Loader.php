@@ -30,7 +30,6 @@ class Loader
 	/**
 	 *
 	 * @param \Twig_Environment $twig
-	 * @param array                $options An array of options	 */
 	 */
 	public function __construct(\Twig_Environment $twig = null)
 	{	
