@@ -16,13 +16,6 @@ final class Cache
 	const CACHE_SITE_TRANSIENT = 'site-transient';
 	const CACHE_USE_DEFAULT = 'default';
 
-	public static $cache_modes = array(
-		self::CACHE_NONE,
-		self::CACHE_OBJECT,
-		self::CACHE_TRANSIENT,
-		self::CACHE_SITE_TRANSIENT
-	);
-
 	/**
 	 *
 	 */
@@ -182,8 +175,16 @@ final class Cache
 		}
 
 		// Fallback if self::$cache_mode did not get a valid value
-		if ( !in_array($cache_mode, self::$cache_modes) ) {
-			$cache_mode = self::CACHE_OBJECT;
+		switch ($cache_mode) {
+			
+			case self::CACHE_NONE:
+			case self::CACHE_OBJECT:
+			case self::CACHE_TRANSIENT:
+			case self::CACHE_SITE_TRANSIENT:
+				break;
+
+			default:
+				$cache_mode = self::CACHE_OBJECT;
 		}
 
 		return $cache_mode;
