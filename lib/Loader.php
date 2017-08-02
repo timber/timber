@@ -130,6 +130,7 @@ class Loader
 	 * @return bool
 	 */
 	public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
+		return parent::fetch( $key, $group, $cache_mode);
 	}
 
 	/**
@@ -141,6 +142,6 @@ class Loader
 	 * @return string|boolean
 	 */
 	public function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
+		return parent::save( $key, $value, $group, $expires, $cache_mode);
 	}
-
 }

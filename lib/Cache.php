@@ -99,7 +99,7 @@ class Cache
 	 * @param string $cache_mode
 	 * @return bool
 	 */
-	public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	public function fetch( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
 		$value = false;
 
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
@@ -137,7 +137,7 @@ class Cache
 	 * @param string $cache_mode
 	 * @return string|boolean
 	 */
-	public function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	public function save( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
 		if ( (int) $expires < 1 ) {
 			$expires = 0;
 		}

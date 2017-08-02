@@ -18,11 +18,11 @@ class WPObjectCacheAdapter implements CacheProviderInterface {
 	}
 
 	public function fetch( $key ) {
-		return $this->timberCache->get_cache($key, $this->cache_group, Cache::CACHE_USE_DEFAULT);
+		return $this->timberCache->fetch($key, $this->cache_group, Cache::CACHE_USE_DEFAULT);
 	}
 
 	public function save( $key, $value, $expire = 0 ) {
-		return $this->timberCache->set_cache($key, $value, $this->cache_group, $expire, Cache::CACHE_USE_DEFAULT);
+		return $this->timberCache->save($key, $value, $this->cache_group, $expire, Cache::CACHE_USE_DEFAULT);
 	}
 
 }
