@@ -2,6 +2,7 @@
 
 namespace Timber\Integrations;
 
+use Timber\Cache;
 use Timber\Loader;
 
 /**
