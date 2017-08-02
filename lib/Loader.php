@@ -133,7 +133,7 @@ class Loader
 		}
 		$cache = $this->twig->getCache();
 		if ( $cache ) {
-			self::rrmdir($this->get_cache());
+			self::rrmdir($this->twig->getCache());
 			return true;
 		}
 		return false;
