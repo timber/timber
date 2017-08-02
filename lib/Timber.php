@@ -376,15 +376,12 @@ class Timber {
 	 * @param array|string $templates  Name(s) of the Twig template(s) to choose from.
 	 * @return string|bool             Name of chosen template, otherwise false.
 	 */
-	public static function chooseTemplate(\Twig_LoaderInterface $loader, $templates ) {
+	private static function chooseTemplate(\Twig_LoaderInterface $loader, $templates ) {
 		// Change $templates into array, if needed 
 		if ( !is_array($templates) ) {
 			$templates = (array) $templates;
 		}
 		
-		// Get Twig loader
-		$loader = $this->getLoader();
-
 		// Run through template array
 		foreach ( $templates as $template ) {
 			// Use the Twig loader to test for existance
