@@ -77,19 +77,22 @@ final class Cache
 		switch ($cache_mode) {
 				
 			case self::CACHE_TRANSIENT:
+				$cachePool = new \Timber\Cache\Psr16\WordpressTransientPool();
 				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-				$value = get_transient($trans_key);
+				$value = $cachePool->get($trans_key);
 				break;
 				
 			case self::CACHE_SITE_TRANSIENT:
+				$cachePool = new \Timber\Cache\Psr16\WordpressSiteTransientPool();
 				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-				$value = get_site_transient($trans_key);
+				$value = $cachePool->get($trans_key);
 				break;
 
 			case self::CACHE_OBJECT:
 				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
 				if ($object_cache) {
-					$value = wp_cache_get($key, $group);
+					$cachePool = new \Timber\Cache\Psr16\WordpressObjectCachePool($group);
+					$value = $cachePool->get($key);
 				}
 				break;
 				
@@ -117,19 +120,22 @@ final class Cache
 		switch ($cache_mode) {
 		
 			case self::CACHE_TRANSIENT:
+				$cachePool = new \Timber\Cache\Psr16\WordpressTransientPool();
 				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-				set_transient($trans_key, $value, $expires);
+				$cachePool->set($trans_key, $value, $expires);
 				break;
 		
 			case self::CACHE_SITE_TRANSIENT:
+				$cachePool = new \Timber\Cache\Psr16\WordpressSiteTransientPool();
 				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-				set_site_transient($trans_key, $value, $expires);
+				$cachePool->set($trans_key, $value, $expires);
 				break;
 		
 			case self::CACHE_OBJECT:
 				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
 				if ($object_cache) {
-					wp_cache_set($key, $value, $group, $expires);
+					$cachePool = new \Timber\Cache\Psr16\WordpressObjectCachePool($group);
+					$cachePool->set($key, $value, $expires);
 				}
 				break;
 
