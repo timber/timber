@@ -12,11 +12,11 @@ class WPObjectCacheAdapter implements CacheProviderInterface {
 	}
 
 	public function fetch( $key ) {
-		return Cache::fetch($key, $this->cache_group, Cache::CACHE_USE_DEFAULT);
+		return Cache::fetch($key, Cache::CACHE_USE_DEFAULT, $this->cache_group);
 	}
 
 	public function save( $key, $value, $expire = 0 ) {
-		return Cache::save($key, $value, $this->cache_group, $expire, Cache::CACHE_USE_DEFAULT);
+		return Cache::save($key, $value, $expire, Cache::CACHE_USE_DEFAULT, $this->cache_group);
 	}
 
 }

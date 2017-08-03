@@ -88,11 +88,11 @@ final class Cache
 
 	/**
 	 * @param string $key
-	 * @param string $group
 	 * @param string $cache_mode
+	 * @param string $group
 	 * @return bool
 	 */
-	public static function fetch( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	public static function fetch( $key, $cache_mode = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP ) {
 		$value = false;
 
 		$cache_mode = self::filterCacheMode($cache_mode);
@@ -125,12 +125,12 @@ final class Cache
 	/**
 	 * @param string $key
 	 * @param string|boolean $value
-	 * @param string $group
 	 * @param integer $expires
 	 * @param string $cache_mode
+	 * @param string $group
 	 * @return string|boolean
 	 */
-	public static function save( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	public static function save( $key, $value, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP ) {
 		if ( (int) $expires < 1 ) {
 			$expires = 0;
 		}
