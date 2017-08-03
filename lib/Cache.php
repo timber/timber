@@ -160,7 +160,7 @@ final class Cache
 
 			//
 			case $cachePool instanceof \Timber\Cache\Psr16\TimberTransientPool:
-			case $cachePool instanceof \Timber\Cache\Psr16\TimberTransientPool:
+			case $cachePool instanceof \Timber\Cache\Psr16\TimberSiteTransientPool:
 				$key = $group.'_'.$key;
 				break;
 
