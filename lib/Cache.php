@@ -35,12 +35,12 @@ final class Cache
 				
 			case self::CACHE_TRANSIENT:
 			case self::CACHE_SITE_TRANSIENT:
-				return self::clearCacheTimberDatabase();
+//				return self::clearCacheTimberDatabase();
 			
 			case self::CACHE_OBJECT:
 				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
 				if ($object_cache) {
-					return self::clearCacheTimberObject();
+//					return self::clearCacheTimberObject();
 				}
 				break;
 			
@@ -49,28 +49,6 @@ final class Cache
 		}
 
 		return false;
-	}
-
-	protected static function clearCacheTimberDatabase()
-	{
-		global $wpdb;
-		$query = $wpdb->prepare("DELETE FROM $wpdb->options WHERE option_name LIKE '%s'", '_transient_timberloader_%');
-		return $wpdb->query($query);
-	}
-
-	protected static function clearCacheTimberObject()
-	{
-		global $wp_object_cache;
-		if ( isset($wp_object_cache->cache[self::CACHEGROUP]) ) {
-			$items = $wp_object_cache->cache[self::CACHEGROUP];
-			foreach ( $items as $key => $value ) {
-				if ( is_multisite() ) {
-					$key = preg_replace('/^(.*?):/', '', $key);
-				}
-				wp_cache_delete($key, self::CACHEGROUP);
-			}
-			return true;
-		}
 	}
 
 	/**
@@ -188,78 +166,5 @@ final class Cache
 		}
 
 		return $cache_mode;
-	}
-
-	public static function deleteTransients()
-	{
-		global $_wp_using_ext_object_cache;
-
-		if ( $_wp_using_ext_object_cache ) {
-			return 0;
-		}
-
-		global $wpdb;
-		$records = 0;
-
-		// Delete transients from options table
-		$records .= self::deleteTransientsSingleSite();
-
-		// Delete transients from multisite, if configured as such
-
-		if ( is_multisite() && is_main_network() ) {
-
-			$records .= self::deleteTransientsMultisite();
-		}
-		return $records;
-
-	}
-	protected static function deleteTransientsSingleSite()
-	{
-		global $wpdb;
-		$sql = "
-				DELETE
-					a, b
-				FROM
-					{$wpdb->options} a, {$wpdb->options} b
-				WHERE
-					a.option_name LIKE '%_transient_%' AND
-					a.option_name NOT LIKE '%_transient_timeout_%' AND
-					b.option_name = CONCAT(
-						'_transient_timeout_',
-						SUBSTRING(
-							a.option_name,
-							CHAR_LENGTH('_transient_') + 1
-						)
-					)
-				AND b.option_value < UNIX_TIMESTAMP()
-			";
-
-		return $wpdb->query($sql);
-	}
-
-	protected static function deleteTransientsMultisite()
-	{
-		global $wpdb;
-		$sql = "
-				DELETE
-					a, b
-				FROM
-					{$wpdb->sitemeta} a, {$wpdb->sitemeta} b
-				WHERE
-					a.meta_key LIKE '_site_transient_%' AND
-					a.meta_key NOT LIKE '_site_transient_timeout_%' AND
-					b.meta_key = CONCAT(
-						'_site_transient_timeout_',
-						SUBSTRING(
-							a.meta_key,
-							CHAR_LENGTH('_site_transient_') + 1
-						)
-					)
-				AND b.meta_value < UNIX_TIMESTAMP()
-			";
-
-		$clean = $wpdb->query($sql);
-
-		return $clean;
 	}
 }
