@@ -80,10 +80,10 @@ final class Cache
 		switch ($cache_mode) {
 				
 			case self::CACHE_TRANSIENT:
-				return new \Timber\Cache\Psr16\WordpressTransientPool();
+				return new \Timber\Cache\Psr16\UnsafeWordpressTransientPool();
 				
 			case self::CACHE_SITE_TRANSIENT:
-				return new \Timber\Cache\Psr16\WordpressSiteTransientPool();
+				return new \Timber\Cache\Psr16\UnsafeWordpressSiteTransientPool();
 
 			case self::CACHE_OBJECT:
 // TODO: ???
@@ -120,9 +120,9 @@ final class Cache
 		switch (true) {
 				
 			//
-			case $cachePool instanceof \Timber\Cache\Psr16\WordpressTransientPool:
-			case $cachePool instanceof \Timber\Cache\Psr16\WordpressSiteTransientPool:
-				$key = substr($group.'_'.$key, 0, $cachePool::getMaxKeyLength());
+			case $cachePool instanceof \Timber\Cache\Psr16\UnsafeWordpressTransientPool:
+			case $cachePool instanceof \Timber\Cache\Psr16\UnsafeWordpressSiteTransientPool:
+				$key = $group.'_'.$key;
 				break;
 
 			//
@@ -164,7 +164,7 @@ final class Cache
 			//
 			case $cachePool instanceof \Timber\Cache\Psr16\UnsafeWordpressTransientPool:
 			case $cachePool instanceof \Timber\Cache\Psr16\UnsafeWordpressSiteTransientPool:
-				$key = substr($group.'_'.$key, 0, $cachePool::getMaxKeyLength());
+				$key = $group.'_'.$key;
 				break;
 
 			//
