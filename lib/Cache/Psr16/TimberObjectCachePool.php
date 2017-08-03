@@ -14,7 +14,7 @@ namespace Timber\Cache\Psr16;
 class TimberObjectCachePool
 	extends WordpressObjectCachePool
 {
-	public static function clearTimber()
+	public function clearTimber()
 	{
 // Origin: Timber v1.3.4 (Timber\Loader::clear_cache_timber_object())
 		global $wp_object_cache;
