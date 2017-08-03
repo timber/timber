@@ -114,7 +114,7 @@ final class Cache
 		}
 
 		//
-		$cachePool = self::getSimplePool($cache_mode);
+		$cachePool = self::getSimplePool($cache_mode, $group);
 			
 		//
 		switch (true) {
@@ -156,7 +156,7 @@ final class Cache
 		}
 
 		//
-		$cachePool = self::getSimplePool($cache_mode);
+		$cachePool = self::getSimplePool($cache_mode, $group);
 
 		//
 		switch (true) {
