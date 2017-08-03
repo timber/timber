@@ -28,4 +28,5 @@ class TimberObjectCachePool
 			}
 			return true;
 		}
+	}
 }
