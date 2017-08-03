@@ -65,6 +65,38 @@ final class Cache
 	}
 
 	/**
+	 * @param string $cache_mode
+	 * @param string $group
+	 * @return bool
+	 */
+	protected static function getSimplePool( $cache_mode = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
+	{
+		$cache_mode = self::filterCacheMode($cache_mode);
+		switch ($cache_mode) {
+				
+			case self::CACHE_TRANSIENT:
+				return new \Timber\Cache\Psr16\WordpressTransientPool();
+				
+			case self::CACHE_SITE_TRANSIENT:
+				return new \Timber\Cache\Psr16\WordpressSiteTransientPool();
+
+			case self::CACHE_OBJECT:
+// TODO: ???
+				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
+				if ( ! $object_cache) {
+					throw new \Exception('Ehh ?!?');
+				}
+				return new \Timber\Cache\Psr16\WordpressObjectCachePool($group);
+				
+			case self::CACHE_NONE:
+				throw new \Exception('This makes no sense!');
+				
+			default:
+				throw new \Exception('Invalid pool');
+		}		
+	}
+
+	/**
 	 * @param string $key
 	 * @param string $cache_mode
 	 * @param string $group
