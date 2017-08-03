@@ -33,16 +33,13 @@ final class Cache
 		switch (true) {
 
 			//
-			case $cachePool instanceof \Timber\Cache\Psr16\WordpressTransientPool:
-			case $cachePool instanceof \Timber\Cache\Psr16\WordpressSiteTransientPool:
-// TODO: 
-				return false; // self::clearCacheTimberDatabase();
-				
-		
+			case $cachePool instanceof \Timber\Cache\Psr16\TimberTransientPool:
+			case $cachePool instanceof \Timber\Cache\Psr16\TimberSiteTransientPool:
+				return $cachePool->clearTimber();
+
 			//
-			case $cachePool instanceof \Timber\Cache\Psr16\WordpressObjectCachePool:
-// TODO:
-				return false; // self::clearCacheTimberObject();
+			case $cachePool instanceof \Timber\Cache\Psr16\TimberObjectCachePool:
+				return $cachePool->clearTimber();
 				
 			default:
 				// Unknown cache pool :-)
@@ -80,10 +77,10 @@ final class Cache
 		switch ($cache_mode) {
 				
 			case self::CACHE_TRANSIENT:
-				return new \Timber\Cache\Psr16\UnsafeWordpressTransientPool();
+				return new \Timber\Cache\Psr16\TimberTransientPool();
 				
 			case self::CACHE_SITE_TRANSIENT:
-				return new \Timber\Cache\Psr16\UnsafeWordpressSiteTransientPool();
+				return new \Timber\Cache\Psr16\TimberSiteTransientPool();
 
 			case self::CACHE_OBJECT:
 // TODO: ???
@@ -91,7 +88,7 @@ final class Cache
 				if ( ! $object_cache) {
 					throw new \Exception('Ehh ?!?');
 				}
-				return new \Timber\Cache\Psr16\WordpressObjectCachePool($group);
+				return new \Timber\Cache\Psr16\TimberObjectCachePool($group);
 				
 			case self::CACHE_NONE:
 				throw new \Exception('This makes no sense!');
@@ -120,13 +117,13 @@ final class Cache
 		switch (true) {
 				
 			//
-			case $cachePool instanceof \Timber\Cache\Psr16\UnsafeWordpressTransientPool:
-			case $cachePool instanceof \Timber\Cache\Psr16\UnsafeWordpressSiteTransientPool:
+			case $cachePool instanceof \Timber\Cache\Psr16\TimberWordpressTransientPool:
+			case $cachePool instanceof \Timber\Cache\Psr16\TimberWordpressSiteTransientPool:
 				$key = $group.'_'.$key;
 				break;
 
 			//
-			case $cachePool instanceof \Timber\Cache\Psr16\WordpressObjectCachePool:
+			case $cachePool instanceof \Timber\Cache\Psr16\TimberObjectCachePool:
 				// No thing to do here
 				break;
 				
@@ -162,13 +159,13 @@ final class Cache
 		switch (true) {
 
 			//
-			case $cachePool instanceof \Timber\Cache\Psr16\UnsafeWordpressTransientPool:
-			case $cachePool instanceof \Timber\Cache\Psr16\UnsafeWordpressSiteTransientPool:
+			case $cachePool instanceof \Timber\Cache\Psr16\TimberTransientPool:
+			case $cachePool instanceof \Timber\Cache\Psr16\TimberTransientPool:
 				$key = $group.'_'.$key;
 				break;
 
 			//
-			case $cachePool instanceof \Timber\Cache\Psr16\WordpressObjectCachePool:
+			case $cachePool instanceof \Timber\Cache\Psr16\TimberObjectCachePool:
 				// No thing to do here
 				break;
 				
