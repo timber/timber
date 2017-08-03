@@ -59,10 +59,12 @@ final class Cache
 	/**
 	 * @return \Asm89\Twig\CacheExtension\Extension
 	 */
-	public static function createCacheExtension() {
-
+	public static function createCacheExtension($cache_mode = Cache::CACHE_USE_DEFAULT, $group = 'timber')
+	{
 		$key_generator   = new \Timber\Cache\KeyGenerator();
-		$cache_provider  = new \Timber\Cache\WPObjectCacheAdapter();
+		$cache_provider  = new \Timber\Cache\Psr16\Asm89SimpleCacheAdapter(
+			self::getSimplePool($cache_mode, $group)
+		);
 		$cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator);
 		$cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
 
