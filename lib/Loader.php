@@ -57,7 +57,22 @@ final class Loader
 	 * @return string|bool             Name of chosen template, otherwise false.
 	 */
 	public function choose_template( $templates ) {
-		Cache::clearCacheTimber();
+		// Change $templates into array, if needed 
+		if ( !is_array($templates) ) {
+			$templates = (array) $templates;
+		}
+		
+		// Run through template array
+		foreach ( $templates as $template ) {
+			// Use the Twig loader to test for existance
+			if ( $loader->exists($template) ) {
+				// Return name of existing template
+				return $template;
+			}
+		}
+
+		// No existing template was found
+		return false;
 	}
 
 	/**
