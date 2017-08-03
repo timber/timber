@@ -203,7 +203,8 @@
             sleep(1);
             $str_new = Timber::compile('assets/single-post.twig', array('post' => $post), 600);
             $this->assertEquals($str_old, $str_new);
-            $clear = TimberCache::clearCacheTimber();
+            $loader = new TimberLoader();
+            $clear = $loader->clear_cache_timber();
             $this->assertGreaterThan(0, $clear);
             global $wpdb;
             $query = "SELECT * FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
@@ -222,7 +223,8 @@
             sleep(1);
             $str_new = Timber::compile('assets/single-post.twig', array('post' => $post), 600, \Timber\Loader::CACHE_OBJECT);
             $this->assertEquals($str_old, $str_new);
-            $clear = TimberCache::clearCacheTimber(\Timber\Loader::CACHE_OBJECT);
+            $loader = new TimberLoader();
+            $clear = $loader->clear_cache_timber(\Timber\Loader::CACHE_OBJECT);
             $this->assertTrue($clear);
             $works = true;
             if ( isset($wp_object_cache->cache[\Timber\Loader::CACHEGROUP]) 
