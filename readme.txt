@@ -41,6 +41,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= 1.4.0 =
+* **Change for Theme Developers** Improve loader performance and logic #1489 #1491 (thanks @heino). This introduces potential changes if you were loading templates in a non-standard way and with multiple sources (ex: from a theme and plugin directory)
+* Improve GIF resize performance #1495 (thanks @ahallais)
+* Fix for get_host which could generate an unncessary warning #1490 (thanks @ahallais)
+
 = 1.3.4 =
 * Fix for Twig 2.0 compatibility issue #1464 (thanks @luism-s)
 
