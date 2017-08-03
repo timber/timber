@@ -21,7 +21,7 @@ final class Cache
 
 	public static function deleteCache()
 	{
-		Self::deleteTransients();
+		\Timber\Cache\Psr16\WordpressTransientPool::deleteTransients();
 	}
 
 	public static function clearCacheTimber( $cache_mode = self::CACHE_USE_DEFAULT )

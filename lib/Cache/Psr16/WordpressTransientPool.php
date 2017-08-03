@@ -362,7 +362,7 @@ class WordpressTransientPool
     /**
      * 
      */
-	protected static function deleteTransients()
+	public static function deleteTransients()
 	{
 // Origin: Timber v1.3.4 (Timber\Cache\Cleaner::delete_transients_single_site())
 		global $_wp_using_ext_object_cache;
