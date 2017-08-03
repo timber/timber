@@ -6,7 +6,7 @@ final class Loader
 {
 	const CACHEGROUP = Cache::CACHEGROUP;
 
-	const TRANS_KEY_LEN = Cache::TRANS_KEY_LEN;
+	const TRANS_KEY_LEN = 50;
 
 	const CACHE_NONE = Cache::CACHE_NONE;
 	const CACHE_OBJECT = Cache::CACHE_OBJECT;

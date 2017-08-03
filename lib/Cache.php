@@ -8,8 +8,6 @@ final class Cache
 {
 	const CACHEGROUP = 'timberloader';
 
-	const TRANS_KEY_LEN = 50;
-
 	const CACHE_NONE = 'none';
 	const CACHE_OBJECT = 'cache';
 	const CACHE_TRANSIENT = 'transient';
@@ -124,7 +122,7 @@ final class Cache
 			//
 			case $cachePool instanceof \Timber\Cache\Psr16\WordpressTransientPool:
 			case $cachePool instanceof \Timber\Cache\Psr16\WordpressSiteTransientPool:
-				$key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
+				$key = substr($group.'_'.$key, 0, $cachePool::getMaxKeyLength());
 				break;
 
 			//
@@ -166,7 +164,7 @@ final class Cache
 			//
 			case $cachePool instanceof \Timber\Cache\Psr16\UnsafeWordpressTransientPool:
 			case $cachePool instanceof \Timber\Cache\Psr16\UnsafeWordpressSiteTransientPool:
-				$key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
+				$key = substr($group.'_'.$key, 0, $cachePool::getMaxKeyLength());
 				break;
 
 			//
