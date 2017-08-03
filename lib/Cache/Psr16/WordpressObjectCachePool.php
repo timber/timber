@@ -356,19 +356,4 @@ class WordpressObjectCachePool
 		//
 		return true;
 	}
-
-	public static function clearTimber()
-	{
-// Origin: Timber v1.3.4 (Timber\Loader::clear_cache_timber_object())
-		global $wp_object_cache;
-		if ( isset($wp_object_cache->cache[$this->group]) ) {
-			$items = $wp_object_cache->cache[$this->group];
-			foreach ( $items as $key => $value ) {
-				if ( is_multisite() ) {
-					$key = preg_replace('/^(.*?):/', '', $key);
-				}
-				wp_cache_delete($key, $this->group);
-			}
-			return true;
-		}
 }

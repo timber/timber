@@ -441,20 +441,4 @@ class WordpressTransientPool
 
 		return $clean;
 	}
-
-	public static function clearTimber($group = \Timber\Cache::CACHEGROUP)
-	{
-// Origin: Timber v1.3.4 (Timber\Loader::clearCacheTimberDatabase())
-		global $wpdb;
-		$query = $wpdb->prepare(
-			"DELETE
-				FROM
-					$wpdb->options
-				WHERE
-					option_name
-				LIKE '%s'",
-			'_transient_'.$group.'_%'
-		);
-		return $wpdb->query($query);
-	}
 }
