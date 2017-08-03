@@ -95,16 +95,16 @@ final class Cache
 	public static function fetch( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
 		$value = false;
 
-		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-		
 		$cache_mode = self::filterCacheMode($cache_mode);
 		switch ($cache_mode) {
 				
 			case self::CACHE_TRANSIENT:
+				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 				$value = get_transient($trans_key);
 				break;
 				
 			case self::CACHE_SITE_TRANSIENT:
+				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 				$value = get_site_transient($trans_key);
 				break;
 
@@ -135,16 +135,16 @@ final class Cache
 			$expires = 0;
 		}
 
-		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-
 		$cache_mode = self::filterCacheMode($cache_mode);
 		switch ($cache_mode) {
 		
 			case self::CACHE_TRANSIENT:
+				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 				set_transient($trans_key, $value, $expires);
 				break;
 		
 			case self::CACHE_SITE_TRANSIENT:
+				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 				set_site_transient($trans_key, $value, $expires);
 				break;
 		
