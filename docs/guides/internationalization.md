@@ -64,7 +64,7 @@ To generate `.pot`, `.po` and `.mo` files, you need a tool that supports parsing
 
 ### Generating l10n files with Poedit 1.x
 
-Internationalization functions in Twig files are not automatically parsed by gettext in Poedit 1.x. The quick and dirty workaround is to start each .twig file with `{#<?php#}`. By doing this, gettext will interpret whatever comes next as PHP, and start looking for `__`.
+Internationalization functions in Twig files are not automatically parsed by gettext in Poedit 1.x. The quick and dirty workaround is to start each .twig file with `{#<?php#}`. By doing this, gettext will interpret whatever comes next as PHP, and start looking for `__`. Note however that this method may miss some strings; quotes in particular (such as in HTML attributes) can cause it to skip over `__` calls.
 
 * * *
 
@@ -72,7 +72,7 @@ Another solution is [Twig-Gettext-Extractor](https://github.com/umpirsky/Twig-Ge
 
 * * *
 
-Alternatively, you can use a custom parser for Python instead. This will throw a warning or two, but your strings are extracted! To add the parser, follow these steps:
+Alternatively, you can use a custom parser for Python instead. This will throw a warning or two, but most of your strings are extracted! ("Most" because this method has the same problems with quotes as the PHP workaround above.) To add the parser, follow these steps:
 
 1. Create a Poedit project for your theme if you haven't already, and make sure to add `__` on the _Sources keywords_ tab.
 2. Go to _Edit_ > _Preferences_.
