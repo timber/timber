@@ -2,8 +2,8 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.3.4
-Tested up to: 4.8
+Stable tag: 1.4.0
+Tested up to: 4.8.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -41,8 +41,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 == Changelog ==
 
+= Develop =
+* Please add bullet points here with your PR so theme developers are informed of changes. The heading for this section will get the correct version number once released.
+
 = 1.4.0 =
-* **Change for Theme Developers** Improve loader performance and logic #1489 #1491 (thanks @heino). This introduces potential changes if you were loading templates in a non-standard way and with multiple sources (ex: from a theme and plugin directory)
+* **Change for Theme Developers** Improve loader performance and logic #1476 #1489 #1491 (thanks @heino). This introduces potential changes if you were loading templates in a non-standard way and with multiple sources (ex: from a theme and plugin directory). Non-existing templates are no longer passed all the way to Twig's render(), which currently generates an exception.
 * Improve GIF resize performance #1495 (thanks @ahallais)
 * Fix for get_host which could generate an unncessary warning #1490 (thanks @ahallais)
 
