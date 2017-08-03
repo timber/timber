@@ -73,7 +73,25 @@ final class Cache
 	 */
 	protected static function getSimplePool( $cache_mode = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
 	{
-		$cache_mode = self::filterCacheMode($cache_mode);
+		if ( empty($cache_mode) || self::CACHE_USE_DEFAULT === $cache_mode ) {
+			$cache_mode = self::CACHE_TRANSIENT;
+			$cache_mode = apply_filters('timber_cache_mode', $cache_mode);
+			$cache_mode = apply_filters('timber/cache/mode', $cache_mode);
+		}
+
+		// Fallback if self::$cache_mode did not get a valid value
+		switch ($cache_mode) {
+			
+			case self::CACHE_NONE:
+			case self::CACHE_OBJECT:
+			case self::CACHE_TRANSIENT:
+			case self::CACHE_SITE_TRANSIENT:
+				break;
+
+			default:
+				$cache_mode = self::CACHE_OBJECT;
+		}
+
 		switch ($cache_mode) {
 				
 			case self::CACHE_TRANSIENT:
@@ -178,33 +196,5 @@ final class Cache
 
 		//
 		return $value;
-	}
-
-	/**
-	 * @param string $cache_mode
-	 * @return string
-	 */
-	private static function filterCacheMode( $cache_mode )
-	{
-		if ( empty($cache_mode) || self::CACHE_USE_DEFAULT === $cache_mode ) {
-			$cache_mode = self::CACHE_TRANSIENT;
-			$cache_mode = apply_filters('timber_cache_mode', $cache_mode);
-			$cache_mode = apply_filters('timber/cache/mode', $cache_mode);
-		}
-
-		// Fallback if self::$cache_mode did not get a valid value
-		switch ($cache_mode) {
-			
-			case self::CACHE_NONE:
-			case self::CACHE_OBJECT:
-			case self::CACHE_TRANSIENT:
-			case self::CACHE_SITE_TRANSIENT:
-				break;
-
-			default:
-				$cache_mode = self::CACHE_OBJECT;
-		}
-
-		return $cache_mode;
 	}
 }
