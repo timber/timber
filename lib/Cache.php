@@ -30,22 +30,29 @@ final class Cache
 
 	public static function clearCacheTimber( $cache_mode = self::CACHE_USE_DEFAULT )
 	{
-		$cache_mode = self::filterCacheMode($cache_mode);
-		switch ($cache_mode) {
+		//
+		$cachePool = self::getSimplePool($cache_mode);
+
+		//
+		switch (true) {
+
+			//
+			case $cachePool instanceof \Timber\Cache\Psr16\WordpressTransientPool:
+			case $cachePool instanceof \Timber\Cache\Psr16\WordpressSiteTransientPool:
+// TODO: 
+				return false; // self::clearCacheTimberDatabase();
 				
-			case self::CACHE_TRANSIENT:
-			case self::CACHE_SITE_TRANSIENT:
-//				return self::clearCacheTimberDatabase();
-			
-			case self::CACHE_OBJECT:
-				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
-				if ($object_cache) {
-//					return self::clearCacheTimberObject();
-				}
-				break;
-			
-			default:
+		
+			//
+			case $cachePool instanceof \Timber\Cache\Psr16\WordpressObjectCachePool:
 // TODO:
+				return false; // self::clearCacheTimberObject();
+				
+			default:
+				// Unknown cache pool :-)
+
+// TODO: call $cachePool->clear() ???
+				throw new \Exception('Currently unimplemented');
 		}
 
 		return false;
@@ -103,35 +110,37 @@ final class Cache
 	 * @return bool
 	 */
 	public static function fetch( $key, $cache_mode = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP ) {
-		$value = false;
 
-		$cache_mode = self::filterCacheMode($cache_mode);
-		switch ($cache_mode) {
-				
-			case self::CACHE_TRANSIENT:
-				$cachePool = new \Timber\Cache\Psr16\WordpressTransientPool();
-				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-				$value = $cachePool->get($trans_key);
-				break;
-				
-			case self::CACHE_SITE_TRANSIENT:
-				$cachePool = new \Timber\Cache\Psr16\WordpressSiteTransientPool();
-				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-				$value = $cachePool->get($trans_key);
-				break;
-
-			case self::CACHE_OBJECT:
-				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
-				if ($object_cache) {
-					$cachePool = new \Timber\Cache\Psr16\WordpressObjectCachePool($group);
-					$value = $cachePool->get($key);
-				}
-				break;
-				
-			default:
-// TODO:
+		if ($cache_mode == self::CACHE_NONE) {
+			return false;
 		}
 
+		//
+		$cachePool = self::getSimplePool($cache_mode);
+			
+		//
+		switch (true) {
+				
+			//
+			case $cachePool instanceof \Timber\Cache\Psr16\WordpressTransientPool:
+			case $cachePool instanceof \Timber\Cache\Psr16\WordpressSiteTransientPool:
+				$key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
+				break;
+
+			//
+			case $cachePool instanceof \Timber\Cache\Psr16\WordpressObjectCachePool:
+				// No thing to do here
+				break;
+				
+			//
+			default:
+				// Unknown cache pool :-)
+		}
+
+		//
+		$value = $cachePool->get($key);
+
+		//
 		return $value;
 	}
 
@@ -148,33 +157,31 @@ final class Cache
 			$expires = 0;
 		}
 
-		$cache_mode = self::filterCacheMode($cache_mode);
-		switch ($cache_mode) {
-		
-			case self::CACHE_TRANSIENT:
-				$cachePool = new \Timber\Cache\Psr16\WordpressTransientPool();
-				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-				$cachePool->set($trans_key, $value, $expires);
-				break;
-		
-			case self::CACHE_SITE_TRANSIENT:
-				$cachePool = new \Timber\Cache\Psr16\WordpressSiteTransientPool();
-				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-				$cachePool->set($trans_key, $value, $expires);
-				break;
-		
-			case self::CACHE_OBJECT:
-				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
-				if ($object_cache) {
-					$cachePool = new \Timber\Cache\Psr16\WordpressObjectCachePool($group);
-					$cachePool->set($key, $value, $expires);
-				}
+		//
+		$cachePool = self::getSimplePool($cache_mode);
+
+		//
+		switch (true) {
+
+			//
+			case $cachePool instanceof \Timber\Cache\Psr16\UnsafeWordpressTransientPool:
+			case $cachePool instanceof \Timber\Cache\Psr16\UnsafeWordpressSiteTransientPool:
+				$key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 				break;
 
+			//
+			case $cachePool instanceof \Timber\Cache\Psr16\WordpressObjectCachePool:
+				// No thing to do here
+				break;
+				
 			default:
-// TODO: 
+				// Unknown cache pool :-)
 		}
 
+		//
+		$cachePool->set($key, $value, $expires);
+
+		//
 		return $value;
 	}
 
