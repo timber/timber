@@ -24,7 +24,7 @@ final class Cache
 		\Timber\Cache\Psr16\WordpressTransientPool::deleteTransients();
 	}
 
-	public static function clearCacheTimber( $cache_mode = self::CACHE_USE_DEFAULT )
+	public static function clearTimber( $cache_mode = self::CACHE_USE_DEFAULT )
 	{
 		//
 		$cachePool = self::getSimplePool($cache_mode);

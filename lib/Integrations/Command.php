@@ -29,7 +29,7 @@ class Command {
 	}
 
 	public static function clear_cache_timber() {
-		return Cache::clearCacheTimber();
+		return Cache::clearTimber();
 	}
 
 	public static function clear_cache_twig() {
