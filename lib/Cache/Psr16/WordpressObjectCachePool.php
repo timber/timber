@@ -28,7 +28,10 @@ class WordpressObjectCachePool
 		}
 		
 		//
-		$this->group = $this->validateGroup($group);
+		$this->validateGroup($group);
+		
+		//
+		$this->group = $group;
 	}
 
 	/**
