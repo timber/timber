@@ -55,13 +55,11 @@ class Timber {
 	 */
 	private static $twigEnvironmentOptions = array();
 
-// TODO: For now there is currently no way to alter these
 	/**
 	 * @var string Classname of the Twig loader to use when creating new Twig environment
 	 */
 	private static $twigLoaderClassname = __NAMESPACE__.'\LegacyLoader';
 
-// TODO: For now there is currently no way to alter these
 	/**
 	 * @var string Classname of the Twig environment to be created
 	 */
@@ -167,11 +165,35 @@ class Timber {
 	 */
 	protected static function configureOptions(\Symfony\Component\OptionsResolver\OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-// TODO: Setup experimental options...
-			'experimental:reuse_environment' => false,
+        $resolver->setDefined(array(
+			'experimental:twig_loader_classname',
+			'experimental:twig_environment_classname',
+		));
+
+		$resolver->setDefaults(array(
 			'experimental:loader'            => 'legacy',
         ));
+		
+		$resolver->setDefault('experimental:reuse_environment', function (\Symfony\Component\OptionsResolver\Options $options, $previousValue) {
+			switch (true) {
+				case $options['experimental:loader'] != 'legacy':
+				case isset($options['experimental:twig_loader_classname']):
+				case isset($options['experimental:twig_environment_classname']):
+					return true;
+				default:
+					return false;
+			}
+		});
+		
+		$resolver->setAllowedValues('experimental:loader', array('legacy', 'compatible'));
+
+		$resolver->setAllowedValues('experimental:twig_environment_classname', function ($classname) {
+    		return class_exists($classname) && is_a($classname, '\Twig_Environment', true);
+		});
+		
+		$resolver->setAllowedValues('experimental:twig_loader_classname', function ($classname) {
+    		return class_exists($classname) && is_a($classname, '\Twig_LoaderInterface', true);
+		});
     }
 
 	/**
@@ -195,10 +217,20 @@ class Timber {
 				throw new \Exception("Configuration error: '${option}' is not a valid loader mode.");
 		}
 
-		// Experimental: Heandle reusable twig environment
+		// Experimental: Heandle reusable Twig environment
 		if ($options['experimental:reuse_environment'] === true) {
 			$loader = self::createTwigLoader();
 			static::$twigEnvironment = static::createTwigEnvironment($loader , array());
+		}
+
+		// Experimental: Heandle change of Twig loader classname
+		if (isset($options['experimental:twig_environment_classname'])) {
+			self::$twigEnvironmentClassname = $options['experimental:twig_environment_classname'];
+		}
+
+		// Experimental: Heandle change of Twig environment classname
+		if (isset($options['experimental:twig_environment_classname'])) {
+			self::$twigEnvironmentClassname = $options['experimental:twig_environment_classname'];
 		}
 	}
 
