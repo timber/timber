@@ -10,8 +10,8 @@ namespace Timber\Cache\Psr16;
  * @copyright 2017 Heino H. Gehlsen
  * @license MIT
  */
-class TimberSiteTransientPool
-	extends WordpressSiteTransientPool
+class TimberSiteTransientAdapter
+	extends WordpressSiteTransientAdapter
 {
 	/**
      * @var string

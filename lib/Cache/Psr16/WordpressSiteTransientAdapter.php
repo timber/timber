@@ -9,8 +9,8 @@ namespace Timber\Cache\Psr16;
  * @copyright 2017 Heino H. Gehlsen
  * @license MIT
  */
-class WordpressSiteTransientPool
-	extends AbstractWordpressPool
+class WordpressSiteTransientAdapter
+	extends AbstractWordpressAdapter
 {
 	/**
      * 

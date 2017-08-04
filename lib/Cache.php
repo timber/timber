@@ -285,9 +285,9 @@ final class Cache
 
 // TODO: Remove temp calls to clearTimber() methods in own adapters. These are to be rewritten into PSR-16's naming: clean()
 		switch (true) {
-			case $adapter instanceof \Timber\Cache\Psr16\TimberTransientPool:
-			case $adapter instanceof \Timber\Cache\Psr16\TimberSiteTransientPool:
-			case $adapter instanceof \Timber\Cache\Psr16\TimberObjectCachePool:
+			case $adapter instanceof \Timber\Cache\Psr16\TimberTransientAdapter:
+			case $adapter instanceof \Timber\Cache\Psr16\TimberSiteTransientAdapter:
+			case $adapter instanceof \Timber\Cache\Psr16\TimberObjectCacheAdapter:
 				return $adapter->clearTimber();
 		}
 				
@@ -300,7 +300,7 @@ final class Cache
 // TODO: Move this avay from this class, or integrate with clear()
 	public static function deleteCache()
 	{
-		\Timber\Cache\Psr16\WordpressTransientPool::deleteTransients();
+		\Timber\Cache\Psr16\WordpressTransientAdapter::deleteTransients();
 	}
 }
 
@@ -316,14 +316,14 @@ Cache::registerAdapter(
 // Register WordPress's Trancient caching as 'trancient' (with support for $group)
 Cache::registerAdapter(
 	Cache::CACHE_TRANSIENT,
-	'\Timber\Cache\Psr16\TimberTransientPool',
+	'\Timber\Cache\Psr16\TimberTransientAdapter',
 	true // Support group
 );
 
 // Register WordPress's Site Trancient caching as 'site-trancient' (with support for $group)
 Cache::registerAdapter(
 	Cache::CACHE_SITE_TRANSIENT,
-	'\Timber\Cache\Psr16\TimberSiteTransientPool',
+	'\Timber\Cache\Psr16\TimberSiteTransientAdapter',
 	true // Support group
 );
 
@@ -331,7 +331,7 @@ Cache::registerAdapter(
 if (isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache'])) {
 	Cache::registerAdapter(
 		Cache::CACHE_OBJECT,
-		'\Timber\Cache\Psr16\TimberObjectCachePool',
+		'\Timber\Cache\Psr16\TimberObjectCacheAdapter',
 		true // Support group
 	);
 } else {

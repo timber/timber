@@ -9,7 +9,7 @@ namespace Timber\Cache\Psr16;
  * @copyright 2017 Heino H. Gehlsen
  * @license MIT
  */
-abstract class AbstractWordpressPool
+abstract class AbstractWordpressAdapter
 	implements \Psr\SimpleCache\CacheInterface
 {
 	/**

@@ -11,8 +11,8 @@ namespace Timber\Cache\Psr16;
  * 
  * @todo Consider implementing a something with wp_cache_switch_to_blog()
  */
-class TimberObjectCachePool
-	extends WordpressObjectCachePool
+class TimberObjectCacheAdapter
+	extends WordpressObjectCacheAdapter
 {
 	public function clearTimber()
 	{
