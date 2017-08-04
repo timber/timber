@@ -45,14 +45,31 @@ class Timber {
 
 	public static $context_cache = array();
 
+	/**
+	 * @var null|\Twig_Environment Holds the created Twig environment instance after creation, or null if reuse of environment is not enabled
+	 */
 	private static $twigEnvironment;
+
+	/**
+	 * @var array Holds the options sent to Twig_Environment on creation 
+	 */
 	private static $twigEnvironmentOptions = array();
-	
+
+// TODO: For now there is currently no way to alter these
+	/**
+	 * @var string Classname of the Twig loader to use when creating new Twig environment
+	 */
 	private static $twigLoaderClassname = __NAMESPACE__.'\LegacyLoader';
+
+// TODO: For now there is currently no way to alter these
+	/**
+	 * @var string Classname of the Twig environment to be created
+	 */
 	private static $twigEnvironmentClassname = '\Twig_Environment';
 
 	/**
 	 * @codeCoverageIgnore
+	 * @param array $options
 	 */
 	final public function __construct(array $options = null)
 	{
@@ -136,6 +153,7 @@ class Timber {
 
 	/**
 	 * @codeCoverageIgnore
+	 * @param array $options
 	 */
 	protected static function init(array $options = array())
 	{
@@ -190,6 +208,8 @@ class Timber {
 
 	/**
 	 *  
+	 * @param \Twig_LoaderInterface $loader
+	 * @param array $options
 	 * @return \Twig_Environment
 	 */
 	protected static function createTwigEnvironment(\Twig_LoaderInterface $loader, array $options = array())
@@ -277,6 +297,7 @@ class Timber {
 	}
 
 	/**
+	 * @param \Psr\SimpleCache\CacheInterface $adapter
 	 * @return \Asm89\Twig\CacheExtension\Extension
 	 */
 	protected static function createAsm89CacheExtension(\Psr\SimpleCache\CacheInterface $adapter)
@@ -320,36 +341,52 @@ class Timber {
 			new self();
 		}
 		
+		// Get a Twig environment. It can be either a reused, og a newly createt instance, depending on how Timber was configured. 
 		$twigEnvironment = static::getTwigEnvironment();
 
+		// Get the Twig environment's current loader
 		$loader = $twigEnvironment->getLoader();
 		
+		// Determine if the loader is supports Timbers way of injecting the directory of the caller into the loader 
 		$supportCaller = $loader instanceof CallerCompatibleLoaderInterface;
 		if ($supportCaller) {
+// TODO: This could be identified via the call to ::get_calling_script_file() below, and reduce load...
+			// Determine caller directory of the file that called compile
 			$callerDir = LocationManager::get_calling_script_dir(1);
+			// Set caller in loader
 			$loader->setCaller($callerDir);
 		}
 
+		// Choose which of the supplied templates to be used. This involved querying the current environment loader for existance
 		$name = self::chooseTemplate($loader, $names);
 
+		// Identify the file from chere compile was called
 		$callerFile = LocationManager::get_calling_script_file(1);
 		do_action('timber/calling_php_file', $callerFile);
 
+		// Filter the name of the chosen template
+// TODO: Verify that the returned template exists! Or that false is returned, which equals bypass (se code below)
 		$name = apply_filters($via_render ? 'timber_render_file' : 'timber_compile_file', $name);
 
+		// Define variables used below
 		$output = false;
 
+		// Do not process anything if $name == false 
 		if ($name !== false) {
+			
+			// Make sure $context is an array
 			if ( is_null($context) ) {
 				$context = array();
 			}
 
+			// Filter context
+// TODO: Verify that the returned value is still an array
 			$context = apply_filters($via_render ? 'timber_render_data' : 'timber_compile_data', $context);
 
 //
 // Content from moved Loader::render() begins here.
 //
-			// Different $expires if user is anonymous or logged in
+			// Handle different $expires if user is anonymous or logged in
 			if ( is_array($expires) ) {
 				/** @var array $expires */
 				if ( is_user_logged_in() && isset($expires[1]) ) {
@@ -375,7 +412,7 @@ class Timber {
 				// Generate cache key, by generating a md5 hash of the template name joined with a json version of the array (serializing via json is apparently faster)
 				$key = md5($name.json_encode($context));
 
-				// Load cached output
+				// Load cached output. Both null and false is qeual nothing cached below!
 				$output = Cache::get($key, $adapterName);
 			}
 
@@ -404,7 +441,10 @@ class Timber {
 				$output = $template->render($context);
 			}
 
-			// Update cache, when 3) $key has been ser, 2) $expires != false, and 1) $output has ben changed from the initial false
+			// Update cache, when
+			//   3) $key has been set,
+			//   2) $expires != false, and
+			//   1) $output has ben changed from the initial false
 			if ( false !== $output && false !== $expires && null !== $key ) {
 				// Erase cache
 				Cache::deleteCache();
@@ -414,17 +454,21 @@ class Timber {
 //
 // Content from moved Loader::render() ends here.
 //
-
 			// Filter output
 			$output = apply_filters('timber_output', $output);
 			$output = apply_filters('timber/output', $output, $context, $name);
 		}
-		
+
+		// Determine if the loader is supports Timbers way of injecting the directory of the caller into the loader 
 		if ($supportCaller) {
+			// Removes caller from the loader
 			$loader->resetCaller();
 		}
 
+		// Call action to inform that compile is done
 		do_action('timber_compile_done');
+		
+		// Return the processes template
 		return $output;
 	}
 
@@ -445,8 +489,11 @@ class Timber {
 	 * @return  bool|string
 	 */
 	public static function compile_string( $string, $context = array() ) {
+		// Get a Twig environment. It can be either a reused, og a newly createt instance, depending on how Timber was configured. 
 		$twigEnvironment = static::getTwigEnvironment();
+		// Create a template based on $string
 		$template = $twigEnvironment->createTemplate($string);
+		// Render and return the template
 		return $template->render($context);
 	}
 
@@ -464,8 +511,11 @@ class Timber {
 	 * @return bool|string The returned output.
 	 */
 	public static function fetch( $names, $context = array(), $expires = false, $adapterName = Cache::CACHE_USE_DEFAULT ) {
+		// Render the template (with last parmeter set to true, to change the names of called filters/actions)
 		$output = self::compile($names, $context, $expires, $adapterName, true);
+		// Filter output. This is not called when compile() directly!
 		$output = apply_filters('timber_compile_result', $output);
+		// Return the rendered template
 		return $output;
 	}
 
@@ -491,8 +541,11 @@ class Timber {
 	 * @return bool|string The echoed output.
 	 */
 	public static function render( $names, $context = array(), $expires = false, $adapterName = Cache::CACHE_USE_DEFAULT ) {
+		// Render the template (with last parmeter set to true, to change the names of called filters/actions)
 		$output = self::fetch($names, $context, $expires, $adapterName);
+		// Print the rendered tempalte
 		echo $output;
+		// Return the rendered template
 		return $output;
 	}
 
@@ -513,8 +566,11 @@ class Timber {
 	 * @return bool|string
 	 */
 	public static function render_string( $string, $data = array() ) {
+		// Render the string as a template 
 		$compiled = self::compile_string($string, $data);
+		// Print the rendered tempalte
 		echo $compiled;
+		// Return the rendered template
 		return $compiled;
 	}
 
@@ -525,6 +581,8 @@ class Timber {
 	 * @return array
 	 */
 	public static function get_context() {
+
+		// Only de this once...
 		if ( empty(self::$context_cache) ) {
 			self::$context_cache['http_host'] = URLHelper::get_scheme().'://'.URLHelper::get_host();
 			self::$context_cache['wp_title'] = Helper::get_wp_title();
@@ -549,7 +607,7 @@ class Timber {
 			self::$context_cache = apply_filters('timber/context', self::$context_cache);
 		}
 
-
+		// Return context array
 		return self::$context_cache;
 	}
 
