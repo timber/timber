@@ -18,6 +18,9 @@ final class Cache
 	const CACHE_SITE_TRANSIENT = 'site-transient';
 	const CACHE_USE_DEFAULT = 'default';
 
+	private static $registeredAdapters = array();
+	private static $loadedAdapters = array();
+
 	/**
 	 *
 	 */
@@ -74,6 +77,80 @@ final class Cache
 
 	/**
 	 * @param string $cache_mode
+	 * @param string $classname
+	 * @param bool   $supportsGroup
+	 * @return bool
+	 */
+	public static function registerAdapter($cache_mode, $classname, $suportGroup = false)
+	{
+		switch (true) {
+
+			// Accept PSR-16 interfaces
+			case is_a($classname, '\Psr\SimpleCache\CacheInterface', true):
+				break;
+
+			// Accept PSR-6 interfaces
+			case is_a($classname, '\Psr\Cache\CacheItemPoolInterface', true):
+				throw new \Exception('PSR-6 is not implemented yet');
+				
+			// Handle non-supported classes
+			case class_exists($classname):
+				throw new \Exception('Class exists, but does not implement a supported (PSR-16 or PSR-6) interface');
+
+			// Handle garbage...
+			default:
+				throw new \Exception('Unknown input');
+		}
+
+		//
+		$registerName = $cache_mode;
+
+		//
+		self::$registeredAdapters[$registerName] = array(
+			'name' => $cache_mode,
+			'classname' => $classname,
+			'supports_group' => $suportGroup,
+		);
+	}
+
+	/**
+	 * @param string $cache_mode
+	 * @param string $group
+	 */
+	protected static function loadAdapter($cache_mode, $group = null)
+	{
+		// Get registration
+		$register = self::$registeredAdapters[$cache_mode];
+
+		// Create name to be used in $loadedAdapters
+		$loadedName = $cache_mode;
+
+		// Test if $group was used or not
+		if ($group === null) {
+			
+			// Create adapter object
+			$adapter = new $register['classname']();
+
+		} else {
+
+			// Adapter must be registered with support for $group parameter for this to work
+			if ($register['supports_group'] !== true) {
+				throw new \Exception('Adapter does not support usage of the $group parameter');				
+			}
+			
+			// Append ':$group' to $loadedName
+			$loadedName .= ':'.$group;
+
+			// Create adapter object - with $group parameter
+			$adapter = new $register['classname']($group);
+		}
+		
+		// Put the created adapter into the array
+		self::$loadedAdapters[$loadedName] = $adapter;
+	}
+
+	/**
+	 * @param string $cache_mode
 	 * @param string $group
 	 * @return bool
 	 */
@@ -97,29 +174,25 @@ final class Cache
 			default:
 				$cache_mode = self::CACHE_OBJECT;
 		}
+		
+		// Create name to be used in $loadedAdapters
+		$loadedName = $group === null ? $cache_mode : $cache_mode.':'.$group;
+		
+		// Test if adapter is not loaded
+		if (! isset(self::$loadedAdapters[$loadedName])) {
+		
+			// Try to load adaptor
+			self::loadAdapter($cache_mode, $group);
 
-		switch ($cache_mode) {
-				
-			case self::CACHE_TRANSIENT:
-				return new \Timber\Cache\Psr16\TimberTransientPool();
-				
-			case self::CACHE_SITE_TRANSIENT:
-				return new \Timber\Cache\Psr16\TimberSiteTransientPool();
-
-			case self::CACHE_OBJECT:
-// TODO: ???
-				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
-				if ( ! $object_cache) {
-					throw new \Exception('Ehh ?!?');
-				}
-				return new \Timber\Cache\Psr16\TimberObjectCachePool($group);
-				
-			case self::CACHE_NONE:
-				throw new \Exception('This makes no sense!');
-				
-			default:
-				throw new \Exception('Invalid pool');
-		}		
+			// Test if adapter is still not loaded
+			if (! isset(self::$loadedAdapters[$loadedName])) {
+				// This is unexpected
+				throw new \Exception("Cache '$cache_mode' is not registered registered.");
+			}
+		}
+		
+		// Return adapter
+		return self::$loadedAdapters[$loadedName];
 	}
 
 	/**
@@ -166,4 +239,26 @@ final class Cache
 		//
 		return $value;
 	}
+}
+
+Cache::registerAdapter(
+	Cache::CACHE_TRANSIENT,
+	'\Timber\Cache\Psr16\TimberTransientPool',
+	true
+);
+
+Cache::registerAdapter(
+	Cache::CACHE_SITE_TRANSIENT,
+	'\Timber\Cache\Psr16\TimberSiteTransientPool',
+	true
+);
+
+if (isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache'])) {
+	Cache::registerAdapter(
+		Cache::CACHE_OBJECT,
+		'\Timber\Cache\Psr16\TimberObjectCachePool',
+		true
+	);
+} else {
+	throw new \Exception('Ehh ?!?');
 }
