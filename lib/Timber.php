@@ -168,6 +168,7 @@ class Timber {
         $resolver->setDefined(array(
 			'experimental:twig_loader_classname',
 			'experimental:twig_environment_classname',
+			'experimental:twig_environment_options',
 		));
 
 		$resolver->setDefaults(array(
@@ -179,6 +180,7 @@ class Timber {
 				case $options['experimental:loader'] != 'legacy':
 				case isset($options['experimental:twig_loader_classname']):
 				case isset($options['experimental:twig_environment_classname']):
+				case isset($options['experimental:twig_environment_options']):
 					return true;
 				default:
 					return false;
@@ -187,14 +189,16 @@ class Timber {
 		
 		$resolver->setAllowedValues('experimental:loader', array('legacy', 'compatible'));
 
-		$resolver->setAllowedValues('experimental:twig_environment_classname', function ($classname) {
-    		return class_exists($classname) && is_a($classname, '\Twig_Environment', true);
-		});
-		
 		$resolver->setAllowedValues('experimental:twig_loader_classname', function ($classname) {
     		return class_exists($classname) && is_a($classname, '\Twig_LoaderInterface', true);
 		});
-    }
+
+		$resolver->setAllowedValues('experimental:twig_environment_classname', function ($classname) {
+    		return class_exists($classname) && is_a($classname, '\Twig_Environment', true);
+		});
+
+		$resolver->setAllowedTypes('experimental:twig_environment_options', 'array');
+	}
 
 	/**
 	 * @codeCoverageIgnore
@@ -217,20 +221,24 @@ class Timber {
 				throw new \Exception("Configuration error: '${option}' is not a valid loader mode.");
 		}
 
-		// Experimental: Heandle reusable Twig environment
-		if ($options['experimental:reuse_environment'] === true) {
-			$loader = self::createTwigLoader();
-			static::$twigEnvironment = static::createTwigEnvironment($loader , array());
-		}
-
 		// Experimental: Heandle change of Twig loader classname
-		if (isset($options['experimental:twig_environment_classname'])) {
-			self::$twigEnvironmentClassname = $options['experimental:twig_environment_classname'];
+		if (isset($options['experimental:twig_loader_classname'])) {
+			self::$twigEnvironmentClassname = $options['experimental:twig_loader_classname'];
 		}
 
 		// Experimental: Heandle change of Twig environment classname
 		if (isset($options['experimental:twig_environment_classname'])) {
 			self::$twigEnvironmentClassname = $options['experimental:twig_environment_classname'];
+		}
+
+		// Experimental: Heandle change of Twig environment options
+		if (isset($options['experimental:twig_environment_options'])) {
+			self::$twigEnvironmentOptions = $options['experimental:twig_environment_options'];
+		}
+
+		// Experimental: Heandle reusable Twig environment
+		if ($options['experimental:reuse_environment'] === true) {
+			static::$twigEnvironment = static::createTwigEnvironment(self::createTwigLoader(), self::$twigEnvironmentOptions);
 		}
 	}
 
