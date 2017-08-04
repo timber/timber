@@ -30,33 +30,31 @@ final class Cache
 	{	
 	}
 
+// TODO: Move this avay from this class, or integrate with clear()
 	public static function deleteCache()
 	{
 		\Timber\Cache\Psr16\WordpressTransientPool::deleteTransients();
 	}
 
-	public static function clearTimber( $adapterName = self::CACHE_USE_DEFAULT )
+	public static function clear( $adapterName = self::CACHE_USE_DEFAULT )
 	{
 		//
 		$adapter = self::getAdapter($adapterName);
 
 		//
 		switch (true) {
-
 			//
 			case $adapter instanceof \Timber\Cache\Psr16\TimberTransientPool:
 			case $adapter instanceof \Timber\Cache\Psr16\TimberSiteTransientPool:
-				return $adapter->clearTimber();
-
-			//
 			case $adapter instanceof \Timber\Cache\Psr16\TimberObjectCachePool:
+// TODO: Call temprary clearTimber() methods in own adapters. These are to be rewritten into PSR-16's naming: clean()
 				return $adapter->clearTimber();
 				
+			// Unknown cache pool :-)
 			default:
-				// Unknown cache pool :-)
-
-// TODO: call $adapter->clear() ???
+// TODO: Currently diabled, until further tested...
 				throw new \Exception('Currently unimplemented');
+				$adapter->clear();
 		}
 
 		return false;

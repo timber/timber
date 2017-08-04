@@ -101,7 +101,7 @@ final class Loader
 	}
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
-		return Cache::clearTimber( $cache_mode);
+		return Cache::clear( $cache_mode);
 	}
 
 	public function clear_cache_twig() {
