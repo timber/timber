@@ -10,6 +10,6 @@ namespace Timber\Cache\Psr16;
  * @license MIT
  */
 class KeyTooLongException
-	extends InvalidKey
+	extends InvalidKeyException
 {
 }
