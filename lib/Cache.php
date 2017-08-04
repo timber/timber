@@ -212,7 +212,7 @@ final class Cache
 	 * @param string $group
 	 * @return bool
 	 */
-	protected static function filterAdapterName( $adamterName, $group = null)
+	public static function filterAdapterName( $adamterName, $group = null)
 	{
 		if ( empty($adapterName) || self::CACHE_USE_DEFAULT === $adapterName ) {
 			// Use default adapter as set in class property

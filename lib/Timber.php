@@ -344,13 +344,18 @@ class Timber {
 
 		$twigEnvironment = new self::$twigEnvironmentClassname($loader, $options);
 
+		// Add debug extension, if Wordpress is in debuging mode
 		if ( WP_DEBUG ) {
 			$twigEnvironment->addExtension(new \Twig_Extension_Debug());
 		}
 
+		// Add Asm89 cache extension
 		$twigEnvironment->addExtension(
 			self::createAsm89CacheExtension(
-				Cache::getAdapter(Cache::CACHE_USE_DEFAULT, 'timber')
+				Cache::getAdapter(
+					Cache::filterAdapterName( Cache::CACHE_USE_DEFAULT, 'timber'),
+					'timber'
+				)
 			)
 		);
 
