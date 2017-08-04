@@ -78,10 +78,10 @@ final class Cache
 	/**
 	 * @param string $cache_mode
 	 * @param string $classname
-	 * @param bool   $supportsGroup
+	 * @param bool   $supportGroup
 	 * @return bool
 	 */
-	public static function registerAdapter($cache_mode, $classname, $suportGroup = false)
+	public static function registerAdapter($cache_mode, $classname, $supportGroup = false)
 	{
 		switch (true) {
 
@@ -109,7 +109,7 @@ final class Cache
 		self::$registeredAdapters[$registerName] = array(
 			'name' => $cache_mode,
 			'classname' => $classname,
-			'supports_group' => $suportGroup,
+			'supports_group' => $supportGroup,
 		);
 	}
 
