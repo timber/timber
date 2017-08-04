@@ -87,15 +87,25 @@ class Timber {
 			static::backwards_compatibility();
 			static::init_constants();
 
-// Todo: This will be replaced, if pull request #1493 is accepted
+// TODO: This will be replaced, if pull request #1493 is accepted
 			Twig::init();
 
 			ImageHelper::init();
 			Admin::init();
 			new Integrations();
 
-			// Since the constructor is made final, this is the first place a possible child class will be able to overload.
-			static::init(is_array($options) ? $options : array());
+// TODO: Experimental option resolver, to handle options related to other experimental matters...
+			// Make sure $options is an array (method default is null)
+			$options = $options !== null ? $options : array();
+			// Define option resolver
+			$optionsResolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
+			// Setup option resolver
+			self::configureOptions($optionsResolver);
+			// Resolve and replace $options
+			$options = $optionsResolver->resolve($options);
+
+			// Since the constructor is made final, this is the first place a possible child class will be able to overload. Well, except for the experimental configureOptions() above...
+			static::init($options);
 
 			define('TIMBER_LOADED', true);
 		}
@@ -153,29 +163,40 @@ class Timber {
 
 	/**
 	 * @codeCoverageIgnore
+	 * @param \Symfony\Component\OptionsResolver\OptionsResolver $resolver
+	 */
+	protected static function configureOptions(\Symfony\Component\OptionsResolver\OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(array(
+// TODO: Setup experimental options...
+			'experimental:reuse_environment' => false,
+			'experimental:loader'            => 'legacy',
+        ));
+    }
+
+	/**
+	 * @codeCoverageIgnore
 	 * @param array $options
 	 */
 	protected static function init(array $options = array())
 	{
-// TODO: This is experimental matters...
+		// Experimental: Heandle switchable loaders
+		switch ($option = $options['experimental:loader']) {
 
-		if (isset($options['experimental:loader']) && is_string($options['experimental:loader'])) {
-			switch ($option = $options['experimental:loader']) {
+			case 'legacy':
+				self::$twigLoaderClassname = __NAMESPACE__.'\LegacyLoader';
+				break;
 
-				case 'legacy':
-					self::$twigLoaderClassname = __NAMESPACE__.'\LegacyLoader';
-					break;
+			case 'compatible':
+				self::$twigLoaderClassname = __NAMESPACE__.'\CompatibleLoader';
+				break;
 
-				case 'compatible':
-					self::$twigLoaderClassname = __NAMESPACE__.'\CompatibleLoader';
-					break;
-
-				default:
-					throw new \Exception("Configuration error: '${option}' is not a valid loader mode.");
-			}
+			default:
+				throw new \Exception("Configuration error: '${option}' is not a valid loader mode.");
 		}
 
-		if (isset($options['experimental:reuse_environment']) && $options['experimental:reuse_environment'] === true) {
+		// Experimental: Heandle reusable twig environment
+		if ($options['experimental:reuse_environment'] === true) {
 			$loader = self::createTwigLoader();
 			static::$twigEnvironment = static::createTwigEnvironment($loader , array());
 		}
