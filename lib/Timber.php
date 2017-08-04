@@ -95,7 +95,7 @@ class Timber {
 			new Integrations();
 
 			// Since the constructor is made final, this is the first place a possible child class will be able to overload.
-			static::init($options);
+			static::init(is_array($options) ? $options : arary());
 
 			define('TIMBER_LOADED', true);
 		}
