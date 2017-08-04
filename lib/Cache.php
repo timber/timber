@@ -301,23 +301,28 @@ final class Cache
 	}
 }
 
+/* Register original 'none', 'trancient', 'site-trancient', 'object' cache modes as autoload adapters */
+
+// Register WordPress's Trancient caching as 'trancient' (with support for $group)
 Cache::registerAdapter(
 	Cache::CACHE_TRANSIENT,
 	'\Timber\Cache\Psr16\TimberTransientPool',
-	true
+	true // Support group
 );
 
+// Register WordPress's Site Trancient caching as 'site-trancient' (with support for $group)
 Cache::registerAdapter(
 	Cache::CACHE_SITE_TRANSIENT,
 	'\Timber\Cache\Psr16\TimberSiteTransientPool',
-	true
+	true // Support group
 );
 
+// Register WordPress's Object caching as 'object' (with support for $group)
 if (isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache'])) {
 	Cache::registerAdapter(
 		Cache::CACHE_OBJECT,
 		'\Timber\Cache\Psr16\TimberObjectCachePool',
-		true
+		true // Support group
 	);
 } else {
 	throw new \Exception('Ehh ?!?');
