@@ -163,147 +163,20 @@ class Timber {
 		}
 	}
 
-	/* Post Retrieval Routine
-	================================ */
-
-	/**
-	 * Get a post by post ID or query (as a query string or an array of arguments).
-	 * But it's also cool
-	 *
-	 * @api
-	 * @param mixed        $query     Optional. Post ID or query (as query string or an array of arguments for
-	 *                                WP_Query). If a query is provided, only the first post of the result will be
-	 *                                returned. Default false.
-	 * @param string|array $PostClass Optional. Class to use to wrap the returned post object. Default 'Timber\Post'.
-	 * @return \Timber\Post|bool Timber\Post object if a post was found, false if no post was found.
-	 */
-	public static function get_post( $query = false, $PostClass = 'Timber\Post' ) {
-		return PostGetter::get_post($query, $PostClass);
-	}
-
-	/**
-	 * Get posts.
-	 * @api
-	 * @example
-	 * ```php
-	 * $posts = Timber::get_posts();
- 	 *  $posts = Timber::get_posts('post_type = article')
- 	 *  $posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format.
- 	 *  $posts = Timber::get_posts('post_type=any', array('portfolio' => 'MyPortfolioClass', 'alert' => 'MyAlertClass')); //use a classmap for the $PostClass
-	 * ```
-	 * @param mixed   $query
-	 * @param string|array  $PostClass
-	 * @return array|bool|null
-	 */
-	public static function get_posts( $query = false, $PostClass = 'Timber\Post', $return_collection = false ) {
-		return PostGetter::get_posts($query, $PostClass, $return_collection);
-	}
-
-	/**
-	 * Query post.
-	 * @api
-	 * @param mixed   $query
-	 * @param string  $PostClass
-	 * @return array|bool|null
-	 */
-	public static function query_post( $query = false, $PostClass = 'Timber\Post' ) {
-		return PostGetter::query_post($query, $PostClass);
-	}
-
-	/**
-	 * Query posts.
-	 * @api
-	 * @param mixed   $query
-	 * @param string  $PostClass
-	 * @return PostCollection
-	 */
-	public static function query_posts( $query = false, $PostClass = 'Timber\Post' ) {
-		return PostGetter::query_posts($query, $PostClass);
-	}
-
-	/* Term Retrieval
-	================================ */
-
-	/**
-	 * Get terms.
-	 * @api
-	 * @param string|array $args
-	 * @param array   $maybe_args
-	 * @param string  $TermClass
-	 * @return mixed
-	 */
-	public static function get_terms( $args = null, $maybe_args = array(), $TermClass = 'Timber\Term' ) {
-		return TermGetter::get_terms($args, $maybe_args, $TermClass);
-	}
-
-	/**
-	 * Get term.
-	 * @api
-	 * @param int|WP_Term|object $term
-	 * @param string     $taxonomy
-	 * @return Timber\Term|WP_Error|null
-	 */
-	public static function get_term( $term, $taxonomy = 'post_tag', $TermClass = 'Timber\Term' ) {
-		return TermGetter::get_term($term, $taxonomy, $TermClass);
-	}
-
-	/* Site Retrieval
-	================================ */
-
-	/**
-	 * Get sites.
-	 * @api
-	 * @param array|bool $blog_ids
-	 * @return array
-	 */
-	public static function get_sites( $blog_ids = false ) {
-		if ( !is_array($blog_ids) ) {
-			global $wpdb;
-			$blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs ORDER BY blog_id ASC");
-		}
-		$return = array();
-		foreach ( $blog_ids as $blog_id ) {
-			$return[] = new Site($blog_id);
-		}
-		return $return;
-	}
-
-
 	/*  Template Setup and Display
 	================================ */
 
 	/**
-	 * Get context.
-	 * @api
-	 * @return array
+	 *  
+	 * @return \Twig_Environment
 	 */
-	public static function get_context() {
-		if ( empty(self::$context_cache) ) {
-			self::$context_cache['http_host'] = URLHelper::get_scheme().'://'.URLHelper::get_host();
-			self::$context_cache['wp_title'] = Helper::get_wp_title();
-			self::$context_cache['body_class'] = implode(' ', get_body_class());
-
-			self::$context_cache['site'] = new Site();
-			self::$context_cache['request'] = new Request();
-			$user = new User();
-			self::$context_cache['user'] = ($user->ID) ? $user : false;
-			self::$context_cache['theme'] = self::$context_cache['site']->theme;
-
-			self::$context_cache['posts'] = new PostQuery();
-
-			/**
-			 * @deprecated as of Timber 1.3.0
-			 * @todo remove in Timber 1.4.*
-			 */
-			self::$context_cache['wp_head'] = new FunctionWrapper( 'wp_head' );
-			self::$context_cache['wp_footer'] = new FunctionWrapper( 'wp_footer' );
-
-			self::$context_cache = apply_filters('timber_context', self::$context_cache);
-			self::$context_cache = apply_filters('timber/context', self::$context_cache);
+	public static function getTwigEnvironment()
+	{
+		if (static::$twigEnvironment !== null) {
+			return static::$twigEnvironment;
+		} else {
+			return static::createTwigEnvironment(self::createTwigLoader(), self::$twigEnvironmentOptions);
 		}
-
-
-		return self::$context_cache;
 	}
 
 	/**
@@ -376,19 +249,6 @@ class Timber {
 		do_action('get_twig', $twigEnvironment);
 		
 		return $twigEnvironment;
-	}
-
-	/**
-	 *  
-	 * @return \Twig_Environment
-	 */
-	public static function getTwigEnvironment()
-	{
-		if (static::$twigEnvironment !== null) {
-			return static::$twigEnvironment;
-		} else {
-			return static::createTwigEnvironment(self::createTwigLoader(), self::$twigEnvironmentOptions);
-		}
 	}
 
 	/**
@@ -659,6 +519,145 @@ class Timber {
 	}
 
 
+	/**
+	 * Get context.
+	 * @api
+	 * @return array
+	 */
+	public static function get_context() {
+		if ( empty(self::$context_cache) ) {
+			self::$context_cache['http_host'] = URLHelper::get_scheme().'://'.URLHelper::get_host();
+			self::$context_cache['wp_title'] = Helper::get_wp_title();
+			self::$context_cache['body_class'] = implode(' ', get_body_class());
+
+			self::$context_cache['site'] = new Site();
+			self::$context_cache['request'] = new Request();
+			$user = new User();
+			self::$context_cache['user'] = ($user->ID) ? $user : false;
+			self::$context_cache['theme'] = self::$context_cache['site']->theme;
+
+			self::$context_cache['posts'] = new PostQuery();
+
+			/**
+			 * @deprecated as of Timber 1.3.0
+			 * @todo remove in Timber 1.4.*
+			 */
+			self::$context_cache['wp_head'] = new FunctionWrapper( 'wp_head' );
+			self::$context_cache['wp_footer'] = new FunctionWrapper( 'wp_footer' );
+
+			self::$context_cache = apply_filters('timber_context', self::$context_cache);
+			self::$context_cache = apply_filters('timber/context', self::$context_cache);
+		}
+
+
+		return self::$context_cache;
+	}
+
+	/* Post Retrieval Routine
+	================================ */
+
+	/**
+	 * Get a post by post ID or query (as a query string or an array of arguments).
+	 * But it's also cool
+	 *
+	 * @api
+	 * @param mixed        $query     Optional. Post ID or query (as query string or an array of arguments for
+	 *                                WP_Query). If a query is provided, only the first post of the result will be
+	 *                                returned. Default false.
+	 * @param string|array $PostClass Optional. Class to use to wrap the returned post object. Default 'Timber\Post'.
+	 * @return \Timber\Post|bool Timber\Post object if a post was found, false if no post was found.
+	 */
+	public static function get_post( $query = false, $PostClass = 'Timber\Post' ) {
+		return PostGetter::get_post($query, $PostClass);
+	}
+
+	/**
+	 * Get posts.
+	 * @api
+	 * @example
+	 * ```php
+	 * $posts = Timber::get_posts();
+ 	 *  $posts = Timber::get_posts('post_type = article')
+ 	 *  $posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format.
+ 	 *  $posts = Timber::get_posts('post_type=any', array('portfolio' => 'MyPortfolioClass', 'alert' => 'MyAlertClass')); //use a classmap for the $PostClass
+	 * ```
+	 * @param mixed   $query
+	 * @param string|array  $PostClass
+	 * @return array|bool|null
+	 */
+	public static function get_posts( $query = false, $PostClass = 'Timber\Post', $return_collection = false ) {
+		return PostGetter::get_posts($query, $PostClass, $return_collection);
+	}
+
+	/**
+	 * Query post.
+	 * @api
+	 * @param mixed   $query
+	 * @param string  $PostClass
+	 * @return array|bool|null
+	 */
+	public static function query_post( $query = false, $PostClass = 'Timber\Post' ) {
+		return PostGetter::query_post($query, $PostClass);
+	}
+
+	/**
+	 * Query posts.
+	 * @api
+	 * @param mixed   $query
+	 * @param string  $PostClass
+	 * @return PostCollection
+	 */
+	public static function query_posts( $query = false, $PostClass = 'Timber\Post' ) {
+		return PostGetter::query_posts($query, $PostClass);
+	}
+
+	/* Term Retrieval
+	================================ */
+
+	/**
+	 * Get terms.
+	 * @api
+	 * @param string|array $args
+	 * @param array   $maybe_args
+	 * @param string  $TermClass
+	 * @return mixed
+	 */
+	public static function get_terms( $args = null, $maybe_args = array(), $TermClass = 'Timber\Term' ) {
+		return TermGetter::get_terms($args, $maybe_args, $TermClass);
+	}
+
+	/**
+	 * Get term.
+	 * @api
+	 * @param int|WP_Term|object $term
+	 * @param string     $taxonomy
+	 * @return Timber\Term|WP_Error|null
+	 */
+	public static function get_term( $term, $taxonomy = 'post_tag', $TermClass = 'Timber\Term' ) {
+		return TermGetter::get_term($term, $taxonomy, $TermClass);
+	}
+
+	/* Site Retrieval
+	================================ */
+
+	/**
+	 * Get sites.
+	 * @api
+	 * @param array|bool $blog_ids
+	 * @return array
+	 */
+	public static function get_sites( $blog_ids = false ) {
+		if ( !is_array($blog_ids) ) {
+			global $wpdb;
+			$blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs ORDER BY blog_id ASC");
+		}
+		$return = array();
+		foreach ( $blog_ids as $blog_id ) {
+			$return[] = new Site($blog_id);
+		}
+		return $return;
+	}
+
 	/*  Sidebar
 	================================ */
 
@@ -746,9 +745,8 @@ class Timber {
 		Helper::warn('Timber::add_route (and accompanying methods for load_view, etc. Have been deprecated and will soon be removed. Please update your theme with Route::map. You can read more in the 1.0 Upgrade Guide: https://github.com/timber/timber/wiki/1.0-Upgrade-Guide');
 		\Routes::map($route, $callback, $args);
 	}
-
-
 }
+
 
 /**
  * @param \Twig_Environment $twig
