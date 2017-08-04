@@ -132,25 +132,6 @@ final class Cache
 		$cachePool = self::getSimplePool($cache_mode, $group);
 			
 		//
-		switch (true) {
-				
-			//
-			case $cachePool instanceof \Timber\Cache\Psr16\TimberWordpressTransientPool:
-			case $cachePool instanceof \Timber\Cache\Psr16\TimberWordpressSiteTransientPool:
-				$key = $group.'_'.$key;
-				break;
-
-			//
-			case $cachePool instanceof \Timber\Cache\Psr16\TimberObjectCachePool:
-				// No thing to do here
-				break;
-				
-			//
-			default:
-				// Unknown cache pool :-)
-		}
-
-		//
 		$value = $cachePool->get($key);
 
 		//
@@ -171,25 +152,7 @@ final class Cache
 		}
 
 		//
-		$cachePool = self::getSimplePool($cache_mode, $group);
-
-		//
-		switch (true) {
-
-			//
-			case $cachePool instanceof \Timber\Cache\Psr16\TimberTransientPool:
-			case $cachePool instanceof \Timber\Cache\Psr16\TimberSiteTransientPool:
-				$key = $group.'_'.$key;
-				break;
-
-			//
-			case $cachePool instanceof \Timber\Cache\Psr16\TimberObjectCachePool:
-				// No thing to do here
-				break;
-				
-			default:
-				// Unknown cache pool :-)
-		}
+		$cachePool = self::getAdapter($cache_mode, $group);
 
 		//
 		$cachePool->set($key, $value, $expires);
