@@ -144,7 +144,7 @@ final class Loader
 	 * @return bool
 	 */
 	public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		return Cache::fetch( $key, $cache_mode, $group);
+		return Cache::get( $key, $cache_mode, $group);
 	}
 
 	/**
@@ -156,6 +156,6 @@ final class Loader
 	 * @return string|boolean
 	 */
 	public function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		return Cache::save( $key, $value, $expires, $cache_mode, $group);
+		return Cache::set( $key, $value, $expires, $cache_mode, $group);
 	}
 }

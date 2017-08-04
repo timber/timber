@@ -251,8 +251,8 @@ final class Cache
 	 * @param string $group
 	 * @return bool
 	 */
-	public static function fetch( $key, $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP ) {
-
+	public static function get( $key, $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
+	{
 		if ($adapterName == self::CACHE_NONE) {
 			return false;
 		}
@@ -275,7 +275,8 @@ final class Cache
 	 * @param string $group
 	 * @return string|boolean
 	 */
-	public static function save( $key, $value, $expires = 0, $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP ) {
+	public static function set( $key, $value, $expires = 0, $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
+	{
 		if ( (int) $expires < 1 ) {
 			$expires = 0;
 		}
