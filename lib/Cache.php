@@ -117,8 +117,13 @@ final class Cache
 	 * @param string $cache_mode
 	 * @param string $group
 	 */
-	protected static function loadAdapter($cache_mode, $group = null)
+	protected static function autoloadAdapter($cache_mode, $group = null)
 	{
+		//
+		if (! isset(self::$registeredAdapters[$cache_mode])) {
+			throw new \Exception("No loader '$cache_mode' registeret for autoloading");
+		}
+		
 		// Get registration
 		$register = self::$registeredAdapters[$cache_mode];
 
@@ -145,8 +150,40 @@ final class Cache
 			$adapter = new $register['classname']($group);
 		}
 		
+		// Load the adapter
+		self::loadAdapter($loadedName, $adapter);
+	}
+
+	/**
+	 * @param string $cache_mode
+	 * @param string $adapter
+	 */
+	public static function loadAdapter($cache_mode, $adapter)
+	{
+		// 
+		if (isset(self::$loadedAdapters[$cache_mode])) {
+			throw new \Exception("Another adapter has already been loaded as $cache_mode");
+		}
+
+		switch (true) {
+
+			// Accept PSR-16 interfaces
+			case $adapter instanceof \Psr\SimpleCache\CacheInterface:
+				break;
+
+			// Accept PSR-6 interfaces
+			case $adapter instanceof \Psr\Cache\CacheItemPoolInterface:
+				// Use Symfony's PSR-6 to PSR-16 adapter 
+				$adapter = new \Symfony\Component\Cache\Simple\Psr6Cache($adapter);
+				break;
+				
+			// Handle garbage...
+			default:
+				throw new \Exception('Unknown adapter');
+		}
+		
 		// Put the created adapter into the array
-		self::$loadedAdapters[$loadedName] = $adapter;
+		self::$loadedAdapters[$cache_mode] = $adapter;
 	}
 
 	/**
