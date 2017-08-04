@@ -2,6 +2,12 @@
 
 namespace Timber;
 
+/**
+ * 
+ * @author Heino H. Gehlsen <heino@gehlsen.dk>
+ * @copyright 2017 Heino H. Gehlsen
+ * @license MIT
+ */
 final class Cache 
 {
 	const CACHEGROUP = 'timberloader';
