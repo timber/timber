@@ -15,6 +15,11 @@ class WordpressObjectCachePool
 	extends AbstractWordpressPool
 {
 	/**
+     * @var string
+     */
+	protected $group;
+
+	/**
      * @param string @group
      */
     public function __construct($group = '')
