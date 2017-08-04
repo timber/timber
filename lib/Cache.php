@@ -256,28 +256,27 @@ final class Cache
 		return $adapter->set($key, $value, $expires);
 	}
 	
+	/**
+	 * @param string $adapterName
+	 * @return boolean
+	 */
 	public static function clear( $adapterName = self::CACHE_USE_DEFAULT )
 	{
 		//
 		$adapter = self::getAdapter($adapterName);
 
-		//
+// TODO: Remove temp calls to clearTimber() methods in own adapters. These are to be rewritten into PSR-16's naming: clean()
 		switch (true) {
-			//
 			case $adapter instanceof \Timber\Cache\Psr16\TimberTransientPool:
 			case $adapter instanceof \Timber\Cache\Psr16\TimberSiteTransientPool:
 			case $adapter instanceof \Timber\Cache\Psr16\TimberObjectCachePool:
-// TODO: Call temprary clearTimber() methods in own adapters. These are to be rewritten into PSR-16's naming: clean()
 				return $adapter->clearTimber();
-				
-			// Unknown cache pool :-)
-			default:
-// TODO: Currently diabled, until further tested...
-				throw new \Exception('Currently unimplemented');
-				$adapter->clear();
 		}
-
-		return false;
+				
+// TODO: Currently diabled, until further tested...
+		throw new \Exception('Currently unimplemented');
+		// Return boolean from adapter
+		return $adapter->clear();
 	}
 
 // TODO: Move this avay from this class, or integrate with clear()
