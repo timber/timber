@@ -54,40 +54,33 @@ class Timber {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function __construct(array $options = null)
-	{	
+	final public function __construct(array $options = null)
+	{
 		if (defined('TIMBER_LOADED')) {
 
+			// Only allow $options !== null on 1st object instantiation.
+			// This is to mimic a pseudo singleton pattern.
 			if ($options !== null) {
 				throw new \LogicException('Creation with $options prohibited, since Timber has already been configured by an other instance.');
 			}
-			
+
 		} else {
 
-			$options = is_array($options) ? $options : array();
-			
+			static::test_compatibility();
+			static::backwards_compatibility();
+			static::init_constants();
+
+// Todo: This will be replaced, if pull request #1493 is accepted
+			Twig::init();
+
+			ImageHelper::init();
+			Admin::init();
+			new Integrations();
+
+			// Since the constructor is made final, this is the first place a possible child class will be able to overload.
 			static::init($options);
 
-			if (isset($options['experimental:loader']) && is_string($options['experimental:loader'])) {
-				switch ($option = $options['experimental:loader']) {
-
-					case 'legacy':
-						self::$twigLoaderClassname = __NAMESPACE__.'\LegacyLoader';
-						break;
-
-					case 'compatible':
-						self::$twigLoaderClassname = __NAMESPACE__.'\CompatibleLoader';
-						break;
-
-					default:
-						throw new \Exception("Configuration error: '${option}' is not a valid loader mode.");
-				}
-			}
-
-			if (isset($options['experimental:reuse_environment']) && $options['experimental:reuse_environment'] === true) {
-				$loader = self::createTwigLoader();
-				static::$twigEnvironment = static::createTwigEnvironment($loader , array());
-			}
+			define('TIMBER_LOADED', true);
 		}
 	}
 
@@ -97,12 +90,19 @@ class Timber {
 	 * @return
 	 */
 	private static function test_compatibility() {
+		if ( !defined('ABSPATH') ) {
+			trigger_error('Timber requires Wordpress to be loaded!', E_USER_ERROR);
+		}
+		if ( !class_exists('\WP')) {
+			trigger_error('Timber requires Wordpress to be available!', E_USER_ERROR);
+		}
 		if ( is_admin() || $_SERVER['PHP_SELF'] == '/wp-login.php' ) {
 			return;
 		}
 		if ( version_compare(phpversion(), '5.3.0', '<') && !is_admin() ) {
 			trigger_error('Timber requires PHP 5.3.0 or greater. You have '.phpversion(), E_USER_ERROR);
 		}
+// TODO: This will only test if Twig is available, not if requirements in package.json is fulfilled!
 		if ( !class_exists('Twig_Token') ) {
 			trigger_error('You have not run "composer install" to download required dependencies for Timber, you can read more on https://github.com/timber/timber#installation', E_USER_ERROR);
 		}
@@ -137,19 +137,29 @@ class Timber {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	protected static function init() {
-		if ( !defined('ABSPATH') ) {
-			trigger_error('Timber requires Wordpress to be loaded!', E_USER_ERROR);
+	protected static function init(array $options = array())
+	{
+// TODO: This is experimental matters...
+
+		if (isset($options['experimental:loader']) && is_string($options['experimental:loader'])) {
+			switch ($option = $options['experimental:loader']) {
+
+				case 'legacy':
+					self::$twigLoaderClassname = __NAMESPACE__.'\LegacyLoader';
+					break;
+
+				case 'compatible':
+					self::$twigLoaderClassname = __NAMESPACE__.'\CompatibleLoader';
+					break;
+
+				default:
+					throw new \Exception("Configuration error: '${option}' is not a valid loader mode.");
+			}
 		}
-		if ( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
-			static::test_compatibility();
-			static::backwards_compatibility();
-			static::init_constants();
-			Twig::init();
-			ImageHelper::init();
-			Admin::init();
-			new Integrations();
-			define('TIMBER_LOADED', true);
+
+		if (isset($options['experimental:reuse_environment']) && $options['experimental:reuse_environment'] === true) {
+			$loader = self::createTwigLoader();
+			static::$twigEnvironment = static::createTwigEnvironment($loader , array());
 		}
 	}
 
