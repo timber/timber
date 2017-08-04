@@ -344,11 +344,20 @@ class Timber {
 
 		$twigEnvironment = new self::$twigEnvironmentClassname($loader, $options);
 
+		// Add debug extension, if Wordpress is in debuging mode
 		if ( WP_DEBUG ) {
 			$twigEnvironment->addExtension(new \Twig_Extension_Debug());
 		}
 
-		$twigEnvironment->addExtension(Cache::createCacheExtension());
+		// Add Asm89 cache extension
+		$twigEnvironment->addExtension(
+			self::createAsm89CacheExtension(
+				Cache::getAdapter(
+					Cache::filterAdapterName( Cache::CACHE_USE_DEFAULT, 'timber'),
+					'timber'
+				)
+			)
+		);
 
 		do_action('timber/twig', $twigEnvironment);
 		/**
@@ -398,6 +407,19 @@ class Timber {
 	}
 
 	/**
+	 * @return \Asm89\Twig\CacheExtension\Extension
+	 */
+	protected static function createAsm89CacheExtension(\Psr\SimpleCache\CacheInterface $adapter)
+	{
+		$key_generator   = new \Timber\Cache\KeyGenerator();
+		$cache_provider  = new \Timber\Cache\Psr16\Asm89SimpleCacheAdapter($adapter);
+		$cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator);
+		$cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
+
+		return $cache_extension;
+	}
+
+	/**
 	 * Compile a Twig file.
 	 *
 	 * Passes data to a Twig file and returns the output.
@@ -419,11 +441,11 @@ class Timber {
 	 * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
 	 *                                 array, the first value is used for non-logged in visitors, the second for users.
 	 *                                 Default false.
-	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in TimberLoader.
+	 * @param string       $adapterName Optional. Any of the cache mode constants defined in TimberLoader.
 	 * @param bool         $via_render Optional. Whether to apply optional render or compile filters. Default false.
 	 * @return bool|string The returned output.
 	 */
-	public static function compile( $names, $context = array(), $expires = false, $cache_mode = Cache::CACHE_USE_DEFAULT, $via_render = false ) {
+	public static function compile( $names, $context = array(), $expires = false, $adapterName = Cache::CACHE_USE_DEFAULT, $via_render = false ) {
 		if ( !defined('TIMBER_LOADED') ) {
 			new self();
 		}
@@ -484,7 +506,7 @@ class Timber {
 				$key = md5($name.json_encode($context));
 
 				// Load cached output
-				$output = Cache::fetch($key, $cache_mode);
+				$output = Cache::get($key, $adapterName);
 			}
 
 			// If no output at this point, generate some...
@@ -517,7 +539,7 @@ class Timber {
 				// Erase cache
 				Cache::deleteCache();
 				// Store output
-				Cache::save($key, $output, $expires, $cache_mode);
+				Cache::set($key, $output, $expires, $adapterName);
 			}
 //
 // Content from moved Loader::render() ends here.
@@ -568,11 +590,11 @@ class Timber {
 	 * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
 	 *                                 array, the first value is used for non-logged in visitors, the second for users.
 	 *                                 Default false.
-	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in TimberLoader.
+	 * @param string       $adapterName Optional. Any of the cache mode constants defined in TimberLoader.
 	 * @return bool|string The returned output.
 	 */
-	public static function fetch( $names, $context = array(), $expires = false, $cache_mode = Cache::CACHE_USE_DEFAULT ) {
-		$output = self::compile($names, $context, $expires, $cache_mode, true);
+	public static function fetch( $names, $context = array(), $expires = false, $adapterName = Cache::CACHE_USE_DEFAULT ) {
+		$output = self::compile($names, $context, $expires, $adapterName, true);
 		$output = apply_filters('timber_compile_result', $output);
 		return $output;
 	}
@@ -595,11 +617,11 @@ class Timber {
 	 * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
 	 *                                 array, the first value is used for non-logged in visitors, the second for users.
 	 *                                 Default false.
-	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in TimberLoader.
+	 * @param string       $adapterName Optional. Any of the cache mode constants defined in TimberLoader.
 	 * @return bool|string The echoed output.
 	 */
-	public static function render( $names, $context = array(), $expires = false, $cache_mode = Cache::CACHE_USE_DEFAULT ) {
-		$output = self::fetch($names, $context, $expires, $cache_mode);
+	public static function render( $names, $context = array(), $expires = false, $adapterName = Cache::CACHE_USE_DEFAULT ) {
+		$output = self::fetch($names, $context, $expires, $adapterName);
 		echo $output;
 		return $output;
 	}

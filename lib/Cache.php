@@ -2,19 +2,26 @@
 
 namespace Timber;
 
-use Timber\Cache\Cleaner;
-
+/**
+ * 
+ * @author Heino H. Gehlsen <heino@gehlsen.dk>
+ * @copyright 2017 Heino H. Gehlsen
+ * @license MIT
+ */
 final class Cache 
 {
 	const CACHEGROUP = 'timberloader';
-
-	const TRANS_KEY_LEN = 50;
 
 	const CACHE_NONE = 'none';
 	const CACHE_OBJECT = 'cache';
 	const CACHE_TRANSIENT = 'transient';
 	const CACHE_SITE_TRANSIENT = 'site-transient';
 	const CACHE_USE_DEFAULT = 'default';
+
+	private static $registeredAdapters = array();
+	private static $loadedAdapters = array();
+
+	private static $defaultAdapter = self::CACHE_TRANSIENT;
 
 	/**
 	 *
@@ -23,102 +30,220 @@ final class Cache
 	{	
 	}
 
-	public static function deleteCache()
+	/**
+	 * @param string $adapterName
+	 * @param string $classname
+	 * @param bool   $supportGroup
+	 * @return bool
+	 */
+	public static function registerAdapter($adapterName, $classname, $supportGroup = false)
 	{
-		Self::deleteTransients();
-	}
+		switch (true) {
 
-	public static function clearCacheTimber( $cache_mode = self::CACHE_USE_DEFAULT )
-	{
-		$cache_mode = self::filterCacheMode($cache_mode);
-		switch ($cache_mode) {
-				
-			case self::CACHE_TRANSIENT:
-			case self::CACHE_SITE_TRANSIENT:
-				return self::clearCacheTimberDatabase();
-			
-			case self::CACHE_OBJECT:
-				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
-				if ($object_cache) {
-					return self::clearCacheTimberObject();
-				}
+			// Accept PSR-16 interfaces
+			case is_a($classname, '\Psr\SimpleCache\CacheInterface', true):
 				break;
-			
+
+			// Accept PSR-6 interfaces
+			case is_a($classname, '\Psr\Cache\CacheItemPoolInterface', true):
+				break;
+				
+			// Handle non-supported classes
+			case class_exists($classname):
+				throw new \Exception('Class exists, but does not implement a supported (PSR-16 or PSR-6) interface');
+
+			// Handle garbage...
 			default:
-// TODO:
+				throw new \Exception('Unknown input');
 		}
 
-		return false;
-	}
+		//
+		$registerName = $adapterName;
 
-	protected static function clearCacheTimberDatabase()
-	{
-		global $wpdb;
-		$query = $wpdb->prepare("DELETE FROM $wpdb->options WHERE option_name LIKE '%s'", '_transient_timberloader_%');
-		return $wpdb->query($query);
-	}
-
-	protected static function clearCacheTimberObject()
-	{
-		global $wp_object_cache;
-		if ( isset($wp_object_cache->cache[self::CACHEGROUP]) ) {
-			$items = $wp_object_cache->cache[self::CACHEGROUP];
-			foreach ( $items as $key => $value ) {
-				if ( is_multisite() ) {
-					$key = preg_replace('/^(.*?):/', '', $key);
-				}
-				wp_cache_delete($key, self::CACHEGROUP);
-			}
-			return true;
-		}
+		//
+		self::$registeredAdapters[$registerName] = array(
+			'name' => $adapterName,
+			'classname' => $classname,
+			'supports_group' => $supportGroup,
+		);
 	}
 
 	/**
-	 * @return \Asm89\Twig\CacheExtension\Extension
+	 * @param string $adapterName
+	 * @param string $adapter
 	 */
-	public static function createCacheExtension() {
+	public static function loadAdapter($adapterName, $adapter)
+	{
+		// 
+		if (isset(self::$loadedAdapters[$adapterName])) {
+			throw new \Exception("Another adapter has already been loaded as $adapterName");
+		}
 
-		$key_generator   = new \Timber\Cache\KeyGenerator();
-		$cache_provider  = new \Timber\Cache\WPObjectCacheAdapter();
-		$cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator);
-		$cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
+		switch (true) {
 
-		return $cache_extension;
+			// Accept PSR-16 interfaces
+			case $adapter instanceof \Psr\SimpleCache\CacheInterface:
+				break;
+
+			// Accept PSR-6 interfaces
+			case $adapter instanceof \Psr\Cache\CacheItemPoolInterface:
+				// Use Symfony's PSR-6 to PSR-16 adapter 
+				$adapter = new \Symfony\Component\Cache\Simple\Psr6Cache($adapter);
+				break;
+				
+			// Handle garbage...
+			default:
+				throw new \Exception('Unknown adapter');
+		}
+		
+		// Put the created adapter into the array
+		self::$loadedAdapters[$adapterName] = $adapter;
+	}
+
+	/**
+	 * @param string $adapterName
+	 * @param string $group
+	 */
+	protected static function autoloadAdapter($adapterName, $group = null)
+	{
+		//
+		if (! isset(self::$registeredAdapters[$adapterName])) {
+			throw new \Exception("No loader '$adapterName' registeret for autoloading");
+		}
+		
+		// Get registration
+		$register = self::$registeredAdapters[$adapterName];
+
+		// Create name to be used in $loadedAdapters
+		$loadedName = $adapterName;
+
+		// Test if $group was used or not
+		if ($group === null) {
+			
+			// Create adapter object
+			$adapter = new $register['classname']();
+
+		} else {
+
+			// Adapter must be registered with support for $group parameter for this to work
+			if ($register['supports_group'] !== true) {
+				throw new \Exception('Adapter does not support usage of the $group parameter');				
+			}
+			
+			// Append ':$group' to $loadedName
+			$loadedName .= ':'.$group;
+
+			// Create adapter object - with $group parameter
+			$adapter = new $register['classname']($group);
+		}
+		
+		// Load the adapter
+		self::loadAdapter($loadedName, $adapter);
+	}
+
+	/**
+	 * @param string $adapterName
+	 * @param string $group
+	 * @return bool
+	 */
+	public static function getAdapter( $adapterName, $group = null )
+	{
+		// Create name to be used in $loadedAdapters
+		$loadedName = $adapterName;
+		
+		// Test if $group was used or not
+		if ($group !== null) {
+
+			// Verify that $group is allowed
+			if (! isset(self::$registeredAdapters[$adapterName])) {
+				throw new \Exception('Only autoloading adapters support the $group parameter');
+			}
+
+			// Get registration
+			$register = self::$registeredAdapters[$adapterName];
+
+			// Adapter must be registered with support for $group parameter for this to work
+			if ($register['supports_group'] !== true) {
+				throw new \Exception('Adapter does not support usage of the $group parameter');				
+			}
+			
+			// Append ':$group' to $loadedName
+			$loadedName .= ':'.$group;
+		}
+
+		// Test if adapter is not loaded
+		if (! isset(self::$loadedAdapters[$loadedName])) {
+		
+			try {
+				// Try to load adaptor
+				self::autoloadAdapter($adapterName, $group);
+				
+			} catch (\Exception $e) {
+				
+// TODO: Currently bypasses compatibility with old bad practive, to allow loading of new PSR-6/16 cache adapters
+//				throw $e;
+
+				// Backward compatibility: On failed autoload, fallback to WordPress' object cache. 
+				switch ($adapterName) {
+
+					case self::CACHE_NONE:
+					case self::CACHE_OBJECT:
+					case self::CACHE_TRANSIENT:
+					case self::CACHE_SITE_TRANSIENT:
+						// This is unexpected
+						throw new \Exception("Cache '$adapterName' is not registered registered.");
+						
+					default:
+						// Overload $loadedName (the bad old Timber way)
+						$loadedName = self::CACHE_OBJECT;
+						// Load the fallback adaptor
+						self::autoloadAdapter($loadedName, $group);
+				}
+			}
+		}
+		
+		// Return adapter
+		return self::$loadedAdapters[$loadedName];
 	}
 
 	/**
 	 * @param string $key
-	 * @param string $cache_mode
+	 * @param string $adapterName
 	 * @param string $group
 	 * @return bool
 	 */
-	public static function fetch( $key, $cache_mode = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP ) {
-		$value = false;
-
-		$cache_mode = self::filterCacheMode($cache_mode);
-		switch ($cache_mode) {
-				
-			case self::CACHE_TRANSIENT:
-				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-				$value = get_transient($trans_key);
-				break;
-				
-			case self::CACHE_SITE_TRANSIENT:
-				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-				$value = get_site_transient($trans_key);
-				break;
-
-			case self::CACHE_OBJECT:
-				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
-				if ($object_cache) {
-					$value = wp_cache_get($key, $group);
-				}
-				break;
-				
-			default:
-// TODO:
+	public static function filterAdapterName( $adapterName, $group = null)
+	{
+		if ( empty($adapterName) || self::CACHE_USE_DEFAULT === $adapterName ) {
+			// Use default adapter as set in class property
+			$adapterName = self::$defaultAdapter;
+			// Apply Wordpress filters
+			$adapterName = apply_filters('timber_cache_mode', $adapterName);
+			$adapterName = apply_filters('timber/cache/mode', $adapterName);
 		}
+		
+		// Return adapter name
+		return $adapterName;
+	}
 
+	/**
+	 * @param string $key
+	 * @param string $adapterName
+	 * @param string $group
+	 * @return bool
+	 */
+	public static function get( $key, $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
+	{
+		// Filter $adapterName through Timber's Wordpress filters
+		$adapterName = self::filterAdapterName($adapterName, $group);
+
+		//
+		$adapter = self::getAdapter($adapterName, $group);
+			
+		//
+		$value = $adapter->get($key);
+
+		//
 		return $value;
 	}
 
@@ -126,140 +251,89 @@ final class Cache
 	 * @param string $key
 	 * @param string|boolean $value
 	 * @param integer $expires
-	 * @param string $cache_mode
+	 * @param string $adapterName
 	 * @param string $group
 	 * @return string|boolean
 	 */
-	public static function save( $key, $value, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP ) {
+	public static function set( $key, $value, $expires = 0, $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
+	{
 		if ( (int) $expires < 1 ) {
 			$expires = 0;
 		}
 
-		$cache_mode = self::filterCacheMode($cache_mode);
-		switch ($cache_mode) {
-		
-			case self::CACHE_TRANSIENT:
-				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-				set_transient($trans_key, $value, $expires);
-				break;
-		
-			case self::CACHE_SITE_TRANSIENT:
-				$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
-				set_site_transient($trans_key, $value, $expires);
-				break;
-		
-			case self::CACHE_OBJECT:
-				$object_cache = isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']);
-				if ($object_cache) {
-					wp_cache_set($key, $value, $group, $expires);
-				}
-				break;
+		// Filter $adapterName through Timber's Wordpress filters
+		$adapterName = self::filterAdapterName($adapterName, $group);
 
-			default:
-// TODO: 
-		}
+		//
+		$adapter = self::getAdapter($adapterName, $group);
 
-		return $value;
+		//
+		return $adapter->set($key, $value, $expires);
 	}
-
+	
 	/**
-	 * @param string $cache_mode
-	 * @return string
+	 * @param string $adapterName
+	 * @return boolean
 	 */
-	private static function filterCacheMode( $cache_mode )
+	public static function clear( $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
 	{
-		if ( empty($cache_mode) || self::CACHE_USE_DEFAULT === $cache_mode ) {
-			$cache_mode = self::CACHE_TRANSIENT;
-			$cache_mode = apply_filters('timber_cache_mode', $cache_mode);
-			$cache_mode = apply_filters('timber/cache/mode', $cache_mode);
+		// Filter $adapterName through Timber's Wordpress filters
+		$adapterName = self::filterAdapterName($adapterName, $group);
+
+		//
+		$adapter = self::getAdapter($adapterName, $group);
+
+// TODO: Remove temp calls to clearTimber() methods in own adapters. These are to be rewritten into PSR-16's naming: clean()
+		switch (true) {
+			case $adapter instanceof \Timber\Cache\Psr16\TimberTransientPool:
+			case $adapter instanceof \Timber\Cache\Psr16\TimberSiteTransientPool:
+			case $adapter instanceof \Timber\Cache\Psr16\TimberObjectCachePool:
+				return $adapter->clearTimber();
 		}
-
-		// Fallback if self::$cache_mode did not get a valid value
-		switch ($cache_mode) {
-			
-			case self::CACHE_NONE:
-			case self::CACHE_OBJECT:
-			case self::CACHE_TRANSIENT:
-			case self::CACHE_SITE_TRANSIENT:
-				break;
-
-			default:
-				$cache_mode = self::CACHE_OBJECT;
-		}
-
-		return $cache_mode;
+				
+// TODO: Currently diabled, until further tested...
+		throw new \Exception('Currently unimplemented');
+		// Return boolean from adapter
+		return $adapter->clear();
 	}
 
-	public static function deleteTransients()
+// TODO: Move this avay from this class, or integrate with clear()
+	public static function deleteCache()
 	{
-		global $_wp_using_ext_object_cache;
-
-		if ( $_wp_using_ext_object_cache ) {
-			return 0;
-		}
-
-		global $wpdb;
-		$records = 0;
-
-		// Delete transients from options table
-		$records .= self::deleteTransientsSingleSite();
-
-		// Delete transients from multisite, if configured as such
-
-		if ( is_multisite() && is_main_network() ) {
-
-			$records .= self::deleteTransientsMultisite();
-		}
-		return $records;
-
+		\Timber\Cache\Psr16\WordpressTransientPool::deleteTransients();
 	}
-	protected static function deleteTransientsSingleSite()
-	{
-		global $wpdb;
-		$sql = "
-				DELETE
-					a, b
-				FROM
-					{$wpdb->options} a, {$wpdb->options} b
-				WHERE
-					a.option_name LIKE '%_transient_%' AND
-					a.option_name NOT LIKE '%_transient_timeout_%' AND
-					b.option_name = CONCAT(
-						'_transient_timeout_',
-						SUBSTRING(
-							a.option_name,
-							CHAR_LENGTH('_transient_') + 1
-						)
-					)
-				AND b.option_value < UNIX_TIMESTAMP()
-			";
+}
 
-		return $wpdb->query($sql);
-	}
+/* Register original 'none', 'trancient', 'site-trancient', 'object' cache modes as autoload adapters */
 
-	protected static function deleteTransientsMultisite()
-	{
-		global $wpdb;
-		$sql = "
-				DELETE
-					a, b
-				FROM
-					{$wpdb->sitemeta} a, {$wpdb->sitemeta} b
-				WHERE
-					a.meta_key LIKE '_site_transient_%' AND
-					a.meta_key NOT LIKE '_site_transient_timeout_%' AND
-					b.meta_key = CONCAT(
-						'_site_transient_timeout_',
-						SUBSTRING(
-							a.meta_key,
-							CHAR_LENGTH('_site_transient_') + 1
-						)
-					)
-				AND b.meta_value < UNIX_TIMESTAMP()
-			";
+// Register null adapter to imitate legacy cache mode 'none' (with support for $group)
+Cache::registerAdapter(
+	Cache::CACHE_NONE,
+	'Symfony\Component\Cache\Adapter\NullAdapter',
+	true // Support group
+);
 
-		$clean = $wpdb->query($sql);
+// Register WordPress's Trancient caching as 'trancient' (with support for $group)
+Cache::registerAdapter(
+	Cache::CACHE_TRANSIENT,
+	'\Timber\Cache\Psr16\TimberTransientPool',
+	true // Support group
+);
 
-		return $clean;
-	}
+// Register WordPress's Site Trancient caching as 'site-trancient' (with support for $group)
+Cache::registerAdapter(
+	Cache::CACHE_SITE_TRANSIENT,
+	'\Timber\Cache\Psr16\TimberSiteTransientPool',
+	true // Support group
+);
+
+// Register WordPress's Object caching as 'cache' (with support for $group)
+if (isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache'])) {
+	Cache::registerAdapter(
+		Cache::CACHE_OBJECT,
+		'\Timber\Cache\Psr16\TimberObjectCachePool',
+		true // Support group
+	);
+} else {
+	throw new \Exception('Ehh ?!?');
 }

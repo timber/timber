@@ -6,7 +6,7 @@ final class Loader
 {
 	const CACHEGROUP = Cache::CACHEGROUP;
 
-	const TRANS_KEY_LEN = Cache::TRANS_KEY_LEN;
+	const TRANS_KEY_LEN = 50;
 
 	const CACHE_NONE = Cache::CACHE_NONE;
 	const CACHE_OBJECT = Cache::CACHE_OBJECT;
@@ -57,7 +57,22 @@ final class Loader
 	 * @return string|bool             Name of chosen template, otherwise false.
 	 */
 	public function choose_template( $templates ) {
-		Cache::clearCacheTimber();
+		// Change $templates into array, if needed 
+		if ( !is_array($templates) ) {
+			$templates = (array) $templates;
+		}
+		
+		// Run through template array
+		foreach ( $templates as $template ) {
+			// Use the Twig loader to test for existance
+			if ( $loader->exists($template) ) {
+				// Return name of existing template
+				return $template;
+			}
+		}
+
+		// No existing template was found
+		return false;
 	}
 
 	/**
@@ -86,7 +101,7 @@ final class Loader
 	}
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
-		return Cache::clearCacheTimber( $cache_mode);
+		return Cache::clear( $cache_mode);
 	}
 
 	public function clear_cache_twig() {
@@ -129,7 +144,7 @@ final class Loader
 	 * @return bool
 	 */
 	public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		return Cache::fetch( $key, $cache_mode, $group);
+		return Cache::get( $key, $cache_mode, $group);
 	}
 
 	/**
@@ -141,6 +156,6 @@ final class Loader
 	 * @return string|boolean
 	 */
 	public function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
-		return Cache::save( $key, $value, $expires, $cache_mode, $group);
+		return Cache::set( $key, $value, $expires, $cache_mode, $group);
 	}
 }
