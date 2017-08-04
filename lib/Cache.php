@@ -148,13 +148,6 @@ final class Cache
 	 */
 	public static function getAdapter( $adapterName, $group = null )
 	{
-// TODO: What to make of this?
-		if ( empty($adapterName) || self::CACHE_USE_DEFAULT === $adapterName ) {
-			$adapterName = self::$defaultAdapter;
-			$adapterName = apply_filters('timber_cache_mode', $adapterName);
-			$adapterName = apply_filters('timber/cache/mode', $adapterName);
-		}
-		
 		// Create name to be used in $loadedAdapters
 		$loadedName = $adapterName;
 		
@@ -219,11 +212,34 @@ final class Cache
 	 * @param string $group
 	 * @return bool
 	 */
+	protected static function filterAdapterName( $adamterName, $group = null)
+	{
+		if ( empty($adapterName) || self::CACHE_USE_DEFAULT === $adapterName ) {
+			// Use default adapter as set in class property
+			$adapterName = self::$defaultAdapter;
+			// Apply Wordpress filters
+			$adapterName = apply_filters('timber_cache_mode', $adapterName);
+			$adapterName = apply_filters('timber/cache/mode', $adapterName);
+		}
+		
+		// Return adapter name
+		return $adapterName;
+	}
+
+	/**
+	 * @param string $key
+	 * @param string $adapterName
+	 * @param string $group
+	 * @return bool
+	 */
 	public static function get( $key, $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
 	{
 		if ($adapterName == self::CACHE_NONE) {
 			return false;
 		}
+
+		// Filter $adapterName through Timber's Wordpress filters
+		$adapterName = self::filterAdapterName($adapterName, $group);
 
 		//
 		$adapter = self::getAdapter($adapterName, $group);
@@ -249,6 +265,9 @@ final class Cache
 			$expires = 0;
 		}
 
+		// Filter $adapterName through Timber's Wordpress filters
+		$adapterName = self::filterAdapterName($adapterName, $group);
+
 		//
 		$adapter = self::getAdapter($adapterName, $group);
 
@@ -262,6 +281,9 @@ final class Cache
 	 */
 	public static function clear( $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
 	{
+		// Filter $adapterName through Timber's Wordpress filters
+		$adapterName = self::filterAdapterName($adapterName, $group);
+
 		//
 		$adapter = self::getAdapter($adapterName, $group);
 
