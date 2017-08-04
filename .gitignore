@@ -1,5 +1,6 @@
 .sass-cache
 twig-cache/*
+composer.lock
 .DS_Store
 .idea
 vendor
