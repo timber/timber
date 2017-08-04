@@ -38,7 +38,6 @@ class TimberSiteTransientPool
      */
     public function get($key, $default = null)
 	{
-		dump($this->keyPrefix.$key);
 		return parent::get($this->keyPrefix.$key, $default);
 	}
 
