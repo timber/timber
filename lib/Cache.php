@@ -146,7 +146,7 @@ final class Cache
 	 * @param string $group
 	 * @return bool
 	 */
-	public static function getAdapter( $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
+	public static function getAdapter( $adapterName, $group = null )
 	{
 // TODO: What to make of this?
 		if ( empty($adapterName) || self::CACHE_USE_DEFAULT === $adapterName ) {
@@ -260,10 +260,10 @@ final class Cache
 	 * @param string $adapterName
 	 * @return boolean
 	 */
-	public static function clear( $adapterName = self::CACHE_USE_DEFAULT )
+	public static function clear( $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
 	{
 		//
-		$adapter = self::getAdapter($adapterName);
+		$adapter = self::getAdapter($adapterName, $group);
 
 // TODO: Remove temp calls to clearTimber() methods in own adapters. These are to be rewritten into PSR-16's naming: clean()
 		switch (true) {
