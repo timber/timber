@@ -176,13 +176,33 @@ final class Cache
 		}
 		
 		// Create name to be used in $loadedAdapters
-		$loadedName = $group === null ? $cache_mode : $cache_mode.':'.$group;
+		$loadedName = $cache_mode;
 		
+		// Test if $group was used or not
+		if ($group !== null) {
+
+			// Verify that $group is allowed
+			if (! isset(self::$registeredAdapters[$cache_mode])) {
+				throw new \Exception('Only autoloading adapters support the $group parameter');
+			}
+
+			// Get registration
+			$register = self::$registeredAdapters[$cache_mode];
+
+			// Adapter must be registered with support for $group parameter for this to work
+			if ($register['supports_group'] !== true) {
+				throw new \Exception('Adapter does not support usage of the $group parameter');				
+			}
+			
+			// Append ':$group' to $loadedName
+			$loadedName .= ':'.$group;
+		}
+
 		// Test if adapter is not loaded
 		if (! isset(self::$loadedAdapters[$loadedName])) {
 		
 			// Try to load adaptor
-			self::loadAdapter($cache_mode, $group);
+			self::autoloadAdapter($cache_mode, $group);
 
 			// Test if adapter is still not loaded
 			if (! isset(self::$loadedAdapters[$loadedName])) {
