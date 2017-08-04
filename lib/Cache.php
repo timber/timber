@@ -93,7 +93,7 @@ final class Cache
 
 			// Accept PSR-6 interfaces
 			case is_a($classname, '\Psr\Cache\CacheItemPoolInterface', true):
-				throw new \Exception('PSR-6 is not implemented yet');
+				break;
 				
 			// Handle non-supported classes
 			case class_exists($classname):
