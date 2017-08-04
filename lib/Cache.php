@@ -234,10 +234,6 @@ final class Cache
 	 */
 	public static function get( $key, $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
 	{
-		if ($adapterName == self::CACHE_NONE) {
-			return false;
-		}
-
 		// Filter $adapterName through Timber's Wordpress filters
 		$adapterName = self::filterAdapterName($adapterName, $group);
 
@@ -310,10 +306,11 @@ final class Cache
 
 /* Register original 'none', 'trancient', 'site-trancient', 'object' cache modes as autoload adapters */
 
-// Register null adapter to imitate legacy cache mode 'none'
+// Register null adapter to imitate legacy cache mode 'none' (with support for $group)
 Cache::registerAdapter(
 	Cache::CACHE_NONE,
-	'Symfony\Component\Cache\Adapter\NullAdapter'
+	'Symfony\Component\Cache\Adapter\NullAdapter',
+	true // Support group
 );
 
 // Register WordPress's Trancient caching as 'trancient' (with support for $group)
