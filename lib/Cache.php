@@ -30,36 +30,6 @@ final class Cache
 	{	
 	}
 
-// TODO: Move this avay from this class, or integrate with clear()
-	public static function deleteCache()
-	{
-		\Timber\Cache\Psr16\WordpressTransientPool::deleteTransients();
-	}
-
-	public static function clear( $adapterName = self::CACHE_USE_DEFAULT )
-	{
-		//
-		$adapter = self::getAdapter($adapterName);
-
-		//
-		switch (true) {
-			//
-			case $adapter instanceof \Timber\Cache\Psr16\TimberTransientPool:
-			case $adapter instanceof \Timber\Cache\Psr16\TimberSiteTransientPool:
-			case $adapter instanceof \Timber\Cache\Psr16\TimberObjectCachePool:
-// TODO: Call temprary clearTimber() methods in own adapters. These are to be rewritten into PSR-16's naming: clean()
-				return $adapter->clearTimber();
-				
-			// Unknown cache pool :-)
-			default:
-// TODO: Currently diabled, until further tested...
-				throw new \Exception('Currently unimplemented');
-				$adapter->clear();
-		}
-
-		return false;
-	}
-
 	/**
 	 * @param string $adapterName
 	 * @param string $classname
@@ -96,6 +66,38 @@ final class Cache
 			'classname' => $classname,
 			'supports_group' => $supportGroup,
 		);
+	}
+
+	/**
+	 * @param string $adapterName
+	 * @param string $adapter
+	 */
+	public static function loadAdapter($adapterName, $adapter)
+	{
+		// 
+		if (isset(self::$loadedAdapters[$adapterName])) {
+			throw new \Exception("Another adapter has already been loaded as $adapterName");
+		}
+
+		switch (true) {
+
+			// Accept PSR-16 interfaces
+			case $adapter instanceof \Psr\SimpleCache\CacheInterface:
+				break;
+
+			// Accept PSR-6 interfaces
+			case $adapter instanceof \Psr\Cache\CacheItemPoolInterface:
+				// Use Symfony's PSR-6 to PSR-16 adapter 
+				$adapter = new \Symfony\Component\Cache\Simple\Psr6Cache($adapter);
+				break;
+				
+			// Handle garbage...
+			default:
+				throw new \Exception('Unknown adapter');
+		}
+		
+		// Put the created adapter into the array
+		self::$loadedAdapters[$adapterName] = $adapter;
 	}
 
 	/**
@@ -137,38 +139,6 @@ final class Cache
 		
 		// Load the adapter
 		self::loadAdapter($loadedName, $adapter);
-	}
-
-	/**
-	 * @param string $adapterName
-	 * @param string $adapter
-	 */
-	public static function loadAdapter($adapterName, $adapter)
-	{
-		// 
-		if (isset(self::$loadedAdapters[$adapterName])) {
-			throw new \Exception("Another adapter has already been loaded as $adapterName");
-		}
-
-		switch (true) {
-
-			// Accept PSR-16 interfaces
-			case $adapter instanceof \Psr\SimpleCache\CacheInterface:
-				break;
-
-			// Accept PSR-6 interfaces
-			case $adapter instanceof \Psr\Cache\CacheItemPoolInterface:
-				// Use Symfony's PSR-6 to PSR-16 adapter 
-				$adapter = new \Symfony\Component\Cache\Simple\Psr6Cache($adapter);
-				break;
-				
-			// Handle garbage...
-			default:
-				throw new \Exception('Unknown adapter');
-		}
-		
-		// Put the created adapter into the array
-		self::$loadedAdapters[$adapterName] = $adapter;
 	}
 
 	/**
@@ -284,6 +254,36 @@ final class Cache
 
 		//
 		return $adapter->set($key, $value, $expires);
+	}
+	
+	public static function clear( $adapterName = self::CACHE_USE_DEFAULT )
+	{
+		//
+		$adapter = self::getAdapter($adapterName);
+
+		//
+		switch (true) {
+			//
+			case $adapter instanceof \Timber\Cache\Psr16\TimberTransientPool:
+			case $adapter instanceof \Timber\Cache\Psr16\TimberSiteTransientPool:
+			case $adapter instanceof \Timber\Cache\Psr16\TimberObjectCachePool:
+// TODO: Call temprary clearTimber() methods in own adapters. These are to be rewritten into PSR-16's naming: clean()
+				return $adapter->clearTimber();
+				
+			// Unknown cache pool :-)
+			default:
+// TODO: Currently diabled, until further tested...
+				throw new \Exception('Currently unimplemented');
+				$adapter->clear();
+		}
+
+		return false;
+	}
+
+// TODO: Move this avay from this class, or integrate with clear()
+	public static function deleteCache()
+	{
+		\Timber\Cache\Psr16\WordpressTransientPool::deleteTransients();
 	}
 }
 
