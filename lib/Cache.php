@@ -63,21 +63,6 @@ final class Cache
 	}
 
 	/**
-	 * @return \Asm89\Twig\CacheExtension\Extension
-	 */
-	public static function createCacheExtension($adapterName = Cache::CACHE_USE_DEFAULT, $group = 'timber')
-	{
-		$key_generator   = new \Timber\Cache\KeyGenerator();
-		$cache_provider  = new \Timber\Cache\Psr16\Asm89SimpleCacheAdapter(
-			self::getAdapter($adapterName, $group)
-		);
-		$cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator);
-		$cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
-
-		return $cache_extension;
-	}
-
-	/**
 	 * @param string $adapterName
 	 * @param string $classname
 	 * @param bool   $supportGroup
@@ -193,7 +178,7 @@ final class Cache
 	 * @param string $group
 	 * @return bool
 	 */
-	protected static function getAdapter( $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
+	public static function getAdapter( $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
 	{
 // TODO: What to make of this?
 		if ( empty($adapterName) || self::CACHE_USE_DEFAULT === $adapterName ) {

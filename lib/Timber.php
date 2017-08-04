@@ -348,7 +348,11 @@ class Timber {
 			$twigEnvironment->addExtension(new \Twig_Extension_Debug());
 		}
 
-		$twigEnvironment->addExtension(Cache::createCacheExtension());
+		$twigEnvironment->addExtension(
+			self::createAsm89CacheExtension(
+				Cache::getAdapter(Cache::CACHE_USE_DEFAULT, 'timber')
+			)
+		);
 
 		do_action('timber/twig', $twigEnvironment);
 		/**
@@ -395,6 +399,19 @@ class Timber {
 
 		// No existing template was found
 		return false;
+	}
+
+	/**
+	 * @return \Asm89\Twig\CacheExtension\Extension
+	 */
+	protected static function createAsm89CacheExtension(\Psr\SimpleCache\CacheInterface $adapter)
+	{
+		$key_generator   = new \Timber\Cache\KeyGenerator();
+		$cache_provider  = new \Timber\Cache\Psr16\Asm89SimpleCacheAdapter($adapter);
+		$cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator);
+		$cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
+
+		return $cache_extension;
 	}
 
 	/**
