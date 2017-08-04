@@ -303,6 +303,12 @@ final class Cache
 
 /* Register original 'none', 'trancient', 'site-trancient', 'object' cache modes as autoload adapters */
 
+// Register null adapter to imitate legacy cache mode 'none'
+Cache::registerAdapter(
+	Cache::CACHE_NONE,
+	'Symfony\Component\Cache\Adapter\NullAdapter'
+);
+
 // Register WordPress's Trancient caching as 'trancient' (with support for $group)
 Cache::registerAdapter(
 	Cache::CACHE_TRANSIENT,
