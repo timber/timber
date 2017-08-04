@@ -27,24 +27,24 @@ final class Cache
 	public static function clearTimber( $cache_mode = self::CACHE_USE_DEFAULT )
 	{
 		//
-		$cachePool = self::getSimplePool($cache_mode);
+		$adapter = self::getAdapter($cache_mode);
 
 		//
 		switch (true) {
 
 			//
-			case $cachePool instanceof \Timber\Cache\Psr16\TimberTransientPool:
-			case $cachePool instanceof \Timber\Cache\Psr16\TimberSiteTransientPool:
-				return $cachePool->clearTimber();
+			case $adapter instanceof \Timber\Cache\Psr16\TimberTransientPool:
+			case $adapter instanceof \Timber\Cache\Psr16\TimberSiteTransientPool:
+				return $adapter->clearTimber();
 
 			//
-			case $cachePool instanceof \Timber\Cache\Psr16\TimberObjectCachePool:
-				return $cachePool->clearTimber();
+			case $adapter instanceof \Timber\Cache\Psr16\TimberObjectCachePool:
+				return $adapter->clearTimber();
 				
 			default:
 				// Unknown cache pool :-)
 
-// TODO: call $cachePool->clear() ???
+// TODO: call $adapter->clear() ???
 				throw new \Exception('Currently unimplemented');
 		}
 
@@ -58,7 +58,7 @@ final class Cache
 	{
 		$key_generator   = new \Timber\Cache\KeyGenerator();
 		$cache_provider  = new \Timber\Cache\Psr16\Asm89SimpleCacheAdapter(
-			self::getSimplePool($cache_mode, $group)
+			self::getAdapter($cache_mode, $group)
 		);
 		$cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator);
 		$cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
@@ -71,7 +71,7 @@ final class Cache
 	 * @param string $group
 	 * @return bool
 	 */
-	protected static function getSimplePool( $cache_mode = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
+	protected static function getAdapter( $cache_mode = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
 	{
 		if ( empty($cache_mode) || self::CACHE_USE_DEFAULT === $cache_mode ) {
 			$cache_mode = self::CACHE_TRANSIENT;
@@ -129,10 +129,10 @@ final class Cache
 		}
 
 		//
-		$cachePool = self::getSimplePool($cache_mode, $group);
+		$adapter = self::getAdapter($cache_mode, $group);
 			
 		//
-		$value = $cachePool->get($key);
+		$value = $adapter->get($key);
 
 		//
 		return $value;
@@ -152,10 +152,10 @@ final class Cache
 		}
 
 		//
-		$cachePool = self::getAdapter($cache_mode, $group);
+		$adapter = self::getAdapter($cache_mode, $group);
 
 		//
-		$cachePool->set($key, $value, $expires);
+		$adapter->set($key, $value, $expires);
 
 		//
 		return $value;
