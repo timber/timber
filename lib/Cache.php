@@ -285,10 +285,7 @@ final class Cache
 		$adapter = self::getAdapter($adapterName, $group);
 
 		//
-		$adapter->set($key, $value, $expires);
-
-		//
-		return $value;
+		return $adapter->set($key, $value, $expires);
 	}
 }
 
