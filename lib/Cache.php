@@ -21,6 +21,8 @@ final class Cache
 	private static $registeredAdapters = array();
 	private static $loadedAdapters = array();
 
+	private static $defaultAdapter = self::CACHE_TRANSIENT;
+
 	/**
 	 *
 	 */
@@ -193,8 +195,9 @@ final class Cache
 	 */
 	protected static function getAdapter( $cache_mode = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
 	{
+// TODO: What to make of this?
 		if ( empty($cache_mode) || self::CACHE_USE_DEFAULT === $cache_mode ) {
-			$cache_mode = self::CACHE_TRANSIENT;
+			$cache_mode = self::$defaultAdapter;
 			$cache_mode = apply_filters('timber_cache_mode', $cache_mode);
 			$cache_mode = apply_filters('timber/cache/mode', $cache_mode);
 		}
