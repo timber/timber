@@ -15,12 +15,12 @@ class Asm89SimpleCacheAdapter
 	implements \Asm89\Twig\CacheExtension\CacheProviderInterface
 {
     /**
-     * @var CacheItemPoolInterface
+     * @var \Psr\SimpleCache\CacheInterface
      */
     private $cache;
 
     /**
-     * @param CacheItemPoolInterface $cache
+     * @param \Psr\SimpleCache\CacheInterface $cache
      */
     public function __construct(\Psr\SimpleCache\CacheInterface $cache)
     {
