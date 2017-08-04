@@ -35,10 +35,10 @@ final class Cache
 		\Timber\Cache\Psr16\WordpressTransientPool::deleteTransients();
 	}
 
-	public static function clearTimber( $cache_mode = self::CACHE_USE_DEFAULT )
+	public static function clearTimber( $adapterName = self::CACHE_USE_DEFAULT )
 	{
 		//
-		$adapter = self::getAdapter($cache_mode);
+		$adapter = self::getAdapter($adapterName);
 
 		//
 		switch (true) {
@@ -65,11 +65,11 @@ final class Cache
 	/**
 	 * @return \Asm89\Twig\CacheExtension\Extension
 	 */
-	public static function createCacheExtension($cache_mode = Cache::CACHE_USE_DEFAULT, $group = 'timber')
+	public static function createCacheExtension($adapterName = Cache::CACHE_USE_DEFAULT, $group = 'timber')
 	{
 		$key_generator   = new \Timber\Cache\KeyGenerator();
 		$cache_provider  = new \Timber\Cache\Psr16\Asm89SimpleCacheAdapter(
-			self::getAdapter($cache_mode, $group)
+			self::getAdapter($adapterName, $group)
 		);
 		$cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator);
 		$cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
@@ -78,12 +78,12 @@ final class Cache
 	}
 
 	/**
-	 * @param string $cache_mode
+	 * @param string $adapterName
 	 * @param string $classname
 	 * @param bool   $supportGroup
 	 * @return bool
 	 */
-	public static function registerAdapter($cache_mode, $classname, $supportGroup = false)
+	public static function registerAdapter($adapterName, $classname, $supportGroup = false)
 	{
 		switch (true) {
 
@@ -105,32 +105,32 @@ final class Cache
 		}
 
 		//
-		$registerName = $cache_mode;
+		$registerName = $adapterName;
 
 		//
 		self::$registeredAdapters[$registerName] = array(
-			'name' => $cache_mode,
+			'name' => $adapterName,
 			'classname' => $classname,
 			'supports_group' => $supportGroup,
 		);
 	}
 
 	/**
-	 * @param string $cache_mode
+	 * @param string $adapterName
 	 * @param string $group
 	 */
-	protected static function autoloadAdapter($cache_mode, $group = null)
+	protected static function autoloadAdapter($adapterName, $group = null)
 	{
 		//
-		if (! isset(self::$registeredAdapters[$cache_mode])) {
-			throw new \Exception("No loader '$cache_mode' registeret for autoloading");
+		if (! isset(self::$registeredAdapters[$adapterName])) {
+			throw new \Exception("No loader '$adapterName' registeret for autoloading");
 		}
 		
 		// Get registration
-		$register = self::$registeredAdapters[$cache_mode];
+		$register = self::$registeredAdapters[$adapterName];
 
 		// Create name to be used in $loadedAdapters
-		$loadedName = $cache_mode;
+		$loadedName = $adapterName;
 
 		// Test if $group was used or not
 		if ($group === null) {
@@ -157,14 +157,14 @@ final class Cache
 	}
 
 	/**
-	 * @param string $cache_mode
+	 * @param string $adapterName
 	 * @param string $adapter
 	 */
-	public static function loadAdapter($cache_mode, $adapter)
+	public static function loadAdapter($adapterName, $adapter)
 	{
 		// 
-		if (isset(self::$loadedAdapters[$cache_mode])) {
-			throw new \Exception("Another adapter has already been loaded as $cache_mode");
+		if (isset(self::$loadedAdapters[$adapterName])) {
+			throw new \Exception("Another adapter has already been loaded as $adapterName");
 		}
 
 		switch (true) {
@@ -185,21 +185,21 @@ final class Cache
 		}
 		
 		// Put the created adapter into the array
-		self::$loadedAdapters[$cache_mode] = $adapter;
+		self::$loadedAdapters[$adapterName] = $adapter;
 	}
 
 	/**
-	 * @param string $cache_mode
+	 * @param string $adapterName
 	 * @param string $group
 	 * @return bool
 	 */
-	protected static function getAdapter( $cache_mode = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
+	protected static function getAdapter( $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP )
 	{
 // TODO: What to make of this?
-		if ( empty($cache_mode) || self::CACHE_USE_DEFAULT === $cache_mode ) {
-			$cache_mode = self::$defaultAdapter;
-			$cache_mode = apply_filters('timber_cache_mode', $cache_mode);
-			$cache_mode = apply_filters('timber/cache/mode', $cache_mode);
+		if ( empty($adapterName) || self::CACHE_USE_DEFAULT === $adapterName ) {
+			$adapterName = self::$defaultAdapter;
+			$adapterName = apply_filters('timber_cache_mode', $adapterName);
+			$adapterName = apply_filters('timber/cache/mode', $adapterName);
 		}
 
 		// Fallback if self::$cache_mode did not get a valid value
@@ -216,18 +216,18 @@ final class Cache
 		}
 		
 		// Create name to be used in $loadedAdapters
-		$loadedName = $cache_mode;
+		$loadedName = $adapterName;
 		
 		// Test if $group was used or not
 		if ($group !== null) {
 
 			// Verify that $group is allowed
-			if (! isset(self::$registeredAdapters[$cache_mode])) {
+			if (! isset(self::$registeredAdapters[$adapterName])) {
 				throw new \Exception('Only autoloading adapters support the $group parameter');
 			}
 
 			// Get registration
-			$register = self::$registeredAdapters[$cache_mode];
+			$register = self::$registeredAdapters[$adapterName];
 
 			// Adapter must be registered with support for $group parameter for this to work
 			if ($register['supports_group'] !== true) {
@@ -242,12 +242,12 @@ final class Cache
 		if (! isset(self::$loadedAdapters[$loadedName])) {
 		
 			// Try to load adaptor
-			self::autoloadAdapter($cache_mode, $group);
+			self::autoloadAdapter($adapterName, $group);
 
 			// Test if adapter is still not loaded
 			if (! isset(self::$loadedAdapters[$loadedName])) {
 				// This is unexpected
-				throw new \Exception("Cache '$cache_mode' is not registered registered.");
+				throw new \Exception("Cache '$adapterName' is not registered registered.");
 			}
 		}
 		
@@ -257,18 +257,18 @@ final class Cache
 
 	/**
 	 * @param string $key
-	 * @param string $cache_mode
+	 * @param string $adapterName
 	 * @param string $group
 	 * @return bool
 	 */
-	public static function fetch( $key, $cache_mode = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP ) {
+	public static function fetch( $key, $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP ) {
 
-		if ($cache_mode == self::CACHE_NONE) {
+		if ($adapterName == self::CACHE_NONE) {
 			return false;
 		}
 
 		//
-		$adapter = self::getAdapter($cache_mode, $group);
+		$adapter = self::getAdapter($adapterName, $group);
 			
 		//
 		$value = $adapter->get($key);
@@ -281,17 +281,17 @@ final class Cache
 	 * @param string $key
 	 * @param string|boolean $value
 	 * @param integer $expires
-	 * @param string $cache_mode
+	 * @param string $adapterName
 	 * @param string $group
 	 * @return string|boolean
 	 */
-	public static function save( $key, $value, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP ) {
+	public static function save( $key, $value, $expires = 0, $adapterName = self::CACHE_USE_DEFAULT, $group = self::CACHEGROUP ) {
 		if ( (int) $expires < 1 ) {
 			$expires = 0;
 		}
 
 		//
-		$adapter = self::getAdapter($cache_mode, $group);
+		$adapter = self::getAdapter($adapterName, $group);
 
 		//
 		$adapter->set($key, $value, $expires);
