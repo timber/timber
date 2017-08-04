@@ -201,19 +201,6 @@ final class Cache
 			$adapterName = apply_filters('timber_cache_mode', $adapterName);
 			$adapterName = apply_filters('timber/cache/mode', $adapterName);
 		}
-
-		// Fallback if self::$cache_mode did not get a valid value
-		switch ($cache_mode) {
-			
-			case self::CACHE_NONE:
-			case self::CACHE_OBJECT:
-			case self::CACHE_TRANSIENT:
-			case self::CACHE_SITE_TRANSIENT:
-				break;
-
-			default:
-				$cache_mode = self::CACHE_OBJECT;
-		}
 		
 		// Create name to be used in $loadedAdapters
 		$loadedName = $adapterName;
@@ -241,13 +228,31 @@ final class Cache
 		// Test if adapter is not loaded
 		if (! isset(self::$loadedAdapters[$loadedName])) {
 		
-			// Try to load adaptor
-			self::autoloadAdapter($adapterName, $group);
+			try {
+				// Try to load adaptor
+				self::autoloadAdapter($adapterName, $group);
+				
+			} catch (\Exception $e) {
+				
+// TODO: Currently bypasses compatibility with old bad practive, to allow loading of new PSR-6/16 cache adapters
+//				throw $e;
 
-			// Test if adapter is still not loaded
-			if (! isset(self::$loadedAdapters[$loadedName])) {
-				// This is unexpected
-				throw new \Exception("Cache '$adapterName' is not registered registered.");
+				// Backward compatibility: On failed autoload, fallback to WordPress' object cache. 
+				switch ($adapterName) {
+
+					case self::CACHE_NONE:
+					case self::CACHE_OBJECT:
+					case self::CACHE_TRANSIENT:
+					case self::CACHE_SITE_TRANSIENT:
+						// This is unexpected
+						throw new \Exception("Cache '$adapterName' is not registered registered.");
+						
+					default:
+						// Overload $loadedName (the bad old Timber way)
+						$loadedName = self::CACHE_OBJECT;
+						// Load the fallback adaptor
+						self::autoloadAdapter($loadedName, $group);
+				}
 			}
 		}
 		
@@ -323,7 +328,7 @@ Cache::registerAdapter(
 	true // Support group
 );
 
-// Register WordPress's Object caching as 'object' (with support for $group)
+// Register WordPress's Object caching as 'cache' (with support for $group)
 if (isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache'])) {
 	Cache::registerAdapter(
 		Cache::CACHE_OBJECT,
