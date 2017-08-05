@@ -11,7 +11,7 @@ use Timber\Image;
 use Timber\User;
 
 use Timber\Twig_Function;
-
+use Timber\TextHelper;
 /**
  *
  */
