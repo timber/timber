@@ -28,7 +28,11 @@ class ImageHelper {
 	const BASE_UPLOADS = 1;
 	const BASE_CONTENT = 2;
 
+	static $home_url;
+
 	public static function init() {
+		self::$home_url = get_home_url();
+
 		add_action('delete_attachment', array(__CLASS__, 'delete_attachment'));
 		add_filter('wp_generate_attachment_metadata', array(__CLASS__, 'generate_attachment_metadata'), 10, 2);
 		add_filter('upload_dir', array(__CLASS__, 'add_relative_upload_dir_key'), 10, 2);
@@ -198,7 +202,7 @@ class ImageHelper {
 	 * @return array
 	 */
 	public static function add_relative_upload_dir_key( $arr ) {
-		$arr['relative'] = str_replace(get_home_url(), '', $arr['baseurl']);
+		$arr['relative'] = str_replace(self::$home_url, '', $arr['baseurl']);
 		return $arr;
 	}
 
