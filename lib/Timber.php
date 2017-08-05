@@ -210,11 +210,11 @@ class Timber {
 		switch ($option = $options['experimental:loader']) {
 
 			case 'legacy':
-				self::$twigLoaderClassname = __NAMESPACE__.'\LegacyLoader';
+				self::$twigLoaderClassname = __NAMESPACE__.'\TwigLoader\LegacyLoader';
 				break;
 
 			case 'compatible':
-				self::$twigLoaderClassname = __NAMESPACE__.'\CompatibleLoader';
+				self::$twigLoaderClassname = __NAMESPACE__.'\TwigLoader\CompatibleLoader';
 				break;
 
 			default:

@@ -30,7 +30,7 @@ final class Loader
 	{
 		$this->twigEnvironment = Timber::getTwigEnvironment();
 		
-		if (! $this->twigEnvironment->getLoader() instanceof CallerCompatibleLoaderInterface) {
+		if (! $this->twigEnvironment->getLoader() instanceof TwigLoader\CallerCompatibleInterface) {
 			throw new \Exception('The Twig Environment loader must implement CallerCompatibleLoaderInterface for the to work.');
 		}
 		if ($caller !== false) {

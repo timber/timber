@@ -1,12 +1,16 @@
 <?php
 
-namespace Timber;
+namespace Timber\TwigLoader;
+
+use Timber\LocationManager;
 
 /**
- *
+ * @author Heino H. Gehlsen <heino@gehlsen.dk>
+ * @copyright 2017 Heino H. Gehlsen
+ * @license MIT
  */
 class CompatibleLoader
-	implements \Twig_LoaderInterface, CallerCompatibleLoaderInterface
+	implements \Twig_LoaderInterface, CallerCompatibleInterface
 {
 	private $chain;
 	private $temporaryLoader;

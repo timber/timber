@@ -1,12 +1,16 @@
 <?php
 
-namespace Timber;
+namespace Timber\TwigLoader;
+
+use Timber\LocationManager;
 
 /**
- *
+ * @author Heino H. Gehlsen <heino@gehlsen.dk>
+ * @copyright 2017 Heino H. Gehlsen
+ * @license MIT
  */
 class LegacyLoader
-	implements \Twig_LoaderInterface, CallerCompatibleLoaderInterface
+	implements \Twig_LoaderInterface, CallerCompatibleInterface
 {
 	protected $set = false;
 	protected $filesystemLoader;
