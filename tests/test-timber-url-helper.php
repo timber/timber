@@ -46,21 +46,12 @@
             $this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
         }
 
-        function addWPMLHomeFilter($url, $path) {
-            return 'http://example.org/en'.$path;
-        }
-
-        function _setupWPMLDirectory() {
-            define('ICL_LANGUAGE_CODE', 'en');
-            add_filter('home_url', array($this, 'addWPMLHomeFilter'), 10, 2);
-        }
-
         function testFileSystemToURLWithWPMLPrefix() {
-            self::_setupWPMLDirectory();
+            self::setupWPMLDirectory();
             $image = TestTimberImage::copyTestImage();
             $url = Timber\URLHelper::file_system_to_url($image);
             $this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
-            remove_filter('home_url', array($this, 'addWPMLHomeFilter'));
+            self::tearDownWPMLDirectory();
         }
 
         function testContentSubDirectory() {

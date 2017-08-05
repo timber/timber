@@ -85,4 +85,23 @@
 			return 'http://' . $_SERVER['HTTP_HOST'] . '/src';
 		}
 
+		function setupWPMLDirectory() {
+			if (!defined('ICL_LANGUAGE_CODE')) {
+				define('ICL_LANGUAGE_CODE', 'en');
+			}
+			add_filter('home_url', array($this, 'addWPMLHomeFilter'), 10, 2);
+		}
+		function tearDownWPMLDirectory() {
+			remove_filter('home_url', array($this, 'addWPMLHomeFilter'), 10, 2);
+		}
+
+		function addWPMLHomeFilter($url, $path) {
+			$url = 'http://' . $_SERVER['HTTP_HOST'] . '/en';
+			$path = ltrim($path, '/');
+			if ( $path ) {
+				$url .= '/' . $path;
+			}
+			return $url;
+		}
+
 	}
