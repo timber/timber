@@ -202,10 +202,10 @@ class Image extends Post implements CoreInterface {
 		return $url;
 	}
 
-	public static function wp_upload_dir() {
+	public static function wp_upload_dir($reset = false) {
 		static $wp_upload_dir = false;
 
-		if ( !$wp_upload_dir ) {
+		if ( !$wp_upload_dir || $reset) {
 			$wp_upload_dir = wp_upload_dir();
 		}
 
