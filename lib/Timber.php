@@ -85,8 +85,7 @@ class Timber {
 			static::backwards_compatibility();
 			static::init_constants();
 
-// TODO: This will be replaced, if pull request #1493 is accepted
-			Twig::init();
+			TwigExtension\CoreExtension::activateWordpressHook();
 
 			ImageHelper::init();
 			Admin::init();
