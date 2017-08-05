@@ -408,7 +408,7 @@ class Timber {
 		$loader = $twigEnvironment->getLoader();
 		
 		// Determine if the loader is supports Timbers way of injecting the directory of the caller into the loader 
-		$supportCaller = $loader instanceof CallerCompatibleLoaderInterface;
+		$supportCaller = $loader instanceof TwigLoader\CallerCompatibleInterface;
 		if ($supportCaller) {
 // TODO: This could be identified via the call to ::get_calling_script_file() below, and reduce load...
 			// Determine caller directory of the file that called compile

@@ -136,13 +136,12 @@ class TimberSiteTransientAdapter
 		// TODO: Thow something on unwated stuff...
 	}
 
-	public static function clearTimber($prefix = \Timber\Cache::CACHEGROUP, $separator = '_')
+	public function clear()
 	{
-// Origin: Timber v1.3.4 (Timber\Loader::clearCacheTimberDatabase())
-
-// TODO: Change to non-static mathod, at get prefix from $this->keyPrefix.
-// TODO: This is SQL! $group and $separator is currently unsafe!
 		global $wpdb;
+
+// TODO: This is SQL! $keyPrefix is currently unsafe!
+		// Origin: Timber v1.3.4 (Timber\Loader::clearCacheTimberDatabase())
 		$query = $wpdb->prepare(
 			"DELETE
 				FROM
@@ -150,8 +149,26 @@ class TimberSiteTransientAdapter
 				WHERE
 					option_name
 				LIKE '%s'",
-			'_transient_'.$group,$separator.'%'
+			'_site_transient_'.$this->keyPrefix.'%'
 		);
-		return $wpdb->query($query);
+
+		// Execute query
+		$deleted = $wpdb->query($query);
+
+		// Handle SQL fail
+		if ($deleted === false) {
+
+			// Reset, since nothing happened
+			$this->deletedDuringLastClear = 0;
+
+			// Return fail
+			return false;
+		}
+
+		// Remember number of deleted records
+		$this->deletedDuringLastClear = $deleted;
+
+		// Return success
+		return true;
 	}
 }

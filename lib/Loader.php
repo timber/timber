@@ -101,7 +101,21 @@ final class Loader
 	}
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
-		return Cache::clear( $cache_mode);
+		switch ($cache_mode) {
+
+			case Cache::CACHE_TRANSIENT;
+			case Cache::CACHE_SITE_TRANSIENT;	
+				$adapter = Cache::getAdapter(Cache::filterAdapterName($cache_mode));
+				$result = $adapter->clear($cache_mode);
+				if ($result === false) {
+					return false;
+				}
+				return $adapter->deletedDuringLastClear;
+
+			default:
+				return  Cache::clear($cache_mode);
+		}
+		
 	}
 
 	public function clear_cache_twig() {

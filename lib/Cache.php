@@ -283,16 +283,16 @@ final class Cache
 		//
 		$adapter = self::getAdapter($adapterName, $group);
 
-// TODO: Remove temp calls to clearTimber() methods in own adapters. These are to be rewritten into PSR-16's naming: clean()
+// TODO: Currently diabled clear() on unknown adapters, until further tested...
 		switch (true) {
 			case $adapter instanceof \Timber\Cache\Psr16\TimberTransientAdapter:
 			case $adapter instanceof \Timber\Cache\Psr16\TimberSiteTransientAdapter:
 			case $adapter instanceof \Timber\Cache\Psr16\TimberObjectCacheAdapter:
-				return $adapter->clearTimber();
+				break;
+			default:
+				throw new \Exception('Currently unimplemented');
 		}
-				
-// TODO: Currently diabled, until further tested...
-		throw new \Exception('Currently unimplemented');
+
 		// Return boolean from adapter
 		return $adapter->clear();
 	}
