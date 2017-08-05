@@ -109,7 +109,7 @@ class Timber {
 	protected static function init() {
 		if ( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
 			Twig::init();
-			TwigExtension::activateWordpressHook();
+			TwigExtension\CoreExtension::activateWordpressHook();
 			ImageHelper::init();
 			Admin::init();
 			new Integrations();

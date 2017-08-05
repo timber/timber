@@ -1,6 +1,6 @@
 <?php
 
-namespace Timber;
+namespace Timber\TwigExtension;
 
 use Timber\URLHelper;
 use Timber\Helper;
@@ -10,11 +10,12 @@ use Timber\Term;
 use Timber\Image;
 use Timber\User;
 
+use Timber\Twig_Function;
 
 /**
  *
  */
-class TwigExtension implements \Twig_ExtensionInterface {
+class CoreExtension implements \Twig_ExtensionInterface {
 
 	/**
 	 *
