@@ -103,8 +103,7 @@ Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/q
 It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [hundreds of sites](http://timber.github.io/timber/#showcase) (and tons more we don't know about)
 
 #### Contributing
-Read the [contributor guidelines](https://github.com/timber/timber/wiki#contributing) in the wiki.
-
+Read the [Contributor Guidelines](https://github.com/timber/timber/blob/master/CONTRIBUTING.md).
 
 ## Documentation
 
