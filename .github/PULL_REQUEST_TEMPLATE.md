@@ -12,16 +12,15 @@
 <!-- What impact will this have on the current codebase, performance, backwards compatability? -->
 
 
-#### Usage
-<!-- Are there are any usage changes, or are there new usage that we need to know about? If so, add them to the `readme.txt` file so that developers know what usage changes are associated to your PR -->
+#### Usage Changes
+<!-- Are there are any usage changes that we need to know about? If so, list them here so that we can integrate it in the release notes and developers know what usage changes are associated to your PR.
 
-#### Documentation Requirements:
-Check one:
-- [ ] No usage changes. I've updated the `readme.txt` with a quick summary of the change and my GitHub handle
-- [ ] Yes, there's a usage change. I've updated the `readme.txt` with ...
-  - [ ] **Change for Theme Developers:** label
-  - [ ] A quick summary of the change
-  - [ ] New usage instructions
+Alternatively, you’re very welcome to directly edit the readme.txt file with:
+- A quick summary, including your Github handle.
+- A list of changes for Theme Developers (under the "Changes for Theme Developers" label).
+- New usage instructions, possibly with a short code example.
+-->
+
 
 #### Considerations
 <!-- As we do not live in an ideal world it's worth to share your thought on how we could make the solution even better. -->
@@ -29,4 +28,3 @@ Check one:
 
 #### Testing
 <!-- Are unit tests included? If they need to be written, please provide pseudo code for a scenario that fails without your code, but succeeds with it -->
-
