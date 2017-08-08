@@ -78,14 +78,7 @@ class PostCollection extends \ArrayObject {
 		return $posts;
 	}
 
-}
 
-class PostsIterator extends \ArrayIterator {
-
-	public function current() {
-		global $post;
-		$post = parent::current();
-		return $post;
 	}
 }
 
