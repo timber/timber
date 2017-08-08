@@ -10,6 +10,7 @@ class Integrations {
 
 	var $acf;
 	var $coauthors_plus;
+	public $woocommerce;
 
 	public function __construct() {
 		$this->init();
@@ -31,5 +32,8 @@ class Integrations {
 			$this->coauthors_plus = new Integrations\CoAuthorsPlus();
 		}
 		$this->wpml = new Integrations\WPML();
+		if ( class_exists( 'WooCommerce' ) ) {
+			$this->woocommerce = new Integrations\WooCommerce\WooCommerce();
+		}
 	}
 }

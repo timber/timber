@@ -78,6 +78,30 @@ class PostCollection extends \ArrayObject {
 		return $posts;
 	}
 
+	/**
+	 * Runs a custom filter function on the elements of the collection.
+	 *
+	 * An instance of ArrayObject can not be filtered by just passing the object to array_filter(). We need to work
+	 * with getArrayCopy().
+	 *
+	 * @since 1.4.x
+	 *
+	 * @param callable $callback The callback function to use.
+	 * @param bool     $replace  Whether to replace the current elements in the array with the filtered array.
+	 * @return self The filtered collection.
+	 */
+	public function filter( $callback = null, $replace = true ) {
+		$array = array_filter( $this->getArrayCopy(), $callback );
+
+		if ( $replace ) {
+			$this->exchangeArray( $array );
+
+			return $this;
+		}
+
+		return $array;
+	}
+
 }
 
 class PostsIterator extends \ArrayIterator {
