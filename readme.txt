@@ -17,14 +17,14 @@ Once Timber is installed and activated in your plugin directory, it gives any Wo
 
 ### Looking for docs?
 * **[Project Page](http://upstatement.com/timber)**
-* [Timber Documentation](https://github.com/timber/docs)
+* [Timber Documentation](https://timber.github.io/docs/)
 * [Twig Reference (from SensioLabs)](http://twig.sensiolabs.org/doc/templates.html)
-_Twig is the template language powering Timber; if you need a little background on what a template language is, [Twig's homepage has an overview](http://twig.sensiolabs.org/)_
-* **[Video Tutorials](https://github.com/timber/timber/wiki/Video-Tutorials)**
-* [Overview / Getting Started Guide](https://github.com/timber/timber/wiki/getting-started)
 
 #### Related Projects
 * [**Timber Debug Bar**](http://wordpress.org/plugins/debug-bar-timber/) Adds a debug bar panel that will show you want template is in-use and the data sent to your twig file.
+_Twig is the template language powering Timber; if you need a little background on what a template language is, [Twig’s homepage has an overview](http://twig.sensiolabs.org/)_
+* **[Video Tutorials](https://timber.github.io/docs/getting-started/video-tutorials/)**
+* [Overview / Getting Started Guide](https://timber.github.io/docs/getting-started/)
 
 #### What does it look like?
 Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https://github.com/viewportindustries/starkers) or [_s theme](https://github.com/Automattic/_s) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
@@ -651,7 +651,7 @@ Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/q
 == Frequently Asked Questions ==
 
 = Can it be used in an existing theme? =
-You bet! Watch these **[video tutorials](https://github.com/timber/timber/wiki/Video-Tutorials)** to see how.
+You bet! Watch these **[Video Tutorials](https://timber.github.io/docs/getting-started/video-tutorials/)** to see how.
 
 = Is it used in production? =
 At Upstatement we've now used it on more than a dozen client sites. Hundreds of other sites use it too. You can check some of them out in the **[showcase](http://upstatement.com/timber/#showcase)**.

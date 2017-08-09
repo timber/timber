@@ -38,8 +38,8 @@ Once Timber is installed and activated in your plugin directory, it gives any Wo
 ### Looking for docs?
 * [Timber Documentation](https://timber.github.io/docs/)
 * [Twig Reference](http://twig.sensiolabs.org/doc/templates.html)
-* [Video Tutorials](https://github.com/timber/timber/wiki/Video-Tutorials)
-* [Overview / Getting Started Guide](https://github.com/timber/timber/wiki/getting-started)
+* [Overview / Getting Started Guide](https://timber.github.io/docs/getting-started/)
+* [Video Tutorials](https://timber.github.io/docs/getting-started/video-tutorials/)
 
 * * *
 
