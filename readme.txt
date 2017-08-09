@@ -46,6 +46,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 **Fixes and improvements**
 
 - Fix for WPML URLs in some situations #1513 (thanks @ChrisManganaro)
+- Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
 
 **Changes for Theme Developers**
 
