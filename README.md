@@ -1,5 +1,5 @@
 <div style="text-align:center">
-<a href="http://timber.github.io/timber"><img src="http://i.imgur.com/PbEwvZ9.png" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
+<a href="https://timber.github.io/docs/"><img src="http://i.imgur.com/PbEwvZ9.png" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
 </div>
 
 By [Jared Novack](https://github.com/jarednova) ([@jarednova](https://twitter.com/jarednova)), [Lukas Gächter](https://github.com/gchtr) ([@lgaechter](https://twitter.com/lgaechter)), [Linda Gorman](https://github.com/lggorman) ([@lggorman](https://twitter.com/lggorman)) and [Upstatement](https://twitter.com/upstatement)
@@ -100,7 +100,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/questions/tagged/timber). Please use GitHub issues only for specific bugs, feature requests and other types of issues.
 
 #### Should I use it?
-It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [hundreds of sites](http://timber.github.io/timber/#showcase) (and tons more we don't know about)
+It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [hundreds of sites](https://www.upstatement.com/timber/#showcase) (and tons more we don't know about)
 
 #### Contributing
 Read the [Contributor Guidelines](https://github.com/timber/timber/blob/master/CONTRIBUTING.md).
