@@ -8,36 +8,23 @@ PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Helps you create themes faster with sustainable code. With Timber, you write HTML using Mustache-like Templates http://timber.upstatement.com
+Helps you create themes faster with sustainable code. With Timber, you write HTML using Twig Templates http://www.upstatement.com/timber/
 
 == Description ==
-Timber cleans-up your theme code so, for example, your php file can focus on being the data, while your twig/html file can focus 100% on the HTML and display.
+Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](http://twig.sensiolabs.org/) separate from your PHP files. This cleans up your theme code so, for example, your PHP file can focus on being the data/logic, while your Twig file can focus 100% on the HTML and display.
 
 Once Timber is installed and activated in your plugin directory, it gives any WordPress theme the ability to take advantage of the power of Twig and other Timber features.
 
-### Looking for docs?
+### Want to learn more?
 * **[Project Page](http://upstatement.com/timber)**
+* [Timber on GitHub](http://github.com/timber/timber/)
+
+### Looking for Documentation?
 * [Timber Documentation](https://timber.github.io/docs/)
 * [Twig Reference (from SensioLabs)](http://twig.sensiolabs.org/doc/templates.html)
-
-#### Related Projects
-* [**Timber Debug Bar**](http://wordpress.org/plugins/debug-bar-timber/) Adds a debug bar panel that will show you want template is in-use and the data sent to your twig file.
 _Twig is the template language powering Timber; if you need a little background on what a template language is, [Twig’s homepage has an overview](http://twig.sensiolabs.org/)_
 * **[Video Tutorials](https://timber.github.io/docs/getting-started/video-tutorials/)**
 * [Overview / Getting Started Guide](https://timber.github.io/docs/getting-started/)
-
-#### What does it look like?
-Nothing. Timber is meant for you to build a theme on. Like the [Starkers](https://github.com/viewportindustries/starkers) or [_s theme](https://github.com/Automattic/_s) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
-
-#### Who is it good for?
-Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because not everyone knows the ins-and-outs of the_loop(), WordPress codex and PHP (nor should they). With Timber your best WordPress dev can focus on building the .php files with requests from WordPress and pass the data into .twig files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
-
-#### Want to read more?
-* [Timber on GitHub](http://github.com/timber/timber/)
-* [Timber Overview on Tidy Repo](http://tidyrepo.com/timber/)
-* ["Timber and Twig Reignited My Love for WordPress" on CSS-Tricks](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/)
-
-
 
 == Changelog ==
 
@@ -620,7 +607,7 @@ Misc fixes to documentation
 
 == Screenshots ==
 
-1. This what a normal WordPres PHP file looks like
+1. This what a normal WordPress PHP file looks like
 2. With Timber, you write Twig files that are super-clear and HTML-centric.
 
 == Installation ==
@@ -628,21 +615,21 @@ Misc fixes to documentation
 1. Activate the plugin through the 'Plugins' menu in WordPress
 2. For an example, try modifying your home.php or index.php with something like this:
 
-`
+```
 $context = array();
 $context['message'] = 'Hello Timber!';
-Timber::render('welcome.twig', $context);
-`
+Timber::render( 'welcome.twig', $context );
+```
 
-Then create a subdirectory called `views` in your theme folder. The make this file: `views/welcome.twig`
-`
-{# welcome.twig #}
+Then create a subdirectory called `views` in your theme folder. Then create a file `views/welcome.twig` with these contents:
+
+```
 <div class="welcome">
-	<h3>{{message}}</h3>
+    <h3>{{ message }}</h3>
 </div>
-`
+```
 
-That's Timber!
+That’s Timber!
 
 == Support ==
 
@@ -654,16 +641,13 @@ Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/q
 You bet! Watch these **[Video Tutorials](https://timber.github.io/docs/getting-started/video-tutorials/)** to see how.
 
 = Is it used in production? =
-At Upstatement we've now used it on more than a dozen client sites. Hundreds of other sites use it too. You can check some of them out in the **[showcase](http://upstatement.com/timber/#showcase)**.
+At Upstatement we’ve now used it on more than a dozen client sites. Hundreds of other sites use it too. You can check some of them out in the **[Showcase](http://upstatement.com/timber/#showcase)**.
 
-= Doesn't this all make WordPress harder since there's more to learn? =
-Does jQuery make JavaScript harder? Yes, it's an extra piece to learn -- but it super-charges your ability to write unencumbered JavaScript (and prevents you from having to learn lots of the messy internals). If your answer is "jQuery sucks and everyone should learn how to write vanilla JS or they're rotten stupid people," this tool isn't for you.
+= Doesn't this all make WordPress harder since there’s more to learn? =
+Does jQuery make JavaScript harder? Yes, it’s an extra piece to learn -- but it super-charges your ability to write unencumbered JavaScript (and prevents you from having to learn lots of the messy internals). If your answer is "jQuery sucks and everyone should learn how to write vanilla JavaScript or they’re rotten stupid people," this tool isn’t for you.
 
-= Oh, Timber is simple code so it's for making simple themes =
-Whatever. It simplifies the silly stuff so that you can focus on building more complicated sites and apps. jQuery simplifies Javascript, but you can still use the full range of JS's abilities.
+= Oh, Timber is simple code so it’s for making simple themes =
+Whatever. It simplifies the silly stuff so that you can focus on building more complicated sites and apps. jQuery simplifies Javascript, but you can still use the full range of JavaScript’s abilities.
 
 = Will you support it? =
-As stated above, we're using it in dozens of sites (and dozens more planned) -- dozens of other developers are using it too. This isn't going anywhere. Twig is the chosen language for other PHP platforms like Symfony, Drupal 8 and Craft. WordPress will eventually adopt Twig too, I promise you that.
-
-= Support? =
-Leave a [GitHub issue](https://github.com/timber/timber/issues?state=open) and I'll holler back.
+As stated above, we’re using it in dozens of sites (and dozens more planned) -- dozens of other developers are using it too. This isn’t going anywhere. Twig is the chosen language for other PHP platforms like Symfony, Drupal 8 and Craft. WordPress will eventually adopt Twig too, I promise you that.
