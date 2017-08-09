@@ -2,8 +2,8 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.3.4
-Tested up to: 4.8
+Stable tag: 1.4.0
+Tested up to: 4.8.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -40,6 +40,27 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 
 == Changelog ==
+
+= Develop (next release) =
+
+**Fixes and improvements**
+
+- Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
+
+**Changes for Theme Developers**
+
+- Please add any usage changes here so theme developers are informed of changes.
+
+= 1.4.0 =
+
+**Fixes and Improvements**
+
+- Improve GIF resize performance #1495 (thanks @ahallais)
+- Fix for get_host which could generate an unncessary warning #1490 (thanks @ahallais)
+
+**Changes for Theme Developers**
+
+- Improve loader performance and logic #1476 #1489 #1491 (thanks @heino). This introduces potential changes if you were loading templates in a non-standard way and with multiple sources (ex: from a theme and plugin directory). Non-existing templates are no longer passed all the way to Twig’s `render()`, which currently generates an exception.
 
 = 1.3.4 =
 * Fix for Twig 2.0 compatibility issue #1464 (thanks @luism-s)
@@ -127,7 +148,7 @@ Misc fixes to documentation
 * A new PostQuery object that comes _with_ pagination (thanks @lggorman).
 * You can pass an array of post types to `post.children()` (thanks @njbarrett)
 
-= 1.1.6 = 
+= 1.1.6 =
 * Kill those transients! Timber now wipes expired ones away 9a5851bf36110dcb399e277d51230f1addb0c53c
 * Fixed a warning that was annoying and nobody liked and didn't have any friends c53b4c832cfced01157f8196688468ad3318d3fb
 
@@ -215,7 +236,7 @@ Misc fixes to documentation
 * Updated version numbers and build script (@jarednova) 81a281e
 * Corrected Routes -> /Routes which threw a fatal error (@jarednova) 26b6585
 
-= 0.22.6 = 
+= 0.22.6 =
 * New {{request}} object for post/get variables (thanks @connorjburton) #856
 * New crop positions (thanks @salaros) #861
 * Bug Fixes
