@@ -180,7 +180,7 @@ class Helper {
 	 * @return FunctionWrapper|mixed
 	 */
 	public static function function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false ) {
-		Helper::warn( 'function_wrapper is deprecated and will be removed in 1.4. Use {{ function( \'function_to_call\' ) }} instead or use FunctionWrapper directly. For more information refer to http://timber.github.io/timber/#functions' );
+		Helper::warn( 'function_wrapper is deprecated and will be removed in 1.4. Use {{ function( \'function_to_call\' ) }} instead or use FunctionWrapper directly. For more information refer to https://timber.github.io/docs/guides/functions/' );
 
 		return new FunctionWrapper( $function_name, $defaults, $return_output_buffer );
 	}

@@ -219,7 +219,7 @@ class Image extends Post implements CoreInterface {
 	public function init( $iid = false ) {
 		//Make sure we actually have something to work with
 		if ( !$iid ) { Helper::error_log('Initalized TimberImage without providing first parameter.'); return; }
-		
+
 		//If passed TimberImage, grab the ID and continue
 		if ( $iid instanceof self ) {
 			$iid = (int) $iid->ID;
@@ -258,7 +258,7 @@ class Image extends Post implements CoreInterface {
 			/**
 			 * This will catch TimberPost and any post classes that extend TimberPost,
 			 * see http://php.net/manual/en/internals2.opcodes.instanceof.php#109108
-			 * and https://github.com/timber/timber/wiki/Extending-Timber
+			 * and https://timber.github.io/docs/guides/extending-timber/
 			 */
 			$iid = (int) $iid->_thumbnail_id;
 		}
