@@ -641,13 +641,13 @@ Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/q
 You bet! Watch these **[Video Tutorials](https://timber.github.io/docs/getting-started/video-tutorials/)** to see how.
 
 = Is it used in production? =
-At Upstatement we’ve now used it on more than a dozen client sites. Hundreds of other sites use it too. You can check some of them out in the **[Showcase](http://upstatement.com/timber/#showcase)**.
+Tens of thousands of sites now use Timber. You can check some of them out in the **[Showcase](http://upstatement.com/timber/#showcase)**.
 
 = Doesn't this all make WordPress harder since there’s more to learn? =
-Does jQuery make JavaScript harder? Yes, it’s an extra piece to learn -- but it super-charges your ability to write unencumbered JavaScript (and prevents you from having to learn lots of the messy internals). If your answer is "jQuery sucks and everyone should learn how to write vanilla JavaScript or they’re rotten stupid people," this tool isn’t for you.
+Does jQuery make JavaScript harder? Yes, it’s an extra piece to learn — but it super-charges your ability to write unencumbered JavaScript (and prevents you from having to learn lots of the messy internals). If your answer is "jQuery sucks and everyone should learn how to write vanilla JavaScript or they’re rotten stupid people," this tool isn’t for you.
 
 = Oh, Timber is simple code so it’s for making simple themes =
 Whatever. It simplifies the silly stuff so that you can focus on building more complicated sites and apps. jQuery simplifies Javascript, but you can still use the full range of JavaScript’s abilities.
 
 = Will you support it? =
-As stated above, we’re using it in dozens of sites (and dozens more planned) -- dozens of other developers are using it too. This isn’t going anywhere. Twig is the chosen language for other PHP platforms like Symfony, Drupal 8 and Craft. WordPress will eventually adopt Twig too, I promise you that.
+At [Upstatement](https://upstatement.com) we’re using it in dozens of sites (and many more planned) -- thousands of other developers are using it too. This isn’t going anywhere. Twig is the chosen language for other PHP platforms like Symfony, Drupal 8 and Craft.
