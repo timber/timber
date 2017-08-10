@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 Tested up to: 4.8.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -31,23 +31,24 @@ _Twig is the template language powering Timber; if you need a little background 
 = Develop (next release) =
 
 **Fixes and improvements**
-
-- Fix for WPML URLs in some situations #1513 (thanks @ChrisManganaro)
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
 
 **Changes for Theme Developers**
-
 - Please add any usage changes here so theme developers are informed of changes.
+
+= 1.4.1 =
+
+**Fixes and improvements**
+- Fix for WPML URLs in some situations #1513 (thanks @ChrisManganaro)
+- Fix for PHP 5.5 issue with some URLs #1518 (thanks @danFWD)
 
 = 1.4.0 =
 
 **Fixes and Improvements**
-
 - Improve GIF resize performance #1495 (thanks @ahallais)
 - Fix for get_host which could generate an unncessary warning #1490 (thanks @ahallais)
 
 **Changes for Theme Developers**
-
 - Improve loader performance and logic #1476 #1489 #1491 (thanks @heino). This introduces potential changes if you were loading templates in a non-standard way and with multiple sources (ex: from a theme and plugin directory). Non-existing templates are no longer passed all the way to Twig’s `render()`, which currently generates an exception.
 
 = 1.3.4 =
