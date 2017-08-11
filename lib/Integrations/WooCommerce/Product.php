@@ -18,14 +18,25 @@ class Product extends \Timber\Post {
 	/**
 	 * Product constructor.
 	 *
-	 * @param null|\Timber\Post|\WP_Post $post A post object.
+	 * @param mixed $post A post object or an object of class WC_Product or a class that inherits from WC_Product.
 	 */
 	public function __construct( $post = null ) {
-		parent::__construct( $post );
-
 		global $product;
 
-		$product = wc_get_product( $this->ID );
+		/**
+		 * Check if the object is an instance of WC_Product or inherits from WC_Product.
+		 *
+		 * In that case, get the post ID from the product and then let Timber get the post through the parent
+		 * constructor of this class.
+		 */
+		if ( is_a( $post, 'WC_Product' ) ) {
+			parent::__construct( $post->get_id() );
+			$product = $post;
+		} else {
+			parent::__construct( $post );
+			$product = wc_get_product( $this->ID );
+		}
+
 		$this->product = $product;
 	}
 
