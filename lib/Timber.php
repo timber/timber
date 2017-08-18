@@ -317,7 +317,7 @@ class Timber {
 
 			$output = $loader->render($file, $data, $expires, $cache_mode);
 		}
-		
+
 		do_action('timber_compile_done');
 		return $output;
 	}
@@ -498,7 +498,7 @@ class Timber {
 	 * @codeCoverageIgnore
 	 */
 	public static function add_route( $route, $callback, $args = array() ) {
-		Helper::warn('Timber::add_route (and accompanying methods for load_view, etc. Have been deprecated and will soon be removed. Please update your theme with Route::map. You can read more in the 1.0 Upgrade Guide: https://github.com/timber/timber/wiki/1.0-Upgrade-Guide');
+		Helper::warn('Timber::add_route (and accompanying methods for load_view, etc. Have been deprecated and will soon be removed. Please update your theme with Route::map. You can read more in the 1.0 Upgrade Guide: https://timber.github.io/docs/upgrade-guides/1.0/');
 		\Routes::map($route, $callback, $args);
 	}
 
