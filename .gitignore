@@ -17,3 +17,4 @@ docs/mkdocs
 docs/output
 /Timber.php
 wordpress
+composer.lock

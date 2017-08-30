@@ -17,7 +17,7 @@
 			$post_id = $this->factory->post->create(array('post_password' => 'jiggypoof'));
 			$post = new TimberPost($post_id);
 			$this->assertTrue($post->password_required());
-			
+
 		}
 
 		function testNameMethod() {
@@ -498,7 +498,42 @@
 			$this->assertEquals('aside', $post->format());
 		}
 
+		function testPostClassInTwig(){
+			$pid = $this->factory->post->create();
+			$category = wp_insert_term('Uncategorized', 'category');
+			self::set_object_terms($pid, $category, 'category', true);
+			$post = new TimberPost($pid);
+			$str = Timber::compile_string("{{ post.class }}", array('post' => $post));
+			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $str);
+		}
+
 		function testPostClass(){
+			$pid = $this->factory->post->create();
+			$category = wp_insert_term('Uncategorized', 'category');
+			self::set_object_terms($pid, $category, 'category', true);
+			$post = new TimberPost($pid);
+			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $post->post_class());
+		}
+
+		function testCssClass(){
+			$pid = $this->factory->post->create();
+			$category = wp_insert_term('Uncategorized', 'category');
+			self::set_object_terms($pid, $category, 'category', true);
+			$post = new TimberPost($pid);
+			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $post->css_class());
+			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized additional-css-class', $post->css_class('additional-css-class'));
+		}
+
+		function testCssClassMagicCall(){
+			$pid = $this->factory->post->create();
+			$category = wp_insert_term('Uncategorized', 'category');
+			self::set_object_terms($pid, $category, 'category', true);
+			$post = new TimberPost($pid);
+			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $post->class());
+			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized additional-css-class', $post->class('additional-css-class'));
+		}
+
+		function testCssClassMagicGet(){
 			$pid = $this->factory->post->create();
 			$category = wp_insert_term('Uncategorized', 'category');
 			self::set_object_terms($pid, $category, 'category', true);
