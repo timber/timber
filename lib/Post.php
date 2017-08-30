@@ -179,10 +179,11 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2
+	 * This is also here to ensure that {{ post.class }} remains usable
 	 * @return mixed
 	 */
 	public function __get( $field ) {
-		if ('class' === $field) {
+		if ( 'class' === $field ) {
 			return $this->css_class();
 		}
 
@@ -191,6 +192,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2
+	 * This is also here to ensure that {{ post.class }} remains usable
 	 * @return mixed
 	 */
 	public function __call( $field, $args ) {
@@ -211,11 +213,11 @@ class Post extends Core implements CoreInterface {
 	protected function determine_id( $pid ) {
 		global $wp_query;
 		if ( $pid === null &&
-		     isset($wp_query->queried_object_id)
-		     && $wp_query->queried_object_id
-		     && isset($wp_query->queried_object)
-		     && is_object($wp_query->queried_object)
-		     && get_class($wp_query->queried_object) == 'WP_Post'
+			isset($wp_query->queried_object_id)
+			&& $wp_query->queried_object_id
+			&& isset($wp_query->queried_object)
+			&& is_object($wp_query->queried_object)
+			&& get_class($wp_query->queried_object) == 'WP_Post'
 		) {
 			if ( isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id) ) {
 				$pid = $this->get_post_preview_id($wp_query);
@@ -560,10 +562,10 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * <section id="job-feed">
 	 * {% for post in job %}
-	 * <div class="job">
-	 *   <h2>{{ post.title }}</h2>
-	 *    <p>{{ post.terms('category') | join(', ') }}
-	 *  </div>
+	 *   <div class="job">
+	 *     <h2>{{ post.title }}</h2>
+	 *     <p>{{ post.terms('category') | join(', ') }}
+	 *   </div>
 	 * {% endfor %}
 	 * </section>
 	 * ```
@@ -729,7 +731,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Get the CSS classes for a post without cache. For usage you should use `{{post.post_class}}`
+	 * Get the CSS classes for a post without cache. For usage you should use `{{post.class}}`
 	 * @internal
 	 * @param string $class additional classes you want to add
 	 * @example
@@ -759,7 +761,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Get the CSS classes for a post, but with caching css post classes. For usage you should use `{{post.class}}` instead of `{{post.css_class}}` or `{{post.post_class}}`
+	 * Get the CSS classes for a post, but with caching css post classes. For usage you should use `{{ post.class }}` instead of `{{post.css_class}}` or `{{post.post_class}}`
 	 * @internal
 	 * @param string $class additional classes you want to add
 	 * @see Timber\Post::$_css_class
