@@ -196,7 +196,7 @@ class Post extends Core implements CoreInterface {
 	 * @return mixed
 	 */
 	public function __call( $field, $args ) {
-		if ('class' === $field) {
+		if ( 'class' === $field ) {
 			$class = isset($args[0]) ? $args[0] : '';
 			return $this->css_class($class);
 		}
@@ -775,7 +775,7 @@ class Post extends Core implements CoreInterface {
 	 * @return string a space-seperated list of classes
 	 */
 	public function css_class( $class = '' ) {
-		if (!$this->_css_class) {
+		if ( !$this->_css_class ) {
 			$this->_css_class = $this->post_class();
 		}
 
@@ -958,11 +958,11 @@ class Post extends Core implements CoreInterface {
 	 * If the Password form is to be shown, show it!
 	 * @return string|void
 	 */
-	protected function maybe_show_password_form(){
+	protected function maybe_show_password_form() {
 		if ( $this->password_required() ) {
 			$show_pw = false;
 			$show_pw = apply_filters('timber/post/content/show_password_form_for_protected', $show_pw);
-			if ($show_pw) {
+			if ( $show_pw ) {
 				return apply_filters('timber/post/content/password_form', get_the_password_form($this->ID), $this);
 			}
 		}
