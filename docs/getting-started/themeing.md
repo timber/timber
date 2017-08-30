@@ -1,5 +1,5 @@
 ---
-title: "Themeing"
+title: "Theming"
 menu:
   main:
     parent: "getting-started"
