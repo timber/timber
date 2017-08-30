@@ -9,7 +9,7 @@
 
 
 #### Impact
-<!-- What impact will this have on the current codebase, performance, backwards compatability? -->
+<!-- What impact will this have on the current codebase, performance, backwards compatibility? -->
 
 
 #### Usage Changes
