@@ -5,8 +5,6 @@ menu:
     parent: "getting-started"
 ---
 
-I'm in the midst of an install and walk-through on Timber, here are the screencasts thus far:
-
 ## 1. Install Timber
 
 ### Option 1: Via GitHub (for developers)
@@ -17,13 +15,13 @@ I'm in the midst of an install and walk-through on Timber, here are the screenca
 
 #### 2) Use git to grab the repo
 
-	$ git clone git@github.com:jarednova/timber.git
+	$ git clone git@github.com:timber/timber.git
 
 #### 3) Use Composer to download the dependencies (Twig, etc.)
 
 	$ cd timber
 	$ composer install
-	
+
 You can find a guide on [how to get started with Composer](https://getcomposer.org/doc/00-intro.md) in the official documentation.
 
 ### Option 2: Via Composer (for developers)
@@ -34,17 +32,17 @@ You can find a guide on [how to get started with Composer](https://getcomposer.o
 
 #### 2) Use Composer to create project and download the dependencies (Twig, etc.)
 
-	$ composer create-project --no-dev jarednova/timber ./timber
+	$ composer create-project --no-dev timber/timber ./timber
 
 You can find a guide on [how to get started with Composer](https://getcomposer.org/doc/00-intro.md) in the official documentation.
 
 ### Option 3: Via WordPress plugins directory (for non-developers)
 
-If you'd prefer one-click installation, you should use the [WordPress.org](http://wordpress.org/plugins/timber-library/) version.
+If you’d prefer one-click installation, you should use the [WordPress.org](http://wordpress.org/plugins/timber-library/) version.
 
 * * *
 
-Now just activate in your WordPress admin screen. Inside of the timber directory there's a timber-starter-theme. To use this move it into your `themes` directory (probably want to rename it too) and select it.
+Now just activate in your WordPress admin screen. Inside of the timber directory there’s a `timber-starter-theme` directory. To use this, move it into your `themes` directory (probably want to rename it too) and select it.
 
 * * *
 
@@ -54,23 +52,26 @@ Now just activate in your WordPress admin screen. Inside of the timber directory
 
 In which we use an existing WordPress template and implement a very simple Timber usage.
 
-Here's the relevant code:
+Here’s the relevant code:
+
+**index.php**
 
 ```php
 <?php
-/* index.php */
 $context = array();
 $context['headline'] = 'Welcome to my new Timber Blog!';
-Timber::render('welcome.twig', $context);
+
+Timber::render( 'welcome.twig', $context );
 ```
 
+**welcome.twig**
+
 ```twig
-{# welcome.twig #}
 <section class="welcome-block">
-	<div class="inner">
-		<h3>{{headline}}</h3>
-		<p>This will be a superb blog, I will inform you every day</p>
-	</div>
+    <div class="inner">
+        <h3>{{ headline }}</h3>
+        <p>This will be a superb blog, I will inform you every day</p>
+    </div>
 </section>
 ```
 
@@ -83,17 +84,18 @@ Timber::render('welcome.twig', $context);
 ```php
 <?php
 $context = array();
-$context['welcome'] = Timber::get_post(56);
-Timber::render('welcome.twig', $context);
+$context['welcome'] = Timber::get_post( 56 );
+
+Timber::render( 'welcome.twig', $context );
 ```
 
 ```twig
 <section class="welcome-block">
-	<div class="inner">
-		<h3>{{welcome.post_title}}</h3>
-		<p>{{welcome.get_content}}</p>
-		<p>Follow me on <a href="https://twitter.com/{{welcome.twitter_handle}}" target="_blank">Twitter!</a></p>
-	</div>
+    <div class="inner">
+        <h3>{{ welcome.title }}</h3>
+        <p>{{ welcome.content }}</p>
+        <p>Follow me on <a href="https://twitter.com/{{ welcome.twitter_handle }}" target="_blank">Twitter!</a></p>
+    </div>
 </section>
 ```
 
@@ -106,13 +108,15 @@ Timber::render('welcome.twig', $context);
 ```php
 <?php
 $context['posts'] = Timber::get_posts();
-Timber::render('home-main.twig', $context);
+
+Timber::render( 'home-main.twig', $context );
 ```
 
+**home-main.twig**
+
 ```twig
-{# home-main.twig #}
 {% for post in posts %}
-    {% include "tz-post.twig" %}
+    {% include 'teaser-post.twig' %}
 {% endfor %}
 ```
 
@@ -122,65 +126,81 @@ Timber::render('home-main.twig', $context);
 
 [![Using Custom Post Types with Timber](http://img.youtube.com/vi/19T0MStDLSQ/0.jpg)](http://www.youtube.com/watch?v=19T0MStDLSQ)
 
+**home-main.twig**
+
 ```twig
-{# home-main.twig #}
 {% for post in posts %}
-	{# you can send includes an array, in order of precedence #}
-	{% include ["tz-"~post.post_type~".twig", "tz-post.twig"] %}
+    {# You can send an array to "include". Twig will use the first template it finds. #}
+    {% include ['teaser-' ~ post.post_type ~ '.twig', 'teaser-post.twig'] %}
 {% endfor %}
 ```
 
+**teaser-recipe.twig**
+
 ```twig
-{# tz-recipe.twig #}
-<article id="post-{{post.ID}}" class="post-{{post.ID}} {{post.post_type}} type-{{post.post_type}} status-publish hentry">
-	{% if post.get_thumbnail %}
-		<img src="{{post.get_thumbnail.get_src|resize(600, 300)}}" />
-	{% endif %}
-	<h2>{{post.post_title}}</h2>
-	<div class="post-body">
-		{{post.get_content}}
-	</div>
+<article id="post-{{ post.ID }}" class="post-{{ post.ID }} {{ post.post_type }} type-{{ post.post_type }} status-publish hentry">
+    {% if post.thumbnail %}
+        <img src="{{ post.thumbnail.src|resize(600, 300) }}" />
+    {% endif %}
+
+    <h2>{{ post.title }}</h2>
+
+    <div class="post-body">
+        {{ post.content }}
+    </div>
 </article>
 ```
 
 * * *
 
 ## 6. Extending Templates
+
 _Todo: Record Screencast showing this_
 
-This is a **really** important concept for DRY. I'll show how to create a base template that can power your site:
+This is a **really** important concept for DRY. I’ll show how to create a base template that can power your site:
 
 ### Create a `base.twig` file:
 
+**base.twig**
+
 ```twig
-{# base.twig #}
 {% include "html-header.twig" %}
+
 {% block head %}
-	<!-- This is where you'll put template-specific stuff that needs to go in the head tags like custom meta tags, etc. -->
+    <!-- This is where you’ll put template-specific stuff that needs to go in the head tags like custom meta tags, etc. -->
 {% endblock %}
+
 </head>
-<body class="{{body_class}}">
+
+<body class="{{ body_class }}">
+
 {% block content %}
-	<!-- The template's main content will go here. -->
+    <!-- The template’s main content will go here. -->
 {% endblock %}
+
 {% include "footer.twig" %}
-{{wp_footer}}
+
+{{ wp_footer }}
+
 </body>
 </html>
 ```
 
 ### You can use this in a custom `single.twig` file:
 
+**single.twig**
+
 ```twig
-{# single.twig #}
 {% extends "base.twig" %}
+
 {% block head %}
-	<meta property="og:title" value="{{post.title}}" />
+    <meta property="og:title" value="{{ post.title }}" />
 {% endblock %}
+
 {% block content %}
-	<div class="main">
-		<h1>{{post.title}}</h1>
-		<p>{{post.get_content}}</p>
-	</div>
+    <div class="main">
+        <h1>{{ post.title }}</h1>
+        <p>{{ post.content }}</p>
+    </div>
 {% endblock %}
 ```

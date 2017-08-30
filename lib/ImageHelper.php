@@ -12,7 +12,7 @@ use Timber\URLHelper;
 
 /**
  * Implements the Twig image filters:
- * https://github.com/timber/timber/wiki/Image-cookbook#arbitrary-resizing-of-images
+ * https://timber.github.io/docs/guides/cookbook-images/#arbitrary-resizing-of-images
  * - resize
  * - retina
  * - letterbox
