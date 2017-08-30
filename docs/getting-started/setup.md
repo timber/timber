@@ -66,4 +66,4 @@ Make sure you select the Timber-enabled theme **after** you activate the plugin.
 
 ### 3. Let’s write our theme!
 
-Continue ahead in [part 2 about Themeing](https://timber.github.io/docs/getting-started/themeing/).
+Continue ahead in [part 2 about Theming](https://timber.github.io/docs/getting-started/theming/).
