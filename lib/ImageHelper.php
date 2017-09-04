@@ -32,7 +32,6 @@ class ImageHelper {
 
 	public static function init() {
 		self::$home_url = get_home_url();
-
 		add_action('delete_attachment', array(__CLASS__, 'delete_attachment'));
 		add_filter('wp_generate_attachment_metadata', array(__CLASS__, 'generate_attachment_metadata'), 10, 2);
 		add_filter('upload_dir', array(__CLASS__, 'add_relative_upload_dir_key'), 10, 2);
@@ -175,22 +174,24 @@ class ImageHelper {
 	/**
 	 * Deletes all resized versions of an image when the source is deleted.
 	 *
+	 * @since 1.5.0
 	 * @param int   $post_id an attachment post id
 	 */
 	public static function delete_attachment( $post_id ) {
-		\Timber\ImageHelper::_delete_generated_if_image($post_id);
+		self::_delete_generated_if_image($post_id);
 	}
 
 
 	/**
 	 * Delete all resized version of an image when its meta data is regenerated.
 	 *
+	 * @since 1.5.0
 	 * @param array $metadata
 	 * @param int   $post_id an attachment post id
 	 * @return array
 	 */
 	public static function generate_attachment_metadata( $metadata, $post_id ) {
-		\Timber\ImageHelper::_delete_generated_if_image($post_id);
+		self::_delete_generated_if_image($post_id);
 		return $metadata;
 	}
 
@@ -198,6 +199,7 @@ class ImageHelper {
 	 * Adds a 'relative' key to wp_upload_dir() result.
 	 * It will contain the relative url to upload dir.
 	 *
+	 * @since 1.5.0
 	 * @param array $arr
 	 * @return array
 	 */
