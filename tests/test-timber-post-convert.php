@@ -31,7 +31,19 @@
 			$converted = $post->convert($posts);
 			$this->assertEquals($post_ids[2], $converted[2]->id);
 			$this->assertEquals('Timber\Post', get_class($converted[3]));
+		}
 
+		function testNestedArray() {
+			$post_ids = $this->factory->post->create_many(8, array('post_title' => 'Sample Post '.rand(1, 999)));
+
+			$post_id = $this->factory->post->create();
+			$post = new TimberPost($post_id);
+			$posts = get_posts(array('post__in' => $post_ids, 'orderby' => 'post__in'));
+			$arr = array($post, $posts);
+
+			$converted = $post->convert($arr);
+			$this->assertEquals($post_ids[2], $converted[1][2]->id);
+			$this->assertEquals('Timber\Post', get_class($converted[1][3]));
 		}
 
 	}
