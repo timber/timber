@@ -144,6 +144,7 @@ class PostGetter {
 
 		if ( !class_exists($post_class_use) || !is_a(new $post_class_use, '\Timber\Post') ) {
 			Helper::error_log('Class '.$post_class_use.' either does not exist or implement \Timber\Post');
+			return '\Timber\Post';
 		}
 
 		return $post_class_use;
