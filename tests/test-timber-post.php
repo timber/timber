@@ -17,7 +17,6 @@
 			$post_id = $this->factory->post->create(array('post_password' => 'jiggypoof'));
 			$post = new TimberPost($post_id);
 			$this->assertTrue($post->password_required());
-
 		}
 
 		function testNameMethod() {

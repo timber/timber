@@ -1233,7 +1233,7 @@ class Post extends Core implements CoreInterface {
 	 * @param array|WP_Post $data
 	 * @param string $class
 	 */
-	public function convert( $data, $class ) {
+	public function convert( $data, $class = '\Timber\Post' ) {
 		if ( $data instanceof WP_Post ) {
 			$data = new $class($data);
 		} else if ( is_array($data) ) {
@@ -1248,7 +1248,6 @@ class Post extends Core implements CoreInterface {
 				}
 			}
 		}
-
 		return $data;
 	}
 
