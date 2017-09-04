@@ -361,7 +361,7 @@ class Post extends Core implements CoreInterface {
 			return $pid;
 		}
 		if ( !is_numeric($pid) && is_string($pid) ) {
-			$pid = self::get_post_id_by_name($pid);
+			$pid = PostGetter::get_post_id_by_name($pid);
 			return $pid;
 		}
 		if ( !$pid ) {
@@ -374,17 +374,12 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * get_post_id_by_name($post_name)
 	 * @internal
+	 * @deprecated since 1.5.0
 	 * @param string $post_name
 	 * @return int
 	 */
 	public static function get_post_id_by_name( $post_name ) {
-		global $wpdb;
-		$query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s LIMIT 1", $post_name);
-		$result = $wpdb->get_row($query);
-		if ( !$result ) {
-			return null;
-		}
-		return $result->ID;
+		return PostGetter::get_post_id_by_name($post_name);
 	}
 
 	/**
@@ -1233,7 +1228,7 @@ class Post extends Core implements CoreInterface {
 	 * @param array|WP_Post $data
 	 * @param string $class
 	 */
-	public function convert( $data, $class ) {
+	public function convert( $data, $class = '\Timber\Post' ) {
 		if ( $data instanceof WP_Post ) {
 			$data = new $class($data);
 		} else if ( is_array($data) ) {
@@ -1248,7 +1243,6 @@ class Post extends Core implements CoreInterface {
 				}
 			}
 		}
-
 		return $data;
 	}
 
