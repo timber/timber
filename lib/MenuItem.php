@@ -111,6 +111,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @internal
 	 * @see TimberMenuItem::link
 	 * @deprecated 1.0
+	 * @codeCoverageIgnore
 	 * @return string an absolute URL http://example.org/my-page
 	 */
 	public function get_link() {
@@ -119,6 +120,7 @@ class MenuItem extends Core implements CoreInterface {
 
 	/**
 	 * @internal
+	 * @codeCoverageIgnore
 	 * @see TimberMenuItem::path()
 	 * @deprecated 1.0
 	 * @return string a relative url /my-page
@@ -263,7 +265,7 @@ class MenuItem extends Core implements CoreInterface {
 			if ( isset($this->_menu_item_type) && $this->_menu_item_type == 'custom' ) {
 				$this->url = $this->_menu_item_url;
 			} else if ( isset($this->menu_object) && method_exists($this->menu_object, 'get_link') ) {
-					$this->url = $this->menu_object->get_link();
+					$this->url = $this->menu_object->link();
 				}
 		}
 		return $this->url;
@@ -274,6 +276,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @internal
 	 * @deprecated since 0.21.7 use link instead
 	 * @see link()
+	 * @codeCoverageIgnore
 	 * @return string a full URL like http://mysite.com/thing/
 	 */
 	public function permalink() {
@@ -289,7 +292,6 @@ class MenuItem extends Core implements CoreInterface {
 	 *     <li><a href="{{ item.path }}">{{ item.title }}</a></li>
 	 * {% endfor %}
 	 * ```
-	 * @see get_path()
 	 * @return string the path of a URL like /foo
 	 */
 	public function path() {
