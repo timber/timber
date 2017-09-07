@@ -40,6 +40,21 @@
             $this->assertFalse(Timber\URLHelper::starts_with($haystack, $nope));
         }
 
+        function 
+          
+          ToURLWithWPML() {
+            self::_setLanguage();
+            add_filter('home_url', array($this, 'addWPMLHomeFilterForRegExTest'), 10, 2);
+            $image = TestTimberImage::copyTestImage();
+            $url = Timber\URLHelper::file_system_to_url($image);
+            $this->assertEquals('http://enample.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
+            remove_filter('home_url', array($this, 'addWPMLHomeFilterForRegExTest'));
+        }
+
+        function addWPMLHomeFilterForRegExTest($url, $path) {
+            return 'http://enample.org/en'.$path;
+        }
+
         function testFileSystemToURL() {
             $image = TestTimberImage::copyTestImage();
             $url = Timber\URLHelper::file_system_to_url($image);
