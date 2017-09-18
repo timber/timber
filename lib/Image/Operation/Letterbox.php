@@ -57,8 +57,14 @@ class Letterbox extends ImageOperation {
 		$h = $this->h;
 
 		$bg = imagecreatetruecolor($w, $h);
-		$c = self::hexrgb($this->color);
-		$bgColor = imagecolorallocate($bg, $c['red'], $c['green'], $c['blue']);
+		if(!$this->color) {
+			imagesavealpha($bg, true);
+			$bgColor = imagecolorallocatealpha($bg, 0, 0, 0, 127);
+		} else {
+			$c = self::hexrgb($this->color);
+			$bgColor = imagecolorallocate($bg, $c['red'], $c['green'], $c['blue']);
+		}
+
 		imagefill($bg, 0, 0, $bgColor);
 		$image = wp_get_image_editor($load_filename);
 		if ( !is_wp_error($image) ) {
