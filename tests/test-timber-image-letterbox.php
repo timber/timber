@@ -51,6 +51,20 @@ class TestTimberImageLetterbox extends TimberImage_UnitTestCase {
 		$this->assertFileExists( $location_of_image );
 	}
 
+	function testLetterboxTransparentBackground() {
+		$base_file = 'eastern-trans.png';
+		$file_loc = TestTimberImage::copyTestImage( $base_file );
+		$upload_dir = wp_upload_dir();
+		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/'.$base_file, 500, 500 );
+		$location_of_image = TimberImageHelper::get_server_location( $new_file );
+		$this->addFile( $location_of_image );
+		$this->assertTrue (TestTimberImage::checkSize($location_of_image, 500, 500));
+		//whats the bg/color of the image
+		$is_green = TestTimberImage::checkPixel($location_of_image, 250, 250);
+		$this->assertTrue( $is_green );
+		$this->assertFileExists( $location_of_image );
+	}
+
 	function testLetterboxGif() {
 		$base_file = 'panam.gif';
 		$file_loc = TestTimberImage::copyTestImage( $base_file );
