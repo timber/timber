@@ -95,10 +95,9 @@ class Post extends Core implements CoreInterface {
 	protected $_prev = array();
 
 	/**
-	 * @api
 	 * @var string $class stores the CSS classes for the post (ex: "post post-type-book post-123")
 	 */
-	public $class;
+	protected $_css_class;
 
 	/**
 	 * @api
@@ -179,6 +178,33 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2
+	 * This is also here to ensure that {{ post.class }} remains usable
+	 * @return mixed
+	 */
+	public function __get( $field ) {
+		if ( 'class' === $field ) {
+			return $this->css_class();
+		}
+
+		return parent::__get($field);
+	}
+
+	/**
+	 * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2
+	 * This is also here to ensure that {{ post.class }} remains usable
+	 * @return mixed
+	 */
+	public function __call( $field, $args ) {
+		if ( 'class' === $field ) {
+			$class = isset($args[0]) ? $args[0] : '';
+			return $this->css_class($class);
+		}
+
+		return parent::__call($field, $args);
+	}
+
+	/**
 	 * tries to figure out what post you want to get if not explictly defined (or if it is, allows it to be passed through)
 	 * @internal
 	 * @param mixed a value to test against
@@ -192,12 +218,12 @@ class Post extends Core implements CoreInterface {
 			&& isset($wp_query->queried_object)
 			&& is_object($wp_query->queried_object)
 			&& get_class($wp_query->queried_object) == 'WP_Post'
-			) {
-				if ( isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id) ) {
-					$pid = $this->get_post_preview_id($wp_query);
-				} else if ( !$pid ) {
-					$pid = $wp_query->queried_object_id;
-				}
+		) {
+			if ( isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id) ) {
+				$pid = $this->get_post_preview_id($wp_query);
+			} else if ( !$pid ) {
+				$pid = $wp_query->queried_object_id;
+			}
 		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id ) {
 			//hack for static page as home page
 			$pid = $wp_query->queried_object_id;
@@ -233,23 +259,23 @@ class Post extends Core implements CoreInterface {
 
 	protected function get_post_preview_id( $query ) {
 		$can = array(
-	 		'edit_'.$query->queried_object->post_type.'s',
-	 	);
+			'edit_'.$query->queried_object->post_type.'s',
+		);
 
-	 	if ( $query->queried_object->author_id !== get_current_user_id() ) {
-	 		$can[] = 'edit_others_'.$query->queried_object->post_type.'s';
-	 	}
+		if ( $query->queried_object->author_id !== get_current_user_id() ) {
+			$can[] = 'edit_others_'.$query->queried_object->post_type.'s';
+		}
 
-	 	$can_preview = array();
+		$can_preview = array();
 
 		foreach ( $can as $type ) {
-			 if ( current_user_can($type) ) {
+			if ( current_user_can($type) ) {
 				$can_preview[] = true;
-			 }
+			}
 		}
 
 		if ( count($can_preview) !== count($can) ) {
-			 return;
+			return;
 		}
 
 		$revisions = wp_get_post_revisions($query->queried_object_id);
@@ -276,9 +302,6 @@ class Post extends Core implements CoreInterface {
 		}
 		$post_info = $this->get_info($pid);
 		$this->import($post_info);
-		//cant have a function, so gots to do it this way
-		$post_class = $this->post_class();
-		$this->class = $post_class;
 	}
 
 	/**
@@ -338,7 +361,7 @@ class Post extends Core implements CoreInterface {
 			return $pid;
 		}
 		if ( !is_numeric($pid) && is_string($pid) ) {
-			$pid = self::get_post_id_by_name($pid);
+			$pid = PostGetter::get_post_id_by_name($pid);
 			return $pid;
 		}
 		if ( !$pid ) {
@@ -351,17 +374,12 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * get_post_id_by_name($post_name)
 	 * @internal
+	 * @deprecated since 1.5.0
 	 * @param string $post_name
 	 * @return int
 	 */
 	public static function get_post_id_by_name( $post_name ) {
-		global $wpdb;
-		$query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s LIMIT 1", $post_name);
-		$result = $wpdb->get_row($query);
-		if ( !$result ) {
-			return null;
-		}
-		return $result->ID;
+		return PostGetter::get_post_id_by_name($post_name);
 	}
 
 	/**
@@ -539,11 +557,11 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * <section id="job-feed">
 	 * {% for post in job %}
-	 * <div class="job">
-	 *   <h2>{{ post.title }}</h2> 
-	 *    <p>{{ post.terms('category') | join(', ') }}
-	 *  </div>
-	 * {% endfor %}    
+	 *   <div class="job">
+	 *     <h2>{{ post.title }}</h2>
+	 *     <p>{{ post.terms('category') | join(', ') }}
+	 *   </div>
+	 * {% endfor %}
 	 * </section>
 	 * ```
 	 * ```html
@@ -708,13 +726,12 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Get the CSS classes for a post. For usage you should use `{{post.class}}` instead of `{{post.post_class}}`
+	 * Get the CSS classes for a post without cache. For usage you should use `{{post.class}}`
 	 * @internal
 	 * @param string $class additional classes you want to add
-	 * @see Timber\Post::$class
 	 * @example
 	 * ```twig
-	 * <article class="{{ post.class }}">
+	 * <article class="{{ post.post_class }}">
 	 *    {# Some stuff here #}
 	 * </article>
 	 * ```
@@ -736,6 +753,28 @@ class Post extends Core implements CoreInterface {
 			return implode(' ', $class_array);
 		}
 		return $class_array;
+	}
+
+	/**
+	 * Get the CSS classes for a post, but with caching css post classes. For usage you should use `{{ post.class }}` instead of `{{post.css_class}}` or `{{post.post_class}}`
+	 * @internal
+	 * @param string $class additional classes you want to add
+	 * @see Timber\Post::$_css_class
+	 * @example
+	 * ```twig
+	 * <article class="{{ post.class }}">
+	 *    {# Some stuff here #}
+	 * </article>
+	 * ```
+	 *
+	 * @return string a space-seperated list of classes
+	 */
+	public function css_class( $class = '' ) {
+		if ( !$this->_css_class ) {
+			$this->_css_class = $this->post_class();
+		}
+
+		return trim(sprintf('%s %s', $this->_css_class, $class));
 	}
 
 	// Docs
@@ -914,11 +953,11 @@ class Post extends Core implements CoreInterface {
 	 * If the Password form is to be shown, show it!
 	 * @return string|void
 	 */
-	protected function maybe_show_password_form(){
+	protected function maybe_show_password_form() {
 		if ( $this->password_required() ) {
 			$show_pw = false;
 			$show_pw = apply_filters('timber/post/content/show_password_form_for_protected', $show_pw);
-			if ($show_pw) {
+			if ( $show_pw ) {
 				return apply_filters('timber/post/content/password_form', get_the_password_form($this->ID), $this);
 			}
 		}
@@ -1014,8 +1053,8 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function time( $time_format = '' ) {
 		$tf = $time_format ? $time_format : get_option('time_format');
-	 	$the_time = (string) mysql2date($tf, $this->post_date);
-	 	return apply_filters('get_the_time', $the_time, $tf);
+		$the_time = (string) mysql2date($tf, $this->post_date);
+		return apply_filters('get_the_time', $the_time, $tf);
 	}
 
 
@@ -1061,7 +1100,7 @@ class Post extends Core implements CoreInterface {
 	public function format() {
 		return get_post_format($this->ID);
 	}
-	
+
 	/**
 	 * whether post requires password and correct password has been provided
 	 * @api
@@ -1189,7 +1228,7 @@ class Post extends Core implements CoreInterface {
 	 * @param array|WP_Post $data
 	 * @param string $class
 	 */
-	public function convert( $data, $class ) {
+	public function convert( $data, $class = '\Timber\Post' ) {
 		if ( $data instanceof WP_Post ) {
 			$data = new $class($data);
 		} else if ( is_array($data) ) {
@@ -1204,7 +1243,6 @@ class Post extends Core implements CoreInterface {
 				}
 			}
 		}
-
 		return $data;
 	}
 
@@ -1294,7 +1332,7 @@ class Post extends Core implements CoreInterface {
 		if ( $tid ) {
 			//return new Image($tid);
 			return new $this->ImageClass($tid);
-		}	
+		}
 	}
 
 
@@ -1391,19 +1429,19 @@ class Post extends Core implements CoreInterface {
 		return $this->title();
 	}
 
-		/**
-		 * Displays the content of the post with filters, shortcodes and wpautop applied
-		 * @example
-		 * ```twig
-		 * <div class="article-text">{{post.get_content}}</div>
-		 * ```
-		 * ```html
-		 * <div class="article-text"><p>Blah blah blah</p><p>More blah blah blah.</p></div>
-		 * ```
-		 * @param int $len
-		 * @param int $page
-		 * @return string
-		 */
+	/**
+	 * Displays the content of the post with filters, shortcodes and wpautop applied
+	 * @example
+	 * ```twig
+	 * <div class="article-text">{{post.get_content}}</div>
+	 * ```
+	 * ```html
+	 * <div class="article-text"><p>Blah blah blah</p><p>More blah blah blah.</p></div>
+	 * ```
+	 * @param int $len
+	 * @param int $page
+	 * @return string
+	 */
 	public function get_content( $len = -1, $page = 0 ) {
 		if ( $len === 0 ) {
 			$len = -1;
@@ -1444,14 +1482,14 @@ class Post extends Core implements CoreInterface {
 		return $this->link();
 	}
 
-		/**
-		 * @internal
-		 * @see Timber\Post::date
-		 * @deprecated since 1.0
-		 * @codeCoverageIgnore
-		 * @param  string $date_format
-		 * @return string
-		 */
+	/**
+	 * @internal
+	 * @see Timber\Post::date
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @param  string $date_format
+	 * @return string
+	 */
 	public function get_date( $date_format = '' ) {
 		return $this->date($date_format);
 	}
@@ -1492,15 +1530,15 @@ class Post extends Core implements CoreInterface {
 		return $this->children($post_type, $childPostClass);
 	}
 
-		/**
-		 * Get the permalink for a post, but as a relative path
-		 * For example, where {{post.link}} would return "http://example.org/2015/07/04/my-cool-post"
-		 * this will return the relative version: "/2015/07/04/my-cool-post"
-		 * @internal
-		 * @deprecated since 1.0
-		 * @codeCoverageIgnore
-		 * @return string
-		 */
+	/**
+	 * Get the permalink for a post, but as a relative path
+	 * For example, where {{post.link}} would return "http://example.org/2015/07/04/my-cool-post"
+	 * this will return the relative version: "/2015/07/04/my-cool-post"
+	 * @internal
+	 * @deprecated since 1.0
+	 * @codeCoverageIgnore
+	 * @return string
+	 */
 	public function get_path() {
 		return $this->path();
 	}

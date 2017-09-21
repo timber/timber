@@ -6,13 +6,34 @@ use Timber\Helper;
 use Timber\Post;
 
 /**
- * PostCollections are internal objects used to hold a collection of posts
+ * Class PostCollection
+ *
+ * PostCollections are internal objects used to hold a collection of posts.
+ *
+ * @package Timber
  */
 class PostCollection extends \ArrayObject {
 
 	public function __construct( $posts = array(), $post_class = '\Timber\Post' ) {
 		$returned_posts = self::init($posts, $post_class);
-		parent::__construct($returned_posts, $flags = 0, 'Timber\PostsIterator');
+
+		$posts_iterator = 'Timber\PostsIterator';
+
+		/**
+		 * Filters the PostIterator class to use for a PostCollection.
+		 *
+		 * This filter is useful if you need to set special values or globals on each post. Because many plugins still
+		 * rely on The Loop, a custom PostIterator can make it much easier to integrate third party plugins with Timber.
+		 *
+		 * @since 1.4.x
+		 *
+		 * @param string $posts_iterator The iterator class to use to loop over posts. Default `Timber\PostsIterator`.
+		 * @param array  $returned_posts An array of posts.
+		 * @param string $post_class     The post class to use to extend posts with.
+		 */
+		$posts_iterator = apply_filters('timber/class/posts_iterator', $posts_iterator, $returned_posts, $post_class);
+
+		parent::__construct($returned_posts, 0, $posts_iterator);
 	}
 
 	protected static function init( $posts, $post_class ) {
@@ -76,16 +97,6 @@ class PostCollection extends \ArrayObject {
 		}
 
 		return $posts;
-	}
-
-}
-
-class PostsIterator extends \ArrayIterator {
-
-	public function current() {
-		global $post;
-		$post = parent::current();
-		return $post;
 	}
 }
 
