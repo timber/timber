@@ -36,7 +36,11 @@ class Letterbox extends ImageOperation {
 	 *                    (ex: my-awesome-pic-lbox-300x200-FF3366.jpg)
 	 */
 	public function filename( $src_filename, $src_extension ) {
-		$color = str_replace('#', '', $this->color);
+		$color = $this->color;
+		if ( !$color ) {
+			$color = 'trans';
+		}
+		$color = str_replace('#', '', $color);
 		$newbase = $src_filename.'-lbox-'.$this->w.'x'.$this->h.'-'.$color;
 		$new_name = $newbase.'.'.$src_extension;
 		return $new_name;
@@ -57,7 +61,7 @@ class Letterbox extends ImageOperation {
 		$h = $this->h;
 
 		$bg = imagecreatetruecolor($w, $h);
-		if(!$this->color) {
+		if( !$this->color ) {
 			imagesavealpha($bg, true);
 			$bgColor = imagecolorallocatealpha($bg, 0, 0, 0, 127);
 		} else {

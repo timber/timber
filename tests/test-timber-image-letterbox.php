@@ -59,10 +59,10 @@ class TestTimberImageLetterbox extends TimberImage_UnitTestCase {
 		$location_of_image = TimberImageHelper::get_server_location( $new_file );
 		$this->addFile( $location_of_image );
 		$this->assertTrue (TestTimberImage::checkSize($location_of_image, 500, 500));
-		//whats the bg/color of the image
-		$is_green = TestTimberImage::checkPixel($location_of_image, 250, 250);
-		$this->assertTrue( $is_green );
+		// whats the bg/color of the image?
+		$is_trans = TestTimberImage::checkPixel($location_of_image, 250, 250, false);
 		$this->assertFileExists( $location_of_image );
+		$this->assertTrue( $is_trans );
 	}
 
 	function testLetterboxGif() {
