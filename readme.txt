@@ -35,6 +35,7 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Changes for Theme Developers**
 - Please add any usage changes here so theme developers are informed of changes.
+- You can now get {{ theme.version }} to get the theme version! #1555 (thanks @herrschuessler)
 
 = 1.5.0 =
 
