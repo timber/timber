@@ -33,6 +33,12 @@ class Theme extends Core {
 
 	/**
 	 * @api
+	 * @var string the version of the theme (ex: `1.2.3`)
+	 */
+	public $version;
+
+	/**
+	 * @api
 	 * @var TimberTheme|bool the TimberTheme object for the parent theme (if it exists), false otherwise
 	 */
 	public $parent = false;
@@ -84,6 +90,7 @@ class Theme extends Core {
 	protected function init( $slug = null ) {
 		$this->theme = wp_get_theme($slug);
 		$this->name = $this->theme->get('Name');
+		$this->version = $this->theme->get('Version');
 		$this->slug = $this->theme->get_stylesheet();
 
 		$this->uri = $this->theme->get_template_directory_uri();

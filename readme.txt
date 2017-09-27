@@ -32,9 +32,11 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
+- Transparent PNGs now work with letterboxing #1554 (thanks @nlemoine)
 
 **Changes for Theme Developers**
 - Please add any usage changes here so theme developers are informed of changes.
+- You can now get {{ theme.version }} to get the theme version! #1555 (thanks @herrschuessler)
 
 = 1.5.0 =
 
