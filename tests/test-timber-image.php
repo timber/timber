@@ -89,7 +89,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  		$resized_one = Timber\ImageHelper::get_server_location($str);
  		sleep(1);
  		$filename = self::copyTestImage('cardinals.jpg', 'arch.jpg');
- 		
+
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$resized_tester = Timber\ImageHelper::get_server_location($str);
 
@@ -101,8 +101,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  		$this->assertTrue($is_white);
  		$is_also_white = TestTimberImage::checkPixel($resized_one, 5,5, '#FFFFFF');
  		$this->assertTrue($is_also_white);
- 		
-
  	}
 
  	function testResizedReplacedImage() {
@@ -122,7 +120,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
  		$pizza_md5 = md5( file_get_contents($resized_pizza) );
  		$this->assertEquals($pizza_md5, $test_md5);
-
  	}
 
  	function testImageLink() {
@@ -457,7 +454,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		return false;
 	}
 
-	public static function checkPixel($file, $x, $y, $color = '#FFFFFF', $upper_color = false) {
+	public static function checkPixel($file, $x, $y, $color = false, $upper_color = false) {
 		if ( self::is_png($file) ) {
 			$image = imagecreatefrompng( $file );
 		} else if ( self::is_gif($file) ) {
@@ -465,12 +462,16 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		} else {
 			$image = imagecreatefromjpeg( $file );
 		}
-		$pixel_rgb = imagecolorat( $image, $x, $y );
-		$colors_of_file = imagecolorsforindex( $image, $pixel_rgb );
+		$pixel_rgba = imagecolorat( $image, $x, $y );
+		$colors_of_file = imagecolorsforindex( $image, $pixel_rgba );
 		if ($upper_color) {
 			$upper_colors = ImageOperation::hexrgb($upper_color);
 		}
 		$test_colors = ImageOperation::hexrgb($color);
+		if( false === $color ) {
+			$alpha = ($pixel_rgba & 0x7F000000) >> 24;
+			return $alpha === 127;
+		}
 		if ( isset($upper_colors) && $upper_colors ) {
 			if (self::checkChannel('red', $test_colors, $colors_of_file, $upper_colors) &&
 				self::checkChannel('green', $test_colors, $colors_of_file, $upper_colors) &&

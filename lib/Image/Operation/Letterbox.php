@@ -36,7 +36,11 @@ class Letterbox extends ImageOperation {
 	 *                    (ex: my-awesome-pic-lbox-300x200-FF3366.jpg)
 	 */
 	public function filename( $src_filename, $src_extension ) {
-		$color = str_replace('#', '', $this->color);
+		$color = $this->color;
+		if ( !$color ) {
+			$color = 'trans';
+		}
+		$color = str_replace('#', '', $color);
 		$newbase = $src_filename.'-lbox-'.$this->w.'x'.$this->h.'-'.$color;
 		$new_name = $newbase.'.'.$src_extension;
 		return $new_name;
@@ -57,8 +61,14 @@ class Letterbox extends ImageOperation {
 		$h = $this->h;
 
 		$bg = imagecreatetruecolor($w, $h);
-		$c = self::hexrgb($this->color);
-		$bgColor = imagecolorallocate($bg, $c['red'], $c['green'], $c['blue']);
+		if( !$this->color ) {
+			imagesavealpha($bg, true);
+			$bgColor = imagecolorallocatealpha($bg, 0, 0, 0, 127);
+		} else {
+			$c = self::hexrgb($this->color);
+			$bgColor = imagecolorallocate($bg, $c['red'], $c['green'], $c['blue']);
+		}
+
 		imagefill($bg, 0, 0, $bgColor);
 		$image = wp_get_image_editor($load_filename);
 		if ( !is_wp_error($image) ) {

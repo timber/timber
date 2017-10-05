@@ -15,6 +15,10 @@ The purpose of this page is to identify helpful tools for working with Twig.
 * PHPStorm – Built in coloring and code hinting. The Twig extension is recognized and has been for some time. [Twig Details for PHPStorm](http://blog.jetbrains.com/phpstorm/2013/06/twig-support-in-phpstorm/).
 * Atom – Syntax highlighting with the [Atom Component](https://atom.io/packages/php-twig).
 
+## WordPress tools
+
+* [Lisa Templates](https://wordpress.org/plugins/lisa-templates/) – allows you to write Twig-templates in the WordPress admin that renders through a shortcode or widget.
+
 ## Other
 
 * [Watson-Ruby](http://goosecode.com/watson/) – An inline issue manager. Put tags like `[todo]` in a Twig comment and find it easily later. Watson supports Twig as of version 1.6.3.

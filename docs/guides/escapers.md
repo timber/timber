@@ -5,6 +5,16 @@ menu:
     parent: "guides"
 ---
 
+## Universal Escaping
+
+By default, Timber does *not* escape the output of standard tags (i.e. `{{ post.field }}`). If you want to enable `autoescape` behavior simply add these lines to `functions.php`:
+
+```php
+if ( class_exists('Timber') ) {
+	Timber::$autoescape = true; 
+}
+```
+
 ## General Escapers
 
 Twig offers a variety of [escapers](http://twig.sensiolabs.org/doc/filters/escape.html) out of the box. These are intended to escape a string for safe insertion into the final output and there are multiple functions to conform to the strategy dependant on the context. In addition, Timber has added some valuable custom escapers for your WP theme. To use the escaper (see documentation link above) you use pipe your content through a function `e` if you want to use a custom escaper you would supply an argument to the function, e.g. `e('wp_kses_post')`

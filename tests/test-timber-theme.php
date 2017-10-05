@@ -3,6 +3,13 @@
 	class TestTimberTheme extends Timber_UnitTestCase {
 
 		protected $backup_wp_theme_directories;
+
+		function testThemeVersion() {
+			switch_theme('twentysixteen');
+			$theme = new TimberTheme();
+			$this->assertGreaterThan(1.2, $theme->version);
+			switch_theme('default');
+		}
 		
 		function testThemeMods(){
 			set_theme_mod('foo', 'bar');
