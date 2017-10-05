@@ -7,27 +7,47 @@ menu:
 
 ## PHPUnit
 
-To setup tests
+#### Get your environment up with VVV
+Follow the setup steps for [Varying Vagrant Vagrants](https://github.com/Varying-Vagrant-Vagrants/VVV). If you're having trouble I recommend starting 100% fresh (uninstall and delete everything including VirtualBox). For this walk-through I'm going to start from scratch.
 
-- Git clone VVV: `git clone git@github.com:Varying-Vagrant-Vagrants/VVV.git`
-- Navigate into the `www` folder and git clone timber `git clone git@github.com:timber/timber.git`
-- Login to Vagrant SSH: `vagrant ssh`
-- Navigate to your Timber folder `cd /srv/www/timber`
-- Install dependencies `composer install`
-- Run PHPUnit! `phpunit`
+1. Install VVV
+Follow the [setup instructions](https://varyingvagrantvagrants.org/docs/en-US/installation/) — don't forget to install VirtualBox and Vagrant first! For this tutorial I'm going to assume you've installed into `~/vagrant-local/`
 
-**Full code**
+#### Setting up Timber for Tests
+
+1. Navigate into the `www` directory and clone Timber...
+```
+$ cd ~/vagrant-local/www/
+$ git clone git@github.com:jarednova/timber.git
+```
+
+2. Now install the necessary Composer files...
+```
+$ cd timber
+$ composer install
+```
+
+3. Ok, you should be ready to run tests. This is where things get interesting. You're going to login to your Vagrant virtual box to run the tests...
+
+#### Run the tests!
+Connect to your Vagrant instance
+
 
 ```
-cd ~/Sites
-git clone git@github.com:Varying-Vagrant-Vagrants/VVV.git
-cd VVV/www
-git clone git@github.com:timber/timber.git
-vagrant ssh
-cd /srv/www/timber
-composer install
-phpunit
+$ vagrant ssh
 ```
+Now wait for it to bring you into the virtual box, from the virtual environment...
+```
+$ cd /srv/www/timber
+$ phpunit
+```
+
+You should see a bunch of gobbledygook across your screen (the whole process will take about 3 mins.); but we should see that WordPress is testing successfully. Hurrah! For more info, check out the [Codex docs on Automated Testing](http://make.wordpress.org/core/handbook/automated-testing/).
+
+## Writing tests
+
+Now we get to the good stuff. You can add tests to the `timber/tests` directory. Any new features should be covered by tests. You can be a hero and help write tests for existing methods and functionality.
+
 
 ## Gotchas!
 
