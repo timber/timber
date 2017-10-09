@@ -68,15 +68,8 @@ class Twig {
 					return new $ImageClass($pid);
 				} ));
 
-		$twig->addFunction(new Twig_Function('TimberTerm', function( $pid, $TermClass = 'Timber\Term' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $TermClass($p);
-						}
-						return $pid;
-					}
-					return new $TermClass($pid);
-				} ));
+		$twig->addFunction( new Twig_Function('TimberTerm', array($this, 'handle_term_object')) );
+
 		$twig->addFunction(new Twig_Function('TimberUser', function( $pid, $UserClass = 'Timber\User' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
@@ -106,15 +99,7 @@ class Twig {
 					}
 					return new $ImageClass($pid);
 				} ));
-		$twig->addFunction(new Twig_Function('Term', function( $pid, $TermClass = 'Timber\Term' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $TermClass($p);
-						}
-						return $pid;
-					}
-					return new $TermClass($pid);
-				} ));
+		$twig->addFunction(new Twig_Function('Term', array($this, 'handle_term_object')));
 		$twig->addFunction(new Twig_Function('User', function( $pid, $UserClass = 'Timber\User' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
@@ -161,6 +146,36 @@ class Twig {
 				} ));
 
 		return $twig;
+	}
+
+	function handle_term_object( $tid, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+		if ($taxonomy != $TermClass) {
+			// user has sent any additonal parameters, process
+			$processed_args = self::process_term_args($taxonomy, $TermClass);
+			$taxonomy = $processed_args['taxonomy'];
+			$TermClass = $processed_args['TermClass'];
+		}
+		if ( is_array($tid) && !Helper::is_array_assoc($tid) ) {
+			foreach ( $tid as &$p ) {
+				$p = new $TermClass($p, $taxonomy);
+			}
+			return $tid;
+		}
+		return new $TermClass($tid, $taxonomy);
+	}
+
+	/**
+
+	 */
+	protected static function process_term_args( $maybe_taxonomy, $TermClass ) {
+		// A user could be sending a TermClass in the first arg, let's test for that ...
+		if ( class_exists($maybe_taxonomy) ) {
+			$tc = new $maybe_taxonomy;
+			if ( is_subclass_of($tc, 'Timber/Term') ) {
+				return array('taxonomy' => '', 'TermClass' => $maybe_taxonomy);
+			}
+		}
+		return array('taxonomy' => $maybe_taxonomy, 'TermClass' => $TermClass);
 	}
 
 	/**

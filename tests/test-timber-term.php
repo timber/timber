@@ -2,6 +2,17 @@
 
 	class TestTimberTerm extends Timber_UnitTestCase {
 
+		function testConstructor() {
+			register_taxonomy('arts', array('post'));
+
+			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
+			$term = new TimberTerm($term_id, 'arts');
+			$this->assertEquals('Zong', $term->name());
+			$template = '{% set zp_term = TimberTerm("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
+			$string = Timber::compile_string($template);
+			$this->assertEquals('Zong', $string);
+		}
+
 		function testTerm() {
 			$term_id = $this->factory->term->create();
 			$term = new TimberTerm($term_id);
