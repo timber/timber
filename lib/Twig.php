@@ -68,7 +68,7 @@ class Twig {
 					return new $ImageClass($pid);
 				} ));
 
-		$twig->addFunction( new Twig_Function('TimberTerm', array($this, 'handle_term_object')) );
+		$twig->addFunction(new Twig_Function('TimberTerm', array($this, 'handle_term_object')));
 
 		$twig->addFunction(new Twig_Function('TimberUser', function( $pid, $UserClass = 'Timber\User' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
@@ -149,7 +149,7 @@ class Twig {
 	}
 
 	function handle_term_object( $tid, $taxonomy = '', $TermClass = 'Timber\Term' ) {
-		if ($taxonomy != $TermClass) {
+		if ( $taxonomy != $TermClass ) {
 			// user has sent any additonal parameters, process
 			$processed_args = self::process_term_args($taxonomy, $TermClass);
 			$taxonomy = $processed_args['taxonomy'];
@@ -202,7 +202,7 @@ class Twig {
 		$twig->addFilter(new \Twig_SimpleFilter('stripshortcodes', 'strip_shortcodes'));
 		$twig->addFilter(new \Twig_SimpleFilter('array', array($this, 'to_array')));
 		$twig->addFilter(new \Twig_SimpleFilter('excerpt', 'wp_trim_words'));
-		$twig->addFilter(new \Twig_SimpleFilter('excerpt_chars', array('Timber\TextHelper','trim_characters')));
+		$twig->addFilter(new \Twig_SimpleFilter('excerpt_chars', array('Timber\TextHelper', 'trim_characters')));
 		$twig->addFilter(new \Twig_SimpleFilter('function', array($this, 'exec_function')));
 		$twig->addFilter(new \Twig_SimpleFilter('pretags', array($this, 'twig_pretags')));
 		$twig->addFilter(new \Twig_SimpleFilter('sanitize', 'sanitize_title'));
@@ -249,18 +249,18 @@ class Twig {
 	public function add_timber_escapers( $twig ) {
 
 		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_url', function( \Twig_Environment $env, $string ) {
-			return esc_url( $string );
+			return esc_url($string);
 		});
 		$twig->getExtension('Twig_Extension_Core')->setEscaper('wp_kses_post', function( \Twig_Environment $env, $string ) {
-			return wp_kses_post( $string );
+			return wp_kses_post($string);
 		});
 
 		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_html', function( \Twig_Environment $env, $string ) {
-			return esc_html( $string );
+			return esc_html($string);
 		});
 
 		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_js', function( \Twig_Environment $env, $string ) {
-			return esc_js( $string );
+			return esc_js($string);
 		});
 
 		return $twig;
