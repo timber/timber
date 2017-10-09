@@ -200,7 +200,7 @@ class MenuItem extends Core implements CoreInterface {
 		}
 		$this->children[] = $item;
 		$item->level = $this->level + 1;
-		if ( $item->children ) {
+		if ( count($item->children) ) {
 			$this->update_child_levels();
 		}
 	}
