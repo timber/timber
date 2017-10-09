@@ -171,7 +171,7 @@ class Twig {
 		// A user could be sending a TermClass in the first arg, let's test for that ...
 		if ( class_exists($maybe_taxonomy) ) {
 			$tc = new $maybe_taxonomy;
-			if ( is_subclass_of($tc, 'Timber/Term') ) {
+			if ( is_subclass_of($tc, 'Timber\Term') ) {
 				return array('taxonomy' => '', 'TermClass' => $maybe_taxonomy);
 			}
 		}
