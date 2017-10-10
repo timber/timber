@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 Tested up to: 4.8.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
@@ -32,11 +32,17 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
-- Transparent PNGs now work with letterboxing #1554 (thanks @nlemoine)
 
 **Changes for Theme Developers**
 - Please add any usage changes here so theme developers are informed of changes.
-- You can now interact with Terms in Twig the same as PHP (ex: `{% set term = Term(#1159 (@jarednova)
+
+= 1.5.1 =
+
+**Fixes and improvements**
+- Transparent PNGs now work with letterboxing #1554 (thanks @nlemoine)
+
+**Changes for Theme Developers**
+- You can now interact with Terms in Twig the same as PHP (ex: `{% set term = Term(34, "arts") %}`). The second arg will default to a subclass of Timber\Term if it exists #1159 (@jarednova)
 - You can now get {{ theme.version }} to get the theme version! #1555 (thanks @herrschuessler)
 
 = 1.5.0 =
