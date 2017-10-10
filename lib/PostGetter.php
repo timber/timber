@@ -34,6 +34,23 @@ class PostGetter {
 		return false;
 	}
 
+	/**
+	 * get_post_id_by_name($post_name)
+	 * @internal
+	 * @since 1.5.0
+	 * @param string $post_name
+	 * @return int
+	 */
+	public static function get_post_id_by_name( $post_name ) {
+		global $wpdb;
+		$query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s LIMIT 1", $post_name);
+		$result = $wpdb->get_row($query);
+		if ( !$result ) {
+			return null;
+		}
+		return $result->ID;
+	}
+
 	public static function get_posts( $query = false, $PostClass = '\Timber\Post', $return_collection = false ) {
 		$posts = self::query_posts($query, $PostClass);
 		return apply_filters('timber_post_getter_get_posts', $posts->get_posts($return_collection));
@@ -121,12 +138,13 @@ class PostGetter {
 			Helper::error_log('Unexpeted value for PostClass: '.print_r($post_class, true));
 		}
 
-		$test_post = false;
-		if ( class_exists($post_class_use) ) {
-			$test_post = new $post_class_use();
+		if ( $post_class_use === '\Timber\Post' ) {
+			return $post_class_use;
 		}
-		if ( !$test_post || !(is_subclass_of($test_post, '\Timber\Post') || is_a($test_post, '\Timber\Post')) ) {
-			Helper::error_log('Class ' . $post_class_use . ' either does not exist or implement \Timber\Post');
+
+		if ( !class_exists($post_class_use) || !is_a(new $post_class_use, '\Timber\Post') ) {
+			Helper::error_log('Class '.$post_class_use.' either does not exist or implement \Timber\Post');
+			return '\Timber\Post';
 		}
 
 		return $post_class_use;

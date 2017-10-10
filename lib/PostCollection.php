@@ -13,8 +13,9 @@ use Timber\Post;
  * @package Timber
  */
 class PostCollection extends \ArrayObject {
+
 	public function __construct( $posts = array(), $post_class = '\Timber\Post' ) {
-		$returned_posts = self::init( $posts, $post_class );
+		$returned_posts = self::init($posts, $post_class);
 
 		$posts_iterator = 'Timber\PostsIterator';
 
@@ -30,9 +31,9 @@ class PostCollection extends \ArrayObject {
 		 * @param array  $returned_posts An array of posts.
 		 * @param string $post_class     The post class to use to extend posts with.
 		 */
-		$posts_iterator = apply_filters( 'timber/class/posts_iterator', $posts_iterator, $returned_posts, $post_class );
+		$posts_iterator = apply_filters('timber/class/posts_iterator', $posts_iterator, $returned_posts, $post_class);
 
-		parent::__construct( $returned_posts, 0, $posts_iterator );
+		parent::__construct($returned_posts, 0, $posts_iterator);
 	}
 
 	protected static function init( $posts, $post_class ) {

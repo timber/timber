@@ -40,6 +40,19 @@
             $this->assertFalse(Timber\URLHelper::starts_with($haystack, $nope));
         }
 
+        function testFileSystemToURLWithWPML() {
+            self::_setLanguage();
+            add_filter('home_url', array($this, 'addWPMLHomeFilterForRegExTest'), 10, 2);
+            $image = TestTimberImage::copyTestImage();
+            $url = Timber\URLHelper::file_system_to_url($image);
+            $this->assertEquals('http://enample.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
+            remove_filter('home_url', array($this, 'addWPMLHomeFilterForRegExTest'));
+        }
+
+        function addWPMLHomeFilterForRegExTest($url, $path) {
+            return 'http://enample.org/en'.$path;
+        }
+
         function testFileSystemToURL() {
             $image = TestTimberImage::copyTestImage();
             $url = Timber\URLHelper::file_system_to_url($image);
@@ -50,8 +63,14 @@
             return 'http://example.org/en'.$path;
         }
 
+        function _setLanguage() {
+            if ( !defined('ICL_LANGUAGE_CODE') ) {
+                define('ICL_LANGUAGE_CODE', 'en');
+            }
+        }
+
         function _setupWPMLDirectory() {
-            define('ICL_LANGUAGE_CODE', 'en');
+            self::_setLanguage();
             add_filter('home_url', array($this, 'addWPMLHomeFilter'), 10, 2);
         }
 

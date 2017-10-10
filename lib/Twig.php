@@ -68,15 +68,8 @@ class Twig {
 					return new $ImageClass($pid);
 				} ));
 
-		$twig->addFunction(new Twig_Function('TimberTerm', function( $pid, $TermClass = 'Timber\Term' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $TermClass($p);
-						}
-						return $pid;
-					}
-					return new $TermClass($pid);
-				} ));
+		$twig->addFunction(new Twig_Function('TimberTerm', array($this, 'handle_term_object')));
+
 		$twig->addFunction(new Twig_Function('TimberUser', function( $pid, $UserClass = 'Timber\User' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
@@ -106,15 +99,7 @@ class Twig {
 					}
 					return new $ImageClass($pid);
 				} ));
-		$twig->addFunction(new Twig_Function('Term', function( $pid, $TermClass = 'Timber\Term' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $TermClass($p);
-						}
-						return $pid;
-					}
-					return new $TermClass($pid);
-				} ));
+		$twig->addFunction(new Twig_Function('Term', array($this, 'handle_term_object')));
 		$twig->addFunction(new Twig_Function('User', function( $pid, $UserClass = 'Timber\User' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
@@ -163,6 +148,36 @@ class Twig {
 		return $twig;
 	}
 
+	function handle_term_object( $tid, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+		if ( $taxonomy != $TermClass ) {
+			// user has sent any additonal parameters, process
+			$processed_args = self::process_term_args($taxonomy, $TermClass);
+			$taxonomy = $processed_args['taxonomy'];
+			$TermClass = $processed_args['TermClass'];
+		}
+		if ( is_array($tid) && !Helper::is_array_assoc($tid) ) {
+			foreach ( $tid as &$p ) {
+				$p = new $TermClass($p, $taxonomy);
+			}
+			return $tid;
+		}
+		return new $TermClass($tid, $taxonomy);
+	}
+
+	/**
+
+	 */
+	protected static function process_term_args( $maybe_taxonomy, $TermClass ) {
+		// A user could be sending a TermClass in the first arg, let's test for that ...
+		if ( class_exists($maybe_taxonomy) ) {
+			$tc = new $maybe_taxonomy;
+			if ( is_subclass_of($tc, 'Timber\Term') ) {
+				return array('taxonomy' => '', 'TermClass' => $maybe_taxonomy);
+			}
+		}
+		return array('taxonomy' => $maybe_taxonomy, 'TermClass' => $TermClass);
+	}
+
 	/**
 	 *
 	 *
@@ -187,7 +202,7 @@ class Twig {
 		$twig->addFilter(new \Twig_SimpleFilter('stripshortcodes', 'strip_shortcodes'));
 		$twig->addFilter(new \Twig_SimpleFilter('array', array($this, 'to_array')));
 		$twig->addFilter(new \Twig_SimpleFilter('excerpt', 'wp_trim_words'));
-		$twig->addFilter(new \Twig_SimpleFilter('excerpt_chars', array('Timber\TextHelper','trim_characters')));
+		$twig->addFilter(new \Twig_SimpleFilter('excerpt_chars', array('Timber\TextHelper', 'trim_characters')));
 		$twig->addFilter(new \Twig_SimpleFilter('function', array($this, 'exec_function')));
 		$twig->addFilter(new \Twig_SimpleFilter('pretags', array($this, 'twig_pretags')));
 		$twig->addFilter(new \Twig_SimpleFilter('sanitize', 'sanitize_title'));
@@ -234,18 +249,18 @@ class Twig {
 	public function add_timber_escapers( $twig ) {
 
 		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_url', function( \Twig_Environment $env, $string ) {
-			return esc_url( $string );
+			return esc_url($string);
 		});
 		$twig->getExtension('Twig_Extension_Core')->setEscaper('wp_kses_post', function( \Twig_Environment $env, $string ) {
-			return wp_kses_post( $string );
+			return wp_kses_post($string);
 		});
 
 		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_html', function( \Twig_Environment $env, $string ) {
-			return esc_html( $string );
+			return esc_html($string);
 		});
 
 		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_js', function( \Twig_Environment $env, $string ) {
-			return esc_js( $string );
+			return esc_js($string);
 		});
 
 		return $twig;
