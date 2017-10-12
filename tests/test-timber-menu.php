@@ -283,12 +283,33 @@ class TestTimberMenu extends Timber_UnitTestCase {
 				'post_status' => 'publish',
 				'post_name' => 'grandchild-page',
 				'post_type' => 'page',
-				'menu_order' => 100,
 			) );
 		$grandchild_menu_item = wp_insert_post( array(
 				'post_title' => '',
 				'post_status' => 'publish',
 				'post_type' => 'nav_menu_item',
+				'menu_order' => 100,
+			) );
+		update_post_meta( $grandchild_menu_item, '_menu_item_type', 'post_type' );
+		update_post_meta( $grandchild_menu_item, '_menu_item_menu_item_parent', $child_menu_item );
+		update_post_meta( $grandchild_menu_item, '_menu_item_object_id', $grandchild_id );
+		update_post_meta( $grandchild_menu_item, '_menu_item_object', 'page' );
+		update_post_meta( $grandchild_menu_item, '_menu_item_url', '' );
+		$post = new TimberPost( $grandchild_menu_item );
+		$menu_items[] = $grandchild_menu_item;
+
+		/* make another grandchild page */
+		$grandchild_id = wp_insert_post( array(
+				'post_title' => 'Other Grandchild Page',
+				'post_status' => 'publish',
+				'post_name' => 'other grandchild-page',
+				'post_type' => 'page',
+			) );
+		$grandchild_menu_item = wp_insert_post( array(
+				'post_title' => '',
+				'post_status' => 'publish',
+				'post_type' => 'nav_menu_item',
+				'menu_order' => 101,
 			) );
 		update_post_meta( $grandchild_menu_item, '_menu_item_type', 'post_type' );
 		update_post_meta( $grandchild_menu_item, '_menu_item_menu_item_parent', $child_menu_item );
@@ -436,9 +457,12 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals(0, $parent->level);
 		$child = $parent->children[0];
 		$this->assertEquals(1, $child->level);
-		$grandchild = $child->children[0];
-		$this->assertEquals('Grandchild Page', $grandchild->title());
-		$this->assertEquals(2, $grandchild->level);
+		$olderGrandchild = $child->children[0];
+		$this->assertEquals('Grandchild Page', $olderGrandchild->title());
+		$this->assertEquals(2, $olderGrandchild->level);
+		$youngerGrandchild = $child->children[1];
+		$this->assertEquals('Other Grandchild Page', $youngerGrandchild->title());
+		$this->assertEquals(2, $youngerGrandchild->level);
 	}
 
 	function testMenuLevelsChildren() {
