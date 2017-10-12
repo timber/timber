@@ -195,9 +195,6 @@ class MenuItem extends Core implements CoreInterface {
 			$this->add_class('menu-item-has-children');
 			$this->has_child_class = true;
 		}
-		if ( !isset($this->children) ) {
-			$this->children = array();
-		}
 		$this->children[] = $item;
 		$item->level = $this->level + 1;
 		if ( count($this->children) ) {
