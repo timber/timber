@@ -61,7 +61,6 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 
-
 	function testTrailingSlashesOrNot() {
 		self::setPermalinkStructure();
 		$items = array();
@@ -246,34 +245,6 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertFalse( $item->is_external() );
 		$this->assertEquals( 'http://example.org/home/', $item->link() );
 		$this->assertEquals( '/home/', $item->path() );
-	}
-
-	public static function _createTestMenuForThumbnail() {
-		$menu_term = wp_insert_term( 'Menu with Image', 'nav_menu' );
-		$menu_id = $menu_term['term_id'];
-		$menu_items = array();
-		$parent_post = wp_insert_post(
-			array(
-				'post_title' => 'My Post',
-				'post_status' => 'publish',
-				'post_name' => 'home',
-				'post_type' => 'post',
-				'menu_order' => 1
-			)
-		);
-		$parent_id = wp_insert_post( array(
-				'post_title' => '',
-				'post_status' => 'publish',
-				'post_type' => 'nav_menu_item'
-			) );
-		update_post_meta( $parent_id, '_menu_item_type', 'post_type' );
-		update_post_meta( $parent_id, '_menu_item_object', 'post' );
-		update_post_meta( $parent_id, '_menu_item_menu_item_parent', 0 );
-		update_post_meta( $parent_id, '_menu_item_object_id', $parent_post );
-		update_post_meta( $parent_id, '_menu_item_url', '' );
-		$menu_items[] = $parent_id;
-		self::insertIntoMenu($menu_id, $menu_items);
-		return $menu_term;
 	}
 
 	public static function _createTestMenu() {

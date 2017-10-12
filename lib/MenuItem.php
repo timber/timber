@@ -437,17 +437,6 @@ class MenuItem extends Core implements CoreInterface {
 	 * ```
 	 * @return \Timber\Image|null The featured image object.
 	 */
-	public function thumbnail_old() {
-		$mo = $this->get_master_object();
-		error_log('$mo = '.$mo->ID);
-		error_log('menu_object = '.$this->menu_object->ID);
-		if ( $this->menu_object && method_exists($this->menu_object, 'thumbnail')) {
-			return $this->menu_object->thumbnail();
-		} else {
-			error_log('no master object');
-		}
-	}
-
 	public function thumbnail() {
 		$mo = $this->get_master_object();
 		if ( $mo && method_exists($mo, 'thumbnail')) {
