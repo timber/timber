@@ -429,6 +429,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * Get the featured image of the post associated with the menu item.
 	 *
 	 * @api
+	 * @deprecated since 1.5.2 to be removed in v2.0
 	 * @example
 	 * ```twig
 	 * {% for item in menu.items %}
