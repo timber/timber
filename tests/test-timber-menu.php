@@ -17,10 +17,25 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( '/home/', $item->path() );
 	}
 
+	
+	function testTrailingSlashesOrNot() {
+		self::setPermalinkStructure();
+		$items = array();
+		$items[] = (object) array('type' => 'link', 'link' => '/');
+		$items[] = (object) array('type' => 'link', 'link' => '/foo');
+		$items[] = (object) array('type' => 'link', 'link' => '/bar/');
+		$mid = $this->buildMenu('Blanky', $items);
+		$menu = new TimberMenu($mid);
+		$items = $menu->get_items();
+		$this->assertEquals('/', $items[0]->path());
+		$this->assertEquals('/foo', $items[1]->path());
+		$this->assertEquals('/bar/', $items[2]->path());
+	}
+
 	/**
 	 * @group menuThumbnails
 	 */
-	function testNavMenuThumbnailsNew() {
+	function testNavMenuThumbnailsWithInitializedMenu() {
 		add_theme_support( 'thumbnails' );
 		self::setPermalinkStructure();
 
@@ -44,6 +59,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( $menu_items[0]->ID . ' - http://example.org/wp-content/uploads/' . date( 'Y/m' ) . '/arch.jpg', $result );
 	}
 
+
 	/**
 	 * @group menuThumbnails
 	 */
@@ -60,20 +76,6 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $result);
 	}
 
-
-	function testTrailingSlashesOrNot() {
-		self::setPermalinkStructure();
-		$items = array();
-		$items[] = (object) array('type' => 'link', 'link' => '/');
-		$items[] = (object) array('type' => 'link', 'link' => '/foo');
-		$items[] = (object) array('type' => 'link', 'link' => '/bar/');
-		$mid = $this->buildMenu('Blanky', $items);
-		$menu = new TimberMenu($mid);
-		$items = $menu->get_items();
-		$this->assertEquals('/', $items[0]->path());
-		$this->assertEquals('/foo', $items[1]->path());
-		$this->assertEquals('/bar/', $items[2]->path());
-	}
 
 	function testPagesMenu() {
 		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
