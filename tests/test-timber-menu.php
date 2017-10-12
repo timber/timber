@@ -17,7 +17,9 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( '/home/', $item->path() );
 	}
 
-
+	/**
+	 * @group menuThumbnails
+	 */
 	function testNavMenuThumbnailsNew() {
 		add_theme_support( 'thumbnails' );
 		self::setPermalinkStructure();
