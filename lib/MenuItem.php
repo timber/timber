@@ -441,4 +441,13 @@ class MenuItem extends Core implements CoreInterface {
 			error_log('no master object');
 		}
 	}
+
+	public function thumbnail_bak() {
+		$mo = $this->get_master_object();
+		if ( $mo && method_exists($mo, 'thumbnail')) {
+			return $mo->thumbnail();
+		} else {
+			error_log('no master object');
+		}
+	}
 }

@@ -18,6 +18,47 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 
+	function testNavMenuThumbnailsNew() {
+		add_theme_support( 'thumbnails' );
+		self::setPermalinkStructure();
+
+		$menu_term = self::_createTestMenu();
+		$menu = new Timber\Menu( $menu_term['term_id'] );
+		$menu_items = $menu->items;
+
+		// Add attachment to post
+		$pid = $menu->items[0]->object_id;
+		$iid = TestTimberImage::get_image_attachment( $pid );
+		add_post_meta( $pid, '_thumbnail_id', $iid, true );
+
+		// Lets confirm this post has a thumbnail on it!
+		$post = new TimberPost($pid);
+		$this->assertEquals('http://example.org/wp-content/uploads/' . date( 'Y/m' ) . '/arch.jpg', $post->thumbnail());
+
+		$nav_menu = new Timber\Menu( $menu_term['term_id'] );
+
+		$str    = '{{ menu.items[0].ID }} - {{ menu.items[0].thumbnail.src }}';
+		$result = Timber::compile_string( $str, array( 'menu' => $nav_menu ) );
+		$this->assertEquals( $menu_items[0]->ID . ' - http://example.org/wp-content/uploads/' . date( 'Y/m' ) . '/arch.jpg', $result );
+	}
+
+	/**
+	 * @group menuThumbnails
+	 */
+	function testMenuWithImage() {
+		add_theme_support('thumbnails');
+		self::setPermalinkStructure();
+		$pid = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
+		$iid = TestTimberImage::get_image_attachment($pid);
+		add_post_meta( $pid, '_thumbnail_id', $iid, true );
+		$post = new \Timber\Post($pid);
+		$page_menu = new TimberMenu();
+		$str = '{% for item in menu.items %}{{item.thumbnail.src}}{% endfor %}';
+		$result = Timber::compile_string($str, array('menu' => $page_menu));
+		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $result);
+	}
+
+
 
 	function testTrailingSlashesOrNot() {
 		self::setPermalinkStructure();
@@ -45,18 +86,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 	}
 
-	function testMenuWithImage() {
-		add_theme_support('thumbnails');
-		self::setPermalinkStructure();
-		$pid = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
-		$iid = TestTimberImage::get_image_attachment($pid);
-		add_post_meta( $pid, '_thumbnail_id', $iid, true );
-		$post = new \Timber\Post($pid);
-		$page_menu = new TimberMenu();
-		$str = '{% for item in menu.items %}{{item.thumbnail.src}}{% endfor %}';
-		$result = Timber::compile_string($str, array('menu' => $page_menu));
-		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $result);
-	}
+
 
 	function testPagesMenuWithFalse() {
 		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
@@ -214,6 +244,34 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertFalse( $item->is_external() );
 		$this->assertEquals( 'http://example.org/home/', $item->link() );
 		$this->assertEquals( '/home/', $item->path() );
+	}
+
+	public static function _createTestMenuForThumbnail() {
+		$menu_term = wp_insert_term( 'Menu with Image', 'nav_menu' );
+		$menu_id = $menu_term['term_id'];
+		$menu_items = array();
+		$parent_post = wp_insert_post(
+			array(
+				'post_title' => 'My Post',
+				'post_status' => 'publish',
+				'post_name' => 'home',
+				'post_type' => 'post',
+				'menu_order' => 1
+			)
+		);
+		$parent_id = wp_insert_post( array(
+				'post_title' => '',
+				'post_status' => 'publish',
+				'post_type' => 'nav_menu_item'
+			) );
+		update_post_meta( $parent_id, '_menu_item_type', 'post_type' );
+		update_post_meta( $parent_id, '_menu_item_object', 'post' );
+		update_post_meta( $parent_id, '_menu_item_menu_item_parent', 0 );
+		update_post_meta( $parent_id, '_menu_item_object_id', $parent_post );
+		update_post_meta( $parent_id, '_menu_item_url', '' );
+		$menu_items[] = $parent_id;
+		self::insertIntoMenu($menu_id, $menu_items);
+		return $menu_term;
 	}
 
 	public static function _createTestMenu() {
