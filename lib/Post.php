@@ -1349,6 +1349,62 @@ class Post extends Core implements CoreInterface {
 		return apply_filters('the_title', $this->post_title, $this->ID);
 	}
 
+	/**
+	 * Returns the gallery
+	 * @api
+	 * @example
+	 * ```twig
+	 * {{ post.gallery }}
+	 * ```
+	 * @return html
+	 */
+	public function gallery($html = true) {
+		$galleries = get_post_galleries( $this->ID, $html );
+		$gallery = reset( $galleries );
+
+		return apply_filters( 'get_post_gallery', $gallery, $this->ID, $galleries );
+	}
+
+	/**
+	 * Returns the audio
+	 * @api
+	 * @example
+	 * ```twig
+	 * {{ post.audio }}
+	 * ```
+	 * @return html
+	 */
+	public function audio() {
+		$audio = false;
+
+		// Only get audio from the content if a playlist isn't present.
+		if ( false === strpos( $this->content, 'wp-playlist-script' ) ) {
+			$audio = get_media_embedded_in_content( $this->content, array( 'audio' ) );
+		}
+
+		return $audio;
+	}
+
+	/**
+	 * Returns the video
+	 * @api
+	 * @example
+	 * ```twig
+	 * {{ post.video }}
+	 * ```
+	 * @return html
+	 */
+	public function video() {
+		$video = false;
+
+		// Only get video from the content if a playlist isn't present.
+		if ( false === strpos( $this->content, 'wp-playlist-script' ) ) {
+			$video = get_media_embedded_in_content( $this->content, array( 'video', 'object', 'embed', 'iframe' ) );
+		}
+
+		return $video;
+	}
+
 
 	/**
 	 *
