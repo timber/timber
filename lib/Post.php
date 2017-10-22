@@ -1358,11 +1358,11 @@ class Post extends Core implements CoreInterface {
 	 * ```
 	 * @return html
 	 */
-	public function gallery($html = true) {
-		$galleries = get_post_galleries( $this->ID, $html );
+	public function gallery( $html = true ) {
+		$galleries = get_post_galleries($this->ID, $html);
 		$gallery = reset( $galleries );
 
-		return apply_filters( 'get_post_gallery', $gallery, $this->ID, $galleries );
+		return apply_filters('get_post_gallery', $gallery, $this->ID, $galleries);
 	}
 
 	/**
@@ -1378,8 +1378,8 @@ class Post extends Core implements CoreInterface {
 		$audio = false;
 
 		// Only get audio from the content if a playlist isn't present.
-		if ( false === strpos( $this->get_content(), 'wp-playlist-script' ) ) {
-			$audio = get_media_embedded_in_content( $this->get_content(), array( 'audio' ) );
+		if ( false === strpos($this->get_content(), 'wp-playlist-script') ) {
+			$audio = get_media_embedded_in_content($this->get_content(), array('audio'));
 		}
 
 		return $audio;
@@ -1398,8 +1398,8 @@ class Post extends Core implements CoreInterface {
 		$video = false;
 
 		// Only get video from the content if a playlist isn't present.
-		if ( false === strpos( $this->get_content(), 'wp-playlist-script' ) ) {
-			$video = get_media_embedded_in_content( $this->get_content(), array( 'video', 'object', 'embed', 'iframe' ) );
+		if ( false === strpos($this->get_content(), 'wp-playlist-script') ) {
+			$video = get_media_embedded_in_content($this->get_content(), array('video', 'object', 'embed', 'iframe'));
 		}
 
 		return $video;
