@@ -753,6 +753,55 @@
 			$this->assertStringStartsWith('<div id="respond"', trim($form));
 		}
 
+		function testPostWithoutGallery() {
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+
+			$this->assertEquals(null, $post->gallery());
+		}
+
+		function testPostWithoutAudio() {
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+
+			$this->assertEquals(array(), $post->audio());
+		}
+
+		function testPostWithAudio() {
+			$quote = 'Named must your fear be before banish it you can.';
+			$quote .= '[embed]http://www.noiseaddicts.com/samples_1w72b820/280.mp3[/embed]';
+			$quote .= "No, try not. Do or do not. There is no try.";
+
+			$pid = $this->factory->post->create(array('post_content' => $quote));
+			$post = new TimberPost($pid);
+			$expected = array(
+				'<audio class="wp-audio-shortcode" id="audio-1-1" preload="none" style="width: 100%;" controls="controls"><source type="audio/mpeg" src="http://www.noiseaddicts.com/samples_1w72b820/280.mp3?_=1" /><a href="http://www.noiseaddicts.com/samples_1w72b820/280.mp3">http://www.noiseaddicts.com/samples_1w72b820/280.mp3</a></audio>',
+			);
+
+			$this->assertEquals($expected, $post->audio());
+		}
+
+		function testPostWithoutVideo() {
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+
+			$this->assertEquals(array(), $post->video());
+		}
+
+		function testPostWithVideo() {
+			$quote = 'Named must your fear be before banish it you can.';
+			$quote .= '[embed]https://www.youtube.com/watch?v=Jf37RalsnEs[/embed]';
+			$quote .= "No, try not. Do or do not. There is no try.";
+
+			$pid = $this->factory->post->create(array('post_content' => $quote));
+			$post = new TimberPost($pid);
+			$expected = array(
+				'<iframe width="500" height="281" src="https://www.youtube.com/embed/Jf37RalsnEs?feature=oembed" frameborder="0" allowfullscreen></iframe>',
+			);
+
+			$this->assertEquals($expected, $post->video());
+		}
+
 		/**
 		 * @group failing
 		 */

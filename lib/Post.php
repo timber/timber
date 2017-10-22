@@ -1360,7 +1360,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function gallery( $html = true ) {
 		$galleries = get_post_galleries($this->ID, $html);
-		$gallery = reset( $galleries );
+		$gallery = reset($galleries);
 
 		return apply_filters('get_post_gallery', $gallery, $this->ID, $galleries);
 	}
