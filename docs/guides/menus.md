@@ -43,6 +43,17 @@ Or pass nothing. This is good if you have only one menu. In that case Timber wil
 $menu = new TimberMenu();
 ```
 
+## Options
+
+Optionally, you can send additional options to `Timber\Menu`. Current only `depth` is supported
+
+```php
+$args = array(
+	'depth' => 2,
+);
+$menu = new TimberMenu( 'primary', $args);
+```
+
 ## Setting up a menu globally
 
 The first thing to do is to initialize your menu using `Timber\Menu`. This will make the menu available as an object to work with in the context. Because we need the menu on every page, we can add it to the global context through the `timber/context` filter:
