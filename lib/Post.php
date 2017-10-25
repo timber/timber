@@ -1016,7 +1016,7 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * Published on {{ post.date }} // Uses WP's formatting set in Admin
 	 * OR
-	 * Published on {{ post.date | date('F jS') }} // Jan 12th
+	 * Published on {{ post.date('F jS') }} // Jan 12th
 	 * ```
 	 *
 	 * ```html
