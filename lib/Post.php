@@ -1016,7 +1016,7 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * Published on {{ post.date }} // Uses WP's formatting set in Admin
 	 * OR
-	 * Published on {{ post.date | date('F jS') }} // Jan 12th
+	 * Published on {{ post.date('F jS') }} // Jan 12th
 	 * ```
 	 *
 	 * ```html
@@ -1319,13 +1319,13 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * get the featured image as a TimberImage
+	 * get the featured image as a Timber/Image
 	 * @api
 	 * @example
 	 * ```twig
-	 * <img src="{{post.thumbnail.src}}" />
+	 * <img src="{{ post.thumbnail.src }}" />
 	 * ```
-	 * @return TimberImage|null of your thumbnail
+	 * @return Timber/Image|null of your thumbnail
 	 */
 	public function thumbnail() {
 		$tid = get_post_thumbnail_id($this->ID);
