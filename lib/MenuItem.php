@@ -390,7 +390,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string A full URL, like `http://mysite.com/thing/`.
 	 */
 	public function permalink() {
-		Helper::warn( '{{ item.permalink }} is deprecated, use {{ item.link }} instead' );
+		Helper::warn('{{ item.permalink }} is deprecated, use {{ item.link }} instead');
 		return $this->link();
 	}
 
@@ -443,10 +443,8 @@ class MenuItem extends Core implements CoreInterface {
 	 */
 	public function thumbnail() {
 		$mo = $this->master_object();
-		if ( $mo && method_exists($mo, 'thumbnail')) {
+		if ( $mo && method_exists($mo, 'thumbnail') ) {
 			return $mo->thumbnail();
-		} else {
-			error_log('no master object');
 		}
 	}
 }
