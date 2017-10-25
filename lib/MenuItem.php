@@ -64,7 +64,6 @@ class MenuItem extends Core implements CoreInterface {
 	protected $_menu_item_object_id;
 	protected $_menu_item_url;
 	protected $menu_object;
-	protected $master_object;
 
 	/**
 	 * @internal
@@ -140,20 +139,27 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string The URL-safe slug of the menu item.
 	 */
 	public function slug() {
-		if ( !isset($this->master_object) ) {
-			$this->master_object = $this->get_master_object();
-		}
-		if ( isset($this->master_object->post_name) && $this->master_object->post_name ) {
-			return $this->master_object->post_name;
+		$mo = $this->master_object();
+		if ( $mo && $mo->post_name ) {
+			return $mo->post_name;
 		}
 		return $this->post_name;
 	}
 
 	/**
-	 * @internal
-	 * @return mixed Whatever object (Post, Term, etc.) the menu item represents.
+	 * Allows dev to access the "master object" (ex: post or page) the menu item represents
+	 * @api
+	 * @example
+	 * ```twig
+	 * <div>
+	 *     {% for item in menu.items %}
+	 *         <a href="{{ item.link }}"><img src="{{ item.master_object.thumbnail }}" /></a>
+	 *     {% endfor %}
+	 * </div>
+	 * ```
+	 * @return mixed Whatever object (Timber\Post, Timber\Term, etc.) the menu item represents.
 	 */
-	protected function get_master_object() {
+	public function master_object() {
 		if ( isset($this->_menu_item_object_id) ) {
 			return new $this->PostClass($this->_menu_item_object_id);
 		}
@@ -436,7 +442,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return \Timber\Image|null The featured image object.
 	 */
 	public function thumbnail() {
-		$mo = $this->get_master_object();
+		$mo = $this->master_object();
 		if ( $mo && method_exists($mo, 'thumbnail')) {
 			return $mo->thumbnail();
 		} else {
