@@ -36,6 +36,11 @@ _Twig is the template language powering Timber; if you need a little background 
 **Changes for Theme Developers**
 - Please add any usage changes here so theme developers are informed of changes.
 
+= 1.5.2 =
+
+**Fixes and improvements**
+- Fixed a bug where multi-level menus weren't receiving proper data
+
 = 1.5.1 =
 
 **Fixes and improvements**
