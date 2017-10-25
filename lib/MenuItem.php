@@ -64,7 +64,6 @@ class MenuItem extends Core implements CoreInterface {
 	protected $_menu_item_object_id;
 	protected $_menu_item_url;
 	protected $menu_object;
-	protected $master_object;
 
 	/**
 	 * @internal
@@ -140,22 +139,32 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string The URL-safe slug of the menu item.
 	 */
 	public function slug() {
-		if ( !isset($this->master_object) ) {
-			$this->master_object = $this->get_master_object();
-		}
-		if ( isset($this->master_object->post_name) && $this->master_object->post_name ) {
-			return $this->master_object->post_name;
+		$mo = $this->master_object();
+		if ( $mo && $mo->post_name ) {
+			return $mo->post_name;
 		}
 		return $this->post_name;
 	}
 
 	/**
-	 * @internal
-	 * @return mixed Whatever object (Post, Term, etc.) the menu item represents.
+	 * Allows dev to access the "master object" (ex: post or page) the menu item represents
+	 * @api
+	 * @example
+	 * ```twig
+	 * <div>
+	 *     {% for item in menu.items %}
+	 *         <a href="{{ item.link }}"><img src="{{ item.master_object.thumbnail }}" /></a>
+	 *     {% endfor %}
+	 * </div>
+	 * ```
+	 * @return mixed Whatever object (Timber\Post, Timber\Term, etc.) the menu item represents.
 	 */
-	protected function get_master_object() {
+	public function master_object() {
 		if ( isset($this->_menu_item_object_id) ) {
 			return new $this->PostClass($this->_menu_item_object_id);
+		}
+		if ( isset($this->menu_object) ) {
+			return new $this->PostClass($this->menu_object);
 		}
 	}
 
@@ -381,7 +390,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string A full URL, like `http://mysite.com/thing/`.
 	 */
 	public function permalink() {
-		Helper::warn( '{{ item.permalink }} is deprecated, use {{ item.link }} instead' );
+		Helper::warn('{{ item.permalink }} is deprecated, use {{ item.link }} instead');
 		return $this->link();
 	}
 
@@ -423,6 +432,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * Get the featured image of the post associated with the menu item.
 	 *
 	 * @api
+	 * @deprecated since 1.5.2 to be removed in v2.0
 	 * @example
 	 * ```twig
 	 * {% for item in menu.items %}
@@ -432,10 +442,9 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return \Timber\Image|null The featured image object.
 	 */
 	public function thumbnail() {
-		if ( $this->menu_object && method_exists($this->menu_object, 'thumbnail')) {
-			return $this->menu_object->thumbnail();
-		} else {
-			error_log('no master object');
+		$mo = $this->master_object();
+		if ( $mo && method_exists($mo, 'thumbnail') ) {
+			return $mo->thumbnail();
 		}
 	}
 }
