@@ -1319,13 +1319,13 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * get the featured image as a TimberImage
+	 * get the featured image as a Timber/Image
 	 * @api
 	 * @example
 	 * ```twig
-	 * <img src="{{post.thumbnail.src}}" />
+	 * <img src="{{ post.thumbnail.src }}" />
 	 * ```
-	 * @return TimberImage|null of your thumbnail
+	 * @return Timber/Image|null of your thumbnail
 	 */
 	public function thumbnail() {
 		$tid = get_post_thumbnail_id($this->ID);
