@@ -69,6 +69,11 @@ class Post extends Core implements CoreInterface {
 	public $object_type = 'post';
 
 	/**
+	 * @var array $custom stores custom meta data
+	 */
+	public $custom = array();
+
+	/**
 	 * @var string $representation what does this class represent in WordPress terms?
 	 */
 	public static $representation = 'post';
