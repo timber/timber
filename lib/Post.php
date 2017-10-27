@@ -1359,6 +1359,9 @@ class Post extends Core implements CoreInterface {
 	 * @return html
 	 */
 	public function gallery( $html = true ) {
+		if ( isset($this->custom['gallery']) ) {
+			return $this->custom['gallery'];
+		}
 		$galleries = get_post_galleries($this->ID, $html);
 		$gallery = reset($galleries);
 
@@ -1375,6 +1378,9 @@ class Post extends Core implements CoreInterface {
 	 * @return html
 	 */
 	public function audio() {
+		if ( isset($this->custom['audio']) ) {
+			return $this->custom['audio'];
+		}
 		$audio = false;
 
 		// Only get audio from the content if a playlist isn't present.
@@ -1395,6 +1401,9 @@ class Post extends Core implements CoreInterface {
 	 * @return html
 	 */
 	public function video() {
+		if ( isset($this->custom['video']) ) {
+			return $this->custom['video'];
+		}
 		$video = false;
 
 		// Only get video from the content if a playlist isn't present.

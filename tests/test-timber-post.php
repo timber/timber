@@ -760,6 +760,13 @@
 			$this->assertEquals(null, $post->gallery());
 		}
 
+		function testPostWithGalleryCustomField() {
+			$pid = $this->factory->post->create();
+			update_post_meta($pid, 'gallery', 'foo');
+			$post = new Timber\Post($pid);
+			$this->assertEquals('foo', $post->gallery());
+		}
+
 		function testPostWithoutAudio() {
 			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
@@ -781,6 +788,13 @@
 			$this->assertEquals($expected, $post->audio());
 		}
 
+		function testPostWithAudioCustomField() {
+			$pid = $this->factory->post->create();
+			update_post_meta($pid, 'audio', 'foo');
+			$post = new Timber\Post($pid);
+			$this->assertEquals('foo', $post->audio());
+		}
+
 		function testPostWithoutVideo() {
 			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
@@ -800,6 +814,13 @@
 			);
 
 			$this->assertEquals($expected, $post->video());
+		}
+
+		function testPostWithVideoCustomField() {
+			$pid = $this->factory->post->create();
+			update_post_meta($pid, 'video', 'foo');
+			$post = new Timber\Post($pid);
+			$this->assertEquals('foo', $post->video());
 		}
 
 		/**
