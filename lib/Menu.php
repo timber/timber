@@ -117,6 +117,8 @@ class Menu extends Core {
 	 */
 	protected function set_options ($options) {
 		if (!is_array($options)) {
+			$this->depth = -1;
+			$this->raw_options = [];
 			return;
 		}
 
@@ -248,12 +250,13 @@ class Menu extends Core {
 	 * @param array $menu
 	 */
 	protected function strip_to_depth_limit ($menu, $current = 1) {
-		if ($this->depth <= 0) {
+		$depth = (int)$this->depth; // Confirms still int.
+		if ($depth <= 0) {
 			return $menu;
 		}
 
 		foreach ($menu as &$currentItem) {
-			if ($current == $this->depth) {
+			if ($current == $depth) {
 				$currentItem->children = false;
 				continue;
 			}
