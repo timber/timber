@@ -420,6 +420,24 @@ class Helper {
 		}
 		return $return;
 	}
+	
+	/**
+	 * Filters a list of objects, based on a set of key => value arguments.
+	 * 
+	 * @param        $array
+	 * @param        $value
+	 * @param string $key
+	 *
+	 * @return mixed
+	 */
+	public static function filter_array( $array, $value, $key = 'slug' ) {
+		$result = wp_list_filter( $array, array( $key => $value ) );
+		if ( is_array( $result ) ) {
+			$first_element = reset( $result );
+			return $first_element;
+		}
+		return $array;
+	}
 
 	/* Links, Forms, Etc. Utilities
 	======================== */
