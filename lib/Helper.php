@@ -430,8 +430,8 @@ class Helper {
 	 *
 	 * @return mixed
 	 */
-	public static function filter_array( $array, $value, $key = 'slug' ) {
-		$result = wp_list_filter( $array, array( $key => $value ) );
+	public static function filter_array( $array, $value, $key = 'slug', $operator = 'AND' ) {
+		$result = wp_list_filter( $array, array( $key => $value ), $operator );
 		if ( is_array( $result ) ) {
 			$first_element = reset( $result );
 			return $first_element;
