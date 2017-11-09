@@ -20,10 +20,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( '/home/', $item->path() );
 	}
 
-<<<<<<< HEAD
-=======
-	
->>>>>>> 911a9aa41d6fd06942f4f5afff002d6ef184f64f
+
 	function testTrailingSlashesOrNot() {
 		self::setPermalinkStructure();
 		$items = array();
