@@ -71,7 +71,7 @@ class Menu extends Core {
 		$menu_id = false;
 		$locations = get_nav_menu_locations();
 
-		$this->set_options($options);
+		$this->set_options((array)$options);
 
 		if ( $slug != 0 && is_numeric($slug) ) {
 			$menu_id = $slug;
@@ -116,12 +116,6 @@ class Menu extends Core {
 	 * @param mixed $options
 	 */
 	protected function set_options ($options) {
-		if (!is_array($options)) {
-			$this->depth = -1;
-			$this->raw_options = [];
-			return;
-		}
-
 		// Set any important options
 		$this->depth = (isset($options['depth']) ? (int)$options['depth'] : -1);
 		$this->raw_options = $options; // for future enhancements?
