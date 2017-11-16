@@ -81,6 +81,8 @@ class Site extends Core implements CoreInterface {
 	 */
 	public $title;
 	public $url;
+	public $home_url;
+	public $site_url;
 
 	/**
 	 * @api
