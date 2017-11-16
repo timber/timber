@@ -167,6 +167,8 @@ class Site extends Core implements CoreInterface {
 	 */
 	protected function init() {
 		$this->url = home_url();
+		$this->home_url = $this->url;
+		$this->site_url = site_url();
 		$this->rdf = get_bloginfo('rdf_url');
 		$this->rss = get_bloginfo('rss_url');
 		$this->rss2 = get_bloginfo('rss2_url');
