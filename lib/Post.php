@@ -69,6 +69,11 @@ class Post extends Core implements CoreInterface {
 	public $object_type = 'post';
 
 	/**
+	 * @var array $custom stores custom meta data
+	 */
+	public $custom = array();
+
+	/**
 	 * @var string $representation what does this class represent in WordPress terms?
 	 */
 	public static $representation = 'post';
@@ -1016,7 +1021,7 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * Published on {{ post.date }} // Uses WP's formatting set in Admin
 	 * OR
-	 * Published on {{ post.date | date('F jS') }} // Jan 12th
+	 * Published on {{ post.date('F jS') }} // Jan 12th
 	 * ```
 	 *
 	 * ```html
@@ -1319,13 +1324,13 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * get the featured image as a TimberImage
+	 * get the featured image as a Timber/Image
 	 * @api
 	 * @example
 	 * ```twig
-	 * <img src="{{post.thumbnail.src}}" />
+	 * <img src="{{ post.thumbnail.src }}" />
 	 * ```
-	 * @return TimberImage|null of your thumbnail
+	 * @return Timber/Image|null of your thumbnail
 	 */
 	public function thumbnail() {
 		$tid = get_post_thumbnail_id($this->ID);
@@ -1347,6 +1352,71 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function title() {
 		return apply_filters('the_title', $this->post_title, $this->ID);
+	}
+
+	/**
+	 * Returns the gallery
+	 * @api
+	 * @example
+	 * ```twig
+	 * {{ post.gallery }}
+	 * ```
+	 * @return html
+	 */
+	public function gallery( $html = true ) {
+		if ( isset($this->custom['gallery']) ) {
+			return $this->custom['gallery'];
+		}
+		$galleries = get_post_galleries($this->ID, $html);
+		$gallery = reset($galleries);
+
+		return apply_filters('get_post_gallery', $gallery, $this->ID, $galleries);
+	}
+
+	/**
+	 * Returns the audio
+	 * @api
+	 * @example
+	 * ```twig
+	 * {{ post.audio }}
+	 * ```
+	 * @return html
+	 */
+	public function audio() {
+		if ( isset($this->custom['audio']) ) {
+			return $this->custom['audio'];
+		}
+		$audio = false;
+
+		// Only get audio from the content if a playlist isn't present.
+		if ( false === strpos($this->get_content(), 'wp-playlist-script') ) {
+			$audio = get_media_embedded_in_content($this->get_content(), array('audio'));
+		}
+
+		return $audio;
+	}
+
+	/**
+	 * Returns the video
+	 * @api
+	 * @example
+	 * ```twig
+	 * {{ post.video }}
+	 * ```
+	 * @return html
+	 */
+	public function video() {
+		if ( isset($this->custom['video']) ) {
+			return $this->custom['video'];
+		}
+		$video = false;
+
+		// Only get video from the content if a playlist isn't present.
+		if ( false === strpos($this->get_content(), 'wp-playlist-script') ) {
+			$video = get_media_embedded_in_content($this->get_content(), array('video', 'object', 'embed', 'iframe'));
+		}
+
+		return $video;
 	}
 
 

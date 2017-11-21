@@ -2,6 +2,47 @@
 
 	class TestTimberTerm extends Timber_UnitTestCase {
 
+		function testConstructorWithClass() {
+			register_taxonomy('arts', array('post'));
+
+			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'post_tag'));
+			$term = new \Timber\Term($term_id);
+
+			$template = '{% set zp_term = Term("'.$term_id.'", "Arts") %}{{ zp_term.name }} {{ zp_term.taxonomy }}';
+			$string = Timber::compile_string($template);
+			$this->assertEquals('Zong post_tag', $string);
+
+			$template = '{% set zp_term = TimberTerm('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
+			$string = Timber::compile_string($template);
+			$this->assertEquals('Zebra', $string);
+		}
+
+		function testConstructorWithClassAndTaxonomy() {
+			register_taxonomy('arts', array('post'));
+
+			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
+			$term = new \Timber\Term($term_id);
+
+			$template = '{% set zp_term = Term("'.$term_id.'", "arts", "Arts") %}{{ zp_term.name }} {{ zp_term.taxonomy }}';
+			$string = Timber::compile_string($template);
+			$this->assertEquals('Zong arts', $string);
+
+			$template = '{% set zp_term = TimberTerm('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
+			$string = Timber::compile_string($template);
+			$this->assertEquals('Zebra', $string);
+		}
+
+		function testConstructor() {
+			register_taxonomy('arts', array('post'));
+
+			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
+			$term = new TimberTerm($term_id, 'arts');
+			$this->assertEquals('Zong', $term->name());
+			$template = '{% set zp_term = TimberTerm("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
+			$string = Timber::compile_string($template);
+			$this->assertEquals('Zong', $string);
+		}
+
 		function testTerm() {
 			$term_id = $this->factory->term->create();
 			$term = new TimberTerm($term_id);
@@ -202,6 +243,14 @@
 			$links[] = 'http://example.org/wp-admin/edit-tags.php?action=edit&taxonomy=category&tag_ID='.$tid;
 			$links[] = 'http://example.org/wp-admin/term.php?taxonomy=category&term_id='.$tid.'&post_type=post';
 			$this->assertContains($term->edit_link(), $links);
+		}
+
+	}
+
+	class Arts extends Timber\Term {
+
+		function foobar() {
+			return 'Zebra';
 		}
 
 	}

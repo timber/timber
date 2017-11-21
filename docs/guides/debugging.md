@@ -40,6 +40,20 @@ This will give you something like:
 
 ![](http://i.imgur.com/5ZD8VDd.png)
 
+## Formatted output
+
+For a highlighted output like you see it above, you need to have [xDebug](https://xdebug.org/) enabled in your local development environment. With some environments like MAMP, enabling it is as easy as ticking a checkbox and restarting the server. Other times, it might be more complex.
+
+An easier solution is to use the [Timber Dump Extension](https://github.com/nlemoine/timber-dump-extension), which will make use of the Symfony VarDumper component to generate output like this when using `{{ dump() }}` in Twig:
+
+![](https://user-images.githubusercontent.com/2084481/31230351-116569a8-a9e4-11e7-8310-48b7f679892b.png)
+
+It also works in PHP. Instead of using `var_dump` or `print_r`, you will use `dump()` as well:
+
+```php
+dump( $post );
+```
+
 ## Using Timber Debug Bar plugin
 
 There’s a [Timber add-on](http://wordpress.org/plugins/debug-bar-timber/) for the [WordPress debug bar](https://wordpress.org/plugins/debug-bar/).  
