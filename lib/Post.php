@@ -702,6 +702,15 @@ class Post extends Core implements CoreInterface {
 		return (!$this->get_field($field_name)) ? false : true;
 	}
 
+	/**
+	 * @param string $field_name
+	 * @return mixed
+	 */
+	public function get_field_object( $field_name ) {
+		$value = apply_filters('timber_post_get_meta_object_field', null, $this->ID, $field_name, $this);
+		$value = $this->convert($value, __CLASS__);
+		return $value;
+	}
 
 	/**
 	 * @param string $field_name

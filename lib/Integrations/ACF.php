@@ -7,6 +7,7 @@ class ACF {
 	public function __construct() {
 		add_filter('timber_post_get_meta', array($this, 'post_get_meta'), 10, 2);
 		add_filter('timber_post_get_meta_field', array($this, 'post_get_meta_field'), 10, 3);
+		add_filter('timber_post_get_meta_object_field', array($this, 'post_get_meta_object'), 10, 3);
 		add_filter('timber/term/meta', array($this, 'term_get_meta'), 10, 3);
 		add_filter('timber/term/meta/field', array($this, 'term_get_meta_field'), 10, 4);
 		add_filter('timber_user_get_meta_field_pre', array($this, 'user_get_meta_field'), 10, 3);
@@ -19,6 +20,10 @@ class ACF {
 
 	public function post_get_meta_field( $value, $post_id, $field_name ) {
 		return get_field($field_name, $post_id);
+	}
+
+	public function post_get_meta_object( $value, $post_id, $field_name ) {
+		return get_field_object( $field_name, $post_id );
 	}
 
 	public function term_get_meta_field( $value, $term_id, $field_name, $term ) {
