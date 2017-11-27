@@ -32,8 +32,14 @@ class TestTimberSite extends Timber_UnitTestCase {
 	}
 
 	function testSiteURL() {
-		$site = new TimberSite();
+		$site = new \Timber\Site();
 		$this->assertEquals( 'http://example.org', $site->link() );
+		$this->assertEquals(site_url(), $site->site_url);
+	}
+
+	function testHomeUrl() {
+		$site = new \Timber\Site();
+		$this->assertEquals($site->url, $site->home_url);
 	}
 
 	function testSiteIcon() {
