@@ -703,11 +703,15 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @param string $field_name
+	 * Gets the field object data from Advanced Custom Fields.
+	 * This includes metadata on the field like whether it's conditional or not.
+	 *
+	 * @since 1.6.0
+	 * @param string $field_name of the field you want to lookup.
 	 * @return mixed
 	 */
-	public function get_field_object( $field_name ) {
-		$value = apply_filters('timber_post_get_meta_object_field', null, $this->ID, $field_name, $this);
+	public function field_object( $field_name ) {
+		$value = apply_filters('timber/post/meta_object_field', null, $this->ID, $field_name, $this);
 		$value = $this->convert($value, __CLASS__);
 		return $value;
 	}

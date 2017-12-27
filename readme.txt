@@ -37,6 +37,7 @@ _Twig is the template language powering Timber; if you need a little background 
 - Please add any usage changes here so theme developers are informed of changes.
 - You can now easily access all of a MenuItem's master object properties through `{{ item.master_object }}` What's a master object? It's when a Menu Item has been created directly from a Post or Term in the WP Admin #1577 #1572
 - Enabled methods for getting media from posts, you can now do `{{ post.video }}`, `{{ post.audio }}` and `{{ post.gallery }}` to retrieve media include in the body of a post #1583 (thanks @marciojc)
+- You can now get ACF's field object data: `{{ post.field_object('my_field').key }}` #1597 #1599 (thanks @palmiak)
 
 = 1.5.2 =
 
