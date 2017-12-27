@@ -11,6 +11,7 @@ use Timber\Image;
 
 /**
  * This is used in Timber to represent users retrived from WordPress. You can call `$my_user = new Timber\User(123);` directly, or access it through the `{{ post.author }}` method.
+ *
  * @example
  * ```php
  * $context['current_user'] = new Timber\User();
@@ -28,7 +29,7 @@ use Timber\Image;
  */
 class User extends Core implements CoreInterface {
 
-	public $object_type = 'user';
+	public $object_type           = 'user';
 	public static $representation = 'user';
 
 	public $_link;
@@ -105,8 +106,8 @@ class User extends Core implements CoreInterface {
 
 	/**
 	 * @internal
-	 * @param string 	$field
-	 * @param mixed 	$value
+	 * @param string $field
+	 * @param mixed  $value
 	 */
 	public function __set( $field, $value ) {
 		if ( $field == 'name' ) {
@@ -120,7 +121,7 @@ class User extends Core implements CoreInterface {
 	 * @param object|int|bool $uid The user ID to use
 	 */
 	protected function init( $uid = false ) {
-		if ( $uid === false ) {
+		if ( false === $uid ) {
 			$uid = get_current_user_id();
 		}
 		if ( is_object($uid) || is_array($uid) ) {
@@ -132,7 +133,7 @@ class User extends Core implements CoreInterface {
 		}
 		if ( is_numeric($uid) ) {
 			$data = get_userdata($uid);
-		} else if ( is_string($uid) ) {
+		} elseif ( is_string($uid) ) {
 			$data = get_user_by('login', $uid);
 		}
 		if ( isset($data) && is_object($data) ) {
@@ -143,15 +144,16 @@ class User extends Core implements CoreInterface {
 			}
 		}
 		unset($this->user_pass);
-		$this->id = $this->ID;
-		$this->name = $this->name();
+		$this->id     = $this->ID;
+		$this->name   = $this->name();
 		$this->avatar = new Image(get_avatar_url($this->id));
-		$custom = $this->get_custom();
+		$custom       = $this->get_custom();
 		$this->import($custom);
 	}
 
 	/**
-	 * @param string $field_name
+	 * @param string $field_name that you want to retrieve.
+	 *
 	 * @return mixed
 	 */
 	public function get_meta_field( $field_name ) {
@@ -179,7 +181,7 @@ class User extends Core implements CoreInterface {
 				if ( is_array($value) && count($value) == 1 ) {
 					$value = $value[0];
 				}
-				$custom[$key] = maybe_unserialize($value);
+				$custom[ $key ] = maybe_unserialize($value);
 			}
 			$custom = apply_filters('timber_user_get_meta', $custom, $this->ID, $this);
 			return $custom;
@@ -192,7 +194,7 @@ class User extends Core implements CoreInterface {
 	 * @return string http://example.org/author/lincoln
 	 */
 	public function link() {
-		if ( !$this->_link ) {
+		if ( ! $this->_link ) {
 			$this->_link = user_trailingslashit(get_author_posts_url($this->ID));
 		}
 		return $this->_link;
