@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress-Timber">
+    <description>A custom set of rules to check coding standards for Timber.</description>
+
+    <!--
+        Default settings for command line usage
+    -->
+
+    <!-- Exclude folders and files from being checked. -->
+    <exclude-pattern>*/tests/*</exclude-pattern>
+    <exclude-pattern>*.twig</exclude-pattern>
+
+    <!-- If no files or directories are specified on the command line, check all relevant files. -->
+    <file>./lib</file>
+
+    <!-- Use colors in output. -->
+    <arg name="colors"/>
+
+    <!-- Show sniff names and progress. -->
+    <arg value="sp"/>
+
+    <!--
+        WordPress-Extra
+        Best practices beyond core WordPress Coding Standards.
+
+        The WordPress-Core standard doesn’t have to be included here,
+        because WordPress-Extra already includes it.
+    -->
+    <rule ref="WordPress-Extra">
+        <!-- Do not check for proper WordPress file names. -->
+        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+    </rule>
+
+    <!--
+        WordPress-Docs
+        WordPress Coding Standards for Inline Documentation and Comments.
+    -->
+    <rule ref="WordPress-Docs" />
+
+    <!--
+        File Names
+
+        The WordPress Coding Standards state that all class files should start with 'class-'. Timber
+        follows the PSR-0 standard for naming class files, because it uses autoloading via Composer.
+
+        @link https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties#disregard-class-file-name-rules
+    -->
+    <rule ref="WordPress.Files.FileName">
+        <properties>
+            <property name="strict_class_file_names" value="false" />
+        </properties>
+    </rule>
+
+    <!--
+        Hook Names
+
+        While the WordPress Coding Standards state that hook names should be separated by
+        underscores, an optionated approach used by plugins like Advanced Custom Fields is to use
+        '/' to namespace hooks.
+
+        @link https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties#custom-word-delimiters-in-hook-names
+    -->
+    <rule ref="WordPress.NamingConventions.ValidHookName">
+        <properties>
+            <property name="additionalWordDelimiters" value="/"/>
+        </properties>
+    </rule>
+
+    <rule ref="PEAR.Functions.FunctionCallSignature">
+        <properties>
+            <property name="requiredSpacesAfterOpen" value="0" />
+            <property name="requiredSpacesBeforeClose" value="0"/>
+        </properties>
+    </rule>
+
+</ruleset>
