@@ -98,7 +98,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'Perhaps there’s more to Newman than meets the eye.', 'comment_date' => '2015-08-21 03:25:07'));
 		$child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'No, there’s less.', 'comment_parent' => $comment_id, 'comment_date' => '2015-08-21 03:26:07'));
 		$post = new TimberPost($post_id);
-		$comments = $post->get_comments();
+		$comments = $post->comments();
 		$this->assertEquals(2, count($comments));
 		$this->assertEquals(1, count($comments[1]->children()));
 		$twig_string = '{{comment.author.name}}';
@@ -127,7 +127,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 	function testCommentDepth() {
 		$post_id = $this->_makeCommentPost();
 		$post = new \Timber\Post($post_id);
-		$comments = $post->get_comments();
+		$comments = $post->comments();
 		$children = $comments[1]->children();
 		$grand_children = $children[0]->children();
 		$this->assertEquals(3, count($comments));
@@ -140,7 +140,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'Perhaps there’s more to Newman than meets the eye.', 'comment_date' => '2016-11-28 05:58:18'));
 		$twig_string = '{{comment.author.name}}';
-		$comments = $post->get_comments();
+		$comments = $post->comments();
 		$result = Timber::compile_string($twig_string, array('comment' => $comments[0]));
 		$this->assertEquals('Kramer', $result);
 	}

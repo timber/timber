@@ -56,7 +56,7 @@
 			$date = date('F j, Y @ g:i a');
 			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
-			$twig = "I was modified {{post.modified_date('F j, Y @ g:i a')}}";
+			$twig = "I was modified {{ post.modified_date('F j, Y @ g:i a') }}";
 			$str = Timber::compile_string($twig, array('post' => $post));
 			$this->assertEquals('I was modified '.$date, $str);
 		}

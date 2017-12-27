@@ -39,6 +39,13 @@ class CommentThread extends \ArrayObject {
 		return $this;
 	}
 
+	/**
+	 * @return int the number of comments on a post
+	 */
+	public function mecount() {
+		return get_comments_number($this->post_id);
+	}
+
 	protected function merge_args( $args ) {
 		$base = array('status' => 'approve');
 		$overrides = array('order' => $this->_order);

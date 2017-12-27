@@ -7,7 +7,7 @@
 			$comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
 			$post = new TimberPost($post_id);
 			$this->assertEquals( 5, count($post->comments()) );
-			$this->assertEquals( 5, $post->get_comment_count() );
+			$this->assertEquals( 5, $post->comment_count() );
 		}
 
 		function testCommentCount() {
@@ -15,7 +15,7 @@
 			$comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
 			$post = new TimberPost($post_id);
 			$this->assertEquals( 2, count($post->comments(2)) );
-			$this->assertEquals( 5, $post->get_comment_count() );
+			$this->assertEquals( 5, count($post->comments()) );
 		}
 
 		function testCommentCountZero() {
@@ -41,7 +41,7 @@
 			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
 			$comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
 			$post = new TimberPost($post_id);
-			$comments = $post->get_comments(null, 'wp', 'comment', 'approve', 'CustomComment');
+			$comments = $post->comments(null, 'wp', 'comment', 'approve', 'CustomComment');
 			$this->assertEquals('CustomComment', get_class($comments[0]));
 		}
 
@@ -66,7 +66,7 @@
 			$grandchild_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $child_id));
 			$grandchild_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $child_id));
 			$post = new TimberPost($post_id);
-			$comments = $post->get_comments();
+			$comments = $post->comments();
 			$this->assertEquals(1, count($comments));
 			$children = $comments[0]->children();
 			$this->assertEquals(1, count($children));
@@ -82,7 +82,7 @@
 			$child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $parent_id, 'comment_date' => '2016-11-28 15:00:00', 'comment_content' => 'I am the child'));
 			$grandchild_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $child_id, 'comment_date' => '2016-11-28 16:00:00', 'comment_content' => 'I am the GRANDchild'));
 			$post = new TimberPost($post_id);
-			$comments = $post->get_comments();
+			$comments = $post->comments();
 			$children = $comments[1]->children();
 			$this->assertEquals($parent_id, $children[0]->comment_parent);
 			$grand_children = $children[0]->children();

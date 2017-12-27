@@ -10,7 +10,7 @@
 			$dummy_tag = wp_insert_term('whatever', 'post_tag');
 			wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);
 
-			$terms = $post->get_terms('post_tag', 'MyTimberTerm');
+			$terms = $post->terms('post_tag', 'MyTimberTerm');
 			$this->assertEquals( 'MyTimberTerm', get_class($terms[0]) );
 
 			$post = new TimberPost($pid);
@@ -23,7 +23,7 @@
 			self::enable_error_log(false);
 			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
-			$terms = $post->get_terms('foobar');
+			$terms = $post->terms('foobar');
 			$this->assertEquals(array(), $terms);
 			self::enable_error_log(true);
 		}

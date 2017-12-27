@@ -11,7 +11,6 @@
 			wp_update_post($post);
 			$password_form = get_the_password_form($post->ID);
 			$this->assertEquals(wpautop($quote), $post->content());
-			$this->assertEquals(wpautop($quote), $post->get_content());
 		}
 
 		function testPasswordedContentWhenEnabled(){
@@ -26,7 +25,6 @@
 			wp_update_post($post);
 			$password_form = get_the_password_form($post->ID);
 			$this->assertEquals($password_form, $post->content());
-			$this->assertEquals($password_form, $post->get_content());
 		}
 
 		function testPasswordedContentWhenEnabledWithCustomForm(){
@@ -44,7 +42,6 @@
 			wp_update_post($post);
 			$password_form = '<form>Enter password to see Secrets!</form>';
 			$this->assertEquals($password_form, $post->content());
-			$this->assertEquals($password_form, $post->get_content());
 		}
 
 	}
