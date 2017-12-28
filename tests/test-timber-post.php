@@ -32,7 +32,8 @@
 			$iid = wp_insert_attachment( $attachment, $filename, $post_id );
 			update_post_meta($post_id, 'landmark', $iid);
 			$post = new TimberPost($post_id);
-			$image = $post->get_image('landmark');
+			$image = $post->get_field('landmark');
+			$image = new Timber\Image($image);
 			$this->assertEquals('The Arch', $image->title());
 		}
 
@@ -231,11 +232,14 @@
 			$this->assertEquals($post->ID, $post_id);
 		}
 
+		/**
+		 * @deprecated since 2.0
+		 */
 		function testPostByName(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost($post_id);
-			$pid_from_name = TimberPost::get_post_id_by_name($post->post_name);
-			$this->assertEquals($pid_from_name, $post_id);
+			$post2 = new TimberPost($post->post_name);
+			$this->assertEquals($post2->id, $post_id);
 		}
 
 		function testUpdate(){
@@ -264,7 +268,6 @@
 			$post->post_title = $title;
 			wp_update_post($post);
 			$this->assertEquals($title, trim(strip_tags($post->title())));
-			$this->assertEquals($title, trim(strip_tags($post->get_title())));
 		}
 
 		function testPreviewContent(){
@@ -343,7 +346,6 @@
 			$post->post_content = $quote;
 			wp_update_post($post);
 			$this->assertEquals($quote, trim(strip_tags($post->content())));
-			$this->assertEquals($quote, trim(strip_tags($post->get_content())));
 		}
 
 		function testContentPaged(){
@@ -358,8 +360,6 @@
 
             $this->assertEquals($page1, trim(strip_tags($post->content(1))));
             $this->assertEquals($page2, trim(strip_tags($post->content(2))));
-            $this->assertEquals($page1, trim(strip_tags($post->get_content(0,1))));
-            $this->assertEquals($page2, trim(strip_tags($post->get_content(0,2))));
 		}
 
         function testPagedContent(){
@@ -383,7 +383,7 @@
             setup_postdata( get_post( $post_id ) );
             $post = Timber::get_post();
 
-			$this->assertEquals($page2, trim(strip_tags( $post->get_paged_content() )));
+			$this->assertEquals($page2, trim(strip_tags( $post->paged_content() )));
 		}
 
 		function testMetaCustomArrayFilter(){
@@ -720,7 +720,7 @@
 			$this->assertEquals($class_name, get_class($terms[0]));
 
 			// test return class for deprecated $post->get_terms
-			$get_terms = $post->get_terms('post_tag', true, $class_name);
+			$get_terms = $post->terms('post_tag', true, $class_name);
 			$this->assertEquals($class_name, get_class($get_terms[0]));
 		}
 
@@ -728,14 +728,14 @@
 			$crawl = "The evil leaders of Planet Spaceball having foolishly spuandered their precious atmosphere, have devised a secret plan to take every breath of air away from their peace-loving neighbor, Planet Druidia. Today is Princess Vespa's wedding day. Unbeknownest to the princess, but knowest to us, danger lurks in the stars above...";
 			$pid = $this->factory->post->create(array('post_content' => $crawl));
 			$post = new TimberPost($pid);
-			$content = trim(strip_tags($post->get_content(6)));
+			$content = trim(strip_tags($post->content(0, 6)));
 			$this->assertEquals("The evil leaders of Planet Spaceball&hellip;", $content);
 		}
 
 		function testPostTypeObject() {
 			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
-			$pto = $post->get_post_type();
+			$pto = $post->type();
 			$this->assertEquals('Posts', $pto->label);
 		}
 
@@ -842,7 +842,7 @@
 			$user->add_role('administrator');
 			$data = get_userdata($uid);
 			$this->assertTrue($post->can_edit());
-			$this->assertEquals('http://example.org/wp-admin/post.php?post='.$pid.'&amp;action=edit', $post->get_edit_url());
+			$this->assertEquals('http://example.org/wp-admin/post.php?post='.$pid.'&amp;action=edit', $post->edit_link());
 			//
 		}
 
