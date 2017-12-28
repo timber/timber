@@ -250,7 +250,7 @@ class Image extends Post implements CoreInterface {
 		} else if ( $iid instanceof \WP_Post ) {
 			$ref = new \ReflectionClass($this);
 			$post = $ref->getParentClass()->newInstance($iid->ID);
-			if ( isset($post->_thumbnail_id) && $post->_thumbnail_id ) {
+			if ( $post->_thumbnail_id ) {
 				return $this->init((int) $post->_thumbnail_id);
 			}
 			return $this->init($iid->ID);
@@ -441,7 +441,7 @@ class Image extends Post implements CoreInterface {
 			return $this->_maybe_secure_url($this->abs_url);
 		}
 
-		if (!$this->is_image()) {
+		if ( ! $this->is_image() ) {
 			return wp_get_attachment_url($this->ID);
 		}
 

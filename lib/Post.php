@@ -460,7 +460,7 @@ class Post extends Core implements CoreInterface {
 		$post->slug = $post->post_name;
 		$customs = $this->get_post_custom($post->ID);
 		$post->custom = $customs;
-		$post = (object) array_merge((array) $customs, (array) $post);
+		//$post = (object) array_merge((array) $customs, (array) $post);
 		return $post;
 	}
 
