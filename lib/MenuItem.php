@@ -148,6 +148,7 @@ class MenuItem extends Core implements CoreInterface {
 
 	/**
 	 * Allows dev to access the "master object" (ex: post or page) the menu item represents
+	 *
 	 * @api
 	 * @example
 	 * ```twig
@@ -160,38 +161,13 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return mixed Whatever object (Timber\Post, Timber\Term, etc.) the menu item represents.
 	 */
 	public function master_object() {
-		if ( isset($this->_menu_item_object_id) ) {
-			return new $this->PostClass($this->_menu_item_object_id);
+		if ( isset($this->custom['_menu_item_object_id']) &&
+				$this->custom['_menu_item_object_id'] ) {
+			return new $this->PostClass($this->custom['_menu_item_object_id']);
 		}
-		if ( isset($this->menu_object) ) {
+		if ( $this->menu_object ) {
 			return new $this->PostClass($this->menu_object);
 		}
-	}
-
-	/**
-	 * Get link.
-	 *
-	 * @internal
-	 * @see \Timber\MenuItem::link()
-	 * @deprecated since 1.0
-	 * @codeCoverageIgnore
-	 * @return string An absolute URL, e.g. `http://example.org/my-page`.
-	 */
-	public function get_link() {
-		return $this->link();
-	}
-
-	/**
-	 * Get path.
-	 *
-	 * @internal
-	 * @codeCoverageIgnore
-	 * @see        \Timber\MenuItem::path()
-	 * @deprecated since 1.0
-	 * @return string A relative URL, e.g. `/my-page`.
-	 */
-	public function get_path() {
-		return $this->path();
 	}
 
 	/**
@@ -200,18 +176,20 @@ class MenuItem extends Core implements CoreInterface {
 	 * @param \Timber\MenuItem $item The menu item to add.
 	 */
 	public function add_child( $item ) {
-		if ( !$this->has_child_class ) {
+		if ( ! $this->has_child_class ) {
 			$this->add_class('menu-item-has-children');
 			$this->has_child_class = true;
 		}
 		$this->children[] = $item;
-		$item->level = $this->level + 1;
+		$item->level      = $this->level + 1;
 		if ( count($this->children) ) {
 			$this->update_child_levels();
 		}
 	}
 
 	/**
+	 * Update the level data associated with $this.
+	 *
 	 * @internal
 	 * @return bool|null
 	 */
@@ -230,7 +208,7 @@ class MenuItem extends Core implements CoreInterface {
 	 *
 	 * @internal
 	 *
-	 * @param array|object $data
+	 * @param array|object $data to import.
 	 */
 	public function import_classes( $data ) {
 		if ( is_array($data) ) {
@@ -239,7 +217,7 @@ class MenuItem extends Core implements CoreInterface {
 		$this->classes = array_merge($this->classes, $data->classes);
 		$this->classes = array_unique($this->classes);
 		$this->classes = apply_filters('nav_menu_css_class', $this->classes, $this, array(), 0);
-		$this->class = trim(implode(' ', $this->classes));
+		$this->class   = trim(implode(' ', $this->classes));
 	}
 
 	/**
@@ -280,7 +258,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return bool Whether the link is external or not.
 	 */
 	public function is_external() {
-		if ( $this->type() != 'custom' ) {
+		if ( $this->type() !== 'custom' ) {
 			return false;
 		}
 		return URLHelper::is_external($this->url);
@@ -370,28 +348,14 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string A full URL, like `http://mysite.com/thing/`.
 	 */
 	public function link() {
-		if ( !isset($this->url) || !$this->url ) {
-			if ( isset($this->_menu_item_type) && $this->_menu_item_type == 'custom' ) {
+		if ( ! isset($this->url) || !$this->url ) {
+			if ( isset($this->_menu_item_type) && $this->_menu_item_type === 'custom' ) {
 				$this->url = $this->_menu_item_url;
-			} else if ( isset($this->menu_object) && method_exists($this->menu_object, 'get_link') ) {
+			} elseif ( isset($this->menu_object) && method_exists($this->menu_object, 'get_link') ) {
 					$this->url = $this->menu_object->link();
-				}
+			}
 		}
 		return $this->url;
-	}
-
-	/**
-	 * Get the link the menu item points at.
-	 *
-	 * @internal
-	 * @deprecated since 0.21.7 Use link method instead.
-	 * @see \Timber\MenuItem::link()
-	 * @codeCoverageIgnore
-	 * @return string A full URL, like `http://mysite.com/thing/`.
-	 */
-	public function permalink() {
-		Helper::warn('{{ item.permalink }} is deprecated, use {{ item.link }} instead');
-		return $this->link();
 	}
 
 	/**
