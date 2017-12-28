@@ -71,6 +71,18 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		$this->assertEquals( 'blue', Timber::compile_string( $str, array( 'term' => $term ) ) );
 	}
 
+	
+	function testACFFieldObject() {
+		$fp_id = $this->factory->post->create(array('post_content' => 'a:10:{s:4:"type";s:4:"text";s:12:"instructions";s:0:"";s:8:"required";i:0;s:17:"conditional_logic";i:0;s:7:"wrapper";a:3:{s:5:"width";s:2:"50";s:5:"class";s:8:"thingerz";s:2:"id";s:0:"";}s:13:"default_value";s:0:"";s:11:"placeholder";s:0:"";s:7:"prepend";s:0:"";s:6:"append";s:0:"";s:9:"maxlength";s:0:"";}', 'post_title' => 'Thinger', 'post_name' => 'field_5a43eae2cde80'));	
+		$pid      = $this->factory->post->create();
+		update_field( 'thinger', 'foo', $pid );
+		update_field( '_thinger', 'field_5a43eae2cde80', $pid );
+		$post     = new TimberPost($pid);
+		$template = '{{ post.meta("thinger") }} / {{ post.field_object("thinger").key }}';
+		$str      = Timber::compile_string($template, array( 'post' => $post ));
+		$this->assertEquals('foo / field_thinger', $str);
+	}
+
 	function testACFInit() {
 		$acf = new ACF();
 		$this->assertInstanceOf( 'Timber\Integrations\ACF', $acf );
@@ -137,5 +149,6 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
     	$success = Command::clear_cache('bunk');
     	$this->assertNull($success);
 	}
+
 
 }
