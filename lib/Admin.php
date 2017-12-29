@@ -75,10 +75,17 @@ class Admin {
 		return $m;
 	}
 
+	/**
+	 * Figure out how signficant the upgrade is
+	 *
+	 * @param string $current_version a version string ("1.3.6") that the user is currently on.
+	 * @param string $new_version a version string ("2.0") of what the user is potentially upgrading to.
+	 * @return string a version jump identifier compared against the current one (milestone, major or minor)
+	 */
 	public static function get_upgrade_magnitude( $current_version, $new_version ) {
-		$current_version_array = explode('.', (string)$current_version);
-		$new_version_array = explode('.', (string)$new_version);
-		if ( $new_version_array[0] > $current_version_array[0]) {
+		$current_version_array = explode('.', (string) $current_version);
+		$new_version_array     = explode('.', (string) $new_version);
+		if ( $new_version_array[0] > $current_version_array[0] ) {
 			return 'milestone';
 		} elseif ( $new_version_array[1] > $current_version_array[1] ) {
 			return 'major';
@@ -89,16 +96,16 @@ class Admin {
 	}
 
 	/**
-	 *  Displays an update message for plugin list screens.
-	 *  Shows only the version updates from the current until the newest version
+	 * Displays an update message for plugin list screens.
+	 * Shows only the version updates from the current until the newest version
 	 *
-	 *	@codeCoverageIgnore
+	 * @codeCoverageIgnore
 	 *
-	 *  @type	function
-	 *  @date	4/22/16
+	 * @type    function
+	 * @date    4/22/16
 	 *
-	 *  @param	{array}		$plugin_data
-	 *  @param	{object}	$r
+	 * @param   {array}	 $plugin_data
+	 * @param   {object} $r
 	 */
 	public static function in_plugin_update_message( $plugin_data, $r ) {
 		$current_version = $plugin_data['Version'];

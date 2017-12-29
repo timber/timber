@@ -44,11 +44,12 @@ class Archives extends Core {
 	 * @api
 	 * @var array the items of the archives to iterate through and markup for your page
 	 */
-	public $items;
 
 	/**
+	 * Build an Archives menu
+	 *
 	 * @api
-	 * @param $args array of arguments {
+	 * @param array  $args of arguments {
 	 *     @type bool show_year => false
 	 *     @type string
 	 *     @type string type => 'monthly-nested'
@@ -58,23 +59,24 @@ class Archives extends Core {
 	 *     @type string post_type => 'post'
 	 *     @type bool show_year => false
 	 *     @type bool nested => false
-	 * }
-	 * @param string $base any additional paths that need to be prepended to the URLs that are generated, for example: "tags"
+	 * };
+	 * @param string $base any additional paths that need to be prepended to the URLs that are generated, for example: "tags".
 	 */
 	public function __construct( $args = null, $base = '' ) {
-
-
 		$this->init($args, $base);
 	}
 
 	/**
+	 * Initialize the Archives
+	 *
 	 * @internal
 	 * @param array|string $args
-	 * @param string $base
+	 * @param string       $base
 	 */
 	public function init( $args = null, $base = '' ) {
 		$this->base = $base;
 		$this->items = $this->get_items($args);
+		$this->args = $args;
 	}
 
 	/**
@@ -179,11 +181,19 @@ class Archives extends Core {
 	}
 
 	/**
+	 * @deprecated since 2.0 use Archives::items instead
+	 * @return array|string
+	 */
+	public function get_items( $args = null ) {
+		return $this->items($args);
+	}
+
+	/**
 	 * @api
 	 * @param array|string $args
 	 * @return array|string
 	 */
-	public function get_items( $args = null ) {
+	public function items( $args = null ) {
 		global $wpdb;
 
 		$defaults = array(
@@ -195,6 +205,10 @@ class Archives extends Core {
 			'show_year' => false,
 			'nested' => false
 		);
+
+		if ( $args === null ) {
+			$args = $this->args;
+		}
 
 		$args = wp_parse_args($args, $defaults);
 		$post_type = $args['post_type'];

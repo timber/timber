@@ -70,15 +70,13 @@ class MenuItem extends Core implements CoreInterface {
 	 * @param array|object $data
 	 */
 	public function __construct( $data ) {
-		$data = (object) $data;
+		$data              = (object) $data;
 		$this->import($data);
 		$this->import_classes($data);
-		if ( isset($this->name) ) {
-			$this->_name = $this->name;
-		}
-		$this->name = $this->name();
-		$this->add_class('menu-item-'.$this->ID);
 		$this->menu_object = $data;
+		$this->_name       = $this->name;
+		$this->name        = $this->name();
+		$this->add_class('menu-item-'.$this->ID);
 	}
 
 	/**
@@ -88,7 +86,7 @@ class MenuItem extends Core implements CoreInterface {
 	 */
 	public function add_class( $class_name ) {
 		$this->classes[] = $class_name;
-		$this->class .= ' '.$class_name;
+		$this->class    .= ' ' . $class_name;
 	}
 
 	/**
@@ -98,13 +96,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string The label for the menu item.
 	 */
 	public function name() {
-		if ( $title = $this->title() ) {
-			return $title;
-		}
-		if ( isset($this->_name) ) {
-			return $this->_name;
-		}
-		return '';
+		return $this->title();
 	}
 
 	/**
