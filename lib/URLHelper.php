@@ -5,7 +5,7 @@ namespace Timber;
 class URLHelper {
 
 	/**
-	 *
+	 * Get the current URL of the page
 	 *
 	 * @return string
 	 */

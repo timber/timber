@@ -82,12 +82,12 @@ class ImageHelper {
 	 */
 	private static function find_wp_dimensions( $size ) {
 		global $_wp_additional_image_sizes;
-		if ( isset($_wp_additional_image_sizes[$size]) ) {
-			$w = $_wp_additional_image_sizes[$size]['width'];
-			$h = $_wp_additional_image_sizes[$size]['height'];
-		} else if ( in_array($size, array('thumbnail', 'medium', 'large')) ) {
-			$w = get_option($size.'_size_w');
-			$h = get_option($size.'_size_h');
+		if ( isset($_wp_additional_image_sizes[ $size ]) ) {
+			$w = $_wp_additional_image_sizes[ $size ]['width'];
+			$h = $_wp_additional_image_sizes[ $size ]['height'];
+		} elseif ( in_array($size, array('thumbnail', 'medium', 'large')) ) {
+			$w = get_option($size . '_size_w');
+			$h = get_option($size . '_size_h');
 		}
 		if ( isset($w) && isset($h) && ($w || $h) ) {
 			return array('w' => $w, 'h' => $h);
@@ -98,9 +98,9 @@ class ImageHelper {
 	/**
 	 * Generates a new image with increased size, for display on Retina screens.
 	 *
-	 * @param string  $src
+	 * @param string  $src of the file to read from.
 	 * @param float   $multiplier
-	 * @param boolean $force
+	 * @param boolean $force require process to run even if the file exists.
 	 *
 	 * @return string url to the new image
 	 */
@@ -110,29 +110,29 @@ class ImageHelper {
 	}
 
 	/**
-	 * checks to see if the given file is an aimated gif
-	 * @param  string  $file local filepath to a file, not a URL
-	 * @return boolean true if it's an animated gif, false if not
+	 * Checks to see if the given file is an aimated gif
+	 *
+	 * @param string $file local filepath to a file, not a URL.
+	 * @return boolean true if it's an animated gif, false if not.
 	 */
 	public static function is_animated_gif( $file ) {
 		if ( strpos(strtolower($file), '.gif') === false ) {
 			//doesn't have .gif, bail
 			return false;
 		}
-		//its a gif so test
-		if ( !($fh = @fopen($file, 'rb')) ) {
+		// Its a gif so test
+		if ( ! ($fh = @fopen($file, 'rb')) ) {
 		  	return false;
 		}
 		$count = 0;
-		//an animated gif contains multiple "frames", with each frame having a
-		//header made up of:
-		// * a static 4-byte sequence (\x00\x21\xF9\x04)
-		// * 4 variable bytes
-		// * a static 2-byte sequence (\x00\x2C)
-
-		// We read through the file til we reach the end of the file, or we've found
-		// at least 2 frame headers
-		while ( !feof($fh) && $count < 2 ) {
+		// An animated gif contains multiple "frames", with each frame having a
+		// header made up of:
+		// * a static 4-byte sequence (\x00\x21\xF9\x04).
+		// * 4 variable bytes.
+		// * a static 2-byte sequence (\x00\x2C).
+		// We read through the file til we reach the end of the file, or we've found.
+		// at least 2 frame headers.
+		while ( ! feof($fh) && $count < 2 ) {
 			$chunk = fread($fh, 1024 * 100); //read 100kb at a time
 			$count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00[\x2C\x21]#s', $chunk, $matches);
 		}
