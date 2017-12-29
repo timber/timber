@@ -194,8 +194,78 @@ class Term extends Core implements CoreInterface {
 		return 0;
 	}
 
+	/* Public methods
+	===================== */
 
+	/**
+	 * @internal
+	 * @return string
+	 */
+	public function get_edit_url() {
+		return get_edit_term_link($this->ID, $this->taxonomy);
+	}
 
+	/**
+	 * @internal
+	 * @param string $field_name
+	 * @return string
+	 */
+	public function get_meta_field( $field_name ) {
+		return $this->meta($field_name);
+	}
+
+	/**
+	 * @internal
+	 * @deprecated since 1.0
+	 * @return string
+	 */
+	public function get_path() {
+		return $this->path();
+	}
+
+	/**
+	 * @internal
+	 * @deprecated since 1.0
+	 * @return string
+	 */
+	public function get_link() {
+		return $this->link();
+	}
+
+	/**
+	 * Get Posts that have been "tagged" with the particular term
+	 * @internal
+	 * @param int $numberposts
+	 * @param string $post_type
+	 * @param string $PostClass
+	 * @return array|bool|null
+	 */
+	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
+		return $this->posts($numberposts, $post_type, $PostClass);
+	}
+
+	/**
+	 * @internal
+	 * @return array
+	 */
+	public function get_children() {
+		return $this->children();
+	}
+
+	/**
+	 *
+	 *
+	 * @param string  $key
+	 * @param mixed   $value
+	 */
+	public function update( $key, $value ) {
+		$value = apply_filters('timber_term_set_meta', $value, $key, $this->ID, $this);
+		$value = apply_filters('timber/term/meta/set', $value, $key, $this->ID, $this);
+		$this->$key = $value;
+	}
+
+	/* Alias
+	====================== */
 
 	/**
 	 * @api
@@ -255,7 +325,7 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 * Retrieves and outputs meta information stored with a term. This will use
-	 * both data stored under (old) ACF hacks and new (WP 4.6+) where term meta 
+	 * both data stored under (old) ACF hacks and new (WP 4.6+) where term meta
 	 * has its own table. If retrieving a special ACF field (repeater, etc.) you
 	 * can use the output immediately in Twig — no further processing is
 	 * required.
@@ -359,70 +429,12 @@ class Term extends Core implements CoreInterface {
 		return Timber::get_posts($args, $post_class);
 	}
 
+
 	/**
 	 * @api
 	 * @return string
 	 */
 	public function title() {
 		return $this->name;
-	}
-
-	/** DEPRECATED DOWN HERE
-	 * ======================
-	 **/
-	/**
-	 * Get Posts that have been "tagged" with the particular term
-	 *
-	 * @deprecated since 2.0
-	 * @internal
-	 * @param int $numberposts
-	 * @param string $post_type
-	 * @param string $PostClass
-	 * @return array|bool|null
-	 */
-	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
-		return $this->posts($numberposts, $post_type, $PostClass);
-	}
-
-	/**
-	 *
-	 * @deprecated since 2.0
-	 * @internal
-	 * @return array
-	 */
-	public function get_children() {
-		return $this->children();
-	}
-
-	/**
-	 * @deprecated since 2.0
-	 * @internal
-	 * @return string
-	 */
-	public function get_edit_url() {
-		return $this->edit_link();
-	}
-
-	/**
-	 * @deprecated since 2.0
-	 * @internal
-	 * @param string $field_name
-	 * @return string
-	 */
-	public function get_meta_field( $field_name ) {
-		return $this->meta($field_name);
-	}
-
-
-	/**
-	 *
-	 * @deprecated since 2.0
-	 * @param string  $key
-	 * @param mixed   $value
-	 */
-	public function update( $key, $value ) {
-		$value = apply_filters('timber_term_set_meta', $value, $key, $this->ID, $this);
-		$value = apply_filters('timber/term/meta/set', $value, $key, $this->ID, $this);
-		$this->$key = $value;
 	}
 }
