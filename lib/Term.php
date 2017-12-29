@@ -294,7 +294,7 @@ class Term extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function path() {
-		$link = $this->get_link();
+		$link = $this->link();
 		$rel = URLHelper::get_rel_url($link, true);
 		$rel = apply_filters('timber_term_path', $rel, $this);
 		return apply_filters('timber/term/path', $rel, $this);
