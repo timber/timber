@@ -8,6 +8,7 @@ use Timber\URLHelper;
 
 /**
  * Need to display info about your theme? Well you've come to the right place. By default info on the current theme comes for free with what's fetched by `Timber::get_context()` in which case you can access it your theme like so:
+ *
  * @example
  * ```php
  * <?php
@@ -16,7 +17,7 @@ use Timber\URLHelper;
  * ?>
  * ```
  * ```twig
- * <script src="{{theme.link}}/static/js/all.js"></script>
+ * <script src="{{ theme.link }}/static/js/all.js"></script>
  * ```
  * ```html
  * <script src="http://example.org/wp-content/themes/my-theme/static/js/all.js"></script>
@@ -26,24 +27,32 @@ use Timber\URLHelper;
 class Theme extends Core {
 
 	/**
+	 * The human-friendly name of the theme (ex: `My Timber Starter Theme`)
+	 *
 	 * @api
 	 * @var string the human-friendly name of the theme (ex: `My Timber Starter Theme`)
 	 */
 	public $name;
 
 	/**
+	 * The version of the theme (ex: `1.2.3`)
+	 *
 	 * @api
 	 * @var string the version of the theme (ex: `1.2.3`)
 	 */
 	public $version;
 
 	/**
+	 * TimberTheme object for the parent theme (if it exists), false otherwise
+	 *
 	 * @api
 	 * @var TimberTheme|bool the TimberTheme object for the parent theme (if it exists), false otherwise
 	 */
 	public $parent = false;
 
 	/**
+	 * Slug of the parent theme (ex: `_s`)
+	 *
 	 * @api
 	 * @var string the slug of the parent theme (ex: `_s`)
 	 */
@@ -84,8 +93,10 @@ class Theme extends Core {
 	}
 
 	/**
+	 * Initalizes the Theme object
+	 *
 	 * @internal
-	 * @param string $slug
+	 * @param string $slug of theme (eg 'twentysixteen').
 	 */
 	protected function init( $slug = null ) {
 		$this->theme = wp_get_theme($slug);
