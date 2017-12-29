@@ -170,6 +170,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
+	 *
 	 * @example
 	 * ```php
 	 * $post = new Timber\Post();
@@ -298,8 +299,8 @@ class Post extends Core implements CoreInterface {
 	 * @internal
 	 * @param integer $pid
 	 */
-	protected function init( $pid = false ) {
-		if ( $pid === false ) {
+	protected function init( $pid = null ) {
+		if ( $pid === null ) {
 			$pid = get_the_ID();
 		}
 		if ( is_numeric($pid) ) {
@@ -446,7 +447,7 @@ class Post extends Core implements CoreInterface {
 	 * @param  int $pid
 	 * @return null|object|WP_Post
 	 */
-	protected function get_info( $pid ) {
+	protected function get_info( $pid = null ) {
 		$post = $this->prepare_post_info($pid);
 		if ( !isset($post->post_status) ) {
 			return null;
@@ -459,7 +460,7 @@ class Post extends Core implements CoreInterface {
 		$post->slug = $post->post_name;
 		$customs = $this->get_post_custom($post->ID);
 		$post->custom = $customs;
-		$post = (object) array_merge((array) $customs, (array) $post);
+		//$post = (object) array_merge((array) $customs, (array) $post);
 		return $post;
 	}
 

@@ -240,7 +240,7 @@ class Image extends Post implements CoreInterface {
 				return;
 			}
 
-			$relative = false;
+			$relative  = false;
 			$iid_lower = strtolower($iid);
 			foreach ( $this->file_types as $type ) { if ( strstr($iid_lower, $type) ) { $relative = true; break; } };
 			if ( $relative ) {
@@ -250,7 +250,7 @@ class Image extends Post implements CoreInterface {
 		} else if ( $iid instanceof \WP_Post ) {
 			$ref = new \ReflectionClass($this);
 			$post = $ref->getParentClass()->newInstance($iid->ID);
-			if ( isset($post->_thumbnail_id) && $post->_thumbnail_id ) {
+			if ( $post->_thumbnail_id ) {
 				return $this->init((int) $post->_thumbnail_id);
 			}
 			return $this->init($iid->ID);
@@ -285,13 +285,6 @@ class Image extends Post implements CoreInterface {
 				$this->$key = $value[0];
 			}
 			$this->id = $this->ID;
-		} else {
-			if ( is_array($iid) || is_object($iid) ) {
-				Helper::error_log('Not able to init in TimberImage with iid=');
-				Helper::error_log($iid);
-			} else {
-				Helper::error_log('Not able to init in TimberImage with iid='.$iid);
-			}
 		}
 	}
 
@@ -441,7 +434,7 @@ class Image extends Post implements CoreInterface {
 			return $this->_maybe_secure_url($this->abs_url);
 		}
 
-		if (!$this->is_image()) {
+		if ( ! $this->is_image() ) {
 			return wp_get_attachment_url($this->ID);
 		}
 
@@ -478,34 +471,4 @@ class Image extends Post implements CoreInterface {
 		return $this->get_dimensions('width');
 	}
 
-	/**
-	 * @deprecated 0.21.9 use TimberImage::src
-	 * @internal
-	 * @param string $size
-	 * @return bool|string
-	 */
-	public function get_src( $size = '' ) {
-		Helper::warn('{{image.get_src}} is deprecated and will be removed in 1.1; use {{image.src}}');
-		return $this->src($size);
-	}
-
-
-	/**
-	 * @deprecated since 0.21.9 use src() instead
-	 * @return string
-	 */
-	public function url( $size = '' ) {
-		Helper::warn('{{image.url}} is deprecated and will be removed in 1.1; use {{image.src}}');
-		return $this->src($size);
-	}
-
-
-	/**
-	 * @deprecated since 0.21.9 use src() instead
-	 * @return string
-	 */
-	public function get_url( $size = '' ) {
-		Helper::warn('{{image.get_url}} is deprecated and will be removed in 1.1; use {{image.src}}');
-		return $this->src($size);
-	}
 }
