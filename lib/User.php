@@ -96,20 +96,11 @@ class User extends Core implements CoreInterface {
 
 	/**
 	 * @internal
-	 * @param string $field_name
-	 * @return null
-	 */
-	public function get_meta( $field_name ) {
-		return $this->get_meta_field($field_name);
-	}
-
-	/**
-	 * @internal
 	 * @param string 	$field
 	 * @param mixed 	$value
 	 */
 	public function __set( $field, $value ) {
-		if ( $field == 'name' ) {
+		if ( 'name' === $field ) {
 			$this->display_name = $value;
 		}
 		$this->$field = $value;
@@ -132,7 +123,7 @@ class User extends Core implements CoreInterface {
 		}
 		if ( is_numeric($uid) ) {
 			$data = get_userdata($uid);
-		} else if ( is_string($uid) ) {
+		} elseif ( is_string($uid) ) {
 			$data = get_user_by('login', $uid);
 		}
 		if ( isset($data) && is_object($data) ) {
@@ -148,24 +139,13 @@ class User extends Core implements CoreInterface {
 		$this->avatar = new Image(get_avatar_url($this->id));
 		$this->custom = $this->get_custom();
 		$this->import($this->custom, false, true);
-
 	}
 
-	/**
-	 * @param string $field_name
-	 * @return mixed
-	 */
-	public function get_meta_field( $field_name ) {
-		$value = null;
-		$value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
-		if ( $value === null ) {
-			$value = get_user_meta($this->ID, $field_name, true);
-		}
-		$value = apply_filters('timber_user_get_meta_field', $value, $this->ID, $field_name, $this);
-		return $value;
-	}
 
 	/**
+	 * Retrives the custom (meta) data on a user and returns it.
+	 *
+	 * @internal
 	 * @return array|null
 	 */
 	protected function get_custom() {
@@ -177,10 +157,10 @@ class User extends Core implements CoreInterface {
 			}
 			$custom = array();
 			foreach ( $um as $key => $value ) {
-				if ( is_array($value) && count($value) == 1 ) {
+				if ( is_array($value) && count($value) === 1 ) {
 					$value = $value[0];
 				}
-				$custom[$key] = maybe_unserialize($value);
+				$custom[ $key ] = maybe_unserialize($value);
 			}
 			$custom = apply_filters('timber_user_get_meta', $custom, $this->ID, $this);
 			return $custom;
@@ -189,17 +169,35 @@ class User extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Get the URL of the user's profile
+	 *
 	 * @api
 	 * @return string http://example.org/author/lincoln
 	 */
 	public function link() {
-		if ( !$this->_link ) {
+		if ( ! $this->_link ) {
 			$this->_link = user_trailingslashit(get_author_posts_url($this->ID));
 		}
 		return $this->_link;
 	}
 
 	/**
+	 * @param string $field_name
+	 * @return mixed
+	 */
+	public function meta( $field_name ) {
+		$value = null;
+		$value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
+		if ( null === $value ) {
+			$value = get_user_meta($this->ID, $field_name, true);
+		}
+		$value = apply_filters('timber_user_get_meta_field', $value, $this->ID, $field_name, $this);
+		return $value;
+	}
+
+	/**
+	 * Get the name of the User
+	 *
 	 * @api
 	 * @return string the human-friendly name of the user (ex: "Buster Bluth")
 	 */
@@ -208,14 +206,8 @@ class User extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @param string $field_name
-	 * @return mixed
-	 */
-	public function meta( $field_name ) {
-		return $this->get_meta_field($field_name);
-	}
-
-	/**
+	 * Get the relative path to the user's profile
+	 *
 	 * @api
 	 * @return string ex: /author/lincoln
 	 */
@@ -229,5 +221,28 @@ class User extends Core implements CoreInterface {
 	 */
 	public function slug() {
 		return $this->user_nicename;
+	}
+
+	/**
+	 * DEPRECATION ZONE
+	 */
+
+	/**
+	 * @deprected since 2.0
+	 * @param string $field_name
+	 * @return mixed
+	 */
+	public function get_meta_field( $field_name ) {
+		return $this->meta($field_name);
+	}
+
+	/**
+	 * @deprected since 2.0
+	 * @internal
+	 * @param string $field_name
+	 * @return null
+	 */
+	public function get_meta( $field_name ) {
+		return $this->get_meta_field($field_name);
 	}
 }
