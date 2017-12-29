@@ -172,20 +172,6 @@ class Helper {
 	}
 
 	/**
-	 * @deprecated since 1.3.0
-	 *
-	 * @param mixed $function_name        String or array( $class( string|object ), $function_name ).
-	 * @param array $defaults             Optional.
-	 * @param bool  $return_output_buffer Optional. Return function output instead of return value. Default false.
-	 * @return FunctionWrapper|mixed
-	 */
-	public static function function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false ) {
-		Helper::warn( 'function_wrapper is deprecated and will be removed in 1.4. Use {{ function( \'function_to_call\' ) }} instead or use FunctionWrapper directly. For more information refer to https://timber.github.io/docs/guides/functions/' );
-
-		return new FunctionWrapper( $function_name, $defaults, $return_output_buffer );
-	}
-
-	/**
 	 *
 	 *
 	 * @param mixed $arg that you want to error_log
@@ -222,37 +208,6 @@ class Helper {
 		return trim(wp_title($separator, false, $seplocation));
 	}
 
-	/* Text Utitilites */
-
-
-
-	/* Object Utilities
-	======================== */
-
-	/**
-	 * @codeCoverageIgnore
-     * @deprecated since 1.2.0
-     * @see TextHelper::trim_words
-     * @param string  $text
-     * @param int     $num_words
-     * @param string|null|false  $more text to appear in "Read more...". Null to use default, false to hide
-     * @param string  $allowed_tags
-     * @return string
-     */
-    public static function trim_words( $text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br blockquote' ) {
-        return TextHelper::trim_words($text, $num_words, $more, $allowed_tags);
-    }
-
-     /**
-     * @deprecated since 1.2.0
-     * @see TextHelper::close_tags
-     * @param string  $html
-     * @return string
-     */
-
-    public static function close_tags( $html ) {
-    	return TextHelper::close_tags($html);
-    }
 
 	/**
 	 *
@@ -383,23 +338,23 @@ class Helper {
 	}
 
 	/**
+	 * Is the number even? Let's find out.
 	 *
-	 *
-	 * @param int     $i
+	 * @param int $i number to test.
 	 * @return bool
 	 */
 	public static function iseven( $i ) {
-		return ($i % 2) == 0;
+		return ( $i % 2 ) === 0;
 	}
 
 	/**
+	 * Is the number odd? Let's find out.
 	 *
-	 *
-	 * @param int     $i
+	 * @param int $i number to test.
 	 * @return bool
 	 */
 	public static function isodd( $i ) {
-		return ($i % 2) != 0;
+		return ( $i % 2 ) !== 0;
 	}
 
 	/**
@@ -419,40 +374,5 @@ class Helper {
 			}
 		}
 		return $return;
-	}
-
-	/* Links, Forms, Etc. Utilities
-	======================== */
-
-	/**
-	 *
-	 * Gets the comment form for use on a single article page
-	 * @deprecated 0.21.8 use `{{ function('comment_form') }}` instead
-	 * @param int     $post_id which post_id should the form be tied to?
-	 * @param array   $args this $args thing is a fucking mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
-	 * @return string
-	 */
-	public static function get_comment_form( $post_id = null, $args = array() ) {
-		return self::ob_function('comment_form', array($args, $post_id));
-	}
-
-	/**
-	 * @codeCoverageIgnore
-	 * @deprecated since 1.1.2
-	 * @param array  $args
-	 * @return array
-	 */
-	public static function paginate_links( $args = array() ) {
-		Helper::warn('Helper/paginate_links has been moved to Pagination/paginate_links');
-		return Pagination::paginate_links($args);
-	}
-
-	/**
-	 * @codeCoverageIgnore
-	 * @return string
-	 */
-	public function get_current_url() {
-		Helper::warn('TimberHelper::get_current_url() is deprecated and will be removed in future versions, use Timber\URLHelper::get_current_url()');
-		return URLHelper::get_current_url();
 	}
 }

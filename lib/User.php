@@ -146,8 +146,9 @@ class User extends Core implements CoreInterface {
 		$this->id = $this->ID;
 		$this->name = $this->name();
 		$this->avatar = new Image(get_avatar_url($this->id));
-		$custom = $this->get_custom();
-		$this->import($custom);
+		$this->custom = $this->get_custom();
+		$this->import($this->custom, false, true);
+
 	}
 
 	/**
@@ -167,7 +168,7 @@ class User extends Core implements CoreInterface {
 	/**
 	 * @return array|null
 	 */
-	public function get_custom() {
+	protected function get_custom() {
 		if ( $this->ID ) {
 			$um = array();
 			$um = apply_filters('timber_user_get_meta_pre', $um, $this->ID, $this);

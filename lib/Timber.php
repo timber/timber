@@ -35,7 +35,7 @@ use Timber\Loader;
  */
 class Timber {
 
-	public static $version = '1.2.4';
+	public static $version = '2.0';
 	public static $locations;
 	public static $dirname = 'views';
 	public static $twig_cache = false;
@@ -244,13 +244,6 @@ class Timber {
 
 			self::$context_cache['posts'] = new PostQuery();
 
-			/**
-			 * @deprecated as of Timber 1.3.0
-			 * @todo remove in Timber 1.4.*
-			 */
-			self::$context_cache['wp_head'] = new FunctionWrapper( 'wp_head' );
-			self::$context_cache['wp_footer'] = new FunctionWrapper( 'wp_footer' );
-
 			self::$context_cache = apply_filters('timber_context', self::$context_cache);
 			self::$context_cache = apply_filters('timber/context', self::$context_cache);
 		}
@@ -458,9 +451,6 @@ class Timber {
 		return $ret;
 	}
 
-	/* Widgets
-	================================ */
-
 	/**
 	 * Get widgets.
 	 *
@@ -472,34 +462,15 @@ class Timber {
 		return trim( Helper::ob_function( 'dynamic_sidebar', array( $widget_id ) ) );
 	}
 
-	/*  Pagination
-	================================ */
-
 	/**
 	 * Get pagination.
+	 *
 	 * @api
-	 * @param array   $prefs
+	 * @param array $prefs an array of preference data.
 	 * @return array mixed
 	 */
 	public static function get_pagination( $prefs = array() ) {
 		return Pagination::get_pagination($prefs);
-	}
-
-	/*  Utility
-	================================ */
-
-	/**
-	 * Add route.
-	 *
-	 * @param string  $route
-	 * @param callable $callback
-	 * @param array   $args
-	 * @deprecated since 0.20.0 and will be removed in 1.1
-	 * @codeCoverageIgnore
-	 */
-	public static function add_route( $route, $callback, $args = array() ) {
-		Helper::warn('Timber::add_route (and accompanying methods for load_view, etc. Have been deprecated and will soon be removed. Please update your theme with Route::map. You can read more in the 1.0 Upgrade Guide: https://timber.github.io/docs/upgrade-guides/1.0/');
-		\Routes::map($route, $callback, $args);
 	}
 
 

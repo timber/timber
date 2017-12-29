@@ -43,13 +43,6 @@
 			$this->assertEquals(array('bar'), $bar);
 		}
 
-		function testCommentFormPHP() {
-			$post_id = $this->factory->post->create();
-			$form = TimberHelper::get_comment_form($post_id);
-			$form = trim($form);
-			$this->assertStringStartsWith('<div id="respond"', $form);
-		}
-
 		function testTrimCharacters() {
 			$text    = "Sometimes you need to do such weird things like remove all comments from your project.";
 			$trimmed = \Timber\TextHelper::trim_characters( $text, 20 );
@@ -58,7 +51,7 @@
 
 		function testCloseTagsWithSelfClosingTags(){
 			$p = '<p>My thing is this <hr>Whatever';
-			$html = \Timber\Helper::close_tags($p);
+			$html = \Timber\TextHelper::close_tags($p);
 			$this->assertEquals('<p>My thing is this <hr />Whatever</p>', $html);
 		}
 

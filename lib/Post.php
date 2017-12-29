@@ -468,7 +468,8 @@ class Post extends Core implements CoreInterface {
 	 * @return string of HTML for the form
 	 */
 	public function comment_form( $args = array() ) {
-		return Helper::get_comment_form($this->ID, $args);
+		return trim(Helper::ob_function( 'comment_form', array( $args, $this->ID ) ));
+			$form = trim($form);
 	}
 
 
@@ -501,7 +502,8 @@ class Post extends Core implements CoreInterface {
 	 * </section>
 	 * ```
 	 * @param string|array $tax What taxonom(y|ies) to pull from. Defaults to all registered taxonomies for the post type. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you're on your own.
-	 * @param bool $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?
+	 * @param bool         $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?.
+	 * @param string       $TermClass what the Timber class to use for Terms.
 	 * @return array
 	 */
 	public function terms( $tax = '', $merge = true, $TermClass = '' ) {
@@ -578,6 +580,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 *
 	 * @return int the number of comments on a post
 	 */
 	public function comment_count() {
@@ -586,6 +589,7 @@ class Post extends Core implements CoreInterface {
 
 
 	/**
+	 *
 	 * @param string $field_name
 	 * @return boolean
 	 */
@@ -608,6 +612,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 *
 	 * @param string $field_name
 	 * @return mixed
 	 */

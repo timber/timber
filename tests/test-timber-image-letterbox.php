@@ -2,6 +2,9 @@
 
 class TestTimberImageLetterbox extends TimberImage_UnitTestCase {
 
+	/**
+	 * @requires extension gd
+	 */
 	function setUp() {
 		parent::setUp();
 		if ( ! extension_loaded( 'gd' ) ) {
