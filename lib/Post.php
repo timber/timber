@@ -332,34 +332,31 @@ class Post extends Core implements CoreInterface {
 	 */
 	protected function prepare_post_info( $pid = 0 ) {
 		if ( is_string($pid) || is_numeric($pid) || (is_object($pid) && !isset($pid->post_title)) || $pid === 0 ) {
-			$pid = self::check_post_id($pid);
+			$pid  = self::check_post_id($pid);
 			$post = get_post($pid);
 			if ( $post ) {
 				return $post;
 			}
 		}
-		//we can skip if already is WP_Post
+		// we can skip if already is WP_Post.
 		return $pid;
 	}
 
 
 	/**
-	 * helps you find the post id regardless of whether you send a string or whatever
-	 * @param integer $pid ;
+	 * Helps you find the post id regardless of whether you send a string or whatever.
+	 *
+	 * @param integer $pid number to check against.
 	 * @internal
 	 * @return integer ID number of a post
 	 */
 	protected function check_post_id( $pid ) {
-		if ( is_numeric($pid) && $pid === 0 ) {
+		if ( is_numeric($pid) && 0 === $pid ) {
 			$pid = get_the_ID();
 			return $pid;
 		}
-		if ( !is_numeric($pid) && is_string($pid) ) {
+		if ( ! is_numeric($pid) && is_string($pid) ) {
 			$pid = PostGetter::get_post_id_by_name($pid);
-			return $pid;
-		}
-		if ( !$pid ) {
-			return null;
 		}
 		return $pid;
 	}
@@ -438,13 +435,13 @@ class Post extends Core implements CoreInterface {
 		if ( isset($link['href']) ) {
 			return $link['href'];
 		}
-		return '';
 	}
 
 	/**
-	 * Used internally by init, etc. to build TimberPost object
+	 * Used internally by init, etc. to build TimberPost object.
+	 *
 	 * @internal
-	 * @param  int $pid
+	 * @param  int|null $pid The ID to generate info from.
 	 * @return null|object|WP_Post
 	 */
 	protected function get_info( $pid = null ) {
@@ -465,9 +462,9 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 *
 	 * Gets the comment form for use on a single article page
-	 * @param array   $args this $args thing is a fucking mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
+	 *
+	 * @param array $args this $args thing is a fucking mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form).
 	 * @return string of HTML for the form
 	 */
 	public function comment_form( $args = array() ) {
@@ -478,6 +475,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Get the terms associated with the post
 	 * This goes across all taxonomies by default
+	 *
 	 * @api
 	 * @example
 	 * ```twig
