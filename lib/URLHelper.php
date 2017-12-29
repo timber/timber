@@ -10,39 +10,39 @@ class URLHelper {
 	 * @return string
 	 */
 	public static function get_current_url() {
-		$pageURL = self::get_scheme()."://";
-		if ( isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != "80" ) {
-			$pageURL .= self::get_host().":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+		$page_url = self::get_scheme() . "://";
+		if ( isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != "80" ) {
+			$page_url .= self::get_host() . ":" . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
 		} else {
-			$pageURL .= self::get_host().$_SERVER["REQUEST_URI"];
+			$page_url .= self::get_host() . $_SERVER['REQUEST_URI'];
 		}
-		return $pageURL;
+		return $page_url;
 	}
 
-    /**
-     *
-     * Get url scheme
-     * @return string
-     */
+	/**
+	 * Get url scheme
+	 *
+	 * @return string
+	*/
 	public static function get_scheme() {
 		return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-    }
+	}
 
-    /**
-     * 
-     * Check to see if the URL begins with the string in question
-     * Because it's a URL we don't care about protocol (HTTP vs HTTPS)
-     * Or case (so it's cAsE iNsEnSeTiVe)
-     * @return boolean
-     */
-    public static function starts_with( $haystack, $starts_with ) {
-    	$haystack = str_replace('https', 'http', strtolower($haystack));
-    	$starts_with = str_replace('https', 'http', strtolower($starts_with));
-    	if ( 0 === strpos($haystack, $starts_with) ) {
-            return true;
-        }
-        return false;
-    }
+	/**
+	 * Check to see if the URL begins with the string in question
+	 * Because it's a URL we don't care about protocol (HTTP vs HTTPS)
+	 * Or case (so it's cAsE iNsEnSeTiVe)
+	 *
+	 * @return boolean
+	 */
+	public static function starts_with( $haystack, $starts_with ) {
+		$haystack = str_replace('https', 'http', strtolower($haystack));
+		$starts_with = str_replace('https', 'http', strtolower($starts_with));
+		if ( 0 === strpos($haystack, $starts_with) ) {
+			return true;
+		}
+		return false;
+	}
 
 
 	/**
@@ -176,6 +176,7 @@ class URLHelper {
 	/**
 	 * Get the path to the content directory relative to the site.
 	 * This replaces the WP_CONTENT_SUBDIR constant
+	 *
 	 * @return string (ex: /wp-content or /content)
 	 */
 	public static function get_content_subdir() {
@@ -201,36 +202,36 @@ class URLHelper {
 	}
 
 	/**
+	 * Look for accidental slashes in a URL and remove them
 	 *
-	 *
-	 * @param string  $url
-	 * @return string
+	 * @param  string $url to process (ex: http://nytimes.com//news/article.html)
+	 * @return string the result (ex: http://nytimes.com/news/article.html)
 	 */
 	public static function remove_double_slashes( $url ) {
 		$url = str_replace('//', '/', $url);
-		if ( strstr($url, 'http:') && !strstr($url, 'http://') ) {
+		if ( strstr($url, 'http:') && ! strstr($url, 'http://') ) {
 			$url = str_replace('http:/', 'http://', $url);
 		}
-		if ( strstr($url, 'https:') && !strstr($url, 'https://') ) {
+		if ( strstr($url, 'https:') && ! strstr($url, 'https://') ) {
 			$url = str_replace('https:/', 'https://', $url);
 		}
 		return $url;
 	}
 
 	/**
+	 * Add something to the start of the path in an URL
 	 *
-	 *
-	 * @param string  $url
-	 * @param string  $path
-	 * @return string
+	 * @param  string $url a URL that you want to manipulate (ex: 'https://nytimes.com/news/article.html').
+	 * @param  string $path the path you want to insert ('/2017').
+	 * @return string the result (ex 'https://nytimes.com/2017/news/article.html')
 	 */
 	public static function prepend_to_url( $url, $path ) {
 		if ( strstr(strtolower($url), 'http') ) {
-			$url_parts = parse_url($url);
-			$url = $url_parts['scheme'].'://'.$url_parts['host'];
+			$url_parts = wp_parse_url($url);
+			$url       = $url_parts['scheme'] . '://' . $url_parts['host'];
 
 			if ( isset($url_parts['port']) ) {
-				$url .= ':'.$url_parts['port'];
+				$url .= ':' . $url_parts['port'];
 			}
 
 			$url .= $path;
@@ -239,34 +240,34 @@ class URLHelper {
 				$url .= $url_parts['path'];
 			}
 			if ( isset($url_parts['query']) ) {
-				$url .= '?'.$url_parts['query'];
+				$url .= '?' . $url_parts['query'];
 			}
 			if ( isset($url_parts['fragment']) ) {
-				$url .= '#'.$url_parts['fragment'];
+				$url .= '#' . $url_parts['fragment'];
 			}
 		} else {
-			$url = $url.$path;
+			$url = $url . $path;
 		}
 		return self::remove_double_slashes($url);
 	}
 
 	/**
+	 * Add slash (if not already present) to a path
 	 *
-	 *
-	 * @param string  $path
+	 * @param  string $path to process.
 	 * @return string
 	 */
 	public static function preslashit( $path ) {
-		if ( strpos($path, '/') != 0 ) {
-			$path = '/'.$path;
+		if ( strpos($path, '/') !== 0 ) {
+			$path = '/' . $path;
 		}
 		return $path;
 	}
 
 	/**
+	 * Remove slashes (if found) from a path
 	 *
-	 *
-	 * @param string  $path
+	 * @param  string $path to process.
 	 * @return string
 	 */
 	public static function unpreslashit( $path ) {
@@ -287,9 +288,9 @@ class URLHelper {
 	/**
 	 * This function is slightly different from the one below in the case of:
 	 * an image hosted on the same domain BUT on a different site than the
-	 * Wordpress install will be reported as external content.
+	 * WordPress install will be reported as external content.
 	 *
-	 * @param string  $url a URL to evaluate against
+	 * @param  string $url a URL to evaluate against
 	 * @return boolean if $url points to an external location returns true
 	 */
 	public static function is_external_content( $url ) {
@@ -305,22 +306,21 @@ class URLHelper {
 		// using content_url() instead of site_url or home_url is IMPORTANT
 		// otherwise you run into errors with sites that:
 		// 1. use WPML plugin
-		// 2. or redefine content directory
+		// 2. or redefine content directory.
 		$is_content_url = strstr($url, content_url());
 
-		// this case covers when the upload directory has been redefined
-		$upload_dir = wp_upload_dir();
+		// this case covers when the upload directory has been redefined.
+		$upload_dir    = wp_upload_dir();
 		$is_upload_url = strstr($url, $upload_dir['baseurl']);
 
 		return $is_content_url || $is_upload_url;
 	}
-    
+
 	/**
+	 * Determines if URL is an external url. True if $path is an external url or subdomain (http://cdn.example.org = true). False if relative or local true if it's a subdomain
 	 *
-	 *
-	 * @param string  $url
-	 * @return bool     true if $path is an external url, false if relative or local.
-	 *                  true if it's a subdomain (http://cdn.example.org = true)
+	 * @param  string $url to evalute.
+	 * @return bool
 	 */
 	public static function is_external( $url ) {
 		$has_http = strstr(strtolower($url), 'http');
@@ -334,7 +334,7 @@ class URLHelper {
 	/**
 	 * Pass links through untrailingslashit unless they are a single /
 	 *
-	 * @param string  $link
+	 * @param  string $link the URL to process.
 	 * @return string
 	 */
 	public static function remove_trailing_slash( $link ) {
@@ -346,24 +346,26 @@ class URLHelper {
 
 	/**
 	 * Removes the subcomponent of a URL regardless of protocol
-	 * @since 1.3.3
+	 *
+	 * @since  1.3.3
 	 * @author jarednova
-	 * @param string $haystack ex: http://example.org/wp-content/uploads/dog.jpg
-	 * @param string $needle ex: http://example.org/wp-content
-	 * @return string 
+	 * @param  string $haystack ex: http://example.org/wp-content/uploads/dog.jpg.
+	 * @param  string $needle ex: http://example.org/wp-content.
+	 * @return string
 	 */
 	public static function remove_url_component( $haystack, $needle ) {
 		$haystack = str_replace($needle, '', $haystack);
-		$needle = self::swap_protocol($needle);
+		$needle   = self::swap_protocol($needle);
 		return str_replace($needle, '', $haystack);
 	}
 
 
 	/**
 	 * Swaps whatever protocol of a URL is sent. http becomes https and vice versa
-	 * @since 1.3.3
+	 *
+	 * @since  1.3.3
 	 * @author jarednova
-	 * @param string $url ex: http://example.org/wp-content/uploads/dog.jpg
+	 * @param  string $url ex: http://example.org/wp-content/uploads/dog.jpg.
 	 * @return string ex: https://example.org/wp-content/uploads/dog.jpg
 	 */
 	public static function swap_protocol( $url ) {
@@ -379,20 +381,19 @@ class URLHelper {
 	/**
 	 * Pass links through user_trailingslashit handling query strings properly
 	 *
-	 * @param string $link
+	 * @param  string $link the URL to process.
 	 * @return string
 	 * */
 	public static function user_trailingslashit( $link ) {
-		$link_parts = parse_url($link);
+		$link_parts = wp_parse_url($link);
 
-		if ( !$link_parts ) {
+		if ( ! $link_parts ) {
 			return $link;
 		}
-		
-		if ( isset($link_parts['path']) && $link_parts['path'] != '/' ) {
+
+		if ( isset($link_parts['path']) && '/' !== $link_parts['path'] ) {
 			$new_path = user_trailingslashit($link_parts['path']);
-			
-			if ( $new_path != $link_parts['path'] ) {
+			if ( $new_path !== $link_parts['path'] ) {
 				$link = str_replace($link_parts['path'], $new_path, $link);
 			}
 		}
@@ -408,22 +409,21 @@ class URLHelper {
 	 * @return array|string
 	 */
 	public static function get_params( $i = false ) {
-		$args = explode('/', trim(strtolower($_SERVER['REQUEST_URI'])));
+		$args    = explode('/', trim(strtolower($_SERVER['REQUEST_URI'])));
 		$newargs = array();
 		foreach ( $args as $arg ) {
 			if ( strlen($arg) ) {
 				$newargs[] = $arg;
 			}
 		}
-		if ( $i === false ) {
+		if ( false === $i ) {
 			return $newargs;
 		}
 		if ( $i < 0 ) {
-			//count from end
 			$i = count($newargs) + $i;
 		}
-		if ( isset($newargs[$i]) ) {
-			return $newargs[$i];
+		if ( isset($newargs[ $i ]) ) {
+			return $newargs[ $i ];
 		}
 	}
 

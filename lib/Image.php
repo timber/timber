@@ -10,6 +10,7 @@ use Timber\URLHelper;
 
 /**
  * If TimberPost is the class you're going to spend the most time, TimberImage is the class you're going to have the most fun with.
+ *
  * @example
  * ```php
  * $context = Timber::get_context();
@@ -24,24 +25,24 @@ use Timber\URLHelper;
  *
  * ```twig
  * <article>
- * 	<img src="{{cover_image.src}}" class="cover-image" />
- * 	<h1 class="headline">{{post.title}}</h1>
- * 	<div class="body">
- * 		{{post.content}}
- * 	</div>
+ *   <img src="{{cover_image.src}}" class="cover-image" />
+ *   <h1 class="headline">{{post.title}}</h1>
+ *   <div class="body">
+ *     {{post.content}}
+ *   </div>
  *
- * 	<img src="{{ Image(post.custom_field_with_image_id).src }}" alt="Another way to initialize images as TimberImages, but within Twig" />
+ *  <img src="{{ Image(post.custom_field_with_image_id).src }}" alt="Another way to initialize images as TimberImages, but within Twig" />
  * </article>
  * ```
  *
  * ```html
  * <article>
- * 	<img src="http://example.org/wp-content/uploads/2015/06/nevermind.jpg" class="cover-image" />
- * 	<h1 class="headline">Now you've done it!</h1>
- * 	<div class="body">
- * 		Whatever whatever
- * 	</div>
- * 	<img src="http://example.org/wp-content/uploads/2015/06/kurt.jpg" alt="Another way to initialize images as TimberImages, but within Twig" />
+ *   <img src="http://example.org/wp-content/uploads/2015/06/nevermind.jpg" class="cover-image" />
+ *   <h1 class="headline">Now you've done it!</h1>
+ *   <div class="body">
+ *     Whatever whatever
+ *   </div>
+ *   <img src="http://example.org/wp-content/uploads/2015/06/kurt.jpg" alt="Another way to initialize images as TimberImages, but within Twig" />
  * </article>
  * ```
  */
@@ -101,17 +102,17 @@ class Image extends Post implements CoreInterface {
 	}
 
 	/**
+	 * The src of the image
+	 *
 	 * @return string the src of the file
 	 */
 	public function __toString() {
-		if ( $src = $this->src() ) {
-			return $src;
-		}
-		return '';
+		return $this->src();
 	}
 
 	/**
 	 * Get a PHP array with pathinfo() info from the file
+	 *
 	 * @return array
 	 */
 	public function get_pathinfo() {
@@ -137,13 +138,15 @@ class Image extends Post implements CoreInterface {
 	}
 
 	/**
+	 * If the dimensions have already been loaded, return those saved values
+	 *
 	 * @internal
-	 * @param string|null $dim
-	 * @return array|int
+	 * @param string|null $dim what dimensions we seek (width or height).
+	 * @return int
 	 */
 	protected function get_dimensions_loaded( $dim ) {
 		$dim = strtolower($dim);
-		if ( $dim == 'h' || $dim == 'height' ) {
+		if ( 'h' === $dim || 'height' === $dim ) {
 			return $this->_dimensions[1];
 		}
 		return $this->_dimensions[0];
@@ -168,11 +171,11 @@ class Image extends Post implements CoreInterface {
 		$image_info = $iid;
 		if ( is_numeric($iid) ) {
 			$image_info = wp_get_attachment_metadata($iid);
-			if ( !is_array($image_info) ) {
+			if ( ! is_array($image_info) ) {
 				$image_info = array();
 			}
 			$image_custom = self::get_post_custom($iid);
-			$basic = get_post($iid);
+			$basic        = get_post($iid);
 			if ( $basic ) {
 				if ( isset($basic->post_excerpt) ) {
 					$this->caption = $basic->post_excerpt;
@@ -197,15 +200,20 @@ class Image extends Post implements CoreInterface {
 	 */
 	protected static function _maybe_secure_url( $url ) {
 		if ( is_ssl() && strpos($url, 'https') !== 0 && strpos($url, 'http') === 0 ) {
-			$url = 'https'.substr($url, strlen('http'));
+			$url = 'https' . substr($url, strlen('http'));
 		}
 		return $url;
 	}
 
+	/**
+	 * Returns the `wp_upload_dir` and saves result to static var
+	 *
+	 * @return array of data https://developer.wordpress.org/reference/functions/wp_upload_dir/
+	 */
 	public static function wp_upload_dir() {
 		static $wp_upload_dir = false;
 
-		if ( !$wp_upload_dir ) {
+		if ( ! $wp_upload_dir ) {
 			$wp_upload_dir = wp_upload_dir();
 		}
 
@@ -217,15 +225,17 @@ class Image extends Post implements CoreInterface {
 	 * @param int $iid
 	 */
 	public function init( $iid = false ) {
-		//Make sure we actually have something to work with
-		if ( !$iid ) { Helper::error_log('Initalized TimberImage without providing first parameter.'); return; }
+		// Make sure we actually have something to work with.
+		if ( !$iid ) {
+			Helper::error_log('Initalized TimberImage without providing first parameter.'); return;
+		}
 
-		//If passed TimberImage, grab the ID and continue
+		// If passed TimberImage, grab the ID and continue.
 		if ( $iid instanceof self ) {
 			$iid = (int) $iid->ID;
 		}
 
-		//If passed ACF image array
+		// If passed ACF image array.
 		if ( is_array($iid) && isset($iid['ID']) ) {
 			$iid = $iid['ID'];
 		}
@@ -339,14 +349,16 @@ class Image extends Post implements CoreInterface {
 	}
 
 	/**
+	 * Get the aspect ratio of the image
+	 *
 	 * @api
 	 * @example
 	 * ```twig
 	 * {% if post.thumbnail.aspect < 1 %}
-	 *     {# handle vertical image #}
-	 *     <img src="{{ post.thumbnail.src|resize(300, 500) }}" alt="A basketball player" />
+	 *   {# handle vertical image #}
+	 *   <img src="{{ post.thumbnail.src|resize(300, 500) }}" alt="A basketball player" />
 	 * {% else %}
-	 * 	   <img src="{{ post.thumbnail.src|resize(500) }}" alt="A sumo wrestler" />
+	 *   <img src="{{ post.thumbnail.src|resize(500) }}" alt="A sumo wrestler" />
 	 * {% endif %}
 	 * ```
 	 * @return float
@@ -374,6 +386,7 @@ class Image extends Post implements CoreInterface {
 
 	/**
 	 * Returns the link to an image attachment's Permalink page (NOT the link for the image itself!!)
+	 *
 	 * @api
 	 * @example
 	 * ```twig
@@ -392,7 +405,7 @@ class Image extends Post implements CoreInterface {
 
 	/**
 	 * @api
-	 * @return bool|TimberPost
+	 * @return bool|Timber\Post
 	 */
 	public function parent() {
 		if ( !$this->post_parent ) {
