@@ -10,9 +10,9 @@ class URLHelper {
 	 * @return string
 	 */
 	public static function get_current_url() {
-		$page_url = self::get_scheme() . "://";
-		if ( isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != "80" ) {
-			$page_url .= self::get_host() . ":" . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
+		$page_url = self::get_scheme() . '://';
+		if ( isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] !== '80' ) {
+			$page_url .= self::get_host() . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
 		} else {
 			$page_url .= self::get_host() . $_SERVER['REQUEST_URI'];
 		}
@@ -23,7 +23,7 @@ class URLHelper {
 	 * Get url scheme
 	 *
 	 * @return string
-	*/
+	 */
 	public static function get_scheme() {
 		return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 	}
@@ -36,7 +36,7 @@ class URLHelper {
 	 * @return boolean
 	 */
 	public static function starts_with( $haystack, $starts_with ) {
-		$haystack = str_replace('https', 'http', strtolower($haystack));
+		$haystack    = str_replace('https', 'http', strtolower($haystack));
 		$starts_with = str_replace('https', 'http', strtolower($starts_with));
 		if ( 0 === strpos($haystack, $starts_with) ) {
 			return true;
@@ -48,11 +48,11 @@ class URLHelper {
 	/**
 	 *
 	 *
-	 * @param string  $url
+	 * @param string $url
 	 * @return bool
 	 */
 	public static function is_url( $url ) {
-		if ( !is_string($url) ) {
+		if ( ! is_string($url) ) {
 			return false;
 		}
 		$url = strtolower($url);
@@ -70,10 +70,10 @@ class URLHelper {
 	public static function get_path_base() {
 		$struc = get_option('permalink_structure');
 		$struc = explode('/', $struc);
-		$p = '/';
+		$p     = '/';
 		foreach ( $struc as $s ) {
-			if ( !strstr($s, '%') && strlen($s) ) {
-				$p .= $s.'/';
+			if ( ! strstr($s, '%') && strlen($s) ) {
+				$p .= $s . '/';
 			}
 		}
 		return $p;
@@ -82,13 +82,13 @@ class URLHelper {
 	/**
 	 *
 	 *
-	 * @param string  $url
-	 * @param bool    $force
+	 * @param string $url
+	 * @param bool   $force
 	 * @return string
 	 */
 	public static function get_rel_url( $url, $force = false ) {
 		$url_info = parse_url($url);
-		if ( isset($url_info['host']) && $url_info['host'] != self::get_host() && !$force ) {
+		if ( isset($url_info['host']) && $url_info['host'] != self::get_host() && ! $force ) {
 			return $url;
 		}
 		$link = '';
@@ -96,10 +96,10 @@ class URLHelper {
 			$link = $url_info['path'];
 		}
 		if ( isset($url_info['query']) && strlen($url_info['query']) ) {
-			$link .= '?'.$url_info['query'];
+			$link .= '?' . $url_info['query'];
 		}
 		if ( isset($url_info['fragment']) && strlen($url_info['fragment']) ) {
-			$link .= '#'.$url_info['fragment'];
+			$link .= '#' . $url_info['fragment'];
 		}
 		$link = self::remove_double_slashes($link);
 		return $link;
@@ -107,6 +107,7 @@ class URLHelper {
 
 	/**
 	 * Some setups like HTTP_HOST, some like SERVER_NAME, it's complicated
+	 *
 	 * @link http://stackoverflow.com/questions/2297403/http-host-vs-server-name
 	 * @return string the HTTP_HOST or SERVER_NAME
 	 */
@@ -123,12 +124,12 @@ class URLHelper {
 	/**
 	 *
 	 *
-	 * @param string  $url
+	 * @param string $url
 	 * @return bool
 	 */
 	public static function is_local( $url ) {
 		$host = self::get_host();
-		if ( !empty($host) && strstr($url, $host) ) {
+		if ( ! empty($host) && strstr($url, $host) ) {
 			return true;
 		}
 		return false;
@@ -137,12 +138,12 @@ class URLHelper {
 	/**
 	 *
 	 *
-	 * @param string  $src
+	 * @param string $src
 	 * @return string
 	 */
 	public static function get_full_path( $src ) {
-		$root = ABSPATH;
-		$old_root_path = $root.$src;
+		$root          = ABSPATH;
+		$old_root_path = $root . $src;
 		$old_root_path = str_replace('//', '/', $old_root_path);
 		return $old_root_path;
 	}
@@ -152,14 +153,14 @@ class URLHelper {
 	 * NOTE: Not fool-proof, makes a lot of assumptions about the file path
 	 * matching the URL path
 	 *
-	 * @param string  $url
+	 * @param string $url
 	 * @return string
 	 */
 	public static function url_to_file_system( $url ) {
-		$url_parts = parse_url($url);
+		$url_parts         = parse_url($url);
 		$url_parts['path'] = apply_filters('timber/URLHelper/url_to_file_system/path', $url_parts['path']);
-		$path = ABSPATH.$url_parts['path'];
-		$path = str_replace('//', '/', $path);
+		$path              = ABSPATH . $url_parts['path'];
+		$path              = str_replace('//', '/', $path);
 		return $path;
 	}
 
@@ -168,8 +169,8 @@ class URLHelper {
 	 */
 	public static function file_system_to_url( $fs ) {
 		$relative_path = self::get_rel_path($fs);
-		$home = home_url('/'.$relative_path);
-		$home = apply_filters('timber/URLHelper/file_system_to_url', $home);
+		$home          = home_url('/' . $relative_path);
+		$home          = apply_filters('timber/URLHelper/file_system_to_url', $home);
 		return $home;
 	}
 
@@ -180,25 +181,25 @@ class URLHelper {
 	 * @return string (ex: /wp-content or /content)
 	 */
 	public static function get_content_subdir() {
-		$home_url = get_home_url();
-		$home_url = apply_filters('timber/URLHelper/get_content_subdir/home_url', $home_url);
+		$home_url        = get_home_url();
+		$home_url        = apply_filters('timber/URLHelper/get_content_subdir/home_url', $home_url);
 		$wp_content_path = str_replace($home_url, '', WP_CONTENT_URL);
 		return $wp_content_path;
-	} 
+	}
 
 	/**
 	 *
 	 *
-	 * @param string  $src
+	 * @param string $src
 	 * @return string
 	 */
 	public static function get_rel_path( $src ) {
 		if ( strstr($src, ABSPATH) ) {
 			return str_replace(ABSPATH, '', $src);
 		}
-		//its outside the wordpress directory, alternate setups:
+		// its outside the WordPress directory, alternate setups:
 		$src = str_replace(WP_CONTENT_DIR, '', $src);
-		return self::get_content_subdir().$src;
+		return self::get_content_subdir() . $src;
 	}
 
 	/**
@@ -281,7 +282,7 @@ class URLHelper {
 	 * @return boolean true if $path is an absolute url, false if relative.
 	 */
 	public static function is_absolute( $path ) {
-		return (boolean) (strstr($path, 'http'));
+		return (boolean) ( strstr($path, 'http') );
 	}
 
 
@@ -294,7 +295,7 @@ class URLHelper {
 	 * @return boolean if $url points to an external location returns true
 	 */
 	public static function is_external_content( $url ) {
-		$is_external = self::is_absolute($url) && !self::is_internal_content($url);
+		$is_external = self::is_absolute($url) && ! self::is_internal_content($url);
 
 		return $is_external;
 	}
@@ -323,9 +324,9 @@ class URLHelper {
 	 * @return bool
 	 */
 	public static function is_external( $url ) {
-		$has_http = strstr(strtolower($url), 'http');
+		$has_http  = strstr(strtolower($url), 'http');
 		$on_domain = strstr($url, self::get_host());
-		if ( $has_http && !$on_domain ) {
+		if ( $has_http && ! $on_domain ) {
 			return true;
 		}
 		return false;
@@ -338,7 +339,7 @@ class URLHelper {
 	 * @return string
 	 */
 	public static function remove_trailing_slash( $link ) {
-		if ( $link != "/" ) {
+		if ( $link != '/' ) {
 			$link = untrailingslashit($link);
 		}
 		return $link;
