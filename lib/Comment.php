@@ -189,27 +189,37 @@ class Comment extends Core implements CoreInterface {
 		}
 	}
 
+	/**
+	 * At what depth is this comment?
+	 *
+	 * @api
+	 * @return int
+	 */
 	public function depth() {
 		return $this->_depth;
 	}
 
 	/**
+	 * Is the comment approved?
+	 *
 	 * @api
 	 * @example
 	 * ```twig
 	 * {% if comment.approved %}
-	 * 	Your comment is good
+	 *   Your comment is good
 	 * {% else %}
-	 * 	Do you kiss your mother with that mouth?
+	 *   Do you kiss your mother with that mouth?
 	 * {% endif %}
 	 * ```
 	 * @return boolean
 	 */
 	public function approved() {
-		return Helper::is_true($this->comment_approved);		
+		return Helper::is_true($this->comment_approved);
 	}
 
 	/**
+	 * The date for the comment.
+	 *
 	 * @api
 	 * @example
 	 * ```twig
@@ -226,6 +236,7 @@ class Comment extends Core implements CoreInterface {
 	 *   <p class="comment">Happy Birthday!</p>
 	 * </article>
 	 * ```
+	 * @param string $date_format of desired PHP date format (eg "M j, Y").
 	 * @return string
 	 */
 	public function date( $date_format = '' ) {
@@ -235,6 +246,8 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
+	 * What time was the commetn posted?
+	 *
 	 * @api
 	 * @example
 	 * ```twig
@@ -251,6 +264,7 @@ class Comment extends Core implements CoreInterface {
 	 *   <p class="comment">Happy Birthday!</p>
 	 * </article>
 	 * ```
+	 * @param string $time_format of desired PHP time format (eg "H:i:s").
 	 * @return string
 	 */
 	public function time( $time_format = '' ) {
