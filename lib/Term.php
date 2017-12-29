@@ -12,6 +12,7 @@ use Timber\URLHelper;
 /**
  * Terms: WordPress has got 'em, you want 'em. Categories. Tags. Custom
  * Taxonomies. You don't care, you're a fiend. Well let's get this under control:
+ *
  * @example
  * ```php
  * //Get a term by its ID
@@ -66,7 +67,7 @@ class Term extends Core implements CoreInterface {
 	 * @param string $tax
 	 */
 	public function __construct( $tid = null, $tax = '' ) {
-		if ( $tid === null ) {
+		if ( null === $tid ) {
 			$tid = $this->get_term_from_query();
 		}
 		if ( strlen($tax) ) {
@@ -76,6 +77,8 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
+	 * The string the term will render as by default
+	 *
 	 * @return string
 	 */
 	public function __toString() {
@@ -119,21 +122,12 @@ class Term extends Core implements CoreInterface {
 	 */
 	protected function init( $tid ) {
 		$term = $this->get_term($tid);
-		if ( isset($term->id) ) {
-			$term->ID = $term->id;
-		} else if ( isset($term->term_id) ) {
+		if ( isset($term->term_id) ) {
 			$term->ID = $term->term_id;
-		} else if ( is_string($tid) ) {
-			//echo 'bad call using '.$tid;
-			//Helper::error_log(debug_backtrace());
 		}
 		if ( isset($term->ID) ) {
 			$term->id = $term->ID;
 			$this->import($term);
-			if ( isset($term->term_id) ) {
-				$custom = $this->get_term_meta($term->term_id);
-				$this->import($custom);
-			}
 		}
 	}
 
@@ -183,7 +177,7 @@ class Term extends Core implements CoreInterface {
 		if ( is_numeric($tid) ) {
 			return $tid;
 		}
-		if ( gettype($tid) == 'object' ) {
+		if ( gettype($tid) === 'object' ) {
 			$tid = $tid->term_id;
 		}
 		if ( is_numeric($tid) ) {
@@ -200,109 +194,14 @@ class Term extends Core implements CoreInterface {
 		return 0;
 	}
 
-	/* Public methods
-	===================== */
+
+
 
 	/**
-	 * @internal
-	 * @return string
-	 */
-	public function get_edit_url() {
-		return get_edit_term_link($this->ID, $this->taxonomy);
-	}
-
-	/**
-	 * @internal
-	 * @param string $field_name
-	 * @return string
-	 */
-	public function get_meta_field( $field_name ) {
-		if ( !isset($this->$field_name) ) {
-			$field_value = get_term_meta($this->ID, $field_name, true);
-			if ( !$field_value ) {
-				$field_value = apply_filters('timber_term_get_meta_field', '', $this->ID, $field_name, $this);
-				$field_value = apply_filters('timber/term/meta/field', $field_value, $this->ID, $field_name, $this);
-			}
-			$this->$field_name = $field_value;
-			
-		}
-		return $this->$field_name;
-	}
-
-	/**
-	 * @internal
-	 * @deprecated since 1.0
-	 * @return string
-	 */
-	public function get_path() {
-		return $this->path();
-	}
-
-	/**
-	 * @internal
-	 * @deprecated since 1.0
-	 * @return string
-	 */
-	public function get_link() {
-		return $this->link();
-	}
-
-	/**
-	 * Get Posts that have been "tagged" with the particular term
-	 * @internal
-	 * @param int $numberposts
-	 * @param string $post_type
-	 * @param string $PostClass
-	 * @return array|bool|null
-	 */
-	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
-		if ( !strlen($PostClass) ) {
-			$PostClass = $this->PostClass;
-		}
-		$default_tax_query = array(array(
-			'field' => 'id',
-			'terms' => $this->ID,
-			'taxonomy' => $this->taxonomy,
-		));
-		if ( is_string($numberposts) && strstr($numberposts, '=') ) {
-			$args = $numberposts;
-			$new_args = array();
-			parse_str($args, $new_args);
-			$args = $new_args;
-			$args['tax_query'] = $default_tax_query;
-			if ( !isset($args['post_type']) ) {
-				$args['post_type'] = 'any';
-			}
-			if ( class_exists($post_type) ) {
-				$PostClass = $post_type;
-			}
-		} else if ( is_array($numberposts) ) {
-			//they sent us an array already baked
-			$args = $numberposts;
-			if ( !isset($args['tax_query']) ) {
-				$args['tax_query'] = $default_tax_query;
-			}
-			if ( class_exists($post_type) ) {
-				$PostClass = $post_type;
-			}
-			if ( !isset($args['post_type']) ) {
-				$args['post_type'] = 'any';
-			}
-		} else {
-			$args = array(
-				'numberposts' => $numberposts,
-				'tax_query' => $default_tax_query,
-				'post_type' => $post_type
-			);
-		}
-		return Timber::get_posts($args, $PostClass);
-	}
-
-	/**
-	 * @internal
+	 * @api
 	 * @return array
 	 */
-	public function get_children() {
+	public function children() {
 		if ( !isset($this->_children) ) {
 			$children = get_term_children($this->ID, $this->taxonomy);
 			foreach ( $children as &$child ) {
@@ -314,29 +213,8 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Return the description of the term
 	 *
-	 *
-	 * @param string  $key
-	 * @param mixed   $value
-	 */
-	public function update( $key, $value ) {
-		$value = apply_filters('timber_term_set_meta', $value, $key, $this->ID, $this);
-		$value = apply_filters('timber/term/meta/set', $value, $key, $this->ID, $this);
-		$this->$key = $value;
-	}
-
-	/* Alias
-	====================== */
-
-	/**
-	 * @api
-	 * @return array
-	 */
-	public function children() {
-		return $this->get_children();
-	}
-
-	/**
 	 * @api
 	 * @return string
 	 */
@@ -355,7 +233,7 @@ class Term extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function edit_link() {
-		return $this->get_edit_url();
+		return get_edit_term_link($this->ID, $this->taxonomy);
 	}
 
 
@@ -381,6 +259,7 @@ class Term extends Core implements CoreInterface {
 	 * has its own table. If retrieving a special ACF field (repeater, etc.) you
 	 * can use the output immediately in Twig — no further processing is
 	 * required.
+	 *
 	 * @api
 	 * @param string $field_name
 	 * @example
@@ -393,7 +272,15 @@ class Term extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function meta( $field_name ) {
-		return $this->get_meta_field($field_name);
+		if ( !isset($this->$field_name) ) {
+			$field_value = get_term_meta($this->ID, $field_name, true);
+			if ( !$field_value ) {
+				$field_value = apply_filters('timber_term_get_meta_field', '', $this->ID, $field_name, $this);
+				$field_value = apply_filters('timber/term/meta/field', $field_value, $this->ID, $field_name, $this);
+			}
+			$this->$field_name = $field_value;
+		}
+		return $this->$field_name;
 	}
 
 	/**
@@ -430,7 +317,46 @@ class Term extends Core implements CoreInterface {
 	 * @return array|bool|null
 	 */
 	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
-		return $this->get_posts($numberposts_or_args, $post_type_or_class, $post_class);
+		if ( !strlen($post_class) ) {
+			$post_class = $this->PostClass;
+		}
+		$default_tax_query = array(array(
+			'field' => 'id',
+			'terms' => $this->ID,
+			'taxonomy' => $this->taxonomy,
+		));
+		if ( is_string($numberposts_or_args) && strstr($numberposts_or_args, '=') ) {
+			$args = $numberposts_or_args;
+			$new_args = array();
+			parse_str($args, $new_args);
+			$args = $new_args;
+			$args['tax_query'] = $default_tax_query;
+			if ( !isset($args['post_type']) ) {
+				$args['post_type'] = 'any';
+			}
+			if ( class_exists($post_type_or_class) ) {
+				$post_class = $post_type_or_class;
+			}
+		} else if ( is_array($numberposts_or_args) ) {
+			//they sent us an array already baked
+			$args = $numberposts_or_args;
+			if ( !isset($args['tax_query']) ) {
+				$args['tax_query'] = $default_tax_query;
+			}
+			if ( class_exists($post_type_or_class) ) {
+				$post_class = $post_type_or_class;
+			}
+			if ( !isset($args['post_type']) ) {
+				$args['post_type'] = 'any';
+			}
+		} else {
+			$args = array(
+				'numberposts_or_args' => $numberposts_or_args,
+				'tax_query' => $default_tax_query,
+				'post_type' => $post_type_or_class
+			);
+		}
+		return Timber::get_posts($args, $post_class);
 	}
 
 	/**
@@ -439,5 +365,64 @@ class Term extends Core implements CoreInterface {
 	 */
 	public function title() {
 		return $this->name;
+	}
+
+	/** DEPRECATED DOWN HERE
+	 * ======================
+	 **/
+	/**
+	 * Get Posts that have been "tagged" with the particular term
+	 *
+	 * @deprecated since 2.0
+	 * @internal
+	 * @param int $numberposts
+	 * @param string $post_type
+	 * @param string $PostClass
+	 * @return array|bool|null
+	 */
+	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
+		return $this->posts($numberposts, $post_type, $PostClass);
+	}
+
+	/**
+	 *
+	 * @deprecated since 2.0
+	 * @internal
+	 * @return array
+	 */
+	public function get_children() {
+		return $this->children();
+	}
+
+	/**
+	 * @deprecated since 2.0
+	 * @internal
+	 * @return string
+	 */
+	public function get_edit_url() {
+		return $this->edit_link();
+	}
+
+	/**
+	 * @deprecated since 2.0
+	 * @internal
+	 * @param string $field_name
+	 * @return string
+	 */
+	public function get_meta_field( $field_name ) {
+		return $this->meta($field_name);
+	}
+
+
+	/**
+	 *
+	 * @deprecated since 2.0
+	 * @param string  $key
+	 * @param mixed   $value
+	 */
+	public function update( $key, $value ) {
+		$value = apply_filters('timber_term_set_meta', $value, $key, $this->ID, $this);
+		$value = apply_filters('timber/term/meta/set', $value, $key, $this->ID, $this);
+		$this->$key = $value;
 	}
 }

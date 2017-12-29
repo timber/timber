@@ -95,14 +95,12 @@
 			$term_id = $this->factory->term->create();
 			$term = new TimberTerm($term_id);
 			$this->assertContains('http://', $term->link());
-			$this->assertContains('http://', $term->get_link());
 		}
 
 		function testTermPath() {
 			$term_id = $this->factory->term->create();
 			$term = new TimberTerm($term_id);
 			$this->assertFalse(strstr($term->path(), 'http://'));
-			$this->assertFalse(strstr($term->get_path(), 'http://'));
 		}
 
 		function testGetPostsWithPostTypesString() {
