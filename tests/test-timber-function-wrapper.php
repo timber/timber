@@ -40,7 +40,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 
 	function testWPHead() {
 		$context = Timber::get_context();
-		$str = Timber::compile_string('{{ wp_head }}', $context);
+		$str = Timber::compile_string('{{ function("wp_head") }}', $context);
 		$this->assertRegexp('/<title>Test Blog/', trim($str));
 	}
 
@@ -51,7 +51,12 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 	}
 
 	function testSoloFunctionUsingWrapper() {
-		new TimberFunctionWrapper('my_boo');
+		if (version_compare(Timber::$version, 2.0, '>=')) {
+            return $this->markTestSkipped(
+              'This functionality is disabled in Timber 2.0'
+            );
+        }
+		new Timber\FunctionWrapper('my_boo');
 		$str = Timber::compile_string("{{ my_boo() }}");
 		$this->assertEquals('bar!', trim($str));
 	}
