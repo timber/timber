@@ -129,6 +129,9 @@ class Term extends Core implements CoreInterface {
 			$term->id = $term->ID;
 			$this->import($term);
 		}
+		if ( isset($term->term_id) ) {
+			$this->custom = $this->get_term_meta($term->term_id);
+		}
 	}
 
 	/**
