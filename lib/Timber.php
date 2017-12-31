@@ -144,8 +144,8 @@ class Timber {
 	 * @api
 	 * @deprecated since 2.0.0 Use `new Timber\PostQuery()` instead.
 	 *
-	 * @param mixed   $query
-	 * @param string|array  $PostClass
+	 * @param mixed        $query
+	 * @param string|array $PostClass
 	 *
 	 * @return array|bool|null
 	 */
@@ -155,9 +155,13 @@ class Timber {
 
 	/**
 	 * Query post.
+	 *
 	 * @api
-	 * @param mixed   $query
-	 * @param string  $PostClass
+	 * @deprecated since 2.0.0 Use `new Timber\Post()` instead.
+	 *
+	 * @param mixed  $query
+	 * @param string $PostClass
+	 *
 	 * @return array|bool|null
 	 */
 	public static function query_post( $query = false, $PostClass = 'Timber\Post' ) {
@@ -166,9 +170,13 @@ class Timber {
 
 	/**
 	 * Query posts.
+	 *
 	 * @api
-	 * @param mixed   $query
-	 * @param string  $PostClass
+	 * @deprecated since 2.0.0 Use `new Timber\PostQuery()` instead.
+	 *
+	 * @param mixed  $query
+	 * @param string $PostClass
+	 *
 	 * @return PostCollection
 	 */
 	public static function query_posts( $query = false, $PostClass = 'Timber\Post' ) {
