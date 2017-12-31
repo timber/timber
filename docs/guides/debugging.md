@@ -79,4 +79,4 @@ This filter answers the question: What type of object am I working with? It pass
 {{ post|get_class }}
 ```
 
-It will output something like `TimberPost` or your custom wrapper object.
+It will output something like `Timber\Post` or your custom wrapper object.

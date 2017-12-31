@@ -404,7 +404,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Used internally to fetch the metadata fields (wp_postmeta table)
-	 * and attach them to our TimberPost object
+	 * and attach them to our Timber\Post object
 	 * @internal
 	 * @param int $pid
 	 * @return array
@@ -634,7 +634,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Import field data onto this object
-	 * 
+	 *
 	 * @param string $field_name
 	 */
 	public function import_field( $field_name ) {

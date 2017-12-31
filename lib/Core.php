@@ -46,13 +46,15 @@ abstract class Core {
 	}
 
 	/**
-	 * Takes an array or object and adds the properties to the parent object
+	 * Takes an array or object and adds the properties to the parent object.
+	 *
 	 * @example
 	 * ```php
-	 * $data = array('airplane' => '757-200', 'flight' => '5316');
-	 * $post = new TimberPost()
+	 * $data = array( 'airplane' => '757-200', 'flight' => '5316' );
+	 * $post = new Timber\Post();
 	 * $post->import(data);
-	 * echo $post->airplane; //757-200
+	 *
+	 * echo $post->airplane; // 757-200
 	 * ```
 	 * @param array|object $info an object or array you want to grab data from to attach to the Timber object
 	 */
@@ -75,7 +77,7 @@ abstract class Core {
 					} else {
 						$this->$key = $value;
 					}
-					
+
 				}
 			}
 		}
