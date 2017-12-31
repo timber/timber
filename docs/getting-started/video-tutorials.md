@@ -107,7 +107,7 @@ Timber::render( 'welcome.twig', $context );
 
 ```php
 <?php
-$context['posts'] = Timber::get_posts();
+$context['posts'] = new Timber\PostQuery();
 
 Timber::render( 'home-main.twig', $context );
 ```
