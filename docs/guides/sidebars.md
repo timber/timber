@@ -68,7 +68,7 @@ $post_cat = $post_cat[0]->ID;
 $context['post'] = $post;
 
 $sidebar_context = array();
-$sidebar_context['related'] = Timber::get_posts('cat='.$post_cat);
+$sidebar_context['related'] = new Timber\PostQuery('cat='.$post_cat);
 $context['sidebar'] = Timber::get_sidebar('sidebar-related.twig', $sidebar_context);
 Timber::render('single.twig', $context);
 ```

@@ -258,7 +258,7 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 * Retrieves and outputs meta information stored with a term. This will use
-	 * both data stored under (old) ACF hacks and new (WP 4.6+) where term meta 
+	 * both data stored under (old) ACF hacks and new (WP 4.6+) where term meta
 	 * has its own table. If retrieving a special ACF field (repeater, etc.) you
 	 * can use the output immediately in Twig — no further processing is
 	 * required.
@@ -317,7 +317,7 @@ class Term extends Core implements CoreInterface {
 	 * {% endfor %}
 	 * </ul>
 	 * ```
-	 * @return array|bool|null
+	 * @return \Timber\PostQuery
 	 */
 	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
 		if ( !strlen($post_class) ) {
@@ -359,7 +359,8 @@ class Term extends Core implements CoreInterface {
 				'post_type' => $post_type_or_class
 			);
 		}
-		return Timber::get_posts($args, $post_class);
+
+		return new PostQuery( $args, $post_class );
 	}
 
 	/**

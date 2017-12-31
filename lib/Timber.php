@@ -23,14 +23,18 @@ use Timber\Loader;
  *
  * @example
  * ```php
- *  $posts = Timber::get_posts();
- *  $posts = Timber::get_posts('post_type = article')
- *  $posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format.
- *  $posts = Timber::get_posts(array(23,24,35,67), 'InkwellArticle');
+ * $posts = new Timber\PostQuery();
+ * $posts = new Timber\PostQuery( 'post_type = article' );
+ * $posts = new Timber\PostQuery( array(
+ *     'post_type' => 'article',
+ *     'category_name' => 'sports',
+ * ) );
+ * $posts = new Timber\PostQuery( array( 23, 24, 35, 67 ), 'InkwellArticle' );
  *
- *  $context = Timber::get_context(); // returns wp favorites!
- *  $context['posts'] = $posts;
- *  Timber::render('index.twig', $context);
+ * $context = Timber::get_context();
+ * $context['posts'] = $posts;
+ *
+ * Timber::render( 'index.twig', $context );
  * ```
  */
 class Timber {
