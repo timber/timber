@@ -274,7 +274,7 @@ class Post extends Core implements CoreInterface {
 		$can_preview = array();
 
 		foreach ( $can as $type ) {
-			if ( current_user_can($type) ) {
+			if ( current_user_can($type, $query->queried_object_id) ) {
 				$can_preview[] = true;
 			}
 		}
