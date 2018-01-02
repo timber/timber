@@ -227,7 +227,8 @@
 			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
 			$posts = Timber::get_posts($posts);
-			$template = '{% for post in posts | filter("Method Man", "post_content")%}{{ post.title }}{% endfor %}';
+			$template = '{% for post in posts | filter({post_content: "Method Man"
+		})%}{{ post.title }}{% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => $posts));
 			$this->assertEquals('Cheese', trim($str));
 		}
