@@ -232,4 +232,15 @@
 			$str = Timber::compile_string($template, array('posts' => $posts));
 			$this->assertEquals('Cheese', trim($str));
 		}
+
+		function testArrayFilterMulti() {
+			$posts = [];
+			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
+			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
+			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
+			$posts = Timber::get_posts($posts);
+			$template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
+			$str = Timber::compile_string($template, array('posts' => $posts));
+			$this->assertEquals('Stringer Bell Snoop', trim($str));
+		}
 	}
