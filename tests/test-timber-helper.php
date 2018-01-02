@@ -209,4 +209,26 @@
 			$this->assertEquals('Robbie', $people[2]->name);
 			$this->assertEquals(1984, $people[1]->year);
 		}
+
+		function testArrayFilter() {
+			$posts = [];
+			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
+			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
+			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
+			$posts = Timber::get_posts($posts);
+			$template = '{% for post in posts | filter("snoop")%}{{ post.content|striptags }}{% endfor %}';
+			$str = Timber::compile_string($template, array('posts' => $posts));
+			$this->assertEquals('Felicia Pearson', trim($str));
+		}
+
+		function testArrayFilterKeyValue() {
+			$posts = [];
+			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
+			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
+			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
+			$posts = Timber::get_posts($posts);
+			$template = '{% for post in posts | filter("Method Man", "post_content")%}{{ post.title }}{% endfor %}';
+			$str = Timber::compile_string($template, array('posts' => $posts));
+			$this->assertEquals('Cheese', trim($str));
+		}
 	}

@@ -423,20 +423,16 @@ class Helper {
 	
 	/**
 	 * Filters a list of objects, based on a set of key => value arguments.
-	 * 
-	 * @param        $array
-	 * @param        $value
-	 * @param string $key
 	 *
-	 * @return mixed
+	 * @since 1.5.3
+	 * @ticket #1594
+	 * @param array  $array to filter.
+	 * @param string $value to search for.
+	 * @param string $key to look in.
+	 * @return array
 	 */
-	public static function filter_array( $array, $value, $key = 'slug', $operator = 'AND' ) {
-		$result = wp_list_filter( $array, array( $key => $value ), $operator );
-		if ( is_array( $result ) ) {
-			$first_element = reset( $result );
-			return $first_element;
-		}
-		return $array;
+	public static function filter_array( $array, $value, $key = 'slug' ) {
+		return wp_list_filter($array, array($key => $value), "AND");
 	}
 
 	/* Links, Forms, Etc. Utilities
