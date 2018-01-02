@@ -14,7 +14,7 @@ This will only work in a php file with an active query (like `archive.php` or `h
 ```php
 	<?php
 	$context = Timber::get_context();
-	$context['posts'] = new PostQuery();
+	$context['posts'] = new Timber\PostQuery();
 	Timber::render('archive.twig', $context);
 ```
 
