@@ -421,6 +421,23 @@ class Helper {
 		return $return;
 	}
 
+	/**
+	 * Filters a list of objects, based on a set of key => value arguments.
+	 *
+	 * @since 1.5.3
+	 * @ticket #1594
+	 * @param array        $array to filter.
+	 * @param string|array $filter to search for.
+	 * @param string       $operator to use (AND, NOT, OR).
+	 * @return array
+	 */
+	public static function filter_array( $array, $filter, $operator = 'AND' ) {
+		if ( ! is_array($filter) ) {
+			$filter = array( 'slug' => $filter );
+		}
+		return wp_list_filter($array, $filter, $operator);
+	}
+
 	/* Links, Forms, Etc. Utilities
 	======================== */
 
