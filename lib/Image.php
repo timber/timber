@@ -453,8 +453,25 @@ class Image extends Post implements CoreInterface {
 
 		$src = wp_get_attachment_image_src($this->ID, $size);
 		$src = $src[0];
+
+		/**
+		 * Filters the src for a `Timber\Image`.
+		 *
+		 * @see \Timber\Image::src()
+		 * @since 0.21.7
+		 *
+		 * @param string $src The image src.
+		 * @param int    $id  The image ID.
+		 */
 		$src = apply_filters('timber/image/src', $src, $this->ID);
-		$src = apply_filters('timber_image_src', $src, $this->ID);
+
+		/**
+		 * Filters the src for a `Timber\Image`.
+		 *
+		 * @deprecated 2.0.0, use `timber/image/src`
+		 */
+		$src = apply_filters_deprecated( 'timber_image_src', array( $src, $this->ID ), '2.0.0', 'timber/image/src' );
+
 		return $src;
 	}
 

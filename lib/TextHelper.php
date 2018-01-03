@@ -3,7 +3,7 @@
 namespace Timber;
 
 /**
- * Class provides different text-related functions 
+ * Class provides different text-related functions
  * commonly used in WordPress development
  */
 class TextHelper {
@@ -45,9 +45,26 @@ class TextHelper {
         }
         $original_text = $text;
         $allowed_tag_string = '';
-        foreach ( explode(' ', apply_filters('timber/trim_words/allowed_tags', $allowed_tags)) as $tag ) {
+
+		/**
+		 * Filters allowed tags for `trim_words()` helper.
+		 *
+		 * The `trim_words()` helper strips all HTML tags from a text it trims, except for a list of
+		 * allowed tags. Instead of passing the allowed tags every time you use `trim_words()` (or `{{ text|truncate }}`
+		 * in Twig), you can use this filter to set the allowed tags.
+		 *
+		 * @see \Timber\TextHelper::trim_words()
+		 * @since 0.21.9
+		 *
+		 * @param string $allowed_tags Allowed tags, separated by one whitespace.
+		 *                             Default `p a span b i br blockquote`.
+		 */
+		$allowed_tags = apply_filters( 'timber/trim_words/allowed_tags', $allowed_tags );
+
+        foreach ( explode(' ', $allowed_tags) as $tag ) {
             $allowed_tag_string .= '<'.$tag.'>';
         }
+
         $text = strip_tags($text, $allowed_tag_string);
         /* translators: If your word count is based on single characters (East Asian characters), enter 'characters'. Otherwise, enter 'words'. Do not translate into your own language. */
         if ( 'characters' == _x('words', 'word count: words or characters?') && preg_match('/^utf\-?8$/i', get_option('blog_charset')) ) {

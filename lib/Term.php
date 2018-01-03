@@ -141,8 +141,35 @@ class Term extends Core implements CoreInterface {
 	 */
 	protected function get_term_meta( $tid ) {
 		$customs = array();
-		$customs = apply_filters('timber_term_get_meta', $customs, $tid, $this);
-		return apply_filters('timber/term/meta', $customs, $tid, $this);
+
+		/**
+		 * Filters term meta data.
+		 *
+		 * This filter is used by the ACF Integration.
+		 *
+		 * @todo Add example
+		 *
+		 * @since 0.21.9
+		 *
+		 * @param array        $customs Custom term meta data.
+		 * @param int          $term_id Term ID.
+		 * @param \Timber\Term $term    Term object.
+		 */
+		$customs = apply_filters('timber/term/meta', $customs, $tid, $this);
+
+		/**
+		 * Filters term meta data.
+		 *
+		 * @deprecated 2.0.0, use `timber/term/meta`
+		 */
+		$customs = apply_filters_deprecated(
+			'timber_term_get_meta',
+			array( $customs, $tid, $this ),
+			'2.0.0',
+			'timber/term/meta'
+		);
+
+		return $customs;
 	}
 
 	/**
@@ -252,8 +279,31 @@ class Term extends Core implements CoreInterface {
 	 */
 	public function link() {
 		$link = get_term_link($this);
-		$link = apply_filters('timber_term_link', $link, $this);
-		return apply_filters('timber/term/link', $link, $this);
+
+		/**
+		 * Filters the link to the term archive page.
+		 *
+		 * @see   \Timber\Term::link()
+		 * @since 0.21.9
+		 *
+		 * @param string       $link The link.
+		 * @param \Timber\Term $term The term object.
+		 */
+		$link = apply_filters('timber/term/link', $link, $this);
+
+		/**
+		 * Filters the link to the term archive page.
+		 *
+		 * @deprecated 0.21.9, use `timber/term/link`
+		 */
+		$link = apply_filters_deprecated(
+			'timber_term_link',
+			array( $link, $this ),
+			'2.0.0',
+			'timber/term/link'
+		);
+
+		return $link;
 	}
 
 	/**
@@ -278,8 +328,35 @@ class Term extends Core implements CoreInterface {
 		if ( !isset($this->$field_name) ) {
 			$field_value = get_term_meta($this->ID, $field_name, true);
 			if ( !$field_value ) {
-				$field_value = apply_filters('timber_term_get_meta_field', '', $this->ID, $field_name, $this);
+
+				/**
+				 * Filters the value for a term meta field.
+				 *
+				 * This filter is used by the ACF Integration.
+				 *
+				 * @todo Add example
+				 *
+				 * @see   \Timber\Term::meta()
+				 * @since 0.21.9
+				 *
+				 * @param mixed        $field_value The field value.
+				 * @param int          $term_id     The term ID.
+				 * @param string       $field_name  The name of the meta field to get the value for.
+				 * @param \Timber\Term $term        The term object.
+				 */
 				$field_value = apply_filters('timber/term/meta/field', $field_value, $this->ID, $field_name, $this);
+
+				/**
+				 * Filters the value for a term meta field.
+				 *
+				 * @deprecated 2.0.0, use `timber/term/meta/field`
+				 */
+				$field_value = apply_filters_deprecated(
+					'timber_term_get_meta_field',
+					array( $field_value, $this->ID, $field_name, $this ),
+					'2.0.0',
+					'timber/term/meta/field'
+				);
 			}
 			$this->$field_name = $field_value;
 		}
@@ -299,8 +376,33 @@ class Term extends Core implements CoreInterface {
 	public function path() {
 		$link = $this->link();
 		$rel = URLHelper::get_rel_url($link, true);
-		$rel = apply_filters('timber_term_path', $rel, $this);
-		return apply_filters('timber/term/path', $rel, $this);
+
+		/**
+		 * Filters the relative link (path) to a term archive page.
+		 *
+		 * @todo Add example
+		 *
+		 * @see   \Timber\Term::path()
+		 * @since 0.21.9
+		 *
+		 * @param string       $rel  The relative link.
+		 * @param \Timber\Term $term The term object.
+		 */
+		$rel = apply_filters('timber/term/path', $rel, $this);
+
+		/**
+		 * Filters the relative link (path) to a term archive page.
+		 *
+		 * @deprecated 2.0.0, use `timber/term/path`
+		 */
+		$rel = apply_filters_deprecated(
+			'timber_term_path',
+			array( $rel, $this ),
+			'2.0.0',
+			'timber/term/path'
+		);
+
+		return $rel;
 	}
 
 	/**
@@ -424,8 +526,34 @@ class Term extends Core implements CoreInterface {
 	 * @param mixed   $value
 	 */
 	public function update( $key, $value ) {
-		$value = apply_filters('timber_term_set_meta', $value, $key, $this->ID, $this);
-		$value = apply_filters('timber/term/meta/set', $value, $key, $this->ID, $this);
+		/**
+		 * Filters term meta value that is going to be updated.
+		 *
+		 * @deprecated 2.0.0 with no replacement
+		 */
+		$value = apply_filters_deprecated(
+			'timber_term_set_meta',
+			array( $value, $key, $this->ID, $this ),
+			'2.0.0',
+			false,
+			'This filter will be removed in a future version of Timber. There is no replacement.'
+		);
+
+		/**
+		 * Filters term meta value that is going to be updated.
+		 *
+		 * This filter is used by the ACF Integration.
+		 *
+		 * @deprecated 2.0.0 with no replacement
+		 */
+		$value = apply_filters_deprecated(
+			'timber/term/meta/set',
+			array( $value, $key, $this->ID, $this ),
+			'2.0.0',
+			false,
+			'This filter will be removed in a future version of Timber. There is no replacement.'
+		);
+
 		$this->$key = $value;
 	}
 }

@@ -386,9 +386,30 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function get_preview( $len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;' ) {
 		$pp = new PostPreview($this);
+
+		/** This filter is documented in PostPreview.php */
 		add_filter('timber/post/preview/read_more_class', function(){
+			/**
+			 * Filters the CSS class used for the preview link for a post.
+			 *
+			 * This filter only applies when you use `{{ post.get_preview() }}`. When you want to
+			 * change the CSS class for all preview links in general, you can use the
+			 * `timber/post/preview/read_more_class` filter.
+			 *
+			 * @since 0.22.3
+			 * @example
+			 * ```php
+			 * // Change the CSS class for preview links
+			 * add_filter( 'timber/post/get_preview/read_more_class', function( $class ) {
+			 *     return 'post__read-more__link';
+			 * } );
+			 * ```
+			 *
+			 * @param string $class The CSS class to use for the preview link. Default `read-more`.
+			 */
 			return apply_filters('timber/post/get_preview/read_more_class', "read-more");
 		});
+
 		return $pp->length($len)->force($force)->read_more($readmore)->strip($strip)->end($end);
 	}
 
@@ -410,18 +431,71 @@ class Post extends Core implements CoreInterface {
 	 * @return array
 	 */
 	protected function get_post_custom( $pid ) {
-		apply_filters('timber_post_get_meta_pre', array(), $pid, $this);
-		$customs = get_post_custom($pid);
+		$customs = array();
+
+		/**
+		 * Fires before post meta data is imported into the object.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param array        $customs An array of custom meta values. Passing an non-empty array
+		 *                              will skip fetching the values from the database and will use
+		 *                              the filtered values instead.
+		 * @param int          $pid     The post ID.
+		 * @param \Timber\Post $post    The post object.
+		 */
+		$customs = apply_filters( 'timber/post/pre_get_meta', $customs, $pid, $this );
+
+		/**
+		 * Fires before post meta data is imported into the object.
+		 *
+		 * @deprecated 2.0.0, use `timber/post/pre_get_meta`
+		 */
+		do_action_deprecated(
+			'timber_post_get_meta_pre',
+			array( $customs, $pid, $this ),
+			'2.0.0',
+			'timber/post/pre_get_meta'
+		);
+
 		if ( !is_array($customs) || empty($customs) ) {
-			return array();
+			$customs = get_post_custom($pid);
 		}
+
 		foreach ( $customs as $key => $value ) {
 			if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
 				$value = $value[0];
 			}
 			$customs[$key] = maybe_unserialize($value);
 		}
-		$customs = apply_filters('timber_post_get_meta', $customs, $pid, $this);
+
+		/**
+		 * Filters post meta data.
+		 *
+		 * This filter is used by the ACF Integration.
+		 *
+		 * @todo Add description, example
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param array        $customs Post meta data.
+		 * @param int          $pid     The post ID.
+		 * @param \Timber\Post $post    The post object.
+		 */
+		$customs = apply_filters( 'timber/post/get_meta', $customs, $pid, $this );
+
+		/**
+		 * Filters post meta data.
+		 *
+		 * @deprecated 2.0.0, use `timber/post/get_meta`
+		 */
+		$customs = apply_filters_deprecated(
+			'timber_post_get_meta',
+			array( $customs, $pid, $this ),
+			'2.0.0',
+			'timber/post/get_meta'
+		);
+
 		return $customs;
 	}
 
@@ -601,12 +675,29 @@ class Post extends Core implements CoreInterface {
 	 * Gets the field object data from Advanced Custom Fields.
 	 * This includes metadata on the field like whether it's conditional or not.
 	 *
+	 * @api
 	 * @since 1.6.0
 	 * @param string $field_name of the field you want to lookup.
 	 * @return mixed
 	 */
 	public function field_object( $field_name ) {
+		/**
+		 * Filters field object data from Advanced Custom Fields.
+		 *
+		 * This filter is used by the ACF Integration.
+		 *
+		 * @todo Add example
+		 *
+		 * @see   \Timber\Post::field_object()
+		 * @since 1.6.0
+		 *
+		 * @param array        $value      The field object array.
+		 * @param int          $post_id    The post ID.
+		 * @param string       $field_name The ACF field name.
+		 * @param \Timber\Post $post       The post object.
+		 */
 		$value = apply_filters('timber/post/meta_object_field', null, $this->ID, $field_name, $this);
+
 		$value = $this->convert($value, __CLASS__);
 		return $value;
 	}
@@ -617,7 +708,33 @@ class Post extends Core implements CoreInterface {
 	 * @return mixed
 	 */
 	public function get_field( $field_name ) {
-		$value = apply_filters('timber_post_get_meta_field_pre', null, $this->ID, $field_name, $this);
+		/**
+		 * Filters the value for a post meta field before it is fetched from the database.
+		 *
+		 * @todo  Add description, example
+		 *
+		 * @see   \Timber\Post::meta()
+		 * @since 2.0.0
+		 *
+		 * @param string       $value      The field value. Default null.
+		 * @param int          $post_id    The post ID.
+		 * @param string       $field_name The name of the meta field to get the value for.
+		 * @param \Timber\Post $post       The post object.
+		 */
+		$value = apply_filters( 'timber/post/pre_get_meta_field', null, $this->ID, $field_name, $this );
+
+		/**
+		 * Filters the value for a post meta field before it is fetched from the database.
+		 *
+		 * @deprecated 2.0.0, use `timber/post/pre_get_meta_field`
+		 */
+		$value = apply_filters_deprecated(
+			'timber_post_get_meta_field_pre',
+			array( $value, $this->ID, $field_name, $this ),
+			'2.0.0',
+			'timber/post/pre_get_meta_field'
+		);
+
 		if ( $value === null ) {
 			$value = get_post_meta($this->ID, $field_name);
 			if ( is_array($value) && count($value) == 1 ) {
@@ -627,14 +744,43 @@ class Post extends Core implements CoreInterface {
 				$value = null;
 			}
 		}
-		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
+
+		/**
+		 * Filters the value for a post meta field.
+		 *
+		 * This filter is used by the ACF Integration.
+		 *
+		 * @todo  Add description, example
+		 *
+		 * @see   \Timber\Post::meta()
+		 * @since 2.0.0
+		 *
+		 * @param string       $value      The field value.
+		 * @param int          $post_id    The post ID.
+		 * @param string       $field_name The name of the meta field to get the value for.
+		 * @param \Timber\Post $post       The post object.
+		 */
+		$value = apply_filters( 'timber/post/get_meta_field', $value, $this->ID, $field_name, $this );
+
+		/**
+		 * Filters the value for a post meta field.
+		 *
+		 * @deprecated 2.0.0, use `timber/post/get_meta_field`
+		 */
+		$value = apply_filters_deprecated(
+			'timber_post_get_meta_field',
+			array( $value, $this->ID, $field_name, $this ),
+			'2.0.0',
+			'timber/post/get_meta_field'
+		);
+
 		$value = $this->convert($value, __CLASS__);
 		return $value;
 	}
 
 	/**
 	 * Import field data onto this object
-	 * 
+	 *
 	 * @param string $field_name
 	 */
 	public function import_field( $field_name ) {
@@ -749,6 +895,19 @@ class Post extends Core implements CoreInterface {
 	 * @return array
 	 */
 	public function authors() {
+		/**
+		 * Filters authors for a post.
+		 *
+		 * This filter is used by the CoAuthorsPlus integration.
+		 *
+		 * @todo  Add example
+		 *
+		 * @see   \Timber\Post::authors()
+		 * @since 1.1.4
+		 *
+		 * @param array        $authors An array of User objects. Default: User object for `post_author`.
+		 * @param \Timber\Post $post    The post object.
+		 */
 		return apply_filters('timber/post/authors', array($this->author()), $this);
 	}
 
@@ -887,8 +1046,47 @@ class Post extends Core implements CoreInterface {
 	protected function maybe_show_password_form() {
 		if ( $this->password_required() ) {
 			$show_pw = false;
+
+			/**
+			 * Filters whether the password form should be shown for password protected posts.
+			 *
+			 * This filter runs only when you call `{{ post.content }}` for a password protected
+			 * post. When this filter returns `true`, a password form will be shown instead of the
+			 * post content. If you want to modify the form itself, you can use the
+			 * `timber/post/content/password_form` filter.
+			 *
+			 * @since 1.1.4
+			 * @example
+			 * ```php
+			 * // Always show password form for password protected posts.
+			 * add_filter( 'timber/post/content/show_password_form_for_protected', '__return_true' );
+			 * ```
+			 *
+			 * @param bool $show_pw Whether the password form should be shown. Default `false`.
+			 */
 			$show_pw = apply_filters('timber/post/content/show_password_form_for_protected', $show_pw);
+
 			if ( $show_pw ) {
+				/**
+				 * Filters the password form output.
+				 *
+				 * As an alternative to this filter, you could also use WordPress’s `the_password_form` filter.
+				 * The difference to this filter is, that you’ll also have the post object available as a second
+				 * parameter, in case you need that.
+				 *
+				 * @since 1.1.4
+				 *
+				 * @example
+				 * ```php
+				 * // Modify the password form.
+				 * add_filter( 'timber/post/content/password_form', function( $form, $post ) {
+				 *     return Timber::compile( 'assets/password-form.twig', array( 'post' => $post ) );
+				 * }, 10, 2 );
+				 * ```
+				 *
+				 * @param string       $form Form output. Default WordPress password form output generated by `get_the_password_form()`.
+				 * @param \Timber\Post $post The post object.
+				 */
 				return apply_filters('timber/post/content/password_form', get_the_password_form($this->ID), $this);
 			}
 		}

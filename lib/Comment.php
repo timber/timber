@@ -130,13 +130,13 @@ class Comment extends Core implements CoreInterface {
 		}
 
 		$email = $this->avatar_email();
-		
+
 		$args = array('size' => $size, 'default' => $default);
 		$args = apply_filters('pre_get_avatar_data', $args, $email);
 		if ( isset($args['url']) ) {
 			return $args['url'];
 		}
-		
+
 		$email_hash = '';
 		if ( !empty($email) ) {
 			$email_hash = md5(strtolower(trim($email)));
@@ -298,15 +298,63 @@ class Comment extends Core implements CoreInterface {
 		if ( $comment_id === null ) {
 			$comment_id = $this->ID;
 		}
-		//Could not find a WP function to fetch all comment meta data, so I made one.
-		apply_filters('timber_comment_get_meta_pre', array(), $comment_id);
-		$comment_metas = get_comment_meta($comment_id);
+
+		$comment_metas = array();
+
+		/**
+		 * Filters comment meta data before is fetched from the database.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param array           $comment_metas An array of comment meta data. Passing a non-empty
+		 *                                       array will skip fetching values from the database
+		 *                                       and will use the filtered values instead.
+		 *                                       Default `array()`.
+		 * @param int             $comment_id    The comment ID.
+		 * @param \Timber\Comment $comment       The comment object.
+		 */
+		$comment_metas = apply_filters( 'timber/comment/pre_get_meta_fields', $comment_metas, $comment_id, $this );
+
+		/**
+		 * Fires before comment meta data is imported into the object.
+		 *
+		 * @deprecated 2.0.0
+		 * @since      0.15.4
+		 * @since      0.19.1 Switched from filter to action functionality.
+		 */
+		do_action_deprecated( 'timber_comment_get_meta_pre', array( $comment_metas, $comment_id ), '2.0.0', 'timber/comment/pre_get_meta_fields' );
+
+		if ( ! is_array( $comment_metas ) || empty( $comment_metas ) ) {
+			$comment_metas = get_comment_meta($comment_id);
+		}
+
 		foreach ( $comment_metas as &$cm ) {
 			if ( is_array($cm) && count($cm) == 1 ) {
 				$cm = $cm[0];
 			}
 		}
-		$comment_metas = apply_filters('timber_comment_get_meta', $comment_metas, $comment_id);
+
+		/**
+		 * Filters comment meta data.
+		 *
+		 * @todo Add description, example
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param array           $comment_metas Comment meta data.
+		 * @param int             $comment_id    The comment ID.
+		 * @param \Timber\Comment $comment       The comment object.
+		 */
+		$comment_metas = apply_filters( 'timber/comment/get_meta_fields', $comment_metas, $comment_id, $this );
+
+		/**
+		 * Filters comment meta data.
+		 *
+		 * @deprecated 2.0.0, use `timber/comment/get_meta_fields`
+         * @since 0.15.4
+		 */
+		$comment_metas = apply_filters_deprecated( 'timber_comment_get_meta', array( $comment_metas, $comment_id ), '2.0.0', 'timber/comment/get_meta_fields' );
+
 		return $comment_metas;
 	}
 
@@ -317,11 +365,67 @@ class Comment extends Core implements CoreInterface {
 	 * @return mixed
 	 */
 	protected function get_meta_field( $field_name ) {
-		$value = apply_filters('timber_comment_get_meta_field_pre', null, $this->ID, $field_name, $this);
-		if ( $value === null ) {
-			$value = get_comment_meta($this->ID, $field_name, true);
+		/**
+		 * Filters the value for a comment meta field before it is fetched from the database.
+		 *
+		 * @todo  Add description, example
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param string          $value      Passing a non-null value will short-circuit
+		 *                                    `Comment::get_meta_field()`, returning the value instead.
+		 *                                    Default null.
+		 * @param int             $comment_id The comment ID.
+		 * @param string          $field_name The name of the meta field to get the value for.
+		 * @param \Timber\Comment $comment    The comment object.
+		 */
+		$value = apply_filters( 'timber/comment/pre_get_meta_field', null, $this->ID, $field_name, $this);
+
+		/**
+		 * Filters the value for a comment meta field before it is fetched from the database.
+		 *
+		 * @deprecated 2.0.0, use `timber/comment/pre_get_meta_field`
+		 */
+		$value = apply_filters_deprecated(
+			'timber_comment_get_meta_field_pre',
+			array( $value, $this->ID, $field_name, $this),
+			'2.0.0',
+			'timber/comment/pre_get_meta_field'
+		);
+
+		// Short-circuit
+		if ( $value ) {
+			return $value;
 		}
-		$value = apply_filters('timber_comment_get_meta_field', $value, $this->ID, $field_name, $this);
+
+		$value = get_comment_meta($this->ID, $field_name, true);
+
+		/**
+		 * Filters the value for a comment meta field.
+		 *
+		 * @todo  Add description, example
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param string          $value      The field value.
+		 * @param int             $comment_id The comment ID.
+		 * @param string          $field_name The name of the meta field to get the value for.
+		 * @param \Timber\Comment $comment    The comment object.
+		 */
+		$value = apply_filters( 'timber/comment/get_meta_field', $value, $this->ID, $field_name, $this);
+
+		/**
+		 * Filters the value for a comment meta field.
+		 *
+		 * @deprecated 2.0.0, use `timber/comment/get_meta_field`
+		 */
+		$value = apply_filters_deprecated(
+			'timber_comment_get_meta_field',
+			array( $value, $this->ID, $field_name, $this ),
+			'2.0.0',
+			'timber/comment/get_meta_field'
+		);
+
 		return $value;
 	}
 

@@ -98,7 +98,23 @@ class PostPreview {
 				$text .= $this->end.' ';
 			}
 		}
+
+		/**
+		 * Filters the CSS class used for preview links.
+		 *
+		 * @since 1.0.4
+		 * @example
+		 * ```php
+		 * // Change the CSS class for preview links
+		 * add_filter( 'timber/post/preview/read_more_class', function( $class ) {
+		 *     return 'read-more__link';
+		 * } );
+		 * ```
+		 *
+		 * @param string $class The CSS class to use for the preview link. Default `read-more`.
+		 */
 		$read_more_class = apply_filters('timber/post/preview/read_more_class', "read-more");
+
 		if ( $this->readmore && !empty($readmore_matches) && !empty($readmore_matches[1]) ) {
 			$text .= ' <a href="'.$this->post->link().'" class="'.$read_more_class.'">'.trim($readmore_matches[1]).'</a>';
 		} elseif ( $this->readmore ) {
