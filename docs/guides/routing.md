@@ -105,7 +105,7 @@ Routes::map('info/:name/page/:pg', function($params){
 global $params;
 $context['wp_title'] = $params['my_title']; // "This is my custom title"
 /* the rest as normal... */
-Timber::render('archive.twig', $context)
+Timber::render('archive.twig', $context);
 ```
 
 `$query`
