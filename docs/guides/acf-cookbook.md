@@ -225,21 +225,3 @@ $context["acf"] = get_field_objects($data["post"]->ID);
 ```twig
 {{ acf.your_field_name_here.label }}
 ```
-
-* * *
-
-## Query by custom field value
-
-This example that uses a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) array shows the arguments to find all posts where a custom field called `color` has a value of `red`.
-
-```php
-<?php
-$args = array(
-    'numberposts' => -1,
-    'post_type' => 'post',
-    'meta_key' => 'color',
-    'meta_value' => 'red'
-);
-$context['posts'] = Timber::get_posts($args);
-```
-* * *
