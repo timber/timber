@@ -23,7 +23,7 @@
 
 		function _setupTranslationFiles() {
 			$lang_dir = get_stylesheet_directory().'/languages';
-			
+
 			if ( !file_exists($lang_dir.'/en_US.po') ) {
 				$this->installTranlsationFiles($lang_dir);
 			}
@@ -79,7 +79,7 @@
 				$action_tally[] = 'my_action_args';
 				return 'foo';
 			});
-			add_action('timber_compile_done', function(){
+			add_action('timber/compile/done', function(){
 				global $action_tally, $php_unit;
 				$php_unit->assertContains('my_action_args', $action_tally);
 				$php_unit->assertContains('my_action_foo', $action_tally);
@@ -118,7 +118,7 @@
 				$action_context_tally[] = 'my_action_context';
 			});
 
-			add_action('timber_compile_done', function(){
+			add_action('timber/compile/done', function(){
 				global $php_unit;
 				global $action_context_tally;
 				$php_unit->assertContains('my_action_context_vars', $action_context_tally);
@@ -252,7 +252,7 @@
 		}
 
 		function testAddToTwig() {
-			add_filter('get_twig', function( $twig ) {
+			add_filter('timber/twig', function( $twig ) {
 				$twig->addFilter( new Twig_SimpleFilter( 'foobar', function( $text ) {
 					return $text . 'foobar';
 				}) );

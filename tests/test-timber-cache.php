@@ -120,9 +120,9 @@
 
             TimberHelper::_lock_transient($transient, 30);
 
-            add_filter( 'timber_force_transients', '__return_true' );
+            add_filter( 'timber/transient/force_transients', '__return_true' );
             $get_transient = TimberHelper::transient( $transient, '__return_true' );
-            remove_filter( 'timber_force_transients', '__return_true' );
+            remove_filter( 'timber/transient/force_transients', '__return_true' );
 
             $this->assertTrue( $get_transient );
         }
@@ -227,7 +227,7 @@
             $clear = $loader->clear_cache_timber(\Timber\Loader::CACHE_OBJECT);
             $this->assertTrue($clear);
             $works = true;
-            if ( isset($wp_object_cache->cache[\Timber\Loader::CACHEGROUP]) 
+            if ( isset($wp_object_cache->cache[\Timber\Loader::CACHEGROUP])
                 && !empty($wp_object_cache->cache[\Timber\Loader::CACHEGROUP]) ) {
                 $works = false;
             }
@@ -270,7 +270,7 @@
             $str_new = Timber::compile('assets/single-post-rand.twig', array('post' => $post, 'rand' => $r2), array(600, false));
             $this->assertNotEquals($str_old, $str_new);
             self::_unswapFiles();
-            
+
         }
 
         function _swapFiles() {
@@ -367,7 +367,7 @@
         public function _get_cache_key() {
             return 'iamakey';
         }
-    } 
+    }
 
 	function my_test_callback(){
 		return "lbj";
