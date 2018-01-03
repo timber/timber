@@ -264,17 +264,17 @@ class Post extends Core implements CoreInterface {
 
 	protected function get_post_preview_id( $query ) {
 		$can = array(
-			'edit_'.$query->queried_object->post_type.'s',
+			get_post_type_object($query->queried_object->post_type)->cap->edit_post,
 		);
 
 		if ( $query->queried_object->author_id !== get_current_user_id() ) {
-			$can[] = 'edit_others_'.$query->queried_object->post_type.'s';
+			$can[] = get_post_type_object($query->queried_object->post_type)->cap->edit_others_posts;
 		}
 
 		$can_preview = array();
 
 		foreach ( $can as $type ) {
-			if ( current_user_can($type) ) {
+			if ( current_user_can($type, $query->queried_object_id) ) {
 				$can_preview[] = true;
 			}
 		}
