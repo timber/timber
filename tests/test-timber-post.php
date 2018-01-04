@@ -374,21 +374,21 @@
             // @todo The below should work magically when the iterators are merged
             setup_postdata( get_post( $post_id ) );
 
-            $post = Timber::get_post();
+            $post = new Timber\Post();
 			$this->assertEquals($page1, trim(strip_tags( $post->paged_content() )));
 
             $pagination = $post->pagination();
             $this->go_to( $pagination['pages'][1]['link'] );
 
             setup_postdata( get_post( $post_id ) );
-            $post = Timber::get_post();
+            $post = new Timber\Post();
 
 			$this->assertEquals($page2, trim(strip_tags( $post->paged_content() )));
 		}
 
 		/**
 		 * This seems like an incredible edge case test from 1.x
-		 * @ignore
+		 * @ignore since 2.0
 		 */
 		/*
 		function testMetaCustomArrayFilter(){
