@@ -21,7 +21,7 @@
 		function testCommentCountZero() {
 			$quote = 'Named must your fear be before banish it you can.';
             $post_id = $this->factory->post->create(array('post_content' => $quote));
-            $post = Timber::get_post($post_id);
+            $post = new Timber\Post($post_id);
             $this->assertEquals(0, $post->get_comment_count());
 		}
 
