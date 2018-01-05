@@ -100,27 +100,27 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	 * This tests some ridiculous notion I had of using DOM style selection for WP posts (like "#my-post"). There's no way anyone uses it.
 	 * @deprecated since 2.0
 	 */
-	function testGetPostsFromSlugWithHash(){
-		$post_id = $this->factory->post->create();
-		/** Test deprecated method */
-		$post = Timber::get_post($post_id);
-		$str = '#'.$post->post_name;
-		$post = Timber::get_post($str);
-		$this->assertEquals($post_id, $post->ID);
-	}
+	// function testGetPostsFromSlugWithHash(){
+	// 	$post_id = $this->factory->post->create();
+	// 	/** Test deprecated method */
+	// 	$post = Timber::get_post($post_id);
+	// 	$str = '#'.$post->post_name;
+	// 	$post = Timber::get_post($str);
+	// 	$this->assertEquals($post_id, $post->ID);
+	// }
 
 	/**
 	 * This tests some ridiculous notion I had of using DOM style selection for WP posts (like "my-post-type#my-post"). There's no way anyone uses it.
 	 * @deprecated since 2.0
 	 */
-	function testGetPostsFromSlugWithHashAndPostType(){
-		$post_id = $this->factory->post->create();
-		/** Test deprecated method */
-		$post = Timber::get_post($post_id);
-		$str = $post->post_type.'#'.$post->post_name;
-		$post = Timber::get_post($str);
-		$this->assertEquals($post_id, $post->ID);
-	}
+	// function testGetPostsFromSlugWithHashAndPostType(){
+	// 	$post_id = $this->factory->post->create();
+	// 	/** Test deprecated method */
+	// 	$post = Timber::get_post($post_id);
+	// 	$str = $post->post_type.'#'.$post->post_name;
+	// 	$post = Timber::get_post($str);
+	// 	$this->assertEquals($post_id, $post->ID);
+	// }
 
 	function testGetPostsFromSlug(){
 		$post_id = $this->factory->post->create(array('post_name' => 'mycoolpost'));
