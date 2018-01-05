@@ -635,14 +635,16 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Import field data onto this object
 	 *
-   * @deprecated since 2.0.0
+	 * @deprecated since 2.0.0
 	 * @param string $field_name
 	 */
 	public function import_field( $field_name ) {
 		$this->$field_name = $this->get_field($field_name);
 	}
 
-	 * Get the CSS classes for a post without cache. For usage you should use `{{post.class}}`
+	/**
+	 * Get the CSS classes for a post without cache. 
+	 * For usage you should use `{{post.class}}`
 	 *
 	 * @internal
 	 * @param string $class additional classes you want to add.
