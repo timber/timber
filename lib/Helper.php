@@ -436,6 +436,10 @@ class Helper {
 			$args = array( 'slug' => $args );
 		}
 
+		if ( ! is_array( $list ) && ! is_a( $list, 'Traversable' ) ) {
+			return array();
+		}
+
 		$util = new \WP_List_Util( $list );
 		return $util->filter( $args, $operator );
 	}
