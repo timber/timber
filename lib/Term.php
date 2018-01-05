@@ -202,6 +202,7 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 * @internal
+   * @deprecated since 2.0.0 use Term::edit_link() instead
 	 * @return string
 	 */
 	public function get_edit_url() {
@@ -210,6 +211,7 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 * @internal
+   * @deprecated since 2.0.0 use Term::meta() insteaad
 	 * @param string $field_name
 	 * @return string
 	 */
@@ -218,25 +220,8 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @internal
-	 * @deprecated since 1.0
-	 * @return string
-	 */
-	public function get_path() {
-		return $this->path();
-	}
-
-	/**
-	 * @internal
-	 * @deprecated since 1.0
-	 * @return string
-	 */
-	public function get_link() {
-		return $this->link();
-	}
-
-	/**
 	 * Get Posts that have been "tagged" with the particular term
+   * @deprecated since 2.0.0 use Term::posts() instead.
 	 * @internal
 	 * @param int $numberposts
 	 * @param string $post_type
@@ -249,6 +234,7 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 * @internal
+   * @deprecated since 2.0.0 use Term::children() instead
 	 * @return array
 	 */
 	public function get_children() {
@@ -256,8 +242,8 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * 
+	 * @deprecated since 2.0.0
 	 * @param string  $key
 	 * @param mixed   $value
 	 */
