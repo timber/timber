@@ -235,6 +235,31 @@ class Term extends Core implements CoreInterface {
 		return $this->meta($field_name);
 	}
 
+	/**
+	 * @api
+	 * @deprecated 1.0.0, use `{{ term.path }}` instead.
+	 * @return string
+	 */
+	public function get_path() {
+		Helper::warn( '{{ term.get_path }} is deprecated. Use {{ term.path }} instead.' );
+
+		return $this->path();
+	}
+
+	/**
+	 * @api
+	 * @deprecated 1.0.0, use `{{ term.link }}` instead.
+	 * @return string
+	 */
+	public function get_link() {
+		Helper::warn( '{{ term.get_link }} is deprecated. Use {{ term.link }} instead.' );
+
+		return $this->link();
+	}
+
+
+	/* Alias
+	====================== */
 
 	/**
 	 * @api
@@ -490,7 +515,7 @@ class Term extends Core implements CoreInterface {
 	/**
 	 * Get Posts that have been "tagged" with the particular term
 	 *
-	 * @deprecated since 2.0 use Term::posts() instead
+	 * @deprecated 2.0 use Term::posts() instead
 	 * @internal
 	 * @param int $numberposts
 	 * @param string $post_type
