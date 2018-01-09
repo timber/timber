@@ -189,11 +189,18 @@ class Helper {
 	}
 
 	/**
-	 * @param string $message that you want to output
-	 * @return boolean
+	 * Trigger a warning.
+	 *
+	 * @param string $message The warning that you want to output.
+	 *
+	 * @return void
 	 */
 	public static function warn( $message ) {
-		return trigger_error($message, E_USER_WARNING);
+		if ( ! WP_DEBUG ) {
+			return;
+		}
+
+		trigger_error( $message, E_USER_WARNING );
 	}
 
 	/**
