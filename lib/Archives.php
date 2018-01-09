@@ -75,7 +75,7 @@ class Archives extends Core {
 	 */
 	public function init( $args = null, $base = '' ) {
 		$this->base = $base;
-		$this->items = $this->get_items($args);
+		$this->items = $this->items($args);
 		$this->args = $args;
 	}
 

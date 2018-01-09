@@ -17,7 +17,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( '/home/', $item->path() );
 	}
 
-	
+
 	function testTrailingSlashesOrNot() {
 		self::setPermalinkStructure();
 		$items = array();
@@ -147,7 +147,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 		$items = $menu->get_items();
 		$item = $items[1];
-		$this->assertTrue( $item->external() );
+		$this->assertTrue( $item->is_external() );
 		$struc = get_option( 'permalink_structure' );
 		$this->assertEquals( 'http://upstatement.com', $item->url );
 		$this->assertEquals( 'http://upstatement.com', $item->link() );
