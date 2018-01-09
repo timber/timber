@@ -225,13 +225,29 @@ class Term extends Core implements CoreInterface {
 	}
 
 
+	/* Public methods
+	===================== */
+
 	/**
-	 * @internal
-   	 * @deprecated since 2.0.0 use Term::meta() insteaad
+	 * @api
+	 * @deprecated 2.0.0, use `{{ term.edit_link }}` instead.
+	 * @return string
+	 */
+	public function get_edit_url() {
+		Helper::warn( '{{ term.get_edit_url }} is deprecated. Use `{{ term.edit_link }}` instead.' );
+
+		return $this->edit_link();
+	}
+
+	/**
+	 * @api
+	 * @deprecated 2.0.0, use `{{ term.meta }}` instead.
 	 * @param string $field_name
 	 * @return string
 	 */
 	public function get_meta_field( $field_name ) {
+		Helper::warn( '{{ term.get_meta_field }} is deprecated. Use {{ term.meta }} instead.' );
+
 		return $this->meta($field_name);
 	}
 
@@ -257,9 +273,6 @@ class Term extends Core implements CoreInterface {
 		return $this->link();
 	}
 
-
-	/* Alias
-	====================== */
 
 	/**
 	 * @api
@@ -527,23 +540,15 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
-	 *
-	 * @deprecated since 2.0.0 use Term::children() instead
-	 * @internal
+	 * @deprecated 2.0.0, use `{{ term.children }}` instead.
 	 * @return array
 	 */
 	public function get_children() {
+		Helper::warn( '{{ term.get_children }} is deprecated. Use {{ term.children }} instead.' );
+
 		return $this->children();
 	}
 
-	/**
-	 * @internal
-   	 * @deprecated since 2.0.0 use Term::edit_link() instead
-	 * @return string
-	 */
-	public function get_edit_url() {
-		return get_edit_term_link($this->ID, $this->taxonomy);
-	}
 
 	/**
 	 *
