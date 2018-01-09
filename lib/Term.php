@@ -201,19 +201,25 @@ class Term extends Core implements CoreInterface {
 	===================== */
 
 	/**
-	 * @internal
+	 * @api
+	 * @deprecated 2.0.0, use `{{ term.edit_link }}` instead.
 	 * @return string
 	 */
 	public function get_edit_url() {
-		return get_edit_term_link($this->ID, $this->taxonomy);
+		Helper::warn( '{{ term.get_edit_url }} is deprecated. Use `{{ term.edit_link }}` instead.' );
+
+		return $this->edit_link();
 	}
 
 	/**
-	 * @internal
+	 * @api
+	 * @deprecated 2.0.0, use `{{ term.meta }}` instead.
 	 * @param string $field_name
 	 * @return string
 	 */
 	public function get_meta_field( $field_name ) {
+		Helper::warn( '{{ term.get_meta_field }} is deprecated. Use {{ term.meta }} instead.' );
+
 		return $this->meta($field_name);
 	}
 
@@ -252,10 +258,13 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @internal
+	 * @api
+	 * @deprecated 2.0.0, use `{{ term.children }}` instead.
 	 * @return array
 	 */
 	public function get_children() {
+		Helper::warn( '{{ term.get_children }} is deprecated. Use {{ term.children }} instead.' );
+
 		return $this->children();
 	}
 
