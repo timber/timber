@@ -212,14 +212,11 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @api
-	 * @deprecated 2.0.0, use `{{ term.meta }}` instead.
+	 * @internal
 	 * @param string $field_name
 	 * @return string
 	 */
 	public function get_meta_field( $field_name ) {
-		Helper::warn( '{{ term.get_meta_field }} is deprecated. Use {{ term.meta }} instead.' );
-
 		return $this->meta($field_name);
 	}
 
