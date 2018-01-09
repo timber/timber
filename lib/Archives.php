@@ -38,7 +38,7 @@ use Timber\URLHelper;
  * ```
  */
 class Archives extends Core {
-	
+
 	public $base = '';
 	/**
 	 * @api
@@ -181,10 +181,14 @@ class Archives extends Core {
 	}
 
 	/**
-	 * @deprecated since 2.0 use Archives::items instead
+	 * @api
+	 * @deprecated 2.0.0, use `{{ archives.items }}` instead.
+	 * @see \Timber\Archives::items()
 	 * @return array|string
 	 */
 	public function get_items( $args = null ) {
+		Helper::warn( '{{ archives.get_items }} is deprecated. Use {{ archives.items }} instead.' );
+
 		return $this->items($args);
 	}
 

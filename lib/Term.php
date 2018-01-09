@@ -218,20 +218,24 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @internal
-	 * @deprecated since 1.0
+	 * @api
+	 * @deprecated 1.0.0, use `{{ term.path }}` instead.
 	 * @return string
 	 */
 	public function get_path() {
+		Helper::warn( '{{ term.get_path }} is deprecated. Use {{ term.path }} instead.' );
+
 		return $this->path();
 	}
 
 	/**
-	 * @internal
-	 * @deprecated since 1.0
+	 * @api
+	 * @deprecated 1.0.0, use `{{ term.link }}` instead.
 	 * @return string
 	 */
 	public function get_link() {
+		Helper::warn( '{{ term.get_link }} is deprecated. Use {{ term.link }} instead.' );
+
 		return $this->link();
 	}
 
