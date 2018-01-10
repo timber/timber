@@ -720,7 +720,7 @@ class Post extends Core implements CoreInterface {
 	 * @param string $field_name
 	 * @return mixed
 	 */
-	public function get_field( $field_name ) {
+	public function get_field( $field_name, $format_value = TRUE ) {
 		$value = apply_filters('timber_post_get_meta_field_pre', null, $this->ID, $field_name, $this);
 		if ( $value === null ) {
 			$value = get_post_meta($this->ID, $field_name);
@@ -731,7 +731,7 @@ class Post extends Core implements CoreInterface {
 				$value = null;
 			}
 		}
-		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
+		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $format_value);
 		$value = $this->convert($value, __CLASS__);
 		return $value;
 	}
