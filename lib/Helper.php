@@ -118,9 +118,9 @@ class Helper {
 	 * For stopping time and getting the data
 	 * @example
 	 * ```php
-	 * $start = TimberHelper::start_timer();
+	 * $start = Timber\Helper::start_timer();
 	 * // do some stuff that takes awhile
-	 * echo TimberHelper::stop_timer( $start );
+	 * echo Timber\Helper::stop_timer( $start );
 	 * ```
 	 * @param int     $start
 	 * @return string
@@ -147,7 +147,7 @@ class Helper {
 	 *
 	 * $context = Timber::get_context();
 	 * $context['post'] = new Timber\Post();
-	 * $context['my_form'] = TimberHelper::ob_function('the_form');
+	 * $context['my_form'] = Timber\Helper::ob_function('the_form');
 	 * Timber::render('single-form.twig', $context);
 	 * ```
 	 * ```twig
