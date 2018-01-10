@@ -4,14 +4,14 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 
 	function testImageRetina() {
 		$file = TestTimberImage::copyTestImage();
-		$ret = TimberImageHelper::retina_resize($file, 2);
+		$ret = Timber\ImageHelper::retina_resize($file, 2);
 		$image = new Timber\Image( $ret );
 		$this->assertEquals( 3000, $image->width() );
 	}
 
 	function testImageBiggerRetina() {
 		$file = TestTimberImage::copyTestImage();
-		$ret = TimberImageHelper::retina_resize($file, 3);
+		$ret = Timber\ImageHelper::retina_resize($file, 3);
 		$image = new Timber\Image( $ret );
 		$this->assertEquals( 4500, $image->width() );
 	}

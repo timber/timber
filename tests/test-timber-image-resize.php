@@ -11,7 +11,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 	function testCropCenter() {
 		$cropper = TestTimberImage::copyTestImage('cropper.png');
-		$resized = TimberImageHelper::resize($cropper, 100, 300, 'center');
+		$resized = Timber\ImageHelper::resize($cropper, 100, 300, 'center');
 
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
@@ -27,7 +27,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 	function testCropFalse() {
 		$cropper = TestTimberImage::copyTestImage('cropper.png');
-		$resized = TimberImageHelper::resize($cropper, 100, 200, false);
+		$resized = Timber\ImageHelper::resize($cropper, 100, 200, false);
 
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
@@ -49,7 +49,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 	function testCropRight() {
 		$cropper = TestTimberImage::copyTestImage('cropper.png');
-		$resized = TimberImageHelper::resize($cropper, 100, 300, 'right');
+		$resized = Timber\ImageHelper::resize($cropper, 100, 300, 'right');
 
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
@@ -60,7 +60,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 	function testCropTop() {
 		$cropper = TestTimberImage::copyTestImage('cropper.png');
-		$resized = TimberImageHelper::resize($cropper, 300, 100, 'top');
+		$resized = Timber\ImageHelper::resize($cropper, 300, 100, 'top');
 
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
@@ -71,7 +71,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 	function testCropBottom() {
 		$cropper = TestTimberImage::copyTestImage('cropper.png');
-		$resized = TimberImageHelper::resize($cropper, 300, 100, 'bottom');
+		$resized = Timber\ImageHelper::resize($cropper, 300, 100, 'bottom');
 
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
@@ -82,7 +82,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 	function testCropBottomCenter() {
 		$cropper = TestTimberImage::copyTestImage('cropper.png');
-		$resized = TimberImageHelper::resize($cropper, 300, 100, 'bottom-center');
+		$resized = Timber\ImageHelper::resize($cropper, 300, 100, 'bottom-center');
 
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
@@ -93,7 +93,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 	function testCropTopCenter() {
 		$cropper = TestTimberImage::copyTestImage('cropper.png');
-		$resized = TimberImageHelper::resize($cropper, 300, 100, 'top-center');
+		$resized = Timber\ImageHelper::resize($cropper, 300, 100, 'top-center');
 
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
@@ -104,7 +104,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 	function testCropHeight() {
 		$arch = TestTimberImage::copyTestImage('arch.jpg');
-		$resized = TimberImageHelper::resize($arch, false, 250);
+		$resized = Timber\ImageHelper::resize($arch, false, 250);
 
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
@@ -123,14 +123,14 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 		$img = 'https://raw.githubusercontent.com/timber/timber/master/tests/assets/arch-2night.jpg';
 		// test with a local and external file
-		$resized = TimberImageHelper::resize($img, 50, 50);
+		$resized = Timber\ImageHelper::resize($img, 50, 50);
 
 		// make sure the base url has not been duplicated (https://github.com/timber/timber/issues/405)
 		$this->assertLessThanOrEqual( 1, substr_count($resized, 'example.org') );
 		// make sure the image has been resized
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
 		$this->assertTrue( TestTimberImage::checkSize($resized, 50, 50), 'image should be resized' );
-		
+
 	}
 
 	function testWPMLurlLocal() {
@@ -144,15 +144,15 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		// test with a local and external file
 		$img = 'arch.jpg';
 		$img = TestTimberImage::copyTestImage($img);
-			
-		$resized = TimberImageHelper::resize($img, 50, 50);
+
+		$resized = Timber\ImageHelper::resize($img, 50, 50);
 
 		// make sure the base url has not been duplicated (https://github.com/timber/timber/issues/405)
 		$this->assertLessThanOrEqual( 1, substr_count($resized, 'example.org') );
 		// make sure the image has been resized
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
 		$this->assertTrue( TestTimberImage::checkSize($resized, 50, 50), 'image should be resized' );
-		
+
 	}
 
 }
