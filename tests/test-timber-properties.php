@@ -9,7 +9,7 @@ class TestTimberProperty extends Timber_UnitTestCase {
 		$term_id = wp_insert_term( 'baseball', 'post_tag' );
 		$term_id = $term_id['term_id'];
 		$post = new Timber\Post( $post_id );
-		$user = new TimberUser( $user_id );
+		$user = new Timber\User( $user_id );
 		$term = new Timber\Term( $term_id );
 		$comment = new Timber\Comment( $comment_id );
 		$this->assertEquals( $post_id, $post->ID );
@@ -30,7 +30,7 @@ class TestTimberProperty extends Timber_UnitTestCase {
 		$term_id = wp_insert_term( 'baseball', 'post_tag' );
 		$term_id = $term_id['term_id'];
 		$post = new Timber\Post( $post_id );
-		$user = new TimberUser( $user_id );
+		$user = new Timber\User( $user_id );
 		$term = new Timber\Term( $term_id );
 		$comment = new Timber\Comment( $comment_id );
 		$site = new Timber\Site();

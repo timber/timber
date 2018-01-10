@@ -37,7 +37,7 @@ class TestTimberFilters extends Timber_UnitTestCase {
 
 	function testUserMetaFilter() {
 		$uid = $this->factory->user->create();
-		$user = new TimberUser( $uid );
+		$user = new Timber\User( $uid );
 		$user->update( 'jared', 'novack' );
 		add_filter( 'timber_user_get_meta_field', array( $this, 'filter_timber_user_get_meta_field' ), 10, 4 );
 		$this->assertEquals( $user->meta( 'jared' ), 'novack' );
