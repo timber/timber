@@ -33,7 +33,7 @@ class TestTimberProperty extends Timber_UnitTestCase {
 		$user = new TimberUser( $user_id );
 		$term = new TimberTerm( $term_id );
 		$comment = new Timber\Comment( $comment_id );
-		$site = new TimberSite();
+		$site = new Timber\Site();
 		return array( 'post' => $post, 'user' => $user, 'term' => $term, 'comment' => $comment, 'site' => $site );
 	}
 
