@@ -53,7 +53,7 @@ class TestTimberFilters extends Timber_UnitTestCase {
 
 	function testTermMetaFilter() {
 		$tid = $this->factory->term->create();
-		$term = new TimberTerm( $tid );
+		$term = new Timber\Term( $tid );
 		add_filter( 'timber_term_get_meta_field', array( $this, 'filter_timber_term_get_meta_field' ), 10, 4 );
 		$term->meta( 'panic', 'oh yeah' );
 		remove_filter( 'timber_term_get_meta_field', array( $this, 'filter_timber_term_get_meta_field' ) );

@@ -49,7 +49,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 
 	function testACFGetFieldTermCategory() {
 		update_field( 'color', 'blue', 'category_1' );
-		$cat = new TimberTerm( 1 );
+		$cat = new Timber\Term( 1 );
 		$this->assertEquals( 'blue', $cat->color );
 		$str = '{{term.color}}';
 		$this->assertEquals( 'blue', Timber::compile_string( $str, array( 'term' => $cat ) ) );
@@ -58,7 +58,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testACFCustomFieldTermTag() {
 		$tid = $this->factory->term->create();
 		update_field( 'color', 'green', 'post_tag_'.$tid );
-		$term = new TimberTerm( $tid );
+		$term = new Timber\Term( $tid );
 		$str = '{{term.color}}';
 		$this->assertEquals( 'green', Timber::compile_string( $str, array( 'term' => $term ) ) );
 	}
@@ -66,7 +66,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testACFGetFieldTermTag() {
 		$tid = $this->factory->term->create();
 		update_field( 'color', 'blue', 'post_tag_'.$tid );
-		$term = new TimberTerm( $tid );
+		$term = new Timber\Term( $tid );
 		$str = '{{term.get_field("color")}}';
 		$this->assertEquals( 'blue', Timber::compile_string( $str, array( 'term' => $term ) ) );
 	}

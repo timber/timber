@@ -654,7 +654,7 @@
 
 			// test expected tags
 			$timber_tags = $post->terms('post_tag');
-			$dummy_timber_tag = new TimberTerm($dummy_tag['term_id'], 'post_tag');
+			$dummy_timber_tag = new Timber\Term($dummy_tag['term_id'], 'post_tag');
 			$this->assertEquals('whatever', $timber_tags[0]->slug);
 			$this->assertEquals($dummy_timber_tag, $timber_tags[0]);
 

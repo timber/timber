@@ -45,6 +45,6 @@
 
 	}
 
-	class MyTimberTerm extends TimberTerm {
+	class MyTimberTerm extends Timber\Term {
 
 	}

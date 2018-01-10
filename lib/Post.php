@@ -762,7 +762,7 @@ class Post extends Core implements CoreInterface {
 	 * Get the categoires on a particular post
 	 *
 	 * @api
-	 * @return array of TimberTerms
+	 * @return array of Timber\Term objects
 	 */
 	public function categories() {
 		return $this->terms('category');
@@ -773,7 +773,7 @@ class Post extends Core implements CoreInterface {
 	 *
 	 * @api
 	 * If mulitpuile categories are set, it will return just the first one
-	 * @return TimberTerm|null
+	 * @return \Timber\Term|null
 	 */
 	public function category() {
 		$cats = $this->categories();
