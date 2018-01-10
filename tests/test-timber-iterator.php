@@ -5,7 +5,7 @@ class TestTimberIterator extends Timber_UnitTestCase {
     function testQueryPosts(){
         $this->factory->post->create();
         $posts = Timber\PostGetter::query_posts('post_type=post');
-        $this->assertInstanceOf( 'TimberQueryIterator', $posts );
+        $this->assertInstanceOf( 'Timber\QueryIterator', $posts );
     }
 
     function testTheLoop(){
