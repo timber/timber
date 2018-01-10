@@ -330,7 +330,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testInitFromURL() {
 		$destination_path = self::copyTestImage();
-		$destination_path = TimberURLHelper::get_rel_path( $destination_path );
+		$destination_path = Timber\URLHelper::get_rel_path( $destination_path );
 		$destination_url = 'http://'.$_SERVER['HTTP_HOST'].$destination_path;
 		$image = new Timber\Image( $destination_url );
 		$this->assertEquals( $destination_url, $image->src() );
@@ -759,7 +759,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testImageWidthWithFilter() {
 		$pid = $this->factory->post->create();
 		$photo = $this->copyTestImage();
-		$photo = TimberURLHelper::get_rel_path($photo);
+		$photo = Timber\URLHelper::get_rel_path($photo);
 		update_post_meta($pid, 'custom_photo', '/'.$photo);
 		$str = '{{TimberImage(post.custom_photo).width}}';
 		$post = new Timber\Post($pid);
@@ -919,7 +919,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$result = Timber::compile_string($str);
 		$resized_url = str_replace('loading.gif', 'loading-200x0-c-default.gif', $gif_url);
 		$resized_path = str_replace('http://example.org', ABSPATH, $resized_url);
-		$resized_path = TimberURLHelper::remove_double_slashes($resized_path);
+		$resized_path = Timber\URLHelper::remove_double_slashes($resized_path);
 		$this->assertFileExists($resized_path);
 	}
 
