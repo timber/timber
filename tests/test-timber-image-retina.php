@@ -5,14 +5,14 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 	function testImageRetina() {
 		$file = TestTimberImage::copyTestImage();
 		$ret = TimberImageHelper::retina_resize($file, 2);
-		$image = new TimberImage( $ret );
+		$image = new Timber\Image( $ret );
 		$this->assertEquals( 3000, $image->width() );
 	}
 
 	function testImageBiggerRetina() {
 		$file = TestTimberImage::copyTestImage();
 		$ret = TimberImageHelper::retina_resize($file, 3);
-		$image = new TimberImage( $ret );
+		$image = new Timber\Image( $ret );
 		$this->assertEquals( 4500, $image->width() );
 	}
 
@@ -34,7 +34,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$str = '{{post.thumbnail.src|retina}}';
 		$compiled = Timber::compile_string($str, $data);
 		$this->assertContains('@2x', $compiled);
-		$img = new TimberImage($compiled);
+		$img = new Timber\Image($compiled);
 		$this->assertEquals(500, $img->width());
 	}
 
@@ -56,7 +56,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$str = '{{post.thumbnail.src|retina(1.5)}}';
 		$compiled = Timber::compile_string($str, $data);
 		$this->assertContains('@1.5x', $compiled);
-		$img = new TimberImage($compiled);
+		$img = new Timber\Image($compiled);
 		$this->assertEquals(375, $img->width());
 	}
 
@@ -76,7 +76,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$data['post'] = new Timber\Post( $post_id );
 		$str = '{{post.thumbnail.src|resize(100, 50)|retina(3)}}';
 		$compiled = Timber::compile_string($str, $data);
-		$img = new TimberImage($compiled);
+		$img = new Timber\Image($compiled);
 		$this->assertContains('@3x', $compiled);
 		$this->assertEquals(300, $img->width());
 	}
