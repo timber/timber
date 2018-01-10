@@ -180,7 +180,7 @@
         function testTwigCache(){
         	$cache_dir = __DIR__.'/../cache/twig';
         	if (is_dir($cache_dir)){
-        		TimberLoader::rrmdir($cache_dir);
+        		Timber\Loader::rrmdir($cache_dir);
         	}
         	$this->assertFileNotExists($cache_dir);
         	Timber::$cache = true;
@@ -190,7 +190,7 @@
         	sleep(1);
         	$this->assertFileExists($cache_dir);
         	Timber::$cache = false;
-        	$loader = new TimberLoader();
+        	$loader = new Timber\Loader();
         	$loader->clear_cache_twig();
         	$this->assertFileNotExists($cache_dir);
         }
@@ -203,7 +203,7 @@
             sleep(1);
             $str_new = Timber::compile('assets/single-post.twig', array('post' => $post), 600);
             $this->assertEquals($str_old, $str_new);
-            $loader = new TimberLoader();
+            $loader = new Timber\Loader();
             $clear = $loader->clear_cache_timber();
             $this->assertGreaterThan(0, $clear);
             global $wpdb;
@@ -223,7 +223,7 @@
             sleep(1);
             $str_new = Timber::compile('assets/single-post.twig', array('post' => $post), 600, \Timber\Loader::CACHE_OBJECT);
             $this->assertEquals($str_old, $str_new);
-            $loader = new TimberLoader();
+            $loader = new Timber\Loader();
             $clear = $loader->clear_cache_timber(\Timber\Loader::CACHE_OBJECT);
             $this->assertTrue($clear);
             $works = true;

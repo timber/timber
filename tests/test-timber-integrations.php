@@ -97,7 +97,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testWPCLIClearCacheTwig(){
 		$cache_dir = __DIR__.'/../cache/twig';
     	if (is_dir($cache_dir)){
-    		TimberLoader::rrmdir($cache_dir);
+    		Timber\Loader::rrmdir($cache_dir);
     	}
     	$this->assertFileNotExists($cache_dir);
     	Timber::$cache = true;
@@ -114,7 +114,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testWPCLIClearCacheAll(){
 		$cache_dir = __DIR__.'/../cache/twig';
     	if (is_dir($cache_dir)){
-    		TimberLoader::rrmdir($cache_dir);
+    		Timber\Loader::rrmdir($cache_dir);
     	}
     	$this->assertFileNotExists($cache_dir);
     	Timber::$cache = true;
@@ -132,7 +132,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testWPCLIClearCacheAllArray(){
 		$cache_dir = __DIR__.'/../cache/twig';
     	if (is_dir($cache_dir)){
-    		TimberLoader::rrmdir($cache_dir);
+    		Timber\Loader::rrmdir($cache_dir);
     	}
     	$this->assertFileNotExists($cache_dir);
     	Timber::$cache = true;
