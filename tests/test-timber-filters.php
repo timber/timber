@@ -21,7 +21,7 @@ class TestTimberFilters extends Timber_UnitTestCase {
 	function testCommentMetaFilter() {
 		$post_id = $this->factory->post->create();
 		$comment_id = $this->factory->comment->create( array( 'comment_post_ID' => $post_id ) );
-		$comment = new TimberComment( $comment_id );
+		$comment = new Timber\Comment( $comment_id );
 		$comment->update( 'ghost', 'busters' );
 		add_filter( 'timber_comment_get_meta_field', array( $this, 'filter_timber_comment_get_meta_field' ), 10, 4 );
 		$this->assertEquals( $comment->meta( 'ghost' ), 'busters' );
