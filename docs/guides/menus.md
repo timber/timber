@@ -40,7 +40,7 @@ $menu = new Timber\Menu( 'primary' );
 Or pass nothing. This is good if you have only one menu. In that case Timber will just grab what you got.
 
 ```php
-$menu = new TimberMenu();
+$menu = new Timber\Menu();
 ```
 
 ## Setting up a menu globally

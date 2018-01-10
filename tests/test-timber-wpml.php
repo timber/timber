@@ -34,7 +34,7 @@ class TestTimberWPML extends Timber_UnitTestCase {
 				'bonus' => 'The Bonus'
 		    )
 		);
-		$menu = new TimberMenu('extra-menu');
+		$menu = new Timber\Menu('extra-menu');
 		$this->assertEquals('Ziggy', $menu->name);
 	}
 
