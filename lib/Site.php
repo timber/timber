@@ -72,7 +72,7 @@ class Site extends Core implements CoreInterface {
 	public $siteurl;
 	/**
 	 * @api
-	 * @var [TimberTheme](#TimberTheme)
+	 * @var \Timber\Theme
 	 */
 	public $theme;
 	/**

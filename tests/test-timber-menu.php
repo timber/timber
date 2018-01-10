@@ -536,7 +536,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$built_menu_id = $built_menu['term_id'];
 
 		$this->buildMenu('Zappy', $items);
-		$theme = new TimberTheme();
+		$theme = new Timber\Theme();
 		$data = array('nav_menu_locations' => array('header-menu' => 0, 'extra-menu' => $built_menu_id, 'bonus' => 0));
 		update_option('theme_mods_'.$theme->slug, $data);
 		register_nav_menus(
