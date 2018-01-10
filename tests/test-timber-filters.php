@@ -5,7 +5,7 @@ class TestTimberFilters extends Timber_UnitTestCase {
 	function testPostMetaFieldFilter() {
 		$post_id = $this->factory->post->create();
 		update_post_meta( $post_id, 'Frank', 'Drebin' );
-		$tp = new TimberPost( $post_id );
+		$tp = new Timber\Post( $post_id );
 		add_filter( 'timber_post_get_meta_field', array( $this, 'filter_timber_post_get_meta_field' ), 10, 4 );
 		$this->assertEquals( 'Drebin', $tp->meta( 'Frank' ) );
 		remove_filter( 'timber_post_get_meta_field', array( $this, 'filter_timber_post_get_meta_field' ) );

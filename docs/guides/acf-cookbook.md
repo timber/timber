@@ -37,9 +37,9 @@ This is where we'll start in PHP.
 ```php
 <?php
 /* single.php */
-$post = new TimberPost();
+$post = new Timber\Post();
 if (isset($post->hero_image) && strlen($post->hero_image)){
-	$post->hero_image = new TimberImage($post->hero_image);
+	$post->hero_image = new Timber\Image($post->hero_image);
 }
 $data = Timber::get_context();
 $data['post'] = $post;

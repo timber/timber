@@ -29,7 +29,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
 		add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 		$data = array();
-		$post = new TimberPost( $post_id );
+		$post = new Timber\Post( $post_id );
 		$data['post'] = $post;
 		$str = '{{post.thumbnail.src|retina}}';
 		$compiled = Timber::compile_string($str, $data);
@@ -51,7 +51,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
 		add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 		$data = array();
-		$post = new TimberPost( $post_id );
+		$post = new Timber\Post( $post_id );
 		$data['post'] = $post;
 		$str = '{{post.thumbnail.src|retina(1.5)}}';
 		$compiled = Timber::compile_string($str, $data);
@@ -73,7 +73,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
 		add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 		$data = array();
-		$data['post'] = new TimberPost( $post_id );
+		$data['post'] = new Timber\Post( $post_id );
 		$str = '{{post.thumbnail.src|resize(100, 50)|retina(3)}}';
 		$compiled = Timber::compile_string($str, $data);
 		$img = new TimberImage($compiled);

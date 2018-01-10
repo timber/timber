@@ -9,12 +9,12 @@ use Timber\URLHelper;
 
 
 /**
- * If TimberPost is the class you're going to spend the most time, TimberImage is the class you're going to have the most fun with.
+ * If Timber\Post is the class you're going to spend the most time, Timber\Image is the class you're going to have the most fun with.
  *
  * @example
  * ```php
  * $context = Timber::get_context();
- * $post = new TimberPost();
+ * $post = new Timber\Post();
  * $context['post'] = $post;
  *
  * // lets say you have an alternate large 'cover image' for your post stored in a custom field which returns an image ID
@@ -266,7 +266,7 @@ class Image extends Post implements CoreInterface {
 			return $this->init($iid->ID);
 		} else if ( $iid instanceof Post ) {
 			/**
-			 * This will catch TimberPost and any post classes that extend TimberPost,
+			 * This will catch Timber\Post and any post classes that extend Timber\Post,
 			 * see http://php.net/manual/en/internals2.opcodes.instanceof.php#109108
 			 * and https://timber.github.io/docs/guides/extending-timber/
 			 */

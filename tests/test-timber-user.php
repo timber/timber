@@ -22,7 +22,7 @@
 			$user = new TimberUser($uid);
 			$this->assertEquals('Sixteenth President', $user->description);
 			$pid = $this->factory->post->create(array('post_author' => $uid));
-			$post = new TimberPost($pid);
+			$post = new Timber\Post($pid);
 			$str = Timber::compile_string('{{post.author.description}}', array('post' => $post));
 			$this->assertEquals('Sixteenth President', $str);
 		}

@@ -404,7 +404,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Used internally to fetch the metadata fields (wp_postmeta table)
-	 * and attach them to our TimberPost object
+	 * and attach them to our Timber\Post object
 	 * @internal
 	 * @param int $pid
 	 * @return array
@@ -438,7 +438,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Used internally by init, etc. to build TimberPost object.
+	 * Used internally by init, etc. to build Timber\Post object.
 	 *
 	 * @internal
 	 * @param  int|null $pid The ID to generate info from.

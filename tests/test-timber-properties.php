@@ -8,7 +8,7 @@ class TestTimberProperty extends Timber_UnitTestCase {
 		$comment_id = $this->factory->comment->create( array( 'comment_post_ID' => $post_id ) );
 		$term_id = wp_insert_term( 'baseball', 'post_tag' );
 		$term_id = $term_id['term_id'];
-		$post = new TimberPost( $post_id );
+		$post = new Timber\Post( $post_id );
 		$user = new TimberUser( $user_id );
 		$term = new TimberTerm( $term_id );
 		$comment = new TimberComment( $comment_id );
@@ -29,7 +29,7 @@ class TestTimberProperty extends Timber_UnitTestCase {
 		$comment_id = $this->factory->comment->create( array( 'comment_post_ID' => $post_id ) );
 		$term_id = wp_insert_term( 'baseball', 'post_tag' );
 		$term_id = $term_id['term_id'];
-		$post = new TimberPost( $post_id );
+		$post = new Timber\Post( $post_id );
 		$user = new TimberUser( $user_id );
 		$term = new TimberTerm( $term_id );
 		$comment = new TimberComment( $comment_id );

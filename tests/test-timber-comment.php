@@ -97,7 +97,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'These pretzels are making me thirsty.', 'user_id' => $kramer, 'comment_date' => '2015-08-21 03:24:07'));
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'Perhaps there’s more to Newman than meets the eye.', 'comment_date' => '2015-08-21 03:25:07'));
 		$child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'No, there’s less.', 'comment_parent' => $comment_id, 'comment_date' => '2015-08-21 03:26:07'));
-		$post = new TimberPost($post_id);
+		$post = new Timber\Post($post_id);
 		$comments = $post->comments();
 		$this->assertEquals(2, count($comments));
 		$this->assertEquals(1, count($comments[1]->children()));
@@ -110,8 +110,8 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$elaine = $this->factory->user->create(array('display_name' => 'Elaine Benes'));
 		$kramer = $this->factory->user->create(array('display_name' => 'Kramer'));
 		$peterman = $this->factory->user->create(array('display_name' => 'J. Peterman'));
-		
-		
+
+
 		$post_id = $this->factory->post->create(array('post_date' => '2016-11-28 02:58:18'));
 		//1st parent @4:58am
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'These pretzels are making me thirsty.', 'user_id' => $kramer, 'comment_date' => '2016-11-28 04:58:18'));

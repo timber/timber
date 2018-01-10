@@ -68,7 +68,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$pid = $this->factory->post->create();
 		$iid = self::get_image_attachment( $pid );
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
-		$post = new TimberPost($pid);
+		$post = new Timber\Post($pid);
 		return $post;
 	}
 
@@ -352,7 +352,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
 		add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 		$data = array();
-		$data['post'] = new TimberPost( $post_id );
+		$data['post'] = new Timber\Post( $post_id );
 		$data['size'] = array( 'width' => 100, 'height' => 50 );
 		$data['crop'] = 'default';
 		Timber::compile( 'assets/thumb-test.twig', $data );
@@ -379,7 +379,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 		add_post_meta( $attach_id, '_wp_attachment_image_alt', $thumb_alt, true );
 		$data = array();
-		$data['post'] = new TimberPost( $post_id );
+		$data['post'] = new Timber\Post( $post_id );
 		$this->assertEquals( $data['post']->thumbnail()->alt(), $thumb_alt );
 	}
 
@@ -762,7 +762,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$photo = TimberURLHelper::get_rel_path($photo);
 		update_post_meta($pid, 'custom_photo', '/'.$photo);
 		$str = '{{TimberImage(post.custom_photo).width}}';
-		$post = new TimberPost($pid);
+		$post = new Timber\Post($pid);
 		$rendered = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals( 1500, $rendered );
 	}
@@ -825,7 +825,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$attach_id = wp_insert_attachment($attachment, $filename, $post_id);
 		add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
 		$data = array();
-		$data['post'] = new TimberPost($post_id);
+		$data['post'] = new Timber\Post($post_id);
 		$data['size'] = 'timber-testPostThumbnailsNamed';
 		Timber::compile('assets/image-thumb-named.twig', $data);
 		$resized_path = $upload_dir['path'].'/flag-'.$width.'x'.$height.'-c-default.png';
@@ -847,7 +847,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$attach_id = wp_insert_attachment($attachment, $filename, $post_id);
 		add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
 		$data = array();
-		$data['post'] = new TimberPost($post_id);
+		$data['post'] = new Timber\Post($post_id);
 		$data['size'] = 'medium';
 		$result = Timber::compile('assets/image-thumb-named.twig', $data);
 		$filename = 'flag-300x300-c-default.png';
@@ -949,7 +949,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 		$str = '{{ TimberImage(post).src }}';
 		$result = Timber::compile_string( $str, array('post' => $post) );
-		
+
 		$this->assertEquals($image->src(), $result);
 	}
 
@@ -1001,7 +1001,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testNoThumbnail() {
 		$pid = $this->factory->post->create();
-		$post = new TimberPost($pid);
+		$post = new Timber\Post($pid);
 		$str = Timber::compile_string('Image?{{post.thumbnail.src}}', array('post' => $post));
 		$this->assertEquals('Image?', $str);
 	}
