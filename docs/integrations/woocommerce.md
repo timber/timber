@@ -3,6 +3,8 @@ title: "WooCommerce"
 menu:
   main:
     parent: "guides"
+aliases:
+  - /guides/woocommerce
 ---
 
 ## Point of entry - main WooCommerce PHP file
