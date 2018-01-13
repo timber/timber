@@ -1,5 +1,6 @@
 ---
 title: "Custom Fields"
+weight: "600"
 menu:
   main:
     parent: "guides"

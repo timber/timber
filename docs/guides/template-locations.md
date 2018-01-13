@@ -1,5 +1,6 @@
 ---
 title: "Template Locations"
+weight: "1700"
 menu:
   main:
     parent: "guides"

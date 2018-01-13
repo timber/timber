@@ -1,5 +1,6 @@
 ---
 title: "Extending Timber"
+weight: "1600"
 menu:
   main:
     parent: "guides"

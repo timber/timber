@@ -1,5 +1,6 @@
 ---
 title: "Functions"
+weight: "800"
 menu:
   main:
     parent: "guides"
