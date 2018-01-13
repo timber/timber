@@ -2,7 +2,7 @@
 title: "WooCommerce"
 menu:
   main:
-    parent: "guides"
+    parent: "integrations"
 aliases:
   - /guides/woocommerce
 ---
