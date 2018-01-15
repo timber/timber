@@ -16,13 +16,13 @@ use Timber\URLHelper;
  * @example
  * ```php
  * //Get a term by its ID
- * $context['term'] = new TimberTerm(6);
+ * $context['term'] = new Timber\Term(6);
  * //Get a term when on a term archive page
- * $context['term_page'] = new TimberTerm();
+ * $context['term_page'] = new Timber\Term();
  * //Get a term with a slug
- * $context['team'] = new TimberTerm('patriots');
+ * $context['team'] = new Timber\Term('patriots');
  * //Get a team with a slug from a specific taxonomy
- * $context['st_louis'] = new TimberTerm('cardinals', 'baseball');
+ * $context['st_louis'] = new Timber\Term('cardinals', 'baseball');
  * Timber::render('index.twig', $context);
  * ```
  * ```twig
@@ -213,6 +213,7 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 * @internal
+   * @deprecated since 2.0.0 use Term::meta() insteaad
 	 * @param string $field_name
 	 * @return string
 	 */
@@ -244,6 +245,7 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 * Get Posts that have been "tagged" with the particular term
+   * @deprecated since 2.0.0 use Term::posts() instead.
 	 * @internal
 	 * @param int $numberposts
 	 * @param string $post_type
@@ -257,6 +259,7 @@ class Term extends Core implements CoreInterface {
 	/**
 	 * @api
 	 * @deprecated 2.0.0, use `{{ term.children }}` instead.
+	 * @internal
 	 * @return array
 	 */
 	public function get_children() {
@@ -266,8 +269,8 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
-	 *
-	 *
+	 * 
+	 * @deprecated since 2.0.0
 	 * @param string  $key
 	 * @param mixed   $value
 	 */
@@ -397,7 +400,7 @@ class Term extends Core implements CoreInterface {
 	 * {% endfor %}
 	 * </ul>
 	 * ```
-	 * @return array|bool|null
+	 * @return \Timber\PostQuery
 	 */
 	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
 		if ( !strlen($post_class) ) {
@@ -439,7 +442,8 @@ class Term extends Core implements CoreInterface {
 				'post_type' => $post_type_or_class
 			);
 		}
-		return Timber::get_posts($args, $post_class);
+
+		return new PostQuery( $args, $post_class );
 	}
 
 

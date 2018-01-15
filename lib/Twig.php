@@ -158,7 +158,7 @@ class Twig {
 	}
 
 	/**
-	 * Function for Term or TimberTerm() within Twig
+	 * Function for Term or Timber\Term() within Twig
 	 * @since 1.5.1
 	 * @author @jarednova
 	 * @param integer $tid the term ID to search for
@@ -255,7 +255,7 @@ class Twig {
 					return apply_filters_ref_array($tag, $args);
 				} ));
 
-		
+
 		$twig = apply_filters('timber/twig', $twig);
 		/**
 		 * get_twig is deprecated, use timber/twig

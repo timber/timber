@@ -81,7 +81,7 @@ class User extends Core implements CoreInterface {
 	 * This post is by Jared Novack
 	 * ```
 	 *
-	 * @return string a fallback for TimberUser::name()
+	 * @return string a fallback for Timber\User::name()
 	 */
 	public function __toString() {
 		$name = $this->name();

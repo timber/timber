@@ -68,13 +68,13 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$pid = $this->factory->post->create();
 		$iid = self::get_image_attachment( $pid );
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
-		$post = new TimberPost($pid);
+		$post = new Timber\Post($pid);
 		return $post;
 	}
 
 	public static function get_timber_image_object($file = 'cropper.png') {
 		$iid = self::get_image_attachment(0, $file);
-		return new TimberImage($iid);
+		return new Timber\Image($iid);
 	}
 
 /* ----------------
@@ -125,7 +125,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  	function testImageLink() {
  		self::setPermalinkStructure();
  		$attach = self::get_image_attachment();
- 		$image = new TimberImage($attach);
+ 		$image = new Timber\Image($attach);
  		$links = array();
  		$links[] = 'http://example.org/'.$image->post_name.'/';
  		$links[] = 'http://example.org/?attachment_id='.$image->ID;
@@ -178,8 +178,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data = array();
 		$file_loc = self::copyTestImage( 'stl.jpg' );
 		$upload_dir = wp_upload_dir();
-		$new_file = TimberImageHelper::resize( $upload_dir['url'].'/stl.jpg', 500, 200, 'default', true );
-		$location_of_image = TimberImageHelper::get_server_location( $new_file );
+		$new_file = Timber\ImageHelper::resize( $upload_dir['url'].'/stl.jpg', 500, 200, 'default', true );
+		$location_of_image = Timber\ImageHelper::get_server_location( $new_file );
 		$size = getimagesize( $location_of_image );
 		$this->assertEquals( 500, $size[0] );
 	}
@@ -188,8 +188,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data = array();
 		$file_loc = self::copyTestImage( 'stl.jpg' );
 		$upload_dir = wp_upload_dir();
-		$new_file = TimberImageHelper::resize( $upload_dir['url'].'/stl.jpg', 500, 300, 'default', true );
-		$location_of_image = TimberImageHelper::get_server_location( $new_file );
+		$new_file = Timber\ImageHelper::resize( $upload_dir['url'].'/stl.jpg', 500, 300, 'default', true );
+		$location_of_image = Timber\ImageHelper::get_server_location( $new_file );
 		$size = getimagesize( $location_of_image );
 		$this->assertEquals( 500, $size[0] );
 		$this->assertEquals( 300, $size[1] );
@@ -234,11 +234,11 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testIsNotAGif() {
 		$image = self::copyTestImage('arch.jpg');
-		$this->assertFalse( TimberImageHelper::is_animated_gif($image) );
+		$this->assertFalse( Timber\ImageHelper::is_animated_gif($image) );
 	}
 
 	function testIsNotAGifFile() {
-		$this->assertFalse( TimberImageHelper::is_animated_gif('notreal.gif') );
+		$this->assertFalse( Timber\ImageHelper::is_animated_gif('notreal.gif') );
 	}
 
 	function testAnimatedGifResize() {
@@ -255,7 +255,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$resized_path = $upload_dir['path'].'/robocop-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.gif';
 		$this->addFile( $resized_path );
 		$this->assertFileExists( $resized_path );
-		$this->assertTrue(TimberImageHelper::is_animated_gif($resized_path));
+		$this->assertTrue(Timber\ImageHelper::is_animated_gif($resized_path));
 	}
 
 	function testImageArray() {
@@ -302,13 +302,13 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testInitFromRelativePath() {
 		$filename = self::copyTestImage( 'arch.jpg' );
 		$path = str_replace(ABSPATH, '/', $filename);
-		$image = new TimberImage( $path );
+		$image = new Timber\Image( $path );
 		$this->assertEquals( 1500, $image->width() );
 	}
 
 	function testImagePath() {
 		$filename = self::copyTestImage( 'arch.jpg' );
-		$image = new TimberImage( $filename );
+		$image = new Timber\Image( $filename );
 		$this->assertStringStartsWith('/wp-content', $image->path());
 		$this->assertStringEndsWith('.jpg', $image->path());
 	}
@@ -318,21 +318,21 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$filename = self::copyTestImage( 'arch.jpg' );
 		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 		$iid = wp_insert_attachment( $attachment, $filename, $pid );
-		$image = new TimberImage( $iid );
+		$image = new Timber\Image( $iid );
 		$this->assertEquals( 1500, $image->width() );
 	}
 
 	function testInitFromFilePath() {
 		$image_file = self::copyTestImage();
-		$image = new TimberImage( $image_file );
+		$image = new Timber\Image( $image_file );
 		$this->assertEquals( 1500, $image->width() );
 	}
 
 	function testInitFromURL() {
 		$destination_path = self::copyTestImage();
-		$destination_path = TimberURLHelper::get_rel_path( $destination_path );
+		$destination_path = Timber\URLHelper::get_rel_path( $destination_path );
 		$destination_url = 'http://'.$_SERVER['HTTP_HOST'].$destination_path;
-		$image = new TimberImage( $destination_url );
+		$image = new Timber\Image( $destination_url );
 		$this->assertEquals( $destination_url, $image->src() );
 		$this->assertEquals( $destination_url, (string)$image );
 	}
@@ -352,7 +352,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
 		add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 		$data = array();
-		$data['post'] = new TimberPost( $post_id );
+		$data['post'] = new Timber\Post( $post_id );
 		$data['size'] = array( 'width' => 100, 'height' => 50 );
 		$data['crop'] = 'default';
 		Timber::compile( 'assets/thumb-test.twig', $data );
@@ -379,7 +379,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 		add_post_meta( $attach_id, '_wp_attachment_image_alt', $thumb_alt, true );
 		$data = array();
-		$data['post'] = new TimberPost( $post_id );
+		$data['post'] = new Timber\Post( $post_id );
 		$this->assertEquals( $data['post']->thumbnail()->alt(), $thumb_alt );
 	}
 
@@ -387,7 +387,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$file = 'eastern.jpg';
 		$file_loc = self::copyTestImage( $file );
 		$upload_dir = wp_upload_dir();
-		$filename = TimberImageHelper::get_resize_file_url( self::getTestImageURL($file, true), 300, 500, 'default' );
+		$filename = Timber\ImageHelper::get_resize_file_url( self::getTestImageURL($file, true), 300, 500, 'default' );
 		$expected = $upload_dir['relative'].$upload_dir['subdir'].'/eastern-300x500-c-default.jpg';
 		$this->assertEquals( $expected, $filename );
 	}
@@ -396,7 +396,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$file_loc = self::copyTestImage( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
 		$url_src = $upload_dir['url'].'/eastern.jpg';
-		$filename = TimberImageHelper::get_resize_file_url( $url_src, 300, 500, 'default' );
+		$filename = Timber\ImageHelper::get_resize_file_url( $url_src, 300, 500, 'default' );
 		$this->assertEquals( $upload_dir['url'].'/eastern-300x500-c-default.jpg', $filename );
 	}
 
@@ -405,7 +405,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$file_loc = self::copyTestImage( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
 		$url_src = $upload_dir['url'].'/eastern.jpg';
-		$filename = TimberImageHelper::get_resize_file_url( $url_src, 300, 500, 'default' );
+		$filename = Timber\ImageHelper::get_resize_file_url( $url_src, 300, 500, 'default' );
 		$this->assertEquals( $upload_dir['url'].'/eastern-300x500-c-default.jpg', $filename );
 		remove_filter( 'home_url', array($this, 'add_lang_to_home'), 1 );
 	}
@@ -414,7 +414,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$file_loc = self::copyTestImage( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
 		$url_src = $upload_dir['url'].'/eastern.jpg';
-		$filename = TimberImageHelper::get_letterbox_file_url( $url_src, 300, 500, '#FFFFFF' );
+		$filename = Timber\ImageHelper::get_letterbox_file_url( $url_src, 300, 500, '#FFFFFF' );
 		$this->assertEquals( $upload_dir['url'].'/eastern-lbox-300x500-FFFFFF.jpg', $filename );
 	}
 
@@ -510,8 +510,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		}
 		$file_loc = self::copyTestImage( 'eastern-trans.png' );
 		$upload_dir = wp_upload_dir();
-		$new_file = TimberImageHelper::img_to_jpg( $upload_dir['url'].'/eastern-trans.png', '#FFFF00' );
-		$location_of_image = TimberImageHelper::get_server_location( $new_file );
+		$new_file = Timber\ImageHelper::img_to_jpg( $upload_dir['url'].'/eastern-trans.png', '#FFFF00' );
+		$location_of_image = Timber\ImageHelper::get_server_location( $new_file );
 		$this->assertFileExists( $location_of_image );
 		$image = imagecreatefromjpeg( $location_of_image );
 		$pixel_rgb = imagecolorat( $image, 1, 1 );
@@ -528,19 +528,19 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$file = self::copyTestImage( 'arch-2night.jpg' );
 		$data['test_image'] = $upload_dir['url'].'/arch-2night.jpg';
 		$data['crop'] = 'default';
-		$arch_2night = TimberImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
+		$arch_2night = Timber\ImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
 		Timber::compile( 'assets/image-test.twig', $data );
 
 		$file = self::copyTestImage( 'arch.jpg' );
 		$data['test_image'] = $upload_dir['url'].'/arch.jpg';
 		$data['size'] = array( 'width' => 520, 'height' => 250 );
 		$data['crop'] = 'left';
-		$arch_regular = TimberImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
+		$arch_regular = Timber\ImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
 		Timber::compile( 'assets/image-test.twig', $data );
 		$this->assertFileExists( $arch_regular );
 		$this->assertFileExists( $arch_2night );
 		//Delte the regular arch image
-		TimberImageHelper::delete_generated_files( $file );
+		Timber\ImageHelper::delete_generated_files( $file );
 		//The child of the regular arch image should be like
 		//poof-be-gone
 		$this->assertFileNotExists( $arch_regular );
@@ -557,16 +557,16 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data['test_image'] = $upload_dir['url'].'/city-museum.jpg';
 		$data['crop'] = 'default';
 		Timber::compile( 'assets/image-test.twig', $data );
-		$resized_500_file = TimberImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
+		$resized_500_file = Timber\ImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
 		$data['size'] = array( 'width' => 520, 'height' => 250 );
 		$data['crop'] = 'left';
 		Timber::compile( 'assets/image-test.twig', $data );
-		$resized_520_file = TimberImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
+		$resized_520_file = Timber\ImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
 		//make sure it generated the sizes we're expecting
 		$this->assertFileExists( $resized_500_file );
 		$this->assertFileExists( $resized_520_file );
 		//Now delete the "parent" image
-		TimberImageHelper::delete_generated_files( $file );
+		Timber\ImageHelper::delete_generated_files( $file );
 		//Have the children been deleted as well?
 		$this->assertFileNotExists( $resized_520_file );
 		$this->assertFileNotExists( $resized_500_file );
@@ -589,16 +589,16 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data['test_image'] = $upload_dir['url'].'/flag.png';
 		$data['crop'] = 'default';
 		Timber::compile( 'assets/image-test.twig', $data );
-		$resized_500_file = TimberImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
+		$resized_500_file = Timber\ImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
 		$data['size'] = array( 'width' => 520, 'height' => 250 );
 		$data['crop'] = 'left';
 		Timber::compile( 'assets/image-test.twig', $data );
-		$resized_520_file = TimberImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
+		$resized_520_file = Timber\ImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
 		//make sure it generated the sizes we're expecting
 		$this->assertFileExists( $resized_500_file );
 		$this->assertFileExists( $resized_520_file );
 		//Now delete the "parent" image
-		TimberImageHelper::delete_generated_files( $data['test_image'] );
+		Timber\ImageHelper::delete_generated_files( $data['test_image'] );
 		//Have the children been deleted as well?
 		$this->assertFileNotExists( $resized_520_file );
 		$this->assertFileNotExists( $resized_500_file );
@@ -621,11 +621,11 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data['test_image'] = $upload_dir['url'].'/flag.png';
 		$data['crop'] = 'default';
 		Timber::compile( 'assets/image-test.twig', $data );
-		$resized_500_file = TimberImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
+		$resized_500_file = Timber\ImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
 		$data['size'] = array( 'width' => 520, 'height' => 250 );
 		$data['crop'] = 'left';
 		Timber::compile( 'assets/image-test.twig', $data );
-		$resized_520_file = TimberImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
+		$resized_520_file = Timber\ImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
 		//make sure it generated the sizes we're expecting
 		$this->assertFileExists( $resized_500_file );
 		$this->assertFileExists( $resized_520_file );
@@ -653,17 +653,17 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data['test_image'] = $upload_dir['url'].'/flag.png';
 		$data['crop'] = 'default';
 		Timber::compile( 'assets/image-test.twig', $data );
-		$resized_500_file = TimberImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
+		$resized_500_file = Timber\ImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
 		$data['size'] = array( 'width' => 520, 'height' => 250 );
 		$data['crop'] = 'left';
 		Timber::compile( 'assets/image-test.twig', $data );
-		$resized_520_file = TimberImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
+		$resized_520_file = Timber\ImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
 		//make sure it generated the sizes we're expecting
 		$this->assertFileExists( $resized_500_file );
 		$this->assertFileExists( $resized_520_file );
 		//Now delete the "parent" image
-		$post = new TimberImage( $attach_id );
-		TimberImageHelper::delete_generated_files( $post->file_loc );
+		$post = new Timber\Image( $attach_id );
+		Timber\ImageHelper::delete_generated_files( $post->file_loc );
 		//Have the children been deleted as well?
 		$this->assertFileNotExists( $resized_520_file );
 		$this->assertFileNotExists( $resized_500_file );
@@ -677,11 +677,11 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$file = self::copyTestImage( 'city-museum.jpg' );
 		$upload_dir = wp_upload_dir();
 		$data['test_image'] = $upload_dir['url'].'/city-museum.jpg';
-		$new_file = TimberImageHelper::letterbox( $data['test_image'], 500, 500, '#00FF00' );
-		$letterboxed_file = TimberImageHelper::get_letterbox_file_path( $data['test_image'], 500, 500, '#00FF00' );
+		$new_file = Timber\ImageHelper::letterbox( $data['test_image'], 500, 500, '#00FF00' );
+		$letterboxed_file = Timber\ImageHelper::get_letterbox_file_path( $data['test_image'], 500, 500, '#00FF00' );
 		$this->assertFileExists( $letterboxed_file );
 		//Now delete the "parent" image
-		TimberImageHelper::delete_generated_files( $file );
+		Timber\ImageHelper::delete_generated_files( $file );
 		//Have the children been deleted as well?
 		$this->assertFileNotExists( $letterboxed_file );
 	}
@@ -751,7 +751,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		copy($source, $dest);
 		$image = $theme_url.'/cardinals.jpg';
 		$image = str_replace( 'http://example.org', '', $image );
-		$letterboxed = TimberImageHelper::letterbox( $image, 600, 300, '#FF0000' );
+		$letterboxed = Timber\ImageHelper::letterbox( $image, 600, 300, '#FF0000' );
 		$this->assertFileExists( realpath(get_template_directory().'/cardinals-lbox-600x300-FF0000.jpg') );
 		unlink( realpath(get_template_directory().'/cardinals-lbox-600x300-FF0000.jpg') );
 	}
@@ -759,10 +759,10 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testImageWidthWithFilter() {
 		$pid = $this->factory->post->create();
 		$photo = $this->copyTestImage();
-		$photo = TimberURLHelper::get_rel_path($photo);
+		$photo = Timber\URLHelper::get_rel_path($photo);
 		update_post_meta($pid, 'custom_photo', '/'.$photo);
 		$str = '{{TimberImage(post.custom_photo).width}}';
-		$post = new TimberPost($pid);
+		$post = new Timber\Post($pid);
 		$rendered = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals( 1500, $rendered );
 	}
@@ -825,7 +825,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$attach_id = wp_insert_attachment($attachment, $filename, $post_id);
 		add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
 		$data = array();
-		$data['post'] = new TimberPost($post_id);
+		$data['post'] = new Timber\Post($post_id);
 		$data['size'] = 'timber-testPostThumbnailsNamed';
 		Timber::compile('assets/image-thumb-named.twig', $data);
 		$resized_path = $upload_dir['path'].'/flag-'.$width.'x'.$height.'-c-default.png';
@@ -847,7 +847,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$attach_id = wp_insert_attachment($attachment, $filename, $post_id);
 		add_post_meta($post_id, '_thumbnail_id', $attach_id, true);
 		$data = array();
-		$data['post'] = new TimberPost($post_id);
+		$data['post'] = new Timber\Post($post_id);
 		$data['size'] = 'medium';
 		$result = Timber::compile('assets/image-thumb-named.twig', $data);
 		$filename = 'flag-300x300-c-default.png';
@@ -867,7 +867,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if (!is_int($file_id)) {
 			error_log(print_r($file_id, true));
 		}
-		$image = new TimberImage($file_id);
+		$image = new Timber\Image($file_id);
 		$str = '<img src="{{image.src(\'medium\')}}" />';
 		$result = Timber::compile_string($str, array('image' => $image));
 		$upload_dir = wp_upload_dir();
@@ -885,7 +885,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if (!is_int($file_id)) {
 			error_log(print_r($file_id, true));
 		}
-		$image = new TimberImage($file_id);
+		$image = new Timber\Image($file_id);
 		$str = '<img src="{{image.src(\'medium\')}}" />';
 		$result = Timber::compile_string($str, array('image' => $image));
 		$upload_dir = wp_upload_dir();
@@ -905,7 +905,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testImageHelperInit() {
-		$helper = TimberImageHelper::init();
+		$helper = Timber\ImageHelper::init();
 		$this->assertTrue($helper);
 	}
 
@@ -919,13 +919,13 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$result = Timber::compile_string($str);
 		$resized_url = str_replace('loading.gif', 'loading-200x0-c-default.gif', $gif_url);
 		$resized_path = str_replace('http://example.org', ABSPATH, $resized_url);
-		$resized_path = TimberURLHelper::remove_double_slashes($resized_path);
+		$resized_path = Timber\URLHelper::remove_double_slashes($resized_path);
 		$this->assertFileExists($resized_path);
 	}
 
 	function testImageNoParent() {
 		$filename = self::copyTestImage( 'arch.jpg' );
-		$image = new TimberImage( $filename );
+		$image = new Timber\Image( $filename );
 		$this->assertFalse($image->parent());
 	}
 
@@ -937,7 +937,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testPathInfo() {
 		$filename = self::copyTestImage( 'arch.jpg' );
-		$image = new TimberImage( $filename );
+		$image = new Timber\Image( $filename );
 		$path_parts = $image->get_pathinfo();
 		$this->assertEquals('jpg', $path_parts['extension']);
 	}
@@ -949,15 +949,15 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 		$str = '{{ TimberImage(post).src }}';
 		$result = Timber::compile_string( $str, array('post' => $post) );
-		
+
 		$this->assertEquals($image->src(), $result);
 	}
 
 	function testTimberImageFromTimberImage() {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
-		$post = new TimberImage($image);
 		$str = '{{ TimberImage(post).src }}';
+		$post = new Timber\Image($image);
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($image->src(), $result);
 	}
@@ -965,8 +965,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testTimberImageFromTimberImageID() {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
-		$post = new TimberImage($image->ID);
 		$str = '{{ TimberImage(post).src }}';
+		$post = new Timber\Image($image->ID);
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($image->src(), $result);
 	}
@@ -982,7 +982,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testTimberImageFromAttachment() {
 		$iid = self::get_image_attachment();
-		$image = new TimberImage($iid);
+		$image = new Timber\Image($iid);
 		$post = get_post($iid);
 		$str = '{{ TimberImage(post).src }}';
 		$result = Timber::compile_string( $str, array('post' => $post) );
@@ -993,15 +993,15 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testTimberImageFromDocument() {
 		$pid = $this->factory->post->create();
 		$iid = self::get_image_attachment($pid, 'dummy-pdf.pdf');
-		$attachment = new TimberImage($iid);
 		$str = '{{ TimberImage(post).src }}';
+		$attachment = new Timber\Image($iid);
 		$result = Timber::compile_string( $str, array('post' => $iid) );
 		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/dummy-pdf.pdf', $result);
 	}
 
 	function testNoThumbnail() {
 		$pid = $this->factory->post->create();
-		$post = new TimberPost($pid);
+		$post = new Timber\Post($pid);
 		$str = Timber::compile_string('Image?{{post.thumbnail.src}}', array('post' => $post));
 		$this->assertEquals('Image?', $str);
 	}
@@ -1024,7 +1024,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
 
-		$resized_520_file = TimberImageHelper::resize($image->src, 520, 500);
+		$resized_520_file = Timber\ImageHelper::resize($image->src, 520, 500);
 
 		remove_filter('upload_dir', array($this, '_filter_upload'));
 

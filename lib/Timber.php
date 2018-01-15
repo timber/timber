@@ -23,14 +23,18 @@ use Timber\Loader;
  *
  * @example
  * ```php
- *  $posts = Timber::get_posts();
- *  $posts = Timber::get_posts('post_type = article')
- *  $posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format.
- *  $posts = Timber::get_posts(array(23,24,35,67), 'InkwellArticle');
+ * $posts = new Timber\PostQuery();
+ * $posts = new Timber\PostQuery( 'post_type = article' );
+ * $posts = new Timber\PostQuery( array(
+ *     'post_type' => 'article',
+ *     'category_name' => 'sports',
+ * ) );
+ * $posts = new Timber\PostQuery( array( 23, 24, 35, 67 ), 'InkwellArticle' );
  *
- *  $context = Timber::get_context(); // returns wp favorites!
- *  $context['posts'] = $posts;
- *  Timber::render('index.twig', $context);
+ * $context = Timber::get_context();
+ * $context['posts'] = $posts;
+ *
+ * Timber::render( 'index.twig', $context );
  * ```
  */
 class Timber {
@@ -121,14 +125,18 @@ class Timber {
 
 	/**
 	 * Get a post by post ID or query (as a query string or an array of arguments).
-	 * But it's also cool
 	 *
 	 * @api
-	 * @param mixed        $query     Optional. Post ID or query (as query string or an array of arguments for
-	 *                                WP_Query). If a query is provided, only the first post of the result will be
-	 *                                returned. Default false.
-	 * @param string|array $PostClass Optional. Class to use to wrap the returned post object. Default 'Timber\Post'.
-	 * @return \Timber\Post|bool Timber\Post object if a post was found, false if no post was found.
+	 * @deprecated since 2.0.0 Use `new Timber\Post()` instead.
+	 *
+	 * @param mixed        $query     Optional. Post ID or query (as query string or an array of
+	 *                                arguments for WP_Query). If a query is provided, only the
+	 *                                first post of the result will be returned. Default false.
+	 * @param string|array $PostClass Optional. Class to use to wrap the returned post object.
+	 *                                Default 'Timber\Post'.
+	 *
+	 * @return \Timber\Post|bool Timber\Post object if a post was found, false if no post was
+	 *                           found.
 	 */
 	public static function get_post( $query = false, $PostClass = 'Timber\Post' ) {
 		return PostGetter::get_post($query, $PostClass);
@@ -136,16 +144,13 @@ class Timber {
 
 	/**
 	 * Get posts.
+	 *
 	 * @api
-	 * @example
-	 * ```php
-	 * $posts = Timber::get_posts();
- 	 *  $posts = Timber::get_posts('post_type = article')
- 	 *  $posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format.
- 	 *  $posts = Timber::get_posts('post_type=any', array('portfolio' => 'MyPortfolioClass', 'alert' => 'MyAlertClass')); //use a classmap for the $PostClass
-	 * ```
-	 * @param mixed   $query
-	 * @param string|array  $PostClass
+	 * @deprecated since 2.0.0 Use `new Timber\PostQuery()` instead.
+	 *
+	 * @param mixed        $query
+	 * @param string|array $PostClass
+	 *
 	 * @return array|bool|null
 	 */
 	public static function get_posts( $query = false, $PostClass = 'Timber\Post', $return_collection = false ) {
@@ -154,9 +159,13 @@ class Timber {
 
 	/**
 	 * Query post.
+	 *
 	 * @api
-	 * @param mixed   $query
-	 * @param string  $PostClass
+	 * @deprecated since 2.0.0 Use `new Timber\Post()` instead.
+	 *
+	 * @param mixed  $query
+	 * @param string $PostClass
+	 *
 	 * @return array|bool|null
 	 */
 	public static function query_post( $query = false, $PostClass = 'Timber\Post' ) {
@@ -165,9 +174,13 @@ class Timber {
 
 	/**
 	 * Query posts.
+	 *
 	 * @api
-	 * @param mixed   $query
-	 * @param string  $PostClass
+	 * @deprecated since 2.0.0 Use `new Timber\PostQuery()` instead.
+	 *
+	 * @param mixed  $query
+	 * @param string $PostClass
+	 *
 	 * @return PostCollection
 	 */
 	public static function query_posts( $query = false, $PostClass = 'Timber\Post' ) {
@@ -274,7 +287,7 @@ class Timber {
 	 * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
 	 *                                 array, the first value is used for non-logged in visitors, the second for users.
 	 *                                 Default false.
-	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in TimberLoader.
+	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in Timber\Loader.
 	 * @param bool         $via_render Optional. Whether to apply optional render or compile filters. Default false.
 	 * @return bool|string The returned output.
 	 */
@@ -348,7 +361,7 @@ class Timber {
 	 * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
 	 *                                 array, the first value is used for non-logged in visitors, the second for users.
 	 *                                 Default false.
-	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in TimberLoader.
+	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in Timber\Loader.
 	 * @return bool|string The returned output.
 	 */
 	public static function fetch( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
@@ -375,7 +388,7 @@ class Timber {
 	 * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
 	 *                                 array, the first value is used for non-logged in visitors, the second for users.
 	 *                                 Default false.
-	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in TimberLoader.
+	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in Timber\Loader.
 	 * @return bool|string The echoed output.
 	 */
 	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {

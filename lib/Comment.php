@@ -7,10 +7,10 @@ use Timber\Core;
 use Timber\CoreInterface;
 
 /**
- * The TimberComment class is used to view the output of comments. 99% of the time this will be in the context of the comments on a post. However you can also fetch a comment directly using its comment ID.
+ * The Timber\Comment class is used to view the output of comments. 99% of the time this will be in the context of the comments on a post. However you can also fetch a comment directly using its comment ID.
  * @example
  * ```php
- * $comment = new TimberComment($comment_id);
+ * $comment = new Timber\Comment($comment_id);
  * $context['comment_of_the_day'] = $comment;
  * Timber::render('index.twig', $context);
  * ```
@@ -130,13 +130,13 @@ class Comment extends Core implements CoreInterface {
 		}
 
 		$email = $this->avatar_email();
-		
+
 		$args = array('size' => $size, 'default' => $default);
 		$args = apply_filters('pre_get_avatar_data', $args, $email);
 		if ( isset($args['url']) ) {
 			return $args['url'];
 		}
-		
+
 		$email_hash = '';
 		if ( !empty($email) ) {
 			$email_hash = md5(strtolower(trim($email)));

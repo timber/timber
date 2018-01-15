@@ -5,7 +5,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	function testBlankMenu() {
 		self::setPermalinkStructure();
 		self::_createTestMenu();
-		$menu = new TimberMenu();
+		$menu = new Timber\Menu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 		$items = $menu->get_items();
@@ -25,7 +25,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$items[] = (object) array('type' => 'link', 'link' => '/foo');
 		$items[] = (object) array('type' => 'link', 'link' => '/bar/');
 		$mid = $this->buildMenu('Blanky', $items);
-		$menu = new TimberMenu($mid);
+		$menu = new Timber\Menu($mid);
 		$items = $menu->get_items();
 		$this->assertEquals('/', $items[0]->path());
 		$this->assertEquals('/foo', $items[1]->path());
@@ -49,7 +49,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
 
 		// Lets confirm this post has a thumbnail on it!
-		$post = new TimberPost($pid);
+		$post = new Timber\Post($pid);
 		$this->assertEquals('http://example.org/wp-content/uploads/' . date( 'Y/m' ) . '/arch.jpg', $post->thumbnail());
 
 		$nav_menu = new Timber\Menu( $menu_term['term_id'] );
@@ -70,7 +70,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$iid = TestTimberImage::get_image_attachment($pid);
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
 		$post = new \Timber\Post($pid);
-		$page_menu = new TimberMenu();
+		$page_menu = new Timber\Menu();
 		$str = '{% for item in menu.items %}{{item.thumbnail.src}}{% endfor %}';
 		$result = Timber::compile_string($str, array('menu' => $page_menu));
 		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $result);
@@ -80,12 +80,12 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	function testPagesMenu() {
 		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
 		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
-		$page_menu = new TimberMenu();
+		$page_menu = new Timber\Menu();
 		$this->assertEquals( 2, count( $page_menu->items ) );
 		$this->assertEquals( 'Bar Page', $page_menu->items[0]->title() );
 		self::_createTestMenu();
 		//make sure other menus are still more powerful
-		$menu = new TimberMenu();
+		$menu = new Timber\Menu();
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 	}
 
@@ -94,12 +94,12 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	function testPagesMenuWithFalse() {
 		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
 		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
-		$page_menu = new TimberMenu();
+		$page_menu = new Timber\Menu();
 		$this->assertEquals( 2, count( $page_menu->items ) );
 		$this->assertEquals( 'Bar Page', $page_menu->items[0]->title() );
 		self::_createTestMenu();
 		//make sure other menus are still more powerful
-		$menu = new TimberMenu(false);
+		$menu = new Timber\Menu(false);
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 	}
 
@@ -109,7 +109,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	function testMissingMenu() {
 		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
 		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
-		$missing_menu = new TimberMenu( 14 );
+		$missing_menu = new Timber\Menu( 14 );
 		$this->assertTrue( empty( $missing_menu->items ) );
 	}
 
@@ -118,7 +118,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$context = Timber::get_context();
 		self::_createTestMenu();
 		$this->go_to( home_url( '/child-page' ) );
-		$context['menu'] = new TimberMenu();
+		$context['menu'] = new Timber\Menu();
 		$str = Timber::compile( 'assets/child-menu.twig', $context );
 		$str = preg_replace( '/\s+/', '', $str );
 		$str = preg_replace( '/\s+/', '', $str );
@@ -130,7 +130,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		self::_createTestMenu();
 		$this->go_to( home_url( '/home' ) );
 		$context = Timber::get_context();
-		$context['menu'] = new TimberMenu();
+		$context['menu'] = new Timber\Menu();
 		$str = Timber::compile( 'assets/menu-classes.twig', $context );
 		$str = trim( $str );
 		$this->assertContains( 'current_page_item', $str );
@@ -142,7 +142,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	function testMenuItemLink() {
 		self::setPermalinkStructure();
 		self::_createTestMenu();
-		$menu = new TimberMenu();
+		$menu = new Timber\Menu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 		$items = $menu->get_items();
@@ -155,7 +155,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testMenuMeta() {
 		self::_createTestMenu();
-		$menu = new TimberMenu();
+		$menu = new Timber\Menu();
 		$items = $menu->get_items();
 		$item = $items[0];
 		$this->assertEquals( 'funke', $item->tobias );
@@ -164,7 +164,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testMenuItemWithHash() {
 		self::_createTestMenu();
-		$menu = new TimberMenu();
+		$menu = new Timber\Menu();
 		$items = $menu->get_items();
 		$item = $items[3];
 		$this->assertEquals( '#people', $item->link() );
@@ -175,7 +175,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testMenuHome() {
 		self::_createTestMenu();
-		$menu = new TimberMenu();
+		$menu = new Timber\Menu();
 		$items = $menu->get_items();
 		$item = $items[2];
 		$this->assertEquals( '/', $item->link() );
@@ -238,7 +238,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	function testWPMLMenu() {
 		self::setPermalinkStructure();
 		self::_createTestMenu();
-		$menu = new TimberMenu();
+		$menu = new Timber\Menu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 		$items = $menu->get_items();
@@ -307,7 +307,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $child_menu_item, '_menu_item_object_id', $child_id );
 		update_post_meta( $child_menu_item, '_menu_item_object', 'page' );
 		update_post_meta( $child_menu_item, '_menu_item_url', '' );
-		$post = new TimberPost( $child_menu_item );
+		$post = new Timber\Post( $child_menu_item );
 		$menu_items[] = $child_menu_item;
 
 		/* make a grandchild page */
@@ -328,7 +328,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $grandchild_menu_item, '_menu_item_object_id', $grandchild_id );
 		update_post_meta( $grandchild_menu_item, '_menu_item_object', 'page' );
 		update_post_meta( $grandchild_menu_item, '_menu_item_url', '' );
-		$post = new TimberPost( $grandchild_menu_item );
+		$post = new Timber\Post( $grandchild_menu_item );
 		$menu_items[] = $grandchild_menu_item;
 
 		/* make another grandchild page */
@@ -349,7 +349,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $grandchild_menu_item, '_menu_item_object_id', $grandchild_id );
 		update_post_meta( $grandchild_menu_item, '_menu_item_object', 'page' );
 		update_post_meta( $grandchild_menu_item, '_menu_item_url', '' );
-		$post = new TimberPost( $grandchild_menu_item );
+		$post = new Timber\Post( $grandchild_menu_item );
 		$menu_items[] = $grandchild_menu_item;
 
 		$root_url_link_id = wp_insert_post(
@@ -479,13 +479,13 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 		$wpdb->query( $query );
 		$this->go_to( home_url( '/gallery' ) );
-		$menu = new TimberMenu();
+		$menu = new Timber\Menu();
 		$this->assertContains( 'current-page-item', $menu->items[0]->classes );
 	}
 
 	function testMenuLevels() {
 		self::_createTestMenu();
-		$menu = new TimberMenu();
+		$menu = new Timber\Menu();
 		$parent = $menu->items[0];
 		$this->assertEquals(0, $parent->level);
 		$child = $parent->children[0];
@@ -500,7 +500,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testMenuLevelsChildren() {
 		self::_createTestMenu();
-		$menu = new TimberMenu();
+		$menu = new Timber\Menu();
 		$parent = $menu->items[0];
 		$this->assertEquals(0, $parent->level);
 		$children = $parent->children();
@@ -510,14 +510,14 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testMenuItemMeta() {
 		$menu_info = $this->_createSimpleMenu();
-		$menu = new TimberMenu($menu_info['term_id']);
+		$menu = new Timber\Menu($menu_info['term_id']);
 		$item = $menu->items[0];
 		$this->assertEquals('molasses', $item->meta('flood'));
 	}
 
 	function testMenuName() {
 		self::_createTestMenu();
-		$menu = new TimberMenu();
+		$menu = new Timber\Menu();
 		$str = Timber::compile_string('{{menu.items[0].title}}', array('menu' => $menu));
 		$this->assertEquals('Home', $str);
 		$str = Timber::compile_string('{{menu.items[0]}}', array('menu' => $menu));
@@ -536,7 +536,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$built_menu_id = $built_menu['term_id'];
 
 		$this->buildMenu('Zappy', $items);
-		$theme = new TimberTheme();
+		$theme = new Timber\Theme();
 		$data = array('nav_menu_locations' => array('header-menu' => 0, 'extra-menu' => $built_menu_id, 'bonus' => 0));
 		update_option('theme_mods_'.$theme->slug, $data);
 		register_nav_menus(
@@ -546,7 +546,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 				'bonus' => 'The Bonus'
 		    )
 		);
-		$menu = new TimberMenu('extra-menu');
+		$menu = new Timber\Menu('extra-menu');
 		$this->assertEquals('Ziggy', $menu->name);
 	}
 
@@ -558,7 +558,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 		$this->buildMenu('Fancy Suit', $items);
 
-		$menu = new TimberMenu('Fancy Suit');
+		$menu = new Timber\Menu('Fancy Suit');
 		$this->assertEquals( 3, count($menu->get_items()) );
 	}
 
@@ -570,7 +570,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 		$this->buildMenu('Jolly Jeepers', $items);
 
-		$menu = new TimberMenu('jolly-jeepers');
+		$menu = new Timber\Menu('jolly-jeepers');
 		$this->assertEquals( 3, count($menu->get_items()) );
 	}
 
