@@ -43,10 +43,10 @@ class Theme extends Core {
 	public $version;
 
 	/**
-	 * TimberTheme object for the parent theme (if it exists), false otherwise
+	 * Timber\Theme object for the parent theme (if it exists), false otherwise
 	 *
 	 * @api
-	 * @var TimberTheme|bool the TimberTheme object for the parent theme (if it exists), false otherwise
+	 * @var \Timber\Theme|bool the Timber\Theme object for the parent theme (if it exists), false otherwise
 	 */
 	public $parent = false;
 
@@ -71,12 +71,12 @@ class Theme extends Core {
 	private $theme;
 
 	/**
-	 * Constructs a new TimberTheme object. NOTE the TimberTheme object of the current theme comes in the default `Timber::get_context()` call. You can access this in your twig template via `{{site.theme}}.
+	 * Constructs a new Timber\Theme object. NOTE the Timber\Theme object of the current theme comes in the default `Timber::get_context()` call. You can access this in your twig template via `{{site.theme}}.
 	 * @param string $slug
 	 * @example
 	 * ```php
 	 * <?php
-	 *     $theme = new TimberTheme("my-theme");
+	 *     $theme = new Timber\Theme("my-theme");
 	 *     $context['theme_stuff'] = $theme;
 	 *     Timber::render('single.twig', $context);
 	 * ?>

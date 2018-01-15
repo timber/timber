@@ -6,7 +6,7 @@ use Timber\FunctionWrapper;
 use Timber\URLHelper;
 
 /**
- * As the name suggests these are helpers for Timber (and you!) when developing. You can find additional (mainly internally-focused helpers) in TimberURLHelper
+ * As the name suggests these are helpers for Timber (and you!) when developing. You can find additional (mainly internally-focused helpers) in Timber\URLHelper
  */
 class Helper {
 
@@ -118,9 +118,9 @@ class Helper {
 	 * For stopping time and getting the data
 	 * @example
 	 * ```php
-	 * $start = TimberHelper::start_timer();
+	 * $start = Timber\Helper::start_timer();
 	 * // do some stuff that takes awhile
-	 * echo TimberHelper::stop_timer( $start );
+	 * echo Timber\Helper::stop_timer( $start );
 	 * ```
 	 * @param int     $start
 	 * @return string
@@ -146,8 +146,8 @@ class Helper {
 	 * }
 	 *
 	 * $context = Timber::get_context();
-	 * $context['post'] = new TimberPost();
-	 * $context['my_form'] = TimberHelper::ob_function('the_form');
+	 * $context['post'] = new Timber\Post();
+	 * $context['my_form'] = Timber\Helper::ob_function('the_form');
 	 * Timber::render('single-form.twig', $context);
 	 * ```
 	 * ```twig
