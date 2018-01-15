@@ -4,8 +4,8 @@ class TestTimberIterator extends Timber_UnitTestCase {
 
     function testQueryPosts(){
         $this->factory->post->create();
-        $posts = TimberPostGetter::query_posts('post_type=post');
-        $this->assertInstanceOf( 'TimberQueryIterator', $posts );
+        $posts = Timber\PostGetter::query_posts('post_type=post');
+        $this->assertInstanceOf( 'Timber\QueryIterator', $posts );
     }
 
     function testTheLoop(){
@@ -15,7 +15,7 @@ class TestTimberIterator extends Timber_UnitTestCase {
             ) );
         }
         $results = Timber::compile('assets/iterator-test.twig', array(
-            'posts' => TimberPostGetter::query_posts( 'post_type=post' )
+            'posts' => Timber\PostGetter::query_posts( 'post_type=post' )
         ) );
 
         $results = trim( $results );
@@ -26,10 +26,10 @@ class TestTimberIterator extends Timber_UnitTestCase {
 
     function testTwigLoopVar() {
 	    $posts = $this->factory->post->create_many( 3 );
-	    $posts = TimberPostGetter::query_posts($posts);
+	    $posts = Timber\PostGetter::query_posts($posts);
 
 	    $compiled = Timber::compile('assets/iterator-loop-test.twig', array(
-		    'posts' => TimberPostGetter::query_posts( 'post_type=post' )
+		    'posts' => Timber\PostGetter::query_posts( 'post_type=post' )
 	    ) );
 
 	    $loop = array_map('json_decode', explode("\n", trim($compiled)));
@@ -55,7 +55,7 @@ class TestTimberIterator extends Timber_UnitTestCase {
 
     function testPostCount() {
     	$posts = $this->factory->post->create_many( 8 );
-        $posts = TimberPostGetter::query_posts('post_type=post');
+        $posts = Timber\PostGetter::query_posts('post_type=post');
         $this->assertEquals( 8, $posts->post_count() );
         $this->assertEquals( 8, count($posts) );
     }

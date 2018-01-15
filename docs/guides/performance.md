@@ -154,7 +154,7 @@ Timber provides some quick shortcuts to measure page timing. Here’s an example
 ```php
 <?php
 // This generates a starting time
-$start = TimberHelper::start_timer();
+$start = Timber\Helper::start_timer();
 
 $context = Timber::get_context();
 $context['post'] = new Timber\Post();
@@ -163,5 +163,5 @@ $context['whatever'] = get_my_foo();
 Timber::render( 'single.twig', $context, 600 );
 
 // This reports the time diff by passing the $start time
-echo TimberHelper::stop_timer( $start);
+echo Timber\Helper::stop_timer( $start);
 ```

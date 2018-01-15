@@ -16,8 +16,8 @@ class TestTimberImageLetterbox extends TimberImage_UnitTestCase {
 		$file_loc = TestTimberImage::copyTestImage( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
 		$image = $upload_dir['url'].'/eastern.jpg';
-		$new_file = TimberImageHelper::letterbox( $image, 500, 500, '#CCC', true );
-		$location_of_image = TimberImageHelper::get_server_location( $new_file );
+		$new_file = Timber\ImageHelper::letterbox( $image, 500, 500, '#CCC', true );
+		$location_of_image = Timber\ImageHelper::get_server_location( $new_file );
 		$this->addFile( $location_of_image );
 		$this->assertTrue (TestTimberImage::checkSize($location_of_image, 500, 500));
 		//whats the bg/color of the image
@@ -27,9 +27,9 @@ class TestTimberImageLetterbox extends TimberImage_UnitTestCase {
 	function testLetterboxColorChange() {
 		$file_loc = TestTimberImage::copyTestImage( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
-		$new_file_red = TimberImageHelper::letterbox( $upload_dir['url'].'/eastern.jpg', 500, 500, '#FF0000' );
-		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/eastern.jpg', 500, 500, '#00FF00' );
-		$location_of_image = TimberImageHelper::get_server_location( $new_file );
+		$new_file_red = Timber\ImageHelper::letterbox( $upload_dir['url'].'/eastern.jpg', 500, 500, '#FF0000' );
+		$new_file = Timber\ImageHelper::letterbox( $upload_dir['url'].'/eastern.jpg', 500, 500, '#00FF00' );
+		$location_of_image = Timber\ImageHelper::get_server_location( $new_file );
 		$this->addFile( $location_of_image );
 		$this->assertTrue (TestTimberImage::checkSize($location_of_image, 500, 500));
 		//whats the bg/color of the image
@@ -44,8 +44,8 @@ class TestTimberImageLetterbox extends TimberImage_UnitTestCase {
 		$base_file = 'eastern-trans.png';
 		$file_loc = TestTimberImage::copyTestImage( $base_file );
 		$upload_dir = wp_upload_dir();
-		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/'.$base_file, 500, 500, '00FF00', true );
-		$location_of_image = TimberImageHelper::get_server_location( $new_file );
+		$new_file = Timber\ImageHelper::letterbox( $upload_dir['url'].'/'.$base_file, 500, 500, '00FF00', true );
+		$location_of_image = Timber\ImageHelper::get_server_location( $new_file );
 		$this->addFile( $location_of_image );
 		$this->assertTrue (TestTimberImage::checkSize($location_of_image, 500, 500));
 		//whats the bg/color of the image
@@ -58,8 +58,8 @@ class TestTimberImageLetterbox extends TimberImage_UnitTestCase {
 		$base_file = 'eastern-trans.png';
 		$file_loc = TestTimberImage::copyTestImage( $base_file );
 		$upload_dir = wp_upload_dir();
-		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/'.$base_file, 500, 500 );
-		$location_of_image = TimberImageHelper::get_server_location( $new_file );
+		$new_file = Timber\ImageHelper::letterbox( $upload_dir['url'].'/'.$base_file, 500, 500 );
+		$location_of_image = Timber\ImageHelper::get_server_location( $new_file );
 		$this->addFile( $location_of_image );
 		$this->assertTrue (TestTimberImage::checkSize($location_of_image, 500, 500));
 		// whats the bg/color of the image?
@@ -72,8 +72,8 @@ class TestTimberImageLetterbox extends TimberImage_UnitTestCase {
 		$base_file = 'panam.gif';
 		$file_loc = TestTimberImage::copyTestImage( $base_file );
 		$upload_dir = wp_upload_dir();
-		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/'.$base_file, 300, 100, '00FF00', true );
-		$location_of_image = TimberImageHelper::get_server_location( $new_file );
+		$new_file = Timber\ImageHelper::letterbox( $upload_dir['url'].'/'.$base_file, 300, 100, '00FF00', true );
+		$location_of_image = Timber\ImageHelper::get_server_location( $new_file );
 		$this->addFile( $location_of_image );
 		$this->assertTrue (TestTimberImage::checkSize($location_of_image, 300, 100));
 		//whats the bg/color of the image
@@ -85,8 +85,8 @@ class TestTimberImageLetterbox extends TimberImage_UnitTestCase {
 		$data = array();
 		$file_loc = TestTimberImage::copyTestImage( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
-		$new_file = TimberImageHelper::letterbox( $upload_dir['url'].'/eastern.jpg', 500, 500, '#FFFFFF', true );
-		$location_of_image = TimberImageHelper::get_server_location( $new_file );
+		$new_file = Timber\ImageHelper::letterbox( $upload_dir['url'].'/eastern.jpg', 500, 500, '#FFFFFF', true );
+		$location_of_image = Timber\ImageHelper::get_server_location( $new_file );
 		$this->addFile( $location_of_image );
 		$this->assertTrue (TestTimberImage::checkSize($location_of_image, 500, 500));
 		//whats the bg/color of the image

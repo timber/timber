@@ -9,17 +9,16 @@ Myth: Timber is for making simple themes. Fact: It's for making incredibly compl
 
 The beauty of Timber is that the object-oriented nature lets you extend it to match the exact requirements of your theme.
 
-## An example that extends TimberPost
+## An example that extends Timber\Post
 
-Timber's objects like `TimberPost`, `TimberTerm`, etc. are a great starting point to build your own subclass from. For example, on this project each post was a part of an "issue" of a magazine. I wanted an easy way to reference the issue in the twig file:
+Timber's objects like `Timber\Post`, `Timber\Term`, etc. are a great starting point to build your own subclass from. For example, on this project each post was a part of an "issue" of a magazine. I wanted an easy way to reference the issue in the twig file:
 
 
 ```twig
 <h1>{{ post.title }}</h1>
 <h3>From the {{ post.issue.title }} issue</h3>
 ```
-
-Of course, `Timber\Post` has no built-in concept of an issue (which I’ve built as a custom taxonomy called "issues"). So we're going to extend TimberPost to give it one:
+Of course, `Timber\Post` has no built-in concept of an issue (which I've built as a custom taxonomy called "issues"). So we're going to extend `Timber\Post` to give it one:
 
 ```php
 <?php
@@ -57,7 +56,7 @@ class MySitePost extends Timber\Post {
 }
 ```
 
-Right now I'm in the midst of building a complex site for a hybrid foundation and publication. The posts on the site have some very specific requirements that requires a fair amount of logic. I can take the simple `TimberPost` object and extend it to make it work perfectly for this theme.
+Right now I'm in the midst of building a complex site for a hybrid foundation and publication. The posts on the site have some very specific requirements that requires a fair amount of logic. I can take the simple `Timber\Post` object and extend it to make it work perfectly for this theme.
 
 For example, I have a plugin that let's people insert manually related posts, but if they don't, WordPress will pull some automatically based on how the post is tagged.
 

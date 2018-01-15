@@ -16,17 +16,17 @@
 
 		function testIsAnimatedGif() {
 			$image = TestTimberImage::copyTestImage('robocop.gif');
-			$this->assertTrue( TimberImageHelper::is_animated_gif($image) );
+			$this->assertTrue( Timber\ImageHelper::is_animated_gif($image) );
 		}
 
 		function testIsRegularGif() {
 			$image = TestTimberImage::copyTestImage('boyer.gif');
-			$this->assertFalse( TimberImageHelper::is_animated_gif($image) );
+			$this->assertFalse( Timber\ImageHelper::is_animated_gif($image) );
 		}
 
 		function testIsNotGif() {
 			$arch = TestTimberImage::copyTestImage('arch.jpg');
-			$this->assertFalse( TimberImageHelper::is_animated_gif($arch) );
+			$this->assertFalse( Timber\ImageHelper::is_animated_gif($arch) );
 		}
 
 		function testServerLocation() {
@@ -54,7 +54,7 @@
 			$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
 			add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 			$data = array();
-			$data['post'] = new TimberPost( $post_id );
+			$data['post'] = new Timber\Post( $post_id );
 			$data['size'] = $size;
 			$data['crop'] = 'default';
 			Timber::compile( $template, $data );
@@ -72,8 +72,8 @@
 			$file_loc = TestTimberImage::copyTestImage( 'eastern.jpg' );
 			$upload_dir = wp_upload_dir();
 			$image = $upload_dir['url'].'/eastern.jpg';
-			$new_file = TimberImageHelper::letterbox( $image, 500, 500, '#CCC', true );
-			$location_of_image = TimberImageHelper::get_server_location( $new_file );
+			$new_file = Timber\ImageHelper::letterbox( $image, 500, 500, '#CCC', true );
+			$location_of_image = Timber\ImageHelper::get_server_location( $new_file );
 			$this->addFile( $location_of_image );
 			$this->assertTrue (TestTimberImage::checkSize($location_of_image, 500, 500));
 			//whats the bg/color of the image

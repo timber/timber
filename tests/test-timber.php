@@ -183,7 +183,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 
 		$context = Timber::get_context();
 		$this->assertArrayHasKey( 'user', $context );
-		$this->assertInstanceOf( 'TimberUser', $context['user'] );
+		$this->assertInstanceOf( 'Timber\User', $context['user'] );
 	}
 
 	function testQueryPostsInContext(){
@@ -237,7 +237,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 
     function testTimberRenderString() {
     	$pid = $this->factory->post->create(array('post_title' => 'Zoogats'));
-        $post = new TimberPost($pid);
+        $post = new Timber\Post($pid);
         ob_start();
         Timber::render_string('<h2>{{post.title}}</h2>', array('post' => $post));
        	$data = ob_get_contents();
@@ -247,7 +247,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 
     function testTimberRender() {
     	$pid = $this->factory->post->create(array('post_title' => 'Foobar'));
-        $post = new TimberPost($pid);
+        $post = new Timber\Post($pid);
         ob_start();
         Timber::render('assets/single-post.twig', array('post' => $post));
        	$data = ob_get_contents();

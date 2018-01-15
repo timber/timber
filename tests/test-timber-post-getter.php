@@ -50,7 +50,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$cats = $this->factory->post->create_many(3, array('post_category' => array($cat)) );
 		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
 
-		$cat_post = new TimberPost($cat_post);
+		$cat_post = new Timber\Post($cat_post);
 		$this->assertEquals('News', $cat_post->category()->name());
 
 		$posts = new Timber\PostQuery(array('cat' => $cat));
@@ -177,7 +177,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
 		add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 		$data = array();
-		$data['post'] = new TimberPost( $post_id );
+		$data['post'] = new Timber\Post( $post_id );
 		$data['size'] = array( 'width' => 100, 'height' => 50 );
 		$data['crop'] = 'default';
 		Timber::compile( 'assets/thumb-test.twig', $data );
@@ -303,7 +303,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	function testCustomPostTypeAndClassOnSinglePage() {
 		register_post_type('job');
 		$post_id = $this->factory->post->create( array( 'post_type' => 'job' ) );
-		$post = new TimberPost($post_id);
+		$post = new Timber\Post($post_id);
 		$this->go_to('?p='.$post->ID);
 		$jobs = $this->factory->post->create_many( 10, array('post_type' => 'job'));
 		$jobPosts = new Timber\PostQuery(array('post_type' => 'job'));

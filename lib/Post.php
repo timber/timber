@@ -438,7 +438,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Used internally by init, etc. to build TimberPost object.
+	 * Used internally by init, etc. to build Timber\Post object.
 	 *
 	 * @internal
 	 * @param  int|null $pid The ID to generate info from.
@@ -773,7 +773,7 @@ class Post extends Core implements CoreInterface {
 	 * Get the categoires on a particular post
 	 *
 	 * @api
-	 * @return array of TimberTerms
+	 * @return array of Timber\Term objects
 	 */
 	public function categories() {
 		return $this->terms('category');
@@ -784,7 +784,7 @@ class Post extends Core implements CoreInterface {
 	 *
 	 * @api
 	 * If mulitpuile categories are set, it will return just the first one
-	 * @return TimberTerm|null
+	 * @return \Timber\Term|null
 	 */
 	public function category() {
 		$cats = $this->categories();
@@ -834,13 +834,13 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Gets the comments on a Timber\Post and returns them as an array of [TimberComments](#TimberComment) (or whatever comment class you set).
+	 * Gets the comments on a Timber\Post and returns them as an array of `Timber\Comment` objects (or whatever comment class you set).
 	 * @api
 	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
 	 * @param string $order use ordering set in WordPress admin, or a different scheme
 	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
 	 * @param string $status Could be 'pending', etc.
-	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending TimberComment for your site or app (obviously, totally optional)
+	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending Timber\Comment for your site or app (obviously, totally optional)
 	 * @example
 	 * ```twig
 	 * {# single.twig #}

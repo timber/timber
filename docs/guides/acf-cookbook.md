@@ -39,14 +39,14 @@ This is where we'll start in PHP.
 /* single.php */
 $post = new Timber\Post();
 if (isset($post->hero_image) && strlen($post->hero_image)){
-	$post->hero_image = new TimberImage($post->hero_image);
+	$post->hero_image = new Timber\Image($post->hero_image);
 }
 $data = Timber::get_context();
 $data['post'] = $post;
 Timber::render('single.twig', $data);
 ```
 
-`TimberImage` should be initialized using a WordPress image ID#. It can also take URLs and image objects, but that requires extra processing.
+`Timber\Image` should be initialized using a WordPress image ID#. It can also take URLs and image objects, but that requires extra processing.
 
 You can now use all the above functions to transform your custom images in the same way, the format will be:
 

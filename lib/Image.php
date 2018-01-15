@@ -9,7 +9,7 @@ use Timber\URLHelper;
 
 
 /**
- * If TimberPost is the class you're going to spend the most time, TimberImage is the class you're going to have the most fun with.
+ * If Timber\Post is the class you're going to spend the most time, Timber\Image is the class you're going to have the most fun with.
  *
  * @example
  * ```php
@@ -19,7 +19,7 @@ use Timber\URLHelper;
  *
  * // lets say you have an alternate large 'cover image' for your post stored in a custom field which returns an image ID
  * $cover_image_id = $post->cover_image;
- * $context['cover_image'] = new TimberImage($cover_image_id);
+ * $context['cover_image'] = new Timber\Image($cover_image_id);
  * Timber::render('single.twig', $context);
  * ```
  *
@@ -31,7 +31,7 @@ use Timber\URLHelper;
  *     {{post.content}}
  *   </div>
  *
- *  <img src="{{ Image(post.custom_field_with_image_id).src }}" alt="Another way to initialize images as TimberImages, but within Twig" />
+ *  <img src="{{ Image(post.custom_field_with_image_id).src }}" alt="Another way to initialize images as Timber\Image objects, but within Twig" />
  * </article>
  * ```
  *
@@ -42,7 +42,7 @@ use Timber\URLHelper;
  *   <div class="body">
  *     Whatever whatever
  *   </div>
- *   <img src="http://example.org/wp-content/uploads/2015/06/kurt.jpg" alt="Another way to initialize images as TimberImages, but within Twig" />
+ *   <img src="http://example.org/wp-content/uploads/2015/06/kurt.jpg" alt="Another way to initialize images as Timber\Image objects, but within Twig" />
  * </article>
  * ```
  */
@@ -86,14 +86,14 @@ class Image extends Post implements CoreInterface {
 	protected $_wp_attached_file;
 
 	/**
-	 * Creates a new TimberImage object
+	 * Creates a new Timber\Image object
 	 * @example
 	 * ```php
 	 * // You can pass it an ID number
-	 * $myImage = new TimberImage(552);
+	 * $myImage = new Timber\Image(552);
 	 *
 	 * //Or send it a URL to an image
-	 * $myImage = new TimberImage('http://google.com/logo.jpg');
+	 * $myImage = new Timber\Image('http://google.com/logo.jpg');
 	 * ```
 	 * @param int|string $iid
 	 */
@@ -227,10 +227,10 @@ class Image extends Post implements CoreInterface {
 	public function init( $iid = false ) {
 		// Make sure we actually have something to work with.
 		if ( !$iid ) {
-			Helper::error_log('Initalized TimberImage without providing first parameter.'); return;
+			Helper::error_log('Initalized Timber\Image without providing first parameter.'); return;
 		}
 
-		// If passed TimberImage, grab the ID and continue.
+		// If passed Timber\Image, grab the ID and continue.
 		if ( $iid instanceof self ) {
 			$iid = (int) $iid->ID;
 		}
@@ -266,7 +266,7 @@ class Image extends Post implements CoreInterface {
 			return $this->init($iid->ID);
 		} else if ( $iid instanceof Post ) {
 			/**
-			 * This will catch TimberPost and any post classes that extend TimberPost,
+			 * This will catch Timber\Post and any post classes that extend Timber\Post,
 			 * see http://php.net/manual/en/internals2.opcodes.instanceof.php#109108
 			 * and https://timber.github.io/docs/guides/extending-timber/
 			 */

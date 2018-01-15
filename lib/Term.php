@@ -16,13 +16,13 @@ use Timber\URLHelper;
  * @example
  * ```php
  * //Get a term by its ID
- * $context['term'] = new TimberTerm(6);
+ * $context['term'] = new Timber\Term(6);
  * //Get a term when on a term archive page
- * $context['term_page'] = new TimberTerm();
+ * $context['term_page'] = new Timber\Term();
  * //Get a term with a slug
- * $context['team'] = new TimberTerm('patriots');
+ * $context['team'] = new Timber\Term('patriots');
  * //Get a team with a slug from a specific taxonomy
- * $context['st_louis'] = new TimberTerm('cardinals', 'baseball');
+ * $context['st_louis'] = new Timber\Term('cardinals', 'baseball');
  * Timber::render('index.twig', $context);
  * ```
  * ```twig
