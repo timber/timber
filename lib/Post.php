@@ -780,6 +780,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Import field data onto this object
+	 *
 	 * @deprecated since 2.0.0
 	 * @param string $field_name
 	 */
@@ -788,7 +789,8 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Get the CSS classes for a post without cache. For usage you should use `{{post.class}}`
+	 * Get the CSS classes for a post without cache. 
+	 * For usage you should use `{{post.class}}`
 	 *
 	 * @internal
 	 * @param string $class additional classes you want to add.

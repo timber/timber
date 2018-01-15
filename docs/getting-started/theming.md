@@ -140,7 +140,7 @@ Let’s crack open **index.php** and see what’s inside:
 ```php
 <?php
 $context = Timber::get_context();
-$context['posts'] = Timber::get_posts();
+$context['posts'] = new Timber\PostQuery();
 
 Timber::render( 'index.twig', $context );
 ```
@@ -160,12 +160,12 @@ This is going to return an object with a lot of the common things we need across
 
 ```php
 <?php
-$context['posts'] = Timber::get_posts();
+$context['posts'] = new Timber\PostQuery();
 ```
 
 We’re now going to grab the posts that are inside the loop and stick them inside our data object under the **posts** key.
 
-## How to use Timber::get_posts()
+## How to use Timber\PostQuery
 
 ### Use a WP_Query array
 
@@ -189,7 +189,7 @@ $args = array(
     )
 );
 
-$context['posts'] = Timber::get_posts( $args );
+$context['posts'] = new Timber\PostQuery( $args );
 ```
 
 You can find all available options in the documentation for [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query).
@@ -200,7 +200,7 @@ You can find all available options in the documentation for [WP_Query](http://co
 <?php
 $args = 'post_type=movies&numberposts=8&orderby=rand';
 
-$context['posts'] = Timber::get_posts( $args );
+$context['posts'] = new Timber\PostQuery( $args );
 ```
 
 ### Use Post ID numbers
@@ -209,7 +209,7 @@ $context['posts'] = Timber::get_posts( $args );
 <?php
 $ids = array( 14, 123, 234, 421, 811, 6 );
 
-$context['posts'] = Timber::get_posts( $ids );
+$context['posts'] = new Timber\PostQuery( $ids );
 ```
 
 ## Render

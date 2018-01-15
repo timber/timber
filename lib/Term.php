@@ -224,6 +224,18 @@ class Term extends Core implements CoreInterface {
 		return 0;
 	}
 
+
+	/**
+	 * @internal
+   	 * @deprecated since 2.0.0 use Term::meta() insteaad
+	 * @param string $field_name
+	 * @return string
+	 */
+	public function get_meta_field( $field_name ) {
+		return $this->meta($field_name);
+	}
+
+
 	/**
 	 * @api
 	 * @return array
@@ -416,7 +428,7 @@ class Term extends Core implements CoreInterface {
 	 * {% endfor %}
 	 * </ul>
 	 * ```
-	 * @return array|bool|null
+	 * @return \Timber\PostQuery
 	 */
 	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
 		if ( !strlen($post_class) ) {
@@ -458,7 +470,8 @@ class Term extends Core implements CoreInterface {
 				'post_type' => $post_type_or_class
 			);
 		}
-		return Timber::get_posts($args, $post_class);
+
+		return new PostQuery( $args, $post_class );
 	}
 
 
@@ -473,10 +486,11 @@ class Term extends Core implements CoreInterface {
 	/** DEPRECATED DOWN HERE
 	 * ======================
 	 **/
+
 	/**
 	 * Get Posts that have been "tagged" with the particular term
 	 *
-	 * @deprecated since 2.0
+	 * @deprecated since 2.0 use Term::posts() instead
 	 * @internal
 	 * @param int $numberposts
 	 * @param string $post_type
@@ -489,7 +503,7 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 *
-	 * @deprecated since 2.0
+	 * @deprecated since 2.0.0 use Term::children() instead
 	 * @internal
 	 * @return array
 	 */
@@ -498,24 +512,13 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @deprecated since 2.0
 	 * @internal
+   	 * @deprecated since 2.0.0 use Term::edit_link() instead
 	 * @return string
 	 */
 	public function get_edit_url() {
-		return $this->edit_link();
+		return get_edit_term_link($this->ID, $this->taxonomy);
 	}
-
-	/**
-	 * @deprecated since 2.0
-	 * @internal
-	 * @param string $field_name
-	 * @return string
-	 */
-	public function get_meta_field( $field_name ) {
-		return $this->meta($field_name);
-	}
-
 
 	/**
 	 *
