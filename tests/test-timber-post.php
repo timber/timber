@@ -817,7 +817,7 @@
 			$pid = $this->factory->post->create(array('post_content' => $quote));
 			$post = new Timber\Post($pid);
 			$expected = array(
-				'<iframe width="500" height="281" src="https://www.youtube.com/embed/Jf37RalsnEs?feature=oembed" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>',
+				'<iframe width="500" height="281" src="https://www.youtube.com/embed/Jf37RalsnEs?feature=oembed" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>',
 			);
 
 			$this->assertEquals($expected, $post->video());
