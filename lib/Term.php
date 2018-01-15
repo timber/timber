@@ -16,13 +16,13 @@ use Timber\URLHelper;
  * @example
  * ```php
  * //Get a term by its ID
- * $context['term'] = new TimberTerm(6);
+ * $context['term'] = new Timber\Term(6);
  * //Get a term when on a term archive page
- * $context['term_page'] = new TimberTerm();
+ * $context['term_page'] = new Timber\Term();
  * //Get a term with a slug
- * $context['team'] = new TimberTerm('patriots');
+ * $context['team'] = new Timber\Term('patriots');
  * //Get a team with a slug from a specific taxonomy
- * $context['st_louis'] = new TimberTerm('cardinals', 'baseball');
+ * $context['st_louis'] = new Timber\Term('cardinals', 'baseball');
  * Timber::render('index.twig', $context);
  * ```
  * ```twig
@@ -224,9 +224,6 @@ class Term extends Core implements CoreInterface {
 		return 0;
 	}
 
-
-
-
 	/**
 	 * @api
 	 * @return array
@@ -308,7 +305,7 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 * Retrieves and outputs meta information stored with a term. This will use
-	 * both data stored under (old) ACF hacks and new (WP 4.6+) where term meta 
+	 * both data stored under (old) ACF hacks and new (WP 4.6+) where term meta
 	 * has its own table. If retrieving a special ACF field (repeater, etc.) you
 	 * can use the output immediately in Twig — no further processing is
 	 * required.
@@ -464,6 +461,7 @@ class Term extends Core implements CoreInterface {
 		return Timber::get_posts($args, $post_class);
 	}
 
+
 	/**
 	 * @api
 	 * @return string
@@ -556,4 +554,5 @@ class Term extends Core implements CoreInterface {
 
 		$this->$key = $value;
 	}
+
 }

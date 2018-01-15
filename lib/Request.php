@@ -6,15 +6,14 @@ use Timber\Core;
 use Timber\CoreInterface;
 
 /**
- * TimberRequest exposes $_GET and $_POST to the context
+ * Timber\Request exposes $_GET and $_POST to the context
  */
-
 class Request extends Core implements CoreInterface {
 	public $post = array();
 	public $get = array();
-	
+
 	/**
-	 * Constructs a TimberRequest object
+	 * Constructs a Timber\Request object
 	 * @example
 	 */
 	public function __construct() {

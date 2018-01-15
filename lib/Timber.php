@@ -325,7 +325,7 @@ class Timber {
 	 * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
 	 *                                 array, the first value is used for non-logged in visitors, the second for users.
 	 *                                 Default false.
-	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in TimberLoader.
+	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in Timber\Loader.
 	 * @param bool         $via_render Optional. Whether to apply optional render or compile filters. Default false.
 	 * @return bool|string The returned output.
 	 */
@@ -517,7 +517,7 @@ class Timber {
 	 * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
 	 *                                 array, the first value is used for non-logged in visitors, the second for users.
 	 *                                 Default false.
-	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in TimberLoader.
+	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in Timber\Loader.
 	 * @return bool|string The returned output.
 	 */
 	public static function fetch( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
@@ -555,7 +555,7 @@ class Timber {
 	 * @param bool|int     $expires    Optional. In seconds. Use false to disable cache altogether. When passed an
 	 *                                 array, the first value is used for non-logged in visitors, the second for users.
 	 *                                 Default false.
-	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in TimberLoader.
+	 * @param string       $cache_mode Optional. Any of the cache mode constants defined in Timber\Loader.
 	 * @return bool|string The echoed output.
 	 */
 	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {

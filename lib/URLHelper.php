@@ -480,7 +480,7 @@ class URLHelper {
 	/**
 	 * Returns the url parameters, for example for url http://example.org/blog/post/news/2014/whatever
 	 * this will return array('blog', 'post', 'news', '2014', 'whatever');
-	 * OR if sent an integer like: TimberUrlHelper::get_params(2); this will return 'news';
+	 * OR if sent an integer like: Timber\URLHelper::get_params(2); this will return 'news';
 	 *
 	 * @param int $i the position of the parameter to grab.
 	 * @return array|string

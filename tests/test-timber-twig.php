@@ -125,7 +125,7 @@
 				$php_unit->assertContains('my_action_context', $action_context_tally);
 			});
 			$post_id = $this->factory->post->create(array('post_title' => "Jaredz Post", 'post_content' => 'stuff to say'));
-			$context['post'] = new TimberPost($post_id);
+			$context['post'] = new Timber\Post($post_id);
 			$str = Timber::compile('assets/test-action-context.twig', $context);
 			$this->assertEquals('Here: stuff to say', trim($str));
 		}
@@ -136,7 +136,7 @@
 			add_filter('protected_title_format', function($title){
 				return 'Protected: '.$title;
 			});
-			$context['post'] = new TimberPost($post_id);
+			$context['post'] = new Timber\Post($post_id);
 			if (post_password_required($post_id)){
 				$this->assertTrue(true);
 				$str = Timber::compile('assets/test-wp-filters.twig', $context);
@@ -167,7 +167,7 @@
 
 		function testFilterFunction() {
 			$pid = $this->factory->post->create(array('post_title' => 'Foo'));
-			$post = new TimberPost( $pid );
+			$post = new Timber\Post( $pid );
 			$str = 'I am a {{post | get_class }}';
 			$this->assertEquals('I am a Timber\Post', Timber::compile_string($str, array('post' => $post)));
 		}
@@ -246,7 +246,7 @@
      	*/
 		function testSetObject() {
 			$pid = $this->factory->post->create(array('post_title' => 'Spaceballs'));
-			$post = new TimberPost( $pid );
+			$post = new Timber\Post( $pid );
 			$result = Timber::compile('assets/set-object.twig', array('post' => $post));
 			$this->assertEquals('Spaceballs: may the schwartz be with you', trim($result));
 		}

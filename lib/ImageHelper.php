@@ -436,7 +436,7 @@ class ImageHelper {
 		if ( !$absolute ) {
 			$url = str_replace(site_url(), '', $url);
 		}
-		// $url = TimberURLHelper::remove_double_slashes( $url);
+		// $url = Timber\URLHelper::remove_double_slashes( $url);
 		return $url;
 	}
 

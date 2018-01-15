@@ -6,7 +6,7 @@ use Timber\FunctionWrapper;
 use Timber\URLHelper;
 
 /**
- * As the name suggests these are helpers for Timber (and you!) when developing. You can find additional (mainly internally-focused helpers) in TimberURLHelper
+ * As the name suggests these are helpers for Timber (and you!) when developing. You can find additional (mainly internally-focused helpers) in Timber\URLHelper
  */
 class Helper {
 
@@ -173,9 +173,9 @@ class Helper {
 	 * For stopping time and getting the data
 	 * @example
 	 * ```php
-	 * $start = TimberHelper::start_timer();
+	 * $start = Timber\Helper::start_timer();
 	 * // do some stuff that takes awhile
-	 * echo TimberHelper::stop_timer( $start );
+	 * echo Timber\Helper::stop_timer( $start );
 	 * ```
 	 * @param int     $start
 	 * @return string
@@ -201,8 +201,8 @@ class Helper {
 	 * }
 	 *
 	 * $context = Timber::get_context();
-	 * $context['post'] = new TimberPost();
-	 * $context['my_form'] = TimberHelper::ob_function('the_form');
+	 * $context['post'] = new Timber\Post();
+	 * $context['my_form'] = Timber\Helper::ob_function('the_form');
 	 * Timber::render('single-form.twig', $context);
 	 * ```
 	 * ```twig
@@ -451,16 +451,22 @@ class Helper {
 	 *
 	 * @since 1.5.3
 	 * @ticket #1594
-	 * @param array        $array to filter.
+	 * @param array        $list to filter.
 	 * @param string|array $filter to search for.
 	 * @param string       $operator to use (AND, NOT, OR).
 	 * @return array
 	 */
-	public static function filter_array( $array, $filter, $operator = 'AND' ) {
-		if ( ! is_array($filter) ) {
-			$filter = array( 'slug' => $filter );
+	public static function filter_array( $list, $args, $operator = 'AND' ) {
+		if ( ! is_array($args) ) {
+			$args = array( 'slug' => $args );
 		}
-		return wp_list_filter($array, $filter, $operator);
+
+		if ( ! is_array( $list ) && ! is_a( $list, 'Traversable' ) ) {
+			return array();
+		}
+
+		$util = new \WP_List_Util( $list );
+		return $util->filter( $args, $operator );
 	}
 
 }

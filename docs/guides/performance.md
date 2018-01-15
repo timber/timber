@@ -120,7 +120,7 @@ You can also use some [syntactic sugar](http://en.wikipedia.org/wiki/Syntactic_s
 
 $context = Timber::get_context();
 
-$context['main_stories'] = TimberHelper::transient( 'main_stories', function(){
+$context['main_stories'] = Timber\Helper::transient( 'main_stories', function(){
     $posts = Timber::get_posts();
 
     // As an example, do something expensive with these posts
@@ -153,7 +153,7 @@ Timber provides some quick shortcuts to measure page timing. Here’s an example
 ```php
 <?php
 // This generates a starting time
-$start = TimberHelper::start_timer();
+$start = Timber\Helper::start_timer();
 
 $context = Timber::get_context();
 $context['post'] = Timber::get_post();
@@ -162,5 +162,5 @@ $context['whatever'] = get_my_foo();
 Timber::render( 'single.twig', $context, 600 );
 
 // This reports the time diff by passing the $start time
-echo TimberHelper::stop_timer( $start);
+echo Timber\Helper::stop_timer( $start);
 ```

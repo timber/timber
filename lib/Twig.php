@@ -32,7 +32,11 @@ class Twig {
 	}
 
 	/**
+	 * Add Timber-specific functions to Twig.
 	 *
+	 * @param \Twig_Environment $twig
+	 *
+	 * @return \Twig_Environment
 	 */
 	public function add_timber_functions( $twig ) {
 		/* actions and filters */
@@ -90,6 +94,11 @@ class Twig {
 					}
 					return new $PostClass($pid);
 				} ));
+
+		$twig->addFunction( new Twig_Function( 'PostQuery', function( $args = false, $post_class = '\Timber\Post' ) {
+			return new PostQuery( $args, $post_class );
+		} ) );
+
 		$twig->addFunction(new Twig_Function('Image', function( $pid, $ImageClass = 'Timber\Image' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
@@ -149,7 +158,7 @@ class Twig {
 	}
 
 	/**
-	 * Function for Term or TimberTerm() within Twig
+	 * Function for Term or Timber\Term() within Twig
 	 * @since 1.5.1
 	 * @author @jarednova
 	 * @param integer $tid the term ID to search for

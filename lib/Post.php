@@ -425,7 +425,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Used internally to fetch the metadata fields (wp_postmeta table)
-	 * and attach them to our TimberPost object
+	 * and attach them to our Timber\Post object
 	 * @internal
 	 * @param int $pid
 	 * @return array
@@ -512,7 +512,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Used internally by init, etc. to build TimberPost object.
+	 * Used internally by init, etc. to build Timber\Post object.
 	 *
 	 * @internal
 	 * @param  int|null $pid The ID to generate info from.
@@ -780,7 +780,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Import field data onto this object
-	 *
+	 * @deprecated since 2.0.0
 	 * @param string $field_name
 	 */
 	public function import_field( $field_name ) {
@@ -791,7 +791,7 @@ class Post extends Core implements CoreInterface {
 	 * Get the CSS classes for a post without cache. For usage you should use `{{post.class}}`
 	 *
 	 * @internal
-	 * @param string $class additional classes you want to add
+	 * @param string $class additional classes you want to add.
 	 * @example
 	 * ```twig
 	 * <article class="{{ post.post_class }}">
@@ -813,7 +813,7 @@ class Post extends Core implements CoreInterface {
 		$class_array     = get_post_class($class, $this->ID);
 		$post            = $old_global_post;
 		if ( is_array($class_array) ) {
-			return implode(' ', $class_array);
+			$class_array = implode(' ', $class_array);
 		}
 		return $class_array;
 	}
@@ -822,7 +822,7 @@ class Post extends Core implements CoreInterface {
 	 * Get the CSS classes for a post, but with caching css post classes. For usage you should use `{{ post.class }}` instead of `{{post.css_class}}` or `{{post.post_class}}`
 	 *
 	 * @internal
-	 * @param string $class additional classes you want to add
+	 * @param string $class additional classes you want to add.
 	 * @see Timber\Post::$_css_class
 	 * @example
 	 * ```twig
@@ -834,14 +834,12 @@ class Post extends Core implements CoreInterface {
 	 * @return string a space-seperated list of classes
 	 */
 	public function css_class( $class = '' ) {
-		if ( !$this->_css_class ) {
+		if ( ! $this->_css_class ) {
 			$this->_css_class = $this->post_class();
 		}
 
 		return trim(sprintf('%s %s', $this->_css_class, $class));
 	}
-
-	// Docs
 
 	/**
 	 * @return array
@@ -932,7 +930,7 @@ class Post extends Core implements CoreInterface {
 	 * Get the categoires on a particular post
 	 *
 	 * @api
-	 * @return array of TimberTerms
+	 * @return array of Timber\Term objects
 	 */
 	public function categories() {
 		return $this->terms('category');
@@ -943,7 +941,7 @@ class Post extends Core implements CoreInterface {
 	 *
 	 * @api
 	 * If mulitpuile categories are set, it will return just the first one
-	 * @return TimberTerm|null
+	 * @return \Timber\Term|null
 	 */
 	public function category() {
 		$cats = $this->categories();
@@ -967,39 +965,39 @@ class Post extends Core implements CoreInterface {
 	 * {% endif %}
 	 * ```
 	 * @param string|array $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type or you can pass an array of post types.
-	 * @param string|bool $childPostClass _optional_ a custom post class (ex: 'MyTimber\Post') to return the objects as. By default (false) it will use Timber\Post::$post_class value.
+	 * @param string|bool  $child_post_class _optional_ a custom post class (ex: 'MyTimber\Post') to return the objects as. By default (false) it will use Timber\Post::$post_class value.
 	 * @return array
 	 */
-	public function children( $post_type = 'any', $childPostClass = false ) {
-		if ( $childPostClass === false ) {
-			$childPostClass = $this->PostClass;
+	public function children( $post_type = 'any', $child_post_class = false ) {
+		if ( $child_post_class === false ) {
+			$child_post_class = $this->PostClass;
 		}
-		if ( $post_type == 'parent' ) {
+		if ( $post_type === 'parent' ) {
 			$post_type = $this->post_type;
 		}
 		if ( is_array($post_type) ) {
 			$post_type = implode('&post_type[]=', $post_type);
 		}
-		$query = 'post_parent='.$this->ID.'&post_type[]='.$post_type.'&numberposts=-1&orderby=menu_order title&order=ASC&post_status[]=publish';
-		if ( $this->post_status == 'publish' ) {
+		$query = 'post_parent=' . $this->ID . '&post_type[]=' . $post_type . '&numberposts=-1&orderby=menu_order title&order=ASC&post_status[]=publish';
+		if ( $this->post_status === 'publish' ) {
 			$query .= '&post_status[]=inherit';
 		}
 		$children = get_children($query);
 		foreach ( $children as &$child ) {
-			$child = new $childPostClass($child->ID);
+			$child = new $child_post_class($child->ID);
 		}
 		$children = array_values($children);
 		return $children;
 	}
 
 	/**
-	 * Gets the comments on a Timber\Post and returns them as an array of [TimberComments](#TimberComment) (or whatever comment class you set).
+	 * Gets the comments on a Timber\Post and returns them as an array of `Timber\Comment` objects (or whatever comment class you set).
 	 * @api
 	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
 	 * @param string $order use ordering set in WordPress admin, or a different scheme
 	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
 	 * @param string $status Could be 'pending', etc.
-	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending TimberComment for your site or app (obviously, totally optional)
+	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending Timber\Comment for your site or app (obviously, totally optional)
 	 * @example
 	 * ```twig
 	 * {# single.twig #}
@@ -1094,6 +1092,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).
+	 *
 	 * @api
 	 * @example
 	 * ```twig
@@ -1157,13 +1156,14 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function date( $date_format = '' ) {
-		$df = $date_format ? $date_format : get_option('date_format');
+		$df       = $date_format ? $date_format : get_option('date_format');
 		$the_date = (string) mysql2date($df, $this->post_date);
 		return apply_filters('get_the_date', $the_date, $df);
 	}
 
 	/**
 	 * Get the time to use in your template
+	 *
 	 * @api
 	 * @example
 	 * ```twig
@@ -1177,11 +1177,11 @@ class Post extends Core implements CoreInterface {
 	 * OR
 	 * Published at 13:25
 	 * ```
-	 * @param string $time_format
+	 * @param  string $time_format
 	 * @return string
 	 */
 	public function time( $time_format = '' ) {
-		$tf = $time_format ? $time_format : get_option('time_format');
+		$tf       = $time_format ? $time_format : get_option('time_format');
 		$the_time = (string) mysql2date($tf, $this->post_date);
 		return apply_filters('get_the_time', $the_time, $tf);
 	}
@@ -1206,7 +1206,7 @@ class Post extends Core implements CoreInterface {
 		if ( isset($this->custom['type']) ) {
 			return $this->custom['type'];
 		}
-		if ( !$this->__type instanceof PostType ) {
+		if ( ! $this->__type instanceof PostType ) {
 			$this->__type = new PostType($this->post_type);
 		}
 		return $this->__type;
