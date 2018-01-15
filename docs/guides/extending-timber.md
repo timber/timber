@@ -18,7 +18,6 @@ Timber's objects like `Timber\Post`, `Timber\Term`, etc. are a great starting po
 <h1>{{ post.title }}</h1>
 <h3>From the {{ post.issue.title }} issue</h3>
 ```
-
 Of course, `Timber\Post` has no built-in concept of an issue (which I've built as a custom taxonomy called "issues"). So we're going to extend `Timber\Post` to give it one:
 
 ```php
@@ -69,7 +68,7 @@ For example, I have a plugin that let's people insert manually related posts, bu
 			$tags = $this->tags();
 			if (is_array($tags) && count($tags)) {
 				$search_tag = $tags[0];
-				$related = Timber::get_posts('tag_id='.$search_tag->ID);
+				$related = new Timber\PostQuery('tag_id='.$search_tag->ID);
 				return $related;
 			} else {
 				//not tagged, cant do related on it

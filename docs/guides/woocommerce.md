@@ -21,13 +21,13 @@ $context            = Timber::get_context();
 $context['sidebar'] = Timber::get_widgets( 'shop-sidebar' );
 
 if ( is_singular( 'product' ) ) {
-    $context['post']    = Timber::get_post();
+    $context['post']    = new Timber\Post();
     $product            = wc_get_product( $context['post']->ID );
     $context['product'] = $product;
 
     Timber::render( 'views/woo/single-product.twig', $context );
 } else {
-    $posts = Timber::get_posts();
+    $posts = new Timber\PostQuery();
     $context['products'] = $posts;
 
     if ( is_product_category() ) {

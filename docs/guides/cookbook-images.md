@@ -109,7 +109,7 @@ This is where we’ll start in PHP.
 
 ```php
 <?php
-$post = Timber::get_post();
+$post = new Timber\Post();
 
 if ( isset( $post->hero_image ) && strlen( $post->hero_image ) ) {
     $post->hero_image = new Timber\Image( $post->hero_image );

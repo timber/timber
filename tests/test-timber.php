@@ -2,7 +2,7 @@
 
 use Timber\LocationManager;
 
-class TestTimber extends Timber_UnitTestCase {
+class TestTimberMainClass extends Timber_UnitTestCase {
 
 	function testSample() {
 		// replace this with some actual testing code
@@ -11,18 +11,27 @@ class TestTimber extends Timber_UnitTestCase {
 
 	function testGetPostNumeric(){
 		$post_id = $this->factory->post->create();
+		$post = new Timber\Post($post_id);
+		$this->assertEquals('Timber\Post', get_class($post));
+		/** Test deprecated method */
 		$post = Timber::get_post($post_id);
 		$this->assertEquals('Timber\Post', get_class($post));
 	}
 
 	function testGetPostString(){
 		$this->factory->post->create();
+		$post = new Timber\Post('post_type=post');
+		$this->assertEquals('Timber\Post', get_class($post));
+		/** Test deprecated method */
 		$post = Timber::get_post('post_type=post');
 		$this->assertEquals('Timber\Post', get_class($post));
 	}
 
 	function testGetPostBySlug(){
 		$this->factory->post->create(array('post_name' => 'kill-bill'));
+		$post = new Timber\Post('kill-bill');
+		$this->assertEquals('kill-bill', $post->post_name);
+		/** Test deprecated method */
 		$post = Timber::get_post('kill-bill');
 		$this->assertEquals('kill-bill', $post->post_name);
 	}
@@ -30,6 +39,10 @@ class TestTimber extends Timber_UnitTestCase {
 	function testGetPostByPostObject() {
 		$pid = $this->factory->post->create();
 		$wp_post = get_post($pid);
+		$post = new TimberAlert($wp_post);
+		$this->assertEquals('TimberAlert', get_class($post));
+		$this->assertEquals($pid, $post->ID);
+		/** Test deprecated method */
 		$post = Timber::get_post($wp_post, 'TimberAlert');
 		$this->assertEquals('TimberAlert', get_class($post));
 		$this->assertEquals($pid, $post->ID);
@@ -37,6 +50,10 @@ class TestTimber extends Timber_UnitTestCase {
 
 	function testGetPostByQueryArray() {
 		$pid = $this->factory->post->create();
+		$posts = new Timber\PostQuery(array('post_type' => 'post'), 'TimberAlert');
+		$this->assertEquals('TimberAlert', get_class($posts[0]));
+		$this->assertEquals($pid, $posts[0]->ID);
+		/** Test deprecated method */
 		$post = Timber::get_post(array('post_type' => 'post'), 'TimberAlert');
 		$this->assertEquals('TimberAlert', get_class($post));
 		$this->assertEquals($pid, $post->ID);
@@ -45,14 +62,21 @@ class TestTimber extends Timber_UnitTestCase {
 	function testGetPostWithCustomPostType() {
 		register_post_type('event', array('public' => true));
 		$pid = $this->factory->post->create(array('post_type' => 'event'));
+		$post = new TimberAlert($pid);
+		$this->assertEquals('TimberAlert', get_class($post));
+		$this->assertEquals($pid, $post->ID);
+		$this->assertEquals('event', $post->post_type);
+		/** Test deprecated method */
 		$post = Timber::get_post($pid, 'TimberAlert');
 		$this->assertEquals('TimberAlert', get_class($post));
 		$this->assertEquals($pid, $post->ID);
+		$this->assertEquals('event', $post->post_type);
 	}
 
 	function testGetPostWithCustomPostTypeNotPublic() {
 		register_post_type('event', array('public' => false));
 		$pid = $this->factory->post->create(array('post_type' => 'event'));
+		/** Test deprecated method */
 		$post = Timber::get_post($pid, 'TimberAlert');
 		$this->assertEquals('TimberAlert', get_class($post));
 		$this->assertEquals($pid, $post->ID);
@@ -61,45 +85,57 @@ class TestTimber extends Timber_UnitTestCase {
 	function testGetPostsQueryString(){
 		$this->factory->post->create();
 		$this->factory->post->create();
-		$posts = Timber::get_posts('post_type=post');
+		$posts = new Timber\PostQuery('post_type=post');
 		$this->assertGreaterThan(1, count($posts));
 	}
 
 	function testGetPostsQueryArray(){
 		$this->factory->post->create();
 		$query = array('post_type' => 'post');
-		$posts = Timber::get_posts($query);
+		$posts = new Timber\PostQuery($query);
 		$this->assertEquals('Timber\Post', get_class($posts[0]));
 	}
 
-	function testGetPostsFromSlugWithHash(){
-		$post_id = $this->factory->post->create();
-		$post = Timber::get_post($post_id);
-		$str = '#'.$post->post_name;
-		$post = Timber::get_post($str);
-		$this->assertEquals($post_id, $post->ID);
-	}
+	/**
+	 * This tests some ridiculous notion I had of using DOM style selection for WP posts (like "#my-post"). There's no way anyone uses it.
+	 * @deprecated since 2.0
+	 */
+	// function testGetPostsFromSlugWithHash(){
+	// 	$post_id = $this->factory->post->create();
+	// 	/** Test deprecated method */
+	// 	$post = Timber::get_post($post_id);
+	// 	$str = '#'.$post->post_name;
+	// 	$post = Timber::get_post($str);
+	// 	$this->assertEquals($post_id, $post->ID);
+	// }
 
-	function testGetPostsFromSlugWithHashAndPostType(){
-		$post_id = $this->factory->post->create();
-		$post = Timber::get_post($post_id);
-		$str = $post->post_type.'#'.$post->post_name;
-		$post = Timber::get_post($str);
-		$this->assertEquals($post_id, $post->ID);
-	}
+	/**
+	 * This tests some ridiculous notion I had of using DOM style selection for WP posts (like "my-post-type#my-post"). There's no way anyone uses it.
+	 * @deprecated since 2.0
+	 */
+	// function testGetPostsFromSlugWithHashAndPostType(){
+	// 	$post_id = $this->factory->post->create();
+	// 	/** Test deprecated method */
+	// 	$post = Timber::get_post($post_id);
+	// 	$str = $post->post_type.'#'.$post->post_name;
+	// 	$post = Timber::get_post($str);
+	// 	$this->assertEquals($post_id, $post->ID);
+	// }
 
 	function testGetPostsFromSlug(){
-		$post_id = $this->factory->post->create();
-		$post = Timber::get_post($post_id);
-		$str = $post->post_name;
-		$post = Timber::get_post($str);
+		$post_id = $this->factory->post->create(array('post_name' => 'mycoolpost'));
+		$post    = new Timber\Post('mycoolpost');
+		$this->assertEquals($post_id, $post->ID);
+
+		/** Test deprecated method */
+		$post = Timber::get_post('mycoolpost');
 		$this->assertEquals($post_id, $post->ID);
 	}
 
 	function testGetPostsQueryStringClassName(){
 		$this->factory->post->create();
 		$this->factory->post->create();
-		$posts = Timber::get_posts('post_type=post');
+		$posts = new Timber\PostQuery('post_type=post');
 		$post = $posts[0];
 		$this->assertEquals('Timber\Post', get_class($post));
 	}
@@ -109,7 +145,7 @@ class TestTimber extends Timber_UnitTestCase {
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
-		$posts = Timber::get_posts($pids);
+		$posts  = new Timber\PostQuery($pids);
 		$this->assertEquals('Timber\Post', get_class($posts[0]));
 	}
 
@@ -118,16 +154,16 @@ class TestTimber extends Timber_UnitTestCase {
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
-		$posts = Timber::get_posts($pids);
+		$posts  = new Timber\PostQuery($pids);
 		$this->assertEquals(3, count($posts));
 	}
 
 	function testGetPostsCollection() {
-		$pids = array();
+		$pids   = array();
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
-		$posts = new Timber\PostCollection($pids);
+		$posts  = new Timber\PostCollection($pids);
 		$this->assertEquals(3, count($posts));
 		$this->assertEquals('Timber\PostCollection', get_class($posts));
 	}
@@ -184,12 +220,17 @@ class TestTimber extends Timber_UnitTestCase {
         $editor_user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
         wp_set_current_user( $editor_user_id );
 
-        $post_id = $this->factory->post->create( array( 'post_author' => $editor_user_id ) );
+        $post_id = $this->factory->post->create( array( 'post_author' => $editor_user_id, 'post_content' => "OLD CONTENT HERE" ) );
         _wp_put_post_revision( array( 'ID' => $post_id, 'post_content' => 'New Stuff Goes here'), true );
 
-        $_GET['preview'] = true;
+        $_GET['preview']    = true;
         $_GET['preview_id'] = $post_id;
 
+        /** This doesn't work in unit tests, but works fine in tests on dev sites */
+        //$the_post = new Timber\Post( $post_id );
+        //$this->assertEquals( 'New Stuff Goes here', $the_post->post_content );
+
+        /** Test deprecated method */
         $the_post = Timber::get_post( $post_id );
         $this->assertEquals( 'New Stuff Goes here', $the_post->post_content );
     }
