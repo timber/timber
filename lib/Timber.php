@@ -257,8 +257,59 @@ class Timber {
 
 			self::$context_cache['posts'] = new PostQuery();
 
-			self::$context_cache = apply_filters('timber_context', self::$context_cache);
+			/**
+			 * Filters the global Timber context.
+			 *
+			 * By using this filter, you can add custom data to the global Timber context, which
+			 * means that this data will be available on every page that is initialized with
+			 * `Timber::get_context()`.
+			 *
+			 * @see \Timber\Timber::get_context()
+			 * @since 0.21.7
+			 * @example
+			 * ```php
+			 * add_filter( 'timber/context', function( $context ) {
+			 *     // Example: A custom value
+			 *     $context['custom_site_value'] = 'Hooray!';
+			 *
+			 *     // Example: Add a menu to the global context.
+			 *     $context['menu'] = new \Timber\Menu( 'primary-menu' );
+			 *
+			 *     // Example: Add all ACF options to global context.
+			 *     $context['options'] = get_fields( 'options' );
+			 *
+			 *     return $context;
+			 * } );
+			 * ```
+			 * ```twig
+			 * <h1>{{ custom_site_value|e }}</h1>
+			 *
+			 * {% for item in menu.items %}
+			 *     {# Display menu item #}
+			 * {% endfor %}
+			 *
+			 * <footer>
+			 *     {% if options.footer_text is not empty %}
+			 *         {{ options.footer_text|e }}
+			 *     {% endif %}
+			 * </footer>
+			 * ```
+			 *
+			 * @param array $context The global context.
+			 */
 			self::$context_cache = apply_filters('timber/context', self::$context_cache);
+
+			/**
+			 * Filters the global Timber context.
+			 *
+			 * @deprecated 2.0.0, use `timber/context`
+			 */
+			self::$context_cache = apply_filters_deprecated(
+				'timber_context',
+				array( self::$context_cache ),
+				'2.0.0',
+				'timber/context'
+			);
 		}
 
 
@@ -300,12 +351,62 @@ class Timber {
 		$file = $loader->choose_template($filenames);
 
 		$caller_file = LocationManager::get_calling_script_file(1);
-		apply_filters('timber/calling_php_file', $caller_file);
+
+		/**
+		 * Fires after the calling PHP file was determined in Timber’s compile
+		 * function.
+		 *
+		 * This action is used by the Timber Debug Bar extension.
+		 *
+		 * @since 1.1.2
+		 * @since 2.0.0 Switched from filter to action.
+		 *
+		 * @param string|null $caller_file The calling script file.
+		 */
+		do_action( 'timber/calling_php_file', $caller_file );
 
 		if ( $via_render ) {
-			$file = apply_filters('timber_render_file', $file);
+			/**
+			 * Filters the Twig template that should be rendered.
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param string $file The chosen Twig template name to render.
+			 */
+			$file = apply_filters( 'timber/render/file', $file );
+
+			/**
+			 * Filters the Twig file that should be rendered.
+			 *
+			 * @deprecated 2.0.0, use `timber/render/file`
+			 */
+			$file = apply_filters_deprecated(
+				'timber_render_file',
+				array( $file ),
+				'2.0.0',
+				'timber/render/file'
+			);
 		} else {
-			$file = apply_filters('timber_compile_file', $file);
+			/**
+			 * Filters the Twig template that should be compiled.
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param string $file The chosen Twig template name to compile.
+			 */
+			$file = apply_filters( 'timber/compile/file', $file );
+
+			/**
+			 * Filters the Twig template that should be compiled.
+			 *
+			 * @deprecated 2.0.0
+			 */
+			$file = apply_filters_deprecated(
+				'timber_compile_file',
+				array( $file ),
+				'2.0.0',
+				'timber/compile/file'
+			);
 		}
 
 		$output = false;
@@ -316,15 +417,81 @@ class Timber {
 			}
 
 			if ( $via_render ) {
-				$data = apply_filters('timber_render_data', $data);
+				/**
+				 * Filters the data that should be passed for rendering a Twig template.
+				 *
+				 * @since 2.0.0
+				 *
+				 * @param array  $data The data that is used to render the Twig template.
+				 * @param string $file The name of the Twig template to render.
+				 */
+				$data = apply_filters( 'timber/render/data', $data, $file );
+
+				/**
+				 * Filters the data that should be passed for rendering a Twig template.
+				 *
+				 * @deprecated 2.0.0
+				 */
+				$data = apply_filters_deprecated(
+					'timber_render_data',
+					array( $data ),
+					'2.0.0',
+					'timber/render/data'
+				);
 			} else {
-				$data = apply_filters('timber_compile_data', $data);
+				/**
+				 * Filters the data that should be passed for compiling a Twig template.
+				 *
+				 * @since 2.0.0
+				 *
+				 * @param array  $data The data that is used to compile the Twig template.
+				 * @param string $file The name of the Twig template to compile.
+				 */
+				$data = apply_filters( 'timber/compile/data', $data, $file );
+
+				/**
+				 * Filters the data that should be passed for compiling a Twig template.
+				 *
+				 * @deprecated 2.0.0, use `timber/compile/data`
+				 */
+				$data = apply_filters_deprecated(
+					'timber_compile_data',
+					array( $data ),
+					'2.0.0',
+					'timber/compile/data'
+				);
 			}
 
 			$output = $loader->render($file, $data, $expires, $cache_mode);
 		}
 
-		do_action('timber_compile_done');
+		/**
+		 * Fires after a Twig template was compiled and before the compiled data
+		 * is returned.
+		 *
+		 * This action can be helpful if you need to debug Twig template
+		 * compilation.
+		 *
+		 * @todo Add parameter descriptions
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param string $output
+		 * @param string $file
+		 * @param array  $data
+		 * @param bool   $expires
+		 * @param string $cache_mode
+		 */
+		do_action( 'timber/compile/done', $output, $file, $data, $expires, $cache_mode );
+
+		/**
+		 * Fires after a Twig template was compiled and before the compiled data
+		 * is returned.
+		 *
+		 * @deprecated 2.0.0, use `timber/compile/done`
+		 */
+		do_action_deprecated( 'timber_compile_done', array(), '2.0.0', 'timber/compile/done' );
+
 		return $output;
 	}
 
@@ -354,6 +521,8 @@ class Timber {
 	/**
 	 * Fetch function.
 	 *
+	 * @todo In case this isn’t deprecated for 2.0.0, update filter hook name.
+	 *
 	 * @api
 	 * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, Timber will
 	 *                                 render the first file that exists.
@@ -366,7 +535,18 @@ class Timber {
 	 */
 	public static function fetch( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
 		$output = self::compile($filenames, $data, $expires, $cache_mode, true);
+
+		/**
+		 * Filters the compiled result before it is returned.
+		 *
+		 * @todo Maybe deprecate in 2.0?
+		 * @see \Timber\Timber::fetch()
+		 * @since 0.16.7
+		 *
+		 * @param string $output The compiled output.
+		 */
 		$output = apply_filters('timber_compile_result', $output);
+
 		return $output;
 	}
 

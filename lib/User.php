@@ -143,7 +143,7 @@ class User extends Core implements CoreInterface {
 
 
 	/**
-	 * Retrives the custom (meta) data on a user and returns it.
+	 * Retrieves the custom (meta) data on a user and returns it.
 	 *
 	 * @internal
 	 * @return array|null
@@ -151,7 +151,32 @@ class User extends Core implements CoreInterface {
 	protected function get_custom() {
 		if ( $this->ID ) {
 			$um = array();
-			$um = apply_filters('timber_user_get_meta_pre', $um, $this->ID, $this);
+
+			/**
+			 * Filters user meta data before it is fetched from the database.
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param array        $user_meta User meta data. Passing a non-empty array will skip
+			 *                                fetching meta values from the database, returning the
+			 *                                filtered value instead. Default `array()`.
+			 * @param int          $user_id   The user ID.
+			 * @param \Timber\User $user      The user object.
+			 */
+			$um = apply_filters( 'timber/user/pre_get_meta', $um, $this->ID, $this );
+
+			/**
+			 * Filters user meta data before it is fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/user/pre_get_meta`
+			 */
+			$um = apply_filters_deprecated(
+				'timber_user_get_meta_pre',
+				array( $um, $this->ID, $this ),
+				'2.0.0',
+				'timber/user/pre_get_meta'
+			);
+
 			if ( empty($um) ) {
 				$um = get_user_meta($this->ID);
 			}
@@ -162,7 +187,30 @@ class User extends Core implements CoreInterface {
 				}
 				$custom[ $key ] = maybe_unserialize($value);
 			}
-			$custom = apply_filters('timber_user_get_meta', $custom, $this->ID, $this);
+
+			/**
+			 * Filters user meta data fetched from the database.
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param array        $user_meta User meta data fetched from the database.
+			 * @param int          $user_id   The user ID.
+			 * @param \Timber\User $user      The user object.
+			 */
+			$custom = apply_filters( 'timber/user/get_meta', $custom, $this->ID, $this );
+
+			/**
+			 * Filters user meta data fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/user/get_meta`
+			 */
+			$custom = apply_filters_deprecated(
+				'timber_user_get_meta',
+				array( $custom, $this->ID, $this ),
+				'2.0.0',
+				'timber/user/get_meta'
+			);
+
 			return $custom;
 		}
 		return null;
@@ -187,11 +235,63 @@ class User extends Core implements CoreInterface {
 	 */
 	public function meta( $field_name ) {
 		$value = null;
-		$value = apply_filters('timber_user_get_meta_field_pre', $value, $this->ID, $field_name, $this);
+
+		/**
+		 * Filters a user meta field before it is fetched from the database.
+		 *
+		 * @see \Timber\User::meta()
+		 * @since 2.0.0
+		 *
+		 * @param mixed        $value      The field value. Passing a non-null value will skip
+		 *                                 fetching the value from the database, returning the
+		 *                                 filtered value instead. Default `null`.
+		 * @param int          $user_id    The user ID
+		 * @param string       $field_name The name of the meta field to get the value for.
+		 * @param \Timber\User $user       The user object.
+		 */
+		$value = apply_filters( 'timber/user/pre_get_meta_field', $value, $this->ID, $field_name, $this );
+
+		/**
+		 * Filters a user meta field before it is fetched from the database.
+		 *
+		 * @deprecated 2.0.0, use `timber/user/pre_get_meta_field`
+		 */
+		$value = apply_filters_deprecated(
+			'timber_user_get_meta_field_pre',
+			array( $value, $this->ID, $field_name, $this ),
+			'2.0.0',
+			'timber/user/pre_get_meta_field'
+		);
+
 		if ( null === $value ) {
 			$value = get_user_meta($this->ID, $field_name, true);
 		}
-		$value = apply_filters('timber_user_get_meta_field', $value, $this->ID, $field_name, $this);
+
+		/**
+		 * Filters the value for a user meta field.
+		 *
+		 * @see \Timber\User::meta()
+		 * @since 2.0.0
+		 *
+		 * @param mixed        $value      The field value.
+		 * @param int          $user_id    The user ID.
+		 * @param string       $field_name The name of the meta field to get the value for.
+		 * @param \Timber\User $user       The user object.
+		 */
+		$value = apply_filters( 'timber/user/get_meta_field', $value, $this->ID, $field_name, $this );
+
+		/**
+		 * Filters the value for a user meta field.
+		 *
+		 * @deprecated 2.0.0, use `timber/user/get_meta_field`
+		 */
+		$value = apply_filters_deprecated(
+			'timber_user_get_meta_field',
+			array( $value, $this->ID, $field_name, $this ),
+			'2.0.0',
+			'timber/user/get_meta_field'
+		);
+
 		return $value;
 	}
 
@@ -202,6 +302,14 @@ class User extends Core implements CoreInterface {
 	 * @return string the human-friendly name of the user (ex: "Buster Bluth")
 	 */
 	public function name() {
+		/**
+		 * Filters the name of a user.
+		 *
+		 * @since 1.1.4
+		 *
+		 * @param string       $name The name of the user. Default `display_name`.
+		 * @param \Timber\User $user The user object.
+		 */
 		return apply_filters('timber/user/name', $this->display_name, $this);
 	}
 

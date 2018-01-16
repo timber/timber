@@ -252,7 +252,15 @@ class Archives extends Core {
 		}
 
 		$where = $wpdb->prepare('WHERE post_type = "%s" AND post_status = "publish"', $post_type);
+
+		/**
+		 * @link https://developer.wordpress.org/reference/hooks/getarchives_where/
+		 */
 		$where = apply_filters('getarchives_where', $where, $args);
+
+		/**
+		 * @link https://developer.wordpress.org/reference/hooks/getarchives_join/
+		 */
 		$join = apply_filters('getarchives_join', '', $args);
 
 		$output = array();

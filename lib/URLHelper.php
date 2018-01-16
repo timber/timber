@@ -158,7 +158,33 @@ class URLHelper {
 	 */
 	public static function url_to_file_system( $url ) {
 		$url_parts         = parse_url($url);
-		$url_parts['path'] = apply_filters('timber/URLHelper/url_to_file_system/path', $url_parts['path']);
+
+		/**
+		 * Filters the path of a parsed URL.
+		 *
+		 * This filter is used by the WPML integration.
+		 *
+		 * @todo Add description, parameter description.
+		 *
+		 * @see \Timber\URLHelper::url_to_file_system()
+		 * @since 1.3.2
+		 *
+		 * @param string $path
+		 */
+		$url_parts['path'] = apply_filters( 'timber/url_helper/url_to_file_system/path', $url_parts['path'] );
+
+		/**
+		 * Filters the path of a parsed URL.
+		 *
+		 * @deprecated 2.0.0, use `timber/url_helper/url_to_file_system/path`
+		 */
+		$url_parts['path'] = apply_filters_deprecated(
+			'timber/URLHelper/url_to_file_system/path',
+			array( $url_parts['path'] ),
+			'2.0.0',
+			'timber/url_helper/url_to_file_system/path'
+		);
+
 		$path              = ABSPATH . $url_parts['path'];
 		$path              = str_replace('//', '/', $path);
 		return $path;
@@ -170,7 +196,35 @@ class URLHelper {
 	public static function file_system_to_url( $fs ) {
 		$relative_path = self::get_rel_path($fs);
 		$home          = home_url('/' . $relative_path);
-		$home          = apply_filters('timber/URLHelper/file_system_to_url', $home);
+
+		/**
+		 * Filters the home URL …
+		 *
+		 * This filter is used by the WPML integration.
+		 *
+		 * @todo Complete summary, add description.
+		 *
+		 * @see \Timber\URLHelper::file_system_to_url()
+		 * @since 1.3.2
+		 *
+		 * @param string $home The home URL.
+		 */
+		$home = apply_filters( 'timber/url_helper/file_system_to_url', $home );
+
+		/**
+		 * Filters the home URL …
+		 *
+		 * @todo Complete summary.
+		 *
+		 * @deprecated 2.0.0, use `timber/url_helper/file_system_to_url`
+		 */
+		$home = apply_filters_deprecated(
+			'timber/URLHelper/file_system_to_url',
+			array( $home ),
+			'2.0.0',
+			'timber/url_helper/file_system_to_url'
+		);
+
 		return $home;
 	}
 
@@ -181,8 +235,30 @@ class URLHelper {
 	 * @return string (ex: /wp-content or /content)
 	 */
 	public static function get_content_subdir() {
-		$home_url        = get_home_url();
-		$home_url        = apply_filters('timber/URLHelper/get_content_subdir/home_url', $home_url);
+		$home_url = get_home_url();
+
+		/**
+		 * Filters the home URL that is used to get the path relative to the content directory.
+		 *
+		 * @since 1.3.2
+		 *
+		 * @param string $home_url The URL to use as the base for getting the content subdirectory.
+		 *                         Default value of `home_url()`.
+		 */
+		$home_url = apply_filters( 'timber/url_helper/get_content_subdir/home_url', $home_url );
+
+		/**
+		 * Filters the home URL that is used to get the path relative to the content directory.
+		 *
+		 * @deprecated 2.0.0, use `timber/url_helper/get_content_subdir/home_url`
+		 */
+		$home_url = apply_filters_deprecated(
+			'timber/URLHelper/get_content_subdir/home_url',
+			array( $home_url ),
+			'2.0.0',
+			'timber/url_helper/get_content_subdir/home_url'
+		);
+
 		$wp_content_path = str_replace($home_url, '', WP_CONTENT_URL);
 		return $wp_content_path;
 	}

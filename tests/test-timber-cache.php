@@ -120,9 +120,9 @@
 
             Timber\Helper::_lock_transient($transient, 30);
 
-            add_filter( 'timber_force_transients', '__return_true' );
+            add_filter( 'timber/transient/force_transients', '__return_true' );
             $get_transient = Timber\Helper::transient( $transient, '__return_true' );
-            remove_filter( 'timber_force_transients', '__return_true' );
+            remove_filter( 'timber/transient/force_transients', '__return_true' );
 
             $this->assertTrue( $get_transient );
         }
