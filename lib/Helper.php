@@ -31,6 +31,15 @@ class Helper {
 	 * @return mixed
 	 */
 	public static function transient( $slug, $callback, $transient_time = 0, $lock_timeout = 5, $force = false ) {
+		/**
+		 * Filters the transient slug.
+		 *
+		 * This might be useful if you are using a multilingual solution.
+		 *
+		 * @since 0.22.6
+		 *
+		 * @param string $slug The slug for the transient.
+		 */
 		$slug = apply_filters('timber/transient/slug', $slug);
 
 		$enable_transients = ($transient_time === false || (defined('WP_DISABLE_TRANSIENTS') && WP_DISABLE_TRANSIENTS)) ? false : true;
@@ -53,8 +62,54 @@ class Helper {
 	 */
 	protected static function handle_transient_locking( $slug, $callback, $transient_time, $lock_timeout, $force, $enable_transients ) {
 		if ( $enable_transients && self::_is_transient_locked($slug) ) {
-			$force = apply_filters('timber_force_transients', $force);
-			$force = apply_filters('timber_force_transient_'.$slug, $force);
+
+			/**
+			 * Filters …
+			 *
+			 * @todo Add summary, add description, add description for $force param
+			 *
+			 * @since 2.0.0
+			 * @param bool $force
+			 */
+			$force = apply_filters( 'timber/transient/force_transients', $force );
+
+			/**
+			 * Filters …
+			 *
+			 * @todo Add summary
+			 *
+			 * @deprecated 2.0.0, use `timber/transient/force_transients`
+			 */
+			$force = apply_filters_deprecated(
+				'timber_force_transients',
+				array( $force ),
+				'2.0.0',
+				'timber/transient/force_transients'
+			);
+
+			/**
+			 * Filters …
+			 *
+			 * Here is a description about the filter.
+			 * `$slug` The transient slug.
+			 *
+			 * @todo Add summary, add description, add description for $force param
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param bool $force
+			 */
+			$force = apply_filters( "timber/transient/force_transient_{$slug}", $force );
+
+			/**
+			 * Filters …
+			 *
+			 * @todo Add summary
+			 *
+			 * @deprecated 2.0.0, use `timber/transient/force_transient_{$slug}`
+			 */
+			$force = apply_filters( "timber_force_transient_{$slug}", $force );
+
 			if ( !$force ) {
 				//the server is currently executing the process.
 				//We're just gonna dump these users. Sorry!
@@ -211,7 +266,22 @@ class Helper {
 	 * @return string
 	 */
 	public static function get_wp_title( $separator = ' ', $seplocation = 'left' ) {
-		$separator = apply_filters('timber_wp_title_seperator', $separator);
+		/**
+		 * Filters the separator used for the page title.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param string $separator The separator to use. Default `' '`.
+		 */
+		$separator = apply_filters( 'timber/helper/wp_title_separator', $separator );
+
+		/**
+		 * Filters the separator used for the page title.
+		 *
+		 * @deprecated 2.0.0, use `timber/helper/wp_title_separator`
+		 */
+		$separator = apply_filters_deprecated( 'timber_wp_title_seperator', array( $separator ), '2.0.0', 'timber/helper/wp_title_separator' );
+
 		return trim(wp_title($separator, false, $seplocation));
 	}
 

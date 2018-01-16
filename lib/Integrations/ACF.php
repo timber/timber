@@ -13,12 +13,12 @@ namespace Timber\Integrations;
 class ACF {
 
 	public function __construct() {
-		add_filter('timber_post_get_meta', array( $this, 'post_get_meta' ), 10, 2);
-		add_filter('timber_post_get_meta_field', array( $this, 'post_get_meta_field' ), 10, 3);
+		add_filter('timber/post/get_meta', array( $this, 'post_get_meta' ), 10, 2);
+		add_filter('timber/post/get_meta_field', array( $this, 'post_get_meta_field' ), 10, 3);
 		add_filter('timber/post/meta_object_field', array( $this, 'post_meta_object' ), 10, 3);
 		add_filter('timber/term/meta', array( $this, 'term_get_meta' ), 10, 3);
 		add_filter('timber/term/meta/field', array( $this, 'term_get_meta_field' ), 10, 4);
-		add_filter('timber_user_get_meta_field_pre', array( $this, 'user_get_meta_field' ), 10, 3);
+		add_filter('timber/user/pre_get_meta_field', array( $this, 'user_get_meta_field' ), 10, 3);
 		add_filter('timber/term/meta/set', array( $this, 'term_set_meta' ), 10, 4);
 	}
 

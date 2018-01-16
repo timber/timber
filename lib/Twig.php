@@ -255,12 +255,41 @@ class Twig {
 					return apply_filters_ref_array($tag, $args);
 				} ));
 
-
-		$twig = apply_filters('timber/twig', $twig);
 		/**
-		 * get_twig is deprecated, use timber/twig
+		 * Filters the Twig environment used in the global context.
+		 *
+		 * You can use this filter if you want to add additional functionality to Twig, like global variables, filters or functions.
+		 *
+		 * @example
+		 * ```php
+		 * /**
+		 *  * @param \Twig_Environment $twig The Twig environment.
+		 *  * @return $twig
+		 *  *\/
+		 * add_filter( 'timber/twig', function( $twig ) {
+		 *     // Make get_theme_file_uri() usable as {{ theme_file() }} in Twig.
+		 *     $twig->addFunction( new Timber_Twig_Function( 'theme_file', 'get_theme_file_uri' ) );
+		 *
+		 *     return $twig;
+		 * } );
+		 * ```
+		 * ```twig
+		 * <a class="navbar-brand" href="{{ site.url }}">
+		 *     <img src="{{ theme_file( 'build/img/logo-example.svg' ) }}" alt="Logo {{ site.title }}">
+		 * </a>
+		 * ```
+		 * @since 0.21.9
+		 *
+		 * @param \Twig_Environment $twig The Twig Environment to which you can add additional functionality.
 		 */
-		$twig = apply_filters('get_twig', $twig);
+		$twig = apply_filters('timber/twig', $twig);
+
+		/**
+		 * Filters the Twig environment used in the global context.
+		 *
+		 * @deprecated 2.0.0
+		 */
+		$twig = apply_filters_deprecated( 'get_twig', array( $twig ), '2.0.0', 'timber/twig' );
 		return $twig;
 	}
 

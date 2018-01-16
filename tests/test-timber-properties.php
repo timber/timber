@@ -36,25 +36,36 @@ class TestTimberProperty extends Timber_UnitTestCase {
 		$site = new Timber\Site();
 		return array( 'post' => $post, 'user' => $user, 'term' => $term, 'comment' => $comment, 'site' => $site );
 	}
+	
+	/**
+	 * @expectedDeprecated timber/term/meta/set
+	 */
+	function testMetaForTerm() {
+		$vars = $this->_initObjects();
+		extract( $vars );
+		$term->update( 'abraham', 'lincoln' );
+		$this->assertEquals( 'lincoln', $term->abraham );
+		$this->assertEquals( 'lincoln', Timber::compile_string( '{{term.abraham}}', array( 'term' => $term ) ) );
+	}
 
 	function testMeta() {
 		$vars = $this->_initObjects();
 		extract( $vars );
 		$site->update( 'bill', 'clinton' );
 		$post->update( 'thomas', 'jefferson' );
-		$term->update( 'abraham', 'lincoln' );
+		//
 		$user->update( 'dwight', 'einsenhower' );
 		$user->update( 'teddy', 'roosevelt' );
 		$user->update( 'john', 'kennedy' );
 		$comment->update( 'george', 'washington' );
 		$this->assertEquals( 'jefferson', $post->thomas );
-		$this->assertEquals( 'lincoln', $term->abraham );
+		
 		$this->assertEquals( 'roosevelt', $user->teddy );
 		$this->assertEquals( 'washington', $comment->george );
 		$this->assertEquals( 'clinton', $site->bill );
 
 		$this->assertEquals( 'jefferson', Timber::compile_string( '{{post.thomas}}', array( 'post' => $post ) ) );
-		$this->assertEquals( 'lincoln', Timber::compile_string( '{{term.abraham}}', array( 'term' => $term ) ) );
+		
 		$this->assertEquals( 'roosevelt', Timber::compile_string( '{{user.teddy}}', array( 'user' => $user ) ) );
 		$this->assertEquals( 'washington', Timber::compile_string( '{{comment.george}}', array( 'comment' => $comment ) ) );
 		$this->assertEquals( 'clinton', Timber::compile_string( '{{site.bill}}', array( 'site' => $site ) ) );

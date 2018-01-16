@@ -275,7 +275,31 @@ class Site extends Core implements CoreInterface {
 	 * @param mixed   $value
 	 */
 	public function update( $key, $value ) {
-		$value = apply_filters('timber_site_set_meta', $value, $key, $this->ID, $this);
+		/**
+		 * Filters a value before it is updated in the site options.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param mixed        $value   The new value.
+		 * @param string       $key     The option key.
+		 * @param int          $site_id The site ID.
+		 * @param \Timber\Site $site    The site object.
+		 */
+		$value = apply_filters( 'timber/site/update_option', $value, $key, $this->ID, $this );
+
+		/**
+		 * Filters a value before it is updated in the site options.
+		 *
+		 * @deprecated 2.0.0, use `timber/site/update_option`
+		 * @since 0.20.0
+		 */
+		$value = apply_filters_deprecated(
+			'timber_site_set_meta',
+			array( $value, $key, $this->ID, $this ),
+			'2.0.0',
+			'timber/site/update_option'
+		);
+
 		if ( is_multisite() ) {
 			update_blog_option($this->ID, $key, $value);
 		} else {

@@ -4,7 +4,7 @@ namespace Timber;
 
 class LocationManager {
 
-	
+
 	/**
 	 * @param bool|string   $caller the calling directory (or false)
 	 * @return array
@@ -21,8 +21,27 @@ class LocationManager {
 		$locs = array_unique($locs);
 		//now make sure theres a trailing slash on everything
 		$locs = array_map('trailingslashit', $locs);
-		$locs = apply_filters('timber_locations', $locs);
+
+		/**
+		 * Filters …
+		 *
+		 * @todo Add summary, description, example, parameter description
+		 *
+		 * @since 0.20.10
+		 *
+		 * @param array $locs
+		 */
 		$locs = apply_filters('timber/locations', $locs);
+
+		/**
+		 * Filters …
+		 *
+		 * @todo Add summary
+		 *
+		 * @deprecated 2.0.0, use `timber/locations`
+		 */
+		$locs = apply_filters_deprecated( 'timber_locations', array( $locs ), '2.0.0', 'timber/locations' );
+
 		return $locs;
 	}
 
@@ -67,7 +86,7 @@ class LocationManager {
 			if ( array_key_exists('file', $trace) && $trace['file'] != __FILE__ ) {
 				$callers[] = $trace['file'];
 			}
-		}		
+		}
 		$callers = array_unique($callers);
 		$callers = array_values($callers);
 		return $callers[$offset];

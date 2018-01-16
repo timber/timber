@@ -13,7 +13,7 @@
 		}
 
 		function testPHPSidebar() {
-			add_filter('timber_context', function($context){
+			add_filter('timber/context', function($context){
 				$context['sidebar'] = Timber::get_sidebar('assets/my-sidebar.php');
 				return $context;
 			});

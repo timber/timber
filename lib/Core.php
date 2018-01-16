@@ -85,7 +85,7 @@ abstract class Core {
 
 
 	/**
-	 * @ignore
+	 * @deprecated since 2.0.0
 	 * @param string  $key
 	 * @param mixed   $value
 	 */
