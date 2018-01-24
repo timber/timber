@@ -2,8 +2,8 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 3.7
-Stable tag: 1.5.0
-Tested up to: 4.8.1
+Stable tag: 1.6.0
+Tested up to: 4.9.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -32,11 +32,41 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
-- Transparent PNGs now work with letterboxing #1554 (thanks @nlemoine)
 
 **Changes for Theme Developers**
 - Please add any usage changes here so theme developers are informed of changes.
-- You can now interact with Terms in Twig the same as PHP (ex: `{% set term = Term(#1159 (@jarednova)
+
+= 1.6.0 =
+**Changes for Theme Developers**
+- You can now easily access all of a MenuItem's master object properties through `{{ item.master_object }}` What's a master object? It's when a Menu Item has been created directly from a Post or Term in the WP Admin #1577 #1572
+- Enabled methods for getting media from posts, you can now do `{{ post.video }}`, `{{ post.audio }}` and `{{ post.gallery }}` to retrieve media include in the body of a post #1583 (thanks @marciojc)
+- You can now get ACF's field object data: `{{ post.field_object('my_field').key }}` #1597 #1599 (thanks @palmiak)
+- You can use the `|filter` filter on arrays to return items like so:
+```
+{% for post in posts|filter('my-slug') %}
+    {{ post.title }}
+{% endfor %}
+```
+by default it looks for slugs, but you can also get into particular fields:
+```
+{% for post in posts|filter({post_title: "Cheese", post_content:"Method Man"}) %}
+    {{ post.title }}
+{% endfor %}
+```
+... this will return posts that match both parameters. #1594 thanks @pablo-sg-pacheco
+
+= 1.5.2 =
+
+**Fixes and improvements**
+- Fixed a bug where multi-level menus weren't receiving proper data
+
+= 1.5.1 =
+
+**Fixes and improvements**
+- Transparent PNGs now work with letterboxing #1554 (thanks @nlemoine)
+
+**Changes for Theme Developers**
+- You can now interact with Terms in Twig the same as PHP (ex: `{% set term = Term(34, "arts") %}`). The second arg will default to a subclass of Timber\Term if it exists #1159 (@jarednova)
 - You can now get {{ theme.version }} to get the theme version! #1555 (thanks @herrschuessler)
 
 = 1.5.0 =

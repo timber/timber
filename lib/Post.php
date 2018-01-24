@@ -69,6 +69,11 @@ class Post extends Core implements CoreInterface {
 	public $object_type = 'post';
 
 	/**
+	 * @var array $custom stores custom meta data
+	 */
+	public $custom = array();
+
+	/**
 	 * @var string $representation what does this class represent in WordPress terms?
 	 */
 	public static $representation = 'post';
@@ -259,17 +264,17 @@ class Post extends Core implements CoreInterface {
 
 	protected function get_post_preview_id( $query ) {
 		$can = array(
-			'edit_'.$query->queried_object->post_type.'s',
+			get_post_type_object($query->queried_object->post_type)->cap->edit_post,
 		);
 
 		if ( $query->queried_object->author_id !== get_current_user_id() ) {
-			$can[] = 'edit_others_'.$query->queried_object->post_type.'s';
+			$can[] = get_post_type_object($query->queried_object->post_type)->cap->edit_others_posts;
 		}
 
 		$can_preview = array();
 
 		foreach ( $can as $type ) {
-			if ( current_user_can($type) ) {
+			if ( current_user_can($type, $query->queried_object_id) ) {
 				$can_preview[] = true;
 			}
 		}
@@ -697,6 +702,19 @@ class Post extends Core implements CoreInterface {
 		return (!$this->get_field($field_name)) ? false : true;
 	}
 
+	/**
+	 * Gets the field object data from Advanced Custom Fields.
+	 * This includes metadata on the field like whether it's conditional or not.
+	 *
+	 * @since 1.6.0
+	 * @param string $field_name of the field you want to lookup.
+	 * @return mixed
+	 */
+	public function field_object( $field_name ) {
+		$value = apply_filters('timber/post/meta_object_field', null, $this->ID, $field_name, $this);
+		$value = $this->convert($value, __CLASS__);
+		return $value;
+	}
 
 	/**
 	 * @param string $field_name
@@ -1016,7 +1034,7 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * Published on {{ post.date }} // Uses WP's formatting set in Admin
 	 * OR
-	 * Published on {{ post.date | date('F jS') }} // Jan 12th
+	 * Published on {{ post.date('F jS') }} // Jan 12th
 	 * ```
 	 *
 	 * ```html
@@ -1319,13 +1337,13 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * get the featured image as a TimberImage
+	 * get the featured image as a Timber/Image
 	 * @api
 	 * @example
 	 * ```twig
-	 * <img src="{{post.thumbnail.src}}" />
+	 * <img src="{{ post.thumbnail.src }}" />
 	 * ```
-	 * @return TimberImage|null of your thumbnail
+	 * @return Timber/Image|null of your thumbnail
 	 */
 	public function thumbnail() {
 		$tid = get_post_thumbnail_id($this->ID);
@@ -1347,6 +1365,71 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function title() {
 		return apply_filters('the_title', $this->post_title, $this->ID);
+	}
+
+	/**
+	 * Returns the gallery
+	 * @api
+	 * @example
+	 * ```twig
+	 * {{ post.gallery }}
+	 * ```
+	 * @return html
+	 */
+	public function gallery( $html = true ) {
+		if ( isset($this->custom['gallery']) ) {
+			return $this->custom['gallery'];
+		}
+		$galleries = get_post_galleries($this->ID, $html);
+		$gallery = reset($galleries);
+
+		return apply_filters('get_post_gallery', $gallery, $this->ID, $galleries);
+	}
+
+	/**
+	 * Returns the audio
+	 * @api
+	 * @example
+	 * ```twig
+	 * {{ post.audio }}
+	 * ```
+	 * @return html
+	 */
+	public function audio() {
+		if ( isset($this->custom['audio']) ) {
+			return $this->custom['audio'];
+		}
+		$audio = false;
+
+		// Only get audio from the content if a playlist isn't present.
+		if ( false === strpos($this->get_content(), 'wp-playlist-script') ) {
+			$audio = get_media_embedded_in_content($this->get_content(), array('audio'));
+		}
+
+		return $audio;
+	}
+
+	/**
+	 * Returns the video
+	 * @api
+	 * @example
+	 * ```twig
+	 * {{ post.video }}
+	 * ```
+	 * @return html
+	 */
+	public function video() {
+		if ( isset($this->custom['video']) ) {
+			return $this->custom['video'];
+		}
+		$video = false;
+
+		// Only get video from the content if a playlist isn't present.
+		if ( false === strpos($this->get_content(), 'wp-playlist-script') ) {
+			$video = get_media_embedded_in_content($this->get_content(), array('video', 'object', 'embed', 'iframe'));
+		}
+
+		return $video;
 	}
 
 
