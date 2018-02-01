@@ -234,40 +234,18 @@ class Term extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function get_edit_url() {
-		Helper::warn( '{{ term.get_edit_url }} is deprecated. Use `{{ term.edit_link }}` instead.' );
-
+		Helper::deprecated('{{ term.get_edit_url }}', '{{ term.edit_link }}', '2.0.0');
 		return $this->edit_link();
 	}
 
 	/**
 	 * @internal
+	 * @deprecated 2.0.0, use `{{ term.meta("my_field") }}` instead.
 	 * @param string $field_name
 	 * @return string
 	 */
 	public function get_meta_field( $field_name ) {
 		return $this->meta($field_name);
-	}
-
-	/**
-	 * @api
-	 * @deprecated 1.0.0, use `{{ term.path }}` instead.
-	 * @return string
-	 */
-	public function get_path() {
-		Helper::warn( '{{ term.get_path }} is deprecated. Use {{ term.path }} instead.' );
-
-		return $this->path();
-	}
-
-	/**
-	 * @api
-	 * @deprecated 1.0.0, use `{{ term.link }}` instead.
-	 * @return string
-	 */
-	public function get_link() {
-		Helper::warn( '{{ term.get_link }} is deprecated. Use {{ term.link }} instead.' );
-
-		return $this->link();
 	}
 
 
@@ -525,7 +503,7 @@ class Term extends Core implements CoreInterface {
 	/**
 	 * Get Posts that have been "tagged" with the particular term
 	 *
-	 * @deprecated 2.0 use Term::posts() instead
+	 * @deprecated 2.0.0 use `{{ term.posts }}` instead
 	 * @internal
 	 * @param int $numberposts
 	 * @param string $post_type
@@ -533,6 +511,7 @@ class Term extends Core implements CoreInterface {
 	 * @return array|bool|null
 	 */
 	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
+		Helper::deprecated('{{ term.get_posts }}', '{{ term.posts }}', '2.0.0')
 		return $this->posts($numberposts, $post_type, $PostClass);
 	}
 
@@ -541,7 +520,7 @@ class Term extends Core implements CoreInterface {
 	 * @return array
 	 */
 	public function get_children() {
-		Helper::warn( '{{ term.get_children }} is deprecated. Use {{ term.children }} instead.' );
+		Helper::deprecated('{{ term.get_children }}', '{{ term.children }}', '2.0.0');
 
 		return $this->children();
 	}
@@ -549,7 +528,7 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 *
-	 * @deprecated since 2.0
+	 * @deprecated 2.0.0 with no replacement
 	 * @param string  $key
 	 * @param mixed   $value
 	 */
