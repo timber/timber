@@ -336,21 +336,26 @@ class User extends Core implements CoreInterface {
 	 */
 
 	/**
-	 * @deprected since 2.0
+	 * @api
+	 * @deprecated 2.0.0, use `{{ user.meta }}` instead.
 	 * @param string $field_name
 	 * @return mixed
 	 */
 	public function get_meta_field( $field_name ) {
+		Helper::warn( '{{ user.get_meta_field() }} is deprecated. Use {{ user.meta() }} instead.' );
+
 		return $this->meta($field_name);
 	}
 
 	/**
-	 * @deprected since 2.0
-	 * @internal
+	 * @api
+	 * @deprecated 2.0.0, use `{{ user.meta }}` instead.
 	 * @param string $field_name
 	 * @return null
 	 */
 	public function get_meta( $field_name ) {
+		Helper::warn( '{{ user.get_meta() }} is deprecated. Use {{ user.meta() }} instead.' );
+
 		return $this->get_meta_field($field_name);
 	}
 }

@@ -362,29 +362,47 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @return PostPreview
+	 * Get a preview (excerpt) of your post.
+	 *
+	 * If you an excerpt is set on the post, the excerpt will be used. Otherwise it will try to pull
+	 * from a preview from `post_content`. If there’s a `<!-- more -->` tag in the post content,
+	 * it will use that to mark where to pull through.
+	 *
+	 * @see \Timber\PostPreview
+	 *
+	 * @return \Timber\PostPreview
 	 */
 	public function preview() {
 		return new PostPreview($this);
 	}
 
 	/**
-	 * get a preview of your post, if you have an excerpt it will use that,
-	 * otherwise it will pull from the post_content.
-	 * If there's a <!-- more --> tag it will use that to mark where to pull through.
-	 * @deprecated since 1.3.1, use {{ post.preview }} instead
-	 * @example
-	 * ```twig
-	 * <p>{{post.get_preview(50)}}</p>
-	 * ```
-	 * @param int $len The number of words that WP should use to make the tease. (Isn't this better than [this mess](http://wordpress.org/support/topic/changing-the-default-length-of-the_excerpt-1?replies=14)?). If you've set a post_excerpt on a post, we'll use that for the preview text; otherwise the first X words of the post_content
-	 * @param bool $force What happens if your custom post excerpt is longer then the length requested? By default (`$force = false`) it will use the full `post_excerpt`. However, you can set this to true to *force* your excerpt to be of the desired length
-	 * @param string $readmore The text you want to use on the 'readmore' link
-	 * @param bool|string $strip true for default, false for none, string for list of custom attributes
-	 * @param string $end The text to end the preview with (defaults to ...)
-	 * @return string of the post preview
+	 * Get a preview (excerpt) of your post.
+	 *
+	 * @api
+	 * @deprecated 1.3.1, use `{{ post.preview }}` instead.
+	 * @see        \Timber\Post::preview()
+	 *
+	 * @param int         $len      The number of words that WordPress should use to make the
+	 *                              preview.
+	 *                              (Isn’t this better than [this
+	 *                              mess](http://wordpress.org/support/topic/changing-the-default-length-of-the_excerpt-1?replies=14)?).
+	 *                              If you’ve set a post excerpt on a post, we’ll use that for the
+	 *                              preview text; otherwise the first X words of `post_content`.
+	 * @param bool        $force    What happens if your custom post excerpt is longer then the
+	 *                              length requested? By default (`$force = false`) it will use the
+	 *                              full `post_excerpt`. However, you can set this to `true` to
+	 *                              *force* your excerpt to be of the desired length.
+	 * @param string      $readmore The text you want to use for the 'readmore' link.
+	 * @param bool|string $strip    `true` for default, `false` for none, a string for a list of
+	 *                              custom attributes.
+	 * @param string      $end      The text to end the preview with. Default `...`.
+	 *
+	 * @return string The post preview.
 	 */
 	public function get_preview( $len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;' ) {
+		Helper::warn( '{{ post.get_preview }} is deprecated. Use {{ post.preview }} instead.' );
+
 		$pp = new PostPreview($this);
 
 		/** This filter is documented in PostPreview.php */
@@ -825,7 +843,7 @@ class Post extends Core implements CoreInterface {
 	 *
 	 * @internal
 	 * @param string $class additional classes you want to add.
-	 * @see Timber\Post::$_css_class
+	 * @see \Timber\Post::$_css_class
 	 * @example
 	 * ```twig
 	 * <article class="{{ post.class }}">
@@ -929,7 +947,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Get the categoires on a particular post
+	 * Get the categories on a particular post
 	 *
 	 * @api
 	 * @return array of Timber\Term objects
