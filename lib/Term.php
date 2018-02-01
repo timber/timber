@@ -511,7 +511,7 @@ class Term extends Core implements CoreInterface {
 	 * @return array|bool|null
 	 */
 	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
-		Helper::deprecated('{{ term.get_posts }}', '{{ term.posts }}', '2.0.0')
+		Helper::deprecated('{{ term.get_posts }}', '{{ term.posts }}', '2.0.0');
 		return $this->posts($numberposts, $post_type, $PostClass);
 	}
 
