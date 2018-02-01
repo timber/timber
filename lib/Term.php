@@ -224,21 +224,9 @@ class Term extends Core implements CoreInterface {
 		return 0;
 	}
 
-
-	/**
-	 * @api
-	 * @deprecated 2.0.0, use `{{ term.edit_link }}` instead.
-	 * @return string
-	 */
-	public function get_edit_url() {
-		Helper::warn( '{{ term.get_edit_url }} is deprecated. Use `{{ term.edit_link }}` instead.' );
-
-		return $this->edit_link();
-	}
-
 	/**
 	 * @internal
-   * @deprecated since 2.0.0 use Term::meta() insteaad
+	 * @deprecated since 2.0.0 use Term::meta() insteaad
 	 * @param string $field_name
 	 * @return string
 	 */
@@ -246,42 +234,6 @@ class Term extends Core implements CoreInterface {
 		return $this->meta($field_name);
 	}
 
-	/**
-	 * Get Posts that have been "tagged" with the particular term
-   * @deprecated since 2.0.0 use Term::posts() instead.
-	 * @internal
-	 * @param int $numberposts
-	 * @param string $post_type
-	 * @param string $PostClass
-	 * @return array|bool|null
-	 */
-	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
-		return $this->posts($numberposts, $post_type, $PostClass);
-	}
-
-	/**
-	 * @api
-	 * @deprecated 2.0.0, use `{{ term.children }}` instead.
-	 * @internal
-	 * @return array
-	 */
-	public function get_children() {
-		Helper::warn( '{{ term.get_children }} is deprecated. Use {{ term.children }} instead.' );
-
-		return $this->children();
-	}
-
-	/**
-	 * 
-	 * @deprecated since 2.0.0
-	 * @param string  $key
-	 * @param mixed   $value
-	 */
-	public function update( $key, $value ) {
-		$value = apply_filters('timber_term_set_meta', $value, $key, $this->ID, $this);
-		$value = apply_filters('timber/term/meta/set', $value, $key, $this->ID, $this);
-		$this->$key = $value;
-	}
 
 	/* Alias
 	====================== */
@@ -540,11 +492,11 @@ class Term extends Core implements CoreInterface {
 	/**
 	 * Get Posts that have been "tagged" with the particular term
 	 *
-	 * @deprecated since 2.0 use Term::posts() instead
+	 * @deprecated 2.0 use Term::posts() instead
 	 * @internal
-	 * @param int $numberposts
-	 * @param string $post_type
-	 * @param string $PostClass
+	 * @param int    $numberposts how many posts do we want?.
+	 * @param string $post_type of what type 'any', 'post', 'event', etc.
+	 * @param string $PostClass what PHP class should we use.
 	 * @return array|bool|null
 	 */
 	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
@@ -553,26 +505,28 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 *
-	 * @deprecated since 2.0.0 use Term::children() instead
+	 * @deprecated 2.0.0 use `{{ term.children }}` instead
 	 * @internal
 	 * @return array
 	 */
 	public function get_children() {
+		Helper::warn( '{{ term.get_children }} is deprecated. Use {{ term.children }} instead.' );
 		return $this->children();
 	}
 
 	/**
-	 * @internal
-   	 * @deprecated since 2.0.0 use Term::edit_link() instead
+	 * @deprecated 2.0.0, use `{{ term.edit_link }}` instead.
 	 * @return string
 	 */
 	public function get_edit_url() {
-		return get_edit_term_link($this->ID, $this->taxonomy);
+		Helper::warn( '{{ term.get_edit_url }} is deprecated. Use `{{ term.edit_link }}` instead.' );
+
+		return $this->edit_link();
 	}
 
 	/**
 	 *
-	 * @deprecated since 2.0
+	 * @deprecated 2.0.0
 	 * @param string  $key
 	 * @param mixed   $value
 	 */
