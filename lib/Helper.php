@@ -259,6 +259,47 @@ class Helper {
 	}
 
 	/**
+	 * Trigger a deprecation warning.
+	 *
+	 * @param string $message The warning that you want to output.
+	 *
+	 * @return void
+	 */
+	public static function deprecated( $function, $replacement, $version ) {
+		if ( ! WP_DEBUG ) {
+			return;
+		}
+
+		 do_action( 'deprecated_function_run', $function, $replacement, $version );
+ 
+	    /**
+	     * Filters whether to trigger an error for deprecated functions.
+	     *
+	     * @since 2.5.0
+	     *
+	     * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
+	     */
+	    if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
+	        if ( function_exists( '__' ) ) {
+	            if ( ! is_null( $replacement ) ) {
+	                /* translators: 1: PHP function name, 2: version number, 3: alternative function name */
+	                trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since Timber version %2$s! Use %3$s instead.'), $function, $version, $replacement ) );
+	            } else {
+	                /* translators: 1: PHP function name, 2: version number */
+	                trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since Timber version %2$s with no alternative available.'), $function, $version ) );
+	            }
+	        } else {
+	            if ( ! is_null( $replacement ) ) {
+	                trigger_error( sprintf( '%1$s is <strong>deprecated</strong> since Timber version %2$s! Use %3$s instead.', $function, $version, $replacement ) );
+	            } else {
+	                trigger_error( sprintf( '%1$s is <strong>deprecated</strong> since Timber version %2$s with no alternative available.', $function, $version ) );
+	            }
+	        }
+	    }
+	}
+
+
+	/**
 	 *
 	 *
 	 * @param string  $separator

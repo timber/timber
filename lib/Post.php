@@ -401,8 +401,7 @@ class Post extends Core implements CoreInterface {
 	 * @return string The post preview.
 	 */
 	public function get_preview( $len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;' ) {
-		Helper::warn( '{{ post.get_preview }} is deprecated. Use {{ post.preview }} instead.' );
-
+		Helper::deprecated('{{ post.get_preview }}', '{{ post.preview }}', '1.3.1');
 		$pp = new PostPreview($this);
 
 		/** This filter is documented in PostPreview.php */
