@@ -330,7 +330,7 @@ class Comment extends Core implements CoreInterface {
 			'add_below' => 'comment',
 			'respond_id' => 'respond',
 			'reply_text' => $reply_text,
-			'depth' => 1,
+			'depth' => $this->depth() + 1,
 			'max_depth' => $max_depth,
 		);
 
