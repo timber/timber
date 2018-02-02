@@ -133,6 +133,9 @@
 			$this->assertEquals('5', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ term.get_posts }}
+		 */
 		function testGetPostsOld() {
 			$term_id = $this->factory->term->create();
 			$posts = array();
@@ -166,6 +169,9 @@
 			$this->assertEquals(0, count($gotten_posts));
 		}
 
+		/**
+		 * @expectedDeprecated {{ term.get_posts }}
+		 */
 		function testGetPostsNew() {
 			require_once('php/timber-post-subclass.php');
 			$term_id = $this->factory->term->create();
