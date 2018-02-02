@@ -247,16 +247,6 @@ class Site extends Core implements CoreInterface {
 		return $this->url;
 	}
 
-	/**
-	 * @deprecated 0.21.9
-	 * @internal
-	 * @return string
-	 */
-	public function get_link() {
-		Helper::warn('{{site.get_link}} is deprecated, use {{site.link}}');
-		return $this->link();
-	}
-
 
 	/**
 	 * @ignore
@@ -306,22 +296,15 @@ class Site extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @deprecated 1.0.4
-	 * @see Timber\Site::link
+	 * @api
+	 * @deprecated 1.0.4, use `{{ site.link }}` instead.
+	 * @see \Timber\Site::link()
 	 * @return string
 	 */
 	public function url() {
+		Helper::deprecated('{{ site.url }}', '{{ site.link }}', '1.0.4');
 		return $this->link();
 	}
 
-	/**
-	 * @deprecated 0.21.9
-	 * @internal
-	 * @return string
-	 */
-	public function get_url() {
-		Helper::warn('{{site.get_url}} is deprecated, use {{site.link}} instead');
-		return $this->link();
-	}
 
 }

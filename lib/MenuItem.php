@@ -315,15 +315,17 @@ class MenuItem extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Check if a link is external.
+	 * Checks to see if the menu item is an external link.
 	 *
-	 * This is helpful when creating rules for the target of a link.
-	 *
-	 * @internal
+	 * @api
+	 * @deprecated 2.0.0, use `{{ item.is_external }}`
 	 * @see \Timber\MenuItem::is_external()
+	 *
 	 * @return bool Whether the link is external or not.
 	 */
 	public function external() {
+		Helper::warn( '{{ item.external }} is deprecated. Use {{ item.is_external }} instead.' );
+
 		return $this->is_external();
 	}
 
@@ -388,7 +390,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * Get the featured image of the post associated with the menu item.
 	 *
 	 * @api
-	 * @deprecated since 1.5.2 to be removed in v2.0
+	 * @deprecated 1.5.2, to be removed in v2.0
 	 * @example
 	 * ```twig
 	 * {% for item in menu.items %}

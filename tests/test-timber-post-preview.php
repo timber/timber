@@ -2,6 +2,9 @@
 
 	class TestTimberPostPreview extends Timber_UnitTestCase {
 
+		/**
+		 * @expectedDeprecated {{ post.get_preview }}
+		 */
 		function testDoubleEllipsis(){
 			$post_id = $this->factory->post->create();
 			$post = new Timber\Post($post_id);
@@ -10,6 +13,9 @@
 			$this->assertEquals(1, substr_count($prev, '&hellip;'));
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.get_preview }}
+		 */
 		function testReadMoreClassFilter() {
 			add_filter('timber/post/get_preview/read_more_class', function($class) {
 				return $class . ' and-foo';
@@ -20,6 +26,9 @@
 			$this->assertContains('and-foo', (string) $text);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.get_preview }}
+		 */
 		function testPreviewTags() {
 			$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
 			$post = new Timber\Post($post_id);
@@ -27,6 +36,9 @@
 			$this->assertNotContains('</p>', (string) $text);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.get_preview }}
+		 */
 		function testGetPreview() {
 			global $wp_rewrite;
 			$struc = false;
@@ -64,7 +76,7 @@
 			});
 			$pid = $this->factory->post->create( array('post_content' => 'jared [mythang]', 'post_excerpt' => '') );
 			$post = new Timber\Post( $pid );
-			$this->assertEquals('jared mythangy&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $post->get_preview());
+			$this->assertEquals('jared mythangy&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $post->preview());
 		}
 
 		function testShortcodesInPreviewFromContentWithMoreTag() {
@@ -73,27 +85,39 @@
 			});
 			$pid = $this->factory->post->create( array('post_content' => 'jared [duck] <!--more--> joojoo', 'post_excerpt' => '') );
 			$post = new Timber\Post( $pid );
-			$this->assertEquals('jared Quack! <a href="'.$post->link().'" class="read-more">Read More</a>', $post->get_preview());
+			$this->assertEquals('jared Quack! <a href="'.$post->link().'" class="read-more">Read More</a>', $post->preview());
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.get_preview }}
+		 */
 		function testPreviewWithSpaceInMoreTag() {
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck, but a great duck let me tell you why <!--more--> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = new Timber\Post( $pid );
 			$this->assertEquals('Lauren is a&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $post->get_preview(3, true));
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.get_preview }}
+		 */
 		function testPreviewWithMoreTagAndForcedLength() {
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck<!-- more--> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = new Timber\Post( $pid );
 			$this->assertEquals('Lauren is a duck <a href="'.$post->link().'" class="read-more">Read More</a>', $post->get_preview());
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.get_preview }}
+		 */
 		function testPreviewWithCustomMoreTag() {
 			$pid = $this->factory->post->create( array('post_content' => 'Eric is a polar bear <!-- more But what is Elaina? --> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = new Timber\Post( $pid );
 			$this->assertEquals('Eric is a polar bear <a href="'.$post->link().'" class="read-more">But what is Elaina?</a>', $post->get_preview());
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.get_preview }}
+		 */
 		function testPreviewWithCustomEnd() {
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck, but a great duck let me tell you why Lauren is a duck', 'post_excerpt' => '') );
 			$post = new Timber\Post( $pid );
@@ -101,7 +125,7 @@
 		}
 
 		/**
-		 * @group failing
+		 * @expectedDeprecated {{ post.get_preview }}
 		 */
 		function testPreviewWithCustomStripTags() {
 			$pid = $this->factory->post->create(array(

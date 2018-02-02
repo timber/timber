@@ -225,9 +225,22 @@ class Term extends Core implements CoreInterface {
 	}
 
 
+	/* Public methods
+	===================== */
+
+	/**
+	 * @api
+	 * @deprecated 2.0.0, use `{{ term.edit_link }}` instead.
+	 * @return string
+	 */
+	public function get_edit_url() {
+		Helper::deprecated('{{ term.get_edit_url }}', '{{ term.edit_link }}', '2.0.0');
+		return $this->edit_link();
+	}
+
 	/**
 	 * @internal
-   	 * @deprecated since 2.0.0 use Term::meta() insteaad
+	 * @deprecated 2.0.0, use `{{ term.meta("my_field") }}` instead.
 	 * @param string $field_name
 	 * @return string
 	 */
@@ -490,7 +503,7 @@ class Term extends Core implements CoreInterface {
 	/**
 	 * Get Posts that have been "tagged" with the particular term
 	 *
-	 * @deprecated since 2.0 use Term::posts() instead
+	 * @deprecated 2.0.0 use `{{ term.posts }}` instead
 	 * @internal
 	 * @param int $numberposts
 	 * @param string $post_type
@@ -498,31 +511,24 @@ class Term extends Core implements CoreInterface {
 	 * @return array|bool|null
 	 */
 	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
+		Helper::deprecated('{{ term.get_posts }}', '{{ term.posts }}', '2.0.0');
 		return $this->posts($numberposts, $post_type, $PostClass);
 	}
 
 	/**
-	 *
-	 * @deprecated since 2.0.0 use Term::children() instead
-	 * @internal
+	 * @deprecated 2.0.0, use `{{ term.children }}` instead.
 	 * @return array
 	 */
 	public function get_children() {
+		Helper::deprecated('{{ term.get_children }}', '{{ term.children }}', '2.0.0');
+
 		return $this->children();
 	}
 
-	/**
-	 * @internal
-   	 * @deprecated since 2.0.0 use Term::edit_link() instead
-	 * @return string
-	 */
-	public function get_edit_url() {
-		return get_edit_term_link($this->ID, $this->taxonomy);
-	}
 
 	/**
 	 *
-	 * @deprecated since 2.0
+	 * @deprecated 2.0.0 with no replacement
 	 * @param string  $key
 	 * @param mixed   $value
 	 */
