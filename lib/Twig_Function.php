@@ -6,7 +6,7 @@ namespace Timber;
  * Handle TwigFunction among Twig versions
  *
  * From Twig 2.4.0, extending Twig_Function is deprecated, will be final in 3.0
- *
+ * @ticket #1641
  * Temporary fix for conflicts between Twig_Function and Twig_SimpleFunction
  * in different versions of Twig (1.* and 2.*)
  */
