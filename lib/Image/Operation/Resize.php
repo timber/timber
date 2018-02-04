@@ -51,25 +51,29 @@ class Resize extends ImageOperation {
 		}
 		$result = $src_filename.'-'.$w.'x'.$h.'-c-'.($this->crop ? $this->crop : 'f'); // Crop will be either user named or f (false)
 		if ( $src_extension ) {
-			$result .= '.'.$src_extension;
+			$result .= '.' . $src_extension;
 		}
 		return $result;
 	}
 
 	/**
-	 * @param string $load_filename
-	 * @param string $save_filename
-	 * @param \WP_Image_Editor $editor
+	 * Run a resize as animated GIF (if the server supports it)
+	 *
+	 * @param string           $load_filename the name of the file to resize.
+	 * @param string           $save_filename the desired name of the file to save.
+	 * @param \WP_Image_Editor $editor the image editor we're using.
+	 * @return bool
 	 */
 	protected function run_animated_gif( $load_filename, $save_filename, \WP_Image_Editor $editor ) {
 		$w = $this->w;
 		$h = $this->h;
-		if ( !class_exists('Imagick') ) {
-			Helper::error_log( 'Can not resize GIF, Imagick is not installed' );
+		if ( ! class_exists('Imagick') || ( defined('TEST_NO_IMAGICK') && TEST_NO_IMAGICK ) ) {
+			Helper::warn('Cannot resize GIF, Imagick is not installed');
+			return false;
 		}
 		$image = new \Imagick($load_filename);
 		$image = $image->coalesceImages();
-		$crop = self::get_target_sizes($editor);
+		$crop  = self::get_target_sizes($editor);
 		foreach ( $image as $frame ) {
 			$frame->cropImage($crop['src_w'], $crop['src_h'], $crop['x'], $crop['y']);
 			$frame->thumbnailImage($w, $h);
@@ -172,9 +176,7 @@ class Resize extends ImageOperation {
 		if ( !is_wp_error($image) ) {
 			//should be resized by gif resizer
 			if ( ImageHelper::is_animated_gif($load_filename) ) {
-				//attempt to resize
-				//return if successful
-				//proceed if not
+				//attempt to resize, return if successful proceed if not
 				$gif = self::run_animated_gif($load_filename, $save_filename, $image);
 				if ( $gif ) {
 					return true;
