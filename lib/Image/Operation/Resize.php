@@ -66,7 +66,7 @@ class Resize extends ImageOperation {
 		$w = $this->w;
 		$h = $this->h;
 		if ( !class_exists('Imagick') || ( defined('TEST_NO_IMAGICK') &&  TEST_NO_IMAGICK )) {
-			Helper::error_log( 'Can not resize GIF, Imagick is not installed' );
+			Helper::warn( 'Cannot resize GIF, Imagick is not installed' );
 			return false;
 		}
 		$image = new \Imagick($load_filename);
