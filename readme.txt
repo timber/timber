@@ -32,6 +32,7 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
+- Fixed some issues with animated gif resizing when Imagick isn't available #1653
 
 **Changes for Theme Developers**
 - Please add any usage changes here so theme developers are informed of changes.
