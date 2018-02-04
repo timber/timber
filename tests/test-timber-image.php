@@ -265,24 +265,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertFalse( TimberImageHelper::is_animated_gif('notreal.gif') );
 	}
 
-	/**
-     * @runInSeparateProcess
-     * @expectedException Twig_Error_Runtime
-     */
-	function testAnimagedGifResizeWithoutImagick() {
-		define('TEST_NO_IMAGICK', true);
-		$image = self::copyTestImage('robocop.gif');
-		$data = array('crop' => 'default');
-		$data['size'] = array('width' => 90, 'height' => 90);
-		$upload_dir = wp_upload_dir();
-		$url = $upload_dir['url'].'/robocop.gif';
-		$data['test_image'] = $url;
-		$str = Timber::compile( 'assets/image-test.twig', $data );
-		$resized_path = $upload_dir['path'].'/robocop-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.gif';
-		$this->addFile( $resized_path );
-		$this->assertFileExists( $resized_path );
-		$this->assertFalse(TimberImageHelper::is_animated_gif($resized_path));
-	}
+
 
 	/**
 	 * @group maybeSkipped
@@ -1080,6 +1063,24 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data['url'] = $data['baseurl'];
 
 		return $data;
+	}
+
+	/**
+     * @expectedException Twig_Error_Runtime
+     */
+	function testAnimagedGifResizeWithoutImagick() {
+		define('TEST_NO_IMAGICK', true);
+		$image = self::copyTestImage('robocop.gif');
+		$data = array('crop' => 'default');
+		$data['size'] = array('width' => 90, 'height' => 90);
+		$upload_dir = wp_upload_dir();
+		$url = $upload_dir['url'].'/robocop.gif';
+		$data['test_image'] = $url;
+		$str = Timber::compile( 'assets/image-test.twig', $data );
+		$resized_path = $upload_dir['path'].'/robocop-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.gif';
+		$this->addFile( $resized_path );
+		$this->assertFileExists( $resized_path );
+		$this->assertFalse(TimberImageHelper::is_animated_gif($resized_path));
 	}
 
 }
