@@ -90,9 +90,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals( 1500, $image->width() );
 	}
 
- 	/**
-     * @runInSeparateProcess
-     */
 	function testWithOutputBuffer() {
 		ob_start();
 		$post = $this->get_post_with_image();
@@ -270,6 +267,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	/**
      * @runInSeparateProcess
+     * @expectedException Twig_Error_Runtime
      */
 	function testAnimagedGifResizeWithoutImagick() {
 		define('TEST_NO_IMAGICK', true);
@@ -279,7 +277,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$upload_dir = wp_upload_dir();
 		$url = $upload_dir['url'].'/robocop.gif';
 		$data['test_image'] = $url;
-		Timber::compile( 'assets/image-test.twig', $data );
+		$str = Timber::compile( 'assets/image-test.twig', $data );
 		$resized_path = $upload_dir['path'].'/robocop-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.gif';
 		$this->addFile( $resized_path );
 		$this->assertFileExists( $resized_path );
