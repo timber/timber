@@ -64,8 +64,9 @@ class Resize extends ImageOperation {
 	protected function run_animated_gif( $load_filename, $save_filename, \WP_Image_Editor $editor ) {
 		$w = $this->w;
 		$h = $this->h;
-		if ( !class_exists('Imagick') ) {
+		if ( !class_exists('Imagick') || ( defined('TEST_NO_IMAGICK') &&  TEST_NO_IMAGICK )) {
 			Helper::error_log( 'Can not resize GIF, Imagick is not installed' );
+			return;
 		}
 		$image = new \Imagick($load_filename);
 		$image = $image->coalesceImages();
@@ -172,9 +173,7 @@ class Resize extends ImageOperation {
 		if ( !is_wp_error($image) ) {
 			//should be resized by gif resizer
 			if ( ImageHelper::is_animated_gif($load_filename) ) {
-				//attempt to resize
-				//return if successful
-				//proceed if not
+				//attempt to resize, return if successful proceed if not
 				$gif = self::run_animated_gif($load_filename, $save_filename, $image);
 				if ( $gif ) {
 					return true;
