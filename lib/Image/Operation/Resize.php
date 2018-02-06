@@ -17,14 +17,14 @@ use Timber\Image\Operation as ImageOperation;
  */
 class Resize extends ImageOperation {
 
-   private $w, $h, $crop;
+   private $w, $h, $crop, $quality;
 
 	/**
 	 * @param int    $w    width of new image
 	 * @param int    $h    height of new image
 	 * @param string $crop cropping method, one of: 'default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center'.
 	 */
-	public function __construct( $w, $h, $crop ) {
+	public function __construct( $w, $h, $crop, $quality ) {
 		$this->w = $w;
 		$this->h = $h;
 		// Sanitize crop position
@@ -33,6 +33,7 @@ class Resize extends ImageOperation {
 			$crop = $allowed_crop_positions[0];
 		}
 		$this->crop = $crop;
+		$this->quality = $quality;
 	}
 
 	/**
@@ -191,6 +192,7 @@ class Resize extends ImageOperation {
 							$crop['target_w'],
 							$crop['target_h']
 			);
+			$image->set_quality($this->quality);
 			$result = $image->save($save_filename);
 			if ( is_wp_error($result) ) {
 				// @codeCoverageIgnoreStart

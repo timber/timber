@@ -57,7 +57,7 @@ class ImageHelper {
 	 * ```
 	 * @return string (ex: )
 	 */
-	public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
+	public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false, $quality = 60 ) {
 		if ( !is_numeric($w) && is_string($w) ) {
 			if ( $sizes = self::find_wp_dimensions($w) ) {
 				$w = $sizes['w'];
