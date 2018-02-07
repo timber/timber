@@ -14,7 +14,6 @@ env:
 
 matrix:
     include:
-        - env: WP_VERSION=4.6 WP_MULTISITE=0
         - PREFER_LOWEST="--prefer-lowest --prefer-stable"
         - PREFER_LOWEST=""
 
