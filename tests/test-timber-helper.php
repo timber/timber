@@ -243,4 +243,11 @@
 			$str = Timber::compile_string($template, array('posts' => $posts));
 			$this->assertEquals('Stringer Bell Snoop', trim($str));
 		}
+
+		function testArrayFilterWithBogusArray() {
+			$template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
+			$str = Timber::compile_string($template, array('posts' => 'foobar'));
+			$this->assertEquals('', $str);
+		}
+
 	}
