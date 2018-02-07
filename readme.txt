@@ -1,7 +1,7 @@
 === Timber ===
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
-Requires at least: 3.7
+Requires at least: 4.7.9
 Stable tag: 1.6.0
 Tested up to: 4.9.1
 PHP version: 5.3.0 or greater
