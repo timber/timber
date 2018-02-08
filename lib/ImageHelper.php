@@ -66,7 +66,7 @@ class ImageHelper {
 				return $src;
 			}
 		}
-		$op = new Image\Operation\Resize($w, $h, $crop);
+		$op = new Image\Operation\Resize($w, $h, $crop, $quality);
 		return self::_operate($src, $op, $force);
 	}
 
