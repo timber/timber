@@ -20,9 +20,10 @@ class Resize extends ImageOperation {
    private $w, $h, $crop, $quality;
 
 	/**
-	 * @param int    $w    width of new image
-	 * @param int    $h    height of new image
-	 * @param string $crop cropping method, one of: 'default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center'.
+	 * @param int    $w       width of new image
+	 * @param int    $h       height of new image
+	 * @param string $crop    cropping method, one of: 'default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center'.
+	 * @param int    $quality compression quality 0-100 if image format is jpeg
 	 */
 	public function __construct( $w, $h, $crop, $quality ) {
 		$this->w = $w;

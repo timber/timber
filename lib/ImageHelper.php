@@ -48,6 +48,7 @@ class ImageHelper {
 	 * @param int     		$h target height (ignored if $w is WP image size). If not set, will ignore and resize based on $w only.
 	 * @param string  		$crop your choices are 'default', 'center', 'top', 'bottom', 'left', 'right'
 	 * @param bool    		$force
+	 * @param int     		$quality compression quality 0-100 if image format is jpeg
 	 * @example
 	 * ```twig
 	 * <img src="{{ image.src | resize(300, 200, 'top') }}" />
