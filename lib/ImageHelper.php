@@ -584,7 +584,7 @@ class ImageHelper {
 		return $new_path;
 	}
 
-	public static function get_resize_file_url( $url, $w, $h, $crop, $quality ) {
+	public static function get_resize_file_url( $url, $w, $h, $crop, $quality = 60 ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Resize($w, $h, $crop, $quality);
 		$new_url = self::_get_file_url(
@@ -596,7 +596,7 @@ class ImageHelper {
 		return $new_url;
 	}
 
-	public static function get_resize_file_path( $url, $w, $h, $crop, $quality ) {
+	public static function get_resize_file_path( $url, $w, $h, $crop, $quality = 60 ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Resize($w, $h, $crop, $quality);
 		$new_path = self::_get_file_path(
