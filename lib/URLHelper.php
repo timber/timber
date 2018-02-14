@@ -2,11 +2,17 @@
 
 namespace Timber;
 
+/**
+ * Class URLHelper
+ *
+ * @api
+ */
 class URLHelper {
 
 	/**
 	 * Get the current URL of the page
 	 *
+	 * @api
 	 * @return string
 	 */
 	public static function get_current_url() {
@@ -22,6 +28,7 @@ class URLHelper {
 	/**
 	 * Get url scheme
 	 *
+	 * @api
 	 * @return string
 	 */
 	public static function get_scheme() {
@@ -33,6 +40,7 @@ class URLHelper {
 	 * Because it's a URL we don't care about protocol (HTTP vs HTTPS)
 	 * Or case (so it's cAsE iNsEnSeTiVe)
 	 *
+	 * @api
 	 * @return boolean
 	 */
 	public static function starts_with( $haystack, $starts_with ) {
@@ -46,8 +54,7 @@ class URLHelper {
 
 
 	/**
-	 *
-	 *
+	 * @api
 	 * @param string $url
 	 * @return bool
 	 */
@@ -63,8 +70,7 @@ class URLHelper {
 	}
 
 	/**
-	 *
-	 *
+	 * @api
 	 * @return string
 	 */
 	public static function get_path_base() {
@@ -80,8 +86,7 @@ class URLHelper {
 	}
 
 	/**
-	 *
-	 *
+	 * @api
 	 * @param string $url
 	 * @param bool   $force
 	 * @return string
@@ -108,7 +113,9 @@ class URLHelper {
 	/**
 	 * Some setups like HTTP_HOST, some like SERVER_NAME, it's complicated
 	 *
+	 * @api
 	 * @link http://stackoverflow.com/questions/2297403/http-host-vs-server-name
+	 *
 	 * @return string the HTTP_HOST or SERVER_NAME
 	 */
 	public static function get_host() {
@@ -122,7 +129,7 @@ class URLHelper {
 	}
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param string $url
 	 * @return bool
@@ -136,7 +143,7 @@ class URLHelper {
 	}
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param string $src
 	 * @return string
@@ -152,6 +159,8 @@ class URLHelper {
 	 * Takes a url and figures out its place based in the file system based on path
 	 * NOTE: Not fool-proof, makes a lot of assumptions about the file path
 	 * matching the URL path
+	 *
+	 * @api
 	 *
 	 * @param string $url
 	 * @return string
@@ -191,6 +200,7 @@ class URLHelper {
 	}
 
 	/**
+	 * @api
 	 * @param string $fs
 	 */
 	public static function file_system_to_url( $fs ) {
@@ -232,6 +242,8 @@ class URLHelper {
 	 * Get the path to the content directory relative to the site.
 	 * This replaces the WP_CONTENT_SUBDIR constant
 	 *
+	 * @api
+	 *
 	 * @return string (ex: /wp-content or /content)
 	 */
 	public static function get_content_subdir() {
@@ -264,8 +276,7 @@ class URLHelper {
 	}
 
 	/**
-	 *
-	 *
+	 * @api
 	 * @param string $src
 	 * @return string
 	 */
@@ -281,6 +292,7 @@ class URLHelper {
 	/**
 	 * Look for accidental slashes in a URL and remove them
 	 *
+	 * @api
 	 * @param  string $url to process (ex: http://nytimes.com//news/article.html)
 	 * @return string the result (ex: http://nytimes.com/news/article.html)
 	 */
@@ -298,6 +310,7 @@ class URLHelper {
 	/**
 	 * Add something to the start of the path in an URL
 	 *
+	 * @api
 	 * @param  string $url a URL that you want to manipulate (ex: 'https://nytimes.com/news/article.html').
 	 * @param  string $path the path you want to insert ('/2017').
 	 * @return string the result (ex 'https://nytimes.com/2017/news/article.html')
@@ -331,6 +344,7 @@ class URLHelper {
 	/**
 	 * Add slash (if not already present) to a path
 	 *
+	 * @api
 	 * @param  string $path to process.
 	 * @return string
 	 */
@@ -344,6 +358,7 @@ class URLHelper {
 	/**
 	 * Remove slashes (if found) from a path
 	 *
+	 * @api
 	 * @param  string $path to process.
 	 * @return string
 	 */
@@ -367,6 +382,7 @@ class URLHelper {
 	 * an image hosted on the same domain BUT on a different site than the
 	 * WordPress install will be reported as external content.
 	 *
+	 * @api
 	 * @param  string $url a URL to evaluate against
 	 * @return boolean if $url points to an external location returns true
 	 */
@@ -394,9 +410,15 @@ class URLHelper {
 	}
 
 	/**
-	 * Determines if URL is an external url. True if $path is an external url or subdomain (http://cdn.example.org = true). False if relative or local true if it's a subdomain
+	 * Determines if URL is an external URL.
+	 *
+	 * True if $path is an external url or subdomain (http://cdn.example.org = true). False if
+	 * relative or local true if it's a subdomain
+	 *
+	 * @api
 	 *
 	 * @param  string $url to evalute.
+	 *
 	 * @return bool
 	 */
 	public static function is_external( $url ) {
@@ -411,6 +433,7 @@ class URLHelper {
 	/**
 	 * Pass links through untrailingslashit unless they are a single /
 	 *
+	 * @api
 	 * @param  string $link the URL to process.
 	 * @return string
 	 */
@@ -424,8 +447,10 @@ class URLHelper {
 	/**
 	 * Removes the subcomponent of a URL regardless of protocol
 	 *
+	 * @api
 	 * @since  1.3.3
 	 * @author jarednova
+	 *
 	 * @param  string $haystack ex: http://example.org/wp-content/uploads/dog.jpg.
 	 * @param  string $needle ex: http://example.org/wp-content.
 	 * @return string
@@ -440,8 +465,10 @@ class URLHelper {
 	/**
 	 * Swaps whatever protocol of a URL is sent. http becomes https and vice versa
 	 *
+	 * @api
 	 * @since  1.3.3
 	 * @author jarednova
+	 *
 	 * @param  string $url ex: http://example.org/wp-content/uploads/dog.jpg.
 	 * @return string ex: https://example.org/wp-content/uploads/dog.jpg
 	 */
@@ -458,9 +485,10 @@ class URLHelper {
 	/**
 	 * Pass links through user_trailingslashit handling query strings properly
 	 *
+	 * @api
 	 * @param  string $link the URL to process.
 	 * @return string
-	 * */
+	 */
 	public static function user_trailingslashit( $link ) {
 		$link_parts = wp_parse_url($link);
 
@@ -478,11 +506,16 @@ class URLHelper {
 	}
 
 	/**
-	 * Returns the url parameters, for example for url http://example.org/blog/post/news/2014/whatever
-	 * this will return array('blog', 'post', 'news', '2014', 'whatever');
-	 * OR if sent an integer like: Timber\URLHelper::get_params(2); this will return 'news';
+	 * Returns the url parameters
+	 *
+	 * For example, for URL `http://example.org/blog/post/news/2014/whatever` this will return
+	 * `array('blog', 'post', 'news', '2014', 'whatever');` OR if sent an integer like:
+	 * `Timber\URLHelper::get_params(2);` this will return `news`.
+	 *
+	 * @api
 	 *
 	 * @param int $i the position of the parameter to grab.
+	 *
 	 * @return array|string
 	 */
 	public static function get_params( $i = false ) {

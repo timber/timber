@@ -10,7 +10,12 @@ use Timber\URLHelper;
 use Timber\Image;
 
 /**
- * This is used in Timber to represent users retrived from WordPress. You can call `$my_user = new Timber\User(123);` directly, or access it through the `{{ post.author }}` method.
+ * Class User
+ *
+ * This is used in Timber to represent users retrived from WordPress. You can call
+ * `$my_user = new Timber\User(123);` directly, or access it through the `{{ post.author }}` method.
+ *
+ * @api
  * @example
  * ```php
  * $context['current_user'] = new Timber\User();
@@ -38,6 +43,11 @@ class User extends Core implements CoreInterface {
 	 * @var string The description from WordPress
 	 */
 	public $description;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $display_name;
 
 	/**
@@ -48,13 +58,13 @@ class User extends Core implements CoreInterface {
 
 	/**
 	 * @api
-	 * @var  string The first name of the user
+	 * @var string The first name of the user
 	 */
 	public $first_name;
 
 	/**
 	 * @api
-	 * @var  string The last name of the user
+	 * @var string The last name of the user
 	 */
 	public $last_name;
 
@@ -63,9 +73,15 @@ class User extends Core implements CoreInterface {
 	 * @var int The ID from WordPress
 	 */
 	public $id;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $user_nicename;
 
 	/**
+	 * @api
 	 * @param object|int|bool $uid
 	 */
 	public function __construct( $uid = false ) {
@@ -73,6 +89,7 @@ class User extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @example
 	 * ```twig
 	 * This post is by {{ post.author }}
@@ -230,6 +247,7 @@ class User extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @param string $field_name
 	 * @return mixed
 	 */

@@ -10,10 +10,18 @@ use Timber\Post;
  *
  * PostCollections are internal objects used to hold a collection of posts.
  *
- * @package Timber
+ * @api
  */
 class PostCollection extends \ArrayObject {
 
+	/**
+	 * PostCollection constructor.
+	 *
+	 * @api
+	 *
+	 * @param array  $posts
+	 * @param string $post_class
+	 */
 	public function __construct( $posts = array(), $post_class = '\Timber\Post' ) {
 		$returned_posts = self::init($posts, $post_class);
 
@@ -83,7 +91,10 @@ class PostCollection extends \ArrayObject {
 		return self::maybe_set_preview($returned_posts);
 	}
 
-
+	/**
+	 * @api
+	 * @return array
+	 */
 	public function get_posts() {
 		return $this->getArrayCopy();
 	}

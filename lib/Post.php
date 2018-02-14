@@ -16,7 +16,14 @@ use Timber\PostType;
 use WP_Post;
 
 /**
- * This is the object you use to access or extend WordPress posts. Think of it as Timber's (more accessible) version of WP_Post. This is used throughout Timber to represent posts retrieved from WordPress making them available to Twig templates. See the PHP and Twig examples for an example of what it's like to work with this object in your code.
+ * Class Post
+ *
+ * This is the object you use to access or extend WordPress posts. Think of it as Timber's (more
+ * accessible) version of WP_Post. This is used throughout Timber to represent posts retrieved from
+ * WordPress making them available to Twig templates. See the PHP and Twig examples for an example
+ * of what it’s like to work with this object in your code.
+ *
+ * @api
  * @example
  * ```php
  * // single.php, see connected twig example
@@ -43,139 +50,150 @@ use WP_Post;
  *     </div>
  * </article>
  * ```
- *
- * @package Timber
  */
 class Post extends Core implements CoreInterface {
 
 	/**
-	 * @var string $ImageClass the name of the class to handle images by default
+	 * @var string The name of the class to handle images by default
 	 */
 	public $ImageClass = 'Timber\Image';
 
 	/**
-	 * @var string $PostClass the name of the class to handle posts by default
+	 * @var string The name of the class to handle posts by default
 	 */
 	public $PostClass = 'Timber\Post';
 
 	/**
-	 * @var string $TermClass the name of the class to handle terms by default
+	 * @var string The name of the class to handle terms by default
 	 */
 	public $TermClass = 'Timber\Term';
 
 	/**
-	 * @var string $object_type what does this class represent in WordPress terms?
+	 * @var string What does this class represent in WordPress terms?
 	 */
 	public $object_type = 'post';
 
 	/**
-	 * @var array $custom stores custom meta data
+	 * @api
+	 * @var array Stores custom meta data
 	 */
 	public $custom = array();
 
 	/**
-	 * @var string $representation what does this class represent in WordPress terms?
+	 * @var string What does this class represent in WordPress terms?
 	 */
 	public static $representation = 'post';
 
 	/**
 	 * @internal
-	 * @var string $_content stores the processed content internally
+	 * @var string Stores the processed content internally
 	 */
 	protected $_content;
 
 	/**
-	 * @var string $_permalink the returned permalink from WP's get_permalink function
+	 * @var string The returned permalink from WP's get_permalink function
 	 */
 	protected $_permalink;
 
 	/**
-	 * @var array $_next stores the results of the next Timber\Post in a set inside an array (in order to manage by-taxonomy)
+	 * @var array Stores the results of the next Timber\Post in a set inside an array (in order to manage by-taxonomy)
 	 */
 	protected $_next = array();
 
 	/**
-	 * @var array $_prev stores the results of the previous Timber\Post in a set inside an array (in order to manage by-taxonomy)
+	 * @var array Stores the results of the previous Timber\Post in a set inside an array (in order to manage by-taxonomy)
 	 */
 	protected $_prev = array();
 
 	/**
-	 * @var string $class stores the CSS classes for the post (ex: "post post-type-book post-123")
+	 * @var string Stores the CSS classes for the post (ex: "post post-type-book post-123")
 	 */
 	protected $_css_class;
 
 	/**
 	 * @api
-	 * @var string $id the numeric WordPress id of a post
+	 * @var string The numeric WordPress id of a post.
 	 */
 	public $id;
 
 	/**
-	 * @var string 	$ID 			the numeric WordPress id of a post, capitalized to match WP usage
+	 * @api
+	 * @var string The numeric WordPress id of a post, capitalized to match WordPress usage.
 	 */
 	public $ID;
 
 	/**
-	 * @var int 	$post_author 	the numeric ID of the a post's author corresponding to the wp_user dtable
+	 * @api
+	 * @var int The numeric ID of the a post's author corresponding to the wp_user database table
 	 */
 	public $post_author;
 
 	/**
-	 * @var string 	$post_content 	the raw text of a WP post as stored in the database
+	 * @api
+	 * @var string The raw text of a WP post as stored in the database
 	 */
 	public $post_content;
 
 	/**
-	 * @var string 	$post_date 		the raw date string as stored in the WP database, ex: 2014-07-05 18:01:39
+	 * @api
+	 * @var string The raw date string as stored in the WP database, ex: 2014-07-05 18:01:39
 	 */
 	public $post_date;
 
 	/**
-	 * @var string 	$post_excerpt 	the raw text of a manual post excerpt as stored in the database
+	 * @api
+	 * @var string The raw text of a manual post excerpt as stored in the database
 	 */
 	public $post_excerpt;
 
 	/**
-	 * @var int 		$post_parent 	the numeric ID of a post's parent post
+	 * @api
+	 * @var int The numeric ID of a post's parent post
 	 */
 	public $post_parent;
 
 	/**
 	 * @api
-	 * @var string 		$post_status 	the status of a post ("draft", "publish", etc.)
+	 * @var string The status of a post ("draft", "publish", etc.)
 	 */
 	public $post_status;
 
 	/**
-	 * @var string 	$post_title 	the raw text of a post's title as stored in the database
+	 * @api
+	 * @var string The raw text of a post's title as stored in the database
 	 */
 	public $post_title;
 
 	/**
 	 * @api
-	 * @var string 	$post_type 		the name of the post type, this is the machine name (so "my_custom_post_type" as opposed to "My Custom Post Type")
+	 * @var string The name of the post type, this is the machine name (so "my_custom_post_type" as
+	 *      opposed to "My Custom Post Type")
 	 */
 	public $post_type;
 
 	/**
 	 * @api
-	 * @var string 	$slug 		the URL-safe slug, this corresponds to the poorly-named "post_name" in the WP database, ex: "hello-world"
+	 * @var string The URL-safe slug, this corresponds to the poorly-named "post_name" in the WP
+	 *      database, ex: "hello-world"
 	 */
 	public $slug;
 
 	/**
-	 * @var PostType $_type stores the PostType object for the Post
+	 * @var string Stores the PostType object for the Post
 	 */
 	protected $__type;
 
 	/**
-	 * If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
+	 * If you send the constructor nothing it will try to figure out the current post id based on
+	 * being inside The_Loop.
 	 *
+	 * @api
 	 * @example
 	 * ```php
 	 * $post = new Timber\Post();
 	 * $other_post = new Timber\Post($random_post_id);
 	 * ```
+	 *
 	 * @param mixed $pid
 	 */
 	public function __construct( $pid = null ) {
@@ -184,8 +202,13 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2
-	 * This is also here to ensure that {{ post.class }} remains usable
+	 * This is helpful for twig to return properties and methods see:
+	 * https://github.com/fabpot/Twig/issues/2
+	 *
+	 * This is also here to ensure that {{ post.class }} remains usable.
+	 *
+	 * @api
+	 *
 	 * @return mixed
 	 */
 	public function __get( $field ) {
@@ -197,8 +220,13 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2
+	 * This is helpful for twig to return properties and methods see:
+	 * https://github.com/fabpot/Twig/issues/2
+	 *
 	 * This is also here to ensure that {{ post.class }} remains usable
+	 *
+	 * @api
+	 *
 	 * @return mixed
 	 */
 	public function __call( $field, $args ) {
@@ -257,6 +285,8 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Outputs the title of the post if you do something like `<h1>{{post}}</h1>`
+	 *
+	 * @api
 	 * @return string
 	 */
 	public function __toString() {
@@ -346,8 +376,8 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Helps you find the post id regardless of whether you send a string or whatever.
 	 *
-	 * @param integer $pid number to check against.
 	 * @internal
+	 * @param integer $pid number to check against.
 	 * @return integer ID number of a post
 	 */
 	protected function check_post_id( $pid ) {
@@ -368,6 +398,7 @@ class Post extends Core implements CoreInterface {
 	 * from a preview from `post_content`. If there’s a `<!-- more -->` tag in the post content,
 	 * it will use that to mark where to pull through.
 	 *
+	 * @api
 	 * @see \Timber\PostPreview
 	 *
 	 * @return \Timber\PostPreview
@@ -517,6 +548,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @internal
 	 * @param int $i
 	 * @return string
 	 */
@@ -555,6 +587,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Gets the comment form for use on a single article page
 	 *
+	 * @api
 	 * @param array $args this $args thing is a fucking mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form).
 	 * @return string of HTML for the form
 	 */
@@ -565,7 +598,8 @@ class Post extends Core implements CoreInterface {
 
 
 	/**
-	 * Get the terms associated with the post
+	 * Get the terms associated with the post.
+	 *
 	 * This goes across all taxonomies by default
 	 *
 	 * @api
@@ -592,9 +626,11 @@ class Post extends Core implements CoreInterface {
 	 *   </div>
 	 * </section>
 	 * ```
+	 *
 	 * @param string|array $tax What taxonom(y|ies) to pull from. Defaults to all registered taxonomies for the post type. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you're on your own.
 	 * @param bool         $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?.
 	 * @param string       $TermClass what the Timber class to use for Terms.
+	 *
 	 * @return array
 	 */
 	public function terms( $tax = '', $merge = true, $TermClass = '' ) {
@@ -628,7 +664,7 @@ class Post extends Core implements CoreInterface {
 			$terms = wp_get_post_terms($this->ID, $taxonomy);
 
 			if ( is_wp_error($terms) ) {
-				/* @var $terms WP_Error */
+				/* @var \WP_Error $terms */
 				Helper::error_log("Error retrieving terms for taxonomy '$taxonomy' on a post in timber-post.php");
 				Helper::error_log('tax = '.print_r($tax, true));
 				Helper::error_log('WP_Error: '.$terms->get_error_message());
@@ -651,6 +687,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @param string|int $term_name_or_id
 	 * @param string $taxonomy
 	 * @return bool
@@ -671,7 +708,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 *
+	 * @api
 	 * @return int the number of comments on a post
 	 */
 	public function comment_count() {
@@ -680,7 +717,7 @@ class Post extends Core implements CoreInterface {
 
 
 	/**
-	 *
+	 * @api
 	 * @param string $field_name
 	 * @return boolean
 	 */
@@ -720,7 +757,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 *
+	 * @api
 	 * @param string $field_name
 	 * @return mixed
 	 */
@@ -798,6 +835,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Import field data onto this object
 	 *
+	 * @api
 	 * @deprecated since 2.0.0
 	 * @param string $field_name
 	 */
@@ -806,7 +844,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Get the CSS classes for a post without cache. 
+	 * Get the CSS classes for a post without cache.
 	 * For usage you should use `{{post.class}}`
 	 *
 	 * @internal
@@ -909,6 +947,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Got more than one author? That's cool, but you'll need Co-Authors plus or another plugin to access any data
 	 *
+	 * @api
 	 * @return array
 	 */
 	public function authors() {
@@ -931,6 +970,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Get the author (WordPress user) who last modified the post
 	 *
+	 * @api
 	 * @example
 	 * ```twig
 	 * Last updated by {{ post.modified_author.name }}
@@ -1011,12 +1051,8 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Gets the comments on a Timber\Post and returns them as an array of `Timber\Comment` objects (or whatever comment class you set).
+	 *
 	 * @api
-	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
-	 * @param string $order use ordering set in WordPress admin, or a different scheme
-	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
-	 * @param string $status Could be 'pending', etc.
-	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending Timber\Comment for your site or app (obviously, totally optional)
 	 * @example
 	 * ```twig
 	 * {# single.twig #}
@@ -1028,6 +1064,12 @@ class Post extends Core implements CoreInterface {
 	 * 	</div>
 	 * {% endfor %}
 	 * ```
+	 *
+	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
+	 * @param string $order use ordering set in WordPress admin, or a different scheme
+	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
+	 * @param string $status Could be 'pending', etc.
+	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending Timber\Comment for your site or app (obviously, totally optional)
 	 * @return bool|array
 	 */
 	public function comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
@@ -1158,6 +1200,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Get the date to use in your template!
+	 *
 	 * @api
 	 * @example
 	 * ```twig
@@ -1209,6 +1252,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Returns the post_type object with labels and other info
 	 *
+	 * @api
 	 * @since 1.0.4
 	 * @example
 	 *
@@ -1234,6 +1278,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Returns the edit URL of a post if the user has access to it
 	 *
+	 * @api
 	 * @return bool|string the edit URL of a post in the WordPress admin
 	 */
 	public function edit_link() {
@@ -1277,6 +1322,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @param string $field_name
 	 * @return mixed
 	 */
@@ -1289,6 +1335,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @return string
 	 */
 	public function name() {
@@ -1296,7 +1343,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 *
+	 * @api
 	 * @param string $date_format
 	 * @return string
 	 */
@@ -1307,6 +1354,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @param string $time_format
 	 * @return string
 	 */
@@ -1344,7 +1392,9 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Get a data array of pagination so you can navigate to the previous/next for a paginated post
+	 * Get a data array of pagination so you can navigate to the previous/next for a paginated post.
+	 *
+	 * @api
 	 * @return array
 	 */
 	public function pagination() {
@@ -1377,6 +1427,8 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Finds any WP_Post objects and converts them to Timber\Posts
+	 *
+	 * @api
 	 * @param array|WP_Post $data
 	 * @param string $class
 	 */
@@ -1400,13 +1452,15 @@ class Post extends Core implements CoreInterface {
 
 
 	/**
-	 * Gets the parent (if one exists) from a post as a Timber\Post object (or whatever is set in Timber\Post::$PostClass)
+	 * Gets the parent (if one exists) from a post as a Timber\Post object (or whatever is set in
+	 * Timber\Post::$PostClass)
+	 *
 	 * @api
 	 * @example
 	 * ```twig
 	 * Parent page: <a href="{{ post.parent.link }}">{{ post.parent.title }}</a>
 	 * ```
-	 * @return bool|Timber\Post
+	 * @return bool|\Timber\Post
 	 */
 	public function parent() {
 		if ( !$this->post_parent ) {
@@ -1415,10 +1469,10 @@ class Post extends Core implements CoreInterface {
 		return new $this->PostClass($this->post_parent);
 	}
 
-
 	/**
 	 * Gets the relative path of a WP Post, so while link() will return http://example.org/2015/07/my-cool-post
 	 * this will return just /2015/07/my-cool-post
+	 *
 	 * @api
 	 * @example
 	 * ```twig
@@ -1480,7 +1534,7 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * <img src="{{ post.thumbnail.src }}" />
 	 * ```
-	 * @return Timber/Image|null of your thumbnail
+	 * @return \Timber\Image|null of your thumbnail
 	 */
 	public function thumbnail() {
 		$tid = get_post_thumbnail_id($this->ID);

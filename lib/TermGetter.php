@@ -5,6 +5,9 @@ namespace Timber;
 use Timber\Term;
 use Timber\Helper;
 
+/**
+ * Class TermGetter
+ */
 class TermGetter {
 	/**
 	 * @param int|WP_Term|object $term

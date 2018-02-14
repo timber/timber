@@ -10,9 +10,12 @@ use Timber\Helper;
 use Timber\URLHelper;
 
 /**
- * Terms: WordPress has got 'em, you want 'em. Categories. Tags. Custom
- * Taxonomies. You don't care, you're a fiend. Well let's get this under control:
+ * Class Term
  *
+ * Terms: WordPress has got 'em, you want 'em. Categories. Tags. Custom Taxonomies. You don't care,
+ * you're a fiend. Well let's get this under control:
+ *
+ * @api
  * @example
  * ```php
  * //Get a term by its ID
@@ -51,11 +54,13 @@ class Term extends Core implements CoreInterface {
 	public static $representation = 'term';
 
 	public $_children;
+
 	/**
 	 * @api
 	 * @var string the human-friendly name of the term (ex: French Cuisine)
 	 */
 	public $name;
+
 	/**
 	 * @api
 	 * @var string the WordPress taxonomy slug (ex: `post_tag` or `actors`)
@@ -63,6 +68,7 @@ class Term extends Core implements CoreInterface {
 	public $taxonomy;
 
 	/**
+	 * @api
 	 * @param int $tid
 	 * @param string $tax
 	 */
@@ -79,6 +85,7 @@ class Term extends Core implements CoreInterface {
 	/**
 	 * The string the term will render as by default
 	 *
+	 * @api
 	 * @return string
 	 */
 	public function __toString() {
@@ -86,6 +93,8 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @api
+	 *
 	 * @param $tid
 	 * @param $taxonomy
 	 *
@@ -288,15 +297,15 @@ class Term extends Core implements CoreInterface {
 		return get_edit_term_link($this->ID, $this->taxonomy);
 	}
 
-
 	/**
-	 * Returns a full link to the term archive page like
-	 * `http://example.com/category/news`
+	 * Returns a full link to the term archive page like `http://example.com/category/news`
+	 *
 	 * @api
 	 * @example
 	 * ```twig
 	 * See all posts in: <a href="{{ term.link }}">{{ term.name }}</a>
 	 * ```
+	 *
 	 * @return string
 	 */
 	public function link() {
@@ -336,7 +345,6 @@ class Term extends Core implements CoreInterface {
 	 * required.
 	 *
 	 * @api
-	 * @param string $field_name
 	 * @example
 	 * ```twig
 	 * <div class="location-info">
@@ -344,6 +352,8 @@ class Term extends Core implements CoreInterface {
 	 *   <p>{{ term.meta('address') }}</p>
 	 * </div>
 	 * ```
+	 *
+	 * @param string $field_name
 	 * @return string
 	 */
 	public function meta( $field_name ) {
@@ -386,8 +396,8 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Returns a relative link (path) to the term archive page like
-	 * `/category/news`
+	 * Returns a relative link (path) to the term archive page like `/category/news`
+	 *
 	 * @api
 	 * @example
 	 * ```twig
@@ -429,9 +439,6 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 * @api
-	 * @param int $numberposts_or_args
-	 * @param string $post_type_or_class
-	 * @param string $post_class
 	 * @example
 	 * ```twig
 	 * <h4>Recent posts in {{ term.name }}</h4>
@@ -441,6 +448,10 @@ class Term extends Core implements CoreInterface {
 	 * {% endfor %}
 	 * </ul>
 	 * ```
+	 *
+	 * @param int $numberposts_or_args
+	 * @param string $post_type_or_class
+	 * @param string $post_class
 	 * @return \Timber\PostQuery
 	 */
 	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
@@ -503,8 +514,9 @@ class Term extends Core implements CoreInterface {
 	/**
 	 * Get Posts that have been "tagged" with the particular term
 	 *
+	 * @api
 	 * @deprecated 2.0.0 use `{{ term.posts }}` instead
-	 * @internal
+	 *
 	 * @param int $numberposts
 	 * @param string $post_type
 	 * @param string $PostClass
@@ -516,7 +528,9 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @deprecated 2.0.0, use `{{ term.children }}` instead.
+	 *
 	 * @return array
 	 */
 	public function get_children() {
@@ -525,10 +539,10 @@ class Term extends Core implements CoreInterface {
 		return $this->children();
 	}
 
-
 	/**
-	 *
+	 * @api
 	 * @deprecated 2.0.0 with no replacement
+	 *
 	 * @param string  $key
 	 * @param mixed   $value
 	 */

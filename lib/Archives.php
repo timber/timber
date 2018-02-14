@@ -6,8 +6,13 @@ use Timber\Core;
 use Timber\URLHelper;
 
 /**
- * The Timber\Archives class is used to generate a menu based on the date archives of your posts. The [Nieman Foundation News site](http://nieman.harvard.edu/news/) has an example of how the output can be used in a real site ([screenshot](https://cloud.githubusercontent.com/assets/1298086/9610076/3cdca596-50a5-11e5-82fd-acb74c09c482.png)).
+ * Class Archive
  *
+ * The `Timber\Archives` class is used to generate a menu based on the date archives of your posts.
+ * The [Nieman Foundation News site](http://nieman.harvard.edu/news/) has an example of how the
+ * output can be used in a real site ([screenshot](https://cloud.githubusercontent.com/assets/1298086/9610076/3cdca596-50a5-11e5-82fd-acb74c09c482.png)).
+ *
+ * @api
  * @example
  * ```php
  * $context['archives'] = new Timber\Archives( $args );
@@ -38,29 +43,39 @@ use Timber\URLHelper;
  * ```
  */
 class Archives extends Core {
-
+	/**
+	 * URL prefix.
+	 *
+	 * @api
+	 * @var string
+	 */
 	public $base = '';
+
 	/**
 	 * @api
-	 * @var array the items of the archives to iterate through and markup for your page
+	 * @var array The items of the archives to iterate through and markup for your page.
 	 */
+	public $items;
 
 	/**
 	 * Build an Archives menu
 	 *
 	 * @api
-	 * @param array  $args of arguments {
-	 *     @type bool show_year => false
-	 *     @type string
-	 *     @type string type => 'monthly-nested'
-	 *     @type int limit => -1
-	 *     @type bool show_post_count => false
-	 *     @type string order => 'DESC'
-	 *     @type string post_type => 'post'
-	 *     @type bool show_year => false
-	 *     @type bool nested => false
-	 * };
-	 * @param string $base any additional paths that need to be prepended to the URLs that are generated, for example: "tags".
+	 * @param array  $args {
+	 *      Array of arguments.
+	 *
+	 *      @type bool $show_year => false
+	 *      @type string
+	 *      @type string $type => 'monthly-nested'
+	 *      @type int $limit => -1
+	 *      @type bool $show_post_count => false
+	 *      @type string $order => 'DESC'
+	 *      @type string $post_type => 'post'
+	 *      @type bool $show_year => false
+	 *      @type bool $nested => false
+	 * }
+	 * @param string $base Any additional paths that need to be prepended to the URLs that are
+	 *                     generated, for example: "tags". Default ''.
 	 */
 	public function __construct( $args = null, $base = '' ) {
 		$this->init($args, $base);

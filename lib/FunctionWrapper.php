@@ -5,11 +5,12 @@ namespace Timber;
 use Timber\Helper;
 
 /**
- * FunctionWrapper Class.
+ * Class FunctionWrapper
  *
- * With Timber, we want to prepare all the data before we echo content through a render function. Some functionality in WordPress directly echoes output instead of returning it. This class makes it easier to store the results of an echoing function by using ob_start() and ob_end_clean() behind the scenes.
- *
- * @package Timber
+ * With Timber, we want to prepare all the data before we echo content through a render function.
+ * Some functionality in WordPress directly echoes output instead of returning it. This class makes
+ * it easier to store the results of an echoing function by using ob_start() and ob_end_clean()
+ * behind the scenes.
  */
 class FunctionWrapper {
 

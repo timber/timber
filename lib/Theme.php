@@ -3,12 +3,16 @@
 namespace Timber;
 
 use Timber\Core;
-use Timber\Theme;
 use Timber\URLHelper;
 
 /**
- * Need to display info about your theme? Well you've come to the right place. By default info on the current theme comes for free with what's fetched by `Timber::get_context()` in which case you can access it your theme like so:
+ * Class Theme
  *
+ * Need to display info about your theme? Well you've come to the right place. By default info on
+ * the current theme comes for free with what's fetched by `Timber::get_context()` in which case you
+ * can access it your theme like so:
+ *
+ * @api
  * @example
  * ```php
  * <?php
@@ -22,7 +26,6 @@ use Timber\URLHelper;
  * ```html
  * <script src="http://example.org/wp-content/themes/my-theme/static/js/all.js"></script>
  * ```
- * @package Timber
  */
 class Theme extends Core {
 
@@ -63,16 +66,25 @@ class Theme extends Core {
 	 * @var string the slug of the theme (ex: `my-super-theme`)
 	 */
 	public $slug;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $uri;
 
 	/**
-	 * @var WP_Theme the underlying WordPress native Theme object
+	 * @var \WP_Theme the underlying WordPress native Theme object
 	 */
 	private $theme;
 
 	/**
-	 * Constructs a new Timber\Theme object. NOTE the Timber\Theme object of the current theme comes in the default `Timber::get_context()` call. You can access this in your twig template via `{{site.theme}}.
-	 * @param string $slug
+	 * Constructs a new `Timber\Theme` object.
+	 *
+	 * The `Timber\Theme` object of the current theme comes in the default `Timber::get_context()`
+	 * call. You can access this in your twig template via `{{site.theme}}`.
+	 *
+	 * @api
 	 * @example
 	 * ```php
 	 * <?php
@@ -87,6 +99,8 @@ class Theme extends Core {
 	 * ```html
 	 * We are currently using the My Theme theme.
 	 * ```
+	 *
+	 * @param string $slug
 	 */
 	public function __construct( $slug = null ) {
 		$this->init($slug);
@@ -129,6 +143,7 @@ class Theme extends Core {
 	}
 
 	/**
+	 * @api
 	 * @param string $name
 	 * @param bool $default
 	 * @return string
@@ -138,6 +153,7 @@ class Theme extends Core {
 	}
 
 	/**
+	 * @api
 	 * @return array
 	 */
 	public function theme_mods() {

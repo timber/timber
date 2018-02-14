@@ -7,6 +7,8 @@ use Timber\Post;
 use Timber\PostGetter;
 
 /**
+ * Class PostQuery
+ *
  * Query for a collection of WordPress posts.
  *
  * This is the equivalent of using `WP_Query` in normal WordPress development.
@@ -15,7 +17,6 @@ use Timber\PostGetter;
  * retrieve meta information about it.
  *
  * @api
- * @package Timber
  */
 class PostQuery extends PostCollection {
 
@@ -35,6 +36,7 @@ class PostQuery extends PostCollection {
 	 * [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/) for a list of all
 	 * the arguments that can be used for the `$query` parameter.
 	 *
+	 * @api
 	 * @example
 	 * ```php
 	 * // Get posts from default query
@@ -90,6 +92,7 @@ class PostQuery extends PostCollection {
 	 *
 	 * Optionally could be used to get pagination with custom preferences.
 	 *
+	 * @api
 	 * @example
 	 * ```twig
 	 * {% if posts.pagination.prev %}

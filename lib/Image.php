@@ -7,10 +7,13 @@ use Timber\Helper;
 use Timber\Post;
 use Timber\URLHelper;
 
-
 /**
- * If Timber\Post is the class you're going to spend the most time, Timber\Image is the class you're going to have the most fun with.
+ * Class Image
  *
+ * If Timber\Post is the class you're going to spend the most time, Timber\Image is the class you're
+ * going to have the most fun with.
+ *
+ * @api
  * @example
  * ```php
  * $context = Timber::get_context();
@@ -50,43 +53,69 @@ class Image extends Post implements CoreInterface {
 
 	protected $_can_edit;
 	protected $_dimensions;
-	public $abs_url;
-	/**
-	 * @var string $object_type what does this class represent in WordPress terms?
-	 */
-	public $object_type = 'image';
-	/**
-	 * @var string $representation what does this class represent in WordPress terms?
-	 */
-	public static $representation = 'image';
-	/**
-	 * @var array of supported relative file types
-	 */
-	private $file_types = array('jpg', 'jpeg', 'png', 'svg', 'bmp', 'ico', 'gif', 'tiff', 'pdf');
+
 	/**
 	 * @api
-	 * @var string $file_loc the location of the image file in the filesystem (ex: `/var/www/htdocs/wp-content/uploads/2015/08/my-pic.jpg`)
+	 * @var string
+	 */
+	public $abs_url;
+
+	/**
+	 * @api
+	 * @var string What does this class represent in WordPress terms?
+	 */
+	public $object_type = 'image';
+
+	/**
+	 * @api
+	 * @var string What does this class represent in WordPress terms?
+	 */
+	public static $representation = 'image';
+
+	/**
+	 * @var array Array of supported relative file types.
+	 */
+	private $file_types = array('jpg', 'jpeg', 'png', 'svg', 'bmp', 'ico', 'gif', 'tiff', 'pdf');
+
+	/**
+	 * @api
+	 * @var string The location of the image file in the filesystem (ex: `/var/www/htdocs/wp-content/uploads/2015/08/my-pic.jpg`)
 	 */
 	public $file_loc;
+
+	/**
+	 * @api
+	 * @var mixed
+	 */
 	public $file;
+
 	/**
 	 * @api
 	 * @var integer the ID of the image (which is a WP_Post)
 	 */
 	public $id;
-	public $sizes = array();
+
 	/**
 	 * @api
-	 * @var string $caption the string stored in the WordPress database
+	 * @var array
+	 */
+	public $sizes = array();
+
+	/**
+	 * @api
+	 * @var string The string stored in the WordPress database
 	 */
 	public $caption;
+
 	/**
-	 * @var $_wp_attached_file the file as stored in the WordPress database
+	 * @var array The file as stored in the WordPress database
 	 */
 	protected $_wp_attached_file;
 
 	/**
 	 * Creates a new Timber\Image object
+	 *
+	 * @api
 	 * @example
 	 * ```php
 	 * // You can pass it an ID number
@@ -104,6 +133,8 @@ class Image extends Post implements CoreInterface {
 	/**
 	 * The src of the image
 	 *
+	 * @api
+	 *
 	 * @return string the src of the file
 	 */
 	public function __toString() {
@@ -112,6 +143,8 @@ class Image extends Post implements CoreInterface {
 
 	/**
 	 * Get a PHP array with pathinfo() info from the file
+	 *
+	 * @api
 	 *
 	 * @return array
 	 */
@@ -207,6 +240,8 @@ class Image extends Post implements CoreInterface {
 
 	/**
 	 * Returns the `wp_upload_dir` and saves result to static var
+	 *
+	 * @api
 	 *
 	 * @return array of data https://developer.wordpress.org/reference/functions/wp_upload_dir/
 	 */
@@ -405,7 +440,7 @@ class Image extends Post implements CoreInterface {
 
 	/**
 	 * @api
-	 * @return bool|Timber\Post
+	 * @return bool|\Timber\Post
 	 */
 	public function parent() {
 		if ( !$this->post_parent ) {
@@ -430,7 +465,6 @@ class Image extends Post implements CoreInterface {
 	}
 
 	/**
-	 * @param string $size a size known to WordPress (like "medium")
 	 * @api
 	 * @example
 	 * ```twig
@@ -440,6 +474,8 @@ class Image extends Post implements CoreInterface {
 	 * ```html
 	 * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg" />
 	 * ```
+	 *
+	 * @param string $size a size known to WordPress (like "medium")
 	 * @return bool|string
 	 */
 	public function src( $size = 'full' ) {

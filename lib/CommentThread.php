@@ -4,6 +4,9 @@ namespace Timber;
 
 use Timber\Comment;
 
+/**
+ * Class CommentThread
+ */
 class CommentThread extends \ArrayObject {
 
 	var $CommentClass = 'Timber\Comment';
@@ -86,7 +89,7 @@ class CommentThread extends \ArrayObject {
 			}
 		}
 
-		
+
 
 		foreach ( $children as &$comment ) {
 			$parent_id = $comment->comment_parent;

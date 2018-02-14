@@ -7,7 +7,13 @@ use Timber\Core;
 use Timber\CoreInterface;
 
 /**
- * The Timber\Comment class is used to view the output of comments. 99% of the time this will be in the context of the comments on a post. However you can also fetch a comment directly using its comment ID.
+ * Class Comment
+ *
+ * The `Timber\Comment` class is used to view the output of comments. 99% of the time this will be
+ * in the context of the comments on a post. However you can also fetch a comment directly using its
+ * comment ID.
+ *
+ * @api
  * @example
  * ```php
  * $comment = new Timber\Comment($comment_id);
@@ -32,26 +38,76 @@ class Comment extends Core implements CoreInterface {
 
 	public static $representation = 'comment';
 
+	/**
+	 * @api
+	 * @var int
+	 */
 	public $ID;
+
+	/**
+	 * @api
+	 * @var int
+	 */
 	public $id;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $comment_author_email;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $comment_content;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $comment_date;
+
+	/**
+	 * @api
+	 * @var int
+	 */
 	public $comment_ID;
+
+	/**
+	 * @api
+	 * @var int
+	 */
 	public $user_id;
+
+	/**
+	 * @api
+	 * @var int
+	 */
 	public $post_id;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $comment_author;
+
 	public $_depth = 0;
 
 	protected $children = array();
 
 	/**
+	 * @api
 	 * @param int $cid
 	 */
 	public function __construct( $cid ) {
 		$this->init($cid);
 	}
 
+	/**
+	 * @api
+	 * @return string
+	 */
 	public function __toString() {
 		return $this->content();
 	}
@@ -108,7 +164,8 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Fetches the Gravatar
+	 * Fetches the Gravatar.
+	 *
 	 * @api
 	 * @example
 	 * ```twig
@@ -168,6 +225,7 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @param Comment $child_comment;
 	 */
 	public function add_child( Comment $child_comment ) {
@@ -178,6 +236,7 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @param int $depth
 	 */
 	public function update_depth( $depth = 0 ) {
@@ -246,7 +305,7 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
-	 * What time was the commetn posted?
+	 * What time was the comment posted?
 	 *
 	 * @api
 	 * @example
@@ -274,6 +333,7 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
+	 * @api
 	 * @param string $field_name
 	 * @return mixed
 	 */
@@ -359,7 +419,6 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
-	 *
 	 * @internal
 	 * @param string $field_name
 	 * @return mixed
@@ -430,8 +489,8 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Enqueue the WP threaded comments javascript,
-	 * and fetch the reply link for various comments.
+	 * Enqueue the WP threaded comments JavaScript, and fetch the reply link for various comments.
+	 *
 	 * @api
 	 * @return string
 	 */

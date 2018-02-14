@@ -5,6 +5,9 @@ namespace Timber;
 use Timber\PostCollection;
 use Timber\QueryIterator;
 
+/**
+ * Class PostGetter
+ */
 class PostGetter {
 
 	/**
