@@ -546,7 +546,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 *
 	 * Gets the comment form for use on a single article page
-	 * @param array   $args this $args thing is a fucking mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
+	 * @param array This $args array thing is a mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
 	 * @return string of HTML for the form
 	 */
 	public function comment_form( $args = array() ) {
