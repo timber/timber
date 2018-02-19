@@ -17,10 +17,11 @@ use Timber\User;
 use Timber\Loader;
 
 /**
- * Timber Class.
+ * Class Timber
  *
  * Main class called Timber for this plugin.
  *
+ * @api
  * @example
  * ```php
  * $posts = new Timber\PostQuery();
@@ -67,7 +68,6 @@ class Timber {
 	/**
 	 * Tests whether we can use Timber
 	 * @codeCoverageIgnore
-	 * @return
 	 */
 	protected function test_compatibility() {
 		if ( is_admin() || $_SERVER['PHP_SELF'] == '/wp-login.php' ) {
@@ -509,7 +509,7 @@ class Timber {
 	 * ```
 	 * @param string $string A string with Twig variables.
 	 * @param array  $data   Optional. An array of data to use in Twig template.
-	 * @return  bool|string
+	 * @return bool|string
 	 */
 	public static function compile_string( $string, $data = array() ) {
 		$dummy_loader = new Loader();
@@ -660,11 +660,9 @@ class Timber {
 	 *
 	 * @api
 	 * @param array $prefs an array of preference data.
-	 * @return array mixed
+	 * @return array|mixed
 	 */
 	public static function get_pagination( $prefs = array() ) {
 		return Pagination::get_pagination($prefs);
 	}
-
-
 }

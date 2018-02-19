@@ -2,6 +2,9 @@
 
 namespace Timber;
 
+/**
+ * Class Admin
+ */
 class Admin {
 
 	public static function init() {
@@ -101,11 +104,10 @@ class Admin {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @type    function
 	 * @date    4/22/16
 	 *
-	 * @param   {array}	 $plugin_data
-	 * @param   {object} $r
+	 * @param array  $plugin_data
+	 * @param object $r
 	 */
 	public static function in_plugin_update_message( $plugin_data, $r ) {
 		$current_version = $plugin_data['Version'];

@@ -10,12 +10,13 @@ if ( !defined('ABSPATH') ) {
 	exit;
 }
 
+/**
+ * Class QueryIterator
+ */
 class QueryIterator implements \Iterator, \Countable {
 
 	/**
-	 *
-	 *
-	 * @var WP_Query
+	 * @var \WP_Query
 	 */
 	private $_query = null;
 	private $_posts_class = 'Timber\Post';

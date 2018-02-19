@@ -6,6 +6,8 @@ use Timber\Core;
 use Timber\CoreInterface;
 
 /**
+ * Class Request
+ *
  * Timber\Request exposes $_GET and $_POST to the context
  */
 class Request extends Core implements CoreInterface {

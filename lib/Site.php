@@ -9,7 +9,12 @@ use Timber\Theme;
 use Timber\Helper;
 
 /**
- * Timber\Site gives you access to information you need about your site. In Multisite setups, you can get info on other sites in your network.
+ * Class Site
+ *
+ * `Timber\Site` gives you access to information you need about your site. In Multisite setups, you
+ * can get info on other sites in your network.
+ *
+ * @api
  * @example
  * ```php
  * $context = Timber::get_context();
@@ -28,10 +33,16 @@ class Site extends Core implements CoreInterface {
 
 	/**
 	 * @api
-	 * @var string the admin email address set in the WP admin panel
+	 * @var string The admin email address set in the WP admin panel
 	 */
 	public $admin_email;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $blogname;
+
 	/**
 	 * @api
 	 * @var string
@@ -43,16 +54,19 @@ class Site extends Core implements CoreInterface {
 	 * @var string
 	 */
 	public $description;
+
 	/**
 	 * @api
 	 * @var int the ID of a site in multisite
 	 */
 	public $id;
+
 	/**
 	 * @api
 	 * @var string the language setting ex: en-US
 	 */
 	public $language;
+
 	/**
 	 * @api
 	 * @var bool true if multisite, false if plain ole' WordPress
@@ -65,23 +79,46 @@ class Site extends Core implements CoreInterface {
 	 */
 	public $name;
 
-	/** @api
+	/**
+	 * @api
 	 * @var string for people who like trackback spam
 	 */
 	public $pingback_url;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $siteurl;
+
 	/**
 	 * @api
 	 * @var \Timber\Theme
 	 */
 	public $theme;
+
 	/**
 	 * @api
 	 * @var string
 	 */
 	public $title;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $url;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $home_url;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $site_url;
 
 	/**
@@ -96,6 +133,8 @@ class Site extends Core implements CoreInterface {
 
 	/**
 	 * Constructs a Timber\Site object
+	 *
+	 * @api
 	 * @example
 	 * ```php
 	 * //multisite setup
@@ -120,6 +159,7 @@ class Site extends Core implements CoreInterface {
 
 	/**
 	 * Switches to the blog requested in the request
+	 *
 	 * @param string|integer|null $site_name_or_id
 	 * @return integer with the ID of the new blog
 	 */
@@ -180,7 +220,6 @@ class Site extends Core implements CoreInterface {
 		$this->pingback = $this->pingback_url = get_bloginfo('pingback_url');
 	}
 
-
 	/**
 	 * Returns the language attributes that you're looking for
 	 * @return string
@@ -190,8 +229,6 @@ class Site extends Core implements CoreInterface {
 	}
 
 	/**
-	 *
-	 *
 	 * @param string  $field
 	 * @return mixed
 	 */
@@ -206,6 +243,10 @@ class Site extends Core implements CoreInterface {
 		return $this->$field;
 	}
 
+	/**
+	 * @api
+	 * @return null|\Timber\Image
+	 */
 	public function icon() {
 		if ( is_multisite() ) {
 			return $this->icon_multisite($this->ID);
@@ -229,6 +270,8 @@ class Site extends Core implements CoreInterface {
 
 	/**
 	 * Returns the link to the site's home.
+	 *
+	 * @api
 	 * @example
 	 * ```twig
 	 * <a href="{{ site.link }}" title="Home">
@@ -240,7 +283,7 @@ class Site extends Core implements CoreInterface {
 	 * 	  <img src="/wp-content/uploads/logo.png" alt="Logo for some stupid thing" />
 	 * </a>
 	 * ```
-	 * @api
+	 *
 	 * @return string
 	 */
 	public function link() {
@@ -249,7 +292,7 @@ class Site extends Core implements CoreInterface {
 
 
 	/**
-	 * @ignore
+	 * @internal
 	 */
 	public function meta( $field ) {
 		return $this->__get($field);
@@ -257,7 +300,7 @@ class Site extends Core implements CoreInterface {
 
 	/**
 	 *
-	 * @ignore
+	 * @internal
 	 * @param string  $key
 	 * @param mixed   $value
 	 */
@@ -305,6 +348,5 @@ class Site extends Core implements CoreInterface {
 		Helper::deprecated('{{ site.url }}', '{{ site.link }}', '1.0.4');
 		return $this->link();
 	}
-
 
 }

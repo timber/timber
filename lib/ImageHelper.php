@@ -11,6 +11,8 @@ use Timber\Image\Operation\Letterbox;
 use Timber\URLHelper;
 
 /**
+ * Class ImageHelper
+ *
  * Implements the Twig image filters:
  * https://timber.github.io/docs/guides/cookbook-images/#arbitrary-resizing-of-images
  * - resize
@@ -22,6 +24,8 @@ use Timber\URLHelper;
  * - public static functions provide the methods that are called by the filter
  * - most of the work is common to all filters (URL analysis, directory gymnastics, file caching, error management) and done by private static functions
  * - the specific part (actual image processing) is delegated to dedicated subclasses of TimberImageOperation
+ *
+ * @api
  */
 class ImageHelper {
 
@@ -43,6 +47,7 @@ class ImageHelper {
 	 * New dimensions are achieved by cropping to maintain ratio.
 	 *
 	 * @api
+	 *
 	 * @param string  		$src an URL (absolute or relative) to the original image
 	 * @param int|string	$w target width(int) or WordPress image size (WP-set or user-defined).
 	 * @param int     		$h target height (ignored if $w is WP image size). If not set, will ignore and resize based on $w only.
@@ -71,7 +76,9 @@ class ImageHelper {
 	}
 
 	/**
-	 * Find the sizes of an image based on a defined image size
+	 * Find the sizes of an image based on a defined image size.
+	 *
+	 * @internal
 	 * @param  string $size the image size to search for
 	 *                      can be WordPress-defined ("medium")
 	 *                      or user-defined ("my-awesome-size")
@@ -98,6 +105,8 @@ class ImageHelper {
 	/**
 	 * Generates a new image with increased size, for display on Retina screens.
 	 *
+	 * @api
+	 *
 	 * @param string  $src of the file to read from.
 	 * @param float   $multiplier
 	 * @param boolean $force require process to run even if the file exists.
@@ -111,6 +120,8 @@ class ImageHelper {
 
 	/**
 	 * Checks to see if the given file is an aimated gif
+	 *
+	 * @api
 	 *
 	 * @param string $file local filepath to a file, not a URL.
 	 * @return boolean true if it's an animated gif, false if not.
@@ -145,6 +156,8 @@ class ImageHelper {
 	 * Generate a new image with the specified dimensions.
 	 * New dimensions are achieved by adding colored bands to maintain ratio.
 	 *
+	 * @api
+	 *
 	 * @param string  $src
 	 * @param int     $w
 	 * @param int     $h
@@ -159,6 +172,8 @@ class ImageHelper {
 
 	/**
 	 * Generates a new image by converting the source GIF or PNG into JPG
+	 *
+	 * @api
 	 *
 	 * @param string  $src   a url or path to the image (http://example.org/wp-content/uploads/2014/image.jpg) or (/wp-content/uploads/2014/image.jpg)
 	 * @param string  $bghex
@@ -583,6 +598,9 @@ class ImageHelper {
 
 // -- the below methods are just used for unit testing the URL generation code
 //
+	/**
+	 * @internal
+	 */
 	public static function get_letterbox_file_url( $url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Letterbox($w, $h, $color);
@@ -595,6 +613,9 @@ class ImageHelper {
 		return $new_url;
 	}
 
+	/**
+	 * @internal
+	 */
 	public static function get_letterbox_file_path( $url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Letterbox($w, $h, $color);
@@ -606,6 +627,9 @@ class ImageHelper {
 		return $new_path;
 	}
 
+	/**
+	 * @internal
+	 */
 	public static function get_resize_file_url( $url, $w, $h, $crop ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Resize($w, $h, $crop);
@@ -618,6 +642,9 @@ class ImageHelper {
 		return $new_url;
 	}
 
+	/**
+	 * @internal
+	 */
 	public static function get_resize_file_path( $url, $w, $h, $crop ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Resize($w, $h, $crop);

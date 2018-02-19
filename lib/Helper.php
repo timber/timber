@@ -6,12 +6,15 @@ use Timber\FunctionWrapper;
 use Timber\URLHelper;
 
 /**
- * As the name suggests these are helpers for Timber (and you!) when developing. You can find additional (mainly internally-focused helpers) in Timber\URLHelper
+ * Class Helper
+ *
+ * As the name suggests these are helpers for Timber (and you!) when developing. You can find additional
+ * (mainly internally-focused helpers) in Timber\URLHelper.
  */
 class Helper {
-
 	/**
-	 * A utility for a one-stop shop for Transients
+	 * A utility for a one-stop shop for transients.
+	 *
 	 * @api
 	 * @example
 	 * ```php
@@ -52,7 +55,10 @@ class Helper {
 	}
 
 	/**
-	 * Does the dirty work of locking the transient, running the callback and unlocking
+	 * Does the dirty work of locking the transient, running the callback and unlocking.
+	 *
+	 * @internal
+	 *
 	 * @param string 	$slug
 	 * @param callable 	$callback
 	 * @param integer  	$transient_time Expiration of transients in seconds
@@ -158,7 +164,8 @@ class Helper {
 	/* These are for measuring page render time */
 
 	/**
-	 * For measuring time, this will start a timer
+	 * For measuring time, this will start a timer.
+	 *
 	 * @api
 	 * @return float
 	 */
@@ -170,13 +177,16 @@ class Helper {
 	}
 
 	/**
-	 * For stopping time and getting the data
+	 * For stopping time and getting the data.
+	 *
+	 * @api
 	 * @example
 	 * ```php
 	 * $start = Timber\Helper::start_timer();
 	 * // do some stuff that takes awhile
 	 * echo Timber\Helper::stop_timer( $start );
 	 * ```
+	 *
 	 * @param int     $start
 	 * @return string
 	 */
@@ -193,7 +203,10 @@ class Helper {
 	======================== */
 
 	/**
-	 * Calls a function with an output buffer. This is useful if you have a function that outputs text that you want to capture and use within a twig template.
+	 * Calls a function with an output buffer. This is useful if you have a function that outputs
+	 * text that you want to capture and use within a twig template.
+	 *
+	 * @api
 	 * @example
 	 * ```php
 	 * function the_form() {
@@ -213,9 +226,10 @@ class Helper {
 	 * <h1>Apply to my contest!</h1>
 	 * <form action="form.php"><input type="text" /><input type="submit /></form>
 	 * ```
-	 * @api
+	 *
 	 * @param callback $function
 	 * @param array   $args
+	 *
 	 * @return string
 	 */
 	public static function ob_function( $function, $args = array(null) ) {
@@ -227,7 +241,7 @@ class Helper {
 	}
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param mixed $arg that you want to error_log
 	 * @return void
@@ -246,6 +260,8 @@ class Helper {
 	/**
 	 * Trigger a warning.
 	 *
+	 * @api
+	 *
 	 * @param string $message The warning that you want to output.
 	 *
 	 * @return void
@@ -261,7 +277,7 @@ class Helper {
 	/**
 	 * Trigger a deprecation warning.
 	 *
-	 * @param string $message The warning that you want to output.
+	 * @api
 	 *
 	 * @return void
 	 */
@@ -271,7 +287,7 @@ class Helper {
 		}
 
 		 do_action( 'deprecated_function_run', $function, $replacement, $version );
- 
+
 	    /**
 	     * Filters whether to trigger an error for deprecated functions.
 	     *
@@ -300,7 +316,7 @@ class Helper {
 
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param string  $separator
 	 * @param string  $seplocation
@@ -326,22 +342,24 @@ class Helper {
 		return trim(wp_title($separator, false, $seplocation));
 	}
 
-
 	/**
+	 * Sorts object arrays by properties.
 	 *
+	 * @api
 	 *
-	 * @param array   $array
-	 * @param string  $prop
+	 * @param array  $array The array of objects to sort.
+	 * @param string $prop  The property to sort by.
+	 *
 	 * @return void
 	 */
 	public static function osort( &$array, $prop ) {
 		usort($array, function( $a, $b ) use ($prop) {
-				return $a->$prop > $b->$prop ? 1 : -1;
-			} );
+			return $a->$prop > $b->$prop ? 1 : -1;
+		} );
 	}
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param array   $arr
 	 * @return bool
@@ -354,7 +372,7 @@ class Helper {
 	}
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param array   $array
 	 * @return \stdClass
@@ -372,7 +390,7 @@ class Helper {
 	}
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param array   $array
 	 * @param string  $key
@@ -399,13 +417,13 @@ class Helper {
 	}
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param array   $array
 	 * @param string  $key
 	 * @param mixed   $value
 	 * @return array|null
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public static function get_object_by_property( $array, $key, $value ) {
 		if ( is_array($array) ) {
@@ -421,7 +439,7 @@ class Helper {
 	}
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param array   $array
 	 * @param int     $len
@@ -438,7 +456,7 @@ class Helper {
 	======================== */
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param mixed   $value
 	 * @return bool
@@ -458,6 +476,8 @@ class Helper {
 	/**
 	 * Is the number even? Let's find out.
 	 *
+	 * @api
+	 *
 	 * @param int $i number to test.
 	 * @return bool
 	 */
@@ -468,6 +488,8 @@ class Helper {
 	/**
 	 * Is the number odd? Let's find out.
 	 *
+	 * @api
+	 *
 	 * @param int $i number to test.
 	 * @return bool
 	 */
@@ -477,8 +499,13 @@ class Helper {
 
 	/**
 	 * Plucks the values of a certain key from an array of objects
-	 * @param array $array
+	 *
+	 * @api
+	 *
+	 * @param array  $array
 	 * @param string $key
+	 *
+	 * @return array
 	 */
 	public static function pluck( $array, $key ) {
 		$return = array();
@@ -497,8 +524,10 @@ class Helper {
 	/**
 	 * Filters a list of objects, based on a set of key => value arguments.
 	 *
+	 * @api
 	 * @since 1.5.3
 	 * @ticket #1594
+	 *
 	 * @param array        $list to filter.
 	 * @param string|array $filter to search for.
 	 * @param string       $operator to use (AND, NOT, OR).
@@ -516,5 +545,4 @@ class Helper {
 		$util = new \WP_List_Util( $list );
 		return $util->filter( $args, $operator );
 	}
-
 }

@@ -7,6 +7,11 @@ use Timber\CoreInterface;
 
 use Timber\URLHelper;
 
+/**
+ * Class MenuItem
+ *
+ * @api
+ */
 class MenuItem extends Core implements CoreInterface {
 	/**
 	 * @api
@@ -165,6 +170,8 @@ class MenuItem extends Core implements CoreInterface {
 	/**
 	 * Add a new `Timber\MenuItem` object as a child of this menu item.
 	 *
+	 * @api
+	 *
 	 * @param \Timber\MenuItem $item The menu item to add.
 	 */
 	public function add_child( $item ) {
@@ -277,11 +284,11 @@ class MenuItem extends Core implements CoreInterface {
 	 * Plugins like Advanced Custom Fields allow you to set custom fields for menu items. With this
 	 * method you can retrieve the value of these.
 	 *
+	 * @api
 	 * @example
 	 * ```twig
 	 * <a class="icon-{{ item.meta('icon') }}" href="{{ item.link }}">{{ item.title }}</a>
 	 * ```
-	 * @api
 	 * @param string $key The meta key to get the value for.
 	 * @return mixed Whatever value is stored in the database.
 	 */

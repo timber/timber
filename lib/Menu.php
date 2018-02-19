@@ -5,6 +5,11 @@ namespace Timber;
 use Timber\Core;
 use Timber\Post;
 
+/**
+ * Class Menu
+ *
+ * @api
+ */
 class Menu extends Core {
 
 	public $MenuItemClass = 'Timber\MenuItem';
@@ -18,19 +23,19 @@ class Menu extends Core {
 
 	/**
 	 * @api
-	 * @var integer The ID of the menu, corresponding to the wp_terms table.
+	 * @var int The ID of the menu, corresponding to the wp_terms table.
 	 */
 	public $id;
 
 	/**
 	 * @api
-	 * @var integer The ID of the menu, corresponding to the wp_terms table.
+	 * @var int The ID of the menu, corresponding to the wp_terms table.
 	 */
 	public $ID;
 
 	/**
 	 * @api
-	 * @var integer The ID of the menu, corresponding to the wp_terms table.
+	 * @var int The ID of the menu, corresponding to the wp_terms table.
 	 */
 	public $term_id;
 
@@ -48,6 +53,8 @@ class Menu extends Core {
 
 	/**
 	 * Initialize a menu.
+	 *
+	 * @api
 	 *
 	 * @param int|string $slug A menu slug, the term ID of the menu, the full name from the admin
 	 *                         menu, the slug of theregistered location or nothing. Passing nothing

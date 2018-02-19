@@ -10,7 +10,9 @@ use Timber\Term;
 use Timber\Image;
 use Timber\User;
 
-
+/**
+ * Class Twig
+ */
 class Twig {
 
 	public static $dir_name;
