@@ -162,8 +162,9 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = TimberUrlHelper::url_to_file_system( $resized );
 
-		$fileSizeBig = filesize($resized);
-		$this->assertEquals(43136, $fileSizeBig);
+		$fileSizeDefault = filesize($resized);
+		$this->assertGreaterThan(20000, $fileSizeDefault);
+		$this->assertLessThan(75000, $fileSizeDefault);
 	}
 
 	function testJPEGQualityHigh() {
