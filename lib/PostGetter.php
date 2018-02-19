@@ -138,7 +138,7 @@ class PostGetter {
 			Helper::error_log('Unexpeted value for PostClass: '.print_r($post_class, true));
 		}
 
-		if ( $post_class_use === '\Timber\Post' ) {
+		if ( $post_class_use === '\Timber\Post' || $post_class_use === 'Timber\Post') {
 			return $post_class_use;
 		}
 
