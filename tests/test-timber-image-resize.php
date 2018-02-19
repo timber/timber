@@ -155,4 +155,43 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		
 	}
 
+	function testJPEGQualityDefault() {
+		//make image at best quality
+		$arch = TestTimberImage::copyTestImage('arch.jpg');
+		$resized = Timber\ImageHelper::resize($arch, 500, 500, 'default', true);
+		$resized = str_replace('http://example.org', '', $resized);
+		$resized = TimberUrlHelper::url_to_file_system( $resized );
+
+		$fileSizeBig = filesize($resized);
+		$this->assertEquals(43136, $fileSizeBig);
+	}
+
+	function testJPEGQualityHigh() {
+		//make image at best quality
+		add_filter('wp_editor_set_quality', function(){
+			return 100;
+		});
+		$arch = TestTimberImage::copyTestImage('arch.jpg');
+		$resized = Timber\ImageHelper::resize($arch, 500, 500, 'default', true);
+		$resized = str_replace('http://example.org', '', $resized);
+		$resized = TimberUrlHelper::url_to_file_system( $resized );
+
+		$fileSizeBig = filesize($resized);
+		$this->assertGreaterThan(43136, $fileSizeBig);
+	}
+
+	function testJPEGQualityLow() {
+		//make image at best quality
+		add_filter('wp_editor_set_quality', function(){
+			return 1;
+		});
+		$arch = TestTimberImage::copyTestImage('arch.jpg');
+		$resized = Timber\ImageHelper::resize($arch, 500, 500, 'default', true);
+		$resized = str_replace('http://example.org', '', $resized);
+		$resized = TimberUrlHelper::url_to_file_system( $resized );
+
+		$fileSizeSmall = filesize($resized);
+		$this->assertLessThan(43136, $fileSizeSmall);
+	}
+
 }
