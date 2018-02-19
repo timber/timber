@@ -48,6 +48,7 @@ class ImageHelper {
 	 * @param int     		$h target height (ignored if $w is WP image size). If not set, will ignore and resize based on $w only.
 	 * @param string  		$crop your choices are 'default', 'center', 'top', 'bottom', 'left', 'right'
 	 * @param bool    		$force
+	 * @param int     		$quality compression quality 0-100 if image format is jpeg
 	 * @example
 	 * ```twig
 	 * <img src="{{ image.src | resize(300, 200, 'top') }}" />
@@ -57,7 +58,7 @@ class ImageHelper {
 	 * ```
 	 * @return string (ex: )
 	 */
-	public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
+	public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false, $quality = 60 ) {
 		if ( !is_numeric($w) && is_string($w) ) {
 			if ( $sizes = self::find_wp_dimensions($w) ) {
 				$w = $sizes['w'];
@@ -66,7 +67,7 @@ class ImageHelper {
 				return $src;
 			}
 		}
-		$op = new Image\Operation\Resize($w, $h, $crop);
+		$op = new Image\Operation\Resize($w, $h, $crop, $quality);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -584,9 +585,9 @@ class ImageHelper {
 		return $new_path;
 	}
 
-	public static function get_resize_file_url( $url, $w, $h, $crop ) {
+	public static function get_resize_file_url( $url, $w, $h, $crop, $quality = 60 ) {
 		$au = self::analyze_url($url);
-		$op = new Image\Operation\Resize($w, $h, $crop);
+		$op = new Image\Operation\Resize($w, $h, $crop, $quality);
 		$new_url = self::_get_file_url(
 			$au['base'],
 			$au['subdir'],
@@ -596,9 +597,9 @@ class ImageHelper {
 		return $new_url;
 	}
 
-	public static function get_resize_file_path( $url, $w, $h, $crop ) {
+	public static function get_resize_file_path( $url, $w, $h, $crop, $quality = 60 ) {
 		$au = self::analyze_url($url);
-		$op = new Image\Operation\Resize($w, $h, $crop);
+		$op = new Image\Operation\Resize($w, $h, $crop, $quality);
 		$new_path = self::_get_file_path(
 			$au['base'],
 			$au['subdir'],
