@@ -421,6 +421,29 @@ class Helper {
 		return $return;
 	}
 
+	/**
+	 * Filters a list of objects, based on a set of key => value arguments.
+	 *
+	 * @since 1.5.3
+	 * @ticket #1594
+	 * @param array        $list to filter.
+	 * @param string|array $filter to search for.
+	 * @param string       $operator to use (AND, NOT, OR).
+	 * @return array
+	 */
+	public static function filter_array( $list, $args, $operator = 'AND' ) {
+		if ( ! is_array($args) ) {
+			$args = array( 'slug' => $args );
+		}
+
+		if ( ! is_array( $list ) && ! is_a( $list, 'Traversable' ) ) {
+			return array();
+		}
+
+		$util = new \WP_List_Util( $list );
+		return $util->filter( $args, $operator );
+	}
+
 	/* Links, Forms, Etc. Utilities
 	======================== */
 
