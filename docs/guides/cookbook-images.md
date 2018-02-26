@@ -7,7 +7,7 @@ menu:
 
 Timber makes it damn easy to use an image in a tag.
 
-Automatically, Timber will interpret images attached to a post’s thumbnail field ("Featured Image" in the admin) and treat them as instances of [Timber\Image](/reference/timber-image/). Then, in your Twig templates, you can access them via `{{ post.thumbnail }}`. 
+Automatically, Timber will interpret images attached to a post’s thumbnail field ("Featured Image" in the admin) and treat them as instances of [Timber\Image](/reference/timber-image/). Then, in your Twig templates, you can access them via `{{ post.thumbnail }}`.
 
 ## Basic image stuff
 
@@ -78,15 +78,6 @@ You can use Timber to generate @2x image sizes for retina devices. For example, 
     {{ post.thumbnail.src|retina(2) }} 2x,
     {{ post.thumbnail.src|retina(3) }} 3x,
     {{ post.thumbnail.src|retina(4) }} 4x">
-```
-
-This can be used in conjunction with other filters, so for example:
-
-```twig
-<img src="{{ post.thumbnail.src|resize(400, 300) }}" srcset="{{ post.thumbnail.src|resize(400, 300)|retina(1) }} 1x,
-    {{ post.thumbnail.src|resize(400, 300)|retina(2) }}  2x,
-    {{ post.thumbnail.src|resize(400, 300)|retina(3) }}  3x,
-    {{ post.thumbnail.src|resize(400, 300)|retina(4) }}  4x">
 ```
 
 ## Using images in custom fields
