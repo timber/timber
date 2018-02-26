@@ -191,6 +191,8 @@ class Resize extends ImageOperation {
 							$crop['target_w'],
 							$crop['target_h']
 			);
+			$quality = apply_filters( 'wp_editor_set_quality', 82, 'image/jpeg');
+			$image->set_quality($quality);
 			$result = $image->save($save_filename);
 			if ( is_wp_error($result) ) {
 				// @codeCoverageIgnoreStart
