@@ -99,28 +99,28 @@ class Twig {
 		$twig->addFunction( new Twig_Function(
 			'TimberPost',
 			function( $pid, $PostClass = 'Timber\Post' ) {
-				Helper::deprecated( '{{ TimberPost() }}', 'Post', '2.0.0' );
+				Helper::deprecated( '{{ TimberPost() }}', '{{ Post() }}', '2.0.0' );
 			}
 		) );
 
 		$twig->addFunction( new Twig_Function(
 			'TimberImage',
 			function( $pid = false, $ImageClass = 'Timber\Image' ) {
-				Helper::deprecated( '{{ TimberImage() }}', 'Image', '2.0.0' );
+				Helper::deprecated( '{{ TimberImage() }}', '{{ Image() }}', '2.0.0' );
 			}
 		) );
 
 		$twig->addFunction( new Twig_Function(
 			'TimberTerm',
 			function( $tid, $taxonomy = '', $TermClass = 'Timber\Term' ) {
-				Helper::deprecated( '{{ TimberTerm() }}', 'Term', '2.0.0' );
+				Helper::deprecated( '{{ TimberTerm() }}', '{{ Term() }}', '2.0.0' );
 			}
 		) );
 
 		$twig->addFunction( new Twig_Function(
 			'TimberUser',
 			function( $pid, $UserClass = 'Timber\User' ) {
-				Helper::deprecated( '{{ TimberUser() }}', 'User', '2.0.0' );
+				Helper::deprecated( '{{ TimberUser() }}', '{{ User() }}', '2.0.0' );
 			}
 		) );
 
