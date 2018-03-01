@@ -54,39 +54,10 @@ class Twig {
 
 		$twig->addFunction(new Twig_Function('shortcode', 'do_shortcode'));
 
-		/* TimberObjects */
-		$twig->addFunction(new Twig_Function('TimberPost', function( $pid, $PostClass = 'Timber\Post' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $PostClass($p);
-						}
-						return $pid;
-					}
-					return new $PostClass($pid);
-				} ));
-		$twig->addFunction(new Twig_Function('TimberImage', function( $pid = false, $ImageClass = 'Timber\Image' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $ImageClass($p);
-						}
-						return $pid;
-					}
-					return new $ImageClass($pid);
-				} ));
+		/**
+		 * Timber object functions.
+		 */
 
-		$twig->addFunction(new Twig_Function('TimberTerm', array($this, 'handle_term_object')));
-
-		$twig->addFunction(new Twig_Function('TimberUser', function( $pid, $UserClass = 'Timber\User' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $UserClass($p);
-						}
-						return $pid;
-					}
-					return new $UserClass($pid);
-				} ));
-
-		/* TimberObjects Alias */
 		$twig->addFunction(new Twig_Function('Post', function( $pid, $PostClass = 'Timber\Post' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
@@ -120,6 +91,38 @@ class Twig {
 					}
 					return new $UserClass($pid);
 				} ));
+
+		/**
+		 * Deprecated Timber object functions.
+		 */
+
+		$twig->addFunction( new Twig_Function(
+			'TimberPost',
+			function( $pid, $PostClass = 'Timber\Post' ) {
+				Helper::deprecated( '{{ TimberPost() }}', 'Post', '2.0.0' );
+			}
+		) );
+
+		$twig->addFunction( new Twig_Function(
+			'TimberImage',
+			function( $pid = false, $ImageClass = 'Timber\Image' ) {
+				Helper::deprecated( '{{ TimberImage() }}', 'Image', '2.0.0' );
+			}
+		) );
+
+		$twig->addFunction( new Twig_Function(
+			'TimberTerm',
+			function( $tid, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+				Helper::deprecated( '{{ TimberTerm() }}', 'Term', '2.0.0' );
+			}
+		) );
+
+		$twig->addFunction( new Twig_Function(
+			'TimberUser',
+			function( $pid, $UserClass = 'Timber\User' ) {
+				Helper::deprecated( '{{ TimberUser() }}', 'User', '2.0.0' );
+			}
+		) );
 
 		/* bloginfo and translate */
 		$twig->addFunction(new Twig_Function('bloginfo', function( $show = '', $filter = 'raw' ) {
