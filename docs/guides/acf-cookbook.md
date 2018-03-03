@@ -14,7 +14,7 @@ While data saved by ACF is available via `{{post.my_acf_field}}` you will often 
 ```twig
 <h3>{{post.title}}</h3>
 <div class="intro-text">
-     {{post.get_field('my_wysiwyg_field')}}
+     {{post.meta('my_wysiwyg_field')}}
 </div>
 ```
 
@@ -27,7 +27,7 @@ You can retrieve an image from a custom field, then use it in a Twig template. T
 ### The quick way (for most situations)
 
 ```twig
-<img src="{{TimberImage(post.get_field('hero_image')).src}}" />
+<img src="{{TimberImage(post.meta('hero_image')).src}}" />
 ```
 
 ### The long way (for some special situations)
@@ -59,7 +59,7 @@ You can now use all the above functions to transform your custom images in the s
 ## Gallery field
 
 ```twig
-{% for image in post.get_field('gallery') %}
+{% for image in post.meta('gallery') %}
     <img src="{{ TimberImage(image) }}" />
 {% endfor %}
 ```
