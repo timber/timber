@@ -139,7 +139,7 @@ class Term extends Core implements CoreInterface {
 			$this->import($term);
 		}
 		if ( isset($term->term_id) ) {
-			$this->custom = $this->get_term_meta($term->term_id);
+			$this->custom = $this->get_meta_values($term->term_id);
 		}
 	}
 
@@ -148,7 +148,7 @@ class Term extends Core implements CoreInterface {
 	 * @param int $tid
 	 * @return array
 	 */
-	protected function get_term_meta( $tid ) {
+	protected function get_meta_values( $tid ) {
 		$customs = array();
 
 		/**
@@ -158,13 +158,13 @@ class Term extends Core implements CoreInterface {
 		 *
 		 * @todo Add example
 		 *
-		 * @since 0.21.9
+		 * @since 2.0.0
 		 *
 		 * @param array        $customs Custom term meta data.
 		 * @param int          $term_id Term ID.
 		 * @param \Timber\Term $term    Term object.
 		 */
-		$customs = apply_filters('timber/term/meta', $customs, $tid, $this);
+		$customs = apply_filters('timber/term/get_meta_values', $customs, $tid, $this);
 
 		/**
 		 * Filters term meta data.
@@ -175,7 +175,7 @@ class Term extends Core implements CoreInterface {
 			'timber_term_get_meta',
 			array( $customs, $tid, $this ),
 			'2.0.0',
-			'timber/term/meta'
+			'timber/term/get_meta_values'
 		);
 
 		return $customs;
@@ -248,15 +248,23 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @internal
-	 * @deprecated 2.0.0, use `{{ term.meta("my_field") }}` instead.
-	 * @param string $field_name
-	 * @return string
+	 * Gets a term meta value.
+	 *
+	 * @api
+	 * @deprecated 2.0.0, use `{{ term.meta('field_name') }}` instead.
+	 *
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return string The meta field value.
 	 */
 	public function get_meta_field( $field_name ) {
+		Helper::deprecated(
+			"{{ term.get_meta_field('field_name') }}",
+			"{{ term.meta('field_name') }}",
+			'2.0.0'
+		);
+
 		return $this->meta($field_name);
 	}
-
 
 	/**
 	 * @api
@@ -338,10 +346,11 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Retrieves and outputs meta information stored with a term. This will use
-	 * both data stored under (old) ACF hacks and new (WP 4.6+) where term meta
-	 * has its own table. If retrieving a special ACF field (repeater, etc.) you
-	 * can use the output immediately in Twig — no further processing is
+	 * Gets a term meta value.
+	 *
+	 * Returns meta information stored with a term. This will use both data stored under (old) ACF
+	 * hacks and new (WP 4.6+) where term meta has its own table. If retrieving a special ACF field
+	 * (repeater, etc.) you can use the output immediately in Twig — no further processing is
 	 * required.
 	 *
 	 * @api
@@ -353,14 +362,13 @@ class Term extends Core implements CoreInterface {
 	 * </div>
 	 * ```
 	 *
-	 * @param string $field_name
-	 * @return string
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return mixed The meta field value.
 	 */
 	public function meta( $field_name ) {
 		if ( !isset($this->$field_name) ) {
 			$field_value = get_term_meta($this->ID, $field_name, true);
 			if ( !$field_value ) {
-
 				/**
 				 * Filters the value for a term meta field.
 				 *
@@ -376,18 +384,36 @@ class Term extends Core implements CoreInterface {
 				 * @param string       $field_name  The name of the meta field to get the value for.
 				 * @param \Timber\Term $term        The term object.
 				 */
-				$field_value = apply_filters('timber/term/meta/field', $field_value, $this->ID, $field_name, $this);
+				$field_value = apply_filters(
+					'timber/term/meta',
+					$field_value,
+					$this->ID,
+					$field_name,
+					$this
+				);
 
 				/**
 				 * Filters the value for a term meta field.
 				 *
-				 * @deprecated 2.0.0, use `timber/term/meta/field`
+				 * @deprecated 2.0.0, use `timber/term/meta`
+				 */
+				$field_value = apply_filters_deprecated(
+					'timber/term/meta/field',
+					array( $field_value, $this->ID, $field_name, $this ),
+					'2.0.0',
+					'timber/term/meta'
+				);
+
+				/**
+				 * Filters the value for a term meta field.
+				 *
+				 * @deprecated 2.0.0, use `timber/term/meta`
 				 */
 				$field_value = apply_filters_deprecated(
 					'timber_term_get_meta_field',
 					array( $field_value, $this->ID, $field_name, $this ),
 					'2.0.0',
-					'timber/term/meta/field'
+					'timber/term/meta'
 				);
 			}
 			$this->$field_name = $field_value;
@@ -565,7 +591,7 @@ class Term extends Core implements CoreInterface {
 		 *
 		 * This filter is used by the ACF Integration.
 		 *
-		 * @deprecated 2.0.0 with no replacement
+		 * @deprecated 2.0.0, with no replacement
 		 */
 		$value = apply_filters_deprecated(
 			'timber/term/meta/set',
