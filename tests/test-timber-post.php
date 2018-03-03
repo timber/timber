@@ -32,7 +32,7 @@
 			$iid = wp_insert_attachment( $attachment, $filename, $post_id );
 			update_post_meta($post_id, 'landmark', $iid);
 			$post = new Timber\Post($post_id);
-			$image = $post->get_field('landmark');
+			$image = $post->meta('landmark');
 			$image = new Timber\Image($image);
 			$this->assertEquals('The Arch', $image->title());
 		}
