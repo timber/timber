@@ -133,6 +133,3 @@ class PostCollection extends \ArrayObject {
 		return $posts;
 	}
 }
-
-class_alias('Timber\PostCollection', 'Timber\PostsCollection');
-class_alias('Timber\PostCollection', 'TimberPostsCollection');
