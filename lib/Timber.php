@@ -59,7 +59,6 @@ class Timber {
 		}
 		if ( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
 			$this->test_compatibility();
-			$this->backwards_compatibility();
 			$this->init_constants();
 			self::init();
 		}
@@ -81,28 +80,6 @@ class Timber {
 		}
 	}
 
-	/**
-	 * @codeCoverageIgnore
-	 */
-	private function backwards_compatibility() {
-		if ( class_exists('TimberArchives') ) {
-			//already run, so bail
-			return;
-		}
-		$names = array('Archives', 'Comment', 'Core', 'FunctionWrapper', 'Helper', 'Image', 'ImageHelper', 'Integrations', 'Loader', 'Menu', 'MenuItem', 'Post', 'PostGetter', 'PostCollection', 'QueryIterator', 'Request', 'Site', 'Term', 'TermGetter', 'Theme', 'Twig', 'URLHelper', 'User', 'Integrations\Command', 'Integrations\ACF');
-		foreach ( $names as $name ) {
-			$old_class_name = 'Timber'.str_replace('Integrations\\', '', $name);
-			$new_class_name = 'Timber\\'.$name;
-			if ( class_exists($new_class_name) ) {
-				class_alias($new_class_name, $old_class_name);
-			}
-		}
-		class_alias(get_class($this), 'Timber');
-		if ( class_exists('Timber\\'.'Integrations\Timber_WP_CLI_Command') ) {
-			class_alias('Timber\\'.'Integrations\Timber_WP_CLI_Command', 'Timber_WP_CLI_Command');
-		}
-	}
-
 	public function init_constants() {
 		defined("TIMBER_LOC") or define("TIMBER_LOC", realpath(dirname(__DIR__)));
 	}
@@ -116,6 +93,15 @@ class Timber {
 			ImageHelper::init();
 			Admin::init();
 			new Integrations();
+
+			/**
+			 * Make an alias for the Timber class.
+			 *
+			 * This way, developers can use Timber::render() instead of Timber\Timber::render, which
+			 * is more user-friendly.
+			 */
+			class_alias( 'Timber\Timber', 'Timber' );
+
 			define('TIMBER_LOADED', true);
 		}
 	}

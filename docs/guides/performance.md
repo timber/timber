@@ -18,7 +18,7 @@ You can still use plugins like [W3 Total Cache](https://wordpress.org/plugins/w3
 
 ## Cache the Entire Twig File and Data
 
-When rendering, use the `$expires` argument in [`Timber::render`](https://timber.github.io/docs/reference/timber/#render). For example:
+When rendering, use the `$expires` argument in [`Timber::render`](/reference/timber/#render). For example:
 
 ```php
 <?php
@@ -33,7 +33,7 @@ This method is very effective, but crude - the whole template is cached. So if y
 
 ### Set cache mode
 
-As a fourth parameter for [Timber::render()](https://timber.github.io/docs/reference/timber/#render), you can set the `$cache_mode`.
+As a fourth parameter for [Timber::render()](/reference/timber/#render), you can set the `$cache_mode`.
 
 ```php
 <?php

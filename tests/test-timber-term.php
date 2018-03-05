@@ -12,7 +12,7 @@
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zong post_tag', $string);
 
-			$template = '{% set zp_term = TimberTerm('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
+			$template = '{% set zp_term = Term('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zebra', $string);
 		}
@@ -27,7 +27,7 @@
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zong arts', $string);
 
-			$template = '{% set zp_term = TimberTerm('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
+			$template = '{% set zp_term = Term('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zebra', $string);
 		}
@@ -38,7 +38,7 @@
 			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
 			$term = new Timber\Term($term_id, 'arts');
 			$this->assertEquals('Zong', $term->name());
-			$template = '{% set zp_term = TimberTerm("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
+			$template = '{% set zp_term = Term("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zong', $string);
 		}
