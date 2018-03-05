@@ -545,4 +545,5 @@ class Helper {
 		$util = new \WP_List_Util( $list );
 		return $util->filter( $args, $operator );
 	}
+  
 }

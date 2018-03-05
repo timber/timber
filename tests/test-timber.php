@@ -266,6 +266,24 @@ class TestTimberMainClass extends Timber_UnitTestCase {
     	$this->assertEquals('I am single course', $str);
     }
 
+    /**
+	 * @ticket 1660
+	 */
+	function testDoubleInstantiationOfSubclass() {
+		$post_id = $this->factory->post->create( array( 'post_type' => 'person' ) );
+		$post = Timber::get_post($post_id, 'Person');
+		$this->assertEquals('Person', get_class($post));
+	}
+
+	/**
+	 * @ticket 1660
+	 */
+	function testDoubleInstantiationOfTimberPostClass() {
+		$post_id = $this->factory->post->create( array( 'post_type' => 'post' ) );
+		$post = Timber::get_post($post_id);
+		$this->assertEquals('Timber\Post', get_class($post));
+	}
+
 }
 
 function arrays_are_similar($a, $b) {

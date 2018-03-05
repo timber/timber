@@ -205,7 +205,7 @@ class URLHelper {
 	 */
 	public static function file_system_to_url( $fs ) {
 		$relative_path = self::get_rel_path($fs);
-		$home          = home_url('/' . $relative_path);
+		$home          = site_url('/' . $relative_path);
 
 		/**
 		 * Filters the home URL …
