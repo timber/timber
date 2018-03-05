@@ -411,6 +411,15 @@
 			//$this->assertEquals($post->the_field_name_flat, 'the-value');
 		}*/
 
+		/**
+		 * This tests was created to catch what happens when you
+		 * do weird things to {{ post.meta }}, like with a custom field
+		 * actually named "meta"
+		 * This seems like an edge case that's best to let error-out so it can be resovled
+		 * instead of creating unexpected behavior
+		 * 
+		 * @expectedException Twig_Error_Runtime
+		 */
 		function testPostMetaMetaException(){
 			$post_id = $this->factory->post->create();
 			$post = new Timber\Post($post_id);
