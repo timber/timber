@@ -160,7 +160,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		$arch = TestTimberImage::copyTestImage('arch.jpg');
 		$resized = Timber\ImageHelper::resize($arch, 500, 500, 'default', true);
 		$resized = str_replace('http://example.org', '', $resized);
-		$resized = TimberUrlHelper::url_to_file_system( $resized );
+		$resized = Timber\URLHelper::url_to_file_system( $resized );
 
 		$fileSizeDefault = filesize($resized);
 		$this->assertGreaterThan(20000, $fileSizeDefault);
@@ -175,7 +175,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		$arch = TestTimberImage::copyTestImage('arch.jpg');
 		$resized = Timber\ImageHelper::resize($arch, 500, 500, 'default', true);
 		$resized = str_replace('http://example.org', '', $resized);
-		$resized = TimberUrlHelper::url_to_file_system( $resized );
+		$resized = Timber\URLHelper::url_to_file_system( $resized );
 
 		$fileSizeBig = filesize($resized);
 		$this->assertGreaterThan(43136, $fileSizeBig);
@@ -189,7 +189,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		$arch = TestTimberImage::copyTestImage('arch.jpg');
 		$resized = Timber\ImageHelper::resize($arch, 500, 500, 'default', true);
 		$resized = str_replace('http://example.org', '', $resized);
-		$resized = TimberUrlHelper::url_to_file_system( $resized );
+		$resized = Timber\URLHelper::url_to_file_system( $resized );
 
 		$fileSizeSmall = filesize($resized);
 		$this->assertLessThan(43136, $fileSizeSmall);

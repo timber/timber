@@ -80,16 +80,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 /* ----------------
  * Tests
  ---------------- */
-
- 	function testInitFromID() {
-		$pid = $this->factory->post->create();
-		$filename = self::copyTestImage( 'arch.jpg' );
-		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
-		$iid = wp_insert_attachment( $attachment, $filename, $pid );
-		$image = new TimberImage( $iid );
-		$this->assertEquals( 1500, $image->width() );
-	}
-
 	function testWithOutputBuffer() {
 		ob_start();
 		$post = $this->get_post_with_image();
