@@ -7,7 +7,7 @@ menu:
 
 Timber makes it damn easy to use an image in a tag.
 
-Automatically, Timber will interpret images attached to a post’s thumbnail field ("Featured Image" in the admin) and treat them as instances of [Timber\Image](/reference/timber-image/). Then, in your Twig templates, you can access them via `{{ post.thumbnail }}`. 
+Automatically, Timber will interpret images attached to a post’s thumbnail field ("Featured Image" in the admin) and treat them as instances of [Timber\Image](https://timber.github.io/docs/reference/timber-image/). Then, in your Twig templates, you can access them via `{{ post.thumbnail }}`. 
 
 ## Basic image stuff
 
