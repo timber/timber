@@ -761,7 +761,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$photo = $this->copyTestImage();
 		$photo = Timber\URLHelper::get_rel_path($photo);
 		update_post_meta($pid, 'custom_photo', '/'.$photo);
-		$str = '{{TimberImage(post.custom_photo).width}}';
+		$str = '{{ Image(post.custom_photo).width }}';
 		$post = new Timber\Post($pid);
 		$rendered = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals( 1500, $rendered );
@@ -947,7 +947,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$image = $post->thumbnail();
 		$post = get_post($post->ID);
 
-		$str = '{{ TimberImage(post).src }}';
+		$str = '{{ Image(post).src }}';
 		$result = Timber::compile_string( $str, array('post' => $post) );
 
 		$this->assertEquals($image->src(), $result);
@@ -956,7 +956,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testTimberImageFromTimberImage() {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
-		$str = '{{ TimberImage(post).src }}';
+		$str = '{{ Image(post).src }}';
 		$post = new Timber\Image($image);
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($image->src(), $result);
@@ -965,7 +965,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testTimberImageFromTimberImageID() {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
-		$str = '{{ TimberImage(post).src }}';
+		$str = '{{ Image(post).src }}';
 		$post = new Timber\Image($image->ID);
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($image->src(), $result);
@@ -975,7 +975,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
 		$post = $image->ID;
-		$str = '{{ TimberImage(post).src }}';
+		$str = '{{ Image(post).src }}';
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($image->src(), $result);
 	}
@@ -984,7 +984,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$iid = self::get_image_attachment();
 		$image = new Timber\Image($iid);
 		$post = get_post($iid);
-		$str = '{{ TimberImage(post).src }}';
+		$str = '{{ Image(post).src }}';
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($image->src(), $result);
 	}
@@ -993,7 +993,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testTimberImageFromDocument() {
 		$pid = $this->factory->post->create();
 		$iid = self::get_image_attachment($pid, 'dummy-pdf.pdf');
-		$str = '{{ TimberImage(post).src }}';
+		$str = '{{ Image(post).src }}';
 		$attachment = new Timber\Image($iid);
 		$result = Timber::compile_string( $str, array('post' => $iid) );
 		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/dummy-pdf.pdf', $result);
