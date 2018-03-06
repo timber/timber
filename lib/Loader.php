@@ -93,14 +93,14 @@ class Loader {
 	 * @return string|bool             Name of chosen template, otherwise false.
 	 */
 	public function choose_template( $templates ) {
-		// Change $templates into array, if needed 
+		// Change $templates into array, if needed
 		if ( !is_array($templates) ) {
 			$templates = (array) $templates;
 		}
-		
+
 		// Get Twig loader
 		$loader = $this->get_loader();
-		
+
 		// Run through template array
 		foreach ( $templates as $template ) {
 			// Use the Twig loader to test for existance
@@ -253,7 +253,8 @@ class Loader {
 
 		$key_generator   = new \Timber\Cache\KeyGenerator();
 		$cache_provider  = new \Timber\Cache\WPObjectCacheAdapter($this);
-		$cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator);
+		$cache_lifetime  = apply_filters('timber/cache/extension/lifetime', 0);
+		$cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator, $cache_lifetime);
 		$cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
 
 		return $cache_extension;
