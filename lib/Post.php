@@ -768,7 +768,7 @@ class Post extends Core implements CoreInterface {
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return mixed The meta field value.
 	 */
-	public function meta( $field_name ) {
+	public function meta( $field_name = null ) {
 		/**
 		 * Filters the value for a post meta field before it is fetched from the database.
 		 *
