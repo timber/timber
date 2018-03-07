@@ -63,11 +63,12 @@ class Menu extends Core {
 	/**
 	 * Initialize a menu.
 	 *
-	 * @param int|string $slug A menu slug, the term ID of the menu, the full name from the admin
-	 *                         menu, the slug of theregistered location or nothing. Passing nothing
-	 *                         is good if you only have one menu. Timber will grab what it finds.
+	 * @param int|string $slug    A menu slug, the term ID of the menu, the full name from the admin
+	 *                            menu, the slug of theregistered location or nothing. Passing nothing
+	 *                            is good if you only have one menu. Timber will grab what it finds.
+	 * @param array      $options An array of options, right now only `depth` is supported
 	 */
-	public function __construct( $slug = 0, $options = array()) {
+	public function __construct( $slug = 0, $options = array() ) {
 		$menu_id = false;
 		$locations = get_nav_menu_locations();
 
