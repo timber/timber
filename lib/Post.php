@@ -768,7 +768,7 @@ class Post extends Core implements CoreInterface {
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return mixed The meta field value.
 	 */
-	public function meta( $field_name = null ) {
+	public function meta( $field_name ) {
 		/**
 		 * Filters the value for a post meta field before it is fetched from the database.
 		 *
@@ -783,6 +783,14 @@ class Post extends Core implements CoreInterface {
 		 * @param \Timber\Post $post       The post object.
 		 */
 		$value = apply_filters( 'timber/post/pre_meta', null, $this->ID, $field_name, $this );
+
+		if ( null === $field_name ) {
+			Helper::warn('You have not set what meta field you want to retrive this can cause strange behavior and is not recommended');
+		}
+
+		if ( "meta" === $field_name ) {
+			Helper::warn('You are trying to retrive a meta field named "meta" this can cause strange behavior and is not recommended');
+		}
 
 		/**
 		 * Filters the value for a post meta field before it is fetched from the database.
