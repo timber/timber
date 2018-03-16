@@ -194,7 +194,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		self::_createTestMenu();
 
 		// With no options set.
-		$menu = new TimberMenu();
+		$menu = new Timber\Menu();
 		$this->assertInternalType("int", $menu->depth);
 		$this->assertEquals( -1, $menu->depth );
 		$this->assertInternalType("array", $menu->raw_options);
@@ -203,7 +203,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$arguments = array(
 			'depth' => 1,
 		);
-		$menu = new TimberMenu(self::MENU_NAME, $arguments);
+		$menu = new Timber\Menu(self::MENU_NAME, $arguments);
 		$this->assertInternalType("int", $menu->depth);
 		$this->assertEquals( 1, $menu->depth );
 		$this->assertInternalType("array", $menu->raw_options);
@@ -213,7 +213,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$arguments = array(
 			'depth' => 'boogie',
 		);
-		$menu = new TimberMenu(self::MENU_NAME, $arguments);
+		$menu = new Timber\Menu(self::MENU_NAME, $arguments);
 		$this->assertInternalType("int", $menu->depth);
 		$this->assertEquals( 0, $menu->depth );
 	}
@@ -223,7 +223,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$arguments = array(
 			'depth' => 1,
 		);
-		$menu = new TimberMenu(self::MENU_NAME, $arguments);
+		$menu = new Timber\Menu(self::MENU_NAME, $arguments);
 
 		// Confirm that none of them have "children" set.
 		$items = $menu->get_items();
@@ -235,7 +235,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$arguments = array(
 			'depth' => 2,
 		);
-		$menu = new TimberMenu(self::MENU_NAME, $arguments);
+		$menu = new Timber\Menu(self::MENU_NAME, $arguments);
 		foreach ($items as $item) {
 			if ($item->children) {
 				foreach ($item->children as $child) {
