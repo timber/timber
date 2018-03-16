@@ -2,6 +2,9 @@
 
 class TestTimberMenu extends Timber_UnitTestCase {
 
+	const MENU_NAME = 'Menu One';
+	const MENU_SLUG = 'nav_menu';
+
 	function testBlankMenu() {
 		self::setPermalinkStructure();
 		self::_createTestMenu();
@@ -187,6 +190,61 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		//$this->assertEquals('/', $item->path() );
 	}
 
+	function testMenuOptions () {
+		self::_createTestMenu();
+
+		// With no options set.
+		$menu = new TimberMenu();
+		$this->assertInternalType("int", $menu->depth);
+		$this->assertEquals( -1, $menu->depth );
+		$this->assertInternalType("array", $menu->raw_options);
+
+		// With Valid options set.
+		$arguments = array(
+			'depth' => 1,
+		);
+		$menu = new TimberMenu(self::MENU_NAME, $arguments);
+		$this->assertInternalType("int", $menu->depth);
+		$this->assertEquals( 1, $menu->depth );
+		$this->assertInternalType("array", $menu->raw_options);
+		$this->assertEquals( $arguments, $menu->raw_options );
+
+		// With invalid option set.
+		$arguments = array(
+			'depth' => 'boogie',
+		);
+		$menu = new TimberMenu(self::MENU_NAME, $arguments);
+		$this->assertInternalType("int", $menu->depth);
+		$this->assertEquals( 0, $menu->depth );
+	}
+
+	function testMenuOptions_Depth() {
+		self::_createTestMenu();
+		$arguments = array(
+			'depth' => 1,
+		);
+		$menu = new TimberMenu(self::MENU_NAME, $arguments);
+
+		// Confirm that none of them have "children" set.
+		$items = $menu->get_items();
+		foreach ($items as $item) {
+			$this->assertEquals(null, $item->children);
+		}
+
+		// Confirm two levels deep
+		$arguments = array(
+			'depth' => 2,
+		);
+		$menu = new TimberMenu(self::MENU_NAME, $arguments);
+		foreach ($items as $item) {
+			if ($item->children) {
+				foreach ($item->children as $child) {
+					$this->assertEquals(null, $child->children);
+				}
+			}
+		}
+	}
+
 	public static function buildMenu($name, $items) {
 		$menu_term = wp_insert_term( $name, 'nav_menu' );
 		$menu_items = array();
@@ -250,7 +308,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	public static function _createTestMenu() {
-		$menu_term = wp_insert_term( 'Menu One', 'nav_menu' );
+		$menu_term = wp_insert_term( self::MENU_NAME, self::MENU_SLUG );
 		$menu_id = $menu_term['term_id'];
 		$menu_items = array();
 		$parent_page = wp_insert_post(

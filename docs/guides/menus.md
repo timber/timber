@@ -43,6 +43,17 @@ Or pass nothing. This is good if you have only one menu. In that case Timber wil
 $menu = new Timber\Menu();
 ```
 
+## Options
+
+Optionally, you can send additional options to `Timber\Menu`. Current only `depth` is supported (see https://developer.wordpress.org/reference/functions/wp_nav_menu/ for reference)
+
+```php
+$args = array(
+	'depth' => 2,
+);
+$menu = new Timber\Menu( 'primary', $args );
+```
+
 ## Setting up a menu globally
 
 The first thing to do is to initialize your menu using `Timber\Menu`. This will make the menu available as an object to work with in the context. Because we need the menu on every page, we can add it to the global context through the `timber/context` filter:
