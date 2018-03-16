@@ -467,7 +467,7 @@ class Post extends Core implements CoreInterface {
 	 * @param integer $pid a post ID number
 	 */
 	public function import_custom( $pid ) {
-		$customs = $this->get_post_custom($pid);
+		$customs = $this->get_meta_values($pid);
 		$this->import($customs);
 	}
 
@@ -475,10 +475,12 @@ class Post extends Core implements CoreInterface {
 	 * Used internally to fetch the metadata fields (wp_postmeta table)
 	 * and attach them to our Timber\Post object
 	 * @internal
+	 *
 	 * @param int $pid
+	 *
 	 * @return array
 	 */
-	protected function get_post_custom( $pid ) {
+	protected function get_meta_values( $pid ) {
 		$customs = array();
 
 		/**
@@ -492,18 +494,18 @@ class Post extends Core implements CoreInterface {
 		 * @param int          $pid     The post ID.
 		 * @param \Timber\Post $post    The post object.
 		 */
-		$customs = apply_filters( 'timber/post/pre_get_meta', $customs, $pid, $this );
+		$customs = apply_filters( 'timber/post/pre_get_meta_values', $customs, $pid, $this );
 
 		/**
 		 * Fires before post meta data is imported into the object.
 		 *
-		 * @deprecated 2.0.0, use `timber/post/pre_get_meta`
+		 * @deprecated 2.0.0, use `timber/post/pre_get_meta_values`
 		 */
 		do_action_deprecated(
 			'timber_post_get_meta_pre',
 			array( $customs, $pid, $this ),
 			'2.0.0',
-			'timber/post/pre_get_meta'
+			'timber/post/pre_get_meta_values'
 		);
 
 		if ( !is_array($customs) || empty($customs) ) {
@@ -530,18 +532,18 @@ class Post extends Core implements CoreInterface {
 		 * @param int          $pid     The post ID.
 		 * @param \Timber\Post $post    The post object.
 		 */
-		$customs = apply_filters( 'timber/post/get_meta', $customs, $pid, $this );
+		$customs = apply_filters( 'timber/post/get_meta_values', $customs, $pid, $this );
 
 		/**
 		 * Filters post meta data.
 		 *
-		 * @deprecated 2.0.0, use `timber/post/get_meta`
+		 * @deprecated 2.0.0, use `timber/post/get_meta_values`
 		 */
 		$customs = apply_filters_deprecated(
 			'timber_post_get_meta',
 			array( $customs, $pid, $this ),
 			'2.0.0',
-			'timber/post/get_meta'
+			'timber/post/get_meta_values'
 		);
 
 		return $customs;
@@ -578,7 +580,7 @@ class Post extends Core implements CoreInterface {
 		$post->status = $post->post_status;
 		$post->id = $post->ID;
 		$post->slug = $post->post_name;
-		$customs = $this->get_post_custom($post->ID);
+		$customs = $this->get_meta_values($post->ID);
 		$post->custom = $customs;
 		//$post = (object) array_merge((array) $customs, (array) $post);
 		return $post;
@@ -722,7 +724,7 @@ class Post extends Core implements CoreInterface {
 	 * @return boolean
 	 */
 	public function has_field( $field_name ) {
-		return (!$this->get_field($field_name)) ? false : true;
+		return (!$this->meta($field_name)) ? false : true;
 	}
 
 	/**
@@ -757,11 +759,16 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Gets a post meta value.
+	 *
+	 * Returns a meta value for a post that’s saved in the post meta database table.
+	 *
 	 * @api
-	 * @param string $field_name
-	 * @return mixed
+	 *
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return mixed The meta field value.
 	 */
-	public function get_field( $field_name ) {
+	public function meta( $field_name = null ) {
 		/**
 		 * Filters the value for a post meta field before it is fetched from the database.
 		 *
@@ -775,18 +782,18 @@ class Post extends Core implements CoreInterface {
 		 * @param string       $field_name The name of the meta field to get the value for.
 		 * @param \Timber\Post $post       The post object.
 		 */
-		$value = apply_filters( 'timber/post/pre_get_meta_field', null, $this->ID, $field_name, $this );
+		$value = apply_filters( 'timber/post/pre_meta', null, $this->ID, $field_name, $this );
 
 		/**
 		 * Filters the value for a post meta field before it is fetched from the database.
 		 *
-		 * @deprecated 2.0.0, use `timber/post/pre_get_meta_field`
+		 * @deprecated 2.0.0, use `timber/post/pre_meta`
 		 */
 		$value = apply_filters_deprecated(
 			'timber_post_get_meta_field_pre',
 			array( $value, $this->ID, $field_name, $this ),
 			'2.0.0',
-			'timber/post/pre_get_meta_field'
+			'timber/post/pre_meta'
 		);
 
 		if ( $value === null ) {
@@ -814,18 +821,18 @@ class Post extends Core implements CoreInterface {
 		 * @param string       $field_name The name of the meta field to get the value for.
 		 * @param \Timber\Post $post       The post object.
 		 */
-		$value = apply_filters( 'timber/post/get_meta_field', $value, $this->ID, $field_name, $this );
+		$value = apply_filters( 'timber/post/meta', $value, $this->ID, $field_name, $this );
 
 		/**
 		 * Filters the value for a post meta field.
 		 *
-		 * @deprecated 2.0.0, use `timber/post/get_meta_field`
+		 * @deprecated 2.0.0, use `timber/post/meta`
 		 */
 		$value = apply_filters_deprecated(
 			'timber_post_get_meta_field',
 			array( $value, $this->ID, $field_name, $this ),
 			'2.0.0',
-			'timber/post/get_meta_field'
+			'timber/post/meta'
 		);
 
 		$value = $this->convert($value, __CLASS__);
@@ -840,7 +847,7 @@ class Post extends Core implements CoreInterface {
 	 * @param string $field_name
 	 */
 	public function import_field( $field_name ) {
-		$this->$field_name = $this->get_field($field_name);
+		$this->$field_name = $this->meta($field_name);
 	}
 
 	/**
@@ -1322,16 +1329,27 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Gets a post meta value.
+	 *
 	 * @api
-	 * @param string $field_name
-	 * @return mixed
+	 * @deprecated 2.0.0, use `{{ post.meta('field_name') }}` instead.
+	 *
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return mixed The meta field value.
 	 */
-	public function meta( $field_name = null ) {
+	public function get_field( $field_name = null ) {
+		Helper::deprecated(
+			"{{ post.get_field('field_name') }}",
+			"{{ post.meta('field_name' }}",
+			'2.0.0'
+		);
+
 		if ( $field_name === null ) {
 			//on the off-chance the field is actually named meta
 			$field_name = 'meta';
 		}
-		return $this->get_field($field_name);
+
+		return $this->meta( $field_name );
 	}
 
 	/**

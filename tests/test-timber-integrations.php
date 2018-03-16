@@ -16,7 +16,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testACFGetFieldPost() {
 		$pid = $this->factory->post->create();
 		update_field( 'subhead', 'foobar', $pid );
-		$str = '{{post.get_field("subhead")}}';
+		$str = '{{post.meta("subhead")}}';
 		$post = new Timber\Post( $pid );
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
 		$this->assertEquals( 'foobar', $str );
@@ -67,7 +67,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		$tid = $this->factory->term->create();
 		update_field( 'color', 'blue', 'post_tag_'.$tid );
 		$term = new Timber\Term( $tid );
-		$str = '{{term.get_field("color")}}';
+		$str = '{{term.meta("color")}}';
 		$this->assertEquals( 'blue', Timber::compile_string( $str, array( 'term' => $term ) ) );
 	}
 

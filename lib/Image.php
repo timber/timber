@@ -188,7 +188,7 @@ class Image extends Post implements CoreInterface {
 	/**
 	 * @return array
 	 */
-	protected function get_post_custom( $iid ) {
+	protected function get_meta_values( $iid ) {
 		$pc = get_post_custom($iid);
 		if ( is_bool($pc) ) {
 			return array();
@@ -207,7 +207,7 @@ class Image extends Post implements CoreInterface {
 			if ( ! is_array($image_info) ) {
 				$image_info = array();
 			}
-			$image_custom = self::get_post_custom($iid);
+			$image_custom = self::get_meta_values($iid);
 			$basic        = get_post($iid);
 			if ( $basic ) {
 				if ( isset($basic->post_excerpt) ) {
@@ -325,7 +325,7 @@ class Image extends Post implements CoreInterface {
 			$this->ID = $iid;
 		}
 		if ( isset($this->ID) ) {
-			$custom = self::get_post_custom($this->ID);
+			$custom = self::get_meta_values($this->ID);
 			foreach ( $custom as $key => $value ) {
 				$this->$key = $value[0];
 			}
