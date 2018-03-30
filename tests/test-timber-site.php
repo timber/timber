@@ -57,10 +57,19 @@ class TestTimberSite extends Timber_UnitTestCase {
 		$this->assertEquals( 'bar', $site->foo );
 	}
 
+	/**
+	 * @expectedDeprecated {{ site.meta() }}
+	 */
 	function testSiteMeta() {
 		$ts = new Timber\Site();
 		update_option('foo', 'magoo');
 		$this->assertEquals('magoo', $ts->meta('foo'));
+	}
+
+	function testSiteOption() {
+		$ts = new Timber\Site();
+		update_option('date_format', 'j. F Y');
+		$this->assertEquals('j. F Y', $ts->option('date_format'));
 	}
 
 	function setUp() {
