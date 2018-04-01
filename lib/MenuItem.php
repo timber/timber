@@ -264,6 +264,27 @@ class MenuItem extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Checks whether the «Open in new tab» option checked in the menu item options.
+	 *
+	 * @example
+	 * ```twig
+	 * <a href="{{ item.link }}" {{ item.is_target_blank ? 'target="_blank"' }}>
+	 * ```
+	 *
+	 * In combination with `is_external()`
+	 *
+	 * ```twig
+	 * <a href="{{ item.link }}" {{ item.is_target_blank or item.is_external ? 'target="_blank"' }}>
+	 * ```
+	 *
+	 * @return bool Whether the menu item has the «Open in new tab» option checked in the menu item
+	 *              options.
+	 */
+	public function is_target_blank() {
+		return '_blank' === $this->meta( '_menu_item_target' );
+	}
+
+	/**
 	 * Get the type of the menu item.
 	 *
 	 * Depending on what is the menu item links to. Can be `post_type` for posts, pages and custom
