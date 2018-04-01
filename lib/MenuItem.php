@@ -290,7 +290,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * <a class="icon-{{ item.meta('icon') }}" href="{{ item.link }}">{{ item.title }}</a>
 	 * ```
 	 * @param string $key The meta key to get the value for.
-	 * @return mixed Whatever value is stored in the database.
+	 * @return mixed Whatever value is stored in the database. Null if no value could be found.
 	 */
 	public function meta( $key ) {
 		if ( is_object($this->menu_object) && method_exists($this->menu_object, 'meta') ) {
@@ -299,6 +299,8 @@ class MenuItem extends Core implements CoreInterface {
 		if ( isset($this->$key) ) {
 			return $this->$key;
 		}
+
+		return null;
 	}
 
 	/* Aliases */
