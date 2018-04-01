@@ -254,6 +254,19 @@ class MenuItem extends Core implements CoreInterface {
 	 * ```twig
 	 * <a href="{{ item.link }}" target="{{ item.is_external ? '_blank' : '_self' }}">
 	 * ```
+	 *
+	 * Or when you only want to add a target attribute if it is really needed:
+	 *
+	 * ```twig
+	 * <a href="{{ item.link }}" {{ item.is_external ? 'target="_blank"' }}">
+	 * ```
+	 *
+	 * In combination with `is_target_blank()`:
+	 *
+	 * ```twig
+	 * <a href="{{ item.link }}" {{ item.is_external or item.is_target_blank ? 'target="_blank"' }}">
+	 * ```
+	 *
 	 * @return bool Whether the link is external or not.
 	 */
 	public function is_external() {
