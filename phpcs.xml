@@ -52,6 +52,20 @@
     </rule>
 
     <!--
+    Line length
+
+    Lines should be 100 chars long at max (triggers warning),
+    and should in no case exceed 120 characters (triggers error).
+    -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="100"/>
+            <property name="absoluteLineLimit" value="120"/>
+        </properties>
+    </rule>
+
+
+    <!--
         Hook Names
 
         While the WordPress Coding Standards state that hook names should be separated by
