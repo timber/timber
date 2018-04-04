@@ -229,18 +229,57 @@ class Site extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @param string  $field
-	 * @return mixed
+	 * Get the value for a site option.
+	 *
+	 * @api
+	 * @example
+	 * ```twig
+	 * Published on: {{ post.date|date(site.date_format) }}
+	 * ```
+	 *
+	 * @param string $option The name of the option to get the value for.
+	 *
+	 * @return mixed The option value.
 	 */
-	public function __get( $field ) {
-		if ( !isset($this->$field) ) {
+	public function __get( $option ) {
+		if ( ! isset( $this->$option ) ) {
 			if ( is_multisite() ) {
-				$this->$field = get_blog_option($this->ID, $field);
+				$this->$option = get_blog_option( $this->ID, $option );
 			} else {
-				$this->$field = get_option($field);
+				$this->$option = get_option( $option );
 			}
 		}
-		return $this->$field;
+
+		return $this->$option;
+	}
+
+	/**
+	 * Get the value for a site option.
+	 *
+	 * @api
+	 * @example
+	 * ```twig
+	 * Published on: {{ post.date|date(site.option('date_format')) }}
+	 * ```
+	 *
+	 * @param string $option The name of the option to get the value for.
+	 *
+	 * @return mixed The option value.
+	 */
+	public function option( $option ) {
+		return $this->__get( $option );
+	}
+
+	/**
+	 * Get the value for a site option.
+	 *
+	 * @api
+	 * @deprecated 2.0.0, use `{{ site.option }}` instead
+	 */
+	public function meta( $option ) {
+		Helper::deprecated( '{{ site.meta() }}', '{{ site.option() }}', '2.0.0' );
+
+		return $this->__get( $option );
 	}
 
 	/**
@@ -288,14 +327,6 @@ class Site extends Core implements CoreInterface {
 	 */
 	public function link() {
 		return $this->url;
-	}
-
-
-	/**
-	 * @internal
-	 */
-	public function meta( $field ) {
-		return $this->__get($field);
 	}
 
 	/**
