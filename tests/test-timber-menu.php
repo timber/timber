@@ -156,6 +156,24 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://upstatement.com', $item->link() );
 	}
 
+	function testMenuItemIsTargetBlank() {
+		self::_createTestMenu();
+		$menu = new Timber\Menu();
+		$items = $menu->get_items();
+
+		// Menu item without _menu_item_target set
+		$item = $items[0];
+		$this->assertFalse( $item->is_target_blank() );
+
+		// Menu item with _menu_item_target set to '_blank'
+		$item = $items[1];
+		$this->assertTrue( $item->is_target_blank() );
+
+		// Menu item with _menu_item_target set to ''
+		$item = $items[2];
+		$this->assertFalse( $item->is_target_blank() );
+	}
+
 	function testMenuMeta() {
 		self::_createTestMenu();
 		$menu = new Timber\Menu();
@@ -346,6 +364,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $link_id, '_menu_item_url', 'http://upstatement.com' );
 		update_post_meta( $link_id, '_menu_item_xfn', '' );
 		update_post_meta( $link_id, '_menu_item_menu_item_parent', 0 );
+		update_post_meta( $link_id, '_menu_item_target', '_blank' );
 
 		/* make a child page */
 		$child_id = wp_insert_post( array(
@@ -365,6 +384,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $child_menu_item, '_menu_item_object_id', $child_id );
 		update_post_meta( $child_menu_item, '_menu_item_object', 'page' );
 		update_post_meta( $child_menu_item, '_menu_item_url', '' );
+		update_post_meta( $child_menu_item, '_menu_item_target', '' );
+
 		$post = new Timber\Post( $child_menu_item );
 		$menu_items[] = $child_menu_item;
 

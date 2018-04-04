@@ -254,6 +254,19 @@ class MenuItem extends Core implements CoreInterface {
 	 * ```twig
 	 * <a href="{{ item.link }}" target="{{ item.is_external ? '_blank' : '_self' }}">
 	 * ```
+	 *
+	 * Or when you only want to add a target attribute if it is really needed:
+	 *
+	 * ```twig
+	 * <a href="{{ item.link }}" {{ item.is_external ? 'target="_blank"' }}">
+	 * ```
+	 *
+	 * In combination with `is_target_blank()`:
+	 *
+	 * ```twig
+	 * <a href="{{ item.link }}" {{ item.is_external or item.is_target_blank ? 'target="_blank"' }}">
+	 * ```
+	 *
 	 * @return bool Whether the link is external or not.
 	 */
 	public function is_external() {
@@ -261,6 +274,27 @@ class MenuItem extends Core implements CoreInterface {
 			return false;
 		}
 		return URLHelper::is_external($this->url);
+	}
+
+	/**
+	 * Checks whether the «Open in new tab» option checked in the menu item options.
+	 *
+	 * @example
+	 * ```twig
+	 * <a href="{{ item.link }}" {{ item.is_target_blank ? 'target="_blank"' }}>
+	 * ```
+	 *
+	 * In combination with `is_external()`
+	 *
+	 * ```twig
+	 * <a href="{{ item.link }}" {{ item.is_target_blank or item.is_external ? 'target="_blank"' }}>
+	 * ```
+	 *
+	 * @return bool Whether the menu item has the «Open in new tab» option checked in the menu item
+	 *              options.
+	 */
+	public function is_target_blank() {
+		return '_blank' === $this->meta( '_menu_item_target' );
 	}
 
 	/**
@@ -290,7 +324,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * <a class="icon-{{ item.meta('icon') }}" href="{{ item.link }}">{{ item.title }}</a>
 	 * ```
 	 * @param string $key The meta key to get the value for.
-	 * @return mixed Whatever value is stored in the database.
+	 * @return mixed Whatever value is stored in the database. Null if no value could be found.
 	 */
 	public function meta( $key ) {
 		if ( is_object($this->menu_object) && method_exists($this->menu_object, 'meta') ) {
@@ -299,6 +333,8 @@ class MenuItem extends Core implements CoreInterface {
 		if ( isset($this->$key) ) {
 			return $this->$key;
 		}
+
+		return null;
 	}
 
 	/* Aliases */
