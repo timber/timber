@@ -51,6 +51,10 @@ class Retina extends ImageOperation {
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
 	public function run( $load_filename, $save_filename ) {
+		// attempt to check if SVG
+		if ( ImageHelper::is_svg( $load_filename ) ) {
+			return false;
+		}
 		$image = wp_get_image_editor($load_filename);
 		if ( !is_wp_error($image) ) {
 			$current_size = $image->get_size();
