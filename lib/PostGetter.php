@@ -138,11 +138,11 @@ class PostGetter {
 			Helper::error_log('Unexpeted value for PostClass: '.print_r($post_class, true));
 		}
 
-		if ( $post_class_use === '\Timber\Post' ) {
+		if ( $post_class_use === '\Timber\Post' || $post_class_use === 'Timber\Post') {
 			return $post_class_use;
 		}
 
-		if ( !class_exists($post_class_use) || !is_a(new $post_class_use, '\Timber\Post') ) {
+		if ( !class_exists($post_class_use) || !is_subclass_of($post_class_use, '\Timber\Post') ) {
 			Helper::error_log('Class '.$post_class_use.' either does not exist or implement \Timber\Post');
 			return '\Timber\Post';
 		}
