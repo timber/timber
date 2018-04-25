@@ -10,6 +10,7 @@ class Integrations {
 
 	var $acf;
 	var $coauthors_plus;
+	public $woocommerce;
 
 	public function __construct() {
 		$this->init();
