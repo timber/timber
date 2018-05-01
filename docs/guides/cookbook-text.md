@@ -78,4 +78,4 @@ Twig template:
 <p class="entry-meta">{{ function('twentytwelve_entry_meta') }}</p>
 ```
 
-You can read more about using functions in the [Functions](/guides/functions/) guide.
+You can read more about using functions in the [Functions](https://timber.github.io/docs/guides/functions/) guide.
