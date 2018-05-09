@@ -252,11 +252,11 @@ class Post extends Core implements CoreInterface {
 			$pid = $pid_from_loop;
 		}
 		if (
-			isset($wp_query->queried_object_id)
-			&& ($wp_query->queried_object_id === $pid || (is_object($pid) && $wp_query->queried_object_id === $pid->ID))
-			&& isset($_GET['preview'])
+			isset($_GET['preview'])
 			&& isset($_GET['preview_nonce'])
 			&& wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id)
+			&& isset($wp_query->queried_object_id)
+			&& ($wp_query->queried_object_id === $pid || (is_object($pid) && $wp_query->queried_object_id === $pid->ID))
 		) {
 			$pid = $this->get_post_preview_id($wp_query);
 		}
