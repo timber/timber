@@ -216,6 +216,7 @@ class Post extends Core implements CoreInterface {
 	 * @return bool 
 	 */
 	protected static function is_previewing() {
+		global $wp_query;
 		if ( isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id) ) {
 			return true;
 		}
