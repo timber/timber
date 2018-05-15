@@ -376,7 +376,6 @@
 		function testCustomFieldPreviewNotRevision() {
 			global $current_user;
 			global $wp_query;
-
 			$original_content = 'The custom field content';
 
 			$post_id = $this->factory->post->create(array(
@@ -401,7 +400,6 @@
 
 			$wp_query->queried_object_id = $post_id;
 			$wp_query->queried_object = get_post($post_id);
-			$_GET['preview'] = false;
 			$post = new TimberPost($post_id);
 
 			$str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
