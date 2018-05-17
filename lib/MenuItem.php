@@ -298,6 +298,30 @@ class MenuItem extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Gets the target of a menu item according to the «Open in new tab» option in the menu item
+	 * options.
+	 *
+	 * This function return `_blank` when the option to open a menu item in a new tab is checked in
+	 * the WordPress backend, and `_self` if the option is not checked. Beware `_self` is the
+	 * default value for the target attribute, which means you could leave it out. You can use
+	 * `item.is_target_blank` if you want to use a conditional.
+	 *
+	 * @example
+	 * ```twig
+	 * <a href="{{ item.link }}" target="{{ item.target }}">
+	 * ```
+	 *
+	 * @return string
+	 */
+	public function target() {
+		if ( $this->is_target_blank() ) {
+			return '_blank';
+		}
+
+		return '_self';
+	}
+
+	/**
 	 * Get the type of the menu item.
 	 *
 	 * Depending on what is the menu item links to. Can be `post_type` for posts, pages and custom
