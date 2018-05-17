@@ -247,7 +247,8 @@ class MenuItem extends Core implements CoreInterface {
 	 * Checks to see if the menu item is an external link.
 	 *
 	 * If your site is `example.org`, then `google.com/whatever` is an external link. This is
-	 * helpful when you want to create rules for the target of a link.
+	 * helpful when you want to style external links differently or create rules for the target of a
+	 * link.
 	 *
 	 * @api
 	 * @example
