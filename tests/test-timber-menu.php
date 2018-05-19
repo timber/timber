@@ -644,10 +644,29 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
     // force a specific MenuItem to be the current one,
     // and put it on the Zazz Train to Zazzville
+    $menu->items[0]->current_item_ancestor = true;
     $menu->items[1]->current = true;
 
     $current = $menu->get_current_item();
     $this->assertEquals( '/zazzy', $current->link() );
+  }
+
+  function testGetCurrentItemWithAncestor() {
+    $items = array();
+    $items[] = (object) array('type' => 'link', 'link' => '/');
+    $items[] = (object) array('type' => 'link', 'link' => '/grandpa');
+    $items[] = (object) array('type' => 'link', 'link' => '/joe-shmoe');
+
+    $this->buildMenu('Ancestry.com Main Menu', $items);
+
+    $menu = new TimberMenu('Ancestry.com Main Menu');
+
+    // force a MenuItem of olde to be the current one,
+    // and listen reverently to its stories
+    $menu->items[1]->current_item_ancestor = true;
+
+    $current = $menu->get_current_item();
+    $this->assertEquals( '/grandpa', $current->link() );
   }
 
 }

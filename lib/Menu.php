@@ -324,14 +324,28 @@ class Menu extends Core {
    * corresponding to the current post.
    */
   public function get_current_item() {
+    if ( false === $this->current_item ) {
+      return null;
+    }
+
     if ( !isset( $this->current_item ) ) {
       foreach ( $this->items as $item ) {
         if ( $item->current ) {
           // cache this item for subsequent calls
           $this->current_item = $item;
+          // stop looking
           break;
+        } elseif ( $item->current_item_ancestor ) {
+          // we found an ancestor,
+          // but keep looking for a more precise match
+          $this->current_item = $item;
         }
       }
+    }
+
+    if ( !isset( $this->current_item ) ) {
+      // indicate that we know we won't find current_item here
+      $this->current_item = false;
     }
 
     return $this->current_item;
