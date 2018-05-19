@@ -320,11 +320,15 @@ class Menu extends Core {
 	 *   </ul>
 	 * </div>
 	 * ```
+	 * @param int $depth the maximum depth to traverse the menu tree to find the
+	 * current item. Defaults to -1, meaning no maximum. 1-based, meaning the
+	 * top level is 1.
 	 * @return MenuItem the current `Timber\MenuItem` object, i.e. the menu item
 	 * corresponding to the current post.
 	 */
-	public function get_current_item() {
+	public function get_current_item( $depth = -1 ) {
 		if ( false === $this->current_item ) {
+			// I TOLD YOU BEFORE.
 			return false;
 		}
 
@@ -334,7 +338,16 @@ class Menu extends Core {
 		}
 
 		if ( ! isset($this->current_item) ) {
-			$this->current_item = $this->traverse_items_for_current($this->items);
+			$current = $this->traverse_items_for_current(
+				$this->items,
+				$depth
+			);
+
+			if ( $depth < 1 ) {
+				$this->current_item = $current;
+			} else {
+				return $current;
+			}
 		}
 
 		return $this->current_item;
@@ -347,9 +360,10 @@ class Menu extends Core {
 	 * @internal
 	 * @param array $items the items to traverse.
 	 */
-	private function traverse_items_for_current( $items ) {
-		$current = false;
-		$i       = 0;
+	private function traverse_items_for_current( $items, $depth ) {
+		$current 			= false;
+		$currentDepth = 1;
+		$i       			= 0;
 
 		while ( isset($items[ $i ]) ) {
 			$item = $items[ $i ];
@@ -364,11 +378,17 @@ class Menu extends Core {
 				// but keep looking for a more precise match.
 				$current = $item;
 
+				if ( $currentDepth === $depth ) {
+					// we're at max traversal depth.
+					return $current;
+				}
+
 				// we're in the right subtree, so go deeper.
 				if ( $item->get_children() ) {
 					// reset the counter, since we're at a new level.
 					$items = $item->get_children();
 					$i     = 0;
+					$currentDepth++;
 					continue;
 				}
 			}

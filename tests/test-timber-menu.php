@@ -703,4 +703,49 @@ class TestTimberMenu extends Timber_UnitTestCase {
     $this->assertFalse($menu->get_current_item());
   }
 
+  function testGetCurrentItemWithDepth() {
+    self::_createTestMenu();
+    $menu = new TimberMenu();
+
+    // pick a grandchild to inherit the great responsibility of current affairs
+    $parent = $menu->items[0];
+    $parent->current_item_ancestor = true;
+
+    // although grandchild is current, we expect this one because of $depth
+    $child = $parent->children[0];
+    $child->current_item_ancestor = true;
+
+    // mark grandchild as current, so when we get child back,
+    // we can reason that the traversal was depth-limited
+    $grandchild = $child->children[1];
+    $grandchild->current = true;
+
+    $current = $menu->get_current_item(2);
+    $this->assertEquals( $child->link(), $current->link() );
+  }
+
+  function testGetCurrentItemSequence() {
+    // make sure we're not caching current_item too eagerly
+    // when calling get_current_item with $depth
+    self::_createTestMenu();
+    $menu = new TimberMenu();
+
+    // we'll expect parent first, but expect grandchild on subsequent calls
+    // with no arguments
+    $parent = $menu->items[0];
+    $parent->current_item_ancestor = true;
+
+    $child = $parent->children[0];
+    $child->current = true;
+
+    $this->assertEquals(
+      $parent->link(),
+      $menu->get_current_item(1)->link()
+    );
+    $this->assertEquals(
+      $child->link(),
+      $menu->get_current_item()->link()
+    );
+  }
+
 }
