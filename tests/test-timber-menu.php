@@ -632,4 +632,22 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( 3, count($menu->get_items()) );
 	}
 
+  function testGetCurrentItem() {
+    $items = array();
+    $items[] = (object) array('type' => 'link', 'link' => '/');
+    $items[] = (object) array('type' => 'link', 'link' => '/zazzy');
+    $items[] = (object) array('type' => 'link', 'link' => '/stuffy');
+
+    $this->buildMenu('The Zazziest Menu', $items);
+
+    $menu = new TimberMenu('The Zazziest Menu');
+
+    // force a specific MenuItem to be the current one,
+    // and put it on the Zazz Train to Zazzville
+    $menu->items[1]->current = true;
+
+    $current = $menu->get_current_item();
+    $this->assertEquals( '/zazzy', $current->link() );
+  }
+
 }

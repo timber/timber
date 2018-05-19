@@ -58,6 +58,11 @@ class Menu extends Core {
 	 */
 	public $title;
 
+  /**
+   * @var MenuItem the current menu item
+   */
+  private $current_item;
+
 
 
 	/**
@@ -293,4 +298,42 @@ class Menu extends Core {
 
 		return array();
 	}
+
+  /**
+   * Get the current MenuItem based on the WP context
+   *
+   * @see _wp_menu_item_classes_by_context()
+   * @example
+   * Say you want to render the sub-tree of the main menu that corresponds
+   * to the menu item for the current page, such as in a context-aware sidebar:
+   * ```twig
+   * <div class="sidebar">
+   *   <a href="{{ menu.get_current_item.link }}">
+   *     {{ menu.get_current_item.title }}
+   *   </a>
+   *   <ul>
+   *     {% for child in menu.get_current_item.get_children %}
+   *       <li>
+   *         <a href="{{ child.link }}">{{ child.title }}</a>
+   *       </li>
+   *     {% endfor %}
+   *   </ul>
+   * </div>
+   * ```
+   * @return MenuItem the current `Timber\MenuItem` object, i.e. the menu item
+   * corresponding to the current post.
+   */
+  public function get_current_item() {
+    if ( !isset( $this->current_item ) ) {
+      foreach ( $this->items as $item ) {
+        if ( $item->current ) {
+          // cache this item for subsequent calls
+          $this->current_item = $item;
+          break;
+        }
+      }
+    }
+
+    return $this->current_item;
+  }
 }
