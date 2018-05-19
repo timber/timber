@@ -334,40 +334,48 @@ class Menu extends Core {
 		}
 
 		if ( ! isset($this->current_item) ) {
-			$items = $this->items;
-			$i     = 0;
-
-			while ( isset($items[ $i ]) ) {
-				$item = $items[ $i ];
-
-				if ( $item->current ) {
-					// cache this item for subsequent calls.
-					$this->current_item = $item;
-					// stop looking.
-					break;
-				} elseif ( $item->current_item_ancestor ) {
-					// we found an ancestor,
-					// but keep looking for a more precise match.
-					$this->current_item = $item;
-
-					// we're in the right subtree, so go deeper.
-					if ( $item->get_children() ) {
-						// reset the counter, since we're at a new level.
-						$items = $item->get_children();
-						$i     = 0;
-						continue;
-					}
-				}
-
-				$i++;
-			}
-		}
-
-		if ( ! isset($this->current_item) ) {
-			// indicate that we know we won't find current_item here.
-			$this->current_item = false;
+			$this->current_item = $this->traverse_items_for_current($this->items);
 		}
 
 		return $this->current_item;
+	}
+
+
+	/**
+	 * Traverse an array of MenuItems in search of the current item.
+	 *
+	 * @internal
+	 * @param array $items the items to traverse.
+	 */
+	private function traverse_items_for_current( $items ) {
+		$current = false;
+		$i       = 0;
+
+		while ( isset($items[ $i ]) ) {
+			$item = $items[ $i ];
+
+			if ( $item->current ) {
+				// cache this item for subsequent calls.
+				$current = $item;
+				// stop looking.
+				break;
+			} elseif ( $item->current_item_ancestor ) {
+				// we found an ancestor,
+				// but keep looking for a more precise match.
+				$current = $item;
+
+				// we're in the right subtree, so go deeper.
+				if ( $item->get_children() ) {
+					// reset the counter, since we're at a new level.
+					$items = $item->get_children();
+					$i     = 0;
+					continue;
+				}
+			}
+
+			$i++;
+		}
+
+		return $current;
 	}
 }
