@@ -325,11 +325,11 @@ class Menu extends Core {
    */
   public function get_current_item() {
     if ( false === $this->current_item ) {
-      return null;
+      return false;
     }
 
     if ( empty( $this->items ) ) {
-      return null;
+      return $this->current_item = false;
     }
 
     if ( !isset( $this->current_item ) ) {

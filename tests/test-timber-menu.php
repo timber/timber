@@ -687,4 +687,20 @@ class TestTimberMenu extends Timber_UnitTestCase {
     $this->assertEquals( $grandchild->link(), $current->link() );
   }
 
+  function testGetCurrentItemAntiClimactic() {
+    self::_createTestMenu();
+    $menu = new TimberMenu();
+
+    // nothing marked as current
+    // womp womp
+    $this->assertFalse($menu->get_current_item());
+  }
+
+  function testGetCurrentItemWithEmptyMenu() {
+    $menu = new TimberMenu();
+
+    // ain't nothin there
+    $this->assertFalse($menu->get_current_item());
+  }
+
 }
