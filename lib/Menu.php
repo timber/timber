@@ -58,10 +58,10 @@ class Menu extends Core {
 	 */
 	public $title;
 
-  /**
-   * @var MenuItem the current menu item
-   */
-  private $current_item;
+	/**
+	 * @var MenuItem the current menu item
+	 */
+	private $current_item;
 
 
 
@@ -299,74 +299,75 @@ class Menu extends Core {
 		return array();
 	}
 
-  /**
-   * Get the current MenuItem based on the WP context
-   *
-   * @see _wp_menu_item_classes_by_context()
-   * @example
-   * Say you want to render the sub-tree of the main menu that corresponds
-   * to the menu item for the current page, such as in a context-aware sidebar:
-   * ```twig
-   * <div class="sidebar">
-   *   <a href="{{ menu.get_current_item.link }}">
-   *     {{ menu.get_current_item.title }}
-   *   </a>
-   *   <ul>
-   *     {% for child in menu.get_current_item.get_children %}
-   *       <li>
-   *         <a href="{{ child.link }}">{{ child.title }}</a>
-   *       </li>
-   *     {% endfor %}
-   *   </ul>
-   * </div>
-   * ```
-   * @return MenuItem the current `Timber\MenuItem` object, i.e. the menu item
-   * corresponding to the current post.
-   */
-  public function get_current_item() {
-    if ( false === $this->current_item ) {
-      return false;
-    }
+	/**
+	 * Get the current MenuItem based on the WP context
+	 *
+	 * @see _wp_menu_item_classes_by_context()
+	 * @example
+	 * Say you want to render the sub-tree of the main menu that corresponds
+	 * to the menu item for the current page, such as in a context-aware sidebar:
+	 * ```twig
+	 * <div class="sidebar">
+	 *   <a href="{{ menu.get_current_item.link }}">
+	 *     {{ menu.get_current_item.title }}
+	 *   </a>
+	 *   <ul>
+	 *     {% for child in menu.get_current_item.get_children %}
+	 *       <li>
+	 *         <a href="{{ child.link }}">{{ child.title }}</a>
+	 *       </li>
+	 *     {% endfor %}
+	 *   </ul>
+	 * </div>
+	 * ```
+	 * @return MenuItem the current `Timber\MenuItem` object, i.e. the menu item
+	 * corresponding to the current post.
+	 */
+	public function get_current_item() {
+		if ( false === $this->current_item ) {
+			return false;
+		}
 
-    if ( empty( $this->items ) ) {
-      return $this->current_item = false;
-    }
+		if ( empty($this->items) ) {
+			$this->current_item = false;
+			return $this->current_item;
+		}
 
-    if ( !isset( $this->current_item ) ) {
-      $items = $this->items;
-      $i = 0;
+		if ( ! isset($this->current_item) ) {
+			$items = $this->items;
+			$i     = 0;
 
-      while ( isset( $items[$i] ) ) {
-        $item = $items[$i];
+			while ( isset($items[ $i ]) ) {
+				$item = $items[ $i ];
 
-        if ( $item->current ) {
-          // cache this item for subsequent calls
-          $this->current_item = $item;
-          // stop looking
-          break;
-        } elseif ( $item->current_item_ancestor ) {
-          // we found an ancestor,
-          // but keep looking for a more precise match
-          $this->current_item = $item;
+				if ( $item->current ) {
+					// cache this item for subsequent calls.
+					$this->current_item = $item;
+					// stop looking.
+					break;
+				} elseif ( $item->current_item_ancestor ) {
+					// we found an ancestor,
+					// but keep looking for a more precise match.
+					$this->current_item = $item;
 
-          // we're in the right subtree, so go deeper
-          if ( $item->get_children() ) {
-            // reset the counter, since we're at a new level
-            $items = $item->get_children();
-            $i = 0;
-            continue;
-          }
-        }
+					// we're in the right subtree, so go deeper.
+					if ( $item->get_children() ) {
+						// reset the counter, since we're at a new level.
+						$items = $item->get_children();
+						$i     = 0;
+						continue;
+					}
+				}
 
-        $i++;
-      }
-    }
+				$i++;
+			}
+		}
 
-    if ( !isset( $this->current_item ) ) {
-      // indicate that we know we won't find current_item here
-      $this->current_item = false;
-    }
+		if ( ! isset($this->current_item) ) {
+			// indicate that we know we won't find current_item here.
+			$this->current_item = false;
+		}
 
-    return $this->current_item;
-  }
+		return $this->current_item;
+	}
 }
