@@ -669,4 +669,22 @@ class TestTimberMenu extends Timber_UnitTestCase {
     $this->assertEquals( '/grandpa', $current->link() );
   }
 
+  function testGetCurrentItemWithComplexAncestry() {
+    self::_createTestMenu();
+    $menu = new TimberMenu();
+
+    // pick a grandchild to inherit the great responsibility of current affairs
+    $parent = $menu->items[0];
+    $parent->current_item_ancestor = true;
+
+    $child = $parent->children[0];
+    $child->current_item_ancestor = true;
+
+    $grandchild = $child->children[1];
+    $grandchild->current = true;
+
+    $current = $menu->get_current_item();
+    $this->assertEquals( $grandchild->link(), $current->link() );
+  }
+
 }

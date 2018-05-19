@@ -348,6 +348,14 @@ class Menu extends Core {
           // we found an ancestor,
           // but keep looking for a more precise match
           $this->current_item = $item;
+
+          // we're in the right subtree, so go deeper
+          if ( $item->get_children() ) {
+            // reset the counter, since we're at a new level
+            $items = $item->get_children();
+            $i = 0;
+            continue;
+          }
         }
 
         $i++;
