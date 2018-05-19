@@ -353,6 +353,15 @@ class Menu extends Core {
 		return $this->current_item;
 	}
 
+	/**
+	 * Alias for get_current_top_level_item(1).
+	 *
+	 * @return MenuItem the current top-level `Timber\MenuItem` object.
+	 */
+	public function get_current_top_level_item() {
+		return $this->get_current_item( 1 );
+	}
+
 
 	/**
 	 * Traverse an array of MenuItems in search of the current item.

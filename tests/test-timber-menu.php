@@ -748,4 +748,20 @@ class TestTimberMenu extends Timber_UnitTestCase {
     );
   }
 
+  function testGetCurrentTopLevelItem() {
+    self::_createTestMenu();
+    $menu = new TimberMenu();
+
+    // we want this one
+    $parent = $menu->items[0];
+    $parent->current_item_ancestor = true;
+
+    // although grandchild is current, we expect this one because of $depth
+    $child = $parent->children[0];
+    $child->current = true;
+
+    $top = $menu->get_current_top_level_item();
+    $this->assertEquals( $parent->link(), $top->link() );
+  }
+
 }
