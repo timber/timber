@@ -328,8 +328,17 @@ class Menu extends Core {
       return null;
     }
 
+    if ( empty( $this->items ) ) {
+      return null;
+    }
+
     if ( !isset( $this->current_item ) ) {
-      foreach ( $this->items as $item ) {
+      $items = $this->items;
+      $i = 0;
+
+      while ( isset( $items[$i] ) ) {
+        $item = $items[$i];
+
         if ( $item->current ) {
           // cache this item for subsequent calls
           $this->current_item = $item;
@@ -340,6 +349,8 @@ class Menu extends Core {
           // but keep looking for a more precise match
           $this->current_item = $item;
         }
+
+        $i++;
       }
     }
 
