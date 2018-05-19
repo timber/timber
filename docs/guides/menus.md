@@ -136,6 +136,28 @@ Here’s an example to display child menu items only if it’s the menu item is 
 
 Other properties that are available are `current_item_parent` for direct parents of a menu item and `current_item_ancestor` for when you have deeper nesting.
 
+### Getting the current menu item outside the loop
+
+Say you want to display sibling menu items of the current page, for example in
+a sidebar. You can use the `get_current_item()` helper to achieve this:
+
+**Twig**
+
+```twig
+<div class="sidebar">
+  <a href="{{ menu.get_current_item.link }}">
+    {{ menu.get_current_item.title }}
+  </a>
+  <ul>
+    {% for child in menu.get_current_item.get_children %}
+      <li>
+        <a href="{{ child.link }}">{{ child.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+```
+
 ## Tips
 
 - [Add items dynamically](https://github.com/jarednova/timber/issues/200)
