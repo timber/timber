@@ -174,6 +174,24 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertFalse( $item->is_target_blank() );
 	}
 
+	function testMenuItemTarget() {
+		self::_createTestMenu();
+		$menu = new Timber\Menu();
+		$items = $menu->get_items();
+
+		// Menu item without _menu_item_target set
+		$item = $items[0];
+		$this->assertEquals( '_self', $item->target() );
+
+		// Menu item with _menu_item_target set to '_blank'
+		$item = $items[1];
+		$this->assertEquals( '_blank', $item->target() );
+
+		// Menu item with _menu_item_target set to ''
+		$item = $items[2];
+		$this->assertFalse( '_self', $item->target() );
+	}
+
 	function testMenuMeta() {
 		self::_createTestMenu();
 		$menu = new Timber\Menu();
