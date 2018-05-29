@@ -2,8 +2,8 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 4.7.9
-Tested up to: 4.9.1
-Stable tag: 1.7.0
+Tested up to: 4.9.6
+Stable tag: 1.7.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -36,13 +36,20 @@ _Twig is the template language powering Timber; if you need a little background 
 **Changes for Theme Developers**
 - Please add any usage changes here so theme developers are informed of changes.
 
+= 1.7.1 =
+**Fixes and improvements**
+- Fixes issues previewing custom fields with ACF #1712
+- Fixes some edge cases with Menu Item classes #1709
+- Improved efficiency of Post class instantiation #1660
+
+
 = 1.7.0 =
 **Fixes and improvements**
 - Fixed some issues with animated gif resizing when Imagick isn't available #1653
 - Fixed incorrect reporting of depth level in some comments #1648
 - Fixed issues with preview permissions #1607
 - Fixed issue with image resize in some WPML setups #1625
-- Fixes compatability issues with Twig 2.4 (and later) #1641
+- Fixes compatibility issues with Twig 2.4 (and later) #1641
 
 
 = 1.6.0 =

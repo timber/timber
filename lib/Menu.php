@@ -230,7 +230,7 @@ class Menu extends Core {
 					$old_menu_item = $item;
 					$item = new $this->PostClass($item);
 				}
-				$menu_item = new $this->MenuItemClass($item);
+				$menu_item = $this->create_menu_item($item);
 				if ( isset($old_menu_item) ) {
 					$menu_item->import_classes($old_menu_item);
 				}
@@ -245,6 +245,15 @@ class Menu extends Core {
 			}
 		}
 		return $menu;
+	}
+
+	/**
+	 * @internal
+	 * @param object $item the WP menu item object to wrap
+	 * @return mixed an instance of the user-configured $MenuItemClass
+	 */
+	protected function create_menu_item($item) {
+		return new $this->MenuItemClass($item);
 	}
 
 	/**

@@ -11,7 +11,7 @@ By default, Timber does *not* escape the output of standard tags (i.e. `{{ post.
 
 ```php
 if ( class_exists('Timber') ) {
-	Timber::$autoescape = true; 
+	Timber::$autoescape = true;
 }
 ```
 
@@ -56,7 +56,7 @@ Uses WordPress' internal `esc_url` function on text. This should be used to sani
 
 **Twig**
 
-`<a href="{{ post.get_field('custom_link')|e('esc_url'); }}"></a>`
+`<a href="{{ post.get_field('custom_link')|e('esc_url') }}"></a>`
 
 **Output**
 
@@ -91,4 +91,3 @@ Escapes text strings for echoing in JS. It is intended to be used for inline JS 
 **Output**
 
 `<script>var bar = 'Gabrielle';</script>`
-

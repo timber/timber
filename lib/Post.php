@@ -239,6 +239,19 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Determined whether or not an admin/editor is looking at the post in "preview mode" via the
+	 * WordPress admin
+	 * @internal
+	 * @return bool 
+	 */
+	protected static function is_previewing() {
+		global $wp_query;
+		if ( isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id) ) {
+			return true;
+		}
+	}
+
+	/**
 	 * tries to figure out what post you want to get if not explictly defined (or if it is, allows it to be passed through)
 	 * @internal
 	 * @param mixed a value to test against
@@ -253,7 +266,8 @@ class Post extends Core implements CoreInterface {
 			&& is_object($wp_query->queried_object)
 			&& get_class($wp_query->queried_object) == 'WP_Post'
 		) {
-			if ( isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id) ) {
+
+			if ( self::is_previewing() ) {
 				$pid = $this->get_post_preview_id($wp_query);
 			} else if ( !$pid ) {
 				$pid = $wp_query->queried_object_id;
@@ -279,6 +293,15 @@ class Post extends Core implements CoreInterface {
 		}
 		if ( $pid === null && ($pid_from_loop = PostGetter::loop_to_id()) ) {
 			$pid = $pid_from_loop;
+		}
+		if (
+			isset($_GET['preview'])
+			&& isset($_GET['preview_nonce'])
+			&& wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id)
+			&& isset($wp_query->queried_object_id)
+			&& ($wp_query->queried_object_id === $pid || (is_object($pid) && $wp_query->queried_object_id === $pid->ID))
+		) {
+			$pid = $this->get_post_preview_id($wp_query);
 		}
 		return $pid;
 	}
