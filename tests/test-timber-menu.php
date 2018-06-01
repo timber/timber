@@ -681,7 +681,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
     $this->buildMenu('The Zazziest Menu', $items);
 
-    $menu = new TimberMenu('The Zazziest Menu');
+    $menu = new Timber\Menu('The Zazziest Menu');
 
     // force a specific MenuItem to be the current one,
     // and put it on the Zazz Train to Zazzville
@@ -700,7 +700,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
     $this->buildMenu('Ancestry.com Main Menu', $items);
 
-    $menu = new TimberMenu('Ancestry.com Main Menu');
+    $menu = new Timber\Menu('Ancestry.com Main Menu');
 
     // force a MenuItem of olde to be the current one,
     // and listen reverently to its stories
@@ -712,7 +712,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
   function testGetCurrentItemWithComplexAncestry() {
     self::_createTestMenu();
-    $menu = new TimberMenu();
+    $menu = new Timber\Menu();
 
     // pick a grandchild to inherit the great responsibility of current affairs
     $parent = $menu->items[0];
