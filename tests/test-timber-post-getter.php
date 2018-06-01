@@ -1,7 +1,6 @@
 <?php
 
 class TestTimberPostGetter extends Timber_UnitTestCase {
-
 	/**
 	 * @group wp_query_hacks
 	 */
@@ -337,6 +336,20 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals(4, count($personPostsString));
 	}
 
+	/**
+	 * Make sure that the_post action is called when we loop over a collection of posts.
+	 */
+	function testThePostHook() {
+		add_action( 'the_post', function( $post ) {
+			$post->touched_the_post_action = true;
+		} );
+
+		$posts = new Timber\PostQuery( $this->factory->post->create_many( 3 ) );
+
+		foreach ( $posts as $post ) {
+			$this->assertEquals( true, $post->touched_the_post_action );
+		}
+	}
 }
 
 class MyState {

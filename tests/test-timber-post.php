@@ -402,7 +402,7 @@
 
 			$wp_query->queried_object_id = $post_id;
 			$wp_query->queried_object = get_post($post_id);
-			
+
 			$post = new \Timber\Post($post_id);
 
 			$str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
@@ -485,9 +485,9 @@
 		}*/
 
 		/**
-		 * This tests was created to catch what happens when you do weird things to {{ post.meta }}, 
+		 * This tests was created to catch what happens when you do weird things to {{ post.meta }},
 		 * like calling it when nothing's assigned and trying to output as a string.
-		 * 
+		 *
 		 * @expectedException Twig_Error_Runtime
 		 */
 		function testPostMetaMetaException(){
@@ -498,9 +498,9 @@
 		}
 
 		/**
-		 * This tests was created to catch what happens when you do weird things to {{ post.meta }}, 
+		 * This tests was created to catch what happens when you do weird things to {{ post.meta }},
 		 * like calling it when nothing's assigned and trying to output a default property as a string.
-		 * 
+		 *
 		 * @expectedException Twig_Error_Runtime
 		 */
 		function testPostMetaMetaArrayProperty(){
@@ -511,10 +511,10 @@
 		}
 
 		/**
-		 * This tests was created to catch what happens when you do weird things to {{ post.meta }}, 
-		 * like calling it when nothing's assigned and trying to output as a string. (Even when 
+		 * This tests was created to catch what happens when you do weird things to {{ post.meta }},
+		 * like calling it when nothing's assigned and trying to output as a string. (Even when
 		 * something's assigned)
-		 * 
+		 *
 		 * @expectedException Twig_Error_Runtime
 		 */
 		function testPostMetaMetaAssignedException() {
@@ -535,7 +535,7 @@
 			$this->assertEquals('My steak', trim($string));
 		}
 
-		
+
 
 		function testPostParent(){
 			$parent_id = $this->factory->post->create();
@@ -990,4 +990,22 @@
 			//
 		}
 
+		/**
+		 * Tests whether 'the_post' action is called when a post is fetched through the Post constructor.
+		 *
+		 * The 'the_post' action should only be called when a singular template file is called, and
+		 * only on the main post, but not when Timber creates post objects in a loop.
+		 *
+		 * @ticket 1639
+		 */
+		function testPostConstructorAndThePostHook() {
+			add_action( 'the_post', function( $post ) {
+				$post->touched_the_post_action = true;
+			} );
+
+			$post_id = $this->factory()->post->create();
+			$post = new Timber\Post( $post_id );
+
+			$this->assertEquals( false, $post->touched_the_post_action );
+		}
 	}
