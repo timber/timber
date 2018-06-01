@@ -36,12 +36,15 @@ _Twig is the template language powering Timber; if you need a little background 
 **Changes for Theme Developers**
 - Please add any usage changes here so theme developers are informed of changes.
 
+= 2.0.0 =
+**Fixes and improvements**
+- Added Menu::get_current_item() helper method #1704
+
 = 1.7.1 =
 **Fixes and improvements**
 - Fixes issues previewing custom fields with ACF #1712
 - Fixes some edge cases with Menu Item classes #1709
 - Improved efficiency of Post class instantiation #1660
-
 
 = 1.7.0 =
 **Fixes and improvements**

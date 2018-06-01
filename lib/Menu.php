@@ -63,6 +63,11 @@ class Menu extends Core {
 	 */
 	public $title;
 
+	/**
+	 * @var MenuItem the current menu item
+	 */
+	private $_current_item;
+
 
 
 	/**
@@ -299,5 +304,114 @@ class Menu extends Core {
 		}
 
 		return array();
+	}
+
+	/**
+	 * Get the current MenuItem based on the WP context
+	 *
+	 * @see _wp_menu_item_classes_by_context()
+	 * @example
+	 * Say you want to render the sub-tree of the main menu that corresponds
+	 * to the menu item for the current page, such as in a context-aware sidebar:
+	 * ```twig
+	 * <div class="sidebar">
+	 *   <a href="{{ menu.current_item.link }}">
+	 *     {{ menu.current_item.title }}
+	 *   </a>
+	 *   <ul>
+	 *     {% for child in menu.current_item.get_children %}
+	 *       <li>
+	 *         <a href="{{ child.link }}">{{ child.title }}</a>
+	 *       </li>
+	 *     {% endfor %}
+	 *   </ul>
+	 * </div>
+	 * ```
+	 * @param int $depth the maximum depth to traverse the menu tree to find the
+	 * current item. Defaults to null, meaning no maximum. 1-based, meaning the
+	 * top level is 1.
+	 * @return MenuItem the current `Timber\MenuItem` object, i.e. the menu item
+	 * corresponding to the current post.
+	 */
+	public function current_item( $depth = null ) {
+		if ( false === $this->_current_item ) {
+			// I TOLD YOU BEFORE.
+			return false;
+		}
+
+		if ( empty($this->items) ) {
+			$this->_current_item = false;
+			return $this->_current_item;
+		}
+
+		if ( ! isset($this->_current_item) ) {
+			$current = $this->traverse_items_for_current(
+				$this->items,
+				$depth
+			);
+
+			if ( is_null($depth) ) {
+				$this->_current_item = $current;
+			} else {
+				return $current;
+			}
+		}
+
+		return $this->_current_item;
+	}
+
+	/**
+	 * Alias for current_top_level_item(1).
+	 *
+	 * @return MenuItem the current top-level `Timber\MenuItem` object.
+	 */
+	public function current_top_level_item() {
+		return $this->current_item( 1 );
+	}
+
+
+	/**
+	 * Traverse an array of MenuItems in search of the current item.
+	 *
+	 * @internal
+	 * @param array $items the items to traverse.
+	 */
+	private function traverse_items_for_current( $items, $depth ) {
+		$current 			= false;
+		$currentDepth = 1;
+		$i       			= 0;
+
+		while ( isset($items[ $i ]) ) {
+			$item = $items[ $i ];
+
+			if ( $item->current ) {
+				// cache this item for subsequent calls.
+				$current = $item;
+				// stop looking.
+				break;
+			} elseif ( $item->current_item_ancestor ) {
+				// we found an ancestor,
+				// but keep looking for a more precise match.
+				$current = $item;
+
+				if ( $currentDepth === $depth ) {
+					// we're at max traversal depth.
+					return $current;
+				}
+
+				// we're in the right subtree, so go deeper.
+				if ( $item->get_children() ) {
+					// reset the counter, since we're at a new level.
+					$items = $item->get_children();
+					$i     = 0;
+					$currentDepth++;
+					continue;
+				}
+			}
+
+			$i++;
+		}
+
+		return $current;
 	}
 }

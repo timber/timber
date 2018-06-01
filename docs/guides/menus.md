@@ -137,6 +137,59 @@ Here’s an example to display child menu items only if it’s the menu item is 
 
 Other properties that are available are `current_item_parent` for direct parents of a menu item and `current_item_ancestor` for when you have deeper nesting.
 
+### Getting the current menu item outside the loop
+
+Say you want to display sibling menu items of the current page, for example in
+a sidebar. You can use the `get_current_item()` helper to achieve this:
+
+**Twig**
+
+```twig
+<div class="sidebar">
+  <a href="{{ menu.get_current_item.link }}">
+    {{ menu.get_current_item.title }}
+  </a>
+  <ul>
+    {% for child in menu.get_current_item.get_children %}
+      <li>
+        <a href="{{ child.link }}">{{ child.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+```
+
+### Getting a current menu ancestor
+
+You can limit the traversal depth of the tree when looking for the current
+item by passing a `$depth` parameter to `get_current_item`.
+Going off the previous example, say you wanted the root node of your sidebar
+to be the _second_ level of the main menu tree. In that case, you could
+specify a depth of 2:
+
+**Twig**
+
+```twig
+<div class="sidebar secondary-nav">
+  <a href="{{ menu.get_current_item(2).link }}">
+    {{ menu.get_current_item(2).title }}
+  </a>
+  <ul class="third-level-nav-items">
+    {% for child in menu.get_current_item(2).get_children %}
+      <li>
+        <a href="{{ child.link }}">{{ child.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+```
+
+### Getting the current top-level item
+
+For getting the top-level (that is, level-1) item corresponding to the
+current post, you can call `get_current_top_level_item()`. This method
+takes no arguments and is just an alias for `get_current_item(1)`.
+
 ## Menu item targets
 
 To get the target for a menu item, you can use `item.target`:

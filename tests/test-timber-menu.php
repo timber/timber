@@ -673,4 +673,136 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( 3, count($menu->get_items()) );
 	}
 
+  function testGetCurrentItem() {
+    $items = array();
+    $items[] = (object) array('type' => 'link', 'link' => '/');
+    $items[] = (object) array('type' => 'link', 'link' => '/zazzy');
+    $items[] = (object) array('type' => 'link', 'link' => '/stuffy');
+
+    $this->buildMenu('The Zazziest Menu', $items);
+
+    $menu = new Timber\Menu('The Zazziest Menu');
+
+    // force a specific MenuItem to be the current one,
+    // and put it on the Zazz Train to Zazzville
+    $menu->items[0]->current_item_ancestor = true;
+    $menu->items[1]->current = true;
+
+    $current = $menu->current_item();
+    $this->assertEquals( '/zazzy', $current->link() );
+  }
+
+  function testGetCurrentItemWithAncestor() {
+    $items = array();
+    $items[] = (object) array('type' => 'link', 'link' => '/');
+    $items[] = (object) array('type' => 'link', 'link' => '/grandpa');
+    $items[] = (object) array('type' => 'link', 'link' => '/joe-shmoe');
+
+    $this->buildMenu('Ancestry.com Main Menu', $items);
+
+    $menu = new Timber\Menu('Ancestry.com Main Menu');
+
+    // force a MenuItem of olde to be the current one,
+    // and listen reverently to its stories
+    $menu->items[1]->current_item_ancestor = true;
+
+    $current = $menu->current_item();
+    $this->assertEquals( '/grandpa', $current->link() );
+  }
+
+  function testGetCurrentItemWithComplexAncestry() {
+    self::_createTestMenu();
+    $menu = new Timber\Menu();
+
+    // pick a grandchild to inherit the great responsibility of current affairs
+    $parent = $menu->items[0];
+    $parent->current_item_ancestor = true;
+
+    $child = $parent->children[0];
+    $child->current_item_ancestor = true;
+
+    $grandchild = $child->children[1];
+    $grandchild->current = true;
+
+    $current = $menu->current_item();
+    $this->assertEquals( $grandchild->link(), $current->link() );
+  }
+
+  function testGetCurrentItemAntiClimactic() {
+    self::_createTestMenu();
+    $menu = new Timber\Menu();
+
+    // nothing marked as current
+    // womp womp
+    $this->assertFalse($menu->current_item());
+  }
+
+  function testGetCurrentItemWithEmptyMenu() {
+    $menu = new Timber\Menu();
+
+    // ain't nothin there
+    $this->assertFalse($menu->current_item());
+  }
+
+  function testGetCurrentItemWithDepth() {
+    self::_createTestMenu();
+    $menu = new Timber\Menu();
+
+    // pick a grandchild to inherit the great responsibility of current affairs
+    $parent = $menu->items[0];
+    $parent->current_item_ancestor = true;
+
+    // although grandchild is current, we expect this one because of $depth
+    $child = $parent->children[0];
+    $child->current_item_ancestor = true;
+
+    // mark grandchild as current, so when we get child back,
+    // we can reason that the traversal was depth-limited
+    $grandchild = $child->children[1];
+    $grandchild->current = true;
+
+    $current = $menu->current_item(2);
+    $this->assertEquals( $child->link(), $current->link() );
+  }
+
+  function testGetCurrentItemSequence() {
+    // make sure we're not caching current_item too eagerly
+    // when calling current_item with $depth
+    self::_createTestMenu();
+    $menu = new Timber\Menu();
+
+    // we'll expect parent first, but expect grandchild on subsequent calls
+    // with no arguments
+    $parent = $menu->items[0];
+    $parent->current_item_ancestor = true;
+
+    $child = $parent->children[0];
+    $child->current = true;
+
+    $this->assertEquals(
+      $parent->link(),
+      $menu->current_item(1)->link()
+    );
+    $this->assertEquals(
+      $child->link(),
+      $menu->current_item()->link()
+    );
+  }
+
+  function testGetCurrentTopLevelItem() {
+    self::_createTestMenu();
+    $menu = new Timber\Menu();
+
+    // we want this one
+    $parent = $menu->items[0];
+    $parent->current_item_ancestor = true;
+
+    // although grandchild is current, we expect this one because of $depth
+    $child = $parent->children[0];
+    $child->current = true;
+
+    $top = $menu->current_top_level_item();
+    $this->assertEquals( $parent->link(), $top->link() );
+  }
+
 }
