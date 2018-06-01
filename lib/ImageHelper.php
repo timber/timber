@@ -11,6 +11,8 @@ use Timber\Image\Operation\Letterbox;
 use Timber\URLHelper;
 
 /**
+ * Class ImageHelper
+ *
  * Implements the Twig image filters:
  * https://timber.github.io/docs/guides/cookbook-images/#arbitrary-resizing-of-images
  * - resize
@@ -22,6 +24,8 @@ use Timber\URLHelper;
  * - public static functions provide the methods that are called by the filter
  * - most of the work is common to all filters (URL analysis, directory gymnastics, file caching, error management) and done by private static functions
  * - the specific part (actual image processing) is delegated to dedicated subclasses of TimberImageOperation
+ *
+ * @api
  */
 class ImageHelper {
 
@@ -43,6 +47,7 @@ class ImageHelper {
 	 * New dimensions are achieved by cropping to maintain ratio.
 	 *
 	 * @api
+	 *
 	 * @param string  		$src an URL (absolute or relative) to the original image
 	 * @param int|string	$w target width(int) or WordPress image size (WP-set or user-defined).
 	 * @param int     		$h target height (ignored if $w is WP image size). If not set, will ignore and resize based on $w only.
@@ -71,7 +76,9 @@ class ImageHelper {
 	}
 
 	/**
-	 * Find the sizes of an image based on a defined image size
+	 * Find the sizes of an image based on a defined image size.
+	 *
+	 * @internal
 	 * @param  string $size the image size to search for
 	 *                      can be WordPress-defined ("medium")
 	 *                      or user-defined ("my-awesome-size")
@@ -82,12 +89,12 @@ class ImageHelper {
 	 */
 	private static function find_wp_dimensions( $size ) {
 		global $_wp_additional_image_sizes;
-		if ( isset($_wp_additional_image_sizes[$size]) ) {
-			$w = $_wp_additional_image_sizes[$size]['width'];
-			$h = $_wp_additional_image_sizes[$size]['height'];
-		} else if ( in_array($size, array('thumbnail', 'medium', 'large')) ) {
-			$w = get_option($size.'_size_w');
-			$h = get_option($size.'_size_h');
+		if ( isset($_wp_additional_image_sizes[ $size ]) ) {
+			$w = $_wp_additional_image_sizes[ $size ]['width'];
+			$h = $_wp_additional_image_sizes[ $size ]['height'];
+		} elseif ( in_array($size, array('thumbnail', 'medium', 'large')) ) {
+			$w = get_option($size . '_size_w');
+			$h = get_option($size . '_size_h');
 		}
 		if ( isset($w) && isset($h) && ($w || $h) ) {
 			return array('w' => $w, 'h' => $h);
@@ -98,9 +105,11 @@ class ImageHelper {
 	/**
 	 * Generates a new image with increased size, for display on Retina screens.
 	 *
-	 * @param string  $src
+	 * @api
+	 *
+	 * @param string  $src of the file to read from.
 	 * @param float   $multiplier
-	 * @param boolean $force
+	 * @param boolean $force require process to run even if the file exists.
 	 *
 	 * @return string url to the new image
 	 */
@@ -110,29 +119,31 @@ class ImageHelper {
 	}
 
 	/**
-	 * checks to see if the given file is an aimated gif
-	 * @param  string  $file local filepath to a file, not a URL
-	 * @return boolean true if it's an animated gif, false if not
+	 * Checks to see if the given file is an aimated gif
+	 *
+	 * @api
+	 *
+	 * @param string $file local filepath to a file, not a URL.
+	 * @return boolean true if it's an animated gif, false if not.
 	 */
 	public static function is_animated_gif( $file ) {
 		if ( strpos(strtolower($file), '.gif') === false ) {
 			//doesn't have .gif, bail
 			return false;
 		}
-		//its a gif so test
-		if ( !($fh = @fopen($file, 'rb')) ) {
+		// Its a gif so test
+		if ( ! ($fh = @fopen($file, 'rb')) ) {
 		  	return false;
 		}
 		$count = 0;
-		//an animated gif contains multiple "frames", with each frame having a
-		//header made up of:
-		// * a static 4-byte sequence (\x00\x21\xF9\x04)
-		// * 4 variable bytes
-		// * a static 2-byte sequence (\x00\x2C)
-
-		// We read through the file til we reach the end of the file, or we've found
-		// at least 2 frame headers
-		while ( !feof($fh) && $count < 2 ) {
+		// An animated gif contains multiple "frames", with each frame having a
+		// header made up of:
+		// * a static 4-byte sequence (\x00\x21\xF9\x04).
+		// * 4 variable bytes.
+		// * a static 2-byte sequence (\x00\x2C).
+		// We read through the file til we reach the end of the file, or we've found.
+		// at least 2 frame headers.
+		while ( ! feof($fh) && $count < 2 ) {
 			$chunk = fread($fh, 1024 * 100); //read 100kb at a time
 			$count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00[\x2C\x21]#s', $chunk, $matches);
 		}
@@ -144,6 +155,8 @@ class ImageHelper {
 	/**
 	 * Generate a new image with the specified dimensions.
 	 * New dimensions are achieved by adding colored bands to maintain ratio.
+	 *
+	 * @api
 	 *
 	 * @param string  $src
 	 * @param int     $w
@@ -159,6 +172,8 @@ class ImageHelper {
 
 	/**
 	 * Generates a new image by converting the source GIF or PNG into JPG
+	 *
+	 * @api
 	 *
 	 * @param string  $src   a url or path to the image (http://example.org/wp-content/uploads/2014/image.jpg) or (/wp-content/uploads/2014/image.jpg)
 	 * @param string  $bghex
@@ -436,7 +451,7 @@ class ImageHelper {
 		if ( !$absolute ) {
 			$url = str_replace(site_url(), '', $url);
 		}
-		// $url = TimberURLHelper::remove_double_slashes( $url);
+		// $url = Timber\URLHelper::remove_double_slashes( $url);
 		return $url;
 	}
 
@@ -534,8 +549,30 @@ class ImageHelper {
 			$au['basename']
 		);
 
+		/**
+		 * Filters the URL for the resized version of a `Timber\Image`.
+		 *
+		 * You’ll probably need to use this in combination with `timber/image/new_path`.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $new_url The URL to the resized version of an image.
+		 */
 		$new_url = apply_filters('timber/image/new_url', $new_url);
+
+		/**
+		 * Filters the destination path for the resized version of a `Timber\Image`.
+		 *
+		 * A possible use case for this would be to store all images generated by Timber in a
+		 * separate directory. You’ll probably need to use this in combination with
+		 * `timber/image/new_url`.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $destination_path Full path to the destination of a resized image.
+		 */
 		$destination_path = apply_filters('timber/image/new_path', $destination_path);
+
 		// if already exists...
 		if ( file_exists($source_path) && file_exists($destination_path) ) {
 			if ( $force || filemtime($source_path) > filemtime($destination_path) ) {
@@ -561,6 +598,9 @@ class ImageHelper {
 
 // -- the below methods are just used for unit testing the URL generation code
 //
+	/**
+	 * @internal
+	 */
 	public static function get_letterbox_file_url( $url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Letterbox($w, $h, $color);
@@ -573,6 +613,9 @@ class ImageHelper {
 		return $new_url;
 	}
 
+	/**
+	 * @internal
+	 */
 	public static function get_letterbox_file_path( $url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Letterbox($w, $h, $color);
@@ -584,6 +627,9 @@ class ImageHelper {
 		return $new_path;
 	}
 
+	/**
+	 * @internal
+	 */
 	public static function get_resize_file_url( $url, $w, $h, $crop ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Resize($w, $h, $crop);
@@ -596,6 +642,9 @@ class ImageHelper {
 		return $new_url;
 	}
 
+	/**
+	 * @internal
+	 */
 	public static function get_resize_file_path( $url, $w, $h, $crop ) {
 		$au = self::analyze_url($url);
 		$op = new Image\Operation\Resize($w, $h, $crop);

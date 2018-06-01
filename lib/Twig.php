@@ -10,7 +10,9 @@ use Timber\Term;
 use Timber\Image;
 use Timber\User;
 
-
+/**
+ * Class Twig
+ */
 class Twig {
 
 	public static $dir_name;
@@ -32,7 +34,11 @@ class Twig {
 	}
 
 	/**
+	 * Add Timber-specific functions to Twig.
 	 *
+	 * @param \Twig_Environment $twig
+	 *
+	 * @return \Twig_Environment
 	 */
 	public function add_timber_functions( $twig ) {
 		/* actions and filters */
@@ -48,39 +54,10 @@ class Twig {
 
 		$twig->addFunction(new Twig_Function('shortcode', 'do_shortcode'));
 
-		/* TimberObjects */
-		$twig->addFunction(new Twig_Function('TimberPost', function( $pid, $PostClass = 'Timber\Post' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $PostClass($p);
-						}
-						return $pid;
-					}
-					return new $PostClass($pid);
-				} ));
-		$twig->addFunction(new Twig_Function('TimberImage', function( $pid = false, $ImageClass = 'Timber\Image' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $ImageClass($p);
-						}
-						return $pid;
-					}
-					return new $ImageClass($pid);
-				} ));
+		/**
+		 * Timber object functions.
+		 */
 
-		$twig->addFunction(new Twig_Function('TimberTerm', array($this, 'handle_term_object')));
-
-		$twig->addFunction(new Twig_Function('TimberUser', function( $pid, $UserClass = 'Timber\User' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $UserClass($p);
-						}
-						return $pid;
-					}
-					return new $UserClass($pid);
-				} ));
-
-		/* TimberObjects Alias */
 		$twig->addFunction(new Twig_Function('Post', function( $pid, $PostClass = 'Timber\Post' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
@@ -90,6 +67,11 @@ class Twig {
 					}
 					return new $PostClass($pid);
 				} ));
+
+		$twig->addFunction( new Twig_Function( 'PostQuery', function( $args = false, $post_class = '\Timber\Post' ) {
+			return new PostQuery( $args, $post_class );
+		} ) );
+
 		$twig->addFunction(new Twig_Function('Image', function( $pid, $ImageClass = 'Timber\Image' ) {
 					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
 						foreach ( $pid as &$p ) {
@@ -109,6 +91,38 @@ class Twig {
 					}
 					return new $UserClass($pid);
 				} ));
+
+		/**
+		 * Deprecated Timber object functions.
+		 */
+
+		$twig->addFunction( new Twig_Function(
+			'TimberPost',
+			function( $pid, $PostClass = 'Timber\Post' ) {
+				Helper::deprecated( '{{ TimberPost() }}', '{{ Post() }}', '2.0.0' );
+			}
+		) );
+
+		$twig->addFunction( new Twig_Function(
+			'TimberImage',
+			function( $pid = false, $ImageClass = 'Timber\Image' ) {
+				Helper::deprecated( '{{ TimberImage() }}', '{{ Image() }}', '2.0.0' );
+			}
+		) );
+
+		$twig->addFunction( new Twig_Function(
+			'TimberTerm',
+			function( $tid, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+				Helper::deprecated( '{{ TimberTerm() }}', '{{ Term() }}', '2.0.0' );
+			}
+		) );
+
+		$twig->addFunction( new Twig_Function(
+			'TimberUser',
+			function( $pid, $UserClass = 'Timber\User' ) {
+				Helper::deprecated( '{{ TimberUser() }}', '{{ User() }}', '2.0.0' );
+			}
+		) );
 
 		/* bloginfo and translate */
 		$twig->addFunction(new Twig_Function('bloginfo', function( $show = '', $filter = 'raw' ) {
@@ -149,7 +163,7 @@ class Twig {
 	}
 
 	/**
-	 * Function for Term or TimberTerm() within Twig
+	 * Function for Term or Timber\Term() within Twig
 	 * @since 1.5.1
 	 * @author @jarednova
 	 * @param integer $tid the term ID to search for
@@ -246,12 +260,41 @@ class Twig {
 					return apply_filters_ref_array($tag, $args);
 				} ));
 
-		
-		$twig = apply_filters('timber/twig', $twig);
 		/**
-		 * get_twig is deprecated, use timber/twig
+		 * Filters the Twig environment used in the global context.
+		 *
+		 * You can use this filter if you want to add additional functionality to Twig, like global variables, filters or functions.
+		 *
+		 * @example
+		 * ```php
+		 * /**
+		 *  * @param \Twig_Environment $twig The Twig environment.
+		 *  * @return $twig
+		 *  *\/
+		 * add_filter( 'timber/twig', function( $twig ) {
+		 *     // Make get_theme_file_uri() usable as {{ theme_file() }} in Twig.
+		 *     $twig->addFunction( new Timber_Twig_Function( 'theme_file', 'get_theme_file_uri' ) );
+		 *
+		 *     return $twig;
+		 * } );
+		 * ```
+		 * ```twig
+		 * <a class="navbar-brand" href="{{ site.url }}">
+		 *     <img src="{{ theme_file( 'build/img/logo-example.svg' ) }}" alt="Logo {{ site.title }}">
+		 * </a>
+		 * ```
+		 * @since 0.21.9
+		 *
+		 * @param \Twig_Environment $twig The Twig Environment to which you can add additional functionality.
 		 */
-		$twig = apply_filters('get_twig', $twig);
+		$twig = apply_filters('timber/twig', $twig);
+
+		/**
+		 * Filters the Twig environment used in the global context.
+		 *
+		 * @deprecated 2.0.0
+		 */
+		$twig = apply_filters_deprecated( 'get_twig', array( $twig ), '2.0.0', 'timber/twig' );
 		return $twig;
 	}
 

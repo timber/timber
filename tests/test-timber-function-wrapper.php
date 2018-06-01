@@ -4,7 +4,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 
 	function testToStringWithException() {
 		ob_start();
-		$wrapper = new TimberFunctionWrapper('TestTimberFunctionWrapper::isNum', array('hi'));
+		$wrapper = new Timber\FunctionWrapper('TestTimberFunctionWrapper::isNum', array('hi'));
 		echo $wrapper;
 		$content = trim(ob_get_contents());
 		ob_end_clean();
@@ -13,7 +13,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 
 	function testToStringWithoutException() {
 		ob_start();
-		$wrapper = new TimberFunctionWrapper('TestTimberFunctionWrapper::isNum', array(4));
+		$wrapper = new Timber\FunctionWrapper('TestTimberFunctionWrapper::isNum', array(4));
 		echo $wrapper;
 		$content = trim(ob_get_contents());
 		ob_end_clean();
@@ -22,7 +22,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 
 	function testToStringWithClassObject() {
 		ob_start();
-		$wrapper = new TimberFunctionWrapper(array($this, 'isNum'), array(4));
+		$wrapper = new Timber\FunctionWrapper(array($this, 'isNum'), array(4));
 		echo $wrapper;
 		$content = trim(ob_get_contents());
 		ob_end_clean();
@@ -31,7 +31,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 
 	function testToStringWithClassString() {
 		ob_start();
-		$wrapper = new TimberFunctionWrapper(array(get_class($this), 'isNum'), array(4));
+		$wrapper = new Timber\FunctionWrapper(array(get_class($this), 'isNum'), array(4));
 		echo $wrapper;
 		$content = trim(ob_get_contents());
 		ob_end_clean();
@@ -40,7 +40,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 
 	function testWPHead() {
 		$context = Timber::get_context();
-		$str = Timber::compile_string('{{ wp_head }}', $context);
+		$str = Timber::compile_string('{{ function("wp_head") }}', $context);
 		$this->assertRegexp('/<title>Test Blog/', trim($str));
 	}
 
@@ -51,7 +51,12 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 	}
 
 	function testSoloFunctionUsingWrapper() {
-		new TimberFunctionWrapper('my_boo');
+		if (version_compare(Timber::$version, 2.0, '>=')) {
+            return $this->markTestSkipped(
+              'This functionality is disabled in Timber 2.0'
+            );
+        }
+		new Timber\FunctionWrapper('my_boo');
 		$str = Timber::compile_string("{{ my_boo() }}");
 		$this->assertEquals('bar!', trim($str));
 	}

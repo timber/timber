@@ -14,7 +14,7 @@ While data saved by ACF is available via `{{post.my_acf_field}}` you will often 
 ```twig
 <h3>{{post.title}}</h3>
 <div class="intro-text">
-     {{post.get_field('my_wysiwyg_field')}}
+     {{post.meta('my_wysiwyg_field')}}
 </div>
 ```
 
@@ -27,7 +27,7 @@ You can retrieve an image from a custom field, then use it in a Twig template. T
 ### The quick way (for most situations)
 
 ```twig
-<img src="{{TimberImage(post.get_field('hero_image')).src}}" />
+<img src="{{TimberImage(post.meta('hero_image')).src}}" />
 ```
 
 ### The long way (for some special situations)
@@ -37,16 +37,16 @@ This is where we'll start in PHP.
 ```php
 <?php
 /* single.php */
-$post = new TimberPost();
+$post = new Timber\Post();
 if (isset($post->hero_image) && strlen($post->hero_image)){
-	$post->hero_image = new TimberImage($post->hero_image);
+	$post->hero_image = new Timber\Image($post->hero_image);
 }
 $data = Timber::get_context();
 $data['post'] = $post;
 Timber::render('single.twig', $data);
 ```
 
-`TimberImage` should be initialized using a WordPress image ID#. It can also take URLs and image objects, but that requires extra processing.
+`Timber\Image` should be initialized using a WordPress image ID#. It can also take URLs and image objects, but that requires extra processing.
 
 You can now use all the above functions to transform your custom images in the same way, the format will be:
 
@@ -59,8 +59,8 @@ You can now use all the above functions to transform your custom images in the s
 ## Gallery field
 
 ```twig
-{% for image in post.get_field('gallery') %}
-    <img src="{{ TimberImage(image) }}" />
+{% for image in post.meta('gallery') %}
+    <img src="{{ Image(image) }}" />
 {% endfor %}
 ```
 
@@ -78,7 +78,7 @@ You can access repeater fields within twig files:
 		<div class="item">
 			<h4>{{item.name}}</h4>
 			<h6>{{item.info}}</h6>
-			<img src="{{TimberImage(item.picture).src}}" />
+			<img src="{{ Image(item.picture).src }}" />
 		</div>
 	{% endfor %}
 </div>
@@ -134,8 +134,8 @@ Similar to repeaters, get the field by the name of the flexible content field:
 ```twig
 {% for media_item in post.get_field('media_set') %}
 	{% if media_item.acf_fc_layout == 'image_set' %}
-		<img src="{{TimberImage(media_item.image).src}}" />
-		<p class="caption">{{TimberImage(media_item.image).caption}}</p>
+		<img src="{{ Image(media_item.image).src }}" />
+		<p class="caption">{{ Image(media_item.image).caption }}</p>
 		<aside class="notes">{{media_item.notes}}</aside>
 	{% elseif media_item.acf_fc_layout == 'video_set' %}
 		<iframe width="560" height="315" src="http://www.youtube.com/embed/{{media_item.youtube_id}}" frameborder="0" allowfullscreen></iframe>

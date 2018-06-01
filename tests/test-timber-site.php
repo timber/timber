@@ -4,7 +4,7 @@ class TestTimberSite extends Timber_UnitTestCase {
 
 	function testStandardThemeLocation() {
 		switch_theme( 'twentyfifteen' );
-		$site = new TimberSite();
+		$site = new Timber\Site();
 		$content_subdir = Timber\URLHelper::get_content_subdir();
 		$this->assertEquals( $content_subdir.'/themes/twentyfifteen', $site->theme->path );
 	}
@@ -14,7 +14,7 @@ class TestTimberSite extends Timber_UnitTestCase {
 		$content_subdir = Timber\URLHelper::get_content_subdir();
 		$this->assertFileExists( WP_CONTENT_DIR.'/themes/fake-child-theme/style.css' );
 		switch_theme( 'fake-child-theme' );
-		$site = new TimberSite();
+		$site = new Timber\Site();
 		$this->assertEquals( $content_subdir.'/themes/fake-child-theme', $site->theme->path );
 		$this->assertEquals( $content_subdir.'/themes/twentyfifteen', $site->theme->parent->path );
 	}
@@ -45,7 +45,7 @@ class TestTimberSite extends Timber_UnitTestCase {
 	function testSiteIcon() {
 		$icon_id = TestTimberImage::get_image_attachment(0, 'cardinals.jpg');
 		update_option('site_icon', $icon_id);
-		$site = new TimberSite();
+		$site = new Timber\Site();
 		$icon = $site->icon();
 		$this->assertEquals('Timber\Image', get_class($icon));
 		$this->assertContains('cardinals.jpg', $icon->src());
@@ -53,14 +53,23 @@ class TestTimberSite extends Timber_UnitTestCase {
 
 	function testSiteGet() {
 		update_option( 'foo', 'bar' );
-		$site = new TimberSite();
+		$site = new Timber\Site();
 		$this->assertEquals( 'bar', $site->foo );
 	}
 
+	/**
+	 * @expectedDeprecated {{ site.meta() }}
+	 */
 	function testSiteMeta() {
-		$ts = new TimberSite();
+		$ts = new Timber\Site();
 		update_option('foo', 'magoo');
 		$this->assertEquals('magoo', $ts->meta('foo'));
+	}
+
+	function testSiteOption() {
+		$ts = new Timber\Site();
+		update_option('date_format', 'j. F Y');
+		$this->assertEquals('j. F Y', $ts->option('date_format'));
 	}
 
 	function setUp() {

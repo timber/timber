@@ -10,10 +10,18 @@ use Timber\Post;
  *
  * PostCollections are internal objects used to hold a collection of posts.
  *
- * @package Timber
+ * @api
  */
 class PostCollection extends \ArrayObject {
 
+	/**
+	 * PostCollection constructor.
+	 *
+	 * @api
+	 *
+	 * @param array  $posts
+	 * @param string $post_class
+	 */
 	public function __construct( $posts = array(), $post_class = '\Timber\Post' ) {
 		$returned_posts = self::init($posts, $post_class);
 
@@ -23,9 +31,32 @@ class PostCollection extends \ArrayObject {
 		 * Filters the PostIterator class to use for a PostCollection.
 		 *
 		 * This filter is useful if you need to set special values or globals on each post. Because many plugins still
-		 * rely on The Loop, a custom PostIterator can make it much easier to integrate third party plugins with Timber.
+		 * rely on The Loop and global variables, a custom PostIterator can make it much easier to integrate third party
+		 * plugins with Timber.
 		 *
-		 * @since 1.4.x
+		 * @since 1.5.0
+		 * @example
+		 * ```php
+		 * // Set a new posts iterator class
+		 * add_filter( 'timber/class/posts_iterator', function( $posts_iterator ) {
+		 *     return 'CustomPostsIterator';
+		 * } );
+		 * ```
+		 *
+		 * And your custom posts iterator could look like this:
+		 *
+		 * ```php
+		 * class CustomPostsIterator extends \ArrayIterator {
+		 *     public function current() {
+		 *         global $post, $my_custom_global;
+		 *
+		 *         $post = parent::current();
+		 *         $my_custom_global = process_my_global( $post->ID );
+		 *
+		 *         return $post;
+		 *     }
+		 * }
+		 * ```
 		 *
 		 * @param string $posts_iterator The iterator class to use to loop over posts. Default `Timber\PostsIterator`.
 		 * @param array  $returned_posts An array of posts.
@@ -60,7 +91,10 @@ class PostCollection extends \ArrayObject {
 		return self::maybe_set_preview($returned_posts);
 	}
 
-
+	/**
+	 * @api
+	 * @return array
+	 */
 	public function get_posts() {
 		return $this->getArrayCopy();
 	}
@@ -99,6 +133,3 @@ class PostCollection extends \ArrayObject {
 		return $posts;
 	}
 }
-
-class_alias('Timber\PostCollection', 'Timber\PostsCollection');
-class_alias('Timber\PostCollection', 'TimberPostsCollection');

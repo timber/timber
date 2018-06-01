@@ -10,12 +10,13 @@ if ( !defined('ABSPATH') ) {
 	exit;
 }
 
+/**
+ * Class QueryIterator
+ */
 class QueryIterator implements \Iterator, \Countable {
 
 	/**
-	 *
-	 *
-	 * @var WP_Query
+	 * @var \WP_Query
 	 */
 	private $_query = null;
 	private $_posts_class = 'Timber\Post';
@@ -92,24 +93,13 @@ class QueryIterator implements \Iterator, \Countable {
 	}
 
 	public static function get_query_from_string( $string = '' ) {
-		$post_type = false;
-
-		if ( is_string($string) && strstr($string, '#') ) {
-			//we have a post_type directive here
-			list($post_type, $string) = explode('#', $string);
-		}
-
-		$query = array(
-			'post_type' => ($post_type) ? $post_type : 'any'
-		);
-
+		$query = array('post_type' =>  'any');
 		if ( is_numeric($string) ) {
 			$query['p'] = $string;
 
 		} else {
 			$query['name'] = $string;
 		}
-
 		return new \WP_Query($query);
 	}
 

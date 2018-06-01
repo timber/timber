@@ -9,12 +9,17 @@ use Timber\Theme;
 use Timber\Helper;
 
 /**
- * TimberSite gives you access to information you need about your site. In Multisite setups, you can get info on other sites in your network.
+ * Class Site
+ *
+ * `Timber\Site` gives you access to information you need about your site. In Multisite setups, you
+ * can get info on other sites in your network.
+ *
+ * @api
  * @example
  * ```php
  * $context = Timber::get_context();
  * $other_site_id = 2;
- * $context['other_site'] = new TimberSite($other_site_id);
+ * $context['other_site'] = new Timber\Site($other_site_id);
  * Timber::render('index.twig', $context);
  * ```
  * ```twig
@@ -28,10 +33,16 @@ class Site extends Core implements CoreInterface {
 
 	/**
 	 * @api
-	 * @var string the admin email address set in the WP admin panel
+	 * @var string The admin email address set in the WP admin panel
 	 */
 	public $admin_email;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $blogname;
+
 	/**
 	 * @api
 	 * @var string
@@ -43,16 +54,19 @@ class Site extends Core implements CoreInterface {
 	 * @var string
 	 */
 	public $description;
+
 	/**
 	 * @api
 	 * @var int the ID of a site in multisite
 	 */
 	public $id;
+
 	/**
 	 * @api
 	 * @var string the language setting ex: en-US
 	 */
 	public $language;
+
 	/**
 	 * @api
 	 * @var bool true if multisite, false if plain ole' WordPress
@@ -65,23 +79,46 @@ class Site extends Core implements CoreInterface {
 	 */
 	public $name;
 
-	/** @api
+	/**
+	 * @api
 	 * @var string for people who like trackback spam
 	 */
 	public $pingback_url;
-	public $siteurl;
+
 	/**
 	 * @api
-	 * @var [TimberTheme](#TimberTheme)
+	 * @var string
+	 */
+	public $siteurl;
+
+	/**
+	 * @api
+	 * @var \Timber\Theme
 	 */
 	public $theme;
+
 	/**
 	 * @api
 	 * @var string
 	 */
 	public $title;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $url;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $home_url;
+
+	/**
+	 * @api
+	 * @var string
+	 */
 	public $site_url;
 
 	/**
@@ -95,14 +132,16 @@ class Site extends Core implements CoreInterface {
 	public $atom;
 
 	/**
-	 * Constructs a TimberSite object
+	 * Constructs a Timber\Site object
+	 *
+	 * @api
 	 * @example
 	 * ```php
 	 * //multisite setup
-	 * $site = new TimberSite(1);
-	 * $site_two = new TimberSite("My Cool Site");
+	 * $site = new Timber\Site(1);
+	 * $site_two = new Timber\Site("My Cool Site");
 	 * //non-multisite
-	 * $site = new TimberSite();
+	 * $site = new Timber\Site();
 	 * ```
 	 * @param string|int $site_name_or_id
 	 */
@@ -120,6 +159,7 @@ class Site extends Core implements CoreInterface {
 
 	/**
 	 * Switches to the blog requested in the request
+	 *
 	 * @param string|integer|null $site_name_or_id
 	 * @return integer with the ID of the new blog
 	 */
@@ -180,7 +220,6 @@ class Site extends Core implements CoreInterface {
 		$this->pingback = $this->pingback_url = get_bloginfo('pingback_url');
 	}
 
-
 	/**
 	 * Returns the language attributes that you're looking for
 	 * @return string
@@ -190,22 +229,63 @@ class Site extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Get the value for a site option.
 	 *
+	 * @api
+	 * @example
+	 * ```twig
+	 * Published on: {{ post.date|date(site.date_format) }}
+	 * ```
 	 *
-	 * @param string  $field
-	 * @return mixed
+	 * @param string $option The name of the option to get the value for.
+	 *
+	 * @return mixed The option value.
 	 */
-	public function __get( $field ) {
-		if ( !isset($this->$field) ) {
+	public function __get( $option ) {
+		if ( ! isset( $this->$option ) ) {
 			if ( is_multisite() ) {
-				$this->$field = get_blog_option($this->ID, $field);
+				$this->$option = get_blog_option( $this->ID, $option );
 			} else {
-				$this->$field = get_option($field);
+				$this->$option = get_option( $option );
 			}
 		}
-		return $this->$field;
+
+		return $this->$option;
 	}
 
+	/**
+	 * Get the value for a site option.
+	 *
+	 * @api
+	 * @example
+	 * ```twig
+	 * Published on: {{ post.date|date(site.option('date_format')) }}
+	 * ```
+	 *
+	 * @param string $option The name of the option to get the value for.
+	 *
+	 * @return mixed The option value.
+	 */
+	public function option( $option ) {
+		return $this->__get( $option );
+	}
+
+	/**
+	 * Get the value for a site option.
+	 *
+	 * @api
+	 * @deprecated 2.0.0, use `{{ site.option }}` instead
+	 */
+	public function meta( $option ) {
+		Helper::deprecated( '{{ site.meta() }}', '{{ site.option() }}', '2.0.0' );
+
+		return $this->__get( $option );
+	}
+
+	/**
+	 * @api
+	 * @return null|\Timber\Image
+	 */
 	public function icon() {
 		if ( is_multisite() ) {
 			return $this->icon_multisite($this->ID);
@@ -229,6 +309,8 @@ class Site extends Core implements CoreInterface {
 
 	/**
 	 * Returns the link to the site's home.
+	 *
+	 * @api
 	 * @example
 	 * ```twig
 	 * <a href="{{ site.link }}" title="Home">
@@ -240,7 +322,7 @@ class Site extends Core implements CoreInterface {
 	 * 	  <img src="/wp-content/uploads/logo.png" alt="Logo for some stupid thing" />
 	 * </a>
 	 * ```
-	 * @api
+	 *
 	 * @return string
 	 */
 	public function link() {
@@ -248,31 +330,37 @@ class Site extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @deprecated 0.21.9
-	 * @internal
-	 * @return string
-	 */
-	public function get_link() {
-		Helper::warn('{{site.get_link}} is deprecated, use {{site.link}}');
-		return $this->link();
-	}
-
-
-	/**
-	 * @ignore
-	 */
-	public function meta( $field ) {
-		return $this->__get($field);
-	}
-
-	/**
 	 *
-	 * @ignore
+	 * @internal
 	 * @param string  $key
 	 * @param mixed   $value
 	 */
 	public function update( $key, $value ) {
-		$value = apply_filters('timber_site_set_meta', $value, $key, $this->ID, $this);
+		/**
+		 * Filters a value before it is updated in the site options.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param mixed        $value   The new value.
+		 * @param string       $key     The option key.
+		 * @param int          $site_id The site ID.
+		 * @param \Timber\Site $site    The site object.
+		 */
+		$value = apply_filters( 'timber/site/update_option', $value, $key, $this->ID, $this );
+
+		/**
+		 * Filters a value before it is updated in the site options.
+		 *
+		 * @deprecated 2.0.0, use `timber/site/update_option`
+		 * @since 0.20.0
+		 */
+		$value = apply_filters_deprecated(
+			'timber_site_set_meta',
+			array( $value, $key, $this->ID, $this ),
+			'2.0.0',
+			'timber/site/update_option'
+		);
+
 		if ( is_multisite() ) {
 			update_blog_option($this->ID, $key, $value);
 		} else {
@@ -282,21 +370,13 @@ class Site extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @deprecated 1.0.4
-	 * @see TimberSite::link
+	 * @api
+	 * @deprecated 1.0.4, use `{{ site.link }}` instead.
+	 * @see \Timber\Site::link()
 	 * @return string
 	 */
 	public function url() {
-		return $this->link();
-	}
-
-	/**
-	 * @deprecated 0.21.9
-	 * @internal
-	 * @return string
-	 */
-	public function get_url() {
-		Helper::warn('{{site.get_url}} is deprecated, use {{site.link}} instead');
+		Helper::deprecated('{{ site.url }}', '{{ site.link }}', '1.0.4');
 		return $this->link();
 	}
 

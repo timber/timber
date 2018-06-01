@@ -2,6 +2,11 @@
 
 namespace Timber;
 
+/**
+ * Class Pagination
+ *
+ * @api
+ */
 class Pagination {
 
 	public $current;
@@ -10,12 +15,21 @@ class Pagination {
 	public $next;
 	public $prev;
 
+	/**
+	 * Pagination constructor.
+	 *
+	 * @api
+	 *
+	 * @param array $prefs
+	 * @param null  $wp_query
+	 */
 	public function __construct( $prefs = array(), $wp_query = null ) {
 		$this->init($prefs, $wp_query);
 	}
 
 	/**
 	 * Get pagination.
+	 *
 	 * @api
 	 * @param array   $prefs
 	 * @return array mixed
@@ -148,7 +162,7 @@ class Pagination {
 				$dots = true;
 			} else {
 				if ( $args['show_all'] || ($n <= $args['end_size'] || ($args['current'] && $n >= $args['current'] - $args['mid_size'] && $n <= $args['current'] + $args['mid_size']) || $n > $args['total'] - $args['end_size']) ) {
-					
+
 					$link = str_replace('%_%', 1 == $n ? '' : $args['format'], $args['base']);
 					$link = str_replace('%#%', $n, $link);
 
@@ -192,16 +206,16 @@ class Pagination {
 		}
 		return $add_args;
 	}
-	
+
 	protected static function sanitize_args( $args ) {
 
 		$format_args = array();
-		
+
 		$format = explode('?', str_replace('%_%', $args['format'], $args['base']));
 		$format_query = isset($format[1]) ? $format[1] : '';
 
 		wp_parse_str($format_query, $format_args);
-		
+
 		// Remove the format argument from the array of query arguments, to avoid overwriting custom format.
 		foreach ( $format_args as $format_arg => $format_arg_value ) {
 			unset($args['add_args'][urlencode_deep($format_arg)]);

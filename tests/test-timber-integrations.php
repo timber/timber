@@ -16,8 +16,8 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testACFGetFieldPost() {
 		$pid = $this->factory->post->create();
 		update_field( 'subhead', 'foobar', $pid );
-		$str = '{{post.get_field("subhead")}}';
-		$post = new TimberPost( $pid );
+		$str = '{{post.meta("subhead")}}';
+		$post = new Timber\Post( $pid );
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
 		$this->assertEquals( 'foobar', $str );
 	}
@@ -25,15 +25,15 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testWPPostConvert() {
 		$pid = $this->factory->post->create();
 		$wp_post = get_post( $pid );
-		$post = new TimberPost();
-		$timber_post = $post->convert( $wp_post, 'TimberPost' );
-		$this->assertTrue( $timber_post instanceof TimberPost );
+		$post = new Timber\Post();
+		$timber_post = $post->convert( $wp_post, 'Timber\Post' );
+		$this->assertTrue( $timber_post instanceof Timber\Post );
 	}
 
 	function testACFHasFieldPostFalse() {
 		$pid = $this->factory->post->create();
 		$str = '{% if post.has_field("heythisdoesntexist") %}FAILED{% else %}WORKS{% endif %}';
-		$post = new TimberPost( $pid );
+		$post = new Timber\Post( $pid );
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
 		$this->assertEquals('WORKS', $str);
 	}
@@ -42,14 +42,14 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		$pid = $this->factory->post->create();
 		update_post_meta($pid, 'best_radiohead_album', 'in_rainbows');
 		$str = '{% if post.has_field("best_radiohead_album") %}In Rainbows{% else %}OK Computer{% endif %}';
-		$post = new TimberPost( $pid );
+		$post = new Timber\Post( $pid );
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
 		$this->assertEquals('In Rainbows', $str);
 	}
 
 	function testACFGetFieldTermCategory() {
 		update_field( 'color', 'blue', 'category_1' );
-		$cat = new TimberTerm( 1 );
+		$cat = new Timber\Term( 1 );
 		$this->assertEquals( 'blue', $cat->color );
 		$str = '{{term.color}}';
 		$this->assertEquals( 'blue', Timber::compile_string( $str, array( 'term' => $cat ) ) );
@@ -58,7 +58,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testACFCustomFieldTermTag() {
 		$tid = $this->factory->term->create();
 		update_field( 'color', 'green', 'post_tag_'.$tid );
-		$term = new TimberTerm( $tid );
+		$term = new Timber\Term( $tid );
 		$str = '{{term.color}}';
 		$this->assertEquals( 'green', Timber::compile_string( $str, array( 'term' => $term ) ) );
 	}
@@ -66,18 +66,18 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testACFGetFieldTermTag() {
 		$tid = $this->factory->term->create();
 		update_field( 'color', 'blue', 'post_tag_'.$tid );
-		$term = new TimberTerm( $tid );
-		$str = '{{term.get_field("color")}}';
+		$term = new Timber\Term( $tid );
+		$str = '{{term.meta("color")}}';
 		$this->assertEquals( 'blue', Timber::compile_string( $str, array( 'term' => $term ) ) );
 	}
 
-	
+
 	function testACFFieldObject() {
-		$fp_id = $this->factory->post->create(array('post_content' => 'a:10:{s:4:"type";s:4:"text";s:12:"instructions";s:0:"";s:8:"required";i:0;s:17:"conditional_logic";i:0;s:7:"wrapper";a:3:{s:5:"width";s:2:"50";s:5:"class";s:8:"thingerz";s:2:"id";s:0:"";}s:13:"default_value";s:0:"";s:11:"placeholder";s:0:"";s:7:"prepend";s:0:"";s:6:"append";s:0:"";s:9:"maxlength";s:0:"";}', 'post_title' => 'Thinger', 'post_name' => 'field_5a43eae2cde80'));	
+		$fp_id = $this->factory->post->create(array('post_content' => 'a:10:{s:4:"type";s:4:"text";s:12:"instructions";s:0:"";s:8:"required";i:0;s:17:"conditional_logic";i:0;s:7:"wrapper";a:3:{s:5:"width";s:2:"50";s:5:"class";s:8:"thingerz";s:2:"id";s:0:"";}s:13:"default_value";s:0:"";s:11:"placeholder";s:0:"";s:7:"prepend";s:0:"";s:6:"append";s:0:"";s:9:"maxlength";s:0:"";}', 'post_title' => 'Thinger', 'post_name' => 'field_5a43eae2cde80'));
 		$pid      = $this->factory->post->create();
 		update_field( 'thinger', 'foo', $pid );
 		update_field( '_thinger', 'field_5a43eae2cde80', $pid );
-		$post     = new TimberPost($pid);
+		$post     = new Timber\Post($pid);
 		$template = '{{ post.meta("thinger") }} / {{ post.field_object("thinger").key }}';
 		$str      = Timber::compile_string($template, array( 'post' => $post ));
 		$this->assertEquals('foo / field_thinger', $str);
@@ -97,12 +97,12 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testWPCLIClearCacheTwig(){
 		$cache_dir = __DIR__.'/../cache/twig';
     	if (is_dir($cache_dir)){
-    		TimberLoader::rrmdir($cache_dir);
+    		Timber\Loader::rrmdir($cache_dir);
     	}
     	$this->assertFileNotExists($cache_dir);
     	Timber::$cache = true;
     	$pid = $this->factory->post->create();
-    	$post = new TimberPost($pid);
+    	$post = new Timber\Post($pid);
     	Timber::compile('assets/single-post.twig', array('post' => $post));
     	sleep(1);
     	$this->assertFileExists($cache_dir);
@@ -114,12 +114,12 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testWPCLIClearCacheAll(){
 		$cache_dir = __DIR__.'/../cache/twig';
     	if (is_dir($cache_dir)){
-    		TimberLoader::rrmdir($cache_dir);
+    		Timber\Loader::rrmdir($cache_dir);
     	}
     	$this->assertFileNotExists($cache_dir);
     	Timber::$cache = true;
     	$pid = $this->factory->post->create();
-    	$post = new TimberPost($pid);
+    	$post = new Timber\Post($pid);
     	Timber::compile('assets/single-post.twig', array('post' => $post));
     	sleep(1);
     	$this->assertFileExists($cache_dir);
@@ -132,12 +132,12 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testWPCLIClearCacheAllArray(){
 		$cache_dir = __DIR__.'/../cache/twig';
     	if (is_dir($cache_dir)){
-    		TimberLoader::rrmdir($cache_dir);
+    		Timber\Loader::rrmdir($cache_dir);
     	}
     	$this->assertFileNotExists($cache_dir);
     	Timber::$cache = true;
     	$pid = $this->factory->post->create();
-    	$post = new TimberPost($pid);
+    	$post = new Timber\Post($pid);
     	Timber::compile('assets/single-post.twig', array('post' => $post));
     	sleep(1);
     	$this->assertFileExists($cache_dir);

@@ -40,6 +40,20 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals(4, count($pagination['pages']));
 	}
 
+	function testPaginationWithPostQuery() {
+		register_post_type( 'portfolio' );
+		$pids = $this->factory->post->create_many( 33 );
+		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
+		$this->go_to( home_url( '/' ) );
+		new Timber\PostQuery('post_type=portfolio');
+		$pagination = Timber::get_pagination();
+
+		global $timber;
+		$timber->active_query = false;
+		unset($timber->active_query);
+		$this->assertEquals(4, count($pagination['pages']));
+	}
+
 	function testPaginationOnLaterPage() {
 		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );
@@ -136,7 +150,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 			wp_set_object_terms( $post, $news_id, 'category' );
 		}
 		$this->go_to( home_url( '/category/news' ) );
-		$post_objects = Timber::get_posts( false );
+		$post_objects = new Timber\PostQuery( false );
 		$pagination = Timber::get_pagination();
 		//need to complete test
 	}

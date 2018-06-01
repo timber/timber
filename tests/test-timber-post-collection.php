@@ -4,14 +4,9 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 
 	function setUp() {
 		global $wpdb;
-		$wpdb->query("TRUNCATE TABLE $wpdb->posts"); 
+		$wpdb->query("TRUNCATE TABLE $wpdb->posts");
 		$wpdb->query("ALTER TABLE $wpdb->posts AUTO_INCREMENT = 1");
 		parent::setUp();
-	}
-
-	function testBackwards() {
-		$pc = new TimberPostsCollection();
-		$pc = new Timber\PostsCollection();
 	}
 
 	function testBasicCollection() {
@@ -52,7 +47,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 	}
 
 	function IgnoretestBasicCollectionWithPaginationAndBlankQuery() {
-		
+
 		$pids = $this->factory->post->create_many(130);
 		$this->go_to('/');
 		$pc = new Timber\PostQuery();

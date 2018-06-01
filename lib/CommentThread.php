@@ -4,6 +4,9 @@ namespace Timber;
 
 use Timber\Comment;
 
+/**
+ * Class CommentThread
+ */
 class CommentThread extends \ArrayObject {
 
 	var $CommentClass = 'Timber\Comment';
@@ -37,6 +40,13 @@ class CommentThread extends \ArrayObject {
 		$this->_orderby = $orderby;
 		$this->init();
 		return $this;
+	}
+
+	/**
+	 * @return int the number of comments on a post
+	 */
+	public function mecount() {
+		return get_comments_number($this->post_id);
 	}
 
 	protected function merge_args( $args ) {
@@ -79,7 +89,7 @@ class CommentThread extends \ArrayObject {
 			}
 		}
 
-		
+
 
 		foreach ( $children as &$comment ) {
 			$parent_id = $comment->comment_parent;

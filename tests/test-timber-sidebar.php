@@ -6,14 +6,14 @@
 			$context = Timber::get_context();
 			$sidebar_post = $this->factory->post->create(array('post_title' => 'Sidebar post content'));
 			$sidebar_context = array();
-			$sidebar_context['post'] = new TimberPost($sidebar_post);
+			$sidebar_context['post'] = new Timber\Post($sidebar_post);
 			$context['sidebar'] = Timber::get_sidebar('assets/sidebar.twig', $sidebar_context);
 			$result = Timber::compile('assets/main-w-sidebar.twig', $context);
 			$this->assertEquals('I am the main stuff <h4>Sidebar post content</h4>', trim($result));
 		}
 
 		function testPHPSidebar() {
-			add_filter('timber_context', function($context){
+			add_filter('timber/context', function($context){
 				$context['sidebar'] = Timber::get_sidebar('assets/my-sidebar.php');
 				return $context;
 			});

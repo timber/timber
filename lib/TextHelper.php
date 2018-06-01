@@ -3,19 +3,23 @@
 namespace Timber;
 
 /**
- * Class provides different text-related functions 
- * commonly used in WordPress development
+ * Class TextHelper
+ *
+ * Class provides different text-related functions commonly used in WordPress development
+ *
+ * @api
  */
 class TextHelper {
-
     /**
      * Trims text to a certain number of characters.
      * This function can be useful for excerpt of the post
      * As opposed to wp_trim_words trims characters that makes text to
      * take the same amount of space in each post for example
      *
+     * @api
      * @since   1.2.0
      * @author  @CROSP
+     *
      * @param   string $text      Text to trim.
      * @param   int    $num_chars Number of characters. Default is 60.
      * @param   string|null $more      Optional. What to append if $text needs to be trimmed. Default '&hellip;'.
@@ -31,8 +35,7 @@ class TextHelper {
     }
 
     /**
-     *
-     *
+     * @api
      * @param string  $text
      * @param int     $num_words
      * @param string|null|false  $more text to appear in "Read more...". Null to use default, false to hide
@@ -45,9 +48,26 @@ class TextHelper {
         }
         $original_text = $text;
         $allowed_tag_string = '';
-        foreach ( explode(' ', apply_filters('timber/trim_words/allowed_tags', $allowed_tags)) as $tag ) {
+
+		/**
+		 * Filters allowed tags for `trim_words()` helper.
+		 *
+		 * The `trim_words()` helper strips all HTML tags from a text it trims, except for a list of
+		 * allowed tags. Instead of passing the allowed tags every time you use `trim_words()` (or `{{ text|truncate }}`
+		 * in Twig), you can use this filter to set the allowed tags.
+		 *
+		 * @see \Timber\TextHelper::trim_words()
+		 * @since 0.21.9
+		 *
+		 * @param string $allowed_tags Allowed tags, separated by one whitespace.
+		 *                             Default `p a span b i br blockquote`.
+		 */
+		$allowed_tags = apply_filters( 'timber/trim_words/allowed_tags', $allowed_tags );
+
+        foreach ( explode(' ', $allowed_tags) as $tag ) {
             $allowed_tag_string .= '<'.$tag.'>';
         }
+
         $text = strip_tags($text, $allowed_tag_string);
         /* translators: If your word count is based on single characters (East Asian characters), enter 'characters'. Otherwise, enter 'words'. Do not translate into your own language. */
         if ( 'characters' == _x('words', 'word count: words or characters?') && preg_match('/^utf\-?8$/i', get_option('blog_charset')) ) {
@@ -70,11 +90,20 @@ class TextHelper {
         return apply_filters('wp_trim_words', $text, $num_words, $more, $original_text);
     }
 
+	/**
+	 * @api
+	 *
+	 * @param       $string
+	 * @param array $tags
+	 *
+	 * @return null|string|string[]
+	 */
     public static function remove_tags( $string, $tags = array() ) {
         return preg_replace('#<(' . implode( '|', $tags) . ')(?:[^>]+)?>.*?</\1>#s', '', $string);
     }
 
     /**
+     * @api
      * @param string $haystack
      * @param string $needle
      * @return boolean
@@ -87,7 +116,7 @@ class TextHelper {
     }
 
     /**
-     *
+     * @api
      *
      * @param string  $html
      * @return string

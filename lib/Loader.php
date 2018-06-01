@@ -32,8 +32,36 @@ class Loader {
 	 */
 	public function __construct( $caller = false ) {
 		$this->locations = LocationManager::get_locations($caller);
-		$this->cache_mode = apply_filters('timber_cache_mode', $this->cache_mode);
+
+		/**
+		 * Filters the cache mode.
+		 *
+		 * You can read more about Caching in the
+		 * [Performance/Caching]({{<relref "performance.md" >}}) guide.
+		 *
+		 * @since 0.20.10
+		 *
+		 * @param string $cache_mode The cache mode. Can be one of the following:
+		 *                           `Timber\Loader::CACHE_NONE`,
+		 *                           `Timber\Loader::CACHE_OBJECT`,
+		 *                           `Timber\Loader::CACHE_TRANSIENT`,
+		 *                           `Timber\Loader::CACHE_SITE_TRANSIENT`,
+		 *                           `Timber\Loader::CACHE_USE_DEFAULT`.
+		 *                           Default `Timber\Loader::CACHE_TRANSIENT`.
+		 */
 		$this->cache_mode = apply_filters('timber/cache/mode', $this->cache_mode);
+
+		/**
+		 * Filters the cache mode.
+		 *
+		 * @deprecated 2.0.0, use `timber/cache/mode`
+		 */
+		$this->cache_mode = apply_filters_deprecated(
+			'timber_cache_mode',
+			array( $this->cache_mode ),
+			'2.0.0',
+			'timber/cache/mode'
+		);
 	}
 
 	/**
@@ -67,10 +95,59 @@ class Loader {
 			if ( strlen($file) ) {
 				$loader = $this->get_loader();
 				$result = $loader->getCacheKey($file);
-				do_action('timber_loader_render_file', $result);
+
+				/**
+				 * Fires after …
+				 *
+				 * @todo Add summary, description parameter description
+				 *
+				 * @param string $result
+				 */
+				do_action( 'timber/loader/render_file', $result );
+
+				/**
+				 * Fires after …
+				 *
+				 * This action is used by the Timber Debug Bar extension.
+				 *
+				 * @todo Add summary
+				 *
+				 * @deprecated 2.0.0, use `timber/loader/render_file`
+				 */
+				do_action_deprecated(
+					'timber_loader_render_file',
+					array( $result ),
+					'2.0.0',
+					'timber/loader/render_file'
+				);
 			}
-			$data = apply_filters('timber_loader_render_data', $data);
+
+			/**
+			 * Filters …
+			 *
+			 * @todo Add summary, description, example, parameter descriptions
+			 *
+			 * @since 0.20.10
+			 *
+			 * @param array  $data
+			 * @param string $file
+			 */
 			$data = apply_filters('timber/loader/render_data', $data, $file);
+
+			/**
+			 * Filters …
+			 *
+			 * @todo Add summary
+			 *
+			 * @deprecated 2.0.0, use `timber/loader/render_data`
+			 */
+			$data = apply_filters_deprecated(
+				'timber_loader_render_data',
+				array( $data ),
+				'2.0.0',
+				'timber/loader/render_data'
+			);
+
 			$output = $twig->render($file, $data);
 		}
 
@@ -78,8 +155,30 @@ class Loader {
 			$this->delete_cache();
 			$this->set_cache($key, $output, self::CACHEGROUP, $expires, $cache_mode);
 		}
-		$output = apply_filters('timber_output', $output);
-		return apply_filters('timber/output', $output, $data, $file);
+
+		/**
+		 * Filters …
+		 *
+		 * @todo  Add summary, description, example, parameter descriptions
+		 *
+		 * @since 0.20.10
+		 *
+		 * @param string $output
+		 * @param array  $data
+		 * @param string $file
+		 */
+		$output = apply_filters('timber/output', $output, $data, $file);
+
+		/**
+		 * Filters …
+		 *
+		 * @todo       Add summary
+		 *
+		 * @deprecated 2.0.0, use `timber/output`
+		 */
+		$output = apply_filters_deprecated( 'timber_output', array( $output ), '2.0.0', 'timber/output' );
+
+		return $output;
 	}
 
 	protected function delete_cache() {
@@ -115,11 +214,11 @@ class Loader {
 	}
 
 	/**
-	 * @param string $name
-	 * @return bool
 	 * @deprecated 1.3.5 No longer used internally
 	 * @todo remove in 2.x
 	 * @codeCoverageIgnore
+	 * @param string $name
+	 * @return bool
 	 */
 	protected function template_exists( $name ) {
 		return $this->get_loader()->exists($name);
@@ -132,6 +231,16 @@ class Loader {
 	public function get_loader() {
 		$open_basedir = ini_get('open_basedir');
 		$paths = array_merge($this->locations, array($open_basedir ? ABSPATH : '/'));
+
+		/**
+		 * Filters …
+		 *
+		 * @todo Add summary, description, example, parameter description
+		 *
+		 * @since 0.20.10
+		 *
+		 * @param array $paths
+		 */
 		$paths = apply_filters('timber/loader/paths', $paths);
 
 		$rootPath = '/';
@@ -139,7 +248,19 @@ class Loader {
 			$rootPath = null;
 		}
 		$fs = new \Twig_Loader_Filesystem($paths, $rootPath);
+
+		/**
+		 * Filters …
+		 *
+		 * @todo Add summary, description, example, parameter description
+		 *
+		 * @link https://github.com/timber/timber/pull/1254
+		 * @since 1.1.11
+		 *
+		 * @param array $paths
+		 */
 		$fs = apply_filters('timber/loader/loader', $fs);
+
 		return $fs;
 	}
 
@@ -157,7 +278,21 @@ class Loader {
 			Timber::$twig_cache = true;
 		}
 		if ( Timber::$twig_cache ) {
+			/**
+			 * Filters the cache location used for Twig.
+			 *
+			 * Allows you to set a new cache location for Twig. If the folder doesn’t exist yet, it
+			 * will be created automatically.
+			 *
+			 * @todo: Add example
+			 *
+			 * @since 0.20.10
+			 *
+			 * @param string $twig_cache_loc Full path to the cache location. Default `/cache/twig`
+			 *                               in the Timber root folder.
+			 */
 			$twig_cache_loc = apply_filters('timber/cache/location', TIMBER_LOC.'/cache/twig');
+
 			if ( !file_exists($twig_cache_loc) ) {
 				mkdir($twig_cache_loc, 0777, true);
 			}
@@ -169,11 +304,57 @@ class Loader {
 		}
 		$twig->addExtension($this->_get_cache_extension());
 
-		$twig = apply_filters('twig_apply_filters', $twig);
+		/**
+		 * Filters …
+		 *
+		 * @todo Add summary, description, example
+		 *
+		 * @since 0.21.9
+		 *
+		 * @param \Twig\Environment $twig The Twig environment you can add functionality to.
+		 */
 		$twig = apply_filters('timber/twig/filters', $twig);
+
+		/**
+		 * Filters …
+		 *
+		 * @todo Add summary, description, example
+		 *
+		 * @since 1.3.0-rc2
+		 *
+		 * @param \Twig\Environment $twig The Twig environment you can add functionality to.
+		 */
 		$twig = apply_filters('timber/twig/functions', $twig);
+
+		/**
+		 * Filters …
+		 *
+		 * @todo Add summary, description, example
+		 *
+		 * @since 1.1.1
+		 *
+		 * @param \Twig\Environment $twig The Twig environment you can add functionality to.
+		 */
 		$twig = apply_filters('timber/twig/escapers', $twig);
+
+		/**
+		 * Filters …
+		 *
+		 * @todo Add summary, description, example
+		 *
+		 * @since 0.20.10
+		 *
+		 * @param \Twig\Environment $twig The Twig environment you can add functionality to.
+		 */
 		$twig = apply_filters('timber/loader/twig', $twig);
+
+		/**
+		 * Filters …
+		 *
+		 * @deprecated 2.0.0, use `timber/twig/filters`
+		 */
+		$twig = apply_filters_deprecated( 'twig_apply_filters', array( $twig ), '2.0.0', 'timber/twig/filters' );
+
 		return $twig;
 	}
 

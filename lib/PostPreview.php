@@ -3,8 +3,11 @@
 namespace Timber;
 
 /**
- * An object that lets a user easily modify the post preview to their
- * liking
+ * Class PostPreview
+ *
+ * An object that lets a user easily modify the post preview to their liking.
+ *
+ * @api
  * @since 1.0.4
 */
 class PostPreview {
@@ -19,6 +22,7 @@ class PostPreview {
 	protected $destroy_tags = array('script', 'style');
 
 	/**
+	 * @api
 	 * @param Post $post
 	 */
 	public function __construct( $post ) {
@@ -30,6 +34,7 @@ class PostPreview {
 	}
 
 	/**
+	 * @api
 	 * @param integer $length (in words) of the target preview
 	 */
 	public function length( $length = 50 ) {
@@ -38,6 +43,7 @@ class PostPreview {
 	}
 
 	/**
+	 * @api
 	 * @param integer $char_length (in characters) of the target preview
 	 */
 	public function chars( $char_length = false ) {
@@ -46,6 +52,7 @@ class PostPreview {
 	}
 
 	/**
+	 * @api
 	 * @param string $end how should the text in the preview end
 	 */
 	public function end( $end = '&hellip;' ) {
@@ -54,6 +61,7 @@ class PostPreview {
 	}
 
 	/**
+	 * @api
 	 * @param boolean $force If the editor wrote a manual excerpt longer than the set length, should it be "forced" to the size specified?
 	 */
 	public function force( $force = true ) {
@@ -62,6 +70,7 @@ class PostPreview {
 	}
 
 	/**
+	 * @api
 	 * @param string $readmore What the text displays as to the reader inside of the <a> tag
 	 */
 	public function read_more( $readmore = 'Read More' ) {
@@ -70,6 +79,7 @@ class PostPreview {
 	}
 
 	/**
+	 * @api
 	 * @param boolean|string $strip strip the tags or what? You can also provide a list of allowed tags
 	 */
 	public function strip( $strip = true ) {
@@ -78,6 +88,7 @@ class PostPreview {
 	}
 
 	/**
+	 * @internal
 	 * @param string $text
 	 * @param array|booelan $readmore_matches
 	 * @param boolean $trimmed was the text trimmed?
@@ -98,7 +109,23 @@ class PostPreview {
 				$text .= $this->end.' ';
 			}
 		}
+
+		/**
+		 * Filters the CSS class used for preview links.
+		 *
+		 * @since 1.0.4
+		 * @example
+		 * ```php
+		 * // Change the CSS class for preview links
+		 * add_filter( 'timber/post/preview/read_more_class', function( $class ) {
+		 *     return 'read-more__link';
+		 * } );
+		 * ```
+		 *
+		 * @param string $class The CSS class to use for the preview link. Default `read-more`.
+		 */
 		$read_more_class = apply_filters('timber/post/preview/read_more_class', "read-more");
+
 		if ( $this->readmore && !empty($readmore_matches) && !empty($readmore_matches[1]) ) {
 			$text .= ' <a href="'.$this->post->link().'" class="'.$read_more_class.'">'.trim($readmore_matches[1]).'</a>';
 		} elseif ( $this->readmore ) {

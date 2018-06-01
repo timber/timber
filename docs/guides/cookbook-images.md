@@ -98,7 +98,7 @@ When setting up your custom fields you’ll want to save the `image_id` to the f
 ### The quick way (for most situations)
 
 ```twig
-<img src="{{ TimberImage(post.hero_image).src }}" />
+<img src="{{ Image(post.hero_image).src }}" />
 ```
 
 ### The long way (for some special situations)
@@ -109,7 +109,7 @@ This is where we’ll start in PHP.
 
 ```php
 <?php
-$post = Timber::get_post();
+$post = new Timber\Post();
 
 if ( isset( $post->hero_image ) && strlen( $post->hero_image ) ) {
     $post->hero_image = new Timber\Image( $post->hero_image );
@@ -120,7 +120,7 @@ $data['post'] = $post;
 Timber::render( 'single.twig', $data );
 ```
 
-`TimberImage` should be initialized using a WordPress image ID. It can also take URLs and image objects, but that requires extra processing.
+`Timber\Image` should be initialized using a WordPress image ID. It can also take URLs and image objects, but that requires extra processing.
 
 You can now use all the above functions to transform your custom images in the same way. The format will be:
 
