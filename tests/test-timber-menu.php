@@ -688,7 +688,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
     $menu->items[0]->current_item_ancestor = true;
     $menu->items[1]->current = true;
 
-    $current = $menu->get_current_item();
+    $current = $menu->current_item();
     $this->assertEquals( '/zazzy', $current->link() );
   }
 
@@ -706,7 +706,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
     // and listen reverently to its stories
     $menu->items[1]->current_item_ancestor = true;
 
-    $current = $menu->get_current_item();
+    $current = $menu->current_item();
     $this->assertEquals( '/grandpa', $current->link() );
   }
 
@@ -724,7 +724,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
     $grandchild = $child->children[1];
     $grandchild->current = true;
 
-    $current = $menu->get_current_item();
+    $current = $menu->current_item();
     $this->assertEquals( $grandchild->link(), $current->link() );
   }
 
@@ -734,14 +734,14 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
     // nothing marked as current
     // womp womp
-    $this->assertFalse($menu->get_current_item());
+    $this->assertFalse($menu->current_item());
   }
 
   function testGetCurrentItemWithEmptyMenu() {
     $menu = new Timber\Menu();
 
     // ain't nothin there
-    $this->assertFalse($menu->get_current_item());
+    $this->assertFalse($menu->current_item());
   }
 
   function testGetCurrentItemWithDepth() {
@@ -761,13 +761,13 @@ class TestTimberMenu extends Timber_UnitTestCase {
     $grandchild = $child->children[1];
     $grandchild->current = true;
 
-    $current = $menu->get_current_item(2);
+    $current = $menu->current_item(2);
     $this->assertEquals( $child->link(), $current->link() );
   }
 
   function testGetCurrentItemSequence() {
     // make sure we're not caching current_item too eagerly
-    // when calling get_current_item with $depth
+    // when calling current_item with $depth
     self::_createTestMenu();
     $menu = new Timber\Menu();
 
@@ -781,11 +781,11 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
     $this->assertEquals(
       $parent->link(),
-      $menu->get_current_item(1)->link()
+      $menu->current_item(1)->link()
     );
     $this->assertEquals(
       $child->link(),
-      $menu->get_current_item()->link()
+      $menu->current_item()->link()
     );
   }
 
@@ -801,7 +801,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
     $child = $parent->children[0];
     $child->current = true;
 
-    $top = $menu->get_current_top_level_item();
+    $top = $menu->current_top_level_item();
     $this->assertEquals( $parent->link(), $top->link() );
   }
 

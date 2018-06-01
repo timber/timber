@@ -66,7 +66,7 @@ class Menu extends Core {
 	/**
 	 * @var MenuItem the current menu item
 	 */
-	private $current_item;
+	private $_current_item;
 
 
 
@@ -315,11 +315,11 @@ class Menu extends Core {
 	 * to the menu item for the current page, such as in a context-aware sidebar:
 	 * ```twig
 	 * <div class="sidebar">
-	 *   <a href="{{ menu.get_current_item.link }}">
-	 *     {{ menu.get_current_item.title }}
+	 *   <a href="{{ menu.current_item.link }}">
+	 *     {{ menu.current_item.title }}
 	 *   </a>
 	 *   <ul>
-	 *     {% for child in menu.get_current_item.get_children %}
+	 *     {% for child in menu.current_item.get_children %}
 	 *       <li>
 	 *         <a href="{{ child.link }}">{{ child.title }}</a>
 	 *       </li>
@@ -328,45 +328,45 @@ class Menu extends Core {
 	 * </div>
 	 * ```
 	 * @param int $depth the maximum depth to traverse the menu tree to find the
-	 * current item. Defaults to -1, meaning no maximum. 1-based, meaning the
+	 * current item. Defaults to null, meaning no maximum. 1-based, meaning the
 	 * top level is 1.
 	 * @return MenuItem the current `Timber\MenuItem` object, i.e. the menu item
 	 * corresponding to the current post.
 	 */
-	public function get_current_item( $depth = -1 ) {
-		if ( false === $this->current_item ) {
+	public function current_item( $depth = null ) {
+		if ( false === $this->_current_item ) {
 			// I TOLD YOU BEFORE.
 			return false;
 		}
 
 		if ( empty($this->items) ) {
-			$this->current_item = false;
-			return $this->current_item;
+			$this->_current_item = false;
+			return $this->_current_item;
 		}
 
-		if ( ! isset($this->current_item) ) {
+		if ( ! isset($this->_current_item) ) {
 			$current = $this->traverse_items_for_current(
 				$this->items,
 				$depth
 			);
 
-			if ( $depth < 1 ) {
-				$this->current_item = $current;
+			if ( is_null($depth) ) {
+				$this->_current_item = $current;
 			} else {
 				return $current;
 			}
 		}
 
-		return $this->current_item;
+		return $this->_current_item;
 	}
 
 	/**
-	 * Alias for get_current_top_level_item(1).
+	 * Alias for current_top_level_item(1).
 	 *
 	 * @return MenuItem the current top-level `Timber\MenuItem` object.
 	 */
-	public function get_current_top_level_item() {
-		return $this->get_current_item( 1 );
+	public function current_top_level_item() {
+		return $this->current_item( 1 );
 	}
 
 
