@@ -367,10 +367,10 @@
 			$wp_query->queried_object = get_post($post_id);
 			$_GET['preview'] = true;
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
-			$post = new TimberPost($post_id);
+			$post = new Timber\Post($post_id);
 
 			$str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
-			$str_getfield = Timber::compile_string('{{post.get_field(\'test_field\')}}', array('post' => $post));
+			$str_getfield = Timber::compile_string('{{post.meta(\'test_field\')}}', array('post' => $post));
 
 			$this->assertEquals( $assertCustomFieldVal, $str_direct );
 			$this->assertEquals( $assertCustomFieldVal, $str_getfield );
@@ -403,10 +403,10 @@
 
 			$wp_query->queried_object_id = $post_id;
 			$wp_query->queried_object = get_post($post_id);
-			$post = new TimberPost($post_id);
+			$post = new Timber\Post($post_id);
 
 			$str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
-			$str_getfield = Timber::compile_string('{{post.get_field(\'test_field\')}}', array('post' => $post));
+			$str_getfield = Timber::compile_string('{{post.meta(\'test_field\')}}', array('post' => $post));
 
 			$this->assertEquals( $original_content, $str_direct );
 			$this->assertEquals( $original_content, $str_getfield );
