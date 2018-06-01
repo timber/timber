@@ -315,11 +315,11 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function target() {
-		if ( $this->is_target_blank() ) {
-			return '_blank';
+		$target = $this->meta( '_menu_item_target' );
+		if ( !$target ) {
+			return '_self';
 		}
-
-		return '_self';
+		return $target;
 	}
 
 	/**

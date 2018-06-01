@@ -189,7 +189,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 		// Menu item with _menu_item_target set to ''
 		$item = $items[2];
-		$this->assertFalse( '_self', $item->target() );
+		$this->assertEquals( '_self', $item->target() );
 	}
 
 	function testMenuMeta() {
@@ -464,7 +464,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $root_url_link_id, '_menu_item_url', '/' );
 		update_post_meta( $root_url_link_id, '_menu_item_xfn', '' );
 		update_post_meta( $root_url_link_id, '_menu_item_menu_item_parent', 0 );
-
+		update_post_meta( $root_url_link_id, '_menu_item_target', '' );
+		
 		$link_id = wp_insert_post(
 			array(
 				'post_title' => 'People',
@@ -480,7 +481,6 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $link_id, '_menu_item_url', '#people' );
 		update_post_meta( $link_id, '_menu_item_xfn', '' );
 		update_post_meta( $link_id, '_menu_item_menu_item_parent', 0 );
-
 		$link_id = wp_insert_post(
 			array(
 				'post_title' => 'More People',
@@ -512,6 +512,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $link_id, '_menu_item_url', 'http://example.org' );
 		update_post_meta( $link_id, '_menu_item_xfn', '' );
 		update_post_meta( $link_id, '_menu_item_menu_item_parent', 0 );
+		update_post_meta( $link_id, '_menu_item_target', ' ' );
+		update_post_meta( $link_id, 'jiggle', 'oops');
 
 		self::insertIntoMenu($menu_id, $menu_items);
 		return $menu_term;
