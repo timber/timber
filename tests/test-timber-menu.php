@@ -730,7 +730,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
   function testGetCurrentItemAntiClimactic() {
     self::_createTestMenu();
-    $menu = new TimberMenu();
+    $menu = new Timber\Menu();
 
     // nothing marked as current
     // womp womp
@@ -738,7 +738,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
   }
 
   function testGetCurrentItemWithEmptyMenu() {
-    $menu = new TimberMenu();
+    $menu = new Timber\Menu();
 
     // ain't nothin there
     $this->assertFalse($menu->get_current_item());
@@ -746,7 +746,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
   function testGetCurrentItemWithDepth() {
     self::_createTestMenu();
-    $menu = new TimberMenu();
+    $menu = new Timber\Menu();
 
     // pick a grandchild to inherit the great responsibility of current affairs
     $parent = $menu->items[0];
@@ -769,7 +769,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
     // make sure we're not caching current_item too eagerly
     // when calling get_current_item with $depth
     self::_createTestMenu();
-    $menu = new TimberMenu();
+    $menu = new Timber\Menu();
 
     // we'll expect parent first, but expect grandchild on subsequent calls
     // with no arguments
@@ -791,7 +791,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
   function testGetCurrentTopLevelItem() {
     self::_createTestMenu();
-    $menu = new TimberMenu();
+    $menu = new Timber\Menu();
 
     // we want this one
     $parent = $menu->items[0];
