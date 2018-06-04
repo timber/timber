@@ -50,6 +50,12 @@ class Timber {
 
 	public static $context_cache = array();
 
+	public static $context_cache_post = null;
+
+	public static $context_cache_posts = array();
+
+	public static $context_args = array();
+
 	/**
 	 * @codeCoverageIgnore
 	 */
@@ -224,24 +230,57 @@ class Timber {
 	/*  Template Setup and Display
 	================================ */
 
+	public function get_context( $args = array() ) {
+		Helper::deprecated( 'get_context', 'context', '2.0.0' );
+
+		return $this->context( $args );
+	}
+
 	/**
-	 * Get context.
+	 * Gets the context.
+	 *
+	 * The context contains a `post` entry for singular pages. For archive pages, it set a `posts
+	 * entry that will contain an array of posts that will be displayed for the current archive.
+	 *
+	 * The first call to this function will be cached, which means that you can call this function
+	 * again without losing performance. When you pass arguments directly to subsequent calls, then
+	 * the cache will not be updated, but you will get the result for the arguments that you pass.
+	 * In this case, it might affect your performance. If a filter is added after the first call to
+	 * this function, it will update the cache.
+	 *
+	 * - Arguments that are saved through filters will be cached.
+	 * - Arguments that will directly be passed to the query will be cached.
+	 *
+	 * If get_context() is called again:
+	 *
+	 * - New arguments that come in through filters will update the cache.
+	 * - New arguments that will directly be passed to the query won’t update the query.
+	 *
 	 * @api
-	 * @return array
+	 *
+	 * @param array $args
+	 *
+	 * @return array An array of context variables that is used to pass into Twig templates through
+	 *               a render or compile function.
 	 */
-	public static function get_context() {
-		if ( empty(self::$context_cache) ) {
-			self::$context_cache['http_host'] = URLHelper::get_scheme().'://'.URLHelper::get_host();
-			self::$context_cache['wp_title'] = Helper::get_wp_title();
-			self::$context_cache['body_class'] = implode(' ', get_body_class());
+	public static function context( $args = array() ) {
+		$args = wp_parse_args( $args, array(
+			'post'                 => null,
+			'posts'                => array(),
+			'cancel_default_query' => false,
+		) );
 
-			self::$context_cache['site'] = new Site();
-			self::$context_cache['request'] = new Request();
-			$user = new User();
-			self::$context_cache['user'] = ($user->ID) ? $user : false;
-			self::$context_cache['theme'] = self::$context_cache['site']->theme;
+		$args = apply_filters( 'timber/context/args', $args );
 
-			self::$context_cache['posts'] = new PostQuery();
+		if ( empty( self::$context_cache ) ) {
+			self::$context_cache['site']       = new Site();
+			self::$context_cache['request']    = new Request();
+			self::$context_cache['theme']      = self::$context_cache['site']->theme;
+			self::$context_cache['user']       = is_user_logged_in() ? new User() : false;
+
+			self::$context_cache['http_host']  = URLHelper::get_scheme() . '://' . URLHelper::get_host();
+			self::$context_cache['wp_title']   = Helper::get_wp_title();
+			self::$context_cache['body_class'] = implode( ' ', get_body_class() );
 
 			/**
 			 * Filters the global Timber context.
@@ -249,6 +288,9 @@ class Timber {
 			 * By using this filter, you can add custom data to the global Timber context, which
 			 * means that this data will be available on every page that is initialized with
 			 * `Timber::get_context()`.
+			 *
+			 * Be aware that data will be cached as soon as you call `Timber::get_context()` for the
+			 * first time.
 			 *
 			 * @see \Timber\Timber::get_context()
 			 * @since 0.21.7
@@ -283,7 +325,7 @@ class Timber {
 			 *
 			 * @param array $context The global context.
 			 */
-			self::$context_cache = apply_filters('timber/context', self::$context_cache);
+			self::$context_cache = apply_filters( 'timber/context', self::$context_cache );
 
 			/**
 			 * Filters the global Timber context.
@@ -298,8 +340,113 @@ class Timber {
 			);
 		}
 
+		$context = self::$context_cache;
 
-		return self::$context_cache;
+		// Context for singular templates.
+		if ( false !== $args['post']
+		    && ! apply_filters( 'timber/context/disable_post', false )
+		) {
+			 $context_post = self::context_post( $args );
+
+			 if ( $context_post ) {
+			    $context['post'] = $context_post;
+			 }
+		}
+
+		// Context for archive templates.
+		if ( false !== $args['posts']
+		    && ! apply_filters( 'timber/context/disable_posts', false )
+		) {
+			$context_posts = self::context_posts( $args );
+
+			if ( $context_posts ) {
+				$context['posts'] = $context_posts;
+			}
+		}
+
+		self::$context_args = $args;
+
+		return $context;
+	}
+
+	/**
+	 * @internal
+	 * @return null|\Timber\Post
+	 */
+	public static function context_post( $args ) {
+		global $post;
+		global $wp_query;
+
+		if ( ! isset( $wp_query ) || ! is_singular() ) {
+			return null;
+		}
+
+		$context_post = $post;
+
+		// Arguments that are passed directly to the context will always overwrite the default post.
+		if ( ! empty( $args['post'] ) ) {
+			$context_post = $args['post'];
+		}
+
+		/**
+		 * Update cache and mimick WordPress behavior, if the cache is still empty or the post
+		 * parameter passed in the args is different than the one from a previous call to this
+		 * function.
+		 */
+		if ( empty( self::$context_cache_post ) || self::$context_args['post'] !== $args['post'] ) {
+			// Mimick WordPress behavior
+			$wp_query->in_the_loop = true;
+			do_action_ref_array( 'loop_start', $wp_query );
+			$wp_query->setup_postdata( $context_post instanceof Post
+				? $context_post->ID
+				: $context_post
+			);
+
+			self::$context_args['post'] = $args['post'];
+			self::$context_cache_post = new Post( $context_post );
+		}
+
+		return self::$context_cache_post;
+	}
+
+	/**
+	 * @internal
+	 * @param array $args
+	 *
+	 * @return array|null|\Timber\PostQuery
+	 */
+	public static function context_posts( $args = array() ) {
+		global $wp_query;
+
+		if ( isset( $wp_query ) || ! is_archive() ) {
+			return null;
+		}
+
+		if ( $args['cancel_default_query'] ) {
+			return new PostQuery( $args['posts'] );
+		}
+
+		$post_query_args = $wp_query->query_vars;
+		// $post_query_args = apply_filters( 'timber/context/posts', $post_query_args );
+
+		/**
+		 * Arguments that are directly passed to the context will always overwrite the default post
+		 * query args.
+		 */
+		if ( ! empty( $args['posts'] ) ) {
+			$post_query_args = wp_parse_args( $args['posts'], $post_query_args );
+
+			if ( ! empty( self::$context_cache_posts ) ) {
+				return new PostQuery( $post_query_args );
+			}
+		}
+
+		if ( empty( self::$context_cache_posts ) || self::$context_args['posts'] !== $post_query_args ) {
+			self::$context_args['posts'] = $post_query_args;
+			self::$context_cache_posts = new PostQuery( $post_query_args );
+		}
+
+		return self::$context_cache_posts;
 	}
 
 	/**
