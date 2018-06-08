@@ -58,8 +58,8 @@ class Letterbox extends ImageOperation {
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
 	public function run( $load_filename, $save_filename ) {
-		// attempt to check if SVG
-		if ( ImageHelper::is_svg( $load_filename ) ) {
+		// Attempt to check if SVG.
+		if ( ImageHelper::is_svg($load_filename) ) {
 			return false;
 		}
 		

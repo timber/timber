@@ -47,8 +47,8 @@ class ToJpg extends ImageOperation {
 			return false;
 		}
 		
-		// attempt to check if SVG
-		if ( ImageHelper::is_svg( $load_filename ) ) {
+		// Attempt to check if SVG.
+		if ( ImageHelper::is_svg($load_filename) ) {
 			return false;
 		}
 
