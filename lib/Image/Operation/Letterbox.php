@@ -3,6 +3,7 @@
 namespace Timber\Image\Operation;
 
 use Timber\Helper;
+use Timber\ImageHelper;
 use Timber\Image\Operation as ImageOperation;
 
 /*
