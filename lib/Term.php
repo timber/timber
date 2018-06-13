@@ -260,7 +260,7 @@ class Term extends Core implements CoreInterface {
 			$PostClass = $this->PostClass;
 		}
 		$default_tax_query = array(array(
-			'field' => 'id',
+			'field' => 'term_id',
 			'terms' => $this->ID,
 			'taxonomy' => $this->taxonomy,
 		));
