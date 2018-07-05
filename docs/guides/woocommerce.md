@@ -120,6 +120,9 @@ Create a Twig file according to the location asked by the above file, in this ex
 
 Again we are keeping things simple by using WooCommerce’s default hooks. If you need to override the output of any of those hooks, my advice would be to remove and add the relevant actions using PHP, keeping your upgrade path simple.
 
+If you wanna use the same `tease-product.twig` output as your related products, you have to remove the default related-products from theme, add the following to your `functions.php` file:
+`remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );`
+
 Finally, we’ll need to create a teaser file for products in loops. Considering the code above that would be `views/partials/tease-product.twig`:
 
 ## Tease Product
