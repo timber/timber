@@ -1083,4 +1083,20 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertFalse(TimberImageHelper::is_animated_gif($resized_path));
 	}
 
+	/**
+	 * Unlike raster (JPEG, PNG, etc.) SVG is vector-type file so resizing
+	 * shouldn't affect the file. Why is this necessary? B/C a user could have
+	 * uploaded an SVG or JPEG to a particular field and we need to handle
+	 * for either case. 
+	 */	
+	function testResizeSVG() {
+		$image = self::copyTestImage('icon-twitter.svg');
+		$data = [];
+		$data['size'] = array('width' => 100, 'height' => 50);
+		$upload_dir = wp_upload_dir();
+		$data['test_image'] = $upload_dir['url'].'/icon-twitter.svg';
+		$str = Timber::compile( 'assets/image-test.twig', $data );
+		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.date('Y/m').'/icon-twitter.svg" />', trim($str));
+	}
+
 }
