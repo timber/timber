@@ -30,8 +30,8 @@ if ( is_singular( 'product' ) ) {
     $related_ids                 = wc_get_related_products( $context['post']->id, $related_limit );
     $context['related_products'] =  Timber::get_posts( $related_ids );
 
-		// Restore the context and loop back to the main query loop.
-		wp_reset_postdata();
+    // Restore the context and loop back to the main query loop.
+    wp_reset_postdata();
 
     Timber::render( 'views/woo/single-product.twig', $context );
 } else {
