@@ -1118,4 +1118,13 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.date('Y/m').'/icon-twitter.svg" />', trim($str));
 	}
 
+	function testSVGtoJPG() {
+		$image = self::copyTestImage('icon-twitter.svg');
+		$data = [];
+		$upload_dir = wp_upload_dir();
+		$data['test_image'] = $upload_dir['url'].'/icon-twitter.svg';
+		$str = Timber::compile_string( '<img src="{{ test_image|tojpg }}" />', $data );
+		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.date('Y/m').'/icon-twitter.svg" />', trim($str));
+	}
+
 }

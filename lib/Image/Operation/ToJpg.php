@@ -75,4 +75,5 @@ class ToJpg extends ImageOperation {
 		imagejpeg($output, $save_filename);
 		return true;
 	}
+
 }
