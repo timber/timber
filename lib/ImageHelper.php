@@ -142,6 +142,7 @@ class ImageHelper {
 	}
 	
 	/** 
+	 *
 	 * Checks if file is an SVG
 	 * @param string $file_path file path.
 	 * @return boolean true if svg, false if not svg or file doesn't exist.
@@ -150,7 +151,7 @@ class ImageHelper {
 		$ret = false;
 		if ( isset($file_path) && '' !== $file_path && file_exists($file_path) ) {
 			$mime = mime_content_type($file_path);
-    		$ret = in_array($mime, ['image/svg+xml','text/html', 'text/plain']);
+    		$ret  = in_array($mime, ['image/svg+xml', 'text/html', 'text/plain']);
     	}
     	return $ret;
 	}
