@@ -1089,13 +1089,32 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	 * uploaded an SVG or JPEG to a particular field and we need to handle
 	 * for either case. 
 	 */	
-	function testResizeSVG() {
+	function testSVGResize() {
 		$image = self::copyTestImage('icon-twitter.svg');
 		$data = [];
 		$data['size'] = array('width' => 100, 'height' => 50);
 		$upload_dir = wp_upload_dir();
 		$data['test_image'] = $upload_dir['url'].'/icon-twitter.svg';
 		$str = Timber::compile( 'assets/image-test.twig', $data );
+		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.date('Y/m').'/icon-twitter.svg" />', trim($str));
+	}
+
+	function testSVGLetterbox() {
+		$image = self::copyTestImage('icon-twitter.svg');
+		$data = [];
+		$data['size'] = array('width' => 100, 'height' => 50);
+		$upload_dir = wp_upload_dir();
+		$data['test_image'] = $upload_dir['url'].'/icon-twitter.svg';
+		$str = Timber::compile_string( '<img src="{{ test_image|letterbox(size.width, size.height) }}" />', $data );
+		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.date('Y/m').'/icon-twitter.svg" />', trim($str));
+	}
+
+	function testSVGRetina() {
+		$image = self::copyTestImage('icon-twitter.svg');
+		$data = [];
+		$upload_dir = wp_upload_dir();
+		$data['test_image'] = $upload_dir['url'].'/icon-twitter.svg';
+		$str = Timber::compile_string( '<img src="{{ test_image|retina(2) }}" />', $data );
 		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.date('Y/m').'/icon-twitter.svg" />', trim($str));
 	}
 
