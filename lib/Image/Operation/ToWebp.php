@@ -4,8 +4,8 @@ namespace Timber\Image\Operation;
 
 use Timber\Image\Operation as ImageOperation;
 
-class ToWebp extends ImageOperation
-{
+class ToWebp extends ImageOperation {
+
 	private $quality;
 
 	/**
@@ -56,6 +56,6 @@ class ToWebp extends ImageOperation
         if ( !imageistruecolor($input) ) {
             imagepalettetotruecolor($input);
         }
-		return imagewebp($input, $save_filename, $this->quality);
+		return \imagewebp($input, $save_filename, $this->quality);
     }
 }
