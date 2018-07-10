@@ -336,6 +336,79 @@
 			$this->assertEquals('I am the one', $post->post_content);
 		}
 
+		function testCustomFieldPreviewRevision(){
+			global $current_user;
+			global $wp_query;
+
+			$post_id = $this->factory->post->create(array(
+				'post_author' => 5,
+			));
+			update_field('test_field', 'The custom field content', $post_id);
+
+			$assertCustomFieldVal = 'This has been revised';
+			$revision_id = $this->factory->post->create(array(
+				'post_type' => 'revision',
+				'post_status' => 'inherit',
+				'post_parent' => $post_id,
+			));
+			update_field('test_field', $assertCustomFieldVal, $revision_id);
+
+			$uid = $this->factory->user->create(array(
+				'user_login' => 'timber',
+				'user_pass' => 'timber',
+			));
+			$user = wp_set_current_user($uid);
+			$user->add_role('administrator');
+
+			$wp_query->queried_object_id = $post_id;
+			$wp_query->queried_object = get_post($post_id);
+			$_GET['preview'] = true;
+			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
+			$post = new TimberPost($post_id);
+
+			$str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
+			$str_getfield = Timber::compile_string('{{post.get_field(\'test_field\')}}', array('post' => $post));
+
+			$this->assertEquals( $assertCustomFieldVal, $str_direct );
+			$this->assertEquals( $assertCustomFieldVal, $str_getfield );
+		}
+
+		function testCustomFieldPreviewNotRevision() {
+			global $current_user;
+			global $wp_query;
+			$original_content = 'The custom field content';
+
+			$post_id = $this->factory->post->create(array(
+				'post_author' => 5,
+			));
+			update_field('test_field', $original_content, $post_id);
+
+			$assertCustomFieldVal = 'This has been revised';
+			$revision_id = $this->factory->post->create(array(
+				'post_type' => 'revision',
+				'post_status' => 'inherit',
+				'post_parent' => $post_id,
+			));
+			update_field('test_field', $assertCustomFieldVal, $revision_id);
+
+			$uid = $this->factory->user->create(array(
+				'user_login' => 'timber',
+				'user_pass' => 'timber',
+			));
+			$user = wp_set_current_user($uid);
+			$user->add_role('administrator');
+
+			$wp_query->queried_object_id = $post_id;
+			$wp_query->queried_object = get_post($post_id);
+			$post = new TimberPost($post_id);
+
+			$str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
+			$str_getfield = Timber::compile_string('{{post.get_field(\'test_field\')}}', array('post' => $post));
+
+			$this->assertEquals( $original_content, $str_direct );
+			$this->assertEquals( $original_content, $str_getfield );
+		}
+
 		function testContent(){
 			$quote = 'The way to do well is to do well.';
 			$post_id = $this->factory->post->create();
@@ -821,6 +894,29 @@
 			update_post_meta($pid, 'video', 'foo');
 			$post = new Timber\Post($pid);
 			$this->assertEquals('foo', $post->video());
+		}
+
+		function testPathAndLinkWithPort() {
+			/* setUp */
+			update_option( 'siteurl', 'http://example.org:3000', true );
+			update_option( 'home', 'http://example.org:3000', true );
+			self::setPermalinkStructure();
+            $old_port = $_SERVER['SERVER_PORT'];
+            $_SERVER['SERVER_PORT'] = 3000;
+            if (!isset($_SERVER['SERVER_NAME'])){
+                $_SERVER['SERVER_NAME'] = 'example.org';
+            }
+
+            /* test */
+            $pid = $this->factory->post->create(array('post_name' => 'my-cool-post'));
+			$post = new TimberPost($pid);
+			$this->assertEquals('http://example.org:3000/my-cool-post/', $post->link());
+			$this->assertEquals('/my-cool-post/', $post->path());
+
+			/* tearDown */
+            $_SERVER['SERVER_PORT'] = $old_port;
+            update_option( 'siteurl', 'http://example.org', true );
+            update_option( 'home', 'http://example.org', true );
 		}
 
 		/**

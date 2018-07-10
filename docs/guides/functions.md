@@ -65,6 +65,7 @@ If you have functions that you use a lot and want to improve readability of your
  */
 add_filter( 'timber/twig', function( \Twig_Environment $twig ) {
 	$twig->addFunction( new Timber\Twig_Function( 'edit_post_link', 'edit_post_link' ) );
+	return $twig;
 } );
 ```
 
@@ -92,7 +93,7 @@ In Timber versions lower than 1.3, you could use `function_wrapper` to make func
 
 The concept of Timber (and templating engines like Twig in general) is to prepare all the data before you pass it to a template. Some functions in WordPress echo their output directly. We don’t want this, because the output of this function would be echoed before we call `Timber:render()` and appear before every else on your website. There are two ways to work around this:
 
-- If you have a function where you want to bypass the output and instead save it as a string, so that you can add it to your context, use [`Helper::ob_function`](/reference/timber-helper/#ob-function).
+- If you have a function where you want to bypass the output and instead save it as a string, so that you can add it to your context, use [`Helper::ob_function`](https://timber.github.io/docs/reference/timber-helper/#ob-function).
 - If you have a function that needs to be called exactly where you use it in your template (e.g. because it depends on certain global values) you can use `FunctionWrapper`:
 
 ```php
