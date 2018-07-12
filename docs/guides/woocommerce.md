@@ -25,6 +25,14 @@ if ( is_singular( 'product' ) ) {
     $product            = wc_get_product( $context['post']->ID );
     $context['product'] = $product;
 
+    // Get related products
+    $related_limit               = wc_get_loop_prop( 'columns' );
+    $related_ids                 = wc_get_related_products( $context['post']->id, $related_limit );
+    $context['related_products'] =  Timber::get_posts( $related_ids );
+
+    // Restore the context and loop back to the main query loop.
+    wp_reset_postdata();
+
     Timber::render( 'views/woo/single-product.twig', $context );
 } else {
     $posts = new Timber\PostQuery();
@@ -103,12 +111,17 @@ Create a Twig file according to the location asked by the above file, in this ex
 
     </article>
 
+    {% include ["partials/tease-product.twig"] with { products: related_products } %}
+
     {% do action('woocommerce_after_single_product') %}
 
 {% endblock  %}
 ```
 
 Again we are keeping things simple by using WooCommerce’s default hooks. If you need to override the output of any of those hooks, my advice would be to remove and add the relevant actions using PHP, keeping your upgrade path simple.
+
+If you wanna use the same `tease-product.twig` output as your related products, you have to remove the default related-products from theme, add the following to your `functions.php` file:
+`remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );`
 
 Finally, we’ll need to create a teaser file for products in loops. Considering the code above that would be `views/partials/tease-product.twig`:
 

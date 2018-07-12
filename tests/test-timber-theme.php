@@ -27,6 +27,27 @@
 			$this->assertEquals('/wp-content/themes/'.$theme->slug, $output);
 		}
 
+		function testPathWithPort() {
+			/* setUp */
+			update_option( 'siteurl', 'http://example.org:3000', true );
+			update_option( 'home', 'http://example.org:3000', true );
+			self::setPermalinkStructure();
+            $old_port = $_SERVER['SERVER_PORT'];
+            $_SERVER['SERVER_PORT'] = 3000;
+            if (!isset($_SERVER['SERVER_NAME'])){
+                $_SERVER['SERVER_NAME'] = 'example.org';
+            }
+
+            /* test */
+            $theme = new Timber\Theme();
+			$this->assertEquals('/wp-content/themes/default', $theme->path());
+
+			/* tearDown */
+            $_SERVER['SERVER_PORT'] = $old_port;
+            update_option( 'siteurl', 'http://example.org', true );
+            update_option( 'home', 'http://example.org', true );
+		}
+
 		function testPathOnSubdirectoryInstall() {
 			update_option( 'siteurl', 'http://example.org/wordpress', true );
 			$context = Timber::get_context();
