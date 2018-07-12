@@ -267,18 +267,6 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Get Posts that have been "tagged" with the particular term
-	 * @deprecated since 2.0.0
-	 * @param int $numberposts
-	 * @param string $post_type
-	 * @param string $PostClass
-	 * @return array|bool|null
-	 */
-	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
-		return $this->posts($numberposts, $post_type, $PostClass);
-	}
-
-	/**
 	 * @internal
 	 * @return array
 	 */
