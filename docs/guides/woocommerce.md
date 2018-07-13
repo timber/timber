@@ -185,7 +185,7 @@ function timber_set_product( $post ) {
 }
 ```
 
-Without this, some elements of the listed products would show the same information as the first product in the loop.
+Without this, some elements of the listed products would show the same information as the first product in the loop. If you see an error like `Warning: call_user_func_array() expects parameter 1 to be a valid callback, no array or string given`, this is your problem.
 
 *Note:* Some users reported issues with the loop context even when using the `timber_set_product()` helper function. Turns out the default WooCommerce hooks interfere with the output of the aforementioned function.
 
