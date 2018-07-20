@@ -37,7 +37,8 @@
   "require-dev": {
     "phpunit/phpunit": "5.7.16",
     "wpackagist-plugin/advanced-custom-fields": "4.4.*",
-    "wpackagist-plugin/co-authors-plus" : "3.2.*"
+    "wpackagist-plugin/co-authors-plus" : "3.2.*",
+    "johnpbloch/wordpress" : "4.*"
   },
   "suggest" : {
     "satooshi/php-coveralls": "1.0.* for code coverage"
