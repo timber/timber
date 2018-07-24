@@ -140,6 +140,21 @@ class ImageHelper {
 		fclose($fh);
 		return $count > 1;
 	}
+	
+	/** 
+	 *
+	 * Checks if file is an SVG
+	 * @param string $file_path file path.
+	 * @return boolean true if svg, false if not svg or file doesn't exist.
+	 */
+	public static function is_svg( $file_path ) {
+		$ret = false;
+		if ( isset($file_path) && '' !== $file_path && file_exists($file_path) ) {
+			$mime = mime_content_type($file_path);
+    		$ret  = in_array($mime, ['image/svg+xml', 'text/html', 'text/plain']);
+    	}
+    	return $ret;
+	}
 
 	/**
 	 * Generate a new image with the specified dimensions.

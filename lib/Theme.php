@@ -114,7 +114,9 @@ class Theme extends Core {
 	 * @return  string the relative path to the theme (ex: `/wp-content/themes/my-timber-theme`)
 	 */
 	public function path() {
-		return URLHelper::get_rel_url($this->link());
+		// force = true to work with specifying the port
+		// @see https://github.com/timber/timber/issues/1739
+		return URLHelper::get_rel_url($this->link(), true); 
 	}
 
 	/**
