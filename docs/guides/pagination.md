@@ -60,6 +60,13 @@ You can then markup the output like so  (of course, the exact markup is up to YO
 	Timber::render('page-events.twig', $context);
 ```
 
+## And if it's still not working ?
+```php
+	<?php
+	$context['pagination'] = Timber\Pagination::get_pagination( array() );
+	Timber::render('page-events.twig', $context);
+```
+
 ## Pagination with pre_get_posts
 
 Custom `query_posts` sometimes shows 404 on example.com/page/2. In that case you can also use `pre_get_posts` in your functions.php file:
