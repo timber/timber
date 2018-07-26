@@ -251,6 +251,12 @@
 			$this->assertEquals('Spaceballs: may the schwartz be with you', trim($result));
 		}
 
+		function testTwigFunction() {
+			$template = '{{bloginfo("name")}}';
+			$result = Timber::compile_string($template);
+			$this->assertEquals('Test Blog', $result);
+		}
+
 		function testAddToTwig() {
 			add_filter('timber/twig', function( $twig ) {
 				$twig->addFilter( new Twig_SimpleFilter( 'foobar', function( $text ) {
