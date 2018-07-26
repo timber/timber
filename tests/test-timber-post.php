@@ -957,7 +957,7 @@
 
             /* test */
             $pid = $this->factory->post->create(array('post_name' => 'my-cool-post'));
-			$post = new TimberPost($pid);
+			$post = new Timber\Post($pid);
 			$this->assertEquals('http://example.org:3000/my-cool-post/', $post->link());
 			$this->assertEquals('/my-cool-post/', $post->path());
 
