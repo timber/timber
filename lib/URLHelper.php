@@ -181,8 +181,7 @@ class URLHelper {
 	public static function get_content_subdir() {
 		$home_url = get_home_url();
 		$home_url = apply_filters('timber/URLHelper/get_content_subdir/home_url', $home_url);
-		$wp_content_path = str_replace($home_url, '', WP_CONTENT_URL);
-		return $wp_content_path;
+		return str_replace($home_url, '', WP_CONTENT_URL);
 	} 
 
 	/**
