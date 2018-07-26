@@ -9,6 +9,10 @@
             $_SERVER['SERVER_PORT'] = 443;
             $url = Timber\URLHelper::get_current_url();
             $this->assertEquals('https://example.org', $url);
+            unset($_SERVER['HTTPS']);
+            $_SERVER['SERVER_PORT'] = 80;
+            print_r($_SERVER);
+
         }
 
         function testSwapProtocolHTTPtoHTTPS() {
