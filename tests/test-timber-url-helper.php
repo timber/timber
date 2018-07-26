@@ -4,6 +4,13 @@
 
 		private $mockUploadDir = false;
 
+        function testHTTPSCurrentURL() {
+            $_SERVER['HTTPS'] = 'on';
+            $_SERVER['SERVER_PORT'] = 443;
+            $url = Timber\URLHelper::get_current_url();
+            $this->assertEquals('https://example.org', $url);
+        }
+
         function testSwapProtocolHTTPtoHTTPS() {
             $url = 'http://nytimes.com/news/reports/2017';
             $url = Timber\URLHelper::swap_protocol($url);
