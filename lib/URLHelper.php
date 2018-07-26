@@ -18,7 +18,7 @@ class URLHelper {
 	public static function get_current_url() {
 		$page_url = self::get_scheme() . '://';
 		if ( isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != "80" && $_SERVER["SERVER_PORT"] != "443") {
-			$pageURL .= self::get_host().":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+			$page_url .= self::get_host().":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
 		} else {
 			$page_url .= self::get_host() . $_SERVER['REQUEST_URI'];
 		}
