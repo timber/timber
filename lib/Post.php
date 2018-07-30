@@ -106,7 +106,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * @api
-	 * @var string $id the numeric WordPress id of a post
+	 * @var int $id the numeric WordPress id of a post
 	 */
 	public $id;
 
@@ -1366,7 +1366,7 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * <img src="{{ post.thumbnail.src }}" />
 	 * ```
-	 * @return Timber/Image|null of your thumbnail
+	 * @return Timber\Image|null of your thumbnail
 	 */
 	public function thumbnail() {
 		$tid = get_post_thumbnail_id($this->ID);
