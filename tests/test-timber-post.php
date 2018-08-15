@@ -997,15 +997,16 @@
 		 * only on the main post, but not when Timber creates post objects in a loop.
 		 *
 		 * @ticket 1639
+		 * @see TestTimberContext::testIfThePostHookIsRunInSingularTemplates()
 		 */
 		function testPostConstructorAndThePostHook() {
 			add_action( 'the_post', function( $post ) {
-				$post->touched_the_post_action = true;
+				add_filter( 'touched_the_post_action', '__return_true' );
 			} );
 
 			$post_id = $this->factory()->post->create();
-			$post = new Timber\Post( $post_id );
+			new Timber\Post( $post_id );
 
-			$this->assertEquals( false, $post->touched_the_post_action );
+			$this->assertFalse( apply_filters( 'touched_the_post_action', false ) );
 		}
 	}
