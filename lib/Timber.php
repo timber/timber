@@ -230,16 +230,16 @@ class Timber {
 	/*  Template Setup and Display
 	================================ */
 
-	public function get_context( $args = array() ) {
+	public static function get_context( $args = array() ) {
 		Helper::deprecated( 'get_context', 'context', '2.0.0' );
 
-		return $this->context( $args );
+		return self::context( $args );
 	}
 
 	/**
 	 * Gets the context.
 	 *
-	 * The context contains a `post` entry for singular pages. For archive pages, it set a `posts
+	 * The context contains a `post` entry for singular pages. For archive pages, it sets a `posts`
 	 * entry that will contain an array of posts that will be displayed for the current archive.
 	 *
 	 * The first call to this function will be cached, which means that you can call this function
@@ -272,6 +272,33 @@ class Timber {
 
 		$args = apply_filters( 'timber/context/args', $args );
 
+		$context = self::context_global();
+
+		// Context for singular templates.
+		$context_post = self::context_post( $args );
+
+		if ( $context_post ) {
+			$context['post'] = $context_post;
+		}
+
+		// Context for archive templates.
+		$context_posts = self::context_posts( $args );
+
+		if ( $context_posts ) {
+			$context['posts'] = $context_posts;
+		}
+
+		self::$context_args = $args;
+
+		return $context;
+	}
+
+	/**
+	 * Gets the global context.
+	 *
+	 * @return array An array of global context variables.
+	 */
+	public static function context_global() {
 		if ( empty( self::$context_cache ) ) {
 			self::$context_cache['site']       = new Site();
 			self::$context_cache['request']    = new Request();
@@ -340,44 +367,29 @@ class Timber {
 			);
 		}
 
-		$context = self::$context_cache;
-
-		// Context for singular templates.
-		if ( false !== $args['post']
-		    && ! apply_filters( 'timber/context/disable_post', false )
-		) {
-			 $context_post = self::context_post( $args );
-
-			 if ( $context_post ) {
-			    $context['post'] = $context_post;
-			 }
-		}
-
-		// Context for archive templates.
-		if ( false !== $args['posts']
-		    && ! apply_filters( 'timber/context/disable_posts', false )
-		) {
-			$context_posts = self::context_posts( $args );
-
-			if ( $context_posts ) {
-				$context['posts'] = $context_posts;
-			}
-		}
-
-		self::$context_args = $args;
-
-		return $context;
+		return self::$context_cache;
 	}
 
 	/**
+	 * Gets post context for a singular template.
+	 *
 	 * @internal
+	 *
+	 * @param $context_post
+	 *
 	 * @return null|\Timber\Post
 	 */
 	public static function context_post( $args ) {
 		global $post;
 		global $wp_query;
 
-		if ( ! isset( $wp_query ) || ! is_singular() ) {
+		/**
+		 * Bail out if
+		 *
+		 * - A post shouldn’t be set in the context
+		 * - We don’t have a singular template
+		 */
+		if ( false === $args['post'] || ! is_singular() ) {
 			return null;
 		}
 
@@ -389,28 +401,33 @@ class Timber {
 		}
 
 		/**
-		 * Update cache and mimick WordPress behavior, if the cache is still empty or the post
-		 * parameter passed in the args is different than the one from a previous call to this
-		 * function.
+		 * Update cache if the cache is still empty or the post parameter passed in the args is
+		 * different than the one from a previous call to this function.
 		 */
 		if ( empty( self::$context_cache_post ) || self::$context_args['post'] !== $args['post'] ) {
-			// Mimick WordPress behavior
-			$wp_query->in_the_loop = true;
-			do_action_ref_array( 'loop_start', $wp_query );
-			$wp_query->setup_postdata( $context_post instanceof Post
-				? $context_post->ID
-				: $context_post
-			);
+			if ( ! $context_post instanceof Post ) {
+				$context_post = new Post( $context_post );
+			}
 
+			// Set chache.
 			self::$context_args['post'] = $args['post'];
-			self::$context_cache_post = new Post( $context_post );
+			self::$context_cache_post   = $context_post;
 		}
+
+		// Mimick WordPress behavior to improve compatibility with third party plugins.
+		$wp_query->in_the_loop = true;
+		do_action_ref_array( 'loop_start', array( &$GLOBALS['wp_query'] ) );
+		$wp_query->setup_postdata( $context_post instanceof Post
+			? $context_post->ID
+			: $context_post
+		);
 
 		return self::$context_cache_post;
 	}
 
 	/**
-	 * @internal
+	 * Gets posts context for an archive template.
+	 *
 	 * @param array $args
 	 *
 	 * @return array|null|\Timber\PostQuery
@@ -418,32 +435,47 @@ class Timber {
 	public static function context_posts( $args = array() ) {
 		global $wp_query;
 
-		if ( isset( $wp_query ) || ! is_archive() ) {
+		$args = wp_parse_args( array(
+			'posts'                => array(),
+			'cancel_default_query' => false,
+		), $args );
+
+		// Bail out if posts should not be set in context.
+		if ( false === $args['posts'] ||
+			( $args['cancel_default_query'] && empty( $args['posts'] ) )
+		) {
 			return null;
 		}
 
-		if ( $args['cancel_default_query'] ) {
-			return new PostQuery( $args['posts'] );
+		// Bail out if it’s not an archive page.
+		if ( ! is_archive() && ! is_home() ) {
+			return null;
 		}
 
+		// Use args from default query.
 		$post_query_args = $wp_query->query_vars;
-		// $post_query_args = apply_filters( 'timber/context/posts', $post_query_args );
 
-		/**
-		 * Arguments that are directly passed to the context will always overwrite the default post
-		 * query args.
-		 */
 		if ( ! empty( $args['posts'] ) ) {
-			$post_query_args = wp_parse_args( $args['posts'], $post_query_args );
+			if ( $args['cancel_default_query'] ) {
+				$post_query_args = $args['posts'];
+			} elseif ( is_array( $args['posts'] ) ) {
+				$post_query_args = wp_parse_args( $args['posts'], $post_query_args );
+			}
 
+			// Return early when cache is already set.
 			if ( ! empty( self::$context_cache_posts ) ) {
-				return new PostQuery( $post_query_args );
+				return $post_query_args instanceof PostQuery
+					? $post_query_args
+					: new PostQuery( $post_query_args );
 			}
 		}
 
 		if ( empty( self::$context_cache_posts ) || self::$context_args['posts'] !== $post_query_args ) {
+			// Set cache.
 			self::$context_args['posts'] = $post_query_args;
-			self::$context_cache_posts = new PostQuery( $post_query_args );
+			self::$context_cache_posts   = $post_query_args instanceof PostQuery
+				? $post_query_args
+				: new PostQuery( $post_query_args );
 		}
 
 		return self::$context_cache_posts;
