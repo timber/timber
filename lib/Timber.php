@@ -50,12 +50,6 @@ class Timber {
 
 	public static $context_cache = array();
 
-	public static $context_cache_post = null;
-
-	public static $context_cache_posts = array();
-
-	public static $context_args = array();
-
 	/**
 	 * @codeCoverageIgnore
 	 */
@@ -288,8 +282,6 @@ class Timber {
 			$context['posts'] = $context_posts;
 		}
 
-		self::$context_args = $args;
-
 		return $context;
 	}
 
@@ -404,25 +396,16 @@ class Timber {
 		 * Update cache if the cache is still empty or the post parameter passed in the args is
 		 * different than the one from a previous call to this function.
 		 */
-		if ( empty( self::$context_cache_post ) || self::$context_args['post'] !== $args['post'] ) {
-			if ( ! $context_post instanceof Post ) {
-				$context_post = new Post( $context_post );
-			}
-
-			// Set chache.
-			self::$context_args['post'] = $args['post'];
-			self::$context_cache_post   = $context_post;
+		if ( ! $context_post instanceof Post ) {
+			$context_post = new Post( $context_post );
 		}
 
 		// Mimick WordPress behavior to improve compatibility with third party plugins.
 		$wp_query->in_the_loop = true;
 		do_action_ref_array( 'loop_start', array( &$GLOBALS['wp_query'] ) );
-		$wp_query->setup_postdata( $context_post instanceof Post
-			? $context_post->ID
-			: $context_post
-		);
+		$wp_query->setup_postdata( $context_post->ID );
 
-		return self::$context_cache_post;
+		return $context_post;
 	}
 
 	/**
@@ -434,11 +417,6 @@ class Timber {
 	 */
 	public static function context_posts( $args = array() ) {
 		global $wp_query;
-
-		$args = wp_parse_args( array(
-			'posts'                => array(),
-			'cancel_default_query' => false,
-		), $args );
 
 		// Bail out if posts should not be set in context.
 		if ( false === $args['posts'] ||
@@ -456,29 +434,18 @@ class Timber {
 		$post_query_args = $wp_query->query_vars;
 
 		if ( ! empty( $args['posts'] ) ) {
-			if ( $args['cancel_default_query'] ) {
-				$post_query_args = $args['posts'];
-			} elseif ( is_array( $args['posts'] ) ) {
+			if ( is_array( $args['post'] ) && ! $args['cancel_default_query'] ) {
 				$post_query_args = wp_parse_args( $args['posts'], $post_query_args );
-			}
-
-			// Return early when cache is already set.
-			if ( ! empty( self::$context_cache_posts ) ) {
-				return $post_query_args instanceof PostQuery
-					? $post_query_args
-					: new PostQuery( $post_query_args );
+			} else {
+				$post_query_args = $args['posts'];
 			}
 		}
 
-		if ( empty( self::$context_cache_posts ) || self::$context_args['posts'] !== $post_query_args ) {
-			// Set cache.
-			self::$context_args['posts'] = $post_query_args;
-			self::$context_cache_posts   = $post_query_args instanceof PostQuery
-				? $post_query_args
-				: new PostQuery( $post_query_args );
+		if ( $post_query_args instanceof PostQuery ) {
+			return $post_query_args;
 		}
 
-		return self::$context_cache_posts;
+		return new PostQuery( $post_query_args );
 	}
 
 	/**
