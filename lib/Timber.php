@@ -48,6 +48,11 @@ class Timber {
 	public static $auto_meta = true;
 	public static $autoescape = false;
 
+	/**
+	 * Global context cache.
+	 *
+	 * @var array An array containing global context variables.
+	 */
 	public static $context_cache = array();
 
 	/**
@@ -224,6 +229,16 @@ class Timber {
 	/*  Template Setup and Display
 	================================ */
 
+	/**
+	 * Gets the context.
+	 * 
+	 * @api
+	 * @deprecated 2.0.0, use `Timber::context()` instead.
+	 *
+	 * @param array $args
+	 *
+	 * @return array
+	 */
 	public static function get_context( $args = array() ) {
 		Helper::deprecated( 'get_context', 'context', '2.0.0' );
 
@@ -233,26 +248,46 @@ class Timber {
 	/**
 	 * Gets the context.
 	 *
-	 * The context contains a `post` entry for singular pages. For archive pages, it sets a `posts`
-	 * entry that will contain an array of posts that will be displayed for the current archive.
+	 * The context always contains the global context with the following variables:
 	 *
-	 * The first call to this function will be cached, which means that you can call this function
-	 * again without losing performance. When you pass arguments directly to subsequent calls, then
-	 * the cache will not be updated, but you will get the result for the arguments that you pass.
-	 * In this case, it might affect your performance. If a filter is added after the first call to
-	 * this function, it will update the cache.
+	 * - `site` – An instance of `Timber\Site`.
+	 * - `request` - An instance of `Timber\Request`.
+	 * - `theme` - An instance of `Timber\Theme`.
+	 * - `user` - An instance of `Timber\User`.
+	 * - `http_host` - The HTTP host.
+	 * - `wp_title` - Title retrieved for the currently displayed page, retrieved through
+	 * `wp_title()`.
+	 * - `body_class` - The body class retrieved through `get_body_class()`.
 	 *
-	 * - Arguments that are saved through filters will be cached.
-	 * - Arguments that will directly be passed to the query will be cached.
+	 * The context can have additional variables based on which template is displayed. It will set
+	 * `post` for singular pages, which is a `Timber\Object` of the currently displayed post. For
+	 * archive pages, the context sets `posts`, which contains a collection of posts selected by the
+	 * default query that WordPress runs for this archive. This behavior can be changed by passing
+	 * arguments to this function.
 	 *
-	 * If get_context() is called again:
-	 *
-	 * - New arguments that come in through filters will update the cache.
-	 * - New arguments that will directly be passed to the query won’t update the query.
+	 * The global context will be cached, which means that you can call this function again without
+	 * losing performance. Templated based contexts like `post` and `posts` will not be cached.
 	 *
 	 * @api
 	 *
-	 * @param array $args
+	 * @param array $args {
+	 *     Optional. An array of arguments for the context.
+	 *
+	 *     @type false|null|\Timber\Post        $post                 A post ID, a WP_Post object, a `Timber\Post`
+	 *                                                                object or a class instance that inherits from
+	 *                                                                `Timber\Post`. If set to `false`, Timber will not
+	 *                                                                set `post` in the context. Default `null`.
+	 *     @type false|array|\Timber\PostQuery  $posts                An array of posts, a `Timber\PostQuery` object or
+	 *                                                                an array of arguments that will be passed to
+	 *                                                                `Timber\PostQuery`. If set to `false`, Timber will
+	 *                                                                not set `posts` in the context. Default `array()`.
+	 *     @type bool                           $cancel_default_query By default, parameters passed with `posts` will
+	 *                                                                merge with the default WordPress post query. If
+	 *                                                                this argument is set to `true`, merging will be
+	 *                                                                disabled. Instead, the default query will be
+	 *                                                                overwritten with the parameters passed in `posts`.
+	 *                                                                Default `false`.
+	 * }
 	 *
 	 * @return array An array of context variables that is used to pass into Twig templates through
 	 *               a render or compile function.
@@ -264,6 +299,22 @@ class Timber {
 			'cancel_default_query' => false,
 		) );
 
+		/**
+		 * Filters the default arguments for `Timber::context()`.
+		 *
+		 * @since 2.0.0
+		 * @example
+		 * ```php
+         * // Globally disable `post` and `posts` in context
+         * add_filter( 'timber/context/args', function( $args ) {
+         * 	$args['post']  = false;
+         * 	$args['posts'] = false;
+         *     return $args;
+         * } );
+		 * ```
+		 *
+		 * @param array $args An array of arguments for the context. See `Timber::context()`.
+		 */
 		$args = apply_filters( 'timber/context/args', $args );
 
 		$context = self::context_global();
@@ -288,6 +339,21 @@ class Timber {
 	/**
 	 * Gets the global context.
 	 *
+	 * This function is used by `Timber::context()` to get the global context. Usually, you don’t
+	 * call this function directly, except when you need the global context in a partial view.
+	 *
+	 * The global context will be cached, which means that you can call this function again without
+	 * losing performance.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @example
+	 * ```php
+	 * add_shortcode( 'global_address', function() {
+     *    return Timber::compile( 'global_address.twig', Timber::context_global() );
+	 * } );
+	 * ```
+	 *
 	 * @return array An array of global context variables.
 	 */
 	public static function context_global() {
@@ -309,7 +375,8 @@ class Timber {
 			 * `Timber::get_context()`.
 			 *
 			 * Be aware that data will be cached as soon as you call `Timber::get_context()` for the
-			 * first time.
+			 * first time. That’s why you should add this filter before you call
+			 * `Timber::context()`.
 			 *
 			 * @see \Timber\Timber::get_context()
 			 * @since 0.21.7
@@ -365,19 +432,20 @@ class Timber {
 	/**
 	 * Gets post context for a singular template.
 	 *
-	 * @internal
+	 * @api
+	 * @since 2.0.0
 	 *
-	 * @param $context_post
+	 * @param array $args An array of arguments from `Timber::context()`.
 	 *
-	 * @return null|\Timber\Post
+	 * @return null|\Timber\Post A `Timber\Post` object. Null if not applicable in the current
+	 *                           context.
 	 */
-	public static function context_post( $args ) {
+	public static function context_post( $args = array() ) {
 		global $post;
 		global $wp_query;
 
 		/**
 		 * Bail out if
-		 *
 		 * - A post shouldn’t be set in the context
 		 * - We don’t have a singular template
 		 */
@@ -411,7 +479,10 @@ class Timber {
 	/**
 	 * Gets posts context for an archive template.
 	 *
-	 * @param array $args
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @param array $args An array of arguments from `Timber::context()`.
 	 *
 	 * @return array|null|\Timber\PostQuery
 	 */
