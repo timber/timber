@@ -76,14 +76,14 @@ function add_to_context( $context ) {
 }
 ```
 
-Now, when you call `Timber::get_context()`, your menu will already be set in the context. You don’t need to initialize the menu in all your template files.
+Now, when you call `Timber::context()`, your menu will already be set in the context. You don’t need to initialize the menu in all your template files.
 
 **index.php**
 
 ```php
 <?php
 
-$context = Timber::get_context();
+$context = Timber::context();
 
 Timber::render( 'index.twig', $context );
 ```

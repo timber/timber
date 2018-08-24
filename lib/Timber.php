@@ -32,7 +32,7 @@ use Timber\Loader;
  * ) );
  * $posts = new Timber\PostQuery( array( 23, 24, 35, 67 ), 'InkwellArticle' );
  *
- * $context = Timber::get_context();
+ * $context = Timber::context();
  * $context['posts'] = $posts;
  *
  * Timber::render( 'index.twig', $context );
@@ -231,7 +231,7 @@ class Timber {
 
 	/**
 	 * Gets the context.
-	 * 
+	 *
 	 * @api
 	 * @deprecated 2.0.0, use `Timber::context()` instead.
 	 *
@@ -372,13 +372,13 @@ class Timber {
 			 *
 			 * By using this filter, you can add custom data to the global Timber context, which
 			 * means that this data will be available on every page that is initialized with
-			 * `Timber::get_context()`.
+			 * `Timber::context()`.
 			 *
 			 * Be aware that data will be cached as soon as you call `Timber::get_context()` for the
 			 * first time. That’s why you should add this filter before you call
 			 * `Timber::context()`.
 			 *
-			 * @see \Timber\Timber::get_context()
+			 * @see \Timber\Timber::context()
 			 * @since 0.21.7
 			 * @example
 			 * ```php
@@ -761,7 +761,7 @@ class Timber {
 	 * @api
 	 * @example
 	 * ```php
-	 * $context = Timber::get_context();
+	 * $context = Timber::context();
 	 *
 	 * Timber::render( 'index.twig', $context );
 	 * ```

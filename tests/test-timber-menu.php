@@ -118,7 +118,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testMenuTwig() {
 		self::setPermalinkStructure();
-		$context = Timber::get_context();
+		$context = Timber::context();
 		self::_createTestMenu();
 		$this->go_to( home_url( '/child-page' ) );
 		$context['menu'] = new Timber\Menu();
@@ -132,7 +132,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		self::setPermalinkStructure();
 		self::_createTestMenu();
 		$this->go_to( home_url( '/home' ) );
-		$context = Timber::get_context();
+		$context = Timber::context();
 		$context['menu'] = new Timber\Menu();
 		$str = Timber::compile( 'assets/menu-classes.twig', $context );
 		$str = trim( $str );
@@ -465,7 +465,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $root_url_link_id, '_menu_item_xfn', '' );
 		update_post_meta( $root_url_link_id, '_menu_item_menu_item_parent', 0 );
 		update_post_meta( $root_url_link_id, '_menu_item_target', '' );
-		
+
 		$link_id = wp_insert_post(
 			array(
 				'post_title' => 'People',

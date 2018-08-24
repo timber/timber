@@ -9,14 +9,14 @@ use Timber\URLHelper;
  * Class Theme
  *
  * Need to display info about your theme? Well you've come to the right place. By default info on
- * the current theme comes for free with what's fetched by `Timber::get_context()` in which case you
+ * the current theme comes for free with what's fetched by `Timber::context()` in which case you
  * can access it your theme like so:
  *
  * @api
  * @example
  * ```php
  * <?php
- * $context = Timber::get_context();
+ * $context = Timber::context();
  * Timber::render('index.twig', $context);
  * ?>
  * ```
@@ -81,7 +81,7 @@ class Theme extends Core {
 	/**
 	 * Constructs a new `Timber\Theme` object.
 	 *
-	 * The `Timber\Theme` object of the current theme comes in the default `Timber::get_context()`
+	 * The `Timber\Theme` object of the current theme comes in the default `Timber::context()`
 	 * call. You can access this in your twig template via `{{site.theme}}`.
 	 *
 	 * @api
@@ -141,7 +141,7 @@ class Theme extends Core {
 	public function path() {
 		// force = true to work with specifying the port
 		// @see https://github.com/timber/timber/issues/1739
-		return URLHelper::get_rel_url($this->link(), true); 
+		return URLHelper::get_rel_url($this->link(), true);
 	}
 
 	/**

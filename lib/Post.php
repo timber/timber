@@ -27,7 +27,7 @@ use WP_Post;
  * @example
  * ```php
  * // single.php, see connected twig example
- * $context = Timber::get_context();
+ * $context = Timber::context();
  * $context['post'] = new Timber\Post(); // It's a new Timber\Post object, but an existing post from WordPress.
  * Timber::render('single.twig', $context);
  * ?>
@@ -242,7 +242,7 @@ class Post extends Core implements CoreInterface {
 	 * Determined whether or not an admin/editor is looking at the post in "preview mode" via the
 	 * WordPress admin
 	 * @internal
-	 * @return bool 
+	 * @return bool
 	 */
 	protected static function is_previewing() {
 		global $wp_query;

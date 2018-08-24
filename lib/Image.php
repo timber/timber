@@ -16,7 +16,7 @@ use Timber\URLHelper;
  * @api
  * @example
  * ```php
- * $context = Timber::get_context();
+ * $context = Timber::context();
  * $post = new Timber\Post();
  * $context['post'] = $post;
  *
