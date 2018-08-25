@@ -350,7 +350,10 @@ class Timber {
 	 * @example
 	 * ```php
 	 * add_shortcode( 'global_address', function() {
-     *    return Timber::compile( 'global_address.twig', Timber::context_global() );
+	 *     return Timber::compile(
+	 *         'global_address.twig',
+	 *         Timber::context_global()
+	 *     );
 	 * } );
 	 * ```
 	 *

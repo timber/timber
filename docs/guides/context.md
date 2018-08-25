@@ -7,7 +7,7 @@ menu:
 
 The context is one of the most important concepts to understand in Timber. Think of the context as the set of variables that are passed to your Twig template.
 
-In the following example, `$data` is an array of values. Each of the values will be available in the Twig template with the key of the value as a variable name.
+In the following example, `$data` is an associative array of values. Each of the values will be available in the Twig template with the key as a variable name.
 
 **single.php**
 
@@ -29,7 +29,7 @@ Timber::render( 'single.twig', $data );
 <p>{{ message }}</p>
 ```
 
-Of course you don’t have to figure all the variables you need for yourself. Timber will provide you with a set of useful variables when you call `Timber::context()`. 
+Of course you don’t have to figure out all the variables you need for yourself. Timber will provide you with a set of useful variables when you call `Timber::context()`. 
 
 **single.php**
 
@@ -41,7 +41,7 @@ $context = Timber::context();
 Timber::render( 'single.twig', $context );
 ```
 
-Follow this guide to get an overview of what’s in the context, or use `var_dump( $context );` in PHP or `{{ dump() }}` in Twig to display the contents right on your site.
+Follow this guide to get an overview of what’s in the context, or use `var_dump( $context );` in PHP or `{{ dump() }}` in Twig to display the contents in your browser.
 
 ## Global context
 
@@ -49,45 +49,22 @@ The global context is the context that is always set when you load it through `T
 
 ### Global context variables
 
-#### site
+Among others, the following variables will be available:
 
-The `site` variable is a `Timber\Site` object which will make it easier for you to retrieve site info. If you’re used to using `blog_info( 'sitename' )` in PHP, you can use `{{ site.name }}` in Twig instead.
+- **site** – The `site` variable is a [Timber\Site](/docs/reference/timber-site/) object which will make it easier for you to retrieve site info. If you’re used to using `blog_info( 'sitename' )` in PHP, you can use `{{ site.name }}` in Twig instead.
+- **request** - The `request` variable is a `Timber\Request` object, which will make it easier for you to access `$_GET` and `$_POST` variables in your context. Please be aware that you should always be very careful about using `$_GET` and `$_POST` variables in your templates directly. Read more about this in the Escaping Guide.
+- **theme** - The `theme` variable is [Timber\Theme](/docs/reference/timber-theme/) object and contains info about your theme.
+- **user** - The `user` variable will be a [`Timber\User`](/docs/reference/timber-user/) object if a user/visitor is currently logged in and otherwise it will just be `false`.
 
-#### request
-
-The `request` variable is a `Timber\Request` object, which will make it easier for you to access `$_GET` and `$_POST` variables in your context. Please be aware that you should always be very careful about using `$_GET` and `$_POST` variables in your templates directly. Read more about this in the [Escaping Guide]().
-
-#### theme
-
-The `theme` variable contains useful info about your theme.
-
-#### user
-
-The `user` variable will be a `Timber\User` object if a user/visitor is currently logged in and otherwise it will just be `false`. This will make it possible for you to check if a user is logged by checking for `user` instead of calling `is_user_logged_in()` in your Twig templates:
-
-```twig
-{% if user %}
-	Hello {{ user.name }}
-{% endif %}
-```
-
-#### http_host
-
-…
-
-#### wp_title
-
-…
-
-#### body_class
-
-…
+For a full list of variables, go have a look at the reference for [`Timber::context()`](/docs/reference/timber-timber/#context).
 
 ### Hook into the global context
 
-In your theme, you probably have elements that you use on every page, like a navigation menu, or a postal address or phone number. You don’t want to set these variables every time you call `Timber::render()` or `Timber::compile()`. And you don’t have to! You can use the `timber/context` filter to add your own data that will always be available.
+In your theme, you probably have elements that you use on every page, like a navigation menu, or a postal address or phone number. You don’t want to add these variables to the context every time you call `Timber::render()` or `Timber::compile()`. And you don’t have to! You can use the `timber/context` filter to add your own data that will always be available.
 
 Here’s an example for how you could **add a navigation menu** to your context, so that it becomes available in every template you use:
+
+**functions.php**
 
 ```php
 // Example: Add a menu to the global context.
@@ -98,13 +75,13 @@ add_filter( 'timber/context', function( $context ) {
 } );
 ```
 
-For menus to work, you will first need to [register them](https://codex.wordpress.org/Navigation_Menus).
+For menus to work, you will first need to [register them](https://codex.wordpress.org/Navigation_Menus). Please be aware that the [global context will be cached](#context-cache). That’s why you need to define your `timber/context` filter before using `Timber::context()` for the first time.
 
 ## Template contexts
 
 The context can change based on what template is displayed. Timber will always set `post` or `posts` in the context, if it can. But sometimes this is not what you want. Sometimes you need to change some arguments when fetching posts, or write your own posts query. In that case, it’s important to tell Timber about your change. Otherwise it will perform a separate query in the back, which might affect the performance of your page load. Since version 2.0 of Timber, you have more control over this process.
 
-### post
+### Singular templates
 
 The `post` variable will be available in singular templates ([is_singular()](https://developer.wordpress.org/reference/functions/is_singular/)), like posts or pages. It will contain a `Timber\Post` object of the currently displayed post.
 
@@ -132,7 +109,7 @@ $context = Timber::context( array(
 Timber::render( 'single.twig', $context );
 ```
 
-Of course you can pass in a `Timber\Post` object instead of just an ID, too.
+Of course you can also pass in a `Timber\Post` object instead of just an ID.
 
 **single.php**
 
@@ -145,7 +122,7 @@ $context = Timber::context( array(
 Timber::render( 'single.twig', $context );
 ```
 
-This is also the way to go if you want to use [your own post class](https://timber.github.io/docs/guides/extending-timber/). In that case, you could pass a post object directly.
+This is also the way to go if you want to use [your own post class](/docs/guides/extending-timber/). In that case, you could pass a post object directly.
 
 **single.php**
 
@@ -158,15 +135,13 @@ $context = Timber::context( array(
 Timber::render( 'single.twig', $context );
 ```
 
-### posts
+### Archive templates
 
-The `posts` variable will be available in archive templates ([is_archive()](https://developer.wordpress.org/reference/functions/is_archive/)), like your posts index page, category or tag archives, date based or author archives. It will contain the posts that are fetched with `Timber\PostQuery` with the arguments of WordPress’ default query.
+The `posts` variable will be available in archive templates ([is_archive()](https://developer.wordpress.org/reference/functions/is_archive/)), like your posts index page, category or tag archives, date based or author archives. It will contain the posts that are fetched with `Timber\PostQuery` with the arguments that WordPress uses for the default query of the currently displayed page.
 
 #### Change arguments for default query
 
-You can change arguments for the default query that WordPress will use to fetch posts by passing a `posts` argument array to the `context()` function. You might be used to using the [`pre_get_posts` filter](https://developer.wordpress.org/reference/hooks/pre_get_posts/), but here’s a way that might be more convenient for you.
-
-For example, if you’d want to change the default query to only show pages that have no parents, you can set the `post_parent` argument:
+You can change arguments for the default query that WordPress will use to fetch posts by passing a `posts` argument array to the `context()` function. For example, if you’d want to change the default query to *only show pages that have no parents*, you could pass in a `post_parent` argument:
 
 **archive.php**
 
@@ -180,11 +155,11 @@ $context = Timber::context( array(
 Timber::render( 'archive.twig', $context );
 ```
 
-You `$context` will then contain a `posts` entry with a posts collection fetched by the default query.
+Your `$context` will then contain a `posts` entry with a posts collection fetched by the default query. This is practically the same as using [`pre_get_posts` filter](https://developer.wordpress.org/reference/hooks/pre_get_posts/) in a default WordPress project, but it might be a little more convenient.
 
 #### Overwrite default query
 
-To **overwrite the default query** that WordPress uses, there’s a parameter `cancel_default_query` that you can use in combination with the arguments array that you pass to `context()`:
+You may not want to use the default query that WordPress uses. Sometimes you want to write your own query from scratch. To **overwrite the default query** that WordPress uses, there’s a parameter `cancel_default_query` that you can use in combination with the arguments array that you pass to `context()`:
 
 **archive.php**
 
@@ -204,7 +179,7 @@ $context['posts'] = new Timber\PostQuery( array(
 Timber::render( 'archive.twig', $context );
 ```
 
-Now, to make it easier to write, you can also pass in the arguments directly through the `posts` parameter.
+For a more compact way of writing this, you can also pass in the arguments directly through the `posts` parameter. If `cancel_default_query` is set to `true`, the arguments that you pass in `posts` will be used to perform a query that will then be present in `$context['posts']`.
 
 **archive.php**
 
@@ -219,8 +194,6 @@ Timber::render( 'archive.twig', Timber::context( array(
 ) ) );
 ```
 
-If `cancel_default_query` is set to `true`, the arguments that you pass in `posts` will be used to perform a query that will then be present in `$context['posts']`.
-
 ### Disable template contexts
 
 Automatic template contexts might not be what you want. In that case, you can disable them by using the `timber/context/args` filter:
@@ -230,10 +203,10 @@ Automatic template contexts might not be what you want. In that case, you can di
 ```php
 // Disable `post` and `posts` in context
 add_filter( 'timber/context/args', function( $args ) {
-	$args['post'] = false;
-	$args['posts'] = false;
+    $args['post'] = false;
+    $args['posts'] = false;
 
-	return $args;
+    return $args;
 } );
 ```
 
@@ -264,10 +237,13 @@ Sometimes you also need your context in other places, for example when you compi
  * Shortcode for address inside a WYSIWG field
  */
 add_shortcode( 'company_address', function() {
-    return Timber::compile( 'shortcode/company-address.twig', Timber::context_global() );
+    return Timber::compile(
+        'shortcode/company-address.twig',
+        Timber::context_global()
+    );
 } );
 ```
 
 Inside `shortcode/company-address.twig`, you will then have access to all the global variables that you can use in your normal template files as well. When you only need the global context, you can use the `Timber::context_global()` function. You can call that function multiple times without losing performance.
 
-Timber will cache the global context for you, but it won’t cache template contexts. If you’re using the `timber/context` filter, make sure you run it before you call `Timber::context()` for the first time. Otherwise, the cache will be set before you could add your own data.
+Timber will **cache the global context**, but it won’t cache template contexts. If you’re using the `timber/context` filter, make sure you run it before you call `Timber::context()` for the first time. Otherwise, the cache will be set before you could add your own data.

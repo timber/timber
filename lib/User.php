@@ -12,23 +12,37 @@ use Timber\Image;
 /**
  * Class User
  *
- * This is used in Timber to represent users retrived from WordPress. You can call
- * `$my_user = new Timber\User(123);` directly, or access it through the `{{ post.author }}` method.
+ * A user object represents a WordPress user.
+ *
+ * The currently logged-in user will be available as `{{ user }}` in your Twig files through the
+ * global context. If a user is not logged in, it will be `false`. This will make it possible for
+ * you to check if a user is logged by checking for `user` instead of calling `is_user_logged_in()`
+ * in your Twig templates.
  *
  * @api
  * @example
+ * ```twig
+ * {% if user %}
+ *     Hello {{ user.name }}
+ * {% endif %}
+ * ```
+ *
+ * The difference between a logged-in user and a post author:
+ *
  * ```php
- * $context['current_user'] = new Timber\User();
+ * $context = Timber::context();
  * $context['post'] = new Timber\Post();
- * Timber::render('single.twig', $context);
+ * Timber::render( 'single.twig', $context );
  * ```
  * ```twig
- * <p class="current-user-info">Your name is {{ current_user.name }}</p>
- * <p class="article-info">This article is called "{{ post.title }}" and it's by {{ post.author.name }}
+ * <p class="current-user-info">Your name is {{ user.name }}</p>
+ * <p class="article-info">This article is called "{{ post.title }}"
+ *     and it’s by {{ post.author.name }}</p>
  * ```
  * ```html
  * <p class="current-user-info">Your name is Jesse Eisenberg</p>
- * <p class="article-info">This article is called "Consider the Lobster" and it's by David Foster Wallace
+ * <p class="article-info">This article is called "Consider the Lobster"
+ *     and it’s by David Foster Wallace</p>
  * ```
  */
 class User extends Core implements CoreInterface {
