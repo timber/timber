@@ -273,7 +273,7 @@ class Timber {
 	 * @param array $args {
 	 *     Optional. An array of arguments for the context.
 	 *
-	 *     @type false|null|\Timber\Post        $post                 A post ID, a WP_Post object, a `Timber\Post`
+	 *     @type null|false|\Timber\Post        $post                 A post ID, a WP_Post object, a `Timber\Post`
 	 *                                                                object or a class instance that inherits from
 	 *                                                                `Timber\Post`. If set to `false`, Timber will not
 	 *                                                                set `post` in the context. Default `null`.
@@ -320,7 +320,7 @@ class Timber {
 		$context = self::context_global();
 
 		// Context for singular templates.
-		$context_post = self::context_post( $args );
+		$context_post = self::context_post( $args['post'] );
 
 		if ( $context_post ) {
 			$context['post'] = $context_post;
@@ -435,15 +435,21 @@ class Timber {
 	/**
 	 * Gets post context for a singular template.
 	 *
+	 * Mimicks WordPress behavior for singular templates to improve compatibility with third party
+	 * plugins.
+	 *
 	 * @api
 	 * @since 2.0.0
 	 *
-	 * @param array $args An array of arguments from `Timber::context()`.
+	 * @param null|false|\Timber\Post $post_arg Optional. A post ID, a WP_Post object, a
+	 *                                          `Timber\Post` object or a class instance that
+	 *                                          inherits from `Timber\Post`. Defaults to global
+	 *                                          `$post`. Default `null`.
 	 *
 	 * @return null|\Timber\Post A `Timber\Post` object. Null if not applicable in the current
 	 *                           context.
 	 */
-	public static function context_post( $args = array() ) {
+	public static function context_post( $post_arg = null ) {
 		global $post;
 		global $wp_query;
 
@@ -452,15 +458,16 @@ class Timber {
 		 * - A post shouldn’t be set in the context
 		 * - We don’t have a singular template
 		 */
-		if ( false === $args['post'] || ! is_singular() ) {
+		if ( false === $post_arg || ! is_singular() ) {
 			return null;
 		}
 
+		// Use post global as the default.
 		$context_post = $post;
 
 		// Arguments that are passed directly to the context will always overwrite the default post.
-		if ( ! empty( $args['post'] ) ) {
-			$context_post = $args['post'];
+		if ( ! empty( $post_arg ) ) {
+			$context_post = $post_arg;
 		}
 
 		/**
