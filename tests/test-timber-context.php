@@ -1,5 +1,8 @@
 <?php
 
+use Timber\Timber;
+use Timber\Post;
+
 class TestTimberContext extends Timber_UnitTestCase {
 	/**
 	 * This throws an infite loop if memorization isn't working
@@ -23,8 +26,9 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$this->go_to( get_permalink( $post_id ) );
 
 		$context = Timber::context();
-		$post    = new Timber\Post( $post_id );
+		$post    = new Post( $post_id );
 
+		$this->assertArrayNotHasKey( 'posts', $context );
 		$this->assertEquals( $post, $context['post'] );
 	}
 
@@ -42,7 +46,7 @@ class TestTimberContext extends Timber_UnitTestCase {
 	}
 
 	function testPostContextWithExtendedPost() {
-		require_once(__DIR__.'/php/timber-post-subclass.php');
+		require_once( __DIR__ . '/php/timber-post-subclass.php' );
 
 		$post_id = $this->factory->post->create();
 		$this->go_to( get_permalink( $post_id ) );
@@ -61,6 +65,7 @@ class TestTimberContext extends Timber_UnitTestCase {
 
 		$context = Timber::context();
 
+		$this->assertArrayNotHasKey( 'post', $context );
 		$this->assertInstanceOf( 'Timber\PostQuery', $context['posts'] );
 		$this->assertCount( 3, $context['posts']->get_posts() );
 	}

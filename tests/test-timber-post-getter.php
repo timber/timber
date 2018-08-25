@@ -337,17 +337,17 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	}
 
 	/**
-	 * Make sure that the_post action is called when we loop over a collection of posts.
+	 * Make sure that the_post action is not called when we loop over a collection of posts.
 	 */
 	function testThePostHook() {
 		add_action( 'the_post', function( $post ) {
-			$post->touched_the_post_action = true;
+			add_filter( 'touched_the_post_action', '__return_true' );
 		} );
 
 		$posts = new Timber\PostQuery( $this->factory->post->create_many( 3 ) );
 
 		foreach ( $posts as $post ) {
-			$this->assertEquals( true, $post->touched_the_post_action );
+			$this->assertFalse( apply_filters( 'touched_the_post_action', false ) );
 		}
 	}
 }
