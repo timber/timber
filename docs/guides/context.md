@@ -196,21 +196,23 @@ Timber::render( 'archive.twig', Timber::context( array(
 
 ### Disable template contexts
 
-Automatic template contexts might not be what you want. In that case, you can disable them by using the `timber/context/args` filter:
+Automatic template contexts might not be what you want. In that case, you can disable them.
 
-**functions.php**
+#### Disable archive context
+
+You can also directly pass `false` to the `posts` argument when you call `context()`:
+
+**archive.php**
 
 ```php
-// Disable `post` and `posts` in context
-add_filter( 'timber/context/args', function( $args ) {
-    $args['post'] = false;
-    $args['posts'] = false;
-
-    return $args;
-} );
+$context = Timber::context( array(
+    'posts' => false,
+) );
 ```
 
-You can also directly pass `false` to either the `post` and/or the `posts` parameter when you call `context()`:
+#### Disable singular context
+
+You can directly pass `false` to the `post` argument when you call `context()`:
 
 **single.php**
 
@@ -220,12 +222,36 @@ $context = Timber::context( array(
 ) );
 ```
 
-**archive.php**
+If you disable `post` in the context, you should pass your new post through `Timber::context_post()`.
+
+**single.php**
 
 ```php
-$context = Timber::context( array(
-    'posts' => false,
-) );
+<?php
+// If you need to set post yourself, use `context_post()` to improve compatibility.
+
+$context         = Timber::context( array( 'post' => false ) );
+$context['post'] = Timber::context_post( new Extended_Post() );
+
+Timber::render( 'single.twig', $context );
+```
+
+The `Timber::context_post()` function is needed **for better compatibility with third party plugins**. Through this function, Timber will set `$wp->query->in_the_loop` to `true`, will call the `loop_start` action and will call `$wp_query->setup_postdata()`, which in turn will call the `the_post` action.
+
+### Disable template context with a filter
+
+If you want to globally disable template contexts, you can use the `timber/context/args` filter:
+
+**functions.php**
+
+```php
+// Disable `post` and/or `posts` in context
+add_filter( 'timber/context/args', function( $args ) {
+    $args['post'] = false;
+    $args['posts'] = false;
+
+    return $args;
+} );
 ```
 
 ## Context cache

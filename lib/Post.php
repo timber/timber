@@ -19,25 +19,28 @@ use WP_Post;
  * Class Post
  *
  * This is the object you use to access or extend WordPress posts. Think of it as Timber's (more
- * accessible) version of WP_Post. This is used throughout Timber to represent posts retrieved from
- * WordPress making them available to Twig templates. See the PHP and Twig examples for an example
- * of what it’s like to work with this object in your code.
+ * accessible) version of `WP_Post`. This is used throughout Timber to represent posts retrieved
+ * from WordPress making them available to Twig templates. See the PHP and Twig examples for an
+ * example of what it’s like to work with this object in your code.
  *
  * @api
  * @example
+ *
+ * **single.php**
+ *
  * ```php
- * // single.php, see connected twig example
  * $context = Timber::context();
- * $context['post'] = new Timber\Post(); // It's a new Timber\Post object, but an existing post from WordPress.
- * Timber::render('single.twig', $context);
- * ?>
+ *
+ * Timber::render( 'single.twig', $context );
  * ```
+ *
+ * **single.twig**
+ *
  * ```twig
- * {# single.twig #}
  * <article>
- *     <h1 class="headline">{{post.title}}</h1>
+ *     <h1 class="headline">{{ post.title }}</h1>
  *     <div class="body">
- *         {{post.content}}
+ *         {{ post.content }}
  *     </div>
  * </article>
  * ```
@@ -46,7 +49,9 @@ use WP_Post;
  * <article>
  *     <h1 class="headline">The Empire Strikes Back</h1>
  *     <div class="body">
- *         It is a dark time for the Rebellion. Although the Death Star has been destroyed, Imperial troops have driven the Rebel forces from their hidden base and pursued them across the galaxy.
+ *         It is a dark time for the Rebellion. Although the Death Star has been
+ *         destroyed, Imperial troops have driven the Rebel forces from their
+ *         hidden base and pursued them across the galaxy.
  *     </div>
  * </article>
  * ```
