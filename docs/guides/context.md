@@ -75,11 +75,31 @@ add_filter( 'timber/context', function( $context ) {
 } );
 ```
 
-For menus to work, you will first need to [register them](https://codex.wordpress.org/Navigation_Menus). Please be aware that the [global context will be cached](#context-cache). That’s why you need to define your `timber/context` filter before using `Timber::context()` for the first time.
+For menus to work, you will first need to [register them](https://codex.wordpress.org/Navigation_Menus).
+
+## Context cache
+
+The global context will be cached. That’s why you need to define your `timber/context` filter before using `Timber::context()` for the first time. Otherwise, the cache will be set before you could add your own data. Having a cached global context can be useful if you need the context in other places. For example if you compile the template for a shortcode:
+
+```php
+/**
+ * Shortcode for address inside a WYSIWG field
+ */
+add_shortcode( 'company_address', function() {
+    return Timber::compile(
+        'shortcode/company-address.twig',
+        Timber::context_global()
+    );
+} );
+```
+
+Inside `shortcode/company-address.twig`, you will have access to all the global variables that you can use in your normal template files as well. Whenever you only need the global context, you can use the `Timber::context_global()` function. You can call that function multiple times without losing performance.
 
 ## Template contexts
 
 The context can change based on what template is displayed. Timber will always set `post` or `posts` in the context, if it can. But sometimes this is not what you want. Sometimes you need to change some arguments when fetching posts, or write your own posts query. In that case, it’s important to tell Timber about your change. Otherwise it will perform a separate query in the back, which might affect the performance of your page load. Since version 2.0 of Timber, you have more control over this process.
+
+Timber won’t cache template contexts.
 
 ### Singular templates
 
@@ -253,23 +273,3 @@ add_filter( 'timber/context/args', function( $args ) {
     return $args;
 } );
 ```
-
-## Context cache
-
-Sometimes you also need your context in other places, for example when you compile the template for a shortcode:
-
-```php
-/**
- * Shortcode for address inside a WYSIWG field
- */
-add_shortcode( 'company_address', function() {
-    return Timber::compile(
-        'shortcode/company-address.twig',
-        Timber::context_global()
-    );
-} );
-```
-
-Inside `shortcode/company-address.twig`, you will then have access to all the global variables that you can use in your normal template files as well. When you only need the global context, you can use the `Timber::context_global()` function. You can call that function multiple times without losing performance.
-
-Timber will **cache the global context**, but it won’t cache template contexts. If you’re using the `timber/context` filter, make sure you run it before you call `Timber::context()` for the first time. Otherwise, the cache will be set before you could add your own data.
