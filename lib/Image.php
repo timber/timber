@@ -16,9 +16,10 @@ use Timber\URLHelper;
  * @api
  * @example
  * ```php
- * $context = Timber::get_context();
  * $post = new Timber\Post();
- * $context['post'] = $post;
+ *
+ * $context         = Timber::context();
+ * $context['post'] = Timber::context_post( $post );
  *
  * // lets say you have an alternate large 'cover image' for your post stored in a custom field which returns an image ID
  * $cover_image_id = $post->cover_image;
