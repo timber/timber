@@ -89,47 +89,6 @@
 			$this->assertEquals('Stuff', $str);
 		}
 
-		function testDoActionContext(){
-			global $php_unit;
-			$php_unit = $this;
-			global $action_context_tally;
-			$action_context_tally = array();
-			add_action('my_action_context_vars', function($foo, $bar, $context) {
-				global $php_unit;
-				$php_unit->assertEquals('foo', $foo);
-				$php_unit->assertEquals('bar', $bar);
-				$php_unit->assertEquals('Jaredz Post', $context['post']->post_title);
-				global $action_context_tally;
-				$action_context_tally[] = 'my_action_context_vars';
-			}, 10, 3);
-
-			add_action('my_action_context_var', function($foo, $context) {
-				global $php_unit;
-				$php_unit->assertEquals('foo', $foo);
-				$php_unit->assertEquals('Jaredz Post', $context['post']->post_title);
-				global $action_context_tally;
-				$action_context_tally[] = 'my_action_context_vars';
-			}, 10, 2);
-
-			add_action('my_action_context', function($context){
-				global $php_unit;
-				$php_unit->assertEquals('Jaredz Post', $context['post']->post_title);
-				global $action_context_tally;
-				$action_context_tally[] = 'my_action_context';
-			});
-
-			add_action('timber/compile/done', function(){
-				global $php_unit;
-				global $action_context_tally;
-				$php_unit->assertContains('my_action_context_vars', $action_context_tally);
-				$php_unit->assertContains('my_action_context', $action_context_tally);
-			});
-			$post_id = $this->factory->post->create(array('post_title' => "Jaredz Post", 'post_content' => 'stuff to say'));
-			$context['post'] = new Timber\Post($post_id);
-			$str = Timber::compile('assets/test-action-context.twig', $context);
-			$this->assertEquals('Here: stuff to say', trim($str));
-		}
-
 		function testWordPressPasswordFilters(){
 			$post_id = $this->factory->post->create(array('post_title' => 'My Private Post', 'post_password' => 'abc123'));
 			$context = array();
