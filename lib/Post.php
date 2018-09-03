@@ -183,6 +183,8 @@ class Post extends Core implements CoreInterface {
 	 */
 	public $slug;
 
+	public $_thumbnail_id;
+
 	/**
 	 * @var string Stores the PostType object for the Post
 	 */

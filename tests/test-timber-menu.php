@@ -48,7 +48,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 		// Add attachment to post
 		$pid = $menu->items[0]->object_id;
-		$iid = TestTimberImage::get_image_attachment( $pid );
+		$iid = TestTimberImage::get_attachment( $pid );
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
 
 		// Lets confirm this post has a thumbnail on it!
@@ -70,7 +70,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		add_theme_support('thumbnails');
 		self::setPermalinkStructure();
 		$pid = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
-		$iid = TestTimberImage::get_image_attachment($pid);
+		$iid = TestTimberImage::get_attachment($pid);
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
 		$post = new \Timber\Post($pid);
 		$page_menu = new Timber\Menu();

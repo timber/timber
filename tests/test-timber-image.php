@@ -2,84 +2,34 @@
 
 use Timber\Image\Operation as ImageOperation;
 
-class TestTimberImage extends TimberImage_UnitTestCase {
+require_once 'test-timber-attachment.php';
+
+class TestTimberImage extends TestTimberAttachment {
 
 /* ----------------
  * Helper functions
  ---------------- */
 
- 	static function replace_image( $old_id, $new_id ) {
-		$uploadDir = wp_upload_dir();
-		$newFile = $uploadDir['basedir'].'/'.get_post_meta($new_id, '_wp_attached_file', true);
-		$oldFile = $uploadDir['basedir'].'/'.get_post_meta($old_id, '_wp_attached_file', true);
-		if (!file_exists(dirname($oldFile)))
-			mkdir(dirname($oldFile), 0777, true);
-		copy($newFile, $oldFile);
-		$meta = wp_generate_attachment_metadata($old_id, $oldFile);
-		wp_update_attachment_metadata($old_id, $meta);
-		wp_delete_post($new_id, true);
- 	}
-
-	static function copyTestImage( $img = 'arch.jpg', $dest_name = null ) {
-		$upload_dir = wp_upload_dir();
-		if ( is_null($dest_name) ) {
-			$dest_name = $img;
-		}
-		$destination = $upload_dir['path'].'/'.$dest_name;
-		copy( __DIR__.'/assets/'.$img, $destination );
-		return $destination;
-	}
-
-
-	static function getTestImageURL( $img = 'arch.jpg', $relative = false) {
-		$upload_dir = wp_upload_dir();
-		$result = $upload_dir['url'].'/'.$img;
-		if ( $relative ) {
-			$result = str_replace(home_url(), '', $result);
-		}
-		return $result;
-	}
-
-
-	public static function is_connected() {
-		$connected = @fsockopen( "www.google.com", 80, $errno, $errstr, 3 );
-		if ( $connected ) {
-			$is_conn = true; //action when connected
-			fclose( $connected );
-		} else {
-			$is_conn = false; //action in connection failure
-		}
-		return $is_conn;
-	}
-
-	function add_lang_to_home( $url, $path, $orig_scheme, $blog_id ){
-		return "$url?lang=en";
-	}
-
-	public static function get_image_attachment( $pid = 0, $file = 'arch.jpg' ) {
-		$filename = self::copyTestImage( $file );
-		$filetype = wp_check_filetype( basename( $filename ), null );
-		$attachment = array('post_title' => 'The Arch', 'post_content' => '', 'post_mime_type' => $filetype['type']);
-		$iid = wp_insert_attachment( $attachment, $filename, $pid );
-		return $iid;
-	}
-
 	public function get_post_with_image() {
 		$pid = $this->factory->post->create();
-		$iid = self::get_image_attachment( $pid );
+		$iid = self::get_attachment( $pid );
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
 		$post = new Timber\Post($pid);
 		return $post;
 	}
 
-	public static function get_timber_image_object($file = 'cropper.png') {
-		$iid = self::get_image_attachment(0, $file);
-		return new Timber\Image($iid);
-	}
-
 /* ----------------
  * Tests
  ---------------- */
+	function testTimberImageSrc() {
+		$iid = self::get_attachment();
+		$image = new Timber\Image($iid);
+		$post = get_post($iid);
+		$str = '{{ Image(post).src }}';
+		$result = Timber::compile_string( $str, array('post' => $post) );
+		$this->assertEquals($image->src(), $result);
+	}
+
 	function testWithOutputBuffer() {
 		ob_start();
 		$post = $this->get_post_with_image();
@@ -94,17 +44,17 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
  	function testReplacedImage() {
  		$pid = $this->factory->post->create(array('post_type' => 'post'));
- 		$attach_id = self::get_image_attachment($pid, 'arch.jpg');
+ 		$attach_id = self::get_attachment($pid, 'arch.jpg');
  		$template = '{{Image(img).src|resize(200, 200)}}';
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$resized_one = Timber\ImageHelper::get_server_location($str);
  		sleep(1);
- 		$filename = self::copyTestImage('cardinals.jpg', 'arch.jpg');
+ 		$filename = self::copyTestAttachment('cardinals.jpg', 'arch.jpg');
 
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$resized_tester = Timber\ImageHelper::get_server_location($str);
 
- 		$attach_id = self::get_image_attachment($pid, 'cardinals.jpg');
+ 		$attach_id = self::get_attachment($pid, 'cardinals.jpg');
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$resized_known = Timber\ImageHelper::get_server_location($str);
  		$pixel = TestTimberImage::getPixel($resized_one, 5, 5);
@@ -116,11 +66,11 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
  	function testResizedReplacedImage() {
  		$pid = $this->factory->post->create(array('post_type' => 'post'));
- 		$attach_id = self::get_image_attachment($pid, 'arch.jpg');
+ 		$attach_id = self::get_attachment($pid, 'arch.jpg');
  		$template = '{{Image(img).src|resize(200, 200)}}';
  		$str = Timber::compile_string($template, array('img' => $attach_id));
- 		$new_id = self::get_image_attachment($pid, 'pizza.jpg');
- 		self::replace_image($attach_id, $new_id);
+ 		$new_id = self::get_attachment($pid, 'pizza.jpg');
+ 		self::replace_attachment($attach_id, $new_id);
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$resized_path = Timber\ImageHelper::get_server_location($str);
  		$test_md5 = md5( file_get_contents($resized_path) );
@@ -131,16 +81,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
  		$pizza_md5 = md5( file_get_contents($resized_pizza) );
  		$this->assertEquals($pizza_md5, $test_md5);
- 	}
-
- 	function testImageLink() {
- 		self::setPermalinkStructure();
- 		$attach = self::get_image_attachment();
- 		$image = new Timber\Image($attach);
- 		$links = array();
- 		$links[] = 'http://example.org/'.$image->post_name.'/';
- 		$links[] = 'http://example.org/?attachment_id='.$image->ID;
- 		$this->assertContains($image->link(), $links);
  	}
 
 	function testImageMeta() {
@@ -190,7 +130,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testUpSizing() {
 		$data = array();
-		$file_loc = self::copyTestImage( 'stl.jpg' );
+		$file_loc = self::copyTestAttachment( 'stl.jpg' );
 		$upload_dir = wp_upload_dir();
 		$new_file = Timber\ImageHelper::resize( $upload_dir['url'].'/stl.jpg', 500, 200, 'default', true );
 		$location_of_image = Timber\ImageHelper::get_server_location( $new_file );
@@ -200,7 +140,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testUpSizing2Param() {
 		$data = array();
-		$file_loc = self::copyTestImage( 'stl.jpg' );
+		$file_loc = self::copyTestAttachment( 'stl.jpg' );
 		$upload_dir = wp_upload_dir();
 		$new_file = Timber\ImageHelper::resize( $upload_dir['url'].'/stl.jpg', 500, 300, 'default', true );
 		$location_of_image = Timber\ImageHelper::get_server_location( $new_file );
@@ -211,7 +151,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testImageResizeRelative() {
 		$upload_dir = wp_upload_dir();
-		self::copyTestImage();
+		self::copyTestAttachment();
 		$url = $upload_dir['url'].'/arch.jpg';
 		$url = str_replace( 'http://example.org', '', $url );
 		$data = array( 'crop' => 'default', 'test_image' => $url );
@@ -231,7 +171,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data = array();
 		$data['size'] = array( 'width' => 600, 'height' => 400 );
 		$upload_dir = wp_upload_dir();
-		self::copyTestImage();
+		self::copyTestAttachment();
 		$url = $upload_dir['url'].'/arch.jpg';
 		$data['test_image'] = $url;
 		$data['crop'] = 'default';
@@ -247,7 +187,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testIsNotAGif() {
-		$image = self::copyTestImage('arch.jpg');
+		$image = self::copyTestAttachment('arch.jpg');
 		$this->assertFalse( Timber\ImageHelper::is_animated_gif($image) );
 	}
 
@@ -264,7 +204,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if ( ! extension_loaded( 'imagick' ) ) {
 			self::markTestSkipped( 'Animated GIF resizing test requires Imagick extension' );
 		}
-		$image = self::copyTestImage('robocop.gif');
+		$image = self::copyTestAttachment('robocop.gif');
 		$data = array('crop' => 'default');
 		$data['size'] = array('width' => 90, 'height' => 90);
 		$upload_dir = wp_upload_dir();
@@ -277,25 +217,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertTrue(Timber\ImageHelper::is_animated_gif($resized_path));
 	}
 
-	function testImageArray() {
-		$post_id = $this->factory->post->create();
-		$filename = self::copyTestImage('arch.jpg');
-		$wp_filetype = wp_check_filetype( basename( $filename ), null );
-		$attachment = array(
-			'post_mime_type' => $wp_filetype['type'],
-			'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
-			'post_content' => '',
-			'post_status' => 'inherit'
-		);
-		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
-		$data = array('ID' => $attach_id);
-		$image = new Timber\Image($data);
-		$filename = explode('/', $image->file);
-		$filename = array_pop($filename);
-		$this->assertEquals('arch.jpg', $filename);
-
-	}
-
 	/**
 	 * @group maybeSkipped
 	 */
@@ -303,7 +224,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data = array();
 		$data['size'] = array( 'width' => 600 );
 		$upload_dir = wp_upload_dir();
-		self::copyTestImage( 'tall.jpg' );
+		self::copyTestAttachment( 'tall.jpg' );
 		$url = $upload_dir['url'].'/tall.jpg';
 		$data['test_image'] = $url;
 		$data['crop'] = 'default';
@@ -321,48 +242,10 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals( $w, 600 );
 	}
 
-	function testInitFromRelativePath() {
-		$filename = self::copyTestImage( 'arch.jpg' );
-		$path = str_replace(ABSPATH, '/', $filename);
-		$image = new Timber\Image( $path );
-		$this->assertEquals( 1500, $image->width() );
-	}
-
-	function testImagePath() {
-		$filename = self::copyTestImage( 'arch.jpg' );
-		$image = new Timber\Image( $filename );
-		$this->assertStringStartsWith('/wp-content', $image->path());
-		$this->assertStringEndsWith('.jpg', $image->path());
-	}
-
-	function testInitFromID() {
-		$pid = $this->factory->post->create();
-		$filename = self::copyTestImage( 'arch.jpg' );
-		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
-		$iid = wp_insert_attachment( $attachment, $filename, $pid );
-		$image = new Timber\Image( $iid );
-		$this->assertEquals( 1500, $image->width() );
-	}
-
-	function testInitFromFilePath() {
-		$image_file = self::copyTestImage();
-		$image = new Timber\Image( $image_file );
-		$this->assertEquals( 1500, $image->width() );
-	}
-
-	function testInitFromURL() {
-		$destination_path = self::copyTestImage();
-		$destination_path = Timber\URLHelper::get_rel_path( $destination_path );
-		$destination_url = 'http://'.$_SERVER['HTTP_HOST'].$destination_path;
-		$image = new Timber\Image( $destination_url );
-		$this->assertEquals( $destination_url, $image->src() );
-		$this->assertEquals( $destination_url, (string)$image );
-	}
-
 	function testPostThumbnails() {
 		$upload_dir = wp_upload_dir();
 		$post_id = $this->factory->post->create();
-		$filename = self::copyTestImage( 'flag.png' );
+		$filename = self::copyTestAttachment( 'flag.png' );
 		$destination_url = str_replace( ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$attachment = array(
@@ -388,7 +271,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testImageAltText() {
 		$upload_dir = wp_upload_dir();
 		$thumb_alt = 'Thumb alt';
-		$filename = self::copyTestImage( 'flag.png' );
+		$filename = self::copyTestAttachment( 'flag.png' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$post_id = $this->factory->post->create();
 		$attachment = array(
@@ -407,15 +290,15 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testResizeFileNaming() {
 		$file = 'eastern.jpg';
-		$file_loc = self::copyTestImage( $file );
+		$file_loc = self::copyTestAttachment( $file );
 		$upload_dir = wp_upload_dir();
-		$filename = Timber\ImageHelper::get_resize_file_url( self::getTestImageURL($file, true), 300, 500, 'default' );
+		$filename = Timber\ImageHelper::get_resize_file_url( self::getTestAttachmentURL($file, true), 300, 500, 'default' );
 		$expected = $upload_dir['relative'].$upload_dir['subdir'].'/eastern-300x500-c-default.jpg';
 		$this->assertEquals( $expected, $filename );
 	}
 
 	function testResizeFileNamingWithAbsoluteURL() {
-		$file_loc = self::copyTestImage( 'eastern.jpg' );
+		$file_loc = self::copyTestAttachment( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
 		$url_src = $upload_dir['url'].'/eastern.jpg';
 		$filename = Timber\ImageHelper::get_resize_file_url( $url_src, 300, 500, 'default' );
@@ -424,7 +307,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testResizeFileNamingWithLangHome() {
 		add_filter( 'home_url', array($this, 'add_lang_to_home') , 1, 4 );
-		$file_loc = self::copyTestImage( 'eastern.jpg' );
+		$file_loc = self::copyTestAttachment( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
 		$url_src = $upload_dir['url'].'/eastern.jpg';
 		$filename = Timber\ImageHelper::get_resize_file_url( $url_src, 300, 500, 'default' );
@@ -433,7 +316,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testLetterboxFileNaming() {
-		$file_loc = self::copyTestImage( 'eastern.jpg' );
+		$file_loc = self::copyTestAttachment( 'eastern.jpg' );
 		$upload_dir = wp_upload_dir();
 		$url_src = $upload_dir['url'].'/eastern.jpg';
 		$filename = Timber\ImageHelper::get_letterbox_file_url( $url_src, 300, 500, '#FFFFFF' );
@@ -533,7 +416,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if ( ! extension_loaded( 'gd' ) ) {
 			self::markTestSkipped( 'PNG to JPEG conversion test requires GD extension' );
 		}
-		$file_loc = self::copyTestImage( 'eastern-trans.png' );
+		$file_loc = self::copyTestAttachment( 'eastern-trans.png' );
 		$upload_dir = wp_upload_dir();
 		$new_file = Timber\ImageHelper::img_to_jpg( $upload_dir['url'].'/eastern-trans.png', '#FFFF00' );
 		$location_of_image = Timber\ImageHelper::get_server_location( $new_file );
@@ -550,13 +433,13 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data = array();
 		$data['size'] = array( 'width' => 500, 'height' => 300 );
 		$upload_dir = wp_upload_dir();
-		$file = self::copyTestImage( 'arch-2night.jpg' );
+		$file = self::copyTestAttachment( 'arch-2night.jpg' );
 		$data['test_image'] = $upload_dir['url'].'/arch-2night.jpg';
 		$data['crop'] = 'default';
 		$arch_2night = Timber\ImageHelper::get_resize_file_path( $data['test_image'], $data['size']['width'], $data['size']['height'], $data['crop'] );
 		Timber::compile( 'assets/image-test.twig', $data );
 
-		$file = self::copyTestImage( 'arch.jpg' );
+		$file = self::copyTestAttachment( 'arch.jpg' );
 		$data['test_image'] = $upload_dir['url'].'/arch.jpg';
 		$data['size'] = array( 'width' => 520, 'height' => 250 );
 		$data['crop'] = 'left';
@@ -578,7 +461,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data = array();
 		$data['size'] = array( 'width' => 500, 'height' => 300 );
 		$upload_dir = wp_upload_dir();
-		$file = self::copyTestImage( 'city-museum.jpg' );
+		$file = self::copyTestAttachment( 'city-museum.jpg' );
 		$data['test_image'] = $upload_dir['url'].'/city-museum.jpg';
 		$data['crop'] = 'default';
 		Timber::compile( 'assets/image-test.twig', $data );
@@ -599,7 +482,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testImageDeletionByURL() {
 		$post_id = $this->factory->post->create();
-		$filename = self::copyTestImage( 'flag.png' );
+		$filename = self::copyTestAttachment( 'flag.png' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$attachment = array(
 			'post_mime_type' => $wp_filetype['type'],
@@ -631,7 +514,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testImageDeletionByDeletingAttachment() {
 		$post_id = $this->factory->post->create();
-		$filename = self::copyTestImage( 'flag.png' );
+		$filename = self::copyTestAttachment( 'flag.png' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$attachment = array(
 			'post_mime_type' => $wp_filetype['type'],
@@ -663,7 +546,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testImageDeletionByAttachmentLocation() {
 		$post_id = $this->factory->post->create();
-		$filename = self::copyTestImage( 'flag.png' );
+		$filename = self::copyTestAttachment( 'flag.png' );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$attachment = array(
 			'post_mime_type' => $wp_filetype['type'],
@@ -703,7 +586,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 			self::markTestSkipped( 'Letterbox image test requires GD extension' );
 		}
 		$data = array();
-		$file = self::copyTestImage( 'city-museum.jpg' );
+		$file = self::copyTestAttachment( 'city-museum.jpg' );
 		$upload_dir = wp_upload_dir();
 		$data['test_image'] = $upload_dir['url'].'/city-museum.jpg';
 		$new_file = Timber\ImageHelper::letterbox( $data['test_image'], 500, 500, '#00FF00' );
@@ -790,7 +673,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	function testImageWidthWithFilter() {
 		$pid = $this->factory->post->create();
-		$photo = $this->copyTestImage();
+		$photo = $this->copyTestAttachment();
 		$photo = Timber\URLHelper::get_rel_path($photo);
 		update_post_meta($pid, 'custom_photo', '/'.$photo);
 		$str = '{{ Image(post.custom_photo).width }}';
@@ -806,7 +689,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data = array();
 		$data['size'] = 'timber-testResizeNamed';
 		$upload_dir = wp_upload_dir();
-		self::copyTestImage();
+		self::copyTestAttachment();
 		$url = $upload_dir['url'].'/arch.jpg';
 		$data['test_image'] = $url;
 		Timber::compile('assets/image-resize-named.twig', $data);
@@ -824,7 +707,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data = array();
 		$data['size'] = 'timber-foobar';
 		$upload_dir = wp_upload_dir();
-		self::copyTestImage();
+		self::copyTestAttachment();
 		$url = $upload_dir['url'].'/arch.jpg';
 		$data['test_image'] = $url;
 		$result = Timber::compile('assets/image-resize-named.twig', $data);
@@ -835,7 +718,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		add_image_size('timber-testPostThumbnailsNamed', $width = 100, $height = 50, $crop = true);
 		$upload_dir = wp_upload_dir();
 		$post_id = $this->factory->post->create();
-		$filename = self::copyTestImage('flag.png');
+		$filename = self::copyTestAttachment('flag.png');
 		$destination_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
 		$wp_filetype = wp_check_filetype(basename($filename), null);
 		$attachment = array(
@@ -857,7 +740,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testPostThumbnailsWithWPName() {
 		$upload_dir = wp_upload_dir();
 		$post_id = $this->factory->post->create();
-		$filename = self::copyTestImage('flag.png');
+		$filename = self::copyTestAttachment('flag.png');
 		$destination_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
 		$wp_filetype = wp_check_filetype(basename($filename), null);
 		$attachment = array(
@@ -921,7 +804,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if ( ! extension_loaded( 'gd' ) ) {
 			self::markTestSkipped( 'JPEG conversion test requires GD extension' );
 		}
-		$filename = self::copyTestImage('loading.gif');
+		$filename = self::copyTestAttachment('loading.gif');
 		$gif_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
 		$str = '<img src="{{'."'$gif_url'".'|tojpg}}" />';
 		$result = Timber::compile_string($str);
@@ -941,7 +824,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if ( ! extension_loaded( 'imagick' ) ) {
 			self::markTestSkipped( 'Animated GIF resizing test requires Imagick extension' );
 		}
-		$filename = self::copyTestImage('loading.gif');
+		$filename = self::copyTestAttachment('loading.gif');
 		$gif_url = str_replace(ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename);
 		$str = '<img src="{{'."'$gif_url'".'|resize(200)}}" />';
 		$result = Timber::compile_string($str);
@@ -952,7 +835,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testImageNoParent() {
-		$filename = self::copyTestImage( 'arch.jpg' );
+		$filename = self::copyTestAttachment( 'arch.jpg' );
 		$image = new Timber\Image( $filename );
 		$this->assertFalse($image->parent());
 	}
@@ -961,13 +844,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
 		$this->assertEquals($post->ID, $image->parent()->ID);
-	}
-
-	function testPathInfo() {
-		$filename = self::copyTestImage( 'arch.jpg' );
-		$image = new Timber\Image( $filename );
-		$path_parts = $image->get_pathinfo();
-		$this->assertEquals('jpg', $path_parts['extension']);
 	}
 
 	function testTimberImageFromPost() {
@@ -1006,25 +882,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$str = '{{ Image(post).src }}';
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($image->src(), $result);
-	}
-
-	function testTimberImageFromAttachment() {
-		$iid = self::get_image_attachment();
-		$image = new Timber\Image($iid);
-		$post = get_post($iid);
-		$str = '{{ Image(post).src }}';
-		$result = Timber::compile_string( $str, array('post' => $post) );
-		$this->assertEquals($image->src(), $result);
-	}
-
-	// Test document like pdf, docx
-	function testTimberImageFromDocument() {
-		$pid = $this->factory->post->create();
-		$iid = self::get_image_attachment($pid, 'dummy-pdf.pdf');
-		$str = '{{ Image(post).src }}';
-		$attachment = new Timber\Image($iid);
-		$result = Timber::compile_string( $str, array('post' => $iid) );
-		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/dummy-pdf.pdf', $result);
 	}
 
 	function testNoThumbnail() {
@@ -1071,7 +928,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
      */
 	function testAnimagedGifResizeWithoutImagick() {
 		define('TEST_NO_IMAGICK', true);
-		$image = self::copyTestImage('robocop.gif');
+		$image = self::copyTestAttachment('robocop.gif');
 		$data = array('crop' => 'default');
 		$data['size'] = array('width' => 90, 'height' => 90);
 		$upload_dir = wp_upload_dir();
@@ -1088,10 +945,10 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	 * Unlike raster (JPEG, PNG, etc.) SVG is vector-type file so resizing
 	 * shouldn't affect the file. Why is this necessary? B/C a user could have
 	 * uploaded an SVG or JPEG to a particular field and we need to handle
-	 * for either case. 
-	 */	
+	 * for either case.
+	 */
 	function testSVGResize() {
-		$image = self::copyTestImage('icon-twitter.svg');
+		$image = self::copyTestAttachment('icon-twitter.svg');
 		$data = [];
 		$data['size'] = array('width' => 100, 'height' => 50);
 		$upload_dir = wp_upload_dir();
@@ -1101,7 +958,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testSVGLetterbox() {
-		$image = self::copyTestImage('icon-twitter.svg');
+		$image = self::copyTestAttachment('icon-twitter.svg');
 		$data = [];
 		$data['size'] = array('width' => 100, 'height' => 50);
 		$upload_dir = wp_upload_dir();
@@ -1111,7 +968,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testSVGRetina() {
-		$image = self::copyTestImage('icon-twitter.svg');
+		$image = self::copyTestAttachment('icon-twitter.svg');
 		$data = [];
 		$upload_dir = wp_upload_dir();
 		$data['test_image'] = $upload_dir['url'].'/icon-twitter.svg';
@@ -1120,7 +977,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	}
 
 	function testSVGtoJPG() {
-		$image = self::copyTestImage('icon-twitter.svg');
+		$image = self::copyTestAttachment('icon-twitter.svg');
 		$data = [];
 		$upload_dir = wp_upload_dir();
 		$data['test_image'] = $upload_dir['url'].'/icon-twitter.svg';

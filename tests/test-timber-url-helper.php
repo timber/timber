@@ -57,7 +57,7 @@
         function testFileSystemToURLWithWPML() {
             self::_setLanguage();
             add_filter('site_url', array($this, 'addWPMLHomeFilterForRegExTest'), 10, 2);
-            $image = TestTimberImage::copyTestImage();
+            $image = TestTimberImage::copyTestAttachment();
             $url = Timber\URLHelper::file_system_to_url($image);
             $this->assertStringEndsWith('://example2.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
             remove_filter('site_url', array($this, 'addWPMLHomeFilterForRegExTest'));
@@ -68,7 +68,7 @@
         }
 
         function testFileSystemToURL() {
-            $image = TestTimberImage::copyTestImage();
+            $image = TestTimberImage::copyTestAttachment();
             $url = Timber\URLHelper::file_system_to_url($image);
             $this->assertStringEndsWith('://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
         }
@@ -90,7 +90,7 @@
 
         function testFileSystemToURLWithWPMLPrefix() {
             self::_setupWPMLDirectory();
-            $image = TestTimberImage::copyTestImage();
+            $image = TestTimberImage::copyTestAttachment();
             $url = Timber\URLHelper::file_system_to_url($image);
             $this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
             remove_filter('home_url', array($this, 'addWPMLHomeFilter'));

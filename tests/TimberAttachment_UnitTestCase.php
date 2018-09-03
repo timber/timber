@@ -1,6 +1,6 @@
 <?php
 
-	class TimberImage_UnitTestCase extends Timber_UnitTestCase {
+	class TimberAttachment_UnitTestCase extends Timber_UnitTestCase {
 
 		var $_files;
 
