@@ -31,7 +31,7 @@ class ToWebp extends ImageOperation {
 	 *
 	 * @param  string $load_filename filepath (not URL) to source file (ex: /src/var/www/wp-content/uploads/my-pic.jpg)
 	 * @param  string $save_filename filepath (not URL) where result file should be saved
-	 *                               (ex: /src/var/www/wp-content/uploads/my-pic.png)
+	 *                               (ex: /src/var/www/wp-content/uploads/my-pic.webp)
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
 	public function run( $load_filename, $save_filename ) {
@@ -56,6 +56,11 @@ class ToWebp extends ImageOperation {
         if ( !imageistruecolor($input) ) {
             imagepalettetotruecolor($input);
         }
-		return \imagewebp($input, $save_filename, $this->quality);
+
+		if (!function_exists('imagewebp')) {
+			return false;
+		}
+
+		return imagewebp($input, $save_filename, $this->quality);
     }
 }
