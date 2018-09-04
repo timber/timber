@@ -4,7 +4,7 @@
 
 		function setUp() {
 			parent::setUp();
-			if ( ! extension_loaded( 'gd' ) ) {
+			if ( ! function_exists( 'imagewebp' ) ) {
 				self::markTestSkipped( 'WEBP conversion tests requires GD extension' );
 			}
 		}
