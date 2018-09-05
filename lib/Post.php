@@ -244,6 +244,41 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Sets up post.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @param int $loop_index Default `0`. The current loop index. If no argument is passed, it’s
+	 *                        assumed that we’re in a singular template.
+	 *
+	 * @return \Timber\Post $this
+	 */
+	public function setup( $loop_index = 0 ) {
+		global $post;
+		global $wp_query;
+
+		// Overwrite post global.
+		$post = $this;
+
+		/**
+		 * Mimick WordPress behavior to improve compatibility
+		 * with third party plugins.
+		 */
+		$wp_query->in_the_loop = true;
+
+		// Fire action when the loop has just started.
+		if ( 0 === $loop_index ) {
+			do_action_ref_array( 'loop_start', array( &$GLOBALS['wp_query'] ) );
+		}
+
+		// The setup_postdata() function will call the 'the_post' action.
+		$wp_query->setup_postdata( $post->ID );
+
+		return $this;
+	}
+
+	/**
 	 * Determined whether or not an admin/editor is looking at the post in "preview mode" via the
 	 * WordPress admin
 	 * @internal

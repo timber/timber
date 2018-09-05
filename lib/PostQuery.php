@@ -79,6 +79,24 @@ class PostQuery extends PostCollection {
 	}
 
 	/**
+	 * Merges arguments with default query.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @param array $args Optional. Arguments to be merged with the default query.
+	 *
+	 * @return \Timber\PostQuery
+	 */
+	public static function merge_default( $args = array() ) {
+		global $wp_query;
+
+		$args = wp_parse_args( $args, $wp_query->query_vars );
+
+		return new self( $args );
+	}
+
+	/**
 	 * @return mixed The query the user orignally passed to the pagination object.
 	 */
 	protected function get_query() {
