@@ -89,6 +89,16 @@ This can be used in conjunction with other filters, so for example:
     {{ post.thumbnail.src|resize(400, 300)|retina(4) }}  4x">
 ```
 
+## Using WebP images
+
+```twig
+<picture>
+   <source srcset="{{ post.thumbnail.src|towebp }}" type="image/webp">
+   <source srcset="{{ post.thumbnail.src|tojpg }}" type="image/jpeg">
+   <img src="{{ post.thumbnail.src|tojpg }}" alt="{{ post.title }}">
+</picture>
+```
+
 ## Using images in custom fields
 
 Let’s say you're using a custom field plugin (like the amazing [Advanced Custom Fields](http://www.advancedcustomfields.com/)). You can use the resulting images in your Twig templates very easily.
