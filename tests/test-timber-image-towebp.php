@@ -13,7 +13,6 @@
 			$filename = TestTimberImage::copyTestImage( 'white-castle.tif' );
 			$str = Timber::compile_string('{{file|towebp}}', array('file' => $filename));
 			$this->assertEquals($filename, $str);
-			unlink($filename);
 		}
 
 		function testPNGtoWEBP() {
@@ -24,8 +23,6 @@
 			$this->assertGreaterThan(1000, filesize($renamed));
 			$this->assertEquals('image/png', mime_content_type($filename));
 			$this->assertEquals('image/webp', mime_content_type($renamed));
-			unlink($filename);
-			unlink($renamed);
 		}
 
 		function testGIFtoJPG() {
@@ -36,8 +33,6 @@
 			$this->assertGreaterThan(1000, filesize($renamed));
 			$this->assertEquals('image/gif', mime_content_type($filename));
 			$this->assertEquals('image/webp', mime_content_type($renamed));
-			unlink($filename);
-			unlink($renamed);
 		}
 
 		function testJPGtoWEBP() {
@@ -48,7 +43,6 @@
 			$this->assertGreaterThan(1000, filesize($renamed));
 			$this->assertEquals('image/jpeg', mime_content_type($filename));
 			$this->assertEquals('image/webp', mime_content_type($renamed));
-			unlink($filename);
 		}
 
 		function testJPEGtoJPG() {
@@ -59,8 +53,6 @@
 			$this->assertGreaterThan(1000, filesize($renamed));
 			$this->assertEquals('image/jpeg', mime_content_type($filename));
 			$this->assertEquals('image/webp', mime_content_type($renamed));
-			unlink($filename);
-			unlink($renamed);
 		}
 
 		function testWEBPtoWEBP() {
@@ -70,6 +62,5 @@
 			$new_size = filesize($filename);
 			$this->assertEquals($original_size, $new_size);
 			$this->assertEquals('image/webp', mime_content_type($filename));
-			unlink($filename);
 		}
 	}

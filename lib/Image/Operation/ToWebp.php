@@ -4,6 +4,9 @@ namespace Timber\Image\Operation;
 
 use Timber\Image\Operation as ImageOperation;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ToWebp extends ImageOperation {
 
 	private $quality;
