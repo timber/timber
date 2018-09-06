@@ -11,7 +11,7 @@
 
 ### Pull Requests
 
-Pull requests are highly appreciated. More than fifty people have written parts of Timber (so far). Here are some guidelines to help:
+Pull requests are highly appreciated. Almost 150 people have written parts of Timber (so far). Here are some guidelines to help:
 
 1. **Solve a problem** – Features are great, but even better is cleaning-up and fixing issues in the code that you discover.
 2. **Write tests** – This helps preserve functionality as the codebase grows and demonstrates how your change affects the code.
