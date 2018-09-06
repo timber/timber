@@ -11,7 +11,7 @@ class URLHelper {
 	 */
 	public static function get_current_url() {
 		$pageURL = self::get_scheme()."://";
-		if ( isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != "80" ) {
+		if ( isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != "80" && $_SERVER["SERVER_PORT"] != "443") {
 			$pageURL .= self::get_host().":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
 		} else {
 			$pageURL .= self::get_host().$_SERVER["REQUEST_URI"];
@@ -181,8 +181,7 @@ class URLHelper {
 	public static function get_content_subdir() {
 		$home_url = get_home_url();
 		$home_url = apply_filters('timber/URLHelper/get_content_subdir/home_url', $home_url);
-		$wp_content_path = str_replace($home_url, '', WP_CONTENT_URL);
-		return $wp_content_path;
+		return str_replace($home_url, '', WP_CONTENT_URL);
 	} 
 
 	/**
