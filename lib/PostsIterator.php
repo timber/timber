@@ -39,7 +39,7 @@ class PostsIterator extends \ArrayIterator {
 		$post->teardown();
 
 		// Fire action when the loop has ended.
-		if ( $this->count() === $this->key() ) {
+		if ( $this->key() === $this->count() - 1 ) {
 			do_action_ref_array( 'loop_end', array( &$GLOBALS['wp_query'] ) );
 			wp_reset_postdata();
 		}
