@@ -216,7 +216,7 @@ class Image extends Attachment {
 	 */
 	public function alt() {
 		$alt = $this->meta( '_wp_attachment_image_alt' );
-		return trim( strip_tags( $alt ) );
+		return trim( wp_strip_all_tags( $alt ) );
 	}
 
 	/**
