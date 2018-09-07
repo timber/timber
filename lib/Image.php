@@ -62,8 +62,10 @@ class Image extends Attachment {
 	public static $representation = 'image';
 
 	/**
+	 * Image sizes.
+	 *
 	 * @api
-	 * @var array
+	 * @var array An array of available sizes for the image.
 	 */
 	public $sizes = array();
 
