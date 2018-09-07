@@ -244,27 +244,22 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Sets up post.
+	 * Sets up a post.
 	 *
 	 * @api
 	 * @since 2.0.0
 	 *
-	 * @param int $loop_index Default `0`. The current loop index. If no argument is passed, it’s
-	 *                        assumed that we’re in a singular template.
-	 *
-	 * @return \Timber\Post $this
+	 * @return \Timber\Post The post instance.
 	 */
 	public function setup() {
 		global $post;
 		global $wp_query;
 
 		// Overwrite post global.
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
 		$post = $this;
 
-		/**
-		 * Mimick WordPress behavior to improve compatibility
-		 * with third party plugins.
-		 */
+		// Mimick WordPress behavior to improve compatibility with third party plugins.
 		$wp_query->in_the_loop = true;
 
 		// The setup_postdata() function will call the 'the_post' action.
@@ -274,11 +269,12 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Resets the variables after post has been used
+	 * Resets variables after post has been used.
+	 *
 	 * @api
 	 * @since 2.0.0
 	 *
-	 * @return \Timber\Post $this
+	 * @return \Timber\Post The post instance.
 	 */
 	public function teardown() {
 		return $this;
