@@ -254,7 +254,7 @@ class Post extends Core implements CoreInterface {
 	 *
 	 * @return \Timber\Post $this
 	 */
-	public function setup( $loop_index = 0 ) {
+	public function setup() {
 		global $post;
 		global $wp_query;
 
@@ -267,14 +267,20 @@ class Post extends Core implements CoreInterface {
 		 */
 		$wp_query->in_the_loop = true;
 
-		// Fire action when the loop has just started.
-		if ( 0 === $loop_index ) {
-			do_action_ref_array( 'loop_start', array( &$GLOBALS['wp_query'] ) );
-		}
-
 		// The setup_postdata() function will call the 'the_post' action.
 		$wp_query->setup_postdata( $post->ID );
 
+		return $this;
+	}
+
+	/**
+	 * Resets the variables after post has been used
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @return \Timber\Post $this
+	 */
+	public function teardown() {
 		return $this;
 	}
 
