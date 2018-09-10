@@ -22,6 +22,25 @@ class TestTimberPostIterator extends Timber_UnitTestCase {
 	}
 
 	/**
+	 * TODO: Make this test work
+	 */
+	function testSetupMethodCalled() {
+		global $wp_query;
+		$pids = $this->factory->post->create_many(3);
+		$posts = new Timber\PostQuery( $pids );
+
+		// Make sure $wp_query is set up.
+		$this->go_to( get_permalink( get_option( 'page_for_posts' ) ) );
+
+		$in_the_loop = false;
+		foreach ($posts as $post) {
+			$in_the_loop = $in_the_loop || $wp_query->in_the_loop;
+		}
+
+		$this->assertEquals( $in_the_loop, true );
+	}
+
+	/**
 	 * Checks if wp_reset_postdata() is run after a query.
 	 */
 	function testResetPostDataAfterLastItem() {
