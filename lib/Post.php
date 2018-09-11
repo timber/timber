@@ -56,7 +56,7 @@ use WP_Post;
  * </article>
  * ```
  */
-class Post extends Core implements CoreInterface {
+class Post extends Core implements CoreInterface, Setupable {
 
 	/**
 	 * @var string The name of the class to handle images by default
