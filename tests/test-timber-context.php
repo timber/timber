@@ -32,32 +32,6 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$this->assertEquals( $post, $context['post'] );
 	}
 
-	function testPostContextWithID() {
-		$post_id1 = $this->factory->post->create();
-		$post_id2 = $this->factory->post->create();
-
-		$this->go_to( get_permalink( $post_id1 ) );
-
-		$context = Timber::context( array(
-			'post' => $post_id2,
-		) );
-
-		$this->assertEquals( $post_id2, $context['post']->ID );
-	}
-
-	function testPostContextWithExtendedPost() {
-		require_once( __DIR__ . '/php/timber-post-subclass.php' );
-
-		$post_id = $this->factory->post->create();
-		$this->go_to( get_permalink( $post_id ) );
-
-		$context = Timber::context( array(
-			'post' => new TimberPostSubclass(),
-		) );
-
-		$this->assertInstanceOf( 'TimberPostSubclass', $context['post'] );
-	}
-
 	function testPostsContextSimple() {
 		update_option( 'show_on_front', 'posts' );
 		$this->factory->post->create_many( 3 );
@@ -85,35 +59,6 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$this->assertInstanceOf( 'Timber\PostQuery', $context['posts'] );
 		$this->assertCount( 2, $context['posts']->get_posts() );
 		$this->assertEquals( 'page', $context['posts'][0]->post_type );
-	}
-
-	function testCancelDefaultQueryPosts() {
-		update_option( 'show_on_front', 'posts' );
-		$this->factory->post->create_many( 3 );
-		$this->go_to( '/' );
-
-		$context = Timber::context( array(
-			'cancel_default_query' => true
-		) );
-
-		$this->assertArrayNotHasKey( 'posts', $context );
-	}
-
-	function testCancelDefaultQueryPostsWithPostArgs() {
-		update_option( 'show_on_front', 'posts' );
-		$this->factory->post->create_many( 3 );
-
-		$this->go_to( '/' );
-
-		$context = Timber::context( array(
-			'cancel_default_query' => true,
-			'posts' => array(
-				'posts_per_page' => 2,
-			),
-		) );
-
-		$this->assertArrayHasKey( 'posts', $context );
-		$this->assertCount( 2, $context['posts']->get_posts() );
 	}
 
 	function testDisableDefaultQueryByArgsPost() {
@@ -180,19 +125,6 @@ class TestTimberContext extends Timber_UnitTestCase {
 		Timber::context();
 
 		$this->assertTrue( $wp_query->in_the_loop );
-	}
-
-	function testLoopStartHookInSingularTemplates() {
-		add_action( 'loop_start', function( $wp_query ) {
-			$wp_query->touched_loop_start = true;
-		} );
-
-		$post_id = $this->factory->post->create();
-		$this->go_to( get_permalink( $post_id ) );
-		Timber::context();
-
-		global $wp_query;
-		$this->assertTrue( $wp_query->touched_loop_start );
 	}
 
 	/**
