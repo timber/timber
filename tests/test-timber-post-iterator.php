@@ -21,11 +21,7 @@ class TestTimberPostIterator extends Timber_UnitTestCase {
 		$this->assertEquals( 'loop_end', $this->collector[3] );
 	}
 
-	/**
-	 * TODO: Make this test work
-	 */
 	function testSetupMethodCalled() {
-		global $wp_query;
 		$pids = $this->factory->post->create_many(3);
 		$posts = new Timber\PostQuery( $pids );
 
@@ -33,7 +29,9 @@ class TestTimberPostIterator extends Timber_UnitTestCase {
 		$this->go_to( get_permalink( get_option( 'page_for_posts' ) ) );
 
 		$in_the_loop = false;
+
 		foreach ($posts as $post) {
+			global $wp_query;
 			$in_the_loop = $in_the_loop || $wp_query->in_the_loop;
 		}
 
