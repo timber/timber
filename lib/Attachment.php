@@ -225,7 +225,7 @@ class Attachment extends Post implements CoreInterface {
 		if ( isset( $this->file ) ) {
 			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
 		} elseif ( isset( $this->_wp_attached_file ) ) {
-			$this->file     = reset( $this->_wp_attached_file );
+			$this->file     = $this->_wp_attached_file;
 			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
 		}
 
