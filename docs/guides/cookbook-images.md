@@ -80,15 +80,6 @@ You can use Timber to generate @2x image sizes for retina devices. For example, 
     {{ post.thumbnail.src|retina(4) }} 4x">
 ```
 
-This can be used in conjunction with other filters, so for example:
-
-```twig
-<img src="{{ post.thumbnail.src|resize(400, 300) }}" srcset="{{ post.thumbnail.src|resize(400, 300)|retina(1) }} 1x,
-    {{ post.thumbnail.src|resize(400, 300)|retina(2) }}  2x,
-    {{ post.thumbnail.src|resize(400, 300)|retina(3) }}  3x,
-    {{ post.thumbnail.src|resize(400, 300)|retina(4) }}  4x">
-```
-
 ## Using WebP images
 
 ```twig
