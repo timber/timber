@@ -143,6 +143,26 @@ Similar to repeaters, get the field by the name of the flexible content field:
 	{% endif %}
 {% endfor %}
 ```
+### Repeater in Flexible Content Field
+
+Similar to nested repeaters, you should only call the `get_field` method once:
+
+```twig
+{% for media_item in post.get_field('media_set') %}
+	{% if media_item.acf_fc_layout == 'image_set' %}
+		{% for image_item in media_item.image_set %}
+			<img src="{{TimberImage(image_item.image).src}}" />
+			<p class="caption">{{TimberImage(image_item.image).caption}}</p>
+			<aside class="notes">{{image_item.notes}}</aside>
+		{% endfor %}
+	{% elseif media_item.acf_fc_layout == 'video_set' %}
+		{% for video_item in media_item.video_set %}
+			<iframe width="560" height="315" src="http://www.youtube.com/embed/{{video_item.youtube_id}}" frameborder="0" allowfullscreen></iframe>
+			<p class="caption">{{video_item.caption}}</p>
+		{% endfor %}
+	{% endif %}
+{% endfor %}
+```
 
 * * *
 
