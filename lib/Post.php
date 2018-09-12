@@ -492,9 +492,9 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * gets the post custom and attaches it to the current object
-	 * @internal
-	 * @param integer $pid a post ID number
+	 * Gets the post meta data values and attaches it to the current object.
+	 *
+	 * @param int $pid A post ID.
 	 */
 	public function import_custom( $pid ) {
 		$customs = $this->get_meta_values($pid);

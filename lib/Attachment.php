@@ -232,15 +232,8 @@ class Attachment extends Post implements CoreInterface {
 			$this->ID = $iid;
 		}
 
-		/**
-		 * TODO: do we have so set custom values here?
-		 */
 		if ( isset( $this->ID ) ) {
-			$custom = self::get_meta_values( $this->ID );
-
-			foreach ( $custom as $key => $value ) {
-				$this->$key = $value[0];
-			}
+			$this->import_custom( $this->ID );
 
 			$this->id = $this->ID;
 		}
@@ -334,69 +327,6 @@ class Attachment extends Post implements CoreInterface {
 		}
 
 		return $attachment_id;
-	}
-
-	/**
-	 * Gets meta values for an attachment.
-	 *
-	 * Used internally to fetch the metadata fields from the post meta table and attach them to our
-	 * `Timber\Attachment` object.
-	 *
-	 * @internal
-	 *
-	 * @param int $attachment_id The attachment ID to fetch the values for.
-	 *
-	 * @return array
-	 */
-	protected function get_meta_values( $attachment_id ) {
-		$meta_values = array();
-
-		/**
-		 * Fires before post meta data is imported into the object.
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param array              $meta_values   An array of custom meta values. Passing a
-		 *                                          non-empty array will skip fetching the values
-		 *                                          from the database and will use the filtered
-		 *                                          values instead.
-		 * @param int                $attachment_id The post ID.
-		 * @param \Timber\Attachment $post          The attachment post object.
-		 */
-		$meta_values = apply_filters(
-			'timber/attachment/pre_get_meta_values',
-			$meta_values,
-			$attachment_id,
-			$this
-		);
-
-		if ( ! is_array( $meta_values ) || empty( $meta_values ) ) {
-			$meta_values = get_post_custom( $attachment_id );
-		}
-
-		if ( is_bool( $meta_values ) ) {
-			return array();
-		}
-
-		/**
-		 * Filters attachment meta data.
-		 *
-		 * @todo Add description, example
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param array        $customs Post meta data.
-		 * @param int          $pid     The post ID.
-		 * @param \Timber\Post $post    The post object.
-		 */
-		$meta_values = apply_filters(
-			'timber/attachment/get_meta_values',
-			$meta_values,
-			$attachment_id,
-			$this
-		);
-
-		return $meta_values;
 	}
 
 	/**
