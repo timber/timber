@@ -80,7 +80,7 @@ class PostPreview {
 
 	/**
 	 * @api
-	 * @param boolean|string $strip strip the tags or what? You can also provide a list of allowed tags
+	 * @param boolean|string $strip strip the tags or what? You can also provide a list of allowed tags (e.g. '<p><a>')
 	 */
 	public function strip( $strip = true ) {
 		$this->strip = $strip;
