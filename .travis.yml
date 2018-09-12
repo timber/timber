@@ -7,22 +7,20 @@ php:
     - 7.1
 
 env:
-    - WP_VERSION=4.7.3 WP_MULTISITE=0
-    - WP_VERSION=4.7.3 WP_MULTISITE=1
-    - WP_VERSION=latest WP_MULTISITE=0
-    - WP_VERSION=latest WP_MULTISITE=1
-
-#matrix:
-    #include:
-        # php: 5.6.30
-        #  env: WP_VERSION=4.6 WP_MULTISITE=0
+    - WP_VERSION=4.7.9 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
+    - WP_VERSION=4.7.9 WP_MULTISITE=0 PREFER_LOWEST=""
+    - WP_VERSION=4.7.9 WP_MULTISITE=1 PREFER_LOWEST=""
+    - WP_VERSION=latest WP_MULTISITE=0 PREFER_LOWEST=""
+    - WP_VERSION=latest WP_MULTISITE=1 PREFER_LOWEST=""
+    - WP_VERSION=latest WP_MULTISITE=1 PREFER_LOWEST="--prefer-lowest --prefer-stable"
 
 before_script:
-    - if [ "$TRAVIS_PHP_VERSION" == 5.5 ] || [ "$TRAVIS_PHP_VERSION" == 5.4 ] || [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then autodetect | pecl install imagick; fi
+    - if [ "$TRAVIS_PHP_VERSION" == 5.5 ] || [ "$TRAVIS_PHP_VERSION" == 5.4 ] || [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then pear config-set preferred_state beta; pecl channel-update pecl.php.net; yes | pecl install imagick; fi
     - if [ "$TRAVIS_PHP_VERSION" == 5.3 ]; then autodetect | pecl install imagick-3.0.1; fi
     - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+    # composer install --dev --prefer-source
+    - composer update $PREFER_LOWEST --dev --prefer-source
     - composer require satooshi/php-coveralls:1.0.*
-    - composer install --dev --prefer-source
 
 script:
     - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then mkdir -p build/logs; vendor/phpunit/phpunit/phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml; else vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml; fi

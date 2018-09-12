@@ -65,6 +65,7 @@ If you have functions that you use a lot and want to improve readability of your
  */
 add_filter( 'timber/twig', function( \Twig_Environment $twig ) {
 	$twig->addFunction( new Timber\Twig_Function( 'edit_post_link', 'edit_post_link' ) );
+	return $twig;
 } );
 ```
 

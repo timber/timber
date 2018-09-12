@@ -2,24 +2,20 @@
 
 namespace Timber\Image\Operation;
 
-use Timber\Helper;
-use Timber\ImageHelper;
 use Timber\Image\Operation as ImageOperation;
 
 /**
- * Implements converting a PNG file to JPG.
- * Argument:
- * - color to fill transparent zones
+ * @codeCoverageIgnore
  */
-class ToJpg extends ImageOperation {
+class ToWebp extends ImageOperation {
 
-	private $color;
+	private $quality;
 
 	/**
-	 * @param string $color hex string of color to use for transparent zones
+	 * @param string $quality  ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
 	 */
-	public function __construct( $color ) {
-		$this->color = $color;
+	public function __construct( $quality ) {
+		$this->quality = $quality;
 	}
 
 	/**
@@ -27,8 +23,8 @@ class ToJpg extends ImageOperation {
 	 * @param   string    $src_extension    ignored
 	 * @return  string    the final filename to be used (ex: my-awesome-pic.jpg)
 	 */
-	public function filename( $src_filename, $src_extension = 'jpg' ) {
-		$new_name = $src_filename.'.jpg';
+	public function filename( $src_filename, $src_extension = 'webp' ) {
+		$new_name = $src_filename  . '.webp';
 		return $new_name;
 	}
 
@@ -38,19 +34,13 @@ class ToJpg extends ImageOperation {
 	 *
 	 * @param  string $load_filename filepath (not URL) to source file (ex: /src/var/www/wp-content/uploads/my-pic.jpg)
 	 * @param  string $save_filename filepath (not URL) where result file should be saved
-	 *                               (ex: /src/var/www/wp-content/uploads/my-pic.png)
+	 *                               (ex: /src/var/www/wp-content/uploads/my-pic.webp)
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
 	public function run( $load_filename, $save_filename ) {
-
-		if ( !file_exists($load_filename) ) {
-			return false;
-		}
-		
-		// Attempt to check if SVG.
-		if ( ImageHelper::is_svg($load_filename) ) {
-			return false;
-		}
+        if (!is_file($load_filename)) {
+            return false;
+        }
 
 		$ext = wp_check_filetype($load_filename);
 		if ( isset($ext['ext']) ) {
@@ -66,14 +56,14 @@ class ToJpg extends ImageOperation {
 
 		$input = $imagecreate_function($load_filename);
 
-		list($width, $height) = getimagesize($load_filename);
-		$output = imagecreatetruecolor($width, $height);
-		$c = self::hexrgb($this->color);
-		$color = imagecolorallocate($output, $c['red'], $c['green'], $c['blue']);
-		imagefilledrectangle($output, 0, 0, $width, $height, $color);
-		imagecopy($output, $input, 0, 0, 0, 0, $width, $height);
-		imagejpeg($output, $save_filename);
-		return true;
-	}
+        if ( !imageistruecolor($input) ) {
+            imagepalettetotruecolor($input);
+        }
 
+		if (!function_exists('imagewebp')) {
+			return false;
+		}
+
+		return imagewebp($input, $save_filename, $this->quality);
+    }
 }

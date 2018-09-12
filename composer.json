@@ -29,7 +29,7 @@
   },
   "require": {
     "php": ">=5.3.0|7.*",
-    "twig/twig": "^1.0|2.*",
+    "twig/twig": "1.34.*|2.*",
     "upstatement/routes": "0.4",
     "composer/installers": "~1.0",
     "asm89/twig-cache-extension": "~1.0"
@@ -37,7 +37,8 @@
   "require-dev": {
     "phpunit/phpunit": "5.7.16",
     "wpackagist-plugin/advanced-custom-fields": "5.*",
-    "wpackagist-plugin/co-authors-plus" : "3.*"
+    "wpackagist-plugin/co-authors-plus" : "3.2.*",
+    "johnpbloch/wordpress" : "4.*"
   },
   "suggest" : {
     "satooshi/php-coveralls": "1.0.* for code coverage"

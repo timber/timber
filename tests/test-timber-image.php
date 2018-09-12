@@ -81,6 +81,27 @@ class TestTimberImage extends TimberImage_UnitTestCase {
  * Tests
  ---------------- */
 
+ 	function testInitFromID() {
+		$pid = $this->factory->post->create();
+		$filename = self::copyTestImage( 'arch.jpg' );
+		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+		$iid = wp_insert_attachment( $attachment, $filename, $pid );
+		$image = new TimberImage( $iid );
+		$this->assertEquals( 1500, $image->width() );
+	}
+
+	function testWithOutputBuffer() {
+		ob_start();
+		$post = $this->get_post_with_image();
+		$str = '<img src="{{ post.thumbnail.src|resize(510, 280) }}" />';
+		Timber::render_string($str, array('post' => $post));
+		$result = ob_get_contents();
+		ob_end_clean();
+		$m = date('m');
+		$y = date('Y');
+		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.$y.'/'.$m.'/arch-510x280-c-default.jpg" />', $result);
+	}
+
  	function testReplacedImage() {
  		$pid = $this->factory->post->create(array('post_type' => 'post'));
  		$attach_id = self::get_image_attachment($pid, 'arch.jpg');
@@ -149,6 +170,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals( 1.5, $image->aspect() );
 	}
 
+	/**
+	 * @group maybeSkipped
+	 */
 	function testExternalImageResize() {
 		if ( !self::is_connected() ) {
 			$this->markTestSkipped('Cannot test external images when not connected to internet');
@@ -241,6 +265,11 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertFalse( TimberImageHelper::is_animated_gif('notreal.gif') );
 	}
 
+
+
+	/**
+	 * @group maybeSkipped
+	 */
 	function testAnimatedGifResize() {
 		if ( ! extension_loaded( 'imagick' ) ) {
 			self::markTestSkipped( 'Animated GIF resizing test requires Imagick extension' );
@@ -277,6 +306,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 
 	}
 
+	/**
+	 * @group maybeSkipped
+	 */
 	function testResizeTallImage() {
 		$data = array();
 		$data['size'] = array( 'width' => 600 );
@@ -311,15 +343,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$image = new TimberImage( $filename );
 		$this->assertStringStartsWith('/wp-content', $image->path());
 		$this->assertStringEndsWith('.jpg', $image->path());
-	}
-
-	function testInitFromID() {
-		$pid = $this->factory->post->create();
-		$filename = self::copyTestImage( 'arch.jpg' );
-		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
-		$iid = wp_insert_attachment( $attachment, $filename, $pid );
-		$image = new TimberImage( $iid );
-		$this->assertEquals( 1500, $image->width() );
 	}
 
 	function testInitFromFilePath() {
@@ -504,6 +527,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		return ImageOperation::rgbhex($r, $g, $b);
 	}
 
+	/**
+	 * @group maybeSkipped
+	 */
 	function testPNGtoJPG() {
 		if ( ! extension_loaded( 'gd' ) ) {
 			self::markTestSkipped( 'PNG to JPEG conversion test requires GD extension' );
@@ -669,6 +695,10 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertFileNotExists( $resized_500_file );
 	}
 
+	/**
+	 *
+	 * @group maybeSkipped
+	 */
 	function testLetterboxImageDeletion() {
 		if ( ! extension_loaded( 'gd' ) ) {
 			self::markTestSkipped( 'Letterbox image test requires GD extension' );
@@ -741,6 +771,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		return $path;
 	}
 
+	/**
+	 * @group maybeSkipped
+	 */
 	function testThemeImageLetterbox() {
 		$theme_url = get_theme_root_uri().'/'.get_stylesheet();
 		if ( ! extension_loaded( 'gd' ) ) {
@@ -767,17 +800,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals( 1500, $rendered );
 	}
 
-	function testWithOutputBuffer() {
-		ob_start();
-		$post = $this->get_post_with_image();
-		$str = '<img src="{{ post.thumbnail.src|resize(510, 280) }}" />';
-		Timber::render_string($str, array('post' => $post));
-		$result = ob_get_contents();
-		ob_end_clean();
-		$m = date('m');
-		$y = date('Y');
-		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.$y.'/'.$m.'/arch-510x280-c-default.jpg" />', $result);
-	}
+
 
 	function testResizeNamed() {
 		add_image_size('timber-testResizeNamed', $width = 600, $height = 400, $crop = true);
@@ -892,6 +915,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals('<img src="'.$upload_dir['url'].'/'.$image->sizes['medium']['file'].'" />', trim($result));
 	}
 
+	/**
+	 * @group maybeSkipped
+	 */
 	function testGifToJpg() {
 		if ( ! extension_loaded( 'gd' ) ) {
 			self::markTestSkipped( 'JPEG conversion test requires GD extension' );
@@ -909,6 +935,9 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertTrue($helper);
 	}
 
+	/**
+	 * @group maybeSkipped
+	 */
 	function testResizeGif() {
 		if ( ! extension_loaded( 'imagick' ) ) {
 			self::markTestSkipped( 'Animated GIF resizing test requires Imagick extension' );
@@ -1034,6 +1063,68 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$data['url'] = $data['baseurl'];
 
 		return $data;
+	}
+
+	/**
+     * @expectedException Twig_Error_Runtime
+     */
+	function testAnimagedGifResizeWithoutImagick() {
+		define('TEST_NO_IMAGICK', true);
+		$image = self::copyTestImage('robocop.gif');
+		$data = array('crop' => 'default');
+		$data['size'] = array('width' => 90, 'height' => 90);
+		$upload_dir = wp_upload_dir();
+		$url = $upload_dir['url'].'/robocop.gif';
+		$data['test_image'] = $url;
+		$str = Timber::compile( 'assets/image-test.twig', $data );
+		$resized_path = $upload_dir['path'].'/robocop-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.gif';
+		$this->addFile( $resized_path );
+		$this->assertFileExists( $resized_path );
+		$this->assertFalse(TimberImageHelper::is_animated_gif($resized_path));
+	}
+
+	/**
+	 * Unlike raster (JPEG, PNG, etc.) SVG is vector-type file so resizing
+	 * shouldn't affect the file. Why is this necessary? B/C a user could have
+	 * uploaded an SVG or JPEG to a particular field and we need to handle
+	 * for either case. 
+	 */	
+	function testSVGResize() {
+		$image = self::copyTestImage('icon-twitter.svg');
+		$data = [];
+		$data['size'] = array('width' => 100, 'height' => 50);
+		$upload_dir = wp_upload_dir();
+		$data['test_image'] = $upload_dir['url'].'/icon-twitter.svg';
+		$str = Timber::compile( 'assets/image-test.twig', $data );
+		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.date('Y/m').'/icon-twitter.svg" />', trim($str));
+	}
+
+	function testSVGLetterbox() {
+		$image = self::copyTestImage('icon-twitter.svg');
+		$data = [];
+		$data['size'] = array('width' => 100, 'height' => 50);
+		$upload_dir = wp_upload_dir();
+		$data['test_image'] = $upload_dir['url'].'/icon-twitter.svg';
+		$str = Timber::compile_string( '<img src="{{ test_image|letterbox(size.width, size.height) }}" />', $data );
+		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.date('Y/m').'/icon-twitter.svg" />', trim($str));
+	}
+
+	function testSVGRetina() {
+		$image = self::copyTestImage('icon-twitter.svg');
+		$data = [];
+		$upload_dir = wp_upload_dir();
+		$data['test_image'] = $upload_dir['url'].'/icon-twitter.svg';
+		$str = Timber::compile_string( '<img src="{{ test_image|retina(2) }}" />', $data );
+		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.date('Y/m').'/icon-twitter.svg" />', trim($str));
+	}
+
+	function testSVGtoJPG() {
+		$image = self::copyTestImage('icon-twitter.svg');
+		$data = [];
+		$upload_dir = wp_upload_dir();
+		$data['test_image'] = $upload_dir['url'].'/icon-twitter.svg';
+		$str = Timber::compile_string( '<img src="{{ test_image|tojpg }}" />', $data );
+		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.date('Y/m').'/icon-twitter.svg" />', trim($str));
 	}
 
 }

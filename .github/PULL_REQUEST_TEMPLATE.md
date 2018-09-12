@@ -1,3 +1,5 @@
+First off, hello! Thanks for submitting a PR. We love/welcome PRs (especially if it's your first). Have any questions? Read [this section in CONTRIBUTING.md](https://github.com/timber/timber/blob/master/CONTRIBUTING.md#pull-requests) 
+
 **Ticket**: # <!-- Ignore this if not relevant -->
 
 #### Issue

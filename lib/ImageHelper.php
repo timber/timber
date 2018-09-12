@@ -4,6 +4,7 @@ namespace Timber;
 
 use Timber\Image;
 use Timber\Image\Operation\ToJpg;
+use Timber\Image\Operation\ToWebp;
 use Timber\Image\Operation\Resize;
 use Timber\Image\Operation\Retina;
 use Timber\Image\Operation\Letterbox;
@@ -140,6 +141,21 @@ class ImageHelper {
 		fclose($fh);
 		return $count > 1;
 	}
+	
+	/** 
+	 *
+	 * Checks if file is an SVG
+	 * @param string $file_path file path.
+	 * @return boolean true if svg, false if not svg or file doesn't exist.
+	 */
+	public static function is_svg( $file_path ) {
+		$ret = false;
+		if ( isset($file_path) && '' !== $file_path && file_exists($file_path) ) {
+			$mime = mime_content_type($file_path);
+    		$ret  = in_array($mime, ['image/svg+xml', 'text/html', 'text/plain']);
+    	}
+    	return $ret;
+	}
 
 	/**
 	 * Generate a new image with the specified dimensions.
@@ -168,6 +184,19 @@ class ImageHelper {
 		$op = new Image\Operation\ToJpg($bghex);
 		return self::_operate($src, $op, $force);
 	}
+
+    /**
+     * Generates a new image by converting the source into WEBP
+     *
+     * @param string  $src      a url or path to the image (http://example.org/wp-content/uploads/2014/image.jpg) 
+     *                          or (/wp-content/uploads/2014/image.jpg)
+	 * @param int     $quality  ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
+     * @param bool    $force
+     */
+    public static function img_to_webp( $src, $quality = 80, $force = false ) {
+        $op = new Image\Operation\ToWebp($quality);
+        return self::_operate($src, $op, $force);
+    }
 
 	//-- end of public methods --//
 

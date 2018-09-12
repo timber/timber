@@ -40,7 +40,18 @@ $menu = new Timber\Menu( 'primary' );
 Or pass nothing. This is good if you have only one menu. In that case Timber will just grab what you got.
 
 ```php
-$menu = new TimberMenu();
+$menu = new Timber\Menu();
+```
+
+## Options
+
+Optionally, you can send additional options to `Timber\Menu`. Current only `depth` is supported (see https://developer.wordpress.org/reference/functions/wp_nav_menu/ for reference)
+
+```php
+$args = array(
+	'depth' => 2,
+);
+$menu = new Timber\Menu( 'primary', $args );
 ```
 
 ## Setting up a menu globally
