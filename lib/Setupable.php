@@ -2,13 +2,13 @@
 
 namespace Timber;
 
-
-interface Setupable
-{
+/**
+ * Interface Setupable
+ */
+interface Setupable {
 	/**
-	 * Sets up an object
+	 * Sets up an object.
 	 *
-	 * @api
 	 * @since 2.0.0
 	 *
 	 * @return \Timber\Core The affected object.
@@ -16,9 +16,8 @@ interface Setupable
 	public function setup();
 
 	/**
-	 * Resets variables after the loop
+	 * Resets variables after the loop.
 	 *
-	 * @api
 	 * @since 2.0.0
 	 *
 	 * @return \Timber\Core The affected object.
