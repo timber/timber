@@ -160,7 +160,7 @@ class Attachment extends Post implements CoreInterface {
 		if ( ! $iid ) {
 			Helper::error_log( 'Initialized Timber\Attachment without providing first parameter.' );
 
-			return;
+			return null;
 		}
 
 		/**
@@ -178,15 +178,21 @@ class Attachment extends Post implements CoreInterface {
 			if ( strstr( $iid, '://' ) ) {
 				// Assume URL.
 				$this->init_with_url( $iid );
+
+				return null;
 			} elseif ( strstr( $iid, ABSPATH ) ) {
 				// Assume absolute path.
 				$this->init_with_file_path( $iid );
+
+				return null;
 			} else {
 				// Check for image file types.
 				foreach ( $this->image_file_types as $type ) {
 					// Assume a relative path.
 					if ( strstr( strtolower( $iid ), $type ) ) {
 						$this->init_with_relative_path( $iid );
+
+						return null;
 					}
 				}
 			}
@@ -196,13 +202,10 @@ class Attachment extends Post implements CoreInterface {
 
 			// Check if it’s a post that has a featured image.
 			if ( $post->_thumbnail_id ) {
-				$this->init( (int) $post->_thumbnail_id );
-				return;
+				return $this->init( (int) $post->_thumbnail_id );
 			}
 
-			$this->init( $iid->ID );
-			return;
-
+			return $this->init( $iid->ID );
 		} elseif ( $iid instanceof Post ) {
 			/**
 			 * This will catch TimberPost and any post classes that extend TimberPost,
@@ -237,6 +240,8 @@ class Attachment extends Post implements CoreInterface {
 
 			$this->id = $this->ID;
 		}
+
+		return null;
 	}
 
 	/**
