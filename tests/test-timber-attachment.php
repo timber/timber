@@ -97,14 +97,6 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		$this->assertEquals('arch.jpg', $filename);
 	}
 
-	// Todo: Make this not check the image width
-	function testInitFromRelativePath() {
-		$filename = self::copyTestAttachment( 'arch.jpg' );
-		$path = str_replace(ABSPATH, '/', $filename);
-		$image = new Timber\Image( $path );
-		$this->assertEquals( 1500, $image->width() );
-	}
-
 	function testAttachmentPath() {
 		$filename = self::copyTestAttachment( 'arch.jpg' );
 		$image = new Timber\Image( $filename );
@@ -112,35 +104,42 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		$this->assertStringEndsWith('.jpg', $image->path());
 	}
 
-	// Todo: Make this not check the image width
 	function testInitFromID() {
 		$pid = $this->factory->post->create();
 		$filename = self::copyTestAttachment( 'arch.jpg' );
 		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 		$iid = wp_insert_attachment( $attachment, $filename, $pid );
-		$image = new Timber\Image( $iid );
-		$this->assertEquals( 1500, $image->width() );
+		$attachment = new Timber\Attachment( $iid );
+		$this->assertEquals( 'The Arch', $attachment->title() );
 	}
 
-	// Todo: Make this not check the image width
 	function testInitFromFilePath() {
-		$image_file = self::copyTestAttachment();
-		$image = new Timber\Image( $image_file );
-		$this->assertEquals( 1500, $image->width() );
+		$attachment_file = self::copyTestAttachment();
+		$attachment = new Timber\Attachment( $attachment_file );
+		$size = $attachment->size_raw();
+		$this->assertEquals( 154752, $size );
+	}
+
+	function testInitFromRelativePath() {
+		$filename = self::copyTestAttachment( 'arch.jpg' );
+		$path = str_replace(ABSPATH, '/', $filename);
+		$attachment = new Timber\Attachment( $path );
+		$size = $attachment->size_raw();
+		$this->assertEquals( 154752, $size );
 	}
 
 	function testInitFromURL() {
 		$destination_path = self::copyTestAttachment();
 		$destination_path = Timber\URLHelper::get_rel_path( $destination_path );
 		$destination_url = 'http://'.$_SERVER['HTTP_HOST'].$destination_path;
-		$image = new Timber\Image( $destination_url );
+		$image = new Timber\Attachment( $destination_url );
 		$this->assertEquals( $destination_url, $image->src() );
 		$this->assertEquals( $destination_url, (string)$image );
 	}
 
 	function testPathInfo() {
 		$filename = self::copyTestAttachment( 'arch.jpg' );
-		$image = new Timber\Image( $filename );
+		$image = new Timber\Attachment( $filename );
 		$path_parts = $image->get_pathinfo();
 		$this->assertEquals('jpg', $path_parts['extension']);
 	}
@@ -186,5 +185,4 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		$result = Timber::compile_string( $str, array( 'post' => $iid ) );
 		$this->assertEquals('PDF', $result);
 	}
-
 }

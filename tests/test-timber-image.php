@@ -21,6 +21,22 @@ class TestTimberImage extends TestTimberAttachment {
 /* ----------------
  * Tests
  ---------------- */
+
+	function testInitFromFilePath() {
+		$attachment_file = self::copyTestAttachment();
+		$image = new Timber\Image( $attachment_file );
+		$size = $image->width();
+		$this->assertEquals( 1500, $size );
+	}
+
+	function testInitFromRelativePath() {
+		$filename = self::copyTestAttachment( 'arch.jpg' );
+		$path = str_replace(ABSPATH, '/', $filename);
+		$image = new Timber\Image( $path );
+		$width = $image->width();
+		$this->assertEquals( 1500, $width );
+	}
+
 	function testTimberImageSrc() {
 		$iid = self::get_attachment();
 		$image = new Timber\Image($iid);
