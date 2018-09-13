@@ -84,7 +84,7 @@ class TestTimberTwigObjects extends Timber_UnitTestCase {
 	function testPostQueryWithStringInTwig(){
 		$pids[] = $this->factory->post->create( array( 'post_title' => 'Foo' ) );
 		$pids[] = $this->factory->post->create( array( 'post_title' => 'Bar' ) );
-		$str    = "{% for post in PostQuery('post_type=post&posts_per_page=-1&order=ASC') %}{{ post.title }}{% endfor %}";
+		$str    = "{% for post in PostQuery({ query: 'post_type=post&posts_per_page=-1&order=ASC'}) %}{{ post.title }}{% endfor %}";
 
 		$this->assertEquals( 'FooBar', Timber::compile_string( $str, array( 'pids' => $pids ) ) );
 	}
@@ -92,7 +92,7 @@ class TestTimberTwigObjects extends Timber_UnitTestCase {
 	function testPostQueryWithArgsInTwig(){
 		$pids[] = $this->factory->post->create( array( 'post_title' => 'Foo' ) );
 		$pids[] = $this->factory->post->create( array( 'post_title' => 'Bar' ) );
-		$str    = "{% for post in PostQuery({ post_type: 'post', posts_per_page: -1, order: 'ASC'}) %}{{ post.title }}{% endfor %}";
+		$str    = "{% for post in PostQuery({ query: { post_type: 'post', posts_per_page: -1, order: 'ASC'} }) %}{{ post.title }}{% endfor %}";
 
 		$this->assertEquals( 'FooBar', Timber::compile_string( $str, array( 'pids' => $pids ) ) );
 	}

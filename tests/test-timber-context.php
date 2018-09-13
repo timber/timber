@@ -44,77 +44,7 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$this->assertCount( 3, $context['posts']->get_posts() );
 	}
 
-	function testChangeDefaultQueryArgument() {
-		update_option( 'show_on_front', 'posts' );
-		$this->factory->post->create_many( 3, array( 'post_type' => 'page' ) );
-		$this->go_to( '/' );
-
-		$context = Timber::context( array(
-			'posts' => array(
-				'post_type' => 'page',
-		        'posts_per_page' => 2,
-			),
-		) );
-
-		$this->assertInstanceOf( 'Timber\PostQuery', $context['posts'] );
-		$this->assertCount( 2, $context['posts']->get_posts() );
-		$this->assertEquals( 'page', $context['posts'][0]->post_type );
-	}
-
-	function testDisableDefaultQueryByArgsPost() {
-		$post_id = $this->factory->post->create();
-		$this->go_to( get_permalink( $post_id ) );
-
-		$context = Timber::context( array(
-		    'post'  => false,
-		) );
-
-		$this->assertArrayNotHasKey( 'post', $context );
-	}
-
-	function testDisableDefaultQueryByArgsPosts() {
-		update_option( 'show_on_front', 'posts' );
-		$this->factory->post->create_many( 3 );
-		$this->go_to( '/' );
-
-		$context = Timber::context( array(
-		    'posts'  => false,
-		) );
-
-		$this->assertArrayNotHasKey( 'posts', $context );
-	}
-
-	function testDisableDefaultQueryByFilterPost() {
-		add_filter( 'timber/context/args', function( $args ) {
-			$args['post'] = false;
-
-			return $args;
-		} );
-
-		$post_id = $this->factory->post->create();
-		$this->go_to( get_permalink( $post_id ) );
-
-		$context = Timber::context();
-
-		$this->assertArrayNotHasKey( 'post', $context );
-	}
-
-	function testDisableDefaultQueryByFilterPosts() {
-		add_filter( 'timber/context/args', function( $args ) {
-			$args['posts'] = false;
-
-			return $args;
-		} );
-
-		$this->factory->post->create_many( 3 );
-		$this->go_to( get_post_type_archive_link( 'post' ) );
-
-		$context = Timber::context();
-
-		$this->assertArrayNotHasKey( 'posts', $context );
-	}
-
-	function testIfInTheLoopIsSetToTrueInSingularTemplates() {
+	function testIfSetupFunctionIsRunInSingularTemplates() {
 		$post_id = $this->factory->post->create();
 		$this->go_to( get_permalink( $post_id ) );
 

@@ -50,7 +50,12 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 
 	function testGetPostByQueryArray() {
 		$pid = $this->factory->post->create();
-		$posts = new Timber\PostQuery(array('post_type' => 'post'), 'TimberAlert');
+		$posts = new Timber\PostQuery( array(
+			'query'      => array(
+				'post_type' => 'post'
+			),
+			'post_class' => 'TimberAlert',
+		) );
 		$this->assertEquals('TimberAlert', get_class($posts[0]));
 		$this->assertEquals($pid, $posts[0]->ID);
 		/** Test deprecated method */
@@ -85,14 +90,18 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	function testGetPostsQueryString(){
 		$this->factory->post->create();
 		$this->factory->post->create();
-		$posts = new Timber\PostQuery('post_type=post');
+		$posts = new Timber\PostQuery( array(
+			'query' => 'post_type=post'
+		) );
 		$this->assertGreaterThan(1, count($posts));
 	}
 
 	function testGetPostsQueryArray(){
 		$this->factory->post->create();
 		$query = array('post_type' => 'post');
-		$posts = new Timber\PostQuery($query);
+		$posts = new Timber\PostQuery( array(
+			'query' => $query
+		) );
 		$this->assertEquals('Timber\Post', get_class($posts[0]));
 	}
 
@@ -135,7 +144,9 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	function testGetPostsQueryStringClassName(){
 		$this->factory->post->create();
 		$this->factory->post->create();
-		$posts = new Timber\PostQuery('post_type=post');
+		$posts = new Timber\PostQuery( array(
+			'query' => 'post_type=post'
+		) );
 		$post = $posts[0];
 		$this->assertEquals('Timber\Post', get_class($post));
 	}
@@ -145,7 +156,9 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
-		$posts  = new Timber\PostQuery($pids);
+		$posts  = new Timber\PostQuery( array(
+			'query' => $pids,
+		) );
 		$this->assertEquals('Timber\Post', get_class($posts[0]));
 	}
 
@@ -154,7 +167,9 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
-		$posts  = new Timber\PostQuery($pids);
+		$posts  = new Timber\PostQuery( array(
+			'query' => $pids
+		) );
 		$this->assertEquals(3, count($posts));
 	}
 

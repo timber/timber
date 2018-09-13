@@ -8,7 +8,9 @@ class TestTimberPostIterator extends Timber_UnitTestCase {
 	 */
 	function testLoopEndAfterLastItem() {
 		$pids = $this->factory->post->create_many(3);
-		$posts = new Timber\PostQuery( $pids );
+		$posts = new Timber\PostQuery( array(
+			'query' => $pids
+		) );
 		$this->collector = [];
 
 		add_action( 'loop_end', array( $this, 'loop_end' ) );
@@ -23,7 +25,9 @@ class TestTimberPostIterator extends Timber_UnitTestCase {
 
 	function testSetupMethodCalled() {
 		$pids = $this->factory->post->create_many(3);
-		$posts = new Timber\PostQuery( $pids );
+		$posts = new Timber\PostQuery( array(
+			'query' => $pids
+		) );
 
 		// Make sure $wp_query is set up.
 		$this->go_to( get_permalink( get_option( 'page_for_posts' ) ) );
@@ -43,7 +47,9 @@ class TestTimberPostIterator extends Timber_UnitTestCase {
 	 */
 	function testResetPostDataAfterLastItem() {
 		$pids = $this->factory->post->create_many(3);
-		$posts = new Timber\PostQuery( $pids );
+		$posts = new Timber\PostQuery( array(
+			'query' => $pids
+		) );
 
 		// Make sure $wp_query is set up.
 		$this->go_to( get_permalink( get_option( 'page_for_posts' ) ) );
