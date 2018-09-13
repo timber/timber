@@ -68,8 +68,8 @@ class Twig {
 					return new $PostClass($pid);
 				} ));
 
-		$twig->addFunction( new Twig_Function( 'PostQuery', function( $args = false, $post_class = '\Timber\Post' ) {
-			return new PostQuery( $args, $post_class );
+		$twig->addFunction( new Twig_Function( 'PostQuery', function( $args ) {
+			return new PostQuery( $args );
 		} ) );
 
 		$twig->addFunction(new Twig_Function('Image', function( $pid, $ImageClass = 'Timber\Image' ) {
