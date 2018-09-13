@@ -42,12 +42,9 @@ class Twig {
 	 */
 	public function add_timber_functions( $twig ) {
 		/* actions and filters */
-		$twig->addFunction(new Twig_Function('action', function( $context ) {
-					$args = func_get_args();
-					array_shift($args);
-					$args[] = $context;
-					call_user_func_array('do_action', $args);
-				}, array('needs_context' => true)));
+		$twig->addFunction( new Twig_Function( 'action', function() {
+			call_user_func_array( 'do_action', func_get_args() );
+		} ) );
 
 		$twig->addFunction(new Twig_Function('function', array(&$this, 'exec_function')));
 		$twig->addFunction(new Twig_Function('fn', array(&$this, 'exec_function')));
@@ -224,6 +221,7 @@ class Twig {
 		$twig->addFilter(new \Twig_SimpleFilter('retina', array('Timber\ImageHelper', 'retina_resize')));
 		$twig->addFilter(new \Twig_SimpleFilter('letterbox', array('Timber\ImageHelper', 'letterbox')));
 		$twig->addFilter(new \Twig_SimpleFilter('tojpg', array('Timber\ImageHelper', 'img_to_jpg')));
+		$twig->addFilter(new \Twig_SimpleFilter('towebp', array('Timber\ImageHelper', 'img_to_webp')));
 
 		/* debugging filters */
 		$twig->addFilter(new \Twig_SimpleFilter('get_class', 'get_class'));

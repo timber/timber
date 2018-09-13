@@ -27,49 +27,32 @@ Full documentation to come.
 
 ## Actions
 
-Call them in your Twig template...
+You can all actions in your Twig templates like this:
 
 ```twig
 {% do action('my_action') %}
 {% do action('my_action_with_args', 'foo', 'bar') %}
 ```
 
-... in your `functions.php` file:
+If you ask yourself why there’s no underline between `do` and `action`: The expression [`do`](https://twig.symfony.com/doc/2.x/tags/do.html) is a feature of Twig which *calls a function without printing its return value*, like `{{ }}` does. Timber only register an `action` function, which then calls the `do_action()` function.
 
-```php
-<?php
-add_action( 'my_action', 'my_function' );
+If you want anything from the template's context, you'll need to pass that manually:
 
-function my_function( $context ) {
-    // $context stores the template context in case you need to reference it
-
-    // Outputs title of your post
-    echo $context['post']->post_title;
-}
+```twig
+{% do action('my_action', 'foo', post) %}
 ```
 
-```php
-<?php
+```php  
+<?php   
+
 add_action( 'my_action_with_args', 'my_function_with_args', 10, 2 );
 
-function my_function_with_args( $foo, $bar ){
-    echo 'I say ' . $foo . ' and ' . $bar;
+function my_function_with_args( $foo, $post ){    
+    echo 'I say ' . $foo . '!';
+    echo 'For the post with title ' . $post->title(); 
 }
+
 ```
-
-You can still get the context object when passing args, it’s always the _last_ argument...
-
-```php
-<?php
-add_action( 'my_action_with_args', 'my_function_with_args', 10, 3 );
-
-function my_function_with_args( $foo, $bar, $context ){
-    echo 'I say ' . $foo . ' and ' . $bar;
-    echo 'For the post with title ' . $context['post']->post_title;
-}
-```
-
-Please note the argument count that WordPress requires for `add_action`.
 
 ## Filters
 
@@ -156,7 +139,7 @@ public function widget( $args, $instance ) {
 
 Well, if it works for widgets, why shouldn't it work for shortcodes? Of course it does!
 
-Let’s implement a `[youtube]` shortcode which embeds a youtube video.  
+Let’s implement a `[youtube]` shortcode which embeds a youtube video.
 For the desired usage of `[youtube id=xxxx]`, we only need a few lines of code:
 
 ```php
