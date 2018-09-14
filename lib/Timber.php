@@ -39,7 +39,6 @@ use Timber\Loader;
  * ```
  */
 class Timber {
-
 	public static $version = '2.0.0';
 	public static $locations;
 	public static $dirname = 'views';
@@ -275,18 +274,12 @@ class Timber {
 	public static function context() {
 		$context = self::context_global();
 
-        // Context for singular templates.
-		$context_post = self::context_post();
-
-        if ( $context_post ) {
-			$context['post'] = $context_post;
+		if ( is_singular() ) {
+			$post = ( new Post() )->setup();
+			$context['post'] = $post;
 		}
-
-        // Context for archive templates.
-		$context_posts = self::context_posts();
-
-        if ( $context_posts ) {
-			$context['posts'] = $context_posts;
+		elseif ( is_archive() || is_home() ) {
+			$context['posts'] = new PostQuery();
 		}
 
  		return $context;
@@ -387,45 +380,6 @@ class Timber {
 		}
 
 		return self::$context_cache;
-	}
-
-	/**
-	 * Gets post context for a singular template.
-	 *
-	 * @api
-	 * @since 2.0.0
-	 *
-	 * @return null|\Timber\Post A `Timber\Post` object. Null if not applicable in the current
-	 *                           context.
-	 */
-	public static function context_post() {
-		// Bail out if it’s not a singular template.
-		if ( ! is_singular() ) {
-			return null;
-		}
-
-		$post = new Post();
-		$post->setup();
-
-		return $post;
-	}
-
-	/**
-	 * Gets posts context for an archive template.
-	 *
-	 * @api
-	 * @since 2.0.0
-	 *
-	 * @return null|\Timber\PostQuery A `Timber\PostQuery` object. Null if not applicable in the
-	 *                                current context.
-	 */
-	public static function context_posts() {
-		// Bail out if posts should not be set in context or if it’s not an archive page.
-		if ( ! is_archive() && ! is_home() ) {
-			return null;
-		}
-
-		return new PostQuery();
 	}
 
 	/**
