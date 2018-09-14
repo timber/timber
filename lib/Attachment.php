@@ -156,6 +156,53 @@ class Attachment extends Post implements CoreInterface {
 	 * @param int|mixed $iid An attachment identifier.
 	 */
 	public function init( $iid = null ) {
+		$iid = $this->determine_id( $iid );
+
+		/**
+		 * determine_id returns null when the attachment is a file path,
+		 * thus there's nothing in the DB for us to do here 
+		 */
+		if ( null === $iid ) {
+			return null;
+		}
+
+		$attachment_info = $this->get_attachment_info( $iid );
+
+		$this->import( $attachment_info );
+
+		$basedir = self::wp_upload_dir();
+		$basedir = $basedir['basedir'];
+
+		if ( isset( $this->file ) ) {
+			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
+		} elseif ( isset( $this->_wp_attached_file ) ) {
+			$this->file     = $this->_wp_attached_file;
+			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
+		}
+
+		if ( isset( $attachment_info['id'] ) ) {
+			$this->ID = $attachment_info['id'];
+		} elseif ( is_numeric( $iid ) ) {
+			$this->ID = $iid;
+		}
+
+		if ( isset( $this->ID ) ) {
+			$this->import_custom( $this->ID );
+
+			$this->id = $this->ID;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Tries to figure out the attachment id you want or otherwise handle when
+	 * a string or other data is sent (object, file path, etc.)
+	 * @internal
+	 * @param mixed a value to test against
+	 * @return int|null the numberic id we should be using for this post object 
+	 */
+	protected function determine_id( $iid ) {
 		// Make sure we actually have something to work with.
 		if ( ! $iid ) {
 			Helper::error_log( 'Initialized Timber\Attachment without providing first parameter.' );
@@ -196,52 +243,8 @@ class Attachment extends Post implements CoreInterface {
 					}
 				}
 			}
-		} elseif ( $iid instanceof \WP_Post ) {
-			$ref  = new \ReflectionClass( $this );
-			$post = $ref->getParentClass()->newInstance( $iid->ID );
-
-			// Check if it’s a post that has a featured image.
-			if ( $post->_thumbnail_id ) {
-				return $this->init( (int) $post->_thumbnail_id );
-			}
-
-			return $this->init( $iid->ID );
-		} elseif ( $iid instanceof Post ) {
-			/**
-			 * This will catch TimberPost and any post classes that extend TimberPost,
-			 * see http://php.net/manual/en/internals2.opcodes.instanceof.php#109108
-			 * and https://timber.github.io/docs/guides/extending-timber/
-			 */
-			$iid = (int) $iid->_thumbnail_id;
-		}
-
-		$attachment_info = $this->get_attachment_info( $iid );
-
-		$this->import( $attachment_info );
-
-		$basedir = self::wp_upload_dir();
-		$basedir = $basedir['basedir'];
-
-		if ( isset( $this->file ) ) {
-			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
-		} elseif ( isset( $this->_wp_attached_file ) ) {
-			$this->file     = $this->_wp_attached_file;
-			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
-		}
-
-		if ( isset( $attachment_info['id'] ) ) {
-			$this->ID = $attachment_info['id'];
-		} elseif ( is_numeric( $iid ) ) {
-			$this->ID = $iid;
-		}
-
-		if ( isset( $this->ID ) ) {
-			$this->import_custom( $this->ID );
-
-			$this->id = $this->ID;
-		}
-
-		return null;
+		} 
+		return $iid;
 	}
 
 	/**
