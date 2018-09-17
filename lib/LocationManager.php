@@ -128,10 +128,14 @@ class LocationManager {
 			if ( is_string(Timber::$locations) ) {
 				Timber::$locations = array(Timber::$locations);
 			}
-			foreach ( Timber::$locations as $tloc ) {
+			foreach ( Timber::$locations as $namespace => $tloc ) {
 				$tloc = realpath($tloc);
 				if ( is_dir($tloc) ) {
-					$locs[] = $tloc;
+					if ( ! is_string( $namespace ) ) {
+						$locs[] = $tloc;
+					} else {
+						$locs[$namespace] = $tloc;
+					}
 				}
 			}
 		}

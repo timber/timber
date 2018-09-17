@@ -247,7 +247,14 @@ class Loader {
 		if ( $open_basedir ) {
 			$rootPath = null;
 		}
-		$fs = new \Twig_Loader_Filesystem($paths, $rootPath);
+		$fs = new \Twig_Loader_Filesystem(array(), $rootPath);
+		foreach ($paths as $namespace => $path) {
+			if (is_string($namespace)) {
+				$fs->addPath($path, $namespace);
+			} else {
+				$fs->addPath($path);
+			}
+		}
 
 		/**
 		 * Filters …
