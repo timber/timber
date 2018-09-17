@@ -124,5 +124,10 @@
 			$this->assertEquals('<img src="" />', trim($str));
 		}
 
+		function testTwigLoadsFromLocationWithNamespace(){
+			Timber::$locations = array( 'assets' => __DIR__.'/assets' );
+			$str = Timber::compile('@assets/thumb-test.twig');
+			$this->assertEquals('<img src="" />', trim($str));
+		}
 
 	}
