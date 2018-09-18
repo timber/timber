@@ -66,7 +66,7 @@ class User extends Core implements CoreInterface {
 	public $user_nicename;
 
 	/**
-	 * @param int|bool $uid
+	 * @param object|int|bool $uid
 	 */
 	public function __construct( $uid = false ) {
 		$this->init($uid);
@@ -117,7 +117,7 @@ class User extends Core implements CoreInterface {
 
 	/**
 	 * @internal
-	 * @param int|bool $uid The user ID to use
+	 * @param object|int|bool $uid The user ID to use
 	 */
 	protected function init( $uid = false ) {
 		if ( $uid === false ) {

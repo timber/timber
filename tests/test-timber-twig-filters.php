@@ -8,6 +8,13 @@
 			$this->assertEquals('jareds-big-adventure', $str);
 		}
 
+		function testTimberPreTags() {
+			$data = '<pre><h1>thing</h1></pre>';
+			$template = '{{foo|pretags}}';
+			$str = Timber::compile_string($template, array('foo' => $data));
+			$this->assertEquals('<pre>&lt;h1&gt;thing&lt;/h1&gt;</pre>', $str);
+		}
+
 		function testTimberFilterString(){
 			$data['arr'] = array('foo', 'foo');
 			$str = Timber::compile_string('{{arr|join(" ")}}', $data);

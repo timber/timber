@@ -3,35 +3,43 @@
 class TestTimberSite extends Timber_UnitTestCase {
 
 	function testStandardThemeLocation() {
-		switch_theme( 'twentythirteen' );
+		switch_theme( 'twentyfifteen' );
 		$site = new TimberSite();
-		$this->assertEquals( WP_CONTENT_SUBDIR.'/themes/twentythirteen', $site->theme->path );
+		$content_subdir = Timber\URLHelper::get_content_subdir();
+		$this->assertEquals( $content_subdir.'/themes/twentyfifteen', $site->theme->path );
 	}
 
 	function testChildParentThemeLocation() {
 		TestTimberLoader::_setupChildTheme();
+		$content_subdir = Timber\URLHelper::get_content_subdir();
 		$this->assertFileExists( WP_CONTENT_DIR.'/themes/fake-child-theme/style.css' );
 		switch_theme( 'fake-child-theme' );
 		$site = new TimberSite();
-		$this->assertEquals( WP_CONTENT_SUBDIR.'/themes/fake-child-theme', $site->theme->path );
-		$this->assertEquals( WP_CONTENT_SUBDIR.'/themes/twentythirteen', $site->theme->parent->path );
+		$this->assertEquals( $content_subdir.'/themes/fake-child-theme', $site->theme->path );
+		$this->assertEquals( $content_subdir.'/themes/twentyfifteen', $site->theme->parent->path );
 	}
 
 	function testThemeFromContext() {
-		switch_theme( 'twentythirteen' );
+		switch_theme( 'twentyfifteen' );
 		$context = Timber::get_context();
-		$this->assertEquals( 'twentythirteen', $context['theme']->slug );
+		$this->assertEquals( 'twentyfifteen', $context['theme']->slug );
 	}
 
 	function testThemeFromSiteContext() {
-		switch_theme( 'twentythirteen' );
+		switch_theme( 'twentyfifteen' );
 		$context = Timber::get_context();
-		$this->assertEquals( 'twentythirteen', $context['site']->theme->slug );
+		$this->assertEquals( 'twentyfifteen', $context['site']->theme->slug );
 	}
 
 	function testSiteURL() {
-		$site = new TimberSite();
+		$site = new \Timber\Site();
 		$this->assertEquals( 'http://example.org', $site->link() );
+		$this->assertEquals(site_url(), $site->site_url);
+	}
+
+	function testHomeUrl() {
+		$site = new \Timber\Site();
+		$this->assertEquals($site->url, $site->home_url);
 	}
 
 	function testSiteIcon() {
@@ -55,5 +63,26 @@ class TestTimberSite extends Timber_UnitTestCase {
 		$this->assertEquals('magoo', $ts->meta('foo'));
 	}
 
+	function setUp() {
+		global $wp_theme_directories;
 
+		parent::setUp();
+
+		$this->backup_wp_theme_directories = $wp_theme_directories;
+		$wp_theme_directories = array( WP_CONTENT_DIR . '/themes' );
+
+		wp_clean_themes_cache();
+		unset( $GLOBALS['wp_themes'] );
+
+	}
+
+	function tearDown() {
+		global $wp_theme_directories;
+
+		$wp_theme_directories = $this->backup_wp_theme_directories;
+
+		wp_clean_themes_cache();
+		unset( $GLOBALS['wp_themes'] );
+		parent::tearDown();
+	}
 }

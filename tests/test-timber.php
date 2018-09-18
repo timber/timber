@@ -153,7 +153,7 @@ class TestTimber extends Timber_UnitTestCase {
 	function testQueryPostsInContext(){
         $context = Timber::get_context();
         $this->assertArrayHasKey( 'posts', $context );
-        $this->assertInstanceOf( 'Timber\QueryIterator', $context['posts'] );
+        $this->assertInstanceOf( 'Timber\PostCollection', $context['posts'] );
 	}
 
 	/* Terms */
@@ -219,6 +219,29 @@ class TestTimber extends Timber_UnitTestCase {
     	$file = getcwd().'/tests/test-timber.php';
     	$this->assertEquals($calling_file, $file);
     }
+
+    function testCompileNull() {
+    	$str = Timber::compile('assets/single-course.twig', null);
+    	$this->assertEquals('I am single course', $str);
+    }
+
+    /**
+	 * @ticket 1660
+	 */
+	function testDoubleInstantiationOfSubclass() {
+		$post_id = $this->factory->post->create( array( 'post_type' => 'person' ) );
+		$post = Timber::get_post($post_id, 'Person');
+		$this->assertEquals('Person', get_class($post));
+	}
+
+	/**
+	 * @ticket 1660
+	 */
+	function testDoubleInstantiationOfTimberPostClass() {
+		$post_id = $this->factory->post->create( array( 'post_type' => 'post' ) );
+		$post = Timber::get_post($post_id);
+		$this->assertEquals('Timber\Post', get_class($post));
+	}
 
 }
 

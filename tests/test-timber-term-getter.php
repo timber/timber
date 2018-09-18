@@ -53,7 +53,20 @@
 			$this->assertEquals($class_name, get_class($terms[0]));
 		}
 
+		function setUp() {
+			global $wpdb;
+			$query = "truncate $wpdb->term_relationships";
+			$wpdb->query($query);
+			$query = "truncate $wpdb->term_taxonomy";
+			$wpdb->query($query);
+			$query = "truncate $wpdb->terms";
+			$wpdb->query($query);
+			$query = "truncate $wpdb->termmeta";
+			$wpdb->query($query);
+		}
+
 		function testGetWithQueryString(){
+			$category = $this->factory->term->create(array('name' => 'Uncategorized', 'taxonomy' => 'category'));
 			$other_term = $this->factory->term->create(array('name' => 'Bogus Term'));
 			$term_id = $this->factory->term->create(array('name' => 'My Term'));
 			$terms = Timber::get_terms('term_id='.$term_id);

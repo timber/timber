@@ -33,6 +33,12 @@ class Theme extends Core {
 
 	/**
 	 * @api
+	 * @var string the version of the theme (ex: `1.2.3`)
+	 */
+	public $version;
+
+	/**
+	 * @api
 	 * @var TimberTheme|bool the TimberTheme object for the parent theme (if it exists), false otherwise
 	 */
 	public $parent = false;
@@ -51,6 +57,11 @@ class Theme extends Core {
 	public $uri;
 
 	/**
+	 * @var WP_Theme the underlying WordPress native Theme object
+	 */
+	private $theme;
+
+	/**
 	 * Constructs a new TimberTheme object. NOTE the TimberTheme object of the current theme comes in the default `Timber::get_context()` call. You can access this in your twig template via `{{site.theme}}.
 	 * @param string $slug
 	 * @example
@@ -58,7 +69,7 @@ class Theme extends Core {
 	 * <?php
 	 *     $theme = new TimberTheme("my-theme");
 	 *     $context['theme_stuff'] = $theme;
-	 *     Timber::render('single.')
+	 *     Timber::render('single.twig', $context);
 	 * ?>
 	 * ```
 	 * ```twig
@@ -77,21 +88,15 @@ class Theme extends Core {
 	 * @param string $slug
 	 */
 	protected function init( $slug = null ) {
-		$data = wp_get_theme($slug);
-		$this->name = $data->get('Name');
-		$ss = $data->get_stylesheet();
-		$this->slug = $ss;
+		$this->theme = wp_get_theme($slug);
+		$this->name = $this->theme->get('Name');
+		$this->version = $this->theme->get('Version');
+		$this->slug = $this->theme->get_stylesheet();
 
-		if ( !function_exists('get_home_path') ) {
-			require_once(ABSPATH.'wp-admin/includes/file.php');
-		}
+		$this->uri = $this->theme->get_template_directory_uri();
 
-		$this->uri = get_stylesheet_directory_uri();
-		$this->parent_slug = $data->get('Template');
-		if ( !$this->parent_slug ) {
-			$this->uri = get_template_directory_uri();
-		}
-		if ( $this->parent_slug && $this->parent_slug != $this->slug ) {
+		if ( $this->theme->parent()) {
+			$this->parent_slug = $this->theme->parent()->get_stylesheet();
 			$this->parent = new Theme($this->parent_slug);
 		}
 	}
@@ -101,7 +106,7 @@ class Theme extends Core {
 	 * @return string the absolute path to the theme (ex: `http://example.org/wp-content/themes/my-timber-theme`)
 	 */
 	public function link() {
-		return $this->uri;
+		return $this->theme->get_stylesheet_directory_uri();
 	}
 
 	/**
@@ -109,7 +114,9 @@ class Theme extends Core {
 	 * @return  string the relative path to the theme (ex: `/wp-content/themes/my-timber-theme`)
 	 */
 	public function path() {
-		return URLHelper::get_rel_url($this->link());
+		// force = true to work with specifying the port
+		// @see https://github.com/timber/timber/issues/1739
+		return URLHelper::get_rel_url($this->link(), true); 
 	}
 
 	/**
@@ -129,3 +136,4 @@ class Theme extends Core {
 	}
 
 }
+
