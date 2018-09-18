@@ -280,4 +280,33 @@ class Image extends Attachment {
 
 		return in_array( $check['ext'], $image_exts, true );
 	}
+
+	/**
+	* Tries to figure out the attachment id you want or otherwise handle when
+	* a string or other data is sent (object, file path, etc.)
+	* @internal
+	* @deprecated since 2.0 functionality will no longer be supported in future releases
+	* @param mixed a value to test against
+	* @return int|null the numberic id we should be using for this post object 
+	*/
+	protected function determine_id( $iid ) {
+		$iid = parent::determine_id( $iid );
+		if ( $iid instanceof \WP_Post ) {
+			$ref  = new \ReflectionClass( $this );
+			$post = $ref->getParentClass()->newInstance( $iid->ID );
+			// Check if it’s a post that has a featured image.
+			if ( $post->_thumbnail_id ) {
+				return $this->init( (int) $post->_thumbnail_id );
+			}
+			return $this->init( $iid->ID );
+		} elseif ( $iid instanceof Post ) {
+			/**
+			 * This will catch TimberPost and any post classes that extend TimberPost,
+			 * see http://php.net/manual/en/internals2.opcodes.instanceof.php#109108
+			 * and https://timber.github.io/docs/guides/extending-timber/
+			 */
+			$iid = (int) $iid->_thumbnail_id;
+		}
+		return $iid;
+	}
 }
