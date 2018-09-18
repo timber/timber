@@ -4,7 +4,7 @@ use Timber\Image\Operation as ImageOperation;
 
 require_once 'test-timber-attachment.php';
 
-class TestTimberImage extends TestTimberAttachment {
+class TestTimberImage extends TimberAttachment_UnitTestCase {
 
 /* ----------------
  * Helper functions
