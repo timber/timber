@@ -4,14 +4,8 @@ namespace Timber;
 
 use Timber\Core;
 use Timber\CoreInterface;
-<<<<<<< HEAD
-
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
-=======
-use Timber\CommentThread;
->>>>>>> origin
-use Timber\Term;
 use Timber\User;
 use Timber\Image;
 use Timber\Helper;
@@ -175,18 +169,18 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function __construct( $post ) {
 
-<<<<<<< HEAD
-		if ( ! $post instanceof \WP_Post && ! $post instanceof Post ) {
-			_doing_it_wrong( 'Timber\Post::__construct', 'Please use Timber\Factory\PostFactory::get() to instantiate Timber Posts', '2.0.0' );
-			$post = PostFactory::get( $post );
+		if (!$post instanceof \WP_Post && !$post instanceof Post) {
+			_doing_it_wrong('Timber\Post::__construct', 'Please use Timber\Factory\PostFactory::get() to instantiate Timber Posts', '2.0.0');
+			$post = PostFactory::get($post);
 		}
 
-		$post_info = $this->get_info( $post );
-		$this->import( $post_info );
+		$post_info = $this->get_info($post);
+		$this->import($post_info);
 		//cant have a function, so gots to do it this way
-		$post_class  = $this->post_class();
+		$post_class = $this->post_class();
 		$this->class = $post_class;
-=======
+	}
+
 	/**
 	 * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2
 	 * This is also here to ensure that {{ post.class }} remains usable
@@ -218,7 +212,7 @@ class Post extends Core implements CoreInterface {
 	 * Determined whether or not an admin/editor is looking at the post in "preview mode" via the
 	 * WordPress admin
 	 * @internal
-	 * @return bool 
+	 * @return bool
 	 */
 	protected static function is_previewing() {
 		global $wp_query;
@@ -280,7 +274,6 @@ class Post extends Core implements CoreInterface {
 			$pid = $this->get_post_preview_id($wp_query);
 		}
 		return $pid;
->>>>>>> origin
 	}
 
 	/**
@@ -291,8 +284,6 @@ class Post extends Core implements CoreInterface {
 		return $this->title();
 	}
 
-<<<<<<< HEAD
-=======
 	protected function get_post_preview_id( $query ) {
 		$can = array(
 			get_post_type_object($query->queried_object->post_type)->cap->edit_post,
@@ -340,7 +331,6 @@ class Post extends Core implements CoreInterface {
 		$this->import($post_info);
 	}
 
->>>>>>> origin
 	/**
 	 * Get the URL that will edit the current post/object
 	 * @internal
@@ -364,9 +354,6 @@ class Post extends Core implements CoreInterface {
 			$this->$field = $value;
 		}
 	}
-
-<<<<<<< HEAD
-=======
 
 	/**
 	 * takes a mix of integer (post ID), string (post slug),
@@ -421,7 +408,6 @@ class Post extends Core implements CoreInterface {
 		return PostGetter::get_post_id_by_name($post_name);
 	}
 
->>>>>>> origin
 	/**
 	 * @return PostPreview
 	 */
