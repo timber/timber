@@ -172,13 +172,17 @@ class Helper {
 	}
 
 	/**
-	 * @param mixed $function_name or array( $class( string|object ), $function_name )
-	 * @param array (optional) $defaults
-	 * @param bool (optional) $return_output_buffer Return function output instead of return value (default: false)
-	 * @return Timber\FunctionWrapper|mixed
+	 * @deprecated since 1.3.0
+	 *
+	 * @param mixed $function_name        String or array( $class( string|object ), $function_name ).
+	 * @param array $defaults             Optional.
+	 * @param bool  $return_output_buffer Optional. Return function output instead of return value. Default false.
+	 * @return FunctionWrapper|mixed
 	 */
 	public static function function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false ) {
-		return new FunctionWrapper($function_name, $defaults, $return_output_buffer);
+		Helper::warn( 'function_wrapper is deprecated and will be removed in 1.4. Use {{ function( \'function_to_call\' ) }} instead or use FunctionWrapper directly. For more information refer to https://timber.github.io/docs/guides/functions/' );
+
+		return new FunctionWrapper( $function_name, $defaults, $return_output_buffer );
 	}
 
 	/**
@@ -205,7 +209,7 @@ class Helper {
 	public static function warn( $message ) {
 		return trigger_error($message, E_USER_WARNING);
 	}
-	
+
 	/**
 	 *
 	 *
@@ -226,6 +230,7 @@ class Helper {
 	======================== */
 
 	/**
+	 * @codeCoverageIgnore
      * @deprecated since 1.2.0
      * @see TextHelper::trim_words
      * @param string  $text
@@ -336,10 +341,10 @@ class Helper {
 					return $arr;
 				}
 			}
-		} else {
-			throw new \InvalidArgumentException('$array is not an array, got:');
-			Helper::error_log($array);
+			return false;
 		}
+		throw new \InvalidArgumentException('$array is not an array, got:');
+		Helper::error_log($array);
 	}
 
 	/**
@@ -409,11 +414,34 @@ class Helper {
 				$return[] = $obj->$key();
 			} elseif ( is_object($obj) && property_exists($obj, $key) ) {
 				$return[] = $obj->$key;
-			} elseif ( isset($obj[$key]) ) {
+			} elseif ( is_array($obj) && isset($obj[$key]) ) {
 				$return[] = $obj[$key];
 			}
 		}
 		return $return;
+	}
+
+	/**
+	 * Filters a list of objects, based on a set of key => value arguments.
+	 *
+	 * @since 1.5.3
+	 * @ticket #1594
+	 * @param array        $list to filter.
+	 * @param string|array $filter to search for.
+	 * @param string       $operator to use (AND, NOT, OR).
+	 * @return array
+	 */
+	public static function filter_array( $list, $args, $operator = 'AND' ) {
+		if ( ! is_array($args) ) {
+			$args = array( 'slug' => $args );
+		}
+
+		if ( ! is_array( $list ) && ! is_a( $list, 'Traversable' ) ) {
+			return array();
+		}
+
+		$util = new \WP_List_Util( $list );
+		return $util->filter( $args, $operator );
 	}
 
 	/* Links, Forms, Etc. Utilities
@@ -423,8 +451,8 @@ class Helper {
 	 *
 	 * Gets the comment form for use on a single article page
 	 * @deprecated 0.21.8 use `{{ function('comment_form') }}` instead
-	 * @param int     $post_id which post_id should the form be tied to?
-	 * @param array   $args this $args thing is a fucking mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
+	 * @param int $post_id which post_id should the form be tied to?
+	 * @param array The $args thing is a mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
 	 * @return string
 	 */
 	public static function get_comment_form( $post_id = null, $args = array() ) {
@@ -432,7 +460,7 @@ class Helper {
 	}
 
 	/**
-	 *
+	 * @codeCoverageIgnore
 	 * @deprecated since 1.1.2
 	 * @param array  $args
 	 * @return array
@@ -443,6 +471,7 @@ class Helper {
 	}
 
 	/**
+	 * @codeCoverageIgnore
 	 * @return string
 	 */
 	public function get_current_url() {

@@ -70,6 +70,22 @@ class TextHelper {
         return apply_filters('wp_trim_words', $text, $num_words, $more, $original_text);
     }
 
+    public static function remove_tags( $string, $tags = array() ) {
+        return preg_replace('#<(' . implode( '|', $tags) . ')(?:[^>]+)?>.*?</\1>#s', '', $string);
+    }
+
+    /**
+     * @param string $haystack
+     * @param string $needle
+     * @return boolean
+     */
+    public static function starts_with( $haystack, $needle ) {
+        if ( 0 === strpos($haystack, $needle) ) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      *
      *

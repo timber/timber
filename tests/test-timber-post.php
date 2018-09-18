@@ -17,7 +17,6 @@
 			$post_id = $this->factory->post->create(array('post_password' => 'jiggypoof'));
 			$post = new TimberPost($post_id);
 			$this->assertTrue($post->password_required());
-			
 		}
 
 		function testNameMethod() {
@@ -167,15 +166,21 @@
         	} else {
 				register_taxonomy('pizza', 'post');
 				$posts = array();
-				for($i = 0; $i<3; $i++){
+				for( $i = 0; $i < 3; $i++ ){
 					$j = $i + 1;
-					$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
+					$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00', 'post_title' => "Pizza $j is so good!"));
 				}
-				wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
-				wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
+				$cat = wp_insert_term('Cheese', 'pizza');
+				self::set_object_terms($posts[0], $cat, 'pizza', false);
+				self::set_object_terms($posts[2], $cat, 'pizza', false);
 				$lastPost = new TimberPost($posts[2]);
-				$prevPost = new TimberPost($posts[0]);
-				$this->assertEquals($lastPost->prev('pizza')->ID, $prevPost->ID);
+				// echo "\n".'$lastPost'."\n";
+				// print_r($lastPost);
+				// echo "\n".'$lastPost->prev(pizza)'."\n";
+				// print_r($lastPost->prev('pizza'));
+				// echo "posts\n";
+				// print_r($posts);
+				$this->assertEquals($posts[0], $lastPost->prev('pizza')->ID);
 			}
 		}
 
@@ -185,8 +190,9 @@
 				$j = $i + 1;
 				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
-			wp_set_object_terms($posts[0], 'TestMe', 'category', false);
-			wp_set_object_terms($posts[2], 'TestMe', 'category', false);
+			$cat = wp_insert_term('TestMe', 'category');
+			self::set_object_terms($posts[0], $cat, 'category', false);
+			self::set_object_terms($posts[2], $cat, 'category', false);
 			$lastPost = new TimberPost($posts[2]);
 			$prevPost = new TimberPost($posts[0]);
 			$this->assertEquals($lastPost->prev('category')->ID, $prevPost->ID);
@@ -201,9 +207,8 @@
 			$firstPost = new TimberPost($posts[0]);
 			$nextPost = new TimberPost($posts[1]);
 			$nextPostAfter = new TimberPost($posts[2]);
-			$nextPost->post_status = 'draft';
-			wp_update_post($nextPost);
-			$this->assertEquals($firstPost->next()->ID, $nextPostAfter->ID);
+			wp_update_post( array('ID' =>$nextPost->ID, 'post_status' => 'draft') );
+			$this->assertEquals($nextPostAfter->ID, $firstPost->next()->ID);
 		}
 
 		function testNextWithDraft(){
@@ -329,6 +334,79 @@
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
 			$post = new TimberPost();
 			$this->assertEquals('I am the one', $post->post_content);
+		}
+
+		function testCustomFieldPreviewRevision(){
+			global $current_user;
+			global $wp_query;
+
+			$post_id = $this->factory->post->create(array(
+				'post_author' => 5,
+			));
+			update_field('test_field', 'The custom field content', $post_id);
+
+			$assertCustomFieldVal = 'This has been revised';
+			$revision_id = $this->factory->post->create(array(
+				'post_type' => 'revision',
+				'post_status' => 'inherit',
+				'post_parent' => $post_id,
+			));
+			update_field('test_field', $assertCustomFieldVal, $revision_id);
+
+			$uid = $this->factory->user->create(array(
+				'user_login' => 'timber',
+				'user_pass' => 'timber',
+			));
+			$user = wp_set_current_user($uid);
+			$user->add_role('administrator');
+
+			$wp_query->queried_object_id = $post_id;
+			$wp_query->queried_object = get_post($post_id);
+			$_GET['preview'] = true;
+			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
+			$post = new TimberPost($post_id);
+
+			$str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
+			$str_getfield = Timber::compile_string('{{post.get_field(\'test_field\')}}', array('post' => $post));
+
+			$this->assertEquals( $assertCustomFieldVal, $str_direct );
+			$this->assertEquals( $assertCustomFieldVal, $str_getfield );
+		}
+
+		function testCustomFieldPreviewNotRevision() {
+			global $current_user;
+			global $wp_query;
+			$original_content = 'The custom field content';
+
+			$post_id = $this->factory->post->create(array(
+				'post_author' => 5,
+			));
+			update_field('test_field', $original_content, $post_id);
+
+			$assertCustomFieldVal = 'This has been revised';
+			$revision_id = $this->factory->post->create(array(
+				'post_type' => 'revision',
+				'post_status' => 'inherit',
+				'post_parent' => $post_id,
+			));
+			update_field('test_field', $assertCustomFieldVal, $revision_id);
+
+			$uid = $this->factory->user->create(array(
+				'user_login' => 'timber',
+				'user_pass' => 'timber',
+			));
+			$user = wp_set_current_user($uid);
+			$user->add_role('administrator');
+
+			$wp_query->queried_object_id = $post_id;
+			$wp_query->queried_object = get_post($post_id);
+			$post = new TimberPost($post_id);
+
+			$str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
+			$str_getfield = Timber::compile_string('{{post.get_field(\'test_field\')}}', array('post' => $post));
+
+			$this->assertEquals( $original_content, $str_direct );
+			$this->assertEquals( $original_content, $str_getfield );
 		}
 
 		function testContent(){
@@ -472,6 +550,16 @@
 			global $wpdb;
 			$query = "DELETE from $wpdb->users WHERE ID > 1";
 			$wpdb->query($query);
+			$query = "truncate $wpdb->term_relationships";
+			$wpdb->query($query);
+			$query = "truncate $wpdb->term_taxonomy";
+			$wpdb->query($query);
+			$query = "truncate $wpdb->terms";
+			$wpdb->query($query);
+			$query = "truncate $wpdb->termmeta";
+			$wpdb->query($query);
+			$query = "truncate $wpdb->posts";
+			$wpdb->query($query);
 		}
 
 		function testPostFormat() {
@@ -482,8 +570,45 @@
 			$this->assertEquals('aside', $post->format());
 		}
 
+		function testPostClassInTwig(){
+			$pid = $this->factory->post->create();
+			$category = wp_insert_term('Uncategorized', 'category');
+			self::set_object_terms($pid, $category, 'category', true);
+			$post = new TimberPost($pid);
+			$str = Timber::compile_string("{{ post.class }}", array('post' => $post));
+			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $str);
+		}
+
 		function testPostClass(){
 			$pid = $this->factory->post->create();
+			$category = wp_insert_term('Uncategorized', 'category');
+			self::set_object_terms($pid, $category, 'category', true);
+			$post = new TimberPost($pid);
+			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $post->post_class());
+		}
+
+		function testCssClass(){
+			$pid = $this->factory->post->create();
+			$category = wp_insert_term('Uncategorized', 'category');
+			self::set_object_terms($pid, $category, 'category', true);
+			$post = new TimberPost($pid);
+			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $post->css_class());
+			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized additional-css-class', $post->css_class('additional-css-class'));
+		}
+
+		function testCssClassMagicCall(){
+			$pid = $this->factory->post->create();
+			$category = wp_insert_term('Uncategorized', 'category');
+			self::set_object_terms($pid, $category, 'category', true);
+			$post = new TimberPost($pid);
+			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $post->class());
+			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized additional-css-class', $post->class('additional-css-class'));
+		}
+
+		function testCssClassMagicGet(){
+			$pid = $this->factory->post->create();
+			$category = wp_insert_term('Uncategorized', 'category');
+			self::set_object_terms($pid, $category, 'category', true);
 			$post = new TimberPost($pid);
 			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $post->class);
 		}
@@ -491,6 +616,15 @@
 		function testPostChildren(){
 			$parent_id = $this->factory->post->create();
 			$children = $this->factory->post->create_many(8, array('post_parent' => $parent_id));
+			$parent = new TimberPost($parent_id);
+			$this->assertEquals(8, count($parent->children()));
+		}
+
+		function testPostChildrenOfInheritStatus(){
+			$parent_id = $this->factory->post->create();
+			$children = $this->factory->post->create_many(4, array('post_parent' => $parent_id));
+			$children = $this->factory->post->create_many(4, array('post_parent' => $parent_id,
+			                                                       'post_status' => 'inherit'));
 			$parent = new TimberPost($parent_id);
 			$this->assertEquals(8, count($parent->children()));
 		}
@@ -538,23 +672,24 @@
 		function testPostCategory(){
 			$cat = wp_insert_term('News', 'category');
 			$pid = $this->factory->post->create();
-			wp_set_object_terms($pid, $cat['term_id'], 'category');
+			self::set_object_terms($pid, $cat, 'category');
 			$post = new TimberPost($pid);
 			$this->assertEquals('News', $post->category()->name);
 		}
 
 		function testPostCategories() {
 			$pid = $this->factory->post->create();
+			$cat = wp_insert_term('Uncategorized', 'category');
+			self::set_object_terms($pid, $cat, 'category');
 			$post = new TimberPost($pid);
 			$category_names = array('News', 'Sports', 'Obits');
 
 			// Uncategorized is applied by default
 			$default_categories = $post->categories();
 			$this->assertEquals('uncategorized', $default_categories[0]->slug);
-
 			foreach ( $category_names as $category_name ) {
 				$category_name = wp_insert_term($category_name, 'category');
-				wp_set_object_terms($pid, $category_name['term_id'], 'category', true);
+				self::set_object_terms($pid, $category_name, 'category');
 			}
 
 			$this->assertEquals(count($default_categories) + count($category_names), count($post->categories()));
@@ -576,10 +711,12 @@
 		function testPostTerms() {
 			$pid = $this->factory->post->create();
 			$post = new TimberPost($pid);
+			$category = wp_insert_term('Uncategorized', 'category');
+			self::set_object_terms($pid, $category, 'category');
 
 			// create a new tag and associate it with the post
 			$dummy_tag = wp_insert_term('whatever', 'post_tag');
-			wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);
+			self::set_object_terms($pid, $dummy_tag, 'post_tag');
 
 			// test expected tags
 			$timber_tags = $post->terms('post_tag');
@@ -593,7 +730,7 @@
 
 			foreach ( $team_names as $team_name ) {
 				$team_term = wp_insert_term($team_name, 'team');
-				wp_set_object_terms($pid, $team_term['term_id'], 'team', true);
+				self::set_object_terms($pid, $team_term, 'team');
 			}
 
 			$this->assertEquals(count($team_names), count($post->terms('team')));
@@ -627,6 +764,18 @@
 			$this->assertEquals(count($post_tag_terms) + count($post_team_terms), count($post_tag_and_team_terms));
 		}
 
+		function set_object_terms( $pid, $term_info, $taxonomy = 'post_tag' , $append = true ) {
+			$term_id = 0;
+			if ( is_array($term_info) ) {
+				$term_id = $term_info['term_id'];
+			} else if ( is_object($term_info) && get_class($term_info) == 'WP_Error' ) {
+				$term_id = $term_info->error_data['term_exists'];
+			}
+			if ( $term_id ) {
+				wp_set_object_terms($pid, $term_id, $taxonomy, $append);
+			}
+		}
+
 		function testPostTermClass() {
 			$class_name = 'TimberTermSubclass';
 			require_once('php/timber-term-subclass.php');
@@ -637,7 +786,7 @@
 
 			// create a new tag, associate with post
 			$dummy_tag = wp_insert_term('whatever', 'post_tag');
-			wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);
+			self::set_object_terms($pid, $dummy_tag, 'post_tag');
 
 			// test return class
 			$terms = $post->terms('post_tag', true, $class_name);
@@ -675,6 +824,99 @@
 			$post = new Timber\Post($post_id);
 			$form = $post->comment_form();
 			$this->assertStringStartsWith('<div id="respond"', trim($form));
+		}
+
+		function testPostWithoutGallery() {
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+
+			$this->assertEquals(null, $post->gallery());
+		}
+
+		function testPostWithGalleryCustomField() {
+			$pid = $this->factory->post->create();
+			update_post_meta($pid, 'gallery', 'foo');
+			$post = new Timber\Post($pid);
+			$this->assertEquals('foo', $post->gallery());
+		}
+
+		function testPostWithoutAudio() {
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+
+			$this->assertEquals(array(), $post->audio());
+		}
+
+		function testPostWithAudio() {
+			$quote = 'Named must your fear be before banish it you can.';
+			$quote .= '[embed]http://www.noiseaddicts.com/samples_1w72b820/280.mp3[/embed]';
+			$quote .= "No, try not. Do or do not. There is no try.";
+
+			$pid = $this->factory->post->create(array('post_content' => $quote));
+			$post = new TimberPost($pid);
+			$expected = array(
+				'<audio class="wp-audio-shortcode" id="audio-1-1" preload="none" style="width: 100%;" controls="controls"><source type="audio/mpeg" src="http://www.noiseaddicts.com/samples_1w72b820/280.mp3?_=1" /><a href="http://www.noiseaddicts.com/samples_1w72b820/280.mp3">http://www.noiseaddicts.com/samples_1w72b820/280.mp3</a></audio>',
+			);
+
+			$this->assertEquals($expected, $post->audio());
+		}
+
+		function testPostWithAudioCustomField() {
+			$pid = $this->factory->post->create();
+			update_post_meta($pid, 'audio', 'foo');
+			$post = new Timber\Post($pid);
+			$this->assertEquals('foo', $post->audio());
+		}
+
+		function testPostWithoutVideo() {
+			$pid = $this->factory->post->create();
+			$post = new TimberPost($pid);
+
+			$this->assertEquals(array(), $post->video());
+		}
+
+		function testPostWithVideo() {
+			$quote = 'Named must your fear be before banish it you can.';
+			$quote .= '[embed]https://www.youtube.com/watch?v=Jf37RalsnEs[/embed]';
+			$quote .= "No, try not. Do or do not. There is no try.";
+
+			$pid = $this->factory->post->create(array('post_content' => $quote));
+			$post = new TimberPost($pid);
+			$expected = array(
+				'<iframe width="500" height="281" src="https://www.youtube.com/embed/Jf37RalsnEs?feature=oembed" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>',
+			);
+
+			$this->assertEquals($expected, $post->video());
+		}
+
+		function testPostWithVideoCustomField() {
+			$pid = $this->factory->post->create();
+			update_post_meta($pid, 'video', 'foo');
+			$post = new Timber\Post($pid);
+			$this->assertEquals('foo', $post->video());
+		}
+
+		function testPathAndLinkWithPort() {
+			/* setUp */
+			update_option( 'siteurl', 'http://example.org:3000', true );
+			update_option( 'home', 'http://example.org:3000', true );
+			self::setPermalinkStructure();
+            $old_port = $_SERVER['SERVER_PORT'];
+            $_SERVER['SERVER_PORT'] = 3000;
+            if (!isset($_SERVER['SERVER_NAME'])){
+                $_SERVER['SERVER_NAME'] = 'example.org';
+            }
+
+            /* test */
+            $pid = $this->factory->post->create(array('post_name' => 'my-cool-post'));
+			$post = new TimberPost($pid);
+			$this->assertEquals('http://example.org:3000/my-cool-post/', $post->link());
+			$this->assertEquals('/my-cool-post/', $post->path());
+
+			/* tearDown */
+            $_SERVER['SERVER_PORT'] = $old_port;
+            update_option( 'siteurl', 'http://example.org', true );
+            update_option( 'home', 'http://example.org', true );
 		}
 
 		/**

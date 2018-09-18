@@ -73,10 +73,11 @@
 			$this->assertNotEquals($not_gravatar, md5(file_get_contents(dirname(__FILE__).'/assets/jarednova.jpeg')));
 		}
 
-		function testAvatar(){
+		function testAvatarSimple(){
 			if (!TestTimberImage::is_connected()){
 				$this->markTestSkipped('Cannot test avatar images when not connected to internet');
 			}
+			$theme_url = get_theme_root_uri().'/'.get_stylesheet();
 			$post_id = $this->factory->post->create();
 			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
 			$comment = new TimberComment($comment_id);
@@ -99,19 +100,19 @@
 			$this->valid_avatar($comment, "http://upload.wikimedia.org/wikipedia/en/b/bc/Wiki.png");
 
 			# same domain.
-			$this->valid_avatar($comment, get_template_directory_uri() . "/images/default.png");
+			$this->valid_avatar($comment, $theme_url . "/images/default.png");
 
 			#relative
 			$default_url = "/images/default.png";
 			$avatar = $comment->avatar(32, $default_url );
 			if (strstr($avatar, '?')){
 	  			list($url, $params) = explode('?', $avatar);
-	  			$default_url = get_template_directory_uri() . $default_url;
+	  			$default_url = $theme_url . $default_url;
 	  			# you get back the absoulte url to default in the avatar url?
 	  			$this->assertEquals($params, "d=$default_url&amp;s=32");
 	  		}
 	  		# you get back url?
-	  		$this->assertTrue(substr ( get_template_directory_uri() . $avatar , 0, 5 ) == "http:");
+	  		$this->assertTrue(substr ( $theme_url. $avatar , 0, 5 ) == "http:");
 		}
 
 

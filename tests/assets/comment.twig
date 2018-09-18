@@ -1,0 +1,8 @@
+<article data-depth="{{ comment.depth }}">
+	<p>{{ comment.content }}</p>
+	{% if comment.children %}
+		{% for child_comment in comment.children %}
+			{% include 'assets/comment.twig' with { comment:child_comment } %}
+		{% endfor %}
+	{% endif %}
+</article>

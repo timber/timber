@@ -25,7 +25,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote));
 		$comment = new TimberComment($comment_id);
 		$str = Timber::compile_string('{{comment}}', array('comment' => $comment));
-		$this->assertEquals($quote, $str);
+		$this->assertEquals('<p>'.$quote.'</p>', $str);
 	}
 
 	function testCommentContent(){
@@ -33,7 +33,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$post_id = $this->factory->post->create();
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $costanza_quote));
 		$comment = new TimberComment($comment_id);
-		$this->assertEquals($costanza_quote, $comment->content());
+		$this->assertEquals('<p>'.$costanza_quote.'</p>', $comment->content());
 	}
 
 	function testCommentApproval(){
@@ -92,20 +92,82 @@ class TestTimberComment extends Timber_UnitTestCase {
 	}
 
 	function testCommentWithChildren() {
-		$kramer = $this->factory->user->create(array('display_name' => 'Cosmo Kramer'));
+		$kramer = $this->factory->user->create(array('display_name' => 'Kramer'));
 		$post_id = $this->factory->post->create();
-		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'These pretzels are making me thirsty.', 'user_id' => $kramer));
-		sleep(2);
-		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'Perhaps there’s more to Newman than meets the eye.'));
-		$child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'No, there’s less.', 'comment_parent' => $comment_id));
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'These pretzels are making me thirsty.', 'user_id' => $kramer, 'comment_date' => '2015-08-21 03:24:07'));
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'Perhaps there’s more to Newman than meets the eye.', 'comment_date' => '2015-08-21 03:25:07'));
+		$child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'No, there’s less.', 'comment_parent' => $comment_id, 'comment_date' => '2015-08-21 03:26:07'));
 		$post = new TimberPost($post_id);
 		$comments = $post->get_comments();
 		$this->assertEquals(2, count($comments));
 		$this->assertEquals(1, count($comments[1]->children()));
 		$twig_string = '{{comment.author.name}}';
 		$result = Timber::compile_string($twig_string, array('comment' => $comments[0]));
-		$this->assertEquals('Cosmo Kramer', $result);
+		$this->assertEquals('Kramer', $result);
 	}
+
+	function _makeCommentPost() {
+		$elaine = $this->factory->user->create(array('display_name' => 'Elaine Benes'));
+		$kramer = $this->factory->user->create(array('display_name' => 'Kramer'));
+		$peterman = $this->factory->user->create(array('display_name' => 'J. Peterman'));
+		
+		
+		$post_id = $this->factory->post->create(array('post_date' => '2016-11-28 02:58:18'));
+		//1st parent @4:58am
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'These pretzels are making me thirsty.', 'user_id' => $kramer, 'comment_date' => '2016-11-28 04:58:18'));
+		//2nd parent @5:58am
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'Perhaps there’s more to Newman than meets the eye.', 'comment_date' => '2016-11-28 05:58:18', 'user_id' => $elaine));
+		$child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'No, there’s less.', 'comment_parent' => $comment_id, 'comment_date' => '2016-11-28 06:58:18'));
+		$child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'for real?', 'comment_parent' => $child_id, 'comment_date' => '2016-11-28 06:59:18'));
+		//3rd parent @7:58am
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'The very pants you were returning', 'comment_date' => '2016-11-28 07:58:18', 'user_id' => $peterman));
+		return $post_id;
+	}
+
+	function testCommentDepth() {
+		$post_id = $this->_makeCommentPost();
+		$post = new \Timber\Post($post_id);
+		$comments = $post->get_comments();
+		$children = $comments[1]->children();
+		$grand_children = $children[0]->children();
+		$this->assertEquals(3, count($comments));
+		$this->assertEquals(1, count($children));
+
+		$this->assertEquals(0, $comments[1]->depth());
+		$this->assertEquals(1, $children[0]->depth());
+		$this->assertEquals(2, $grand_children[0]->depth());
+		$this->assertEquals(0, $comments[2]->depth());
+
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'Perhaps there’s more to Newman than meets the eye.', 'comment_date' => '2016-11-28 05:58:18'));
+		$twig_string = '{{comment.author.name}}';
+		$comments = $post->get_comments();
+		$result = Timber::compile_string($twig_string, array('comment' => $comments[0]));
+		$this->assertEquals('Kramer', $result);
+	}
+
+	function testCommentOrder() {
+		$post_id = $this->_makeCommentPost();
+		$post = new \Timber\Post($post_id);
+		$str = '{% for comment in post.comments %}{{comment.author.name}}, {% endfor %}';
+		$compiled = Timber::compile_string($str, array('post' => $post));
+		$this->assertEquals('Kramer, Elaine Benes, J. Peterman, ', $compiled);
+		$str = '{% for comment in post.comments.order("DESC") %}{{comment.author.name}}, {% endfor %}';
+		$compiled = Timber::compile_string($str, array('post' => $post));
+		$this->assertEquals('J. Peterman, Elaine Benes, Kramer, ', $compiled);
+	}
+
+	function testCommentOrderBy() {
+		$post_id = $this->_makeCommentPost();
+		$post = new \Timber\Post($post_id);
+		$str = '{% for comment in post.comments %}{{comment.author.name}}, {% endfor %}';
+		$compiled = Timber::compile_string($str, array('post' => $post));
+		$this->assertEquals('Kramer, Elaine Benes, J. Peterman, ', $compiled);
+		$str = '{% for comment in post.comments.orderby("comment_author") %}{{comment.author.name}}, {% endfor %}';
+		$compiled = Timber::compile_string($str, array('post' => $post));
+		$this->assertEquals('Kramer, Elaine Benes, J. Peterman, ', $compiled);
+	}
+
+
 
 
 

@@ -9,9 +9,9 @@ use Timber\QueryIterator;
 class PostGetter {
 
 	/**
-	 * @param mixed $query
+	 * @param mixed        $query
 	 * @param string|array $PostClass
-	 * @return array|bool|null
+	 * @return \Timber\Post|bool
 	 */
 	public static function get_post( $query = false, $PostClass = '' ) {
 		// if a post id is passed, grab the post directly
@@ -25,9 +25,29 @@ class PostGetter {
 		}
 
 		$posts = self::get_posts($query, $PostClass);
+
 		if ( $post = reset($posts) ) {
 			return $post;
 		}
+
+		return false;
+	}
+
+	/**
+	 * get_post_id_by_name($post_name)
+	 * @internal
+	 * @since 1.5.0
+	 * @param string $post_name
+	 * @return int
+	 */
+	public static function get_post_id_by_name( $post_name ) {
+		global $wpdb;
+		$query = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s LIMIT 1", $post_name);
+		$result = $wpdb->get_row($query);
+		if ( !$result ) {
+			return null;
+		}
+		return $result->ID;
 	}
 
 	public static function get_posts( $query = false, $PostClass = '', $return_collection = false ) {
@@ -105,17 +125,22 @@ class PostGetter {
 		$post_class = apply_filters( 'Timber\PostClassMap', $post_class );
 		$post_class_use = '';
 
-		if ( is_array($post_class) )  {
-			if ( isset( $post_class[$post_type]) ) {
+		if ( is_array($post_class) ) {
+			if ( isset($post_class[$post_type]) ) {
 				$post_class_use = $post_class[$post_type];
 			} else {
-				Helper::error_log($post_type . ' not found in ' . print_r($post_class, true));
+				Helper::error_log($post_type.' not found in '.print_r($post_class, true));
 			}
 		} elseif ( is_string($post_class) ) {
 			$post_class_use = $post_class;
 		} else {
-			Helper::error_log('Unexpeted value for PostClass: ' . print_r( $post_class, true));
+			Helper::error_log('Unexpeted value for PostClass: '.print_r($post_class, true));
 		}
+
+		if ( $post_class_use === '\Timber\Post' || $post_class_use === 'Timber\Post') {
+			return $post_class_use;
+		}
+
 
 		if ( !class_exists( $post_class_use ) || !( is_subclass_of($post_class_use, '') || is_a($post_class_use, '', true) ) ) {
 			Helper::error_log('Class ' . $post_class_use . ' either does not exist or implement \Timber\Post');

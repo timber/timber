@@ -16,6 +16,7 @@ class PostPreview {
 	protected $char_length = false;
 	protected $readmore = 'Read More';
 	protected $strip = true;
+	protected $destroy_tags = array('script', 'style');
 
 	/**
 	 * @param Post $post
@@ -69,7 +70,7 @@ class PostPreview {
 	}
 
 	/**
-	 * @param boolean|string $strip strip the tags or what? You can also provide a list of allowed tags
+	 * @param boolean|string $strip strip the tags or what? You can also provide a list of allowed tags (e.g. '<p><a>')
 	 */
 	public function strip( $strip = true ) {
 		$this->strip = $strip;
@@ -141,7 +142,9 @@ class PostPreview {
 			$text = do_shortcode($text);
 		}
 		if ( !strlen($text) ) {
-			$text = TextHelper::trim_words($this->post->content(), $len, false);
+			$text = $this->post->content();
+			$text = TextHelper::remove_tags($text, $this->destroy_tags);
+			$text = TextHelper::trim_words($text, $len, false);
 			if ( $chars !== false ) {
 				$text = TextHelper::trim_characters($text, $chars, false);
 			}
