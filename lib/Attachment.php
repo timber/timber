@@ -215,7 +215,7 @@ class Attachment extends Post implements CoreInterface {
 		if ( $iid instanceof Attachment
 		    || ( $iid instanceof \WP_Post && 'attachment' === $iid->post_type )
 		) {
-		    $iid = (int) $iid->ID;
+		    return (int) $iid->ID;
 		} elseif ( is_array( $iid ) && isset( $iid['ID'] ) ) {
 		    // Assume ACF image array.
 		    $iid = $iid['ID'];
