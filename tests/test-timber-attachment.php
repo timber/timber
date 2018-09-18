@@ -79,6 +79,13 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
  		$this->assertContains($image->link(), $links);
  	}
 
+ 	function testAttachmentInitWithWP_Post() {
+ 		$aid = self::get_attachment();
+ 		$wp_post = get_post($aid);
+ 		$attach = new Timber\Attachment($wp_post);
+ 		$this->assertEquals($wp_post->ID, $attach->id);
+ 	}
+
 	function testAttachmentArray() {
 		$post_id = $this->factory->post->create();
 		$filename = self::copyTestAttachment('arch.jpg');
