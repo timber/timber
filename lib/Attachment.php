@@ -163,7 +163,7 @@ class Attachment extends Post implements CoreInterface {
 		 * thus there's nothing in the DB for us to do here 
 		 */
 		if ( null === $iid ) {
-			return null;
+			return;
 		}
 
 		$attachment_info = $this->get_attachment_info( $iid );
@@ -191,8 +191,6 @@ class Attachment extends Post implements CoreInterface {
 
 			$this->id = $this->ID;
 		}
-
-		return null;
 	}
 
 	/**
@@ -211,14 +209,16 @@ class Attachment extends Post implements CoreInterface {
 		}
 
 		/**
-		 * If passed a Timber\Attachment object, grab the ID and continue. Otherwise, try to check
-		 * for an ACF image array an take the ID from that array.
+		 * If passed a Timber\Attachment or WP_Post object, grab the ID and continue. Otherwise, try
+		 * to check for an ACF image array an take the ID from that array.
 		 */
-		if ( $iid instanceof Attachment ) {
-			$iid = (int) $iid->ID;
+		if ( $iid instanceof Attachment
+		    || ( $iid instanceof \WP_Post && 'attachment' === $iid->post_type )
+		) {
+		    $iid = (int) $iid->ID;
 		} elseif ( is_array( $iid ) && isset( $iid['ID'] ) ) {
-			// Assume ACF image array.
-			$iid = $iid['ID'];
+		    // Assume ACF image array.
+		    $iid = $iid['ID'];
 		}
 
 		if ( ! is_numeric( $iid ) && is_string( $iid ) ) {
