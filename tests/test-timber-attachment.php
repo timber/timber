@@ -7,7 +7,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
  ---------------- */
 
  	static function replace_attachment( $old_id, $new_id ) {
-		$uploadDir = wp_upload_dir();
+		$uploadDir = wp_get_upload_dir();
 		$newFile = $uploadDir['basedir'].'/'.get_post_meta($new_id, '_wp_attached_file', true);
 		$oldFile = $uploadDir['basedir'].'/'.get_post_meta($old_id, '_wp_attached_file', true);
 		if (!file_exists(dirname($oldFile)))
@@ -19,7 +19,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
  	}
 
 	static function copyTestAttachment( $img = 'arch.jpg', $dest_name = null ) {
-		$upload_dir = wp_upload_dir();
+		$upload_dir = wp_get_upload_dir();
 		if ( is_null($dest_name) ) {
 			$dest_name = $img;
 		}
@@ -29,7 +29,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	}
 
 	static function getTestAttachmentURL( $img = 'arch.jpg', $relative = false) {
-		$upload_dir = wp_upload_dir();
+		$upload_dir = wp_get_upload_dir();
 		$result = $upload_dir['url'].'/'.$img;
 		if ( $relative ) {
 			$result = str_replace(home_url(), '', $result);

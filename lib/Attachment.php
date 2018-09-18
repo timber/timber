@@ -538,22 +538,4 @@ class Attachment extends Post implements CoreInterface {
 	public function get_pathinfo() {
 		return pathinfo( $this->file );
 	}
-
-	/**
-	 * Returns the `wp_upload_dir` and saves result to static var
-	 *
-	 * @internal
-	 * @link https://developer.wordpress.org/reference/functions/wp_upload_dir/
-	 *
-	 * @return array
-	 */
-	public static function wp_upload_dir() {
-		static $wp_upload_dir = false;
-
-		if ( ! $wp_upload_dir ) {
-			$wp_upload_dir = wp_upload_dir();
-		}
-
-		return $wp_upload_dir;
-	}
 }
