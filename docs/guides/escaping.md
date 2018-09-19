@@ -104,7 +104,7 @@ Escapes text strings for echoing in JavaScript. It is intended to be used for in
 **Twig**
 
 ```twig
-<script>var bar = '{{ post.get_field('name')|e('js_escape') }}';</script>
+<script>var bar = '{{ post.get_field('name')|e('esc_js') }}';</script>
 ```
 
 **Output**
