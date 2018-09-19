@@ -153,13 +153,13 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	function testGettingEmptyArray(){
 		$pids = $this->factory->post->create_many( 15 );
 		$posts = new Timber\PostQuery(array());
-		$this->assertEquals(0, count($posts));
+		$this->assertEmpty($posts);
 	}
 
 	function testGettingWithFalse(){
 		$pids = $this->factory->post->create_many( 15 );
 		$posts = new Timber\PostQuery(false);
-		$this->assertEquals(0, count($posts));
+		$this->assertEmpty($posts);
 	}
 
 	function testGetAttachment() {

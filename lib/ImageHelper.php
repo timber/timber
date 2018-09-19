@@ -163,7 +163,7 @@ class ImageHelper {
 		$ret = false;
 		if ( isset($file_path) && '' !== $file_path && file_exists($file_path) ) {
 			$mime = mime_content_type($file_path);
-    		$ret  = in_array($mime, ['image/svg+xml', 'text/html', 'text/plain']);
+    		$ret  = in_array($mime, ['image/svg+xml', 'text/html', 'text/plain', 'image/svg']);
     	}
     	return $ret;
 	}
