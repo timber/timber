@@ -1,6 +1,7 @@
 <?php
 
 class TestTimberPostGetter extends Timber_UnitTestCase {
+
 	/**
 	 * @group wp_query_hacks
 	 */
@@ -164,7 +165,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	function testGetAttachment() {
 		$upload_dir = wp_upload_dir();
 		$post_id = $this->factory->post->create();
-		$filename = TestTimberImage::copyTestImage( 'flag.png' );
+		$filename = TestTimberImage::copyTestAttachment( 'flag.png' );
 		$destination_url = str_replace( ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename );
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
 		$attachment = array(

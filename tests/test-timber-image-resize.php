@@ -10,7 +10,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 	}
 
 	function testCropCenter() {
-		$cropper = TestTimberImage::copyTestImage('cropper.png');
+		$cropper = TestTimberImage::copyTestAttachment('cropper.png');
 		$resized = Timber\ImageHelper::resize($cropper, 100, 300, 'center');
 
 		$resized = str_replace('http://example.org', '', $resized);
@@ -26,7 +26,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 	}
 
 	function testCropFalse() {
-		$cropper = TestTimberImage::copyTestImage('cropper.png');
+		$cropper = TestTimberImage::copyTestAttachment('cropper.png');
 		$resized = Timber\ImageHelper::resize($cropper, 100, 200, false);
 
 		$resized = str_replace('http://example.org', '', $resized);
@@ -48,7 +48,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 	}
 
 	function testCropRight() {
-		$cropper = TestTimberImage::copyTestImage('cropper.png');
+		$cropper = TestTimberImage::copyTestAttachment('cropper.png');
 		$resized = Timber\ImageHelper::resize($cropper, 100, 300, 'right');
 
 		$resized = str_replace('http://example.org', '', $resized);
@@ -59,7 +59,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 	}
 
 	function testCropTop() {
-		$cropper = TestTimberImage::copyTestImage('cropper.png');
+		$cropper = TestTimberImage::copyTestAttachment('cropper.png');
 		$resized = Timber\ImageHelper::resize($cropper, 300, 100, 'top');
 
 		$resized = str_replace('http://example.org', '', $resized);
@@ -70,7 +70,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 	}
 
 	function testCropBottom() {
-		$cropper = TestTimberImage::copyTestImage('cropper.png');
+		$cropper = TestTimberImage::copyTestAttachment('cropper.png');
 		$resized = Timber\ImageHelper::resize($cropper, 300, 100, 'bottom');
 
 		$resized = str_replace('http://example.org', '', $resized);
@@ -81,7 +81,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 	}
 
 	function testCropBottomCenter() {
-		$cropper = TestTimberImage::copyTestImage('cropper.png');
+		$cropper = TestTimberImage::copyTestAttachment('cropper.png');
 		$resized = Timber\ImageHelper::resize($cropper, 300, 100, 'bottom-center');
 
 		$resized = str_replace('http://example.org', '', $resized);
@@ -92,7 +92,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 	}
 
 	function testCropTopCenter() {
-		$cropper = TestTimberImage::copyTestImage('cropper.png');
+		$cropper = TestTimberImage::copyTestAttachment('cropper.png');
 		$resized = Timber\ImageHelper::resize($cropper, 300, 100, 'top-center');
 
 		$resized = str_replace('http://example.org', '', $resized);
@@ -103,7 +103,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 	}
 
 	function testCropHeight() {
-		$arch = TestTimberImage::copyTestImage('arch.jpg');
+		$arch = TestTimberImage::copyTestAttachment('arch.jpg');
 		$resized = Timber\ImageHelper::resize($arch, false, 250);
 
 		$resized = str_replace('http://example.org', '', $resized);
@@ -143,7 +143,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 		// test with a local and external file
 		$img = 'arch.jpg';
-		$img = TestTimberImage::copyTestImage($img);
+		$img = TestTimberImage::copyTestAttachment($img);
 
 		$resized = Timber\ImageHelper::resize($img, 50, 50);
 
@@ -157,7 +157,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 
 	function testJPEGQualityDefault() {
 		//make image at best quality
-		$arch = TestTimberImage::copyTestImage('arch.jpg');
+		$arch = TestTimberImage::copyTestAttachment('arch.jpg');
 		$resized = Timber\ImageHelper::resize($arch, 500, 500, 'default', true);
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = Timber\URLHelper::url_to_file_system( $resized );
@@ -172,7 +172,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		add_filter('wp_editor_set_quality', function(){
 			return 100;
 		});
-		$arch = TestTimberImage::copyTestImage('arch.jpg');
+		$arch = TestTimberImage::copyTestAttachment('arch.jpg');
 		$resized = Timber\ImageHelper::resize($arch, 500, 500, 'default', true);
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = Timber\URLHelper::url_to_file_system( $resized );
@@ -186,7 +186,7 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		add_filter('wp_editor_set_quality', function(){
 			return 1;
 		});
-		$arch = TestTimberImage::copyTestImage('arch.jpg');
+		$arch = TestTimberImage::copyTestAttachment('arch.jpg');
 		$resized = Timber\ImageHelper::resize($arch, 500, 500, 'default', true);
 		$resized = str_replace('http://example.org', '', $resized);
 		$resized = Timber\URLHelper::url_to_file_system( $resized );

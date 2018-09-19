@@ -27,7 +27,7 @@
 
 		function testGetImage() {
 			$post_id = $this->factory->post->create(array('post_title' => 'St. Louis History'));
-			$filename = TestTimberImage::copyTestImage( 'arch.jpg' );
+			$filename = TestTimberImage::copyTestAttachment( 'arch.jpg' );
 			$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 			$iid = wp_insert_attachment( $attachment, $filename, $post_id );
 			update_post_meta($post_id, 'landmark', $iid);
@@ -46,7 +46,7 @@
 
 		function testFalseParent() {
 			$pid = $this->factory->post->create();
-			$filename = TestTimberImage::copyTestImage( 'arch.jpg' );
+			$filename = TestTimberImage::copyTestAttachment( 'arch.jpg' );
 			$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 			$iid = wp_insert_attachment( $attachment, $filename, $pid );
 			update_post_meta( $iid, 'architect', 'Eero Saarinen' );
@@ -990,23 +990,4 @@
 			//
 		}
 
-		/**
-		 * Tests whether 'the_post' action is called when a post is fetched through the Post constructor.
-		 *
-		 * The 'the_post' action should only be called when a singular template file is called, and
-		 * only on the main post, but not when Timber creates post objects in a loop.
-		 *
-		 * @ticket 1639
-		 * @see TestTimberContext::testIfThePostHookIsRunInSingularTemplates()
-		 */
-		function testPostConstructorAndThePostHook() {
-			add_action( 'the_post', function( $post ) {
-				add_filter( 'touched_the_post_action', '__return_true' );
-			} );
-
-			$post_id = $this->factory()->post->create();
-			new Timber\Post( $post_id );
-
-			$this->assertFalse( apply_filters( 'touched_the_post_action', false ) );
-		}
 	}
