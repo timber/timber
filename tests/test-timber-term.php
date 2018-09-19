@@ -237,7 +237,7 @@ class TestTimberTerm extends Timber_UnitTestCase {
 		function testTermEditLink() {
 			wp_set_current_user(1);
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
-			$term = TermFactory::($tid);
+			$term = TermFactory::get($tid);
 			$links = array();
 
 			$links[] = 'http://example.org/wp-admin/term.php?taxonomy=category&tag_ID='.$tid.'&post_type=post';
