@@ -130,4 +130,38 @@
 			$this->assertEquals('<img src="" />', trim($str));
 		}
 
+		function testTwigLoadsFromLocationWithAndWithoutNamespaces(){
+			Timber::$locations = array( 'namespaced' => __DIR__.'/namespaced', __DIR__ . '/assets' );
+
+			// Namespaced location
+			$str = Timber::compile('@namespaced/test-namespaced.twig');
+			$this->assertEquals('This is a namespaced template.', trim($str));
+
+			// Non namespaced location
+			$str = Timber::compile('thumb-test.twig');
+			$this->assertEquals('<img src="" />', trim($str));
+		}
+
+		function testTwigLoadsFromLocationWithAndWithoutNamespacesAndDirs(){
+			Timber::$dirname = array('foo', 'views');
+			Timber::$locations = array( 'namespaced' => __DIR__.'/namespaced', __DIR__ . '/assets' );
+
+			// Namespaced location
+			$str = Timber::compile('@namespaced/test-namespaced.twig');
+			$this->assertEquals('This is a namespaced template.', trim($str));
+
+			// Non namespaced location
+			$str = Timber::compile('thumb-test.twig');
+			$this->assertEquals('<img src="" />', trim($str));
+
+			if (!file_exists(get_template_directory().'/foo')) {
+				mkdir(get_template_directory().'/foo', 0777, true);
+			}
+			copy(__DIR__.'/assets/single-foo.twig', get_template_directory().'/foo/single-foo.twig');
+
+			// Dir
+			$str = Timber::compile('single-foo.twig');
+			$this->assertEquals('I am single-foo', trim($str));
+		}
+
 	}
