@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use Twig\Loader\FilesystemLoader;
+
 class LocationManager {
 
 	
@@ -12,17 +14,27 @@ class LocationManager {
 	public static function get_locations( $caller = false ) {
 		//prioirty: user locations, caller (but not theme), child theme, parent theme, caller
 		$locs = array();
-		$locs = array_merge($locs, self::get_locations_user());
-		$locs = array_merge($locs, self::get_locations_caller($caller));
+		$locs = array_merge_recursive( $locs, self::get_locations_user() );
+		$locs = array_merge_recursive( $locs, self::get_locations_caller( $caller ) );
 		//remove themes from caller
-		$locs = array_diff($locs, self::get_locations_theme());
-		$locs = array_merge($locs, self::get_locations_theme());
-		$locs = array_merge($locs, self::get_locations_caller($caller));
-		$locs = array_unique($locs);
+		//$locs = array_diff_assoc( $locs, self::get_locations_theme() );
+		$locs = array_merge_recursive( $locs, self::get_locations_theme() );
+		$locs = array_merge_recursive( $locs, self::get_locations_caller( $caller ) );
+		$locs = array_map( 'array_unique', $locs );
+
 		//now make sure theres a trailing slash on everything
-		$locs = array_map('trailingslashit', $locs);
-		$locs = apply_filters('timber_locations', $locs);
-		$locs = apply_filters('timber/locations', $locs);
+		$locs = array_map( function ( $loc ) {
+			return array_map( 'trailingslashit', $loc );
+		}, $locs );
+
+		$locs = array_map( function ( $loc ) {
+			return apply_filters( 'timber_locations', $loc );
+		}, $locs );
+
+		$locs = array_map( function ( $loc ) {
+			return apply_filters( 'timber/locations', $loc );
+		}, $locs );
+
 		return $locs;
 	}
 
@@ -33,19 +45,19 @@ class LocationManager {
 	protected static function get_locations_theme() {
 		$theme_locs = array();
 		$theme_dirs = LocationManager::get_locations_theme_dir();
-		$roots      = array(get_stylesheet_directory(), get_template_directory());
-		$roots      = array_map('realpath', $roots);
-		$roots      = array_unique($roots);
+		$roots      = array( get_stylesheet_directory(), get_template_directory() );
+		$roots      = array_map( 'realpath', $roots );
+		$roots      = array_unique( $roots );
 		foreach ( $roots as $root ) {
-			if ( !is_dir($root) ) {
+			if ( ! is_dir( $root ) ) {
 				continue;
 			}
-			$theme_locs[] = $root;
-			$root         = trailingslashit($root);
+			$theme_locs[ FilesystemLoader::MAIN_NAMESPACE ][] = $root;
+			$root                                             = trailingslashit( $root );
 			foreach ( $theme_dirs as $dirname ) {
-				$tloc = realpath($root.$dirname);
-				if ( is_dir($tloc) ) {
-					$theme_locs[] = $tloc;
+				$tloc = realpath( $root . $dirname );
+				if ( is_dir( $tloc ) ) {
+					$theme_locs[ FilesystemLoader::MAIN_NAMESPACE ][] = $tloc;
 				}
 			}
 		}
@@ -105,21 +117,29 @@ class LocationManager {
 	 */
 	protected static function get_locations_user() {
 		$locs = array();
-		if ( isset(Timber::$locations) ) {
-			if ( is_string(Timber::$locations) ) {
-				Timber::$locations = array(Timber::$locations);
+		if ( isset( Timber::$locations ) ) {
+			if ( is_string( Timber::$locations ) ) {
+				Timber::$locations = array( Timber::$locations );
 			}
-			foreach ( Timber::$locations as $namespace => $tloc ) {
-				$tloc = realpath($tloc);
-				if ( is_dir($tloc) ) {
+			foreach ( Timber::$locations as $tloc => $namespace_or_tloc ) {
+				if ( is_string( $tloc ) ) {
+					$namespace = $namespace_or_tloc;
+				} else {
+					$tloc      = $namespace_or_tloc;
+					$namespace = null;
+				}
+
+				$tloc = realpath( $tloc );
+				if ( is_dir( $tloc ) ) {
 					if ( ! is_string( $namespace ) ) {
-						$locs[] = $tloc;
+						$locs[ FilesystemLoader::MAIN_NAMESPACE ][] = $tloc;
 					} else {
-						$locs[$namespace] = $tloc;
+						$locs[ $namespace ][] = $tloc;
 					}
 				}
 			}
 		}
+
 		return $locs;
 	}
 
@@ -129,19 +149,20 @@ class LocationManager {
 	 */
 	protected static function get_locations_caller( $caller = false ) {
 		$locs = array();
-		if ( $caller && is_string($caller) ) {
-			$caller = realpath($caller);
-			if ( is_dir($caller) ) {
-				$locs[] = $caller;
+		if ( $caller && is_string( $caller ) ) {
+			$caller = realpath( $caller );
+			if ( is_dir( $caller ) ) {
+				$locs[ FilesystemLoader::MAIN_NAMESPACE ][] = $caller;
 			}
-			$caller = trailingslashit($caller);
+			$caller = trailingslashit( $caller );
 			foreach ( LocationManager::get_locations_theme_dir() as $dirname ) {
-				$caller_sub = realpath($caller.$dirname);
-				if ( is_dir($caller_sub) ) {
-					$locs[] = $caller_sub;
+				$caller_sub = realpath( $caller . $dirname );
+				if ( is_dir( $caller_sub ) ) {
+					$locs[ FilesystemLoader::MAIN_NAMESPACE ][] = $caller_sub;
 				}
 			}
 		}
+
 		return $locs;
 	}
 

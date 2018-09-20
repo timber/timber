@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Timber\Cache\Cleaner;
+use Twig\Loader\FilesystemLoader;
 
 class Loader {
 
@@ -130,23 +131,29 @@ class Loader {
 	 * @return \Twig_Loader_Filesystem
 	 */
 	public function get_loader() {
-		$open_basedir = ini_get('open_basedir');
-		$paths = array_merge($this->locations, array($open_basedir ? ABSPATH : '/'));
-		$paths = apply_filters('timber/loader/paths', $paths);
+		$open_basedir = ini_get( 'open_basedir' );
+		$paths        = array_merge_recursive(
+			$this->locations,
+			array( FilesystemLoader::MAIN_NAMESPACE => $open_basedir ? ABSPATH : '/' )
+		);
+		$paths        = apply_filters( 'timber/loader/paths', $paths );
 
 		$rootPath = '/';
 		if ( $open_basedir ) {
 			$rootPath = null;
 		}
-		$fs = new \Twig_Loader_Filesystem(array(), $rootPath);
-		foreach ($paths as $namespace => $path) {
-			if (is_string($namespace)) {
-				$fs->addPath($path, $namespace);
+		$fs = new \Twig_Loader_Filesystem( array(), $rootPath );
+		foreach ( $paths as $namespace => $path_locations ) {
+			if ( is_array( $path_locations ) ) {
+				array_map( function ( $path ) use ( $fs, $namespace ) {
+					$fs->addPath( $path, $namespace );
+				}, $path_locations );
 			} else {
-				$fs->addPath($path);
+				$fs->addPath( $path_locations, $namespace );
 			}
 		}
-		$fs = apply_filters('timber/loader/loader', $fs);
+		$fs = apply_filters( 'timber/loader/loader', $fs );
+
 		return $fs;
 	}
 

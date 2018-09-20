@@ -24,6 +24,7 @@
 		function testTwigPathFilter() {
 			$php_unit = $this;
 			add_filter('timber/loader/paths', function($paths) use ($php_unit) {
+				$paths = call_user_func_array('array_merge', $paths);
 				$count = count($paths);
 				$php_unit->assertEquals(3, count($paths));
 				$pos = array_search('/', $paths);
@@ -125,13 +126,19 @@
 		}
 
 		function testTwigLoadsFromLocationWithNamespace(){
-			Timber::$locations = array( 'assets' => __DIR__.'/assets' );
+			Timber::$locations = array( __DIR__.'/assets' => 'assets' );
 			$str = Timber::compile('@assets/thumb-test.twig');
 			$this->assertEquals('<img src="" />', trim($str));
 		}
 
+		function testTwigLoadsFromLocationWithNestedNamespace(){
+			Timber::$locations = array( __DIR__.'/namespaced' => 'namespaced' );
+			$str = Timber::compile('@namespaced/test-nested.twig');
+			$this->assertEquals('This is a namespaced template.', trim($str));
+		}
+
 		function testTwigLoadsFromLocationWithAndWithoutNamespaces(){
-			Timber::$locations = array( 'namespaced' => __DIR__.'/namespaced', __DIR__ . '/assets' );
+			Timber::$locations = array( __DIR__.'/namespaced' => 'namespaced', __DIR__ . '/assets' );
 
 			// Namespaced location
 			$str = Timber::compile('@namespaced/test-namespaced.twig');
@@ -144,7 +151,7 @@
 
 		function testTwigLoadsFromLocationWithAndWithoutNamespacesAndDirs(){
 			Timber::$dirname = array('foo', 'views');
-			Timber::$locations = array( 'namespaced' => __DIR__.'/namespaced', __DIR__ . '/assets' );
+			Timber::$locations = array( __DIR__.'/namespaced' => 'namespaced', __DIR__ . '/assets' );
 
 			// Namespaced location
 			$str = Timber::compile('@namespaced/test-namespaced.twig');
@@ -162,6 +169,21 @@
 			// Dir
 			$str = Timber::compile('single-foo.twig');
 			$this->assertEquals('I am single-foo', trim($str));
+		}
+
+		function testTwigLoadsFromMultipleLocationsWithNamespace(){
+			Timber::$locations = array( __DIR__.'/assets' => 'assets', __DIR__ .'/namespaced' => 'assets' );
+			$str = Timber::compile('@assets/thumb-test.twig');
+			$this->assertEquals('<img src="" />', trim($str));
+
+			$str = Timber::compile('@assets/test-namespaced.twig');
+			$this->assertEquals('This is a namespaced template.', trim($str));
+		}
+
+		function testTwigLoadsFirstTemplateWhenMultipleLocationsWithSameNamespace(){
+			Timber::$locations = array( __DIR__.'/assets' => 'assets', __DIR__ .'/namespaced' => 'assets' );
+			$str = Timber::compile('@assets/thumb-test.twig');
+			$this->assertEquals('<img src="" />', trim($str));
 		}
 
 	}
