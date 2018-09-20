@@ -256,8 +256,6 @@ class Loader {
 				array_map( function ( $path ) use ( $fs, $namespace ) {
 					$fs->addPath( $path, $namespace );
 				}, $path_locations );
-			} else {
-				$fs->addPath( $path_locations, $namespace );
 			}
 		}
 
