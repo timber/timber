@@ -43,7 +43,7 @@ class TestTimberSite extends Timber_UnitTestCase {
 	}
 
 	function testSiteIcon() {
-		$icon_id = TestTimberImage::get_image_attachment(0, 'cardinals.jpg');
+		$icon_id = TestTimberImage::get_attachment(0, 'cardinals.jpg');
 		update_option('site_icon', $icon_id);
 		$site = new Timber\Site();
 		$icon = $site->icon();

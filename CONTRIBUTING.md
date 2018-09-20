@@ -5,13 +5,13 @@
 3. [Report a bug](https://github.com/timber/timber/issues/new) that you find.
 4. Share a theme you’ve built with Timber. This helps transfer knowledge about best practices, etc. _Add it to the [Showcase list](https://github.com/timber/timber/wiki/Showcase)_.
 5. Tweet and [blog](http://www.oomphinc.com/blog/2013-10/php-templating-wordpress/#post-content) about the advantages (and criticisms) of the project and Twig.
-6. Browse [contrib opportunities](https://github.com/timber/timber/issues?labels=contrib-opportunity&page=1&state=open) for areas of WordPress/PHP/code you know well to consider, build or document.
+6. Browse ["help wanted"](https://github.com/timber/timber/labels/help%20wanted) and ["good first issue"](https://github.com/timber/timber/labels/good%20first%20issue) labels for areas of WordPress/PHP/code you know well to consider, build or document.
 7. Answer questions on [Stack Overflow posted under the «Timber» tag](https://stackoverflow.com/questions/tagged/timber). You can also [subscribe to a tag](https://stackoverflow.blog/2010/12/20/subscribe-to-tags-via-emai/) via email to get notified when someone needs help.
 8. Answer question in the support channel on [Gitter](https://gitter.im/timber/timber).
 
 ### Pull Requests
 
-Pull requests are highly appreciated. More than fifty people have written parts of Timber (so far). Here are some guidelines to help:
+Pull requests are highly appreciated. Almost 150 people have written parts of Timber (so far). Here are some guidelines to help:
 
 1. **Solve a problem** – Features are great, but even better is cleaning-up and fixing issues in the code that you discover.
 2. **Write tests** – This helps preserve functionality as the codebase grows and demonstrates how your change affects the code.

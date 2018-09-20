@@ -42,12 +42,9 @@ class Twig {
 	 */
 	public function add_timber_functions( $twig ) {
 		/* actions and filters */
-		$twig->addFunction(new Twig_Function('action', function( $context ) {
-					$args = func_get_args();
-					array_shift($args);
-					$args[] = $context;
-					call_user_func_array('do_action', $args);
-				}, array('needs_context' => true)));
+		$twig->addFunction( new Twig_Function( 'action', function() {
+			call_user_func_array( 'do_action', func_get_args() );
+		} ) );
 
 		$twig->addFunction(new Twig_Function('function', array(&$this, 'exec_function')));
 		$twig->addFunction(new Twig_Function('fn', array(&$this, 'exec_function')));
@@ -91,6 +88,9 @@ class Twig {
 					}
 					return new $UserClass($pid);
 				} ));
+		$twig->addFunction( new Twig_Function( 'Attachment', function( $post_id, $attachment_class = 'Timber\Attachment' ) {
+			return self::maybe_convert_array( $post_id, $attachment_class );
+		} ) );
 
 		/**
 		 * Deprecated Timber object functions.
@@ -141,6 +141,30 @@ class Twig {
 	}
 
 	/**
+	 * Converts input to Timber object(s)
+	 *
+	 * @internal
+	 * @since 2.0.0
+	 *
+	 * @param mixed  $post_id A post ID, object or something else that the Timber object class
+	 *                        constructor an read.
+	 * @param string $class   The class to use to convert the input.
+	 *
+	 * @return mixed An object or array of objects.
+	 */
+	public static function maybe_convert_array( $post_id, $class ) {
+		if ( is_array( $post_id ) && ! Helper::is_array_assoc( $post_id ) ) {
+			foreach ( $post_id as &$id ) {
+				$id = new $class( $id );
+			}
+
+			return $post_id;
+		}
+
+		return new $class( $post_id );
+	}
+
+	/**
 	 * Function for Term or Timber\Term() within Twig
 	 * @since 1.5.1
 	 * @author @jarednova
@@ -156,6 +180,7 @@ class Twig {
 			$taxonomy = $processed_args['taxonomy'];
 			$TermClass = $processed_args['TermClass'];
 		}
+
 		if ( is_array($tid) && !Helper::is_array_assoc($tid) ) {
 			foreach ( $tid as &$p ) {
 				$p = new $TermClass($p, $taxonomy);
@@ -196,6 +221,7 @@ class Twig {
 		$twig->addFilter(new \Twig_SimpleFilter('retina', array('Timber\ImageHelper', 'retina_resize')));
 		$twig->addFilter(new \Twig_SimpleFilter('letterbox', array('Timber\ImageHelper', 'letterbox')));
 		$twig->addFilter(new \Twig_SimpleFilter('tojpg', array('Timber\ImageHelper', 'img_to_jpg')));
+		$twig->addFilter(new \Twig_SimpleFilter('towebp', array('Timber\ImageHelper', 'img_to_webp')));
 
 		/* debugging filters */
 		$twig->addFilter(new \Twig_SimpleFilter('get_class', 'get_class'));

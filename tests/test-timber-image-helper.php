@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberImageHelper extends TimberImage_UnitTestCase {
+	class TestTimberImageHelper extends TimberAttachment_UnitTestCase {
 
 		function testHTTPAnalyze() {
 			$url = 'http://example.org/wp-content/uploads/2017/06/dog.jpg';
@@ -15,22 +15,22 @@
 		}
 
 		function testIsAnimatedGif() {
-			$image = TestTimberImage::copyTestImage('robocop.gif');
+			$image = TestTimberImage::copyTestAttachment('robocop.gif');
 			$this->assertTrue( Timber\ImageHelper::is_animated_gif($image) );
 		}
 
 		function testIsRegularGif() {
-			$image = TestTimberImage::copyTestImage('boyer.gif');
+			$image = TestTimberImage::copyTestAttachment('boyer.gif');
 			$this->assertFalse( Timber\ImageHelper::is_animated_gif($image) );
 		}
 
 		function testIsNotGif() {
-			$arch = TestTimberImage::copyTestImage('arch.jpg');
+			$arch = TestTimberImage::copyTestAttachment('arch.jpg');
 			$this->assertFalse( Timber\ImageHelper::is_animated_gif($arch) );
 		}
 
 		function testServerLocation() {
-			$arch = TestTimberImage::copyTestImage('arch.jpg');
+			$arch = TestTimberImage::copyTestAttachment('arch.jpg');
 			$this->assertEquals($arch, \Timber\ImageHelper::get_server_location($arch));
 		}
 
@@ -42,7 +42,7 @@
 
 			$upload_dir = wp_upload_dir();
 			$post_id = $this->factory->post->create();
-			$filename = TestTimberImage::copyTestImage( 'flag.png' );
+			$filename = TestTimberImage::copyTestAttachment( 'flag.png' );
 			$destination_url = str_replace( ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename );
 			$wp_filetype = wp_check_filetype( basename( $filename ), null );
 			$attachment = array(
@@ -69,7 +69,7 @@
 		}
 
 		function testLetterbox() {
-			$file_loc = TestTimberImage::copyTestImage( 'eastern.jpg' );
+			$file_loc = TestTimberImage::copyTestAttachment( 'eastern.jpg' );
 			$upload_dir = wp_upload_dir();
 			$image = $upload_dir['url'].'/eastern.jpg';
 			$new_file = Timber\ImageHelper::letterbox( $image, 500, 500, '#CCC', true );

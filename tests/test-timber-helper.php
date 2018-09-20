@@ -57,6 +57,8 @@
 
 		function testCommentForm() {
 			$post_id = $this->factory->post->create();
+      global $post;
+			$post = get_post($post_id);
 			$form = Timber\Helper::ob_function( 'comment_form', array( array(), $post_id ) );
 			$form = trim($form);
 			$this->assertStringStartsWith('<div id="respond"', $form);
