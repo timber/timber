@@ -228,8 +228,25 @@
 		 */
 		function testTermWithNativeMetaNotExisting() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+			add_term_meta($tid, 'bar', 'qux');;
+			$wp_native_value = get_term_meta($tid, 'foo', true);
+			$acf_native_value = get_field('foo', 'category_'.$tid);
+			
+			$valid_wp_native_value = get_term_meta($tid, 'bar', true);
+			$valid_acf_native_value = get_field('bar', 'category_'.$tid);
+
 			$term = new TimberTerm($tid);
-			$this->assertFalse($term->meta('foo'));
+
+			//test baseline "bar" data
+			$this->assertEquals('qux', $valid_wp_native_value);
+			$this->assertEquals('qux', $valid_acf_native_value);
+			$this->assertEquals('qux', $term->bar);
+
+			//test the one taht doesn't exist
+			$this->assertEquals('string', gettype($wp_native_value));
+			$this->assertEmpty($wp_native_value);
+			$this->assertNull($acf_native_value);
+			$this->assertNotTrue($term->meta('foo'));
 		}
 
 		function testTermEditLink() {
