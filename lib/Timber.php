@@ -451,12 +451,6 @@ class Timber {
 						$found = true;
 					}
 				}
-			} else {
-				if ( file_exists( trailingslashit( $uri_locations ) . $sidebar ) ) {
-					include trailingslashit( $uri_locations ) . $sidebar;
-					$found = true;
-					break;
-				}
 			}
 		}
 		if ( ! $found ) {
