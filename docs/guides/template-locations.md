@@ -23,6 +23,31 @@ Timber::$locations = array(
 );
 ```
 
+You can also use namespaces in your locations too, just define it as the value next to a path, for example:
+
+```php
+<?php
+Timber::$locations = array(
+    '/Users/jared/Sandbox/templates',
+    '~/Sites/timber-templates/',
+    ABSPATH.'/wp-content/templates',
+    ABSPATH.'/wp-content/styleguide' => 'styleguide'
+);
+```
+
+You can also register multiple paths for the same namespace. Order is important as it will look top to bottom and return the first one it encounters, for example:
+
+```php
+<?php
+Timber::$locations = array(
+    '/Users/jared/Sandbox/templates',
+    '~/Sites/timber-templates/',
+    ABSPATH.'/wp-content/templates',
+    ABSPATH.'/wp-content/styleguide' => 'styleguide',
+    '/Users/jared/Sandbox/styleguide' => 'styleguide'
+);
+```
+
 You only need to do this once in your project (in `functions.php` of your theme). When you call one of the render or compile functions from a PHP file (say `single.php`), Timber will look for Twig files in these locations before it checks the child or parent theme.
 
 ## Changing the default folder for Twig files
