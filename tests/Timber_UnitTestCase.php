@@ -73,4 +73,9 @@
 			return 'http://' . $_SERVER['HTTP_HOST'] . '/wp';
 		}
 
+		function clearPosts() {
+			global $wpdb;
+			$wpdb->query("TRUNCATE TABLE $wpdb->posts;");
+		}
+
 	}
