@@ -2,8 +2,6 @@
 
 namespace Timber;
 
-use Twig\Loader\FilesystemLoader;
-
 class LocationManager {
 
 
@@ -65,12 +63,12 @@ class LocationManager {
 			if ( ! is_dir( $root ) ) {
 				continue;
 			}
-			$theme_locs[ FilesystemLoader::MAIN_NAMESPACE ][] = $root;
+			$theme_locs[ Loader::MAIN_NAMESPACE ][] = $root;
 			$root                                             = trailingslashit( $root );
 			foreach ( $theme_dirs as $dirname ) {
 				$tloc = realpath( $root . $dirname );
 				if ( is_dir( $tloc ) ) {
-					$theme_locs[ FilesystemLoader::MAIN_NAMESPACE ][] = $tloc;
+					$theme_locs[ Loader::MAIN_NAMESPACE ][] = $tloc;
 				}
 			}
 		}
@@ -145,7 +143,7 @@ class LocationManager {
 				$tloc = realpath( $tloc );
 				if ( is_dir( $tloc ) ) {
 					if ( ! is_string( $namespace ) ) {
-						$locs[ FilesystemLoader::MAIN_NAMESPACE ][] = $tloc;
+						$locs[ Loader::MAIN_NAMESPACE ][] = $tloc;
 					} else {
 						$locs[ $namespace ][] = $tloc;
 					}
@@ -165,13 +163,13 @@ class LocationManager {
 		if ( $caller && is_string( $caller ) ) {
 			$caller = realpath( $caller );
 			if ( is_dir( $caller ) ) {
-				$locs[ FilesystemLoader::MAIN_NAMESPACE ][] = $caller;
+				$locs[ Loader::MAIN_NAMESPACE ][] = $caller;
 			}
 			$caller = trailingslashit( $caller );
 			foreach ( LocationManager::get_locations_theme_dir() as $dirname ) {
 				$caller_sub = realpath( $caller . $dirname );
 				if ( is_dir( $caller_sub ) ) {
-					$locs[ FilesystemLoader::MAIN_NAMESPACE ][] = $caller_sub;
+					$locs[ Loader::MAIN_NAMESPACE ][] = $caller_sub;
 				}
 			}
 		}
