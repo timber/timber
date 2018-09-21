@@ -17,6 +17,9 @@ class Loader {
 	const CACHE_SITE_TRANSIENT = 'site-transient';
 	const CACHE_USE_DEFAULT = 'default';
 
+	/** Identifier of the main namespace. Will likely mirror Twig\Loader\FilesystemLoader::MAIN_NAMESPACE */
+	const MAIN_NAMESPACE = '__main__';
+
 	public static $cache_modes = array(
 		self::CACHE_NONE,
 		self::CACHE_OBJECT,
@@ -134,7 +137,7 @@ class Loader {
 		$open_basedir = ini_get( 'open_basedir' );
 		$paths        = array_merge_recursive(
 			$this->locations,
-			array( FilesystemLoader::MAIN_NAMESPACE => $open_basedir ? ABSPATH : '/' )
+			array( self::MAIN_NAMESPACE => $open_basedir ? ABSPATH : '/' )
 		);
 		$paths        = apply_filters( 'timber/loader/paths', $paths );
 
