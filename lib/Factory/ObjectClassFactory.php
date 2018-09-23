@@ -27,7 +27,7 @@ class ObjectClassFactory {
 		$default_class = static::${"{$type}Class"};
 		$class_to_use = $class;
 
-		if ( ! $class_to_use || $class_to_use && ! class_exists( $class_to_use ) ) {
+		if ( $class_to_use === null || $class_to_use !== null && ! class_exists( $class_to_use ) ) {
 
 			$class_to_use = $default_class;
 			$class = apply_filters( "Timber\\${type}ClassMap", $class, $object_type, $object, $default_class );

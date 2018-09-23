@@ -1,27 +1,30 @@
 <?php
 
-	class TestTimberPost extends Timber_UnitTestCase {
+use Timber\Factory\PostFactory;
+use Timber\Factory\TermFactory;
+
+class TestTimberPost extends Timber_UnitTestCase {
 
 		function testPostObject(){
 			$post_id = $this->factory->post->create();
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$this->assertEquals('Timber\Post', get_class($post));
 			$this->assertEquals($post_id, $post->ID);
 		}
 
 		function testPostPasswordReqd(){
 			$post_id = $this->factory->post->create();
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$this->assertFalse($post->password_required());
 
 			$post_id = $this->factory->post->create(array('post_password' => 'jiggypoof'));
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$this->assertTrue($post->password_required());
 		}
 
 		function testNameMethod() {
 			$post_id = $this->factory->post->create(array('post_title' => 'Battlestar Galactica'));
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$this->assertEquals('Battlestar Galactica', $post->name());
 		}
 
@@ -31,14 +34,14 @@
 			$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 			$iid = wp_insert_attachment( $attachment, $filename, $post_id );
 			update_post_meta($post_id, 'landmark', $iid);
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$image = $post->get_image('landmark');
 			$this->assertEquals('The Arch', $image->title());
 		}
 
 		function testPostString() {
 			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$str = Timber::compile_string('<h1>{{post}}</h1>', array('post' => $post));
 			$this->assertEquals('<h1>Gobbles</h1>', $str);
 		}
@@ -58,7 +61,7 @@
 		function testPostOnSingle(){
 			$post_id = $this->factory->post->create();
 			$this->go_to(home_url('/?p='.$post_id));
-			$post = new TimberPost();
+			$post = PostFactory::get();
 			$this->assertEquals($post_id, $post->ID);
 		}
 
@@ -85,19 +88,19 @@
 		// 	$this->go_to(home_url('/?p='.$post_id));
 		// 	$_post = $post;
 		// 	$post = false;
-		// 	$my_post = new TimberPost();
+		// 	$my_post = PostFactory::get();
 		// 	$this->assertEquals($post_id, $my_post->ID);
 		// }
 
 		function testNonexistentProperty(){
 			$post_id = $this->factory->post->create();
-			$post = new TimberPost( $post_id );
+			$post = PostFactory::get( $post_id );
 			$this->assertFalse( $post->zebra );
 		}
 
 		function testNonexistentMethod(){
 			$post_id = $this->factory->post->create();
-			$post = new TimberPost( $post_id );
+			$post = PostFactory::get( $post_id );
 			$template = '{{post.donkey}}';
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('', $str);
@@ -110,8 +113,8 @@
 				$j = $i + 1;
 				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
-			$firstPost = new TimberPost($posts[0]);
-			$nextPost = new TimberPost($posts[1]);
+			$firstPost = PostFactory::get($posts[0]);
+			$nextPost = PostFactory::get($posts[1]);
 			$this->assertEquals($firstPost->next()->ID, $nextPost->ID);
 		}
 
@@ -123,8 +126,8 @@
 			}
 			wp_set_object_terms($posts[0], 'TestMe', 'category', false);
 			wp_set_object_terms($posts[2], 'TestMe', 'category', false);
-			$firstPost = new TimberPost($posts[0]);
-			$nextPost = new TimberPost($posts[2]);
+			$firstPost = PostFactory::get($posts[0]);
+			$nextPost = PostFactory::get($posts[2]);
 			$this->assertEquals($firstPost->next('category')->ID, $nextPost->ID);
 		}
 
@@ -142,8 +145,8 @@
 				wp_set_object_terms($posts[0], 'Cheese', 'pizza', false);
 				wp_set_object_terms($posts[2], 'Cheese', 'pizza', false);
 				wp_set_object_terms($posts[3], 'Mushroom', 'pizza', false);
-				$firstPost = new TimberPost($posts[0]);
-				$nextPost = new TimberPost($posts[2]);
+				$firstPost = PostFactory::get($posts[0]);
+				$nextPost = PostFactory::get($posts[2]);
 				$this->assertEquals($firstPost->next('pizza')->ID, $nextPost->ID);
 			}
 		}
@@ -154,8 +157,8 @@
 				$j = $i + 1;
 				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
-			$lastPost = new TimberPost($posts[1]);
-			$prevPost = new TimberPost($posts[0]);
+			$lastPost = PostFactory::get($posts[1]);
+			$prevPost = PostFactory::get($posts[0]);
 			$this->assertEquals($lastPost->prev()->ID, $prevPost->ID);
 		}
 
@@ -173,7 +176,7 @@
 				$cat = wp_insert_term('Cheese', 'pizza');
 				self::set_object_terms($posts[0], $cat, 'pizza', false);
 				self::set_object_terms($posts[2], $cat, 'pizza', false);
-				$lastPost = new TimberPost($posts[2]);
+				$lastPost = PostFactory::get($posts[2]);
 				// echo "\n".'$lastPost'."\n";
 				// print_r($lastPost);
 				// echo "\n".'$lastPost->prev(pizza)'."\n";
@@ -193,8 +196,8 @@
 			$cat = wp_insert_term('TestMe', 'category');
 			self::set_object_terms($posts[0], $cat, 'category', false);
 			self::set_object_terms($posts[2], $cat, 'category', false);
-			$lastPost = new TimberPost($posts[2]);
-			$prevPost = new TimberPost($posts[0]);
+			$lastPost = PostFactory::get($posts[2]);
+			$prevPost = PostFactory::get($posts[0]);
 			$this->assertEquals($lastPost->prev('category')->ID, $prevPost->ID);
 		}
 
@@ -204,9 +207,9 @@
 				$j = $i + 1;
 				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
-			$firstPost = new TimberPost($posts[0]);
-			$nextPost = new TimberPost($posts[1]);
-			$nextPostAfter = new TimberPost($posts[2]);
+			$firstPost = PostFactory::get($posts[0]);
+			$nextPost = PostFactory::get($posts[1]);
+			$nextPostAfter = PostFactory::get($posts[2]);
 			wp_update_post( array('ID' =>$nextPost->ID, 'post_status' => 'draft') );
 			$this->assertEquals($nextPostAfter->ID, $firstPost->next()->ID);
 		}
@@ -217,8 +220,8 @@
 				$j = $i + 1;
 				$posts[] = $this->factory->post->create(array('post_date' => '2014-02-0'.$j.' 12:00:00'));
 			}
-			$firstPost = new TimberPost($posts[0]);
-			$nextPost = new TimberPost($posts[1]);
+			$firstPost = PostFactory::get($posts[0]);
+			$nextPost = PostFactory::get($posts[1]);
 			$nextPost->post_status = 'draft';
 			wp_update_post($nextPost);
 			$nextPostTest = $firstPost->next();
@@ -227,30 +230,30 @@
 		function testPostInitObject(){
 			$post_id = $this->factory->post->create();
 			$post = get_post($post_id);
-			$post = new TimberPost($post);
+			$post = PostFactory::get($post);
 			$this->assertEquals($post->ID, $post_id);
 		}
 
 		function testPostByName(){
 			$post_id = $this->factory->post->create();
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$pid_from_name = TimberPost::get_post_id_by_name($post->post_name);
 			$this->assertEquals($pid_from_name, $post_id);
 		}
 
 		function testUpdate(){
 			$post_id = $this->factory->post->create();
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$rand = rand_str();
 			$post->update('test_meta', $rand);
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$this->assertEquals($rand, $post->test_meta);
 		}
 
 		function testCanEdit(){
 			wp_set_current_user(1);
 			$post_id = $this->factory->post->create(array('post_author' => 1));
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$this->assertTrue($post->can_edit());
 			wp_set_current_user(0);
 		}
@@ -260,7 +263,7 @@
 		function testTitle(){
 			$title = 'Fifteen Million Merits';
 			$post_id = $this->factory->post->create();
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$post->post_title = $title;
 			wp_update_post($post);
 			$this->assertEquals($title, trim(strip_tags($post->title())));
@@ -294,7 +297,7 @@
 			$wp_query->queried_object = get_post($post_id);
 			$_GET['preview'] = true;
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
-			$post = new TimberPost();
+			$post = PostFactory::get();
 			$this->assertEquals( $quote . 'Yes', $post->post_content );
 		}
 
@@ -332,7 +335,7 @@
 			$wp_query->queried_object = get_post($post_id);
 			$_GET['preview'] = true;
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
-			$post = new TimberPost();
+			$post = PostFactory::get();
 			$this->assertEquals('I am the one', $post->post_content);
 		}
 
@@ -364,7 +367,7 @@
 			$wp_query->queried_object = get_post($post_id);
 			$_GET['preview'] = true;
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 
 			$str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
 			$str_getfield = Timber::compile_string('{{post.get_field(\'test_field\')}}', array('post' => $post));
@@ -400,7 +403,7 @@
 
 			$wp_query->queried_object_id = $post_id;
 			$wp_query->queried_object = get_post($post_id);
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 
 			$str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
 			$str_getfield = Timber::compile_string('{{post.get_field(\'test_field\')}}', array('post' => $post));
@@ -412,7 +415,7 @@
 		function testContent(){
 			$quote = 'The way to do well is to do well.';
 			$post_id = $this->factory->post->create();
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$post->post_content = $quote;
 			wp_update_post($post);
 			$this->assertEquals($quote, trim(strip_tags($post->content())));
@@ -425,7 +428,7 @@
             $quote .= $page2 = "And do not let your tongue get ahead of your mind.";
 
             $post_id = $this->factory->post->create();
-            $post = new TimberPost($post_id);
+            $post = PostFactory::get($post_id);
             $post->post_content = $quote;
             wp_update_post($post);
 
@@ -472,18 +475,18 @@
 			$post_id = $this->factory->post->create();
 			update_post_meta($post_id, 'the-field-name', 'the-value');
 			update_post_meta($post_id, 'with_underscores', 'the_value');
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$this->assertEquals($post->with_underscores_flat, 'the_value');
 			$this->assertEquals($post->the_field_name_flat, 'the-value');
 		}
 
 		function testPostMetaMetaException(){
 			$post_id = $this->factory->post->create();
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$string = Timber::compile_string('My {{post.meta}}', array('post' => $post));
 			$this->assertEquals('My', trim($string));
 			update_post_meta($post_id, 'meta', 'steak');
-			$post = new TimberPost($post_id);
+			$post = PostFactory::get($post_id);
 			$string = Timber::compile_string('My {{post.custom.meta}}', array('post' => $post));
 			//sorry you can't over-write methods now
 			$this->assertEquals('My steak', trim($string));
@@ -492,20 +495,20 @@
 		function testPostParent(){
 			$parent_id = $this->factory->post->create();
 			$child_id = $this->factory->post->create(array('post_parent' => $parent_id));
-			$child_post = new TimberPost($child_id);
+			$child_post = PostFactory::get($child_id);
 			$this->assertEquals($parent_id, $child_post->parent()->ID);
 		}
 
 		function testPostSlug(){
 			$pid = $this->factory->post->create(array('post_name' => 'the-adventures-of-tom-sawyer'));
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('the-adventures-of-tom-sawyer', $post->slug);
 		}
 
 		function testPostAuthor(){
 			$author_id = $this->factory->user->create(array('display_name' => 'Jared Novack', 'user_login' => 'jared-novack'));
 			$pid = $this->factory->post->create(array('post_author' => $author_id));
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('jared-novack', $post->author()->slug());
 			$this->assertEquals('Jared Novack', $post->author()->name());
 			$template = 'By {{post.author}}';
@@ -519,7 +522,7 @@
 		function testPostAuthorInTwig(){
 			$author_id = $this->factory->user->create(array('display_name' => 'Jon Stewart', 'user_login' => 'jon-stewart'));
 			$pid = $this->factory->post->create(array('post_author' => $author_id));
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('jon-stewart', $post->author()->slug());
 			$this->assertEquals('Jon Stewart', $post->author()->name());
 			$template = 'By {{post.author}}';
@@ -534,7 +537,7 @@
 			$author_id = $this->factory->user->create(array('display_name' => 'Woodward', 'user_login' => 'bob-woodward'));
 			$mod_author_id = $this->factory->user->create(array('display_name' => 'Bernstein', 'user_login' => 'carl-bernstein'));
 			$pid = $this->factory->post->create(array('post_author' => $author_id));
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('bob-woodward', $post->author()->slug());
 			$this->assertEquals('bob-woodward', $post->modified_author()->slug());
 			$this->assertEquals('Woodward', $post->author()->name());
@@ -566,7 +569,7 @@
 			add_theme_support( 'post-formats', array( 'aside', 'gallery' ) );
 			$pid = $this->factory->post->create();
 			set_post_format($pid, 'aside');
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('aside', $post->format());
 		}
 
@@ -574,7 +577,7 @@
 			$pid = $this->factory->post->create();
 			$category = wp_insert_term('Uncategorized', 'category');
 			self::set_object_terms($pid, $category, 'category', true);
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$str = Timber::compile_string("{{ post.class }}", array('post' => $post));
 			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $str);
 		}
@@ -583,7 +586,7 @@
 			$pid = $this->factory->post->create();
 			$category = wp_insert_term('Uncategorized', 'category');
 			self::set_object_terms($pid, $category, 'category', true);
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $post->post_class());
 		}
 
@@ -591,7 +594,7 @@
 			$pid = $this->factory->post->create();
 			$category = wp_insert_term('Uncategorized', 'category');
 			self::set_object_terms($pid, $category, 'category', true);
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $post->css_class());
 			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized additional-css-class', $post->css_class('additional-css-class'));
 		}
@@ -600,7 +603,7 @@
 			$pid = $this->factory->post->create();
 			$category = wp_insert_term('Uncategorized', 'category');
 			self::set_object_terms($pid, $category, 'category', true);
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $post->class());
 			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized additional-css-class', $post->class('additional-css-class'));
 		}
@@ -609,14 +612,14 @@
 			$pid = $this->factory->post->create();
 			$category = wp_insert_term('Uncategorized', 'category');
 			self::set_object_terms($pid, $category, 'category', true);
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('post-'.$pid.' post type-post status-publish format-standard hentry category-uncategorized', $post->class);
 		}
 
 		function testPostChildren(){
 			$parent_id = $this->factory->post->create();
 			$children = $this->factory->post->create_many(8, array('post_parent' => $parent_id));
-			$parent = new TimberPost($parent_id);
+			$parent = PostFactory::get($parent_id);
 			$this->assertEquals(8, count($parent->children()));
 		}
 
@@ -625,7 +628,7 @@
 			$children = $this->factory->post->create_many(4, array('post_parent' => $parent_id));
 			$children = $this->factory->post->create_many(4, array('post_parent' => $parent_id,
 			                                                       'post_status' => 'inherit'));
-			$parent = new TimberPost($parent_id);
+			$parent = PostFactory::get($parent_id);
 			$this->assertEquals(8, count($parent->children()));
 		}
 
@@ -633,7 +636,7 @@
 			$parent_id = $this->factory->post->create(array('post_type' => 'foo'));
 			$children = $this->factory->post->create_many(8, array('post_parent' => $parent_id));
 			$children = $this->factory->post->create_many(4, array('post_parent' => $parent_id, 'post_type' => 'foo'));
-			$parent = new TimberPost($parent_id);
+			$parent = PostFactory::get($parent_id);
 			$this->assertEquals(4, count($parent->children('parent')));
 		}
 
@@ -641,21 +644,21 @@
 			$parent_id = $this->factory->post->create(array('post_type' => 'foo'));
 			$children = $this->factory->post->create_many(8, array('post_parent' => $parent_id, 'post_type' => 'bar'));
 			$children = $this->factory->post->create_many(4, array('post_parent' => $parent_id, 'post_type' => 'foo'));
-			$parent = new TimberPost($parent_id);
+			$parent = PostFactory::get($parent_id);
 			$this->assertEquals(12, count($parent->children(array('foo', 'bar'))));
 		}
 
 		function testPostNoConstructorArgument(){
 			$pid = $this->factory->post->create();
 			$this->go_to('?p='.$pid);
-			$post = new TimberPost();
+			$post = PostFactory::get();
 			$this->assertEquals($pid, $post->ID);
 		}
 
 		function testPostPathUglyPermalinks(){
 			update_option('permalink_structure', '');
 			$pid = $this->factory->post->create();
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('http://example.org/?p='.$pid, $post->link());
 			$this->assertEquals('/?p='.$pid, $post->path());
 		}
@@ -664,7 +667,7 @@
 			$struc = '/blog/%year%/%monthnum%/%postname%/';
 			update_option('permalink_structure', $struc);
 			$pid = $this->factory->post->create(array('post_date' => '2014-05-28'));
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$this->assertStringStartsWith('http://example.org/blog/2014/05/post-title', $post->link());
 			$this->assertStringStartsWith('/blog/2014/05/post-title', $post->path());
 		}
@@ -673,7 +676,7 @@
 			$cat = wp_insert_term('News', 'category');
 			$pid = $this->factory->post->create();
 			self::set_object_terms($pid, $cat, 'category');
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('News', $post->category()->name);
 		}
 
@@ -681,7 +684,7 @@
 			$pid = $this->factory->post->create();
 			$cat = wp_insert_term('Uncategorized', 'category');
 			self::set_object_terms($pid, $cat, 'category');
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$category_names = array('News', 'Sports', 'Obits');
 
 			// Uncategorized is applied by default
@@ -697,7 +700,7 @@
 
 		function testPostTags() {
 			$pid = $this->factory->post->create();
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$tag_names = array('News', 'Sports', 'Obits');
 
 			foreach ( $tag_names as $tag_name ) {
@@ -710,7 +713,7 @@
 
 		function testPostTerms() {
 			$pid = $this->factory->post->create();
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$category = wp_insert_term('Uncategorized', 'category');
 			self::set_object_terms($pid, $category, 'category');
 
@@ -720,7 +723,7 @@
 
 			// test expected tags
 			$timber_tags = $post->terms('post_tag');
-			$dummy_timber_tag = new TimberTerm($dummy_tag['term_id'], 'post_tag');
+			$dummy_timber_tag = TermFactory::get($dummy_tag['term_id'], 'post_tag');
 			$this->assertEquals('whatever', $timber_tags[0]->slug);
 			$this->assertEquals($dummy_timber_tag, $timber_tags[0]);
 
@@ -782,7 +785,7 @@
 
 			// create new post
 			$pid = $this->factory->post->create();
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 
 			// create a new tag, associate with post
 			$dummy_tag = wp_insert_term('whatever', 'post_tag');
@@ -800,35 +803,35 @@
 		function testPostContentLength() {
 			$crawl = "The evil leaders of Planet Spaceball having foolishly spuandered their precious atmosphere, have devised a secret plan to take every breath of air away from their peace-loving neighbor, Planet Druidia. Today is Princess Vespa's wedding day. Unbeknownest to the princess, but knowest to us, danger lurks in the stars above...";
 			$pid = $this->factory->post->create(array('post_content' => $crawl));
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$content = trim(strip_tags($post->get_content(6)));
 			$this->assertEquals("The evil leaders of Planet Spaceball&hellip;", $content);
 		}
 
 		function testPostTypeObject() {
 			$pid = $this->factory->post->create();
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$pto = $post->get_post_type();
 			$this->assertEquals('Posts', $pto->label);
 		}
 
 		function testPage() {
 			$pid = $this->factory->post->create(array('post_type' => 'page', 'post_title' => 'My Page'));
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals($pid, $post->ID);
 			$this->assertEquals('My Page', $post->title());
 		}
 
 		function testCommentFormOnPost() {
 			$post_id = $this->factory->post->create();
-			$post = new Timber\Post($post_id);
+			$post = PostFactory::get($post_id);
 			$form = $post->comment_form();
 			$this->assertStringStartsWith('<div id="respond"', trim($form));
 		}
 
 		function testPostWithoutGallery() {
 			$pid = $this->factory->post->create();
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 
 			$this->assertEquals(null, $post->gallery());
 		}
@@ -836,13 +839,13 @@
 		function testPostWithGalleryCustomField() {
 			$pid = $this->factory->post->create();
 			update_post_meta($pid, 'gallery', 'foo');
-			$post = new Timber\Post($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('foo', $post->gallery());
 		}
 
 		function testPostWithoutAudio() {
 			$pid = $this->factory->post->create();
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 
 			$this->assertEquals(array(), $post->audio());
 		}
@@ -853,7 +856,7 @@
 			$quote .= "No, try not. Do or do not. There is no try.";
 
 			$pid = $this->factory->post->create(array('post_content' => $quote));
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$expected = array(
 				'<audio class="wp-audio-shortcode" id="audio-1-1" preload="none" style="width: 100%;" controls="controls"><source type="audio/mpeg" src="http://www.noiseaddicts.com/samples_1w72b820/280.mp3?_=1" /><a href="http://www.noiseaddicts.com/samples_1w72b820/280.mp3">http://www.noiseaddicts.com/samples_1w72b820/280.mp3</a></audio>',
 			);
@@ -864,13 +867,13 @@
 		function testPostWithAudioCustomField() {
 			$pid = $this->factory->post->create();
 			update_post_meta($pid, 'audio', 'foo');
-			$post = new Timber\Post($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('foo', $post->audio());
 		}
 
 		function testPostWithoutVideo() {
 			$pid = $this->factory->post->create();
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 
 			$this->assertEquals(array(), $post->video());
 		}
@@ -881,7 +884,7 @@
 			$quote .= "No, try not. Do or do not. There is no try.";
 
 			$pid = $this->factory->post->create(array('post_content' => $quote));
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$expected = array(
 				'<iframe width="500" height="281" src="https://www.youtube.com/embed/Jf37RalsnEs?feature=oembed" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>',
 			);
@@ -892,7 +895,7 @@
 		function testPostWithVideoCustomField() {
 			$pid = $this->factory->post->create();
 			update_post_meta($pid, 'video', 'foo');
-			$post = new Timber\Post($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('foo', $post->video());
 		}
 
@@ -909,7 +912,7 @@
 
             /* test */
             $pid = $this->factory->post->create(array('post_name' => 'my-cool-post'));
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$this->assertEquals('http://example.org:3000/my-cool-post/', $post->link());
 			$this->assertEquals('/my-cool-post/', $post->path());
 
@@ -931,7 +934,7 @@
 
 			$uid = $this->factory->user->create(array('display_name' => 'Franklin Delano Roosevelt', 'user_login' => 'fdr'));
 			$pid = $this->factory->post->create(array('post_author' => $uid));
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$edit_url = $post->edit_link();
 			$this->assertEquals('', $edit_url);
 			$user = wp_set_current_user($uid);
