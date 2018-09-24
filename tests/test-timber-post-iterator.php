@@ -66,6 +66,31 @@ class TestTimberPostIterator extends Timber_UnitTestCase {
 		$this->assertEquals( $initial_post, $post );
 	}
 
+	/**
+	 * Checks if $wp_query->in_the_loop is reset after a query.
+	 */
+	function testInTheLoopAfterLastItem() {
+		$pids = $this->factory->post->create_many(3);
+		$posts = new Timber\PostQuery( array(
+			'query' => $pids
+		) );
+
+		// Make sure $wp_query is set up.
+		$this->go_to( get_permalink( get_option( 'page_for_posts' ) ) );
+
+		foreach ( $posts as $post ) {
+			// Run something
+			$post->title;
+
+			global $wp_query;
+			$this->assertTrue( $wp_query->in_the_loop );
+		}
+
+		global $wp_query;
+
+		$this->assertFalse( $wp_query->in_the_loop );
+	}
+
 	public function loop_end() {
 		$this->collector[] = 'loop_end';
 	}
