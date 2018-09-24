@@ -93,15 +93,15 @@ add_shortcode( 'company_address', function() {
 } );
 ```
 
-Inside `shortcode/company-address.twig`, you will have access to all the global variables that you can use in your normal template files as well. Whenever you only need the global context, you should use the `Timber::context_global()` function. You can call that function multiple times without losing performance.
+In this example, we've provided all the global context variables to `shortcode/company-address.twig` via `Timber::context_global()`. Whenever you only need the global context, you should use the `Timber::context_global()` function. You can call that function multiple times without losing performance.
 
 Timber will not cache template contexts.
 
 ## Template contexts
 
-When WordPress decides [which template file](https://wphierarchy.com/) it will display, it has already run database queries to fetch posts for archive templates or to set up the `$post` global for singular templates.
+When WordPress decides [which PHP template file](https://wphierarchy.com/) it will display, it has already run database queries to fetch posts for archive templates or to set up the `$post` global for singular templates.
 
-When you call `Timber::context()`, Timber will automatically populate your context with a `post` or `posts` variable, depending on which template file you’re in.
+When you call `Timber::context()`, Timber will automatically populate your context with a `post` or `posts` variable, depending on which type of template file you’re in.
 
 ### Singular templates
 
@@ -134,7 +134,7 @@ $context['post'] = $post;
 $context['post'] = ( new Extended_Post() )->setup();
 ```
 
-Whenever you set up **your own post in a singular template, you need set up your post through `$post->setup()`**. This function improves compatibility with third party plugins.
+Whenever you set up **a post in a singular template (instead of relying on `Timber::context()` to do it for you), you need set up your post through `$post->setup()`**. This function improves compatibility with third party plugins.
 
 ### Archive templates
 
@@ -165,7 +165,7 @@ $context['posts'] = new Timber\PostQuery( array(
 
 #### Change arguments for default query
 
-Sometimes you don’t want to use the default query, but only change a little thing. You can change arguments for the default query that WordPress will use to fetch posts by using the `merge_default` argument. For example, if you’d want to change the default query to *only show pages that have no parents*, you could pass in a `post_parent` argument:
+Sometimes you don’t want to use the default query, but only change a little thing. You can change arguments for the default query that WordPress will use to fetch posts by using the `merge_default` argument. For example, if you’d want to change the default query to *only show posts written by a specific group of authors*, you could pass in a `author__in` argument:
 
 **archive.php**
 
@@ -173,13 +173,16 @@ Sometimes you don’t want to use the default query, but only change a little th
 $context          = Timber::context();
 $context['posts'] = Timber\PostQuery( array(
     'query' => array(
-        'post_parent' => 0,
+        'author__in' => array(1, 6, 14),
     ),
     'merge_default' => true,
 ) );
 
 Timber::render( 'archive.twig', $context );
 ```
+
+Timber will accepted the parameters found in WordPress's [WP_Query class](https://codex.wordpress.org/Class_Reference/WP_Query)
+
 
 ### Performance
 
