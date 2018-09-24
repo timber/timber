@@ -35,6 +35,15 @@ Timber::$locations = array(
 );
 ```
 
+In the example above the namespace is called `styleguide`. You must prefix this with `@` when using it in templates (that's how Twig can differentiate namespaces from regular paths).
+Assuming you have a template called `menu.twig` within that namespace, you would call it like so:
+
+```twig
+{% include '@styleguide/menu.twig' %}
+```
+
+## Register your own namespaces
+
 You can also register multiple paths for the same namespace. Order is important as it will look top to bottom and return the first one it encounters, for example:
 
 ```php
