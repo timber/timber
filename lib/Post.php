@@ -248,6 +248,12 @@ class Post extends Core implements CoreInterface, Setupable {
 	/**
 	 * Sets up a post.
 	 *
+	 * Sets up the `$post` global, and other global variables as well as variables in the
+	 * `$wp_query` global that makes Timber more compatible with WordPress.
+	 *
+	 * This function will be called automatically when you loop over Timber posts as well as in
+	 * `Timber::context()`.
+	 *
 	 * @api
 	 * @since 2.0.0
 	 *
@@ -272,6 +278,8 @@ class Post extends Core implements CoreInterface, Setupable {
 
 	/**
 	 * Resets variables after post has been used.
+	 *
+	 * This function will be called automatically when you loop over Timber posts.
 	 *
 	 * @api
 	 * @since 2.0.0
