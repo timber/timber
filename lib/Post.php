@@ -279,6 +279,10 @@ class Post extends Core implements CoreInterface, Setupable {
 	 * @return \Timber\Post The post instance.
 	 */
 	public function teardown() {
+		global $wp_query;
+
+		$wp_query->in_the_loop = false;
+
 		return $this;
 	}
 
