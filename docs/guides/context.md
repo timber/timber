@@ -181,8 +181,7 @@ $context['posts'] = Timber\PostQuery( array(
 Timber::render( 'archive.twig', $context );
 ```
 
-Timber will accepted the parameters found in WordPress's [WP_Query class](https://codex.wordpress.org/Class_Reference/WP_Query)
-
+Timber will accept the parameters that can be found in WordPress’s [WP_Query class](https://codex.wordpress.org/Class_Reference/WP_Query).
 
 ### Performance
 
