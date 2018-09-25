@@ -151,10 +151,20 @@ class ImageHelper {
 	public static function is_svg( $file_path ) {
 		$ret = false;
 		if ( isset($file_path) && '' !== $file_path && file_exists($file_path) ) {
-			$mime = mime_content_type($file_path);
+			$mime = self::_mime_content_type($file_path);
     		$ret  = in_array($mime, ['image/svg+xml', 'text/html', 'text/plain', 'image/svg']);
     	}
     	return $ret;
+	}
+
+	static function _mime_content_type($filename) {
+	    $result = new \finfo();
+
+	    if ( file_exists($filename) === true ) {
+	        return $result->file($filename, FILEINFO_MIME_TYPE);
+	    }
+
+	    return false;
 	}
 
 	/**
