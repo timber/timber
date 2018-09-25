@@ -23,6 +23,8 @@ Timber::$locations = array(
 );
 ```
 
+## Register your own namespaces
+
 You can also use namespaces in your locations too, just define it as the value next to a path, for example:
 
 ```php
@@ -41,8 +43,6 @@ Assuming you have a template called `menu.twig` within that namespace, you would
 ```twig
 {% include '@styleguide/menu.twig' %}
 ```
-
-## Register your own namespaces
 
 You can also register multiple paths for the same namespace. Order is important as it will look top to bottom and return the first one it encounters, for example:
 
