@@ -39,7 +39,6 @@ use Timber\Loader;
  * ```
  */
 class Timber {
-
 	public static $version = '2.0.0';
 	public static $locations;
 	public static $dirname = 'views';
@@ -235,18 +234,16 @@ class Timber {
 	 * @api
 	 * @deprecated 2.0.0, use `Timber::context()` instead.
 	 *
-	 * @param array $args
-	 *
 	 * @return array
 	 */
-	public static function get_context( $args = array() ) {
+	public static function get_context() {
 		Helper::deprecated( 'get_context', 'context', '2.0.0' );
 
-		return self::context( $args );
+		return self::context();
 	}
 
 	/**
-	 * Gets the context.
+	 * Gets the global context.
 	 *
 	 * The context always contains the global context with the following variables:
 	 *
@@ -259,81 +256,33 @@ class Timber {
 	 * `wp_title()`.
 	 * - `body_class` - The body class retrieved through `get_body_class()`.
 	 *
-	 * The context can have additional variables based on which template is displayed. It will set
-	 * `post` for singular pages, which is a `Timber\Object` of the currently displayed post. For
-	 * archive pages, the context sets `posts`, which contains a collection of posts selected by the
-	 * default query that WordPress runs for this archive. This behavior can be changed by passing
-	 * arguments to this function.
-	 *
 	 * The global context will be cached, which means that you can call this function again without
-	 * losing performance. Templated based contexts like `post` and `posts` will not be cached.
+	 * losing performance.
+	 *
+	 * Additionally to that, the context will contain template contexts depending on which template
+	 * is being displayed. For archive templates, a `posts` variable will be present that will
+	 * contain a collection of `Timber\Post` objects for the default query. For singular templates,
+	 * a `post` variable will be present that that contains a `Timber\Post` object of the `$post`
+	 * global.
 	 *
 	 * @api
-	 *
-	 * @param array $args {
-	 *     Optional. An array of arguments for the context.
-	 *
-	 *     @type null|false|\Timber\Post        $post                 A post ID, a WP_Post object, a `Timber\Post`
-	 *                                                                object or a class instance that inherits from
-	 *                                                                `Timber\Post`. If set to `false`, Timber will not
-	 *                                                                set `post` in the context. Default `null`.
-	 *     @type false|array|\Timber\PostQuery  $posts                An array of posts, a `Timber\PostQuery` object or
-	 *                                                                an array of arguments that will be passed to
-	 *                                                                `Timber\PostQuery`. If set to `false`, Timber will
-	 *                                                                not set `posts` in the context. Default `array()`.
-	 *     @type bool                           $cancel_default_query By default, parameters passed with `posts` will
-	 *                                                                merge with the default WordPress post query. If
-	 *                                                                this argument is set to `true`, merging will be
-	 *                                                                disabled. Instead, the default query will be
-	 *                                                                overwritten with the parameters passed in `posts`.
-	 *                                                                Default `false`.
-	 * }
+	 * @since 2.0.0
 	 *
 	 * @return array An array of context variables that is used to pass into Twig templates through
 	 *               a render or compile function.
 	 */
-	public static function context( $args = array() ) {
-		$args = wp_parse_args( $args, array(
-			'post'                 => null,
-			'posts'                => array(),
-			'cancel_default_query' => false,
-		) );
-
-		/**
-		 * Filters the default arguments for `Timber::context()`.
-		 *
-		 * @since 2.0.0
-		 * @example
-		 * ```php
-         * // Globally disable `post` and `posts` in context
-         * add_filter( 'timber/context/args', function( $args ) {
-         * 	$args['post']  = false;
-         * 	$args['posts'] = false;
-         *     return $args;
-         * } );
-		 * ```
-		 *
-		 * @param array $args An array of arguments for the context. See `Timber::context()`.
-		 */
-		$args = apply_filters( 'timber/context/args', $args );
-
+	public static function context() {
 		$context = self::context_global();
 
-		// Context for singular templates.
-		$context_post = self::context_post( $args['post'] );
-
-		if ( $context_post ) {
-			$context['post'] = $context_post;
+		if ( is_singular() ) {
+			$post = ( new Post() )->setup();
+			$context['post'] = $post;
+		}
+		elseif ( is_archive() || is_home() ) {
+			$context['posts'] = new PostQuery();
 		}
 
-		// Context for archive templates.
-		$context_posts = self::context_posts( $args );
-
-		if ( $context_posts ) {
-			$context['posts'] = $context_posts;
-		}
-
-		return $context;
+ 		return $context;
 	}
 
 	/**
@@ -427,106 +376,10 @@ class Timber {
 				'2.0.0',
 				'timber/context'
 			);
+
 		}
 
 		return self::$context_cache;
-	}
-
-	/**
-	 * Gets post context for a singular template.
-	 *
-	 * Mimicks WordPress behavior for singular templates to improve compatibility with third party
-	 * plugins.
-	 *
-	 * @api
-	 * @since 2.0.0
-	 *
-	 * @param null|false|\Timber\Post $post_arg Optional. A post ID, a WP_Post object, a
-	 *                                          `Timber\Post` object or a class instance that
-	 *                                          inherits from `Timber\Post`. Defaults to global
-	 *                                          `$post`. Default `null`.
-	 *
-	 * @return null|\Timber\Post A `Timber\Post` object. Null if not applicable in the current
-	 *                           context.
-	 */
-	public static function context_post( $post_arg = null ) {
-		global $post;
-		global $wp_query;
-
-		/**
-		 * Bail out if
-		 * - A post shouldn’t be set in the context
-		 * - We don’t have a singular template
-		 */
-		if ( false === $post_arg || ! is_singular() ) {
-			return null;
-		}
-
-		// Use post global as the default.
-		$context_post = $post;
-
-		// Arguments that are passed directly to the context will always overwrite the default post.
-		if ( ! empty( $post_arg ) ) {
-			$context_post = $post_arg;
-		}
-
-		/**
-		 * Update cache if the cache is still empty or the post parameter passed in the args is
-		 * different than the one from a previous call to this function.
-		 */
-		if ( ! $context_post instanceof Post ) {
-			$context_post = new Post( $context_post );
-		}
-
-		// Mimick WordPress behavior to improve compatibility with third party plugins.
-		$wp_query->in_the_loop = true;
-		do_action_ref_array( 'loop_start', array( &$GLOBALS['wp_query'] ) );
-		$wp_query->setup_postdata( $context_post->ID );
-
-		return $context_post;
-	}
-
-	/**
-	 * Gets posts context for an archive template.
-	 *
-	 * @api
-	 * @since 2.0.0
-	 *
-	 * @param array $args An array of arguments from `Timber::context()`.
-	 *
-	 * @return array|null|\Timber\PostQuery
-	 */
-	public static function context_posts( $args = array() ) {
-		global $wp_query;
-
-		// Bail out if posts should not be set in context.
-		if ( false === $args['posts'] ||
-			( $args['cancel_default_query'] && empty( $args['posts'] ) )
-		) {
-			return null;
-		}
-
-		// Bail out if it’s not an archive page.
-		if ( ! is_archive() && ! is_home() ) {
-			return null;
-		}
-
-		// Use args from default query.
-		$post_query_args = $wp_query->query_vars;
-
-		if ( ! empty( $args['posts'] ) ) {
-			if ( is_array( $args['post'] ) && ! $args['cancel_default_query'] ) {
-				$post_query_args = wp_parse_args( $args['posts'], $post_query_args );
-			} else {
-				$post_query_args = $args['posts'];
-			}
-		}
-
-		if ( $post_query_args instanceof PostQuery ) {
-			return $post_query_args;
-		}
-
-		return new PostQuery( $post_query_args );
 	}
 
 	/**

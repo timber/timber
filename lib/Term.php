@@ -521,7 +521,10 @@ class Term extends Core implements CoreInterface {
 			);
 		}
 
-		return new PostQuery( $args, $post_class );
+		return new PostQuery( array(
+			'query'      => $args,
+			'post_class' => $post_class,
+		) );
 	}
 
 

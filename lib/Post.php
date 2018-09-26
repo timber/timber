@@ -56,7 +56,7 @@ use WP_Post;
  * </article>
  * ```
  */
-class Post extends Core implements CoreInterface {
+class Post extends Core implements CoreInterface, Setupable {
 
 	/**
 	 * @var string The name of the class to handle images by default
@@ -243,6 +243,55 @@ class Post extends Core implements CoreInterface {
 		}
 
 		return parent::__call($field, $args);
+	}
+
+	/**
+	 * Sets up a post.
+	 *
+	 * Sets up the `$post` global, and other global variables as well as variables in the
+	 * `$wp_query` global that makes Timber more compatible with WordPress.
+	 *
+	 * This function will be called automatically when you loop over Timber posts as well as in
+	 * `Timber::context()`.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @return \Timber\Post The post instance.
+	 */
+	public function setup() {
+		global $post;
+		global $wp_query;
+
+		// Overwrite post global.
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
+		$post = $this;
+
+		// Mimick WordPress behavior to improve compatibility with third party plugins.
+		$wp_query->in_the_loop = true;
+
+		// The setup_postdata() function will call the 'the_post' action.
+		$wp_query->setup_postdata( $post->ID );
+
+		return $this;
+	}
+
+	/**
+	 * Resets variables after post has been used.
+	 *
+	 * This function will be called automatically when you loop over Timber posts.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @return \Timber\Post The post instance.
+	 */
+	public function teardown() {
+		global $wp_query;
+
+		$wp_query->in_the_loop = false;
+
+		return $this;
 	}
 
 	/**
