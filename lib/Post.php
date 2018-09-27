@@ -213,7 +213,7 @@ class Post extends Core implements CoreInterface {
 	 * Determined whether or not an admin/editor is looking at the post in "preview mode" via the
 	 * WordPress admin
 	 * @internal
-	 * @return bool 
+	 * @return bool
 	 */
 	protected static function is_previewing() {
 		global $wp_query;
@@ -606,9 +606,10 @@ class Post extends Core implements CoreInterface {
 	 * ```
 	 * @param string|array $tax What taxonom(y|ies) to pull from. Defaults to all registered taxonomies for the post type. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you're on your own.
 	 * @param bool $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?
+	 * @param array $termArgs Arguments to pass to wp_get_post_terms to allow additional filtering
 	 * @return array
 	 */
-	public function terms( $tax = '', $merge = true, $TermClass = '' ) {
+	public function terms( $tax = '', $merge = true, $TermClass = '', $termArgs = array() ) {
 		$taxonomies = array();
 		$TermClass = $TermClass ?: $this->TermClass;
 
@@ -636,7 +637,7 @@ class Post extends Core implements CoreInterface {
 				$taxonomy = 'category';
 			}
 
-			$terms = wp_get_post_terms($this->ID, $taxonomy);
+			$terms = wp_get_post_terms($this->ID, $taxonomy, $termArgs);
 
 			if ( is_wp_error($terms) ) {
 				/* @var $terms WP_Error */
