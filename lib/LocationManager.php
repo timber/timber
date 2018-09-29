@@ -15,7 +15,6 @@ class LocationManager {
 		$locs = array_merge_recursive( $locs, self::get_locations_user() );
 		$locs = array_merge_recursive( $locs, self::get_locations_caller( $caller ) );
 		//remove themes from caller
-		//$locs = array_diff_assoc( $locs, self::get_locations_theme() );
 		$locs = array_merge_recursive( $locs, self::get_locations_theme() );
 		$locs = array_merge_recursive( $locs, self::get_locations_caller( $caller ) );
 		$locs = array_map( 'array_unique', $locs );
@@ -64,7 +63,7 @@ class LocationManager {
 				continue;
 			}
 			$theme_locs[ Loader::MAIN_NAMESPACE ][] = $root;
-			$root                                             = trailingslashit( $root );
+			$root                                   = trailingslashit( $root );
 			foreach ( $theme_dirs as $dirname ) {
 				$tloc = realpath( $root . $dirname );
 				if ( is_dir( $tloc ) ) {
