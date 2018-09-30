@@ -3,7 +3,7 @@ Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 4.7.9
 Tested up to: 4.9.6
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -36,7 +36,11 @@ _Twig is the template language powering Timber; if you need a little background 
 **Changes for Theme Developers**
 - Please add any usage changes here so theme developers are informed of changes.
 
-= 1.8.0=
+= 1.8.1 =
+**Fixes and improvements**
+- Fixed how mime_type was figured out in some PHP installs #1798
+
+= 1.8.0 =
 **Changes for Theme Developers**
 - Webp is now supported as a conversion format ( `{{ post.thumbnail.src | towebp }}` ) @mhz-tamb @pascalknecht #1638 #1777 #1780
 - Timber now recognizes that SVGs shouldn't be resized as if they are rasters (for retina, etc.) @palmiak #1726 #1736
