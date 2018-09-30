@@ -151,10 +151,31 @@ class ImageHelper {
 	public static function is_svg( $file_path ) {
 		$ret = false;
 		if ( isset($file_path) && '' !== $file_path && file_exists($file_path) ) {
-			$mime = mime_content_type($file_path);
+			$mime = self::_mime_content_type($file_path);
     		$ret  = in_array($mime, ['image/svg+xml', 'text/html', 'text/plain', 'image/svg']);
     	}
     	return $ret;
+	}
+
+	/**
+	 * 
+	 * Reads a file's mime type. This is a hack b/c some installs of PHP don't enable this function
+	 * by default. See #1798 for more info
+	 * @since 1.8.1
+	 * @param string $filename to test.
+	 * @return string|boolean mime type if found (eg. `image/svg` or `text/plain`) false if not
+	 */
+	static function _mime_content_type( $filename ) {
+		if ( function_exists( 'mime_content_type' ) ) {
+			return mime_content_type( $filename );
+		}
+	    $result = new \finfo();
+
+	    if ( file_exists( $filename ) === true ) {
+	        return $result->file( $filename, FILEINFO_MIME_TYPE );
+	    }
+
+	    return false;
 	}
 
 	/**
