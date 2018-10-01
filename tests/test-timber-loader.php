@@ -24,7 +24,7 @@
 		function testTwigPathFilterAdded() {
 			$php_unit = $this;
 			add_filter('timber/loader/paths', function($paths) use ($php_unit) {
-				$paths[] = '/srv/www/timber/tests/october/';
+				$paths[] = __DIR__.'/october/';
 				return $paths;
 			});
 			$str = Timber::compile('spooky.twig', array());
