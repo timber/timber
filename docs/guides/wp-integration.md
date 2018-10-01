@@ -217,7 +217,9 @@ It’s recommended to use the [`post_password_required()`](https://developer.wor
  * By default, this will use the `password-protected.php` template file. If you want password
  * templates specific to a post type, use `password-protected-$posttype.php`.
  */
-add_filter( 'template_include', function( $template ) {
+add_filter( 'template_include', 'get_password_protected_template', 99 );
+
+function get_password_protected_template( $template ) {
     global $post;
 
     if ( ! empty( $post ) && post_password_required( $post->ID ) ) {
