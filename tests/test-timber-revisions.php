@@ -3,7 +3,6 @@
 	class TestTimberRevisions extends Timber_UnitTestCase {
 
 		function testPreviewClass() {
-
 			global $current_user;
 			global $wp_query;
 
@@ -34,7 +33,6 @@
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
 			$post = new TimberPost();
 			$this->assertEquals( $original_post->class(), $post->class() );
-
 		}
 
 		function testPreviewContent(){

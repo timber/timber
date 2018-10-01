@@ -789,6 +789,9 @@ class Post extends Core implements CoreInterface {
 		$old_global_post = $post;
 		$post = $this;
 		$class_array = get_post_class($class, $this->ID);
+		if ( $this->is_previewing() ) {
+			$class_array = get_post_class($class, $this->post_parent);
+		}
 		$post = $old_global_post;
 		if ( is_array($class_array) ) {
 			return implode(' ', $class_array);
