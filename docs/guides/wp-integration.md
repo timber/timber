@@ -204,3 +204,43 @@ Timber and Twig can process your shortcodes by using the `{% filter shortcodes %
 {% endfilter %}
 ```
 
+## Password protected posts
+
+It’s recommended to use the [`post_password_required()`](https://developer.wordpress.org/reference/functions/post_password_required/) function to check if a post requires a password. You can add this check in all your PHP template files, or you can use a specific PHP template for all your password protected posts, using a filter:
+
+**functions.php**
+
+```php
+/**
+ * Use specific template for password protected posts.
+ *
+ * By default, this will use the `password-protected.php` template file. If you want password
+ * templates specific to a post type, use `password-protected-$posttype.php`.
+ */
+add_filter( 'template_include', function( $template ) {
+    global $post;
+
+    if ( ! empty( $post ) && post_password_required( $post->ID ) ) {
+        $template = locate_template( [
+            'password-protected.php',
+            "password-protected-{$post->post_type}.php",
+        ] ) ?: $template;
+    }
+
+    return $template;
+}, 99 );
+```
+
+With this filter, you can use a **password-protected.php** template file with the following contents:
+
+```php
+<?php
+
+$context                  = Timber::get_context();
+$context['post']          = new Timber\Post();
+$context['password_form'] = get_the_password_form();
+
+Timber::render( 'password-protected.twig', $context );
+```
+
+To display the password on the page, you could then use `{{ password_form }}` in your Twig file.
