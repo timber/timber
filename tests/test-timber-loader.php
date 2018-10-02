@@ -21,6 +21,16 @@
 			$this->assertFalse($str);
 		}
 
+		function testTwigPathFilterAdded() {
+			$php_unit = $this;
+			add_filter('timber/loader/paths', function($paths) use ($php_unit) {
+				$paths[] = __DIR__.'/october/';
+				return $paths;
+			});
+			$str = Timber::compile('spooky.twig', array());
+			$this->assertEquals('Boo!', $str);
+		}
+
 		function testTwigPathFilter() {
 			$php_unit = $this;
 			add_filter('timber/loader/paths', function($paths) use ($php_unit) {
