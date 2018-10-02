@@ -762,6 +762,16 @@
 			// test multiple taxonomies
 			$post_tag_and_team_terms = $post->terms(array('post_tag','team'));
 			$this->assertEquals(count($post_tag_terms) + count($post_team_terms), count($post_tag_and_team_terms));
+
+			// test using term args
+			$term_args = array(
+				'orderby' => 'name',
+				'fields' => 'names'
+			);
+			$post_team_terms = $post->terms(array('team'), true, false, $term_args);
+			$this->assertEquals($post_team_terms[0], $team_names[1]);
+
+
 		}
 
 		function set_object_terms( $pid, $term_info, $taxonomy = 'post_tag' , $append = true ) {

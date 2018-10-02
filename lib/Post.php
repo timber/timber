@@ -648,6 +648,11 @@ class Post extends Core implements CoreInterface {
 				return $term_class_objects;
 			}
 
+			// Return array if no object wanted
+			if ( isset($termArgs['fields'] ) && $termArgs['fields'] !== 'all' && $termArgs['fields'] !== 'all_with_object_id' ) {
+				return $terms;
+			}
+
 			// map over array of wordpress terms, and transform them into instances of the TermClass
 			$terms = array_map(function( $term ) use ($TermClass, $taxonomy) {
 				return call_user_func(array($TermClass, 'from'), $term->term_id, $taxonomy);
