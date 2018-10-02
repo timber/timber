@@ -2,6 +2,90 @@
 
 	class TestTimberRevisions extends Timber_UnitTestCase {
 
+		public function setRevision( $post_id ) {
+			global $wp_query;
+			$wp_query->queried_object_id = $post_id;
+			$wp_query->queried_object = get_post($post_id);
+			$_GET['preview'] = true;
+			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
+
+		}
+
+		function testParentOfPost() {
+			// Register Custom Post Type
+
+			$args = array(
+				'label'                 => __( 'Box', 'text_domain' ),
+				'description'           => __( 'Post Type Description', 'text_domain' ),
+				'supports'              => array( 'title', 'editor', 'revisions' ),
+				'taxonomies'            => array( 'category', 'post_tag' ),
+				'hierarchical'          => true,
+				'public'                => true,
+				'show_ui'               => true,
+				'show_in_menu'          => true,
+				'menu_position'         => 5,
+				'show_in_admin_bar'     => true,
+				'show_in_nav_menus'     => true,
+				'can_export'            => true,
+				'has_archive'           => true,
+				'exclude_from_search'   => false,
+				'publicly_queryable'    => true,
+				'capability_type'       => 'page',
+			);
+			register_post_type( 'box', $args );
+
+			global $current_user;
+			global $wp_query;
+
+			$uid = $this->factory->user->create(array(
+				'user_login' => 'timber',
+				'user_pass' => 'timber',
+			));
+			$user = wp_set_current_user($uid);
+			$user->add_role('administrator');
+
+			$parent_id = $this->factory->post->create(array(
+				'post_content' => 'I am parent',
+				'post_type' => 'box',
+				'post_author' => $uid
+			));
+
+			error_log('parent = '.$parent_id);
+
+			$post_id = $this->factory->post->create(array(
+				'post_content' => 'I am child',
+				'post_type' => 'box',
+				'post_author' => $uid,
+				'post_parent' => $parent_id
+ 			));
+
+ 			error_log('post = ' .$post_id);
+
+ 			$revision_id = $this->factory->post->create(array(
+				'post_type' => 'revision',
+				'post_status' => 'inherit',
+				'post_parent' => $post_id,
+				'post_content' => 'I am revised'
+			));
+
+			$post = new Timber\Post($post_id);
+			$parent = new Timber\Post($parent_id);
+
+			//$this->assertEquals($parent_id, $post->parent()->id);
+
+
+			self::setRevision($post_id);
+			$revision = new Timber\Post();
+
+			$this->assertEquals('I am revised', trim(strip_tags($revision->content())) );
+
+			$revision_parent = $revision->parent();
+			error_log(print_r($revision_parent, true));
+			$this->assertEquals($parent_id, $revision_parent->id);
+			// $this->assertEquals('I am parent', trim(strip_tags($revision->parent()->content())) );
+
+		}
+
 		function testPreviewClass() {
 			global $current_user;
 			global $wp_query;
