@@ -1,22 +1,44 @@
-## Here are ways to get involved:
+# Contributing to Timber
+
+Hey there! We’re really happy you’ve found your way here 💪. Timber is a community project that is developed by people from all over the world. We appreciate any help.
+
+Here are ways to get involved:
 
 1. [Star](https://github.com/timber/timber/stargazers) the project!
-2. Answer questions that come through [GitHub issues](https://github.com/timber/timber/issues?state=open)
+2. Answer questions that come in through [GitHub issues](https://github.com/timber/timber/issues?state=open).
 3. [Report a bug](https://github.com/timber/timber/issues/new) that you find.
 4. Share a theme you’ve built with Timber. This helps transfer knowledge about best practices, etc. _Add it to the [Showcase list](https://github.com/timber/timber/wiki/Showcase)_.
 5. Tweet and [blog](http://www.oomphinc.com/blog/2013-10/php-templating-wordpress/#post-content) about the advantages (and criticisms) of the project and Twig.
 6. Browse ["help wanted"](https://github.com/timber/timber/labels/help%20wanted) and ["good first issue"](https://github.com/timber/timber/labels/good%20first%20issue) labels for areas of WordPress/PHP/code you know well to consider, build or document.
 7. Answer questions on [Stack Overflow posted under the «Timber» tag](https://stackoverflow.com/questions/tagged/timber). You can also [subscribe to a tag](https://stackoverflow.blog/2010/12/20/subscribe-to-tags-via-emai/) via email to get notified when someone needs help.
-8. Answer question in the support channel on [Gitter](https://gitter.im/timber/timber).
+8. Answer questions in the support channel on [Gitter](https://gitter.im/timber/timber).
 
-### Pull Requests
+## Table of Contents
+
+<!-- TOC depthTo:3 -->
+
+- [Pull Requests](#pull-requests)
+- [Coding Standards](#coding-standards)
+    - [Use PHP_CodeSniffer to detect coding standard violations](#use-php_codesniffer-to-detect-coding-standard-violations)
+- [Inline Documentation](#inline-documentation)
+    - [Differences to the official standards](#differences-to-the-official-standards)
+    - [Ignoring Structural Elements](#ignoring-structural-elements)
+    - [Referencing class names](#referencing-class-names)
+    - [Code examples](#code-examples)
+    - [Reference linking with @see tag](#reference-linking-with-see-tag)
+    - [Documenting Hooks](#documenting-hooks)
+
+<!-- /TOC -->
+
+## Pull Requests
 
 Pull requests are highly appreciated. Almost 150 people have written parts of Timber (so far). Here are some guidelines to help:
 
 1. **Solve a problem** – Features are great, but even better is cleaning-up and fixing issues in the code that you discover.
 2. **Write tests** – This helps preserve functionality as the codebase grows and demonstrates how your change affects the code.
-3. **Small > big** – Better to have a few small pull requests that address specific parts of the code, than one big pull request that jumps all over.
-4. **Comply with Coding Standards** – See next section.
+3. **Write documentation** – Timber is only useful if its features are documented. This covers inline documentation of the code as well as documenting functionality and use cases in the Guides section of the documentation.
+4. **Small > big** – Better to have a few small pull requests that address specific parts of the code, than one big pull request that jumps all over.
+5. **Comply with Coding Standards** – See next section.
 
 ## Coding Standards
 
