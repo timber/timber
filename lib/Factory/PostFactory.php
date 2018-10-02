@@ -16,7 +16,7 @@ class PostFactory extends Factory implements FactoryInterface {
 	public static function get( $post_identifier = null ) {
 		static $self = null;
 		if ($self === null) {
-			$self = new self;
+			$self = new self(ObjectClassFactory::$PostClass);
 		}
 		return $self->get_object( $post_identifier );
 	}

@@ -367,7 +367,7 @@ class TestTimberPost extends Timber_UnitTestCase {
 			$wp_query->queried_object = get_post($post_id);
 			$_GET['preview'] = true;
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
-			$post = PostFactory::get($post_id);
+			$post = PostFactory::get();
 
 			$str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
 			$str_getfield = Timber::compile_string('{{post.get_field(\'test_field\')}}', array('post' => $post));
@@ -886,7 +886,7 @@ class TestTimberPost extends Timber_UnitTestCase {
 			$pid = $this->factory->post->create(array('post_content' => $quote));
 			$post = PostFactory::get($pid);
 			$expected = array(
-				'<iframe width="500" height="281" src="https://www.youtube.com/embed/Jf37RalsnEs?feature=oembed" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>',
+				'<iframe width="525" height="295" src="https://www.youtube.com/embed/Jf37RalsnEs?feature=oembed" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>',
 			);
 
 			$this->assertEquals($expected, $post->video());

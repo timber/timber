@@ -78,7 +78,7 @@ class PostGetter implements ObjectGetterInterface {
 	/**
 	 * @param $query
 	 *
-	 * @return bool|void
+	 * @return bool
 	 */
 	protected static function get_post_preview_id( $query ) {
 		$can = array(

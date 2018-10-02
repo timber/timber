@@ -1,6 +1,8 @@
 <?php
 
-	class TestTimberTwig extends Timber_UnitTestCase {
+use Timber\Factory\PostFactory;
+
+class TestTimberTwig extends Timber_UnitTestCase {
 
 		function tearDown() {
 			$lang_dir = get_stylesheet_directory().'/languages';
@@ -23,7 +25,7 @@
 
 		function _setupTranslationFiles() {
 			$lang_dir = get_stylesheet_directory().'/languages';
-			
+
 			if ( !file_exists($lang_dir.'/en_US.po') ) {
 				$this->installTranlsationFiles($lang_dir);
 			}
@@ -125,7 +127,7 @@
 				$php_unit->assertContains('my_action_context', $action_context_tally);
 			});
 			$post_id = $this->factory->post->create(array('post_title' => "Jaredz Post", 'post_content' => 'stuff to say'));
-			$context['post'] = new TimberPost($post_id);
+			$context['post'] = PostFactory::get($post_id);
 			$str = Timber::compile('assets/test-action-context.twig', $context);
 			$this->assertEquals('Here: stuff to say', trim($str));
 		}
@@ -136,7 +138,7 @@
 			add_filter('protected_title_format', function($title){
 				return 'Protected: '.$title;
 			});
-			$context['post'] = new TimberPost($post_id);
+			$context['post'] = PostFactory::get($post_id);
 			if (post_password_required($post_id)){
 				$this->assertTrue(true);
 				$str = Timber::compile('assets/test-wp-filters.twig', $context);
@@ -167,7 +169,7 @@
 
 		function testFilterFunction() {
 			$pid = $this->factory->post->create(array('post_title' => 'Foo'));
-			$post = new TimberPost( $pid );
+			$post = PostFactory::get( $pid );
 			$str = 'I am a {{post | get_class }}';
 			$this->assertEquals('I am a Timber\Post', Timber::compile_string($str, array('post' => $post)));
 		}
@@ -246,7 +248,7 @@
      	*/
 		function testSetObject() {
 			$pid = $this->factory->post->create(array('post_title' => 'Spaceballs'));
-			$post = new TimberPost( $pid );
+			$post = PostFactory::get( $pid );
 			$result = Timber::compile('assets/set-object.twig', array('post' => $post));
 			$this->assertEquals('Spaceballs: may the schwartz be with you', trim($result));
 		}

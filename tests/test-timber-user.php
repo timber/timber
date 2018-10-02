@@ -1,6 +1,8 @@
 <?php
 
-	class TestTimberUser extends Timber_UnitTestCase {
+use Timber\Factory\PostFactory;
+
+class TestTimberUser extends Timber_UnitTestCase {
 
 		function testInitWithID(){
 			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln'));
@@ -22,7 +24,7 @@
 			$user = new TimberUser($uid);
 			$this->assertEquals('Sixteenth President', $user->description);
 			$pid = $this->factory->post->create(array('post_author' => $uid));
-			$post = new TimberPost($pid);
+			$post = PostFactory::get($pid);
 			$str = Timber::compile_string('{{post.author.description}}', array('post' => $post));
 			$this->assertEquals('Sixteenth President', $str);
 		}

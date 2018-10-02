@@ -456,6 +456,8 @@ class Helper {
 	 * @return string
 	 */
 	public static function get_comment_form( $post_id = null, $args = array() ) {
+		global $post;
+		$post = get_post($post_id);
 		return self::ob_function('comment_form', array($args, $post_id));
 	}
 
