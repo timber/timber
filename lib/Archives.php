@@ -42,7 +42,6 @@ use Timber\URLHelper;
  *     <li class="child">October</li>
  * </ul>
  * ```
- * @package Timber
  */
 class Archives extends Core {
 	/**
