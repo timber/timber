@@ -1408,6 +1408,9 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function title() {
+		if ( $rd = $this->get_revised_data_from_method('title') ) {
+			return $rd;
+		}
 		return apply_filters('the_title', $this->post_title, $this->ID);
 	}
 

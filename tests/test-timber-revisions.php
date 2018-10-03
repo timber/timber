@@ -114,6 +114,36 @@
 			$this->assertEquals( $original_post->class(), $post->class() );
 		}
 
+		function testPreviewTitleWithID() {
+			global $current_user;
+			global $wp_query;
+
+			$post_id = $this->factory->post->create(array(
+				'post_title' => 'I call it banana bread',
+				'post_author' => 5
+			));
+			$revision_id = $this->factory->post->create(array(
+				'post_type' => 'revision',
+				'post_status' => 'inherit',
+				'post_parent' => $post_id,
+				'post_title' => 'I call it fromage'
+			));
+
+			$uid = $this->factory->user->create(array(
+				'user_login' => 'timber',
+				'user_pass' => 'timber',
+			));
+			$user = wp_set_current_user($uid);
+
+			$user->add_role('administrator');
+			$wp_query->queried_object_id = $post_id;
+			$wp_query->queried_object = get_post($post_id);
+			$_GET['preview'] = true;
+			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
+			$post = new TimberPost($post_id);
+			$this->assertEquals( 'I call it fromage', $post->title() );
+		}
+
 		function testPreviewContentWithID() {
 			global $current_user;
 			global $wp_query;
