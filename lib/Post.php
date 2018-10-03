@@ -191,7 +191,6 @@ class Post extends Core implements CoreInterface {
 		if ( 'class' === $field ) {
 			return $this->css_class();
 		}
-
 		return parent::__get($field);
 	}
 
@@ -747,6 +746,9 @@ class Post extends Core implements CoreInterface {
 	 * @return mixed
 	 */
 	public function get_field( $field_name ) {
+		if ( $rd = $this->get_revised_data_from_method('get_field', $field_name) ) {
+			return $rd;
+		}
 		$value = apply_filters('timber_post_get_meta_field_pre', null, $this->ID, $field_name, $this);
 		if ( $value === null ) {
 			$value = get_post_meta($this->ID, $field_name);
@@ -1015,9 +1017,8 @@ class Post extends Core implements CoreInterface {
 	 */
 	protected function get_revised_data_from_method( $method, ...$args ) {
 		$rev = $this->get_post_preview_object();
-		//if ( $rev && $this->ID !== $rev->ID ) {
 		if ( $rev && $this->ID == $rev->post_parent ) {
-			return $rev->$method( $args[0], $args[1] );
+			return call_user_func_array( array($rev, $method), $args );
 		}
 	}
 

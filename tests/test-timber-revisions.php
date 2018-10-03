@@ -56,7 +56,7 @@
 				'post_author' => $uid,
 				'post_parent' => $parent_id
  			));
- 			
+
  			$revision_id = $this->factory->post->create(array(
 				'post_type' => 'revision',
 				'post_status' => 'inherit',
@@ -211,10 +211,43 @@
 			$_GET['preview'] = true;
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
 			$post = new TimberPost();
-			$this->assertEquals('I am the one', $post->post_content);
+			$this->assertEquals('I am the one', trim(strip_tags($post->content())) );
 		}
 
-		function testCustomFieldPreviewRevision(){
+		function testCustomFieldPreviewRevisionMethod(){
+			global $current_user;
+			global $wp_query;
+
+			$post_id = $this->factory->post->create(array(
+				'post_author' => 5,
+			));
+			update_field('test_field', 'The custom field content', $post_id);
+
+			$assertCustomFieldVal = 'This has been revised';
+			$revision_id = $this->factory->post->create(array(
+				'post_type' => 'revision',
+				'post_status' => 'inherit',
+				'post_parent' => $post_id,
+			));
+			update_field('test_field', $assertCustomFieldVal, $revision_id);
+
+			$uid = $this->factory->user->create(array(
+				'user_login' => 'timber',
+				'user_pass' => 'timber',
+			));
+			$user = wp_set_current_user($uid);
+			$user->add_role('administrator');
+
+			$wp_query->queried_object_id = $post_id;
+			$wp_query->queried_object = get_post($post_id);
+			$_GET['preview'] = true;
+			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
+			$post = new TimberPost($post_id);
+			$str_getfield = Timber::compile_string('{{post.get_field(\'test_field\')}}', array('post' => $post));
+			$this->assertEquals( $assertCustomFieldVal, $str_getfield );
+		}
+
+		function testCustomFieldPreviewRevisionImported(){
 			global $current_user;
 			global $wp_query;
 
@@ -245,10 +278,7 @@
 			$post = new TimberPost($post_id);
 
 			$str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
-			$str_getfield = Timber::compile_string('{{post.get_field(\'test_field\')}}', array('post' => $post));
-
 			$this->assertEquals( $assertCustomFieldVal, $str_direct );
-			$this->assertEquals( $assertCustomFieldVal, $str_getfield );
 		}
 
 		function testCustomFieldPreviewNotRevision() {
