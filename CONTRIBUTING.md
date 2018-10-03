@@ -92,7 +92,7 @@ There are minor differences to the official standards:
 
 ### Ignoring Structural Elements
 
-An element (class, method, property) is **ignored when one of the following conditions** applies:
+The documentation generator ignores a number of elements. An element (class, method, property) is **ignored when one of the following conditions** applies:
 
 - No DocBlock is provided
 - No `@api` tag is present
