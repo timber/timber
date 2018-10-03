@@ -50,17 +50,13 @@
 				'post_author' => $uid
 			));
 
-			error_log('parent = '.$parent_id);
-
 			$post_id = $this->factory->post->create(array(
 				'post_content' => 'I am child',
 				'post_type' => 'box',
 				'post_author' => $uid,
 				'post_parent' => $parent_id
  			));
-
- 			error_log('post = ' .$post_id);
-
+ 			
  			$revision_id = $this->factory->post->create(array(
 				'post_type' => 'revision',
 				'post_status' => 'inherit',
@@ -80,9 +76,8 @@
 			$this->assertEquals('I am revised', trim(strip_tags($revision->content())) );
 
 			$revision_parent = $revision->parent();
-			error_log(print_r($revision_parent, true));
 			$this->assertEquals($parent_id, $revision_parent->id);
-			// $this->assertEquals('I am parent', trim(strip_tags($revision->parent()->content())) );
+			$this->assertEquals('I am parent', trim(strip_tags($revision_parent->content())) );
 
 		}
 
@@ -119,6 +114,37 @@
 			$this->assertEquals( $original_post->class(), $post->class() );
 		}
 
+		function testPreviewContentWithID() {
+			global $current_user;
+			global $wp_query;
+
+			$quote = 'The way to do well is to do well.';
+			$post_id = $this->factory->post->create(array(
+				'post_content' => $quote,
+				'post_author' => 5
+			));
+			$revision_id = $this->factory->post->create(array(
+				'post_type' => 'revision',
+				'post_status' => 'inherit',
+				'post_parent' => $post_id,
+				'post_content' => $quote . 'Yes'
+			));
+
+			$uid = $this->factory->user->create(array(
+				'user_login' => 'timber',
+				'user_pass' => 'timber',
+			));
+			$user = wp_set_current_user($uid);
+
+			$user->add_role('administrator');
+			$wp_query->queried_object_id = $post_id;
+			$wp_query->queried_object = get_post($post_id);
+			$_GET['preview'] = true;
+			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
+			$post = new TimberPost($post_id);
+			$this->assertEquals( $quote . 'Yes', trim(strip_tags($post->content())) );
+		}
+
 		function testPreviewContent(){
 			global $current_user;
 			global $wp_query;
@@ -147,7 +173,7 @@
 			$_GET['preview'] = true;
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
 			$post = new TimberPost();
-			$this->assertEquals( $quote . 'Yes', $post->post_content );
+			$this->assertEquals( $quote . 'Yes', trim(strip_tags($post->content())) );
 		}
 
 		function testMultiPreviewRevisions(){

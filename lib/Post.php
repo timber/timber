@@ -237,12 +237,7 @@ class Post extends Core implements CoreInterface {
 			&& is_object($wp_query->queried_object)
 			&& get_class($wp_query->queried_object) == 'WP_Post'
 		) {
-
-			if ( self::is_previewing() ) {
-				$pid = $this->get_post_preview_id($wp_query);
-			} else if ( !$pid ) {
-				$pid = $wp_query->queried_object_id;
-			}
+			$pid = $wp_query->queried_object_id;
 		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id ) {
 			//hack for static page as home page
 			$pid = $wp_query->queried_object_id;
@@ -265,15 +260,15 @@ class Post extends Core implements CoreInterface {
 		if ( $pid === null && ($pid_from_loop = PostGetter::loop_to_id()) ) {
 			$pid = $pid_from_loop;
 		}
-		if (
-			isset($_GET['preview'])
-			&& isset($_GET['preview_nonce'])
-			&& wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id)
-			&& isset($wp_query->queried_object_id)
-			&& ($wp_query->queried_object_id === $pid || (is_object($pid) && $wp_query->queried_object_id === $pid->ID))
-		) {
-			$pid = $this->get_post_preview_id($wp_query);
-		}
+		// if (
+		// 	isset($_GET['preview'])
+		// 	&& isset($_GET['preview_nonce'])
+		// 	&& wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id)
+		// 	&& isset($wp_query->queried_object_id)
+		// 	&& ($wp_query->queried_object_id === $pid || (is_object($pid) && $wp_query->queried_object_id === $pid->ID))
+		// ) {
+		// 	$pid = $this->get_post_preview_id($wp_query);
+		// }
 		return $pid;
 	}
 
@@ -283,6 +278,14 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function __toString() {
 		return $this->title();
+	}
+
+	protected function get_post_preview_object() {
+		global $wp_query;
+		if ( $this->is_previewing() ) {
+			$revision_id = $this->get_post_preview_id( $wp_query );
+			return new $this->PostClass( $revision_id );
+		}
 	}
 
 	protected function get_post_preview_id( $query ) {
@@ -1008,6 +1011,17 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 * 
+	 */
+	protected function get_revised_data_from_method( $method, ...$args ) {
+		$rev = $this->get_post_preview_object();
+		//if ( $rev && $this->ID !== $rev->ID ) {
+		if ( $rev && $this->ID == $rev->post_parent ) {
+			return $rev->$method( $args[0], $args[1] );
+		}
+	}
+
+	/**
 	 * Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).
 	 * @api
 	 * @example
@@ -1021,6 +1035,9 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function content( $page = 0, $len = -1 ) {
+		if ( $rd = $this->get_revised_data_from_method('content', $page, $len) ) {
+			return $rd;
+		}
 		if ( $form = $this->maybe_show_password_form() ) {
 			return $form;
 		}
