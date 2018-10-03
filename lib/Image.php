@@ -188,7 +188,7 @@ class Image extends Attachment {
 	 *   <img src="{{ post.thumbnail.src|resize(500) }}" alt="A sumo wrestler" />
 	 * {% endif %}
 	 * ```
-	 * @return float
+	 * @return float The aspect ratio of the image.
 	 */
 	public function aspect() {
 		$w = intval( $this->width() );
@@ -212,7 +212,7 @@ class Image extends Attachment {
 	 * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg"
 	 *     alt="You should always add alt texts to your images for better accessibility" />
 	 * ```
-	 * @return string alt text stored in WordPress
+	 * @return string Alt text stored in WordPress
 	 */
 	public function alt() {
 		$alt = $this->meta( '_wp_attachment_image_alt' );
@@ -253,7 +253,7 @@ class Image extends Attachment {
 	 *
 	 * @internal
 	 *
-	 * @param string|null $dim The requested dimension. Either `width` or `height`.
+	 * @param string|null $dim Optional. The requested dimension. Either `width` or `height`.
 	 *
 	 * @return int The requested dimension in pixels.
 	 */
@@ -284,10 +284,11 @@ class Image extends Attachment {
 	/**
 	* Tries to figure out the attachment id you want or otherwise handle when
 	* a string or other data is sent (object, file path, etc.)
+	*
 	* @internal
 	* @deprecated since 2.0 functionality will no longer be supported in future releases
-	* @param mixed a value to test against
-	* @return int|null the numberic id we should be using for this post object 
+	* @param mixed $iid A value to test against
+	* @return int|null The numberic id we should be using for this post object
 	*/
 	protected function determine_id( $iid ) {
 		$iid = parent::determine_id( $iid );
