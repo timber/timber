@@ -563,6 +563,11 @@ class Post extends Core implements CoreInterface {
 		$post->id = $post->ID;
 		$post->slug = $post->post_name;
 		$customs = $this->get_post_custom($post->ID);
+		if ( $this->is_previewing() ) {
+			global $wp_query;
+			$rev_id = $this->get_post_preview_id($wp_query);
+			$customs = $this->get_post_custom($rev_id);
+		}
 		$post->custom = $customs;
 		$post = (object) array_merge((array) $customs, (array) $post);
 		return $post;
@@ -1017,7 +1022,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	protected function get_revised_data_from_method( $method, ...$args ) {
 		$rev = $this->get_post_preview_object();
-		if ( $rev && $this->ID == $rev->post_parent ) {
+		if ( $rev && $this->ID == $rev->post_parent && $this->ID != $rev->ID ) {
 			return call_user_func_array( array($rev, $method), $args );
 		}
 	}
