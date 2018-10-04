@@ -174,6 +174,7 @@ This is needed so that the [Hook Reference Generator](https://github.com/timber/
  * Filters … / Fires … (Summary)
  *
  * Description.
+ *
  * `$var` Optional description of variables that might be used in the filter name.
  * 
  * @see \Timber\Classname::function()
@@ -215,13 +216,13 @@ When a filter contains a variable, it should be marked up with double quotes `"`
 $force = apply_filters( "timber/transient/force_transient_{$slug}", $force );
 ```
 
-Additionally to this, document what the variable is by adding it to the description. Add it on a newline with the variable wrapped in backticks, so that they appear as code in Markdown:
+Additionally to this, document what the variable is by adding it to the description. Add it on a new line with the variable wrapped in backticks, so that it appears as code in Markdown:
 
 ```php
 /**
- * Filters …
+ * Filters the status of a particularly named transient.
  *
- * Here is a description about the filter.
+ * Allows you to override the behavior on a case-by-case basis.  
  * `$slug` The transient slug.
  *
  * @param bool $force Param description.
