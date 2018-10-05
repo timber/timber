@@ -100,7 +100,7 @@ class Comment extends Core implements CoreInterface {
 	 * Build a Timber\Comment
 	 *
 	 * @api
-	 * @param int $cid Comment id.
+	 * @param int $cid Comment ID.
 	 */
 	public function __construct( $cid ) {
 		$this->init($cid);
@@ -215,7 +215,7 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Get the content.
+	 * Gets the content.
 	 *
 	 * @api
 	 * @return string
@@ -225,7 +225,7 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Get the comment childrens.
+	 * Gets the comment children.
 	 *
 	 * @api
 	 * @return array Comments
@@ -249,7 +249,7 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Update the depth
+	 * Updates the comment depth.
 	 *
 	 * @api
 	 * @param int $depth Level of depth.
@@ -367,7 +367,7 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Checks if is a child
+	 * Checks if the comment is a child.
 	 *
 	 * @api
 	 * @return bool
