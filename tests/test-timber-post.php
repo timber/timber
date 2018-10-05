@@ -270,6 +270,7 @@
 			$this->assertEquals($title, trim(strip_tags($post->title())));
 		}
 
+
 		function testPreviewContent(){
 			global $current_user;
 			global $wp_query;

@@ -3,7 +3,7 @@ Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 4.7.9
 Tested up to: 4.9.6
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -39,6 +39,10 @@ _Twig is the template language powering Timber; if you need a little background 
 = 2.0.0 =
 **Fixes and improvements**
 - Added Menu::get_current_item() helper method #1704
+
+= 1.8.1 =
+**Fixes and improvements**
+- Fixed how mime_type was figured out in some PHP installs #1798
 
 = 1.8.0 =
 **Changes for Theme Developers**

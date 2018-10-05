@@ -19,9 +19,8 @@ The purpose of this page is to identify helpful tools for working with Twig.
 
 * [Lisa Templates](https://wordpress.org/plugins/lisa-templates/) – allows you to write Twig-templates in the WordPress admin that renders through a shortcode or widget.
 
-## Other
-
-* [Watson-Ruby](http://goosecode.com/watson/) – An inline issue manager. Put tags like `[todo]` in a Twig comment and find it easily later. Watson supports Twig as of version 1.6.3.
+## Other	
+ * [Watson-Ruby](http://nhmood.github.io/watson-ruby/) – An inline issue manager. Put tags like `[todo]` in a Twig comment and find it easily later. Watson supports Twig as of version 1.6.3.
 
 ## JavaScript
 

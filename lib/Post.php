@@ -222,7 +222,6 @@ class Post extends Core implements CoreInterface, Setupable {
 		if ( 'class' === $field ) {
 			return $this->css_class();
 		}
-
 		return parent::__get($field);
 	}
 
@@ -322,12 +321,7 @@ class Post extends Core implements CoreInterface, Setupable {
 			&& is_object($wp_query->queried_object)
 			&& get_class($wp_query->queried_object) == 'WP_Post'
 		) {
-
-			if ( self::is_previewing() ) {
-				$pid = $this->get_post_preview_id($wp_query);
-			} else if ( !$pid ) {
-				$pid = $wp_query->queried_object_id;
-			}
+			$pid = $wp_query->queried_object_id;
 		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id ) {
 			//hack for static page as home page
 			$pid = $wp_query->queried_object_id;
@@ -350,15 +344,6 @@ class Post extends Core implements CoreInterface, Setupable {
 		if ( $pid === null && ($pid_from_loop = PostGetter::loop_to_id()) ) {
 			$pid = $pid_from_loop;
 		}
-		if (
-			isset($_GET['preview'])
-			&& isset($_GET['preview_nonce'])
-			&& wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id)
-			&& isset($wp_query->queried_object_id)
-			&& ($wp_query->queried_object_id === $pid || (is_object($pid) && $wp_query->queried_object_id === $pid->ID))
-		) {
-			$pid = $this->get_post_preview_id($wp_query);
-		}
 		return $pid;
 	}
 
@@ -370,6 +355,14 @@ class Post extends Core implements CoreInterface, Setupable {
 	 */
 	public function __toString() {
 		return $this->title();
+	}
+
+	protected function get_post_preview_object() {
+		global $wp_query;
+		if ( $this->is_previewing() ) {
+			$revision_id = $this->get_post_preview_id( $wp_query );
+			return new $this->PostClass( $revision_id );
+		}
 	}
 
 	protected function get_post_preview_id( $query ) {
@@ -657,9 +650,16 @@ class Post extends Core implements CoreInterface, Setupable {
 		$post->status = $post->post_status;
 		$post->id = $post->ID;
 		$post->slug = $post->post_name;
+
 		$customs = $this->get_meta_values($post->ID);
+
+		if ( $this->is_previewing() ) {
+			global $wp_query;
+			$rev_id = $this->get_post_preview_id($wp_query);
+			$customs = $this->get_meta_values($rev_id);
+		}
+
 		$post->custom = $customs;
-		//$post = (object) array_merge((array) $customs, (array) $post);
 		return $post;
 	}
 
@@ -846,6 +846,10 @@ class Post extends Core implements CoreInterface, Setupable {
 	 * @return mixed The meta field value.
 	 */
 	public function meta( $field_name = null ) {
+  
+    if ( $rd = $this->get_revised_data_from_method('meta', $field_name) ) {
+			return $rd;
+		}
 		/**
 		 * Filters the value for a post meta field before it is fetched from the database.
 		 *
@@ -958,12 +962,17 @@ class Post extends Core implements CoreInterface, Setupable {
 	public function post_class( $class = '' ) {
 		global $post;
 		$old_global_post = $post;
-		$post            = $this;
-		$class_array     = get_post_class($class, $this->ID);
-		$post            = $old_global_post;
+    $post = $this;
+    
+		$class_array = get_post_class($class, $this->ID);
+		if ( $this->is_previewing() ) {
+			$class_array = get_post_class($class, $this->post_parent);
+		}
+    
 		if ( is_array($class_array) ) {
 			$class_array = implode(' ', $class_array);
 		}
+    $post = $old_global_post;
 		return $class_array;
 	}
 
@@ -1244,6 +1253,16 @@ class Post extends Core implements CoreInterface, Setupable {
 	}
 
 	/**
+	 * 
+	 */
+	protected function get_revised_data_from_method( $method, ...$args ) {
+		$rev = $this->get_post_preview_object();
+		if ( $rev && $this->ID == $rev->post_parent && $this->ID != $rev->ID ) {
+			return call_user_func_array( array($rev, $method), $args );
+		}
+	}
+
+	/**
 	 * Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).
 	 *
 	 * @api
@@ -1258,6 +1277,9 @@ class Post extends Core implements CoreInterface, Setupable {
 	 * @return string
 	 */
 	public function content( $page = 0, $len = -1 ) {
+		if ( $rd = $this->get_revised_data_from_method('content', $page, $len) ) {
+			return $rd;
+		}
 		if ( $form = $this->maybe_show_password_form() ) {
 			return $form;
 		}
@@ -1658,6 +1680,9 @@ class Post extends Core implements CoreInterface, Setupable {
 	 * @return string
 	 */
 	public function title() {
+		if ( $rd = $this->get_revised_data_from_method('title') ) {
+			return $rd;
+		}
 		return apply_filters('the_title', $this->post_title, $this->ID);
 	}
 
