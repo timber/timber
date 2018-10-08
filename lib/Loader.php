@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Timber\Cache\Cleaner;
+use Twig\Loader\FilesystemLoader;
 
 class Loader {
 
@@ -15,6 +16,9 @@ class Loader {
 	const CACHE_TRANSIENT = 'transient';
 	const CACHE_SITE_TRANSIENT = 'site-transient';
 	const CACHE_USE_DEFAULT = 'default';
+
+	/** Identifier of the main namespace. Will likely mirror Twig\Loader\FilesystemLoader::MAIN_NAMESPACE */
+	const MAIN_NAMESPACE = '__main__';
 
 	public static $cache_modes = array(
 		self::CACHE_NONE,
@@ -130,16 +134,27 @@ class Loader {
 	 * @return \Twig_Loader_Filesystem
 	 */
 	public function get_loader() {
-		$open_basedir = ini_get('open_basedir');
-		$paths = array_merge($this->locations, array($open_basedir ? ABSPATH : '/'));
-		$paths = apply_filters('timber/loader/paths', $paths);
+		$open_basedir = ini_get( 'open_basedir' );
+		$paths        = array_merge_recursive(
+			$this->locations,
+			array( self::MAIN_NAMESPACE => $open_basedir ? ABSPATH : '/' )
+		);
+		$paths        = apply_filters( 'timber/loader/paths', $paths );
 
 		$rootPath = '/';
 		if ( $open_basedir ) {
 			$rootPath = null;
 		}
-		$fs = new \Twig_Loader_Filesystem($paths, $rootPath);
-		$fs = apply_filters('timber/loader/loader', $fs);
+		$fs = new \Twig_Loader_Filesystem( array(), $rootPath );
+		foreach ( $paths as $namespace => $path_locations ) {
+			if ( is_array( $path_locations ) ) {
+				array_map( function ( $path ) use ( $fs, $namespace ) {
+					$fs->addPath( $path, $namespace );
+				}, $path_locations );
+			}
+		}
+		$fs = apply_filters( 'timber/loader/loader', $fs );
+
 		return $fs;
 	}
 

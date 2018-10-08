@@ -439,22 +439,26 @@ class Timber {
 	 * @return string
 	 */
 	public static function get_sidebar_from_php( $sidebar = '', $data ) {
-		$caller = LocationManager::get_calling_script_dir(1);
-		$uris = LocationManager::get_locations($caller);
+		$caller = LocationManager::get_calling_script_dir( 1 );
+		$uris   = LocationManager::get_locations( $caller );
 		ob_start();
 		$found = false;
-		foreach ( $uris as $uri ) {
-			if ( file_exists(trailingslashit($uri).$sidebar) ) {
-				include trailingslashit($uri).$sidebar;
-				$found = true;
-				break;
+		foreach ( $uris as $namespace => $uri_locations ) {
+			if ( is_array( $uri_locations ) ) {
+				foreach ( $uri_locations as $uri ) {
+					if ( file_exists( trailingslashit( $uri ) . $sidebar ) ) {
+						include trailingslashit( $uri ) . $sidebar;
+						$found = true;
+					}
+				}
 			}
 		}
-		if ( !$found ) {
-			Helper::error_log('error loading your sidebar, check to make sure the file exists');
+		if ( ! $found ) {
+			Helper::error_log( 'error loading your sidebar, check to make sure the file exists' );
 		}
 		$ret = ob_get_contents();
 		ob_end_clean();
+
 		return $ret;
 	}
 
