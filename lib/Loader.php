@@ -257,8 +257,19 @@ class Loader {
 		foreach ( $paths as $namespace => $path_locations ) {
 			if ( is_array( $path_locations ) ) {
 				array_map( function ( $path ) use ( $fs, $namespace ) {
-					$fs->addPath( $path, $namespace );
+					if ( is_string($namespace) ) {
+						$fs->addPath( $path, $namespace );
+					} else {
+						$fs->addPath( $path, Loader::MAIN_NAMESPACE );
+					}
 				}, $path_locations );
+			} else {
+				Helper::deprecated(
+					'add_filter( \'timber/loader/paths\', [\'path/to/my/templates\'] ) in a non-associative array',
+					'add_filter( \'timber/loader/paths\', [ 0 => [ \'path/to/my/templates\' ] ] )',
+					'2.0.0'
+				);
+				$fs->addPath( $path_locations, self::MAIN_NAMESPACE );
 			}
 		}
 

@@ -122,7 +122,7 @@ class LocationManager {
 
 
 	/**
-	 *
+	 * @deprecated since 2.0.0 Use `add_filter('timber/locations', $locations)` instead.
 	 * @return array
 	 */
 	protected static function get_locations_user() {
