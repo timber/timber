@@ -236,7 +236,7 @@ class Loader {
 		$open_basedir = ini_get('open_basedir');
 		$paths        = array_merge_recursive(
 			$this->locations,
-			array( self::MAIN_NAMESPACE => $open_basedir ? ABSPATH : '/' )
+			array( self::MAIN_NAMESPACE => array( $open_basedir ? ABSPATH : '/' ) )
 		);
 		/**
 		 * Filters …

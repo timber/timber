@@ -115,7 +115,7 @@ class LocationManager {
 	 */
 	public static function get_locations_theme_dir() {
 		if ( is_string(Timber::$dirname) ) {
-			return array(Timber::$dirname);
+			return array( Loader::MAIN_NAMESPACE => array( Timber::$dirname ) );
 		}
 		return Timber::$dirname;
 	}
