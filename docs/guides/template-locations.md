@@ -88,7 +88,7 @@ This is an alternative to configuring `$dirnames` with a string.
 
 ```php
 <?php
-Timber::$dirname = array( 'templates', 'templates/shared/mods', 'twigs', 'views' );
+Timber::$dirname = array( 0 => array('templates', 'templates/shared/mods', 'twigs', 'views' ));
 ```
 
 ## Subdirectories

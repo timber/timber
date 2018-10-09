@@ -62,13 +62,16 @@ class LocationManager {
 			if ( ! is_dir( $root ) ) {
 				continue;
 			}
+
 			$theme_locs[ Loader::MAIN_NAMESPACE ][] = $root;
 			$root                                   = trailingslashit( $root );
-			foreach ( $theme_dirs as $dirname ) {
-				$tloc = realpath( $root . $dirname );
-				if ( is_dir( $tloc ) ) {
-					$theme_locs[ Loader::MAIN_NAMESPACE ][] = $tloc;
-				}
+			foreach ( $theme_dirs as $namespace => $dirnames ) {
+				array_map(function ($dirname) use ($root, $namespace, &$theme_locs) {
+					$tloc = realpath( $root . $dirname );
+					if ( is_dir( $tloc ) ) {
+						$theme_locs[ $namespace ][] = $tloc;
+					}
+				}, $dirnames);
 			}
 		}
 
@@ -111,7 +114,7 @@ class LocationManager {
 
 	/**
 	 * returns an array of the directory inside themes that holds twig files
-	 * @return string[] the names of directores, ie: array('templats', 'views');
+	 * @return array the names of directores, ie: array('__MAIN__' => ['templats', 'views']);
 	 */
 	public static function get_locations_theme_dir() {
 		if ( is_string(Timber::$dirname) ) {
@@ -165,11 +168,13 @@ class LocationManager {
 				$locs[ Loader::MAIN_NAMESPACE ][] = $caller;
 			}
 			$caller = trailingslashit( $caller );
-			foreach ( LocationManager::get_locations_theme_dir() as $dirname ) {
-				$caller_sub = realpath( $caller . $dirname );
-				if ( is_dir( $caller_sub ) ) {
-					$locs[ Loader::MAIN_NAMESPACE ][] = $caller_sub;
-				}
+			foreach ( LocationManager::get_locations_theme_dir() as $namespace => $dirnames ) {
+				array_map(function ($dirname) use ($caller, $namespace, &$locs) {
+					$caller_sub = realpath( $caller . $dirname );
+					if ( is_dir( $caller_sub ) ) {
+						$locs[ $namespace ][] = $caller_sub;
+					}
+				}, $dirnames);
 			}
 		}
 

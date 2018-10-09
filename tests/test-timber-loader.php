@@ -136,7 +136,7 @@
 		}
 
 		function testTwigLoadsFromAlternateDirName(){
-			Timber::$dirname = array('foo', 'views');
+			Timber::$dirname = array(\Timber\Loader::MAIN_NAMESPACE => array('foo', 'views'));
 			if (!file_exists(get_template_directory().'/foo')) {
     			mkdir(get_template_directory().'/foo', 0777, true);
 			}
@@ -176,7 +176,7 @@
 		}
 
 		function testTwigLoadsFromLocationWithAndWithoutNamespacesAndDirs(){
-			Timber::$dirname = array('foo', 'views');
+			Timber::$dirname = array(\Timber\Loader::MAIN_NAMESPACE => array('foo', 'views'));
 			Timber::$locations = array( __DIR__.'/namespaced' => 'namespaced', __DIR__ . '/assets' );
 
 			// Namespaced location
