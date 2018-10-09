@@ -337,6 +337,30 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals(4, count($personPostsString));
 	}
 
+	function testGettingPostsWithStickiesReturnsCorrectAmountOfPosts(){
+		$post_ids = $this->factory->post->create_many(20);
+
+		//Set some posts as sticky, outside of the first ten posts
+        $sticky_ids = array_slice($post_ids, 11, 3);
+        foreach($sticky_ids as $sticky_id){
+            stick_post($sticky_id);
+        }
+
+        //Query the first ten posts
+        $numberPosts = 10;
+        $queryArgs = array(
+            'post_type' => 'post',
+            'numberposts' => $numberPosts,
+            'orderby' => 'ID',
+            'order' => 'ASC'
+        );
+
+        $posts = Timber::get_posts($queryArgs);
+        $this->assertEquals($numberPosts, count($posts));
+
+	}
+
+
 }
 
 class MyState {
