@@ -20,7 +20,7 @@ class Pagination {
 	 * @param array   $prefs
 	 * @return array mixed
 	 */
-	public static function get_pagination( $prefs ) {
+	public static function get_pagination( $prefs = array() ) {
 		$pagination = new self($prefs);
 		$pagination = get_object_vars($pagination);
 		return $pagination;
