@@ -33,7 +33,7 @@ add_filter( 'timber/loader/paths', function($paths) {
 
 ## Register your own namespaces
 
-You can also use namespaces in your locations too, just define it as the value next to a path, for example:
+You can also use [namespaces](https://symfony.com/doc/current/templating/namespaced_paths.html) in your locations too. Namespaces allow you to create a shortcut to a particular location. Just define it as the value next to a path, for example:
 
 ```php
 <?php
@@ -88,7 +88,7 @@ This is an alternative to configuring `$dirnames` with a string.
 
 ```php
 <?php
-Timber::$dirname = array( 0 => array('templates', 'templates/shared/mods', 'twigs', 'views' ));
+Timber::$dirname = array( array('templates', 'templates/shared/mods', 'twigs', 'views' ) );
 ```
 
 ## Subdirectories

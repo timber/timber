@@ -145,6 +145,26 @@
 			$this->assertEquals('I am single-foo', trim($str));
 		}
 
+		function testTwigLoadsFromAlternateDirNameWithoutNamespace(){
+			Timber::$dirname = array(array('foo', 'views'));
+			if (!file_exists(get_template_directory().'/foo')) {
+    			mkdir(get_template_directory().'/foo', 0777, true);
+			}
+			copy(__DIR__.'/assets/single-foo.twig', get_template_directory().'/foo/single-foo.twig');
+			$str = Timber::compile('single-foo.twig');
+			$this->assertEquals('I am single-foo', trim($str));
+		}
+
+		function testTwigLoadsFromAlternateDirNameWithoutNamespaceAndSimpleArray(){
+			Timber::$dirname = array('foo', 'views');
+			if (!file_exists(get_template_directory().'/foo')) {
+    			mkdir(get_template_directory().'/foo', 0777, true);
+			}
+			copy(__DIR__.'/assets/single-foo.twig', get_template_directory().'/foo/single-foo.twig');
+			$str = Timber::compile('single-foo.twig');
+			$this->assertEquals('I am single-foo', trim($str));
+		}
+
 		function testTwigLoadsFromLocation(){
 			Timber::$locations = __DIR__.'/assets';
 			$str = Timber::compile('thumb-test.twig');

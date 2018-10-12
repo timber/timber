@@ -66,6 +66,7 @@ class LocationManager {
 			$theme_locs[ Loader::MAIN_NAMESPACE ][] = $root;
 			$root                                   = trailingslashit( $root );
 			foreach ( $theme_dirs as $namespace => $dirnames ) {
+				$dirnames = self::convert_to_array( $dirnames );
 				array_map(function ($dirname) use ($root, $namespace, &$theme_locs) {
 					$tloc = realpath( $root . $dirname );
 					if ( is_dir( $tloc ) ) {
@@ -157,6 +158,20 @@ class LocationManager {
 	}
 
 	/**
+	 * 
+	 * Converts the variable to an array with the var as the sole element. Ignores if it's already an array
+	 *
+	 * @param mixed $var the variable to test and maybe convert
+	 * @return array
+	 */
+	protected static function convert_to_array( $var ) {
+		if ( is_string($var) ) {
+			$var = array($var);
+		}
+		return $var;
+	}
+
+	/**
 	 * @param bool|string   $caller the calling directory
 	 * @return array
 	 */
@@ -169,6 +184,7 @@ class LocationManager {
 			}
 			$caller = trailingslashit( $caller );
 			foreach ( LocationManager::get_locations_theme_dir() as $namespace => $dirnames ) {
+				$dirnames = self::convert_to_array( $dirnames );
 				array_map(function ($dirname) use ($caller, $namespace, &$locs) {
 					$caller_sub = realpath( $caller . $dirname );
 					if ( is_dir( $caller_sub ) ) {
