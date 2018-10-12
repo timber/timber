@@ -12,15 +12,17 @@ class LocationManager {
 	public static function get_locations( $caller = false ) {
 		//prioirty: user locations, caller (but not theme), child theme, parent theme, caller
 		$locs = array();
-		$locs = array_merge($locs, self::get_locations_user());
-		$locs = array_merge($locs, self::get_locations_caller($caller));
+		$locs = array_merge_recursive( $locs, self::get_locations_user() );
+		$locs = array_merge_recursive( $locs, self::get_locations_caller( $caller ) );
 		//remove themes from caller
-		$locs = array_diff($locs, self::get_locations_theme());
-		$locs = array_merge($locs, self::get_locations_theme());
-		$locs = array_merge($locs, self::get_locations_caller($caller));
-		$locs = array_unique($locs);
+		$locs = array_merge_recursive( $locs, self::get_locations_theme() );
+		$locs = array_merge_recursive( $locs, self::get_locations_caller( $caller ) );
+		$locs = array_map( 'array_unique', $locs );
+
 		//now make sure theres a trailing slash on everything
-		$locs = array_map('trailingslashit', $locs);
+		$locs = array_map( function ( $loc ) {
+			return array_map( 'trailingslashit', $loc );
+		}, $locs );
 
 		/**
 		 * Filters …
@@ -32,6 +34,7 @@ class LocationManager {
 		 * @param array $locs
 		 */
 		$locs = apply_filters('timber/locations', $locs);
+
 
 		/**
 		 * Filters …
@@ -52,20 +55,24 @@ class LocationManager {
 	protected static function get_locations_theme() {
 		$theme_locs = array();
 		$theme_dirs = LocationManager::get_locations_theme_dir();
-		$roots      = array(get_stylesheet_directory(), get_template_directory());
-		$roots      = array_map('realpath', $roots);
-		$roots      = array_unique($roots);
+		$roots      = array( get_stylesheet_directory(), get_template_directory() );
+		$roots      = array_map( 'realpath', $roots );
+		$roots      = array_unique( $roots );
 		foreach ( $roots as $root ) {
-			if ( !is_dir($root) ) {
+			if ( ! is_dir( $root ) ) {
 				continue;
 			}
-			$theme_locs[] = $root;
-			$root         = trailingslashit($root);
-			foreach ( $theme_dirs as $dirname ) {
-				$tloc = realpath($root.$dirname);
-				if ( is_dir($tloc) ) {
-					$theme_locs[] = $tloc;
-				}
+
+			$theme_locs[ Loader::MAIN_NAMESPACE ][] = $root;
+			$root                                   = trailingslashit( $root );
+			foreach ( $theme_dirs as $namespace => $dirnames ) {
+				$dirnames = self::convert_to_array( $dirnames );
+				array_map(function ($dirname) use ($root, $namespace, &$theme_locs) {
+					$tloc = realpath( $root . $dirname );
+					if ( is_dir( $tloc ) ) {
+						$theme_locs[ $namespace ][] = $tloc;
+					}
+				}, $dirnames);
 			}
 		}
 
@@ -108,34 +115,60 @@ class LocationManager {
 
 	/**
 	 * returns an array of the directory inside themes that holds twig files
-	 * @return string[] the names of directores, ie: array('templats', 'views');
+	 * @return array the names of directores, ie: array('__MAIN__' => ['templats', 'views']);
 	 */
 	public static function get_locations_theme_dir() {
 		if ( is_string(Timber::$dirname) ) {
-			return array(Timber::$dirname);
+			return array( Loader::MAIN_NAMESPACE => array( Timber::$dirname ) );
 		}
 		return Timber::$dirname;
 	}
 
 
 	/**
-	 *
+	 * @deprecated since 2.0.0 Use `add_filter('timber/locations', $locations)` instead.
 	 * @return array
 	 */
 	protected static function get_locations_user() {
 		$locs = array();
-		if ( isset(Timber::$locations) ) {
-			if ( is_string(Timber::$locations) ) {
-				Timber::$locations = array(Timber::$locations);
+		if ( isset( Timber::$locations ) ) {
+			if ( is_string( Timber::$locations ) ) {
+				Timber::$locations = array( Timber::$locations );
 			}
-			foreach ( Timber::$locations as $tloc ) {
-				$tloc = realpath($tloc);
-				if ( is_dir($tloc) ) {
-					$locs[] = $tloc;
+			foreach ( Timber::$locations as $tloc => $namespace_or_tloc ) {
+				if ( is_string( $tloc ) ) {
+					$namespace = $namespace_or_tloc;
+				} else {
+					$tloc      = $namespace_or_tloc;
+					$namespace = null;
+				}
+
+				$tloc = realpath( $tloc );
+				if ( is_dir( $tloc ) ) {
+					if ( ! is_string( $namespace ) ) {
+						$locs[ Loader::MAIN_NAMESPACE ][] = $tloc;
+					} else {
+						$locs[ $namespace ][] = $tloc;
+					}
 				}
 			}
 		}
+
 		return $locs;
+	}
+
+	/**
+	 * 
+	 * Converts the variable to an array with the var as the sole element. Ignores if it's already an array
+	 *
+	 * @param mixed $var the variable to test and maybe convert
+	 * @return array
+	 */
+	protected static function convert_to_array( $var ) {
+		if ( is_string($var) ) {
+			$var = array($var);
+		}
+		return $var;
 	}
 
 	/**
@@ -144,19 +177,23 @@ class LocationManager {
 	 */
 	protected static function get_locations_caller( $caller = false ) {
 		$locs = array();
-		if ( $caller && is_string($caller) ) {
-			$caller = realpath($caller);
-			if ( is_dir($caller) ) {
-				$locs[] = $caller;
+		if ( $caller && is_string( $caller ) ) {
+			$caller = realpath( $caller );
+			if ( is_dir( $caller ) ) {
+				$locs[ Loader::MAIN_NAMESPACE ][] = $caller;
 			}
-			$caller = trailingslashit($caller);
-			foreach ( LocationManager::get_locations_theme_dir() as $dirname ) {
-				$caller_sub = realpath($caller.$dirname);
-				if ( is_dir($caller_sub) ) {
-					$locs[] = $caller_sub;
-				}
+			$caller = trailingslashit( $caller );
+			foreach ( LocationManager::get_locations_theme_dir() as $namespace => $dirnames ) {
+				$dirnames = self::convert_to_array( $dirnames );
+				array_map(function ($dirname) use ($caller, $namespace, &$locs) {
+					$caller_sub = realpath( $caller . $dirname );
+					if ( is_dir( $caller_sub ) ) {
+						$locs[ $namespace ][] = $caller_sub;
+					}
+				}, $dirnames);
 			}
 		}
+
 		return $locs;
 	}
 

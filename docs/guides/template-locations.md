@@ -9,18 +9,62 @@ You can set your own locations for your twig files with...
 
 ```php
 <?php
-Timber::$locations = '/Users/jared/Sandbox/templates';
+add_filter( 'timber/loader/paths', function($paths) {
+	$paths[] = array('/Users/jared/Sandbox/templates');
+	
+	return $paths;
+});
 ```
 
 Use the full file path to make sure Timber knows what you're trying to draw from. You can also send an array for multiple locations:
 
 ```php
 <?php
-Timber::$locations = array(
-    '/Users/jared/Sandbox/templates',
-    '~/Sites/timber-templates/',
-    ABSPATH.'/wp-content/templates'
-);
+add_filter( 'timber/loader/paths', function($paths) {
+	$paths[] = array(
+		'/Users/jared/Sandbox/templates',
+		'~/Sites/timber-templates/',
+		ABSPATH.'/wp-content/templates'
+	);
+	
+	return $paths;
+});
+```
+
+## Register your own namespaces
+
+You can also use [namespaces](https://symfony.com/doc/current/templating/namespaced_paths.html) in your locations too. Namespaces allow you to create a shortcut to a particular location. Just define it as the value next to a path, for example:
+
+```php
+<?php
+add_filter( 'timber/loader/paths', function($paths) {
+	$paths['styleguide'] = array(
+		ABSPATH.'/wp-content/styleguide'
+	);
+	
+	return $paths;
+});
+```
+
+In the example above the namespace is called `styleguide`. You must prefix this with `@` when using it in templates (that's how Twig can differentiate namespaces from regular paths).
+Assuming you have a template called `menu.twig` within that namespace, you would call it like so:
+
+```twig
+{% include '@styleguide/menu.twig' %}
+```
+
+You can also register multiple paths for the same namespace. Order is important as it will look top to bottom and return the first one it encounters, for example:
+
+```php
+<?php
+add_filter( 'timber/loader/paths', function($paths) {
+	$paths['styleguide'] = array(
+		ABSPATH.'/wp-content/styleguide',
+		'/Users/jared/Sandbox/styleguide'
+	);
+	
+	return $paths;
+});
 ```
 
 You only need to do this once in your project (in `functions.php` of your theme). When you call one of the render or compile functions from a PHP file (say `single.php`), Timber will look for Twig files in these locations before it checks the child or parent theme.
@@ -44,7 +88,7 @@ This is an alternative to configuring `$dirnames` with a string.
 
 ```php
 <?php
-Timber::$dirname = array( 'templates', 'templates/shared/mods', 'twigs', 'views' );
+Timber::$dirname = array( array('templates', 'templates/shared/mods', 'twigs', 'views' ) );
 ```
 
 ## Subdirectories
