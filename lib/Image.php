@@ -466,7 +466,10 @@ class Image extends Post implements CoreInterface {
 	 *	@return bool|string
 	 */
 	public function srcset( $size = "full" ) {
-		return wp_get_attachment_image_srcset($this->ID, $size);
+		$srcset = wp_get_attachment_image_srcset($this->ID, $size);
+		$srcset = apply_filters('timber/image/srcset', $srcsset, $this->ID);
+		$srcset = apply_filters('timber_image_srcset', $srcsset, $this->ID);
+		return $srcset;
 	}
 	
 	/**
@@ -483,7 +486,10 @@ class Image extends Post implements CoreInterface {
 	 *	@return bool|string
 	 */
 	public function img_sizes( $size = "full" ) {
-		return wp_get_attachment_image_sizes($this->ID, $size);
+		$img_sizes = wp_get_attachment_image_sizes($this->ID, $size);
+		$img_sizes = apply_filters('timber/image/img_sizes', $img_sizes, $this->ID);
+		$img_sizes = apply_filters('timber_image_img_sizes', $img_sizes, $this->ID);
+		return $img_sizes;
 	}
 	
 	/**
