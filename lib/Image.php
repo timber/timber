@@ -453,6 +453,40 @@ class Image extends Post implements CoreInterface {
 	}
 
 	/**
+	 * @param string $size a size known to WordPress (like "medium")
+	 * @api
+	 * @example
+	 * ```twig
+	 * <h1>{{ post.title }}</h1>
+	 * <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumnbail.srcset }}" />
+	 * ```
+	 * ```html
+	 * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w "
+	 * ```
+	 *	@return bool|string
+	 */
+	public function srcset( $size = "full" ) {
+		return wp_get_attachment_image_srcset($this->ID, $size);
+	}
+	
+	/**
+	 * @param string $size a size known to WordPress (like "medium")
+	 * @api
+	 * @example
+	 * ```twig
+	 * <h1>{{ post.title }}</h1>
+	 * <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumnbail.srcset }}" sizes="{{ post.thumbnail.sizes }}" />
+	 * ```
+	 * ```html
+	 * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w sizes="(max-width: 1024px) 100vw, 102"
+	 * ```
+	 *	@return bool|string
+	 */
+	public function img_sizes( $size = "full" ) {
+		return wp_get_attachment_image_sizes($this->ID, $size);
+	}
+	
+	/**
 	 * @internal
 	 * @return bool true if media is an image
 	 */
