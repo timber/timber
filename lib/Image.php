@@ -467,8 +467,8 @@ class Image extends Post implements CoreInterface {
 	 */
 	public function srcset( $size = "full" ) {
 		$srcset = wp_get_attachment_image_srcset($this->ID, $size);
-		$srcset = apply_filters('timber/image/srcset', $srcsset, $this->ID);
-		$srcset = apply_filters('timber_image_srcset', $srcsset, $this->ID);
+		$srcset = apply_filters('timber/image/srcset', $srcset, $this->ID);
+		$srcset = apply_filters('timber_image_srcset', $srcset, $this->ID);
 		return $srcset;
 	}
 	
