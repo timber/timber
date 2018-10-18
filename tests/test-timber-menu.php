@@ -261,8 +261,9 @@ class TestTimberMenu extends Timber_UnitTestCase {
 			'depth' => 1,
 		);
 		$menu = new TimberMenu(self::MENU_NAME, $arguments);
-		$this->assertTrue( ($menu->get_items())[3]->current );
-		$this->assertContains( 'current-menu-item', ($menu->get_items())[3]->classes );
+		$menu_items = $menu->get_items();
+		$this->assertTrue( $menu_items[3]->current );
+		$this->assertContains( 'current-menu-item', $menu_items[3]->classes );
 	}
 
 	public static function buildMenu($name, $items) {
