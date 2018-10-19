@@ -68,6 +68,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$pid = $this->factory->post->create();
 		$iid = self::get_image_attachment( $pid );
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
+        add_post_meta( $iid, '_wp_attachment_metadata', wp_generate_attachment_metadata($iid, get_attached_file($iid)), true );
 		$post = new TimberPost($pid);
 		return $post;
 	}
