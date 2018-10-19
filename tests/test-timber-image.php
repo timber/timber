@@ -171,6 +171,18 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		$this->assertEquals( 1.5, $image->aspect() );
 	}
 
+    function testImageSrcset() {
+        $post = $this->get_post_with_image();
+        $img = $post->thumbnail();
+        $mine = $img->srcset();
+        
+        $native = wp_get_attachment_image_srcset($img->ID, 'full');
+        $this->assertEquals($native, $mine);
+        
+        $native = wp_get_attachment_image_srcset($img->ID, 'medium');
+        $this->assertNotEquals($native, $mine);
+    }
+
 	/**
 	 * @group maybeSkipped
 	 */
