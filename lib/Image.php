@@ -466,7 +466,9 @@ class Image extends Post implements CoreInterface {
 	 *	@return bool|string
 	 */
 	public function srcset( $size = "full" ) {
+        if($this->is_image()){
             return wp_get_attachment_image_srcset($this->ID, $size);
+        }
 	}
 	
 	/**
@@ -483,7 +485,9 @@ class Image extends Post implements CoreInterface {
 	 *	@return bool|string
 	 */
 	public function img_sizes( $size = "full" ) {
+        if($this->is_image()){
             return wp_get_attachment_image_sizes($this->ID, $size);
+        }
 	}
 	
 	/**
