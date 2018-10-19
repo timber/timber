@@ -100,6 +100,38 @@ class Menu extends Core {
 		if ( $menu ) {
 			_wp_menu_item_classes_by_context($menu);
 			if ( is_array($menu) ) {
+				/**
+				 * Default arguments from wp_nav_menu() function.
+				 *
+				 * @see wp_nav_menu()
+				 */
+				$default_args = array(
+					'menu'            => '',
+					'container'       => 'div',
+					'container_class' => '',
+					'container_id'    => '',
+					'menu_class'      => 'menu',
+					'menu_id'         => '',
+					'echo'            => true,
+					'fallback_cb'     => 'wp_page_menu',
+					'before'          => '',
+					'after'           => '',
+					'link_before'     => '',
+					'link_after'      => '',
+					'items_wrap'      => '<ul id="%1$s" class="%2$s">%3$s</ul>',
+					'item_spacing'    => 'preserve',
+					'depth'           => $this->depth,
+					'walker'          => '',
+					'theme_location'  => '',
+				);
+
+				/**
+				 * Improve compatibitility with third-party plugins.
+				 *
+				 * @see wp_nav_menu()
+				 */
+				$menu = apply_filters( 'wp_nav_menu_objects', $menu, $default_args );
+
 				$menu = self::order_children($menu);
 				$menu = self::strip_to_depth_limit($menu);
 			}
