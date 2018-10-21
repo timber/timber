@@ -846,7 +846,7 @@ class Post extends Core implements CoreInterface, Setupable {
 	 * @return mixed The meta field value.
 	 */
 	public function meta( $field_name = null ) {
-  
+
     if ( $rd = $this->get_revised_data_from_method('meta', $field_name) ) {
 			return $rd;
 		}
@@ -963,12 +963,12 @@ class Post extends Core implements CoreInterface, Setupable {
 		global $post;
 		$old_global_post = $post;
     $post = $this;
-    
+
 		$class_array = get_post_class($class, $this->ID);
 		if ( $this->is_previewing() ) {
 			$class_array = get_post_class($class, $this->post_parent);
 		}
-    
+
 		if ( is_array($class_array) ) {
 			$class_array = implode(' ', $class_array);
 		}
@@ -1253,7 +1253,7 @@ class Post extends Core implements CoreInterface, Setupable {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	protected function get_revised_data_from_method( $method, ...$args ) {
 		$rev = $this->get_post_preview_object();
@@ -1440,6 +1440,7 @@ class Post extends Core implements CoreInterface, Setupable {
 	 *
 	 * @api
 	 * @deprecated 2.0.0, use `{{ post.meta('field_name') }}` instead.
+	 * @see \Timber\Post::meta()
 	 *
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return mixed The meta field value.
