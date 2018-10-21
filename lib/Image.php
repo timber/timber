@@ -212,7 +212,7 @@ class Image extends Attachment {
 	 * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg"
 	 *     alt="You should always add alt texts to your images for better accessibility" />
 	 * ```
-	 * @return string Alt text stored in WordPress
+	 * @return string Alt text stored in WordPress.
 	 */
 	public function alt() {
 		$alt = $this->meta( '_wp_attachment_image_alt' );
@@ -282,14 +282,15 @@ class Image extends Attachment {
 	}
 
 	/**
-	* Tries to figure out the attachment id you want or otherwise handle when
-	* a string or other data is sent (object, file path, etc.)
-	*
-	* @internal
-	* @deprecated since 2.0 functionality will no longer be supported in future releases
-	* @param mixed $iid A value to test against
-	* @return int|null The numberic id we should be using for this post object
-	*/
+	 * Tries to figure out the attachment id you want or otherwise handle when
+	 * a string or other data is sent (object, file path, etc.)
+	 *
+	 * @internal
+	 * @deprecated since 2.0 Functionality will no longer be supported in future releases.
+	 *
+	 * @param mixed $iid A value to test against.
+	 * @return int|null The numberic ID that should be used for this post object.
+	 */
 	protected function determine_id( $iid ) {
 		$iid = parent::determine_id( $iid );
 		if ( $iid instanceof \WP_Post ) {
