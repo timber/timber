@@ -62,8 +62,8 @@ class Archives extends Core {
 	 * Build an Archives menu
 	 *
 	 * @api
-	 * @param array  $args Optional. {
-	 *      Array of arguments.
+	 * @param array  $args {
+	 *      Optional. Array of arguments.
 	 *
 	 *      @type bool   $show_year => false
 	 *      @type string

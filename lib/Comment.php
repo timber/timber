@@ -181,7 +181,7 @@ class Comment extends Core implements CoreInterface {
 	 * <img src="http://gravatar.com/i/sfsfsdfasdfsfa.jpg" alt="Image of Katherine Rich" />
 	 * ```
 	 * @param int    $size     Size of avatar.
-	 * @param string $default  Default avatar url.
+	 * @param string $default  Default avatar URL.
 	 * @return bool|mixed|string
 	 */
 	public function avatar( $size = 92, $default = '' ) {
@@ -238,7 +238,7 @@ class Comment extends Core implements CoreInterface {
 	 * Adds a child.
 	 *
 	 * @api
-	 * @param Timber\Comment $child_comment Comment child to be add;
+	 * @param \Timber\Comment $child_comment Comment child to add.
 	 * @return array Comment children.
 	 */
 	public function add_child( Comment $child_comment ) {
@@ -543,7 +543,7 @@ class Comment extends Core implements CoreInterface {
 	 * Enqueue the WP threaded comments JavaScript, and fetch the reply link for various comments.
 	 *
 	 * @api
-	 * @param string $reply_text Text of reply link.
+	 * @param string $reply_text Text of the reply link.
 	 * @return string
 	 */
 	public function reply_link( $reply_text = 'Reply' ) {
