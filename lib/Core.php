@@ -131,6 +131,8 @@ abstract class Core {
 	}
 
 	/**
+	 * @deprecated since 2.0.0
+	 *
 	 * @param string $field_name
 	 * @return mixed
 	 */
