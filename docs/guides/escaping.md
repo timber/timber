@@ -17,7 +17,7 @@ If you want to enable Twig’s `autoescape` behavior, add these lines to `functi
 
 ```php
 if ( class_exists( 'Timber' ) ) {
-    Timber::$autoescape = true; 
+    Timber::$autoescape = true;
 }
 ```
 
@@ -88,7 +88,7 @@ This is for plain old text. If your content has HTML markup, you should not use 
 **Twig**
 
 ```twig
-<div class="equation">{{ post.get_field('equation')|e('esc_html') }}</div>
+<div class="equation">{{ post.meta('equation')|e('esc_html') }}</div>
 ```
 
 **Output**
@@ -104,7 +104,7 @@ Escapes text strings for echoing in JavaScript. It is intended to be used for in
 **Twig**
 
 ```twig
-<script>var bar = '{{ post.get_field('name')|e('esc_js') }}';</script>
+<script>var bar = '{{ post.meta('name')|e('esc_js') }}';</script>
 ```
 
 **Output**
