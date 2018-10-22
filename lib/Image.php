@@ -231,7 +231,7 @@ class Image extends Post implements CoreInterface {
 		}
 
 		if ( !is_numeric($iid) && is_string($iid) ) {
-			if ( strstr($iid, '://') ) {
+			if ( strpos($iid, '//') === 0 || strstr($iid, '://') ) {
 				$this->init_with_url($iid);
 				return;
 			}

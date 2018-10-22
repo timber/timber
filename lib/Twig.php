@@ -111,39 +111,17 @@ class Twig {
 				} ));
 
 		/* bloginfo and translate */
-		$twig->addFunction(new Twig_Function('bloginfo', function( $show = '', $filter = 'raw' ) {
-					return get_bloginfo($show, $filter);
-				} ));
-		$twig->addFunction(new Twig_Function('__', function( $text, $domain = 'default' ) {
-					return __($text, $domain);
-				} ));
-		$twig->addFunction(new Twig_Function('translate', function( $text, $domain = 'default' ) {
-					return translate($text, $domain);
-				} ));
-		$twig->addFunction(new Twig_Function('_e', function( $text, $domain = 'default' ) {
-					return _e($text, $domain);
-				} ));
-		$twig->addFunction(new Twig_Function('_n', function( $single, $plural, $number, $domain = 'default' ) {
-					return _n($single, $plural, $number, $domain);
-				} ));
-		$twig->addFunction(new Twig_Function('_x', function( $text, $context, $domain = 'default' ) {
-					return _x($text, $context, $domain);
-				} ));
-		$twig->addFunction(new Twig_Function('_ex', function( $text, $context, $domain = 'default' ) {
-					return _ex($text, $context, $domain);
-				} ));
-		$twig->addFunction(new Twig_Function('_nx', function( $single, $plural, $number, $context, $domain = 'default' ) {
-					return _nx($single, $plural, $number, $context, $domain);
-				} ));
-		$twig->addFunction(new Twig_Function('_n_noop', function( $singular, $plural, $domain = 'default' ) {
-					return _n_noop($singular, $plural, $domain);
-				} ));
-		$twig->addFunction(new Twig_Function('_nx_noop', function( $singular, $plural, $context, $domain = 'default' ) {
-					return _nx_noop($singular, $plural, $context, $domain);
-				} ));
-		$twig->addFunction(new Twig_Function('translate_nooped_plural', function( $nooped_plural, $count, $domain = 'default' ) {
-					return translate_nooped_plural($nooped_plural, $count, $domain);
-				} ));
+		$twig->addFunction(new Twig_Function('bloginfo', 'bloginfo'));
+		$twig->addFunction(new Twig_Function('__', '__'));
+		$twig->addFunction(new Twig_Function('translate', 'translate'));
+		$twig->addFunction(new Twig_Function('_e', '_e'));
+		$twig->addFunction(new Twig_Function('_n', '_n'));
+		$twig->addFunction(new Twig_Function('_x', '_x'));
+		$twig->addFunction(new Twig_Function('_ex', '_ex'));
+		$twig->addFunction(new Twig_Function('_nx', '_nx'));
+		$twig->addFunction(new Twig_Function('_n_noop', '_n_noop'));
+		$twig->addFunction(new Twig_Function('_nx_noop', '_nx_noop'));
+		$twig->addFunction(new Twig_Function('translate_nooped_plural', 'translate_nooped_plural'));
 
 		return $twig;
 	}
@@ -204,6 +182,7 @@ class Twig {
 		$twig->addFilter(new \Twig_SimpleFilter('retina', array('Timber\ImageHelper', 'retina_resize')));
 		$twig->addFilter(new \Twig_SimpleFilter('letterbox', array('Timber\ImageHelper', 'letterbox')));
 		$twig->addFilter(new \Twig_SimpleFilter('tojpg', array('Timber\ImageHelper', 'img_to_jpg')));
+		$twig->addFilter(new \Twig_SimpleFilter('towebp', array('Timber\ImageHelper', 'img_to_webp')));
 
 		/* debugging filters */
 		$twig->addFilter(new \Twig_SimpleFilter('get_class', 'get_class'));
