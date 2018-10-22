@@ -66,6 +66,15 @@ You can now use all the above functions to transform your custom images in the s
 
 * * *
 
+## Group field
+```twig
+{% set group = post.get_field('group') %}
+{{ group.first_field }}
+{{ group.second_field }}
+```
+
+* * *
+
 ## Repeater field
 
 You can access repeater fields within twig files:
