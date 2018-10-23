@@ -68,9 +68,14 @@ You can now use all the above functions to transform your custom images in the s
 
 ## Group field
 ```twig
+{{post.get_field('group').first_field}}
+{{post.get_field('group').second_field}}
+```
+or 
+```twig
 {% set group = post.get_field('group') %}
-{{ group.first_field }}
-{{ group.second_field }}
+{{group.first_field}}
+{{group.second_field}}
 ```
 
 * * *
