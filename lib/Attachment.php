@@ -160,7 +160,7 @@ class Attachment extends Post implements CoreInterface {
 
 		/**
 		 * determine_id returns null when the attachment is a file path,
-		 * thus there's nothing in the DB for us to do here 
+		 * thus there's nothing in the DB for us to do here
 		 */
 		if ( null === $iid ) {
 			return;
@@ -195,10 +195,11 @@ class Attachment extends Post implements CoreInterface {
 
 	/**
 	 * Tries to figure out the attachment id you want or otherwise handle when
-	 * a string or other data is sent (object, file path, etc.)
+	 * a string or other data is sent (object, file path, etc.).
+	 *
 	 * @internal
-	 * @param mixed a value to test against
-	 * @return int|null the numberic id we should be using for this post object 
+	 * @param mixed A value to test against.
+	 * @return int|null The numberic id we should be using for this post object.
 	 */
 	protected function determine_id( $iid ) {
 		// Make sure we actually have something to work with.
@@ -243,7 +244,7 @@ class Attachment extends Post implements CoreInterface {
 					}
 				}
 			}
-		} 
+		}
 		return $iid;
 	}
 
@@ -300,7 +301,7 @@ class Attachment extends Post implements CoreInterface {
 	/**
 	 * @internal
 	 *
-	 * @param  int $attachment_id the id number of the image in the WP database
+	 * @param  int $attachment_id The id number of the image in the WP database.
 	 */
 	protected function get_attachment_info( $attachment_id ) {
 		$image_info = $attachment_id;
@@ -367,6 +368,8 @@ class Attachment extends Post implements CoreInterface {
 	 *     <img src="http://example.org/wp-content/uploads/2015/whatever.jpg"/>
 	 * </a>
 	 * ```
+	 *
+	 * @return string An URL of the attachment.
 	 */
 	public function link() {
 		if ( strlen( $this->abs_url ) ) {
@@ -434,6 +437,7 @@ class Attachment extends Post implements CoreInterface {
 	 *     <span class="download-info">(Download, {{ attachment.size }})</span>
 	 * </a>
 	 * ```
+	 *
 	 * @return mixed|null The filesize string in a human readable format.
 	 */
 	public function size() {
@@ -533,10 +537,10 @@ class Attachment extends Post implements CoreInterface {
 	 *
 	 * @api
 	 *
-	 * @return array
+	 * @return array Path info from the file.
 	 */
 	public function get_pathinfo() {
 		return pathinfo( $this->file );
 	}
-	
+
 }
