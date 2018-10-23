@@ -214,12 +214,12 @@ class Attachment extends Post implements CoreInterface {
 		 * to check for an ACF image array an take the ID from that array.
 		 */
 		if ( $iid instanceof Attachment
-		    || ( $iid instanceof \WP_Post && 'attachment' === $iid->post_type )
+			|| ( $iid instanceof \WP_Post && 'attachment' === $iid->post_type )
 		) {
-		    return (int) $iid->ID;
+			return (int) $iid->ID;
 		} elseif ( is_array( $iid ) && isset( $iid['ID'] ) ) {
-		    // Assume ACF image array.
-		    $iid = $iid['ID'];
+			// Assume ACF image array.
+			$iid = $iid['ID'];
 		}
 
 		if ( ! is_numeric( $iid ) && is_string( $iid ) ) {
