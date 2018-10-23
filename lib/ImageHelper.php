@@ -138,7 +138,7 @@ class ImageHelper {
 		}
 		// Its a gif so test
 		if ( ! ($fh = @fopen($file, 'rb')) ) {
-		  	return false;
+			return false;
 		}
 		$count = 0;
 		// An animated gif contains multiple "frames", with each frame having a
@@ -167,9 +167,9 @@ class ImageHelper {
 		$ret = false;
 		if ( isset($file_path) && '' !== $file_path && file_exists($file_path) ) {
 			$mime = self::_mime_content_type($file_path);
-    		$ret  = in_array($mime, ['image/svg+xml', 'text/html', 'text/plain', 'image/svg']);
-    	}
-    	return $ret;
+			$ret  = in_array($mime, ['image/svg+xml', 'text/html', 'text/plain', 'image/svg']);
+		}
+		return $ret;
 	}
 
 	/**
@@ -184,13 +184,13 @@ class ImageHelper {
 		if ( function_exists( 'mime_content_type' ) ) {
 			return mime_content_type( $filename );
 		}
-	    $result = new \finfo();
+		$result = new \finfo();
 
-	    if ( file_exists( $filename ) === true ) {
-	        return $result->file( $filename, FILEINFO_MIME_TYPE );
-	    }
+		if ( file_exists( $filename ) === true ) {
+			return $result->file( $filename, FILEINFO_MIME_TYPE );
+		}
 
-	    return false;
+		return false;
 	}
 
 	/**
@@ -226,18 +226,18 @@ class ImageHelper {
 		return self::_operate($src, $op, $force);
 	}
 
-    /**
-     * Generates a new image by converting the source into WEBP.
-     *
-     * @param string  $src      A url or path to the image (http://example.org/wp-content/uploads/2014/image.jpg)
-     *                          or (/wp-content/uploads/2014/image.jpg).
-	   * @param int     $quality  Ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file).
-     * @param bool    $force
-     */
-    public static function img_to_webp( $src, $quality = 80, $force = false ) {
-        $op = new Image\Operation\ToWebp($quality);
-        return self::_operate($src, $op, $force);
-    }
+	/**
+	 * Generates a new image by converting the source into WEBP.
+	 *
+	 * @param string  $src      A url or path to the image (http://example.org/wp-content/uploads/2014/image.jpg)
+	 *                          or (/wp-content/uploads/2014/image.jpg).
+	 * @param int     $quality  Ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file).
+	 * @param bool    $force
+	 */
+	public static function img_to_webp( $src, $quality = 80, $force = false ) {
+		$op = new Image\Operation\ToWebp($quality);
+		return self::_operate($src, $op, $force);
+	}
 
 	//-- end of public methods --//
 
@@ -299,7 +299,7 @@ class ImageHelper {
 	 * Deletes the auto-generated files for resize and letterboxing created by Timber.
 	 *
 	 * @param string  $local_file   ex: /var/www/wp-content/uploads/2015/my-pic.jpg
-	 *	                            or: http://example.org/wp-content/uploads/2015/my-pic.jpg
+	 *                              or: http://example.org/wp-content/uploads/2015/my-pic.jpg
 	 */
 	static function delete_generated_files( $local_file ) {
 		if ( URLHelper::is_absolute($local_file) ) {
@@ -467,7 +467,7 @@ class ImageHelper {
 	 * @param string  $src A URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg).
 	 * @return string Full path to the file in question.
 	 */
-	static function theme_url_to_dir( $src ) 	{
+	static function theme_url_to_dir( $src ) {
 		$site_root = trailingslashit(get_theme_root_uri()).get_stylesheet();
 		$tmp = str_replace($site_root, '', $src);
 		//$tmp = trailingslashit(get_theme_root()).get_stylesheet().$tmp;
