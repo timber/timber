@@ -15,11 +15,11 @@ class CommentThread extends \ArrayObject {
 	var $_order = 'ASC';
 
 	/**
-	 * Creates a new `Timber\CommentThread` object
+	 * Creates a new `Timber\CommentThread` object.
 	 *
 	 * @param int $post_id The Post ID.
 	 * @param array|boolean $args Optional. An array of arguments
-	 * 						or false if to skip initialization.
+	 *                            or false if to skip initialization.
 	 */
 	public function __construct( $post_id, $args = array() ) {
 		parent::__construct();
