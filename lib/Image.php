@@ -54,7 +54,7 @@ class Image extends Attachment {
 	public $object_type = 'image';
 
 	/**
-	 * Representation
+	 * Representation.
 	 *
 	 * @api
 	 * @var string What does this class represent in WordPress terms?
@@ -188,6 +188,7 @@ class Image extends Attachment {
 	 *   <img src="{{ post.thumbnail.src|resize(500) }}" alt="A sumo wrestler" />
 	 * {% endif %}
 	 * ```
+	 *
 	 * @return float The aspect ratio of the image.
 	 */
 	public function aspect() {
@@ -212,6 +213,7 @@ class Image extends Attachment {
 	 * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg"
 	 *     alt="You should always add alt texts to your images for better accessibility" />
 	 * ```
+	 *
 	 * @return string Alt text stored in WordPress.
 	 */
 	public function alt() {
@@ -225,7 +227,6 @@ class Image extends Attachment {
 	 * @internal
 	 *
 	 * @param string $dimension The requested dimension. Either `width` or `height`.
-	 *
 	 * @return int|null The requested dimension. Null if image file couldn’t be found.
 	 */
 	protected function get_dimension( $dimension ) {
@@ -254,7 +255,6 @@ class Image extends Attachment {
 	 * @internal
 	 *
 	 * @param string|null $dim Optional. The requested dimension. Either `width` or `height`.
-	 *
 	 * @return int The requested dimension in pixels.
 	 */
 	protected function get_dimension_loaded( $dim = null ) {
@@ -283,7 +283,7 @@ class Image extends Attachment {
 
 	/**
 	 * Tries to figure out the attachment id you want or otherwise handle when
-	 * a string or other data is sent (object, file path, etc.)
+	 * a string or other data is sent (object, file path, etc.).
 	 *
 	 * @internal
 	 * @deprecated since 2.0 Functionality will no longer be supported in future releases.
