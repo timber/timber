@@ -159,7 +159,7 @@ class Attachment extends Post implements CoreInterface {
 		$iid = $this->determine_id( $iid );
 
 		/**
-		 * determine_id returns null when the attachment is a file path,
+		 * The determine_id returns null when the attachment is a file path,
 		 * thus there's nothing in the DB for us to do here
 		 */
 		if ( null === $iid ) {
@@ -198,7 +198,7 @@ class Attachment extends Post implements CoreInterface {
 	 * a string or other data is sent (object, file path, etc.).
 	 *
 	 * @internal
-	 * @param mixed A value to test against.
+	 * @param mixed $iid A value to test against.
 	 * @return int|null The numberic id we should be using for this post object.
 	 */
 	protected function determine_id( $iid ) {
@@ -299,6 +299,8 @@ class Attachment extends Post implements CoreInterface {
 	}
 
 	/**
+	 * Gets the attachment information.
+	 *
 	 * @internal
 	 *
 	 * @param  int $attachment_id The id number of the image in the WP database.

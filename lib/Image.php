@@ -15,7 +15,8 @@ namespace Timber;
  * $context         = Timber::context();
  * $context['post'] = Timber::context_post( $post );
  *
- * // lets say you have an alternate large 'cover image' for your post stored in a custom field which returns an image ID
+ * // lets say you have an alternate large 'cover image' for your post
+ * // stored in a custom field which returns an image ID
  * $cover_image_id = $post->cover_image;
  * $context['cover_image'] = new Timber\Image($cover_image_id);
  * Timber::render('single.twig', $context);
@@ -29,7 +30,9 @@ namespace Timber;
  *     {{post.content}}
  *   </div>
  *
- *  <img src="{{ Image(post.custom_field_with_image_id).src }}" alt="Another way to initialize images as Timber\Image objects, but within Twig" />
+ *  <img
+ *    src="{{ Image(post.custom_field_with_image_id).src }}"
+ *    alt="Another way to initialize images as Timber\Image objects, but within Twig" />
  * </article>
  * ```
  *
@@ -40,7 +43,9 @@ namespace Timber;
  *   <div class="body">
  *     Whatever whatever
  *   </div>
- *   <img src="http://example.org/wp-content/uploads/2015/06/kurt.jpg" alt="Another way to initialize images as Timber\Image objects, but within Twig" />
+ *   <img
+ *     src="http://example.org/wp-content/uploads/2015/06/kurt.jpg"
+ *     alt="Another way to initialize images as Timber\Image objects, but within Twig" />
  * </article>
  * ```
  */
