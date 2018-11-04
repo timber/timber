@@ -1,14 +1,17 @@
 ---
-title: "Gutenberg with ACF Blocks Cookbook"
+title: "Gutenberg"
 menu:
   main:
     parent: "guides"
 ---
+## Using Gutenberg in with Timber
+Timber works with Gutenberg out of the box. If you use `{{ post.content }}`, Timber will render all the Gutenberg blocks.
 
-## What are the ACF Blocks
+## ACF Blocks
+### What are the ACF Blocks
 ACF Blocks are the easiest way to create content blocks for [Gutenberg](https://wordpress.org/gutenberg/). You don't need any advanced JavaScript knowledge to create new blocks. If you want to learn more about them read the article on [advancedcustomfields.com](https://www.advancedcustomfields.com/blog/acf-5-8-introducing-acf-blocks-for-gutenberg/).
 
-## How to use ACF Blocks with Timber
+### How to use ACF Blocks with Timber
 Before you can start using ACF Blocks, you must install the Advanced Custom Fields 5.8.0-beta or later.
 
 To create your content block, first you have to register it in `functions.php` or in a seperate plugin:
@@ -73,7 +76,7 @@ finally you can create the template `template-parts/block/example-block.twig`:
 
 ```
 
-## Using repeaters
+### Using repeaters
 ```
 {% for field in fields.repeater %}
     Title: {{ field.title }} <br/>
@@ -81,7 +84,7 @@ finally you can create the template `template-parts/block/example-block.twig`:
 {% endfor %}
 ```
 
-## Using groups
+### Using groups
 ```
 Title: {{ fields.group.title }} <br/>
 Url: {{ fields.group.url }}
