@@ -18,7 +18,7 @@ If you want to enable Twig’s `autoescape` behavior, add these lines to `functi
 
 ```php
 if ( class_exists( 'Timber' ) ) {
-    Timber::$autoescape = true; 
+    Timber::$autoescape = 'html; 
 }
 ```
 
