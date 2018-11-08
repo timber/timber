@@ -17,7 +17,7 @@ While Twig has escaping enabled by default, **Timber’s Twig does not escape** 
 If you want to enable Twig’s `autoescape` behavior, add these lines to `functions.php`:
 
 ```php
-if ( class_exists( 'Timber' ) ) {
+if ( class_exists( 'Timber\Timber' ) ) {
     Timber::$autoescape = 'html'; 
 }
 ```
