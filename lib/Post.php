@@ -689,47 +689,52 @@ class Post extends Core implements CoreInterface {
 			}
 		}
 
-		$term_class_objects = array();
-
-		foreach ( $taxonomies as $taxonomy ) {
-			// @todo Remove in 2.x
+		// @todo Remove in 2.x
+		$taxonomies = array_map( function( $taxonomy ) {
 			if ( in_array( $taxonomy, array( 'tag', 'tags' ), true ) ) {
 				$taxonomy = 'post_tag';
 			} elseif ( 'categories' === $taxonomy ) {
 				$taxonomy = 'category';
 			}
 
-			// Maybe this is not needed?
-			if ( isset( $args['query']['taxonomy'] ) ) {
-				unset( $args['query']['taxonomy'] );
-			}
+			return $taxonomy;
+		}, $taxonomies );
 
-			$terms = wp_get_post_terms( $this->ID, $taxonomy, $args['query'] );
+		$terms = wp_get_post_terms( $this->ID, $taxonomies, $args['query'] );
 
-			if ( is_wp_error( $terms ) ) {
-				/**
-				 * @var $terms \WP_Error
-				 */
-				Helper::error_log("Error retrieving terms for taxonomy '$taxonomy' on a post in timber-post.php");
-				Helper::error_log('tax = '.print_r($tax, true));
-				Helper::error_log('WP_Error: '.$terms->get_error_message());
+		if ( is_wp_error( $terms ) ) {
+			/**
+			 * @var $terms \WP_Error
+			 */
+			Helper::error_log( "Error retrieving terms for taxonomies on a post in timber-post.php" );
+			Helper::error_log( 'tax = ' . print_r( $tax, true ) );
+			Helper::error_log( 'WP_Error: ' . $terms->get_error_message() );
 
-				return $term_class_objects;
-			}
-
-			// Map over array of WordPress terms and transform them into instances of the chosen term class.
-			$terms = array_map(function( $term ) use ($term_class, $taxonomy) {
-				return call_user_func(array($term_class, 'from'), $term->term_id, $taxonomy);
-			}, $terms);
-
-			if ( $merge && is_array($terms) ) {
-				$term_class_objects = array_merge($term_class_objects, $terms);
-			} else if ( count($terms) ) {
-				$term_class_objects[$taxonomy] = $terms;
-			}
+			return $terms;
 		}
 
-		return $term_class_objects;
+		// Map over array of WordPress terms and transform them into instances of the chosen term class.
+		$terms = array_map( function( $term ) use ( $term_class ) {
+			return call_user_func( array( $term_class, 'from' ), $term->term_id, $term->taxonomy );
+		}, $terms );
+
+		if ( ! $merge ) {
+			$terms_sorted = array();
+
+			// Initialize sub-arrays.
+			foreach ( $taxonomies as $taxonomy ) {
+				$terms_sorted[ $taxonomy ] = array();
+			}
+
+			// Fill terms into arrays.
+			foreach ( $terms as $term ) {
+				$terms_sorted[ $term->taxonomy ][] = $term;
+			}
+
+			return $terms_sorted;
+		}
+
+		return $terms;
 	}
 
 	/**
