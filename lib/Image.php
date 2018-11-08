@@ -15,8 +15,8 @@ namespace Timber;
  * $context         = Timber::context();
  * $context['post'] = Timber::context_post( $post );
  *
- * // lets say you have an alternate large 'cover image' for your post
- * // stored in a custom field which returns an image ID
+ * // Lets say you have an alternate large 'cover image' for your post
+ * // stored in a custom field which returns an image ID.
  * $cover_image_id = $post->cover_image;
  * $context['cover_image'] = new Timber\Image($cover_image_id);
  * Timber::render('single.twig', $context);
@@ -287,8 +287,10 @@ class Image extends Attachment {
 	}
 
 	/**
-	 * Tries to figure out the attachment id you want or otherwise handle when
-	 * a string or other data is sent (object, file path, etc.).
+	 * Determines the ID.
+	 *
+	 * Tries to figure out the attachment ID or otherwise handles the case when a string or other
+	 * data is sent (object, file path, etc.).
 	 *
 	 * @internal
 	 * @deprecated since 2.0 Functionality will no longer be supported in future releases.

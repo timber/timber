@@ -52,12 +52,6 @@ class ImageHelper {
 	 * New dimensions are achieved by cropping to maintain ratio.
 	 *
 	 * @api
-	 *
-	 * @param string      $src An URL (absolute or relative) to the original image
-	 * @param int|string  $w Target width(int) or WordPress image size (WP-set or user-defined).
-	 * @param int         $h Target height (ignored if $w is WP image size). If not set, will ignore and resize based on $w only.
-	 * @param string      $crop Your choices are 'default', 'center', 'top', 'bottom', 'left', 'right'
-	 * @param bool        $force
 	 * @example
 	 * ```twig
 	 * <img src="{{ image.src | resize(300, 200, 'top') }}" />
@@ -66,7 +60,16 @@ class ImageHelper {
 	 * <img src="http://example.org/wp-content/uploads/pic-300x200-c-top.jpg" />
 	 * ```
 	 *
-	 * @return string (ex: )
+	 * @param string     $src   A URL (absolute or relative) to the original image.
+	 * @param int|string $w     Target width (int) or WordPress image size (WP-set or
+	 *                          user-defined).
+	 * @param int        $h     Optional. Target height (ignored if `$w` is WP image size). If not
+	 *                          set, will ignore and resize based on `$w` only. Default `0`.
+	 * @param string     $crop  Optional. Your choices are `default`, `center`, `top`, `bottom`,
+	 *                          `left`, `right`. Default `default`.
+	 * @param bool       $force Optional. Whether to remove any already existing result file and
+	 *                          force file generation. Default `false`.
+	 * @return string The URL of the resized image.
 	 */
 	public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
 		if ( !is_numeric($w) && is_string($w) ) {
@@ -82,16 +85,13 @@ class ImageHelper {
 	}
 
 	/**
-	 * Find the sizes of an image based on a defined image size.
+	 * Finds the sizes of an image based on a defined image size.
 	 *
 	 * @internal
-	 * @param  string $size The image size to search for
-	 *                      can be WordPress-defined ("medium")
-	 *                      or user-defined ("my-awesome-size")
-	 * @return false|array {
-	 *     @type int w
-	 *     @type int h
-	 * }
+	 * @param  string $size The image size to search for can be WordPress-defined ('medium') or
+	 *                      user-defined ('my-awesome-size').
+	 * @return false|array An array with `w` and `h` height key, corresponding to the width and the
+	 *                     height of the image.
 	 */
 	private static function find_wp_dimensions( $size ) {
 		global $_wp_additional_image_sizes;
@@ -114,8 +114,10 @@ class ImageHelper {
 	 * @api
 	 *
 	 * @param string  $src        URL of the file to read from.
-	 * @param float   $multiplier
-	 * @param boolean $force      Require process to run even if the file exists.
+	 * @param float   $multiplier Optional. Factor the original dimensions should be multiplied
+	 *                            with. Default `2`.
+	 * @param boolean $force      Optional. Whether to remove any already existing result file and
+	 *                            force file generation. Default `false`.
 	 * @return string URL to the new image.
 	 */
 	public static function retina_resize( $src, $multiplier = 2, $force = false ) {
@@ -124,12 +126,12 @@ class ImageHelper {
 	}
 
 	/**
-	 * Checks to see if the given file is an aimated gif.
+	 * Checks to see if the given file is an animated GIF.
 	 *
 	 * @api
 	 *
 	 * @param string $file Local filepath to a file, not a URL.
-	 * @return boolean True if it's an animated gif, false if not.
+	 * @return boolean True if it’s an animated GIF, false if not.
 	 */
 	public static function is_animated_gif( $file ) {
 		if ( strpos(strtolower($file), '.gif') === false ) {
@@ -217,9 +219,11 @@ class ImageHelper {
 	 *
 	 * @api
 	 *
-	 * @param string  $src   A url or path to the image (http://example.org/wp-content/uploads/2014/image.jpg) or (/wp-content/uploads/2014/image.jpg).
-	 * @param string  $bghex Hex color.
-	 * @return string
+	 * @param string $src   A URL or path to the image
+	 *                      (http://example.org/wp-content/uploads/2014/image.jpg) or
+	 *                      (/wp-content/uploads/2014/image.jpg).
+	 * @param string $bghex The hex color to use for transparent zones.
+	 * @return string The URL of the processed image.
 	 */
 	public static function img_to_jpg( $src, $bghex = '#FFFFFF', $force = false ) {
 		$op = new Image\Operation\ToJpg($bghex);
@@ -229,10 +233,14 @@ class ImageHelper {
 	/**
 	 * Generates a new image by converting the source into WEBP.
 	 *
-	 * @param string  $src      A url or path to the image (http://example.org/wp-content/uploads/2014/image.jpg)
-	 *                          or (/wp-content/uploads/2014/image.jpg).
-	 * @param int     $quality  Ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file).
-	 * @param bool    $force
+	 * @param string $src     A URL or path to the image
+	 *                        (http://example.org/wp-content/uploads/2014/image.jpg) or
+	 *                        (/wp-content/uploads/2014/image.jpg).
+	 * @param int    $quality Range from `0` (worst quality, smaller file) to `100` (best quality,
+	 *                        biggest file).
+	 * @param bool   $force   Optional. Whether to remove any already existing result file and
+	 *                        force file generation. Default `false`.
+	 * @return string The URL of the processed image.
 	 */
 	public static function img_to_webp( $src, $quality = 80, $force = false ) {
 		$op = new Image\Operation\ToWebp($quality);
@@ -245,19 +253,18 @@ class ImageHelper {
 	 * Deletes all resized versions of an image when the source is deleted.
 	 *
 	 * @since 1.5.0
-	 * @param int   $post_id An attachment post id.
+	 * @param int   $post_id An attachment ID.
 	 */
 	public static function delete_attachment( $post_id ) {
 		self::_delete_generated_if_image($post_id);
 	}
 
-
 	/**
 	 * Delete all resized version of an image when its meta data is regenerated.
 	 *
 	 * @since 1.5.0
-	 * @param array $metadata
-	 * @param int   $post_id An attachment post id.
+	 * @param array $metadata Existing metadata.
+	 * @param int   $post_id  An attachment ID.
 	 * @return array
 	 */
 	public static function generate_attachment_metadata( $metadata, $post_id ) {
@@ -282,8 +289,7 @@ class ImageHelper {
 	/**
 	 * Checks if attachment is an image before deleting generated files.
 	 *
-	 * @param int  $post_id An attachment post id.
-	 *
+	 * @param int  $post_id An attachment ID.
 	 */
 	public static function _delete_generated_if_image( $post_id ) {
 		if ( wp_attachment_is_image($post_id) ) {
@@ -294,12 +300,11 @@ class ImageHelper {
 		}
 	}
 
-
 	/**
 	 * Deletes the auto-generated files for resize and letterboxing created by Timber.
 	 *
-	 * @param string  $local_file   ex: /var/www/wp-content/uploads/2015/my-pic.jpg
-	 *                              or: http://example.org/wp-content/uploads/2015/my-pic.jpg
+	 * @param string $local_file ex: /var/www/wp-content/uploads/2015/my-pic.jpg
+	 *                           or: http://example.org/wp-content/uploads/2015/my-pic.jpg
 	 */
 	static function delete_generated_files( $local_file ) {
 		if ( URLHelper::is_absolute($local_file) ) {
@@ -317,17 +322,18 @@ class ImageHelper {
 
 	/**
 	 * Deletes resized versions of the supplied file name.
-	 * So if passed a value like my-pic.jpg, this function will delete my-pic-500x200-c-left.jpg, my-pic-400x400-c-default.jpg, etc.
 	 *
-	 * keeping these here so I know what the hell we're matching
+	 * If passed a value like my-pic.jpg, this function will delete my-pic-500x200-c-left.jpg, my-pic-400x400-c-default.jpg, etc.
+	 *
+	 * Keeping these here so I know what the hell we’re matching
 	 * $match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/$filename-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $found_file);
 	 * $match = preg_match("/\/srv\/www\/wordpress-develop\/src\/wp-content\/uploads\/2014\/05\/arch-[0-9]*x[0-9]*-c-[a-z]*.jpg/", $filename);
 	 *
-	 * @param string  $filename       ex: my-pic
-	 * @param string  $ext            ex: jpg
-	 * @param string  $dir            var/www/wp-content/uploads/2015/
-	 * @param string  $search_pattern Pattern of files to pluck from
-	 * @param string  $match_pattern  Pattern of files to go forth and delete
+	 * @param string  $filename       ex: my-pic.
+	 * @param string  $ext            ex: jpg.
+	 * @param string  $dir            var/www/wp-content/uploads/2015/.
+	 * @param string  $search_pattern Pattern of files to pluck from.
+	 * @param string  $match_pattern  Pattern of files to go forth and delete.
 	 */
 	protected static function process_delete_generated_files( $filename, $ext, $dir, $search_pattern, $match_pattern = null ) {
 		$searcher = '/'.$filename.$search_pattern;
@@ -343,7 +349,7 @@ class ImageHelper {
 	/**
 	 * Determines the filepath corresponding to a given URL.
 	 *
-	 * @param string  $url
+	 * @param string $url
 	 * @return string
 	 */
 	public static function get_server_location( $url ) {
@@ -409,12 +415,12 @@ class ImageHelper {
 	}
 
 	/**
-	 * Takes in an URL and breaks it into components,
-	 * that will then be used in the different steps of image processing.
+	 * Takes a URL and breaks it into components.
 	 *
+	 * The components can then be used in the different steps of image processing.
 	 * The image is expected to be either part of a theme, plugin, or an upload.
 	 *
-	 * @param  string $url An URL (absolute or relative) pointing to an image.
+	 * @param  string $url A URL (absolute or relative) pointing to an image.
 	 * @return array       An array (see keys in code below).
 	 */
 	public static function analyze_url( $url ) {
@@ -488,10 +494,13 @@ class ImageHelper {
 	/**
 	 * Builds the public URL of a file based on its different components.
 	 *
-	 * @param  int    $base     One of self::BASE_UPLOADS, self::BASE_CONTENT to indicate if file is an upload or a content (theme or plugin).
-	 * @param  string $subdir   Subdirectory in which file is stored, relative to $base root folder.
+	 * @param  int    $base     One of `self::BASE_UPLOADS`, `self::BASE_CONTENT` to indicate if
+	 *                          file is an upload or a content (theme or plugin).
+	 * @param  string $subdir   Subdirectory in which file is stored, relative to $base root
+	 *                          folder.
 	 * @param  string $filename File name, including extension (but no path).
-	 * @param  bool   $absolute Should the returned URL be absolute (include protocol+host), or relative.
+	 * @param  bool   $absolute Should the returned URL be absolute (include protocol+host), or
+	 *                          relative.
 	 * @return string           The URL.
 	 */
 	private static function _get_file_url( $base, $subdir, $filename, $absolute ) {
@@ -515,10 +524,10 @@ class ImageHelper {
 	}
 
 	/**
-	 * Runs realpath to resolve symbolic links (../, etc). But only if it's a path and not a URL.
+	 * Runs realpath to resolve symbolic links (../, etc). But only if it’s a path and not a URL.
 	 *
 	 * @param  string $path
-	 * @return string       The resolved path.
+	 * @return string The resolved path.
 	 */
 	protected static function maybe_realpath( $path ) {
 		if ( strstr($path, '../') !== false ) {
@@ -527,12 +536,13 @@ class ImageHelper {
 		return $path;
 	}
 
-
 	/**
 	 * Builds the absolute file system location of a file based on its different components.
 	 *
-	 * @param  int    $base     One of self::BASE_UPLOADS, self::BASE_CONTENT to indicate if file is an upload or a content (theme or plugin).
-	 * @param  string $subdir   Subdirectory in which file is stored, relative to $base root folder.
+	 * @param  int    $base     One of `self::BASE_UPLOADS`, `self::BASE_CONTENT` to indicate if
+	 *                          file is an upload or a content (theme or plugin).
+	 * @param  string $subdir   Subdirectory in which file is stored, relative to $base root
+	 *                          folder.
 	 * @param  string $filename File name, including extension (but no path).
 	 * @return string           The file location.
 	 */
@@ -563,7 +573,6 @@ class ImageHelper {
 		return URLHelper::remove_double_slashes($path);
 	}
 
-
 	/**
 	 * Main method that applies operation to src image:
 	 * 1. break down supplied URL into components
@@ -571,11 +580,11 @@ class ImageHelper {
 	 * 3. check if a result file already exists
 	 * 4. otherwise, delegate to supplied TimberImageOperation
 	 *
-	 * @param  string  $src   An URL (absolute or relative) to an image.
+	 * @param  string  $src   A URL (absolute or relative) to an image.
 	 * @param  object  $op    Object of class TimberImageOperation.
-	 * @param  boolean $force If true, remove any already existing result file and forces file generation.
-	 * @return string         URL to the new image - or the source one if error.
-	 *
+	 * @param  boolean $force Optional. Whether to remove any already existing result file and
+	 *                        force file generation. Default `false`.
+	 * @return string URL to the new image - or the source one if error.
 	 */
 	private static function _operate( $src, $op, $force = false ) {
 		if ( empty($src) ) {

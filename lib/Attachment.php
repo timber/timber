@@ -160,7 +160,7 @@ class Attachment extends Post implements CoreInterface {
 
 		/**
 		 * The determine_id returns null when the attachment is a file path,
-		 * thus there's nothing in the DB for us to do here
+		 * thus there’s nothing in the DB for us to do here.
 		 */
 		if ( null === $iid ) {
 			return;
@@ -194,12 +194,14 @@ class Attachment extends Post implements CoreInterface {
 	}
 
 	/**
-	 * Tries to figure out the attachment id you want or otherwise handle when
-	 * a string or other data is sent (object, file path, etc.).
+	 * Determines attachment ID.
+	 *
+	 * Tries to figure out the attachment ID you want, or otherwise handles the case when a string
+	 * or other data is sent (object, file path, etc.).
 	 *
 	 * @internal
 	 * @param mixed $iid A value to test against.
-	 * @return int|null The numberic id we should be using for this post object.
+	 * @return int|null The numeric ID we should be using for this post object.
 	 */
 	protected function determine_id( $iid ) {
 		// Make sure we actually have something to work with.
@@ -303,7 +305,8 @@ class Attachment extends Post implements CoreInterface {
 	 *
 	 * @internal
 	 *
-	 * @param  int $attachment_id The id number of the image in the WP database.
+	 * @param int $attachment_id The ID number of the image in the WP database.
+	 * @return array|int|mixed Attachment info or ID
 	 */
 	protected function get_attachment_info( $attachment_id ) {
 		$image_info = $attachment_id;
@@ -371,7 +374,7 @@ class Attachment extends Post implements CoreInterface {
 	 * </a>
 	 * ```
 	 *
-	 * @return string An URL of the attachment.
+	 * @return string The URL of the attachment.
 	 */
 	public function link() {
 		if ( strlen( $this->abs_url ) ) {
@@ -535,7 +538,7 @@ class Attachment extends Post implements CoreInterface {
 	}
 
 	/**
-	 * Get a PHP array with pathinfo() info from the file
+	 * Gets a PHP array with pathinfo() info from the file.
 	 *
 	 * @api
 	 *
@@ -544,5 +547,4 @@ class Attachment extends Post implements CoreInterface {
 	public function get_pathinfo() {
 		return pathinfo( $this->file );
 	}
-
 }

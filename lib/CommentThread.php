@@ -17,9 +17,9 @@ class CommentThread extends \ArrayObject {
 	/**
 	 * Creates a new `Timber\CommentThread` object.
 	 *
-	 * @param int $post_id The Post ID.
-	 * @param array|boolean $args Optional. An array of arguments
-	 *                            or false if to skip initialization.
+	 * @param int           $post_id The post ID.
+	 * @param array|boolean $args    Optional. An array of arguments or false if initialization
+	 *                               should be skipped.
 	 */
 	public function __construct( $post_id, $args = array() ) {
 		parent::__construct();
