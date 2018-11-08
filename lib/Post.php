@@ -585,7 +585,7 @@ class Post extends Core implements CoreInterface {
 	 * {% for post in job %}
 	 *     <div class="job">
 	 *         <h2>{{ post.title }}</h2>
-	 *         <p>{{ post.terms('category') | join(', ') }}
+	 *         <p>{{ post.terms('category')|join(', ') }}</p>
 	 *     </div>
 	 * {% endfor %}
 	 * </section>
@@ -618,6 +618,19 @@ class Post extends Core implements CoreInterface {
      *     'merge'      => false,
      *     'term_class' => 'My_Term_Class'
      * ) );
+	 * ```
+	 *
+	 * How would the last example look like in Twig?
+	 *
+	 * ```twig
+	 * {{ post.terms({
+	 *     query: {
+	 *         taxonomy: 'custom_tax',
+	 *         orderby: 'count'
+	 *     },
+	 *     merge: false,
+	 *     term_class: 'My_Term_Class'
+	 * })|join(', ') }}
 	 * ```
 	 *
 	 * @param string|array $args {
