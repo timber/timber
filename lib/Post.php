@@ -212,7 +212,7 @@ class Post extends Core implements CoreInterface {
 	 * Determined whether or not an admin/editor is looking at the post in "preview mode" via the
 	 * WordPress admin
 	 * @internal
-	 * @return bool 
+	 * @return bool
 	 */
 	protected static function is_previewing() {
 		global $wp_query;
@@ -574,50 +574,115 @@ class Post extends Core implements CoreInterface {
 		return Helper::get_comment_form($this->ID, $args);
 	}
 
-
 	/**
-	 * Get the terms associated with the post
-	 * This goes across all taxonomies by default
+	 * Gets the terms associated with the post.
+	 *
 	 * @api
+	 * @todo Remove deprecated parameters in 2.x
 	 * @example
 	 * ```twig
 	 * <section id="job-feed">
 	 * {% for post in job %}
-	 *   <div class="job">
-	 *     <h2>{{ post.title }}</h2>
-	 *     <p>{{ post.terms('category') | join(', ') }}
-	 *   </div>
+	 *     <div class="job">
+	 *         <h2>{{ post.title }}</h2>
+	 *         <p>{{ post.terms('category') | join(', ') }}
+	 *     </div>
 	 * {% endfor %}
 	 * </section>
 	 * ```
 	 * ```html
 	 * <section id="job-feed">
-	 *   <div class="job">
-	 * 	   <h2>Cheese Maker</h2>
-	 *     <p>Food, Cheese, Fromage</p>
-	 *   </div>
-	 *   <div class="job">
-	 * 	   <h2>Mime</h2>
-	 *     <p>Performance, Silence</p>
-	 *   </div>
+	 *     <div class="job">
+	 *         <h2>Cheese Maker</h2>
+	 *         <p>Food, Cheese, Fromage</p>
+	 *     </div>
+	 *     <div class="job">
+	 *         <h2>Mime</h2>
+	 *         <p>Performance, Silence</p>
+	 *     </div>
 	 * </section>
 	 * ```
-	 * @param string|array $tax What taxonom(y|ies) to pull from. Defaults to all registered taxonomies for the post type. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you're on your own.
-	 * @param bool $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?
-	 * @return array
+	 * ```php
+	 * // Get all terms of a taxonomy.
+	 * $terms = $post->terms( 'category' );
+	 *
+	 * // Get terms of multiple taxonomies.
+	 * $terms = $post->terms( array( 'books', 'movies' ) );
+	 *
+	 * // Use custom arguments for taxonomy query and options.
+	 * $terms = $post->terms( array(
+     *     'query' => [
+     *         'taxonomy' => 'custom_tax',
+     *         'orderby'  => 'count',
+     *     ],
+     *     'merge'      => false,
+     *     'term_class' => 'My_Term_Class'
+     * ) );
+	 * ```
+	 *
+	 * @param string|array $args {
+	 *     Optional. Name of the taxonomy or array of arguments.
+	 *
+	 *     @type array $query       Any array of term query parameters for getting the terms. See
+	 *                              `WP_Term_Query::__construct()` for supported arguments. Use the
+	 *                              `taxonomy` argument to choose which taxonomies to get. Defaults
+	 *                              to querying all registered taxonomies for the post type. You can
+	 *                              use custom or built-in WordPress taxonomies (category, tag).
+	 *                              Timber plays nice and figures out that `tag`, `tags` or
+	 *                              `post_tag` are all the same (also for `categories` or
+	 *                              `category`). For custom taxonomies you need to define the
+	 *                              proper name.
+	 *     @type bool $merge        Whether the resulting array should be one big one (`true`) or
+	 *                              whether it should be an array of sub-arrays for each taxonomy
+	 *                              (`false`). Default `true`.
+	 *     @type string $term_class The Timber term class to use for the term objects.
+	 * }
+	 * @param bool   $merge      Deprecated. Optional. See `$merge` argument in `$args` parameter.
+	 * @param string $term_class Deprecated. Optional. See `$term_class` argument in `$args`
+	 *                           parameter.
+	 * @return array An array of taxonomies.
 	 */
-	public function terms( $tax = '', $merge = true, $TermClass = '' ) {
-		$taxonomies = array();
-		$TermClass = $TermClass ?: $this->TermClass;
+	public function terms( $args = array(), $merge = true, $term_class = '' ) {
+		// Ensure backwards compatibility.
+		if ( ! is_array( $args ) || isset( $args[0] ) ) {
+			$args = array(
+				'query' => array(
+					'taxonomy' => $args,
+				),
+				'merge' => $merge,
+				'term_class' => $term_class,
+			);
 
+			if ( empty( $args['term_class']) ) {
+				$args['term_class'] = $this->TermClass;
+			}
+		}
+
+		// Defaults.
+		$args = wp_parse_args( $args, array(
+			'query' => array(
+				'taxonomy' => 'all',
+			),
+			'merge' => true,
+			'term_class' => $this->TermClass,
+		) );
+
+		$tax        = $args['query']['taxonomy'];
+		$merge      = $args['merge'];
+		$term_class = $args['term_class'];
+
+		$taxonomies = array();
+
+		// @todo: Remove in 2.x
 		if ( is_string($merge) && class_exists($merge) ) {
-			$TermClass = $merge;
+			$term_class = $merge;
 		}
-		if ( is_array($tax) ) {
+
+		// Build an array of taxonomies.
+		if ( is_array( $tax ) ) {
 			$taxonomies = $tax;
-		}
-		if ( is_string($tax) ) {
-			if ( in_array($tax, array('all', 'any', '')) ) {
+		} elseif ( is_string( $tax ) ) {
+			if ( in_array( $tax, array( 'all', 'any', '' ) ) ) {
 				$taxonomies = get_object_taxonomies($this->post_type);
 			} else {
 				$taxonomies = array($tax);
@@ -627,17 +692,24 @@ class Post extends Core implements CoreInterface {
 		$term_class_objects = array();
 
 		foreach ( $taxonomies as $taxonomy ) {
-			if ( in_array($taxonomy, array('tag', 'tags')) ) {
+			// @todo Remove in 2.x
+			if ( in_array( $taxonomy, array( 'tag', 'tags' ), true ) ) {
 				$taxonomy = 'post_tag';
-			}
-			if ( $taxonomy == 'categories' ) {
+			} elseif ( 'categories' === $taxonomy ) {
 				$taxonomy = 'category';
 			}
 
-			$terms = wp_get_post_terms($this->ID, $taxonomy);
+			// Maybe this is not needed?
+			if ( isset( $args['query']['taxonomy'] ) ) {
+				unset( $args['query']['taxonomy'] );
+			}
 
-			if ( is_wp_error($terms) ) {
-				/* @var $terms WP_Error */
+			$terms = wp_get_post_terms( $this->ID, $taxonomy, $args['query'] );
+
+			if ( is_wp_error( $terms ) ) {
+				/**
+				 * @var $terms \WP_Error
+				 */
 				Helper::error_log("Error retrieving terms for taxonomy '$taxonomy' on a post in timber-post.php");
 				Helper::error_log('tax = '.print_r($tax, true));
 				Helper::error_log('WP_Error: '.$terms->get_error_message());
@@ -645,9 +717,9 @@ class Post extends Core implements CoreInterface {
 				return $term_class_objects;
 			}
 
-			// map over array of wordpress terms, and transform them into instances of the TermClass
-			$terms = array_map(function( $term ) use ($TermClass, $taxonomy) {
-				return call_user_func(array($TermClass, 'from'), $term->term_id, $taxonomy);
+			// Map over array of WordPress terms and transform them into instances of the chosen term class.
+			$terms = array_map(function( $term ) use ($term_class, $taxonomy) {
+				return call_user_func(array($term_class, 'from'), $term->term_id, $taxonomy);
 			}, $terms);
 
 			if ( $merge && is_array($terms) ) {
@@ -656,6 +728,7 @@ class Post extends Core implements CoreInterface {
 				$term_class_objects[$taxonomy] = $terms;
 			}
 		}
+
 		return $term_class_objects;
 	}
 
@@ -1009,7 +1082,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	protected function get_revised_data_from_method( $method, ...$args ) {
 		$rev = $this->get_post_preview_object();
