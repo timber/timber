@@ -620,19 +620,6 @@ class Post extends Core implements CoreInterface {
      * ) );
 	 * ```
 	 *
-	 * How would the last example look like in Twig?
-	 *
-	 * ```twig
-	 * {{ post.terms({
-	 *     query: {
-	 *         taxonomy: 'custom_tax',
-	 *         orderby: 'count'
-	 *     },
-	 *     merge: false,
-	 *     term_class: 'My_Term_Class'
-	 * })|join(', ') }}
-	 * ```
-	 *
 	 * @param string|array $args {
 	 *     Optional. Name of the taxonomy or array of arguments.
 	 *
