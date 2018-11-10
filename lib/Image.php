@@ -466,9 +466,9 @@ class Image extends Post implements CoreInterface {
 	 *	@return bool|string
 	 */
 	public function srcset( $size = "full" ) {
-        if($this->is_image()){
-            return wp_get_attachment_image_srcset($this->ID, $size);
-        }
+		if( $this->is_image() ){
+			return wp_get_attachment_image_srcset($this->ID, $size);
+		}
 	}
 	
 	/**
@@ -485,9 +485,9 @@ class Image extends Post implements CoreInterface {
 	 *	@return bool|string
 	 */
 	public function img_sizes( $size = "full" ) {
-        if($this->is_image()){
-            return wp_get_attachment_image_sizes($this->ID, $size);
-        }
+		if( $this->is_image() ){
+			return wp_get_attachment_image_sizes($this->ID, $size);
+		}
 	}
 	
 	/**
@@ -518,6 +518,7 @@ class Image extends Post implements CoreInterface {
 
 	/**
 	 * @deprecated 0.21.9 use TimberImage::src
+	 * @codeCoverageIgnore
 	 * @internal
 	 * @param string $size
 	 * @return bool|string
@@ -530,6 +531,7 @@ class Image extends Post implements CoreInterface {
 
 	/**
 	 * @deprecated since 0.21.9 use src() instead
+	 * @codeCoverageIgnore
 	 * @return string
 	 */
 	public function url( $size = '' ) {
@@ -540,6 +542,7 @@ class Image extends Post implements CoreInterface {
 
 	/**
 	 * @deprecated since 0.21.9 use src() instead
+	 * @codeCoverageIgnore
 	 * @return string
 	 */
 	public function get_url( $size = '' ) {
