@@ -34,7 +34,7 @@ _Twig is the template language powering Timber; if you need a little background 
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
 
 **Changes for Theme Developers**
-- Please add any usage changes here so theme developers are informed of changes.
+- You can now change the query parameters that are used when getting a post’s terms through `$post->terms()`. #1802
 
 = 1.8.1 =
 **Fixes and improvements**
