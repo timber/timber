@@ -141,41 +141,34 @@ class ImageHelper {
 		fclose($fh);
 		return $count > 1;
 	}
-	
-	/** 
-	 *
-	 * Checks if file is an SVG
-	 * @param string $file_path file path.
-	 * @return boolean true if svg, false if not svg or file doesn't exist.
-	 */
-	public static function is_svg( $file_path ) {
-		$ret = false;
-		if ( isset($file_path) && '' !== $file_path && file_exists($file_path) ) {
-			$mime = self::_mime_content_type($file_path);
-    		$ret  = in_array($mime, ['image/svg+xml', 'text/html', 'text/plain', 'image/svg']);
-    	}
-    	return $ret;
-	}
 
 	/**
-	 * 
-	 * Reads a file's mime type. This is a hack b/c some installs of PHP don't enable this function
-	 * by default. See #1798 for more info
-	 * @since 1.8.1
-	 * @param string $filename to test.
-	 * @return string|boolean mime type if found (eg. `image/svg` or `text/plain`) false if not
+	 * Checks if file is an SVG.
+	 *
+	 * @param string $file_path File path to check.
+	 * @return bool True if SVG, false if not SVG or file doesn't exist.
 	 */
-	static function _mime_content_type( $filename ) {
-		if ( function_exists( 'mime_content_type' ) ) {
-			return mime_content_type( $filename );
+	public static function is_svg( $file_path ) {
+		if ( ! isset( $file_path ) || '' === $file_path || ! file_exists( $file_path ) ) {
+			return false;
 		}
-	    $result = new \finfo();
 
-	    if ( file_exists( $filename ) === true ) {
-	        return $result->file( $filename, FILEINFO_MIME_TYPE );
-	    }
+		/**
+		 * Try reading mime type.
+		 *
+		 * SVG images are not allowed by default in WordPress, so we have to pass a default mime
+		 * type for SVG images.
+		 */
+		$mime = wp_check_filetype_and_ext( $file_path, basename( $file_path ), array(
+			'svg' => 'image/svg+xml',
+		) );
 
-	    return false;
+		return in_array( $mime['type'], array(
+			'image/svg+xml',
+			'text/html',
+			'text/plain',
+			'image/svg',
+		) );
 	}
 
 	/**
@@ -209,7 +202,7 @@ class ImageHelper {
     /**
      * Generates a new image by converting the source into WEBP
      *
-     * @param string  $src      a url or path to the image (http://example.org/wp-content/uploads/2014/image.jpg) 
+     * @param string  $src      a url or path to the image (http://example.org/wp-content/uploads/2014/image.jpg)
      *                          or (/wp-content/uploads/2014/image.jpg)
 	 * @param int     $quality  ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
      * @param bool    $force
