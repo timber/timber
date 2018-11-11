@@ -55,41 +55,23 @@ class Twig {
 		 * Timber object functions.
 		 */
 
-		$twig->addFunction(new Twig_Function('Post', function( $pid, $PostClass = 'Timber\Post' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $PostClass($p);
-						}
-						return $pid;
-					}
-					return new $PostClass($pid);
-				} ));
+		$twig->addFunction(new Twig_Function('Post', function( $post_id, $PostClass = 'Timber\Post' ) {
+			return self::maybe_convert_array( $post_id, $PostClass );
+		} ) );
 
 		$twig->addFunction( new Twig_Function( 'PostQuery', function( $args ) {
 			return new PostQuery( $args );
 		} ) );
 
-		$twig->addFunction(new Twig_Function('Image', function( $pid, $ImageClass = 'Timber\Image' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $ImageClass($p);
-						}
-						return $pid;
-					}
-					return new $ImageClass($pid);
-				} ));
+		$twig->addFunction(new Twig_Function('Image', function( $post_id, $ImageClass = 'Timber\Image' ) {
+			return self::maybe_convert_array( $post_id, $ImageClass );
+		} ) );
 		$twig->addFunction(new Twig_Function('Term', array($this, 'handle_term_object')));
-		$twig->addFunction(new Twig_Function('User', function( $pid, $UserClass = 'Timber\User' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $UserClass($p);
-						}
-						return $pid;
-					}
-					return new $UserClass($pid);
-				} ));
-		$twig->addFunction( new Twig_Function( 'Attachment', function( $post_id, $attachment_class = 'Timber\Attachment' ) {
-			return self::maybe_convert_array( $post_id, $attachment_class );
+		$twig->addFunction(new Twig_Function('User', function( $post_id, $UserClass = 'Timber\User' ) {
+			return self::maybe_convert_array( $post_id, $UserClass );
+		} ) );
+		$twig->addFunction( new Twig_Function( 'Attachment', function( $post_id, $AttachmentClass = 'Timber\Attachment' ) {
+			return self::maybe_convert_array( $post_id, $AttachmentClass );
 		} ) );
 
 		/**
@@ -168,12 +150,12 @@ class Twig {
 	 * Function for Term or Timber\Term() within Twig
 	 * @since 1.5.1
 	 * @author @jarednova
-	 * @param integer $tid the term ID to search for
+	 * @param integer $term_id the term ID to search for
 	 * @param string $taxonomy the taxonomy to search inside of. If sent a class name, it will use that class to support backwards compatibility
 	 * @param string $TermClass the class to use for processing the term
 	 * @return Term|array
 	 */
-	function handle_term_object( $tid, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+	function handle_term_object( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
 		if ( $taxonomy != $TermClass ) {
 			// user has sent any additonal parameters, process
 			$processed_args = self::process_term_args($taxonomy, $TermClass);
@@ -181,13 +163,7 @@ class Twig {
 			$TermClass = $processed_args['TermClass'];
 		}
 
-		if ( is_array($tid) && !Helper::is_array_assoc($tid) ) {
-			foreach ( $tid as &$p ) {
-				$p = new $TermClass($p, $taxonomy);
-			}
-			return $tid;
-		}
-		return new $TermClass($tid, $taxonomy);
+		return self::maybe_convert_array( $term_id, $TermClass );
 	}
 
 	/**
