@@ -163,7 +163,14 @@ class Twig {
 			$TermClass = $processed_args['TermClass'];
 		}
 
-		return self::maybe_convert_array( $term_id, $TermClass );
+		if ( is_array($term_id) && !Helper::is_array_assoc($term_id) ) {
+			foreach ( $term_id as &$p ) {
+				$p = new $TermClass($p, $taxonomy);	
+			}	
+			return $term_id;
+		}
+
+		return new $TermClass($term_id, $taxonomy);
 	}
 
 	/**
