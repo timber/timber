@@ -1089,7 +1089,10 @@ class Post extends Core implements CoreInterface {
 	/**
 	 *
 	 */
-	protected function get_revised_data_from_method( $method, ...$args ) {
+	protected function get_revised_data_from_method( $method, $args = false ) {
+		if ( ! is_array($args) ) {
+			$args = array($args);
+		}
 		$rev = $this->get_post_preview_object();
 		if ( $rev && $this->ID == $rev->post_parent && $this->ID != $rev->ID ) {
 			return call_user_func_array( array($rev, $method), $args );
@@ -1110,7 +1113,7 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function content( $page = 0, $len = -1 ) {
-		if ( $rd = $this->get_revised_data_from_method('content', $page, $len) ) {
+		if ( $rd = $this->get_revised_data_from_method('content', array($page, $len) ) ) {
 			return $rd;
 		}
 		if ( $form = $this->maybe_show_password_form() ) {
