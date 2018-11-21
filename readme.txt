@@ -37,8 +37,11 @@ _Twig is the template language powering Timber; if you need a little background 
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
 
 
-= 1.8.2 =
+= 1.8.3 =
+**Fixes and improvements**
+* Hotfix for PHP versions 5.5 and 5.4
 
+= 1.8.2 =
 **Changes for Theme Developers**
 - You can now change the query parameters that are used when getting a post’s terms through `$post->terms()`. #1802
 - New attributes for responsive images `post.thumbnail.srcset` and `post.thumbnail.sizes` #1819 (thanks @maxxwv)
