@@ -162,37 +162,30 @@ class ImageHelper {
 	/**
 	 * Checks if file is an SVG.
 	 *
-	 * @param string $file_path File path.
-	 * @return boolean True if svg, false if not svg or file doesn't exist.
+	 * @param string $file_path File path to check.
+	 * @return bool True if SVG, false if not SVG or file doesn't exist.
 	 */
 	public static function is_svg( $file_path ) {
-		$ret = false;
-		if ( isset($file_path) && '' !== $file_path && file_exists($file_path) ) {
-			$mime = self::_mime_content_type($file_path);
-    		$ret  = in_array($mime, array('image/svg+xml', 'text/html', 'text/plain', 'image/svg') );
-    	}
-    	return $ret;
-	}
-
-	/**
-	 * Reads a file's mime type. This is a hack b/c some installs of PHP don't enable this function
-	 * by default. See #1798 for more info.
-	 *
-	 * @since 1.8.1
-	 * @param string $filename File name to test.
-	 * @return string|boolean Mime type if found (eg. `image/svg` or `text/plain`) false if not.
-	 */
-	static function _mime_content_type( $filename ) {
-		if ( function_exists( 'mime_content_type' ) ) {
-			return mime_content_type( $filename );
-		}
-		$result = new \finfo();
-
-		if ( file_exists( $filename ) === true ) {
-			return $result->file( $filename, FILEINFO_MIME_TYPE );
+		if ( ! isset( $file_path ) || '' === $file_path || ! file_exists( $file_path ) ) {
+			return false;
 		}
 
-		return false;
+		/**
+		 * Try reading mime type.
+		 *
+		 * SVG images are not allowed by default in WordPress, so we have to pass a default mime
+		 * type for SVG images.
+		 */
+		$mime = wp_check_filetype_and_ext( $file_path, basename( $file_path ), array(
+			'svg' => 'image/svg+xml',
+		) );
+
+		return in_array( $mime['type'], array(
+			'image/svg+xml',
+			'text/html',
+			'text/plain',
+			'image/svg',
+		) );
 	}
 
 	/**

@@ -466,8 +466,6 @@
 			$this->assertEquals('My steak', trim($string));
 		}
 
-
-
 		function testPostParent(){
 			$parent_id = $this->factory->post->create();
 			$child_id = $this->factory->post->create(array('post_parent' => $parent_id));
@@ -743,6 +741,179 @@
 			$this->assertEquals(count($post_tag_terms) + count($post_team_terms), count($post_tag_and_team_terms));
 		}
 
+		function testPostTermsArgumentStyle() {
+			$pid      = $this->factory->post->create();
+			$post     = new TimberPost( $pid );
+			$category = wp_insert_term( 'Uncategorized', 'category' );
+			self::set_object_terms( $pid, $category, 'category' );
+
+			// create a new tag and associate it with the post
+			$dummy_tag = wp_insert_term( 'whatever', 'post_tag' );
+			self::set_object_terms( $pid, $dummy_tag, 'post_tag' );
+
+			// test expected tags
+			$timber_tags = $post->terms( array(
+				'query' => array(
+					'taxonomy' => 'post_tag',
+				),
+			) );
+			$dummy_timber_tag = new TimberTerm( $dummy_tag['term_id'], 'post_tag' );
+			$this->assertEquals( 'whatever', $timber_tags[0]->slug );
+			$this->assertEquals( $dummy_timber_tag, $timber_tags[0] );
+
+			// register a custom taxonomy, create some terms in it and associate to post
+			register_taxonomy( 'team', 'post' );
+			$team_names = array( 'Patriots', 'Bills', 'Dolphins', 'Jets' );
+
+			foreach ( $team_names as $team_name ) {
+				$team_term = wp_insert_term( $team_name, 'team' );
+				self::set_object_terms( $pid, $team_term, 'team' );
+			}
+
+			$this->assertEquals( count( $team_names ), count( $post->terms( array(
+				'query' => array(
+					'taxonomy' => 'team',
+				),
+			) ) ) );
+
+			// test tags method - wrapper for $this->get_terms('tags')
+			$this->assertEquals($post->tags(), $post->terms( array(
+				'query' => array(
+					'taxonomy' => 'tag',
+				),
+			) ) );
+			$this->assertEquals($post->tags(), $post->terms( array(
+				'query' => array(
+					'taxonomy' => 'tags',
+				),
+			) ) );
+			$this->assertEquals($post->tags(), $post->terms( array(
+				'query' => array(
+					'taxonomy' => 'post_tag',
+				),
+			) ) );
+
+			// test categories method - wrapper for $this->get_terms('category')
+			$this->assertEquals($post->categories(), $post->terms( array(
+				'query' => array(
+					'taxonomy' => 'category',
+				),
+			) ) );
+			$this->assertEquals($post->categories(), $post->terms( array(
+				'query' => array(
+					'taxonomy' => 'categories',
+				),
+			) ));
+
+			// test using an array of taxonomies
+			$post_tag_terms = $post->terms( array(
+				'query' => array(
+					'taxonomy' => array( 'post_tag' ),
+				),
+			) );
+			$this->assertEquals(1, count($post_tag_terms));
+			$post_team_terms = $post->terms( array(
+				'query' => array(
+					'taxonomy' => array( 'team' ),
+				),
+			) );
+			$this->assertEquals(count($team_names), count($post_team_terms));
+
+			// test multiple taxonomies
+			$post_tag_and_team_terms = $post->terms( array(
+				'query' => array(
+					'taxonomy' => array( 'post_tag', 'team' ),
+				),
+			) );
+			$this->assertEquals(count($post_tag_terms) + count($post_team_terms), count($post_tag_and_team_terms));
+		}
+
+		function testPostTermsMerge() {
+			$pid  = $this->factory->post->create();
+			$post = new Timber\Post( $pid );
+
+			// register a custom taxonomy, create some terms in it and associate to post
+			register_taxonomy( 'team', 'post' );
+			$team_names = array( 'Patriots', 'Bills', 'Dolphins', 'Jets' );
+
+			foreach ( $team_names as $team_name ) {
+				$team_term = wp_insert_term( $team_name, 'team' );
+				self::set_object_terms( $pid, $team_term, 'team' );
+			}
+
+			register_taxonomy( 'book', 'post' );
+			$book_names = array( 'Fall of Giants', 'Winter of the World', 'Edge of Eternity' );
+
+			foreach ( $book_names as $book_name ) {
+				$book_term = wp_insert_term( $book_name, 'book' );
+				self::set_object_terms( $pid, $book_term, 'book' );
+			}
+
+			$team_and_book_terms = $post->terms( array(
+				'query' => array(
+					'taxonomy' => array( 'team', 'book' ),
+				),
+				'merge' => false,
+			) );
+			$this->assertEquals(4, count($team_and_book_terms['team']));
+			$this->assertEquals(3, count($team_and_book_terms['book']));
+		}
+
+		function testPostTermQueryArgs() {
+			$pid  = $this->factory->post->create();
+			$post = new Timber\Post( $pid );
+
+			// register a custom taxonomy, create some terms in it and associate to post
+			register_taxonomy( 'team', 'post' );
+			$team_names = array( 'Patriots', 'Bills', 'Dolphins', 'Jets' );
+
+			foreach ( $team_names as $team_name ) {
+				$team_term = wp_insert_term( $team_name, 'team' );
+				self::set_object_terms( $pid, $team_term, 'team' );
+			}
+
+			register_taxonomy( 'book', 'post' );
+			$book_names = array( 'Fall of Giants', 'Winter of the World', 'Edge of Eternity' );
+
+			foreach ( $book_names as $book_name ) {
+				$book_term = wp_insert_term( $book_name, 'book' );
+				self::set_object_terms( $pid, $book_term, 'book' );
+			}
+
+			// Test order.
+			$team_and_book_terms = $post->terms( array(
+				'query' => array(
+					'taxonomy' => array( 'team', 'book' ),
+					'orderby'  => 'name',
+				),
+			) );
+
+			$this->assertEquals( 'Bills', $team_and_book_terms[0]->title );
+			$this->assertEquals( 'Edge of Eternity', $team_and_book_terms[2]->title );
+
+			// Test number of terms
+			$team_and_book_terms = $post->terms( array(
+				'query' => array(
+					'taxonomy' => array( 'team', 'book' ),
+					'number'  => 3,
+				),
+			) );
+
+			$this->assertCount( 3, $team_and_book_terms );
+
+			// Test query in Twig
+			$string = Timber::compile_string( "{{
+			    post.terms({
+			        query: {
+			            taxonomy: ['team', 'book'],
+			            number: 3,
+			            orderby: 'name'
+			        }
+			  })|join(', ') }}", array( 'post' => $post ) );
+
+			$this->assertEquals( 'Bills, Dolphins, Edge of Eternity', $string );
+		}
+
 		function set_object_terms( $pid, $term_info, $taxonomy = 'post_tag' , $append = true ) {
 			$term_id = 0;
 			if ( is_array($term_info) ) {
@@ -769,6 +940,15 @@
 
 			// test return class
 			$terms = $post->terms('post_tag', true, $class_name);
+			$this->assertEquals($class_name, get_class($terms[0]));
+
+			// Test argument style.
+			$terms = $post->terms( array(
+				'query'      => [
+					'taxonomy' => 'post_tag',
+				],
+				'term_class' => $class_name,
+			) );
 			$this->assertEquals($class_name, get_class($terms[0]));
 
 			// test return class for deprecated $post->get_terms
