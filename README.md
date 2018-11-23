@@ -87,6 +87,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Timber Starter Theme**](https://github.com/timber/starter-theme) The "_s" of Timber to give you an easy start to the most basic theme you can build upon and customize.
 * [**Timber Debug Bar**](https://github.com/timber/debug-bar-timber) Adds a debug bar panel that will show you which template is in-use and the data sent to your twig file.
 * [**Timber Dump Extension**](https://github.com/nlemoine/timber-dump-extension) Debug output with nice formatting.
+* [**Timber WebLink Extension**](https://github.com/nlemoine/timber-weblink-extension) Provides Twig functions to manage the Link HTTP header needed for Web Linking when using HTTP/2 Server Push as well as Resource Hints.
 * [**TimberPhoton**](https://github.com/slimndap/TimberPhoton) Plug-in to use JetPack's free Photon image manipulation and CDN with Timber.
 * [**Timber CLI**](https://github.com/nclud/wp-timber-cli) A CLI for Timber.
 * [**Timber Sugar**](https://github.com/timber/sugar) A catch-all for goodies to use w Timber.
