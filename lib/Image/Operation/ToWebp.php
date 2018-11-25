@@ -5,6 +5,8 @@ namespace Timber\Image\Operation;
 use Timber\Image\Operation as ImageOperation;
 
 /**
+ * This class is used to process webp images. Not all server configurations support webp. 
+ * If webp is not enabled, Timber will generate webp images instead
  * @codeCoverageIgnore
  */
 class ToWebp extends ImageOperation {
@@ -21,7 +23,7 @@ class ToWebp extends ImageOperation {
 	/**
 	 * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
 	 * @param   string    $src_extension    ignored
-	 * @return  string    the final filename to be used (ex: my-awesome-pic.jpg)
+	 * @return  string    the final filename to be used (ex: my-awesome-pic.webp)
 	 */
 	public function filename( $src_filename, $src_extension = 'webp' ) {
 		$new_name = $src_filename  . '.webp';
@@ -32,7 +34,7 @@ class ToWebp extends ImageOperation {
 	 * Performs the actual image manipulation,
 	 * including saving the target file.
 	 *
-	 * @param  string $load_filename filepath (not URL) to source file (ex: /src/var/www/wp-content/uploads/my-pic.jpg)
+	 * @param  string $load_filename filepath (not URL) to source file (ex: /src/var/www/wp-content/uploads/my-pic.webp)
 	 * @param  string $save_filename filepath (not URL) where result file should be saved
 	 *                               (ex: /src/var/www/wp-content/uploads/my-pic.webp)
 	 * @return bool                  true if everything went fine, false otherwise
