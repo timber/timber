@@ -2,6 +2,7 @@
 
 namespace Timber\Image\Operation;
 
+use Timber\Helper as Helper;
 use Timber\Image\Operation as ImageOperation;
 
 /**
@@ -63,6 +64,7 @@ class ToWebp extends ImageOperation {
         }
 
 		if (!function_exists('imagewebp')) {
+			Helper::error_log('The function imagewebp does not exist on this server to convert image to '.$save_filename.'.');
 			return false;
 		}
 
