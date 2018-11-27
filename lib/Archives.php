@@ -9,6 +9,7 @@ use Timber\URLHelper;
  * Class Archive
  *
  * The `Timber\Archives` class is used to generate a menu based on the date archives of your posts.
+ *
  * The [Nieman Foundation News site](http://nieman.harvard.edu/news/) has an example of how the
  * output can be used in a real site ([screenshot](https://cloud.githubusercontent.com/assets/1298086/9610076/3cdca596-50a5-11e5-82fd-acb74c09c482.png)).
  *
@@ -62,17 +63,17 @@ class Archives extends Core {
 	 *
 	 * @api
 	 * @param array  $args {
-	 *      Array of arguments.
+	 *      Optional. Array of arguments.
 	 *
-	 *      @type bool $show_year => false
+	 *      @type bool   $show_year => false
 	 *      @type string
 	 *      @type string $type => 'monthly-nested'
-	 *      @type int $limit => -1
-	 *      @type bool $show_post_count => false
+	 *      @type int    $limit => -1
+	 *      @type bool   $show_post_count => false
 	 *      @type string $order => 'DESC'
 	 *      @type string $post_type => 'post'
-	 *      @type bool $show_year => false
-	 *      @type bool $nested => false
+	 *      @type bool   $show_year => false
+	 *      @type bool   $nested => false
 	 * }
 	 * @param string $base Any additional paths that need to be prepended to the URLs that are
 	 *                     generated, for example: "tags". Default ''.
@@ -98,6 +99,7 @@ class Archives extends Core {
 	 * @internal
 	 * @param string $url
 	 * @param string $text
+	 * @param int    $post_count
 	 * @return mixed
 	 */
 	protected function get_archives_link( $url, $text, $post_count = 0 ) {
@@ -112,7 +114,7 @@ class Archives extends Core {
 
 	/**
 	 * @internal
-	 * @param array $args
+	 * @param array  $args
 	 * @param string $last_changed
 	 * @param string $join
 	 * @param string $where
@@ -196,6 +198,8 @@ class Archives extends Core {
 	}
 
 	/**
+	 * Gets archive items.
+	 *
 	 * @api
 	 * @deprecated 2.0.0, use `{{ archives.items }}` instead.
 	 * @see \Timber\Archives::items()
@@ -209,7 +213,7 @@ class Archives extends Core {
 
 	/**
 	 * @api
-	 * @param array|string $args
+	 * @param array|string $args Optional. Array of arguments.
 	 * @return array|string
 	 */
 	public function items( $args = null ) {

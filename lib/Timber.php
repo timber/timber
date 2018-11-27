@@ -40,7 +40,7 @@ use Timber\Loader;
  */
 class Timber {
 
-  public static $version = '2.0.0';
+    public static $version = '2.0.0';
 	public static $locations;
 	public static $dirname = 'views';
 	public static $twig_cache = false;
@@ -327,7 +327,7 @@ class Timber {
 			 * means that this data will be available on every page that is initialized with
 			 * `Timber::context()`.
 			 *
-			 * Be aware that data will be cached as soon as you call `Timber::get_context()` for the
+			 * Be aware that data will be cached as soon as you call `Timber::context()` for the
 			 * first time. That’s why you should add this filter before you call
 			 * `Timber::context()`.
 			 *

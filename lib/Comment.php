@@ -97,14 +97,18 @@ class Comment extends Core implements CoreInterface {
 	protected $children = array();
 
 	/**
+	 * Build a Timber\Comment
+	 *
 	 * @api
-	 * @param int $cid
+	 * @param int $cid Comment ID.
 	 */
 	public function __construct( $cid ) {
 		$this->init($cid);
 	}
 
 	/**
+	 * Gets the content.
+	 *
 	 * @api
 	 * @return string
 	 */
@@ -129,6 +133,8 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Gets the author.
+	 *
 	 * @api
 	 * @example
 	 * ```twig
@@ -174,8 +180,8 @@ class Comment extends Core implements CoreInterface {
 	 * ```html
 	 * <img src="http://gravatar.com/i/sfsfsdfasdfsfa.jpg" alt="Image of Katherine Rich" />
 	 * ```
-	 * @param int $size
-	 * @param string $default
+	 * @param int    $size     Size of avatar.
+	 * @param string $default  Default avatar URL.
 	 * @return bool|mixed|string
 	 */
 	public function avatar( $size = 92, $default = '' ) {
@@ -209,6 +215,8 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Gets the content.
+	 *
 	 * @api
 	 * @return string
 	 */
@@ -217,6 +225,8 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Gets the comment children.
+	 *
 	 * @api
 	 * @return array Comments
 	 */
@@ -225,8 +235,11 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Adds a child.
+	 *
 	 * @api
-	 * @param Comment $child_comment;
+	 * @param \Timber\Comment $child_comment Comment child to add.
+	 * @return array Comment children.
 	 */
 	public function add_child( Comment $child_comment ) {
 		if ( !is_array($this->children) ) {
@@ -236,8 +249,10 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Updates the comment depth.
+	 *
 	 * @api
-	 * @param int $depth
+	 * @param int $depth Level of depth.
 	 */
 	public function update_depth( $depth = 0 ) {
 		$this->_depth = $depth;
@@ -352,6 +367,8 @@ class Comment extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Checks if the comment is a child.
+	 *
 	 * @api
 	 * @return bool
 	 */
@@ -526,6 +543,7 @@ class Comment extends Core implements CoreInterface {
 	 * Enqueue the WP threaded comments JavaScript, and fetch the reply link for various comments.
 	 *
 	 * @api
+	 * @param string $reply_text Text of the reply link.
 	 * @return string
 	 */
 	public function reply_link( $reply_text = 'Reply' ) {

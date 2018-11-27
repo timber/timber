@@ -15,9 +15,11 @@ class CommentThread extends \ArrayObject {
 	var $_order = 'ASC';
 
 	/**
-	 * @param int $post_id
-	 * @param array|boolean $args an array of arguments
-	 * 						or false if to skip initialization
+	 * Creates a new `Timber\CommentThread` object.
+	 *
+	 * @param int           $post_id The post ID.
+	 * @param array|boolean $args    Optional. An array of arguments or false if initialization
+	 *                               should be skipped.
 	 */
 	public function __construct( $post_id, $args = array() ) {
 		parent::__construct();
@@ -43,7 +45,9 @@ class CommentThread extends \ArrayObject {
 	}
 
 	/**
-	 * @return int the number of comments on a post
+	 * Gets the number of comments on a post.
+	 *
+	 * @return int The number of comments on a post.
 	 */
 	public function mecount() {
 		return get_comments_number($this->post_id);
@@ -64,6 +68,11 @@ class CommentThread extends \ArrayObject {
 		return $this;
 	}
 
+	/**
+	 * Inits the object.
+	 *
+	 * @param array $args Optional.
+	 */
 	public function init( $args = array() ) {
 		global $overridden_cpage;
 		$args = self::merge_args($args);
@@ -88,8 +97,6 @@ class CommentThread extends \ArrayObject {
 				$parents[$comment->ID] = $comment;
 			}
 		}
-
-
 
 		foreach ( $children as &$comment ) {
 			$parent_id = $comment->comment_parent;

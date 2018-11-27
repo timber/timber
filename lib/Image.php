@@ -15,7 +15,8 @@ namespace Timber;
  * $context         = Timber::context();
  * $context['post'] = Timber::context_post( $post );
  *
- * // lets say you have an alternate large 'cover image' for your post stored in a custom field which returns an image ID
+ * // Lets say you have an alternate large 'cover image' for your post
+ * // stored in a custom field which returns an image ID.
  * $cover_image_id = $post->cover_image;
  * $context['cover_image'] = new Timber\Image($cover_image_id);
  * Timber::render('single.twig', $context);
@@ -29,7 +30,9 @@ namespace Timber;
  *     {{post.content}}
  *   </div>
  *
- *  <img src="{{ Image(post.custom_field_with_image_id).src }}" alt="Another way to initialize images as Timber\Image objects, but within Twig" />
+ *  <img
+ *    src="{{ Image(post.custom_field_with_image_id).src }}"
+ *    alt="Another way to initialize images as Timber\Image objects, but within Twig" />
  * </article>
  * ```
  *
@@ -40,7 +43,9 @@ namespace Timber;
  *   <div class="body">
  *     Whatever whatever
  *   </div>
- *   <img src="http://example.org/wp-content/uploads/2015/06/kurt.jpg" alt="Another way to initialize images as Timber\Image objects, but within Twig" />
+ *   <img
+ *     src="http://example.org/wp-content/uploads/2015/06/kurt.jpg"
+ *     alt="Another way to initialize images as Timber\Image objects, but within Twig" />
  * </article>
  * ```
  */
@@ -54,7 +59,7 @@ class Image extends Attachment {
 	public $object_type = 'image';
 
 	/**
-	 * Representation
+	 * Representation.
 	 *
 	 * @api
 	 * @var string What does this class represent in WordPress terms?
@@ -188,7 +193,8 @@ class Image extends Attachment {
 	 *   <img src="{{ post.thumbnail.src|resize(500) }}" alt="A sumo wrestler" />
 	 * {% endif %}
 	 * ```
-	 * @return float
+	 *
+	 * @return float The aspect ratio of the image.
 	 */
 	public function aspect() {
 		$w = intval( $this->width() );
@@ -212,7 +218,8 @@ class Image extends Attachment {
 	 * <img src="http://example.org/wp-content/uploads/2015/08/pic.jpg"
 	 *     alt="You should always add alt texts to your images for better accessibility" />
 	 * ```
-	 * @return string alt text stored in WordPress
+	 *
+	 * @return string Alt text stored in WordPress.
 	 */
 	public function alt() {
 		$alt = $this->meta( '_wp_attachment_image_alt' );
@@ -225,7 +232,6 @@ class Image extends Attachment {
 	 * @internal
 	 *
 	 * @param string $dimension The requested dimension. Either `width` or `height`.
-	 *
 	 * @return int|null The requested dimension. Null if image file couldn’t be found.
 	 */
 	protected function get_dimension( $dimension ) {
@@ -253,8 +259,7 @@ class Image extends Attachment {
 	 *
 	 * @internal
 	 *
-	 * @param string|null $dim The requested dimension. Either `width` or `height`.
-	 *
+	 * @param string|null $dim Optional. The requested dimension. Either `width` or `height`.
 	 * @return int The requested dimension in pixels.
 	 */
 	protected function get_dimension_loaded( $dim = null ) {
@@ -265,6 +270,44 @@ class Image extends Attachment {
 		}
 
 		return $this->dimensions[0];
+	}
+
+	/**
+	 * @param string $size a size known to WordPress (like "medium")
+	 * @api
+	 * @example
+	 * ```twig
+	 * <h1>{{ post.title }}</h1>
+	 * <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumnbail.srcset }}" />
+	 * ```
+	 * ```html
+	 * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w" />
+	 * ```
+	 *	@return bool|string
+	 */
+	public function srcset( $size = "full" ) {
+		if( $this->is_image() ){
+			return wp_get_attachment_image_srcset($this->ID, $size);
+		}
+	}
+
+	/**
+	 * @param string $size a size known to WordPress (like "medium")
+	 * @api
+	 * @example
+	 * ```twig
+	 * <h1>{{ post.title }}</h1>
+	 * <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumnbail.srcset }}" sizes="{{ post.thumbnail.sizes }}" />
+	 * ```
+	 * ```html
+	 * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w sizes="(max-width: 1024px) 100vw, 102" />
+	 * ```
+	 *	@return bool|string
+	 */
+	public function img_sizes( $size = "full" ) {
+		if( $this->is_image() ){
+			return wp_get_attachment_image_sizes($this->ID, $size);
+		}
 	}
 
 	/**
@@ -282,13 +325,17 @@ class Image extends Attachment {
 	}
 
 	/**
-	* Tries to figure out the attachment id you want or otherwise handle when
-	* a string or other data is sent (object, file path, etc.)
-	* @internal
-	* @deprecated since 2.0 functionality will no longer be supported in future releases
-	* @param mixed a value to test against
-	* @return int|null the numberic id we should be using for this post object 
-	*/
+	 * Determines the ID.
+	 *
+	 * Tries to figure out the attachment ID or otherwise handles the case when a string or other
+	 * data is sent (object, file path, etc.).
+	 *
+	 * @internal
+	 * @deprecated since 2.0 Functionality will no longer be supported in future releases.
+	 *
+	 * @param mixed $iid A value to test against.
+	 * @return int|null The numberic ID that should be used for this post object.
+	 */
 	protected function determine_id( $iid ) {
 		$iid = parent::determine_id( $iid );
 		if ( $iid instanceof \WP_Post ) {
