@@ -56,7 +56,7 @@ Uses WordPress' internal `esc_url` function on text. This should be used to sani
 
 **Twig**
 
-`<a href="{{ post.get_field('custom_link')|e('esc_url') }}"></a>`
+`<a href="{{ post.meta('custom_link')|e('esc_url') }}"></a>`
 
 **Output**
 
@@ -72,7 +72,7 @@ This is for plain old text. If your content has HTML markup you should not use `
 
 **Twig**
 
-`<div class="equation">{{ post.get_field('equation')|e('esc_html') }}</div>`
+`<div class="equation">{{ post.meta('equation')|e('esc_html') }}</div>`
 
 **Output**
 
@@ -86,7 +86,7 @@ Escapes text strings for echoing in JS. It is intended to be used for inline JS 
 
 **Twig**
 
-`<script>var bar = '{{ post.get_field('name') }}';</script>`
+`<script>var bar = '{{ post.meta('name') }}';</script>`
 
 **Output**
 
