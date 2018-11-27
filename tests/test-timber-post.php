@@ -722,13 +722,10 @@
 			$this->assertEquals(6, count($post->terms()));
 
 			// test tags method - wrapper for $this->get_terms('tags')
-			$this->assertEquals($post->tags(), $post->terms('tag'));
-			$this->assertEquals($post->tags(), $post->terms('tags'));
 			$this->assertEquals($post->tags(), $post->terms('post_tag'));
 
 			// test categories method - wrapper for $this->get_terms('category')
 			$this->assertEquals($post->categories(), $post->terms('category'));
-			$this->assertEquals($post->categories(), $post->terms('categories'));
 
 			// test using an array of taxonomies
 			$post_tag_terms = $post->terms(array('post_tag'));
@@ -743,7 +740,7 @@
 
 		function testPostTermsArgumentStyle() {
 			$pid      = $this->factory->post->create();
-			$post     = new TimberPost( $pid );
+			$post     = new Timber\Post( $pid );
 			$category = wp_insert_term( 'Uncategorized', 'category' );
 			self::set_object_terms( $pid, $category, 'category' );
 
@@ -757,7 +754,7 @@
 					'taxonomy' => 'post_tag',
 				),
 			) );
-			$dummy_timber_tag = new TimberTerm( $dummy_tag['term_id'], 'post_tag' );
+			$dummy_timber_tag = new Timber\Term( $dummy_tag['term_id'], 'post_tag' );
 			$this->assertEquals( 'whatever', $timber_tags[0]->slug );
 			$this->assertEquals( $dummy_timber_tag, $timber_tags[0] );
 
@@ -779,16 +776,6 @@
 			// test tags method - wrapper for $this->get_terms('tags')
 			$this->assertEquals($post->tags(), $post->terms( array(
 				'query' => array(
-					'taxonomy' => 'tag',
-				),
-			) ) );
-			$this->assertEquals($post->tags(), $post->terms( array(
-				'query' => array(
-					'taxonomy' => 'tags',
-				),
-			) ) );
-			$this->assertEquals($post->tags(), $post->terms( array(
-				'query' => array(
 					'taxonomy' => 'post_tag',
 				),
 			) ) );
@@ -799,11 +786,6 @@
 					'taxonomy' => 'category',
 				),
 			) ) );
-			$this->assertEquals($post->categories(), $post->terms( array(
-				'query' => array(
-					'taxonomy' => 'categories',
-				),
-			) ));
 
 			// test using an array of taxonomies
 			$post_tag_terms = $post->terms( array(
@@ -938,10 +920,6 @@
 			$dummy_tag = wp_insert_term('whatever', 'post_tag');
 			self::set_object_terms($pid, $dummy_tag, 'post_tag');
 
-			// test return class
-			$terms = $post->terms('post_tag', true, $class_name);
-			$this->assertEquals($class_name, get_class($terms[0]));
-
 			// Test argument style.
 			$terms = $post->terms( array(
 				'query'      => [
@@ -950,10 +928,6 @@
 				'term_class' => $class_name,
 			) );
 			$this->assertEquals($class_name, get_class($terms[0]));
-
-			// test return class for deprecated $post->get_terms
-			$get_terms = $post->terms('post_tag', true, $class_name);
-			$this->assertEquals($class_name, get_class($get_terms[0]));
 		}
 
 		function testPostContentLength() {
