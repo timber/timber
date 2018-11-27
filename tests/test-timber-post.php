@@ -743,7 +743,7 @@
 
 		function testPostTermsArgumentStyle() {
 			$pid      = $this->factory->post->create();
-			$post     = new TimberPost( $pid );
+			$post     = new Timber\Post( $pid );
 			$category = wp_insert_term( 'Uncategorized', 'category' );
 			self::set_object_terms( $pid, $category, 'category' );
 
