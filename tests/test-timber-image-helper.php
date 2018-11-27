@@ -30,7 +30,7 @@
 		}
 
 		function testIsSVG() {
-			$image = TestTimberImage::copyTestImage('timber-logo.svg');
+			$image = TestTimberImage::copyTestAttachment('timber-logo.svg');
 			$this->assertTrue( TimberImageHelper::is_svg( $image ) );
 		}
 
