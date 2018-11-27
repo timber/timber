@@ -224,7 +224,7 @@ class ImageHelper {
 	}
 
 	/**
-	 * Generates a new image by converting the source into WEBP.
+	 * Generates a new image by converting the source into WEBP if supported by the server.
 	 *
 	 * @param string $src     A URL or path to the image
 	 *                        (http://example.org/wp-content/uploads/2014/image.jpg) or
@@ -233,7 +233,8 @@ class ImageHelper {
 	 *                        biggest file).
 	 * @param bool   $force   Optional. Whether to remove any already existing result file and
 	 *                        force file generation. Default `false`.
-	 * @return string The URL of the processed image.
+	 * @return string The URL of the processed image. If webp is not supported, a jpeg image will be
+	 *                        generated.
 	 */
 	public static function img_to_webp( $src, $quality = 80, $force = false ) {
 		$op = new Image\Operation\ToWebp($quality);
@@ -282,7 +283,7 @@ class ImageHelper {
 	/**
 	 * Checks if attachment is an image before deleting generated files.
 	 *
-	 * @param int  $post_id An attachment ID.
+	 * @param int $post_id An attachment ID.
 	 */
 	public static function _delete_generated_if_image( $post_id ) {
 		if ( wp_attachment_is_image($post_id) ) {
