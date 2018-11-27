@@ -45,6 +45,11 @@ class ToWebp extends ImageOperation {
             return false;
         }
 
+        // Attempt to check if SVG.
+		if ( ImageHelper::is_svg($load_filename) ) {
+			return false;
+		}
+
 		$ext = wp_check_filetype($load_filename);
 		if ( isset($ext['ext']) ) {
 			$ext = $ext['ext'];
