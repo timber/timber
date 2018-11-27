@@ -485,14 +485,21 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param string          $value      Passing a non-null value will short-circuit
-		 *                                    `Comment::meta()`, returning the value instead.
-		 *                                    Default null.
+		 * @param string $value               The field value. Passing a non-null value will skip
+		 *                                    fetching the value from the database. Default null.
 		 * @param int             $comment_id The comment ID.
 		 * @param string          $field_name The name of the meta field to get the value for.
+		 * @param array           $args       An array of arguments.
 		 * @param \Timber\Comment $comment    The comment object.
 		 */
-		$value = apply_filters( 'timber/comment/pre_meta', null, $this->ID, $field_name, $this );
+		$value = apply_filters(
+			'timber/comment/pre_meta',
+			null,
+			$this->ID,
+			$field_name,
+			$args,
+			$this
+		);
 
 		/**
 		 * Filters the value for a comment meta field before it is fetched from the database.
@@ -506,12 +513,9 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			'timber/comment/pre_meta'
 		);
 
-		// Short-circuit
-		if ( $value ) {
-			return $value;
+		if ( null === $value ) {
+			$value = get_comment_meta($this->ID, $field_name, true);
 		}
-
-		$value = get_comment_meta($this->ID, $field_name, true);
 
 		/**
 		 * Filters the value for a comment meta field.
@@ -523,9 +527,17 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		 * @param string          $value      The field value.
 		 * @param int             $comment_id The comment ID.
 		 * @param string          $field_name The name of the meta field to get the value for.
+		 * @param array           $args       An array of arguments.
 		 * @param \Timber\Comment $comment    The comment object.
 		 */
-		$value = apply_filters( 'timber/comment/get_meta', $value, $this->ID, $field_name, $this );
+		$value = apply_filters(
+			'timber/comment/get_meta',
+			$value,
+			$this->ID,
+			$field_name,
+			$args,
+			$this
+		);
 
 		/**
 		 * Filters the value for a comment meta field.

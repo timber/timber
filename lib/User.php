@@ -274,22 +274,30 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * @return mixed The meta field value.
 	 */
 	public function meta( $field_name, $args = array() ) {
-		$value = null;
-
 		/**
 		 * Filters a user meta field before it is fetched from the database.
+		 *
+		 * @todo Add description, example
 		 *
 		 * @see \Timber\User::meta()
 		 * @since 2.0.0
 		 *
 		 * @param mixed        $value      The field value. Passing a non-null value will skip
 		 *                                 fetching the value from the database, returning the
-		 *                                 filtered value instead. Default `null`.
-		 * @param int          $user_id    The user ID
+		 *                                 filtered value instead. Default null.
+		 * @param int          $user_id    The user ID.
 		 * @param string       $field_name The name of the meta field to get the value for.
+		 * @param array        $args       An array of arguments.
 		 * @param \Timber\User $user       The user object.
 		 */
-		$value = apply_filters( 'timber/user/pre_meta', $value, $this->ID, $field_name, $this );
+		$value = apply_filters(
+			'timber/user/pre_meta',
+			null,
+			$this->ID,
+			$field_name,
+			$args,
+			$this
+		);
 
 		/**
 		 * Filters a user meta field before it is fetched from the database.
@@ -316,9 +324,17 @@ class User extends Core implements CoreInterface, MetaInterface {
 		 * @param mixed        $value      The field value.
 		 * @param int          $user_id    The user ID.
 		 * @param string       $field_name The name of the meta field to get the value for.
+		 * @param array        $args       An array of arguments.
 		 * @param \Timber\User $user       The user object.
 		 */
-		$value = apply_filters( 'timber/user/meta', $value, $this->ID, $field_name, $this );
+		$value = apply_filters(
+			'timber/user/meta',
+			$value,
+			$this->ID,
+			$field_name,
+			$args,
+			$this
+		);
 
 		/**
 		 * Filters the value for a user meta field.
