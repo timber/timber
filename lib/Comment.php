@@ -31,7 +31,7 @@ use Timber\CoreInterface;
  * <p class="comment-attribution">- Sullivan Ballou</p>
  * ```
  */
-class Comment extends Core implements CoreInterface {
+class Comment extends Core implements CoreInterface, MetaInterface {
 
 	public $PostClass = 'Post';
 	public $object_type = 'comment';
@@ -472,9 +472,12 @@ class Comment extends Core implements CoreInterface {
 	 * @api
 	 *
 	 * @param string $field_name The field name for which you want to get the value.
+     * @param array  $args       An array of arguments for getting the meta value. Third-party
+	 *                           integrations can use this argument to make their API arguments
+	 *                           available in Timber. Default empty.
 	 * @return mixed The meta field value.
 	 */
-	public function meta( $field_name ) {
+	public function meta( $field_name, $args = array() ) {
 		/**
 		 * Filters the value for a comment meta field before it is fetched from the database.
 		 *
@@ -537,6 +540,26 @@ class Comment extends Core implements CoreInterface {
 		);
 
 		return $value;
+	}
+
+	/**
+	 * Gets a comment meta value.
+	 *
+	 * @api
+	 * @deprecated 2.0.0, use `{{ comment.meta('field_name') }}` instead.
+	 * @see \Timber\Comment::meta()
+	 *
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return mixed The meta field value.
+	 */
+	public function get_field( $field_name = null ) {
+		Helper::deprecated(
+			"{{ comment.get_field('field_name') }}",
+			"{{ comment.meta('field_name') }}",
+			'2.0.0'
+		);
+
+		return $this->meta( $field_name );
 	}
 
 	/**

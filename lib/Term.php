@@ -45,7 +45,7 @@ use Timber\URLHelper;
  * </ul>
  * ```
  */
-class Term extends Core implements CoreInterface {
+class Term extends Core implements CoreInterface, MetaInterface {
 
 	public $PostClass = 'Timber\Post';
 	public $TermClass = 'Term';
@@ -419,6 +419,26 @@ class Term extends Core implements CoreInterface {
 			$this->$field_name = $field_value;
 		}
 		return $this->$field_name;
+	}
+
+	/**
+	 * Gets a term meta value.
+	 *
+	 * @api
+	 * @deprecated 2.0.0, use `{{ term.meta('field_name') }}` instead.
+	 * @see \Timber\Term::meta()
+	 *
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return mixed The meta field value.
+	 */
+	public function get_field( $field_name = null ) {
+		Helper::deprecated(
+			"{{ term.get_field('field_name') }}",
+			"{{ term.meta('field_name') }}",
+			'2.0.0'
+		);
+
+		return $this->meta( $field_name );
 	}
 
 	/**

@@ -129,14 +129,4 @@ abstract class Core {
 		$ret['can_edit'] = $this->can_edit();
 		return $ret;
 	}
-
-	/**
-	 * @deprecated since 2.0.0
-	 *
-	 * @param string $field_name
-	 * @return mixed
-	 */
-	public function get_field( $field_name ) {
-		return $this->get_meta_field($field_name);
-	}
 }

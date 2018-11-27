@@ -56,7 +56,7 @@ use WP_Post;
  * </article>
  * ```
  */
-class Post extends Core implements CoreInterface, Setupable {
+class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 	/**
 	 * @var string The name of the class to handle images by default
@@ -843,9 +843,12 @@ class Post extends Core implements CoreInterface, Setupable {
 	 * @api
 	 *
 	 * @param string $field_name The field name for which you want to get the value.
+	 * @param array  $args       An array of arguments for getting the meta value. Third-party
+	 *                           integrations can use this argument to make their API arguments
+	 *                           available in Timber. Default empty.
 	 * @return mixed The meta field value.
 	 */
-	public function meta( $field_name = null ) {
+	public function meta( $field_name = null, $args = array() ) {
 
     if ( $rd = $this->get_revised_data_from_method('meta', $field_name) ) {
 			return $rd;
@@ -926,6 +929,31 @@ class Post extends Core implements CoreInterface, Setupable {
 
 		$value = $this->convert($value, __CLASS__);
 		return $value;
+	}
+
+	/**
+	 * Gets a post meta value.
+	 *
+	 * @api
+	 * @deprecated 2.0.0, use `{{ post.meta('field_name') }}` instead.
+	 * @see \Timber\Post::meta()
+	 *
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return mixed The meta field value.
+	 */
+	public function get_field( $field_name = null ) {
+		Helper::deprecated(
+			"{{ post.get_field('field_name') }}",
+			"{{ post.meta('field_name') }}",
+			'2.0.0'
+		);
+
+		if ( $field_name === null ) {
+			// On the off-chance the field is actually named meta.
+			$field_name = 'meta';
+		}
+
+		return $this->meta( $field_name );
 	}
 
 	/**
@@ -1433,31 +1461,6 @@ class Post extends Core implements CoreInterface, Setupable {
 		}
 		$this->_permalink = get_permalink($this->ID);
 		return $this->_permalink;
-	}
-
-	/**
-	 * Gets a post meta value.
-	 *
-	 * @api
-	 * @deprecated 2.0.0, use `{{ post.meta('field_name') }}` instead.
-	 * @see \Timber\Post::meta()
-	 *
-	 * @param string $field_name The field name for which you want to get the value.
-	 * @return mixed The meta field value.
-	 */
-	public function get_field( $field_name = null ) {
-		Helper::deprecated(
-			"{{ post.get_field('field_name') }}",
-			"{{ post.meta('field_name' }}",
-			'2.0.0'
-		);
-
-		if ( $field_name === null ) {
-			//on the off-chance the field is actually named meta
-			$field_name = 'meta';
-		}
-
-		return $this->meta( $field_name );
 	}
 
 	/**

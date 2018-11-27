@@ -12,7 +12,7 @@ use Timber\URLHelper;
  *
  * @api
  */
-class MenuItem extends Core implements CoreInterface {
+class MenuItem extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * @api
 	 * @var array Array of children of a menu item. Empty if there are no child menu items.
@@ -348,18 +348,41 @@ class MenuItem extends Core implements CoreInterface {
 	 * ```twig
 	 * <a class="icon-{{ item.meta('icon') }}" href="{{ item.link }}">{{ item.title }}</a>
 	 * ```
-	 * @param string $key The meta key to get the value for.
+	 * @param string $field_name The meta key to get the value for.
+	 * @param array  $args       An array of arguments for getting the meta value. Third-party
+	 *                           integrations can use this argument to make their API arguments
+	 *                           available in Timber. Default empty.
 	 * @return mixed Whatever value is stored in the database. Null if no value could be found.
 	 */
-	public function meta( $key ) {
+	public function meta( $field_name, $args = array() ) {
 		if ( is_object($this->menu_object) && method_exists($this->menu_object, 'meta') ) {
-			return $this->menu_object->meta($key);
+			return $this->menu_object->meta($field_name);
 		}
-		if ( isset($this->$key) ) {
-			return $this->$key;
+		if ( isset($this->$field_name) ) {
+			return $this->$field_name;
 		}
 
 		return null;
+	}
+
+	/**
+	 * Gets a menu item meta value.
+	 *
+	 * @api
+	 * @deprecated 2.0.0, use `{{ item.meta('field_name') }}` instead.
+	 * @see \Timber\MenuItem::meta()
+	 *
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return mixed The meta field value.
+	 */
+	public function get_field( $field_name = null ) {
+		Helper::deprecated(
+			"{{ item.get_field('field_name') }}",
+			"{{ item.meta('field_name') }}",
+			'2.0.0'
+		);
+
+		return $this->meta( $field_name );
 	}
 
 	/* Aliases */
