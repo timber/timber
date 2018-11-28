@@ -21,7 +21,7 @@ Before you can start using ACF Blocks, you must install the Advanced Custom Fiel
 To create a content block, you first have to register it in **functions.php** or in a separate plugin:
 
 ```php
-add_action('acf/init', 'my_acf_init');
+add_action( 'acf/init', 'my_acf_init' );
 function my_acf_init() {
 	
 	// check function exists
