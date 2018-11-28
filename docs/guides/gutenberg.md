@@ -33,6 +33,11 @@ function my_acf_init() {
 			'description'		=> __( 'A custom example block.', 'your-text-domain' ),
 			'render_callback'	=> 'my_acf_block_render_callback',
 			'category'			=> 'formatting',
+            /**
+             * Use an SVG or a Dashicon.
+             *
+             * @link https://wordpress.org/gutenberg/handbook/block-api/#icon-optional
+             */
 			'icon'				=> 'admin-comments',
 			'keywords'		    => array( 'example' ),
 		));
