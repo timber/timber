@@ -86,7 +86,6 @@ Finally, you can create the template **block/example-block.twig**:
 		color: {{ fields.text_color }};
 	}
 </style>
-
 ```
 
 ### Using repeaters
