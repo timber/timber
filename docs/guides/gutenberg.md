@@ -90,6 +90,7 @@ Finally, you can create the template **block/example-block.twig**:
 ```
 
 ### Using groups
+
 ```
 Title: {{ fields.group.title }} <br/>
 Url: {{ fields.group.url }}
