@@ -678,7 +678,6 @@ class Post extends Core implements CoreInterface, Setupable {
 	 * Gets the terms associated with the post.
 	 *
 	 * @api
-	 * @todo Remove deprecated parameters in 2.x
 	 * @example
 	 * ```twig
 	 * <section id="job-feed">
@@ -737,25 +736,16 @@ class Post extends Core implements CoreInterface, Setupable {
 	 *                              (`false`). Default `true`.
 	 *     @type string $term_class The Timber term class to use for the term objects.
 	 * }
-	 * @param bool   $merge      Deprecated. Optional. See `$merge` argument in `$args` parameter.
-	 * @param string $term_class Deprecated. Optional. See `$term_class` argument in `$args`
-	 *                           parameter.
 	 * @return array An array of taxonomies.
 	 */
-	public function terms( $args = array(), $merge = true, $term_class = '' ) {
-		// Ensure backwards compatibility.
+	public function terms( $args = array() ) {
+		// Make it possible to use a category or an array of categories as a shorthand.
 		if ( ! is_array( $args ) || isset( $args[0] ) ) {
 			$args = array(
 				'query' => array(
 					'taxonomy' => $args,
 				),
-				'merge' => $merge,
-				'term_class' => $term_class,
 			);
-
-			if ( empty( $args['term_class']) ) {
-				$args['term_class'] = $this->TermClass;
-			}
 		}
 
 		// Defaults.
@@ -770,13 +760,7 @@ class Post extends Core implements CoreInterface, Setupable {
 		$tax        = $args['query']['taxonomy'];
 		$merge      = $args['merge'];
 		$term_class = $args['term_class'];
-
 		$taxonomies = array();
-
-		// @todo: Remove in 2.x
-		if ( is_string($merge) && class_exists($merge) ) {
-			$term_class = $merge;
-		}
 
 		// Build an array of taxonomies.
 		if ( is_array( $tax ) ) {
@@ -789,31 +773,20 @@ class Post extends Core implements CoreInterface, Setupable {
 			}
 		}
 
-		// @todo Remove in 2.x
-		$taxonomies = array_map( function( $taxonomy ) {
-			if ( in_array( $taxonomy, array( 'tag', 'tags' ), true ) ) {
-				$taxonomy = 'post_tag';
-			} elseif ( 'categories' === $taxonomy ) {
-				$taxonomy = 'category';
-			}
-
-			return $taxonomy;
-		}, $taxonomies );
-
 		$terms = wp_get_post_terms( $this->ID, $taxonomies, $args['query'] );
 
 		if ( is_wp_error( $terms ) ) {
 			/**
 			 * @var $terms \WP_Error
 			 */
-			Helper::error_log( "Error retrieving terms for taxonomies on a post in timber-post.php" );
+			Helper::error_log( 'Error retrieving terms for taxonomies on a post in lib/Post.php' );
 			Helper::error_log( 'tax = ' . print_r( $tax, true ) );
 			Helper::error_log( 'WP_Error: ' . $terms->get_error_message() );
 
 			return $terms;
 		}
 
-		// Map over array of WordPress terms and transform them into instances of the chosen term class.
+		// Map over array of WordPress terms and transform them into instances of chosen term class.
 		$terms = array_map( function( $term ) use ( $term_class ) {
 			return call_user_func( array( $term_class, 'from' ), $term->term_id, $term->taxonomy );
 		}, $terms );

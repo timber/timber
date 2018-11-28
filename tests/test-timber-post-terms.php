@@ -10,11 +10,22 @@
 			$dummy_tag = wp_insert_term('whatever', 'post_tag');
 			wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);
 
-			$terms = $post->terms('post_tag', 'MyTimberTerm');
+			$terms = $post->terms( array(
+				'query' => array(
+					'taxonomy' => 'post_tag'
+				),
+				'term_class' => 'MyTimberTerm',
+			) );
 			$this->assertEquals( 'MyTimberTerm', get_class($terms[0]) );
 
 			$post = new Timber\Post($pid);
-			$terms = $post->terms('post_tag', true, 'MyTimberTerm');
+			$terms = $post->terms( array(
+				'query' => array(
+					'taxonomy' => 'post_tag',
+				),
+				'merge' => true,
+				'term_class' => 'MyTimberTerm',
+			) );
 			$this->assertEquals( 'MyTimberTerm', get_class($terms[0]) );
 		}
 
@@ -53,9 +64,13 @@
 			wp_set_object_terms($pid, $dummy_cat['term_id'], 'category', true);
 
 			$post = new Timber\Post($pid);
-			$terms = $post->terms('all', false);
+			$terms = $post->terms( array(
+				'query' => array(
+					'taxonomy' => 'all'
+				),
+				'merge' => false,
+			) );
 			$this->assertEquals($terms['post_tag'][0]->name, 'whatever');
-
 		}
 
 	}
