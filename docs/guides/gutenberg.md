@@ -45,7 +45,8 @@ function my_acf_init() {
 }
 ```
 
-next you you have to create a `render_callback`:
+Next, you you have to create your `render_callback()` function:
+
 ```php
 function my_acf_block_render_callback( $block ) {
     // store block values
