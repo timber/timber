@@ -4,7 +4,8 @@ menu:
   main:
     parent: "guides"
 ---
-## Using Gutenberg in with Timber
+## Using Gutenberg with Timber
+
 Timber works with Gutenberg out of the box. If you use `{{ post.content }}`, Timber will render all the Gutenberg blocks.
 
 ## ACF Blocks
