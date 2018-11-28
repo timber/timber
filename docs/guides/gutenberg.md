@@ -23,25 +23,20 @@ To create a content block, you first have to register it in **functions.php** or
 ```php
 add_action( 'acf/init', 'my_acf_init' );
 function my_acf_init() {
-	// check function exists
-	if( function_exists('acf_register_block') ) {
-		
-		// Register a new block.
-		acf_register_block(array(
-			'name'				=> 'example_block',
-			'title'				=> __( 'Example Block', 'your-text-domain' ),
-			'description'		=> __( 'A custom example block.', 'your-text-domain' ),
-			'render_callback'	=> 'my_acf_block_render_callback',
-			'category'			=> 'formatting',
-            /**
-             * Use an SVG or a Dashicon.
-             *
-             * @link https://wordpress.org/gutenberg/handbook/block-api/#icon-optional
-             */
-			'icon'				=> 'admin-comments',
-			'keywords'		    => array( 'example' ),
-		) );
-	}
+    // Check function exists.
+    if( function_exists('acf_register_block') ) {
+        
+        // Register a new block.
+        acf_register_block(array(
+            'name'				=> 'example_block',
+            'title'				=> __( 'Example Block', 'your-text-domain' ),
+            'description'		=> __( 'A custom example block.', 'your-text-domain' ),
+            'render_callback'	=> 'my_acf_block_render_callback',
+            'category'			=> 'formatting',
+            'icon'				=> 'admin-comments',
+            'keywords'		    => array( 'example' ),
+        ) );
+    }
 }
 ```
 
@@ -49,7 +44,7 @@ Next, you you have to create your `render_callback()` function:
 
 ```php
 function my_acf_block_render_callback( $block ) {
-    $context = [];
+    $context = array();
     
     // Store block values.
     $context['block'] = $block;
@@ -81,12 +76,28 @@ Finally, you can create the template **block/example-block.twig**:
     <p>{{ fields.description }}</p>
 </div>
 <style type="text/css">
-	#testimonial-{{ block.id }} {
-		background: {{ fields.background_color }};
-		color: {{ fields.text_color }};
-	}
+    #testimonial-{{ block.id }} {
+        background: {{ fields.background_color }};
+        color: {{ fields.text_color }};
+    }
 </style>
 ```
+
+If you would like to use an external stylesheet both inside of the block editor and the frontend you should add:
+
+```php
+function my_acf_block_editor_style() {
+    wp_enqueue_style(
+        'logo_grid_css',
+        get_template_directory_uri() .'/assets/example-block.css'
+    );
+}
+
+add_action( 'enqueue_block_assets', 'my_acf_block_editor_style' );
+
+```
+
+For more details about enqueueing assets read the [Gutenberg Handbook](https://wordpress.org/gutenberg/handbook/blocks/applying-styles-with-stylesheets/#enqueueing-editor-only-block-assets).
 
 ### Using repeaters
 
