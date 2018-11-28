@@ -62,7 +62,7 @@ function my_acf_block_render_callback( $block ) {
 }
 
 ```
-you create an extra array called `$vars` with two values:
+You create an extra array called `$context` with two values:
 - **block** - with all data like block title, alignment etc
 - **fields** - all custom fields - also all the fields created in **ACF**
 
