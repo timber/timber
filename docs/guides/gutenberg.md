@@ -49,7 +49,9 @@ Next, you you have to create your `render_callback()` function:
 
 ```php
 function my_acf_block_render_callback( $block ) {
-    // store block values
+    $context = [];
+    
+    // Store block values.
     $vars['block'] = $block;
 
     // store field values
