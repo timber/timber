@@ -40,7 +40,7 @@ function my_acf_init() {
              */
 			'icon'				=> 'admin-comments',
 			'keywords'		    => array( 'example' ),
-		));
+		) );
 	}
 }
 ```
