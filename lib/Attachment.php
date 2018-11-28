@@ -159,8 +159,8 @@ class Attachment extends Post implements CoreInterface {
 		$iid = $this->determine_id( $iid );
 
 		/**
-		 * determine_id returns null when the attachment is a file path,
-		 * thus there's nothing in the DB for us to do here 
+		 * The determine_id returns null when the attachment is a file path,
+		 * thus there’s nothing in the DB for us to do here.
 		 */
 		if ( null === $iid ) {
 			return;
@@ -194,11 +194,14 @@ class Attachment extends Post implements CoreInterface {
 	}
 
 	/**
-	 * Tries to figure out the attachment id you want or otherwise handle when
-	 * a string or other data is sent (object, file path, etc.)
+	 * Determines attachment ID.
+	 *
+	 * Tries to figure out the attachment ID you want, or otherwise handles the case when a string
+	 * or other data is sent (object, file path, etc.).
+	 *
 	 * @internal
-	 * @param mixed a value to test against
-	 * @return int|null the numberic id we should be using for this post object 
+	 * @param mixed $iid A value to test against.
+	 * @return int|null The numeric ID we should be using for this post object.
 	 */
 	protected function determine_id( $iid ) {
 		// Make sure we actually have something to work with.
@@ -213,12 +216,12 @@ class Attachment extends Post implements CoreInterface {
 		 * to check for an ACF image array an take the ID from that array.
 		 */
 		if ( $iid instanceof Attachment
-		    || ( $iid instanceof \WP_Post && 'attachment' === $iid->post_type )
+			|| ( $iid instanceof \WP_Post && 'attachment' === $iid->post_type )
 		) {
-		    return (int) $iid->ID;
+			return (int) $iid->ID;
 		} elseif ( is_array( $iid ) && isset( $iid['ID'] ) ) {
-		    // Assume ACF image array.
-		    $iid = $iid['ID'];
+			// Assume ACF image array.
+			$iid = $iid['ID'];
 		}
 
 		if ( ! is_numeric( $iid ) && is_string( $iid ) ) {
@@ -243,7 +246,7 @@ class Attachment extends Post implements CoreInterface {
 					}
 				}
 			}
-		} 
+		}
 		return $iid;
 	}
 
@@ -298,9 +301,12 @@ class Attachment extends Post implements CoreInterface {
 	}
 
 	/**
+	 * Gets the attachment information.
+	 *
 	 * @internal
 	 *
-	 * @param  int $attachment_id the id number of the image in the WP database
+	 * @param int $attachment_id The ID number of the image in the WP database.
+	 * @return array|int|mixed Attachment info or ID
 	 */
 	protected function get_attachment_info( $attachment_id ) {
 		$image_info = $attachment_id;
@@ -367,6 +373,8 @@ class Attachment extends Post implements CoreInterface {
 	 *     <img src="http://example.org/wp-content/uploads/2015/whatever.jpg"/>
 	 * </a>
 	 * ```
+	 *
+	 * @return string The URL of the attachment.
 	 */
 	public function link() {
 		if ( strlen( $this->abs_url ) ) {
@@ -434,6 +442,7 @@ class Attachment extends Post implements CoreInterface {
 	 *     <span class="download-info">(Download, {{ attachment.size }})</span>
 	 * </a>
 	 * ```
+	 *
 	 * @return mixed|null The filesize string in a human readable format.
 	 */
 	public function size() {
@@ -529,14 +538,13 @@ class Attachment extends Post implements CoreInterface {
 	}
 
 	/**
-	 * Get a PHP array with pathinfo() info from the file
+	 * Gets a PHP array with pathinfo() info from the file.
 	 *
 	 * @api
 	 *
-	 * @return array
+	 * @return array Path info from the file.
 	 */
 	public function get_pathinfo() {
 		return pathinfo( $this->file );
 	}
-	
 }

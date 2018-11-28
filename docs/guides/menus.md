@@ -1,5 +1,6 @@
 ---
 title: "Menus"
+weight: "700"
 menu:
   main:
     parent: "guides"

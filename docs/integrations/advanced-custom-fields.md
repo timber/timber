@@ -1,24 +1,26 @@
 ---
-title: "ACF Cookbook"
+title: "Advanced Custom Fields"
 menu:
   main:
-    parent: "guides"
+    parent: "integrations"
+aliases:
+  - /guides/acf-cookbook
 ---
 
 Timber is designed to play nicely with (the amazing) [Advanced Custom Fields](http://www.advancedcustomfields.com/). It's not a requirement, of course.
 
-While data saved by ACF is available via `{{post.my_acf_field}}` you will often need to do some additional work to get back the _kind_ of data you want. For example, images are stored as image ID#s which you might want to translate into a specific image object. Read on to learn more about those specific exceptions.
+While data saved by ACF is available via `{{ post.my_acf_field }}` you will often need to do some additional work to get back the _kind_ of data you want. For example, images are stored as image ID#s which you might want to translate into a specific image object. Read on to learn more about those specific exceptions.
 
 ## WYSIWYG field (and other requiring text)
-
+ 
 ```twig
-<h3>{{post.title}}</h3>
-<div class="intro-text">
-     {{post.meta('my_wysiwyg_field')}}
+<h3>{{ post.title }}</h3>
+<div class="intro-text"> d
+     {{ post.meta('my_wysiwyg_field') }}
 </div>
 ```
+This will apply your expected paragraph breaks and other pre-processing to the text. In the past we used `{{ post.get_field('my_wysiwyg_field') }}`, but this is now deprecated. Use `{{ post.meta('my_wysiwyg_field') }}`.
 
-This will apply your expected paragraph breaks and other pre-processing to the text.
 
 ## Image field
 
@@ -27,7 +29,7 @@ You can retrieve an image from a custom field, then use it in a Twig template. T
 ### The quick way (for most situations)
 
 ```twig
-<img src="{{TimberImage(post.meta('hero_image')).src}}" />
+<img src="{{ Image(post.meta('hero_image')).src }}" />
 ```
 
 ### The long way (for some special situations)
@@ -51,7 +53,7 @@ Timber::render('single.twig', $data);
 You can now use all the above functions to transform your custom images in the same way, the format will be:
 
 ```twig
-<img src="{{post.hero_image.src|resize(500, 300)}}" />
+<img src="{{ post.hero_image.src | resize(500, 300) }}" />
 ```
 
 * * *
@@ -66,18 +68,32 @@ You can now use all the above functions to transform your custom images in the s
 
 * * *
 
+## Group field
+```twig
+{{ post.meta('group').first_field }}
+{{ post.meta('group').second_field }}
+```
+or 
+```twig
+{% set group = post.meta('group') %}
+{{ group.first_field }}
+{{ group.second_field }}
+```
+
+* * *
+
 ## Repeater field
 
 You can access repeater fields within twig files:
 
 ```twig
 {# single.twig #}
-<h2>{{post.title}}</h2>
+<h2>{{ post.title }}</h2>
 <div class="my-list">
-	{% for item in post.get_field('my_repeater') %}
+	{% for item in post.meta('my_repeater') %}
 		<div class="item">
-			<h4>{{item.name}}</h4>
-			<h6>{{item.info}}</h6>
+			<h4>{{ item.name }}</h4>
+			<h6>{{ item.info }}</h6>
 			<img src="{{ Image(item.picture).src }}" />
 		</div>
 	{% endfor %}
@@ -86,14 +102,14 @@ You can access repeater fields within twig files:
 
 ### Nested Repeater fields
 
-When you run `get_field` on an outer ACF field, everything inside is ready to be traversed. You can refer to nested fields via item_outer.inner_repeater
+When you run `meta` on an outer ACF field, everything inside is ready to be traversed. You can refer to nested fields via item_outer.inner_repeater
 
 ```twig
-{% for item_outer in post.get_field('outer') %}
+{% for item_outer in post.meta('outer') %}
      {{item_outer.title}}
 
      {% for item_inner in item_outer.inner_repeater %}
-          {{item_inner.title}}
+          {{ item_inner.title }}
      {% endfor %}
 
 {% endfor %}
@@ -101,15 +117,15 @@ When you run `get_field` on an outer ACF field, everything inside is ready to be
 
 ### Troubleshooting Repeaters
 
-A common problem in working with repeaters is that you should only call the `get_field` method **once** on an item. In other words if you have a field inside a field (for example, a relationship inside a repeater or a repeater inside a repeater, **do not** call `get_field` on the inner field). More:
+A common problem in working with repeaters is that you should only call the `meta` method **once** on an item. In other words if you have a field inside a field (for example, a relationship inside a repeater or a repeater inside a repeater, **do not** call `meta` on the inner field). More:
 
 **DON'T DO THIS: (Bad)**
 
 ```twig
-{% for gear in post.get_field('gear_items') %}
+{% for gear in post.meta('gear_items') %}
     <h3> {{ gear.brand_name }} </h3>
-    {% for gear_feature in gear.get_field('features') %}
-        <li> {{gear_feature}} </li>
+    {% for gear_feature in gear.meta('features') %}
+        <li> {{ gear_feature }} </li>
     {% endfor %}
 {% endfor %}
 ```
@@ -117,10 +133,10 @@ A common problem in working with repeaters is that you should only call the `get
 **DO THIS: (Good)**
 
 ```twig
-{% for gear in post.get_field('gear_items') %}
+{% for gear in post.meta('gear_items') %}
     <h3> {{ gear.brand_name }} </h3>
     {% for gear_feature in gear.features %}
-        <li> {{gear_feature}} </li>
+        <li> {{ gear_feature }} </li>
     {% endfor %}
 {% endfor %}
 ```
@@ -132,24 +148,24 @@ A common problem in working with repeaters is that you should only call the `get
 Similar to repeaters, get the field by the name of the flexible content field:
 
 ```twig
-{% for media_item in post.get_field('media_set') %}
+{% for media_item in post.meta('media_set') %}
     {% if media_item.acf_fc_layout == 'image_set' %}
         <img src="{{ Image(media_item.image).src }}" />
         <p class="caption">{{ Image(media_item.image).caption }}</p>
-        <aside class="notes">{{media_item.notes}}</aside>
+        <aside class="notes">{{ media_item.notes }}</aside>
     {% elseif media_item.acf_fc_layout == 'video_set' %}
         <iframe width="560" height="315" src="http://www.youtube.com/embed/{{media_item.youtube_id}}" frameborder="0" allowfullscreen></iframe>
-        <p class="caption">{{media_item.caption}}</p>
+        <p class="caption">{{ media_item.caption }}</p>
     {% endif %}
 {% endfor %}
 ```
 
 ### Repeater in Flexible Content Field
 
-Similar to nested repeaters, you should only call the `get_field` method once when you use a repeater field inside a flexible content field:
+Similar to nested repeaters, you should only call the `meta` method once when you use a repeater field inside a flexible content field:
 
 ```twig
-{% for media_item in post.get_field('media_set') %}
+{% for media_item in post.meta('media_set') %}
     {% if media_item.acf_fc_layout == 'image_set' %}
         {% for image_item in media_item.image_set %}
             <img src="{{ Image(image_item.image).src }}" />
@@ -185,7 +201,7 @@ Similar to nested repeaters, you should only call the `get_field` method once wh
 ACF Pro has a built in options page, and changes the `get_fields('options')` to `get_fields('option')`.
 
 ```twig
-	<footer>{{options.copyright_info}}</footer>
+	<footer>{{ options.copyright_info }}</footer>
 ```
 
 ### Use options info site wide
@@ -207,7 +223,7 @@ Now, you can use any of the option fields across the site instead of per templat
 
 ```twig
 /* footer.twig */
-<footer>{{options.copyright_info}}</footer>
+<footer>{{ options.copyright_info }}</footer>
 ```
 
 * * *
@@ -225,21 +241,3 @@ $context["acf"] = get_field_objects($data["post"]->ID);
 ```twig
 {{ acf.your_field_name_here.label }}
 ```
-
-* * *
-
-## Query by custom field value
-
-This example that uses a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) array shows the arguments to find all posts where a custom field called `color` has a value of `red`.
-
-```php
-<?php
-$args = array(
-    'numberposts' => -1,
-    'post_type' => 'post',
-    'meta_key' => 'color',
-    'meta_value' => 'red'
-);
-$context['posts'] = Timber::get_posts($args);
-```
-* * *

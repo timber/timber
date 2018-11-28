@@ -393,11 +393,13 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	}
 
 	function testNotATimberPost() {
+		self::enable_error_log(false);
 		$post_id = $this->factory->post->create( array( 'post_type' => 'state' ) );
 		$use = \Timber\PostGetter::get_post_class('state', 'MyState');
 		$this->assertEquals('\Timber\Post', $use);
 		$post = new $use($post_id);
 		$this->assertEquals('Timber\Post', get_class($post));
+		self::enable_error_log(true);
 	}
 
 	function testPostTypeReturnAgainstArgType() {

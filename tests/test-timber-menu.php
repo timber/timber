@@ -281,6 +281,27 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		}
 	}
 
+	/**
+	 * Test the menu with applied filter in wp_nav_menu_objects
+	 */
+	function testNavMenuFilters() {
+		self::_createTestMenu();
+
+		add_filter( 'wp_nav_menu_objects', function( $menu_items ) {
+			$menu_items[4]->current = true;
+			$menu_items[4]->classes = array_merge( (array)$menu_items[4]->classes, array( 'current-menu-item' ) );
+			return $menu_items;
+		}, 2 );
+
+		$arguments = array(
+			'depth' => 1,
+		);
+		$menu = new Timber\Menu(self::MENU_NAME, $arguments);
+		$menu_items = $menu->get_items();
+		$this->assertTrue( $menu_items[3]->current );
+		$this->assertContains( 'current-menu-item', $menu_items[3]->classes );
+	}
+
 	public static function buildMenu($name, $items) {
 		$menu_term = wp_insert_term( $name, 'nav_menu' );
 		$menu_items = array();

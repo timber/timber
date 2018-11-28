@@ -3,6 +3,7 @@ title: "Escaping"
 menu:
   main:
     parent: "guides"
+weight: "400"
 aliases:
   - /guides/escapers
 ---
@@ -16,8 +17,9 @@ While Twig has escaping enabled by default, **Timber’s Twig does not escape** 
 If you want to enable Twig’s `autoescape` behavior, add these lines to `functions.php`:
 
 ```php
-if ( class_exists( 'Timber' ) ) {
-    Timber::$autoescape = true;
+
+if ( class_exists( 'Timber\Timber' ) ) {
+    Timber::$autoescape = 'html'; 
 }
 ```
 

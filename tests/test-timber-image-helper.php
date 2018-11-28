@@ -29,6 +29,11 @@
 			$this->assertFalse( Timber\ImageHelper::is_animated_gif($arch) );
 		}
 
+		function testIsSVG() {
+			$image = TestTimberImage::copyTestAttachment('timber-logo.svg');
+			$this->assertTrue( Timber\ImageHelper::is_svg( $image ) );
+		}
+
 		function testServerLocation() {
 			$arch = TestTimberImage::copyTestAttachment('arch.jpg');
 			$this->assertEquals($arch, \Timber\ImageHelper::get_server_location($arch));
