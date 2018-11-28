@@ -58,7 +58,8 @@ you create an extra array called `$vars` with two values:
 - **block** - with all data like block title, alignment etc
 - **fields** - all custom fields - also all the fields created in **ACF**
 
-finally you can create the template `template-parts/block/example-block.twig`:
+Finally, you can create the template **block/example-block.twig**:
+
 ```twig
 {#
 /**
