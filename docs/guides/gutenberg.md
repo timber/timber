@@ -16,7 +16,7 @@ ACF Blocks are an alternative way to create content blocks without advanced Java
 
 ### How to use ACF Blocks with Timber
 
-Before you can start using ACF Blocks, you must install the Advanced Custom Fields 5.8.0-beta or later.
+Before you can start using ACF Blocks, you must install the Advanced Custom Fields 5.8.0-beta version or later.
 
 To create your content block, first you have to register it in `functions.php` or in a seperate plugin:
 ```php
