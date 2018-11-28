@@ -15,6 +15,7 @@ Timber works with Gutenberg out of the box. If you use `{{ post.content }}`, Tim
 ACF Blocks are an alternative way to create content blocks without advanced JavaScript knowledge. If you want to learn more about them, read the article on [advancedcustomfields.com](https://www.advancedcustomfields.com/blog/acf-5-8-introducing-acf-blocks-for-gutenberg/).
 
 ### How to use ACF Blocks with Timber
+
 Before you can start using ACF Blocks, you must install the Advanced Custom Fields 5.8.0-beta or later.
 
 To create your content block, first you have to register it in `functions.php` or in a seperate plugin:
