@@ -52,7 +52,7 @@ function my_acf_block_render_callback( $block ) {
     $context = [];
     
     // Store block values.
-    $vars['block'] = $block;
+    $context['block'] = $block;
 
     // Store field values.
     $context['fields'] = get_fields(); 
