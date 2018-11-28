@@ -23,7 +23,6 @@ To create a content block, you first have to register it in **functions.php** or
 ```php
 add_action( 'acf/init', 'my_acf_init' );
 function my_acf_init() {
-	
 	// check function exists
 	if( function_exists('acf_register_block') ) {
 		
