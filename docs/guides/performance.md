@@ -1,5 +1,6 @@
 ---
 title: "Performance/Caching"
+weight: "1300"
 menu:
   main:
     parent: "guides"

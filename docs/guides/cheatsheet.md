@@ -1,5 +1,6 @@
 ---
 title: "Cheatsheet"
+weight: "1500"
 menu:
   main:
     parent: "guides"
