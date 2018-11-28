@@ -10,7 +10,8 @@ Timber works with Gutenberg out of the box. If you use `{{ post.content }}`, Tim
 
 ## ACF Blocks
 
-### What are the ACF Blocks
+### What are ACF Blocks?
+
 ACF Blocks are the alternative way to create content blocks without advanced JavaScript knowledge. If you want to learn more about them read the article on [advancedcustomfields.com](https://www.advancedcustomfields.com/blog/acf-5-8-introducing-acf-blocks-for-gutenberg/).
 
 ### How to use ACF Blocks with Timber
