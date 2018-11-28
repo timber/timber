@@ -779,7 +779,7 @@ class Post extends Core implements CoreInterface, Setupable {
 			/**
 			 * @var $terms \WP_Error
 			 */
-			Helper::error_log( 'Error retrieving terms for taxonomies on a post in timber-post.php' );
+			Helper::error_log( 'Error retrieving terms for taxonomies on a post in lib/Post.php' );
 			Helper::error_log( 'tax = ' . print_r( $tax, true ) );
 			Helper::error_log( 'WP_Error: ' . $terms->get_error_message() );
 
