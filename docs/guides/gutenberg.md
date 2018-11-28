@@ -57,7 +57,7 @@ function my_acf_block_render_callback( $block ) {
     // Store field values.
     $context['fields'] = get_fields(); 
 
-    // render the block
+    // Render the block.
     Timber::render( '/template-parts/block/example-block.twig', $vars );
 }
 
