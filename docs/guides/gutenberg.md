@@ -18,7 +18,8 @@ ACF Blocks are an alternative way to create content blocks without advanced Java
 
 Before you can start using ACF Blocks, you must install the Advanced Custom Fields 5.8.0-beta version or later.
 
-To create your content block, first you have to register it in `functions.php` or in a seperate plugin:
+To create a content block, you first have to register it in **functions.php** or in a separate plugin:
+
 ```php
 add_action('acf/init', 'my_acf_init');
 function my_acf_init() {
