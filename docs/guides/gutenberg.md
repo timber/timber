@@ -54,7 +54,7 @@ function my_acf_block_render_callback( $block ) {
     // Store block values.
     $vars['block'] = $block;
 
-    // store field values
+    // Store field values.
     $vars['fields'] = get_fields(); 
 
     // render the block
