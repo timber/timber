@@ -1,5 +1,6 @@
 ---
 title: "Sidebars"
+weight: "1200"
 menu:
   main:
     parent: "guides"

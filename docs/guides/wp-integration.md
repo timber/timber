@@ -1,5 +1,6 @@
 ---
 title: "WordPress Integration"
+weight: "100"
 menu:
   main:
     parent: "guides"

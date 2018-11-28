@@ -1,5 +1,6 @@
 ---
 title: "Internationalization"
+weight: "1400"
 menu:
   main:
     parent: "guides"

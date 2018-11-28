@@ -125,7 +125,7 @@ class PostQuery extends PostCollection {
 	/**
 	 * Get pagination for a post collection.
 	 *
-	 * Refer to the [Pagination Guide]({{< relref "guides/pagination.md" >}}) for a detailed usage example.
+	 * Refer to the [Pagination Guide]({{< relref "../guides/pagination.md" >}}) for a detailed usage example.
 	 *
 	 * Optionally could be used to get pagination with custom preferences.
 	 *
