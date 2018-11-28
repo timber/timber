@@ -86,16 +86,19 @@ Nothing. Timber is meant for you to build a theme on. Like [_s](https://github.c
 #### Who is it good for?
 Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because while our entire team needs to participate in building WordPress sites, not everyone knows the ins-and-outs of the_loop(),  codex and PHP (nor should they). With Timber your best WordPress engineer can focus on building the `.php` files with requests from WordPress and pass the data into `.twig` files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
 
-#### Related Projects
+#### Related & Official Projects
+* [**Twig**](https://github.com/twigphp/Twig) The template language used by Timber.
 * [**Timber Starter Theme**](https://github.com/timber/starter-theme) The "_s" of Timber to give you an easy start to the most basic theme you can build upon and customize.
 * [**Timber Debug Bar**](https://github.com/timber/debug-bar-timber) Adds a debug bar panel that will show you which template is in-use and the data sent to your twig file.
-* [**Timber Dump Extension**](https://github.com/nlemoine/timber-dump-extension) Debug output with nice formatting.
-* [**TimberPhoton**](https://github.com/slimndap/TimberPhoton) Plug-in to use JetPack's free Photon image manipulation and CDN with Timber.
-* [**Timber CLI**](https://github.com/nclud/wp-timber-cli) A CLI for Timber.
-* [**Timber Sugar**](https://github.com/timber/sugar) A catch-all for goodies to use w Timber.
-* [**Timmy**](https://github.com/MINDKomm/Timmy) Advanced image manipulation for Timber.
-* [**Twig**](https://github.com/fabpot/Twig) The template language used by Timber.
-* [**Pine**](https://github.com/azeemhassni/pine) A CLI installer for timber
+
+#### Related Timber Projects
+* [**Pine**](https://github.com/azeemhassni/pine) A CLI _installer_ for Timber
+* [**Timber CLI**](https://github.com/nclud/wp-timber-cli) A CLI for Timber
+* [**Timber Dump Extension**](https://github.com/nlemoine/timber-dump-extension) Debug output with nice formatting
+* [**Timber Photon**](https://github.com/slimndap/TimberPhoton) Plug-in to use JetPack's free Photon image manipulation and CDN with Timber
+* [**Timber Sugar**](https://github.com/timber/sugar) A catch-all for goodies to use w Timber
+* [**Timber WebLink Extension**](https://github.com/nlemoine/timber-weblink-extension) Provides Twig functions to manage the Link HTTP header needed for Web Linking when using HTTP/2 Server Push as well as Resource Hints
+* [**Timmy**](https://github.com/MINDKomm/Timmy) Advanced image manipulation for Timber
 
 #### Projects that use Timber
 * [**Gantry5**](https://wordpress.org/plugins/gantry5/) a framework for theme development
