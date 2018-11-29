@@ -3,7 +3,7 @@ Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 4.7.9
 Tested up to: 4.9.6
-Stable tag: 1.8.1
+Stable tag: 1.8.3
 PHP version: 5.3.0 or greater
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -34,7 +34,22 @@ _Twig is the template language powering Timber; if you need a little background 
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
 
 **Changes for Theme Developers**
+- Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
+
+
+= 1.8.3 =
+**Fixes and improvements**
+* Hotfix for PHP versions 5.5 and 5.4
+
+= 1.8.2 =
+**Changes for Theme Developers**
 - You can now change the query parameters that are used when getting a post’s terms through `$post->terms()`. #1802
+- New attributes for responsive images `post.thumbnail.srcset` and `post.thumbnail.sizes` #1819 (thanks @maxxwv)
+
+**Fixes and improvements**
+- Using WordPress's `wp_check_filetype_and_ext` for the mime_type mess #1843 (thanks @gchtr)
+- Fixed how some previewed data (when looking at an unsaved post from the admin) is handled so that parenting relationships match what happens when published #1752 
+- Timber\Menu now respects modifications sent through WP's `wp_nav_menu_objects` filter #1814 (thanks @pascalknecht)
 
 = 1.8.1 =
 **Fixes and improvements**

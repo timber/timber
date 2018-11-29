@@ -200,10 +200,11 @@ class ImageHelper {
 	}
 
     /**
-     * Generates a new image by converting the source into WEBP
+     * Generates a new image by converting the source into WEBP if supported by the server
      *
-     * @param string  $src      a url or path to the image (http://example.org/wp-content/uploads/2014/image.jpg)
-     *                          or (/wp-content/uploads/2014/image.jpg)
+     * @param string  $src      a url or path to the image (http://example.org/wp-content/uploads/2014/image.webp) 
+     *							or (/wp-content/uploads/2014/image.jpg)
+     *							If webp is not supported, a jpeg image will be generated
 	 * @param int     $quality  ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
      * @param bool    $force
      */
