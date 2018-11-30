@@ -7,24 +7,56 @@ aliases:
   - /guides/acf-cookbook
 ---
 
-Timber is designed to play nicely with (the amazing) [Advanced Custom Fields](http://www.advancedcustomfields.com/). It's not a requirement, of course.
+Timber is designed to play nicely with (the amazing) [Advanced Custom Fields](http://www.advancedcustomfields.com/). It’s not a requirement to work with it, of course.
 
-While data saved by ACF is available via `{{ post.my_acf_field }}` you will often need to do some additional work to get back the _kind_ of data you want. For example, images are stored as image ID#s which you might want to translate into a specific image object. Read on to learn more about those specific exceptions.
+While data saved by ACF is available via `{{ post.my_acf_field }}`, you will often need to do some additional work to get back the _kind_ of data you want. For example, images are stored as image IDs, which you might want to translate into a specific image object. Read on to learn more about those specific exceptions.
 
-## WYSIWYG field (and other requiring text)
- 
+## Getting data from ACF
+
+If you’ve worked with ACF before, you’re use to use `get_field( 'my_acf_field' )` all the time. In Timber, getting data from ACF works the same way as getting meta data in general:
+
+**Twig**
+
+```twig
+{{ post.meta('my_acf_field') }}
+```
+
+**PHP**
+
+```php
+$meta = $post->meta( 'my_acf_field' );
+```
+
+In ACF, all values are filtered. If you want to use unfiltered, raw values from the database, you’re probably used to using the third parameter for `get_field()`, which is called `$format_value`. In Timber, you’ll have to pass it like so:
+
+**Twig**
+
+```twig
+{{ post.meta('my_acf_field', { format_value: true }) }}
+```
+
+**PHP**
+
+```php
+$meta = $post->meta( 'my_acf_field', [
+    'format_value' => false,
+] );
+```
+
+## WYSIWYG Field (and other requiring text)
+
 ```twig
 <h3>{{ post.title }}</h3>
-<div class="intro-text"> d
+<div class="intro-text">
      {{ post.meta('my_wysiwyg_field') }}
 </div>
 ```
-This will apply your expected paragraph breaks and other pre-processing to the text. In the past we used `{{ post.get_field('my_wysiwyg_field') }}`, but this is now deprecated. Use `{{ post.meta('my_wysiwyg_field') }}`.
 
+This will apply your expected paragraph breaks and other pre-processing to the text.
 
-## Image field
+## Image Field
 
-You can retrieve an image from a custom field, then use it in a Twig template. The most reliable approach is this: When setting up your custom fields you'll want to save the `image_id` to the field. The image object, url, etc. _will_ work but it's not as fool-proof.
+You can retrieve an image from a custom field, then use it in a Twig template. The most reliable approach is this: When setting up your custom fields, you’ll want to save the `image_id` to the field. The image object, URL, etc. _will_ work, but it’s not as fool-proof.
 
 ### The quick way (for most situations)
 
@@ -34,21 +66,25 @@ You can retrieve an image from a custom field, then use it in a Twig template. T
 
 ### The long way (for some special situations)
 
-This is where we'll start in PHP.
+This is where we’ll start in PHP.
+
+**single.php**
 
 ```php
 <?php
-/* single.php */
 $post = new Timber\Post();
+
 if (isset($post->hero_image) && strlen($post->hero_image)){
 	$post->hero_image = new Timber\Image($post->hero_image);
 }
-$data = Timber::context();
-$data['post'] = $post;
-Timber::render('single.twig', $data);
+
+$context = Timber::context();
+$context['post'] = $post;
+
+Timber::render('single.twig', $context);
 ```
 
-`Timber\Image` should be initialized using a WordPress image ID#. It can also take URLs and image objects, but that requires extra processing.
+`Timber\Image` should be initialized using a WordPress image ID. It can also take URLs and image objects, but that requires extra processing.
 
 You can now use all the above functions to transform your custom images in the same way, the format will be:
 
@@ -58,7 +94,7 @@ You can now use all the above functions to transform your custom images in the s
 
 * * *
 
-## Gallery field
+## Gallery Field
 
 ```twig
 {% for image in post.meta('gallery') %}
@@ -68,12 +104,14 @@ You can now use all the above functions to transform your custom images in the s
 
 * * *
 
-## Group field
+## Group Field
 ```twig
 {{ post.meta('group').first_field }}
 {{ post.meta('group').second_field }}
 ```
-or 
+
+or
+
 ```twig
 {% set group = post.meta('group') %}
 {{ group.first_field }}
@@ -82,12 +120,13 @@ or
 
 * * *
 
-## Repeater field
+## Repeater Field
 
 You can access repeater fields within twig files:
 
+**single.twig**
+
 ```twig
-{# single.twig #}
 <h2>{{ post.title }}</h2>
 <div class="my-list">
 	{% for item in post.meta('my_repeater') %}
@@ -119,7 +158,7 @@ When you run `meta` on an outer ACF field, everything inside is ready to be trav
 
 A common problem in working with repeaters is that you should only call the `meta` method **once** on an item. In other words if you have a field inside a field (for example, a relationship inside a repeater or a repeater inside a repeater, **do not** call `meta` on the inner field). More:
 
-**DON'T DO THIS: (Bad)**
+**DON’T DO THIS: (Bad)**
 
 ```twig
 {% for gear in post.meta('gear_items') %}
@@ -181,48 +220,55 @@ Similar to nested repeaters, you should only call the `meta` method once when yo
 ## Options Page
 
 ```php
-	<?php
-	$context['site_copyright_info'] = get_field('copyright_info', 'options');
-	Timber::render('index.twig', $context);
+$context['site_copyright_info'] = get_field('copyright_info', 'options');
+
+Timber::render('index.twig', $context);
 ```
 
 ```twig
-	<footer>{{site_copyright_info}}</footer>
+<footer>{{site_copyright_info}}</footer>
 ```
 
 ### Get all info from your options page
 
 ```php
-	<?php
-	$context['options'] = get_fields('options');
-	Timber::render('index.twig', $context);
+$context['options'] = get_fields('options');
+
+Timber::render('index.twig', $context);
 ```
 
 ACF Pro has a built in options page, and changes the `get_fields('options')` to `get_fields('option')`.
 
 ```twig
-	<footer>{{ options.copyright_info }}</footer>
+<footer>{{ options.copyright_info }}</footer>
 ```
 
 ### Use options info site wide
 
-To use any options fields site wide, add the `option` context to your functions.php file
+To use any options fields site wide, add the `option` context to your **functions.php** file:
 
 ```php
 <?php
-/* functions.php */
-add_filter( 'timber_context', 'mytheme_timber_context'  );
+add_filter( 'timber/context', 'global_timber_context'  );
 
-function mytheme_timber_context( $context ) {
-    $context['options'] = get_fields('option');
+/**
+ * Filters global context.
+ * 
+ * @param array $context An array of existing context variables.
+ * @return mixed
+ */
+function global_timber_context( $context ) {
+    $context['options'] = get_fields( 'option' );
+    
     return $context;
 }
 ```
 
 Now, you can use any of the option fields across the site instead of per template.
 
+**footer.twig**
+
 ```twig
-/* footer.twig */
 <footer>{{ options.copyright_info }}</footer>
 ```
 
@@ -232,10 +278,10 @@ Now, you can use any of the option fields across the site instead of per templat
 
 You can grab specific field label data like so:
 
+**single.php**
+
 ```php
-<?php
-/* single.php */
-$context["acf"] = get_field_objects($data["post"]->ID);
+$context['acf'] = get_field_objects($data['post']->ID);
 ```
 
 ```twig
