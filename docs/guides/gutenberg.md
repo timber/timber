@@ -44,7 +44,7 @@ Next, you you have to create your `render_callback()` function:
 
 ```php
 function my_acf_block_render_callback( $block ) {
-    $context = array();
+    $context = Timber::get_context();
     
     // Store block values.
     $context['block'] = $block;
