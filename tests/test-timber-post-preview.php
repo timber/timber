@@ -70,6 +70,9 @@
 			$this->assertEquals('this is super dooper', $preview);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testShortcodesInPreviewFromContent() {
 			add_shortcode('mythang', function($text) {
 				return 'mythangy';
@@ -79,6 +82,9 @@
 			$this->assertEquals('jared mythangy&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $post->preview());
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testShortcodesInPreviewFromContentWithMoreTag() {
 			add_shortcode('duck', function($text) {
 				return 'Quack!';

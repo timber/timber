@@ -476,6 +476,7 @@ class Post extends Core implements CoreInterface, Setupable {
 	 * @return \Timber\PostPreview
 	 */
 	public function preview() {
+		Helper::deprecated('{{ post.preview }}', '{{ post.excerpt }}', '2.0.0');
 		return new PostPreview($this);
 	}
 
