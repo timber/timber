@@ -468,6 +468,25 @@ class Post extends Core implements CoreInterface, Setupable {
 	 *
 	 * If you an excerpt is set on the post, the excerpt will be used. Otherwise it will try to pull
 	 * from a preview from `post_content`. If there’s a `<!-- more -->` tag in the post content,
+	 * it will use that as an indicator of where to end the excerpt.
+	 *
+	 * @api
+	 * @see \Timber\PostPreview
+	 *
+	 * @param array $options the array of configuration options for the generated
+	 * PostPreview object
+	 * @return \Timber\PostPreview
+	 */
+	public function excerpt( array $options = array() ) {
+		return new PostPreview( $this, $options );
+	}
+
+
+	/**
+	 * Get a preview (excerpt) of your post.
+	 *
+	 * If you an excerpt is set on the post, the excerpt will be used. Otherwise it will try to pull
+	 * from a preview from `post_content`. If there’s a `<!-- more -->` tag in the post content,
 	 * it will use that to mark where to pull through.
 	 *
 	 * @api

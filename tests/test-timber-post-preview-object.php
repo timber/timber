@@ -4,6 +4,114 @@
 
 		protected $gettysburg = 'Four score and seven years ago our fathers brought forth on this continent a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal.';
 
+		public function testExcerptConstructorWithWords() {
+			$post_id = $this->factory->post->create(array(
+				'post_excerpt' => $this->gettysburg,
+			));
+			$post = new Timber\Post($post_id);
+			$excerpt = $post->excerpt(array(
+				'words'     => 4,
+				'force'     => true,
+				'read_more' => false,
+			));
+
+			// Coerce excerpt to a string and test it.
+			$this->assertEquals('Four score and seven&hellip;', ''.$excerpt);
+		}
+
+		public function testExcerptConstructorWithChars() {
+			$post_id = $this->factory->post->create(array(
+				'post_excerpt' => $this->gettysburg,
+			));
+			$post    = new Timber\Post($post_id);
+			$excerpt = $post->excerpt(array(
+				'chars'     => 20,
+				'force'     => true,
+				'read_more' => false,
+			));
+
+			// Coerce excerpt to a string and test it.
+			$this->assertEquals('Four score and seven&hellip;', ''.$excerpt);
+		}
+
+		public function testExcerptConstructorWithEnd() {
+			$post_id = $this->factory->post->create(array(
+				'post_excerpt' => $this->gettysburg,
+			));
+			$post    = new Timber\Post($post_id);
+			$excerpt = $post->excerpt(array(
+				'chars'     => 20,
+				'force'     => true,
+				'read_more' => false,
+				'end'       => ' - kthxbi',
+			));
+
+			// Coerce excerpt to a string and test it.
+			$this->assertEquals('Four score and seven - kthxbi', ''.$excerpt);
+		}
+
+		public function testExcerptConstructorWithHtml() {
+			$post_id = $this->factory->post->create(array(
+				'post_excerpt' => '<span>Yo</span>'
+					. ' <a href="/">CLICK</a>'
+					. ' <strong>STRONG</strong> '
+					. $this->gettysburg,
+			));
+			$post    = new Timber\Post($post_id);
+			$excerpt = $post->excerpt(array(
+				'chars'     => 26,
+				'read_more' => false,
+				'force'     => true,
+			));
+
+			// Coerce excerpt to a string and test it.
+			$this->assertEquals('Yo CLICK STRONG Four score&hellip;', ''.$excerpt);
+		}
+
+		public function testExcerptConstructorStrippingSomeTags() {
+			$post_id = $this->factory->post->create(array(
+				'post_excerpt' => '<span>Yo</span>'
+					. ' <a href="/">CLICK</a>'
+					. ' <strong>STRONG</strong> '
+					. $this->gettysburg,
+			));
+			$post    = new Timber\Post($post_id);
+			$excerpt = $post->excerpt(array(
+				'words'     => 5,
+				'read_more' => false,
+				'force'     => true,
+				'strip'     => '<span><a>',
+			));
+
+			// Coerce excerpt to a string and test it.
+			$this->assertEquals(
+				'<span>Yo</span> <a href="/">CLICK</a> STRONG Four&hellip;',
+				''.$excerpt
+			);
+		}
+
+		public function testExcerptConstructorWithReadMore() {
+			$post_id = $this->factory->post->create(array(
+				'post_excerpt' => $this->gettysburg,
+			));
+			$post     = new Timber\Post($post_id);
+			$readmore = 'read more! if you dare...';
+			$excerpt  = $post->excerpt(array(
+				'chars'     => 20,
+				'force'     => true,
+				'read_more' => 'read more! if you dare...',
+			));
+
+			$expected = sprintf(
+				'Four score and seven&hellip; <a href="%s" class="read-more">%s</a>',
+				$post->link(),
+				$readmore
+			);
+
+			// Coerce excerpt to a string and test it.
+			$this->assertEquals($expected, ''.$excerpt);
+		}
+
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */

@@ -23,10 +23,39 @@ class PostPreview {
 
 	/**
 	 * @api
+	 * @param array $options the array of configuration options for generating
+	 * the excerpt. Valid options:
+	 *
+	 * * `length`: the number of words in the excerpt. Default: 50
+	 * * `chars`: the number of characters in the excerpt. Default: false (no character limit)
+	 * * `end`: string to append to the end of the excerpt. Default: "&hellip;" (HTML ellipsis character)
+	 * * `force`: Whether to shorten the excerpt to the length/word count specified, if the editor wrote a manual excerpt longer than the set length
+	 * * `strip`: the number of words in the excerpt
+	 * * `read_more`: the number of words in the excerpt
+	 *
+	 * PostPreview object
 	 * @param Post $post
 	 */
-	public function __construct( $post ) {
+	public function __construct( $post, array $options = array() ) {
 		$this->post = $post;
+
+		// Set up excerpt defaults.
+		$options = wp_parse_args( $options, array(
+			'words'     => 50,
+			'chars'     => false,
+			'end'				=> '&hellip;',
+			'force'     => false,
+			'strip'     => true,
+			'read_more' => 'Read More',
+		));
+
+		// Set excerpt properties
+		$this->length      = $options['words'];
+		$this->char_length = $options['chars'];
+		$this->end         = $options['end'];
+		$this->force       = $options['force'];
+		$this->strip       = $options['strip'];
+		$this->readmore    = $options['read_more'];
 	}
 
 	public function __toString() {
@@ -145,6 +174,8 @@ class PostPreview {
 		$readmore_matches = array();
 		$text = '';
 		$trimmed = false;
+
+		// A user-specified excerpt is authoritative, so check that first.
 		if ( isset($this->post->post_excerpt) && strlen($this->post->post_excerpt) ) {
 			if ( $this->force ) {
 				$text = TextHelper::trim_words($this->post->post_excerpt, $len, false);
