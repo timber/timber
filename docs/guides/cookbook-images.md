@@ -1,5 +1,6 @@
 ---
 title: "Image Cookbook"
+weight: "1000"
 menu:
   main:
     parent: "guides"

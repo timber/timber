@@ -14,6 +14,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$pid = $this->factory->post->create();
 		$iid = self::get_attachment( $pid );
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
+        add_post_meta( $iid, '_wp_attachment_metadata', wp_generate_attachment_metadata($iid, get_attached_file($iid)), true );
 		$post = new Timber\Post($pid);
 		return $post;
 	}
@@ -115,6 +116,30 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$this->assertEquals( $post->ID, $image->parent()->id );
 		$this->assertEquals( 1.5, $image->aspect() );
 	}
+
+    function testImageSrcset() {
+        $post = $this->get_post_with_image();
+        $img = $post->thumbnail();
+        $mine = $img->srcset();
+
+        $native = wp_get_attachment_image_srcset($img->ID, 'full');
+        $this->assertEquals($native, $mine);
+
+        $native = wp_get_attachment_image_srcset($img->ID, 'medium');
+        $this->assertNotEquals($native, $mine);
+    }
+
+    function testImageImgSizes() {
+        $post = $this->get_post_with_image();
+        $img = $post->thumbnail();
+        $mine = $img->img_sizes();
+
+        $native = wp_get_attachment_image_sizes($img->ID, 'full');
+        $this->assertEquals($native, $mine);
+
+        $native = wp_get_attachment_image_sizes($img->ID, 'medium');
+        $this->assertNotEquals($native, $mine);
+    }
 
 	/**
 	 * @group maybeSkipped

@@ -1,5 +1,6 @@
 ---
 title: "Filters"
+weight: "900"
 menu:
   main:
     parent: "guides"

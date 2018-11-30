@@ -1,5 +1,6 @@
 ---
 title: "Debugging"
+weight: "1800"
 menu:
   main:
     parent: "guides"
