@@ -207,11 +207,18 @@ class Twig {
 		$twig->addFilter(new \Twig_SimpleFilter('towebp', array('Timber\ImageHelper', 'img_to_webp')));
 
 		/* debugging filters */
-		$twig->addFilter(new \Twig_SimpleFilter('get_class', 'get_class'));
-		$twig->addFilter(new \Twig_SimpleFilter('get_type', 'get_type'));
+		$twig->addFilter(new \Twig_SimpleFilter('get_class', function( $obj ) {
+			Helper::deprecated( '{{ get_class }}', null, '2.0.0' );
+			return get_class( $obj );
+		} ));
+		$twig->addFilter(new \Twig_SimpleFilter('get_type', function( $var ) {
+			Helper::deprecated( '{{ get_type }}', null, '2.0.0' );
+			return get_type($arr, true);
+		} ));
 		$twig->addFilter(new \Twig_SimpleFilter('print_r', function( $arr ) {
-					return print_r($arr, true);
-				} ));
+			Helper::deprecated( '{{ print_r }}', null, '2.0.0' );
+			return print_r($arr, true);
+		} ));
 
 		/* other filters */
 		$twig->addFilter(new \Twig_SimpleFilter('stripshortcodes', 'strip_shortcodes'));
