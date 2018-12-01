@@ -910,16 +910,16 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		 *                                 will skip fetching the value from the database.
 		 * @param int          $post_id    The post ID.
 		 * @param string       $field_name The name of the meta field to get the value for.
-		 * @param array        $args       An array of arguments.
 		 * @param \Timber\Post $post       The post object.
+		 * @param array        $args       An array of arguments.
 		 */
 		$value = apply_filters(
 			'timber/post/pre_meta',
 			null,
 			$this->ID,
 			$field_name,
-			$args,
-			$this
+			$this,
+			$args
 		);
 
 		/**
@@ -957,16 +957,16 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		 * @param string       $value      The field value.
 		 * @param int          $post_id    The post ID.
 		 * @param string       $field_name The name of the meta field to get the value for.
-		 * @param array        $args       An array of arguments.
 		 * @param \Timber\Post $post       The post object.
+		 * @param array        $args       An array of arguments.
 		 */
 		$value = apply_filters(
 			'timber/post/meta',
 			$value,
 			$this->ID,
 			$field_name,
-			$args,
-			$this
+			$this,
+			$args
 		);
 
 		/**

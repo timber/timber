@@ -489,16 +489,16 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		 *                                    fetching the value from the database. Default null.
 		 * @param int             $comment_id The comment ID.
 		 * @param string          $field_name The name of the meta field to get the value for.
-		 * @param array           $args       An array of arguments.
 		 * @param \Timber\Comment $comment    The comment object.
+		 * @param array           $args       An array of arguments.
 		 */
 		$value = apply_filters(
 			'timber/comment/pre_meta',
 			null,
 			$this->ID,
 			$field_name,
-			$args,
-			$this
+			$this,
+			$args
 		);
 
 		/**
@@ -527,16 +527,16 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		 * @param string          $value      The field value.
 		 * @param int             $comment_id The comment ID.
 		 * @param string          $field_name The name of the meta field to get the value for.
-		 * @param array           $args       An array of arguments.
 		 * @param \Timber\Comment $comment    The comment object.
+		 * @param array           $args       An array of arguments.
 		 */
 		$value = apply_filters(
 			'timber/comment/get_meta',
 			$value,
 			$this->ID,
 			$field_name,
-			$args,
-			$this
+			$this,
+			$args
 		);
 
 		/**

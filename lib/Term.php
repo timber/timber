@@ -385,16 +385,16 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		 *                                 fetching the value from the database. Default null.
 		 * @param int          $post_id    The post ID.
 		 * @param string       $field_name The name of the meta field to get the value for.
-		 * @param array        $args       An array of arguments.
 		 * @param \Timber\Term $term       The term object.
+		 * @param array        $args       An array of arguments.
 		 */
 		$value = apply_filters(
 			'timber/term/pre_meta',
 			null,
 			$this->ID,
 			$field_name,
-			$args,
-			$this
+			$this,
+			$args
 		);
 
 		if ( null === $value ) {
@@ -414,16 +414,16 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		 * @param mixed        $value The field value.
 		 * @param int          $term_id     The term ID.
 		 * @param string       $field_name  The name of the meta field to get the value for.
-		 * @param array        $args        An array of arguments.
 		 * @param \Timber\Term $term        The term object.
+		 * @param array        $args        An array of arguments.
 		 */
 		$value = apply_filters(
 			'timber/term/meta',
 			$value,
 			$this->ID,
 			$field_name,
-			$args,
-			$this
+			$this,
+			$args
 		);
 
 		/**

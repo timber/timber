@@ -11,7 +11,7 @@ class TestTimberFilters extends Timber_UnitTestCase {
 		remove_filter( 'timber/post/meta', array( $this, 'filter_timber_post_get_meta_field' ) );
 	}
 
-	function filter_timber_post_get_meta_field( $value, $pid, $field_name, $args, $timber_post ) {
+	function filter_timber_post_get_meta_field( $value, $pid, $field_name, $timber_post, $args ) {
 		$this->assertEquals( 'Frank', $field_name );
 		$this->assertEquals( 'Drebin', $value );
 		$this->assertSame( $timber_post->ID, $pid );
@@ -60,7 +60,7 @@ class TestTimberFilters extends Timber_UnitTestCase {
 		remove_filter( 'timber/term/meta', array( $this, 'filter_timber_term_get_meta_field' ) );
 	}
 
-	function filter_timber_term_get_meta_field( $value, $tid, $field_name, $args, $timber_term ) {
+	function filter_timber_term_get_meta_field( $value, $tid, $field_name, $timber_term, $args ) {
 		$this->assertEquals( $tid, $timber_term->ID );
 		$this->assertEquals( $field_name, 'panic' );
 		return $value;
