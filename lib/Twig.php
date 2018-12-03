@@ -211,10 +211,6 @@ class Twig {
 			Helper::deprecated( '{{ get_class }}', null, '2.0.0' );
 			return get_class( $obj );
 		} ));
-		$twig->addFilter(new \Twig_SimpleFilter('get_type', function( $var ) {
-			Helper::deprecated( '{{ get_type }}', null, '2.0.0' );
-			return get_type($arr, true);
-		} ));
 		$twig->addFilter(new \Twig_SimpleFilter('print_r', function( $arr ) {
 			Helper::deprecated( '{{ print_r }}', null, '2.0.0' );
 			return print_r($arr, true);
