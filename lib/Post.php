@@ -404,6 +404,19 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 * get a preview of your post, if you have an excerpt it will use that,
+	 * otherwise it will pull from the post_content.
+	 * If there's a <!-- more --> tag it will use that to mark where to pull through.
+	 * @example
+	 * ```twig
+	 * <p>{{post.preview.length(50).read_more("Continue Reading")}}</p>
+	 * ```
+	 * @method length(int) The number of words that WP should use to make the tease. 
+	 * @method chars(int) The number of characters that WP should use to make the tease.
+	 * @method force(bool) What happens if your custom post excerpt is longer then the length requested? By default (`$force = false`) it will use the full `post_excerpt`. However, you can set this to true to *force* your excerpt to be of the desired length
+	 * @method read_more(bool|string) The text you want to use on the 'readmore' link or no text (false)
+	 * @method strip(bool|string) true for default, false for none, string for list of custom attributes
+	 * @method end(string) The text to end the preview with (defaults to ...)
 	 * @return PostPreview
 	 */
 	public function preview() {
