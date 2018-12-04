@@ -13,7 +13,6 @@ To use debugging, the constant `WP_DEBUG` needs to be set to `true`.
 **wp-config.php**
 
 ```php
-<?php
 define( 'WP_DEBUG', true );
 ```
 
@@ -29,9 +28,9 @@ Twig includes a `dump` function that can output the properties of an object.
 
 Which will give you:
 
-![](http://i.imgur.com/5Xu53Fk.png)
+![](https://i.imgur.com/5Xu53Fk.png)
 
-You can also dump _everything_ sent to your template (contents of `$context` passed to the Twig file) via:
+You can also dump _everything_ sent to your template (all the contents of `$context` that were passed to the Twig file) via:
 
 ```twig
 {{ dump() }}
@@ -39,7 +38,7 @@ You can also dump _everything_ sent to your template (contents of `$context` pas
 
 This will give you something like:
 
-![](http://i.imgur.com/5ZD8VDd.png)
+![](https://i.imgur.com/5ZD8VDd.png)
 
 ## Formatted output
 
@@ -53,6 +52,52 @@ It also works in PHP. Instead of using `var_dump` or `print_r`, you will use `du
 
 ```php
 dump( $post );
+```
+
+## Commented Twig includes
+
+Sometimes it’s difficult to know which Twig file generated a certain output. Thankfully, there’s the [Timber Commented Include](https://github.com/djboris88/timber-commented-include) extension. It will generate HTML comments that indicate where a template starts and where it ends:
+
+```html
+<!-- Begin output of "partials/navigation.twig" -->
+<nav class="navigation">...</nav>
+<!-- / End output of "partials/navigation.twig" -->).
+```
+
+The extension is only active when `WP_DEBUG` is set to `true`.
+
+## Set xDebug breakpoints in Twig
+
+Certain IDEs allow you to set breakpoints in your PHP code. To do that in Twig, you can use the [AjglBreakpointTwigExtension](https://github.com/ajgarlag/AjglBreakpointTwigExtension) extension, that allows you to set breakpoints and inspect environment and context variables.
+
+Install it as a dev-dependency:
+
+```
+composer require ajgl/breakpoint-twig-extension --dev
+```
+
+And then add it to Timber’s Twig environment:
+
+**functions.php**
+
+```php
+add_filter( 'timber/twig', function( Twig_Environment $twig ) {
+    if ( defined( 'WP_DEBUG' ) && WP_DEBUG
+        && class_exists( 'Ajgl\Twig\Extension\BreakpointExtension' )
+    ) {
+        $twig->addExtension( new Ajgl\Twig\Extension\BreakpointExtension() );
+    }
+
+    return $twig;
+} );
+```
+
+Finally, you can set a breakpoint anywhere in your Twig file:
+
+```twig
+<nav>
+    {{ breakpoint() }}
+</nav>
 ```
 
 ## Using Timber Debug Bar plugin
