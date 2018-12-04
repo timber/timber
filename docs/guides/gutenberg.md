@@ -4,6 +4,7 @@ menu:
   main:
     parent: "guides"
 ---
+
 ## Using Gutenberg with Timber
 
 Timber works with Gutenberg out of the box. If you use `{{ post.content }}`, Timber will render all the Gutenberg blocks.
@@ -44,7 +45,7 @@ Next, you you have to create your `render_callback()` function:
 
 ```php
 function my_acf_block_render_callback( $block ) {
-    $context = Timber::get_context();
+    $context = Timber::context_global();
     
     // Store block values.
     $context['block'] = $block;
@@ -55,8 +56,8 @@ function my_acf_block_render_callback( $block ) {
     // Render the block.
     Timber::render( 'block/example-block.twig', $context );
 }
-
 ```
+
 You create an extra array called `$context` with two values:
 - **block** - with all data like block title, alignment etc
 - **fields** - all custom fields - also all the fields created in **ACF**
@@ -94,7 +95,6 @@ function my_acf_block_editor_style() {
 }
 
 add_action( 'enqueue_block_assets', 'my_acf_block_editor_style' );
-
 ```
 
 For more details about enqueueing assets read the [Gutenberg Handbook](https://wordpress.org/gutenberg/handbook/blocks/applying-styles-with-stylesheets/#enqueueing-editor-only-block-assets).
