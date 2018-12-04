@@ -7,6 +7,7 @@ By
 [Lukas Gächter](https://github.com/gchtr) ([@lgaechter](https://twitter.com/lgaechter)), 
 [Pascal Knecht](https://github.com/pascalknecht) ([@pascalknecht](https://twitter.com/revenwo)), 
 [Maciej Palmowski](https://github.com/palmiak) ([@palmiak_fp](https://twitter.com/palmiak_fp)),
+[Coby Tamayo](https://github.com/acobster) ([@cobytamayo](https://twitter.com/cobytamayo)),
 [Upstatement](https://twitter.com/upstatement) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors)
 
 [![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.org/timber/timber)
