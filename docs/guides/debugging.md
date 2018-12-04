@@ -29,7 +29,7 @@ Which will give you:
 
 ![](https://i.imgur.com/5Xu53Fk.png)
 
-You can also dump _everything_ sent to your template (all the contents of `$context` that was passed to the Twig file) via:
+You can also dump _everything_ sent to your template (all the contents of `$context` that were passed to the Twig file) via:
 
 ```twig
 {{ dump() }}
