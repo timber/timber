@@ -12,16 +12,15 @@ The purpose of this page is to identify helpful tools for working with Twig.
 * Text Mate & Sublime text bundle – [Anomareh's PHP-Twig](https://github.com/Anomareh/PHP-Twig.tmbundle)
 * Emacs – [Web Mode](http://web-mode.org/)
 * Geany – Add [Twig/Symfony2 detection and highlighting](https://wiki.geany.org/howtos/geany_and_django#twigsymfony2_support)
-* PHPStorm – Built in coloring and code hinting. The Twig extension is recognized and has been for some time. [Twig Details for PHPStorm](http://blog.jetbrains.com/phpstorm/2013/06/twig-support-in-phpstorm/).
+* PhpStorm – Built in coloring and code hinting. The Twig extension is recognized and has been for some time. [Twig Details for PhpStorm](http://blog.jetbrains.com/phpstorm/2013/06/twig-support-in-phpstorm/).
 * Atom – Syntax highlighting with the [Atom Component](https://atom.io/packages/php-twig).
 
 ## WordPress tools
 
 * [Lisa Templates](https://wordpress.org/plugins/lisa-templates/) – allows you to write Twig-templates in the WordPress admin that renders through a shortcode or widget.
 
-## Other
-
-* [Watson-Ruby](http://goosecode.com/watson/) – An inline issue manager. Put tags like `[todo]` in a Twig comment and find it easily later. Watson supports Twig as of version 1.6.3.
+## Other	
+ * [Watson-Ruby](http://nhmood.github.io/watson-ruby/) – An inline issue manager. Put tags like `[todo]` in a Twig comment and find it easily later. Watson supports Twig as of version 1.6.3.
 
 ## JavaScript
 

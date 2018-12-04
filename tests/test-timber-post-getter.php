@@ -153,13 +153,13 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	function testGettingEmptyArray(){
 		$pids = $this->factory->post->create_many( 15 );
 		$posts = Timber::get_posts(array());
-		$this->assertEquals(0, count($posts));
+		$this->assertEmpty($posts);
 	}
 
 	function testGettingWithFalse(){
 		$pids = $this->factory->post->create_many( 15 );
 		$posts = Timber::get_posts(false);
-		$this->assertEquals(0, count($posts));
+		$this->assertEmpty($posts);
 	}
 
 	function testGetAttachment() {
@@ -321,11 +321,13 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	}
 
 	function testNotATimberPost() {
+		self::enable_error_log(false);
 		$post_id = $this->factory->post->create( array( 'post_type' => 'state' ) );
 		$use = \Timber\PostGetter::get_post_class('state', 'MyState');
 		$this->assertEquals('\Timber\Post', $use);
 		$post = new $use($post_id);
 		$this->assertEquals('Timber\Post', get_class($post));
+		self::enable_error_log(true);
 	}
 
 	function testPostTypeReturnAgainstArgType() {
