@@ -102,6 +102,20 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals('http://example.org/portfolio/page/4/?wx9umscriptalert(1)/script%_253eaq86s=1', $link);
 	}
 
+	function testDoubleEncodedPaginationUrlWithEscHTML() {
+		$this->setPermalinkStructure('/%postname%/');
+		register_post_type( 'portfolio' );
+		$this->factory->post->create_many( 33, array( 'post_type' => 'portfolio' ) );
+		$this->go_to( home_url( '/portfolio/page/3?wx9um%2522%253e%253cscript%253ealert%25281%2529%253c%252fscript%
+253eaq86s=1' ) );
+		query_posts('post_type=portfolio&paged=3');
+
+		$link = Timber::compile_string("{{ posts.pagination.next.link|e('esc_html') }}", array(
+			'posts' => new Timber\PostQuery(),
+		) );
+		$this->assertEquals('http://example.org/portfolio/page/4/?wx9umscriptalert(1)/script%_253eaq86s=1', $link);
+	}
+
 	function testPaginationWithSize() {
 		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );
