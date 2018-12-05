@@ -125,7 +125,7 @@
 		}
 
 		/**
-		 * @expectedDeprecated {{ get_class }}
+		 * @expectedDeprecated {{ my_object | get_class }}
 		 */
 		function testFilterFunction() {
 			$pid = $this->factory->post->create(array('post_title' => 'Foo'));
