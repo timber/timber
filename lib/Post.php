@@ -1377,7 +1377,8 @@ class Post extends Core implements CoreInterface {
 					$ele = $this->$func($ele, $class);
 				} else {
 					if ( $ele instanceof WP_Post ) {
-						$ele = new $class($ele);
+						$klass = PostGetter::get_post_class($ele->post_type);
+						$ele = new $klass($ele);
 					}
 				}
 			}
