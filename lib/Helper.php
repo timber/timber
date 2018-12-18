@@ -480,4 +480,26 @@ class Helper {
 		Helper::warn('TimberHelper::get_current_url() is deprecated and will be removed in future versions, use Timber\URLHelper::get_current_url()');
 		return URLHelper::get_current_url();
 	}
+
+	/**
+	 * Converts a WP object (WP_Post, WP_Term) into his
+	 * equivalent Timber class (Timber\Post, Timber\Term).
+	 *
+	 * If no match is found the function will return the inital argument.
+	 *
+	 * @param mix $obj WP Object
+	 * @return mix Instance of equivalent Timber object, or the argument if no match is found
+	 */
+	public static function convert_wp_object( $obj ) {
+
+		if ( $obj instanceof \WP_Post ) {
+			return new Timber\Post($obj->ID);
+		} elseif ( $obj instanceof \WP_Term ) {
+			return new Timber\Term($obj->term_id);
+		} elseif ( $obj instanceof \WP_User ) {
+			return new Timber\User($obj->id);
+		}
+
+		return $obj;
+	}
 }
