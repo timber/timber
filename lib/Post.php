@@ -811,7 +811,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function field_object( $field_name ) {
 		$value = apply_filters('timber/post/meta_object_field', null, $this->ID, $field_name, $this);
-		$value = $this->convert($value, __CLASS__);
+		$value = $this->convert($value);
 		return $value;
 	}
 
@@ -834,7 +834,7 @@ class Post extends Core implements CoreInterface {
 			}
 		}
 		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
-		$value = $this->convert($value, __CLASS__);
+		$value = $this->convert($value);
 		return $value;
 	}
 
@@ -1367,18 +1367,16 @@ class Post extends Core implements CoreInterface {
 	 * @param array|WP_Post $data
 	 * @param string $class
 	 */
-	public function convert( $data, $class = '\Timber\Post' ) {
-		if ( $data instanceof WP_Post ) {
-			$data = new $class($data);
+	public function convert( $data ) {
+		if ( is_object($data) ) {
+			$data = Helper::convert_wp_object($data);
 		} else if ( is_array($data) ) {
 			$func = __FUNCTION__;
 			foreach ( $data as &$ele ) {
-				if ( gettype($ele) === 'array' ) {
+				if ( is_array($ele) ) {
 					$ele = $this->$func($ele, $class);
-				} else {
-					if ( $ele instanceof WP_Post ) {
-						$ele = new $class($ele);
-					}
+				} else if ( is_object($ele) ) {
+					$ele = Helper::convert_wp_object($ele);
 				}
 			}
 		}
