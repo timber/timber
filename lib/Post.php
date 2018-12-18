@@ -1374,7 +1374,7 @@ class Post extends Core implements CoreInterface {
 			$func = __FUNCTION__;
 			foreach ( $data as &$ele ) {
 				if ( is_array($ele) ) {
-					$ele = $this->$func($ele, $class);
+					$ele = $this->$func($ele);
 				} else if ( is_object($ele) ) {
 					$ele = Helper::convert_wp_object($ele);
 				}
