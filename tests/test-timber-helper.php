@@ -252,4 +252,34 @@
 			$this->assertEquals('', $str);
 		}
 
+		function testConvertWPObject() {
+
+			// Test WP_Post -> \Timber\Post
+			$post_id = $this->factory->post->create();
+			$wp_post = get_post( $post_id );
+			$timber_post = \Timber\Helper::convert_wp_object($wp_post);
+			$this->assertTrue($timber_post instanceof \TimberPost);
+
+			// Test WP_Term -> \Timber\Term
+			$term_id = $this->factory->term->create();
+			$wp_term = get_term( $term_id );
+			$timber_term = \Timber\Helper::convert_wp_object($wp_term);
+			$this->assertTrue($timber_term instanceof \TimberTerm);
+
+			// Test WP_User -> \Timber\User
+			$user_id = $this->factory->user->create();
+			$wp_user = get_user_by('id', $user_id);
+			$timber_user = \Timber\Helper::convert_wp_object($wp_user);
+			$this->assertTrue($timber_user instanceof \TimberUser);
+
+			// Test strange input
+			$random_int = 2018;
+			$convert_int = \Timber\Helper::convert_wp_object($random_int);
+			$this->assertTrue($convert_int === $random_int);
+
+			$array = array();
+			$convert_array = \Timber\Helper::convert_wp_object($array);
+			$this->assertTrue(is_array($convert_array));
+		}
+
 	}
