@@ -493,11 +493,11 @@ class Helper {
 	public static function convert_wp_object( $obj ) {
 
 		if ( $obj instanceof \WP_Post ) {
-			return new Timber\Post($obj->ID);
+			return new \Timber\Post($obj->ID);
 		} elseif ( $obj instanceof \WP_Term ) {
-			return new Timber\Term($obj->term_id);
+			return new \Timber\Term($obj->term_id);
 		} elseif ( $obj instanceof \WP_User ) {
-			return new Timber\User($obj->id);
+			return new \Timber\User($obj->ID);
 		}
 
 		return $obj;
