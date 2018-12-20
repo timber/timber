@@ -60,7 +60,7 @@ function my_acf_block_render_callback( $block, $content = '', $is_preview ) {
 }
 
 ```
-You create an extra array called `$context` with two values:
+You create an extra array called `$context` with three values:
 - **block** - with all data like block title, alignment etc
 - **fields** - all custom fields - also all the fields created in **ACF**
 - **is_preview** - returns true during AJAX preview
