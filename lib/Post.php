@@ -404,22 +404,26 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Get a preview of your post, if you have an excerpt it will use that,
-	 * otherwise it will pull from the post_content.
-	 * This uses Timber's PostPreview object.
-	 * If there's a <!-- more --> tag it will use that to mark where to pull through.
+	 * Gets a preview/excerpt of your post.
+	 *
+	 * If you have text defined in the excerpt textarea of your post, it will use that. Otherwise it
+	 * will pull from the post_content. If there's a <!-- more --> tag, it will use that to mark
+	 * where to pull through.
+	 *
+	 * This method returns `Timber\PostPreview` a object, which is a **chainable object**. This
+	 * means that you can change the output of the preview by **adding more methods**. Refer to the
+	 * documentation of the `Timber\PostPreview` to get an overview of all the available methods.
+	 *
 	 * @example
 	 * ```twig
-	 * <p>{{ post.preview.length(50).read_more("Continue Reading") }}</p>
+	 * {# Change the post preview text #}
+	 * <p>{{ post.preview.read_more('Continue Reading') }}</p>
+	 *
+	 * {# Additionally restrict the length to 50 words #}
+	 * <p>{{ post.preview.length(50).read_more('Continue Reading') }}</p>
 	 * ```
-	 * @method length(int) The number of words that WP should use to make the tease. 
-	 * @method chars(int) The number of characters that WP should use to make the tease.
-	 * @method force(bool) What happens if your custom post excerpt is longer then the length requested? By default (`$force = false`) it will use the full `post_excerpt`. However, you can set this to true to *force* your excerpt to be of the desired length
-	 * @method read_more(bool|string) The text you want to use on the 'readmore' link or no text (false)
-	 * @method strip(bool|string) true for default, false for none, string for list of custom attributes
-	 * @method end(string) The text to end the preview with (defaults to ...)
-	 * @see Timber\PostPreview
-	 * @return PostPreview
+	 * @see \Timber\PostPreview
+	 * @return \Timber\PostPreview
 	 */
 	public function preview() {
 		return new PostPreview($this);
