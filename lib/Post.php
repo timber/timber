@@ -404,12 +404,13 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * get a preview of your post, if you have an excerpt it will use that,
+	 * Get a preview of your post, if you have an excerpt it will use that,
 	 * otherwise it will pull from the post_content.
+	 * This uses Timber's PostPreview object.
 	 * If there's a <!-- more --> tag it will use that to mark where to pull through.
 	 * @example
 	 * ```twig
-	 * <p>{{post.preview.length(50).read_more("Continue Reading")}}</p>
+	 * <p>{{ post.preview.length(50).read_more("Continue Reading") }}</p>
 	 * ```
 	 * @method length(int) The number of words that WP should use to make the tease. 
 	 * @method chars(int) The number of characters that WP should use to make the tease.
@@ -417,6 +418,7 @@ class Post extends Core implements CoreInterface {
 	 * @method read_more(bool|string) The text you want to use on the 'readmore' link or no text (false)
 	 * @method strip(bool|string) true for default, false for none, string for list of custom attributes
 	 * @method end(string) The text to end the preview with (defaults to ...)
+	 * @see Timber\PostPreview
 	 * @return PostPreview
 	 */
 	public function preview() {

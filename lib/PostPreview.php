@@ -3,10 +3,15 @@
 namespace Timber;
 
 /**
- * An object that lets a user easily modify the post preview to their
- * liking
+ * An object that lets a user easily modify the post preview to their liking.
+ * Designed to be used through the `Timber\Post::preview` method
+ * @example
+ * ```twig
+ * <p>{{ post.preview.length(50).read_more("Continue Reading") }}</p>
+ * ```
  * @since 1.0.4
-*/
+ * @see Timber\Post::preview()
+ */
 class PostPreview {
 
 	protected $post;
