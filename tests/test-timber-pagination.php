@@ -7,7 +7,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$posts = $this->factory->post->create_many( 55 );
 		$this->go_to( home_url( '?s=post' ) );
 		$pagination = Timber::get_pagination();
-		$this->assertEquals( user_trailingslashit(home_url().'/?paged=5&s=post'), $pagination['pages'][4]['link'] );
+		$this->assertEquals( user_trailingslashit(home_url().esc_url('/?paged=5&s=post')), $pagination['pages'][4]['link'] );
 	}
 
 	/* This test is for the concept of linking query_posts and get_pagination
@@ -185,16 +185,16 @@ class TestTimberPagination extends Timber_UnitTestCase {
 
 	function testPaginationInCategory( $struc = '/%postname%/' ) {
 		$this->setPermalinkStructure( $struc );
-		$no_posts = $this->factory->post->create_many( 25 );
+		$no_posts = $this->factory->post->create_many( 73 );
 		$posts = $this->factory->post->create_many( 31 );
 		$news_id = wp_insert_term( 'News', 'category' );
 		foreach ( $posts as $post ) {
 			wp_set_object_terms( $post, $news_id, 'category' );
 		}
 		$this->go_to( home_url( '/category/news' ) );
-		$post_objects = Timber::get_posts( false );
-		$pagination = Timber::get_pagination();
-		//need to complete test
+		$posts = new Timber\PostQuery(array('category_name' => 'news'));
+		$pagination = $posts->pagination();
+		$this->assertEquals(4, count($pagination->pages));
 	}
 
 	function testPaginationNextUsesBaseAndFormatArgs( $struc = '/%postname%/' ) {
@@ -239,7 +239,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->go_to( home_url( '?s=post' ) );
 		$posts = new Timber\PostQuery();
 		$pagination = $posts->pagination();
-		$this->assertEquals( home_url().'/?paged=5&s=post', $pagination->pages[4]['link'] );
+		$this->assertEquals( home_url().esc_url('/?paged=5&s=post'), $pagination->pages[4]['link'] );
 	}
 
 	function testCollectionPaginationOnLaterPage() {
