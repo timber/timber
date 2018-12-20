@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 4.7.9
-Tested up to: 4.9.8
+Tested up to: 5.0.2
 Stable tag: 1.8.3
 Requires PHP: 5.3
 License: GPLv2 or later
@@ -718,7 +718,7 @@ Then create a subdirectory called `views` in your theme folder. Then create a fi
 </div>
 `
 
-When you visit this page, you'll see both the data from PHP come through as you've marked it up. For more, continue with the official (G)etting Started Guide)[https://timber.github.io/docs/getting-started/]
+When you visit this page, you'll see both the data from PHP come through as you've marked it up. For more, continue with the official [Getting Started Guide](https://timber.github.io/docs/getting-started/)
 
 == Support ==
 
