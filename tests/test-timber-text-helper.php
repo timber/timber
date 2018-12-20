@@ -15,4 +15,12 @@
 			$this->assertFalse($maybe_starts_with);
 		}
 
+		function testTruncateEastAsian() {
+			$chars = "寒くなってきましたね。14日には北海道でも記録的に遅い初雪が降ったそ";
+			$str = '{{ "'.$chars.'"|truncate( 5, true ) }}';
+			$result = Timber::compile_string($str);
+			error_log('result = '.$result);
+			$this->assertEquals(wp_trim_words($chars, 5), $result);
+		}
+
 	}
