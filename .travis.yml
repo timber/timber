@@ -10,9 +10,9 @@ env:
     - WP_VERSION=4.7.9 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
     - WP_VERSION=4.7.9 WP_MULTISITE=0 PREFER_LOWEST=""
     - WP_VERSION=4.7.9 WP_MULTISITE=1 PREFER_LOWEST=""
-    - WP_VERSION=latest WP_MULTISITE=0 PREFER_LOWEST=""
-    - WP_VERSION=latest WP_MULTISITE=1 PREFER_LOWEST=""
-    - WP_VERSION=latest WP_MULTISITE=1 PREFER_LOWEST="--prefer-lowest --prefer-stable"
+    - WP_VERSION=5.0.2 WP_MULTISITE=0 PREFER_LOWEST=""
+    - WP_VERSION=5.0.2 WP_MULTISITE=1 PREFER_LOWEST=""
+    - WP_VERSION=5.0.2 WP_MULTISITE=1 PREFER_LOWEST="--prefer-lowest --prefer-stable"
 
 before_script:
     - if [ "$TRAVIS_PHP_VERSION" == 5.5 ] || [ "$TRAVIS_PHP_VERSION" == 5.4 ] || [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then pear config-set preferred_state beta; pecl channel-update pecl.php.net; yes | pecl install imagick; fi
