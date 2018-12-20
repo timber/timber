@@ -9,6 +9,13 @@ namespace Timber;
  * class all return the object itself, which means that this is a **chainable object**. You can
  * change the output of the preview by **adding more methods**.
  *
+ * By default, the preview will
+ *
+ * - have a length of 50 words, which will be forced, even if a longer excerpt is set on the post.
+ * - be stripped of all HTML tags.
+ * - have an ellipsis (…) as the end of the text.
+ * - have a "Read More" link appended.
+ *
  * @example
  * ```twig
  * {# Use default preview #}
@@ -163,10 +170,10 @@ class PostPreview {
 	 * ```
 	 * @param bool $force Whether the length of the preview should be forced to the requested
 	 *                    length, even if an editor wrote a manual excerpt that is longer than the
-	 *                    set length. Default `false`.
+	 *                    set length. Default `true`.
 	 * @return \Timber\PostPreview
 	 */
-	public function force( $force = false ) {
+	public function force( $force = true ) {
 		$this->force = $force;
 		return $this;
 	}
