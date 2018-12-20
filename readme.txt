@@ -3,7 +3,7 @@ Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 4.7.9
 Tested up to: 5.0.2
-Stable tag: 1.8.3
+Stable tag: 1.8.4
 Requires PHP: 5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -36,6 +36,9 @@ _Twig is the template language powering Timber; if you need a little background 
 **Changes for Theme Developers**
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
 
+= 1.8.4 =
+**Fixes and improvements**
+* Resolve potential pagination issue #1642 (thanks @gchtr)
 
 = 1.8.3 =
 **Fixes and improvements**
