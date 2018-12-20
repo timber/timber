@@ -124,6 +124,9 @@
 			$this->assertEquals('FooxBarxQuack', trim(Timber::compile_string($twig, array('string' => $str, 'array' => $arr))));
 		}
 
+		/**
+		 * @expectedDeprecated {{ my_object | get_class }}
+		 */
 		function testFilterFunction() {
 			$pid = $this->factory->post->create(array('post_title' => 'Foo'));
 			$post = new Timber\Post( $pid );

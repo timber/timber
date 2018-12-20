@@ -104,25 +104,3 @@ Finally, you can set a breakpoint anywhere in your Twig file:
 
 There’s a [Timber add-on](http://wordpress.org/plugins/debug-bar-timber/) for the [WordPress debug bar](https://wordpress.org/plugins/debug-bar/).  
 **Warning:** this currently requires PHP 5.4.
-
-## Using (Legacy) Timber Filters
-
-You can also use some quick filters on an object. These are legacy and will be removed in favor of using Twig's built-in functionality. However, these do not require that `WP_DEBUG` be turned on.
-
-### print_r
-
-Passes the variable to PHP’s `print_r` function.
-
-```twig
-{{ post|print_r }}
-```
-
-### get_class
-
-This filter answers the question: What type of object am I working with? It passes a variable to PHP’s `get_class` function.
-
-```twig
-{{ post|get_class }}
-```
-
-It will output something like `Timber\Post` or your custom wrapper object.
