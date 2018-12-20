@@ -11,6 +11,9 @@ namespace Timber;
  *
  * @example
  * ```twig
+ * {# Use default preview #}
+ * <p>{{ post.preview }}</p>
+ *
  * {# Change the post preview text #}
  * <p>{{ post.preview.read_more('Continue Reading') }}</p>
  *
