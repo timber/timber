@@ -153,6 +153,10 @@ class ImageHelper {
 			return false;
 		}
 
+		if ( TextHelper::ends_with( strtolower($file_path), '.svg' ) ) {
+			return true;
+		}
+
 		/**
 		 * Try reading mime type.
 		 *

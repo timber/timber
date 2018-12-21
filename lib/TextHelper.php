@@ -87,6 +87,17 @@ class TextHelper {
     }
 
     /**
+     * Does the string in question (haystack) 
+     * end with the substring in question (needle)?
+     * @param string $haystack
+     * @param string $needle
+     * @return boolean
+     */
+    public static function ends_with( $haystack, $needle ) {
+        return ( substr( $haystack, strlen( $haystack ) - strlen( $needle ) ) == $needle );
+    }
+
+    /**
      *
      *
      * @param string  $html
