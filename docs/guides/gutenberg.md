@@ -44,6 +44,13 @@ function my_acf_init() {
 Next, you you have to create your `render_callback()` function:
 
 ```php
+/**
+ *  This is the callback that displays the block.
+ *
+ * @param   array $block The block settings and attributes.
+ * @param   string $content The block content (emtpy string).
+ * @param   bool $is_preview True during AJAX preview.
+ */
 function my_acf_block_render_callback( $block, $content = '', $is_preview ) {
     $context = Timber::context_global();
     
