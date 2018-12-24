@@ -105,7 +105,7 @@ class Menu extends Core {
 				 *
 				 * @see wp_nav_menu()
 				 */
-				$default_args = array(
+				$default_args_array = array(
 					'menu'            => '',
 					'container'       => 'div',
 					'container_class' => '',
@@ -130,7 +130,10 @@ class Menu extends Core {
 				 *
 				 * @see wp_nav_menu()
 				 */
-				$menu = apply_filters( 'wp_nav_menu_objects', $menu, $default_args );
+				$default_args_array = apply_filters( 'wp_nav_menu_args', $default_args_array );
+				$default_args_obj = (object) $default_args_array;
+
+				$menu = apply_filters( 'wp_nav_menu_objects', $menu, $default_args_obj );
 
 				$menu = self::order_children($menu);
 				$menu = self::strip_to_depth_limit($menu);
