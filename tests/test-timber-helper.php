@@ -258,19 +258,19 @@
 			$post_id = $this->factory->post->create();
 			$wp_post = get_post( $post_id );
 			$timber_post = \Timber\Helper::convert_wp_object($wp_post);
-			$this->assertTrue($timber_post instanceof \TimberPost);
+			$this->assertTrue($timber_post instanceof \Timber\Post);
 
 			// Test WP_Term -> \Timber\Term
 			$term_id = $this->factory->term->create();
 			$wp_term = get_term( $term_id );
 			$timber_term = \Timber\Helper::convert_wp_object($wp_term);
-			$this->assertTrue($timber_term instanceof \TimberTerm);
+			$this->assertTrue($timber_term instanceof \Timber\Term);
 
 			// Test WP_User -> \Timber\User
 			$user_id = $this->factory->user->create();
 			$wp_user = get_user_by('id', $user_id);
 			$timber_user = \Timber\Helper::convert_wp_object($wp_user);
-			$this->assertTrue($timber_user instanceof \TimberUser);
+			$this->assertTrue($timber_user instanceof \Timber\User);
 
 			// Test strange input
 			$random_int = 2018;
