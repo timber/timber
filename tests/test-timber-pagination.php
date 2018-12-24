@@ -208,10 +208,11 @@ class TestTimberPagination extends Timber_UnitTestCase {
 			wp_set_object_terms( $post, $news_id, 'category' );
 		}
 		$this->go_to( home_url( '/category/news' ) );
+		query_posts('category_name=news');
 		$post_objects = new Timber\PostQuery( array(
 			'query' => false,
 		) );
-		$pagination = $posts->pagination();
+		$pagination = $post_objects->pagination();
 		$this->assertEquals(4, count($pagination->pages));
 	}
 
