@@ -215,7 +215,7 @@ class PostPreview {
 
 	/**
 	 * @param string $text
-	 * @param array|booelan $readmore_matches
+	 * @param array|bool $readmore_matches
 	 * @param boolean $trimmed was the text trimmed?
 	 */
 	protected function assemble( $text, $readmore_matches, $trimmed ) {
