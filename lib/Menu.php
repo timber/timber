@@ -130,10 +130,10 @@ class Menu extends Core {
 				 *
 				 * @see wp_nav_menu()
 				 */
-				$default_args = apply_filters( 'wp_nav_menu_args', $default_args_array );
-				$default_args = (object) $default_args;
+				$default_args_array = apply_filters( 'wp_nav_menu_args', $default_args_array );
+				$default_args_obj = (object) $default_args_array;
 
-				$menu = apply_filters( 'wp_nav_menu_objects', $menu, $default_args );
+				$menu = apply_filters( 'wp_nav_menu_objects', $menu, $default_args_obj );
 
 				$menu = self::order_children($menu);
 				$menu = self::strip_to_depth_limit($menu);
