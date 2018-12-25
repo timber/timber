@@ -51,7 +51,7 @@ Next, you you have to create your `render_callback()` function:
  * @param   string $content The block content (emtpy string).
  * @param   bool $is_preview True during AJAX preview.
  */
-function my_acf_block_render_callback( $block, $content = '', $is_preview ) {
+function my_acf_block_render_callback( $block, $content = '', $is_preview = false ) {
     $context = Timber::context_global();
     
     // Store block values.
@@ -85,7 +85,7 @@ Finally, you can create the template **block/example-block.twig**:
 #}
 
 {% if is_preview %}
-<p>I will only appear in the editor.</p>
+    <p>I will only appear in the editor.</p>
 {% endif %}
 
 <div id="example-{{ block.id }}" class="wrapper">
