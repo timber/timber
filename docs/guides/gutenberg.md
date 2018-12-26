@@ -43,7 +43,14 @@ function my_acf_init() {
 Next, you you have to create your `render_callback()` function:
 
 ```php
-function my_acf_block_render_callback( $block ) {
+/**
+*  This is the callback that displays the block.
+*
+* @param   array $block The block settings and attributes.
+* @param   string $content The block content (emtpy string).
+* @param   bool $is_preview True during AJAX preview.
+*/
+function my_acf_block_render_callback( $block, $content = '', $is_preview = false ) {
     $context = Timber::get_context();
     
     // Store block values.
@@ -52,14 +59,18 @@ function my_acf_block_render_callback( $block ) {
     // Store field values.
     $context['fields'] = get_fields(); 
 
+    // Store $is_preview value.
+    $context['is_preview'] = $is_preview; 
+
     // Render the block.
     Timber::render( 'block/example-block.twig', $context );
 }
 
 ```
-You create an extra array called `$context` with two values:
+You create an extra array called `$context` with three values:
 - **block** - with all data like block title, alignment etc
 - **fields** - all custom fields - also all the fields created in **ACF**
+- **is_preview** - returns true during AJAX preview
 
 Finally, you can create the template **block/example-block.twig**:
 
@@ -71,6 +82,11 @@ Finally, you can create the template **block/example-block.twig**:
  * This is the template that displays the example block.
  */
 #}
+
+{% if is_preview %}
+    <p>I will only appear in the editor.</p>
+{% endif %}
+
 <div id="example-{{ block.id }}" class="wrapper">
     <h1>{{ fields.title }}</h1>
     <p>{{ fields.description }}</p>
@@ -88,7 +104,7 @@ If you would like to use an external stylesheet both inside of the block editor 
 ```php
 function my_acf_block_editor_style() {
     wp_enqueue_style(
-        'logo_grid_css',
+        'example_block_css',
         get_template_directory_uri() .'/assets/example-block.css'
     );
 }
