@@ -4,6 +4,15 @@
 
 		protected $gettysburg = 'Four score and seven years ago our fathers brought forth on this continent a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal.';
 
+		function test1886Error() {
+			$expected = '<p>Govenment:</p> <ul> <li>of the <strong>people</strong></li> <li>by the people</li> <li>for the people</li> </ul>';
+			$post_id = $this->factory->post->create(array('post_content' => $expected.'<blockquote>Lincoln</blockquote>', 'post_excerpt' => false));
+			$post = new Timber\Post($post_id);
+			$template = "{{ post.preview.strip('<p><strong><ul><ol><li><br>') }}";
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals($expected.' <p>Lincoln</p>&hellip; <a href="http://example.org/?p='.$post_id.'" class="read-more">Read More</a>', $str);
+		}
+
 		function testPreviewWithStyleTags() {
 			global $wpdb;
 			$style = '<style>body { background-color: red; }</style><b>Yo.</b> ';
