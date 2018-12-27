@@ -115,6 +115,7 @@ class PostPreview {
 		$len = $this->length;
 		$chars = $this->char_length;
 		$strip = $this->strip;
+		$allowable_tags = ( $strip && is_string($strip)) ? $strip : null;
 		$readmore_matches = array();
 		$text = '';
 		$trimmed = false;
@@ -144,7 +145,11 @@ class PostPreview {
 		if ( !strlen($text) ) {
 			$text = $this->post->content();
 			$text = TextHelper::remove_tags($text, $this->destroy_tags);
-			$text = TextHelper::trim_words($text, $len, false, strtr($this->strip, '<>', '  '));
+			if ( $allowable_tags ) {
+				$text = TextHelper::trim_words($text, $len, false, strtr($allowable_tags, '<>', '  '));
+			} else {
+				$text = TextHelper::trim_words($text, $len, false);
+			}
 			if ( $chars !== false ) {
 				$text = TextHelper::trim_characters($text, $chars, false);
 			}
@@ -154,7 +159,6 @@ class PostPreview {
 			return trim($text);
 		}
 		if ( $strip ) {
-			$allowable_tags = (is_string($strip)) ? $strip : null;
 			$text = trim(strip_tags($text, $allowable_tags));
 		}
 		if ( strlen($text) ) {
