@@ -144,7 +144,7 @@ class PostPreview {
 		if ( !strlen($text) ) {
 			$text = $this->post->content();
 			$text = TextHelper::remove_tags($text, $this->destroy_tags);
-			$text = TextHelper::trim_words($text, $len, false);
+			$text = TextHelper::trim_words($text, $len, false, strtr($this->strip, '<>', '  '));
 			if ( $chars !== false ) {
 				$text = TextHelper::trim_characters($text, $chars, false);
 			}
