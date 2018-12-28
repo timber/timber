@@ -13,6 +13,15 @@
 			$this->assertEquals($expected.' <p>Lincoln</p>&hellip; <a href="http://example.org/?p='.$post_id.'" class="read-more">Read More</a>', $str);
 		}
 
+		function test1886ErrorWithForce() {
+			$expected = '<p>Govenment:</p> <ul> <li>of the <strong>people</strong></li> <li>by the people</li> <li>for the people</li> </ul>';
+			$post_id = $this->factory->post->create(array('post_excerpt' => $expected, 'post_content' => $this->gettysburg));
+			$post = new Timber\Post($post_id);
+			$template = "{{ post.preview.strip('<ul><li>').length(10).force }}";
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('Govenment: <ul> <li>of the people</li> <li>by the people</li> <li>for the</li></ul>&hellip; <a href="http://example.org/?p='.$post_id.'" class="read-more">Read More</a>', $str);
+		}
+
 		function testPreviewWithStyleTags() {
 			global $wpdb;
 			$style = '<style>body { background-color: red; }</style><b>Yo.</b> ';

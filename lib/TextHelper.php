@@ -44,10 +44,10 @@ class TextHelper {
             $more = __('&hellip;');
         }
         $original_text = $text;
-        $allowed_tag_string = '';
-        foreach ( explode(' ', apply_filters('timber/trim_words/allowed_tags', $allowed_tags)) as $tag ) {
-            $allowed_tag_string .= '<'.$tag.'>';
-        }
+       
+        $allowed_tags_array = explode(' ', apply_filters('timber/trim_words/allowed_tags', $allowed_tags));
+        $allowed_tags_array = array_filter($allowed_tags_array, function($value) { return $value !== ''; });
+        $allowed_tag_string = '<'.implode($allowed_tags_array, '><').'>';
         $text = strip_tags($text, $allowed_tag_string);
         /* translators: If your word count is based on single characters (East Asian characters), enter 'characters'. Otherwise, enter 'words'. Do not translate into your own language. */
         if ( 'characters' == _x('words', 'word count: words or characters?') && preg_match('/^utf\-?8$/i', get_option('blog_charset')) ) {
