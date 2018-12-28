@@ -45,26 +45,19 @@ class TextHelper {
         }
         $original_text = $text;
       
-      /**
-		   * Filters allowed tags for `trim_words()` helper.
-		   *
-		   * The `trim_words()` helper strips all HTML tags from a text it trims, except for a list of
-		   * allowed tags. Instead of passing the allowed tags every time you use `trim_words()` (or `{{ text|truncate }}`
-		   * in Twig), you can use this filter to set the allowed tags.
-		   *
-		   * @see \Timber\TextHelper::trim_words()
-		   * @since 0.21.9
-       *
-       * @param string $allowed_tags Allowed tags, separated by one whitespace.
-       *                             Default `p a span b i br blockquote`.
-       */
-        $allowed_tags = apply_filters( 'timber/trim_words/allowed_tags', $allowed_tags );
-
-        foreach ( explode(' ', $allowed_tags) as $tag ) {
-            $allowed_tag_string .= '<'.$tag.'>';
-        }
-
-       
+        /**
+         * Filters allowed tags for `trim_words()` helper.
+         *
+         * The `trim_words()` helper strips all HTML tags from a text it trims, except for a list of
+         * allowed tags. Instead of passing the allowed tags every time you use `trim_words()` (or `{{ text|truncate }}`
+         * in Twig), you can use this filter to set the allowed tags.
+         *
+         * @see \Timber\TextHelper::trim_words()
+         * @since 0.21.9
+         *
+         * @param string $allowed_tags Allowed tags, separated by one whitespace.
+         *                             Default `p a span b i br blockquote`.
+         */
         $allowed_tags_array = explode(' ', apply_filters('timber/trim_words/allowed_tags', $allowed_tags));
         $allowed_tags_array = array_filter($allowed_tags_array, function($value) { return $value !== ''; });
         $allowed_tag_string = '<'.implode('><', $allowed_tags_array).'>';
