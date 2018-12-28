@@ -115,7 +115,7 @@ class PostPreview {
 		$len = $this->length;
 		$chars = $this->char_length;
 		$strip = $this->strip;
-		$allowable_tags = ( $strip && is_string($strip)) ? $strip : null;
+		$allowable_tags = ( $strip && is_string($strip)) ? $strip : false;
 		$readmore_matches = array();
 		$text = '';
 		$trimmed = false;
@@ -138,7 +138,6 @@ class PostPreview {
 			$pieces = explode($readmore_matches[0], $this->post->post_content);
 			$text = $pieces[0];
 			if ( $force ) {
-				
 				if ( $allowable_tags ) {
 					$text = TextHelper::trim_words($text, $len, false, strtr($allowable_tags, '<>', '  '));
 				} else {

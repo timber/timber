@@ -18,13 +18,10 @@ class TextHelper {
      * @author  @CROSP
      * @param   string $text      Text to trim.
      * @param   int    $num_chars Number of characters. Default is 60.
-     * @param   string|null $more      Optional. What to append if $text needs to be trimmed. Default '&hellip;'.
+     * @param   string $more      What to append if $text needs to be trimmed. Defaults to '&hellip;'.
      * @return  string trimmed text.
      */
-    public static function trim_characters( $text, $num_chars = 60, $more = null ) {
-        if ( $more === null ) {
-            $more = __('&hellip;');
-        }
+    public static function trim_characters( $text, $num_chars = 60, $more = '&hellip;' ) {
         $text = wp_strip_all_tags($text);
         $text = mb_strimwidth($text, 0, $num_chars, $more);
         return $text;
@@ -47,7 +44,7 @@ class TextHelper {
        
         $allowed_tags_array = explode(' ', apply_filters('timber/trim_words/allowed_tags', $allowed_tags));
         $allowed_tags_array = array_filter($allowed_tags_array, function($value) { return $value !== ''; });
-        $allowed_tag_string = '<'.implode($allowed_tags_array, '><').'>';
+        $allowed_tag_string = '<'.implode('><', $allowed_tags_array).'>';
         $text = strip_tags($text, $allowed_tag_string);
         /* translators: If your word count is based on single characters (East Asian characters), enter 'characters'. Otherwise, enter 'words'. Do not translate into your own language. */
         if ( 'characters' == _x('words', 'word count: words or characters?') && preg_match('/^utf\-?8$/i', get_option('blog_charset')) ) {
