@@ -115,25 +115,34 @@ class PostPreview {
 		$len = $this->length;
 		$chars = $this->char_length;
 		$strip = $this->strip;
+		$allowable_tags = ( $strip && is_string($strip)) ? $strip : false;
 		$readmore_matches = array();
 		$text = '';
 		$trimmed = false;
 		if ( isset($this->post->post_excerpt) && strlen($this->post->post_excerpt) ) {
+			$text = $this->post->post_excerpt;
 			if ( $this->force ) {
-				$text = TextHelper::trim_words($this->post->post_excerpt, $len, false);
+				
+				if ( $allowable_tags ) {
+					$text = TextHelper::trim_words($text, $len, false, strtr($allowable_tags, '<>', '  '));
+				} else {
+					$text = TextHelper::trim_words($text, $len, false);
+				}
 				if ( $chars !== false ) {
-					$text = TextHelper::trim_characters($this->post->post_excerpt, $chars, false);
+					$text = TextHelper::trim_characters($text, $chars, false);
 				}
 				$trimmed = true;
-			} else {
-				$text = $this->post->post_excerpt;
-			}
+			} 
 		}
 		if ( !strlen($text) && preg_match('/<!--\s?more(.*?)?-->/', $this->post->post_content, $readmore_matches) ) {
 			$pieces = explode($readmore_matches[0], $this->post->post_content);
 			$text = $pieces[0];
 			if ( $force ) {
-				$text = TextHelper::trim_words($text, $len, false);
+				if ( $allowable_tags ) {
+					$text = TextHelper::trim_words($text, $len, false, strtr($allowable_tags, '<>', '  '));
+				} else {
+					$text = TextHelper::trim_words($text, $len, false);
+				}
 				if ( $chars !== false ) {
 					$text = TextHelper::trim_characters($text, $chars, false);
 				}
@@ -144,7 +153,11 @@ class PostPreview {
 		if ( !strlen($text) ) {
 			$text = $this->post->content();
 			$text = TextHelper::remove_tags($text, $this->destroy_tags);
-			$text = TextHelper::trim_words($text, $len, false);
+			if ( $allowable_tags ) {
+				$text = TextHelper::trim_words($text, $len, false, strtr($allowable_tags, '<>', '  '));
+			} else {
+				$text = TextHelper::trim_words($text, $len, false);
+			}
 			if ( $chars !== false ) {
 				$text = TextHelper::trim_characters($text, $chars, false);
 			}
@@ -154,7 +167,6 @@ class PostPreview {
 			return trim($text);
 		}
 		if ( $strip ) {
-			$allowable_tags = (is_string($strip)) ? $strip : null;
 			$text = trim(strip_tags($text, $allowable_tags));
 		}
 		if ( strlen($text) ) {
