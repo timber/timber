@@ -4,6 +4,7 @@ menu:
   main:
     parent: "guides"
 ---
+
 ## Using Gutenberg with Timber
 
 Timber works with Gutenberg out of the box. If you use `{{ post.content }}`, Timber will render all the Gutenberg blocks.
@@ -22,21 +23,23 @@ To create a content block, you first have to register it in **functions.php** or
 
 ```php
 add_action( 'acf/init', 'my_acf_init' );
+
 function my_acf_init() {
-    // Check function exists.
-    if( function_exists('acf_register_block') ) {
-        
-        // Register a new block.
-        acf_register_block(array(
-            'name'				=> 'example_block',
-            'title'				=> __( 'Example Block', 'your-text-domain' ),
-            'description'		=> __( 'A custom example block.', 'your-text-domain' ),
-            'render_callback'	=> 'my_acf_block_render_callback',
-            'category'			=> 'formatting',
-            'icon'				=> 'admin-comments',
-            'keywords'		    => array( 'example' ),
-        ) );
+    // Bailout if function doesn’t exist.
+    if ( ! function_exists( 'acf_register_block' ) ) {
+        return;
     }
+
+    // Register a new block.
+    acf_register_block( array(
+        'name'            => 'example_block',
+        'title'           => __( 'Example Block', 'your-text-domain' ),
+        'description'     => __( 'A custom example block.', 'your-text-domain' ),
+        'render_callback' => 'my_acf_block_render_callback',
+        'category'        => 'formatting',
+        'icon'            => 'admin-comments',
+        'keywords'        => array( 'example' ),
+    ) );
 }
 ```
 
@@ -44,14 +47,14 @@ Next, you you have to create your `render_callback()` function:
 
 ```php
 /**
-*  This is the callback that displays the block.
-*
-* @param   array $block The block settings and attributes.
-* @param   string $content The block content (emtpy string).
-* @param   bool $is_preview True during AJAX preview.
-*/
+ *  This is the callback that displays the block.
+ *
+ * @param   array $block The block settings and attributes.
+ * @param   string $content The block content (emtpy string).
+ * @param   bool $is_preview True during AJAX preview.
+ */
 function my_acf_block_render_callback( $block, $content = '', $is_preview = false ) {
-    $context = Timber::get_context();
+    $context = Timber::context_global();
     
     // Store block values.
     $context['block'] = $block;
@@ -65,8 +68,8 @@ function my_acf_block_render_callback( $block, $content = '', $is_preview = fals
     // Render the block.
     Timber::render( 'block/example-block.twig', $context );
 }
-
 ```
+
 You create an extra array called `$context` with three values:
 - **block** - with all data like block title, alignment etc
 - **fields** - all custom fields - also all the fields created in **ACF**
@@ -110,7 +113,6 @@ function my_acf_block_editor_style() {
 }
 
 add_action( 'enqueue_block_assets', 'my_acf_block_editor_style' );
-
 ```
 
 For more details about enqueueing assets read the [Gutenberg Handbook](https://wordpress.org/gutenberg/handbook/blocks/applying-styles-with-stylesheets/#enqueueing-editor-only-block-assets).
