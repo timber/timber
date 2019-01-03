@@ -369,10 +369,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @return mixed The meta field value.
 	 */
 	public function meta( $field_name, $args = array() ) {
-		if ( isset($this->$field_name) ) {
-			return $this->$field_name;
-		}
-
 		/**
 		 * Filters the value for a term meta field before it is fetched from the database.
 		 *
@@ -450,9 +446,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			'timber/term/meta'
 		);
 
-		$this->$field_name = $value;
-
-		return $this->$field_name;
+		return $value;
 	}
 
 	/**
