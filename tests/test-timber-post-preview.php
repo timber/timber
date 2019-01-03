@@ -134,7 +134,7 @@
 			$post = new Timber\Post($pid);
 			$post->post_excerpt = '';
 			$preview = $post->get_preview(6, true, 'Read More', '<span>');
-			$this->assertEquals('<span>Even in the world of</span>&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $preview);
+			$this->assertEquals('<span>Even in the world of make-believe</span>&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', (string) $preview);
 		}
 
 	}

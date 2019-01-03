@@ -9,14 +9,14 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		$integrations->maybe_init_integrations();
 		$this->assertEquals('Timber\Integrations', get_class($integrations));
 		$this->assertEquals('Timber\Integrations\ACF', get_class($integrations->acf));
-		 $this->assertEquals('Timber\Integrations\CoAuthorsPlus', get_class($integrations->coauthors_plus));
+		$this->assertEquals('Timber\Integrations\CoAuthorsPlus', get_class($integrations->coauthors_plus));
 	}
 
 	function testWPPostConvert() {
 		$pid = $this->factory->post->create();
 		$wp_post = get_post( $pid );
 		$post = new Timber\Post();
-		$timber_post = $post->convert( $wp_post, 'Timber\Post' );
+		$timber_post = $post->convert( $wp_post );
 		$this->assertTrue( $timber_post instanceof Timber\Post );
 	}
 

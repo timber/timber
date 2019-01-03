@@ -94,6 +94,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 #### Related Timber Projects
 * [**Pine**](https://github.com/azeemhassni/pine) A CLI _installer_ for Timber
 * [**Timber CLI**](https://github.com/nclud/wp-timber-cli) A CLI for Timber
+* [**Timber Commented Include**](https://github.com/djboris88/timber-commented-include) Debug output via HTML comments before and after each include statement in Twig
 * [**Timber Dump Extension**](https://github.com/nlemoine/timber-dump-extension) Debug output with nice formatting
 * [**Timber Photon**](https://github.com/slimndap/TimberPhoton) Plug-in to use JetPack's free Photon image manipulation and CDN with Timber
 * [**Timber Sugar**](https://github.com/timber/sugar) A catch-all for goodies to use w Timber
