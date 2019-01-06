@@ -13,7 +13,7 @@ While data saved by ACF is available via `{{ post.my_acf_field }}`, you will oft
 
 ## Getting data from ACF
 
-If you’ve worked with ACF before, you’re use to use `get_field( 'my_acf_field' )` all the time. In Timber, getting data from ACF works the same way as getting meta data in general:
+If you’ve worked with ACF before, you’re use to use `get_field( 'my_acf_field' )` all the time. In Timber, getting data from ACF works the same way as getting WordPress's native meta data in general:
 
 **Twig**
 
@@ -27,12 +27,12 @@ If you’ve worked with ACF before, you’re use to use `get_field( 'my_acf_fiel
 $meta = $post->meta( 'my_acf_field' );
 ```
 
-In ACF, all values are filtered. If you want to use unfiltered, raw values from the database, you’re probably used to using the third parameter for `get_field()`, which is called `$format_value`. In Timber, you’ll have to pass it like so:
+In ACF, all values are filtered. If you want to use unfiltered, raw values from the database, you’re probably used to using the third parameter for `get_field()`, which is called `$format_value`. This defaults to true. In Timber, you’d pass it like so:
 
 **Twig**
 
 ```twig
-{{ post.meta('my_acf_field', { format_value: true }) }}
+{{ post.meta('my_acf_field', { format_value: false }) }}
 ```
 
 **PHP**
@@ -48,7 +48,7 @@ $meta = $post->meta( 'my_acf_field', [
 ```twig
 <h3>{{ post.title }}</h3>
 <div class="intro-text">
-     {{ post.meta('my_wysiwyg_field') }}
+    {{ post.meta('my_wysiwyg_field') }}
 </div>
 ```
 
@@ -56,7 +56,7 @@ This will apply your expected paragraph breaks and other pre-processing to the t
 
 ## Image Field
 
-You can retrieve an image from a custom field, then use it in a Twig template. The most reliable approach is this: When setting up your custom fields, you’ll want to save the `image_id` to the field. The image object, URL, etc. _will_ work, but it’s not as fool-proof.
+You can retrieve an image from a custom field, then use it in a Twig template. The most reliable approach is this: When setting up your custom fields, you’ll want to use `Image ID` as the field's return value. The image object, URL, etc. _should_ work, but it’s not as fool-proof.
 
 ### The quick way (for most situations)
 
@@ -122,7 +122,7 @@ or
 
 ## Repeater Field
 
-You can access repeater fields within twig files:
+You can access repeater fields within Twig files:
 
 **single.twig**
 
@@ -226,7 +226,7 @@ Timber::render('index.twig', $context);
 ```
 
 ```twig
-<footer>{{site_copyright_info}}</footer>
+<footer>{{site_copyright_info }}</footer>
 ```
 
 ### Get all info from your options page
