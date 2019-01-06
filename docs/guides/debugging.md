@@ -99,6 +99,10 @@ Finally, you can set a breakpoint anywhere in your Twig file:
 </nav>
 ```
 
+## Timber Debugger
+
+The [**Timber Debugger**](https://github.com/djboris88/timber-debugger) package includes all three extensions mentioned above:  the [Timber Dump](https://github.com/nlemoine/timber-dump-extension) extension, the [Timber Commented Include](https://github.com/djboris88/timber-commented-include) extension and the [Twig Breakpoints](https://github.com/ajgarlag/AjglBreakpointTwigExtension) extension.
+
 ## Using Timber Debug Bar plugin
 
 There’s a [Timber add-on](http://wordpress.org/plugins/debug-bar-timber/) for the [WordPress debug bar](https://wordpress.org/plugins/debug-bar/).  
