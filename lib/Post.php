@@ -893,7 +893,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @return mixed The meta field value.
 	 */
 	public function meta( $field_name = null, $args = array() ) {
-        if ( $rd = $this->get_revised_data_from_method('meta', $field_name) ) {
+		if ( $rd = $this->get_revised_data_from_method('meta', $field_name) ) {
 			return $rd;
 		}
 

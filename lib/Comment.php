@@ -472,7 +472,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	 * @api
 	 *
 	 * @param string $field_name The field name for which you want to get the value.
-     * @param array  $args       An array of arguments for getting the meta value. Third-party
+	 * @param array  $args       An array of arguments for getting the meta value. Third-party
 	 *                           integrations can use this argument to make their API arguments
 	 *                           available in Timber. Default empty.
 	 * @return mixed The meta field value.

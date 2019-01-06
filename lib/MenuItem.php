@@ -340,8 +340,8 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * Get a meta value of the menu item.
 	 *
-	 * Plugins like Advanced Custom Fields allow you to set custom fields for menu items. With this
-	 * method you can retrieve the value of these.
+	 * Plugins like Advanced Custom Fields allow you to set custom fields for menu items.
+	 * With this method you can retrieve the value of these.
 	 *
 	 * @api
 	 * @example

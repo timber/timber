@@ -402,7 +402,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		 *
 		 * This filter is used by the ACF Integration.
 		 *
-		 * @todo Add example
+		 * @todo  Add description, example
 		 *
 		 * @see   \Timber\Term::meta()
 		 * @since 0.21.9
