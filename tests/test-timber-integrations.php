@@ -26,8 +26,8 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		$pid = $this->factory->post->create();
 		$wp_post = get_post( $pid );
 		$post = new TimberPost();
-		$timber_post = $post->convert( $wp_post, 'TimberPost' );
-		$this->assertTrue( $timber_post instanceof TimberPost );
+		$timber_post = $post->convert( $wp_post );
+		$this->assertTrue( $timber_post instanceof \Timber\Post );
 	}
 
 	function testACFHasFieldPostFalse() {
@@ -71,10 +71,10 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		$this->assertEquals( 'blue', Timber::compile_string( $str, array( 'term' => $term ) ) );
 	}
 
-	
+
 	function testACFFieldObject() {
 		$key = 'field_5ba2c660ed26d';
-		$fp_id = $this->factory->post->create(array('post_content' => 'a:10:{s:4:"type";s:4:"text";s:12:"instructions";s:0:"";s:8:"required";i:0;s:17:"conditional_logic";i:0;s:7:"wrapper";a:3:{s:5:"width";s:0:"";s:5:"class";s:0:"";s:2:"id";s:0:"";}s:13:"default_value";s:0:"";s:11:"placeholder";s:0:"";s:7:"prepend";s:0:"";s:6:"append";s:0:"";s:9:"maxlength";s:0:"";}', 'post_title' => 'Thinger', 'post_name' => $key, 'post_type' => 'acf-field'));	
+		$fp_id = $this->factory->post->create(array('post_content' => 'a:10:{s:4:"type";s:4:"text";s:12:"instructions";s:0:"";s:8:"required";i:0;s:17:"conditional_logic";i:0;s:7:"wrapper";a:3:{s:5:"width";s:0:"";s:5:"class";s:0:"";s:2:"id";s:0:"";}s:13:"default_value";s:0:"";s:11:"placeholder";s:0:"";s:7:"prepend";s:0:"";s:6:"append";s:0:"";s:9:"maxlength";s:0:"";}', 'post_title' => 'Thinger', 'post_name' => $key, 'post_type' => 'acf-field'));
 		$pid      = $this->factory->post->create();
 		update_field( 'thinger', 'foo', $pid );
 		update_field( '_thinger', $key, $pid );

@@ -32,7 +32,8 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
-- Fix an error with handling args for nav menus #1865 (thanks @palmiak)
+* Fix an error with handling args for nav menus #1865 (thanks @palmiak)
+* Allowed tags won't be stripped when automatically generating an excerpt #1886 (thanks @davefx)
 
 **Changes for Theme Developers**
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
