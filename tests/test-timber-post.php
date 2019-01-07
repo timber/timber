@@ -431,8 +431,6 @@
 		/**
 		 * This tests was created to catch what happens when you do weird things to {{ post.meta }},
 		 * like calling it when nothing's assigned and trying to output a default property as a string.
-		 *
-		 * @expectedException Twig_Error_Runtime
 		 */
 		function testPostMetaMetaArrayProperty(){
 			$post_id = $this->factory->post->create();

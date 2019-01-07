@@ -56,7 +56,7 @@ use WP_Post;
  * </article>
  * ```
  */
-class Post extends Core implements CoreInterface, Setupable {
+class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 	/**
 	 * @var string The name of the class to handle images by default
@@ -887,10 +887,13 @@ class Post extends Core implements CoreInterface, Setupable {
 	 * @api
 	 *
 	 * @param string $field_name The field name for which you want to get the value.
+	 * @param array  $args       An array of arguments for getting the meta value. Third-party
+	 *                           integrations can use this argument to make their API arguments
+	 *                           available in Timber. Default empty.
 	 * @return mixed The meta field value.
 	 */
-	public function meta( $field_name = null ) {
-        if ( $rd = $this->get_revised_data_from_method('meta', $field_name) ) {
+	public function meta( $field_name = null, $args = array() ) {
+		if ( $rd = $this->get_revised_data_from_method('meta', $field_name) ) {
 			return $rd;
 		}
 
@@ -902,20 +905,21 @@ class Post extends Core implements CoreInterface, Setupable {
 		 * @see   \Timber\Post::meta()
 		 * @since 2.0.0
 		 *
-		 * @param string       $value      The field value. Default null.
+		 * @param string       $value      The field value. Default null. Passing a non-null value
+		 *                                 will skip fetching the value from the database.
 		 * @param int          $post_id    The post ID.
 		 * @param string       $field_name The name of the meta field to get the value for.
 		 * @param \Timber\Post $post       The post object.
+		 * @param array        $args       An array of arguments.
 		 */
-		$value = apply_filters( 'timber/post/pre_meta', null, $this->ID, $field_name, $this );
-
-		if ( null === $field_name ) {
-			Helper::warn('You have not set what meta field you want to retrive this can cause strange behavior and is not recommended');
-		}
-
-		if ( "meta" === $field_name ) {
-			Helper::warn('You are trying to retrive a meta field named "meta" this can cause strange behavior and is not recommended');
-		}
+		$value = apply_filters(
+			'timber/post/pre_meta',
+			null,
+			$this->ID,
+			$field_name,
+			$this,
+			$args
+		);
 
 		/**
 		 * Filters the value for a post meta field before it is fetched from the database.
@@ -929,7 +933,7 @@ class Post extends Core implements CoreInterface, Setupable {
 			'timber/post/pre_meta'
 		);
 
-		if ( $value === null ) {
+		if ( null === $value ) {
 			$value = get_post_meta($this->ID, $field_name);
 			if ( is_array($value) && count($value) == 1 ) {
 				$value = $value[0];
@@ -953,8 +957,16 @@ class Post extends Core implements CoreInterface, Setupable {
 		 * @param int          $post_id    The post ID.
 		 * @param string       $field_name The name of the meta field to get the value for.
 		 * @param \Timber\Post $post       The post object.
+		 * @param array        $args       An array of arguments.
 		 */
-		$value = apply_filters( 'timber/post/meta', $value, $this->ID, $field_name, $this );
+		$value = apply_filters(
+			'timber/post/meta',
+			$value,
+			$this->ID,
+			$field_name,
+			$this,
+			$args
+		);
 
 		/**
 		 * Filters the value for a post meta field.
@@ -971,6 +983,31 @@ class Post extends Core implements CoreInterface, Setupable {
 
 		$value = $this->convert($value);
 		return $value;
+	}
+
+	/**
+	 * Gets a post meta value.
+	 *
+	 * @api
+	 * @deprecated 2.0.0, use `{{ post.meta('field_name') }}` instead.
+	 * @see \Timber\Post::meta()
+	 *
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return mixed The meta field value.
+	 */
+	public function get_field( $field_name = null ) {
+		Helper::deprecated(
+			"{{ post.get_field('field_name') }}",
+			"{{ post.meta('field_name') }}",
+			'2.0.0'
+		);
+
+		if ( $field_name === null ) {
+			// On the off-chance the field is actually named meta.
+			$field_name = 'meta';
+		}
+
+		return $this->meta( $field_name );
 	}
 
 	/**
@@ -1482,30 +1519,6 @@ class Post extends Core implements CoreInterface, Setupable {
 		}
 		$this->_permalink = get_permalink($this->ID);
 		return $this->_permalink;
-	}
-
-	/**
-	 * Gets a post meta value.
-	 *
-	 * @api
-	 * @deprecated 2.0.0, use `{{ post.meta('field_name') }}` instead.
-	 *
-	 * @param string $field_name The field name for which you want to get the value.
-	 * @return mixed The meta field value.
-	 */
-	public function get_field( $field_name = null ) {
-		Helper::deprecated(
-			"{{ post.get_field('field_name') }}",
-			"{{ post.meta('field_name' }}",
-			'2.0.0'
-		);
-
-		if ( $field_name === null ) {
-			//on the off-chance the field is actually named meta
-			$field_name = 'meta';
-		}
-
-		return $this->meta( $field_name );
 	}
 
 	/**
