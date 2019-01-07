@@ -20,8 +20,8 @@ class Pagination {
 	 *
 	 * @api
 	 *
-	 * @param array $prefs
-	 * @param null  $wp_query
+	 * @param array           $prefs
+	 * @param \WP_Query|null  $wp_query
 	 */
 	public function __construct( $prefs = array(), $wp_query = null ) {
 		$this->init($prefs, $wp_query);

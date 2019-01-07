@@ -117,13 +117,13 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 	/**
 	 * @api
-	 * @var int $id the numeric WordPress id of a post
+	 * @var int The numeric WordPress id of a post.
 	 */
 	public $id;
 
 	/**
 	 * @api
-	 * @var string The numeric WordPress id of a post, capitalized to match WordPress usage.
+	 * @var int The numeric WordPress id of a post, capitalized to match WordPress usage.
 	 */
 	public $ID;
 

@@ -44,6 +44,13 @@ use Timber\URLHelper;
  * ```
  */
 class Archives extends Core {
+
+	/**
+	 * @var array Preserves arguments sent with the constructor for possible later use when 
+	 * displaying items.
+	 */
+	protected $args;
+
 	/**
 	 * URL prefix.
 	 *
