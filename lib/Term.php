@@ -208,8 +208,8 @@ class Term extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @internal
-	 * @param int $tid
-	 * @return int
+	 * @param mixed $tid
+	 * @return int|bool
 	 */
 	protected function get_tid( $tid ) {
 		global $wpdb;
@@ -219,18 +219,14 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		if ( gettype($tid) === 'object' ) {
 			$tid = $tid->term_id;
 		}
-		if ( is_numeric($tid) ) {
-			$query = $wpdb->prepare("SELECT * FROM $wpdb->terms WHERE term_id = %d", $tid);
-		} else {
-			$query = $wpdb->prepare("SELECT * FROM $wpdb->terms WHERE slug = %s", $tid);
-		}
+		$query = $wpdb->prepare("SELECT * FROM $wpdb->terms WHERE slug = %s", $tid);
 		$result = $wpdb->get_row($query);
 		if ( isset($result->term_id) ) {
 			$result->ID = $result->term_id;
 			$result->id = $result->term_id;
 			return $result->ID;
 		}
-		return 0;
+		return false;
 	}
 
 
@@ -240,6 +236,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * @api
 	 * @deprecated 2.0.0, use `{{ term.edit_link }}` instead.
+	 * @codeCoverageIgnore
 	 * @return string
 	 */
 	public function get_edit_url() {
@@ -249,9 +246,9 @@ class Term extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * Gets a term meta value.
-	 *
 	 * @api
 	 * @deprecated 2.0.0, use `{{ term.meta('field_name') }}` instead.
+	 * @codeCoverageIgnore
 	 *
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return string The meta field value.
@@ -607,6 +604,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * @api
 	 * @deprecated 2.0.0, use `{{ term.children }}` instead.
+	 * @codeCoverageIgnore
 	 *
 	 * @return array
 	 */

@@ -49,7 +49,7 @@ class CommentThread extends \ArrayObject {
 	 *
 	 * @return int The number of comments on a post.
 	 */
-	public function mecount() {
+	public function count() {
 		return get_comments_number($this->post_id);
 	}
 
