@@ -308,7 +308,7 @@ class ImageHelper {
 	protected static function process_delete_generated_files( $filename, $ext, $dir, $search_pattern, $match_pattern = null ) {
 		$searcher = '/'.$filename.$search_pattern;
 		$files = glob($dir.$searcher);
-		if ( $files === false ) {
+		if ( $files === false || empty($files) ) {
 			return;
 		}
 		foreach ( $files as $found_file ) {
