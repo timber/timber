@@ -79,7 +79,7 @@ class Comment extends Core implements CoreInterface {
 	 * <h3>Comments by...</h3>
 	 * <ol>
 	 * {% for comment in post.comments %}
-	 * 	<li>{{comment.author.name}}, who is a {{comment.author.role}}</li>
+	 * 	<li>{{comment.author.name}}, who is a {{comment.author.roles|join(', ')}}</li>
 	 * {% endfor %}
 	 * </ol>
 	 * ```

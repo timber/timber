@@ -66,6 +66,16 @@ class User extends Core implements CoreInterface {
 	public $user_nicename;
 
 	/**
+	 * The roles the user is part of.
+	 *
+	 * @api
+	 * @since 1.8.5
+	 *
+	 * @var array
+	 */
+	protected $roles;
+
+	/**
 	 * @param object|int|bool $uid
 	 */
 	public function __construct( $uid = false ) {
@@ -140,6 +150,10 @@ class User extends Core implements CoreInterface {
 				$this->import($data->data);
 			} else {
 				$this->import($data);
+			}
+
+			if ( isset($data->roles) ) {
+				$this->roles = $this->get_roles($data->roles);
 			}
 		}
 		unset($this->user_pass);
@@ -228,5 +242,82 @@ class User extends Core implements CoreInterface {
 	 */
 	public function slug() {
 		return $this->user_nicename;
+	}
+
+	/**
+	 * Create the array with user roles names and slugs.
+	 *
+	 * @api
+	 * @since 1.8.5
+	 *
+	 * @return array|null
+	 */
+	public function get_roles( $roles ) {
+		if ( empty( $roles ) ) {
+			return null;
+		}
+
+		$wp_roles = wp_roles();
+		$names    = $wp_roles->get_names();
+
+		$values = array();
+
+		foreach( $roles as $role ) {
+			$name = $role;
+			if ( isset( $names[ $role ] ) ) {
+				$name = translate_user_role( $names[ $role ] );
+			}
+
+			$values[$role] = $name;
+		}
+		
+		return $values;
+	}
+
+	/**
+	 * Gets the user roles.
+	 *
+	 * @api
+	 * @since 1.8.5
+	 * @example
+	 * ```twig
+	 * <h2>Role name</h2>
+	 * {% for role in post.author.roles %}
+	 *   {{ role }} 
+	 * {% endfor %}
+	 * ```
+	 * ```twig
+	 * <h2>Role name</h2>
+	 * {{ post.author.roles|join(', ') }}
+	 * ```
+	 * ```twig
+	 * {% for slug in post.author.roles|keys %}
+	 *   {{ slug }} 
+	 * {% endfor %}
+	 * ```
+	 *
+	 * @return array|null
+	 */
+	public function roles() {		
+		return $this->roles;
+	}
+
+	/**
+	 * Checks whether a user has a capability.
+	 *
+	 * @api
+	 * @since 1.8.5
+	 *
+	 * @param string $capability The capability to check.
+	 * @example
+	 * ```twig
+	 * {% if post.author.can('editor') %}
+	 * 	User has the capability "editor"
+	 * {% endif %}
+	 * ```
+	 * @return bool Whether the user has the capability.
+	 */
+	public function can( $capability ) {
+		return user_can( $this->ID, $capability );
 	}
 }
