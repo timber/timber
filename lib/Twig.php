@@ -225,7 +225,7 @@ class Twig {
 					return apply_filters_ref_array($tag, $args);
 				} ));
 
-		
+
 		$twig = apply_filters('timber/twig', $twig);
 		/**
 		 * get_twig is deprecated, use timber/twig
@@ -358,14 +358,14 @@ class Twig {
 	 * @param string $second_delimiter
 	 * @return string
 	 */
-	public function add_list_separators( $arr, $first_delimiter = ',', $second_delimiter = 'and' ) {
+	public function add_list_separators( $arr, $first_delimiter = ',', $second_delimiter = ' and' ) {
 		$length = count($arr);
 		$list = '';
 		foreach ( $arr as $index => $item ) {
 			if ( $index < $length - 2 ) {
 				$delimiter = $first_delimiter.' ';
 			} elseif ( $index == $length - 2 ) {
-				$delimiter = ' '.$second_delimiter.' ';
+				$delimiter = $second_delimiter.' ';
 			} else {
 				$delimiter = '';
 			}
