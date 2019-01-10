@@ -272,7 +272,6 @@ class URLHelper {
 		);
 
 		return str_replace($home_url, '', WP_CONTENT_URL);
-		return $wp_content_path;
 	} 
 
 	/**

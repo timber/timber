@@ -8,7 +8,7 @@ class WPObjectCacheAdapter implements CacheProviderInterface {
 	private $cache_group;
 
 	/**
-	 * @var Timber\Loader
+	 * @var \Timber\Loader
 	 */
 	private $timberloader;
 

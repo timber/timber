@@ -155,8 +155,8 @@ class QueryIterator implements \Iterator, \Countable {
 
 	/**
 	 * this will test for whether a custom page to display posts is active, and if so, set the query to the default
-	 * @param  WP_Query $query the original query recived from WordPress
-	 * @return WP_Query
+	 * @param  \WP_Query $query the original query recived from WordPress
+	 * @return \WP_Query
 	 */
 	public static function handle_maybe_custom_posts_page( $query ) {
 		if ( $custom_posts_page = get_option('page_for_posts') ) {
