@@ -5,7 +5,6 @@
 	convertErrorsToExceptions="true"
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
-	ignoreDeprecatedCode="true"
 	>
 	<testsuites>
 		<testsuite>
@@ -23,7 +22,7 @@
 		<!-- <log type="coverage-html" target="build/logs/html"/> -->
     </logging>
     <filter>
-    	<whitelist processUncoveredFilesFromWhitelist="true">
+    	<whitelist processUncoveredFilesFromWhitelist="true" ignoreDeprecatedCode="true">
     		<directory suffix=".php">lib</directory>
     		<file>timber.php</file>
   		</whitelist>
