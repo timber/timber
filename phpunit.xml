@@ -18,11 +18,11 @@
 		</testsuite>
 	</testsuites>
 	<logging>
-		<log type="coverage-clover" target="build/logs/clover.xml"/>
+		<log type="coverage-clover" target="build/logs/clover.xml" ignoreDeprecatedCode="true"/>
 		<!-- <log type="coverage-html" target="build/logs/html"/> -->
     </logging>
     <filter>
-    	<whitelist processUncoveredFilesFromWhitelist="true" ignoreDeprecatedCode="true">
+    	<whitelist processUncoveredFilesFromWhitelist="true" >
     		<directory suffix=".php">lib</directory>
     		<file>timber.php</file>
   		</whitelist>
