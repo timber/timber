@@ -3,34 +3,120 @@
 namespace Timber;
 
 /**
- * An object that lets a user easily modify the post preview to their
- * liking
+ * The PostPreview class lets a user modify a post preview/excerpt to their liking.
+ *
+ * It’s designed to be used through the `Timber\Post::preview()` method. The public methods of this
+ * class all return the object itself, which means that this is a **chainable object**. You can
+ * change the output of the preview by **adding more methods**.
+ *
+ * By default, the preview will
+ *
+ * - have a length of 50 words, which will be forced, even if a longer excerpt is set on the post.
+ * - be stripped of all HTML tags.
+ * - have an ellipsis (…) as the end of the text.
+ * - have a "Read More" link appended.
+ *
+ * @example
+ * ```twig
+ * {# Use default preview #}
+ * <p>{{ post.preview }}</p>
+ *
+ * {# Change the post preview text #}
+ * <p>{{ post.preview.read_more('Continue Reading') }}</p>
+ *
+ * {# Additionally restrict the length to 50 words #}
+ * <p>{{ post.preview.length(50).read_more('Continue Reading') }}</p>
+ * ```
  * @since 1.0.4
-*/
+ * @see \Timber\Post::preview()
+ */
 class PostPreview {
-
+	/**
+	 * Post.
+	 *
+	 * @var \Timber\Post
+	 */
 	protected $post;
+
+	/**
+	 * Preview end.
+	 *
+	 * @var string
+	 */
 	protected $end = '&hellip;';
+
+	/**
+	 * Force length.
+	 *
+	 * @var bool
+	 */
 	protected $force = false;
+
+	/**
+	 * Length in words.
+	 *
+	 * @var int
+	 */
 	protected $length = 50;
+
+	/**
+	 * Length in characters.
+	 *
+	 * @var bool
+	 */
 	protected $char_length = false;
+
+	/**
+	 * Read more text.
+	 *
+	 * @var string
+	 */
 	protected $readmore = 'Read More';
+
+	/**
+	 * HTML tag stripping behavior.
+	 *
+	 * @var bool
+	 */
 	protected $strip = true;
+
+	/**
+	 * Destroy tags.
+	 *
+	 * @var array List of tags that should always be destroyed.
+	 */
 	protected $destroy_tags = array('script', 'style');
 
 	/**
-	 * @param Post $post
+	 * PostPreview constructor.
+	 *
+	 * @api
+	 * @param \Timber\Post $post The post to pull the preview from.
 	 */
 	public function __construct( $post ) {
 		$this->post = $post;
 	}
 
+	/**
+	 * Returns the resulting preview.
+	 *
+	 * @api
+	 * @return string
+	 */
 	public function __toString() {
 		return $this->run();
 	}
 
 	/**
-	 * @param integer $length (in words) of the target preview
+	 * Restricts the length of the preview to a certain amount of words.
+	 *
+	 * @api
+	 * @example
+	 * ```twig
+	 * <p>{{ post.preview.length(50) }}</p>
+	 * ```
+	 * @param int $length The maximum amount of words (not letters) for the preview. Default `50`.
+	 * @return \Timber\PostPreview
 	 */
 	public function length( $length = 50 ) {
 		$this->length = $length;
@@ -38,7 +124,16 @@ class PostPreview {
 	}
 
 	/**
-	 * @param integer $char_length (in characters) of the target preview
+	 * Restricts the length of the preview to a certain amount of characters.
+	 *
+	 * @api
+	 * @example
+	 * ```twig
+	 * <p>{{ post.preview.chars(180) }}</p>
+	 * ```
+	 * @param int|bool $char_length The maximum amount of characters for the preview. Default
+	 *                              `false`.
+	 * @return \Timber\PostPreview
 	 */
 	public function chars( $char_length = false ) {
 		$this->char_length = $char_length;
@@ -46,7 +141,15 @@ class PostPreview {
 	}
 
 	/**
-	 * @param string $end how should the text in the preview end
+	 * Defines the text to end the preview with.
+	 *
+	 * @api
+	 * @example
+	 * ```twig
+	 * <p>{{ post.preview.end('… and much more!') }}</p>
+	 * ```
+	 * @param string $end The text for the end of the preview. Default `…`.
+	 * @return \Timber\PostPreview
 	 */
 	public function end( $end = '&hellip;' ) {
 		$this->end = $end;
@@ -54,7 +157,21 @@ class PostPreview {
 	}
 
 	/**
-	 * @param boolean $force If the editor wrote a manual excerpt longer than the set length, should it be "forced" to the size specified?
+	 * Forces preview lengths.
+	 *
+	 * What happens if your custom post excerpt is longer than the length requested? By default, it
+	 * will use the full `post_excerpt`. However, you can set this to `true` to *force* your excerpt
+	 * to be of the desired length.
+	 *
+	 * @api
+	 * @example
+	 * ```twig
+	 * <p>{{ post.preview.length(20).force }}</p>
+	 * ```
+	 * @param bool $force Whether the length of the preview should be forced to the requested
+	 *                    length, even if an editor wrote a manual excerpt that is longer than the
+	 *                    set length. Default `true`.
+	 * @return \Timber\PostPreview
 	 */
 	public function force( $force = true ) {
 		$this->force = $force;
@@ -62,7 +179,16 @@ class PostPreview {
 	}
 
 	/**
-	 * @param string $readmore What the text displays as to the reader inside of the <a> tag
+	 * Defines the text to be used for the "Read More" link.
+	 *
+	 * Set this to `false` to not add a "Read More" link.
+	 *
+	 * @api
+	 * ```twig
+	 * <p>{{ post.preview.read_more('Learn more') }}</p>
+	 * ```
+	 * @param string $readmore Text for the link. Default 'Read More'.
+	 * @return \Timber\PostPreview
 	 */
 	public function read_more( $readmore = 'Read More' ) {
 		$this->readmore = $readmore;
@@ -70,7 +196,17 @@ class PostPreview {
 	}
 
 	/**
-	 * @param boolean|string $strip strip the tags or what? You can also provide a list of allowed tags (e.g. '<p><a>')
+	 * Defines how HTML tags should be stripped from the preview.
+	 *
+	 * @api
+	 * ```twig
+	 * {# Strips all HTML tags, except for bold or emphasized text #}
+	 * <p>{{ post.preview.length('50').strip('<strong><em>') }}</p>
+	 * ```
+	 * @param bool|string $strip Whether or how HTML tags in the preview should be stripped. Use
+	 *                           `true` to strip all tags, `false` for no stripping, or a string for
+	 *                           a list of allowed tags (e.g. '<p><a>'). Default `true`.
+	 * @return \Timber\PostPreview
 	 */
 	public function strip( $strip = true ) {
 		$this->strip = $strip;
@@ -79,7 +215,7 @@ class PostPreview {
 
 	/**
 	 * @param string $text
-	 * @param array|booelan $readmore_matches
+	 * @param array|bool $readmore_matches
 	 * @param boolean $trimmed was the text trimmed?
 	 */
 	protected function assemble( $text, $readmore_matches, $trimmed ) {
@@ -115,25 +251,34 @@ class PostPreview {
 		$len = $this->length;
 		$chars = $this->char_length;
 		$strip = $this->strip;
+		$allowable_tags = ( $strip && is_string($strip)) ? $strip : false;
 		$readmore_matches = array();
 		$text = '';
 		$trimmed = false;
 		if ( isset($this->post->post_excerpt) && strlen($this->post->post_excerpt) ) {
+			$text = $this->post->post_excerpt;
 			if ( $this->force ) {
-				$text = TextHelper::trim_words($this->post->post_excerpt, $len, false);
+				
+				if ( $allowable_tags ) {
+					$text = TextHelper::trim_words($text, $len, false, strtr($allowable_tags, '<>', '  '));
+				} else {
+					$text = TextHelper::trim_words($text, $len, false);
+				}
 				if ( $chars !== false ) {
-					$text = TextHelper::trim_characters($this->post->post_excerpt, $chars, false);
+					$text = TextHelper::trim_characters($text, $chars, false);
 				}
 				$trimmed = true;
-			} else {
-				$text = $this->post->post_excerpt;
-			}
+			} 
 		}
 		if ( !strlen($text) && preg_match('/<!--\s?more(.*?)?-->/', $this->post->post_content, $readmore_matches) ) {
 			$pieces = explode($readmore_matches[0], $this->post->post_content);
 			$text = $pieces[0];
 			if ( $force ) {
-				$text = TextHelper::trim_words($text, $len, false);
+				if ( $allowable_tags ) {
+					$text = TextHelper::trim_words($text, $len, false, strtr($allowable_tags, '<>', '  '));
+				} else {
+					$text = TextHelper::trim_words($text, $len, false);
+				}
 				if ( $chars !== false ) {
 					$text = TextHelper::trim_characters($text, $chars, false);
 				}
@@ -144,7 +289,11 @@ class PostPreview {
 		if ( !strlen($text) ) {
 			$text = $this->post->content();
 			$text = TextHelper::remove_tags($text, $this->destroy_tags);
-			$text = TextHelper::trim_words($text, $len, false);
+			if ( $allowable_tags ) {
+				$text = TextHelper::trim_words($text, $len, false, strtr($allowable_tags, '<>', '  '));
+			} else {
+				$text = TextHelper::trim_words($text, $len, false);
+			}
 			if ( $chars !== false ) {
 				$text = TextHelper::trim_characters($text, $chars, false);
 			}
@@ -154,7 +303,6 @@ class PostPreview {
 			return trim($text);
 		}
 		if ( $strip ) {
-			$allowable_tags = (is_string($strip)) ? $strip : null;
 			$text = trim(strip_tags($text, $allowable_tags));
 		}
 		if ( strlen($text) ) {

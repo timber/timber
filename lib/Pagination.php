@@ -167,7 +167,7 @@ class Pagination {
 
 					$page_links[] = array(
 						'class' => 'page-number page-numbers',
-						'link' => $link,
+						'link' => esc_url( $link ),
 						'title' => $n_display,
 						'name' => $n_display,
 						'current' => $args['current'] == $n
