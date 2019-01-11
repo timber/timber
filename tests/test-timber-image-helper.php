@@ -72,11 +72,12 @@
 			$exists = file_exists( $resized_path );
 			$this->assertTrue( $exists );
 		}
+		
 		/**
 		 * @doesNotPerformAssertions
 		 */
 		function testDeleteFalseFile() {
-			TimberImageHelper::delete_generated_files('/etc/www/image.jpg');
+			Timber\ImageHelper::delete_generated_files('/etc/www/image.jpg');
 		}
 
 		function testLetterbox() {
