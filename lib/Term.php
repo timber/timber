@@ -236,7 +236,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * @api
 	 * @deprecated 2.0.0, use `{{ term.edit_link }}` instead.
-	 * @codeCoverageIgnore
 	 * @return string
 	 */
 	public function get_edit_url() {
@@ -248,7 +247,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * Gets a term meta value.
 	 * @api
 	 * @deprecated 2.0.0, use `{{ term.meta('field_name') }}` instead.
-	 * @codeCoverageIgnore
 	 *
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return string The meta field value.
@@ -604,7 +602,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * @api
 	 * @deprecated 2.0.0, use `{{ term.children }}` instead.
-	 * @codeCoverageIgnore
 	 *
 	 * @return array
 	 */
