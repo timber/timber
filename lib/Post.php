@@ -607,7 +607,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		/**
 		 * Filters post meta data.
 		 *
-		 * This filter is used by the ACF Integration.
 		 *
 		 * @todo Add description, example
 		 *
