@@ -180,8 +180,8 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	 * ```html
 	 * <img src="http://gravatar.com/i/sfsfsdfasdfsfa.jpg" alt="Image of Katherine Rich" />
 	 * ```
-	 * @param int    $size     Size of avatar.
-	 * @param string $default  Default avatar URL.
+	 * @param int|mixed    $size     Size of avatar.
+	 * @param string       $default  Default avatar URL.
 	 * @return bool|mixed|string
 	 */
 	public function avatar( $size = 92, $default = '' ) {
@@ -242,9 +242,6 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	 * @return array Comment children.
 	 */
 	public function add_child( Comment $child_comment ) {
-		if ( !is_array($this->children) ) {
-			$this->children = array();
-		}
 		return $this->children[] = $child_comment;
 	}
 
