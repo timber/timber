@@ -389,13 +389,19 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		$comment_metas = array();
 
 		/**
-		 * Filters comment meta data before is fetched from the database.
+		 * Filters comment meta data before it is fetched from the database.
+		 *
+		 * Timber loads all meta values into the comment object on initialization. With this filter,
+		 * you can disable fetching the meta values through the default method, which uses
+		 * `get_comment_meta()`, by returning `false` or a non-empty array.
+		 *
+		 * @todo Add example
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array           $comment_metas An array of comment meta data. Passing a non-empty
-		 *                                       array will skip fetching values from the database
-		 *                                       and will use the filtered values instead.
+		 * @param array           $comment_metas An array of comment meta data. Passing `false` or a
+		 *                                       non-empty array will skip fetching values from the
+		 *                                       database and will use the filtered values instead.
 		 *                                       Default `array()`.
 		 * @param int             $comment_id    The comment ID.
 		 * @param \Timber\Comment $comment       The comment object.
@@ -420,7 +426,8 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			'timber/comment/pre_get_meta_values'
 		);
 
-		if ( ! is_array( $comment_metas ) || empty( $comment_metas ) ) {
+		// Load all meta data when it wasn’t filtered before.
+		if ( false !== $comment_metas && empty( $comment_metas ) ) {
 			$comment_metas = get_comment_meta($comment_id);
 		}
 
@@ -431,9 +438,12 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		}
 
 		/**
-		 * Filters comment meta data.
+		 * Filters comment meta data fetched from the database.
 		 *
-		 * @todo Add description, example
+		 * Timber loads all meta values into the comment object on initialization. With this filter,
+		 * you can change meta values after they were fetched from the database.
+		 *
+		 * @todo Add example
 		 *
 		 * @since 2.0.0
 		 *
@@ -449,7 +459,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		);
 
 		/**
-		 * Filters comment meta data.
+		 * Filters comment meta data fetched from the database.
 		 *
 		 * @deprecated 2.0.0, use `timber/comment/get_meta_values`
 		 * @since 0.15.4

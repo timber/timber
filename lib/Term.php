@@ -152,7 +152,43 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		$customs = array();
 
 		/**
-		 * Filters term meta data.
+		 * Filters term meta data before it is fetched from the database.
+		 *
+		 * Timber loads all meta values into the term object on initialization. With this filter,
+		 * you can disable fetching the meta values through the default method, which uses
+		 * `get_term_meta()`, by returning `false` or a non-empty array.
+		 *
+		 * @todo  Add example.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param array        $customs An array of custom meta values. Passing `false` or a
+		 *                              non-empty array will skip fetching the values from the
+		 *                              database and will use the filtered values instead. Default
+		 *                              `array()`.
+		 * @param int          $term_id The term ID.
+		 * @param \Timber\Term $term    The term object.
+		 */
+		$customs = apply_filters( 'timber/term/pre_get_meta_values', $customs, $tid, $this );
+
+		// Load all meta data when it wasn’t filtered before.
+		if ( false !== $customs && empty( $customs ) ) {
+			$customs = get_term_meta( $tid );
+		}
+
+		foreach ( $customs as $key => $value ) {
+			if ( is_array( $value ) && 1 === count( $value ) && isset( $value[0] ) ) {
+				$value = $value[0];
+			}
+
+			$customs[ $key ] = maybe_unserialize( $value );
+		}
+
+		/**
+		 * Filters term meta data fetched from the database.
+		 *
+		 * Timber loads all meta values into the term object on initialization. With this filter,
+		 * you can change meta values after they were fetched from the database.
 		 *
 		 * This filter is used by the ACF Integration.
 		 *
@@ -167,7 +203,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		$customs = apply_filters('timber/term/get_meta_values', $customs, $tid, $this);
 
 		/**
-		 * Filters term meta data.
+		 * Filters term meta data fetched from the database.
 		 *
 		 * @deprecated 2.0.0, use `timber/term/meta`
 		 */

@@ -569,20 +569,26 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		$customs = array();
 
 		/**
-		 * Fires before post meta data is imported into the object.
+		 * Filters post meta data before it is fetched from the database.
+		 *
+		 * Timber loads all meta values into the post object on initialization. With this filter,
+		 * you can disable fetching the meta values through the default method, which uses
+		 * `get_post_meta()`, by returning `false` or an non-empty array.
+		 *
+		 * @todo  Add example.
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array        $customs An array of custom meta values. Passing an non-empty array
-		 *                              will skip fetching the values from the database and will use
-		 *                              the filtered values instead.
+		 * @param array        $customs An array of custom meta values. Passing false or a non-empty
+		 *                              array will skip fetching the values from the database and
+		 *                              will use the filtered values instead. Default `array()`.
 		 * @param int          $pid     The post ID.
 		 * @param \Timber\Post $post    The post object.
 		 */
 		$customs = apply_filters( 'timber/post/pre_get_meta_values', $customs, $pid, $this );
 
 		/**
-		 * Fires before post meta data is imported into the object.
+		 * Filters post meta data before it is fetched from the database.
 		 *
 		 * @deprecated 2.0.0, use `timber/post/pre_get_meta_values`
 		 */
@@ -593,8 +599,9 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			'timber/post/pre_get_meta_values'
 		);
 
-		if ( !is_array($customs) || empty($customs) ) {
-			$customs = get_post_custom($pid);
+		// Load all meta data when it wasn’t filtered before.
+		if ( false !== $customs && empty( $customs ) ) {
+			$customs = get_post_meta( $pid );
 		}
 
 		foreach ( $customs as $key => $value ) {
@@ -605,11 +612,12 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		}
 
 		/**
-		 * Filters post meta data.
+		 * Filters post meta data fetched from the database.
 		 *
-		 * This filter is used by the ACF Integration.
+		 * Timber loads all meta values into the post object on initialization. With this filter,
+		 * you can change meta values after they were fetched from the database.
 		 *
-		 * @todo Add description, example
+		 * @todo Add example.
 		 *
 		 * @since 2.0.0
 		 *
@@ -620,7 +628,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		$customs = apply_filters( 'timber/post/get_meta_values', $customs, $pid, $this );
 
 		/**
-		 * Filters post meta data.
+		 * Filters post meta data fetched from the database.
 		 *
 		 * @deprecated 2.0.0, use `timber/post/get_meta_values`
 		 */
@@ -947,7 +955,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		);
 
 		if ( null === $value ) {
-			$value = get_post_meta($this->ID, $field_name);
+			$value = get_post_meta( $this->ID, $field_name );
 			if ( is_array($value) && count($value) == 1 ) {
 				$value = $value[0];
 			}
