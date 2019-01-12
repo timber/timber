@@ -7,6 +7,7 @@ By
 [Lukas Gächter](https://github.com/gchtr) ([@lgaechter](https://twitter.com/lgaechter)), 
 [Pascal Knecht](https://github.com/pascalknecht) ([@pascalknecht](https://twitter.com/revenwo)), 
 [Maciej Palmowski](https://github.com/palmiak) ([@palmiak_fp](https://twitter.com/palmiak_fp)),
+[Coby Tamayo](https://github.com/acobster) ([@cobytamayo](https://keybase.io/acobster)),
 [Upstatement](https://twitter.com/upstatement) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors)
 
 [![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.org/timber/timber)
@@ -95,6 +96,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Pine**](https://github.com/azeemhassni/pine) A CLI _installer_ for Timber
 * [**Timber CLI**](https://github.com/nclud/wp-timber-cli) A CLI for Timber
 * [**Timber Commented Include**](https://github.com/djboris88/timber-commented-include) Debug output via HTML comments before and after each include statement in Twig
+* [**Timber Debugger**](https://github.com/djboris88/timber-debugger) Package that provides extra debugging options for Timber
 * [**Timber Dump Extension**](https://github.com/nlemoine/timber-dump-extension) Debug output with nice formatting
 * [**Timber Photon**](https://github.com/slimndap/TimberPhoton) Plug-in to use JetPack's free Photon image manipulation and CDN with Timber
 * [**Timber Sugar**](https://github.com/timber/sugar) A catch-all for goodies to use w Timber

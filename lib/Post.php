@@ -404,7 +404,29 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @return PostPreview
+	 * Gets a preview/excerpt of your post.
+	 *
+	 * If you have text defined in the excerpt textarea of your post, it will use that. Otherwise it
+	 * will pull from the post_content. If there's a <!-- more --> tag, it will use that to mark
+	 * where to pull through.
+	 *
+	 * This method returns `Timber\PostPreview` a object, which is a **chainable object**. This
+	 * means that you can change the output of the preview by **adding more methods**. Refer to the
+	 * documentation of the `Timber\PostPreview` to get an overview of all the available methods.
+	 *
+	 * @example
+	 * ```twig
+     * {# Use default preview #}
+	 * <p>{{ post.preview }}</p>
+	 *
+	 * {# Change the post preview text #}
+	 * <p>{{ post.preview.read_more('Continue Reading') }}</p>
+	 *
+	 * {# Additionally restrict the length to 50 words #}
+	 * <p>{{ post.preview.length(50).read_more('Continue Reading') }}</p>
+	 * ```
+	 * @see \Timber\PostPreview
+	 * @return \Timber\PostPreview
 	 */
 	public function preview() {
 		return new PostPreview($this);
@@ -811,7 +833,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function field_object( $field_name ) {
 		$value = apply_filters('timber/post/meta_object_field', null, $this->ID, $field_name, $this);
-		$value = $this->convert($value, __CLASS__);
+		$value = $this->convert($value);
 		return $value;
 	}
 
@@ -834,7 +856,7 @@ class Post extends Core implements CoreInterface {
 			}
 		}
 		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
-		$value = $this->convert($value, __CLASS__);
+		$value = $this->convert($value);
 		return $value;
 	}
 
@@ -1367,18 +1389,16 @@ class Post extends Core implements CoreInterface {
 	 * @param array|WP_Post $data
 	 * @param string $class
 	 */
-	public function convert( $data, $class = '\Timber\Post' ) {
-		if ( $data instanceof WP_Post ) {
-			$data = new $class($data);
+	public function convert( $data ) {
+		if ( is_object($data) ) {
+			$data = Helper::convert_wp_object($data);
 		} else if ( is_array($data) ) {
 			$func = __FUNCTION__;
 			foreach ( $data as &$ele ) {
-				if ( gettype($ele) === 'array' ) {
-					$ele = $this->$func($ele, $class);
-				} else {
-					if ( $ele instanceof WP_Post ) {
-						$ele = new $class($ele);
-					}
+				if ( is_array($ele) ) {
+					$ele = $this->$func($ele);
+				} else if ( is_object($ele) ) {
+					$ele = Helper::convert_wp_object($ele);
 				}
 			}
 		}
