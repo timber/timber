@@ -5,6 +5,7 @@
 	convertErrorsToExceptions="true"
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
+	ignoreDeprecatedCodeUnitsFromCodeCoverage="true"
 	>
 	<testsuites>
 		<testsuite>
@@ -18,7 +19,7 @@
 		</testsuite>
 	</testsuites>
 	<logging>
-		<log type="coverage-clover" target="build/logs/clover.xml" ignoreDeprecatedCode="true"/>
+		<log type="coverage-clover" target="build/logs/clover.xml"/>
 		<!-- <log type="coverage-html" target="build/logs/html"/> -->
     </logging>
     <filter>
