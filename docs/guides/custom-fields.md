@@ -51,7 +51,7 @@ Now, there are several workarounds for that:
 
 ### The `custom` property
 
-The `custom` property that’s always set on an object is an array that hold the values of all the meta values from the `postmeta` table in the database. With this method, values are **raw** (directly from the database) and are **not filtered** by third-party plugins (e.g. Advanced Custom Fields).
+The `custom` property that’s always set on an object is an array that holds the values of all the meta values from the `postmeta` table in the database. With this method, values are **raw** (directly from the database) and are **not filtered** by third-party plugins (e.g. Advanced Custom Fields).
 
 **Twig**
 

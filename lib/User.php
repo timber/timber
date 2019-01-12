@@ -95,6 +95,20 @@ class User extends Core implements CoreInterface, MetaInterface {
 	public $user_nicename;
 
 	/**
+	 * Meta values.
+	 *
+	 * With this property you can check which meta values exist for a user, but you can’t access the
+	 * values through this property. Use `{{ user.meta('field_name') }}` or
+	 * `{{ user.raw_meta('field_name') }}` to get the values for a custom field.
+	 *
+	 * @api
+	 * @see User::meta()
+	 * @see User::raw_meta()
+	 * @var array Storage for a user’s meta data.
+	 */
+	protected $custom = array();
+
+	/**
 	 * @api
 	 * @param object|int|bool $uid
 	 */
@@ -169,9 +183,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 		$this->name = $this->name();
 		$this->avatar = new Image(get_avatar_url($this->id));
 		$this->custom = $this->get_meta_values();
-		$this->import($this->custom, false, true);
 	}
-
 
 	/**
 	 * Retrieves the custom (meta) data on a user and returns it.
@@ -349,6 +361,24 @@ class User extends Core implements CoreInterface, MetaInterface {
 		);
 
 		return $value;
+	}
+
+	/**
+	 * Gets a user meta value directly from the database.
+	 *
+	 * Returns a raw meta value for a user that’s saved in the term meta database table. Be aware
+	 * that the value can still be filtered by plugins.
+	 *
+	 * @since 2.0.0
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return null|mixed The meta field value.
+	 */
+	public function raw_meta( $field_name ) {
+		if ( isset( $this->custom[ $field_name ] ) ) {
+			return $this->custom[ $field_name ];
+		}
+
+		return null;
 	}
 
 	/**

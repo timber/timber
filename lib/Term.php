@@ -68,6 +68,20 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	public $taxonomy;
 
 	/**
+	 * Meta values.
+	 *
+	 * With this property you can check which meta values exist on a term, but you can’t access the
+	 * values through this property. Use `{{ term.meta('field_name') }}` or
+	 * `{{ term.raw_meta('field_name') }}` to get the values for a custom field.
+	 *
+	 * @api
+	 * @see Term::meta()
+	 * @see Term::raw_meta()
+	 * @var array Storage for a term’s meta data.
+	 */
+	protected $custom = array();
+
+	/**
 	 * @api
 	 * @param int $tid
 	 * @param string $tax
@@ -442,6 +456,24 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		);
 
 		return $value;
+	}
+
+	/**
+	 * Gets a term meta value directly from the database.
+	 *
+	 * Returns a raw meta value for a term that’s saved in the term meta database table. Be aware
+	 * that the value can still be filtered by plugins.
+	 *
+	 * @since 2.0.0
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return null|mixed The meta field value.
+	 */
+	public function raw_meta( $field_name ) {
+		if ( isset( $this->custom[ $field_name ] ) ) {
+			return $this->custom[ $field_name ];
+		}
+
+		return null;
 	}
 
 	/**

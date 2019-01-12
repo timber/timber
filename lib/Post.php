@@ -79,10 +79,18 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	public $object_type = 'post';
 
 	/**
+	 * Meta values.
+	 *
+	 * With this property you can check which meta values exist on a post, but you can’t access the
+	 * values through this property. Use `{{ post.meta('field_name') }}` or
+	 * `{{ post.raw_meta('field_name') }}` to get the values for a custom field.
+	 *
 	 * @api
-	 * @var array Stores custom meta data
+	 * @see Post::meta()
+	 * @see Post::raw_meta()
+	 * @var array Storage for a post’s meta data.
 	 */
-	public $custom = array();
+	protected $custom = array();
 
 	/**
 	 * @var string What does this class represent in WordPress terms?
@@ -410,6 +418,15 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		}
 		$post_info = $this->get_info($pid);
 		$this->import($post_info);
+
+		$post_custom_id = $this->ID;
+
+		if ( $this->is_previewing() ) {
+			global $wp_query;
+			$post_custom_id = $this->get_post_preview_id( $wp_query );
+		}
+
+		$this->custom = $this->get_meta_values( $post_custom_id );
 	}
 
 	/**
@@ -664,15 +681,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		$post->id = $post->ID;
 		$post->slug = $post->post_name;
 
-		$customs = $this->get_meta_values($post->ID);
-
-		if ( $this->is_previewing() ) {
-			global $wp_query;
-			$rev_id = $this->get_post_preview_id($wp_query);
-			$customs = $this->get_meta_values($rev_id);
-		}
-
-		$post->custom = $customs;
 		return $post;
 	}
 
@@ -993,9 +1001,26 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			'timber/post/meta'
 		);
 
-
 		$value = $this->convert($value);
 		return $value;
+	}
+
+	/**
+	 * Gets a post meta value directly from the database.
+	 *
+	 * Returns a raw meta value for a post that’s saved in the post meta database table. Be aware
+	 * that the value can still be filtered by plugins.
+	 *
+	 * @since 2.0.0
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return null|mixed The meta field value.
+	 */
+	public function raw_meta( $field_name ) {
+		if ( isset( $this->custom[ $field_name ] ) ) {
+			return $this->custom[ $field_name ];
+		}
+
+		return null;
 	}
 
 	/**
