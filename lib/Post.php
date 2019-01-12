@@ -404,7 +404,29 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @return PostPreview
+	 * Gets a preview/excerpt of your post.
+	 *
+	 * If you have text defined in the excerpt textarea of your post, it will use that. Otherwise it
+	 * will pull from the post_content. If there's a <!-- more --> tag, it will use that to mark
+	 * where to pull through.
+	 *
+	 * This method returns `Timber\PostPreview` a object, which is a **chainable object**. This
+	 * means that you can change the output of the preview by **adding more methods**. Refer to the
+	 * documentation of the `Timber\PostPreview` to get an overview of all the available methods.
+	 *
+	 * @example
+	 * ```twig
+     * {# Use default preview #}
+	 * <p>{{ post.preview }}</p>
+	 *
+	 * {# Change the post preview text #}
+	 * <p>{{ post.preview.read_more('Continue Reading') }}</p>
+	 *
+	 * {# Additionally restrict the length to 50 words #}
+	 * <p>{{ post.preview.length(50).read_more('Continue Reading') }}</p>
+	 * ```
+	 * @see \Timber\PostPreview
+	 * @return \Timber\PostPreview
 	 */
 	public function preview() {
 		return new PostPreview($this);
