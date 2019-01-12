@@ -220,7 +220,6 @@ class Loader {
 	/**
 	 * @deprecated 1.3.5 No longer used internally
 	 * @todo remove in 2.x
-	 * @codeCoverageIgnore
 	 * @param string $name
 	 * @return bool
 	 */

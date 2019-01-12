@@ -357,7 +357,6 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * @api
 	 * @deprecated 2.0.0, use `{{ user.meta('field_name') }}` instead.
 	 * @see \Timber\User::meta()
-	 * @codeCoverageIgnore
 	 *
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return mixed The meta field value.

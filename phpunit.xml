@@ -23,7 +23,7 @@
 		<!-- <log type="coverage-html" target="build/logs/html"/> -->
     </logging>
     <filter>
-    	<whitelist processUncoveredFilesFromWhitelist="true" >
+    	<whitelist processUncoveredFilesFromWhitelist="true">
     		<directory suffix=".php">lib</directory>
     		<file>timber.php</file>
   		</whitelist>
