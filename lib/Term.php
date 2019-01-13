@@ -464,6 +464,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * Returns a raw meta value for a term that’s saved in the term meta database table. Be aware
 	 * that the value can still be filtered by plugins.
 	 *
+	 * @api
 	 * @since 2.0.0
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return null|mixed The meta field value.

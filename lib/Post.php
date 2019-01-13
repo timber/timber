@@ -1011,6 +1011,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * Returns a raw meta value for a post that’s saved in the post meta database table. Be aware
 	 * that the value can still be filtered by plugins.
 	 *
+	 * @api
 	 * @since 2.0.0
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return null|mixed The meta field value.
