@@ -163,6 +163,10 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @return array
 	 */
 	protected function get_meta_values( $tid ) {
+		if ( ! $tid ) {
+			return null;
+		}
+
 		$customs = array();
 
 		/**

@@ -583,6 +583,10 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @return array
 	 */
 	protected function get_meta_values( $pid ) {
+		if ( ! $pid ) {
+			return null;
+		}
+
 		$customs = array();
 
 		/**

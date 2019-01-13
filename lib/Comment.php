@@ -399,6 +399,10 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			$comment_id = $this->ID;
 		}
 
+		if ( ! $comment_id ) {
+			return null;
+		}
+
 		$comment_metas = array();
 
 		/**
