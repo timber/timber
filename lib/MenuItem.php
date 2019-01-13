@@ -358,8 +358,24 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		if ( is_object($this->menu_object) && method_exists($this->menu_object, 'meta') ) {
 			return $this->menu_object->meta($field_name);
 		}
-		if ( isset($this->$field_name) ) {
-			return $this->$field_name;
+
+		return null;
+	}
+
+	/**
+	 * Gets a menu item’s meta value directly from the database.
+	 *
+	 * Returns a raw meta value for a menu item that’s saved in the post meta database table. Be
+	 * aware that the value can still be filtered by plugins.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return null|mixed The meta field value. Null if no value could be found.
+	 */
+	public function raw_meta( $field_name ) {
+		if ( is_object( $this->menu_object ) && method_exists( $this->menu_object, 'raw_meta' ) ) {
+			return $this->menu_object->raw_meta( $field_name );
 		}
 
 		return null;
