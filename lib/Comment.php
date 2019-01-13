@@ -488,7 +488,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	 * @param array  $args       An array of arguments for getting the meta value. Third-party
 	 *                           integrations can use this argument to make their API arguments
 	 *                           available in Timber. Default empty.
-	 * @return mixed The meta field value.
+	 * @return mixed The meta field value. Null if no value could be found.
 	 */
 	public function meta( $field_name, $args = array() ) {
 		/**
@@ -576,7 +576,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	 * @api
 	 * @since 2.0.0
 	 * @param string $field_name The field name for which you want to get the value.
-	 * @return null|mixed The meta field value.
+	 * @return null|mixed The meta field value. Null if no value could be found.
 	 */
 	public function raw_meta( $field_name ) {
 		if ( isset( $this->custom[ $field_name ] ) ) {

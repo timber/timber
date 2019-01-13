@@ -911,7 +911,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @param array  $args       An array of arguments for getting the meta value. Third-party
 	 *                           integrations can use this argument to make their API arguments
 	 *                           available in Timber. Default empty.
-	 * @return mixed The meta field value.
+	 * @return mixed The meta field value. Null if no value could be found.
 	 */
 	public function meta( $field_name = null, $args = array() ) {
 		if ( $rd = $this->get_revised_data_from_method('meta', $field_name) ) {
@@ -1014,7 +1014,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @api
 	 * @since 2.0.0
 	 * @param string $field_name The field name for which you want to get the value.
-	 * @return null|mixed The meta field value.
+	 * @return null|mixed The meta field value. Null if no value could be found.
 	 */
 	public function raw_meta( $field_name ) {
 		if ( isset( $this->custom[ $field_name ] ) ) {
