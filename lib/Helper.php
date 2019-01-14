@@ -491,9 +491,9 @@ class Helper {
 	 * @return mix Instance of equivalent Timber object, or the argument if no match is found
 	 */
 	public static function convert_wp_object( $obj ) {
-
 		if ( $obj instanceof \WP_Post ) {
-			return new \Timber\Post($obj->ID);
+			$class = \Timber\PostGetter::get_post_class($obj->post_type);
+			return new $class($obj->ID);
 		} elseif ( $obj instanceof \WP_Term ) {
 			return new \Timber\Term($obj->term_id);
 		} elseif ( $obj instanceof \WP_User ) {
