@@ -278,8 +278,7 @@ class Timber {
 		if ( is_singular() ) {
 			$post = ( new Post() )->setup();
 			$context['post'] = $post;
-		}
-		elseif ( is_archive() || is_home() ) {
+		} elseif ( is_archive() || is_home() ) {
 			$context['posts'] = new PostQuery();
 		}
 

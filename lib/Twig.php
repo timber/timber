@@ -150,9 +150,9 @@ class Twig {
 	 * Function for Term or Timber\Term() within Twig
 	 * @since 1.5.1
 	 * @author @jarednova
-	 * @param integer $term_id the term ID to search for
-	 * @param string $taxonomy the taxonomy to search inside of. If sent a class name, it will use that class to support backwards compatibility
-	 * @param string $TermClass the class to use for processing the term
+	 * @param integer|array $term_id the term ID to search for
+	 * @param string        $taxonomy the taxonomy to search inside of. If sent a class name, it will use that class to support backwards compatibility
+	 * @param string        $TermClass the class to use for processing the term
 	 * @return Term|array
 	 */
 	function handle_term_object( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
@@ -166,7 +166,7 @@ class Twig {
 		if ( is_array($term_id) && !Helper::is_array_assoc($term_id) ) {
 			foreach ( $term_id as &$p ) {
 				$p = new $TermClass($p, $taxonomy);	
-			}	
+			}
 			return $term_id;
 		}
 
