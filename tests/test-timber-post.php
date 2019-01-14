@@ -964,13 +964,6 @@
 			$this->assertEquals(null, $post->gallery());
 		}
 
-		function testPostWithGalleryCustomField() {
-			$pid = $this->factory->post->create();
-			update_post_meta($pid, 'gallery', 'foo');
-			$post = new Timber\Post($pid);
-			$this->assertEquals('foo', $post->gallery());
-		}
-
 		function testPostWithoutAudio() {
 			$pid = $this->factory->post->create();
 			$post = new Timber\Post($pid);
