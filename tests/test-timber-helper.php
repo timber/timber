@@ -282,4 +282,19 @@
 			$this->assertTrue(is_array($convert_array));
 		}
 
+ 		function testCovertPostWithClassMap() {
+			register_post_type('book');
+			require_once('assets/Sport.php');
+			add_filter('Timber\PostClassMap', function( $post_classes ) {
+				$post_classes = array('sport' => 'Sport', 'post' => 'Timber');
+				$post_classes['sport'] = 'Sport';
+				return $post_classes;
+			});
+ 			$sport_id = $this->factory->post->create(array('post_type' => 'sport', 'post_title' => 'Basketball Player'));
+			$wp_post = get_post($sport_id);
+			$sport_post = \Timber\Helper::convert_wp_object($wp_post);
+			$this->assertEquals('Sport', get_class($sport_post));
+			$this->assertEquals('ESPN', $sport_post->channel());
+ 		}
+
 	}
