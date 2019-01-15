@@ -986,10 +986,17 @@
 		}
 
 		function testPostWithAudioCustomField() {
-			$pid = $this->factory->post->create();
+			$quote = 'Named must your fear be before banish it you can.';
+			$quote .= '[embed]http://www.noiseaddicts.com/samples_1w72b820/280.mp3[/embed]';
+			$quote .= "No, try not. Do or do not. There is no try.";
+
+			$pid = $this->factory->post->create(array('post_content' => $quote));
 			update_post_meta($pid, 'audio', 'foo');
+			$expected = array(
+				'<audio class="wp-audio-shortcode" id="audio-1-2" preload="none" style="width: 100%;" controls="controls"><source type="audio/mpeg" src="http://www.noiseaddicts.com/samples_1w72b820/280.mp3?_=2" /><a href="http://www.noiseaddicts.com/samples_1w72b820/280.mp3">http://www.noiseaddicts.com/samples_1w72b820/280.mp3</a></audio>',
+			);
 			$post = new Timber\Post($pid);
-			$this->assertEquals('foo', $post->audio());
+			$this->assertEquals($expected, $post->audio());
 		}
 
 		function testPostWithoutVideo() {
@@ -1011,13 +1018,6 @@
 			);
 
 			$this->assertEquals($expected, $post->video());
-		}
-
-		function testPostWithVideoCustomField() {
-			$pid = $this->factory->post->create();
-			update_post_meta($pid, 'video', 'foo');
-			$post = new Timber\Post($pid);
-			$this->assertEquals('foo', $post->video());
 		}
 
 		function testPathAndLinkWithPort() {

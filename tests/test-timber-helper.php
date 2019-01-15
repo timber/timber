@@ -278,9 +278,9 @@
 		}
 
  		function testCovertPostWithClassMap() {
-			register_post_type('book');
+			register_post_type('sport');
 			require_once('assets/Sport.php');
-			add_filter('Timber\PostClassMap', function( $post_classes ) {
+			add_filter('timber/post/post_class', function( $post_classes ) {
 				$post_classes = array('sport' => 'Sport', 'post' => 'Timber');
 				$post_classes['sport'] = 'Sport';
 				return $post_classes;
