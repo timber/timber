@@ -736,6 +736,12 @@ class Timber {
 	 * @return array|mixed
 	 */
 	public static function get_pagination( $prefs = array() ) {
+		Helper::deprecated(
+			'get_pagination',
+			'{{ posts.pagination }} (see https://timber.github.io/docs/guides/pagination/ for more information)',
+			'2.0.0'
+		);
+
 		return Pagination::get_pagination($prefs);
 	}
 }
