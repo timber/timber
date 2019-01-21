@@ -249,10 +249,10 @@ class User extends Core implements CoreInterface {
 	 *
 	 * @api
 	 * @since 1.8.5
-	 *
+	 * @param array $roles user roles
 	 * @return array|null
 	 */
-	public function get_roles( $roles ) {
+	protected function get_roles( $roles ) {
 		if ( empty( $roles ) ) {
 			return null;
 		}
@@ -317,22 +317,20 @@ class User extends Core implements CoreInterface {
 	 * want to check whether a user is a Subscriber, use `{{ user.can('read') }}`. If you only want
 	 * to check whether a user is logged in, you can use `{% if user %}`.
 	 *
-	 * Don’t use role slugs for capability checks. While checking against a role in place of a
-	 * capability is supported in part, this practice is discouraged as it may produce unreliable
-	 * results. This includes cases where you want to check whether a user is registered. If you
-	 * want to check whether a user is a Subscriber, use `{{ user.can('read') }}`. If you only want
-	 * to check whether a user is logged in, you can use `{% if user %}`.
-	 *
 	 * @api
 	 * @since 1.8.5
 	 *
 	 * @param string $capability The capability to check.
-	 * @example
-	 * ```twig
-	 * {% if post.author.can('editor') %}
-	 * 	User has the capability "editor"
-	 * {% endif %}
-	 * ```
+	 *
+         * @example
+         * Give moderation users another CSS class to style them differently.
+         *
+         * ```twig
+         * <span class="comment-author {{ comment.author.can('moderate_comments') ? 'comment-author--is-moderator }}">
+         *     {{ comment.author.name }}
+         * </span>
+         * ```
+	 *
 	 * @return bool Whether the user has the capability.
 	 */
 	public function can( $capability ) {
