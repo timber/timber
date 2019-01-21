@@ -21,7 +21,11 @@ class ACF {
 		add_filter('timber/term/pre_meta', array( $this, 'term_get_meta_field' ), 10, 5);
 		add_filter('timber/user/pre_meta', array( $this, 'user_get_meta_field' ), 10, 5);
 
-		// Deprecated
+		/**
+		 * Allowed a user to set a meta value
+		 *
+		 * @deprecated 2.0.0 with no replacement
+		 */
 		add_filter('timber/term/meta/set', array( $this, 'term_set_meta' ), 10, 4);
 	}
 
