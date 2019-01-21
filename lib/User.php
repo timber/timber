@@ -193,8 +193,12 @@ class User extends Core implements CoreInterface, MetaInterface {
 		 * you can disable fetching the meta values through the default method, which uses
 		 * `get_user_meta()`, by returning `false` or a non-empty array.
 		 *
-		 * @todo Add example
-		 *
+		 * @example
+		 * ```php
+		 * add_filter('timber/user/pre_get_meta_values', function($user_meta, $user_id, $user){
+    	 *     return false;
+		 * }, 10, 3);
+		 * ```
 		 * @since 2.0.0
 		 *
 		 * @param array        $user_meta An array of custom meta values. Passing `false` or a
@@ -223,12 +227,12 @@ class User extends Core implements CoreInterface, MetaInterface {
 			$um = get_user_meta($this->ID);
 		}
 
-		$custom = array();
+		$user_meta = array();
 		foreach ( $um as $key => $value ) {
 			if ( is_array($value) && count($value) === 1 ) {
 				$value = $value[0];
 			}
-			$custom[ $key ] = maybe_unserialize($value);
+			$user_meta[ $key ] = maybe_unserialize($value);
 		}
 
 		/**
@@ -237,7 +241,16 @@ class User extends Core implements CoreInterface, MetaInterface {
 		 * Timber loads all meta values into the user object on initialization. With this filter,
 		 * you can change meta values after they were fetched from the database.
 		 *
-		 * @todo Add example
+		 * @example
+		 * ```php
+		 * add_filter('timber/user/get_meta_values', function($user_meta, $user_id, $user) {
+		 *     if ( $user_id == 123 ) {
+		 *         // do something special
+		 *         $user_meta['foo'] = $user_meta['foo'].' bar';
+		 *     }
+		 *     return $user_meta;
+		 * });
+		 * ```
 		 *
 		 * @since 2.0.0
 		 *
@@ -245,21 +258,21 @@ class User extends Core implements CoreInterface, MetaInterface {
 		 * @param int          $user_id   The user ID.
 		 * @param \Timber\User $user      The user object.
 		 */
-		$custom = apply_filters( 'timber/user/get_meta_values', $custom, $this->ID, $this );
+		$user_meta = apply_filters( 'timber/user/get_meta_values', $user_meta, $this->ID, $this );
 
 		/**
 		 * Filters user meta data fetched from the database.
 		 *
 		 * @deprecated 2.0.0, use `timber/user/get_meta_values`
 		 */
-		$custom = apply_filters_deprecated(
+		$user_meta = apply_filters_deprecated(
 			'timber_user_get_meta',
-			array( $custom, $this->ID, $this ),
+			array( $user_meta, $this->ID, $this ),
 			'2.0.0',
 			'timber/user/get_meta_values'
 		);
 
-		return $custom;
+		return $user_meta;
 	}
 
 	/**

@@ -383,7 +383,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			$comment_id = $this->ID;
 		}
 
-		$comment_metas = array();
+		$comment_meta = array();
 
 		/**
 		 * Filters comment meta data before it is fetched from the database.
@@ -392,19 +392,24 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		 * you can disable fetching the meta values through the default method, which uses
 		 * `get_comment_meta()`, by returning `false` or a non-empty array.
 		 *
-		 * @todo Add example
+		 * @example
+		 * ```php
+		 * add_filter( 'timber/comment/pre_get_meta_values', function($comment_meta, $comment_id, $comment) {
+		 *     return false;
+		 * }, 10, 3);
+		 * ```
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array           $comment_metas An array of comment meta data. Passing `false` or a
-		 *                                       non-empty array will skip fetching values from the
-		 *                                       database and will use the filtered values instead.
-		 *                                       Default `array()`.
-		 * @param int             $comment_id    The comment ID.
-		 * @param \Timber\Comment $comment       The comment object.
+		 * @param array           $comment_meta An array of comment meta data. Passing `false` or a
+		 *                                      non-empty array will skip fetching values from the
+		 *                                      database and will use the filtered values instead.
+		 *                                      Default `array()`.
+		 * @param int             $comment_id   The comment ID.
+		 * @param \Timber\Comment $comment      The comment object.
 		 */
-		$comment_metas = apply_filters( 'timber/comment/pre_get_meta_values',
-			$comment_metas,
+		$comment_meta = apply_filters( 'timber/comment/pre_get_meta_values',
+			$comment_meta,
 			$comment_id,
 			$this
 		);
@@ -418,17 +423,17 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		 */
 		do_action_deprecated(
 			'timber_comment_get_meta_pre',
-			array( $comment_metas, $comment_id ),
+			array( $comment_meta, $comment_id ),
 			'2.0.0',
 			'timber/comment/pre_get_meta_values'
 		);
 
 		// Load all meta data when it wasn’t filtered before.
-		if ( false !== $comment_metas && empty( $comment_metas ) ) {
-			$comment_metas = get_comment_meta($comment_id);
+		if ( false !== $comment_meta && empty( $comment_meta ) ) {
+			$comment_meta = get_comment_meta($comment_id);
 		}
 
-		foreach ( $comment_metas as &$cm ) {
+		foreach ( $comment_meta as &$cm ) {
 			if ( is_array($cm) && count($cm) == 1 ) {
 				$cm = $cm[0];
 			}
@@ -440,17 +445,26 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		 * Timber loads all meta values into the comment object on initialization. With this filter,
 		 * you can change meta values after they were fetched from the database.
 		 *
-		 * @todo Add example
+		 * @example
+		 * ```php
+		 * add_filter('timber/comment/get_meta_values', function($comment_meta, $comment_id, $comment) {
+		 *     if ( $comment_id == 12345 ) {
+		 *         // do something special
+		 *         $comment_meta['foo'] = $comment_meta['foo'].' bar';
+		 *     }
+		 *     return $comment_meta;
+		 * });
+		 * ```
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array           $comment_metas Comment meta data.
-		 * @param int             $comment_id    The comment ID.
-		 * @param \Timber\Comment $comment       The comment object.
+		 * @param array           $comment_meta Comment meta data.
+		 * @param int             $comment_id   The comment ID.
+		 * @param \Timber\Comment $comment      The comment object.
 		 */
-		$comment_metas = apply_filters(
+		$comment_meta = apply_filters(
 			'timber/comment/get_meta_values',
-			$comment_metas,
+			$comment_meta,
 			$comment_id,
 			$this
 		);
@@ -461,14 +475,14 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		 * @deprecated 2.0.0, use `timber/comment/get_meta_values`
 		 * @since 0.15.4
 		 */
-		$comment_metas = apply_filters_deprecated(
+		$comment_meta = apply_filters_deprecated(
 			'timber_comment_get_meta',
-			array( $comment_metas, $comment_id ),
+			array( $comment_meta, $comment_id ),
 			'2.0.0',
 			'timber/comment/get_meta_values'
 		);
 
-		return $comment_metas;
+		return $comment_meta;
 	}
 
 	/**

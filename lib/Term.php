@@ -148,8 +148,8 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @param int $tid
 	 * @return array
 	 */
-	protected function get_meta_values( $tid ) {
-		$customs = array();
+	protected function get_meta_values( $term_id ) {
+		$term_meta = array();
 
 		/**
 		 * Filters term meta data before it is fetched from the database.
@@ -158,30 +158,35 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		 * you can disable fetching the meta values through the default method, which uses
 		 * `get_term_meta()`, by returning `false` or a non-empty array.
 		 *
-		 * @todo  Add example.
+		 * @example
+		 * ```php
+		 * add_filter( 'timber/term/pre_get_meta_values', function($term_meta, $term_id, $term) {
+		 *     return false;
+		 * }, 10, 3);
+		 * ```
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array        $customs An array of custom meta values. Passing `false` or a
+		 * @param array        $term_meta An array of custom meta values. Passing `false` or a
 		 *                              non-empty array will skip fetching the values from the
 		 *                              database and will use the filtered values instead. Default
 		 *                              `array()`.
 		 * @param int          $term_id The term ID.
 		 * @param \Timber\Term $term    The term object.
 		 */
-		$customs = apply_filters( 'timber/term/pre_get_meta_values', $customs, $tid, $this );
+		$term_meta = apply_filters( 'timber/term/pre_get_meta_values', $term_meta, $term_id, $this );
 
 		// Load all meta data when it wasn’t filtered before.
-		if ( false !== $customs && empty( $customs ) ) {
-			$customs = get_term_meta( $tid );
+		if ( false !== $term_meta && empty( $term_meta ) ) {
+			$term_meta = get_term_meta( $term_id );
 		}
 
-		foreach ( $customs as $key => $value ) {
+		foreach ( $term_meta as $key => $value ) {
 			if ( is_array( $value ) && 1 === count( $value ) && isset( $value[0] ) ) {
 				$value = $value[0];
 			}
 
-			$customs[ $key ] = maybe_unserialize( $value );
+			$term_meta[ $key ] = maybe_unserialize( $value );
 		}
 
 		/**
@@ -192,29 +197,38 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		 *
 		 * This filter is used by the ACF Integration.
 		 *
-		 * @todo Add example
+		 * @example
+		 * ```php
+		 * add_filter('timber/term/get_meta_values', function($term_meta, $term_id, $term) {
+		 *     if ( $term_id == 123 ) {
+		 *         // do something special
+		 *         $term_meta['foo'] = $term_meta['foo'].' bar';
+		 *     }
+		 *     return $term_meta;
+		 * });
+		 * ```
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array        $customs Custom term meta data.
-		 * @param int          $term_id Term ID.
-		 * @param \Timber\Term $term    Term object.
+		 * @param array        $term_meta Custom term meta data.
+		 * @param int          $term_id   Term ID.
+		 * @param \Timber\Term $term      Term object.
 		 */
-		$customs = apply_filters('timber/term/get_meta_values', $customs, $tid, $this);
+		$term_meta = apply_filters('timber/term/get_meta_values', $term_meta, $term_id, $this);
 
 		/**
 		 * Filters term meta data fetched from the database.
 		 *
 		 * @deprecated 2.0.0, use `timber/term/meta`
 		 */
-		$customs = apply_filters_deprecated(
+		$term_meta = apply_filters_deprecated(
 			'timber_term_get_meta',
-			array( $customs, $tid, $this ),
+			array( $term_meta, $term_id, $this ),
 			'2.0.0',
 			'timber/term/get_meta_values'
 		);
 
-		return $customs;
+		return $term_meta;
 	}
 
 	/**

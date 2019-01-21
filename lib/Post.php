@@ -566,7 +566,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @return array
 	 */
 	protected function get_meta_values( $pid ) {
-		$customs = array();
+		$post_meta = array();
 
 		/**
 		 * Filters post meta data before it is fetched from the database.
@@ -575,17 +575,21 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		 * you can disable fetching the meta values through the default method, which uses
 		 * `get_post_meta()`, by returning `false` or an non-empty array.
 		 *
-		 * @todo  Add example.
-		 *
+		 * @example
+		 * ```php
+		 * add_filter('timber/post/pre_get_meta_values', function($custom_data, $post_id, $post){
+    	 *     return false;
+		 * }, 10, 3);
+		 * ```
 		 * @since 2.0.0
 		 *
-		 * @param array        $customs An array of custom meta values. Passing false or a non-empty
-		 *                              array will skip fetching the values from the database and
-		 *                              will use the filtered values instead. Default `array()`.
-		 * @param int          $pid     The post ID.
-		 * @param \Timber\Post $post    The post object.
+		 * @param array        $post_meta An array of custom meta values. Passing false or a non-empty
+		 *                                array will skip fetching the values from the database and
+		 *                                will use the filtered values instead. Default `array()`.
+		 * @param int          $pid       The post ID.
+		 * @param \Timber\Post $post      The post object.
 		 */
-		$customs = apply_filters( 'timber/post/pre_get_meta_values', $customs, $pid, $this );
+		$post_meta = apply_filters( 'timber/post/pre_get_meta_values', $post_meta, $pid, $this );
 
 		/**
 		 * Filters post meta data before it is fetched from the database.
@@ -594,21 +598,21 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		 */
 		do_action_deprecated(
 			'timber_post_get_meta_pre',
-			array( $customs, $pid, $this ),
+			array( $post_meta, $pid, $this ),
 			'2.0.0',
 			'timber/post/pre_get_meta_values'
 		);
 
 		// Load all meta data when it wasn’t filtered before.
-		if ( false !== $customs && empty( $customs ) ) {
-			$customs = get_post_meta( $pid );
+		if ( false !== $post_meta && empty( $post_meta ) ) {
+			$post_meta = get_post_meta( $pid );
 		}
 
-		foreach ( $customs as $key => $value ) {
+		foreach ( $post_meta as $key => $value ) {
 			if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
 				$value = $value[0];
 			}
-			$customs[$key] = maybe_unserialize($value);
+			$post_meta[$key] = maybe_unserialize($value);
 		}
 
 		/**
@@ -617,29 +621,38 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		 * Timber loads all meta values into the post object on initialization. With this filter,
 		 * you can change meta values after they were fetched from the database.
 		 *
-		 * @todo Add example.
+		 * @example
+		 * ```php
+		 * add_filter('timber/post/get_meta_values', function($post_meta, $post_id, $post) {
+		 *     if ( $post_id == 12345 ) {
+		 *         // do something special
+		 *         $post_meta['foo'] = $post_meta['foo'].' bar';
+		 *     }
+		 *     return $post_meta;
+		 * });
+		 * ```
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array        $customs Post meta data.
-		 * @param int          $pid     The post ID.
-		 * @param \Timber\Post $post    The post object.
+		 * @param array        $post_meta Post meta data.
+		 * @param int          $pid       The post ID.
+		 * @param \Timber\Post $post      The post object.
 		 */
-		$customs = apply_filters( 'timber/post/get_meta_values', $customs, $pid, $this );
+		$post_meta = apply_filters( 'timber/post/get_meta_values', $post_meta, $pid, $this );
 
 		/**
 		 * Filters post meta data fetched from the database.
 		 *
 		 * @deprecated 2.0.0, use `timber/post/get_meta_values`
 		 */
-		$customs = apply_filters_deprecated(
+		$post_meta = apply_filters_deprecated(
 			'timber_post_get_meta',
-			array( $customs, $pid, $this ),
+			array( $post_meta, $pid, $this ),
 			'2.0.0',
 			'timber/post/get_meta_values'
 		);
 
-		return $customs;
+		return $post_meta;
 	}
 
 	/**
