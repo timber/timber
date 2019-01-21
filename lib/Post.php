@@ -1469,14 +1469,12 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		return apply_filters('get_the_time', $the_time, $tf);
 	}
 
-
 	/**
-	 * Returns the post_type object with labels and other info
+	 * Returns the PostType object for a post’s post type with labels and other info.
 	 *
 	 * @api
 	 * @since 1.0.4
 	 * @example
-	 *
 	 * ```twig
 	 * This post is from <span>{{ post.type.labels.name }}</span>
 	 * ```
@@ -1484,12 +1482,9 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * ```html
 	 * This post is from <span>Recipes</span>
 	 * ```
-	 * @return PostType
+	 * @return \Timber\PostType
 	 */
 	public function type() {
-		if ( isset($this->custom['type']) ) {
-			return $this->custom['type'];
-		}
 		if ( ! $this->__type instanceof PostType ) {
 			$this->__type = new PostType($this->post_type);
 		}
@@ -1768,19 +1763,17 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * Returns the gallery
+	 * Returns galleries from the post’s content.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
 	 * {{ post.gallery }}
 	 * ```
-	 * @return html
+	 * @return array A list of arrays, each containing gallery data and srcs parsed from the
+	 * expanded shortcode.
 	 */
 	public function gallery( $html = true ) {
-		if ( isset($this->custom['gallery']) ) {
-			return $this->custom['gallery'];
-		}
 		$galleries = get_post_galleries($this->ID, $html);
 		$gallery = reset($galleries);
 
@@ -1788,22 +1781,19 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * Returns the audio
+	 * Returns audio tags embedded in the post’s content.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
 	 * {{ post.audio }}
 	 * ```
-	 * @return html
+	 * @return bool|array A list of found HTML embeds.
 	 */
 	public function audio() {
-		if ( isset($this->custom['audio']) ) {
-			return $this->custom['audio'];
-		}
 		$audio = false;
 
-		// Only get audio from the content if a playlist isn't present.
+		// Only get audio from the content if a playlist isn’t present.
 		if ( false === strpos($this->content(), 'wp-playlist-script') ) {
 			$audio = get_media_embedded_in_content($this->content(), array('audio'));
 		}
@@ -1812,19 +1802,16 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * Returns the video
+	 * Returns video tags embedded in the post’s content.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
 	 * {{ post.video }}
 	 * ```
-	 * @return html
+	 * @return bool|array A list of found HTML embeds.
 	 */
 	public function video() {
-		if ( isset($this->custom['video']) ) {
-			return $this->custom['video'];
-		}
 		$video = false;
 
 		// Only get video from the content if a playlist isn't present.

@@ -554,9 +554,9 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * </ul>
 	 * ```
 	 *
-	 * @param int $numberposts_or_args
-	 * @param string $post_type_or_class
-	 * @param string $post_class
+	 * @param int|string|array $numberposts_or_args
+	 * @param string           $post_type_or_class
+	 * @param string           $post_class
 	 * @return \Timber\PostQuery
 	 */
 	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {

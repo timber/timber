@@ -147,12 +147,14 @@ class Menu extends Core {
 
 				$menu = apply_filters( 'wp_nav_menu_objects', $menu, $default_args_obj );
 
-				$menu = self::order_children($menu);
-				$menu = self::strip_to_depth_limit($menu);
+				$menu = $this->order_children($menu);
+				$menu = $this->strip_to_depth_limit($menu);
 			}
 			$this->items = $menu;
 			$menu_info = wp_get_nav_menu_object($menu_id);
-			$this->import($menu_info);
+			if ( $menu_info ) {
+				$this->import($menu_info);
+			}
 			$this->ID = $this->term_id;
 			$this->id = $this->term_id;
 			$this->title = $this->name;
@@ -180,7 +182,7 @@ class Menu extends Core {
 			}
 			_wp_menu_item_classes_by_context($menu);
 			if ( is_array($menu) ) {
-				$menu = self::order_children($menu);
+				$menu = $this->order_children($menu);
 			}
 			$this->items = $menu;
 		}
@@ -188,8 +190,8 @@ class Menu extends Core {
 
 	/**
 	 * @internal
-	 * @param string $slug
-	 * @param array $locations
+	 * @param string|int $slug
+	 * @param array      $locations
 	 * @return integer
 	 */
 	protected function get_menu_id_from_locations( $slug, $locations ) {
@@ -211,7 +213,7 @@ class Menu extends Core {
 
 	/**
 	 * @internal
-	 * @param int $slug
+	 * @param int|string $slug
 	 * @return int
 	 */
 	protected function get_menu_id_from_terms( $slug = 0 ) {
@@ -312,7 +314,7 @@ class Menu extends Core {
 				continue;
 			}
 
-			$currentItem->children = self::strip_to_depth_limit($currentItem->children, $current + 1);
+			$currentItem->children = $this->strip_to_depth_limit($currentItem->children, $current + 1);
 		}
 
 		return $menu;
