@@ -245,7 +245,7 @@ class User extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Create the array with user roles names and slugs.
+	 * Creates an associative array with user role slugs and their translated names.
 	 *
 	 * @api
 	 * @since 1.8.5
@@ -262,7 +262,7 @@ class User extends Core implements CoreInterface {
 
 		$values = array();
 
-		foreach( $roles as $role ) {
+		foreach ( $roles as $role ) {
 			$name = $role;
 			if ( isset( $names[ $role ] ) ) {
 				$name = translate_user_role( $names[ $role ] );
@@ -276,6 +276,12 @@ class User extends Core implements CoreInterface {
 
 	/**
 	 * Gets the user roles.
+	 * Roles shouldn’t be used to check whether a user has a capability. Use roles only for
+	 * displaying purposes. For example, if you want to display the name of the subscription a user
+	 * has on the site behind a paywall.
+	 *
+	 * If you want to check for capabilities, use `{{ user.can('capability') }}`. If you only want
+	 * to check whether a user is logged in, you can use `{% if user %}`.
 	 *
 	 * @api
 	 * @since 1.8.5
@@ -283,7 +289,7 @@ class User extends Core implements CoreInterface {
 	 * ```twig
 	 * <h2>Role name</h2>
 	 * {% for role in post.author.roles %}
-	 *   {{ role }} 
+	 *     {{ role }} 
 	 * {% endfor %}
 	 * ```
 	 * ```twig
@@ -291,8 +297,8 @@ class User extends Core implements CoreInterface {
 	 * {{ post.author.roles|join(', ') }}
 	 * ```
 	 * ```twig
-	 * {% for slug in post.author.roles|keys %}
-	 *   {{ slug }} 
+	 * {% for slug, name in post.author.roles %}
+	 *     {{ slug }} 
 	 * {% endfor %}
 	 * ```
 	 *
@@ -304,6 +310,12 @@ class User extends Core implements CoreInterface {
 
 	/**
 	 * Checks whether a user has a capability.
+	 *
+	 * Don’t use role slugs for capability checks. While checking against a role in place of a
+	 * capability is supported in part, this practice is discouraged as it may produce unreliable
+	 * results. This includes cases where you want to check whether a user is registered. If you
+	 * want to check whether a user is a Subscriber, use `{{ user.can('read') }}`. If you only want
+	 * to check whether a user is logged in, you can use `{% if user %}`.
 	 *
 	 * @api
 	 * @since 1.8.5
