@@ -317,6 +317,12 @@ class User extends Core implements CoreInterface {
 	 * want to check whether a user is a Subscriber, use `{{ user.can('read') }}`. If you only want
 	 * to check whether a user is logged in, you can use `{% if user %}`.
 	 *
+	 * Don’t use role slugs for capability checks. While checking against a role in place of a
+	 * capability is supported in part, this practice is discouraged as it may produce unreliable
+	 * results. This includes cases where you want to check whether a user is registered. If you
+	 * want to check whether a user is a Subscriber, use `{{ user.can('read') }}`. If you only want
+	 * to check whether a user is logged in, you can use `{% if user %}`.
+	 *
 	 * @api
 	 * @since 1.8.5
 	 *
