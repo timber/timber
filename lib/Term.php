@@ -160,8 +160,17 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		 *
 		 * @example
 		 * ```php
-		 * add_filter( 'timber/term/pre_get_meta_values', function($term_meta, $term_id, $term) {
-		 *     return false;
+		 * // Disable fetching meta values.
+		 * add_filter( 'timber/term/pre_get_meta_values', '__return_false' );
+		 *
+		 * // Add your own meta data.
+		 * add_filter( 'timber/term/pre_get_meta_values', function( $term_meta, $term_id, $term ) {
+    	 *     $term_meta = array(
+		 *         'custom_data_1' => 73,
+		 *         'custom_data_2' => 274,
+		 *     );
+		 *
+		 *     return $term_meta;
 		 * }, 10, 3);
 		 * ```
 		 *
@@ -199,13 +208,14 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		 *
 		 * @example
 		 * ```php
-		 * add_filter('timber/term/get_meta_values', function($term_meta, $term_id, $term) {
-		 *     if ( $term_id == 123 ) {
-		 *         // do something special
-		 *         $term_meta['foo'] = $term_meta['foo'].' bar';
+		 * add_filter( 'timber/term/get_meta_values', function( $term_meta, $term_id, $term ) {
+		 *     if ( 123 === $term_id ) {
+		 *         // Do something special.
+		 *         $term_meta['foo'] = $term_meta['foo'] . ' bar';
 		 *     }
+		 *
 		 *     return $term_meta;
-		 * });
+		 * }, 10, 3 );
 		 * ```
 		 *
 		 * @since 2.0.0
@@ -214,7 +224,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		 * @param int          $term_id   Term ID.
 		 * @param \Timber\Term $term      Term object.
 		 */
-		$term_meta = apply_filters('timber/term/get_meta_values', $term_meta, $term_id, $this);
+		$term_meta = apply_filters( 'timber/term/get_meta_values', $term_meta, $term_id, $this );
 
 		/**
 		 * Filters term meta data fetched from the database.

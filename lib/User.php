@@ -195,10 +195,20 @@ class User extends Core implements CoreInterface, MetaInterface {
 		 *
 		 * @example
 		 * ```php
-		 * add_filter('timber/user/pre_get_meta_values', function($user_meta, $user_id, $user){
-    	 *     return false;
-		 * }, 10, 3);
+		 * // Disable fetching meta values.
+		 * add_filter( 'timber/user/pre_get_meta_values', '__return_false' );
+		 *
+		 * // Add your own meta values.
+		 * add_filter( 'timber/user/pre_get_meta_values', function( $user_meta, $user_id, $user ) {
+		 *     $user_meta = array(
+		 *         'custom_data_1' => 73,
+		 *         'custom_data_2' => 274,
+		 *     );
+		 *
+		 *     return $user_meta;
+		 * }, 10, 3 );
 		 * ```
+		 *
 		 * @since 2.0.0
 		 *
 		 * @param array        $user_meta An array of custom meta values. Passing `false` or a
@@ -243,13 +253,14 @@ class User extends Core implements CoreInterface, MetaInterface {
 		 *
 		 * @example
 		 * ```php
-		 * add_filter('timber/user/get_meta_values', function($user_meta, $user_id, $user) {
-		 *     if ( $user_id == 123 ) {
-		 *         // do something special
-		 *         $user_meta['foo'] = $user_meta['foo'].' bar';
+		 * add_filter( 'timber/user/get_meta_values', function( $user_meta, $user_id, $user ) {
+		 *     if ( 123 === $user_id ) {
+		 *         // Do something special.
+		 *         $user_meta['foo'] = $user_meta['foo'] . ' bar';
 		 *     }
+		 *
 		 *     return $user_meta;
-		 * });
+		 * }, 10, 3 );
 		 * ```
 		 *
 		 * @since 2.0.0

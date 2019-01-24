@@ -394,9 +394,9 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		 *
 		 * @example
 		 * ```php
-		 * add_filter( 'timber/comment/pre_get_meta_values', function($comment_meta, $comment_id, $comment) {
+		 * add_filter( 'timber/comment/pre_get_meta_values', function( $comment_meta, $comment_id, $comment ) {
 		 *     return false;
-		 * }, 10, 3);
+		 * }, 10, 3 );
 		 * ```
 		 *
 		 * @since 2.0.0
@@ -447,13 +447,14 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		 *
 		 * @example
 		 * ```php
-		 * add_filter('timber/comment/get_meta_values', function($comment_meta, $comment_id, $comment) {
-		 *     if ( $comment_id == 12345 ) {
-		 *         // do something special
-		 *         $comment_meta['foo'] = $comment_meta['foo'].' bar';
+		 * add_filter( 'timber/comment/get_meta_values', function( $comment_meta, $comment_id, $comment ) {
+		 *     if ( 12345 === (int) $comment_id ) {
+		 *         // Do something special.
+		 *         $comment_meta['foo'] = $comment_meta['foo'] . ' bar';
 		 *     }
+		 *
 		 *     return $comment_meta;
-		 * });
+		 * }, 10, 3 );
 		 * ```
 		 *
 		 * @since 2.0.0
