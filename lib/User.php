@@ -254,7 +254,9 @@ class User extends Core implements CoreInterface {
 	 */
 	protected function get_roles( $roles ) {
 		if ( empty($roles) ) {
+			// @codeCoverageIgnoreStart
 			return null;
+			// @codeCoverageIgnoreEnd
 		}
 
 		$wp_roles = wp_roles();
@@ -267,7 +269,6 @@ class User extends Core implements CoreInterface {
 			if ( isset($names[ $role ]) ) {
 				$name = translate_user_role($names[ $role ]);
 			}
-
 			$values[ $role ] = $name;
 		}
 
