@@ -247,13 +247,13 @@ class User extends Core implements CoreInterface {
 	/**
 	 * Creates an associative array with user role slugs and their translated names.
 	 *
-	 * @api
+	 * @internal
 	 * @since 1.8.5
-	 * @param array $roles user roles
+	 * @param array $roles user roles.
 	 * @return array|null
 	 */
 	protected function get_roles( $roles ) {
-		if ( empty( $roles ) ) {
+		if ( empty($roles) ) {
 			return null;
 		}
 
@@ -264,13 +264,13 @@ class User extends Core implements CoreInterface {
 
 		foreach ( $roles as $role ) {
 			$name = $role;
-			if ( isset( $names[ $role ] ) ) {
-				$name = translate_user_role( $names[ $role ] );
+			if ( isset($names[ $role ]) ) {
+				$name = translate_user_role($names[ $role ]);
 			}
 
-			$values[$role] = $name;
+			$values[ $role ] = $name;
 		}
-		
+
 		return $values;
 	}
 
@@ -289,7 +289,7 @@ class User extends Core implements CoreInterface {
 	 * ```twig
 	 * <h2>Role name</h2>
 	 * {% for role in post.author.roles %}
-	 *     {{ role }} 
+	 *     {{ role }}
 	 * {% endfor %}
 	 * ```
 	 * ```twig
@@ -298,13 +298,13 @@ class User extends Core implements CoreInterface {
 	 * ```
 	 * ```twig
 	 * {% for slug, name in post.author.roles %}
-	 *     {{ slug }} 
+	 *     {{ slug }}
 	 * {% endfor %}
 	 * ```
 	 *
 	 * @return array|null
 	 */
-	public function roles() {		
+	public function roles() {
 		return $this->roles;
 	}
 
@@ -322,18 +322,18 @@ class User extends Core implements CoreInterface {
 	 *
 	 * @param string $capability The capability to check.
 	 *
-         * @example
-         * Give moderation users another CSS class to style them differently.
-         *
-         * ```twig
-         * <span class="comment-author {{ comment.author.can('moderate_comments') ? 'comment-author--is-moderator }}">
-         *     {{ comment.author.name }}
-         * </span>
-         * ```
+	 * @example
+	 * Give moderation users another CSS class to style them differently.
+	 *
+	 * ```twig
+	 * <span class="comment-author {{ comment.author.can('moderate_comments') ? 'comment-author--is-moderator }}">
+	 *     {{ comment.author.name }}
+	 * </span>
+	 * ```
 	 *
 	 * @return bool Whether the user has the capability.
 	 */
 	public function can( $capability ) {
-		return user_can( $this->ID, $capability );
+		return user_can($this->ID, $capability);
 	}
 }
