@@ -16,6 +16,19 @@
 			$this->assertEquals($uid, $user->id);
 		}
 
+		function testUserCapability() {
+			$uid = $this->factory->user->create(array('display_name' => 'Tito Bottitta', 'user_login' => 'mbottitta', 'role' => 'editor'));
+			$user = new Timber\User('mbottitta');
+			$this->assertTrue($user->can('edit_posts'));
+			$this->assertFalse($user->can('activate_plugins'));
+		}
+
+		function testUserRole() {
+			$uid = $this->factory->user->create(array('display_name' => 'Tito Bottitta', 'user_login' => 'mbottitta', 'role' => 'editor'));
+			$user = new Timber\User('mbottitta');
+			$this->assertArrayHasKey('editor', $user->roles());
+		}
+
 		function testDescription() {
 			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln', 'user_login' => 'blincoln'));
 			update_user_meta($uid, 'description', 'Sixteenth President');
