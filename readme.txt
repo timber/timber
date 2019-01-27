@@ -37,6 +37,8 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Changes for Theme Developers**
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
+- Adds support for roles on the user object. Example: `{{ post.author.roles }}` which returns an array of roles #1898 (thanks @palmiak)
+- Adds support for capabilities on the user object. Example: `{{post.author.can("moderate_comments")}}` which returns true or false #1898 (thanks @palmiak)
 
 = 1.8.4 =
 **Fixes and improvements**

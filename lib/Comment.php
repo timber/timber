@@ -141,16 +141,16 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	 * <h3>Comments by...</h3>
 	 * <ol>
 	 * {% for comment in post.comments %}
-	 * 	<li>{{comment.author.name}}, who is a {{comment.author.role}}</li>
+	 *     <li>{{comment.author.name}}, who has the following roles: {{comment.author.roles|join(', ')}}</li>
 	 * {% endfor %}
 	 * </ol>
 	 * ```
 	 * ```html
 	 * <h3>Comments by...</h3>
 	 * <ol>
-	 * 	<li>Jared Novack, who is a contributor</li>
-	 * 	<li>Katie Ricci, who is a subscriber</li>
-	 * 	<li>Rebecca Pearl, who is a author</li>
+	 *  <li>Jared Novack, who is a contributor</li>
+	 *  <li>Katie Ricci, who is a subscriber</li>
+	 *  <li>Rebecca Pearl, who is a author</li>
 	 * </ol>
 	 * ```
 	 * @return User
