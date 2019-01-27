@@ -77,32 +77,35 @@ class Twig {
 		/**
 		 * Deprecated Timber object functions.
 		 */
-
 		$twig->addFunction( new Twig_Function(
 			'TimberPost',
-			function( $pid, $PostClass = 'Timber\Post' ) {
+			function( $post_id, $PostClass = 'Timber\Post' ) {
 				Helper::deprecated( '{{ TimberPost() }}', '{{ Post() }}', '2.0.0' );
+				return self::maybe_convert_array( $post_id, $PostClass );
 			}
 		) );
 
 		$twig->addFunction( new Twig_Function(
 			'TimberImage',
-			function( $pid = false, $ImageClass = 'Timber\Image' ) {
+			function( $post_id = false, $ImageClass = 'Timber\Image' ) {
 				Helper::deprecated( '{{ TimberImage() }}', '{{ Image() }}', '2.0.0' );
+				return self::maybe_convert_array( $post_id, $ImageClass );
 			}
 		) );
 
 		$twig->addFunction( new Twig_Function(
 			'TimberTerm',
-			function( $tid, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+			function( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
 				Helper::deprecated( '{{ TimberTerm() }}', '{{ Term() }}', '2.0.0' );
+				return self::handle_term_object($term_id, $taxonomy, $TermClass);
 			}
 		) );
 
 		$twig->addFunction( new Twig_Function(
 			'TimberUser',
-			function( $pid, $UserClass = 'Timber\User' ) {
+			function( $user_id, $UserClass = 'Timber\User' ) {
 				Helper::deprecated( '{{ TimberUser() }}', '{{ User() }}', '2.0.0' );
+				return self::maybe_convert_array($user_id, $UserClass);
 			}
 		) );
 
@@ -155,7 +158,7 @@ class Twig {
 	 * @param string        $TermClass the class to use for processing the term
 	 * @return Term|array
 	 */
-	function handle_term_object( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+	static function handle_term_object( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
 		if ( $taxonomy != $TermClass ) {
 			// user has sent any additonal parameters, process
 			$processed_args = self::process_term_args($taxonomy, $TermClass);
