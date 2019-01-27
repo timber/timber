@@ -105,7 +105,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 	protected $roles;
 
 	/**
-	 * @param object|int|bool $uid
+	 * @param object|int|bool|string $uid
 	 */
 	public function __construct( $uid = false ) {
 		$this->init($uid);

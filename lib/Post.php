@@ -96,7 +96,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	protected $_content;
 
 	/**
-	 * @var string The returned permalink from WP's get_permalink function
+	 * @var string|boolean The returned permalink from WP's get_permalink function
 	 */
 	protected $_permalink;
 
@@ -561,7 +561,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * and attach them to our Timber\Post object
 	 * @internal
 	 *
-	 * @param int $post_id
+	 * @param int|boolean $post_id
 	 *
 	 * @return array
 	 */
@@ -683,7 +683,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 *
 	 * @internal
 	 * @param  int|null $pid The ID to generate info from.
-	 * @return null|object|WP_Post
+	 * @return null|object|WP_Post|boolean
 	 */
 	protected function get_info( $pid = null ) {
 		$post = $this->prepare_post_info($pid);
@@ -711,7 +711,8 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * Gets the comment form for use on a single article page
 	 *
 	 * @api
-	 * @param array This $args array thing is a mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
+	 * @param array $args see [WordPress docs on comment_form](http://codex.wordpress.org/Function_Reference/comment_form)
+	 *                    for reference on acceptable parameters
 	 * @return string of HTML for the form
 	 */
 	public function comment_form( $args = array() ) {
@@ -1094,10 +1095,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		if ( $this->is_previewing() ) {
 			$class_array = get_post_class($class, $this->post_parent);
 		}
-
-		if ( is_array($class_array) ) {
-			$class_array = implode(' ', $class_array);
-		}
+		$class_array = implode(' ', $class_array);
 
         $post = $old_global_post;
 		return $class_array;
