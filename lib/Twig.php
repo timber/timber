@@ -198,8 +198,8 @@ class Twig {
 	/**
 	 *
 	 *
-	 * @param Twig_Environment $twig
-	 * @return Twig_Environment
+	 * @param \Twig_Environment $twig
+	 * @return \Twig_Environment
 	 */
 	public function add_timber_filters( $twig ) {
 		/* image filters */
@@ -370,8 +370,8 @@ class Twig {
 	/**
 	 *
 	 *
-	 * @param string  $date
-	 * @param string  $format (optional)
+	 * @param string|\DateTime  $date
+	 * @param string            $format (optional)
 	 * @return string
 	 */
 	public function intl_date( $date, $format = null ) {
