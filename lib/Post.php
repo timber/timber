@@ -1590,7 +1590,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 	/**
 	 * @api
-	 * @param bool $in_same_term
+	 * @param bool|string $in_same_term
 	 * @return mixed
 	 */
 	public function next( $in_same_term = false ) {
@@ -1599,7 +1599,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			$this->_next = array();
 			$old_global = $post;
 			$post = $this;
-			if ( $in_same_term ) {
+			if ( is_string($in_same_term) && strlen($in_same_term) ) {
 				$adjacent = get_adjacent_post(true, '', false, $in_same_term);
 			} else {
 				$adjacent = get_adjacent_post(false, '', false);
@@ -1717,7 +1717,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * <h3>{{post.prev.title}}</h3>
 	 * <p>{{post.prev.preview(25)}}</p>
 	 * ```
-	 * @param bool $in_same_term
+	 * @param string|boolean $in_same_term
 	 * @return mixed
 	 */
 	public function prev( $in_same_term = false ) {
@@ -1756,7 +1756,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * ```twig
 	 * <img src="{{ post.thumbnail.src }}" />
 	 * ```
-	 * @return Timber\Image|null of your thumbnail
+	 * @return \Timber\Image|null of your thumbnail
 	 */
 	public function thumbnail() {
 		$tid = get_post_thumbnail_id($this->ID);
