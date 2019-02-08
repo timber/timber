@@ -209,7 +209,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Determined whether or not an admin/editor is looking at the post in "preview mode" via the
+	 * Determine whether or not an admin/editor is looking at the post in "preview mode" via the
 	 * WordPress admin
 	 * @internal
 	 * @return bool
