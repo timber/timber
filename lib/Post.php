@@ -209,7 +209,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Determined whether or not an admin/editor is looking at the post in "preview mode" via the
+	 * Determine whether or not an admin/editor is looking at the post in "preview mode" via the
 	 * WordPress admin
 	 * @internal
 	 * @return bool
@@ -407,12 +407,13 @@ class Post extends Core implements CoreInterface {
 	 * Gets a preview/excerpt of your post.
 	 *
 	 * If you have text defined in the excerpt textarea of your post, it will use that. Otherwise it
-	 * will pull from the post_content. If there's a <!-- more --> tag, it will use that to mark
+	 * will pull from the post_content. If there's a `<!-- more -->` tag, it will use that to mark
 	 * where to pull through.
 	 *
-	 * This method returns `Timber\PostPreview` a object, which is a **chainable object**. This
+	 * This method returns a `Timber\PostPreview` object, which is a **chainable object**. This
 	 * means that you can change the output of the preview by **adding more methods**. Refer to the
-	 * documentation of the `Timber\PostPreview` to get an overview of all the available methods.
+	 * [documentation of the `Timber\PostPreview` class](https://timber.github.io/docs/reference/timber-postpreview/)
+	 * to get an overview of all the available methods.
 	 *
 	 * @example
 	 * ```twig
