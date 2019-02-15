@@ -29,11 +29,11 @@ use Timber\URLHelper;
  * Timber::render('index.twig', $context);
  * ```
  * ```twig
- * <h2>{{term_page.name}} Archives</h2>
+ * <h2>{{ term_page.name }} Archives</h2>
  * <h3>Teams</h3>
  * <ul>
- *     <li>{{st_louis.name}} - {{st_louis.description}}</li>
- *     <li>{{team.name}} - {{team.description}}</li>
+ *     <li>{{ st_louis.name}} - {{ st_louis.description }}</li>
+ *     <li>{{ team.name}} - {{ team.description }}</li>
  * </ul>
  * ```
  * ```html
@@ -41,7 +41,7 @@ use Timber\URLHelper;
  * <h3>Teams</h3>
  * <ul>
  *     <li>St. Louis Cardinals - Winner of 11 World Series</li>
- *     <li>New England Patriots - Winner of 4 Super Bowls</li>
+ *     <li>New England Patriots - Winner of 6 Super Bowls</li>
  * </ul>
  * ```
  */
@@ -672,7 +672,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
-	 * @deprecated 2.0.0 with no replacement
+	 * @deprecated 2.0.0 use `\update_term_meta` instead.
 	 *
 	 * @param string  $key
 	 * @param mixed   $value

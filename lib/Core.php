@@ -88,7 +88,7 @@ abstract class Core {
 
 
 	/**
-	 * @deprecated 2.0.0 with no replacement
+	 * @deprecated 2.0.0 use `\update_metadata` instead.
 	 * @param string  $key
 	 * @param mixed   $value
 	 */

@@ -277,9 +277,9 @@ class Helper {
 	 * Trigger a deprecation warning.
 	 *
 	 * @api
-	 * @param string 	$function the name of the current function/method
-	 * @param string 	$replacement function to use instead
-	 * @param string 	$version when we deprecated this
+	 * @param string $function the name of the current function/method.
+	 * @param string $replacement function to use instead.
+	 * @param string $version when we deprecated this.
 	 * @return void
 	 */
 	public static function deprecated( $function, $replacement, $version ) {

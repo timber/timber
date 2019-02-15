@@ -330,7 +330,7 @@ class Site extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @deprecated 2.0.0 with no replacement
+	 * @deprecated 2.0.0 use `\update_option` or `\update_blog_option` instead.
 	 * @param string  $key
 	 * @param mixed   $value
 	 */

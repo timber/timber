@@ -414,9 +414,9 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 	/**
 	 * updates the post_meta of the current object with the given value
-	 * @deprecated 2.0.0 with no replacement
+	 * @deprecated 2.0.0 use `\update_post_meta` instead.
 	 * @param string $field
-	 * @param mixed $value
+	 * @param mixed  $value
 	 */
 	public function update( $field, $value ) {
 		Helper::deprecated('Timber\Post::update', 'update_post_meta', '2.0.0');
