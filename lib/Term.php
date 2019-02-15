@@ -37,7 +37,7 @@ use Timber\URLHelper;
  * <h3>Teams</h3>
  * <ul>
  *     <li>St. Louis Cardinals - Winner of 11 World Series</li>
- *     <li>New England Patriots - Winner of 4 Super Bowls</li>
+ *     <li>New England Patriots - Winner of 6 Super Bowls</li>
  * </ul>
  * ```
  */
