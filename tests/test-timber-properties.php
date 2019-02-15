@@ -53,11 +53,7 @@ class TestTimberProperty extends Timber_UnitTestCase {
 	function testMeta() {
 		$vars = $this->_initObjects();
 		extract( $vars );
-		if ( is_multisite() ) {
-			update_blog_option($this->ID, $key, $value);
-		} else {
-			update_option('bill', 'clinton');
-		}
+
 		$site->update( 'bill', 'clinton' );
 		$post->update( 'thomas', 'jefferson' );
 		//
