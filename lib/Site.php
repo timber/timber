@@ -330,12 +330,12 @@ class Site extends Core implements CoreInterface {
 	}
 
 	/**
-	 *
-	 * @internal
+	 * @deprecated 2.0.0 with no replacement
 	 * @param string  $key
 	 * @param mixed   $value
 	 */
 	public function update( $key, $value ) {
+		Helper::deprecated('Timber\Site::update', 'update_option', '2.0.0');
 		/**
 		 * Filters a value before it is updated in the site options.
 		 *

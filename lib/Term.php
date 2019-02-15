@@ -672,13 +672,13 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
-	 * @api
 	 * @deprecated 2.0.0 with no replacement
 	 *
 	 * @param string  $key
 	 * @param mixed   $value
 	 */
 	public function update( $key, $value ) {
+		Helper::deprecated('Timber\Term::update', 'update_term_meta', '2.0.0');
 		/**
 		 * Filters term meta value that is going to be updated.
 		 *

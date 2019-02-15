@@ -88,11 +88,12 @@ abstract class Core {
 
 
 	/**
-	 * @deprecated since 2.0.0
+	 * @deprecated 2.0.0 with no replacement
 	 * @param string  $key
 	 * @param mixed   $value
 	 */
 	public function update( $key, $value ) {
+		Helper::deprecated('Timber\Core::update', "update_metadata", '2.0.0');
 		update_metadata($this->object_type, $this->ID, $key, $value);
 	}
 
