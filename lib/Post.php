@@ -452,7 +452,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @param integer $pid number to check against.
 	 * @return integer ID number of a post
 	 */
-	protected function check_post_id( $pid ) {
+	protected static function check_post_id( $pid ) {
 		if ( is_numeric($pid) && 0 === $pid ) {
 			$pid = get_the_ID();
 			return $pid;
@@ -682,7 +682,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * Used internally by init, etc. to build Timber\Post object.
 	 *
 	 * @internal
-	 * @param  int|null $pid The ID to generate info from.
+	 * @param  int|null|boolean $pid The ID to generate info from.
 	 * @return null|object|WP_Post|boolean
 	 */
 	protected function get_info( $pid = null ) {
