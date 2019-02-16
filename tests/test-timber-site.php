@@ -9,6 +9,12 @@ class TestTimberSite extends Timber_UnitTestCase {
 		$this->assertEquals( $content_subdir.'/themes/twentyfifteen', $site->theme->path );
 	}
 
+	function testLanguageAttributes() {
+		$site = new TimberSite();
+		$lang = $site->language_attributes();
+		$this->assertEquals('lang="en-US"', $lang);
+	}
+
 	function testChildParentThemeLocation() {
 		TestTimberLoader::_setupChildTheme();
 		$content_subdir = Timber\URLHelper::get_content_subdir();
