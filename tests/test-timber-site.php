@@ -51,6 +51,13 @@ class TestTimberSite extends Timber_UnitTestCase {
 		$this->assertContains('cardinals.jpg', $icon->src());
 	}
 
+
+	function testNullIcon() {
+		delete_option('site_icon');
+		$site = new Timber\Site();
+		$this->assertNull($site->icon());
+	}
+
 	function testSiteGet() {
 		update_option( 'foo', 'bar' );
 		$site = new Timber\Site();
