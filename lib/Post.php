@@ -96,7 +96,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	protected $_content;
 
 	/**
-	 * @var string The returned permalink from WP's get_permalink function
+	 * @var string|boolean The returned permalink from WP's get_permalink function
 	 */
 	protected $_permalink;
 
@@ -452,7 +452,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @param integer $pid number to check against.
 	 * @return integer ID number of a post
 	 */
-	protected function check_post_id( $pid ) {
+	protected static function check_post_id( $pid ) {
 		if ( is_numeric($pid) && 0 === $pid ) {
 			$pid = get_the_ID();
 			return $pid;
@@ -562,7 +562,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * and attach them to our Timber\Post object
 	 * @internal
 	 *
-	 * @param int $post_id
+	 * @param int|boolean $post_id
 	 *
 	 * @return array
 	 */
@@ -683,8 +683,8 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * Used internally by init, etc. to build Timber\Post object.
 	 *
 	 * @internal
-	 * @param  int|null $pid The ID to generate info from.
-	 * @return null|object|WP_Post
+	 * @param  int|null|boolean $pid The ID to generate info from.
+	 * @return null|object|WP_Post|boolean
 	 */
 	protected function get_info( $pid = null ) {
 		$post = $this->prepare_post_info($pid);
@@ -712,7 +712,8 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * Gets the comment form for use on a single article page
 	 *
 	 * @api
-	 * @param array This $args array thing is a mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
+	 * @param array $args see [WordPress docs on comment_form](http://codex.wordpress.org/Function_Reference/comment_form)
+	 *                    for reference on acceptable parameters
 	 * @return string of HTML for the form
 	 */
 	public function comment_form( $args = array() ) {
@@ -1095,10 +1096,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		if ( $this->is_previewing() ) {
 			$class_array = get_post_class($class, $this->post_parent);
 		}
-
-		if ( is_array($class_array) ) {
-			$class_array = implode(' ', $class_array);
-		}
+		$class_array = implode(' ', $class_array);
 
         $post = $old_global_post;
 		return $class_array;
@@ -1593,7 +1591,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 	/**
 	 * @api
-	 * @param bool $in_same_term
+	 * @param bool|string $in_same_term
 	 * @return mixed
 	 */
 	public function next( $in_same_term = false ) {
@@ -1602,7 +1600,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			$this->_next = array();
 			$old_global = $post;
 			$post = $this;
-			if ( $in_same_term ) {
+			if ( is_string($in_same_term) && strlen($in_same_term) ) {
 				$adjacent = get_adjacent_post(true, '', false, $in_same_term);
 			} else {
 				$adjacent = get_adjacent_post(false, '', false);
@@ -1720,7 +1718,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * <h3>{{post.prev.title}}</h3>
 	 * <p>{{post.prev.preview(25)}}</p>
 	 * ```
-	 * @param bool $in_same_term
+	 * @param string|boolean $in_same_term
 	 * @return mixed
 	 */
 	public function prev( $in_same_term = false ) {
@@ -1759,7 +1757,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * ```twig
 	 * <img src="{{ post.thumbnail.src }}" />
 	 * ```
-	 * @return Timber\Image|null of your thumbnail
+	 * @return \Timber\Image|null of your thumbnail
 	 */
 	public function thumbnail() {
 		$tid = get_post_thumbnail_id($this->ID);
