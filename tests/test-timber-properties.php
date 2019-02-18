@@ -46,9 +46,9 @@ class TestTimberProperty extends Timber_UnitTestCase {
 	}
 
 	/**
-	 * @expectedDeprecated Timber\Site::update
-	 * @expectedDeprecated Timber\Post::update
-	 * @expectedDeprecated Timber\Core::update
+	 * @expectedDeprecated Timber\Site::update()
+	 * @expectedDeprecated Timber\Post::update()
+	 * @expectedDeprecated Timber\Core::update()
 	 */
 	function testMeta() {
 		$vars = $this->_initObjects();
