@@ -413,13 +413,16 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * updates the post_meta of the current object with the given value
-	 * @deprecated 2.0.0 use `\update_post_meta` instead.
-	 * @param string $field
-	 * @param mixed  $value
+	 * Updates post_meta of the current object with the given value.
+	 *
+	 * @deprecated 2.0.0 Use `update_post_meta()` instead.
+	 *
+	 * @param string $field The key of the meta field to update.
+	 * @param mixed  $value The new value.
 	 */
 	public function update( $field, $value ) {
-		Helper::deprecated('Timber\Post::update', 'update_post_meta', '2.0.0');
+		Helper::deprecated( 'Timber\Post::update()', 'update_post_meta()', '2.0.0' );
+
 		if ( isset($this->ID) ) {
 			update_post_meta($this->ID, $field, $value);
 			$this->$field = $value;
