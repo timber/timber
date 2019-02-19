@@ -29,11 +29,11 @@ use Timber\URLHelper;
  * Timber::render('index.twig', $context);
  * ```
  * ```twig
- * <h2>{{term_page.name}} Archives</h2>
+ * <h2>{{ term_page.name }} Archives</h2>
  * <h3>Teams</h3>
  * <ul>
- *     <li>{{st_louis.name}} - {{st_louis.description}}</li>
- *     <li>{{team.name}} - {{team.description}}</li>
+ *     <li>{{ st_louis.name}} - {{ st_louis.description }}</li>
+ *     <li>{{ team.name}} - {{ team.description }}</li>
  * </ul>
  * ```
  * ```html
@@ -672,13 +672,16 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
-	 * @api
-	 * @deprecated 2.0.0 with no replacement
+	 * Updates term_meta of the current object with the given value.
 	 *
-	 * @param string  $key
-	 * @param mixed   $value
+	 * @deprecated 2.0.0 Use `update_term_meta()` instead.
+	 *
+	 * @param string $key   The key of the meta field to update.
+	 * @param mixed  $value The new value.
 	 */
 	public function update( $key, $value ) {
+		Helper::deprecated( 'Timber\Term::update()', 'update_term_meta()', '2.0.0' );
+
 		/**
 		 * Filters term meta value that is going to be updated.
 		 *

@@ -330,12 +330,16 @@ class Site extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Updates a site option.
 	 *
-	 * @internal
-	 * @param string  $key
-	 * @param mixed   $value
+	 * @deprecated 2.0.0 Use `update_option()` or `update_blog_option()` instead.
+	 *
+	 * @param string $key   The key of the site option to update.
+	 * @param mixed  $value The new value.
 	 */
 	public function update( $key, $value ) {
+		Helper::deprecated( 'Timber\Site::update()', 'update_option()', '2.0.0' );
+
 		/**
 		 * Filters a value before it is updated in the site options.
 		 *
