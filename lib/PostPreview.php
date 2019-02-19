@@ -62,7 +62,7 @@ class PostPreview {
 	/**
 	 * Length in characters.
 	 *
-	 * @var bool
+	 * @var int|bool
 	 */
 	protected $char_length = false;
 
@@ -76,7 +76,7 @@ class PostPreview {
 	/**
 	 * HTML tag stripping behavior.
 	 *
-	 * @var bool
+	 * @var string|bool
 	 */
 	protected $strip = true;
 
