@@ -4,13 +4,13 @@ class TestTimberSite extends Timber_UnitTestCase {
 
 	function testStandardThemeLocation() {
 		switch_theme( 'twentyfifteen' );
-		$site = new Timber\Site();
+		$site = new \Timber\Site();
 		$content_subdir = Timber\URLHelper::get_content_subdir();
 		$this->assertEquals( $content_subdir.'/themes/twentyfifteen', $site->theme->path );
 	}
 
 	function testLanguageAttributes() {
-		$site = new TimberSite();
+		$site = new \Timber\Site();
 		$lang = $site->language_attributes();
 		$this->assertEquals('lang="en-US"', $lang);
 	}
