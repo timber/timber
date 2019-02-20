@@ -456,10 +456,24 @@ class ImageHelper {
 		return $tmp;
 	}
 
+	/**
+	 * Checks if uploaded image is located in theme.
+	 *
+	 * @param string $path image path.
+	 * @return bool     If the image is located in the theme directory it returns true.
+	 *                  If not or $path doesn't exits it returns false.
+	 */
 	protected static function is_in_theme_dir( $path ) {
-		$root = realpath(get_stylesheet_directory_uri());
-		if ( 0 === strpos($path, chr($root)) ) {
+		$root = realpath(get_stylesheet_directory());
+
+		if ( false === $root ) {
+			return false;
+		}
+
+		if ( 0 === strpos($path, (string) $root) ) {
 			return true;
+		} else {
+			return false;
 		}
 	}
 
