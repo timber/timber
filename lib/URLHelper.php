@@ -315,16 +315,17 @@ class URLHelper {
 	}
 
 	/**
+	 * Checks if URL is external or internal.
+	 * Works with domains, subdomains and protocol relative domains.
 	 *
-	 *
-	 * @param string  $url
+	 * @param string $url Url.
 	 * @return bool     true if $path is an external url, false if relative or local.
 	 *                  true if it's a subdomain (http://cdn.example.org = true)
 	 */
 	public static function is_external( $url ) {
-		$has_http = strstr(strtolower($url), 'http') || strstr(strtolower($url), '//');
+		$has_http  = strstr(strtolower($url), 'http') || strstr(strtolower($url), '//');
 		$on_domain = strstr($url, self::get_host());
-		if ( $has_http && !$on_domain ) {
+		if ( $has_http && ! $on_domain ) {
 			return true;
 		}
 		return false;
