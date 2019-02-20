@@ -327,8 +327,8 @@ class ImageHelper {
 	 * @return string
 	 */
 	public static function get_server_location( $url ) {
-		// if we're already an absolute dir, just return
-		if ( 0 === strpos($url, chr(ABSPATH)) ) {
+		// if we're already an absolute dir, just return.
+		if ( 0 === strpos($url, ABSPATH) ) {
 			return $url;
 		}
 		// otherwise, analyze URL then build mapping path
