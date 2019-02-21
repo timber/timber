@@ -32,6 +32,7 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
+- Fix for URLHelper::is_external for URLs without protoco #1924 (thanks @hacknug)
 
 **Changes for Theme Developers**
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
