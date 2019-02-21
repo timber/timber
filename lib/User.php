@@ -159,7 +159,7 @@ class User extends Core implements CoreInterface {
 		unset($this->user_pass);
 		$this->id = $this->ID;
 		$this->name = $this->name();
-		$this->avatar = new Image(get_avatar_url($this->id));
+		$this->avatar = $this->avatar($args);
 		$custom = $this->get_custom();
 		$this->import($custom);
 	}
@@ -336,5 +336,26 @@ class User extends Core implements CoreInterface {
 	 */
 	public function can( $capability ) {
 		return user_can($this->ID, $capability);
+	}
+
+	/**
+	 * Returns user's avatar url.
+	 *
+	 * @api
+	 * @since 1.9.1
+	 *
+	 * @param array $args parameters are same as those used in `get_avatar_url`
+	 *              https://developer.wordpress.org/reference/functions/get_avatar_url/ .
+	 *
+	 * @example
+	 * Getting 150px user avatar
+	 *
+	 * ```twig
+	 * <img src="{{ post.author.avatar({'size': 150}) }}"/>
+	 * ```
+	 * @return string avatar url.
+	 */
+	public function avatar( $args = '' ) {
+		return new Image(get_avatar_url($this->id, $args));
 	}
 }
