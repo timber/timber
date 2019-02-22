@@ -339,7 +339,7 @@ class User extends Core implements CoreInterface {
 	 * Get a user avatar with a width and height of 150px:
 	 *
 	 * ```twig
-	 * <img src="{{ post.author.avatar({ size: 150 }) }}"/>
+	 * <img src="{{ post.author.avatar({ size: 150 }) }}">
 	 * ```
 	 *
 	 * @param null|array $args Parameters for
