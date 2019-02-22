@@ -355,8 +355,8 @@ class User extends Core implements CoreInterface {
 	 * @return string avatar url.
 	 */
 	public function avatar( $args = null ) {
-		if ( $this->_avatar ) {
-			return $this->_avatar;
+		if ( $this->_avatar_override ) {
+			return $this->_avatar_override;
 		} 
 		return new Image(get_avatar_url($this->id, $args));
 	}
