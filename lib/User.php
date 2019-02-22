@@ -42,12 +42,6 @@ class User extends Core implements CoreInterface {
 
 	/**
 	 * @api
-	 * @var string|Image The URL of the author's avatar
-	 */
-	public $avatar;
-
-	/**
-	 * @api
 	 * @var  string The first name of the user
 	 */
 	public $first_name;
@@ -159,7 +153,6 @@ class User extends Core implements CoreInterface {
 		unset($this->user_pass);
 		$this->id = $this->ID;
 		$this->name = $this->name();
-		$this->avatar = $this->avatar($args);
 		$custom = $this->get_custom();
 		$this->import($custom);
 	}
