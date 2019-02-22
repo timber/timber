@@ -224,7 +224,7 @@ class Term extends Core implements CoreInterface {
 				$field_value = apply_filters('timber/term/meta/field', $field_value, $this->ID, $field_name, $this);
 			}
 			$this->$field_name = $field_value;
-			
+
 		}
 		return $this->$field_name;
 	}
@@ -377,7 +377,7 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 * Retrieves and outputs meta information stored with a term. This will use
-	 * both data stored under (old) ACF hacks and new (WP 4.6+) where term meta 
+	 * both data stored under (old) ACF hacks and new (WP 4.6+) where term meta
 	 * has its own table. If retrieving a special ACF field (repeater, etc.) you
 	 * can use the output immediately in Twig — no further processing is
 	 * required.
@@ -414,19 +414,48 @@ class Term extends Core implements CoreInterface {
 	}
 
 	/**
+	 * Gets posts that have this term assigned.
+	 *
 	 * @api
-	 * @param int $numberposts_or_args
-	 * @param string $post_type_or_class
-	 * @param string $post_class
 	 * @example
 	 * ```twig
 	 * <h4>Recent posts in {{ term.name }}</h4>
+	 *
 	 * <ul>
 	 * {% for post in term.posts(3, 'post') %}
-	 *     <li><a href="{{post.link}}">{{post.title}}</a></li>
+	 *     <li>
+	 *         <a href="{{ post.link }}">{{ post.title }}</a>
+	 *     </li>
 	 * {% endfor %}
 	 * </ul>
 	 * ```
+	 *
+	 * If you need more control over the query that is going to be performed, you can pass your
+	 * custom query arguments in the first parameter.
+	 *
+	 * ```twig
+	 * <h4>Our branches in {{ region.name }}</h4>
+	 *
+	 * <ul>
+	 * {% for branch in region.posts({
+	 *     posts_per_page: -1,
+	 *     orderby: 'menu_order'
+	 * }, 'branch', 'Branch') %}
+	 *     <li>
+	 *         <a href="{{ branch.link }}">{{ branch.title }}</a>
+	 *     </li>
+	 * {% endfor %}
+	 * </ul>
+	 * ```
+	 *
+	 * @param int|array $numberposts_or_args Optional. Either the number of posts or an array of
+	 *                                       arguments for the post query that this method is going.
+	 *                                       to perform. Default `10`.
+	 * @param string $post_type_or_class     Optional. Either the post type to get or the name of
+	 *                                       post class to use for the returned posts. Default
+	 *                                       `any`.
+	 * @param string $post_class             Optional. The name of the post class to use for the
+	 *                                       returned posts. Default `Timber\Post`.
 	 * @return array|bool|null
 	 */
 	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
