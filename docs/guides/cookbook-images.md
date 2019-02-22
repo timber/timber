@@ -105,7 +105,7 @@ When setting up your custom fields you’ll want to save the `image_id` to the f
 ### The quick way (for most situations)
 
 ```twig
-<img src="{{ TimberImage(post.hero_image).src }}" />
+<img src="{{ Timber\Image(post.hero_image).src }}" />
 ```
 
 ### The long way (for some special situations)
@@ -127,7 +127,7 @@ $data['post'] = $post;
 Timber::render( 'single.twig', $data );
 ```
 
-`TimberImage` should be initialized using a WordPress image ID. It can also take URLs and image objects, but that requires extra processing.
+`Timber\Image` should be initialized using a WordPress image ID. It can also take URLs and image objects, but that requires extra processing.
 
 You can now use all the above functions to transform your custom images in the same way. The format will be:
 
@@ -141,4 +141,4 @@ If you use a plugin like [WP Offload Media Lite](https://wordpress.org/plugins/a
 
 - **You can use** the `{{ image.src }}` or get the source of a WordPress image size, like `{{ image.src('large') }}`.
 
-- **You cannot use** a filter that creates a new image, like `|resize()`, `|letterbox()` or a filter that converts your image to another format (like `|tojpg` or `|towebp`). The reason for this is that when you use one of these filters, then Timber creates a new file locally. But WordPress doesn’t know about that file, because it’s not associated with a WordPress image size registered through `add_image_size()`. Because of that, your CDN plugin will not be able to upload that image to the CDN server, because it doesn’t know the file exists, either.
+- **You cannot use** a filter that creates a new image, like `|resize()`, `|letterbox()` or a filter that converts your image to another format (like `|tojpg` or `|towebp`). When you use one of these filters, Timber only creates a new file locally — but WordPress doesn’t know about that file (because it’s not associated with a WordPress image size registered through `add_image_size()`). Because of that, your CDN plugin will not be able to upload that image to the CDN server, because it doesn’t know the file exists, either.
