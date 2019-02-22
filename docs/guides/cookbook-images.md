@@ -139,8 +139,8 @@ You can now use all the above functions to transform your custom images in the s
 
 Timber’s image functions may be somewhat limited when using a CDN. If you use a plugin like [WP Offload Media Lite](https://wordpress.org/plugins/amazon-s3-and-cloudfront/) to store your images on a CDN, you should be aware of these limitations:
 
-- **You can use** the `{{ image.src }}` or get the source of a WordPress image size, like `{{ image.src('large') }}`.
+**You can use** the `{{ image.src }}` or get the source of a WordPress image size, like `{{ image.src('large') }}`.
 
-- **You cannot use** a filter that creates a new image, like `|resize()`, `|letterbox()` or a filter that converts your image to another format (like `|tojpg` or `|towebp`). When you use one of these filters, Timber only creates a new file locally — but WordPress doesn’t know about that file (because it’s not associated with a WordPress image size registered through `add_image_size()`). Because of that, your CDN plugin will not be able to upload that image to the CDN server, because it doesn’t know the file exists, either.
+In some CDN setups, **you cannot use** a filter that creates a new image, like `|resize()`, `|letterbox()` or a filter that converts your image to another format (like `|tojpg` or `|towebp`). When you use one of these filters, Timber only creates a new file locally — but WordPress doesn’t know about that file (because it’s not associated with a WordPress image size registered through `add_image_size()`). Because of that, some CDN plugins will not be able to upload that image to the CDN server, because they don’t know the file exists, either.
 
-However, there may be some CDN setups that work fine with the above filters (for example: one that’s merely watching the contents of the `wp-content/uploads` directory and copying it to the CDN). For example, these seem to work fine with the default setups for WPEngine and Pantheon.
+However, there may be some CDN setups that work fine with the above filters (for example: one that’s merely watching the contents of the `wp-content/uploads` directory and copying it to the CDN). For example, the filters seem to work fine with the default setups for WPEngine and Pantheon.
