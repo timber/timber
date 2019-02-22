@@ -35,6 +35,12 @@ class User extends Core implements CoreInterface {
 
 	/**
 	 * @api
+	 * @var string A URL to an avatar that overrides anything from Gravatar, etc.
+	 */
+	public $avatar_override;
+
+	/**
+	 * @api
 	 * @var string The description from WordPress
 	 */
 	public $description;
@@ -93,7 +99,7 @@ class User extends Core implements CoreInterface {
 			return $name;
 		}
 		if ( strlen($this->name) ) {
-			return $this->name;
+			return $this->cname;
 		}
 		return '';
 	}
@@ -337,8 +343,8 @@ class User extends Core implements CoreInterface {
 	 * @api
 	 * @since 1.9.1
 	 *
-	 * @param array $args parameters are same as those used in `get_avatar_url`
-	 *              https://developer.wordpress.org/reference/functions/get_avatar_url/ .
+	 * @param null|array $args parameters are same as those used in `get_avatar_url`
+	 *                         https://developer.wordpress.org/reference/functions/get_avatar_url/.
 	 *
 	 * @example
 	 * Getting 150px user avatar
@@ -348,7 +354,10 @@ class User extends Core implements CoreInterface {
 	 * ```
 	 * @return string avatar url.
 	 */
-	public function avatar( $args = '' ) {
+	public function avatar( $args = null ) {
+		if ( $this->_avatar ) {
+			return $this->_avatar;
+		} 
 		return new Image(get_avatar_url($this->id, $args));
 	}
 }
