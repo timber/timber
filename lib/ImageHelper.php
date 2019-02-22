@@ -206,7 +206,7 @@ class ImageHelper {
     /**
      * Generates a new image by converting the source into WEBP if supported by the server
      *
-     * @param string  $src      a url or path to the image (http://example.org/wp-content/uploads/2014/image.webp) 
+     * @param string  $src      a url or path to the image (http://example.org/wp-content/uploads/2014/image.webp)
      *							or (/wp-content/uploads/2014/image.jpg)
      *							If webp is not supported, a jpeg image will be generated
 	 * @param int     $quality  ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
@@ -327,7 +327,7 @@ class ImageHelper {
 	 * @return string
 	 */
 	public static function get_server_location( $url ) {
-		// if we're already an absolute dir, just return
+		// if we're already an absolute dir, just return.
 		if ( 0 === strpos($url, ABSPATH) ) {
 			return $url;
 		}
@@ -456,10 +456,24 @@ class ImageHelper {
 		return $tmp;
 	}
 
+	/**
+	 * Checks if uploaded image is located in theme.
+	 *
+	 * @param string $path image path.
+	 * @return bool     If the image is located in the theme directory it returns true.
+	 *                  If not or $path doesn't exits it returns false.
+	 */
 	protected static function is_in_theme_dir( $path ) {
-		$root = realpath(get_stylesheet_directory_uri());
-		if ( 0 === strpos($path, $root) ) {
+		$root = realpath(get_stylesheet_directory());
+
+		if ( false === $root ) {
+			return false;
+		}
+
+		if ( 0 === strpos($path, (string) $root) ) {
 			return true;
+		} else {
+			return false;
 		}
 	}
 
