@@ -34,7 +34,7 @@ class CoAuthorsPlusUser extends \Timber\User {
 			$avatar_url = get_avatar_url($coauthor->user_email);
 		}
 		if ( $avatar_url ) {
-			$this->_avatar_override = new \Timber\Image($avatar_url);
+			$this->avatar = new \Timber\Image($avatar_url);
 		}
 	}
 }
