@@ -19,30 +19,30 @@ class URLHelper {
 		return $pageURL;
 	}
 
-    /**
-     *
-     * Get url scheme
-     * @return string
-     */
+	/**
+	 *
+	 * Get url scheme
+	 * @return string
+	 */
 	public static function get_scheme() {
 		return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-    }
+	}
 
-    /**
-     * 
-     * Check to see if the URL begins with the string in question
-     * Because it's a URL we don't care about protocol (HTTP vs HTTPS)
-     * Or case (so it's cAsE iNsEnSeTiVe)
-     * @return boolean
-     */
-    public static function starts_with( $haystack, $starts_with ) {
-    	$haystack = str_replace('https', 'http', strtolower($haystack));
-    	$starts_with = str_replace('https', 'http', strtolower($starts_with));
-    	if ( 0 === strpos($haystack, $starts_with) ) {
-            return true;
-        }
-        return false;
-    }
+	/**
+	 *
+	 * Check to see if the URL begins with the string in question
+	 * Because it's a URL we don't care about protocol (HTTP vs HTTPS)
+	 * Or case (so it's cAsE iNsEnSeTiVe)
+	 * @return boolean
+	 */
+	public static function starts_with( $haystack, $starts_with ) {
+		$haystack = str_replace('https', 'http', strtolower($haystack));
+		$starts_with = str_replace('https', 'http', strtolower($starts_with));
+		if ( 0 === strpos($haystack, $starts_with) ) {
+			return true;
+		}
+		return false;
+	}
 
 
 	/**
@@ -182,7 +182,7 @@ class URLHelper {
 		$home_url = get_home_url();
 		$home_url = apply_filters('timber/URLHelper/get_content_subdir/home_url', $home_url);
 		return str_replace($home_url, '', WP_CONTENT_URL);
-	} 
+	}
 
 	/**
 	 *
@@ -313,18 +313,19 @@ class URLHelper {
 
 		return $is_content_url || $is_upload_url;
 	}
-    
+
 	/**
+	 * Checks if URL is external or internal.
+	 * Works with domains, subdomains and protocol relative domains.
 	 *
-	 *
-	 * @param string  $url
+	 * @param string $url Url.
 	 * @return bool     true if $path is an external url, false if relative or local.
 	 *                  true if it's a subdomain (http://cdn.example.org = true)
 	 */
 	public static function is_external( $url ) {
-		$has_http = strstr(strtolower($url), 'http');
+		$has_http  = strstr(strtolower($url), 'http') || strstr(strtolower($url), '//');
 		$on_domain = strstr($url, self::get_host());
-		if ( $has_http && !$on_domain ) {
+		if ( $has_http && ! $on_domain ) {
 			return true;
 		}
 		return false;
@@ -349,7 +350,7 @@ class URLHelper {
 	 * @author jarednova
 	 * @param string $haystack ex: http://example.org/wp-content/uploads/dog.jpg
 	 * @param string $needle ex: http://example.org/wp-content
-	 * @return string 
+	 * @return string
 	 */
 	public static function remove_url_component( $haystack, $needle ) {
 		$haystack = str_replace($needle, '', $haystack);
@@ -387,10 +388,10 @@ class URLHelper {
 		if ( !$link_parts ) {
 			return $link;
 		}
-		
+
 		if ( isset($link_parts['path']) && $link_parts['path'] != '/' ) {
 			$new_path = user_trailingslashit($link_parts['path']);
-			
+
 			if ( $new_path != $link_parts['path'] ) {
 				$link = str_replace($link_parts['path'], $new_path, $link);
 			}
