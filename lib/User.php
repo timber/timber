@@ -94,14 +94,7 @@ class User extends Core implements CoreInterface {
 	 * @return string a fallback for TimberUser::name()
 	 */
 	public function __toString() {
-		$name = $this->name();
-		if ( strlen($name) ) {
-			return $name;
-		}
-		if ( strlen($this->name) ) {
-			return $this->name;
-		}
-		return '';
+		return $this->name();
 	}
 
 	/**

@@ -214,7 +214,7 @@ class Image extends Post implements CoreInterface {
 
 	/**
 	 * @internal
-	 * @param int $iid
+	 * @param int|bool|string $iid
 	 */
 	public function init( $iid = false ) {
 		//Make sure we actually have something to work with
