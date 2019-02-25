@@ -105,7 +105,7 @@ When setting up your custom fields you’ll want to save the `image_id` to the f
 ### The quick way (for most situations)
 
 ```twig
-<img src="{{ Timber\Image(post.hero_image).src }}" />
+<img src="{{ Image(post.hero_image).src }}" />
 ```
 
 ### The long way (for some special situations)
