@@ -94,7 +94,7 @@ class Image extends Post implements CoreInterface {
 	 * //Or send it a URL to an image
 	 * $myImage = new TimberImage('http://google.com/logo.jpg');
 	 * ```
-	 * @param int|string $iid
+	 * @param bool|int|string $iid
 	 */
 	public function __construct( $iid ) {
 		$this->init($iid);
@@ -214,7 +214,7 @@ class Image extends Post implements CoreInterface {
 
 	/**
 	 * @internal
-	 * @param int $iid
+	 * @param int|bool|string $iid
 	 */
 	public function init( $iid = false ) {
 		//Make sure we actually have something to work with
