@@ -331,26 +331,26 @@ class User extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Returns user's avatar url.
+	 * Gets a user’s avatar URL.
 	 *
 	 * @api
 	 * @since 1.9.1
-	 *
-	 * @param null|array $args parameters are same as those used in `get_avatar_url`
-	 *                         https://developer.wordpress.org/reference/functions/get_avatar_url/.
-	 *
 	 * @example
-	 * Getting 150px user avatar
+	 * Get a user avatar with a width and height of 150px:
 	 *
 	 * ```twig
-	 * <img src="{{ post.author.avatar({'size': 150}) }}"/>
+	 * <img src="{{ post.author.avatar({ size: 150 }) }}">
 	 * ```
-	 * @return string avatar url.
+	 *
+	 * @param null|array $args Parameters for
+	 *                         [`get_avatar_url()`](https://developer.wordpress.org/reference/functions/get_avatar_url/).
+	 * @return string|\Timber\Image The avatar URL.
 	 */
 	public function avatar( $args = null ) {
 		if ( $this->avatar_override ) {
 			return $this->avatar_override;
-		} 
-		return new Image(get_avatar_url($this->id, $args));
+		}
+
+		return new Image( get_avatar_url( $this->id, $args ) );
 	}
 }
