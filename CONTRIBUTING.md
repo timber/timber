@@ -58,7 +58,7 @@ When you run `composer install` in Timber’s repository root, you will get all 
 To run PHP_CodeSniffer with the default settings on all relevant Timber files, use the following command from the root folder of the Timber repository: 
 
 ```bash
-./vendor/bin/phpcs
+composer lint
 ```
 
 You can check a single file like this:
