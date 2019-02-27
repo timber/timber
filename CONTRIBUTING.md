@@ -49,30 +49,29 @@ We try to follow the [WordPress Coding Standards](https://make.wordpress.org/cor
 
 ### Use PHP_CodeSniffer to detect coding standard violations
 
-To check where the code deviates from the standards, you can use [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer). Timber comes with a `phpcs.xml` in the root folder of the repository, so that the coding standards will automatically be applied for the Timber code base.
-
-- Install PHP_CodeSniffer globally by following this guide: <https://github.com/squizlabs/PHP_CodeSniffer#installation>.
-- Install WPCS by following this guide: <https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards#installation>.
+To check where the code deviates from the standards, you can use [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer). Timber comes with a `phpcs.xml` in the root folder of the repository, so that the the Timber code base will be automatically checked for coding standards violations.
 
 #### Command Line Usage
 
-To run PHP_CodeSniffer with the default settings on all relevant Timber files, use the following command from the root folder of the Timber library: 
+When you run `composer install` in Timber’s repository root, you will get all required dependencies to check the coding standards.
+
+To run PHP_CodeSniffer with the default settings on all relevant Timber files, use the following command from the root folder of the Timber repository: 
 
 ```bash
-phpcs
+./vendor/bin/phpcs
 ```
 
-You could check a single file like this:
+You can check a single file like this:
 
 ```bash
-phpcs ./lib/Menu.php
+./vendor/bin/phpcs ./lib/Menu.php
 ```
 
-Use `phpcs --help` for a list of available settings.
+Use `./vendor/bin/phpcs --help` for a list of available settings or refer to the [PHP_CodeSniffer documentation](https://github.com/squizlabs/PHP_CodeSniffer/wiki).
 
 #### Use it in your IDE
 
-Please refer to <https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards#how-to-use> for different ways to use PHP_CodeSniffer directly in your IDE. In some IDEs like PHPStorm, you may have to select the `phpcs.xml` explicitly to apply the proper standards.
+Please refer to <https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards#using-phpcs-and-wpcs-from-within-your-ide> for different ways to use PHP_CodeSniffer directly in your IDE. In some IDEs like PHPStorm, you may have to select the `phpcs.xml` explicitly to apply the proper standards.
 
 #### Whitelisting
 
