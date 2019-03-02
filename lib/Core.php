@@ -23,22 +23,59 @@ abstract class Core {
 	}
 
 	/**
-	 * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2
-	 * @return mixed
+	 * "Magic" method dispatcher for meta fields, for convience in Twig views.
+	 * Called when explicitly invoking non-existent methods on a Core object.
+	 * Not meant to be called directly.
+	 *
+	 * @example
+	 * ```php
+	 * $post = Timber\Post::get();
+	 * update_post_meta($post->id, 'favorite_zep4_track', 'Black Dog');
+	 * Timber::render('rock-n-roll.twig', array( 'post' => $post ));
+	 * ```
+	 * ```twig
+	 * {# Since this method does not exist explicitly on the Post class,
+	 *    it will dynamically dispatch the magic __call() method with an argument
+	 *    of "favorite_zep4_track" #}
+	 * <span>Favorite <i>Zeppelin IV</i> Track: {{ post.favorite_zep4_track() }}</span>
+	 * ```
+	 * @see https://secure.php.net/manual/en/language.oop5.overloading.php#object.call
+	 * @see: https://github.com/fabpot/Twig/issues/2
+	 * @param string the name of the method being called
+	 * @return mixed the value of the meta field named `$field`, if truthy;
+	 * false otherwise
 	 */
-	public function __call( $field, $args ) {
-		return $this->__get($field);
+	public function __call( string $field, $_ ) {
+		if ( method_exists($this, 'meta') && $meta_value = $this->meta($field) ) {
+			return $meta_value;
+		}
+		return false;
 	}
 
 	/**
-	 * This is helpful for twig to return properties and methods see: https://github.com/fabpot/Twig/issues/2
+	 * "Magic" getter for dynamic meta fields, for convenience in Twig views.
+	 * Not meant to be called directly.
 	 *
-	 * @return mixed
+	 * @example
+	 * ```php
+	 * $post = Timber\Post::get();
+	 * update_post_meta($post->id, 'favorite_darkside_track', 'Any Colour You Like');
+	 * Timber::render('rock-n-roll.twig', array( 'post' => $post ));
+	 * ```
+	 * ```twig
+	 * {# Since this property does not exist explicitly on the Post class,
+	 *    it will dynamically dispatch the magic __get() method with an argument
+	 *    of "favorite_darkside_track" #}
+	 * <span>Favorite <i>Dark Side of the Moon</i> Track: {{ post.favorite_darkside_track }}</span>
+	 * ```
+	 * @see https://secure.php.net/manual/en/language.oop5.overloading.php#object.get
+	 * @see: https://github.com/fabpot/Twig/issues/2
+	 * @param string the name of the property being accessed
+	 * @return mixed the value of the meta field, or the result of invoking
+	 * `$field()` as a method with no arguments, or false if neither returns a
+	 * truthy value
 	 */
-	public function __get( $field ) {
-		if ( property_exists($this, $field) ) {
-			return $this->$field;
-		}
+	public function __get( string $field ) {
 		if ( method_exists($this, 'meta') && $meta_value = $this->meta($field) ) {
 			return $this->$field = $meta_value;
 		}
