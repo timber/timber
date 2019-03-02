@@ -42,10 +42,11 @@ abstract class Core {
 	 * @see https://secure.php.net/manual/en/language.oop5.overloading.php#object.call
 	 * @see: https://github.com/fabpot/Twig/issues/2
 	 * @param string the name of the method being called
+	 * @param array args not used.
 	 * @return mixed the value of the meta field named `$field`, if truthy;
 	 * false otherwise
 	 */
-	public function __call( string $field, $_ ) {
+	public function __call( $field, $_ ) {
 		if ( method_exists($this, 'meta') && $meta_value = $this->meta($field) ) {
 			return $meta_value;
 		}
@@ -75,7 +76,7 @@ abstract class Core {
 	 * `$field()` as a method with no arguments, or false if neither returns a
 	 * truthy value
 	 */
-	public function __get( string $field ) {
+	public function __get( $field ) {
 		if ( method_exists($this, 'meta') && $meta_value = $this->meta($field) ) {
 			return $this->$field = $meta_value;
 		}
