@@ -263,8 +263,8 @@ class Term extends Core implements CoreInterface {
 	 */
 	public function get_posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
 		if ( !strlen($post_class) ) {
-			$post_class = $this->PostClass;
-		}
+				$post_class = $this->PostClass;
+			}
 		$default_tax_query = array(array(
 			'field' => 'term_id',
 			'terms' => $this->ID,
@@ -301,6 +301,7 @@ class Term extends Core implements CoreInterface {
 				'post_type'   => $post_type_or_class
 			);
 		}
+
 		return Timber::get_posts($args, $post_class);
 	}
 
