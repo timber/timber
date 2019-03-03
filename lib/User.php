@@ -124,27 +124,9 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * @return string a fallback for Timber\User::name()
 	 */
 	public function __toString() {
-		$name = $this->name();
-		if ( strlen($name) ) {
-			return $name;
-		}
-		if ( strlen($this->name) ) {
-			return $this->name;
-		}
-		return '';
+		return $this->name();
 	}
 
-	/**
-	 * @internal
-	 * @param string 	$field
-	 * @param mixed 	$value
-	 */
-	public function __set( $field, $value ) {
-		if ( 'name' === $field ) {
-			$this->display_name = $value;
-		}
-		$this->$field = $value;
-	}
 
 	/**
 	 * @internal
@@ -179,8 +161,6 @@ class User extends Core implements CoreInterface, MetaInterface {
 		}
 		unset($this->user_pass);
 		$this->id = $this->ID;
-		$this->name = $this->name();
-		$this->avatar = new Image(get_avatar_url($this->id));
 		$this->custom = $this->get_meta_values();
 		$this->import($this->custom, false, true);
 	}
