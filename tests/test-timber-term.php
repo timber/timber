@@ -214,6 +214,7 @@
 			], 'page' );
 
 			$this->assertEquals( 'Timber\Post', get_class( $term_posts[0] ) );
+			$this->assertEquals( 'page', $term_posts[0]->post_type );
 			$this->assertEquals( 2, count( $term_posts ) );
 		}
 
@@ -239,11 +240,12 @@
 			], 'page', 'TimberPostSubclass' );
 
 			$this->assertInstanceOf( 'TimberPostSubclass', $term_posts[0] );
+			$this->assertEquals( 'page', $term_posts[0]->post_type );
 			$this->assertEquals( 2, count( $term_posts ) );
 		}
 
 		/**
-		 * This test uses the logic introduced in https://github.com/timber/timber/pull/885.
+		 * This test uses the logic described in https://github.com/timber/timber/issues/799#issuecomment-192445207.
 		 */
 		function testPostsWithCustomPostTypePageAndCustomClass() {
 			require_once 'php/timber-post-subclass.php';
@@ -268,6 +270,7 @@
 			], 'page', 'TimberPostSubclass' );
 
 			$this->assertInstanceOf( 'page', $term_posts[0] );
+			$this->assertEquals( 'page', $term_posts[0]->post_type );
 			$this->assertEquals( 2, count( $term_posts ) );
 		}
 
