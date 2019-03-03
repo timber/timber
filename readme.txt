@@ -3,7 +3,7 @@ Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 4.7.9
 Tested up to: 5.0.3
-Stable tag: 1.9.0
+Stable tag: 1.9.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -32,10 +32,17 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
-- Fix for URLHelper::is_external for URLs without protoco #1924 (thanks @hacknug)
 
 **Changes for Theme Developers**
 - Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
+
+= 1.9.1 =
+
+**Changes for Theme Developers**
+- You can now pass params to `{{ user.avatar }}` such as `{{ user.avatar({size: 128}) }}` #1730 (thanks @palmiak)
+
+**Fixes and improvements**
+- Fix for URLHelper::is_external for URLs without protocol #1924 (thanks @hacknug)
 
 = 1.9.0 =
 Timber now requires PHP 5.6 or greater. While Timber may work on PHP 5.5 and older versions; support will no longer be maintained in future versions.
