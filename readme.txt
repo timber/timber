@@ -42,6 +42,7 @@ _Twig is the template language powering Timber; if you need a little background 
 - You can now pass params to `{{ user.avatar }}` such as `{{ user.avatar({size: 128}) }}` #1730 (thanks @palmiak)
 
 **Fixes and improvements**
+- Fix for PHP 7.3 compatibility #1933 (thanks @palmiak)
 - Fix for URLHelper::is_external for URLs without protocol #1924 (thanks @hacknug)
 
 = 1.9.0 =
