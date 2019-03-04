@@ -54,6 +54,12 @@ class User extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @api
+	 * @var string A URL to an avatar that overrides anything from Gravatar, etc.
+	 */
+	public $avatar_override;
+
+	/**
+	 * @api
 	 * @var string The description from WordPress
 	 */
 	public $description;
@@ -63,12 +69,6 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * @var string
 	 */
 	public $display_name;
-
-	/**
-	 * @api
-	 * @var string|Image The URL of the author's avatar
-	 */
-	public $avatar;
 
 	/**
 	 * @api
@@ -568,5 +568,29 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 */
 	public function can( $capability ) {
 		return user_can($this->ID, $capability);
+	}
+
+	/**
+	 * Gets a user’s avatar URL.
+	 *
+	 * @api
+	 * @since 1.9.1
+	 * @example
+	 * Get a user avatar with a width and height of 150px:
+	 *
+	 * ```twig
+	 * <img src="{{ post.author.avatar({ size: 150 }) }}">
+	 * ```
+	 *
+	 * @param null|array $args Parameters for
+	 *                         [`get_avatar_url()`](https://developer.wordpress.org/reference/functions/get_avatar_url/).
+	 * @return string|\Timber\Image The avatar URL.
+	 */
+	public function avatar( $args = null ) {
+		if ( $this->avatar_override ) {
+			return $this->avatar_override;
+		}
+
+		return new Image( get_avatar_url( $this->id, $args ) );
 	}
 }

@@ -266,9 +266,12 @@
             $local = 'http://example.org';
             $subdomain = 'http://cdn.example.org';
             $external = 'http://upstatement.com';
+            $protocol_relative = '//upstatement.com';
+
             $this->assertFalse(Timber\URLHelper::is_external($local));
             $this->assertFalse(Timber\URLHelper::is_external($subdomain));
             $this->assertTrue(Timber\URLHelper::is_external($external));
+			$this->assertTrue(Timber\URLHelper::is_external($protocol_relative));
         }
 
 		function testIsExternalContent() {

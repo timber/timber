@@ -25,6 +25,7 @@ class URLHelper {
 		return $page_url;
 	}
 
+
 	/**
 	 * Get url scheme
 	 *
@@ -34,6 +35,7 @@ class URLHelper {
 	public static function get_scheme() {
 		return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 	}
+
 
 	/**
 	 * Check to see if the URL begins with the string in question
@@ -272,7 +274,7 @@ class URLHelper {
 		);
 
 		return str_replace($home_url, '', WP_CONTENT_URL);
-	} 
+	}
 
 	/**
 	 * @api
@@ -411,23 +413,22 @@ class URLHelper {
 	/**
 	 * Determines if URL is an external URL.
 	 *
-	 * True if $path is an external url or subdomain (http://cdn.example.org = true). False if
+	 * True if `$url` is an external url or subdomain (http://cdn.example.org = true). False if
 	 * relative or local true if it's a subdomain
 	 *
 	 * @api
-	 *
 	 * @param  string $url to evalute.
-	 *
 	 * @return bool
 	 */
 	public static function is_external( $url ) {
-		$has_http  = strstr(strtolower($url), 'http');
+		$has_http  = strstr(strtolower($url), 'http') || strstr(strtolower($url), '//');
 		$on_domain = strstr($url, self::get_host());
 		if ( $has_http && ! $on_domain ) {
 			return true;
 		}
 		return false;
 	}
+
 
 	/**
 	 * Pass links through untrailingslashit unless they are a single /
@@ -449,9 +450,8 @@ class URLHelper {
 	 * @api
 	 * @since  1.3.3
 	 * @author jarednova
-	 *
-	 * @param  string $haystack ex: http://example.org/wp-content/uploads/dog.jpg.
-	 * @param  string $needle ex: http://example.org/wp-content.
+	 * @param string $haystack ex: http://example.org/wp-content/uploads/dog.jpg
+	 * @param string $needle ex: http://example.org/wp-content
 	 * @return string
 	 */
 	public static function remove_url_component( $haystack, $needle ) {
