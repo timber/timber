@@ -35,16 +35,16 @@ class User extends Core implements CoreInterface {
 
 	/**
 	 * @api
+	 * @var string A URL to an avatar that overrides anything from Gravatar, etc.
+	 */
+	public $avatar_override;
+
+	/**
+	 * @api
 	 * @var string The description from WordPress
 	 */
 	public $description;
 	public $display_name;
-
-	/**
-	 * @api
-	 * @var string|Image The URL of the author's avatar
-	 */
-	public $avatar;
 
 	/**
 	 * @api
@@ -94,14 +94,7 @@ class User extends Core implements CoreInterface {
 	 * @return string a fallback for TimberUser::name()
 	 */
 	public function __toString() {
-		$name = $this->name();
-		if ( strlen($name) ) {
-			return $name;
-		}
-		if ( strlen($this->name) ) {
-			return $this->name;
-		}
-		return '';
+		return $this->name();
 	}
 
 	/**
@@ -159,7 +152,6 @@ class User extends Core implements CoreInterface {
 		unset($this->user_pass);
 		$this->id = $this->ID;
 		$this->name = $this->name();
-		$this->avatar = new Image(get_avatar_url($this->id));
 		$custom = $this->get_custom();
 		$this->import($custom);
 	}
@@ -336,5 +328,29 @@ class User extends Core implements CoreInterface {
 	 */
 	public function can( $capability ) {
 		return user_can($this->ID, $capability);
+	}
+
+	/**
+	 * Gets a user’s avatar URL.
+	 *
+	 * @api
+	 * @since 1.9.1
+	 * @example
+	 * Get a user avatar with a width and height of 150px:
+	 *
+	 * ```twig
+	 * <img src="{{ post.author.avatar({ size: 150 }) }}">
+	 * ```
+	 *
+	 * @param null|array $args Parameters for
+	 *                         [`get_avatar_url()`](https://developer.wordpress.org/reference/functions/get_avatar_url/).
+	 * @return string|\Timber\Image The avatar URL.
+	 */
+	public function avatar( $args = null ) {
+		if ( $this->avatar_override ) {
+			return $this->avatar_override;
+		}
+
+		return new Image( get_avatar_url( $this->id, $args ) );
 	}
 }
