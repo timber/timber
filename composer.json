@@ -51,6 +51,9 @@
   "autoload-dev": {
     "classmap": [
       "tests/"
+    ],
+    "exclude-from-classmap": [
+      "tests/php"
     ]
   },
   "repositories": [
