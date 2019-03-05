@@ -201,6 +201,20 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertGreaterThan( 0, $item->id );
 	}
 
+	function testMenuMetaSet() {
+		$mid = self::_createSimpleMenu('Tester');
+		$menu = new Timber\Menu($mid);
+		$items = $menu->get_items();
+		$item = $items[0];
+		$item->foo = 'bar';
+		update_post_meta( $item->ID, 'ziggy', 'stardust' );
+		$this->assertNotEquals( $item->ID, $item->master_object->ID );
+		$this->assertEquals( 'bar', $item->foo );
+		$this->assertEquals( 'bar', $item->meta('foo') );
+		$this->assertEquals( 'stardust', $item->meta('ziggy') );
+		$this->assertNull( $item->meta('asdfafds') );
+	}
+
 	function testMenuItemWithHash() {
 		self::_createTestMenu();
 		$menu = new Timber\Menu();
