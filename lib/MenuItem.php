@@ -277,7 +277,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		if ( $this->type() !== 'custom' ) {
 			return false;
 		}
-		return URLHelper::is_external($this->url);
+		return URLHelper::is_external( $this->link() );
 	}
 
 	/**
@@ -337,7 +337,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @return string The type of the menu item.
 	 */
 	public function type() {
-		return $this->_menu_item_type;
+		return $this->meta('_menu_item_type');
 	}
 
 	/**
@@ -364,7 +364,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		if ( is_object($this->menu_object) && method_exists($this->menu_object, 'meta') ) {
 			return $this->menu_object->meta($field_name, $args);
 		}
-		return null;
 	}
 
 	/**
@@ -432,9 +431,9 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 */
 	public function link() {
 		if ( ! isset($this->url) || !$this->url ) {
-			if ( isset($this->_menu_item_type) && $this->_menu_item_type === 'custom' ) {
-				$this->url = $this->_menu_item_url;
-			} elseif ( isset($this->menu_object) && method_exists($this->menu_object, 'get_link') ) {
+			if ( 'custom' === $this->type() ) {
+				$this->url = $this->meta('_menu_item_url');
+			} elseif ( isset($this->menu_object) && method_exists($this->menu_object, 'link') ) {
 					$this->url = $this->menu_object->link();
 			}
 		}

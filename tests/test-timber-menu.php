@@ -150,10 +150,13 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 		$items = $menu->get_items();
 		$item = $items[1];
-		$this->assertTrue( $item->is_external() );
+		unset($item->url);
+		
 		$struc = get_option( 'permalink_structure' );
-		$this->assertEquals( 'http://upstatement.com', $item->url );
 		$this->assertEquals( 'http://upstatement.com', $item->link() );
+		$this->assertEquals( 'http://upstatement.com', $item->url );
+		$this->assertTrue( $item->is_external() );
+
 	}
 
 	function testMenuItemIsTargetBlank() {
