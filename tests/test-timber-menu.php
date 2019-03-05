@@ -142,6 +142,16 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertNotContains( 'foobar', $str );
 	}
 
+	function testImportClasses() {
+		$menu = self::_createSimpleMenu('Main Tester');
+		$menu = new Timber\Menu('Main Tester');
+		$items = $menu->get_items();
+		$item = $items[0];
+		$array = array('classes' => array('menu-test-class'));
+		$item->import_classes($array);
+		$this->assertContains('menu-test-class', $item->classes);
+	}
+
 	function testMenuItemLink() {
 		self::setPermalinkStructure();
 		self::_createTestMenu();
