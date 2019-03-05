@@ -362,7 +362,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 			return $this->$field_name;
 		}
 		if ( is_object($this->menu_object) && method_exists($this->menu_object, 'meta') ) {
-			return $this->menu_object->meta($field_name);
+			return $this->menu_object->meta($field_name, $args);
 		}
 		return null;
 	}
