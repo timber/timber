@@ -356,7 +356,7 @@ class Menu extends Core {
 	 *     {{ menu.current_item.title }}
 	 *   </a>
 	 *   <ul>
-	 *     {% for child in menu.current_item.get_children %}
+	 *     {% for child in menu.current_item.children %}
 	 *       <li>
 	 *         <a href="{{ child.link }}">{{ child.title }}</a>
 	 *       </li>
@@ -437,9 +437,9 @@ class Menu extends Core {
 				}
 
 				// we're in the right subtree, so go deeper.
-				if ( $item->get_children() ) {
+				if ( $item->children() ) {
 					// reset the counter, since we're at a new level.
-					$items = $item->get_children();
+					$items = $item->children();
 					$i     = 0;
 					$currentDepth++;
 					continue;

@@ -226,6 +226,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * in Twig).
 	 *
 	 * @internal
+	 * @deprecated 2.0.0, use `item.children` instead.
 	 * @example
 	 * ```twig
 	 * {% for child in item.get_children %}
@@ -237,10 +238,12 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @return array|bool Array of children of a menu item. Empty if there are no child menu items.
 	 */
 	public function get_children() {
-		if ( isset($this->children) ) {
-			return $this->children;
-		}
-		return false;
+		Helper::deprecated(
+			"{{ item.get_children }}",
+			"{{ item.children }}",
+			'2.0.0'
+		);
+		return $this->children();
 	}
 
 	/**
@@ -381,11 +384,8 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 			"{{ item.meta('field_name') }}",
 			'2.0.0'
 		);
-
 		return $this->meta( $field_name );
 	}
-
-	/* Aliases */
 
 	/**
 	 * Get the child menu items of a `Timber\MenuItem`.
@@ -402,7 +402,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @return array|bool Array of children of a menu item. Empty if there are no child menu items.
 	 */
 	public function children() {
-		return $this->get_children();
+		return $this->children;
 	}
 
 	/**
@@ -416,7 +416,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 */
 	public function external() {
 		Helper::warn( '{{ item.external }} is deprecated. Use {{ item.is_external }} instead.' );
-
 		return $this->is_external();
 	}
 
@@ -477,23 +476,4 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		}
 	}
 
-	/**
-	 * Get the featured image of the post associated with the menu item.
-	 *
-	 * @api
-	 * @deprecated 1.5.2, to be removed in v2.0
-	 * @example
-	 * ```twig
-	 * {% for item in menu.items %}
-	 *     <li><a href="{{ item.link }}"><img src="{{ item.thumbnail }}"/></a></li>
-	 * {% endfor %}
-	 * ```
-	 * @return \Timber\Image|null The featured image object.
-	 */
-	public function thumbnail() {
-		$mo = $this->master_object();
-		if ( $mo && method_exists($mo, 'thumbnail') ) {
-			return $mo->thumbnail();
-		}
-	}
 }

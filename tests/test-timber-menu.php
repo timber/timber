@@ -57,7 +57,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 		$nav_menu = new Timber\Menu( $menu_term['term_id'] );
 
-		$str    = '{{ menu.items[0].ID }} - {{ menu.items[0].thumbnail.src }}';
+		$str    = '{{ menu.items[0].ID }} - {{ menu.items[0].master_object.thumbnail.src }}';
 		$result = Timber::compile_string( $str, array( 'menu' => $nav_menu ) );
 		$this->assertEquals( $menu_items[0]->ID . ' - http://example.org/wp-content/uploads/' . date( 'Y/m' ) . '/arch.jpg', $result );
 	}
@@ -74,7 +74,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
 		$post = new \Timber\Post($pid);
 		$page_menu = new Timber\Menu();
-		$str = '{% for item in menu.items %}{{item.thumbnail.src}}{% endfor %}';
+		$str = '{% for item in menu.items %}{{item.master_object.thumbnail.src}}{% endfor %}';
 		$result = Timber::compile_string($str, array('menu' => $page_menu));
 		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $result);
 	}
