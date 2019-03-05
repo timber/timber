@@ -151,7 +151,7 @@ a sidebar. You can use the `current_item()` helper to achieve this:
     {{ menu.current_item.title }}
   </a>
   <ul>
-    {% for child in menu.current_item.get_children %}
+    {% for child in menu.current_item.children %}
       <li>
         <a href="{{ child.link }}">{{ child.title }}</a>
       </li>
@@ -176,7 +176,7 @@ specify a depth of 2:
     {{ menu.current_item(2).title }}
   </a>
   <ul class="third-level-nav-items">
-    {% for child in menu.current_item(2).get_children %}
+    {% for child in menu.current_item(2).children %}
       <li>
         <a href="{{ child.link }}">{{ child.title }}</a>
       </li>

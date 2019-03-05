@@ -57,7 +57,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 		$nav_menu = new Timber\Menu( $menu_term['term_id'] );
 
-		$str    = '{{ menu.items[0].ID }} - {{ menu.items[0].thumbnail.src }}';
+		$str    = '{{ menu.items[0].ID }} - {{ menu.items[0].master_object.thumbnail.src }}';
 		$result = Timber::compile_string( $str, array( 'menu' => $nav_menu ) );
 		$this->assertEquals( $menu_items[0]->ID . ' - http://example.org/wp-content/uploads/' . date( 'Y/m' ) . '/arch.jpg', $result );
 	}
@@ -74,7 +74,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
 		$post = new \Timber\Post($pid);
 		$page_menu = new Timber\Menu();
-		$str = '{% for item in menu.items %}{{item.thumbnail.src}}{% endfor %}';
+		$str = '{% for item in menu.items %}{{item.master_object.thumbnail.src}}{% endfor %}';
 		$result = Timber::compile_string($str, array('menu' => $page_menu));
 		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $result);
 	}
@@ -142,6 +142,16 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertNotContains( 'foobar', $str );
 	}
 
+	function testImportClasses() {
+		$menu = self::_createSimpleMenu('Main Tester');
+		$menu = new Timber\Menu('Main Tester');
+		$items = $menu->get_items();
+		$item = $items[0];
+		$array = array('classes' => array('menu-test-class'));
+		$item->import_classes($array);
+		$this->assertContains('menu-test-class', $item->classes);
+	}
+
 	function testMenuItemLink() {
 		self::setPermalinkStructure();
 		self::_createTestMenu();
@@ -150,10 +160,11 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 		$items = $menu->get_items();
 		$item = $items[1];
-		$this->assertTrue( $item->is_external() );
 		$struc = get_option( 'permalink_structure' );
-		$this->assertEquals( 'http://upstatement.com', $item->url );
 		$this->assertEquals( 'http://upstatement.com', $item->link() );
+		$this->assertEquals( 'http://upstatement.com', $item->url );
+		$this->assertTrue( $item->is_external() );
+
 	}
 
 	function testMenuItemIsTargetBlank() {
@@ -199,6 +210,20 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$item = $items[0];
 		$this->assertEquals( 'funke', $item->tobias );
 		$this->assertGreaterThan( 0, $item->id );
+	}
+
+	function testMenuMetaSet() {
+		$mid = self::_createSimpleMenu('Tester');
+		$menu = new Timber\Menu($mid);
+		$items = $menu->get_items();
+		$item = $items[0];
+		$item->foo = 'bar';
+		update_post_meta( $item->ID, 'ziggy', 'stardust' );
+		$this->assertNotEquals( $item->ID, $item->master_object->ID );
+		$this->assertEquals( 'bar', $item->foo );
+		$this->assertEquals( 'bar', $item->meta('foo') );
+		$this->assertEquals( 'stardust', $item->meta('ziggy') );
+		$this->assertNull( $item->meta('asdfafds') );
 	}
 
 	function testMenuItemWithHash() {
