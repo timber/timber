@@ -430,13 +430,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @return string A full URL, like `http://mysite.com/thing/`.
 	 */
 	public function link() {
-		if ( ! isset($this->url) || !$this->url ) {
-			if ( 'custom' === $this->type() ) {
-				$this->url = $this->meta('_menu_item_url');
-			} elseif ( isset($this->menu_object) && method_exists($this->menu_object, 'link') ) {
-					$this->url = $this->menu_object->link();
-			}
-		}
 		return $this->url;
 	}
 
