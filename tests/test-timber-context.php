@@ -15,5 +15,10 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$this->assertEquals('http://example.org', $context['http_host']);
 	}
 
+	function testContext() {
+		$context = Timber::context();
+		$this->assertEquals('http://example.org', $context['http_host']);
+	}
+
 
 }
