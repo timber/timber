@@ -528,8 +528,18 @@ class Timber {
 				);
 			}
 
-			$output = $loader->render($file, $data, $expires, $cache_mode);
+			$output = $loader->render( $file, $data, $expires, $cache_mode );
 		}
+
+		/**
+		 * Replaces the depraceted `timber_compile_result`.
+		 * It adds the posibility to filter the output ready for render.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param string $output
+		 */
+		$output = apply_filter( 'timber/compile/output', $output );
 
 		/**
 		 * Fires after a Twig template was compiled and before the compiled data
@@ -587,9 +597,8 @@ class Timber {
 	/**
 	 * Fetch function.
 	 *
-	 * @todo In case this isn’t deprecated for 2.0.0, update filter hook name.
-	 *
 	 * @api
+	 * @deprecated 2.0.0 use Timber::compile()
 	 * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, Timber will
 	 *                                 render the first file that exists.
 	 * @param array        $data       Optional. An array of data to use in Twig template.
@@ -600,18 +609,28 @@ class Timber {
 	 * @return bool|string The returned output.
 	 */
 	public static function fetch( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
-		$output = self::compile($filenames, $data, $expires, $cache_mode, true);
+		Helper::deprecated(
+			'fetch',
+			'Timber::compile() (see https://timber.github.io/docs/reference/timber/#compile for more information)',
+			'2.0.0'
+		);
+		$output = self::compile( $filenames, $data, $expires, $cache_mode, true );
 
 		/**
 		 * Filters the compiled result before it is returned.
 		 *
-		 * @todo Maybe deprecate in 2.0?
 		 * @see \Timber\Timber::fetch()
 		 * @since 0.16.7
+		 * @deprecated 2.0.0 use timber/compile/render
 		 *
 		 * @param string $output The compiled output.
 		 */
-		$output = apply_filters('timber_compile_result', $output);
+		$output = apply_filters_deprecated(
+			'timber_compile_result',
+			array( $output ),
+			'2.0.0',
+			'timber/compile/output'
+		);
 
 		return $output;
 	}
@@ -640,7 +659,6 @@ class Timber {
 	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
 		$output = self::fetch($filenames, $data, $expires, $cache_mode);
 		echo $output;
-		return $output;
 	}
 
 	/**
@@ -662,7 +680,6 @@ class Timber {
 	public static function render_string( $string, $data = array() ) {
 		$compiled = self::compile_string($string, $data);
 		echo $compiled;
-		return $compiled;
 	}
 
 
