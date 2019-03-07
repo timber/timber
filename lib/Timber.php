@@ -621,7 +621,7 @@ class Timber {
 		 *
 		 * @see \Timber\Timber::fetch()
 		 * @since 0.16.7
-		 * @deprecated 2.0.0 use timber/compile/render
+		 * @deprecated 2.0.0 use timber/compile/output
 		 *
 		 * @param string $output The compiled output.
 		 */
