@@ -539,7 +539,7 @@ class Timber {
 		 *
 		 * @param string $output
 		 */
-		$output = apply_filter( 'timber/compile/output', $output );
+		$output = apply_filters( 'timber/compile/output', $output );
 
 		/**
 		 * Fires after a Twig template was compiled and before the compiled data
