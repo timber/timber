@@ -12,7 +12,7 @@ use Timber\URLHelper;
  *
  * @api
  */
-class MenuItem extends Core implements CoreInterface {
+class MenuItem extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * @api
 	 * @var array Array of children of a menu item. Empty if there are no child menu items.
@@ -226,6 +226,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * in Twig).
 	 *
 	 * @internal
+	 * @deprecated 2.0.0, use `item.children` instead.
 	 * @example
 	 * ```twig
 	 * {% for child in item.get_children %}
@@ -237,10 +238,12 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return array|bool Array of children of a menu item. Empty if there are no child menu items.
 	 */
 	public function get_children() {
-		if ( isset($this->children) ) {
-			return $this->children;
-		}
-		return false;
+		Helper::deprecated(
+			"{{ item.get_children }}",
+			"{{ item.children }}",
+			'2.0.0'
+		);
+		return $this->children();
 	}
 
 	/**
@@ -274,7 +277,7 @@ class MenuItem extends Core implements CoreInterface {
 		if ( $this->type() !== 'custom' ) {
 			return false;
 		}
-		return URLHelper::is_external($this->url);
+		return URLHelper::is_external( $this->link() );
 	}
 
 	/**
@@ -334,35 +337,53 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string The type of the menu item.
 	 */
 	public function type() {
-		return $this->_menu_item_type;
+		return $this->meta('_menu_item_type');
 	}
 
 	/**
 	 * Get a meta value of the menu item.
 	 *
-	 * Plugins like Advanced Custom Fields allow you to set custom fields for menu items. With this
-	 * method you can retrieve the value of these.
+	 * Plugins like Advanced Custom Fields allow you to set custom fields for menu items.
+	 * With this method you can retrieve the value of these.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
 	 * <a class="icon-{{ item.meta('icon') }}" href="{{ item.link }}">{{ item.title }}</a>
 	 * ```
-	 * @param string $key The meta key to get the value for.
+	 * @param string $field_name The meta key to get the value for.
+	 * @param array  $args       An array of arguments for getting the meta value. Third-party
+	 *                           integrations can use this argument to make their API arguments
+	 *                           available in Timber. Default empty.
 	 * @return mixed Whatever value is stored in the database. Null if no value could be found.
 	 */
-	public function meta( $key ) {
+	public function meta( $field_name, $args = array() ) {
+		if ( isset($this->$field_name) ) {
+			return $this->$field_name;
+		}
 		if ( is_object($this->menu_object) && method_exists($this->menu_object, 'meta') ) {
-			return $this->menu_object->meta($key);
+			return $this->menu_object->meta($field_name, $args);
 		}
-		if ( isset($this->$key) ) {
-			return $this->$key;
-		}
-
-		return null;
 	}
 
-	/* Aliases */
+	/**
+	 * Gets a menu item meta value.
+	 *
+	 * @api
+	 * @deprecated 2.0.0, use `{{ item.meta('field_name') }}` instead.
+	 * @see \Timber\MenuItem::meta()
+	 *
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return mixed The meta field value.
+	 */
+	public function get_field( $field_name = null ) {
+		Helper::deprecated(
+			"{{ item.get_field('field_name') }}",
+			"{{ item.meta('field_name') }}",
+			'2.0.0'
+		);
+		return $this->meta( $field_name );
+	}
 
 	/**
 	 * Get the child menu items of a `Timber\MenuItem`.
@@ -379,7 +400,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return array|bool Array of children of a menu item. Empty if there are no child menu items.
 	 */
 	public function children() {
-		return $this->get_children();
+		return $this->children;
 	}
 
 	/**
@@ -393,7 +414,6 @@ class MenuItem extends Core implements CoreInterface {
 	 */
 	public function external() {
 		Helper::warn( '{{ item.external }} is deprecated. Use {{ item.is_external }} instead.' );
-
 		return $this->is_external();
 	}
 
@@ -410,13 +430,6 @@ class MenuItem extends Core implements CoreInterface {
 	 * @return string A full URL, like `http://mysite.com/thing/`.
 	 */
 	public function link() {
-		if ( ! isset($this->url) || !$this->url ) {
-			if ( isset($this->_menu_item_type) && $this->_menu_item_type === 'custom' ) {
-				$this->url = $this->_menu_item_url;
-			} elseif ( isset($this->menu_object) && method_exists($this->menu_object, 'get_link') ) {
-					$this->url = $this->menu_object->link();
-			}
-		}
 		return $this->url;
 	}
 
@@ -454,23 +467,4 @@ class MenuItem extends Core implements CoreInterface {
 		}
 	}
 
-	/**
-	 * Get the featured image of the post associated with the menu item.
-	 *
-	 * @api
-	 * @deprecated 1.5.2, to be removed in v2.0
-	 * @example
-	 * ```twig
-	 * {% for item in menu.items %}
-	 *     <li><a href="{{ item.link }}"><img src="{{ item.thumbnail }}"/></a></li>
-	 * {% endfor %}
-	 * ```
-	 * @return \Timber\Image|null The featured image object.
-	 */
-	public function thumbnail() {
-		$mo = $this->master_object();
-		if ( $mo && method_exists($mo, 'thumbnail') ) {
-			return $mo->thumbnail();
-		}
-	}
 }

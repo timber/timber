@@ -69,21 +69,21 @@ $my_custom_field = $post->custom['my_custom_field'];
 
 This method is practically the same as accessing value directly through its field name. You’ll also get values that are **filtered** by third-party plugins (e.g. Advanced Custom Fields), without having the risk of running into the problem of conflicts with Timber methods.
 
-```
+**Twig**
+
+```twig
 {{ post.meta('my_custom_field') }}
 ```
 
 **PHP**
 
 ```php
-$my_custom_field = $post->meta('my_custom_field');
+$my_custom_field = $post->meta( 'my_custom_field' );
 ```
 
 ## Site options
 
 You can also get site options directly through their name. Here’s an example to retrieve the admin email address:
-
-**Twig**
 
 ```twig
 {{ site.admin_email }}
@@ -96,7 +96,6 @@ Please be aware that using this might also [conflict with existing Timber method
 This example that uses a [WP_Query](http://codex.wordpress.org/Class_Reference/WP_Query) array shows the arguments to find all posts where a custom field called `color` has a value of `red`.
 
 ```php
-<?php
 $args = array(
     'numberposts' => -1,
     'post_type' => 'post',

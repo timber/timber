@@ -10,9 +10,9 @@ use Timber\Helper;
  */
 class TermGetter {
 	/**
-	 * @param int|WP_Term|object $term
+	 * @param int|\WP_Term|object $term
 	 * @param string $taxonomy
-	 * @return Timber\Term|WP_Error|null
+	 * @return \Timber\Term|\WP_Error|null
 	 */
 	public static function get_term( $term, $taxonomy, $TermClass = '\Timber\Term' ) {
 		$term = get_term($term, $taxonomy);

@@ -247,4 +247,49 @@
 			$this->assertEquals('', $str);
 		}
 
+		function testConvertWPObject() {
+
+			// Test WP_Post -> \Timber\Post
+			$post_id = $this->factory->post->create();
+			$wp_post = get_post( $post_id );
+			$timber_post = \Timber\Helper::convert_wp_object($wp_post);
+			$this->assertTrue($timber_post instanceof \Timber\Post);
+
+			// Test WP_Term -> \Timber\Term
+			$term_id = $this->factory->term->create();
+			$wp_term = get_term( $term_id );
+			$timber_term = \Timber\Helper::convert_wp_object($wp_term);
+			$this->assertTrue($timber_term instanceof \Timber\Term);
+
+			// Test WP_User -> \Timber\User
+			$user_id = $this->factory->user->create();
+			$wp_user = get_user_by('id', $user_id);
+			$timber_user = \Timber\Helper::convert_wp_object($wp_user);
+			$this->assertTrue($timber_user instanceof \Timber\User);
+
+			// Test strange input
+			$random_int = 2018;
+			$convert_int = \Timber\Helper::convert_wp_object($random_int);
+			$this->assertTrue($convert_int === $random_int);
+
+			$array = array();
+			$convert_array = \Timber\Helper::convert_wp_object($array);
+			$this->assertTrue(is_array($convert_array));
+		}
+
+ 		function testCovertPostWithClassMap() {
+			register_post_type('sport');
+			require_once('assets/Sport.php');
+			add_filter('timber/post/post_class', function( $post_classes ) {
+				$post_classes = array('sport' => 'Sport', 'post' => 'Timber');
+				$post_classes['sport'] = 'Sport';
+				return $post_classes;
+			});
+ 			$sport_id = $this->factory->post->create(array('post_type' => 'sport', 'post_title' => 'Basketball Player'));
+			$wp_post = get_post($sport_id);
+			$sport_post = \Timber\Helper::convert_wp_object($wp_post);
+			$this->assertEquals('Sport', get_class($sport_post));
+			$this->assertEquals('ESPN', $sport_post->channel());
+ 		}
+
 	}

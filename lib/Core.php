@@ -86,13 +86,16 @@ abstract class Core {
 		}
 	}
 
-
 	/**
-	 * @deprecated since 2.0.0
-	 * @param string  $key
-	 * @param mixed   $value
+	 * Updates metadata for the object.
+	 *
+	 * @deprecated 2.0.0 Use `update_metadata()` instead.
+	 *
+	 * @param string $key   The key of the meta field to update.
+	 * @param mixed  $value The new value.
 	 */
 	public function update( $key, $value ) {
+		Helper::deprecated( 'Timber\Core::update()', 'update_metadata()', '2.0.0' );
 		update_metadata($this->object_type, $this->ID, $key, $value);
 	}
 
@@ -128,13 +131,5 @@ abstract class Core {
 		$ret = array();
 		$ret['can_edit'] = $this->can_edit();
 		return $ret;
-	}
-
-	/**
-	 * @param string $field_name
-	 * @return mixed
-	 */
-	public function get_field( $field_name ) {
-		return $this->get_meta_field($field_name);
 	}
 }

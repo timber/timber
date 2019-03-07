@@ -31,7 +31,7 @@ use Timber\CoreInterface;
  * <p class="comment-attribution">- Sullivan Ballou</p>
  * ```
  */
-class Comment extends Core implements CoreInterface {
+class Comment extends Core implements CoreInterface, MetaInterface {
 
 	public $PostClass = 'Post';
 	public $object_type = 'comment';
@@ -141,16 +141,16 @@ class Comment extends Core implements CoreInterface {
 	 * <h3>Comments by...</h3>
 	 * <ol>
 	 * {% for comment in post.comments %}
-	 * 	<li>{{comment.author.name}}, who is a {{comment.author.role}}</li>
+	 *     <li>{{comment.author.name}}, who has the following roles: {{comment.author.roles|join(', ')}}</li>
 	 * {% endfor %}
 	 * </ol>
 	 * ```
 	 * ```html
 	 * <h3>Comments by...</h3>
 	 * <ol>
-	 * 	<li>Jared Novack, who is a contributor</li>
-	 * 	<li>Katie Ricci, who is a subscriber</li>
-	 * 	<li>Rebecca Pearl, who is a author</li>
+	 *  <li>Jared Novack, who is a contributor</li>
+	 *  <li>Katie Ricci, who is a subscriber</li>
+	 *  <li>Rebecca Pearl, who is a author</li>
 	 * </ol>
 	 * ```
 	 * @return User
@@ -180,8 +180,8 @@ class Comment extends Core implements CoreInterface {
 	 * ```html
 	 * <img src="http://gravatar.com/i/sfsfsdfasdfsfa.jpg" alt="Image of Katherine Rich" />
 	 * ```
-	 * @param int    $size     Size of avatar.
-	 * @param string $default  Default avatar URL.
+	 * @param int|mixed    $size     Size of avatar.
+	 * @param string       $default  Default avatar URL.
 	 * @return bool|mixed|string
 	 */
 	public function avatar( $size = 92, $default = '' ) {
@@ -242,9 +242,6 @@ class Comment extends Core implements CoreInterface {
 	 * @return array Comment children.
 	 */
 	public function add_child( Comment $child_comment ) {
-		if ( !is_array($this->children) ) {
-			$this->children = array();
-		}
 		return $this->children[] = $child_comment;
 	}
 
@@ -351,7 +348,7 @@ class Comment extends Core implements CoreInterface {
 	 * Gets a comment meta value.
 	 *
 	 * @api
-	 * @deprecated 2.0.0, use `{{ comment.meta('field_name) }}` instead
+	 * @deprecated 2.0.0, use `{{ comment.meta('field_name') }}` instead.
 	 *
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return mixed The meta field value.
@@ -386,22 +383,33 @@ class Comment extends Core implements CoreInterface {
 			$comment_id = $this->ID;
 		}
 
-		$comment_metas = array();
+		$comment_meta = array();
 
 		/**
-		 * Filters comment meta data before is fetched from the database.
+		 * Filters comment meta data before it is fetched from the database.
+		 *
+		 * Timber loads all meta values into the comment object on initialization. With this filter,
+		 * you can disable fetching the meta values through the default method, which uses
+		 * `get_comment_meta()`, by returning `false` or a non-empty array.
+		 *
+		 * @example
+		 * ```php
+		 * add_filter( 'timber/comment/pre_get_meta_values', function( $comment_meta, $comment_id, $comment ) {
+		 *     return false;
+		 * }, 10, 3 );
+		 * ```
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array           $comment_metas An array of comment meta data. Passing a non-empty
-		 *                                       array will skip fetching values from the database
-		 *                                       and will use the filtered values instead.
-		 *                                       Default `array()`.
-		 * @param int             $comment_id    The comment ID.
-		 * @param \Timber\Comment $comment       The comment object.
+		 * @param array           $comment_meta An array of comment meta data. Passing `false` or a
+		 *                                      non-empty array will skip fetching values from the
+		 *                                      database and will use the filtered values instead.
+		 *                                      Default `array()`.
+		 * @param int             $comment_id   The comment ID.
+		 * @param \Timber\Comment $comment      The comment object.
 		 */
-		$comment_metas = apply_filters( 'timber/comment/pre_get_meta_values',
-			$comment_metas,
+		$comment_meta = apply_filters( 'timber/comment/pre_get_meta_values',
+			$comment_meta,
 			$comment_id,
 			$this
 		);
@@ -415,53 +423,67 @@ class Comment extends Core implements CoreInterface {
 		 */
 		do_action_deprecated(
 			'timber_comment_get_meta_pre',
-			array( $comment_metas, $comment_id ),
+			array( $comment_meta, $comment_id ),
 			'2.0.0',
 			'timber/comment/pre_get_meta_values'
 		);
 
-		if ( ! is_array( $comment_metas ) || empty( $comment_metas ) ) {
-			$comment_metas = get_comment_meta($comment_id);
+		// Load all meta data when it wasn’t filtered before.
+		if ( false !== $comment_meta && empty( $comment_meta ) ) {
+			$comment_meta = get_comment_meta($comment_id);
 		}
 
-		foreach ( $comment_metas as &$cm ) {
+		foreach ( $comment_meta as &$cm ) {
 			if ( is_array($cm) && count($cm) == 1 ) {
 				$cm = $cm[0];
 			}
 		}
 
 		/**
-		 * Filters comment meta data.
+		 * Filters comment meta data fetched from the database.
 		 *
-		 * @todo Add description, example
+		 * Timber loads all meta values into the comment object on initialization. With this filter,
+		 * you can change meta values after they were fetched from the database.
+		 *
+		 * @example
+		 * ```php
+		 * add_filter( 'timber/comment/get_meta_values', function( $comment_meta, $comment_id, $comment ) {
+		 *     if ( 12345 === (int) $comment_id ) {
+		 *         // Do something special.
+		 *         $comment_meta['foo'] = $comment_meta['foo'] . ' bar';
+		 *     }
+		 *
+		 *     return $comment_meta;
+		 * }, 10, 3 );
+		 * ```
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array           $comment_metas Comment meta data.
-		 * @param int             $comment_id    The comment ID.
-		 * @param \Timber\Comment $comment       The comment object.
+		 * @param array           $comment_meta Comment meta data.
+		 * @param int             $comment_id   The comment ID.
+		 * @param \Timber\Comment $comment      The comment object.
 		 */
-		$comment_metas = apply_filters(
+		$comment_meta = apply_filters(
 			'timber/comment/get_meta_values',
-			$comment_metas,
+			$comment_meta,
 			$comment_id,
 			$this
 		);
 
 		/**
-		 * Filters comment meta data.
+		 * Filters comment meta data fetched from the database.
 		 *
 		 * @deprecated 2.0.0, use `timber/comment/get_meta_values`
 		 * @since 0.15.4
 		 */
-		$comment_metas = apply_filters_deprecated(
+		$comment_meta = apply_filters_deprecated(
 			'timber_comment_get_meta',
-			array( $comment_metas, $comment_id ),
+			array( $comment_meta, $comment_id ),
 			'2.0.0',
 			'timber/comment/get_meta_values'
 		);
 
-		return $comment_metas;
+		return $comment_meta;
 	}
 
 	/**
@@ -472,9 +494,12 @@ class Comment extends Core implements CoreInterface {
 	 * @api
 	 *
 	 * @param string $field_name The field name for which you want to get the value.
+	 * @param array  $args       An array of arguments for getting the meta value. Third-party
+	 *                           integrations can use this argument to make their API arguments
+	 *                           available in Timber. Default empty.
 	 * @return mixed The meta field value.
 	 */
-	public function meta( $field_name ) {
+	public function meta( $field_name, $args = array() ) {
 		/**
 		 * Filters the value for a comment meta field before it is fetched from the database.
 		 *
@@ -482,14 +507,21 @@ class Comment extends Core implements CoreInterface {
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param string          $value      Passing a non-null value will short-circuit
-		 *                                    `Comment::meta()`, returning the value instead.
-		 *                                    Default null.
+		 * @param string $value               The field value. Passing a non-null value will skip
+		 *                                    fetching the value from the database. Default null.
 		 * @param int             $comment_id The comment ID.
 		 * @param string          $field_name The name of the meta field to get the value for.
 		 * @param \Timber\Comment $comment    The comment object.
+		 * @param array           $args       An array of arguments.
 		 */
-		$value = apply_filters( 'timber/comment/pre_meta', null, $this->ID, $field_name, $this );
+		$value = apply_filters(
+			'timber/comment/pre_meta',
+			null,
+			$this->ID,
+			$field_name,
+			$this,
+			$args
+		);
 
 		/**
 		 * Filters the value for a comment meta field before it is fetched from the database.
@@ -503,12 +535,9 @@ class Comment extends Core implements CoreInterface {
 			'timber/comment/pre_meta'
 		);
 
-		// Short-circuit
-		if ( $value ) {
-			return $value;
+		if ( null === $value ) {
+			$value = get_comment_meta($this->ID, $field_name, true);
 		}
-
-		$value = get_comment_meta($this->ID, $field_name, true);
 
 		/**
 		 * Filters the value for a comment meta field.
@@ -521,8 +550,16 @@ class Comment extends Core implements CoreInterface {
 		 * @param int             $comment_id The comment ID.
 		 * @param string          $field_name The name of the meta field to get the value for.
 		 * @param \Timber\Comment $comment    The comment object.
+		 * @param array           $args       An array of arguments.
 		 */
-		$value = apply_filters( 'timber/comment/get_meta', $value, $this->ID, $field_name, $this );
+		$value = apply_filters(
+			'timber/comment/get_meta',
+			$value,
+			$this->ID,
+			$field_name,
+			$this,
+			$args
+		);
 
 		/**
 		 * Filters the value for a comment meta field.
@@ -537,6 +574,26 @@ class Comment extends Core implements CoreInterface {
 		);
 
 		return $value;
+	}
+
+	/**
+	 * Gets a comment meta value.
+	 *
+	 * @api
+	 * @deprecated 2.0.0, use `{{ comment.meta('field_name') }}` instead.
+	 * @see \Timber\Comment::meta()
+	 *
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return mixed The meta field value.
+	 */
+	public function get_field( $field_name = null ) {
+		Helper::deprecated(
+			"{{ comment.get_field('field_name') }}",
+			"{{ comment.meta('field_name') }}",
+			'2.0.0'
+		);
+
+		return $this->meta( $field_name );
 	}
 
 	/**

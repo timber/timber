@@ -242,15 +242,6 @@
 			$this->assertEquals($post2->id, $post_id);
 		}
 
-		function testUpdate(){
-			$post_id = $this->factory->post->create();
-			$post = new Timber\Post($post_id);
-			$rand = rand_str();
-			$post->update('test_meta', $rand);
-			$post = new Timber\Post($post_id);
-			$this->assertEquals($rand, $post->test_meta);
-		}
-
 		function testCanEdit(){
 			wp_set_current_user(1);
 			$post_id = $this->factory->post->create(array('post_author' => 1));
@@ -258,8 +249,6 @@
 			$this->assertTrue($post->can_edit());
 			wp_set_current_user(0);
 		}
-
-
 
 		function testTitle(){
 			$title = 'Fifteen Million Merits';
@@ -431,8 +420,6 @@
 		/**
 		 * This tests was created to catch what happens when you do weird things to {{ post.meta }},
 		 * like calling it when nothing's assigned and trying to output a default property as a string.
-		 *
-		 * @expectedException Twig_Error_Runtime
 		 */
 		function testPostMetaMetaArrayProperty(){
 			$post_id = $this->factory->post->create();
@@ -966,13 +953,6 @@
 			$this->assertEquals(null, $post->gallery());
 		}
 
-		function testPostWithGalleryCustomField() {
-			$pid = $this->factory->post->create();
-			update_post_meta($pid, 'gallery', 'foo');
-			$post = new Timber\Post($pid);
-			$this->assertEquals('foo', $post->gallery());
-		}
-
 		function testPostWithoutAudio() {
 			$pid = $this->factory->post->create();
 			$post = new Timber\Post($pid);
@@ -995,10 +975,17 @@
 		}
 
 		function testPostWithAudioCustomField() {
-			$pid = $this->factory->post->create();
+			$quote = 'Named must your fear be before banish it you can.';
+			$quote .= '[embed]http://www.noiseaddicts.com/samples_1w72b820/280.mp3[/embed]';
+			$quote .= "No, try not. Do or do not. There is no try.";
+
+			$pid = $this->factory->post->create(array('post_content' => $quote));
 			update_post_meta($pid, 'audio', 'foo');
+			$expected = array(
+				'<audio class="wp-audio-shortcode" id="audio-1-2" preload="none" style="width: 100%;" controls="controls"><source type="audio/mpeg" src="http://www.noiseaddicts.com/samples_1w72b820/280.mp3?_=2" /><a href="http://www.noiseaddicts.com/samples_1w72b820/280.mp3">http://www.noiseaddicts.com/samples_1w72b820/280.mp3</a></audio>',
+			);
 			$post = new Timber\Post($pid);
-			$this->assertEquals('foo', $post->audio());
+			$this->assertEquals($expected, $post->audio());
 		}
 
 		function testPostWithoutVideo() {
@@ -1020,13 +1007,6 @@
 			);
 
 			$this->assertEquals($expected, $post->video());
-		}
-
-		function testPostWithVideoCustomField() {
-			$pid = $this->factory->post->create();
-			update_post_meta($pid, 'video', 'foo');
-			$post = new Timber\Post($pid);
-			$this->assertEquals('foo', $post->video());
 		}
 
 		function testPathAndLinkWithPort() {

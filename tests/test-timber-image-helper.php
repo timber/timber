@@ -72,6 +72,13 @@
 			$exists = file_exists( $resized_path );
 			$this->assertTrue( $exists );
 		}
+		
+		/**
+		 * @doesNotPerformAssertions
+		 */
+		function testDeleteFalseFile() {
+			Timber\ImageHelper::delete_generated_files('/etc/www/image.jpg');
+		}
 
 		function testLetterbox() {
 			$file_loc = TestTimberImage::copyTestAttachment( 'eastern.jpg' );

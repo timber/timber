@@ -20,8 +20,8 @@ class Pagination {
 	 *
 	 * @api
 	 *
-	 * @param array $prefs
-	 * @param null  $wp_query
+	 * @param array           $prefs
+	 * @param \WP_Query|null  $wp_query
 	 */
 	public function __construct( $prefs = array(), $wp_query = null ) {
 		$this->init($prefs, $wp_query);
@@ -181,7 +181,7 @@ class Pagination {
 
 					$page_links[] = array(
 						'class' => 'page-number page-numbers',
-						'link' => $link,
+						'link' => esc_url( $link ),
 						'title' => $n_display,
 						'name' => $n_display,
 						'current' => $args['current'] == $n

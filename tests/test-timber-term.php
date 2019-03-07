@@ -32,6 +32,16 @@
 			$this->assertEquals('Zebra', $string);
 		}
 
+		function testConstructorWithObject() {
+			register_taxonomy('arts', array('post'));
+
+			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
+
+			$term_obj = get_term($term_id);
+			$term = new Timber\Term($term_obj, 'arts');
+			$this->assertEquals('Zong', $term->name());
+		}
+
 		function testConstructor() {
 			register_taxonomy('arts', array('post'));
 

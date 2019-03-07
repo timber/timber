@@ -220,7 +220,6 @@ class Loader {
 	/**
 	 * @deprecated 1.3.5 No longer used internally
 	 * @todo remove in 2.x
-	 * @codeCoverageIgnore
 	 * @param string $name
 	 * @return bool
 	 */
@@ -513,7 +512,7 @@ class Loader {
 			$expires = 0;
 		}
 
-		$cache_mode = self::_get_cache_mode($cache_mode);
+		$cache_mode = $this->_get_cache_mode($cache_mode);
 		$trans_key = substr($group.'_'.$key, 0, self::TRANS_KEY_LEN);
 
 		if ( self::CACHE_TRANSIENT === $cache_mode ) {

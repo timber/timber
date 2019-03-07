@@ -40,7 +40,7 @@ use Timber\Loader;
  */
 class Timber {
 
-    public static $version = '2.0.0';
+	public static $version = '2.0.0';
 	public static $locations;
 	public static $dirname = 'views';
 	public static $twig_cache = false;
@@ -278,8 +278,7 @@ class Timber {
 		if ( is_singular() ) {
 			$post = ( new Post() )->setup();
 			$context['post'] = $post;
-		}
-		elseif ( is_archive() || is_home() ) {
+		} elseif ( is_archive() || is_home() ) {
 			$context['posts'] = new PostQuery();
 		}
 
@@ -730,10 +729,18 @@ class Timber {
 	 * Get pagination.
 	 *
 	 * @api
+	 * @deprecated 2.0.0
+	 * @link https://timber.github.io/docs/guides/pagination/
 	 * @param array $prefs an array of preference data.
 	 * @return array|mixed
 	 */
 	public static function get_pagination( $prefs = array() ) {
+		Helper::deprecated(
+			'get_pagination',
+			'{{ posts.pagination }} (see https://timber.github.io/docs/guides/pagination/ for more information)',
+			'2.0.0'
+		);
+
 		return Pagination::get_pagination($prefs);
 	}
 }

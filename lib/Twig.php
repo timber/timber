@@ -77,32 +77,35 @@ class Twig {
 		/**
 		 * Deprecated Timber object functions.
 		 */
-
 		$twig->addFunction( new Twig_Function(
 			'TimberPost',
-			function( $pid, $PostClass = 'Timber\Post' ) {
+			function( $post_id, $PostClass = 'Timber\Post' ) {
 				Helper::deprecated( '{{ TimberPost() }}', '{{ Post() }}', '2.0.0' );
+				return self::maybe_convert_array( $post_id, $PostClass );
 			}
 		) );
 
 		$twig->addFunction( new Twig_Function(
 			'TimberImage',
-			function( $pid = false, $ImageClass = 'Timber\Image' ) {
+			function( $post_id = false, $ImageClass = 'Timber\Image' ) {
 				Helper::deprecated( '{{ TimberImage() }}', '{{ Image() }}', '2.0.0' );
+				return self::maybe_convert_array( $post_id, $ImageClass );
 			}
 		) );
 
 		$twig->addFunction( new Twig_Function(
 			'TimberTerm',
-			function( $tid, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+			function( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
 				Helper::deprecated( '{{ TimberTerm() }}', '{{ Term() }}', '2.0.0' );
+				return self::handle_term_object($term_id, $taxonomy, $TermClass);
 			}
 		) );
 
 		$twig->addFunction( new Twig_Function(
 			'TimberUser',
-			function( $pid, $UserClass = 'Timber\User' ) {
+			function( $user_id, $UserClass = 'Timber\User' ) {
 				Helper::deprecated( '{{ TimberUser() }}', '{{ User() }}', '2.0.0' );
+				return self::maybe_convert_array($user_id, $UserClass);
 			}
 		) );
 
@@ -150,12 +153,12 @@ class Twig {
 	 * Function for Term or Timber\Term() within Twig
 	 * @since 1.5.1
 	 * @author @jarednova
-	 * @param integer $term_id the term ID to search for
-	 * @param string $taxonomy the taxonomy to search inside of. If sent a class name, it will use that class to support backwards compatibility
-	 * @param string $TermClass the class to use for processing the term
+	 * @param integer|array $term_id the term ID to search for
+	 * @param string        $taxonomy the taxonomy to search inside of. If sent a class name, it will use that class to support backwards compatibility
+	 * @param string        $TermClass the class to use for processing the term
 	 * @return Term|array
 	 */
-	function handle_term_object( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+	static function handle_term_object( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
 		if ( $taxonomy != $TermClass ) {
 			// user has sent any additonal parameters, process
 			$processed_args = self::process_term_args($taxonomy, $TermClass);
@@ -166,7 +169,7 @@ class Twig {
 		if ( is_array($term_id) && !Helper::is_array_assoc($term_id) ) {
 			foreach ( $term_id as &$p ) {
 				$p = new $TermClass($p, $taxonomy);	
-			}	
+			}
 			return $term_id;
 		}
 
@@ -195,8 +198,8 @@ class Twig {
 	/**
 	 *
 	 *
-	 * @param Twig_Environment $twig
-	 * @return Twig_Environment
+	 * @param \Twig_Environment $twig
+	 * @return \Twig_Environment
 	 */
 	public function add_timber_filters( $twig ) {
 		/* image filters */
@@ -207,11 +210,14 @@ class Twig {
 		$twig->addFilter(new \Twig_SimpleFilter('towebp', array('Timber\ImageHelper', 'img_to_webp')));
 
 		/* debugging filters */
-		$twig->addFilter(new \Twig_SimpleFilter('get_class', 'get_class'));
-		$twig->addFilter(new \Twig_SimpleFilter('get_type', 'get_type'));
+		$twig->addFilter(new \Twig_SimpleFilter('get_class', function( $obj ) {
+			Helper::deprecated( '{{ my_object | get_class }}', "{{ function('get_class', my_object) }}", '2.0.0' );
+			return get_class( $obj );
+		} ));
 		$twig->addFilter(new \Twig_SimpleFilter('print_r', function( $arr ) {
-					return print_r($arr, true);
-				} ));
+			Helper::deprecated( '{{ my_object | print_r }}', '{{ dump(my_object) }}', '2.0.0' );
+			return print_r($arr, true);
+		} ));
 
 		/* other filters */
 		$twig->addFilter(new \Twig_SimpleFilter('stripshortcodes', 'strip_shortcodes'));
@@ -364,8 +370,8 @@ class Twig {
 	/**
 	 *
 	 *
-	 * @param string  $date
-	 * @param string  $format (optional)
+	 * @param string|\DateTime  $date
+	 * @param string            $format (optional)
 	 * @return string
 	 */
 	public function intl_date( $date, $format = null ) {
@@ -409,14 +415,14 @@ class Twig {
 	 * @param string $second_delimiter
 	 * @return string
 	 */
-	public function add_list_separators( $arr, $first_delimiter = ',', $second_delimiter = 'and' ) {
+	public function add_list_separators( $arr, $first_delimiter = ',', $second_delimiter = ' and' ) {
 		$length = count($arr);
 		$list = '';
 		foreach ( $arr as $index => $item ) {
 			if ( $index < $length - 2 ) {
 				$delimiter = $first_delimiter.' ';
 			} elseif ( $index == $length - 2 ) {
-				$delimiter = ' '.$second_delimiter.' ';
+				$delimiter = $second_delimiter.' ';
 			} else {
 				$delimiter = '';
 			}
