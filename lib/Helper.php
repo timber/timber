@@ -146,7 +146,7 @@ class Helper {
 	 * }
 	 *
 	 * $context = Timber::get_context();
-	 * $context['post'] = new TimberPost();
+	 * $context['post'] = new Timber\Post();
 	 * $context['my_form'] = TimberHelper::ob_function('the_form');
 	 * Timber::render('single-form.twig', $context);
 	 * ```

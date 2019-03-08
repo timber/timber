@@ -9,7 +9,7 @@ Here are some helpful conversions for functions you’re probably well familiar 
 
 ```php
 $context = Timber::get_context();
-$context['post'] = new TimberPost();
+$context['post'] = new Timber\Post();
 Timber::render( 'single.twig', $context );
 ```
 
