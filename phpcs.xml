@@ -64,7 +64,6 @@
         </properties>
     </rule>
 
-
     <!--
         Hook Names
 
@@ -79,12 +78,4 @@
             <property name="additionalWordDelimiters" value="/"/>
         </properties>
     </rule>
-
-    <rule ref="PEAR.Functions.FunctionCallSignature">
-        <properties>
-            <property name="requiredSpacesAfterOpen" value="0" />
-            <property name="requiredSpacesBeforeClose" value="0"/>
-        </properties>
-    </rule>
-
 </ruleset>
