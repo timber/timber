@@ -993,7 +993,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Get the categoires on a particular post
 	 * @api
-	 * @return array of TimberTerms
+	 * @return array of Timber\Terms
 	 */
 	public function categories() {
 		return $this->terms('category');
@@ -1003,7 +1003,7 @@ class Post extends Core implements CoreInterface {
 	 * Returns a category attached to a post
 	 * @api
 	 * If mulitpuile categories are set, it will return just the first one
-	 * @return TimberTerm|null
+	 * @return Timber\Term|null
 	 */
 	public function category() {
 		return $this->get_category();
@@ -1592,7 +1592,7 @@ class Post extends Core implements CoreInterface {
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
 	 * @see Timber\Post::categories
-	 * @return array of TimberTerms
+	 * @return array of Timber\Terms
 	 */
 	public function get_categories() {
 		return $this->terms('category');

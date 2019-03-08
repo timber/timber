@@ -11,7 +11,7 @@ The beauty of Timber is that the object-oriented nature lets you extend it to ma
 
 ## An example that extends TimberPost
 
-Timber's objects like `Timber\Post`, `TimberTerm`, etc. are a great starting point to build your own subclass from. For example, on this project each post was a part of an "issue" of a magazine. I wanted an easy way to reference the issue in the twig file:
+Timber's objects like `Timber\Post`, `Timber\Term`, etc. are a great starting point to build your own subclass from. For example, on this project each post was a part of an "issue" of a magazine. I wanted an easy way to reference the issue in the twig file:
 
 
 ```twig
