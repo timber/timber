@@ -1614,7 +1614,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * @param string $field
-	 * @return TimberImage
+	 * @return Timber\Image
 	 */
 	public function get_image( $field ) {
 		return new $this->ImageClass($this->$field);
