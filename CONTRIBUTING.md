@@ -266,7 +266,7 @@ As soon as the todo is resolved, the `@todo` tag can be removed.
 
 All PRs receive a review from at least one maintainer. We’ll do our best to do that review in a week, but we’d rather go slow and get it right than merge in code with issues that just lead to trouble.
 
-#### GitHub reviews & assignments
+### GitHub reviews & assignments
 
 You might see us assign multiple reviewers, in this case these are OR checks (i.e. either Coby or Pascal) unless we explicitly say it’s an AND type thing (i.e. can both Lukas and Maciej check this out?).
 
@@ -274,7 +274,7 @@ We use the assignee to show who’s responsible at that moment. We’ll assign b
 
 Once approved, the lead maintainer for the branch should merge the PR into the `master` or `2.x` branch. The 1.x team will work to resolve merge conflicts on #1617 (`2.x` into `master`) so the branches stay in sync.
 
-#### Branch Maintainers
+### Branch Maintainers
 
 * 1.x: @jaredNova (lead), @palmiak
 * 2.x: @gchtr (lead), @pascalknecht, @cobytamayo

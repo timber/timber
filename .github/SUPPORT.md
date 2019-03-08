@@ -6,4 +6,4 @@ Please post your question to Stack Overflow (http://stackoverflow.com/questions/
 
 You can use [Gitter](https://gitter.im/timber/timber) for user-to-user support and help.
 
-Please don't post to the [WordPress.org support forum](https://wordpress.org/support/plugin/timber-library/). You might see a response, but it will just redirect you to either GitHub (for bugs/issues) or StackOverflow (for usage/support questions)
+Please don't post to the [WordPress.org support forum](https://wordpress.org/support/plugin/timber-library/). You might see a response, but it will just redirect you to either GitHub (for bugs/issues) or StackOverflow (for usage/support questions).
