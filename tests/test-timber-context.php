@@ -75,4 +75,9 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$this->assertTrue( apply_filters( 'touched_the_post_action', false ) );
 	}
 
+  function testContext() {
+		$context = Timber::context();
+		$this->assertEquals('http://example.org', $context['http_host']);
+	}
+
 }

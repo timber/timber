@@ -230,8 +230,7 @@ class Timber {
 	================================ */
 
 	/**
-	 * Gets the context.
-	 *
+	 * Get context.
 	 * @api
 	 * @deprecated 2.0.0, use `Timber::context()` instead.
 	 *
