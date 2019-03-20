@@ -1088,7 +1088,14 @@ class Post extends Core implements CoreInterface {
 			$args['include_unapproved'] = array($user_ID);
 		} elseif ( !empty($comment_author_email) ) {
 			$args['include_unapproved'] = array($comment_author_email);
+		} elseif ( function_exists('wp_get_unapproved_comment_author_email') ) {
+			$unapproved_email = wp_get_unapproved_comment_author_email();
+
+			if ( $unapproved_email ) {
+				$args['include_unapproved'] = array($unapproved_email);
+			}
 		}
+
 		$ct = new CommentThread($this->ID, false);
 		$ct->CommentClass = $CommentClass;
 		$ct->init($args);
