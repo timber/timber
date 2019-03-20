@@ -20,7 +20,7 @@ use WP_Post;
  * @example
  * ```php
  * // single.php, see connected twig example
- * $context = Timber::get_context();
+ * $context = Timber::context();
  * $context['post'] = new Timber\Post(); // It's a new Timber\Post object, but an existing post from WordPress.
  * Timber::render('single.twig', $context);
  * ?>

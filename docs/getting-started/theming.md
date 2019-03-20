@@ -2,7 +2,7 @@
 title: "Theming"
 menu:
   main:
-    parent: "getting-started"
+	parent: "getting-started"
 ---
 
 ## Your first Timber project
@@ -19,18 +19,18 @@ Brilliant! Open it up.
 {% extends "base.twig" %}
 
 {% block content %}
-    <div class="content-wrapper">
-        <article class="post-type-{{ post.post_type }}" id="post-{{ post.ID }}">
-            <section class="article-content">
-                <h1 class="article-h1">{{ post.title }}</h1>
-                <h2 class="article-h2">{{ post.subtitle }}</h2>
-                <p class="blog-author">
-                	<span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.post_date|date }}
-                </p>
-                {{ post.content }}
-            </section>
-        </article>
-    </div>
+	<div class="content-wrapper">
+		<article class="post-type-{{ post.post_type }}" id="post-{{ post.ID }}">
+			<section class="article-content">
+				<h1 class="article-h1">{{ post.title }}</h1>
+				<h2 class="article-h2">{{ post.subtitle }}</h2>
+				<p class="blog-author">
+					<span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.post_date|date }}
+				</p>
+				{{ post.content }}
+			</section>
+		</article>
+	</div>
 {% endblock %}
 ```
 
@@ -78,7 +78,7 @@ In `single.twig` you see opening and closing block declarations that surround th
 
 ```twig
 {% block content %}
-    {# other stuff here ... #}
+	{# other stuff here ... #}
 {% endblock %}
 ```
 
@@ -96,19 +96,19 @@ For this demo, let’s assume that the name of the page is "All about Jared" (ma
 {% extends "base.twig" %}
 
 {% block content %}
-    <div class="content-wrapper">
-        <article class="post-type-{{ post.post_type }}" id="post-{{ post.ID }}">
-            <section class="article-content">
-                {% block headline %}
-                    <h1 class="article-h1">{{ post.title }}</h1>
-                    <h2 class="article-h2">{{ post.subtitle }}</h2>
-                {% endblock %}
+	<div class="content-wrapper">
+		<article class="post-type-{{ post.post_type }}" id="post-{{ post.ID }}">
+			<section class="article-content">
+				{% block headline %}
+					<h1 class="article-h1">{{ post.title }}</h1>
+					<h2 class="article-h2">{{ post.subtitle }}</h2>
+				{% endblock %}
 
-                <p class="blog-author"><span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.post_date|date }}</p>
-                {{ post.content }}
-            </section>
-        </article>
-    </div>
+				<p class="blog-author"><span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.post_date|date }}</p>
+				{{ post.content }}
+			</section>
+		</article>
+	</div>
 {% endblock %}
 ```
 
@@ -139,7 +139,7 @@ Let’s crack open **index.php** and see what’s inside:
 
 ```php
 <?php
-$context = Timber::get_context();
+$context = Timber::context();
 $context['posts'] = Timber::get_posts();
 
 Timber::render( 'index.twig', $context );
@@ -151,7 +151,7 @@ This is where we are going to handle the logic that powers our index file. Let�
 
 ```php
 <?php
-$context = Timber::get_context();
+$context = Timber::context();
 ```
 
 This is going to return an object with a lot of the common things we need across the site. Things like the site name, the description or the navigation menu you’ll want to start with each time (even if you over-write them later). You can do a `print_r( $context );` to see what’s inside or open-up [**Timber.php**](https://github.com/timber/timber/blob/master/lib/Timber.php) to inspect for yourself.
@@ -172,21 +172,21 @@ We’re now going to grab the posts that are inside the loop and stick them insi
 ```php
 <?php
 $args = array(
-    'post_type' => 'post',
-    'tax_query' => array(
-        'relation' => 'AND',
-        array(
-            'taxonomy' => 'movie_genre',
-            'field' => 'slug',
-            'terms' => array( 'action', 'comedy' )
-        ),
-        array(
-            'taxonomy' => 'actor',
-            'field' => 'id',
-            'terms' => array( 103, 115, 206 ),
-            'operator' => 'NOT IN'
-        )
-    )
+	'post_type' => 'post',
+	'tax_query' => array(
+		'relation' => 'AND',
+		array(
+			'taxonomy' => 'movie_genre',
+			'field' => 'slug',
+			'terms' => array( 'action', 'comedy' )
+		),
+		array(
+			'taxonomy' => 'actor',
+			'field' => 'id',
+			'terms' => array( 103, 115, 206 ),
+			'operator' => 'NOT IN'
+		)
+	)
 );
 
 $context['posts'] = Timber::get_posts( $args );

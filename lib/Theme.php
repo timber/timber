@@ -7,11 +7,11 @@ use Timber\Theme;
 use Timber\URLHelper;
 
 /**
- * Need to display info about your theme? Well you've come to the right place. By default info on the current theme comes for free with what's fetched by `Timber::get_context()` in which case you can access it your theme like so:
+ * Need to display info about your theme? Well you've come to the right place. By default info on the current theme comes for free with what's fetched by `Timber::context()` in which case you can access it your theme like so:
  * @example
  * ```php
  * <?php
- * $context = Timber::get_context();
+ * $context = Timber::context();
  * Timber::render('index.twig', $context);
  * ?>
  * ```
@@ -62,7 +62,7 @@ class Theme extends Core {
 	private $theme;
 
 	/**
-	 * Constructs a new TimberTheme object. NOTE the TimberTheme object of the current theme comes in the default `Timber::get_context()` call. You can access this in your twig template via `{{site.theme}}.
+	 * Constructs a new TimberTheme object. NOTE the TimberTheme object of the current theme comes in the default `Timber::context()` call. You can access this in your twig template via `{{site.theme}}.
 	 * @param string $slug
 	 * @example
 	 * ```php
@@ -116,7 +116,7 @@ class Theme extends Core {
 	public function path() {
 		// force = true to work with specifying the port
 		// @see https://github.com/timber/timber/issues/1739
-		return URLHelper::get_rel_url($this->link(), true); 
+		return URLHelper::get_rel_url($this->link(), true);
 	}
 
 	/**
