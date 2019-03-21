@@ -30,7 +30,7 @@ if ( ! class_exists( 'Timber' ) ) {
     return;
 }
 
-$context            = Timber::get_context();
+$context            = Timber::context();
 $context['sidebar'] = Timber::get_widgets( 'shop-sidebar' );
 
 if ( is_singular( 'product' ) ) {
@@ -191,7 +191,7 @@ For some reason, products in the loop don’t get the right context by default. 
 <?php
 function timber_set_product( $post ) {
     global $product;
-    
+
     if ( is_woocommerce() ) {
         $product = wc_get_product( $post->ID );
     }

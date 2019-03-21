@@ -25,7 +25,7 @@ Brilliant! Open it up.
                 <h1 class="article-h1">{{ post.title }}</h1>
                 <h2 class="article-h2">{{ post.subtitle }}</h2>
                 <p class="blog-author">
-                	<span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.post_date|date }}
+                    <span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.post_date|date }}
                 </p>
                 {{ post.content }}
             </section>
@@ -122,7 +122,7 @@ To inject my custom bit of markup, I’m going to create a file called `single-a
 {% extends "single.twig" %}
 
 {% block headline %}
-	<h1><img src="/wp-content/uploads/2014/05/jareds-face.jpg" alt="Jared’s Mug"/></h1>
+    <h1><img src="/wp-content/uploads/2014/05/jareds-face.jpg" alt="Jared’s Mug"/></h1>
 {% endblock %}
 ```
 
@@ -139,7 +139,7 @@ Let’s crack open **index.php** and see what’s inside:
 
 ```php
 <?php
-$context = Timber::get_context();
+$context = Timber::context();
 $context['posts'] = Timber::get_posts();
 
 Timber::render( 'index.twig', $context );
@@ -151,7 +151,7 @@ This is where we are going to handle the logic that powers our index file. Let�
 
 ```php
 <?php
-$context = Timber::get_context();
+$context = Timber::context();
 ```
 
 This is going to return an object with a lot of the common things we need across the site. Things like the site name, the description or the navigation menu you’ll want to start with each time (even if you over-write them later). You can do a `print_r( $context );` to see what’s inside or open-up [**Timber.php**](https://github.com/timber/timber/blob/master/lib/Timber.php) to inspect for yourself.
