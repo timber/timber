@@ -12,7 +12,7 @@ use Timber\URLHelper;
  * If TimberPost is the class you're going to spend the most time, Timber\Image is the class you're going to have the most fun with.
  * @example
  * ```php
- * $context = Timber::get_context();
+ * $context = Timber::context();
  * $post = new Timber\Post();
  * $context['post'] = $post;
  *

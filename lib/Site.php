@@ -12,7 +12,7 @@ use Timber\Helper;
  * Timber\Site gives you access to information you need about your site. In Multisite setups, you can get info on other sites in your network.
  * @example
  * ```php
- * $context = Timber::get_context();
+ * $context = Timber::context();
  * $other_site_id = 2;
  * $context['other_site'] = new Timber\Site($other_site_id);
  * Timber::render('index.twig', $context);

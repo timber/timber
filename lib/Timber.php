@@ -28,7 +28,7 @@ use Timber\Loader;
  *  $posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format.
  *  $posts = Timber::get_posts(array(23,24,35,67), 'InkwellArticle');
  *
- *  $context = Timber::get_context(); // returns wp favorites!
+ *  $context = Timber::context(); // returns wp favorites!
  *  $context['posts'] = $posts;
  *  Timber::render('index.twig', $context);
  * ```
@@ -387,7 +387,7 @@ class Timber {
 	 * @api
 	 * @example
 	 * ```php
-	 * $context = Timber::get_context();
+	 * $context = Timber::context();
 	 *
 	 * Timber::render( 'index.twig', $context );
 	 * ```
