@@ -2,7 +2,7 @@
 title: "Theming"
 menu:
   main:
-  parent: "getting-started"
+    parent: "getting-started"
 ---
 
 ## Your first Timber project
@@ -19,18 +19,18 @@ Brilliant! Open it up.
 {% extends "base.twig" %}
 
 {% block content %}
-  <div class="content-wrapper">
-    <article class="post-type-{{ post.post_type }}" id="post-{{ post.ID }}">
-      <section class="article-content">
-        <h1 class="article-h1">{{ post.title }}</h1>
-        <h2 class="article-h2">{{ post.subtitle }}</h2>
-        <p class="blog-author">
-          <span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.post_date|date }}
-        </p>
-        {{ post.content }}
-      </section>
-    </article>
-  </div>
+    <div class="content-wrapper">
+        <article class="post-type-{{ post.post_type }}" id="post-{{ post.ID }}">
+            <section class="article-content">
+                <h1 class="article-h1">{{ post.title }}</h1>
+                <h2 class="article-h2">{{ post.subtitle }}</h2>
+                <p class="blog-author">
+                  <span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.post_date|date }}
+                </p>
+                {{ post.content }}
+            </section>
+        </article>
+    </div>
 {% endblock %}
 ```
 
@@ -78,7 +78,7 @@ In `single.twig` you see opening and closing block declarations that surround th
 
 ```twig
 {% block content %}
-  {# other stuff here ... #}
+    {# other stuff here ... #}
 {% endblock %}
 ```
 
@@ -96,19 +96,19 @@ For this demo, let’s assume that the name of the page is "All about Jared" (ma
 {% extends "base.twig" %}
 
 {% block content %}
-  <div class="content-wrapper">
-    <article class="post-type-{{ post.post_type }}" id="post-{{ post.ID }}">
-      <section class="article-content">
-        {% block headline %}
-          <h1 class="article-h1">{{ post.title }}</h1>
-          <h2 class="article-h2">{{ post.subtitle }}</h2>
-        {% endblock %}
+    <div class="content-wrapper">
+        <article class="post-type-{{ post.post_type }}" id="post-{{ post.ID }}">
+            <section class="article-content">
+                {% block headline %}
+                    <h1 class="article-h1">{{ post.title }}</h1>
+                    <h2 class="article-h2">{{ post.subtitle }}</h2>
+                {% endblock %}
 
-        <p class="blog-author"><span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.post_date|date }}</p>
-        {{ post.content }}
-      </section>
-    </article>
-  </div>
+                <p class="blog-author"><span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.post_date|date }}</p>
+                {{ post.content }}
+            </section>
+        </article>
+    </div>
 {% endblock %}
 ```
 
@@ -172,21 +172,21 @@ We’re now going to grab the posts that are inside the loop and stick them insi
 ```php
 <?php
 $args = array(
-  'post_type' => 'post',
-  'tax_query' => array(
-    'relation' => 'AND',
-    array(
-      'taxonomy' => 'movie_genre',
-      'field' => 'slug',
-      'terms' => array( 'action', 'comedy' )
-    ),
-    array(
-      'taxonomy' => 'actor',
-      'field' => 'id',
-      'terms' => array( 103, 115, 206 ),
-      'operator' => 'NOT IN'
+    'post_type' => 'post',
+    'tax_query' => array(
+        'relation' => 'AND',
+        array(
+            'taxonomy' => 'movie_genre',
+            'field' => 'slug',
+            'terms' => array( 'action', 'comedy' )
+        ),
+        array(
+            'taxonomy' => 'actor',
+            'field' => 'id',
+            'terms' => array( 103, 115, 206 ),
+            'operator' => 'NOT IN'
+        )
     )
-  )
 );
 
 $context['posts'] = Timber::get_posts( $args );
