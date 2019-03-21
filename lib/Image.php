@@ -9,16 +9,16 @@ use Timber\URLHelper;
 
 
 /**
- * If TimberPost is the class you're going to spend the most time, TimberImage is the class you're going to have the most fun with.
+ * If TimberPost is the class you're going to spend the most time, Timber\Image is the class you're going to have the most fun with.
  * @example
  * ```php
- * $context = Timber::get_context();
- * $post = new TimberPost();
+ * $context = Timber::context();
+ * $post = new Timber\Post();
  * $context['post'] = $post;
  *
  * // lets say you have an alternate large 'cover image' for your post stored in a custom field which returns an image ID
  * $cover_image_id = $post->cover_image;
- * $context['cover_image'] = new TimberImage($cover_image_id);
+ * $context['cover_image'] = new Timber\Image($cover_image_id);
  * Timber::render('single.twig', $context);
  * ```
  *
@@ -85,14 +85,14 @@ class Image extends Post implements CoreInterface {
 	protected $_wp_attached_file;
 
 	/**
-	 * Creates a new TimberImage object
+	 * Creates a new Timber\Image object
 	 * @example
 	 * ```php
 	 * // You can pass it an ID number
-	 * $myImage = new TimberImage(552);
+	 * $myImage = new Timber\Image(552);
 	 *
 	 * //Or send it a URL to an image
-	 * $myImage = new TimberImage('http://google.com/logo.jpg');
+	 * $myImage = new Timber\Image('http://google.com/logo.jpg');
 	 * ```
 	 * @param bool|int|string $iid
 	 */

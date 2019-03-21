@@ -7,7 +7,7 @@
 				$context['person'] = "Nathan Hass";
 				return $context;
 			});
-			$context = Timber::get_context();
+			$context = Timber::context();
 			$this->assertEquals('Nathan Hass', $context['person']);
 		}
 	}
