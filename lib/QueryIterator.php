@@ -23,6 +23,7 @@ class QueryIterator implements \Iterator, \Countable {
 	public function __construct( $query = false, $posts_class = 'Timber\Post' ) {
 		add_action('pre_get_posts', array($this, 'fix_number_posts_wp_quirk'));
 		add_action('pre_get_posts', array($this, 'fix_cat_wp_quirk'));
+		add_action('pre_get_posts', array($this, 'set_query_defaults'));
 		if ( $posts_class ) {
 			$this->_posts_class = $posts_class;
 		}
@@ -159,6 +160,19 @@ class QueryIterator implements \Iterator, \Countable {
 				&& !isset($query->query['cat']) ) {
 			$query->set('cat', $query->query['category']);
 			unset($query->query['category']);
+		}
+		return $query;
+	}
+
+    /**
+     * Sets some default values for the query when not set
+     * @param WP_Query $query
+     * @return WP_Query
+     */
+	public static function set_query_defaults( $query ) {
+	    //WordPress' get_posts sets ignore_sticky_posts true by default. We should do the same
+		if ( isset($query->query) && !isset($query->query['ignore_sticky_posts']) ) {
+			$query->set('ignore_sticky_posts', true);
 		}
 		return $query;
 	}
