@@ -119,6 +119,31 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertContains($pids[0], $post_ids_gotten);
 	}
 
+	function testStickyAgainstGetPosts() {
+		delete_option('sticky_posts');
+		$pids = $this->factory->post->create(array('post_date' => '2015-04-23 15:13:52'));
+		$sticky_id = $this->factory->post->create(array('post_date' => '2015-04-21 15:13:52'));
+		$pids = $this->factory->post->create(array('post_date' => '2015-04-24 15:13:52'));
+		update_option('sticky_posts', array($sticky_id));
+		$posts = Timber::get_posts('post_type=post');
+		$this->assertEquals($sticky_id, $posts[0]->ID);
+		$posts = get_posts('post_type=post');
+		$this->assertEquals($sticky_id, $posts[0]->ID);
+	}
+
+	function testStickyAgainstQuery() {
+		delete_option('sticky_posts');
+		$pids = $this->factory->post->create(array('post_date' => '2015-04-23 15:13:52'));
+		$sticky_id = $this->factory->post->create(array('post_date' => '2015-04-21 15:13:52'));
+		$pids = $this->factory->post->create(array('post_date' => '2015-04-24 15:13:52'));
+		update_option('sticky_posts', array($sticky_id));
+		$posts = new Timber\PostQuery('post_type=post');
+		$this->assertEquals($sticky_id, $posts[0]->ID);
+		$posts = new WP_Query('post_type=post');
+		//error_log(print_r($posts, true));
+		$this->assertEquals($sticky_id, $posts->posts[0]->ID);
+	}
+
 	function testGetPostsWithClassMap() {
 		register_post_type('portfolio', array('public' => true));
 		register_post_type('alert', array('public' => true));
