@@ -15,13 +15,13 @@ use Timber\URLHelper;
  * @example
  * ```php
  * //Get a term by its ID
- * $context['term'] = new TimberTerm(6);
+ * $context['term'] = new Timber\Term(6);
  * //Get a term when on a term archive page
- * $context['term_page'] = new TimberTerm();
+ * $context['term_page'] = new Timber\Term();
  * //Get a term with a slug
- * $context['team'] = new TimberTerm('patriots');
+ * $context['team'] = new Timber\Term('patriots');
  * //Get a team with a slug from a specific taxonomy
- * $context['st_louis'] = new TimberTerm('cardinals', 'baseball');
+ * $context['st_louis'] = new Timber\Term('cardinals', 'baseball');
  * Timber::render('index.twig', $context);
  * ```
  * ```twig
@@ -37,7 +37,7 @@ use Timber\URLHelper;
  * <h3>Teams</h3>
  * <ul>
  *     <li>St. Louis Cardinals - Winner of 11 World Series</li>
- *     <li>New England Patriots - Winner of 4 Super Bowls</li>
+ *     <li>New England Patriots - Winner of 6 Super Bowls</li>
  * </ul>
  * ```
  */
@@ -224,7 +224,7 @@ class Term extends Core implements CoreInterface {
 				$field_value = apply_filters('timber/term/meta/field', $field_value, $this->ID, $field_name, $this);
 			}
 			$this->$field_name = $field_value;
-			
+
 		}
 		return $this->$field_name;
 	}
@@ -377,7 +377,7 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 * Retrieves and outputs meta information stored with a term. This will use
-	 * both data stored under (old) ACF hacks and new (WP 4.6+) where term meta 
+	 * both data stored under (old) ACF hacks and new (WP 4.6+) where term meta
 	 * has its own table. If retrieving a special ACF field (repeater, etc.) you
 	 * can use the output immediately in Twig — no further processing is
 	 * required.

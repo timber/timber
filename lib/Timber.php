@@ -28,14 +28,14 @@ use Timber\Loader;
  *  $posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format.
  *  $posts = Timber::get_posts(array(23,24,35,67), 'InkwellArticle');
  *
- *  $context = Timber::get_context(); // returns wp favorites!
+ *  $context = Timber::context(); // returns wp favorites!
  *  $context['posts'] = $posts;
  *  Timber::render('index.twig', $context);
  * ```
  */
 class Timber {
 
-	public static $version = '1.8.4';
+	public static $version = '1.9.2';
 	public static $locations;
 	public static $dirname = 'views';
 	public static $twig_cache = false;
@@ -226,6 +226,21 @@ class Timber {
 	================================ */
 
 	/**
+	 * Alias for Timber::get_context() which is deprecated in 2.0.
+	 *
+	 * This will allow us to update the starter theme to use the ::context() method and better
+	 * prepare users for the upgrade (even if the details of what the method returns differs
+	 * slightly).
+	 *
+	 * @see \Timber\Timber::get_context()
+	 * @api
+	 * @return array
+	 */
+	public static function context() {
+		return self::get_context();
+	}
+
+	/**
 	 * Get context.
 	 * @api
 	 * @return array
@@ -372,7 +387,7 @@ class Timber {
 	 * @api
 	 * @example
 	 * ```php
-	 * $context = Timber::get_context();
+	 * $context = Timber::context();
 	 *
 	 * Timber::render( 'index.twig', $context );
 	 * ```

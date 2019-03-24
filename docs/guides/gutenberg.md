@@ -53,7 +53,7 @@ Next, you you have to create your `render_callback()` function:
  * @param   bool   $is_preview True during AJAX preview.
  */
 function my_acf_block_render_callback( $block, $content = '', $is_preview = false ) {
-    $context = Timber::get_context();
+    $context = Timber::context();
 
     // Store block values.
     $context['block'] = $block;

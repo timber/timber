@@ -20,7 +20,7 @@ use WP_Post;
  * @example
  * ```php
  * // single.php, see connected twig example
- * $context = Timber::get_context();
+ * $context = Timber::context();
  * $context['post'] = new Timber\Post(); // It's a new Timber\Post object, but an existing post from WordPress.
  * Timber::render('single.twig', $context);
  * ?>
@@ -209,7 +209,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Determined whether or not an admin/editor is looking at the post in "preview mode" via the
+	 * Determine whether or not an admin/editor is looking at the post in "preview mode" via the
 	 * WordPress admin
 	 * @internal
 	 * @return bool
@@ -407,12 +407,13 @@ class Post extends Core implements CoreInterface {
 	 * Gets a preview/excerpt of your post.
 	 *
 	 * If you have text defined in the excerpt textarea of your post, it will use that. Otherwise it
-	 * will pull from the post_content. If there's a <!-- more --> tag, it will use that to mark
+	 * will pull from the post_content. If there's a `<!-- more -->` tag, it will use that to mark
 	 * where to pull through.
 	 *
-	 * This method returns `Timber\PostPreview` a object, which is a **chainable object**. This
+	 * This method returns a `Timber\PostPreview` object, which is a **chainable object**. This
 	 * means that you can change the output of the preview by **adding more methods**. Refer to the
-	 * documentation of the `Timber\PostPreview` to get an overview of all the available methods.
+	 * [documentation of the `Timber\PostPreview` class](https://timber.github.io/docs/reference/timber-postpreview/)
+	 * to get an overview of all the available methods.
 	 *
 	 * @example
 	 * ```twig
@@ -992,7 +993,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Get the categoires on a particular post
 	 * @api
-	 * @return array of TimberTerms
+	 * @return array of Timber\Terms
 	 */
 	public function categories() {
 		return $this->terms('category');
@@ -1002,7 +1003,7 @@ class Post extends Core implements CoreInterface {
 	 * Returns a category attached to a post
 	 * @api
 	 * If mulitpuile categories are set, it will return just the first one
-	 * @return TimberTerm|null
+	 * @return Timber\Term|null
 	 */
 	public function category() {
 		return $this->get_category();
@@ -1048,13 +1049,13 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Gets the comments on a Timber\Post and returns them as an array of [TimberComments](#TimberComment) (or whatever comment class you set).
+	 * Gets the comments on a Timber\Post and returns them as an array of [Timber\Comment](#TimberComment) (or whatever comment class you set).
 	 * @api
 	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
 	 * @param string $order use ordering set in WordPress admin, or a different scheme
 	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
 	 * @param string $status Could be 'pending', etc.
-	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending TimberComment for your site or app (obviously, totally optional)
+	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending Timber\Comment for your site or app (obviously, totally optional)
 	 * @example
 	 * ```twig
 	 * {# single.twig #}
@@ -1591,7 +1592,7 @@ class Post extends Core implements CoreInterface {
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
 	 * @see Timber\Post::categories
-	 * @return array of TimberTerms
+	 * @return array of Timber\Terms
 	 */
 	public function get_categories() {
 		return $this->terms('category');
@@ -1613,7 +1614,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * @param string $field
-	 * @return TimberImage
+	 * @return Timber\Image
 	 */
 	public function get_image( $field ) {
 		return new $this->ImageClass($this->$field);

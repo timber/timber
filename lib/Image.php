@@ -9,16 +9,16 @@ use Timber\URLHelper;
 
 
 /**
- * If TimberPost is the class you're going to spend the most time, TimberImage is the class you're going to have the most fun with.
+ * If TimberPost is the class you're going to spend the most time, Timber\Image is the class you're going to have the most fun with.
  * @example
  * ```php
- * $context = Timber::get_context();
- * $post = new TimberPost();
+ * $context = Timber::context();
+ * $post = new Timber\Post();
  * $context['post'] = $post;
  *
  * // lets say you have an alternate large 'cover image' for your post stored in a custom field which returns an image ID
  * $cover_image_id = $post->cover_image;
- * $context['cover_image'] = new TimberImage($cover_image_id);
+ * $context['cover_image'] = new Timber\Image($cover_image_id);
  * Timber::render('single.twig', $context);
  * ```
  *
@@ -85,16 +85,16 @@ class Image extends Post implements CoreInterface {
 	protected $_wp_attached_file;
 
 	/**
-	 * Creates a new TimberImage object
+	 * Creates a new Timber\Image object
 	 * @example
 	 * ```php
 	 * // You can pass it an ID number
-	 * $myImage = new TimberImage(552);
+	 * $myImage = new Timber\Image(552);
 	 *
 	 * //Or send it a URL to an image
-	 * $myImage = new TimberImage('http://google.com/logo.jpg');
+	 * $myImage = new Timber\Image('http://google.com/logo.jpg');
 	 * ```
-	 * @param int|string $iid
+	 * @param bool|int|string $iid
 	 */
 	public function __construct( $iid ) {
 		$this->init($iid);
@@ -214,7 +214,7 @@ class Image extends Post implements CoreInterface {
 
 	/**
 	 * @internal
-	 * @param int $iid
+	 * @param int|bool|string $iid
 	 */
 	public function init( $iid = false ) {
 		//Make sure we actually have something to work with
@@ -470,14 +470,14 @@ class Image extends Post implements CoreInterface {
 			return wp_get_attachment_image_srcset($this->ID, $size);
 		}
 	}
-	
+
 	/**
 	 * @param string $size a size known to WordPress (like "medium")
 	 * @api
 	 * @example
 	 * ```twig
 	 * <h1>{{ post.title }}</h1>
-	 * <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumnbail.srcset }}" sizes="{{ post.thumbnail.sizes }}" />
+	 * <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumnbail.srcset }}" sizes="{{ post.thumbnail.img_sizes }}" />
 	 * ```
 	 * ```html
 	 * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w sizes="(max-width: 1024px) 100vw, 102" />
@@ -489,7 +489,7 @@ class Image extends Post implements CoreInterface {
 			return wp_get_attachment_image_sizes($this->ID, $size);
 		}
 	}
-	
+
 	/**
 	 * @internal
 	 * @return bool true if media is an image

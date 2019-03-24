@@ -35,16 +35,16 @@ class User extends Core implements CoreInterface {
 
 	/**
 	 * @api
+	 * @var string A URL to an avatar that overrides anything from Gravatar, etc.
+	 */
+	public $avatar_override;
+
+	/**
+	 * @api
 	 * @var string The description from WordPress
 	 */
 	public $description;
 	public $display_name;
-
-	/**
-	 * @api
-	 * @var string|Image The URL of the author's avatar
-	 */
-	public $avatar;
 
 	/**
 	 * @api
@@ -66,6 +66,16 @@ class User extends Core implements CoreInterface {
 	public $user_nicename;
 
 	/**
+	 * The roles the user is part of.
+	 *
+	 * @api
+	 * @since 1.8.5
+	 *
+	 * @var array
+	 */
+	protected $roles;
+
+	/**
 	 * @param object|int|bool $uid
 	 */
 	public function __construct( $uid = false ) {
@@ -84,14 +94,7 @@ class User extends Core implements CoreInterface {
 	 * @return string a fallback for TimberUser::name()
 	 */
 	public function __toString() {
-		$name = $this->name();
-		if ( strlen($name) ) {
-			return $name;
-		}
-		if ( strlen($this->name) ) {
-			return $this->name;
-		}
-		return '';
+		return $this->name();
 	}
 
 	/**
@@ -141,11 +144,14 @@ class User extends Core implements CoreInterface {
 			} else {
 				$this->import($data);
 			}
+
+			if ( isset($data->roles) ) {
+				$this->roles = $this->get_roles($data->roles);
+			}
 		}
 		unset($this->user_pass);
 		$this->id = $this->ID;
 		$this->name = $this->name();
-		$this->avatar = new Image(get_avatar_url($this->id));
 		$custom = $this->get_custom();
 		$this->import($custom);
 	}
@@ -228,5 +234,123 @@ class User extends Core implements CoreInterface {
 	 */
 	public function slug() {
 		return $this->user_nicename;
+	}
+
+	/**
+	 * Creates an associative array with user role slugs and their translated names.
+	 *
+	 * @internal
+	 * @since 1.8.5
+	 * @param array $roles user roles.
+	 * @return array|null
+	 */
+	protected function get_roles( $roles ) {
+		if ( empty($roles) ) {
+			// @codeCoverageIgnoreStart
+			return null;
+			// @codeCoverageIgnoreEnd
+		}
+
+		$wp_roles = wp_roles();
+		$names    = $wp_roles->get_names();
+
+		$values = array();
+
+		foreach ( $roles as $role ) {
+			$name = $role;
+			if ( isset($names[ $role ]) ) {
+				$name = translate_user_role($names[ $role ]);
+			}
+			$values[ $role ] = $name;
+		}
+
+		return $values;
+	}
+
+	/**
+	 * Gets the user roles.
+	 * Roles shouldn’t be used to check whether a user has a capability. Use roles only for
+	 * displaying purposes. For example, if you want to display the name of the subscription a user
+	 * has on the site behind a paywall.
+	 *
+	 * If you want to check for capabilities, use `{{ user.can('capability') }}`. If you only want
+	 * to check whether a user is logged in, you can use `{% if user %}`.
+	 *
+	 * @api
+	 * @since 1.8.5
+	 * @example
+	 * ```twig
+	 * <h2>Role name</h2>
+	 * {% for role in post.author.roles %}
+	 *     {{ role }}
+	 * {% endfor %}
+	 * ```
+	 * ```twig
+	 * <h2>Role name</h2>
+	 * {{ post.author.roles|join(', ') }}
+	 * ```
+	 * ```twig
+	 * {% for slug, name in post.author.roles %}
+	 *     {{ slug }}
+	 * {% endfor %}
+	 * ```
+	 *
+	 * @return array|null
+	 */
+	public function roles() {
+		return $this->roles;
+	}
+
+	/**
+	 * Checks whether a user has a capability.
+	 *
+	 * Don’t use role slugs for capability checks. While checking against a role in place of a
+	 * capability is supported in part, this practice is discouraged as it may produce unreliable
+	 * results. This includes cases where you want to check whether a user is registered. If you
+	 * want to check whether a user is a Subscriber, use `{{ user.can('read') }}`. If you only want
+	 * to check whether a user is logged in, you can use `{% if user %}`.
+	 *
+	 * @api
+	 * @since 1.8.5
+	 *
+	 * @param string $capability The capability to check.
+	 *
+	 * @example
+	 * Give moderation users another CSS class to style them differently.
+	 *
+	 * ```twig
+	 * <span class="comment-author {{ comment.author.can('moderate_comments') ? 'comment-author--is-moderator }}">
+	 *     {{ comment.author.name }}
+	 * </span>
+	 * ```
+	 *
+	 * @return bool Whether the user has the capability.
+	 */
+	public function can( $capability ) {
+		return user_can($this->ID, $capability);
+	}
+
+	/**
+	 * Gets a user’s avatar URL.
+	 *
+	 * @api
+	 * @since 1.9.1
+	 * @example
+	 * Get a user avatar with a width and height of 150px:
+	 *
+	 * ```twig
+	 * <img src="{{ post.author.avatar({ size: 150 }) }}">
+	 * ```
+	 *
+	 * @param null|array $args Parameters for
+	 *                         [`get_avatar_url()`](https://developer.wordpress.org/reference/functions/get_avatar_url/).
+	 * @return string|\Timber\Image The avatar URL.
+	 */
+	public function avatar( $args = null ) {
+		if ( $this->avatar_override ) {
+			return $this->avatar_override;
+		}
+
+		return new Image( get_avatar_url( $this->id, $args ) );
 	}
 }

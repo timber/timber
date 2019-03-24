@@ -26,7 +26,7 @@ Timber::render('sidebar.twig', $context);
 ```php
 <?php
 /* single.php */
-$context = Timber::get_context();
+$context = Timber::context();
 $context['sidebar'] = Timber::get_sidebar('sidebar.php');
 Timber::render('single.twig', $context);
 ```
@@ -61,8 +61,8 @@ In this example, you would populate your sidebar from your main PHP file (home.p
 ```php
 <?php
 /* single.php */
-$context = Timber::get_context();
-$post = new TimberPost();
+$context = Timber::context();
+$post = new Timber\Post();
 $post_cat = $post->get_terms('category');
 $post_cat = $post_cat[0]->ID;
 $context['post'] = $post;

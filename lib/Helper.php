@@ -15,7 +15,7 @@ class Helper {
 	 * @api
 	 * @example
 	 * ```php
-	 * $context = Timber::get_context();
+	 * $context = Timber::context();
 	 * $context['favorites'] = Timber\Helper::transient('user-' .$uid. '-favorites', function() use ($uid) {
 	 *  	//some expensive query here that's doing something you want to store to a transient
 	 *  	return $favorites;
@@ -145,8 +145,8 @@ class Helper {
 	 *     echo '<form action="form.php"><input type="text" /><input type="submit /></form>';
 	 * }
 	 *
-	 * $context = Timber::get_context();
-	 * $context['post'] = new TimberPost();
+	 * $context = Timber::context();
+	 * $context['post'] = new Timber\Post();
 	 * $context['my_form'] = TimberHelper::ob_function('the_form');
 	 * Timber::render('single-form.twig', $context);
 	 * ```
@@ -491,9 +491,9 @@ class Helper {
 	 * @return mix Instance of equivalent Timber object, or the argument if no match is found
 	 */
 	public static function convert_wp_object( $obj ) {
-
 		if ( $obj instanceof \WP_Post ) {
-			return new \Timber\Post($obj->ID);
+			$class = \Timber\PostGetter::get_post_class($obj->post_type);
+			return new $class($obj->ID);
 		} elseif ( $obj instanceof \WP_Term ) {
 			return new \Timber\Term($obj->term_id);
 		} elseif ( $obj instanceof \WP_User ) {
