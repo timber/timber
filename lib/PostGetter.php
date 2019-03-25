@@ -53,7 +53,6 @@ class PostGetter {
 
 	public static function get_posts( $query = false, $PostClass = '\Timber\Post', $return_collection = false ) {
 		add_filter( 'pre_get_posts', array('Timber\PostGetter', 'set_query_defaults') );
-		$query = self::apply_get_posts_query_modifiers($query);
 		$posts = self::query_posts($query, $PostClass);
 		return apply_filters('timber_post_getter_get_posts', $posts->get_posts($return_collection));
 	}
