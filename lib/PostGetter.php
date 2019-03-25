@@ -66,15 +66,22 @@ class PostGetter {
 	}
 
 	/**
-	 * Sets some default values for the query when not set
+	 * Sets some default values for those parameters for the query when not set. WordPress's get_posts sets a few of
+	 * these parameters true by default (compared to WP_Query), we should do the same.
 	 * @internal
 	 * @param WP_Query $query
 	 * @return WP_Query
 	 */
 	public static function set_query_defaults( $query ) {
-		// WordPress's get_posts sets ignore_sticky_posts true by default. We should do the same
+		// 
 		if ( isset($query->query) && !isset( $query->query['ignore_sticky_posts']) ) {
 			$query->set('ignore_sticky_posts', true);
+		}
+		if ( isset($query->query) && !isset( $query->query['supress_filters']) ) {
+			$query->set('supress_filters', true);
+		}
+		if ( isset($query->query) && !isset( $query->query['no_found_rows']) ) {
+			$query->set('no_found_rows', true);
 		}
 		return $query;
 	}
