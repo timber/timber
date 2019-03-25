@@ -121,14 +121,14 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 
 	function testStickyAgainstGetPosts() {
 		delete_option('sticky_posts');
-		$pids = $this->factory->post->create(array('post_date' => '2015-04-23 15:13:52'));
+		$first = $this->factory->post->create(array('post_date' => '2015-04-23 15:13:52'));
 		$sticky_id = $this->factory->post->create(array('post_date' => '2015-04-21 15:13:52'));
-		$pids = $this->factory->post->create(array('post_date' => '2015-04-24 15:13:52'));
+		$last = $this->factory->post->create(array('post_date' => '2015-04-24 15:13:52'));
 		update_option('sticky_posts', array($sticky_id));
 		$posts = Timber::get_posts('post_type=post');
-		$this->assertEquals($sticky_id, $posts[0]->ID);
+		$this->assertEquals($last, $posts[0]->ID);
 		$posts = get_posts('post_type=post');
-		$this->assertEquals($sticky_id, $posts[0]->ID);
+		$this->assertEquals($last, $posts[0]->ID);
 	}
 
 	function testStickyAgainstQuery() {
