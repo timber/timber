@@ -202,6 +202,8 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	}
 
 	function testQueryPostsInContext(){
+		$pids = $this->factory->post->create_many(20);
+		$this->go_to('/');
         $context = Timber::context();
         $this->assertArrayHasKey( 'posts', $context );
         $this->assertInstanceOf( 'Timber\PostCollection', $context['posts'] );

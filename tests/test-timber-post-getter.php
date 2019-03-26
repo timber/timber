@@ -164,7 +164,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		update_option('sticky_posts', array($sticky_id));
 		$posts = Timber::get_posts('post_type=post');
 		$this->assertEquals($last, $posts[0]->ID);
-		$posts = new Timber\PostQuery('post_type=post');
+		$posts = new Timber\PostQuery(array('query' => 'post_type=post'));
 		$this->assertEquals($sticky_id, $posts[0]->ID);
 	}
 
@@ -173,7 +173,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$sticky_id = $this->factory->post->create(array('post_date' => '2015-04-21 15:13:52'));
 		$pids = $this->factory->post->create(array('post_date' => '2015-04-24 15:13:52'));
 		update_option('sticky_posts', array($sticky_id));
-		$posts = new Timber\PostQuery('post_type=post');
+		$posts = new Timber\PostQuery(array('query' => 'post_type=post'));
 		$this->assertEquals($sticky_id, $posts[0]->ID);
 		$posts = new WP_Query('post_type=post');
 		$this->assertEquals($sticky_id, $posts->posts[0]->ID);
