@@ -52,7 +52,7 @@ class PostGetter {
 	}
 
 	public static function get_posts( $query = false, $PostClass = '\Timber\Post', $return_collection = false ) {
-		add_filter( 'pre_get_posts', array('Timber\PostGetter', 'set_query_defaults') );
+		add_filter('pre_get_posts', array('Timber\PostGetter', 'set_query_defaults'));
 		$posts = self::query_posts($query, $PostClass);
 		return apply_filters('timber_post_getter_get_posts', $posts->get_posts($return_collection));
 	}
@@ -72,16 +72,16 @@ class PostGetter {
 	 * @return \WP_Query
 	 */
 	public static function set_query_defaults( $query ) {
-		if ( isset($query->query) && !isset( $query->query['ignore_sticky_posts']) ) {
+		if ( isset($query->query) && !isset($query->query['ignore_sticky_posts']) ) {
 			$query->set('ignore_sticky_posts', true);
 		}
-		if ( isset($query->query) && !isset( $query->query['supress_filters']) ) {
+		if ( isset($query->query) && !isset($query->query['supress_filters']) ) {
 			$query->set('supress_filters', true);
 		}
-		if ( isset($query->query) && !isset( $query->query['no_found_rows']) ) {
+		if ( isset($query->query) && !isset($query->query['no_found_rows']) ) {
 			$query->set('no_found_rows', true);
 		}
-		remove_filter( 'pre_get_posts', array('Timber\PostGetter', 'set_query_defaults') );
+		remove_filter('pre_get_posts', array('Timber\PostGetter', 'set_query_defaults'));
 		return $query;
 	}
 
@@ -160,7 +160,7 @@ class PostGetter {
 			Helper::error_log('Unexpeted value for PostClass: '.print_r($post_class, true));
 		}
 
-		if ( $post_class_use === '\Timber\Post' || $post_class_use === 'Timber\Post') {
+		if ( $post_class_use === '\Timber\Post' || $post_class_use === 'Timber\Post' ) {
 			return $post_class_use;
 		}
 
