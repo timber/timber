@@ -19,7 +19,9 @@ Timber's objects like `Timber\Post`, `Timber\Term`, etc. are a great starting po
 <h1>{{ post.title }}</h1>
 <h3>From the {{ post.issue.title }} issue</h3>
 ```
+
 Of course, `Timber\Post` has no built-in concept of an issue (which I've built as a custom taxonomy called "issues"). So we're going to extend `Timber\Post` to give it one:
+
 
 ```php
 <?php

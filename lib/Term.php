@@ -317,7 +317,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			"{{ term.meta('field_name') }}",
 			'2.0.0'
 		);
-
 		return $this->meta($field_name);
 	}
 

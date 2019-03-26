@@ -1232,7 +1232,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 *
 	 * @api
 	 * If mulitpuile categories are set, it will return just the first one
-	 * @return \Timber\Term|null
+	 * @return Timber\Term|null
 	 */
 	public function category() {
 		$cats = $this->categories();
@@ -1848,5 +1848,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 		return $video;
 	}
+
 
 }

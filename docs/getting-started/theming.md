@@ -25,7 +25,7 @@ Brilliant! Open it up.
                 <h1 class="article-h1">{{ post.title }}</h1>
                 <h2 class="article-h2">{{ post.subtitle }}</h2>
                 <p class="blog-author">
-                	<span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.post_date|date }}
+                    <span>By</span> {{ post.author.name }} <span>&bull;</span> {{ post.post_date|date }}
                 </p>
                 {{ post.content }}
             </section>
@@ -122,7 +122,7 @@ To inject my custom bit of markup, I’m going to create a file called `single-a
 {% extends "single.twig" %}
 
 {% block headline %}
-	<h1><img src="/wp-content/uploads/2014/05/jareds-face.jpg" alt="Jared’s Mug"/></h1>
+    <h1><img src="/wp-content/uploads/2014/05/jareds-face.jpg" alt="Jared’s Mug"/></h1>
 {% endblock %}
 ```
 
@@ -141,7 +141,6 @@ Let’s crack open **index.php** and see what’s inside:
 <?php
 $context = Timber::context();
 $context['posts'] = new Timber\PostQuery();
-
 Timber::render( 'index.twig', $context );
 ```
 
