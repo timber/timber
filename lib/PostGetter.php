@@ -68,8 +68,8 @@ class PostGetter {
 	 * Sets some default values for those parameters for the query when not set. WordPress's get_posts sets a few of
 	 * these parameters true by default (compared to WP_Query), we should do the same.
 	 * @internal
-	 * @param WP_Query $query
-	 * @return WP_Query
+	 * @param \WP_Query $query
+	 * @return \WP_Query
 	 */
 	public static function set_query_defaults( $query ) {
 		if ( isset($query->query) && !isset( $query->query['ignore_sticky_posts']) ) {
