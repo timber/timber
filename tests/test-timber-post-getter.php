@@ -2,6 +2,11 @@
 
 class TestTimberPostGetter extends Timber_UnitTestCase {
 
+
+	function setUp() {
+		delete_option('sticky_posts');
+		parent::setUp();
+	}
 	/**
 	 * @group wp_query_hacks
 	 */
@@ -120,7 +125,6 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	}
 
 	function testStickyAgainstGetPosts() {
-		delete_option('sticky_posts');
 		$first = $this->factory->post->create(array('post_date' => '2015-04-23 15:13:52'));
 		$sticky_id = $this->factory->post->create(array('post_date' => '2015-04-21 15:13:52'));
 		$last = $this->factory->post->create(array('post_date' => '2015-04-24 15:13:52'));
@@ -131,8 +135,18 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals($last, $posts[0]->ID);
 	}
 
+	function testStickyAgainstTwoSuccessiveLookups() {
+		$first = $this->factory->post->create(array('post_date' => '2015-04-23 15:13:52'));
+		$sticky_id = $this->factory->post->create(array('post_date' => '2015-04-21 15:13:52'));
+		$last = $this->factory->post->create(array('post_date' => '2015-04-24 15:13:52'));
+		update_option('sticky_posts', array($sticky_id));
+		$posts = Timber::get_posts('post_type=post');
+		$this->assertEquals($last, $posts[0]->ID);
+		$posts = new Timber\PostQuery('post_type=post');
+		$this->assertEquals($sticky_id, $posts[0]->ID);
+	}
+
 	function testStickyAgainstQuery() {
-		delete_option('sticky_posts');
 		$pids = $this->factory->post->create(array('post_date' => '2015-04-23 15:13:52'));
 		$sticky_id = $this->factory->post->create(array('post_date' => '2015-04-21 15:13:52'));
 		$pids = $this->factory->post->create(array('post_date' => '2015-04-24 15:13:52'));
@@ -140,7 +154,6 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$posts = new Timber\PostQuery('post_type=post');
 		$this->assertEquals($sticky_id, $posts[0]->ID);
 		$posts = new WP_Query('post_type=post');
-		//error_log(print_r($posts, true));
 		$this->assertEquals($sticky_id, $posts->posts[0]->ID);
 	}
 

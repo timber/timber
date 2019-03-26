@@ -72,7 +72,6 @@ class PostGetter {
 	 * @return WP_Query
 	 */
 	public static function set_query_defaults( $query ) {
-		// 
 		if ( isset($query->query) && !isset( $query->query['ignore_sticky_posts']) ) {
 			$query->set('ignore_sticky_posts', true);
 		}
@@ -82,6 +81,7 @@ class PostGetter {
 		if ( isset($query->query) && !isset( $query->query['no_found_rows']) ) {
 			$query->set('no_found_rows', true);
 		}
+		remove_filter( 'pre_get_posts', array('Timber\PostGetter', 'set_query_defaults') );
 		return $query;
 	}
 
