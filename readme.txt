@@ -2,7 +2,7 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 4.7.12
-Tested up to: 5.1
+Tested up to: 5.1.1
 Stable tag: 1.9.3
 Requires PHP: 5.6
 License: GPLv2 or later
