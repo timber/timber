@@ -30,15 +30,18 @@
   "require": {
     "php": ">=5.3.0|7.*",
     "twig/twig": "1.34.*|2.*",
-    "upstatement/routes": "0.4",
+    "upstatement/routes": "0.5",
     "composer/installers": "~1.0",
     "asm89/twig-cache-extension": "~1.0"
   },
   "require-dev": {
-    "wpackagist-plugin/advanced-custom-fields": "5.*",
+    "johnpbloch/wordpress": "4.*",
     "phpunit/phpunit": "5.7.16|6.*",
+    "squizlabs/php_codesniffer": "3.*",
+    "wp-coding-standards/wpcs": "^2.0",
+    "wpackagist-plugin/advanced-custom-fields": "5.*",
     "wpackagist-plugin/co-authors-plus": "3.2.*",
-    "johnpbloch/wordpress": "4.*"
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0"
   },
   "suggest": {
     "satooshi/php-coveralls": "1.0.* for code coverage"
@@ -51,6 +54,9 @@
   "autoload-dev": {
     "classmap": [
       "tests/"
+    ],
+    "exclude-from-classmap": [
+      "tests/php"
     ]
   },
   "repositories": [
@@ -58,5 +64,8 @@
       "type": "composer",
       "url": "https://wpackagist.org"
     }
-  ]
+  ],
+  "scripts": {
+    "lint": "phpcs --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1"
+  }
 }
