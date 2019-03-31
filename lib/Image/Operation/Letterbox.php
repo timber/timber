@@ -52,7 +52,7 @@ class Letterbox extends ImageOperation {
 			$this->h = $args['h'];
 			$this->color = $args['color'];
 		} else {
-			$this->w = $w;
+			$this->w = $parameters_or_w;
 			$this->h = $h;
 			$this->color = $color;
 		}
