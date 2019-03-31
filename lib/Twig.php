@@ -32,7 +32,10 @@ class Twig {
 	}
 
 	/**
+	 * Adds functions to Twig.
 	 *
+	 * @param \Twig\Environment $twig The Twig Environment.
+	 * @return \Twig\Environment
 	 */
 	public function add_timber_functions( $twig ) {
 		/* actions and filters */
@@ -171,10 +174,10 @@ class Twig {
 	}
 
 	/**
+	 * Adds filters to Twig.
 	 *
-	 *
-	 * @param Twig_Environment $twig
-	 * @return Twig_Environment
+	 * @param \Twig\Environment $twig The Twig Environment.
+	 * @return \Twig\Environment
 	 */
 	public function add_timber_filters( $twig ) {
 		/* image filters */
@@ -235,10 +238,10 @@ class Twig {
 	}
 
 	/**
+	 * Adds escapers to Twig.
 	 *
-	 *
-	 * @param Twig_Environment $twig
-	 * @return Twig_Environment
+	 * @param \Twig\Environment $twig The Twig Environment.
+	 * @return \Twig\Environment
 	 */
 	public function add_timber_escapers( $twig ) {
 
