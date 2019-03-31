@@ -3,12 +3,13 @@
 namespace Timber;
 
 /**
- * Handle TwigFunction among Twig versions
+ * Handle TwigFunction among different Twig versions.
  *
- * From Twig 2.4.0, extending Twig_Function is deprecated, will be final in 3.0
- * @ticket #1641
+ * From Twig 2.4.0, extending Twig_Function is deprecated and will be final in 3.0.
  * Temporary fix for conflicts between Twig_Function and Twig_SimpleFunction
- * in different versions of Twig (1.* and 2.*)
+ * in different versions of Twig (1.* and 2.*).
+ *
+ * @ticket #1641
  */
 
 if ( version_compare(\Twig_Environment::VERSION, '2.4.0', '>=') ) {
