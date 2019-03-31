@@ -17,7 +17,28 @@ use Timber\Image\Operation as ImageOperation;
  */
 class Resize extends ImageOperation {
 
-	private $parameters_or_w, $h, $crop;
+	/**
+	 * Array of parameters (**w** image width, **h** image height, **crop** image cropping)
+	 * or image width when integer.
+	 *
+	 * @var array|integer
+	 */
+	private $parameters_or_w;
+
+	/**
+	 * Image height
+	 *
+	 * @var integer
+	 */
+	private $h;
+
+	/**
+	 * Cropping method, one of: 'default', 'center', 'top', 'bottom',
+	 * 'left', 'right', 'top-center', 'bottom-center'.
+	 *
+	 * @var string
+	 */
+	private $crop;
 
 	/**
 	 * @param array|int $parameters_or_w    Array of all information like width, height or cropping.
@@ -31,27 +52,23 @@ class Resize extends ImageOperation {
 		$allowed_crop_positions = array( 'default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center' );
 
 		if ( is_array($parameters_or_w) ) {
-			if ( isset($parameters_or_w['width']) ) {
-				$this->w = $parameters_or_w['width'];
-			}
+			$args = wp_parse_args($parameters_or_w, array(
+				'crop' => '',
+			));
 
-			if ( isset($parameters_or_w['height']) ) {
-				$this->h = $parameters_or_w['height'];
-			}
+			$this->w = $args['w'];
+			$this->h = $args['h'];
 
-			if ( isset($parameters_or_w['crop']) ) {
-				// Sanitize crop position.
-				if ( $parameters_or_w['crop'] !== false && ! in_array($parameters_or_w['crop'], $allowed_crop_positions) ) {
-					$parameters_or_w['crop'] = $allowed_crop_positions[0];
-				}
-				$this->crop = $parameters_or_w['crop'];
+			if ( false !== $args['crop'] && ! in_array($args['crop'], $allowed_crop_positions) ) {
+				$args['crop'] = $allowed_crop_positions[0];
 			}
+			$this->crop = $args['crop'];
 		} else {
 			$this->w = $parameters_or_w;
 			$this->h = $h;
 
 			// Sanitize crop position.
-			if ( $crop !== false && ! in_array($crop, $allowed_crop_positions) ) {
+			if ( false !== $crop && ! in_array($crop, $allowed_crop_positions) ) {
 				$crop = $allowed_crop_positions[0];
 			}
 			$this->crop = $crop;

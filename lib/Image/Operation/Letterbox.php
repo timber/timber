@@ -6,7 +6,7 @@ use Timber\Helper;
 use Timber\ImageHelper;
 use Timber\Image\Operation as ImageOperation;
 
-/*
+/**
  * Changes image to new size, by shrinking/enlarging then padding with colored bands,
  * so that no part of the image is cropped or stretched.
  *
@@ -16,18 +16,46 @@ use Timber\Image\Operation as ImageOperation;
  * - color of padding
  */
 class Letterbox extends ImageOperation {
-
-	private $w, $h, $color;
+	/**
+	 * Array of parameters (**w** image width, **h** image height, **color** image padding bands color)
+	 * or image width when integer.
+	 *
+	 * @var array|integer
+	 */
+	private $parameters_or_w;
 
 	/**
-	 * @param int    $w     width of result image
-	 * @param int    $h     height
-	 * @param string $color hex string, for color of padding bands
+	 * Image height
+	 *
+	 * @var integer
 	 */
-	public function __construct( $w, $h, $color ) {
-		$this->w = $w;
-		$this->h = $h;
-		$this->color = $color;
+	private $h;
+
+	/**
+	 * Hex string, for color of padding bands.
+	 *
+	 * @var string
+	 */
+	private $color;
+
+	/**
+	 * @param    array|int $parameters_or_w    Array of all information like width, height or color.
+	 *                                         Width of new image if integer.
+	 * @param    int       $h                  Image height.
+	 * @param    string    $color              Hex string, for color of padding bands.
+	 */
+	public function __construct( $parameters_or_w, $h, $color ) {
+		if ( is_array($parameters_or_w) ) {
+			$args = wp_parse_args($parameters_or_w);
+
+			$this->w = $args['w'];
+			$this->h = $args['h'];
+			$this->color = $args['color'];
+		} else {
+			$this->w = $w;
+			$this->h = $h;
+			$this->color = $color;
+		}
 	}
 
 	/**
@@ -62,7 +90,7 @@ class Letterbox extends ImageOperation {
 		if ( ImageHelper::is_svg($load_filename) ) {
 			return false;
 		}
-		
+
 		$w = $this->w;
 		$h = $this->h;
 

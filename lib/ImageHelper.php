@@ -186,7 +186,7 @@ class ImageHelper {
 	 * @param bool    $force
 	 * @return string
 	 */
-	public static function letterbox( $src, $w, $h, $color = false, $force = false ) {
+	public static function letterbox( $src, $w, $h = '', $color = false, $force = false ) {
 		$op = new Letterbox($w, $h, $color);
 		return self::_operate($src, $op, $force);
 	}
