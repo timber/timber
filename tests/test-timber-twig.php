@@ -23,7 +23,7 @@
 
 		function _setupTranslationFiles() {
 			$lang_dir = get_stylesheet_directory().'/languages';
-			
+
 			if ( !file_exists($lang_dir.'/en_US.po') ) {
 				$this->installTranlsationFiles($lang_dir);
 			}
@@ -259,7 +259,7 @@
 
 		function testAddToTwig() {
 			add_filter('get_twig', function( $twig ) {
-				$twig->addFilter( new Twig_SimpleFilter( 'foobar', function( $text ) {
+				$twig->addFilter( new Timber\Twig_Filter( 'foobar', function( $text ) {
 					return $text . 'foobar';
 				}) );
 				return $twig;
@@ -270,7 +270,7 @@
 
 		function testTimberTwigObjectFilter() {
 			add_filter('timber/twig', function( $twig ) {
-				$twig->addFilter( new Twig_SimpleFilter( 'quack', function( $text ) {
+				$twig->addFilter( new Timber\Twig_Filter( 'quack', function( $text ) {
 					return $text . ' Quack!';
 				}) );
 				return $twig;
