@@ -25,10 +25,10 @@
 			$_GET['unapproved'] = $comment->comment_ID;
 			$_GET['moderation-hash'] = wp_hash($comment->comment_date_gmt);
 			$post = new TimberPost($post_id);
-			$timber_comment = $post->comments()[0];
 			if ( !function_exists('wp_get_unapproved_comment_author_email') ) {
-				$this->markTestSkipped('WP 5.1 or greater required');
+				$this->assertEquals(0, count( $post->comments() ));
 			} else {
+				$timber_comment = $post->comments()[0];
 				$this->assertEquals($quote, $timber_comment->comment_content);
 			}
 
