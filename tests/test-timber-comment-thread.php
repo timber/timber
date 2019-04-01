@@ -10,4 +10,34 @@
 			$this->assertEquals( 5, count($ct) );
 		}
 
+		function testShowUnmoderatedCommentIfByAnon() {
+			global $wp_version;
+			$post_id = $this->factory->post->create();
+			add_filter('wp_get_current_commenter', function($author_data) {
+				$author_data['comment_author_email'] = 'jarednova@upstatement.com';
+				return $author_data;
+			});
+
+
+
+			$commenter = wp_get_current_commenter();
+			$quote = "And in that moment, I was a marine biologist";
+			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => $quote,'comment_approved' => 0, 'comment_author_email' => 'jarednova@upstatement.com'));
+
+			$comment = get_comment($comment_id);
+
+			$_GET['unapproved'] = $comment->comment_ID;
+			$_GET['moderation-hash'] = wp_hash($comment->comment_date_gmt);
+
+			$post = new TimberPost($post_id);
+			$timber_comment = $post->comments()[0];
+
+			if ( !function_exists('wp_get_unapproved_comment_author_email') ) {
+				$this->markTestSkipped('WP 5.1 or greater required');
+			} else {
+				$this->assertEquals($quote, $timber_comment->comment_content);
+			}
+
+		}
+
 	}
