@@ -96,8 +96,8 @@ class PostGetter {
 		if ( isset($query->query) && !isset($query->query['ignore_sticky_posts']) ) {
 			$query->set('ignore_sticky_posts', true);
 		}
-		if ( isset($query->query) && !isset($query->query['supress_filters']) ) {
-			$query->set('supress_filters', true);
+		if ( isset($query->query) && !isset($query->query['suppress_filters']) ) {
+			$query->set('suppress_filters', true);
 		}
 		if ( isset($query->query) && !isset($query->query['no_found_rows']) ) {
 			$query->set('no_found_rows', true);
