@@ -1083,19 +1083,18 @@ class Post extends Core implements CoreInterface {
 		if ( strtolower($order) == 'wp' || strtolower($order) == 'wordpress' ) {
 			$args['order'] = get_option('comment_order');
 		}
-
 		if ( $user_ID ) {
 			$args['include_unapproved'] = array($user_ID);
 		} elseif ( !empty($comment_author_email) ) {
 			$args['include_unapproved'] = array($comment_author_email);
 		} elseif ( Comment::get_unapproved_comment_author_email() ) {
+
 			$unapproved_email = Comment::get_unapproved_comment_author_email();
 
 			if ( $unapproved_email ) {
 				$args['include_unapproved'] = array($unapproved_email);
 			}
 		}
-
 		$ct = new CommentThread($this->ID, false);
 		$ct->CommentClass = $CommentClass;
 		$ct->init($args);

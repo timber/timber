@@ -431,7 +431,6 @@ class Comment extends Core implements CoreInterface {
 		if ( function_exists('wp_get_unapproved_comment_author_email') ) {
 			return wp_get_unapproved_comment_author_email();
 		}
-		return 'afsdfad@dfsadfa.com';
 	}
 
 }
