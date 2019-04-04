@@ -141,7 +141,7 @@ function whateverify( $text ) {
 This can now be called in your twig files with:
 
 ```twig
-<h2 id="{{ post.title|slugify }}">{{ post.title|slugify }}</h2>
+<h2 id="{{ post.title|slugify }}">{{ post.title|whateverify }}</h2>
 ```
 
 Which will output:
