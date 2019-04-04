@@ -34,6 +34,8 @@
 			$post = new TimberPost($post_id);
 			$this->assertEquals(1, count($post->comments()));
 			wp_set_current_user( 0 );
+			$post = new TimberPost($post_id);
+			$this->assertEquals(0, count($post->comments()));
 		}
 
 		function testPostWithCustomCommentClass() {
@@ -57,6 +59,8 @@
 			$post = new TimberPost($post_id);
 			$this->assertEquals(1, count($post->comments()));
 		}
+
+		
 
 		function testMultilevelThreadedComments() {
 			update_option('comment_order', 'ASC');

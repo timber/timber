@@ -400,6 +400,32 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 
 	}
 
+	function testOrderOfPostsIn() {
+		$pids = $this->factory->post->create_many(30);
+		shuffle($pids);
+		$first_pids = array_slice($pids, 0, 5);
+		$query = array('post__in' => $first_pids, 'orderby' => 'post__in');
+		$timber_posts = Timber::get_posts($query);
+		$timber_ids = array_map(function($post) {
+			return $post->ID;
+		}, $timber_posts);
+
+		$this->assertEquals($first_pids, $timber_ids);
+
+		$wp_posts = get_posts($query);
+		$wp_ids = array_map(function($post) {
+			return $post->ID;
+		}, $wp_posts);
+
+		$this->assertEquals($first_pids, $wp_ids);
+
+		$other_query = Timber::get_posts(array('post__in' => $first_pids));
+		$timber_ids = array_map(function($post) {
+			return $post->ID;
+		}, $other_query);
+		$this->assertNotEquals($first_pids, $timber_ids);
+	}
+
 
 }
 
