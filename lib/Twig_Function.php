@@ -12,7 +12,7 @@ namespace Timber;
  * @ticket #1641
  */
 
-if ( version_compare(\Twig_Environment::VERSION, '2.4.0', '>=') ) {
+if ( class_exists( '\Twig\TwigFunction' ) ) {
 
 	class_alias('\Twig\TwigFunction', '\Timber\Twig_Function');
 
