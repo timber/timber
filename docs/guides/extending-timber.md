@@ -123,7 +123,7 @@ function add_to_twig( $twig ) {
     $twig->addFunction( new Timber\Twig_Function( 'edit_post_link', 'edit_post_link' ) );
     
     // Adding functions as filters.
-    $twig->addFilter(new Timber\Twig_Filter( 'whateverify', 'whateverify' ) );
+    $twig->addFilter( new Timber\Twig_Filter( 'whateverify', 'whateverify' ) );
     $twig->addFilter( new Timber\Twig_Filter( 'slugify', function( $title ) {
         return sanitize_title( $title );
     } ) );
