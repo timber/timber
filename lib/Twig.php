@@ -10,6 +10,9 @@ use Timber\Term;
 use Timber\Image;
 use Timber\User;
 
+use Twig\TwigFunction;
+use Twig\TwigFilter;
+
 /**
  * Class Twig
  */
@@ -34,50 +37,50 @@ class Twig {
 	}
 
 	/**
-	 * Add Timber-specific functions to Twig.
+	 * Adds Timber-specific functions to Twig.
 	 *
-	 * @param \Twig_Environment $twig
+	 * @param \Twig\Environment $twig The Twig Environment.
 	 *
-	 * @return \Twig_Environment
+	 * @return \Twig\Environment
 	 */
 	public function add_timber_functions( $twig ) {
 		/* actions and filters */
-		$twig->addFunction( new Twig_Function( 'action', function() {
+		$twig->addFunction( new TwigFunction( 'action', function() {
 			call_user_func_array( 'do_action', func_get_args() );
 		} ) );
 
-		$twig->addFunction(new Twig_Function('function', array(&$this, 'exec_function')));
-		$twig->addFunction(new Twig_Function('fn', array(&$this, 'exec_function')));
+		$twig->addFunction(new TwigFunction('function', array(&$this, 'exec_function')));
+		$twig->addFunction(new TwigFunction('fn', array(&$this, 'exec_function')));
 
-		$twig->addFunction(new Twig_Function('shortcode', 'do_shortcode'));
+		$twig->addFunction(new TwigFunction('shortcode', 'do_shortcode'));
 
 		/**
 		 * Timber object functions.
 		 */
 
-		$twig->addFunction(new Twig_Function('Post', function( $post_id, $PostClass = 'Timber\Post' ) {
+		$twig->addFunction(new TwigFunction('Post', function( $post_id, $PostClass = 'Timber\Post' ) {
 			return self::maybe_convert_array( $post_id, $PostClass );
 		} ) );
 
-		$twig->addFunction( new Twig_Function( 'PostQuery', function( $args ) {
+		$twig->addFunction( new TwigFunction( 'PostQuery', function( $args ) {
 			return new PostQuery( $args );
 		} ) );
 
-		$twig->addFunction(new Twig_Function('Image', function( $post_id, $ImageClass = 'Timber\Image' ) {
+		$twig->addFunction(new TwigFunction('Image', function( $post_id, $ImageClass = 'Timber\Image' ) {
 			return self::maybe_convert_array( $post_id, $ImageClass );
 		} ) );
-		$twig->addFunction(new Twig_Function('Term', array($this, 'handle_term_object')));
-		$twig->addFunction(new Twig_Function('User', function( $post_id, $UserClass = 'Timber\User' ) {
+		$twig->addFunction(new TwigFunction('Term', array($this, 'handle_term_object')));
+		$twig->addFunction(new TwigFunction('User', function( $post_id, $UserClass = 'Timber\User' ) {
 			return self::maybe_convert_array( $post_id, $UserClass );
 		} ) );
-		$twig->addFunction( new Twig_Function( 'Attachment', function( $post_id, $AttachmentClass = 'Timber\Attachment' ) {
+		$twig->addFunction( new TwigFunction( 'Attachment', function( $post_id, $AttachmentClass = 'Timber\Attachment' ) {
 			return self::maybe_convert_array( $post_id, $AttachmentClass );
 		} ) );
 
 		/**
 		 * Deprecated Timber object functions.
 		 */
-		$twig->addFunction( new Twig_Function(
+		$twig->addFunction( new TwigFunction(
 			'TimberPost',
 			function( $post_id, $PostClass = 'Timber\Post' ) {
 				Helper::deprecated( '{{ TimberPost() }}', '{{ Post() }}', '2.0.0' );
@@ -85,7 +88,7 @@ class Twig {
 			}
 		) );
 
-		$twig->addFunction( new Twig_Function(
+		$twig->addFunction( new TwigFunction(
 			'TimberImage',
 			function( $post_id = false, $ImageClass = 'Timber\Image' ) {
 				Helper::deprecated( '{{ TimberImage() }}', '{{ Image() }}', '2.0.0' );
@@ -93,7 +96,7 @@ class Twig {
 			}
 		) );
 
-		$twig->addFunction( new Twig_Function(
+		$twig->addFunction( new TwigFunction(
 			'TimberTerm',
 			function( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
 				Helper::deprecated( '{{ TimberTerm() }}', '{{ Term() }}', '2.0.0' );
@@ -101,7 +104,7 @@ class Twig {
 			}
 		) );
 
-		$twig->addFunction( new Twig_Function(
+		$twig->addFunction( new TwigFunction(
 			'TimberUser',
 			function( $user_id, $UserClass = 'Timber\User' ) {
 				Helper::deprecated( '{{ TimberUser() }}', '{{ User() }}', '2.0.0' );
@@ -110,17 +113,17 @@ class Twig {
 		) );
 
 		/* bloginfo and translate */
-		$twig->addFunction(new Twig_Function('bloginfo', 'bloginfo'));
-		$twig->addFunction(new Twig_Function('__', '__'));
-		$twig->addFunction(new Twig_Function('translate', 'translate'));
-		$twig->addFunction(new Twig_Function('_e', '_e'));
-		$twig->addFunction(new Twig_Function('_n', '_n'));
-		$twig->addFunction(new Twig_Function('_x', '_x'));
-		$twig->addFunction(new Twig_Function('_ex', '_ex'));
-		$twig->addFunction(new Twig_Function('_nx', '_nx'));
-		$twig->addFunction(new Twig_Function('_n_noop', '_n_noop'));
-		$twig->addFunction(new Twig_Function('_nx_noop', '_nx_noop'));
-		$twig->addFunction(new Twig_Function('translate_nooped_plural', 'translate_nooped_plural'));
+		$twig->addFunction(new TwigFunction('bloginfo', 'bloginfo'));
+		$twig->addFunction(new TwigFunction('__', '__'));
+		$twig->addFunction(new TwigFunction('translate', 'translate'));
+		$twig->addFunction(new TwigFunction('_e', '_e'));
+		$twig->addFunction(new TwigFunction('_n', '_n'));
+		$twig->addFunction(new TwigFunction('_x', '_x'));
+		$twig->addFunction(new TwigFunction('_ex', '_ex'));
+		$twig->addFunction(new TwigFunction('_nx', '_nx'));
+		$twig->addFunction(new TwigFunction('_n_noop', '_n_noop'));
+		$twig->addFunction(new TwigFunction('_nx_noop', '_nx_noop'));
+		$twig->addFunction(new TwigFunction('translate_nooped_plural', 'translate_nooped_plural'));
 
 		return $twig;
 	}
@@ -168,7 +171,7 @@ class Twig {
 
 		if ( is_array($term_id) && !Helper::is_array_assoc($term_id) ) {
 			foreach ( $term_id as &$p ) {
-				$p = new $TermClass($p, $taxonomy);	
+				$p = new $TermClass($p, $taxonomy);
 			}
 			return $term_id;
 		}
@@ -196,57 +199,57 @@ class Twig {
 	}
 
 	/**
+	 * Adds filters.
 	 *
-	 *
-	 * @param \Twig_Environment $twig
-	 * @return \Twig_Environment
+	 * @param \Twig\Environment $twig The Twig Environment.
+	 * @return \Twig\Environment
 	 */
 	public function add_timber_filters( $twig ) {
 		/* image filters */
-		$twig->addFilter(new \Twig_SimpleFilter('resize', array('Timber\ImageHelper', 'resize')));
-		$twig->addFilter(new \Twig_SimpleFilter('retina', array('Timber\ImageHelper', 'retina_resize')));
-		$twig->addFilter(new \Twig_SimpleFilter('letterbox', array('Timber\ImageHelper', 'letterbox')));
-		$twig->addFilter(new \Twig_SimpleFilter('tojpg', array('Timber\ImageHelper', 'img_to_jpg')));
-		$twig->addFilter(new \Twig_SimpleFilter('towebp', array('Timber\ImageHelper', 'img_to_webp')));
+		$twig->addFilter(new TwigFilter('resize', array('Timber\ImageHelper', 'resize')));
+		$twig->addFilter(new TwigFilter('retina', array('Timber\ImageHelper', 'retina_resize')));
+		$twig->addFilter(new TwigFilter('letterbox', array('Timber\ImageHelper', 'letterbox')));
+		$twig->addFilter(new TwigFilter('tojpg', array('Timber\ImageHelper', 'img_to_jpg')));
+		$twig->addFilter(new TwigFilter('towebp', array('Timber\ImageHelper', 'img_to_webp')));
 
 		/* debugging filters */
-		$twig->addFilter(new \Twig_SimpleFilter('get_class', function( $obj ) {
+		$twig->addFilter(new TwigFilter('get_class', function( $obj ) {
 			Helper::deprecated( '{{ my_object | get_class }}', "{{ function('get_class', my_object) }}", '2.0.0' );
 			return get_class( $obj );
 		} ));
-		$twig->addFilter(new \Twig_SimpleFilter('print_r', function( $arr ) {
+		$twig->addFilter(new TwigFilter('print_r', function( $arr ) {
 			Helper::deprecated( '{{ my_object | print_r }}', '{{ dump(my_object) }}', '2.0.0' );
 			return print_r($arr, true);
 		} ));
 
 		/* other filters */
-		$twig->addFilter(new \Twig_SimpleFilter('stripshortcodes', 'strip_shortcodes'));
-		$twig->addFilter(new \Twig_SimpleFilter('array', array($this, 'to_array')));
-		$twig->addFilter(new \Twig_SimpleFilter('excerpt', 'wp_trim_words'));
-		$twig->addFilter(new \Twig_SimpleFilter('excerpt_chars', array('Timber\TextHelper', 'trim_characters')));
-		$twig->addFilter(new \Twig_SimpleFilter('function', array($this, 'exec_function')));
-		$twig->addFilter(new \Twig_SimpleFilter('pretags', array($this, 'twig_pretags')));
-		$twig->addFilter(new \Twig_SimpleFilter('sanitize', 'sanitize_title'));
-		$twig->addFilter(new \Twig_SimpleFilter('shortcodes', 'do_shortcode'));
-		$twig->addFilter(new \Twig_SimpleFilter('time_ago', array($this, 'time_ago')));
-		$twig->addFilter(new \Twig_SimpleFilter('wpautop', 'wpautop'));
-		$twig->addFilter(new \Twig_SimpleFilter('list', array($this, 'add_list_separators')));
+		$twig->addFilter(new TwigFilter('stripshortcodes', 'strip_shortcodes'));
+		$twig->addFilter(new TwigFilter('array', array($this, 'to_array')));
+		$twig->addFilter(new TwigFilter('excerpt', 'wp_trim_words'));
+		$twig->addFilter(new TwigFilter('excerpt_chars', array('Timber\TextHelper', 'trim_characters')));
+		$twig->addFilter(new TwigFilter('function', array($this, 'exec_function')));
+		$twig->addFilter(new TwigFilter('pretags', array($this, 'twig_pretags')));
+		$twig->addFilter(new TwigFilter('sanitize', 'sanitize_title'));
+		$twig->addFilter(new TwigFilter('shortcodes', 'do_shortcode'));
+		$twig->addFilter(new TwigFilter('time_ago', array($this, 'time_ago')));
+		$twig->addFilter(new TwigFilter('wpautop', 'wpautop'));
+		$twig->addFilter(new TwigFilter('list', array($this, 'add_list_separators')));
 
-		$twig->addFilter(new \Twig_SimpleFilter('pluck', array('Timber\Helper', 'pluck')));
-		$twig->addFilter(new \Twig_SimpleFilter('filter', array('Timber\Helper', 'filter_array')));
+		$twig->addFilter(new TwigFilter('pluck', array('Timber\Helper', 'pluck')));
+		$twig->addFilter(new TwigFilter('filter', array('Timber\Helper', 'filter_array')));
 
-		$twig->addFilter(new \Twig_SimpleFilter('relative', function( $link ) {
+		$twig->addFilter(new TwigFilter('relative', function( $link ) {
 					return URLHelper::get_rel_url($link, true);
 				} ));
 
-		$twig->addFilter(new \Twig_SimpleFilter('date', array($this, 'intl_date')));
+		$twig->addFilter(new TwigFilter('date', array($this, 'intl_date')));
 
-		$twig->addFilter(new \Twig_SimpleFilter('truncate', function( $text, $len ) {
+		$twig->addFilter(new TwigFilter('truncate', function( $text, $len ) {
 					return TextHelper::trim_words($text, $len);
 				} ));
 
 		/* actions and filters */
-		$twig->addFilter(new \Twig_SimpleFilter('apply_filters', function() {
+		$twig->addFilter(new TwigFilter('apply_filters', function() {
 					$args = func_get_args();
 					$tag = current(array_splice($args, 1, 1));
 
@@ -292,10 +295,10 @@ class Twig {
 	}
 
 	/**
+	 * Adds escapers.
 	 *
-	 *
-	 * @param Twig_Environment $twig
-	 * @return Twig_Environment
+	 * @param \Twig\Environment $twig The Twig Environment.
+	 * @return \Twig\Environment
 	 */
 	public function add_timber_escapers( $twig ) {
 
