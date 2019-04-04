@@ -289,7 +289,7 @@ class Loader {
 
 
 	/**
-	 * @return \Twig_Environment
+	 * @return \Twig\Environment
 	 */
 	public function get_twig() {
 		$loader = $this->get_loader();
@@ -321,7 +321,7 @@ class Loader {
 			}
 			$params['cache'] = $twig_cache_loc;
 		}
-		$twig = new \Twig_Environment($loader, $params);
+		$twig = new \Twig\Environment($loader, $params);
 		if ( WP_DEBUG ) {
 			$twig->addExtension(new \Twig_Extension_Debug());
 		}

@@ -259,29 +259,31 @@ class Twig {
 		/**
 		 * Filters the Twig environment used in the global context.
 		 *
-		 * You can use this filter if you want to add additional functionality to Twig, like global variables, filters or functions.
+		 * You can use this filter if you want to add additional functionality to Twig, like global
+		 * variables, filters or functions.
 		 *
 		 * @example
 		 * ```php
 		 * /**
-		 *  * @param \Twig_Environment $twig The Twig environment.
-		 *  * @return $twig
+		 *  * Adds Twig functionality.
+		 *  *
+		 *  * @param \Twig\Environment $twig The Twig Environment to which you can add additional functionality.
 		 *  *\/
 		 * add_filter( 'timber/twig', function( $twig ) {
 		 *     // Make get_theme_file_uri() usable as {{ theme_file() }} in Twig.
-		 *     $twig->addFunction( new Timber_Twig_Function( 'theme_file', 'get_theme_file_uri' ) );
+		 *     $twig->addFunction( new Twig\TwigFunction( 'theme_file', 'get_theme_file_uri' ) );
 		 *
 		 *     return $twig;
 		 * } );
 		 * ```
+		 *
 		 * ```twig
 		 * <a class="navbar-brand" href="{{ site.url }}">
 		 *     <img src="{{ theme_file( 'build/img/logo-example.svg' ) }}" alt="Logo {{ site.title }}">
 		 * </a>
 		 * ```
-		 * @since 0.21.9
 		 *
-		 * @param \Twig_Environment $twig The Twig Environment to which you can add additional functionality.
+		 * @param \Twig\Environment $twig The Twig environment.
 		 */
 		$twig = apply_filters('timber/twig', $twig);
 
@@ -302,18 +304,18 @@ class Twig {
 	 */
 	public function add_timber_escapers( $twig ) {
 
-		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_url', function( \Twig_Environment $env, $string ) {
+		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_url', function( \Twig\Environment $env, $string ) {
 			return esc_url($string);
 		});
-		$twig->getExtension('Twig_Extension_Core')->setEscaper('wp_kses_post', function( \Twig_Environment $env, $string ) {
+		$twig->getExtension('Twig_Extension_Core')->setEscaper('wp_kses_post', function( \Twig\Environment $env, $string ) {
 			return wp_kses_post($string);
 		});
 
-		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_html', function( \Twig_Environment $env, $string ) {
+		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_html', function( \Twig\Environment $env, $string ) {
 			return esc_html($string);
 		});
 
-		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_js', function( \Twig_Environment $env, $string ) {
+		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_js', function( \Twig\Environment $env, $string ) {
 			return esc_js($string);
 		});
 
