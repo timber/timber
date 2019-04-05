@@ -1,9 +1,7 @@
 ---
 title: "Template Locations"
+tags: guides
 weight: "75"
-menu:
-  main:
-    parent: "guides"
 ---
 
 You can set your own locations for your twig files with...

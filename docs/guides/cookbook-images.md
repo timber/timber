@@ -1,9 +1,7 @@
 ---
 title: "Image Cookbook"
+tags: guides
 weight: "1000"
-menu:
-  main:
-    parent: "guides"
 ---
 
 Timber makes it damn easy to use an image in a tag.

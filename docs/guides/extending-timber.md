@@ -1,9 +1,7 @@
 ---
 title: "Extending Timber"
+tags: guides
 weight: "1600"
-menu:
-  main:
-    parent: "guides"
 ---
 
 Myth: Timber is for making simple themes. Fact: It's for making incredibly complex themes _look_ easy. But yes, you can also make simple sites from it.

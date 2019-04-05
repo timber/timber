@@ -1,9 +1,7 @@
 ---
 title: "Sidebars"
+tags: guides
 weight: "1200"
-menu:
-  main:
-    parent: "guides"
 ---
 
 So you want a sidebar?

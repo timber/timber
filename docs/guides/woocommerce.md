@@ -1,8 +1,6 @@
 ---
 title: "WooCommerce"
-menu:
-  main:
-    parent: "guides"
+tags: guides
 ---
 
 ## Point of entry - main WooCommerce PHP file

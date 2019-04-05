@@ -1,8 +1,6 @@
 ---
 title: "Gutenberg"
-menu:
-  main:
-    parent: "guides"
+tags: guides
 ---
 
 ## Using Gutenberg with Timber

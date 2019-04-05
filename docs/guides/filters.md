@@ -1,9 +1,7 @@
 ---
 title: "Filters"
+tags: guides
 weight: "900"
-menu:
-  main:
-    parent: "guides"
 ---
 
 ## General Filters

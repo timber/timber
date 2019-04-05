@@ -1,8 +1,6 @@
 ---
 title: "Escaping"
-menu:
-  main:
-    parent: "guides"
+tags: guides
 weight: "400"
 aliases:
   - /guides/escapers

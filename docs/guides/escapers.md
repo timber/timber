@@ -1,8 +1,6 @@
 ---
 title: "Escapers"
-menu:
-  main:
-    parent: "guides"
+tags: guides
 ---
 
 ## Universal Escaping

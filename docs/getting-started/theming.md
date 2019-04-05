@@ -1,8 +1,6 @@
 ---
 title: "Theming"
-menu:
-  main:
-    parent: "getting-started"
+tags: getting-started
 ---
 
 ## Your first Timber project

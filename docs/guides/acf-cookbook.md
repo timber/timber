@@ -1,8 +1,6 @@
 ---
 title: "ACF Cookbook"
-menu:
-  main:
-    parent: "guides"
+tags: guides
 ---
 
 Timber is designed to play nicely with (the amazing) [Advanced Custom Fields](http://www.advancedcustomfields.com/). It's not a requirement, of course.

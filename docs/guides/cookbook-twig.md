@@ -1,9 +1,7 @@
 ---
 title: "Twig Cookbook"
+tags: guides
 weight: "200"
-menu:
-  main:
-    parent: "guides"
 ---
 
 ## Using Twig vars in live type

@@ -1,9 +1,7 @@
 ---
 title: "WordPress Integration"
+tags: guides
 weight: "100"
-menu:
-  main:
-    parent: "guides"
 ---
 
 Timber plays nicely with your existing WordPress setup. You can still use other plugins, etc.

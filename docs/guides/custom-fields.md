@@ -1,9 +1,7 @@
 ---
 title: "Custom Fields"
+tags: guides
 weight: "600"
-menu:
-  main:
-    parent: "guides"
 ---
 
 Timber tries to make it as easy as possible for you to retrieve custom meta data for post, term and user objects. And it works with a range of plugins that make it easier for you to create custom fields, like Advanced Custom Fields. While most of this guide applies to everything you do with custom fields, we have separate guides in the [Integrations sections](https://timber.github.io/docs/integrations/).

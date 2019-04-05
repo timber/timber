@@ -1,9 +1,7 @@
 ---
 title: "Unit Testing"
+tags: guides
 weight: "1900"
-menu:
-  main:
-    parent: "guides"
 aliases:
   - /guides/testing
 ---

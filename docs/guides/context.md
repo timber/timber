@@ -1,9 +1,7 @@
 ---
 title: "Context"
+tags: guides
 weight: "50"
-menu:
-  main:
-    parent: "guides"
 ---
 
 The context is one of the most important concepts to understand in Timber. Think of the context as the set of variables that are passed to your Twig template.
