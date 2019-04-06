@@ -9,7 +9,7 @@ class TestTimberPostPreviewObject extends Timber_UnitTestCase {
 		function test1886Error() {
 			$expected = '<p>Govenment:</p> <ul> <li>of the <strong>people</strong></li> <li>by the people</li> <li>for the people</li> </ul>';
 			$post_id = $this->factory->post->create(array('post_content' => $expected.'<blockquote>Lincoln</blockquote>', 'post_excerpt' => false));
-			$post = new Timber\Post($post_id);
+			$post = PostFactory::get($post_id);
 			$template = "{{ post.preview.strip('<p><strong><ul><ol><li><br>') }}";
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals($expected.' <p>Lincoln</p>&hellip; <a href="http://example.org/?p='.$post_id.'" class="read-more">Read More</a>', $str);
@@ -18,7 +18,7 @@ class TestTimberPostPreviewObject extends Timber_UnitTestCase {
 		function test1886ErrorWithForce() {
 			$expected = '<p>Govenment:</p> <ul> <li>of the <strong>people</strong></li> <li>by the people</li> <li>for the people</li> </ul>';
 			$post_id = $this->factory->post->create(array('post_excerpt' => $expected, 'post_content' => $this->gettysburg));
-			$post = new Timber\Post($post_id);
+			$post = PostFactory::get($post_id);
 			$template = "{{ post.preview.strip('<ul><li>').length(10).force }}";
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('Govenment: <ul> <li>of the people</li> <li>by the people</li> <li>for the</li></ul>&hellip; <a href="http://example.org/?p='.$post_id.'" class="read-more">Read More</a>', $str);
