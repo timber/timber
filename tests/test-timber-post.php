@@ -447,14 +447,14 @@ class TestTimberPost extends Timber_UnitTestCase {
             // @todo The below should work magically when the iterators are merged
             setup_postdata( get_post( $post_id ) );
 
-            $post = new Timber\Post();
+            $post = PostFactory::get();
 			$this->assertEquals($page1, trim(strip_tags( $post->paged_content() )));
 
             $pagination = $post->pagination();
             $this->go_to( $pagination['pages'][1]['link'] );
 
             setup_postdata( get_post( $post_id ) );
-            $post = new Timber\Post();
+            $post = PostFactory::get();
 
 			$this->assertEquals($page2, trim(strip_tags( $post->paged_content() )));
 		}
@@ -507,7 +507,7 @@ class TestTimberPost extends Timber_UnitTestCase {
 		 */
 		function testPostMetaMetaArrayProperty(){
 			$post_id = $this->factory->post->create();
-			$post = new Timber\Post($post_id);
+			$post = PostFactory::get($post_id);
 			$string = Timber::compile_string('My {{ post.meta._pingme[0] }}', array('post' => $post));
 			$this->assertEquals('My 1', trim($string));
 		}
@@ -811,7 +811,7 @@ class TestTimberPost extends Timber_UnitTestCase {
 
 		function testPostTermsArgumentStyle() {
 			$pid      = $this->factory->post->create();
-			$post     = new Timber\Post( $pid );
+			$post     = PostFactory::get( $pid );
 			$category = wp_insert_term( 'Uncategorized', 'category' );
 			self::set_object_terms( $pid, $category, 'category' );
 
@@ -883,7 +883,7 @@ class TestTimberPost extends Timber_UnitTestCase {
 
 		function testPostTermsMerge() {
 			$pid  = $this->factory->post->create();
-			$post = new Timber\Post( $pid );
+			$post = PostFactory::get( $pid );
 
 			// register a custom taxonomy, create some terms in it and associate to post
 			register_taxonomy( 'team', 'post' );
@@ -914,7 +914,7 @@ class TestTimberPost extends Timber_UnitTestCase {
 
 		function testPostTermQueryArgs() {
 			$pid  = $this->factory->post->create();
-			$post = new Timber\Post( $pid );
+			$post = PostFactory::get( $pid );
 
 			// register a custom taxonomy, create some terms in it and associate to post
 			register_taxonomy( 'team', 'post' );

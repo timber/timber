@@ -1,11 +1,13 @@
 <?php
 
+use Timber\Factory\PostFactory;
+
 class TestTimberFilters extends Timber_UnitTestCase {
 
 	function testPostMetaFieldFilter() {
 		$post_id = $this->factory->post->create();
 		update_post_meta( $post_id, 'Frank', 'Drebin' );
-		$tp = new Timber\Post( $post_id );
+		$tp = PostFactory::get( $post_id );
 		add_filter( 'timber/post/meta', array( $this, 'filter_timber_post_get_meta_field' ), 10, 5 );
 		$this->assertEquals( 'Drebin', $tp->meta( 'Frank' ) );
 		remove_filter( 'timber/post/meta', array( $this, 'filter_timber_post_get_meta_field' ) );

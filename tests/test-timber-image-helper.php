@@ -1,5 +1,7 @@
 <?php
 
+use Timber\Factory\PostFactory;
+
 	class TestTimberImageHelper extends TimberAttachment_UnitTestCase {
 
 		function testHTTPAnalyze() {
@@ -59,7 +61,7 @@
 			$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
 			add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 			$data = array();
-			$data['post'] = new Timber\Post( $post_id );
+			$data['post'] = PostFactory::get( $post_id );
 			$data['size'] = $size;
 			$data['crop'] = 'default';
 			Timber::compile( $template, $data );
@@ -72,7 +74,7 @@
 			$exists = file_exists( $resized_path );
 			$this->assertTrue( $exists );
 		}
-		
+
 		/**
 		 * @doesNotPerformAssertions
 		 */

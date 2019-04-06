@@ -1,5 +1,7 @@
 <?php
 
+use Timber\Factory\PostFactory;
+
 class TestTimberImageRetina extends Timber_UnitTestCase {
 
 	function testImageRetina() {
@@ -29,7 +31,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
 		add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 		$data = array();
-		$post = new Timber\Post( $post_id );
+		$post = PostFactory::get( $post_id );
 		$data['post'] = $post;
 		$str = '{{post.thumbnail.src|retina}}';
 		$compiled = Timber::compile_string($str, $data);
@@ -51,7 +53,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
 		add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 		$data = array();
-		$post = new Timber\Post( $post_id );
+		$post = PostFactory::get( $post_id );
 		$data['post'] = $post;
 		$str = '{{post.thumbnail.src|retina(1.5)}}';
 		$compiled = Timber::compile_string($str, $data);
@@ -73,7 +75,7 @@ class TestTimberImageRetina extends Timber_UnitTestCase {
 		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
 		add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 		$data = array();
-		$data['post'] = new Timber\Post( $post_id );
+		$data['post'] = PostFactory::get( $post_id );
 		$str = '{{post.thumbnail.src|resize(100, 50)|retina(3)}}';
 		$compiled = Timber::compile_string($str, $data);
 		$img = new Timber\Image($compiled);

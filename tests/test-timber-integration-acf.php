@@ -1,5 +1,7 @@
 <?php
 
+use Timber\Factory\PostFactory;
+
 use Timber\Integrations\ACF;
 
 class TestTimberIntegrationACF extends Timber_UnitTestCase {
@@ -12,7 +14,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 		$pid = $this->factory->post->create();
 		update_field( 'subhead', 'foobar', $pid );
 		$str = '{{post.meta("subhead")}}';
-		$post = new Timber\Post( $pid );
+		$post = PostFactory::get( $pid );
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
 		$this->assertEquals( 'foobar', $str );
 	}
@@ -20,7 +22,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 	function testACFHasFieldPostFalse() {
 		$pid = $this->factory->post->create();
 		$str = '{% if post.has_field("heythisdoesntexist") %}FAILED{% else %}WORKS{% endif %}';
-		$post = new Timber\Post( $pid );
+		$post = PostFactory::get( $pid );
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
 		$this->assertEquals('WORKS', $str);
 	}
@@ -29,7 +31,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 		$pid = $this->factory->post->create();
 		update_post_meta($pid, 'best_radiohead_album', 'in_rainbows');
 		$str = '{% if post.has_field("best_radiohead_album") %}In Rainbows{% else %}OK Computer{% endif %}';
-		$post = new Timber\Post( $pid );
+		$post = PostFactory::get( $pid );
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
 		$this->assertEquals('In Rainbows', $str);
 	}
@@ -64,7 +66,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 		$pid      = $this->factory->post->create();
 		update_field( 'thinger', 'foo', $pid );
 		update_field( '_thinger', $key, $pid );
-		$post     = new Timber\Post($pid);
+		$post     = PostFactory::get($pid);
 		$template = '{{ post.meta("thinger") }} / {{ post.field_object("thinger").key }}';
 		$str      = Timber::compile_string($template, array( 'post' => $post ));
 		$this->assertEquals('foo / '.$key, $str);
@@ -94,7 +96,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 		) );
 
 		$post_id = $this->factory->post->create();
-		$post    = new Timber\Post( $post_id );
+		$post    = PostFactory::get( $post_id );
 		update_field( 'lead', 'Murder Spagurders are dangerous sneks.', $post_id );
 
 		$string = trim( Timber::compile_string( "{{ post.meta('lead') }}", [ 'post' => $post ] ) );
@@ -109,7 +111,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 	 */
 	function testPostGetFieldDeprecated() {
 		$post_id = $this->factory->post->create();
-		$post    = new Timber\Post( $post_id );
+		$post    = PostFactory::get( $post_id );
 
 		$post->get_field( 'field_name' );
 	}

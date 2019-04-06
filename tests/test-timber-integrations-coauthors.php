@@ -1,5 +1,7 @@
 <?php
 
+use Timber\Factory\PostFactory;
+
 	class TestTimberIntegrationsCoAuthors extends Timber_UnitTestCase {
 
 		/**
@@ -59,7 +61,7 @@
 			$uids[] = $this->factory->user->create(array('display_name' => 'Mike Swartz', 'user_login' => 'm_swartz'));
 			$uids[] = $this->factory->user->create(array('display_name' => 'JP Boneyard', 'user_login' => 'jpb'));
 			$pid = $this->factory->post->create(array('post_author' => $uids[0]));
-			$post = new Timber\Post($pid);
+			$post = PostFactory::get($pid);
 			$cap = new CoAuthors_Plus();
 			$added = $cap->add_coauthors($pid, array('mbottitta', 'm_swartz', 'jpb'));
 			$this->assertTrue($added);
@@ -77,7 +79,7 @@
 		function testAuthors() {
 			$uid = $this->factory->user->create(array('display_name' => 'Jen Weinman', 'user_login' => 'aquajenus'));
 			$pid = $this->factory->post->create(array('post_author' => $uid));
-			$post = new Timber\Post($pid);
+			$post = PostFactory::get($pid);
 			$template_string = '{% for author in post.authors %}{{author.name}}{% endfor %}';
 			$str = Timber::compile_string($template_string, array('post' => $post));
 			$this->assertEquals('Jen Weinman', $str);
@@ -85,7 +87,7 @@
 
 		function testGuestAuthor(){
 			$pid = $this->factory->post->create();
-			$post = new Timber\Post($pid);
+			$post = PostFactory::get($pid);
 
 			$user_login = 'bmotia';
 			$display_name = 'Motia';
@@ -105,7 +107,7 @@
 		function testGuestAuthorWithRegularAuthor(){
 			$uid = $this->factory->user->create(array('display_name' => 'Alexander Hamilton', 'user_login' => 'ahamilton'));
 			$pid = $this->factory->post->create(array('post_author' => $uid));
-			$post = new Timber\Post($pid);
+			$post = PostFactory::get($pid);
 
 			$user_login = 'bmotia';
 			$display_name = 'Motia';
@@ -129,7 +131,7 @@
 			global $coauthors_plus;
 
 			$pid = $this->factory->post->create();
-			$post = new Timber\Post($pid);
+			$post = PostFactory::get($pid);
 
 			$user_login = 'truelogin';
 			$display_name = 'True Name';
@@ -162,7 +164,7 @@
 
 		function testGuestAuthorAvatar(){
 			$pid = $this->factory->post->create();
-			$post = new Timber\Post($pid);
+			$post = PostFactory::get($pid);
 			$user_login = 'withfeaturedimage';
 			$display_name = 'Have Featured';
 			$email = 'admin@admin.com';

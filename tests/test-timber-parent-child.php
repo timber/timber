@@ -1,5 +1,7 @@
 <?php
 
+use Timber\Factory\PostFactory;
+
 	class TestTimberParentChild extends Timber_UnitTestCase {
 
 		function testParentChildGeneral(){
@@ -11,7 +13,7 @@
 			$dest_dir = WP_CONTENT_DIR.'/themes/twentyfifteen';
 			copy(__DIR__.'/assets/single-course.twig', $dest_dir.'/views/single-course.twig');
 			$pid = $this->factory->post->create();
-			$post = new Timber\Post($pid);
+			$post = PostFactory::get($pid);
 			$str = Timber::compile(array('single-course.twig', 'single.twig'), array( 'post' => $post ));
 			$this->assertEquals('I am single course', $str);
 		}
