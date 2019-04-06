@@ -3,8 +3,9 @@
 namespace Timber;
 
 /**
+ * Class Integrations
+ *
  * This is for integrating external plugins into timber
- * @package  timber
  */
 class Integrations {
 
@@ -14,7 +15,7 @@ class Integrations {
 	public function __construct() {
 		$this->init();
 	}
-    
+
 	public function init() {
 		add_action('init', array($this, 'maybe_init_integrations'));
 

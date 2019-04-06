@@ -1,5 +1,6 @@
 ---
 title: "WordPress Integration"
+weight: "100"
 menu:
   main:
     parent: "guides"
@@ -27,49 +28,32 @@ Full documentation to come.
 
 ## Actions
 
-Call them in your Twig template...
+You can all actions in your Twig templates like this:
 
 ```twig
 {% do action('my_action') %}
 {% do action('my_action_with_args', 'foo', 'bar') %}
 ```
 
-... in your `functions.php` file:
+If you ask yourself why there’s no underline between `do` and `action`: The expression [`do`](https://twig.symfony.com/doc/2.x/tags/do.html) is a feature of Twig which *calls a function without printing its return value*, like `{{ }}` does. Timber only register an `action` function, which then calls the `do_action()` function.
 
-```php
-<?php
-add_action( 'my_action', 'my_function' );
+If you want anything from the template's context, you'll need to pass that manually:
 
-function my_function( $context ) {
-    // $context stores the template context in case you need to reference it
-
-    // Outputs title of your post
-    echo $context['post']->post_title;
-}
+```twig
+{% do action('my_action', 'foo', post) %}
 ```
 
-```php
-<?php
+```php  
+<?php   
+
 add_action( 'my_action_with_args', 'my_function_with_args', 10, 2 );
 
-function my_function_with_args( $foo, $bar ){
-    echo 'I say ' . $foo . ' and ' . $bar;
+function my_function_with_args( $foo, $post ){    
+    echo 'I say ' . $foo . '!';
+    echo 'For the post with title ' . $post->title(); 
 }
+
 ```
-
-You can still get the context object when passing args, it’s always the _last_ argument...
-
-```php
-<?php
-add_action( 'my_action_with_args', 'my_function_with_args', 10, 3 );
-
-function my_function_with_args( $foo, $bar, $context ){
-    echo 'I say ' . $foo . ' and ' . $bar;
-    echo 'For the post with title ' . $context['post']->post_title;
-}
-```
-
-Please note the argument count that WordPress requires for `add_action`.
 
 ## Filters
 
@@ -156,7 +140,7 @@ public function widget( $args, $instance ) {
 
 Well, if it works for widgets, why shouldn't it work for shortcodes? Of course it does!
 
-Let’s implement a `[youtube]` shortcode which embeds a youtube video.  
+Let’s implement a `[youtube]` shortcode which embeds a youtube video.
 For the desired usage of `[youtube id=xxxx]`, we only need a few lines of code:
 
 ```php
@@ -204,3 +188,72 @@ Timber and Twig can process your shortcodes by using the `{% filter shortcodes %
 {% endfilter %}
 ```
 
+## Password protected posts
+
+It’s recommended to use the [`post_password_required()`](https://developer.wordpress.org/reference/functions/post_password_required/) function to check if a post requires a password. You can add this check in all your single PHP template files
+
+**single.php**
+
+```php
+$context = Timber::context();
+$post = Timber::query_post();
+$context['post'] = $post;
+if ( post_password_required( $post->ID ) ) {
+    Timber::render( 'single-password.twig', $context );
+} else {
+    Timber::render( array( 'single-' . $post->ID . '.twig', 'single-' . $post->post_type . '.twig', 'single.twig' ), $context );
+}
+```
+
+**single-password.twig**
+
+```twig
+{% extends "base.twig" %}
+
+{% block content %}
+    {{ function('get_the_password_form') }}
+{% endblock %}
+```
+
+
+#### Using a Filter
+With a WordPress filter, you can use a specific PHP template for all your password protected posts. Note: this is accomplished using only standard WordPress functions. This is nothing special to Timber
+
+**functions.php**
+
+```php
+/**
+ * Use specific template for password protected posts.
+ *
+ * By default, this will use the `password-protected.php` template file. If you want password
+ * templates specific to a post type, use `password-protected-$posttype.php`.
+ */
+add_filter( 'template_include', 'get_password_protected_template', 99 );
+
+function get_password_protected_template( $template ) {
+    global $post;
+
+    if ( ! empty( $post ) && post_password_required( $post->ID ) ) {
+        $template = locate_template( [
+            'password-protected.php',
+            "password-protected-{$post->post_type}.php",
+        ] ) ?: $template;
+    }
+
+    return $template;
+};
+```
+
+With this filter, you can use a **password-protected.php** template file with the following contents:
+
+```php
+<?php
+
+$context                  = Timber::context();
+$context['post']          = new Timber\Post();
+$context['password_form'] = get_the_password_form();
+
+Timber::render( 'password-protected.twig', $context );
+```
+
+To display the password on the page, you could then use `{{ password_form }}` in your Twig file.

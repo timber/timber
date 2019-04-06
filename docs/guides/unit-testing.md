@@ -1,8 +1,11 @@
 ---
-title: "Testing"
+title: "Unit Testing"
+weight: "1900"
 menu:
   main:
     parent: "guides"
+aliases:
+  - /guides/testing
 ---
 
 ## Setup a testing environment with PHPUnit

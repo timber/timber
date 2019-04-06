@@ -6,6 +6,9 @@ use Timber\Factory\PostFactory;
 use Timber\PostCollection;
 use Timber\QueryIterator;
 
+/**
+ * Class PostGetter
+ */
 class PostGetter {
 
 	/**
@@ -50,9 +53,29 @@ class PostGetter {
 		return $result->ID;
 	}
 
+	// TODO is this right?
 	public static function get_posts( $query = false, $PostClass = '', $return_collection = false ) {
+		add_filter('pre_get_posts', array('Timber\PostGetter', 'set_query_defaults'));
 		$posts = self::query_posts($query, $PostClass);
-		return apply_filters('timber_post_getter_get_posts', $posts->get_posts($return_collection));
+
+		/**
+		 * Filters the posts returned by `Timber::get_posts()`.
+		 *
+		 * There’s no replacement for this filter, because it’s called in a function that will be
+		 * removed in the future. If you’re using `Timber::get_posts()`, you should replace it with
+		 * `new Timber\PostQuery()`.
+		 *
+		 * @deprecated 2.0.0
+		 */
+		$posts = apply_filters_deprecated(
+			'timber_post_getter_get_posts',
+			array( $posts->get_posts( $return_collection ) ),
+			'2.0.0',
+			false,
+			'There’s no replacement for this filter, because it’s called in a function that will be removed. If you’re using Timber::get_posts(), you should replace it with new Timber\PostQuery().'
+		);
+
+		return $posts;
 	}
 
 	public static function query_post( $query = false, $PostClass = '' ) {
@@ -60,6 +83,27 @@ class PostGetter {
 		if ( method_exists($posts, 'current') && $post = $posts->current() ) {
 			return $post;
 		}
+	}
+
+	/**
+	 * Sets some default values for those parameters for the query when not set. WordPress's get_posts sets a few of
+	 * these parameters true by default (compared to WP_Query), we should do the same.
+	 * @internal
+	 * @param \WP_Query $query
+	 * @return \WP_Query
+	 */
+	public static function set_query_defaults( $query ) {
+		if ( isset($query->query) && !isset($query->query['ignore_sticky_posts']) ) {
+			$query->set('ignore_sticky_posts', true);
+		}
+		if ( isset($query->query) && !isset($query->query['suppress_filters']) ) {
+			$query->set('suppress_filters', true);
+		}
+		if ( isset($query->query) && !isset($query->query['no_found_rows']) ) {
+			$query->set('no_found_rows', true);
+		}
+		remove_filter('pre_get_posts', array('Timber\PostGetter', 'set_query_defaults'));
+		return $query;
 	}
 
 	/**
@@ -121,9 +165,58 @@ class PostGetter {
 	 *
 	 * @return string
 	 */
-	public static function get_post_class( $post_type, $post_class = '' ) {
-		$post_class = apply_filters( 'Timber\PostClassMap', $post_class );
-		$post_class_use = '';
+	public static function get_post_class( $post_type, $post_class = '\Timber\Post' ) {
+		/**
+		 * Filters the class(es) used for different post types.
+		 *
+		 * @since 2.0.0
+		 * @example
+		 * ```
+		 * // Use one class for all Timber posts.
+		 * add_filter( 'timber/post/post_class', function( $post_class, $post_type ) {
+		 *    return 'CustomPostClass';
+		 * }, 10, 2 );
+		 *
+		 * // Use default class for all post types, except for pages.
+		 * add_filter( 'timber/post/post_class', function( $post_class, $post_type ) {
+		 *    // Bailout if not a page
+		 *    if ( 'page' !== $post_type ) {
+		 *        return $post_class;
+		 *    }
+		 *
+		 *    return 'PagePost';
+		 * }, 10, 2 );
+		 *
+		 * // Use a class map for different post types
+		 * add_filter( 'timber/post/post_class', function( $post_class, $post_type ) {
+		 *    return array(
+		 *        'post' => 'BlogPost',
+		 *        'apartment' => 'ApartmentPost',
+		 *        'city' => 'CityPost',
+		 *    );
+		 * }, 10, 2 );
+		 * ```
+		 *
+		 * @param string|array $post_class The post class(es) to use. Can be a string for a single
+		 *                                 post class or an key-value array map to define which post
+		 *                                 type should use which class. Default `Timber\Post`.
+		 * @param string       $post_type  The post type of the post.
+		 */
+		$post_class = apply_filters( 'timber/post/post_class', $post_class, $post_type );
+
+		/**
+		 * Filters the class(es) used for different post types.
+		 *
+		 * @deprecated 2.0.0, use `timber/post/post_class`
+		 */
+		$post_class = apply_filters_deprecated(
+			'Timber\PostClassMap',
+			array( $post_class ),
+			'2.0.0',
+			'timber/post/post_class'
+		);
+
+		$post_class_use = '\Timber\Post';
 
 		if ( is_array($post_class) ) {
 			if ( isset($post_class[$post_type]) ) {
@@ -134,10 +227,10 @@ class PostGetter {
 		} elseif ( is_string($post_class) ) {
 			$post_class_use = $post_class;
 		} else {
-			Helper::error_log('Unexpeted value for PostClass: '.print_r($post_class, true));
+			Helper::error_log('Unexpected value for PostClass: '.print_r($post_class, true));
 		}
 
-		if ( $post_class_use === '\Timber\Post' || $post_class_use === 'Timber\Post') {
+		if ( $post_class_use === '\Timber\Post' || $post_class_use === 'Timber\Post' ) {
 			return $post_class_use;
 		}
 

@@ -1,5 +1,6 @@
 ---
 title: "Custom Page Templates"
+weight: "500"
 menu:
   main:
     parent: "guides"

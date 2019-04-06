@@ -1,5 +1,6 @@
 ---
 title: "Pagination"
+weight: "1100"
 menu:
   main:
     parent: "guides"
@@ -13,7 +14,7 @@ This will only work in a php file with an active query (like `archive.php` or `h
 
 ```php
 	<?php
-	$context = Timber::get_context();
+	$context = Timber::context();
 	$context['posts'] = new Timber\PostQuery();
 	Timber::render('archive.twig', $context);
 ```
@@ -50,7 +51,7 @@ You can then markup the output like so  (of course, the exact markup is up to YO
 	if (!isset($paged) || !$paged){
 		$paged = 1;
 	}
-	$context = Timber::get_context();
+	$context = Timber::context();
 	$args = array(
 		'post_type' => 'event',
 		'posts_per_page' => 5,
@@ -77,7 +78,7 @@ In your archive.php or home.php template:
 
 ```php
 	<?php
-	$context = Timber::get_context();
+	$context = Timber::context();
 	$context['posts'] = new Timber\PostQuery();
 	Timber::render('archive.twig', $context);
 ```

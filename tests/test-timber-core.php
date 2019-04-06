@@ -1,6 +1,6 @@
 <?php
 
-class TimberCoreTester extends TimberPost {
+class TimberCoreTester extends Timber\Post {
 
 	public $public = 'public A';
 	protected $protected = 'protected A';

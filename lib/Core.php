@@ -2,6 +2,9 @@
 
 namespace Timber;
 
+/**
+ * Class Core
+ */
 abstract class Core {
 
 	public $id;
@@ -46,17 +49,19 @@ abstract class Core {
 	}
 
 	/**
-	 * Takes an array or object and adds the properties to the parent object
+	 * Takes an array or object and adds the properties to the parent object.
+	 *
 	 * @example
 	 * ```php
-	 * $data = array('airplane' => '757-200', 'flight' => '5316');
-	 * $post = new TimberPost()
+	 * $data = array( 'airplane' => '757-200', 'flight' => '5316' );
+	 * $post = new Timber\Post();
 	 * $post->import(data);
-	 * echo $post->airplane; //757-200
+	 *
+	 * echo $post->airplane; // 757-200
 	 * ```
 	 * @param array|object $info an object or array you want to grab data from to attach to the Timber object
 	 */
-	public function import( $info, $force = false ) {
+	public function import( $info, $force = false, $only_declared_properties = false ) {
 		if ( is_object($info) ) {
 			$info = get_object_vars($info);
 		}
@@ -68,19 +73,29 @@ abstract class Core {
 				if ( !empty($key) && $force ) {
 					$this->$key = $value;
 				} else if ( !empty($key) && !method_exists($this, $key) ) {
-					$this->$key = $value;
+					if ( $only_declared_properties ) {
+						if ( property_exists($this, $key) ) {
+							$this->$key = $value;
+						}
+					} else {
+						$this->$key = $value;
+					}
+
 				}
 			}
 		}
 	}
 
-
 	/**
-	 * @ignore
-	 * @param string  $key
-	 * @param mixed   $value
+	 * Updates metadata for the object.
+	 *
+	 * @deprecated 2.0.0 Use `update_metadata()` instead.
+	 *
+	 * @param string $key   The key of the meta field to update.
+	 * @param mixed  $value The new value.
 	 */
 	public function update( $key, $value ) {
+		Helper::deprecated( 'Timber\Core::update()', 'update_metadata()', '2.0.0' );
 		update_metadata($this->object_type, $this->ID, $key, $value);
 	}
 
@@ -116,13 +131,5 @@ abstract class Core {
 		$ret = array();
 		$ret['can_edit'] = $this->can_edit();
 		return $ret;
-	}
-
-	/**
-	 * @param string $field_name
-	 * @return mixed
-	 */
-	public function get_field( $field_name ) {
-		return $this->get_meta_field($field_name);
 	}
 }

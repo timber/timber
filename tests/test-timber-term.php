@@ -14,7 +14,7 @@ class TestTimberTerm extends Timber_UnitTestCase {
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zong post_tag', $string);
 
-			$template = '{% set zp_term = TimberTerm('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
+			$template = '{% set zp_term = Term('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zebra', $string);
 		}
@@ -29,9 +29,19 @@ class TestTimberTerm extends Timber_UnitTestCase {
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zong arts', $string);
 
-			$template = '{% set zp_term = TimberTerm('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
+			$template = '{% set zp_term = Term('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zebra', $string);
+		}
+
+		function testConstructorWithObject() {
+			register_taxonomy('arts', array('post'));
+
+			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
+
+			$term_obj = get_term($term_id);
+			$term = new Timber\Term($term_obj, 'arts');
+			$this->assertEquals('Zong', $term->name());
 		}
 
 		function testConstructor() {
@@ -40,7 +50,7 @@ class TestTimberTerm extends Timber_UnitTestCase {
 			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
 			$term = TermFactory::get($term_id, 'arts');
 			$this->assertEquals('Zong', $term->name());
-			$template = '{% set zp_term = TimberTerm("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
+			$template = '{% set zp_term = Term("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zong', $string);
 		}
@@ -97,14 +107,12 @@ class TestTimberTerm extends Timber_UnitTestCase {
 			$term_id = $this->factory->term->create();
 			$term = TermFactory::get($term_id);
 			$this->assertContains('http://', $term->link());
-			$this->assertContains('http://', $term->get_link());
 		}
 
 		function testTermPath() {
 			$term_id = $this->factory->term->create();
 			$term = TermFactory::get($term_id);
 			$this->assertFalse(strstr($term->path(), 'http://'));
-			$this->assertFalse(strstr($term->get_path(), 'http://'));
 		}
 
 		function testGetPostsWithPostTypesString() {
@@ -137,6 +145,9 @@ class TestTimberTerm extends Timber_UnitTestCase {
 			$this->assertEquals('5', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ term.get_posts }}
+		 */
 		function testGetPostsOld() {
 			$term_id = $this->factory->term->create();
 			$posts = array();
@@ -170,6 +181,9 @@ class TestTimberTerm extends Timber_UnitTestCase {
 			$this->assertEquals(0, count($gotten_posts));
 		}
 
+		/**
+		 * @expectedDeprecated {{ term.get_posts }}
+		 */
 		function testGetPostsNew() {
 			require_once('php/timber-post-subclass.php');
 			$term_id = $this->factory->term->create();
@@ -230,6 +244,7 @@ class TestTimberTerm extends Timber_UnitTestCase {
 		 */
 		function testTermWithNativeMetaNotExisting() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+
 			add_term_meta($tid, 'bar', 'qux');;
 			$wp_native_value = get_term_meta($tid, 'foo', true);
 			$acf_native_value = get_field('foo', 'category_'.$tid);

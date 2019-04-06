@@ -1,5 +1,6 @@
 ---
 title: "Performance/Caching"
+weight: "1300"
 menu:
   main:
     parent: "guides"
@@ -22,7 +23,8 @@ When rendering, use the `$expires` argument in [`Timber::render`](https://timber
 
 ```php
 <?php
-$context['posts'] = Timber::get_posts();
+$context['posts'] = new Timber\PostQuery();
+
 Timber::render( 'index.twig', $context, 600 );
 ```
 
@@ -118,10 +120,10 @@ You can also use some [syntactic sugar](http://en.wikipedia.org/wiki/Syntactic_s
 ```php
 <?php
 
-$context = Timber::get_context();
+$context = Timber::context();
 
 $context['main_stories'] = TimberHelper::transient( 'main_stories', function(){
-    $posts = Timber::get_posts();
+    $posts = new Timber\PostQuery();
 
     // As an example, do something expensive with these posts
     $extra_teases = get_field( 'my_extra_teases', 'options' );
@@ -153,14 +155,13 @@ Timber provides some quick shortcuts to measure page timing. Here’s an example
 ```php
 <?php
 // This generates a starting time
-$start = TimberHelper::start_timer();
+$start = Timber\Helper::start_timer();
 
-$context = Timber::get_context();
-$context['post'] = Timber::get_post();
+$context = Timber::context();
 $context['whatever'] = get_my_foo();
 
 Timber::render( 'single.twig', $context, 600 );
 
 // This reports the time diff by passing the $start time
-echo TimberHelper::stop_timer( $start);
+echo Timber\Helper::stop_timer( $start);
 ```

@@ -84,7 +84,7 @@ Timber::render( 'welcome.twig', $context );
 ```php
 <?php
 $context = array();
-$context['welcome'] = Timber::get_post( 56 );
+$context['welcome'] = new Timber\Post( 56 );
 
 Timber::render( 'welcome.twig', $context );
 ```
@@ -107,7 +107,7 @@ Timber::render( 'welcome.twig', $context );
 
 ```php
 <?php
-$context['posts'] = Timber::get_posts();
+$context['posts'] = new Timber\PostQuery();
 
 Timber::render( 'home-main.twig', $context );
 ```

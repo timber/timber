@@ -9,7 +9,9 @@ use Timber\Helper;
 
 use Timber\Post;
 
-
+/**
+ * Class Twig
+ */
 class Twig {
 
 	public static $dir_name;
@@ -31,16 +33,17 @@ class Twig {
 	}
 
 	/**
+	 * Add Timber-specific functions to Twig.
 	 *
+	 * @param \Twig_Environment $twig
+	 *
+	 * @return \Twig_Environment
 	 */
 	public function add_timber_functions( $twig ) {
 		/* actions and filters */
-		$twig->addFunction(new Twig_Function('action', function( $context ) {
-					$args = func_get_args();
-					array_shift($args);
-					$args[] = $context;
-					call_user_func_array('do_action', $args);
-				}, array('needs_context' => true)));
+		$twig->addFunction( new Twig_Function( 'action', function() {
+			call_user_func_array( 'do_action', func_get_args() );
+		} ) );
 
 		$twig->addFunction(new Twig_Function('function', array(&$this, 'exec_function')));
 		$twig->addFunction(new Twig_Function('fn', array(&$this, 'exec_function')));
@@ -90,6 +93,7 @@ class Twig {
 			}
 			return new $UserClass($pid);
 		} ));
+
 		/**
 		 * Deprecated Timber object functions.
 		 */
@@ -135,29 +139,10 @@ class Twig {
 	}
 
 	/**
-	 * Process the arguments for handle_term_object to determine what arguments the user is sending
-	 * @since 1.5.1
-	 * @author @jarednova
-	 * @param string $maybe_taxonomy probably a taxonomy, but it could be a Timber\Term subclass
-	 * @param string $TermClass a string for the Timber\Term subclass
-	 * @return array of processed arguments
-	 */
-	protected static function process_term_args( $maybe_taxonomy, $TermClass ) {
-		// A user could be sending a TermClass in the first arg, let's test for that ...
-		if ( class_exists($maybe_taxonomy) ) {
-			$tc = new $maybe_taxonomy;
-			if ( is_subclass_of($tc, 'Timber\Term') ) {
-				return array('taxonomy' => '', 'TermClass' => $maybe_taxonomy);
-			}
-		}
-		return array('taxonomy' => $maybe_taxonomy, 'TermClass' => $TermClass);
-	}
-
-	/**
 	 *
 	 *
-	 * @param Twig_Environment $twig
-	 * @return Twig_Environment
+	 * @param \Twig_Environment $twig
+	 * @return \Twig_Environment
 	 */
 	public function add_timber_filters( $twig ) {
 		/* image filters */
@@ -168,11 +153,14 @@ class Twig {
 		$twig->addFilter(new \Twig_SimpleFilter('towebp', array('Timber\ImageHelper', 'img_to_webp')));
 
 		/* debugging filters */
-		$twig->addFilter(new \Twig_SimpleFilter('get_class', 'get_class'));
-		$twig->addFilter(new \Twig_SimpleFilter('get_type', 'get_type'));
+		$twig->addFilter(new \Twig_SimpleFilter('get_class', function( $obj ) {
+			Helper::deprecated( '{{ my_object | get_class }}', "{{ function('get_class', my_object) }}", '2.0.0' );
+			return get_class( $obj );
+		} ));
 		$twig->addFilter(new \Twig_SimpleFilter('print_r', function( $arr ) {
-					return print_r($arr, true);
-				} ));
+			Helper::deprecated( '{{ my_object | print_r }}', '{{ dump(my_object) }}', '2.0.0' );
+			return print_r($arr, true);
+		} ));
 
 		/* other filters */
 		$twig->addFilter(new \Twig_SimpleFilter('stripshortcodes', 'strip_shortcodes'));
@@ -208,12 +196,41 @@ class Twig {
 					return apply_filters_ref_array($tag, $args);
 				} ));
 
-
-		$twig = apply_filters('timber/twig', $twig);
 		/**
-		 * get_twig is deprecated, use timber/twig
+		 * Filters the Twig environment used in the global context.
+		 *
+		 * You can use this filter if you want to add additional functionality to Twig, like global variables, filters or functions.
+		 *
+		 * @example
+		 * ```php
+		 * /**
+		 *  * @param \Twig_Environment $twig The Twig environment.
+		 *  * @return $twig
+		 *  *\/
+		 * add_filter( 'timber/twig', function( $twig ) {
+		 *     // Make get_theme_file_uri() usable as {{ theme_file() }} in Twig.
+		 *     $twig->addFunction( new Timber_Twig_Function( 'theme_file', 'get_theme_file_uri' ) );
+		 *
+		 *     return $twig;
+		 * } );
+		 * ```
+		 * ```twig
+		 * <a class="navbar-brand" href="{{ site.url }}">
+		 *     <img src="{{ theme_file( 'build/img/logo-example.svg' ) }}" alt="Logo {{ site.title }}">
+		 * </a>
+		 * ```
+		 * @since 0.21.9
+		 *
+		 * @param \Twig_Environment $twig The Twig Environment to which you can add additional functionality.
 		 */
-		$twig = apply_filters('get_twig', $twig);
+		$twig = apply_filters('timber/twig', $twig);
+
+		/**
+		 * Filters the Twig environment used in the global context.
+		 *
+		 * @deprecated 2.0.0
+		 */
+		$twig = apply_filters_deprecated( 'get_twig', array( $twig ), '2.0.0', 'timber/twig' );
 		return $twig;
 	}
 
@@ -296,8 +313,8 @@ class Twig {
 	/**
 	 *
 	 *
-	 * @param string  $date
-	 * @param string  $format (optional)
+	 * @param string|\DateTime  $date
+	 * @param string            $format (optional)
 	 * @return string
 	 */
 	public function intl_date( $date, $format = null ) {
@@ -341,14 +358,14 @@ class Twig {
 	 * @param string $second_delimiter
 	 * @return string
 	 */
-	public function add_list_separators( $arr, $first_delimiter = ',', $second_delimiter = 'and' ) {
+	public function add_list_separators( $arr, $first_delimiter = ',', $second_delimiter = ' and' ) {
 		$length = count($arr);
 		$list = '';
 		foreach ( $arr as $index => $item ) {
 			if ( $index < $length - 2 ) {
 				$delimiter = $first_delimiter.' ';
 			} elseif ( $index == $length - 2 ) {
-				$delimiter = ' '.$second_delimiter.' ';
+				$delimiter = $second_delimiter.' ';
 			} else {
 				$delimiter = '';
 			}

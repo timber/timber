@@ -1,5 +1,6 @@
 ---
 title: "Menus"
+weight: "700"
 menu:
   main:
     parent: "guides"
@@ -49,7 +50,7 @@ Optionally, you can send additional options to `Timber\Menu`. Current only `dept
 
 ```php
 $args = array(
-	'depth' => 2,
+    'depth' => 2,
 );
 $menu = new Timber\Menu( 'primary', $args );
 ```
@@ -76,14 +77,14 @@ function add_to_context( $context ) {
 }
 ```
 
-Now, when you call `Timber::get_context()`, your menu will already be set in the context. You don’t need to initialize the menu in all your template files.
+Now, when you call `Timber::context()`, your menu will already be set in the context. You don’t need to initialize the menu in all your template files.
 
 **index.php**
 
 ```php
 <?php
 
-$context = Timber::get_context();
+$context = Timber::context();
 
 Timber::render( 'index.twig', $context );
 ```
@@ -99,12 +100,13 @@ In your Twig file, you can loop over the menu items like normal arrays. You’re
     <ul class="nav-main">
         {% for item in menu.items %}
             <li class="nav-main-item {{ item.classes|join(' ') }}">
-                <a class="nav-main-link" href="{{ item.link }}">{{ item.title }}</a>
+                <a class="nav-main-link" href="{{ item.link }}" {{ item.is_target_blank ? 'target="_blank"' }}>{{ item.title }}</a>
+
                 {% if item.children %}
                     <ul class="nav-drop">
                         {% for child in item.children %}
                             <li class="nav-drop-item">
-                                <a href="{{ child.link }}">{{ child.title }}</a>
+                                <a href="{{ child.link }}" {{ item.is_target_blank ? 'target="_blank"' }}>{{ child.title }}</a>
                             </li>
                         {% endfor %}
                     </ul>
@@ -135,6 +137,87 @@ Here’s an example to display child menu items only if it’s the menu item is 
 ```
 
 Other properties that are available are `current_item_parent` for direct parents of a menu item and `current_item_ancestor` for when you have deeper nesting.
+
+### Getting the current menu item outside the loop
+
+Say you want to display sibling menu items of the current page, for example in
+a sidebar. You can use the `current_item()` helper to achieve this:
+
+**Twig**
+
+```twig
+<div class="sidebar">
+  <a href="{{ menu.current_item.link }}">
+    {{ menu.current_item.title }}
+  </a>
+  <ul>
+    {% for child in menu.current_item.children %}
+      <li>
+        <a href="{{ child.link }}">{{ child.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+```
+
+### Getting a current menu ancestor
+
+You can limit the traversal depth of the tree when looking for the current
+item by passing a `$depth` parameter to `current_item`.
+Going off the previous example, say you wanted the root node of your sidebar
+to be the _second_ level of the main menu tree. In that case, you could
+specify a depth of 2:
+
+**Twig**
+
+```twig
+<div class="sidebar secondary-nav">
+  <a href="{{ menu.current_item(2).link }}">
+    {{ menu.current_item(2).title }}
+  </a>
+  <ul class="third-level-nav-items">
+    {% for child in menu.current_item(2).children %}
+      <li>
+        <a href="{{ child.link }}">{{ child.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+```
+
+### Getting the current top-level item
+
+For getting the top-level (that is, level-1) item corresponding to the
+current post, you can call `current_top_level_item()`. This method
+takes no arguments and is just an alias for `current_item(1)`.
+
+## Menu item targets
+
+To get the target for a menu item, you can use `item.target`:
+
+```twig
+<a href="{{ item.link }}" target="{{ item.target }}">
+```
+
+In the menu edit screen, WordPress offers a checkbox for each menu item that lets the administrator decide whether to open a menu item in a new tab. The `item.target` function will return `_blank` if that checkbox is ticked, and `_self` if it’s not ticked.
+
+You might not need a value `_self` for the target attribute, because `_self` is the default value, which opens a link in the same tab/window. If you want to add `target="_blank"` only if it’s really needed, then you can use the conditional function `item.is_target_blank` :
+
+```twig
+<a href="{{ item.link }}" {{ item.is_target_blank ? 'target="_blank"' }}>
+```
+
+What about **external links**? If your site is `example.org`, then `google.com/whatever` is an external link. Whether it makes sense to open links in new tabs is not the topic to discuss here. If you still decide that you want that, you can check whether an item link is external with `item.is_external`:
+
+```twig
+<a href="{{ item.link }}" {{ item.is_external ? 'target="_blank"' }}">
+```
+
+You could also use it in combination with `item.is_target_blank`:
+
+```twig
+<a href="{{ item.link }}" {{ item.is_target_blank or item.is_external ? 'target="_blank"' }}>
+```
 
 ## Tips
 

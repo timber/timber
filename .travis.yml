@@ -5,14 +5,20 @@ language: php
 php:
     - 5.6.30
     - 7.1
+    - 7.3
 
 env:
-    - WP_VERSION=4.7.9 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
-    - WP_VERSION=4.7.9 WP_MULTISITE=0 PREFER_LOWEST=""
-    - WP_VERSION=4.7.9 WP_MULTISITE=1 PREFER_LOWEST=""
+    - WP_VERSION=4.7.12 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
+    - WP_VERSION=4.7.12 WP_MULTISITE=1 PREFER_LOWEST=""
     - WP_VERSION=latest WP_MULTISITE=0 PREFER_LOWEST=""
-    - WP_VERSION=latest WP_MULTISITE=1 PREFER_LOWEST=""
     - WP_VERSION=latest WP_MULTISITE=1 PREFER_LOWEST="--prefer-lowest --prefer-stable"
+
+matrix:
+    exclude:
+    - php: 7.3
+      env: WP_VERSION=4.7.12 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
+    - php: 7.3
+      env: WP_VERSION=4.7.12 WP_MULTISITE=1 PREFER_LOWEST=""
 
 before_script:
     - if [ "$TRAVIS_PHP_VERSION" == 5.5 ] || [ "$TRAVIS_PHP_VERSION" == 5.4 ] || [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then pear config-set preferred_state beta; pecl channel-update pecl.php.net; yes | pecl install imagick; fi
@@ -23,11 +29,11 @@ before_script:
     - composer require satooshi/php-coveralls:1.0.*
 
 script:
-    - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then mkdir -p build/logs; vendor/phpunit/phpunit/phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml; else vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml; fi
+    - if [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_BRANCH" == "2.x" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then mkdir -p build/logs; vendor/phpunit/phpunit/phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml; else vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml; fi
 
 after_script:
-    - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then php vendor/bin/coveralls -v; fi
+    - if [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_BRANCH" == "2.x" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then php vendor/bin/coveralls -v; fi
 
 after_success:
-    - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then coveralls; fi
+    - if [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_BRANCH" == "2.x" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then coveralls; fi
     - bash <(curl -s https://codecov.io/bash)

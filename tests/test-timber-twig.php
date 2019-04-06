@@ -81,7 +81,7 @@ class TestTimberTwig extends Timber_UnitTestCase {
 				$action_tally[] = 'my_action_args';
 				return 'foo';
 			});
-			add_action('timber_compile_done', function(){
+			add_action('timber/compile/done', function(){
 				global $action_tally, $php_unit;
 				$php_unit->assertContains('my_action_args', $action_tally);
 				$php_unit->assertContains('my_action_foo', $action_tally);
@@ -167,6 +167,9 @@ class TestTimberTwig extends Timber_UnitTestCase {
 			$this->assertEquals('FooxBarxQuack', trim(Timber::compile_string($twig, array('string' => $str, 'array' => $arr))));
 		}
 
+		/**
+		 * @expectedDeprecated {{ my_object | get_class }}
+		 */
 		function testFilterFunction() {
 			$pid = $this->factory->post->create(array('post_title' => 'Foo'));
 			$post = PostFactory::get( $pid );
@@ -260,7 +263,7 @@ class TestTimberTwig extends Timber_UnitTestCase {
 		}
 
 		function testAddToTwig() {
-			add_filter('get_twig', function( $twig ) {
+			add_filter('timber/twig', function( $twig ) {
 				$twig->addFilter( new Twig_SimpleFilter( 'foobar', function( $text ) {
 					return $text . 'foobar';
 				}) );

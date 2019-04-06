@@ -2,7 +2,7 @@
 
 namespace Timber;
 
-/**
+/*
  * Handle TwigFunction among Twig versions
  *
  * From Twig 2.4.0, extending Twig_Function is deprecated, will be final in 3.0

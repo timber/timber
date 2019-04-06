@@ -1,15 +1,15 @@
 ---
 title: "Cheatsheet"
+weight: "1500"
 menu:
   main:
     parent: "guides"
 ---
 
-Here are some helpful conversions for functions you’re probably well familiar with in WordPress and their Timber equivalents. These assume a PHP file with the `Timber::get_context();` function at the top. For example:
+Here are some helpful conversions for functions you’re probably well familiar with in WordPress and their Timber equivalents. These assume a PHP file with the `Timber::context();` function at the top. For example:
 
 ```php
-$context = Timber::get_context();
-$context['post'] = new TimberPost();
+$context = Timber::context();
 Timber::render( 'single.twig', $context );
 ```
 

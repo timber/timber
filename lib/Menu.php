@@ -6,6 +6,11 @@ use Timber\Core;
 use Timber\Factory\PostFactory;
 use Timber\Post;
 
+/**
+ * Class Menu
+ *
+ * @api
+ */
 class Menu extends Core {
 
 	public $MenuItemClass = 'Timber\MenuItem';
@@ -24,19 +29,19 @@ class Menu extends Core {
 
 	/**
 	 * @api
-	 * @var integer The ID of the menu, corresponding to the wp_terms table.
+	 * @var int The ID of the menu, corresponding to the wp_terms table.
 	 */
 	public $id;
 
 	/**
 	 * @api
-	 * @var integer The ID of the menu, corresponding to the wp_terms table.
+	 * @var int The ID of the menu, corresponding to the wp_terms table.
 	 */
 	public $ID;
 
 	/**
 	 * @api
-	 * @var integer The ID of the menu, corresponding to the wp_terms table.
+	 * @var int The ID of the menu, corresponding to the wp_terms table.
 	 */
 	public $term_id;
 
@@ -58,10 +63,17 @@ class Menu extends Core {
 	 */
 	public $title;
 
+	/**
+	 * @var MenuItem the current menu item
+	 */
+	private $_current_item;
+
 
 
 	/**
 	 * Initialize a menu.
+	 *
+	 * @api
 	 *
 	 * @param int|string $slug    A menu slug, the term ID of the menu, the full name from the admin
 	 *                            menu, the slug of theregistered location or nothing. Passing nothing
@@ -100,12 +112,49 @@ class Menu extends Core {
 		if ( $menu ) {
 			_wp_menu_item_classes_by_context($menu);
 			if ( is_array($menu) ) {
-				$menu = self::order_children($menu);
-				$menu = self::strip_to_depth_limit($menu);
+				/**
+				 * Default arguments from wp_nav_menu() function.
+				 *
+				 * @see wp_nav_menu()
+				 */
+				$default_args_array = array(
+					'menu'            => '',
+					'container'       => 'div',
+					'container_class' => '',
+					'container_id'    => '',
+					'menu_class'      => 'menu',
+					'menu_id'         => '',
+					'echo'            => true,
+					'fallback_cb'     => 'wp_page_menu',
+					'before'          => '',
+					'after'           => '',
+					'link_before'     => '',
+					'link_after'      => '',
+					'items_wrap'      => '<ul id="%1$s" class="%2$s">%3$s</ul>',
+					'item_spacing'    => 'preserve',
+					'depth'           => $this->depth,
+					'walker'          => '',
+					'theme_location'  => '',
+				);
+
+				/**
+				 * Improve compatibitility with third-party plugins.
+				 *
+				 * @see wp_nav_menu()
+				 */
+				$default_args_array = apply_filters( 'wp_nav_menu_args', $default_args_array );
+				$default_args_obj = (object) $default_args_array;
+
+				$menu = apply_filters( 'wp_nav_menu_objects', $menu, $default_args_obj );
+
+				$menu = $this->order_children($menu);
+				$menu = $this->strip_to_depth_limit($menu);
 			}
 			$this->items = $menu;
 			$menu_info = wp_get_nav_menu_object($menu_id);
-			$this->import($menu_info);
+			if ( $menu_info ) {
+				$this->import($menu_info);
+			}
 			$this->ID = $this->term_id;
 			$this->id = $this->term_id;
 			$this->title = $this->name;
@@ -133,7 +182,7 @@ class Menu extends Core {
 			}
 			_wp_menu_item_classes_by_context($menu);
 			if ( is_array($menu) ) {
-				$menu = self::order_children($menu);
+				$menu = $this->order_children($menu);
 			}
 			$this->items = $menu;
 		}
@@ -141,8 +190,8 @@ class Menu extends Core {
 
 	/**
 	 * @internal
-	 * @param string $slug
-	 * @param array $locations
+	 * @param string|int $slug
+	 * @param array      $locations
 	 * @return integer
 	 */
 	protected function get_menu_id_from_locations( $slug, $locations ) {
@@ -164,7 +213,7 @@ class Menu extends Core {
 
 	/**
 	 * @internal
-	 * @param int $slug
+	 * @param int|string $slug
 	 * @return int
 	 */
 	protected function get_menu_id_from_terms( $slug = 0 ) {
@@ -265,7 +314,7 @@ class Menu extends Core {
 				continue;
 			}
 
-			$currentItem->children = self::strip_to_depth_limit($currentItem->children, $current + 1);
+			$currentItem->children = $this->strip_to_depth_limit($currentItem->children, $current + 1);
 		}
 
 		return $menu;
@@ -292,5 +341,114 @@ class Menu extends Core {
 		}
 
 		return array();
+	}
+
+	/**
+	 * Get the current MenuItem based on the WP context
+	 *
+	 * @see _wp_menu_item_classes_by_context()
+	 * @example
+	 * Say you want to render the sub-tree of the main menu that corresponds
+	 * to the menu item for the current page, such as in a context-aware sidebar:
+	 * ```twig
+	 * <div class="sidebar">
+	 *   <a href="{{ menu.current_item.link }}">
+	 *     {{ menu.current_item.title }}
+	 *   </a>
+	 *   <ul>
+	 *     {% for child in menu.current_item.children %}
+	 *       <li>
+	 *         <a href="{{ child.link }}">{{ child.title }}</a>
+	 *       </li>
+	 *     {% endfor %}
+	 *   </ul>
+	 * </div>
+	 * ```
+	 * @param int $depth the maximum depth to traverse the menu tree to find the
+	 * current item. Defaults to null, meaning no maximum. 1-based, meaning the
+	 * top level is 1.
+	 * @return MenuItem the current `Timber\MenuItem` object, i.e. the menu item
+	 * corresponding to the current post.
+	 */
+	public function current_item( $depth = null ) {
+		if ( false === $this->_current_item ) {
+			// I TOLD YOU BEFORE.
+			return false;
+		}
+
+		if ( empty($this->items) ) {
+			$this->_current_item = false;
+			return $this->_current_item;
+		}
+
+		if ( ! isset($this->_current_item) ) {
+			$current = $this->traverse_items_for_current(
+				$this->items,
+				$depth
+			);
+
+			if ( is_null($depth) ) {
+				$this->_current_item = $current;
+			} else {
+				return $current;
+			}
+		}
+
+		return $this->_current_item;
+	}
+
+	/**
+	 * Alias for current_top_level_item(1).
+	 *
+	 * @return MenuItem the current top-level `Timber\MenuItem` object.
+	 */
+	public function current_top_level_item() {
+		return $this->current_item( 1 );
+	}
+
+
+	/**
+	 * Traverse an array of MenuItems in search of the current item.
+	 *
+	 * @internal
+	 * @param array $items the items to traverse.
+	 */
+	private function traverse_items_for_current( $items, $depth ) {
+		$current 			= false;
+		$currentDepth = 1;
+		$i       			= 0;
+
+		while ( isset($items[ $i ]) ) {
+			$item = $items[ $i ];
+
+			if ( $item->current ) {
+				// cache this item for subsequent calls.
+				$current = $item;
+				// stop looking.
+				break;
+			} elseif ( $item->current_item_ancestor ) {
+				// we found an ancestor,
+				// but keep looking for a more precise match.
+				$current = $item;
+
+				if ( $currentDepth === $depth ) {
+					// we're at max traversal depth.
+					return $current;
+				}
+
+				// we're in the right subtree, so go deeper.
+				if ( $item->children() ) {
+					// reset the counter, since we're at a new level.
+					$items = $item->children();
+					$i     = 0;
+					$currentDepth++;
+					continue;
+				}
+			}
+
+			$i++;
+		}
+
+		return $current;
 	}
 }

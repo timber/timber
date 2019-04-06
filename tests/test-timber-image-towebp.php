@@ -10,13 +10,13 @@
 		}
 
 		function testTIFtoWEBP() {
-			$filename = TestTimberImage::copyTestImage( 'white-castle.tif' );
+			$filename = TestTimberImage::copyTestAttachment( 'white-castle.tif' );
 			$str = Timber::compile_string('{{file|towebp}}', array('file' => $filename));
 			$this->assertEquals($filename, $str);
 		}
 
 		function testPNGtoWEBP() {
-			$filename = TestTimberImage::copyTestImage( 'flag.png' );
+			$filename = TestTimberImage::copyTestAttachment( 'flag.png' );
 			$str = Timber::compile_string('{{file|towebp}}', array('file' => $filename));
 			$renamed = str_replace('.png', '.webp', $filename);
 			$this->assertFileExists($renamed);
@@ -26,7 +26,7 @@
 		}
 
 		function testGIFtoJPG() {
-			$filename = TestTimberImage::copyTestImage( 'boyer.gif' );
+			$filename = TestTimberImage::copyTestAttachment( 'boyer.gif' );
 			$str = Timber::compile_string('{{file|towebp}}', array('file' => $filename));
 			$renamed = str_replace('.gif', '.webp', $filename);
 			$this->assertFileExists($renamed);
@@ -36,7 +36,7 @@
 		}
 
 		function testJPGtoWEBP() {
-			$filename = TestTimberImage::copyTestImage( 'stl.jpg' );
+			$filename = TestTimberImage::copyTestAttachment( 'stl.jpg' );
 			$original_size = filesize($filename);
 			$str = Timber::compile_string('{{file|towebp(100)}}', array('file' => $filename));
 			$renamed = str_replace('.jpg', '.webp', $filename);
@@ -46,7 +46,7 @@
 		}
 
 		function testJPEGtoJPG() {
-			$filename = TestTimberImage::copyTestImage( 'jarednova.jpeg' );
+			$filename = TestTimberImage::copyTestAttachment( 'jarednova.jpeg' );
 			$str = Timber::compile_string('{{file|towebp}}', array('file' => $filename));
 			$renamed = str_replace('.jpeg', '.webp', $filename);
 			$this->assertFileExists($renamed);
@@ -56,7 +56,7 @@
 		}
 
 		function testWEBPtoWEBP() {
-			$filename = TestTimberImage::copyTestImage( 'mountains.webp' );
+			$filename = TestTimberImage::copyTestAttachment( 'mountains.webp' );
 			$original_size = filesize($filename);
 			$str = Timber::compile_string('{{file|towebp}}', array('file' => $filename));
 			$new_size = filesize($filename);

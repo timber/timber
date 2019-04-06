@@ -11,7 +11,7 @@ use Timber\Post;
  *
  * PostCollections are internal objects used to hold a collection of posts.
  *
- * @package Timber
+ * @api
  */
 class PostCollection extends \ArrayObject {
 
@@ -43,6 +43,7 @@ class PostCollection extends \ArrayObject {
 			$posts = array();
 		}
 		foreach ( $posts as $post_object ) {
+			// TODO create PostFactory once outside loop
 
 			$post = ( new PostFactory( $post_class ) )->get_object( $post_object );
 
@@ -54,7 +55,10 @@ class PostCollection extends \ArrayObject {
 		return self::maybe_set_preview($returned_posts);
 	}
 
-
+	/**
+	 * @api
+	 * @return array
+	 */
 	public function get_posts() {
 		return $this->getArrayCopy();
 	}
@@ -93,6 +97,3 @@ class PostCollection extends \ArrayObject {
 		return $posts;
 	}
 }
-
-class_alias('Timber\PostCollection', 'Timber\PostsCollection');
-class_alias('Timber\PostCollection', 'TimberPostsCollection');
