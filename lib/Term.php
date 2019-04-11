@@ -89,6 +89,9 @@ class Term extends Core implements CoreInterface {
 	 * @return static
 	 */
 	public static function from( $tid, $taxonomy ) {
+		if (is_array($tid)) {
+			return array_map(function ($term) { return new static($term); }, $tid);	
+		}
 		return new static($tid, $taxonomy);
 	}
 
