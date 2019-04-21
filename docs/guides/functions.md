@@ -60,10 +60,10 @@ If you have functions that you use a lot and want to improve readability of your
 /**
  * My custom Twig functionality.
  *
- * @param Twig_Environment $twig
+ * @param Twig\Environment $twig
  * @return $twig
  */
-add_filter( 'timber/twig', function( \Twig_Environment $twig ) {
+add_filter( 'timber/twig', function( new \Twig\Environment $twig ) {
 	$twig->addFunction( new Timber\Twig_Function( 'edit_post_link', 'edit_post_link' ) );
 	return $twig;
 } );

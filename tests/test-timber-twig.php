@@ -259,7 +259,7 @@
 
 		function testAddToTwig() {
 			add_filter('get_twig', function( $twig ) {
-				$twig->addFilter( new Twig_SimpleFilter( 'foobar', function( $text ) {
+				$twig->addFilter( new \Twig\TwigFilter( 'foobar', function( $text ) {
 					return $text . 'foobar';
 				}) );
 				return $twig;
@@ -270,7 +270,7 @@
 
 		function testTimberTwigObjectFilter() {
 			add_filter('timber/twig', function( $twig ) {
-				$twig->addFilter( new Twig_SimpleFilter( 'quack', function( $text ) {
+				$twig->addFilter( new \Twig\TwigFilter( 'quack', function( $text ) {
 					return $text . ' Quack!';
 				}) );
 				return $twig;

@@ -127,7 +127,7 @@ class Loader {
 
 
 	/**
-	 * @return \Twig_Loader_Filesystem
+	 * @return \Twig\Loader\FilesystemLoader
 	 */
 	public function get_loader() {
 		$open_basedir = ini_get('open_basedir');
@@ -138,14 +138,14 @@ class Loader {
 		if ( $open_basedir ) {
 			$rootPath = null;
 		}
-		$fs = new \Twig_Loader_Filesystem($paths, $rootPath);
+		$fs = new \Twig\Loader\FilesystemLoader($paths, $rootPath);
 		$fs = apply_filters('timber/loader/loader', $fs);
 		return $fs;
 	}
 
 
 	/**
-	 * @return \Twig_Environment
+	 * @return \Twig\Environment
 	 */
 	public function get_twig() {
 		$loader = $this->get_loader();
@@ -163,9 +163,9 @@ class Loader {
 			}
 			$params['cache'] = $twig_cache_loc;
 		}
-		$twig = new \Twig_Environment($loader, $params);
+		$twig = new \Twig\Environment($loader, $params);
 		if ( WP_DEBUG ) {
-			$twig->addExtension(new \Twig_Extension_Debug());
+			$twig->addExtension(new \Twig\Extension\DebugExtension());
 		}
 		$twig->addExtension($this->_get_cache_extension());
 

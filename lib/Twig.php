@@ -178,47 +178,47 @@ class Twig {
 	 */
 	public function add_timber_filters( $twig ) {
 		/* image filters */
-		$twig->addFilter(new \Twig_SimpleFilter('resize', array('Timber\ImageHelper', 'resize')));
-		$twig->addFilter(new \Twig_SimpleFilter('retina', array('Timber\ImageHelper', 'retina_resize')));
-		$twig->addFilter(new \Twig_SimpleFilter('letterbox', array('Timber\ImageHelper', 'letterbox')));
-		$twig->addFilter(new \Twig_SimpleFilter('tojpg', array('Timber\ImageHelper', 'img_to_jpg')));
-		$twig->addFilter(new \Twig_SimpleFilter('towebp', array('Timber\ImageHelper', 'img_to_webp')));
+		$twig->addFilter(new \Twig\TwigFilter('resize', array('Timber\ImageHelper', 'resize')));
+		$twig->addFilter(new \Twig\TwigFilter('retina', array('Timber\ImageHelper', 'retina_resize')));
+		$twig->addFilter(new \Twig\TwigFilter('letterbox', array('Timber\ImageHelper', 'letterbox')));
+		$twig->addFilter(new \Twig\TwigFilter('tojpg', array('Timber\ImageHelper', 'img_to_jpg')));
+		$twig->addFilter(new \Twig\TwigFilter('towebp', array('Timber\ImageHelper', 'img_to_webp')));
 
 		/* debugging filters */
-		$twig->addFilter(new \Twig_SimpleFilter('get_class', 'get_class'));
-		$twig->addFilter(new \Twig_SimpleFilter('get_type', 'get_type'));
-		$twig->addFilter(new \Twig_SimpleFilter('print_r', function( $arr ) {
+		$twig->addFilter(new \Twig\TwigFilter('get_class', 'get_class'));
+		$twig->addFilter(new \Twig\TwigFilter('get_type', 'get_type'));
+		$twig->addFilter(new \Twig\TwigFilter('print_r', function( $arr ) {
 					return print_r($arr, true);
 				} ));
 
 		/* other filters */
-		$twig->addFilter(new \Twig_SimpleFilter('stripshortcodes', 'strip_shortcodes'));
-		$twig->addFilter(new \Twig_SimpleFilter('array', array($this, 'to_array')));
-		$twig->addFilter(new \Twig_SimpleFilter('excerpt', 'wp_trim_words'));
-		$twig->addFilter(new \Twig_SimpleFilter('excerpt_chars', array('Timber\TextHelper', 'trim_characters')));
-		$twig->addFilter(new \Twig_SimpleFilter('function', array($this, 'exec_function')));
-		$twig->addFilter(new \Twig_SimpleFilter('pretags', array($this, 'twig_pretags')));
-		$twig->addFilter(new \Twig_SimpleFilter('sanitize', 'sanitize_title'));
-		$twig->addFilter(new \Twig_SimpleFilter('shortcodes', 'do_shortcode'));
-		$twig->addFilter(new \Twig_SimpleFilter('time_ago', array($this, 'time_ago')));
-		$twig->addFilter(new \Twig_SimpleFilter('wpautop', 'wpautop'));
-		$twig->addFilter(new \Twig_SimpleFilter('list', array($this, 'add_list_separators')));
+		$twig->addFilter(new \Twig\TwigFilter('stripshortcodes', 'strip_shortcodes'));
+		$twig->addFilter(new \Twig\TwigFilter('array', array($this, 'to_array')));
+		$twig->addFilter(new \Twig\TwigFilter('excerpt', 'wp_trim_words'));
+		$twig->addFilter(new \Twig\TwigFilter('excerpt_chars', array('Timber\TextHelper', 'trim_characters')));
+		$twig->addFilter(new \Twig\TwigFilter('function', array($this, 'exec_function')));
+		$twig->addFilter(new \Twig\TwigFilter('pretags', array($this, 'twig_pretags')));
+		$twig->addFilter(new \Twig\TwigFilter('sanitize', 'sanitize_title'));
+		$twig->addFilter(new \Twig\TwigFilter('shortcodes', 'do_shortcode'));
+		$twig->addFilter(new \Twig\TwigFilter('time_ago', array($this, 'time_ago')));
+		$twig->addFilter(new \Twig\TwigFilter('wpautop', 'wpautop'));
+		$twig->addFilter(new \Twig\TwigFilter('list', array($this, 'add_list_separators')));
 
-		$twig->addFilter(new \Twig_SimpleFilter('pluck', array('Timber\Helper', 'pluck')));
-		$twig->addFilter(new \Twig_SimpleFilter('filter', array('Timber\Helper', 'filter_array')));
+		$twig->addFilter(new \Twig\TwigFilter('pluck', array('Timber\Helper', 'pluck')));
+		$twig->addFilter(new \Twig\TwigFilter('filter', array('Timber\Helper', 'filter_array')));
 
-		$twig->addFilter(new \Twig_SimpleFilter('relative', function( $link ) {
+		$twig->addFilter(new \Twig\TwigFilter('relative', function( $link ) {
 					return URLHelper::get_rel_url($link, true);
 				} ));
 
-		$twig->addFilter(new \Twig_SimpleFilter('date', array($this, 'intl_date')));
+		$twig->addFilter(new \Twig\TwigFilter('date', array($this, 'intl_date')));
 
-		$twig->addFilter(new \Twig_SimpleFilter('truncate', function( $text, $len ) {
+		$twig->addFilter(new \Twig\TwigFilter('truncate', function( $text, $len ) {
 					return TextHelper::trim_words($text, $len);
 				} ));
 
 		/* actions and filters */
-		$twig->addFilter(new \Twig_SimpleFilter('apply_filters', function() {
+		$twig->addFilter(new \Twig\TwigFilter('apply_filters', function() {
 					$args = func_get_args();
 					$tag = current(array_splice($args, 1, 1));
 
