@@ -258,7 +258,7 @@ class Menu extends Core {
 					$old_menu_item = $item;
 					$item = new $this->PostClass($item);
 				}
-				if ( get_class($item) == 'WPML_LS_Menu_Item' ) {
+				if ( get_class($item) === 'WPML_LS_Menu_Item' ) {
 					$old_menu_item = $item;
 				}
 				$menu_item = $this->create_menu_item($item);
