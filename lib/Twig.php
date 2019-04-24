@@ -209,11 +209,11 @@ class Twig {
 		$twig->addFilter(new Twig_Filter('towebp', array('Timber\ImageHelper', 'img_to_webp')));
 
 		/* debugging filters */
-		$twig->addFilter(new \Twig_Filter('get_class', function( $obj ) {
+		$twig->addFilter(new Twig_Filter('get_class', function( $obj ) {
 			Helper::deprecated( '{{ my_object | get_class }}', "{{ function('get_class', my_object) }}", '2.0.0' );
 			return get_class( $obj );
 		} ));
-		$twig->addFilter(new \Twig_Filter('print_r', function( $arr ) {
+		$twig->addFilter(new Twig_Filter('print_r', function( $arr ) {
 			Helper::deprecated( '{{ my_object | print_r }}', '{{ dump(my_object) }}', '2.0.0' );
 			return print_r($arr, true);
 		} ));
