@@ -179,15 +179,99 @@
 				set_post_type($post_id, 'page');
 				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
 			}
+
 			$term = new TimberTerm($term_id);
+
 			$gotten_posts = $term->get_posts('post_type=page');
 			$this->assertEquals(count($posts), count($gotten_posts));
+
 			$gotten_posts = $term->get_posts('post_type=page', 'TimberPostSubclass');
 			$this->assertEquals(count($posts), count($gotten_posts));
-			$this->assertEquals($gotten_posts[0]->foo(), 'bar');
+			$this->assertInstanceOf( 'TimberPostSubclass', $gotten_posts[0] );
+
 			$gotten_posts = $term->get_posts(array('post_type' => 'page'), 'TimberPostSubclass');
-			$this->assertEquals($gotten_posts[0]->foo(), 'bar');
+			$this->assertInstanceOf( 'TimberPostSubclass', $gotten_posts[0] );
 			$this->assertEquals(count($posts), count($gotten_posts));
+		}
+
+		function testPostsWithCustomPostType() {
+			$term_id = $this->factory->term->create();
+			$posts   = array();
+			$posts[] = $this->factory->post->create();
+			$posts[] = $this->factory->post->create();
+			$posts[] = $this->factory->post->create();
+
+			foreach ( $posts as $post_id ) {
+				set_post_type( $post_id, 'page' );
+				wp_set_object_terms( $post_id, $term_id, 'post_tag', true );
+			}
+
+			$term = new Timber\Term( $term_id );
+
+			$term_posts = $term->posts( [
+				'posts_per_page' => 2,
+				'orderby'        => 'menu_order',
+			], 'page' );
+
+			$this->assertEquals( 'Timber\Post', get_class( $term_posts[0] ) );
+			$this->assertEquals( 'page', $term_posts[0]->post_type );
+			$this->assertEquals( 2, count( $term_posts ) );
+		}
+
+		function testPostsWithCustomPostTypeAndCustomClass() {
+			require_once 'php/timber-post-subclass.php';
+
+			$term_id = $this->factory->term->create();
+			$posts   = array();
+			$posts[] = $this->factory->post->create();
+			$posts[] = $this->factory->post->create();
+			$posts[] = $this->factory->post->create();
+
+			foreach ( $posts as $post_id ) {
+				set_post_type( $post_id, 'page' );
+				wp_set_object_terms( $post_id, $term_id, 'post_tag', true );
+			}
+
+			$term = new Timber\Term( $term_id );
+
+			$term_posts = $term->posts( [
+				'posts_per_page' => 2,
+				'orderby'        => 'menu_order',
+			], 'page', 'TimberPostSubclass' );
+
+			$this->assertInstanceOf( 'TimberPostSubclass', $term_posts[0] );
+			$this->assertEquals( 'page', $term_posts[0]->post_type );
+			$this->assertEquals( 2, count( $term_posts ) );
+		}
+
+		/**
+		 * This test uses the logic described in https://github.com/timber/timber/issues/799#issuecomment-192445207.
+		 */
+		function testPostsWithCustomPostTypePageAndCustomClass() {
+			require_once 'php/timber-post-subclass.php';
+			require_once 'php/timber-post-subclass-page.php';
+
+			$term_id = $this->factory->term->create();
+			$posts   = array();
+			$posts[] = $this->factory->post->create();
+			$posts[] = $this->factory->post->create();
+			$posts[] = $this->factory->post->create();
+
+			foreach ( $posts as $post_id ) {
+				set_post_type( $post_id, 'page' );
+				wp_set_object_terms( $post_id, $term_id, 'post_tag', true );
+			}
+
+			$term = new Timber\Term( $term_id );
+
+			$term_posts = $term->posts( [
+				'posts_per_page' => 2,
+				'orderby'        => 'menu_order',
+			], 'page', 'TimberPostSubclass' );
+
+			$this->assertInstanceOf( 'page', $term_posts[0] );
+			$this->assertEquals( 'page', $term_posts[0]->post_type );
+			$this->assertEquals( 2, count( $term_posts ) );
 		}
 
 		function testTermChildren() {
@@ -231,7 +315,7 @@
 			add_term_meta($tid, 'bar', 'qux');;
 			$wp_native_value = get_term_meta($tid, 'foo', true);
 			$acf_native_value = get_field('foo', 'category_'.$tid);
-			
+
 			$valid_wp_native_value = get_term_meta($tid, 'bar', true);
 			$valid_acf_native_value = get_field('bar', 'category_'.$tid);
 
