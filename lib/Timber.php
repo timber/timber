@@ -39,7 +39,6 @@ use Timber\Loader;
  * ```
  */
 class Timber {
-
 	public static $version = '2.0.0';
 	public static $locations;
 	public static $dirname = 'views';

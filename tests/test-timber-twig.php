@@ -264,7 +264,7 @@ class TestTimberTwig extends Timber_UnitTestCase {
 
 		function testAddToTwig() {
 			add_filter('timber/twig', function( $twig ) {
-				$twig->addFilter( new Twig_SimpleFilter( 'foobar', function( $text ) {
+				$twig->addFilter( new Timber\Twig_Filter( 'foobar', function( $text ) {
 					return $text . 'foobar';
 				}) );
 				return $twig;
@@ -275,7 +275,7 @@ class TestTimberTwig extends Timber_UnitTestCase {
 
 		function testTimberTwigObjectFilter() {
 			add_filter('timber/twig', function( $twig ) {
-				$twig->addFilter( new Twig_SimpleFilter( 'quack', function( $text ) {
+				$twig->addFilter( new Timber\Twig_Filter( 'quack', function( $text ) {
 					return $text . ' Quack!';
 				}) );
 				return $twig;

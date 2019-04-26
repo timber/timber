@@ -490,20 +490,48 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
+	 * Gets posts that have the current term assigned.
+	 *
 	 * @api
 	 * @example
 	 * ```twig
 	 * <h4>Recent posts in {{ term.name }}</h4>
+	 *
 	 * <ul>
 	 * {% for post in term.posts(3, 'post') %}
-	 *     <li><a href="{{post.link}}">{{post.title}}</a></li>
+	 *     <li>
+	 *         <a href="{{ post.link }}">{{ post.title }}</a>
+	 *     </li>
 	 * {% endfor %}
 	 * </ul>
 	 * ```
 	 *
-	 * @param int|string|array $numberposts_or_args
-	 * @param string           $post_type_or_class
-	 * @param string           $post_class
+	 * If you need more control over the query that is going to be performed, you can pass your
+	 * custom query arguments in the first parameter.
+	 *
+	 * ```twig
+	 * <h4>Our branches in {{ region.name }}</h4>
+	 *
+	 * <ul>
+	 * {% for branch in region.posts({
+	 *     posts_per_page: -1,
+	 *     orderby: 'menu_order'
+	 * }, 'branch', 'Branch') %}
+	 *     <li>
+	 *         <a href="{{ branch.link }}">{{ branch.title }}</a>
+	 *     </li>
+	 * {% endfor %}
+	 * </ul>
+	 * ```
+	 *
+	 * @param int|array $numberposts_or_args Optional. Either the number of posts or an array of
+	 *                                       arguments for the post query that this method is going.
+	 *                                       to perform. Default `10`.
+	 * @param string $post_type_or_class     Optional. Either the post type to get or the name of
+	 *                                       post class to use for the returned posts. Default
+	 *                                       `any`.
+	 * @param string $post_class             Optional. The name of the post class to use for the
+	 *                                       returned posts. Default `Timber\Post`.
 	 * @return \Timber\PostQuery
 	 */
 	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
