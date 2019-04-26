@@ -228,6 +228,17 @@ class PostGetter {
 			$post_class_use = $post_class;
 		} else {
 			Helper::error_log('Unexpected value for PostClass: '.print_r($post_class, true));
+			// TODO remove this
+			// try to find the test file that called this
+			$trace = debug_backtrace();
+			$caller = $trace[1];
+			foreach ($trace as $call) {
+				if (strpos($call['file'], 'test-') !== false) {
+					$caller = $call;
+					break;
+				}
+			}
+			Helper::error_log(sprintf("Called from %s:%d", $caller['file'], $caller['line']));
 		}
 
 		if ( $post_class_use === '\Timber\Post' || $post_class_use === 'Timber\Post' ) {

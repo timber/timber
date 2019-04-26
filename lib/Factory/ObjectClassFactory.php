@@ -42,6 +42,17 @@ class ObjectClassFactory {
 				}
 			} else {
 				Helper::error_log( "Unexpected value for {$type}Class: " . print_r( $class, true ) );
+				// TODO remove this
+				// try to find the test file that called this
+				$trace = debug_backtrace();
+				$caller = $trace[1];
+				foreach ($trace as $call) {
+					if (strpos($call['file'], 'test-') !== false) {
+						$caller = $call;
+						break;
+					}
+				}
+				Helper::error_log(sprintf("Called from %s:%d", $caller['file'], $caller['line']));
 			}
 
 		}
