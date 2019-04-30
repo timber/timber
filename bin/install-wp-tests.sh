@@ -12,8 +12,14 @@ DB_HOST=${4-localhost}
 WP_VERSION=${5-latest}
 SKIP_DB_CREATE=${6-false}
 
-WP_TESTS_DIR=${WP_TESTS_DIR-/tmp/wordpress-tests-lib}
-WP_CORE_DIR=${WP_CORE_DIR-/tmp/wordpress/}
+TMPDIR=${TMPDIR-/tmp}
+WP_TESTS_DIR=${WP_TESTS_DIR-$TMPDIR/wordpress-tests-lib}
+WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress}
+
+# think 'untrailingslashit(), but in bash"
+TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
+WP_TESTS_DIR=$(echo $WP_TESTS_DIR | sed -e "s/\/$//")
+WP_CORE_DIR=$(echo $WP_CORE_DIR | sed -e "s/\/$//")
 
 download() {
     if [ `which curl` ]; then
