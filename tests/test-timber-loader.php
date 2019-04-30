@@ -20,10 +20,10 @@
 			$str = Timber::compile( array('assets/barf.twig', 'assets/lonestar.twig') );
 			$this->assertFalse($str);
 		}
-		
+
 		function testWhitespaceTrimForTemplate(){
 			$str = Timber::compile('assets/single.twig ', array());
-			$this->assertEquals('I am single.twig in parent theme', trim($str));
+			$this->assertEquals('I am single.twig', trim($str));
 		}
 
 		function testTwigPathFilterAdded() {
