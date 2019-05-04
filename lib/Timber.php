@@ -63,7 +63,6 @@ class Timber {
 	/**
 	 * Tests whether we can use Timber
 	 * @codeCoverageIgnore
-	 * @return
 	 */
 	protected function test_compatibility() {
 		if ( is_admin() || $_SERVER['PHP_SELF'] == '/wp-login.php' ) {
@@ -192,9 +191,9 @@ class Timber {
 	/**
 	 * Get term.
 	 * @api
-	 * @param int|WP_Term|object $term
+	 * @param int|\WP_Term|object $term
 	 * @param string     $taxonomy
-	 * @return Timber\Term|WP_Error|null
+	 * @return \Timber\Term|\WP_Error|null
 	 */
 	public static function get_term( $term, $taxonomy = 'post_tag', $TermClass = 'Timber\Term' ) {
 		return TermGetter::get_term($term, $taxonomy, $TermClass);

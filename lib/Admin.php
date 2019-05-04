@@ -94,11 +94,11 @@ class Admin {
 	 *
 	 *	@codeCoverageIgnore
 	 *
-	 *  @type	function
-	 *  @date	4/22/16
+	 *  @type function
+	 *  @date 4/22/16
 	 *
-	 *  @param	{array}		$plugin_data
-	 *  @param	{object}	$r
+	 *  @param array $plugin_data
+	 *  @param object $r
 	 */
 	public static function in_plugin_update_message( $plugin_data, $r ) {
 		$current_version = $plugin_data['Version'];
@@ -108,7 +108,8 @@ class Admin {
 			$message = self::update_message_milestone();
 			echo '<br />'.sprintf($message);
 			return;
-		} elseif ( $upgrade_magnitude == 'major' ) {
+		}
+		if ( $upgrade_magnitude == 'major' ) {
 			//major version
 			$message = self::update_message_major();
 			echo '<br />'.sprintf($message);
@@ -116,8 +117,6 @@ class Admin {
 		}
 		$message = self::update_message_minor();
 		echo '<br />'.($message);
-		return;
-
 	}
 
 }

@@ -44,7 +44,7 @@ class PostQuery extends PostCollection {
 	 * Set pagination for the collection. Optionally could be used to get pagination with custom preferences.
 	 *
 	 * @param 	array $prefs
-	 * @return 	Timber\Pagination object
+	 * @return 	\Timber\Pagination object
 	 */
 	public function pagination( $prefs = array() ) {
 		if ( !$this->pagination && is_a($this->queryIterator, 'Timber\QueryIterator') ) {

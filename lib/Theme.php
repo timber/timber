@@ -39,7 +39,7 @@ class Theme extends Core {
 
 	/**
 	 * @api
-	 * @var TimberTheme|bool the TimberTheme object for the parent theme (if it exists), false otherwise
+	 * @var \Timber\Theme|bool the Timber\Theme object for the parent theme (if it exists), false otherwise
 	 */
 	public $parent = false;
 
@@ -57,7 +57,7 @@ class Theme extends Core {
 	public $uri;
 
 	/**
-	 * @var WP_Theme the underlying WordPress native Theme object
+	 * @var \WP_Theme the underlying WordPress native Theme object
 	 */
 	private $theme;
 

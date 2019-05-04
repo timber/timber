@@ -1003,7 +1003,7 @@ class Post extends Core implements CoreInterface {
 	 * Returns a category attached to a post
 	 * @api
 	 * If mulitpuile categories are set, it will return just the first one
-	 * @return Timber\Term|null
+	 * @return \Timber\Term|null
 	 */
 	public function category() {
 		return $this->get_category();
@@ -1391,7 +1391,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * Finds any WP_Post objects and converts them to Timber\Posts
-	 * @param array|WP_Post $data
+	 * @param array|\WP_Post $data
 	 * @param string $class
 	 */
 	public function convert( $data ) {
@@ -1418,7 +1418,7 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * Parent page: <a href="{{ post.parent.link }}">{{ post.parent.title }}</a>
 	 * ```
-	 * @return bool|Timber\Post
+	 * @return bool|\Timber\Post
 	 */
 	public function parent() {
 		if ( !$this->post_parent ) {
@@ -1489,7 +1489,7 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * <img src="{{ post.thumbnail.src }}" />
 	 * ```
-	 * @return Timber\Image|null of your thumbnail
+	 * @return \Timber\Image|null of your thumbnail
 	 */
 	public function thumbnail() {
 		$tid = get_post_thumbnail_id($this->ID);
@@ -1523,7 +1523,7 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * {{ post.gallery }}
 	 * ```
-	 * @return html
+	 * @return string html
 	 */
 	public function gallery( $html = true ) {
 		if ( isset($this->custom['gallery']) ) {
@@ -1542,7 +1542,7 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * {{ post.audio }}
 	 * ```
-	 * @return html
+	 * @return string html
 	 */
 	public function audio() {
 		if ( isset($this->custom['audio']) ) {
@@ -1565,7 +1565,7 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * {{ post.video }}
 	 * ```
-	 * @return html
+	 * @return string html
 	 */
 	public function video() {
 		if ( isset($this->custom['video']) ) {
@@ -1618,7 +1618,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * @param string $field
-	 * @return Timber\Image
+	 * @return \Timber\Image
 	 */
 	public function get_image( $field ) {
 		return new $this->ImageClass($this->$field);
@@ -1780,7 +1780,7 @@ class Post extends Core implements CoreInterface {
 	 * @internal
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @return TimberPost|boolean
+	 * @return \Timber\Post|bool
 	 */
 	public function get_prev( $in_same_term = false ) {
 		return $this->prev($in_same_term);
@@ -1791,7 +1791,7 @@ class Post extends Core implements CoreInterface {
 	 * @internal
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
-	 * @return bool|TimberPost
+	 * @return \Timber\Post|bool
 	 */
 	public function get_parent() {
 		return $this->parent();
@@ -1860,7 +1860,7 @@ class Post extends Core implements CoreInterface {
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
 	 * @param bool $taxonomy
-	 * @return TimberPost|boolean
+	 * @return \Timber\Post|bool
 	 */
 	public function get_next( $taxonomy = false ) {
 		return $this->next($taxonomy);

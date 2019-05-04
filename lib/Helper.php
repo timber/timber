@@ -89,7 +89,7 @@ class Helper {
 	 * @param string $slug
 	 */
 	public static function _unlock_transient( $slug ) {
-		delete_transient($slug.'_lock', true);
+		delete_transient($slug.'_lock');
 	}
 
 	/**
@@ -159,8 +159,8 @@ class Helper {
 	 * <form action="form.php"><input type="text" /><input type="submit /></form>
 	 * ```
 	 * @api
-	 * @param callback $function
-	 * @param array   $args
+	 * @param callable $function
+	 * @param array    $args
 	 * @return string
 	 */
 	public static function ob_function( $function, $args = array(null) ) {
@@ -487,8 +487,8 @@ class Helper {
 	 *
 	 * If no match is found the function will return the inital argument.
 	 *
-	 * @param mix $obj WP Object
-	 * @return mix Instance of equivalent Timber object, or the argument if no match is found
+	 * @param mixed $obj WP Object
+	 * @return mixed Instance of equivalent Timber object, or the argument if no match is found
 	 */
 	public static function convert_wp_object( $obj ) {
 		if ( $obj instanceof \WP_Post ) {

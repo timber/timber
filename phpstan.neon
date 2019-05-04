@@ -1,0 +1,28 @@
+# Start command: composer update --classmap-authoritative && vendor/bin/phpstan analyze
+
+includes:
+    # https://github.com/phpstan/phpstan/blob/master/conf/bleedingEdge.neon
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+parameters:
+    level: max
+    paths:
+        - %currentWorkingDirectory%/lib/
+#    excludes_analyse:
+    autoload_files:
+        # Missing constants, function and class shims
+        - %currentWorkingDirectory%/tests/phpstan/bootstrap.php
+        # Plugin stubs
+        - %currentWorkingDirectory%/tests/phpstan/wp-cli-stubs-2.2.0.php
+#        # Procedural code
+#        - %currentWorkingDirectory%/myplugin-functions.php
+#    autoload_directories:
+#        - %currentWorkingDirectory%/inc/
+    ignoreErrors:
+        - '#^Function apply_filters invoked with [3456] parameters, 2 required\.$#'
+#        - '#^Function do_action invoked with [3456] parameters, 1-2 required\.$#'
+        - '#^Function current_user_can invoked with 2 parameters, 1 required\.$#'
+        - '#^Function add_query_arg invoked with [123] parameters, 0 required\.$#'
+#        - '/^Parameter #2 \$deprecated of function load_plugin_textdomain expects string, false given\.$/'
+        # WP-CLI accepts a class too
+#        - '/^Parameter #2 \$callable of static method WP_CLI::add_command\(\) expects callable\(\): mixed, \S+ given\.$/'

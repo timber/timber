@@ -8,8 +8,9 @@ namespace Timber;
  */
 class Integrations {
 
-	var $acf;
-	var $coauthors_plus;
+	public $acf;
+	public $coauthors_plus;
+	public $wpml;
 
 	public function __construct() {
 		$this->init();

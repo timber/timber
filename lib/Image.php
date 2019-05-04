@@ -80,7 +80,7 @@ class Image extends Post implements CoreInterface {
 	 */
 	public $caption;
 	/**
-	 * @var $_wp_attached_file the file as stored in the WordPress database
+	 * @var string $_wp_attached_file the file as stored in the WordPress database
 	 */
 	protected $_wp_attached_file;
 
@@ -399,7 +399,7 @@ class Image extends Post implements CoreInterface {
 
 	/**
 	 * @api
-	 * @return bool|TimberPost
+	 * @return \Timber\Post|bool
 	 */
 	public function parent() {
 		if ( !$this->post_parent ) {
