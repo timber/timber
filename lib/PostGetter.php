@@ -52,7 +52,17 @@ class PostGetter {
 	}
 
 	public static function get_posts( $query = false, $PostClass = '\Timber\Post', $return_collection = false ) {
-		add_filter('pre_get_posts', array('Timber\PostGetter', 'set_query_defaults'));
+		/**
+		 * Checks if we should use **get_posts()** in a Timber or WordPress way.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param boolean
+		 */
+		if ( apply_filter( 'timber/post_getter/wp_get_posts', false ) ) {
+			add_filter('pre_get_posts', array('Timber\PostGetter', 'set_query_defaults'));
+		}
+
 		$posts = self::query_posts($query, $PostClass);
 		return apply_filters('timber_post_getter_get_posts', $posts->get_posts($return_collection));
 	}
