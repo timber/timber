@@ -397,7 +397,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
             'orderby' => 'ID',
             'order' => 'ASC'
         );
-
+		add_filter( 'timber/post_getter/wp_get_posts', '__return_true' );
         $posts = Timber::get_posts($queryArgs);
         $this->assertEquals($numberPosts, count($posts));
 
