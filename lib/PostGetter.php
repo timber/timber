@@ -59,7 +59,7 @@ class PostGetter {
 		 *
 		 * @param boolean
 		 */
-		if ( apply_filter( 'timber/post_getter/wp_get_posts', false ) ) {
+		if ( apply_filters( 'timber/post_getter/wp_get_posts', false ) ) {
 			add_filter('pre_get_posts', array('Timber\PostGetter', 'set_query_defaults'));
 		}
 
