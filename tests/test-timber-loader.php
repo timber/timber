@@ -10,7 +10,7 @@
 		    });
 		    $str = Timber::compile('assets/single.twig', array());
 		}
-				
+
 		function testBogusTemplate() {
 			$str = Timber::compile('assets/darkhelmet.twig');
 			$this->assertFalse($str);
@@ -19,6 +19,11 @@
 		function testBogusTemplates() {
 			$str = Timber::compile( array('assets/barf.twig', 'assets/lonestar.twig') );
 			$this->assertFalse($str);
+		}
+
+		function testWhitespaceTrimForTemplate(){
+			$str = Timber::compile('assets/single.twig ', array());
+			$this->assertEquals('I am single.twig', trim($str));
 		}
 
 		/**
