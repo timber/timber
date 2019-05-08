@@ -305,18 +305,18 @@ class Twig {
 	 */
 	public function add_timber_escapers( $twig ) {
 
-		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_url', function( \Twig\Environment $env, $string ) {
+		$twig->getExtension('Twig\Extension\CoreExtension')->setEscaper('esc_url', function( \Twig\Environment $env, $string ) {
 			return esc_url($string);
 		});
-		$twig->getExtension('Twig_Extension_Core')->setEscaper('wp_kses_post', function( \Twig\Environment $env, $string ) {
+		$twig->getExtension('Twig\Extension\CoreExtension')->setEscaper('wp_kses_post', function( \Twig\Environment $env, $string ) {
 			return wp_kses_post($string);
 		});
 
-		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_html', function( \Twig\Environment $env, $string ) {
+		$twig->getExtension('Twig\Extension\CoreExtension')->setEscaper('esc_html', function( \Twig\Environment $env, $string ) {
 			return esc_html($string);
 		});
 
-		$twig->getExtension('Twig_Extension_Core')->setEscaper('esc_js', function( \Twig\Environment $env, $string ) {
+		$twig->getExtension('Twig\Extension\CoreExtension')->setEscaper('esc_js', function( \Twig\Environment $env, $string ) {
 			return esc_js($string);
 		});
 
