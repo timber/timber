@@ -199,7 +199,7 @@ class Twig {
 	}
 
 	/**
-	 * Adds filters.
+	 * Adds filters to Twig.
 	 *
 	 * @param \Twig\Environment $twig The Twig Environment.
 	 * @return \Twig\Environment
@@ -262,6 +262,7 @@ class Twig {
 		 * You can use this filter if you want to add additional functionality to Twig, like global
 		 * variables, filters or functions.
 		 *
+		 * @since 0.21.9
 		 * @example
 		 * ```php
 		 * /**
