@@ -99,13 +99,24 @@ Every time you render a `.twig` file, Twig compiles all the HTML tags and variab
 **functions.php**
 
 ```php
-<?php
-if ( class_exists( 'Timber' ) ){
-	Timber::$cache = true;
-}
+add_filter( 'timber/twig/environment/options', function( $options ) {
+	$options['cache'] = true;
+
+    return $options;
+} );
 ```
 
-You can look in your your `/wp-content/plugins/timber/twig-cache` directory to see what these files look like.
+You can look in your your `/vendor/timber/timber/cache` directory to see what these files look like.
+
+If you want to change the path where Timber caches the Twig files, you can pass in an absolute path for the `cache` option:
+
+```php
+add_filter( 'timber/twig/environment/options', function( $options ) {
+	$options['cache'] = '/absolute/path/to/twig_cache';
+
+    return $options;
+} );
+```
 
 This does not cache the _contents_ of the variables. This is recommended as a last-step in the production process. Once enabled, any change you make to a `.twig` file (just tweaking the HTML for example) will not go live until the cache is flushed.
 
