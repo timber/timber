@@ -2,14 +2,6 @@
 
 namespace Timber;
 
-use Timber\URLHelper;
-use Timber\Helper;
-
-use Timber\Post;
-use Timber\Term;
-use Timber\Image;
-use Timber\User;
-
 /**
  * Class Twig
  */

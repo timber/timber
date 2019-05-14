@@ -2,10 +2,6 @@
 
 namespace Timber;
 
-use Timber\User;
-use Timber\Core;
-use Timber\CoreInterface;
-
 /**
  * Class Comment
  *

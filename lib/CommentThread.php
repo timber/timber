@@ -2,8 +2,6 @@
 
 namespace Timber;
 
-use Timber\Comment;
-
 /**
  * Class CommentThread
  */

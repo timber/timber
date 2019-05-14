@@ -2,9 +2,6 @@
 
 namespace Timber;
 
-use Timber\FunctionWrapper;
-use Timber\URLHelper;
-
 /**
  * Class Helper
  *

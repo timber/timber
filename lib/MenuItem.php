@@ -2,11 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
-
-use Timber\URLHelper;
-
 /**
  * Class MenuItem
  *

@@ -2,13 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
-
-use Timber\URLHelper;
-
-use Timber\Image;
-
 /**
  * Class User
  *
@@ -475,7 +468,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 		);
 		return $this->meta( $field_name );
   }
-  
+
   /**
 	 * Creates an associative array with user role slugs and their translated names.
 	 *

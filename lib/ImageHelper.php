@@ -2,14 +2,7 @@
 
 namespace Timber;
 
-use Timber\Image;
-use Timber\Image\Operation\ToJpg;
-use Timber\Image\Operation\ToWebp;
-use Timber\Image\Operation\Resize;
-use Timber\Image\Operation\Retina;
 use Timber\Image\Operation\Letterbox;
-
-use Timber\URLHelper;
 
 /**
  * Class ImageHelper
