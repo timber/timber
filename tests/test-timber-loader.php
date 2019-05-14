@@ -21,6 +21,11 @@
 			$this->assertFalse($str);
 		}
 
+		function testWhitespaceTrimForTemplate(){
+			$str = Timber::compile('assets/single.twig ', array());
+			$this->assertEquals('I am single.twig', trim($str));
+		}
+
 		function testTwigPathFilterAdded() {
 			$php_unit = $this;
 			add_filter('timber/loader/paths', function($paths) use ($php_unit) {
