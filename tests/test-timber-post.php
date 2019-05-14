@@ -1003,7 +1003,7 @@
 			$pid = $this->factory->post->create(array('post_content' => $quote));
 			$post = new Timber\Post($pid);
 			$expected = array(
-				'<iframe width="500" height="281" src="https://www.youtube.com/embed/Jf37RalsnEs?feature=oembed" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+				'<iframe title="Building sane, reusable WordPress templates with Twig and Timber - WPCampus 2017" width="500" height="281" src="https://www.youtube.com/embed/Jf37RalsnEs?feature=oembed" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
 			);
 
 			$this->assertEquals($expected, $post->video());
