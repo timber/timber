@@ -554,12 +554,12 @@ class Helper {
 	 */
 	public static function convert_wp_object( $obj ) {
 		if ( $obj instanceof \WP_Post ) {
-			$class = \Timber\PostGetter::get_post_class($obj->post_type);
+			$class = PostGetter::get_post_class($obj->post_type);
 			return new $class($obj->ID);
 		} elseif ( $obj instanceof \WP_Term ) {
-			return new \Timber\Term($obj->term_id);
+			return new Term($obj->term_id);
 		} elseif ( $obj instanceof \WP_User ) {
-			return new \Timber\User($obj->ID);
+			return new User($obj->ID);
 		}
 
 		return $obj;
