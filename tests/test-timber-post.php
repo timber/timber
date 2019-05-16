@@ -923,12 +923,12 @@
 			$quote .= "No, try not. Do or do not. There is no try.";
 
 			$pid = $this->factory->post->create(array('post_content' => $quote));
-			$post = new TimberPost($pid);
-			$expected = array(
-				'<iframe width="500" height="281" src="https://www.youtube.com/embed/Jf37RalsnEs?feature=oembed" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
-			);
+			$post = new Timber\Post($pid);
 
-			$this->assertEquals($expected, $post->video());
+			$video    = $post->video();
+			$value    = array_shift( $video );
+			$expected = '/<iframe [^>]+ src="https:\/\/www\.youtube\.com\/embed\/Jf37RalsnEs\?feature=oembed" [^>]+>/i';
+ 			$this->assertRegExp( $expected, $value );;
 		}
 
 		function testPostWithVideoCustomField() {
