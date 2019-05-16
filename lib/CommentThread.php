@@ -4,6 +4,35 @@ namespace Timber;
 
 use Timber\Comment;
 
+/**
+ * This object is a special type of array that hold WordPress comments as Timber\Comment objects. 
+ * You propbably won't use this directly. This object is returned when calling `{{ post.comments }}` 
+ * in Twig.
+ *
+ * @example
+ * ```twig
+ * <div id="post-comments">
+ *   <h4>Comments on {{ post.title }}</h4>
+ *   <ul>
+ *     {% for comment in post.comments %}
+ *       {% include 'comment.twig' %}
+ *     {% endfor %}
+ *	 </ul>
+ * 
+ * #comment.twig
+ * <li>
+ *   <div>{{ comment.content }}</div>
+ *   <p class="comment-author">{{ comment.author.name }}</p>
+ *   <!-- nested comments here -->
+ *   {% if comment.children %}
+ *     <div class="replies"> 
+ *	     {% for child_comment in comment.children %}
+ *         {% include 'comment.twig' with { comment:child_comment } %}
+ *       {% endfor %}
+ *     </div> 
+ *   {% endif %}    
+ * </li>
+ */
 class CommentThread extends \ArrayObject {
 
 	var $CommentClass = 'Timber\Comment';
@@ -78,8 +107,6 @@ class CommentThread extends \ArrayObject {
 				$parents[$comment->ID] = $comment;
 			}
 		}
-
-		
 
 		foreach ( $children as &$comment ) {
 			$parent_id = $comment->comment_parent;
