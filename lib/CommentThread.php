@@ -11,6 +11,7 @@ use Timber\Comment;
  *
  * @example
  * ```twig
+ * {# single.twig #}
  * <div id="post-comments">
  *   <h4>Comments on {{ post.title }}</h4>
  *   <ul>
@@ -18,8 +19,10 @@ use Timber\Comment;
  *       {% include 'comment.twig' %}
  *     {% endfor %}
  *	 </ul>
- * 
- * #comment.twig
+ * ```
+ *
+ * ```twig
+ * {# comment.twig #}
  * <li>
  *   <div>{{ comment.content }}</div>
  *   <p class="comment-author">{{ comment.author.name }}</p>
@@ -32,6 +35,7 @@ use Timber\Comment;
  *     </div> 
  *   {% endif %}    
  * </li>
+ * ```
  */
 class CommentThread extends \ArrayObject {
 
