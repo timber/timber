@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Timber\Cache\Cleaner;
+use Twig\CacheExtension;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
@@ -456,15 +457,19 @@ class Loader {
 	}
 
 	/**
-	 * @return \Asm89\Twig\CacheExtension\Extension
+	 * @return \Twig\CacheExtension\Extension
 	 */
 	private function _get_cache_extension() {
 
 		$key_generator   = new \Timber\Cache\KeyGenerator();
 		$cache_provider  = new \Timber\Cache\WPObjectCacheAdapter($this);
 		$cache_lifetime  = apply_filters('timber/cache/extension/lifetime', 0);
-		$cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator, $cache_lifetime);
-		$cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
+		$cache_strategy  = new CacheExtension\CacheStrategy\GenerationalCacheStrategy(
+			$cache_provider,
+			$key_generator,
+			$cache_lifetime
+		);
+		$cache_extension = new CacheExtension\Extension($cache_strategy);
 
 		return $cache_extension;
 	}
