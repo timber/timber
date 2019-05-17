@@ -1049,7 +1049,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Gets the comments on a Timber\Post and returns them as an array of [Timber\Comment](#TimberComment) (or whatever comment class you set).
+	 * Gets the comments on a Timber\Post and returns them as a Timber\CommentThread: a PHP ArrayObject of [Timber\Comment](#TimberComment) (or whatever comment class you set).
 	 * @api
 	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
 	 * @param string $order use ordering set in WordPress admin, or a different scheme
@@ -1059,13 +1059,29 @@ class Post extends Core implements CoreInterface {
 	 * @example
 	 * ```twig
 	 * {# single.twig #}
-	 * <h4>Comments:</h4>
-	 * {% for comment in post.comments %}
-	 * 	<div class="comment-{{comment.ID}} comment-order-{{loop.index}}">
-	 * 		<p>{{comment.author.name}} said:</p>
-	 * 		<p>{{comment.content}}</p>
-	 * 	</div>
-	 * {% endfor %}
+	 * <div id="post-comments">
+	 *   <h4>Comments on {{ post.title }}</h4>
+	 *   <ul>
+	 *     {% for comment in post.comments() %}
+	 *       {% include 'comment.twig' %}
+	 *     {% endfor %}
+	 *	 </ul>
+	 * ```
+	 *
+	 * ```twig
+	 * {# comment.twig #}
+	 * <li>
+	 *   <div>{{ comment.content }}</div>
+	 *   <p class="comment-author">{{ comment.author.name }}</p>
+	 *   <!-- nested comments here -->
+	 *   {% if comment.children %}
+	 *     <div class="replies"> 
+	 *	     {% for child_comment in comment.children %}
+	 *         {% include 'comment.twig' with { comment:child_comment } %}
+	 *       {% endfor %}
+	 *     </div> 
+	 *   {% endif %}    
+	 * </li>
 	 * ```
 	 * @return bool|array
 	 */
