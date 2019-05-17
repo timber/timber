@@ -80,7 +80,7 @@ And then add it to Timber’s Twig environment:
 **functions.php**
 
 ```php
-add_filter( 'timber/twig', function( Twig_Environment $twig ) {
+add_filter( 'timber/twig', function( \Twig\Environment $twig ) {
     if ( defined( 'WP_DEBUG' ) && WP_DEBUG
         && class_exists( 'Ajgl\Twig\Extension\BreakpointExtension' )
     ) {

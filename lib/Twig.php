@@ -180,7 +180,6 @@ class Twig {
 	 * @return \Twig\Environment
 	 */
 	public function add_timber_filters( $twig ) {
-		/* image filters */
 		$twig->addFilter(new Twig_Filter('resize', array('Timber\ImageHelper', 'resize')));
 		$twig->addFilter(new Twig_Filter('retina', array('Timber\ImageHelper', 'retina_resize')));
 		$twig->addFilter(new Twig_Filter('letterbox', array('Timber\ImageHelper', 'letterbox')));
