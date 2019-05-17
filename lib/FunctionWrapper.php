@@ -61,12 +61,12 @@ class FunctionWrapper {
 	 *
 	 * When a function is added more than once, addFunction() will throw a LogicException that states that the function
 	 * is already registered. By catching this exception, we can prevent a fatal error.
-	 * @see Twig_Extension_Staging::addFunction()
+	 * @see \Twig\Extension\StagingExtension::addFunction()
 	 *
 	 * @deprecated since 1.3.0
 	 * @todo remove in 1.4.0
-	 * @param \Twig_Environment $twig
-	 * @return \Twig_Environment
+	 * @param \Twig\Environment $twig
+	 * @return \Twig\Environment
 	 */
 	public function add_to_twig( $twig ) {
 		$wrapper = $this;
