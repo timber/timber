@@ -192,9 +192,9 @@
         	Timber::compile('assets/single-post.twig', array('post' => $post));
         	sleep(1);
         	$this->assertFileExists($cache_dir);
-        	Timber::$twig_cache = false;
         	$loader = new Timber\Loader();
         	$loader->clear_cache_twig();
+        	Timber::$twig_cache = false;
         	$this->assertFileNotExists($cache_dir);
         }
 
