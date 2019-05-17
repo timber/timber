@@ -112,6 +112,7 @@ You can extend Twig by adding custom functionality like functions or filters. Ti
 
 ```php
 <?php
+
 add_filter( 'timber/twig', 'add_to_twig' );
 
 /**
