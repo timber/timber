@@ -57,6 +57,9 @@ class CommentThread extends \ArrayObject {
 		}
 	}
 
+	/**
+	 * @internal
+	 */
 	protected function fetch_comments( $args = array() ) {
 		$args['post_id'] = $this->post_id;
 		$comments = get_comments($args);
@@ -64,14 +67,8 @@ class CommentThread extends \ArrayObject {
 	}
 
 	/**
-	 * @experimental
+	 * @internal
 	 */
-	public function orderby( $orderby = 'wp' ) {
-		$this->_orderby = $orderby;
-		$this->init();
-		return $this;
-	}
-
 	protected function merge_args( $args ) {
 		$base = array('status' => 'approve');
 		$overrides = array('order' => $this->_order);
@@ -79,6 +76,7 @@ class CommentThread extends \ArrayObject {
 	}
 
 	/**
+	 * @internal
 	 * @experimental
 	 */
 	public function order( $order = 'ASC' ) {
@@ -87,6 +85,19 @@ class CommentThread extends \ArrayObject {
 		return $this;
 	}
 
+	/**
+	 * @internal
+	 * @experimental
+	 */
+	public function orderby( $orderby = 'wp' ) {
+		$this->_orderby = $orderby;
+		$this->init();
+		return $this;
+	}
+
+	/**
+	 * @internal
+	 */
 	public function init( $args = array() ) {
 		global $overridden_cpage;
 		$args = self::merge_args($args);
@@ -129,10 +140,16 @@ class CommentThread extends \ArrayObject {
 		$this->import_comments($parents);
 	}
 
+	/**
+	 * @internal
+	 */
 	protected function clear() {
 		$this->exchangeArray(array());
 	}
 
+	/**
+	 * @internal
+	 */
 	protected function import_comments( $arr ) {
 		$this->clear();
 		$i = 0;
