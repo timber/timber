@@ -65,9 +65,31 @@ Sometimes it’s difficult to know which Twig file generated a certain output. T
 
 The extension is only active when `WP_DEBUG` is set to `true`.
 
-## Set xDebug breakpoints in Twig
+## Set breakpoints in Twig
 
-Certain IDEs allow you to set breakpoints in your PHP code. To do that in Twig, you can use the [AjglBreakpointTwigExtension](https://github.com/ajgarlag/AjglBreakpointTwigExtension) extension, that allows you to set breakpoints and inspect environment and context variables.
+### Twig breakpoints in PhpStorm
+
+With PhpStorm, you can [set breakpoints right in your Twig files](https://blog.jetbrains.com/phpstorm/2019/05/twig-and-blade-templates-debugging-2/). To make it work, you need to enable the caching of Twig files:
+
+**functions.php**
+
+```php
+Timber::$twig_cache = true;
+```
+
+Then, you need to reference the path to the cached files in ***Settings/Preferences*** &rarr; ***Languages & Frameworks*** &rarr; ***PHP*** &rarr; ***Debug*** &rarr; ***Templates***. If you’ve installed Timber through Composer, the path will be `vendor/timber/timber/cache/`.
+
+Remember that you can set the location of the cache files through the `timber/cache/location` filter:
+
+```php
+add_filter( 'timber/cache/location', function() {
+    return '/absolute/path/to/your/cached/twig/files';
+} );
+```
+
+### Twig breakpoints in other IDEs
+
+Other IDEs don’t allow you to set breakpoints in your PHP code. You can try out the [AjglBreakpointTwigExtension](https://github.com/ajgarlag/AjglBreakpointTwigExtension) extension, that allows you to set breakpoints and inspect environment and context variables.
 
 Install it as a dev-dependency:
 
