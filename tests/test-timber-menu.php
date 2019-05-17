@@ -43,7 +43,10 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		self::setPermalinkStructure();
 
 		$menu_term = self::_createTestMenu();
+
+		add_filter( 'wp_get_nav_menu_items', [ $this, 'append_wpml_language_switcher_menu_element' ] );
 		$menu = new Timber\Menu( $menu_term['term_id'] );
+		remove_filter( 'wp_get_nav_menu_items', [ $this, 'append_wpml_language_switcher_menu_element' ] );
 		$menu_items = $menu->items;
 
 		// Add attachment to post
@@ -653,4 +656,31 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( 3, count($menu->get_items()) );
 	}
 
+	public function append_wpml_language_switcher_menu_element( array $items ) {
+		$ls_item = $this->getMockBuilder( 'WPML_LS_Menu_Item' )
+		                ->disableOriginalConstructor()
+		                ->getMock();
+
+		$ls_item->title            = 'Some title';
+		$ls_item->ID               = 987654321;
+		$ls_item->object_id        = null;
+		$ls_item->db_id            = null;
+		$ls_item->menu_item_parent = null;
+		$ls_item->attr_title       = 'Some attr title';
+		$ls_item->post_title       = 'Some post title';
+		$ls_item->url              = null;
+		$ls_item->classes          = 'Some classes';
+		$ls_item->description      = 'Some desc';
+		$ls_item->object           = 'wpml_ls_menu_item';
+		$ls_item->target           = '';
+		$ls_item->type             = 'wpml_ls_menu_item';
+		$ls_item->type_label       = '';
+		$ls_item->xfn              = '';
+		$ls_item->_invalid         = false;
+		$ls_item->menu_order       = 1000;
+
+		$items[] = $ls_item;
+
+		return $items;
+	}
 }
