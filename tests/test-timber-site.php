@@ -27,13 +27,13 @@ class TestTimberSite extends Timber_UnitTestCase {
 
 	function testThemeFromContext() {
 		switch_theme( 'twentyfifteen' );
-		$context = Timber::get_context();
+		$context = Timber::context();
 		$this->assertEquals( 'twentyfifteen', $context['theme']->slug );
 	}
 
 	function testThemeFromSiteContext() {
 		switch_theme( 'twentyfifteen' );
-		$context = Timber::get_context();
+		$context = Timber::context();
 		$this->assertEquals( 'twentyfifteen', $context['site']->theme->slug );
 	}
 

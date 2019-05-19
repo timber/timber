@@ -41,7 +41,7 @@ $post = new Timber\Post();
 if (isset($post->hero_image) && strlen($post->hero_image)){
 	$post->hero_image = new Timber\Image($post->hero_image);
 }
-$data = Timber::get_context();
+$data = Timber::context();
 $data['post'] = $post;
 Timber::render('single.twig', $data);
 ```
@@ -71,7 +71,7 @@ You can now use all the above functions to transform your custom images in the s
 {{ post.meta('group').first_field }}
 {{ post.meta('group').second_field }}
 ```
-or 
+or
 ```twig
 {% set group = post.meta('group') %}
 {{ group.first_field }}

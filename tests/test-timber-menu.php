@@ -118,7 +118,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testMenuTwig() {
 		self::setPermalinkStructure();
-		$context = Timber::get_context();
+		$context = Timber::context();
 		self::_createTestMenu();
 		$this->go_to( home_url( '/child-page' ) );
 		$context['menu'] = new TimberMenu();
@@ -132,7 +132,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		self::setPermalinkStructure();
 		self::_createTestMenu();
 		$this->go_to( home_url( '/home' ) );
-		$context = Timber::get_context();
+		$context = Timber::context();
 		$context['menu'] = new TimberMenu();
 		$str = Timber::compile( 'assets/menu-classes.twig', $context );
 		$str = trim( $str );

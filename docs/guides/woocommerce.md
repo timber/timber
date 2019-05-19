@@ -6,18 +6,31 @@ menu:
 ---
 
 ## Point of entry - main WooCommerce PHP file
-The first step to get your WooCommerce project integrated with Timber is creating a file named `woocommerce.php` in the root of your theme. That will establish the context and data to be passed to your Twig files:
+
+The first step to get your WooCommerce project integrated with Timber is declaring WooCommerce support in your theme’s **functions.php** file like so:
+
+```php
+function theme_add_woocommerce_support() {
+    add_theme_support( 'woocommerce' );
+}
+
+add_action( 'after_setup_theme', 'theme_add_woocommerce_support' );
+```
+
+For more information about how you can enable or disable features and change settings through theme support, refer to the [WooCommerce Theme Developer Handbook](https://docs.woocommerce.com/document/woocommerce-theme-developer-handbook).
+
+Once that’s done you can start integrating WooCommerce into your theme by creating a file named **woocommerce.php** in the root of your theme. That will establish the context and data to be passed to your Twig files:
 
 ```php
 <?php
 
-if ( ! class_exists( 'Timber' ) ){
+if ( ! class_exists( 'Timber' ) ) {
     echo 'Timber not activated. Make sure you activate the plugin in <a href="/wp-admin/plugins.php#timber">/wp-admin/plugins.php</a>';
 
     return;
 }
 
-$context            = Timber::get_context();
+$context            = Timber::context();
 $context['sidebar'] = Timber::get_widgets( 'shop-sidebar' );
 
 if ( is_singular( 'product' ) ) {
@@ -178,7 +191,7 @@ For some reason, products in the loop don’t get the right context by default. 
 <?php
 function timber_set_product( $post ) {
     global $product;
-    
+
     if ( is_woocommerce() ) {
         $product = wc_get_product( $post->ID );
     }

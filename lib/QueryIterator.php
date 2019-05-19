@@ -23,6 +23,7 @@ class QueryIterator implements \Iterator, \Countable {
 	public function __construct( $query = false, $posts_class = 'Timber\Post' ) {
 		add_action('pre_get_posts', array($this, 'fix_number_posts_wp_quirk'));
 		add_action('pre_get_posts', array($this, 'fix_cat_wp_quirk'));
+		
 		if ( $posts_class ) {
 			$this->_posts_class = $posts_class;
 		}
