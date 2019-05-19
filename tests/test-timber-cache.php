@@ -198,6 +198,28 @@
         	$this->assertFileNotExists($cache_dir);
         }
 
+        /**
+		 * @expectedDeprecated Timber::$cache and Timber::$twig_cache
+		 */
+        function testTwigCacheAliasDeprecated(){
+        	$cache_dir = __DIR__.'/../cache/twig';
+        	if (is_dir($cache_dir)){
+        		Timber\Loader::rrmdir($cache_dir);
+        	}
+        	$this->assertFileNotExists($cache_dir);
+        	Timber::$cache = true;
+        	$pid = $this->factory->post->create();
+        	$post = new Timber\Post($pid);
+        	Timber::compile('assets/single-post.twig', array('post' => $post));
+        	sleep(1);
+        	$this->assertFileExists($cache_dir);
+        	$loader = new Timber\Loader();
+        	$loader->clear_cache_twig();
+        	Timber::$cache = false;
+        	Timber::$twig_cache = false;
+        	$this->assertFileNotExists($cache_dir);
+        }
+
         function testTwigCache(){
 	        $cache_dir = __DIR__ . '/../cache/twig';
 
