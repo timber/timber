@@ -105,7 +105,7 @@ if ( class_exists( 'Timber' ) ){
 }
 ```
 
-You can look in your your `/wp-content/plugins/timber/twig-cache` directory to see what these files look like.
+You can look in your your `/vendor/timber/timber/twig-cache` directory to see what these files look like.
 
 This does not cache the _contents_ of the variables. This is recommended as a last-step in the production process. Once enabled, any change you make to a `.twig` file (just tweaking the HTML for example) will not go live until the cache is flushed.
 
