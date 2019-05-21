@@ -1049,40 +1049,50 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Gets the comments on a Timber\Post and returns them as a Timber\CommentThread: a PHP ArrayObject of [Timber\Comment](#TimberComment) (or whatever comment class you set).
+	 * Gets the comments on a `Timber\Post` and returns them as a `Timber\CommentThread`: a PHP
+	 * ArrayObject of [`Timber\Comment`](https://timber.github.io/docs/reference/timber-comment/)
+	 * (or whatever comment class you set).
+	 *
+	 * @example
+	 *
+	 * **single.twig**
+	 *
+	 * ```twig
+	 * <div id="post-comments">
+	 *     <h4>Comments on {{ post.title }}</h4>
+	 *     <ul>
+	 *         {% for comment in post.comments %}
+	 *             {% include 'comment.twig' %}
+	 *         {% endfor %}
+	 *	   </ul>
+	 * </div>
+	 * ```
+	 *
+     * **comment.twig**
+     *
+     * ```twig
+     * <li>
+     *     <div>{{ comment.content }}</div>
+     *     <p class="comment-author">{{ comment.author.name }}</p>
+     *     <!-- nested comments here -->
+     *     {% if comment.children %}
+     *         <div class="replies">
+     *             {% for child_comment in comment.children %}
+     *                 {% include 'comment.twig' with { comment: child_comment } %}
+     *             {% endfor %}
+     *         </div>
+     *     {% endif %}
+     * </li>
+     * ```
+	 *
 	 * @api
-	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
+	 *
 	 * @param string $order use ordering set in WordPress admin, or a different scheme
 	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
 	 * @param string $status Could be 'pending', etc.
 	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending Timber\Comment for your site or app (obviously, totally optional)
-	 * @example
-	 * ```twig
-	 * {# single.twig #}
-	 * <div id="post-comments">
-	 *   <h4>Comments on {{ post.title }}</h4>
-	 *   <ul>
-	 *     {% for comment in post.comments() %}
-	 *       {% include 'comment.twig' %}
-	 *     {% endfor %}
-	 *	 </ul>
-	 * ```
+	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
 	 *
-	 * ```twig
-	 * {# comment.twig #}
-	 * <li>
-	 *   <div>{{ comment.content }}</div>
-	 *   <p class="comment-author">{{ comment.author.name }}</p>
-	 *   <!-- nested comments here -->
-	 *   {% if comment.children %}
-	 *     <div class="replies"> 
-	 *	     {% for child_comment in comment.children %}
-	 *         {% include 'comment.twig' with { comment:child_comment } %}
-	 *       {% endfor %}
-	 *     </div> 
-	 *   {% endif %}    
-	 * </li>
-	 * ```
 	 * @return bool|array
 	 */
 	public function comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
