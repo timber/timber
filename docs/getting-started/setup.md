@@ -14,7 +14,7 @@ You can install Timber through [Composer](https://getcomposer.org/download/).
 composer require timber/timber
 ```
 
-You can choose yourself where in your project you want to include Timber. Some developers prefer to have Timber installed as a theme dependency, so they would run this command from the theme root. But it’s also possible to use Timber as a WordPress dependency, which means you would run the command above from the WordPress root.
+You can choose yourself where in your project you want to include Timber. Most developers prefer to have Timber installed as a theme dependency, so they would run this command from the theme root. But it’s also possible to use Timber as a WordPress dependency, which means you would run the command above from the WordPress root.
 
 If your theme or project is not already set up to pull in Composer’s autoload file, you will need to add the following line at the top of your `functions.php` file: 
 
