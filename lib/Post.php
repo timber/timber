@@ -1087,11 +1087,16 @@ class Post extends Core implements CoreInterface {
 	 *
 	 * @api
 	 *
-	 * @param string $order use ordering set in WordPress admin, or a different scheme
-	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
-	 * @param string $status Could be 'pending', etc.
-	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending Timber\Comment for your site or app (obviously, totally optional)
-	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
+	 * @param int    $count        Set the number of comments you want to get. `0` is analogous to
+	 *                             "all".
+	 * @param string $order        Use ordering set in WordPress admin, or a different scheme.
+	 * @param string $type         For when other plugins use the comments table for their own
+	 *                             special purposes. Might be set to 'liveblog' or other, depending
+	 *                             on what’s stored in your comments table.
+	 * @param string $status       Could be 'pending', etc.
+	 * @param string $CommentClass What class to use when returning Comment objects. As you become a
+	 *                             Timber Pro, you might find yourself extending `Timber\Comment`
+	 *                             for your site or app (obviously, totally optional).
 	 *
 	 * @return bool|array
 	 */
