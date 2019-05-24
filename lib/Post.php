@@ -531,11 +531,16 @@ class Post extends Core implements CoreInterface {
 	 * @return array
 	 */
 	protected function get_post_custom( $pid ) {
-		apply_filters('timber_post_get_meta_pre', array(), $pid, $this);
-		$customs = get_post_custom($pid);
-		if ( !is_array($customs) || empty($customs) ) {
+		$customs = apply_filters('timber_post_get_meta_pre', array(), $pid, $this);
+
+		if ( is_array($customs) && empty($customs) ) {
+			$customs = get_post_custom($pid);
+		}
+
+		if ( !is_array($customs) ) {
 			return array();
 		}
+
 		foreach ( $customs as $key => $value ) {
 			if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
 				$value = $value[0];
