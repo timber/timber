@@ -27,9 +27,34 @@ Looking to do non-threaded comments? This pattern can be expanded upon. If you'r
 </section>
 ```
 
-## Threaded Comments
+## Threaded Comments (Method 1)
 
-Timber contains the `CommentThread` class to help manage comment threads. However, because replying to threaded comments involves WordPress's HTML and JavaScript we recommend employing threaded comments like so:
+You can implement threaded comments this way (if you don't mind using WordPres's comment markup).
+
+**single.twig**
+```twig
+<section class="post-{{ post.id }}">
+  <h1>{{ post.title }}</h1>
+  <div class="content">
+    {{ post.content }}
+  </div>
+  <div class="comments">
+    {{ function('comments_template') }}
+  </div>
+</section>
+```
+
+**functions.php**
+```php
+//Include the comment reply Javascript
+add_action('wp_print_scripts', function(){
+  if ( (!is_admin()) && is_singular() && comments_open() && get_option('thread_comments') ) wp_enqueue_script( 'comment-reply' );
+});
+```
+
+## Threaded Comments (Method 2)
+
+Timber contains the `CommentThread` class to help manage comment threads. If you need to build something custom, you can implement it like so:
 
 **single.twig**
 ```twig
