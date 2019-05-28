@@ -8,12 +8,15 @@ php:
     - 7.3
 
 env:
-    - WP_VERSION=4.7.12 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
-    - WP_VERSION=4.7.12 WP_MULTISITE=0 PREFER_LOWEST=""
-    - WP_VERSION=4.7.12 WP_MULTISITE=1 PREFER_LOWEST=""
-    - WP_VERSION=latest WP_MULTISITE=0 PREFER_LOWEST=""
-    - WP_VERSION=latest WP_MULTISITE=1 PREFER_LOWEST=""
-    - WP_VERSION=latest WP_MULTISITE=1 PREFER_LOWEST="--prefer-lowest --prefer-stable"
+    global:
+        - TMPDIR=/tmp
+    matrix:
+        - WP_VERSION=4.7.12 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
+        - WP_VERSION=4.7.12 WP_MULTISITE=0 PREFER_LOWEST=""
+        - WP_VERSION=4.7.12 WP_MULTISITE=1 PREFER_LOWEST=""
+        - WP_VERSION=latest WP_MULTISITE=0 PREFER_LOWEST=""
+        - WP_VERSION=latest WP_MULTISITE=1 PREFER_LOWEST=""
+        - WP_VERSION=latest WP_MULTISITE=1 PREFER_LOWEST="--prefer-lowest --prefer-stable"
 
 matrix:
     exclude:

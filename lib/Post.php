@@ -1049,16 +1049,29 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Gets the comments on a Timber\Post and returns them as a Timber\CommentThread: a PHP ArrayObject of [Timber\Comment](#TimberComment) (or whatever comment class you set).
+	 * Gets the comments on a `Timber\Post` and returns them as a `Timber\CommentThread`: a PHP
+	 * ArrayObject of [`Timber\Comment`](https://timber.github.io/docs/reference/timber-comment/)
+	 * (or whatever comment class you set).
 	 * @api
-	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
-	 * @param string $order use ordering set in WordPress admin, or a different scheme
-	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
-	 * @param string $status Could be 'pending', etc.
-	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending Timber\Comment for your site or app (obviously, totally optional)
+	 *
+	 * @param int    $count        Set the number of comments you want to get. `0` is analogous to
+	 *                             "all".
+	 * @param string $order        Use ordering set in WordPress admin, or a different scheme.
+	 * @param string $type         For when other plugins use the comments table for their own
+	 *                             special purposes. Might be set to 'liveblog' or other, depending
+	 *                             on what’s stored in your comments table.
+	 * @param string $status       Could be 'pending', etc.
+	 * @param string $CommentClass What class to use when returning Comment objects. As you become a
+	 *                             Timber Pro, you might find yourself extending `Timber\Comment`
+	 *                             for your site or app (obviously, totally optional).
+	 * @see \Timber\CommentThread for an example with nested comments
+	 * @return bool|\Timber\CommentThread
+	 *
 	 * @example
+	 *
+	 * **single.twig**
+	 *
 	 * ```twig
-	 * {# single.twig #}
 	 * <div id="post-comments">
 	 *   <h4>Comments on {{ post.title }}</h4>
 	 *   <ul>
@@ -1072,15 +1085,15 @@ class Post extends Core implements CoreInterface {
 	 * </div>
 	 * ```
 	 *
+	 * **comment.twig**
+	 *
 	 * ```twig
 	 * {# comment.twig #}
 	 * <li>
+	 *   <p class="comment-author">{{ comment.author.name }} says:</p>
 	 *   <div>{{ comment.content }}</div>
-	 *   <p class="comment-author">{{ comment.author.name }}</p>
 	 * </li>
 	 * ```
-	 * @see \Timber\CommentThread for an example with nested comments
-	 * @return bool|array
 	 */
 	public function comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
 		global $overridden_cpage, $user_ID;
