@@ -5,19 +5,14 @@ namespace Timber;
 use Timber\Comment;
 
 /**
- * Class CommentThread
- *
- * This object is a special type of array that hold WordPress comments as `Timber\Comment` objects.
- * You probably won’t use this directly. This object is returned when calling `{{ post.comments }}`
+ * This object is a special type of array that hold WordPress comments as `Timber\Comment` objects. 
+ * You probably won't use this directly. This object is returned when calling `{{ post.comments }}` 
  * in Twig.
  *
- * @example
- *
- * **single.twig**
- *
+ * @example 
  * ```twig
+ * {# single.twig #}
  * <div id="post-comments">
-<<<<<<< HEAD
  *   <h4>Comments on {{ post.title }}</h4>
  *   <ul>
  *     {% for comment in post.comments %}
@@ -27,22 +22,12 @@ use Timber\Comment;
  *   <div class="comment-form">
  *     {{ function('comment_form') }}
  *   </div>
-=======
- *     <h4>Comments on {{ post.title }}</h4>
- *     <ul>
- *         {% for comment in post.comments %}
- *             {% include 'comment.twig' %}
- *         {% endfor %}
- *	   </ul>
->>>>>>> 9d51e73aab5e8f345bf3a72d925a22b827dc6b91
  * </div>
  * ```
  *
- * **comment.twig**
- *
  * ```twig
+ * {# comment.twig #}
  * <li>
-<<<<<<< HEAD
  *   <div>{{ comment.content }}</div>
  *   <p class="comment-author">{{ comment.author.name }}</p>
  *   {{ function('comment_form') }}
@@ -54,18 +39,6 @@ use Timber\Comment;
  *       {% endfor %}
  *     </div> 
  *   {% endif %}    
-=======
- *     <div>{{ comment.content }}</div>
- *     <p class="comment-author">{{ comment.author.name }}</p>
- *     <!-- nested comments here -->
- *     {% if comment.children %}
- *         <div class="replies">
- *             {% for child_comment in comment.children %}
- *                 {% include 'comment.twig' with { comment: child_comment } %}
- *             {% endfor %}
- *         </div>
- *     {% endif %}
->>>>>>> 9d51e73aab5e8f345bf3a72d925a22b827dc6b91
  * </li>
  * ```
  */
