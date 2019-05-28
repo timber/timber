@@ -18,7 +18,11 @@ use Timber\Comment;
  *     {% for comment in post.comments %}
  *       {% include 'comment.twig' %}
  *     {% endfor %}
- *	 </ul>
+ *   </ul>
+ *   <div class="comment-form">
+ *     {{ function('comment_form') }}
+ *   </div>
+ * </div>
  * ```
  *
  * ```twig
@@ -26,6 +30,7 @@ use Timber\Comment;
  * <li>
  *   <div>{{ comment.content }}</div>
  *   <p class="comment-author">{{ comment.author.name }}</p>
+ *   {{ function('comment_form') }}
  *   <!-- nested comments here -->
  *   {% if comment.children %}
  *     <div class="replies"> 

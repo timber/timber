@@ -1065,7 +1065,11 @@ class Post extends Core implements CoreInterface {
 	 *     {% for comment in post.comments() %}
 	 *       {% include 'comment.twig' %}
 	 *     {% endfor %}
-	 *	 </ul>
+	 *   </ul>
+	 *   <div class="comment-form">
+	 *     {{ function('comment_form') }}
+	 *   </div>
+	 * </div>
 	 * ```
 	 *
 	 * ```twig
@@ -1073,16 +1077,9 @@ class Post extends Core implements CoreInterface {
 	 * <li>
 	 *   <div>{{ comment.content }}</div>
 	 *   <p class="comment-author">{{ comment.author.name }}</p>
-	 *   <!-- nested comments here -->
-	 *   {% if comment.children %}
-	 *     <div class="replies"> 
-	 *	     {% for child_comment in comment.children %}
-	 *         {% include 'comment.twig' with { comment:child_comment } %}
-	 *       {% endfor %}
-	 *     </div> 
-	 *   {% endif %}    
 	 * </li>
 	 * ```
+	 * @see \Timber\CommentThread for an example with nested comments
 	 * @return bool|array
 	 */
 	public function comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
