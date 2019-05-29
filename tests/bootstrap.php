@@ -1,8 +1,10 @@
 <?php
 
-$_tests_dir = getenv('WP_TESTS_DIR');
-if ( !$_tests_dir ) $_tests_dir = '/tmp/wordpress-tests-lib';
+$_tests_dir = getenv( 'WP_TESTS_DIR' );
 
+if ( ! $_tests_dir ) {
+	$_tests_dir = rtrim( getenv( 'TMPDIR' ), '/' ) . '/wordpress-tests-lib';
+}
 
 require_once $_tests_dir . '/includes/functions.php';
 
