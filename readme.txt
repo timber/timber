@@ -35,10 +35,6 @@ _Twig is the template language powering Timber; if you need a little background 
 **Changes for Theme Developers**
 
 
-= 1.10.0 (upcoming) =
-**Changes for Theme Developers**
-- You can use WordPress's behavior of `get_posts` (versus `WP_Query`) via a filter. By default, Timber uses the unique behaviors of WP_Query or get_posts depending on your type of Timber query #1989 (thanks @palmiak) 
-
 = 1.9.5 =
 **Fixes and improvements**
 - Updated to most current version of Twig.
