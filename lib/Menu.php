@@ -255,14 +255,14 @@ class Menu extends Core {
 			}
 			if ( isset($item->ID) ) {
 				if ( is_object($item) && get_class($item) == 'WP_Post' ) {
-					$old_menu_item = $item;
+					$wp_post_menu_item = $item;
 					$item = new $this->PostClass($item);
 				}
 				$menu_item = $this->create_menu_item($item);
-				if ( $old_menu_item ) {
-					$menu_item->import_classes($old_menu_item);
+				if ( $wp_post_menu_item ) {
+					$menu_item->import_classes($wp_post_menu_item);
 				}
-				$old_menu_item = null;
+				$wp_post_menu_item = null;
 				$index[$item->ID] = $menu_item;
 			}
 		}
