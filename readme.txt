@@ -33,6 +33,7 @@ _Twig is the template language powering Timber; if you need a little background 
 **Fixes and improvements**
 - Updated to most current version of Twig.
 - Fix to menu items getting incorrect classes in WPML and others #1974
+- You can use WordPress's behavior of `get_posts` (versus `WP_Query`) in Timber's queries #1989 (thanks @palmiak) 
 
 **Changes for Theme Developers**
 - If you run into problems with unknown `Twig_SimpleFilter` or unknown `Twig_Filter` classes, you can use `Timber\Twig_Filter` instead.
