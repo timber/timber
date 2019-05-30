@@ -247,6 +247,7 @@ class Menu extends Core {
 	protected function order_children( $items ) {
 		$index = array();
 		$menu = array();
+		$wp_post_menu_item = null;
 		foreach ( $items as $item ) {
 			if ( isset($item->title) ) {
 				// Items from WordPress can come with a $title property which conflicts with methods
