@@ -2,8 +2,8 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 4.7.12
-Tested up to: 5.1.1
-Stable tag: 1.9.4
+Tested up to: 5.2.1
+Stable tag: 1.9.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -31,17 +31,28 @@ _Twig is the template language powering Timber; if you need a little background 
 = Develop (next release) =
 
 **Fixes and improvements**
-- Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
 
 **Changes for Theme Developers**
-- Please add bullet points here with your PR. The heading for this section will get the correct version number once released.
 
-= 1.9.4 = 
+
+= 1.9.5 =
+**Fixes and improvements**
+- Updated to most current version of Twig.
+- This restores the prior behavior before #1813 / 1.9.3 when using Timber::get_posts. This is now controllable by devs
+- Add support for non-cookied comment awaiting moderation message #1954 (thanks @codeclarified)
+- Avoids a potential WSOD when incorrectly specifying template filenames #1984 (thanks @aj-adl)
+
+**Changes for Theme Developers**
+- You can use WordPress's behavior of `get_posts` (versus `WP_Query`) via a filter. By default, Timber uses the behaviors of WP_Query in Timber's queries #1989 (thanks @palmiak) 
+- If you run into problems with unknown `Twig_SimpleFilter` or unknown `Twig_Filter` classes, you can use `Timber\Twig_Filter` instead.
+
+
+= 1.9.4 =
 
 **Fixes and improvements**
 - Fixes a bug introduced in #1813 that was watching for the query param of `supress_filters` (instead of the correct spelling: `suppress_filters`)
 
-= 1.9.3 = 
+= 1.9.3 =
 
 **Changes for Theme Developers**
 - Fixed `Timber::get_posts` so that its default query parameters mirror WordPress's `get_posts` #1812 (thanks @bartvanraaij)
@@ -90,7 +101,7 @@ Timber now requires PHP 5.6 or greater. While Timber may work on PHP 5.5 and old
 
 **Fixes and improvements**
 - Using WordPress's `wp_check_filetype_and_ext` for the mime_type mess #1843 (thanks @gchtr)
-- Fixed how some previewed data (when looking at an unsaved post from the admin) is handled so that parenting relationships match what happens when published #1752 
+- Fixed how some previewed data (when looking at an unsaved post from the admin) is handled so that parenting relationships match what happens when published #1752
 - Timber\Menu now respects modifications sent through WP's `wp_nav_menu_objects` filter #1814 (thanks @pascalknecht)
 
 = 1.8.1 =

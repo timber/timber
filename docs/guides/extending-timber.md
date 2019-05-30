@@ -102,38 +102,51 @@ For example, I have a plugin that let's people insert manually related posts, bu
 
 These can get pretty complex. And that's the beauty. The complexity lives inside the context of the object, but very simple when it comes to your templates.
 
+## Adding functionality to Twig
 
-## Adding to Twig
+You can extend Twig by adding custom functionality like functions or filters. Timber provides its own classes (`Timber\Twig_Function` and `Timber\Twig_Filter`) to provide better compatibility with different versions of Twig.
 
-This is the correct formation for when you need to add custom functions, filters to twig:
+**functions.php**
 
 ```php
 <?php
-/* functions.php */
 
-add_filter('timber/twig', 'add_to_twig');
+add_filter( 'timber/twig', 'add_to_twig' );
 
-function add_to_twig($twig) {
-	/* this is where you can add your own functions to twig */
-	$twig->addExtension(new Twig_Extension_StringLoader());
-	$twig->addFilter(new Twig_SimpleFilter('whatever', 'my_whatever'));
-	return $twig;
+/**
+ * Adds functionality to Twig.
+ * 
+ * @param \Twig\Environment $twig The Twig environment.
+ * @return \Twig\Environment
+ */
+function add_to_twig( $twig ) {
+    // Adding a function.
+    $twig->addFunction( new Timber\Twig_Function( 'edit_post_link', 'edit_post_link' ) );
+    
+    // Adding functions as filters.
+    $twig->addFilter( new Timber\Twig_Filter( 'whateverify', 'whateverify' ) );
+    $twig->addFilter( new Timber\Twig_Filter( 'slugify', function( $title ) {
+        return sanitize_title( $title );
+    } ) );
+    
+    return $twig;
 }
 
-function my_whatever($text) {
-	$text .= ' or whatever';
-	return $text;
+function whateverify( $text ) {
+    $text .= ' or whatever';
+    
+    return $text;
 }
 ```
 
 This can now be called in your twig files with:
 
 ```twig
-<h2>{{ post.title|whatever }}</h2>
+<h2 id="{{ post.title|slugify }}">{{ post.title|whateverify }}</h2>
 ```
 
 Which will output:
 
 ```twig
-<h2>Hello World! or whatever</h2>
+<h2 id="hello-world">Hello World! or whatever</h2>
 ```
