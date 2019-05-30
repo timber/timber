@@ -10,7 +10,6 @@ Here are some helpful conversions for functions you’re probably well familiar 
 
 ```php
 $context = Timber::context();
-
 Timber::render( 'single.twig', $context );
 ```
 
