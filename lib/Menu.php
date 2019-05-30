@@ -259,9 +259,10 @@ class Menu extends Core {
 					$item = new $this->PostClass($item);
 				}
 				$menu_item = $this->create_menu_item($item);
-				if ( isset($old_menu_item) ) {
+				if ( $old_menu_item ) {
 					$menu_item->import_classes($old_menu_item);
 				}
+				$old_menu_item = null;
 				$index[$item->ID] = $menu_item;
 			}
 		}
