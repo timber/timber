@@ -2,8 +2,8 @@
 Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 4.7.12
-Tested up to: 5.1.1
-Stable tag: 1.9.4
+Tested up to: 5.2.1
+Stable tag: 1.9.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -31,11 +31,25 @@ _Twig is the template language powering Timber; if you need a little background 
 = Develop (next release) =
 
 **Fixes and improvements**
-- Updated to most current version of Twig.
-- You can use WordPress's behavior of `get_posts` (versus `WP_Query`) in Timber's queries #1989 (thanks @palmiak) 
 
 **Changes for Theme Developers**
+
+
+= 1.10.0 (upcoming) =
+**Changes for Theme Developers**
+- You can use WordPress's behavior of `get_posts` (versus `WP_Query`) via a filter. By default, Timber uses the unique behaviors of WP_Query or get_posts depending on your type of Timber query #1989 (thanks @palmiak) 
+
+= 1.9.5 =
+**Fixes and improvements**
+- Updated to most current version of Twig.
+- This restores the prior behavior before #1813 / 1.9.3 when using Timber::get_posts. This is now controllable by devs
+- Add support for non-cookied comment awaiting moderation message #1954 (thanks @codeclarified)
+- Avoids a potential WSOD when incorrectly specifying template filenames #1984 (thanks @aj-adl)
+
+**Changes for Theme Developers**
+- You can use WordPress's behavior of `get_posts` (versus `WP_Query`) via a filter. By default, Timber uses the behaviors of WP_Query in Timber's queries #1989 (thanks @palmiak) 
 - If you run into problems with unknown `Twig_SimpleFilter` or unknown `Twig_Filter` classes, you can use `Timber\Twig_Filter` instead.
+
 
 = 1.9.4 =
 
