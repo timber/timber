@@ -52,6 +52,7 @@ class PostGetter {
 	}
 
 	public static function get_posts( $query = false, $PostClass = '\Timber\Post', $return_collection = false ) {
+
 		/**
 		 * Filters whether Timber::get_posts() should mirror WordPress’s get_posts() function.
 		 *
@@ -70,7 +71,6 @@ class PostGetter {
 		 * @param bool $mirror Whether to mirror the `get_posts()` function of WordPress with all its
 		 *                     parameters. Default `false`.
 		 */
-
 		$mirror_wp_get_posts = apply_filters( 'timber/get_posts/mirror_wp_get_posts', false );
 		if ( $mirror_wp_get_posts ) {
 			add_filter( 'pre_get_posts', array('Timber\PostGetter', 'set_query_defaults') );
