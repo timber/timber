@@ -98,6 +98,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * Meta data.
 	 *
 	 * @api
+	 * @since 2.0.0
 	 * @var array All custom field data for the object.
 	 */
 	public $custom = array();
