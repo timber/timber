@@ -81,7 +81,7 @@ class MenuItem extends Core implements CoreInterface {
 	 */
 	public function __construct( $data, $menu ) {
 		$this->menu = $menu;
-		$data = (object) $data;
+		$data       = (object) $data;
 
 		$this->import($data);
 		$this->import_classes($data);
@@ -250,7 +250,28 @@ class MenuItem extends Core implements CoreInterface {
 		}
 		$this->classes = array_merge($this->classes, $data->classes);
 		$this->classes = array_unique($this->classes);
-		$this->classes = apply_filters('nav_menu_css_class', $this->classes, $this, array(), 0);
+
+		/**
+		 * Filters the CSS classes applied to a menu item’s list item.
+		 *
+		 * @param string[]         $classes An array of the CSS classes that can be applied to the
+		 *                                  menu item’s `<li>` element.
+		 * @param \Timber\MenuItem $item    The current menu item.
+		 * @param \stdClass $args           An object of wp_nav_menu() arguments. In Timber, we
+		 *                                  don’t have these arguments because we don’t use a menu
+		 *                                  walker. Instead, you get the options that were used to
+		 *                                  create the `Timber\Menu` object.
+		 * @param int              $depth   Depth of menu item.
+		 */
+		$this->classes = apply_filters(
+			'nav_menu_css_class',
+			$this->classes,
+			$this,
+			// The options need to be an object.
+			(object) $this->menu->options,
+			0
+		);
+
 		$this->class = trim(implode(' ', $this->classes));
 	}
 
