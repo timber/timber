@@ -48,16 +48,24 @@ class Menu extends Core {
 
 	/**
 	 * @api
-	 * @var array The unfiltered options sent forward via the user in the __construct
-	 */
-	public $raw_options;
-
-	/**
-	 * @api
 	 * @var string The name of the menu (ex: `Main Navigation`).
 	 */
 	public $title;
 
+	/**
+	 * Menu options.
+	 *
+	 * @api
+	 * @since 1.9.6
+	 * @var array An array of menu options.
+	 */
+	public $options;
+
+	/**
+	 * @api
+	 * @var array The unfiltered options sent forward via the user in the __construct
+	 */
+	public $raw_options;
 
 	/**
 	 * Theme Location.
@@ -72,15 +80,25 @@ class Menu extends Core {
 	 * Initialize a menu.
 	 *
 	 * @param int|string $slug    A menu slug, the term ID of the menu, the full name from the admin
-	 *                            menu, the slug of theregistered location or nothing. Passing nothing
-	 *                            is good if you only have one menu. Timber will grab what it finds.
-	 * @param array      $options An array of options, right now only `depth` is supported
+	 *                            menu, the slug of the registered location or nothing. Passing
+	 *                            nothing is good if you only have one menu. Timber will grab what
+	 *                            it finds.
+	 * @param array      $options Optional. An array of options. Right now, only the `depth` is,
+	 *                            supported which says how many levels of hierarchy should be
+	 *                            included in the menu. Default `-1`, which is all levels.
 	 */
 	public function __construct( $slug = 0, $options = array() ) {
 		$menu_id = false;
 		$locations = get_nav_menu_locations();
 
-		$this->set_options((array)$options);
+		// For future enhancements?
+		$this->raw_options = $options;
+
+			'depth' => -1,
+		$this->options = wp_parse_args( array(
+		), (array) $options );
+
+		$this->depth = (int) $this->options['depth'];
 
 		if ( $slug != 0 && is_numeric($slug) ) {
 			$menu_id = $slug;
@@ -160,16 +178,6 @@ class Menu extends Core {
 			$this->id = $this->term_id;
 			$this->title = $this->name;
 		}
-	}
-
-	/**
-	 * @internal
-	 * @param mixed $options
-	 */
-	protected function set_options ($options) {
-		// Set any important options
-		$this->depth = (isset($options['depth']) ? (int)$options['depth'] : -1);
-		$this->raw_options = $options; // for future enhancements?
 	}
 
 	/**
