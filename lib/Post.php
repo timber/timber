@@ -547,7 +547,7 @@ class Post extends Core implements CoreInterface {
 		 *
 		 * // Add your own meta data.
 		 * add_filter( 'timber_post_get_meta_pre', function( $post_meta, $post_id, $post ) {
-    	 *     $post_meta = array(
+		 *     $post_meta = array(
 		 *         'custom_data_1' => 73,
 		 *         'custom_data_2' => 274,
 		 *     );
