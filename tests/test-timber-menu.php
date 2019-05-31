@@ -455,8 +455,10 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		// With no options set.
 		$menu = new TimberMenu();
 		$this->assertInternalType("int", $menu->depth);
-		$this->assertEquals( -1, $menu->depth );
+		$this->assertEquals( 0, $menu->depth );
 		$this->assertInternalType("array", $menu->raw_options);
+		$this->assertInternalType('array', $menu->options);
+		$this->assertEquals(array( 'depth' => 0 ), $menu->options);
 
 		// With Valid options set.
 		$arguments = array(
@@ -467,6 +469,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( 1, $menu->depth );
 		$this->assertInternalType("array", $menu->raw_options);
 		$this->assertEquals( $arguments, $menu->raw_options );
+		$this->assertInternalType('array', $menu->options);
+		$this->assertEquals(array( 'depth' => 1 ), $menu->options);
 
 		// With invalid option set.
 		$arguments = array(
@@ -670,4 +674,71 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( 3, count($menu->get_items()) );
 	}
 
+	function testThemeLocationProperty() {
+		$term    = self::_createTestMenu();
+		$menu_id = $term['term_id'];
+
+		$this->registerNavMenus( array(
+			'secondary' => $menu_id,
+		) );
+
+		$menu = new Timber\Menu( $menu_id );
+
+		$this->assertEquals( 'secondary', $menu->theme_location );
+
+		// Test property access from menu item.
+		$this->assertEquals( $menu, $menu->items[0]->menu );
+		$this->assertEquals( 'secondary', $menu->items[0]->menu->theme_location );
+	}
+
+	function testThemeLocationAccessInNavMenuCssClassFilter() {
+		$term    = self::_createTestMenu();
+		$menu_id = $term['term_id'];
+
+		$this->registerNavMenus( array(
+			'secondary' => $menu_id,
+		) );
+
+		$filter = function( $classes, $item, $args ) {
+		    if ( 'secondary' === $item->menu->theme_location ) {
+		        $classes[] = 'test-class';
+		    }
+
+		    return $classes;
+		};
+
+		add_filter( 'nav_menu_css_class', $filter, 10, 3 );
+
+		$menu = new Timber\Menu( $menu_id );
+
+		foreach ( $menu->items as $item ) {
+			$this->assertContains( 'test-class', $item->classes );
+		}
+
+		remove_filter( 'nav_menu_css_class', $filter );
+	}
+
+	function testMenuOptionsInNavMenuCssClassFilter() {
+		$term    = self::_createTestMenu();
+		$menu_id = $term['term_id'];
+
+		$this->registerNavMenus( array(
+			'secondary' => $menu_id,
+		) );
+
+		$filter = function( $classes, $item, $args ) {
+			$this->assertEquals( 3, $item->menu->options['depth'] );
+			$this->assertEquals( 3, $args->depth );
+
+		    return $classes;
+		};
+
+		add_filter( 'nav_menu_css_class', $filter, 10, 3 );
+
+		new Timber\Menu( $menu_id, [
+			'depth' => 3,
+		] );
+
+		remove_filter( 'nav_menu_css_class', $filter );
+	}
 }
