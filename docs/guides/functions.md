@@ -78,7 +78,7 @@ Now you can use it like a "normal" function:
 ```twig
 {# single.twig #}
 <div class="admin-tools">
-    {{ edit_post_link }}
+    {{ edit_post_link() }}
 </div>
 {# Calls edit_post_link using default arguments #}
 

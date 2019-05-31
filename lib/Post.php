@@ -531,19 +531,57 @@ class Post extends Core implements CoreInterface {
 	 * @return array
 	 */
 	protected function get_post_custom( $pid ) {
-		apply_filters('timber_post_get_meta_pre', array(), $pid, $this);
-		$customs = get_post_custom($pid);
-		if ( !is_array($customs) || empty($customs) ) {
+		$post_meta = array();
+
+		/**
+		 * Filters post meta data before it is fetched from the database.
+		 *
+		 * Timber loads all meta values into the post object on initialization. With this filter,
+		 * you can disable fetching the meta values through the default method, which uses
+		 * `get_post_meta()`, by returning `false` or an non-empty array.
+		 *
+		 * @example
+		 * ```php
+		 * // Disable fetching meta values.
+		 * add_filter( 'timber_post_get_meta_pre', '__return_false' );
+		 *
+		 * // Add your own meta data.
+		 * add_filter( 'timber_post_get_meta_pre', function( $post_meta, $post_id, $post ) {
+		 *     $post_meta = array(
+		 *         'custom_data_1' => 73,
+		 *         'custom_data_2' => 274,
+		 *     );
+		 *
+		 *     return $post_meta;
+		 * }, 10, 3 );
+		 * ```
+		 *
+		 * @param array $post_meta        An array of custom meta values. Passing false or a
+		 *                                non-empty array will skip fetching the values from the
+		 *                                database and will use the filtered values instead. Default
+		 *                                `array()`.
+		 * @param int          $post_id   The post ID.
+		 * @param \Timber\Post $post      The post object.
+		 */
+		$post_meta = apply_filters('timber_post_get_meta_pre', $post_meta, $pid, $this);
+
+		// Load all meta data when it wasn’t filtered before.
+		if ( false !== $post_meta && empty( $post_meta ) ) {
+			$post_meta = get_post_meta( $pid );
+		}
+
+		if ( !is_array($post_meta) ) {
 			return array();
 		}
-		foreach ( $customs as $key => $value ) {
+
+		foreach ( $post_meta as $key => $value ) {
 			if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
 				$value = $value[0];
 			}
-			$customs[$key] = maybe_unserialize($value);
+			$post_meta[$key] = maybe_unserialize($value);
 		}
-		$customs = apply_filters('timber_post_get_meta', $customs, $pid, $this);
-		return $customs;
+		$post_meta = apply_filters('timber_post_get_meta', $post_meta, $pid, $this);
+		return $post_meta;
 	}
 
 	/**
@@ -1049,25 +1087,51 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Gets the comments on a Timber\Post and returns them as an array of [Timber\Comment](#TimberComment) (or whatever comment class you set).
+	 * Gets the comments on a `Timber\Post` and returns them as a `Timber\CommentThread`: a PHP
+	 * ArrayObject of [`Timber\Comment`](https://timber.github.io/docs/reference/timber-comment/)
+	 * (or whatever comment class you set).
 	 * @api
-	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
-	 * @param string $order use ordering set in WordPress admin, or a different scheme
-	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
-	 * @param string $status Could be 'pending', etc.
-	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending Timber\Comment for your site or app (obviously, totally optional)
+	 *
+	 * @param int    $count        Set the number of comments you want to get. `0` is analogous to
+	 *                             "all".
+	 * @param string $order        Use ordering set in WordPress admin, or a different scheme.
+	 * @param string $type         For when other plugins use the comments table for their own
+	 *                             special purposes. Might be set to 'liveblog' or other, depending
+	 *                             on what’s stored in your comments table.
+	 * @param string $status       Could be 'pending', etc.
+	 * @param string $CommentClass What class to use when returning Comment objects. As you become a
+	 *                             Timber Pro, you might find yourself extending `Timber\Comment`
+	 *                             for your site or app (obviously, totally optional).
+	 * @see \Timber\CommentThread for an example with nested comments
+	 * @return bool|\Timber\CommentThread
+	 *
 	 * @example
+	 *
+	 * **single.twig**
+	 *
 	 * ```twig
-	 * {# single.twig #}
-	 * <h4>Comments:</h4>
-	 * {% for comment in post.comments %}
-	 * 	<div class="comment-{{comment.ID}} comment-order-{{loop.index}}">
-	 * 		<p>{{comment.author.name}} said:</p>
-	 * 		<p>{{comment.content}}</p>
-	 * 	</div>
-	 * {% endfor %}
+	 * <div id="post-comments">
+	 *   <h4>Comments on {{ post.title }}</h4>
+	 *   <ul>
+	 *     {% for comment in post.comments() %}
+	 *       {% include 'comment.twig' %}
+	 *     {% endfor %}
+	 *   </ul>
+	 *   <div class="comment-form">
+	 *     {{ function('comment_form') }}
+	 *   </div>
+	 * </div>
 	 * ```
-	 * @return bool|array
+	 *
+	 * **comment.twig**
+	 *
+	 * ```twig
+	 * {# comment.twig #}
+	 * <li>
+	 *   <p class="comment-author">{{ comment.author.name }} says:</p>
+	 *   <div>{{ comment.content }}</div>
+	 * </li>
+	 * ```
 	 */
 	public function comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
 		global $overridden_cpage, $user_ID;
