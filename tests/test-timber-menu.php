@@ -200,6 +200,23 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		self::insertIntoMenu($menu_term['term_id'], $menu_items);
 		return $menu_term;
 	}
+
+	public function registerNavMenus( $locations ) {
+		$theme = new Timber\Theme();
+
+		update_option( 'theme_mods_' . $theme->slug, array(
+			'nav_menu_locations' => $locations,
+		) );
+
+		register_nav_menus(
+		    array(
+		    	'header-menu' => 'Header Menu',
+				'extra-menu' => 'Extra Menu',
+				'bonus' => 'The Bonus'
+		    )
+		);
+	}
+
 	public static function _createSimpleMenu( $name = 'My Menu' ) {
 		$menu_term = wp_insert_term( $name, 'nav_menu' );
 		$menu_items = array();
@@ -619,16 +636,12 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$built_menu_id = $built_menu['term_id'];
 
 		$this->buildMenu('Zappy', $items);
-		$theme = new TimberTheme();
-		$data = array('nav_menu_locations' => array('header-menu' => 0, 'extra-menu' => $built_menu_id, 'bonus' => 0));
-		update_option('theme_mods_'.$theme->slug, $data);
-		register_nav_menus(
-		    array(
-		    	'header-menu' => 'Header Menu',
-				'extra-menu' => 'Extra Menu',
-				'bonus' => 'The Bonus'
-		    )
-		);
+		$this->registerNavMenus( array(
+			'header-menu' => 0,
+			'extra-menu'  => $built_menu_id,
+			'bonus'       => 0,
+		) );
+
 		$menu = new TimberMenu('extra-menu');
 		$this->assertEquals('Ziggy', $menu->name);
 	}
