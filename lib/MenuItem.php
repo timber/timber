@@ -60,6 +60,15 @@ class MenuItem extends Core implements CoreInterface {
 	 */
 	public $current_item_ancestor;
 
+	/**
+	 * Timber Menu.
+	 *
+	 * @api
+	 * @since 1.9.6
+	 * @var \Timber\Menu The `Timber\Menu` object the menu item is associated with.
+	 */
+	public $menu;
+
 	protected $_name;
 	protected $_menu_item_object_id;
 	protected $_menu_item_url;
@@ -68,9 +77,12 @@ class MenuItem extends Core implements CoreInterface {
 	/**
 	 * @internal
 	 * @param array|object $data
+	 * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
 	 */
-	public function __construct( $data ) {
+	public function __construct( $data, $menu ) {
+		$this->menu = $menu;
 		$data = (object) $data;
+
 		$this->import($data);
 		$this->import_classes($data);
 		if ( isset($this->name) ) {

@@ -296,7 +296,7 @@ class Menu extends Core {
 	 * @return mixed an instance of the user-configured $MenuItemClass
 	 */
 	protected function create_menu_item($item) {
-		return new $this->MenuItemClass($item);
+		return new $this->MenuItemClass( $item, $this );
 	}
 
 	/**
