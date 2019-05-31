@@ -59,6 +59,14 @@ class Menu extends Core {
 	public $title;
 
 
+	/**
+	 * Theme Location.
+	 *
+	 * @api
+	 * @since 1.9.6
+	 * @var string The theme location of the menu, if available.
+	 */
+	public $theme_location = null;
 
 	/**
 	 * Initialize a menu.
@@ -76,7 +84,7 @@ class Menu extends Core {
 
 		if ( $slug != 0 && is_numeric($slug) ) {
 			$menu_id = $slug;
-		} else if ( is_array($locations) && count($locations) ) {
+		} else if ( is_array($locations) && ! empty( $locations ) ) {
 			$menu_id = $this->get_menu_id_from_locations($slug, $locations);
 		} else if ( $slug === false ) {
 			$menu_id = false;
@@ -97,6 +105,13 @@ class Menu extends Core {
 	 */
 	protected function init( $menu_id ) {
 		$menu = wp_get_nav_menu_items($menu_id);
+		$locations = get_nav_menu_locations();
+
+		// Set theme location if available.
+		if ( ! empty( $locations ) && in_array( $menu_id, $locations, true ) ) {
+			$this->theme_location = array_search( $menu_id, $locations, true );
+		}
+
 		if ( $menu ) {
 			_wp_menu_item_classes_by_context($menu);
 			if ( is_array($menu) ) {
