@@ -79,8 +79,10 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	public $object_type = 'post';
 
 	/**
+	 * Meta data.
+	 *
 	 * @api
-	 * @var array Stores custom meta data
+	 * @var array All custom field data for the object.
 	 */
 	public $custom = array();
 
@@ -623,11 +625,13 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			$post_meta = get_post_meta( $post_id );
 		}
 
-		foreach ( $post_meta as $key => $value ) {
-			if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
-				$value = $value[0];
+		if ( ! empty( $post_meta ) ) {
+			foreach ( $post_meta as $key => $value ) {
+				if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
+					$value = $value[0];
+				}
+				$post_meta[$key] = maybe_unserialize($value);
 			}
-			$post_meta[$key] = maybe_unserialize($value);
 		}
 
 		/**
@@ -667,6 +671,11 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			'2.0.0',
 			'timber/post/get_meta_values'
 		);
+
+		// Ensure proper return value.
+		if ( empty( $post_meta ) ) {
+			$post_meta = array();
+		}
 
 		return $post_meta;
 	}

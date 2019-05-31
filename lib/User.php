@@ -95,6 +95,14 @@ class User extends Core implements CoreInterface, MetaInterface {
 	public $user_nicename;
 
 	/**
+	 * Meta data.
+	 *
+	 * @api
+	 * @var array All custom field data for the object.
+	 */
+	public $custom = array();
+
+	/**
 	 * The roles the user is part of.
 	 *
 	 * @api
@@ -177,7 +185,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 			return null;
 		}
 
-		$um = array();
+		$user_meta = array();
 
 		/**
 		 * Filters user meta data before it is fetched from the database.
@@ -211,31 +219,32 @@ class User extends Core implements CoreInterface, MetaInterface {
 		 * @param int          $user_id   The user ID.
 		 * @param \Timber\User $user      The user object.
 		 */
-		$um = apply_filters( 'timber/user/pre_get_meta_values', $um, $this->ID, $this );
+		$user_meta = apply_filters( 'timber/user/pre_get_meta_values', $user_meta, $this->ID, $this );
 
 		/**
 		 * Filters user meta data before it is fetched from the database.
 		 *
 		 * @deprecated 2.0.0, use `timber/user/pre_get_meta_values`
 		 */
-		$um = apply_filters_deprecated(
+		$user_meta = apply_filters_deprecated(
 			'timber_user_get_meta_pre',
-			array( $um, $this->ID, $this ),
+			array( $user_meta, $this->ID, $this ),
 			'2.0.0',
 			'timber/user/pre_get_meta_values'
 		);
 
 		// Load all meta data when it wasn’t filtered before.
-		if ( false !== $um && empty( $um ) ) {
-			$um = get_user_meta($this->ID);
+		if ( false !== $user_meta && empty( $user_meta ) ) {
+			$user_meta = get_user_meta($this->ID);
 		}
 
-		$user_meta = array();
-		foreach ( $um as $key => $value ) {
-			if ( is_array($value) && count($value) === 1 ) {
-				$value = $value[0];
+		if ( ! empty( $user_meta ) ) {
+			foreach ( $user_meta as $key => $value ) {
+				if ( is_array($value) && count($value) === 1 ) {
+					$value = $value[0];
+				}
+				$user_meta[ $key ] = maybe_unserialize($value);
 			}
-			$user_meta[ $key ] = maybe_unserialize($value);
 		}
 
 		/**
@@ -275,6 +284,11 @@ class User extends Core implements CoreInterface, MetaInterface {
 			'2.0.0',
 			'timber/user/get_meta_values'
 		);
+
+		// Ensure proper return value.
+		if ( empty( $user_meta ) ) {
+			$user_meta = array();
+		}
 
 		return $user_meta;
 	}
@@ -475,7 +489,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 		);
 		return $this->meta( $field_name );
   }
-  
+
   /**
 	 * Creates an associative array with user role slugs and their translated names.
 	 *

@@ -94,6 +94,14 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 
 	public $_depth = 0;
 
+	/**
+	 * Meta data.
+	 *
+	 * @api
+	 * @var array All custom field data for the object.
+	 */
+	public $custom = array();
+
 	protected $children = array();
 
 	/**
@@ -128,8 +136,9 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		$this->import($comment_data);
 		$this->ID = $this->comment_ID;
 		$this->id = $this->comment_ID;
-		$comment_meta_data = $this->get_meta_values($this->ID);
-		$this->import($comment_meta_data);
+		$this->custom = $this->get_meta_values($this->ID);
+
+		$this->import( $this->custom );
 	}
 
 	/**
@@ -433,9 +442,11 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			$comment_meta = get_comment_meta($comment_id);
 		}
 
-		foreach ( $comment_meta as &$cm ) {
-			if ( is_array($cm) && count($cm) == 1 ) {
-				$cm = $cm[0];
+		if ( ! empty ( $comment_meta ) ) {
+			foreach ( $comment_meta as &$cm ) {
+				if ( is_array($cm) && count($cm) == 1 ) {
+					$cm = $cm[0];
+				}
 			}
 		}
 
@@ -482,6 +493,11 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			'2.0.0',
 			'timber/comment/get_meta_values'
 		);
+
+		// Ensure proper return value.
+		if ( empty( $comment_meta ) ) {
+			$comment_meta = array();
+		}
 
 		return $comment_meta;
 	}
