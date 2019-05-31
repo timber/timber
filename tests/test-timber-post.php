@@ -319,6 +319,47 @@
 			$this->assertEquals($page2, trim(strip_tags( $post->get_paged_content() )));
 		}
 
+		function testMetaCustomPreFilterDisable(){
+
+			$callable = function(){ return false; };
+
+			add_filter( 'timber_post_get_meta_pre', $callable );
+
+			$post_id = $this->factory->post->create();
+
+			update_post_meta($post_id, 'hidden_value', 'Super secret value');
+
+			$post = new TimberPost($post_id);
+
+			$this->assertCount( 0, $post->custom);
+
+			remove_filter( 'timber_post_get_meta_pre', $callable );
+		}
+
+		function testMetaCustomPreFilterAlter(){
+
+			$callable = function( $customs, $pid, $post ) {
+				$key = 'critical_value';
+
+				return [
+					$key => get_post_meta( $pid, $key ),
+				];
+			};
+
+			add_filter( 'timber_post_get_meta_pre', $callable , 10, 3);
+
+			$post_id = $this->factory->post->create();
+
+			update_post_meta($post_id, 'hidden_value', 'super-big-secret');
+			update_post_meta($post_id, 'critical_value', 'I am needed, all the time');
+
+			$post = new TimberPost($post_id);
+			$this->assertCount( 1, $post->custom );
+			$this->assertEquals( $post->custom, array( 'critical_value' => 'I am needed, all the time' ) );
+
+			remove_filter( 'timber_post_get_meta_pre', $callable );
+		}
+
 		function testMetaCustomArrayFilter(){
 			add_filter('timber_post_get_meta', function($customs){
 				foreach($customs as $key=>$value){
