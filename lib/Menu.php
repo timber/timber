@@ -85,7 +85,7 @@ class Menu extends Core {
 	 *                            it finds.
 	 * @param array      $options Optional. An array of options. Right now, only the `depth` is,
 	 *                            supported which says how many levels of hierarchy should be
-	 *                            included in the menu. Default `-1`, which is all levels.
+	 *                            included in the menu. Default `0`, which is all levels.
 	 */
 	public function __construct( $slug = 0, $options = array() ) {
 		$menu_id = false;
@@ -94,8 +94,8 @@ class Menu extends Core {
 		// For future enhancements?
 		$this->raw_options = $options;
 
-			'depth' => -1,
 		$this->options = wp_parse_args( array(
+			'depth' => 0,
 		), (array) $options );
 
 		$this->depth = (int) $this->options['depth'];
