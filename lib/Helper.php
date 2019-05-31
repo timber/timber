@@ -226,8 +226,8 @@ class Helper {
 	 * <form action="form.php"><input type="text" /><input type="submit /></form>
 	 * ```
 	 *
-	 * @param callback $function
-	 * @param array   $args
+	 * @param callable $function
+	 * @param array    $args
 	 *
 	 * @return string
 	 */

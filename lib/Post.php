@@ -1230,9 +1230,10 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	/**
 	 * Returns a category attached to a post
 	 *
+	 * If multiple categories are set, it will return just the first one
+	 *
 	 * @api
-	 * If mulitpuile categories are set, it will return just the first one
-	 * @return Timber\Term|null
+	 * @return \Timber\Term|null
 	 */
 	public function category() {
 		$cats = $this->categories();
