@@ -94,9 +94,9 @@ class Menu extends Core {
 		// For future enhancements?
 		$this->raw_options = $options;
 
-		$this->options = wp_parse_args( array(
+		$this->options = wp_parse_args( (array) $options, array(
 			'depth' => 0,
-		), (array) $options );
+		) );
 
 		$this->depth = (int) $this->options['depth'];
 
