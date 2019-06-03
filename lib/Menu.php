@@ -83,7 +83,7 @@ class Menu extends Core {
 	 *                            menu, the slug of the registered location or nothing. Passing
 	 *                            nothing is good if you only have one menu. Timber will grab what
 	 *                            it finds.
-	 * @param array      $options Optional. An array of options. Right now, only the `depth` is,
+	 * @param array      $options Optional. An array of options. Right now, only the `depth` is
 	 *                            supported which says how many levels of hierarchy should be
 	 *                            included in the menu. Default `0`, which is all levels.
 	 */
