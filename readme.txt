@@ -34,6 +34,7 @@ _Twig is the template language powering Timber; if you need a little background 
 - Fix to menu items getting incorrect classes in WPML and others #1974
 
 **Changes for Theme Developers**
+- You can now skip the eager loading of meta vars through a filter #2014 (thanks @aj-adl @gchtr)
 
 
 = 1.9.5 =
