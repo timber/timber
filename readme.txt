@@ -3,7 +3,7 @@ Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 4.7.12
 Tested up to: 5.2.1
-Stable tag: 1.9.6
+Stable tag: 1.10.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -33,33 +33,32 @@ _Twig is the template language powering Timber; if you need a little background 
 **Fixes and improvements**
 
 **Changes for Theme Developers**
+
+= 1.10.0 =
+**Important Note**
+If you use WPML, please do not upgrade to 1.10.* yet. Because WPML also uses Twig, there is a conflict between Twig versions and loading. We're working with the WPML team to resolve. Until then, please use version 1.9.2
+
+**Fixes and improvements**
 - You can now skip the eager loading of meta vars through a filter #2014 (thanks @aj-adl @gchtr)
-
-= 1.9.6 =
-**Fixes and improvements**
-- Revert to Twig 1.34 to prevent compatability issues with WPML and other plug-ins
-
-= 1.9.5 =
-**Fixes and improvements**
 - Updated to most current version of Twig.
 - This restores the prior behavior before #1813 / 1.9.3 when using Timber::get_posts. This is now controllable by devs
 - Add support for non-cookied comment awaiting moderation message #1954 (thanks @codeclarified)
 - Avoids a potential WSOD when incorrectly specifying template filenames #1984 (thanks @aj-adl)
+- Fixes a bug introduced in #1813 that was watching for the query param of `supress_filters` (instead of the correct spelling: `suppress_filters`)
 
 **Changes for Theme Developers**
 - You can use WordPress's behavior of `get_posts` (versus `WP_Query`) via a filter. By default, Timber uses the behaviors of WP_Query in Timber's queries #1989 (thanks @palmiak) 
 - If you run into problems with unknown `Twig_SimpleFilter` or unknown `Twig_Filter` classes, you can use `Timber\Twig_Filter` instead.
+- Fixed `Timber::get_posts` so that its default query parameters mirror WordPress's `get_posts` #1812 (thanks @bartvanraaij)
 
+= 1.9.5 =
+- This release was pulled due to compatibility issues with other plug-ins
 
 = 1.9.4 =
-
-**Fixes and improvements**
-- Fixes a bug introduced in #1813 that was watching for the query param of `supress_filters` (instead of the correct spelling: `suppress_filters`)
+- This release was pulled due to compatibility issues with other plug-ins
 
 = 1.9.3 =
-
-**Changes for Theme Developers**
-- Fixed `Timber::get_posts` so that its default query parameters mirror WordPress's `get_posts` #1812 (thanks @bartvanraaij)
+- This release was pulled due to compatibility issues with other plug-ins
 
 = 1.9.2 =
 
