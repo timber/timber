@@ -3,7 +3,7 @@ Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 4.7.12
 Tested up to: 5.2.1
-Stable tag: 1.9.5
+Stable tag: 1.9.6
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -33,7 +33,11 @@ _Twig is the template language powering Timber; if you need a little background 
 **Fixes and improvements**
 
 **Changes for Theme Developers**
+- You can now skip the eager loading of meta vars through a filter #2014 (thanks @aj-adl @gchtr)
 
+= 1.9.6 =
+**Fixes and improvements**
+- Revert to Twig 1.34 to prevent compatability issues with WPML and other plug-ins
 
 = 1.9.5 =
 **Fixes and improvements**

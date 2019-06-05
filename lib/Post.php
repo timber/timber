@@ -531,19 +531,57 @@ class Post extends Core implements CoreInterface {
 	 * @return array
 	 */
 	protected function get_post_custom( $pid ) {
-		apply_filters('timber_post_get_meta_pre', array(), $pid, $this);
-		$customs = get_post_custom($pid);
-		if ( !is_array($customs) || empty($customs) ) {
+		$post_meta = array();
+
+		/**
+		 * Filters post meta data before it is fetched from the database.
+		 *
+		 * Timber loads all meta values into the post object on initialization. With this filter,
+		 * you can disable fetching the meta values through the default method, which uses
+		 * `get_post_meta()`, by returning `false` or an non-empty array.
+		 *
+		 * @example
+		 * ```php
+		 * // Disable fetching meta values.
+		 * add_filter( 'timber_post_get_meta_pre', '__return_false' );
+		 *
+		 * // Add your own meta data.
+		 * add_filter( 'timber_post_get_meta_pre', function( $post_meta, $post_id, $post ) {
+		 *     $post_meta = array(
+		 *         'custom_data_1' => 73,
+		 *         'custom_data_2' => 274,
+		 *     );
+		 *
+		 *     return $post_meta;
+		 * }, 10, 3 );
+		 * ```
+		 *
+		 * @param array $post_meta        An array of custom meta values. Passing false or a
+		 *                                non-empty array will skip fetching the values from the
+		 *                                database and will use the filtered values instead. Default
+		 *                                `array()`.
+		 * @param int          $post_id   The post ID.
+		 * @param \Timber\Post $post      The post object.
+		 */
+		$post_meta = apply_filters('timber_post_get_meta_pre', $post_meta, $pid, $this);
+
+		// Load all meta data when it wasn’t filtered before.
+		if ( false !== $post_meta && empty( $post_meta ) ) {
+			$post_meta = get_post_meta( $pid );
+		}
+
+		if ( !is_array($post_meta) ) {
 			return array();
 		}
-		foreach ( $customs as $key => $value ) {
+
+		foreach ( $post_meta as $key => $value ) {
 			if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
 				$value = $value[0];
 			}
-			$customs[$key] = maybe_unserialize($value);
+			$post_meta[$key] = maybe_unserialize($value);
 		}
-		$customs = apply_filters('timber_post_get_meta', $customs, $pid, $this);
-		return $customs;
+		$post_meta = apply_filters('timber_post_get_meta', $post_meta, $pid, $this);
+		return $post_meta;
 	}
 
 	/**
