@@ -34,10 +34,11 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Changes for Theme Developers**
 - You can now skip the eager loading of meta vars through a filter #2014 (thanks @aj-adl @gchtr)
+- You can now more easily work with menu locations and filters #1959 #2018 (thanks @gchtr)
 
 = 1.9.6 =
 **Fixes and improvements**
-- Revert to Twig 1.34 to prevent compatability issues with WPML and other plug-ins
+- Revert to Twig 1.34 to prevent compatibility issues with WPML and other plug-ins
 
 = 1.9.5 =
 **Fixes and improvements**
