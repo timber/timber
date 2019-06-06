@@ -40,7 +40,7 @@ If you use WPML, please do not upgrade to 1.10.* yet. Because WPML also uses Twi
 
 **Fixes and improvements**
 - You can now skip the eager loading of meta vars through a filter #2014 (thanks @aj-adl @gchtr)
-- Updated to most current version of Twig.
+- Use Twig 1.38 to prevent compatibility issues with WPML and other plug-ins
 - This restores the prior behavior before #1813 / 1.9.3 when using Timber::get_posts. This is now controllable by devs
 - Add support for non-cookied comment awaiting moderation message #1954 (thanks @codeclarified)
 - Avoids a potential WSOD when incorrectly specifying template filenames #1984 (thanks @aj-adl)
@@ -50,6 +50,7 @@ If you use WPML, please do not upgrade to 1.10.* yet. Because WPML also uses Twi
 - You can use WordPress's behavior of `get_posts` (versus `WP_Query`) via a filter. By default, Timber uses the behaviors of WP_Query in Timber's queries #1989 (thanks @palmiak) 
 - If you run into problems with unknown `Twig_SimpleFilter` or unknown `Twig_Filter` classes, you can use `Timber\Twig_Filter` instead.
 - Fixed `Timber::get_posts` so that its default query parameters mirror WordPress's `get_posts` #1812 (thanks @bartvanraaij)
+- You can now more easily work with menu locations and filters #1959 #2018 (thanks @gchtr)
 
 = 1.9.5 =
 - This release was pulled due to compatibility issues with other plug-ins
