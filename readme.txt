@@ -45,7 +45,7 @@ If you use WPML, please do not upgrade to 1.10.* yet. Because WPML also uses Twi
 - Add support for non-cookied comment awaiting moderation message #1954 (thanks @codeclarified)
 - Avoids a potential WSOD when incorrectly specifying template filenames #1984 (thanks @aj-adl)
 - Fixes a bug introduced in #1813 that was watching for the query param of `supress_filters` (instead of the correct spelling: `suppress_filters`)
-- Fixes a bug where the last menu item recieved incorrect CSS classes #2009 #1974 (thanks @strategio)
+- Fixes a bug where the last menu item received incorrect CSS classes #2009 #1974 (thanks @strategio)
 
 **Changes for Theme Developers**
 - You can use WordPress's behavior of `get_posts` (versus `WP_Query`) via a filter. By default, Timber uses the behaviors of WP_Query in Timber's queries #1989 (thanks @palmiak) 
