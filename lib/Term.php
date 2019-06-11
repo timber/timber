@@ -66,7 +66,15 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	public $taxonomy;
 
 	/**
-<<<<<<< HEAD
+	 * Meta data.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @var array All custom field data for the object.
+	 */
+	public $custom = array();
+
+	/**
 	 * @param \WP_Term|mixed $term
 	 * @param string $tax Deprecated as of v2.0.0
 	 */
@@ -113,12 +121,19 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @return Term
 	 */
 	public static function from( $tid, $taxonomy ) {
+		if ( is_array($tid) ) {
+			return array_map( function($term) use ($taxonomy) {
+				return new TermFactory::get($term, $taxonomy);
+			}, $tid);
+		}
+
 		return TermFactory::get( $tid, $taxonomy );
 	}
 
 	/**
 	 * @internal
-	 * @param int $tid
+	 *
+	 * @param int $term_id
 	 * @return array
 	 */
 	protected function get_meta_values( $term_id ) {
@@ -163,12 +178,14 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			$term_meta = get_term_meta( $term_id );
 		}
 
-		foreach ( $term_meta as $key => $value ) {
-			if ( is_array( $value ) && 1 === count( $value ) && isset( $value[0] ) ) {
-				$value = $value[0];
-			}
+		if ( ! empty( $term_meta ) ) {
+			foreach ( $term_meta as $key => $value ) {
+				if ( is_array( $value ) && 1 === count( $value ) && isset( $value[0] ) ) {
+					$value = $value[0];
+				}
 
-			$term_meta[ $key ] = maybe_unserialize( $value );
+				$term_meta[ $key ] = maybe_unserialize( $value );
+			}
 		}
 
 		/**
@@ -210,6 +227,11 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			'2.0.0',
 			'timber/term/get_meta_values'
 		);
+
+		// Ensure proper return value.
+		if ( empty( $term_meta ) ) {
+			$term_meta = array();
+		}
 
 		return $term_meta;
 	}

@@ -459,6 +459,43 @@ class TestTimberPost extends Timber_UnitTestCase {
 			$this->assertEquals($page2, trim(strip_tags( $post->paged_content() )));
 		}
 
+		function testPreGetMetaValuesDisableFetch(){
+			add_filter( 'timber/post/pre_get_meta_values', '__return_false' );
+
+			$post_id = $this->factory->post->create();
+
+			update_post_meta( $post_id, 'hidden_value', 'Super secret value' );
+
+			$post = new Timber\Post($post_id);
+
+			$this->assertCount( 0, $post->custom );
+
+			remove_filter( 'timber/post/pre_get_meta_values', '__return_false' );
+		}
+
+		function testPreGetMetaValuesCustomFetch(){
+			$callable = function( $customs, $pid, $post ) {
+				$key = 'critical_value';
+
+				return [
+					$key => get_post_meta( $pid, $key ),
+				];
+			};
+
+			add_filter( 'timber/post/pre_get_meta_values', $callable , 10, 3);
+
+			$post_id = $this->factory->post->create();
+
+			update_post_meta( $post_id, 'hidden_value', 'super-big-secret' );
+			update_post_meta( $post_id, 'critical_value', 'I am needed, all the time' );
+
+			$post = new Timber\Post($post_id);
+			$this->assertCount( 1, $post->custom );
+			$this->assertEquals( $post->custom, array( 'critical_value' => 'I am needed, all the time' ) );
+
+			remove_filter( 'timber/post/pre_get_meta_values', $callable );
+		}
+
 		/**
 		 * This seems like an incredible edge case test from 1.x
 		 * @ignore since 2.0
@@ -1096,11 +1133,12 @@ class TestTimberPost extends Timber_UnitTestCase {
 
 			$pid = $this->factory->post->create(array('post_content' => $quote));
 			$post = PostFactory::get($pid);
-			$expected = array(
-				'<iframe width="525" height="295" src="https://www.youtube.com/embed/Jf37RalsnEs?feature=oembed" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>',
-			);
 
-			$this->assertEquals($expected, $post->video());
+			$video    = $post->video();
+			$value    = array_shift( $video );
+			$expected = '/<iframe [^>]+ src="https:\/\/www\.youtube\.com\/embed\/Jf37RalsnEs\?feature=oembed" [^>]+>/i';
+
+			$this->assertRegExp( $expected, $value );
 		}
 
 		function testPostWithVideoCustomField() {

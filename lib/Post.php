@@ -69,8 +69,10 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	public $object_type = 'post';
 
 	/**
+	 * Meta data.
+	 *
 	 * @api
-	 * @var array Stores custom meta data
+	 * @var array All custom field data for the object.
 	 */
 	public $custom = array();
 
@@ -562,11 +564,9 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 	/**
 	 * Used internally to fetch the metadata fields (wp_postmeta table)
-	 * and attach them to our Timber\Post object
 	 * @internal
 	 *
-	 * @param int|boolean $post_id
-	 *
+	 * @param int $post_id
 	 * @return array
 	 */
 	protected function get_meta_values( $post_id ) {
@@ -621,11 +621,13 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			$post_meta = get_post_meta( $post_id );
 		}
 
-		foreach ( $post_meta as $key => $value ) {
-			if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
-				$value = $value[0];
+		if ( ! empty( $post_meta ) ) {
+			foreach ( $post_meta as $key => $value ) {
+				if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
+					$value = $value[0];
+				}
+				$post_meta[$key] = maybe_unserialize($value);
 			}
-			$post_meta[$key] = maybe_unserialize($value);
 		}
 
 		/**
@@ -665,6 +667,11 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			'2.0.0',
 			'timber/post/get_meta_values'
 		);
+
+		// Ensure proper return value.
+		if ( empty( $post_meta ) ) {
+			$post_meta = array();
+		}
 
 		return $post_meta;
 	}
@@ -1296,24 +1303,51 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * Gets the comments on a Timber\Post and returns them as an array of `Timber\Comment` objects (or whatever comment class you set).
 	 *
 	 * @api
+	 * Gets the comments on a `Timber\Post` and returns them as a `Timber\CommentThread`: a PHP
+	 * ArrayObject of [`Timber\Comment`](https://timber.github.io/docs/reference/timber-comment/)
+	 * (or whatever comment class you set).
+	 * @api
+	 *
+	 * @param int    $count        Set the number of comments you want to get. `0` is analogous to
+	 *                             "all".
+	 * @param string $order        Use ordering set in WordPress admin, or a different scheme.
+	 * @param string $type         For when other plugins use the comments table for their own
+	 *                             special purposes. Might be set to 'liveblog' or other, depending
+	 *                             on what’s stored in your comments table.
+	 * @param string $status       Could be 'pending', etc.
+	 * @param string $CommentClass What class to use when returning Comment objects. As you become a
+	 *                             Timber Pro, you might find yourself extending `Timber\Comment`
+	 *                             for your site or app (obviously, totally optional).
+	 * @see \Timber\CommentThread for an example with nested comments
+	 * @return bool|\Timber\CommentThread
+	 *
 	 * @example
+	 *
+	 * **single.twig**
+	 *
 	 * ```twig
-	 * {# single.twig #}
-	 * <h4>Comments:</h4>
-	 * {% for comment in post.comments %}
-	 * 	<div class="comment-{{comment.ID}} comment-order-{{loop.index}}">
-	 * 		<p>{{comment.author.name}} said:</p>
-	 * 		<p>{{comment.content}}</p>
-	 * 	</div>
-	 * {% endfor %}
+	 * <div id="post-comments">
+	 *   <h4>Comments on {{ post.title }}</h4>
+	 *   <ul>
+	 *     {% for comment in post.comments() %}
+	 *       {% include 'comment.twig' %}
+	 *     {% endfor %}
+	 *   </ul>
+	 *   <div class="comment-form">
+	 *     {{ function('comment_form') }}
+	 *   </div>
+	 * </div>
 	 * ```
 	 *
-	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
-	 * @param string $order use ordering set in WordPress admin, or a different scheme
-	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
-	 * @param string $status Could be 'pending', etc.
-	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending Timber\Comment for your site or app (obviously, totally optional)
-	 * @return bool|array
+	 * **comment.twig**
+	 *
+	 * ```twig
+	 * {# comment.twig #}
+	 * <li>
+	 *   <p class="comment-author">{{ comment.author.name }} says:</p>
+	 *   <div>{{ comment.content }}</div>
+	 * </li>
+	 * ```
 	 */
 	public function comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
 		global $overridden_cpage, $user_ID;
