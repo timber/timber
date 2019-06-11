@@ -2,13 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
-
-use Timber\Post;
-use Timber\Helper;
-use Timber\URLHelper;
-
 /**
  * Class Term
  *

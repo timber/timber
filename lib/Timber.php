@@ -2,20 +2,6 @@
 
 namespace Timber;
 
-use Timber\Twig;
-use Timber\ImageHelper;
-use Timber\Admin;
-use Timber\Integrations;
-use Timber\PostGetter;
-use Timber\TermGetter;
-use Timber\Site;
-use Timber\URLHelper;
-use Timber\Helper;
-use Timber\Pagination;
-use Timber\Request;
-use Timber\User;
-use Timber\Loader;
-
 /**
  * Class Timber
  *

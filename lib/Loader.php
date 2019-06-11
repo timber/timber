@@ -258,7 +258,9 @@ class Loader {
 		if ( $open_basedir ) {
 			$rootPath = null;
 		}
+
 		$fs = new FilesystemLoader( array(), $rootPath );
+
 		foreach ( $paths as $namespace => $path_locations ) {
 			if ( is_array( $path_locations ) ) {
 				array_map( function ( $path ) use ( $fs, $namespace ) {

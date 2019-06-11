@@ -2,9 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\Post;
-
 /**
  * Class Menu
  *
