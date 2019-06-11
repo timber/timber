@@ -123,7 +123,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	public static function from( $tid, $taxonomy ) {
 		if ( is_array($tid) ) {
 			return array_map( function($term) use ($taxonomy) {
-				return new TermFactory::get($term, $taxonomy);
+				return TermFactory::get($term, $taxonomy);
 			}, $tid);
 		}
 
