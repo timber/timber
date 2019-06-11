@@ -179,7 +179,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * Retrieves the custom (meta) data on a user and returns it.
 	 *
 	 * @internal
-	 * @return array|null
+	 * @return array
 	 */
 	protected function get_meta_values() {
 		if ( ! $this->ID ) {
