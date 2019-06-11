@@ -2,10 +2,6 @@
 
 namespace Timber;
 
-use Timber\Helper;
-use Timber\Post;
-use Timber\PostGetter;
-
 /**
  * Class PostQuery
  *
