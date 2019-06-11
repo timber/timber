@@ -2,14 +2,7 @@
 
 namespace Timber;
 
-use Timber\Image;
-use Timber\Image\Operation\ToJpg;
-use Timber\Image\Operation\ToWebp;
-use Timber\Image\Operation\Resize;
-use Timber\Image\Operation\Retina;
-use Timber\Image\Operation\Letterbox;
-
-use Timber\URLHelper;
+use Timber\Image\Operation;
 
 /**
  * Class ImageHelper
@@ -80,7 +73,7 @@ class ImageHelper {
 				return $src;
 			}
 		}
-		$op = new Image\Operation\Resize($w, $h, $crop);
+		$op = new Operation\Resize($w, $h, $crop);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -121,7 +114,7 @@ class ImageHelper {
 	 * @return string URL to the new image.
 	 */
 	public static function retina_resize( $src, $multiplier = 2, $force = false ) {
-		$op = new Image\Operation\Retina($multiplier);
+		$op = new Operation\Retina($multiplier);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -207,7 +200,7 @@ class ImageHelper {
 	 * @return string
 	 */
 	public static function letterbox( $src, $w, $h, $color = false, $force = false ) {
-		$op = new Letterbox($w, $h, $color);
+		$op = new Operation\Letterbox($w, $h, $color);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -223,7 +216,7 @@ class ImageHelper {
 	 * @return string The URL of the processed image.
 	 */
 	public static function img_to_jpg( $src, $bghex = '#FFFFFF', $force = false ) {
-		$op = new Image\Operation\ToJpg($bghex);
+		$op = new Operation\ToJpg($bghex);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -241,7 +234,7 @@ class ImageHelper {
 	 *                        generated.
 	 */
 	public static function img_to_webp( $src, $quality = 80, $force = false ) {
-		$op = new Image\Operation\ToWebp($quality);
+		$op = new Operation\ToWebp($quality);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -688,7 +681,7 @@ class ImageHelper {
 	 */
 	public static function get_letterbox_file_url( $url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
-		$op = new Image\Operation\Letterbox($w, $h, $color);
+		$op = new Operation\Letterbox($w, $h, $color);
 		$new_url = self::_get_file_url(
 			$au['base'],
 			$au['subdir'],
@@ -703,7 +696,7 @@ class ImageHelper {
 	 */
 	public static function get_letterbox_file_path( $url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
-		$op = new Image\Operation\Letterbox($w, $h, $color);
+		$op = new Operation\Letterbox($w, $h, $color);
 		$new_path = self::_get_file_path(
 			$au['base'],
 			$au['subdir'],
@@ -717,7 +710,7 @@ class ImageHelper {
 	 */
 	public static function get_resize_file_url( $url, $w, $h, $crop ) {
 		$au = self::analyze_url($url);
-		$op = new Image\Operation\Resize($w, $h, $crop);
+		$op = new Operation\Resize($w, $h, $crop);
 		$new_url = self::_get_file_url(
 			$au['base'],
 			$au['subdir'],
@@ -732,7 +725,7 @@ class ImageHelper {
 	 */
 	public static function get_resize_file_path( $url, $w, $h, $crop ) {
 		$au = self::analyze_url($url);
-		$op = new Image\Operation\Resize($w, $h, $crop);
+		$op = new Operation\Resize($w, $h, $crop);
 		$new_path = self::_get_file_path(
 			$au['base'],
 			$au['subdir'],

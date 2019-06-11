@@ -3,7 +3,6 @@
 namespace Timber;
 
 use Timber\Cache\Cleaner;
-use Twig\Loader\FilesystemLoader;
 
 class Loader {
 

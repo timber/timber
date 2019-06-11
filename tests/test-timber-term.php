@@ -1,6 +1,17 @@
 <?php
 
 	class TestTimberTerm extends Timber_UnitTestCase {
+		
+		function testTermFrom() {
+			register_taxonomy('baseball', array('post'));
+			register_taxonomy('hockey', array('post'));
+			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'baseball'));
+			$term_id = $this->factory->term->create(array('name' => 'Cardinals', 'taxonomy' => 'baseball'));
+			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'hockey'));
+			$baseball_teams = Timber\Term::from(get_terms(array('taxonomy' => 'baseball', 'hide_empty' => false)), 'baseball');
+			$this->assertEquals(2, count($baseball_teams));
+			$this->assertEquals('Cardinals', $baseball_teams[0]->name());
+		}
 
 		function testConstructorWithClass() {
 			register_taxonomy('arts', array('post'));
