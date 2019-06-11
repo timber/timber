@@ -1,6 +1,17 @@
 <?php
 
 	class TestTimberTerm extends Timber_UnitTestCase {
+		
+		function testTermFrom() {
+			register_taxonomy('baseball', array('post'));
+			register_taxonomy('hockey', array('post'));
+			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'baseball'));
+			$term_id = $this->factory->term->create(array('name' => 'Cardinals', 'taxonomy' => 'baseball'));
+			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'hockey'));
+			$baseball_teams = Timber\Term::from(get_terms(array('taxonomy' => 'baseball', 'hide_empty' => false)), 'baseball');
+			$this->assertEquals(2, count($baseball_teams));
+			$this->assertEquals('Cardinals', $baseball_teams[0]->name());
+		}
 
 		function testConstructorWithClass() {
 			register_taxonomy('arts', array('post'));
@@ -359,6 +370,43 @@
 			$this->assertContains($term->edit_link(), $links);
 		}
 
+		function testPreGetMetaValuesDisableFetch(){
+			add_filter( 'timber/term/pre_get_meta_values', '__return_false' );
+
+			$term_id = $this->factory->term->create();
+
+			update_term_meta( $term_id, 'hidden_value', 'Super secret value' );
+
+			$term = new Timber\Term( $term_id );
+
+			$this->assertCount( 0, $term->custom );
+
+			remove_filter( 'timber/term/pre_get_meta_values', '__return_false' );
+		}
+
+		function testPreGetMetaValuesCustomFetch(){
+			$callable = function( $term_meta, $pid, $post ) {
+				$key = 'critical_value';
+
+				return [
+					$key => get_term_meta( $pid, $key ),
+				];
+			};
+
+			add_filter( 'timber/term/pre_get_meta_values', $callable , 10, 3);
+
+			$term_id = $this->factory->term->create();
+
+			update_term_meta( $term_id, 'hidden_value', 'super-big-secret' );
+			update_term_meta( $term_id, 'critical_value', 'I am needed, all the time' );
+
+			$term = new Timber\Term( $term_id );
+
+			$this->assertCount( 1, $term->custom );
+			$this->assertEquals( $term->custom, array( 'critical_value' => 'I am needed, all the time' ) );
+
+			remove_filter( 'timber/term/pre_get_meta_values', $callable );
+		}
 	}
 
 	class Arts extends Timber\Term {
