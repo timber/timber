@@ -44,6 +44,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $link_id, '_menu_item_url', 'http://upstatement.com' );
 		update_post_meta( $link_id, '_menu_item_xfn', '' );
 		update_post_meta( $link_id, '_menu_item_menu_item_parent', 0 );
+		update_post_meta( $link_id, '_menu_item_target', '_blank' );
 
 		/* make a child page */
 		$child_id = wp_insert_post( array(
