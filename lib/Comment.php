@@ -385,13 +385,11 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @internal
+	 *
 	 * @param int $comment_id
 	 * @return array
 	 */
-	protected function get_meta_values( $comment_id = null ) {
-		if ( $comment_id === null ) {
-			$comment_id = $this->ID;
-		}
+	protected function get_meta_values( $comment_id ) {
 
 		$comment_meta = array();
 

@@ -154,7 +154,8 @@ class Term extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @internal
-	 * @param int $tid
+	 *
+	 * @param int $term_id
 	 * @return array
 	 */
 	protected function get_meta_values( $term_id ) {

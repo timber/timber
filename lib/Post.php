@@ -566,11 +566,9 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 	/**
 	 * Used internally to fetch the metadata fields (wp_postmeta table)
-	 * and attach them to our Timber\Post object
 	 * @internal
 	 *
-	 * @param int|boolean $post_id
-	 *
+	 * @param int $post_id
 	 * @return array
 	 */
 	protected function get_meta_values( $post_id ) {

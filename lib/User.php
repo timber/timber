@@ -170,7 +170,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 		}
 		unset($this->user_pass);
 		$this->id = $this->ID;
-		$this->custom = $this->get_meta_values();
+		$this->custom = $this->get_meta_values( $this->ID );
 		$this->import($this->custom, false, true);
 	}
 
@@ -179,13 +179,11 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * Retrieves the custom (meta) data on a user and returns it.
 	 *
 	 * @internal
+	 *
+	 * @param int $user_id
 	 * @return array
 	 */
-	protected function get_meta_values() {
-		if ( ! $this->ID ) {
-			return null;
-		}
-
+	protected function get_meta_values( $user_id ) {
 		$user_meta = array();
 
 		/**
@@ -220,7 +218,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 		 * @param int          $user_id   The user ID.
 		 * @param \Timber\User $user      The user object.
 		 */
-		$user_meta = apply_filters( 'timber/user/pre_get_meta_values', $user_meta, $this->ID, $this );
+		$user_meta = apply_filters( 'timber/user/pre_get_meta_values', $user_meta, $user_id, $this );
 
 		/**
 		 * Filters user meta data before it is fetched from the database.
@@ -229,14 +227,14 @@ class User extends Core implements CoreInterface, MetaInterface {
 		 */
 		$user_meta = apply_filters_deprecated(
 			'timber_user_get_meta_pre',
-			array( $user_meta, $this->ID, $this ),
+			array( $user_meta, $user_id, $this ),
 			'2.0.0',
 			'timber/user/pre_get_meta_values'
 		);
 
 		// Load all meta data when it wasn’t filtered before.
 		if ( false !== $user_meta && empty( $user_meta ) ) {
-			$user_meta = get_user_meta($this->ID);
+			$user_meta = get_user_meta($user_id);
 		}
 
 		if ( ! empty( $user_meta ) ) {
@@ -272,7 +270,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 		 * @param int          $user_id   The user ID.
 		 * @param \Timber\User $user      The user object.
 		 */
-		$user_meta = apply_filters( 'timber/user/get_meta_values', $user_meta, $this->ID, $this );
+		$user_meta = apply_filters( 'timber/user/get_meta_values', $user_meta, $user_id, $this );
 
 		/**
 		 * Filters user meta data fetched from the database.
@@ -281,7 +279,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 		 */
 		$user_meta = apply_filters_deprecated(
 			'timber_user_get_meta',
-			array( $user_meta, $this->ID, $this ),
+			array( $user_meta, $user_id, $this ),
 			'2.0.0',
 			'timber/user/get_meta_values'
 		);
