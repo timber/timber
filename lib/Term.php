@@ -68,6 +68,15 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	public $taxonomy;
 
 	/**
+	 * Meta data.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @var array All custom field data for the object.
+	 */
+	public $custom = array();
+
+	/**
 	 * @api
 	 * @param int $tid
 	 * @param string $tax
@@ -150,7 +159,8 @@ class Term extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @internal
-	 * @param int $tid
+	 *
+	 * @param int $term_id
 	 * @return array
 	 */
 	protected function get_meta_values( $term_id ) {
@@ -195,12 +205,14 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			$term_meta = get_term_meta( $term_id );
 		}
 
-		foreach ( $term_meta as $key => $value ) {
-			if ( is_array( $value ) && 1 === count( $value ) && isset( $value[0] ) ) {
-				$value = $value[0];
-			}
+		if ( ! empty( $term_meta ) ) {
+			foreach ( $term_meta as $key => $value ) {
+				if ( is_array( $value ) && 1 === count( $value ) && isset( $value[0] ) ) {
+					$value = $value[0];
+				}
 
-			$term_meta[ $key ] = maybe_unserialize( $value );
+				$term_meta[ $key ] = maybe_unserialize( $value );
+			}
 		}
 
 		/**
@@ -242,6 +254,11 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			'2.0.0',
 			'timber/term/get_meta_values'
 		);
+
+		// Ensure proper return value.
+		if ( empty( $term_meta ) ) {
+			$term_meta = array();
+		}
 
 		return $term_meta;
 	}

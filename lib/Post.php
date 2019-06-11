@@ -79,8 +79,10 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	public $object_type = 'post';
 
 	/**
+	 * Meta data.
+	 *
 	 * @api
-	 * @var array Stores custom meta data
+	 * @var array All custom field data for the object.
 	 */
 	public $custom = array();
 
@@ -564,15 +566,14 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 	/**
 	 * Used internally to fetch the metadata fields (wp_postmeta table)
-	 * and attach them to our Timber\Post object
 	 * @internal
 	 *
-	 * @param int|boolean $post_id
-	 *
+	 * @param int $post_id
 	 * @return array
 	 */
 	protected function get_meta_values( $post_id ) {
 		$post_meta = array();
+
 		/**
 		 * Filters post meta data before it is fetched from the database.
 		 *
@@ -604,6 +605,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		 * @param \Timber\Post $post      The post object.
 		 */
 		$post_meta = apply_filters( 'timber/post/pre_get_meta_values', $post_meta, $post_id, $this );
+
 		/**
 		 * Filters post meta data before it is fetched from the database.
 		 *
@@ -615,10 +617,12 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			'2.0.0',
 			'timber/post/pre_get_meta_values'
 		);
+
 		// Load all meta data when it wasn’t filtered before.
 		if ( false !== $post_meta && empty( $post_meta ) ) {
 			$post_meta = get_post_meta( $post_id );
 		}
+
 		if ( ! empty( $post_meta ) ) {
 			foreach ( $post_meta as $key => $value ) {
 				if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
@@ -627,6 +631,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 				$post_meta[$key] = maybe_unserialize($value);
 			}
 		}
+
 		/**
 		 * Filters post meta data fetched from the database.
 		 *
@@ -652,6 +657,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		 * @param \Timber\Post $post      The post object.
 		 */
 		$post_meta = apply_filters( 'timber/post/get_meta_values', $post_meta, $post_id, $this );
+
 		/**
 		 * Filters post meta data fetched from the database.
 		 *
@@ -663,10 +669,12 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			'2.0.0',
 			'timber/post/get_meta_values'
 		);
+
 		// Ensure proper return value.
 		if ( empty( $post_meta ) ) {
 			$post_meta = array();
 		}
+
 		return $post_meta;
 	}
 

@@ -379,23 +379,21 @@
 			$this->assertEquals($page2, trim(strip_tags( $post->paged_content() )));
 		}
 
-		function testMetaCustomPreFilterDisable(){
-			$callable = function(){ return false; };
-
-			add_filter( 'timber_post_get_meta_pre', $callable );
+		function testPreGetMetaValuesDisableFetch(){
+			add_filter( 'timber/post/pre_get_meta_values', '__return_false' );
 
 			$post_id = $this->factory->post->create();
 
-			update_post_meta($post_id, 'hidden_value', 'Super secret value');
+			update_post_meta( $post_id, 'hidden_value', 'Super secret value' );
 
-			$post = new TimberPost($post_id);
+			$post = new Timber\Post($post_id);
 
-			$this->assertCount( 0, $post->custom);
+			$this->assertCount( 0, $post->custom );
 
-			remove_filter( 'timber_post_get_meta_pre', $callable );
+			remove_filter( 'timber/post/pre_get_meta_values', '__return_false' );
 		}
 
-		function testMetaCustomPreFilterAlter(){
+		function testPreGetMetaValuesCustomFetch(){
 			$callable = function( $customs, $pid, $post ) {
 				$key = 'critical_value';
 
@@ -404,18 +402,18 @@
 				];
 			};
 
-			add_filter( 'timber_post_get_meta_pre', $callable , 10, 3);
+			add_filter( 'timber/post/pre_get_meta_values', $callable , 10, 3);
 
 			$post_id = $this->factory->post->create();
 
-			update_post_meta($post_id, 'hidden_value', 'super-big-secret');
-			update_post_meta($post_id, 'critical_value', 'I am needed, all the time');
+			update_post_meta( $post_id, 'hidden_value', 'super-big-secret' );
+			update_post_meta( $post_id, 'critical_value', 'I am needed, all the time' );
 
-			$post = new TimberPost($post_id);
+			$post = new Timber\Post($post_id);
 			$this->assertCount( 1, $post->custom );
 			$this->assertEquals( $post->custom, array( 'critical_value' => 'I am needed, all the time' ) );
 
-			remove_filter( 'timber_post_get_meta_pre', $callable );
+			remove_filter( 'timber/post/pre_get_meta_values', $callable );
 		}
 
 		/**
@@ -440,7 +438,7 @@
 			update_post_meta($post_id, 'with_underscores', 'the_value');
 			$post = new Timber\Post($post_id);
 			$this->assertEquals($post->with_underscores_flat, 'the_value');
-			$this->assertEquals($post->the_field_name_flat, 'the-value');
+			//$this->assertEquals($post->the_field_name_flat, 'the-value');
 		}*/
 
 		/**
