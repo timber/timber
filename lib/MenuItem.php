@@ -226,7 +226,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		}
 		$this->classes = array_merge($this->classes, $data->classes);
 		$this->classes = array_unique($this->classes);
-		$this->classes = apply_filters('nav_menu_css_class', $this->classes, $this, array(), 0);
 
 		/**
 		 * Filters the CSS classes applied to a menu item’s list item.
