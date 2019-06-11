@@ -26,6 +26,7 @@ before_script:
     - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
     - composer update $PREFER_LOWEST --dev --prefer-source
     - composer require satooshi/php-coveralls:1.0.*
+    - if ["WP_VERSION" == "4.9.8"]; then composer require phpunit/phpunit:6.5.14; fi 
 
 script:
     - if [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_BRANCH" == "2.x" ] && [ "$TRAVIS_PHP_VERSION" == 7.3 ]; then mkdir -p build/logs; vendor/phpunit/phpunit/phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml; else vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml; fi
