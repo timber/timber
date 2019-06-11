@@ -65,6 +65,15 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 */
 	public $current_item_ancestor;
 
+	/**
+	 * Timber Menu.
+	 *
+	 * @api
+	 * @since 1.9.6
+	 * @var \Timber\Menu The `Timber\Menu` object the menu item is associated with.
+	 */
+	public $menu;
+
 	protected $_name;
 	protected $_menu_item_object_id;
 	protected $_menu_item_url;
@@ -73,9 +82,11 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * @internal
 	 * @param array|object $data
+	 * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
 	 */
-	public function __construct( $data ) {
-		$data              = (object) $data;
+	public function __construct( $data, $menu ) {
+		$this->menu = $menu;
+		$data       = (object) $data;
 		$this->import($data);
 		$this->import_classes($data);
 		$this->menu_object = $data;
@@ -215,8 +226,29 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		}
 		$this->classes = array_merge($this->classes, $data->classes);
 		$this->classes = array_unique($this->classes);
-		$this->classes = apply_filters('nav_menu_css_class', $this->classes, $this, array(), 0);
-		$this->class   = trim(implode(' ', $this->classes));
+
+		/**
+		 * Filters the CSS classes applied to a menu item’s list item.
+		 *
+		 * @param string[]         $classes An array of the CSS classes that can be applied to the
+		 *                                  menu item’s `<li>` element.
+		 * @param \Timber\MenuItem $item    The current menu item.
+		 * @param \stdClass $args           An object of wp_nav_menu() arguments. In Timber, we
+		 *                                  don’t have these arguments because we don’t use a menu
+		 *                                  walker. Instead, you get the options that were used to
+		 *                                  create the `Timber\Menu` object.
+		 * @param int              $depth   Depth of menu item.
+		 */
+		$this->classes = apply_filters(
+			'nav_menu_css_class',
+			$this->classes,
+			$this,
+			// The options need to be an object.
+			(object) $this->menu->options,
+			0
+		);
+
+		$this->class = trim(implode(' ', $this->classes));
 	}
 
 	/**
