@@ -573,7 +573,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 */
 	protected function get_meta_values( $post_id ) {
 		$post_meta = array();
-
 		/**
 		 * Filters post meta data before it is fetched from the database.
 		 *
@@ -605,7 +604,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		 * @param \Timber\Post $post      The post object.
 		 */
 		$post_meta = apply_filters( 'timber/post/pre_get_meta_values', $post_meta, $post_id, $this );
-
 		/**
 		 * Filters post meta data before it is fetched from the database.
 		 *
@@ -617,19 +615,18 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			'2.0.0',
 			'timber/post/pre_get_meta_values'
 		);
-
 		// Load all meta data when it wasn’t filtered before.
 		if ( false !== $post_meta && empty( $post_meta ) ) {
 			$post_meta = get_post_meta( $post_id );
 		}
-
-		foreach ( $post_meta as $key => $value ) {
-			if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
-				$value = $value[0];
+		if ( ! empty( $post_meta ) ) {
+			foreach ( $post_meta as $key => $value ) {
+				if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
+					$value = $value[0];
+				}
+				$post_meta[$key] = maybe_unserialize($value);
 			}
-			$post_meta[$key] = maybe_unserialize($value);
 		}
-
 		/**
 		 * Filters post meta data fetched from the database.
 		 *
@@ -655,7 +652,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		 * @param \Timber\Post $post      The post object.
 		 */
 		$post_meta = apply_filters( 'timber/post/get_meta_values', $post_meta, $post_id, $this );
-
 		/**
 		 * Filters post meta data fetched from the database.
 		 *
@@ -667,7 +663,10 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			'2.0.0',
 			'timber/post/get_meta_values'
 		);
-
+		// Ensure proper return value.
+		if ( empty( $post_meta ) ) {
+			$post_meta = array();
+		}
 		return $post_meta;
 	}
 

@@ -101,6 +101,11 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @return static
 	 */
 	public static function from( $tid, $taxonomy ) {
+		if ( is_array($tid) ) {
+			return array_map( function($term) use ($taxonomy) {
+				return new static($term, $taxonomy);
+			}, $tid);
+		}
 		return new static($tid, $taxonomy);
 	}
 
