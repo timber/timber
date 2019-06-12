@@ -55,7 +55,7 @@ Nice! Any gotchas? Unfortunately yes. While the above example will totally work 
 
 ## Make functions available in Twig
 
-If you have functions that you use a lot and want to improve readability of your code, you can make a function available in Twig by using `Timber\Twig_Function` inside the `timber/twig` filter.
+If you have functions that you use a lot and want to improve readability of your code, you can make a function available in Twig by using `Twig\TwigFunction` inside the `timber/twig` hook.
 
 ```php
 add_filter( 'timber/twig', 'add_to_twig' );
@@ -66,9 +66,8 @@ add_filter( 'timber/twig', 'add_to_twig' );
  * @param \Twig\Environment $twig
  * @return \Twig\Environment
  */
-function add_to_twig( $twig ) {
-    // Adding a function.
-    $twig->addFunction( new Timber\Twig_Function( 'edit_post_link', 'edit_post_link' ) );
+ function add_to_twig( $twig ) {
+    $twig->addFunction( new Twig\TwigFunction( 'edit_post_link', 'edit_post_link' ) );
     
     return $twig;
 } );

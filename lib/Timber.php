@@ -2,20 +2,6 @@
 
 namespace Timber;
 
-use Timber\Twig;
-use Timber\ImageHelper;
-use Timber\Admin;
-use Timber\Integrations;
-use Timber\PostGetter;
-use Timber\TermGetter;
-use Timber\Site;
-use Timber\URLHelper;
-use Timber\Helper;
-use Timber\Pagination;
-use Timber\Request;
-use Timber\User;
-use Timber\Loader;
-
 /**
  * Class Timber
  *
@@ -79,7 +65,7 @@ class Timber {
 		if ( version_compare(phpversion(), '5.3.0', '<') && !is_admin() ) {
 			trigger_error('Timber requires PHP 5.3.0 or greater. You have '.phpversion(), E_USER_ERROR);
 		}
-		if ( !class_exists('Twig\Token') ) {
+		if ( ! class_exists( 'Twig\Token' ) ) {
 			trigger_error('You have not run "composer install" to download required dependencies for Timber, you can read more on https://github.com/timber/timber#installation', E_USER_ERROR);
 		}
 	}
