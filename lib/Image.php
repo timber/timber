@@ -108,53 +108,11 @@ class Image extends Attachment {
 
 	/**
 	 * Get a PHP array with pathinfo() info from the file
+	 * @deprecated since 2.0 Functionality will no longer be supported in future releases.
 	 * @return array
 	 */
 	public function get_pathinfo() {
 		return pathinfo($this->file);
-	}
-
-	/**
-	 * Processes an image's dimensions.
-	 * @internal
-	 * @param string $dim
-	 * @return array|int
-	 */
-	protected function get_dimensions( $dim ) {
-		if ( isset($this->_dimensions) ) {
-			return $this->get_dimensions_loaded($dim);
-		}
-		if ( file_exists($this->file_loc) && filesize($this->file_loc) ) {
-			list($width, $height) = getimagesize($this->file_loc);
-			$this->_dimensions = array();
-			$this->_dimensions[0] = $width;
-			$this->_dimensions[1] = $height;
-			return $this->get_dimensions_loaded($dim);
-		}
-	}
-
-	/**
-	 * @internal
-	 * @param string|null $dim
-	 * @return array|int
-	 */
-	protected function get_dimensions_loaded( $dim ) {
-		$dim = strtolower($dim);
-		if ( $dim == 'h' || $dim == 'height' ) {
-			return $this->_dimensions[1];
-		}
-		return $this->_dimensions[0];
-	}
-
-	/**
-	 * @return array
-	 */
-	protected function get_post_custom( $iid ) {
-		$pc = get_post_custom($iid);
-		if ( is_bool($pc) ) {
-			return array();
-		}
-		return $pc;
 	}
 
 	/**
