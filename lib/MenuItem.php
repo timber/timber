@@ -79,7 +79,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @param array|object $data
 	 * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
 	 */
-	public function __construct( $data, $menu ) {
+	public function __construct( $data, $menu = null ) {
 		$this->menu = $menu;
 		$data       = (object) $data;
 
@@ -251,6 +251,12 @@ class MenuItem extends Core implements CoreInterface {
 		$this->classes = array_merge($this->classes, $data->classes);
 		$this->classes = array_unique($this->classes);
 
+		$options = new \stdClass();
+		if ( isset( $this->menu->options ) ) {
+			// The options need to be an object.
+			$options = (object) $this->menu->options;
+		}
+
 		/**
 		 * Filters the CSS classes applied to a menu item’s list item.
 		 *
@@ -267,8 +273,7 @@ class MenuItem extends Core implements CoreInterface {
 			'nav_menu_css_class',
 			$this->classes,
 			$this,
-			// The options need to be an object.
-			(object) $this->menu->options,
+			$options,
 			0
 		);
 
