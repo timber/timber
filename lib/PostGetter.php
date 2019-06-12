@@ -3,8 +3,6 @@
 namespace Timber;
 
 use Timber\Factory\PostFactory;
-use Timber\PostCollection;
-use Timber\QueryIterator;
 
 /**
  * Class PostGetter

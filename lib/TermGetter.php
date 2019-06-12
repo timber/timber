@@ -3,8 +3,6 @@
 namespace Timber;
 
 use Timber\Factory\TermFactory;
-use Timber\Term;
-use Timber\Helper;
 
 /**
  * Class TermGetter

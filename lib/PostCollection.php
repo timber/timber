@@ -3,8 +3,6 @@
 namespace Timber;
 
 use Timber\Factory\PostFactory;
-use Timber\Helper;
-use Timber\Post;
 
 /**
  * Class PostCollection

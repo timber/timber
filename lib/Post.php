@@ -2,17 +2,8 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
-use Timber\User;
-use Timber\Image;
-use Timber\Helper;
-use Timber\URLHelper;
-use Timber\PostGetter;
-use Timber\PostType;
-
 use WP_Post;
 
 /**
