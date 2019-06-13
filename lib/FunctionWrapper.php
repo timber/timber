@@ -2,8 +2,6 @@
 
 namespace Timber;
 
-use Timber\Helper;
-
 /**
  * Class FunctionWrapper
  *
