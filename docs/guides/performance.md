@@ -118,7 +118,17 @@ add_filter( 'timber/twig/environment/options', function( $options ) {
 } );
 ```
 
-This does not cache the _contents_ of the variables. This is recommended as a last-step in the production process. Once enabled, any change you make to a `.twig` file (just tweaking the HTML for example) will not go live until the cache is flushed.
+This does not cache the _contents_ of the variables. But rather, the structure of the Twig files themselves (i.e. the HTML and where those variables appear in your template). Once enabled, any change you make to a `.twig` file (just tweaking the HTML for example) will not go live until the cache is flushed.
+
+Thus, during development, you should enable the option for `auto_reload`:
+
+```php
+add_filter( 'timber/twig/environment/options', function( $options ) {
+    $options['cache']       = true;
+    $options['auto_reload'] = true;
+    
+    return $options;
+});
 
 ## Cache the PHP data
 
