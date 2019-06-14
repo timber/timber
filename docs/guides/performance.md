@@ -129,6 +129,7 @@ add_filter( 'timber/twig/environment/options', function( $options ) {
     
     return $options;
 });
+```
 
 ## Cache the PHP data
 
