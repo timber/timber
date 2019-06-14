@@ -12,7 +12,12 @@ abstract class Core {
 	public $object_type;
 
 	/**
+	 * This method is needed to complement the magic __get() method, because Twig uses `isset()`
+	 * internally.
 	 *
+	 * @internal
+	 * @link https://github.com/twigphp/Twig/issues/601
+	 * @link https://twig.symfony.com/doc/2.x/recipes.html#using-dynamic-object-properties
 	 * @return boolean
 	 */
 	public function __isset( $field ) {
@@ -23,15 +28,18 @@ abstract class Core {
 	}
 
 	/**
-	 * "Magic" method dispatcher for meta fields, for convience in Twig views.
-	 * Called when explicitly invoking non-existent methods on a Core object.
-	 * Not meant to be called directly.
+	 * Magic method dispatcher for meta fields, for convience in Twig views.
+	 *
+	 * Called when explicitly invoking non-existent methods on a Core object. This method is not
+	 * meant to be called directly.
 	 *
 	 * @example
 	 * ```php
-	 * $post = Timber\Post::get();
-	 * update_post_meta($post->id, 'favorite_zep4_track', 'Black Dog');
-	 * Timber::render('rock-n-roll.twig', array( 'post' => $post ));
+	 * $post = Timber\Post::get( get_the_ID() );
+	 *
+	 * update_post_meta( $post->id, 'favorite_zep4_track', 'Black Dog' );
+	 *
+	 * Timber::render( 'rock-n-roll.twig', array( 'post' => $post ) );
 	 * ```
 	 * ```twig
 	 * {# Since this method does not exist explicitly on the Post class,
@@ -39,28 +47,35 @@ abstract class Core {
 	 *    of "favorite_zep4_track" #}
 	 * <span>Favorite <i>Zeppelin IV</i> Track: {{ post.favorite_zep4_track() }}</span>
 	 * ```
-	 * @see https://secure.php.net/manual/en/language.oop5.overloading.php#object.call
-	 * @see: https://github.com/fabpot/Twig/issues/2
-	 * @param string the name of the method being called
-	 * @param array args not used.
-	 * @return mixed the value of the meta field named `$field`, if truthy;
-	 * false otherwise
+	 * @link https://secure.php.net/manual/en/language.oop5.overloading.php#object.call
+	 * @link https://github.com/twigphp/Twig/issues/2
+	 * @api
+	 *
+	 * @param string $field     The name of the method being called.
+	 * @param array  $arguments Enumerated array containing the parameters passed to the function.
+	 *                          Not used.
+	 *
+	 * @return mixed The value of the meta field named `$field` if truthy, `false` otherwise.
 	 */
-	public function __call( $field, $_ ) {
-		if ( method_exists($this, 'meta') && $meta_value = $this->meta($field) ) {
+	public function __call( $field, $arguments ) {
+		if ( method_exists( $this, 'meta' ) && $meta_value = $this->meta( $field ) ) {
 			return $meta_value;
 		}
+
 		return false;
 	}
 
 	/**
-	 * "Magic" getter for dynamic meta fields, for convenience in Twig views.
-	 * Not meant to be called directly.
+	 * Magic getter for dynamic meta fields, for convenience in Twig views.
+	 *
+	 * This method is not meant to be called directly.
 	 *
 	 * @example
 	 * ```php
-	 * $post = Timber\Post::get();
-	 * update_post_meta($post->id, 'favorite_darkside_track', 'Any Colour You Like');
+	 * $post = Timber\Post::get( get_the_ID() );
+	 *
+	 * update_post_meta( $post->id, 'favorite_darkside_track', 'Any Colour You Like' );
+	 *
 	 * Timber::render('rock-n-roll.twig', array( 'post' => $post ));
 	 * ```
 	 * ```twig
@@ -69,12 +84,13 @@ abstract class Core {
 	 *    of "favorite_darkside_track" #}
 	 * <span>Favorite <i>Dark Side of the Moon</i> Track: {{ post.favorite_darkside_track }}</span>
 	 * ```
-	 * @see https://secure.php.net/manual/en/language.oop5.overloading.php#object.get
-	 * @see: https://github.com/fabpot/Twig/issues/2
-	 * @param string the name of the property being accessed
-	 * @return mixed the value of the meta field, or the result of invoking
-	 * `$field()` as a method with no arguments, or false if neither returns a
-	 * truthy value
+	 * @link https://secure.php.net/manual/en/language.oop5.overloading.php#object.get
+	 * @link https://twig.symfony.com/doc/2.x/recipes.html#using-dynamic-object-properties
+	 *
+	 * @param string $field Nhe name of the property being accessed.
+	 *
+	 * @return mixed The value of the meta field, or the result of invoking `$field()` as a method
+	 * with no arguments, or `false` if neither returns a truthy value.
 	 */
 	public function __get( $field ) {
 		if ( method_exists($this, 'meta') && $meta_value = $this->meta($field) ) {
