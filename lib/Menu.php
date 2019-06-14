@@ -2,9 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\Post;
-
 /**
  * Class Menu
  *
@@ -53,22 +50,38 @@ class Menu extends Core {
 
 	/**
 	 * @api
-	 * @var array The unfiltered options sent forward via the user in the __construct
-	 */
-	public $raw_options;
-
-	/**
-	 * @api
 	 * @var string The name of the menu (ex: `Main Navigation`).
 	 */
 	public $title;
+
+	/**
+	 * Menu options.
+	 *
+	 * @api
+	 * @since 1.9.6
+	 * @var array An array of menu options.
+	 */
+	public $options;
 
 	/**
 	 * @var MenuItem the current menu item
 	 */
 	private $_current_item;
 
+	/**
+	 * @api
+	 * @var array The unfiltered options sent forward via the user in the __construct
+	 */
+	public $raw_options;
 
+	/**
+	 * Theme Location.
+	 *
+	 * @api
+	 * @since 1.9.6
+	 * @var string The theme location of the menu, if available.
+	 */
+	public $theme_location = null;
 
 	/**
 	 * Initialize a menu.
@@ -76,19 +89,29 @@ class Menu extends Core {
 	 * @api
 	 *
 	 * @param int|string $slug    A menu slug, the term ID of the menu, the full name from the admin
-	 *                            menu, the slug of theregistered location or nothing. Passing nothing
-	 *                            is good if you only have one menu. Timber will grab what it finds.
-	 * @param array      $options An array of options, right now only `depth` is supported
+	 *                            menu, the slug of the registered location or nothing. Passing
+	 *                            nothing is good if you only have one menu. Timber will grab what
+	 *                            it finds.
+	 * @param array      $options Optional. An array of options. Right now, only the `depth` is
+	 *                            supported which says how many levels of hierarchy should be
+	 *                            included in the menu. Default `0`, which is all levels.
 	 */
 	public function __construct( $slug = 0, $options = array() ) {
 		$menu_id = false;
 		$locations = get_nav_menu_locations();
 
-		$this->set_options((array)$options);
+		// For future enhancements?
+		$this->raw_options = $options;
+
+		$this->options = wp_parse_args( (array) $options, array(
+			'depth' => 0,
+		) );
+
+		$this->depth = (int) $this->options['depth'];
 
 		if ( $slug != 0 && is_numeric($slug) ) {
 			$menu_id = $slug;
-		} else if ( is_array($locations) && count($locations) ) {
+		} else if ( is_array($locations) && ! empty( $locations ) ) {
 			$menu_id = $this->get_menu_id_from_locations($slug, $locations);
 		} else if ( $slug === false ) {
 			$menu_id = false;
@@ -109,6 +132,13 @@ class Menu extends Core {
 	 */
 	protected function init( $menu_id ) {
 		$menu = wp_get_nav_menu_items($menu_id);
+		$locations = get_nav_menu_locations();
+
+		// Set theme location if available.
+		if ( ! empty( $locations ) && in_array( $menu_id, $locations, true ) ) {
+			$this->theme_location = array_search( $menu_id, $locations, true );
+		}
+
 		if ( $menu ) {
 			_wp_menu_item_classes_by_context($menu);
 			if ( is_array($menu) ) {
@@ -159,16 +189,6 @@ class Menu extends Core {
 			$this->id = $this->term_id;
 			$this->title = $this->name;
 		}
-	}
-
-	/**
-	 * @internal
-	 * @param mixed $options
-	 */
-	protected function set_options ($options) {
-		// Set any important options
-		$this->depth = (isset($options['depth']) ? (int)$options['depth'] : -1);
-		$this->raw_options = $options; // for future enhancements?
 	}
 
 	/**
@@ -295,7 +315,7 @@ class Menu extends Core {
 	 * @return mixed an instance of the user-configured $MenuItemClass
 	 */
 	protected function create_menu_item($item) {
-		return new $this->MenuItemClass($item);
+		return new $this->MenuItemClass( $item, $this );
 	}
 
 	/**
@@ -356,7 +376,7 @@ class Menu extends Core {
 	 *     {{ menu.current_item.title }}
 	 *   </a>
 	 *   <ul>
-	 *     {% for child in menu.current_item.get_children %}
+	 *     {% for child in menu.current_item.children %}
 	 *       <li>
 	 *         <a href="{{ child.link }}">{{ child.title }}</a>
 	 *       </li>
@@ -437,9 +457,9 @@ class Menu extends Core {
 				}
 
 				// we're in the right subtree, so go deeper.
-				if ( $item->get_children() ) {
+				if ( $item->children() ) {
 					// reset the counter, since we're at a new level.
-					$items = $item->get_children();
+					$items = $item->children();
 					$i     = 0;
 					$currentDepth++;
 					continue;

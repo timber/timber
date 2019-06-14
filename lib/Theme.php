@@ -2,9 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\URLHelper;
-
 /**
  * Class Theme
  *
@@ -82,7 +79,7 @@ class Theme extends Core {
 	 * Constructs a new `Timber\Theme` object.
 	 *
 	 * The `Timber\Theme` object of the current theme comes in the default `Timber::context()`
-	 * call. You can access this in your twig template via `{{site.theme}}`.
+	 * call. You can access this in your twig template via `{{ site.theme }}`.
 	 *
 	 * @api
 	 * @example
@@ -91,7 +88,6 @@ class Theme extends Core {
 	 *     $theme = new Timber\Theme("my-theme");
 	 *     $context['theme_stuff'] = $theme;
 	 *     Timber::render('single.twig', $context);
-	 * ?>
 	 * ```
 	 * ```twig
 	 * We are currently using the {{ theme_stuff.name }} theme.

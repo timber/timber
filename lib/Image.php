@@ -10,14 +10,11 @@ namespace Timber;
  * @api
  * @example
  * ```php
- * $post = new Timber\Post();
- *
  * $context         = Timber::context();
- * $context['post'] = Timber::context_post( $post );
  *
  * // Lets say you have an alternate large 'cover image' for your post
  * // stored in a custom field which returns an image ID.
- * $cover_image_id = $post->cover_image;
+ * $cover_image_id = $context['post']->cover_image;
  * $context['cover_image'] = new Timber\Image($cover_image_id);
  * Timber::render('single.twig', $context);
  * ```
@@ -82,6 +79,83 @@ class Image extends Attachment {
 	 *            item is the height of the image in pixels.
 	 */
 	protected $dimensions;
+
+	/**
+	 * Creates a new Timber\Image object
+	 * @example
+	 * ```php
+	 * // You can pass it an ID number
+	 * $myImage = new Timber\Image(552);
+	 *
+	 * //Or send it a URL to an image
+	 * $myImage = new Timber\Image('http://google.com/logo.jpg');
+	 * ```
+	 * @param bool|int|string $iid
+	 */
+	public function __construct( $iid ) {
+		$this->init($iid);
+	}
+
+	/**
+	 * @return string the src of the file
+	 */
+	public function __toString() {
+		if ( $src = $this->src() ) {
+			return $src;
+		}
+		return '';
+	}
+
+	/**
+	 * Get a PHP array with pathinfo() info from the file
+	 * @return array
+	 */
+	public function get_pathinfo() {
+		return pathinfo($this->file);
+	}
+
+	/**
+	 * Processes an image's dimensions.
+	 * @internal
+	 * @param string $dim
+	 * @return array|int
+	 */
+	protected function get_dimensions( $dim ) {
+		if ( isset($this->_dimensions) ) {
+			return $this->get_dimensions_loaded($dim);
+		}
+		if ( file_exists($this->file_loc) && filesize($this->file_loc) ) {
+			list($width, $height) = getimagesize($this->file_loc);
+			$this->_dimensions = array();
+			$this->_dimensions[0] = $width;
+			$this->_dimensions[1] = $height;
+			return $this->get_dimensions_loaded($dim);
+		}
+	}
+
+	/**
+	 * @internal
+	 * @param string|null $dim
+	 * @return array|int
+	 */
+	protected function get_dimensions_loaded( $dim ) {
+		$dim = strtolower($dim);
+		if ( $dim == 'h' || $dim == 'height' ) {
+			return $this->_dimensions[1];
+		}
+		return $this->_dimensions[0];
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function get_post_custom( $iid ) {
+		$pc = get_post_custom($iid);
+		if ( is_bool($pc) ) {
+			return array();
+		}
+		return $pc;
+	}
 
 	/**
 	 * Gets the source URL for the image.
@@ -278,7 +352,7 @@ class Image extends Attachment {
 	 * @example
 	 * ```twig
 	 * <h1>{{ post.title }}</h1>
-	 * <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumnbail.srcset }}" />
+	 * <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumbnail.srcset }}" />
 	 * ```
 	 * ```html
 	 * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w" />
@@ -297,7 +371,7 @@ class Image extends Attachment {
 	 * @example
 	 * ```twig
 	 * <h1>{{ post.title }}</h1>
-	 * <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumnbail.srcset }}" sizes="{{ post.thumbnail.img_sizes }}" />
+	 * <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumbnail.srcset }}" sizes="{{ post.thumbnail.img_sizes }}" />
 	 * ```
 	 * ```html
 	 * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w sizes="(max-width: 1024px) 100vw, 102" />

@@ -3,6 +3,9 @@
 namespace Timber;
 
 use Timber\Cache\Cleaner;
+use Twig\CacheExtension;
+use Twig\Environment;
+use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 
 class Loader {
@@ -206,6 +209,9 @@ class Loader {
 
 		// Run through template array
 		foreach ( $templates as $template ) {
+
+			// Remove any whitespace around the template name
+			$template = trim( $template );
 			// Use the Twig loader to test for existance
 			if ( $loader->exists($template) ) {
 				// Return name of existing template
@@ -229,7 +235,7 @@ class Loader {
 
 
 	/**
-	 * @return \Twig_Loader_Filesystem
+	 * @return \Twig\Loader\FilesystemLoader
 	 */
 	public function get_loader() {
 		$open_basedir = ini_get('open_basedir');
@@ -252,7 +258,9 @@ class Loader {
 		if ( $open_basedir ) {
 			$rootPath = null;
 		}
-		$fs = new \Twig_Loader_Filesystem( array(), $rootPath );
+
+		$fs = new FilesystemLoader( array(), $rootPath );
+
 		foreach ( $paths as $namespace => $path_locations ) {
 			if ( is_array( $path_locations ) ) {
 				array_map( function ( $path ) use ( $fs, $namespace ) {
@@ -289,7 +297,7 @@ class Loader {
 
 
 	/**
-	 * @return \Twig_Environment
+	 * @return \Twig\Environment
 	 */
 	public function get_twig() {
 		$loader = $this->get_loader();
@@ -321,9 +329,9 @@ class Loader {
 			}
 			$params['cache'] = $twig_cache_loc;
 		}
-		$twig = new \Twig_Environment($loader, $params);
+		$twig = new Environment($loader, $params);
 		if ( WP_DEBUG ) {
-			$twig->addExtension(new \Twig_Extension_Debug());
+			$twig->addExtension(new DebugExtension());
 		}
 		$twig->addExtension($this->_get_cache_extension());
 
@@ -451,15 +459,19 @@ class Loader {
 	}
 
 	/**
-	 * @return \Asm89\Twig\CacheExtension\Extension
+	 * @return \Twig\CacheExtension\Extension
 	 */
 	private function _get_cache_extension() {
 
 		$key_generator   = new \Timber\Cache\KeyGenerator();
 		$cache_provider  = new \Timber\Cache\WPObjectCacheAdapter($this);
 		$cache_lifetime  = apply_filters('timber/cache/extension/lifetime', 0);
-		$cache_strategy  = new \Asm89\Twig\CacheExtension\CacheStrategy\GenerationalCacheStrategy($cache_provider, $key_generator, $cache_lifetime);
-		$cache_extension = new \Asm89\Twig\CacheExtension\Extension($cache_strategy);
+		$cache_strategy  = new CacheExtension\CacheStrategy\GenerationalCacheStrategy(
+			$cache_provider,
+			$key_generator,
+			$cache_lifetime
+		);
+		$cache_extension = new CacheExtension\Extension($cache_strategy);
 
 		return $cache_extension;
 	}

@@ -2,13 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
-
-use Timber\Post;
-use Timber\Helper;
-use Timber\URLHelper;
-
 /**
  * Class Term
  *
@@ -68,6 +61,15 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	public $taxonomy;
 
 	/**
+	 * Meta data.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @var array All custom field data for the object.
+	 */
+	public $custom = array();
+
+	/**
 	 * @api
 	 * @param int $tid
 	 * @param string $tax
@@ -101,6 +103,11 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @return static
 	 */
 	public static function from( $tid, $taxonomy ) {
+		if ( is_array($tid) ) {
+			return array_map( function($term) use ($taxonomy) {
+				return new static($term, $taxonomy);
+			}, $tid);
+		}
 		return new static($tid, $taxonomy);
 	}
 
@@ -145,7 +152,8 @@ class Term extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @internal
-	 * @param int $tid
+	 *
+	 * @param int $term_id
 	 * @return array
 	 */
 	protected function get_meta_values( $term_id ) {
@@ -190,12 +198,14 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			$term_meta = get_term_meta( $term_id );
 		}
 
-		foreach ( $term_meta as $key => $value ) {
-			if ( is_array( $value ) && 1 === count( $value ) && isset( $value[0] ) ) {
-				$value = $value[0];
-			}
+		if ( ! empty( $term_meta ) ) {
+			foreach ( $term_meta as $key => $value ) {
+				if ( is_array( $value ) && 1 === count( $value ) && isset( $value[0] ) ) {
+					$value = $value[0];
+				}
 
-			$term_meta[ $key ] = maybe_unserialize( $value );
+				$term_meta[ $key ] = maybe_unserialize( $value );
+			}
 		}
 
 		/**
@@ -237,6 +247,11 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			'2.0.0',
 			'timber/term/get_meta_values'
 		);
+
+		// Ensure proper return value.
+		if ( empty( $term_meta ) ) {
+			$term_meta = array();
+		}
 
 		return $term_meta;
 	}
@@ -317,7 +332,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			"{{ term.meta('field_name') }}",
 			'2.0.0'
 		);
-
 		return $this->meta($field_name);
 	}
 
@@ -567,20 +581,48 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
+	 * Gets posts that have the current term assigned.
+	 *
 	 * @api
 	 * @example
 	 * ```twig
 	 * <h4>Recent posts in {{ term.name }}</h4>
+	 *
 	 * <ul>
 	 * {% for post in term.posts(3, 'post') %}
-	 *     <li><a href="{{post.link}}">{{post.title}}</a></li>
+	 *     <li>
+	 *         <a href="{{ post.link }}">{{ post.title }}</a>
+	 *     </li>
 	 * {% endfor %}
 	 * </ul>
 	 * ```
 	 *
-	 * @param int|string|array $numberposts_or_args
-	 * @param string           $post_type_or_class
-	 * @param string           $post_class
+	 * If you need more control over the query that is going to be performed, you can pass your
+	 * custom query arguments in the first parameter.
+	 *
+	 * ```twig
+	 * <h4>Our branches in {{ region.name }}</h4>
+	 *
+	 * <ul>
+	 * {% for branch in region.posts({
+	 *     posts_per_page: -1,
+	 *     orderby: 'menu_order'
+	 * }, 'branch', 'Branch') %}
+	 *     <li>
+	 *         <a href="{{ branch.link }}">{{ branch.title }}</a>
+	 *     </li>
+	 * {% endfor %}
+	 * </ul>
+	 * ```
+	 *
+	 * @param int|array $numberposts_or_args Optional. Either the number of posts or an array of
+	 *                                       arguments for the post query that this method is going.
+	 *                                       to perform. Default `10`.
+	 * @param string $post_type_or_class     Optional. Either the post type to get or the name of
+	 *                                       post class to use for the returned posts. Default
+	 *                                       `any`.
+	 * @param string $post_class             Optional. The name of the post class to use for the
+	 *                                       returned posts. Default `Timber\Post`.
 	 * @return \Timber\PostQuery
 	 */
 	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {

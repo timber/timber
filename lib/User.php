@@ -2,13 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
-
-use Timber\URLHelper;
-
-use Timber\Image;
-
 /**
  * Class User
  *
@@ -54,6 +47,12 @@ class User extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @api
+	 * @var string A URL to an avatar that overrides anything from Gravatar, etc.
+	 */
+	public $avatar_override;
+
+	/**
+	 * @api
 	 * @var string The description from WordPress
 	 */
 	public $description;
@@ -63,12 +62,6 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * @var string
 	 */
 	public $display_name;
-
-	/**
-	 * @api
-	 * @var string|Image The URL of the author's avatar
-	 */
-	public $avatar;
 
 	/**
 	 * @api
@@ -93,6 +86,15 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * @var string
 	 */
 	public $user_nicename;
+
+	/**
+	 * Meta data.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @var array All custom field data for the object.
+	 */
+	public $custom = array();
 
 	/**
 	 * The roles the user is part of.
@@ -124,27 +126,9 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * @return string a fallback for Timber\User::name()
 	 */
 	public function __toString() {
-		$name = $this->name();
-		if ( strlen($name) ) {
-			return $name;
-		}
-		if ( strlen($this->name) ) {
-			return $this->name;
-		}
-		return '';
+		return $this->name();
 	}
 
-	/**
-	 * @internal
-	 * @param string 	$field
-	 * @param mixed 	$value
-	 */
-	public function __set( $field, $value ) {
-		if ( 'name' === $field ) {
-			$this->display_name = $value;
-		}
-		$this->$field = $value;
-	}
 
 	/**
 	 * @internal
@@ -179,9 +163,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 		}
 		unset($this->user_pass);
 		$this->id = $this->ID;
-		$this->name = $this->name();
-		$this->avatar = new Image(get_avatar_url($this->id));
-		$this->custom = $this->get_meta_values();
+		$this->custom = $this->get_meta_values( $this->ID );
 		$this->import($this->custom, false, true);
 	}
 
@@ -190,14 +172,12 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * Retrieves the custom (meta) data on a user and returns it.
 	 *
 	 * @internal
-	 * @return array|null
+	 *
+	 * @param int $user_id
+	 * @return array
 	 */
-	protected function get_meta_values() {
-		if ( ! $this->ID ) {
-			return null;
-		}
-
-		$um = array();
+	protected function get_meta_values( $user_id ) {
+		$user_meta = array();
 
 		/**
 		 * Filters user meta data before it is fetched from the database.
@@ -231,31 +211,32 @@ class User extends Core implements CoreInterface, MetaInterface {
 		 * @param int          $user_id   The user ID.
 		 * @param \Timber\User $user      The user object.
 		 */
-		$um = apply_filters( 'timber/user/pre_get_meta_values', $um, $this->ID, $this );
+		$user_meta = apply_filters( 'timber/user/pre_get_meta_values', $user_meta, $user_id, $this );
 
 		/**
 		 * Filters user meta data before it is fetched from the database.
 		 *
 		 * @deprecated 2.0.0, use `timber/user/pre_get_meta_values`
 		 */
-		$um = apply_filters_deprecated(
+		$user_meta = apply_filters_deprecated(
 			'timber_user_get_meta_pre',
-			array( $um, $this->ID, $this ),
+			array( $user_meta, $user_id, $this ),
 			'2.0.0',
 			'timber/user/pre_get_meta_values'
 		);
 
 		// Load all meta data when it wasn’t filtered before.
-		if ( false !== $um && empty( $um ) ) {
-			$um = get_user_meta($this->ID);
+		if ( false !== $user_meta && empty( $user_meta ) ) {
+			$user_meta = get_user_meta($user_id);
 		}
 
-		$user_meta = array();
-		foreach ( $um as $key => $value ) {
-			if ( is_array($value) && count($value) === 1 ) {
-				$value = $value[0];
+		if ( ! empty( $user_meta ) ) {
+			foreach ( $user_meta as $key => $value ) {
+				if ( is_array($value) && count($value) === 1 ) {
+					$value = $value[0];
+				}
+				$user_meta[ $key ] = maybe_unserialize($value);
 			}
-			$user_meta[ $key ] = maybe_unserialize($value);
 		}
 
 		/**
@@ -282,7 +263,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 		 * @param int          $user_id   The user ID.
 		 * @param \Timber\User $user      The user object.
 		 */
-		$user_meta = apply_filters( 'timber/user/get_meta_values', $user_meta, $this->ID, $this );
+		$user_meta = apply_filters( 'timber/user/get_meta_values', $user_meta, $user_id, $this );
 
 		/**
 		 * Filters user meta data fetched from the database.
@@ -291,10 +272,15 @@ class User extends Core implements CoreInterface, MetaInterface {
 		 */
 		$user_meta = apply_filters_deprecated(
 			'timber_user_get_meta',
-			array( $user_meta, $this->ID, $this ),
+			array( $user_meta, $user_id, $this ),
 			'2.0.0',
 			'timber/user/get_meta_values'
 		);
+
+		// Ensure proper return value.
+		if ( empty( $user_meta ) ) {
+			$user_meta = array();
+		}
 
 		return $user_meta;
 	}
@@ -495,7 +481,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 		);
 		return $this->meta( $field_name );
   }
-  
+
   /**
 	 * Creates an associative array with user role slugs and their translated names.
 	 *
@@ -588,5 +574,29 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 */
 	public function can( $capability ) {
 		return user_can($this->ID, $capability);
+	}
+
+	/**
+	 * Gets a user’s avatar URL.
+	 *
+	 * @api
+	 * @since 1.9.1
+	 * @example
+	 * Get a user avatar with a width and height of 150px:
+	 *
+	 * ```twig
+	 * <img src="{{ post.author.avatar({ size: 150 }) }}">
+	 * ```
+	 *
+	 * @param null|array $args Parameters for
+	 *                         [`get_avatar_url()`](https://developer.wordpress.org/reference/functions/get_avatar_url/).
+	 * @return string|\Timber\Image The avatar URL.
+	 */
+	public function avatar( $args = null ) {
+		if ( $this->avatar_override ) {
+			return $this->avatar_override;
+		}
+
+		return new Image( get_avatar_url( $this->id, $args ) );
 	}
 }

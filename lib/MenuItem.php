@@ -2,11 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
-
-use Timber\URLHelper;
-
 /**
  * Class MenuItem
  *
@@ -65,6 +60,15 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 */
 	public $current_item_ancestor;
 
+	/**
+	 * Timber Menu.
+	 *
+	 * @api
+	 * @since 1.9.6
+	 * @var \Timber\Menu The `Timber\Menu` object the menu item is associated with.
+	 */
+	public $menu;
+
 	protected $_name;
 	protected $_menu_item_object_id;
 	protected $_menu_item_url;
@@ -73,9 +77,11 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * @internal
 	 * @param array|object $data
+	 * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
 	 */
-	public function __construct( $data ) {
-		$data              = (object) $data;
+	public function __construct( $data, $menu ) {
+		$this->menu = $menu;
+		$data       = (object) $data;
 		$this->import($data);
 		$this->import_classes($data);
 		$this->menu_object = $data;
@@ -215,8 +221,29 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		}
 		$this->classes = array_merge($this->classes, $data->classes);
 		$this->classes = array_unique($this->classes);
-		$this->classes = apply_filters('nav_menu_css_class', $this->classes, $this, array(), 0);
-		$this->class   = trim(implode(' ', $this->classes));
+
+		/**
+		 * Filters the CSS classes applied to a menu item’s list item.
+		 *
+		 * @param string[]         $classes An array of the CSS classes that can be applied to the
+		 *                                  menu item’s `<li>` element.
+		 * @param \Timber\MenuItem $item    The current menu item.
+		 * @param \stdClass $args           An object of wp_nav_menu() arguments. In Timber, we
+		 *                                  don’t have these arguments because we don’t use a menu
+		 *                                  walker. Instead, you get the options that were used to
+		 *                                  create the `Timber\Menu` object.
+		 * @param int              $depth   Depth of menu item.
+		 */
+		$this->classes = apply_filters(
+			'nav_menu_css_class',
+			$this->classes,
+			$this,
+			// The options need to be an object.
+			(object) $this->menu->options,
+			0
+		);
+
+		$this->class = trim(implode(' ', $this->classes));
 	}
 
 	/**
@@ -226,6 +253,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * in Twig).
 	 *
 	 * @internal
+	 * @deprecated 2.0.0, use `item.children` instead.
 	 * @example
 	 * ```twig
 	 * {% for child in item.get_children %}
@@ -237,10 +265,12 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @return array|bool Array of children of a menu item. Empty if there are no child menu items.
 	 */
 	public function get_children() {
-		if ( isset($this->children) ) {
-			return $this->children;
-		}
-		return false;
+		Helper::deprecated(
+			"{{ item.get_children }}",
+			"{{ item.children }}",
+			'2.0.0'
+		);
+		return $this->children();
 	}
 
 	/**
@@ -274,7 +304,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		if ( $this->type() !== 'custom' ) {
 			return false;
 		}
-		return URLHelper::is_external($this->url);
+		return URLHelper::is_external( $this->link() );
 	}
 
 	/**
@@ -334,7 +364,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @return string The type of the menu item.
 	 */
 	public function type() {
-		return $this->_menu_item_type;
+		return $this->meta('_menu_item_type');
 	}
 
 	/**
@@ -355,14 +385,12 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @return mixed Whatever value is stored in the database. Null if no value could be found.
 	 */
 	public function meta( $field_name, $args = array() ) {
-		if ( is_object($this->menu_object) && method_exists($this->menu_object, 'meta') ) {
-			return $this->menu_object->meta($field_name);
-		}
 		if ( isset($this->$field_name) ) {
 			return $this->$field_name;
 		}
-
-		return null;
+		if ( is_object($this->menu_object) && method_exists($this->menu_object, 'meta') ) {
+			return $this->menu_object->meta($field_name, $args);
+		}
 	}
 
 	/**
@@ -381,11 +409,8 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 			"{{ item.meta('field_name') }}",
 			'2.0.0'
 		);
-
 		return $this->meta( $field_name );
 	}
-
-	/* Aliases */
 
 	/**
 	 * Get the child menu items of a `Timber\MenuItem`.
@@ -402,7 +427,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @return array|bool Array of children of a menu item. Empty if there are no child menu items.
 	 */
 	public function children() {
-		return $this->get_children();
+		return $this->children;
 	}
 
 	/**
@@ -416,7 +441,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 */
 	public function external() {
 		Helper::warn( '{{ item.external }} is deprecated. Use {{ item.is_external }} instead.' );
-
 		return $this->is_external();
 	}
 
@@ -433,13 +457,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @return string A full URL, like `http://mysite.com/thing/`.
 	 */
 	public function link() {
-		if ( ! isset($this->url) || !$this->url ) {
-			if ( isset($this->_menu_item_type) && $this->_menu_item_type === 'custom' ) {
-				$this->url = $this->_menu_item_url;
-			} elseif ( isset($this->menu_object) && method_exists($this->menu_object, 'get_link') ) {
-					$this->url = $this->menu_object->link();
-			}
-		}
 		return $this->url;
 	}
 
@@ -477,23 +494,4 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		}
 	}
 
-	/**
-	 * Get the featured image of the post associated with the menu item.
-	 *
-	 * @api
-	 * @deprecated 1.5.2, to be removed in v2.0
-	 * @example
-	 * ```twig
-	 * {% for item in menu.items %}
-	 *     <li><a href="{{ item.link }}"><img src="{{ item.thumbnail }}"/></a></li>
-	 * {% endfor %}
-	 * ```
-	 * @return \Timber\Image|null The featured image object.
-	 */
-	public function thumbnail() {
-		$mo = $this->master_object();
-		if ( $mo && method_exists($mo, 'thumbnail') ) {
-			return $mo->thumbnail();
-		}
-	}
 }

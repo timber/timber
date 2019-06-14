@@ -13,6 +13,7 @@ class TestTimberContext extends Timber_UnitTestCase {
 			$context['zebra'] = 'silly horse';
 
 			return $context;
+
 		} );
 
 		$context = Timber::context();
@@ -30,6 +31,9 @@ class TestTimberContext extends Timber_UnitTestCase {
 
 		$this->assertArrayNotHasKey( 'posts', $context );
 		$this->assertEquals( $post, $context['post'] );
+
+		$context = Timber::context();
+		$this->assertEquals('http://example.org', $context['http_host']);
 	}
 
 	function testPostsContextSimple() {
@@ -73,6 +77,11 @@ class TestTimberContext extends Timber_UnitTestCase {
 		Timber::context();
 
 		$this->assertTrue( apply_filters( 'touched_the_post_action', false ) );
+	}
+
+  function testContext() {
+		$context = Timber::context();
+		$this->assertEquals('http://example.org', $context['http_host']);
 	}
 
 }

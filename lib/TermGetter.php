@@ -2,9 +2,6 @@
 
 namespace Timber;
 
-use Timber\Term;
-use Timber\Helper;
-
 /**
  * Class TermGetter
  */

@@ -2,10 +2,6 @@
 
 namespace Timber;
 
-use Timber\User;
-use Timber\Core;
-use Timber\CoreInterface;
-
 /**
  * Class Comment
  *
@@ -94,6 +90,15 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 
 	public $_depth = 0;
 
+	/**
+	 * Meta data.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @var array All custom field data for the object.
+	 */
+	public $custom = array();
+
 	protected $children = array();
 
 	/**
@@ -128,8 +133,9 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		$this->import($comment_data);
 		$this->ID = $this->comment_ID;
 		$this->id = $this->comment_ID;
-		$comment_meta_data = $this->get_meta_values($this->ID);
-		$this->import($comment_meta_data);
+		$this->custom = $this->get_meta_values($this->ID);
+
+		$this->import( $this->custom );
 	}
 
 	/**
@@ -348,7 +354,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	 * Gets a comment meta value.
 	 *
 	 * @api
-	 * @deprecated 2.0.0, use `{{ comment.meta('field_name) }}` instead.
+	 * @deprecated 2.0.0, use `{{ comment.meta('field_name') }}` instead.
 	 *
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return mixed The meta field value.
@@ -375,13 +381,11 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @internal
+	 *
 	 * @param int $comment_id
-	 * @return mixed
+	 * @return array
 	 */
-	protected function get_meta_values( $comment_id = null ) {
-		if ( $comment_id === null ) {
-			$comment_id = $this->ID;
-		}
+	protected function get_meta_values( $comment_id ) {
 
 		$comment_meta = array();
 
@@ -433,9 +437,11 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			$comment_meta = get_comment_meta($comment_id);
 		}
 
-		foreach ( $comment_meta as &$cm ) {
-			if ( is_array($cm) && count($cm) == 1 ) {
-				$cm = $cm[0];
+		if ( ! empty ( $comment_meta ) ) {
+			foreach ( $comment_meta as &$cm ) {
+				if ( is_array($cm) && count($cm) == 1 ) {
+					$cm = $cm[0];
+				}
 			}
 		}
 
@@ -482,6 +488,11 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			'2.0.0',
 			'timber/comment/get_meta_values'
 		);
+
+		// Ensure proper return value.
+		if ( empty( $comment_meta ) ) {
+			$comment_meta = array();
+		}
 
 		return $comment_meta;
 	}

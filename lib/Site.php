@@ -2,12 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
-
-use Timber\Theme;
-use Timber\Helper;
-
 /**
  * Class Site
  *
@@ -133,7 +127,6 @@ class Site extends Core implements CoreInterface {
 
 	/**
 	 * Constructs a Timber\Site object
-	 *
 	 * @api
 	 * @example
 	 * ```php
