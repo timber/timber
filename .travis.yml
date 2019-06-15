@@ -6,6 +6,8 @@ services: mysql
 
 language: php
 
+dist: trusty
+
 php:
     - 7.1
     - 7.3
