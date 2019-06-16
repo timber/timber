@@ -14,12 +14,16 @@ Escaping describes the practice of securing output before rendering it for the e
 
 While Twig has escaping enabled by default, **Timber’s Twig does not escape** the output of standard tags (i.e. `{{ post.field }}`).
 
-If you want to enable Twig’s `autoescape` behavior, add these lines to `functions.php`:
+If you want to enable Twig’s `autoescape` behavior, you can enable it with the `timber/twig/environment/options` filter:
+
+**functions.php**
 
 ```php
-if ( class_exists( 'Timber\Timber' ) ) {
-    Timber::$autoescape = 'html'; 
-}
+add_filter( 'timber/twig/environment/options', function( $options ) {
+	$options['autoescape'] = 'html';
+
+	return $options;
+} );
 ```
 
 ## Why should I escape?
