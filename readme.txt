@@ -3,7 +3,7 @@ Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 4.7.12
 Tested up to: 5.2.1
-Stable tag: 1.10.0
+Stable tag: 1.10.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -33,6 +33,10 @@ _Twig is the template language powering Timber; if you need a little background 
 **Fixes and improvements**
 
 **Changes for Theme Developers**
+
+= 1.10.1 =
+**Fixes and improvements**
+- Allows for a MenuItem's Menu to be unknown #2024 #2025
 
 = 1.10.0 =
 **Important Note**

@@ -741,4 +741,17 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 		remove_filter( 'nav_menu_css_class', $filter );
 	}
+
+	function testCustomMenuItemClass() {
+		require_once('php/custom-menu-item-class.php');
+		$term    = self::_createTestMenu();
+		$menu_id = $term['term_id'];
+		$menu_items = wp_get_nav_menu_items($menu_id);
+		$tmis = [];
+		foreach( $menu_items as $mi ) {
+			$tmi = new CustomMenuItemClass($mi);
+			array_push($tmis, $tmi);
+		}
+		$this->assertEquals($tmis[4]->post_title, 'People');
+	}
 }
