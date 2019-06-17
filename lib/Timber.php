@@ -28,10 +28,7 @@ class Timber {
 	public static $version = '2.0.0';
 	public static $locations;
 	public static $dirname = 'views';
-	public static $twig_cache = false;
-	public static $cache = false;
 	public static $auto_meta = true;
-	public static $autoescape = false;
 
 	/**
 	 * Global context cache.
@@ -39,6 +36,32 @@ class Timber {
 	 * @var array An array containing global context variables.
 	 */
 	public static $context_cache = array();
+
+	/**
+	 * Caching option for Twig.
+	 *
+	 * @deprecated 2.0.0
+	 * @var bool
+	 */
+	public static $twig_cache = false;
+
+	/**
+	 * Caching option for Twig.
+	 *
+	 * Alias for `Timber::$twig_cache`.
+	 *
+	 * @deprecated 2.0.0
+	 * @var bool
+	 */
+	public static $cache = false;
+
+	/**
+	 * Autoescaping option for Twig.
+	 *
+	 * @deprecated 2.0.0
+	 * @var bool
+	 */
+	public static $autoescape = false;
 
 	/**
 	 * @codeCoverageIgnore

@@ -295,41 +295,132 @@ class Loader {
 		return $fs;
 	}
 
-
 	/**
 	 * @return \Twig\Environment
 	 */
 	public function get_twig() {
-		$loader = $this->get_loader();
-		$params = array('debug' => WP_DEBUG, 'autoescape' => false);
-		if ( isset(Timber::$autoescape) ) {
-			$params['autoescape'] = Timber::$autoescape === true ? 'html' : Timber::$autoescape;
+		// Default options.
+		$environment_options = array(
+			'debug'      => WP_DEBUG,
+			'autoescape' => false,
+			'cache'      => false,
+		);
+
+		/**
+		 * Filters the environment options that are used when creating a Twig Environment instance.
+		 *
+		 * By default, Timber sets the following values:
+		 *
+		 * - `'debug' => WP_DEBUG`
+		 * - `'autoescape' => false`
+		 * - `'cache' => false`
+		 *
+		 * @api
+		 * @since 1.9.5
+		 * @link https://twig.symfony.com/doc/2.x/api.html#environment-options
+		 * @example
+		 * ```php
+		 * add_filter( 'timber/twig/environment/options', 'update_twig_environment_options' );
+		 *
+		 * /**
+		 *  * Updates Twig environment options.
+		 *  *
+		 *  * @link https://twig.symfony.com/doc/2.x/api.html#environment-options
+		 *  *
+		 *  * @param array $options An array of environment options.
+		 *  *
+		 *  * @return array
+		 *  *\/
+		 * function update_twig_environment_options( $options ) {
+		 *     $options['cache']       = true;
+		 *     $options['auto_reload'] = true;
+		 *
+		 *     return $options;
+		 * }
+		 * ```
+		 *
+		 * @param array $environment_options An array of Twig environment options.
+		 */
+		$environment_options = apply_filters(
+			'timber/twig/environment/options',
+			$environment_options
+		);
+
+		/**
+		 * @deprecated 2.0.0
+		 */
+		if ( isset( Timber::$autoescape ) && false !== Timber::$autoescape ) {
+			Helper::deprecated(
+				'Timber::$autoescape',
+				'the \'timber/twig/environment/options filter\'',
+				'2.0.0'
+			);
+
+			$environment_options['autoescape'] = Timber::$autoescape;
 		}
-		if ( Timber::$cache === true ) {
+
+		/**
+		 * Backwards compatibility fix.
+		 *
+		 * The value `true` doesn’t exist anymore for the `autoescape` option. You need to define
+		 * an auto-escaping fallback strategy. This fallback uses the `html` strategy.
+		 */
+		if ( true === $environment_options['autoescape'] ) {
+			$environment_options['autoescape'] = 'html';
+		}
+
+		/**
+		 * Alias Timber::$cache can be used for Timber::$twig_cache.
+		 *
+		 * @deprecated 2.0.0
+		 */
+		if ( isset( Timber::$cache ) && true === Timber::$cache ) {
 			Timber::$twig_cache = true;
 		}
-		if ( Timber::$twig_cache ) {
+
+		/**
+		 * @deprecated 2.0.0
+		 */
+		if ( isset( Timber::$twig_cache ) && false !== Timber::$twig_cache ) {
+			Helper::deprecated(
+				'Timber::$cache and Timber::$twig_cache',
+				'the \'timber/twig/environment/options filter\'',
+				'2.0.0'
+			);
+
+			$environment_options['cache'] = Timber::$twig_cache;
+		}
+
+		if ( true === $environment_options['cache'] ) {
+			$twig_cache_loc = TIMBER_LOC . '/cache/twig';
+
 			/**
 			 * Filters the cache location used for Twig.
 			 *
 			 * Allows you to set a new cache location for Twig. If the folder doesn’t exist yet, it
 			 * will be created automatically.
 			 *
-			 * @todo: Add example
-			 *
 			 * @since 0.20.10
+			 * @deprecated 2.0.0
 			 *
 			 * @param string $twig_cache_loc Full path to the cache location. Default `/cache/twig`
 			 *                               in the Timber root folder.
 			 */
-			$twig_cache_loc = apply_filters('timber/cache/location', TIMBER_LOC.'/cache/twig');
+			$twig_cache_loc = apply_filters_deprecated(
+				'timber/cache/location',
+				array( $twig_cache_loc ),
+				'2.0.0',
+				'timber/twig/environment/options'
+			);
 
 			if ( !file_exists($twig_cache_loc) ) {
 				mkdir($twig_cache_loc, 0777, true);
 			}
-			$params['cache'] = $twig_cache_loc;
+
+			$environment_options['cache'] = $twig_cache_loc;
 		}
-		$twig = new Environment($loader, $params);
+		$twig = new \Twig\Environment( $this->get_loader(), $environment_options );
+
 		if ( WP_DEBUG ) {
 			$twig->addExtension(new DebugExtension());
 		}
