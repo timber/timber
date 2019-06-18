@@ -31,6 +31,7 @@ _Twig is the template language powering Timber; if you need a little background 
 = Develop (next release) =
 
 **Fixes and improvements**
+- Fixed issue with Timber not respecting comment order #1731 #2015
 
 **Changes for Theme Developers**
 
