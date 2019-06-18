@@ -2,12 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
-
-use Timber\Theme;
-use Timber\Helper;
-
 /**
  * Class Site
  *

@@ -104,11 +104,9 @@ For example, I have a plugin that let's people insert manually related posts, bu
 
 These can get pretty complex. And that's the beauty. The complexity lives inside the context of the object, but very simple when it comes to your templates.
 
-## Adding functionality to Twig
+## Adding to Twig
 
-You can extend Twig by adding custom functionality like functions or filters. Timber provides its own classes (`Timber\Twig_Function` and `Timber\Twig_Filter`) to provide better compatibility with different versions of Twig.
-
-**functions.php**
+You can extend Twig by adding custom functionality like functions or filters.
 
 ```php
 <?php
@@ -123,11 +121,11 @@ add_filter( 'timber/twig', 'add_to_twig' );
  */
 function add_to_twig( $twig ) {
     // Adding a function.
-    $twig->addFunction( new Timber\Twig_Function( 'edit_post_link', 'edit_post_link' ) );
+    $twig->addFunction( new \Twig\TwigFunction( 'edit_post_link', 'edit_post_link' ) );
     
     // Adding functions as filters.
-    $twig->addFilter( new Timber\Twig_Filter( 'whateverify', 'whateverify' ) );
-    $twig->addFilter( new Timber\Twig_Filter( 'slugify', function( $title ) {
+    $twig->addFilter( new \Twig\TwigFilter( 'whateverify', 'whateverify' ) );
+    $twig->addFilter( new \Twig\TwigFilter( 'slugify', function( $title ) {
         return sanitize_title( $title );
     } ) );
     

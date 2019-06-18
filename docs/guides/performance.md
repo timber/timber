@@ -53,7 +53,7 @@ The following cache modes are available:
 
 ## Cache _Parts_ of the Twig File and Data
 
-This method implements the [Twig Cache Extension](https://github.com/asm89/twig-cache-extension). It adds the cache tag, for use in templates. Best shown by example:
+This method implements the [Twig Cache Extension](https://github.com/twigphp/twig-cache-extension). It adds the cache tag, for use in templates. Best shown by example:
 
 ```twig
 {% cache 'index/content' posts %}
@@ -99,15 +99,37 @@ Every time you render a `.twig` file, Twig compiles all the HTML tags and variab
 **functions.php**
 
 ```php
-<?php
-if ( class_exists( 'Timber' ) ){
-	Timber::$cache = true;
-}
+add_filter( 'timber/twig/environment/options', function( $options ) {
+	$options['cache'] = true;
+
+    return $options;
+} );
 ```
 
-You can look in your your `/vendor/timber/timber/twig-cache` directory to see what these files look like.
+You can look in your your `/vendor/timber/timber/cache` directory to see what these files look like.
 
-This does not cache the _contents_ of the variables. This is recommended as a last-step in the production process. Once enabled, any change you make to a `.twig` file (just tweaking the HTML for example) will not go live until the cache is flushed.
+If you want to change the path where Timber caches the Twig files, you can pass in an absolute path for the `cache` option:
+
+```php
+add_filter( 'timber/twig/environment/options', function( $options ) {
+	$options['cache'] = '/absolute/path/to/twig_cache';
+
+    return $options;
+} );
+```
+
+This does not cache the _contents_ of the variables. But rather, the structure of the Twig files themselves (i.e. the HTML and where those variables appear in your template). Once enabled, any change you make to a `.twig` file (just tweaking the HTML for example) will not go live until the cache is flushed.
+
+Thus, during development, you should enable the option for `auto_reload`:
+
+```php
+add_filter( 'timber/twig/environment/options', function( $options ) {
+    $options['cache']       = true;
+    $options['auto_reload'] = true;
+    
+    return $options;
+});
+```
 
 ## Cache the PHP data
 
