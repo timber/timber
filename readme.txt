@@ -32,6 +32,7 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 - Fix to menu items getting incorrect classes in WPML and others #1974
+- Fixed issue with Timber not respecting comment order #1731 #2015
 
 **Changes for Theme Developers**
 

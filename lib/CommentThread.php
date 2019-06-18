@@ -75,9 +75,8 @@ class CommentThread extends \ArrayObject {
 	 * @internal
 	 */
 	protected function merge_args( $args ) {
-		$base = array('status' => 'approve');
-		$overrides = array('order' => $this->_order);
-		return array_merge($base, $args, $overrides);
+		$base = array('status' => 'approve', 'order' => $this->_order);
+		return array_merge($base, $args);
 	}
 
 	/**
