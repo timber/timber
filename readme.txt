@@ -31,6 +31,7 @@ _Twig is the template language powering Timber; if you need a little background 
 = Develop (next release) =
 
 **Fixes and improvements**
+- Fix to menu items getting incorrect classes in WPML and others #1974
 - Fixed issue with Timber not respecting comment order #1731 #2015
 
 **Changes for Theme Developers**
@@ -46,7 +47,7 @@ If you use WPML, please do not upgrade to 1.10.* yet. Because WPML also uses Twi
 **Fixes and improvements**
 - You can now skip the eager loading of meta vars through a filter #2014 (thanks @aj-adl @gchtr)
 - Use Twig 1.38 to prevent compatibility issues with WPML and other plug-ins
-- This restores the prior behavior before #1813 / 1.9.3 when using Timber::get_posts. This is now controllable by devs
+- This restores the prior behavior before #1813 / 1.9.3 when using Timber::get_posts. This is now controllable by devs via a filter #1989 (thanks @palmiak)
 - Add support for non-cookied comment awaiting moderation message #1954 (thanks @codeclarified)
 - Avoids a potential WSOD when incorrectly specifying template filenames #1984 (thanks @aj-adl)
 - Fixes a bug introduced in #1813 that was watching for the query param of `supress_filters` (instead of the correct spelling: `suppress_filters`)
