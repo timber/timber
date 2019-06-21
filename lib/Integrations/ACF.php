@@ -15,19 +15,18 @@ use Timber\Helper;
 class ACF {
 
 	public function __construct() {
-		add_filter('timber/post/get_meta_values', array( $this, 'post_get_meta' ), 10, 2);
 		add_filter('timber/post/pre_meta', array( $this, 'post_get_meta_field' ), 10, 5);
 		add_filter('timber/post/meta_object_field', array( $this, 'post_meta_object' ), 10, 3);
 		add_filter('timber/term/get_meta_values', array( $this, 'term_get_meta' ), 10, 3);
 		add_filter('timber/term/pre_meta', array( $this, 'term_get_meta_field' ), 10, 5);
 		add_filter('timber/user/pre_meta', array( $this, 'user_get_meta_field' ), 10, 5);
 
-		// Deprecated
+		/**
+		 * Allowed a user to set a meta value
+		 *
+		 * @deprecated 2.0.0 with no replacement
+		 */
 		add_filter('timber/term/meta/set', array( $this, 'term_set_meta' ), 10, 4);
-	}
-
-	public function post_get_meta( $customs, $post_id ) {
-		return $customs;
 	}
 
 	/**
@@ -98,10 +97,6 @@ class ACF {
 			}
 			$fields = array_merge($fields, $fds);
 		}
-		return $fields;
-	}
-
-	public function user_get_meta( $fields, $user_id ) {
 		return $fields;
 	}
 

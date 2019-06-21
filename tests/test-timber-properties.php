@@ -36,21 +36,24 @@ class TestTimberProperty extends Timber_UnitTestCase {
 		$site = new Timber\Site();
 		return array( 'post' => $post, 'user' => $user, 'term' => $term, 'comment' => $comment, 'site' => $site );
 	}
-	
-	/**
-	 * @expectedDeprecated timber/term/meta/set
-	 */
+
 	function testMetaForTerm() {
 		$vars = $this->_initObjects();
 		extract( $vars );
-		$term->update( 'abraham', 'lincoln' );
+		update_term_meta($term->ID, 'abraham', 'lincoln');
 		$this->assertEquals( 'lincoln', $term->abraham );
 		$this->assertEquals( 'lincoln', Timber::compile_string( '{{term.abraham}}', array( 'term' => $term ) ) );
 	}
 
+	/**
+	 * @expectedDeprecated Timber\Site::update()
+	 * @expectedDeprecated Timber\Post::update()
+	 * @expectedDeprecated Timber\Core::update()
+	 */
 	function testMeta() {
 		$vars = $this->_initObjects();
 		extract( $vars );
+
 		$site->update( 'bill', 'clinton' );
 		$post->update( 'thomas', 'jefferson' );
 		//

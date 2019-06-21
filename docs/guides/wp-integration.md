@@ -195,7 +195,7 @@ It’s recommended to use the [`post_password_required()`](https://developer.wor
 **single.php**
 
 ```php
-$context = Timber::get_context();
+$context = Timber::context();
 $post = Timber::query_post();
 $context['post'] = $post;
 if ( post_password_required( $post->ID ) ) {
@@ -241,7 +241,7 @@ function get_password_protected_template( $template ) {
     }
 
     return $template;
-}, 99 );
+};
 ```
 
 With this filter, you can use a **password-protected.php** template file with the following contents:
@@ -249,7 +249,7 @@ With this filter, you can use a **password-protected.php** template file with th
 ```php
 <?php
 
-$context                  = Timber::get_context();
+$context                  = Timber::context();
 $context['post']          = new Timber\Post();
 $context['password_form'] = get_the_password_form();
 

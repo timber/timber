@@ -14,14 +14,14 @@ When you have a custom field that’s named `my_custom_field`, you can access it
 
 1. Access it through the `meta()` method.
 2. Access it through the `raw()` property.
-3. Define your own method.
+3. Directly access it through the field’s name.
+4. Define your own method.
 
 Each of these methods behaves a little differently. Let’s look at each one in more detail.
 
 ### The `meta()` method
 
-This is the **recommended** method to get custom values for most use cases.
-You’ll get values that are **filtered** by third-party plugins (e.g. Advanced Custom Fields).
+This method is the recommended way to access meta values. You’ll get values that are **filtered** by third-party plugins (e.g. Advanced Custom Fields).
 
 **Twig**
 
@@ -35,9 +35,45 @@ You’ll get values that are **filtered** by third-party plugins (e.g. Advanced 
 $my_custom_field = $post->meta( 'my_custom_field' );
 ```
 
-### The `raw_meta()` method
+### Direct access through field name
 
-With this method, values are **raw** (directly from the database) and are **not filtered** by third-party plugins (e.g. Advanced Custom Fields).
+We *recommend* to use this method when you’ve defined a custom method that **modifies the value of the custom field before it is returned**.
+
+```php
+class CustomPost extends Timber\Post {
+    /**
+     * Gets formatted price.
+     */
+    public function price() {
+        $price = $this->meta( 'price' );
+        
+        // Remove decimal digits.
+        return number_format( $price, 0, '', '' );
+    }
+}
+```
+
+```twig
+{{ post.price }}
+```
+
+This way, you’ll know from looking at the code that you call a method. If that method doesn’t exist, Timber will fall back to the equivalent `{{ post.meta('post') }}` call. This means that you can always write `{{ post.price }}`, even if you don’t have method. We don’t recommend to use this method, because you might run into conflicts with existing methods on an object.
+
+#### Caveat: Conflicts with Timber methods
+
+This method might not work in all cases. For example, when you use a custom field that you name `date` and try to get its value through `{{ post.date }}`, it won’t work. That’s because [`date`](https://timber.github.io/docs/reference/timber-post/#date) is a method of the `Timber\Post` object that returns the date a post was published.
+
+In PHP, you’d access the property through `$post->date` and call the `date` method through `$post->date()`. But in Twig, you can call methods without using brackets. And methods take precedence over properties. Timber uses a technique called [Overloading](http://de.php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members) to get meta values using PHP’s [`__get` magic method](http://php.net/manual/en/language.oop5.overloading.php#object.get) on `Timber\Post`, `Timber\Term`, `Timber\User` and `Timber\Comment` objects. This means that when you use `{{ post.date}}`, it will
+
+- Check if method method `date` exists. If it does, it will return what the method produces.
+- Otherwise, it will check if a property `date` exists. If it does, it will return its value.
+- Otherwise, it will hit the `__get()` method, which handles undefined or inaccessible properties. Timber’s `__get()` method will look for existing custom values and return these.
+
+Now, if you run into this problem, you should probably use the [`meta()`](#the-meta-method) method.
+
+### The `custom` property
+
+The `custom` property that’s always set on an object is an array that hold the values of all the meta values from the `postmeta` table in the database. With this method, values are **raw** (directly from the database) and are **not filtered** by third-party plugins (e.g. Advanced Custom Fields).
 
 **Twig**
 
@@ -49,49 +85,6 @@ With this method, values are **raw** (directly from the database) and are **not 
 
 ```php
 $my_custom_field = $post->raw_meta( 'my_custom_field' );
-```
-
-### Define your own method
-
-When you directly access the field name of an object, then it’s considered that you defined your own method for handling that value.
-
-**Twig**
-
-```twig
-{{ post.my_custom_field }}
-```
-
-**PHP**
-
-```php
-class ExtendedPost extends Timber\Post {
-    public function my_custom_field() {
-        $value = $this->meta( 'my_custom_field' );
-
-        // Do something else with the value
-
-        return $value;
-    }
-}
-```
-
-Be aware that through this method, you might overwrite a method that already exists on for a `Timber\Post` object, like [`date`](https://timber.github.io/docs/reference/timber-post/#date).
-
-### The `custom` property
-
-The `custom` property that’s always set on an object is an array that holds the values of all the meta values from the meta database table (`wp_postmeta`, `wp_termmeta`, `wp_usermeta`or  `wp_commentmeta`, depending on the object you have at hand).
-
-This property only acts **as a reference** for all the existing meta values. You **can’t access the values through that property**, because it’s protected. You need to use the `meta()` or `raw_meta()` method instead. So instead of doing:
-
-```twig
-{{ post.my_custom_field }}
-```
-
-You would use one of the following:
-
-```twig
-{{ post.meta('my_custom_field') }}
-{{ post.raw_meta('my_custom_field') }}
 ```
 
 ## Site options

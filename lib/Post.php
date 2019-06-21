@@ -2,17 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
-use Timber\CommentThread;
-use Timber\Term;
-use Timber\User;
-use Timber\Image;
-use Timber\Helper;
-use Timber\URLHelper;
-use Timber\PostGetter;
-use Timber\PostType;
-
 use WP_Post;
 
 /**
@@ -86,9 +75,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * `{{ post.raw_meta('field_name') }}` to get the values for a custom field.
 	 *
 	 * @api
-	 * @see Post::meta()
-	 * @see Post::raw_meta()
-	 * @var array Storage for a post’s meta data.
+	 * @var array All custom field data for the object.
 	 */
 	protected $custom = array();
 
@@ -104,7 +91,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	protected $_content;
 
 	/**
-	 * @var string The returned permalink from WP's get_permalink function
+	 * @var string|boolean The returned permalink from WP's get_permalink function
 	 */
 	protected $_permalink;
 
@@ -302,7 +289,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * Determined whether or not an admin/editor is looking at the post in "preview mode" via the
+	 * Determine whether or not an admin/editor is looking at the post in "preview mode" via the
 	 * WordPress admin
 	 * @internal
 	 * @return bool
@@ -430,11 +417,16 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * updates the post_meta of the current object with the given value
-	 * @param string $field
-	 * @param mixed $value
+	 * Updates post_meta of the current object with the given value.
+	 *
+	 * @deprecated 2.0.0 Use `update_post_meta()` instead.
+	 *
+	 * @param string $field The key of the meta field to update.
+	 * @param mixed  $value The new value.
 	 */
 	public function update( $field, $value ) {
+		Helper::deprecated( 'Timber\Post::update()', 'update_post_meta()', '2.0.0' );
+
 		if ( isset($this->ID) ) {
 			update_post_meta($this->ID, $field, $value);
 			$this->$field = $value;
@@ -469,7 +461,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @param integer $pid number to check against.
 	 * @return integer ID number of a post
 	 */
-	protected function check_post_id( $pid ) {
+	protected static function check_post_id( $pid ) {
 		if ( is_numeric($pid) && 0 === $pid ) {
 			$pid = get_the_ID();
 			return $pid;
@@ -484,12 +476,13 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * Gets a preview/excerpt of your post.
 	 *
 	 * If you have text defined in the excerpt textarea of your post, it will use that. Otherwise it
-	 * will pull from the post_content. If there's a <!-- more --> tag, it will use that to mark
+	 * will pull from the post_content. If there's a `<!-- more -->` tag, it will use that to mark
 	 * where to pull through.
 	 *
-	 * This method returns `Timber\PostPreview` a object, which is a **chainable object**. This
+	 * This method returns a `Timber\PostPreview` object, which is a **chainable object**. This
 	 * means that you can change the output of the preview by **adding more methods**. Refer to the
-	 * documentation of the `Timber\PostPreview` to get an overview of all the available methods.
+	 * [documentation of the `Timber\PostPreview` class](https://timber.github.io/docs/reference/timber-postpreview/)
+	 * to get an overview of all the available methods.
 	 *
 	 * @example
 	 * ```twig
@@ -575,84 +568,116 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 	/**
 	 * Used internally to fetch the metadata fields (wp_postmeta table)
-	 * and attach them to our Timber\Post object
 	 * @internal
 	 *
-	 * @param int $pid
-	 *
+	 * @param int $post_id
 	 * @return array
 	 */
-	protected function get_meta_values( $pid ) {
-		if ( ! $pid ) {
-			return null;
-		}
-
-		$customs = array();
+	protected function get_meta_values( $post_id ) {
+		$post_meta = array();
 
 		/**
-		 * Fires before post meta data is imported into the object.
+		 * Filters post meta data before it is fetched from the database.
 		 *
+		 * Timber loads all meta values into the post object on initialization. With this filter,
+		 * you can disable fetching the meta values through the default method, which uses
+		 * `get_post_meta()`, by returning `false` or an non-empty array.
+		 *
+		 * @example
+		 * ```php
+		 * // Disable fetching meta values.
+		 * add_filter( 'timber/post/pre_get_meta_values', '__return_false' );
+		 *
+		 * // Add your own meta data.
+		 * add_filter( 'timber/post/pre_get_meta_values', function( $post_meta, $post_id, $post ) {
+    	 *     $post_meta = array(
+		 *         'custom_data_1' => 73,
+		 *         'custom_data_2' => 274,
+		 *     );
+		 *
+		 *     return $post_meta;
+		 * }, 10, 3 );
+		 * ```
 		 * @since 2.0.0
 		 *
-		 * @param array        $customs An array of custom meta values. Passing an non-empty array
-		 *                              will skip fetching the values from the database and will use
-		 *                              the filtered values instead.
-		 * @param int          $pid     The post ID.
-		 * @param \Timber\Post $post    The post object.
+		 * @param array        $post_meta An array of custom meta values. Passing false or a non-empty
+		 *                                array will skip fetching the values from the database and
+		 *                                will use the filtered values instead. Default `array()`.
+		 * @param int          $post_id   The post ID.
+		 * @param \Timber\Post $post      The post object.
 		 */
-		$customs = apply_filters( 'timber/post/pre_get_meta_values', $customs, $pid, $this );
+		$post_meta = apply_filters( 'timber/post/pre_get_meta_values', $post_meta, $post_id, $this );
 
 		/**
-		 * Fires before post meta data is imported into the object.
+		 * Filters post meta data before it is fetched from the database.
 		 *
 		 * @deprecated 2.0.0, use `timber/post/pre_get_meta_values`
 		 */
 		do_action_deprecated(
 			'timber_post_get_meta_pre',
-			array( $customs, $pid, $this ),
+			array( $post_meta, $post_id, $this ),
 			'2.0.0',
 			'timber/post/pre_get_meta_values'
 		);
 
-		if ( !is_array($customs) || empty($customs) ) {
-			$customs = get_post_custom($pid);
+		// Load all meta data when it wasn’t filtered before.
+		if ( false !== $post_meta && empty( $post_meta ) ) {
+			$post_meta = get_post_meta( $post_id );
 		}
 
-		foreach ( $customs as $key => $value ) {
-			if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
-				$value = $value[0];
+		if ( ! empty( $post_meta ) ) {
+			foreach ( $post_meta as $key => $value ) {
+				if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
+					$value = $value[0];
+				}
+				$post_meta[$key] = maybe_unserialize($value);
 			}
-			$customs[$key] = maybe_unserialize($value);
 		}
 
 		/**
-		 * Filters post meta data.
+		 * Filters post meta data fetched from the database.
 		 *
-		 * This filter is used by the ACF Integration.
+		 * Timber loads all meta values into the post object on initialization. With this filter,
+		 * you can change meta values after they were fetched from the database.
 		 *
-		 * @todo Add description, example
+		 * @example
+		 * ```php
+		 * add_filter( 'timber/post/get_meta_values', function( $post_meta, $post_id, $post ) {
+		 *     if ( 'event' === $post->post_type ) {
+		 *         // Do something special.
+		 *         $post_meta['foo'] = $post_meta['foo'] . ' bar';
+		 *     }
+		 *
+		 *     return $post_meta;
+		 * }, 10, 3 );
+		 * ```
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array        $customs Post meta data.
-		 * @param int          $pid     The post ID.
-		 * @param \Timber\Post $post    The post object.
+		 * @param array        $post_meta Post meta data.
+		 * @param int          $post_id   The post ID.
+		 * @param \Timber\Post $post      The post object.
 		 */
-		$customs = apply_filters( 'timber/post/get_meta_values', $customs, $pid, $this );
+		$post_meta = apply_filters( 'timber/post/get_meta_values', $post_meta, $post_id, $this );
 
 		/**
-		 * Filters post meta data.
+		 * Filters post meta data fetched from the database.
 		 *
 		 * @deprecated 2.0.0, use `timber/post/get_meta_values`
 		 */
-		$customs = apply_filters_deprecated(
+		$post_meta = apply_filters_deprecated(
 			'timber_post_get_meta',
-			array( $customs, $pid, $this ),
+			array( $post_meta, $post_id, $this ),
 			'2.0.0',
 			'timber/post/get_meta_values'
 		);
 
-		return $customs;
+		// Ensure proper return value.
+		if ( empty( $post_meta ) ) {
+			$post_meta = array();
+		}
+
+		return $post_meta;
 	}
 
 	/**
@@ -672,8 +697,8 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * Used internally by init, etc. to build Timber\Post object.
 	 *
 	 * @internal
-	 * @param  int|null $pid The ID to generate info from.
-	 * @return null|object|WP_Post
+	 * @param  int|null|boolean $pid The ID to generate info from.
+	 * @return null|object|WP_Post|boolean
 	 */
 	protected function get_info( $pid = null ) {
 		$post = $this->prepare_post_info($pid);
@@ -692,7 +717,8 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * Gets the comment form for use on a single article page
 	 *
 	 * @api
-	 * @param array This $args array thing is a mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
+	 * @param array $args see [WordPress docs on comment_form](http://codex.wordpress.org/Function_Reference/comment_form)
+	 *                    for reference on acceptable parameters
 	 * @return string of HTML for the form
 	 */
 	public function comment_form( $args = array() ) {
@@ -959,7 +985,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		);
 
 		if ( null === $value ) {
-			$value = get_post_meta($this->ID, $field_name);
+			$value = get_post_meta( $this->ID, $field_name );
 			if ( is_array($value) && count($value) == 1 ) {
 				$value = $value[0];
 			}
@@ -1093,10 +1119,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		if ( $this->is_previewing() ) {
 			$class_array = get_post_class($class, $this->post_parent);
 		}
-
-		if ( is_array($class_array) ) {
-			$class_array = implode(' ', $class_array);
-		}
+		$class_array = implode(' ', $class_array);
 
         $post = $old_global_post;
 		return $class_array;
@@ -1227,7 +1250,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 *
 	 * @api
 	 * If mulitpuile categories are set, it will return just the first one
-	 * @return \Timber\Term|null
+	 * @return Timber\Term|null
 	 */
 	public function category() {
 		$cats = $this->categories();
@@ -1280,24 +1303,51 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * Gets the comments on a Timber\Post and returns them as an array of `Timber\Comment` objects (or whatever comment class you set).
 	 *
 	 * @api
+	 * Gets the comments on a `Timber\Post` and returns them as a `Timber\CommentThread`: a PHP
+	 * ArrayObject of [`Timber\Comment`](https://timber.github.io/docs/reference/timber-comment/)
+	 * (or whatever comment class you set).
+	 * @api
+	 *
+	 * @param int    $count        Set the number of comments you want to get. `0` is analogous to
+	 *                             "all".
+	 * @param string $order        Use ordering set in WordPress admin, or a different scheme.
+	 * @param string $type         For when other plugins use the comments table for their own
+	 *                             special purposes. Might be set to 'liveblog' or other, depending
+	 *                             on what’s stored in your comments table.
+	 * @param string $status       Could be 'pending', etc.
+	 * @param string $CommentClass What class to use when returning Comment objects. As you become a
+	 *                             Timber Pro, you might find yourself extending `Timber\Comment`
+	 *                             for your site or app (obviously, totally optional).
+	 * @see \Timber\CommentThread for an example with nested comments
+	 * @return bool|\Timber\CommentThread
+	 *
 	 * @example
+	 *
+	 * **single.twig**
+	 *
 	 * ```twig
-	 * {# single.twig #}
-	 * <h4>Comments:</h4>
-	 * {% for comment in post.comments %}
-	 * 	<div class="comment-{{comment.ID}} comment-order-{{loop.index}}">
-	 * 		<p>{{comment.author.name}} said:</p>
-	 * 		<p>{{comment.content}}</p>
-	 * 	</div>
-	 * {% endfor %}
+	 * <div id="post-comments">
+	 *   <h4>Comments on {{ post.title }}</h4>
+	 *   <ul>
+	 *     {% for comment in post.comments() %}
+	 *       {% include 'comment.twig' %}
+	 *     {% endfor %}
+	 *   </ul>
+	 *   <div class="comment-form">
+	 *     {{ function('comment_form') }}
+	 *   </div>
+	 * </div>
 	 * ```
 	 *
-	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
-	 * @param string $order use ordering set in WordPress admin, or a different scheme
-	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
-	 * @param string $status Could be 'pending', etc.
-	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending Timber\Comment for your site or app (obviously, totally optional)
-	 * @return bool|array
+	 * **comment.twig**
+	 *
+	 * ```twig
+	 * {# comment.twig #}
+	 * <li>
+	 *   <p class="comment-author">{{ comment.author.name }} says:</p>
+	 *   <div>{{ comment.content }}</div>
+	 * </li>
+	 * ```
 	 */
 	public function comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
 		global $overridden_cpage, $user_ID;
@@ -1313,11 +1363,15 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		if ( strtolower($order) == 'wp' || strtolower($order) == 'wordpress' ) {
 			$args['order'] = get_option('comment_order');
 		}
-
 		if ( $user_ID ) {
 			$args['include_unapproved'] = array($user_ID);
 		} elseif ( !empty($comment_author_email) ) {
 			$args['include_unapproved'] = array($comment_author_email);
+		} elseif ( function_exists('wp_get_unapproved_comment_author_email') ) {
+			$unapproved_email = wp_get_unapproved_comment_author_email();
+			if ( $unapproved_email ) {
+				$args['include_unapproved'] = array($unapproved_email);
+			}
 		}
 		$ct = new CommentThread($this->ID, false);
 		$ct->CommentClass = $CommentClass;
@@ -1491,14 +1545,12 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		return apply_filters('get_the_time', $the_time, $tf);
 	}
 
-
 	/**
-	 * Returns the post_type object with labels and other info
+	 * Returns the PostType object for a post’s post type with labels and other info.
 	 *
 	 * @api
 	 * @since 1.0.4
 	 * @example
-	 *
 	 * ```twig
 	 * This post is from <span>{{ post.type.labels.name }}</span>
 	 * ```
@@ -1506,12 +1558,9 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * ```html
 	 * This post is from <span>Recipes</span>
 	 * ```
-	 * @return PostType
+	 * @return \Timber\PostType
 	 */
 	public function type() {
-		if ( isset($this->custom['type']) ) {
-			return $this->custom['type'];
-		}
 		if ( ! $this->__type instanceof PostType ) {
 			$this->__type = new PostType($this->post_type);
 		}
@@ -1596,7 +1645,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 	/**
 	 * @api
-	 * @param bool $in_same_term
+	 * @param bool|string $in_same_term
 	 * @return mixed
 	 */
 	public function next( $in_same_term = false ) {
@@ -1605,7 +1654,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			$this->_next = array();
 			$old_global = $post;
 			$post = $this;
-			if ( $in_same_term ) {
+			if ( is_string($in_same_term) && strlen($in_same_term) ) {
 				$adjacent = get_adjacent_post(true, '', false, $in_same_term);
 			} else {
 				$adjacent = get_adjacent_post(false, '', false);
@@ -1723,7 +1772,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * <h3>{{post.prev.title}}</h3>
 	 * <p>{{post.prev.preview(25)}}</p>
 	 * ```
-	 * @param bool $in_same_term
+	 * @param string|boolean $in_same_term
 	 * @return mixed
 	 */
 	public function prev( $in_same_term = false ) {
@@ -1762,7 +1811,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * ```twig
 	 * <img src="{{ post.thumbnail.src }}" />
 	 * ```
-	 * @return Timber\Image|null of your thumbnail
+	 * @return \Timber\Image|null of your thumbnail
 	 */
 	public function thumbnail() {
 		$tid = get_post_thumbnail_id($this->ID);
@@ -1790,19 +1839,17 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * Returns the gallery
+	 * Returns galleries from the post’s content.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
 	 * {{ post.gallery }}
 	 * ```
-	 * @return html
+	 * @return array A list of arrays, each containing gallery data and srcs parsed from the
+	 * expanded shortcode.
 	 */
 	public function gallery( $html = true ) {
-		if ( isset($this->custom['gallery']) ) {
-			return $this->custom['gallery'];
-		}
 		$galleries = get_post_galleries($this->ID, $html);
 		$gallery = reset($galleries);
 
@@ -1810,22 +1857,19 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * Returns the audio
+	 * Returns audio tags embedded in the post’s content.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
 	 * {{ post.audio }}
 	 * ```
-	 * @return html
+	 * @return bool|array A list of found HTML embeds.
 	 */
 	public function audio() {
-		if ( isset($this->custom['audio']) ) {
-			return $this->custom['audio'];
-		}
 		$audio = false;
 
-		// Only get audio from the content if a playlist isn't present.
+		// Only get audio from the content if a playlist isn’t present.
 		if ( false === strpos($this->content(), 'wp-playlist-script') ) {
 			$audio = get_media_embedded_in_content($this->content(), array('audio'));
 		}
@@ -1834,19 +1878,16 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * Returns the video
+	 * Returns video tags embedded in the post’s content.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
 	 * {{ post.video }}
 	 * ```
-	 * @return html
+	 * @return bool|array A list of found HTML embeds.
 	 */
 	public function video() {
-		if ( isset($this->custom['video']) ) {
-			return $this->custom['video'];
-		}
 		$video = false;
 
 		// Only get video from the content if a playlist isn't present.
@@ -1856,5 +1897,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 		return $video;
 	}
+
 
 }

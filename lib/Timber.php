@@ -2,20 +2,6 @@
 
 namespace Timber;
 
-use Timber\Twig;
-use Timber\ImageHelper;
-use Timber\Admin;
-use Timber\Integrations;
-use Timber\PostGetter;
-use Timber\TermGetter;
-use Timber\Site;
-use Timber\URLHelper;
-use Timber\Helper;
-use Timber\Pagination;
-use Timber\Request;
-use Timber\User;
-use Timber\Loader;
-
 /**
  * Class Timber
  *
@@ -40,13 +26,10 @@ use Timber\Loader;
  */
 class Timber {
 
-  public static $version = '2.0.0';
+	public static $version = '2.0.0';
 	public static $locations;
 	public static $dirname = 'views';
-	public static $twig_cache = false;
-	public static $cache = false;
 	public static $auto_meta = true;
-	public static $autoescape = false;
 
 	/**
 	 * Global context cache.
@@ -54,6 +37,32 @@ class Timber {
 	 * @var array An array containing global context variables.
 	 */
 	public static $context_cache = array();
+
+	/**
+	 * Caching option for Twig.
+	 *
+	 * @deprecated 2.0.0
+	 * @var bool
+	 */
+	public static $twig_cache = false;
+
+	/**
+	 * Caching option for Twig.
+	 *
+	 * Alias for `Timber::$twig_cache`.
+	 *
+	 * @deprecated 2.0.0
+	 * @var bool
+	 */
+	public static $cache = false;
+
+	/**
+	 * Autoescaping option for Twig.
+	 *
+	 * @deprecated 2.0.0
+	 * @var bool
+	 */
+	public static $autoescape = false;
 
 	/**
 	 * @codeCoverageIgnore
@@ -80,7 +89,7 @@ class Timber {
 		if ( version_compare(phpversion(), '5.3.0', '<') && !is_admin() ) {
 			trigger_error('Timber requires PHP 5.3.0 or greater. You have '.phpversion(), E_USER_ERROR);
 		}
-		if ( !class_exists('Twig_Token') ) {
+		if ( ! class_exists( 'Twig\Token' ) ) {
 			trigger_error('You have not run "composer install" to download required dependencies for Timber, you can read more on https://github.com/timber/timber#installation', E_USER_ERROR);
 		}
 	}
@@ -230,8 +239,7 @@ class Timber {
 	================================ */
 
 	/**
-	 * Gets the context.
-	 *
+	 * Get context.
 	 * @api
 	 * @deprecated 2.0.0, use `Timber::context()` instead.
 	 *
@@ -278,8 +286,7 @@ class Timber {
 		if ( is_singular() ) {
 			$post = ( new Post() )->setup();
 			$context['post'] = $post;
-		}
-		elseif ( is_archive() || is_home() ) {
+		} elseif ( is_archive() || is_home() ) {
 			$context['posts'] = new PostQuery();
 		}
 
@@ -730,10 +737,18 @@ class Timber {
 	 * Get pagination.
 	 *
 	 * @api
+	 * @deprecated 2.0.0
+	 * @link https://timber.github.io/docs/guides/pagination/
 	 * @param array $prefs an array of preference data.
 	 * @return array|mixed
 	 */
 	public static function get_pagination( $prefs = array() ) {
+		Helper::deprecated(
+			'get_pagination',
+			'{{ posts.pagination }} (see https://timber.github.io/docs/guides/pagination/ for more information)',
+			'2.0.0'
+		);
+
 		return Pagination::get_pagination($prefs);
 	}
 }

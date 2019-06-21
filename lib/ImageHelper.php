@@ -2,14 +2,7 @@
 
 namespace Timber;
 
-use Timber\Image;
-use Timber\Image\Operation\ToJpg;
-use Timber\Image\Operation\ToWebp;
-use Timber\Image\Operation\Resize;
-use Timber\Image\Operation\Retina;
-use Timber\Image\Operation\Letterbox;
-
-use Timber\URLHelper;
+use Timber\Image\Operation;
 
 /**
  * Class ImageHelper
@@ -80,7 +73,7 @@ class ImageHelper {
 				return $src;
 			}
 		}
-		$op = new Image\Operation\Resize($w, $h, $crop);
+		$op = new Operation\Resize($w, $h, $crop);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -121,7 +114,7 @@ class ImageHelper {
 	 * @return string URL to the new image.
 	 */
 	public static function retina_resize( $src, $multiplier = 2, $force = false ) {
-		$op = new Image\Operation\Retina($multiplier);
+		$op = new Operation\Retina($multiplier);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -207,7 +200,7 @@ class ImageHelper {
 	 * @return string
 	 */
 	public static function letterbox( $src, $w, $h, $color = false, $force = false ) {
-		$op = new Letterbox($w, $h, $color);
+		$op = new Operation\Letterbox($w, $h, $color);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -223,7 +216,7 @@ class ImageHelper {
 	 * @return string The URL of the processed image.
 	 */
 	public static function img_to_jpg( $src, $bghex = '#FFFFFF', $force = false ) {
-		$op = new Image\Operation\ToJpg($bghex);
+		$op = new Operation\ToJpg($bghex);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -231,8 +224,8 @@ class ImageHelper {
 	 * Generates a new image by converting the source into WEBP if supported by the server.
 	 *
 	 * @param string $src     A URL or path to the image
-	 *                        (http://example.org/wp-content/uploads/2014/image.jpg) or
-	 *                        (/wp-content/uploads/2014/image.jpg).
+	 *                        (http://example.org/wp-content/uploads/2014/image.webp) or
+	 *                        (/wp-content/uploads/2014/image.webp).
 	 * @param int    $quality Range from `0` (worst quality, smaller file) to `100` (best quality,
 	 *                        biggest file).
 	 * @param bool   $force   Optional. Whether to remove any already existing result file and
@@ -241,7 +234,7 @@ class ImageHelper {
 	 *                        generated.
 	 */
 	public static function img_to_webp( $src, $quality = 80, $force = false ) {
-		$op = new Image\Operation\ToWebp($quality);
+		$op = new Operation\ToWebp($quality);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -355,7 +348,7 @@ class ImageHelper {
 	 * @return string
 	 */
 	public static function get_server_location( $url ) {
-		// if we're already an absolute dir, just return
+		// if we're already an absolute dir, just return.
 		if ( 0 === strpos($url, ABSPATH) ) {
 			return $url;
 		}
@@ -486,10 +479,24 @@ class ImageHelper {
 		return $tmp;
 	}
 
+	/**
+	 * Checks if uploaded image is located in theme.
+	 *
+	 * @param string $path image path.
+	 * @return bool     If the image is located in the theme directory it returns true.
+	 *                  If not or $path doesn't exits it returns false.
+	 */
 	protected static function is_in_theme_dir( $path ) {
-		$root = realpath(get_stylesheet_directory_uri());
-		if ( 0 === strpos($path, $root) ) {
+		$root = realpath(get_stylesheet_directory());
+
+		if ( false === $root ) {
+			return false;
+		}
+
+		if ( 0 === strpos($path, (string) $root) ) {
 			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -674,7 +681,7 @@ class ImageHelper {
 	 */
 	public static function get_letterbox_file_url( $url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
-		$op = new Image\Operation\Letterbox($w, $h, $color);
+		$op = new Operation\Letterbox($w, $h, $color);
 		$new_url = self::_get_file_url(
 			$au['base'],
 			$au['subdir'],
@@ -689,7 +696,7 @@ class ImageHelper {
 	 */
 	public static function get_letterbox_file_path( $url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
-		$op = new Image\Operation\Letterbox($w, $h, $color);
+		$op = new Operation\Letterbox($w, $h, $color);
 		$new_path = self::_get_file_path(
 			$au['base'],
 			$au['subdir'],
@@ -703,7 +710,7 @@ class ImageHelper {
 	 */
 	public static function get_resize_file_url( $url, $w, $h, $crop ) {
 		$au = self::analyze_url($url);
-		$op = new Image\Operation\Resize($w, $h, $crop);
+		$op = new Operation\Resize($w, $h, $crop);
 		$new_url = self::_get_file_url(
 			$au['base'],
 			$au['subdir'],
@@ -718,7 +725,7 @@ class ImageHelper {
 	 */
 	public static function get_resize_file_path( $url, $w, $h, $crop ) {
 		$au = self::analyze_url($url);
-		$op = new Image\Operation\Resize($w, $h, $crop);
+		$op = new Operation\Resize($w, $h, $crop);
 		$new_path = self::_get_file_path(
 			$au['base'],
 			$au['subdir'],

@@ -4,9 +4,15 @@ class TestTimberSite extends Timber_UnitTestCase {
 
 	function testStandardThemeLocation() {
 		switch_theme( 'twentyfifteen' );
-		$site = new Timber\Site();
+		$site = new \Timber\Site();
 		$content_subdir = Timber\URLHelper::get_content_subdir();
 		$this->assertEquals( $content_subdir.'/themes/twentyfifteen', $site->theme->path );
+	}
+
+	function testLanguageAttributes() {
+		$site = new \Timber\Site();
+		$lang = $site->language_attributes();
+		$this->assertEquals('lang="en-US"', $lang);
 	}
 
 	function testChildParentThemeLocation() {
@@ -49,6 +55,13 @@ class TestTimberSite extends Timber_UnitTestCase {
 		$icon = $site->icon();
 		$this->assertEquals('Timber\Image', get_class($icon));
 		$this->assertContains('cardinals.jpg', $icon->src());
+	}
+
+
+	function testNullIcon() {
+		delete_option('site_icon');
+		$site = new Timber\Site();
+		$this->assertNull($site->icon());
 	}
 
 	function testSiteGet() {

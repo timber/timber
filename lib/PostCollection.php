@@ -2,9 +2,6 @@
 
 namespace Timber;
 
-use Timber\Helper;
-use Timber\Post;
-
 /**
  * Class PostCollection
  *

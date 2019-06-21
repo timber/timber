@@ -2,13 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
-
-use Timber\Post;
-use Timber\Helper;
-use Timber\URLHelper;
-
 /**
  * Class Term
  *
@@ -29,11 +22,11 @@ use Timber\URLHelper;
  * Timber::render('index.twig', $context);
  * ```
  * ```twig
- * <h2>{{term_page.name}} Archives</h2>
+ * <h2>{{ term_page.name }} Archives</h2>
  * <h3>Teams</h3>
  * <ul>
- *     <li>{{st_louis.name}} - {{st_louis.description}}</li>
- *     <li>{{team.name}} - {{team.description}}</li>
+ *     <li>{{ st_louis.name}} - {{ st_louis.description }}</li>
+ *     <li>{{ team.name}} - {{ team.description }}</li>
  * </ul>
  * ```
  * ```html
@@ -41,7 +34,7 @@ use Timber\URLHelper;
  * <h3>Teams</h3>
  * <ul>
  *     <li>St. Louis Cardinals - Winner of 11 World Series</li>
- *     <li>New England Patriots - Winner of 4 Super Bowls</li>
+ *     <li>New England Patriots - Winner of 6 Super Bowls</li>
  * </ul>
  * ```
  */
@@ -75,9 +68,10 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * `{{ term.raw_meta('field_name') }}` to get the values for a custom field.
 	 *
 	 * @api
+	 * @since 2.0.0
 	 * @see Term::meta()
 	 * @see Term::raw_meta()
-	 * @var array Storage for a term’s meta data.
+	 * @var array All custom field data for the object.
 	 */
 	protected $custom = array();
 
@@ -115,6 +109,11 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @return static
 	 */
 	public static function from( $tid, $taxonomy ) {
+		if ( is_array($tid) ) {
+			return array_map( function($term) use ($taxonomy) {
+				return new static($term, $taxonomy);
+			}, $tid);
+		}
 		return new static($tid, $taxonomy);
 	}
 
@@ -159,44 +158,108 @@ class Term extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @internal
-	 * @param int $tid
+	 *
+	 * @param int $term_id
 	 * @return array
 	 */
-	protected function get_meta_values( $tid ) {
-		if ( ! $tid ) {
-			return null;
-		}
-
-		$customs = array();
+	protected function get_meta_values( $term_id ) {
+		$term_meta = array();
 
 		/**
-		 * Filters term meta data.
+		 * Filters term meta data before it is fetched from the database.
 		 *
-		 * This filter is used by the ACF Integration.
+		 * Timber loads all meta values into the term object on initialization. With this filter,
+		 * you can disable fetching the meta values through the default method, which uses
+		 * `get_term_meta()`, by returning `false` or a non-empty array.
 		 *
-		 * @todo Add example
+		 * @example
+		 * ```php
+		 * // Disable fetching meta values.
+		 * add_filter( 'timber/term/pre_get_meta_values', '__return_false' );
+		 *
+		 * // Add your own meta data.
+		 * add_filter( 'timber/term/pre_get_meta_values', function( $term_meta, $term_id, $term ) {
+    	 *     $term_meta = array(
+		 *         'custom_data_1' => 73,
+		 *         'custom_data_2' => 274,
+		 *     );
+		 *
+		 *     return $term_meta;
+		 * }, 10, 3);
+		 * ```
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array        $customs Custom term meta data.
-		 * @param int          $term_id Term ID.
-		 * @param \Timber\Term $term    Term object.
+		 * @param array        $term_meta An array of custom meta values. Passing `false` or a
+		 *                              non-empty array will skip fetching the values from the
+		 *                              database and will use the filtered values instead. Default
+		 *                              `array()`.
+		 * @param int          $term_id The term ID.
+		 * @param \Timber\Term $term    The term object.
 		 */
-		$customs = apply_filters('timber/term/get_meta_values', $customs, $tid, $this);
+		$term_meta = apply_filters( 'timber/term/pre_get_meta_values', $term_meta, $term_id, $this );
+
+		// Load all meta data when it wasn’t filtered before.
+		if ( false !== $term_meta && empty( $term_meta ) ) {
+			$term_meta = get_term_meta( $term_id );
+		}
+
+		if ( ! empty( $term_meta ) ) {
+			foreach ( $term_meta as $key => $value ) {
+				if ( is_array( $value ) && 1 === count( $value ) && isset( $value[0] ) ) {
+					$value = $value[0];
+				}
+
+				$term_meta[ $key ] = maybe_unserialize( $value );
+			}
+		}
 
 		/**
-		 * Filters term meta data.
+		 * Filters term meta data fetched from the database.
+		 *
+		 * Timber loads all meta values into the term object on initialization. With this filter,
+		 * you can change meta values after they were fetched from the database.
+		 *
+		 * This filter is used by the ACF Integration.
+		 *
+		 * @example
+		 * ```php
+		 * add_filter( 'timber/term/get_meta_values', function( $term_meta, $term_id, $term ) {
+		 *     if ( 123 === $term_id ) {
+		 *         // Do something special.
+		 *         $term_meta['foo'] = $term_meta['foo'] . ' bar';
+		 *     }
+		 *
+		 *     return $term_meta;
+		 * }, 10, 3 );
+		 * ```
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param array        $term_meta Custom term meta data.
+		 * @param int          $term_id   Term ID.
+		 * @param \Timber\Term $term      Term object.
+		 */
+		$term_meta = apply_filters( 'timber/term/get_meta_values', $term_meta, $term_id, $this );
+
+		/**
+		 * Filters term meta data fetched from the database.
 		 *
 		 * @deprecated 2.0.0, use `timber/term/meta`
 		 */
-		$customs = apply_filters_deprecated(
+		$term_meta = apply_filters_deprecated(
 			'timber_term_get_meta',
-			array( $customs, $tid, $this ),
+			array( $term_meta, $term_id, $this ),
 			'2.0.0',
 			'timber/term/get_meta_values'
 		);
 
-		return $customs;
+		// Ensure proper return value.
+		if ( empty( $term_meta ) ) {
+			$term_meta = array();
+		}
+
+		return $term_meta;
 	}
 
 	/**
@@ -275,7 +338,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			"{{ term.meta('field_name') }}",
 			'2.0.0'
 		);
-
 		return $this->meta($field_name);
 	}
 
@@ -544,20 +606,48 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
+	 * Gets posts that have the current term assigned.
+	 *
 	 * @api
 	 * @example
 	 * ```twig
 	 * <h4>Recent posts in {{ term.name }}</h4>
+	 *
 	 * <ul>
 	 * {% for post in term.posts(3, 'post') %}
-	 *     <li><a href="{{post.link}}">{{post.title}}</a></li>
+	 *     <li>
+	 *         <a href="{{ post.link }}">{{ post.title }}</a>
+	 *     </li>
 	 * {% endfor %}
 	 * </ul>
 	 * ```
 	 *
-	 * @param int $numberposts_or_args
-	 * @param string $post_type_or_class
-	 * @param string $post_class
+	 * If you need more control over the query that is going to be performed, you can pass your
+	 * custom query arguments in the first parameter.
+	 *
+	 * ```twig
+	 * <h4>Our branches in {{ region.name }}</h4>
+	 *
+	 * <ul>
+	 * {% for branch in region.posts({
+	 *     posts_per_page: -1,
+	 *     orderby: 'menu_order'
+	 * }, 'branch', 'Branch') %}
+	 *     <li>
+	 *         <a href="{{ branch.link }}">{{ branch.title }}</a>
+	 *     </li>
+	 * {% endfor %}
+	 * </ul>
+	 * ```
+	 *
+	 * @param int|array $numberposts_or_args Optional. Either the number of posts or an array of
+	 *                                       arguments for the post query that this method is going.
+	 *                                       to perform. Default `10`.
+	 * @param string $post_type_or_class     Optional. Either the post type to get or the name of
+	 *                                       post class to use for the returned posts. Default
+	 *                                       `any`.
+	 * @param string $post_class             Optional. The name of the post class to use for the
+	 *                                       returned posts. Default `Timber\Post`.
 	 * @return \Timber\PostQuery
 	 */
 	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
@@ -649,13 +739,16 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
-	 * @api
-	 * @deprecated 2.0.0 with no replacement
+	 * Updates term_meta of the current object with the given value.
 	 *
-	 * @param string  $key
-	 * @param mixed   $value
+	 * @deprecated 2.0.0 Use `update_term_meta()` instead.
+	 *
+	 * @param string $key   The key of the meta field to update.
+	 * @param mixed  $value The new value.
 	 */
 	public function update( $key, $value ) {
+		Helper::deprecated( 'Timber\Term::update()', 'update_term_meta()', '2.0.0' );
+
 		/**
 		 * Filters term meta value that is going to be updated.
 		 *

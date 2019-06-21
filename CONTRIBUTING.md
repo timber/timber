@@ -32,7 +32,7 @@ Here are ways to get involved:
 
 ## Pull Requests
 
-Pull requests are highly appreciated. Almost 150 people have written parts of Timber (so far). Here are some guidelines to help:
+Pull requests are highly appreciated. More than [150 people](https://github.com/timber/timber/graphs/contributors) have written parts of Timber (so far). Here are some guidelines to help:
 
 1. **Solve a problem** – Features are great, but even better is cleaning-up and fixing issues in the code that you discover.
 2. **Write tests** – This helps preserve functionality as the codebase grows and demonstrates how your change affects the code.
@@ -49,30 +49,29 @@ We try to follow the [WordPress Coding Standards](https://make.wordpress.org/cor
 
 ### Use PHP_CodeSniffer to detect coding standard violations
 
-To check where the code deviates from the standards, you can use [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer). Timber comes with a `phpcs.xml` in the root folder of the repository, so that the coding standards will automatically be applied for the Timber code base.
-
-- Install PHP_CodeSniffer globally by following this guide: <https://github.com/squizlabs/PHP_CodeSniffer#installation>.
-- Install WPCS by following this guide: <https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards#installation>.
+To check where the code deviates from the standards, you can use [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer). Timber comes with a `phpcs.xml` in the root folder of the repository, so that the the Timber code base will be automatically checked for coding standards violations.
 
 #### Command Line Usage
 
-To run PHP_CodeSniffer with the default settings on all relevant Timber files, use the following command from the root folder of the Timber library: 
+When you run `composer install` in Timber’s repository root, you will get all required dependencies to check the coding standards.
+
+To run PHP_CodeSniffer with the default settings on all relevant Timber files, use the following command from the root folder of the Timber repository: 
 
 ```bash
-phpcs
+composer lint
 ```
 
-You could check a single file like this:
+You can check a single file like this:
 
 ```bash
-phpcs ./lib/Menu.php
+./vendor/bin/phpcs ./lib/Menu.php
 ```
 
-Use `phpcs --help` for a list of available settings.
+Use `./vendor/bin/phpcs --help` for a list of available settings or refer to the [PHP_CodeSniffer documentation](https://github.com/squizlabs/PHP_CodeSniffer/wiki).
 
 #### Use it in your IDE
 
-Please refer to <https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards#how-to-use> for different ways to use PHP_CodeSniffer directly in your IDE. In some IDEs like PHPStorm, you may have to select the `phpcs.xml` explicitly to apply the proper standards.
+Please refer to <https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards#using-phpcs-and-wpcs-from-within-your-ide> for different ways to use PHP_CodeSniffer directly in your IDE. In some IDEs like PHPStorm, you may have to select the `phpcs.xml` explicitly to apply the proper standards.
 
 #### Whitelisting
 
@@ -261,3 +260,20 @@ If a filter description is not finished yet, mark it up with the `@todo` tag. It
 ```
 
 As soon as the todo is resolved, the `@todo` tag can be removed.
+
+## Process
+
+All PRs receive a review from at least one maintainer. We’ll do our best to do that review in a week, but we’d rather go slow and get it right than merge in code with issues that just lead to trouble.
+
+### GitHub reviews & assignments
+
+You might see us assign multiple reviewers, in this case these are OR checks (i.e. either Coby or Pascal) unless we explicitly say it’s an AND type thing (i.e. can both Lukas and Maciej check this out?).
+
+We use the assignee to show who’s responsible at that moment. We’ll assign back to the submitter if we need additional info/code/response, or it might be assigned to a branch maintainer if it needs more thought/revision (perhaps it’s directly related to an issue that's actively being worked on).
+
+Once approved, the lead maintainer for the branch should merge the PR into the `master` or `2.x` branch. The 1.x team will work to resolve merge conflicts on #1617 (`2.x` into `master`) so the branches stay in sync.
+
+### Branch Maintainers
+
+* 1.x: @jaredNova (lead), @palmiak
+* 2.x: @gchtr (lead), @pascalknecht, @cobytamayo

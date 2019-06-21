@@ -16,6 +16,19 @@
 			$this->assertEquals($uid, $user->id);
 		}
 
+		function testUserCapability() {
+			$uid = $this->factory->user->create(array('display_name' => 'Tito Bottitta', 'user_login' => 'mbottitta', 'role' => 'editor'));
+			$user = new Timber\User('mbottitta');
+			$this->assertTrue($user->can('edit_posts'));
+			$this->assertFalse($user->can('activate_plugins'));
+		}
+
+		function testUserRole() {
+			$uid = $this->factory->user->create(array('display_name' => 'Tito Bottitta', 'user_login' => 'mbottitta', 'role' => 'editor'));
+			$user = new Timber\User('mbottitta');
+			$this->assertArrayHasKey('editor', $user->roles());
+		}
+
 		function testDescription() {
 			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln', 'user_login' => 'blincoln'));
 			update_user_meta($uid, 'description', 'Sixteenth President');
@@ -49,6 +62,49 @@
 			$this->assertEquals('/blog/author/lincoln/', trailingslashit($user->path()) );
 			$user->president = '16th';
 			$this->assertEquals('16th', $user->president);
+		}
 
+		function testAvatar() {
+			$uid = $this->factory->user->create(array('display_name' => 'Maciej Palmowski', 'user_login' => 'palmiak', 'user_email' => 'm.palmowski@spiders.agency'));
+			$user = new Timber\User($uid);
+			$this->assertEquals('http://2.gravatar.com/avatar/b2965625410b81a2b25ef02b54493ce0?s=96&d=mm&r=g', $user->avatar());
+		}
+
+		function testPreGetMetaValuesDisableFetch(){
+			add_filter( 'timber/user/pre_get_meta_values', '__return_false' );
+
+			$user_id = $this->factory->user->create();
+
+			update_user_meta( $user_id, 'hidden_value', 'Super secret value' );
+
+			$user = new Timber\User( $user_id );
+
+			$this->assertCount( 0, $user->custom );
+
+			remove_filter( 'timber/user/pre_get_meta_values', '__return_false' );
+		}
+
+		function testPreGetMetaValuesCustomFetch(){
+			$callable = function( $user_meta, $pid, $post ) {
+				$key = 'critical_value';
+
+				return [
+					$key => get_user_meta( $pid, $key ),
+				];
+			};
+
+			add_filter( 'timber/user/pre_get_meta_values', $callable , 10, 3);
+
+			$user_id = $this->factory->user->create();
+
+			update_user_meta( $user_id, 'hidden_value', 'super-big-secret' );
+			update_user_meta( $user_id, 'critical_value', 'I am needed, all the time' );
+
+			$user = new Timber\User( $user_id );
+
+			$this->assertCount( 1, $user->custom );
+			$this->assertEquals( $user->custom, array( 'critical_value' => 'I am needed, all the time' ) );
+
+			remove_filter( 'timber/user/pre_get_meta_values', $callable );
 		}
 	}

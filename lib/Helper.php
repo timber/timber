@@ -2,9 +2,6 @@
 
 namespace Timber;
 
-use Timber\FunctionWrapper;
-use Timber\URLHelper;
-
 /**
  * Class Helper
  *
@@ -150,7 +147,7 @@ class Helper {
 	 * @param string $slug
 	 */
 	public static function _unlock_transient( $slug ) {
-		delete_transient($slug.'_lock', true);
+		delete_transient($slug.'_lock');
 	}
 
 	/**
@@ -274,10 +271,12 @@ class Helper {
 	}
 
 	/**
-	 * Trigger a deprecation warning.
+	 * Triggers a deprecation warning.
 	 *
 	 * @api
-	 *
+	 * @param string $function    The name of the deprecated function/method.
+	 * @param string $replacement Function to use instead.
+	 * @param string $version     When we deprecated this.
 	 * @return void
 	 */
 	public static function deprecated( $function, $replacement, $version ) {
@@ -434,7 +433,6 @@ class Helper {
 			return false;
 		}
 		throw new \InvalidArgumentException('$array is not an array, got:');
-		Helper::error_log($array);
 	}
 
 	/**
@@ -551,17 +549,17 @@ class Helper {
 	 *
 	 * If no match is found the function will return the inital argument.
 	 *
-	 * @param mix $obj WP Object
-	 * @return mix Instance of equivalent Timber object, or the argument if no match is found
+	 * @param mixed $obj WP Object
+	 * @return mixed Instance of equivalent Timber object, or the argument if no match is found
 	 */
 	public static function convert_wp_object( $obj ) {
-
 		if ( $obj instanceof \WP_Post ) {
-			return new \Timber\Post($obj->ID);
+			$class = PostGetter::get_post_class($obj->post_type);
+			return new $class($obj->ID);
 		} elseif ( $obj instanceof \WP_Term ) {
-			return new \Timber\Term($obj->term_id);
+			return new Term($obj->term_id);
 		} elseif ( $obj instanceof \WP_User ) {
-			return new \Timber\User($obj->ID);
+			return new User($obj->ID);
 		}
 
 		return $obj;

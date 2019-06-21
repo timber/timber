@@ -19,7 +19,9 @@ Timber's objects like `Timber\Post`, `Timber\Term`, etc. are a great starting po
 <h1>{{ post.title }}</h1>
 <h3>From the {{ post.issue.title }} issue</h3>
 ```
+
 Of course, `Timber\Post` has no built-in concept of an issue (which I've built as a custom taxonomy called "issues"). So we're going to extend `Timber\Post` to give it one:
+
 
 ```php
 <?php
@@ -102,42 +104,49 @@ For example, I have a plugin that let's people insert manually related posts, bu
 
 These can get pretty complex. And that's the beauty. The complexity lives inside the context of the object, but very simple when it comes to your templates.
 
-
 ## Adding to Twig
 
-This is the correct formation for when you need to add custom functions, filters to twig:
+You can extend Twig by adding custom functionality like functions or filters.
 
 ```php
 <?php
-/* functions.php */
 
-add_filter('timber/twig', 'add_to_twig');
+add_filter( 'timber/twig', 'add_to_twig' );
 
 /**
- * @param \Twig_Environment $twig 
+ * Adds functionality to Twig.
+ * 
+ * @param \Twig\Environment $twig The Twig environment.
+ * @return \Twig\Environment
  */
 function add_to_twig( $twig ) {
-	/* this is where you can add your own functions to twig */
-	$twig->addExtension(new Twig_Extension_StringLoader());
-	$twig->addFilter(new Twig_SimpleFilter('whatever', 'my_whatever'));
-	
-	return $twig;
+    // Adding a function.
+    $twig->addFunction( new \Twig\TwigFunction( 'edit_post_link', 'edit_post_link' ) );
+    
+    // Adding functions as filters.
+    $twig->addFilter( new \Twig\TwigFilter( 'whateverify', 'whateverify' ) );
+    $twig->addFilter( new \Twig\TwigFilter( 'slugify', function( $title ) {
+        return sanitize_title( $title );
+    } ) );
+    
+    return $twig;
 }
 
-function my_whatever($text) {
-	$text .= ' or whatever';
-	return $text;
+function whateverify( $text ) {
+    $text .= ' or whatever';
+    
+    return $text;
 }
 ```
 
 This can now be called in your twig files with:
 
 ```twig
-<h2>{{ post.title|whatever }}</h2>
+<h2 id="{{ post.title|slugify }}">{{ post.title|whateverify }}</h2>
 ```
 
 Which will output:
 
 ```twig
-<h2>Hello World! or whatever</h2>
+<h2 id="hello-world">Hello World! or whatever</h2>
 ```

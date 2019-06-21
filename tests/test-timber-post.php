@@ -242,15 +242,6 @@
 			$this->assertEquals($post2->id, $post_id);
 		}
 
-		function testUpdate(){
-			$post_id = $this->factory->post->create();
-			$post = new Timber\Post($post_id);
-			$rand = rand_str();
-			$post->update('test_meta', $rand);
-			$post = new Timber\Post($post_id);
-			$this->assertEquals($rand, $post->test_meta);
-		}
-
 		function testCanEdit(){
 			wp_set_current_user(1);
 			$post_id = $this->factory->post->create(array('post_author' => 1));
@@ -258,8 +249,6 @@
 			$this->assertTrue($post->can_edit());
 			wp_set_current_user(0);
 		}
-
-
 
 		function testTitle(){
 			$title = 'Fifteen Million Merits';
@@ -388,6 +377,43 @@
             $post = new Timber\Post();
 
 			$this->assertEquals($page2, trim(strip_tags( $post->paged_content() )));
+		}
+
+		function testPreGetMetaValuesDisableFetch(){
+			add_filter( 'timber/post/pre_get_meta_values', '__return_false' );
+
+			$post_id = $this->factory->post->create();
+
+			update_post_meta( $post_id, 'hidden_value', 'Super secret value' );
+
+			$post = new Timber\Post($post_id);
+
+			$this->assertCount( 0, $post->custom );
+
+			remove_filter( 'timber/post/pre_get_meta_values', '__return_false' );
+		}
+
+		function testPreGetMetaValuesCustomFetch(){
+			$callable = function( $customs, $pid, $post ) {
+				$key = 'critical_value';
+
+				return [
+					$key => get_post_meta( $pid, $key ),
+				];
+			};
+
+			add_filter( 'timber/post/pre_get_meta_values', $callable , 10, 3);
+
+			$post_id = $this->factory->post->create();
+
+			update_post_meta( $post_id, 'hidden_value', 'super-big-secret' );
+			update_post_meta( $post_id, 'critical_value', 'I am needed, all the time' );
+
+			$post = new Timber\Post($post_id);
+			$this->assertCount( 1, $post->custom );
+			$this->assertEquals( $post->custom, array( 'critical_value' => 'I am needed, all the time' ) );
+
+			remove_filter( 'timber/post/pre_get_meta_values', $callable );
 		}
 
 		/**
@@ -964,13 +990,6 @@
 			$this->assertEquals(null, $post->gallery());
 		}
 
-		function testPostWithGalleryCustomField() {
-			$pid = $this->factory->post->create();
-			update_post_meta($pid, 'gallery', 'foo');
-			$post = new Timber\Post($pid);
-			$this->assertEquals('foo', $post->gallery());
-		}
-
 		function testPostWithoutAudio() {
 			$pid = $this->factory->post->create();
 			$post = new Timber\Post($pid);
@@ -993,10 +1012,17 @@
 		}
 
 		function testPostWithAudioCustomField() {
-			$pid = $this->factory->post->create();
+			$quote = 'Named must your fear be before banish it you can.';
+			$quote .= '[embed]http://www.noiseaddicts.com/samples_1w72b820/280.mp3[/embed]';
+			$quote .= "No, try not. Do or do not. There is no try.";
+
+			$pid = $this->factory->post->create(array('post_content' => $quote));
 			update_post_meta($pid, 'audio', 'foo');
+			$expected = array(
+				'<audio class="wp-audio-shortcode" id="audio-1-2" preload="none" style="width: 100%;" controls="controls"><source type="audio/mpeg" src="http://www.noiseaddicts.com/samples_1w72b820/280.mp3?_=2" /><a href="http://www.noiseaddicts.com/samples_1w72b820/280.mp3">http://www.noiseaddicts.com/samples_1w72b820/280.mp3</a></audio>',
+			);
 			$post = new Timber\Post($pid);
-			$this->assertEquals('foo', $post->audio());
+			$this->assertEquals($expected, $post->audio());
 		}
 
 		function testPostWithoutVideo() {
@@ -1013,18 +1039,12 @@
 
 			$pid = $this->factory->post->create(array('post_content' => $quote));
 			$post = new Timber\Post($pid);
-			$expected = array(
-				'<iframe width="500" height="281" src="https://www.youtube.com/embed/Jf37RalsnEs?feature=oembed" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
-			);
 
-			$this->assertEquals($expected, $post->video());
-		}
+			$video    = $post->video();
+			$value    = array_shift( $video );
+			$expected = '/<iframe [^>]+ src="https:\/\/www\.youtube\.com\/embed\/Jf37RalsnEs\?feature=oembed" [^>]+>/i';
 
-		function testPostWithVideoCustomField() {
-			$pid = $this->factory->post->create();
-			update_post_meta($pid, 'video', 'foo');
-			$post = new Timber\Post($pid);
-			$this->assertEquals('foo', $post->video());
+			$this->assertRegExp( $expected, $value );
 		}
 
 		function testPathAndLinkWithPort() {

@@ -22,7 +22,7 @@ class TestTimberFilters extends Timber_UnitTestCase {
 		$post_id = $this->factory->post->create();
 		$comment_id = $this->factory->comment->create( array( 'comment_post_ID' => $post_id ) );
 		$comment = new Timber\Comment( $comment_id );
-		$comment->update( 'ghost', 'busters' );
+		update_metadata('comment', $comment_id, 'ghost', 'busters');
 		add_filter( 'timber/comment/meta', array( $this, 'filter_timber_comment_get_meta_field' ), 10, 4 );
 		$this->assertEquals( $comment->meta( 'ghost' ), 'busters' );
 		remove_filter( 'timber/comment/meta', array( $this, 'filter_timber_comment_get_meta_field' ) );
@@ -38,7 +38,7 @@ class TestTimberFilters extends Timber_UnitTestCase {
 	function testUserMetaFilter() {
 		$uid = $this->factory->user->create();
 		$user = new Timber\User( $uid );
-		$user->update( 'jared', 'novack' );
+		update_metadata('user', $uid, 'jared', 'novack');
 		add_filter( 'timber/user/meta', array( $this, 'filter_timber_user_get_meta_field' ), 10, 5 );
 		$this->assertEquals( $user->meta( 'jared' ), 'novack' );
 		remove_filter( 'timber/user/meta', array( $this, 'filter_timber_user_get_meta_field' ) );

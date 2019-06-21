@@ -65,6 +65,7 @@ In this example, you would populate your sidebar from your main PHP file (home.p
 
 $post     = new Timber\Post();
 $post_cat = $post->get_terms( 'category' );
+
 $post_cat = $post_cat[0]->ID;
 
 $sidebar_context = array(

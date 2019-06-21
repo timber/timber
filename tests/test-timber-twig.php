@@ -221,7 +221,7 @@
 
 		function testAddToTwig() {
 			add_filter('timber/twig', function( $twig ) {
-				$twig->addFilter( new Twig_SimpleFilter( 'foobar', function( $text ) {
+				$twig->addFilter( new \Twig\TwigFilter( 'foobar', function( $text ) {
 					return $text . 'foobar';
 				}) );
 				return $twig;
@@ -232,7 +232,7 @@
 
 		function testTimberTwigObjectFilter() {
 			add_filter('timber/twig', function( $twig ) {
-				$twig->addFilter( new Twig_SimpleFilter( 'quack', function( $text ) {
+				$twig->addFilter( new \Twig\TwigFilter( 'quack', function( $text ) {
 					return $text . ' Quack!';
 				}) );
 				return $twig;
@@ -259,5 +259,63 @@
 
 		}
 
+		/**
+		 * @expectedDeprecated Timber::$autoescape
+		 */
+		function testAutoescapeVariableDeprecated() {
+			Timber::$autoescape = true;
 
+			$str = Timber\Timber::compile_string('The {{ region }} remembers…', array(
+				'region' => '<strong>North</strong>',
+			) );
+
+			$this->assertEquals(
+				'The &lt;strong&gt;North&lt;/strong&gt; remembers…',
+				$str
+			);
+
+			Timber::$autoescape = false;
+		}
+
+		function testAutoescapeTrueBackwardsCompatibilityWithFilter() {
+			$autoescape_filter = function( $options ) {
+				$options['autoescape'] = true;
+
+				return $options;
+			};
+
+			add_filter( 'timber/twig/environment/options', $autoescape_filter );
+
+			$str = Timber\Timber::compile_string('The {{ region }} remembers…', array(
+				'region' => '<strong>North</strong>',
+			) );
+
+			remove_filter( 'timber/twig/environment/options', $autoescape_filter );
+
+			$this->assertEquals(
+				'The &lt;strong&gt;North&lt;/strong&gt; remembers…',
+				$str
+			);
+		}
+
+		function testAutoescapeStrategyWithFilter() {
+			$autoescape_filter = function( $options ) {
+				$options['autoescape'] = 'html';
+
+				return $options;
+			};
+
+			add_filter( 'timber/twig/environment/options', $autoescape_filter );
+
+			$str = Timber\Timber::compile_string('The {{ region }} remembers…', array(
+				'region' => '<strong>North</strong>',
+			) );
+
+			remove_filter( 'timber/twig/environment/options', $autoescape_filter );
+
+			$this->assertEquals(
+				'The &lt;strong&gt;North&lt;/strong&gt; remembers…',
+				$str
+			);
+		}
 	}
