@@ -87,7 +87,7 @@ abstract class Core {
 	 * @link https://secure.php.net/manual/en/language.oop5.overloading.php#object.get
 	 * @link https://twig.symfony.com/doc/2.x/recipes.html#using-dynamic-object-properties
 	 *
-	 * @param string $field Nhe name of the property being accessed.
+	 * @param string $field The name of the property being accessed.
 	 *
 	 * @return mixed The value of the meta field, or the result of invoking `$field()` as a method
 	 * with no arguments, or `false` if neither returns a truthy value.
@@ -99,6 +99,15 @@ abstract class Core {
 		if ( method_exists($this, $field) ) {
 			return $this->$field = $this->$field();
 		}
+
+		if ( 'custom' === $field ) {
+			Helper::deprecated(
+				"Accessing a meta value through {{ {$this->object_type}.custom }}",
+				"{{ {$this->object_type}.meta() }} or {{ {$this->object_type}.raw_meta() }}",
+				'2.0.0'
+			);
+		}
+
 		return $this->$field = false;
 	}
 
