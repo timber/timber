@@ -176,7 +176,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 
 		$comment = new Timber\Comment( $comment );
 
-		$this->assertCount( 0, $comment->custom );
+		$this->assertEmpty( $comment->meta( 'hidden_value' ) );
 
 		remove_filter( 'timber/comment/pre_get_meta_values', '__return_false' );
 	}
@@ -199,8 +199,11 @@ class TestTimberComment extends Timber_UnitTestCase {
 
 		$comment = new Timber\Comment( $comment_id );
 
-		$this->assertCount( 1, $comment->custom );
-		$this->assertEquals( $comment->custom, array( 'critical_value' => 'I am needed, all the time' ) );
+		$this->assertEquals( 'super-big-secret', $comment->meta( 'hidden_value' ) );
+		$this->assertEquals(
+			$comment->meta( 'critical_value' ),
+			'I am needed, all the time'
+		);
 
 		remove_filter( 'timber/comment/pre_get_meta_values', $callable );
 	}

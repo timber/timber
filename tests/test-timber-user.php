@@ -79,7 +79,7 @@
 
 			$user = new Timber\User( $user_id );
 
-			$this->assertCount( 0, $user->custom );
+			$this->assertEquals( 0, $user->raw_meta( 'hidden_value' ) );
 
 			remove_filter( 'timber/user/pre_get_meta_values', '__return_false' );
 		}
@@ -102,8 +102,11 @@
 
 			$user = new Timber\User( $user_id );
 
-			$this->assertCount( 1, $user->custom );
-			$this->assertEquals( $user->custom, array( 'critical_value' => 'I am needed, all the time' ) );
+			$this->assertEquals( null, $user->raw_meta( 'hidden_value') );
+			$this->assertEquals(
+				'I am needed, all the time',
+				$user->raw_meta( 'critical_value' )
+			);
 
 			remove_filter( 'timber/user/pre_get_meta_values', $callable );
 		}

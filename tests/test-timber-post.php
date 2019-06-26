@@ -388,7 +388,7 @@
 
 			$post = new Timber\Post($post_id);
 
-			$this->assertCount( 0, $post->custom );
+			$this->assertEquals( 0, $post->raw_meta( 'hidden_value' ) );
 
 			remove_filter( 'timber/post/pre_get_meta_values', '__return_false' );
 		}
@@ -402,16 +402,19 @@
 				];
 			};
 
-			add_filter( 'timber/post/pre_get_meta_values', $callable , 10, 3);
+			add_filter( 'timber/post/pre_get_meta_values', $callable , 10, 3 );
 
 			$post_id = $this->factory->post->create();
 
 			update_post_meta( $post_id, 'hidden_value', 'super-big-secret' );
 			update_post_meta( $post_id, 'critical_value', 'I am needed, all the time' );
 
-			$post = new Timber\Post($post_id);
-			$this->assertCount( 1, $post->custom );
-			$this->assertEquals( $post->custom, array( 'critical_value' => 'I am needed, all the time' ) );
+			$post = new Timber\Post( $post_id );
+			$this->assertEquals( null, $post->raw_meta( 'hidden_value' ) );
+			$this->assertEquals(
+				'I am needed, all the time',
+				$post->raw_meta( 'critical_value' )
+			);
 
 			remove_filter( 'timber/post/pre_get_meta_values', $callable );
 		}

@@ -309,7 +309,7 @@
 		}
 
 		/**
-		 @issue #824
+		 * @ticket #824
 		 */
 		function testTermWithNativeMeta() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
@@ -321,7 +321,7 @@
 		}
 
 		/**
-		 @issue #824
+		 * @ticket #824
 		 */
 		function testTermWithNativeMetaFalse() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
@@ -331,7 +331,7 @@
 		}
 
 		/**
-		 @issue #824
+		 * @ticket #824
 		 */
 		function testTermWithNativeMetaNotExisting() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
@@ -379,7 +379,7 @@
 
 			$term = new Timber\Term( $term_id );
 
-			$this->assertCount( 0, $term->custom );
+			$this->assertEquals( 0, $term->raw_meta( 'hidden_value' ) );
 
 			remove_filter( 'timber/term/pre_get_meta_values', '__return_false' );
 		}
@@ -402,8 +402,11 @@
 
 			$term = new Timber\Term( $term_id );
 
-			$this->assertCount( 1, $term->custom );
-			$this->assertEquals( $term->custom, array( 'critical_value' => 'I am needed, all the time' ) );
+			$this->assertEquals( 'super-big-secret', $term->meta( 'hidden_value' ) );
+			$this->assertEquals(
+				'I am needed, all the time',
+				$term->meta( 'critical_value' )
+			);
 
 			remove_filter( 'timber/term/pre_get_meta_values', $callable );
 		}
