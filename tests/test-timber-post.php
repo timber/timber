@@ -444,55 +444,6 @@
 			//$this->assertEquals($post->the_field_name_flat, 'the-value');
 		}*/
 
-		/**
-		 * This tests was created to catch what happens when you do weird things to {{ post.meta }},
-		 * like calling it when nothing's assigned and trying to output as a string.
-		 *
-		 * @expectedException Twig_Error_Runtime
-		 */
-		function testPostMetaMetaException(){
-			$post_id = $this->factory->post->create();
-			$post = new Timber\Post($post_id);
-			$string = Timber::compile_string('My {{ post.meta }}', array('post' => $post));
-			$this->assertEquals('My ', trim($string));
-		}
-
-		/**
-		 * This tests was created to catch what happens when you do weird things to {{ post.meta }},
-		 * like calling it when nothing's assigned and trying to output a default property as a string.
-		 */
-		function testPostMetaMetaArrayProperty(){
-			$post_id = $this->factory->post->create();
-			$post = new Timber\Post($post_id);
-			$string = Timber::compile_string('My {{ post.meta._pingme[0] }}', array('post' => $post));
-			$this->assertEquals('My 1', trim($string));
-		}
-
-		/**
-		 * This tests was created to catch what happens when you do weird things to {{ post.meta }},
-		 * like calling it when nothing's assigned and trying to output as a string. (Even when
-		 * something's assigned)
-		 *
-		 * @expectedException Twig_Error_Runtime
-		 */
-		function testPostMetaMetaAssignedException() {
-			$post_id = $this->factory->post->create();
-			update_post_meta($post_id, 'meta', 'steak');
-			$post = new Timber\Post($post_id);
-			$string = Timber::compile_string('My {{ post.meta }}', array('post' => $post));
-			$this->assertEquals('My ', trim($string));
-		}
-
-		function testPostMetaMetaOnCustom() {
-			$post_id = $this->factory->post->create();
-			$post = new Timber\Post($post_id);
-			update_post_meta($post_id, 'meta', 'steak');
-			$post = new Timber\Post($post_id);
-			$string = Timber::compile_string('My {{ post.custom.meta }}', array('post' => $post));
-			// We're cool with this, but it's still a bad idea.
-			$this->assertEquals('My steak', trim($string));
-		}
-
 		function testPostParent(){
 			$parent_id = $this->factory->post->create();
 			$child_id = $this->factory->post->create(array('post_parent' => $parent_id));
