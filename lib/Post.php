@@ -943,7 +943,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 *                           available in Timber. Default empty.
 	 * @return mixed The meta field value. Null if no value could be found.
 	 */
-	public function meta( $field_name = null, $args = array() ) {
+	public function meta( $field_name, $args = array() ) {
 		if ( $rd = $this->get_revised_data_from_method('meta', $field_name) ) {
 			return $rd;
 		}
