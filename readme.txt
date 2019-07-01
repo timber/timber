@@ -3,7 +3,7 @@ Contributors: jarednova, connorjburton, lggorman
 Tags: template engine, templates, twig
 Requires at least: 4.7.12
 Tested up to: 5.2.1
-Stable tag: 1.9.5
+Stable tag: 1.10.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -31,32 +31,42 @@ _Twig is the template language powering Timber; if you need a little background 
 = Develop (next release) =
 
 **Fixes and improvements**
+- Fix to menu items getting incorrect classes in WPML and others #1974
+- Fixed issue with Timber not respecting comment order #1731 #2015
 
 **Changes for Theme Developers**
-- You can now skip the eager loading of meta vars through a filter #2014 (thanks @aj-adl @gchtr)
 
-
-= 1.9.5 =
+= 1.10.1 =
 **Fixes and improvements**
-- Updated to most current version of Twig.
-- This restores the prior behavior before #1813 / 1.9.3 when using Timber::get_posts. This is now controllable by devs
+- Allows for a MenuItem's Menu to be unknown #2024 #2025
+
+= 1.10.0 =
+**Important Note**
+If you use WPML, please do not upgrade to 1.10.* yet. Because WPML also uses Twig, there is a conflict with loading Twig versions. They will release an update soon to keep things in sync. Until then, please use version 1.9.2
+
+**Fixes and improvements**
+- You can now skip the eager loading of meta vars through a filter #2014 (thanks @aj-adl @gchtr)
+- Use Twig 1.38 to prevent compatibility issues with WPML and other plug-ins
+- This restores the prior behavior before #1813 / 1.9.3 when using Timber::get_posts. This is now controllable by devs via a filter #1989 (thanks @palmiak)
 - Add support for non-cookied comment awaiting moderation message #1954 (thanks @codeclarified)
 - Avoids a potential WSOD when incorrectly specifying template filenames #1984 (thanks @aj-adl)
+- Fixes a bug introduced in #1813 that was watching for the query param of `supress_filters` (instead of the correct spelling: `suppress_filters`)
+- Fixes a bug where the last menu item received incorrect CSS classes #2009 #1974 (thanks @strategio)
 
 **Changes for Theme Developers**
 - You can use WordPress's behavior of `get_posts` (versus `WP_Query`) via a filter. By default, Timber uses the behaviors of WP_Query in Timber's queries #1989 (thanks @palmiak) 
 - If you run into problems with unknown `Twig_SimpleFilter` or unknown `Twig_Filter` classes, you can use `Timber\Twig_Filter` instead.
+- Fixed `Timber::get_posts` so that its default query parameters mirror WordPress's `get_posts` #1812 (thanks @bartvanraaij)
+- You can now more easily work with menu locations and filters #1959 #2018 (thanks @gchtr)
 
+= 1.9.5 =
+- This release was pulled due to compatibility issues with other plug-ins
 
 = 1.9.4 =
-
-**Fixes and improvements**
-- Fixes a bug introduced in #1813 that was watching for the query param of `supress_filters` (instead of the correct spelling: `suppress_filters`)
+- This release was pulled due to compatibility issues with other plug-ins
 
 = 1.9.3 =
-
-**Changes for Theme Developers**
-- Fixed `Timber::get_posts` so that its default query parameters mirror WordPress's `get_posts` #1812 (thanks @bartvanraaij)
+- This release was pulled due to compatibility issues with other plug-ins
 
 = 1.9.2 =
 
