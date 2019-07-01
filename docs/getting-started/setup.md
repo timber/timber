@@ -16,11 +16,21 @@ You can grab the all-things-included plugin at [WordPress.org](http://wordpress.
 
 The GitHub version of Timber requires [Composer](https://getcomposer.org/download/). If you'd prefer one-click installation, you should use the [WordPress.org](https://wordpress.org/plugins/timber-library/) version.
 
+Run the following Composer command from within your theme's root directory:
+
 ```shell
 composer require timber/timber
 ```
 
-If your theme is not setup to pull in Composer’s autoload file, you will need to add the following at the top of your `functions.php` file: 
+If you're using the [starter theme](https://github.com/timber/starter-theme), a `composer.json` file is already included, so you can run the following command instead:
+
+```shell
+composer install
+```
+
+Using the starter theme's existing `composer.json` file currently works slightly different and will install Timber to your site's `plugins` directory and will need to be activated via `wp-admin/plugins.php` rather than using Composer's autoload feature.
+
+If you're not using the starter theme or your theme is not setup to pull in Composer’s autoload file, you will need to add the following at the top of your `functions.php` file: 
 
 **functions.php**
 
