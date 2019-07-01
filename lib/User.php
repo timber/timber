@@ -169,8 +169,8 @@ class User extends Core implements CoreInterface, MetaInterface {
 		}
 		unset($this->user_pass);
 		$this->id = $this->ID;
+
 		$this->custom = $this->get_meta_values( $this->ID );
-		$this->import($this->custom, false, true);
 	}
 
 	/**

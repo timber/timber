@@ -139,9 +139,8 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		$this->import($comment_data);
 		$this->ID = $this->comment_ID;
 		$this->id = $this->comment_ID;
-		$this->custom = $this->get_meta_values( $this->ID );
 
-		$this->import( $this->custom );
+		$this->custom = $this->get_meta_values( $this->ID );
 	}
 
 	/**
