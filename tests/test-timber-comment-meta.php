@@ -3,9 +3,9 @@
 use Timber\Comment;
 
 /**
- * Class TestTimberComment
+ * Class TestTimberCommentMeta
  */
-class TestTimberComment extends Timber_UnitTestCase {
+class TestTimberCommentMeta extends Timber_UnitTestCase {
 	function testPreGetMetaValuesDisableFetch() {
 		add_filter( 'timber/comment/pre_get_meta_values', '__return_false' );
 
