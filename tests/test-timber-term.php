@@ -369,47 +369,6 @@
 			$links[] = 'http://example.org/wp-admin/term.php?taxonomy=category&term_id='.$tid.'&post_type=post';
 			$this->assertContains($term->edit_link(), $links);
 		}
-
-		function testPreGetMetaValuesDisableFetch(){
-			add_filter( 'timber/term/pre_get_meta_values', '__return_false' );
-
-			$term_id = $this->factory->term->create();
-
-			update_term_meta( $term_id, 'hidden_value', 'Super secret value' );
-
-			$term = new Timber\Term( $term_id );
-
-			$this->assertEquals( 0, $term->raw_meta( 'hidden_value' ) );
-
-			remove_filter( 'timber/term/pre_get_meta_values', '__return_false' );
-		}
-
-		function testPreGetMetaValuesCustomFetch(){
-			$callable = function( $term_meta, $pid, $post ) {
-				$key = 'critical_value';
-
-				return [
-					$key => get_term_meta( $pid, $key ),
-				];
-			};
-
-			add_filter( 'timber/term/pre_get_meta_values', $callable , 10, 3);
-
-			$term_id = $this->factory->term->create();
-
-			update_term_meta( $term_id, 'hidden_value', 'super-big-secret' );
-			update_term_meta( $term_id, 'critical_value', 'I am needed, all the time' );
-
-			$term = new Timber\Term( $term_id );
-
-			$this->assertEquals( 'super-big-secret', $term->meta( 'hidden_value' ) );
-			$this->assertEquals(
-				'I am needed, all the time',
-				$term->meta( 'critical_value' )
-			);
-
-			remove_filter( 'timber/term/pre_get_meta_values', $callable );
-		}
 	}
 
 	class Arts extends Timber\Term {
