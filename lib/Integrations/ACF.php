@@ -17,7 +17,6 @@ class ACF {
 	public function __construct() {
 		add_filter('timber/post/pre_meta', array( $this, 'post_get_meta_field' ), 10, 5);
 		add_filter('timber/post/meta_object_field', array( $this, 'post_meta_object' ), 10, 3);
-		add_filter('timber/term/get_meta_values', array( $this, 'term_get_meta' ), 10, 3);
 		add_filter('timber/term/pre_meta', array( $this, 'term_get_meta_field' ), 10, 5);
 		add_filter('timber/user/pre_meta', array( $this, 'user_get_meta_field' ), 10, 5);
 
@@ -82,22 +81,6 @@ class ACF {
 		$searcher = $term->taxonomy . '_' . $term->ID;
 		update_field($field, $value, $searcher);
 		return $value;
-	}
-
-	public function term_get_meta( $fields, $term_id, $term ) {
-		$searcher = $term->taxonomy . '_' . $term->ID; // save to a specific category.
-		$fds      = get_fields($searcher);
-		if ( is_array($fds) ) {
-			foreach ( $fds as $key => $value ) {
-				$key            = preg_replace('/_/', '', $key, 1);
-				$key            = str_replace($searcher, '', $key);
-				$key            = preg_replace('/_/', '', $key, 1);
-				$field          = get_field($key, $searcher);
-				$fields[ $key ] = $field;
-			}
-			$fields = array_merge($fields, $fds);
-		}
-		return $fields;
 	}
 
 	/**

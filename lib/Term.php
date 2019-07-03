@@ -220,8 +220,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		 * Timber loads all meta values into the term object on initialization. With this filter,
 		 * you can change meta values after they were fetched from the database.
 		 *
-		 * This filter is used by the ACF Integration.
-		 *
 		 * @example
 		 * ```php
 		 * add_filter( 'timber/term/get_meta_values', function( $term_meta, $term_id, $term ) {
