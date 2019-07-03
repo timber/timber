@@ -389,7 +389,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = new MetaPost( $post_id );
 		$term    = new MetaTerm( $term_id );
 		$user    = new MetaUser( $user_id );
-		$comment = new MetaComment( $user_id );
+		$comment = new MetaComment( $comment_id );
 
 		$post_string    = Timber::compile_string(
 			'{{ post.protected_property }}', [ 'post' => $post ]
