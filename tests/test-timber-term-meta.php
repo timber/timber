@@ -15,7 +15,7 @@ class TestTimberTermMeta extends Timber_UnitTestCase {
 
 		$term = new Term( $term_id );
 
-		$this->assertEquals( 0, $term->raw_meta( 'hidden_value' ) );
+		$this->assertEquals( null, $term->raw_meta( 'hidden_value' ) );
 
 		remove_filter( 'timber/term/pre_get_meta_values', '__return_false' );
 	}

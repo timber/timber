@@ -15,7 +15,7 @@ class TestTimberUserMeta extends Timber_UnitTestCase {
 
 		$user = new User( $user_id );
 
-		$this->assertEquals( 0, $user->raw_meta( 'hidden_value' ) );
+		$this->assertEquals( null, $user->raw_meta( 'hidden_value' ) );
 
 		remove_filter( 'timber/user/pre_get_meta_values', '__return_false' );
 	}

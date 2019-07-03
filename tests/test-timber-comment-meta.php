@@ -9,13 +9,13 @@ class TestTimberCommentMeta extends Timber_UnitTestCase {
 	function testPreGetMetaValuesDisableFetch() {
 		add_filter( 'timber/comment/pre_get_meta_values', '__return_false' );
 
-		$comment = $this->factory->comment->create();
+		$comment_id = $this->factory->comment->create();
 
-		update_user_meta( $comment, 'hidden_value', 'Super secret value' );
+		update_comment_meta( $comment_id, 'hidden_value', 'Super secret value' );
 
-		$comment = new Comment( $comment );
+		$comment = new Comment( $comment_id );
 
-		$this->assertEmpty( $comment->meta( 'hidden_value' ) );
+		$this->assertEquals( null, $comment->raw_meta( 'hidden_value' ) );
 
 		remove_filter( 'timber/comment/pre_get_meta_values', '__return_false' );
 	}

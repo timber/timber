@@ -13,9 +13,9 @@ class TestTimberPostMeta extends Timber_UnitTestCase {
 
 		update_post_meta( $post_id, 'hidden_value', 'Super secret value' );
 
-		$post = new Post($post_id);
+		$post = new Post( $post_id );
 
-		$this->assertEquals( 0, $post->raw_meta( 'hidden_value' ) );
+		$this->assertEquals( null, $post->raw_meta( 'hidden_value' ) );
 
 		remove_filter( 'timber/post/pre_get_meta_values', '__return_false' );
 	}
