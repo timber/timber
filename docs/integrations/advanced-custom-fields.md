@@ -25,6 +25,8 @@ If you’ve worked with ACF before, you’re use to use `get_field( 'my_acf_fiel
 $meta = $post->meta( 'my_acf_field' );
 ```
 
+### Unformatted values
+
 In ACF, all values are filtered. If you want to use unfiltered, raw values from the database, you’re probably used to using the third parameter for `get_field()`, which is called `$format_value`. This defaults to true. In Timber, you’d pass it like so:
 
 **Twig**
@@ -41,7 +43,7 @@ $meta = $post->meta( 'my_acf_field', [
 ] );
 ```
 
-Alternatively, you can also use the `raw_meta()` method, which accesses values directly from the database:
+You can also use the **faster `raw_meta()` method**, which accesses values directly from the database and bypasses any ACF filters:
 
 **Twig**
 
