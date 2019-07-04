@@ -13,6 +13,12 @@ function deploy () {
 	cd ~/Sites/timber-wp
 	mkdir tags/$1
 
+	# Clean the Starter Theme of stuff we don't want on WP.org
+	rm ~/Sites/timber/timber-starter-theme/composer.json
+	rm ~/Sites/timber/timber-starter-theme/composer.lock
+	rm -rf ~/Sites/timber/timber-starter-theme/vendor
+	rm -rf ~/Sites/timber/timber-starter-theme/bin
+
 	cp -r ~/Sites/timber/lib tags/$1/lib
 	cp -r ~/Sites/timber/timber-starter-theme tags/$1/timber-starter-theme
 	cp -r ~/Sites/timber/vendor tags/$1/vendor
@@ -43,6 +49,7 @@ read -p "Did you update the changelog and version numbers?" -n 1 -r
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
+	php -v
     echo "Setting up version " $1
 	echo "You still need to use Versions to send to WP.org"
 
