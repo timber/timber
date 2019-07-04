@@ -112,6 +112,11 @@ class Image extends Attachment {
 	 * @return array
 	 */
 	public function get_pathinfo() {
+		Helper::deprecated(
+			"{{ image.get_pathinfo }}",
+			"{{ function('pathinfo', image.file) }}",
+			'2.0.0'
+		);
 		return pathinfo($this->file);
 	}
 
