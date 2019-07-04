@@ -108,19 +108,31 @@ class Image extends Attachment {
 
 	/**
 	 * Get a PHP array with pathinfo() info from the file
+	 * @deprecated 2.0.0, functionality will no longer be supported in future releases.
 	 * @return array
 	 */
 	public function get_pathinfo() {
+		Helper::deprecated(
+			"{{ image.get_pathinfo }}",
+			"{{ function('pathinfo', image.file) }}",
+			'2.0.0'
+		);
 		return pathinfo($this->file);
 	}
 
 	/**
 	 * Processes an image's dimensions.
+	 * @deprecated 2.0.0, use `{{ image.width }}` or `{{ image.height }}` in Twig
 	 * @internal
 	 * @param string $dim
 	 * @return array|int
 	 */
 	protected function get_dimensions( $dim ) {
+		Helper::deprecated(
+			'Image::get_dimensions',
+			'Image::get_dimension',
+			'2.0.0'
+		);
 		if ( isset($this->_dimensions) ) {
 			return $this->get_dimensions_loaded($dim);
 		}
@@ -134,11 +146,17 @@ class Image extends Attachment {
 	}
 
 	/**
+	 * @deprecated 2.0.0, use Image::get_dimension_loaded
 	 * @internal
 	 * @param string|null $dim
 	 * @return array|int
 	 */
 	protected function get_dimensions_loaded( $dim ) {
+		Helper::deprecated(
+			'Image::get_dimensions',
+			'Image::get_dimension',
+			'2.0.0'
+		);
 		$dim = strtolower($dim);
 		if ( $dim == 'h' || $dim == 'height' ) {
 			return $this->_dimensions[1];
@@ -147,9 +165,15 @@ class Image extends Attachment {
 	}
 
 	/**
+	 * @deprecated 2.0.0, use Image::meta to retrieve specific fields
 	 * @return array
 	 */
 	protected function get_post_custom( $iid ) {
+		Helper::deprecated(
+			'{{ image.get_post_custom( image.id ) }}',
+			"{{ image.meta('my_field') }}",
+			'2.0.0'
+		);
 		$pc = get_post_custom($iid);
 		if ( is_bool($pc) ) {
 			return array();
