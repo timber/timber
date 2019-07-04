@@ -1,7 +1,7 @@
 <?php
 
 	class TestTimberTerm extends Timber_UnitTestCase {
-		
+
 		function testTermFrom() {
 			register_taxonomy('baseball', array('post'));
 			register_taxonomy('hockey', array('post'));
@@ -10,7 +10,7 @@
 			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'hockey'));
 			$baseball_teams = Timber\Term::from(get_terms(array('taxonomy' => 'baseball', 'hide_empty' => false)), 'baseball');
 			$this->assertEquals(2, count($baseball_teams));
-			$this->assertEquals('Cardinals', $baseball_teams[0]->name());
+			$this->assertEquals('Cardinals', $baseball_teams[0]->title());
 		}
 
 		function testConstructorWithClass() {
@@ -50,7 +50,7 @@
 
 			$term_obj = get_term($term_id);
 			$term = new Timber\Term($term_obj, 'arts');
-			$this->assertEquals('Zong', $term->name());
+			$this->assertEquals('Zong', $term->title());
 		}
 
 		function testConstructor() {
@@ -58,7 +58,7 @@
 
 			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
 			$term = new Timber\Term($term_id, 'arts');
-			$this->assertEquals('Zong', $term->name());
+			$this->assertEquals('Zong', $term->title());
 			$template = '{% set zp_term = Term("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zong', $string);
@@ -75,7 +75,7 @@
 			$term_data = get_term($term_id, 'post_tag');
 			$this->assertTrue( in_array( get_class($term_data), array('WP_Term', 'stdClass') ) );
 			$term = new Timber\Term($term_id);
-			$this->assertEquals('Famous Commissioners', $term->name());
+			$this->assertEquals('Famous Commissioners', $term->title());
 			$this->assertEquals('Timber\Term', get_class($term));
 		}
 

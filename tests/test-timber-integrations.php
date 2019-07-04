@@ -26,13 +26,16 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		$this->assertGreaterThan(0, $success);
 	}
 
-	function testWPCLIClearCacheTwig(){
+	/**
+	 * @expectedDeprecated Timber::$cache and Timber::$twig_cache
+	 */
+	function testWPCLIClearCacheTwigDeprecated(){
 		$cache_dir = __DIR__.'/../cache/twig';
     	if (is_dir($cache_dir)){
     		Timber\Loader::rrmdir($cache_dir);
     	}
     	$this->assertFileNotExists($cache_dir);
-    	Timber::$cache = true;
+    	Timber::$twig_cache = true;
     	$pid = $this->factory->post->create();
     	$post = new Timber\Post($pid);
     	Timber::compile('assets/single-post.twig', array('post' => $post));
@@ -40,16 +43,45 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
     	$this->assertFileExists($cache_dir);
     	$success = Command::clear_cache('twig');
 		$this->assertTrue($success);
-    	Timber::$cache = false;
+    	Timber::$twig_cache = false;
 	}
 
-	function testWPCLIClearCacheAll(){
+	function testWPCLIClearCache(){
 		$cache_dir = __DIR__.'/../cache/twig';
     	if (is_dir($cache_dir)){
     		Timber\Loader::rrmdir($cache_dir);
     	}
     	$this->assertFileNotExists($cache_dir);
-    	Timber::$cache = true;
+
+		$cache_enabler = function( $options ) {
+			$options['cache'] = true;
+
+			return $options;
+		};
+
+		add_filter( 'timber/twig/environment/options', $cache_enabler );
+
+		$pid  = $this->factory->post->create();
+		$post = new Timber\Post( $pid );
+		Timber::compile( 'assets/single-post.twig', array( 'post' => $post ) );
+		sleep( 1 );
+		$this->assertFileExists( $cache_dir );
+		$success = Command::clear_cache( 'twig' );
+		$this->assertTrue( $success );
+
+    	remove_filter( 'timber/twig/environment/options', $cache_enabler );
+	}
+
+	/**
+	 * @expectedDeprecated Timber::$cache and Timber::$twig_cache
+	 */
+	function testWPCLIClearCacheAllDeprecated(){
+		$cache_dir = __DIR__.'/../cache/twig';
+    	if (is_dir($cache_dir)){
+    		Timber\Loader::rrmdir($cache_dir);
+    	}
+    	$this->assertFileNotExists($cache_dir);
+    	Timber::$twig_cache = true;
     	$pid = $this->factory->post->create();
     	$post = new Timber\Post($pid);
     	Timber::compile('assets/single-post.twig', array('post' => $post));
@@ -58,16 +90,47 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
     	Timber::compile('assets/single.twig', array('data' => 'foobar'), 600);
     	$success = Command::clear_cache('all');
 		$this->assertTrue($success);
-    	Timber::$cache = false;
+    	Timber::$twig_cache = false;
 	}
 
-	function testWPCLIClearCacheAllArray(){
+	function testWPCLIClearCacheAll() {
+		$cache_dir = __DIR__ . '/../cache/twig';
+
+		if ( is_dir( $cache_dir ) ) {
+			Timber\Loader::rrmdir( $cache_dir );
+		}
+
+		$this->assertFileNotExists( $cache_dir );
+
+		$cache_enabler = function( $options ) {
+			$options['cache'] = true;
+
+			return $options;
+		};
+
+		add_filter( 'timber/twig/environment/options', $cache_enabler );
+
+		$pid  = $this->factory->post->create();
+		$post = new Timber\Post( $pid );
+		Timber::compile( 'assets/single-post.twig', array( 'post' => $post ) );
+		sleep( 1 );
+		$this->assertFileExists( $cache_dir );
+		Timber::compile( 'assets/single.twig', array( 'data' => 'foobar' ), 600 );
+		$success = Command::clear_cache( 'all' );
+		$this->assertTrue( $success );
+		remove_filter( 'timber/twig/environment/options', $cache_enabler );
+	}
+
+	/**
+	 * @expectedDeprecated Timber::$cache and Timber::$twig_cache
+	 */
+	function testWPCLIClearCacheAllArrayDeprecated(){
 		$cache_dir = __DIR__.'/../cache/twig';
     	if (is_dir($cache_dir)){
     		Timber\Loader::rrmdir($cache_dir);
     	}
     	$this->assertFileNotExists($cache_dir);
-    	Timber::$cache = true;
+    	Timber::$twig_cache = true;
     	$pid = $this->factory->post->create();
     	$post = new Timber\Post($pid);
     	Timber::compile('assets/single-post.twig', array('post' => $post));
@@ -76,11 +139,40 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
     	Timber::compile('assets/single.twig', array('data' => 'foobar'), 600);
     	$success = Command::clear_cache(array('all'));
 		$this->assertTrue($success);
-    	Timber::$cache = false;
+    	Timber::$twig_cache = false;
 
     	$success = Command::clear_cache('bunk');
     	$this->assertNull($success);
 	}
 
+	function testWPCLIClearCacheAllArray(){
+		$cache_dir = __DIR__ . '/../cache/twig';
 
+		if ( is_dir( $cache_dir ) ) {
+			Timber\Loader::rrmdir( $cache_dir );
+		}
+
+		$this->assertFileNotExists( $cache_dir );
+
+		$cache_enabler = function( $options ) {
+			$options['cache'] = true;
+
+			return $options;
+		};
+
+		add_filter( 'timber/twig/environment/options', $cache_enabler );
+
+		$pid  = $this->factory->post->create();
+		$post = new Timber\Post( $pid );
+		Timber::compile( 'assets/single-post.twig', array( 'post' => $post ) );
+		sleep( 1 );
+		$this->assertFileExists( $cache_dir );
+		Timber::compile( 'assets/single.twig', array( 'data' => 'foobar' ), 600 );
+		$success = Command::clear_cache( array( 'all' ) );
+		$this->assertTrue( $success );
+		remove_filter( 'timber/twig/environment/options', $cache_enabler );
+
+		$success = Command::clear_cache( 'bunk' );
+		$this->assertNull( $success );
+	}
 }
