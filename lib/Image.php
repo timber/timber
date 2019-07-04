@@ -171,7 +171,7 @@ class Image extends Attachment {
 	protected function get_post_custom( $iid ) {
 		Helper::deprecated(
 			'{{ image.get_post_custom( image.id ) }}',
-			'{{ image.meta("my_field") }}',
+			"{{ image.meta('my_field') }}",
 			'2.0.0'
 		);
 		$pc = get_post_custom($iid);
