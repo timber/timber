@@ -108,7 +108,7 @@ class Image extends Attachment {
 
 	/**
 	 * Get a PHP array with pathinfo() info from the file
-	 * @deprecated since 2.0 Functionality will no longer be supported in future releases.
+	 * @deprecated 2.0.0 Functionality will no longer be supported in future releases.
 	 * @return array
 	 */
 	public function get_pathinfo() {
