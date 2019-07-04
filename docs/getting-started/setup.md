@@ -28,23 +28,13 @@ If you're using the [starter theme](https://github.com/timber/starter-theme), a 
 composer install
 ```
 
-Using the starter theme's existing `composer.json` file currently works slightly different and will install Timber to your site's `plugins` directory and will need to be activated via `wp-admin/plugins.php` rather than using Composer's autoload feature.
-
-If you're not using the starter theme or your theme is not setup to pull in Composer’s autoload file, you will need to add the following at the top of your `functions.php` file: 
+If you're not using the starter theme or your theme is not setup to pull in Composer’s autoload file, you will need to add the following at the top of your `functions.php` file to load the Composer dependencies (including Timber), and initialize Timber.
 
 **functions.php**
 
 ```php
 <?php
 require_once( __DIR__ . '/vendor/autoload.php' );
-```
-
-Initialize Timber with:
-
-**functions.php**
-
-```php
-<?php
 $timber = new Timber\Timber();
 ```
 
