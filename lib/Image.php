@@ -108,7 +108,7 @@ class Image extends Attachment {
 
 	/**
 	 * Get a PHP array with pathinfo() info from the file
-	 * @deprecated 2.0.0 Functionality will no longer be supported in future releases.
+	 * @deprecated 2.0.0, functionality will no longer be supported in future releases.
 	 * @return array
 	 */
 	public function get_pathinfo() {
@@ -122,7 +122,7 @@ class Image extends Attachment {
 
 	/**
 	 * Processes an image's dimensions.
-	 * @deprecated 2.0.0 use `{{ image.width }}` or `{{ image.height }}` in Twig.
+	 * @deprecated 2.0.0, use `{{ image.width }}` or `{{ image.height }}` in Twig
 	 * @internal
 	 * @param string $dim
 	 * @return array|int
@@ -146,7 +146,7 @@ class Image extends Attachment {
 	}
 
 	/**
-	 * @deprecated 2.0.0 use Image::get_dimension_loaded
+	 * @deprecated 2.0.0, use Image::get_dimension_loaded
 	 * @internal
 	 * @param string|null $dim
 	 * @return array|int
@@ -165,7 +165,7 @@ class Image extends Attachment {
 	}
 
 	/**
-	 * @deprecated 2.0.0 use Image::meta to retrieve specific fields
+	 * @deprecated 2.0.0, use Image::meta to retrieve specific fields
 	 * @return array
 	 */
 	protected function get_post_custom( $iid ) {
