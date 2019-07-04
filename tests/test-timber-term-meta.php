@@ -6,16 +6,28 @@ use Timber\Term;
  * Class TestTimberTermMeta
  */
 class TestTimberTermMeta extends Timber_UnitTestCase {
-	function testPreGetMetaValuesDisableFetch(){
+	/**
+	 * Function hit helper.
+	 *
+	 * @var bool
+	 */
+	protected $is_get_term_meta_hit;
+
+	function testPreGetMetaValuesDisableFetch() {
+		$this->is_get_term_meta_hit = false;
+
 		add_filter( 'timber/term/pre_get_meta_values', '__return_false' );
+		add_filter( 'get_term_metadata', function( $value, $object_id, $meta_key ) {
+			if ( empty( $meta_key ) ) {
+				$this->is_get_term_meta_hit = true;
+			}
 
+			return $value;
+		}, 10, 3 );
 		$term_id = $this->factory->term->create();
+		$term    = new Term( $term_id );
 
-		update_term_meta( $term_id, 'hidden_value', 'Super secret value' );
-
-		$term = new Term( $term_id );
-
-		$this->assertEquals( null, $term->raw_meta( 'hidden_value' ) );
+		$this->assertEquals( false, $this->is_get_term_meta_hit );
 
 		remove_filter( 'timber/term/pre_get_meta_values', '__return_false' );
 	}

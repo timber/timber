@@ -6,21 +6,34 @@ use Timber\Post;
  * Class TestTimberPostMeta
  */
 class TestTimberPostMeta extends Timber_UnitTestCase {
-	function testPreGetMetaValuesDisableFetch(){
+	/**
+	 * Function hit helper.
+	 *
+	 * @var bool
+	 */
+	protected $is_get_post_meta_hit;
+
+	function testPreGetMetaValuesDisableFetch() {
+		$this->is_get_post_meta_hit = false;
+
 		add_filter( 'timber/post/pre_get_meta_values', '__return_false' );
+		add_filter( 'get_post_metadata', function( $value, $object_id, $meta_key ) {
+			if ( empty( $meta_key ) ) {
+				$this->is_get_post_meta_hit = true;
+			}
+
+			return $value;
+		}, 10, 3 );
 
 		$post_id = $this->factory->post->create();
-
-		update_post_meta( $post_id, 'hidden_value', 'Super secret value' );
-
 		$post = new Post( $post_id );
 
-		$this->assertEquals( null, $post->raw_meta( 'hidden_value' ) );
+		$this->assertEquals( false, $this->is_get_post_meta_hit );
 
 		remove_filter( 'timber/post/pre_get_meta_values', '__return_false' );
 	}
 
-	function testPreGetMetaValuesCustomFetch(){
+	function testPreGetMetaValuesCustomFetch() {
 		$callable = function( $customs, $pid, $post ) {
 			$key = 'critical_value';
 
