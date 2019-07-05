@@ -548,7 +548,7 @@ class Timber {
 		 *
 		 * @param string $output
 		 */
-		$output = apply_filters( 'timber/compile/output', $output );
+		$output = apply_filters( 'timber/compile/result', $output );
 
 		/**
 		 * Fires after a Twig template was compiled and before the compiled data
@@ -630,7 +630,7 @@ class Timber {
 		 *
 		 * @see \Timber\Timber::fetch()
 		 * @since 0.16.7
-		 * @deprecated 2.0.0 use timber/compile/output
+		 * @deprecated 2.0.0 use timber/compile/result
 		 *
 		 * @param string $output The compiled output.
 		 */
@@ -638,7 +638,7 @@ class Timber {
 			'timber_compile_result',
 			array( $output ),
 			'2.0.0',
-			'timber/compile/output'
+			'timber/compile/result'
 		);
 
 		return $output;
@@ -666,7 +666,7 @@ class Timber {
 	 * @return bool|string The echoed output.
 	 */
 	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
-		$output = self::fetch($filenames, $data, $expires, $cache_mode);
+		$output = self::compile($filenames, $data, $expires, $cache_mode);
 		echo $output;
 	}
 
