@@ -540,7 +540,8 @@ class Timber {
 		}
 
 		/**
-		 * Replaces the depraceted `timber_compile_result`.
+		 * Filters the compiled result before it is returned in `Timber::compile()`.
+		 *
 		 * It adds the posibility to filter the output ready for render.
 		 *
 		 * @since 2.0.0
