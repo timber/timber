@@ -10,6 +10,8 @@ menu:
 
 You can install Timber through [Composer](https://getcomposer.org/download/).
 
+Run the following Composer command from within your theme's root directory:
+
 ```shell
 composer require timber/timber
 ```
@@ -24,20 +26,20 @@ If your theme or project is not already set up to pull in Composer’s autoload 
 <?php
 // Load Composer dependencies.
 require_once __DIR__ . '/vendor/autoload.php';
-```
 
-And then, you need to initialize Timber with:
-
-**functions.php**
-
-```php
-<?php
+// Initialize Timber
 new Timber\Timber();
 ```
 
 ## Use the starter theme
 
-The [starter theme](https://github.com/timber/starter-theme) is for starting a project from scratch. You can also use Timber in an existing theme.
+The [starter theme](https://github.com/timber/starter-theme) is for starting a project from scratch (you can also use Timber in an existing theme).
+
+A `composer.json` file is already included with the starter theme, so you can run the following command to install Timber:
+
+```shell
+composer install
+```
 
 ### Navigate to your WordPress themes directory
 
