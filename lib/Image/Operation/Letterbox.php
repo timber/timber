@@ -11,13 +11,19 @@ use Timber\Image\Operation as ImageOperation;
  * so that no part of the image is cropped or stretched.
  *
  * Arguments:
- * - width of new image
+ * - array of parameters or width of new image
  * - height of new image
  * - color of padding
+ *
+ * @example
+ * ```twig
+ * {{ Image(post.hero_image)|letterbox('width':500,'height':500,'color':'#ff0000') }}
+ * ```
  */
 class Letterbox extends ImageOperation {
 	/**
-	 * Array of parameters (**w** image width, **h** image height, **color** image padding bands color)
+	 * Array of parameters (**w** or **width** image width, **h** or **height** image height,
+	 * **color** image padding bands color)
 	 * or image width when integer.
 	 *
 	 * @var array|integer
@@ -45,11 +51,24 @@ class Letterbox extends ImageOperation {
 	 * @param    string    $color              Hex string, for color of padding bands.
 	 */
 	public function __construct( $parameters_or_w, $h, $color ) {
-		if ( is_array($parameters_or_w) ) {
-			$args = wp_parse_args($parameters_or_w);
+		if ( is_array( $parameters_or_w ) ) {
+			$args = wp_parse_args( $parameters_or_w );
 
-			$this->w = $args['w'];
-			$this->h = $args['h'];
+			if ( isset( $args['w'] ) ) {
+				$width = $args['w'];
+			} elseif ( $args['width'] ) {
+				$width = $args['width'];
+			}
+
+			if ( isset( $args['h'] ) ) {
+				$width = $args['h'];
+			} elseif ( $args['height'] ) {
+				$width = $args['height'];
+			}
+
+			$this->w = $width;
+			$this->h = $height;
+
 			$this->color = $args['color'];
 		} else {
 			$this->w = $parameters_or_w;

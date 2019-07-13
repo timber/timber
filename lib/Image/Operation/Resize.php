@@ -11,14 +11,20 @@ use Timber\Image\Operation as ImageOperation;
  * then cropping to respect new ratio.
  *
  * Arguments:
- * - width of new image
+ * - array of parameters or width of new image
  * - height of new image
  * - crop method
+ *
+ * @example
+ * ```twig
+ * {{ Image(post.hero_image)|resize('width':500,'height':500,'crop':'center') }}
+ * ```
  */
 class Resize extends ImageOperation {
 
 	/**
-	 * Array of parameters (**w** image width, **h** image height, **crop** image cropping)
+	 * Array of parameters (**w** or **width** image width, **h** or **height** image height,
+	 * **crop** image cropping)
 	 * or image width when integer.
 	 *
 	 * @var array|integer
@@ -51,15 +57,29 @@ class Resize extends ImageOperation {
 
 		$allowed_crop_positions = array( 'default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center' );
 
-		if ( is_array($parameters_or_w) ) {
-			$args = wp_parse_args($parameters_or_w, array(
-				'crop' => '',
-			));
+		if ( is_array( $parameters_or_w ) ) {
+			$args = wp_parse_args( $parameters_or_w,
+				array(
+					'crop' => '',
+				)
+			);
 
-			$this->w = $args['w'];
-			$this->h = $args['h'];
+			if( isset( $args['w'] ) ) {
+				$width = $args['w'];
+			} elseif ( $args['width'] ) {
+				$width = $args['width'];
+			}
 
-			if ( false !== $args['crop'] && ! in_array($args['crop'], $allowed_crop_positions) ) {
+			if ( isset( $args['h'] ) ) {
+				$width = $args['h'];
+			} elseif ( $args['height'] ) {
+				$width = $args['height'];
+			}
+
+			$this->w = $width;
+			$this->h = $height;
+
+			if ( false !== $args['crop'] && ! in_array( $args['crop'], $allowed_crop_positions ) ) {
 				$args['crop'] = $allowed_crop_positions[0];
 			}
 			$this->crop = $args['crop'];
@@ -68,7 +88,7 @@ class Resize extends ImageOperation {
 			$this->h = $h;
 
 			// Sanitize crop position.
-			if ( false !== $crop && ! in_array($crop, $allowed_crop_positions) ) {
+			if ( false !== $crop && ! in_array( $crop, $allowed_crop_positions ) ) {
 				$crop = $allowed_crop_positions[0];
 			}
 			$this->crop = $crop;
