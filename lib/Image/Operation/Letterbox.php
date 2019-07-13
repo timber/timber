@@ -61,9 +61,9 @@ class Letterbox extends ImageOperation {
 			}
 
 			if ( isset( $args['h'] ) ) {
-				$width = $args['h'];
+				$height = $args['h'];
 			} elseif ( $args['height'] ) {
-				$width = $args['height'];
+				$height = $args['height'];
 			}
 
 			$this->w = $width;

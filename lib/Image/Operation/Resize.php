@@ -64,16 +64,16 @@ class Resize extends ImageOperation {
 				)
 			);
 
-			if( isset( $args['w'] ) ) {
+			if ( isset( $args['w'] ) ) {
 				$width = $args['w'];
 			} elseif ( $args['width'] ) {
 				$width = $args['width'];
 			}
 
 			if ( isset( $args['h'] ) ) {
-				$width = $args['h'];
+				$height = $args['h'];
 			} elseif ( $args['height'] ) {
-				$width = $args['height'];
+				$height = $args['height'];
 			}
 
 			$this->w = $width;
