@@ -58,7 +58,7 @@ class Theme extends Core {
 
 	/**
 	 * @api
-	 * @var array the slug of the theme (ex: `my-super-theme`)
+	 * @var array return an array of theme information (ex: author, author URI)
 	 */
 	public $meta;
 
