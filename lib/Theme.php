@@ -102,10 +102,10 @@ class Theme extends Core {
 		$this->uri = $this->theme->get_template_directory_uri();
 
 		$this->meta = [
-			'ThemeURI' => $this->theme->get('ThemeURI'),
-			'Desc' => $this->theme->get('Description'),
-			'Author' => $this->theme->get('Author'),
-			'AuthorURI' => $this->theme->get('AuthorURI')
+			'theme_uri' => $this->theme->get('ThemeURI'),
+			'desc' => $this->theme->get('Description'),
+			'author' => $this->theme->get('Author'),
+			'author_uri' => $this->theme->get('AuthorURI')
 		];
 
 		if ( $this->theme->parent()) {
