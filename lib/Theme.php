@@ -57,6 +57,12 @@ class Theme extends Core {
 	public $uri;
 
 	/**
+	 * @api
+	 * @var array the slug of the theme (ex: `my-super-theme`)
+	 */
+	public $meta;
+
+	/**
 	 * @var WP_Theme the underlying WordPress native Theme object
 	 */
 	private $theme;
@@ -94,6 +100,13 @@ class Theme extends Core {
 		$this->slug = $this->theme->get_stylesheet();
 
 		$this->uri = $this->theme->get_template_directory_uri();
+
+		$this->meta = [
+			'ThemeURI' => $this->theme->get('ThemeURI'),
+			'Desc' => $this->theme->get('Description'),
+			'Author' => $this->theme->get('Author'),
+			'AuthorURI' => $this->theme->get('AuthorURI')
+		];
 
 		if ( $this->theme->parent()) {
 			$this->parent_slug = $this->theme->parent()->get_stylesheet();
