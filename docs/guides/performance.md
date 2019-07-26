@@ -103,7 +103,7 @@ if ( class_exists( 'Timber' ) ){
 }
 ```
 
-You can look in your your `/wp-content/plugins/timber/cache/twig` directory to see what these files look like.
+You can look in your `/wp-content/plugins/timber/cache/twig` directory to see what these files look like.
 
 This does not cache the _contents_ of the variables. 
 
