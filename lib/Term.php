@@ -140,110 +140,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @internal
-	 *
-	 * @param int $term_id
-	 * @return array
-	 */
-	protected function get_meta_values( $term_id ) {
-		$term_meta = array();
-
-		/**
-		 * Filters term meta data before it is fetched from the database.
-		 *
-		 * Timber loads all meta values into the term object on initialization. With this filter,
-		 * you can disable fetching the meta values through the default method, which uses
-		 * `get_term_meta()`, by returning `false` or a non-empty array.
-		 *
-		 * @example
-		 * ```php
-		 * // Disable fetching meta values.
-		 * add_filter( 'timber/term/pre_get_meta_values', '__return_false' );
-		 *
-		 * // Add your own meta data.
-		 * add_filter( 'timber/term/pre_get_meta_values', function( $term_meta, $term_id, $term ) {
-    	 *     $term_meta = array(
-		 *         'custom_data_1' => 73,
-		 *         'custom_data_2' => 274,
-		 *     );
-		 *
-		 *     return $term_meta;
-		 * }, 10, 3);
-		 * ```
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param array        $term_meta An array of custom meta values. Passing `false` or a
-		 *                              non-empty array will skip fetching the values from the
-		 *                              database and will use the filtered values instead. Default
-		 *                              `array()`.
-		 * @param int          $term_id The term ID.
-		 * @param \Timber\Term $term    The term object.
-		 */
-		$term_meta = apply_filters( 'timber/term/pre_get_meta_values', $term_meta, $term_id, $this );
-
-		// Load all meta data when it wasn’t filtered before.
-		if ( false !== $term_meta && empty( $term_meta ) ) {
-			$term_meta = get_term_meta( $term_id );
-		}
-
-		if ( ! empty( $term_meta ) ) {
-			foreach ( $term_meta as $key => $value ) {
-				if ( is_array( $value ) && 1 === count( $value ) && isset( $value[0] ) ) {
-					$value = $value[0];
-				}
-
-				$term_meta[ $key ] = maybe_unserialize( $value );
-			}
-		}
-
-		/**
-		 * Filters term meta data fetched from the database.
-		 *
-		 * Timber loads all meta values into the term object on initialization. With this filter,
-		 * you can change meta values after they were fetched from the database.
-		 *
-		 * @example
-		 * ```php
-		 * add_filter( 'timber/term/get_meta_values', function( $term_meta, $term_id, $term ) {
-		 *     if ( 123 === $term_id ) {
-		 *         // Do something special.
-		 *         $term_meta['foo'] = $term_meta['foo'] . ' bar';
-		 *     }
-		 *
-		 *     return $term_meta;
-		 * }, 10, 3 );
-		 * ```
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param array        $term_meta Custom term meta data.
-		 * @param int          $term_id   Term ID.
-		 * @param \Timber\Term $term      Term object.
-		 */
-		$term_meta = apply_filters( 'timber/term/get_meta_values', $term_meta, $term_id, $this );
-
-		/**
-		 * Filters term meta data fetched from the database.
-		 *
-		 * @deprecated 2.0.0, use `timber/term/meta`
-		 */
-		$term_meta = apply_filters_deprecated(
-			'timber_term_get_meta',
-			array( $term_meta, $term_id, $this ),
-			'2.0.0',
-			'timber/term/get_meta_values'
-		);
-
-		// Ensure proper return value.
-		if ( empty( $term_meta ) ) {
-			$term_meta = array();
-		}
-
-		return $term_meta;
-	}
-
-	/**
-	 * @internal
 	 * @param int $tid
 	 * @return mixed
 	 */
@@ -403,10 +299,11 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * Gets a term meta value.
 	 *
-	 * Returns meta information stored with a term. This will use both data stored under (old) ACF
-	 * hacks and new (WP 4.6+) where term meta has its own table. If retrieving a special ACF field
-	 * (repeater, etc.) you can use the output immediately in Twig — no further processing is
-	 * required.
+	 * Returns a meta value or all meta value for all custom fields of a term saved in the term meta
+	 * database table.
+	 *
+	 * Fetching all values is only advised during development, because it can be a big performance
+	 * impact, when all filters are applied.
 	 *
 	 * @api
 	 * @example
@@ -417,110 +314,174 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * </div>
 	 * ```
 	 *
-	 * @param string $field_name The field name for which you want to get the value.
-	 * @param array  $args       An array of arguments for getting the meta value. Third-party
-	 *                           integrations can use this argument to make their API arguments
-	 *                           available in Timber. Default empty.
-	 * @return mixed The meta field value. Null if no value could be found.
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
+	 * @param array  $args       {
+	 *      An array of arguments for getting the meta value. Third-party integrations can use this
+	 *      argument to make their API arguments available in Timber. Default empty array.
+	 *
+	 *      @type bool $apply_filters Whether to apply filtering of meta values. You can also use
+	 *                                the `raw_meta()` method as a shortcut to apply this argument.
+	 *                                Default true.
+	 * }
+	 * @return mixed The custom field value or an array of custom field valus. Null if no value
+	 *               could be found.
 	 */
 	public function meta( $field_name, $args = array() ) {
-		/**
-		 * Filters the value for a term meta field before it is fetched from the database.
-		 *
-		 * @todo  Add description, example
-		 *
-		 * @see   \Timber\Term::meta()
-		 * @since 2.0.0
-		 *
-		 * @param string       $value      The field value. Passing a non-null value will skip
-		 *                                 fetching the value from the database. Default null.
-		 * @param int          $post_id    The post ID.
-		 * @param string       $field_name The name of the meta field to get the value for.
-		 * @param \Timber\Term $term       The term object.
-		 * @param array        $args       An array of arguments.
-		 */
-		$value = apply_filters(
-			'timber/term/pre_meta',
-			null,
-			$this->ID,
-			$field_name,
-			$this,
-			$args
-		);
+		$args = wp_parse_args( $args, [
+			'apply_filters' => true,
+		] );
 
-		if ( null === $value ) {
-			$value = get_term_meta($this->ID, $field_name, true);
+		$term_meta = null;
+
+		if ( $args['apply_filters'] ) {
+			/**
+			 * Filters the value for a term meta field before it is fetched from the database.
+			 *
+			 * @example
+			 * ```php
+			 * // Disable fetching meta values.
+			 * add_filter( 'timber/term/pre_meta', '__return_false' );
+			 *
+			 * // Add your own meta data.
+			 * add_filter( 'timber/term/pre_meta', function( $term_meta, $term_id, $term ) {
+			 *     $term_meta = array(
+			 *         'custom_data_1' => 73,
+			 *         'custom_data_2' => 274,
+			 *     );
+			 *
+			 *     return $term_meta;
+			 * }, 10, 3);
+			 * ```
+			 *
+			 * @see   \Timber\Term::meta()
+			 * @since 2.0.0
+			 *
+			 * @param string       $term_meta  The field value. Passing a non-null value will skip
+			 *                                 fetching the value from the database. Default null.
+			 * @param int          $post_id    The post ID.
+			 * @param string       $field_name The name of the meta field to get the value for.
+			 * @param \Timber\Term $term       The term object.
+			 * @param array        $args       An array of arguments.
+			 */
+			$term_meta = apply_filters(
+				'timber/term/pre_meta',
+				$term_meta,
+				$this->ID,
+				$field_name,
+				$this,
+				$args
+			);
 		}
 
-		/**
-		 * Filters the value for a term meta field.
-		 *
-		 * This filter is used by the ACF Integration.
-		 *
-		 * @todo  Add description, example
-		 *
-		 * @see   \Timber\Term::meta()
-		 * @since 0.21.9
-		 *
-		 * @param mixed        $value The field value.
-		 * @param int          $term_id     The term ID.
-		 * @param string       $field_name  The name of the meta field to get the value for.
-		 * @param \Timber\Term $term        The term object.
-		 * @param array        $args        An array of arguments.
-		 */
-		$value = apply_filters(
-			'timber/term/meta',
-			$value,
-			$this->ID,
-			$field_name,
-			$this,
-			$args
-		);
+		if ( null === $term_meta ) {
+			$term_meta = get_term_meta( $this->ID, $field_name, true );
 
-		/**
-		 * Filters the value for a term meta field.
-		 *
-		 * @deprecated 2.0.0, use `timber/term/meta`
-		 */
-		$value = apply_filters_deprecated(
-			'timber/term/meta/field',
-			array( $value, $this->ID, $field_name, $this ),
-			'2.0.0',
-			'timber/term/meta'
-		);
+			if ( is_array( $term_meta ) ) {
+				if ( 1 === count( $term_meta ) && isset( $term_meta[0] ) ) {
+					// Only one value. Same as $single argument for get_term_meta().
+					$term_meta = $term_meta[0];
+				} elseif ( empty( $term_meta ) ) {
+					// Empty result.
+					$term_meta = null;
+				}
+			}
+		}
 
-		/**
-		 * Filters the value for a term meta field.
-		 *
-		 * @deprecated 2.0.0, use `timber/term/meta`
-		 */
-		$value = apply_filters_deprecated(
-			'timber_term_get_meta_field',
-			array( $value, $this->ID, $field_name, $this ),
-			'2.0.0',
-			'timber/term/meta'
-		);
+		if ( $args['apply_filters'] ) {
+			/**
+			 * Filters the value for a term meta field.
+			 *
+			 * This filter is used by the ACF Integration.
+			 *
+			 * @see   \Timber\Term::meta()
+			 * @todo  Add description, example
+			 *
+			 * @since 0.21.9
+			 *
+			 * @param mixed        $term_meta  The field value.
+			 * @param int          $term_id    The term ID.
+			 * @param string       $field_name The name of the meta field to get the value for.
+			 * @param \Timber\Term $term       The term object.
+			 * @param array        $args       An array of arguments.
+			 */
+			$term_meta = apply_filters(
+				'timber/term/meta',
+				$term_meta,
+				$this->ID,
+				$field_name,
+				$this,
+				$args
+			);
 
-		return $value;
+			/**
+			 * Filters term meta data fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/term/meta`
+			 */
+			$term_meta = apply_filters_deprecated(
+				'timber_term_get_meta',
+				array( $term_meta, $this->ID, $this ),
+				'2.0.0',
+				'timber/term/meta'
+			);
+
+			/**
+			 * Filters the value for a term meta field.
+			 *
+			 * @deprecated 2.0.0, use `timber/term/meta`
+			 */
+			$term_meta = apply_filters_deprecated(
+				'timber/term/meta/field',
+				array( $term_meta, $this->ID, $field_name, $this ),
+				'2.0.0',
+				'timber/term/meta'
+			);
+
+			/**
+			 * Filters the value for a term meta field.
+			 *
+			 * @deprecated 2.0.0, use `timber/term/meta`
+			 */
+			$term_meta = apply_filters_deprecated(
+				'timber_term_get_meta_field',
+				array( $term_meta, $this->ID, $field_name, $this ),
+				'2.0.0',
+				'timber/term/meta'
+			);
+		}
+
+		return $term_meta;
 	}
 
 	/**
 	 * Gets a term meta value directly from the database.
 	 *
-	 * Returns a raw meta value for a term that’s saved in the term meta database table. Be aware
-	 * that the value can still be filtered by plugins.
+	 * Returns a raw meta value or all raw meta values saved in the term meta database table. In
+	 * comparison to `meta()`, this function will return raw values that are not filtered by third-
+	 * party plugins.
+	 *
+	 * Fetching raw values for all custom fields will not have a big performance impact, because
+	 * WordPress gets all meta values, when the first meta value is accessed.
 	 *
 	 * @api
 	 * @since 2.0.0
-	 * @param string $field_name The field name for which you want to get the value.
-	 * @return null|mixed The meta field value. Null if no value could be found.
+	 *
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
+	 * @param array  $args       Optional. An array of args for `Term::meta()`. Default empty array.
+	 * @return null|mixed The custom field value(s). Null if no value could be found, an empty array
+	 *                    if all fields were requested but no values could be found.
 	 */
-	public function raw_meta( $field_name ) {
-		if ( isset( $this->custom[ $field_name ] ) ) {
-			return $this->custom[ $field_name ];
-		}
-
-		return null;
+	public function raw_meta( $field_name = '', $args = array() ) {
+		return $this->meta( $field_name, array_merge(
+			$args,
+			[
+				'apply_filters' => false,
+			]
+		) );
 	}
 
 	/**

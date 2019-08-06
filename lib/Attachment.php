@@ -316,7 +316,7 @@ class Attachment extends Post implements CoreInterface {
 				$image_info = array();
 			}
 
-			$meta_values = $this->get_meta_values( $attachment_id );
+			$meta_values = $this->raw_meta();
 			$post        = get_post( $attachment_id );
 
 			if ( $post ) {

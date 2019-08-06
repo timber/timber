@@ -542,121 +542,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		return $pp->length($len)->force($force)->read_more($readmore)->strip($strip)->end($end);
 	}
 
-
-	/**
-	 * Used internally to fetch the metadata fields (wp_postmeta table)
-	 * @internal
-	 *
-	 * @param int $post_id
-	 * @return array
-	 */
-	protected function get_meta_values( $post_id ) {
-		$post_meta = array();
-
-		/**
-		 * Filters post meta data before it is fetched from the database.
-		 *
-		 * Timber loads all meta values into the post object on initialization. With this filter,
-		 * you can disable fetching the meta values through the default method, which uses
-		 * `get_post_meta()`, by returning `false` or an non-empty array.
-		 *
-		 * @example
-		 * ```php
-		 * // Disable fetching meta values.
-		 * add_filter( 'timber/post/pre_get_meta_values', '__return_false' );
-		 *
-		 * // Add your own meta data.
-		 * add_filter( 'timber/post/pre_get_meta_values', function( $post_meta, $post_id, $post ) {
-    	 *     $post_meta = array(
-		 *         'custom_data_1' => 73,
-		 *         'custom_data_2' => 274,
-		 *     );
-		 *
-		 *     return $post_meta;
-		 * }, 10, 3 );
-		 * ```
-		 * @since 2.0.0
-		 *
-		 * @param array        $post_meta An array of custom meta values. Passing false or a non-empty
-		 *                                array will skip fetching the values from the database and
-		 *                                will use the filtered values instead. Default `array()`.
-		 * @param int          $post_id   The post ID.
-		 * @param \Timber\Post $post      The post object.
-		 */
-		$post_meta = apply_filters( 'timber/post/pre_get_meta_values', $post_meta, $post_id, $this );
-
-		/**
-		 * Filters post meta data before it is fetched from the database.
-		 *
-		 * @deprecated 2.0.0, use `timber/post/pre_get_meta_values`
-		 */
-		do_action_deprecated(
-			'timber_post_get_meta_pre',
-			array( $post_meta, $post_id, $this ),
-			'2.0.0',
-			'timber/post/pre_get_meta_values'
-		);
-
-		// Load all meta data when it wasn’t filtered before.
-		if ( false !== $post_meta && empty( $post_meta ) ) {
-			$post_meta = get_post_meta( $post_id );
-		}
-
-		if ( ! empty( $post_meta ) ) {
-			foreach ( $post_meta as $key => $value ) {
-				if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
-					$value = $value[0];
-				}
-				$post_meta[$key] = maybe_unserialize($value);
-			}
-		}
-
-		/**
-		 * Filters post meta data fetched from the database.
-		 *
-		 * Timber loads all meta values into the post object on initialization. With this filter,
-		 * you can change meta values after they were fetched from the database.
-		 *
-		 * @example
-		 * ```php
-		 * add_filter( 'timber/post/get_meta_values', function( $post_meta, $post_id, $post ) {
-		 *     if ( 'event' === $post->post_type ) {
-		 *         // Do something special.
-		 *         $post_meta['foo'] = $post_meta['foo'] . ' bar';
-		 *     }
-		 *
-		 *     return $post_meta;
-		 * }, 10, 3 );
-		 * ```
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param array        $post_meta Post meta data.
-		 * @param int          $post_id   The post ID.
-		 * @param \Timber\Post $post      The post object.
-		 */
-		$post_meta = apply_filters( 'timber/post/get_meta_values', $post_meta, $post_id, $this );
-
-		/**
-		 * Filters post meta data fetched from the database.
-		 *
-		 * @deprecated 2.0.0, use `timber/post/get_meta_values`
-		 */
-		$post_meta = apply_filters_deprecated(
-			'timber_post_get_meta',
-			array( $post_meta, $post_id, $this ),
-			'2.0.0',
-			'timber/post/get_meta_values'
-		);
-
-		// Ensure proper return value.
-		if ( empty( $post_meta ) ) {
-			$post_meta = array();
-		}
-
-		return $post_meta;
-	}
-
 	/**
 	 * @internal
 	 * @param int $i
@@ -910,39 +795,75 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	/**
 	 * Gets a post meta value.
 	 *
-	 * Returns a meta value for a post that’s saved in the post meta database table.
+	 * Returns a meta value or all meta value for all custom fields of a post saved in the post meta
+	 * database table.
+	 *
+	 * Fetching all values is only advised during development, because it can be a big performance
+	 * impact, when all filters are applied.
 	 *
 	 * @api
 	 *
-	 * @param string $field_name The field name for which you want to get the value.
-	 * @param array  $args       An array of arguments for getting the meta value. Third-party
-	 *                           integrations can use this argument to make their API arguments
-	 *                           available in Timber. Default empty.
-	 * @return mixed The meta field value. Null if no value could be found.
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
+	 * @param array  $args       {
+	 *      An array of arguments for getting the meta value. Third-party integrations can use this
+	 *      argument to make their API arguments available in Timber. Default empty array.
+	 *
+	 *      @type bool $apply_filters Whether to apply filtering of meta values. You can also use
+	 *                                the `raw_meta()` method as a shortcut to apply this argument.
+	 *                                Default true.
+	 * }
+	 * @return mixed The custom field value or an array of custom field valus. Null if no value
+	 *               could be found.
 	 */
-	public function meta( $field_name, $args = array() ) {
-		if ( $rd = $this->get_revised_data_from_method('meta', $field_name) ) {
-			return $rd;
+	public function meta( $field_name = '', $args = array() ) {
+		$args = wp_parse_args( $args, [
+			'apply_filters' => true,
+		] );
+
+		$revised_data = $this->get_revised_data_from_method( 'meta', $field_name );
+
+		if ( $revised_data ) {
+			return $revised_data;
 		}
 
+		$post_meta = null;
+
+		if ( $args['apply_filters'] ) {
 		/**
-		 * Filters the value for a post meta field before it is fetched from the database.
+			 * Filters post meta data before it is fetched from the database.
+			 *
+			 * @example
+			 * ```php
+			 * // Disable fetching meta values.
+			 * add_filter( 'timber/post/pre_meta', '__return_false' );
+			 *
+			 * // Add your own meta data.
+			 * add_filter( 'timber/post/pre_meta', function( $post_meta, $post_id, $post ) {
+			 *     $post_meta = array_merge( $post_meta, array(
+			 *         'custom_data_1' => 73,
+			 *         'custom_data_2' => 274,
+			 *     ) );
 		 *
-		 * @todo  Add description, example
+			 *     return $post_meta;
+			 * }, 10, 3 );
+			 * ```
 		 *
 		 * @see   \Timber\Post::meta()
 		 * @since 2.0.0
 		 *
-		 * @param string       $value      The field value. Default null. Passing a non-null value
-		 *                                 will skip fetching the value from the database.
+			 * @param string       $post_meta  The field value. Default null. Passing a non-null
+			 *                                 value will skip fetching the value from the database
+			 *                                 and will use the value from the filter instead.
 		 * @param int          $post_id    The post ID.
 		 * @param string       $field_name The name of the meta field to get the value for.
 		 * @param \Timber\Post $post       The post object.
 		 * @param array        $args       An array of arguments.
 		 */
-		$value = apply_filters(
+			$post_meta = apply_filters(
 			'timber/post/pre_meta',
-			null,
+				$post_meta,
 			$this->ID,
 			$field_name,
 			$this,
@@ -954,42 +875,71 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		 *
 		 * @deprecated 2.0.0, use `timber/post/pre_meta`
 		 */
-		$value = apply_filters_deprecated(
+			$post_meta = apply_filters_deprecated(
 			'timber_post_get_meta_field_pre',
-			array( $value, $this->ID, $field_name, $this ),
+				array( $post_meta, $this->ID, $field_name, $this ),
 			'2.0.0',
 			'timber/post/pre_meta'
 		);
 
-		if ( null === $value ) {
-			$value = get_post_meta( $this->ID, $field_name );
-			if ( is_array($value) && count($value) == 1 ) {
-				$value = $value[0];
+			/**
+			 * Filters post meta data before it is fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/post/pre_meta`
+			 */
+			do_action_deprecated(
+				'timber_post_get_meta_pre',
+				array( $post_meta, $this->ID, $this ),
+				'2.0.0',
+				'timber/post/pre_get_meta_values'
+			);
+		}
+
+		if ( null === $post_meta ) {
+			// Fetch values. Auto-fetches all values if $field_name is empty.
+			$post_meta = get_post_meta( $this->ID, $field_name );
+
+			if ( is_array( $post_meta ) ) {
+				if ( 1 === count( $post_meta ) && isset( $post_meta[0] ) ) {
+					// Only one value. Same as $single argument for get_post_meta().
+					$post_meta = $post_meta[0];
+				} elseif ( empty( $post_meta ) ) {
+					// Empty result.
+					$post_meta = null;
 			}
-			if ( is_array($value) && count($value) == 0 ) {
-				$value = null;
 			}
 		}
 
+		if ( $args['apply_filters'] ) {
 		/**
 		 * Filters the value for a post meta field.
 		 *
 		 * This filter is used by the ACF Integration.
 		 *
-		 * @todo  Add description, example
+			 * @example
+			 * ```php
+			 * add_filter( 'timber/post/meta', function( $post_meta, $post_id, $field_name, $post ) {
+			 *     if ( 'event' === $post->post_type ) {
+			 *         // Do something special.
+			 *         $post_meta['foo'] = $post_meta['foo'] . ' bar';
+			 *     }
+			 *
+			 *     return $post_meta;
+			 * }, 10, 4 );
+			 * ```
 		 *
 		 * @see   \Timber\Post::meta()
 		 * @since 2.0.0
 		 *
-		 * @param string       $value      The field value.
+			 * @param string       $post_meta  The field value.
 		 * @param int          $post_id    The post ID.
 		 * @param string       $field_name The name of the meta field to get the value for.
 		 * @param \Timber\Post $post       The post object.
 		 * @param array        $args       An array of arguments.
 		 */
-		$value = apply_filters(
+			$post_meta = apply_filters(
 			'timber/post/meta',
-			$value,
+				$post_meta,
 			$this->ID,
 			$field_name,
 			$this,
@@ -1001,34 +951,60 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		 *
 		 * @deprecated 2.0.0, use `timber/post/meta`
 		 */
-		$value = apply_filters_deprecated(
+			$post_meta = apply_filters_deprecated(
 			'timber_post_get_meta_field',
-			array( $value, $this->ID, $field_name, $this ),
+				array( $post_meta, $this->ID, $field_name, $this ),
 			'2.0.0',
 			'timber/post/meta'
 		);
 
-		$value = $this->convert($value);
-		return $value;
+			/**
+			 * Filters post meta data fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/post/meta`
+			 */
+			$post_meta = apply_filters_deprecated(
+				'timber_post_get_meta',
+				array( $post_meta, $this->ID, $this ),
+				'2.0.0',
+				'timber/post/meta'
+			);
+
+			// Maybe convert values to Timber objects.
+			$post_meta = $this->convert($post_meta);
+		}
+
+		return $post_meta;
 	}
 
 	/**
 	 * Gets a post meta value directly from the database.
 	 *
-	 * Returns a raw meta value for a post that’s saved in the post meta database table. Be aware
-	 * that the value can still be filtered by plugins.
+	 * Returns a raw meta value or all raw meta values saved in the post meta database table. In
+	 * comparison to `meta()`, this function will return raw values that are not filtered by third-
+	 * party plugins.
+	 *
+	 * Fetching raw values for all custom fields will not have a big performance impact, because
+	 * WordPress gets all meta values, when the first meta value is accessed.
 	 *
 	 * @api
 	 * @since 2.0.0
-	 * @param string $field_name The field name for which you want to get the value.
-	 * @return null|mixed The meta field value. Null if no value could be found.
+	 *
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
+	 * @param array  $args       Optional. An array of args for `Post::meta()`. Default empty array.
+	 *
+	 * @return null|mixed The meta field value(s). Null if no value could be found, an empty array
+	 *                    if all fields were requested but no values could be found.
 	 */
-	public function raw_meta( $field_name ) {
-		if ( isset( $this->custom[ $field_name ] ) ) {
-			return $this->custom[ $field_name ];
-		}
-
-		return null;
+	public function raw_meta( $field_name = '', $args = array() ) {
+		return $this->meta( $field_name, array_merge(
+			$args,
+			[
+				'apply_filters' => false,
+			]
+		) );
 	}
 
 	/**
