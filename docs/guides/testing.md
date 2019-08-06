@@ -22,18 +22,61 @@ $ cd ~/vagrant-local/www/
 $ git clone git@github.com:timber/timber.git
 ```
 
-Now install the necessary Composer files...
+### 3. Install WordPress's Development Version
+VVV no longer installs the development version of WordPress by default so we have to re-provision with it enabled. Edit `vvv-custom.yml` and find this line:
 
 ```
-$ cd timber
-$ composer install
+  wordpress-trunk:
+    skip_provisioning: true # provisioning this one takes longer, so it's disabled by default
 ```
 
-Ok, you should be ready to run tests. This is where things get interesting. You're going to login to your Vagrant virtual box to run the tests...
+Set `skip_provisioning` to `false`
+```
+  wordpress-trunk:
+    skip_provisioning: false # provisioning this one takes longer, so it's disabled by default
+```
 
-### 3. Run the tests!
+Now re-provision Vagrant
 
-Connect to your Vagrant instance trough SSH:
+```
+$ vagrant halt && vagrant up --provision
+```
+
+Warning: this one will take a while.
+
+### 4. Configure WordPress tests
+Copy `/wordpress-trunk/public_html/wp-tests-config-sample.php` to `/wordpress-trunk/public_html/wp-tests-config.php`. Assuming you're using VVV's defaults, we just need to specify how to access the database:
+
+```php
+define( 'DB_NAME', 'wordpress_unit_tests' );
+define( 'DB_USER', 'root' );
+define( 'DB_PASSWORD', 'root' );
+```
+
+### 5. Install WordPress tests
+SSH into Vagrant to install Timber's tests and run them
+
+```
+$ vagrant ssh
+```
+
+Now, navigate to where you installed Timber via Git:
+
+```
+$ cd /srv/www/timber
+```
+
+And install the tests!
+
+```
+$ bin/install-wp-tests.sh wordpress_tests root root
+```
+
+All done! Now, the fun part (and the only part you have to do in the future when writing/running tests)
+
+### 6. Run the tests!
+
+Connect to your Vagrant instance trough SSH (if you're not already):
 
 ```
 $ vagrant ssh
@@ -43,10 +86,11 @@ Now wait for it to bring you into the virtual box from the virtual environment..
 
 ```
 $ cd /srv/www/timber
+$ composer install
 $ phpunit
 ```
 
-You should see a bunch of gobbledygook across your screen (the whole process will take about 3 mins.), but we should see that WordPress is testing successfully. Hurrah! For more info, check out the [Handbook on Automated Testing](http://make.wordpress.org/core/handbook/automated-testing/).
+You should see a bunch of gobbledygook across your screen (the whole process will take about 4 mins.), but we should see that WordPress is testing successfully. Hurrah! For more info, check out the [Handbook on Automated Testing](http://make.wordpress.org/core/handbook/automated-testing/).
 
 ## Writing tests
 
