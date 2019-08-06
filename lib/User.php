@@ -88,21 +88,6 @@ class User extends Core implements CoreInterface, MetaInterface {
 	public $user_nicename;
 
 	/**
-	 * Meta values.
-	 *
-	 * With this property you can check which meta values exist for a user, but you can’t access the
-	 * values through this property. Use `{{ user.meta('field_name') }}` or
-	 * `{{ user.raw_meta('field_name') }}` to get the values for a custom field.
-	 *
-	 * @api
-	 * @since 2.0.0
-	 * @see User::meta()
-	 * @see User::raw_meta()
-	 * @var array Storage for a user’s meta data.
-	 */
-	protected $custom = array();
-
-	/**
 	 * The roles the user is part of.
 	 *
 	 * @api
@@ -169,8 +154,6 @@ class User extends Core implements CoreInterface, MetaInterface {
 		}
 		unset($this->user_pass);
 		$this->id = $this->ID;
-
-		$this->custom = $this->get_meta_values( $this->ID );
 	}
 
 	/**

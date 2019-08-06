@@ -68,18 +68,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	public $object_type = 'post';
 
 	/**
-	 * Meta values.
-	 *
-	 * With this property you can check which meta values exist on a post, but you can’t access the
-	 * values through this property. Use `{{ post.meta('field_name') }}` or
-	 * `{{ post.raw_meta('field_name') }}` to get the values for a custom field.
-	 *
-	 * @api
-	 * @var array All custom field data for the object.
-	 */
-	protected $custom = array();
-
-	/**
 	 * @var string What does this class represent in WordPress terms?
 	 */
 	public static $representation = 'post';
@@ -412,8 +400,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			global $wp_query;
 			$post_custom_id = $this->get_post_preview_id( $wp_query );
 		}
-
-		$this->custom = $this->get_meta_values( $post_custom_id );
 	}
 
 	/**
@@ -556,15 +542,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		return $pp->length($len)->force($force)->read_more($readmore)->strip($strip)->end($end);
 	}
 
-	/**
-	 * Gets the post meta data values and attaches it to the current object.
-	 *
-	 * @param int $pid A post ID.
-	 */
-	public function import_custom( $pid ) {
-		$customs = $this->get_meta_values($pid);
-		$this->import($customs);
-	}
 
 	/**
 	 * Used internally to fetch the metadata fields (wp_postmeta table)

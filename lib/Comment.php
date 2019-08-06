@@ -93,21 +93,6 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	protected $children = array();
 
 	/**
-	 * Meta values.
-	 *
-	 * With this property you can check which meta values exist on a comment, but you can’t access
-	 * the values through this property. Use `{{ comment.meta('field_name') }}` or
-	 * `{{ comment.raw_meta('field_name') }}` to get the values for a custom field.
-	 *
-	 * @api
-	 * @since 2.0.0
-	 * @see Comment::meta()
-	 * @see Comment::raw_meta()
-	 * @var array All custom field data for the object.
-	 */
-	protected $custom = array();
-
-	/**
 	 * Build a Timber\Comment
 	 *
 	 * @api
@@ -139,8 +124,6 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		$this->import($comment_data);
 		$this->ID = $this->comment_ID;
 		$this->id = $this->comment_ID;
-
-		$this->custom = $this->get_meta_values( $this->ID );
 	}
 
 	/**
