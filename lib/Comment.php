@@ -385,7 +385,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			'apply_filters' => true,
 		] );
 
-		$value = null;
+		$comment_meta = null;
 
 		if ( $args['apply_filters'] ) {
 			/**
@@ -395,15 +395,15 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			 *
 			 * @since 2.0.0
 			 *
-			 * @param string          $value      The field value. Passing a non-null value will
-			 *                                    skip fetching the value from the database. Default
-			 *                                    null.
+			 * @param string          $comment_meta The field value. Passing a non-null value will
+			 *                                      skip fetching the value from the database.
+			 *                                      Default null.
 			 * @param int             $comment_id The comment ID.
 			 * @param string          $field_name The name of the meta field to get the value for.
 			 * @param \Timber\Comment $comment    The comment object.
 			 * @param array           $args       An array of arguments.
 			 */
-			$value = apply_filters(
+			$comment_meta = apply_filters(
 				'timber/comment/pre_meta',
 				null,
 				$this->ID,
@@ -417,9 +417,9 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			 *
 			 * @deprecated 2.0.0, use `timber/comment/pre_meta`
 			 */
-			$value = apply_filters_deprecated(
+			$comment_meta = apply_filters_deprecated(
 				'timber_comment_get_meta_field_pre',
-				array( $value, $this->ID, $field_name, $this ),
+				array( $comment_meta, $this->ID, $field_name, $this ),
 				'2.0.0',
 				'timber/comment/pre_meta'
 			);
@@ -433,14 +433,14 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			 */
 			do_action_deprecated(
 				'timber_comment_get_meta_pre',
-				array( $value, $this->ID ),
+				array( $comment_meta, $this->ID ),
 				'2.0.0',
 				'timber/comment/pre_meta'
 			);
 		}
 
-		if ( null === $value ) {
-			$value = get_comment_meta( $this->ID, $field_name, true );
+		if ( null === $comment_meta ) {
+			$comment_meta = get_comment_meta( $this->ID, $field_name, true );
 
 			if ( is_array( $value ) ) {
 				if ( 1 === count( $value ) && isset( $value[0] ) ) {
@@ -461,15 +461,15 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			 *
 			 * @since 2.0.0
 			 *
-			 * @param string          $value      The field value.
+			 * @param string          $comment_meta The field value.
 			 * @param int             $comment_id The comment ID.
 			 * @param string          $field_name The name of the meta field to get the value for.
 			 * @param \Timber\Comment $comment    The comment object.
 			 * @param array           $args       An array of arguments.
 			 */
-			$value = apply_filters(
+			$comment_meta = apply_filters(
 				'timber/comment/meta',
-				$value,
+				$comment_meta,
 				$this->ID,
 				$field_name,
 				$this,
@@ -482,9 +482,9 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			 * @deprecated 2.0.0, use `timber/comment/meta`
 			 * @since 0.15.4
 			 */
-			$value = apply_filters_deprecated(
+			$comment_meta = apply_filters_deprecated(
 				'timber_comment_get_meta',
-				array( $value, $this->ID ),
+				array( $comment_meta, $this->ID ),
 				'2.0.0',
 				'timber/comment/meta'
 			);
@@ -494,15 +494,15 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			 *
 			 * @deprecated 2.0.0, use `timber/comment/meta`
 			 */
-			$value = apply_filters_deprecated(
+			$comment_meta = apply_filters_deprecated(
 				'timber_comment_get_meta_field',
-				array( $value, $this->ID, $field_name, $this ),
+				array( $comment_meta, $this->ID, $field_name, $this ),
 				'2.0.0',
 				'timber/comment/meta'
 			);
 		}
 
-		return $value;
+		return $comment_meta;
 	}
 
 	/**

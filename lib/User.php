@@ -182,12 +182,12 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 *                           available in Timber. Default empty.
 	 * @return mixed The meta field value. Null if no value could be found.
 	 */
-	public function meta( $field_name, $args = array() ) {
+	public function meta( $field_name = '', $args = array() ) {
 		$args = wp_parse_args( $args, [
 			'apply_filters' => true,
 		] );
 
-		$value = null;
+		$user_meta = null;
 
 		if ( $args['apply_filters'] ) {
 			/**
@@ -198,7 +198,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 			 *
 			 * @since 2.0.0
 			 *
-			 * @param mixed        $value      The field value. Passing a non-null value will skip
+			 * @param mixed        $user_meta  The field value. Passing a non-null value will skip
 			 *                                 fetching the value from the database, returning the
 			 *                                 filtered value instead. Default null.
 			 * @param int          $user_id    The user ID.
@@ -206,7 +206,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 			 * @param array        $args       An array of arguments.
 			 * @param \Timber\User $user       The user object.
 			 */
-			$value = apply_filters(
+			$user_meta = apply_filters(
 				'timber/user/pre_meta',
 				null,
 				$this->ID,
@@ -220,9 +220,9 @@ class User extends Core implements CoreInterface, MetaInterface {
 			 *
 			 * @deprecated 2.0.0, use `timber/user/pre_get_meta_values`
 			 */
-			$value = apply_filters_deprecated(
+			$user_meta = apply_filters_deprecated(
 				'timber_user_get_meta_pre',
-				array( $value, $this->ID, $this ),
+				array( $user_meta, $this->ID, $this ),
 				'2.0.0',
 				'timber/user/pre_meta'
 			);
@@ -232,9 +232,9 @@ class User extends Core implements CoreInterface, MetaInterface {
 			 *
 			 * @deprecated 2.0.0, use `timber/user/pre_meta`
 			 */
-			$value = apply_filters_deprecated(
+			$user_meta = apply_filters_deprecated(
 				'timber_user_get_meta_field_pre',
-				array( $value, $this->ID, $field_name, $this ),
+				array( $user_meta, $this->ID, $field_name, $this ),
 				'2.0.0',
 				'timber/user/pre_meta'
 			);
@@ -261,15 +261,15 @@ class User extends Core implements CoreInterface, MetaInterface {
 			 * @see   \Timber\User::meta()
 			 * @since 2.0.0
 			 *
-			 * @param mixed        $value      The field value.
+			 * @param mixed        $user_meta  The field value.
 			 * @param int          $user_id    The user ID.
 			 * @param string       $field_name The name of the meta field to get the value for.
 			 * @param array        $args       An array of arguments.
 			 * @param \Timber\User $user       The user object.
 			 */
-			$value = apply_filters(
+			$user_meta = apply_filters(
 				'timber/user/meta',
-				$value,
+				$user_meta,
 				$this->ID,
 				$field_name,
 				$args,
@@ -281,9 +281,9 @@ class User extends Core implements CoreInterface, MetaInterface {
 			 *
 			 * @deprecated 2.0.0, use `timber/user/meta`
 			 */
-			$value = apply_filters_deprecated(
+			$user_meta = apply_filters_deprecated(
 				'timber_user_get_meta',
-				array( $value, $this->ID, $this ),
+				array( $user_meta, $this->ID, $this ),
 				'2.0.0',
 				'timber/user/meta'
 			);
@@ -293,15 +293,15 @@ class User extends Core implements CoreInterface, MetaInterface {
 			 *
 			 * @deprecated 2.0.0, use `timber/user/meta`
 			 */
-			$value = apply_filters_deprecated(
+			$user_meta = apply_filters_deprecated(
 				'timber_user_get_meta_field',
-				array( $value, $this->ID, $field_name, $this ),
+				array( $user_meta, $this->ID, $field_name, $this ),
 				'2.0.0',
 				'timber/user/meta'
 			);
 		}
 
-		return $value;
+		return $user_meta;
 	}
 
 	/**
