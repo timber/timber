@@ -328,7 +328,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @return mixed The custom field value or an array of custom field valus. Null if no value
 	 *               could be found.
 	 */
-	public function meta( $field_name, $args = array() ) {
+	public function meta( $field_name = '', $args = array() ) {
 		$args = wp_parse_args( $args, [
 			'apply_filters' => true,
 		] );

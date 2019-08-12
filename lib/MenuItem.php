@@ -383,13 +383,15 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * ```twig
 	 * <a class="icon-{{ item.meta('icon') }}" href="{{ item.link }}">{{ item.title }}</a>
 	 * ```
-	 * @param string $field_name The meta key to get the value for.
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
 	 * @param array  $args       An array of arguments for getting the meta value. Third-party
 	 *                           integrations can use this argument to make their API arguments
 	 *                           available in Timber. Default empty.
 	 * @return mixed Whatever value is stored in the database. Null if no value could be found.
 	 */
-	public function meta( $field_name, $args = array() ) {
+	public function meta( $field_name = '', $args = array() ) {
 		if ( isset($this->$field_name) ) {
 			return $this->$field_name;
 		}
@@ -409,7 +411,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return null|mixed The meta field value. Null if no value could be found.
 	 */
-	public function raw_meta( $field_name ) {
+	public function raw_meta( $field_name = '' ) {
 		if ( is_object( $this->menu_object ) && method_exists( $this->menu_object, 'raw_meta' ) ) {
 			return $this->menu_object->raw_meta( $field_name );
 		}
