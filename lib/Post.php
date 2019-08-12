@@ -831,7 +831,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		$post_meta = null;
 
 		if ( $args['apply_filters'] ) {
-		/**
+			/**
 			 * Filters post meta data before it is fetched from the database.
 			 *
 			 * @example
@@ -845,42 +845,42 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			 *         'custom_data_1' => 73,
 			 *         'custom_data_2' => 274,
 			 *     ) );
-		 *
+			 *
 			 *     return $post_meta;
 			 * }, 10, 3 );
 			 * ```
-		 *
-		 * @see   \Timber\Post::meta()
-		 * @since 2.0.0
-		 *
+			 *
+			 * @see   \Timber\Post::meta()
+			 * @since 2.0.0
+			 *
 			 * @param string       $post_meta  The field value. Default null. Passing a non-null
 			 *                                 value will skip fetching the value from the database
 			 *                                 and will use the value from the filter instead.
-		 * @param int          $post_id    The post ID.
-		 * @param string       $field_name The name of the meta field to get the value for.
-		 * @param \Timber\Post $post       The post object.
-		 * @param array        $args       An array of arguments.
-		 */
+			 * @param int          $post_id    The post ID.
+			 * @param string       $field_name The name of the meta field to get the value for.
+			 * @param \Timber\Post $post       The post object.
+			 * @param array        $args       An array of arguments.
+			 */
 			$post_meta = apply_filters(
-			'timber/post/pre_meta',
+				'timber/post/pre_meta',
 				$post_meta,
-			$this->ID,
-			$field_name,
-			$this,
-			$args
-		);
+				$this->ID,
+				$field_name,
+				$this,
+				$args
+			);
 
-		/**
-		 * Filters the value for a post meta field before it is fetched from the database.
-		 *
-		 * @deprecated 2.0.0, use `timber/post/pre_meta`
-		 */
+			/**
+			 * Filters the value for a post meta field before it is fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/post/pre_meta`
+			 */
 			$post_meta = apply_filters_deprecated(
-			'timber_post_get_meta_field_pre',
+				'timber_post_get_meta_field_pre',
 				array( $post_meta, $this->ID, $field_name, $this ),
-			'2.0.0',
-			'timber/post/pre_meta'
-		);
+				'2.0.0',
+				'timber/post/pre_meta'
+			);
 
 			/**
 			 * Filters post meta data before it is fetched from the database.
@@ -897,25 +897,31 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 		if ( null === $post_meta ) {
 			// Fetch values. Auto-fetches all values if $field_name is empty.
-			$post_meta = get_post_meta( $this->ID, $field_name );
+			$post_meta = get_post_meta( $this->ID, $field_name, true );
 
-			if ( is_array( $post_meta ) ) {
-				if ( 1 === count( $post_meta ) && isset( $post_meta[0] ) ) {
-					// Only one value. Same as $single argument for get_post_meta().
-					$post_meta = $post_meta[0];
-				} elseif ( empty( $post_meta ) ) {
-					// Empty result.
-					$post_meta = null;
+			// Mimick $single argument when fetching all meta values.
+			if ( empty( $field_name ) ) {
+				$post_meta = array_map( function( $meta ) {
+					if ( 1 === count( $meta ) && isset( $meta[0] ) ) {
+						return $meta[0];
+					}
+
+					return $meta;
+				}, $post_meta );
 			}
+
+			// Empty result.
+			if ( empty( $post_meta ) ) {
+				$post_meta = null;
 			}
 		}
 
 		if ( $args['apply_filters'] ) {
-		/**
-		 * Filters the value for a post meta field.
-		 *
-		 * This filter is used by the ACF Integration.
-		 *
+			/**
+			 * Filters the value for a post meta field.
+			 *
+			 * This filter is used by the ACF Integration.
+			 *
 			 * @example
 			 * ```php
 			 * add_filter( 'timber/post/meta', function( $post_meta, $post_id, $field_name, $post ) {
@@ -927,36 +933,36 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			 *     return $post_meta;
 			 * }, 10, 4 );
 			 * ```
-		 *
-		 * @see   \Timber\Post::meta()
-		 * @since 2.0.0
-		 *
+			 *
+			 * @see   \Timber\Post::meta()
+			 * @since 2.0.0
+			 *
 			 * @param string       $post_meta  The field value.
-		 * @param int          $post_id    The post ID.
-		 * @param string       $field_name The name of the meta field to get the value for.
-		 * @param \Timber\Post $post       The post object.
-		 * @param array        $args       An array of arguments.
-		 */
+			 * @param int          $post_id    The post ID.
+			 * @param string       $field_name The name of the meta field to get the value for.
+			 * @param \Timber\Post $post       The post object.
+			 * @param array        $args       An array of arguments.
+			 */
 			$post_meta = apply_filters(
-			'timber/post/meta',
+				'timber/post/meta',
 				$post_meta,
-			$this->ID,
-			$field_name,
-			$this,
-			$args
-		);
+				$this->ID,
+				$field_name,
+				$this,
+				$args
+			);
 
-		/**
-		 * Filters the value for a post meta field.
-		 *
-		 * @deprecated 2.0.0, use `timber/post/meta`
-		 */
+			/**
+			 * Filters the value for a post meta field.
+			 *
+			 * @deprecated 2.0.0, use `timber/post/meta`
+			 */
 			$post_meta = apply_filters_deprecated(
-			'timber_post_get_meta_field',
+				'timber_post_get_meta_field',
 				array( $post_meta, $this->ID, $field_name, $this ),
-			'2.0.0',
-			'timber/post/meta'
-		);
+				'2.0.0',
+				'timber/post/meta'
+			);
 
 			/**
 			 * Filters post meta data fetched from the database.
@@ -1040,6 +1046,12 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @param string $field_name
 	 */
 	public function import_field( $field_name ) {
+		Helper::deprecated(
+			"Importing field data onto an object",
+			"{{ post.meta('field_name') }}",
+			'2.0.0'
+		);
+
 		$this->$field_name = $this->meta($field_name);
 	}
 

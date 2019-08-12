@@ -398,10 +398,10 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			 * @param string          $comment_meta The field value. Passing a non-null value will
 			 *                                      skip fetching the value from the database.
 			 *                                      Default null.
-			 * @param int             $comment_id The comment ID.
-			 * @param string          $field_name The name of the meta field to get the value for.
-			 * @param \Timber\Comment $comment    The comment object.
-			 * @param array           $args       An array of arguments.
+			 * @param int             $comment_id   The comment ID.
+			 * @param string          $field_name   The name of the meta field to get the value for.
+			 * @param \Timber\Comment $comment      The comment object.
+			 * @param array           $args         An array of arguments.
 			 */
 			$comment_meta = apply_filters(
 				'timber/comment/pre_meta',
@@ -442,14 +442,20 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		if ( null === $comment_meta ) {
 			$comment_meta = get_comment_meta( $this->ID, $field_name, true );
 
-			if ( is_array( $value ) ) {
-				if ( 1 === count( $value ) && isset( $value[0] ) ) {
-					// Only one value. Same as $single argument for get_comment_meta().
-					$value = $value[0];
-				} elseif ( empty( $value ) ) {
-					// Empty result.
-					$value = null;
-				}
+			// Mimick $single argument when fetching all meta values.
+			if ( empty( $field_name ) ) {
+				$comment_meta = array_map( function( $meta ) {
+					if ( 1 === count( $meta ) && isset( $meta[0] ) ) {
+						return $meta[0];
+					}
+
+					return $meta;
+				}, $comment_meta );
+			}
+
+			// Empty result.
+			if ( empty( $comment_meta ) ) {
+				$comment_meta = null;
 			}
 		}
 
@@ -462,10 +468,10 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			 * @since 2.0.0
 			 *
 			 * @param string          $comment_meta The field value.
-			 * @param int             $comment_id The comment ID.
-			 * @param string          $field_name The name of the meta field to get the value for.
-			 * @param \Timber\Comment $comment    The comment object.
-			 * @param array           $args       An array of arguments.
+			 * @param int             $comment_id   The comment ID.
+			 * @param string          $field_name   The name of the meta field to get the value for.
+			 * @param \Timber\Comment $comment      The comment object.
+			 * @param array           $args         An array of arguments.
 			 */
 			$comment_meta = apply_filters(
 				'timber/comment/meta',

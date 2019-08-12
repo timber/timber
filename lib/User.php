@@ -240,17 +240,23 @@ class User extends Core implements CoreInterface, MetaInterface {
 			);
 		}
 
-		if ( null === $value ) {
-			$value = get_user_meta( $this->ID, $field_name, true );
+		if ( null === $user_meta ) {
+			$user_meta = get_user_meta( $this->ID, $field_name, true );
 
-			if ( is_array( $value ) ) {
-				if ( 1 === count( $value ) && isset( $value[0] ) ) {
-					// Only one value. Same as $single argument for get_use_meta().
-					$value = $value[0];
-				} elseif ( empty( $value ) ) {
-					// Empty result.
-					$value = null;
-				}
+			// Mimick $single argument when fetching all meta values.
+			if ( empty( $field_name ) ) {
+				$user_meta = array_map( function( $meta ) {
+					if ( 1 === count( $meta ) && isset( $meta[0] ) ) {
+						return $meta[0];
+					}
+
+					return $meta;
+				}, $user_meta );
+			}
+
+			// Empty result.
+			if ( empty( $user_meta ) ) {
+				$user_meta = null;
 			}
 		}
 
@@ -264,16 +270,16 @@ class User extends Core implements CoreInterface, MetaInterface {
 			 * @param mixed        $user_meta  The field value.
 			 * @param int          $user_id    The user ID.
 			 * @param string       $field_name The name of the meta field to get the value for.
-			 * @param array        $args       An array of arguments.
 			 * @param \Timber\User $user       The user object.
+			 * @param array        $args       An array of arguments.
 			 */
 			$user_meta = apply_filters(
 				'timber/user/meta',
 				$user_meta,
 				$this->ID,
 				$field_name,
-				$args,
-				$this
+				$this,
+				$args
 			);
 
 			/**

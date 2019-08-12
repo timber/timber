@@ -378,14 +378,20 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		if ( null === $term_meta ) {
 			$term_meta = get_term_meta( $this->ID, $field_name, true );
 
-			if ( is_array( $term_meta ) ) {
-				if ( 1 === count( $term_meta ) && isset( $term_meta[0] ) ) {
-					// Only one value. Same as $single argument for get_term_meta().
-					$term_meta = $term_meta[0];
-				} elseif ( empty( $term_meta ) ) {
-					// Empty result.
-					$term_meta = null;
-				}
+			// Mimick $single argument when fetching all meta values.
+			if ( empty( $field_name ) ) {
+				$term_meta = array_map( function( $meta ) {
+					if ( 1 === count( $meta ) && isset( $meta[0] ) ) {
+						return $meta[0];
+					}
+
+					return $meta;
+				}, $term_meta );
+			}
+
+			// Empty result.
+			if ( empty( $term_meta ) ) {
+				$term_meta = null;
 			}
 		}
 
