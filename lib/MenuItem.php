@@ -69,8 +69,16 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 */
 	public $menu;
 
+	/**
+	 * Object ID.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @var int|null Linked object ID.
+	 */
+	public $object_id = null;
+
 	protected $_name;
-	protected $_menu_item_object_id;
 	protected $_menu_item_url;
 	protected $menu_object;
 
@@ -88,6 +96,8 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		$this->_name       = $this->name;
 		$this->name        = $this->name();
 		$this->add_class('menu-item-'.$this->ID);
+
+		$this->object_id = (int) get_post_meta( $this->ID, '_menu_item_object_id', true );
 	}
 
 	/**
@@ -164,9 +174,8 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @return mixed Whatever object (Timber\Post, Timber\Term, etc.) the menu item represents.
 	 */
 	public function master_object() {
-		if ( isset($this->custom['_menu_item_object_id']) &&
-				$this->custom['_menu_item_object_id'] ) {
-			return new $this->PostClass($this->custom['_menu_item_object_id']);
+		if ( $this->object_id ) {
+			return new $this->PostClass( $this->object_id );
 		}
 		if ( $this->menu_object ) {
 			return new $this->PostClass($this->menu_object);
