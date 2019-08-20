@@ -170,6 +170,8 @@ class Attachment extends Post implements CoreInterface {
 
 		$this->import( $attachment_info );
 
+		$this->_wp_attached_file = get_post_meta( $this->ID, '_wp_attached_file', true );
+
 		$basedir = wp_get_upload_dir();
 		$basedir = $basedir['basedir'];
 
