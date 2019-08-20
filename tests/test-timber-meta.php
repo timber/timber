@@ -20,7 +20,143 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	}
 
 	/**
-	 * Tests accessing a post meta value through magic methods.
+	 * Tests accessing all meta values instead of only one meta value.
+	 */
+	function testAllMeta() {
+		$post_id    = $this->factory->post->create();
+		$term_id    = $this->factory->term->create();
+		$user_id    = $this->factory->user->create();
+		$comment_id = $this->factory->comment->create();
+
+		update_post_meta( $post_id, 'meta1', 'Meta 1' );
+		update_post_meta( $post_id, 'meta2', 'Meta 2' );
+		update_term_meta( $term_id, 'meta1', 'Meta 1' );
+		update_term_meta( $term_id, 'meta2', 'Meta 2' );
+		update_user_meta( $user_id, 'meta1', 'Meta 1' );
+		update_user_meta( $user_id, 'meta2', 'Meta 2' );
+		update_comment_meta( $comment_id, 'meta1', 'Meta 1' );
+		update_comment_meta( $comment_id, 'meta2', 'Meta 2' );
+
+		$post    = new Post( $post_id );
+		$term    = new Term( $term_id );
+		$user    = new User( $user_id );
+		$comment = new Comment( $comment_id );
+
+		$this->assertEquals( 'Meta 1', $post->meta()['meta1'] );
+		$this->assertEquals( 'Meta 2', $post->meta()['meta2'] );
+
+		$this->assertEquals( 'Meta 1', $term->meta()['meta1'] );
+		$this->assertEquals( 'Meta 2', $term->meta()['meta2'] );
+
+		$this->assertEquals( 'Meta 1', $user->meta()['meta1'] );
+		$this->assertEquals( 'Meta 2', $user->meta()['meta2'] );
+
+		$this->assertEquals( 'Meta 1', $comment->meta()['meta1'] );
+		$this->assertEquals( 'Meta 2', $comment->meta()['meta2'] );
+	}
+
+	/**
+	 * Tests accessing all meta values instead of only one meta value.
+	 */
+	function testMetaReturnsNullWhenResultIsEmpty() {
+		$post_id    = $this->factory->post->create();
+		$term_id    = $this->factory->term->create();
+		$user_id    = $this->factory->user->create();
+		$comment_id = $this->factory->comment->create();
+
+		$post    = new Post( $post_id );
+		$term    = new Term( $term_id );
+		$user    = new User( $user_id );
+		$comment = new Comment( $comment_id );
+
+		$this->assertEquals( null, $post->meta( 'not_found' ) );
+		$this->assertEquals( null, $term->meta( 'not_found' ) );
+		$this->assertEquals( null, $user->meta( 'not_found' ) );
+		$this->assertEquals( null, $comment->meta( 'not_found' ) );
+	}
+
+	function testPreMetaFilter() {
+		$filter = function ( $meta, $object_id, $field_name, $object, $args ) {
+			if ( 'filtered_meta' === $field_name ) {
+				return 'Only I should exist.';
+			}
+
+			return $meta;
+		};
+
+		add_filter( 'timber/post/pre_meta', $filter, 10, 5 );
+		add_filter( 'timber/term/pre_meta', $filter, 10, 5 );
+		add_filter( 'timber/user/pre_meta', $filter, 10, 5 );
+		add_filter( 'timber/comment/pre_meta', $filter, 10, 5 );
+
+		$post_id    = $this->factory->post->create();
+		$term_id    = $this->factory->term->create();
+		$user_id    = $this->factory->user->create();
+		$comment_id = $this->factory->comment->create();
+
+		$post    = new Post( $post_id );
+		$term    = new Term( $term_id );
+		$user    = new User( $user_id );
+		$comment = new Comment( $comment_id );
+
+		update_post_meta( $post_id, 'filtered_meta', 'I shouldn’t exist later.' );
+		update_term_meta( $term_id, 'filtered_meta', 'I shouldn’t exist later.' );
+		update_user_meta( $user_id, 'filtered_meta', 'I shouldn’t exist later.' );
+		update_comment_meta( $comment_id, 'filtered_meta', 'I shouldn’t exist later.' );
+
+		$this->assertEquals( 'Only I should exist.', $post->meta( 'filtered_meta' ) );
+		$this->assertEquals( 'Only I should exist.', $term->meta( 'filtered_meta' ) );
+		$this->assertEquals( 'Only I should exist.', $comment->meta( 'filtered_meta' ) );
+		$this->assertEquals( 'Only I should exist.', $user->meta( 'filtered_meta' ) );
+
+		remove_filter( 'timber/post/pre_meta', $filter );
+		remove_filter( 'timber/term/pre_meta', $filter );
+		remove_filter( 'timber/user/pre_meta', $filter );
+		remove_filter( 'timber/comment/pre_meta', $filter );
+	}
+
+	function testMetaFilter() {
+		$filter = function ( $meta, $object_id, $field_name, $object, $args ) {
+			$this->assertEquals( 'name', $field_name );
+			$this->assertEquals( 'A girl has no name.', $meta );
+			$this->assertSame( $object->ID, $object_id );
+
+			return $meta;
+		};
+
+		add_filter( 'timber/post/meta', $filter, 10, 5 );
+		add_filter( 'timber/term/meta', $filter, 10, 5 );
+		add_filter( 'timber/user/meta', $filter, 10, 5 );
+		add_filter( 'timber/comment/meta', $filter, 10, 5 );
+
+		$post_id    = $this->factory->post->create();
+		$term_id    = $this->factory->term->create();
+		$user_id    = $this->factory->user->create();
+		$comment_id = $this->factory->comment->create();
+
+		$post    = new Post( $post_id );
+		$term    = new Term( $term_id );
+		$user    = new User( $user_id );
+		$comment = new Comment( $comment_id );
+
+		update_post_meta( $post_id, 'name', 'A girl has no name.' );
+		update_term_meta( $term_id, 'name', 'A girl has no name.' );
+		update_user_meta( $user_id, 'name', 'A girl has no name.' );
+		update_comment_meta( $comment_id, 'name', 'A girl has no name.' );
+
+		$this->assertEquals( 'Frank Drebin', $post->meta( 'name' ) );
+		$this->assertEquals( 'Frank Drebin', $term->meta( 'name' ) );
+		$this->assertEquals( 'Frank Drebin', $comment->meta( 'name' ) );
+		$this->assertEquals( 'Frank Drebin', $user->meta( 'name' ) );
+
+		remove_filter( 'timber/post/meta', $filter );
+		remove_filter( 'timber/term/meta', $filter );
+		remove_filter( 'timber/user/meta', $filter );
+		remove_filter( 'timber/comment/meta', $filter );
+	}
+
+	/**
+	 * Tests accessing a post meta value through the raw_meta() method.
 	 */
 	function testRawMeta() {
 		$post_id    = $this->factory->post->create();
@@ -65,7 +201,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	}
 
 	/**
-	 * Tests accessing a post meta value through magic methods.
+	 * Tests accessing an inexistent meta value through raw_meta().
 	 */
 	function testRawMetaInexistent() {
 		$post_id    = $this->factory->post->create();
@@ -105,7 +241,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	}
 
 	/**
-	 * Tests accessing a post meta value through magic methods.
+	 * Tests accessing a meta value directly through magic methods.
 	 */
 	function testMetaDirectAccess() {
 		$post_id    = $this->factory->post->create();
