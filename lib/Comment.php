@@ -443,7 +443,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			$comment_meta = get_comment_meta( $this->ID, $field_name, true );
 
 			// Mimick $single argument when fetching all meta values.
-			if ( empty( $field_name ) ) {
+			if ( empty( $field_name ) && is_array( $comment_meta ) && ! empty( $comment_meta ) ) {
 				$comment_meta = array_map( function( $meta ) {
 					if ( 1 === count( $meta ) && isset( $meta[0] ) ) {
 						return $meta[0];
@@ -455,7 +455,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 
 			// Empty result.
 			if ( empty( $comment_meta ) ) {
-				$comment_meta = null;
+				$comment_meta = empty( $field_name ) ? [] : null;
 			}
 		}
 

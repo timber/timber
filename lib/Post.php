@@ -900,7 +900,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			$post_meta = get_post_meta( $this->ID, $field_name, true );
 
 			// Mimick $single argument when fetching all meta values.
-			if ( empty( $field_name ) ) {
+			if ( empty( $field_name ) && is_array( $post_meta ) && ! empty( $post_meta ) ) {
 				$post_meta = array_map( function( $meta ) {
 					if ( 1 === count( $meta ) && isset( $meta[0] ) ) {
 						return $meta[0];
@@ -912,7 +912,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 			// Empty result.
 			if ( empty( $post_meta ) ) {
-				$post_meta = null;
+				$post_meta = empty( $field_name ) ? [] : null;
 			}
 		}
 

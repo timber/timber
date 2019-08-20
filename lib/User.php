@@ -244,7 +244,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 			$user_meta = get_user_meta( $this->ID, $field_name, true );
 
 			// Mimick $single argument when fetching all meta values.
-			if ( empty( $field_name ) ) {
+			if ( empty( $field_name ) && is_array( $user_meta ) && ! empty( $user_meta )  ) {
 				$user_meta = array_map( function( $meta ) {
 					if ( 1 === count( $meta ) && isset( $meta[0] ) ) {
 						return $meta[0];
@@ -256,7 +256,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 
 			// Empty result.
 			if ( empty( $user_meta ) ) {
-				$user_meta = null;
+				$user_meta = empty( $field_name ) ? [] : null;
 			}
 		}
 
