@@ -166,8 +166,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 */
 	public $slug;
 
-	public $_thumbnail_id;
-
 	/**
 	 * @var string Stores the PostType object for the Post
 	 */
@@ -205,6 +203,15 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		if ( 'class' === $field ) {
 			return $this->css_class();
 		}
+
+		if ( '_thumbnail_id' === $field ) {
+			Helper::deprecated(
+				"Accessing the thumbnail ID through {{ {$this->object_type}._thumbnail_id }}",
+				"{{ {$this->object_type}.thumbnail_id }}",
+				'2.0.0'
+			);
+		}
+
 		return parent::__get($field);
 	}
 
@@ -1769,6 +1776,18 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
+	 * Gets the post’s thumbnail ID.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @return false|int The default post’s ID. False if no thumbnail was defined.
+	 */
+	public function thumbnail_id() {
+		return (int) get_post_meta( $this->ID, '_thumbnail_id', true );
+	}
+
+	/**
 	 * get the featured image as a Timber/Image
 	 *
 	 * @api
@@ -1779,7 +1798,8 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @return \Timber\Image|null of your thumbnail
 	 */
 	public function thumbnail() {
-		$tid = get_post_thumbnail_id($this->ID);
+		$tid = $this->thumbnail_id();
+
 		if ( $tid ) {
 			return new $this->ImageClass($tid);
 		}

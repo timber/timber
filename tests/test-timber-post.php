@@ -982,4 +982,28 @@
 			//
 		}
 
+		function testPostThumbnailId() {
+			// Add attachment to post.
+			$post_id       = $this->factory->post->create();
+			$attachment_id = TestTimberImage::get_attachment( $post_id );
+			add_post_meta( $post_id, '_thumbnail_id', $attachment_id, true );
+
+			$post = new Timber\Post( $post_id );
+
+			$this->assertEquals( $attachment_id, $post->thumbnail_id() );
+		}
+
+		/**
+		 * @expectedDeprecated Accessing the thumbnail ID through {{ post._thumbnail_id }}
+		 */
+		function testDeprecatedPostThumbnailIdProperty() {
+			// Add attachment to post.
+			$post_id       = $this->factory->post->create();
+			$attachment_id = TestTimberImage::get_attachment( $post_id );
+			add_post_meta( $post_id, '_thumbnail_id', $attachment_id, true );
+
+			$post = new Timber\Post( $post_id );
+
+			$this->assertEquals( $attachment_id, $post->_thumbnail_id );
+		}
 	}
