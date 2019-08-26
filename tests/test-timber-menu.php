@@ -960,7 +960,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 		$menu      = new Timber\Menu();
 		$item      = $menu->items[0];
-		$object_id = (int) get_post_meta( '_menu_item_object_id', $item->ID, true );
+		$object_id = (int) get_post_meta( $item->ID, '_menu_item_object_id', true );
 
 		$this->assertEquals( $object_id, $item->object_id );
 	}
