@@ -10,6 +10,15 @@ use Timber\User;
  * Class TestTimberMeta
  */
 class TestTimberMeta extends Timber_UnitTestCase {
+	/**
+	 * Function hit helper.
+	 *
+	 * @var bool
+	 */
+	protected $is_get_post_meta_hit;
+	protected $is_get_term_meta_hit;
+	protected $is_get_comment_meta_hit;
+
 	public function setUp() {
 		parent::setUp();
 
@@ -110,6 +119,71 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		remove_filter( 'timber/term/pre_meta', $filter );
 		remove_filter( 'timber/user/pre_meta', $filter );
 		remove_filter( 'timber/comment/pre_meta', $filter );
+	}
+
+	/**
+	 * We can’t check whether a user meta function is hit, because user metadata is requested by
+	 * other functionality as well.
+	 */
+	function testNonNullReturnInPreMetaFilterDisablesDatabaseFetch() {
+		$this->is_get_post_meta_hit    = false;
+		$this->is_get_term_meta_hit    = false;
+		$this->is_get_comment_meta_hit = false;
+
+		$post_filter = function( $value ) {
+			$this->is_get_post_meta_hit = true;
+
+			return $value;
+		};
+
+		$term_filter = function( $value ) {
+			$this->is_get_term_meta_hit = true;
+
+			return $value;
+		};
+
+		$comment_filter = function( $value ) {
+			$this->is_get_comment_meta_hit = true;
+
+			return $value;
+		};
+
+		add_filter( 'timber/post/pre_meta', '__return_false' );
+		add_filter( 'timber/term/pre_meta', '__return_false' );
+		add_filter( 'timber/comment/pre_meta', '__return_false' );
+
+		add_filter( 'get_post_metadata', $post_filter );
+		add_filter( 'get_term_metadata', $term_filter );
+		add_filter( 'get_comment_metadata', $comment_filter );
+
+		$post_id    = $this->factory->post->create();
+		$term_id    = $this->factory->term->create();
+		$comment_id = $this->factory->comment->create();
+
+		$post    = new Post( $post_id );
+		$term    = new Term( $term_id );
+		$comment = new Comment( $comment_id );
+
+		$this->assertEquals( false, $this->is_get_post_meta_hit );
+		$this->assertEquals( false, $this->is_get_term_meta_hit );
+		$this->assertEquals( false, $this->is_get_comment_meta_hit );
+
+		// Run fetch.
+		$post->meta();
+		$term->meta();
+		$comment->meta();
+
+		$this->assertEquals( false, $this->is_get_post_meta_hit );
+		$this->assertEquals( false, $this->is_get_term_meta_hit );
+		$this->assertEquals( false, $this->is_get_comment_meta_hit );
+
+		remove_filter( 'timber/post/pre_meta', '__return_false' );
+		remove_filter( 'timber/term/pre_meta', '__return_false' );
+		remove_filter( 'timber/comment/pre_meta', '__return_false' );
+
+		remove_filter( 'get_post_metadata', $post_filter );
+		remove_filter( 'get_term_metadata', $term_filter );
+		remove_filter( 'get_comment_metadata', $comment_filter );
 	}
 
 	function testMetaFilter() {
