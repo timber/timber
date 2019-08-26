@@ -3,6 +3,12 @@
 use Timber\Integrations\ACF;
 
 class TestTimberIntegrationACF extends Timber_UnitTestCase {
+	public function setUp() {
+		parent::setUp();
+
+		require dirname( __FILE__ ) . '/../wp-content/plugins/advanced-custom-fields/acf.php';
+	}
+
 	function testACFInit() {
 		$acf = new ACF();
 		$this->assertInstanceOf( 'Timber\Integrations\ACF', $acf );
