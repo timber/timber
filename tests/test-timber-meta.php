@@ -55,9 +55,6 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$this->assertEquals( 'Meta 2', $comment->meta()['meta2'] );
 	}
 
-	/**
-	 * Tests accessing all meta values instead of only one meta value.
-	 */
 	function testMetaReturnsNullWhenResultIsEmpty() {
 		$post_id    = $this->factory->post->create();
 		$term_id    = $this->factory->term->create();
@@ -120,6 +117,9 @@ class TestTimberMeta extends Timber_UnitTestCase {
 			$this->assertEquals( 'name', $field_name );
 			$this->assertEquals( 'A girl has no name.', $meta );
 			$this->assertSame( $object->ID, $object_id );
+
+			// Update the meta value.
+			$meta = 'Frank Drebin';
 
 			return $meta;
 		};
