@@ -201,6 +201,48 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	}
 
 	/**
+	 * Meta values still need to fetchable through raw_meta() even when the pre_meta filter is used.
+	 */
+	function testRawMetaWhenPreMetaFilterReturnsFalse(){
+		add_filter( 'timber/post/pre_meta', '__return_false' );
+		add_filter( 'timber/term/pre_meta', '__return_false' );
+		add_filter( 'timber/user/pre_meta', '__return_false' );
+		add_filter( 'timber/comment/pre_meta', '__return_false' );
+
+		$post_id    = $this->factory->post->create();
+		$term_id    = $this->factory->term->create();
+		$user_id    = $this->factory->user->create();
+		$comment_id = $this->factory->comment->create();
+
+		update_post_meta( $post_id, 'meta_value', 'I am a meta value' );
+		update_term_meta( $term_id, 'meta_value', 'I am a meta value' );
+		update_user_meta( $user_id, 'meta_value', 'I am a meta value' );
+		update_comment_meta( $comment_id, 'meta_value', 'I am a meta value' );
+
+		$post    = new Post( $post_id );
+		$term    = new Term( $term_id );
+		$user    = new User( $user_id );
+		$comment = new Comment( $comment_id );
+
+		$this->assertEquals( 'I am a meta value', $post->raw_meta( 'meta_value' ) );
+		$this->assertEquals( false, $post->meta( 'meta_value' ) );
+
+		$this->assertEquals( 'I am a meta value', $term->raw_meta( 'meta_value' ) );
+		$this->assertEquals( false, $term->meta( 'meta_value' ) );
+
+		$this->assertEquals( 'I am a meta value', $user->raw_meta( 'meta_value' ) );
+		$this->assertEquals( false, $user->meta( 'meta_value' ) );
+
+		$this->assertEquals( 'I am a meta value', $comment->raw_meta( 'meta_value' ) );
+		$this->assertEquals( false, $comment->meta( 'meta_value' ) );
+
+		remove_filter( 'timber/post/pre_meta', '__return_false' );
+		remove_filter( 'timber/term/pre_meta', '__return_false' );
+		remove_filter( 'timber/user/pre_meta', '__return_false' );
+		remove_filter( 'timber/comment/pre_meta', '__return_false' );
+	}
+
+	/**
 	 * Tests accessing an inexistent meta value through raw_meta().
 	 */
 	function testRawMetaInexistent() {
