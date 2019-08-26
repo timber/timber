@@ -218,7 +218,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 			/**
 			 * Filters user meta data before it is fetched from the database.
 			 *
-			 * @deprecated 2.0.0, use `timber/user/pre_get_meta_values`
+			 * @deprecated 2.0.0, use `timber/user/pre_meta`
 			 */
 			$user_meta = apply_filters_deprecated(
 				'timber_user_get_meta_pre',
