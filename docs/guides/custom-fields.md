@@ -53,7 +53,7 @@ $my_custom_field = $post->raw_meta( 'my_custom_field' );
 
 ### Define your own method
 
-Sometimes you need to modify a meta value before it is returned. You can do that by [extending a Timber object](https://timber.github.io/docs/guides/extending-timber/) and defining your own method. In the following example, we set your custom `price()` method to format the price that’s saved in a custom field named `price`.
+Sometimes you need to modify a meta value before it is returned. You can do that by [extending a Timber object](https://timber.github.io/docs/guides/extending-timber/) and defining your own method. In the following example, we set a custom `price()` method to format the price that’s saved in a custom field named `price`.
 
 **PHP**
 
@@ -97,35 +97,61 @@ In PHP, you’d access the property through `$post->date` and call the `date` me
 
 Now, if you ever run into this problem, you should either use the [`meta()`](#the-meta-method) or [`raw_meta()`](#the-raw-meta-method) method.
 
-### The `$custom` property
+### Accessing all meta values
 
-The `custom` property that’s always set on an object is an array that holds the values of all the meta values from the meta database table (`wp_postmeta`, `wp_termmeta`, `wp_usermeta`or  `wp_commentmeta`, depending on the object you have at hand).
+In earlier versions of Timber, you could use the `custom` property on an object to check which meta values were set on a post, term, user or comment object.
 
-This property only acts **as a reference** for all the existing meta values. You **can’t access the values through that property**, because it’s protected. You need to use the `meta()` or `raw_meta()` method instead. So instead of doing:
-
-```twig
-{{ post.my_custom_field }}
-```
-
-You would use one of the following:
+Now, to get the values for all meta values that are set on an object, you can use `meta()` or `raw_meta()` without passing a field name.
 
 ```twig
-{{ post.meta('my_custom_field') }}
-{{ post.raw_meta('my_custom_field') }}
+{{ dump(post.meta()) }}
+{{ dump(post.raw_meta()) }}
 ```
 
-You can still use the `$custom` property to get a list of all the meta values on a post:
+This is only recommended **for development purposes**, because it might affect your performance if you always request all values.
 
-**PHP**
+### Performance
 
-```php
-var_dump( $post->custom );
-```
+You might be tempted to set variables for repeated calls to `meta()` or `raw_meta()` in Twig to save performance. This is not really necessary. Timber uses `get_post_meta()` internally, which fetches all meta values for an object from the database when the first value is requested and caches the meta values for later meta requests. The only thing you will be bypassing are a couple of filters, which usually won’t result in a big performance hit.
 
-**Twig**
+For example, in most cases it’s totally fine to use `meta()` in an if statement before using it again to display the value:
 
 ```twig
-{{ dump(post.custom) }}
+{% if book.meta('author') %}
+    <h3>Author</h3>
+    <span>{{ book.meta('author') }}</span>
+{% endif %}
+```
+
+However, you should be careful when you use custom field plugins like Advanced Custom Fields, where a lot of processing can happen in filters (like with repeaters or flexible content fields). Here, you could cache the result of the meta function either in PHP or in Twig:
+
+```twig
+{% set gear_items = post.meta('gear_items') %}
+
+{% if gear_items %}
+    <h2>Gear Items</h2>
+
+    {% for gear in gear_items %}
+        <h3>{{ gear.brand_name }}</h3>
+
+        {% for gear_feature in gear.features %}
+            <li>{{ gear_feature }}</li>
+        {% endfor %}
+    {% endfor %}
+{% endif %}
+```
+
+You might also think that you could load all meta values by not passing a field name and access all required values from there. You shouldn’t do this either, because then a lot of filters might run that you won’t need.
+
+**DON’T DO THIS**
+
+```twig
+{% set meta = book.meta() %}
+
+{% if meta.author %}
+    <h3>Author</h3>
+    <span>{{ meta.author }}</span>
+{% endif %}
 ```
 
 ## Site options

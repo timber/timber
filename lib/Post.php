@@ -898,7 +898,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 				'timber_post_get_meta_pre',
 				array( $post_meta, $this->ID, $this ),
 				'2.0.0',
-				'timber/post/pre_get_meta_values'
+				'timber/post/pre_meta'
 			);
 		}
 
