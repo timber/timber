@@ -6,6 +6,8 @@ use Timber\Term;
 use Timber\Timber;
 use Timber\User;
 
+use Timber\Integrations\ACF;
+
 /**
  * Class TestTimberMeta
  */
@@ -26,6 +28,11 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		require_once 'php/MetaTerm.php';
 		require_once 'php/MetaUser.php';
 		require_once 'php/MetaComment.php';
+
+		remove_filter( 'timber/post/pre_meta', array( ACF::class, 'post_get_meta_field' ) );
+		remove_filter( 'timber/post/meta_object_field', array( ACF::class, 'post_meta_object' ) );
+		remove_filter( 'timber/term/pre_meta', array( ACF::class, 'term_get_meta_field' ) );
+		remove_filter( 'timber/user/pre_meta', array( ACF::class, 'user_get_meta_field' ) );
 	}
 
 	/**
@@ -122,8 +129,8 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	}
 
 	/**
-	 * We can’t check whether a user meta function is hit, because user metadata is requested by
-	 * other functionality as well.
+	 * We can’t check whether a user meta function is hit, because user metadata
+	 * is requested by other functionality as well.
 	 */
 	function testNonNullReturnInPreMetaFilterDisablesDatabaseFetch() {
 		$this->is_get_post_meta_hit    = false;
