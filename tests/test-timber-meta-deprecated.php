@@ -5,10 +5,21 @@ use Timber\Post;
 use Timber\Term;
 use Timber\User;
 
+use Timber\Integrations\ACF;
+
 /**
  * Class TestTimberMeta
  */
 class TestTimberMetaDeprecated extends Timber_UnitTestCase {
+	public function setUp() {
+		parent::setUp();
+
+		remove_filter( 'timber/post/pre_meta', array( ACF::class, 'post_get_meta_field' ) );
+		remove_filter( 'timber/post/meta_object_field', array( ACF::class, 'post_meta_object' ) );
+		remove_filter( 'timber/term/pre_meta', array( ACF::class, 'term_get_meta_field' ) );
+		remove_filter( 'timber/user/pre_meta', array( ACF::class, 'user_get_meta_field' ) );
+	}
+
 	/**
 	 * @expectedDeprecated timber_post_get_meta_field_pre
 	 */
