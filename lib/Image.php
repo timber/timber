@@ -452,7 +452,7 @@ class Image extends Attachment {
 			 * see http://php.net/manual/en/internals2.opcodes.instanceof.php#109108
 			 * and https://timber.github.io/docs/guides/extending-timber/
 			 */
-			$iid = (int) $iid->thumbnail_id();
+			return (int) $iid->thumbnail_id();
 		}
 		return $iid;
 	}

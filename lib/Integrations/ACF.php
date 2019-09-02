@@ -13,6 +13,7 @@ use Timber\Helper;
  * Class used to handle integration with Advanced Custom Fields
  */
 class ACF {
+	
 	public function __construct() {
 		add_filter('timber/post/pre_meta', array( __CLASS__, 'post_get_meta_field' ), 10, 5);
 		add_filter('timber/post/meta_object_field', array( __CLASS__, 'post_meta_object' ), 10, 3);

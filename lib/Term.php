@@ -299,10 +299,10 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * Gets a term meta value.
 	 *
-	 * Returns a meta value or all meta value for all custom fields of a term saved in the term meta
-	 * database table.
+	 * Returns a meta value or all meta values for all custom fields of a term saved in the term
+	 * meta database table.
 	 *
-	 * Fetching all values is only advised during development, because it can be a big performance
+	 * Fetching all values is only advised during development, because it can have a big performance
 	 * impact, when all filters are applied.
 	 *
 	 * @api
@@ -325,7 +325,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 *                                the `raw_meta()` method as a shortcut to apply this argument.
 	 *                                Default true.
 	 * }
-	 * @return mixed The custom field value or an array of custom field valus. Null if no value
+	 * @return mixed The custom field value or an array of custom field values. Null if no value
 	 *               could be found.
 	 */
 	public function meta( $field_name = '', $args = array() ) {

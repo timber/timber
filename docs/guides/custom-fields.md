@@ -37,7 +37,7 @@ $my_custom_field = $post->meta( 'my_custom_field' );
 
 ### The `raw_meta()` method
 
-With this method, values are **raw** (directly from the database) and are **not filtered** by third-party plugins (e.g. Advanced Custom Fields).
+With this method, values are **raw** (directly from the `wp_meta` table in the database) and are **not filtered** by third-party plugins (e.g. Advanced Custom Fields).
 
 **Twig**
 
@@ -89,9 +89,9 @@ If a directly accessed property or method doesn’t exist, Timber will fall back
 
 For example, when you use a custom field that you name `date` and try to get its value through `{{ post.date }}`, it won’t work. That’s because [`date`](https://timber.github.io/docs/reference/timber-post/#date) is a method of the `Timber\Post` object that returns the date a post was published.
 
-In PHP, you’d access the property through `$post->date` and call the `date` method through `$post->date()`. But in Twig, you can call methods without using brackets. And methods take precedence over properties. Timber uses a PHP technique called [Overloading](http://de.php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members) to get meta values using PHP’s [`__get` magic method](http://php.net/manual/en/language.oop5.overloading.php#object.get) on `Timber\Post`, `Timber\Term`, `Timber\User` and `Timber\Comment` objects. This means that when you use `{{ post.date}}`, it will
+In PHP, you’d access the property through `$post->date` and call the `date` method through `$post->date()`. But in Twig, you can call methods without using parentheses. And methods take precedence over properties. Timber uses a PHP technique called [Overloading](http://de.php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members) to get meta values using PHP’s [`__get` magic method](http://php.net/manual/en/language.oop5.overloading.php#object.get) on `Timber\Post`, `Timber\Term`, `Timber\User` and `Timber\Comment` objects. This means that when you use `{{ post.date }}`, it will ...
 
-- Check if method method `date` exists. If it does, it will return what the method produces.
+- Check if method `date` exists. If it does, it will return what the method produces.
 - Otherwise, it will check if a property `date` exists. If it does, it will return its value.
 - Otherwise, it will hit the `__get()` method, which handles undefined or inaccessible properties. Timber’s `__get()` method will look for existing meta and return these.
 
@@ -112,7 +112,7 @@ This is only recommended **for development purposes**, because it might affect y
 
 ### Performance
 
-You might be tempted to set variables for repeated calls to `meta()` or `raw_meta()` in Twig to save performance. This is not really necessary. Timber uses `get_post_meta()` internally, which fetches all meta values for an object from the database when the first value is requested and caches the meta values for later meta requests. The only thing you will be bypassing are a couple of filters, which usually won’t result in a big performance hit.
+You might be tempted to set variables for repeated calls to `meta()` or `raw_meta()` in Twig to save performance. This is not really necessary. Timber uses `get_post_meta()` internally, which fetches all meta values for an object from the database when the first value is requested and caches the meta values for later meta requests. The only thing you will be bypassing are a couple of filters, which is unlikely to result in a performance savings.
 
 For example, in most cases it’s totally fine to use `meta()` in an if statement before using it again to display the value:
 
@@ -123,7 +123,7 @@ For example, in most cases it’s totally fine to use `meta()` in an if statemen
 {% endif %}
 ```
 
-However, you should be careful when you use custom field plugins like Advanced Custom Fields, where a lot of processing can happen in filters (like with repeaters or flexible content fields). Here, you could cache the result of the meta function either in PHP or in Twig:
+However, you should be careful when you use custom field plugins like Advanced Custom Fields, where a lot of processing can happen in filters (like with repeaters or flexible content fields). Here, you might want to cache the result of the meta function either in PHP or in Twig:
 
 ```twig
 {% set gear_items = post.meta('gear_items') %}
