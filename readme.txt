@@ -35,6 +35,7 @@ _Twig is the template language powering Timber; if you need a little background 
 - Fixed issue with Timber not respecting comment order #1731 #2015
 
 **Changes for Theme Developers**
+- Theme methods (theme.get and theme.display) for headers are now exposed by Timber\Theme #2051 (thanks @dtvn)
 
 = 1.10.1 =
 **Fixes and improvements**
