@@ -400,13 +400,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		}
 		$post_info = $this->get_info($pid);
 		$this->import($post_info);
-
-		$post_custom_id = $this->ID;
-
-		if ( $this->is_previewing() ) {
-			global $wp_query;
-			$post_custom_id = $this->get_post_preview_id( $wp_query );
-		}
 	}
 
 	/**
@@ -802,7 +795,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	/**
 	 * Gets a post meta value.
 	 *
-	 * Returns a meta value or all meta values for all custom fields of a post saved in the post 
+	 * Returns a meta value or all meta values for all custom fields of a post saved in the post
 	 * meta database table.
 	 *
 	 * Fetching all values is only advised during development, because it can have a big performance
