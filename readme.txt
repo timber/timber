@@ -1,9 +1,9 @@
 === Timber ===
-Contributors: jarednova, connorjburton, lggorman
+Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 4.7.12
-Tested up to: 5.2.1
-Stable tag: 1.10.1
+Tested up to: 5.2.3
+Stable tag: 1.11.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -29,6 +29,10 @@ _Twig is the template language powering Timber; if you need a little background 
 == Changelog ==
 
 = Develop (next release) =
+
+= 1.11.0 =
+**General Note**
+- If you use WPML with Timber, please upgrade to WPML 4.2.8. The WPML team has removed their included Twig version which means no more conflicts!
 
 **Fixes and improvements**
 - Fix to menu items getting incorrect classes in WPML and others #1974
