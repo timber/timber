@@ -95,7 +95,7 @@ class Theme extends Core {
 
 		$this->uri = $this->theme->get_template_directory_uri();
 
-		if ( $this->theme->parent()) {
+		if ( $this->theme->parent() ) {
 			$this->parent_slug = $this->theme->parent()->get_stylesheet();
 			$this->parent = new Theme($this->parent_slug);
 		}
@@ -135,5 +135,42 @@ class Theme extends Core {
 		return get_theme_mods();
 	}
 
+	/**
+	 * Gets a raw, unformatted theme header.
+	 * 
+	 * @api 
+	 * @see \WP_Theme::get()
+	 * @example
+	 * ```twig
+	 * {{ theme.get('Version') }}
+	 * ```
+	 *
+	 * @param string $header Name of the theme header. Name, Description, Author, Version,
+	 *                       ThemeURI, AuthorURI, Status, Tags.
+	 *
+	 * @return false|string String on success, false on failure.
+	 */
+	public function get( $header ) {
+		return $this->theme->get( $header );
+	}
+
+	/**
+	 * Gets a theme header, formatted and translated for display.
+	 *
+	 * @api
+	 * @see \WP_Theme::display()
+	 * @example
+	 * ```twig
+	 * {{ theme.display('Description') }}
+	 * ```
+	 *
+	 * @param string $header Name of the theme header. Name, Description, Author, Version,
+	 *                       ThemeURI, AuthorURI, Status, Tags.
+	 *
+	 * @return false|string
+	 */
+	public function display( $header ) {
+		return $this->theme->display( $header );
+	}
 }
 
