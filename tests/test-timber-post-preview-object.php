@@ -167,5 +167,14 @@
 			$this->assertEquals('', $str);
 		}
 
+		function testPagePreviewOnSearch() {
+			$pid = $this->factory->post->create(array('post_type' => 'page', 'post_content' => 'What a beautiful day for a ballgame!', 'post_excerpt' => ''));
+			$post = new TimberPost( $pid );
+			$template = '{{ post.preview }}';
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('What a beautiful day for a ballgame!&hellip; <a href="http://example.org/?page_id='.$pid.'" class="read-more">Read More</a>', $str);
+		}
+
+
 
 	}
