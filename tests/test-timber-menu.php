@@ -463,13 +463,21 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( '_self', $item->target() );
 	}
 
+
 	function testMenuMeta() {
-		self::_createTestMenu();
-		$menu = new Timber\Menu();
-		$items = $menu->get_items();
-		$item = $items[0];
-		$this->assertEquals( 'funke', $item->tobias );
-		$this->assertGreaterThan( 0, $item->id );
+		$term = self::_createTestMenu();
+		$menu_id = $term['term_id'];
+		add_term_meta($menu_id, 'nationality', 'Canadian');
+		$menu = new Timber\Menu($menu_id);
+		$string = Timber::compile_string('{{ menu.meta("nationality") }}', array('menu' => $menu));
+		$this->assertEquals('Canadian', $string);
+	}
+
+	function testMenuItemMetaAlt() {
+		$menu_info = $this->_createSimpleMenu();
+		$menu = new Timber\Menu($menu_info['term_id']);
+		$item = $menu->items[0];
+		$this->assertEquals('molasses', $item->meta('flood'));
 	}
 
 	function testMenuMetaSet() {

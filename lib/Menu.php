@@ -7,10 +7,9 @@ namespace Timber;
  *
  * @api
  */
-class Menu extends Core {
+class Menu extends CoreTerm {
 
 	public $MenuItemClass = 'Timber\MenuItem';
-	public $PostClass = 'Timber\Post';
 
 	/**
 	 * @api
@@ -28,25 +27,7 @@ class Menu extends Core {
 	 * @api
 	 * @var int The ID of the menu, corresponding to the wp_terms table.
 	 */
-	public $id;
-
-	/**
-	 * @api
-	 * @var int The ID of the menu, corresponding to the wp_terms table.
-	 */
-	public $ID;
-
-	/**
-	 * @api
-	 * @var int The ID of the menu, corresponding to the wp_terms table.
-	 */
 	public $term_id;
-
-	/**
-	 * @api
-	 * @var string The name of the menu (ex: `Main Navigation`).
-	 */
-	public $name;
 
 	/**
 	 * @api
