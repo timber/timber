@@ -131,6 +131,17 @@ add_filter( 'timber/twig/environment/options', function( $options ) {
 });
 ```
 
+Enabling `Timber::$cache` works best as a last step in the production process. Once enabled, any change you make to a `.twig` file (just tweaking the HTML for example) will not go live until the cache is flushed. 
+
+Note that when `WP_DEBUG` is set to `true`, changes you make to `.twig` files will be reflected on the site regardless of the `Timber::$cache` value.
+
+To flush the Twig cache you can do this:
+
+```php
+$loader = new Timber\Loader();
+$loader->clear_cache_twig();
+```
+
 ## Cache the PHP data
 
 Sometimes the most expensive parts of the operations are generating the data needed to populate the twig template. You can of course use WordPress’s default [Transient API](http://codex.wordpress.org/Transients_API) to store this data.
