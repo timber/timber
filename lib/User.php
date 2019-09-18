@@ -88,15 +88,6 @@ class User extends Core implements CoreInterface, MetaInterface {
 	public $user_nicename;
 
 	/**
-	 * Meta data.
-	 *
-	 * @api
-	 * @since 2.0.0
-	 * @var array All custom field data for the object.
-	 */
-	public $custom = array();
-
-	/**
 	 * The roles the user is part of.
 	 *
 	 * @api
@@ -163,126 +154,6 @@ class User extends Core implements CoreInterface, MetaInterface {
 		}
 		unset($this->user_pass);
 		$this->id = $this->ID;
-		$this->custom = $this->get_meta_values( $this->ID );
-		$this->import($this->custom, false, true);
-	}
-
-
-	/**
-	 * Retrieves the custom (meta) data on a user and returns it.
-	 *
-	 * @internal
-	 *
-	 * @param int $user_id
-	 * @return array
-	 */
-	protected function get_meta_values( $user_id ) {
-		$user_meta = array();
-
-		/**
-		 * Filters user meta data before it is fetched from the database.
-		 *
-		 * Timber loads all meta values into the user object on initialization. With this filter,
-		 * you can disable fetching the meta values through the default method, which uses
-		 * `get_user_meta()`, by returning `false` or a non-empty array.
-		 *
-		 * @example
-		 * ```php
-		 * // Disable fetching meta values.
-		 * add_filter( 'timber/user/pre_get_meta_values', '__return_false' );
-		 *
-		 * // Add your own meta values.
-		 * add_filter( 'timber/user/pre_get_meta_values', function( $user_meta, $user_id, $user ) {
-		 *     $user_meta = array(
-		 *         'custom_data_1' => 73,
-		 *         'custom_data_2' => 274,
-		 *     );
-		 *
-		 *     return $user_meta;
-		 * }, 10, 3 );
-		 * ```
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param array        $user_meta An array of custom meta values. Passing `false` or a
-		 *                                non-empty array will skip fetching meta values from the
-		 *                                database, returning the filtered value instead. Default
-		 *                                `array()`.
-		 * @param int          $user_id   The user ID.
-		 * @param \Timber\User $user      The user object.
-		 */
-		$user_meta = apply_filters( 'timber/user/pre_get_meta_values', $user_meta, $user_id, $this );
-
-		/**
-		 * Filters user meta data before it is fetched from the database.
-		 *
-		 * @deprecated 2.0.0, use `timber/user/pre_get_meta_values`
-		 */
-		$user_meta = apply_filters_deprecated(
-			'timber_user_get_meta_pre',
-			array( $user_meta, $user_id, $this ),
-			'2.0.0',
-			'timber/user/pre_get_meta_values'
-		);
-
-		// Load all meta data when it wasn’t filtered before.
-		if ( false !== $user_meta && empty( $user_meta ) ) {
-			$user_meta = get_user_meta($user_id);
-		}
-
-		if ( ! empty( $user_meta ) ) {
-			foreach ( $user_meta as $key => $value ) {
-				if ( is_array($value) && count($value) === 1 ) {
-					$value = $value[0];
-				}
-				$user_meta[ $key ] = maybe_unserialize($value);
-			}
-		}
-
-		/**
-		 * Filters user meta data fetched from the database.
-		 *
-		 * Timber loads all meta values into the user object on initialization. With this filter,
-		 * you can change meta values after they were fetched from the database.
-		 *
-		 * @example
-		 * ```php
-		 * add_filter( 'timber/user/get_meta_values', function( $user_meta, $user_id, $user ) {
-		 *     if ( 123 === $user_id ) {
-		 *         // Do something special.
-		 *         $user_meta['foo'] = $user_meta['foo'] . ' bar';
-		 *     }
-		 *
-		 *     return $user_meta;
-		 * }, 10, 3 );
-		 * ```
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param array        $user_meta User meta data fetched from the database.
-		 * @param int          $user_id   The user ID.
-		 * @param \Timber\User $user      The user object.
-		 */
-		$user_meta = apply_filters( 'timber/user/get_meta_values', $user_meta, $user_id, $this );
-
-		/**
-		 * Filters user meta data fetched from the database.
-		 *
-		 * @deprecated 2.0.0, use `timber/user/get_meta_values`
-		 */
-		$user_meta = apply_filters_deprecated(
-			'timber_user_get_meta',
-			array( $user_meta, $user_id, $this ),
-			'2.0.0',
-			'timber/user/get_meta_values'
-		);
-
-		// Ensure proper return value.
-		if ( empty( $user_meta ) ) {
-			$user_meta = array();
-		}
-
-		return $user_meta;
 	}
 
 	/**
@@ -309,84 +180,164 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * @param array  $args       An array of arguments for getting the meta value. Third-party
 	 *                           integrations can use this argument to make their API arguments
 	 *                           available in Timber. Default empty.
-	 * @return mixed The meta field value.
+	 * @return mixed The meta field value. Null if no value could be found.
 	 */
-	public function meta( $field_name, $args = array() ) {
-		/**
-		 * Filters a user meta field before it is fetched from the database.
-		 *
-		 * @todo Add description, example
-		 *
-		 * @see \Timber\User::meta()
-		 * @since 2.0.0
-		 *
-		 * @param mixed        $value      The field value. Passing a non-null value will skip
-		 *                                 fetching the value from the database, returning the
-		 *                                 filtered value instead. Default null.
-		 * @param int          $user_id    The user ID.
-		 * @param string       $field_name The name of the meta field to get the value for.
-		 * @param array        $args       An array of arguments.
-		 * @param \Timber\User $user       The user object.
-		 */
-		$value = apply_filters(
-			'timber/user/pre_meta',
-			null,
-			$this->ID,
-			$field_name,
-			$args,
-			$this
-		);
+	public function meta( $field_name = '', $args = array() ) {
+		$args = wp_parse_args( $args, [
+			'apply_filters' => true,
+		] );
 
-		/**
-		 * Filters a user meta field before it is fetched from the database.
-		 *
-		 * @deprecated 2.0.0, use `timber/user/pre_meta`
-		 */
-		$value = apply_filters_deprecated(
-			'timber_user_get_meta_field_pre',
-			array( $value, $this->ID, $field_name, $this ),
-			'2.0.0',
-			'timber/user/pre_meta'
-		);
+		$user_meta = null;
 
-		if ( null === $value ) {
-			$value = get_user_meta($this->ID, $field_name, true);
+		if ( $args['apply_filters'] ) {
+			/**
+			 * Filters a user meta field before it is fetched from the database.
+			 *
+			 * @see   \Timber\User::meta()
+			 * @todo  Add description, example
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param mixed        $user_meta  The field value. Passing a non-null value will skip
+			 *                                 fetching the value from the database, returning the
+			 *                                 filtered value instead. Default null.
+			 * @param int          $user_id    The user ID.
+			 * @param string       $field_name The name of the meta field to get the value for.
+			 * @param array        $args       An array of arguments.
+			 * @param \Timber\User $user       The user object.
+			 */
+			$user_meta = apply_filters(
+				'timber/user/pre_meta',
+				null,
+				$this->ID,
+				$field_name,
+				$args,
+				$this
+			);
+
+			/**
+			 * Filters user meta data before it is fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/user/pre_meta`
+			 */
+			$user_meta = apply_filters_deprecated(
+				'timber_user_get_meta_pre',
+				array( $user_meta, $this->ID, $this ),
+				'2.0.0',
+				'timber/user/pre_meta'
+			);
+
+			/**
+			 * Filters a user meta field before it is fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/user/pre_meta`
+			 */
+			$user_meta = apply_filters_deprecated(
+				'timber_user_get_meta_field_pre',
+				array( $user_meta, $this->ID, $field_name, $this ),
+				'2.0.0',
+				'timber/user/pre_meta'
+			);
 		}
 
-		/**
-		 * Filters the value for a user meta field.
-		 *
-		 * @see \Timber\User::meta()
-		 * @since 2.0.0
-		 *
-		 * @param mixed        $value      The field value.
-		 * @param int          $user_id    The user ID.
-		 * @param string       $field_name The name of the meta field to get the value for.
-		 * @param array        $args       An array of arguments.
-		 * @param \Timber\User $user       The user object.
-		 */
-		$value = apply_filters(
-			'timber/user/meta',
-			$value,
-			$this->ID,
-			$field_name,
+		if ( null === $user_meta ) {
+			$user_meta = get_user_meta( $this->ID, $field_name, true );
+
+			// Mimick $single argument when fetching all meta values.
+			if ( empty( $field_name ) && is_array( $user_meta ) && ! empty( $user_meta )  ) {
+				$user_meta = array_map( function( $meta ) {
+					if ( 1 === count( $meta ) && isset( $meta[0] ) ) {
+						return $meta[0];
+					}
+
+					return $meta;
+				}, $user_meta );
+			}
+
+			// Empty result.
+			if ( empty( $user_meta ) ) {
+				$user_meta = empty( $field_name ) ? [] : null;
+			}
+		}
+
+		if ( $args['apply_filters'] ) {
+			/**
+			 * Filters the value for a user meta field.
+			 *
+			 * @see   \Timber\User::meta()
+			 * @since 2.0.0
+			 *
+			 * @param mixed        $user_meta  The field value.
+			 * @param int          $user_id    The user ID.
+			 * @param string       $field_name The name of the meta field to get the value for.
+			 * @param \Timber\User $user       The user object.
+			 * @param array        $args       An array of arguments.
+			 */
+			$user_meta = apply_filters(
+				'timber/user/meta',
+				$user_meta,
+				$this->ID,
+				$field_name,
+				$this,
+				$args
+			);
+
+			/**
+			 * Filters user meta data fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/user/meta`
+			 */
+			$user_meta = apply_filters_deprecated(
+				'timber_user_get_meta',
+				array( $user_meta, $this->ID, $this ),
+				'2.0.0',
+				'timber/user/meta'
+			);
+
+			/**
+			 * Filters the value for a user meta field.
+			 *
+			 * @deprecated 2.0.0, use `timber/user/meta`
+			 */
+			$user_meta = apply_filters_deprecated(
+				'timber_user_get_meta_field',
+				array( $user_meta, $this->ID, $field_name, $this ),
+				'2.0.0',
+				'timber/user/meta'
+			);
+		}
+
+		return $user_meta;
+	}
+
+	/**
+	 * Gets a user meta value directly from the database.
+	 *
+	 * Returns a raw meta value or all raw meta values saved in the user meta database table. In
+	 * comparison to `meta()`, this function will return raw values that are not filtered by third-
+	 * party plugins.
+	 *
+	 * Fetching raw values for all custom fields will not have a big performance impact, because
+	 * WordPress gets all meta values, when the first meta value is accessed.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
+	 * @param array  $args       Optional. An array of args for `User::meta()`. Default empty array.
+	 *
+	 * @return null|mixed The meta field value(s). Null if no value could be found, an empty array
+	 *                    if all fields were requested but no values could be found.
+	 */
+	public function raw_meta( $field_name = '', $args = array() ) {
+		return $this->meta( $field_name, array_merge(
 			$args,
-			$this
-		);
-
-		/**
-		 * Filters the value for a user meta field.
-		 *
-		 * @deprecated 2.0.0, use `timber/user/meta`
-		 */
-		$value = apply_filters_deprecated(
-			'timber_user_get_meta_field',
-			array( $value, $this->ID, $field_name, $this ),
-			'2.0.0',
-			'timber/user/meta'
-		);
-
-		return $value;
+			[
+				'apply_filters' => false,
+			]
+		) );
 	}
 
 	/**

@@ -949,4 +949,19 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		}
 		$this->assertEquals($tmis[4]->post_title, 'People');
 	}
+
+	function testMenuItemObjectProperty() {
+		$term       = self::_createTestMenu();
+		$menu_id    = $term['term_id'];
+
+		$this->registerNavMenus( array(
+			'secondary' => $menu_id,
+		) );
+
+		$menu      = new Timber\Menu();
+		$item      = $menu->items[0];
+		$object_id = (int) get_post_meta( $item->ID, '_menu_item_object_id', true );
+
+		$this->assertEquals( $object_id, $item->object_id );
+	}
 }
