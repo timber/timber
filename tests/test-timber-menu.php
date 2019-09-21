@@ -415,13 +415,29 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://upstatement.com', $item->link() );
 	}
 
-	function testMenuMeta() {
+	function testMenuItemMetaAlt() {
+		$menu_info = $this->_createSimpleMenu();
+		$menu = new TimberMenu($menu_info['term_id']);
+		$item = $menu->items[0];
+		$this->assertEquals('molasses', $item->meta('flood'));
+	}
+
+	function testMenuItemMeta() {
 		self::_createTestMenu();
 		$menu = new TimberMenu();
 		$items = $menu->get_items();
 		$item = $items[0];
 		$this->assertEquals( 'funke', $item->tobias );
 		$this->assertGreaterThan( 0, $item->id );
+	}
+
+	function testMenuMeta() {
+		$term = self::_createTestMenu();
+		$menu_id = $term['term_id'];
+		add_term_meta($menu_id, 'nationality', 'Canadian');
+		$menu = new Timber\Menu($menu_id);
+		$string = Timber::compile_string('{{menu.meta("nationality")}}', array('menu' => $menu));
+		$this->assertEquals('Canadian', $string);
 	}
 
 	function testMenuItemWithHash() {
@@ -612,13 +628,6 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals('Child Page', $children[0]->title());
 	}
 
-	function testMenuItemMeta() {
-		$menu_info = $this->_createSimpleMenu();
-		$menu = new TimberMenu($menu_info['term_id']);
-		$item = $menu->items[0];
-		$this->assertEquals('molasses', $item->meta('flood'));
-	}
-
 	function testMenuName() {
 		self::_createTestMenu();
 		$menu = new TimberMenu();
@@ -754,4 +763,6 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		}
 		$this->assertEquals($tmis[4]->post_title, 'People');
 	}
+
+
 }
