@@ -30,6 +30,9 @@ _Twig is the template language powering Timber; if you need a little background 
 
 = Develop (next release) =
 
+**Fixes and improvements**
+- Fix resizing for images with UTF-8 characters in their filename
+
 = 1.11.0 =
 **General Note**
 - If you use WPML with Timber, please upgrade to WPML 4.2.8. The WPML team has removed their included Twig version which means no more conflicts!
