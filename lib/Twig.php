@@ -301,17 +301,17 @@ class Twig {
 		}
 
 		if ( class_exists( 'Twig\Extension\EscaperExtension' ) ) {
-			$escaper = $twig->getExtension('Twig\Extension\EscaperExtension');
-			$escaper->setEscaper('esc_url', $esc_url);
-			$escaper->setEscaper('wp_kses_post', $esc_url);
-			$escaper->setEscaper('esc_html', $esc_url);
-			$escaper->setEscaper('esc_js', $esc_url);
+			$escaperExtension = $twig->getExtension('Twig\Extension\EscaperExtension');
+			$escaperExtension->setEscaper('esc_url', $esc_url);
+			$escaperExtension->setEscaper('wp_kses_post', $esc_url);
+			$escaperExtension->setEscaper('esc_html', $esc_url);
+			$escaperExtension->setEscaper('esc_js', $esc_url);
 		} else {
-			$escaper = $twig->getExtension('Twig\Extension\CoreExtension');
-			$escaper->setEscaper('esc_url', $esc_url);
-			$escaper->setEscaper('wp_kses_post', $esc_url);
-			$escaper->setEscaper('esc_html', $esc_url);
-			$escaper->setEscaper('esc_js', $esc_url);
+			$escaperExtension = $twig->getExtension('Twig\Extension\CoreExtension');
+			$escaperExtension->setEscaper('esc_url', $esc_url);
+			$escaperExtension->setEscaper('wp_kses_post', $esc_url);
+			$escaperExtension->setEscaper('esc_html', $esc_url);
+			$escaperExtension->setEscaper('esc_js', $esc_url);
 		}
 
 		return $twig;
