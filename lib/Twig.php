@@ -298,19 +298,19 @@ class Twig {
 	public function add_timber_escapers( $twig ) {
 		$esc_url = function( \Twig\Environment $env, $string ) {
 			return esc_url( $string );
-		}
+		};
 
 		$wp_kses_post = function( \Twig\Environment $env, $string ) {
 			return wp_kses_post( $string );
-		}
+		};
 
 		$esc_html = function( \Twig\Environment $env, $string ) {
 			return esc_html( $string );
-		}
+		};
 
 		$esc_js = function( \Twig\Environment $env, $string ) {
 			return esc_js( $string );
-		}
+		};
 
 		if ( class_exists( 'Twig\Extension\EscaperExtension' ) ) {
 			$escaper_extension = $twig->getExtension('Twig\Extension\EscaperExtension');
