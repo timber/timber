@@ -243,24 +243,40 @@ class Twig {
 	 * @return \Twig\Environment
 	 */
 	public function add_timber_escapers( $twig ) {
-
-		$twig->getExtension('Twig\Extension\EscaperExtension')->setEscaper('esc_url', function( \Twig\Environment $env, $string ) {
-			return esc_url($string);
-		});
-		$twig->getExtension('Twig\Extension\EscaperExtension')->setEscaper('wp_kses_post', function( \Twig\Environment $env, $string ) {
-			return wp_kses_post($string);
-		});
-
-		$twig->getExtension('Twig\Extension\EscaperExtension')->setEscaper('esc_html', function( \Twig\Environment $env, $string ) {
-			return esc_html($string);
-		});
-
-		$twig->getExtension('Twig\Extension\EscaperExtension')->setEscaper('esc_js', function( \Twig\Environment $env, $string ) {
-			return esc_js($string);
-		});
-
+		if (class_exists('Twig\Extension\EscaperExtension')) {
+			$twig->getExtension('Twig\Extension\EscaperExtension')->setEscaper('esc_url', function( \Twig\Environment $env, $string ) {
+				return esc_url($string);
+			});
+			$twig->getExtension('Twig\Extension\EscaperExtension')->setEscaper('wp_kses_post', function( \Twig\Environment $env, $string ) {
+				return wp_kses_post($string);
+			});
+			
+			$twig->getExtension('Twig\Extension\EscaperExtension')->setEscaper('esc_html', function( \Twig\Environment $env, $string ) {
+				return esc_html($string);
+			});
+			
+			$twig->getExtension('Twig\Extension\EscaperExtension')->setEscaper('esc_js', function( \Twig\Environment $env, $string ) {
+				return esc_js($string);
+			});
+		} else {
+			$twig->getExtension('Twig\Extension\CoreExtension')->setEscaper('esc_url', function (\Twig\Environment $env, $string) {
+				return esc_url($string);
+			});
+			
+			$twig->getExtension('Twig\Extension\CoreExtension')->setEscaper('wp_kses_post', function (\Twig\Environment $env, $string) {
+				return wp_kses_post($string);
+			});
+			
+			$twig->getExtension('Twig\Extension\CoreExtension')->setEscaper('esc_html', function (\Twig\Environment $env, $string) {
+				return esc_html($string);
+			});
+			
+			$twig->getExtension('Twig\Extension\CoreExtension')->setEscaper('esc_js', function (\Twig\Environment $env, $string) {
+				return esc_js($string);
+			});
+		}
+		
 		return $twig;
-
 	}
 
 	/**
