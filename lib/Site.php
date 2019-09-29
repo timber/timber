@@ -153,7 +153,7 @@ class Site extends Core implements CoreInterface {
 	/**
 	 * Switches to the blog requested in the request
 	 *
-	 * @param string|integer|null $site_name_or_id
+	 * @param string|int|null $site_name_or_id
 	 * @return integer with the ID of the new blog
 	 */
 	protected static function switch_to_blog( $site_name_or_id ) {
@@ -167,7 +167,7 @@ class Site extends Core implements CoreInterface {
 
 	/**
 	 * @internal
-	 * @param integer $site_id
+	 * @param int $site_id
 	 */
 	protected function init_as_multisite( $site_id ) {
 		$info = get_blog_details($site_id);

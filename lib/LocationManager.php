@@ -86,7 +86,7 @@ class LocationManager {
 	 * @param int     $offset
 	 * @return string|null
 	 */
-	public static function get_calling_script_file( $offset = 0 ) {
+	public static function get_calling_script_file( int $offset = 0 ) {
 		$callers = array();
 		$backtrace = debug_backtrace();
 		foreach ( $backtrace as $trace ) {
@@ -104,7 +104,7 @@ class LocationManager {
 	 * @api
 	 * @return string
 	 */
-	public static function get_calling_script_dir( $offset = 0 ) {
+	public static function get_calling_script_dir( int $offset = 0 ) {
 		$caller = self::get_calling_script_file($offset);
 		if ( !is_null($caller) ) {
 			$pathinfo = pathinfo($caller);
@@ -158,7 +158,7 @@ class LocationManager {
 	}
 
 	/**
-	 * 
+	 *
 	 * Converts the variable to an array with the var as the sole element. Ignores if it's already an array
 	 *
 	 * @param mixed $var the variable to test and maybe convert

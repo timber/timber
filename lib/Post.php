@@ -389,7 +389,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	/**
 	 * Initializes a Post
 	 * @internal
-	 * @param integer $pid
+	 * @param int $pid
 	 */
 	protected function init( $pid = null ) {
 		if ( $pid === null ) {
@@ -424,7 +424,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * takes a mix of integer (post ID), string (post slug),
 	 * or object to return a WordPress post object from WP's built-in get_post() function
 	 * @internal
-	 * @param integer $pid
+	 * @param int $pid
 	 * @return WP_Post on success
 	 */
 	protected function prepare_post_info( $pid = 0 ) {
@@ -444,7 +444,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * Helps you find the post id regardless of whether you send a string or whatever.
 	 *
 	 * @internal
-	 * @param integer $pid number to check against.
+	 * @param int $pid number to check against.
 	 * @return integer ID number of a post
 	 */
 	protected static function check_post_id( $pid ) {
@@ -559,7 +559,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * Used internally by init, etc. to build Timber\Post object.
 	 *
 	 * @internal
-	 * @param  int|null|boolean $pid The ID to generate info from.
+	 * @param  int|null|bool $pid The ID to generate info from.
 	 * @return null|object|WP_Post|boolean
 	 */
 	protected function get_info( $pid = null ) {
@@ -1737,7 +1737,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * <h3>{{post.prev.title}}</h3>
 	 * <p>{{post.prev.preview(25)}}</p>
 	 * ```
-	 * @param string|boolean $in_same_term
+	 * @param string|bool $in_same_term
 	 * @return mixed
 	 */
 	public function prev( $in_same_term = false ) {

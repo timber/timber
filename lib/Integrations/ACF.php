@@ -13,7 +13,7 @@ use Timber\Helper;
  * Class used to handle integration with Advanced Custom Fields
  */
 class ACF {
-	
+
 	public function __construct() {
 		add_filter('timber/post/pre_meta', array( __CLASS__, 'post_get_meta_field' ), 10, 5);
 		add_filter('timber/post/meta_object_field', array( __CLASS__, 'post_meta_object' ), 10, 3);
@@ -38,7 +38,7 @@ class ACF {
 	 * @param array        $args       An array of arguments.
 	 * @return mixed|false
 	 */
-	public static function post_get_meta_field( $value, $post_id, $field_name, $post, $args ) {
+	public static function post_get_meta_field( $value, int $post_id, string $field_name, $post, array $args ) {
 		$args = wp_parse_args( $args, array(
 			'format_value' => true,
 		) );
@@ -46,7 +46,7 @@ class ACF {
 		return get_field( $field_name, $post_id, $args['format_value'] );
 	}
 
-	public static function post_meta_object( $value, $post_id, $field_name ) {
+	public static function post_meta_object( $value, int $post_id, string $field_name ) {
 		return get_field_object($field_name, $post_id);
 	}
 
@@ -60,7 +60,7 @@ class ACF {
 	 * @param array        $args       An array of arguments.
 	 * @return mixed|false
 	 */
-	public static function term_get_meta_field( $value, $term_id, $field_name, $term, $args ) {
+	public static function term_get_meta_field( $value, int $term_id, string $field_name, $term, array $args ) {
 		$args = wp_parse_args( $args, array(
 			'format_value' => true,
 		) );
@@ -93,7 +93,7 @@ class ACF {
 	 * @param array        $args       An array of arguments.
 	 * @return mixed|false
 	 */
-	public static function user_get_meta_field( $value, $user_id, $field_name, $user, $args ) {
+	public static function user_get_meta_field( $value, int $user_id, string $field_name, $user, array $args ) {
 		$args = wp_parse_args( $args, array(
 			'format_value' => true,
 		) );

@@ -96,7 +96,7 @@ class Menu extends Core {
 	 *                            supported which says how many levels of hierarchy should be
 	 *                            included in the menu. Default `0`, which is all levels.
 	 */
-	public function __construct( $slug = 0, $options = array() ) {
+	public function __construct( $slug = 0, array $options = array() ) {
 		$menu_id = false;
 		$locations = get_nav_menu_locations();
 
@@ -130,7 +130,7 @@ class Menu extends Core {
 	 * @internal
 	 * @param int $menu_id
 	 */
-	protected function init( $menu_id ) {
+	protected function init( int $menu_id ) {
 		$menu = wp_get_nav_menu_items($menu_id);
 		$locations = get_nav_menu_locations();
 
@@ -214,7 +214,7 @@ class Menu extends Core {
 	 * @param array      $locations
 	 * @return integer
 	 */
-	protected function get_menu_id_from_locations( $slug, $locations ) {
+	protected function get_menu_id_from_locations( $slug, array $locations ) {
 		if ( $slug === 0 ) {
 			$slug = $this->get_menu_id_from_terms($slug);
 		}
@@ -265,7 +265,7 @@ class Menu extends Core {
 	 * @param int   $parent_id  The parent ID to look for.
 	 * @return \Timber\MenuItem|bool A menu item. False if no parent was found.
 	 */
-	public function find_parent_item_in_menu( $menu_items, $parent_id ) {
+	public function find_parent_item_in_menu( array $menu_items, int $parent_id ) {
 		foreach ( $menu_items as &$item ) {
 			if ( $item->ID == $parent_id ) {
 				return $item;
@@ -278,7 +278,7 @@ class Menu extends Core {
 	 * @param array $items
 	 * @return array
 	 */
-	protected function order_children( $items ) {
+	protected function order_children( array $items ) {
 		$index = array();
 		$menu = array();
 		$wp_post_menu_item = null;
@@ -324,7 +324,7 @@ class Menu extends Core {
 	 * @internal
 	 * @param array $menu
 	 */
-	protected function strip_to_depth_limit ($menu, $current = 1) {
+	protected function strip_to_depth_limit (array $menu, int $current = 1) {
 		$depth = (int)$this->depth; // Confirms still int.
 		if ($depth <= 0) {
 			return $menu;
@@ -392,7 +392,7 @@ class Menu extends Core {
 	 * @return MenuItem the current `Timber\MenuItem` object, i.e. the menu item
 	 * corresponding to the current post.
 	 */
-	public function current_item( $depth = null ) {
+	public function current_item( int $depth = null ) {
 		if ( false === $this->_current_item ) {
 			// I TOLD YOU BEFORE.
 			return false;
@@ -435,7 +435,7 @@ class Menu extends Core {
 	 * @internal
 	 * @param array $items the items to traverse.
 	 */
-	private function traverse_items_for_current( $items, $depth ) {
+	private function traverse_items_for_current( array $items, int $depth ) {
 		$current 			= false;
 		$currentDepth = 1;
 		$i       			= 0;

@@ -21,7 +21,7 @@ class Admin {
 	 * @param string  $file
 	 * @return array
 	 */
-	public static function meta_links( $links, $file ) {
+	public static function meta_links( array $links, string $file ) {
 		if ( strstr($file, '/timber.php') ) {
 			unset($links[2]);
 			$links[] = '<a href="/wp-admin/plugin-install.php?tab=plugin-information&amp;plugin=timber-library&amp;TB_iframe=true&amp;width=600&amp;height=550" class="thickbox" aria-label="More information about Timber" data-title="Timber">View details</a>';
@@ -85,7 +85,7 @@ class Admin {
 	 * @param string $new_version a version string ("2.0") of what the user is potentially upgrading to.
 	 * @return string a version jump identifier compared against the current one (milestone, major or minor)
 	 */
-	public static function get_upgrade_magnitude( $current_version, $new_version ) {
+	public static function get_upgrade_magnitude( string $current_version, string $new_version ) {
 		$current_version_array = explode('.', (string) $current_version);
 		$new_version_array     = explode('.', (string) $new_version);
 		if ( $new_version_array[0] > $current_version_array[0] ) {
@@ -109,7 +109,7 @@ class Admin {
 	 * @param array  $plugin_data
 	 * @param object $r
 	 */
-	public static function in_plugin_update_message( $plugin_data, $r ) {
+	public static function in_plugin_update_message( array $plugin_data, object $r ) {
 		$current_version = $plugin_data['Version'];
 		$new_version = $plugin_data['new_version'];
 		$upgrade_magnitude = self::get_upgrade_magnitude($current_version, $new_version);

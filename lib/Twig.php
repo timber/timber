@@ -148,7 +148,7 @@ class Twig {
 	 * Function for Term or Timber\Term() within Twig
 	 * @since 1.5.1
 	 * @author @jarednova
-	 * @param integer|array $term_id the term ID to search for
+	 * @param int|array $term_id the term ID to search for
 	 * @param string        $taxonomy the taxonomy to search inside of. If sent a class name, it will use that class to support backwards compatibility
 	 * @param string        $TermClass the class to use for processing the term
 	 * @return Term|array

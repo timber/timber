@@ -18,7 +18,7 @@ class ToWebp extends ImageOperation {
 	/**
 	 * @param string $quality  ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
 	 */
-	public function __construct( $quality ) {
+	public function __construct( string $quality ) {
 		$this->quality = $quality;
 	}
 
@@ -27,7 +27,7 @@ class ToWebp extends ImageOperation {
 	 * @param   string    $src_extension    ignored
 	 * @return  string    the final filename to be used (ex: my-awesome-pic.webp)
 	 */
-	public function filename( $src_filename, $src_extension = 'webp' ) {
+	public function filename( string $src_filename, string $src_extension = 'webp' ) {
 		$new_name = $src_filename  . '.webp';
 		return $new_name;
 	}
@@ -41,7 +41,7 @@ class ToWebp extends ImageOperation {
 	 *                               (ex: /src/var/www/wp-content/uploads/my-pic.webp)
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
-	public function run( $load_filename, $save_filename ) {
+	public function run( string $load_filename, string $save_filename ) {
         if (!is_file($load_filename)) {
             return false;
         }

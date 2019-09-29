@@ -57,7 +57,7 @@ abstract class Core {
 	 *
 	 * @return mixed The value of the meta field named `$field` if truthy, `false` otherwise.
 	 */
-	public function __call( $field, $arguments ) {
+	public function __call( string $field, array $arguments ) {
 		if ( method_exists( $this, 'meta' ) && $meta_value = $this->meta( $field ) ) {
 			return $meta_value;
 		}
@@ -92,7 +92,7 @@ abstract class Core {
 	 * @return mixed The value of the meta field, or the result of invoking `$field()` as a method
 	 * with no arguments, or `false` if neither returns a truthy value.
 	 */
-	public function __get( $field ) {
+	public function __get( string $field ) {
 		if ( method_exists($this, 'meta') && $meta_value = $this->meta($field) ) {
 			return $this->$field = $meta_value;
 		}
@@ -157,7 +157,7 @@ abstract class Core {
 	 * @param string $key   The key of the meta field to update.
 	 * @param mixed  $value The new value.
 	 */
-	public function update( $key, $value ) {
+	public function update( string $key, $value ) {
 		Helper::deprecated( 'Timber\Core::update()', 'update_metadata()', '2.0.0' );
 		update_metadata($this->object_type, $this->ID, $key, $value);
 	}

@@ -64,7 +64,7 @@ class ImageHelper {
 	 *                          force file generation. Default `false`.
 	 * @return string The URL of the resized image.
 	 */
-	public static function resize( $src, $w, $h = 0, $crop = 'default', $force = false ) {
+	public static function resize( string $src, $w, int $h = 0, string $crop = 'default', bool $force = false ) {
 		if ( !is_numeric($w) && is_string($w) ) {
 			if ( $sizes = self::find_wp_dimensions($w) ) {
 				$w = $sizes['w'];
@@ -86,7 +86,7 @@ class ImageHelper {
 	 * @return false|array An array with `w` and `h` height key, corresponding to the width and the
 	 *                     height of the image.
 	 */
-	private static function find_wp_dimensions( $size ) {
+	private static function find_wp_dimensions( string $size ) {
 		global $_wp_additional_image_sizes;
 		if ( isset($_wp_additional_image_sizes[ $size ]) ) {
 			$w = $_wp_additional_image_sizes[ $size ]['width'];
@@ -109,11 +109,11 @@ class ImageHelper {
 	 * @param string  $src        URL of the file to read from.
 	 * @param float   $multiplier Optional. Factor the original dimensions should be multiplied
 	 *                            with. Default `2`.
-	 * @param boolean $force      Optional. Whether to remove any already existing result file and
+	 * @param bool $force      Optional. Whether to remove any already existing result file and
 	 *                            force file generation. Default `false`.
 	 * @return string URL to the new image.
 	 */
-	public static function retina_resize( $src, $multiplier = 2, $force = false ) {
+	public static function retina_resize( string $src, float $multiplier = 2, bool $force = false ) {
 		$op = new Operation\Retina($multiplier);
 		return self::_operate($src, $op, $force);
 	}
@@ -126,7 +126,7 @@ class ImageHelper {
 	 * @param string $file Local filepath to a file, not a URL.
 	 * @return boolean True if it’s an animated GIF, false if not.
 	 */
-	public static function is_animated_gif( $file ) {
+	public static function is_animated_gif( string $file ) {
 		if ( strpos(strtolower($file), '.gif') === false ) {
 			//doesn't have .gif, bail
 			return false;
@@ -158,7 +158,7 @@ class ImageHelper {
 	 * @param string $file_path File path to check.
 	 * @return bool True if SVG, false if not SVG or file doesn't exist.
 	 */
-	public static function is_svg( $file_path ) {
+	public static function is_svg( string $file_path ) {
 		if ( ! isset( $file_path ) || '' === $file_path || ! file_exists( $file_path ) ) {
 			return false;
 		}
@@ -199,7 +199,7 @@ class ImageHelper {
 	 * @param bool    $force
 	 * @return string
 	 */
-	public static function letterbox( $src, $w, $h, $color = false, $force = false ) {
+	public static function letterbox( string $src, int $w, int $h, string $color = false, bool $force = false ) {
 		$op = new Operation\Letterbox($w, $h, $color);
 		return self::_operate($src, $op, $force);
 	}
@@ -215,7 +215,7 @@ class ImageHelper {
 	 * @param string $bghex The hex color to use for transparent zones.
 	 * @return string The URL of the processed image.
 	 */
-	public static function img_to_jpg( $src, $bghex = '#FFFFFF', $force = false ) {
+	public static function img_to_jpg( string $src, string $bghex = '#FFFFFF', bool $force = false ) {
 		$op = new Operation\ToJpg($bghex);
 		return self::_operate($src, $op, $force);
 	}
@@ -233,7 +233,7 @@ class ImageHelper {
 	 * @return string The URL of the processed image. If webp is not supported, a jpeg image will be
 	 *                        generated.
 	 */
-	public static function img_to_webp( $src, $quality = 80, $force = false ) {
+	public static function img_to_webp( string $src, int $quality = 80, bool $force = false ) {
 		$op = new Operation\ToWebp($quality);
 		return self::_operate($src, $op, $force);
 	}
@@ -246,7 +246,7 @@ class ImageHelper {
 	 * @since 1.5.0
 	 * @param int   $post_id An attachment ID.
 	 */
-	public static function delete_attachment( $post_id ) {
+	public static function delete_attachment( int $post_id ) {
 		self::_delete_generated_if_image($post_id);
 	}
 
@@ -258,7 +258,7 @@ class ImageHelper {
 	 * @param int   $post_id  An attachment ID.
 	 * @return array
 	 */
-	public static function generate_attachment_metadata( $metadata, $post_id ) {
+	public static function generate_attachment_metadata( array $metadata, int $post_id ) {
 		self::_delete_generated_if_image($post_id);
 		return $metadata;
 	}
@@ -272,7 +272,7 @@ class ImageHelper {
 	 * @param array $arr
 	 * @return array
 	 */
-	public static function add_relative_upload_dir_key( $arr ) {
+	public static function add_relative_upload_dir_key( array $arr ) {
 		$arr['relative'] = str_replace(self::$home_url, '', $arr['baseurl']);
 		return $arr;
 	}
@@ -282,7 +282,7 @@ class ImageHelper {
 	 *
 	 * @param int $post_id An attachment ID.
 	 */
-	public static function _delete_generated_if_image( $post_id ) {
+	public static function _delete_generated_if_image( int $post_id ) {
 		if ( wp_attachment_is_image($post_id) ) {
 			$attachment = new Image($post_id);
 			if ( $attachment->file_loc ) {
@@ -297,7 +297,7 @@ class ImageHelper {
 	 * @param string $local_file ex: /var/www/wp-content/uploads/2015/my-pic.jpg
 	 *                           or: http://example.org/wp-content/uploads/2015/my-pic.jpg
 	 */
-	static function delete_generated_files( $local_file ) {
+	static function delete_generated_files( string $local_file ) {
 		if ( URLHelper::is_absolute($local_file) ) {
 			$local_file = URLHelper::url_to_file_system($local_file);
 		}
@@ -326,7 +326,7 @@ class ImageHelper {
 	 * @param string  $search_pattern Pattern of files to pluck from.
 	 * @param string  $match_pattern  Pattern of files to go forth and delete.
 	 */
-	protected static function process_delete_generated_files( $filename, $ext, $dir, $search_pattern, $match_pattern = null ) {
+	protected static function process_delete_generated_files( string $filename, string $ext, string $dir, string $search_pattern, string $match_pattern = null ) {
 		$searcher = '/'.$filename.$search_pattern;
 		$files = glob($dir.$searcher);
 		if ( $files === false || empty($files) ) {
@@ -347,7 +347,7 @@ class ImageHelper {
 	 * @param string $url
 	 * @return string
 	 */
-	public static function get_server_location( $url ) {
+	public static function get_server_location( string $url ) {
 		// if we're already an absolute dir, just return.
 		if ( 0 === strpos($url, ABSPATH) ) {
 			return $url;
@@ -364,7 +364,7 @@ class ImageHelper {
 	 * @param string  $file
 	 * @return string
 	 */
-	public static function get_sideloaded_file_loc( $file ) {
+	public static function get_sideloaded_file_loc( string $file ) {
 		$upload = wp_upload_dir();
 		$dir = $upload['path'];
 		$filename = $file;
@@ -384,7 +384,7 @@ class ImageHelper {
 	 * @param string  $file The URL to the original file.
 	 * @return string The URL to the downloaded file.
 	 */
-	public static function sideload_image( $file ) {
+	public static function sideload_image( string $file ) {
 		$loc = self::get_sideloaded_file_loc($file);
 		if ( file_exists($loc) ) {
 			return URLHelper::file_system_to_url($loc);
@@ -418,7 +418,7 @@ class ImageHelper {
 	 * @param  string $url A URL (absolute or relative) pointing to an image.
 	 * @return array       An array (see keys in code below).
 	 */
-	public static function analyze_url( $url ) {
+	public static function analyze_url( string $url ) {
 		$result = array(
 			'url' => $url, // the initial url
 			'absolute' => URLHelper::is_absolute($url), // is the url absolute or relative (to home_url)
@@ -468,7 +468,7 @@ class ImageHelper {
 	 * @param string  $src A URL (http://example.org/wp-content/themes/twentysixteen/images/home.jpg).
 	 * @return string Full path to the file in question.
 	 */
-	static function theme_url_to_dir( $src ) {
+	static function theme_url_to_dir( string $src ) {
 		$site_root = trailingslashit(get_theme_root_uri()).get_stylesheet();
 		$tmp = str_replace($site_root, '', $src);
 		//$tmp = trailingslashit(get_theme_root()).get_stylesheet().$tmp;
@@ -486,7 +486,7 @@ class ImageHelper {
 	 * @return bool     If the image is located in the theme directory it returns true.
 	 *                  If not or $path doesn't exits it returns false.
 	 */
-	protected static function is_in_theme_dir( $path ) {
+	protected static function is_in_theme_dir( string $path ) {
 		$root = realpath(get_stylesheet_directory());
 
 		if ( false === $root ) {
@@ -512,7 +512,7 @@ class ImageHelper {
 	 *                          relative.
 	 * @return string           The URL.
 	 */
-	private static function _get_file_url( $base, $subdir, $filename, $absolute ) {
+	private static function _get_file_url( int $base, string $subdir, string $filename, bool $absolute ) {
 		$url = '';
 		if ( self::BASE_UPLOADS == $base ) {
 			$upload_dir = wp_upload_dir();
@@ -538,7 +538,7 @@ class ImageHelper {
 	 * @param  string $path
 	 * @return string The resolved path.
 	 */
-	protected static function maybe_realpath( $path ) {
+	protected static function maybe_realpath( string $path ) {
 		if ( strstr($path, '../') !== false ) {
 			return realpath($path);
 		}
@@ -555,7 +555,7 @@ class ImageHelper {
 	 * @param  string $filename File name, including extension (but no path).
 	 * @return string           The file location.
 	 */
-	private static function _get_file_path( $base, $subdir, $filename ) {
+	private static function _get_file_path( int $base, string $subdir, string $filename ) {
 		if ( URLHelper::is_url($subdir) ) {
 			$subdir = URLHelper::url_to_file_system($subdir);
 		}
@@ -591,11 +591,11 @@ class ImageHelper {
 	 *
 	 * @param  string  $src   A URL (absolute or relative) to an image.
 	 * @param  object  $op    Object of class TimberImageOperation.
-	 * @param  boolean $force Optional. Whether to remove any already existing result file and
+	 * @param  bool    $force Optional. Whether to remove any already existing result file and
 	 *                        force file generation. Default `false`.
 	 * @return string URL to the new image - or the source one if error.
 	 */
-	private static function _operate( $src, $op, $force = false ) {
+	private static function _operate( string $src, $op, bool $force = false ) {
 		if ( empty($src) ) {
 			return '';
 		}

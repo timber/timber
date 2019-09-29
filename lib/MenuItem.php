@@ -105,7 +105,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 *
 	 * @param string $class_name CSS class name to be added.
 	 */
-	public function add_class( $class_name ) {
+	public function add_class( string $class_name ) {
 		$this->classes[] = $class_name;
 		$this->class    .= ' ' . $class_name;
 	}
@@ -400,7 +400,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 *                           available in Timber. Default empty.
 	 * @return mixed Whatever value is stored in the database. Null if no value could be found.
 	 */
-	public function meta( $field_name = '', $args = array() ) {
+	public function meta( string $field_name = '', array $args = array() ) {
 		if ( isset($this->$field_name) ) {
 			return $this->$field_name;
 		}
@@ -420,7 +420,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return null|mixed The meta field value. Null if no value could be found.
 	 */
-	public function raw_meta( $field_name = '' ) {
+	public function raw_meta( string $field_name = '' ) {
 		if ( is_object( $this->menu_object ) && method_exists( $this->menu_object, 'raw_meta' ) ) {
 			return $this->menu_object->raw_meta( $field_name );
 		}
@@ -438,7 +438,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return mixed The meta field value.
 	 */
-	public function get_field( $field_name = null ) {
+	public function get_field( string $field_name = null ) {
 		Helper::deprecated(
 			"{{ item.get_field('field_name') }}",
 			"{{ item.meta('field_name') }}",

@@ -24,7 +24,7 @@ class Resize extends ImageOperation {
 	 * @param int    $h    height of new image
 	 * @param string $crop cropping method, one of: 'default', 'center', 'top', 'bottom', 'left', 'right', 'top-center', 'bottom-center'.
 	 */
-	public function __construct( $w, $h, $crop ) {
+	public function __construct( int $w, int $h, string $crop ) {
 		$this->w = $w;
 		$this->h = $h;
 		// Sanitize crop position
@@ -40,7 +40,7 @@ class Resize extends ImageOperation {
 	 * @param   string    $src_extension    the extension (ex: .jpg)
 	 * @return  string    the final filename to be used (ex: my-awesome-pic-300x200-c-default.jpg)
 	 */
-	public function filename( $src_filename, $src_extension ) {
+	public function filename( string $src_filename, string $src_extension ) {
 		$w = 0;
 		$h = 0;
 		if ( $this->w ) {
@@ -64,7 +64,7 @@ class Resize extends ImageOperation {
 	 * @param \WP_Image_Editor $editor the image editor we're using.
 	 * @return bool
 	 */
-	protected function run_animated_gif( $load_filename, $save_filename, \WP_Image_Editor $editor ) {
+	protected function run_animated_gif( string $load_filename, string $save_filename, \WP_Image_Editor $editor ) {
 		$w = $this->w;
 		$h = $this->h;
 		if ( ! class_exists('Imagick') || ( defined('TEST_NO_IMAGICK') && TEST_NO_IMAGICK ) ) {
@@ -171,7 +171,7 @@ class Resize extends ImageOperation {
 	 *                               (ex: /src/var/www/wp-content/uploads/my-pic-300x200-c-default.jpg)
 	 * @return boolean|null                  true if everything went fine, false otherwise
 	 */
-	public function run( $load_filename, $save_filename ) {
+	public function run( string $load_filename, string $save_filename ) {
 		// Attempt to check if SVG.
 		if ( ImageHelper::is_svg($load_filename) ) {
 			return false;

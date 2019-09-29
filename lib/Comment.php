@@ -114,7 +114,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @internal
-	 * @param integer $cid
+	 * @param int $cid
 	 */
 	public function init( $cid ) {
 		$comment_data = $cid;

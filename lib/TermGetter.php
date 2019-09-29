@@ -153,7 +153,7 @@ class TermGetter {
 	}
 
 	/**
-	 * @param integer[] $args
+	 * @param int[] $args
 	 * @return \stdClass
 	 */
 	public static function get_term_query_from_array_of_ids( $args ) {

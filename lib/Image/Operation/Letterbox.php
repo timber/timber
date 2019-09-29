@@ -24,7 +24,7 @@ class Letterbox extends ImageOperation {
 	 * @param int    $h     height
 	 * @param string $color hex string, for color of padding bands
 	 */
-	public function __construct( $w, $h, $color ) {
+	public function __construct( int $w, int $h, string $color ) {
 		$this->w = $w;
 		$this->h = $h;
 		$this->color = $color;
@@ -36,7 +36,7 @@ class Letterbox extends ImageOperation {
 	 * @return  string    the final filename to be used
 	 *                    (ex: my-awesome-pic-lbox-300x200-FF3366.jpg)
 	 */
-	public function filename( $src_filename, $src_extension ) {
+	public function filename( string $src_filename, string $src_extension ) {
 		$color = $this->color;
 		if ( !$color ) {
 			$color = 'trans';
@@ -57,12 +57,12 @@ class Letterbox extends ImageOperation {
 	 *                               (ex: /src/var/www/wp-content/uploads/my-pic-lbox-300x200-FF3366.jpg)
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
-	public function run( $load_filename, $save_filename ) {
+	public function run( string $load_filename, string $save_filename ) {
 		// Attempt to check if SVG.
 		if ( ImageHelper::is_svg($load_filename) ) {
 			return false;
 		}
-		
+
 		$w = $this->w;
 		$h = $this->h;
 

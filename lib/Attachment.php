@@ -257,7 +257,7 @@ class Attachment extends Post implements CoreInterface {
 	 *
 	 * @param string $file_path An absolute path to a file.
 	 */
-	protected function init_with_file_path( $file_path ) {
+	protected function init_with_file_path( string $file_path ) {
 		$url = URLHelper::file_system_to_url( $file_path );
 
 		$this->abs_url  = $url;
@@ -272,7 +272,7 @@ class Attachment extends Post implements CoreInterface {
 	 *
 	 * @param string $relative_path A relative path to a file.
 	 */
-	protected function init_with_relative_path( $relative_path ) {
+	protected function init_with_relative_path( string $relative_path ) {
 		$file_path = URLHelper::get_full_path( $relative_path );
 
 		$this->abs_url  = home_url( $relative_path );
@@ -287,7 +287,7 @@ class Attachment extends Post implements CoreInterface {
 	 *
 	 * @param string $url An URL on the same host.
 	 */
-	protected function init_with_url( $url ) {
+	protected function init_with_url( string $url ) {
 		$this->abs_url = $url;
 
 		if ( URLHelper::is_local( $url ) ) {
@@ -308,7 +308,7 @@ class Attachment extends Post implements CoreInterface {
 	 * @param int $attachment_id The ID number of the image in the WP database.
 	 * @return array|int|mixed Attachment info or ID
 	 */
-	protected function get_attachment_info( $attachment_id ) {
+	protected function get_attachment_info( int $attachment_id ) {
 		$image_info = $attachment_id;
 
 		if ( is_numeric( $attachment_id ) ) {
@@ -350,7 +350,7 @@ class Attachment extends Post implements CoreInterface {
 	 *
 	 * @return string An URL with or without http/https, depending on what’s appropriate for server.
 	 */
-	protected function maybe_secure_url( $url ) {
+	protected function maybe_secure_url( string $url ) {
 		if ( is_ssl() && strpos( $url, 'https' ) !== 0 && strpos( $url, 'http' ) === 0 ) {
 			$url = 'https' . substr( $url, strlen( 'http' ) );
 		}

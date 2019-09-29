@@ -17,7 +17,7 @@ class ToJpg extends ImageOperation {
 	/**
 	 * @param string $color hex string of color to use for transparent zones
 	 */
-	public function __construct( $color ) {
+	public function __construct( string $color ) {
 		$this->color = $color;
 	}
 
@@ -26,7 +26,7 @@ class ToJpg extends ImageOperation {
 	 * @param   string    $src_extension    ignored
 	 * @return  string    the final filename to be used (ex: my-awesome-pic.jpg)
 	 */
-	public function filename( $src_filename, $src_extension = 'jpg' ) {
+	public function filename( string $src_filename, string $src_extension = 'jpg' ) {
 		$new_name = $src_filename.'.jpg';
 		return $new_name;
 	}
@@ -40,7 +40,7 @@ class ToJpg extends ImageOperation {
 	 *                               (ex: /src/var/www/wp-content/uploads/my-pic.png)
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
-	public function run( $load_filename, $save_filename ) {
+	public function run( string $load_filename, string $save_filename ) {
 
 		if ( !file_exists($load_filename) ) {
 			return false;

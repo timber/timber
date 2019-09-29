@@ -82,7 +82,7 @@ class Archives extends Core {
 	 * @param string $base Any additional paths that need to be prepended to the URLs that are
 	 *                     generated, for example: "tags". Default ''.
 	 */
-	public function __construct( $args = null, $base = '' ) {
+	public function __construct( array $args = null, string $base = '' ) {
 		$this->init($args, $base);
 	}
 
@@ -93,7 +93,7 @@ class Archives extends Core {
 	 * @param array|string $args
 	 * @param string       $base
 	 */
-	public function init( $args = null, $base = '' ) {
+	public function init( $args = null, string $base = '' ) {
 		$this->base = $base;
 		$this->items = $this->items($args);
 		$this->args = $args;
@@ -106,7 +106,7 @@ class Archives extends Core {
 	 * @param int    $post_count
 	 * @return mixed
 	 */
-	protected function get_archives_link( $url, $text, $post_count = 0 ) {
+	protected function get_archives_link( string $url, string $text, int $post_count = 0 ) {
 		$ret = array();
 		$ret['text'] = $ret['title'] = $ret['name'] = wptexturize($text);
 		$ret['url'] = $ret['link'] = esc_url(URLHelper::prepend_to_url($url, $this->base));
@@ -126,7 +126,7 @@ class Archives extends Core {
 	 * @param string $limit
 	 * @return array
 	 */
-	protected function get_items_yearly( $args, $last_changed, $join, $where, $order, $limit ) {
+	protected function get_items_yearly( array $args, string $last_changed, string $join, string $where, string $order, string $limit ) {
 		global $wpdb;
 		$output = array();
 		$query = "SELECT YEAR(post_date) AS `year`, count(ID) as posts FROM {$wpdb->posts} $join $where GROUP BY YEAR(post_date) ORDER BY post_date $order $limit";
@@ -157,7 +157,7 @@ class Archives extends Core {
 	 * @param bool $nested
 	 * @return array
 	 */
-	protected function get_items_monthly( $args, $last_changed, $join, $where, $order, $limit = '', $nested = true ) {
+	protected function get_items_monthly( $args, string $last_changed, string $join, string $where, string $order, string $limit = '', bool $nested = true ) {
 		global $wpdb, $wp_locale;
 		$output = array();
 		$defaults = array(

@@ -74,11 +74,11 @@ class Loader {
 	/**
 	 * @param string        	$file
 	 * @param array         	$data
-	 * @param array|boolean    	$expires (array for options, false for none, integer for # of seconds)
+	 * @param array|bool    	$expires (array for options, false for none, integer for # of seconds)
 	 * @param string        	$cache_mode
 	 * @return bool|string
 	 */
-	public function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	public function render( string $file, array $data = null, $expires = false, string $cache_mode = self::CACHE_USE_DEFAULT ) {
 		// Different $expires if user is anonymous or logged in
 		if ( is_array($expires) ) {
 			/** @var array $expires */
@@ -229,7 +229,7 @@ class Loader {
 	 * @param string $name
 	 * @return bool
 	 */
-	protected function template_exists( $name ) {
+	protected function template_exists( string $name ) {
 		return $this->get_loader()->exists($name);
 	}
 
@@ -480,7 +480,7 @@ class Loader {
 		return $twig;
 	}
 
-	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
+	public function clear_cache_timber( string $cache_mode = self::CACHE_USE_DEFAULT ) {
 		//_transient_timberloader
 		$object_cache = false;
 		if ( isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']) ) {
@@ -573,7 +573,7 @@ class Loader {
 	 * @param string $cache_mode
 	 * @return bool
 	 */
-	public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	public function get_cache( string $key, string $group = self::CACHEGROUP, string $cache_mode = self::CACHE_USE_DEFAULT ) {
 		$object_cache = false;
 
 		if ( isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']) ) {
@@ -598,13 +598,13 @@ class Loader {
 
 	/**
 	 * @param string $key
-	 * @param string|boolean $value
+	 * @param string|bool $value
 	 * @param string $group
-	 * @param integer $expires
+	 * @param int $expires
 	 * @param string $cache_mode
 	 * @return string|boolean
 	 */
-	public function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
+	public function set_cache( string $key, $value, string $group = self::CACHEGROUP, int $expires = 0, string $cache_mode = self::CACHE_USE_DEFAULT ) {
 		$object_cache = false;
 
 		if ( isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']) ) {
@@ -633,7 +633,7 @@ class Loader {
 	 * @param string $cache_mode
 	 * @return string
 	 */
-	private function _get_cache_mode( $cache_mode ) {
+	private function _get_cache_mode( string $cache_mode ) {
 		if ( empty($cache_mode) || self::CACHE_USE_DEFAULT === $cache_mode ) {
 			$cache_mode = $this->cache_mode;
 		}

@@ -204,7 +204,7 @@ class Image extends Attachment {
 	 *
 	 * @return bool|string The src URL for the image.
 	 */
-	public function src( $size = 'full' ) {
+	public function src( string $size = 'full' ) {
 		if ( isset( $this->abs_url ) ) {
 			return $this->maybe_secure_url( $this->abs_url );
 		}
@@ -332,7 +332,7 @@ class Image extends Attachment {
 	 * @param string $dimension The requested dimension. Either `width` or `height`.
 	 * @return int|null The requested dimension. Null if image file couldn’t be found.
 	 */
-	protected function get_dimension( $dimension ) {
+	protected function get_dimension( string $dimension ) {
 		// Load from internal cache.
 		if ( isset( $this->dimensions ) ) {
 			return $this->get_dimension_loaded( $dimension );

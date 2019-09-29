@@ -32,7 +32,7 @@ class FunctionWrapper {
 	 * @param array   $args
 	 * @param bool    $return_output_buffer
 	 */
-	public function __construct( $function, $args = array(), $return_output_buffer = false ) {
+	public function __construct( callable $function, array $args = array(), bool $return_output_buffer = false ) {
 		if ( is_array($function) ) {
 			if ( (is_string($function[0]) && class_exists($function[0])) || gettype($function[0]) === 'object' ) {
 				$this->_class = $function[0];
@@ -72,7 +72,7 @@ class FunctionWrapper {
 	 * @param array   $defaults
 	 * @return array
 	 */
-	private function _parse_args( $args, $defaults ) {
+	private function _parse_args( array $args, array $defaults ) {
 		$_arg = reset($defaults);
 
 		foreach ( $args as $index => $arg ) {

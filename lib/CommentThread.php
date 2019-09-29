@@ -5,11 +5,11 @@ namespace Timber;
 /**
  * Class CommentThread
  *
- * This object is a special type of array that hold WordPress comments as `Timber\Comment` objects. 
- * You probably won't use this directly. This object is returned when calling `{{ post.comments }}` 
+ * This object is a special type of array that hold WordPress comments as `Timber\Comment` objects.
+ * You probably won't use this directly. This object is returned when calling `{{ post.comments }}`
  * in Twig.
  *
- * @example 
+ * @example
  * ```twig
  * {# single.twig #}
  * <div id="post-comments">
@@ -33,12 +33,12 @@ namespace Timber;
  *   {{ function('comment_form') }}
  *   <!-- nested comments here -->
  *   {% if comment.children %}
- *     <div class="replies"> 
+ *     <div class="replies">
  *	     {% for child_comment in comment.children %}
  *         {% include 'comment.twig' with { comment:child_comment } %}
  *       {% endfor %}
- *     </div> 
- *   {% endif %}    
+ *     </div>
+ *   {% endif %}
  * </li>
  * ```
  */
@@ -53,10 +53,10 @@ class CommentThread extends \ArrayObject {
 	 * Creates a new `Timber\CommentThread` object.
 	 *
 	 * @param int           $post_id The post ID.
-	 * @param array|boolean $args    Optional. An array of arguments or false if initialization
+	 * @param array|bool $args    Optional. An array of arguments or false if initialization
 	 *                               should be skipped.
 	 */
-	public function __construct( $post_id, $args = array() ) {
+	public function __construct( int $post_id, $args = array() ) {
 		parent::__construct();
 		$this->post_id = $post_id;
 		if ( $args || is_array($args) ) {
@@ -95,7 +95,7 @@ class CommentThread extends \ArrayObject {
 		$this->init();
 		return $this;
 	}
-  
+
   /**
 	 * @internal
 	 */
@@ -107,7 +107,7 @@ class CommentThread extends \ArrayObject {
 
 	/**
 	 * Inits the object.
-	 * 
+	 *
    * @internal
 	 * @param array $args Optional.
 	 */
