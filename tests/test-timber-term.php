@@ -85,13 +85,13 @@
 
 		function testTermConstructWithSlug() {
 			$term_id = $this->factory->term->create(array('name' => 'New England Patriots'));
-			$term = new Timber\Term('new-england-patriots');
+			$term = Timber::get_term($term_id);
 			$this->assertEquals($term->ID, $term_id);
 		}
 
 		function testTermToString() {
 			$term_id = $this->factory->term->create(array('name' => 'New England Patriots'));
-			$term = new Timber\Term('new-england-patriots');
+			$term = Timber::get_term($term_id);
 			$str = Timber::compile_string('{{term}}', array('term' => $term));
 			$this->assertEquals('New England Patriots', $str);
 		}
@@ -103,6 +103,8 @@
 			$this->assertEquals($desc, $term->description());
 		}
 
+		// FIXME #1793 factories
+		// this test should probably be deleted altogether...
 		function testTermConstructWithName() {
 			$term_id = $this->factory->term->create(array('name' => 'St. Louis Cardinals'));
 			$term = new Timber\Term('St. Louis Cardinals');
@@ -147,7 +149,7 @@
 
 			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
 			$posts = $this->factory->post->create_many(5, array('post_type' => 'portfolio' ));
-			$term = new Timber\Term($term_id);
+			$term = Timber::get_term($term_id, 'arts');
 			foreach($posts as $post_id) {
 				wp_set_object_terms($post_id, $term_id, 'arts', true);
 			}
@@ -306,7 +308,7 @@
 			$local = $this->factory->term->create(array('name' => 'Local', 'parent' => $parent_id, 'taxonomy' => 'category'));
 			$int = $this->factory->term->create(array('name' => 'International', 'parent' => $parent_id, 'taxonomy' => 'category'));
 
-			$term = new Timber\Term($parent_id);
+			$term = Timber::get_term($parent_id, 'category');
 			$children = $term->children();
 			$this->assertEquals(2, count($children));
 			$this->assertEquals('Local', $children[0]->name);
@@ -318,7 +320,7 @@
 		function testTermWithNativeMeta() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
 			add_term_meta($tid, 'foo', 'bar');
-			$term = new Timber\Term($tid);
+			$term = Timber::get_term($tid, 'category');
 			$template = '{{term.foo}}';
 			$compiled = Timber::compile_string($template, array('term' => $term));
 			$this->assertEquals('bar', $compiled);
@@ -330,7 +332,7 @@
 		function testTermWithNativeMetaFalse() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
 			add_term_meta($tid, 'foo', false);
-			$term = new Timber\Term($tid);
+			$term = Timber::get_term($tid, 'category');
 			$this->assertEquals('', $term->meta('foo'));
 		}
 
@@ -347,7 +349,7 @@
 			$valid_wp_native_value = get_term_meta($tid, 'bar', true);
 			$valid_acf_native_value = get_field('bar', 'category_'.$tid);
 
-			$term = new Timber\Term($tid);
+			$term = Timber::get_term($tid, 'category');
 
 			//test baseline "bar" data
 			$this->assertEquals('qux', $valid_wp_native_value);
@@ -364,7 +366,7 @@
 		function testTermEditLink() {
 			wp_set_current_user(1);
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
-			$term = new Timber\Term($tid);
+			$term = Timber::get_term($tid, 'category');
 			$links = array();
 
 			$links[] = 'http://example.org/wp-admin/term.php?taxonomy=category&tag_ID='.$tid.'&post_type=post';
