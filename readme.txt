@@ -29,6 +29,7 @@ _Twig is the template language powering Timber; if you need a little background 
 == Changelog ==
 
 = Develop (next release) =
+- Added tests to cover RTL languages and special characters in image file names
 
 = 1.11.0 =
 **General Note**
