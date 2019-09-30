@@ -28,7 +28,7 @@ class Request extends Core implements CoreInterface {
 
 	public function __call( string $field, array $args ) {}
 
-	public function __get( $field ) {}
+	public function __get( string $field ) {}
 
 	/**
 	 * @return boolean|null

@@ -199,7 +199,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 *
 	 * @return mixed
 	 */
-	public function __get( $field ) {
+	public function __get( string $field ) {
 		if ( 'class' === $field ) {
 			return $this->css_class();
 		}
