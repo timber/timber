@@ -234,7 +234,7 @@ class Site extends Core implements CoreInterface {
 	 *
 	 * @return mixed The option value.
 	 */
-	public function __get( $option ) {
+	public function __get( string $option ) {
 		if ( ! isset( $this->$option ) ) {
 			if ( is_multisite() ) {
 				$this->$option = get_blog_option( $this->ID, $option );
