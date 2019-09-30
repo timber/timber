@@ -199,7 +199,7 @@ class ImageHelper {
 	 * @param bool    $force
 	 * @return string
 	 */
-	public static function letterbox( string $src, int $w, int $h, string $color = false, bool $force = false ) {
+	public static function letterbox( string $src, int $w, int $h, $color = false, bool $force = false ) {
 		$op = new Operation\Letterbox($w, $h, $color);
 		return self::_operate($src, $op, $force);
 	}
