@@ -64,7 +64,7 @@ class ImageHelper {
 	 *                          force file generation. Default `false`.
 	 * @return string The URL of the resized image.
 	 */
-	public static function resize( ?string $src, $w, int $h = 0, ?string $crop = 'default', bool $force = false ) {
+	public static function resize( ?string $src, $w, ?int $h = 0, ?string $crop = 'default', bool $force = false ) {
 		if ( !is_numeric($w) && is_string($w) ) {
 			if ( $sizes = self::find_wp_dimensions($w) ) {
 				$w = $sizes['w'];
