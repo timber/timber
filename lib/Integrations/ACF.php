@@ -93,7 +93,7 @@ class ACF {
 	 * @param array        $args       An array of arguments.
 	 * @return mixed|false
 	 */
-	public static function user_get_meta_field( $value, int $user_id, string $field_name, $user, array $args ) {
+	public static function user_get_meta_field( $value, int $user_id, string $field_name, $user, $args ) {
 		$args = wp_parse_args( $args, array(
 			'format_value' => true,
 		) );

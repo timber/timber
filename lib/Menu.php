@@ -435,7 +435,7 @@ class Menu extends Core {
 	 * @internal
 	 * @param array $items the items to traverse.
 	 */
-	private function traverse_items_for_current( array $items, int $depth ) {
+	private function traverse_items_for_current( array $items, ?int $depth ) {
 		$current 			= false;
 		$currentDepth = 1;
 		$i       			= 0;
