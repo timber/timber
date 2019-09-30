@@ -225,7 +225,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 *
 	 * @return mixed
 	 */
-	public function __call( $field, $args ) {
+	public function __call( string $field, array $args ) {
 		if ( 'class' === $field ) {
 			$class = isset($args[0]) ? $args[0] : '';
 			return $this->css_class($class);

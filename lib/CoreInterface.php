@@ -7,7 +7,7 @@ namespace Timber;
  */
 interface CoreInterface {
 
-	public function __call( $field, $args );
+	public function __call( string $field, array $args );
 
 	public function __get( $field );
 

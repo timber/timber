@@ -26,7 +26,7 @@ class Request extends Core implements CoreInterface {
 		$this->get = $_GET;
 	}
 
-	public function __call( $field, $args ) {}
+	public function __call( string $field, array $args ) {}
 
 	public function __get( $field ) {}
 
