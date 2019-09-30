@@ -2,6 +2,7 @@
 
 /**
  * @group called-post-constructor
+ * @group called-term-constructor
  */
 class TestTimberProperty extends Timber_UnitTestCase {
 
@@ -13,7 +14,7 @@ class TestTimberProperty extends Timber_UnitTestCase {
 		$term_id = $term_id['term_id'];
 		$post = Timber::get_post( $post_id );
 		$user = new Timber\User( $user_id );
-		$term = new Timber\Term( $term_id );
+		$term = Timber::get_term( $term_id );
 		$comment = new Timber\Comment( $comment_id );
 		$this->assertEquals( $post_id, $post->ID );
 		$this->assertEquals( $post_id, $post->id );
@@ -34,7 +35,7 @@ class TestTimberProperty extends Timber_UnitTestCase {
 		$term_id = $term_id['term_id'];
 		$post = Timber::get_post( $post_id );
 		$user = new Timber\User( $user_id );
-		$term = new Timber\Term( $term_id );
+		$term = Timber::get_term( $term_id );
 		$comment = new Timber\Comment( $comment_id );
 		$site = new Timber\Site();
 		return array( 'post' => $post, 'user' => $user, 'term' => $term, 'comment' => $comment, 'site' => $site );

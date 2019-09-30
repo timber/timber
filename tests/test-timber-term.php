@@ -1,5 +1,9 @@
 <?php
 
+  /**
+   * @group called-post-constructor
+   * @group called-term-constructor
+   */
 	class TestTimberTerm extends Timber_UnitTestCase {
 
 		function testTermFrom() {
@@ -49,7 +53,7 @@
 			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
 
 			$term_obj = get_term($term_id);
-			$term = new Timber\Term($term_obj, 'arts');
+			$term = Timber::get_term($term_obj, 'arts');
 			$this->assertEquals('Zong', $term->title());
 		}
 
@@ -57,7 +61,7 @@
 			register_taxonomy('arts', array('post'));
 
 			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
-			$term = new Timber\Term($term_id, 'arts');
+			$term = Timber::get_term($term_id, 'arts');
 			$this->assertEquals('Zong', $term->title());
 			$template = '{% set zp_term = Term("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
 			$string = Timber::compile_string($template);
@@ -66,7 +70,7 @@
 
 		function testTerm() {
 			$term_id = $this->factory->term->create();
-			$term = new Timber\Term($term_id);
+			$term = Timber::get_term($term_id);
 			$this->assertEquals('Timber\Term', get_class($term));
 		}
 
@@ -74,7 +78,7 @@
 			$term_id = $this->factory->term->create(array('name' => 'Famous Commissioners'));
 			$term_data = get_term($term_id, 'post_tag');
 			$this->assertTrue( in_array( get_class($term_data), array('WP_Term', 'stdClass') ) );
-			$term = new Timber\Term($term_id);
+			$term = Timber::get_term($term_id);
 			$this->assertEquals('Famous Commissioners', $term->title());
 			$this->assertEquals('Timber\Term', get_class($term));
 		}
@@ -95,7 +99,7 @@
 		function testTermDescription() {
 			$desc = 'An honest football team';
 			$term_id = $this->factory->term->create(array('name' => 'New England Patriots', 'description' => $desc));
-			$term = new Timber\Term($term_id, 'post_tag');
+			$term = Timber::get_term($term_id, 'post_tag');
 			$this->assertEquals($desc, $term->description());
 		}
 
@@ -108,19 +112,19 @@
 		function testTermInitObject() {
 			$term_id = $this->factory->term->create();
 			$term = get_term($term_id, 'post_tag');
-			$term = new Timber\Term($term);
+			$term = Timber::get_term($term);
 			$this->assertEquals($term->ID, $term_id);
 		}
 
 		function testTermLink() {
 			$term_id = $this->factory->term->create();
-			$term = new Timber\Term($term_id);
+			$term = Timber::get_term($term_id);
 			$this->assertContains('http://', $term->link());
 		}
 
 		function testTermPath() {
 			$term_id = $this->factory->term->create();
-			$term = new Timber\Term($term_id);
+			$term = Timber::get_term($term_id);
 			$this->assertFalse(strstr($term->path(), 'http://'));
 		}
 
@@ -129,7 +133,7 @@
 			$term_id = $this->factory->term->create(array('name' => 'Zong'));
 			$posts = $this->factory->post->create_many(3, array('post_type' => 'post', 'tags_input' => 'zong') );
 			$posts = $this->factory->post->create_many(5, array('post_type' => 'portfolio', 'tags_input' => 'zong') );
-			$term = new Timber\Term($term_id);
+			$term = Timber::get_term($term_id);
 			$posts_gotten = $term->posts('posts_per_page=4');
 			$this->assertEquals(4, count($posts_gotten));
 
@@ -166,7 +170,7 @@
 			foreach($posts as $post_id){
 				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
 			}
-			$term = new Timber\Term($term_id);
+			$term = Timber::get_term($term_id);
 			$gotten_posts = $term->get_posts();
 			$this->assertEquals(count($posts), count($gotten_posts));
 		}
@@ -181,7 +185,7 @@
 				set_post_type($post_id, 'page');
 				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
 			}
-			$term = new Timber\Term($term_id);
+			$term = Timber::get_term($term_id);
 			$gotten_posts = $term->posts(count($posts), 'page');
 			$this->assertEquals(count($posts), count($gotten_posts));
 			$gotten_posts = $term->posts(count($posts), 'any');
@@ -204,7 +208,7 @@
 				set_post_type($post_id, 'page');
 				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
 			}
-			$term = new Timber\Term($term_id);
+			$term = Timber::get_term($term_id);
 			$gotten_posts = $term->get_posts('post_type=page');
 			$this->assertEquals(count($posts), count($gotten_posts));
 
@@ -229,7 +233,7 @@
 				wp_set_object_terms( $post_id, $term_id, 'post_tag', true );
 			}
 
-			$term = new Timber\Term( $term_id );
+			$term = Timber::get_term( $term_id );
 
 			$term_posts = $term->posts( [
 				'posts_per_page' => 2,
@@ -255,7 +259,7 @@
 				wp_set_object_terms( $post_id, $term_id, 'post_tag', true );
 			}
 
-			$term = new Timber\Term( $term_id );
+			$term = Timber::get_term( $term_id );
 
 			$term_posts = $term->posts( [
 				'posts_per_page' => 2,
@@ -285,7 +289,7 @@
 				wp_set_object_terms( $post_id, $term_id, 'post_tag', true );
 			}
 
-			$term = new Timber\Term( $term_id );
+			$term = Timber::get_term( $term_id );
 
 			$term_posts = $term->posts( [
 				'posts_per_page' => 2,
