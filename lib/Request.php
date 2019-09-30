@@ -35,5 +35,5 @@ class Request extends Core implements CoreInterface {
 	 */
 	public function __isset( $field ) {}
 
-	public function meta( $key ) {}
+	public function meta( string $key ) {}
 }

@@ -380,7 +380,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	 *                           available in Timber. Default empty.
 	 * @return mixed The meta field value. Null if no value could be found.
 	 */
-	public function meta( $field_name = '', $args = array() ) {
+	public function meta( string $field_name = '', array $args = array() ) {
 		$args = wp_parse_args( $args, [
 			'apply_filters' => true,
 		] );
