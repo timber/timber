@@ -1,5 +1,8 @@
 <?php
 
+	/**
+	 * @group called-post-constructor
+	 */
 	class TestTimberUser extends Timber_UnitTestCase {
 
 		function testInitWithID(){
@@ -35,7 +38,7 @@
 			$user = new Timber\User($uid);
 			$this->assertEquals('Sixteenth President', $user->meta('description'));
 			$pid = $this->factory->post->create(array('post_author' => $uid));
-			$post = new Timber\Post($pid);
+			$post = Timber::get_post($pid);
 			$str = Timber::compile_string("{{post.author.meta('description')}}", array('post' => $post));
 			$this->assertEquals('Sixteenth President', $str);
 		}

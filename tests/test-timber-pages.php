@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group called-post-constructor
+ */
 class TestTimberPages extends Timber_UnitTestCase {
 
 	function testTimberPostOnCategoryPage() {
@@ -9,6 +12,7 @@ class TestTimberPages extends Timber_UnitTestCase {
 		$this->go_to($cat->path());
 		$term = new Timber\Term();
 		$this->assertEquals($category_id, $term->ID);
+		// FIXME #1793 factories
 		$post = new Timber\Post();
 		$this->assertEquals(0, $post->ID);
 	}

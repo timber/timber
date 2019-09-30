@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group called-post-constructor
+ */
 class TestTimberProperty extends Timber_UnitTestCase {
 
 	function testPropertyID() {
@@ -8,7 +11,7 @@ class TestTimberProperty extends Timber_UnitTestCase {
 		$comment_id = $this->factory->comment->create( array( 'comment_post_ID' => $post_id ) );
 		$term_id = wp_insert_term( 'baseball', 'post_tag' );
 		$term_id = $term_id['term_id'];
-		$post = new Timber\Post( $post_id );
+		$post = Timber::get_post( $post_id );
 		$user = new Timber\User( $user_id );
 		$term = new Timber\Term( $term_id );
 		$comment = new Timber\Comment( $comment_id );
@@ -29,7 +32,7 @@ class TestTimberProperty extends Timber_UnitTestCase {
 		$comment_id = $this->factory->comment->create( array( 'comment_post_ID' => $post_id ) );
 		$term_id = wp_insert_term( 'baseball', 'post_tag' );
 		$term_id = $term_id['term_id'];
-		$post = new Timber\Post( $post_id );
+		$post = Timber::get_post( $post_id );
 		$user = new Timber\User( $user_id );
 		$term = new Timber\Term( $term_id );
 		$comment = new Timber\Comment( $comment_id );
@@ -62,13 +65,13 @@ class TestTimberProperty extends Timber_UnitTestCase {
 		$user->update( 'john', 'kennedy' );
 		$comment->update( 'george', 'washington' );
 		$this->assertEquals( 'jefferson', $post->thomas );
-		
+
 		$this->assertEquals( 'roosevelt', $user->teddy );
 		$this->assertEquals( 'washington', $comment->george );
 		$this->assertEquals( 'clinton', $site->bill );
 
 		$this->assertEquals( 'jefferson', Timber::compile_string( '{{post.thomas}}', array( 'post' => $post ) ) );
-		
+
 		$this->assertEquals( 'roosevelt', Timber::compile_string( '{{user.teddy}}', array( 'user' => $user ) ) );
 		$this->assertEquals( 'washington', Timber::compile_string( '{{comment.george}}', array( 'comment' => $comment ) ) );
 		$this->assertEquals( 'clinton', Timber::compile_string( '{{site.bill}}', array( 'site' => $site ) ) );

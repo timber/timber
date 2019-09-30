@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group called-post-constructor
+ */
 class TestTimberPostGetter extends Timber_UnitTestCase {
 
 
@@ -59,7 +62,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$cats = $this->factory->post->create_many(3, array('post_category' => array($cat)) );
 		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
 
-		$cat_post = new Timber\Post($cat_post);
+		$cat_post = Timber::get_post($cat_post);
 		$this->assertEquals('News', $cat_post->category()->title());
 
 		$posts = new Timber\PostQuery( array(
@@ -99,7 +102,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$cats = $this->factory->post->create_many(3, array('post_category' => array($cat)) );
 		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
 
-		$cat_post = new Timber\Post($cat_post);
+		$cat_post = Timber::get_post($cat_post);
 		$this->assertEquals('News', $cat_post->category()->title());
 
 		$posts = new Timber\PostQuery( array(
@@ -263,7 +266,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
 		add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 		$data = array();
-		$data['post'] = new Timber\Post( $post_id );
+		$data['post'] = Timber::get_post( $post_id );
 		$data['size'] = array( 'width' => 100, 'height' => 50 );
 		$data['crop'] = 'default';
 		Timber::compile( 'assets/thumb-test.twig', $data );
@@ -340,7 +343,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 
 	function testQueryPost() {
 		$posts = $this->factory->post->create_many( 6 );
-		$post = new Timber\Post( $posts[3] );
+		$post = Timber::get_post( $posts[3] );
 		$this->go_to( home_url( '/?p='.$posts[2] ) );
 		$this->assertNotEquals( get_the_ID(), $post->ID );
 		$post = Timber::query_post( $posts[3] );
@@ -411,7 +414,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	function testCustomPostTypeAndClassOnSinglePage() {
 		register_post_type('job');
 		$post_id = $this->factory->post->create( array( 'post_type' => 'job' ) );
-		$post = new Timber\Post($post_id);
+		$post = Timber::get_post($post_id);
 		$this->go_to('?p='.$post->ID);
 		$jobs = $this->factory->post->create_many( 10, array('post_type' => 'job'));
 		$jobPosts = new Timber\PostQuery( array(

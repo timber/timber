@@ -9,6 +9,7 @@ use Timber\Integrations\ACF;
 
 /**
  * Class TestTimberMeta
+ * @group called-post-constructor
  */
 class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 	public function setUp() {
@@ -35,7 +36,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_filter( 'timber_post_get_meta_field_pre', $filter, 10, 4 );
 
 		$post_id = $this->factory->post->create();
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 
 		update_post_meta( $post_id, 'name', 'A girl has no name.' );
 
@@ -56,7 +57,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_action( 'timber_post_get_meta_pre', $action, 10, 3 );
 
 		$post_id = $this->factory->post->create();
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 
 		update_post_meta( $post_id, 'name', 'A girl has no name.' );
 
@@ -80,7 +81,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_filter( 'timber_post_get_meta_field', $filter, 10, 4 );
 
 		$post_id = $this->factory->post->create();
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 
 		update_post_meta( $post_id, 'name', 'A girl has no name.' );
 
@@ -103,7 +104,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_filter( 'timber_post_get_meta', $filter, 10, 3 );
 
 		$post_id = $this->factory->post->create();
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 
 		update_post_meta( $post_id, 'name', 'A girl has no name.' );
 
