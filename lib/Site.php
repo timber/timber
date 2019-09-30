@@ -330,7 +330,7 @@ class Site extends Core implements CoreInterface {
 	 * @param string $key   The key of the site option to update.
 	 * @param mixed  $value The new value.
 	 */
-	public function update( $key, $value ) {
+	public function update( string $key, $value ) {
 		Helper::deprecated( 'Timber\Site::update()', 'update_option()', '2.0.0' );
 
 		/**

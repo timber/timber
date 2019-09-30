@@ -693,7 +693,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @param string $key   The key of the meta field to update.
 	 * @param mixed  $value The new value.
 	 */
-	public function update( $key, $value ) {
+	public function update( string $key, $value ) {
 		Helper::deprecated( 'Timber\Term::update()', 'update_term_meta()', '2.0.0' );
 
 		/**

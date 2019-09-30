@@ -10,7 +10,7 @@ class KeyGenerator implements KeyGeneratorInterface {
 	 * @param mixed $value
 	 * @return string
 	 */
-	public function generateKey( string $value ) {
+	public function generateKey( $value ) {
 		if ( is_a($value, 'Timber\Cache\TimberKeyGeneratorInterface') ) {
 			return $value->_get_cache_key();
 		}
