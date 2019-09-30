@@ -2,6 +2,7 @@
 
 /**
  * @group called-post-constructor
+ * FIXME #1793 replace direct Timber\Comment instantiations
  */
 class TestTimberComment extends Timber_UnitTestCase {
 

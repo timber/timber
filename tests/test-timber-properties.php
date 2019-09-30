@@ -3,6 +3,8 @@
 /**
  * @group called-post-constructor
  * @group called-term-constructor
+ * FIXME #1793 replace direct Timber\User instantiations
+ * FIXME #1793 replace direct Timber\Comment instantiations
  */
 class TestTimberProperty extends Timber_UnitTestCase {
 

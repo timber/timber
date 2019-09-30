@@ -1,5 +1,6 @@
 <?php
 
+	// FIXME #1793 replace direct Timber\Comment instantiations
 	class TestTimberCommentAvatar extends Timber_UnitTestCase {
 
 		function testAvatarSize() {

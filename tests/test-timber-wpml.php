@@ -2,6 +2,7 @@
 
 /**
  * Mocked function for testing menus in WPML
+ * FIXME #1793 replace direct Timber\Menu instantiations
  */
 function wpml_object_id_filter( $element_id, $element_type = 'post', $return_original_if_missing = false, $language_code = null ) {
 	$locations = get_nav_menu_locations();

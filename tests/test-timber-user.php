@@ -2,6 +2,7 @@
 
 	/**
 	 * @group called-post-constructor
+	 * FIXME #1793 replace direct Timber\User instantiations
 	 */
 	class TestTimberUser extends Timber_UnitTestCase {
 
