@@ -595,7 +595,7 @@ class ImageHelper {
 	 *                        force file generation. Default `false`.
 	 * @return string URL to the new image - or the source one if error.
 	 */
-	private static function _operate( string $src, $op, bool $force = false ) {
+	private static function _operate( ?string $src, $op, bool $force = false ) {
 		if ( empty($src) ) {
 			return '';
 		}
