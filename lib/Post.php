@@ -1023,7 +1023,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return mixed The meta field value.
 	 */
-	public function get_field( $field_name = null ) {
+	public function get_field( string $field_name = null ) {
 		Helper::deprecated(
 			"{{ post.get_field('field_name') }}",
 			"{{ post.meta('field_name') }}",

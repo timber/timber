@@ -43,5 +43,5 @@ interface MetaInterface {
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return mixed The meta field value.
 	 */
-	public function get_field( $field_name );
+	public function get_field( string $field_name );
 }

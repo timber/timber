@@ -350,7 +350,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return mixed The meta field value.
 	 */
-	public function get_field( $field_name = null ) {
+	public function get_field( string $field_name = null ) {
 		Helper::deprecated(
 			"{{ user.get_field('field_name') }}",
 			"{{ user.meta('field_name') }}",
