@@ -32,7 +32,7 @@ interface MetaInterface {
 	 * @param string $field_name The field name for which you want to get the value.
 	 * @return mixed The raw meta field value.
 	 */
-	public function raw_meta( $field_name = '' );
+	public function raw_meta( string $field_name = '' );
 
 	/**
 	 * Gets a meta value.

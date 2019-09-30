@@ -1004,7 +1004,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @return null|mixed The meta field value(s). Null if no value could be found, an empty array
 	 *                    if all fields were requested but no values could be found.
 	 */
-	public function raw_meta( $field_name = '', $args = array() ) {
+	public function raw_meta( string $field_name = '', array $args = array() ) {
 		return $this->meta( $field_name, array_merge(
 			$args,
 			[
