@@ -17,36 +17,6 @@
 			$this->assertEquals('Cardinals', $baseball_teams[0]->title());
 		}
 
-		function testConstructorWithClass() {
-			register_taxonomy('arts', array('post'));
-
-			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'post_tag'));
-			$term = new \Timber\Term($term_id);
-
-			$template = '{% set zp_term = Term("'.$term_id.'", "Arts") %}{{ zp_term.name }} {{ zp_term.taxonomy }}';
-			$string = Timber::compile_string($template);
-			$this->assertEquals('Zong post_tag', $string);
-
-			$template = '{% set zp_term = Term('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
-			$string = Timber::compile_string($template);
-			$this->assertEquals('Zebra', $string);
-		}
-
-		function testConstructorWithClassAndTaxonomy() {
-			register_taxonomy('arts', array('post'));
-
-			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
-			$term = new \Timber\Term($term_id);
-
-			$template = '{% set zp_term = Term("'.$term_id.'", "arts", "Arts") %}{{ zp_term.name }} {{ zp_term.taxonomy }}';
-			$string = Timber::compile_string($template);
-			$this->assertEquals('Zong arts', $string);
-
-			$template = '{% set zp_term = Term('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
-			$string = Timber::compile_string($template);
-			$this->assertEquals('Zebra', $string);
-		}
-
 		function testGetTerm() {
 			register_taxonomy('arts', array('post'));
 
@@ -72,12 +42,6 @@
 			$term = Timber::get_term($term_id);
 			$this->assertEquals('Famous Commissioners', $term->title());
 			$this->assertEquals('Timber\Term', get_class($term));
-		}
-
-		function testTermConstructWithSlug() {
-			$term_id = $this->factory->term->create(array('name' => 'New England Patriots'));
-			$term = Timber::get_term($term_id);
-			$this->assertEquals($term->ID, $term_id);
 		}
 
 		function testTermToString() {
