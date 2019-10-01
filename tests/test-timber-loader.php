@@ -76,17 +76,6 @@
 			$this->assertEquals('Boo!', $str);
 		}
 
-		function testTimberLocationsOpenBaseDir() {
-			$old_open_basedir = ini_get('open_basedir');
-			ini_set('open_basedir', __DIR__ . '/october/');
-
-			$php_unit = $this;
-			$str = Timber::compile('spooky.twig', array());
-			$this->assertEquals('Boo!', $str);
-
-			ini_set('open_basedir', $old_open_basedir);
-		}
-
 		function testTwigLoadsFromChildTheme(){
 			$this->_setupParentTheme();
 			$this->_setupChildTheme();
