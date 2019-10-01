@@ -5,8 +5,8 @@ use Timber\Integrations\ACF;
 /**
  * @group called-post-constructor
  * @group called-term-constructor
- * FIXME #1793 replace direct Timber\User instantiations
- * FIXME #1793 replace direct Timber\Comment instantiations
+ * @todo #1793 replace direct Timber\User instantiations
+ * @todo #1793 replace direct Timber\Comment instantiations
  */
 class TestTimberIntegrationACF extends Timber_UnitTestCase {
 	function testACFInit() {

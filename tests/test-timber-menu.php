@@ -2,7 +2,7 @@
 
 /**
  * @group called-post-constructor
- * FIXME #1793 replace direct Timber\Menu instantiations
+ * @todo #1793 replace direct Timber\Menu instantiations
  */
 class TestTimberMenu extends Timber_UnitTestCase {
 

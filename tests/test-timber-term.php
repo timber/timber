@@ -103,7 +103,7 @@
 			$this->assertEquals($desc, $term->description());
 		}
 
-		// FIXME #1793 factories
+		// @todo #1793 factories
 		// this test should probably be deleted altogether...
 		function testTermConstructWithName() {
 			$term_id = $this->factory->term->create(array('name' => 'St. Louis Cardinals'));

@@ -35,7 +35,7 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 		$this->go_to(home_url('/'));
 		global $wp_query;
 		$wp_query->queried_object_id = $page_id;
-		// FIXME #1793 factories
+		// @todo #1793 factories
 		$page = new Timber\Post();
 		$this->assertEquals($page_id, $page->ID);
 	}
@@ -68,7 +68,7 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 			$this->go_to(home_url('/?p='.$page_id));
 			$post = Timber::get_post($post_id);
 			$this->assertEquals($post_id, $post->ID);
-			// FIXME #1793 factories
+			// @todo #1793 factories
 			$page = new Timber\Post();
 			$this->assertEquals($page_id, $page->ID);
 		}
@@ -80,7 +80,7 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 			$this->go_to(home_url('/?p='.$page_id));
 			$posts = Timber::get_posts();
 			$this->assertEquals(0, count($posts));
-			// FIXME #1793 factories
+			// @todo #1793 factories
 			$page = new Timber\Post();
 			$this->assertEquals($page_id, $page->ID);
 		}
@@ -89,7 +89,7 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 			$page_id = $this->factory->post->create(array('post_title' => 'Mister Slave', 'post_type' => 'page'));
 			$children = $this->factory->post->create_many(10, array('post_title' => 'Timmy'));
 			$this->go_to(home_url('/?p='.$page_id));
-			// FIXME #1793 factories
+			// @todo #1793 factories
 			$page = new Timber\Post();
 			$this->assertEquals($page_id, $page->ID);
 			$posts = Timber::get_posts();
