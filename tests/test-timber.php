@@ -173,6 +173,21 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	}
 
 	/* Terms */
+	function testGetTerm(){
+		// @todo #2087
+		$this->markTestSkipped();
+	}
+
+	function testGetTermWithTaxonomyParam(){
+		// @todo #2087
+		$this->markTestSkipped();
+	}
+
+	function testGetTermWithObject(){
+		// @todo #2087
+		$this->markTestSkipped();
+	}
+
 	function testGetTerms(){
 		$posts = $this->factory->post->create_many(15, array( 'post_type' => 'post' ) );
 		$tags = array();
