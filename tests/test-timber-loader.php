@@ -3,7 +3,7 @@
 	class TestTimberLoader extends Timber_UnitTestCase {
 
 		/**
-		 * @expectedDeprecated  add_filter( 'timber/loader/paths' )
+		 * @expectedDeprecated  add_filter( 'timber/loader/paths', ['path/to/my/templates'] )
 		 */
 		function testTwigLoaderFilter() {
 		    $php_unit = $this;
@@ -30,7 +30,7 @@
 		}
 
 		/**
-		 * @expectedDeprecated  add_filter( 'timber/loader/paths' )
+		 * @expectedDeprecated  add_filter( 'timber/loader/paths', ['path/to/my/templates'] )
 		 * @expectedDeprecated  add_filter( 'timber/locations', ['path/to/my/templates'] ) in a non-associative array
 		 */
 		function testTwigPathFilterAdded() {
@@ -44,7 +44,7 @@
 		}
 
 		/**
-		 * @expectedDeprecated  add_filter( 'timber/loader/paths' )
+		 * @expectedDeprecated  add_filter( 'timber/loader/paths', ['path/to/my/templates'] )
 		 */
 		function testUpdatedTwigPathFilterAdded() {
 			$php_unit = $this;
@@ -57,7 +57,7 @@
 		}
 
 		/**
-		 * @expectedDeprecated  add_filter( 'timber/loader/paths' )
+		 * @expectedDeprecated  add_filter( 'timber/loader/paths', ['path/to/my/templates'] )
 		 * @expectedDeprecated  add_filter( 'timber/locations', ['path/to/my/templates'] ) in a non-associative array
 		 */
 		function testTwigPathFilter() {
