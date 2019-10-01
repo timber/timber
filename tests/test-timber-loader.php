@@ -2,6 +2,9 @@
 
 	class TestTimberLoader extends Timber_UnitTestCase {
 
+		/**
+		 * @expectedDeprecated  add_filter( 'timber/loader/paths' )
+		 */
 		function testTwigLoaderFilter() {
 		    $php_unit = $this;
 		    add_filter('timber/loader/loader', function ($loader) use ($php_unit) {
@@ -27,7 +30,8 @@
 		}
 
 		/**
-		 * @expectedDeprecated  add_filter( 'timber/loader/paths', ['path/to/my/templates'] ) in a non-associative array
+		 * @expectedDeprecated  add_filter( 'timber/loader/paths' )
+		 * @expectedDeprecated  add_filter( 'timber/locations', ['path/to/my/templates'] ) in a non-associative array
 		 */
 		function testTwigPathFilterAdded() {
 			$php_unit = $this;
@@ -39,6 +43,9 @@
 			$this->assertEquals('Boo!', $str);
 		}
 
+		/**
+		 * @expectedDeprecated  add_filter( 'timber/loader/paths' )
+		 */
 		function testUpdatedTwigPathFilterAdded() {
 			$php_unit = $this;
 			add_filter('timber/loader/paths', function($paths) use ($php_unit) {
@@ -50,7 +57,8 @@
 		}
 
 		/**
-		 * @expectedDeprecated  add_filter( 'timber/loader/paths', ['path/to/my/templates'] ) in a non-associative array
+		 * @expectedDeprecated  add_filter( 'timber/loader/paths' )
+		 * @expectedDeprecated  add_filter( 'timber/locations', ['path/to/my/templates'] ) in a non-associative array
 		 */
 		function testTwigPathFilter() {
 			$php_unit = $this;
