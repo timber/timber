@@ -27,11 +27,11 @@
 		}
 
 		/**
-		 * @expectedDeprecated  add_filter( 'timber/loader/paths', ['path/to/my/templates'] ) in a non-associative array
+		 * @expectedDeprecated  add_filter( 'timber/locations', ['path/to/my/templates'] ) in a non-associative array
 		 */
 		function testTwigPathFilterAdded() {
 			$php_unit = $this;
-			add_filter('timber/loader/paths', function($paths) use ($php_unit) {
+			add_filter('timber/locations', function($paths) use ($php_unit) {
 				$paths[] = __DIR__.'/october/';
 				return $paths;
 			});
@@ -41,7 +41,7 @@
 
 		function testUpdatedTwigPathFilterAdded() {
 			$php_unit = $this;
-			add_filter('timber/loader/paths', function($paths) use ($php_unit) {
+			add_filter('timber/locations', function($paths) use ($php_unit) {
 				$paths[] = array( __DIR__ . '/october/' );
 				return $paths;
 			});
@@ -50,11 +50,11 @@
 		}
 
 		/**
-		 * @expectedDeprecated  add_filter( 'timber/loader/paths', ['path/to/my/templates'] ) in a non-associative array
+		 * @expectedDeprecated  add_filter( 'timber/locations', ['path/to/my/templates'] ) in a non-associative array
 		 */
 		function testTwigPathFilter() {
 			$php_unit = $this;
-			add_filter('timber/loader/paths', function($paths) use ($php_unit) {
+			add_filter('timber/locations', function($paths) use ($php_unit) {
 				$paths = call_user_func_array('array_merge', $paths);
 				$count = count($paths);
 				$php_unit->assertEquals(3, count($paths));
