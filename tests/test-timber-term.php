@@ -47,21 +47,12 @@
 			$this->assertEquals('Zebra', $string);
 		}
 
-		function testConstructorWithObject() {
+		function testGetTerm() {
 			register_taxonomy('arts', array('post'));
 
 			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
-
-			$term_obj = get_term($term_id);
-			$term = Timber::get_term($term_obj, 'arts');
-			$this->assertEquals('Zong', $term->title());
-		}
-
-		function testConstructor() {
-			register_taxonomy('arts', array('post'));
-
-			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
-			$term = Timber::get_term($term_id, 'arts');
+			// @todo #2087 get this to work w/o $taxonomy param
+			$term = Timber::get_term($term_id, '');
 			$this->assertEquals('Zong', $term->title());
 			$template = '{% set zp_term = Term("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
 			$string = Timber::compile_string($template);
@@ -101,14 +92,6 @@
 			$term_id = $this->factory->term->create(array('name' => 'New England Patriots', 'description' => $desc));
 			$term = Timber::get_term($term_id, 'post_tag');
 			$this->assertEquals($desc, $term->description());
-		}
-
-		// @todo #1793 factories
-		// this test should probably be deleted altogether...
-		function testTermConstructWithName() {
-			$term_id = $this->factory->term->create(array('name' => 'St. Louis Cardinals'));
-			$term = new Timber\Term('St. Louis Cardinals');
-			$this->assertNull($term->ID);
 		}
 
 		function testTermInitObject() {
