@@ -24,12 +24,7 @@ class PostFactory {
       'attachment' => Attachment::class,
     ] );
 
-    // If map is a callable, call it to get the class name
-    if ( is_callable($map) ) {
-      $class = $map($post);
-    } else {
-      $class = $map[$post->post_type] ?? null;
-    }
+		$class = $map[$post->post_type] ?? null;
 
     // If class is a callable, call it to get the actual class name
     if (is_callable($class)) {
