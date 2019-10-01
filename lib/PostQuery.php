@@ -14,7 +14,18 @@ use Timber\PostGetter;
  * @package Timber
  */
 class PostQuery extends PostCollection {
-	
+	/**
+	 * Found posts.
+	 *
+	 * The total amount of posts found for this query. Will be `0` if you used `no_found_rows` as a
+	 * query parameter. Will be `null` if you passed in an existing collection of posts.
+	 *
+	 * @api
+	 * @since 1.11.1
+	 * @var int The amount of posts found in the query.
+	 */
+	public $found_posts = null;
+
 	protected $userQuery;
 	protected $queryIterator;
 	protected $pagination = null;
@@ -27,13 +38,17 @@ class PostQuery extends PostCollection {
 		$this->userQuery = $query;
 		$this->queryIterator = PostGetter::query_posts($query, $post_class);
 
+		if ( $this->queryIterator instanceof QueryIterator ) {
+			$this->found_posts = $this->queryIterator->found_posts();
+		}
+
 		$posts = $this->queryIterator->get_posts();
 
 		parent::__construct($posts, $post_class);
 	}
 
 	/**
-	 * @return mixed the query the user orignally passed 
+	 * @return mixed the query the user orignally passed
 	 * to the pagination object
 	 */
 	protected function get_query() {
