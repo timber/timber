@@ -188,6 +188,14 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->markTestSkipped();
 	}
 
+	function testGetTermWithSlug(){
+		// @todo #2087
+		$this->markTestSkipped();
+		$term_id = $this->factory->term->create(array('name' => 'New England Patriots'));
+		$term = Timber::get_term('new-england-patriots');
+		$this->assertEquals($term->ID, $term_id);
+	}
+
 	function testGetTerms(){
 		$posts = $this->factory->post->create_many(15, array( 'post_type' => 'post' ) );
 		$tags = array();
