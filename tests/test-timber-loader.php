@@ -31,7 +31,7 @@
 
 		/**
 		 * @expectedDeprecated  add_filter( 'timber/loader/paths', ['path/to/my/templates'] )
-		 * @expectedDeprecated  add_filter( 'timber/locations', ['path/to/my/templates'] ) in a non-associative array
+		 * @expectedDeprecated  add_filter( 'timber/loader/paths', ['path/to/my/templates'] ) in a non-associative array
 		 */
 		function testTwigPathFilterAdded() {
 			$php_unit = $this;
@@ -58,7 +58,7 @@
 
 		/**
 		 * @expectedDeprecated  add_filter( 'timber/loader/paths', ['path/to/my/templates'] )
-		 * @expectedDeprecated  add_filter( 'timber/locations', ['path/to/my/templates'] ) in a non-associative array
+		 * @expectedDeprecated  add_filter( 'timber/loader/paths', ['path/to/my/templates'] ) in a non-associative array
 		 */
 		function testTwigPathFilter() {
 			$php_unit = $this;
