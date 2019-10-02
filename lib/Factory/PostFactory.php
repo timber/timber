@@ -47,7 +47,7 @@ class PostFactory {
   protected function build(WP_Post $post) : CoreInterface {
 		$class = $this->get_post_class($post);
 
-    // TODO make Core constructors protected, call ::build() here
+    // @todo make Core constructors protected, call Post::build() here
     return new $class($post);
   }
 }

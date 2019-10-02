@@ -1,5 +1,8 @@
 <?php
 
+	/**
+	 * @group terms-api
+	 */
 	class TestTimberTermGetter extends Timber_UnitTestCase {
 
 		function testGetSingleTerm() {
