@@ -82,7 +82,7 @@ class MenuItem extends Core implements CoreInterface {
 	 */
 	public function __construct( $data, $menu = null ) {
 		$this->_menu = $menu;
-		$data       = (object) $data;
+		$data = (object) $data;
 
 		$this->import($data);
 		$this->import_classes($data);
@@ -253,7 +253,7 @@ class MenuItem extends Core implements CoreInterface {
 		$this->classes = array_unique($this->classes);
 
 		$options = new \stdClass();
-		if ( isset( $this->menu()->options ) ) {
+		if ( isset($this->menu()->options) ) {
 			// The options need to be an object.
 			$options = (object) $this->menu()->options;
 		}
@@ -347,7 +347,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @since 1.12.0
 	 * @return \Timber\Menu The `Timber\Menu` object the menu item is associated with.
 	 */
-	public function menu(){
+	public function menu() {
 		return $this->_menu;
 	}
 
