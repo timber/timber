@@ -16,6 +16,7 @@ class TermFactory {
 	}
 
 	public function from($queryOrTerms) {
+		// @todo more checks here
 		return $this->from_terms_array($queryOrTerms);
 	}
 
