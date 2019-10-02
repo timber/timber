@@ -22,7 +22,11 @@ class PathHelper {
 		PATHINFO_BASENAME | PATHINFO_EXTENSION | PATHINFO_FILENAME
 	) {
 		$info = pathinfo(
-			str_replace( array( '%2F', '%5C' ), '/', rawurlencode( $path ) ),
+			str_replace(
+				array( '%2F', '%5C' ),
+				array( '/', '\\' ),
+				rawurlencode( $path )
+			),
 			$options
 		);
 		if ( is_array( $info ) ) {
