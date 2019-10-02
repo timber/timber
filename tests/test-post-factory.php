@@ -89,11 +89,10 @@ class TestPostFactory extends Timber_UnitTestCase {
 	}
 
 	public function testFromArray() {
-		$postFactory = new PostFactory();
-
 		$this->factory->post->create(['post_type' => 'page', 'post_title' => 'Title One']);
 		$this->factory->post->create(['post_type' => 'page', 'post_title' => 'Title Two']);
 
+		$postFactory = new PostFactory();
 		$res = $postFactory->from(get_posts('post_type=page'));
 
 		$this->assertTrue(true, is_array($res));
