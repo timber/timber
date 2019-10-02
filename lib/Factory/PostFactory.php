@@ -41,8 +41,7 @@ class PostFactory {
     }
 
     // If we don't have a post class by now, fallback on the default class
-    return $class
-      ?? apply_filters( 'timber/post/classmap/default', Post::class );
+    return $class ?? Post::class;
 	}
 
   protected function build(WP_Post $post) : CoreInterface {

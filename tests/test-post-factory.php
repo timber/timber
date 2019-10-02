@@ -88,28 +88,6 @@ class TestPostFactory extends Timber_UnitTestCase {
 		remove_filter( 'timber/post/classmap', $my_class_map );
 	}
 
-	public function testGetPostWithOverriddenDefault() {
-		$filter = function () {
-			return MyPost::class;
-		};
-		add_filter( 'timber/post/classmap/default', $filter );
-
-		$post_id   = $this->factory->post->create(['post_type' => 'post']);
-		$page_id   = $this->factory->post->create(['post_type' => 'page']);
-		$custom_id = $this->factory->post->create(['post_type' => 'custom']);
-
-		$postFactory = new PostFactory();
-		$post        = $postFactory->get_post($post_id);
-		$page        = $postFactory->get_post($page_id);
-		$custom      = $postFactory->get_post($custom_id);
-
-		$this->assertInstanceOf(Post::class, $post);
-		$this->assertInstanceOf(Post::class, $page);
-		$this->assertInstanceOf(MyPost::class, $custom);
-
-		remove_filter( 'timber/post/classmap/default', $filter );
-	}
-
 	public function testFromArray() {
 		$postFactory = new PostFactory();
 
