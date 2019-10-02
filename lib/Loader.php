@@ -276,8 +276,8 @@ class Loader {
 				}, $path_locations );
 			} else {
 				Helper::deprecated(
-					'add_filter( \'timber/locations\', [\'path/to/my/templates\'] ) in a non-associative array',
-					'add_filter( \'timber/locations\', [ 0 => [ \'path/to/my/templates\' ] ] )',
+					'add_filter( \'timber/loader/paths\', [\'path/to/my/templates\'] ) in a non-associative array',
+					'add_filter( \'timber/loader/paths\', [ 0 => [ \'path/to/my/templates\' ] ] )',
 					'2.0.0'
 				);
 				$fs->addPath( $path_locations, self::MAIN_NAMESPACE );
