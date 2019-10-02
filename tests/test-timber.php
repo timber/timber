@@ -2,6 +2,9 @@
 
 use Timber\LocationManager;
 
+/**
+ * @group posts-api
+ */
 class TestTimberMainClass extends Timber_UnitTestCase {
 
 	function testSample() {

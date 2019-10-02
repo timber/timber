@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group posts-api
+ */
 class TestTimberPostGetter extends Timber_UnitTestCase {
 
 

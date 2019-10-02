@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group posts-api
+ */
 class TestTimberPagination extends Timber_UnitTestCase {
 
 	/**

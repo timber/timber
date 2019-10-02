@@ -11,16 +11,25 @@ use WP_Post;
  * Internal API class for instantiating posts
  */
 class PostFactory {
-  public function get(int $id) {
+  public function get_post(int $id) {
     return $this->build(get_post($id));
   }
 
-  public function build(WP_Post $post) : CoreInterface {
+	public function from($queryOrPosts) {
+		// @todo maybe return PostCollection/PostQuery/QueryIterator here?
+		return $this->from_posts_array($queryOrPosts);
+	}
+
+	protected function from_posts_array(array $posts) : array {
+		return array_map([$this, 'build'], $posts);
+	}
+
+	protected function get_post_class(WP_Post $post) : string {
     // Get the user-configured Class Map
     $map = apply_filters( 'timber/post/classmap', [
       'post'       => Post::class,
       'page'       => Post::class,
-      // TODO special logic for attachments?
+      // @todo special logic for attachments?
       'attachment' => Attachment::class,
     ] );
 
@@ -32,10 +41,14 @@ class PostFactory {
     }
 
     // If we don't have a post class by now, fallback on the default class
-    $class = $class
+    return $class
       ?? apply_filters( 'timber/post/classmap/default', Post::class );
+	}
 
-    // TODO make Core constructors protected
+  protected function build(WP_Post $post) : CoreInterface {
+		$class = $this->get_post_class($post);
+
+    // TODO make Core constructors protected, call ::build() here
     return new $class($post);
   }
 }

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group posts-api
+ */
 class TestTimberStaticPages extends Timber_UnitTestCase {
 
 	function tearDown() {
