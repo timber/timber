@@ -31,8 +31,10 @@ _Twig is the template language powering Timber; if you need a little background 
 = Develop (next release) =
 - Added tests to cover RTL languages and special characters in image file names
 
-**Changes for Theme Developers**
+**Fixes and improvements**
+- Fix resizing for images with UTF-8 characters in their filename
 
+**Changes for Theme Developers**
 - Added new `found_posts` property for `Timber\PostQuery`. Now you can check how many posts were found in a query.
 
 = 1.11.0 =

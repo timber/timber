@@ -4,6 +4,7 @@ namespace Timber\Image\Operation;
 
 use Timber\Helper;
 use Timber\ImageHelper;
+use Timber\PathHelper;
 use Timber\Image\Operation as ImageOperation;
 
 /*
@@ -103,7 +104,7 @@ class Letterbox extends ImageOperation {
 			$result = $image->save($save_filename);
 			$func = 'imagecreatefromjpeg';
 			$save_func = 'imagejpeg';
-			$ext = pathinfo($save_filename, PATHINFO_EXTENSION);
+			$ext = PathHelper::pathinfo($save_filename, PATHINFO_EXTENSION);
 			if ( $ext == 'gif' ) {
 				$func = 'imagecreatefromgif';
 				$save_func = 'imagegif';
