@@ -2,7 +2,7 @@
 
 /**
  * @group called-post-constructor
- * @todo #1793 replace direct Timber\Comment instantiations
+ * @todo #2094 replace direct Timber\Comment instantiations
  */
 class TestTimberComment extends Timber_UnitTestCase {
 

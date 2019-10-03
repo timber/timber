@@ -2,7 +2,7 @@
 
   /**
 	 * @group called-post-constructor
-	 * @todo #1793 replace direct Timber\User instantiations
+	 * @todo #2094 replace direct Timber\User instantiations
 	 */
 	class TestTimberIntegrationsCoAuthors extends Timber_UnitTestCase {
 

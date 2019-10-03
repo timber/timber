@@ -74,7 +74,7 @@
 
 
 			self::setRevision($post_id);
-			// @todo #1793 factories
+			// @todo #2094 factories
 			$revision = new Timber\Post();
 
 			$this->assertEquals('I am revised', trim(strip_tags($revision->content())) );
@@ -114,7 +114,7 @@
 			$wp_query->queried_object = get_post($post_id);
 			$_GET['preview'] = true;
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
-			// @todo #1793 factories
+			// @todo #2094 factories
 			$post = new Timber\Post();
 			$this->assertEquals( $original_post->class(), $post->class() );
 		}
@@ -207,7 +207,7 @@
 			$wp_query->queried_object = get_post($post_id);
 			$_GET['preview'] = true;
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
-			// @todo #1793 factories
+			// @todo #2094 factories
 			$post = new Timber\Post();
 			$this->assertEquals( $quote . 'Yes', trim(strip_tags($post->content())) );
 		}
@@ -246,7 +246,7 @@
 			$wp_query->queried_object = get_post($post_id);
 			$_GET['preview'] = true;
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
-			// @todo #1793 factories
+			// @todo #2094 factories
 			$post = new Timber\Post();
 			$this->assertEquals('I am the one', trim(strip_tags($post->content())) );
 		}

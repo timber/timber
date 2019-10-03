@@ -3,8 +3,8 @@
 /**
  * @group called-post-constructor
  * @group called-term-constructor
- * @todo #1793 replace direct Timber\User instantiations
- * @todo #1793 replace direct Timber\Comment instantiations
+ * @todo #2094 replace direct Timber\User instantiations
+ * @todo #2094 replace direct Timber\Comment instantiations
  */
 class TestTimberProperty extends Timber_UnitTestCase {
 

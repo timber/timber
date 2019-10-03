@@ -2,7 +2,7 @@
 
 /**
  * @group called-post-constructor
- * @todo #1793 replace direct Timber\Menu instantiations
+ * @todo #2094 replace direct Timber\Menu instantiations
  */
 class TestTimberMenu extends Timber_UnitTestCase {
 
