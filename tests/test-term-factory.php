@@ -88,6 +88,26 @@ class TestTermFactory extends Timber_UnitTestCase {
 	}
 
 	public function testFromArray() {
+		$a = $this->factory->term->create(['name' => 'A', 'taxonomy' => 'post_tag']);
+		$b = $this->factory->term->create(['name' => 'B', 'taxonomy' => 'post_tag']);
+
+		$termFactory = new TermFactory();
+		$res = $termFactory->from(get_terms([
+			'taxonomy'   => 'post_tag',
+			'hide_empty' => false,
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+		]));
+
+		$this->assertTrue(true, is_array($res));
+		$this->assertCount(2, $res);
+		$this->assertInstanceOf(Term::class, $res[0]);
+		$this->assertInstanceOf(Term::class, $res[1]);
+		$this->assertEquals('A', $res[0]->name);
+		$this->assertEquals('B', $res[1]->name);
+	}
+
+	public function testFromArrayCustom() {
 		register_taxonomy('make', 'post');
 		$my_class_map = function(array $map) {
 			return array_merge($map, [

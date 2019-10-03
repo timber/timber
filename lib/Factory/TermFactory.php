@@ -8,7 +8,7 @@ use Timber\Term;
 use WP_Term;
 
 /**
- * Internal API class for instantiating posts
+ * Internal API class for instantiating Terms
  */
 class TermFactory {
 	public function get_term(int $id) {
