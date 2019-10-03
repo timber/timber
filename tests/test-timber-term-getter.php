@@ -5,15 +5,10 @@
 	class TestTimberTermGetter extends Timber_UnitTestCase {
 
 		function setUp() {
-			global $wpdb;
-			$query = "truncate $wpdb->term_relationships";
-			$wpdb->query($query);
-			$query = "truncate $wpdb->term_taxonomy";
-			$wpdb->query($query);
-			$query = "truncate $wpdb->terms";
-			$wpdb->query($query);
-			$query = "truncate $wpdb->termmeta";
-			$wpdb->query($query);
+			$this->truncate('term_relationships');
+			$this->truncate('term_taxonomy');
+			$this->truncate('terms');
+			$this->truncate('termmeta');
 		}
 
 		function testGetSingleTerm() {
