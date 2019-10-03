@@ -66,12 +66,6 @@
 			$terms = Timber::get_terms();
 			$this->assertCount(3, $terms);
 
-			$terms = Timber::get_terms('categories');
-			$this->assertCount(1, $terms);
-
-			$terms = Timber::get_terms(array('tag'));
-			$this->assertCount(2, $terms);
-
 			$query = array('taxonomy' => array('category'));
 			$terms = Timber::get_terms($query);
 			$this->assertEquals('Uncategorized', $terms[0]->name);
@@ -83,5 +77,20 @@
 			$terms = Timber::get_terms(array($new_id, $term_id));
 			$this->assertCount(2, $terms);
 			$this->assertEquals('My Term', $terms[1]->name);
+		}
+
+		function testGetTermsWithCorrections() {
+			$category = $this->factory->term->create(array('name' => 'Uncategorized', 'taxonomy' => 'category'));
+			$other_term = $this->factory->term->create(array('name' => 'Bogus Term', 'taxonomy' => 'post_tag'));
+			$term_id = $this->factory->term->create(array('name' => 'My Term', 'taxonomy' => 'post_tag'));
+
+			$terms = Timber::get_terms('categories');
+			$this->assertCount(1, $terms);
+
+			$terms = Timber::get_terms(array('tags'));
+			$this->assertCount(2, $terms);
+
+			$terms = Timber::get_terms(array('tag'));
+			$this->assertCount(2, $terms);
 		}
 	}
