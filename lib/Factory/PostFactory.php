@@ -11,14 +11,18 @@ use WP_Post;
  * Internal API class for instantiating posts
  */
 class PostFactory {
-  public function get_post(int $id) {
+	public function from($params) {
+		if (is_int($params)) {
+			return $this->from_id($params);
+		}
+
+		// @todo maybe return PostCollection/PostQuery/QueryIterator here?
+		return $this->from_posts_array($params);
+	}
+
+  protected function from_id(int $id) {
     return $this->build(get_post($id));
   }
-
-	public function from($queryOrPosts) {
-		// @todo maybe return PostCollection/PostQuery/QueryIterator here?
-		return $this->from_posts_array($queryOrPosts);
-	}
 
 	protected function from_posts_array(array $posts) : array {
 		return array_map([$this, 'build'], $posts);

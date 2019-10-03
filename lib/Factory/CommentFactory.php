@@ -12,13 +12,17 @@ use WP_Comment;
  */
 class CommentFactory {
 	public function from($params) {
+		if (is_int($params)) {
+			return $this->from_id($params);
+		}
+
 		// @todo deal with assoc array queries
 		if (is_array($params)) {
 			return array_map([$this, 'build'], $params);
 		}
 	}
 
-	public function get_comment(int $id) {
+	protected function from_id(int $id) {
 		return $this->build(get_comment($id));
 	}
 

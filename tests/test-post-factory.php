@@ -19,9 +19,9 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$custom_id = $this->factory->post->create(['post_type' => 'custom']);
 
 		$postFactory = new PostFactory();
-		$post				 = $postFactory->get_post($post_id);
-		$page				 = $postFactory->get_post($page_id);
-		$custom  		 = $postFactory->get_post($custom_id);
+		$post				 = $postFactory->from($post_id);
+		$page				 = $postFactory->from($page_id);
+		$custom  		 = $postFactory->from($custom_id);
 
 		// Assert that all instances are of Timber\Post
 		$this->assertInstanceOf(Post::class, $post);
@@ -44,9 +44,9 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$custom_id = $this->factory->post->create(['post_type' => 'custom']);
 
 		$postFactory = new PostFactory();
-		$post        = $postFactory->get_post($post_id);
-		$page        = $postFactory->get_post($page_id);
-		$custom      = $postFactory->get_post($custom_id);
+		$post        = $postFactory->from($post_id);
+		$page        = $postFactory->from($page_id);
+		$custom      = $postFactory->from($custom_id);
 
 		$this->assertInstanceOf(MyPost::class, $post);
 		$this->assertInstanceOf(MyPage::class, $page);
@@ -75,10 +75,10 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$special_id = $this->factory->post->create(['post_type' => 'custom', 'post_name' => 'my-special-post']);
 
 		$postFactory = new PostFactory();
-		$post        = $postFactory->get_post($post_id);
-		$page        = $postFactory->get_post($page_id);
-		$custom      = $postFactory->get_post($custom_id);
-		$special     = $postFactory->get_post($special_id);
+		$post        = $postFactory->from($post_id);
+		$page        = $postFactory->from($page_id);
+		$custom      = $postFactory->from($custom_id);
+		$special     = $postFactory->from($special_id);
 
 		$this->assertInstanceOf(Post::class, $post);
 		$this->assertInstanceOf(MyPage::class, $page);

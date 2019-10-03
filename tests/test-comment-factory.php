@@ -19,7 +19,7 @@ class TestCommentFactory extends Timber_UnitTestCase {
 		]);
 
 		$commentFactory = new CommentFactory();
-		$comment				= $commentFactory->get_comment($comment_id);
+		$comment				= $commentFactory->from($comment_id);
 
 		$this->assertInstanceOf(Comment::class, $comment);
 	}
@@ -43,8 +43,8 @@ class TestCommentFactory extends Timber_UnitTestCase {
 		]);
 
 		$commentFactory = new CommentFactory();
-		$post_comment   = $commentFactory->get_comment($post_comment_id);
-		$page_comment   = $commentFactory->get_comment($page_comment_id);
+		$post_comment   = $commentFactory->from($post_comment_id);
+		$page_comment   = $commentFactory->from($page_comment_id);
 
 		$this->assertInstanceOf(PostComment::class, $post_comment);
 		$this->assertInstanceOf(PageComment::class, $page_comment);
@@ -81,8 +81,8 @@ class TestCommentFactory extends Timber_UnitTestCase {
 		]);
 
 		$commentFactory = new CommentFactory();
-		$post_comment   = $commentFactory->get_comment($post_comment_id);
-		$page_comment   = $commentFactory->get_comment($page_comment_id);
+		$post_comment   = $commentFactory->from($post_comment_id);
+		$page_comment   = $commentFactory->from($page_comment_id);
 
 		$this->assertInstanceOf(PostComment::class, $post_comment);
 		$this->assertInstanceOf(PageComment::class, $page_comment);

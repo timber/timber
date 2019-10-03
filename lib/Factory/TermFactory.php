@@ -11,13 +11,19 @@ use WP_Term;
  * Internal API class for instantiating Terms
  */
 class TermFactory {
-	public function get_term(int $id) {
-		return $this->build(get_term($id));
+	public function from($params) {
+		if (is_int($params)) {
+			return $this->from_id($params);
+		}
+
+		return $this->from_terms_array($params);
+
+		// @todo from_query_array
+		// @todo from_query
 	}
 
-	public function from($queryOrTerms) {
-		// @todo more checks here
-		return $this->from_terms_array($queryOrTerms);
+	protected function from_id(int $id) {
+		return $this->build(get_term($id));
 	}
 
 	protected function from_terms_array(array $terms) : array {

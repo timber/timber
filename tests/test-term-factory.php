@@ -16,8 +16,8 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$cat_id = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'category']);
 
 		$termFactory = new TermFactory();
-		$tag				 = $termFactory->get_term($tag_id);
-		$cat				 = $termFactory->get_term($cat_id);
+		$tag				 = $termFactory->from($tag_id);
+		$cat				 = $termFactory->from($cat_id);
 
 		// Assert that all instances are of Timber\Term
 		$this->assertInstanceOf(Term::class, $tag);
@@ -40,9 +40,9 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$whackness_id = $this->factory->term->create(['name' => 'Wiggity-Whack', 'taxonomy' => 'whackness']);
 
 		$termFactory = new TermFactory();
-		$tag				 = $termFactory->get_term($tag_id);
-		$cat				 = $termFactory->get_term($cat_id);
-		$whackness   = $termFactory->get_term($whackness_id);
+		$tag				 = $termFactory->from($tag_id);
+		$cat				 = $termFactory->from($cat_id);
+		$whackness   = $termFactory->from($whackness_id);
 
 		$this->assertInstanceOf(MyTerm::class,         $tag);
 		$this->assertInstanceOf(MyTerm::class,         $cat);
@@ -74,10 +74,10 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$hella_id     = $this->factory->term->create(['name' => 'Hella Whack',   'taxonomy' => 'whackness']);
 
 		$termFactory = new TermFactory();
-		$tag         = $termFactory->get_term($tag_id);
-		$cat         = $termFactory->get_term($cat_id);
-		$whackness   = $termFactory->get_term($whackness_id);
-		$hellawhack  = $termFactory->get_term($hella_id);
+		$tag         = $termFactory->from($tag_id);
+		$cat         = $termFactory->from($cat_id);
+		$whackness   = $termFactory->from($whackness_id);
+		$hellawhack  = $termFactory->from($hella_id);
 
 		$this->assertInstanceOf(Term::class,           $tag);
 		$this->assertInstanceOf(MyTerm::class,         $cat);
