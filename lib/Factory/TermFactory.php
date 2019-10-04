@@ -53,7 +53,7 @@ class TermFactory {
 		}
 
 		throw new \InvalidArgumentException(sprintf(
-			'Expected an instance of Timber\CoreInterface or WP_User, got %s',
+			'Expected an instance of Timber\CoreInterface or WP_Term, got %s',
 			get_class($obj)
 		));
 	}
