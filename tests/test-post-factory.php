@@ -88,6 +88,38 @@ class TestPostFactory extends Timber_UnitTestCase {
 		remove_filter( 'timber/post/classmap', $my_class_map );
 	}
 
+	public function testFromWpPost() {
+		$post_id = $this->factory->post->create(['post_type' => 'page', 'post_title' => 'Title One']);
+
+		$postFactory = new PostFactory();
+		$this->assertInstanceOf(Post::class, $postFactory->from(get_post($post_id)));
+	}
+
+	public function testFromWpQuery() {
+		$my_class_map = function() {
+			return [
+				'post'   => MyPost::class,
+				'page'   => MyPage::class,
+				'custom' => MyCustom::class,
+			];
+		};
+		add_filter( 'timber/post/classmap', $my_class_map );
+
+		$post_id   = $this->factory->post->create(['post_type' => 'post']);
+		$page_id   = $this->factory->post->create(['post_type' => 'page']);
+		$custom_id = $this->factory->post->create(['post_type' => 'custom']);
+
+		$postFactory = new PostFactory();
+		$query       = new WP_Query(['post_type' => ['post', 'page', 'custom']]);
+		$posts       = $postFactory->from($query);
+
+		$this->assertInstanceOf(MyPost::class,   $posts[0]);
+		$this->assertInstanceOf(MyPage::class,   $posts[1]);
+		$this->assertInstanceOf(MyCustom::class, $posts[2]);
+
+		remove_filter( 'timber/post/classmap', 'my_class_map' );
+	}
+
 	public function testFromArray() {
 		$this->factory->post->create(['post_type' => 'page', 'post_title' => 'Title One']);
 		$this->factory->post->create(['post_type' => 'page', 'post_title' => 'Title Two']);
@@ -124,6 +156,54 @@ class TestPostFactory extends Timber_UnitTestCase {
 
 		$this->assertTrue(true, is_array($res));
 		$this->assertCount(3, $res);
+		$this->assertInstanceOf(Post::class,     $res[0]);
+		$this->assertInstanceOf(MyPage::class,   $res[1]);
+		$this->assertInstanceOf(MyCustom::class, $res[2]);
+
+		remove_filter( 'timber/post/classmap', $my_class_map );
+	}
+
+	public function testFromAssortedArray() {
+		$a_id = $this->factory->post->create(['post_type' => 'post',   'post_title' => 'AAA']);
+		$b_id = $this->factory->post->create(['post_type' => 'post',   'post_title' => 'BBB']);
+		$c_id = $this->factory->post->create(['post_type' => 'post',   'post_title' => 'CCC']);
+
+		$postFactory = new PostFactory();
+
+		// pass in an ID, a WP_Post instance, and a Timber\Post instance
+		$res = $postFactory->from([
+			$a_id,
+			get_post($b_id),
+			$postFactory->from($c_id),
+		]);
+
+		$this->assertInstanceOf(Post::class, $res[0]);
+		$this->assertInstanceOf(Post::class, $res[1]);
+		$this->assertInstanceOf(Post::class, $res[2]);
+	}
+
+	public function testFromQueryArray() {
+		$my_class_map = function(array $map) {
+			return array_merge($map, [
+				'page'   => MyPage::class,
+				'custom' => MyCustom::class,
+			]);
+		};
+		add_filter( 'timber/post/classmap', $my_class_map );
+
+		$this->factory->post->create(['post_type' => 'post',        'post_title' => 'AAA']);
+		$this->factory->post->create(['post_type' => 'page',        'post_title' => 'BBB']);
+		$this->factory->post->create(['post_type' => 'custom',      'post_title' => 'CCC']);
+		$this->factory->post->create(['post_type' => 'other_thing', 'post_title' => 'ZZZ']);
+
+		$postFactory = new PostFactory();
+
+		$res = $postFactory->from([
+			'post_type' => ['post', 'page', 'custom'],
+			'orderby'   => 'title',
+			'order'     => 'ASC',
+		]);
+
 		$this->assertInstanceOf(Post::class,     $res[0]);
 		$this->assertInstanceOf(MyPage::class,   $res[1]);
 		$this->assertInstanceOf(MyCustom::class, $res[2]);
