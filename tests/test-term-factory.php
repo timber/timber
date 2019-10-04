@@ -11,6 +11,11 @@ class HellaWhackTerm extends Term {}
  * @group factory
  */
 class TestTermFactory extends Timber_UnitTestCase {
+	public function tearDown() {
+		unregister_taxonomy_for_object_type('make', 'post');
+		parent::tearDown();
+	}
+
 	public function testGetTerm() {
 		$tag_id = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'post_tag']);
 		$cat_id = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'category']);
@@ -128,6 +133,116 @@ class TestTermFactory extends Timber_UnitTestCase {
 		]));
 
 		$this->assertTrue(true, is_array($res));
+		$this->assertCount(2, $res);
+		$this->assertInstanceOf(MyTerm::class, $res[0]);
+		$this->assertInstanceOf(MyTerm::class, $res[1]);
+
+		remove_filter( 'timber/term/classmap', $my_class_map );
+	}
+
+	public function testFromWpTermObject() {
+		$my_class_map = function(array $map) {
+			return array_merge($map, [
+				'make'  => MyTerm::class,
+			]);
+		};
+		add_filter( 'timber/term/classmap', $my_class_map );
+
+		$cat_id    = $this->factory->term->create(['name' => 'Red Herring', 'taxonomy' => 'category']);
+		$toyota_id = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
+
+		$cat    = get_term($cat_id);
+		$toyota = get_term($toyota_id);
+
+		$termFactory = new TermFactory();
+		$this->assertInstanceOf(MyTerm::class, $termFactory->from($toyota));
+		$this->assertInstanceOf(Term::class,   $termFactory->from($cat));
+
+		remove_filter( 'timber/term/classmap', $my_class_map );
+	}
+
+	public function testFromTermQuery() {
+		register_taxonomy('make', 'post');
+		$my_class_map = function(array $map) {
+			return array_merge($map, [
+				'make'  => MyTerm::class,
+			]);
+		};
+		add_filter( 'timber/term/classmap', $my_class_map );
+
+		$this->factory->term->create(['name' => 'Red Herring', 'taxonomy' => 'category']);
+		$toyota = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
+		$chevy  = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'make']);
+
+		$termFactory = new TermFactory();
+		$termQuery   = new WP_Term_Query([
+			'taxonomy'   => 'make',
+			'hide_empty' => false,
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+		]);
+
+		$res = $termFactory->from($termQuery);
+
+		$this->assertCount(2, $res);
+		$this->assertInstanceOf(MyTerm::class, $res[0]);
+		$this->assertInstanceOf(MyTerm::class, $res[1]);
+
+		remove_filter( 'timber/term/classmap', $my_class_map );
+	}
+
+	public function testFromAssortedArray() {
+		register_taxonomy('make', 'post');
+		$my_class_map = function(array $map) {
+			return array_merge($map, [
+				'make'  => MyTerm::class,
+			]);
+		};
+		add_filter( 'timber/term/classmap', $my_class_map );
+
+		$geo_id        = $this->factory->term->create(['name' => 'Geo',        'taxonomy' => 'make']);
+		$datsun_id     = $this->factory->term->create(['name' => 'Datsun',     'taxonomy' => 'make']);
+		$studebaker_id = $this->factory->term->create(['name' => 'Studebaker', 'taxonomy' => 'make']);
+
+		$termFactory = new TermFactory();
+
+		// pass an array with an ID, a WP_Term, and a Timber\Term instance
+		$res = $termFactory->from([
+			$geo_id,
+			get_term($datsun_id),
+			$termFactory->from($studebaker_id),
+		]);
+
+		$this->assertCount(3, $res);
+		$this->assertInstanceOf(MyTerm::class, $res[0]);
+		$this->assertInstanceOf(MyTerm::class, $res[1]);
+		$this->assertInstanceOf(MyTerm::class, $res[2]);
+
+		remove_filter( 'timber/term/classmap', $my_class_map );
+	}
+
+	public function testFromTermQueryArray() {
+		register_taxonomy('make', 'post');
+		$my_class_map = function(array $map) {
+			return array_merge($map, [
+				'make'  => MyTerm::class,
+			]);
+		};
+		add_filter( 'timber/term/classmap', $my_class_map );
+
+		$this->factory->term->create(['name' => 'Red Herring', 'taxonomy' => 'category']);
+		$toyota = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
+		$chevy  = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'make']);
+
+		$termFactory = new TermFactory();
+
+		$res = $termFactory->from([
+			'taxonomy'   => 'make',
+			'hide_empty' => false,
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+		]);
+
 		$this->assertCount(2, $res);
 		$this->assertInstanceOf(MyTerm::class, $res[0]);
 		$this->assertInstanceOf(MyTerm::class, $res[1]);
