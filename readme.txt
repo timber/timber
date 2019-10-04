@@ -1,9 +1,9 @@
 === Timber ===
-Contributors: jarednova, connorjburton, lggorman
+Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 4.7.12
-Tested up to: 5.2.1
-Stable tag: 1.10.1
+Tested up to: 5.2.3
+Stable tag: 1.11.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -29,12 +29,24 @@ _Twig is the template language powering Timber; if you need a little background 
 == Changelog ==
 
 = Develop (next release) =
+- Added tests to cover RTL languages and special characters in image file names
+
+**Fixes and improvements**
+- Fix resizing for images with UTF-8 characters in their filename
+
+**Changes for Theme Developers**
+- Added new `found_posts` property for `Timber\PostQuery`. Now you can check how many posts were found in a query.
+
+= 1.11.0 =
+**General Note**
+- If you use WPML with Timber, please upgrade to WPML 4.2.8. The WPML team has removed their included Twig version which means no more conflicts!
 
 **Fixes and improvements**
 - Fix to menu items getting incorrect classes in WPML and others #1974
 - Fixed issue with Timber not respecting comment order #1731 #2015
 
 **Changes for Theme Developers**
+- Theme methods (theme.get and theme.display) for headers are now exposed by Timber\Theme #2051 (thanks @dtvn)
 
 = 1.10.1 =
 **Fixes and improvements**
@@ -54,7 +66,7 @@ If you use WPML, please do not upgrade to 1.10.* yet. Because WPML also uses Twi
 - Fixes a bug where the last menu item received incorrect CSS classes #2009 #1974 (thanks @strategio)
 
 **Changes for Theme Developers**
-- You can use WordPress's behavior of `get_posts` (versus `WP_Query`) via a filter. By default, Timber uses the behaviors of WP_Query in Timber's queries #1989 (thanks @palmiak) 
+- You can use WordPress's behavior of `get_posts` (versus `WP_Query`) via a filter. By default, Timber uses the behaviors of WP_Query in Timber's queries #1989 (thanks @palmiak)
 - If you run into problems with unknown `Twig_SimpleFilter` or unknown `Twig_Filter` classes, you can use `Timber\Twig_Filter` instead.
 - Fixed `Timber::get_posts` so that its default query parameters mirror WordPress's `get_posts` #1812 (thanks @bartvanraaij)
 - You can now more easily work with menu locations and filters #1959 #2018 (thanks @gchtr)

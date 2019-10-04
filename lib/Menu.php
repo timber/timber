@@ -5,7 +5,7 @@ namespace Timber;
 use Timber\Core;
 use Timber\Post;
 
-class Menu extends Core {
+class Menu extends Term {
 
 	public $MenuItemClass = 'Timber\MenuItem';
 	public $PostClass = 'Timber\Post';
