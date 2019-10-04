@@ -17,8 +17,12 @@ class TermFactory {
 			return $this->from_id($params);
 		}
 
+		if ($params instanceof WP_Term_Query) {
+			return $this->from_wp_term_query($params);
+		}
+
 		if (is_object($params)) {
-			return $this->from_obj($params);
+			return $this->from_term_obj($params);
 		}
 
 		if ($this->is_numeric_array($params)) {
@@ -26,12 +30,32 @@ class TermFactory {
 		}
 
 		if (is_array($params)) {
-			return $this->from_obj(new WP_Term_Query($params));
+			return $this->from_wp_term_query(new WP_Term_Query($params));
 		}
 	}
 
 	protected function from_id(int $id) {
 		return $this->build(get_term($id));
+	}
+
+	protected function from_wp_term_query(WP_Term_Query $query) : Iterable {
+		return array_map([$this, 'build'], $query->get_terms());
+	}
+
+	protected function from_term_obj(object $obj) : CoreInterface {
+		if ($obj instanceof CoreInterface) {
+			// We already have a Timber Core object of some kind
+			return $obj;
+		}
+
+		if ($obj instanceof WP_Term) {
+			return $this->build($obj);
+		}
+
+		throw new \InvalidArgumentException(sprintf(
+			'Expected an instance of Timber\CoreInterface or WP_User, got %s',
+			get_class($obj)
+		));
 	}
 
 	protected function get_term_class(WP_Term $term) : string {
@@ -49,26 +73,6 @@ class TermFactory {
 
     // If we don't have a term class by now, fallback on the default class
 		return $class ?? Term::class;
-	}
-
-	protected function from_obj(object $obj) {
-		if ($obj instanceof CoreInterface) {
-			// We already have a Timber Core object of some kind
-			return $obj;
-		}
-
-		if ($obj instanceof WP_Term) {
-			return $this->build($obj);
-		}
-
-		if ($obj instanceof WP_Term_Query) {
-			return array_map([$this, 'build'], $obj->get_terms());
-		}
-
-		throw new \InvalidArgumentException(sprintf(
-			'Expected an instance of Timber\CoreInterface or WP_User, got %s',
-			get_class($obj)
-		));
 	}
 
 	protected function build(WP_Term $term) : CoreInterface {

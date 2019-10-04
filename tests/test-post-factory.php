@@ -13,7 +13,7 @@ class MySpecialCustom extends MyCustom {}
  */
 class TestPostFactory extends Timber_UnitTestCase {
 
-	public function testGetPost() {
+	public function testFrom() {
 		$post_id   = $this->factory->post->create(['post_type' => 'post']);
 		$page_id   = $this->factory->post->create(['post_type' => 'page']);
 		$custom_id = $this->factory->post->create(['post_type' => 'custom']);
@@ -29,7 +29,7 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(Post::class, $custom);
 	}
 
-	public function testGetPostWithOverrides() {
+	public function testFromWithOverrides() {
 		$my_class_map = function() {
 			return [
 				'post'   => MyPost::class,
@@ -55,7 +55,7 @@ class TestPostFactory extends Timber_UnitTestCase {
 		remove_filter( 'timber/post/classmap', 'my_class_map' );
 	}
 
-	public function testGetPostWithCallable() {
+	public function testFromWithCallable() {
 		$my_class_map = function(array $map) {
 			return array_merge($map, [
 				'page'   => function() {

@@ -14,8 +14,13 @@ class UserFactory {
 			return $this->from_id($params);
 		}
 
+		if ($params instanceof WP_User_Query) {
+			return $this->from_wp_user_query($params);
+		}
+
 		if (is_object($params)) {
-			return $this->from_obj($params);
+			// assume we have some kind of WP user object, Timber or otherwise
+			return $this->from_post_obj($params);
 		}
 
 		if ($this->is_numeric_array($params)) {
@@ -33,7 +38,7 @@ class UserFactory {
 		return $this->build(get_user_by('id', $id));
 	}
 
-	protected function from_obj(object $obj) {
+	protected function from_post_obj(object $obj) : CoreInterface {
 		if ($obj instanceof CoreInterface) {
 			// we already have some kind of Timber Core object
 			return $obj;
@@ -41,10 +46,6 @@ class UserFactory {
 
 		if ($obj instanceof WP_User) {
 			return $this->build($obj);
-		}
-
-		if ($obj instanceof WP_User_Query) {
-			return array_map([$this, 'build'], $obj->get_results());
 		}
 
 		throw new \InvalidArgumentException(sprintf(
