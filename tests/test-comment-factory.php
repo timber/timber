@@ -111,4 +111,104 @@ class TestCommentFactory extends Timber_UnitTestCase {
 		$this->assertEquals('eyyyy', $res[0]->comment_content);
 		$this->assertEquals('beeee', $res[1]->comment_content);
 	}
+
+	public function testFromWpCommentObject() {
+		$id = $this->factory->comment->create([
+			'comment_post_ID' => $this->factory->post->create(),
+			'comment_content' => 'eyyyy',
+		]);
+
+		// docs: You must pass a variable containing an integer
+		// me: lol
+		$comment = get_comment($id);
+
+		$commentFactory = new CommentFactory();
+
+		$this->assertInstanceOf(Comment::class, $commentFactory->from($comment));
+	}
+
+	public function testFromWpCommentQuery() {
+		$pid = $this->factory->post->create();
+		$a = $this->factory->comment->create([
+			'comment_post_ID' => $pid,
+			'comment_content' => 'eyyyy',
+		]);
+		$b = $this->factory->comment->create([
+			'comment_post_ID' => $pid,
+			'comment_content' => 'beeee',
+		]);
+
+		// Create another comment on another post
+		$c = $this->factory->comment->create([
+			'comment_post_ID' => $this->factory->post->create(),
+			'comment_content' => 'beeee',
+		]);
+
+		$commentFactory = new CommentFactory();
+
+		$res = $commentFactory->from(new WP_Comment_Query([
+			'post_id' => $pid,
+		]));
+
+		$this->assertCount(2, $res);
+		$this->assertInstanceOf(Comment::class, $res[0]);
+		$this->assertInstanceOf(Comment::class, $res[1]);
+	}
+
+	public function testFromAssortedArray() {
+		$pid = $this->factory->post->create();
+		$a = $this->factory->comment->create([
+			'comment_post_ID' => $pid,
+			'comment_content' => 'eyyyy',
+		]);
+		$b = $this->factory->comment->create([
+			'comment_post_ID' => $pid,
+			'comment_content' => 'beeee',
+		]);
+		$c = $this->factory->comment->create([
+			'comment_post_ID' => $pid,
+			'comment_content' => 'seeee',
+		]);
+
+		$commentFactory = new CommentFactory();
+
+		// Pass an ID, a WP_Comment instance, and a Timber\Comment instance
+		$res = $commentFactory->from([
+			$a,
+			get_comment($b),
+			$commentFactory->from($c),
+		]);
+
+		$this->assertCount(3, $res);
+		$this->assertInstanceOf(Comment::class, $res[0]);
+		$this->assertInstanceOf(Comment::class, $res[1]);
+		$this->assertInstanceOf(Comment::class, $res[2]);
+	}
+
+	public function testFromQueryArray() {
+		$pid = $this->factory->post->create();
+		$a = $this->factory->comment->create([
+			'comment_post_ID' => $pid,
+			'comment_content' => 'eyyyy',
+		]);
+		$b = $this->factory->comment->create([
+			'comment_post_ID' => $pid,
+			'comment_content' => 'beeee',
+		]);
+		$c = $this->factory->comment->create([
+			'comment_post_ID' => $pid,
+			'comment_content' => 'seeee',
+		]);
+
+		$commentFactory = new CommentFactory();
+
+		$res = $commentFactory->from([
+			'post_id' => $pid,
+		]);
+
+		$this->assertCount(3, $res);
+		$this->assertInstanceOf(Comment::class, $res[0]);
+		$this->assertInstanceOf(Comment::class, $res[1]);
+		$this->assertInstanceOf(Comment::class, $res[2]);
+	}
 }

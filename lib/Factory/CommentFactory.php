@@ -5,6 +5,7 @@ namespace Timber\Factory;
 use Timber\CoreInterface;
 use Timber\Comment;
 
+use WP_Comment_Query;
 use WP_Comment;
 
 /**
@@ -16,9 +17,20 @@ class CommentFactory {
 			return $this->from_id($params);
 		}
 
-		// @todo deal with assoc array queries
+		if ($params instanceof WP_Comment_Query) {
+			return $this->from_wp_comment_query($params);
+		}
+
+		if (is_object($params)) {
+			return $this->from_comment_object($params);
+		}
+
+		if ($this->is_numeric_array($params)) {
+			return array_map([$this, 'from'], $params);
+		}
+
 		if (is_array($params)) {
-			return array_map([$this, 'build'], $params);
+			return $this->from_wp_comment_query(new WP_Comment_Query($params));
 		}
 	}
 
@@ -26,7 +38,27 @@ class CommentFactory {
 		return $this->build(get_comment($id));
 	}
 
-	protected function get_comment_class(WP_Comment $comment) {
+	protected function from_comment_object(object $comment) : CoreInterface {
+		if ($comment instanceof CoreInterface) {
+			// We already have some kind of Timber Core object
+			return $comment;
+		}
+
+		if ($comment instanceof WP_Comment) {
+			return $this->build($comment);
+		}
+
+		throw new \InvalidArgumentException(sprintf(
+			'Expected an instance of Timber\CoreInterface or WP_Comment, got %s',
+			get_class($obj)
+		));
+	}
+
+	protected function from_wp_comment_query(WP_Comment_Query $query) : Iterable {
+		return array_map([$this, 'build'], $query->get_comments());
+	}
+
+	protected function get_comment_class(WP_Comment $comment) : string {
 		// Get the user-configured Class Map
 		$map = apply_filters( 'timber/comment/classmap', []);
 
@@ -46,5 +78,12 @@ class CommentFactory {
 
     // @todo make Core constructors protected, call Comment::build() here
 		return new $class($comment);
+	}
+
+	protected function is_numeric_array(array $arr) {
+		foreach (array_keys($arr) as $k) {
+			if ( ! is_int($k) ) return false;
+		}
+		return true;
 	}
 }
