@@ -241,11 +241,10 @@ class Loader {
 		$paths = $this->locations;
 
 		/**
-		 * Filters …
-		 *
-		 * @todo Add summary, description, example, parameter description
+		 * Filters the template paths used by the Loader.
 		 *
 		 * @since 0.20.10
+		 *
 		 * @deprecated 2.0.0, use `timber/locations`
 		 *
 		 * @param array $paths
