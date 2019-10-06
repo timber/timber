@@ -156,7 +156,9 @@ use BookChildComment;
 
 add_filter( 'timber/comment/classmap', function() {
     return [
-        'book' => function( \WP_Post $post ) {
+        'book' => function( \WP_Comment $comment ) {
+            $post = get_post( $comment->comment_post_ID );
+
             if ( 0 !== $post->post_parent ) {
                 return BookChildComment::class;
             }
@@ -167,7 +169,7 @@ add_filter( 'timber/comment/classmap', function() {
 } );
 ```
 
-The callback function receives a `WP_Post` object and should return the name of the class to use.
+The callback function receives a `WP_Comment` object and should return the name of the class to use. If you need the post ID a comment is associated with, you can get that through `$comment->comment_post_ID`.
 
 ## The User Class Map
 
