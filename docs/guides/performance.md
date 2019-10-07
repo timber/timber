@@ -103,9 +103,21 @@ if ( class_exists( 'Timber' ) ){
 }
 ```
 
-You can look in your your `/wp-content/plugins/timber/twig-cache` directory to see what these files look like.
+You can look in your `/wp-content/plugins/timber/cache/twig` directory to see what these files look like.
 
-This does not cache the _contents_ of the variables. This is recommended as a last-step in the production process. Once enabled, any change you make to a `.twig` file (just tweaking the HTML for example) will not go live until the cache is flushed.
+This does not cache the _contents_ of the variables. 
+
+Enabling `Timber::$cache` works best as a last step in the production process. Once enabled, any change you make to a `.twig` file (just tweaking the HTML for example) will not go live until the cache is flushed. 
+
+Note that when `WP_DEBUG` is set to `true`, changes you make to `.twig` files will be reflected on the site regardless of the `Timber::$cache` value.
+
+To flush the Twig cache you can do this:
+
+```php
+<?php
+$loader = new Timber\Loader();
+$loader->clear_cache_twig();
+```
 
 ## Cache the PHP data
 

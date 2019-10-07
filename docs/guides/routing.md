@@ -5,10 +5,10 @@ menu:
     parent: "guides"
 ---
 
-Among its other special powers, Timber includes modern routing in the Express.js/Ruby on Rails mold, making it easy for you to implement custom pagination--and anything else you might imagine in your wildest dreams of URLs and parameters. OMG so easy!
+Among its other special powers, Timber includes modern routing in the Express.js/Ruby on Rails mold, making it easy for you to implement custom pagination — and anything else you might imagine in your wildest dreams of URLs and parameters. OMG so easy!
 
 ## Some examples
-In your functions.php file, this can be called anywhere (don't hook it to init or another action or it might be called too late)
+In your functions.php file, this can be called anywhere (don't hook it to `init` or another action or it might be called too late)
 
 ```php
 <?php
