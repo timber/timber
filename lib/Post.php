@@ -478,6 +478,11 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * * `strip`: strip tags? Default: true
 	 * * `read_more`: string for what the "Read More" text should be. Default: "Read More"
 	 *
+	 * @example
+	 * ```twig
+	 * <h2>{{ post.title }}</h2>
+	 * <div>{{ post.excerpt({ words:100, read_more:'Keep reading'}) }}</div>
+	 * ```
 	 * @return \Timber\PostPreview
 	 */
 	public function excerpt( array $options = array() ) {
@@ -497,7 +502,8 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * [documentation of the `Timber\PostPreview` class](https://timber.github.io/docs/reference/timber-postpreview/)
 	 * to get an overview of all the available methods.
 	 *
-	 * @deprecated 2.0.0, use `{{ post.excerpt }}` instead.
+	 * @deprecated 2.0.0, use `{{ post.excerpt }}` instead. 
+	 * @see \Timber\PostPreview
 	 * @example
 	 * ```twig
      * {# Use default preview #}
@@ -509,7 +515,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * {# Additionally restrict the length to 50 words #}
 	 * <p>{{ post.preview.length(50).read_more('Continue Reading') }}</p>
 	 * ```
-	 * @see \Timber\PostPreview
 	 * @return \Timber\PostPreview
 	 */
 	public function preview() {
@@ -520,9 +525,8 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	/**
 	 * Get a preview (excerpt) of your post.
 	 *
-	 * @api
 	 * @deprecated 1.3.1, use `{{ post.excerpt }}` instead.
-	 * @see        \Timber\Post::preview()
+	 * @see        \Timber\Post::excerpt()
 	 *
 	 * @param int         $len      The number of words that WordPress should use to make the
 	 *                              preview.
