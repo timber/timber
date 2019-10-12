@@ -461,15 +461,35 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	/**
 	 * Gets a preview/excerpt of your post.
 	 *
-	 * If you have text defined in the excerpt textarea of your post, it will use that. Otherwise it
-	 * will pull from the post_content. If there's a `<!-- more -->` tag, it will use that to mark
-	 * where to pull through.
+	 * If you an excerpt is set on the post, the excerpt will be used. Otherwise it will try to pull
+	 * from a preview from `post_content`. If there’s a `<!-- more -->` tag in the post content,
+	 * it will use that as an indicator of where to end the excerpt.
+	 *
+	 * @api
+	 * @see \Timber\PostPreview
+	 *
+	 * @param array $options the array of configuration options for the generated
+	 * PostPreview object
+	 * @return \Timber\PostPreview
+	 */
+	public function excerpt( array $options = array() ) {
+		return new PostPreview( $this, $options );
+	}
+
+
+	/**
+	 * Get a preview (excerpt) of your post.
+	 *
+	 * If you an excerpt is set on the post, the excerpt will be used. Otherwise it will try to pull
+	 * from a preview from `post_content`. If there’s a `<!-- more -->` tag in the post content,
+	 * it will use that to mark where to pull through.
 	 *
 	 * This method returns a `Timber\PostPreview` object, which is a **chainable object**. This
 	 * means that you can change the output of the preview by **adding more methods**. Refer to the
 	 * [documentation of the `Timber\PostPreview` class](https://timber.github.io/docs/reference/timber-postpreview/)
 	 * to get an overview of all the available methods.
 	 *
+	 * @deprecated 2.0.0, use `{{ post.excerpt }}` instead.
 	 * @example
 	 * ```twig
      * {# Use default preview #}
@@ -485,6 +505,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @return \Timber\PostPreview
 	 */
 	public function preview() {
+		Helper::deprecated('{{ post.preview }}', '{{ post.excerpt }}', '2.0.0');
 		return new PostPreview($this);
 	}
 
@@ -492,7 +513,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * Get a preview (excerpt) of your post.
 	 *
 	 * @api
-	 * @deprecated 1.3.1, use `{{ post.preview }}` instead.
+	 * @deprecated 1.3.1, use `{{ post.excerpt }}` instead.
 	 * @see        \Timber\Post::preview()
 	 *
 	 * @param int         $len      The number of words that WordPress should use to make the

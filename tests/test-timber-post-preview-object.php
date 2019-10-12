@@ -4,6 +4,7 @@
 
 		protected $gettysburg = 'Four score and seven years ago our fathers brought forth on this continent a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal.';
 
+
 		function test1886Error() {
 			$expected = '<p>Govenment:</p> <ul> <li>of the <strong>people</strong></li> <li>by the people</li> <li>for the people</li> </ul>';
 			$post_id = $this->factory->post->create(array('post_content' => $expected.'<blockquote>Lincoln</blockquote>', 'post_excerpt' => false));
@@ -22,6 +23,117 @@
 			$this->assertEquals('Govenment: <ul> <li>of the people</li> <li>by the people</li> <li>for the</li></ul>&hellip; <a href="http://example.org/?p='.$post_id.'" class="read-more">Read More</a>', $str);
 		}
 
+		public function testExcerptConstructorWithWords() {
+			$post_id = $this->factory->post->create(array(
+				'post_excerpt' => $this->gettysburg,
+			));
+			$post = new Timber\Post($post_id);
+			$excerpt = $post->excerpt(array(
+				'words'     => 4,
+				'force'     => true,
+				'read_more' => false,
+			));
+
+			// Coerce excerpt to a string and test it.
+			$this->assertEquals('Four score and seven&hellip;', ''.$excerpt);
+		}
+
+		public function testExcerptConstructorWithChars() {
+			$post_id = $this->factory->post->create(array(
+				'post_excerpt' => $this->gettysburg,
+			));
+			$post    = new Timber\Post($post_id);
+			$excerpt = $post->excerpt(array(
+				'chars'     => 20,
+				'force'     => true,
+				'read_more' => false,
+			));
+
+			// Coerce excerpt to a string and test it.
+			$this->assertEquals('Four score and seven&hellip;', ''.$excerpt);
+		}
+
+		public function testExcerptConstructorWithEnd() {
+			$post_id = $this->factory->post->create(array(
+				'post_excerpt' => $this->gettysburg,
+			));
+			$post    = new Timber\Post($post_id);
+			$excerpt = $post->excerpt(array(
+				'chars'     => 20,
+				'force'     => true,
+				'read_more' => false,
+				'end'       => ' - kthxbi',
+			));
+
+			// Coerce excerpt to a string and test it.
+			$this->assertEquals('Four score and seven - kthxbi', ''.$excerpt);
+		}
+
+		public function testExcerptConstructorWithHtml() {
+			$post_id = $this->factory->post->create(array(
+				'post_excerpt' => '<span>Yo</span>'
+					. ' <a href="/">CLICK</a>'
+					. ' <strong>STRONG</strong> '
+					. $this->gettysburg,
+			));
+			$post    = new Timber\Post($post_id);
+			$excerpt = $post->excerpt(array(
+				'chars'     => 26,
+				'read_more' => false,
+				'force'     => true,
+			));
+
+			// Coerce excerpt to a string and test it.
+			$this->assertEquals('Yo CLICK STRONG Four score&hellip;', ''.$excerpt);
+		}
+
+		public function testExcerptConstructorStrippingSomeTags() {
+			$post_id = $this->factory->post->create(array(
+				'post_excerpt' => '<span>Yo</span>'
+					. ' <a href="/">CLICK</a>'
+					. ' <strong>STRONG</strong> '
+					. $this->gettysburg,
+			));
+			$post    = new Timber\Post($post_id);
+			$excerpt = $post->excerpt(array(
+				'words'     => 5,
+				'read_more' => false,
+				'force'     => true,
+				'strip'     => '<span><a>',
+			));
+
+			// Coerce excerpt to a string and test it.
+			$this->assertEquals(
+				'<span>Yo</span> <a href="/">CLICK</a> STRONG Four&hellip;',
+				''.$excerpt
+			);
+		}
+
+		public function testExcerptConstructorWithReadMore() {
+			$post_id = $this->factory->post->create(array(
+				'post_excerpt' => $this->gettysburg,
+			));
+			$post     = new Timber\Post($post_id);
+			$readmore = 'read more! if you dare...';
+			$excerpt  = $post->excerpt(array(
+				'chars'     => 20,
+				'force'     => true,
+				'read_more' => 'read more! if you dare...',
+			));
+
+			$expected = sprintf(
+				'Four score and seven&hellip; <a href="%s" class="read-more">%s</a>',
+				$post->link(),
+				$readmore
+			);
+
+			// Coerce excerpt to a string and test it.
+			$this->assertEquals($expected, ''.$excerpt);
+		}
+
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPreviewWithStyleTags() {
 			global $wpdb;
 			$style = '<style>body { background-color: red; }</style><b>Yo.</b> ';
@@ -42,6 +154,9 @@
 			$this->assertEquals('Yo. Four score and seven years ago our fathers&hellip;', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPreviewTags() {
 			$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
 			$post = new Timber\Post($post_id);
@@ -50,6 +165,9 @@
 			$this->assertNotContains('</p>', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPostPreviewObjectWithCharAndWordLengthWordsWin() {
 			$pid = $this->factory->post->create( array('post_content' => $this->gettysburg, 'post_excerpt' => '') );
 			$template = '{{ post.preview.length(2).chars(20) }}';
@@ -58,6 +176,9 @@
 			$this->assertEquals('Four score&hellip; <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPostPreviewObjectWithCharAndWordLengthCharsWin() {
 			$pid = $this->factory->post->create( array('post_content' => $this->gettysburg, 'post_excerpt' => '') );
 			$template = '{{ post.preview.length(20).chars(20) }}';
@@ -66,6 +187,9 @@
 			$this->assertEquals('Four score and seven&hellip; <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPostPreviewObjectWithCharLength() {
 			$pid = $this->factory->post->create( array('post_content' => $this->gettysburg, 'post_excerpt' => '') );
 			$template = '{{ post.preview.chars(20) }}';
@@ -74,6 +198,9 @@
 			$this->assertEquals('Four score and seven&hellip; <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPostPreviewObjectWithLength() {
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck she a big ole duck!', 'post_excerpt' => '') );
 			$template = '{{ post.preview.length(4) }}';
@@ -82,6 +209,9 @@
 			$this->assertEquals('Lauren is a duck&hellip; <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPostPreviewObjectWithForcedLength() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been turning over in my mind ever since.') );
 			$template = '{{ post.preview.force.length(3) }}';
@@ -90,6 +220,9 @@
 			$this->assertEquals('In my younger&hellip; <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPostPreviewObject() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been <a href="http://google.com">turning over</a> in my mind ever since.') );
 			$template = '{{ post.preview }}';
@@ -98,6 +231,9 @@
 			$this->assertEquals('In my younger and more vulnerable years my father gave me some advice that I’ve been turning over in my mind ever since. <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPostPreviewObjectStrip() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been <a href="http://google.com">turning over</a> in my mind ever since.') );
 			$template = '{{ post.preview.strip(false) }}';
@@ -106,6 +242,9 @@
 			$this->assertEquals('In my younger and more vulnerable years my father gave me some advice that I’ve been <a href="http://google.com">turning over</a> in my mind ever since. <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPostPreviewObjectWithReadMore() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been turning over in my mind ever since.') );
 			$template = '{{ post.preview.read_more("Keep Reading") }}';
@@ -114,6 +253,9 @@
 			$this->assertEquals('In my younger and more vulnerable years my father gave me some advice that I’ve been turning over in my mind ever since. <a href="http://example.org/?p='.$pid.'" class="read-more">Keep Reading</a>', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPostPreviewObjectWithEverything() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been turning over in my mind ever since.') );
 			$template = '{{ post.preview.length(6).force.end("-->").read_more("Keep Reading") }}';
@@ -122,6 +264,9 @@
 			$this->assertEquals('In my younger and more vulnerable--> <a href="http://example.org/?p='.$pid.'" class="read-more">Keep Reading</a>', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPreviewWithMoreTagAndForcedLength() {
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck<!-- more--> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = new Timber\Post( $pid );
@@ -129,12 +274,18 @@
 			$this->assertEquals('Lauren is a duck <a href="'.$post->link().'" class="read-more">Read More</a>', $post->preview());
 		}
 
+		/**
+			* @expectedDeprecated {{ post.preview }}
+		 */
 		function testPreviewWithCustomMoreTag() {
 			$pid = $this->factory->post->create( array('post_content' => 'Eric is a polar bear <!-- more But what is Elaina? --> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = new Timber\Post( $pid );
 			$this->assertEquals('Eric is a polar bear <a href="'.$post->link().'" class="read-more">But what is Elaina?</a>', $post->preview());
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPreviewWithSpaceInMoreTag() {
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck, but a great duck let me tell you why <!--more--> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = new Timber\Post( $pid );
@@ -143,6 +294,9 @@
 			$this->assertEquals('Lauren is a&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPreviewWithStripAndClosingPTag() {
 			$pid = $this->factory->post->create( array('post_excerpt' => '<p>Lauren is a duck, but a great duck let me tell you why</p>') );
 			$post = new Timber\Post( $pid );
@@ -151,6 +305,9 @@
 			$this->assertEquals('<p>Lauren is a duck, but a great duck let me tell you why <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a></p>', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testPreviewWithStripAndClosingPTagForced() {
 			$pid = $this->factory->post->create( array('post_excerpt' => '<p>Lauren is a duck, but a great duck let me tell you why</p>') );
 			$post = new Timber\Post( $pid );
@@ -159,6 +316,9 @@
 			$this->assertEquals('<p>Lauren is a duck, but a great duck let me tell you why&hellip;  <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a></p>', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ post.preview }}
+		 */
 		function testEmptyPreview() {
 			$pid = $this->factory->post->create( array('post_excerpt' => '', 'post_content' => '') );
 			$post = new Timber\Post( $pid );
