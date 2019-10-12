@@ -359,6 +359,15 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertGreaterThan(1, strlen($text));
 	}
 
+	function testMenuItemMenuProperty() {
+		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
+		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
+		$page_menu = new Timber\Menu();
+		$items = $page_menu->get_items();
+		$menu = $items[0]->menu;
+		$this->assertEquals('Timber\Menu', get_class($menu));
+	}
+
 
 	function testPagesMenuWithFalse() {
 		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
