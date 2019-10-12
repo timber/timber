@@ -468,8 +468,16 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @api
 	 * @see \Timber\PostPreview
 	 *
-	 * @param array $options the array of configuration options for the generated
-	 * PostPreview object
+	 * @param array $options the array of configuration options for generating
+	 * the excerpt. Valid options:
+	 *
+	 * * `words`: number of words in the excerpt. Default: 50
+	 * * `chars`: number of characters in the excerpt. Default: false (no character limit)
+	 * * `end`: string to append to the end of the excerpt. Default: "&hellip;" (HTML ellipsis character)
+	 * * `force`: Whether to shorten the excerpt to the length/word count specified, if the editor wrote a manual excerpt longer than the set length
+	 * * `strip`: strip tags? Default: true
+	 * * `read_more`: string for what the "Read More" text should be. Default: "Read More"
+	 *
 	 * @return \Timber\PostPreview
 	 */
 	public function excerpt( array $options = array() ) {

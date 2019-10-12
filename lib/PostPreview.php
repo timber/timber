@@ -95,12 +95,12 @@ class PostPreview {
 	 * @param array $options the array of configuration options for generating
 	 * the excerpt. Valid options:
 	 *
-	 * * `length`: the number of words in the excerpt. Default: 50
-	 * * `chars`: the number of characters in the excerpt. Default: false (no character limit)
-	 * * `end`: string to append to the end of the excerpt. Default: "&hellip;" (HTML ellipsis character)
+	 * * `words`: Number of words in the excerpt. Default: 50
+	 * * `chars`: Number of characters in the excerpt. Default: false (no character limit)
+	 * * `end`: String to append to the end of the excerpt. Default: "&hellip;" (HTML ellipsis character)
 	 * * `force`: Whether to shorten the excerpt to the length/word count specified, if the editor wrote a manual excerpt longer than the set length
-	 * * `strip`: the number of words in the excerpt
-	 * * `read_more`: the number of words in the excerpt
+	 * * `strip`: Strip HTML tags? Default: true
+	 * * `read_more`: String for what the "Read More" text should be. Default: "Read More"
 	 *
 	 */
 	public function __construct( $post, array $options = array() ) {
@@ -110,7 +110,7 @@ class PostPreview {
 		$options = wp_parse_args( $options, array(
 			'words'     => 50,
 			'chars'     => false,
-			'end'				=> '&hellip;',
+			'end'		=> '&hellip;',
 			'force'     => false,
 			'strip'     => true,
 			'read_more' => 'Read More',
