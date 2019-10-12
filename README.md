@@ -103,6 +103,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Timber Sugar**](https://github.com/timber/sugar) A catch-all for goodies to use w Timber
 * [**Timber WebLink Extension**](https://github.com/nlemoine/timber-weblink-extension) Provides Twig functions to manage the Link HTTP header needed for Web Linking when using HTTP/2 Server Push as well as Resource Hints
 * [**Timmy**](https://github.com/MINDKomm/Timmy) Advanced image manipulation for Timber
+* [**Timber ACF WP Blocks**](https://github.com/palmiak/timber-acf-wp-blocks) Easy ACF Gutenberg blocks creation
 
 #### Projects that use Timber
 * [**Branch**](https://github.com/JeyKeu/branch/) Bootstrap 3 + Timber = Branch starter theme!
