@@ -347,7 +347,7 @@ class MenuItem extends Core implements CoreInterface {
 	 * @since 1.12.0
 	 * @return \Timber\Menu The `Timber\Menu` object the menu item is associated with.
 	 */
-	public function menu(){
+	public function menu() {
 		return $this->menu;
 	}
 
