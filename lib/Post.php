@@ -461,18 +461,56 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	/**
 	 * Gets a preview/excerpt of your post.
 	 *
-	 * If you have text defined in the excerpt textarea of your post, it will use that. Otherwise it
-	 * will pull from the post_content. If there's a `<!-- more -->` tag, it will use that to mark
-	 * where to pull through.
+	 * If you have an excerpt is set on the post, the excerpt will be used. Otherwise it will try to
+	 * pull from a preview from `post_content`. If there’s a `<!-- more -->` tag in the post
+	 * content, it will use that to mark where to pull through.
+	 *
+	 * @api
+	 * @see \Timber\PostPreview
+	 *
+	 * @param array $options {
+	 *     An array of configuration options for generating the excerpt. Default empty.
+	 *
+	 *     @type int      $words     Number of words in the excerpt. Default `50`.
+	 *     @type int|bool $chars     Number of characters in the excerpt. Default `false` (no
+	 *                               character limit).
+	 *     @type string   $end       String to append to the end of the excerpt. Default '&hellip;'
+	 *                               (HTML ellipsis character).
+	 *     @type bool     $force     Whether to shorten the excerpt to the length/word count
+	 *                               specified, if the editor wrote a manual excerpt longer than the
+	 *                               set length. Default `false`.
+	 *     @type bool     $strip     Whether to strip HTML tags. Default `true`.
+	 *     @type string   $read_more String for what the "Read More" text should be. Default
+	 *                               'Read More'.
+	 * }
+	 * @example
+	 * ```twig
+	 * <h2>{{ post.title }}</h2>
+	 * <div>{{ post.excerpt({ words: 100, read_more: 'Keep reading' }) }}</div>
+	 * ```
+	 * @return \Timber\PostPreview
+	 */
+	public function excerpt( array $options = array() ) {
+		return new PostPreview( $this, $options );
+	}
+
+	/**
+	 * Gets a preview (excerpt) of your post.
+	 *
+	 * If you have an excerpt is set on the post, the excerpt will be used. Otherwise it will try to
+	 * pull from a preview from `post_content`. If there’s a `<!-- more -->` tag in the post
+	 * content, it will use that to mark where to pull through.
 	 *
 	 * This method returns a `Timber\PostPreview` object, which is a **chainable object**. This
 	 * means that you can change the output of the preview by **adding more methods**. Refer to the
 	 * [documentation of the `Timber\PostPreview` class](https://timber.github.io/docs/reference/timber-postpreview/)
 	 * to get an overview of all the available methods.
 	 *
+	 * @deprecated 2.0.0, use `{{ post.excerpt }}` instead.
+	 * @see \Timber\PostPreview
 	 * @example
 	 * ```twig
-     * {# Use default preview #}
+	 * {# Use default preview #}
 	 * <p>{{ post.preview }}</p>
 	 *
 	 * {# Change the post preview text #}
@@ -481,19 +519,18 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * {# Additionally restrict the length to 50 words #}
 	 * <p>{{ post.preview.length(50).read_more('Continue Reading') }}</p>
 	 * ```
-	 * @see \Timber\PostPreview
 	 * @return \Timber\PostPreview
 	 */
 	public function preview() {
+		Helper::deprecated('{{ post.preview }}', '{{ post.excerpt }}', '2.0.0');
 		return new PostPreview($this);
 	}
 
 	/**
 	 * Get a preview (excerpt) of your post.
 	 *
-	 * @api
-	 * @deprecated 1.3.1, use `{{ post.preview }}` instead.
-	 * @see        \Timber\Post::preview()
+	 * @deprecated 1.3.1, use `{{ post.excerpt }}` instead.
+	 * @see        \Timber\Post::excerpt()
 	 *
 	 * @param int         $len      The number of words that WordPress should use to make the
 	 *                              preview.
