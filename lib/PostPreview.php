@@ -91,17 +91,23 @@ class PostPreview {
 	 * PostPreview constructor.
 	 *
 	 * @api
+	 *
 	 * @param \Timber\Post $post The post to pull the preview from.
-	 * @param array $options the array of configuration options for generating
-	 * the excerpt. Valid options:
+	 * @param array        $options {
+	 *     An array of configuration options for generating the excerpt. Default empty.
 	 *
-	 * * `words`: Number of words in the excerpt. Default: 50
-	 * * `chars`: Number of characters in the excerpt. Default: false (no character limit)
-	 * * `end`: String to append to the end of the excerpt. Default: "&hellip;" (HTML ellipsis character)
-	 * * `force`: Whether to shorten the excerpt to the length/word count specified, if the editor wrote a manual excerpt longer than the set length
-	 * * `strip`: Strip HTML tags? Default: true
-	 * * `read_more`: String for what the "Read More" text should be. Default: "Read More"
-	 *
+	 *     @type int      $words     Number of words in the excerpt. Default `50`.
+	 *     @type int|bool $chars     Number of characters in the excerpt. Default `false` (no
+	 *                               character limit).
+	 *     @type string   $end       String to append to the end of the excerpt. Default '&hellip;'
+	 *                               (HTML ellipsis character).
+	 *     @type bool     $force     Whether to shorten the excerpt to the length/word count
+	 *                               specified, if the editor wrote a manual excerpt longer than the
+	 *                               set length. Default `false`.
+	 *     @type bool     $strip     Whether to strip HTML tags. Default `true`.
+	 *     @type string   $read_more String for what the "Read More" text should be. Default
+	 *                               'Read More'.
+	 * }
 	 */
 	public function __construct( $post, array $options = array() ) {
 		$this->post = $post;
@@ -110,7 +116,7 @@ class PostPreview {
 		$options = wp_parse_args( $options, array(
 			'words'     => 50,
 			'chars'     => false,
-			'end'		=> '&hellip;',
+			'end'       => '&hellip;',
 			'force'     => false,
 			'strip'     => true,
 			'read_more' => 'Read More',
@@ -305,7 +311,7 @@ class PostPreview {
 		if ( isset($this->post->post_excerpt) && strlen($this->post->post_excerpt) ) {
 			$text = $this->post->post_excerpt;
 			if ( $this->force ) {
-				
+
 				if ( $allowable_tags ) {
 					$text = TextHelper::trim_words($text, $len, false, strtr($allowable_tags, '<>', '  '));
 				} else {
@@ -315,7 +321,7 @@ class PostPreview {
 					$text = TextHelper::trim_characters($text, $chars, false);
 				}
 				$trimmed = true;
-			} 
+			}
 		}
 		if ( !strlen($text) && preg_match('/<!--\s?more(.*?)?-->/', $this->post->post_content, $readmore_matches) ) {
 			$pieces = explode($readmore_matches[0], $this->post->post_content);
