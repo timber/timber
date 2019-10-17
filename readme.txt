@@ -29,7 +29,8 @@ _Twig is the template language powering Timber; if you need a little background 
 == Changelog ==
 
 = Develop (next release) =
-- Added tests to cover RTL languages and special characters in image file names
+- Added tests to cover RTL languages and special characters in image file names #2072
+- Fixed issue with recursion in menus and menu items #2083
 
 **Fixes and improvements**
 - Fix resizing for images with UTF-8 characters in their filename
