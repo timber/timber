@@ -3,7 +3,7 @@ Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 4.7.12
 Tested up to: 5.2.3
-Stable tag: 1.11.0
+Stable tag: 1.12.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -29,15 +29,23 @@ _Twig is the template language powering Timber; if you need a little background 
 == Changelog ==
 
 = Develop (next release) =
-- Added tests to cover RTL languages and special characters in image file names
 
 **Fixes and improvements**
-- Fix resizing for images with UTF-8 characters in their filename
+
+**Changes for Theme Developers**
+
+= 1.12.0 =
+
+**Fixes and improvements**
+- Fix resizing for images with UTF-8 characters in their filename #2072
+- Added tests to cover RTL languages and special characters in image file names #2072
+- Fixed MenuItem menu recursion #2071 #2083
 
 **Changes for Theme Developers**
 - Added new `found_posts` property for `Timber\PostQuery`. Now you can check how many posts were found in a query.
 
 = 1.11.0 =
+
 **General Note**
 - If you use WPML with Timber, please upgrade to WPML 4.2.8. The WPML team has removed their included Twig version which means no more conflicts!
 
