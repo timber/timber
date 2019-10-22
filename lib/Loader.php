@@ -152,7 +152,7 @@ class Loader {
 	 */
 	public function get_twig() {
 		$loader = $this->get_loader();
-		$params = array('debug' => WP_DEBUG, 'autoescape' => false);
+		$params = array('autoescape' => false);
 		if ( isset(Timber::$autoescape) ) {
 			$params['autoescape'] = Timber::$autoescape === true ? 'html' : Timber::$autoescape;
 		}
