@@ -229,6 +229,8 @@ class Loader {
 	}
 
 	/**
+	 * Remove a directory and everything inside
+	 *
 	 * @param string|false $dirPath
 	 */
 	public static function rrmdir( $dirPath ) {
