@@ -135,4 +135,25 @@
 			$this->assertEquals('Nixon was re-elected on Nov 7, 1972, long may he reign!', $str);
 		}
 
+		function testPHPTimeZone() {
+			update_option('timezone_string', 'America/Los_Angeles');
+			$tz = get_option('timezone_string');
+			$date_format   = 'F j, Y @ g:i a';
+			date_default_timezone_set('America/Los_Angeles');
+			$pid = $this->factory->post->create(array('post_date' => '2019-10-31 12:46:41'));
+			$post = new TimberPost($pid);
+			$post_date = Timber::compile_string("{{ post.date('".$date_format."') }}", array('post' => $post));
+			$date_function = Timber::compile_string("{{ date('2019-10-31 12:46:41')|date('F j, Y @ g:i a', 'America/Los_Angeles') }}");
+			$date_filter   = Timber::compile_string("{{ '2019-10-31 12:46:41'|date('F j, Y @ g:i a') }}");
+			// error_log('$tz = '.$tz);
+			// error_log('post_date ='. $post_date);
+			// error_log('date_function = '.$date_function);
+			// error_log('date_filter = '.$date_filter);
+			$this->assertEquals($post_date, $date_filter);
+		}
+
+		function tearDown() {
+			update_option('timezone_string', '');
+		}
+
 	}
