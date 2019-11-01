@@ -100,5 +100,15 @@
 			$this->assertEquals('Tom, Rick, Harry, and Mike', $str);
 		}
 
+		function testTwigSort() {
+			$template = "{% set fruits = [
+							{ name: 'Apples', quantity: 5 },
+							{ name: 'Oranges', quantity: 2 },
+							{ name: 'Grapes', quantity: 4 },
+						] %}{% for fruit in fruits|sort((a, b) => a.quantity <=> b.quantity)|column('name') %}{{ fruit }} {% endfor %}";
+			$output = Timber::compile_string($template);
+			$this->assertEquals('Oranges Grapes Apples ', $output);
+		}
+
 
 	}
