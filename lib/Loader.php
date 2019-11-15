@@ -71,7 +71,8 @@ class Loader {
 			}
 			$data = apply_filters('timber_loader_render_data', $data);
 			$data = apply_filters('timber/loader/render_data', $data, $file);
-			$output = $twig->render($file, $data);
+			$template = $twig->load($file);
+			$output = $template->render($data);
 		}
 
 		if ( false !== $output && false !== $expires && null !== $key ) {
@@ -152,7 +153,7 @@ class Loader {
 	 */
 	public function get_twig() {
 		$loader = $this->get_loader();
-		$params = array('debug' => WP_DEBUG, 'autoescape' => false);
+		$params = array('debug' => WP_DEBUG,'autoescape' => false);
 		if ( isset(Timber::$autoescape) ) {
 			$params['autoescape'] = Timber::$autoescape === true ? 'html' : Timber::$autoescape;
 		}
@@ -229,6 +230,8 @@ class Loader {
 	}
 
 	/**
+	 * Remove a directory and everything inside
+	 *
 	 * @param string|false $dirPath
 	 */
 	public static function rrmdir( $dirPath ) {
