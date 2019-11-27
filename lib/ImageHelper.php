@@ -33,7 +33,8 @@ class ImageHelper {
 	static $home_url;
 
 	public static function init() {
-		self::$home_url = get_home_url();
+		$home_url = get_home_url();
+		self::$home_url = apply_filters('timber/URLHelper/get_content_subdir/home_url', $home_url);
 		add_action('delete_attachment', array(__CLASS__, 'delete_attachment'));
 		add_filter('wp_generate_attachment_metadata', array(__CLASS__, 'generate_attachment_metadata'), 10, 2);
 		add_filter('upload_dir', array(__CLASS__, 'add_relative_upload_dir_key'), 10, 2);
