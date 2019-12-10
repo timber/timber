@@ -166,10 +166,4 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$compiled = Timber::compile_string($str, array('post' => $post));
 		$this->assertEquals('Kramer, Elaine Benes, J. Peterman, ', $compiled);
 	}
-
-
-
-
-
-
 }

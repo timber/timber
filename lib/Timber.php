@@ -2,20 +2,6 @@
 
 namespace Timber;
 
-use Timber\Twig;
-use Timber\ImageHelper;
-use Timber\Admin;
-use Timber\Integrations;
-use Timber\PostGetter;
-use Timber\TermGetter;
-use Timber\Site;
-use Timber\URLHelper;
-use Timber\Helper;
-use Timber\Pagination;
-use Timber\Request;
-use Timber\User;
-use Timber\Loader;
-
 /**
  * Class Timber
  *
@@ -39,13 +25,11 @@ use Timber\Loader;
  * ```
  */
 class Timber {
+
 	public static $version = '2.0.0';
 	public static $locations;
 	public static $dirname = 'views';
-	public static $twig_cache = false;
-	public static $cache = false;
 	public static $auto_meta = true;
-	public static $autoescape = false;
 
 	/**
 	 * Global context cache.
@@ -53,6 +37,32 @@ class Timber {
 	 * @var array An array containing global context variables.
 	 */
 	public static $context_cache = array();
+
+	/**
+	 * Caching option for Twig.
+	 *
+	 * @deprecated 2.0.0
+	 * @var bool
+	 */
+	public static $twig_cache = false;
+
+	/**
+	 * Caching option for Twig.
+	 *
+	 * Alias for `Timber::$twig_cache`.
+	 *
+	 * @deprecated 2.0.0
+	 * @var bool
+	 */
+	public static $cache = false;
+
+	/**
+	 * Autoescaping option for Twig.
+	 *
+	 * @deprecated 2.0.0
+	 * @var bool
+	 */
+	public static $autoescape = false;
 
 	/**
 	 * @codeCoverageIgnore
@@ -79,7 +89,7 @@ class Timber {
 		if ( version_compare(phpversion(), '5.3.0', '<') && !is_admin() ) {
 			trigger_error('Timber requires PHP 5.3.0 or greater. You have '.phpversion(), E_USER_ERROR);
 		}
-		if ( !class_exists('Twig\Token') ) {
+		if ( ! class_exists( 'Twig\Token' ) ) {
 			trigger_error('You have not run "composer install" to download required dependencies for Timber, you can read more on https://github.com/timber/timber#installation', E_USER_ERROR);
 		}
 	}
@@ -526,8 +536,19 @@ class Timber {
 				);
 			}
 
-			$output = $loader->render($file, $data, $expires, $cache_mode);
+			$output = $loader->render( $file, $data, $expires, $cache_mode );
 		}
+
+		/**
+		 * Filters the compiled result before it is returned in `Timber::compile()`.
+		 *
+		 * It adds the posibility to filter the output ready for render.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param string $output
+		 */
+		$output = apply_filters( 'timber/compile/result', $output );
 
 		/**
 		 * Fires after a Twig template was compiled and before the compiled data
@@ -585,9 +606,8 @@ class Timber {
 	/**
 	 * Fetch function.
 	 *
-	 * @todo In case this isn’t deprecated for 2.0.0, update filter hook name.
-	 *
 	 * @api
+	 * @deprecated 2.0.0 use Timber::compile()
 	 * @param array|string $filenames  Name of the Twig file to render. If this is an array of files, Timber will
 	 *                                 render the first file that exists.
 	 * @param array        $data       Optional. An array of data to use in Twig template.
@@ -598,18 +618,28 @@ class Timber {
 	 * @return bool|string The returned output.
 	 */
 	public static function fetch( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
-		$output = self::compile($filenames, $data, $expires, $cache_mode, true);
+		Helper::deprecated(
+			'fetch',
+			'Timber::compile() (see https://timber.github.io/docs/reference/timber/#compile for more information)',
+			'2.0.0'
+		);
+		$output = self::compile( $filenames, $data, $expires, $cache_mode, true );
 
 		/**
 		 * Filters the compiled result before it is returned.
 		 *
-		 * @todo Maybe deprecate in 2.0?
 		 * @see \Timber\Timber::fetch()
 		 * @since 0.16.7
+		 * @deprecated 2.0.0 use timber/compile/result
 		 *
 		 * @param string $output The compiled output.
 		 */
-		$output = apply_filters('timber_compile_result', $output);
+		$output = apply_filters_deprecated(
+			'timber_compile_result',
+			array( $output ),
+			'2.0.0',
+			'timber/compile/result'
+		);
 
 		return $output;
 	}
@@ -636,9 +666,8 @@ class Timber {
 	 * @return bool|string The echoed output.
 	 */
 	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
-		$output = self::fetch($filenames, $data, $expires, $cache_mode);
+		$output = self::compile($filenames, $data, $expires, $cache_mode);
 		echo $output;
-		return $output;
 	}
 
 	/**
@@ -660,7 +689,6 @@ class Timber {
 	public static function render_string( $string, $data = array() ) {
 		$compiled = self::compile_string($string, $data);
 		echo $compiled;
-		return $compiled;
 	}
 
 

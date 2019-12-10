@@ -306,7 +306,7 @@
 			$_GET['preview'] = true;
 			$_GET['preview_nonce'] = wp_create_nonce('post_preview_' . $post_id);
 			$post = new Timber\Post($post_id);
-			$str_direct = Timber::compile_string('{{post.test_field}}', array('post' => $post));
+			$str_direct = Timber::compile_string('{{ post.meta("test_field") }}', array('post' => $post));
 			$this->assertEquals( $assertCustomFieldVal, $str_direct );
 		}
 

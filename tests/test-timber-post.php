@@ -379,80 +379,6 @@
 			$this->assertEquals($page2, trim(strip_tags( $post->paged_content() )));
 		}
 
-		/**
-		 * This seems like an incredible edge case test from 1.x
-		 * @ignore since 2.0
-		 */
-		/*
-		function testMetaCustomArrayFilter(){
-			add_filter('timber_post_get_meta', function($customs) {
-				error_log('RUN FITER');
-				print_r($customs);
-				foreach( $customs as $key=>$value ){
-					$flat_key = str_replace('-', '_', $key);
-					$flat_key .= '_flat';
-					$customs[$flat_key] = $value;
-				}
-				// print_r($customs);
-				return $customs;
-			});
-			$post_id = $this->factory->post->create();
-			update_post_meta($post_id, 'the-field-name', 'the-value');
-			update_post_meta($post_id, 'with_underscores', 'the_value');
-			$post = new Timber\Post($post_id);
-			$this->assertEquals($post->with_underscores_flat, 'the_value');
-			//$this->assertEquals($post->the_field_name_flat, 'the-value');
-		}*/
-
-		/**
-		 * This tests was created to catch what happens when you do weird things to {{ post.meta }},
-		 * like calling it when nothing's assigned and trying to output as a string.
-		 *
-		 * @expectedException Twig_Error_Runtime
-		 */
-		function testPostMetaMetaException(){
-			$post_id = $this->factory->post->create();
-			$post = new Timber\Post($post_id);
-			$string = Timber::compile_string('My {{ post.meta }}', array('post' => $post));
-			$this->assertEquals('My ', trim($string));
-		}
-
-		/**
-		 * This tests was created to catch what happens when you do weird things to {{ post.meta }},
-		 * like calling it when nothing's assigned and trying to output a default property as a string.
-		 */
-		function testPostMetaMetaArrayProperty(){
-			$post_id = $this->factory->post->create();
-			$post = new Timber\Post($post_id);
-			$string = Timber::compile_string('My {{ post.meta._pingme[0] }}', array('post' => $post));
-			$this->assertEquals('My 1', trim($string));
-		}
-
-		/**
-		 * This tests was created to catch what happens when you do weird things to {{ post.meta }},
-		 * like calling it when nothing's assigned and trying to output as a string. (Even when
-		 * something's assigned)
-		 *
-		 * @expectedException Twig_Error_Runtime
-		 */
-		function testPostMetaMetaAssignedException() {
-			$post_id = $this->factory->post->create();
-			update_post_meta($post_id, 'meta', 'steak');
-			$post = new Timber\Post($post_id);
-			$string = Timber::compile_string('My {{ post.meta }}', array('post' => $post));
-			$this->assertEquals('My ', trim($string));
-		}
-
-		function testPostMetaMetaOnCustom() {
-			$post_id = $this->factory->post->create();
-			$post = new Timber\Post($post_id);
-			update_post_meta($post_id, 'meta', 'steak');
-			$post = new Timber\Post($post_id);
-			$string = Timber::compile_string('My {{ post.custom.meta }}', array('post' => $post));
-			// We're cool with this, but it's still a bad idea.
-			$this->assertEquals('My steak', trim($string));
-		}
-
 		function testPostParent(){
 			$parent_id = $this->factory->post->create();
 			$child_id = $this->factory->post->create(array('post_parent' => $parent_id));
@@ -1056,4 +982,28 @@
 			//
 		}
 
+		function testPostThumbnailId() {
+			// Add attachment to post.
+			$post_id       = $this->factory->post->create();
+			$attachment_id = TestTimberImage::get_attachment( $post_id );
+			add_post_meta( $post_id, '_thumbnail_id', $attachment_id, true );
+
+			$post = new Timber\Post( $post_id );
+
+			$this->assertEquals( $attachment_id, $post->thumbnail_id() );
+		}
+
+		/**
+		 * @expectedDeprecated Accessing the thumbnail ID through {{ post._thumbnail_id }}
+		 */
+		function testDeprecatedPostThumbnailIdProperty() {
+			// Add attachment to post.
+			$post_id       = $this->factory->post->create();
+			$attachment_id = TestTimberImage::get_attachment( $post_id );
+			add_post_meta( $post_id, '_thumbnail_id', $attachment_id, true );
+
+			$post = new Timber\Post( $post_id );
+
+			$this->assertEquals( $attachment_id, $post->_thumbnail_id );
+		}
 	}
