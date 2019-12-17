@@ -230,7 +230,6 @@ class Twig {
 		$twig->addFilter(new TwigFilter('pluck', array('Timber\Helper', 'pluck')));
 		
 		/** 
-		 * @removed
 		 * @deprecated since 1.13 and removed in 2.0. Use Twig's native filter filter instead 
 		 * (which was introduced after Timber's version). In this instance we want to use the native
 		 * Twig API when available. If you want to continue to use the Timber 1.x version in your 
