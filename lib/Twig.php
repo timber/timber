@@ -228,7 +228,16 @@ class Twig {
 		$twig->addFilter(new TwigFilter('list', array($this, 'add_list_separators')));
 
 		$twig->addFilter(new TwigFilter('pluck', array('Timber\Helper', 'pluck')));
-		$twig->addFilter(new TwigFilter('filter', array('Timber\Helper', 'filter_array')));
+		
+		/** 
+		 * @removed
+		 * @deprecated since 1.13 and removed in 2.0. Use Twig's native filter filter instead 
+		 * (which was introduced after Timber's version). In this instance we want to use the native
+		 * Twig API when available. If you want to continue to use the Timber 1.x version in your 
+		 * project, you can copy-and-paste the deprecated line below into your functions.php file.
+		 * @ticket #1594 #2120
+		 */
+		//$twig->addFilter(new TwigFilter('filter', array('Timber\Helper', 'filter_array')));
 
 		$twig->addFilter(new TwigFilter('relative', function( $link ) {
 					return URLHelper::get_rel_url($link, true);
