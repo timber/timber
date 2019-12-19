@@ -208,6 +208,7 @@ class Twig {
 
 		$twig->addFilter(new Twig_Filter('pluck', array('Timber\Helper', 'pluck')));
 		$twig->addFilter(new Twig_Filter('filter', array('Timber\Helper', 'filter_array')));
+		$twig->addFilter(new Twig_Filter('wp_list_filter', array('Timber\Helper', 'wp_filter_array')));
 
 		$twig->addFilter(new Twig_Filter('relative', function( $link ) {
 					return URLHelper::get_rel_url($link, true);

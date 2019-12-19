@@ -423,16 +423,38 @@ class Helper {
 
 	/**
 	 * Filters a list of objects, based on a set of key => value arguments.
+	 * Uses native Twig Filter.
+	 *
+	 * @since x.x.x
+	 * @param array                 $list to filter.
+	 * @param callback|string|array $arrow function used for filtering,
+	 *                              string or array for backward compatibility.
+	 * @param string                $operator to use (AND, NOT, OR). For backward compatibility.
+	 * @return array
+	 */
+	public static function filter_array( $list, $arrow, $operator = 'AND' ) {
+		if ( ! is_callable( $arrow ) ) {
+			self::warn( 'filter is using Twig\'s filter by default. If you want to use wp_filter_array use array|wp_list_filter.' );
+
+			return self::wp_filter_array( $list, $arrow, $operator );
+		}
+
+		return twig_array_filter( $list, $arrow );
+	}
+
+	/**
+	 * Filters a list of objects, based on a set of key => value arguments.
+	 * Uses WordPress WP_List_Util's filter.
 	 *
 	 * @since 1.5.3
 	 * @ticket #1594
 	 * @param array        $list to filter.
-	 * @param string|array $filter to search for.
+	 * @param string|array $args to search for.
 	 * @param string       $operator to use (AND, NOT, OR).
 	 * @return array
 	 */
-	public static function filter_array( $list, $args, $operator = 'AND' ) {
-		if ( ! is_array($args) ) {
+	public static function wp_filter_array( $list, $args, $operator = 'AND' ) {
+		if ( ! is_array( $args ) ) {
 			$args = array( 'slug' => $args );
 		}
 
