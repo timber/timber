@@ -61,13 +61,14 @@ class MenuItem extends Core implements CoreInterface {
 	public $current_item_ancestor;
 
 	/**
-	 * Timber Menu.
+	 * Timber Menu. Previously this was a public property, but converted to a method to avoid
+	 * recursion (see #2071).
 	 *
-	 * @api
-	 * @since 1.9.6
+	 * @since 1.12.0
+	 * @see \Timber\Menu::menu();
 	 * @var \Timber\Menu The `Timber\Menu` object the menu item is associated with.
 	 */
-	public $menu;
+	protected $menu;
 
 	protected $_name;
 	protected $_menu_item_object_id;
@@ -252,9 +253,9 @@ class MenuItem extends Core implements CoreInterface {
 		$this->classes = array_unique($this->classes);
 
 		$options = new \stdClass();
-		if ( isset( $this->menu->options ) ) {
+		if ( isset($this->menu()->options) ) {
 			// The options need to be an object.
-			$options = (object) $this->menu->options;
+			$options = (object) $this->menu()->options;
 		}
 
 		/**
@@ -338,6 +339,18 @@ class MenuItem extends Core implements CoreInterface {
 	public function type() {
 		return $this->_menu_item_type;
 	}
+
+	/**
+	 * Timber Menu.
+	 *
+	 * @api
+	 * @since 1.12.0
+	 * @return \Timber\Menu The `Timber\Menu` object the menu item is associated with.
+	 */
+	public function menu() {
+		return $this->menu;
+	}
+
 
 	/**
 	 * Get a meta value of the menu item.

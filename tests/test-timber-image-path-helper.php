@@ -5,7 +5,7 @@
 		function testImagePathLetterboxWithHebrew() {
 			//path/to/איתין-נוף-נוסף.jpg
 
-			$hebrew = TestTimberImage::copyTestImage('איתין-נוף-נוסף.jpg');
+			$hebrew = TestTimberImage::copyTestImage('hebrew.jpg', 'איתין-נוף-נוסף.jpg');
 			$upload_dir = wp_upload_dir();
 			$image = $upload_dir['url'].'/איתין-נוף-נוסף.jpg';
 			$new_file = TimberImageHelper::letterbox( $image, 500, 500, '#CCC', true );
@@ -18,7 +18,7 @@
 
 		function testImagePathStartsWithSpecialChar() {
 			require_once('wp-overrides.php');
-			$filename = __DIR__.'/assets/©Robocop.jpg';
+			$filename = TestTimberImage::copyTestImage('robocop.jpg', '©Robocop.jpg');
 			$filesize = filesize($filename);
 			$data = array('tmp_name' => $filename, 'name' => '©Robocop.jpg', 'type' => 'image/jpg', 'size' => $filesize, 'error' => 0);
 			$this->assertTrue(file_exists($filename));
