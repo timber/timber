@@ -99,9 +99,11 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Timber Debugger**](https://github.com/djboris88/timber-debugger) Package that provides extra debugging options for Timber
 * [**Timber Dump Extension**](https://github.com/nlemoine/timber-dump-extension) Debug output with nice formatting
 * [**Timber Photon**](https://github.com/slimndap/TimberPhoton) Plug-in to use JetPack's free Photon image manipulation and CDN with Timber
+* [**Timber VS Code Extension**](https://github.com/JDevx97/Timber-Snippets) Snippets for Timber in Visual Studio Code
 * [**Timber Sugar**](https://github.com/timber/sugar) A catch-all for goodies to use w Timber
 * [**Timber WebLink Extension**](https://github.com/nlemoine/timber-weblink-extension) Provides Twig functions to manage the Link HTTP header needed for Web Linking when using HTTP/2 Server Push as well as Resource Hints
 * [**Timmy**](https://github.com/MINDKomm/Timmy) Advanced image manipulation for Timber
+* [**Timber ACF WP Blocks**](https://github.com/palmiak/timber-acf-wp-blocks) Easy ACF Gutenberg blocks creation
 
 #### Projects that use Timber
 * [**Branch**](https://github.com/JeyKeu/branch/) Bootstrap 3 + Timber = Branch starter theme!

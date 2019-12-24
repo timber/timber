@@ -154,8 +154,9 @@ class Loader {
 				'2.0.0',
 				'timber/loader/render_data'
 			);
-
-			$output = $twig->render($file, $data);
+			
+			$template = $twig->load($file);
+			$output = $template->render($data);
 		}
 
 		if ( false !== $output && false !== $expires && null !== $key ) {
@@ -302,6 +303,7 @@ class Loader {
 	 * @return \Twig\Environment
 	 */
 	public function get_twig() {
+
 		// Default options.
 		$environment_options = array(
 			'debug'      => WP_DEBUG,
@@ -532,6 +534,8 @@ class Loader {
 	}
 
 	/**
+	 * Remove a directory and everything inside
+	 *
 	 * @param string|false $dirPath
 	 */
 	public static function rrmdir( $dirPath ) {
