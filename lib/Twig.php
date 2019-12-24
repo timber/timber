@@ -234,7 +234,7 @@ class Twig {
 					return URLHelper::get_rel_url($link, true);
 				} ));
 
-		$twig->addFilter(new TwigFilter('date', array($this, 'intl_date')));
+		$twig->addFilter(new TwigFilter('intl_date', array($this, 'intl_date')));
 
 		$twig->addFilter(new TwigFilter('truncate', function( $text, $len ) {
 					return TextHelper::trim_words($text, $len);
@@ -380,7 +380,7 @@ class Twig {
 	}
 
 	/**
-	 *
+	 * Parses date value to more gracefully integrate WordPress's date_i18n with Twig
 	 *
 	 * @param string|\DateTime  $date
 	 * @param string            $format (optional)
