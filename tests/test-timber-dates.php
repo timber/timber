@@ -47,7 +47,7 @@
 		function testPostDateWithFilter(){
 			$pid = $this->factory->post->create();
 			$post = new Timber\Post($pid);
-			$twig = 'I am from {{post.post_date|date}}';
+			$twig = 'I am from {{post.post_date|date("F j, Y")}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
 			$this->assertEquals('I am from '.date('F j, Y'), $str);
 		}
@@ -100,7 +100,7 @@
 		}
 
 		function testACFDate() {
-			$twig = "Thing is on {{'20150928'|date('M j, Y')}}";
+			$twig = "Thing is on {{'20150928'|intl_date('M j, Y')}}";
 			$str = Timber::compile_string($twig);
 			$this->assertEquals('Thing is on Sep 28, 2015', $str);
 		}
@@ -118,13 +118,13 @@
 		}
 
 		function testEightDigitsString() {
-			$twig = "Thing is on {{'20160505'|date('M j, Y')}}";
+			$twig = "Thing is on {{'20160505'|intl_date('M j, Y')}}";
 			$str = Timber::compile_string($twig);
 			$this->assertEquals('Thing is on May 5, 2016', $str);
 		}
 
 		function testEightDigits() {
-			$twig = "Thing is on {{20160505|date('M j, Y')}}";
+			$twig = "Thing is on {{20160505|intl_date('M j, Y')}}";
 			$str = Timber::compile_string($twig);
 			$this->assertEquals('Thing is on May 5, 2016', $str);
 		}
