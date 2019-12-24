@@ -33,6 +33,7 @@ _Twig is the template language powering Timber; if you need a little background 
 **Fixes and improvements**
 
 **Changes for Theme Developers**
+- {{ post.date }} and {{ post.time }} now use `date_i18n` under the hood #2104 #2126 (thanks @palmiak)
 
 = 1.13.0 =
 **Fixes and improvements**
