@@ -1259,7 +1259,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function date( $date_format = '' ) {
 		$df = $date_format ? $date_format : get_option('date_format');
-		$the_date = (string) mysql2date($df, $this->post_date);
+		$the_date = date_i18n($df, strtotime($this->post_date));
 		return apply_filters('get_the_date', $the_date, $df);
 	}
 
@@ -1283,7 +1283,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function time( $time_format = '' ) {
 		$tf = $time_format ? $time_format : get_option('time_format');
-		$the_time = (string) mysql2date($tf, $this->post_date);
+		$the_time = date_i18n($tf, strtotime($this->post_date));
 		return apply_filters('get_the_time', $the_time, $tf);
 	}
 
