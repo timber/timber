@@ -318,16 +318,8 @@ class Twig {
 			$escaper_extension->setEscaper('wp_kses_post', $wp_kses_post);
 			$escaper_extension->setEscaper('esc_html', $esc_html);
 			$escaper_extension->setEscaper('esc_js', $esc_js);
-		} else {
-			$escaper_extension = $twig->getExtension('Twig\Extension\CoreExtension');
-			$escaper_extension->setEscaper('esc_url', $esc_url);
-			$escaper_extension->setEscaper('wp_kses_post', $wp_kses_post);
-			$escaper_extension->setEscaper('esc_html', $esc_html);
-			$escaper_extension->setEscaper('esc_js', $esc_js);
-		}
-
+		} 
 		return $twig;
-
 	}
 
 	/**
