@@ -207,6 +207,10 @@ class Twig {
 		$twig->addFilter(new Twig_Filter('list', array($this, 'add_list_separators')));
 
 		$twig->addFilter(new Twig_Filter('pluck', array('Timber\Helper', 'pluck')));
+		
+		/**
+		 * @todo remove this in 2.x so that filter merely passes to Twig's filter without any modification
+		 */
 		$twig->addFilter(new Twig_Filter('filter', array('Timber\Helper', 'filter_array')));
 		$twig->addFilter(new Twig_Filter('wp_list_filter', array('Timber\Helper', 'wp_filter_array')));
 
