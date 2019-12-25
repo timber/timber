@@ -228,6 +228,11 @@ class Twig {
 		$twig->addFilter(new TwigFilter('list', array($this, 'add_list_separators')));
 
 		$twig->addFilter(new TwigFilter('pluck', array('Timber\Helper', 'pluck')));
+
+		/** 
+		 * @deprecated since 1.13 (to be removed in 2.0). Use Twig's native filter filter instead
+		 * @ticket #1594 #2120
+		 */
 		$twig->addFilter(new TwigFilter('filter', array('Timber\Helper', 'filter_array')));
 
 		$twig->addFilter(new TwigFilter('relative', function( $link ) {
