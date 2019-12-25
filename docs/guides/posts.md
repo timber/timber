@@ -61,7 +61,7 @@ If no valid post can be found with the post ID you provided, the `Timber::get_po
 $post = Timber::get_post( $post_id );
 
 if ( $post ) {
-
+    // Handle post.
 }
 ```
 
@@ -98,26 +98,31 @@ So, how does Timber know about your `Book` class? Timber will use the [Post Clas
 If you want to get a collection of posts, you can use `Timber::get_posts()`.
 
 ```php
-$posts = Timber::get_posts( [
-    'query' => $query,
-] );
+$posts = Timber::get_posts( $query );
 ```
 
 You can use this function in a similar way to how you use [`WP_Query`](https://developer.wordpress.org/reference/classes/wp_query/). If you don’t pass in any argument, Timber will use the global query.
 
 ```php
+// Use the global query.
+$posts = Timber::get_posts();
+
 // Using the WP_Query argument format.
-$posts_query = new Timber::get_posts( [
-    'query' => [
-        'post_type'     => 'article',
-        'category_name' => 'sports',
-    ],
- ] );
+$posts = Timber::get_posts( [
+    'post_type'     => 'article',
+    'category_name' => 'sports',
+] );
 ```
 
-Be aware that you need pass an array to `Timber::get_posts()` with a `query` parameter. This array can have additional arguments that you can check out in the documentation for [`Timber::get_posts()`](https://timber.github.io/docs/reference/timber/#get-posts).
+The `Timber::get_posts()` function accepts a second parameter with options for the query. You can check out the different options in the documentation for [`Timber::get_posts()`](https://timber.github.io/docs/reference/timber/#get-posts).
 
-What you get as a return value is not a pure array of posts, but a `Timber\PostCollection` object, which is an `ArrayObject` that is very similar to an array like you know it. To loop over the posts collection in PHP, you first need to convert it to an array with `$posts->get_posts()`.
+ ```php
+$posts = Timber::get_posts( $query, $options );
+```
+
+### Return value
+
+What you get as a return value when running `Timber::get_posts()` is not a pure array of posts, but a `Timber\PostCollection` object, which is an `ArrayObject` that is very similar to an array like you know it. To loop over the posts collection in PHP, you first need to convert it to an array with `Timber\PostCollection::get_posts()`.
 
 ```php
 foreach ( $posts_query->get_posts() as $post ) {
@@ -125,7 +130,7 @@ foreach ( $posts_query->get_posts() as $post ) {
 }
 ```
 
-In Twig, you can directly loop over it.
+In Twig, you can directly loop over the collection.
 
 ```twig
 {% for post in posts %}
@@ -141,11 +146,9 @@ It might seem like `Timber::get_posts()` is the same as [`get_posts()`](https://
 
 ```php
 $posts = Timber::get_posts( array(
-    'query' => array(
-        'ignore_sticky_posts' => true,
-        'suppress_filters'    => true,
-        'no_found_rows'       => true,
-    ),
+    'ignore_sticky_posts' => true,
+    'suppress_filters'    => true,
+    'no_found_rows'       => true,
 ) );
 ```
 
