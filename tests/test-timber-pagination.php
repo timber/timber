@@ -488,8 +488,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		    'paged' => $paged,
 		]);
 		$pagination = $context['posts']->pagination(array('show_all' => false, 'mid_size' => 1, 'end_size' => 2));
-		error_log(print_r($pagination, true));
-
+		$this->assertEquals(0, count($pagination->pages));
 	}
 
 
