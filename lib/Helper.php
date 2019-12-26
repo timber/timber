@@ -434,9 +434,9 @@ class Helper {
 	 */
 	public static function filter_array( $list, $arrow, $operator = 'AND' ) {
 		if ( ! is_callable( $arrow ) ) {
-			self::warn( 'filter is using Twig\'s filter by default. If you want to use wp_filter_array use array|wp_list_filter.' );
+			self::warn( 'This filter is using Twig\'s filter by default. If you want to use wp_list_filter use array|wp_list_filter.' );
 
-			return self::wp_filter_array( $list, $arrow, $operator );
+			return self::wp_list_filter( $list, $arrow, $operator );
 		}
 
 		return twig_array_filter( $list, $arrow );
@@ -453,7 +453,7 @@ class Helper {
 	 * @param string       $operator to use (AND, NOT, OR).
 	 * @return array
 	 */
-	public static function wp_filter_array( $list, $args, $operator = 'AND' ) {
+	public static function wp_list_filter( $list, $args, $operator = 'AND' ) {
 		if ( ! is_array( $args ) ) {
 			$args = array( 'slug' => $args );
 		}
