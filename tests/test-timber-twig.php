@@ -294,7 +294,14 @@
 
 			$str = Timber::compile_string('{{shortcode("[duck]Lauren[/duck]")}}');
 			$this->assertEquals('Lauren says quack!', $str);
+		}
 
+		function testTwigWhitespace() {
+			add_action('header_class', function() {
+				echo 'fixed';
+			});
+			$str = Timber::compile('assets/header.twig');
+			$this->assertEquals('<header class="header fixed"></header>', $str);
 		}
 
 
