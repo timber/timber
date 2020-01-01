@@ -214,7 +214,7 @@ class Twig {
 		 * @ticket #1594 #2120
 		 */
 		$twig->addFilter(new Twig_Filter('filter', array('Timber\Helper', 'filter_array')));
-		$twig->addFilter(new Twig_Filter('wp_list_filter', array('Timber\Helper', 'wp_filter_array')));
+		$twig->addFilter(new Twig_Filter('wp_list_filter', array('Timber\Helper', 'wp_list_filter')));
 
 		$twig->addFilter(new Twig_Filter('relative', function( $link ) {
 					return URLHelper::get_rel_url($link, true);

@@ -213,17 +213,24 @@
 		}
 
 		/**
- 		 * @expectedException Twig\Error\RuntimeError
+		 * Updated to new syntax
+		 * @ticket #2124
 		 */
-		function testArrayFilter() {
+		function testNewArrayFilter() {
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
 			$posts = Timber::get_posts($posts);
-			$template = '{% for post in posts | filter("snoop")%}{{ post.content|striptags }}{% endfor %}';
+			$template = '{% for post in posts | wp_list_filter("snoop")%}{{ post.content|striptags }}{% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => $posts));
 			$this->assertEquals('Felicia Pearson', trim($str));
+		}
+
+		function testTwigFilterFilter() {
+			$template = "{% set sizes = [34, 36, 38, 40, 42] %}{{ sizes|filter(v => v > 38)|join(', ') }}";
+			$str = Timber::compile_string($template);
+			$this->assertEquals("40, 42", $str);
 		}
 
 		/**
