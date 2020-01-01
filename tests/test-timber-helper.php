@@ -212,17 +212,30 @@
 			$this->assertEquals(1984, $people[1]->year);
 		}
 
-		function testArrayFilter() {
+		/**
+		 * Updated to new syntax
+		 * @ticket #2124
+		 */
+		function testNewArrayFilter() {
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
 			$posts = Timber::get_posts($posts);
-			$template = '{% for post in posts | filter("snoop")%}{{ post.content|striptags }}{% endfor %}';
+			$template = '{% for post in posts | wp_list_filter("snoop")%}{{ post.content|striptags }}{% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => $posts));
 			$this->assertEquals('Felicia Pearson', trim($str));
 		}
 
+		function testTwigFilterFilter() {
+			$template = "{% set sizes = [34, 36, 38, 40, 42] %}{{ sizes|filter(v => v > 38)|join(', ') }}";
+			$str = Timber::compile_string($template);
+			$this->assertEquals("40, 42", $str);
+		}
+
+		/**
+ 		 * @expectedException Twig\Error\RuntimeError
+		 */
 		function testArrayFilterKeyValueUsingPostQuery() {
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
@@ -235,6 +248,9 @@
 			$this->assertEquals('Cheese', trim($str));
 		}
 
+		/**
+ 		 * @expectedException Twig\Error\RuntimeError
+		 */
 		function testArrayFilterMulti() {
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
@@ -246,6 +262,9 @@
 			$this->assertEquals('Stringer Bell Snoop', trim($str));
 		}
 
+		/**
+ 		 * @expectedException Twig\Error\RuntimeError
+		 */
 		function testArrayFilterWithBogusArray() {
 			$template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => 'foobar'));
