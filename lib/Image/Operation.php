@@ -42,10 +42,10 @@ abstract class Operation {
 	 */
 	public static function hexrgb( $hexstr ) {
 		if ( !strstr($hexstr, '#') ) {
-			$hexstr = '#'.$hexstr;
+			$hexstr = ''.$hexstr;
 		}
 		if ( strlen($hexstr) == 4 ) {
-			$hexstr = '#'.$hexstr[1].$hexstr[1].$hexstr[2].$hexstr[2].$hexstr[3].$hexstr[3];
+			$hexstr = ''.$hexstr[1].$hexstr[1].$hexstr[2].$hexstr[2].$hexstr[3].$hexstr[3];
 		}
 		$int = hexdec($hexstr);
 		return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
