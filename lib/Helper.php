@@ -172,8 +172,9 @@ class Helper {
 	}
 
 	/**
+	 * @codeCoverageIgnore
 	 * @deprecated since 1.3.0
-	 *
+	 * 
 	 * @param mixed $function_name        String or array( $class( string|object ), $function_name ).
 	 * @param array $defaults             Optional.
 	 * @param bool  $return_output_buffer Optional. Return function output instead of return value. Default false.
@@ -425,7 +426,7 @@ class Helper {
 	 * Filters a list of objects, based on a set of key => value arguments.
 	 * Uses native Twig Filter.
 	 *
-	 * @since x.x.x
+	 * @since 1.14.0
 	 * @param array                 $list to filter.
 	 * @param callback|string|array $arrow function used for filtering,
 	 *                              string or array for backward compatibility.
