@@ -395,6 +395,24 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals(0, count($pagination->pages));
 	}
 
+	/**
+	 * @ticket #1459
+	 */
+	function test1459Pagintion() {
+		$this->setPermalinkStructure('/%year%/%postname%/');
+		global $paged;
+		register_post_type('my_cpt', array('public' => true, 'has_archive' => true));
+		$posts = $this->factory->post->create_many( 9, array( 'post_type' => 'my_cpt' ) );
+		if (!isset($paged) || !$paged){
+			$paged = 1;
+		}
+		$this->go_to( home_url( 'my_cpt' ) );
+		$data['posts'] =  new \Timber\PostQuery(['post_type' => 'my_cpt', 'posts_per_page' => 4, 'paged' => $paged]);
+	    wp_reset_query(); // for good measure
+	    $pagination = $data['posts']->pagination();
+	    $this->assertEquals('http://example.org/my_cpt/page/3/', $pagination->pages[2]['link']);
+	}
+
 
 
 }
