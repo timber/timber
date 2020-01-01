@@ -8,8 +8,8 @@ language: php
 
 php:
     - 5.6.30
-    - 7.1
-    - 7.3
+    - 7.2
+    - 7.4
 
 env:
     global:
@@ -22,11 +22,11 @@ env:
 
 matrix:
     exclude:
-    - php: 7.3
+    - php: 7.4
       env: WP_VERSION=4.7.12 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
-    - php: 7.3
+    - php: 7.4
       env: WP_VERSION=4.7.12 WP_MULTISITE=0 PREFER_LOWEST=""
-    - php: 7.3
+    - php: 7.4
       env: WP_VERSION=4.7.12 WP_MULTISITE=1 PREFER_LOWEST=""
 
 before_script:
