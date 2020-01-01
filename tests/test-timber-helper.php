@@ -212,6 +212,9 @@
 			$this->assertEquals(1984, $people[1]->year);
 		}
 
+		/**
+ 		 * @expectedException Twig\Error\RuntimeError
+		 */
 		function testArrayFilter() {
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
@@ -223,6 +226,9 @@
 			$this->assertEquals('Felicia Pearson', trim($str));
 		}
 
+		/**
+ 		 * @expectedException Twig\Error\RuntimeError
+		 */
 		function testArrayFilterKeyValueUsingPostQuery() {
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
@@ -235,6 +241,9 @@
 			$this->assertEquals('Cheese', trim($str));
 		}
 
+		/**
+ 		 * @expectedException Twig\Error\RuntimeError
+		 */
 		function testArrayFilterMulti() {
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
@@ -246,6 +255,9 @@
 			$this->assertEquals('Stringer Bell Snoop', trim($str));
 		}
 
+		/**
+ 		 * @expectedException Twig\Error\RuntimeError
+		 */
 		function testArrayFilterWithBogusArray() {
 			$template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => 'foobar'));

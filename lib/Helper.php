@@ -434,8 +434,7 @@ class Helper {
 	 */
 	public static function filter_array( $list, $arrow, $operator = 'AND' ) {
 		if ( ! is_callable( $arrow ) ) {
-			self::warn( 'This filter is using Twig\'s filter by default. If you want to use wp_list_filter use array|wp_list_filter.' );
-
+			self::warn( 'This filter is using Twig\'s filter by default. If you want to use wp_list_filter use {{ my_array|wp_list_filter }}.' );
 			return self::wp_list_filter( $list, $arrow, $operator );
 		}
 
