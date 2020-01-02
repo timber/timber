@@ -1,7 +1,7 @@
 ---
 title: "Pagination"
 tags: guides
-weight: "1100"
+order: "1100"
 ---
 
 Do you like pagination? Stupid question, of course you do. Well, here's how you do it.

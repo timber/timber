@@ -1,7 +1,7 @@
 ---
 title: "Filters"
 tags: guides
-weight: "900"
+order: "900"
 ---
 
 ## General Filters

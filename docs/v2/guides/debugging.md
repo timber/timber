@@ -1,7 +1,7 @@
 ---
 title: "Debugging"
 tags: guides
-weight: "1800"
+order: "1800"
 ---
 
 ## Enable debugging

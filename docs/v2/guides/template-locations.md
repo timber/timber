@@ -1,7 +1,7 @@
 ---
 title: "Template Locations"
 tags: guides
-weight: "75"
+order: "75"
 ---
 
 You can set your own locations for your twig files with...

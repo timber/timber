@@ -1,7 +1,7 @@
 ---
 title: "Sidebars"
 tags: guides
-weight: "1200"
+order: "1200"
 ---
 
 So you want a sidebar?

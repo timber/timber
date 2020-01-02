@@ -1,7 +1,7 @@
 ---
 title: "Text Cookbook"
 tags: guides
-weight: "300"
+order: "300"
 ---
 
 There’s tons of stuff you can do with Twig and Timber filters to make complex transformations easy (and fun).

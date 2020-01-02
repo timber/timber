@@ -1,7 +1,7 @@
 ---
 title: "Cheatsheet"
 tags: guides
-weight: "1500"
+order: "1500"
 ---
 
 Here are some helpful conversions for functions you’re probably well familiar with in WordPress and their Timber equivalents. These assume a PHP file with the `Timber::context();` function at the top. For example:

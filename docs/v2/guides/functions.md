@@ -1,7 +1,7 @@
 ---
 title: "Functions"
 tags: guides
-weight: "800"
+order: "800"
 ---
 
 My theme/plugin has some functions I need! Do I really have to re-write all of them?  

@@ -1,7 +1,7 @@
 ---
 title: "Custom Page Templates"
 tags: guides
-weight: "500"
+order: "500"
 ---
 
 Imagine that you’ve created a page called **«About Us»** and WordPress has given it the slug `about-us`. How would you create a custom template just for this page?

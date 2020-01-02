@@ -1,7 +1,7 @@
 ---
 title: "Performance/Caching"
 tags: guides
-weight: "1300"
+order: "1300"
 ---
 
 Timber, especially in conjunction with WordPress and Twig, offers a variety of caching strategies to optimize performance. Here’s a quick rundown of some of the options, ranked in order of most-broad to most-focused.
