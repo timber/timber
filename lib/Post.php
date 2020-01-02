@@ -45,7 +45,7 @@ use WP_Post;
  * </article>
  * ```
  */
-class Post extends Core implements CoreInterface, MetaInterface, Setupable {
+class Post extends Core implements CoreInterface, MetaInterface, DatedInterface, Setupable {
 
 	/**
 	 * @var string The name of the class to handle images by default
@@ -1498,14 +1498,39 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * Get the date to use in your template!
+	 * Gets the timestamp when the post was published.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @return false|int Unix timestamp on success, false on failure.
+	 */
+	public function timestamp() {
+		return get_post_timestamp( $this->ID );
+	}
+
+	/**
+	 * Gets the timestamp when the post was last modified.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @return false|int Unix timestamp on success, false on failure.
+	 */
+	public function modified_timestamp() {
+		return get_post_timestamp( $this->ID, 'modified' );
+	}
+
+	/**
+	 * Gets the publishing date of the post to use in your template.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * Published on {{ post.date }} // Uses WP's formatting set in Admin
+	 * {# Uses date format set in Settings → General #}
+	 * Published on {{ post.date }}
 	 * OR
-	 * Published on {{ post.date('F jS') }} // Jan 12th
+	 * Published on {{ post.date('F jS') }}
 	 * ```
 	 *
 	 * ```html
@@ -1513,24 +1538,59 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * OR
 	 * Published on Jan 12th
 	 * ```
-	 * @param string $date_format
+	 *
+	 * @param string|null $date_format Optional. PHP date format. Will use the `date_format` option
+	 *                                 as a default.
+	 *
 	 * @return string
 	 */
-	public function date( $date_format = '' ) {
-		$df       = $date_format ? $date_format : get_option('date_format');
-		$the_date = date_i18n($df, strtotime($this->post_date));
-		return apply_filters('get_the_date', $the_date, $df);
+	public function date( $date_format = null ) {
+		$format = $date_format ? $date_format : get_option( 'date_format' );
+		$date   = wp_date( $format, $this->timestamp() );
+
+		return apply_filters( 'get_the_date', $date, $date_format );
 	}
 
 	/**
-	 * Get the time to use in your template
+	 * Gets the date of the last modification of the post to use in your template.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * Published at {{ post.time }} // Uses WP's formatting set in Admin
+	 * {# Uses date format set in Settings → General #}
+	 * Last modified on {{ post.modified_date }}
 	 * OR
-	 * Published at {{ post.time | time('G:i') }} // 13:25
+	 * Last modified on {{ post.modified_date('F jS') }}
+	 * ```
+	 *
+	 * ```html
+	 * Last modified on January 12, 2015
+	 * OR
+	 * Last modified on Jan 12th
+	 * ```
+	 *
+	 * @param string|null $date_format Optional. PHP date format. Will use the `date_format` option
+	 *                                 as a default.
+	 *
+	 * @return string
+	 */
+	public function modified_date( $date_format = null ) {
+		$format = $date_format ? $date_format : get_option( 'date_format' );
+		$date   = wp_date( $format, $this->modified_timestamp() );
+
+		return apply_filters( 'get_the_modified_date', $date, $date_format );
+	}
+
+	/**
+	 * Gets the time the post was published to use in your template.
+	 *
+	 * @api
+	 * @example
+	 * ```twig
+	 * {# Uses time format set in Settings → General #}
+	 * Published at {{ post.time }}
+	 * OR
+	 * Published at {{ post.time|time('G:i') }}
 	 * ```
 	 *
 	 * ```html
@@ -1538,13 +1598,48 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * OR
 	 * Published at 13:25
 	 * ```
-	 * @param  string $time_format
+	 *
+	 * @param string|null $time_format Optional. PHP date format. Will use the `time_format` option
+	 *                                 as a default.
+	 *
 	 * @return string
 	 */
-	public function time( $time_format = '' ) {
-		$tf       = $time_format ? $time_format : get_option('time_format');
-		$the_time = date_i18n($tf, strtotime($this->post_date));
-		return apply_filters('get_the_time', $the_time, $tf);
+	public function time( $time_format = null ) {
+		$format = $time_format ? $time_format : get_option( 'time_format' );
+		$time   = wp_date( $format, $this->timestamp() );
+
+		return apply_filters( 'get_the_time', $time, $time_format );
+	}
+
+	/**
+	 * Gets the time of the last modification of the post to use in your template.
+	 *
+	 * @api
+	 *
+	 * @example
+	 * ```twig
+	 * {# Uses time format set in Settings → General #}
+	 * Published at {{ post.time }}
+	 * OR
+	 * Published at {{ post.time|time('G:i') }}
+	 * ```
+	 *
+	 * ```html
+	 * Published at 1:25 pm
+	 * OR
+	 * Published at 13:25
+	 * ```
+	 *
+	 * @param string|null $time_format Optional. PHP date format. Will use the `time_format` option
+	 *                                 as a default.
+	 *
+	 * @return string
+	 */
+	public function modified_time( $time_format = null ) {
+		$format = $time_format ? $time_format : get_option( 'time_format' );
+		$time   = wp_date( $format, $this->modified_timestamp() );
+
+		return apply_filters( 'get_the_modified_time', $time, $time_format );
 	}
 
 	/**
@@ -1621,28 +1716,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 */
 	public function name() {
 		return $this->title();
-	}
-
-	/**
-	 * @api
-	 * @param string $date_format
-	 * @return string
-	 */
-	public function modified_date( $date_format = '' ) {
-		$df = $date_format ? $date_format : get_option('date_format');
-		$the_time = $this->modified_time($df);
-		return apply_filters('get_the_modified_date', $the_time, $date_format);
-	}
-
-	/**
-	 * @api
-	 * @param string $time_format
-	 * @return string
-	 */
-	public function modified_time( $time_format = '' ) {
-		$tf = $time_format ? $time_format : get_option('time_format');
-		$the_time = get_post_modified_time($tf, false, $this->ID, true);
-		return apply_filters('get_the_modified_time', $the_time, $time_format);
 	}
 
 	/**
