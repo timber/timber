@@ -1,6 +1,5 @@
 ---
 title: "Pagination"
-tags: guides
 order: "1100"
 ---
 

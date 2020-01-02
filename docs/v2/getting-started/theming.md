@@ -1,6 +1,5 @@
 ---
 title: "Theming"
-tags: getting-started
 ---
 
 ## Your first Timber project

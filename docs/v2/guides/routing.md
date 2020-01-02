@@ -1,6 +1,5 @@
 ---
 title: "Routing"
-tags: guides
 order: "2000"
 ---
 

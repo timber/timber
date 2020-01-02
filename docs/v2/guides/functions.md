@@ -1,6 +1,5 @@
 ---
 title: "Functions"
-tags: guides
 order: "800"
 ---
 

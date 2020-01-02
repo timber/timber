@@ -1,6 +1,5 @@
 ---
 title: "WordPress Integration"
-tags: guides
 order: "100"
 ---
 

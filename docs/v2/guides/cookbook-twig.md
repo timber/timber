@@ -1,6 +1,5 @@
 ---
 title: "Twig Cookbook"
-tags: guides
 order: "200"
 ---
 

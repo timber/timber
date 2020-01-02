@@ -1,6 +1,5 @@
 ---
 title: "Video Tutorials"
-tags: getting-started
 ---
 
 ## 1. Install Timber

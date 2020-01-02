@@ -1,6 +1,5 @@
 ---
 title: "Image Cookbook"
-tags: guides
 order: "1000"
 ---
 

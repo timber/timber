@@ -1,6 +1,5 @@
 ---
 title: "Filters"
-tags: guides
 order: "900"
 ---
 

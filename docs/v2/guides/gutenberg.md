@@ -1,6 +1,5 @@
 ---
 title: "Gutenberg"
-tags: guides
 ---
 
 ## Using Gutenberg with Timber

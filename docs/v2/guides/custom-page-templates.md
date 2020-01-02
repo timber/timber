@@ -1,6 +1,5 @@
 ---
 title: "Custom Page Templates"
-tags: guides
 order: "500"
 ---
 

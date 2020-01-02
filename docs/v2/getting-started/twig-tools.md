@@ -1,6 +1,5 @@
 ---
 title: "Twig Tools"
-tags: getting-started
 ---
 
 The purpose of this page is to identify helpful tools for working with Twig.

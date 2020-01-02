@@ -1,6 +1,5 @@
 ---
 title: "Text Cookbook"
-tags: guides
 order: "300"
 ---
 

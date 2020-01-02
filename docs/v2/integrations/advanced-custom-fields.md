@@ -1,6 +1,5 @@
 ---
 title: "Advanced Custom Fields"
-guides: integrations
 aliases:
   - /guides/acf-cookbook
 ---

@@ -1,6 +1,5 @@
 ---
 title: "Sidebars"
-tags: guides
 order: "1200"
 ---
 

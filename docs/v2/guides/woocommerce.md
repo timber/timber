@@ -1,6 +1,5 @@
 ---
 title: "WooCommerce"
-tags: guides
 ---
 
 ## Point of entry - main WooCommerce PHP file

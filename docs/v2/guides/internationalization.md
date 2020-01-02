@@ -1,6 +1,5 @@
 ---
 title: "Internationalization"
-tags: guides
 order: "1400"
 ---
 

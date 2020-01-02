@@ -1,6 +1,5 @@
 ---
 title: "Menus"
-tags: guides
 order: "700"
 ---
 

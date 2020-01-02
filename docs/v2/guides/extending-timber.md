@@ -1,6 +1,5 @@
 ---
 title: "Extending Timber"
-tags: guides
 order: "1600"
 ---
 

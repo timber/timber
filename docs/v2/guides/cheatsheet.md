@@ -1,6 +1,5 @@
 ---
 title: "Cheatsheet"
-tags: guides
 order: "1500"
 ---
 

@@ -1,6 +1,5 @@
 ---
 title: "Template Locations"
-tags: guides
 order: "75"
 ---
 

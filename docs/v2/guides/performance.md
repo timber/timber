@@ -1,6 +1,5 @@
 ---
 title: "Performance/Caching"
-tags: guides
 order: "1300"
 ---
 
