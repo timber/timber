@@ -28,6 +28,11 @@ matrix:
       env: WP_VERSION=4.9.8 WP_MULTISITE=0 PREFER_LOWEST=""
     - php: 7.4
       env: WP_VERSION=4.9.8 WP_MULTISITE=1 PREFER_LOWEST=""
+    - php: 7.4
+      env: WP_VERSION=latest WP_MULTISITE=1 PREFER_LOWEST="--prefer-lowest --prefer-stable"
+    include:
+    - php: 7.4
+      env: WP_VERSION=latest WP_MULTISITE=1 PREFER_LOWEST=""
 
 before_script:
     - if [ "$TRAVIS_PHP_VERSION" == 7.2 ]; then pear config-set preferred_state beta; pecl channel-update pecl.php.net; yes | pecl install imagick; fi

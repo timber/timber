@@ -967,9 +967,11 @@
 			$post = new Timber\Post($pid);
 
 			$video    = $post->video();
-			$value    = array_shift( $video );
+			if ( is_array($video) ) {
+				$video = array_shift( $video );
+			}
 			$expected = '/<iframe [^>]+ src="https:\/\/www\.youtube\.com\/embed\/Jf37RalsnEs\?feature=oembed" [^>]+>/i';
- 			$this->assertRegExp( $expected, $value );;
+ 			$this->assertRegExp( $expected, $video );;
 		}
 
 		function testPostWithVideoCustomField() {
