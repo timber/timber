@@ -66,6 +66,14 @@ class TestTimberDates extends Timber_UnitTestCase {
 		$this->assertEquals( $current_ago, $str );
 	}
 
+	function testTimeAgoLabels() {
+		$past   = DateTimeHelper::time_ago( '2016-11-29 20:00:00', '2016-11-30, 20:00:00', 'prePast %s afterPast' );
+		$future = DateTimeHelper::time_ago( '2016-12-01 20:00:00', '2016-11-30, 20:00:00', null, 'preFuture %s afterFuture' );
+
+		$this->assertEquals('prePast 1 day afterPast', $past );
+		$this->assertEquals('preFuture 1 day afterFuture', $future );
+	}
+
 	function testTime(){
 		$pid = $this->factory->post->create(array('post_date' => '2016-07-07 20:03:00'));
 		$post = new Post($pid);

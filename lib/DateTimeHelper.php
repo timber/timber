@@ -17,11 +17,11 @@ class DateTimeHelper {
 	 * @api
 	 * @since 2.0.0
 	 *
-	 * @param null|string|false    $format   Optional. PHP date format. Will use the `date_format`
-	 *                                       option as a default.
-	 * @param string|int|\DateTime $date     A date.
-	 * @param null|\DateTimeZone   $timezone Optional. Timezone to output result in. Defaults to
-	 *                                       timezone from site settings.
+	 * @param null|string|false             $format   Optional. PHP date format. Will use the
+	 *                                                `date_format` option as a default.
+	 * @param string|int|\DateTimeInterface $date     A date.
+	 * @param null|\DateTimeZone            $timezone Optional. Timezone to output result in.
+	 *                                                Defaults to timezone from site settings.
 	 *
 	 * @return false|string
 	 */

@@ -341,6 +341,10 @@ class Twig {
 	/**
 	 * Overwrite Twig defaults.
 	 *
+	 * Makes Twig compatible with how WordPress handles dates and timezones.
+	 *
+	 * @since 2.0.0
+	 *
 	 * @throws \Twig_Error_Runtime
 	 * @param \Twig_Environment $twig Twig Environment
 	 *
