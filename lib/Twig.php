@@ -231,9 +231,11 @@ class Twig {
 
 		/** 
 		 * @deprecated since 1.13 (to be removed in 2.0). Use Twig's native filter filter instead
+     *  @todo remove this in 2.x so that filter merely passes to Twig's filter without any modification
 		 * @ticket #1594 #2120
 		 */
 		$twig->addFilter(new TwigFilter('filter', array('Timber\Helper', 'filter_array')));
+		$twig->addFilter(new TwigFilter('wp_list_filter', array('Timber\Helper', 'wp_list_filter')));
 
 		$twig->addFilter(new TwigFilter('relative', function( $link ) {
 					return URLHelper::get_rel_url($link, true);
