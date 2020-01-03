@@ -33,6 +33,7 @@ before_install:
     # sudo apt-get update
     # sudo apt-get install php7.2-gd
     #- echo "extension = gd.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - phpenv config-add myconfig.ini
 
 before_script:
     - if [ "$IMG_LIBS" == 1 ]; then pear config-set preferred_state beta; pecl channel-update pecl.php.net; yes '' | pecl install imagick; fi
@@ -40,7 +41,6 @@ before_script:
     - composer update $PREFER_LOWEST --dev --prefer-source
     - composer require satooshi/php-coveralls:1.0.*
     - php -r "print_r(get_loaded_extensions());"
-    - php -i
     - php -m
 
 script:
