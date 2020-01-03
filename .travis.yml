@@ -1,13 +1,6 @@
-sudo: false
+sudo: true
 
 dist: xenial
-
-addons:
-    apt: 
-        sources:
-            - php7.2-gd
-        packages:
-            - libgd2
 
 services: mysql
 
@@ -37,6 +30,7 @@ matrix:
       env: WP_VERSION=4.9.8 IMG_LIBS=0 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
 
 before_install: 
+    - sudo apt-get install php7.2-gd
     #- echo "extension = gd.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 
