@@ -35,7 +35,7 @@ matrix:
       env: WP_VERSION=4.9.8 IMG_LIBS=0 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
 
 before_install:
-    - phpenv --with-webp-dir
+    # phpenv config-add myconfig.ini --with-webp-dir
 
 before_script:
     - if [ "$IMG_LIBS" == 1 ]; then pear config-set preferred_state beta; pecl channel-update pecl.php.net; yes '' | pecl install imagick; fi
