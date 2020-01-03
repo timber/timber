@@ -34,6 +34,8 @@ before_install:
     - sudo apt-get install php-gd
     #- echo "extension = gd.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - phpenv config-add myconfig.ini
+    - ls /home/travis/.phpenv/versions/7.2.15/lib/php/extensions/no-debug-zts-20170718
+    - ls /.phpenv/versions/$(phpenv version-name)/lib/php/extensions
 
 before_script:
     - if [ "$IMG_LIBS" == 1 ]; then pear config-set preferred_state beta; pecl channel-update pecl.php.net; yes '' | pecl install imagick; fi
