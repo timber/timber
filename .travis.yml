@@ -31,7 +31,7 @@ matrix:
 
 before_install:
     - sudo apt-get update
-    - sudo apt-get install php7.2-gd
+    - sudo apt-get install php-gd
     #- echo "extension = gd.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - phpenv config-add myconfig.ini
 
