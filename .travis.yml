@@ -1,4 +1,4 @@
-sudo: false
+sudo: true
 
 dist: xenial
 
@@ -6,10 +6,10 @@ services: mysql
 
 language: php
 
-addons:
-  apt:
-    packages:
-    - libwebp-dev
+# addons:
+#   apt:
+#     packages:
+#     - libwebp-dev
 
 php:
     - 7.2
@@ -35,8 +35,8 @@ matrix:
       env: WP_VERSION=4.9.8 IMG_LIBS=0 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
 
 before_install:
-    # sudo apt-get update
-    # sudo apt-get install libwebp-dev
+    - sudo apt-get update
+    - sudo apt-get install libwebp-dev
     - phpenv config-add myconfig.ini --with-webp-dir
 
 before_script:
