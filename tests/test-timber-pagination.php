@@ -494,6 +494,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 
 	/**
 	 * @ticket #1459
+	 * @expectedDeprecated Passing query arguments directly to PostQuery
 	 */
 	function test1459Pagintion() {
 		$this->setPermalinkStructure('/%year%/%postname%/');
