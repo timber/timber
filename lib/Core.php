@@ -67,7 +67,7 @@ abstract class Core {
 				}
 				if ( !empty($key) && $force ) {
 					$this->$key = $value;
-				} else if ( !empty($key) && !method_exists($this, $key) ) {
+				} else if ( !empty($key) && !method_exists($this, $key) && $key !== '_content' ) {
 					$this->$key = $value;
 				}
 			}
