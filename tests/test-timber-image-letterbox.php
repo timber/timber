@@ -3,14 +3,16 @@
 class TestTimberImageLetterbox extends TimberImage_UnitTestCase {
 
 	static function setUpBeforeClass() {
-		dl('gd.so');
-		error_log('gd.so setup via setUpBeforeClass();');
+		dl('gd');
+		//error_log('gd.so setup via setUpBeforeClass();');
+		
 	}
 
 	function setUp() {
 		parent::setUp();
 		if ( ! extension_loaded( 'gd' ) ) {
 			self::markTestSkipped( 'Letterbox image operation tests requires GD extension' );
+			error_log(print_r(get_loaded_extensions(), true));
 		}
 	}
 
