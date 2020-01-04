@@ -234,7 +234,8 @@ class Twig {
 
 		/**
 		 * @deprecated since 1.13 (to be removed in 2.0). Use Twig's native filter filter instead
-     *  @todo remove this in 2.x so that filter merely passes to Twig's filter without any modification
+		 * @todo remove this in 2.x so that filter merely passes to Twig's filter without any 
+		 *       modification
 		 * @ticket #1594 #2120
 		 */
 		$twig->addFilter(new TwigFilter('filter', array('Timber\Helper', 'filter_array')));
@@ -246,6 +247,8 @@ class Twig {
 
 		/**
 		 * Date and Time filters.
+		 * 
+		 * @todo copy this formatting to other functions 
 		 */
 		$twig->addFilter(new TwigFilter(
 			'date',
@@ -343,7 +346,8 @@ class Twig {
 	/**
 	 * Overwrite Twig defaults.
 	 *
-	 * Makes Twig compatible with how WordPress handles dates and timezones.
+	 * Makes Twig compatible with how WordPress handles dates, timezones and perhaps other items in 
+	 * the future
 	 *
 	 * @since 2.0.0
 	 *
@@ -486,6 +490,7 @@ class Twig {
 
 	/**
 	 * @api
+	 * @deprecated 2.0.0
 	 *
 	 * @param int|string $from
 	 * @param int|string $to
@@ -495,7 +500,7 @@ class Twig {
 	 * @return string
 	 */
 	public static function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
-		Helper::deprecated( 'intl_date', 'DateTimeHelper::time_ago', '2.0.0' );
+		Helper::deprecated( 'time_ago', 'DateTimeHelper::time_ago', '2.0.0' );
 
 		return DateTimeHelper::time_ago( $from, $to, $format_past, $format_future );
 	}
