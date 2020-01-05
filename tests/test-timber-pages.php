@@ -14,7 +14,7 @@ class TestTimberPages extends Timber_UnitTestCase {
 		$this->go_to($cat->path());
 		$term = new Timber\Term();
 		$this->assertEquals($category_id, $term->ID);
-		$post = new Timber\Post();
+		$post = Timber\Timber::get_post();
 		$this->assertEquals(0, $post->ID);
 	}
 

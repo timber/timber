@@ -18,8 +18,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 	function testWPPostConvert() {
 		$pid = $this->factory->post->create();
 		$wp_post = get_post( $pid );
-		// @todo #2094 factories
-		$post = new Timber\Post();
+		$post = Timber\Timber::get_post();
 		$timber_post = $post->convert( $wp_post );
 		$this->assertTrue( $timber_post instanceof Timber\Post );
 	}

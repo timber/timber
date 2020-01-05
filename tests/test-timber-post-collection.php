@@ -11,9 +11,10 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 
 	function testBasicCollection() {
 		$pids = $this->factory->post->create_many(10);
-		$pc = new Timber\PostQuery( array(
-			'query' => 'post_type=post&numberposts=6',
-		) );
+		$pc = Timber\Timber::get_posts( [
+			'post_type'   => 'post',
+			'numberposts' => 6,
+		] );
 		$this->assertEquals(6, count($pc));
 	}
 
@@ -21,9 +22,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		$cat = $this->factory->term->create(array('name' => 'Things', 'taxonomy' => 'category'));
 		$pids = $this->factory->post->create_many(4, array('category' => $cat));
 		$posts = get_posts( array('post_category' => array($cat), 'posts_per_page' => 3) );
-		$pc = new Timber\PostQuery( array(
-			'query' => $posts
-		) );
+		$pc = Timber\Timber::get_posts( $posts );
 		$pagination = $pc->pagination();
 		$this->assertNull($pagination);
 	}
@@ -34,7 +33,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
 		$this->go_to( home_url( '/portfolio/page/3' ) );
 		query_posts('post_type=portfolio&paged=3');
-		$posts = new Timber\PostQuery();
+		$posts = Timber\Timber::get_posts();
 		$pagination = $posts->pagination();
 		$this->assertEquals(6, count($pagination->pages));
 	}
@@ -44,9 +43,9 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		$page = $this->factory->post->create(array('post_title' => 'Test', 'post_type' => 'page'));
 		$this->go_to('/');
 		query_posts(array('post_type=post'));
-		$pc = new Timber\PostQuery( array(
-			'query' => 'post_type=post',
-		) );
+		$pc = Timber\Timber::get_posts( [
+			'post_type' => 'post',
+		] );
 		$str = Timber::compile('assets/collection-pagination.twig', array('posts' => $pc));
 		$str = preg_replace('/\s+/', ' ', $str);
 		$this->assertEquals('<h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <div class="l--pagination"> <div class="pagination-inner"> <div class="pagination-previous"> <span class="pagination-previous-link pagination-disabled">Previous</span> </div> <div class="pagination-pages"> <ul class="pagination-pages-list"> <li class="pagination-list-item pagination-page">1</li> <li class="pagination-list-item pagination-seperator">of</li> <li class="pagination-list-item pagination-page">13</li> </ul> </div> <div class="pagination-next"> <a href="http://example.org/?paged=2" class="pagination-next-link ">Next</a> </div> </div> </div>', trim($str));
@@ -56,7 +55,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 
 		$pids = $this->factory->post->create_many(130);
 		$this->go_to('/');
-		$pc = new Timber\PostQuery();
+		$pc = Timber\Timber::get_posts();
 		$str = Timber::compile('assets/collection-pagination.twig', array('posts' => $pc));
 		$str = preg_replace('/\s+/', ' ', $str);
 		$this->assertEquals('<h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <div class="l--pagination"> <div class="pagination-inner"> <div class="pagination-previous"> <span class="pagination-previous-link pagination-disabled">Previous</span> </div> <div class="pagination-pages"> <ul class="pagination-pages-list"> <li class="pagination-list-item pagination-page">1</li> <li class="pagination-list-item pagination-seperator">of</li> <li class="pagination-list-item pagination-page">13</li> </ul> </div> <div class="pagination-next"> <a href="http://example.org/?paged=2" class="pagination-next-link ">Next</a> </div> </div> </div>', trim($str));

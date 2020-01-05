@@ -18,53 +18,29 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertEquals('Timber\Post', get_class($post));
 	}
 
-	function testGetPostString(){
-		$this->factory->post->create();
-		$post = Timber::get_post('post_type=post');
-		$this->assertEquals('Timber\Post', get_class($post));
-	}
-
-	function testGetPostBySlug(){
-		$this->factory->post->create(array('post_name' => 'kill-bill'));
-		$post = Timber::get_post('kill-bill');
-		$this->assertEquals('kill-bill', $post->post_name);
-	}
-
 	function testGetPostByPostObject() {
-		$pid = $this->factory->post->create();
-		$wp_post = get_post($pid);
-		$post = new TimberAlert($wp_post);
-		$this->assertEquals('TimberAlert', get_class($post));
-		$this->assertEquals($pid, $post->ID);
-		$post = Timber::get_post($wp_post, 'TimberAlert');
-		$this->assertEquals('TimberAlert', get_class($post));
-		$this->assertEquals($pid, $post->ID);
+		$pid     = $this->factory->post->create();
+		$wp_post = get_post( $pid );
+		$post    = Timber\Timber::get_post( $wp_post );
+		$this->assertEquals( $pid, $post->ID );
+		$post = Timber\Timber::get_post( $wp_post );
+		$this->assertEquals( $pid, $post->ID );
 	}
 
 	function testGetPostByQueryArray() {
 		$pid = $this->factory->post->create();
-		$posts = new Timber\PostQuery( array(
-			'query'      => array(
-				'post_type' => 'post'
-			),
-			'post_class' => 'TimberAlert',
-		) );
-		$this->assertEquals('TimberAlert', get_class($posts[0]));
+		$posts = Timber\Timber::get_posts( [
+			'post_type' => 'post'
+		] );
 		$this->assertEquals($pid, $posts[0]->ID);
-		$post = Timber::get_post(array('post_type' => 'post'), 'TimberAlert');
-		$this->assertEquals('TimberAlert', get_class($post));
+		$post = Timber\Timber::get_post( [ 'post_type' => 'post' ]);
 		$this->assertEquals($pid, $post->ID);
 	}
 
 	function testGetPostWithCustomPostType() {
 		register_post_type('event', array('public' => true));
 		$pid = $this->factory->post->create(array('post_type' => 'event'));
-		$post = new TimberAlert($pid);
-		$this->assertEquals('TimberAlert', get_class($post));
-		$this->assertEquals($pid, $post->ID);
-		$this->assertEquals('event', $post->post_type);
-		$post = Timber::get_post($pid, 'TimberAlert');
-		$this->assertEquals('TimberAlert', get_class($post));
+		$post = Timber\Timber::get_post($pid);
 		$this->assertEquals($pid, $post->ID);
 		$this->assertEquals('event', $post->post_type);
 	}
@@ -72,44 +48,31 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	function testGetPostWithCustomPostTypeNotPublic() {
 		register_post_type('event', array('public' => false));
 		$pid = $this->factory->post->create(array('post_type' => 'event'));
-		$post = Timber::get_post($pid, 'TimberAlert');
-		$this->assertEquals('TimberAlert', get_class($post));
+		$post = Timber\Timber::get_post($pid);
 		$this->assertEquals($pid, $post->ID);
 	}
 
 	function testGetPostsQueryString(){
 		$this->factory->post->create();
 		$this->factory->post->create();
-		$posts = new Timber\PostQuery( array(
-			'query' => 'post_type=post'
-		) );
+		$posts = Timber\Timber::get_posts( [
+			'post_type' => 'post',
+		] );
 		$this->assertGreaterThan(1, count($posts));
 	}
 
 	function testGetPostsQueryArray(){
 		$this->factory->post->create();
-		$query = array('post_type' => 'post');
-		$posts = new Timber\PostQuery( array(
-			'query' => $query
-		) );
+		$posts = Timber\Timber::get_posts( [ 'post_type' => 'post' ] );
 		$this->assertEquals('Timber\Post', get_class($posts[0]));
-	}
-
-	function testGetPostsFromSlug(){
-		$post_id = $this->factory->post->create(array('post_name' => 'mycoolpost'));
-		$post    = Timber::get_post('mycoolpost');
-		$this->assertEquals($post_id, $post->ID);
-
-		$post = Timber::get_post('mycoolpost');
-		$this->assertEquals($post_id, $post->ID);
 	}
 
 	function testGetPostsQueryStringClassName(){
 		$this->factory->post->create();
 		$this->factory->post->create();
-		$posts = new Timber\PostQuery( array(
-			'query' => 'post_type=post'
-		) );
+		$posts = Timber\Timber::get_posts( [
+			'post_type' => 'post',
+		] );
 		$post = $posts[0];
 		$this->assertEquals('Timber\Post', get_class($post));
 	}
@@ -119,9 +82,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
-		$posts  = new Timber\PostQuery( array(
-			'query' => $pids,
-		) );
+		$posts  = Timber\Timber::get_posts( $pids );
 		$this->assertEquals('Timber\Post', get_class($posts[0]));
 	}
 
@@ -130,9 +91,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
 		$pids[] = $this->factory->post->create();
-		$posts  = new Timber\PostQuery( array(
-			'query' => $pids
-		) );
+		$posts  = Timber\Timber::get_posts( $pids );
 		$this->assertEquals(3, count($posts));
 	}
 
@@ -262,22 +221,108 @@ class TestTimberMainClass extends Timber_UnitTestCase {
     	$this->assertEquals('I am single course', $str);
     }
 
-  /**
+    /**
 	 * @ticket 1660
+     * @todo Maybe this can be deleted?
 	 */
 	function testDoubleInstantiationOfSubclass() {
 		$post_id = $this->factory->post->create( array( 'post_type' => 'person' ) );
-		$post = Timber::get_post($post_id, 'Person');
+		$post = Timber\Timber::get_post($post_id, 'Person');
 		$this->assertEquals('Person', get_class($post));
 	}
 
 	/**
 	 * @ticket 1660
+     * @todo Maybe this can be deleted?
 	 */
 	function testDoubleInstantiationOfTimberPostClass() {
 		$post_id = $this->factory->post->create( array( 'post_type' => 'post' ) );
-		$post = Timber::get_post($post_id);
+		$post = Timber\Timber::get_post($post_id);
 		$this->assertEquals('Timber\Post', get_class($post));
 	}
 
+	/**
+	 * @expectedIncorrectUsage Timber::get_post()
+	 */
+	function testDeprecatedGetPostFromSlug(){
+		$post_id = $this->factory->post->create( [ 'post_name' => 'mycoolpost' ] );
+		$post    = Timber\Timber::get_post( 'mycoolpost' );
+		$this->assertEquals($post_id, $post->ID);
+
+		$post = Timber\Timber::get_post( 'mycoolpost' );
+		$this->assertEquals($post_id, $post->ID);
+	}
+
+	/**
+	 * @expectedIncorrectUsage Timber::get_post()
+	 */
+	function testDeprecatedPostClassParameterForGetPost() {
+		require_once __DIR__ . '/php/timber-post-subclass.php';
+
+		$post_id = $this->factory->post->create();
+		$post    = Timber\Timber::get_post( $post_id, TimberPostSubclass::class );
+
+		$this->assertEquals( 'Timber\Post', get_class( $post ) );
+	}
+
+	/**
+	 * @expectedIncorrectUsage Timber::get_posts()
+	 */
+	function testDeprecatedPostClassParameterForGetPosts() {
+		require_once __DIR__ . '/php/timber-post-subclass.php';
+
+		$this->factory->post->create_many( 2 );
+
+		$posts = Timber\Timber::get_posts(
+			[ 'post_type' => 'post' ],
+			TimberPostSubclass::class
+		);
+
+		$this->assertEquals( 'Timber\Post', get_class( $posts[0] ) );
+	}
+
+	/**
+	 * @expectedIncorrectUsage Timber::get_posts()
+	 */
+	function testDeprecatedQueryStringsForGetPosts() {
+		$this->factory->post->create_many( 2 );
+
+		$posts = Timber\Timber::get_posts( 'post_type=post' );
+		$this->assertGreaterThan( 1, count( $posts ) );
+	}
+
+	/**
+	 * @expectedIncorrectUsage Timber::get_posts()
+	 */
+	function testDeprecatedReturnCollectionParameterInGetPosts() {
+		$this->factory->post->create_many( 2 );
+
+		$posts = Timber\Timber::get_posts(
+			[ 'post_type' => 'post' ],
+			'Timber\Post',
+			true
+		);
+
+		$this->assertEquals( 'Timber\Post', get_class( $posts[0] ) );
+	}
+
+	/**
+	 * @expectedDeprecated Timber::query_post()
+	 */
+	function testDeprecatedQueryPost() {
+		$post_id = $this->factory->post->create( [ 'post_type' => 'post' ] );
+		$post    = Timber\Timber::query_post( $post_id );
+
+		$this->assertEquals( $post->ID, $post_id );
+	}
+
+	/**
+	 * @expectedDeprecated Timber::query_posts()
+	 */
+	function testDeprecatedQueryPosts() {
+		$post_ids = $this->factory->post->create_many( 3, [ 'post_type' => 'post' ] );
+		$posts    = Timber\Timber::query_posts( [ 'post_type' => 'post' ] );
+
+		$this->assertEquals( $posts[0]->ID, $post_ids[0] );
+	}
 }

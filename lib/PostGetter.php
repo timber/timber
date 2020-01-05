@@ -68,7 +68,7 @@ class PostGetter {
 		 * ```php
 		 * add_filter( 'timber/get_posts/mirror_wp_get_posts', '__return_true' );
 		 * ```
-		 * 
+		 *
 		 * @param bool $mirror Whether to mirror the `get_posts()` function of WordPress with all its
 		 *                     parameters. Default `false`.
 		 */
@@ -82,9 +82,7 @@ class PostGetter {
 		/**
 		 * Filters the posts returned by `Timber::get_posts()`.
 		 *
-		 * There’s no replacement for this filter, because it’s called in a function that will be
-		 * removed in the future. If you’re using `Timber::get_posts()`, you should replace it with
-		 * `new Timber\PostQuery()`.
+		 * There’s no replacement for this filter.
 		 *
 		 * @deprecated 2.0.0
 		 */
@@ -93,7 +91,7 @@ class PostGetter {
 			array( $posts->get_posts( $return_collection ) ),
 			'2.0.0',
 			false,
-			'There’s no replacement for this filter, because it’s called in a function that will be removed. If you’re using Timber::get_posts(), you should replace it with new Timber\PostQuery().'
+			'There’s no replacement for this filter.'
 		);
 
 		return $posts;
