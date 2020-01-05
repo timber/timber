@@ -480,6 +480,9 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * [documentation of the `Timber\PostPreview` class](https://timber.github.io/docs/reference/timber-postpreview/)
 	 * to get an overview of all the available methods.
 	 *
+	 * @api
+	 * @see \Timber\PostPreview
+	 *
 	 * @example
 	 * ```twig
      * {# Use default preview #}
@@ -491,7 +494,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * {# Additionally restrict the length to 50 words #}
 	 * <p>{{ post.preview.length(50).read_more('Continue Reading') }}</p>
 	 * ```
-	 * @see \Timber\PostPreview
 	 * @return \Timber\PostPreview
 	 */
 	public function preview() {
