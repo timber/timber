@@ -177,7 +177,31 @@
             $this->assertEquals( 'second_value', $second_value );
         }
 
-        function testTwigCache(){
+		/**
+		 * @expectedDeprecated Timber::$cache and Timber::$twig_cache
+		 */
+        function testTwigCacheDeprecated(){
+        	$cache_dir = __DIR__.'/../cache/twig';
+        	if (is_dir($cache_dir)){
+        		Timber\Loader::rrmdir($cache_dir);
+        	}
+        	$this->assertFileNotExists($cache_dir);
+        	Timber::$twig_cache = true;
+        	$pid = $this->factory->post->create();
+        	$post = new Timber\Post($pid);
+        	Timber::compile('assets/single-post.twig', array('post' => $post));
+        	sleep(1);
+        	$this->assertFileExists($cache_dir);
+        	$loader = new Timber\Loader();
+        	$loader->clear_cache_twig();
+        	Timber::$twig_cache = false;
+        	$this->assertFileNotExists($cache_dir);
+        }
+
+        /**
+		 * @expectedDeprecated Timber::$cache and Timber::$twig_cache
+		 */
+        function testTwigCacheAliasDeprecated(){
         	$cache_dir = __DIR__.'/../cache/twig';
         	if (is_dir($cache_dir)){
         		Timber\Loader::rrmdir($cache_dir);
@@ -189,10 +213,42 @@
         	Timber::compile('assets/single-post.twig', array('post' => $post));
         	sleep(1);
         	$this->assertFileExists($cache_dir);
-        	Timber::$cache = false;
         	$loader = new Timber\Loader();
         	$loader->clear_cache_twig();
+        	Timber::$cache = false;
+        	Timber::$twig_cache = false;
         	$this->assertFileNotExists($cache_dir);
+        }
+
+        function testTwigCache(){
+	        $cache_dir = __DIR__ . '/../cache/twig';
+
+	        if ( is_dir( $cache_dir ) ) {
+		        Timber\Loader::rrmdir( $cache_dir );
+	        }
+
+	        $this->assertFileNotExists( $cache_dir );
+
+	        $cache_enabler = function( $options ) {
+				$options['cache'] = true;
+
+				return $options;
+			};
+
+			add_filter( 'timber/twig/environment/options', $cache_enabler );
+
+	        $pid  = $this->factory->post->create();
+	        $post = new Timber\Post( $pid );
+	        Timber::compile( 'assets/single-post.twig', array( 'post' => $post ) );
+	        sleep( 1 );
+
+	        $this->assertFileExists( $cache_dir );
+
+	        $loader = new Timber\Loader();
+	        $loader->clear_cache_twig();
+	        $this->assertFileNotExists( $cache_dir );
+
+	        remove_filter( 'timber/twig/environment/options', $cache_enabler );
         }
 
         function testTimberLoaderCache(){

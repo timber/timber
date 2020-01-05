@@ -60,7 +60,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
 
 		$cat_post = new Timber\Post($cat_post);
-		$this->assertEquals('News', $cat_post->category()->name());
+		$this->assertEquals('News', $cat_post->category()->title());
 
 		$posts = new Timber\PostQuery( array(
 			'query' => array(
@@ -100,7 +100,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
 
 		$cat_post = new Timber\Post($cat_post);
-		$this->assertEquals('News', $cat_post->category()->name());
+		$this->assertEquals('News', $cat_post->category()->title());
 
 		$posts = new Timber\PostQuery( array(
 			'query' => array(

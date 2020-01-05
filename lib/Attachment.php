@@ -170,6 +170,8 @@ class Attachment extends Post implements CoreInterface {
 
 		$this->import( $attachment_info );
 
+		$this->_wp_attached_file = get_post_meta( $this->ID, '_wp_attached_file', true );
+
 		$basedir = wp_get_upload_dir();
 		$basedir = $basedir['basedir'];
 
@@ -187,8 +189,6 @@ class Attachment extends Post implements CoreInterface {
 		}
 
 		if ( isset( $this->ID ) ) {
-			$this->import_custom( $this->ID );
-
 			$this->id = $this->ID;
 		}
 	}
@@ -318,7 +318,7 @@ class Attachment extends Post implements CoreInterface {
 				$image_info = array();
 			}
 
-			$meta_values = $this->get_meta_values( $attachment_id );
+			$meta_values = $this->raw_meta();
 			$post        = get_post( $attachment_id );
 
 			if ( $post ) {

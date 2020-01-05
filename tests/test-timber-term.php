@@ -2,6 +2,17 @@
 
 	class TestTimberTerm extends Timber_UnitTestCase {
 
+		function testTermFrom() {
+			register_taxonomy('baseball', array('post'));
+			register_taxonomy('hockey', array('post'));
+			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'baseball'));
+			$term_id = $this->factory->term->create(array('name' => 'Cardinals', 'taxonomy' => 'baseball'));
+			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'hockey'));
+			$baseball_teams = Timber\Term::from(get_terms(array('taxonomy' => 'baseball', 'hide_empty' => false)), 'baseball');
+			$this->assertEquals(2, count($baseball_teams));
+			$this->assertEquals('Cardinals', $baseball_teams[0]->title());
+		}
+
 		function testConstructorWithClass() {
 			register_taxonomy('arts', array('post'));
 
@@ -39,7 +50,7 @@
 
 			$term_obj = get_term($term_id);
 			$term = new Timber\Term($term_obj, 'arts');
-			$this->assertEquals('Zong', $term->name());
+			$this->assertEquals('Zong', $term->title());
 		}
 
 		function testConstructor() {
@@ -47,7 +58,7 @@
 
 			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
 			$term = new Timber\Term($term_id, 'arts');
-			$this->assertEquals('Zong', $term->name());
+			$this->assertEquals('Zong', $term->title());
 			$template = '{% set zp_term = Term("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zong', $string);
@@ -64,7 +75,7 @@
 			$term_data = get_term($term_id, 'post_tag');
 			$this->assertTrue( in_array( get_class($term_data), array('WP_Term', 'stdClass') ) );
 			$term = new Timber\Term($term_id);
-			$this->assertEquals('Famous Commissioners', $term->name());
+			$this->assertEquals('Famous Commissioners', $term->title());
 			$this->assertEquals('Timber\Term', get_class($term));
 		}
 
@@ -298,7 +309,7 @@
 		}
 
 		/**
-		 @issue #824
+		 * @ticket #824
 		 */
 		function testTermWithNativeMeta() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
@@ -310,7 +321,7 @@
 		}
 
 		/**
-		 @issue #824
+		 * @ticket #824
 		 */
 		function testTermWithNativeMetaFalse() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
@@ -320,7 +331,7 @@
 		}
 
 		/**
-		 @issue #824
+		 * @ticket #824
 		 */
 		function testTermWithNativeMetaNotExisting() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
@@ -358,7 +369,6 @@
 			$links[] = 'http://example.org/wp-admin/term.php?taxonomy=category&term_id='.$tid.'&post_type=post';
 			$this->assertContains($term->edit_link(), $links);
 		}
-
 	}
 
 	class Arts extends Timber\Term {

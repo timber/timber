@@ -2,14 +2,7 @@
 
 namespace Timber;
 
-use Timber\Image;
-use Timber\Image\Operation\ToJpg;
-use Timber\Image\Operation\ToWebp;
-use Timber\Image\Operation\Resize;
-use Timber\Image\Operation\Retina;
-use Timber\Image\Operation\Letterbox;
-
-use Timber\URLHelper;
+use Timber\Image\Operation;
 
 /**
  * Class ImageHelper
@@ -80,7 +73,7 @@ class ImageHelper {
 				return $src;
 			}
 		}
-		$op = new Image\Operation\Resize($w, $h, $crop);
+		$op = new Operation\Resize($w, $h, $crop);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -121,7 +114,7 @@ class ImageHelper {
 	 * @return string URL to the new image.
 	 */
 	public static function retina_resize( $src, $multiplier = 2, $force = false ) {
-		$op = new Image\Operation\Retina($multiplier);
+		$op = new Operation\Retina($multiplier);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -180,7 +173,7 @@ class ImageHelper {
 		 * SVG images are not allowed by default in WordPress, so we have to pass a default mime
 		 * type for SVG images.
 		 */
-		$mime = wp_check_filetype_and_ext( $file_path, basename( $file_path ), array(
+		$mime = wp_check_filetype_and_ext( $file_path, PathHelper::basename( $file_path ), array(
 			'svg' => 'image/svg+xml',
 		) );
 
@@ -207,7 +200,7 @@ class ImageHelper {
 	 * @return string
 	 */
 	public static function letterbox( $src, $w, $h, $color = false, $force = false ) {
-		$op = new Letterbox($w, $h, $color);
+		$op = new Operation\Letterbox($w, $h, $color);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -223,7 +216,7 @@ class ImageHelper {
 	 * @return string The URL of the processed image.
 	 */
 	public static function img_to_jpg( $src, $bghex = '#FFFFFF', $force = false ) {
-		$op = new Image\Operation\ToJpg($bghex);
+		$op = new Operation\ToJpg($bghex);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -241,7 +234,7 @@ class ImageHelper {
 	 *                        generated.
 	 */
 	public static function img_to_webp( $src, $quality = 80, $force = false ) {
-		$op = new Image\Operation\ToWebp($quality);
+		$op = new Operation\ToWebp($quality);
 		return self::_operate($src, $op, $force);
 	}
 
@@ -308,7 +301,7 @@ class ImageHelper {
 		if ( URLHelper::is_absolute($local_file) ) {
 			$local_file = URLHelper::url_to_file_system($local_file);
 		}
-		$info = pathinfo($local_file);
+		$info = PathHelper::pathinfo($local_file);
 		$dir = $info['dirname'];
 		$ext = $info['extension'];
 		$filename = $info['filename'];
@@ -376,7 +369,7 @@ class ImageHelper {
 		$dir = $upload['path'];
 		$filename = $file;
 		$file = parse_url($file);
-		$path_parts = pathinfo($file['path']);
+		$path_parts = PathHelper::pathinfo($file['path']);
 		$basename = md5($filename);
 		$ext = 'jpg';
 		if ( isset($path_parts['extension']) ) {
@@ -403,7 +396,7 @@ class ImageHelper {
 		$tmp = download_url($file);
 		preg_match('/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches);
 		$file_array = array();
-		$file_array['name'] = basename($matches[0]);
+		$file_array['name'] = PathHelper::basename($matches[0]);
 		$file_array['tmp_name'] = $tmp;
 		// If error storing temporarily, unlink
 		if ( is_wp_error($tmp) ) {
@@ -411,7 +404,7 @@ class ImageHelper {
 			$file_array['tmp_name'] = '';
 		}
 		// do the validation and storage stuff
-		$locinfo = pathinfo($loc);
+		$locinfo = PathHelper::pathinfo($loc);
 		$file = wp_upload_bits($locinfo['basename'], null, file_get_contents($file_array['tmp_name']));
 		return $file['url'];
 	}
@@ -461,7 +454,7 @@ class ImageHelper {
 				$tmp = URLHelper::remove_url_component($tmp, WP_CONTENT_DIR);
 			}
 		}
-		$parts = pathinfo($tmp);
+		$parts = PathHelper::pathinfo($tmp);
 		$result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
 		$result['filename'] = $parts['filename'];
 		$result['extension'] = strtolower($parts['extension']);
@@ -531,11 +524,10 @@ class ImageHelper {
 		if ( !empty($subdir) ) {
 			$url .= $subdir;
 		}
-		$url .= '/'.$filename;
+		$url = untrailingslashit($url).'/'.$filename;
 		if ( !$absolute ) {
 			$url = str_replace(site_url(), '', $url);
 		}
-		// $url = Timber\URLHelper::remove_double_slashes( $url);
 		return $url;
 	}
 
@@ -688,7 +680,7 @@ class ImageHelper {
 	 */
 	public static function get_letterbox_file_url( $url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
-		$op = new Image\Operation\Letterbox($w, $h, $color);
+		$op = new Operation\Letterbox($w, $h, $color);
 		$new_url = self::_get_file_url(
 			$au['base'],
 			$au['subdir'],
@@ -703,7 +695,7 @@ class ImageHelper {
 	 */
 	public static function get_letterbox_file_path( $url, $w, $h, $color ) {
 		$au = self::analyze_url($url);
-		$op = new Image\Operation\Letterbox($w, $h, $color);
+		$op = new Operation\Letterbox($w, $h, $color);
 		$new_path = self::_get_file_path(
 			$au['base'],
 			$au['subdir'],
@@ -717,7 +709,7 @@ class ImageHelper {
 	 */
 	public static function get_resize_file_url( $url, $w, $h, $crop ) {
 		$au = self::analyze_url($url);
-		$op = new Image\Operation\Resize($w, $h, $crop);
+		$op = new Operation\Resize($w, $h, $crop);
 		$new_url = self::_get_file_url(
 			$au['base'],
 			$au['subdir'],
@@ -732,7 +724,7 @@ class ImageHelper {
 	 */
 	public static function get_resize_file_path( $url, $w, $h, $crop ) {
 		$au = self::analyze_url($url);
-		$op = new Image\Operation\Resize($w, $h, $crop);
+		$op = new Operation\Resize($w, $h, $crop);
 		$new_path = self::_get_file_path(
 			$au['base'],
 			$au['subdir'],

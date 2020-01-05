@@ -99,13 +99,17 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Timber Debugger**](https://github.com/djboris88/timber-debugger) Package that provides extra debugging options for Timber
 * [**Timber Dump Extension**](https://github.com/nlemoine/timber-dump-extension) Debug output with nice formatting
 * [**Timber Photon**](https://github.com/slimndap/TimberPhoton) Plug-in to use JetPack's free Photon image manipulation and CDN with Timber
+* [**Timber VS Code Extension**](https://github.com/JDevx97/Timber-Snippets) Snippets for Timber in Visual Studio Code
 * [**Timber Sugar**](https://github.com/timber/sugar) A catch-all for goodies to use w Timber
 * [**Timber WebLink Extension**](https://github.com/nlemoine/timber-weblink-extension) Provides Twig functions to manage the Link HTTP header needed for Web Linking when using HTTP/2 Server Push as well as Resource Hints
 * [**Timmy**](https://github.com/MINDKomm/Timmy) Advanced image manipulation for Timber
+* [**Timber ACF WP Blocks**](https://github.com/palmiak/timber-acf-wp-blocks) Easy ACF Gutenberg blocks creation
 
 #### Projects that use Timber
+* [**Branch**](https://github.com/JeyKeu/branch/) Bootstrap 3 + Timber = Branch starter theme!
 * [**Gantry5**](https://wordpress.org/plugins/gantry5/) a framework for theme development
-* [**Branch**](https://github.com/JeyKeu/branch/) Bootstrap + Timber = Branch starter theme!
+* [**Seedling**](https://github.com/maxdmyers/seedling) A starter theme using Bootstrap 4
+
 
 #### Helpful Links
 * [**CSS Tricks**](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/) introduction to Timber by [@tjFogarty](https://github.com/tjFogarty)
@@ -119,7 +123,7 @@ Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/q
 It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [tens of thousands of sites](https://www.upstatement.com/timber/#showcase) (and tons more we don't know about)
 
 #### Contributing
-We love PRs! Read the [Contributor Guidelines](https://github.com/timber/timber/blob/master/CONTRIBUTING.md).
+We love PRs! Read the [Contributor Guidelines](https://github.com/timber/timber/blob/master/CONTRIBUTING.md) for more info.
 
 ## Documentation
 
