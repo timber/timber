@@ -271,6 +271,83 @@ class Helper {
 	}
 
 	/**
+	 * Marks something as being incorrectly called.
+	 *
+	 * There is a hook {@see 'doing_it_wrong_run'} that will be called that can be used
+	 * to get the backtrace up to what file and function called the deprecated
+	 * function.
+	 *
+	 * The current behavior is to trigger a user error if `WP_DEBUG` is true.
+	 *
+	 * If you want to catch errors like these in tests, then add the @expectedIncorrectUsage tag.
+	 * E.g.: "@expectedIncorrectUsage Timber::get_posts()".
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @since WordPress 3.1.0
+	 *
+	 * @param string $function The function that was called.
+	 * @param string $message  A message explaining what has been done incorrectly.
+	 * @param string $version  The version of Timber where the message was added.
+	 */
+	public static function doing_it_wrong( $function, $message, $version ) {
+		if ( ! WP_DEBUG ) {
+			return;
+		}
+
+		do_action( 'doing_it_wrong_run', $function, $message, $version );
+
+		/**
+		 * Filters whether to trigger an error for _doing_it_wrong() calls.
+		 *
+		 * This filter is mainly used by unit tests.
+		 *
+		 * @since WordPress 3.1.0
+		 * @since WordPress 5.1.0 Added the $function, $message and $version parameters.
+		 *
+		 * @param bool   $trigger  Whether to trigger the error for _doing_it_wrong() calls. Default true.
+		 * @param string $function The function that was called.
+		 * @param string $message  A message explaining what has been done incorrectly.
+		 * @param string $version  The version of WordPress where the message was added.
+		 */
+		$should_trigger_error = apply_filters(
+			'doing_it_wrong_trigger_error',
+			true,
+			$function,
+			$message,
+			$version
+		);
+
+		if ( $should_trigger_error ) {
+			if ( is_null( $version ) ) {
+				$version = '';
+			} else {
+				$version = sprintf(
+					'(This message was added in Timber version %s.)',
+					$version
+				);
+			}
+
+			$message .= sprintf(
+				' Please see <a href="%s">Debugging in WordPress</a> as well as <a href="%2$s">Debugging in Timber</a> for more information.',
+				'https://wordpress.org/support/article/debugging-in-wordpress/',
+				'https://timber.github.io/docs/guides/debugging/'
+			);
+
+			$error_message = sprintf(
+				'%1$s was called <strong>incorrectly</strong>. %2$s %3$s',
+				$function,
+				$message,
+				$version
+			);
+
+			// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+			// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+			trigger_error( $error_message );
+		}
+	}
+
+	/**
 	 * Triggers a deprecation warning.
 	 *
 	 * @api
@@ -289,7 +366,7 @@ class Helper {
 	    /**
 	     * Filters whether to trigger an error for deprecated functions.
 	     *
-	     * @since 2.5.0
+	     * @since WordPress 2.5.0
 	     *
 	     * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
 	     */
