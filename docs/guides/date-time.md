@@ -18,14 +18,14 @@ In WordPress 5.3, there were [improvements for the Date/Time component](https://
 
 ### WordPress and timezones
 
-One of the most important things to understand with dates in WordPress is that WordPress always works with `UTC` as a default timezone. You shouldn’t try to change the default timezone with [`date_default_timezone_set()`](https://core.trac.wordpress.org/ticket/48623#comment:31). 
+One of the most important things to understand with dates in WordPress is that WordPress always works with `UTC` as a default timezone. You shouldn’t try to change the default timezone with [`date_default_timezone_set()`](https://core.trac.wordpress.org/ticket/48623#comment:31).
 
 Timezones in WordPress are handled by the `timezone_string` setting in the database. WordPress calculates timezone offsets from that timezone setting.
 
 To get the timezone with the setting from the database, you’ll have two functions at hand:
 
 1. **`wp_timezone()`** – Gets the site time zone as a `DateTimeZone` object.
-2. **`wp_timezone_string()`** – Gets the site time zone as a string. Might return a `Region/Location` string or a `±NN:NN` offset. 
+2. **`wp_timezone_string()`** – Gets the site time zone as a string. Might return a `Region/Location` string or a `±NN:NN` offset.
 
 ## Creating dates from strings
 
@@ -35,24 +35,29 @@ WordPress recommends to **store your dates either as Unix timestamps or formats 
 
 ### Create a date from a timestamp
 
-When you have a **timestamp**, you can create your object with `DateTime` or `date_create()`.
+When you have a **timestamp**, you can create your object with `DateTimeImmutable` or `date_create_immutable()`.
 
 ```php
-$datetime = new DateTime( '@' . $timestamp );
-$datetime = date_create( '@' . $timestamp )
+$datetime = new DateTimeImmutable( '@' . $timestamp );
+// or
+$datetime = date_create_immutable( '@' . $timestamp )
 
-$datetime->setTimezone( wp_timezone() );
+// Note that we’re reassigning here, since PHP’s immutable functions/methods return new values.
+$datetime = $datetime->setTimezone( wp_timezone() );
 ```
 
-It’s important to set the timezone after you created the datetime object. You can’t pass the timezone as the second parameter in `DateTime::__construct()` or `date_create()`, because it will be ignored when you use a timestamp.
+Using [`DateTimeImmutable`](https://www.php.net/manual/en/class.datetimeimmutable.php) instead of [`DateTime`](https://www.php.net/manual/en/class.datetime.php) is recommended by WordPress, because it’s more predictable when working with different timezones.
+
+It’s important to set the timezone after you created the datetime object. You can’t pass the timezone as the second parameter in `DateTimeImmutable::__construct()` or `date_create_immutable()`, because it will be ignored when you use a timestamp (See note in the documentation for [`$timezone` parameter](https://www.php.net/manual/en/datetime.construct.php#refsect1-datetime.construct-parameters)).
 
 ### Create a date from a date string
 
-When you know the format of the string, use `DateTime::createFromFormat()` or `date_create_from_format()`.
+When you know the format of the string, use `DateTimeImmutable::createFromFormat()` or `date_create_immutable_from_format()`.
 
 ```php
-$datetime = DateTime::createFromFormat( DATE_ATOM, '2020-01-02T00:09:30+02:00' );
-$datetime = date_create_from_format( DATE_ATOM, '2020-01-02T00:09:30+02:00' );
+$datetime = DateTimeImmutable::createFromFormat( DATE_ATOM, '2020-01-02T00:09:30+02:00' );
+// or
+$datetime = date_create_immutable_from_format( DATE_ATOM, '2020-01-02T00:09:30+02:00' );
 
 $timestamp = $datetime->getTimestamp();
 ```
@@ -60,10 +65,12 @@ $timestamp = $datetime->getTimestamp();
 When the date string already includes the timezone, like when you use the `DATE_ATOM` format, then you don’t need to pass a timezone. When it doesn’t, you may have to pass it, dependening on how you manage/use your dates. If you stored your dates *with* a certain timezone applied (not recommended), then you will have to create them with a timezone.
 
 ```php
-$datetime = DateTime::createFromFormat( 'Y-m-d', '2016-10-31 09:30', wp_timezone() );
-$datetime = date_create_from_format( 'Y-m-d', '2016-10-31 09:30', wp_timezone() );
+$datetime = DateTimeImmutable::createFromFormat( 'Y-m-d', '2016-10-31 09:30', wp_timezone() );
+// or
+$datetime = date_create_immutable_from_format( 'Y-m-d', '2016-10-31 09:30', wp_timezone() );
 
-$datetime->setTimezone( wp_timezone() );
+// Note that we’re reassigning here, since PHP’s immutable functions/methods return new values.
+$datetime = $datetime->setTimezone( wp_timezone() );
 
 $timestamp = $datetime->getTimestamp();
 ```
@@ -71,8 +78,9 @@ $timestamp = $datetime->getTimestamp();
 A time zone might not be relevant if you only need dates and not times.
 
 ```php
-$datetime = DateTime::createFromFormat( 'Y-m-d', '2016-10-31' );
-$datetime = date_create_from_format( 'Y-m-d', '2016-10-31' );
+$datetime = DateTimeImmutable::createFromFormat( 'Y-m-d', '2016-10-31' );
+// or
+$datetime = date_create_immutable_from_format( 'Y-m-d', '2016-10-31' );
 
 $timestamp = $datetime->getTimestamp();
 ```
@@ -84,7 +92,7 @@ $timestamp = strtotime( '2008-08-07 18:11:31' );
 
 $datetime = date_create( '2008-08-07 18:11:31' );
 $datetime = date_create( '2020-01-02T00:09:30+02:00' );
-$datetime = new DateTime( '2008-08-07 18:11:31' );
+$datetime = new DateTimeImmutable( '2008-08-07 18:11:31' );
 ```
 
 ## Control the date display format
@@ -214,7 +222,7 @@ When you want to compare dates, then compare Unix timestamps, `DateTimeInterface
 
 ```php
 $same = $timestamp === $timestamp;
-$same = new DateTime() === new DateTime();
+$same = new DateTimeImmutable() === new DateTimeImmutable();
 $same = wp_date( 'U' ) === time();
 
 // Check if post publishing date is before today.
