@@ -273,10 +273,15 @@ class Helper {
 	/**
 	 * Triggers a deprecation warning.
 	 *
+	 * If you want to catch errors like these in tests, then add the @expectedDeprecated tag to the
+	 * DocBlock. E.g.: "@expectedDeprecated {{ TimberImage() }}".
+	 *
 	 * @api
+	 *
 	 * @param string $function    The name of the deprecated function/method.
 	 * @param string $replacement Function to use instead.
 	 * @param string $version     When we deprecated this.
+	 *
 	 * @return void
 	 */
 	public static function deprecated( $function, $replacement, $version ) {
