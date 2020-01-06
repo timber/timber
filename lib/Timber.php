@@ -138,7 +138,7 @@ class Timber {
 	 * // Using a WP_Post object.
 	 * $post = Timber::get_post( $wp_post );
 	 *
-	 * // Use currently queried post. Same as using get_queried_object_id() as a parameter.
+	 * // Use currently queried post. Same as using get_the_ID() as a parameter.
 	 * $post = Timber::get_post();
 	 * ```
 	 *
