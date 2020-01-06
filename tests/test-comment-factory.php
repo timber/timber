@@ -9,6 +9,7 @@ class SickBurn extends PostComment {}
 
 /**
  * @group factory
+ * @group comments-api
  */
 class TestCommentFactory extends Timber_UnitTestCase {
 

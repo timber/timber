@@ -1,5 +1,9 @@
 <?php
 
+	/**
+	 * @group posts-api
+	 * @group comments-api
+	 */
 	class TestTimberPostComments extends Timber_UnitTestCase {
 
 		function testComments() {
@@ -43,8 +47,18 @@
 			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
 			$comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
 			$post = new Timber\Post($post_id);
+
+			$filter = function() {
+				return [
+					'post' => CustomComment::class,
+				];
+			};
+			add_filter('timber/comment/classmap', $filter);
+
 			$comments = $post->comments(null, 'wp', 'comment', 'approve', 'CustomComment');
-			$this->assertEquals('CustomComment', get_class($comments[0]));
+			$this->assertEquals(CustomComment::class, get_class($comments[0]));
+
+			remove_filter('timber/comment/classmap', $filter);
 		}
 
 		function testShowUnmoderatedCommentIfByCurrentUser() {

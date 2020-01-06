@@ -10,6 +10,8 @@ use Timber\Integrations\ACF;
 
 /**
  * Class TestTimberMeta
+ * 
+ * @group comments-api
  */
 class TestTimberMeta extends Timber_UnitTestCase {
 	/**
@@ -56,7 +58,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = new Post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
-		$comment = new Comment( $comment_id );
+		$comment = Timber::get_comment( $comment_id );
 
 		$this->assertEquals( 'Meta 1', $post->meta()['meta1'] );
 		$this->assertEquals( 'Meta 2', $post->meta()['meta2'] );
@@ -80,7 +82,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = new Post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
-		$comment = new Comment( $comment_id );
+		$comment = Timber::get_comment( $comment_id );
 
 		$this->assertEquals( null, $post->meta( 'not_found' ) );
 		$this->assertEquals( null, $term->meta( 'not_found' ) );
@@ -110,7 +112,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = new Post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
-		$comment = new Comment( $comment_id );
+		$comment = Timber::get_comment( $comment_id );
 
 		update_post_meta( $post_id, 'filtered_meta', 'I shouldn’t exist later.' );
 		update_term_meta( $term_id, 'filtered_meta', 'I shouldn’t exist later.' );
@@ -169,7 +171,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 
 		$post    = new Post( $post_id );
 		$term    = new Term( $term_id );
-		$comment = new Comment( $comment_id );
+		$comment = Timber::get_comment( $comment_id );
 
 		$this->assertEquals( false, $this->is_get_post_meta_hit );
 		$this->assertEquals( false, $this->is_get_term_meta_hit );
@@ -218,7 +220,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = new Post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
-		$comment = new Comment( $comment_id );
+		$comment = Timber::get_comment( $comment_id );
 
 		update_post_meta( $post_id, 'name', 'A girl has no name.' );
 		update_term_meta( $term_id, 'name', 'A girl has no name.' );
@@ -253,7 +255,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = new Post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
-		$comment = new Comment( $comment_id );
+		$comment = Timber::get_comment( $comment_id );
 
 		$post_string    = Timber::compile_string(
 			"{{ post.raw_meta('my_custom_property') }}", [ 'post' => $post ]
@@ -303,7 +305,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = new Post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
-		$comment = new Comment( $comment_id );
+		$comment = Timber::get_comment( $comment_id );
 
 		$this->assertEquals( 'I am a meta value', $post->raw_meta( 'meta_value' ) );
 		$this->assertEquals( false, $post->meta( 'meta_value' ) );
@@ -335,7 +337,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = new Post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
-		$comment = new Comment( $comment_id );
+		$comment = Timber::get_comment( $comment_id );
 
 		$post_string    = Timber::compile_string(
 			"{{ post.raw_meta('my_custom_property_inexistent') }}", [ 'post' => $post ]
@@ -380,7 +382,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = new Post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
-		$comment = new Comment( $comment_id );
+		$comment = Timber::get_comment( $comment_id );
 
 		$post_string    = Timber::compile_string(
 			'My {{ post.my_custom_property }}', [ 'post' => $post ]
@@ -428,7 +430,15 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = new MetaPost( $post_id );
 		$term    = new MetaTerm( $term_id );
 		$user    = new MetaUser( $user_id );
-		$comment = new MetaComment( $comment_id );
+
+		$filter = function() {
+			return [
+				'post' => MetaComment::class,
+			];
+		};
+		add_filter('timber/comment/classmap', $filter);
+
+		$comment = Timber::get_comment( $comment_id );
 
 		$post_string    = Timber::compile_string(
 			'{{ post.public_method }}', [ 'post' => $post ]
@@ -458,6 +468,8 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$this->assertEquals( 'I am a public method', $comment->public_method() );
 		$this->assertEquals( 'I am a meta value', $comment->public_method );
 		$this->assertEquals( 'I am a public method', $comment_string );
+
+		remove_filter('timber/comment/classmap', $filter);
 	}
 
 	/**
@@ -480,7 +492,15 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = new MetaPost( $post_id );
 		$term    = new MetaTerm( $term_id );
 		$user    = new MetaUser( $user_id );
-		$comment = new MetaComment( $comment_id );
+
+		$filter = function() {
+			return [
+				'post' => MetaComment::class,
+			];
+		};
+		add_filter('timber/comment/classmap', $filter);
+
+		$comment = Timber::get_comment( $comment_id );
 
 		$post_string    = Timber::compile_string(
 			'{{ post.protected_method }}', [ 'post' => $post ]
@@ -510,6 +530,8 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$this->assertEquals( 'I am a meta value', $comment->protected_method() );
 		$this->assertEquals( 'I am a meta value', $comment->protected_method );
 		$this->assertEquals( 'I am a meta value', $comment_string );
+
+		remove_filter('timber/comment/classmap', $filter);
 	}
 
 	/**
@@ -574,10 +596,19 @@ class TestTimberMeta extends Timber_UnitTestCase {
 
 		update_comment_meta( $comment_id, 'public_method_with_args', 'I am a meta value' );
 
-		$comment        = new MetaComment( $comment_id );
+		$filter = function() {
+			return [
+				'post' => MetaComment::class,
+			];
+		};
+		add_filter('timber/comment/classmap', $filter);
+
+		$comment        = Timber::get_comment( $comment_id );
 		$comment_string = Timber::compile_string( '{{ comment.public_method_with_args }}', [ 'comment' => $comment ] );
 
 		$this->assertEquals( 'I am a meta value', $comment_string );
+
+		remove_filter('timber/comment/classmap', $filter);
 	}
 
 	/**
@@ -600,7 +631,15 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = new MetaPost( $post_id );
 		$term    = new MetaTerm( $term_id );
 		$user    = new MetaUser( $user_id );
-		$comment = new MetaComment( $user_id );
+
+		$filter = function() {
+			return [
+				'post' => MetaComment::class,
+			];
+		};
+		add_filter('timber/comment/classmap', $filter);
+
+		$comment = Timber::get_comment( $user_id );
 
 		$post_string    = Timber::compile_string(
 			'{{ post.public_property }}', [ 'post' => $post ]
@@ -626,6 +665,8 @@ class TestTimberMeta extends Timber_UnitTestCase {
 
 		$this->assertEquals( 'I am a public property', $comment_string );
 		$this->assertEquals( 'I am a public property', $comment->public_property );
+
+		remove_filter('timber/comment/classmap', $filter);
 	}
 
 	/**
@@ -648,7 +689,15 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = new MetaPost( $post_id );
 		$term    = new MetaTerm( $term_id );
 		$user    = new MetaUser( $user_id );
-		$comment = new MetaComment( $comment_id );
+
+		$filter = function() {
+			return [
+				'post' => MetaComment::class,
+			];
+		};
+		add_filter('timber/comment/classmap', $filter);
+
+		$comment = Timber::get_comment( $comment_id );
 
 		$post_string    = Timber::compile_string(
 			'{{ post.protected_property }}', [ 'post' => $post ]
@@ -674,6 +723,8 @@ class TestTimberMeta extends Timber_UnitTestCase {
 
 		$this->assertEquals( 'I am a meta value', $comment_string );
 		$this->assertEquals( 'I am a meta value', $comment->protected_property );
+
+		remove_filter('timber/comment/classmap', $filter);
 	}
 
 	/**
@@ -737,7 +788,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 
 		update_comment_meta( $comment_id, 'inaccessible', 'Boo!' );
 
-		$comment = new Comment( $comment_id );
+		$comment = Timber::get_comment( $comment_id );
 		$string  = Timber::compile_string( '{{ comment.custom.inaccessible }}', array( 'comment' => $comment ) );
 
 		$this->assertEquals( '', $string );
@@ -762,7 +813,15 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = new MetaPost( $post_id );
 		$term    = new MetaTerm( $term_id );
 		$user    = new MetaUser( $user_id );
-		$comment = new MetaComment( $user_id );
+
+		$filter = function() {
+			return [
+				'post' => MetaComment::class,
+			];
+		};
+		add_filter('timber/comment/classmap', $filter);
+
+		$comment = Timber::get_comment( $user_id );
 
 		$post_string    = Timber::compile_string(
 			'{{ post.inexistent }}', [ 'post' => $post ]

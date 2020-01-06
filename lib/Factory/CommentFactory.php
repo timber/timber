@@ -76,8 +76,7 @@ class CommentFactory {
 	protected function build(WP_Comment $comment) : CoreInterface {
 		$class = $this->get_comment_class($comment);
 
-    // @todo make Core constructors protected, call Comment::build() here
-		return new $class($comment);
+		return $class::build($comment);
 	}
 
 	protected function is_numeric_array(array $arr) {

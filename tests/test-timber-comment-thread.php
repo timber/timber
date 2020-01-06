@@ -1,5 +1,8 @@
 <?php
 
+	/**
+	 * @group comments-api
+	 */
 	class TestTimberCommentThread extends Timber_UnitTestCase {
 
 		function testCommentThreadWithArgs() {

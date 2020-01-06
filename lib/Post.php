@@ -1318,9 +1318,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 *                             special purposes. Might be set to 'liveblog' or other, depending
 	 *                             on what’s stored in your comments table.
 	 * @param string $status       Could be 'pending', etc.
-	 * @param string $CommentClass What class to use when returning Comment objects. As you become a
-	 *                             Timber Pro, you might find yourself extending `Timber\Comment`
-	 *                             for your site or app (obviously, totally optional).
 	 * @see \Timber\CommentThread for an example with nested comments
 	 * @return bool|\Timber\CommentThread
 	 *
