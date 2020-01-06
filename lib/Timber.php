@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use Timber\Factory\CommentFactory;
+
 /**
  * Class Timber
  *
@@ -211,6 +213,31 @@ class Timber {
 	 */
 	public static function get_term( $term, $taxonomy = 'post_tag', $TermClass = 'Timber\Term' ) {
 		return TermGetter::get_term($term, $taxonomy, $TermClass);
+	}
+
+	/* Comment Retrieval
+	================================ */
+
+	/**
+	 * Get comments.
+	 * @api
+	 * @param array   $query
+	 * @return mixed
+	 */
+	public static function get_comments( array $query = [] ) {
+		$factory = new CommentFactory();
+		return $factory->from($query);
+	}
+
+	/**
+	 * Get comment.
+	 * @api
+	 * @param int|\WP_Comment $comment
+	 * @return \Timber\Comment
+	 */
+	public static function get_comment( $comment ) {
+		$factory = new CommentFactory();
+		return $factory->from($comment);
 	}
 
 	/* Site Retrieval
