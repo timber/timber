@@ -639,7 +639,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		};
 		add_filter('timber/comment/classmap', $filter);
 
-		$comment = Timber::get_comment( $user_id );
+		$comment = Timber::get_comment( $comment_id );
 
 		$post_string    = Timber::compile_string(
 			'{{ post.public_property }}', [ 'post' => $post ]
@@ -821,7 +821,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		};
 		add_filter('timber/comment/classmap', $filter);
 
-		$comment = Timber::get_comment( $user_id );
+		$comment = Timber::get_comment( $comment_id );
 
 		$post_string    = Timber::compile_string(
 			'{{ post.inexistent }}', [ 'post' => $post ]
