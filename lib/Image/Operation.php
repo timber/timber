@@ -36,16 +36,14 @@ abstract class Operation {
 	/**
 	 * Helper method to convert hex string to rgb array
 	 * 
-	 * @param  string $hexstr hex color string (like '#FF1455')
+	 * @param  string $hexstr hex color string (like '#FF1455', 'FF1455', '#CCC', 'CCC')
 	 * @return array          array('red', 'green', 'blue') to int
 	 *                        ex: array('red' => 255, 'green' => 20, 'blue' => 85);
 	 */
 	public static function hexrgb( $hexstr ) {
-		if ( !strstr($hexstr, '#') ) {
-			$hexstr = '#'.$hexstr;
-		}
-		if ( strlen($hexstr) == 4 ) {
-			$hexstr = '#'.$hexstr[1].$hexstr[1].$hexstr[2].$hexstr[2].$hexstr[3].$hexstr[3];
+		$hexstr = str_replace('#', '', $hexstr);
+		if ( strlen($hexstr) == 3 ) {
+			$hexstr = $hexstr[0].$hexstr[0].$hexstr[1].$hexstr[1].$hexstr[2].$hexstr[2];
 		}
 		$int = hexdec($hexstr);
 		return array("red" => 0xFF & ($int >> 0x10), "green" => 0xFF & ($int >> 0x8), "blue" => 0xFF & $int);
