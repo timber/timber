@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use WP_Comment;
+
 /**
  * Class Comment
  *
@@ -95,11 +97,24 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * Build a Timber\Comment
 	 *
-	 * @api
-	 * @param int $cid Comment ID.
+	 * @internal
 	 */
-	public function __construct( $cid ) {
-		$this->init($cid);
+	protected function __construct() {
+	}
+
+	/**
+	 * Build a Timber\Comment
+	 *
+	 * @internal
+	 * @param \WP_Comment $wp_comment a native WP_Comment instance
+	 */
+	public static function build( WP_Comment $wp_comment ) {
+		$comment = new static();
+		$comment->import($wp_comment);
+		$comment->ID = $wp_comment->comment_ID;
+		$comment->id = $wp_comment->comment_ID;
+
+		return $comment;
 	}
 
 	/**
