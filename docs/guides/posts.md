@@ -114,11 +114,15 @@ $posts = Timber::get_posts( [
 ] );
 ```
 
-The `Timber::get_posts()` function accepts a second parameter with options for the query. You can check out the different options in the documentation for [`Timber::get_posts()`](https://timber.github.io/docs/reference/timber/#get-posts).
+The `Timber::get_posts()` function accepts a second parameter with options for the query. For example, with the `merge_default` option you can tell Timber that it should merge your query parameters with the default query parameters of the current template. You can check out `merge_default` and all the other options in the documentation for [`Timber::get_posts()`](https://timber.github.io/docs/reference/timber/#get-posts).
 
  ```php
 $posts = Timber::get_posts( $query, $options );
 ```
+
+### The default query
+
+In archive templates like **archive.php** or **category.php**, Timber will already fetch the default query when you call `Timber::context()` and make it available under the `posts` entry. Read more about this in the [Context Guide](/docs/guides/context).
 
 ### Return value
 
@@ -173,9 +177,7 @@ Whenever you query for a collection of posts, but you don’t need pagination fo
 
 ```php
 $posts = Timber::get_posts( array(
-    'query' => array(
-        'no_found_rows' => true,
-    ),
+    'no_found_rows' => true,
 ) );
 ```
 

@@ -30,7 +30,7 @@ Timber::render( 'single.twig', $data );
 <p>{{ message }}</p>
 ```
 
-Of course you don’t have to figure out all the variables you need for yourself. Timber will provide you with a set of useful variables when you call `Timber::context()`. 
+Of course you don’t have to figure out all the variables you need for yourself. Timber will provide you with a set of useful variables when you call `Timber::context()`.
 
 **single.php**
 
@@ -78,7 +78,7 @@ For menus to work, you will first need to [register them](https://codex.wordpres
 
 ### Context cache
 
-The global context will be cached. That’s why you need to define your `timber/context` filter before using `Timber::context()` for the first time. Otherwise, the cache will be set before you could add your own data. 
+The global context will be cached. That’s why you need to define your `timber/context` filter before using `Timber::context()` for the first time. Otherwise, the cache will be set before you could add your own data.
 
 Having a cached global context can be useful if you need the context in other places. For example if you compile the template for a shortcode:
 
@@ -141,7 +141,7 @@ Whenever you set up **a post in a singular template** (instead of relying on `Ti
 
 ### Archive templates
 
-The `posts` variable will be available in archive templates ([when `is_archive()`](https://developer.wordpress.org/reference/functions/is_archive/) returns `true`), like your posts index page, category or tag archives, date based or author archives. It will contain a `Timber\PostQuery` array object with the posts that WordPress already fetched for your archive page.
+The `posts` variable will be available in archive templates ([when `is_archive()`](https://developer.wordpress.org/reference/functions/is_archive/) returns `true`), like your posts index page, category or tag archives, date based or author archives. It will contain a `Timber\PostCollection` object with the posts that WordPress already fetched for your archive page.
 
 #### Use the default query
 
@@ -157,13 +157,11 @@ When you don’t need the default query, you can pass in your own arguments to `
 
 ```php
 $context          = Timber::context();
-$context['posts'] = new Timber::get_posts( array(
-    'query' => array(
-        'post_type'      => 'book',
-        'posts_per_page' => -1,
-        'post_status'    => 'publish',
-    ),
-) );
+$context['posts'] = new Timber::get_posts( [
+    'post_type'      => 'book',
+    'posts_per_page' => -1,
+    'post_status'    => 'publish',
+] );
 ```
 
 #### Change arguments for default query
@@ -174,12 +172,11 @@ Sometimes you don’t want to use the default query, but build on the default qu
 
 ```php
 $context          = Timber::context();
-$context['posts'] = Timber::get_posts( array(
-    'query' => array(
-        'author__in' => array(1, 6, 14),
-    ),
+$context['posts'] = Timber::get_posts( [
+    'author__in' => [ 1, 6, 14 ],
+], [
     'merge_default' => true,
-) );
+] );
 
 Timber::render( 'archive.twig', $context );
 ```
