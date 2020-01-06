@@ -27,7 +27,8 @@
 		}
 
 		/**
-		 * @expectedDeprecated  add_filter( 'timber/loader/paths', ['path/to/my/templates'] ) in a non-associative array
+		 * @expectedDeprecated  timber/loader/paths
+		 * @expectedDeprecated add_filter( 'timber/loader/paths', ['path/to/my/templates'] ) in a non-associative array
 		 */
 		function testTwigPathFilterAdded() {
 			$php_unit = $this;
@@ -39,6 +40,9 @@
 			$this->assertEquals('Boo!', $str);
 		}
 
+		/**
+		 * @expectedDeprecated  timber/loader/paths
+		 */
 		function testUpdatedTwigPathFilterAdded() {
 			$php_unit = $this;
 			add_filter('timber/loader/paths', function($paths) use ($php_unit) {
@@ -50,7 +54,8 @@
 		}
 
 		/**
-		 * @expectedDeprecated  add_filter( 'timber/loader/paths', ['path/to/my/templates'] ) in a non-associative array
+		 * @expectedDeprecated  timber/loader/paths
+		 * @expectedDeprecated add_filter( 'timber/loader/paths', ['path/to/my/templates'] ) in a non-associative array
 		 */
 		function testTwigPathFilter() {
 			$php_unit = $this;
@@ -64,6 +69,16 @@
 				return $paths;
 			});
 			$str = Timber::compile('assets/single.twig', array());
+		}
+
+		function testTimberLocationsFilterAdded() {
+			$php_unit = $this;
+			add_filter('timber/locations', function($paths) use ($php_unit) {
+				$paths[] = array( __DIR__ . '/october/' );
+				return $paths;
+			});
+			$str = Timber::compile('spooky.twig', array());
+			$this->assertEquals('Boo!', $str);
 		}
 
 		function testTwigLoadsFromChildTheme(){

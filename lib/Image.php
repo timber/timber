@@ -117,7 +117,7 @@ class Image extends Attachment {
 			"{{ function('pathinfo', image.file) }}",
 			'2.0.0'
 		);
-		return pathinfo($this->file);
+		return PathHelper::pathinfo($this->file);
 	}
 
 	/**
@@ -416,10 +416,9 @@ class Image extends Attachment {
 	 */
 	protected function is_image() {
 		$src        = wp_get_attachment_url( $this->ID );
-		$check      = wp_check_filetype( basename( $src ), null );
+		$check      = wp_check_filetype( PathHelper::basename( $src ), null );
 		$image_exts = array( 'jpg', 'jpeg', 'jpe', 'gif', 'png' );
-
-		return in_array( $check['ext'], $image_exts, true );
+		return in_array( $check['ext'], $image_exts );
 	}
 
 	/**

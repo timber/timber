@@ -228,7 +228,14 @@ class Twig {
 		$twig->addFilter(new TwigFilter('list', array($this, 'add_list_separators')));
 
 		$twig->addFilter(new TwigFilter('pluck', array('Timber\Helper', 'pluck')));
+
+		/** 
+		 * @deprecated since 1.13 (to be removed in 2.0). Use Twig's native filter filter instead
+     *  @todo remove this in 2.x so that filter merely passes to Twig's filter without any modification
+		 * @ticket #1594 #2120
+		 */
 		$twig->addFilter(new TwigFilter('filter', array('Timber\Helper', 'filter_array')));
+		$twig->addFilter(new TwigFilter('wp_list_filter', array('Timber\Helper', 'wp_list_filter')));
 
 		$twig->addFilter(new TwigFilter('relative', function( $link ) {
 					return URLHelper::get_rel_url($link, true);
@@ -296,24 +303,30 @@ class Twig {
 	 * @return \Twig\Environment
 	 */
 	public function add_timber_escapers( $twig ) {
+		$esc_url = function( \Twig\Environment $env, $string ) {
+			return esc_url( $string );
+		};
 
-		$twig->getExtension('Twig\Extension\CoreExtension')->setEscaper('esc_url', function( \Twig\Environment $env, $string ) {
-			return esc_url($string);
-		});
-		$twig->getExtension('Twig\Extension\CoreExtension')->setEscaper('wp_kses_post', function( \Twig\Environment $env, $string ) {
-			return wp_kses_post($string);
-		});
+		$wp_kses_post = function( \Twig\Environment $env, $string ) {
+			return wp_kses_post( $string );
+		};
 
-		$twig->getExtension('Twig\Extension\CoreExtension')->setEscaper('esc_html', function( \Twig\Environment $env, $string ) {
-			return esc_html($string);
-		});
+		$esc_html = function( \Twig\Environment $env, $string ) {
+			return esc_html( $string );
+		};
 
-		$twig->getExtension('Twig\Extension\CoreExtension')->setEscaper('esc_js', function( \Twig\Environment $env, $string ) {
-			return esc_js($string);
-		});
+		$esc_js = function( \Twig\Environment $env, $string ) {
+			return esc_js( $string );
+		};
 
+		if ( class_exists( 'Twig\Extension\EscaperExtension' ) ) {
+			$escaper_extension = $twig->getExtension('Twig\Extension\EscaperExtension');
+			$escaper_extension->setEscaper('esc_url', $esc_url);
+			$escaper_extension->setEscaper('wp_kses_post', $wp_kses_post);
+			$escaper_extension->setEscaper('esc_html', $esc_html);
+			$escaper_extension->setEscaper('esc_js', $esc_js);
+		} 
 		return $twig;
-
 	}
 
 	/**

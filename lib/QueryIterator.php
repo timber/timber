@@ -60,7 +60,23 @@ class QueryIterator implements \Iterator, \Countable {
 	}
 
 	public function post_count() {
-		return $this->_query->post_count;
+		if ( isset( $this->_query->post_count ) ) {
+			return $this->_query->post_count;
+		}
+	}
+
+	/**
+	 * Gets the amount of found posts in the query.
+	 *
+	 * @api
+	 * @since 1.11.1
+	 *
+	 * @return int
+	 */
+	public function found_posts() {
+		if ( isset( $this->_query->found_posts ) ) {
+			return $this->_query->found_posts;
+		}
 	}
 
 	public function get_pagination( $prefs ) {
