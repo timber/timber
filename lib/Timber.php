@@ -161,9 +161,7 @@ class Timber {
 		}
 
 		if ( func_num_args() > 1 ) {
-			/**
-			 * @todo Add link to Class Maps documentation.
-			 */
+			// @todo Add link to Class Maps documentation.
 			Helper::doing_it_wrong(
 				'Timber::get_post()',
 				'The $PostClass parameter for passing in the post class to use in Timber::get_post() was removed in Timber 2.0. Use Class Maps (LINK HERE) instead.',
@@ -171,16 +169,12 @@ class Timber {
 			);
 		}
 
-		/**
-		 * @todo Will this be handled here or inside factories, or somewhere else?
-		 */
+		// @todo Will this be handled here or inside factories, or somewhere else?
 		if ( null === $post ) {
 			$post = get_the_ID();
 		}
 
-		/**
-		 * @todo Use factory.
-		 */
+		// @todo Use factory.
 		return PostGetter::get_post( $post, 'Timber\Post' );
 	}
 
@@ -221,9 +215,7 @@ class Timber {
 	 */
 	public static function get_posts( $query = false, $options = [] ) {
 		if ( is_string( $query ) ) {
-			/**
-			 * @todo Add link to documentation for get_posts().
-			 */
+			// @todo Add link to documentation for get_posts().
 			Helper::doing_it_wrong(
 				'Timber::get_posts()',
 				"Querying posts by using a query string was removed in Timber 2.0. Pass in the query string as an options array instead. For example, change Timber::get_posts( 'post_type=portfolio&posts_per_page=3') to Timber::get_posts( [ 'post_type' => 'portfolio', 'posts_per_page' => 3 ] ).",
@@ -232,9 +224,7 @@ class Timber {
 		}
 
 		if ( is_string( $options ) ) {
-			/**
-			 * @todo Add link to Class Maps documentation.
-			 */
+			// @todo Add link to Class Maps documentation.
 			Helper::doing_it_wrong(
 				'Timber::get_posts()',
 				'The $PostClass parameter for passing in the post class to use in Timber::get_posts() was removed in Timber 2.0. Use Class Maps (LINK HERE) instead.',
@@ -258,9 +248,7 @@ class Timber {
 			'merge_default' => false,
 		] );
 
-		/**
-		 * @todo Use factory.
-		 */
+		// @todo Use factory.
 		return PostGetter::get_posts( $query, 'Timber\Post', true );
 	}
 

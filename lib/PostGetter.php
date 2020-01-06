@@ -52,7 +52,6 @@ class PostGetter {
 	}
 
 	public static function get_posts( $query = false, $PostClass = '\Timber\Post', $return_collection = false ) {
-
 		/**
 		 * Filters whether Timber::get_posts() should mirror WordPress’s get_posts() function.
 		 *
@@ -64,6 +63,7 @@ class PostGetter {
 		 *
 		 * @since 1.9.5
 		 * @deprecated 2.0.0 use the desired args within Timber\PostQuery() instead
+		 * @todo Rethink how this is handled within post factories?
 		 * @example
 		 * ```php
 		 * add_filter( 'timber/get_posts/mirror_wp_get_posts', '__return_true' );
