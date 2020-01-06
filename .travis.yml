@@ -19,7 +19,7 @@ env:
     global:
         - TMPDIR=/tmp
     matrix:
-        - WP_VERSION=5.9.2 WP_MULTISITE=0 IMG_LIBS=0 
+        - WP_VERSION=5.3.2 WP_MULTISITE=0 IMG_LIBS=0 
         - WP_VERSION=5.3.2 WP_MULTISITE=1 IMG_LIBS=0 
         - WP_VERSION=latest WP_MULTISITE=0 IMG_LIBS=1 COVERAGE=1 
         - WP_VERSION=latest WP_MULTISITE=1 IMG_LIBS=1 COVERAGE=1
