@@ -1,6 +1,6 @@
 <?php
 
-	class MyTerm extends Timber\Term {}
+	require_once 'php/MetaTerm.php';
 
 	/**
 	 * @group terms-api
@@ -46,16 +46,16 @@
 		function testSubclass(){
 			$term_ids = $this->factory->term->create_many(4);
 
-			$terms = Timber::get_terms($term_ids, MyTerm::class);
-			$this->assertEquals(MyTerm::class, get_class($terms[0]));
+			$terms = Timber::get_terms($term_ids, MetaTerm::class);
+			$this->assertEquals(MetaTerm::class, get_class($terms[0]));
 
 			$terms = false;
-			$terms = Timber::get_terms($term_ids, null, MyTerm::class);
-			$this->assertEquals(MyTerm::class, get_class($terms[0]));
+			$terms = Timber::get_terms($term_ids, null, MetaTerm::class);
+			$this->assertEquals(MetaTerm::class, get_class($terms[0]));
 
 			$terms = false;
-			$terms = Timber::get_terms($term_ids, array(), MyTerm::class);
-			$this->assertEquals(MyTerm::class, get_class($terms[0]));
+			$terms = Timber::get_terms($term_ids, array(), MetaTerm::class);
+			$this->assertEquals(MetaTerm::class, get_class($terms[0]));
 		}
 
 		function testGetWithQuery(){
