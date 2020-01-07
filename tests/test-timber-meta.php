@@ -12,6 +12,7 @@ use Timber\Integrations\ACF;
  * Class TestTimberMeta
  * 
  * @group comments-api
+ * @group users-api
  * @group called-post-constructor
  */
 class TestTimberMeta extends Timber_UnitTestCase {

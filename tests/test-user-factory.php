@@ -8,6 +8,7 @@ class SpecialUser extends User {}
 
 /**
  * @group factory
+ * @group users-api
  */
 class TestUserFactory extends Timber_UnitTestCase {
 	public function tearDown() {

@@ -3,6 +3,7 @@
 use Timber\Integrations\ACF;
 
 /**
+ * @group users-api
  * @group called-post-constructor
  * @group called-term-constructor
  * @todo #2094 replace direct Timber\User instantiations
