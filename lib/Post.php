@@ -1522,7 +1522,11 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
-	 * Gets the publishing date of the post to use in your template.
+	 * Gets the publishing date of the post.
+	 *
+	 * This function will also apply the
+	 * [`get_the_date`](https://developer.wordpress.org/reference/hooks/get_the_date/) filter to the
+	 * output.
 	 *
 	 * @api
 	 * @example
@@ -1548,11 +1552,27 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		$format = $date_format ?: get_option( 'date_format' );
 		$date   = wp_date( $format, $this->timestamp() );
 
-		return apply_filters( 'get_the_date', $date, $date_format );
+		/**
+		 * Filters the date a post was published.
+		 *
+		 * @see get_the_date()
+		 *
+		 * @param string      $date        The formatted date.
+		 * @param string      $date_format PHP date format. Defaults to 'date_format' option if not
+		 *                                 specified.
+		 * @param int|WP_Post $id          The post object or ID.
+		 */
+		$date = apply_filters( 'get_the_date', $date, $date_format, $this->ID );
+
+		return $date;
 	}
 
 	/**
-	 * Gets the date of the last modification of the post to use in your template.
+	 * Gets the date the post was last modified.
+	 *
+	 * This function will also apply the
+	 * [`get_the_modified_date`](https://developer.wordpress.org/reference/hooks/get_the_modified_date/)
+	 * filter to the output.
 	 *
 	 * @api
 	 * @example
@@ -1578,11 +1598,32 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		$format = $date_format ?: get_option( 'date_format' );
 		$date   = wp_date( $format, $this->modified_timestamp() );
 
-		return apply_filters( 'get_the_modified_date', $date, $date_format );
+		/**
+		 * Filters the date a post was last modified.
+		 *
+		 * This filter expects a `WP_Post` object as the last parameter. We only have a
+		 * `Timber\Post` object available, that wouldn’t match the expected argument. That’s why we
+		 * need to get the post object with get_post(). This is fairly inexpensive, because the post
+		 * will already be in the cache.
+		 *
+		 * @see get_the_modified_date()
+		 *
+		 * @param string|bool  $date        The formatted date or false if no post is found.
+		 * @param string       $date_format PHP date format. Defaults to value specified in
+		 *                                  'date_format' option.
+		 * @param WP_Post|null $post        WP_Post object or null if no post is found.
+		 */
+		$date = apply_filters( 'get_the_modified_date', $date, $date_format, get_post( $this->ID ) );
+
+		return $date;
 	}
 
 	/**
 	 * Gets the time the post was published to use in your template.
+	 *
+	 * This function will also apply the
+	 * [`get_the_time`](https://developer.wordpress.org/reference/hooks/get_the_time/) filter to the
+	 * output.
 	 *
 	 * @api
 	 * @example
@@ -1608,14 +1649,30 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		$format = $time_format ?: get_option( 'time_format' );
 		$time   = wp_date( $format, $this->timestamp() );
 
-		return apply_filters( 'get_the_time', $time, $time_format );
+		/**
+		 * Filters the time a post was written.
+		 *
+		 * @see get_the_time()
+		 *
+		 * @param string      $time        The formatted time.
+		 * @param string      $time_format Format to use for retrieving the time the post was
+		 *                                 written. Accepts 'G', 'U', or php date format value
+		 *                                 specified in `time_format` option. Default empty.
+		 * @param int|WP_Post $id          WP_Post object or ID.
+		 */
+		$time = apply_filters( 'get_the_time', $time, $time_format, $this->ID );
+
+		return $time;
 	}
 
 	/**
 	 * Gets the time of the last modification of the post to use in your template.
 	 *
-	 * @api
+	 * This function will also apply the
+	 * [`get_the_time`](https://developer.wordpress.org/reference/hooks/get_the_modified_time/)
+	 * filter to the output.
 	 *
+	 * @api
 	 * @example
 	 * ```twig
 	 * {# Uses time format set in Settings → General #}
@@ -1639,7 +1696,25 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		$format = $time_format ?: get_option( 'time_format' );
 		$time   = wp_date( $format, $this->modified_timestamp() );
 
-		return apply_filters( 'get_the_modified_time', $time, $time_format );
+		/**
+		 * Filters the localized time a post was last modified.
+		 *
+		 * This filter expects a `WP_Post` object as the last parameter. We only have a
+		 * `Timber\Post` object available, that wouldn’t match the expected argument. That’s why we
+		 * need to get the post object with get_post(). This is fairly inexpensive, because the post
+		 * will already be in the cache.
+		 *
+		 * @see get_the_modified_time()
+		 *
+		 * @param string|bool  $time        The formatted time or false if no post is found.
+		 * @param string       $time_format Format to use for retrieving the time the post was
+		 *                                  written. Accepts 'G', 'U', or php date format. Defaults
+		 *                                  to value specified in 'time_format' option.
+		 * @param WP_Post|null $post        WP_Post object or null if no post is found.
+		 */
+		$time = apply_filters( 'get_the_modified_time', $time, $time_format, get_post( $this->ID ) );
+
+		return $time;
 	}
 
 	/**
