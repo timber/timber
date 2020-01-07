@@ -85,13 +85,13 @@ $datetime = date_create_immutable_from_format( 'Y-m-d', '2016-10-31' );
 $timestamp = $datetime->getTimestamp();
 ```
 
-If you don’t know the exact format of the date, you can try using `strtotime()` or `date_create()`. Valid formats are explained in [Supported Date and Time Formats](https://www.php.net/manual/en/datetime.formats.php).
+If you don’t know the exact format of the date, you can try using `strtotime()` or `date_create_immutable()`. Valid formats are explained in [Supported Date and Time Formats](https://www.php.net/manual/en/datetime.formats.php).
 
 ```php
 $timestamp = strtotime( '2008-08-07 18:11:31' );
 
-$datetime = date_create( '2008-08-07 18:11:31' );
-$datetime = date_create( '2020-01-02T00:09:30+02:00' );
+$datetime = date_create_immutable( '2008-08-07 18:11:31' );
+$datetime = date_create_immutable( '2020-01-02T00:09:30+02:00' );
 $datetime = new DateTimeImmutable( '2008-08-07 18:11:31' );
 ```
 
