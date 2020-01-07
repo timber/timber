@@ -9,6 +9,8 @@ use Timber\Integrations\ACF;
 
 /**
  * Class TestTimberMeta
+ * 
+ * @group comments-api
  * @group called-post-constructor
  */
 class TestTimberMetaDeprecated extends Timber_UnitTestCase {
@@ -293,7 +295,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_filter( 'timber_comment_get_meta_field_pre', $filter, 10, 4 );
 
 		$comment_id = $this->factory->comment->create();
-		$comment    = new Comment( $comment_id );
+		$comment    = Timber\Timber::get_comment( $comment_id );
 
 		update_comment_meta( $comment_id, 'name', 'A girl has no name.' );
 
@@ -313,7 +315,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_action( 'timber_comment_get_meta_pre', $action, 10, 2 );
 
 		$comment_id = $this->factory->comment->create();
-		$comment    = new Comment( $comment_id );
+		$comment    = Timber\Timber::get_comment( $comment_id );
 
 		update_comment_meta( $comment_id, 'name', 'A girl has no name.' );
 
@@ -335,7 +337,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_filter( 'timber_comment_get_meta', $filter, 10, 2 );
 
 		$comment_id = $this->factory->comment->create();
-		$comment    = new Comment( $comment_id );
+		$comment    = Timber\Timber::get_comment( $comment_id );
 
 		update_comment_meta( $comment_id, 'name', 'A girl has no name.' );
 
@@ -359,7 +361,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_filter( 'timber_comment_get_meta_field', $filter, 10, 4 );
 
 		$comment_id = $this->factory->comment->create();
-		$comment    = new Comment( $comment_id );
+		$comment = Timber\Timber::get_comment( $comment_id );
 
 		update_comment_meta( $comment_id, 'name', 'A girl has no name.' );
 

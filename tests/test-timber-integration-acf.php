@@ -4,6 +4,7 @@ use Timber\Integrations\ACF;
 
 /**
  * @group users-api
+ * @group comments-api
  * @group called-post-constructor
  * @group called-term-constructor
  * @todo #2094 replace direct Timber\User instantiations
@@ -157,7 +158,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 	 */
 	function testCommentGetFieldDeprecated() {
 		$comment_id = $this->factory->comment->create();
-		$comment    = new Timber\Comment( $comment_id );
+		$comment    = Timber\Timber::get_comment( $comment_id );
 
 		$comment->get_field( 'field_name' );
 	}
