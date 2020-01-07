@@ -2,6 +2,7 @@
 
 /**
  * @group comments-api
+ * @group called-post-constructor
  */
 class TestTimberComment extends Timber_UnitTestCase {
 
@@ -100,7 +101,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'These pretzels are making me thirsty.', 'user_id' => $kramer, 'comment_date' => '2015-08-21 03:24:07'));
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'Perhaps there’s more to Newman than meets the eye.', 'comment_date' => '2015-08-21 03:25:07'));
 		$child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'No, there’s less.', 'comment_parent' => $comment_id, 'comment_date' => '2015-08-21 03:26:07'));
-		$post = new Timber\Post($post_id);
+		$post = Timber::get_post($post_id);
 		$comments = $post->comments();
 		$this->assertEquals(2, count($comments));
 		$this->assertEquals(1, count($comments[1]->children()));

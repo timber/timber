@@ -78,4 +78,9 @@
 			$wpdb->query("TRUNCATE TABLE $wpdb->posts;");
 		}
 
+		function truncate(string $table) {
+			global $wpdb;
+			$wpdb->query("TRUNCATE TABLE {$wpdb->$table}");
+		}
+
 	}

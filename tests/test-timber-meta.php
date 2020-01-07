@@ -12,6 +12,7 @@ use Timber\Integrations\ACF;
  * Class TestTimberMeta
  * 
  * @group comments-api
+ * @group called-post-constructor
  */
 class TestTimberMeta extends Timber_UnitTestCase {
 	/**
@@ -55,7 +56,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		update_comment_meta( $comment_id, 'meta1', 'Meta 1' );
 		update_comment_meta( $comment_id, 'meta2', 'Meta 2' );
 
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
 		$comment = Timber::get_comment( $comment_id );
@@ -79,7 +80,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$user_id    = $this->factory->user->create();
 		$comment_id = $this->factory->comment->create();
 
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
 		$comment = Timber::get_comment( $comment_id );
@@ -109,7 +110,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$user_id    = $this->factory->user->create();
 		$comment_id = $this->factory->comment->create();
 
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
 		$comment = Timber::get_comment( $comment_id );
@@ -169,7 +170,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$term_id    = $this->factory->term->create();
 		$comment_id = $this->factory->comment->create();
 
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 		$term    = new Term( $term_id );
 		$comment = Timber::get_comment( $comment_id );
 
@@ -217,7 +218,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$user_id    = $this->factory->user->create();
 		$comment_id = $this->factory->comment->create();
 
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
 		$comment = Timber::get_comment( $comment_id );
@@ -252,7 +253,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		update_user_meta( $user_id, 'my_custom_property', 'Sweet Honey' );
 		update_comment_meta( $comment_id, 'my_custom_property', 'Sweet Honey' );
 
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
 		$comment = Timber::get_comment( $comment_id );
@@ -302,7 +303,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		update_user_meta( $user_id, 'meta_value', 'I am a meta value' );
 		update_comment_meta( $comment_id, 'meta_value', 'I am a meta value' );
 
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
 		$comment = Timber::get_comment( $comment_id );
@@ -334,7 +335,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$user_id    = $this->factory->user->create();
 		$comment_id = $this->factory->comment->create();
 
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
 		$comment = Timber::get_comment( $comment_id );
@@ -379,7 +380,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		update_user_meta( $user_id, 'my_custom_property', 'Sweet Honey' );
 		update_comment_meta( $comment_id, 'my_custom_property', 'Sweet Honey' );
 
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 		$term    = new Term( $term_id );
 		$user    = new User( $user_id );
 		$comment = Timber::get_comment( $comment_id );
@@ -737,7 +738,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 
 		update_post_meta( $post_id, 'inaccessible', 'Boo!' );
 
-		$post   = new Post( $post_id );
+		$post   = Timber::get_post( $post_id );
 		$string = Timber::compile_string( '{{ post.custom.inaccessible }}', array( 'post' => $post ) );
 
 		$this->assertEquals( '', $string );

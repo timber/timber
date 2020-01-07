@@ -2,6 +2,7 @@
 
 /**
  * @group posts-api
+ * @group called-post-constructor
  */
 class TestTimberStaticPages extends Timber_UnitTestCase {
 
@@ -16,7 +17,7 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 		$page_id = $this->factory->post->create(array('post_type' => 'page'));
 		update_option('page_for_posts', $page_id);
 		$this->go_to(home_url('/?page_id='.$page_id));
-		$page = new Timber\Post();
+		$page = Timber::get_post();
 		$this->assertEquals($page_id, $page->ID);
 	}
 
@@ -24,7 +25,7 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 		$pids = $this->factory->post->create_many(6);
 		$page_id = $this->factory->post->create(array('post_title' => 'Foobar', 'post_name' => 'foobar', 'post_type' => 'page'));
 		$this->go_to(home_url('/?page_id='.$page_id));
-		$page = new Timber\Post();
+		$page = Timber::get_post();
 		$this->assertEquals($page_id, $page->ID);
 	}
 
@@ -35,6 +36,7 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 		$this->go_to(home_url('/'));
 		global $wp_query;
 		$wp_query->queried_object_id = $page_id;
+		// @todo #2094 factories
 		$page = new Timber\Post();
 		$this->assertEquals($page_id, $page->ID);
 	}
@@ -45,7 +47,7 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 		update_option('show_on_front', 'page');
 		update_option('page_on_front', $page_id);
 		$this->go_to(home_url('/'));
-		$post = new Timber\Post();
+		$post = Timber::get_post();
 		$this->assertEquals($page_id, $post->ID);
 	}
 
@@ -65,8 +67,9 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 			update_option('page_for_posts', $page_id);
 			$post_id = $this->factory->post->create(array('post_title' => 'My Real post', 'post_type' => 'post'));
 			$this->go_to(home_url('/?p='.$page_id));
-			$post = new Timber\Post($post_id);
+			$post = Timber::get_post($post_id);
 			$this->assertEquals($post_id, $post->ID);
+			// @todo #2094 factories
 			$page = new Timber\Post();
 			$this->assertEquals($page_id, $page->ID);
 		}
@@ -78,6 +81,7 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 			$this->go_to(home_url('/?p='.$page_id));
 			$posts = Timber::get_posts();
 			$this->assertEquals(0, count($posts));
+			// @todo #2094 factories
 			$page = new Timber\Post();
 			$this->assertEquals($page_id, $page->ID);
 		}
@@ -86,6 +90,7 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 			$page_id = $this->factory->post->create(array('post_title' => 'Mister Slave', 'post_type' => 'page'));
 			$children = $this->factory->post->create_many(10, array('post_title' => 'Timmy'));
 			$this->go_to(home_url('/?p='.$page_id));
+			// @todo #2094 factories
 			$page = new Timber\Post();
 			$this->assertEquals($page_id, $page->ID);
 			$posts = Timber::get_posts();

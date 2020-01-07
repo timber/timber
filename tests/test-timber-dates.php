@@ -1,10 +1,13 @@
 <?php
 
+/**
+ * @group called-post-constructor
+ */
 	class TestTimberDates extends Timber_UnitTestCase {
 
 		function testDate(){
 			$pid = $this->factory->post->create();
-			$post = new Timber\Post($pid);
+			$post = Timber::get_post($pid);
 			$twig = 'I am from {{post.date}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
 			$this->assertEquals('I am from '.date('F j, Y'), $str);
@@ -22,7 +25,7 @@
 
 		function testTime(){
 			$pid = $this->factory->post->create(array('post_date' => '2016-07-07 20:03:00'));
-			$post = new Timber\Post($pid);
+			$post = Timber::get_post($pid);
 			$twig = 'Posted at {{post.time}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
 			$this->assertEquals('Posted at 8:03 pm', $str);
@@ -30,7 +33,7 @@
 
 		function testPostDisplayDate(){
 			$pid = $this->factory->post->create();
-			$post = new Timber\Post($pid);
+			$post = Timber::get_post($pid);
 			$twig = 'I am from {{post.date}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
 			$this->assertEquals('I am from '.date('F j, Y'), $str);
@@ -38,7 +41,7 @@
 
 		function testPostDate(){
 			$pid = $this->factory->post->create();
-			$post = new Timber\Post($pid);
+			$post = Timber::get_post($pid);
 			$twig = 'I am from {{post.post_date}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
 			$this->assertEquals('I am from '.$post->post_date, $str);
@@ -46,7 +49,7 @@
 
 		function testPostDateWithFilter(){
 			$pid = $this->factory->post->create();
-			$post = new Timber\Post($pid);
+			$post = Timber::get_post($pid);
 			$twig = 'I am from {{post.post_date|date}}';
 			$str = Timber::compile_string($twig, array('post' => $post));
 			$this->assertEquals('I am from '.date('F j, Y'), $str);
@@ -55,7 +58,7 @@
 		function testModifiedDate(){
 			$date = date('F j, Y @ g:i a');
 			$pid = $this->factory->post->create();
-			$post = new Timber\Post($pid);
+			$post = Timber::get_post($pid);
 			$twig = "I was modified {{ post.modified_date('F j, Y @ g:i a') }}";
 			$str = Timber::compile_string($twig, array('post' => $post));
 			$this->assertEquals('I was modified '.$date, $str);
@@ -63,7 +66,7 @@
 
 		function testModifiedDateFilter() {
 			$pid = $this->factory->post->create();
-			$post = new Timber\Post($pid);
+			$post = Timber::get_post($pid);
 			add_filter('get_the_modified_date', function($the_date) {
 				return 'foobar';
 			});
@@ -75,7 +78,7 @@
 		function testModifiedTime(){
 			$date = date('F j, Y @ g:i a');
 			$pid = $this->factory->post->create();
-			$post = new Timber\Post($pid);
+			$post = Timber::get_post($pid);
 			$twig = "I was modified {{post.modified_time('F j, Y @ g:i a')}}";
 			$str = Timber::compile_string($twig, array('post' => $post));
 			$this->assertEquals('I was modified '.$date, $str);
@@ -90,7 +93,7 @@
 
 		function testModifiedTimeFilter() {
 			$pid = $this->factory->post->create();
-			$post = new Timber\Post($pid);
+			$post = Timber::get_post($pid);
 			add_filter('get_the_modified_time', function($the_date) {
 				return 'foobar';
 			});

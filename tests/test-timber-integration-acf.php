@@ -2,6 +2,12 @@
 
 use Timber\Integrations\ACF;
 
+/**
+ * @group called-post-constructor
+ * @group called-term-constructor
+ * @todo #2094 replace direct Timber\User instantiations
+ * @todo #2094 replace direct Timber\Comment instantiations
+ */
 class TestTimberIntegrationACF extends Timber_UnitTestCase {
 	function testACFInit() {
 		$acf = new ACF();
@@ -12,7 +18,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 		$pid = $this->factory->post->create();
 		update_field( 'subhead', 'foobar', $pid );
 		$str = '{{post.meta("subhead")}}';
-		$post = new Timber\Post( $pid );
+		$post = Timber::get_post( $pid );
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
 		$this->assertEquals( 'foobar', $str );
 	}
@@ -20,7 +26,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 	function testACFHasFieldPostFalse() {
 		$pid = $this->factory->post->create();
 		$str = '{% if post.has_field("heythisdoesntexist") %}FAILED{% else %}WORKS{% endif %}';
-		$post = new Timber\Post( $pid );
+		$post = Timber::get_post( $pid );
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
 		$this->assertEquals('WORKS', $str);
 	}
@@ -29,14 +35,15 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 		$pid = $this->factory->post->create();
 		update_post_meta($pid, 'best_radiohead_album', 'in_rainbows');
 		$str = '{% if post.has_field("best_radiohead_album") %}In Rainbows{% else %}OK Computer{% endif %}';
-		$post = new Timber\Post( $pid );
+		$post = Timber::get_post( $pid );
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
 		$this->assertEquals('In Rainbows', $str);
 	}
 
 	function testACFGetFieldTermCategory() {
-		update_field( 'color', 'blue', 'category_1' );
-		$cat = new Timber\Term( 1 );
+		$tid = $this->factory->term->create();
+		update_field( 'color', 'blue', "category_${tid}" );
+		$cat = Timber::get_term( $tid );
 		$this->assertEquals( 'blue', $cat->color );
 		$str = '{{term.color}}';
 		$this->assertEquals( 'blue', Timber::compile_string( $str, array( 'term' => $cat ) ) );
@@ -45,7 +52,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 	function testACFCustomFieldTermTag() {
 		$tid = $this->factory->term->create();
 		update_field( 'color', 'green', 'post_tag_'.$tid );
-		$term = new Timber\Term( $tid );
+		$term = Timber::get_term( $tid );
 		$str = '{{term.color}}';
 		$this->assertEquals( 'green', Timber::compile_string( $str, array( 'term' => $term ) ) );
 	}
@@ -53,7 +60,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 	function testACFGetFieldTermTag() {
 		$tid = $this->factory->term->create();
 		update_field( 'color', 'blue', 'post_tag_'.$tid );
-		$term = new Timber\Term( $tid );
+		$term = Timber::get_term( $tid );
 		$str = '{{term.meta("color")}}';
 		$this->assertEquals( 'blue', Timber::compile_string( $str, array( 'term' => $term ) ) );
 	}
@@ -73,7 +80,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 		update_field( 'thinger', 'foo', $pid );
 		update_field( '_thinger', $key, $pid );
 
-		$post     = new Timber\Post($pid);
+		$post     = Timber::get_post($pid);
 		$template = '{{ post.meta("thinger") }} / {{ post.field_object("thinger").key }}';
 		$str      = Timber::compile_string($template, array( 'post' => $post ));
 
@@ -104,7 +111,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 		) );
 
 		$post_id = $this->factory->post->create();
-		$post    = new Timber\Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 		update_field( 'lead', 'Murder Spagurders are dangerous sneks.', $post_id );
 
 		$string = trim( Timber::compile_string( "{{ post.meta('lead') }}", [ 'post' => $post ] ) );
@@ -119,7 +126,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 	 */
 	function testPostGetFieldDeprecated() {
 		$post_id = $this->factory->post->create();
-		$post    = new Timber\Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 
 		$post->get_field( 'field_name' );
 	}
@@ -129,7 +136,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 	 */
 	function testTermGetFieldDeprecated() {
 		$term_id = $this->factory->term->create();
-		$term    = new Timber\Term( $term_id );
+		$term    = Timber::get_term( $term_id );
 
 		$term->get_field( 'field_name' );
 	}
