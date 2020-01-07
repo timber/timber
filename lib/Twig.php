@@ -228,7 +228,14 @@ class Twig {
 		$twig->addFilter(new TwigFilter('list', array($this, 'add_list_separators')));
 
 		$twig->addFilter(new TwigFilter('pluck', array('Timber\Helper', 'pluck')));
+
+		/** 
+		 * @deprecated since 1.13 (to be removed in 2.0). Use Twig's native filter filter instead
+     *  @todo remove this in 2.x so that filter merely passes to Twig's filter without any modification
+		 * @ticket #1594 #2120
+		 */
 		$twig->addFilter(new TwigFilter('filter', array('Timber\Helper', 'filter_array')));
+		$twig->addFilter(new TwigFilter('wp_list_filter', array('Timber\Helper', 'wp_list_filter')));
 
 		$twig->addFilter(new TwigFilter('relative', function( $link ) {
 					return URLHelper::get_rel_url($link, true);
@@ -318,16 +325,8 @@ class Twig {
 			$escaper_extension->setEscaper('wp_kses_post', $wp_kses_post);
 			$escaper_extension->setEscaper('esc_html', $esc_html);
 			$escaper_extension->setEscaper('esc_js', $esc_js);
-		} else {
-			$escaper_extension = $twig->getExtension('Twig\Extension\CoreExtension');
-			$escaper_extension->setEscaper('esc_url', $esc_url);
-			$escaper_extension->setEscaper('wp_kses_post', $wp_kses_post);
-			$escaper_extension->setEscaper('esc_html', $esc_html);
-			$escaper_extension->setEscaper('esc_js', $esc_js);
-		}
-
+		} 
 		return $twig;
-
 	}
 
 	/**
