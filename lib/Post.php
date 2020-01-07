@@ -1546,7 +1546,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * @return string
 	 */
 	public function date( $date_format = null ) {
-		$format = $date_format ? $date_format : get_option( 'date_format' );
+		$format = $date_format ?: get_option( 'date_format' );
 		$date   = wp_date( $format, $this->timestamp() );
 
 		return apply_filters( 'get_the_date', $date, $date_format );
@@ -1576,7 +1576,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * @return string
 	 */
 	public function modified_date( $date_format = null ) {
-		$format = $date_format ? $date_format : get_option( 'date_format' );
+		$format = $date_format ?: get_option( 'date_format' );
 		$date   = wp_date( $format, $this->modified_timestamp() );
 
 		return apply_filters( 'get_the_modified_date', $date, $date_format );
@@ -1606,7 +1606,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * @return string
 	 */
 	public function time( $time_format = null ) {
-		$format = $time_format ? $time_format : get_option( 'time_format' );
+		$format = $time_format ?: get_option( 'time_format' );
 		$time   = wp_date( $format, $this->timestamp() );
 
 		return apply_filters( 'get_the_time', $time, $time_format );
@@ -1637,7 +1637,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * @return string
 	 */
 	public function modified_time( $time_format = null ) {
-		$format = $time_format ? $time_format : get_option( 'time_format' );
+		$format = $time_format ?: get_option( 'time_format' );
 		$time   = wp_date( $format, $this->modified_timestamp() );
 
 		return apply_filters( 'get_the_modified_time', $time, $time_format );
