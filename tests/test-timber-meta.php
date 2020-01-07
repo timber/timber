@@ -421,7 +421,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post_id    = $this->factory->post->create();
 		$term_id    = $this->factory->term->create();
 		$user_id    = $this->factory->user->create();
-		$comment_id = $this->factory->comment->create();
+		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
 
 		update_post_meta( $post_id, 'public_method', 'I am a meta value' );
 		update_term_meta( $term_id, 'public_method', 'I am a meta value' );
