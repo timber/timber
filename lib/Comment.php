@@ -95,7 +95,8 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	protected $children = array();
 
 	/**
-	 * Build a Timber\Comment
+	 * Construct a Timber\Comment. This is protected to prevent direct instantiation,
+	 * which is no longer supported. Use `Timber::get_comment()` instead.
 	 *
 	 * @internal
 	 */
@@ -103,12 +104,12 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
-	 * Build a Timber\Comment
+	 * Build a Timber\Comment. Do not call this directly. Use `Timber::get_comment()` instead.
 	 *
 	 * @internal
 	 * @param \WP_Comment $wp_comment a native WP_Comment instance
 	 */
-	public static function build( WP_Comment $wp_comment ) {
+	public static function build( WP_Comment $wp_comment ) : self {
 		$comment = new static();
 		$comment->import($wp_comment);
 		$comment->ID = $wp_comment->comment_ID;
