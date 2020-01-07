@@ -222,10 +222,12 @@ class Timber {
 	 * Get comments.
 	 * @api
 	 * @param array   $query
+	 * @param array   $options optional; none are currently supported
 	 * @return mixed
 	 */
-	public static function get_comments( array $query = [] ) {
+	public static function get_comments( array $query = [], array $options = [] ) : Iterable {
 		$factory = new CommentFactory();
+		// TODO return a Collection type?
 		return $factory->from($query);
 	}
 
@@ -235,7 +237,7 @@ class Timber {
 	 * @param int|\WP_Comment $comment
 	 * @return \Timber\Comment
 	 */
-	public static function get_comment( $comment ) {
+	public static function get_comment( $comment ) : Comment {
 		$factory = new CommentFactory();
 		return $factory->from($comment);
 	}
