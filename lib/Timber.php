@@ -235,9 +235,9 @@ class Timber {
 	 * Get comment.
 	 * @api
 	 * @param int|\WP_Comment $comment
-	 * @return \Timber\Comment
+	 * @return \Timber\Comment|null
 	 */
-	public static function get_comment( $comment ) : Comment {
+	public static function get_comment( $comment ) {
 		$factory = new CommentFactory();
 		return $factory->from($comment);
 	}
