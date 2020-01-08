@@ -62,7 +62,7 @@ class UserFactory {
 	protected function build(WP_User $user) : CoreInterface {
 		$class = apply_filters( 'timber/user/classmap', User::class, $user );
 
-		return new $class($user);
+		return $class::build($user);
 	}
 
 	protected function is_numeric_array(array $arr) {

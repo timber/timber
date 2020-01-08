@@ -4,6 +4,8 @@ namespace Timber;
 
 use WP_Post;
 
+use Timber\Factory\UserFactory;
+
 /**
  * Class Post
  *
@@ -1192,7 +1194,8 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 */
 	public function author() {
 		if ( isset($this->post_author) ) {
-			return new User($this->post_author);
+			$factory = new UserFactory();
+			return $factory->from((int) $this->post_author);
 		}
 	}
 
