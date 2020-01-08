@@ -35,7 +35,9 @@ class UserFactory {
 	}
 
 	protected function from_id(int $id) {
-		return $this->build(get_user_by('id', $id));
+		$wp_user = get_user_by('id', $id);
+
+		return $wp_user ? $this->build($wp_user) : null;
 	}
 
 	protected function from_post_obj(object $obj) : CoreInterface {
