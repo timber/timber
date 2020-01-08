@@ -162,4 +162,14 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 
 		$comment->get_field( 'field_name' );
 	}
+
+	function testACFContentField() {
+		$pid = $this->factory->post->create(array('post_content' => 'Cool content bro!'));
+		update_field( 'content', 'I am custom content', $pid );
+		update_field( '_content', 'I am also custom content', $pid );
+		$str = '{{ post.content }}';
+		$post = new Timber\Post( $pid );
+		$str = Timber::compile_string( $str, array( 'post' => $post ) );
+		$this->assertEquals( '<p>Cool content bro!</p>', trim($str) );
+	}
 }
