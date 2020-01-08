@@ -126,10 +126,10 @@ In archive templates like **archive.php** or **category.php**, Timber will alrea
 
 ### Return value
 
-What you get as a return value when running `Timber::get_posts()` is not a pure array of posts, but a `Timber\PostCollection` object, which is an `ArrayObject` that is very similar to an array like you know it. To loop over the posts collection in PHP, you first need to convert it to an array with `Timber\PostCollection::get_posts()`.
+What you get as a return value when running `Timber::get_posts()` is not a pure array of posts, but a `Timber\PostCollection` object, which is an `ArrayObject` that is very similar to an array like you know it. To loop over the posts collection in PHP, you first need to convert it to an array with `Timber\PostCollection::to_array()`.
 
 ```php
-foreach ( $posts_query->get_posts() as $post ) {
+foreach ( $posts->to_array() as $post ) {
     echo $post->title();
 }
 ```
@@ -138,7 +138,7 @@ In Twig, you can directly loop over the collection.
 
 ```twig
 {% for post in posts %}
-    {{ post.title }}    
+    {{ post.title }}
 {% endfor %}
 ```
 
