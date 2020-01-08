@@ -31,7 +31,8 @@ class CoAuthorsPlus {
 		// Convert guest authors into something Factories know how to deal with
 		$coauthors = array_map(function( object $author) {
 			if ($author instanceof \stdclass) {
-				return CoAuthorsPlusUser::from_guest_author($author);
+				$class = apply_filters('timber/user/classmap', CoAuthorsPlusUser::class, $author);
+				return $class::from_guest_author($author);
 			}
 
 			return $author;

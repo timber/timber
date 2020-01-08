@@ -1,5 +1,9 @@
 <?php
 
+	use Timber\Integrations\CoAuthorsPlusUser;
+
+	require_once 'php/CustomGuestAuthor.php';
+
 	/**
 	 * @group users-api
 	 * @group called-post-constructor
@@ -105,7 +109,7 @@
 			$authors = $post->authors();
 			$author = $authors[0];
 			$this->assertEquals($display_name, $author->display_name);
-			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
+			$this->assertInstanceOf(CoAuthorsPlusUser::class, $author);
 		}
 
 		function testGuestAuthorWithRegularAuthor(){
@@ -125,7 +129,7 @@
 			$authors = $post->authors();
 			$author = $authors[1];
 			$this->assertEquals($display_name, $author->display_name);
-			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
+			$this->assertInstanceOf(CoAuthorsPlusUser::class, $author);
 			$template_string = '{% for author in post.authors %}{{author.name}}, {% endfor %}';
 			$str = Timber::compile_string($template_string, array('post' => $post));
 			$this->assertEquals('Alexander Hamilton, Motia,', trim($str));
@@ -157,13 +161,13 @@
 			$author = $authors[0];
 			$this->assertEquals($author->display_name, $user->name);
 			$this->assertInstanceOf('Timber\User', $author);
-			$this->assertNotInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
+			$this->assertNotInstanceOf(CoAuthorsPlusUser::class, $author);
 
 			$coauthors_plus->force_guest_authors = true;
 			$authors = $post->authors();
 			$author = $authors[0];
 			$this->assertEquals($author->display_name, $guest_display_name);
-			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
+			$this->assertInstanceOf(CoAuthorsPlusUser::class, $author);
 		}
 
 		function testGuestAuthorAvatar(){
@@ -193,5 +197,42 @@
 			Timber\Integrations\CoAuthorsPlus::$prefer_gravatar = true;
 			$str2 = Timber::compile_string($template_string, array('post' => $post));
 			$this->assertEquals(get_avatar_url($email), $str2);
+		}
+
+		function testGuestAuthorWithClassMap(){
+			$this->factory->user->create(array('diplay_name' => 'Original Author', 'user_login' => 'original_author'));
+
+			$pid = $this->factory->post->create();
+			$post = Timber::get_post($pid);
+
+			$guest_id = self::create_guest_author(
+				array('user_login' => 'motia', 'display_name' => 'Motia')
+			);
+
+			global $coauthors_plus;
+			$coauthors_plus->add_coauthors($pid, array('original_author', 'motia'));
+
+			$coauthor_filter = function(string $class, object $author) {
+				// we want to be able to override the class used for guest authors,
+				// so test that we can determine that at this point in the lifecycle.
+				// use the default class
+				if ($author instanceof stdclass) {
+					// we have a guest author
+					return CustomGuestAuthor::class;
+				}
+				return $class;
+			};
+			add_filter('timber/user/classmap', $coauthor_filter, 10, 2);
+
+			$authors = $post->authors();
+
+			// TODO why doesn't this assertion pass?
+			$this->assertEquals('Original Author', $authors[0]->display_name);
+			$this->assertEquals('Motia', $authors[1]->display_name);
+
+			$this->assertInstanceOf(CoAuthorsPlusUser::class, $authors[0]);
+			$this->assertInstanceOf(CustomGuestAuthor::class, $authors[1]);
+
+			remove_filter('timber/user/classmap', $coauthor_filter);
 		}
 	}
