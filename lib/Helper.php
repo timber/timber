@@ -298,7 +298,7 @@ class Helper {
 		 *
 		 * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
 		 */
-		if ( ! apply_filters( 'deprecated_function_trigger_error', true ) ) {
+		if ( apply_filters( 'deprecated_function_trigger_error', true ) ) {
 			return;
 		}
 
