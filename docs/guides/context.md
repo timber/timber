@@ -157,7 +157,7 @@ When you don’t need the default query, you can pass in your own arguments to `
 
 ```php
 $context          = Timber::context();
-$context['posts'] = new Timber::get_posts( [
+$context['posts'] = Timber::get_posts( [
     'post_type'      => 'book',
     'posts_per_page' => -1,
     'post_status'    => 'publish',
