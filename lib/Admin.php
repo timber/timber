@@ -11,10 +11,7 @@ class Admin {
 		$filter = add_filter('plugin_row_meta', array(__CLASS__, 'meta_links'), 10, 2);
 		$action = add_action('in_plugin_update_message-timber-library/timber.php', array(__CLASS__, 'in_plugin_update_message'), 10, 2);
 		$action = add_action('in_plugin_update_message-timber/timber.php', array(__CLASS__, 'in_plugin_update_message'), 10, 2);
-
-
 		global $wp_version;
-
 		if ( version_compare('5.3.0', $wp_version) === 1 ) {
 			// user is running something older that WordPress 5.3 show them an error
 			$upgrade_url = admin_url('update-core.php');
@@ -25,8 +22,19 @@ class Admin {
 		if ( $filter && $action ) {
 			return true;
 		}
+		return true;
 	}
 
+	/**
+	 * Display a message in the admin.
+	 *
+	 * @codeCoverageIgnore
+	 *
+	 * @date    01/07/2020
+	 *
+	 * @param string  $text to display
+	 * @param string  $class of the notice 'error' (red) or 'warning' (yellow)
+	 */
 	protected static function show_notice( $text, $class = 'error') {
 		add_action( 'admin_notices', function() use ( $text, $class ) {
 				echo '<div class="'.$class.'"><p>'.$text.'</p></div>';
