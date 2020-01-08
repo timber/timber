@@ -20,7 +20,7 @@ class UserFactory {
 
 		if (is_object($params)) {
 			// assume we have some kind of WP user object, Timber or otherwise
-			return $this->from_post_obj($params);
+			return $this->from_user_object($params);
 		}
 
 		if ($this->is_numeric_array($params)) {
@@ -40,7 +40,7 @@ class UserFactory {
 		return $wp_user ? $this->build($wp_user) : null;
 	}
 
-	protected function from_post_obj(object $obj) : CoreInterface {
+	protected function from_user_object(object $obj) : CoreInterface {
 		if ($obj instanceof CoreInterface) {
 			// we already have some kind of Timber Core object
 			return $obj;
