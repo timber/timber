@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Timber\Factory\CommentFactory;
+use Timber\Factory\UserFactory;
 
 /**
  * Class Timber
@@ -213,6 +214,65 @@ class Timber {
 	 */
 	public static function get_term( $term, $taxonomy = 'post_tag', $TermClass = 'Timber\Term' ) {
 		return TermGetter::get_term($term, $taxonomy, $TermClass);
+	}
+
+	/* User Retrieval
+	================================ */
+
+	/**
+	 * Get one or more users as a collection.
+	 * @api
+	 * @param array   $query The params for the WP_User_Query to performed
+	 * @param array   $options optional; none are currently supported
+	 * @return mixed
+	 */
+	public static function get_users( array $query = [], array $options = [] ) : Iterable {
+		$factory = new UserFactory();
+		// TODO return a Collection type?
+		return $factory->from($query);
+	}
+
+	/**
+	 * Get a single User.
+	 * 
+	 * @api
+	 * @param int|\WP_User $user a WP_User object or user ID. Defaults to the ID
+	 * of the current user.
+	 * @return \Timber\User|null
+	 */
+	public static function get_user( $user = null ) {
+		/*
+		 * TODO in the interest of time, I'm implementing this logic here. If there's
+		 * a better place to do this or something that already implements this, let me know
+		 * and I'll switch over to that.
+		 */
+		$user = $user ?: get_current_user_id();
+
+		$factory = new UserFactory();
+		return $factory->from($user);
+	}
+
+	/**
+	 * Like WP core's `get_user_by()`, but returns a Timber\User instance
+	 * 
+	 * @api
+	 * @param string $field The field to retrieve the user with. One of:
+	 * - id
+	 * - ID
+	 * - slug
+	 * - email
+	 * - login
+	 * @param int|string $value The value for $field
+	 * @return \Timber\User|null
+	 */
+	public static function get_user_by( string $field, $value ) {
+		$wp_user = get_user_by($field, $value);
+
+		if ($wp_user === false) {
+			return null;
+		}
+
+		return static::get_user($wp_user);
 	}
 
 	/* Comment Retrieval
