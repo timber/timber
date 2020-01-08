@@ -3,6 +3,7 @@
 	/**
 	 * @group users-api
 	 * @group called-post-constructor
+	 * @group integrations
 	 * @todo #2094 replace direct Timber\User instantiations
 	 */
 	class TestTimberIntegrationsCoAuthors extends Timber_UnitTestCase {
@@ -140,7 +141,7 @@
 			$display_name = 'True Name';
 
 			$uid = $this->factory->user->create(array('display_name' => $display_name, 'user_login' => $user_login));
-			$user = new Timber\User($uid);
+			$user = Timber::get_user($uid);
 
 			$guest_login = 'linkguestlogin';
 			$guest_display_name = 'LGuest D Name';

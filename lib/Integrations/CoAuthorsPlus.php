@@ -2,6 +2,9 @@
 
 namespace Timber\Integrations;
 
+use Timber\Factory\UserFactory;
+use Timber\User;
+
 class CoAuthorsPlus {
 
 	public static $prefer_gravatar = false;
@@ -11,27 +14,45 @@ class CoAuthorsPlus {
 	 */
 	public function __construct() {
 		add_filter('timber/post/authors', array($this, 'authors'), 10, 2);
+		add_filter('timber/user/classmap', array($this, 'author_class'));
 	}
 
 	/**
 	 * Filters {{ post.authors }} to return authors stored from Co-Authors Plus
 	 * @since 1.1.4
-	 * @param array $author
+	 * @param array        $_    The post's original author. Not used.
 	 * @param \Timber\Post $post
 	 * @return array of User objects
 	 */
-	public function authors( $author, $post ) {
-		$authors = array();
-		$cauthors = get_coauthors($post->ID);
-		foreach ( $cauthors as $author ) {
-			$uid = $this->get_user_uid( $author );
-			if ( $uid ) {
-				$authors[] = new \Timber\User($uid);
-			} else {
-				$authors[] = new CoAuthorsPlusUser($author);
+	public function authors( $_, $post ) {
+		$factory = new UserFactory();
+		$coauthors = get_coauthors($post->ID);
+
+		// Convert guest authors into something Factories know how to deal with
+		$coauthors = array_map(function( object $author) {
+			if ($author instanceof \stdclass) {
+				return CoAuthorsPlusUser::from_guest_author($author);
 			}
-		}
-		return $authors;
+
+			return $author;
+		}, $coauthors);
+
+		return $factory->from($coauthors);
+	}
+
+	/**
+	 * Filter the author class based on Guest Author status, etc.
+	 * 
+	 * @internal
+	 * @param \WP_User $author the user to Timberize
+	 * @return string
+	 */
+	public function author_class( $author ) {
+		// TODO rename this var; it's not really the ID, but its truthiness, that we care about here.
+		// Also add a comment explaining the reasoning here, as it's not immediately clear why you'd want this.
+		$uid = $this->get_user_uid( $author );
+
+		return $uid ? User::class : CoAuthorsPlusUser::class;
 	}
 
 	/**
@@ -52,7 +73,7 @@ class CoAuthorsPlus {
 			} else {
 				return null;
 			}
-		} else {
+		} elseif ( is_object($cauthor) ) {
 			return $cauthor->ID;
 		}
 	}

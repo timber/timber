@@ -4,11 +4,11 @@ namespace Timber\Integrations;
 
 class CoAuthorsPlusUser extends \Timber\User {
 	
-	/**
-	 * @param object $author co-author object
-	 */
-	public function __construct( $author ) {
-		parent::__construct($author);
+	public static function from_guest_author( \stdclass $coauthor ) {
+		$user = new static();
+		$user->init($coauthor);
+
+		return $user;
 	}
 
 	/**
