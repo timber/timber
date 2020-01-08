@@ -20,7 +20,19 @@ class TestCommentFactory extends Timber_UnitTestCase {
 		]);
 
 		$commentFactory = new CommentFactory();
-		$comment				= $commentFactory->from($comment_id);
+		$comment		= $commentFactory->from($comment_id);
+
+		$this->assertInstanceOf(Comment::class, $comment);
+	}
+
+	public function testGetCommentFromIdString() {
+		$comment_id = $this->factory->comment->create([
+			'comment_post_ID' => $this->factory->post->create(),
+			'comment_content' => 'Hello, Timber!',
+		]);
+
+		$commentFactory = new CommentFactory();
+		$comment		= $commentFactory->from(''.$comment_id);
 
 		$this->assertInstanceOf(Comment::class, $comment);
 	}
