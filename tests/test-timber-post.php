@@ -211,6 +211,9 @@
 			$nextPost->post_status = 'draft';
 			wp_update_post($nextPost);
 			$nextPostTest = $firstPost->next();
+			// because $nextPost has a status of "draft" now (and thus isn't public)
+			// it should not be retured when we call $firstPost->next();
+			$this->assertFalse($nextPostTest);
 		}
 
 		function testPostInitObject(){
