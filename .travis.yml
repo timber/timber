@@ -39,7 +39,7 @@ before_script:
 
 script:
     - if [ "$COVERAGE" == 1 ]; then mkdir -p build/logs; vendor/phpunit/phpunit/phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml --verbose; else vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml --verbose; fi
-    - if [ "$STATIC_ANALYSIS" == 1]; then vendor/bin/phpstan analyze -l 0; fi
+    - if [ "$STATIC_ANALYSIS" == 1 ]; then vendor/bin/phpstan analyze -l 0; fi
 
 after_script:
     - if [ "$COVERAGE" == 1 ]; then php vendor/bin/coveralls -v; fi
