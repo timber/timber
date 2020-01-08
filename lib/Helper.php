@@ -274,7 +274,8 @@ class Helper {
 	 * Triggers a deprecation warning.
 	 *
 	 * If you want to catch errors like these in tests, then add the @expectedDeprecated tag to the
-	 * DocBlock. E.g.: "@expectedDeprecated {{ TimberImage() }}".
+	 * DocBlock. E.g.: "@expectedDeprecated {{ TimberImage() }}". This wraps WordPress's 
+	 * `deprecated_function_run` action.
 	 *
 	 * @api
 	 *
@@ -290,37 +291,8 @@ class Helper {
 		}
 
 		do_action( 'deprecated_function_run', $function, $replacement, $version );
-
-		/**
-		 * Filters whether to trigger an error for deprecated functions.
-		 *
-		 * @since 2.5.0
-		 *
-		 * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
-		 */
-		if ( apply_filters( 'deprecated_function_trigger_error', true ) ) {
-			return;
-		}
-
-		if ( ! is_null( $replacement ) ) {
-			$error_message = sprintf(
-				'%1$s is <strong>deprecated</strong> since Timber version %2$s! Use %3$s instead.',
-				$function,
-				$version,
-				$replacement
-			);
-		} else {
-			$error_message = sprintf(
-				'%1$s is <strong>deprecated</strong> since Timber version %2$s with no alternative available.',
-				$function,
-				$version
-			);
-		}
-
-		// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
-		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-		trigger_error( $error_message );
 	}
+
 
 	/**
 	 * @api
