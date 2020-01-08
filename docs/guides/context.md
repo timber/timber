@@ -106,7 +106,7 @@ When you call `Timber::context()`, Timber will automatically populate your conte
 
 ### Singular templates
 
-The `post` variable will be available in singular templates ([when `is_singular()`](https://developer.wordpress.org/reference/functions/is_singular/) returns `true`), like posts or pages. It will contain a `Timber\Post` object of the currently displayed post.
+The `post` variable will be available in singular templates (when [ `is_singular()`](https://developer.wordpress.org/reference/functions/is_singular/) returns `true`), like posts or pages. It will contain a `Timber\Post` object of the currently displayed post.
 
 **single.php**
 
@@ -141,7 +141,7 @@ Whenever you set up **a post in a singular template** (instead of relying on `Ti
 
 ### Archive templates
 
-The `posts` variable will be available in archive templates ([when `is_archive()`](https://developer.wordpress.org/reference/functions/is_archive/) returns `true`), like your posts index page, category or tag archives, date based or author archives. It will contain a `Timber\PostCollection` object with the posts that WordPress already fetched for your archive page.
+The `posts` variable will be available in archive templates (when [ `is_archive()`](https://developer.wordpress.org/reference/functions/is_archive/) returns `true`), like your posts index page, category or tag archives, date based or author archives. It will contain a `Timber\PostCollection` object with the posts that WordPress already fetched for your archive page.
 
 #### Use the default query
 
