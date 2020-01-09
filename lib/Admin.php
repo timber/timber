@@ -20,8 +20,6 @@ class Admin {
 	/**
 	 * Display a message in the admin.
 	 *
-	 * @codeCoverageIgnore
-	 *
 	 * @date    01/07/2020
 	 *
 	 * @param string  $text to display
