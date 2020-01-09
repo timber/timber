@@ -2,6 +2,12 @@
 
 use Timber\Timber;
 
+/**
+ * @group posts-api
+ * @group terms-api
+ * @group users-api
+ * @group comments-api
+ */
 class TestTimberTwigObjects extends Timber_UnitTestCase {
 
 	/**

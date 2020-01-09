@@ -66,9 +66,7 @@ class Twig {
 			return self::maybe_convert_array( $post_id, $ImageClass );
 		} ) );
 		$twig->addFunction(new TwigFunction('Term', array($this, 'handle_term_object')));
-		$twig->addFunction(new TwigFunction('User', function( $post_id, $UserClass = 'Timber\User' ) {
-			return self::maybe_convert_array( $post_id, $UserClass );
-		} ) );
+		$twig->addFunction(new TwigFunction('User', [Timber::class, 'get_user'] ) );
 		$twig->addFunction( new TwigFunction( 'Attachment', function( $post_id, $AttachmentClass = 'Timber\Attachment' ) {
 			return self::maybe_convert_array( $post_id, $AttachmentClass );
 		} ) );
