@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use Twig\Environment;
+use Twig\Extension\CoreExtension;
 use Twig\TwigFunction;
 use Twig\TwigFilter;
 
@@ -26,6 +28,8 @@ class Twig {
 		add_action('timber/twig/filters', array($this, 'add_timber_filters'));
 		add_action('timber/twig/functions', array($this, 'add_timber_functions'));
 		add_action('timber/twig/escapers', array($this, 'add_timber_escapers'));
+
+		add_filter( 'timber/loader/twig', [ $this, 'set_defaults' ] );
 	}
 
 	/**
@@ -223,15 +227,15 @@ class Twig {
 		$twig->addFilter(new TwigFilter('pretags', array($this, 'twig_pretags')));
 		$twig->addFilter(new TwigFilter('sanitize', 'sanitize_title'));
 		$twig->addFilter(new TwigFilter('shortcodes', 'do_shortcode'));
-		$twig->addFilter(new TwigFilter('time_ago', array($this, 'time_ago')));
 		$twig->addFilter(new TwigFilter('wpautop', 'wpautop'));
 		$twig->addFilter(new TwigFilter('list', array($this, 'add_list_separators')));
 
 		$twig->addFilter(new TwigFilter('pluck', array('Timber\Helper', 'pluck')));
 
-		/** 
+		/**
 		 * @deprecated since 1.13 (to be removed in 2.0). Use Twig's native filter filter instead
-     *  @todo remove this in 2.x so that filter merely passes to Twig's filter without any modification
+		 * @todo remove this in 2.x so that filter merely passes to Twig's filter without any 
+		 *       modification
 		 * @ticket #1594 #2120
 		 */
 		$twig->addFilter(new TwigFilter('filter', array('Timber\Helper', 'filter_array')));
@@ -241,7 +245,17 @@ class Twig {
 					return URLHelper::get_rel_url($link, true);
 				} ));
 
-		$twig->addFilter(new TwigFilter('date', array($this, 'intl_date')));
+		/**
+		 * Date and Time filters.
+		 * 
+		 * @todo copy this formatting to other functions 
+		 */
+		$twig->addFilter(new TwigFilter(
+			'date',
+			[ $this, 'twig_date_format_filter' ],
+			[ 'needs_environment' => true ]
+		) );
+		$twig->addFilter(new TwigFilter('time_ago', array('Timber\DateTimeHelper', 'time_ago')));
 
 		$twig->addFilter(new TwigFilter('truncate', function( $text, $len ) {
 					return TextHelper::trim_words($text, $len);
@@ -325,8 +339,87 @@ class Twig {
 			$escaper_extension->setEscaper('wp_kses_post', $wp_kses_post);
 			$escaper_extension->setEscaper('esc_html', $esc_html);
 			$escaper_extension->setEscaper('esc_js', $esc_js);
-		} 
+		}
 		return $twig;
+	}
+
+	/**
+	 * Overwrite Twig defaults.
+	 *
+	 * Makes Twig compatible with how WordPress handles dates, timezones and perhaps other items in 
+	 * the future
+	 *
+	 * @since 2.0.0
+	 *
+	 * @throws \Twig_Error_Runtime
+	 * @param \Twig_Environment $twig Twig Environment
+	 *
+	 * @return \Twig_Environment
+	 */
+	public function set_defaults( \Twig_Environment $twig ) {
+		$twig->getExtension( CoreExtension::class )->setDateFormat( get_option( 'date_format' ), '%d days' );
+		$twig->getExtension( CoreExtension::class )->setTimezone( wp_timezone_string() );
+
+		return $twig;
+	}
+
+	/**
+	 * Converts a date to the given format.
+	 *
+	 * @internal
+	 * @since 2.0.0
+	 * @see  twig_date_format_filter()
+	 * @link https://twig.symfony.com/doc/2.x/filters/date.html
+	 *
+	 * @throws \Exception
+	 *
+	 * @param \Twig\Environment         $env      Twig Environment.
+	 * @param null|string|int|\DateTime $date     A date.
+	 * @param null|string               $format   Optional. PHP date format. Will return the
+	 *                                            current date as a DateTimeImmutable object by
+	 *                                            default.
+	 * @param null                      $timezone Optional. The target timezone. Use `null` to use
+	 *                                            the default or
+	 *                                            `false` to leave the timezone unchanged.
+	 *
+	 * @return false|string A formatted date.
+	 */
+	public function twig_date_format_filter( Environment $env, $date = null, $format = null, $timezone = null ) {
+		// Support for DateInterval.
+		if ( $date instanceof \DateInterval ) {
+			if ( null === $format ) {
+				$format = $env->getExtension( CoreExtension::class )->getDateFormat()[1];
+			}
+
+			return $date->format( $format );
+		}
+
+		if ( null === $date || 'now' === $date ) {
+			return DateTimeHelper::wp_date( $format, null );
+		}
+
+		/**
+		 * If a string is given and it’s not a timestamp (e.g. "2010-01-28T15:00:00+04:00", try creating a DateTime
+		 * object and read the timezone from that string.
+		 */
+		if ( is_string( $date ) && ! ctype_digit( $date ) ) {
+			$date_obj = date_create( $date );
+
+			if ( $date_obj ) {
+				$date = $date_obj;
+			}
+		}
+
+		/**
+		 * Check for `false` parameter in |date filter in Twig
+		 *
+		 * @link https://twig.symfony.com/doc/2.x/filters/date.html#timezone
+		 */
+		if ( false === $timezone && $date instanceof \DateTimeInterface ) {
+			$timezone = $date->getTimezone();
+		}
+
+		return DateTimeHelper::wp_date( $format, $date, $timezone );
 	}
 
 	/**
@@ -379,45 +472,37 @@ class Twig {
 	}
 
 	/**
+	 * Formats a date.
 	 *
+	 * @deprecated 2.0.0
 	 *
-	 * @param string|\DateTime  $date
-	 * @param string            $format (optional)
+	 * @param null|string|false    $format Optional. PHP date format. Will use the `date_format`
+	 *                                     option as a default.
+	 * @param string|int|\DateTime $date   A date.
+	 *
 	 * @return string
 	 */
 	public function intl_date( $date, $format = null ) {
-		if ( $format === null ) {
-			$format = get_option('date_format');
-		}
+		Helper::deprecated( 'intl_date', 'DateTimeHelper::wp_date', '2.0.0' );
 
-		if ( $date instanceof \DateTime ) {
-			$timestamp = $date->getTimestamp() + $date->getOffset();
-		} else if ( is_numeric($date) && (strtotime($date) === false || strlen($date) !== 8) ) {
-			$timestamp = intval($date);
-		} else {
-			$timestamp = strtotime($date);
-		}
-
-		return date_i18n($format, $timestamp);
+		return DateTimeHelper::wp_date( $format, $date );
 	}
 
 	/**
+	 * @api
+	 * @deprecated 2.0.0
+	 *
 	 * @param int|string $from
 	 * @param int|string $to
-	 * @param string $format_past
-	 * @param string $format_future
+	 * @param string     $format_past
+	 * @param string     $format_future
+	 *
 	 * @return string
 	 */
 	public static function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
-		$to = $to === null ? time() : $to;
-		$to = is_int($to) ? $to : strtotime($to);
-		$from = is_int($from) ? $from : strtotime($from);
+		Helper::deprecated( 'time_ago', 'DateTimeHelper::time_ago', '2.0.0' );
 
-		if ( $from < $to ) {
-			return sprintf($format_past, human_time_diff($from, $to));
-		} else {
-			return sprintf($format_future, human_time_diff($to, $from));
-		}
+		return DateTimeHelper::time_ago( $from, $to, $format_past, $format_future );
 	}
 
 	/**

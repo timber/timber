@@ -769,4 +769,5 @@ class Timber {
 
 		return Pagination::get_pagination($prefs);
 	}
+
 }
