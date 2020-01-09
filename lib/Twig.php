@@ -100,14 +100,6 @@ class Twig {
 			}
 		) );
 
-		$twig->addFunction( new TwigFunction(
-			'TimberUser',
-			function( $user_id, $UserClass = 'Timber\User' ) {
-				Helper::deprecated( '{{ TimberUser() }}', '{{ User() }}', '2.0.0' );
-				return self::maybe_convert_array($user_id, $UserClass);
-			}
-		) );
-
 		/* bloginfo and translate */
 		$twig->addFunction(new TwigFunction('bloginfo', 'bloginfo'));
 		$twig->addFunction(new TwigFunction('__', '__'));

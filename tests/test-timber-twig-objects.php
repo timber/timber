@@ -97,16 +97,6 @@ class TestTimberTwigObjects extends Timber_UnitTestCase {
 		$this->assertEquals( 'FooBar', Timber::compile_string( $str, array( 'pids' => $pids ) ) );
 	}
 
-	/**
-	 * @expectedDeprecated {{ TimberUser() }}
-	 */
-	function testTimberUserInTwig(){
-		$uid = $this->factory->user->create(array('display_name' => 'Pete Karl'));
-		$template = '{{ TimberUser('.$uid.').name }}';
-		$str = Timber::compile_string($template);
-		$this->assertEquals('Pete Karl', $str);
-	}
-
 	function testUsersInTwig(){
 		$uids[] = $this->factory->user->create(array('display_name' => 'Mark Watabe'));
 		$uids[] = $this->factory->user->create(array('display_name' => 'Austin Tzou'));
@@ -118,16 +108,6 @@ class TestTimberTwigObjects extends Timber_UnitTestCase {
 		$uid = $this->factory->user->create(array('display_name' => 'Nathan Hass'));
 		$str = '{{User('.$uid.').name}}';
 		$this->assertEquals('Nathan Hass', Timber::compile_string($str));
-	}
-
-	/**
-	 * @expectedDeprecated {{ TimberUser() }}
-	 */
-	function testTimberUsersInTwig() {
-		$uids[] = $this->factory->user->create(array('display_name' => 'Estelle Getty'));
-		$uids[] = $this->factory->user->create(array('display_name' => 'Bea Arthur'));
-		$str = '{% for user in TimberUser(uids) %}{{user.name}} {% endfor %}';
-		$this->assertEquals('Estelle Getty Bea Arthur', trim(Timber::compile_string($str, array('uids' => $uids))));
 	}
 
 	/**
