@@ -126,10 +126,12 @@ In archive templates like **archive.php** or **category.php**, Timber will alrea
 
 ### Return value
 
-What you get as a return value when running `Timber::get_posts()` is not a pure array of posts, but a `Timber\PostCollection` object, which is an `ArrayObject` that is very similar to an array like you know it. To loop over the posts collection in PHP, you first need to convert it to an array with `Timber\PostCollection::to_array()`.
+The analogous `Timber` methods for getting Users, Terms, and Comments (`::get_users()`, `::get_terms()`, and `::get_comments()`) all return arrays. But because of other considerations like pagination and The Loop, we treat Posts with special care.
+
+What you get as a return value when running `Timber::get_posts()` is not a pure array of posts, but a `Timber\PostCollection` object, an [`ArrayObject`](https://www.php.net/manual/en/class.arrayobject.php) that is very similar to an array as you know it. That means you can still loop over a `PostCollection` directly:
 
 ```php
-foreach ( $posts->to_array() as $post ) {
+foreach ( $posts as $post ) {
     echo $post->title();
 }
 ```
@@ -144,9 +146,9 @@ In Twig, you can directly loop over the collection.
 
 When you query for certain post types, Timber will use the [Post Class Map](https://timber.github.io/docs/guides/class-maps/#the-post-class-map) to check which class it should use to instantiate your posts.
 
-### The difference to `get_post()`
+### Differences from WP core's `get_posts()`
 
-It might seem like `Timber::get_posts()` is the same as [`get_posts()`](https://developer.wordpress.org/reference/functions/get_posts/) in WordPress. But it isn’t. It’s the same as using [`WP_Query`](https://developer.wordpress.org/reference/classes/wp_query/). The difference in the `get_posts()` function is that it uses different parameters and looks like this when using `Timber::get_posts()`.
+It might seem like `Timber::get_posts()` is the same as [`get_posts()`](https://developer.wordpress.org/reference/functions/get_posts/) in WordPress. But it isn’t. It’s more similar to using [`WP_Query`](https://developer.wordpress.org/reference/classes/wp_query/). WP core's `get_posts()` function applies different default parameters and performs same database query as would calling `Timber::get_posts()` like this:
 
 ```php
 $posts = Timber::get_posts( array(
@@ -157,6 +159,8 @@ $posts = Timber::get_posts( array(
 ```
 
 If you’re used to using `get_posts()` instead of `WP_Query`, you will have to set these parameters separately in your queries.
+
+Of course, the other main difference is that instead of returning plain `WP_Post` objects, `Timber::get_posts()` returns instances of `Timber\Post`.
 
 ## Performance
 
