@@ -452,6 +452,7 @@ class Timber {
 			/**
 			 * Filters the Twig file that should be rendered.
 			 *
+			 * @codeCoverageIgnore
 			 * @deprecated 2.0.0, use `timber/render/file`
 			 */
 			$file = apply_filters_deprecated(
@@ -482,7 +483,6 @@ class Timber {
 				'timber/compile/file'
 			);
 		}
-
 		$output = false;
 
 		if ($file !== false) {
@@ -500,10 +500,10 @@ class Timber {
 				 * @param string $file The name of the Twig template to render.
 				 */
 				$data = apply_filters( 'timber/render/data', $data, $file );
-
 				/**
 				 * Filters the data that should be passed for rendering a Twig template.
 				 *
+				 * @codeCoverageIgnore
 				 * @deprecated 2.0.0
 				 */
 				$data = apply_filters_deprecated(
@@ -666,7 +666,7 @@ class Timber {
 	 * @return bool|string The echoed output.
 	 */
 	public static function render( $filenames, $data = array(), $expires = false, $cache_mode = Loader::CACHE_USE_DEFAULT ) {
-		$output = self::compile($filenames, $data, $expires, $cache_mode);
+		$output = self::compile($filenames, $data, $expires, $cache_mode, true);
 		echo $output;
 	}
 

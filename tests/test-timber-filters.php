@@ -1,10 +1,23 @@
 <?php
 
 class TestTimberFilters extends Timber_UnitTestCase {
-	function testRenderDataFilter() {
+
+	function testLoaderRenderDataFilter() {
 		add_filter('timber/loader/render_data', array($this, 'filter_timber_render_data'), 10, 2);
 		$output = Timber::compile('assets/output.twig', array('output' => 14) );
 		$this->assertEquals('output.twig assets/output.twig', $output);
+	}
+
+	function testRenderDataFilter() {
+		add_filter('timber/render/data', function( $data, $file ){
+			$data['post'] = array('title' => 'daaa');
+			return $data;
+		}, 10, 2);
+		ob_start();
+		Timber::render('assets/single-post.twig', array('fop' => 'wag'));
+		$str = ob_get_contents();
+		ob_end_clean();
+		$this->assertEquals('<h1>daaa</h1>', $str);
 	}
 
 	function filter_timber_render_data($data, $file) {
