@@ -69,7 +69,6 @@ class TestTimberDates extends Timber_UnitTestCase {
 	function testTimeAgoLabels() {
 		$past   = DateTimeHelper::time_ago( '2016-11-29 02:00:00', '2016-11-30, 02:00:00', 'prePast %s afterPast' );
 		$future = DateTimeHelper::time_ago( '2016-12-01 02:00:00', '2016-11-30, 02:00:00', null, 'preFuture %s afterFuture' );
-
 		$this->assertEquals('prePast 1 day afterPast', $past );
 		$this->assertEquals('preFuture 1 day afterFuture', $future );
 	}
