@@ -1,6 +1,10 @@
 <?php
 
 	class Timber_UnitTestCase extends WP_UnitTestCase {
+		/**
+		 * Maintain a list of hook removals to perform at the end of each test.
+		 */
+		private $temporary_hook_removals = [];
 
 		/**
 		 * Overload WP_UnitTestcase to ignore deprecated notices
@@ -30,6 +34,13 @@
 			self::resetPermalinks();
 			parent::tearDown();
 			Timber::$context_cache = array();
+
+			// remove any hooks added during this test run
+			foreach ($this->temporary_hook_removals as $callback) {
+				$callback();
+			}
+			// reset hooks
+			$this->temporary_hook_removals = [];
 		}
 
 		function resetPermalinks() {
@@ -81,6 +92,17 @@
 		function truncate(string $table) {
 			global $wpdb;
 			$wpdb->query("TRUNCATE TABLE {$wpdb->$table}");
+		}
+
+		/**
+		 * Exactly the same as add_filter, but automatically calls remove_filter with the same
+		 * arguments during tearDown().
+		 */
+		protected function add_filter_temporarily(string $filter, callable $callback, int $pri = 10, int $count = 1) {
+			add_filter($filter, $callback, $pri, $count);
+			$this->temporary_hook_removals[] = function() use ($filter, $callback, $pri, $count) {
+				remove_filter($filter, $callback, $pri, $count);
+			};
 		}
 
 	}
