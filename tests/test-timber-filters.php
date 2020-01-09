@@ -15,8 +15,7 @@ class TestTimberFilters extends Timber_UnitTestCase {
 		}, 10, 2);
 		ob_start();
 		Timber::render('assets/single-post.twig', array('fop' => 'wag'));
-		$str = ob_get_contents();
-		ob_end_clean();
+		$str = ob_get_clean();
 		$this->assertEquals('<h1>daaa</h1>', $str);
 	}
 
