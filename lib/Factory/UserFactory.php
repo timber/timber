@@ -40,7 +40,7 @@ class UserFactory {
 		return $wp_user ? $this->build($wp_user) : null;
 	}
 
-	protected function from_user_object(object $obj) : CoreInterface {
+	protected function from_user_object($obj) : CoreInterface {
 		if ($obj instanceof CoreInterface) {
 			// we already have some kind of Timber Core object
 			return $obj;
