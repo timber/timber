@@ -1,11 +1,11 @@
 ---
-title: "Unit Testing"
+title: "Automated Testing"
 weight: "1900"
 menu:
   main:
     parent: "guides"
 aliases:
-  - /guides/testing
+  - /guides/unit-testing
 ---
 
 ## Setup a testing environment with PHPUnit
@@ -95,11 +95,11 @@ $ phpunit
 
 You should see a bunch of gobbledygook across your screen (the whole process will take about 4 mins.), but we should see that WordPress is testing successfully. Hurrah! For more info, check out the [Handbook on Automated Testing](http://make.wordpress.org/core/handbook/automated-testing/).
 
-## Writing tests
+### Writing tests
 
 Now we get to the good stuff. You can add tests to the `timber/tests` directory. Any new features should be covered by tests. You can be a hero and help write tests for existing methods and functionality.
 
-## Gotchas!
+### Gotchas!
 
 - You may need to setup authorization between VVV and GitHub. Just follow the prompts to create a token if that interrupts the `composer install`.
 - You may have [memory problems with Composer](https://getcomposer.org/doc/articles/troubleshooting.md#proc-open-fork-failed-errors). In case that happens, here’s the script I run:
@@ -109,3 +109,18 @@ sudo /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024
 sudo /sbin/mkswap /var/swap.1
 sudo /sbin/swapon /var/swap.1
 ```
+
+## Static Analysis
+
+Version 2.x is also covered by static analysis courtesy of [PHPStan](https://github.com/phpstan/phpstan). This analyzes our code files and structure to ensure things like existence and accessibility of called methods and functions, number of passed arguments, data types in docs, etc.
+
+To run, use:
+
+```
+vendor/bin/phpstan analyze -l 1
+```
+
+Where the last argument is the level of strictness (0-4) to apply. We're currently starting at level 1 and working our way up over time.
+
+
+
