@@ -273,10 +273,15 @@ class Helper {
 	/**
 	 * Triggers a deprecation warning.
 	 *
+	 * If you want to catch errors like these in tests, then add the @expectedDeprecated tag to the
+	 * DocBlock. E.g.: "@expectedDeprecated {{ TimberImage() }}".
+	 *
 	 * @api
+	 *
 	 * @param string $function    The name of the deprecated function/method.
 	 * @param string $replacement Function to use instead.
 	 * @param string $version     When we deprecated this.
+	 *
 	 * @return void
 	 */
 	public static function deprecated( $function, $replacement, $version ) {
@@ -284,34 +289,38 @@ class Helper {
 			return;
 		}
 
-		 do_action( 'deprecated_function_run', $function, $replacement, $version );
+		do_action( 'deprecated_function_run', $function, $replacement, $version );
 
-	    /**
-	     * Filters whether to trigger an error for deprecated functions.
-	     *
-	     * @since 2.5.0
-	     *
-	     * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
-	     */
-	    if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
-	        if ( function_exists( '__' ) ) {
-	            if ( ! is_null( $replacement ) ) {
-	                /* translators: 1: PHP function name, 2: version number, 3: alternative function name */
-	                trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since Timber version %2$s! Use %3$s instead.'), $function, $version, $replacement ) );
-	            } else {
-	                /* translators: 1: PHP function name, 2: version number */
-	                trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since Timber version %2$s with no alternative available.'), $function, $version ) );
-	            }
-	        } else {
-	            if ( ! is_null( $replacement ) ) {
-	                trigger_error( sprintf( '%1$s is <strong>deprecated</strong> since Timber version %2$s! Use %3$s instead.', $function, $version, $replacement ) );
-	            } else {
-	                trigger_error( sprintf( '%1$s is <strong>deprecated</strong> since Timber version %2$s with no alternative available.', $function, $version ) );
-	            }
-	        }
-	    }
+		/**
+		 * Filters whether to trigger an error for deprecated functions.
+		 *
+		 * @since 2.5.0
+		 *
+		 * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
+		 */
+		if ( ! apply_filters( 'deprecated_function_trigger_error', true ) ) {
+			return;
+		}
+
+		if ( ! is_null( $replacement ) ) {
+			$error_message = sprintf(
+				'%1$s is <strong>deprecated</strong> since Timber version %2$s! Use %3$s instead.',
+				$function,
+				$version,
+				$replacement
+			);
+		} else {
+			$error_message = sprintf(
+				'%1$s is <strong>deprecated</strong> since Timber version %2$s with no alternative available.',
+				$function,
+				$version
+			);
+		}
+
+		// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		trigger_error( $error_message );
 	}
-
 
 	/**
 	 * @api
@@ -580,7 +589,7 @@ class Helper {
 		} elseif ( $obj instanceof \WP_Term ) {
 			return new Term($obj->term_id);
 		} elseif ( $obj instanceof \WP_User ) {
-			return new User($obj->ID);
+			return Timber::get_user($obj->ID);
 		}
 
 		return $obj;

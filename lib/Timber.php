@@ -295,9 +295,9 @@ class Timber {
 	 * Get comment.
 	 * @api
 	 * @param int|\WP_Comment $comment
-	 * @return \Timber\Comment
+	 * @return \Timber\Comment|null
 	 */
-	public static function get_comment( $comment ) : Comment {
+	public static function get_comment( $comment ) {
 		$factory = new CommentFactory();
 		return $factory->from($comment);
 	}
@@ -410,7 +410,7 @@ class Timber {
 			self::$context_cache['site']       = new Site();
 			self::$context_cache['request']    = new Request();
 			self::$context_cache['theme']      = self::$context_cache['site']->theme;
-			self::$context_cache['user']       = is_user_logged_in() ? new User() : false;
+			self::$context_cache['user']       = is_user_logged_in() ? static::get_user() : false;
 
 			self::$context_cache['http_host']  = URLHelper::get_scheme() . '://' . URLHelper::get_host();
 			self::$context_cache['wp_title']   = Helper::get_wp_title();
@@ -858,4 +858,5 @@ class Timber {
 
 		return Pagination::get_pagination($prefs);
 	}
+
 }

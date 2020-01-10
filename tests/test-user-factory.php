@@ -28,6 +28,13 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(User::class, $user);
 	}
 
+	public function testGetUserFromEmptyArray() {
+		$userFactory = new UserFactory();
+		$res         = $userFactory->from([]);
+
+		$this->assertEquals([], $res);
+	}
+
 	public function testGetUserWithOverrides() {
 		$my_class_map = function(string $class, WP_User $user) {
 			return in_array('administrator', $user->roles)

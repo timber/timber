@@ -8,9 +8,31 @@ use Timber\User;
 use WP_User_Query;
 use WP_User;
 
+/**
+ * Internal class for instantiating User objects/collections. Responsible for applying
+ * the `timber/user/classmap` filter.
+ * 
+ * @internal
+ */
 class UserFactory {
+	/**
+	 * Internal method that does the heavy lifting for converting some kind of user
+	 * object or ID to a Timber\User object.
+	 * 
+	 * Do not call this directly. Use Timber::get_user() or Timber::get_users() instead.
+	 * 
+	 * @internal
+	 * @param mixed one of:
+	 * * a user ID (string or int)
+	 * * a WP_User_Query object
+	 * * a WP_User object
+	 * * a Timber\Core object (presumably a User)
+	 * * an array of IDs
+	 * * an associative array (interpreted as arguments for a WP_User_Query)
+	 * @return \Timber\User|array|null
+	 */
 	public function from($params) {
-		if (is_int($params)) {
+		if (is_int($params) || is_string($params) && is_numeric($params)) {
 			return $this->from_id($params);
 		}
 
@@ -32,6 +54,8 @@ class UserFactory {
 			// we have a query array to be passed to WP_User_Query::__construct()
 			return $this->from_wp_user_query(new WP_User_Query($params));
 		}
+
+		return null;
 	}
 
 	protected function from_id(int $id) {
@@ -40,7 +64,7 @@ class UserFactory {
 		return $wp_user ? $this->build($wp_user) : null;
 	}
 
-	protected function from_user_object(object $obj) : CoreInterface {
+	protected function from_user_object($obj) : CoreInterface {
 		if ($obj instanceof CoreInterface) {
 			// we already have some kind of Timber Core object
 			return $obj;
@@ -67,7 +91,10 @@ class UserFactory {
 		return $class::build($user);
 	}
 
-	protected function is_numeric_array(array $arr) {
+	protected function is_numeric_array($arr) {
+		if ( ! is_array($arr) ) {
+			return false;
+		}
 		foreach (array_keys($arr) as $k) {
 			if ( ! is_int($k) ) return false;
 		}
