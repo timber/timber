@@ -5,6 +5,7 @@ use Timber\LocationManager;
 /**
  * @group posts-api
  * @group terms-api
+ * @group users-api
  * @group called-post-constructor
  */
 class TestTimberMainClass extends Timber_UnitTestCase {

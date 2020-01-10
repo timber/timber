@@ -9,6 +9,7 @@ class HellaWhackTerm extends Term {}
 
 /**
  * @group factory
+ * @group terms-api
  */
 class TestTermFactory extends Timber_UnitTestCase {
 	public function tearDown() {
