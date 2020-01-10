@@ -120,7 +120,7 @@ To run, use:
 vendor/bin/phpstan analyze -l 1
 ```
 
-Where the last argument is the level of strictness (0-4) to apply. We're currently starting at level 1 and working our way up over time.
+Where the last argument is the level of [strictness](https://medium.com/@ondrejmirtes/phpstan-0-12-released-f1a88036535d) (0-7) to apply. We're currently starting at level 1 and working our way up over time.
 
 
 
