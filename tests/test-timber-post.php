@@ -1,6 +1,8 @@
 <?php
 
 	/**
+	 * @group posts-api
+	 * @group users-api
 	 * @group called-post-constructor
 	 * @group called-term-constructor
 	 */
