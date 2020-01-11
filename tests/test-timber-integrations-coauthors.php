@@ -5,7 +5,6 @@
 	require_once 'php/CustomGuestAuthor.php';
 
 	/**
-	 * @group users-api
 	 * @group called-post-constructor
 	 * @group integrations
 	 * @todo #2094 replace direct Timber\User instantiations
