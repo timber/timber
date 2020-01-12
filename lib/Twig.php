@@ -54,47 +54,69 @@ class Twig {
 		 * Timber object functions.
 		 */
 
-		$twig->addFunction(new TwigFunction('Post', function( $post_id, $PostClass = 'Timber\Post' ) {
-			return self::maybe_convert_array( $post_id, $PostClass );
-		} ) );
+		$twig->addFunction( new TwigFunction( 'get_post', [ Timber::class, 'get_post' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_posts', [ Timber::class, 'get_posts' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_term', [ Timber::class, 'get_term' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_terms', [ Timber::class, 'get_terms' ] ) );
 
-		$twig->addFunction( new TwigFunction( 'PostQuery', function( $args ) {
-			return new PostQuery( $args );
-		} ) );
+		// @TODO: Enable this when factories are merged into 2.0.
+		// $twig->addFunction( new TwigFunction( 'get_user', [ Timber::class, 'get_user' ] ) );
 
-		$twig->addFunction(new TwigFunction('Image', function( $post_id, $ImageClass = 'Timber\Image' ) {
-			return self::maybe_convert_array( $post_id, $ImageClass );
-		} ) );
-		$twig->addFunction(new TwigFunction('Term', array($this, 'handle_term_object')));
-		$twig->addFunction(new TwigFunction('User', [Timber::class, 'get_user'] ) );
-		$twig->addFunction( new TwigFunction( 'Attachment', function( $post_id, $AttachmentClass = 'Timber\Attachment' ) {
-			return self::maybe_convert_array( $post_id, $AttachmentClass );
-		} ) );
+		// @TODO: Enable this when factories are merged into 2.0.
+		// $twig->addFunction( new TwigFunction( 'get_users', [ Timber::class, 'get_users' ] );
 
 		/**
 		 * Deprecated Timber object functions.
 		 */
+
+		$twig->addFunction(new TwigFunction('Post', function( $post_id, $PostClass = 'Timber\Post' ) {
+			Helper::deprecated( '{{ Post() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0' );
+			return self::maybe_convert_array( $post_id, $PostClass );
+		} ) );
 		$twig->addFunction( new TwigFunction(
 			'TimberPost',
 			function( $post_id, $PostClass = 'Timber\Post' ) {
-				Helper::deprecated( '{{ TimberPost() }}', '{{ Post() }}', '2.0.0' );
+				Helper::deprecated( '{{ TimberPost() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0' );
 				return self::maybe_convert_array( $post_id, $PostClass );
 			}
 		) );
 
+		$twig->addFunction(new TwigFunction('Image', function( $post_id, $ImageClass = 'Timber\Image' ) {
+			Helper::deprecated( '{{ Image() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0' );
+			return self::maybe_convert_array( $post_id, $ImageClass );
+		} ) );
 		$twig->addFunction( new TwigFunction(
 			'TimberImage',
 			function( $post_id = false, $ImageClass = 'Timber\Image' ) {
-				Helper::deprecated( '{{ TimberImage() }}', '{{ Image() }}', '2.0.0' );
+				Helper::deprecated( '{{ TimberImage() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0' );
 				return self::maybe_convert_array( $post_id, $ImageClass );
 			}
 		) );
 
 		$twig->addFunction( new TwigFunction(
+			'Term',
+			function( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+				Helper::deprecated( '{{ Term() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0' );
+				return self::handle_term_object( $term_id, $taxonomy, $TermClass );
+			}
+		) );
+		$twig->addFunction( new TwigFunction(
 			'TimberTerm',
 			function( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
-				Helper::deprecated( '{{ TimberTerm() }}', '{{ Term() }}', '2.0.0' );
+				Helper::deprecated( '{{ TimberTerm() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0' );
 				return self::handle_term_object($term_id, $taxonomy, $TermClass);
+			}
+		) );
+
+		$twig->addFunction(new TwigFunction('User', function( $post_id, $UserClass = 'Timber\User' ) {
+			Helper::deprecated( '{{ User() }}', '{{ get_user() }} or {{ get_users() }}', '2.0.0' );
+			return self::maybe_convert_array( $post_id, $UserClass );
+		} ) );
+		$twig->addFunction( new TwigFunction(
+			'TimberUser',
+			function( $user_id, $UserClass = 'Timber\User' ) {
+				Helper::deprecated( '{{ TimberUser() }}', '{{ User() }}', '2.0.0' );
+				return self::maybe_convert_array($user_id, $UserClass);
 			}
 		) );
 
@@ -224,7 +246,7 @@ class Twig {
 
 		/**
 		 * @deprecated since 1.13 (to be removed in 2.0). Use Twig's native filter filter instead
-		 * @todo remove this in 2.x so that filter merely passes to Twig's filter without any 
+		 * @todo remove this in 2.x so that filter merely passes to Twig's filter without any
 		 *       modification
 		 * @ticket #1594 #2120
 		 */
@@ -237,8 +259,8 @@ class Twig {
 
 		/**
 		 * Date and Time filters.
-		 * 
-		 * @todo copy this formatting to other functions 
+		 *
+		 * @todo copy this formatting to other functions
 		 */
 		$twig->addFilter(new TwigFilter(
 			'date',
@@ -336,7 +358,7 @@ class Twig {
 	/**
 	 * Overwrite Twig defaults.
 	 *
-	 * Makes Twig compatible with how WordPress handles dates, timezones and perhaps other items in 
+	 * Makes Twig compatible with how WordPress handles dates, timezones and perhaps other items in
 	 * the future
 	 *
 	 * @since 2.0.0
