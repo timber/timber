@@ -29,7 +29,7 @@ class UserFactory {
 	 * * a Timber\Core object (presumably a User)
 	 * * an array of IDs
 	 * * an associative array (interpreted as arguments for a WP_User_Query)
-	 * @return \Timber\User|array|null
+	 * @return \Timber\User|array|false
 	 */
 	public function from($params) {
 		if (is_int($params) || is_string($params) && is_numeric($params)) {
@@ -54,14 +54,12 @@ class UserFactory {
 			// we have a query array to be passed to WP_User_Query::__construct()
 			return $this->from_wp_user_query(new WP_User_Query($params));
 		}
-
-		return null;
 	}
 
 	protected function from_id(int $id) {
 		$wp_user = get_user_by('id', $id);
 
-		return $wp_user ? $this->build($wp_user) : null;
+		return $wp_user ? $this->build($wp_user) : false;
 	}
 
 	protected function from_user_object($obj) : CoreInterface {
