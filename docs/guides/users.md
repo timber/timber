@@ -134,6 +134,12 @@ $post_authors = Timber::get_users( [
 ] );
 ```
 
+Instead of a query, you can also pass and **array of user IDs**.
+
+```php
+$users = Timber::get_users( [ 27, 83, 161 ] );
+```
+
 If you don’t pass in any argument, `Timber::get_users()` will do nothing and return an empty array.
 
 ```php
