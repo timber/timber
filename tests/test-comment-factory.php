@@ -6,6 +6,7 @@ use Timber\Factory\CommentFactory;
 class PostComment extends Comment {}
 class PageComment extends Comment {}
 class SickBurn extends PostComment {}
+class BadComment {}
 
 /**
  * @group factory
@@ -63,6 +64,25 @@ class TestCommentFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(PageComment::class, $page_comment);
 
 		remove_filter( 'timber/comment/classmap', $my_class_map );
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidCommentClassThrowsError() {
+
+		$post_comment_id = $this->factory->comment->create([
+			'comment_post_ID' => $this->factory->post->create(),
+			'comment_content' => "blorg"
+		]);
+
+		$bad_comment_obj = new BadComment();
+
+		$commentFactory = new CommentFactory();
+		$post_comment   = $commentFactory->from($bad_comment_obj);
+
+		// $normie_wp_user = Timber::get_user($bad_user_obj);
+		// $this->assertInstanceOf(User::class, $userFactory->from($normie_wp_user));
 	}
 
 	public function testGetCommentWithCallables() {

@@ -50,7 +50,7 @@ class CommentFactory {
 
 		throw new \InvalidArgumentException(sprintf(
 			'Expected an instance of Timber\CoreInterface or WP_Comment, got %s',
-			get_class($obj)
+			get_class($comment)
 		));
 	}
 
