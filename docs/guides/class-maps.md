@@ -50,7 +50,7 @@ add_filter( 'timber/post/classmap', function() {
             if ( $post->id === 3 ) {
                 return PreciousBook::class;
             }
-            
+
             return Book::class;
         },
     ];
@@ -71,7 +71,7 @@ add_filter( 'timber/post/classmap', function() {
             if ( 'book' === get_post_type( $post->post_parent ) {
                 return BookAttachment::class;
             }
-            
+
             return Attachment::class;
         },
     ];
@@ -114,7 +114,7 @@ add_filter( 'timber/term/classmap', function() {
             if ( $term->term_id === 2 ) {
                 return ComedyGenre::class;
             }
-            
+
             return Genre::class;
         },
     ];
@@ -162,7 +162,7 @@ add_filter( 'timber/comment/classmap', function() {
             if ( 0 !== $post->post_parent ) {
                 return BookChildComment::class;
             }
-            
+
             return BookComment::class;
         },
     ];
@@ -191,4 +191,54 @@ add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
 }, 10, 2 );
 ```
 
-The User Class Map receives the default `Timber\User` class and a `WP_User` object. You should be able to decide which class to use based on that user object. In case you need a different User class based on the current you’re displaying, you can use [Conditional Tags](https://developer.wordpress.org/themes/references/list-of-conditional-tags/).
+The User Class Map receives the default `Timber\User` class and a `WP_User` object. You should be able to decide which class to use based on that user object.
+
+In case you need a different User class based on the current template you’re displaying, you can use [Conditional Tags](https://developer.wordpress.org/themes/references/list-of-conditional-tags/).
+
+```php
+use Author;
+
+add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
+    // Use Author class for single post template.
+    if ( is_singular( 'post' ) ) {
+        return Author::class;
+    }
+
+    return $class;
+}, 10, 2 );
+```
+
+If you need to have a special class based on the capabilities a user has, work with `$user->has_cap()`.
+
+```php
+use Administrator;
+use Editor;
+
+add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
+    if ( $user->has_cap( 'manage_options' ) ) {
+        return Administrator::class;
+    } elseif ( $user->has_cap( 'edit_pages' ) ) {
+        return Editor::class;
+    }
+
+    return $class;
+}, 10, 2 );
+```
+
+If you need check for user roles, check the `$user->roles` array. Don’t work with `$user->has_cap()` to check for roles, because it may lead to unreliable results.
+
+
+```php
+use Administrator;
+use Editor;
+
+add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
+    if ( in_array( 'editor', $user->roles, true ) ) {
+        return Editor::class;
+    } elseif ( $in_array( 'author', $user->roles, true ) ) {
+        return Author::class;
+    }
+
+    return $class;
+}, 10, 2 );
+```
