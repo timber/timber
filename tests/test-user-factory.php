@@ -28,6 +28,13 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(User::class, $user);
 	}
 
+	public function testGetUserFromInvalidId() {
+		$userFactory = new UserFactory();
+		$user        = $userFactory->from( 3345 );
+
+		$this->assertEquals( null, $user );
+	}
+
 	public function testGetUserFromEmptyArray() {
 		$userFactory = new UserFactory();
 		$res         = $userFactory->from([]);
@@ -86,6 +93,17 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(User::class,      $normie);
 
 		remove_filter( 'timber/user/classmap', $my_class_map );
+	}
+
+	public function testGetUserWithArrayOfIdsIncludingInvalidIds() {
+		$user_id     = $this->factory->user->create();
+		$userFactory = new UserFactory();
+
+		// Pass a list of IDs.
+		list( $user, $invalid ) = $userFactory->from( [ $user_id, 256 ] );
+
+		$this->assertInstanceOf( Timber\User::class, $user );
+		$this->assertEquals( null, $invalid );
 	}
 
 	public function testGetUserFromWpUserObject() {
