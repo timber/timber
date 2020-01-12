@@ -5,17 +5,17 @@ title: "Users"
 To get a user object in Timber, you use `Timber::get_user()` and pass the WordPress user ID as an argument.
 
 ```php
-$post = Timber::get_user( $user_id );
+$user = Timber::get_user( $user_id );
 ```
 
 This function is similar to [`get_userdata()`](https://developer.wordpress.org/reference/functions/get_userdata/) and accepts one argument: a user ID. If you don’t pass in any argument, Timber will use `get_current_user_id()` to work with the currently logged in user.
 
 ```php
-$post = Timber::get_user();
+$user = Timber::get_user();
 
 // Is the same as…
 
-$post = Timber::get_user( get_current_user_id() );
+$user = Timber::get_user( get_current_user_id() );
 ```
 
 What you get in return is a [`Timber\User`](https://timber.github.io/docs/reference/timber-user/) object, which is similar to `WP_User`.
@@ -56,7 +56,7 @@ If no user can be found with the user ID you provided, the `Timber::get_user()` 
 $user = Timber::get_user( $user_id );
 
 if ( $user ) {
-    // Handle post.
+    // Handle user.
 }
 ```
 
