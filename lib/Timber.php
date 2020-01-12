@@ -297,7 +297,7 @@ class Timber {
 	 * @param int|\WP_User $user A WP_User object or a WordPress user ID. Defaults to the ID of the
 	 *                           currently logged-in user.
 	 *
-	 * @return \Timber\User|null
+	 * @return \Timber\User|false
 	 */
 	public static function get_user( $user = null ) {
 		/*
@@ -339,7 +339,7 @@ class Timber {
 		$wp_user = get_user_by($field, $value);
 
 		if ($wp_user === false) {
-			return null;
+			return false;
 		}
 
 		return static::get_user($wp_user);
