@@ -11,9 +11,9 @@ parameters:
         - %currentWorkingDirectory%/tests/phpstan/wp-cli-stubs-2.2.0.php
     ignoreErrors:
         # Uses func_get_args()
-        - '#^Function apply_filters invoked with [3456] parameters, 2 required\.$#'
+        # '#^Function apply_filters invoked with [3456] parameters, 2 required\.$#'
         # TODO Define properties!
-        - '#^Access to an undefined property Timber\\\S+$#'
+        # '#^Access to an undefined property Timber\\\S+$#'
         # TODO Do not create a static instance of a non-final class.
         -
             message: '#^Unsafe usage of new static\(\)\.$#'
