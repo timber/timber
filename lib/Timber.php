@@ -269,7 +269,7 @@ class Timber {
 		$wp_user = get_user_by($field, $value);
 
 		if ($wp_user === false) {
-			return null;
+			return false;
 		}
 
 		return static::get_user($wp_user);
