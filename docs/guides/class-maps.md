@@ -173,7 +173,7 @@ The callback function receives a `WP_Comment` object and should return the name 
 
 ## The User Class Map
 
-When you extend a `Timber\User` object…
+With the `timber/user/classmap` filter, you can tell Timber which class it should use for user objects.
 
 The User Class Map is used:
 
@@ -235,7 +235,7 @@ use Editor;
 add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
     if ( in_array( 'editor', $user->roles, true ) ) {
         return Editor::class;
-    } elseif ( $in_array( 'author', $user->roles, true ) ) {
+    } elseif ( in_array( 'author', $user->roles, true ) ) {
         return Author::class;
     }
 
