@@ -1,0 +1,15 @@
+includes:
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+parameters:
+    level: max
+    paths:
+        - %currentWorkingDirectory%/lib/
+    autoload_files:
+        - %currentWorkingDirectory%/tests/phpstan/bootstrap.php
+        # Plugin stubs
+        - %currentWorkingDirectory%/tests/phpstan/wp-cli-stubs-2.2.0.php
+    ignoreErrors:
+        - '#^Function apply_filters invoked with [3456] parameters, 2 required\.$#'
+        # WP-CLI accepts a class too
+        #- '/^Parameter #2 \$callable of static method WP_CLI::add_command\(\) expects callable\(\): mixed, \S+ given\.$/'

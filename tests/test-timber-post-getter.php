@@ -221,17 +221,6 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals( $post_id_alert, $post_alert[0]->ID );
 	}
 
-	function test587() {
-		register_post_type('product');
-		$pids = $this->factory->post->create_many(6, array('post_type' => 'product'));
-		$args = array(
-        	'post_type' => 'project'
-    	);
-		$context['projects'] = new Timber\PostQuery( array(
-			'query' => $args
-		) );
-	}
-
 	function testGettingEmptyArray(){
 		$pids = $this->factory->post->create_many( 15 );
 		$posts = new Timber\PostQuery( array(

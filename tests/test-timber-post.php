@@ -223,6 +223,9 @@
 			$nextPost->post_status = 'draft';
 			wp_update_post($nextPost);
 			$nextPostTest = $firstPost->next();
+			// because $nextPost has a status of "draft" now (and thus isn't public)
+			// it should not be retured when we call $firstPost->next();
+			$this->assertFalse($nextPostTest);
 		}
 
 		function testPostInitObject(){
@@ -930,10 +933,11 @@
 			$post = new Timber\Post($pid);
 
 			$video    = $post->video();
-			$value    = array_shift( $video );
+			if ( is_array($video) ) {
+				$video = array_shift( $video );
+			}
 			$expected = '/<iframe [^>]+ src="https:\/\/www\.youtube\.com\/embed\/Jf37RalsnEs\?feature=oembed" [^>]+>/i';
-
-			$this->assertRegExp( $expected, $value );
+ 			$this->assertRegExp( $expected, $video );;
 		}
 
 		function testPathAndLinkWithPort() {

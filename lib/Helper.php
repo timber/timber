@@ -223,8 +223,8 @@ class Helper {
 	 * <form action="form.php"><input type="text" /><input type="submit /></form>
 	 * ```
 	 *
-	 * @param callback $function
-	 * @param array   $args
+	 * @param callable $function
+	 * @param array    $args
 	 *
 	 * @return string
 	 */
@@ -237,7 +237,7 @@ class Helper {
 	}
 
 	/**
-	 * @api
+	 *
 	 *
 	 * @param mixed $arg that you want to error_log
 	 * @return void
@@ -273,10 +273,15 @@ class Helper {
 	/**
 	 * Triggers a deprecation warning.
 	 *
+	 * If you want to catch errors like these in tests, then add the @expectedDeprecated tag to the
+	 * DocBlock. E.g.: "@expectedDeprecated {{ TimberImage() }}".
+	 *
 	 * @api
+	 *
 	 * @param string $function    The name of the deprecated function/method.
 	 * @param string $replacement Function to use instead.
 	 * @param string $version     When we deprecated this.
+	 *
 	 * @return void
 	 */
 	public static function deprecated( $function, $replacement, $version ) {
@@ -284,34 +289,38 @@ class Helper {
 			return;
 		}
 
-		 do_action( 'deprecated_function_run', $function, $replacement, $version );
+		do_action( 'deprecated_function_run', $function, $replacement, $version );
 
-	    /**
-	     * Filters whether to trigger an error for deprecated functions.
-	     *
-	     * @since 2.5.0
-	     *
-	     * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
-	     */
-	    if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
-	        if ( function_exists( '__' ) ) {
-	            if ( ! is_null( $replacement ) ) {
-	                /* translators: 1: PHP function name, 2: version number, 3: alternative function name */
-	                trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since Timber version %2$s! Use %3$s instead.'), $function, $version, $replacement ) );
-	            } else {
-	                /* translators: 1: PHP function name, 2: version number */
-	                trigger_error( sprintf( __('%1$s is <strong>deprecated</strong> since Timber version %2$s with no alternative available.'), $function, $version ) );
-	            }
-	        } else {
-	            if ( ! is_null( $replacement ) ) {
-	                trigger_error( sprintf( '%1$s is <strong>deprecated</strong> since Timber version %2$s! Use %3$s instead.', $function, $version, $replacement ) );
-	            } else {
-	                trigger_error( sprintf( '%1$s is <strong>deprecated</strong> since Timber version %2$s with no alternative available.', $function, $version ) );
-	            }
-	        }
-	    }
+		/**
+		 * Filters whether to trigger an error for deprecated functions.
+		 *
+		 * @since 2.5.0
+		 *
+		 * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
+		 */
+		if ( ! apply_filters( 'deprecated_function_trigger_error', true ) ) {
+			return;
+		}
+
+		if ( ! is_null( $replacement ) ) {
+			$error_message = sprintf(
+				'%1$s is <strong>deprecated</strong> since Timber version %2$s! Use %3$s instead.',
+				$function,
+				$version,
+				$replacement
+			);
+		} else {
+			$error_message = sprintf(
+				'%1$s is <strong>deprecated</strong> since Timber version %2$s with no alternative available.',
+				$function,
+				$version
+			);
+		}
+
+		// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		trigger_error( $error_message );
 	}
-
 
 	/**
 	 * @api
@@ -520,18 +529,39 @@ class Helper {
 
 	/**
 	 * Filters a list of objects, based on a set of key => value arguments.
+	 * Uses native Twig Filter.
+	 *
+	 * @since 1.14.0
+	 * @param array                 $list to filter.
+	 * @param callback|string|array $arrow function used for filtering,
+	 *                              string or array for backward compatibility.
+	 * @param string                $operator to use (AND, NOT, OR). For backward compatibility.
+	 * @return array
+	 */
+	public static function filter_array( $list, $arrow, $operator = 'AND' ) {
+		if ( ! is_callable( $arrow ) ) {
+			self::warn( 'This filter is using Twig\'s filter by default. If you want to use wp_list_filter use {{ my_array|wp_list_filter }}.' );
+			return self::wp_list_filter( $list, $arrow, $operator );
+		}
+
+		return twig_array_filter( $list, $arrow );
+	}
+
+	/**
+	 * Filters a list of objects, based on a set of key => value arguments.
+	 * Uses WordPress WP_List_Util's filter.
 	 *
 	 * @api
 	 * @since 1.5.3
 	 * @ticket #1594
 	 *
 	 * @param array        $list to filter.
-	 * @param string|array $filter to search for.
+	 * @param string|array $args to search for.
 	 * @param string       $operator to use (AND, NOT, OR).
 	 * @return array
 	 */
-	public static function filter_array( $list, $args, $operator = 'AND' ) {
-		if ( ! is_array($args) ) {
+	public static function wp_list_filter( $list, $args, $operator = 'AND' ) {
+		if ( ! is_array( $args ) ) {
 			$args = array( 'slug' => $args );
 		}
 

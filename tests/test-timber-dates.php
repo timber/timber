@@ -19,28 +19,28 @@ class TestTimberDates extends Timber_UnitTestCase {
 	}
 
 	function testTimeAgoFuture(){
-		$str = DateTimeHelper::time_ago('2016-12-01 20:00:00', '2016-11-30, 20:00:00');
+		$str = DateTimeHelper::time_ago('2016-12-01 02:00:00', '2016-11-30, 02:00:00');
 		$this->assertEquals('1 day from now', $str);
 	}
 
 	function testTimeAgoPast(){
-		$str = DateTimeHelper::time_ago('2016-11-29 20:00:00', '2016-11-30, 20:00:00');
+		$str = DateTimeHelper::time_ago('2016-11-29 02:00:00', '2016-11-30, 02:00:00');
 		$this->assertEquals('1 day ago', $str);
 	}
 
 	function testTimeAgoWithPostDate() {
 		$pid  = $this->factory->post->create( [
-			'post_date' => '2016-07-07 20:03:00',
+			'post_date' => '2016-07-07 02:03:00',
 		] );
 		$post = Timber::get_post( $pid );
 
-		$str = DateTimeHelper::time_ago( $post->date(), '2016-11-30, 20:00:00');
+		$str = DateTimeHelper::time_ago( $post->date(), '2016-11-30, 02:00:00');
 		$this->assertEquals('5 months ago', $str);
 	}
 
 	function testTimeAgoWithPostDateAndCurrent() {
 		$pid  = $this->factory->post->create( [
-			'post_date' => '2016-07-07 20:03:00',
+			'post_date' => '2016-07-07 02:03:00',
 		] );
 		$post = Timber::get_post( $pid );
 
@@ -53,7 +53,7 @@ class TestTimberDates extends Timber_UnitTestCase {
 
 	function testTimeAgoWithPostDateTwigFilter() {
 		$pid  = $this->factory->post->create( [
-			'post_date' => '2016-07-07 20:03:00',
+			'post_date' => '2016-07-07 02:03:00',
 		] );
 		$post = Timber::get_post( $pid );
 
@@ -67,19 +67,18 @@ class TestTimberDates extends Timber_UnitTestCase {
 	}
 
 	function testTimeAgoLabels() {
-		$past   = DateTimeHelper::time_ago( '2016-11-29 20:00:00', '2016-11-30, 20:00:00', 'prePast %s afterPast' );
-		$future = DateTimeHelper::time_ago( '2016-12-01 20:00:00', '2016-11-30, 20:00:00', null, 'preFuture %s afterFuture' );
-
+		$past   = DateTimeHelper::time_ago( '2016-11-29 02:00:00', '2016-11-30, 02:00:00', 'prePast %s afterPast' );
+		$future = DateTimeHelper::time_ago( '2016-12-01 02:00:00', '2016-11-30, 02:00:00', null, 'preFuture %s afterFuture' );
 		$this->assertEquals('prePast 1 day afterPast', $past );
 		$this->assertEquals('preFuture 1 day afterFuture', $future );
 	}
 
 	function testTime(){
-		$pid = $this->factory->post->create(array('post_date' => '2016-07-07 20:03:00'));
+		$pid = $this->factory->post->create(array('post_date' => '2016-07-07 02:03:00'));
 		$post = new Post($pid);
 		$twig = 'Posted at {{post.time}}';
 		$str = Timber::compile_string($twig, array('post' => $post));
-		$this->assertEquals('Posted at 8:03 pm', $str);
+		$this->assertEquals('Posted at 2:03 am', $str);
 	}
 
 	function testPostDisplayDate() {
@@ -98,7 +97,7 @@ class TestTimberDates extends Timber_UnitTestCase {
 		$timezone    = new DateTimeZone( 'Australia/Sydney' );
 
 		$pid = $this->factory->post->create( [
-			'post_date' => '2016-07-07 20:03:00',
+			'post_date' => '2016-07-07 02:03:00',
 		] );
 
 		$post = new Post( $pid );
@@ -109,7 +108,7 @@ class TestTimberDates extends Timber_UnitTestCase {
 			'timezone'    => $timezone,
 		] );
 
-		$this->assertEquals( '2016-07-07T20:03:00-07:00', $str );
+		$this->assertEquals( '2016-07-07T02:03:00-07:00', $str );
 	}
 
 	function testPostDate(){
@@ -130,7 +129,7 @@ class TestTimberDates extends Timber_UnitTestCase {
 
 	function testPostDateFunctionWithDateFilter(){
 		$post_id = $this->factory->post->create( [
-			'post_date' => '2016-07-07 20:03:00',
+			'post_date' => '2016-07-07 02:03:00',
 		] );
 		$post    = new Post( $post_id );
 

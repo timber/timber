@@ -44,20 +44,7 @@ class DateTimeHelper {
 			$timezone = new \DateTimeZone( $timezone );
 		}
 
-		if ( function_exists( 'wp_date' ) ) {
-			return wp_date( $format, $timestamp, $timezone );
-		}
-
-		/**
-		 * Fallback for older date_i18n() function, which requires a timestamp including an offset.
-		 *
-		 * @TODO maybe delete this?
-		 */
-		if ( $date instanceof \DateTimeInterface ) {
-			$timestamp = $date->getTimestamp() + $date->getOffset();
-		}
-
-		return date_i18n( $format, $timestamp );
+		return wp_date( $format, $timestamp, $timezone );
 	}
 
 	/**
