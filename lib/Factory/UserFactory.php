@@ -9,20 +9,22 @@ use WP_User_Query;
 use WP_User;
 
 /**
+ * Class UserFactory
+ *
  * Internal class for instantiating User objects/collections. Responsible for applying
  * the `timber/user/classmap` filter.
- * 
+ *
  * @internal
  */
 class UserFactory {
 	/**
 	 * Internal method that does the heavy lifting for converting some kind of user
 	 * object or ID to a Timber\User object.
-	 * 
+	 *
 	 * Do not call this directly. Use Timber::get_user() or Timber::get_users() instead.
-	 * 
+	 *
 	 * @internal
-	 * @param mixed one of:
+	 * @param mixed $params One of:
 	 * * a user ID (string or int)
 	 * * a WP_User_Query object
 	 * * a WP_User object
