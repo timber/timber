@@ -238,7 +238,7 @@ class Timber {
 	 * @api
 	 * @param int|\WP_User $user a WP_User object or user ID. Defaults to the ID
 	 * of the current user.
-	 * @return \Timber\User|null
+	 * @return \Timber\User|false
 	 */
 	public static function get_user( $user = null ) {
 		/*
