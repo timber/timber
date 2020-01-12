@@ -2,15 +2,19 @@
 title: "Posts"
 ---
 
-To get a post object in Timber, you use `Timber::get_post()` and pass the post ID as an argument.
+To get a post object in Timber, you use `Timber::get_post()` and pass the WordPress post ID as an argument.
 
 ```php
 $post = Timber::get_post( $post_id );
 ```
 
-This function is similar to [`get_post()`](https://developer.wordpress.org/reference/functions/get_post/) and accepts one argument: a post ID. If you don’t pass in any argument, Timber will use `get_queried_object()` to try an work with the currently queried post.
+This function is similar to [`get_post()`](https://developer.wordpress.org/reference/functions/get_post/) and accepts one argument: a post ID. If you don’t pass in any argument, Timber will use `get_queried_object()` to try and work with the currently queried post.
 
 ```php
+$post = Timber::get_post();
+
+// Is the same as…
+
 $post = Timber::get_post( get_queried_object_id() );
 ```
 
@@ -41,7 +45,7 @@ You can convert post IDs to post objects in Twig using the `Post()` function.
 {% set post = Post(post_id) %}
 ```
 
-This is especially helpful if you only have the image ID and want to convert it to an image:
+This is especially helpful if you only have an image ID and want to convert it to an image:
 
 ```twig
 <img src="{{ Image(attachment_id).src }}">
@@ -51,6 +55,8 @@ It also works if you have an array of post IDs that you want to convert to `Timb
 
 ```twig
 {% for post in Post(post_ids) %}
+
+{% endfor %}
 ```
 
 ## Invalid posts
@@ -86,7 +92,7 @@ class Book extends Timber\Post {
 To initiate your new `Book` post, you also use `Timber::get_post()`.
 
 ```php
-$post = Timber::get_post( $post_id );
+$book = Timber::get_post( $post_id );
 ```
 
 You **can’t** instantiate a `Timber\Post` object or an object that extends this class with a constructor – you can’t use `$post = new Book( $post_id )`. In Timber, we’ve chosen to go a different way to prevent a lot of problems that would come with direct instantiation.

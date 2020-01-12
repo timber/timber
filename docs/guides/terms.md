@@ -2,7 +2,7 @@
 title: "Term"
 ---
 
-To get a term object in Timber, you use `Timber::get_term()` and pass the term ID as an argument.
+To get a term object in Timber, you use `Timber::get_term()` and pass the WordPress term ID as an argument.
 
 ```php
 $term = Timber::get_term( $term_id );
@@ -11,6 +11,10 @@ $term = Timber::get_term( $term_id );
 This function is similar to [`get_term()`](https://developer.wordpress.org/reference/functions/get_term/) and accepts one argument: a term ID. If you don’t pass in any argument, Timber will use `get_queried_object()` to try an work with the currently queried term.
 
 ```php
+$term = Timber::get_term();
+
+// Is the same as…
+
 $term = Timber::get_term( get_queried_object_id() );
 ```
 
@@ -28,6 +32,8 @@ It also works if you have an array of terms IDs that you want to convert to `Tim
 
 ```twig
 {% for term in Term(term_ids) %}
+
+{% endfor %}
 ```
 
 ## Invalid terms
@@ -104,7 +110,7 @@ In Twig, you can directly loop over it.
 
 ```twig
 {% for term in terms %}
-    {{ term.title }}    
+    {{ term.title }}
 {% endfor %}
 ```
 
@@ -144,6 +150,6 @@ Or you can use a for-loop:
 {%- endfor %}
 ```
 
-We make use of the `loop` variable in Twig to either display an *and* or a comma. 
+We make use of the `loop` variable in Twig to either display an *and* or a comma.
 
 See how we end the opening tag of the for-loop with `-%}` and start the closing tag with `{%-`? These are [Whitespace Controls](https://twig.symfony.com/doc/2.x/templates.html#whitespace-control) and can come in quite handy. Here, we use them to remove all the superfluous markup whitespace we don’t need.
