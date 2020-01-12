@@ -28,12 +28,92 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	}
 
 	function testGetPostBySlug(){
-		$this->factory->post->create(array('post_name' => 'kill-bill'));
-		$post = new Timber\Post('kill-bill');
-		$this->assertEquals('kill-bill', $post->post_name);
-		/** Test deprecated method */
-		$post = Timber::get_post('kill-bill');
-		$this->assertEquals('kill-bill', $post->post_name);
+		$this->factory->post->create( [ 'post_name' => 'kill-bill' ] );
+
+		$post = Timber\Timber::get_post_by_slug( 'kill-bill');
+
+		$this->assertEquals( 'kill-bill', $post->post_name );
+	}
+
+	function testGetPostBySlugAndPostType(){
+		$post_id_movie = $this->factory->post->create( [
+			'post_name' => 'kill-bill',
+			'post_type' => 'movie',
+		] );
+		$post_id_page  = $this->factory->post->create( [
+			'post_name' => 'kill-bill',
+			'post_type' => 'page',
+		] );
+
+		$post_movie = Timber\Timber::get_post_by_slug( 'kill-bill', 'movie' );
+		$post_page  = Timber\Timber::get_post_by_slug( 'kill-bill', 'page' );
+
+		$this->assertEquals( $post_id_movie, $post_movie->ID );
+		$this->assertEquals( $post_id_page, $post_page->ID );
+
+		$post_any = Timber\Timber::get_post_by_slug( 'kill-bill' );
+		$this->assertEquals( $post_id_movie, $post_any->ID );
+	}
+
+	function testGetPostBySlugForNonexistentPost(){
+		$this->factory->post->create( [ 'post_name' => 'kill-bill' ] );
+
+		$post = Timber\Timber::get_post_by_slug( 'kill-bill-2');
+
+		$this->assertEquals( null, $post );
+	}
+
+	function testGetPostByTitle(){
+		$post_title = 'A Post Title containing Special Characters like # or ! or Ä or ç';
+		$this->factory->post->create( [ 'post_title' => $post_title ] );
+
+		$post = Timber\Timber::get_post_by_title( $post_title );
+
+		$this->assertEquals( $post_title, $post->title() );
+	}
+
+	function testGetPostByTitleWithDifferentCasing(){
+		$post_title = 'A Post Title containing Special Characters like # or ! or Ä or ç';
+		$this->factory->post->create( [ 'post_title' => $post_title ] );
+
+		$lower_case_title = mb_strtolower( $post_title );
+		$post             = Timber\Timber::get_post_by_title( $lower_case_title );
+
+		$this->assertEquals( $post_title, $post->title() );
+	}
+
+	function testGetPostByTitleAndPostType(){
+		$post_title    = 'A Post Title containing Special Characters like # or ! or Ä or ç';
+		$post_id_movie = $this->factory->post->create( [
+			'post_title' => $post_title,
+			'post_type'  => 'movie',
+		] );
+		$post_id_page  = $this->factory->post->create( [
+			'post_title' => $post_title,
+			'post_type'  => 'page',
+		] );
+		$post_id_book  = $this->factory->post->create( [
+			'post_title' => $post_title,
+			'post_type'  => 'book',
+		] );
+
+		$post_movie    = Timber\Timber::get_post_by_title( $post_title, 'movie' );
+		$post_page     = Timber\Timber::get_post_by_title( $post_title, 'page' );
+		$post_multiple = Timber\Timber::get_post_by_title( $post_title, [ 'page', 'book' ] );
+
+		$this->assertEquals( $post_id_movie, $post_movie->ID );
+		$this->assertEquals( $post_id_page, $post_page->ID );
+
+		// Multiple post types should return the post with the lower ID.
+		$this->assertEquals( $post_id_page, $post_multiple->ID );
+	}
+
+	function testGetPostByTitleForNonexistentPost(){
+		$this->factory->post->create();
+
+		$post = Timber\Timber::get_post_by_title( 'Just a nonexistent post' );
+
+		$this->assertEquals( null, $post );
 	}
 
 	function testGetPostByPostObject() {

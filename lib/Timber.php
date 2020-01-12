@@ -158,6 +158,75 @@ class Timber {
 	}
 
 	/**
+	 * Gets a post by post slug.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @example
+	 * ```
+	 * $post = Timber::get_post_by_slug( 'about-us' );
+	 * ```
+	 *
+	 * @param string       $slug      The post slug to search for.
+	 * @param string|array $post_type Optional. The post type or an array of post types to look
+	 *                                for. Default `any`, which will look for posts in any post
+	 *                                type.
+	 *
+	 * @return \Timber\Post|null A Timber post or null if no post could be found.
+	 */
+	public static function get_post_by_slug( $slug, $post_type = 'any' ) {
+		$query = new \WP_Query( [
+			'post_type' => $post_type,
+			'name'      => $slug,
+			'fields'    => 'ids',
+		] );
+
+		if ( $query->post_count < 1 ) {
+			return null;
+		}
+
+		$posts   = $query->get_posts();
+		$post_id = array_shift( $posts );
+
+		return self::get_post( $post_id );
+	}
+
+	/**
+	 * Gets a post by post title.
+	 *
+	 * Because this function uses the MySQL '=' comparison, $page_title will usually be matched
+	 * as case-insensitive with default collation.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @example
+	 * ```php
+	 * $post = Timber::get_post_by_title( 'About us' );
+	 * ```
+	 *
+	 * @param string       $title     The post title to search for.
+	 * @param string|array $post_type Optional. The post type or an array of post types to look
+	 *                                for. Default `any`, which will look for posts in any post
+	 *                                type.
+	 *
+	 * @return \Timber\Post|null A Timber post or null if no post could be found.
+	 */
+	public static function get_post_by_title( $title, $post_type = 'any' ) {
+		if ( 'any' === $post_type ) {
+			$post_id = post_exists( $title );
+		} else {
+			$post    = get_page_by_title( $title, OBJECT, $post_type );
+			$post_id = $post->ID;
+		}
+
+		if ( ! $post_id ) {
+			return null;
+		}
+
+		return self::get_post( $post_id );
+	}
+
+	/**
 	 * Query post.
 	 *
 	 * @api
