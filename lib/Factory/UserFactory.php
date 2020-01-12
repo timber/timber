@@ -88,6 +88,34 @@ class UserFactory {
 	}
 
 	protected function build(WP_User $user) : CoreInterface {
+		/**
+		 * Filters the name of the PHP class used to instantiate `Timber\User` objects.
+		 *
+		 * The User Class Map receives the default `Timber\User` class and a `WP_User` object. You
+		 * should be able to decide which class to use based on that user object.
+		 *
+		 * @api
+		 * @since 2.0.0
+		 * @example
+		 * ```php
+		 * use Administrator;
+		 * use Editor;
+		 *
+		 * add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
+		 *     if ( in_array( 'editor', $user->roles, true ) ) {
+		 *         return Editor::class;
+		 *     } elseif ( in_array( 'author', $user->roles, true ) ) {
+		 *         return Author::class;
+		 *     }
+		 *
+		 *     return $class;
+		 * }, 10, 2 );
+		 * ```
+		 *
+		 * @param string   $class The name of the class. Default `Timber\User`.
+		 * @param \WP_User $user  The `WP_User` object that is used as the base for the
+		 *                        `Timber\User` object.
+		 */
 		$class = apply_filters( 'timber/user/classmap', User::class, $user );
 
 		return $class::build($user);
