@@ -229,6 +229,9 @@ class Timber {
 	 * @since 2.0.0
 	 * @example
 	 * ```php
+	 * // Get users with on an array of user IDs.
+	 * $users = Timber::get_users( [ 24, 81, 325 ] );
+	 *
 	 * // Get all users that only have a subscriber role.
 	 * $subscribers = Timber::get_users( [
 	 *     'role' => 'subscriber',
@@ -242,8 +245,8 @@ class Timber {
 	 *
 	 * @todo  Add links to Class Maps documentation in function summary.
 	 *
-	 * @param array $query   Optional. A WordPress-style query. Use an array in the same way
-	 *                       you would use the `$args` parameter in
+	 * @param array $query   Optional. A WordPress-style query or an array of user IDs. Use an
+	 *                       array in the same way you would use the `$args` parameter in
 	 *                       [WP_User_Query](https://developer.wordpress.org/reference/classes/wp_user_query/).
 	 *                       See
 	 *                       [WP_User_Query::prepare_query()](https://developer.wordpress.org/reference/classes/WP_User_Query/prepare_query/)
