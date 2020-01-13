@@ -10,3 +10,6 @@ function get_field($selector, $post_id = false, $format_value = true) { return '
 function get_field_object($selector, $post_id = false, $format_value = true, $load_value = true) { return new \WP_Post(0); }
 function update_field($selector, $value, $post_id = false) { return $selector === ''; }
 function get_fields($post_id = false, $format_value = true) { return array(); }
+
+// Loads twig_array_filter()
+new Twig\Extension\CoreExtension();
