@@ -159,7 +159,7 @@ class ImageHelper {
 	 * @return bool True if SVG, false if not SVG or file doesn't exist.
 	 */
 	public static function is_svg( $file_path ) {
-		if ( ! isset( $file_path ) || '' === $file_path || ! file_exists( $file_path ) ) {
+		if ( '' === $file_path || ! file_exists( $file_path ) ) {
 			return false;
 		}
 
