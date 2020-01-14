@@ -541,11 +541,6 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 
 		$this->assertEquals($first_pids, $wp_ids);
 
-		$other_query = Timber::get_posts(array('post__in' => $first_pids));
-		$timber_ids = array_map(function($post) {
-			return $post->ID;
-		}, $other_query);
-		$this->assertNotEquals($first_pids, $timber_ids);
 	}
 
 
