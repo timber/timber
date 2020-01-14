@@ -16,6 +16,7 @@ class ACF {
 		add_filter('timber_post_get_meta', array( $this, 'post_get_meta' ), 10, 2);
 		add_filter('timber_post_get_meta_field', array( $this, 'post_get_meta_field' ), 10, 3);
 		add_filter('timber/post/meta_object_field', array( $this, 'post_meta_object' ), 10, 3);
+		add_filter('timber/post/disallowed_properties', array( $this, 'post_disallowed_properties' ), 10, 1);
 		add_filter('timber/term/meta', array( $this, 'term_get_meta' ), 10, 3);
 		add_filter('timber/term/meta/field', array( $this, 'term_get_meta_field' ), 10, 4);
 		add_filter('timber_user_get_meta_field_pre', array( $this, 'user_get_meta_field' ), 10, 3);
@@ -37,6 +38,10 @@ class ACF {
 	public function term_get_meta_field( $value, $term_id, $field_name, $term ) {
 		$searcher = $term->taxonomy . '_' . $term->ID;
 		return get_field($field_name, $searcher);
+	}
+
+	public function post_disallowed_properties( $properties ) {
+		return $properties;
 	}
 
 	public function term_set_meta( $value, $field, $term_id, $term ) {

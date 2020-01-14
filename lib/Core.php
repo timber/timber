@@ -57,6 +57,9 @@ abstract class Core {
 	 * @param array|object $info an object or array you want to grab data from to attach to the Timber object
 	 */
 	public function import( $info, $force = false ) {
+		$disallowed_properties = array();
+		$disallowed_properties = apply_filters('timber/post/disallowed_properties', $disallowed_properties);
+
 		if ( is_object($info) ) {
 			$info = get_object_vars($info);
 		}
@@ -67,7 +70,7 @@ abstract class Core {
 				}
 				if ( !empty($key) && $force ) {
 					$this->$key = $value;
-				} else if ( !empty($key) && !method_exists($this, $key) && $key !== '_content' ) {
+				} else if ( !empty($key) && !method_exists($this, $key) && !in_array($key, $disallowed_properties)) {
 					$this->$key = $value;
 				}
 			}
