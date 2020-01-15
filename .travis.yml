@@ -9,7 +9,7 @@ language: php
 addons:
   apt:
     packages:
-    - libwebp-dev
+      - libwebp-dev
 
 php:
     - 7.4
@@ -20,8 +20,8 @@ env:
     matrix:
         - WP_VERSION=5.3.2 WP_MULTISITE=0
         - WP_VERSION=5.3.2 WP_MULTISITE=1
-        - WP_VERSION=latest WP_MULTISITE=0 IMG_LIBS=1 COVERAGE=1 
-        - WP_VERSION=latest WP_MULTISITE=1 IMG_LIBS=1 COVERAGE=1 STATIC_ANALYSIS=1
+        - WP_VERSION=latest WP_MULTISITE=0 COVERAGE=1 IMG_LIBS=1
+        - WP_VERSION=latest WP_MULTISITE=1 COVERAGE=1 IMG_LIBS=1 STATIC_ANALYSIS=1
 
 matrix:
     include:
@@ -29,10 +29,6 @@ matrix:
       env: WP_VERSION=5.3.2 WP_MULTISITE=0
     - php: 7.2
       env: WP_VERSION=latest WP_MULTISITE=0
-
-before_script:
-    - pear config-set preferred_state beta; pecl channel-update pecl.php.net
-    - yes '' | pecl install imagick
 
 before_install:
     # phpenv config-add myconfig.ini --with-webp-dir
