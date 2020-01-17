@@ -135,6 +135,7 @@ The analogous `Timber` methods for getting Users, Terms, and Comments (`::get_us
 What you get as a **return value** when running `Timber::get_posts()` is not a pure array of posts, but a `Timber\PostCollection` object, an [`ArrayObject`](https://www.php.net/manual/en/class.arrayobject.php) that is very similar to an array as you know it. That means you can still loop over a `PostCollection` directly:
 
 ```php
+$posts = Timber::get_posts(/* optional args */);
 foreach ( $posts as $post ) {
     echo $post->title();
 }
