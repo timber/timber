@@ -37,6 +37,18 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$this->assertFalse( $user );
 	}
 
+	public function testGetUserFromIdString() {
+		$user_id = $this->factory->user->create([
+			'user_email' => 'me@example.com',
+		]);
+
+		$userFactory = new UserFactory();
+		$user				 = $userFactory->from(''.$user_id);
+
+		$this->assertInstanceOf(User::class, $user);
+		$this->assertEquals($user_id, $user->id);
+	}
+
 	public function testGetUserFromEmptyArray() {
 		$userFactory = new UserFactory();
 		$res         = $userFactory->from([]);

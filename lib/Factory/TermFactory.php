@@ -13,7 +13,7 @@ use WP_Term_Query;
  */
 class TermFactory {
 	public function from($params) {
-		if (is_int($params)) {
+		if (is_int($params) || is_string($params) && is_numeric($params)) {
 			return $this->from_id($params);
 		}
 
@@ -90,7 +90,10 @@ class TermFactory {
 		return new $class($term);
 	}
 
-	protected function is_numeric_array(array $arr) {
+	protected function is_numeric_array($arr) {
+		if ( ! is_array($arr) ) {
+			return false;
+		}
 		foreach (array_keys($arr) as $k) {
 			if ( ! is_int($k) ) return false;
 		}

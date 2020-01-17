@@ -43,6 +43,7 @@ class TestCommentFactory extends Timber_UnitTestCase {
 		$comment		= $commentFactory->from(''.$comment_id);
 
 		$this->assertInstanceOf(Comment::class, $comment);
+		$this->assertEquals($comment_id, $comment->id);
 	}
 
 	public function testGetCommentWithOverrides() {
