@@ -151,7 +151,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	 * <h3>Comments by...</h3>
 	 * <ol>
 	 * {% for comment in post.comments %}
-	 *     <li>{{comment.author.name}}, who has the following roles: {{comment.author.roles|join(', ')}}</li>
+	 *     <li>{{comment.author.name}}, who is a {{comment.author.roles[0]}}</li>
 	 * {% endfor %}
 	 * </ol>
 	 * ```
@@ -167,16 +167,14 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	 */
 	public function author() {
 		if ( $this->user_id ) {
-			return new User($this->user_id);
+			return Timber::get_user($this->user_id);
 		} else {
-			$author = new User(0);
-			if ( isset($this->comment_author) && $this->comment_author ) {
-				$author->name = $this->comment_author;
-			} else {
-				$author->name = 'Anonymous';
-			}
+			// We can't (and shouldn't) construct a full-blown User object,
+			// so just return a stdclass inst with a name
+			return (object) [
+				'name' => $this->comment_author ?: 'Anonymous',
+			];
 		}
-		return $author;
 	}
 
 	/**

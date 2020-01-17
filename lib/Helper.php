@@ -589,7 +589,7 @@ class Helper {
 		} elseif ( $obj instanceof \WP_Term ) {
 			return new Term($obj->term_id);
 		} elseif ( $obj instanceof \WP_User ) {
-			return new User($obj->ID);
+			return Timber::get_user($obj->ID);
 		}
 
 		return $obj;

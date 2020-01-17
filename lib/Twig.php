@@ -66,9 +66,7 @@ class Twig {
 			return self::maybe_convert_array( $post_id, $ImageClass );
 		} ) );
 		$twig->addFunction(new TwigFunction('Term', array($this, 'handle_term_object')));
-		$twig->addFunction(new TwigFunction('User', function( $post_id, $UserClass = 'Timber\User' ) {
-			return self::maybe_convert_array( $post_id, $UserClass );
-		} ) );
+		$twig->addFunction(new TwigFunction('User', [Timber::class, 'get_user'] ) );
 		$twig->addFunction( new TwigFunction( 'Attachment', function( $post_id, $AttachmentClass = 'Timber\Attachment' ) {
 			return self::maybe_convert_array( $post_id, $AttachmentClass );
 		} ) );
@@ -97,14 +95,6 @@ class Twig {
 			function( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
 				Helper::deprecated( '{{ TimberTerm() }}', '{{ Term() }}', '2.0.0' );
 				return self::handle_term_object($term_id, $taxonomy, $TermClass);
-			}
-		) );
-
-		$twig->addFunction( new TwigFunction(
-			'TimberUser',
-			function( $user_id, $UserClass = 'Timber\User' ) {
-				Helper::deprecated( '{{ TimberUser() }}', '{{ User() }}', '2.0.0' );
-				return self::maybe_convert_array($user_id, $UserClass);
 			}
 		) );
 

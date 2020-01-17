@@ -6,6 +6,8 @@ use Timber\Factory\UserFactory;
 class AdminUser extends User {}
 class SpecialUser extends User {}
 
+class BadUser {}
+
 /**
  * @group factory
  * @group users-api
@@ -26,6 +28,20 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$user        = $userFactory->from($id);
 
 		$this->assertInstanceOf(User::class, $user);
+	}
+
+	public function testGetUserFromInvalidId() {
+		$userFactory = new UserFactory();
+		$user        = $userFactory->from( 3345 );
+
+		$this->assertEquals( null, $user );
+	}
+
+	public function testGetUserFromEmptyArray() {
+		$userFactory = new UserFactory();
+		$res         = $userFactory->from([]);
+
+		$this->assertEquals([], $res);
 	}
 
 	public function testGetUserWithOverrides() {
@@ -79,6 +95,37 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(User::class,      $normie);
 
 		remove_filter( 'timber/user/classmap', $my_class_map );
+	}
+
+	public function testGetUserWithArrayOfIdsIncludingInvalidIds() {
+		$user_id     = $this->factory->user->create();
+		$userFactory = new UserFactory();
+
+		// Pass a list of IDs.
+		list( $user, $invalid ) = $userFactory->from( [ $user_id, 256 ] );
+
+		$this->assertInstanceOf( Timber\User::class, $user );
+		$this->assertEquals( null, $invalid );
+	}
+
+	public function testGetNonExistentUser() {
+		$user_id     = $this->factory->user->create();
+		$maybe_user  = Timber::get_user_by('id', 3424);
+		$this->assertFalse($maybe_user);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidUserClassThrowsError() {
+		$bad_user_obj = new BadUser();
+
+		$normie_id = $this->factory->user->create([
+			'user_email' => 'someone@example.com',
+		]);
+
+		$normie_wp_user = Timber::get_user($bad_user_obj);
+		$this->assertInstanceOf(User::class, $userFactory->from($normie_wp_user));
 	}
 
 	public function testGetUserFromWpUserObject() {
@@ -220,4 +267,5 @@ class TestUserFactory extends Timber_UnitTestCase {
 
 		remove_filter( 'timber/user/classmap', $my_class_map );
 	}
+
 }

@@ -13,8 +13,8 @@ use WP_Comment;
  */
 class CommentFactory {
 	public function from($params) {
-		if (is_int($params)) {
-			return $this->from_id($params);
+		if (is_int($params) || is_string($params) && is_numeric($params)) {
+			return $this->from_id((int) $params);
 		}
 
 		if ($params instanceof WP_Comment_Query) {
@@ -50,7 +50,7 @@ class CommentFactory {
 
 		throw new \InvalidArgumentException(sprintf(
 			'Expected an instance of Timber\CoreInterface or WP_Comment, got %s',
-			get_class($obj)
+			get_class($comment)
 		));
 	}
 
@@ -79,7 +79,10 @@ class CommentFactory {
 		return $class::build($comment);
 	}
 
-	protected function is_numeric_array(array $arr) {
+	protected function is_numeric_array($arr) {
+		if ( ! is_array($arr) ) {
+			return false;
+		}
 		foreach (array_keys($arr) as $k) {
 			if ( ! is_int($k) ) return false;
 		}

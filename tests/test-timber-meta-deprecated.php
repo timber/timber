@@ -11,6 +11,7 @@ use Timber\Integrations\ACF;
  * Class TestTimberMeta
  * 
  * @group comments-api
+ * @group users-api
  * @group called-post-constructor
  */
 class TestTimberMetaDeprecated extends Timber_UnitTestCase {
@@ -200,7 +201,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_filter( 'timber_user_get_meta_pre', $filter, 10, 3 );
 
 		$user_id = $this->factory->user->create();
-		$user    = new User( $user_id );
+		$user    = Timber::get_user( $user_id );
 
 		update_user_meta( $user_id, 'name', 'A girl has no name.' );
 
@@ -224,7 +225,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_filter( 'timber_user_get_meta_field_pre', $filter, 10, 4 );
 
 		$user_id = $this->factory->user->create();
-		$user    = new User( $user_id );
+		$user    = Timber::get_user( $user_id );
 
 		update_user_meta( $user_id, 'name', 'A girl has no name.' );
 
@@ -247,7 +248,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_filter( 'timber_user_get_meta', $filter, 10, 3 );
 
 		$user_id = $this->factory->user->create();
-		$user    = new User( $user_id );
+		$user    = Timber::get_user( $user_id );
 
 		update_user_meta( $user_id, 'name', 'A girl has no name.' );
 
@@ -271,7 +272,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_filter( 'timber_user_get_meta_field', $filter, 10, 4 );
 
 		$user_id = $this->factory->user->create();
-		$user    = new User( $user_id );
+		$user    = Timber::get_user( $user_id );
 
 		update_user_meta( $user_id, 'name', 'A girl has no name.' );
 
