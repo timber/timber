@@ -32,10 +32,18 @@ class TermFactory {
 		if (is_array($params)) {
 			return $this->from_wp_term_query(new WP_Term_Query($params));
 		}
+
+		return false;
 	}
 
 	protected function from_id(int $id) {
-		return $this->build(get_term($id));
+		$wp_term = get_term($id);
+
+		if (!$wp_term) {
+			return false;
+		}
+
+		return $this->build($wp_term);
 	}
 
 	protected function from_wp_term_query(WP_Term_Query $query) : Iterable {

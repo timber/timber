@@ -26,6 +26,13 @@ class TestCommentFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(Comment::class, $comment);
 	}
 
+	public function testGetCommentFromInvalidId() {
+		$commentFactory = new CommentFactory();
+		$comment			  = $commentFactory->from( 99999 );
+
+		$this->assertFalse( $comment );
+	}
+
 	public function testGetCommentFromIdString() {
 		$comment_id = $this->factory->comment->create([
 			'comment_post_ID' => $this->factory->post->create(),

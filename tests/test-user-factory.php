@@ -34,7 +34,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$userFactory = new UserFactory();
 		$user        = $userFactory->from( 3345 );
 
-		$this->assertEquals( null, $user );
+		$this->assertFalse( $user );
 	}
 
 	public function testGetUserFromEmptyArray() {
@@ -105,7 +105,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		list( $user, $invalid ) = $userFactory->from( [ $user_id, 256 ] );
 
 		$this->assertInstanceOf( Timber\User::class, $user );
-		$this->assertEquals( null, $invalid );
+		$this->assertFalse( $invalid );
 	}
 
 	public function testGetNonExistentUser() {

@@ -32,10 +32,18 @@ class PostFactory {
 		if (is_array($params)) {
 			return $this->from_wp_query(new WP_Query($params));
 		}
+
+		return false;
 	}
 
   protected function from_id(int $id) {
-    return $this->build(get_post($id));
+		$wp_post = get_post($id);
+
+		if (!$wp_post) {
+			return false;
+		}
+
+    return $this->build($wp_post);
   }
 
 	protected function from_post_object(object $obj) : CoreInterface {

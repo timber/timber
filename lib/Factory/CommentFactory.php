@@ -35,7 +35,13 @@ class CommentFactory {
 	}
 
 	protected function from_id(int $id) {
-		return $this->build(get_comment($id));
+		$wp_comment = get_comment($id);
+
+		if (!$wp_comment) {
+			return false;
+		}
+
+		return $this->build($wp_comment);
 	}
 
 	protected function from_comment_object(object $comment) : CoreInterface {

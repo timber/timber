@@ -29,6 +29,13 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(Post::class, $custom);
 	}
 
+	public function testFromInvalidId() {
+		$postFactory = new PostFactory();
+		$post        = $postFactory->from( 99999 );
+
+		$this->assertFalse( $post );
+	}
+
 	public function testFromWithOverrides() {
 		$my_class_map = function() {
 			return [

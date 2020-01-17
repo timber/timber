@@ -56,6 +56,8 @@ class UserFactory {
 			// we have a query array to be passed to WP_User_Query::__construct()
 			return $this->from_wp_user_query(new WP_User_Query($params));
 		}
+
+		return null;
 	}
 
 	protected function from_id(int $id) {
