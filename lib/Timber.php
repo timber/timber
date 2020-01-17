@@ -220,11 +220,44 @@ class Timber {
 	================================ */
 
 	/**
-	 * Get one or more users as a collection.
+	 * Gets one or more users as an array.
+	 *
+	 * By default, Timber will use the `Timber\User` class to create a your post objects. To
+	 * control which class is used for your post objects, use [Class Maps]().
+	 *
 	 * @api
-	 * @param array   $query The params for the WP_User_Query to performed
-	 * @param array   $options optional; none are currently supported
-	 * @return mixed
+	 * @since 2.0.0
+	 * @example
+	 * ```php
+	 * // Get users with on an array of user IDs.
+	 * $users = Timber::get_users( [ 24, 81, 325 ] );
+	 *
+	 * // Get all users that only have a subscriber role.
+	 * $subscribers = Timber::get_users( [
+	 *     'role' => 'subscriber',
+	 * ] );
+	 *
+	 * // Get all users that have published posts.
+	 * $post_authors = Timber::get_users( [
+	 *     'has_published_posts' => [ 'post' ],
+	 * ] );
+	 * ```
+	 *
+	 * @todo  Add links to Class Maps documentation in function summary.
+	 *
+	 * @param array $query   Optional. A WordPress-style query or an array of user IDs. Use an
+	 *                       array in the same way you would use the `$args` parameter in
+	 *                       [WP_User_Query](https://developer.wordpress.org/reference/classes/wp_user_query/).
+	 *                       See
+	 *                       [WP_User_Query::prepare_query()](https://developer.wordpress.org/reference/classes/WP_User_Query/prepare_query/)
+	 *                       for a list of all available parameters. Passing an empty parameter
+	 *                       will return an empty array. Default empty array
+	 *                       `[]`.
+	 * @param array $options Optional. An array of options. None are currently supported. This
+	 *                       parameter exists to prevent future breaking changes. Default empty
+	 *                       array `[]`.
+	 *
+	 * @return \Iterable An array of users objects. Will be empty if no users were found.
 	 */
 	public static function get_users( array $query = [], array $options = [] ) : Iterable {
 		$factory = new UserFactory();
@@ -233,11 +266,37 @@ class Timber {
 	}
 
 	/**
-	 * Get a single User.
-	 * 
+	 * Gets a single user.
+	 *
+	 * By default, Timber will use the `Timber\User` class to create a your post objects. To
+	 * control which class is used for your post objects, use [Class Maps]().
+	 *
 	 * @api
-	 * @param int|\WP_User $user a WP_User object or user ID. Defaults to the ID
-	 * of the current user.
+	 * @since 2.0.0
+	 * @example
+	 * ```php
+	 * $current_user = Timber::get_user();
+	 *
+	 * // Get user by ID.
+	 * $user = Timber::get_user( $user_id );
+	 *
+	 * // Convert a WP_User object to a Timber\User object.
+	 * $user = Timber::get_user( $wp_user_object );
+	 *
+	 * // Check if a user is logged in.
+	 *
+	 * $user = Timber::get_user();
+	 *
+	 * if ( $user ) {
+	 *     // Yay, user is logged in.
+	 * }
+	 * ```
+	 *
+	 * @todo Add links to Class Maps documentation in function summary.
+	 *
+	 * @param int|\WP_User $user A WP_User object or a WordPress user ID. Defaults to the ID of the
+	 *                           currently logged-in user.
+	 *
 	 * @return \Timber\User|false
 	 */
 	public static function get_user( $user = null ) {
@@ -253,16 +312,27 @@ class Timber {
 	}
 
 	/**
-	 * Like WP core's `get_user_by()`, but returns a Timber\User instance
-	 * 
+	 * Gets a user by field.
+	 *
+	 * This function works like
+	 * [`get_user_by()`](https://developer.wordpress.org/reference/functions/get_user_by/), but
+	 * returns a `Timber\User` object.
+	 *
 	 * @api
-	 * @param string $field The field to retrieve the user with. One of:
-	 * - id
-	 * - ID
-	 * - slug
-	 * - email
-	 * - login
-	 * @param int|string $value The value for $field
+	 * @since 2.0.0
+	 * @example
+	 * ```php
+	 * // Get a user by email.
+	 * $user = Timber::get_user_by( 'email', 'user@example.com' );
+	 *
+	 * // Get a user by login.
+	 * $user = Timber::get_user_by( 'login', 'keanu-reeves' );
+	 * ```
+	 *
+	 * @param string     $field The name of the field to retrieve the user with. One of: `id`,
+	 *                          `ID`, `slug`, `email` or `login`.
+	 * @param int|string $value The value to search for by `$field`.
+	 *
 	 * @return \Timber\User|null
 	 */
 	public static function get_user_by( string $field, $value ) {
