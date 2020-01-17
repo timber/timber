@@ -130,17 +130,24 @@ $posts = Timber::get_posts( $query, $options );
 
 In archive templates like **archive.php** or **category.php**, Timber will already fetch the default query when you call `Timber::context()` and make it available under the `posts` entry. Read more about this in the [Context Guide](/docs/guides/context).
 
-### Return value
+### Class Map
 
-What you get as a return value when running `Timber::get_posts()` is not a pure array of posts, but a `Timber\PostCollection` object, which is an `ArrayObject` that is very similar to an array like you know it. To loop over the posts collection in PHP, you first need to convert it to an array with `Timber\PostCollection::to_array()`.
+When you query for certain post types, Timber will use the [Post Class Map](https://timber.github.io/docs/guides/class-maps/#the-post-class-map) to check which class it should use to instantiate your posts.
+
+### Post Collections
+
+The analogous `Timber` methods for getting Users, Terms, and Comments (`::get_users()`, `::get_terms()`, and `::get_comments()`) all return arrays. But in order to make pagination work and making Timber compatible with The Loop, we treat Posts with special care.
+
+What you get as a **return value** when running `Timber::get_posts()` is not a pure array of posts, but a `Timber\PostCollection` object, an [`ArrayObject`](https://www.php.net/manual/en/class.arrayobject.php) that is very similar to an array as you know it. That means you can still loop over a `PostCollection` directly:
 
 ```php
-foreach ( $posts->to_array() as $post ) {
+$posts = Timber::get_posts(/* optional args */);
+foreach ( $posts as $post ) {
     echo $post->title();
 }
 ```
 
-In Twig, you can directly loop over the collection.
+In Twig, you can also loop over the collection.
 
 ```twig
 {% for post in posts %}
@@ -148,21 +155,29 @@ In Twig, you can directly loop over the collection.
 {% endfor %}
 ```
 
-When you query for certain post types, Timber will use the [Post Class Map](https://timber.github.io/docs/guides/class-maps/#the-post-class-map) to check which class it should use to instantiate your posts.
-
-### The difference to `get_post()`
-
-It might seem like `Timber::get_posts()` is the same as [`get_posts()`](https://developer.wordpress.org/reference/functions/get_posts/) in WordPress. But it isn’t. It’s the same as using [`WP_Query`](https://developer.wordpress.org/reference/classes/wp_query/). The difference in the `get_posts()` function is that it uses different parameters and looks like this when using `Timber::get_posts()`.
+What **doesn’t work** with `Timber\PostCollection` objects are PHP’s [Array functions](https://www.php.net/manual/en/ref.array.php) like `array_filter()` or WordPress helper functions like [`wp_list_filter()`](https://developer.wordpress.org/reference/functions/wp_list_filter/). If you want to work with those, you can turn a `Timber\PostCollection` object into a pure array with `to_array()`. But be aware that when you do that, you lose the pagination functionality and compatibility optimizations with The Loop.
 
 ```php
-$posts = Timber::get_posts( array(
+$filtered = wp_list_filter( $posts->to_array(), [
+    'comment_status' => 'open'
+] );
+```
+
+### Differences from WP core’s `get_posts()`
+
+It might seem like `Timber::get_posts()` is the same as [`get_posts()`](https://developer.wordpress.org/reference/functions/get_posts/) in WordPress. But it isn’t. It’s more similar to using [`WP_Query`](https://developer.wordpress.org/reference/classes/wp_query/). WP core’s `get_posts()` function applies different default parameters and performs the same database query as it would when calling `Timber::get_posts()` like this:
+
+```php
+$posts = Timber::get_posts( [
     'ignore_sticky_posts' => true,
     'suppress_filters'    => true,
     'no_found_rows'       => true,
-) );
+] );
 ```
 
 If you’re used to using `get_posts()` instead of `WP_Query`, you will have to set these parameters separately in your queries.
+
+Of course, the other main difference is that instead of returning plain `WP_Post` objects, `Timber::get_posts()` returns instances of `Timber\Post`.
 
 ## Performance
 
