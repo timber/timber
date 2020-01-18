@@ -212,7 +212,17 @@ class Timber {
 	 * @param string              $taxonomy the taxonomy of the term you want
 	 * @return \Timber\Term|\WP_Error|null
 	 */
-	public static function get_term( $term, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+	public static function get_term( $term = null, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+		if (null === $term) {
+			// get the fallback term_id from the current query
+			global $wp_query;
+			$term = $wp_query->queried_object->term_id ?? null;
+		}
+		if (null === $term) {
+			// not able to get term_id from the current query; bail
+			return false;
+		}
+
 		return TermGetter::get_term($term, $taxonomy, $TermClass);
 	}
 
