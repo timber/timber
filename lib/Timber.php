@@ -155,7 +155,7 @@ class Timber {
 		if ( is_string( $post ) && ! is_numeric( $post ) ) {
 			Helper::doing_it_wrong(
 				'Timber::get_post()',
-				'Getting a post by post slug or post name was removed from Timber::get_post() in Timber 2.0. Use Timber::get_post_by_slug() or Timber::get_post_by_title() instead.',
+				'Getting a post by post slug or post name was removed from Timber::get_post() in Timber 2.0. Use Timber::get_post_by() instead.',
 				'2.0.0'
 			);
 		}
