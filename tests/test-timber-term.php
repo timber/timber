@@ -90,20 +90,22 @@
 			$this->assertEquals(7, count($posts_gotten));
 		}
 
-		function testGetPostsWithAnyAndCustomTax() {
+		function testPosts() {
 			register_post_type('portfolio', array('taxonomies' => array('arts'), 'public' => true));
 			register_taxonomy('arts', array('portfolio'));
 
+			// create a term, and some posts to assign it to
 			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
 			$posts = $this->factory->post->create_many(5, array('post_type' => 'portfolio' ));
+
+			// assign the term to each of our new posts
 			foreach($posts as $post_id) {
 				wp_set_object_terms($post_id, $term_id, 'arts', true);
 			}
-			$terms = Timber::get_terms('arts');
-			$template = '{% for term in terms %}{% for post in term.posts %}{{post.title}}{% endfor %}{% endfor %}';
-			$template = '{% for term in terms %}{{term.posts|length}}{% endfor %}';
-			$str = Timber::compile_string($template, array('terms' => $terms));
-			$this->assertEquals('5', $str);
+
+			$term = Timber::get_term($term_id);
+
+			$this->assertEquals(5, count($term->posts()));
 		}
 
 		/**
