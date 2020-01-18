@@ -197,21 +197,54 @@ class Timber {
 	/**
 	 * Get terms.
 	 * @api
-	 * @param string|array $args
-	 * @param array   $maybe_args
-	 * @param string  $TermClass
-	 * @return mixed
+	 * @param string|array $args a string or array identifying the taxonomy or
+	 * `WP_Term_Query` args. Numeric strings are treated as term IDs; non-numeric
+	 * strings are treated as taxonomy names. Numeric arrays are treated as a
+	 * list a of term identifiers; associative arrays are treated as args to
+	 * `WP_Term_Query::__construct()` and accepts any valid parameters to that
+	 * constructor.
+	 * @param array        $options optional; none are currently supported.
+	 * @return Iterable
+	 * @see https://developer.wordpress.org/reference/classes/wp_term_query/__construct/
+	 * @example
+	 * ```php
+	 * // Get all tags.
+	 * $tags = Timber::get_terms('post_tag');
+	 * // Note that this is equivalent to:
+	 * $tags = Timber::get_terms('post_tag');
+	 *
+	 * // Get all categories.
+	 * $cats = Timber::get_terms('category');
+	 *
+	 * // Get all terms in a custom taxonomy.
+	 * $cats = Timber::get_terms('my_taxonomy');
+	 *
+	 * // Perform a custom Term query.
+	 * $cats = Timber::get_terms([
+	 *   'taxonomy' => 'my_taxonomy',
+	 *   'orderby'  => 'slug',
+	 *   'order'    => 'DESC',
+	 * ]);
+	 * ```
 	 */
-	public static function get_terms( $args = null, $maybe_args = array(), $TermClass = 'Timber\Term' ) {
+	public static function get_terms( $args = null, $maybe_args = array(), $TermClass = 'Timber\Term' ) : Iterable {
 		return TermGetter::get_terms($args, $maybe_args, $TermClass);
 	}
 
 	/**
 	 * Get term.
 	 * @api
-	 * @param int|\WP_Term|object $term
-	 * @param string              $taxonomy the taxonomy of the term you want
-	 * @return \Timber\Term|\WP_Error|null
+	 * @param int|\WP_Term $term a WP_Term or term_id
+	 * @param string       $taxonomy the taxonomy of the term you want
+	 * @return \Timber\Term|false
+	 * @example
+	 * ```php
+	 * // Get a Term.
+	 * $tag = Timber::get_term(123);
+	 *
+	 * // Get a tag specifically.
+	 * $tag = Timber::get_term(123, 'post_tag');
+	 * ```
 	 */
 	public static function get_term( $term = null, $taxonomy = '' ) {
 		if (null === $term) {
