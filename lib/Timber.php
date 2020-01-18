@@ -148,8 +148,8 @@ class Timber {
 	 * @param null|int|\WP_Post $post Optional. Post ID or WP_Post object to get a Timber Post
 	 *                                object. Default `null`.
 	 *
-	 * @return \Timber\Post|bool `Timber\Post` object or an instance of a child class of
-	 *                           `Timber\Post` if a post was found, `false` if no post was found.
+	 * @return \Timber\Post|false `Timber\Post` object or an instance of a child class of
+	 *                            `Timber\Post` if a post was found, `false` if no post was found.
 	 */
 	public static function get_post( $post = null ) {
 		if ( is_string( $post ) && ! is_numeric( $post ) ) {
@@ -210,7 +210,7 @@ class Timber {
 	 *                               template. Default `false`.
 	 * }
 	 *
-	 * @return PostCollection|bool
+	 * @return PostCollection|false
 	 */
 	public static function get_posts( $query = false, $options = [] ) {
 		if ( is_string( $query ) ) {
@@ -259,7 +259,7 @@ class Timber {
 	 *
 	 * @param false|int|\WP_Post $post
 	 *
-	 * @return \Timber\Post|bool
+	 * @return \Timber\Post|false
 	 */
 	public static function query_post( $post = false ) {
 		Helper::deprecated( 'Timber::query_post()', 'Timber::get_post()', '2.0.0' );
@@ -275,7 +275,7 @@ class Timber {
 	 *
 	 * @param array|false $query
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	public static function query_posts( $query = false ) {
 		Helper::deprecated( 'Timber::query_posts()', 'Timber::get_posts()', '2.0.0' );
