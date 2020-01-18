@@ -30,7 +30,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	function testGetPostBySlug(){
 		$this->factory->post->create( [ 'post_name' => 'kill-bill' ] );
 
-		$post = Timber\Timber::get_post_by_slug( 'kill-bill');
+		$post = Timber\Timber::get_post_by( 'slug', 'kill-bill');
 
 		$this->assertEquals( 'kill-bill', $post->post_name );
 	}
@@ -45,20 +45,20 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 			'post_type' => 'page',
 		] );
 
-		$post_movie = Timber\Timber::get_post_by_slug( 'kill-bill', 'movie' );
-		$post_page  = Timber\Timber::get_post_by_slug( 'kill-bill', 'page' );
+		$post_movie = Timber\Timber::get_post_by( 'slug', 'kill-bill', 'movie' );
+		$post_page  = Timber\Timber::get_post_by( 'slug', 'kill-bill', 'page' );
 
 		$this->assertEquals( $post_id_movie, $post_movie->ID );
 		$this->assertEquals( $post_id_page, $post_page->ID );
 
-		$post_any = Timber\Timber::get_post_by_slug( 'kill-bill' );
+		$post_any = Timber\Timber::get_post_by( 'slug', 'kill-bill' );
 		$this->assertEquals( $post_id_movie, $post_any->ID );
 	}
 
 	function testGetPostBySlugForNonexistentPost(){
 		$this->factory->post->create( [ 'post_name' => 'kill-bill' ] );
 
-		$post = Timber\Timber::get_post_by_slug( 'kill-bill-2');
+		$post = Timber\Timber::get_post_by( 'slug', 'kill-bill-2');
 
 		$this->assertEquals( null, $post );
 	}
@@ -67,7 +67,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$post_title = 'A Post Title containing Special Characters like # or ! or Ä or ç';
 		$this->factory->post->create( [ 'post_title' => $post_title ] );
 
-		$post = Timber\Timber::get_post_by_title( $post_title );
+		$post = Timber\Timber::get_post_by( 'title', $post_title );
 
 		$this->assertEquals( $post_title, $post->title() );
 	}
@@ -77,7 +77,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->factory->post->create( [ 'post_title' => $post_title ] );
 
 		$lower_case_title = mb_strtolower( $post_title );
-		$post             = Timber\Timber::get_post_by_title( $lower_case_title );
+		$post             = Timber\Timber::get_post_by( 'title', $lower_case_title );
 
 		$this->assertEquals( $post_title, $post->title() );
 	}
@@ -97,9 +97,9 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 			'post_type'  => 'book',
 		] );
 
-		$post_movie    = Timber\Timber::get_post_by_title( $post_title, 'movie' );
-		$post_page     = Timber\Timber::get_post_by_title( $post_title, 'page' );
-		$post_multiple = Timber\Timber::get_post_by_title( $post_title, [ 'page', 'book' ] );
+		$post_movie    = Timber\Timber::get_post_by( 'title', $post_title, 'movie' );
+		$post_page     = Timber\Timber::get_post_by( 'title', $post_title, 'page' );
+		$post_multiple = Timber\Timber::get_post_by( 'title', $post_title, [ 'page', 'book' ] );
 
 		$this->assertEquals( $post_id_movie, $post_movie->ID );
 		$this->assertEquals( $post_id_page, $post_page->ID );
@@ -111,7 +111,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	function testGetPostByTitleForNonexistentPost(){
 		$this->factory->post->create();
 
-		$post = Timber\Timber::get_post_by_title( 'Just a nonexistent post' );
+		$post = Timber\Timber::get_post_by( 'title', 'Just a nonexistent post' );
 
 		$this->assertEquals( null, $post );
 	}
