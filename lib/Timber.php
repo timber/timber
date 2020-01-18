@@ -257,7 +257,7 @@ class Timber {
 	 * @api
 	 * @deprecated since 2.0.0 Use `Timber::get_post()` instead.
 	 *
-	 * @param null|int|\WP_Post $post
+	 * @param false|int|\WP_Post $post
 	 *
 	 * @return \Timber\Post|bool
 	 */
