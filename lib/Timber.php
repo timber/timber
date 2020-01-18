@@ -209,10 +209,10 @@ class Timber {
 	 * Get term.
 	 * @api
 	 * @param int|\WP_Term|object $term
-	 * @param string              $taxonomy
+	 * @param string              $taxonomy the taxonomy of the term you want
 	 * @return \Timber\Term|\WP_Error|null
 	 */
-	public static function get_term( $term, $taxonomy = 'post_tag', $TermClass = 'Timber\Term' ) {
+	public static function get_term( $term, $taxonomy = '', $TermClass = 'Timber\Term' ) {
 		return TermGetter::get_term($term, $taxonomy, $TermClass);
 	}
 
