@@ -502,6 +502,7 @@ class Twig {
 
 	/**
 	 * @api
+   *
 	 * @deprecated 2.0.0
 	 *
 	 * @param int|string $from
@@ -513,7 +514,7 @@ class Twig {
 	 */
 	public static function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
 		Helper::deprecated( 'time_ago', 'DateTimeHelper::time_ago', '2.0.0' );
-
+    
 		return DateTimeHelper::time_ago( $from, $to, $format_past, $format_future );
 	}
 
