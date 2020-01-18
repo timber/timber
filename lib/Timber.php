@@ -169,7 +169,6 @@ class Timber {
 			);
 		}
 
-		// @todo Will this be handled here or inside factories, or somewhere else?
 		if ( null === $post ) {
 			$post = get_the_ID();
 		}
