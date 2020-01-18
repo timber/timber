@@ -587,7 +587,7 @@ class Helper {
 			$class = PostGetter::get_post_class($obj->post_type);
 			return new $class($obj->ID);
 		} elseif ( $obj instanceof \WP_Term ) {
-			return new Term($obj->term_id);
+			return Timber::get_term($obj->term_id);
 		} elseif ( $obj instanceof \WP_User ) {
 			return Timber::get_user($obj->ID);
 		}

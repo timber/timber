@@ -12,13 +12,13 @@ namespace Timber;
  * @example
  * ```php
  * //Get a term by its ID
- * $context['term'] = new Timber\Term(6);
+ * $context['term'] = Timber::get_term(6);
  * //Get a term when on a term archive page
- * $context['term_page'] = new Timber\Term();
+ * $context['term_page'] = Timber::get_term();
  * //Get a term with a slug
- * $context['team'] = new Timber\Term('patriots');
+ * $context['team'] = Timber::get_term('patriots');
  * //Get a team with a slug from a specific taxonomy
- * $context['st_louis'] = new Timber\Term('cardinals', 'baseball');
+ * $context['st_louis'] = Timber::get_term('cardinals', 'baseball');
  * Timber::render('index.twig', $context);
  * ```
  * ```twig
@@ -225,7 +225,8 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		if ( !isset($this->_children) ) {
 			$children = get_term_children($this->ID, $this->taxonomy);
 			foreach ( $children as &$child ) {
-				$child = new Term($child);
+				// @todo #2087 get this to work w/o $taxonomy param
+				$child = Timber::get_term($child, $this->taxonomy);
 			}
 			$this->_children = $children;
 		}
