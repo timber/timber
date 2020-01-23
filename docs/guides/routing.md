@@ -80,7 +80,7 @@ So in this example: `'info/:name/page/:pg'`, $params would have data for:
 `$php_file` (required)
 A PHP file to load, in my experience this is usually your archive.php or a generic listing page (but don't worry it can be anything!)
 
-`$template_params`
+`$args`
 Any data you want to send to the resulting view. Example:
 
 ```php
