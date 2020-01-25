@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Timber\Factory\CommentFactory;
+use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
 
 /**
@@ -212,7 +213,7 @@ class Timber {
 	 * @param string              $taxonomy the taxonomy of the term you want
 	 * @return \Timber\Term|\WP_Error|null
 	 */
-	public static function get_term( $term = null, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+	public static function get_term( $term = null, $taxonomy = '' ) {
 		if (null === $term) {
 			// get the fallback term_id from the current query
 			global $wp_query;
@@ -223,7 +224,9 @@ class Timber {
 			return false;
 		}
 
-		return TermGetter::get_term($term, $taxonomy, $TermClass);
+		$factory = new TermFactory();
+
+		return $factory->from($term);
 	}
 
 	/* User Retrieval
