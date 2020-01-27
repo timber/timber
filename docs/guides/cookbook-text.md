@@ -1,5 +1,6 @@
 ---
 title: "Text Cookbook"
+weight: "300"
 menu:
   main:
     parent: "guides"

@@ -4,17 +4,28 @@
 
 		function testPostTerms() {
 			$pid = $this->factory->post->create();
-			$post = new TimberPost($pid);
+			$post = new Timber\Post($pid);
 
 			// create a new tag and associate it with the post
 			$dummy_tag = wp_insert_term('whatever', 'post_tag');
 			wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);
 
-			$terms = $post->get_terms('post_tag', 'MyTimberTerm');
+			$terms = $post->terms( array(
+				'query' => array(
+					'taxonomy' => 'post_tag'
+				),
+				'term_class' => 'MyTimberTerm',
+			) );
 			$this->assertEquals( 'MyTimberTerm', get_class($terms[0]) );
 
-			$post = new TimberPost($pid);
-			$terms = $post->terms('post_tag', true, 'MyTimberTerm');
+			$post = new Timber\Post($pid);
+			$terms = $post->terms( array(
+				'query' => array(
+					'taxonomy' => 'post_tag',
+				),
+				'merge' => true,
+				'term_class' => 'MyTimberTerm',
+			) );
 			$this->assertEquals( 'MyTimberTerm', get_class($terms[0]) );
 		}
 
@@ -24,7 +35,7 @@
 		function testTermExceptions() {
 			self::enable_error_log(false);
 			$pid = $this->factory->post->create();
-			$post = new TimberPost($pid);
+			$post = new Timber\Post($pid);
 			$terms = $post->terms('dfasdf');
 			$this->assertInstanceOf('WP_Error', $terms);
 			self::enable_error_log(true);
@@ -37,7 +48,7 @@
 			self::enable_error_log(false);
 			register_taxonomy('foobar', 'post');
 			$pid = $this->factory->post->create();
-			$post = new TimberPost($pid);
+			$post = new Timber\Post($pid);
 			$terms = $post->terms('foobar');
 			$this->assertEquals(array(), $terms);
 			self::enable_error_log(true);
@@ -52,14 +63,18 @@
 			$dummy_cat = wp_insert_term('thingy', 'category');
 			wp_set_object_terms($pid, $dummy_cat['term_id'], 'category', true);
 
-			$post = new TimberPost($pid);
-			$terms = $post->terms('all', false);
+			$post = new Timber\Post($pid);
+			$terms = $post->terms( array(
+				'query' => array(
+					'taxonomy' => 'all'
+				),
+				'merge' => false,
+			) );
 			$this->assertEquals($terms['post_tag'][0]->name, 'whatever');
-
 		}
 
 	}
 
-	class MyTimberTerm extends TimberTerm {
+	class MyTimberTerm extends Timber\Term {
 
 	}

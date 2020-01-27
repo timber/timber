@@ -2,15 +2,14 @@
 
 namespace Timber;
 
-use Timber\URLHelper;
-use Timber\Helper;
+use Twig\Environment;
+use Twig\Extension\CoreExtension;
+use Twig\TwigFunction;
+use Twig\TwigFilter;
 
-use Timber\Post;
-use Timber\Term;
-use Timber\Image;
-use Timber\User;
-
-
+/**
+ * Class Twig
+ */
 class Twig {
 
 	public static $dir_name;
@@ -29,129 +28,151 @@ class Twig {
 		add_action('timber/twig/filters', array($this, 'add_timber_filters'));
 		add_action('timber/twig/functions', array($this, 'add_timber_functions'));
 		add_action('timber/twig/escapers', array($this, 'add_timber_escapers'));
+
+		add_filter( 'timber/loader/twig', [ $this, 'set_defaults' ] );
 	}
 
 	/**
-	 * Adds functions to Twig.
+	 * Adds Timber-specific functions to Twig.
 	 *
 	 * @param \Twig\Environment $twig The Twig Environment.
+	 *
 	 * @return \Twig\Environment
 	 */
 	public function add_timber_functions( $twig ) {
 		/* actions and filters */
-		$twig->addFunction(new Twig_Function('action', function( $context ) {
-					$args = func_get_args();
-					array_shift($args);
-					$args[] = $context;
-					call_user_func_array('do_action', $args);
-				}, array('needs_context' => true)));
+		$twig->addFunction( new TwigFunction( 'action', function() {
+			call_user_func_array( 'do_action', func_get_args() );
+		} ) );
 
-		$twig->addFunction(new Twig_Function('function', array(&$this, 'exec_function')));
-		$twig->addFunction(new Twig_Function('fn', array(&$this, 'exec_function')));
+		$twig->addFunction(new TwigFunction('function', array(&$this, 'exec_function')));
+		$twig->addFunction(new TwigFunction('fn', array(&$this, 'exec_function')));
 
-		$twig->addFunction(new Twig_Function('shortcode', 'do_shortcode'));
+		$twig->addFunction(new TwigFunction('shortcode', 'do_shortcode'));
 
-		/* TimberObjects */
-		$twig->addFunction(new Twig_Function('TimberPost', function( $pid, $PostClass = 'Timber\Post' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $PostClass($p);
-						}
-						return $pid;
-					}
-					return new $PostClass($pid);
-				} ));
-		$twig->addFunction(new Twig_Function('TimberImage', function( $pid = false, $ImageClass = 'Timber\Image' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $ImageClass($p);
-						}
-						return $pid;
-					}
-					return new $ImageClass($pid);
-				} ));
+		/**
+		 * Timber object functions.
+		 */
 
-		$twig->addFunction(new Twig_Function('TimberTerm', array($this, 'handle_term_object')));
+		$twig->addFunction(new TwigFunction('Post', function( $post_id, $PostClass = 'Timber\Post' ) {
+			return self::maybe_convert_array( $post_id, $PostClass );
+		} ) );
 
-		$twig->addFunction(new Twig_Function('TimberUser', function( $pid, $UserClass = 'Timber\User' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $UserClass($p);
-						}
-						return $pid;
-					}
-					return new $UserClass($pid);
-				} ));
+		$twig->addFunction( new TwigFunction( 'PostQuery', function( $args ) {
+			return new PostQuery( $args );
+		} ) );
 
-		/* TimberObjects Alias */
-		$twig->addFunction(new Twig_Function('Post', function( $pid, $PostClass = 'Timber\Post' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $PostClass($p);
-						}
-						return $pid;
-					}
-					return new $PostClass($pid);
-				} ));
-		$twig->addFunction(new Twig_Function('Image', function( $pid, $ImageClass = 'Timber\Image' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $ImageClass($p);
-						}
-						return $pid;
-					}
-					return new $ImageClass($pid);
-				} ));
-		$twig->addFunction(new Twig_Function('Term', array($this, 'handle_term_object')));
-		$twig->addFunction(new Twig_Function('User', function( $pid, $UserClass = 'Timber\User' ) {
-					if ( is_array($pid) && !Helper::is_array_assoc($pid) ) {
-						foreach ( $pid as &$p ) {
-							$p = new $UserClass($p);
-						}
-						return $pid;
-					}
-					return new $UserClass($pid);
-				} ));
+		$twig->addFunction(new TwigFunction('Image', function( $post_id, $ImageClass = 'Timber\Image' ) {
+			return self::maybe_convert_array( $post_id, $ImageClass );
+		} ) );
+		$twig->addFunction(new TwigFunction('Term', array($this, 'handle_term_object')));
+		$twig->addFunction(new TwigFunction('User', function( $post_id, $UserClass = 'Timber\User' ) {
+			return self::maybe_convert_array( $post_id, $UserClass );
+		} ) );
+		$twig->addFunction( new TwigFunction( 'Attachment', function( $post_id, $AttachmentClass = 'Timber\Attachment' ) {
+			return self::maybe_convert_array( $post_id, $AttachmentClass );
+		} ) );
+
+		/**
+		 * Deprecated Timber object functions.
+		 */
+		$twig->addFunction( new TwigFunction(
+			'TimberPost',
+			function( $post_id, $PostClass = 'Timber\Post' ) {
+				Helper::deprecated( '{{ TimberPost() }}', '{{ Post() }}', '2.0.0' );
+				return self::maybe_convert_array( $post_id, $PostClass );
+			}
+		) );
+
+		$twig->addFunction( new TwigFunction(
+			'TimberImage',
+			function( $post_id = false, $ImageClass = 'Timber\Image' ) {
+				Helper::deprecated( '{{ TimberImage() }}', '{{ Image() }}', '2.0.0' );
+				return self::maybe_convert_array( $post_id, $ImageClass );
+			}
+		) );
+
+		$twig->addFunction( new TwigFunction(
+			'TimberTerm',
+			function( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+				Helper::deprecated( '{{ TimberTerm() }}', '{{ Term() }}', '2.0.0' );
+				return self::handle_term_object($term_id, $taxonomy, $TermClass);
+			}
+		) );
+
+		$twig->addFunction( new TwigFunction(
+			'TimberUser',
+			function( $user_id, $UserClass = 'Timber\User' ) {
+				Helper::deprecated( '{{ TimberUser() }}', '{{ User() }}', '2.0.0' );
+				return self::maybe_convert_array($user_id, $UserClass);
+			}
+		) );
 
 		/* bloginfo and translate */
-		$twig->addFunction(new Twig_Function('bloginfo', 'bloginfo'));
-		$twig->addFunction(new Twig_Function('__', '__'));
-		$twig->addFunction(new Twig_Function('translate', 'translate'));
-		$twig->addFunction(new Twig_Function('_e', '_e'));
-		$twig->addFunction(new Twig_Function('_n', '_n'));
-		$twig->addFunction(new Twig_Function('_x', '_x'));
-		$twig->addFunction(new Twig_Function('_ex', '_ex'));
-		$twig->addFunction(new Twig_Function('_nx', '_nx'));
-		$twig->addFunction(new Twig_Function('_n_noop', '_n_noop'));
-		$twig->addFunction(new Twig_Function('_nx_noop', '_nx_noop'));
-		$twig->addFunction(new Twig_Function('translate_nooped_plural', 'translate_nooped_plural'));
+		$twig->addFunction(new TwigFunction('bloginfo', 'bloginfo'));
+		$twig->addFunction(new TwigFunction('__', '__'));
+		$twig->addFunction(new TwigFunction('translate', 'translate'));
+		$twig->addFunction(new TwigFunction('_e', '_e'));
+		$twig->addFunction(new TwigFunction('_n', '_n'));
+		$twig->addFunction(new TwigFunction('_x', '_x'));
+		$twig->addFunction(new TwigFunction('_ex', '_ex'));
+		$twig->addFunction(new TwigFunction('_nx', '_nx'));
+		$twig->addFunction(new TwigFunction('_n_noop', '_n_noop'));
+		$twig->addFunction(new TwigFunction('_nx_noop', '_nx_noop'));
+		$twig->addFunction(new TwigFunction('translate_nooped_plural', 'translate_nooped_plural'));
 
 		return $twig;
 	}
 
 	/**
-	 * Function for Term or TimberTerm() within Twig
+	 * Converts input to Timber object(s)
+	 *
+	 * @internal
+	 * @since 2.0.0
+	 *
+	 * @param mixed  $post_id A post ID, object or something else that the Timber object class
+	 *                        constructor an read.
+	 * @param string $class   The class to use to convert the input.
+	 *
+	 * @return mixed An object or array of objects.
+	 */
+	public static function maybe_convert_array( $post_id, $class ) {
+		if ( is_array( $post_id ) && ! Helper::is_array_assoc( $post_id ) ) {
+			foreach ( $post_id as &$id ) {
+				$id = new $class( $id );
+			}
+
+			return $post_id;
+		}
+
+		return new $class( $post_id );
+	}
+
+	/**
+	 * Function for Term or Timber\Term() within Twig
 	 * @since 1.5.1
 	 * @author @jarednova
-	 * @param integer $tid the term ID to search for
-	 * @param string $taxonomy the taxonomy to search inside of. If sent a class name, it will use that class to support backwards compatibility
-	 * @param string $TermClass the class to use for processing the term
+	 * @param integer|array $term_id the term ID to search for
+	 * @param string        $taxonomy the taxonomy to search inside of. If sent a class name, it will use that class to support backwards compatibility
+	 * @param string        $TermClass the class to use for processing the term
 	 * @return Term|array
 	 */
-	function handle_term_object( $tid, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+	static function handle_term_object( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
 		if ( $taxonomy != $TermClass ) {
 			// user has sent any additonal parameters, process
 			$processed_args = self::process_term_args($taxonomy, $TermClass);
 			$taxonomy = $processed_args['taxonomy'];
 			$TermClass = $processed_args['TermClass'];
 		}
-		if ( is_array($tid) && !Helper::is_array_assoc($tid) ) {
-			foreach ( $tid as &$p ) {
+
+		if ( is_array($term_id) && !Helper::is_array_assoc($term_id) ) {
+			foreach ( $term_id as &$p ) {
 				$p = new $TermClass($p, $taxonomy);
 			}
-			return $tid;
+			return $term_id;
 		}
-		return new $TermClass($tid, $taxonomy);
+
+		return new $TermClass($term_id, $taxonomy);
 	}
 
 	/**
@@ -180,71 +201,117 @@ class Twig {
 	 * @return \Twig\Environment
 	 */
 	public function add_timber_filters( $twig ) {
-		$twig->addFilter(new Twig_Filter('resize', array('Timber\ImageHelper', 'resize')));
-		$twig->addFilter(new Twig_Filter('retina', array('Timber\ImageHelper', 'retina_resize')));
-		$twig->addFilter(new Twig_Filter('letterbox', array('Timber\ImageHelper', 'letterbox')));
-		$twig->addFilter(new Twig_Filter('tojpg', array('Timber\ImageHelper', 'img_to_jpg')));
-		$twig->addFilter(new Twig_Filter('towebp', array('Timber\ImageHelper', 'img_to_webp')));
+		/* image filters */
+		$twig->addFilter(new TwigFilter('resize', array('Timber\ImageHelper', 'resize')));
+		$twig->addFilter(new TwigFilter('retina', array('Timber\ImageHelper', 'retina_resize')));
+		$twig->addFilter(new TwigFilter('letterbox', array('Timber\ImageHelper', 'letterbox')));
+		$twig->addFilter(new TwigFilter('tojpg', array('Timber\ImageHelper', 'img_to_jpg')));
+		$twig->addFilter(new TwigFilter('towebp', array('Timber\ImageHelper', 'img_to_webp')));
 
 		/* debugging filters */
-		$twig->addFilter(new Twig_Filter('get_class', 'get_class'));
-		$twig->addFilter(new Twig_Filter('get_type', 'get_type'));
-		$twig->addFilter(new Twig_Filter('print_r', function( $arr ) {
-					return print_r($arr, true);
-				} ));
+		$twig->addFilter(new TwigFilter('get_class', function( $obj ) {
+			Helper::deprecated( '{{ my_object | get_class }}', "{{ function('get_class', my_object) }}", '2.0.0' );
+			return get_class( $obj );
+		} ));
+		$twig->addFilter(new TwigFilter('print_r', function( $arr ) {
+			Helper::deprecated( '{{ my_object | print_r }}', '{{ dump(my_object) }}', '2.0.0' );
+			return print_r($arr, true);
+		} ));
 
 		/* other filters */
-		$twig->addFilter(new Twig_Filter('stripshortcodes', 'strip_shortcodes'));
-		$twig->addFilter(new Twig_Filter('array', array($this, 'to_array')));
-		$twig->addFilter(new Twig_Filter('excerpt', 'wp_trim_words'));
-		$twig->addFilter(new Twig_Filter('excerpt_chars', array('Timber\TextHelper', 'trim_characters')));
-		$twig->addFilter(new Twig_Filter('function', array($this, 'exec_function')));
-		$twig->addFilter(new Twig_Filter('pretags', array($this, 'twig_pretags')));
-		$twig->addFilter(new Twig_Filter('sanitize', 'sanitize_title'));
-		$twig->addFilter(new Twig_Filter('shortcodes', 'do_shortcode'));
-		$twig->addFilter(new Twig_Filter('time_ago', array($this, 'time_ago')));
-		$twig->addFilter(new Twig_Filter('wpautop', 'wpautop'));
-		$twig->addFilter(new Twig_Filter('list', array($this, 'add_list_separators')));
+		$twig->addFilter(new TwigFilter('stripshortcodes', 'strip_shortcodes'));
+		$twig->addFilter(new TwigFilter('array', array($this, 'to_array')));
+		$twig->addFilter(new TwigFilter('excerpt', 'wp_trim_words'));
+		$twig->addFilter(new TwigFilter('excerpt_chars', array('Timber\TextHelper', 'trim_characters')));
+		$twig->addFilter(new TwigFilter('function', array($this, 'exec_function')));
+		$twig->addFilter(new TwigFilter('pretags', array($this, 'twig_pretags')));
+		$twig->addFilter(new TwigFilter('sanitize', 'sanitize_title'));
+		$twig->addFilter(new TwigFilter('shortcodes', 'do_shortcode'));
+		$twig->addFilter(new TwigFilter('wpautop', 'wpautop'));
+		$twig->addFilter(new TwigFilter('list', array($this, 'add_list_separators')));
 
-		$twig->addFilter(new Twig_Filter('pluck', array('Timber\Helper', 'pluck')));
+		$twig->addFilter(new TwigFilter('pluck', array('Timber\Helper', 'pluck')));
 
-		/** 
+		/**
 		 * @deprecated since 1.13 (to be removed in 2.0). Use Twig's native filter filter instead
-     *  @todo remove this in 2.x so that filter merely passes to Twig's filter without any modification
+		 * @todo remove this in 2.x so that filter merely passes to Twig's filter without any 
+		 *       modification
 		 * @ticket #1594 #2120
 		 */
-		$twig->addFilter(new Twig_Filter('filter', array('Timber\Helper', 'filter_array')));
-		$twig->addFilter(new Twig_Filter('wp_list_filter', array('Timber\Helper', 'wp_list_filter')));
+		$twig->addFilter(new TwigFilter('filter', array('Timber\Helper', 'filter_array')));
+		$twig->addFilter(new TwigFilter('wp_list_filter', array('Timber\Helper', 'wp_list_filter')));
 
-		$twig->addFilter(new Twig_Filter('relative', function( $link ) {
+		$twig->addFilter(new TwigFilter('relative', function( $link ) {
 					return URLHelper::get_rel_url($link, true);
 				} ));
 
-		$twig->addFilter(new Twig_Filter('date', array($this, 'intl_date')));
+		/**
+		 * Date and Time filters.
+		 * 
+		 * @todo copy this formatting to other functions 
+		 */
+		$twig->addFilter(new TwigFilter(
+			'date',
+			[ $this, 'twig_date_format_filter' ],
+			[ 'needs_environment' => true ]
+		) );
+		$twig->addFilter(new TwigFilter('time_ago', array('Timber\DateTimeHelper', 'time_ago')));
 
-		$twig->addFilter(new Twig_Filter('truncate', function( $text, $len ) {
+		$twig->addFilter(new TwigFilter('truncate', function( $text, $len ) {
 					return TextHelper::trim_words($text, $len);
 				} ));
 
 		/* actions and filters */
-		$twig->addFilter(new Twig_Filter('apply_filters', function() {
+		$twig->addFilter(new TwigFilter('apply_filters', function() {
 					$args = func_get_args();
 					$tag = current(array_splice($args, 1, 1));
 
 					return apply_filters_ref_array($tag, $args);
 				} ));
 
-
-		$twig = apply_filters('timber/twig', $twig);
 		/**
-		 * get_twig is deprecated, use timber/twig
+		 * Filters the Twig environment used in the global context.
+		 *
+		 * You can use this filter if you want to add additional functionality to Twig, like global
+		 * variables, filters or functions.
+		 *
+		 * @since 0.21.9
+		 * @example
+		 * ```php
+		 * /**
+		 *  * Adds Twig functionality.
+		 *  *
+		 *  * @param \Twig\Environment $twig The Twig Environment to which you can add additional functionality.
+		 *  *\/
+		 * add_filter( 'timber/twig', function( $twig ) {
+		 *     // Make get_theme_file_uri() usable as {{ theme_file() }} in Twig.
+		 *     $twig->addFunction( new Twig\TwigFunction( 'theme_file', 'get_theme_file_uri' ) );
+		 *
+		 *     return $twig;
+		 * } );
+		 * ```
+		 *
+		 * ```twig
+		 * <a class="navbar-brand" href="{{ site.url }}">
+		 *     <img src="{{ theme_file( 'build/img/logo-example.svg' ) }}" alt="Logo {{ site.title }}">
+		 * </a>
+		 * ```
+		 *
+		 * @param \Twig\Environment $twig The Twig environment.
 		 */
-		$twig = apply_filters('get_twig', $twig);
+		$twig = apply_filters('timber/twig', $twig);
+
+		/**
+		 * Filters the Twig environment used in the global context.
+		 *
+		 * @deprecated 2.0.0
+		 */
+		$twig = apply_filters_deprecated( 'get_twig', array( $twig ), '2.0.0', 'timber/twig' );
 		return $twig;
 	}
 
 	/**
-	 * Adds escapers to Twig.
+	 * Adds escapers.
 	 *
 	 * @param \Twig\Environment $twig The Twig Environment.
 	 * @return \Twig\Environment
@@ -253,31 +320,106 @@ class Twig {
 		$esc_url = function( \Twig\Environment $env, $string ) {
 			return esc_url( $string );
 		};
+
 		$wp_kses_post = function( \Twig\Environment $env, $string ) {
 			return wp_kses_post( $string );
 		};
+
 		$esc_html = function( \Twig\Environment $env, $string ) {
 			return esc_html( $string );
 		};
+
 		$esc_js = function( \Twig\Environment $env, $string ) {
 			return esc_js( $string );
 		};
+
 		if ( class_exists( 'Twig\Extension\EscaperExtension' ) ) {
 			$escaper_extension = $twig->getExtension('Twig\Extension\EscaperExtension');
-			if ( method_exists($escaper_extension, 'setEscaper') ) {
-				$escaper_extension->setEscaper('esc_url', $esc_url);
-				$escaper_extension->setEscaper('wp_kses_post', $wp_kses_post);
-				$escaper_extension->setEscaper('esc_html', $esc_html);
-				$escaper_extension->setEscaper('esc_js', $esc_js);
-				return $twig;
+			$escaper_extension->setEscaper('esc_url', $esc_url);
+			$escaper_extension->setEscaper('wp_kses_post', $wp_kses_post);
+			$escaper_extension->setEscaper('esc_html', $esc_html);
+			$escaper_extension->setEscaper('esc_js', $esc_js);
+		}
+		return $twig;
+	}
+
+	/**
+	 * Overwrite Twig defaults.
+	 *
+	 * Makes Twig compatible with how WordPress handles dates, timezones and perhaps other items in 
+	 * the future
+	 *
+	 * @since 2.0.0
+	 *
+	 * @throws \Twig_Error_Runtime
+	 * @param \Twig_Environment $twig Twig Environment
+	 *
+	 * @return \Twig_Environment
+	 */
+	public function set_defaults( \Twig_Environment $twig ) {
+		$twig->getExtension( CoreExtension::class )->setDateFormat( get_option( 'date_format' ), '%d days' );
+		$twig->getExtension( CoreExtension::class )->setTimezone( wp_timezone_string() );
+
+		return $twig;
+	}
+
+	/**
+	 * Converts a date to the given format.
+	 *
+	 * @internal
+	 * @since 2.0.0
+	 * @see  twig_date_format_filter()
+	 * @link https://twig.symfony.com/doc/2.x/filters/date.html
+	 *
+	 * @throws \Exception
+	 *
+	 * @param \Twig\Environment         $env      Twig Environment.
+	 * @param null|string|int|\DateTime $date     A date.
+	 * @param null|string               $format   Optional. PHP date format. Will return the
+	 *                                            current date as a DateTimeImmutable object by
+	 *                                            default.
+	 * @param null                      $timezone Optional. The target timezone. Use `null` to use
+	 *                                            the default or
+	 *                                            `false` to leave the timezone unchanged.
+	 *
+	 * @return false|string A formatted date.
+	 */
+	public function twig_date_format_filter( Environment $env, $date = null, $format = null, $timezone = null ) {
+		// Support for DateInterval.
+		if ( $date instanceof \DateInterval ) {
+			if ( null === $format ) {
+				$format = $env->getExtension( CoreExtension::class )->getDateFormat()[1];
+			}
+
+			return $date->format( $format );
+		}
+
+		if ( null === $date || 'now' === $date ) {
+			return DateTimeHelper::wp_date( $format, null );
+		}
+
+		/**
+		 * If a string is given and it’s not a timestamp (e.g. "2010-01-28T15:00:00+04:00", try creating a DateTime
+		 * object and read the timezone from that string.
+		 */
+		if ( is_string( $date ) && ! ctype_digit( $date ) ) {
+			$date_obj = date_create( $date );
+
+			if ( $date_obj ) {
+				$date = $date_obj;
 			}
 		}
-		$escaper_extension = $twig->getExtension('Twig\Extension\CoreExtension');
-		$escaper_extension->setEscaper('esc_url', $esc_url);
-		$escaper_extension->setEscaper('wp_kses_post', $wp_kses_post);
-		$escaper_extension->setEscaper('esc_html', $esc_html);
-		$escaper_extension->setEscaper('esc_js', $esc_js);
-		return $twig;
+
+		/**
+		 * Check for `false` parameter in |date filter in Twig
+		 *
+		 * @link https://twig.symfony.com/doc/2.x/filters/date.html#timezone
+		 */
+		if ( false === $timezone && $date instanceof \DateTimeInterface ) {
+			$timezone = $date->getTimezone();
+		}
+
+		return DateTimeHelper::wp_date( $format, $date, $timezone );
 	}
 
 	/**
@@ -330,45 +472,38 @@ class Twig {
 	}
 
 	/**
+	 * Formats a date.
 	 *
+	 * @deprecated 2.0.0
 	 *
-	 * @param string  $date
-	 * @param string  $format (optional)
+	 * @param null|string|false    $format Optional. PHP date format. Will use the `date_format`
+	 *                                     option as a default.
+	 * @param string|int|\DateTime $date   A date.
+	 *
 	 * @return string
 	 */
 	public function intl_date( $date, $format = null ) {
-		if ( $format === null ) {
-			$format = get_option('date_format');
-		}
+		Helper::deprecated( 'intl_date', 'DateTimeHelper::wp_date', '2.0.0' );
 
-		if ( $date instanceof \DateTime ) {
-			$timestamp = $date->getTimestamp() + $date->getOffset();
-		} else if ( is_numeric($date) && (strtotime($date) === false || strlen($date) !== 8) ) {
-			$timestamp = intval($date);
-		} else {
-			$timestamp = strtotime($date);
-		}
-
-		return date_i18n($format, $timestamp);
+		return DateTimeHelper::wp_date( $format, $date );
 	}
 
 	/**
+	 * @api
+   *
+	 * @deprecated 2.0.0
+	 *
 	 * @param int|string $from
 	 * @param int|string $to
-	 * @param string $format_past
-	 * @param string $format_future
+	 * @param string     $format_past
+	 * @param string     $format_future
+	 *
 	 * @return string
 	 */
 	public static function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
-		$to = $to === null ? time() : $to;
-		$to = is_int($to) ? $to : strtotime($to);
-		$from = is_int($from) ? $from : strtotime($from);
-
-		if ( $from < $to ) {
-			return sprintf($format_past, human_time_diff($from, $to));
-		} else {
-			return sprintf($format_future, human_time_diff($to, $from));
-		}
+		Helper::deprecated( 'time_ago', 'DateTimeHelper::time_ago', '2.0.0' );
+    
+		return DateTimeHelper::time_ago( $from, $to, $format_past, $format_future );
 	}
 
 	/**

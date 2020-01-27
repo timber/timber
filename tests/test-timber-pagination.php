@@ -2,6 +2,9 @@
 
 class TestTimberPagination extends Timber_UnitTestCase {
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testPaginationSearch() {
 		$this->setPermalinkStructure('');
 		$posts = $this->factory->post->create_many( 55 );
@@ -26,6 +29,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 	*/
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testPaginationWithGetPosts() {
 		register_post_type( 'portfolio' );
 		$pids = $this->factory->post->create_many( 33 );
@@ -40,6 +46,28 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals(4, count($pagination['pages']));
 	}
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
+	function testPaginationWithPostQuery() {
+		register_post_type( 'portfolio' );
+		$pids = $this->factory->post->create_many( 33 );
+		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
+		$this->go_to( home_url( '/' ) );
+		new Timber\PostQuery( array(
+			'query' => 'post_type=portfolio',
+		) );
+		$pagination = Timber::get_pagination();
+
+		global $timber;
+		$timber->active_query = false;
+		unset($timber->active_query);
+		$this->assertEquals(4, count($pagination['pages']));
+	}
+
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testPaginationOnLaterPage() {
 		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );
@@ -50,6 +78,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals(6, count($pagination['pages']));
 	}
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testSanitizeNextPagination() {
 		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );
@@ -60,6 +91,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals('http://example.org/portfolio/page/4/?whscheck=%22%3E%3Csvg%2Fonload%3Dalert%28%29%3E', $pagination['next']['link']);
 	}
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testMaliciousGetParameter() {
 		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );
@@ -71,6 +105,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals('http://example.org/portfolio/page/4/?wx9umscriptalert(1)/script%_253eaq86s=1', $pagination['next']['link']);
 	}
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testMaliciousGetParameter2() {
 		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );
@@ -116,6 +153,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals('http://example.org/portfolio/page/4/?wx9umscriptalert(1)/script%_253eaq86s=1', $link);
 	}
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testPaginationWithSize() {
 		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );
@@ -125,6 +165,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals(5, count($pagination['pages']));
 	}
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testPaginationSearchPrettyWithPostname() {
 		$this->setPermalinkStructure('/%postname%/');
 		$posts = $this->factory->post->create_many( 55 );
@@ -135,6 +178,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination['pages'][4]['link'] );
 	}
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testPaginationSearchPrettyWithPostnameNext() {
 		$this->setPermalinkStructure('/%postname%/');
 		$posts = $this->factory->post->create_many( 55 );
@@ -145,6 +191,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://example.org/page/2/?s=post', $pagination['next']['link'] );
 	}
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testPaginationSearchPrettyWithPostnamePrev() {
 		$this->setPermalinkStructure('/%postname%/');
 		$posts = $this->factory->post->create_many( 55 );
@@ -155,6 +204,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://example.org/page/3/?s=post', $pagination['prev']['link'] );
 	}
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testPaginationSearchPrettyx() {
 		$struc = '/blog/%year%/%monthnum%/%postname%/';
 		$this->setPermalinkStructure( $struc );
@@ -165,6 +217,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination['pages'][4]['link'] );
 	}
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testPaginationHomePrettyTrailingSlash() {
 		$this->setPermalinkStructure('/%postname%/');
 		$posts = $this->factory->post->create_many( 55 );
@@ -174,6 +229,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( user_trailingslashit('http://example.org/page/2/'), $pagination['next']['link'] );
 	}
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testPaginationHomePrettyNonTrailingSlash() {
 		$this->setPermalinkStructure('/%postname%');
 		$posts = $this->factory->post->create_many( 55 );
@@ -192,11 +250,17 @@ class TestTimberPagination extends Timber_UnitTestCase {
 			wp_set_object_terms( $post, $news_id, 'category' );
 		}
 		$this->go_to( home_url( '/category/news' ) );
-		$posts = new Timber\PostQuery(array('category_name' => 'news'));
-		$pagination = $posts->pagination();
+		query_posts('category_name=news');
+		$post_objects = new Timber\PostQuery( array(
+			'query' => false,
+		) );
+		$pagination = $post_objects->pagination();
 		$this->assertEquals(4, count($pagination->pages));
 	}
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testPaginationNextUsesBaseAndFormatArgs( $struc = '/%postname%/' ) {
 		$this->setPermalinkStructure( $struc );
 		$posts = $this->factory->post->create_many( 55 );
@@ -205,6 +269,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( '/apricot/?pagination=2', $pagination['next']['link'] );
 	}
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testPaginationPrevUsesBaseAndFormatArgs( $struc = '/%postname%/' ) {
 		$this->setPermalinkStructure( $struc );
 		$posts = $this->factory->post->create_many( 55 );
@@ -215,6 +282,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals( '/apricot/pagination/2/', $pagination['prev']['link'] );
 	}
 
+	/**
+	 * @expectedDeprecated get_pagination
+	 */
 	function testPaginationWithMoreThan10Pages( $struc = '/%postname%/' ) {
 		$this->setPermalinkStructure( $struc );
 		$posts = $this->factory->post->create_many( 150 );
@@ -228,7 +298,11 @@ class TestTimberPagination extends Timber_UnitTestCase {
 
 	function testPostsCollectionPagination() {
 		$pids = $this->factory->post->create_many( 13 );
-		$posts = new Timber\PostQuery(array('post_type' => 'post'));
+		$posts = new Timber\PostQuery( array(
+			'query' => array(
+				'post_type' => 'post'
+			)
+		) );
 		$pagination = $posts->pagination();
 		$this->assertEquals( 2, count( $pagination->pages ) );
 	}
@@ -248,7 +322,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		register_post_type( 'portfolio' );
 		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
 		$this->go_to( home_url( '/portfolio/page/3' ) );
-		$posts = new Timber\PostQuery('post_type=portfolio&paged=3');
+		$posts = new Timber\PostQuery( array(
+			'query' => 'post_type=portfolio&paged=3'
+		) );
 		$pagination = $posts->pagination();
 		$this->assertEquals(6, count($pagination->pages));
 	}
@@ -257,7 +333,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );
 		$pids = $this->factory->post->create_many( 99, array( 'post_type' => 'portfolio' ) );
-		$posts = new Timber\PostQuery('post_type=portfolio&posts_per_page=20');
+		$posts = new Timber\PostQuery( array(
+			'query' => 'post_type=portfolio&posts_per_page=20',
+		) );
 		$pagination = $posts->pagination();
 		$this->assertEquals(5, count($pagination->pages));
 	}
@@ -267,7 +345,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$posts = $this->factory->post->create_many( 55 );
 		$archive = home_url('?s=post');
 		$this->go_to( $archive );
-		$posts = new Timber\PostQuery('s=post');
+		$posts = new Timber\PostQuery( array(
+			'query' => 's=post'
+		) );
 		$pagination = $posts->pagination();
 		$this->assertEquals( 'http://example.org/page/5/?s=post', $pagination->pages[4]['link'] );
 	}
@@ -277,7 +357,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$posts = $this->factory->post->create_many( 55 );
 		$archive = home_url( '?s=post' );
 		$this->go_to( $archive );
-		$posts = new Timber\PostQuery('s=post');
+		$posts = new Timber\PostQuery( array(
+			'query' => 's=post'
+		) );
 		$pagination = $posts->pagination();
 		$this->assertEquals( 'http://example.org/page/2/?s=post', $pagination->next['link'] );
 	}
@@ -298,7 +380,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$posts = $this->factory->post->create_many( 55 );
 		$archive = home_url( 'page/4/?s=post' );
 		$this->go_to( $archive );
-		$posts = new Timber\PostQuery('s=post&paged=4');
+		$posts = new Timber\PostQuery( array(
+			'query' => 's=post&paged=4'
+		) );
 		$pagination = $posts->pagination();
 		$this->assertEquals( 'http://example.org/page/3/?s=post', $pagination->prev['link'] );
 	}
@@ -330,7 +414,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		for($i=0; $i<30; $i++) {
 			$this->factory->post->create(array('post_title' => 'post'.$i, 'post_date' => '2014-02-'.$i));
 		}
-		$posts = new Timber\PostQuery('paged=3');
+		$posts = new Timber\PostQuery( array(
+			'query' => 'paged=3'
+		) );
 		$pagination = $posts->pagination( array( 'base' => '/apricot/%_%', 'format' => '?pagination=%#%' ) );
 		$this->assertEquals( '/apricot/?pagination=2', $pagination->prev['link'] );
 	}
@@ -341,7 +427,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		for($i=0; $i<30; $i++) {
 			$this->factory->post->create(array('post_title' => 'post'.$i, 'post_date' => '2014-02-'.$i));
 		}
-		$posts = new Timber\PostQuery('paged=3');
+		$posts = new Timber\PostQuery( array(
+			'query' => 'paged=3'
+		) );
 		$pagination = $posts->pagination( array( 'base' => '/apricot/%_%', 'format' => '?page=%#%' ) );
 		$this->assertEquals( '/apricot/?page=2', $pagination->prev['link'] );
 	}
@@ -359,17 +447,26 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	function testPostCollectionPaginationForMultiplePostTypes() {
 		register_post_type( 'recipe' );
 		$pids = $this->factory->post->create_many( 43, array( 'post_type' => 'recipe' ) );
-		$recipes = new Timber\PostQuery(array('post_type' => 'recipe'));
+		$recipes = new Timber\PostQuery(array(
+			'query' => array(
+				'post_type' => 'recipe'
+			),
+		) );
 		$pagination = $recipes->pagination();
 		$this->assertEquals( 5, count( $pagination->pages ) );
 		$pids = $this->factory->post->create_many( 13 );
-		$posts = new Timber\PostQuery(array('post_type' => 'post'));
+		$posts = new Timber\PostQuery( array(
+			'query' => array(
+				'post_type' => 'post'
+			),
+		) );
 		$pagination = $posts->pagination();
 		$this->assertEquals( 2, count( $pagination->pages ) );
 	}
 
 	/**
 	 * @ticket #2123
+	 * @expectedDeprecated Passing query arguments directly to PostQuery
 	 */
 	function testLittlePaginationCateogry() {
 		$this->setPermalinkStructure('/%postname%/');
@@ -397,6 +494,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 
 	/**
 	 * @ticket #1459
+	 * @expectedDeprecated Passing query arguments directly to PostQuery
 	 */
 	function test1459Pagintion() {
 		$this->setPermalinkStructure('/%year%/%postname%/');

@@ -1,5 +1,6 @@
 ---
 title: "Performance/Caching"
+weight: "1300"
 menu:
   main:
     parent: "guides"
@@ -22,7 +23,8 @@ When rendering, use the `$expires` argument in [`Timber::render`](https://timber
 
 ```php
 <?php
-$context['posts'] = Timber::get_posts();
+$context['posts'] = new Timber\PostQuery();
+
 Timber::render( 'index.twig', $context, 600 );
 ```
 
@@ -51,7 +53,7 @@ The following cache modes are available:
 
 ## Cache _Parts_ of the Twig File and Data
 
-This method implements the [Twig Cache Extension](https://github.com/asm89/twig-cache-extension). It adds the cache tag, for use in templates. Best shown by example:
+This method implements the [Twig Cache Extension](https://github.com/twigphp/twig-cache-extension). It adds the cache tag, for use in templates. Best shown by example:
 
 ```twig
 {% cache 'index/content' posts %}
@@ -97,15 +99,37 @@ Every time you render a `.twig` file, Twig compiles all the HTML tags and variab
 **functions.php**
 
 ```php
-<?php
-if ( class_exists( 'Timber' ) ){
-	Timber::$cache = true;
-}
+add_filter( 'timber/twig/environment/options', function( $options ) {
+	$options['cache'] = true;
+
+    return $options;
+} );
 ```
 
-You can look in your `/wp-content/plugins/timber/cache/twig` directory to see what these files look like.
+You can look in your your `/vendor/timber/timber/cache` directory to see what these files look like.
 
-This does not cache the _contents_ of the variables. 
+If you want to change the path where Timber caches the Twig files, you can pass in an absolute path for the `cache` option:
+
+```php
+add_filter( 'timber/twig/environment/options', function( $options ) {
+	$options['cache'] = '/absolute/path/to/twig_cache';
+
+    return $options;
+} );
+```
+
+This does not cache the _contents_ of the variables. But rather, the structure of the Twig files themselves (i.e. the HTML and where those variables appear in your template). Once enabled, any change you make to a `.twig` file (just tweaking the HTML for example) will not go live until the cache is flushed.
+
+Thus, during development, you should enable the option for `auto_reload`:
+
+```php
+add_filter( 'timber/twig/environment/options', function( $options ) {
+    $options['cache']       = true;
+    $options['auto_reload'] = true;
+    
+    return $options;
+});
+```
 
 Enabling `Timber::$cache` works best as a last step in the production process. Once enabled, any change you make to a `.twig` file (just tweaking the HTML for example) will not go live until the cache is flushed. 
 
@@ -114,7 +138,6 @@ Note that when `WP_DEBUG` is set to `true`, changes you make to `.twig` files wi
 To flush the Twig cache you can do this:
 
 ```php
-<?php
 $loader = new Timber\Loader();
 $loader->clear_cache_twig();
 ```
@@ -133,7 +156,7 @@ You can also use some [syntactic sugar](http://en.wikipedia.org/wiki/Syntactic_s
 $context = Timber::context();
 
 $context['main_stories'] = TimberHelper::transient( 'main_stories', function(){
-    $posts = Timber::get_posts();
+    $posts = new Timber\PostQuery();
 
     // As an example, do something expensive with these posts
     $extra_teases = get_field( 'my_extra_teases', 'options' );
@@ -165,14 +188,13 @@ Timber provides some quick shortcuts to measure page timing. Here’s an example
 ```php
 <?php
 // This generates a starting time
-$start = TimberHelper::start_timer();
+$start = Timber\Helper::start_timer();
 
 $context = Timber::context();
-$context['post'] = Timber::get_post();
 $context['whatever'] = get_my_foo();
 
 Timber::render( 'single.twig', $context, 600 );
 
 // This reports the time diff by passing the $start time
-echo TimberHelper::stop_timer( $start);
+echo Timber\Helper::stop_timer( $start);
 ```

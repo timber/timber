@@ -4,6 +4,7 @@ menu:
   main:
     parent: "guides"
 ---
+
 ## Using Gutenberg with Timber
 
 Timber works with Gutenberg out of the box. If you use `{{ post.content }}`, Timber will render all the Gutenberg blocks.
@@ -47,13 +48,15 @@ Next, you you have to create your `render_callback()` function:
 ```php
 /**
  *  This is the callback that displays the block.
- *
+ *  
  * @param   array  $block      The block settings and attributes.
  * @param   string $content    The block content (emtpy string).
  * @param   bool   $is_preview True during AJAX preview.
  */
 function my_acf_block_render_callback( $block, $content = '', $is_preview = false ) {
-    $context = Timber::context();
+
+    $context = Timber::context_global();
+
 
     // Store block values.
     $context['block'] = $block;

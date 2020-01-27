@@ -3,18 +3,20 @@
 namespace Timber;
 
 /**
+ * Class Integrations
+ *
  * This is for integrating external plugins into timber
- * @package  timber
  */
 class Integrations {
 
-	var $acf;
-	var $coauthors_plus;
+	public $acf;
+	public $coauthors_plus;
+	public $wpml;
 
 	public function __construct() {
 		$this->init();
 	}
-    
+
 	public function init() {
 		add_action('init', array($this, 'maybe_init_integrations'));
 

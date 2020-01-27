@@ -6,14 +6,14 @@
 
 		function testThemeVersion() {
 			switch_theme('twentysixteen');
-			$theme = new TimberTheme();
+			$theme = new Timber\Theme();
 			$this->assertGreaterThan(1.2, $theme->version);
 			switch_theme('default');
 		}
 
 		function testThemeMods(){
 			set_theme_mod('foo', 'bar');
-			$theme = new TimberTheme();
+			$theme = new Timber\Theme();
 			$mods = $theme->theme_mods();
 			$this->assertEquals('bar', $mods['foo']);
 			$bar = $theme->theme_mod('foo');

@@ -36,13 +36,9 @@ You can find a guide on [how to get started with Composer](https://getcomposer.o
 
 You can find a guide on [how to get started with Composer](https://getcomposer.org/doc/00-intro.md) in the official documentation.
 
-### Option 3: Via WordPress plugins directory (for non-developers)
-
-If you’d prefer one-click installation, you should use the [WordPress.org](http://wordpress.org/plugins/timber-library/) version.
-
 * * *
 
-Now just activate in your WordPress admin screen. Inside of the timber directory there’s a `timber-starter-theme` directory. To use this, move it into your `themes` directory (probably want to rename it too) and select it.
+Inside of the timber directory there’s a `timber-starter-theme` directory. To use this, move it into your `themes` directory (probably want to rename it too) and select it.
 
 * * *
 
@@ -84,7 +80,7 @@ Timber::render( 'welcome.twig', $context );
 ```php
 <?php
 $context = array();
-$context['welcome'] = Timber::get_post( 56 );
+$context['welcome'] = new Timber\Post( 56 );
 
 Timber::render( 'welcome.twig', $context );
 ```
@@ -107,7 +103,7 @@ Timber::render( 'welcome.twig', $context );
 
 ```php
 <?php
-$context['posts'] = Timber::get_posts();
+$context['posts'] = new Timber\PostQuery();
 
 Timber::render( 'home-main.twig', $context );
 ```

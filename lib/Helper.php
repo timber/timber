@@ -2,16 +2,16 @@
 
 namespace Timber;
 
-use Timber\FunctionWrapper;
-use Timber\URLHelper;
-
 /**
- * As the name suggests these are helpers for Timber (and you!) when developing. You can find additional (mainly internally-focused helpers) in TimberURLHelper
+ * Class Helper
+ *
+ * As the name suggests these are helpers for Timber (and you!) when developing. You can find additional
+ * (mainly internally-focused helpers) in Timber\URLHelper.
  */
 class Helper {
-
 	/**
-	 * A utility for a one-stop shop for Transients
+	 * A utility for a one-stop shop for transients.
+	 *
 	 * @api
 	 * @example
 	 * ```php
@@ -31,6 +31,15 @@ class Helper {
 	 * @return mixed
 	 */
 	public static function transient( $slug, $callback, $transient_time = 0, $lock_timeout = 5, $force = false ) {
+		/**
+		 * Filters the transient slug.
+		 *
+		 * This might be useful if you are using a multilingual solution.
+		 *
+		 * @since 0.22.6
+		 *
+		 * @param string $slug The slug for the transient.
+		 */
 		$slug = apply_filters('timber/transient/slug', $slug);
 
 		$enable_transients = ($transient_time === false || (defined('WP_DISABLE_TRANSIENTS') && WP_DISABLE_TRANSIENTS)) ? false : true;
@@ -43,7 +52,10 @@ class Helper {
 	}
 
 	/**
-	 * Does the dirty work of locking the transient, running the callback and unlocking
+	 * Does the dirty work of locking the transient, running the callback and unlocking.
+	 *
+	 * @internal
+	 *
 	 * @param string 	$slug
 	 * @param callable 	$callback
 	 * @param integer  	$transient_time Expiration of transients in seconds
@@ -53,8 +65,54 @@ class Helper {
 	 */
 	protected static function handle_transient_locking( $slug, $callback, $transient_time, $lock_timeout, $force, $enable_transients ) {
 		if ( $enable_transients && self::_is_transient_locked($slug) ) {
-			$force = apply_filters('timber_force_transients', $force);
-			$force = apply_filters('timber_force_transient_'.$slug, $force);
+
+			/**
+			 * Filters …
+			 *
+			 * @todo Add summary, add description, add description for $force param
+			 *
+			 * @since 2.0.0
+			 * @param bool $force
+			 */
+			$force = apply_filters( 'timber/transient/force_transients', $force );
+
+			/**
+			 * Filters …
+			 *
+			 * @todo Add summary
+			 *
+			 * @deprecated 2.0.0, use `timber/transient/force_transients`
+			 */
+			$force = apply_filters_deprecated(
+				'timber_force_transients',
+				array( $force ),
+				'2.0.0',
+				'timber/transient/force_transients'
+			);
+
+			/**
+			 * Filters …
+			 *
+			 * Here is a description about the filter.
+			 * `$slug` The transient slug.
+			 *
+			 * @todo Add summary, add description, add description for $force param
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param bool $force
+			 */
+			$force = apply_filters( "timber/transient/force_transient_{$slug}", $force );
+
+			/**
+			 * Filters …
+			 *
+			 * @todo Add summary
+			 *
+			 * @deprecated 2.0.0, use `timber/transient/force_transient_{$slug}`
+			 */
+			$force = apply_filters( "timber_force_transient_{$slug}", $force );
+
 			if ( !$force ) {
 				//the server is currently executing the process.
 				//We're just gonna dump these users. Sorry!
@@ -89,7 +147,7 @@ class Helper {
 	 * @param string $slug
 	 */
 	public static function _unlock_transient( $slug ) {
-		delete_transient($slug.'_lock', true);
+		delete_transient($slug.'_lock');
 	}
 
 	/**
@@ -103,7 +161,8 @@ class Helper {
 	/* These are for measuring page render time */
 
 	/**
-	 * For measuring time, this will start a timer
+	 * For measuring time, this will start a timer.
+	 *
 	 * @api
 	 * @return float
 	 */
@@ -115,13 +174,16 @@ class Helper {
 	}
 
 	/**
-	 * For stopping time and getting the data
+	 * For stopping time and getting the data.
+	 *
+	 * @api
 	 * @example
 	 * ```php
-	 * $start = TimberHelper::start_timer();
+	 * $start = Timber\Helper::start_timer();
 	 * // do some stuff that takes awhile
-	 * echo TimberHelper::stop_timer( $start );
+	 * echo Timber\Helper::stop_timer( $start );
 	 * ```
+	 *
 	 * @param int     $start
 	 * @return string
 	 */
@@ -138,7 +200,10 @@ class Helper {
 	======================== */
 
 	/**
-	 * Calls a function with an output buffer. This is useful if you have a function that outputs text that you want to capture and use within a twig template.
+	 * Calls a function with an output buffer. This is useful if you have a function that outputs
+	 * text that you want to capture and use within a twig template.
+	 *
+	 * @api
 	 * @example
 	 * ```php
 	 * function the_form() {
@@ -146,8 +211,7 @@ class Helper {
 	 * }
 	 *
 	 * $context = Timber::context();
-	 * $context['post'] = new Timber\Post();
-	 * $context['my_form'] = TimberHelper::ob_function('the_form');
+	 * $context['my_form'] = Timber\Helper::ob_function('the_form');
 	 * Timber::render('single-form.twig', $context);
 	 * ```
 	 * ```twig
@@ -158,9 +222,10 @@ class Helper {
 	 * <h1>Apply to my contest!</h1>
 	 * <form action="form.php"><input type="text" /><input type="submit /></form>
 	 * ```
-	 * @api
-	 * @param callback $function
-	 * @param array   $args
+	 *
+	 * @param callable $function
+	 * @param array    $args
+	 *
 	 * @return string
 	 */
 	public static function ob_function( $function, $args = array(null) ) {
@@ -169,21 +234,6 @@ class Helper {
 		$data = ob_get_contents();
 		ob_end_clean();
 		return $data;
-	}
-
-	/**
-	 * @codeCoverageIgnore
-	 * @deprecated since 1.3.0
-	 * 
-	 * @param mixed $function_name        String or array( $class( string|object ), $function_name ).
-	 * @param array $defaults             Optional.
-	 * @param bool  $return_output_buffer Optional. Return function output instead of return value. Default false.
-	 * @return FunctionWrapper|mixed
-	 */
-	public static function function_wrapper( $function_name, $defaults = array(), $return_output_buffer = false ) {
-		Helper::warn( 'function_wrapper is deprecated and will be removed in 1.4. Use {{ function( \'function_to_call\' ) }} instead or use FunctionWrapper directly. For more information refer to https://timber.github.io/docs/guides/functions/' );
-
-		return new FunctionWrapper( $function_name, $defaults, $return_output_buffer );
 	}
 
 	/**
@@ -204,72 +254,119 @@ class Helper {
 	}
 
 	/**
-	 * @param string $message that you want to output
-	 * @return boolean
+	 * Trigger a warning.
+	 *
+	 * @api
+	 *
+	 * @param string $message The warning that you want to output.
+	 *
+	 * @return void
 	 */
 	public static function warn( $message ) {
-		return trigger_error($message, E_USER_WARNING);
+		if ( ! WP_DEBUG ) {
+			return;
+		}
+
+		trigger_error( $message, E_USER_WARNING );
 	}
 
 	/**
+	 * Triggers a deprecation warning.
 	 *
+	 * If you want to catch errors like these in tests, then add the @expectedDeprecated tag to the
+	 * DocBlock. E.g.: "@expectedDeprecated {{ TimberImage() }}".
+	 *
+	 * @api
+	 *
+	 * @param string $function    The name of the deprecated function/method.
+	 * @param string $replacement Function to use instead.
+	 * @param string $version     When we deprecated this.
+	 *
+	 * @return void
+	 */
+	public static function deprecated( $function, $replacement, $version ) {
+		if ( ! WP_DEBUG ) {
+			return;
+		}
+
+		do_action( 'deprecated_function_run', $function, $replacement, $version );
+
+		/**
+		 * Filters whether to trigger an error for deprecated functions.
+		 *
+		 * @since 2.5.0
+		 *
+		 * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
+		 */
+		if ( ! apply_filters( 'deprecated_function_trigger_error', true ) ) {
+			return;
+		}
+
+		if ( ! is_null( $replacement ) ) {
+			$error_message = sprintf(
+				'%1$s is <strong>deprecated</strong> since Timber version %2$s! Use %3$s instead.',
+				$function,
+				$version,
+				$replacement
+			);
+		} else {
+			$error_message = sprintf(
+				'%1$s is <strong>deprecated</strong> since Timber version %2$s with no alternative available.',
+				$function,
+				$version
+			);
+		}
+
+		// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		trigger_error( $error_message );
+	}
+
+	/**
+	 * @api
 	 *
 	 * @param string  $separator
 	 * @param string  $seplocation
 	 * @return string
 	 */
 	public static function get_wp_title( $separator = ' ', $seplocation = 'left' ) {
-		$separator = apply_filters('timber_wp_title_seperator', $separator);
+		/**
+		 * Filters the separator used for the page title.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param string $separator The separator to use. Default `' '`.
+		 */
+		$separator = apply_filters( 'timber/helper/wp_title_separator', $separator );
+
+		/**
+		 * Filters the separator used for the page title.
+		 *
+		 * @deprecated 2.0.0, use `timber/helper/wp_title_separator`
+		 */
+		$separator = apply_filters_deprecated( 'timber_wp_title_seperator', array( $separator ), '2.0.0', 'timber/helper/wp_title_separator' );
+
 		return trim(wp_title($separator, false, $seplocation));
 	}
 
-	/* Text Utitilites */
-
-
-
-	/* Object Utilities
-	======================== */
-
 	/**
-	 * @codeCoverageIgnore
-     * @deprecated since 1.2.0
-     * @see TextHelper::trim_words
-     * @param string  $text
-     * @param int     $num_words
-     * @param string|null|false  $more text to appear in "Read more...". Null to use default, false to hide
-     * @param string  $allowed_tags
-     * @return string
-     */
-    public static function trim_words( $text, $num_words = 55, $more = null, $allowed_tags = 'p a span b i br blockquote' ) {
-        return TextHelper::trim_words($text, $num_words, $more, $allowed_tags);
-    }
-
-     /**
-     * @deprecated since 1.2.0
-     * @see TextHelper::close_tags
-     * @param string  $html
-     * @return string
-     */
-
-    public static function close_tags( $html ) {
-    	return TextHelper::close_tags($html);
-    }
-
-	/**
+	 * Sorts object arrays by properties.
 	 *
+	 * @api
 	 *
-	 * @param array   $array
-	 * @param string  $prop
+	 * @param array  $array The array of objects to sort.
+	 * @param string $prop  The property to sort by.
+	 *
 	 * @return void
 	 */
 	public static function osort( &$array, $prop ) {
 		usort($array, function( $a, $b ) use ($prop) {
-				return $a->$prop > $b->$prop ? 1 : -1;
-			} );
+			return $a->$prop > $b->$prop ? 1 : -1;
+		} );
 	}
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param array   $arr
 	 * @return bool
@@ -282,7 +379,7 @@ class Helper {
 	}
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param array   $array
 	 * @return \stdClass
@@ -300,7 +397,7 @@ class Helper {
 	}
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param array   $array
 	 * @param string  $key
@@ -327,13 +424,13 @@ class Helper {
 	}
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param array   $array
 	 * @param string  $key
 	 * @param mixed   $value
 	 * @return array|null
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public static function get_object_by_property( $array, $key, $value ) {
 		if ( is_array($array) ) {
@@ -345,11 +442,10 @@ class Helper {
 			return false;
 		}
 		throw new \InvalidArgumentException('$array is not an array, got:');
-		Helper::error_log($array);
 	}
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param array   $array
 	 * @param int     $len
@@ -366,7 +462,7 @@ class Helper {
 	======================== */
 
 	/**
-	 *
+	 * @api
 	 *
 	 * @param mixed   $value
 	 * @return bool
@@ -384,29 +480,38 @@ class Helper {
 	}
 
 	/**
+	 * Is the number even? Let's find out.
 	 *
+	 * @api
 	 *
-	 * @param int     $i
+	 * @param int $i number to test.
 	 * @return bool
 	 */
 	public static function iseven( $i ) {
-		return ($i % 2) == 0;
+		return ( $i % 2 ) === 0;
 	}
 
 	/**
+	 * Is the number odd? Let's find out.
 	 *
+	 * @api
 	 *
-	 * @param int     $i
+	 * @param int $i number to test.
 	 * @return bool
 	 */
 	public static function isodd( $i ) {
-		return ($i % 2) != 0;
+		return ( $i % 2 ) !== 0;
 	}
 
 	/**
 	 * Plucks the values of a certain key from an array of objects
-	 * @param array $array
+	 *
+	 * @api
+	 *
+	 * @param array  $array
 	 * @param string $key
+	 *
+	 * @return array
 	 */
 	public static function pluck( $array, $key ) {
 		$return = array();
@@ -446,8 +551,10 @@ class Helper {
 	 * Filters a list of objects, based on a set of key => value arguments.
 	 * Uses WordPress WP_List_Util's filter.
 	 *
+	 * @api
 	 * @since 1.5.3
 	 * @ticket #1594
+	 *
 	 * @param array        $list to filter.
 	 * @param string|array $args to search for.
 	 * @param string       $operator to use (AND, NOT, OR).
@@ -466,60 +573,23 @@ class Helper {
 		return $util->filter( $args, $operator );
 	}
 
-	/* Links, Forms, Etc. Utilities
-	======================== */
-
-	/**
-	 *
-	 * Gets the comment form for use on a single article page
-	 * @deprecated 0.21.8 use `{{ function('comment_form') }}` instead
-	 * @param int $post_id which post_id should the form be tied to?
-	 * @param array The $args thing is a mess, [fix at some point](http://codex.wordpress.org/Function_Reference/comment_form)
-	 * @return string
-	 */
-	public static function get_comment_form( $post_id = null, $args = array() ) {
-		global $post;
-		$post = get_post($post_id);
-		return self::ob_function('comment_form', array($args, $post_id));
-	}
-
-	/**
-	 * @codeCoverageIgnore
-	 * @deprecated since 1.1.2
-	 * @param array  $args
-	 * @return array
-	 */
-	public static function paginate_links( $args = array() ) {
-		Helper::warn('Helper/paginate_links has been moved to Pagination/paginate_links');
-		return Pagination::paginate_links($args);
-	}
-
-	/**
-	 * @codeCoverageIgnore
-	 * @return string
-	 */
-	public function get_current_url() {
-		Helper::warn('TimberHelper::get_current_url() is deprecated and will be removed in future versions, use Timber\URLHelper::get_current_url()');
-		return URLHelper::get_current_url();
-	}
-
 	/**
 	 * Converts a WP object (WP_Post, WP_Term) into his
 	 * equivalent Timber class (Timber\Post, Timber\Term).
 	 *
 	 * If no match is found the function will return the inital argument.
 	 *
-	 * @param mix $obj WP Object
-	 * @return mix Instance of equivalent Timber object, or the argument if no match is found
+	 * @param mixed $obj WP Object
+	 * @return mixed Instance of equivalent Timber object, or the argument if no match is found
 	 */
 	public static function convert_wp_object( $obj ) {
 		if ( $obj instanceof \WP_Post ) {
-			$class = \Timber\PostGetter::get_post_class($obj->post_type);
+			$class = PostGetter::get_post_class($obj->post_type);
 			return new $class($obj->ID);
 		} elseif ( $obj instanceof \WP_Term ) {
-			return new \Timber\Term($obj->term_id);
+			return new Term($obj->term_id);
 		} elseif ( $obj instanceof \WP_User ) {
-			return new \Timber\User($obj->ID);
+			return new User($obj->ID);
 		}
 
 		return $obj;

@@ -13,6 +13,7 @@ function _manually_load_plugin() {
 
 	require dirname( __FILE__ ) . '/../vendor/autoload.php';
 	$timber = new \Timber\Timber();
+
 	require dirname( __FILE__ ) . '/../wp-content/plugins/advanced-custom-fields/acf.php';
 	require dirname( __FILE__ ) . '/../wp-content/plugins/co-authors-plus/co-authors-plus.php';
 }
@@ -22,7 +23,7 @@ tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 require $_tests_dir . '/includes/bootstrap.php';
 
 require_once __DIR__.'/Timber_UnitTestCase.php';
-require_once __DIR__.'/TimberImage_UnitTestCase.php';
+require_once __DIR__.'/TimberAttachment_UnitTestCase.php';
 
 error_log('Use http://build.starter-theme.dev/ for testing with UI');
 

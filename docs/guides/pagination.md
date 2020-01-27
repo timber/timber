@@ -1,5 +1,6 @@
 ---
 title: "Pagination"
+weight: "1100"
 menu:
   main:
     parent: "guides"

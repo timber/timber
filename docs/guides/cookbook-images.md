@@ -1,5 +1,6 @@
 ---
 title: "Image Cookbook"
+weight: "1000"
 menu:
   main:
     parent: "guides"
@@ -93,7 +94,6 @@ You can use Timber to generate @2x image sizes for retina devices. For example, 
     {{ post.thumbnail.src|retina(3) }} 3x,
     {{ post.thumbnail.src|retina(4) }} 4x">
 ```
-
 Unfortunately, it’s not possible to use the `|retina()` filter in combination with `|resize()`, because it would create an upscaled image. We are working on making this work eventually.
 
 ## Using images in custom fields
@@ -116,7 +116,7 @@ This is where we’ll start in PHP.
 
 ```php
 <?php
-$post = Timber::get_post();
+$post = new Timber\Post();
 
 if ( isset( $post->hero_image ) && strlen( $post->hero_image ) ) {
     $post->hero_image = new Timber\Image( $post->hero_image );

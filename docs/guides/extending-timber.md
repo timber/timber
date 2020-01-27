@@ -1,5 +1,6 @@
 ---
 title: "Extending Timber"
+weight: "1600"
 menu:
   main:
     parent: "guides"
@@ -9,7 +10,7 @@ Myth: Timber is for making simple themes. Fact: It's for making incredibly compl
 
 The beauty of Timber is that the object-oriented nature lets you extend it to match the exact requirements of your theme.
 
-## An example that extends TimberPost
+## An example that extends Timber\Post
 
 Timber's objects like `Timber\Post`, `Timber\Term`, etc. are a great starting point to build your own subclass from. For example, on this project each post was a part of an "issue" of a magazine. I wanted an easy way to reference the issue in the twig file:
 
@@ -19,7 +20,8 @@ Timber's objects like `Timber\Post`, `Timber\Term`, etc. are a great starting po
 <h3>From the {{ post.issue.title }} issue</h3>
 ```
 
-Of course, `Timber\Post` has no built-in concept of an issue (which I've built as a custom taxonomy called "issues"). So we're going to extend TimberPost to give it one:
+Of course, `Timber\Post` has no built-in concept of an issue (which I've built as a custom taxonomy called "issues"). So we're going to extend `Timber\Post` to give it one:
+
 
 ```php
 <?php
@@ -69,7 +71,7 @@ For example, I have a plugin that let's people insert manually related posts, bu
 			$tags = $this->tags();
 			if (is_array($tags) && count($tags)) {
 				$search_tag = $tags[0];
-				$related = Timber::get_posts('tag_id='.$search_tag->ID);
+				$related = new Timber\PostQuery('tag_id='.$search_tag->ID);
 				return $related;
 			} else {
 				//not tagged, cant do related on it
@@ -102,11 +104,9 @@ For example, I have a plugin that let's people insert manually related posts, bu
 
 These can get pretty complex. And that's the beauty. The complexity lives inside the context of the object, but very simple when it comes to your templates.
 
-## Adding functionality to Twig
+## Adding to Twig
 
-You can extend Twig by adding custom functionality like functions or filters. Timber provides its own classes (`Timber\Twig_Function` and `Timber\Twig_Filter`) to provide better compatibility with different versions of Twig.
-
-**functions.php**
+You can extend Twig by adding custom functionality like functions or filters.
 
 ```php
 <?php
@@ -121,11 +121,11 @@ add_filter( 'timber/twig', 'add_to_twig' );
  */
 function add_to_twig( $twig ) {
     // Adding a function.
-    $twig->addFunction( new Timber\Twig_Function( 'edit_post_link', 'edit_post_link' ) );
+    $twig->addFunction( new \Twig\TwigFunction( 'edit_post_link', 'edit_post_link' ) );
     
     // Adding functions as filters.
-    $twig->addFilter( new Timber\Twig_Filter( 'whateverify', 'whateverify' ) );
-    $twig->addFilter( new Timber\Twig_Filter( 'slugify', function( $title ) {
+    $twig->addFilter( new \Twig\TwigFilter( 'whateverify', 'whateverify' ) );
+    $twig->addFilter( new \Twig\TwigFilter( 'slugify', function( $title ) {
         return sanitize_title( $title );
     } ) );
     

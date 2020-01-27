@@ -1,7 +1,7 @@
 <?php
 
 	class TestTimberTerm extends Timber_UnitTestCase {
-		
+
 		function testTermFrom() {
 			register_taxonomy('baseball', array('post'));
 			register_taxonomy('hockey', array('post'));
@@ -10,7 +10,7 @@
 			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'hockey'));
 			$baseball_teams = Timber\Term::from(get_terms(array('taxonomy' => 'baseball', 'hide_empty' => false)), 'baseball');
 			$this->assertEquals(2, count($baseball_teams));
-			$this->assertEquals('Cardinals', $baseball_teams[0]->name());
+			$this->assertEquals('Cardinals', $baseball_teams[0]->title());
 		}
 
 		function testConstructorWithClass() {
@@ -23,7 +23,7 @@
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zong post_tag', $string);
 
-			$template = '{% set zp_term = TimberTerm('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
+			$template = '{% set zp_term = Term('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zebra', $string);
 		}
@@ -38,25 +38,35 @@
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zong arts', $string);
 
-			$template = '{% set zp_term = TimberTerm('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
+			$template = '{% set zp_term = Term('.$term_id.', "Arts") %}{{ zp_term.foobar }}';
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zebra', $string);
+		}
+
+		function testConstructorWithObject() {
+			register_taxonomy('arts', array('post'));
+
+			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
+
+			$term_obj = get_term($term_id);
+			$term = new Timber\Term($term_obj, 'arts');
+			$this->assertEquals('Zong', $term->title());
 		}
 
 		function testConstructor() {
 			register_taxonomy('arts', array('post'));
 
 			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
-			$term = new TimberTerm($term_id, 'arts');
-			$this->assertEquals('Zong', $term->name());
-			$template = '{% set zp_term = TimberTerm("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
+			$term = new Timber\Term($term_id, 'arts');
+			$this->assertEquals('Zong', $term->title());
+			$template = '{% set zp_term = Term("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zong', $string);
 		}
 
 		function testTerm() {
 			$term_id = $this->factory->term->create();
-			$term = new TimberTerm($term_id);
+			$term = new Timber\Term($term_id);
 			$this->assertEquals('Timber\Term', get_class($term));
 		}
 
@@ -64,20 +74,20 @@
 			$term_id = $this->factory->term->create(array('name' => 'Famous Commissioners'));
 			$term_data = get_term($term_id, 'post_tag');
 			$this->assertTrue( in_array( get_class($term_data), array('WP_Term', 'stdClass') ) );
-			$term = new TimberTerm($term_id);
-			$this->assertEquals('Famous Commissioners', $term->name());
+			$term = new Timber\Term($term_id);
+			$this->assertEquals('Famous Commissioners', $term->title());
 			$this->assertEquals('Timber\Term', get_class($term));
 		}
 
 		function testTermConstructWithSlug() {
 			$term_id = $this->factory->term->create(array('name' => 'New England Patriots'));
-			$term = new TimberTerm('new-england-patriots');
+			$term = new Timber\Term('new-england-patriots');
 			$this->assertEquals($term->ID, $term_id);
 		}
 
 		function testTermToString() {
 			$term_id = $this->factory->term->create(array('name' => 'New England Patriots'));
-			$term = new TimberTerm('new-england-patriots');
+			$term = new Timber\Term('new-england-patriots');
 			$str = Timber::compile_string('{{term}}', array('term' => $term));
 			$this->assertEquals('New England Patriots', $str);
 		}
@@ -85,35 +95,33 @@
 		function testTermDescription() {
 			$desc = 'An honest football team';
 			$term_id = $this->factory->term->create(array('name' => 'New England Patriots', 'description' => $desc));
-			$term = new TimberTerm($term_id, 'post_tag');
+			$term = new Timber\Term($term_id, 'post_tag');
 			$this->assertEquals($desc, $term->description());
 		}
 
 		function testTermConstructWithName() {
 			$term_id = $this->factory->term->create(array('name' => 'St. Louis Cardinals'));
-			$term = new TimberTerm('St. Louis Cardinals');
+			$term = new Timber\Term('St. Louis Cardinals');
 			$this->assertNull($term->ID);
 		}
 
 		function testTermInitObject() {
 			$term_id = $this->factory->term->create();
 			$term = get_term($term_id, 'post_tag');
-			$term = new TimberTerm($term);
+			$term = new Timber\Term($term);
 			$this->assertEquals($term->ID, $term_id);
 		}
 
 		function testTermLink() {
 			$term_id = $this->factory->term->create();
-			$term = new TimberTerm($term_id);
+			$term = new Timber\Term($term_id);
 			$this->assertContains('http://', $term->link());
-			$this->assertContains('http://', $term->get_link());
 		}
 
 		function testTermPath() {
 			$term_id = $this->factory->term->create();
-			$term = new TimberTerm($term_id);
+			$term = new Timber\Term($term_id);
 			$this->assertFalse(strstr($term->path(), 'http://'));
-			$this->assertFalse(strstr($term->get_path(), 'http://'));
 		}
 
 		function testGetPostsWithPostTypesString() {
@@ -121,7 +129,7 @@
 			$term_id = $this->factory->term->create(array('name' => 'Zong'));
 			$posts = $this->factory->post->create_many(3, array('post_type' => 'post', 'tags_input' => 'zong') );
 			$posts = $this->factory->post->create_many(5, array('post_type' => 'portfolio', 'tags_input' => 'zong') );
-			$term = new TimberTerm($term_id);
+			$term = new Timber\Term($term_id);
 			$posts_gotten = $term->posts('posts_per_page=4');
 			$this->assertEquals(4, count($posts_gotten));
 
@@ -135,7 +143,7 @@
 
 			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
 			$posts = $this->factory->post->create_many(5, array('post_type' => 'portfolio' ));
-			$term = new TimberTerm($term_id);
+			$term = new Timber\Term($term_id);
 			foreach($posts as $post_id) {
 				wp_set_object_terms($post_id, $term_id, 'arts', true);
 			}
@@ -146,6 +154,9 @@
 			$this->assertEquals('5', $str);
 		}
 
+		/**
+		 * @expectedDeprecated {{ term.get_posts }}
+		 */
 		function testGetPostsOld() {
 			$term_id = $this->factory->term->create();
 			$posts = array();
@@ -155,7 +166,7 @@
 			foreach($posts as $post_id){
 				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
 			}
-			$term = new TimberTerm($term_id);
+			$term = new Timber\Term($term_id);
 			$gotten_posts = $term->get_posts();
 			$this->assertEquals(count($posts), count($gotten_posts));
 		}
@@ -170,7 +181,7 @@
 				set_post_type($post_id, 'page');
 				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
 			}
-			$term = new TimberTerm($term_id);
+			$term = new Timber\Term($term_id);
 			$gotten_posts = $term->posts(count($posts), 'page');
 			$this->assertEquals(count($posts), count($gotten_posts));
 			$gotten_posts = $term->posts(count($posts), 'any');
@@ -179,6 +190,9 @@
 			$this->assertEquals(0, count($gotten_posts));
 		}
 
+		/**
+		 * @expectedDeprecated {{ term.get_posts }}
+		 */
 		function testGetPostsNew() {
 			require_once('php/timber-post-subclass.php');
 			$term_id = $this->factory->term->create();
@@ -190,9 +204,7 @@
 				set_post_type($post_id, 'page');
 				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
 			}
-
-			$term = new TimberTerm($term_id);
-
+			$term = new Timber\Term($term_id);
 			$gotten_posts = $term->get_posts('post_type=page');
 			$this->assertEquals(count($posts), count($gotten_posts));
 
@@ -290,39 +302,40 @@
 			$local = $this->factory->term->create(array('name' => 'Local', 'parent' => $parent_id, 'taxonomy' => 'category'));
 			$int = $this->factory->term->create(array('name' => 'International', 'parent' => $parent_id, 'taxonomy' => 'category'));
 
-			$term = new TimberTerm($parent_id);
+			$term = new Timber\Term($parent_id);
 			$children = $term->children();
 			$this->assertEquals(2, count($children));
 			$this->assertEquals('Local', $children[0]->name);
 		}
 
 		/**
-		 @issue #824
+		 * @ticket #824
 		 */
 		function testTermWithNativeMeta() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
 			add_term_meta($tid, 'foo', 'bar');
-			$term = new TimberTerm($tid);
+			$term = new Timber\Term($tid);
 			$template = '{{term.foo}}';
 			$compiled = Timber::compile_string($template, array('term' => $term));
 			$this->assertEquals('bar', $compiled);
 		}
 
 		/**
-		 @issue #824
+		 * @ticket #824
 		 */
 		function testTermWithNativeMetaFalse() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
 			add_term_meta($tid, 'foo', false);
-			$term = new TimberTerm($tid);
+			$term = new Timber\Term($tid);
 			$this->assertEquals('', $term->meta('foo'));
 		}
 
 		/**
-		 @issue #824
+		 * @ticket #824
 		 */
 		function testTermWithNativeMetaNotExisting() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+
 			add_term_meta($tid, 'bar', 'qux');;
 			$wp_native_value = get_term_meta($tid, 'foo', true);
 			$acf_native_value = get_field('foo', 'category_'.$tid);
@@ -330,7 +343,7 @@
 			$valid_wp_native_value = get_term_meta($tid, 'bar', true);
 			$valid_acf_native_value = get_field('bar', 'category_'.$tid);
 
-			$term = new TimberTerm($tid);
+			$term = new Timber\Term($tid);
 
 			//test baseline "bar" data
 			$this->assertEquals('qux', $valid_wp_native_value);
@@ -347,7 +360,7 @@
 		function testTermEditLink() {
 			wp_set_current_user(1);
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
-			$term = new TimberTerm($tid);
+			$term = new Timber\Term($tid);
 			$links = array();
 
 			$links[] = 'http://example.org/wp-admin/term.php?taxonomy=category&tag_ID='.$tid.'&post_type=post';
@@ -356,7 +369,6 @@
 			$links[] = 'http://example.org/wp-admin/term.php?taxonomy=category&term_id='.$tid.'&post_type=post';
 			$this->assertContains($term->edit_link(), $links);
 		}
-
 	}
 
 	class Arts extends Timber\Term {

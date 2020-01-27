@@ -2,20 +2,18 @@
 
 namespace Timber;
 
-use Timber\Helper;
-use Timber\PostCollection;
-
 // Exit if accessed directly
 if ( !defined('ABSPATH') ) {
 	exit;
 }
 
+/**
+ * Class QueryIterator
+ */
 class QueryIterator implements \Iterator, \Countable {
 
 	/**
-	 *
-	 *
-	 * @var WP_Query
+	 * @var \WP_Query
 	 */
 	private $_query = null;
 	private $_posts_class = 'Timber\Post';
@@ -61,7 +59,9 @@ class QueryIterator implements \Iterator, \Countable {
 	}
 
 	public function post_count() {
-		return $this->_query->post_count;
+		if ( isset( $this->_query->post_count ) ) {
+			return $this->_query->post_count;
+		}
 	}
 
 	/**
@@ -73,7 +73,9 @@ class QueryIterator implements \Iterator, \Countable {
 	 * @return int
 	 */
 	public function found_posts() {
-		return $this->_query->found_posts;
+		if ( isset( $this->_query->found_posts ) ) {
+			return $this->_query->found_posts;
+		}
 	}
 
 	public function get_pagination( $prefs ) {
@@ -105,24 +107,13 @@ class QueryIterator implements \Iterator, \Countable {
 	}
 
 	public static function get_query_from_string( $string = '' ) {
-		$post_type = false;
-
-		if ( is_string($string) && strstr($string, '#') ) {
-			//we have a post_type directive here
-			list($post_type, $string) = explode('#', $string);
-		}
-
-		$query = array(
-			'post_type' => ($post_type) ? $post_type : 'any'
-		);
-
+		$query = array('post_type' =>  'any');
 		if ( is_numeric($string) ) {
 			$query['p'] = $string;
 
 		} else {
 			$query['name'] = $string;
 		}
-
 		return new \WP_Query($query);
 	}
 
@@ -178,8 +169,8 @@ class QueryIterator implements \Iterator, \Countable {
 
 	/**
 	 * this will test for whether a custom page to display posts is active, and if so, set the query to the default
-	 * @param  WP_Query $query the original query recived from WordPress
-	 * @return WP_Query
+	 * @param  \WP_Query $query the original query recived from WordPress
+	 * @return \WP_Query
 	 */
 	public static function handle_maybe_custom_posts_page( $query ) {
 		if ( $custom_posts_page = get_option('page_for_posts') ) {

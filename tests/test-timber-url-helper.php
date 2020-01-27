@@ -57,7 +57,7 @@
         function testFileSystemToURLWithWPML() {
             self::_setLanguage();
             add_filter('site_url', array($this, 'addWPMLHomeFilterForRegExTest'), 10, 2);
-            $image = TestTimberImage::copyTestImage();
+            $image = TestTimberImage::copyTestAttachment();
             $url = Timber\URLHelper::file_system_to_url($image);
             $this->assertStringEndsWith('://example2.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
             remove_filter('site_url', array($this, 'addWPMLHomeFilterForRegExTest'));
@@ -68,7 +68,7 @@
         }
 
         function testFileSystemToURL() {
-            $image = TestTimberImage::copyTestImage();
+            $image = TestTimberImage::copyTestAttachment();
             $url = Timber\URLHelper::file_system_to_url($image);
             $this->assertStringEndsWith('://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
         }
@@ -90,7 +90,7 @@
 
         function testFileSystemToURLWithWPMLPrefix() {
             self::_setupWPMLDirectory();
-            $image = TestTimberImage::copyTestImage();
+            $image = TestTimberImage::copyTestAttachment();
             $url = Timber\URLHelper::file_system_to_url($image);
             $this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
             remove_filter('home_url', array($this, 'addWPMLHomeFilter'));
@@ -103,7 +103,7 @@
 
         function testURLToFileSystem() {
             $url = 'http://example.org/wp-content/uploads/2012/06/mypic.jpg';
-            $file = TimberURLHelper::url_to_file_system($url);
+            $file = Timber\URLHelper::url_to_file_system($url);
             $this->assertStringStartsWith(ABSPATH, $file);
             $this->assertStringEndsWith('/2012/06/mypic.jpg', $file);
             $this->assertNotContains($file, 'http://example.org');
@@ -202,11 +202,11 @@
         function testPathBase() {
             $struc = '/%year%/%monthnum%/%postname%/';
             $this->setPermalinkStructure( $struc );
-        	$this->assertEquals('/', TimberURLHelper::get_path_base());
+        	$this->assertEquals('/', Timber\URLHelper::get_path_base());
         }
 
         function testIsLocal() {
-        	$this->assertFalse(TimberURLHelper::is_local('http://wordpress.org'));
+        	$this->assertFalse(Timber\URLHelper::is_local('http://wordpress.org'));
         }
 
         function testCurrentURLWithServerPort() {
@@ -216,8 +216,8 @@
                 $_SERVER['SERVER_NAME'] = 'example.org';
             }
             $this->go_to('/');
-            $url = TimberURLHelper::get_current_url();
-            $this->assertStringEndsWith('://example.org:3000/', $url);
+            $url = Timber\URLHelper::get_current_url();
+            $this->assertEquals('http://example.org:3000/', $url);
             $_SERVER['SERVER_PORT'] = $old_port;
         }
 
@@ -225,7 +225,7 @@
             $_SERVER['SERVER_PORT'] = 80;
             $_SERVER['SERVER_NAME'] = 'example.org';
             $this->go_to('/');
-            $url = TimberURLHelper::get_current_url();
+            $url = Timber\URLHelper::get_current_url();
             $this->assertEquals('http://example.org/', $url);
         }
 
@@ -238,39 +238,40 @@
             }
             $_SERVER['HTTPS'] = 'on';
             $this->go_to('/');
-            $url = TimberURLHelper::get_current_url();
+            $url = Timber\URLHelper::get_current_url();
             $this->assertEquals('https://example.org/', $url);
         }
 
         function testUrlSchemeIsSecure() {
             $_SERVER['HTTPS'] = 'on';
-            $scheme = TimberURLHelper::get_scheme();
+            $scheme = Timber\URLHelper::get_scheme();
             $this->assertEquals('https', $scheme);
         }
 
         function testUrlSchemeIsNotSecure() {
             $_SERVER['HTTPS'] = 'off';
-            $scheme = TimberURLHelper::get_scheme();
+            $scheme = Timber\URLHelper::get_scheme();
             $this->assertEquals('http', $scheme);
         }
 
         function testIsURL(){
             $url = 'http://example.org';
             $not_url = '/blog/2014/05/whatever';
-            $this->assertTrue(TimberURLHelper::is_url($url));
-            $this->assertFalse(TimberURLHelper::is_url($not_url));
-      		$this->assertFalse(TimberURLHelper::is_url(8000));
+            $this->assertTrue(Timber\URLHelper::is_url($url));
+            $this->assertFalse(Timber\URLHelper::is_url($not_url));
+      		$this->assertFalse(Timber\URLHelper::is_url(8000));
         }
 
         function testIsExternal(){
             $local = 'http://example.org';
             $subdomain = 'http://cdn.example.org';
-			$external = 'http://upstatement.com';
-			$protocol_relative = '//upstatement.com';
-            $this->assertFalse(TimberURLHelper::is_external($local));
-            $this->assertFalse(TimberURLHelper::is_external($subdomain));
-			$this->assertTrue(TimberURLHelper::is_external($external));
-			$this->assertTrue(TimberURLHelper::is_external($protocol_relative));
+            $external = 'http://upstatement.com';
+            $protocol_relative = '//upstatement.com';
+
+            $this->assertFalse(Timber\URLHelper::is_external($local));
+            $this->assertFalse(Timber\URLHelper::is_external($subdomain));
+            $this->assertTrue(Timber\URLHelper::is_external($external));
+			$this->assertTrue(Timber\URLHelper::is_external($protocol_relative));
         }
 
 		function testIsExternalContent() {
@@ -279,10 +280,10 @@
 			$internal_in_uploads = 'http://example.org/uploads/uploads/my-image.png';
 			$external = 'http://upstatement.com/my-image.png';
 
-			$this->assertFalse( TimberURLHelper::is_external_content( $internal ) );
-			$this->assertTrue( TimberURLHelper::is_external_content( $internal_in_uploads ) );
-			$this->assertTrue( TimberURLHelper::is_external_content( $internal_in_abspath ) );
-			$this->assertTrue( TimberURLHelper::is_external_content( $external ) );
+			$this->assertFalse( Timber\URLHelper::is_external_content( $internal ) );
+			$this->assertTrue( Timber\URLHelper::is_external_content( $internal_in_uploads ) );
+			$this->assertTrue( Timber\URLHelper::is_external_content( $internal_in_abspath ) );
+			$this->assertTrue( Timber\URLHelper::is_external_content( $external ) );
 		}
 
 		function testIsExternalContentMovingFolders() {
@@ -296,10 +297,10 @@
 
 			$this->mockUploadDir = true;
 
-			$this->assertFalse( TimberURLHelper::is_external_content( $internal ) );
-			$this->assertFalse( TimberURLHelper::is_external_content( $internal_in_uploads ) );
-			$this->assertFalse( TimberURLHelper::is_external_content( $internal_in_abspath ) );
-			$this->assertTrue( TimberURLHelper::is_external_content( $external ) );
+			$this->assertFalse( Timber\URLHelper::is_external_content( $internal ) );
+			$this->assertFalse( Timber\URLHelper::is_external_content( $internal_in_uploads ) );
+			$this->assertFalse( Timber\URLHelper::is_external_content( $internal_in_abspath ) );
+			$this->assertTrue( Timber\URLHelper::is_external_content( $external ) );
 
 			$this->mockUploadDir = false;
 		}
@@ -328,32 +329,32 @@
             $subdomain = 'http://cdn.example.org/directory';
             $external = 'http://upstatement.com';
             $rel_url = '/directory/';
-            $this->assertEquals('/directory', TimberURLHelper::get_rel_url($local));
-            $this->assertEquals($subdomain, TimberURLHelper::get_rel_url($subdomain));
-            $this->assertEquals($external, TimberURLHelper::get_rel_url($external));
-            $this->assertEquals($rel_url, TimberURLHelper::get_rel_url($rel_url));
+            $this->assertEquals('/directory', Timber\URLHelper::get_rel_url($local));
+            $this->assertEquals($subdomain, Timber\URLHelper::get_rel_url($subdomain));
+            $this->assertEquals($external, Timber\URLHelper::get_rel_url($external));
+            $this->assertEquals($rel_url, Timber\URLHelper::get_rel_url($rel_url));
         }
 
         function testRemoveTrailingSlash(){
             $url_with_trailing_slash = 'http://example.org/directory/';
             $root_url = "/";
-            $this->assertEquals('http://example.org/directory', TimberURLHelper::remove_trailing_slash($url_with_trailing_slash));
-            $this->assertEquals('/', TimberURLHelper::remove_trailing_slash($root_url));
+            $this->assertEquals('http://example.org/directory', Timber\URLHelper::remove_trailing_slash($url_with_trailing_slash));
+            $this->assertEquals('/', Timber\URLHelper::remove_trailing_slash($root_url));
         }
 
         function testGetParams(){
             $_SERVER['REQUEST_URI'] = 'http://example.org/blog/post/news/2014/whatever';
-            $params = TimberURLHelper::get_params();
+            $params = Timber\URLHelper::get_params();
             $this->assertEquals(7, count($params));
-            $whatever = TimberURLHelper::get_params(-1);
-            $blog = TimberURLHelper::get_params(2);
+            $whatever = Timber\URLHelper::get_params(-1);
+            $blog = Timber\URLHelper::get_params(2);
             $this->assertEquals('whatever', $whatever);
             $this->assertEquals('blog', $blog);
         }
 
         function testGetParamsNadda(){
             $_SERVER['REQUEST_URI'] = 'http://example.org/blog/post/news/2014/whatever';
-            $params = TimberURLHelper::get_params(93);
+            $params = Timber\URLHelper::get_params(93);
             $this->assertNull($params);
         }
 

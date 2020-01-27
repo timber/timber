@@ -1,0 +1,20 @@
+includes:
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+parameters:
+    level: max
+    paths:
+        - %currentWorkingDirectory%/lib/
+    autoload_files:
+        - %currentWorkingDirectory%/tests/phpstan/bootstrap.php
+        # Plugin stubs
+        - %currentWorkingDirectory%/tests/phpstan/wp-cli-stubs-2.2.0.php
+    ignoreErrors:
+        # Uses func_get_args()
+        # '#^Function apply_filters invoked with [3456] parameters, 2 required\.$#'
+        # TODO Define properties!
+        # '#^Access to an undefined property Timber\\\S+$#'
+        # TODO Do not create a static instance of a non-final class.
+        -
+            message: '#^Unsafe usage of new static\(\)\.$#'
+            path: lib/Term.php

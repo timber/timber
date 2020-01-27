@@ -1,5 +1,6 @@
 ---
 title: "Functions"
+weight: "800"
 menu:
   main:
     parent: "guides"
@@ -15,18 +16,18 @@ You can call all PHP functions through `function()` in Twig. For example, if you
 ```twig
 {# single.twig #}
 <html>
-	<head>
-	<!-- Add whatever you need in the head, and then...-->
-	{{ function('wp_head') }}
-	</head>
+    <head>
+    <!-- Add whatever you need in the head, and then...-->
+    {{ function('wp_head') }}
+    </head>
 
-	<!-- etc... -->
+    <!-- etc... -->
 
-	<footer>
-		Copyright &copy; {{ "now"|date('Y') }}
-	</footer>
-	{{ function('wp_footer') }}
-	</body>
+    <footer>
+        Copyright &copy; {{ "now"|date('Y') }}
+    </footer>
+    {{ function('wp_footer') }}
+    </body>
 </html>
 ```
 
@@ -39,7 +40,7 @@ What if you need to pass arguments to a function? Easy, add them as additional a
 ```twig
 {# single.twig #}
 <div class="admin-tools">
-	{{ function('edit_post_link', 'Edit', '<span class="edit-link">', '</span>') }}
+    {{ function('edit_post_link', 'Edit', '<span class="edit-link">', '</span>') }}
 </div>
 ```
 
@@ -48,13 +49,13 @@ Nice! Any gotchas? Unfortunately yes. While the above example will totally work 
 ```twig
 {# index.twig #}
 <div class="admin-tools">
-	{{ function('edit_post_link', 'Edit', '<span class="edit-link">', '</span>', post.ID) }}
+    {{ function('edit_post_link', 'Edit', '<span class="edit-link">', '</span>', post.ID) }}
 </div>
 ```
 
 ## Make functions available in Twig
 
-If you have functions that you use a lot and want to improve readability of your code, you can make a function available in Twig by using `Timber\Twig_Function` inside the `timber/twig` filter.
+If you have functions that you use a lot and want to improve readability of your code, you can make a function available in Twig by using `Twig\TwigFunction` inside the `timber/twig` hook.
 
 ```php
 add_filter( 'timber/twig', 'add_to_twig' );
@@ -65,9 +66,8 @@ add_filter( 'timber/twig', 'add_to_twig' );
  * @param \Twig\Environment $twig
  * @return \Twig\Environment
  */
-function add_to_twig( $twig ) {
-    // Adding a function.
-    $twig->addFunction( new Timber\Twig_Function( 'edit_post_link', 'edit_post_link' ) );
+ function add_to_twig( $twig ) {
+    $twig->addFunction( new Twig\TwigFunction( 'edit_post_link', 'edit_post_link' ) );
     
     return $twig;
 } );

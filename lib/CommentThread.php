@@ -2,9 +2,9 @@
 
 namespace Timber;
 
-use Timber\Comment;
-
 /**
+ * Class CommentThread
+ *
  * This object is a special type of array that hold WordPress comments as `Timber\Comment` objects. 
  * You probably won't use this directly. This object is returned when calling `{{ post.comments }}` 
  * in Twig.
@@ -50,9 +50,11 @@ class CommentThread extends \ArrayObject {
 	var $_order = 'ASC';
 
 	/**
-	 * @param int $post_id
-	 * @param array|boolean $args an array of arguments
-	 * 						or false if to skip initialization
+	 * Creates a new `Timber\CommentThread` object.
+	 *
+	 * @param int           $post_id The post ID.
+	 * @param array|boolean $args    Optional. An array of arguments or false if initialization
+	 *                               should be skipped.
 	 */
 	public function __construct( $post_id, $args = array() ) {
 		parent::__construct();
@@ -72,8 +74,14 @@ class CommentThread extends \ArrayObject {
 	}
 
 	/**
-	 * @internal
+	 * Gets the number of comments on a post.
+	 *
+	 * @return int The number of comments on a post.
 	 */
+	public function mecount() {
+		return get_comments_number($this->post_id);
+	}
+
 	protected function merge_args( $args ) {
 		$base = array('status' => 'approve', 'order' => $this->_order);
 		return array_merge($base, $args);
@@ -81,17 +89,15 @@ class CommentThread extends \ArrayObject {
 
 	/**
 	 * @internal
-	 * @experimental
 	 */
 	public function order( $order = 'ASC' ) {
 		$this->_order = $order;
 		$this->init();
 		return $this;
 	}
-
-	/**
+  
+  /**
 	 * @internal
-	 * @experimental
 	 */
 	public function orderby( $orderby = 'wp' ) {
 		$this->_orderby = $orderby;
@@ -100,7 +106,10 @@ class CommentThread extends \ArrayObject {
 	}
 
 	/**
-	 * @internal
+	 * Inits the object.
+	 * 
+   * @internal
+	 * @param array $args Optional.
 	 */
 	public function init( $args = array() ) {
 		global $overridden_cpage;
