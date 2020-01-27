@@ -92,9 +92,9 @@ Routes::map('info/:name/page/:pg', function($params){
     $query = 'posts_per_page=3&post_type='.$params['name'].'&paged='.intval($params['pg']);
 
     //load up a template which will use that query
-    $params = array();
-    $params['my_title'] = 'This is my custom title';
-    Routes::load('archive.php', $params, $query, 200);
+    $args = array();
+    $args['my_title'] = 'This is my custom title';
+    Routes::load('archive.php', $args, $query, 200);
 });
 ```
 
