@@ -2,6 +2,13 @@
 
 	class TestTimberUser extends Timber_UnitTestCase {
 
+		function testIDDataType() {
+			$uid = $this->factory->user->create(array('display_name' => 'James Marshall'));
+			$user = new Timber\User($uid);
+			$this->assertEquals('integer', gettype($user->id));
+			$this->assertEquals('integer', gettype($user->ID));
+		}
+
 		function testInitWithID(){
 			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln'));
 			$user = new TimberUser($uid);
