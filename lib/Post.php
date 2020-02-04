@@ -225,7 +225,7 @@ class Post extends Core implements CoreInterface {
 	 * tries to figure out what post you want to get if not explictly defined (or if it is, allows it to be passed through)
 	 * @internal
 	 * @param mixed a value to test against
-	 * @return int the numberic id we should be using for this post object
+	 * @return int|null the numberic id we should be using for this post object, null when there's no ID (ex: 404 page)
 	 */
 	protected function determine_id( $pid ) {
 		global $wp_query;
