@@ -133,16 +133,8 @@ class Image extends Attachment {
 			'Image::get_dimension',
 			'2.0.0'
 		);
-		if ( isset($this->_dimensions) ) {
-			return $this->get_dimensions_loaded($dim);
-		}
-		if ( file_exists($this->file_loc) && filesize($this->file_loc) ) {
-			list($width, $height) = getimagesize($this->file_loc);
-			$this->_dimensions = array();
-			$this->_dimensions[0] = $width;
-			$this->_dimensions[1] = $height;
-			return $this->get_dimensions_loaded($dim);
-		}
+		$ds = array($this->width(), $this->height());
+		return $ds;
 	}
 
 	/**
@@ -159,9 +151,9 @@ class Image extends Attachment {
 		);
 		$dim = strtolower($dim);
 		if ( $dim == 'h' || $dim == 'height' ) {
-			return $this->_dimensions[1];
+			return $this->height();
 		}
-		return $this->_dimensions[0];
+		return $this->width();
 	}
 
 	/**
