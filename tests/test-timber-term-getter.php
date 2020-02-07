@@ -8,6 +8,13 @@
 			$this->assertEquals($term_id, $term->ID);
 		}
 
+		function testIDDataType() {
+			$term_id = $this->factory->term->create( array('name' => 'Honda') );
+			$term = new Timber\Term($term_id);
+			$this->assertEquals('integer', gettype($term->id));
+			$this->assertEquals('integer', gettype($term->ID));
+		}
+
 		function testGetSingleTermInTaxonomy() {
 			register_taxonomy('cars', 'post');
 			$term_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'cars') );

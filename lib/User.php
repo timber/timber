@@ -150,7 +150,7 @@ class User extends Core implements CoreInterface {
 			}
 		}
 		unset($this->user_pass);
-		$this->id = $this->ID;
+		$this->id = $this->ID = (int) $this->ID;
 		$this->name = $this->name();
 		$custom = $this->get_custom();
 		$this->import($custom);
