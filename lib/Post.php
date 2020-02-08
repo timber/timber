@@ -646,7 +646,7 @@ class Post extends Core implements CoreInterface {
 	 * {% for post in job %}
 	 *     <div class="job">
 	 *         <h2>{{ post.title }}</h2>
-	 *         <p>{{ post.terms('category')|join(', ') }}</p>
+	 *         <p>{{ post.terms( {query:{taxonomy:'category', orderby:'name', order: 'ASC'}} )|join(', ') }}</p>
 	 *     </div>
 	 * {% endfor %}
 	 * </section>
@@ -655,7 +655,7 @@ class Post extends Core implements CoreInterface {
 	 * <section id="job-feed">
 	 *     <div class="job">
 	 *         <h2>Cheese Maker</h2>
-	 *         <p>Food, Cheese, Fromage</p>
+	 *         <p>Cheese, Food, Fromage</p>
 	 *     </div>
 	 *     <div class="job">
 	 *         <h2>Mime</h2>
