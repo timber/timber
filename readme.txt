@@ -1,9 +1,9 @@
 === Timber ===
 Contributors: jarednova
 Tags: template engine, templates, twig
-Requires at least: 4.7.12
+Requires at least: 4.9.8
 Tested up to: 5.3
-Stable tag: 1.13.0
+Stable tag: 1.14.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -33,7 +33,15 @@ _Twig is the template language powering Timber; if you need a little background 
 **Fixes and improvements**
 
 **Changes for Theme Developers**
-- {{ post.date }} and {{ post.time }} now use `date_i18n` under the hood #2104 #2126 (thanks @palmiak)
+
+= 1.14.0 =
+**Fixes and improvements**
+- {{ post.date }} and {{ post.time }} now use `date_i18n` under the hood instead of `mysql2date` #2104 #2126 (thanks @palmiak)
+- WordPress 4.9.8 is the new min supported version.
+
+**Changes for Theme Developers**
+- We're now using minimum versions of Twig 1.41 and 2.10
+- Twig introduced a [filter filter](https://twig.symfony.com/doc/1.x/filters/filter.html) (you read that right, a filter named filter — like `{{ sizes | filter(v => v > 38) }}`. This wrecked havoc on our own pre-existing Timber filter filter `{{ posts | filter({post_title:"Cheese", post_content:"Yum!"}, "AND") }}`. In #2124 we gave Twig's filter the preferred treatment. However, if the arguments look like you intend to use the old filter (which is a wrapper for WordPress's WP_List_Util class) we use what's there. Want to keep using the class Timber filter filter? Switch it to `wp_list_filter` as in `{{ posts | wp_list_filter({post_title:"Cheese", post_content:"Yum!"}, "AND") }}` (thanks @palmiak @gchtr @nlemoine @aj-adl @rubas @xdevelx and others)
 
 = 1.13.0 =
 **Fixes and improvements**
