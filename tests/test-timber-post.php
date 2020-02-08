@@ -9,6 +9,13 @@
 			$this->assertEquals($post_id, $post->ID);
 		}
 
+		function testIDDataType() {
+			$uid = $this->factory->post->create(array('title' => 'Air Force Once'));
+			$post = new Timber\Post($uid);
+			$this->assertEquals('integer', gettype($post->id));
+			$this->assertEquals('integer', gettype($post->ID));
+		}
+
 		function testPostPasswordReqd(){
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost($post_id);
