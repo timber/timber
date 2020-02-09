@@ -74,6 +74,12 @@ class Site extends Core implements CoreInterface {
 	public $name;
 
 	/**
+	 * @deprecated 2.0.0, use $pingback_url
+	 * @var string for people who like trackback spam
+	 */
+	public $pingback;
+
+	/**
 	 * @api
 	 * @var string for people who like trackback spam
 	 */
