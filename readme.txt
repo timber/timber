@@ -31,6 +31,7 @@ _Twig is the template language powering Timber; if you need a little background 
 = Develop (next release) =
 
 **Fixes and improvements**
+- Fixed an issue where a custom field named "content" could conflict with `{{ post.content }}`
 
 **Changes for Theme Developers**
 

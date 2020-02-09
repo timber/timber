@@ -80,9 +80,9 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * @internal
-	 * @var string $_content stores the processed content internally
+	 * @var string $___content stores the processed content internally
 	 */
-	protected $_content;
+	protected $___content;
 
 	/**
 	 * @var string $_permalink the returned permalink from WP's get_permalink function
@@ -1210,8 +1210,8 @@ class Post extends Core implements CoreInterface {
 		if ( $form = $this->maybe_show_password_form() ) {
 			return $form;
 		}
-		if ( $len == -1 && $page == 0 && $this->_content ) {
-			return $this->_content;
+		if ( $len == -1 && $page == 0 && $this->___content ) {
+			return $this->___content;
 		}
 		$content = $this->post_content;
 		if ( $len > 0 ) {
@@ -1226,7 +1226,7 @@ class Post extends Core implements CoreInterface {
 		}
 		$content = apply_filters('the_content', ($content));
 		if ( $len == -1 && $page == 0 ) {
-			$this->_content = $content;
+			$this->___content = $content;
 		}
 		return $content;
 	}
