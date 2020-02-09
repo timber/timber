@@ -133,8 +133,7 @@ class Image extends Attachment {
 			'Image::get_dimension',
 			'2.0.0'
 		);
-		$ds = array($this->width(), $this->height());
-		return $ds;
+		return array($this->width(), $this->height());
 	}
 
 	/**
