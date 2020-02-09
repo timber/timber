@@ -789,4 +789,29 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$this->assertEquals( '', $comment_string );
 		$this->assertEquals( false, $comment->inexistent );
 	}
+
+	/**
+	 * Tests what happens when a custom field attempts to overwrite a Timber\Post method
+	 */
+	function testCustomTimeField() {
+		$pid = $this->factory->post->create(array('post_content' => 'Cool content bro!', 'post_date' => '2020-02-07 08:03:00'));
+		update_field( '_time', 'I am custom time', $pid );
+		update_field( 'time', 'I am custom time', $pid );
+		$str = '{{ post.time }}';
+		$post = new Timber\Post( $pid );
+		$str = Timber::compile_string( $str, array( 'post' => $post ) );
+		$this->assertEquals( '8:03 am', trim($str) );
+	}
+
+	/**
+	 * Tests what happens when a custom field attempts to overwrite a Timber\Post method
+	 */
+	function testCustomContentField() {
+		$pid = $this->factory->post->create(array('post_content' => 'Cool content bro!'));
+		update_field( '_content', 'I am custom content', $pid );
+		$str = '{{ post.content }}';
+		$post = new Timber\Post( $pid );
+		$str = Timber::compile_string( $str, array( 'post' => $post ) );
+		$this->assertEquals( '<p>Cool content bro!</p>', trim($str) );
+	}
 }
