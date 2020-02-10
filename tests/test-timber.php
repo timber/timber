@@ -110,7 +110,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 
 		$post_movie    = Timber\Timber::get_post_by( 'title', $post_title, 'movie' );
 		$post_page     = Timber\Timber::get_post_by( 'title', $post_title, 'page' );
-		$post_multiple = Timber\Timber::get_post_by( 'title', $post_title, [ 'page', 'book' ] );
+		$post_multiple = Timber\Timber::get_post_by( 'title', $post_title, 'any' );
 
 		$this->assertEquals( $post_id_movie, $post_movie->ID );
 		$this->assertEquals( $post_id_page, $post_page->ID );
