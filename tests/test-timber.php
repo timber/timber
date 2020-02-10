@@ -89,17 +89,19 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		register_post_type('book', array('public' => true));
 		register_post_type('movie', array('public' => true));
 		$post_title    = 'A Special Post Title containing Special Characters like # or ! or Ä or ç';
-		$post_id_movie = $this->factory->post->create( [
-			'post_title' => $post_title,
-			'post_type'  => 'movie',
-			'post_date'  => '2020-01-10 02:58:18'
-		] );
+		
 		$post_id_page  = $this->factory->post->create( [
 			'post_title' => $post_title,
 			'post_type'  => 'page',
 			'post_date'  => '2020-01-02 02:58:18'
 		] );
-		sleep(1);
+
+		$post_id_movie = $this->factory->post->create( [
+			'post_title' => $post_title,
+			'post_type'  => 'movie',
+			'post_date'  => '2020-01-10 02:58:18'
+		] );
+
 		$post_id_book  = $this->factory->post->create( [
 			'post_title' => $post_title,
 			'post_type'  => 'book',
