@@ -99,6 +99,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 			'post_type'  => 'page',
 			'post_date'  => '2020-01-02 02:58:18'
 		] );
+		sleep(1);
 		$post_id_book  = $this->factory->post->create( [
 			'post_title' => $post_title,
 			'post_type'  => 'book',
