@@ -88,7 +88,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	function testGetPostByTitleAndPostType(){
 		register_post_type('book', array('public' => true));
 		register_post_type('movie', array('public' => true));
-		$post_title    = 'A Post Title containing Special Characters like # or ! or Ä or ç';
+		$post_title    = 'A Special Post Title containing Special Characters like # or ! or Ä or ç';
 		$post_id_movie = $this->factory->post->create( [
 			'post_title' => $post_title,
 			'post_type'  => 'movie',
