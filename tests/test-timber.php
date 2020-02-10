@@ -90,14 +90,17 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$post_id_movie = $this->factory->post->create( [
 			'post_title' => $post_title,
 			'post_type'  => 'movie',
+			'post_date'  => '2020-01-10 02:58:18'
 		] );
 		$post_id_page  = $this->factory->post->create( [
 			'post_title' => $post_title,
 			'post_type'  => 'page',
+			'post_date'  => '2020-01-02 02:58:18'
 		] );
 		$post_id_book  = $this->factory->post->create( [
 			'post_title' => $post_title,
 			'post_type'  => 'book',
+			'post_date'  => '2020-01-13 02:58:18'
 		] );
 
 		$post_movie    = Timber\Timber::get_post_by( 'title', $post_title, 'movie' );
@@ -107,7 +110,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertEquals( $post_id_movie, $post_movie->ID );
 		$this->assertEquals( $post_id_page, $post_page->ID );
 
-		// Multiple post types should return the post with the lower ID.
+		// Multiple post types should return the post with the oldest post date.
 		$this->assertEquals( $post_id_page, $post_multiple->ID );
 	}
 
