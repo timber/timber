@@ -188,6 +188,7 @@ class Timber {
 				'post_type' => $post_type,
 				'name'      => $search_value,
 				'fields'    => 'ids',
+				'order'		=> 'ASC',
 			] );
 
 			if ( $query->post_count < 1 ) {

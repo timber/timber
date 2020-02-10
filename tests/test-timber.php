@@ -36,6 +36,9 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	}
 
 	function testGetPostBySlugAndPostType(){
+
+		register_post_type('movie', array('public' => true));
+
 		$post_id_movie = $this->factory->post->create( [
 			'post_name' => 'kill-bill',
 			'post_type' => 'movie',
