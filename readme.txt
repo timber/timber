@@ -2,8 +2,8 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 4.9.8
-Tested up to: 5.3
-Stable tag: 1.14.0
+Tested up to: 5.3.2
+Stable tag: 1.15.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -32,7 +32,17 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 
+
 **Changes for Theme Developers**
+
+
+= 1.15.0 =
+**Fixes and improvements**
+- Fixed an issue where a custom field named "content" could conflict with `{{ post.content }}`
+- Fixed an issue where `Timber/User::$id` was returned as a string instead of an integer (thanks @rubas)
+
+**Changes for Theme Developers**
+- Timber's data to Apache/Nginx error logs (via `error_log()`) is now prefixed with `[ Timber ]`
 
 = 1.14.0 =
 **Fixes and improvements**

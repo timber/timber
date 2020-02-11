@@ -80,9 +80,9 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * @internal
-	 * @var string $_content stores the processed content internally
+	 * @var string $___content stores the processed content internally
 	 */
-	protected $_content;
+	protected $___content;
 
 	/**
 	 * @var string $_permalink the returned permalink from WP's get_permalink function
@@ -225,7 +225,7 @@ class Post extends Core implements CoreInterface {
 	 * tries to figure out what post you want to get if not explictly defined (or if it is, allows it to be passed through)
 	 * @internal
 	 * @param mixed a value to test against
-	 * @return int the numberic id we should be using for this post object
+	 * @return int|null the numberic id we should be using for this post object, null when there's no ID (ex: 404 page)
 	 */
 	protected function determine_id( $pid ) {
 		global $wp_query;
@@ -646,7 +646,7 @@ class Post extends Core implements CoreInterface {
 	 * {% for post in job %}
 	 *     <div class="job">
 	 *         <h2>{{ post.title }}</h2>
-	 *         <p>{{ post.terms('category')|join(', ') }}</p>
+	 *         <p>{{ post.terms( {query:{taxonomy:'category', orderby:'name', order: 'ASC'}} )|join(', ') }}</p>
 	 *     </div>
 	 * {% endfor %}
 	 * </section>
@@ -655,7 +655,7 @@ class Post extends Core implements CoreInterface {
 	 * <section id="job-feed">
 	 *     <div class="job">
 	 *         <h2>Cheese Maker</h2>
-	 *         <p>Food, Cheese, Fromage</p>
+	 *         <p>Cheese, Food, Fromage</p>
 	 *     </div>
 	 *     <div class="job">
 	 *         <h2>Mime</h2>
@@ -1210,8 +1210,8 @@ class Post extends Core implements CoreInterface {
 		if ( $form = $this->maybe_show_password_form() ) {
 			return $form;
 		}
-		if ( $len == -1 && $page == 0 && $this->_content ) {
-			return $this->_content;
+		if ( $len == -1 && $page == 0 && $this->___content ) {
+			return $this->___content;
 		}
 		$content = $this->post_content;
 		if ( $len > 0 ) {
@@ -1226,7 +1226,7 @@ class Post extends Core implements CoreInterface {
 		}
 		$content = apply_filters('the_content', ($content));
 		if ( $len == -1 && $page == 0 ) {
-			$this->_content = $content;
+			$this->___content = $content;
 		}
 		return $content;
 	}

@@ -19,6 +19,29 @@
 		}
 
 		/**
+		 * @ticket #2163
+		 * This test confirms that term ordering works when sent through the query parameter of 
+		 * arguments.
+		 */
+		function testPostTermOrder() {
+			$pid = $this->factory->post->create();
+			register_taxonomy('cars', 'post');
+			$cars[] = $this->factory->term->create( array('name' => 'Honda Civic', 'taxonomy' => 'cars') );
+			$cars[] = $this->factory->term->create( array('name' => 'Toyota Corolla', 'taxonomy' => 'cars') );
+			$cars[] = $this->factory->term->create( array('name' => 'Toyota Camry', 'taxonomy' => 'cars') );
+			$cars[] = $this->factory->term->create( array('name' => 'Dodge Intrepid', 'taxonomy' => 'cars') );
+			foreach($cars as $tid) {
+				$car = new Timber\Term($tid);
+				error_log($tid . ' = ' .$car->name);
+			}
+			wp_set_object_terms($pid, $cars, 'cars', false);
+			$post = new Timber\Post($pid);
+			$template = "{% for term_item in post.terms({query : {taxonomy: 'cars', orderby: 'term_id', order: 'ASC'}}) %}{{ term_item.name }} {% endfor %}";
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('Honda Civic Toyota Corolla Toyota Camry Dodge Intrepid ', $str);
+		}
+
+		/**
 		 * This should return an error because the "dfasdf" taxonomy doesn't exist
 		 */
 		function testTermExceptions() {
