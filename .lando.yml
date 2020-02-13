@@ -8,20 +8,31 @@ services:
   appserver:
     run_as_root:
       - apt-get update
-      - apt-get install zip
+      - apt-get install zip jq subversion -y
 
     run:
+      # - /bin/bash -c "[ ! -d /app/tmp ] && mkdir /app/tmp"
       - composer install
       - /app/lando-config/scripts/setup-wordpress.sh
+      # - /app/lando-config/scripts/install-wp-tests.sh
 
     overrides:
       environment:
         # Pass any non-empty CI envvar from the host into Lando
         # This is so we can force non-interactive mode setting up WP
         CI: ${CI:-''}
+        # TMPDIR: /app/tmp
 
   database:
     type: mysql:5.7
+
+  database-unit-test:
+    type: mysql:5.7
+    portforward: true
+    creds:
+      user: timber
+      password: timber
+      database: timber
 
   phpmyadmin:
     type: phpmyadmin:4.7
@@ -44,8 +55,18 @@ tooling:
 
   debug:
     service: appserver
-    cmd: 'tail -f /app/wp/wp-content/debug.log'
+    cmd: 'tail -f /app/wordpress/wp-content/debug.log'
     description: 'Get real-time WP debug log output'
+
+  install-test-suite:
+    service: appserver
+    cmd: '/app/lando-config/scripts/install-wp-tests.sh'
+    description: 'Installs test suite.'
+
+  test-json:
+    service: appserver
+    cmd: '/app/lando-config/scripts/test-json.sh'
+    description: 'Test JSON parsing.'
 
   unit:
     service: appserver
