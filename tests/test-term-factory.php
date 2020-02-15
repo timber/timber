@@ -30,6 +30,23 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(Term::class, $cat);
 	}
 
+	public function testGetTermFromInvalidId() {
+		$termFactory = new TermFactory();
+		$term        = $termFactory->from( 99999 );
+
+		$this->assertFalse( $term );
+	}
+
+	public function testGetTermFromIdString() {
+		$term_id = $this->factory->term->create();
+
+		$termFactory = new TermFactory();
+		$term				 = $termFactory->from(''.$term_id);
+
+		$this->assertInstanceOf(Term::class, $term);
+		$this->assertEquals($term_id, $term->id);
+	}
+
 	public function testGetTermWithOverrides() {
 		register_taxonomy('whackness', 'post');
 		$my_class_map = function() {

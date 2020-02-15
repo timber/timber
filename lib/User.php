@@ -148,9 +148,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 
 		// Never leak password data
 		unset($this->user_pass);
-
-		$this->ID = $wp_user->ID;
-		$this->id = $wp_user->ID;
+		$this->id = $this->ID = (int) $wp_user->ID;
 	}
 
 	/**

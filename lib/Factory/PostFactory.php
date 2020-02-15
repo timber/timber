@@ -13,7 +13,7 @@ use WP_Post;
  */
 class PostFactory {
 	public function from($params) {
-		if (is_int($params)) {
+		if (is_int($params) || is_string($params) && is_numeric($params)) {
 			return $this->from_id($params);
 		}
 
@@ -32,10 +32,18 @@ class PostFactory {
 		if (is_array($params)) {
 			return $this->from_wp_query(new WP_Query($params));
 		}
+
+		return false;
 	}
 
   protected function from_id(int $id) {
-    return $this->build(get_post($id));
+		$wp_post = get_post($id);
+
+		if (!$wp_post) {
+			return false;
+		}
+
+    return $this->build($wp_post);
   }
 
 	protected function from_post_object(object $obj) : CoreInterface {
@@ -84,7 +92,10 @@ class PostFactory {
     return new $class($post);
   }
 
-	protected function is_numeric_array(array $arr) {
+	protected function is_numeric_array($arr) {
+		if ( ! is_array($arr) ) {
+			return false;
+		}
 		foreach (array_keys($arr) as $k) {
 			if ( ! is_int($k) ) return false;
 		}

@@ -29,6 +29,23 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(Post::class, $custom);
 	}
 
+	public function testFromInvalidId() {
+		$postFactory = new PostFactory();
+		$post        = $postFactory->from( 99999 );
+
+		$this->assertFalse( $post );
+	}
+
+	public function testFromIdString() {
+		$post_id = $this->factory->post->create();
+
+		$postFactory = new PostFactory();
+		$post				 = $postFactory->from(''.$post_id);
+
+		$this->assertInstanceOf(Post::class, $post);
+		$this->assertEquals($post_id, $post->id);
+	}
+
 	public function testFromWithOverrides() {
 		$my_class_map = function() {
 			return [
@@ -105,9 +122,9 @@ class TestPostFactory extends Timber_UnitTestCase {
 		};
 		add_filter( 'timber/post/classmap', $my_class_map );
 
-		$post_id   = $this->factory->post->create(['post_type' => 'post']);
-		$page_id   = $this->factory->post->create(['post_type' => 'page']);
-		$custom_id = $this->factory->post->create(['post_type' => 'custom']);
+		$post_id   = $this->factory->post->create(['post_type' => 'post', 'post_date' => '2020-01-10 19:46:41']);
+		$page_id   = $this->factory->post->create(['post_type' => 'page', 'post_date' => '2020-01-09 19:46:41']);
+		$custom_id = $this->factory->post->create(['post_type' => 'custom', 'post_date' => '2020-01-08 19:46:41']);
 
 		$postFactory = new PostFactory();
 		$query       = new WP_Query(['post_type' => ['post', 'page', 'custom']]);
