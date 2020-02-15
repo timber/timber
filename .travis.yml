@@ -9,24 +9,26 @@ language: php
 addons:
   apt:
     packages:
-    - libwebp-dev
+      - libwebp-dev
 
 php:
-    - 7.2
     - 7.4
 
 env:
     global:
         - TMPDIR=/tmp
     matrix:
-        - WP_VERSION=5.3.2 WP_MULTISITE=0 IMG_LIBS=0 
-        - WP_VERSION=5.3.2 WP_MULTISITE=1 IMG_LIBS=0 
-        - WP_VERSION=latest WP_MULTISITE=0 IMG_LIBS=1 COVERAGE=1 
-        - WP_VERSION=latest WP_MULTISITE=1 IMG_LIBS=1 COVERAGE=1
+        - WP_VERSION=5.3.2 WP_MULTISITE=0
+        - WP_VERSION=5.3.2 WP_MULTISITE=1
+        - WP_VERSION=latest WP_MULTISITE=0 COVERAGE=1 IMG_LIBS=1
+        - WP_VERSION=latest WP_MULTISITE=1 COVERAGE=1 IMG_LIBS=1 STATIC_ANALYSIS=1
 
-before_script:
-    - pear config-set preferred_state beta; pecl channel-update pecl.php.net
-    - yes '' | pecl install imagick
+matrix:
+    include:
+    - php: 7.2
+      env: WP_VERSION=5.3.2 WP_MULTISITE=0
+    - php: 7.2
+      env: WP_VERSION=latest WP_MULTISITE=0
 
 before_install:
     # phpenv config-add myconfig.ini --with-webp-dir
@@ -39,6 +41,7 @@ before_script:
 
 script:
     - if [ "$COVERAGE" == 1 ]; then mkdir -p build/logs; vendor/phpunit/phpunit/phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml --verbose; else vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml --verbose; fi
+    - if [ "$STATIC_ANALYSIS" == 1 ]; then vendor/bin/phpstan analyze -l 1; fi
 
 after_script:
     - if [ "$COVERAGE" == 1 ]; then php vendor/bin/coveralls -v; fi
