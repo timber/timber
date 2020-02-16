@@ -9,6 +9,7 @@ The Class Map is the central hub for Timber to select the right class for post o
 - `timber/post/classmap` for posts
 - `timber/term/classmap` for terms
 - `timber/comment/classmap` for comments
+- `timber/menu/class` for menus
 - `timber/user/classmap` for users
 
 ## The Post Class Map
