@@ -175,9 +175,16 @@ class Timber {
 	 *                                   for `title`, this parameter doesn’t need to be
 	 *                                   case-sensitive, because the `=` comparison is used in
 	 *                                   MySQL.
-	 * @param string|array $post_type    Optional. The post type or an array of post types to look
-	 *                                   for. Default `any`, which will look for posts in any post
-	 *                                   type.
+	 * @param array        $args {
+	 *     Optional. An array of arguments to configure what is returned.
+	 *
+	 * 	   @type string|array     $post_type   Optional. What WordPress post type to limit the 
+	 *                                         results to. Defaults to 'any'
+	 *     @type string           $order_by    Optional. The field to sort by. Defaults to 
+	 *                                         'post_date'
+	 *     @type string           $order       Optional. The sort to apply. Defaults to ASC
+	 *
+	 * }
 	 *
 	 * @return \Timber\Post|false A Timber post or `false` if no post could be found. If multiple
 	 *                            posts with the same slug or title were found, it will select the
