@@ -202,15 +202,33 @@ class Timber {
 			$post_id = array_shift( $posts );
 		} elseif ( 'title' === $type ) {
 			/**
-			 * Using post_exists() seems to be quickest way to get a post by title using a WordPress
-			 * core function when it could be any post type.
+			 * The following section is inspired by post_exists() as well as get_page_by_title().
+			 *
+			 * These two functions always return the post with lowest ID. However, we want the post
+			 * with oldest post date.
+			 *
+			 * @see \post_exists()
+			 * @see \get_page_by_title()
 			 */
-			if ( 'any' === $post_type ) {
-				$post_id = post_exists( $search_value );
-			} else {
-				$post    = get_page_by_title( $search_value, OBJECT, $post_type );
-				$post_id = $post->ID;
+			global $wpdb;
+
+			$sql = "SELECT ID FROM $wpdb->posts WHERE post_title = %s";
+			$query_args = [ $search_value ];
+
+			if ( is_array( $post_type ) ) {
+				$post_type           = esc_sql( $post_type );
+				$post_type_in_string = "'" . implode( "','", $post_type ) . "'";
+
+				$sql .= " AND post_type IN ($post_type_in_string)";
+			} elseif ( 'any' !== $post_type ) {
+				$sql .= ' AND post_type = %s';
+				$query_args[] = $post_type;
 			}
+
+			// Always return the oldest post first.
+			$sql .= ' ORDER BY post_date ASC';
+
+	        $post_id = $wpdb->get_var( $wpdb->prepare( $sql, $query_args ) );
 		}
 
 		if ( ! $post_id ) {
