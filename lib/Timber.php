@@ -171,14 +171,17 @@ class Timber {
 	 * ```
 	 *
 	 * @param string       $type         The type to look for. One of `slug` or `title`.
-	 * @param string       $search_value The post slug or post title to search for. When search for
-	 *                                   `title`, this parameter doesn’t need to be case-sensitive,
-	 *                                   because the `=` comparison is used in MySQL.
+	 * @param string       $search_value The post slug or post title to search for. When searching
+	 *                                   for `title`, this parameter doesn’t need to be
+	 *                                   case-sensitive, because the `=` comparison is used in
+	 *                                   MySQL.
 	 * @param string|array $post_type    Optional. The post type or an array of post types to look
 	 *                                   for. Default `any`, which will look for posts in any post
 	 *                                   type.
 	 *
-	 * @return \Timber\Post|false A Timber post or `false` if no post could be found.
+	 * @return \Timber\Post|false A Timber post or `false` if no post could be found. If multiple
+	 *                            posts with the same slug or title were found, it will select the
+	 *                            post with the oldest date.
 	 */
 	public static function get_post_by( $type, $search_value, $post_type = 'any' ) {
 		$post_id = false;
