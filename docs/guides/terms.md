@@ -8,7 +8,7 @@ To get a term object in Timber, you use `Timber::get_term()` and pass the WordPr
 $term = Timber::get_term( $term_id );
 ```
 
-This function is similar to [`get_term()`](https://developer.wordpress.org/reference/functions/get_term/) and accepts one argument: a term ID. If you don’t pass in any argument, Timber will use `get_queried_object()` to try an work with the currently queried term.
+This function is similar to [`get_term()`](https://developer.wordpress.org/reference/functions/get_term/) and accepts one argument: a term ID. If you don’t pass in any argument, Timber will use `get_queried_object()` to try and work with the currently queried term.
 
 ```php
 $term = Timber::get_term();
@@ -38,7 +38,7 @@ It also works if you have an array of terms IDs that you want to convert to `Tim
 
 ## Invalid terms
 
-If no valid term can be found with the term ID you provided, the `Timber::get_term()` function will return `null`. With this, you can always check for valid term with a simple if statement.
+If no valid term can be found with the term ID you provided, the `Timber::get_term()` function will return `null`. With this, you can always check for a valid term with a simple if statement.
 
 ```php
 $term = Timber::get_term( $term_id );
@@ -72,7 +72,7 @@ To initiate your new `BookGenre` term, you also use `Timber::get_term()`.
 $term = Timber::get_term( $term_id );
 ```
 
-In the same way that you [can’t instantiate post objects directly](https://timber.github.io/docs/guides/posts/#extending-timber-post) you **can’t** instantiate a `Timber\Term` object or an object that extends this class with a constructor. Timber will use the [Term Class Map](https://timber.github.io/docs/guides/class-maps/#the-term-class-map) to sort out which class it should use.
+In the same way that you [can’t instantiate post objects directly](https://timber.github.io/docs/guides/posts/#extending-timber-post), you **can’t** instantiate a `Timber\Term` object or an object that extends this class with a constructor. Timber will use the [Term Class Map](https://timber.github.io/docs/guides/class-maps/#the-term-class-map) to sort out which class it should use.
 
 ## Querying Terms
 
@@ -96,9 +96,9 @@ $term_query = new Timber::get_terms( [
  ] );
 ```
 
-Be aware that you need pass an array to `Timber::get_terms()` with a `query` parameter. This array can have additional arguments that you can check out in the documentation for [`Timber::get_terms()`](https://timber.github.io/docs/reference/timber/#get-terms).
+Be aware that you need to pass an array to `Timber::get_terms()` with a `query` parameter. This array can have additional arguments that you can check out in the documentation for [`Timber::get_terms()`](https://timber.github.io/docs/reference/timber/#get-terms).
 
-What you get as a return value is not a pure array of posts, but a `Timber\TermCollection` object, which is an `ArrayObject` that is very similar to an array like you know it. To loop over the terms collection in PHP, you first need to convert it to an array with `$terms->get_terms()`.
+What you get as a return value is not a pure array of posts, but a `Timber\TermCollection` object, which is an `ArrayObject` that is very similar to an array as you know it. To loop over the terms collection in PHP, you first need to convert it to an array with `$terms->get_terms()`.
 
 ```php
 foreach ( $terms_query->get_terms() as $term ) {

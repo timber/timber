@@ -2,7 +2,7 @@
 title: "Class Maps"
 ---
 
-The Class Map is the central hub for Timber to select the right class for post or term object. Whenever you want to extend existing Timber class with your custom classes, you’ll have to register them through a Class Map so that Timber will know when to use it.
+The Class Map is the central hub for Timber to select the right class for post or term object. Whenever you want to extend existing Timber classes with your custom classes, you’ll have to register them through a Class Map so that Timber will know when to use it.
 
  There are four different Class Maps in Timber:
 
@@ -225,7 +225,7 @@ add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
 }, 10, 2 );
 ```
 
-If you need check for user roles, check the `$user->roles` array. Don’t work with `$user->has_cap()` to check for roles, because it may lead to unreliable results.
+If you need to check for user roles, check the `$user->roles` array. Don’t work with `$user->has_cap()` to check for roles, because it may lead to unreliable results.
 
 
 ```php

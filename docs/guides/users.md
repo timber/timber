@@ -82,7 +82,7 @@ if ( $user ) {
 }
 ```
 
-This allows you to check for login state with an if statement.
+This allows you to check for a login state with an if statement.
 
 ```twig
 {% if user %}
@@ -134,7 +134,7 @@ $post_authors = Timber::get_users( [
 ] );
 ```
 
-Instead of a query, you can also pass and **array of user IDs**.
+Instead of a query, you can also pass an **array of user IDs**.
 
 ```php
 $users = Timber::get_users( [ 27, 83, 161 ] );

@@ -107,7 +107,7 @@ If you want to get a collection of posts, you can use `Timber::get_posts()`.
 $posts = Timber::get_posts( $query );
 ```
 
-You can use this function in a similar way to how you use [`WP_Query`](https://developer.wordpress.org/reference/classes/wp_query/). If you don’t pass in any argument, Timber will use the global query.
+You can use this function similarly to how you use [`WP_Query`](https://developer.wordpress.org/reference/classes/wp_query/). If you don’t pass in any argument, Timber will use the global query.
 
 ```php
 // Use the global query.
@@ -136,7 +136,7 @@ When you query for certain post types, Timber will use the [Post Class Map](http
 
 ### Post Collections
 
-The analogous `Timber` methods for getting Users, Terms, and Comments (`::get_users()`, `::get_terms()`, and `::get_comments()`) all return arrays. But in order to make pagination work and making Timber compatible with The Loop, we treat Posts with special care.
+The analogous `Timber` methods for getting Users, Terms, and Comments (`::get_users()`, `::get_terms()`, and `::get_comments()`) all return arrays. But to make pagination work and making Timber compatible with The Loop, we treat Posts with special care.
 
 What you get as a **return value** when running `Timber::get_posts()` is not a pure array of posts, but a `Timber\PostCollection` object, an [`ArrayObject`](https://www.php.net/manual/en/class.arrayobject.php) that is very similar to an array as you know it. That means you can still loop over a `PostCollection` directly:
 

@@ -30,7 +30,7 @@ Timber::render( 'single.twig', $data );
 <p>{{ message }}</p>
 ```
 
-Of course you don’t have to figure out all the variables you need for yourself. Timber will provide you with a set of useful variables when you call `Timber::context()`.
+Of course, you don’t have to figure out all the variables you need for yourself. Timber will provide you with a set of useful variables when you call `Timber::context()`.
 
 **single.php**
 
@@ -50,7 +50,7 @@ The global context is the context that is always set when you load it through `T
 
 Among others, the following variables will be available:
 
-- **site** – The `site` variable is a [`Timber\Site`](/docs/reference/timber-site/) object which will make it easier for you to retrieve infos about your WordPress site. If you’re used to using `blog_info( 'sitename' )` in PHP, you can use `{{ site.name }}` in Twig instead.
+- **site** – The `site` variable is a [`Timber\Site`](/docs/reference/timber-site/) object which will make it easier for you to retrieve info about your WordPress site. If you’re used to using `blog_info( 'sitename' )` in PHP, you can use `{{ site.name }}` in Twig instead.
 - **request** - The `request` variable is a `Timber\Request` object, which will make it easier for you to access `$_GET` and `$_POST` variables in your context. Please be aware that you should always be very careful about using `$_GET` and `$_POST` variables in your templates directly. Read more about this in the [Escaping Guide](https://timber.github.io/docs/guides/escaping/).
 - **theme** - The `theme` variable is a [`Timber\Theme`](/docs/reference/timber-theme/) object and contains info about your theme.
 - **user** - The `user` variable will be a [`Timber\User`](/docs/reference/timber-user/) object if a user/visitor is currently logged in and otherwise it will be `false`.
@@ -61,7 +61,7 @@ For a full list of variables, go have a look at the reference for [`Timber::cont
 
 In your theme, you probably have elements that you use on every page, like a navigation menu, or a postal address or phone number. You don’t want to add these variables to the context every time you call `Timber::render()` or `Timber::compile()`. And you don’t have to! You can use the `timber/context` filter to add your own data that will always be available.
 
-Here’s an example for how you could **add a navigation menu** to your context, so that it becomes available in every template you use:
+Here’s an example for how you could **add a navigation menu** to your context so that it becomes available in every template you use:
 
 **functions.php**
 
@@ -137,11 +137,11 @@ $context['post'] = $post;
 $context['post'] = Timber::get_post()->setup();
 ```
 
-Whenever you set up **a post in a singular template** (instead of relying on `Timber::context()` to do it for you), **you need set up your post through `$post->setup()`**. The `setup()` function improves compatibility with third party plugins.
+Whenever you set up **a post in a singular template** (instead of relying on `Timber::context()` to do it for you), **you need set up your post through `$post->setup()`**. The `setup()` function improves compatibility with third-party plugins.
 
 ### Archive templates
 
-The `posts` variable will be available in archive templates (when [ `is_archive()`](https://developer.wordpress.org/reference/functions/is_archive/) returns `true`), like your posts index page, category or tag archives, date based or author archives. It will contain a `Timber\PostCollection` object with the posts that WordPress already fetched for your archive page.
+The `posts` variable will be available in archive templates (when [ `is_archive()`](https://developer.wordpress.org/reference/functions/is_archive/) returns `true`), like your posts index page, category or tag archives, date-based or author archives. It will contain a `Timber\PostCollection` object with the posts that WordPress already fetched for your archive page.
 
 #### Use the default query
 
@@ -166,7 +166,7 @@ $context['posts'] = Timber::get_posts( [
 
 #### Change arguments for default query
 
-Sometimes you don’t want to use the default query, but build on the default query and only change a little thing. You can change arguments for the default query that WordPress will use to fetch posts by using the `merge_default` argument. For example, if you’d want to change the default query to *only show posts written by a specific group of authors*, you could pass in a `author__in` argument:
+Sometimes you don’t want to use the default query, but build on the default query and only change a little thing. You can change arguments for the default query that WordPress will use to fetch posts by using the `merge_default` argument. For example, if you’d want to change the default query to *only show posts written by a specific group of authors*, you could pass in an `author__in` argument:
 
 **archive.php**
 
