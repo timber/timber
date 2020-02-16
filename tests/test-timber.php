@@ -110,13 +110,15 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 
 		$post_movie        = Timber\Timber::get_post_by( 'title', $post_title, 'movie' );
 		$post_page         = Timber\Timber::get_post_by( 'title', $post_title, 'page' );
-		$post_multiple = Timber\Timber::get_post_by( 'title', $post_title, 'any' );
+		$post_multiple     = Timber\Timber::get_post_by( 'title', $post_title, [ 'page', 'book' ] );
+		$post_multiple_any = Timber\Timber::get_post_by( 'title', $post_title, 'any' );
 
 		$this->assertEquals( $post_id_movie, $post_movie->ID );
 		$this->assertEquals( $post_id_page, $post_page->ID );
 
 		// Multiple post types should return the post with the oldest post date.
 		$this->assertEquals( $post_id_page, $post_multiple->ID );
+		$this->assertEquals( $post_id_page, $post_multiple_any->ID );
 	}
 
 	function testGetPostByTitleForNonexistentPost(){
