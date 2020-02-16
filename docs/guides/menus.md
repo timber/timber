@@ -15,7 +15,7 @@ To get a menu object in Timber, you use `Timber::get_menu()`. This function is s
 You can pass the **slug of the menu** you want to use:
 
 ```php
-$menu = Timber::get_menu( 'primary' );
+$menu = Timber::get_menu( 'primary-navigation' );
 ```
 
 Or the **ID** number of the menu:
