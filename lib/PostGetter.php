@@ -15,6 +15,9 @@ class PostGetter {
 	public static function get_post( $query = false, $PostClass = '\Timber\Post' ) {
 		// if a post id is passed, grab the post directly
 		if ( is_numeric($query) ) {
+			// @todo this will become:
+			//$factory = new PostFactory();
+			//$post = $factory->get_post($query);
 			$post_type = get_post_type($query);
 			$PostClass = PostGetter::get_post_class($post_type, $PostClass);
 			$post = new $PostClass($query);

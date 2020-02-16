@@ -159,7 +159,7 @@ class ImageHelper {
 	 * @return bool True if SVG, false if not SVG or file doesn't exist.
 	 */
 	public static function is_svg( $file_path ) {
-		if ( ! isset( $file_path ) || '' === $file_path || ! file_exists( $file_path ) ) {
+		if ( '' === $file_path || ! file_exists( $file_path ) ) {
 			return false;
 		}
 
@@ -173,7 +173,7 @@ class ImageHelper {
 		 * SVG images are not allowed by default in WordPress, so we have to pass a default mime
 		 * type for SVG images.
 		 */
-		$mime = wp_check_filetype_and_ext( $file_path, basename( $file_path ), array(
+		$mime = wp_check_filetype_and_ext( $file_path, PathHelper::basename( $file_path ), array(
 			'svg' => 'image/svg+xml',
 		) );
 
@@ -301,7 +301,7 @@ class ImageHelper {
 		if ( URLHelper::is_absolute($local_file) ) {
 			$local_file = URLHelper::url_to_file_system($local_file);
 		}
-		$info = pathinfo($local_file);
+		$info = PathHelper::pathinfo($local_file);
 		$dir = $info['dirname'];
 		$ext = $info['extension'];
 		$filename = $info['filename'];
@@ -369,7 +369,7 @@ class ImageHelper {
 		$dir = $upload['path'];
 		$filename = $file;
 		$file = parse_url($file);
-		$path_parts = pathinfo($file['path']);
+		$path_parts = PathHelper::pathinfo($file['path']);
 		$basename = md5($filename);
 		$ext = 'jpg';
 		if ( isset($path_parts['extension']) ) {
@@ -396,7 +396,7 @@ class ImageHelper {
 		$tmp = download_url($file);
 		preg_match('/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches);
 		$file_array = array();
-		$file_array['name'] = basename($matches[0]);
+		$file_array['name'] = PathHelper::basename($matches[0]);
 		$file_array['tmp_name'] = $tmp;
 		// If error storing temporarily, unlink
 		if ( is_wp_error($tmp) ) {
@@ -404,7 +404,7 @@ class ImageHelper {
 			$file_array['tmp_name'] = '';
 		}
 		// do the validation and storage stuff
-		$locinfo = pathinfo($loc);
+		$locinfo = PathHelper::pathinfo($loc);
 		$file = wp_upload_bits($locinfo['basename'], null, file_get_contents($file_array['tmp_name']));
 		return $file['url'];
 	}
@@ -454,7 +454,7 @@ class ImageHelper {
 				$tmp = URLHelper::remove_url_component($tmp, WP_CONTENT_DIR);
 			}
 		}
-		$parts = pathinfo($tmp);
+		$parts = PathHelper::pathinfo($tmp);
 		$result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
 		$result['filename'] = $parts['filename'];
 		$result['extension'] = strtolower($parts['extension']);
@@ -524,11 +524,10 @@ class ImageHelper {
 		if ( !empty($subdir) ) {
 			$url .= $subdir;
 		}
-		$url .= '/'.$filename;
+		$url = untrailingslashit($url).'/'.$filename;
 		if ( !$absolute ) {
 			$url = str_replace(site_url(), '', $url);
 		}
-		// $url = Timber\URLHelper::remove_double_slashes( $url);
 		return $url;
 	}
 

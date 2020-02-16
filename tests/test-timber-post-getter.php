@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @group posts-api
  * @group called-post-constructor
  */
 class TestTimberPostGetter extends Timber_UnitTestCase {
@@ -224,15 +225,6 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals( $post_id_alert, $post_alert[0]->ID );
 
 		remove_filter( 'timber/post/post_class', $filter );
-	}
-
-	function test587() {
-		register_post_type('product');
-		$pids = $this->factory->post->create_many(6, array('post_type' => 'product'));
-		$args = array(
-        	'post_type' => 'project'
-    	);
-		$context['projects'] = Timber\Timber::get_posts( $args );
 	}
 
 	function testGettingEmptyArray(){
@@ -517,11 +509,6 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 
 		$this->assertEquals($first_pids, $wp_ids);
 
-		$other_query = Timber\Timber::get_posts( [ 'post__in' => $first_pids ] );
-		$timber_ids = array_map(function($post) {
-			return $post->ID;
-		}, $other_query);
-		$this->assertNotEquals($first_pids, $timber_ids);
 	}
 
 

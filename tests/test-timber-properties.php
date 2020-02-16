@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * @group users-api
+ * @group comments-api
  * @group called-post-constructor
  * @group called-term-constructor
  * @todo #2094 replace direct Timber\User instantiations
@@ -8,16 +10,16 @@
  */
 class TestTimberProperty extends Timber_UnitTestCase {
 
-	function testPropertyID() {
+	public function testPropertyID() {
 		$post_id = $this->factory->post->create();
 		$user_id = $this->factory->user->create();
 		$comment_id = $this->factory->comment->create( array( 'comment_post_ID' => $post_id ) );
 		$term_id = wp_insert_term( 'baseball', 'post_tag' );
 		$term_id = $term_id['term_id'];
 		$post = Timber::get_post( $post_id );
-		$user = new Timber\User( $user_id );
+		$user = Timber::get_user( $user_id );
 		$term = Timber::get_term( $term_id );
-		$comment = new Timber\Comment( $comment_id );
+		$comment = Timber\Timber::get_comment( $comment_id );
 		$this->assertEquals( $post_id, $post->ID );
 		$this->assertEquals( $post_id, $post->id );
 		$this->assertEquals( $user_id, $user->ID );
@@ -29,21 +31,21 @@ class TestTimberProperty extends Timber_UnitTestCase {
 	}
 
 
-	function _initObjects() {
+	protected function _initObjects() {
 		$post_id = $this->factory->post->create();
 		$user_id = $this->factory->user->create();
 		$comment_id = $this->factory->comment->create( array( 'comment_post_ID' => $post_id ) );
 		$term_id = wp_insert_term( 'baseball', 'post_tag' );
 		$term_id = $term_id['term_id'];
 		$post = Timber::get_post( $post_id );
-		$user = new Timber\User( $user_id );
+		$user = Timber::get_user( $user_id );
 		$term = Timber::get_term( $term_id );
-		$comment = new Timber\Comment( $comment_id );
+		$comment = Timber\Timber::get_comment( $comment_id );
 		$site = new Timber\Site();
 		return array( 'post' => $post, 'user' => $user, 'term' => $term, 'comment' => $comment, 'site' => $site );
 	}
 
-	function testMetaForTerm() {
+	public function testMetaForTerm() {
 		$vars = $this->_initObjects();
 		extract( $vars );
 		update_term_meta($term->ID, 'abraham', 'lincoln');
@@ -56,7 +58,7 @@ class TestTimberProperty extends Timber_UnitTestCase {
 	 * @expectedDeprecated Timber\Post::update()
 	 * @expectedDeprecated Timber\Core::update()
 	 */
-	function testMeta() {
+	public function testMeta() {
 		$vars = $this->_initObjects();
 		extract( $vars );
 

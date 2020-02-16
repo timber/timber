@@ -154,8 +154,9 @@ class Loader {
 				'2.0.0',
 				'timber/loader/render_data'
 			);
-
-			$output = $twig->render($file, $data);
+			
+			$template = $twig->load($file);
+			$output = $template->render($data);
 		}
 
 		if ( false !== $output && false !== $expires && null !== $key ) {
@@ -238,22 +239,25 @@ class Loader {
 	 * @return \Twig\Loader\FilesystemLoader
 	 */
 	public function get_loader() {
-		$open_basedir = ini_get('open_basedir');
-		$paths        = array_merge_recursive(
-			$this->locations,
-			array( self::MAIN_NAMESPACE => array( $open_basedir ? ABSPATH : '/' ) )
-		);
+		$paths = $this->locations;
+
 		/**
-		 * Filters …
-		 *
-		 * @todo Add summary, description, example, parameter description
+		 * Filters the template paths used by the Loader.
 		 *
 		 * @since 0.20.10
 		 *
+		 * @deprecated 2.0.0, use `timber/locations`
+		 *
 		 * @param array $paths
 		 */
-		$paths = apply_filters('timber/loader/paths', $paths);
+		$paths = apply_filters_deprecated(
+			'timber/loader/paths',
+			array( $paths ),
+			'2.0.0',
+			'timber/locations'
+		);
 
+		$open_basedir = ini_get('open_basedir');
 		$rootPath = '/';
 		if ( $open_basedir ) {
 			$rootPath = null;
@@ -299,6 +303,7 @@ class Loader {
 	 * @return \Twig\Environment
 	 */
 	public function get_twig() {
+
 		// Default options.
 		$environment_options = array(
 			'debug'      => WP_DEBUG,
@@ -529,6 +534,8 @@ class Loader {
 	}
 
 	/**
+	 * Remove a directory and everything inside
+	 *
 	 * @param string|false $dirPath
 	 */
 	public static function rrmdir( $dirPath ) {

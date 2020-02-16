@@ -1,6 +1,7 @@
 <?php
 
 	/**
+	 * @group comments-api
 	 * @group called-post-constructor
 	 */
 	class TestTimberCommentThread extends Timber_UnitTestCase {

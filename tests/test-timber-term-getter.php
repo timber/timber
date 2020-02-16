@@ -1,7 +1,10 @@
 <?php
 
-	class MyTerm extends Timber\Term {}
+	require_once 'php/MetaTerm.php';
 
+	/**
+	 * @group terms-api
+	 */
 	class TestTimberTermGetter extends Timber_UnitTestCase {
 
 		function setUp() {
@@ -15,6 +18,13 @@
 			$term_id = $this->factory->term->create( array('name' => 'Toyota') );
 			$term = Timber::get_term($term_id);
 			$this->assertEquals($term_id, $term->ID);
+		}
+
+		function testIDDataType() {
+			$term_id = $this->factory->term->create( array('name' => 'Honda') );
+			$term = new Timber\Term($term_id);
+			$this->assertEquals('integer', gettype($term->id));
+			$this->assertEquals('integer', gettype($term->ID));
 		}
 
 		function testGetSingleTermInTaxonomy() {
@@ -43,16 +53,16 @@
 		function testSubclass(){
 			$term_ids = $this->factory->term->create_many(4);
 
-			$terms = Timber::get_terms($term_ids, MyTerm::class);
-			$this->assertEquals(MyTerm::class, get_class($terms[0]));
+			$terms = Timber::get_terms($term_ids, MetaTerm::class);
+			$this->assertEquals(MetaTerm::class, get_class($terms[0]));
 
 			$terms = false;
-			$terms = Timber::get_terms($term_ids, null, MyTerm::class);
-			$this->assertEquals(MyTerm::class, get_class($terms[0]));
+			$terms = Timber::get_terms($term_ids, null, MetaTerm::class);
+			$this->assertEquals(MetaTerm::class, get_class($terms[0]));
 
 			$terms = false;
-			$terms = Timber::get_terms($term_ids, array(), MyTerm::class);
-			$this->assertEquals(MyTerm::class, get_class($terms[0]));
+			$terms = Timber::get_terms($term_ids, array(), MetaTerm::class);
+			$this->assertEquals(MetaTerm::class, get_class($terms[0]));
 		}
 
 		function testGetWithQuery(){

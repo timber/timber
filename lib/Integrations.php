@@ -9,8 +9,9 @@ namespace Timber;
  */
 class Integrations {
 
-	var $acf;
-	var $coauthors_plus;
+	public $acf;
+	public $coauthors_plus;
+	public $wpml;
 
 	public function __construct() {
 		$this->init();
@@ -27,9 +28,6 @@ class Integrations {
 	public function maybe_init_integrations() {
 		if ( class_exists('ACF') ) {
 			$this->acf = new Integrations\ACF();
-		}
-		if ( class_exists('CoAuthors_Plus') ) {
-			$this->coauthors_plus = new Integrations\CoAuthorsPlus();
 		}
 		$this->wpml = new Integrations\WPML();
 	}

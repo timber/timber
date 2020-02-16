@@ -4,6 +4,8 @@ namespace Timber;
 
 use WP_Post;
 
+use Timber\Factory\UserFactory;
+
 /**
  * Class Post
  *
@@ -45,7 +47,7 @@ use WP_Post;
  * </article>
  * ```
  */
-class Post extends Core implements CoreInterface, MetaInterface, Setupable {
+class Post extends Core implements CoreInterface, MetaInterface, DatedInterface, Setupable {
 
 	/**
 	 * @var string The name of the class to handle images by default
@@ -74,9 +76,9 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 	/**
 	 * @internal
-	 * @var string Stores the processed content internally
+	 * @var string stores the processed content internally
 	 */
-	protected $_content;
+	protected $___content;
 
 	/**
 	 * @var string|boolean The returned permalink from WP's get_permalink function
@@ -300,7 +302,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * tries to figure out what post you want to get if not explictly defined (or if it is, allows it to be passed through)
 	 * @internal
 	 * @param mixed a value to test against
-	 * @return int the numberic id we should be using for this post object
+	 * @return int|null the numberic id we should be using for this post object, null when there's no ID (ex: 404 page)
 	 */
 	protected function determine_id( $pid ) {
 		global $wp_query;
@@ -461,18 +463,56 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	/**
 	 * Gets a preview/excerpt of your post.
 	 *
-	 * If you have text defined in the excerpt textarea of your post, it will use that. Otherwise it
-	 * will pull from the post_content. If there's a `<!-- more -->` tag, it will use that to mark
-	 * where to pull through.
+	 * If you have an excerpt is set on the post, the excerpt will be used. Otherwise it will try to
+	 * pull from a preview from `post_content`. If there’s a `<!-- more -->` tag in the post
+	 * content, it will use that to mark where to pull through.
+	 *
+	 * @api
+	 * @see \Timber\PostPreview
+	 *
+	 * @param array $options {
+	 *     An array of configuration options for generating the excerpt. Default empty.
+	 *
+	 *     @type int      $words     Number of words in the excerpt. Default `50`.
+	 *     @type int|bool $chars     Number of characters in the excerpt. Default `false` (no
+	 *                               character limit).
+	 *     @type string   $end       String to append to the end of the excerpt. Default '&hellip;'
+	 *                               (HTML ellipsis character).
+	 *     @type bool     $force     Whether to shorten the excerpt to the length/word count
+	 *                               specified, if the editor wrote a manual excerpt longer than the
+	 *                               set length. Default `false`.
+	 *     @type bool     $strip     Whether to strip HTML tags. Default `true`.
+	 *     @type string   $read_more String for what the "Read More" text should be. Default
+	 *                               'Read More'.
+	 * }
+	 * @example
+	 * ```twig
+	 * <h2>{{ post.title }}</h2>
+	 * <div>{{ post.excerpt({ words: 100, read_more: 'Keep reading' }) }}</div>
+	 * ```
+	 * @return \Timber\PostPreview
+	 */
+	public function excerpt( array $options = array() ) {
+		return new PostPreview( $this, $options );
+	}
+
+	/**
+	 * Gets a preview (excerpt) of your post.
+	 *
+	 * If you have an excerpt is set on the post, the excerpt will be used. Otherwise it will try to
+	 * pull from a preview from `post_content`. If there’s a `<!-- more -->` tag in the post
+	 * content, it will use that to mark where to pull through.
 	 *
 	 * This method returns a `Timber\PostPreview` object, which is a **chainable object**. This
 	 * means that you can change the output of the preview by **adding more methods**. Refer to the
 	 * [documentation of the `Timber\PostPreview` class](https://timber.github.io/docs/reference/timber-postpreview/)
 	 * to get an overview of all the available methods.
 	 *
+	 * @deprecated 2.0.0, use `{{ post.excerpt }}` instead.
+	 * @see \Timber\PostPreview
 	 * @example
 	 * ```twig
-     * {# Use default preview #}
+	 * {# Use default preview #}
 	 * <p>{{ post.preview }}</p>
 	 *
 	 * {# Change the post preview text #}
@@ -481,19 +521,18 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * {# Additionally restrict the length to 50 words #}
 	 * <p>{{ post.preview.length(50).read_more('Continue Reading') }}</p>
 	 * ```
-	 * @see \Timber\PostPreview
 	 * @return \Timber\PostPreview
 	 */
 	public function preview() {
+		Helper::deprecated('{{ post.preview }}', '{{ post.excerpt }}', '2.0.0');
 		return new PostPreview($this);
 	}
 
 	/**
 	 * Get a preview (excerpt) of your post.
 	 *
-	 * @api
-	 * @deprecated 1.3.1, use `{{ post.preview }}` instead.
-	 * @see        \Timber\Post::preview()
+	 * @deprecated 1.3.1, use `{{ post.excerpt }}` instead.
+	 * @see        \Timber\Post::excerpt()
 	 *
 	 * @param int         $len      The number of words that WordPress should use to make the
 	 *                              preview.
@@ -597,7 +636,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * {% for post in job %}
 	 *     <div class="job">
 	 *         <h2>{{ post.title }}</h2>
-	 *         <p>{{ post.terms('category')|join(', ') }}</p>
+	 *         <p>{{ post.terms( {query:{taxonomy:'category', orderby:'name', order: 'ASC'}} )|join(', ') }}</p>
 	 *     </div>
 	 * {% endfor %}
 	 * </section>
@@ -606,7 +645,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * <section id="job-feed">
 	 *     <div class="job">
 	 *         <h2>Cheese Maker</h2>
-	 *         <p>Food, Cheese, Fromage</p>
+	 *         <p>Cheese, Food, Fromage</p>
 	 *     </div>
 	 *     <div class="job">
 	 *         <h2>Mime</h2>
@@ -1155,7 +1194,8 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 */
 	public function author() {
 		if ( isset($this->post_author) ) {
-			return new User($this->post_author);
+			$factory = new UserFactory();
+			return $factory->from((int) $this->post_author);
 		}
 	}
 
@@ -1197,7 +1237,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 */
 	public function modified_author() {
 		$user_id = get_post_meta($this->ID, '_edit_last', true);
-		return ($user_id ? new User($user_id) : $this->author());
+		return ($user_id ? Timber::get_user($user_id) : $this->author());
 	}
 
 	/**
@@ -1213,9 +1253,10 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	/**
 	 * Returns a category attached to a post
 	 *
+	 * If multiple categories are set, it will return just the first one
+	 *
 	 * @api
-	 * If mulitpuile categories are set, it will return just the first one
-	 * @return Timber\Term|null
+	 * @return \Timber\Term|null
 	 */
 	public function category() {
 		$cats = $this->categories();
@@ -1280,9 +1321,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 *                             special purposes. Might be set to 'liveblog' or other, depending
 	 *                             on what’s stored in your comments table.
 	 * @param string $status       Could be 'pending', etc.
-	 * @param string $CommentClass What class to use when returning Comment objects. As you become a
-	 *                             Timber Pro, you might find yourself extending `Timber\Comment`
-	 *                             for your site or app (obviously, totally optional).
 	 * @see \Timber\CommentThread for an example with nested comments
 	 * @return bool|\Timber\CommentThread
 	 *
@@ -1431,8 +1469,8 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		if ( $form = $this->maybe_show_password_form() ) {
 			return $form;
 		}
-		if ( $len == -1 && $page == 0 && $this->_content ) {
-			return $this->_content;
+		if ( $len == -1 && $page == 0 && $this->___content ) {
+			return $this->___content;
 		}
 		$content = $this->post_content;
 		if ( $len > 0 ) {
@@ -1447,7 +1485,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		}
 		$content = apply_filters('the_content', ($content));
 		if ( $len == -1 && $page == 0 ) {
-			$this->_content = $content;
+			$this->___content = $content;
 		}
 		return $content;
 	}
@@ -1461,14 +1499,43 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * Get the date to use in your template!
+	 * Gets the timestamp when the post was published.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @return false|int Unix timestamp on success, false on failure.
+	 */
+	public function timestamp() {
+		return get_post_timestamp( $this->ID );
+	}
+
+	/**
+	 * Gets the timestamp when the post was last modified.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @return false|int Unix timestamp on success, false on failure.
+	 */
+	public function modified_timestamp() {
+		return get_post_timestamp( $this->ID, 'modified' );
+	}
+
+	/**
+	 * Gets the publishing date of the post.
+	 *
+	 * This function will also apply the
+	 * [`get_the_date`](https://developer.wordpress.org/reference/hooks/get_the_date/) filter to the
+	 * output.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * Published on {{ post.date }} // Uses WP's formatting set in Admin
+	 * {# Uses date format set in Settings → General #}
+	 * Published on {{ post.date }}
 	 * OR
-	 * Published on {{ post.date('F jS') }} // Jan 12th
+	 * Published on {{ post.date('F jS') }}
 	 * ```
 	 *
 	 * ```html
@@ -1476,24 +1543,96 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * OR
 	 * Published on Jan 12th
 	 * ```
-	 * @param string $date_format
+	 *
+	 * @param string|null $date_format Optional. PHP date format. Will use the `date_format` option
+	 *                                 as a default.
+	 *
 	 * @return string
 	 */
-	public function date( $date_format = '' ) {
-		$df       = $date_format ? $date_format : get_option('date_format');
-		$the_date = (string) mysql2date($df, $this->post_date);
-		return apply_filters('get_the_date', $the_date, $df);
+	public function date( $date_format = null ) {
+		$format = $date_format ?: get_option( 'date_format' );
+		$date   = wp_date( $format, $this->timestamp() );
+
+		/**
+		 * Filters the date a post was published.
+		 *
+		 * @see get_the_date()
+		 *
+		 * @param string      $date        The formatted date.
+		 * @param string      $date_format PHP date format. Defaults to 'date_format' option if not
+		 *                                 specified.
+		 * @param int|WP_Post $id          The post object or ID.
+		 */
+		$date = apply_filters( 'get_the_date', $date, $date_format, $this->ID );
+
+		return $date;
 	}
 
 	/**
-	 * Get the time to use in your template
+	 * Gets the date the post was last modified.
+	 *
+	 * This function will also apply the
+	 * [`get_the_modified_date`](https://developer.wordpress.org/reference/hooks/get_the_modified_date/)
+	 * filter to the output.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * Published at {{ post.time }} // Uses WP's formatting set in Admin
+	 * {# Uses date format set in Settings → General #}
+	 * Last modified on {{ post.modified_date }}
 	 * OR
-	 * Published at {{ post.time | time('G:i') }} // 13:25
+	 * Last modified on {{ post.modified_date('F jS') }}
+	 * ```
+	 *
+	 * ```html
+	 * Last modified on January 12, 2015
+	 * OR
+	 * Last modified on Jan 12th
+	 * ```
+	 *
+	 * @param string|null $date_format Optional. PHP date format. Will use the `date_format` option
+	 *                                 as a default.
+	 *
+	 * @return string
+	 */
+	public function modified_date( $date_format = null ) {
+		$format = $date_format ?: get_option( 'date_format' );
+		$date   = wp_date( $format, $this->modified_timestamp() );
+
+		/**
+		 * Filters the date a post was last modified.
+		 *
+		 * This filter expects a `WP_Post` object as the last parameter. We only have a
+		 * `Timber\Post` object available, that wouldn’t match the expected argument. That’s why we
+		 * need to get the post object with get_post(). This is fairly inexpensive, because the post
+		 * will already be in the cache.
+		 *
+		 * @see get_the_modified_date()
+		 *
+		 * @param string|bool  $date        The formatted date or false if no post is found.
+		 * @param string       $date_format PHP date format. Defaults to value specified in
+		 *                                  'date_format' option.
+		 * @param WP_Post|null $post        WP_Post object or null if no post is found.
+		 */
+		$date = apply_filters( 'get_the_modified_date', $date, $date_format, get_post( $this->ID ) );
+
+		return $date;
+	}
+
+	/**
+	 * Gets the time the post was published to use in your template.
+	 *
+	 * This function will also apply the
+	 * [`get_the_time`](https://developer.wordpress.org/reference/hooks/get_the_time/) filter to the
+	 * output.
+	 *
+	 * @api
+	 * @example
+	 * ```twig
+	 * {# Uses time format set in Settings → General #}
+	 * Published at {{ post.time }}
+	 * OR
+	 * Published at {{ post.time|time('G:i') }}
 	 * ```
 	 *
 	 * ```html
@@ -1501,13 +1640,82 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * OR
 	 * Published at 13:25
 	 * ```
-	 * @param  string $time_format
+	 *
+	 * @param string|null $time_format Optional. PHP date format. Will use the `time_format` option
+	 *                                 as a default.
+	 *
 	 * @return string
 	 */
-	public function time( $time_format = '' ) {
-		$tf       = $time_format ? $time_format : get_option('time_format');
-		$the_time = (string) mysql2date($tf, $this->post_date);
-		return apply_filters('get_the_time', $the_time, $tf);
+	public function time( $time_format = null ) {
+		$format = $time_format ?: get_option( 'time_format' );
+		$time   = wp_date( $format, $this->timestamp() );
+
+		/**
+		 * Filters the time a post was written.
+		 *
+		 * @see get_the_time()
+		 *
+		 * @param string      $time        The formatted time.
+		 * @param string      $time_format Format to use for retrieving the time the post was
+		 *                                 written. Accepts 'G', 'U', or php date format value
+		 *                                 specified in `time_format` option. Default empty.
+		 * @param int|WP_Post $id          WP_Post object or ID.
+		 */
+		$time = apply_filters( 'get_the_time', $time, $time_format, $this->ID );
+
+		return $time;
+	}
+
+	/**
+	 * Gets the time of the last modification of the post to use in your template.
+	 *
+	 * This function will also apply the
+	 * [`get_the_time`](https://developer.wordpress.org/reference/hooks/get_the_modified_time/)
+	 * filter to the output.
+	 *
+	 * @api
+	 * @example
+	 * ```twig
+	 * {# Uses time format set in Settings → General #}
+	 * Published at {{ post.time }}
+	 * OR
+	 * Published at {{ post.time|time('G:i') }}
+	 * ```
+	 *
+	 * ```html
+	 * Published at 1:25 pm
+	 * OR
+	 * Published at 13:25
+	 * ```
+	 *
+	 * @param string|null $time_format Optional. PHP date format. Will use the `time_format` option
+	 *                                 as a default.
+	 *
+	 * @return string
+	 */
+	public function modified_time( $time_format = null ) {
+		$format = $time_format ?: get_option( 'time_format' );
+		$time   = wp_date( $format, $this->modified_timestamp() );
+
+		/**
+		 * Filters the localized time a post was last modified.
+		 *
+		 * This filter expects a `WP_Post` object as the last parameter. We only have a
+		 * `Timber\Post` object available, that wouldn’t match the expected argument. That’s why we
+		 * need to get the post object with get_post(). This is fairly inexpensive, because the post
+		 * will already be in the cache.
+		 *
+		 * @see get_the_modified_time()
+		 *
+		 * @param string|bool  $time        The formatted time or false if no post is found.
+		 * @param string       $time_format Format to use for retrieving the time the post was
+		 *                                  written. Accepts 'G', 'U', or php date format. Defaults
+		 *                                  to value specified in 'time_format' option.
+		 * @param WP_Post|null $post        WP_Post object or null if no post is found.
+		 */
+		$time = apply_filters( 'get_the_modified_time', $time, $time_format, get_post( $this->ID ) );
+
+		return $time;
 	}
 
 	/**
@@ -1584,28 +1792,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 */
 	public function name() {
 		return $this->title();
-	}
-
-	/**
-	 * @api
-	 * @param string $date_format
-	 * @return string
-	 */
-	public function modified_date( $date_format = '' ) {
-		$df = $date_format ? $date_format : get_option('date_format');
-		$the_time = $this->modified_time($df);
-		return apply_filters('get_the_modified_date', $the_time, $date_format);
-	}
-
-	/**
-	 * @api
-	 * @param string $time_format
-	 * @return string
-	 */
-	public function modified_time( $time_format = '' ) {
-		$tf = $time_format ? $time_format : get_option('time_format');
-		$the_time = get_post_modified_time($tf, false, $this->ID, true);
-		return apply_filters('get_the_modified_time', $the_time, $time_format);
 	}
 
 	/**

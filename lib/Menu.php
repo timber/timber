@@ -7,7 +7,7 @@ namespace Timber;
  *
  * @api
  */
-class Menu extends Core {
+class Menu extends Term {
 
 	public $MenuItemClass = 'Timber\MenuItem';
 	public $PostClass = 'Timber\Post';

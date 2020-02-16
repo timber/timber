@@ -3,6 +3,12 @@
 namespace Timber\Integrations;
 
 class CoAuthorsPlusUser extends \Timber\User {
+
+	/**
+	 * @api
+	 * @var \Timber\Image of a user's avatar image. 
+	 */
+	public $avatar;
 	
 	/**
 	 * @param object $author co-author object

@@ -3,8 +3,11 @@
 use Timber\Integrations\ACF;
 
 /**
+ * @group users-api
+ * @group comments-api
  * @group called-post-constructor
  * @group called-term-constructor
+ * @group integrations
  * @todo #2094 replace direct Timber\User instantiations
  * @todo #2094 replace direct Timber\Comment instantiations
  */
@@ -146,7 +149,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 	 */
 	function testUserGetFieldDeprecated() {
 		$user_id = $this->factory->user->create();
-		$user    = new Timber\User( $user_id );
+		$user    = Timber::get_user( $user_id );
 
 		$user->get_field( 'field_name' );
 	}
@@ -156,8 +159,18 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 	 */
 	function testCommentGetFieldDeprecated() {
 		$comment_id = $this->factory->comment->create();
-		$comment    = new Timber\Comment( $comment_id );
+		$comment    = Timber\Timber::get_comment( $comment_id );
 
 		$comment->get_field( 'field_name' );
+	}
+
+	function testACFContentField() {
+		$pid = $this->factory->post->create(array('post_content' => 'Cool content bro!'));
+		update_field( 'content', 'I am custom content', $pid );
+		update_field( '_content', 'I am also custom content', $pid );
+		$str = '{{ post.content }}';
+		$post = new Timber\Post( $pid );
+		$str = Timber::compile_string( $str, array( 'post' => $post ) );
+		$this->assertEquals( '<p>Cool content bro!</p>', trim($str) );
 	}
 }

@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @group posts-api
  * @group called-post-constructor
  */
 class TestTimberStaticPages extends Timber_UnitTestCase {

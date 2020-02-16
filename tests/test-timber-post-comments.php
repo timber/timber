@@ -1,6 +1,8 @@
 <?php
 
-  /**
+	/**
+	 * @group posts-api
+	 * @group comments-api
 	 * @group called-post-constructor
 	 */
 	class TestTimberPostComments extends Timber_UnitTestCase {
@@ -46,8 +48,18 @@
 			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
 			$comment_id_array = $this->factory->comment->create_many( 5, array('comment_post_ID' => $post_id) );
 			$post = Timber::get_post($post_id);
+
+			$filter = function() {
+				return [
+					'post' => CustomComment::class,
+				];
+			};
+			add_filter('timber/comment/classmap', $filter);
+
 			$comments = $post->comments(null, 'wp', 'comment', 'approve', 'CustomComment');
-			$this->assertEquals('CustomComment', get_class($comments[0]));
+			$this->assertEquals(CustomComment::class, get_class($comments[0]));
+
+			remove_filter('timber/comment/classmap', $filter);
 		}
 
 		function testShowUnmoderatedCommentIfByCurrentUser() {
@@ -99,12 +111,14 @@
 
 		function testThreadedCommentsWithTemplate() {
 			$post_id = $this->factory->post->create(array('post_title' => 'Gobbles'));
-			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'first!', 'comment_date' => '2016-11-28 12:58:18'));
-			$comment2_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'second!', 'comment_date' => '2016-11-28 13:58:18'));
+			$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'oldest!', 'comment_date' => '2016-11-28 12:58:18'));
+			$comment2_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_content' => 'newest!', 'comment_date' => '2016-11-28 13:58:18'));
 			$comment2_child_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $comment2_id, 'comment_content' => 'response', 'comment_date' => '2016-11-28 14:58:18'));
 			$comment2_grandchild_id = $this->factory->comment->create(array('comment_post_ID' => $post_id, 'comment_parent' => $comment2_child_id, 'comment_content' => 'Respond2Respond', 'comment_date' => '2016-11-28 15:58:18'));
 			$post = Timber::get_post($post_id);
 			$str = Timber::compile('assets/comments-thread.twig', array('post' => $post));
+			$str = preg_replace('/\s+/', ' ', $str);
+			$this->assertEquals('<article data-depth="0"> <p><p>newest!</p></p> <article data-depth="1"> <p><p>response</p></p> <article data-depth="2"> <p><p>Respond2Respond</p></p> </article> </article> </article> <article data-depth="0"> <p><p>oldest!</p></p> </article>', trim($str));
 		}
 
 	}

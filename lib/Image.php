@@ -117,7 +117,7 @@ class Image extends Attachment {
 			"{{ function('pathinfo', image.file) }}",
 			'2.0.0'
 		);
-		return pathinfo($this->file);
+		return PathHelper::pathinfo($this->file);
 	}
 
 	/**
@@ -133,16 +133,7 @@ class Image extends Attachment {
 			'Image::get_dimension',
 			'2.0.0'
 		);
-		if ( isset($this->_dimensions) ) {
-			return $this->get_dimensions_loaded($dim);
-		}
-		if ( file_exists($this->file_loc) && filesize($this->file_loc) ) {
-			list($width, $height) = getimagesize($this->file_loc);
-			$this->_dimensions = array();
-			$this->_dimensions[0] = $width;
-			$this->_dimensions[1] = $height;
-			return $this->get_dimensions_loaded($dim);
-		}
+		return array($this->width(), $this->height());
 	}
 
 	/**
@@ -159,9 +150,9 @@ class Image extends Attachment {
 		);
 		$dim = strtolower($dim);
 		if ( $dim == 'h' || $dim == 'height' ) {
-			return $this->_dimensions[1];
+			return $this->height();
 		}
-		return $this->_dimensions[0];
+		return $this->width();
 	}
 
 	/**
@@ -416,10 +407,9 @@ class Image extends Attachment {
 	 */
 	protected function is_image() {
 		$src        = wp_get_attachment_url( $this->ID );
-		$check      = wp_check_filetype( basename( $src ), null );
+		$check      = wp_check_filetype( PathHelper::basename( $src ), null );
 		$image_exts = array( 'jpg', 'jpeg', 'jpe', 'gif', 'png' );
-
-		return in_array( $check['ext'], $image_exts, true );
+		return in_array( $check['ext'], $image_exts );
 	}
 
 	/**
