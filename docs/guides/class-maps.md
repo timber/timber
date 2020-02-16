@@ -184,12 +184,12 @@ The Menu Class Map is used:
 ```php
 use MenuPrimary;
 
-add_filter( 'timber/menu/classmap', function( $classmap, $location ) {
+add_filter( 'timber/menu/classmap', function( $class, $location ) {
     if ( 'primary' === $location ) {
         return MenuPrimary::class;
     }
 
-    return $classmap;
+    return $class;
 }, 10, 2 );
 ```
 
