@@ -35,6 +35,21 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertEquals( 'kill-bill', $post->post_name );
 	}
 
+	function testGetPostBySlugNewest(){
+		$post_id = $this->factory->post->create( [ 'post_type' => 'post', 
+												   'post_name' => 'privacy', 
+												   'post_date'  => '2018-01-10 02:58:18' ] );
+
+		$page_id = $this->factory->post->create( [ 'post_type' => 'page', 
+												   'post_name' => 'privacy', 
+												   'post_date'  => '2020-01-10 02:58:18' ] );
+
+		$post = Timber\Timber::get_post_by( 'slug', 'privacy', ['order' => 'DESC'] );
+
+		$this->assertEquals( 'privacy', $post->post_name );
+		$this->assertEquals( $page_id, $post->ID );
+	}
+
 	function testGetPostBySlugAndPostType(){
 
 		register_post_type('movie', array('public' => true));
@@ -48,8 +63,8 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 			'post_type' => 'page',
 		] );
 
-		$post_movie = Timber\Timber::get_post_by( 'slug', 'kill-bill', 'movie' );
-		$post_page  = Timber\Timber::get_post_by( 'slug', 'kill-bill', 'page' );
+		$post_movie = Timber\Timber::get_post_by( 'slug', 'kill-bill', ['post_type' => 'movie'] );
+		$post_page  = Timber\Timber::get_post_by( 'slug', 'kill-bill', ['post_type' => 'page'] );
 
 		$this->assertEquals( $post_id_movie, $post_movie->ID );
 		$this->assertEquals( $post_id_page, $post_page->ID );
@@ -108,10 +123,10 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 			'post_date'  => '2020-01-02 02:58:18'
 		] );
 
-		$post_movie        = Timber\Timber::get_post_by( 'title', $post_title, 'movie' );
-		$post_page         = Timber\Timber::get_post_by( 'title', $post_title, 'page' );
-		$post_multiple     = Timber\Timber::get_post_by( 'title', $post_title, [ 'page', 'book' ] );
-		$post_multiple_any = Timber\Timber::get_post_by( 'title', $post_title, 'any' );
+		$post_movie        = Timber\Timber::get_post_by( 'title', $post_title, ['post_type' => 'movie'] );
+		$post_page         = Timber\Timber::get_post_by( 'title', $post_title, ['post_type' => 'page'] );
+		$post_multiple     = Timber\Timber::get_post_by( 'title', $post_title, ['post_type' => [ 'page', 'book' ]] );
+		$post_multiple_any = Timber\Timber::get_post_by( 'title', $post_title, ['post_type' => 'any'] );
 
 		$this->assertEquals( $post_id_movie, $post_movie->ID );
 		$this->assertEquals( $post_id_page, $post_page->ID );

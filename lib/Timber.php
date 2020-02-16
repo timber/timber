@@ -183,16 +183,19 @@ class Timber {
 	 *                            posts with the same slug or title were found, it will select the
 	 *                            post with the oldest date.
 	 */
-	public static function get_post_by( $type, $search_value, $post_type = 'any' ) {
+	public static function get_post_by( $type, $search_value, $args = array() ) {
 		$post_id = false;
-
+		$args = wp_parse_args( $args, [
+			'post_type' => 'any',
+			'order_by'  => 'post_date',
+			'order'     => 'ASC'
+		] );
 		if ( 'slug' === $type ) {
-			$query = new \WP_Query( [
-				'post_type' => $post_type,
+			$args = wp_parse_args($args, [
 				'name'      => $search_value,
-				'fields'    => 'ids',
-				'order'		=> 'ASC',
-			] );
+				'fields'    => 'ids'
+			]);
+			$query = new \WP_Query( $args );
 
 			if ( $query->post_count < 1 ) {
 				return false;
@@ -214,15 +217,14 @@ class Timber {
 
 			$sql = "SELECT ID FROM $wpdb->posts WHERE post_title = %s";
 			$query_args = [ $search_value ];
-
-			if ( is_array( $post_type ) ) {
-				$post_type           = esc_sql( $post_type );
-				$post_type_in_string = "'" . implode( "','", $post_type ) . "'";
+			if ( is_array( $args['post_type'] ) ) {
+				$post_type           = esc_sql( $args['post_type'] );
+				$post_type_in_string = "'" . implode( "','", $args['post_type'] ) . "'";
 
 				$sql .= " AND post_type IN ($post_type_in_string)";
-			} elseif ( 'any' !== $post_type ) {
+			} elseif ( 'any' !== $args['post_type'] ) {
 				$sql .= ' AND post_type = %s';
-				$query_args[] = $post_type;
+				$query_args[] = $args['post_type'];
 			}
 
 			// Always return the oldest post first.
