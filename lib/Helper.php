@@ -285,17 +285,25 @@ class Helper {
 	 * @api
 	 * @since 2.0.0
 	 * @since WordPress 3.1.0
+	 * @see \_doing_it_wrong()
 	 *
 	 * @param string $function The function that was called.
 	 * @param string $message  A message explaining what has been done incorrectly.
 	 * @param string $version  The version of Timber where the message was added.
 	 */
 	public static function doing_it_wrong( $function, $message, $version ) {
+		/**
+		 * Fires when the given function is being used incorrectly.
+		 *
+		 * @param string $function The function that was called.
+		 * @param string $message  A message explaining what has been done incorrectly.
+		 * @param string $version  The version of WordPress where the message was added.
+		 */
+		do_action( 'doing_it_wrong_run', $function, $message, $version );
+
 		if ( ! WP_DEBUG ) {
 			return;
 		}
-
-		do_action( 'doing_it_wrong_run', $function, $message, $version );
 
 		/**
 		 * Filters whether to trigger an error for _doing_it_wrong() calls.
@@ -354,19 +362,27 @@ class Helper {
 	 * DocBlock. E.g.: "@expectedDeprecated {{ TimberImage() }}".
 	 *
 	 * @api
+	 * @see \_deprecated_function()
 	 *
 	 * @param string $function    The name of the deprecated function/method.
-	 * @param string $replacement Function to use instead.
-	 * @param string $version     When we deprecated this.
+	 * @param string $replacement The name of the function/method to use instead.
+	 * @param string $version     The version of Timber when the function was deprecated.
 	 *
 	 * @return void
 	 */
 	public static function deprecated( $function, $replacement, $version ) {
+		/**
+		 * Fires when a deprecated function is being used.
+		 *
+		 * @param string $function    The function that was called.
+		 * @param string $replacement The name of the function/method to use instead.
+		 * @param string $version     The version of Timber where the message was added.
+		 */
+		do_action( 'deprecated_function_run', $function, $replacement, $version );
+
 		if ( ! WP_DEBUG ) {
 			return;
 		}
-
-		do_action( 'deprecated_function_run', $function, $replacement, $version );
 
 		/**
 		 * Filters whether to trigger an error for deprecated functions.
