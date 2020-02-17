@@ -22,6 +22,7 @@ class CoAuthorsPlusUser extends \Timber\User {
 	 * @param false|object $coauthor co-author object
 	 */
 	protected function init( $coauthor = false ) {
+		parent::init($coauthor);
 		$this->id = $this->ID = (int) $coauthor->ID;
 		$this->first_name = $coauthor->first_name;
 		$this->last_name = $coauthor->last_name;
