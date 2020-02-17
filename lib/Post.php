@@ -205,9 +205,9 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		}
 
 		if ( '_thumbnail_id' === $field ) {
-			Helper::deprecated(
+			Helper::doing_it_wrong(
 				"Accessing the thumbnail ID through {{ {$this->object_type}._thumbnail_id }}",
-				"{{ {$this->object_type}.thumbnail_id }}",
+				"You can retrieve the thumbnail ID via the thumbnail object {{ {$this->object_type}.thumbnail.id }}. If you need the id as stored on this post's postmeta you can use {{ {$this->object_type}.meta('_thumbnail_id') }}",
 				'2.0.0'
 			);
 		}
