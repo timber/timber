@@ -140,6 +140,9 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 */
 	protected function init( $wp_user ) {
 		$data = get_userdata($wp_user->ID);
+		if ( !isset($data->data) ) {
+			return;
+		}
 		$this->import($data->data);
 
 		if ( isset($data->roles) ) {

@@ -129,6 +129,9 @@
 			$this->assertEquals('Alexander Hamilton, Motia,', trim($str));
 		}
 
+		/**
+		 * Co-Authors originally created as guests can be linked to a real WordPress user account. In these instances, we want to use the linked account's information
+		 */
 		function testLinkedGuestAuthor(){
 			global $coauthors_plus;
 
@@ -139,7 +142,7 @@
 			$display_name = 'True Name';
 
 			$uid = $this->factory->user->create(array('display_name' => $display_name, 'user_login' => $user_login));
-			$user = new Timber\User($uid);
+			$user = Timber::get_user($uid);
 
 			$guest_login = 'linkguestlogin';
 			$guest_display_name = 'LGuest D Name';
@@ -152,15 +155,25 @@
 
 			$coauthors_plus->force_guest_authors = false;
 			$authors = $post->authors();
+			
+			/**
+			 * Here we're testing to see if we get the LINKED guest author account ("Mr. True Name") 
+			 * instead of the temporary guest name ("LGuest D Name") that was created.
+			 */
 			$author = $authors[0];
-			$this->assertEquals($author->display_name, $user->name);
+			$this->assertEquals("True Name", $author->name());
 			$this->assertInstanceOf('Timber\User', $author);
-			$this->assertNotInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
+			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
 
+			/**
+			 * Here we're testing that when we FORCE guest authors, it uses the original guest author
+			 * account ("LGuest D Name") when reporting the user's name. 
+			 */
 			$coauthors_plus->force_guest_authors = true;
 			$authors = $post->authors();
 			$author = $authors[0];
-			$this->assertEquals($author->display_name, $guest_display_name);
+			$this->assertEquals($guest_display_name, $author->name());
+			$this->assertInstanceOf('Timber\User', $author);
 			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
 		}
 
