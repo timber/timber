@@ -310,7 +310,8 @@
 			$this->assertEquals('Sport', get_class($sport_post));
 			$this->assertEquals('ESPN', $sport_post->channel());
  		}
- 		 /**
+
+ 		/**
  		 * @expectedIncorrectUsage Accessing the thumbnail ID through {{ post._thumbnail_id }}
  		 */
  		function testDoingItWrong() {
