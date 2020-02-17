@@ -22,7 +22,7 @@ class CoAuthorsPlusUser extends \Timber\User {
 	 * @param false|object $coauthor co-author object
 	 */
 	protected function init( $coauthor = false ) {
-		$this->id = $coauthor->ID;
+		$this->id = $this->ID = (int) $coauthor->ID;
 		$this->first_name = $coauthor->first_name;
 		$this->last_name = $coauthor->last_name;
 		$this->user_nicename = $coauthor->user_nicename;
@@ -45,5 +45,6 @@ class CoAuthorsPlusUser extends \Timber\User {
 		 	 */
 			$this->avatar = new \Timber\Image($avatar_url);
 		}
+
 	}
 }
