@@ -17,6 +17,13 @@
 			parent::expectedDeprecated();
 		}
 
+		function setUp() {
+			if ( !class_exists('CoAuthors_Plus') ) {
+				return $this->markTestSkipped('CoAuthors_Plus plugin not loaded');
+			}
+			parent::setUp();
+		}
+
 		/* ----------------
 		 * Helper functions
 		 ---------------- */
