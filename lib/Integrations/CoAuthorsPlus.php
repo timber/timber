@@ -30,10 +30,10 @@ class CoAuthorsPlus {
 		foreach ( $cauthors as $author ) {
 			$uid = $this->get_user_uid( $author );
 			if ( $uid ) {
-				$authors[] = \Timber::get_user($uid);
+				$authors[] = \Timber\Timber::get_user($uid);
 			} else {
 				$wp_user = new \WP_User($author);
-				$user = \Timber::get_user($wp_user);
+				$user = \Timber\Timber::get_user($wp_user);
 				$user->import($wp_user->data);
 				unset($user->user_pass);
 				$user->id = $user->ID = (int) $wp_user->ID;
