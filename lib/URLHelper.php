@@ -217,7 +217,12 @@ class URLHelper {
 	public static function get_rel_path( $src ) {
 		$root = self::get_root_dir();
 		if ( strstr($src, $root) ) {
-			return str_replace($root, '', $src);
+			/**
+			 * This replaces just the first found instance, whereas str_replace replaces all occurances
+			 */
+			$from = '/'.preg_quote($root, '/').'/';
+    		return preg_replace($from, '', $src, 1);
+			//return str_replace($root, '', $src);
 		}
 		//its outside the wordpress directory, alternate setups:
 		$src = str_replace(WP_CONTENT_DIR, '', $src);
