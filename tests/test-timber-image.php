@@ -393,11 +393,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testInitFromURLWithCustomWPDirectoryStructure() {
 		$this->setupCustomWPDirectoryStructure();
 		$destination_path = self::copyTestImage();
-		error_log('$destination_path='.$destination_path);
 		$destination_rel_path = TimberURLHelper::get_rel_path( $destination_path );
-		error_log('$destination_rel_path = '.$destination_rel_path);
 		$destination_url = 'http://'.$_SERVER['HTTP_HOST'].'/'.$destination_rel_path;
-		error_log('$destination_url = '.$destination_url);
 		$image = new TimberImage( $destination_url );
 		$upload_dir = wp_upload_dir();
 		$this->tearDownCustomWPDirectoryStructure();

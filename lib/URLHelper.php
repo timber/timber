@@ -181,7 +181,7 @@ class URLHelper {
 	public static function get_content_subdir() {
 		$home_url = get_home_url();
 		$home_url = apply_filters('timber/URLHelper/get_content_subdir/home_url', $home_url);
-		$wp_content_path = str_replace($home_url, '', WP_CONTENT_URL);
+		$wp_content_path = self::str_replace_once($home_url, '', WP_CONTENT_URL);
 		return $wp_content_path;
 	}
 
@@ -209,6 +209,15 @@ class URLHelper {
 	}
 
 	/**
+	 * Do a string replacement, but only on the first occurence of the found $from string
+	 * @return string
+	 */
+	public static function str_replace_once( $from, $to, $src ) {
+		$from = '/'.preg_quote($from, '/').'/';
+    	return preg_replace($from, $to, $src, 1);
+	}
+
+	/**
 	 *
 	 *
 	 * @param string  $src
@@ -220,12 +229,10 @@ class URLHelper {
 			/**
 			 * This replaces just the first found instance, whereas str_replace replaces all occurances
 			 */
-			$from = '/'.preg_quote($root, '/').'/';
-    		return preg_replace($from, '', $src, 1);
-			//return str_replace($root, '', $src);
+			return self::str_replace_once($root, '', $src);
 		}
 		//its outside the wordpress directory, alternate setups:
-		$src = str_replace(WP_CONTENT_DIR, '', $src);
+		$src = self::str_replace_once(WP_CONTENT_DIR, '', $src);
 		return self::get_content_subdir().$src;
 	}
 
