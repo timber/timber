@@ -27,7 +27,7 @@ class PostGetter {
 
 		$posts = self::get_posts($query, $PostClass);
 
-		if ( $post = reset($posts) ) {
+		if ( is_iterable($posts) && $post = reset($posts) ) {
 			return $post;
 		}
 
