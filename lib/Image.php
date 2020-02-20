@@ -125,6 +125,8 @@ class Image extends Post implements CoreInterface {
 	 * @return array|int
 	 */
 	protected function get_dimensions( $dim ) {
+		error_log('file_loc'.$this->file_loc);
+		error_log('filesize'.filesize($this->file_loc));
 		if ( isset($this->_dimensions) ) {
 			return $this->get_dimensions_loaded($dim);
 		}

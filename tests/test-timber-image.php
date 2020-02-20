@@ -25,6 +25,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if ( is_null($dest_name) ) {
 			$dest_name = $img;
 		}
+		error_log('$dest_name = '.$dest_name);
+		error_log('wp_upload_dir() '.print_r(wp_upload_dir(), true));
 		$destination = $upload_dir['path'].'/'.$dest_name;
 		error_log('$destination = '.$destination);
 		copy( __DIR__.'/assets/'.$img, $destination );
