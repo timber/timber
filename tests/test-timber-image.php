@@ -26,6 +26,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 			$dest_name = $img;
 		}
 		$destination = $upload_dir['path'].'/'.$dest_name;
+		error_log('$destination = '.$destination);
 		copy( __DIR__.'/assets/'.$img, $destination );
 		return $destination;
 	}
