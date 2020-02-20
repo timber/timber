@@ -749,7 +749,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		}
 		if ( !file_exists($img_dir) ) {
 			$parent = dirname($img_dir);
-			// error_log($parent);
 			chmod($parent, 0777);
     		$res = mkdir($img_dir, 0777, true);
 		}
@@ -762,11 +761,10 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 			exec(sprintf("rm -rf %s", escapeshellarg($img_dir)));
 		}
 		$uploads = wp_upload_dir();
-		$files = glob($uploads['basedir'].date('/Y/m/').'*'); // get all file names
-		//error_log(print_r($files, true));
-		foreach($files as $file){ // iterate files
+		$files = glob($uploads['basedir'].date('/Y/m/').'*');
+		foreach($files as $file){
 			if(is_file($file)) {
-				unlink($file); // delete file
+				unlink($file);
 			}
 		}
 		parent::tearDown();
