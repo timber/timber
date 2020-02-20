@@ -25,10 +25,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if ( is_null($dest_name) ) {
 			$dest_name = $img;
 		}
-		error_log('$dest_name = '.$dest_name);
-		error_log('wp_upload_dir() '.print_r(wp_upload_dir(), true));
 		$destination = $upload_dir['path'].'/'.$dest_name;
-		error_log('$destination = '.$destination);
 		copy( __DIR__.'/assets/'.$img, $destination );
 		return $destination;
 	}
@@ -159,7 +156,6 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testImageSizes() {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
-		error_log(print_r($image, true));
 		$this->assertEquals( 1500, $image->width() );
 		$this->assertEquals( 1000, $image->height() );
 		$this->assertEquals( $post->ID, $image->parent()->id );
@@ -783,6 +779,8 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if ( file_exists($img_dir) ) {
 			exec(sprintf("rm -rf %s", escapeshellarg($img_dir)));
 		}
+		$wp_upload_dir = wp_upload_dir();
+		exec(sprintf("rm -rf %s", escapeshellarg($wp_upload_dir['basedir'])));
 		parent::tearDown();
 	}
 
