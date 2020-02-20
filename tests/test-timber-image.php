@@ -156,6 +156,7 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 	function testImageSizes() {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
+		error_log(print_r($image, true));
 		$this->assertEquals( 1500, $image->width() );
 		$this->assertEquals( 1000, $image->height() );
 		$this->assertEquals( $post->ID, $image->parent()->id );
