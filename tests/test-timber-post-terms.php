@@ -32,7 +32,6 @@
 			$cars[] = $this->factory->term->create( array('name' => 'Dodge Intrepid', 'taxonomy' => 'cars') );
 			foreach($cars as $tid) {
 				$car = new Timber\Term($tid);
-				error_log($tid . ' = ' .$car->name);
 			}
 			wp_set_object_terms($pid, $cars, 'cars', false);
 			$post = new Timber\Post($pid);
