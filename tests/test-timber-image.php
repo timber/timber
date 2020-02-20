@@ -761,6 +761,14 @@ class TestTimberImage extends TimberImage_UnitTestCase {
 		if ( file_exists($img_dir) ) {
 			exec(sprintf("rm -rf %s", escapeshellarg($img_dir)));
 		}
+		$uploads = wp_upload_dir();
+		$files = glob($uploads['basedir'].date('/Y/m/').'*'); // get all file names
+		//error_log(print_r($files, true));
+		foreach($files as $file){ // iterate files
+			if(is_file($file)) {
+				unlink($file); // delete file
+			}
+		}
 		parent::tearDown();
 	}
 
