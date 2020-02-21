@@ -18,10 +18,7 @@ class TermFactory {
 		}
 
 		if (is_string($params)) {
-			return $this->from_wp_term_query(new WP_Term_Query([
-				'taxonomy' => $params,
-				'number'   => 0,
-			]));
+			return $this->from_taxonomy_names([$params]);
 		}
 
 		if ($params instanceof WP_Term_Query) {
@@ -33,11 +30,17 @@ class TermFactory {
 		}
 
 		if ($this->is_numeric_array($params)) {
+			if ($this->is_array_of_strings($params)) {
+				return $this->from_taxonomy_names($params);
+			}
+
 			return array_map([$this, 'from'], $params);
 		}
 
 		if (is_array($params)) {
-			return $this->from_wp_term_query(new WP_Term_Query($params));
+			return $this->from_wp_term_query(new WP_Term_Query(
+				$this->filter_query_params($params)
+			));
 		}
 
 		return false;
@@ -73,6 +76,14 @@ class TermFactory {
 		));
 	}
 
+	protected function from_taxonomy_names(array $names) {
+		return $this->from_wp_term_query(new WP_Term_Query(
+			$this->filter_query_params([
+				'taxonomy' => $names,
+			])
+		));
+	}
+
 	protected function get_term_class(WP_Term $term) : string {
 		// Get the user-configured Class Map
 		$map = apply_filters( 'timber/term/classmap', [
@@ -97,12 +108,67 @@ class TermFactory {
 		return new $class($term);
 	}
 
+	protected function correct_tax_key(array $params) {
+		$corrections = [
+			'taxonomies' => 'taxonomy',
+			'taxs'       => 'taxonomy',
+			'tax'        => 'taxonomy',
+		];
+
+		foreach ($corrections as $mistake => $correction) {
+			if (isset($params[$mistake])) {
+				$params[$correction] = $params[$mistake];
+			}
+		}
+
+		return $params;
+	}
+
+	protected function correct_taxonomies($tax) : array {
+		$taxonomies = is_array($tax) ? $tax : [$tax];
+
+		$corrections = [
+			'categories' => 'category',
+			'tags'       => 'post_tag',
+			'tag'        => 'post_tag',
+		];
+
+		return array_map(function($taxonomy) use($corrections) {
+			return $corrections[$taxonomy] ?? $taxonomy;
+		}, $taxonomies);
+	}
+
+	protected function filter_query_params(array $params) {
+		$params = $this->correct_tax_key($params);
+
+		if (isset($params['taxonomy'])) {
+			$params['taxonomy'] = $this->correct_taxonomies($params['taxonomy']);
+		}
+
+		$include = $params['term_id'] ?? null;
+		if ($include) {
+			$params['include'] = is_array($include) ? $include : [$include];
+		}
+
+		return $params;
+	}
+
 	protected function is_numeric_array($arr) {
 		if ( ! is_array($arr) ) {
 			return false;
 		}
 		foreach (array_keys($arr) as $k) {
 			if ( ! is_int($k) ) return false;
+		}
+		return true;
+	}
+
+	protected function is_array_of_strings($arr) {
+		if ( ! is_array($arr) ) {
+			return false;
+		}
+		foreach ($arr as $v) {
+			if ( ! is_string($v) ) return false;
 		}
 		return true;
 	}

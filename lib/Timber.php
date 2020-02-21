@@ -227,15 +227,22 @@ class Timber {
 	 * ]);
 	 * ```
 	 */
-	public static function get_terms( $args = null, $maybe_args = array(), $TermClass = 'Timber\Term' ) : Iterable {
-		return TermGetter::get_terms($args, $maybe_args, $TermClass);
+	public static function get_terms( $args = null, array $options = [] ) : Iterable {
+		// default to all queryable taxonomies
+		$args = $args ?? [
+			'taxonomy'   => get_taxonomies(),
+			'hide_empty' => false,
+		];
+
+		$factory = new TermFactory();
+
+		return $factory->from($args);
 	}
 
 	/**
 	 * Get term.
 	 * @api
 	 * @param int|\WP_Term $term a WP_Term or term_id
-	 * @param string       $taxonomy the taxonomy of the term you want
 	 * @return \Timber\Term|false
 	 * @example
 	 * ```php
@@ -246,7 +253,7 @@ class Timber {
 	 * $tag = Timber::get_term(123, 'post_tag');
 	 * ```
 	 */
-	public static function get_term( $term = null, $taxonomy = '' ) {
+	public static function get_term( $term = null ) {
 		if (null === $term) {
 			// get the fallback term_id from the current query
 			global $wp_query;
