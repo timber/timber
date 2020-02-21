@@ -17,6 +17,13 @@ class TermFactory {
 			return $this->from_id($params);
 		}
 
+		if (is_string($params)) {
+			return $this->from_wp_term_query(new WP_Term_Query([
+				'taxonomy' => $params,
+				'number'   => 0,
+			]));
+		}
+
 		if ($params instanceof WP_Term_Query) {
 			return $this->from_wp_term_query($params);
 		}

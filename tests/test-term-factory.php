@@ -47,6 +47,25 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$this->assertEquals($term_id, $term->id);
 	}
 
+	public function testGetTermFromTaxonomyName() {
+		$term_ids = $this->factory->term->create_many(3, ['taxonomy' => 'post_tag']);
+
+		// by default hide_empty is true, so assign each term to a post
+		wp_set_object_terms(
+			$this->factory->post->create(),
+			$term_ids,
+			'post_tag'
+		);
+
+		$termFactory = new TermFactory();
+		$terms       = $termFactory->from('post_tag');
+
+		$this->assertCount(3, $terms);
+		foreach ($terms as $term) {
+			$this->assertInstanceOf(Term::class, $term);
+		}
+	}
+
 	public function testGetTermWithOverrides() {
 		register_taxonomy('whackness', 'post');
 		$my_class_map = function() {
