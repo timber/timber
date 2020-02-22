@@ -9,7 +9,7 @@
 
 		function testIDDataType() {
 			$uid = $this->factory->user->create(array('display_name' => 'James Marshall'));
-			$user = new Timber\User($uid);
+			$user = Timber::get_user($uid);
 			$this->assertEquals('integer', gettype($user->id));
 			$this->assertEquals('integer', gettype($user->ID));
 		}
