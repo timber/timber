@@ -225,8 +225,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		if ( !isset($this->_children) ) {
 			$children = get_term_children($this->ID, $this->taxonomy);
 			foreach ( $children as &$child ) {
-				// @todo #2087 get this to work w/o $taxonomy param
-				$child = Timber::get_term($child, $this->taxonomy);
+				$child = Timber::get_term($child);
 			}
 			$this->_children = $children;
 		}
