@@ -66,11 +66,13 @@ class Twig {
 		$twig->addFunction( new TwigFunction( 'get_term', [ Timber::class, 'get_term' ] ) );
 		$twig->addFunction( new TwigFunction( 'get_terms', [ Timber::class, 'get_terms' ] ) );
 
-		// @TODO: Enable these when factories are merged into 2.0.
-		// $twig->addFunction( new TwigFunction( 'get_user', [ Timber::class, 'get_user' ] ) );
-		// $twig->addFunction( new TwigFunction( 'get_users', [ Timber::class, 'get_users' ] );
-		// $twig->addFunction( new TwigFunction( 'get_comment', [ Timber::class, 'get_comment' ] );
-		// $twig->addFunction( new TwigFunction( 'get_comments', [ Timber::class, 'get_comments' ] );
+		// Users
+		$twig->addFunction( new TwigFunction( 'get_user', [ Timber::class, 'get_user' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_users', [ Timber::class, 'get_users' ] ) );
+
+		// Comments
+		$twig->addFunction( new TwigFunction( 'get_comment', [ Timber::class, 'get_comment' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_comments', [ Timber::class, 'get_comments' ] ) );
 
 		/**
 		 * Deprecated Timber object functions.
