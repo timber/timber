@@ -54,8 +54,15 @@ class Twig {
 		 * Timber object functions.
 		 */
 
+		// Posts
 		$twig->addFunction( new TwigFunction( 'get_post', [ Timber::class, 'get_post' ] ) );
 		$twig->addFunction( new TwigFunction( 'get_posts', [ Timber::class, 'get_posts' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_attachment', [ Timber::class, 'get_post' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_attachments', [ Timber::class, 'get_posts' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_image', [ Timber::class, 'get_post' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_images', [ Timber::class, 'get_posts' ] ) );
+
+		// Terms
 		$twig->addFunction( new TwigFunction( 'get_term', [ Timber::class, 'get_term' ] ) );
 		$twig->addFunction( new TwigFunction( 'get_terms', [ Timber::class, 'get_terms' ] ) );
 
@@ -82,7 +89,7 @@ class Twig {
 		) );
 
 		$twig->addFunction(new TwigFunction('Image', function( $post_id, $ImageClass = 'Timber\Image' ) {
-			Helper::deprecated( '{{ Image() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0' );
+			Helper::deprecated( '{{ Image() }}', '{{ get_image() }}, {{ get_images() }}, {{ get_attachment() }} or {{ get_attachments() }}', '2.0.0' );
 			return self::maybe_convert_array( $post_id, $ImageClass );
 		} ) );
 		$twig->addFunction( new TwigFunction(
@@ -514,7 +521,7 @@ class Twig {
 	 */
 	public static function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
 		Helper::deprecated( 'time_ago', 'DateTimeHelper::time_ago', '2.0.0' );
-    
+
 		return DateTimeHelper::time_ago( $from, $to, $format_past, $format_future );
 	}
 

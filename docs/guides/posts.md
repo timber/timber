@@ -44,7 +44,7 @@ You can convert post IDs to post objects in Twig using the `Post()` function.
 This is especially helpful if you only have the image ID and want to convert it to an image:
 
 ```twig
-<img src="{{ Image(attachment_id).src }}">
+<img src="{{ get_image(attachment_id).src }}">
 ```
 
 It also works if you have an array of post IDs that you want to convert to `Timber\Post` objects.

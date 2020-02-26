@@ -28,7 +28,7 @@ namespace Timber;
  *   </div>
  *
  *  <img
- *    src="{{ Image(post.custom_field_with_image_id).src }}"
+ *    src="{{ get_image(post.custom_field_with_image_id).src }}"
  *    alt="Another way to initialize images as Timber\Image objects, but within Twig" />
  * </article>
  * ```

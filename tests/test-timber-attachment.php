@@ -92,7 +92,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		$iid = self::get_attachment();
 		$attachment = new Timber\Attachment($iid);
 		$post = get_post($iid);
-		$str = '{{ Attachment(post).src }}';
+		$str = '{{ get_attachment(post).src }}';
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($attachment->src(), $result);
 	}
@@ -101,7 +101,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	function testAttachmentSrc() {
 		$pid = $this->factory->post->create();
 		$iid = self::get_attachment($pid, 'dummy-pdf.pdf');
-		$str = '{{ Attachment(post).src }}';
+		$str = '{{ get_attachment(post).src }}';
 		$result = Timber::compile_string( $str, array('post' => $iid) );
 		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/dummy-pdf.pdf', $result);
 	}
@@ -109,7 +109,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	function testFileSize() {
  		$pid = $this->factory->post->create();
 		$iid = self::get_attachment( $pid, 'dummy-pdf.pdf' );
-		$str = '{{ Attachment(post).size }}';
+		$str = '{{ get_attachment(post).size }}';
 		$result = Timber::compile_string( $str, array( 'post' => $iid ) );
 		$this->assertEquals('16&nbsp;KB', $result);
 	}
@@ -117,7 +117,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	function testFileSizeRaw() {
  		$pid = $this->factory->post->create();
 		$iid = self::get_attachment( $pid, 'dummy-pdf.pdf' );
-		$str = '{{ Attachment(post).size_raw }}';
+		$str = '{{ get_attachment(post).size_raw }}';
 		$result = Timber::compile_string( $str, array( 'post' => $iid ) );
 		$this->assertEquals('16555', $result);
 	}
@@ -125,7 +125,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	function testFileExtension() {
  		$pid = $this->factory->post->create();
 		$iid = self::get_attachment( $pid, 'dummy-pdf.pdf' );
-		$str = '{{ Attachment(post).extension }}';
+		$str = '{{ get_attachment(post).extension }}';
 		$result = Timber::compile_string( $str, array( 'post' => $iid ) );
 		$this->assertEquals('PDF', $result);
 	}
