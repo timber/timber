@@ -63,7 +63,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
  	function testReplacedImage() {
  		$pid = $this->factory->post->create(array('post_type' => 'post'));
  		$attach_id = self::get_attachment($pid, 'arch.jpg');
- 		$template = '{{Image(img).src|resize(200, 200)}}';
+ 		$template = '{{ get_image(img).src|resize(200, 200) }}';
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$resized_one = Timber\ImageHelper::get_server_location($str);
  		sleep(1);
@@ -85,7 +85,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
  	function testResizedReplacedImage() {
  		$pid = $this->factory->post->create(array('post_type' => 'post'));
  		$attach_id = self::get_attachment($pid, 'arch.jpg');
- 		$template = '{{Image(img).src|resize(200, 200)}}';
+ 		$template = '{{ get_image(img).src|resize(200, 200) }}';
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$new_id = self::get_attachment($pid, 'pizza.jpg');
  		self::replace_attachment($attach_id, $new_id);

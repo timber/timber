@@ -25,7 +25,7 @@ class TestTimberTwigObjects extends Timber_UnitTestCase {
 	 */
 	function testImageInTwig() {
 		$iid = TestTimberImage::get_attachment();
-		$str = '{{Image('.$iid.').src}}';
+		$str = '{{ get_image('.$iid.').src }}';
 		$compiled = Timber::compile_string($str);
 		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpg', $compiled);
 	}
@@ -75,7 +75,7 @@ class TestTimberTwigObjects extends Timber_UnitTestCase {
 	 */
 	function testTimberImageInTwigToString() {
 		$iid = TestTimberImage::get_attachment();
-		$str = '{{Image('.$iid.')}}';
+		$str = '{{ get_image('.$iid.') }}';
 		$compiled = Timber::compile_string($str);
 		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpg', $compiled);
 	}

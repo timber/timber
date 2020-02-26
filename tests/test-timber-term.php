@@ -25,7 +25,7 @@
 			// @todo #2087 get this to work w/o $taxonomy param
 			$term = Timber::get_term($term_id, '');
 			$this->assertEquals('Zong', $term->title());
-			$template = '{% set zp_term = Term("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
+			$template = '{% set zp_term = get_term("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zong', $string);
 		}

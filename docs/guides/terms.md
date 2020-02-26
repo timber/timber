@@ -21,13 +21,13 @@ What you get in return is a [`Timber\Term`](https://timber.github.io/docs/refere
 You can convert terms IDs to term objects in Twig using the `Term()` function.
 
 ```twig
-{% set term = Term(term_id) %}
+{% set term = get_term(term_id) %}
 ```
 
 It also works if you have an array of terms IDs that you want to convert to `Timber\Term` objects.
 
 ```twig
-{% for term in Term(term_ids) %}
+{% for term in get_terms(term_ids) %}
 ```
 
 ## Invalid terms

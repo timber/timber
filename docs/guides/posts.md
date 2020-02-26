@@ -38,7 +38,7 @@ Here’s a Twig template that received the post above in a `$post` variable.
 You can convert post IDs to post objects in Twig using the `Post()` function.
 
 ```twig
-{% set post = Post(post_id) %}
+{% set post = get_post(post_id) %}
 ```
 
 This is especially helpful if you only have the image ID and want to convert it to an image:
@@ -50,7 +50,7 @@ This is especially helpful if you only have the image ID and want to convert it 
 It also works if you have an array of post IDs that you want to convert to `Timber\Post` objects.
 
 ```twig
-{% for post in Post(post_ids) %}
+{% for post in get_posts(post_ids) %}
 ```
 
 ## Invalid posts
