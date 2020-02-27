@@ -36,6 +36,12 @@ _Twig is the template language powering Timber; if you need a little background 
 **Changes for Theme Developers**
 
 
+= 1.15.1 =
+**Fixes and improvements**
+* Fixed an issue where null results from `PostGetter::get_posts` could trigger a fatal error #2199 (thanks @jhhazelaar)
+* Removed a useless and confusing error_log message when a `post_type` isn't found in a class map #2202 (thanks @gchtr)
+* Fixed a documentation issue that gave phpStorm a bad time with `query_post` #2205 (thanks @mweimerskirch)
+
 = 1.15.0 =
 **Fixes and improvements**
 - Fixed an issue where a custom field named "content" could conflict with `{{ post.content }}`
