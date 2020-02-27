@@ -7,9 +7,9 @@ You can set your own locations for your twig files with...
 
 ```php
 <?php
-add_filter( 'timber/loader/paths', function($paths) {
+add_filter( 'timber/locations', function($paths) {
 	$paths[] = array('/Users/jared/Sandbox/templates');
-	
+
 	return $paths;
 });
 ```
@@ -18,13 +18,13 @@ Use the full file path to make sure Timber knows what you're trying to draw from
 
 ```php
 <?php
-add_filter( 'timber/loader/paths', function($paths) {
+add_filter( 'timber/locations', function($paths) {
 	$paths[] = array(
 		'/Users/jared/Sandbox/templates',
 		'~/Sites/timber-templates/',
 		ABSPATH.'/wp-content/templates'
 	);
-	
+
 	return $paths;
 });
 ```
@@ -35,11 +35,11 @@ You can also use [namespaces](https://symfony.com/doc/current/templating/namespa
 
 ```php
 <?php
-add_filter( 'timber/loader/paths', function($paths) {
+add_filter( 'timber/locations', function($paths) {
 	$paths['styleguide'] = array(
 		ABSPATH.'/wp-content/styleguide'
 	);
-	
+
 	return $paths;
 });
 ```
@@ -55,12 +55,12 @@ You can also register multiple paths for the same namespace. Order is important 
 
 ```php
 <?php
-add_filter( 'timber/loader/paths', function($paths) {
+add_filter( 'timber/locations', function($paths) {
 	$paths['styleguide'] = array(
 		ABSPATH.'/wp-content/styleguide',
 		'/Users/jared/Sandbox/styleguide'
 	);
-	
+
 	return $paths;
 });
 ```

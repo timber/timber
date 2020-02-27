@@ -108,48 +108,63 @@ class Image extends Attachment {
 
 	/**
 	 * Get a PHP array with pathinfo() info from the file
+	 * @deprecated 2.0.0, functionality will no longer be supported in future releases.
 	 * @return array
 	 */
 	public function get_pathinfo() {
-		return pathinfo($this->file);
+		Helper::deprecated(
+			"{{ image.get_pathinfo }}",
+			"{{ function('pathinfo', image.file) }}",
+			'2.0.0'
+		);
+		return PathHelper::pathinfo($this->file);
 	}
 
 	/**
 	 * Processes an image's dimensions.
+	 * @deprecated 2.0.0, use `{{ image.width }}` or `{{ image.height }}` in Twig
 	 * @internal
 	 * @param string $dim
 	 * @return array|int
 	 */
 	protected function get_dimensions( $dim ) {
-		if ( isset($this->_dimensions) ) {
-			return $this->get_dimensions_loaded($dim);
-		}
-		if ( file_exists($this->file_loc) && filesize($this->file_loc) ) {
-			list($width, $height) = getimagesize($this->file_loc);
-			$this->_dimensions = array();
-			$this->_dimensions[0] = $width;
-			$this->_dimensions[1] = $height;
-			return $this->get_dimensions_loaded($dim);
-		}
+		Helper::deprecated(
+			'Image::get_dimensions',
+			'Image::get_dimension',
+			'2.0.0'
+		);
+		return array($this->width(), $this->height());
 	}
 
 	/**
+	 * @deprecated 2.0.0, use Image::get_dimension_loaded
 	 * @internal
 	 * @param string|null $dim
 	 * @return array|int
 	 */
 	protected function get_dimensions_loaded( $dim ) {
+		Helper::deprecated(
+			'Image::get_dimensions',
+			'Image::get_dimension',
+			'2.0.0'
+		);
 		$dim = strtolower($dim);
 		if ( $dim == 'h' || $dim == 'height' ) {
-			return $this->_dimensions[1];
+			return $this->height();
 		}
-		return $this->_dimensions[0];
+		return $this->width();
 	}
 
 	/**
+	 * @deprecated 2.0.0, use Image::meta to retrieve specific fields
 	 * @return array
 	 */
 	protected function get_post_custom( $iid ) {
+		Helper::deprecated(
+			'{{ image.get_post_custom( image.id ) }}',
+			"{{ image.meta('my_field') }}",
+			'2.0.0'
+		);
 		$pc = get_post_custom($iid);
 		if ( is_bool($pc) ) {
 			return array();
@@ -352,7 +367,7 @@ class Image extends Attachment {
 	 * @example
 	 * ```twig
 	 * <h1>{{ post.title }}</h1>
-	 * <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumnbail.srcset }}" />
+	 * <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumbnail.srcset }}" />
 	 * ```
 	 * ```html
 	 * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w" />
@@ -371,7 +386,7 @@ class Image extends Attachment {
 	 * @example
 	 * ```twig
 	 * <h1>{{ post.title }}</h1>
-	 * <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumnbail.srcset }}" sizes="{{ post.thumbnail.img_sizes }}" />
+	 * <img src="{{ post.thumbnail.src }}" srcset="{{ post.thumbnail.srcset }}" sizes="{{ post.thumbnail.img_sizes }}" />
 	 * ```
 	 * ```html
 	 * <img src="http://example.org/wp-content/uploads/2018/10/pic.jpg" srcset="http://example.org/wp-content/uploads/2018/10/pic.jpg 1024w, http://example.org/wp-content/uploads/2018/10/pic-600x338.jpg 600w, http://example.org/wp-content/uploads/2018/10/pic-300x169.jpg 300w sizes="(max-width: 1024px) 100vw, 102" />
@@ -392,10 +407,9 @@ class Image extends Attachment {
 	 */
 	protected function is_image() {
 		$src        = wp_get_attachment_url( $this->ID );
-		$check      = wp_check_filetype( basename( $src ), null );
+		$check      = wp_check_filetype( PathHelper::basename( $src ), null );
 		$image_exts = array( 'jpg', 'jpeg', 'jpe', 'gif', 'png' );
-
-		return in_array( $check['ext'], $image_exts, true );
+		return in_array( $check['ext'], $image_exts );
 	}
 
 	/**
@@ -413,11 +427,13 @@ class Image extends Attachment {
 	protected function determine_id( $iid ) {
 		$iid = parent::determine_id( $iid );
 		if ( $iid instanceof \WP_Post ) {
-			$ref  = new \ReflectionClass( $this );
-			$post = $ref->getParentClass()->newInstance( $iid->ID );
+			$ref          = new \ReflectionClass( $this );
+			$post         = $ref->getParentClass()->newInstance( $iid->ID );
+			$thumbnail_id = $post->thumbnail_id();
+
 			// Check if it’s a post that has a featured image.
-			if ( $post->_thumbnail_id ) {
-				return $this->init( (int) $post->_thumbnail_id );
+			if ( $thumbnail_id ) {
+				return $this->init( (int) $thumbnail_id );
 			}
 			return $this->init( $iid->ID );
 		} elseif ( $iid instanceof Post ) {
@@ -426,7 +442,7 @@ class Image extends Attachment {
 			 * see http://php.net/manual/en/internals2.opcodes.instanceof.php#109108
 			 * and https://timber.github.io/docs/guides/extending-timber/
 			 */
-			$iid = (int) $iid->_thumbnail_id;
+			return (int) $iid->thumbnail_id();
 		}
 		return $iid;
 	}

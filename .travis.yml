@@ -1,39 +1,50 @@
 sudo: false
 
+dist: xenial
+
+services: mysql
+
 language: php
 
+addons:
+  apt:
+    packages:
+      - libwebp-dev
+
 php:
-    - 5.6.30
-    - 7.1
-    - 7.3
+    - 7.4
 
 env:
-    - WP_VERSION=4.7.12 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
-    - WP_VERSION=4.7.12 WP_MULTISITE=1 PREFER_LOWEST=""
-    - WP_VERSION=latest WP_MULTISITE=0 PREFER_LOWEST=""
-    - WP_VERSION=latest WP_MULTISITE=1 PREFER_LOWEST="--prefer-lowest --prefer-stable"
+    global:
+        - TMPDIR=/tmp
+    matrix:
+        - WP_VERSION=5.3.2 WP_MULTISITE=0
+        - WP_VERSION=5.3.2 WP_MULTISITE=1
+        - WP_VERSION=latest WP_MULTISITE=0 COVERAGE=1 IMG_LIBS=1
+        - WP_VERSION=latest WP_MULTISITE=1 COVERAGE=1 IMG_LIBS=1 STATIC_ANALYSIS=1
 
 matrix:
-    exclude:
-    - php: 7.3
-      env: WP_VERSION=4.7.12 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
-    - php: 7.3
-      env: WP_VERSION=4.7.12 WP_MULTISITE=1 PREFER_LOWEST=""
+    include:
+    - php: 7.2
+      env: WP_VERSION=5.3.2 WP_MULTISITE=0
+    - php: 7.2
+      env: WP_VERSION=latest WP_MULTISITE=0
+
+before_install:
+    # phpenv config-add myconfig.ini --with-webp-dir
 
 before_script:
-    - if [ "$TRAVIS_PHP_VERSION" == 5.5 ] || [ "$TRAVIS_PHP_VERSION" == 5.4 ] || [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then pear config-set preferred_state beta; pecl channel-update pecl.php.net; yes | pecl install imagick; fi
-    - if [ "$TRAVIS_PHP_VERSION" == 5.3 ]; then autodetect | pecl install imagick-3.0.1; fi
+    - if [ "$IMG_LIBS" == 1 ]; then pear config-set preferred_state beta; pecl channel-update pecl.php.net; yes '' | pecl install imagick; fi
     - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-    # composer install --dev --prefer-source
     - composer update $PREFER_LOWEST --dev --prefer-source
-    - composer require satooshi/php-coveralls:1.0.*
+    - if [ "$COVERAGE" == 1 ]; then composer require satooshi/php-coveralls:1.0.*; fi
 
 script:
-    - if [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_BRANCH" == "2.x" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then mkdir -p build/logs; vendor/phpunit/phpunit/phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml; else vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml; fi
+    - if [ "$COVERAGE" == 1 ]; then mkdir -p build/logs; vendor/phpunit/phpunit/phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml --verbose; else vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml --verbose; fi
+    - if [ "$STATIC_ANALYSIS" == 1 ]; then vendor/bin/phpstan analyze -l 1; fi
 
 after_script:
-    - if [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_BRANCH" == "2.x" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then php vendor/bin/coveralls -v; fi
+    - if [ "$COVERAGE" == 1 ]; then php vendor/bin/coveralls -v; fi
 
 after_success:
-    - if [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_BRANCH" == "2.x" ] && [ "$TRAVIS_PHP_VERSION" == 7.1 ]; then coveralls; fi
-    - bash <(curl -s https://codecov.io/bash)
+    - if [ "$COVERAGE" == 1 ]; then coveralls; bash <(curl -s https://codecov.io/bash); fi

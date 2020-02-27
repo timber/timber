@@ -62,4 +62,65 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		$this->assertEquals('<h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <div class="l--pagination"> <div class="pagination-inner"> <div class="pagination-previous"> <span class="pagination-previous-link pagination-disabled">Previous</span> </div> <div class="pagination-pages"> <ul class="pagination-pages-list"> <li class="pagination-list-item pagination-page">1</li> <li class="pagination-list-item pagination-seperator">of</li> <li class="pagination-list-item pagination-page">13</li> </ul> </div> <div class="pagination-next"> <a href="http://example.org/?paged=2" class="pagination-next-link ">Next</a> </div> </div> </div>', trim($str));
 	}
 
+	/**
+	 * @expectedDeprecated Passing query arguments directly to PostQuery
+	 */
+	function testFoundPostsInQuery() {
+		$this->factory->post->create_many( 20 );
+
+		$query = new Timber\PostQuery( [
+			'post_type' => 'post',
+		] );
+
+		$this->assertCount( 10, $query );
+		$this->assertEquals( 20, $query->found_posts );
+	}
+
+	/**
+	 * @expectedDeprecated Passing query arguments directly to PostQuery
+	 */
+	function testFoundPostsInQueryWithNoFoundRows() {
+		$this->factory->post->create_many( 20 );
+
+		$query = new Timber\PostQuery( [
+			'post_type'     => 'post',
+			'no_found_rows' => true,
+		] );
+
+		$this->assertCount( 10, $query );
+		$this->assertEquals( 0, $query->found_posts );
+	}
+
+	/**
+	 * @expectedDeprecated Passing query arguments directly to PostQuery
+	 */
+	function testFoundPostsInCollection() {
+		$this->factory->post->create_many( 20 );
+
+		$posts = ( new Timber\PostQuery( [
+			'post_type' => 'post',
+		] ) )->get_posts();
+
+		$collection = new Timber\PostQuery( $posts );
+
+		$this->assertCount( 10, $collection );
+		$this->assertEquals( null, $collection->found_posts );
+	}
+
+	/**
+	 * @expectedDeprecated Passing query arguments directly to PostQuery
+	 */
+	function testFoundPostsInCollectionWithNoFoundRows() {
+		$this->factory->post->create_many( 20 );
+
+		$posts = ( new Timber\PostQuery( [
+			'post_type'     => 'post',
+			'no_found_rows' => true,
+		] ) )->get_posts();
+
+		$collection = new Timber\PostQuery( $posts );
+
+		$this->assertCount( 10, $collection );
+		$this->assertEquals( null, $collection->found_posts );
+	}
 }

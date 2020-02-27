@@ -2,6 +2,13 @@
 
 	class TestTimberUser extends Timber_UnitTestCase {
 
+		function testIDDataType() {
+			$uid = $this->factory->user->create(array('display_name' => 'James Marshall'));
+			$user = new Timber\User($uid);
+			$this->assertEquals('integer', gettype($user->id));
+			$this->assertEquals('integer', gettype($user->ID));
+		}
+
 		function testInitWithID(){
 			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln'));
 			$user = new Timber\User($uid);
@@ -33,10 +40,10 @@
 			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln', 'user_login' => 'blincoln'));
 			update_user_meta($uid, 'description', 'Sixteenth President');
 			$user = new Timber\User($uid);
-			$this->assertEquals('Sixteenth President', $user->description);
+			$this->assertEquals('Sixteenth President', $user->meta('description'));
 			$pid = $this->factory->post->create(array('post_author' => $uid));
 			$post = new Timber\Post($pid);
-			$str = Timber::compile_string('{{post.author.description}}', array('post' => $post));
+			$str = Timber::compile_string("{{post.author.meta('description')}}", array('post' => $post));
 			$this->assertEquals('Sixteenth President', $str);
 		}
 

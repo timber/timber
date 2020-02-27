@@ -2,6 +2,17 @@
 
 	class TestTimberTerm extends Timber_UnitTestCase {
 
+		function testTermFrom() {
+			register_taxonomy('baseball', array('post'));
+			register_taxonomy('hockey', array('post'));
+			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'baseball'));
+			$term_id = $this->factory->term->create(array('name' => 'Cardinals', 'taxonomy' => 'baseball'));
+			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'hockey'));
+			$baseball_teams = Timber\Term::from(get_terms(array('taxonomy' => 'baseball', 'hide_empty' => false)), 'baseball');
+			$this->assertEquals(2, count($baseball_teams));
+			$this->assertEquals('Cardinals', $baseball_teams[0]->title());
+		}
+
 		function testConstructorWithClass() {
 			register_taxonomy('arts', array('post'));
 
@@ -39,7 +50,7 @@
 
 			$term_obj = get_term($term_id);
 			$term = new Timber\Term($term_obj, 'arts');
-			$this->assertEquals('Zong', $term->name());
+			$this->assertEquals('Zong', $term->title());
 		}
 
 		function testConstructor() {
@@ -47,7 +58,7 @@
 
 			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
 			$term = new Timber\Term($term_id, 'arts');
-			$this->assertEquals('Zong', $term->name());
+			$this->assertEquals('Zong', $term->title());
 			$template = '{% set zp_term = Term("'.$term->ID.'", "arts") %}{{ zp_term.name }}';
 			$string = Timber::compile_string($template);
 			$this->assertEquals('Zong', $string);
@@ -64,7 +75,7 @@
 			$term_data = get_term($term_id, 'post_tag');
 			$this->assertTrue( in_array( get_class($term_data), array('WP_Term', 'stdClass') ) );
 			$term = new Timber\Term($term_id);
-			$this->assertEquals('Famous Commissioners', $term->name());
+			$this->assertEquals('Famous Commissioners', $term->title());
 			$this->assertEquals('Timber\Term', get_class($term));
 		}
 
@@ -196,12 +207,94 @@
 			$term = new Timber\Term($term_id);
 			$gotten_posts = $term->get_posts('post_type=page');
 			$this->assertEquals(count($posts), count($gotten_posts));
+
 			$gotten_posts = $term->get_posts('post_type=page', 'TimberPostSubclass');
 			$this->assertEquals(count($posts), count($gotten_posts));
-			$this->assertEquals($gotten_posts[0]->foo(), 'bar');
+			$this->assertInstanceOf( 'TimberPostSubclass', $gotten_posts[0] );
+
 			$gotten_posts = $term->get_posts(array('post_type' => 'page'), 'TimberPostSubclass');
-			$this->assertEquals($gotten_posts[0]->foo(), 'bar');
+			$this->assertInstanceOf( 'TimberPostSubclass', $gotten_posts[0] );
 			$this->assertEquals(count($posts), count($gotten_posts));
+		}
+
+		function testPostsWithCustomPostType() {
+			$term_id = $this->factory->term->create();
+			$posts   = array();
+			$posts[] = $this->factory->post->create();
+			$posts[] = $this->factory->post->create();
+			$posts[] = $this->factory->post->create();
+
+			foreach ( $posts as $post_id ) {
+				set_post_type( $post_id, 'page' );
+				wp_set_object_terms( $post_id, $term_id, 'post_tag', true );
+			}
+
+			$term = new Timber\Term( $term_id );
+
+			$term_posts = $term->posts( [
+				'posts_per_page' => 2,
+				'orderby'        => 'menu_order',
+			], 'page' );
+
+			$this->assertEquals( 'Timber\Post', get_class( $term_posts[0] ) );
+			$this->assertEquals( 'page', $term_posts[0]->post_type );
+			$this->assertEquals( 2, count( $term_posts ) );
+		}
+
+		function testPostsWithCustomPostTypeAndCustomClass() {
+			require_once 'php/timber-post-subclass.php';
+
+			$term_id = $this->factory->term->create();
+			$posts   = array();
+			$posts[] = $this->factory->post->create();
+			$posts[] = $this->factory->post->create();
+			$posts[] = $this->factory->post->create();
+
+			foreach ( $posts as $post_id ) {
+				set_post_type( $post_id, 'page' );
+				wp_set_object_terms( $post_id, $term_id, 'post_tag', true );
+			}
+
+			$term = new Timber\Term( $term_id );
+
+			$term_posts = $term->posts( [
+				'posts_per_page' => 2,
+				'orderby'        => 'menu_order',
+			], 'page', 'TimberPostSubclass' );
+
+			$this->assertInstanceOf( 'TimberPostSubclass', $term_posts[0] );
+			$this->assertEquals( 'page', $term_posts[0]->post_type );
+			$this->assertEquals( 2, count( $term_posts ) );
+		}
+
+		/**
+		 * This test uses the logic described in https://github.com/timber/timber/issues/799#issuecomment-192445207.
+		 */
+		function testPostsWithCustomPostTypePageAndCustomClass() {
+			require_once 'php/timber-post-subclass.php';
+			require_once 'php/timber-post-subclass-page.php';
+
+			$term_id = $this->factory->term->create();
+			$posts   = array();
+			$posts[] = $this->factory->post->create();
+			$posts[] = $this->factory->post->create();
+			$posts[] = $this->factory->post->create();
+
+			foreach ( $posts as $post_id ) {
+				set_post_type( $post_id, 'page' );
+				wp_set_object_terms( $post_id, $term_id, 'post_tag', true );
+			}
+
+			$term = new Timber\Term( $term_id );
+
+			$term_posts = $term->posts( [
+				'posts_per_page' => 2,
+				'orderby'        => 'menu_order',
+			], 'page', 'TimberPostSubclass' );
+
+			$this->assertInstanceOf( 'page', $term_posts[0] );
+			$this->assertEquals( 'page', $term_posts[0]->post_type );
+			$this->assertEquals( 2, count( $term_posts ) );
 		}
 
 		function testTermChildren() {
@@ -216,7 +309,7 @@
 		}
 
 		/**
-		 @issue #824
+		 * @ticket #824
 		 */
 		function testTermWithNativeMeta() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
@@ -228,7 +321,7 @@
 		}
 
 		/**
-		 @issue #824
+		 * @ticket #824
 		 */
 		function testTermWithNativeMetaFalse() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
@@ -238,7 +331,7 @@
 		}
 
 		/**
-		 @issue #824
+		 * @ticket #824
 		 */
 		function testTermWithNativeMetaNotExisting() {
 			$tid = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
@@ -246,7 +339,7 @@
 			add_term_meta($tid, 'bar', 'qux');;
 			$wp_native_value = get_term_meta($tid, 'foo', true);
 			$acf_native_value = get_field('foo', 'category_'.$tid);
-			
+
 			$valid_wp_native_value = get_term_meta($tid, 'bar', true);
 			$valid_acf_native_value = get_field('bar', 'category_'.$tid);
 
@@ -276,7 +369,6 @@
 			$links[] = 'http://example.org/wp-admin/term.php?taxonomy=category&term_id='.$tid.'&post_type=post';
 			$this->assertContains($term->edit_link(), $links);
 		}
-
 	}
 
 	class Arts extends Timber\Term {

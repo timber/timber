@@ -5,39 +5,38 @@ description: "All about setting up Timber with your theme."
 
 ## Installation
 
-### Via WordPress.org (easy)
+You can install Timber through [Composer](https://getcomposer.org/download/).
 
-You can grab the all-things-included plugin at [WordPress.org](http://wordpress.org/plugins/timber-library/) either through the WordPress site or through the Plugins menu in the backend. Then skip ahead to [using the starter theme](#use-the-starter-theme).
-
-### Via GitHub (for developers)
-
-The GitHub version of Timber requires [Composer](https://getcomposer.org/download/). If you'd prefer one-click installation, you should use the [WordPress.org](https://wordpress.org/plugins/timber-library/) version.
+Run the following Composer command from within your theme's root directory:
 
 ```shell
 composer require timber/timber
 ```
 
-If your theme is not setup to pull in Composer’s autoload file, you will need to add the following at the top of your `functions.php` file: 
+You can choose yourself where in your project you want to include Timber. Most developers prefer to have Timber installed as a theme dependency, so they would run this command from the theme root. But it’s also possible to use Timber as a WordPress dependency, which means you would run the command above from the WordPress root.
+
+If your theme or project is not already set up to pull in Composer’s autoload file, you will need to add the following line at the top of your `functions.php` file: 
 
 **functions.php**
 
 ```php
 <?php
-require_once( __DIR__ . '/vendor/autoload.php' );
-```
+// Load Composer dependencies.
+require_once __DIR__ . '/vendor/autoload.php';
 
-Initialize Timber with:
-
-**functions.php**
-
-```php
-<?php
-$timber = new Timber\Timber();
+// Initialize Timber
+new Timber\Timber();
 ```
 
 ## Use the starter theme
 
-The [starter theme](https://github.com/timber/starter-theme) is for starting a project from scratch. You can also use Timber in an existing theme.
+The [starter theme](https://github.com/timber/starter-theme) is for starting a project from scratch (you can also use Timber in an existing theme).
+
+A `composer.json` file is already included with the starter theme, so you can run the following command to install Timber:
+
+```shell
+composer install
+```
 
 ### Navigate to your WordPress themes directory
 

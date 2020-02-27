@@ -60,7 +60,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
 
 		$cat_post = new Timber\Post($cat_post);
-		$this->assertEquals('News', $cat_post->category()->name());
+		$this->assertEquals('News', $cat_post->category()->title());
 
 		$posts = new Timber\PostQuery( array(
 			'query' => array(
@@ -100,7 +100,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
 
 		$cat_post = new Timber\Post($cat_post);
-		$this->assertEquals('News', $cat_post->category()->name());
+		$this->assertEquals('News', $cat_post->category()->title());
 
 		$posts = new Timber\PostQuery( array(
 			'query' => array(
@@ -151,6 +151,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$sticky_id = $this->factory->post->create(array('post_date' => '2015-04-21 15:13:52'));
 		$last = $this->factory->post->create(array('post_date' => '2015-04-24 15:13:52'));
 		update_option('sticky_posts', array($sticky_id));
+		add_filter( 'timber/get_posts/mirror_wp_get_posts', '__return_true' );
 		$posts = Timber::get_posts('post_type=post');
 		$this->assertEquals($last, $posts[0]->ID);
 		$posts = get_posts('post_type=post');
@@ -162,6 +163,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$sticky_id = $this->factory->post->create(array('post_date' => '2015-04-21 15:13:52'));
 		$last = $this->factory->post->create(array('post_date' => '2015-04-24 15:13:52'));
 		update_option('sticky_posts', array($sticky_id));
+		add_filter( 'timber/get_posts/mirror_wp_get_posts', '__return_true' );
 		$posts = Timber::get_posts('post_type=post');
 		$this->assertEquals($last, $posts[0]->ID);
 		$posts = new Timber\PostQuery(array('query' => 'post_type=post'));
@@ -217,17 +219,6 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals( $post_id_portfolio, $post_portfolio[0]->ID );
 		$this->assertEquals( 'TimberAlert', get_class($post_alert[0]) );
 		$this->assertEquals( $post_id_alert, $post_alert[0]->ID );
-	}
-
-	function test587() {
-		register_post_type('product');
-		$pids = $this->factory->post->create_many(6, array('post_type' => 'product'));
-		$args = array(
-        	'post_type' => 'project'
-    	);
-		$context['projects'] = new Timber\PostQuery( array(
-			'query' => $args
-		) );
 	}
 
 	function testGettingEmptyArray(){
@@ -524,7 +515,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
             'orderby' => 'ID',
             'order' => 'ASC'
         );
-
+		add_filter( 'timber/get_posts/mirror_wp_get_posts', '__return_true' );
         $posts = Timber::get_posts($queryArgs);
         $this->assertEquals($numberPosts, count($posts));
 
@@ -550,11 +541,6 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 
 		$this->assertEquals($first_pids, $wp_ids);
 
-		$other_query = Timber::get_posts(array('post__in' => $first_pids));
-		$timber_ids = array_map(function($post) {
-			return $post->ID;
-		}, $other_query);
-		$this->assertNotEquals($first_pids, $timber_ids);
 	}
 
 

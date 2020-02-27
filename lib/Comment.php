@@ -2,10 +2,6 @@
 
 namespace Timber;
 
-use Timber\User;
-use Timber\Core;
-use Timber\CoreInterface;
-
 /**
  * Class Comment
  *
@@ -51,6 +47,11 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	public $id;
 
 	/**
+	 * @var int
+	 */
+	public $comment_approved;
+
+	/**
 	 * @api
 	 * @var string
 	 */
@@ -73,6 +74,11 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	 * @var int
 	 */
 	public $comment_ID;
+
+	/**
+	 * @var int
+	 */
+	public $comment_parent;
 
 	/**
 	 * @api
@@ -128,8 +134,6 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		$this->import($comment_data);
 		$this->ID = $this->comment_ID;
 		$this->id = $this->comment_ID;
-		$comment_meta_data = $this->get_meta_values($this->ID);
-		$this->import($comment_meta_data);
 	}
 
 	/**
@@ -374,119 +378,6 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
-	 * @internal
-	 * @param int $comment_id
-	 * @return mixed
-	 */
-	protected function get_meta_values( $comment_id = null ) {
-		if ( $comment_id === null ) {
-			$comment_id = $this->ID;
-		}
-
-		$comment_meta = array();
-
-		/**
-		 * Filters comment meta data before it is fetched from the database.
-		 *
-		 * Timber loads all meta values into the comment object on initialization. With this filter,
-		 * you can disable fetching the meta values through the default method, which uses
-		 * `get_comment_meta()`, by returning `false` or a non-empty array.
-		 *
-		 * @example
-		 * ```php
-		 * add_filter( 'timber/comment/pre_get_meta_values', function( $comment_meta, $comment_id, $comment ) {
-		 *     return false;
-		 * }, 10, 3 );
-		 * ```
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param array           $comment_meta An array of comment meta data. Passing `false` or a
-		 *                                      non-empty array will skip fetching values from the
-		 *                                      database and will use the filtered values instead.
-		 *                                      Default `array()`.
-		 * @param int             $comment_id   The comment ID.
-		 * @param \Timber\Comment $comment      The comment object.
-		 */
-		$comment_meta = apply_filters( 'timber/comment/pre_get_meta_values',
-			$comment_meta,
-			$comment_id,
-			$this
-		);
-
-		/**
-		 * Fires before comment meta data is imported into the object.
-		 *
-		 * @deprecated 2.0.0, use `timber/comment/pre_get_meta_values`
-		 * @since      0.19.1 Switched from filter to action functionality.
-		 * @since      0.15.4
-		 */
-		do_action_deprecated(
-			'timber_comment_get_meta_pre',
-			array( $comment_meta, $comment_id ),
-			'2.0.0',
-			'timber/comment/pre_get_meta_values'
-		);
-
-		// Load all meta data when it wasn’t filtered before.
-		if ( false !== $comment_meta && empty( $comment_meta ) ) {
-			$comment_meta = get_comment_meta($comment_id);
-		}
-
-		foreach ( $comment_meta as &$cm ) {
-			if ( is_array($cm) && count($cm) == 1 ) {
-				$cm = $cm[0];
-			}
-		}
-
-		/**
-		 * Filters comment meta data fetched from the database.
-		 *
-		 * Timber loads all meta values into the comment object on initialization. With this filter,
-		 * you can change meta values after they were fetched from the database.
-		 *
-		 * @example
-		 * ```php
-		 * add_filter( 'timber/comment/get_meta_values', function( $comment_meta, $comment_id, $comment ) {
-		 *     if ( 12345 === (int) $comment_id ) {
-		 *         // Do something special.
-		 *         $comment_meta['foo'] = $comment_meta['foo'] . ' bar';
-		 *     }
-		 *
-		 *     return $comment_meta;
-		 * }, 10, 3 );
-		 * ```
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param array           $comment_meta Comment meta data.
-		 * @param int             $comment_id   The comment ID.
-		 * @param \Timber\Comment $comment      The comment object.
-		 */
-		$comment_meta = apply_filters(
-			'timber/comment/get_meta_values',
-			$comment_meta,
-			$comment_id,
-			$this
-		);
-
-		/**
-		 * Filters comment meta data fetched from the database.
-		 *
-		 * @deprecated 2.0.0, use `timber/comment/get_meta_values`
-		 * @since 0.15.4
-		 */
-		$comment_meta = apply_filters_deprecated(
-			'timber_comment_get_meta',
-			array( $comment_meta, $comment_id ),
-			'2.0.0',
-			'timber/comment/get_meta_values'
-		);
-
-		return $comment_meta;
-	}
-
-	/**
 	 * Gets a comment meta value.
 	 *
 	 * Returns a meta value for a comment that’s saved in the comment meta database table.
@@ -497,83 +388,168 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	 * @param array  $args       An array of arguments for getting the meta value. Third-party
 	 *                           integrations can use this argument to make their API arguments
 	 *                           available in Timber. Default empty.
-	 * @return mixed The meta field value.
+	 * @return mixed The meta field value. Null if no value could be found.
 	 */
-	public function meta( $field_name, $args = array() ) {
-		/**
-		 * Filters the value for a comment meta field before it is fetched from the database.
-		 *
-		 * @todo  Add description, example
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param string $value               The field value. Passing a non-null value will skip
-		 *                                    fetching the value from the database. Default null.
-		 * @param int             $comment_id The comment ID.
-		 * @param string          $field_name The name of the meta field to get the value for.
-		 * @param \Timber\Comment $comment    The comment object.
-		 * @param array           $args       An array of arguments.
-		 */
-		$value = apply_filters(
-			'timber/comment/pre_meta',
-			null,
-			$this->ID,
-			$field_name,
-			$this,
-			$args
-		);
+	public function meta( $field_name = '', $args = array() ) {
+		$args = wp_parse_args( $args, [
+			'apply_filters' => true,
+		] );
 
-		/**
-		 * Filters the value for a comment meta field before it is fetched from the database.
-		 *
-		 * @deprecated 2.0.0, use `timber/comment/pre_meta`
-		 */
-		$value = apply_filters_deprecated(
-			'timber_comment_get_meta_field_pre',
-			array( $value, $this->ID, $field_name, $this ),
-			'2.0.0',
-			'timber/comment/pre_meta'
-		);
+		$comment_meta = null;
 
-		if ( null === $value ) {
-			$value = get_comment_meta($this->ID, $field_name, true);
+		if ( $args['apply_filters'] ) {
+			/**
+			 * Filters the value for a comment meta field before it is fetched from the database.
+			 *
+			 * @todo  Add description, example
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param string          $comment_meta The field value. Passing a non-null value will
+			 *                                      skip fetching the value from the database.
+			 *                                      Default null.
+			 * @param int             $comment_id   The comment ID.
+			 * @param string          $field_name   The name of the meta field to get the value for.
+			 * @param \Timber\Comment $comment      The comment object.
+			 * @param array           $args         An array of arguments.
+			 */
+			$comment_meta = apply_filters(
+				'timber/comment/pre_meta',
+				null,
+				$this->ID,
+				$field_name,
+				$this,
+				$args
+			);
+
+			/**
+			 * Filters the value for a comment meta field before it is fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/comment/pre_meta`
+			 */
+			$comment_meta = apply_filters_deprecated(
+				'timber_comment_get_meta_field_pre',
+				array( $comment_meta, $this->ID, $field_name, $this ),
+				'2.0.0',
+				'timber/comment/pre_meta'
+			);
+
+			/**
+			 * Fires before comment meta data is imported into the object.
+			 *
+			 * @deprecated 2.0.0, use `timber/comment/pre_meta`
+			 * @since      0.19.1 Switched from filter to action functionality.
+			 * @since      0.15.4
+			 */
+			do_action_deprecated(
+				'timber_comment_get_meta_pre',
+				array( $comment_meta, $this->ID ),
+				'2.0.0',
+				'timber/comment/pre_meta'
+			);
 		}
 
-		/**
-		 * Filters the value for a comment meta field.
-		 *
-		 * @todo  Add description, example
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param string          $value      The field value.
-		 * @param int             $comment_id The comment ID.
-		 * @param string          $field_name The name of the meta field to get the value for.
-		 * @param \Timber\Comment $comment    The comment object.
-		 * @param array           $args       An array of arguments.
-		 */
-		$value = apply_filters(
-			'timber/comment/get_meta',
-			$value,
-			$this->ID,
-			$field_name,
-			$this,
-			$args
-		);
+		if ( null === $comment_meta ) {
+			$comment_meta = get_comment_meta( $this->ID, $field_name, true );
 
-		/**
-		 * Filters the value for a comment meta field.
-		 *
-		 * @deprecated 2.0.0, use `timber/comment/get_meta`
-		 */
-		$value = apply_filters_deprecated(
-			'timber_comment_get_meta_field',
-			array( $value, $this->ID, $field_name, $this ),
-			'2.0.0',
-			'timber/comment/get_meta'
-		);
+			// Mimick $single argument when fetching all meta values.
+			if ( empty( $field_name ) && is_array( $comment_meta ) && ! empty( $comment_meta ) ) {
+				$comment_meta = array_map( function( $meta ) {
+					if ( 1 === count( $meta ) && isset( $meta[0] ) ) {
+						return $meta[0];
+					}
 
-		return $value;
+					return $meta;
+				}, $comment_meta );
+			}
+
+			// Empty result.
+			if ( empty( $comment_meta ) ) {
+				$comment_meta = empty( $field_name ) ? [] : null;
+			}
+		}
+
+		if ( $args['apply_filters'] ) {
+			/**
+			 * Filters the value for a comment meta field.
+			 *
+			 * @todo  Add description, example
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param string          $comment_meta The field value.
+			 * @param int             $comment_id   The comment ID.
+			 * @param string          $field_name   The name of the meta field to get the value for.
+			 * @param \Timber\Comment $comment      The comment object.
+			 * @param array           $args         An array of arguments.
+			 */
+			$comment_meta = apply_filters(
+				'timber/comment/meta',
+				$comment_meta,
+				$this->ID,
+				$field_name,
+				$this,
+				$args
+			);
+
+			/**
+			 * Filters comment meta data fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/comment/meta`
+			 * @since 0.15.4
+			 */
+			$comment_meta = apply_filters_deprecated(
+				'timber_comment_get_meta',
+				array( $comment_meta, $this->ID ),
+				'2.0.0',
+				'timber/comment/meta'
+			);
+
+			/**
+			 * Filters the value for a comment meta field.
+			 *
+			 * @deprecated 2.0.0, use `timber/comment/meta`
+			 */
+			$comment_meta = apply_filters_deprecated(
+				'timber_comment_get_meta_field',
+				array( $comment_meta, $this->ID, $field_name, $this ),
+				'2.0.0',
+				'timber/comment/meta'
+			);
+		}
+
+		return $comment_meta;
+	}
+
+	/**
+	 * Gets a comment meta value directly from the database.
+	 *
+	 * Returns a raw meta value or all raw meta values saved in the comment meta database table. In
+	 * comparison to `meta()`, this function will return raw values that are not filtered by third-
+	 * party plugins.
+	 *
+	 * Fetching raw values for all custom fields will not have a big performance impact, because
+	 * WordPress gets all meta values, when the first meta value is accessed.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
+	 * @param array  $args       Optional. An array of args for `Comment::meta()`. Default empty
+	 *                           array.
+	 *
+	 * @return null|mixed The meta field value(s). Null if no value could be found, an empty array
+	 *                    if all fields were requested but no values could be found.
+	 */
+	public function raw_meta( $field_name = '', $args = array() ) {
+		return $this->meta( $field_name, array_merge(
+			$args,
+			[
+				'apply_filters' => false,
+			]
+		) );
 	}
 
 	/**
