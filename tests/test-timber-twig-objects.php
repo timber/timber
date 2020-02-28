@@ -116,29 +116,10 @@ class TestTimberTwigObjects extends Timber_UnitTestCase {
 		$this->assertEquals('Nathan Hass', Timber::compile_string($str));
 	}
 
-	/**
-	 * @expectedDeprecated {{ TimberTerm() }}
-	 */
-	function testTimberTermInTwig(){
-		$tid = $this->factory->term->create(array('name' => 'Golden Girls'));
-		$str = '{{ TimberTerm(tid).title }}';
-		$this->assertEquals('Golden Girls', Timber::compile_string($str, array('tid' => $tid)));
-	}
-
 	function testTermInTwig(){
 		$tid = $this->factory->term->create(array('name' => 'Mythbusters'));
 		$str = '{{Term(tid).title}}';
 		$this->assertEquals('Mythbusters', Timber::compile_string($str, array('tid' => $tid)));
-	}
-
-	/**
-	 * @expectedDeprecated {{ TimberTerm() }}
-	 */
-	function testTimberTermsInTwig(){
-		$tids[] = $this->factory->term->create(array('name' => 'Foods'));
-		$tids[] = $this->factory->term->create(array('name' => 'Cars'));
-		$str = '{% for term in TimberTerm(tids) %}{{term.title}} {% endfor %}';
-		$this->assertEquals('Foods Cars ', Timber::compile_string($str, array('tids' => $tids)));
 	}
 
 	function testTermsInTwig(){

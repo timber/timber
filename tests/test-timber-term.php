@@ -2,7 +2,6 @@
 
 	/**
 	* @group terms-api
-	* @group called-post-constructor
 	*/
 	class TestTimberTerm extends Timber_UnitTestCase {
 

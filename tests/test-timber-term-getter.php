@@ -22,7 +22,7 @@
 
 		function testIDDataType() {
 			$term_id = $this->factory->term->create( array('name' => 'Honda') );
-			$term = new Timber\Term($term_id);
+			$term = Timber::get_term($term_id);
 			$this->assertEquals('integer', gettype($term->id));
 			$this->assertEquals('integer', gettype($term->ID));
 		}
