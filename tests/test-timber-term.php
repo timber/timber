@@ -9,12 +9,20 @@
 		function testTermFrom() {
 			register_taxonomy('baseball', array('post'));
 			register_taxonomy('hockey', array('post'));
-			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'baseball'));
-			$term_id = $this->factory->term->create(array('name' => 'Cardinals', 'taxonomy' => 'baseball'));
-			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'hockey'));
-			$baseball_teams = Timber\Term::from(get_terms(array('taxonomy' => 'baseball', 'hide_empty' => false)), 'baseball');
-			$this->assertEquals(2, count($baseball_teams));
+			$this->factory->term->create(['name' => 'Rangers',   'taxonomy' => 'baseball']);
+			$this->factory->term->create(['name' => 'Cardinals', 'taxonomy' => 'baseball']);
+			$this->factory->term->create(['name' => 'Rangers',   'taxonomy' => 'hockey']);
+
+			$wp_terms       = get_terms([
+				'taxonomy'    => 'baseball',
+				'hide_empty'  => false,
+			]);
+			$baseball_teams = Timber::get_terms($wp_terms);
+
+			$this->assertCount(2, $baseball_teams);
+
 			$this->assertEquals('Cardinals', $baseball_teams[0]->title());
+			$this->assertEquals('Rangers',   $baseball_teams[1]->title());
 		}
 
 		function testGetTerm() {
