@@ -13,6 +13,4 @@ parameters:
         # Uses func_get_args()
         - '#^Function apply_filters invoked with [3456] parameters, 2 required\.$#'
         # TODO Do not create a static instance of a non-final class.
-        -
-            message: '#^Unsafe usage of new static\(\)\.$#'
-            path: lib/Term.php
+        - '#^Unsafe usage of new static\(\)\.$#'
