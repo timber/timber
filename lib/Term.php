@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use WP_Term;
+
 /**
  * Class Term
  *
@@ -61,18 +63,19 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	public $taxonomy;
 
 	/**
-	 * @api
-	 * @param int $tid
-	 * @param string $tax
+	 * @internal
 	 */
-	public function __construct( $tid = null, $tax = '' ) {
-		if ( null === $tid ) {
-			$tid = $this->get_term_from_query();
-		}
-		if ( strlen($tax) ) {
-			$this->taxonomy = $tax;
-		}
-		$this->init($tid);
+	protected function __construct() {}
+
+	/**
+	 * @internal
+	 * @param \WP_Term the vanilla WP term object to build from
+	 * @return \Timber\Term
+	 */
+	public static function build(WP_Term $wp_term) : self {
+		$term = new static();
+		$term->init($wp_term);
+		return $term;
 	}
 
 	/**
@@ -125,17 +128,12 @@ class Term extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @internal
-	 * @param int $tid
+	 * @param \WP_Term $term
 	 */
-	protected function init( $tid ) {
-		$term = $this->get_term($tid);
-		if ( isset($term->term_id) ) {
-			$term->ID = $term->term_id;
-		}
-		if ( isset($term->ID) ) {
-			$term->id = $term->ID;
-			$this->import($term);
-		}
+	protected function init( WP_Term $term ) {
+		$this->ID = $term->term_id;
+		$this->id = $term->term_id;
+		$this->import($term);
 	}
 
 	/**

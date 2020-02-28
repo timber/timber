@@ -14,7 +14,7 @@ use WP_Term_Query;
 class TermFactory {
 	public function from($params) {
 		if (is_int($params) || is_string($params) && is_numeric($params)) {
-			return $this->from_id($params);
+			return $this->from_id((int) $params);
 		}
 
 		if (is_string($params)) {
@@ -104,8 +104,7 @@ class TermFactory {
 	protected function build(WP_Term $term) : CoreInterface {
 		$class = $this->get_term_class($term);
 
-    // @todo make Core constructors protected, call Term::build() here
-		return new $class($term);
+		return $class::build($term);
 	}
 
 	protected function correct_tax_key(array $params) {

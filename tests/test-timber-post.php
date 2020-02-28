@@ -840,11 +840,11 @@
 			});
 
 			// Test argument style.
-			$terms = $post->terms( array(
+			$terms = $post->terms([
 				'query'      => [
 					'taxonomy' => 'post_tag',
 				],
-			) );
+			]);
 
 			$this->assertInstanceOf(TimberTermSubclass::class, $terms[0]);
 		}
