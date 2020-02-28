@@ -667,7 +667,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
      *         'orderby'  => 'count',
      *     ],
      *     'merge'      => false,
-     *     'term_class' => 'My_Term_Class'
      * ) );
 	 * ```
 	 *
@@ -686,11 +685,14 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 *     @type bool $merge        Whether the resulting array should be one big one (`true`) or
 	 *                              whether it should be an array of sub-arrays for each taxonomy
 	 *                              (`false`). Default `true`.
-	 *     @type string $term_class The Timber term class to use for the term objects.
 	 * }
 	 * @return array An array of taxonomies.
 	 */
 	public function terms( $args = array() ) {
+		/*
+		 * @todo push some of this logic down into TermFactory?
+		 */
+
 		// Make it possible to use a category or an array of categories as a shorthand.
 		if ( ! is_array( $args ) || isset( $args[0] ) ) {
 			$args = array(
@@ -706,12 +708,10 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 				'taxonomy' => 'all',
 			),
 			'merge' => true,
-			'term_class' => $this->TermClass,
 		) );
 
 		$tax        = $args['query']['taxonomy'];
 		$merge      = $args['merge'];
-		$term_class = $args['term_class'];
 		$taxonomies = array();
 
 		// Build an array of taxonomies.
@@ -725,23 +725,21 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			}
 		}
 
-		$terms = wp_get_post_terms( $this->ID, $taxonomies, $args['query'] );
+		$res = wp_get_post_terms( $this->ID, $taxonomies, $args['query'] );
 
-		if ( is_wp_error( $terms ) ) {
+		if ( is_wp_error( $res ) ) {
 			/**
 			 * @var $terms \WP_Error
 			 */
 			Helper::error_log( 'Error retrieving terms for taxonomies on a post in lib/Post.php' );
 			Helper::error_log( 'tax = ' . print_r( $tax, true ) );
-			Helper::error_log( 'WP_Error: ' . $terms->get_error_message() );
+			Helper::error_log( 'WP_Error: ' . $res->get_error_message() );
 
-			return $terms;
+			return $res;
 		}
 
 		// Map over array of WordPress terms and transform them into instances of chosen term class.
-		$terms = array_map( function( $term ) use ( $term_class ) {
-			return call_user_func( array( $term_class, 'from' ), $term->term_id, $term->taxonomy );
-		}, $terms );
+		$terms = Timber::get_terms($res);
 
 		if ( ! $merge ) {
 			$terms_sorted = array();
