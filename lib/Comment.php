@@ -47,6 +47,11 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	public $id;
 
 	/**
+	 * @var int
+	 */
+	public $comment_approved;
+
+	/**
 	 * @api
 	 * @var string
 	 */
@@ -69,6 +74,11 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	 * @var int
 	 */
 	public $comment_ID;
+
+	/**
+	 * @var int
+	 */
+	public $comment_parent;
 
 	/**
 	 * @api

@@ -28,7 +28,7 @@ The Post Class Map is used:
 use Book;
 use Page;
 
-add_filter( 'timber/post/classmap', function() {
+add_filter( 'timber/post/classmap', function( $classmap ) {
     return [
         'page' => Page::class,
         'book' => Book::class,
@@ -45,7 +45,7 @@ use Book;
 use Page;
 use PreciousBook;
 
-add_filter( 'timber/post/classmap', function() {
+add_filter( 'timber/post/classmap', function( $classmap ) {
     return [
         'book' => function( \WP_Post $post ) {
             if ( $post->id === 3 ) {
@@ -66,7 +66,7 @@ Here’s another example, where you could use a different attachment class for a
 use BookAttachment;
 use Timber\Attachment;
 
-add_filter( 'timber/post/classmap', function() {
+add_filter( 'timber/post/classmap', function( $classmap ) {
     return [
         'attachment' => function( \WP_Post $post ) {
             if ( 'book' === get_post_type( $post->post_parent ) {
@@ -94,7 +94,7 @@ The Term Class Map is used:
 ```php
 use Genre;
 
-add_filter( 'timber/term/classmap', function() {
+add_filter( 'timber/term/classmap', function( $classmap ) {
     return [
         'genre' => Genre::class,
     ];
@@ -109,7 +109,7 @@ When you need more fine-grained control over which class is used for your term o
 use ComedyGenre;
 use Genre;
 
-add_filter( 'timber/term/classmap', function() {
+add_filter( 'timber/term/classmap', function( $classmap ) {
     return [
         'genre' => function( \WP_Term $term ) {
             if ( $term->term_id === 2 ) {
@@ -139,7 +139,7 @@ The Comment Class Map is used:
 use CommentPost;
 use CommentBook;
 
-add_filter( 'timber/comment/classmap', function() {
+add_filter( 'timber/comment/classmap', function( $classmap ) {
     return [
         'post' => CommentPost::class,
         'book' => CommentBook::class,
@@ -147,7 +147,7 @@ add_filter( 'timber/comment/classmap', function() {
 } );
 ```
 
-Comments for post types that you don’t list in the Comment Class Map will take the default `Timber\Comment` class.
+Comments for post types that you don’t list in the Comment Class Map will take the default `Timber\Comment` class name as an argument.
 
 When you need more fine-grained control over which class is used for your comment object, you can use a callback function:
 
@@ -155,7 +155,7 @@ When you need more fine-grained control over which class is used for your commen
 use BookComment;
 use BookChildComment;
 
-add_filter( 'timber/comment/classmap', function() {
+add_filter( 'timber/comment/classmap', function( $classmap ) {
     return [
         'book' => function( \WP_Comment $comment ) {
             $post = get_post( $comment->comment_post_ID );
@@ -241,7 +241,7 @@ add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
 }, 10, 2 );
 ```
 
-The User Class Map receives the default `Timber\User` class and a `WP_User` object. You should be able to decide which class to use based on that user object.
+The User Class Map receives the default User Class Map and a `WP_User` object as arguments. You should be able to decide which class to use based on that user object.
 
 In case you need a different User class based on the current template you’re displaying, you can use [Conditional Tags](https://developer.wordpress.org/themes/references/list-of-conditional-tags/).
 
