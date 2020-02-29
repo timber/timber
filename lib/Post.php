@@ -60,11 +60,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	public $PostClass = 'Timber\Post';
 
 	/**
-	 * @var string The name of the class to handle terms by default
-	 */
-	public $TermClass = 'Timber\Term';
-
-	/**
 	 * @var string What does this class represent in WordPress terms?
 	 */
 	public $object_type = 'post';
@@ -661,13 +656,13 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * $terms = $post->terms( array( 'books', 'movies' ) );
 	 *
 	 * // Use custom arguments for taxonomy query and options.
-	 * $terms = $post->terms( array(
-     *     'query' => [
-     *         'taxonomy' => 'custom_tax',
-     *         'orderby'  => 'count',
-     *     ],
-     *     'merge'      => false,
-     * ) );
+	 * $terms = $post->terms( [
+   *     'query' => [
+   *         'taxonomy' => 'custom_tax',
+   *         'orderby'  => 'count',
+   *     ],
+   *     'merge'        => false,
+   * ] );
 	 * ```
 	 *
 	 * @param string|array $args {
@@ -725,7 +720,10 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			}
 		}
 
-		$res = wp_get_post_terms( $this->ID, $taxonomies, $args['query'] );
+		$res = Timber::get_terms(array_merge($args['query'], [
+			'object_ids' => [$this->ID],
+			'taxonomy'   => $taxonomies,
+		]));
 
 		if ( is_wp_error( $res ) ) {
 			/**
@@ -738,8 +736,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			return $res;
 		}
 
-		// Map over array of WordPress terms and transform them into instances of chosen term class.
-		$terms = Timber::get_terms($res);
+		$terms = $res;
 
 		if ( ! $merge ) {
 			$terms_sorted = array();

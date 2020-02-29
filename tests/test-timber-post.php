@@ -6,8 +6,7 @@
 	 * @group posts-api
 	 * @group users-api
 	 * @group terms-api
-	 * @group called-post-constructor
-	 * @group called-term-constructor
+	 * @group post-terms
 	 */
 	class TestTimberPost extends Timber_UnitTestCase {
 
