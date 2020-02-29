@@ -88,12 +88,12 @@
 
 		function testTermNotMerged() {
 			$pid = $this->factory->post->create();
-			// create a new tag and associate it with the post
-			$dummy_tag = wp_insert_term('whatever', 'post_tag');
-			wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);
 
-			$dummy_cat = wp_insert_term('thingy', 'category');
-			wp_set_object_terms($pid, $dummy_cat['term_id'], 'category', true);
+			// create a new tag and category and associate each with the post
+			$tag_id = $this->factory->term->create(['name' => 'whatever', 'taxonomy' => 'post_tag']);
+			$cat_id = $this->factory->term->create(['name' => 'thingy',   'taxonomy' => 'category']);
+			wp_set_object_terms($pid, $tag_id, 'post_tag', true);
+			wp_set_object_terms($pid, $cat_id, 'category', true);
 
 			$post = Timber::get_post($pid);
 			$terms = $post->terms( array(
@@ -102,7 +102,9 @@
 				),
 				'merge' => false,
 			) );
+
 			$this->assertEquals($terms['post_tag'][0]->name, 'whatever');
+			$this->assertEquals($terms['category'][0]->name, 'thingy');
 		}
 
 	}

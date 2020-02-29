@@ -684,10 +684,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * @return array An array of taxonomies.
 	 */
 	public function terms( $args = array() ) {
-		/*
-		 * @todo push some of this logic down into TermFactory?
-		 */
-
 		// Make it possible to use a category or an array of categories as a shorthand.
 		if ( ! is_array( $args ) || isset( $args[0] ) ) {
 			$args = array(
@@ -705,56 +701,32 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			'merge' => true,
 		) );
 
-		$tax        = $args['query']['taxonomy'];
+		$taxonomies = $args['query']['taxonomy'];
 		$merge      = $args['merge'];
-		$taxonomies = array();
 
-		// Build an array of taxonomies.
-		if ( is_array( $tax ) ) {
-			$taxonomies = $tax;
-		} elseif ( is_string( $tax ) ) {
-			if ( in_array( $tax, array( 'all', 'any', '' ) ) ) {
-				$taxonomies = get_object_taxonomies($this->post_type);
-			} else {
-				$taxonomies = array($tax);
-			}
+		if ( in_array($taxonomies, ['all', 'any', '']) ) {
+			$taxonomies = get_object_taxonomies($this->post_type);
 		}
 
-		$res = Timber::get_terms(array_merge($args['query'], [
+		if ( ! is_array($taxonomies) ) {
+			$taxonomies = [$taxonomies];
+		}
+
+		$query = array_merge($args['query'], [
 			'object_ids' => [$this->ID],
 			'taxonomy'   => $taxonomies,
-		]));
+		]);
 
-		if ( is_wp_error( $res ) ) {
-			/**
-			 * @var $terms \WP_Error
-			 */
-			Helper::error_log( 'Error retrieving terms for taxonomies on a post in lib/Post.php' );
-			Helper::error_log( 'tax = ' . print_r( $tax, true ) );
-			Helper::error_log( 'WP_Error: ' . $res->get_error_message() );
+		if (!$merge) {
+			// get results segmented out per taxonomy
+			$queries    = $this->partition_tax_queries($query, $taxonomies);
+			$termGroups = Timber::get_terms($queries);
 
-			return $res;
+			// zip 'em up with the right keys
+			return array_combine($taxonomies, $termGroups);
 		}
 
-		$terms = $res;
-
-		if ( ! $merge ) {
-			$terms_sorted = array();
-
-			// Initialize sub-arrays.
-			foreach ( $taxonomies as $taxonomy ) {
-				$terms_sorted[ $taxonomy ] = array();
-			}
-
-			// Fill terms into arrays.
-			foreach ( $terms as $term ) {
-				$terms_sorted[ $term->taxonomy ][] = $term;
-			}
-
-			return $terms_sorted;
-		}
-
-		return $terms;
+		return Timber::get_terms($query);
 	}
 
 	/**
@@ -2058,4 +2030,26 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 
+	/**
+	 * Given a base query and a list of taxonomies, return a list of queries
+	 * each of which queries for one of the taxonomies.
+	 * @example
+	 * ```
+	 * $this->partition_tax_queries(["object_ids" => [123]], ["a", "b"]);
+	 *
+	 * // result:
+	 * // [
+	 * //   ["object_ids" => [123], "taxonomy" => ["a"]],
+	 * //   ["object_ids" => [123], "taxonomy" => ["b"]],
+	 * // ]
+	 * ```
+	 * @internal
+	 */
+	private function partition_tax_queries(array $query, array $taxonomies) : array {
+		return array_map(function(string $tax) use ($query) : array {
+			return array_merge($query, [
+				'taxonomy' => [$tax],
+			]);
+		}, $taxonomies);
+	}
 }
