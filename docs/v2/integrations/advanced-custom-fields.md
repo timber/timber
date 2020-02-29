@@ -1,7 +1,5 @@
 ---
 title: "Advanced Custom Fields"
-aliases:
-  - /guides/acf-cookbook
 ---
 
 Timber is designed to play nicely with the amazing [Advanced Custom Fields](http://www.advancedcustomfields.com/) plugin.

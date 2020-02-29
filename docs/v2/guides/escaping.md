@@ -1,8 +1,6 @@
 ---
 title: "Escaping"
 order: "400"
-aliases:
-  - /guides/escapers
 ---
 
 Escaping describes the practice of securing output before rendering it for the end user of your website. Data in WordPress comes from all sorts of places and a general mindset for development is: **Don’t trust any data.**

@@ -1,8 +1,6 @@
 ---
 title: "Automated Testing"
 order: "1900"
-aliases:
-  - /guides/unit-testing
 ---
 
 ## Setup a testing environment with PHPUnit
