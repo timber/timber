@@ -1,9 +1,6 @@
 ---
 title: "Automated Testing"
-weight: "1900"
-menu:
-  main:
-    parent: "guides"
+order: "1900"
 aliases:
   - /guides/unit-testing
 ---

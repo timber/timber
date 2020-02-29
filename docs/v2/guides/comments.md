@@ -1,8 +1,6 @@
 ---
 title: "Comments"
-menu:
-  main:
-    parent: "guides"
+order: "140"
 ---
 
 ## Simple Comment Implementation

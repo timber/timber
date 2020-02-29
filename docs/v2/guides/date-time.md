@@ -1,8 +1,6 @@
 ---
 title: "Date/Time in Timber"
-menu:
-  main:
-    parent: "guides"
+order: "1350"
 ---
 
 ## Working with date and time in WordPress
