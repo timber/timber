@@ -39,6 +39,39 @@
 		}
 
 		/**
+		 * @ticket #2203
+		 */
+		function testPostTermsUsingUsingFactories() {
+			$pid = $this->factory->post->create();
+			$post = Timber::get_post($pid);
+
+			// create a new tag and associate it with the post
+			$dummy_tag = wp_insert_term('whatever', 'post_tag');
+			$dummy_cat = wp_insert_term('news', 'category');
+			wp_set_object_terms($pid, $dummy_tag['term_id'], 'post_tag', true);
+
+			wp_set_object_terms($pid, $dummy_cat['term_id'], 'category', true);
+
+			$this->add_filter_temporarily('timber/term/classmap', function() {
+				return [
+					'post_tag' => MyTimberTerm::class
+				];
+			});
+
+			$terms = $post->terms( array(
+				'taxonomy' => 'post_tag'
+			) );
+			$this->assertInstanceOf( MyTimberTerm::class, $terms[0] );
+
+			$post = Timber::get_post($pid);
+			$terms = $post->terms( [], [ 'merge' => false ] );
+			$this->assertEquals( 'whatever', $terms['post_tag'][0]->name );
+
+			$terms = $post->terms( [], [ 'merge' => true ] );
+			$this->assertEquals( 3, count($terms) );
+		}
+
+		/**
 		 * @ticket #2163
 		 * This test confirms that term ordering works when sent through the query parameter of
 		 * arguments.
