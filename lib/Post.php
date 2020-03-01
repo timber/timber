@@ -726,7 +726,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			return array_combine($taxonomies, $termGroups);
 		}
 
-		return Timber::get_terms($query);
+		return Timber::get_terms($query, $options);
 	}
 
 
