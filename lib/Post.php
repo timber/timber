@@ -685,6 +685,10 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			$query_args = [ 'taxonomy' => $query_args ];
 		}
 
+		/**
+		 * Handles backwards comaptability for users who use an array with a query property
+		 * @deprecated 2.0.0 use Post::terms( $query_args, $options )
+		 */
 		if ( is_array($query_args) && isset($query_args['query']) ) {
 			if ( isset($query_args['merge']) && !isset($options['merge']) ) {
 				$options['merge'] = $query_args['merge'];
@@ -728,7 +732,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 
 		return Timber::get_terms($query, $options);
 	}
-
 
 	/**
 	 * @api
