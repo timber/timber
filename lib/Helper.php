@@ -337,7 +337,7 @@ class Helper {
 			}
 
 			$message .= sprintf(
-				' Please see <a href="%s">Debugging in WordPress</a> as well as <a href="%2$s">Debugging in Timber</a> for more information.',
+				' Please see Debugging in WordPress (%1$s) as well as Debugging in Timber (%2$s) for more information.',
 				'https://wordpress.org/support/article/debugging-in-wordpress/',
 				'https://timber.github.io/docs/guides/debugging/'
 			);
