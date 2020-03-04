@@ -397,14 +397,14 @@ class Helper {
 
 		if ( ! is_null( $replacement ) ) {
 			$error_message = sprintf(
-				'%1$s is <strong>deprecated</strong> since Timber version %2$s! Use %3$s instead.',
+				'%1$s is deprecated since Timber version %2$s! Use %3$s instead.',
 				$function,
 				$version,
 				$replacement
 			);
 		} else {
 			$error_message = sprintf(
-				'%1$s is <strong>deprecated</strong> since Timber version %2$s with no alternative available.',
+				'%1$s is deprecated since Timber version %2$s with no alternative available.',
 				$function,
 				$version
 			);
