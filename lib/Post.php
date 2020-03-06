@@ -631,7 +631,11 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * {% for post in job %}
 	 *     <div class="job">
 	 *         <h2>{{ post.title }}</h2>
-	 *         <p>{{ post.terms( {query:{taxonomy:'category', orderby:'name', order: 'ASC'}} )|join(', ') }}</p>
+	 *         <p>{{ post.terms({
+	 *             taxonomy: 'category',
+	 *             orderby: 'name',
+	 *             order: 'ASC'
+	 *         })|join(', ') }}</p>
 	 *     </div>
 	 * {% endfor %}
 	 * </section>
@@ -657,52 +661,60 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 *
 	 * // Use custom arguments for taxonomy query and options.
 	 * $terms = $post->terms( [
-   *     'query' => [
-   *         'taxonomy' => 'custom_tax',
-   *         'orderby'  => 'count',
-   *     ],
-   *     'merge'        => false,
-   * ] );
+	 *     'taxonomy' => 'custom_tax',
+	 *     'orderby'  => 'count'
+	 * ], [
+	 *     'merge' => false
+	 * ] );
 	 * ```
 	 *
-	 * @param string|array $args {
-	 *     Optional. Name of the taxonomy or array of arguments.
+	 * @param string|array $query_args 	Any array of term query parameters for getting the terms.
+	 *                                  See `WP_Term_Query::__construct()` for supported arguments.
+	 *                                  Use the `taxonomy` argument to choose which taxonomies to
+	 *                                  get. Defaults to querying all registered taxonomies for the
+	 *                                  post type. You can use custom or built-in WordPress
+	 *                                  taxonomies (category, tag). Timber plays nice and figures
+	 *                                  out that `tag`, `tags` or `post_tag` are all the same
+	 *                                  (also for `categories` or `category`). For custom
+	 *                                  taxonomies you need to define the proper name.
+	 * @param array $options {
+	 *     Optional. An array of options for the function.
 	 *
-	 *     @type array $query       Any array of term query parameters for getting the terms. See
-	 *                              `WP_Term_Query::__construct()` for supported arguments. Use the
-	 *                              `taxonomy` argument to choose which taxonomies to get. Defaults
-	 *                              to querying all registered taxonomies for the post type. You can
-	 *                              use custom or built-in WordPress taxonomies (category, tag).
-	 *                              Timber plays nice and figures out that `tag`, `tags` or
-	 *                              `post_tag` are all the same (also for `categories` or
-	 *                              `category`). For custom taxonomies you need to define the
-	 *                              proper name.
-	 *     @type bool $merge        Whether the resulting array should be one big one (`true`) or
-	 *                              whether it should be an array of sub-arrays for each taxonomy
-	 *                              (`false`). Default `true`.
+	 *     @type bool $merge Whether the resulting array should be one big one (`true`) or whether
+	 *                       it should be an array of sub-arrays for each taxonomy (`false`).
+	 *                       Default `true`.
 	 * }
 	 * @return array An array of taxonomies.
 	 */
-	public function terms( $args = array() ) {
-		// Make it possible to use a category or an array of categories as a shorthand.
-		if ( ! is_array( $args ) || isset( $args[0] ) ) {
-			$args = array(
-				'query' => array(
-					'taxonomy' => $args,
-				),
-			);
+	public function terms( $query_args = [], $options = [] ) {
+		// Make it possible to use a taxonomy or an array of taxonomies as a shorthand.
+		if ( ! is_array( $query_args ) || isset( $query_args[0] ) ) {
+			$query_args = [ 'taxonomy' => $query_args ];
+		}
+
+		/**
+		 * Handles backwards compatibility for users who use an array with a query property.
+		 *
+		 * @deprecated 2.0.0 use Post::terms( $query_args, $options )
+		 */
+		if ( is_array($query_args) && isset($query_args['query']) ) {
+			if ( isset($query_args['merge']) && !isset($options['merge']) ) {
+				$options['merge'] = $query_args['merge'];
+			}
+			$query_args = $query_args['query'];
 		}
 
 		// Defaults.
-		$args = wp_parse_args( $args, array(
-			'query' => array(
-				'taxonomy' => 'all',
-			),
-			'merge' => true,
-		) );
+		$query_args = wp_parse_args( $query_args, [
+			'taxonomy' => 'all'
+		] );
 
-		$taxonomies = $args['query']['taxonomy'];
-		$merge      = $args['merge'];
+		$options = wp_parse_args( $options, [
+			'merge' => true
+		] );
+
+		$taxonomies = $query_args['taxonomy'];
+		$merge      = $options['merge'];
 
 		if ( in_array($taxonomies, ['all', 'any', '']) ) {
 			$taxonomies = get_object_taxonomies($this->post_type);
@@ -712,7 +724,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			$taxonomies = [$taxonomies];
 		}
 
-		$query = array_merge($args['query'], [
+		$query = array_merge($query_args, [
 			'object_ids' => [$this->ID],
 			'taxonomy'   => $taxonomies,
 		]);
@@ -726,7 +738,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			return array_combine($taxonomies, $termGroups);
 		}
 
-		return Timber::get_terms($query);
+		return Timber::get_terms($query, $options);
 	}
 
 	/**
