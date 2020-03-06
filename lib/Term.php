@@ -13,14 +13,14 @@ use WP_Term;
  * @api
  * @example
  * ```php
- * //Get a term by its ID
+ * // Get a term by its ID
  * $context['term'] = Timber::get_term(6);
- * //Get a term when on a term archive page
+ *
+ * // Get a term when on a term archive page
  * $context['term_page'] = Timber::get_term();
- * //Get a term with a slug
+ *
+ * // Get a term with a slug
  * $context['team'] = Timber::get_term('patriots');
- * //Get a team with a slug from a specific taxonomy
- * $context['st_louis'] = Timber::get_term('cardinals', 'baseball');
  * Timber::render('index.twig', $context);
  * ```
  * ```twig

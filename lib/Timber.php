@@ -249,9 +249,6 @@ class Timber {
 	 * ```php
 	 * // Get a Term.
 	 * $tag = Timber::get_term(123);
-	 *
-	 * // Get a tag specifically.
-	 * $tag = Timber::get_term(123, 'post_tag');
 	 * ```
 	 */
 	public static function get_term( $term = null ) {
