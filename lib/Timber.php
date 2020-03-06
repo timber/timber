@@ -211,7 +211,8 @@ class Timber {
 	 * // Get all tags.
 	 * $tags = Timber::get_terms('post_tag');
 	 * // Note that this is equivalent to:
-	 * $tags = Timber::get_terms('post_tag');
+	 * $tags = Timber::get_terms( 'tag' );
+	 * $tags = Timber::get_terms( 'tags' );
 	 *
 	 * // Get all categories.
 	 * $cats = Timber::get_terms('category');
