@@ -232,7 +232,6 @@ class Timber {
 		// default to all queryable taxonomies
 		$args = $args ?? [
 			'taxonomy'   => get_taxonomies(),
-			'hide_empty' => false,
 		];
 
 		$factory = new TermFactory();
