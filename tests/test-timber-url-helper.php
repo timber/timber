@@ -175,6 +175,13 @@
             $this->assertEquals($expected_url, $url);
         }
 
+        function testDoubleSlashesWithS3() {
+            $url = 's3://bucket/folder//thing.html';
+            $expected_url = 's3://bucket/folder/thing.html';
+            $url = Timber\URLHelper::remove_double_slashes($url);
+            $this->assertEquals($expected_url, $url);
+        }
+
         function testUserTrailingSlashItFailure() {
             $link = 'http:///example.com';
             $url = Timber\URLHelper::user_trailingslashit($link);
