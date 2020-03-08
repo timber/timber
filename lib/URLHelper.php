@@ -212,9 +212,10 @@ class URLHelper {
 		foreach ( $schemes_whitelist as $scheme ) {
 			if ( strstr($url, $scheme . ':') && !strstr($url, $scheme . '://') ) {
 				$url = str_replace( $scheme . ':/', $scheme . '://', $url );
-				return $url;
 			}
 		}
+
+		return $url;
 	}
 
 	/**
