@@ -214,7 +214,6 @@ class URLHelper {
 				$url = str_replace( $scheme . ':/', $scheme . '://', $url );
 			}
 		}
-
 		return $url;
 	}
 
