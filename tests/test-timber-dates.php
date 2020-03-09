@@ -20,6 +20,24 @@
 			$this->assertEquals('1 day ago', $str);
 		}
 
+		function testTimeAgoFutureTranslated() {
+			$this->change_locale();
+
+			$str = Timber\Twig::time_ago( '2016-12-01 20:00:00', '2016-11-30, 20:00:00' );
+			$this->assertEquals( '1 Tag ab jetzt', $str );
+
+			$this->restore_locale();
+		}
+
+		function testTimeAgoPastTranslated() {
+			$this->change_locale();
+
+			$str = Timber\Twig::time_ago( '2016-11-29 20:00:00', '2016-11-30, 20:00:00' );
+			$this->assertEquals( 'vor 1 Tag', $str );
+
+			$this->restore_locale();
+		}
+
 		function testTime(){
 			$pid = $this->factory->post->create(array('post_date' => '2016-07-07 20:03:00'));
 			$post = new TimberPost($pid);

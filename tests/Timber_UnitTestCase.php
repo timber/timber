@@ -78,4 +78,30 @@
 			$wpdb->query("TRUNCATE TABLE $wpdb->posts;");
 		}
 
+		/**
+		 * Changes to a different locale.
+		 *
+		 * The translations for the locale you might want to use maybe don’t exist yet. You will
+		 * have to download it first through wp_download_language_pack(). Check the bootstrap.php
+		 * file to see how it works.
+		 *
+		 * After you used this function in a test, don’t forget to restore the current locale using
+		 * $this->restore_locale().
+		 *
+		 * @see \Timber_UnitTestCase::restore_locale()
+		 *
+		 * @param string $locale
+		 */
+		function change_locale( $locale = 'de_DE' ) {
+			switch_to_locale( $locale );
+		}
+
+		/**
+		 * Restores the locale after it was changed by $this->change_locale().
+		 *
+		 * @see \Timber_UnitTestCase::change_locale()
+		 */
+		function restore_locale() {
+			restore_current_locale();
+		}
 	}
