@@ -1005,8 +1005,8 @@
 		}
 
 		/**
-		 * @expectedDeprecated Accessing the thumbnail ID through {{ post._thumbnail_id }}
-		 */
+ 		 * @expectedIncorrectUsage Accessing the thumbnail ID through {{ post._thumbnail_id }}
+ 		 */
 		function testDeprecatedPostThumbnailIdProperty() {
 			// Add attachment to post.
 			$post_id       = $this->factory->post->create();
