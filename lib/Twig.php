@@ -65,7 +65,7 @@ class Twig {
 		$twig->addFunction(new TwigFunction('Image', function( $post_id, $ImageClass = 'Timber\Image' ) {
 			return self::maybe_convert_array( $post_id, $ImageClass );
 		} ) );
-		$twig->addFunction(new TwigFunction('Term', array($this, 'handle_term_object')));
+		$twig->addFunction(new TwigFunction('Term', [Timber::class, 'get_term']));
 		$twig->addFunction(new TwigFunction('User', [Timber::class, 'get_user'] ) );
 		$twig->addFunction( new TwigFunction( 'Attachment', function( $post_id, $AttachmentClass = 'Timber\Attachment' ) {
 			return self::maybe_convert_array( $post_id, $AttachmentClass );
@@ -87,14 +87,6 @@ class Twig {
 			function( $post_id = false, $ImageClass = 'Timber\Image' ) {
 				Helper::deprecated( '{{ TimberImage() }}', '{{ Image() }}', '2.0.0' );
 				return self::maybe_convert_array( $post_id, $ImageClass );
-			}
-		) );
-
-		$twig->addFunction( new TwigFunction(
-			'TimberTerm',
-			function( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
-				Helper::deprecated( '{{ TimberTerm() }}', '{{ Term() }}', '2.0.0' );
-				return self::handle_term_object($term_id, $taxonomy, $TermClass);
 			}
 		) );
 
@@ -136,33 +128,6 @@ class Twig {
 		}
 
 		return new $class( $post_id );
-	}
-
-	/**
-	 * Function for Term or Timber\Term() within Twig
-	 * @since 1.5.1
-	 * @author @jarednova
-	 * @param integer|array $term_id the term ID to search for
-	 * @param string        $taxonomy the taxonomy to search inside of. If sent a class name, it will use that class to support backwards compatibility
-	 * @param string        $TermClass the class to use for processing the term
-	 * @return Term|array
-	 */
-	static function handle_term_object( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
-		if ( $taxonomy != $TermClass ) {
-			// user has sent any additonal parameters, process
-			$processed_args = self::process_term_args($taxonomy, $TermClass);
-			$taxonomy = $processed_args['taxonomy'];
-			$TermClass = $processed_args['TermClass'];
-		}
-
-		if ( is_array($term_id) && !Helper::is_array_assoc($term_id) ) {
-			foreach ( $term_id as &$p ) {
-				$p = new $TermClass($p, $taxonomy);
-			}
-			return $term_id;
-		}
-
-		return new $TermClass($term_id, $taxonomy);
 	}
 
 	/**
@@ -224,7 +189,7 @@ class Twig {
 
 		/**
 		 * @deprecated since 1.13 (to be removed in 2.0). Use Twig's native filter filter instead
-		 * @todo remove this in 2.x so that filter merely passes to Twig's filter without any 
+		 * @todo remove this in 2.x so that filter merely passes to Twig's filter without any
 		 *       modification
 		 * @ticket #1594 #2120
 		 */
@@ -237,8 +202,8 @@ class Twig {
 
 		/**
 		 * Date and Time filters.
-		 * 
-		 * @todo copy this formatting to other functions 
+		 *
+		 * @todo copy this formatting to other functions
 		 */
 		$twig->addFilter(new TwigFilter(
 			'date',
@@ -336,7 +301,7 @@ class Twig {
 	/**
 	 * Overwrite Twig defaults.
 	 *
-	 * Makes Twig compatible with how WordPress handles dates, timezones and perhaps other items in 
+	 * Makes Twig compatible with how WordPress handles dates, timezones and perhaps other items in
 	 * the future
 	 *
 	 * @since 2.0.0
@@ -492,7 +457,7 @@ class Twig {
 	 */
 	public static function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
 		Helper::deprecated( 'time_ago', 'DateTimeHelper::time_ago', '2.0.0' );
-    
+
 		return DateTimeHelper::time_ago( $from, $to, $format_past, $format_future );
 	}
 

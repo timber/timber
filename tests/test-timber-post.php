@@ -1,10 +1,12 @@
 <?php
 
+	require_once 'php/timber-term-subclass.php';
+
 	/**
 	 * @group posts-api
 	 * @group users-api
-	 * @group called-post-constructor
-	 * @group called-term-constructor
+	 * @group terms-api
+	 * @group post-terms
 	 */
 	class TestTimberPost extends Timber_UnitTestCase {
 
@@ -822,9 +824,6 @@
 		}
 
 		function testPostTermClass() {
-			$class_name = 'TimberTermSubclass';
-			require_once('php/timber-term-subclass.php');
-
 			// create new post
 			$pid = $this->factory->post->create();
 			$post = Timber::get_post($pid);
@@ -833,14 +832,20 @@
 			$dummy_tag = wp_insert_term('whatever', 'post_tag');
 			self::set_object_terms($pid, $dummy_tag, 'post_tag');
 
+			$this->add_filter_temporarily('timber/term/classmap', function() {
+				return [
+					'post_tag' => TimberTermSubclass::class
+				];
+			});
+
 			// Test argument style.
-			$terms = $post->terms( array(
+			$terms = $post->terms([
 				'query'      => [
 					'taxonomy' => 'post_tag',
 				],
-				'term_class' => $class_name,
-			) );
-			$this->assertEquals($class_name, get_class($terms[0]));
+			]);
+
+			$this->assertInstanceOf(TimberTermSubclass::class, $terms[0]);
 		}
 
 		function testPostContentLength() {

@@ -47,6 +47,25 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$this->assertEquals($term_id, $term->id);
 	}
 
+	public function testGetTermFromTaxonomyName() {
+		$term_ids = $this->factory->term->create_many(3, ['taxonomy' => 'post_tag']);
+
+		// by default hide_empty is true, so assign each term to a post
+		wp_set_object_terms(
+			$this->factory->post->create(),
+			$term_ids,
+			'post_tag'
+		);
+
+		$termFactory = new TermFactory();
+		$terms       = $termFactory->from('post_tag');
+
+		$this->assertCount(3, $terms);
+		foreach ($terms as $term) {
+			$this->assertInstanceOf(Term::class, $term);
+		}
+	}
+
 	public function testGetTermWithOverrides() {
 		register_taxonomy('whackness', 'post');
 		$my_class_map = function() {
@@ -56,7 +75,7 @@ class TestTermFactory extends Timber_UnitTestCase {
 				'whackness' => WhacknessLevel::class,
 			];
 		};
-		add_filter( 'timber/term/classmap', $my_class_map );
+		$this->add_filter_temporarily( 'timber/term/classmap', $my_class_map );
 
 		$tag_id       = $this->factory->term->create(['name' => 'Toyota',        'taxonomy' => 'post_tag']);
 		$cat_id       = $this->factory->term->create(['name' => 'Chevrolet',     'taxonomy' => 'category']);
@@ -70,8 +89,6 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(MyTerm::class,         $tag);
 		$this->assertInstanceOf(MyTerm::class,         $cat);
 		$this->assertInstanceOf(WhacknessLevel::class, $whackness);
-
-		remove_filter( 'timber/term/classmap', $my_class_map );
 	}
 
 	public function testGetTermWithCallable() {
@@ -89,7 +106,7 @@ class TestTermFactory extends Timber_UnitTestCase {
 				}
 			];
 		};
-		add_filter( 'timber/term/classmap', $my_class_map );
+		$this->add_filter_temporarily( 'timber/term/classmap', $my_class_map );
 
 		$tag_id       = $this->factory->term->create(['name' => 'Toyota',        'taxonomy' => 'post_tag']);
 		$cat_id       = $this->factory->term->create(['name' => 'Chevrolet',     'taxonomy' => 'category']);
@@ -106,8 +123,6 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(MyTerm::class,         $cat);
 		$this->assertInstanceOf(WhacknessLevel::class, $whackness);
 		$this->assertInstanceOf(HellaWhackTerm::class, $hellawhack);
-
-		remove_filter( 'timber/term/classmap', $my_class_map );
 	}
 
 	public function testFromArray() {
@@ -137,7 +152,7 @@ class TestTermFactory extends Timber_UnitTestCase {
 				'make'  => MyTerm::class,
 			]);
 		};
-		add_filter( 'timber/term/classmap', $my_class_map );
+		$this->add_filter_temporarily( 'timber/term/classmap', $my_class_map );
 
 		$toyota = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
 		$chevy  = $this->factory->term->create(['name' => 'Chevrolet', 'taxonomy' => 'make']);
@@ -154,8 +169,6 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$this->assertCount(2, $res);
 		$this->assertInstanceOf(MyTerm::class, $res[0]);
 		$this->assertInstanceOf(MyTerm::class, $res[1]);
-
-		remove_filter( 'timber/term/classmap', $my_class_map );
 	}
 
 	public function testFromWpTermObject() {
@@ -164,7 +177,7 @@ class TestTermFactory extends Timber_UnitTestCase {
 				'make'  => MyTerm::class,
 			]);
 		};
-		add_filter( 'timber/term/classmap', $my_class_map );
+		$this->add_filter_temporarily( 'timber/term/classmap', $my_class_map );
 
 		$cat_id    = $this->factory->term->create(['name' => 'Red Herring', 'taxonomy' => 'category']);
 		$toyota_id = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
@@ -175,8 +188,6 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$termFactory = new TermFactory();
 		$this->assertInstanceOf(MyTerm::class, $termFactory->from($toyota));
 		$this->assertInstanceOf(Term::class,   $termFactory->from($cat));
-
-		remove_filter( 'timber/term/classmap', $my_class_map );
 	}
 
 	public function testFromTermQuery() {
@@ -186,7 +197,7 @@ class TestTermFactory extends Timber_UnitTestCase {
 				'make'  => MyTerm::class,
 			]);
 		};
-		add_filter( 'timber/term/classmap', $my_class_map );
+		$this->add_filter_temporarily( 'timber/term/classmap', $my_class_map );
 
 		$this->factory->term->create(['name' => 'Red Herring', 'taxonomy' => 'category']);
 		$toyota = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
@@ -205,8 +216,6 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$this->assertCount(2, $res);
 		$this->assertInstanceOf(MyTerm::class, $res[0]);
 		$this->assertInstanceOf(MyTerm::class, $res[1]);
-
-		remove_filter( 'timber/term/classmap', $my_class_map );
 	}
 
 	public function testFromAssortedArray() {
@@ -216,7 +225,7 @@ class TestTermFactory extends Timber_UnitTestCase {
 				'make'  => MyTerm::class,
 			]);
 		};
-		add_filter( 'timber/term/classmap', $my_class_map );
+		$this->add_filter_temporarily( 'timber/term/classmap', $my_class_map );
 
 		$geo_id        = $this->factory->term->create(['name' => 'Geo',        'taxonomy' => 'make']);
 		$datsun_id     = $this->factory->term->create(['name' => 'Datsun',     'taxonomy' => 'make']);
@@ -235,8 +244,6 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(MyTerm::class, $res[0]);
 		$this->assertInstanceOf(MyTerm::class, $res[1]);
 		$this->assertInstanceOf(MyTerm::class, $res[2]);
-
-		remove_filter( 'timber/term/classmap', $my_class_map );
 	}
 
 	public function testFromTermQueryArray() {
@@ -246,7 +253,7 @@ class TestTermFactory extends Timber_UnitTestCase {
 				'make'  => MyTerm::class,
 			]);
 		};
-		add_filter( 'timber/term/classmap', $my_class_map );
+		$this->add_filter_temporarily( 'timber/term/classmap', $my_class_map );
 
 		$this->factory->term->create(['name' => 'Red Herring', 'taxonomy' => 'category']);
 		$toyota = $this->factory->term->create(['name' => 'Toyota',    'taxonomy' => 'make']);
@@ -264,7 +271,5 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$this->assertCount(2, $res);
 		$this->assertInstanceOf(MyTerm::class, $res[0]);
 		$this->assertInstanceOf(MyTerm::class, $res[1]);
-
-		remove_filter( 'timber/term/classmap', $my_class_map );
 	}
 }
