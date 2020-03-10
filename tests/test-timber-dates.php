@@ -7,6 +7,7 @@ use Timber\Timber;
 /**
  * Class TestTimberDates
  *
+ * @group called-post-constructor
  * @group Timber\Date
  */
 class TestTimberDates extends Timber_UnitTestCase {

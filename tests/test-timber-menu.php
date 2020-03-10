@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @group called-post-constructor
+ * @todo #2094 replace direct Timber\Menu instantiations
+ */
 class TestTimberMenu extends Timber_UnitTestCase {
 
 	const MENU_NAME = 'Menu One';
@@ -64,7 +68,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $child_menu_item, '_menu_item_object_id', $child_id );
 		update_post_meta( $child_menu_item, '_menu_item_object', 'page' );
 		update_post_meta( $child_menu_item, '_menu_item_url', '' );
-		$post = new Timber\Post( $child_menu_item );
+		$post = Timber::get_post( $child_menu_item );
 		$menu_items[] = $child_menu_item;
 
 		/* make a grandchild page */
@@ -85,7 +89,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $grandchild_menu_item, '_menu_item_object_id', $grandchild_id );
 		update_post_meta( $grandchild_menu_item, '_menu_item_object', 'page' );
 		update_post_meta( $grandchild_menu_item, '_menu_item_url', '' );
-		$post = new Timber\Post( $grandchild_menu_item );
+		$post = Timber::get_post( $grandchild_menu_item );
 		$menu_items[] = $grandchild_menu_item;
 
 		/* make another grandchild page */
@@ -106,7 +110,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $grandchild_menu_item, '_menu_item_object_id', $grandchild_id );
 		update_post_meta( $grandchild_menu_item, '_menu_item_object', 'page' );
 		update_post_meta( $grandchild_menu_item, '_menu_item_url', '' );
-		$post = new Timber\Post( $grandchild_menu_item );
+		$post = Timber::get_post( $grandchild_menu_item );
 		$menu_items[] = $grandchild_menu_item;
 
 		$root_url_link_id = wp_insert_post(
@@ -312,7 +316,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
 
 		// Lets confirm this post has a thumbnail on it!
-		$post = new Timber\Post($pid);
+		$post = Timber::get_post($pid);
 		$this->assertEquals('http://example.org/wp-content/uploads/' . date( 'Y/m' ) . '/arch.jpg', $post->thumbnail());
 
 		$nav_menu = new Timber\Menu( $menu_term['term_id'] );

@@ -40,7 +40,7 @@ $context = Timber::context();
 Timber::render( 'single.twig', $context );
 ```
 
-Follow this guide to get an overview of what’s in the context, or use `var_dump( $context );` in PHP or `{{ dump() }}` in Twig to display the contents in your browser.
+Follow this guide to get an overview of what’s in the context, or use `var_dump( $context );` in PHP or `{{ dump() }}` in Twig to display the contents of the context in your browser.
 
 ## Global context
 
@@ -50,10 +50,10 @@ The global context is the context that is always set when you load it through `T
 
 Among others, the following variables will be available:
 
-- **site** – The `site` variable is a [Timber\Site](/docs/reference/timber-site/) object which will make it easier for you to retrieve site info. If you’re used to using `blog_info( 'sitename' )` in PHP, you can use `{{ site.name }}` in Twig instead.
-- **request** - The `request` variable is a `Timber\Request` object, which will make it easier for you to access `$_GET` and `$_POST` variables in your context. Please be aware that you should always be very careful about using `$_GET` and `$_POST` variables in your templates directly. Read more about this in the Escaping Guide.
-- **theme** - The `theme` variable is [Timber\Theme](/docs/reference/timber-theme/) object and contains info about your theme.
-- **user** - The `user` variable will be a [`Timber\User`](/docs/reference/timber-user/) object if a user/visitor is currently logged in and otherwise it will just be `false`.
+- **site** – The `site` variable is a [`Timber\Site`](/docs/reference/timber-site/) object which will make it easier for you to retrieve infos about your WordPress site. If you’re used to using `blog_info( 'sitename' )` in PHP, you can use `{{ site.name }}` in Twig instead.
+- **request** - The `request` variable is a `Timber\Request` object, which will make it easier for you to access `$_GET` and `$_POST` variables in your context. Please be aware that you should always be very careful about using `$_GET` and `$_POST` variables in your templates directly. Read more about this in the [Escaping Guide](https://timber.github.io/docs/guides/escaping/).
+- **theme** - The `theme` variable is a [`Timber\Theme`](/docs/reference/timber-theme/) object and contains info about your theme.
+- **user** - The `user` variable will be a [`Timber\User`](/docs/reference/timber-user/) object if a user/visitor is currently logged in and otherwise it will be `false`.
 
 For a full list of variables, go have a look at the reference for [`Timber::context()`](/docs/reference/timber-timber/#context).
 
@@ -68,7 +68,7 @@ Here’s an example for how you could **add a navigation menu** to your context,
 ```php
 // Example: Add a menu to the global context.
 add_filter( 'timber/context', function( $context ) {
-    $context['menu'] = new Timber\Menu( 'primary-menu' );
+    $context['menu'] = Timber::get_menu( 'primary-menu' );
 
     return $context;
 } );
@@ -106,7 +106,7 @@ When you call `Timber::context()`, Timber will automatically populate your conte
 
 ### Singular templates
 
-The `post` variable will be available in singular templates ([is_singular()](https://developer.wordpress.org/reference/functions/is_singular/)), like posts or pages. It will contain a `Timber\Post` object of the currently displayed post.
+The `post` variable will be available in singular templates ([when `is_singular()`](https://developer.wordpress.org/reference/functions/is_singular/) returns `true`), like posts or pages. It will contain a `Timber\Post` object of the currently displayed post.
 
 **single.php**
 
@@ -116,46 +116,48 @@ $context = Timber::context();
 Timber::render( 'single.twig', $context );
 ```
 
-By calling `new Timber\Post()` without any arguments, Timber will use the `$post` global for the current singular template.
+By calling `Timber::get_post()` without any arguments, Timber will use the `$post` global for the current singular template.
 
 #### Using a custom post class
 
-If you want to use [your own post class](/docs/guides/extending-timber/), you can create an instance of your own class.
+If you want to use [your own post class](/docs/guides/extending-timber/), you can use the [Post Class Map](/docs/guides/posts/#the-post-class-map) to register that class for your post type. `Timber::context()` will then automatically set the `post` variable using your class.
+
+If you want to overwrite the existing `post` variable in the context, you can do that.
+
 
 ```php
 $context = Timber::context();
 
-// Using an custom post class
-$post = new Extended_Post();
+$post = Timber::get_post();
 $post->setup();
 
 $context['post'] = $post;
 
 // Or very short
-$context['post'] = ( new Extended_Post() )->setup();
+$context['post'] = Timber::get_post()->setup();
 ```
 
-Whenever you set up **a post in a singular template (instead of relying on `Timber::context()` to do it for you), you need set up your post through `$post->setup()`**. This function improves compatibility with third party plugins.
+Whenever you set up **a post in a singular template** (instead of relying on `Timber::context()` to do it for you), **you need set up your post through `$post->setup()`**. The `setup()` function improves compatibility with third party plugins.
 
 ### Archive templates
 
-The `posts` variable will be available in archive templates ([is_archive()](https://developer.wordpress.org/reference/functions/is_archive/)), like your posts index page, category or tag archives, date based or author archives. It will contain a `Timber\PostQuery` with the posts that WordPress already fetched for your archive page.
+The `posts` variable will be available in archive templates ([when `is_archive()`](https://developer.wordpress.org/reference/functions/is_archive/) returns `true`), like your posts index page, category or tag archives, date based or author archives. It will contain a `Timber\PostQuery` array object with the posts that WordPress already fetched for your archive page.
 
 #### Use the default query
 
 ```php
-$context          = Timber::context();
+$context = Timber::context();
 
 Timber::render( 'archive.twig', $context );
 ```
 
 #### Write your own query
 
-When you don’t need the default query, you can pass in your own arguments to `Timber\PostQuery()`.
+When you don’t need the default query, you can pass in your own arguments to `Timber::get_posts()`.
 
 ```php
 $context          = Timber::context();
-$context['posts'] = new Timber\PostQuery( array(
+$context['posts'] = new Timber::get_posts( array(
     'query' => array(
         'post_type'      => 'book',
         'posts_per_page' => -1,
@@ -166,13 +168,13 @@ $context['posts'] = new Timber\PostQuery( array(
 
 #### Change arguments for default query
 
-Sometimes you don’t want to use the default query, but only change a little thing. You can change arguments for the default query that WordPress will use to fetch posts by using the `merge_default` argument. For example, if you’d want to change the default query to *only show posts written by a specific group of authors*, you could pass in a `author__in` argument:
+Sometimes you don’t want to use the default query, but build on the default query and only change a little thing. You can change arguments for the default query that WordPress will use to fetch posts by using the `merge_default` argument. For example, if you’d want to change the default query to *only show posts written by a specific group of authors*, you could pass in a `author__in` argument:
 
 **archive.php**
 
 ```php
 $context          = Timber::context();
-$context['posts'] = Timber\PostQuery( array(
+$context['posts'] = Timber::get_posts( array(
     'query' => array(
         'author__in' => array(1, 6, 14),
     ),
@@ -184,8 +186,6 @@ Timber::render( 'archive.twig', $context );
 
 Timber will accept the parameters that can be found in WordPress’s [WP_Query class](https://codex.wordpress.org/Class_Reference/WP_Query).
 
-### Performance
+#### Use a custom post class
 
-In any case where you instantiate a new `Timber\PostQuery` with a `query` argument or create a new `Timber\Post()` with an argument, data will be fetched from the database. It’s always a performance hit. As long as you don’t change any query parameters, no additional database query will be run.
-
-If you care about performance and want to change the query that WordPress runs before deciding which template file it will use, you need to use the [`pre_get_posts`](https://developer.wordpress.org/reference/hooks/pre_get_posts/) action.
+By default, `Timber::get_posts()` will contain `Timber\Post` objects. If you want to control what class will be used for the posts, you can use the [Post Class Map](/docs/guides/posts#the-post-class-map).

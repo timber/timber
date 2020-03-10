@@ -1,5 +1,8 @@
 <?php
 
+	/**
+	 * @group called-post-constructor
+	 */
 	class TestTimberTwig extends Timber_UnitTestCase {
 
 		function tearDown() {
@@ -95,7 +98,7 @@
 			add_filter('protected_title_format', function($title){
 				return 'Protected: '.$title;
 			});
-			$context['post'] = new Timber\Post($post_id);
+			$context['post'] = Timber::get_post($post_id);
 			if (post_password_required($post_id)){
 				$this->assertTrue(true);
 				$str = Timber::compile('assets/test-wp-filters.twig', $context);
@@ -129,7 +132,7 @@
 		 */
 		function testFilterFunction() {
 			$pid = $this->factory->post->create(array('post_title' => 'Foo'));
-			$post = new Timber\Post( $pid );
+			$post = Timber::get_post( $pid );
 			$str = 'I am a {{post | get_class }}';
 			$this->assertEquals('I am a Timber\Post', Timber::compile_string($str, array('post' => $post)));
 		}
@@ -208,7 +211,7 @@
      	*/
 		function testSetObject() {
 			$pid = $this->factory->post->create(array('post_title' => 'Spaceballs'));
-			$post = new Timber\Post( $pid );
+			$post = Timber::get_post( $pid );
 			$result = Timber::compile('assets/set-object.twig', array('post' => $post));
 			$this->assertEquals('Spaceballs: may the schwartz be with you', trim($result));
 		}
