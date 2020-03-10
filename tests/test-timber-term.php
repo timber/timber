@@ -24,6 +24,17 @@
 			$this->assertEquals('Rangers',   $baseball_teams[1]->title());
 		}
 
+		/**
+		 * @expectedException InvalidArgumentException
+		 */
+		function testTermFromInvalidObject() {
+			register_taxonomy('baseball', array('post'));
+			$term_id = $this->factory->term->create(['name' => 'Cardinals', 'taxonomy' => 'baseball']);
+			$post_id = $this->factory->post->create(['post_title' => 'Test Post']);
+			$post = get_post($post_id);
+			$test = Timber::get_terms($post);
+		}
+
 		function testGetTerm() {
 			register_taxonomy('arts', array('post'));
 
