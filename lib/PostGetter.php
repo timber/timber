@@ -27,7 +27,7 @@ class PostGetter {
 
 		$posts = self::get_posts($query, $PostClass);
 
-		if ( $post = reset($posts) ) {
+		if ( is_iterable($posts) && $post = reset($posts) ) {
 			return $post;
 		}
 
@@ -242,8 +242,6 @@ class PostGetter {
 		if ( is_array($post_class) ) {
 			if ( isset($post_class[$post_type]) ) {
 				$post_class_use = $post_class[$post_type];
-			} else {
-				Helper::error_log($post_type.' not found in '.print_r($post_class, true));
 			}
 		} elseif ( is_string($post_class) ) {
 			$post_class_use = $post_class;
