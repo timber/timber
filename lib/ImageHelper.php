@@ -499,11 +499,10 @@ class ImageHelper {
 		if ( !empty($subdir) ) {
 			$url .= $subdir;
 		}
-		$url .= '/'.$filename;
+		$url = untrailingslashit($url).'/'.$filename;
 		if ( !$absolute ) {
 			$url = str_replace(site_url(), '', $url);
 		}
-		// $url = TimberURLHelper::remove_double_slashes( $url);
 		return $url;
 	}
 

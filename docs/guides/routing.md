@@ -80,7 +80,7 @@ So in this example: `'info/:name/page/:pg'`, $params would have data for:
 `$php_file` (required)
 A PHP file to load, in my experience this is usually your archive.php or a generic listing page (but don't worry it can be anything!)
 
-`$template_params`
+`$args`
 Any data you want to send to the resulting view. Example:
 
 ```php
@@ -92,9 +92,9 @@ Routes::map('info/:name/page/:pg', function($params){
     $query = 'posts_per_page=3&post_type='.$params['name'].'&paged='.intval($params['pg']);
 
     //load up a template which will use that query
-    $params = array();
-    $params['my_title'] = 'This is my custom title';
-    Routes::load('archive.php', $params, $query, 200);
+    $args = array();
+    $args['my_title'] = 'This is my custom title';
+    Routes::load('archive.php', $args, $query, 200);
 });
 ```
 

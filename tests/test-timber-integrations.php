@@ -38,6 +38,25 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		$this->assertEquals('WORKS', $str);
 	}
 
+	function testCustomTimeField() {
+		$pid = $this->factory->post->create(array('post_content' => 'Cool content bro!', 'post_date' => '2020-02-07 08:03:00'));
+		update_field( '_time', 'I am custom time', $pid );
+		update_field( 'time', 'I am custom time', $pid );
+		$str = '{{ post.time }}';
+		$post = new Timber\Post( $pid );
+		$str = Timber::compile_string( $str, array( 'post' => $post ) );
+		$this->assertEquals( '8:03 am', trim($str) );
+	}
+
+	function testCustomContentField() {
+		$pid = $this->factory->post->create(array('post_content' => 'Cool content bro!'));
+		update_field( '_content', 'I am custom content', $pid );
+		$str = '{{ post.content }}';
+		$post = new Timber\Post( $pid );
+		$str = Timber::compile_string( $str, array( 'post' => $post ) );
+		$this->assertEquals( '<p>Cool content bro!</p>', trim($str) );
+	}
+
 	function testACFHasFieldPostTrue() {
 		$pid = $this->factory->post->create();
 		update_post_meta($pid, 'best_radiohead_album', 'in_rainbows');

@@ -35,7 +35,7 @@ use Timber\Loader;
  */
 class Timber {
 
-	public static $version = '1.13.0';
+	public static $version = '1.15.2';
 	public static $locations;
 	public static $dirname = 'views';
 	public static $twig_cache = false;
@@ -157,7 +157,7 @@ class Timber {
 	 * @api
 	 * @param mixed   $query
 	 * @param string  $PostClass
-	 * @return array|bool|null
+	 * @return Post|array|bool|null
 	 */
 	public static function query_post( $query = false, $PostClass = 'Timber\Post' ) {
 		return PostGetter::query_post($query, $PostClass);

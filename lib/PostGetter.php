@@ -27,7 +27,7 @@ class PostGetter {
 
 		$posts = self::get_posts($query, $PostClass);
 
-		if ( $post = reset($posts) ) {
+		if ( is_iterable($posts) && $post = reset($posts) ) {
 			return $post;
 		}
 
@@ -174,13 +174,11 @@ class PostGetter {
 		if ( is_array($post_class) ) {
 			if ( isset($post_class[$post_type]) ) {
 				$post_class_use = $post_class[$post_type];
-			} else {
-				Helper::error_log($post_type.' not found in '.print_r($post_class, true));
 			}
 		} elseif ( is_string($post_class) ) {
 			$post_class_use = $post_class;
 		} else {
-			Helper::error_log('Unexpeted value for PostClass: '.print_r($post_class, true));
+			Helper::error_log('Unexpected value for PostClass: '.print_r($post_class, true));
 		}
 
 		if ( $post_class_use === '\Timber\Post' || $post_class_use === 'Timber\Post' ) {

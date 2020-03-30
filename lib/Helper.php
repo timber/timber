@@ -172,8 +172,9 @@ class Helper {
 	}
 
 	/**
+	 * @codeCoverageIgnore
 	 * @deprecated since 1.3.0
-	 *
+	 * 
 	 * @param mixed $function_name        String or array( $class( string|object ), $function_name ).
 	 * @param array $defaults             Optional.
 	 * @param bool  $return_output_buffer Optional. Return function output instead of return value. Default false.
@@ -199,7 +200,7 @@ class Helper {
 		if ( is_object($error) || is_array($error) ) {
 			$error = print_r($error, true);
 		}
-		return error_log($error);
+		return error_log('[ Timber ]'.$error);
 	}
 
 	/**
@@ -423,16 +424,37 @@ class Helper {
 
 	/**
 	 * Filters a list of objects, based on a set of key => value arguments.
+	 * Uses native Twig Filter.
+	 *
+	 * @since 1.14.0
+	 * @param array                 $list to filter.
+	 * @param callback|string|array $arrow function used for filtering,
+	 *                              string or array for backward compatibility.
+	 * @param string                $operator to use (AND, NOT, OR). For backward compatibility.
+	 * @return array
+	 */
+	public static function filter_array( $list, $arrow, $operator = 'AND' ) {
+		if ( ! is_callable( $arrow ) ) {
+			self::warn( 'This filter is using Twig\'s filter by default. If you want to use wp_list_filter use {{ my_array|wp_list_filter }}.' );
+			return self::wp_list_filter( $list, $arrow, $operator );
+		}
+
+		return twig_array_filter( $list, $arrow );
+	}
+
+	/**
+	 * Filters a list of objects, based on a set of key => value arguments.
+	 * Uses WordPress WP_List_Util's filter.
 	 *
 	 * @since 1.5.3
 	 * @ticket #1594
 	 * @param array        $list to filter.
-	 * @param string|array $filter to search for.
+	 * @param string|array $args to search for.
 	 * @param string       $operator to use (AND, NOT, OR).
 	 * @return array
 	 */
-	public static function filter_array( $list, $args, $operator = 'AND' ) {
-		if ( ! is_array($args) ) {
+	public static function wp_list_filter( $list, $args, $operator = 'AND' ) {
+		if ( ! is_array( $args ) ) {
 			$args = array( 'slug' => $args );
 		}
 
