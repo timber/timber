@@ -13,6 +13,15 @@
 			$this->assertEquals('post', $post->post_type);
 		}
 
+		/**
+		 * @ticket #2111
+		 */
+		function testNonExistentPostType() {
+			$post_type = new Timber\PostType('foobar');
+			$this->assertEquals('foobar', $post_type->slug);
+			$this->assertEquals('Timber\PostType', get_class($post_type));
+		}
+
 		function testPostTypeMethodInTwig() {
 			$post_id = $this->factory->post->create();
 			$post = new TimberPost($post_id);
