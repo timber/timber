@@ -181,6 +181,13 @@
             $url = Timber\URLHelper::remove_double_slashes($url);
             $this->assertEquals($expected_url, $url);
         }
+		
+	function testDoubleSlashesWithGS() {
+            $url = 'gs://bucket/folder//thing.html';
+            $expected_url = 'gs://bucket/folder/thing.html';
+            $url = Timber\URLHelper::remove_double_slashes($url);
+            $this->assertEquals($expected_url, $url);
+        }
 
         function testUserTrailingSlashItFailure() {
             $link = 'http:///example.com';
