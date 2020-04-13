@@ -278,6 +278,7 @@ class Timber {
 	 * Compile a Twig file.
 	 *
 	 * Passes data to a Twig file and returns the output.
+	 * If the template file doesn't exist it will throw a warning when WP_DEBUG is enabled.
 	 *
 	 * @api
 	 * @example
@@ -331,6 +332,8 @@ class Timber {
 			}
 
 			$output = $loader->render($file, $data, $expires, $cache_mode);
+		} else {
+			Helper::warn( 'Error loading your template file, make sure the file exists.' );
 		}
 
 		do_action('timber_compile_done');
