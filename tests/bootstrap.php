@@ -32,4 +32,5 @@ if ( !function_exists('is_post_type_viewable') ) {
  	}
 }
 
+// Make sure translations are installed.
 Timber_UnitTestCase::install_translation( 'de_DE' );
