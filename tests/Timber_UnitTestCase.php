@@ -168,9 +168,9 @@
 		 *
 		 * @see \Timber_UnitTestCase::restore_locale()
 		 *
-		 * @param string $locale
+		 * @param string $locale The locale to switch to.
 		 */
-		function change_locale( $locale = 'de_DE' ) {
+		function change_locale( $locale ) {
 			// Check if the translation is already installed.
 			if ( ! in_array( $locale, get_available_languages() ) ) {
 				self::install_translation( $locale );
