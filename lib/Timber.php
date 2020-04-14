@@ -333,7 +333,10 @@ class Timber {
 
 			$output = $loader->render($file, $data, $expires, $cache_mode);
 		} else {
-			Helper::error_log( 'Error loading your template file, make sure the file exists.' );
+			if ( is_array($filenames) ) {
+				$filenames = implode(", ", $filenames);
+			}
+			Helper::error_log( 'Error loading your template files: '.$filenames.'. Make sure one of these files exists.' );
 		}
 
 		do_action('timber_compile_done');
