@@ -26,14 +26,10 @@ require_once __DIR__.'/TimberImage_UnitTestCase.php';
 
 error_log('Use http://build.starter-theme.dev/ for testing with UI');
 
-/**
- * Download German language pack.
- */
-require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
-wp_download_language_pack( 'de_DE' );
-
 if ( !function_exists('is_post_type_viewable') ) {
 	function is_post_type_viewable( $post_type_object ) {
  		return $post_type_object->publicly_queryable || ( $post_type_object->_builtin && $post_type_object->public );
  	}
 }
+
+Timber_UnitTestCase::install_translation( 'de_DE' );

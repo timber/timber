@@ -79,6 +79,84 @@
 		}
 
 		/**
+		 * Installs a translation.
+		 *
+		 * Deletes already installed translation first.
+		 *
+		 * @param string $locale The locale to install.
+		 */
+		public static function install_translation( $locale ) {
+			require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
+
+			self::uninstall_translation( $locale );
+			wp_download_language_pack( $locale );
+		}
+
+		/**
+		 * Deletes translation files for a locale.
+		 *
+		 * Logic borrowed from WP CLI Language Command
+		 *
+		 * @link https://github.com/wp-cli/language-command/blob/master/src/Core_Language_Command.php
+		 *
+		 * @param string $locale The locale to delete.
+		 *
+		 * @return bool Whether the locale was deleted.
+		 */
+		public static function uninstall_translation( $locale ) {
+			global $wp_filesystem;
+
+			$available    = wp_get_installed_translations( 'core' );
+			$translations = array_keys( $available['default'] );
+
+			if ( ! in_array( $locale, $translations, true ) ) {
+				return false;
+			}
+
+			$files = scandir( WP_LANG_DIR );
+
+			if ( ! $files ) {
+				return false;
+			}
+
+			$current_locale = get_locale();
+			if ( $locale === $current_locale ) {
+				// Language is active.
+				return true;
+			}
+
+			// As of WP 4.0, no API for deleting a language pack
+			WP_Filesystem();
+			$deleted = false;
+			foreach ( $files as $file ) {
+
+				if ( '.' === $file[0] || is_dir( $file ) ) {
+					continue;
+				}
+
+				$extension_length = strlen( $locale ) + 4;
+				$ending           = substr( $file, -$extension_length );
+				$starting = substr( $file, 0, strlen( $locale ) );
+
+				if ( ! in_array( $file, [ $locale . '.po', $locale . '.mo' ], true )
+					&& ! in_array( $ending, [ '-' . $locale . '.po', '-' . $locale . '.mo' ], true )
+					&& $locale !== $starting
+				) {
+					continue;
+				}
+
+				/** @var WP_Filesystem_Base $wp_filesystem */
+				$deleted = $wp_filesystem->delete( trailingslashit( WP_LANG_DIR ) . $file );
+			}
+
+			if ( $deleted ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		/**
 		 * Changes to a different locale.
 		 *
 		 * The translations for the locale you might want to use maybe don’t exist yet. You will
