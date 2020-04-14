@@ -171,6 +171,11 @@
 		 * @param string $locale
 		 */
 		function change_locale( $locale = 'de_DE' ) {
+			// Check if the translation is already installed.
+			if ( ! in_array( $locale, get_available_languages() ) ) {
+				self::install_translation( $locale );
+			}
+
 			switch_to_locale( $locale );
 		}
 
