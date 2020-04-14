@@ -31,7 +31,7 @@ _Twig is the template language powering Timber; if you need a little background 
 = Develop (next release) =
 
 **Fixes and improvements**
-
+* Allows for translation of time_ago Twig filter #2214 #2215 (thanks @gchtr)
 
 **Changes for Theme Developers**
 

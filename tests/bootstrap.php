@@ -31,3 +31,6 @@ if ( !function_exists('is_post_type_viewable') ) {
  		return $post_type_object->publicly_queryable || ( $post_type_object->_builtin && $post_type_object->public );
  	}
 }
+
+// Make sure translations are installed.
+Timber_UnitTestCase::install_translation( 'de_DE' );
