@@ -46,6 +46,7 @@
 			update_user_meta($uid, 'description', 'Sixteenth President');
 			$user = Timber::get_user($uid);
 			$this->assertEquals('Sixteenth President', $user->meta('description'));
+
 			$pid = $this->factory->post->create(array('post_author' => $uid));
 			$post = Timber::get_post($pid);
 			$str = Timber::compile_string("{{post.author.meta('description')}}", array('post' => $post));
@@ -60,8 +61,8 @@
 
 		function testInitWithObject(){
 			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln'));
-			$uid = get_user_by('id', $uid);
-			$user = Timber::get_user($uid);
+			$wp_user = get_user_by('id', $uid);
+			$user = Timber::get_user($wp_user);
 			$this->assertEquals('Baberaham Lincoln', $user->name);
 		}
 
