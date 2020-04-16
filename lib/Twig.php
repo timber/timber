@@ -209,6 +209,7 @@ class Twig {
 		} ));
 
 		/* other filters */
+		$twig->addFilter(new Twig_Filter('time_ago', array($this, 'time_ago')));
 		$twig->addFilter(new TwigFilter('stripshortcodes', 'strip_shortcodes'));
 		$twig->addFilter(new TwigFilter('array', array($this, 'to_array')));
 		$twig->addFilter(new TwigFilter('excerpt', 'wp_trim_words'));
