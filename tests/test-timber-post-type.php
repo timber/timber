@@ -21,7 +21,7 @@
 		 */
 		function testNonExistentPostType() {
 			$post_type = new Timber\PostType('foobar');
-			$this->assertEquals('foobar', $post_type->slug);
+			$this->assertEquals('foobar', $post_type);
 			$this->assertEquals('Timber\PostType', get_class($post_type));
 		}
 
