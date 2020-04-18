@@ -148,6 +148,8 @@ class User extends Core implements CoreInterface {
 			if ( isset($data->roles) ) {
 				$this->roles = $this->get_roles($data->roles);
 			}
+		} else {
+			$this->display_user = '';
 		}
 		unset($this->user_pass);
 		$this->id = $this->ID = (int) $this->ID;
