@@ -44,7 +44,7 @@ class User extends Core implements CoreInterface {
 	 * @var string The description from WordPress
 	 */
 	public $description;
-	public $display_name;
+	public $display_name = '';
 
 	/**
 	 * @api
@@ -148,8 +148,6 @@ class User extends Core implements CoreInterface {
 			if ( isset($data->roles) ) {
 				$this->roles = $this->get_roles($data->roles);
 			}
-		} else {
-			$this->display_user = '';
 		}
 		unset($this->user_pass);
 		$this->id = $this->ID = (int) $this->ID;
