@@ -3,6 +3,7 @@
 	class TestTimberPostType extends Timber_UnitTestCase {
 
 		function testPostTypeObject() {
+			$this->restore_locale();
 			$obj = get_post_type_object('post');
 			$this->assertEquals('Posts', $obj->labels->name);
 		}
@@ -18,7 +19,7 @@
 		 */
 		function testNonExistentPostType() {
 			$post_type = new Timber\PostType('foobar');
-			$this->assertEquals('foobar', $post_type->slug);
+			$this->assertEquals('foobar', $post_type->slug());
 			$this->assertEquals('Timber\PostType', get_class($post_type));
 		}
 

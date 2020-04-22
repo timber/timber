@@ -25,6 +25,10 @@ class PostType {
 		return $this->slug;
 	}
 
+	public function slug() {
+		return $this->slug;
+	}
+
 	protected function init( $post_type ) {
 		$obj = get_post_type_object($post_type);
 		if ( ! empty( $obj ) ) {
