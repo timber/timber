@@ -44,7 +44,7 @@ class User extends Core implements CoreInterface {
 	 * @var string The description from WordPress
 	 */
 	public $description;
-	public $display_name;
+	public $display_name = '';
 
 	/**
 	 * @api
