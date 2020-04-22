@@ -6,6 +6,7 @@
 	class TestTimberPostType extends Timber_UnitTestCase {
 
 		function testPostTypeObject() {
+			$this->restore_locale();
 			$obj = get_post_type_object('post');
 			$this->assertEquals('Posts', $obj->labels->name);
 		}
