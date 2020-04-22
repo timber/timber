@@ -61,7 +61,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * @api
 	 * @var string
 	 */
-	public $display_name;
+	public $display_name = '';
 
 	/**
 	 * @api

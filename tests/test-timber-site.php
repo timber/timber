@@ -10,7 +10,8 @@ class TestTimberSite extends Timber_UnitTestCase {
 	}
 
 	function testLanguageAttributes() {
-		$site = new \Timber\Site();
+		$this->restore_locale();
+		$site = new Site();
 		$lang = $site->language_attributes();
 		$this->assertEquals('lang="en-US"', $lang);
 	}
