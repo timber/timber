@@ -70,15 +70,25 @@ class DateTimeHelper {
 	 *
 	 * @return string
 	 */
-	public static function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
-		$to   = null === $to ? time() : $to;
-		$to   = is_int( $to ) ? $to : strtotime( $to );
-		$from = is_int( $from ) ? $from : strtotime( $from );
+	public static function time_ago( $from, $to = null, $format_past = null, $format_future = null ) {
+		if ( null === $format_past ) {
+			/* translators: %s: Human-readable time difference. */
+			$format_past = __( '%s ago' );
+		}
+
+		if ( null === $format_future ) {
+			/* translators: %s: Human-readable time difference. */
+			$format_future = __( '%s from now' );
+		}
+
+		$to = $to === null ? time() : $to;
+		$to = is_int($to) ? $to : strtotime($to);
+		$from = is_int($from) ? $from : strtotime($from);
 
 		if ( $from < $to ) {
-			return sprintf( $format_past, human_time_diff( $from, $to ) );
+			return sprintf($format_past, human_time_diff($from, $to));
 		} else {
-			return sprintf( $format_future, human_time_diff( $to, $from ) );
+			return sprintf($format_future, human_time_diff($to, $from));
 		}
 	}
 }
