@@ -250,7 +250,7 @@ class Helper {
 		if ( is_object($error) || is_array($error) ) {
 			$error = print_r($error, true);
 		}
-		return error_log('[ Timber ]'.$error);
+		return error_log('[ Timber ] '.$error);
 	}
 
 	/**
