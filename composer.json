@@ -56,7 +56,8 @@
       "tests/"
     ],
     "exclude-from-classmap": [
-      "tests/php"
+      "tests/php",
+      "tests/phpstan"
     ]
   },
   "repositories": [
