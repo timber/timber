@@ -52,13 +52,7 @@ class DateTimeHelper {
 	 *
 	 * Differentiates between past and future dates.
 	 *
-	 * @api
-	 * @since 2.0.0
 	 * @see \human_time_diff()
-	 * @example
-	 * ```
-	 *
-	 * ```
 	 *
 	 * @param int|string $from          Base date as a timestamp or a date string.
 	 * @param int|string $to            Optional. Date to calculate difference to as a timestamp or
@@ -70,7 +64,7 @@ class DateTimeHelper {
 	 *
 	 * @return string
 	 */
-	public static function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
+	public static function time_ago( $from, $to = null, $format_past = null, $format_future = null ) {
 		if ( null === $format_past ) {
 			/* translators: %s: Human-readable time difference. */
 			$format_past = __( '%s ago' );

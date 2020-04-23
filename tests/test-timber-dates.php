@@ -250,7 +250,7 @@ class TestTimberDates extends Timber_UnitTestCase {
 		if ( version_compare( get_bloginfo( 'version' ), 5, '>=' ) ) {
 			$this->change_locale( 'de_DE' );
 
-			$str = \Timber\Twig::time_ago( '2016-11-29 20:00:00', '2016-11-30, 20:00:00' );
+			$str = DateTimeHelper::time_ago( '2016-11-29 20:00:00', '2016-11-30, 20:00:00' );
 			$this->assertEquals( 'vor 1 Tag', $str );
 
 			$this->restore_locale();
