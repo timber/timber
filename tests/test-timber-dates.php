@@ -229,33 +229,33 @@ class TestTimberDates extends Timber_UnitTestCase {
 		$this->assertEquals( wp_date( 'F j, Y @ g:i a' ), $str );
 	}
 
-		function testTimeAgoFutureTranslated() {
-			if ( version_compare( get_bloginfo( 'version' ), 5, '>=' ) ) {
-				$this->change_locale( 'de_DE' );
+	function testTimeAgoFutureTranslated() {
+		if ( version_compare( get_bloginfo( 'version' ), 5, '>=' ) ) {
+			$this->change_locale( 'de_DE' );
 
-				$str = Timber\Twig::time_ago( '2016-12-01 20:00:00', '2016-11-30, 20:00:00' );
-				$this->assertEquals( '1 Tag ab jetzt', $str );
+			$str = \Timber\Twig::time_ago( '2016-12-01 20:00:00', '2016-11-30, 20:00:00' );
+			$this->assertEquals( '1 Tag ab jetzt', $str );
 
-				$this->restore_locale();
+			$this->restore_locale();
 
-				return;
-			}
-
-			$this->markTestSkipped( 'The string `%s from now` is not available in this WordPress version' );
+			return;
 		}
 
-		function testTimeAgoPastTranslated() {
-			if ( version_compare( get_bloginfo( 'version' ), 5, '>=' ) ) {
-				$this->change_locale( 'de_DE' );
+		$this->markTestSkipped( 'The string `%s from now` is not available in this WordPress version' );
+	}
 
-				$str = Timber\Twig::time_ago( '2016-11-29 20:00:00', '2016-11-30, 20:00:00' );
-				$this->assertEquals( 'vor 1 Tag', $str );
+	function testTimeAgoPastTranslated() {
+		if ( version_compare( get_bloginfo( 'version' ), 5, '>=' ) ) {
+			$this->change_locale( 'de_DE' );
 
-				$this->restore_locale();
+			$str = \Timber\Twig::time_ago( '2016-11-29 20:00:00', '2016-11-30, 20:00:00' );
+			$this->assertEquals( 'vor 1 Tag', $str );
 
-				return;
-			}
+			$this->restore_locale();
 
-			$this->markTestSkipped( 'The string `%s ago` is not available in this WordPress version' );
+			return;
 		}
+
+		$this->markTestSkipped( 'The string `%s ago` is not available in this WordPress version' );
+	}
 }

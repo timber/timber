@@ -11,7 +11,7 @@ class TestTimberSite extends Timber_UnitTestCase {
 
 	function testLanguageAttributes() {
 		$this->restore_locale();
-		$site = new Site();
+		$site = new \Timber\Site();
 		$lang = $site->language_attributes();
 		$this->assertEquals('lang="en-US"', $lang);
 	}
@@ -21,7 +21,7 @@ class TestTimberSite extends Timber_UnitTestCase {
 		$content_subdir = Timber\URLHelper::get_content_subdir();
 		$this->assertFileExists( WP_CONTENT_DIR.'/themes/fake-child-theme/style.css' );
 		switch_theme( 'fake-child-theme' );
-		$site = new Timber\Site();
+		$site = new \Timber\Site();
 		$this->assertEquals( $content_subdir.'/themes/fake-child-theme', $site->theme->path );
 		$this->assertEquals( $content_subdir.'/themes/twentyfifteen', $site->theme->parent->path );
 	}
