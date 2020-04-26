@@ -1,5 +1,9 @@
 <?php
 
+	/**
+	 * @group comments-api
+	 * @group called-post-constructor
+	 */
 	class TestTimberCommentThread extends Timber_UnitTestCase {
 
 		function testCommentThreadWithArgs() {
@@ -28,12 +32,12 @@
 
 			$comment = get_comment($comment_id);
 
-			$post = new Timber\Post($post_id);
+			$post = Timber::get_post($post_id);
 			$this->assertEquals(0, count($post->comments()) );
 
 			$_GET['unapproved'] = $comment->comment_ID;
 			$_GET['moderation-hash'] = wp_hash($comment->comment_date_gmt);
-			$post = new Timber\Post($post_id);
+			$post = Timber::get_post($post_id);
 			if ( !function_exists('wp_get_unapproved_comment_author_email') ) {
 				$this->assertEquals(0, count( $post->comments() ));
 			} else {

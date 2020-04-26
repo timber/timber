@@ -3,6 +3,9 @@
 use Timber\Timber;
 use Timber\Post;
 
+/**
+ * @group called-post-constructor
+ */
 class TestTimberContext extends Timber_UnitTestCase {
 	/**
 	 * This throws an infite loop if memorization isn't working
@@ -27,7 +30,7 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$this->go_to( get_permalink( $post_id ) );
 
 		$context = Timber::context();
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 
 		$this->assertArrayNotHasKey( 'posts', $context );
 		$this->assertEquals( $post, $context['post'] );

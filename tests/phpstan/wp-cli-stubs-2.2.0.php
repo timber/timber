@@ -6801,7 +6801,7 @@ namespace cli {
     /**
      * Attempts an encoding-safe way of getting a substring. If intl extension or PCRE with '\X' or mb_string extension aren't
      * available, falls back to substr().
-     * 		
+     *      
      * @param  string        $str      The input string.
      * @param  int           $start    The starting position of the substring.
      * @param  int|bool|null $length   Optional, unless $is_width is set. Maximum length of the substring. Default false. Negative not supported.

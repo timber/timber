@@ -1,5 +1,10 @@
 <?php
 
+	/**
+	 * @group posts-api
+	 * @group terms-api
+	 * @group users-api
+	 */
 	class TestTimberHelper extends Timber_UnitTestCase {
 
 		function testPluckArray() {

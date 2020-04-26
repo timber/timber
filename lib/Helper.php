@@ -250,7 +250,7 @@ class Helper {
 		if ( is_object($error) || is_array($error) ) {
 			$error = print_r($error, true);
 		}
-		return error_log('[ Timber ]'.$error);
+		return error_log('[ Timber ] '.$error);
 	}
 
 	/**
@@ -682,7 +682,7 @@ class Helper {
 		} elseif ( $obj instanceof \WP_Term ) {
 			return new Term($obj->term_id);
 		} elseif ( $obj instanceof \WP_User ) {
-			return new User($obj->ID);
+			return Timber::get_user($obj->ID);
 		}
 
 		return $obj;

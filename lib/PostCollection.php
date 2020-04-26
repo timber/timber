@@ -29,6 +29,7 @@ class PostCollection extends \ArrayObject {
 		if ( is_null($posts) ) {
 			$posts = array();
 		}
+		// @todo this will turn into something like $postFactory->from_posts_array($posts)
 		foreach ( $posts as $post_object ) {
 			$post_type      = get_post_type($post_object);
 			$post_class_use = PostGetter::get_post_class($post_type, $post_class);
