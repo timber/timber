@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use Timber\Factory\CommentFactory;
+
 /**
  * Class CommentThread
  *
@@ -121,7 +123,8 @@ class CommentThread extends \ArrayObject {
 			$overridden_cpage = true;
 		}
 		foreach ( $comments as $key => &$comment ) {
-			$timber_comment = new $this->CommentClass($comment);
+			$factory = new CommentFactory();
+			$timber_comment = $factory->from($comment);
 			$tcs[$timber_comment->id] = $timber_comment;
 		}
 

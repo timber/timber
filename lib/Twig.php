@@ -66,9 +66,7 @@ class Twig {
 			return self::maybe_convert_array( $post_id, $ImageClass );
 		} ) );
 		$twig->addFunction(new TwigFunction('Term', array($this, 'handle_term_object')));
-		$twig->addFunction(new TwigFunction('User', function( $post_id, $UserClass = 'Timber\User' ) {
-			return self::maybe_convert_array( $post_id, $UserClass );
-		} ) );
+		$twig->addFunction(new TwigFunction('User', [Timber::class, 'get_user'] ) );
 		$twig->addFunction( new TwigFunction( 'Attachment', function( $post_id, $AttachmentClass = 'Timber\Attachment' ) {
 			return self::maybe_convert_array( $post_id, $AttachmentClass );
 		} ) );
@@ -97,14 +95,6 @@ class Twig {
 			function( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
 				Helper::deprecated( '{{ TimberTerm() }}', '{{ Term() }}', '2.0.0' );
 				return self::handle_term_object($term_id, $taxonomy, $TermClass);
-			}
-		) );
-
-		$twig->addFunction( new TwigFunction(
-			'TimberUser',
-			function( $user_id, $UserClass = 'Timber\User' ) {
-				Helper::deprecated( '{{ TimberUser() }}', '{{ User() }}', '2.0.0' );
-				return self::maybe_convert_array($user_id, $UserClass);
 			}
 		) );
 
@@ -489,18 +479,26 @@ class Twig {
 	}
 
 	/**
-	 * @api
-   *
+	 *
 	 * @deprecated 2.0.0
 	 *
-	 * @param int|string $from
-	 * @param int|string $to
-	 * @param string     $format_past
-	 * @param string     $format_future
+	 * Returns the difference between two times in a human readable format.
+	 *
+	 * Differentiates between past and future dates.
+	 *
+	 * @see \human_time_diff()
+	 *
+	 * @param int|string $from          Base date as a timestamp or a date string.
+	 * @param int|string $to            Optional. Date to calculate difference to as a timestamp or
+	 *                                  a date string. Default to current time.
+	 * @param string     $format_past   Optional. String to use for past dates. To be used with
+	 *                                  `sprintf()`. Default `%s ago`.
+	 * @param string     $format_future Optional. String to use for future dates. To be used with
+	 *                                  `sprintf()`. Default `%s from now`.
 	 *
 	 * @return string
 	 */
-	public static function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
+	public static function time_ago( $from, $to = null, $format_past = null, $format_future = null ) {
 		Helper::deprecated( 'time_ago', 'DateTimeHelper::time_ago', '2.0.0' );
     
 		return DateTimeHelper::time_ago( $from, $to, $format_past, $format_future );
