@@ -108,7 +108,9 @@ class Timber {
 	 */
 	protected static function init() {
 		if ( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
-			Twig::init();
+			$twig = new Twig();
+			$twig->init();
+
 			ImageHelper::init();
 			Admin::init();
 			new Integrations();
