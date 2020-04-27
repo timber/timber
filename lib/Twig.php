@@ -227,12 +227,6 @@ class Twig {
 					return apply_filters_ref_array($tag, $args);
 				} ));
 
-
-		$twig = apply_filters('timber/twig', $twig);
-		/**
-		 * get_twig is deprecated, use timber/twig
-		 */
-		$twig = apply_filters('get_twig', $twig);
 		return $twig;
 	}
 
