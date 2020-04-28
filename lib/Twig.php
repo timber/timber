@@ -11,26 +11,20 @@ use Twig\TwigFilter;
  * Class Twig
  */
 class Twig {
-
 	public static $dir_name;
 
 	/**
 	 * @codeCoverageIgnore
 	 */
 	public static function init() {
-		new self();
-	}
-
-	/**
-	 * @codeCoverageIgnore
-	 */
-	public function __construct() {
-		add_action('timber/twig/filters', array($this, 'add_timber_filters'));
-		add_action('timber/twig/functions', array($this, 'add_timber_functions'));
-		add_action('timber/twig/escapers', array($this, 'add_timber_escapers'));
-
-		add_filter( 'timber/loader/twig', [ $this, 'set_defaults' ] );
-	}
+		$self = new self();
+    
+    add_action( 'timber/twig/filters', array( $self, 'add_timber_filters' ) );
+		add_action( 'timber/twig/functions', array( $self, 'add_timber_functions' ) );
+		add_action( 'timber/twig/escapers', array( $self, 'add_timber_escapers' ) );
+   
+    add_filter( 'timber/loader/twig', [ $self, 'set_defaults' ] );
+  }
 
 	/**
 	 * Adds Timber-specific functions to Twig.
@@ -259,6 +253,7 @@ class Twig {
 					return apply_filters_ref_array($tag, $args);
 				} ));
 
+
 		/**
 		 * Filters the Twig environment used in the global context.
 		 *
@@ -297,6 +292,7 @@ class Twig {
 		 * @deprecated 2.0.0
 		 */
 		$twig = apply_filters_deprecated( 'get_twig', array( $twig ), '2.0.0', 'timber/twig' );
+
 		return $twig;
 	}
 
