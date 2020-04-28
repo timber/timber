@@ -10,25 +10,18 @@ use Timber\Term;
 use Timber\Image;
 use Timber\User;
 
-
 class Twig {
-
 	public static $dir_name;
 
 	/**
 	 * @codeCoverageIgnore
 	 */
 	public static function init() {
-		new self();
-	}
+		$self = new self();
 
-	/**
-	 * @codeCoverageIgnore
-	 */
-	public function __construct() {
-		add_action('timber/twig/filters', array($this, 'add_timber_filters'));
-		add_action('timber/twig/functions', array($this, 'add_timber_functions'));
-		add_action('timber/twig/escapers', array($this, 'add_timber_escapers'));
+		add_action( 'timber/twig/filters', array( $self, 'add_timber_filters' ) );
+		add_action( 'timber/twig/functions', array( $self, 'add_timber_functions' ) );
+		add_action( 'timber/twig/escapers', array( $self, 'add_timber_escapers' ) );
 	}
 
 	/**
@@ -234,12 +227,6 @@ class Twig {
 					return apply_filters_ref_array($tag, $args);
 				} ));
 
-
-		$twig = apply_filters('timber/twig', $twig);
-		/**
-		 * get_twig is deprecated, use timber/twig
-		 */
-		$twig = apply_filters('get_twig', $twig);
 		return $twig;
 	}
 
