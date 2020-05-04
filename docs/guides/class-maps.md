@@ -9,6 +9,7 @@ The Class Map is the central hub for Timber to select the right class for post o
 - `timber/post/classmap` for posts
 - `timber/term/classmap` for terms
 - `timber/comment/classmap` for comments
+- `timber/menu/class` for menus
 - `timber/user/classmap` for users
 
 ## The Post Class Map
@@ -184,6 +185,55 @@ add_filter( 'timber/comment/classmap', function( $classmap ) {
 ```
 
 The callback function receives a `WP_Comment` object and should return the name of the class to use. If you need the post ID a comment is associated with, you can get that through `$comment->comment_post_ID`.
+
+## The Menu Class Map
+
+With the `timber/menu/classmap` filter, you can tell Timber which class it should use for menu objects. 
+
+The Menu Class Map is used:
+
+- When you get a menu through `Timber::get_menu()`.
+
+**functions.php**
+
+```php
+use MenuPrimary;
+
+add_filter( 'timber/menu/classmap', function( $class, $location ) {
+    if ( 'primary' === $location ) {
+        return MenuPrimary::class;
+    }
+
+    return $class;
+}, 10, 2 );
+```
+
+The Menu Class Map receives the default `Timber\Menu` class name and the registered menu location as arguments. You should be able to decide which class to use based on these parameters. This example demonstrates how you can use a custom class (`MenuPrimary`) that you want to use for the menu assigned to the "primary" location.
+
+## The MenuItem Class Map
+
+With the `timber/menuitem/classmap` filter, you can tell Timber which class it should use for menu item objects.
+
+The MenuItem Class Map is used:
+
+- When you get a menu through `Timber::get_menu()`.
+
+**functions.php**
+
+```php
+use MenuPrimary;
+use MenuItemPrimary;
+
+add_filter( 'timber/menuitem/classmap', function( $class, $location, $menu ) {
+    if ( $menu instanceof MenuPrimary ) {
+        return MenuItemPrimary::class;
+    }
+
+    return $class;
+}, 10, 3 );
+```
+
+The Menu Class Map receives the default `Timber\MenuItem` class name, the registered menu location and the `Timber\Menu` it’s assigned to as arguments. You should be able to decide which class to use based on these parameters. This example demonstrates how you can use a custom class (`MenuItemPrimary`) when the parent menu has a (custom) class of `MenuPrimary` 
 
 ## The User Class Map
 
