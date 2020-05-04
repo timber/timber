@@ -11,26 +11,20 @@ use Twig\TwigFilter;
  * Class Twig
  */
 class Twig {
-
 	public static $dir_name;
 
 	/**
 	 * @codeCoverageIgnore
 	 */
 	public static function init() {
-		new self();
-	}
+		$self = new self();
 
-	/**
-	 * @codeCoverageIgnore
-	 */
-	public function __construct() {
-		add_action('timber/twig/filters', array($this, 'add_timber_filters'));
-		add_action('timber/twig/functions', array($this, 'add_timber_functions'));
-		add_action('timber/twig/escapers', array($this, 'add_timber_escapers'));
+        add_action( 'timber/twig/filters', array( $self, 'add_timber_filters' ) );
+		add_action( 'timber/twig/functions', array( $self, 'add_timber_functions' ) );
+		add_action( 'timber/twig/escapers', array( $self, 'add_timber_escapers' ) );
 
-		add_filter( 'timber/loader/twig', [ $this, 'set_defaults' ] );
-	}
+        add_filter( 'timber/loader/twig', [ $self, 'set_defaults' ] );
+  }
 
 	/**
 	 * Adds Timber-specific functions to Twig.
@@ -66,9 +60,7 @@ class Twig {
 			return self::maybe_convert_array( $post_id, $ImageClass );
 		} ) );
 		$twig->addFunction(new TwigFunction('Term', array($this, 'handle_term_object')));
-		$twig->addFunction(new TwigFunction('User', function( $post_id, $UserClass = 'Timber\User' ) {
-			return self::maybe_convert_array( $post_id, $UserClass );
-		} ) );
+		$twig->addFunction(new TwigFunction('User', [Timber::class, 'get_user'] ) );
 		$twig->addFunction( new TwigFunction( 'Attachment', function( $post_id, $AttachmentClass = 'Timber\Attachment' ) {
 			return self::maybe_convert_array( $post_id, $AttachmentClass );
 		} ) );
@@ -97,14 +89,6 @@ class Twig {
 			function( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
 				Helper::deprecated( '{{ TimberTerm() }}', '{{ Term() }}', '2.0.0' );
 				return self::handle_term_object($term_id, $taxonomy, $TermClass);
-			}
-		) );
-
-		$twig->addFunction( new TwigFunction(
-			'TimberUser',
-			function( $user_id, $UserClass = 'Timber\User' ) {
-				Helper::deprecated( '{{ TimberUser() }}', '{{ User() }}', '2.0.0' );
-				return self::maybe_convert_array($user_id, $UserClass);
 			}
 		) );
 
@@ -269,44 +253,6 @@ class Twig {
 					return apply_filters_ref_array($tag, $args);
 				} ));
 
-		/**
-		 * Filters the Twig environment used in the global context.
-		 *
-		 * You can use this filter if you want to add additional functionality to Twig, like global
-		 * variables, filters or functions.
-		 *
-		 * @since 0.21.9
-		 * @example
-		 * ```php
-		 * /**
-		 *  * Adds Twig functionality.
-		 *  *
-		 *  * @param \Twig\Environment $twig The Twig Environment to which you can add additional functionality.
-		 *  *\/
-		 * add_filter( 'timber/twig', function( $twig ) {
-		 *     // Make get_theme_file_uri() usable as {{ theme_file() }} in Twig.
-		 *     $twig->addFunction( new Twig\TwigFunction( 'theme_file', 'get_theme_file_uri' ) );
-		 *
-		 *     return $twig;
-		 * } );
-		 * ```
-		 *
-		 * ```twig
-		 * <a class="navbar-brand" href="{{ site.url }}">
-		 *     <img src="{{ theme_file( 'build/img/logo-example.svg' ) }}" alt="Logo {{ site.title }}">
-		 * </a>
-		 * ```
-		 *
-		 * @param \Twig\Environment $twig The Twig environment.
-		 */
-		$twig = apply_filters('timber/twig', $twig);
-
-		/**
-		 * Filters the Twig environment used in the global context.
-		 *
-		 * @deprecated 2.0.0
-		 */
-		$twig = apply_filters_deprecated( 'get_twig', array( $twig ), '2.0.0', 'timber/twig' );
 		return $twig;
 	}
 
@@ -489,18 +435,26 @@ class Twig {
 	}
 
 	/**
-	 * @api
-   *
+	 *
 	 * @deprecated 2.0.0
 	 *
-	 * @param int|string $from
-	 * @param int|string $to
-	 * @param string     $format_past
-	 * @param string     $format_future
+	 * Returns the difference between two times in a human readable format.
+	 *
+	 * Differentiates between past and future dates.
+	 *
+	 * @see \human_time_diff()
+	 *
+	 * @param int|string $from          Base date as a timestamp or a date string.
+	 * @param int|string $to            Optional. Date to calculate difference to as a timestamp or
+	 *                                  a date string. Default to current time.
+	 * @param string     $format_past   Optional. String to use for past dates. To be used with
+	 *                                  `sprintf()`. Default `%s ago`.
+	 * @param string     $format_future Optional. String to use for future dates. To be used with
+	 *                                  `sprintf()`. Default `%s from now`.
 	 *
 	 * @return string
 	 */
-	public static function time_ago( $from, $to = null, $format_past = '%s ago', $format_future = '%s from now' ) {
+	public static function time_ago( $from, $to = null, $format_past = null, $format_future = null ) {
 		Helper::deprecated( 'time_ago', 'DateTimeHelper::time_ago', '2.0.0' );
     
 		return DateTimeHelper::time_ago( $from, $to, $format_past, $format_future );
