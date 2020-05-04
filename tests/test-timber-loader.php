@@ -21,6 +21,11 @@
 			$this->assertFalse($str);
 		}
 
+		function testTemplateChainWithMissingTwigFiles() {
+			$str = Timber::compile( array('assets/lonestar.twig', 'assets/single.twig') );
+			$this->assertEquals('I am single.twig', trim($str));
+		}
+
 		function testWhitespaceTrimForTemplate(){
 			$str = Timber::compile('assets/single.twig ', array());
 			$this->assertEquals('I am single.twig', trim($str));
