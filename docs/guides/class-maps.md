@@ -29,10 +29,12 @@ use Book;
 use Page;
 
 add_filter( 'timber/post/classmap', function( $classmap ) {
-    return [
+    $custom_classmap = [
         'page' => Page::class,
         'book' => Book::class,
     ];
+
+    return array_merge( $classmap, $custom_classmap );
 } );
 ```
 
@@ -46,7 +48,7 @@ use Page;
 use PreciousBook;
 
 add_filter( 'timber/post/classmap', function( $classmap ) {
-    return [
+    $custom_classmap = [
         'book' => function( \WP_Post $post ) {
             if ( $post->id === 3 ) {
                 return PreciousBook::class;
@@ -55,6 +57,8 @@ add_filter( 'timber/post/classmap', function( $classmap ) {
             return Book::class;
         },
     ];
+
+    return array_merge( $classmap, $custom_classmap );
 } );
 ```
 
@@ -67,7 +71,7 @@ use BookAttachment;
 use Timber\Attachment;
 
 add_filter( 'timber/post/classmap', function( $classmap ) {
-    return [
+    $custom_classmap = [
         'attachment' => function( \WP_Post $post ) {
             if ( 'book' === get_post_type( $post->post_parent ) {
                 return BookAttachment::class;
@@ -76,6 +80,8 @@ add_filter( 'timber/post/classmap', function( $classmap ) {
             return Attachment::class;
         },
     ];
+
+    return array_merge( $classmap, $custom_classmap );
 } );
 ```
 
@@ -95,9 +101,11 @@ The Term Class Map is used:
 use Genre;
 
 add_filter( 'timber/term/classmap', function( $classmap ) {
-    return [
+    $custom_classmap = [
         'genre' => Genre::class,
     ];
+
+    return array_merge( $classmap, $custom_classmap );
 } );
 ```
 
@@ -110,7 +118,7 @@ use ComedyGenre;
 use Genre;
 
 add_filter( 'timber/term/classmap', function( $classmap ) {
-    return [
+    $custom_classmap = [
         'genre' => function( \WP_Term $term ) {
             if ( $term->term_id === 2 ) {
                 return ComedyGenre::class;
@@ -119,6 +127,8 @@ add_filter( 'timber/term/classmap', function( $classmap ) {
             return Genre::class;
         },
     ];
+
+    return array_merge( $classmap, $custom_classmap );
 } );
 ```
 
@@ -140,10 +150,12 @@ use CommentPost;
 use CommentBook;
 
 add_filter( 'timber/comment/classmap', function( $classmap ) {
-    return [
+    $custom_classmap = [
         'post' => CommentPost::class,
         'book' => CommentBook::class,
     ];
+
+    return array_merge( $classmap, $custom_classmap );
 } );
 ```
 
@@ -156,7 +168,7 @@ use BookComment;
 use BookChildComment;
 
 add_filter( 'timber/comment/classmap', function( $classmap ) {
-    return [
+    $custom_classmap = [
         'book' => function( \WP_Comment $comment ) {
             $post = get_post( $comment->comment_post_ID );
 
@@ -167,6 +179,8 @@ add_filter( 'timber/comment/classmap', function( $classmap ) {
             return BookComment::class;
         },
     ];
+
+    return array_merge( $classmap, $custom_classmap );
 } );
 ```
 

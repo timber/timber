@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use WP_User;
+
 /**
  * Class User
  *
@@ -61,7 +63,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * @api
 	 * @var string
 	 */
-	public $display_name;
+	public $display_name = '';
 
 	/**
 	 * @api
@@ -98,10 +100,22 @@ class User extends Core implements CoreInterface, MetaInterface {
 	protected $roles;
 
 	/**
-	 * @param object|int|bool|string $uid
+	 * Construct a User object. For internal use only: Do not call directly.
+	 * Call `Timber::get_user()` instead.
+	 * 
+	 * @internal
 	 */
-	public function __construct( $uid = false ) {
-		$this->init($uid);
+	protected function __construct() {
+	}
+
+	/**
+	 * Build a new User object. 
+	 */
+	public static function build( WP_User $wp_user ) : self {
+		$user = new static();
+		$user->init( $wp_user );
+
+		return $user;
 	}
 
 	/**
@@ -126,6 +140,11 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 * @param object|int|bool $uid The user ID to use
 	 */
 	protected function init( $uid = false ) {
+		// TODO overhaul/lift some of this logic to an outer layer?
+		// Since constructor is now protected, this shouldn't ever get
+		// called from userland, so we may want to revisit how much of this
+		// code still needs to be here. Specifically, setting a default uid
+		// should probably happen in Timber::get_user()...
 		if ( $uid === false ) {
 			$uid = get_current_user_id();
 		}

@@ -2,6 +2,9 @@
 
 use Timber\Integrations\Command;
 
+/**
+ * @group called-post-constructor
+ */
 class TestTimberIntegrations extends Timber_UnitTestCase {
 
 	function testIntegrationClasses() {
@@ -9,12 +12,12 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		$integrations->maybe_init_integrations();
 		$this->assertEquals('Timber\Integrations', get_class($integrations));
 		$this->assertEquals('Timber\Integrations\ACF', get_class($integrations->acf));
-		$this->assertEquals('Timber\Integrations\CoAuthorsPlus', get_class($integrations->coauthors_plus));
 	}
 
 	function testWPPostConvert() {
 		$pid = $this->factory->post->create();
 		$wp_post = get_post( $pid );
+		// @todo #2094 factories
 		$post = new Timber\Post();
 		$timber_post = $post->convert( $wp_post );
 		$this->assertTrue( $timber_post instanceof Timber\Post );
@@ -37,7 +40,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
     	$this->assertFileNotExists($cache_dir);
     	Timber::$twig_cache = true;
     	$pid = $this->factory->post->create();
-    	$post = new Timber\Post($pid);
+			$post = Timber::get_post($pid);
     	Timber::compile('assets/single-post.twig', array('post' => $post));
     	sleep(1);
     	$this->assertFileExists($cache_dir);
@@ -62,7 +65,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		add_filter( 'timber/twig/environment/options', $cache_enabler );
 
 		$pid  = $this->factory->post->create();
-		$post = new Timber\Post( $pid );
+		$post = Timber::get_post( $pid );
 		Timber::compile( 'assets/single-post.twig', array( 'post' => $post ) );
 		sleep( 1 );
 		$this->assertFileExists( $cache_dir );
@@ -83,7 +86,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
     	$this->assertFileNotExists($cache_dir);
     	Timber::$twig_cache = true;
     	$pid = $this->factory->post->create();
-    	$post = new Timber\Post($pid);
+			$post = Timber::get_post($pid);
     	Timber::compile('assets/single-post.twig', array('post' => $post));
     	sleep(1);
     	$this->assertFileExists($cache_dir);
@@ -111,7 +114,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		add_filter( 'timber/twig/environment/options', $cache_enabler );
 
 		$pid  = $this->factory->post->create();
-		$post = new Timber\Post( $pid );
+		$post = Timber::get_post( $pid );
 		Timber::compile( 'assets/single-post.twig', array( 'post' => $post ) );
 		sleep( 1 );
 		$this->assertFileExists( $cache_dir );
@@ -132,7 +135,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
     	$this->assertFileNotExists($cache_dir);
     	Timber::$twig_cache = true;
     	$pid = $this->factory->post->create();
-    	$post = new Timber\Post($pid);
+			$post = Timber::get_post($pid);
     	Timber::compile('assets/single-post.twig', array('post' => $post));
     	sleep(1);
     	$this->assertFileExists($cache_dir);
@@ -163,7 +166,7 @@ class TestTimberIntegrations extends Timber_UnitTestCase {
 		add_filter( 'timber/twig/environment/options', $cache_enabler );
 
 		$pid  = $this->factory->post->create();
-		$post = new Timber\Post( $pid );
+		$post = Timber::get_post( $pid );
 		Timber::compile( 'assets/single-post.twig', array( 'post' => $post ) );
 		sleep( 1 );
 		$this->assertFileExists( $cache_dir );

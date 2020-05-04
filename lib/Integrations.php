@@ -29,9 +29,6 @@ class Integrations {
 		if ( class_exists('ACF') ) {
 			$this->acf = new Integrations\ACF();
 		}
-		if ( class_exists('CoAuthors_Plus') ) {
-			$this->coauthors_plus = new Integrations\CoAuthorsPlus();
-		}
 		$this->wpml = new Integrations\WPML();
 	}
 }
