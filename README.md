@@ -111,7 +111,6 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Gantry5**](https://wordpress.org/plugins/gantry5/) a framework for theme development
 * [**Seedling**](https://github.com/maxdmyers/seedling) A starter theme using Bootstrap 4
 
-
 #### Helpful Links
 * [**CSS Tricks**](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/) introduction to Timber by [@tjFogarty](https://github.com/tjFogarty)
 * [**Twig for Timber Cheatsheet**](http://notlaura.com/the-twig-for-timber-cheatsheet/) by [@laras126](https://github.com/laras126)
