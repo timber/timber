@@ -2,9 +2,9 @@
 title: "A short intro to Composer"
 ---
 
-Composer is the industry standard for managing community-built PHP packages.
+Composer is the industry standard for managing community-built PHP packages. Much like NPM for JavaScript.
 
-With Composer, you don’t have to download, extract and move a library or a piece of functionality into your project, but you can install it with a simple command that you run in your terminal.
+With Composer, you don’t have to download, extract and move a library or piece of functionality into your project, but you can install it with a simple command that you run in your terminal.
 
 To install Timber, you would use `composer require`.
 
@@ -12,7 +12,7 @@ To install Timber, you would use `composer require`.
 composer require timber/timber
 ```
 
-But before you can run this command, you need to have Composer installed. Follow the [official guide for the installation](https://getcomposer.org/download/).
+Before you can run this command, you need to have Composer installed. Follow the [official guide for the installation](https://getcomposer.org/download/).
 
 In addition to that, you probably want to be able to use the `composer` command in your terminal.
 
@@ -39,9 +39,9 @@ Composer will create **composer.json** file if there isn’t already one in your
 
 ## The vendor folder
 
-Composer will create a **vendor** folder in your project and download the Timber package as well as other packages that Timber uses into that folder.
+Composer will create a **vendor** folder in your project and download the Timber package as well as other packages that Timber relies on into that folder.
 
-It will create a **vendor/autoload.php** file, which is the entry point to all your packages. Here’s where Composer really shines.
+It will also create a **vendor/autoload.php** file, which is the entry point to all your packages. Here’s where Composer really shines.
 
 ## Autoloading
 
