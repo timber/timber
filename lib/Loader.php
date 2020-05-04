@@ -79,6 +79,7 @@ class Loader {
 	 * @return bool|string
 	 */
 	public function render( $file, $data = null, $expires = false, $cache_mode = self::CACHE_USE_DEFAULT ) {
+
 		// Different $expires if user is anonymous or logged in
 		if ( is_array($expires) ) {
 			/** @var array $expires */
@@ -91,7 +92,7 @@ class Loader {
 
 		$key = null;
 		$output = false;
-		if ( false !== $expires ) {
+		if ( false !== $expires && $cache_mode !== self::CACHE_NONE ) {
 			ksort($data);
 			$key = md5($file.json_encode($data));
 			$output = $this->get_cache($key, self::CACHEGROUP, $cache_mode);
@@ -190,6 +191,9 @@ class Loader {
 	}
 
 	protected function delete_cache() {
+		if ( $this->cache_mode === self::CACHE_NONE ) {
+			return;
+		}
 		Cleaner::delete_transients();
 	}
 
@@ -525,6 +529,11 @@ class Loader {
 	}
 
 	public function clear_cache_timber( $cache_mode = self::CACHE_USE_DEFAULT ) {
+
+		if ( $cache_mode === self::CACHE_NONE ) {
+			return;
+		}
+
 		//_transient_timberloader
 		$object_cache = false;
 		if ( isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']) ) {
@@ -599,7 +608,6 @@ class Loader {
 	 * @return \Twig\CacheExtension\Extension
 	 */
 	private function _get_cache_extension() {
-
 		$key_generator   = new \Timber\Cache\KeyGenerator();
 		$cache_provider  = new \Timber\Cache\WPObjectCacheAdapter($this);
 		$cache_lifetime  = apply_filters('timber/cache/extension/lifetime', 0);
@@ -620,6 +628,11 @@ class Loader {
 	 * @return bool
 	 */
 	public function get_cache( $key, $group = self::CACHEGROUP, $cache_mode = self::CACHE_USE_DEFAULT ) {
+		
+		if ( $cache_mode === self::CACHE_NONE ) {
+			return;
+		}
+
 		$object_cache = false;
 
 		if ( isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']) ) {
@@ -651,6 +664,11 @@ class Loader {
 	 * @return string|boolean
 	 */
 	public function set_cache( $key, $value, $group = self::CACHEGROUP, $expires = 0, $cache_mode = self::CACHE_USE_DEFAULT ) {
+
+		if ( $cache_mode === self::CACHE_NONE ) {
+			return;
+		}
+
 		$object_cache = false;
 
 		if ( isset($GLOBALS['wp_object_cache']) && is_object($GLOBALS['wp_object_cache']) ) {
