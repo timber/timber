@@ -54,6 +54,10 @@ class Loader {
 			}
 		}
 
+		if ( $expires === 0 ) {
+			$expires = false;
+		}
+
 		$key = null;
 		$output = false;
 		if ( false !== $expires ) {
