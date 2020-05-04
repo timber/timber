@@ -248,7 +248,7 @@
             $pid = $this->factory->post->create();
             $post = new TimberPost($pid);
             $str_old = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
-            usleep(1500000);
+            sleep(2);
             $str_new = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
             $this->assertEquals($str_old, $str_new);
             global $wpdb;
@@ -346,7 +346,7 @@
             set_transient( 'random_600', 'foo', 600 );
             $random_post = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), 600);
             $str_old = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
-            usleep(1500000);
+            sleep(2);
             $str_new = Timber::compile('assets/single-post.twig', array('post' => $post, 'rand' => rand(0, 99999)), $time);
             $this->assertEquals($str_old, $str_new);
             global $wpdb;
