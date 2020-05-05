@@ -15,7 +15,9 @@ function _manually_load_plugin() {
 	$timber = new \Timber\Timber();
 
 	require dirname( __FILE__ ) . '/../wp-content/plugins/advanced-custom-fields/acf.php';
-	require dirname( __FILE__ ) . '/../wp-content/plugins/co-authors-plus/co-authors-plus.php';
+	if ( file_exists( dirname( __FILE__ ) . '/../wp-content/plugins/co-authors-plus/co-authors-plus.php') ) {
+		include dirname( __FILE__ ) . '/../wp-content/plugins/co-authors-plus/co-authors-plus.php';
+	}
 }
 
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
@@ -32,3 +34,6 @@ if ( !function_exists('is_post_type_viewable') ) {
  		return $post_type_object->publicly_queryable || ( $post_type_object->_builtin && $post_type_object->public );
  	}
 }
+
+// Make sure translations are installed.
+Timber_UnitTestCase::install_translation( 'de_DE' );

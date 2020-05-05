@@ -9,7 +9,7 @@
 
 		function testIDDataType() {
 			$uid = $this->factory->user->create(array('display_name' => 'James Marshall'));
-			$user = new Timber\User($uid);
+			$user = Timber::get_user($uid);
 			$this->assertEquals('integer', gettype($user->id));
 			$this->assertEquals('integer', gettype($user->ID));
 		}
@@ -26,6 +26,18 @@
 			$user = Timber::get_user_by('login', 'mbottitta');
 			$this->assertEquals('Tito Bottitta', $user->name);
 			$this->assertEquals($uid, $user->id);
+		}
+
+		function testPostWithBlankUser() {
+			$post_id = wp_insert_post(
+			    [ 'post_title' => 'Baseball'
+			    , 'post_content' => 'is fine, I guess'
+			    , 'post_status' => 'publish'
+			    ]);
+			$post = new Timber\Post($post_id);
+			$template = '{{ post.title }} by {{ post.author }}';
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('Baseball by', trim($str));
 		}
 
 		function testUserCapability() {
@@ -46,6 +58,7 @@
 			update_user_meta($uid, 'description', 'Sixteenth President');
 			$user = Timber::get_user($uid);
 			$this->assertEquals('Sixteenth President', $user->meta('description'));
+
 			$pid = $this->factory->post->create(array('post_author' => $uid));
 			$post = Timber::get_post($pid);
 			$str = Timber::compile_string("{{post.author.meta('description')}}", array('post' => $post));
@@ -60,8 +73,8 @@
 
 		function testInitWithObject(){
 			$uid = $this->factory->user->create(array('display_name' => 'Baberaham Lincoln'));
-			$uid = get_user_by('id', $uid);
-			$user = Timber::get_user($uid);
+			$wp_user = get_user_by('id', $uid);
+			$user = Timber::get_user($wp_user);
 			$this->assertEquals('Baberaham Lincoln', $user->name);
 		}
 

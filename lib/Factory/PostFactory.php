@@ -2,6 +2,7 @@
 
 namespace Timber\Factory;
 
+use Timber\Attachment;
 use Timber\CoreInterface;
 use Timber\Post;
 
