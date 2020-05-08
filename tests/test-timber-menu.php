@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @group called-post-constructor
+ * @group menus-api
  * @todo #2094 replace direct Timber\Menu instantiations
  */
 class TestTimberMenu extends Timber_UnitTestCase {
