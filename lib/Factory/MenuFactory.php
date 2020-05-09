@@ -12,8 +12,8 @@ use WP_Term;
  */
 class MenuFactory {
 	public function from($params) {
-		if (is_int($params) || is_string($params) && is_numeric($params)) {
-			return $this->from_id((int) $params);
+		if (is_int($params) || is_string($params)) {
+			return $this->from_ident($params);
 		}
 
 		if (is_object($params)) {
@@ -23,7 +23,12 @@ class MenuFactory {
 		return false;
 	}
 
-	protected function from_id(int $id) {
+	/**
+	 * Get a Menu by its name, slug, or ID
+	 *
+	 * @internal
+	 */
+	protected function from_ident($id) {
 		// WP Menus are WP_Term objects under the hood.
 		$term = wp_get_nav_menu_object($id);
 
