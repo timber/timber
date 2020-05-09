@@ -165,18 +165,12 @@ class Timber {
 	 * Query post.
 	 *
 	 * @api
-<<<<<<< HEAD
 	 * @deprecated since 2.0.0 Use `new Timber\Post()` instead.
 	 *
 	 * @param mixed  $query
 	 * @param string $PostClass
 	 *
 	 * @return array|bool|null
-=======
-	 * @param mixed   $query
-	 * @param string  $PostClass
-	 * @return Post|array|bool|null
->>>>>>> master
 	 */
 	public static function query_post( $query = false, $PostClass = 'Timber\Post' ) {
 		return PostGetter::query_post($query, $PostClass);
