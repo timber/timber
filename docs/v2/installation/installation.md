@@ -1,8 +1,9 @@
 ---
 title: "Installation"
+order: "10"
 ---
 
-You can install Timber through [Composer](https://getcomposer.org/download/). If you’re not familiar with Composer yet, read [our short introduction](@todo intro-to-composer.md) and then come back here.
+You can install Timber through [Composer](https://getcomposer.org/download/). If you’re not familiar with Composer yet, read [our short introduction](https://timber.github.io/docs/installation/intro-to-composer/) and then come back here.
 
 In earlier versions of Timber, you could install Timber as a WordPress plugin. We dropped support for that, because Timber is not really a plugin. Plugins are supposed to enhance functionality. But when you're developing with Timber, it’s really a dependency — and Composer is the premier PHP dependency manager.
 

@@ -1,6 +1,9 @@
 ---
 title: "A short intro to Composer"
+order: "20"
 ---
+
+If you’re familiar with the WordPress plugin world, but haven’t used Composer before, this introduction is for you.
 
 Composer is the industry standard for managing community-built PHP packages. Much like NPM for JavaScript.
 

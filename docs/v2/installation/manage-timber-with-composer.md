@@ -1,5 +1,6 @@
 ---
 title: "Managing Timber with Composer"
+order: "30"
 ---
 
 The following guide should help you manage the installed version of Timber. While we work with specific examples for Timber here, what we describe works for most Composer packages.
