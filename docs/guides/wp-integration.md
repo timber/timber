@@ -80,6 +80,18 @@ Timber already comes with a [set of useful filters](https://timber.github.io/doc
 {{ "my custom string"|apply_filters('my_filter', param1, param2, ...) }}
 ```
 
+Since __Twig 3__ you can use your filter with a [apply](https://twig.symfony.com/doc/3.x/tags/apply.html) tag.
+
+```twig
+{% apply apply_filters( 'my_filter') %}
+        {{ post.content }}
+{% endapply %}
+
+{% apply apply_filters('my_filter', param1, param2, ...) %}
+        my custom string
+{% endapply %}
+```
+
 ## Widgets
 
 Everyone loves widgets! Of course they do...
