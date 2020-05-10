@@ -273,7 +273,7 @@ class Helper {
 	/**
 	 * Marks something as being incorrectly called.
 	 *
-	 * There is a hook {@see 'doing_it_wrong_run'} that will be called that can be used
+	 * There is a hook 'doing_it_wrong_run' that will be called that can be used
 	 * to get the backtrace up to what file and function called the deprecated
 	 * function.
 	 *
