@@ -106,6 +106,36 @@ function filter_my_filter( $tag, $param1, $param2, $param3 ) {
 }
 ```
 
+### Real world example with WooCommerce
+
+Sometimes in __WooCommerce__ we found very long line of code:
+
+```php
+echo '<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">' . apply_filters( 'woocommerce_no_available_payment_methods_message', WC()->customer->get_billing_country() ? esc_html__( 'Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce' ) : esc_html__( 'Please fill in your details above to see available payment methods.', 'woocommerce' ) ) . '</li>';
+```
+
+In __Twig__:
+
+```twig
+<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">
+    {{ customer.get_billing_country() ? __( 'Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce' ) : __( 'Please fill in your details above to see available payment methods.', 'woocommerce' ) | apply_filters( 'woocommerce_no_available_payment_methods_message' ) }}
+</li>
+```
+
+And with `filter` tag:
+
+```twig
+<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">
+    {% filter apply_filters( 'woocommerce_no_available_payment_methods_message' ) %}
+        {% if customer.get_billing_country() %}
+            {{ __( 'Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce' ) }}
+        {% else %}
+            {{ __( 'Please fill in your details above to see available payment methods.', 'woocommerce' )  }}
+        {% endif %}
+    {% endfilter %}
+</li>
+```
+
 ## Widgets
 
 Everyone loves widgets! Of course they do...
