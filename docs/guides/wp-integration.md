@@ -87,9 +87,23 @@ You can use your filter with a [filter](https://twig.symfony.com/doc/2.x/tags/fi
         {{ post.content }}
 {% endfilter %}
 
-{% filter apply_filters('my_filter', param1, param2, ...) %}
+{% filter apply_filters('my_filter', 'foo', 'bar, 'baz' ) %}
         my custom string
 {% endfilter %}
+```
+
+In __PHP__, you can get the content of the block with the first parameter and the rest of parameters like that.
+
+```php
+add_filter( 'my_filter', 'filter_my_filter', 10, 4 );
+
+function filter_my_filter( $tag, $param1, $param2, $param3 ) {
+       var_dump( $tag, $param1, $param2, $param3 ); // 'my custom string', 'foo', 'bar, 'baz'
+       
+       $tag = 'my new custom string';
+       
+       echo $tag;
+}
 ```
 
 ## Widgets
