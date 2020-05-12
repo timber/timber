@@ -13,11 +13,8 @@ Timber helps you create fully-customized WordPress themes faster with more susta
 <?php
 
 use Timber\Timber;
-
 $context = Timber::get_context();
-
 $context['post'] = new Timber\Post();
-
 Timber::render( 'single.twig', $context );
 ```
 
