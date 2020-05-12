@@ -12,8 +12,8 @@ If you haven't already, please read the [Installation](/docs/installation/) arti
 Like where twentyeighteen and twentynineteen live. The Timber Starter Theme will live at the same level.
 
 	/wp-content/themes	/twentyeighteen
-						/twentynineteen
-						/timber-starter-theme
+				/twentynineteen
+				/timber-starter-theme
 
 You should now have:
 
