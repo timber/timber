@@ -572,6 +572,13 @@ class ImageHelper {
 		if ( empty($src) ) {
 			return '';
 		}
+
+		$allow_fs_write = apply_filters('timber/allow_fs_write', true);
+
+		if ( $allow_fs_write === false ) {
+			return $src;
+		}
+		
 		$external = false;
 		// if external image, load it first
 		if ( URLHelper::is_external_content($src) ) {
