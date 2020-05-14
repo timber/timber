@@ -63,11 +63,6 @@ tooling:
     cmd: '/app/lando-config/scripts/install-wp-tests.sh'
     description: 'Installs test suite.'
 
-  test-json:
-    service: appserver
-    cmd: '/app/lando-config/scripts/test-json.sh'
-    description: 'Test JSON parsing.'
-
   unit:
     service: appserver
     cmd: '/app/vendor/bin/phpunit'
