@@ -85,4 +85,19 @@ class TestMenuFactory extends Timber_UnitTestCase {
 
 		$this->assertInstanceOf(Menu::class, $factory->from($term));
 	}
+
+	public function testFromWithOverride() {
+		$id = $this->factory->term->create([
+			'name'     => 'Main Menu',
+			'taxonomy' => 'nav_menu',
+		]);
+
+		$factory = new MenuFactory();
+
+		$this->add_filter_temporarily('timber/menu/classmap', function() {
+			return MyMenu::class;
+		});
+
+		$this->assertInstanceOf(MyMenu::class, $factory->from($id));
+	}
 }
