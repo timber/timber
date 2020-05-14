@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Timber\Factory\CommentFactory;
+use Timber\Factory\MenuFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
 
@@ -394,6 +395,78 @@ class Timber {
 
 		return static::get_user($wp_user);
 	}
+
+
+	/* Menu Retrieval
+	================================ */
+
+	public static function get_menu( $menu = null ) {
+		$factory   = new MenuFactory();
+		$locations = get_nav_menu_locations();
+
+		// Get the Menu ID by location, if possible.
+		if (is_string($menu) && isset($locations[$menu])) {
+			$menu = $locations[$menu];
+		}
+
+		// Try getting menu by slug or name.
+		if (!$menu) {
+			$menu = get_term_by('slug', $menu, 'nav_menu')
+				   ?: get_term_by('name', $menu, 'nav_menu');
+		}
+
+		if (!$menu) {
+			// Haven't found a menu yet, just use the first one that a generic query returns.
+			$all_menus = get_terms([
+				'taxonomy' => 'nav_menu',
+			]);
+			if ($all_menus && is_array($all_menus) && isset($all_menus[0]->term_id)) {
+				$menu = $all_menus[0]->term_id;
+			}
+		}
+
+		return $factory->from($menu);
+	}
+
+	public static function _get_menu_id_from_locations( $slug, $locations ) {
+		if ( $slug === 0 ) {
+			$slug = Timber::_get_menu_id_from_terms($slug);
+		}
+		if ( is_numeric($slug) ) {
+			$slug = array_search($slug, $locations);
+		}
+		if ( isset($locations[$slug]) ) {
+			$menu_id = $locations[$slug];
+			// TODO do this in filter/Integration
+			if ( function_exists('wpml_object_id_filter') ) {
+				$menu_id = wpml_object_id_filter($locations[$slug], 'nav_menu');
+			}
+
+			return $menu_id;
+		}
+	}
+
+	public static function _get_menu_id_from_terms( $slug = 0 ) {
+		if ( !is_numeric($slug) && is_string($slug) ) {
+			//we have a string so lets search for that
+			$menu = get_term_by('slug', $slug, 'nav_menu');
+			if ( $menu ) {
+				return $menu->term_id;
+			}
+			$menu = get_term_by('name', $slug, 'nav_menu');
+			if ( $menu ) {
+				return $menu->term_id;
+			}
+		}
+		$menus = get_terms('nav_menu', array('hide_empty' => true));
+		if ( is_array($menus) && count($menus) ) {
+			if ( isset($menus[0]->term_id) ) {
+				return $menus[0]->term_id;
+			}
+		}
+		return 0;
+	}
+
 
 	/* Comment Retrieval
 	================================ */

@@ -7,10 +7,9 @@
 class TestTimberMenu extends Timber_UnitTestCase {
 
 	const MENU_NAME = 'Menu One';
-	const MENU_SLUG = 'nav_menu';
 
 	public static function _createTestMenu() {
-		$menu_term = wp_insert_term( self::MENU_NAME, self::MENU_SLUG );
+		$menu_term = wp_insert_term( self::MENU_NAME, 'nav_menu' );
 		$menu_id = $menu_term['term_id'];
 		$menu_items = array();
 		$parent_page = wp_insert_post(
@@ -272,7 +271,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	function testBlankMenu() {
 		self::setPermalinkStructure();
 		self::_createTestMenu();
-		$menu = new Timber\Menu();
+		$menu = Timber::get_menu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 		$items = $menu->get_items();
@@ -291,8 +290,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$items[] = (object) array('type' => 'link', 'link' => '/');
 		$items[] = (object) array('type' => 'link', 'link' => '/foo');
 		$items[] = (object) array('type' => 'link', 'link' => '/bar/');
-		$mid = $this->buildMenu('Blanky', $items);
-		$menu = new Timber\Menu($mid);
+		$menu = $this->buildMenu('Blanky', $items);
+		$menu = Timber::get_menu($menu['term_id']);
 		$items = $menu->get_items();
 		$this->assertEquals('/', $items[0]->path());
 		$this->assertEquals('/foo', $items[1]->path());
@@ -307,7 +306,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		self::setPermalinkStructure();
 
 		$menu_term = self::_createTestMenu();
-		$menu = new Timber\Menu( $menu_term['term_id'] );
+		$menu = Timber::get_menu( $menu_term['term_id'] );
 		$menu_items = $menu->items;
 
 		// Add attachment to post
@@ -319,7 +318,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$post = Timber::get_post($pid);
 		$this->assertEquals('http://example.org/wp-content/uploads/' . date( 'Y/m' ) . '/arch.jpg', $post->thumbnail());
 
-		$nav_menu = new Timber\Menu( $menu_term['term_id'] );
+		$nav_menu = Timber::get_menu( $menu_term['term_id'] );
 
 		$str    = '{{ menu.items[0].ID }} - {{ menu.items[0].master_object.thumbnail.src }}';
 		$result = Timber::compile_string( $str, array( 'menu' => $nav_menu ) );
@@ -392,7 +391,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	function testMissingMenu() {
 		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
 		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
-		$missing_menu = new Timber\Menu( 14 );
+		$missing_menu = Timber::get_menu( 14 );
 		$this->assertTrue( empty( $missing_menu->items ) );
 	}
 
@@ -424,7 +423,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testImportClasses() {
 		$menu = self::_createSimpleMenu('Main Tester');
-		$menu = new Timber\Menu('Main Tester');
+		$menu = Timber::get_menu('Main Tester');
 		$items = $menu->get_items();
 		$item = $items[0];
 		$array = array('classes' => array('menu-test-class'));
@@ -485,7 +484,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testMenuItemMetaAlt() {
 		$menu_info = $this->_createSimpleMenu();
-		$menu = new Timber\Menu($menu_info['term_id']);
+		$menu = Timber::get_menu($menu_info['term_id']);
 		$item = $menu->items[0];
 		$this->assertEquals('molasses', $item->meta('flood'));
 	}
@@ -501,14 +500,14 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testMenuItemMeta() {
 		$menu_info = $this->_createSimpleMenu();
-		$menu = new Timber\Menu($menu_info['term_id']);
+		$menu = Timber::get_menu($menu_info['term_id']);
 		$item = $menu->items[0];
 		$this->assertEquals('molasses', $item->meta('flood'));
 	}
 
 	function testMenuMetaSet() {
-		$mid = self::_createSimpleMenu('Tester');
-		$menu = new Timber\Menu($mid);
+		$menu_arr = self::_createSimpleMenu('Tester');
+		$menu = Timber::get_menu($menu_arr['term_id']);
 		$items = $menu->get_items();
 		$item = $items[0];
 		$item->foo = 'bar';
@@ -524,7 +523,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$term = self::_createTestMenu();
 		$menu_id = $term['term_id'];
 		add_term_meta($menu_id, 'nationality', 'Canadian');
-		$menu = new Timber\Menu($menu_id);
+		$menu = Timber::get_menu($menu_id);
 		$string = Timber::compile_string('{{menu.meta("nationality")}}', array('menu' => $menu));
 		$this->assertEquals('Canadian', $string);
 	}
@@ -745,7 +744,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 			'bonus'       => 0,
 		) );
 
-		$menu = new Timber\Menu('extra-menu');
+		$menu = Timber::get_menu('extra-menu');
 		$this->assertEquals('Ziggy', $menu->name);
 	}
 
@@ -757,7 +756,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 		$this->buildMenu('Fancy Suit', $items);
 
-		$menu = new Timber\Menu('Fancy Suit');
+		$menu = Timber::get_menu('Fancy Suit');
 		$this->assertEquals( 3, count($menu->get_items()) );
 	}
 
@@ -769,7 +768,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 		$this->buildMenu('Jolly Jeepers', $items);
 
-		$menu = new Timber\Menu('jolly-jeepers');
+		$menu = Timber::get_menu('jolly-jeepers');
 		$this->assertEquals( 3, count($menu->get_items()) );
 	}
 
@@ -781,7 +780,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
     $this->buildMenu('The Zazziest Menu', $items);
 
-    $menu = new Timber\Menu('The Zazziest Menu');
+    $menu = Timber::get_menu('The Zazziest Menu');
 
     // force a specific MenuItem to be the current one,
     // and put it on the Zazz Train to Zazzville
@@ -800,7 +799,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
     $this->buildMenu('Ancestry.com Main Menu', $items);
 
-    $menu = new Timber\Menu('Ancestry.com Main Menu');
+    $menu = Timber::get_menu('Ancestry.com Main Menu');
 
     // force a MenuItem of olde to be the current one,
     // and listen reverently to its stories
@@ -913,7 +912,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 			'secondary' => $menu_id,
 		) );
 
-		$menu = new Timber\Menu( $menu_id );
+		$menu = Timber::get_menu( $menu_id );
 
 		$this->assertEquals( 'secondary', $menu->theme_location );
 
