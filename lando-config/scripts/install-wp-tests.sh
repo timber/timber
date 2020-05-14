@@ -9,7 +9,7 @@ DB_USER="$(echo $LANDO_INFO | jq -r '.[] | {service, external_connection, creds}
 DB_PASS="$(echo $LANDO_INFO | jq -r '.[] | {service, external_connection, creds} | select(.service == "database-unit-test") | .creds | .password')"
 
 # use LANDO_MOUNT to define TMPDIR this defines where the wordpress core and test library will download and install
-TMPDIR="$LANDO_MOUNT"/tmp
+#TMPDIR="$LANDO_MOUNT"/tmp
 WP_TESTS_DIR=${WP_TESTS_DIR-$TMPDIR/wordpress-tests-lib}
 WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress}
 

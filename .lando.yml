@@ -11,17 +11,17 @@ services:
       - apt-get install zip jq subversion -y
 
     run:
-      # - /bin/bash -c "[ ! -d /app/tmp ] && mkdir /app/tmp"
+      - /bin/bash -c "[ ! -d /app/tmp ] && mkdir /app/tmp || echo Directory exists!"
       - composer install
       - /app/lando-config/scripts/setup-wordpress.sh
-      # - /app/lando-config/scripts/install-wp-tests.sh
+      - /app/lando-config/scripts/install-wp-tests.sh
 
     overrides:
       environment:
         # Pass any non-empty CI envvar from the host into Lando
         # This is so we can force non-interactive mode setting up WP
         CI: ${CI:-''}
-        # TMPDIR: /app/tmp
+        TMPDIR: /app/tmp
 
   database:
     type: mysql:5.7
