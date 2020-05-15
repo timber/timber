@@ -398,9 +398,9 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	function testMenuTwig() {
 		self::setPermalinkStructure();
 		$context = Timber::context();
-		self::_createTestMenu();
+		$menu_arr = self::_createTestMenu();
 		$this->go_to( home_url( '/child-page' ) );
-		$context['menu'] = new Timber\Menu();
+		$context['menu'] = Timber::get_menu($menu_arr['term_id']);
 		$str = Timber::compile( 'assets/child-menu.twig', $context );
 		$str = preg_replace( '/\s+/', '', $str );
 		$str = preg_replace( '/\s+/', '', $str );
@@ -433,8 +433,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testMenuItemLink() {
 		self::setPermalinkStructure();
-		self::_createTestMenu();
-		$menu = new Timber\Menu();
+		$menu_arr = self::_createTestMenu();
+		$menu = Timber::get_menu($menu_arr['term_id']);
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 		$items = $menu->get_items();
@@ -447,8 +447,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuItemIsTargetBlank() {
-		self::_createTestMenu();
-		$menu = new Timber\Menu();
+		$menu_arr = self::_createTestMenu();
+		$menu = Timber::get_menu($menu_arr['term_id']);
 		$items = $menu->get_items();
 
 		// Menu item without _menu_item_target set
@@ -465,8 +465,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuItemTarget() {
-		self::_createTestMenu();
-		$menu = new Timber\Menu();
+		$menu_arr = self::_createTestMenu();
+		$menu = Timber::get_menu($menu_arr['term_id']);
 		$items = $menu->get_items();
 
 		// Menu item without _menu_item_target set
@@ -490,8 +490,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuItemMetaProperty() {
-		self::_createTestMenu();
-		$menu = new Timber\Menu();
+		$menu_arr = self::_createTestMenu();
+		$menu = Timber::get_menu($menu_arr['term_id']);
 		$items = $menu->get_items();
 		$item = $items[0];
 		$this->assertEquals( 'funke', $item->tobias );
@@ -529,8 +529,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuItemWithHash() {
-		self::_createTestMenu();
-		$menu = new Timber\Menu();
+		$menu_arr = self::_createTestMenu();
+		$menu = Timber::get_menu($menu_arr['term_id']);
 		$items = $menu->get_items();
 		$item = $items[3];
 		$this->assertEquals( '#people', $item->link() );
@@ -540,8 +540,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuHome() {
-		self::_createTestMenu();
-		$menu = new Timber\Menu();
+		$menu_arr = self::_createTestMenu();
+		$menu = Timber::get_menu($menu_arr['term_id']);
 		$items = $menu->get_items();
 		$item = $items[2];
 		$this->assertEquals( '/', $item->link() );
@@ -554,10 +554,10 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuOptions () {
-		self::_createTestMenu();
+		$menu_arr = self::_createTestMenu();
 
 		// With no options set.
-		$menu = new Timber\Menu();
+		$menu = Timber::get_menu($menu_arr['term_id']);
 		$this->assertInternalType("int", $menu->depth);
 		$this->assertEquals( 0, $menu->depth );
 		$this->assertInternalType("array", $menu->raw_options);
@@ -692,8 +692,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuLevels() {
-		self::_createTestMenu();
-		$menu = new Timber\Menu();
+		$menu_arr = self::_createTestMenu();
+		$menu = Timber::get_menu($menu_arr['term_id']);
 		$parent = $menu->items[0];
 		$this->assertEquals(0, $parent->level);
 		$child = $parent->children[0];
@@ -707,8 +707,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuLevelsChildren() {
-		self::_createTestMenu();
-		$menu = new Timber\Menu();
+		$menu_arr = self::_createTestMenu();
+		$menu = Timber::get_menu($menu_arr['term_id']);
 		$parent = $menu->items[0];
 		$this->assertEquals(0, $parent->level);
 		$children = $parent->children();
@@ -717,8 +717,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testMenuName() {
-		self::_createTestMenu();
-		$menu = new Timber\Menu();
+		$menu_arr = self::_createTestMenu();
+		$menu = Timber::get_menu($menu_arr['term_id']);
 		$str = Timber::compile_string('{{menu.items[0].title}}', array('menu' => $menu));
 		$this->assertEquals('Home', $str);
 		$str = Timber::compile_string('{{menu.items[0]}}', array('menu' => $menu));
@@ -810,8 +810,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
   }
 
   function testGetCurrentItemWithComplexAncestry() {
-    self::_createTestMenu();
-    $menu = new Timber\Menu();
+    $menu_arr = self::_createTestMenu();
+    $menu = Timber::get_menu($menu_arr['term_id']);
 
     // pick a grandchild to inherit the great responsibility of current affairs
     $parent = $menu->items[0];
@@ -828,8 +828,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
   }
 
   function testGetCurrentItemAntiClimactic() {
-    self::_createTestMenu();
-    $menu = new Timber\Menu();
+    $menu_arr = self::_createTestMenu();
+    $menu = Timber::get_menu($menu_arr['term_id']);
 
     // nothing marked as current
     // womp womp
@@ -844,8 +844,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
   }
 
   function testGetCurrentItemWithDepth() {
-    self::_createTestMenu();
-    $menu = new Timber\Menu();
+    $menu_arr = self::_createTestMenu();
+    $menu = Timber::get_menu($menu_arr['term_id']);
 
     // pick a grandchild to inherit the great responsibility of current affairs
     $parent = $menu->items[0];
@@ -867,8 +867,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
   function testGetCurrentItemSequence() {
     // make sure we're not caching current_item too eagerly
     // when calling current_item with $depth
-    self::_createTestMenu();
-    $menu = new Timber\Menu();
+    $menu_arr = self::_createTestMenu();
+    $menu = Timber::get_menu($menu_arr['term_id']);
 
     // we'll expect parent first, but expect grandchild on subsequent calls
     // with no arguments
@@ -889,8 +889,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
   }
 
   function testGetCurrentTopLevelItem() {
-    self::_createTestMenu();
-    $menu = new Timber\Menu();
+    $menu_arr = self::_createTestMenu();
+    $menu = Timber::get_menu($menu_arr['term_id']);
 
     // we want this one
     $parent = $menu->items[0];
@@ -939,7 +939,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 		add_filter( 'nav_menu_css_class', $filter, 10, 3 );
 
-		$menu = new Timber\Menu( $menu_id );
+		$menu = Timber::get_menu( $menu_id );
 
 		foreach ( $menu->items as $item ) {
 			$this->assertContains( 'test-class', $item->classes );
@@ -993,7 +993,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 			'secondary' => $menu_id,
 		) );
 
-		$menu      = new Timber\Menu();
+		$menu      = Timber::get_menu($term['term_id']);
 		$item      = $menu->items[0];
 		$object_id = (int) get_post_meta( $item->ID, '_menu_item_object_id', true );
 
