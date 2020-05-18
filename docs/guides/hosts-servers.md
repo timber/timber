@@ -21,9 +21,7 @@ add_filter('timber/cache/mode', function() {
 ```
 
 ```php
-add_filter('timber/allow_fs_write', function() {
-	return false;
-});
+add_filter( 'timber/allow_fs_write', '__return_false' );
 ```
 
 This means you will not be able to use on-the-fly image resizing through Timber. Don't despair! You can set custom image sizes for WordPress to use:
