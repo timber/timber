@@ -77,6 +77,18 @@ or
 {{ group.first_field }}
 {{ group.second_field }}
 ```
+* * *
+
+## Relationship field
+
+The post data returned from a relationship field will not contain the Timber methods needed for easy handling inside of your Twig file. To get these, you'll need to convert them into a proper Timber `Post` object like so:
+
+```twig
+{% for item in Post(post.relationship_field) %} 
+   {{ item.title }}
+   {# Do something with item #}
+{% endfor %}
+```
 
 * * *
 
