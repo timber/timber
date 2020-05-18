@@ -73,11 +73,65 @@ Please note the argument count that WordPress requires for `add_action`.
 
 ## Filters
 
-Timber already comes with a [set of useful filters](https://timber.github.io/docs/guides/filters/). If you have your own filters that you want to apply, you can use `apply_filters`.
+Timber already comes with a [set of useful filters](/docs/guides/filters/). If you have your own WordPress filters that you want to easily apply in Twig, you can use `apply_filters`.
 
 ```twig
-{{ post.content|apply_filters('my_filter') }}
-{{ "my custom string"|apply_filters('my_filter', param1, param2, ...) }}
+{{ post.content|apply_filters('default_message') }}
+{{ "my custom string"|apply_filters('default_message', param1, param2, ...) }}
+```
+
+You can use your filter with a [Twig filter tag](https://twig.symfony.com/doc/2.x/tags/filter.html).
+
+```twig
+{% filter apply_filters( 'default_message') %}
+        {{ post.content }}
+{% endfilter %}
+
+{% filter apply_filters('default_message', 'foo', 'bar, 'baz' ) %}
+        I love pizza
+{% endfilter %}
+```
+
+In __PHP__, you can get the content of the block with the first parameter and the rest of parameters like that.
+
+```php
+add_filter( 'default_message', 'my_default_message', 10, 4 );
+
+function my_default_message( $tag, $param1, $param2, $param3 ) {
+       var_dump( $tag, $param1, $param2, $param3 ); // 'I love pizza', 'foo', 'bar, 'baz'
+              
+       echo 'I have a message: ' . $tag; // I have a message: I love pizza
+}
+```
+
+### Real world example with WooCommerce
+
+Sometimes in __WooCommerce__ we found very long line of code:
+
+```php
+echo '<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">' . apply_filters( 'woocommerce_no_available_payment_methods_message', WC()->customer->get_billing_country() ? esc_html__( 'Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce' ) : esc_html__( 'Please fill in your details above to see available payment methods.', 'woocommerce' ) ) . '</li>';
+```
+
+In __Twig__:
+
+```twig
+<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">
+    {{ customer.get_billing_country() ? __( 'Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce' ) : __( 'Please fill in your details above to see available payment methods.', 'woocommerce' ) | apply_filters( 'woocommerce_no_available_payment_methods_message' ) }}
+</li>
+```
+
+And with `filter` tag:
+
+```twig
+<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">
+    {% filter apply_filters( 'woocommerce_no_available_payment_methods_message' ) %}
+        {% if customer.get_billing_country() %}
+            {{ __( 'Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce' ) }}
+        {% else %}
+            {{ __( 'Please fill in your details above to see available payment methods.', 'woocommerce' )  }}
+        {% endif %}
+    {% endfilter %}
+</li>
 ```
 
 ## Widgets
