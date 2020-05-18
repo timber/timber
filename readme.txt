@@ -2,8 +2,8 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 4.9.8
-Tested up to: 5.3.2
-Stable tag: 1.15.2
+Tested up to: 5.4.1
+Stable tag: 1.16.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -31,9 +31,16 @@ _Twig is the template language powering Timber; if you need a little background 
 = Develop (next release) =
 
 **Fixes and improvements**
-* Allows for translation of time_ago Twig filter #2214 #2215 (thanks @gchtr)
 
 **Changes for Theme Developers**
+
+= 1.16.0 =
+**Changes for Theme Developers**
+* Allows for translation of time_ago Twig filter #2214 #2215 (thanks @gchtr)
+
+**Fixes and improvements**
+* Fixed an issue where an excessive amount of DELETEs could hit the DB #1834 #2243 (thanks @chads2000 @dennisjac)
+* Fix an issue with blank user names #2232 (thanks @flip111)
 
 = 1.15.2 =
 **Fixes and improvements**
