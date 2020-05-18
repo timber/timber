@@ -38,7 +38,7 @@ $menu = Timber::get_menu( 'primary' );
 
 What you get in return is a [`Timber\Menu`](https://timber.github.io/docs/reference/timber-menu/) object that holds a collection of [`Timber\MenuItem`](https://timber.github.io/docs/reference/timber-menuitem/) objects. If no menu can be found with the argument you provided, the function will return `false`.
 
-In earlier versions of Timber, it was possible to pass in nothing. We’ve removed that functionality because it led to confusing cases where the wrong menu was returned.
+In earlier versions of Timber, it was possible to pass in nothing. We’ve removed that functionality because it led to confusing cases where a menu built from your pages was returned. If you still want to get a menu from your existing pages, use [`Timber::get_pages_menu()`](#pages-menu).
 
 ### Options
 
@@ -94,6 +94,27 @@ $menu = Timber::get_menu( 'primary' );
 ```
 
 In the same way that you [can’t instantiate post objects directly](https://timber.github.io/docs/guides/posts/#extending-timber-post), you **can’t** instantiate `Timber\Menu` or `Timber\MenuItem` objects or an object that extends this class with a constructor. Timber will use the [Menu Class Map](https://timber.github.io/docs/guides/class-maps/#the-menu-class-map) and the [MenuItem Class Map](https://timber.github.io/docs/guides/class-maps/#the-menuitem-class-map) to sort out which class it should use.
+
+## Pages Menu
+
+Timber includes a function to create menu from your pages, without having to register menus first. This is a quick way to create a menu if you have a small website with only a couple of pages.
+
+```php
+$menu = Timber::get_pages_menu();
+```
+
+This function will return an instance of `Timber\PagesMenu`, which is not quite the same as `Timber\Menu`, but it contains the same `Timber\MenuItem` objects as you know them.
+
+If you want to extend a pages menu, you would do it like this:
+
+
+```php
+class CustomPagesMenu extends Timber\PagesMenu {
+
+}
+```
+
+There’s a special [PagesMenu Class Map](https://timber.github.io/docs/guides/class-maps/#the-pages-menu-class-map) which you can use to make Timber use your custom class.
 
 ## Setting up a menu globally
 
