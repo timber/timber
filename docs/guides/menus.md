@@ -109,7 +109,7 @@ If you want to extend a pages menu, you would do it like this:
 
 
 ```php
-class CustomPagesMenu extends Timber\PagesMenu {
+class ExtendedPagesMenu extends \Timber\PagesMenu {
 
 }
 ```

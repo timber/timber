@@ -285,7 +285,7 @@ add_filter( 'timber/pages_menu/classmap', function( $class ) {
 } );
 ```
 
-The Menu Class Map receives the default `Timber\PagesMenu` class name as an argument.
+The Pages Menu Class Map receives the default `Timber\PagesMenu` class name as an argument.
 
 ## The User Class Map
 
