@@ -25,7 +25,7 @@ Of course, `Timber\Post` has no built-in concept of an issue (which I've built a
 
 ```php
 <?php
-class MySitePost extends Timber\Post {
+class MySitePost extends \Timber\Post {
 
 	var $_issue;
 
@@ -43,7 +43,7 @@ issue data:
 
 ```php
 <?php
-class MySitePost extends Timber\Post {
+class MySitePost extends \Timber\Post {
 
 	var $_issue;
 

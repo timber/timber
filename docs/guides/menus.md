@@ -76,13 +76,13 @@ add_action( 'after_setup_theme', function() {
 If you need additional functionality that the `Timber\Menu` and `Timber\MenuItem` classes don’t provide or if you want to have cleaner Twig templates, you can extend the `Timber\Menu` or `Timber\MenuItem` class with your own classes:
 
 ```php
-class MenuPrimary extends Timber\Menu {
+class MenuPrimary extends \Timber\Menu {
 
 }
 ```
 
 ```php
-class MenuItemPrimary extends Timber\MenuItem {
+class MenuItemPrimary extends \Timber\MenuItem {
 
 }
 ```
