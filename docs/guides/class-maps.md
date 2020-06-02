@@ -265,6 +265,28 @@ add_filter( 'timber/menuitem/classmap', function( $class, $menu ) {
 }, 10, 2 );
 ```
 
+## The Pages Menu Class Map
+
+With the `timber/pages_menu/classmap` filter, you can tell Timber which class it should use for pages menu object.
+
+The Pages Menu Class Map is used:
+
+- When you get a menu through `Timber::get_pages_menu()`.
+
+Here’s an a example for a basic filter where you would always return your custom `ExtendedMenu` class.
+
+**functions.php**
+
+```php
+use ExtendedPagesMenu;
+
+add_filter( 'timber/pages_menu/classmap', function( $class ) {
+    return ExtendedPagesMenu::class;
+} );
+```
+
+The Pages Menu Class Map receives the default `Timber\PagesMenu` class name as an argument.
+
 ## The User Class Map
 
 With the `timber/user/classmap` filter, you can tell Timber which class it should use for user objects.
