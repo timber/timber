@@ -1,5 +1,6 @@
 ---
 title: "A short intro to Composer"
+hideInMenu: true
 order: "20"
 ---
 
