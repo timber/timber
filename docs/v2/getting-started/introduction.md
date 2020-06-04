@@ -1,5 +1,6 @@
 ---
 title: "Introduction"
+order: "100"
 ---
 
 Let’s get familiar with some of the concepts of Timber and Twig.
@@ -12,6 +13,7 @@ If you want to start from scratch, you can use the following command. Run it fro
 composer create-project timber/getting-started getting-started
 ```
 
+Now, go to your WordPress Admin and activate the new theme under **Design** &rarr; **Themes**.
 
 ## A view
 
@@ -23,7 +25,7 @@ You’re maybe used to set up the template file for a single post like this:
 <h1><?php the_title(); ?></h1>
 ```
 
-This template displays a post’s title by calling the PHP function `the_title()`. In Timber, we don’t do it like that. Instead, we make use of the Twig templating engine.
+This template displays a post’s title by calling the PHP function `the_title()`. In Timber, we don’t do it like that. Instead, we make use of the [Twig templating engine](https://twig.symfony.com/).
 
 The goal of a templating engine is to separate your logic from your HTML templates. When working with Timber, you’ll want to prepare the data you’ll need for your templates in PHP first – and then pass it to a Twig template. We call the Twig templates "views".
 
@@ -83,7 +85,7 @@ $data = [
 Timber::render( 'index.twig', $data );
 ```
 
-See how there’s not HTML in our PHP file? And see how we fetch the data we need in PHP and output it in Twig? This is what we call *separation of concerns*.
+See how there’s no HTML in our PHP file? And do you see how we fetch the data we need in PHP and output it in Twig? This is what we call *separation of concerns*.
 
 ## The context
 
@@ -101,7 +103,7 @@ $context = Timber::context();
 Timber::render( 'index.twig', $context );
 ```
 
-What happens here? In Timber, you can use the `Timber::context()` function to get **an array of data that you need in most of your templates**. It can be things like the site name, the description or the navigation menu that you probably need in every template. You can read more about this in the [Context Guide](https://timber.github.io/docs/guides/context/) whenever you’re ready.
+What happens here? In Timber, you can use the `Timber::context()` function to get **an array of data that you need in most of your templates**. It can be things like the site name, the site description or the navigation menu that you probably need in every template. You can read more about this in the [Context Guide](https://timber.github.io/docs/v2/guides/context/) whenever you’re ready.
 
 Timber always prepares some of the data you will need behind the scenes. And for a singular post template, this will be a `post` variable that holds information about your post.
 
@@ -111,7 +113,7 @@ Timber always prepares some of the data you will need behind the scenes. And for
 <h1>{{ post.title }}</h1>
 ```
 
-The title is a property (or a method, but more on that later) of `post`. And you can access properties in Twig by using dots.
+The `title` is a property (or a method, but more on that later) of `post`. And you can access properties in Twig by using dots.
 
-This is still not all we want to do. Let’s keep improving. Read about [Template Inheritance and Includes](@todo) in the next section.
+Let’s keep improving. Continue reading about [Template Inheritance and Includes](https://timber.github.io/docs/v2/getting-started/template-inheritance-and-includes/) in the next section.
 

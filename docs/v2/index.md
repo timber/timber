@@ -22,8 +22,6 @@ use Timber\Timber;
 
 $context = Timber::context();
 
-$context['post'] = Timber::get_post();
-
 Timber::render( 'single.twig', $context );
 ```
 
@@ -32,12 +30,16 @@ And then we render that data in your Twig template.
 **single.twig**
 
 ```twig
-{% extends "base.twig" %}
+{% extends 'base.twig' %}
 
 {% block content %}
-	<article class="post">
-		<h1 class="post-title">{{ post.title }}</h1>
-		<img class="post-thumbnail" src="{{ post.thumbnail.src }}">
+	<article>
+		<h1>{{ post.title }}</h1>
+
+		<img
+            src="{{ post.thumbnail.src }}"
+            alt="{{ post.thumbnail.alt }}"
+        >
 
 		<div class="post-content">
 			{{ post.content }}
@@ -110,6 +112,4 @@ Timber does things differently than most WordPress themes and plugins. Naturally
 - you want to connect a lot of existing WordPress plugins and functionality.
 - a WordPress plugin is the primary driver of your project like WooCommerce, or Easy Digital Downloads or Events Calendar Pro, just to name some examples.
 
-We want to say that it’s possible to make Timber work with pretty much everything, and there are existing integrations for popular plugins.
-
-We want to stress that it’s still possible to use Timber for certain parts of your theme. You can still mix it with traditional WordPress code.
+It’s still possible to make Timber work with pretty much everything, and there are existing integrations for popular plugins. And we want to stress that it’s still possible to use Timber only for certain parts of your theme. You can still mix it with traditional WordPress code.
