@@ -57,11 +57,16 @@
 	 * @ticket 2218
 	 */
 	function testGutenbergExcerptOption() {
+		global $wp_version;
+		if ( $wp_version < 5.0 ) {
+			$this->markTestSkipped('Only applies to Block editor which is avaialble in WP 5.x');
+		}
 		$content_1 = '<!-- wp:paragraph --><p>Here is the start to my post! This should not show when noTeaser:true</p><!-- /wp:paragraph -->
 <!-- wp:more {"noTeaser":true} --><!--more--><!--noteaser-->';
 		$content_2 = '<!-- /wp:more --><!-- wp:paragraph --><p>WHEN noTeaser:true, ONLY this shows on the single page</p><!-- /wp:paragraph --><!-- wp:paragraph --><p>And this too!</p><!-- /wp:paragraph -->';
 		$post_id = $this->factory->post->create(['post_content' => $content_1.$content_2 ]);
 		$post = new \Timber\Post($post_id);
+		
 		$this->assertEquals($content_2, $post->content());
 	}
 
