@@ -96,16 +96,36 @@
 		}
 
 		function testGetPostsWithPostTypesString() {
-			register_post_type('portfolio', array('taxonomies' => array('post_tag'), 'public' => true));
-			$term_id = $this->factory->term->create(array('name' => 'Zong'));
-			$posts = $this->factory->post->create_many(3, array('post_type' => 'post', 'tags_input' => 'zong') );
-			$posts = $this->factory->post->create_many(5, array('post_type' => 'portfolio', 'tags_input' => 'zong') );
-			$term = Timber::get_term($term_id);
-			$posts_gotten = $term->posts('posts_per_page=4');
-			$this->assertEquals(4, count($posts_gotten));
+			register_post_type( 'portfolio', [ 'taxonomies' => [ 'post_tag' ], 'public' => true ] );
+			$term_id = $this->factory->term->create( [ 'name' => 'Zong' ] );
 
-			$posts_gotten = $term->posts(array('posts_per_page' => 7));
-			$this->assertEquals(7, count($posts_gotten));
+			$this->factory->post->create_many(3, [ 'post_type' => 'post', 'tags_input' => 'zong' ] );
+			$this->factory->post->create_many(5, [ 'post_type' => 'portfolio', 'tags_input' => 'zong' ] );
+
+			$term         = Timber::get_term( $term_id );
+			$posts_gotten = $term->posts( [ 'posts_per_page' => 4 ] );
+			$this->assertEquals( 4, count( $posts_gotten ) );
+
+			$posts_gotten = $term->posts( [ 'posts_per_page' => 7 ] );
+			$this->assertEquals( 7, count( $posts_gotten ) );
+		}
+
+		/**
+		 * @expectedIncorrectUsage Timber\Term::posts()
+		 */
+		function testGetPostsWithPostTypesStringIncorrectUsage() {
+			register_post_type( 'portfolio', [ 'taxonomies' => [ 'post_tag' ], 'public' => true ] );
+			$term_id = $this->factory->term->create( [ 'name' => 'Zong' ] );
+
+			$this->factory->post->create_many(3, [ 'post_type' => 'post', 'tags_input' => 'zong' ] );
+			$this->factory->post->create_many(5, [ 'post_type' => 'portfolio', 'tags_input' => 'zong' ] );
+
+			$term         = Timber::get_term( $term_id );
+			$posts_gotten = $term->posts( 'posts_per_page=4' );
+			$this->assertEquals( 4, count( $posts_gotten ) );
+
+			$posts_gotten = $term->posts( [ 'posts_per_page' => 7 ] );
+			$this->assertEquals( 7, count( $posts_gotten ) );
 		}
 
 		function testPosts() {
@@ -127,7 +147,7 @@
 		}
 
 		/**
-		 * @expectedDeprecated {{ term.get_posts }}
+		 * @expectedIncorrectUsage Timber\Term::get_posts()
 		 */
 		function testGetPostsOld() {
 			$term_id = $this->factory->term->create();
@@ -135,35 +155,52 @@
 			$posts[] = $this->factory->post->create();
 			$posts[] = $this->factory->post->create();
 			$posts[] = $this->factory->post->create();
+
 			foreach($posts as $post_id){
 				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
 			}
+
 			$term = Timber::get_term($term_id);
 			$gotten_posts = $term->get_posts();
+
 			$this->assertEquals(count($posts), count($gotten_posts));
 		}
 
-		function testGetPostsAsPageOld() {
+		function testGetPostsAsPage() {
 			$term_id = $this->factory->term->create();
 			$posts = array();
 			$posts[] = $this->factory->post->create();
 			$posts[] = $this->factory->post->create();
 			$posts[] = $this->factory->post->create();
-			foreach($posts as $post_id){
-				set_post_type($post_id, 'page');
-				wp_set_object_terms($post_id, $term_id, 'post_tag', true);
+
+			foreach ( $posts as $post_id ) {
+				set_post_type( $post_id, 'page' );
+				wp_set_object_terms( $post_id, $term_id, 'post_tag', true );
 			}
-			$term = Timber::get_term($term_id);
-			$gotten_posts = $term->posts(count($posts), 'page');
-			$this->assertEquals(count($posts), count($gotten_posts));
-			$gotten_posts = $term->posts(count($posts), 'any');
-			$this->assertEquals(count($posts), count($gotten_posts));
-			$gotten_posts = $term->posts(count($posts), 'post');
-			$this->assertEquals(0, count($gotten_posts));
+
+			$term = Timber::get_term( $term_id );
+
+			$gotten_posts = $term->posts( [
+				'posts_per_page' => count( $posts ),
+				'post_type'      => 'page',
+			] );
+			$this->assertEquals( count( $posts ), count( $gotten_posts ) );
+
+			$gotten_posts = $term->posts( [
+				'posts_per_page' => count( $posts ),
+				'post_type'      => 'any',
+			] );
+			$this->assertEquals( count( $posts ), count( $gotten_posts ) );
+
+			$gotten_posts = $term->posts( [
+				'posts_per_page' => count( $posts ),
+				'post_type'      => 'post',
+			] );
+			$this->assertEquals( 0, count( $gotten_posts ) );
 		}
 
 		/**
-		 * @expectedDeprecated {{ term.get_posts }}
+		 * @expectedDeprecated Timber\Term::get_posts()
 		 */
 		function testGetPostsNew() {
 			require_once('php/timber-post-subclass.php');

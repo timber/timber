@@ -559,7 +559,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * <h4>Recent posts in {{ term.name }}</h4>
 	 *
 	 * <ul>
-	 * {% for post in term.posts(3, 'post') %}
+	 * {% for post in term.posts() %}
 	 *     <li>
 	 *         <a href="{{ post.link }}">{{ post.title }}</a>
 	 *     </li>
@@ -575,9 +575,10 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 *
 	 * <ul>
 	 * {% for branch in region.posts({
+	 *     post_type: 'branch',
 	 *     posts_per_page: -1,
 	 *     orderby: 'menu_order'
-	 * }, 'branch', 'Branch') %}
+	 * }) %}
 	 *     <li>
 	 *         <a href="{{ branch.link }}">{{ branch.title }}</a>
 	 *     </li>
@@ -585,61 +586,44 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * </ul>
 	 * ```
 	 *
-	 * @param int|array $numberposts_or_args Optional. Either the number of posts or an array of
-	 *                                       arguments for the post query that this method is going.
-	 *                                       to perform. Default `10`.
-	 * @param string $post_type_or_class     Optional. Either the post type to get or the name of
-	 *                                       post class to use for the returned posts. Default
-	 *                                       `any`.
-	 * @param string $post_class             Optional. The name of the post class to use for the
-	 *                                       returned posts. Default `Timber\Post`.
-	 * @return \Timber\PostQuery
+	 * @param string|array $query_args  Any array of query parameters for getting the posts.
+	 *                                  See [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/) for supported arguments.
+	 *                                  Defaults to querying all posts assigned to the term.
+	 * @param array $options            Optional. An array of options. Currently no options are
+	 *                                  supported. This parameter exists to prevent future breaking
+	 *                                  changes. Default empty array `[]`.
+	 *
+	 * @return \Timber\PostCollection A collection of posts.
 	 */
-	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
-		if ( !strlen($post_class) ) {
-			$post_class = $this->PostClass;
-		}
-		$default_tax_query = array(array(
-			'field' => 'id',
-			'terms' => $this->ID,
-			'taxonomy' => $this->taxonomy,
-		));
-		if ( is_string($numberposts_or_args) && strstr($numberposts_or_args, '=') ) {
-			$args = $numberposts_or_args;
-			$new_args = array();
-			parse_str($args, $new_args);
-			$args = $new_args;
-			$args['tax_query'] = $default_tax_query;
-			if ( !isset($args['post_type']) ) {
-				$args['post_type'] = 'any';
-			}
-			if ( class_exists($post_type_or_class) ) {
-				$post_class = $post_type_or_class;
-			}
-		} else if ( is_array($numberposts_or_args) ) {
-			//they sent us an array already baked
-			$args = $numberposts_or_args;
-			if ( !isset($args['tax_query']) ) {
-				$args['tax_query'] = $default_tax_query;
-			}
-			if ( class_exists($post_type_or_class) ) {
-				$post_class = $post_type_or_class;
-			}
-			if ( !isset($args['post_type']) ) {
-				$args['post_type'] = 'any';
-			}
-		} else {
-			$args = array(
-				'numberposts_or_args' => $numberposts_or_args,
-				'tax_query' => $default_tax_query,
-				'post_type' => $post_type_or_class
+	public function posts( $query_args = [], $options = [] ) {
+		if ( is_integer( $query_args ) ) {
+			Helper::doing_it_wrong(
+				'Timber\Term::posts()',
+				'Using a number of posts as the first argument in {{ term.posts() }} is no longer supported. Use a query with the posts_per_page parameter as a first argument instead.',
+				'2.0.0'
+			);
+		} elseif ( is_string( $query_args ) &&  strstr( $query_args, '=' ) ) {
+			Helper::doing_it_wrong(
+				'Timber\Term::posts()',
+				'Using a query string as the first argument in {{ terms.posts() }} is no longer supported. Use a query array as a first argument instead.',
+				'2.0.0'
 			);
 		}
 
-		return new PostQuery( array(
-			'query'      => $args,
-			'post_class' => $post_class,
-		) );
+		$default_tax_query = [
+			[
+				'field' => 'id',
+				'terms' => $this->ID,
+				'taxonomy' => $this->taxonomy,
+			]
+		];
+
+		$query_args = wp_parse_args( $query_args, [
+			'tax_query' => $default_tax_query,
+			'post_type' => 'any'
+		] );
+
+		return Timber::get_posts( $query_args );
 	}
 
 
@@ -664,11 +648,16 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @param int $numberposts
 	 * @param string $post_type
 	 * @param string $PostClass
-	 * @return array|bool|null
+	 * @return \Timber\PostCollection
 	 */
 	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
-		Helper::deprecated('{{ term.get_posts }}', '{{ term.posts }}', '2.0.0');
-		return $this->posts($numberposts, $post_type, $PostClass);
+		Helper::doing_it_wrong(
+			'Timber\Term::get_posts()',
+			'Using {{ term.get_posts }} is no longer supported. Use {{ term.posts }} instead.',
+			'2.0.0'
+		);
+
+		return $this->posts();
 	}
 
 	/**
