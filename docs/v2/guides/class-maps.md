@@ -1,5 +1,6 @@
 ---
 title: "Class Maps"
+order: "1650"
 ---
 
 The Class Map is the central hub for Timber to select the right PHP class for post or term objects. Whenever you want to extend existing Timber classes with your custom classes, you’ll have to register them through a Class Map so that Timber will know when to use it.

@@ -1,5 +1,6 @@
 ---
 title: "Posts"
+order: "110"
 ---
 
 To get a post object in Timber, you use `Timber::get_post()` and pass the WordPress post ID as an argument.

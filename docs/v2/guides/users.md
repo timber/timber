@@ -1,5 +1,6 @@
 ---
 title: "Users"
+order: "130"
 ---
 
 To get a user object in Timber, you use `Timber::get_user()` and pass the WordPress user ID as an argument.

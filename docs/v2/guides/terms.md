@@ -1,5 +1,6 @@
 ---
 title: "Term"
+order: "120"
 ---
 
 To get a term object in Timber, you use `Timber::get_term()` and pass the WordPress term ID as an argument.
