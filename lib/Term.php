@@ -588,14 +588,10 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 *
 	 * @param string|array $query_args  Any array of query parameters for getting the posts.
 	 *                                  See [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/) for supported arguments.
-	 *                                  Defaults to querying all posts assigned to the term.
-	 * @param array $options            Optional. An array of options. Currently no options are
-	 *                                  supported. This parameter exists to prevent future breaking
-	 *                                  changes. Default empty array `[]`.
-	 *
+	 *                                  Defaults to querying all posts assigned to the term.	 *
 	 * @return \Timber\PostCollection A collection of posts.
 	 */
-	public function posts( $query_args = [], $options = [] ) {
+	public function posts( $query_args = [] ) {
 		if ( is_integer( $query_args ) ) {
 			Helper::doing_it_wrong(
 				'Timber\Term::posts()',
