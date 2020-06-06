@@ -124,6 +124,19 @@ or
 
 * * *
 
+## Relationship field
+
+The post data returned from a relationship field will not contain the Timber methods needed for easy handling inside of your Twig file. To get these, you’ll need to convert them into proper `Timber\Post` objects using `get_posts()`:
+
+```twig
+{% for item in get_posts(post.relationship_field) %}
+   {{ item.title }}
+   {# Do something with item #}
+{% endfor %}
+```
+
+* * *
+
 ## Repeater Field
 
 You can access repeater fields within Twig files:
@@ -261,13 +274,13 @@ add_filter( 'timber/context', 'global_timber_context' );
 
 /**
  * Filters global context.
- * 
+ *
  * @param array $context An array of existing context variables.
  * @return mixed
  */
 function global_timber_context( $context ) {
     $context['options'] = get_fields( 'option' );
-    
+
     return $context;
 }
 ```
