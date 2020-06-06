@@ -164,25 +164,6 @@ class Twig {
 	}
 
 	/**
-	 * Process the arguments for handle_term_object to determine what arguments the user is sending
-	 * @since 1.5.1
-	 * @author @jarednova
-	 * @param string $maybe_taxonomy probably a taxonomy, but it could be a Timber\Term subclass
-	 * @param string $TermClass a string for the Timber\Term subclass
-	 * @return array of processed arguments
-	 */
-	protected static function process_term_args( $maybe_taxonomy, $TermClass ) {
-		// A user could be sending a TermClass in the first arg, let's test for that ...
-		if ( class_exists($maybe_taxonomy) ) {
-			$tc = new $maybe_taxonomy;
-			if ( is_subclass_of($tc, 'Timber\Term') ) {
-				return array('taxonomy' => '', 'TermClass' => $maybe_taxonomy);
-			}
-		}
-		return array('taxonomy' => $maybe_taxonomy, 'TermClass' => $TermClass);
-	}
-
-	/**
 	 * Adds filters to Twig.
 	 *
 	 * @param \Twig\Environment $twig The Twig Environment.
