@@ -10,11 +10,11 @@ class CoAuthorsPlusUser extends \Timber\User {
 	 */
 	public $avatar;
 	
-	/**
-	 * @param object $author co-author object
-	 */
-	public function __construct( $author ) {
-		parent::__construct($author);
+	public static function from_guest_author( \stdclass $coauthor ) {
+		$user = new static();
+		$user->init($coauthor);
+
+		return $user;
 	}
 
 	/**
@@ -22,7 +22,8 @@ class CoAuthorsPlusUser extends \Timber\User {
 	 * @param false|object $coauthor co-author object
 	 */
 	protected function init( $coauthor = false ) {
-		$this->id = $coauthor->ID;
+		parent::init($coauthor);
+		$this->id = $this->ID = (int) $coauthor->ID;
 		$this->first_name = $coauthor->first_name;
 		$this->last_name = $coauthor->last_name;
 		$this->user_nicename = $coauthor->user_nicename;
@@ -45,5 +46,6 @@ class CoAuthorsPlusUser extends \Timber\User {
 		 	 */
 			$this->avatar = new \Timber\Image($avatar_url);
 		}
+
 	}
 }

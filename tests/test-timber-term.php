@@ -2,20 +2,37 @@
 
 	/**
 	* @group terms-api
-	* @group called-post-constructor
-	* @group called-term-constructor
 	*/
 	class TestTimberTerm extends Timber_UnitTestCase {
 
 		function testTermFrom() {
 			register_taxonomy('baseball', array('post'));
 			register_taxonomy('hockey', array('post'));
-			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'baseball'));
-			$term_id = $this->factory->term->create(array('name' => 'Cardinals', 'taxonomy' => 'baseball'));
-			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'hockey'));
-			$baseball_teams = Timber\Term::from(get_terms(array('taxonomy' => 'baseball', 'hide_empty' => false)), 'baseball');
-			$this->assertEquals(2, count($baseball_teams));
+			$this->factory->term->create(['name' => 'Rangers',   'taxonomy' => 'baseball']);
+			$this->factory->term->create(['name' => 'Cardinals', 'taxonomy' => 'baseball']);
+			$this->factory->term->create(['name' => 'Rangers',   'taxonomy' => 'hockey']);
+
+			$wp_terms       = get_terms([
+				'taxonomy'    => 'baseball',
+				'hide_empty'  => false,
+			]);
+			$baseball_teams = Timber::get_terms($wp_terms);
+
+			$this->assertCount(2, $baseball_teams);
+
 			$this->assertEquals('Cardinals', $baseball_teams[0]->title());
+			$this->assertEquals('Rangers',   $baseball_teams[1]->title());
+		}
+
+		/**
+		 * @expectedException InvalidArgumentException
+		 */
+		function testTermFromInvalidObject() {
+			register_taxonomy('baseball', array('post'));
+			$term_id = $this->factory->term->create(['name' => 'Cardinals', 'taxonomy' => 'baseball']);
+			$post_id = $this->factory->post->create(['post_title' => 'Test Post']);
+			$post = get_post($post_id);
+			$test = Timber::get_terms($post);
 		}
 
 		function testGetTerm() {
@@ -91,20 +108,22 @@
 			$this->assertEquals(7, count($posts_gotten));
 		}
 
-		function testGetPostsWithAnyAndCustomTax() {
+		function testPosts() {
 			register_post_type('portfolio', array('taxonomies' => array('arts'), 'public' => true));
 			register_taxonomy('arts', array('portfolio'));
 
+			// create a term, and some posts to assign it to
 			$term_id = $this->factory->term->create(array('name' => 'Zong', 'taxonomy' => 'arts'));
 			$posts = $this->factory->post->create_many(5, array('post_type' => 'portfolio' ));
+
+			// assign the term to each of our new posts
 			foreach($posts as $post_id) {
 				wp_set_object_terms($post_id, $term_id, 'arts', true);
 			}
-			$terms = Timber::get_terms('arts');
-			$template = '{% for term in terms %}{% for post in term.posts %}{{post.title}}{% endfor %}{% endfor %}';
-			$template = '{% for term in terms %}{{term.posts|length}}{% endfor %}';
-			$str = Timber::compile_string($template, array('terms' => $terms));
-			$this->assertEquals('5', $str);
+
+			$term = Timber::get_term($term_id);
+
+			$this->assertEquals(5, count($term->posts()));
 		}
 
 		/**

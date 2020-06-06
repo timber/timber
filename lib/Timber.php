@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Timber\Factory\CommentFactory;
+use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
 
 /**
@@ -169,7 +170,7 @@ class Timber {
 	 * @param mixed  $query
 	 * @param string $PostClass
 	 *
-	 * @return array|bool|null
+	 * @return Post|array|bool|null
 	 */
 	public static function query_post( $query = false, $PostClass = 'Timber\Post' ) {
 		return PostGetter::query_post($query, $PostClass);
@@ -196,24 +197,73 @@ class Timber {
 	/**
 	 * Get terms.
 	 * @api
-	 * @param string|array $args
-	 * @param array   $maybe_args
-	 * @param string  $TermClass
-	 * @return mixed
+	 * @param string|array $args a string or array identifying the taxonomy or
+	 * `WP_Term_Query` args. Numeric strings are treated as term IDs; non-numeric
+	 * strings are treated as taxonomy names. Numeric arrays are treated as a
+	 * list a of term identifiers; associative arrays are treated as args to
+	 * `WP_Term_Query::__construct()` and accepts any valid parameters to that
+	 * constructor.
+	 * @param array        $options optional; none are currently supported.
+	 * @return Iterable
+	 * @see https://developer.wordpress.org/reference/classes/wp_term_query/__construct/
+	 * @example
+	 * ```php
+	 * // Get all tags.
+	 * $tags = Timber::get_terms('post_tag');
+	 * // Note that this is equivalent to:
+	 * $tags = Timber::get_terms( 'tag' );
+	 * $tags = Timber::get_terms( 'tags' );
+	 *
+	 * // Get all categories.
+	 * $cats = Timber::get_terms('category');
+	 *
+	 * // Get all terms in a custom taxonomy.
+	 * $cats = Timber::get_terms('my_taxonomy');
+	 *
+	 * // Perform a custom Term query.
+	 * $cats = Timber::get_terms([
+	 *   'taxonomy' => 'my_taxonomy',
+	 *   'orderby'  => 'slug',
+	 *   'order'    => 'DESC',
+	 * ]);
+	 * ```
 	 */
-	public static function get_terms( $args = null, $maybe_args = array(), $TermClass = 'Timber\Term' ) {
-		return TermGetter::get_terms($args, $maybe_args, $TermClass);
+	public static function get_terms( $args = null, array $options = [] ) : Iterable {
+		// default to all queryable taxonomies
+		$args = $args ?? [
+			'taxonomy'   => get_taxonomies(),
+		];
+
+		$factory = new TermFactory();
+
+		return $factory->from($args);
 	}
 
 	/**
 	 * Get term.
 	 * @api
-	 * @param int|\WP_Term|object $term
-	 * @param string              $taxonomy
-	 * @return \Timber\Term|\WP_Error|null
+	 * @param int|\WP_Term $term a WP_Term or term_id
+	 * @return \Timber\Term|false
+	 * @example
+	 * ```php
+	 * // Get a Term.
+	 * $tag = Timber::get_term(123);
+	 * ```
 	 */
-	public static function get_term( $term, $taxonomy = 'post_tag', $TermClass = 'Timber\Term' ) {
-		return TermGetter::get_term($term, $taxonomy, $TermClass);
+	public static function get_term( $term = null ) {
+		if (null === $term) {
+			// get the fallback term_id from the current query
+			global $wp_query;
+			$term = $wp_query->queried_object->term_id ?? null;
+		}
+		if (null === $term) {
+			// not able to get term_id from the current query; bail
+			return false;
+		}
+
+		$factory = new TermFactory();
+
+		return $factory->from($term);
 	}
 
 	/* User Retrieval
@@ -553,6 +603,7 @@ class Timber {
 	 * Compile a Twig file.
 	 *
 	 * Passes data to a Twig file and returns the output.
+	 * If the template file doesn't exist it will throw a warning when WP_DEBUG is enabled.
 	 *
 	 * @api
 	 * @example
@@ -695,7 +746,12 @@ class Timber {
 				);
 			}
 
-			$output = $loader->render( $file, $data, $expires, $cache_mode );
+			$output = $loader->render($file, $data, $expires, $cache_mode);
+		} else {
+			if ( is_array($filenames) ) {
+				$filenames = implode(", ", $filenames);
+			}
+			Helper::error_log( 'Error loading your template files: '.$filenames.'. Make sure one of these files exists.' );
 		}
 
 		/**

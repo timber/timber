@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use WP_Term;
+
 /**
  * Class Term
  *
@@ -11,14 +13,14 @@ namespace Timber;
  * @api
  * @example
  * ```php
- * //Get a term by its ID
- * $context['term'] = new Timber\Term(6);
- * //Get a term when on a term archive page
- * $context['term_page'] = new Timber\Term();
- * //Get a term with a slug
- * $context['team'] = new Timber\Term('patriots');
- * //Get a team with a slug from a specific taxonomy
- * $context['st_louis'] = new Timber\Term('cardinals', 'baseball');
+ * // Get a term by its ID
+ * $context['term'] = Timber::get_term(6);
+ *
+ * // Get a term when on a term archive page
+ * $context['term_page'] = Timber::get_term();
+ *
+ * // Get a term with a slug
+ * $context['team'] = Timber::get_term('patriots');
  * Timber::render('index.twig', $context);
  * ```
  * ```twig
@@ -61,18 +63,19 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	public $taxonomy;
 
 	/**
-	 * @api
-	 * @param int $tid
-	 * @param string $tax
+	 * @internal
 	 */
-	public function __construct( $tid = null, $tax = '' ) {
-		if ( null === $tid ) {
-			$tid = $this->get_term_from_query();
-		}
-		if ( strlen($tax) ) {
-			$this->taxonomy = $tax;
-		}
-		$this->init($tid);
+	protected function __construct() {}
+
+	/**
+	 * @internal
+	 * @param \WP_Term the vanilla WP term object to build from
+	 * @return \Timber\Term
+	 */
+	public static function build(WP_Term $wp_term) : self {
+		$term = new static();
+		$term->init($wp_term);
+		return $term;
 	}
 
 	/**
@@ -125,17 +128,12 @@ class Term extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @internal
-	 * @param int $tid
+	 * @param \WP_Term $term
 	 */
-	protected function init( $tid ) {
-		$term = $this->get_term($tid);
-		if ( isset($term->term_id) ) {
-			$term->ID = $term->term_id;
-		}
-		if ( isset($term->ID) ) {
-			$term->id = $term->ID;
-			$this->import($term);
-		}
+	protected function init( WP_Term $term ) {
+		$this->ID = $term->term_id;
+		$this->id = $term->term_id;
+		$this->import($term);
 	}
 
 	/**
@@ -225,7 +223,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		if ( !isset($this->_children) ) {
 			$children = get_term_children($this->ID, $this->taxonomy);
 			foreach ( $children as &$child ) {
-				$child = new Term($child);
+				$child = Timber::get_term($child);
 			}
 			$this->_children = $children;
 		}

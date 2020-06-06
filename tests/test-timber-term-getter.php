@@ -22,7 +22,7 @@
 
 		function testIDDataType() {
 			$term_id = $this->factory->term->create( array('name' => 'Honda') );
-			$term = new Timber\Term($term_id);
+			$term = Timber::get_term($term_id);
 			$this->assertEquals('integer', gettype($term->id));
 			$this->assertEquals('integer', gettype($term->ID));
 		}
@@ -43,32 +43,43 @@
 		function testGetTermsByString() {
 			$term_ids = $this->factory->term->create_many(17);
 
-			$terms = Timber::get_terms('tag');
-			$this->assertCount(17, $terms);
+			// by default hide_empty is true, so assign each term to a post
+			wp_set_object_terms(
+				$this->factory->post->create(),
+				$term_ids,
+				'post_tag'
+			);
 
-			$terms = Timber::get_terms(array('taxonomies' => 'tag'));
+			$terms = Timber::get_terms('tag');
 			$this->assertCount(17, $terms);
 		}
 
 		function testSubclass(){
 			$term_ids = $this->factory->term->create_many(4);
 
-			$terms = Timber::get_terms($term_ids, MetaTerm::class);
-			$this->assertEquals(MetaTerm::class, get_class($terms[0]));
+			$this->add_filter_temporarily('timber/term/classmap', function() {
+				return [
+					'post_tag' => MetaTerm::class,
+				];
+			});
 
-			$terms = false;
-			$terms = Timber::get_terms($term_ids, null, MetaTerm::class);
-			$this->assertEquals(MetaTerm::class, get_class($terms[0]));
-
-			$terms = false;
-			$terms = Timber::get_terms($term_ids, array(), MetaTerm::class);
-			$this->assertEquals(MetaTerm::class, get_class($terms[0]));
+			$terms = Timber::get_terms($term_ids);
+			$this->assertInstanceOf(MetaTerm::class, $terms[0]);
 		}
 
 		function testGetWithQuery(){
-			$category = $this->factory->term->create(array('name' => 'Uncategorized', 'taxonomy' => 'category'));
-			$other_term = $this->factory->term->create(array('name' => 'Bogus Term'));
-			$term_id = $this->factory->term->create(array('name' => 'My Term'));
+			$term_ids = [
+				$this->factory->term->create(array('name' => 'Uncategorized', 'taxonomy' => 'category')),
+				$this->factory->term->create(array('name' => 'Bogus Term')),
+				$this->factory->term->create(array('name' => 'My Term')),
+			];
+
+			// by default hide_empty is true, so assign each term to a post
+			wp_set_object_terms(
+				$this->factory->post->create(),
+				$term_ids,
+				'post_tag'
+			);
 
 			$terms = Timber::get_terms('post_tag');
 			$this->assertCount(2, $terms);
@@ -76,31 +87,65 @@
 			$terms = Timber::get_terms();
 			$this->assertCount(3, $terms);
 
-			$query = array('taxonomy' => array('category'));
-			$terms = Timber::get_terms($query);
+			$terms = Timber::get_terms([
+				'taxonomy'   => 'category',
+			]);
 			$this->assertEquals('Uncategorized', $terms[0]->name);
-
-			$new_id = $this->factory->term->create(array('name' => 'Another Term'));
-			$terms = Timber::get_terms('post_tag', ['term_id' => $new_id]);
-			$this->assertEquals('Another Term', $terms[0]->name);
-
-			$terms = Timber::get_terms(array($new_id, $term_id));
-			$this->assertCount(2, $terms);
-			$this->assertEquals('My Term', $terms[1]->name);
 		}
 
 		function testGetTermsWithCorrections() {
-			$category = $this->factory->term->create(array('name' => 'Uncategorized', 'taxonomy' => 'category'));
-			$other_term = $this->factory->term->create(array('name' => 'Bogus Term', 'taxonomy' => 'post_tag'));
-			$term_id = $this->factory->term->create(array('name' => 'My Term', 'taxonomy' => 'post_tag'));
+			$term_ids = [
+				$this->factory->term->create(array('name' => 'Uncategorized', 'taxonomy' => 'category')),
+				$this->factory->term->create(array('name' => 'Bogus Term',    'taxonomy' => 'post_tag')),
+				$this->factory->term->create(array('name' => 'My Term',       'taxonomy' => 'post_tag')),
+			];
+
+			// by default hide_empty is true, so assign each term to a post
+			wp_set_object_terms(
+				$this->factory->post->create(),
+				$term_ids,
+				'post_tag'
+			);
 
 			$terms = Timber::get_terms('categories');
 			$this->assertCount(1, $terms);
 
-			$terms = Timber::get_terms(array('tags'));
+			$terms = Timber::get_terms(['tags']);
 			$this->assertCount(2, $terms);
 
-			$terms = Timber::get_terms(array('tag'));
+			$terms = Timber::get_terms(['tag']);
 			$this->assertCount(2, $terms);
+
+			$terms = Timber::get_terms([
+				'taxonomies' => 'post_tag',
+			]);
+			$this->assertCount(2, $terms);
+
+			$terms = Timber::get_terms([
+				'tax'        => 'post_tag',
+			]);
+			$this->assertCount(2, $terms);
+
+			$terms = Timber::get_terms([
+				'taxs'       => 'post_tag',
+			]);
+			$this->assertCount(2, $terms);
+
+			$terms = Timber::get_terms([
+				'taxonomies' => 'tag',
+			]);
+			$this->assertCount(2, $terms);
+
+			$terms = Timber::get_terms([
+				'taxonomies' => ['tag'],
+			]);
+			$this->assertCount(2, $terms);
+
+			$terms = Timber::get_terms([
+				// this should get corrected to "include"
+				'term_id'    => $term_ids[1],
+				'hide_empty' => false,
+			]);
+			$this->assertEquals('Bogus Term', $terms[0]->name);
 		}
 	}
