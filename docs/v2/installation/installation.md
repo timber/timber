@@ -43,3 +43,29 @@ composer create-project upstatement/timber-starter-theme --no-dev
 ```
 
 This command will install the Starter Theme with Timber included as a Composer dependency.
+
+### 1. Navigate to your WordPress themes directory
+
+Like where twentyeighteen and twentynineteen live, the Timber Starter Theme will live at the same level.
+
+```
+/wp-content/themes/twentyeighteen
+                  /twentynineteen
+                  /timber-starter-theme
+```
+
+You should now have:
+
+```
+/wp-content/themes/timber-starter-theme
+```
+
+You should probably **rename** this to something better.
+
+### 2. Select your theme in WordPress
+
+Navigate to the Manage Themes page in your WordPress admin (**Appearance** → **Themes**). Select the **timber-starter-theme** theme from the step above (or whatever you renamed it to).
+
+### 3. Let’s write our theme!
+
+Dive right in or use the [Getting Started Guide](/docs/v2/getting-started/introduction/) to learn more about how to develop themes with Timber.
