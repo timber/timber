@@ -4,6 +4,8 @@ namespace Timber;
 
 use WP_Post;
 
+use Timber\Factory\UserFactory;
+
 /**
  * Class Post
  *
@@ -205,9 +207,9 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		}
 
 		if ( '_thumbnail_id' === $field ) {
-			Helper::deprecated(
+			Helper::doing_it_wrong(
 				"Accessing the thumbnail ID through {{ {$this->object_type}._thumbnail_id }}",
-				"{{ {$this->object_type}.thumbnail_id }}",
+				"You can retrieve the thumbnail ID via the thumbnail object {{ {$this->object_type}.thumbnail.id }}. If you need the id as stored on this post's postmeta you can use {{ {$this->object_type}.meta('_thumbnail_id') }}",
 				'2.0.0'
 			);
 		}
@@ -1193,7 +1195,8 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 */
 	public function author() {
 		if ( isset($this->post_author) ) {
-			return new User($this->post_author);
+			$factory = new UserFactory();
+			return $factory->from((int) $this->post_author);
 		}
 	}
 
@@ -1235,7 +1238,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 */
 	public function modified_author() {
 		$user_id = get_post_meta($this->ID, '_edit_last', true);
-		return ($user_id ? new User($user_id) : $this->author());
+		return ($user_id ? Timber::get_user($user_id) : $this->author());
 	}
 
 	/**
@@ -1319,9 +1322,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 *                             special purposes. Might be set to 'liveblog' or other, depending
 	 *                             on what’s stored in your comments table.
 	 * @param string $status       Could be 'pending', etc.
-	 * @param string $CommentClass What class to use when returning Comment objects. As you become a
-	 *                             Timber Pro, you might find yourself extending `Timber\Comment`
-	 *                             for your site or app (obviously, totally optional).
 	 * @see \Timber\CommentThread for an example with nested comments
 	 * @return bool|\Timber\CommentThread
 	 *

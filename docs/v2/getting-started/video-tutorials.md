@@ -2,40 +2,14 @@
 title: "Video Tutorials"
 ---
 
-## 1. Install Timber
+## 1. Install & Setup Timber
 
-### Option 1: Via GitHub (for developers)
+Follow the instructions in these articles:
 
-#### 1) Navigate to your WordPress plugins directory
+- [Installation](/docs/installation)
+- [Setup](/docs/getting-started/setup)
 
-	$ cd ~/Sites/mywordpress/wp-content/plugins
-
-#### 2) Use git to grab the repo
-
-	$ git clone git@github.com:timber/timber.git
-
-#### 3) Use Composer to download the dependencies (Twig, etc.)
-
-	$ cd timber
-	$ composer install
-
-You can find a guide on [how to get started with Composer](https://getcomposer.org/doc/00-intro.md) in the official documentation.
-
-### Option 2: Via Composer (for developers)
-
-#### 1) Navigate to your WordPress plugins directory
-
-    $ cd ~/Sites/mywordpress/wp-content/plugins
-
-#### 2) Use Composer to create project and download the dependencies (Twig, etc.)
-
-	$ composer create-project --no-dev timber/timber ./timber
-
-You can find a guide on [how to get started with Composer](https://getcomposer.org/doc/00-intro.md) in the official documentation.
-
-* * *
-
-Inside of the timber directory there’s a `timber-starter-theme` directory. To use this, move it into your `themes` directory (probably want to rename it too) and select it.
+Now your environment is ready!
 
 * * *
 

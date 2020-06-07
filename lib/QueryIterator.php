@@ -36,6 +36,7 @@ class QueryIterator implements \Iterator, \Countable {
 			//if we're on a custom posts page?
 			$the_query = self::handle_maybe_custom_posts_page($the_query);
 		} elseif ( Helper::is_array_assoc($query) || (is_string($query) && strstr($query, '=')) ) {
+			// @todo this clause will go away
 			// We have a regularly formed WP query string or array to use
 			$the_query = new \WP_Query($query);
 		} elseif ( is_numeric($query) || is_string($query) ) {

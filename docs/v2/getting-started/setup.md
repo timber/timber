@@ -5,6 +5,7 @@ description: "All about setting up Timber with your theme."
 
 ## Installation
 
+If you haven't already, please read the [Installation](/docs/installation/) article. This guide assumes you installed in your theme directory and picks up where that one leave off.
 
 ## Use the starter theme
 
@@ -18,11 +19,11 @@ composer install
 
 ### Navigate to your WordPress themes directory
 
-Like where twentyeleven and twentytwelve live. The Timber Starter Theme will live at the same level.
+Like where twentyeighteen and twentynineteen live. The Timber Starter Theme will live at the same level.
 
-	/wp-content/themes	/twentyeleven
-						/twentytwelve
-						/timber-starter-theme
+	/wp-content/themes	/twentyeighteen
+				/twentynineteen
+				/timber-starter-theme
 
 You should now have:
 
@@ -30,13 +31,9 @@ You should now have:
 
 You should probably **rename** this to something better.
 
-### 1. Activate Timber
+### 1. Select your theme in WordPress
 
-It will be in `wp-admin/plugins.php`.
-
-### 2. Select your theme in WordPress
-
-Make sure you select the Timber-enabled theme **after** you activate the plugin. The theme will crash unless Timber is activated. Use the **timber-starter-theme** theme from the step above (or whatever you renamed it to).
+Navigate to the Manage Themes page in your WordPress admin (Appearance => Themes). Select the **timber-starter-theme** theme from the step above (or whatever you renamed it to).
 
 ### 3. Let’s write our theme!
 

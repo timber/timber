@@ -2,6 +2,12 @@
 
 use Timber\LocationManager;
 
+/**
+ * @group posts-api
+ * @group terms-api
+ * @group users-api
+ * @group called-post-constructor
+ */
 class TestTimberMainClass extends Timber_UnitTestCase {
 
 	function testSample() {
@@ -11,27 +17,18 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 
 	function testGetPostNumeric(){
 		$post_id = $this->factory->post->create();
-		$post = new Timber\Post($post_id);
-		$this->assertEquals('Timber\Post', get_class($post));
-		/** Test deprecated method */
 		$post = Timber::get_post($post_id);
 		$this->assertEquals('Timber\Post', get_class($post));
 	}
 
 	function testGetPostString(){
 		$this->factory->post->create();
-		$post = new Timber\Post('post_type=post');
-		$this->assertEquals('Timber\Post', get_class($post));
-		/** Test deprecated method */
 		$post = Timber::get_post('post_type=post');
 		$this->assertEquals('Timber\Post', get_class($post));
 	}
 
 	function testGetPostBySlug(){
 		$this->factory->post->create(array('post_name' => 'kill-bill'));
-		$post = new Timber\Post('kill-bill');
-		$this->assertEquals('kill-bill', $post->post_name);
-		/** Test deprecated method */
 		$post = Timber::get_post('kill-bill');
 		$this->assertEquals('kill-bill', $post->post_name);
 	}
@@ -42,7 +39,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$post = new TimberAlert($wp_post);
 		$this->assertEquals('TimberAlert', get_class($post));
 		$this->assertEquals($pid, $post->ID);
-		/** Test deprecated method */
 		$post = Timber::get_post($wp_post, 'TimberAlert');
 		$this->assertEquals('TimberAlert', get_class($post));
 		$this->assertEquals($pid, $post->ID);
@@ -58,7 +54,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		) );
 		$this->assertEquals('TimberAlert', get_class($posts[0]));
 		$this->assertEquals($pid, $posts[0]->ID);
-		/** Test deprecated method */
 		$post = Timber::get_post(array('post_type' => 'post'), 'TimberAlert');
 		$this->assertEquals('TimberAlert', get_class($post));
 		$this->assertEquals($pid, $post->ID);
@@ -71,7 +66,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertEquals('TimberAlert', get_class($post));
 		$this->assertEquals($pid, $post->ID);
 		$this->assertEquals('event', $post->post_type);
-		/** Test deprecated method */
 		$post = Timber::get_post($pid, 'TimberAlert');
 		$this->assertEquals('TimberAlert', get_class($post));
 		$this->assertEquals($pid, $post->ID);
@@ -81,7 +75,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	function testGetPostWithCustomPostTypeNotPublic() {
 		register_post_type('event', array('public' => false));
 		$pid = $this->factory->post->create(array('post_type' => 'event'));
-		/** Test deprecated method */
 		$post = Timber::get_post($pid, 'TimberAlert');
 		$this->assertEquals('TimberAlert', get_class($post));
 		$this->assertEquals($pid, $post->ID);
@@ -105,38 +98,11 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertEquals('Timber\Post', get_class($posts[0]));
 	}
 
-	/**
-	 * This tests some ridiculous notion I had of using DOM style selection for WP posts (like "#my-post"). There's no way anyone uses it.
-	 * @deprecated since 2.0
-	 */
-	// function testGetPostsFromSlugWithHash(){
-	// 	$post_id = $this->factory->post->create();
-	// 	/** Test deprecated method */
-	// 	$post = Timber::get_post($post_id);
-	// 	$str = '#'.$post->post_name;
-	// 	$post = Timber::get_post($str);
-	// 	$this->assertEquals($post_id, $post->ID);
-	// }
-
-	/**
-	 * This tests some ridiculous notion I had of using DOM style selection for WP posts (like "my-post-type#my-post"). There's no way anyone uses it.
-	 * @deprecated since 2.0
-	 */
-	// function testGetPostsFromSlugWithHashAndPostType(){
-	// 	$post_id = $this->factory->post->create();
-	// 	/** Test deprecated method */
-	// 	$post = Timber::get_post($post_id);
-	// 	$str = $post->post_type.'#'.$post->post_name;
-	// 	$post = Timber::get_post($str);
-	// 	$this->assertEquals($post_id, $post->ID);
-	// }
-
 	function testGetPostsFromSlug(){
 		$post_id = $this->factory->post->create(array('post_name' => 'mycoolpost'));
-		$post    = new Timber\Post('mycoolpost');
+		$post    = Timber::get_post('mycoolpost');
 		$this->assertEquals($post_id, $post->ID);
 
-		/** Test deprecated method */
 		$post = Timber::get_post('mycoolpost');
 		$this->assertEquals($post_id, $post->ID);
 	}
@@ -210,6 +176,29 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	}
 
 	/* Terms */
+	function testGetTerm(){
+		// @todo #2087
+		$this->markTestSkipped();
+	}
+
+	function testGetTermWithTaxonomyParam(){
+		// @todo #2087
+		$this->markTestSkipped();
+	}
+
+	function testGetTermWithObject(){
+		// @todo #2087
+		$this->markTestSkipped();
+	}
+
+	function testGetTermWithSlug(){
+		// @todo #2087
+		$this->markTestSkipped();
+		$term_id = $this->factory->term->create(array('name' => 'New England Patriots'));
+		$term = Timber::get_term('new-england-patriots');
+		$this->assertEquals($term->ID, $term_id);
+	}
+
 	function testGetTerms(){
 		$posts = $this->factory->post->create_many(15, array( 'post_type' => 'post' ) );
 		$tags = array();
@@ -226,9 +215,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 			$results[] = $term->name;
 		}
 		sort($results);
-		$this->assertTrue(arrays_are_similar($results, $tags));
-
-		//lets add one more occurance in..
+		$this->assertEquals($results, $tags);
 
 	}
 
@@ -243,18 +230,13 @@ class TestTimberMainClass extends Timber_UnitTestCase {
         $_GET['preview']    = true;
         $_GET['preview_id'] = $post_id;
 
-        /** This doesn't work in unit tests, but works fine in tests on dev sites */
-        //$the_post = new Timber\Post( $post_id );
-        //$this->assertEquals( 'New Stuff Goes here', $the_post->post_content );
-
-        /** Test deprecated method */
         $the_post = Timber::get_post( $post_id );
         $this->assertEquals( 'New Stuff Goes here', $the_post->post_content );
     }
 
     function testTimberRenderString() {
     	$pid = $this->factory->post->create(array('post_title' => 'Zoogats'));
-        $post = new Timber\Post($pid);
+        $post = Timber::get_post($pid);
         ob_start();
         Timber::render_string('<h2>{{post.title}}</h2>', array('post' => $post));
        	$data = ob_get_contents();
@@ -264,7 +246,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 
     function testTimberRender() {
     	$pid = $this->factory->post->create(array('post_title' => 'Foobar'));
-        $post = new Timber\Post($pid);
+        $post = Timber::get_post($pid);
         ob_start();
         Timber::render('assets/single-post.twig', array('post' => $post));
        	$data = ob_get_contents();
@@ -283,7 +265,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
     	$this->assertEquals('I am single course', $str);
     }
 
-    /**
+  /**
 	 * @ticket 1660
 	 */
 	function testDoubleInstantiationOfSubclass() {
@@ -301,20 +283,4 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertEquals('Timber\Post', get_class($post));
 	}
 
-}
-
-function arrays_are_similar($a, $b) {
-  	// if the indexes don't match, return immediately
-	if (count(array_diff_assoc($a, $b))) {
-		return false;
-	}
-	// we know that the indexes, but maybe not values, match.
-	// compare the values between the two arrays
-	foreach($a as $k => $v) {
-		if ($v !== $b[$k]) {
-			return false;
-		}
-	}
-	// we have identical indexes, and no unequal values
-	return true;
 }

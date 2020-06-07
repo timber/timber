@@ -299,11 +299,11 @@ class URLHelper {
 	 */
 	public static function remove_double_slashes( $url ) {
 		$url = str_replace('//', '/', $url);
-		if ( strstr($url, 'http:') && ! strstr($url, 'http://') ) {
-			$url = str_replace('http:/', 'http://', $url);
-		}
-		if ( strstr($url, 'https:') && ! strstr($url, 'https://') ) {
-			$url = str_replace('https:/', 'https://', $url);
+		$schemes_whitelist = apply_filters( 'timber/url/schemes-whitelist', array( 'http', 'https', 's3', 'gs' )  );
+		foreach ( $schemes_whitelist as $scheme ) {
+			if ( strstr($url, $scheme . ':') && !strstr($url, $scheme . '://') ) {
+				$url = str_replace( $scheme . ':/', $scheme . '://', $url );
+			}
 		}
 		return $url;
 	}

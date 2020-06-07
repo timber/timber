@@ -250,7 +250,7 @@ class Helper {
 		if ( is_object($error) || is_array($error) ) {
 			$error = print_r($error, true);
 		}
-		return error_log('[ Timber ]'.$error);
+		return error_log('[ Timber ] '.$error);
 	}
 
 	/**
@@ -271,25 +271,118 @@ class Helper {
 	}
 
 	/**
+	 * Marks something as being incorrectly called.
+	 *
+	 * There is a hook 'doing_it_wrong_run' that will be called that can be used
+	 * to get the backtrace up to what file and function called the deprecated
+	 * function.
+	 *
+	 * The current behavior is to trigger a user error if `WP_DEBUG` is true.
+	 *
+	 * If you want to catch errors like these in tests, then add the @expectedIncorrectUsage tag.
+	 * E.g.: "@expectedIncorrectUsage Timber::get_posts()".
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @since WordPress 3.1.0
+	 * @see \_doing_it_wrong()
+	 *
+	 * @param string $function The function that was called.
+	 * @param string $message  A message explaining what has been done incorrectly.
+	 * @param string $version  The version of Timber where the message was added.
+	 */
+	public static function doing_it_wrong( $function, $message, $version ) {
+		/**
+		 * Fires when the given function is being used incorrectly.
+		 *
+		 * @param string $function The function that was called.
+		 * @param string $message  A message explaining what has been done incorrectly.
+		 * @param string $version  The version of WordPress where the message was added.
+		 */
+		do_action( 'doing_it_wrong_run', $function, $message, $version );
+
+		if ( ! WP_DEBUG ) {
+			return;
+		}
+
+		/**
+		 * Filters whether to trigger an error for _doing_it_wrong() calls.
+		 *
+		 * This filter is mainly used by unit tests.
+		 *
+		 * @since WordPress 3.1.0
+		 * @since WordPress 5.1.0 Added the $function, $message and $version parameters.
+		 *
+		 * @param bool   $trigger  Whether to trigger the error for _doing_it_wrong() calls. Default true.
+		 * @param string $function The function that was called.
+		 * @param string $message  A message explaining what has been done incorrectly.
+		 * @param string $version  The version of WordPress where the message was added.
+		 */
+		$should_trigger_error = apply_filters(
+			'doing_it_wrong_trigger_error',
+			true,
+			$function,
+			$message,
+			$version
+		);
+
+		if ( $should_trigger_error ) {
+			if ( is_null( $version ) ) {
+				$version = '';
+			} else {
+				$version = sprintf(
+					'(This message was added in Timber version %s.)',
+					$version
+				);
+			}
+
+			$message .= sprintf(
+				' Please see Debugging in WordPress (%1$s) as well as Debugging in Timber (%2$s) for more information.',
+				'https://wordpress.org/support/article/debugging-in-wordpress/',
+				'https://timber.github.io/docs/guides/debugging/'
+			);
+
+			$error_message = sprintf(
+				'%1$s was called <strong>incorrectly</strong>. %2$s %3$s',
+				$function,
+				$message,
+				$version
+			);
+
+			// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+			// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+			trigger_error( '[ Timber ] ' . $error_message );
+		}
+	}
+
+	/**
 	 * Triggers a deprecation warning.
 	 *
 	 * If you want to catch errors like these in tests, then add the @expectedDeprecated tag to the
 	 * DocBlock. E.g.: "@expectedDeprecated {{ TimberImage() }}".
 	 *
 	 * @api
+	 * @see \_deprecated_function()
 	 *
 	 * @param string $function    The name of the deprecated function/method.
-	 * @param string $replacement Function to use instead.
-	 * @param string $version     When we deprecated this.
+	 * @param string $replacement The name of the function/method to use instead.
+	 * @param string $version     The version of Timber when the function was deprecated.
 	 *
 	 * @return void
 	 */
 	public static function deprecated( $function, $replacement, $version ) {
+		/**
+		 * Fires when a deprecated function is being used.
+		 *
+		 * @param string $function    The function that was called.
+		 * @param string $replacement The name of the function/method to use instead.
+		 * @param string $version     The version of Timber where the message was added.
+		 */
+		do_action( 'deprecated_function_run', $function, $replacement, $version );
+
 		if ( ! WP_DEBUG ) {
 			return;
 		}
-
-		do_action( 'deprecated_function_run', $function, $replacement, $version );
 
 		/**
 		 * Filters whether to trigger an error for deprecated functions.
@@ -304,14 +397,14 @@ class Helper {
 
 		if ( ! is_null( $replacement ) ) {
 			$error_message = sprintf(
-				'%1$s is <strong>deprecated</strong> since Timber version %2$s! Use %3$s instead.',
+				'%1$s is deprecated since Timber version %2$s! Use %3$s instead.',
 				$function,
 				$version,
 				$replacement
 			);
 		} else {
 			$error_message = sprintf(
-				'%1$s is <strong>deprecated</strong> since Timber version %2$s with no alternative available.',
+				'%1$s is deprecated since Timber version %2$s with no alternative available.',
 				$function,
 				$version
 			);
@@ -319,7 +412,7 @@ class Helper {
 
 		// phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-		trigger_error( $error_message );
+		trigger_error( '[ Timber ] ' . $error_message );
 	}
 
 	/**
@@ -589,7 +682,7 @@ class Helper {
 		} elseif ( $obj instanceof \WP_Term ) {
 			return new Term($obj->term_id);
 		} elseif ( $obj instanceof \WP_User ) {
-			return new User($obj->ID);
+			return Timber::get_user($obj->ID);
 		}
 
 		return $obj;
