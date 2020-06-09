@@ -115,6 +115,18 @@ Timber::render( 'single.twig', $context );
 
 By calling `Timber::get_post()` without any arguments, Timber will use the `$post` global for the current singular template.
 
+#### Getting the current post
+
+Now, Timber has already fetched the current post for your in `Timber::context()`. Here’s how you could access it:
+
+```php
+$context = Timber::context();
+
+$post = $context['post'];
+
+Timber::render( 'single.twig', $context );
+```
+
 #### Using a custom post class
 
 If you want to use [your own post class](https://timber.github.io/docs/v2/guides/extending-timber/), you can use the [Post Class Map](https://timber.github.io/docs/v2/guides/posts/#the-post-class-map) to register that class for your post type. `Timber::context()` will then automatically set the `post` variable using your class.
@@ -124,7 +136,8 @@ If you want to overwrite the existing `post` variable in the context, you can do
 ```php
 $context = Timber::context();
 
-$post = Timber::get_post();
+// Getting another post.
+$post = Timber::get_post( 12 );
 $post->setup();
 
 $context['post'] = $post;
@@ -133,7 +146,7 @@ $context['post'] = $post;
 $context['post'] = Timber::get_post()->setup();
 ```
 
-Whenever you set up **a post in a singular template** (instead of relying on `Timber::context()` to do it for you), **you need set up your post through `$post->setup()`**. The `setup()` function improves compatibility with third-party plugins.
+**Be aware!** Whenever you set up **a post in a singular template** (instead of relying on `Timber::context()` to do it for you), **you need set up your post through `$post->setup()`**. The `setup()` function improves compatibility with third-party plugins.
 
 ### Archive templates
 
