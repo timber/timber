@@ -7,9 +7,9 @@ There’s a myth that Timber is for making simple themes, but in fact it’s for
 
 The beauty of Timber is that the object-oriented nature lets you extend it to match the exact requirements of your theme.
 
-## Extending Timber objects
+## Extending Timber classes
 
-One of the main concepts for extending Timber is to extend its objects. You can add your custom methods and properties to Posts, Terms and other objects. This way, you can reduce the amount of logic in your template files as well as your Twig files.
+One of the main concepts for extending Timber is to extend its classes. You can add your custom methods and properties to Posts, Terms and other objects. This way, you can reduce the amount of logic in your template files as well as your Twig files.
 
 Let’s look at how we could add a method to **calculate the reading time for a blog post.** First, let’s create a `BlogPost` class with a method that calculates the reading time.
 
@@ -49,7 +49,7 @@ Because we extend `Timber\Post`, we have all the methods from that class availab
 
 ### Use Class Maps
 
-To register your own objects with Timber, you use Class Maps. Refer to the [Class Maps Guide](/docs/v2/guides/class-maps/) for a detailed explanation for how they work. For the `BlogPost` class, it would work like this:
+To register your own classes with Timber, you use Class Maps. Refer to the [Class Maps Guide](/docs/v2/guides/class-maps/) for a detailed explanation for how they work. For the `BlogPost` class, it would work like this:
 
 **functions.php**
 
@@ -139,7 +139,7 @@ add_filter( 'timber/post/classmap', function( $classmap ) {
 } );
 ```
 
-### Move your logic from your template files to your objects
+### Move your logic from your template files to your classes
 
 In the Getting Started Guide for [Archive Pages](/docs/v2/getting-started/a-post-archive/), we looked at how you can load related posts and add them to the context.
 
