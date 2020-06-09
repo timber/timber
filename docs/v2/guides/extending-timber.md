@@ -329,14 +329,14 @@ class Event extends \Timber\Post {
 	 *
 	 * @return string
 	 */
-    public function date_display() {
+    public function date_display( $date_format = 'F j Y' ) {
         $date_start = DateTimeImmutable::createFromFormat( 'Ymd', $this->meta( 'date_start' ) );
 
         if ( empty( $date_start ) ) {
 			return '';
 		}
 
-        return wp_date( 'F j Y', $date_start->getTimestamp() );
+        return wp_date( $date_format, $date_start->getTimestamp() );
     }
 }
 ```
@@ -344,7 +344,11 @@ class Event extends \Timber\Post {
 And use it in Twig:
 
 ```twig
+{# With your default date format #}
 {{ post.date_display }}
+
+{# With a different format #}
+{{ post.date_display('F j') }}
 ```
 
 This is better, because
@@ -354,7 +358,9 @@ This is better, because
 
 Additionally, if there’s more logic, you probably shouldn’t write it in Twig anyway. Twig is powerful, but it shouldn’t replace PHP.
 
-Consider that you might also have an end date for the event that you save in a meta field `date_end`. And suddenly you would have many more cases to handle. You might have to account for empty end dates or maybe display the date a little different if there’s an end date present. Maybe you would want to say `May 30 – June 4 2020`, but `4 – 6 June 2020` instead of `June 4 – June 6 2020` if the month is the same.
+Consider that you might also have an end date for the event that you save in a meta field `date_end`. And suddenly you would have many more cases to handle. You might have to account for empty end dates or maybe display the date a little different if there’s an end date present. Maybe you would want to say `May 30 – June 4 2020`, but `4 – 6 June 2020` instead of `June 4 – June 6 2020` if the month of the two dates is the same.
+
+You can also make the date formats a little more dynamic here by using an arguments array. By using [`wp_parse_args()`](https://developer.wordpress.org/reference/functions/wp_parse_args/), you can make sure that all arguments you need are there, even when you only want to overwrite one of the date formats.
 
 ```php
 /**
@@ -362,33 +368,49 @@ Consider that you might also have an end date for the event that you save in a m
  */
 class Event extends \Timber\Post {
     /**
-	 * Gets display date.
+     * Gets display date.
+     *
+     * @param array $formats An array of date formats.
 	 *
 	 * @return string
 	 */
-	public function date_display() {
-		$date_start = DateTimeImmutable::createFromFormat( 'Ymd', $this->meta( 'date_start' ) );
-		$date_end   = DateTimeImmutable::createFromFormat( 'Ymd', $this->meta( 'date_end' ) );
+	public function date_display( $formats = [] ) {
+        $formats = wp_parse_args( $formats, [
+            'single'           => 'F j Y',
+            'yearless'         => 'F j',
+            'same_month_start' => 'j',
+            'same_month_end'   => 'j F Y'
+        ] );
+
+		$date_start = DateTimeImmutable::createFromFormat(
+            'Ymd',
+            $this->meta( 'date_start' )
+        );
+		$date_end = DateTimeImmutable::createFromFormat(
+            'Ymd',
+            $this->meta( 'date_end' )
+        );
 
 		if ( empty( $date_start ) ) {
 			return '';
 		}
 
 		if ( empty( $date_end ) ) {
-			$date_string = wp_date( 'F j Y', $date_start->getTimestamp() );
+            // There’s only a start date.
+			$date_string = wp_date( $formats['single'], $date_start->getTimestamp() );
 		} else {
 			// Different format if month is the same.
 			if ( $date_start->format( 'm' ) === $date_end->format( 'm' ) ) {
 				$date_string = sprintf(
                     '%1$s &ndash %2$s',
-                    wp_date( 'j', $date_start->getTimestamp() ),
-                    wp_date( 'j F Y', $date_end->getTimestamp() )
+                    wp_date( $formats['same_month_start'], $date_start->getTimestamp() ),
+                    wp_date( $formats['same_month_end'], $date_end->getTimestamp() )
                 );
 			} else {
                 $date_string = sprintf(
                     '%1$s &ndash %2$s',
-                    wp_date( 'F j', $date_start->getTimestamp() ),
-                    wp_date( 'F j Y', $date_end->getTimestamp() )
+                    wp_date( $formats['yearless'], $date_start->getTimestamp() ),
+                    wp_date( $formats['single'], $date_end->getTimestamp() )
                 );
 			}
 		}
@@ -398,6 +420,55 @@ class Event extends \Timber\Post {
 }
 ```
 
+In Twig, you could use it like this:
+
+```twig
+{# With your default date format #}
+{{ post.date_display }}
+
+{# With customized date formats #}
+{{ post.date_display({
+    same_month_end: 'j M Y'
+}) }}
+```
+
+You could make it even more dynamic and use the default date format you set in your WordPress settings.
+
+```php
+$formats = wp_parse_args( $formats, [
+    'single'           => get_option( 'date_format' ),
+    'yearless'         => trim(
+        preg_replace( '/[Yy]/', '', get_option( 'date_format' ) )
+    ),
+    'same_month_start' => 'j',
+    'same_month_end'   => 'j F Y'
+] );
+```
+
+Or you could add a filter to update your date formats globally.
+
+```php
+$formats = wp_parse_args( $formats, [
+    'single'           => 'F j Y',
+    'yearless'         => 'F j',
+    'same_month_start' => 'j',
+    'same_month_end'   => 'j F Y'
+] );
+
+$formats = apply_filters( 'theme/event/date_formats', $formats );
+```
+
+You would use that filter like this.
+
+```php
+add_filter( 'theme/event/date_formats', function( $formats ) {
+    $formats['same_month_end'] = 'j M Y';
+
+    return $formats;
+} );
+```
+
+And with this, we have a method or even a class that we can reuse in other projects.
 
 ### Extending IDs to Timber objects
 
