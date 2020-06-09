@@ -98,7 +98,7 @@ $book = Timber::get_post( $post_id );
 
 You **can’t** instantiate a `Timber\Post` object or an object that extends this class with a constructor – you can’t use `$post = new Book( $post_id )`. In Timber, we’ve chosen to go a different way to prevent a lot of problems that would come with direct instantiation.
 
-So, how does Timber know about your `Book` class? Timber will use the [Post Class Map](https://timber.github.io/docs/guides/class-maps/#the-post-class-map) to sort out which class it should use.
+So, how does Timber know about your `Book` class? Timber will use the [Post Class Map](https://timber.github.io/docs/v2/guides/class-maps/#the-post-class-map) to sort out which class it should use.
 
 ## Querying Posts
 
@@ -121,7 +121,7 @@ $posts = Timber::get_posts( [
 ] );
 ```
 
-The `Timber::get_posts()` function accepts a second parameter with options for the query. For example, with the `merge_default` option you can tell Timber that it should merge your query parameters with the default query parameters of the current template. You can check out `merge_default` and all the other options in the documentation for [`Timber::get_posts()`](https://timber.github.io/docs/reference/timber/#get-posts).
+The `Timber::get_posts()` function accepts a second parameter with options for the query. For example, with the `merge_default` option you can tell Timber that it should merge your query parameters with the default query parameters of the current template. You can check out `merge_default` and all the other options in the documentation for [`Timber::get_posts()`](https://timber.github.io/docs/v2/reference/timber/#get-posts).
 
  ```php
 $posts = Timber::get_posts( $query, $options );
@@ -129,11 +129,11 @@ $posts = Timber::get_posts( $query, $options );
 
 ### The default query
 
-In archive templates like **archive.php** or **category.php**, Timber will already fetch the default query when you call `Timber::context()` and make it available under the `posts` entry. Read more about this in the [Context Guide](/docs/guides/context).
+In archive templates like **archive.php** or **category.php**, Timber will already fetch the default query when you call `Timber::context()` and make it available under the `posts` entry. Read more about this in the [Context Guide](https://timber.github.io/docs/v2/guides/context).
 
 ### Class Map
 
-When you query for certain post types, Timber will use the [Post Class Map](https://timber.github.io/docs/guides/class-maps/#the-post-class-map) to check which class it should use to instantiate your posts.
+When you query for certain post types, Timber will use the [Post Class Map](https://timber.github.io/docs/v2/guides/class-maps/#the-post-class-map) to check which class it should use to instantiate your posts.
 
 ### Post Collections
 
@@ -207,4 +207,4 @@ In the back, the query will not count the number of found rows. This can result 
 
 ## Using posts or post collections in the context
 
-Timber will automatically set the `post` or `posts` variable for you in the context depending on the template file you’re using. Read more about this in the [Context Guide](https://timber.github.io/docs/guides/context/#template-contexts).
+Timber will automatically set the `post` or `posts` variable for you in the context depending on the template file you’re using. Read more about this in the [Context Guide](https://timber.github.io/docs/v2/guides/context/#template-contexts).
