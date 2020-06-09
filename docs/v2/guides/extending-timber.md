@@ -34,7 +34,6 @@ class BlogPost extends \Timber\Post {
     */
     public function reading_time() {
         $words_per_minute = 228;
-        $words_per_second = $words_per_minute / 60;
 
         $words   = str_word_count( wp_strip_all_tags( $this->content() ) );
         $minutes = round( $words / $words_per_minute );
@@ -94,7 +93,7 @@ Your custom methods could get pretty complex. And that’s the beauty. The compl
 To make it a little easier to load your custom classes, you could either require that class in your **functions.php** to make it available for Timber to use:
 
 ```php
-require_once( 'inc/BlogPost.php' );
+require_once 'inc/BlogPost.php';
 ```
 
 Or, because you already use Composer to handle dependencies, you can register your own [namespace](https://www.php.net/manual/en/language.namespaces.php)  that should be autoloaded there. For example, you could add a **src** folder to your project and declare it as the `Theme` namespace.
