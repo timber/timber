@@ -138,7 +138,7 @@ add_filter( 'timber/post/classmap', function( $classmap ) {
 } );
 ```
 
-### Move your logic from your template files to your classes
+## Move your logic from your template files to your classes
 
 In the Getting Started Guide for [Archive Pages](/docs/v2/getting-started/a-post-archive/), we looked at how you can load related posts and add them to the context.
 
@@ -252,7 +252,7 @@ class BlogPost extends \Timber\Post {
 }
 ```
 
-### Magazine example
+## Magazine example
 
 Let’s look at an example where you work with a post’s relationship to other WordPress objects. In the following example, each post is a part of an "issue" of a magazine. We want an easy way to reference the issue in the Twig file:
 
@@ -303,13 +303,13 @@ class MagazinePost extends \Timber\Post {
 
 So now we’ve got an easy way to refer to `{{ post.issue }}` in our Twig templates.
 
-### Working with meta fields
+## Working with meta fields
 
 A very common use case is to use custom methods for handling meta values. Also refer to the [Custom Fields Guide](/docs/v2/guides/custom-fields/) for more information.
 
 Here, we take an custom post type `event` an example.
 
-#### Keep your logic in PHP
+### Keep your logic in PHP
 
 An event probably has a date that you define in the meta field `date_start`. You could get the date and manipulate the output format through Twig’s `date` filter.
 
@@ -399,7 +399,7 @@ class Event extends \Timber\Post {
 ```
 
 
-#### Extending IDs to Timber objects
+### Extending IDs to Timber objects
 
 Imagine that each `event` has a meta field that contains an array of post IDs of posts of the post type `sponsor`, with which you can select all the organizations that make your event possible with their donations.
 
