@@ -47,6 +47,4 @@ script:
 
 after_success:
     - if [ "$COVERAGE" == 1 ]; then bash <(curl -s https://codecov.io/bash) -Z; fi
-
-after_script:
     - if [ "$COVERAGE" == 1 ]; then vendor/bin/coveralls -v; fi
