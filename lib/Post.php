@@ -503,6 +503,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * [documentation of the `Timber\PostPreview` class](https://timber.github.io/docs/reference/timber-postpreview/)
 	 * to get an overview of all the available methods.
 	 *
+	 * @api
 	 * @deprecated 2.0.0, use `{{ post.excerpt }}` instead.
 	 * @see \Timber\PostPreview
 	 * @example
