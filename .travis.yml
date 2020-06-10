@@ -25,7 +25,7 @@ env:
 
 matrix:
     include:
-    - php: 5.6.40
+    - php: 5.6
       env: WP_VERSION=4.9.8 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable" IMG_LIBS=0 COVERAGE=1
     - php: 7.4
       env: WP_VERSION=latest WP_MULTISITE=0 IMG_LIBS=1 COVERAGE=1
@@ -34,7 +34,7 @@ matrix:
 
 before_install:
     # phpenv config-add myconfig.ini --with-webp-dir
-    - if [ $TRAVIS_PHP_VERSION -ne "5.6.40" ]; then phpenv config-rm xdebug.ini; pecl install pcov; fi
+    - if [ "$(phpenv version-name)" != 5.6 ]; then phpenv config-rm xdebug.ini; pecl install pcov; fi
 
 before_script:
     - if [ "$IMG_LIBS" == 1 ]; then pear config-set preferred_state beta; pecl channel-update pecl.php.net; yes '' | pecl install imagick; fi
