@@ -131,7 +131,7 @@ class Timber {
 	 * Gets a Timber Post by post ID or WP_Post object.
 	 *
 	 * By default, Timber will use the `Timber\Post` class to create a new post object. To control
-	 * which class is used for your post object, use [Class Maps]().
+	 * which class is used for your post object, use [Class Maps](https://timber.github.io/docs/v2/guides/class-maps/).
 	 *
 	 * @api
 	 * @example
@@ -146,7 +146,6 @@ class Timber {
 	 * $post = Timber::get_post();
 	 * ```
 	 *
-	 * @todo Add links to Class Maps documentation in function summary.
 	 * @todo Remove warnings in Timber 3.0
 	 *
 	 * @param null|int|\WP_Post $post Optional. Post ID or WP_Post object to get a Timber Post
@@ -165,10 +164,9 @@ class Timber {
 		}
 
 		if ( func_num_args() > 1 ) {
-			// @todo Add link to Class Maps documentation.
 			Helper::doing_it_wrong(
 				'Timber::get_post()',
-				'The $PostClass parameter for passing in the post class to use in Timber::get_post() was removed in Timber 2.0. Use Class Maps (LINK HERE) instead.',
+				'The $PostClass parameter for passing in the post class to use in Timber::get_post() was removed in Timber 2.0. Use Class Maps (https://timber.github.io/docs/v2/guides/class-maps/) instead.',
 				'2.0.0'
 			);
 		}
@@ -218,19 +216,17 @@ class Timber {
 	 */
 	public static function get_posts( $query = false, $options = [] ) {
 		if ( is_string( $query ) ) {
-			// @todo Add link to documentation for get_posts().
 			Helper::doing_it_wrong(
 				'Timber::get_posts()',
-				"Querying posts by using a query string was removed in Timber 2.0. Pass in the query string as an options array instead. For example, change Timber::get_posts( 'post_type=portfolio&posts_per_page=3') to Timber::get_posts( [ 'post_type' => 'portfolio', 'posts_per_page' => 3 ] ).",
+				"Querying posts by using a query string was removed in Timber 2.0. Pass in the query string as an options array instead. For example, change Timber::get_posts( 'post_type=portfolio&posts_per_page=3') to Timber::get_posts( [ 'post_type' => 'portfolio', 'posts_per_page' => 3 ] ). Learn more: https://timber.github.io/docs/v2/reference/timber-timber/#get_posts",
 				'2.0.0'
 			);
 		}
 
 		if ( is_string( $options ) ) {
-			// @todo Add link to Class Maps documentation.
 			Helper::doing_it_wrong(
 				'Timber::get_posts()',
-				'The $PostClass parameter for passing in the post class to use in Timber::get_posts() was removed in Timber 2.0. Use Class Maps (LINK HERE) instead.',
+				'The $PostClass parameter for passing in the post class to use in Timber::get_posts() was removed in Timber 2.0. Use Class Maps (https://timber.github.io/docs/v2/guides/class-maps/) instead.',
 				'2.0.0'
 			);
 		}
@@ -369,7 +365,7 @@ class Timber {
 	 * Gets one or more users as an array.
 	 *
 	 * By default, Timber will use the `Timber\User` class to create a your post objects. To
-	 * control which class is used for your post objects, use [Class Maps]().
+	 * control which class is used for your post objects, use [Class Maps](https://timber.github.io/docs/v2/guides/class-maps/).
 	 *
 	 * @api
 	 * @since 2.0.0
@@ -388,8 +384,6 @@ class Timber {
 	 *     'has_published_posts' => [ 'post' ],
 	 * ] );
 	 * ```
-	 *
-	 * @todo  Add links to Class Maps documentation in function summary.
 	 *
 	 * @param array $query   Optional. A WordPress-style query or an array of user IDs. Use an
 	 *                       array in the same way you would use the `$args` parameter in
@@ -415,7 +409,7 @@ class Timber {
 	 * Gets a single user.
 	 *
 	 * By default, Timber will use the `Timber\User` class to create a your post objects. To
-	 * control which class is used for your post objects, use [Class Maps]().
+	 * control which class is used for your post objects, use [Class Maps](https://timber.github.io/docs/v2/guides/class-maps/).
 	 *
 	 * @api
 	 * @since 2.0.0
@@ -437,8 +431,6 @@ class Timber {
 	 *     // Yay, user is logged in.
 	 * }
 	 * ```
-	 *
-	 * @todo Add links to Class Maps documentation in function summary.
 	 *
 	 * @param int|\WP_User $user A WP_User object or a WordPress user ID. Defaults to the ID of the
 	 *                           currently logged-in user.
