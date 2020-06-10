@@ -19,7 +19,7 @@ $user = Timber::get_user();
 $user = Timber::get_user( get_current_user_id() );
 ```
 
-What you get in return is a [`Timber\User`](https://timber.github.io/docs/reference/timber-user/) object, which is similar to `WP_User`.
+What you get in return is a [`Timber\User`](https://timber.github.io/docs/v2/reference/timber-user/) object, which is similar to `WP_User`.
 
 ## Get user by field
 
@@ -111,7 +111,7 @@ $author = Timber::get_user( $user_id );
 
 You **can’t** instantiate a `Timber\User` object or an object that extends this class with a constructor – you can’t use `$author = new Author( $user_id )`. In Timber, we’ve chosen to go a different way to prevent a lot of problems that would come with direct instantiation.
 
-So, how does Timber know about your `User` class? Timber will use the [User Class Map](https://timber.github.io/docs/guides/class-maps/#the-user-class-map) to sort out which class it should use.
+So, how does Timber know about your `User` class? Timber will use the [User Class Map](https://timber.github.io/docs/v2/guides/class-maps/#the-user-class-map) to sort out which class it should use.
 
 ## Querying Users
 

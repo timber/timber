@@ -19,7 +19,7 @@ $post = Timber::get_post();
 $post = Timber::get_post( get_queried_object_id() );
 ```
 
-What you get in return is a [`Timber\Post`](https://timber.github.io/docs/reference/timber-post/) object, which is similar to `WP_Post`. This object provides you with functions and properties for pretty much everything you need for developing theme templates.
+What you get in return is a [`Timber\Post`](https://timber.github.io/docs/v2/reference/timber-post/) object, which is similar to `WP_Post`. This object provides you with functions and properties for pretty much everything you need for developing theme templates.
 
 Here’s a Twig template that received the post above in a `$post` variable.
 

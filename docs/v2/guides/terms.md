@@ -19,7 +19,7 @@ $term = Timber::get_term();
 $term = Timber::get_term( get_queried_object_id() );
 ```
 
-What you get in return is a [`Timber\Term`](https://timber.github.io/docs/reference/timber-term/) object, which is similar to `WP_Term`.
+What you get in return is a [`Timber\Term`](https://timber.github.io/docs/v2/reference/timber-term/) object, which is similar to `WP_Term`.
 
 ## Twig
 
@@ -73,7 +73,7 @@ To initiate your new `BookGenre` term, you also use `Timber::get_term()`.
 $term = Timber::get_term( $term_id );
 ```
 
-In the same way that you [can’t instantiate post objects directly](https://timber.github.io/docs/guides/posts/#extending-timber-post), you **can’t** instantiate a `Timber\Term` object or an object that extends this class with a constructor. Timber will use the [Term Class Map](https://timber.github.io/docs/guides/class-maps/#the-term-class-map) to sort out which class it should use.
+In the same way that you [can’t instantiate post objects directly](https://timber.github.io/docs/v2/guides/posts/#extending-timber-post), you **can’t** instantiate a `Timber\Term` object or an object that extends this class with a constructor. Timber will use the [Term Class Map](https://timber.github.io/docs/v2/guides/class-maps/#the-term-class-map) to sort out which class it should use.
 
 ## Querying Terms
 
@@ -97,7 +97,7 @@ $term_query = new Timber::get_terms( [
  ] );
 ```
 
-Be aware that you need to pass an array to `Timber::get_terms()` with a `query` parameter. This array can have additional arguments that you can check out in the documentation for [`Timber::get_terms()`](https://timber.github.io/docs/reference/timber/#get-terms).
+Be aware that you need to pass an array to `Timber::get_terms()` with a `query` parameter. This array can have additional arguments that you can check out in the documentation for [`Timber::get_terms()`](https://timber.github.io/docs/v2/reference/timber/#get-terms).
 
 What you get as a return value is not a pure array of posts, but a `Timber\TermCollection` object, which is an `ArrayObject` that is very similar to an array as you know it. To loop over the terms collection in PHP, you first need to convert it to an array with `$terms->get_terms()`.
 
@@ -115,7 +115,7 @@ In Twig, you can directly loop over it.
 {% endfor %}
 ```
 
-When you query for certain post types, Timber will use the [Term Class Map](https://timber.github.io/docs/guides/class-maps/#the-term-class-map) to check which class it should use to instantiate your posts.
+When you query for certain post types, Timber will use the [Term Class Map](https://timber.github.io/docs/v2/guides/class-maps/#the-term-class-map) to check which class it should use to instantiate your posts.
 
 ### Listing terms in Twig
 
