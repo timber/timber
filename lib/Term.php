@@ -598,7 +598,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 				'Using a number of posts as the first argument in {{ term.posts() }} is no longer supported. Use a query with the posts_per_page parameter as a first argument instead.',
 				'2.0.0'
 			);
-		} elseif ( is_string( $query_args ) &&  strstr( $query_args, '=' ) ) {
+		} elseif ( is_string( $query_args ) && strstr( $query_args, '=' ) ) {
 			Helper::doing_it_wrong(
 				'Timber\Term::posts()',
 				'Using a query string as the first argument in {{ terms.posts() }} is no longer supported. Use a query array as a first argument instead.',
@@ -608,10 +608,10 @@ class Term extends Core implements CoreInterface, MetaInterface {
 
 		$default_tax_query = [
 			[
-				'field' => 'id',
-				'terms' => $this->ID,
+				'field'    => 'id',
+				'terms'    => $this->ID,
 				'taxonomy' => $this->taxonomy,
-			]
+			],
 		];
 
 		$query_args = wp_parse_args( $query_args, [
