@@ -34,8 +34,7 @@ matrix:
 
 before_install:
     # phpenv config-add myconfig.ini --with-webp-dir
-    - phpenv config-rm xdebug.ini
-    - pecl install pcov
+    - if [ $TRAVIS_PHP_VERSION -gt 7 ]; phpenv config-rm xdebug.ini; pecl install pcov
 
 before_script:
     - if [ "$IMG_LIBS" == 1 ]; then pear config-set preferred_state beta; pecl channel-update pecl.php.net; yes '' | pecl install imagick; fi
