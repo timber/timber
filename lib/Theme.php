@@ -43,12 +43,12 @@ class Theme extends Core {
 	public $version;
 
 	/**
-	 * Timber\Theme object for the parent theme (if it exists), false otherwise
+	 * Timber\Theme object for the parent theme (even if the current theme is the parent theme)
 	 *
 	 * @api
-	 * @var \Timber\Theme|bool the Timber\Theme object for the parent theme (if it exists), false otherwise
+	 * @var \Timber\Theme the Timber\Theme object for the parent theme
 	 */
-	public $parent = false;
+	public $parent;
 
 	/**
 	 * Slug of the parent theme (ex: `_s`)
@@ -116,6 +116,8 @@ class Theme extends Core {
 
 		$this->uri = $this->theme->get_template_directory_uri();
 
+		$this->parent = $this;
+		$this->parent_slug = $this->theme->get_stylesheet();
 		if ( $this->theme->parent() ) {
 			$this->parent_slug = $this->theme->parent()->get_stylesheet();
 			$this->parent = new Theme($this->parent_slug);
