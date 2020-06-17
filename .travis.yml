@@ -40,13 +40,12 @@ before_script:
     - if [ "$IMG_LIBS" == 1 ]; then pear config-set preferred_state beta; pecl channel-update pecl.php.net; yes '' | pecl install imagick; fi
     - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
     - composer update $PREFER_LOWEST --dev --prefer-source
+    - if [ "$(phpenv version-name)" != 5.6 ]; then composer require --dev 'pcov/clobber:^2.0'; vendor/bin/pcov clobber; fi
     - if [ "$COVERAGE" == 1 ]; then composer require satooshi/php-coveralls:1.0.*; fi
 
 script:
     - if [ "$COVERAGE" == 1 ]; then mkdir -p build/logs; vendor/phpunit/phpunit/phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml --verbose; else vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml --verbose; fi
 
-after_script:
-    - if [ "$COVERAGE" == 1 ]; then php vendor/bin/coveralls -v; fi
-
 after_success:
-    - if [ "$COVERAGE" == 1 ]; then coveralls; bash <(curl -s https://codecov.io/bash); fi
+    - if [ "$COVERAGE" == 1 ]; then bash <(curl -s https://codecov.io/bash) -Z; fi
+    - if [ "$COVERAGE" == 1 ]; then vendor/bin/coveralls -v; fi
