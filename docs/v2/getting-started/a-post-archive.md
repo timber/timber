@@ -17,7 +17,7 @@ Timber::render( 'index.twig', $context );
 
 For basic archives, that’s all you need. Behind the scenes, Timber already prepared a `posts` variable for you that holds all the posts that you would normally find in [The Loop](https://developer.wordpress.org/themes/basics/the-loop/).
 
-You can then loop over your posts with a for-loop in Twig. Here’s what your archive page could look like.
+You can then loop over your posts with a [for-loop in Twig](https://twig.symfony.com/doc/2.x/tags/for.html). Here’s what your archive page could look like.
 
 **index.twig**
 
@@ -69,11 +69,11 @@ Your teaser could look like this. We used the markup for an [Inclusive Card](htt
 There are two new things that you see here:
 
 - `{{ post.slug }}` – This property is the same as `post.post_name`, which is the version of a post’s title that is safe to use in URLs and will be used for permalinks.
-- `{{ post.excerpt }}` – This is an advanced function that pulls in the excerpt of a post, if it exists. Otherwise, it will generate an excerpt from your post’s content. Check out the documentation for [`Timber\Post::excerpt()`](https://timber.github.io/docs/reference/timber-post/#preview) to learn more about the parameters you can control the output with.
+- `{{ post.excerpt }}` – This is an advanced function that pulls in the excerpt of a post, if it exists. Otherwise, it will generate an excerpt from your post’s content. Check out the documentation for [`Timber\Post::excerpt()`](https://timber.github.io/docs/reference/v2/timber-post/#excerpt) to learn more about the parameters you can control the output with.
 
 ## Using custom queries
 
-Sometimes you’ll want to use your own queries for archive pages or to display a list of posts in other places. For that, you can use `Timber::get_posts()`. Here’s an example for a more complex query, that selects posts that have certain movie genre and actor terms assigned.
+Sometimes you’ll want to use your own queries for archive pages or to display a list of posts in other places. For that, you can use `Timber::get_posts()`. Here’s an example for a more complex query, that selects posts that have certain movie genre and actor terms assigned. The parameters you use are the same as those for [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/)
 
 ```php
 <?php

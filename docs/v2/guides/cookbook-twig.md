@@ -14,10 +14,10 @@ Copyright {{year}} by Upstatement, LLC. All Rights Reserved
 But on the site I want it to render as:
 
 ```
-Copyright 2013 by Upstatement, LLC. All Rights Reserved
+Copyright 2020 by Upstatement, LLC. All Rights Reserved
 ```
 
-Ready? There are a bunch of ways, but my favorite is:
+Ready? There are a bunch of ways, but one helpful example is:
 
 **In your PHP file**
 
@@ -45,7 +45,7 @@ render_twig('footer.twig', $data);
 #### Notes
 
 * Make sure your file actually exists or you're going to have a bad time
-* Timber will look in your ```child-theme/views``` directory first, then ```timber/views``` directory
+* Timber will look in your `child-theme/views` directory first, then `timber/views` directory
 * Don't forget the quote marks!
 
 ### Dynamic includes
@@ -74,7 +74,7 @@ Use a variable to determine the included file!
 
 ### WordPress tools
 
-* [Lisa Templates](https://github.com/pierreminik/lisa-templates/) – allows you to write Twig-templates in the WordPress admin that renders through a shortcode, widget or on the_content hook.
+* [Lisa Templates](https://github.com/pierreminik/lisa-templates/) – allows you to write Twig-templates in the WordPress Admin that renders through a shortcode, widget or on the_content hook.
 
 ### Other
 

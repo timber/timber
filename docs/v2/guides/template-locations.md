@@ -7,10 +7,9 @@ order: "75"
 Timber::render( 'teaser.twig' );
 ```
 
-
 When you use `Timber::render()` or `Timber::compile()` to render a Twig template file, Timber will look for that template in different directories. It will first look in the child theme and then falls back to the parent theme (it’s the same logic as in WordPress).
 
-The official load order is:
+The default load order is:
 
 1. **User-defined locations** – See filters below.
 2. **Directory of calling PHP script** (if not in the theme). If you’re using Timber in a plugin it will use the twig files in the plugin’s directory.
@@ -67,7 +66,7 @@ You can set your own locations for your twig files with...
 <?php
 
 add_filter( 'timber/locations', function($paths) {
-	$paths[] = array('/Users/jared/Sandbox/templates');
+	$paths[] = array('/Users/lukas/Sandbox/templates');
 
 	return $paths;
 });
@@ -80,7 +79,7 @@ Use the full file path to make sure Timber knows what you're trying to draw from
 
 add_filter( 'timber/locations', function($paths) {
 	$paths[] = array(
-		'/Users/jared/Sandbox/templates',
+		'/Users/lukas/Sandbox/templates',
 		'~/Sites/timber-templates/',
 		ABSPATH.'/wp-content/templates'
 	);
@@ -120,7 +119,7 @@ You can also register multiple paths for the same namespace. Order is important 
 add_filter( 'timber/locations', function($paths) {
 	$paths['styleguide'] = array(
 		ABSPATH.'/wp-content/styleguide',
-		'/Users/jared/Sandbox/styleguide'
+		'/Users/lukas/Sandbox/styleguide'
 	);
 
 	return $paths;

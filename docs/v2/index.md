@@ -7,7 +7,7 @@ layout: "page"
 
 Timber helps you create fully-customized WordPress themes faster with more sustainable code.
 
-### It simplifies the way you write your templates
+### Simplifies the way you write your templates
 
 With Timber, you write your HTML with the [Twig Template Engine](https://twig.symfony.com/). This cleans up your theme code. Your PHP file can focus on providing the data or logic and your Twig files can focus 100% on the HTML and display.
 
@@ -48,7 +48,7 @@ And then we render that data in your Twig template.
 {% endblock %}
 ```
 
-### Makes interacting with WordPress more unified
+### Unifies interacting with WordPress data 
 
 Timber makes Posts, Terms, Users, Comments and Menus more object-oriented. You can use the common WordPress objects in a way that makes sense.
 
@@ -107,9 +107,9 @@ Timber is for both WordPress pros and rookies:
 
 ### When is Timber not the right tool for the job?
 
-Timber does things differently than most WordPress themes and plugins. Naturally, this comes with compatibility problems. There are ways to work around these problemes, but sometimes they are not really worth it and might feel like you have to use a lot of hacks to make it work. Because of this, we believe that **Timber might not the best tool for every job** when
+Timber does things differently than many WordPress themes and plugins. Naturally, this can create compatibility problems. There are ways to work around these problems, but sometimes they are not really worth it and might feel like you have to use a lot of hacks to make it work. Because of this, we believe that **Timber might not the best tool for every job** when
 
 - you want to connect a lot of existing WordPress plugins and functionality.
 - a WordPress plugin is the primary driver of your project like WooCommerce, or Easy Digital Downloads or Events Calendar Pro, just to name some examples.
 
-It’s still possible to make Timber work with pretty much everything, and there are existing integrations for popular plugins. And we want to stress that it’s still possible to use Timber only for certain parts of your theme. You can still mix it with traditional WordPress code.
+It’s still possible to make Timber work with pretty much everything, and there are existing integrations for popular plugins (like Advanced Custom Fields). We want to stress that it’s still possible to use Timber only for certain parts of your theme; you can still mix it with traditional WordPress code.

@@ -20,7 +20,7 @@ Now in which folder do you run that command?
 You can choose yourself where in your project you want to include Timber.
 
 - Some developers prefer to have Timber installed as a theme dependency, so they would run this command from the **theme root** (ex: **/wp-content/themes/my-theme/**).
-- Others want to use Timber as a WordPress dependency, which means you would run the command above from the **WordPress root** (ex: **/var/www**).
+- Others want to use Timber as a WordPress dependency, which means you would run the command above from the **WordPress root** (ex: **/var/www/**).
 
 If your theme or project is not already set up to pull in Composer’s autoload file, you will need to add the following line at the top of your **functions.php** file:
 

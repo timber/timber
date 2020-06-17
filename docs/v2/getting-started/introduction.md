@@ -85,7 +85,7 @@ $data = [
 Timber::render( 'index.twig', $data );
 ```
 
-See how there’s no HTML in our PHP file? And do you see how we fetch the data we need in PHP and output it in Twig? This is what we call *separation of concerns*.
+See how there’s no HTML in our PHP file? And do you see how we fetch the data we need in PHP and output it in Twig? This is an important concept called [*separation of concerns*](https://en.wikipedia.org/wiki/Separation_of_concerns).
 
 ## The context
 
@@ -103,7 +103,7 @@ $context = Timber::context();
 Timber::render( 'index.twig', $context );
 ```
 
-What happens here? In Timber, you can use the `Timber::context()` function to get **an array of data that you need in most of your templates**. It can be things like the site name, the site description or the navigation menu that you probably need in every template. You can read more about this in the [Context Guide](https://timber.github.io/docs/v2/guides/context/) whenever you’re ready.
+What happens here? In Timber, you can use the `Timber::context()` function to get **an array of data that you need in most of your templates**. It includes things like the site name, the site description or the navigation menu that you probably need in every template. You can read more about this in the [Context Guide](https://timber.github.io/docs/v2/guides/context/) whenever you’re ready.
 
 Timber always prepares some of the data you will need behind the scenes. And for a singular post template, this will be a `post` variable that holds information about your post.
 

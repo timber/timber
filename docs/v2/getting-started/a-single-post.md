@@ -30,11 +30,11 @@ In this guide, we’re looking at a typical blog post. You can use most of the t
 </article>
 ```
 
-In this example, you see that we can also use `post.author`, `post.date` and of course, `post.content` to actually display a posts’s content.
+In this example, you see that we can also use `post.author`, `post.date` and of course, `post.content` to actually display a post’s content.
 
 The `{{ post }}` variable in Twig is not an array, it’s a PHP object. More specifically, it’s an instance of [`Timber\Post`](https://timber.github.io/docs/reference/v2/timber-post/). When you look at the documentation for `Timber\Post`, you see what else you can access.
 
-If you look for `title` in that post object in PHP, you will see that it’s actually not a property, but a function. In Twig, we don’t have to write `{{ post.title() }}` including the parentheses though, we can only use `{{ post.title }}` to call the function and echo out what it returns. If this is still all confusing to you, then don’t worry. You don’t have to completely understand this just yet.
+If you look for `title` in that post object in PHP, you will see that it’s actually not a property, but a function. In Twig, we don’t have to write `{{ post.title() }}` including the parentheses, we can simply use `{{ post.title }}` to call the function and echo out what it returns. If this is still all confusing to you, then don’t worry. You don’t have to completely understand this just yet.
 
 Apart from the post title, we can also access the assigned author of a post through `{{ post.author }}`. The `author` is another Timber object. It’s not a post object though, but a [`Timber\User`](https://timber.github.io/docs/v2/reference/timber-user/) object. We can get the result of the `name` method through `{{ post.author.name }}`. This displays the name of the author.
 
