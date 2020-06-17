@@ -5,7 +5,7 @@ order: "1600"
 
 There’s a myth that Timber is for making simple themes, but in fact it’s for making incredibly complex themes _look_ easy. But yes, you can also make simple sites from it.
 
-The beauty of Timber is that the object-oriented nature lets you extend it to match the exact requirements of your theme.
+The beauty of Timber is that its object-oriented nature lets you extend it to match the exact requirements of your theme.
 
 ## Extending Timber classes
 
@@ -44,7 +44,7 @@ class BlogPost extends \Timber\Post {
 }
 ```
 
-Because we extend `Timber\Post`, we have all the methods from that class available to us by using `$this->method_name()`. In this example, we get posts content through `$this->content()`.
+By extending `Timber\Post`, we have all the methods from that class available to us by using `$this->method_name()`. In the example, we get the post’s content through `$this->content()`.
 
 ### Use Class Maps
 
@@ -86,7 +86,7 @@ Now, in Twig, you can use this new method using `{{ post.reading_time }}`.
 </header>
 ```
 
-Your custom methods could get pretty complex. And that’s the beauty. The complexity lives inside the context of the object, but looks very simple when it comes to your Twig templates.
+Your custom methods can get pretty complex. And that’s the beauty. The complexity lives inside the context of the object, but looks very simple when it comes to your Twig templates.
 
 ### Register a custom namespace in Composer
 
@@ -96,7 +96,7 @@ To make it a little easier to load your custom classes, you could either require
 require_once 'inc/BlogPost.php';
 ```
 
-Or, because you already use Composer to handle dependencies, you can register your own [namespace](https://www.php.net/manual/en/language.namespaces.php)  that should be autoloaded there. For example, you could add a **src** folder to your project and declare it as the `Theme` namespace.
+Or, because you already use Composer to handle dependencies, you can register your own [namespace](https://www.php.net/manual/en/language.namespaces.php) to be autoloaded. For example, you could add a **src** folder to your project and declare it as the `Theme` namespace.
 
 **composer.json**
 
@@ -358,7 +358,7 @@ This is better, because
 
 Additionally, if there’s more logic, you probably shouldn’t write it in Twig anyway. Twig is powerful, but it shouldn’t replace PHP.
 
-Consider that you might also have an end date for the event that you save in a meta field `date_end`. And suddenly you would have many more cases to handle. You might have to account for empty end dates or maybe display the date a little different if there’s an end date present. Maybe you would want to say `May 30 – June 4 2020`, but `4 – 6 June 2020` instead of `June 4 – June 6 2020` if the month of the two dates is the same.
+Consider that you might also have an end date for the event that you save in a meta field `date_end`. Suddenly, you have many more cases to handle. You might have to account for empty end dates or maybe display the date a little different if there’s an end date present. Maybe you would want to say `May 30 – June 4 2020`, but `4 – 6 June 2020` instead of `June 4 – June 6 2020` if the month of the two dates is the same.
 
 You can also make the date formats a little more dynamic here by using an arguments array. By using [`wp_parse_args()`](https://developer.wordpress.org/reference/functions/wp_parse_args/), you can make sure that all arguments you need are there, even when you only want to overwrite one of the date formats.
 
@@ -573,7 +573,7 @@ function whateverify( $text ) {
 This can now be called in your twig files with:
 
 ```twig
-<h2 id="{{ post.title|slugify }}">{{ post.title|whateverify }}</h2>
+<h2 id="{{ post.title | slugify }}">{{ post.title | whateverify }}</h2>
 ```
 
 Which will output:
