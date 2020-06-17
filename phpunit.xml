@@ -28,4 +28,5 @@
     		<file>timber.php</file>
   		</whitelist>
 	</filter>
+	
 </phpunit>
