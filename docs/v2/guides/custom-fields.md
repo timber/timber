@@ -3,7 +3,7 @@ title: "Custom Fields"
 order: "600"
 ---
 
-Timber tries to make it as easy as possible for you to retrieve custom meta data for Post, Term, User and Comment objects. And it works with a range of plugins that make it easier for you to create custom fields, like Advanced Custom Fields. While most of this guide applies to everything you do with custom fields, we have separate guides in the [Integrations section](https://timber.github.io/docs/integrations/).
+Timber tries to make it as easy as possible for you to retrieve custom meta data for Post, Term, User and Comment objects. And it works with a range of plugins that make it easier for you to create custom fields, like Advanced Custom Fields. While most of this guide applies to everything you do with custom fields, we have separate guides in the [Integrations section](https://timber.github.io/docs/v2/integrations/).
 
 ## Accessing custom values
 
@@ -50,7 +50,7 @@ $my_custom_field = $post->raw_meta( 'my_custom_field' );
 
 ### Define your own method
 
-Sometimes you need to modify a meta value before it is returned. You can do that by [extending a Timber object](https://timber.github.io/docs/guides/extending-timber/) and defining your own method. In the following example, we set a custom `price()` method to format the price that’s saved in a custom field named `price`.
+Sometimes you need to modify a meta value before it is returned. You can do that by [extending a Timber object](https://timber.github.io/docs/v2/guides/extending-timber/) and defining your own method. In the following example, we set a custom `price()` method to format the price that’s saved in a custom field named `price`.
 
 **PHP**
 
@@ -61,7 +61,7 @@ class CustomPost extends Timber\Post {
      */
     public function price() {
         $price = $this->meta( 'price' );
-        
+
         // Remove decimal digits.
         return number_format( $price, 0, '', '' );
     }
@@ -76,7 +76,7 @@ In Twig, you would access it like this:
 {{ post.price }}
 ```
 
-You’ll know from looking at the code that you call a defined property or method. Be aware that through this method, you might overwrite a method that already exists on for a `Timber\Post` object (like [`date`](https://timber.github.io/docs/reference/timber-post/#date)), which is totally fine if you know what you’re doing.
+You’ll know from looking at the code that you call a defined property or method. Be aware that through this method, you might overwrite a method that already exists on for a `Timber\Post` object (like [`date`](https://timber.github.io/docs/v2/reference/timber-post/#date)), which is totally fine if you know what you’re doing.
 
 ### Direct access through custom field name
 
@@ -84,7 +84,7 @@ If a directly accessed property or method doesn’t exist, Timber will fall back
 
 **We don’t recommend to use this method, because you might run into conflicts with existing properties or methods on an object.**
 
-For example, when you use a custom field that you name `date` and try to get its value through `{{ post.date }}`, it won’t work. That’s because [`date`](https://timber.github.io/docs/reference/timber-post/#date) is a method of the `Timber\Post` object that returns the date a post was published.
+For example, when you use a custom field that you name `date` and try to get its value through `{{ post.date }}`, it won’t work. That’s because [`date`](https://timber.github.io/docs/v2/reference/timber-post/#date) is a method of the `Timber\Post` object that returns the date a post was published.
 
 In PHP, you’d access the property through `$post->date` and call the `date` method through `$post->date()`. But in Twig, you can call methods without using parentheses. And methods take precedence over properties. Timber uses a PHP technique called [Overloading](http://de.php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members) to get meta values using PHP’s [`__get` magic method](http://php.net/manual/en/language.oop5.overloading.php#object.get) on `Timber\Post`, `Timber\Term`, `Timber\User` and `Timber\Comment` objects. This means that when you use `{{ post.date }}`, it will ...
 

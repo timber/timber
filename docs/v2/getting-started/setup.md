@@ -5,7 +5,7 @@ description: "All about setting up Timber with your theme."
 
 ## Installation
 
-If you haven't already, please read the [Installation](/docs/installation/) article. This guide assumes you installed in your theme directory and picks up where that one leave off.
+If you haven't already, please read the [Installation](https://timber.github.io/docs/v2/installation/) article. This guide assumes you installed in your theme directory and picks up where that one leave off.
 
 ### Navigate to your WordPress themes directory
 
@@ -27,4 +27,4 @@ Navigate to the Manage Themes page in your WordPress admin (Appearance => Themes
 
 ### 3. Let’s write our theme!
 
-Continue ahead in [part 2 about Theming](https://timber.github.io/docs/getting-started/theming/).
+Continue ahead in [part 2 about Theming](https://timber.github.io/docs/v2/getting-started/theming/).

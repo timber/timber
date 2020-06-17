@@ -6,8 +6,8 @@ title: "Video Tutorials"
 
 Follow the instructions in these articles:
 
-- [Installation](/docs/installation)
-- [Setup](/docs/getting-started/setup)
+- [Installation](https://timber.github.io/docs/v2/installation)
+- [Setup](https://timber.github.io/docs/v2/getting-started/setup)
 
 Now your environment is ready!
 
