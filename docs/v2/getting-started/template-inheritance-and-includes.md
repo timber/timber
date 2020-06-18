@@ -155,7 +155,7 @@ What if you wanted to **add** something to the block as opposed to replace? In t
 
 ## Includes
 
-Another very useful functionality is Twig’s [include](https://twig.symfony.com/doc/2.x/functions/include.html) function. You can use it to extract reusable parts of your theme and build your own component library.
+Another very useful functionality is Twig’s [include](https://twig.symfony.com/doc/functions/include.html) function. You can use it to extract reusable parts of your theme and build your own component library.
 
 Let’s the example of the headline again.
 
