@@ -161,6 +161,96 @@ class Timber {
 	}
 
 	/**
+	 * Gets a post by title or slug.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @example
+	 * ```
+	 * $post = Timber::get_post_by( 'slug', 'about-us' );
+	 * ```
+	 * ```php
+	 * $post = Timber::get_post_by( 'title', 'About us' );
+	 * ```
+	 *
+	 * @param string       $type         The type to look for. One of `slug` or `title`.
+	 * @param string       $search_value The post slug or post title to search for. When searching
+	 *                                   for `title`, this parameter doesn’t need to be
+	 *                                   case-sensitive, because the `=` comparison is used in
+	 *                                   MySQL.
+	 * @param array        $args {
+	 *     Optional. An array of arguments to configure what is returned.
+	 *
+	 * 	   @type string|array     $post_type   Optional. What WordPress post type to limit the 
+	 *                                         results to. Defaults to 'any'
+	 *     @type string           $order_by    Optional. The field to sort by. Defaults to 
+	 *                                         'post_date'
+	 *     @type string           $order       Optional. The sort to apply. Defaults to ASC
+	 *
+	 * }
+	 *
+	 * @return \Timber\Post|false A Timber post or `false` if no post could be found. If multiple
+	 *                            posts with the same slug or title were found, it will select the
+	 *                            post with the oldest date.
+	 */
+	public static function get_post_by( $type, $search_value, $args = array() ) {
+		$post_id = false;
+		$args = wp_parse_args( $args, [
+			'post_type' => 'any',
+			'order_by'  => 'post_date',
+			'order'     => 'ASC'
+		] );
+		if ( 'slug' === $type ) {
+			$args = wp_parse_args($args, [
+				'name'      => $search_value,
+				'fields'    => 'ids'
+			]);
+			$query = new \WP_Query( $args );
+
+			if ( $query->post_count < 1 ) {
+				return false;
+			}
+
+			$posts   = $query->get_posts();
+			$post_id = array_shift( $posts );
+		} elseif ( 'title' === $type ) {
+			/**
+			 * The following section is inspired by post_exists() as well as get_page_by_title().
+			 *
+			 * These two functions always return the post with lowest ID. However, we want the post
+			 * with oldest post date.
+			 *
+			 * @see \post_exists()
+			 * @see \get_page_by_title()
+			 */
+			global $wpdb;
+
+			$sql = "SELECT ID FROM $wpdb->posts WHERE post_title = %s";
+			$query_args = [ $search_value ];
+			if ( is_array( $args['post_type'] ) ) {
+				$post_type           = esc_sql( $args['post_type'] );
+				$post_type_in_string = "'" . implode( "','", $args['post_type'] ) . "'";
+
+				$sql .= " AND post_type IN ($post_type_in_string)";
+			} elseif ( 'any' !== $args['post_type'] ) {
+				$sql .= ' AND post_type = %s';
+				$query_args[] = $args['post_type'];
+			}
+
+			// Always return the oldest post first.
+			$sql .= ' ORDER BY post_date ASC';
+
+	        $post_id = $wpdb->get_var( $wpdb->prepare( $sql, $query_args ) );
+		}
+
+		if ( ! $post_id ) {
+			return false;
+		}
+
+		return self::get_post( $post_id );
+	}
+
+	/**
 	 * Query post.
 	 *
 	 * @api
