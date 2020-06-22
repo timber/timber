@@ -10,10 +10,14 @@ Let’s get familiar with some of the concepts of Timber and Twig.
 If you want to start from scratch, you can use the following command. Run it from the **wp-content/themes** folder of your WordPress installation.
 
 ```bash
-composer create-project timber/getting-started getting-started
+composer create-project timber/getting-started-theme getting-started-theme
 ```
 
-Now, go to your WordPress Admin and activate the new theme under **Design** &rarr; **Themes**.
+And now …
+
+1. Go to your WordPress Admin and activate the new theme under **Design** &rarr; **Themes**.
+2. Create a page with any title you like.
+3. Select the newly created page as the **Homepage** under **Settings** &rarr; **Reading**.
 
 ## A view
 
