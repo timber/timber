@@ -36,6 +36,47 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		
 	}
 
+	function testPostsAcrossSites() {
+		//Create
+		$site_ids[] = self::createSubDomainSite('foo.example.org', 'My Foo');
+		$site_ids[] = self::createSubDomainSite('quack.example.org', "Ducks R Us");
+		$site_ids[] = self::createSubDomainSite('duck.example.org', "More Ducks R Us");
+
+		$post_titles = ["I don't like zebras", "Zebra and a half", "Have a zebra of a time"];
+		$others = $this->factory->post->create_many(8);
+		foreach($site_ids as $site_id) {
+			switch_to_blog($site_id);
+			$this->factory->post->create(array('post_title' => array_pop($post_titles)));
+			
+		}
+
+		$timber_posts = array();
+		$wp_posts = array();
+		$sites = Timber::get_sites();
+		foreach ($sites as $site) {
+		    switch_to_blog($site->blog_id);
+		    // fetch all the posts 
+		    $timber_query = Timber::get_posts(['s' => 'zebra']);
+		    foreach ($timber_query as $post) {
+		        $timber_posts[] = $post;
+		    }
+
+		    $wp_query = get_posts(['s' => 'zebra']);
+		    foreach ($wp_query as $post) {
+		        $wp_posts[] = $post;
+		    }
+		    restore_current_blog();
+		    // display all posts
+		}
+		
+		$this->assertEquals(3, count($timber_posts));
+		$this->assertEquals(3, count($wp_posts));
+
+		// ensure tha the current site's post count is distinct from our test condition
+		$current_site_all_posts = get_posts(); 
+		$this->assertEquals(5, count($current_site_all_posts));
+	}
+
 	public static function createSubDomainSite($domain = 'test.example.org', $title = 'Multisite Test' ) {
 		$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 		$blog_id = wpmu_create_blog($domain, '/', $title, 1);
