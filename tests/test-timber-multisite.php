@@ -37,7 +37,11 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 	}
 
 	function testPostsAcrossSites() {
-		//Create
+		self::clear();
+		if ( !is_multisite() ) {
+			$this->markTestSkipped("You can't get sites except on Multisite");
+			return;
+		}
 		$site_ids[] = self::createSubDomainSite('foo.example.org', 'My Foo');
 		$site_ids[] = self::createSubDomainSite('quack.example.org', "Ducks R Us");
 		$site_ids[] = self::createSubDomainSite('duck.example.org', "More Ducks R Us");
