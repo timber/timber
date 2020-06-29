@@ -323,6 +323,7 @@ class Post extends Core implements CoreInterface {
 		}
 		$post_info = $this->get_info($pid);
 		$this->import($post_info);
+		$this->_permalink = get_permalink($this->ID);
 	}
 
 	/**
@@ -1367,10 +1368,6 @@ class Post extends Core implements CoreInterface {
 	 * @return string ex: http://example.org/2015/07/my-awesome-post
 	 */
 	public function link() {
-		if ( isset($this->_permalink) ) {
-			return $this->_permalink;
-		}
-		$this->_permalink = get_permalink($this->ID);
 		return $this->_permalink;
 	}
 
