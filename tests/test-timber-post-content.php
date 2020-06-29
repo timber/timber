@@ -6,7 +6,7 @@
 	function testContent(){
 		$quote = 'The way to do well is to do well.';
 		$post_id = $this->factory->post->create();
-		$post = new TimberPost($post_id);
+		$post = new \Timber\Post($post_id);
 		$post->post_content = $quote;
 		wp_update_post($post);
 		$this->assertEquals($quote, trim(strip_tags($post->content())));
@@ -19,7 +19,7 @@
 		$quote .= $page2 = "And do not let your tongue get ahead of your mind.";
 
 		$post_id = $this->factory->post->create();
-		$post = new TimberPost($post_id);
+		$post = new \Timber\Post($post_id);
 		$post->post_content = $quote;
 		wp_update_post($post);
 
