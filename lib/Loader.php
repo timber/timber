@@ -210,7 +210,10 @@ class Loader {
 
 	protected static function clear_cache_timber_database() {
 		global $wpdb;
-		$query = $wpdb->prepare("DELETE FROM $wpdb->options WHERE option_name LIKE '%s'", '_transient_timberloader_%');
+		$query = $wpdb->prepare(
+			"DELETE FROM $wpdb->options WHERE option_name LIKE '%s'",
+			'_transient%timberloader_%'
+		);
 		return $wpdb->query($query);
 	}
 
