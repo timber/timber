@@ -79,7 +79,24 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		$this->assertEquals(2, count($current_site_all_posts));
 	}
 
-	function testPostGettingAcrossSitesNoArgs() {
+	function testNoArgsPostGettingNoArgs() {
+		$this->go_to( '/' );
+		$post_titles = ["I don't like zebras", "Zebra and a half", "Have a zebra of a time"];
+		foreach($post_titles as $post_title) {
+			$this->factory->post->create(['post_title' => $post_title]);
+		}
+		$timber_posts = array();
+		$wp_posts = array();
+		$timber_query = Timber::get_posts();
+	    foreach ($timber_query as $post) {
+	        $timber_posts[] = $post;
+	    }
+		error_log(print_r($timber_posts, true));
+		$this->assertEquals(4, count($timber_posts));
+	}
+
+	function testNoArgsPostGettingAcrossSitesNoArgs() {
+		$this->go_to( '/' );
 		if ( !is_multisite() ) {
 			$this->markTestSkipped("You can't get sites except on Multisite");
 			return;
