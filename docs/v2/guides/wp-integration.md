@@ -32,7 +32,7 @@ You can all actions in your Twig templates like this:
 {% do action('my_action_with_args', 'foo', 'bar') %}
 ```
 
-If you ask yourself why there’s no underline between `do` and `action`: The expression [`do`](https://twig.symfony.com/doc/2.x/tags/do.html) is a feature of Twig which *calls a function without printing its return value*, like `{{ }}` does. Timber only register an `action` function, which then calls the `do_action()` function.
+If you ask yourself why there’s no underline between `do` and `action`: The expression [`do`](https://twig.symfony.com/doc/tags/do.html) is a feature of Twig which *calls a function without printing its return value*, like `{{ }}` does. Timber only register an `action` function, which then calls the `do_action()` function.
 
 If you want anything from the template's context, you'll need to pass that manually:
 
@@ -54,7 +54,7 @@ function my_function_with_args( $foo, $post ){
 
 ## Filters
 
-Timber already comes with a [set of useful filters](/docs/guides/filters/). If you have your own WordPress filters that you want to easily apply in Twig, you can use `apply_filters`.
+Timber already comes with a [set of useful filters](https://timber.github.io/docs/v2/guides/filters/). If you have your own WordPress filters that you want to easily apply in Twig, you can use `apply_filters`.
 
 ```twig
 {{ post.content|apply_filters('default_message') }}
