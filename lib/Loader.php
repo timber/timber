@@ -174,6 +174,10 @@ class Loader {
 		$twig = new \Twig\Environment($loader, $params);
 		if ( WP_DEBUG ) {
 			$twig->addExtension(new \Twig\Extension\DebugExtension());
+		} else {
+			$twig->addFunction(new Twig_Function('dump', function() {
+				return null;
+			}));
 		}
 		$twig->addExtension($this->_get_cache_extension());
 
