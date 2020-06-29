@@ -79,24 +79,40 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		$this->assertEquals(2, count($current_site_all_posts));
 	}
 
-	function testNoArgsPostGettingNoArgs() {
+	function testNoArgsGetPostsInLoop() {
+		$posts = $this->factory->post->create_many( 55 );
 		$this->go_to( '/' );
+		$posts = Timber::get_posts();
+		$this->assertEquals(10, count($posts));
+
+		// WordPress's get_posts() default is ['numberposts'=> 5]
+		$current_site_all_posts = get_posts(); 
+		$this->assertEquals(5, count($current_site_all_posts));
+	}
+
+	function testNoArgsPostGettingNoArgs() {
+		
 		$post_titles = ["I don't like zebras", "Zebra and a half", "Have a zebra of a time"];
 		foreach($post_titles as $post_title) {
 			$this->factory->post->create(['post_title' => $post_title]);
 		}
 		$timber_posts = array();
 		$wp_posts = array();
+		$this->go_to( '/' );
 		$timber_query = Timber::get_posts();
 	    foreach ($timber_query as $post) {
 	        $timber_posts[] = $post;
 	    }
-		error_log(print_r($timber_posts, true));
-		$this->assertEquals(4, count($timber_posts));
+
+		//error_log(print_r($timber_posts, true));
+		$this->assertEquals(3, count($timber_posts));
+
+		$current_site_all_posts = get_posts(); 
+		$this->assertEquals(3, count($current_site_all_posts));
 	}
 
 	function testNoArgsPostGettingAcrossSitesNoArgs() {
-		$this->go_to( '/' );
+		
 		if ( !is_multisite() ) {
 			$this->markTestSkipped("You can't get sites except on Multisite");
 			return;
@@ -106,15 +122,18 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		$site_ids[] = self::createSubDomainSite('duck.example.org', "More Ducks R Us");
 
 		$post_titles = ["I don't like zebras", "Zebra and a half", "Have a zebra of a time"];
-		//$others = $this->factory->post->create_many(8);
+		$i = 0;
+		print_r($site_ids);
 		foreach($site_ids as $site_id) {
 			switch_to_blog($site_id);
-			$this->factory->post->create(array('post_title' => array_pop($post_titles)));
+			$this->factory->post->create([ 'post_title' => $post_titles[$i] ]);
+			$i++;
 			
 		}
 
 		$timber_posts = array();
 		$wp_posts = array();
+		$this->go_to( '/' );
 		$sites = Timber::get_sites();
 		foreach ($sites as $site) {
 		    switch_to_blog($site->blog_id);
@@ -132,6 +151,10 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		    restore_current_blog();
 		    // display all posts
 		}
+
+		error_log(print_r($timber_posts, true));
+		error_log('========');
+		error_log(print_r($wp_posts, true));
 		
 		$this->assertEquals(6, count($timber_posts));
 		$this->assertEquals(6, count($wp_posts));
