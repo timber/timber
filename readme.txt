@@ -32,6 +32,8 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 
+* Add a catch so that `{{ dump() }}` when WP_DEBUG = FALSE doesn't cause a fatal error (#2217, #2282)
+
 **Changes for Theme Developers**
 
 = 1.16.0 =
