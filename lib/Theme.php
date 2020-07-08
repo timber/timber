@@ -43,7 +43,10 @@ class Theme extends Core {
 	public $version;
 
 	/**
-	 * Timber\Theme object for the parent theme (even if the current theme is the parent theme)
+	 * Timber\Theme object for the parent theme.
+	 *
+	 * Always returns the top-most theme. If the current theme is also the parent theme, it will
+	 * return itself.
 	 *
 	 * @api
 	 * @var \Timber\Theme the Timber\Theme object for the parent theme
@@ -198,4 +201,3 @@ class Theme extends Core {
 		return $this->theme->display( $header );
 	}
 }
-
