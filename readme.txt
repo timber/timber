@@ -2,8 +2,8 @@
 Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 4.9.8
-Tested up to: 5.4.1
-Stable tag: 1.16.0
+Tested up to: 5.4.2
+Stable tag: 1.17.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -30,11 +30,21 @@ _Twig is the template language powering Timber; if you need a little background 
 
 = Develop (next release) =
 
+**Changes for Theme Developers**
+
 **Fixes and improvements**
 
-* Add a catch so that `{{ dump() }}` when WP_DEBUG = FALSE doesn't cause a fatal error (#2217, #2282)
+= 1.17.0 =
 
 **Changes for Theme Developers**
+
+* Adds new filter: `timber/allow_fs_write` to ensure compatibility with WordPress VIP and other hosts with filewrite restrictions. #2250
+
+**Fixes and improvements**
+
+* Add a catch so that `{{ dump() }}` when WP_DEBUG = FALSE doesn't cause a fatal error #2217, #2282
+* Performance improvement for the deletion of transients #2281 (thanks @opengeekv2)
+* Fix for "More" block issue with Gutenberg #2256
 
 = 1.16.0 =
 **Changes for Theme Developers**
