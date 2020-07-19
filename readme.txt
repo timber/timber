@@ -38,7 +38,7 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Changes for Theme Developers**
 
-* Adds new filter: `timber/allow_fs_write` to ensure compatibility with WordPress VIP and other hosts with filewrite restrictions. #2250
+* Adds new filter: `timber/allow_fs_write` to ensure compatibility with WordPress VIP and other hosts with filewrite restrictions. #2250 (thanks @mjangda)
 
 **Fixes and improvements**
 
