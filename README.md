@@ -11,7 +11,8 @@ By
 [Upstatement](https://twitter.com/upstatement) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors)
 
 [![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.org/timber/timber)
-[![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg?style=flat-square)](https://codecov.io/gh/timber/timber)
+[![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg?style=flat-square)](https://coveralls.io/github/timber/timber)
+[![Codecov](https://img.shields.io/codecov/c/github/timber/timber?style=flat-square)](https://codecov.io/gh/timber/timber)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
 [![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
 [![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg?style=flat-square)](https://wordpress.org/plugins/timber-library/)
