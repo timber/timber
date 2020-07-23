@@ -467,6 +467,15 @@ class Timber {
 		return 0;
 	}
 
+	/**
+	 * @todo implement PagesMenuFactory
+	 */
+	public static function get_pages_menu( array $pages = [], array $options = [] ) {
+		$menu = new Menu( $pages, $options );
+		$menu->init_as_page_menu();
+		return $menu;
+	}
+
 
 	/* Comment Retrieval
 	================================ */

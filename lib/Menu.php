@@ -137,8 +137,6 @@ class Menu extends Term {
 		}
 		if ( $menu_id ) {
 			$this->init($menu_id);
-		} else {
-			$this->init_as_page_menu();
 		}
 	}
 
@@ -210,7 +208,7 @@ class Menu extends Term {
 	/**
 	 * @internal
 	 */
-	protected function init_as_page_menu() {
+	public function init_as_page_menu() {
 		$menu = get_pages(array('sort_column' => 'menu_order'));
 		if ( $menu ) {
 			foreach ( $menu as $mi ) {

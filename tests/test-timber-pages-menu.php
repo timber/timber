@@ -277,7 +277,7 @@ class TestTimberPagesMenu extends Timber_UnitTestCase {
 		$iid = TestTimberImage::get_attachment($pid);
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
 		$post = new \Timber\Post($pid);
-		$page_menu = new Timber\Menu();
+		$page_menu = Timber::get_pages_menu();
 		$str = '{% for item in menu.items %}{{item.master_object.thumbnail.src}}{% endfor %}';
 		$result = Timber::compile_string($str, array('menu' => $page_menu));
 		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $result);
@@ -286,7 +286,7 @@ class TestTimberPagesMenu extends Timber_UnitTestCase {
 	function testPagesMenu() {
 		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
 		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
-		$page_menu = new Timber\Menu();
+		$page_menu = Timber::get_pages_menu();
 		$this->assertEquals( 2, count( $page_menu->items ) );
 		$this->assertEquals( 'Bar Page', $page_menu->items[0]->title() );
 		self::_createTestMenu();
@@ -298,7 +298,7 @@ class TestTimberPagesMenu extends Timber_UnitTestCase {
 	function testJSONEncodedMenu() {
 		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
 		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
-		$page_menu = new Timber\Menu();
+		$page_menu = Timber::get_pages_menu();
 		$text = json_encode($page_menu->get_items());
 		$this->assertGreaterThan(1, strlen($text));
 	}
@@ -306,7 +306,7 @@ class TestTimberPagesMenu extends Timber_UnitTestCase {
 	function testMenuItemMenuProperty() {
 		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
 		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
-		$page_menu = new Timber\Menu();
+		$page_menu = Timber::get_pages_menu();
 		$items = $page_menu->get_items();
 		$menu = $items[0]->menu;
 		$this->assertEquals('Timber\Menu', get_class($menu));
@@ -316,7 +316,7 @@ class TestTimberPagesMenu extends Timber_UnitTestCase {
 	function testPagesMenuWithFalse() {
 		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
 		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
-		$page_menu = new Timber\Menu();
+		$page_menu = Timber::get_pages_menu();
 		$this->assertEquals( 2, count( $page_menu->items ) );
 		$this->assertEquals( 'Bar Page', $page_menu->items[0]->title() );
 		self::_createTestMenu();
@@ -348,7 +348,7 @@ class TestTimberPagesMenu extends Timber_UnitTestCase {
 	}
 
   function testGetCurrentItemWithEmptyMenu() {
-    $menu = new Timber\Menu();
+    $menu = Timber::get_pages_menu();
 
     // ain't nothin there
     $this->assertFalse($menu->current_item());
