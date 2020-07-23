@@ -65,7 +65,6 @@ script:
     - if [ "$COVERAGE" == 1 ]; then mkdir -p build/logs; vendor/phpunit/phpunit/phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml --verbose; else vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml --verbose; fi
 
 after_success:
-    - if [ "$COVERAGE" == 1 ]; then bash <(curl -s https://codecov.io/bash) -Z; fi
     - if [ "$COVERAGE" == 1 ]; then vendor/bin/coveralls -v; fi
 
 notifications:
