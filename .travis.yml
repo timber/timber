@@ -31,7 +31,7 @@ matrix:
       env: WP_VERSION=latest WP_MULTISITE=0 COVERAGE=1
       before_install:
         - phpenv config-rm xdebug.ini
-        - pecl install pcov
+        - yes '' | pecl install pcov
         # Install imagick PHP extension
         - pear config-set preferred_state beta
         - pecl channel-update pecl.php.net
