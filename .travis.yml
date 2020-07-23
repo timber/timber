@@ -32,7 +32,7 @@ matrix:
       before_install:
         - phpenv config-rm xdebug.ini
         - pecl install pcov
-        # Install imagick library
+        # Install imagick PHP extension
         - pear config-set preferred_state beta
         - pecl channel-update pecl.php.net
         - yes '' | pecl install imagick
