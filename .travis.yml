@@ -45,6 +45,10 @@ matrix:
     - php: 7.4
       env: WP_VERSION=latest WP_MULTISITE=1 COVERAGE=1
 
+cache:
+  directories:
+    - "${HOME}/.composer/cache"
+
 before_install:
     # phpenv config-add myconfig.ini --with-webp-dir
     - phpenv config-rm xdebug.ini
