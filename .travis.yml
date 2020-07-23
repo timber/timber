@@ -17,6 +17,7 @@ php:
 env:
     global:
         - TMPDIR=/tmp
+        - COVERALLS_PARALLEL=true
     matrix:
         - WP_VERSION=4.9.8 WP_MULTISITE=0 
         - WP_VERSION=4.9.8 WP_MULTISITE=1
@@ -55,3 +56,8 @@ script:
 after_success:
     - if [ "$COVERAGE" == 1 ]; then bash <(curl -s https://codecov.io/bash) -Z; fi
     - if [ "$COVERAGE" == 1 ]; then vendor/bin/coveralls -v; fi
+
+notifications:
+  webhooks:
+    # https://docs.coveralls.io/parallel-build-webhook
+    - 'https://coveralls.io/webhook'
