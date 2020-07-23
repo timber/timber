@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use WP_Term;
+
 /**
  * Class Menu
  *
@@ -82,6 +84,20 @@ class Menu extends Term {
 	 * @var string The theme location of the menu, if available.
 	 */
 	public $theme_location = null;
+
+	/**
+	 * @internal
+	 * @param \WP_Term   $wp_term the vanilla WP term object to build from
+	 * @param array      $options Optional. An array of options. Right now, only the `depth` is
+	 *                            supported which says how many levels of hierarchy should be
+	 *                            included in the menu. Default `0`, which is all levels.
+	 * @return \Timber\Term
+	 */
+	public static function build(WP_Term $wp_term, array $options = []) : Term {
+		$term = new static(0, $options);
+		$term->init($wp_term);
+		return $term;
+	}
 
 	/**
 	 * Initialize a menu.

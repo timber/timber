@@ -11,13 +11,13 @@ use WP_Term;
  * Internal API class for instantiating Menus
  */
 class MenuFactory {
-	public function from($params) {
+	public function from($params, array $options = []) {
 		if (is_int($params) || is_string($params)) {
-			return $this->from_ident($params);
+			return $this->from_ident($params, $options);
 		}
 
 		if (is_object($params)) {
-			return $this->from_term_obj($params);
+			return $this->from_term_obj($params, $options);
 		}
 
 		return false;
@@ -28,7 +28,7 @@ class MenuFactory {
 	 *
 	 * @internal
 	 */
-	protected function from_ident($id) {
+	protected function from_ident($id, $options) {
 		// WP Menus are WP_Term objects under the hood.
 		$term = wp_get_nav_menu_object($id);
 
@@ -36,17 +36,17 @@ class MenuFactory {
 			return false;
 		}
 
-		return $this->build($term);
+		return $this->build($term, $options);
 	}
 
-	protected function from_term_obj(object $obj) : CoreInterface {
+	protected function from_term_obj(object $obj, array $options) : CoreInterface {
 		if ($obj instanceof CoreInterface) {
 			// We already have a Timber Core object of some kind
 			return $obj;
 		}
 
 		if ($obj instanceof WP_Term) {
-			return $this->build($obj);
+			return $this->build($obj, $options);
 		}
 
 		throw new \InvalidArgumentException(sprintf(
@@ -62,10 +62,10 @@ class MenuFactory {
 		return $class ?? Menu::class;
 	}
 
-	protected function build(WP_Term $term) : CoreInterface {
+	protected function build(WP_Term $term, array $options) : CoreInterface {
 		$class = $this->get_menu_class($term);
 
-		return $class::build($term);
+		return $class::build($term, $options);
 	}
 }
 

@@ -400,7 +400,7 @@ class Timber {
 	/* Menu Retrieval
 	================================ */
 
-	public static function get_menu( $menu = null ) {
+	public static function get_menu( $menu = null, array $options = [] ) {
 		$factory   = new MenuFactory();
 		$locations = get_nav_menu_locations();
 
@@ -425,7 +425,7 @@ class Timber {
 			}
 		}
 
-		return $factory->from($menu);
+		return $factory->from($menu, $options);
 	}
 
 	public static function _get_menu_id_from_locations( $slug, $locations ) {
