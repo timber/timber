@@ -911,4 +911,26 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( $object_id, $item->object_id );
 	}
 
+	/*
+	 * Make sure we still get back nothing even though we have a fallback present
+	 */
+	function testMissingMenu() {
+		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
+		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
+		$missing_menu = Timber::get_menu( 14 );
+		$this->assertFalse( $missing_menu );
+	}
+
+	function testMenuTwig() {
+		self::setPermalinkStructure();
+		$context = Timber::context();
+		$menu_arr = self::_createTestMenu();
+		$this->go_to( home_url( '/child-page' ) );
+		$context['menu'] = Timber::get_menu($menu_arr['term_id']);
+		$str = Timber::compile( 'assets/child-menu.twig', $context );
+		$str = preg_replace( '/\s+/', '', $str );
+		$str = preg_replace( '/\s+/', '', $str );
+		$this->assertStringStartsWith( '<ulclass="navnavbar-nav"><li><ahref="http://example.org/home/"class="has-children">Home</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page/">ChildPage</a></li></ul><li><ahref="http://upstatement.com"class="no-children">Upstatement</a><li><ahref="/"class="no-children">RootHome</a>', $str );
+	}
+
 }
