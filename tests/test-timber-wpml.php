@@ -2,7 +2,6 @@
 
 /**
  * Mocked function for testing menus in WPML
- * @todo #2094 replace direct Timber\Menu instantiations
  * @group menus-api
  */
 function wpml_object_id_filter( $element_id, $element_type = 'post', $return_original_if_missing = false, $language_code = null ) {
@@ -36,7 +35,7 @@ class TestTimberWPML extends Timber_UnitTestCase {
 				'bonus' => 'The Bonus'
 		    )
 		);
-		$menu = new Timber\Menu('extra-menu');
+		$menu = Timber::get_menu('extra-menu');
 		$this->assertEquals('Ziggy', $menu->name);
 	}
 

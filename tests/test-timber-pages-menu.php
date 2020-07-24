@@ -2,7 +2,6 @@
 
 /**
  * @group menus-api
- * @todo #2094 replace direct Timber\Menu instantiations
  */
 class TestTimberPagesMenu extends Timber_UnitTestCase {
 

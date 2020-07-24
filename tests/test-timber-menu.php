@@ -2,7 +2,6 @@
 
 /**
  * @group menus-api
- * @todo #2094 replace direct Timber\Menu instantiations
  */
 class TestTimberMenu extends Timber_UnitTestCase {
 
@@ -433,7 +432,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	function testWPMLMenu() {
 		self::setPermalinkStructure();
 		self::_createTestMenu();
-		$menu = new Timber\Menu();
+		$menu = Timber::get_menu();
 		$nav_menu = wp_nav_menu( array( 'echo' => false ) );
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
 		$items = $menu->get_items();
