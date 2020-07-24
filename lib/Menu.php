@@ -244,32 +244,40 @@ class Menu extends Term {
 	 * @return array
 	 */
 	protected function order_children( $items ) {
-		$index = array();
-		$menu = array();
-		$wp_post_menu_item = null;
+		$items_by_id = [];
+		$menu        = [];
+
 		foreach ( $items as $item ) {
 			if ( isset($item->title) ) {
 				// Items from WordPress can come with a $title property which conflicts with methods
 				$item->__title = $item->title;
 				unset($item->title);
 			}
+
+			// Check it we're working with a post
 			if ( isset($item->ID) ) {
 				if ( is_object($item) && get_class($item) == 'WP_Post' ) {
-					$wp_post_menu_item = $item;
-					$item = new $this->PostClass($item);
+					// This is a post
+					$post = $item;
+					$item = Timber::get_post($item);
+					$menu_item = $this->create_menu_item($item);
+					$menu_item->import_classes($post);
+				} else {
+					$menu_item = $this->create_menu_item($item);
 				}
-				$menu_item = $this->create_menu_item($item);
-				if ( $wp_post_menu_item ) {
-					$menu_item->import_classes($wp_post_menu_item);
-				}
-				$wp_post_menu_item = null;
-				$index[$item->ID] = $menu_item;
+
+				// Index each item by its ID
+				$items_by_id[$item->ID] = $menu_item;
 			}
 		}
-		foreach ( $index as $item ) {
-			if ( isset($item->menu_item_parent) && $item->menu_item_parent && isset($index[$item->menu_item_parent]) ) {
-				$index[$item->menu_item_parent]->add_child($item);
+
+		// Walk through our indexed items and assign them to their parents as applicable
+		foreach ( $items_by_id as $item ) {
+			if ( !empty($item->menu_item_parent) && isset($items_by_id[$item->menu_item_parent]) ) {
+				// This one is a child item, add it to its parent
+				$items_by_id[$item->menu_item_parent]->add_child($item);
 			} else {
+				// This is a top-level item, add it as such
 				$menu[] = $item;
 			}
 		}
