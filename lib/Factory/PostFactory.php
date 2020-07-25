@@ -66,20 +66,49 @@ class PostFactory {
 		return array_map([$this, 'build'], $query->posts);
 	}
 
-	protected function get_post_class(WP_Post $post) : string {
-    // Get the user-configured Class Map
-    $map = apply_filters( 'timber/post/classmap', [
+	protected function get_post_class( WP_Post $post ) : string {
+		$classmap = [
       'post'       => Post::class,
       'page'       => Post::class,
       // @todo special logic for attachments?
       'attachment' => Attachment::class,
-    ] );
+		];
 
-		$class = $map[$post->post_type] ?? null;
+		/**
+		 * Filters the class(es) used for different post types.
+		 *
+		 * Read more about this in the documentation for [Post Class Maps](https://timber.github.io/docs/v2/guides/class-maps/#the-post-class-map).
+		 *
+		 * The default Post Class Map will contain class names for posts, pages that map to
+		 * `Timber\Post` and attachments that map to `Timber\Attachment`.
+		 *
+		 * @since 2.0.0
+		 * @example
+		 * ```*
+		 * use Book;
+		 * use Page;
+		 *
+		 * add_filter( 'timber/post/classmap', function( $classmap ) {
+		 *     $custom_classmap = [
+		 *         'page' => Page::class,
+		 *         'book' => Book::class,
+		 *     ];
+		 *
+		 *     return array_merge( $classmap, $custom_classmap );
+		 * } );
+		 * ```
+		 *
+		 * @param string|array $classmap The post class(es) to use. An associative array where the
+		 *                               key is the post type and the value the name of the class to
+		 *                               use for this post type.
+		 */
+		$classmap = apply_filters( 'timber/post/classmap', $classmap );
+
+		$class = $classmap[ $post->post_type ] ?? null;
 
     // If class is a callable, call it to get the actual class name
-    if (is_callable($class)) {
-      $class = $class($post);
+		if ( is_callable( $class ) ) {
+			$class = $class( $post );
     }
 
     // If we don't have a post class by now, fallback on the default class

@@ -193,51 +193,13 @@ class PostGetter {
 		/**
 		 * Filters the class(es) used for different post types.
 		 *
-		 * @since 2.0.0
-		 * @example
-		 * ```
-		 * // Use one class for all Timber posts.
-		 * add_filter( 'timber/post/post_class', function( $post_class, $post_type ) {
-		 *    return 'CustomPostClass';
-		 * }, 10, 2 );
-		 *
-		 * // Use default class for all post types, except for pages.
-		 * add_filter( 'timber/post/post_class', function( $post_class, $post_type ) {
-		 *    // Bailout if not a page
-		 *    if ( 'page' !== $post_type ) {
-		 *        return $post_class;
-		 *    }
-		 *
-		 *    return 'PagePost';
-		 * }, 10, 2 );
-		 *
-		 * // Use a class map for different post types
-		 * add_filter( 'timber/post/post_class', function( $post_class, $post_type ) {
-		 *    return array(
-		 *        'post' => 'BlogPost',
-		 *        'apartment' => 'ApartmentPost',
-		 *        'city' => 'CityPost',
-		 *    );
-		 * }, 10, 2 );
-		 * ```
-		 *
-		 * @param string|array $post_class The post class(es) to use. Can be a string for a single
-		 *                                 post class or an key-value array map to define which post
-		 *                                 type should use which class. Default `Timber\Post`.
-		 * @param string       $post_type  The post type of the post.
-		 */
-		$post_class = apply_filters( 'timber/post/post_class', $post_class, $post_type );
-
-		/**
-		 * Filters the class(es) used for different post types.
-		 *
-		 * @deprecated 2.0.0, use `timber/post/post_class`
+		 * @deprecated 2.0.0, use `timber/post/classmap`
 		 */
 		$post_class = apply_filters_deprecated(
 			'Timber\PostClassMap',
-			array( $post_class ),
+			$post_class,
 			'2.0.0',
-			'timber/post/post_class'
+			'timber/post/classmap'
 		);
 
 		$post_class_use = '\Timber\Post';
