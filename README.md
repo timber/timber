@@ -2,10 +2,10 @@
 <a href="https://upstatement.com/timber/"><img src="http://i.imgur.com/PbEwvZ9.png" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
 </div>
 
-By 
-[Jared Novack](https://github.com/jarednova) ([@jarednova](https://twitter.com/jarednova)), 
-[Lukas Gächter](https://github.com/gchtr) ([@lgaechter](https://twitter.com/lgaechter)), 
-[Pascal Knecht](https://github.com/pascalknecht) ([@pascalknecht](https://twitter.com/revenwo)), 
+By
+[Jared Novack](https://github.com/jarednova) ([@jarednova](https://twitter.com/jarednova)),
+[Lukas Gächter](https://github.com/gchtr) ([@lgaechter](https://twitter.com/lgaechter)),
+[Pascal Knecht](https://github.com/pascalknecht) ([@pascalknecht](https://twitter.com/revenwo)),
 [Maciej Palmowski](https://github.com/palmiak) ([@palmiak_fp](https://twitter.com/palmiak_fp)),
 [Coby Tamayo](https://github.com/acobster) ([@cobytamayo](https://keybase.io/acobster)),
 [Upstatement](https://twitter.com/upstatement) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors)
@@ -19,7 +19,8 @@ By
 [![WordPress Rating](https://img.shields.io/wordpress/plugin/r/timber-library.svg?style=flat-square)](https://wordpress.org/support/plugin/timber-library/reviews/)
 
 
-### Because WordPress is awesome, but the_loop isn't
+> Because WordPress is awesome, but the_loop isn’t.
+
 Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](http://twig.sensiolabs.org/) separate from your PHP files.
 
 This cleans up your theme code so, for example, your PHP file can focus on being the data/logic, while your Twig file can focus 100% on the HTML and display.
@@ -31,13 +32,16 @@ This is what Timber's `.twig` files look like (from this [Hello World example](h
 {% block content %}
   <h1 class="big-title">{{ foo }}</h1>
   <h2 class="post-title">{{ post.title }}</h2>
+
   <img src="{{ post.thumbnail.src }}" />
+
   <div class="body">
 	{{ post.content }}
   </div>
 {% endblock %}
 ```
-Once Timber is installed and activated in your `plugins` directory, it gives any WordPress theme the ability to take advantage of the power of Twig and other Timber features.
+
+Once Timber is installed, it gives any WordPress theme the ability to take advantage of the power of Twig and other Timber features.
 
 ### Looking for docs?
 * [Timber Documentation](https://timber.github.io/docs/)
