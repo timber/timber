@@ -9,7 +9,7 @@ There are three types of pagination, which all work differently, but can easily 
 2. Adjacent post pagination for singular templates.
 3. Paged content for posts.
 
-Let’s look at the two in more detail.
+Let’s look at them in more detail.
 
 ## Pagination for archive templates
 
