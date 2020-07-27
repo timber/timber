@@ -26,18 +26,6 @@ env:
 
 matrix:
     include:
-    - php: 5.6
-      env: WP_VERSION=4.9.8 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
-      before_install: skip
-      install:
-        - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-        - composer update $PREFER_LOWEST --prefer-source
-        - composer require --dev 'satooshi/php-coveralls:1.0.*'
-      script:
-        - mkdir -p build/logs
-        - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --coverage-clover build/logs/clover.xml
-      after_success:
-        - vendor/bin/coveralls -v
     - php: 7.4
       env: WP_VERSION=latest WP_MULTISITE=0
       before_install:
