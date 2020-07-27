@@ -26,6 +26,10 @@ _Twig is the template language powering Timber; if you need a little background 
 * **[Video Tutorials](https://timber.github.io/docs/getting-started/video-tutorials/)**
 * [Overview / Getting Started Guide](https://timber.github.io/docs/getting-started/)
 
+### Need support?
+* [StackOverflow](https://stackoverflow.com/questions/tagged/timber) is for usage questions and troubleshooting
+* [GitHub issues](https://github.com/timber/timber/issues) are for reporting bugs and errors
+
 == Changelog ==
 
 = Develop (next release) =
