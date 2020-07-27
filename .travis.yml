@@ -12,7 +12,7 @@ addons:
       - libwebp-dev
 
 php:
-    - 7.4
+    - 7.2
 
 env:
     global:
@@ -21,8 +21,8 @@ env:
     matrix:
         - WP_VERSION=5.3.2 WP_MULTISITE=0
         - WP_VERSION=5.3.2 WP_MULTISITE=1
-        - WP_VERSION=latest WP_MULTISITE=0 COVERAGE=1 IMG_LIBS=1
-        - WP_VERSION=latest WP_MULTISITE=1 COVERAGE=1 IMG_LIBS=1 STATIC_ANALYSIS=1
+        - WP_VERSION=latest WP_MULTISITE=0
+        - WP_VERSION=latest WP_MULTISITE=1
 
 matrix:
     include:
@@ -67,8 +67,6 @@ cache:
   directories:
     - "${HOME}/.composer/cache"
 
-before_script:
-    - if [ "$IMG_LIBS" == 1 ]; then pear config-set preferred_state beta; pecl channel-update pecl.php.net; yes '' | pecl install imagick; fi
 before_install:
     # phpenv config-add myconfig.ini --with-webp-dir
     - phpenv config-rm xdebug.ini
