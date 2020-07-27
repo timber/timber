@@ -17,6 +17,7 @@ php:
 env:
     global:
         - TMPDIR=/tmp
+        - COVERALLS_PARALLEL=true
     matrix:
         - WP_VERSION=4.9.8 WP_MULTISITE=0 
         - WP_VERSION=4.9.8 WP_MULTISITE=1
@@ -27,6 +28,11 @@ matrix:
     include:
     - php: 5.6
       env: WP_VERSION=4.9.8 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable" COVERAGE=1
+      before_install: skip
+      before_script:
+        - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+        - composer update $PREFER_LOWEST --prefer-source
+        - if [ "$COVERAGE" == 1 ]; then composer require --dev 'satooshi/php-coveralls:1.0.*'; fi
     - php: 7.4
       env: WP_VERSION=latest WP_MULTISITE=0 COVERAGE=1
       before_install:
@@ -39,19 +45,29 @@ matrix:
     - php: 7.4
       env: WP_VERSION=latest WP_MULTISITE=1 COVERAGE=1
 
+cache:
+  directories:
+    - "${HOME}/.composer/cache"
+
 before_install:
     # phpenv config-add myconfig.ini --with-webp-dir
-    - if [ "$(phpenv version-name)" != 5.6 ]; then phpenv config-rm xdebug.ini; pecl install pcov; fi
+    - phpenv config-rm xdebug.ini
+    - yes '' | pecl install pcov
 
 before_script:
     - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-    - composer update $PREFER_LOWEST --dev --prefer-source
-    - if [ "$(phpenv version-name)" != 5.6 ]; then composer require --dev 'pcov/clobber:^2.0'; vendor/bin/pcov clobber; fi
-    - if [ "$COVERAGE" == 1 ]; then composer require satooshi/php-coveralls:1.0.*; fi
+    - composer update $PREFER_LOWEST --prefer-source
+    - composer require --dev 'pcov/clobber:^2.0'
+    - vendor/bin/pcov clobber
+    - if [ "$COVERAGE" == 1 ]; then composer require --dev 'satooshi/php-coveralls:1.0.*'; fi
 
 script:
     - if [ "$COVERAGE" == 1 ]; then mkdir -p build/logs; vendor/phpunit/phpunit/phpunit --coverage-clover build/logs/clover.xml -c phpunit.xml --verbose; else vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml --verbose; fi
 
 after_success:
-    - if [ "$COVERAGE" == 1 ]; then bash <(curl -s https://codecov.io/bash) -Z; fi
     - if [ "$COVERAGE" == 1 ]; then vendor/bin/coveralls -v; fi
+
+notifications:
+  webhooks:
+    # https://docs.coveralls.io/parallel-build-webhook
+    - 'https://coveralls.io/webhook'
