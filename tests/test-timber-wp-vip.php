@@ -1,6 +1,6 @@
 <?php
 
-	class TestTimberWPVIP extends TimberImage_UnitTestCase {
+	class TestTimberWPVIP extends TimberAttachment_UnitTestCase {
 
 		function testDisableCache() {
 			$filter = function() {
@@ -19,7 +19,7 @@
 			$data = array();
 			$data['size'] = array( 'width' => 600, 'height' => 400 );
 			$upload_dir = wp_upload_dir();
-			TestTimberImage::copyTestImage();
+			self::copyTestAttachment();
 			$url = $upload_dir['url'].'/arch.jpg';
 			$data['test_image'] = $url;
 			$data['crop'] = 'default';
@@ -32,7 +32,7 @@
 		function testImageResizeInTwig() {
 			add_filter( 'timber/allow_fs_write', '__return_false' );
 			$pid = $this->factory->post->create(array('post_type' => 'post'));
- 			$attach_id = TestTimberImage::get_image_attachment($pid, 'arch.jpg');
+ 			$attach_id = self::get_attachment($pid, 'arch.jpg');
  			$template = '<img src="{{Image(img).src|resize(200, 200)}}">';
  			$str = Timber::compile_string($template, array('img' => $attach_id));
  			$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg">', $str);
