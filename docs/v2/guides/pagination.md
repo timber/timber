@@ -5,15 +5,15 @@ order: "1100"
 
 There are three types of pagination, which all work differently, but can easily be confused with each other, because they use similar terms:
 
-1. Pagination for archive templates.
-2. Adjacent post pagination for singular templates.
-3. Paged content for posts.
+1. Pagination for archive templates
+2. Adjacent post pagination for singular templates
+3. Paged content within a post
 
 Let’s look at them in more detail.
 
 ## Pagination for archive templates
 
-The pagination for archive pages only works for template files with an active query of multiple posts, like **archive.php** or **home.php**. When you have a lot of posts, you wouldn’t list all of the posts on one page, because that would slow down your site too much. Instead, you would only show a defined number of results and use other pages that show the next set of results. Here’s an example:
+The pagination for archive pages applies to template files with an active query of multiple posts, like **archive.php** or **home.php**. When you have a lot of posts, you wouldn’t list all of the posts on one page, because that would slow down your site too much. Instead, you would only show a defined number of results and use other pages that show the next set of results. Here’s an example:
 
 - `posts/` – Shows first 10 posts.
 - `posts/page/2` – Shows posts 11-20.
@@ -141,7 +141,7 @@ A pagination for singular templates works different, because unlike for archive 
 
 The posts are sorted by default. But if you use a plugin like [Simple Custom Post Order](https://wordpress.org/plugins/simple-custom-post-order/) to order posts manually, it will affect the order for `{{ post.next }}` and `{{ post.prev }}` as well.
 
-## Paged content for posts
+## Paged content within a post
 
 Paged content is yet another form of pagination that appears in WordPress. You can split the content of a single post into multiple pages and use a pagination to add links to the next and previous pages of the post.
 
