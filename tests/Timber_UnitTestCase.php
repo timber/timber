@@ -215,4 +215,19 @@
 			};
 		}
 
+		protected function add_menu_item(int $menu_id, array $item_ids) {
+			global $wpdb;
+			foreach ($item_ids as $id) {
+				// $query = "INSERT INTO $wpdb->term_relationships (object_id, term_taxonomy_id, term_order) VALUES ($id, $menu_id, 0);";
+				$wpdb->query(sprintf(
+					'INSERT INTO %s (object_id, term_taxonomy_id, term_order)'
+					. ' VALUES (%d, %d, 0);',
+					$wpdb->term_relationships,
+					$id,
+					$menu_id
+				));
+			}
+			$menu_items_count = count($item_ids);
+			$wpdb->query("UPDATE $wpdb->term_taxonomy SET count = $menu_items_count WHERE taxonomy = 'nav_menu'; ");
+		}
 	}
