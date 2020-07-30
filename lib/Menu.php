@@ -2,7 +2,10 @@
 
 namespace Timber;
 
+use WP_Post;
 use WP_Term;
+
+use Timber\Factory\MenuItemFactory;
 
 /**
  * Class Menu
@@ -154,6 +157,9 @@ class Menu extends Term {
 		}
 
 		if ( $menu ) {
+			// @todo do we really need to call this fn? It's marked as "private" in the WP docs.
+			// Commenting out this line only breaks a single test: TestTimberMenu::testMenuTwigWithClasses
+			// ...maybe that means there's a way to accomplish what we need without calling a "private" fn.
 			_wp_menu_item_classes_by_context($menu);
 			if ( is_array($menu) ) {
 				/**
@@ -256,15 +262,8 @@ class Menu extends Term {
 
 			// Check it we're working with a post
 			if ( isset($item->ID) ) {
-				if ( is_object($item) && get_class($item) == 'WP_Post' ) {
-					// This is a post
-					$post = $item;
-					$item = Timber::get_post($item);
-					$menu_item = $this->create_menu_item($item);
-					$menu_item->import_classes($post);
-				} else {
-					$menu_item = $this->create_menu_item($item);
-				}
+				$factory   = new MenuItemFactory();
+				$menu_item = $factory->from($item, $this);
 
 				// Index each item by its ID
 				$items_by_id[$item->ID] = $menu_item;
