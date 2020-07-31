@@ -68,7 +68,7 @@ class TestMenuItemFactory extends Timber_UnitTestCase {
 			[
 				'post_title' => 'Page One',
 				'post_status' => 'publish',
-				'post_name' => 'page-one'{,
+				'post_name' => 'page-one',
 				'post_type' => 'page',
 				'menu_order' => 1,
 			],
