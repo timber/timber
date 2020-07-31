@@ -50,6 +50,8 @@ class MenuItemFactory {
   }
 
   protected function build($item, Menu $menu) : CoreInterface {
-    return new MenuItem($item, $menu);
+    $class = apply_filters('timber/menuitem/classmap', MenuItem::class, $item, $menu);
+
+    return new $class($item, $menu);
   }
 }

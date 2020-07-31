@@ -1,6 +1,7 @@
 <?php
 
 use Timber\Factory\MenuItemFactory;
+use Timber\Menu;
 use Timber\MenuItem;
 use Timber\Timber;
 
@@ -55,5 +56,51 @@ class TestMenuItemFactory extends Timber_UnitTestCase {
 		$post = get_post($item_id);
 
 		$this->assertInstanceOf(MenuItem::class, $factory->from($post, $menu));
-  }
+	}
+
+	public function testMenuItemClassmap() {
+		// Destructure the result into the menu WP_Term instance
+		// and the item_ids
+		[
+			'term' => $menu_term,
+			'item_ids' => [$one, $two, $three],
+		] = $this->create_menu_from_posts([
+			[
+				'post_title' => 'Page One',
+				'post_status' => 'publish',
+				'post_name' => 'page-one',
+				'post_type' => 'page',
+				'menu_order' => 1,
+			],
+			[
+				'post_title' => 'Page Two',
+				'post_status' => 'publish',
+				'post_name' => 'page-two',
+				'post_type' => 'page',
+				'menu_order' => 2,
+			],
+			[
+				'post_title' => 'Page Three',
+				'post_status' => 'publish',
+				'post_name' => 'page-three',
+				'post_type' => 'page',
+				'menu_order' => 3,
+			],
+		]);
+
+		$menu = Timber::get_menu($menu_term['term_id']);
+		$factory = new MenuItemFactory();
+
+		$this->add_filter_temporarily('timber/menuitem/classmap', function($class, WP_Post $item, Menu $menu) use ($two) {
+			if ($item->ID === $two) {
+				return MyMenuItem::class;
+			}
+
+			return $class;
+		}, 10, 3);
+
+		$this->assertInstanceOf(MenuItem::class, $factory->from($one, $menu));
+		$this->assertInstanceOf(MyMenuItem::class, $factory->from($two, $menu));
+		$this->assertInstanceOf(MenuItem::class, $factory->from($three, $menu));
+	}
 }
