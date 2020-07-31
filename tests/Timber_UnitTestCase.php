@@ -230,4 +230,41 @@
 			$menu_items_count = count($item_ids);
 			$wpdb->query("UPDATE $wpdb->term_taxonomy SET count = $menu_items_count WHERE taxonomy = 'nav_menu'; ");
 		}
+
+		/**
+		 * Test helper for creating posts and corresponding menu/items from raw post data.
+		 * @param array $posts_data an array of raw post data arrays. Each post array is passed
+		 * separately to wp_insert_post().
+		 * @return array an array of the form:
+		 * [
+		 *   "term" => (WP_Term menu instance),
+		 *   "item_ids" => [(...nav_menu_item post IDs...)],
+		 * ]
+		 */
+		protected function create_menu_from_posts(array $posts_data) {
+			$item_ids = array_map(function(array $post_data) {
+				$post_id = wp_insert_post($post_data);
+				$item_id = wp_insert_post([
+					'post_title'  => '',
+					'post_status' => 'publish',
+					'post_type'   => 'nav_menu_item',
+				]);
+
+				update_post_meta( $item_id, '_menu_item_object_id', $post_id );
+				update_post_meta( $item_id, '_menu_item_type', 'post_type' );
+				update_post_meta( $item_id, '_menu_item_object', 'page' );
+				update_post_meta( $item_id, '_menu_item_menu_item_parent', 0 );
+				update_post_meta( $item_id, '_menu_item_url', '' );
+
+				return $item_id;
+			}, $posts_data);
+
+			$menu_term = wp_insert_term( 'Main Menu', 'nav_menu' );
+			$this->add_menu_item($menu_term['term_id'], $item_ids);
+
+			return [
+				'term'     => $menu_term,
+				'item_ids' => $item_ids,
+			];
+		}
 	}
