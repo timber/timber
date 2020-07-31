@@ -215,7 +215,12 @@
 			};
 		}
 
-		protected function add_menu_item(int $menu_id, array $item_ids) {
+		/**
+		 * Add the given nav_menu_item post IDs to the given menu.
+		 * @param int $menu_id the term_id of the menu to add to.
+		 * @param int[] $item_ids the list of nav_menu_item post IDs to add.
+		 */
+		protected function add_menu_items(int $menu_id, array $item_ids) {
 			global $wpdb;
 			foreach ($item_ids as $id) {
 				// $query = "INSERT INTO $wpdb->term_relationships (object_id, term_taxonomy_id, term_order) VALUES ($id, $menu_id, 0);";
@@ -260,7 +265,7 @@
 			}, $posts_data);
 
 			$menu_term = wp_insert_term( 'Main Menu', 'nav_menu' );
-			$this->add_menu_item($menu_term['term_id'], $item_ids);
+			$this->add_menu_items($menu_term['term_id'], $item_ids);
 
 			return [
 				'term'     => $menu_term,
