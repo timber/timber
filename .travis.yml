@@ -1,4 +1,4 @@
-sudo: false
+os: linux
 
 dist: xenial
 
@@ -9,23 +9,23 @@ language: php
 addons:
   apt:
     packages:
-    - libwebp-dev
+      - libwebp-dev
 
 php:
-    - 7.2
+  - 7.2
 
 env:
-    global:
-        - TMPDIR=/tmp
-        - COVERALLS_PARALLEL=true
-    matrix:
-        - WP_VERSION=4.9.8 WP_MULTISITE=0 
-        - WP_VERSION=4.9.8 WP_MULTISITE=1
-        - WP_VERSION=latest WP_MULTISITE=0
-        - WP_VERSION=latest WP_MULTISITE=1
+  global:
+    - TMPDIR=/tmp
+    - COVERALLS_PARALLEL=true
+  jobs:
+    - WP_VERSION=4.9.8 WP_MULTISITE=0 
+    - WP_VERSION=4.9.8 WP_MULTISITE=1
+    - WP_VERSION=latest WP_MULTISITE=0
+    - WP_VERSION=latest WP_MULTISITE=1
 
-matrix:
-    include:
+jobs:
+  include:
     - php: 5.6
       env: WP_VERSION=4.9.8 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
       before_install: skip
@@ -80,15 +80,15 @@ cache:
     - "${HOME}/.composer/cache"
 
 before_install:
-    # phpenv config-add myconfig.ini --with-webp-dir
-    - phpenv config-rm xdebug.ini
+  # phpenv config-add myconfig.ini --with-webp-dir
+  - phpenv config-rm xdebug.ini
 
 install:
-    - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-    - composer update $PREFER_LOWEST --prefer-source
+  - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+  - composer update $PREFER_LOWEST --prefer-source
 
 script:
-    - vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml --verbose
+  - vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml --verbose
 
 notifications:
   webhooks:
