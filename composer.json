@@ -41,8 +41,7 @@
     "wpackagist-plugin/advanced-custom-fields": "5.*",
     "wpackagist-plugin/co-authors-plus": "3.2.*|3.4.*",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
-    "szepeviktor/phpstan-wordpress": "^0.5.0",
-    "pcov/clobber": "^2.0"
+    "szepeviktor/phpstan-wordpress": "^0.5.0"
   },
   "suggest": {
     "satooshi/php-coveralls": "1.0.* for code coverage"
