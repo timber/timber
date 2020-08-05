@@ -1470,7 +1470,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * ```
 	 *
 	 * @param int $page Optional. The page to show if the content of the post is split into multiple
-	 *                  pages. Read more about this in the [Pagination Guide](https://timber.github.io/docs/v2/guides/pagination/#paged-content-for-posts). Default `0`.
+	 *                  pages. Read more about this in the [Pagination Guide](https://timber.github.io/docs/v2/guides/pagination/#paged-content-within-a-post). Default `0`.
 	 *
 	 * @return string
 	 */
@@ -1524,7 +1524,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 *
 	 * You will use this, if you use `<!--nextpage-->` in your post content or the Page Break block
 	 * in the Block Editor. Use `{{ post.pagination }}` to create a pagination for your paged
-	 * content. Learn more about this in the [Pagination Guide](https://timber.github.io/docs/v2/guides/pagination/#paged-content-for-posts).
+	 * content. Learn more about this in the [Pagination Guide](https://timber.github.io/docs/v2/guides/pagination/#paged-content-within-a-post).
 	 *
 	 * @example
 	 * ```twig
