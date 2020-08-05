@@ -283,14 +283,6 @@ class Menu extends Term {
 		return $menu;
 	}
 
-	/**
-	 * @internal
-	 * @param object $item the WP menu item object to wrap
-	 * @return mixed an instance of the user-configured $MenuItemClass
-	 */
-	protected function create_menu_item($item) {
-		return new $this->MenuItemClass( $item, $this );
-	}
 
 	/**
 	 * @internal
