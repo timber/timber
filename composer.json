@@ -37,11 +37,12 @@
     "johnpbloch/wordpress": ">=5.4.0",
     "phpunit/phpunit": "7.*",
     "squizlabs/php_codesniffer": "3.*",
-    "wp-coding-standards/wpcs": "^2.0",
-    "wpackagist-plugin/advanced-custom-fields": "5.*",
-    "wpackagist-plugin/co-authors-plus": "3.2.*|3.4.*",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
-    "szepeviktor/phpstan-wordpress": "^0.5.0"
+    "wp-coding-standards/wpcs": "^2.0",
+    "phpcompatibility/phpcompatibility-wp": "*",
+    "szepeviktor/phpstan-wordpress": "^0.5.0",
+    "wpackagist-plugin/advanced-custom-fields": "5.*",
+    "wpackagist-plugin/co-authors-plus": "3.2.*|3.4.*"
   },
   "suggest": {
     "satooshi/php-coveralls": "1.0.* for code coverage"
@@ -67,6 +68,9 @@
     }
   ],
   "scripts": {
-    "lint": "phpcs --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1"
+    "lint": "phpcs --report-file=./phpcs-log --report-width=120",
+    "lint-source": "phpcs --report='source' --report-file='./phpcs-source' --report-width=120",
+    "lint-info": "phpcs --report='info'",
+    "fix": "phpcbf"
   }
 }
