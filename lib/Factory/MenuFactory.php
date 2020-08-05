@@ -17,7 +17,7 @@ class MenuFactory {
 		}
 
 		if (is_object($params)) {
-			return $this->from_term_obj($params, $options);
+			return $this->from_term_object($params, $options);
 		}
 
 		return false;
@@ -39,7 +39,7 @@ class MenuFactory {
 		return $this->build($term, $options);
 	}
 
-	protected function from_term_obj(object $obj, array $options) : CoreInterface {
+	protected function from_term_object(object $obj, array $options) : CoreInterface {
 		if ($obj instanceof CoreInterface) {
 			// We already have a Timber Core object of some kind
 			return $obj;
