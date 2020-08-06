@@ -114,6 +114,7 @@ class Pagination {
 			'prev_next' => false,
 			'prev_text' => __('&laquo; Previous'),
 			'next_text' => __('Next &raquo;'),
+			'start_size' => 1,
 			'end_size' => 1,
 			'mid_size' => 2,
 			'type' => 'array',
@@ -130,7 +131,8 @@ class Pagination {
 			return array();
 		}
 		$args['current'] = (int) $args['current'];
-		$args['end_size'] = 0 < (int) $args['end_size'] ? (int) $args['end_size'] : 1; // Out of bounds?  Make it the default.
+		$args['end_size'] = 0 <= (int) $args['end_size'] ? (int) $args['end_size'] : 1; // Out of bounds?  Make it the default.
+		$args['start_size'] = 0 <= (int) $args['start_size'] ? (int) $args['start_size'] : $args['end_size']; // Default to end_size for backwards compat
 		$args['mid_size'] = 0 <= (int) $args['mid_size'] ? (int) $args['mid_size'] : 2;
 		$args['add_args'] = is_array($args['add_args']) ? $args['add_args'] : false;
 		$page_links = array();
@@ -147,7 +149,7 @@ class Pagination {
 				);
 				$dots = true;
 			} else {
-				if ( $args['show_all'] || ($n <= $args['end_size'] || ($args['current'] && $n >= $args['current'] - $args['mid_size'] && $n <= $args['current'] + $args['mid_size']) || $n > $args['total'] - $args['end_size']) ) {
+				if ( $args['show_all'] || ($n <= $args['start_size'] || ($args['current'] && $n >= $args['current'] - $args['mid_size'] && $n <= $args['current'] + $args['mid_size']) || $n > $args['total'] - $args['end_size']) ) {
 					
 					$link = str_replace('%_%', 1 == $n ? '' : $args['format'], $args['base']);
 					$link = str_replace('%#%', $n, $link);
