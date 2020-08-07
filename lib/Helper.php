@@ -439,7 +439,7 @@ class Helper {
 			return self::wp_list_filter( $list, $arrow, $operator );
 		}
 
-		return twig_array_filter( $list, $arrow );
+		return array_filter( $list, $arrow, \ARRAY_FILTER_USE_BOTH );
 	}
 
 	/**
