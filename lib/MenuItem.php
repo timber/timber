@@ -65,7 +65,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * recursion (see #2071).
 	 *
 	 * @since 1.12.0
-	 * @see \Timber\Menu::menu();
+	 * @see \Timber\MenuItem::menu()
 	 * @var \Timber\Menu The `Timber\Menu` object the menu item is associated with.
 	 */
 	protected $menu;

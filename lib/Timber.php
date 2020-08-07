@@ -171,7 +171,7 @@ class Timber {
 	 * @param mixed  $query
 	 * @param string $PostClass
 	 *
-	 * @return array|bool|null
+	 * @return Post|array|bool|null
 	 */
 	public static function query_post( $query = false, $PostClass = 'Timber\Post' ) {
 		return PostGetter::query_post($query, $PostClass);
