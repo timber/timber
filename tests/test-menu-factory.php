@@ -66,11 +66,23 @@ class TestMenuFactory extends Timber_UnitTestCase {
 			'taxonomy' => 'nav_menu',
 		]);
 
-
 		$factory = new MenuFactory();
 		$term    = $factory->from($id);
 
 		$this->assertInstanceOf(Menu::class, $factory->from($term));
+	}
+
+	/**
+     * @expectedException InvalidArgumentException
+     */
+	public function testFromTimberMenuObjectGarbageInGarbageOut() {
+		$factory = new MenuFactory();
+		$this->assertFalse($factory->from(new stdClass()));
+	}
+
+	public function testFromTimberMenuGarbageInGarbageOut() {
+		$factory = new MenuFactory();
+		$this->assertFalse($factory->from(null));
 	}
 
 	public function testFromWpTermObject() {
