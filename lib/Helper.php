@@ -427,6 +427,8 @@ class Helper {
 	 * Uses native Twig Filter.
 	 *
 	 * @since 1.14.0
+	 * @deprecated since 1.17 (to be removed in 2.0). Use array_filter or Helper::wp_list_filter instead
+	 * @todo remove this in 2.x
 	 * @param array                 $list to filter.
 	 * @param callback|string|array $arrow function used for filtering,
 	 *                              string or array for backward compatibility.
@@ -439,7 +441,7 @@ class Helper {
 			return self::wp_list_filter( $list, $arrow, $operator );
 		}
 
-		return twig_array_filter( $list, $arrow );
+		return array_filter( $list, $arrow, \ARRAY_FILTER_USE_BOTH );
 	}
 
 	/**
