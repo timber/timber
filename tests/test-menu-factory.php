@@ -27,6 +27,22 @@ class TestMenuFactory extends Timber_UnitTestCase {
 		$this->assertFalse( $factory->from(9999999) );
 	}
 
+	public function testGetMenuFromNavMenuTerms() {
+		$this->create_menu_from_posts([
+			[
+				'post_title' => 'Home',
+				'post_status' => 'publish',
+				'post_name' => 'home',
+				'post_type' => 'page',
+				'menu_order' => 1,
+			],
+		]);
+
+		$factory = new MenuFactory();
+
+		$this->assertInstanceOf(Menu::class, $factory->from(0));
+	}
+
 	public function testGetMenuFromIdString() {
 		$id = $this->factory->term->create([
 			'name'     => 'Main Menu',

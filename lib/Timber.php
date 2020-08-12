@@ -429,12 +429,6 @@ class Timber {
 	}
 
 	public static function _get_menu_id_from_locations( $slug, $locations ) {
-		if ( $slug === 0 ) {
-			$slug = Timber::_get_menu_id_from_terms($slug);
-		}
-		if ( is_numeric($slug) ) {
-			$slug = array_search($slug, $locations);
-		}
 		if ( isset($locations[$slug]) ) {
 			$menu_id = $locations[$slug];
 			// TODO do this in filter/Integration

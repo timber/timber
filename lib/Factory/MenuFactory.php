@@ -12,6 +12,10 @@ use WP_Term;
  */
 class MenuFactory {
 	public function from($params, array $options = []) {
+		if ($params === 0) {
+			return $this->from_nav_menu_terms($options);
+		}
+
 		if (is_numeric($params)) {
 			return $this->from_id((int) $params, $options);
 		}
@@ -25,6 +29,22 @@ class MenuFactory {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Query the database for existing nav menu terms and return the first one
+	 * as a Timber\Menu object.
+	 *
+	 * @internal
+	 */
+	protected function from_nav_menu_terms(array $options) {
+		$terms = get_terms('nav_menu', [
+			'hide_empty' => true,
+		]);
+
+		$id = $terms[0]->term_id ?? 0;
+
+		return $id ? $this->from_id($id, $options) : false;
 	}
 
 	/**
