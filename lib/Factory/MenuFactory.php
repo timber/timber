@@ -12,8 +12,12 @@ use WP_Term;
  */
 class MenuFactory {
 	public function from($params, array $options = []) {
-		if (is_int($params) || is_string($params)) {
-			return $this->from_ident($params, $options);
+		if (is_numeric($params)) {
+			return $this->from_id((int) $params, $options);
+		}
+
+		if (is_string($params)) {
+			return $this->from_string($params, $options);
 		}
 
 		if (is_object($params)) {
@@ -24,16 +28,36 @@ class MenuFactory {
 	}
 
 	/**
-	 * Get a Menu by its name, slug, or ID
+	 * Get a Menu by its ID
 	 *
 	 * @internal
 	 */
-	protected function from_ident($id, $options) {
+	protected function from_id($id, $options) {
 		// WP Menus are WP_Term objects under the hood.
 		$term = wp_get_nav_menu_object($id);
 
 		if (!$term) {
 			return false;
+		}
+
+		return $this->build($term, $options);
+	}
+
+	/**
+	 * Get a Menu by its slug or name, or by a nav menu location name, e.g. "primary-menu"
+	 *
+	 * @internal
+	 */
+	protected function from_string($ident, $options) {
+		$term = get_term_by('slug', $ident, 'nav_menu') ?: get_term_by('name', $ident, 'nav_menu');
+
+		if (!$term) {
+			$locations = get_nav_menu_locations();
+			if (isset($locations[$ident])) {
+				$term = wp_get_nav_menu_object($locations[$ident]);
+			} else {
+				return false;
+			}
 		}
 
 		return $this->build($term, $options);

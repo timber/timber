@@ -60,6 +60,23 @@ class TestMenuFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(Menu::class, $factory->from('main-menu'));
 	}
 
+	public function testGetMenuFromLocation() {
+		$id = $this->factory->term->create([
+			'name'     => 'Main Menu',
+			'taxonomy' => 'nav_menu',
+		]);
+
+		// Set up our new custom menu location.
+		register_nav_menu('custom', 'Custom nav location');
+		$locations = get_theme_mod('nav_menu_locations');
+		$locations['custom'] = $id;
+		set_theme_mod('nav_menu_locations', $locations);
+
+		$factory = new MenuFactory();
+
+		$this->assertInstanceOf(Menu::class, $factory->from('custom'));
+	}
+
 	public function testFromTimberMenuObject() {
 		$id = $this->factory->term->create([
 			'name'     => 'Main Menu',

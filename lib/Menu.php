@@ -130,10 +130,6 @@ class Menu extends Term {
 
 		if ( $slug != 0 && is_numeric($slug) ) {
 			$menu_id = $slug;
-		} else if ( is_array($locations) && ! empty( $locations ) ) {
-			$menu_id = Timber::_get_menu_id_from_locations($slug, $locations);
-		} else if ( $slug === false ) {
-			$menu_id = false;
 		}
 		if ( !$menu_id ) {
 			$menu_id = Timber::_get_menu_id_from_terms($slug);
