@@ -70,26 +70,42 @@
 			global $php_unit;
 			$php_unit = $this;
 			$action_tally = array();
-			add_action('my_action_foo', function(){
+
+			$my_action_foo = function() {
 				global $action_tally, $php_unit;
-				$php_unit->assertTrue(true);
+				$php_unit->assertTrue( true );
 				$action_tally[] = 'my_action_foo';
+
 				return 'foo';
-			});
-			add_action('my_action_args', function($bar){
+			};
+
+			$my_action_args = function( $bar ) {
 				global $action_tally, $php_unit;
-				$php_unit->assertEquals('bar', $bar);
+				$php_unit->assertEquals( 'bar', $bar );
 				$action_tally[] = 'my_action_args';
+
 				return 'foo';
-			});
-			add_action('timber/compile/done', function(){
+			};
+
+			$timber_compile_done = function() {
 				global $action_tally, $php_unit;
-				$php_unit->assertContains('my_action_args', $action_tally);
-				$php_unit->assertContains('my_action_foo', $action_tally);
-			});
+
+				$php_unit->assertContains( 'my_action_args', $action_tally );
+				$php_unit->assertContains( 'my_action_foo', $action_tally );
+			};
+
+			add_action( 'my_action_foo', $my_action_foo );
+			add_action( 'my_action_args', $my_action_args );
+			add_action( 'timber/compile/done', $timber_compile_done );
+
 			$str = Timber::compile('assets/test-do-action.twig');
 			$str = trim($str);
+
 			$this->assertEquals('Stuff', $str);
+
+			remove_action( 'my_action_foo', $my_action_foo );
+			remove_action( 'my_action_args', $my_action_args );
+			remove_action( 'timber/compile/done', $timber_compile_done );
 		}
 
 		function testWordPressPasswordFilters(){
