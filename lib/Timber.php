@@ -400,10 +400,38 @@ class Timber {
 	/* Menu Retrieval
 	================================ */
 
-	public static function get_menu( $menu = null, array $options = [] ) {
+	/**
+	 * Gets a nav menu object.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @example
+	 * ```php
+	 * // Get a menu by location
+	 * $menu = Timber::get_menu( 'primary-menu' );
+	 *
+	 * // Get a menu by slug
+	 * $menu = Timber::get_menu( 'my-menu' );
+	 *
+	 * // Get a menu by name
+	 * $menu = Timber::get_menu( 'Main Menu' );
+	 *
+	 * // Get a menu by ID (term_id)
+	 * $menu = Timber::get_menu( 123 );
+	 * ```
+	 *
+	 * @param int|string $ident A menu identifier: a term_id, slug, menu name, or menu location name
+	 * @param array      $options An associative array of options. Currently only one option is
+	 * supported:
+	 * - `depth`: How deep down the tree of menu items to query. Useful if you only want
+	 *   the first N levels of items in the menu.
+	 *
+	 * @return \Timber\Menu|false
+	 */
+	public static function get_menu( $ident = null, array $options = [] ) {
 		$factory   = new MenuFactory();
 
-		return $factory->from($menu, $options);
+		return $factory->from($ident, $options);
 	}
 
 	/**

@@ -13,6 +13,8 @@ use WP_Term;
 class MenuFactory {
 	public function from($params, array $options = []) {
 		if ($params === 0) {
+			// We know no nav_menu term exists with ID 0,
+			// so just look at the existing terms in the database.
 			return $this->from_nav_menu_terms($options);
 		}
 
@@ -28,6 +30,7 @@ class MenuFactory {
 			return $this->from_term_object($params, $options);
 		}
 
+		// Fall back on the first nav_menu term we find.
 		return $this->from_nav_menu_terms($options);
 	}
 
