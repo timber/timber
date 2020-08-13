@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @group posts-api
+ * @group post-collections
+ */
 class TestTimberPostIterator extends Timber_UnitTestCase {
 	private $collector;
 

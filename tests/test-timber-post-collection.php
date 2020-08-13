@@ -2,6 +2,7 @@
 
 /**
  * @group posts-api
+ * @group post-collections
  */
 class TestTimberPostQuery extends Timber_UnitTestCase {
 
