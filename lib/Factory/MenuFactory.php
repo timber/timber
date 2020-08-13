@@ -28,7 +28,7 @@ class MenuFactory {
 			return $this->from_term_object($params, $options);
 		}
 
-		return false;
+		return $this->from_nav_menu_terms($options);
 	}
 
 	/**

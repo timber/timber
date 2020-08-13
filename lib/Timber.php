@@ -402,28 +402,6 @@ class Timber {
 
 	public static function get_menu( $menu = null, array $options = [] ) {
 		$factory   = new MenuFactory();
-		$locations = get_nav_menu_locations();
-
-		// Get the Menu ID by location, if possible.
-		if (is_string($menu) && isset($locations[$menu])) {
-			$menu = $locations[$menu];
-		}
-
-		// Try getting menu by slug or name.
-		if (!$menu) {
-			$menu = get_term_by('slug', $menu, 'nav_menu')
-				   ?: get_term_by('name', $menu, 'nav_menu');
-		}
-
-		if (!$menu) {
-			// Haven't found a menu yet, just use the first one that a generic query returns.
-			$all_menus = get_terms([
-				'taxonomy' => 'nav_menu',
-			]);
-			if ($all_menus && is_array($all_menus) && isset($all_menus[0]->term_id)) {
-				$menu = $all_menus[0]->term_id;
-			}
-		}
 
 		return $factory->from($menu, $options);
 	}
