@@ -14,9 +14,6 @@ use Timber\Factory\MenuItemFactory;
  */
 class Menu extends Term {
 
-	public $MenuItemClass = 'Timber\MenuItem';
-	public $PostClass = 'Timber\Post';
-
 	/**
 	 * @api
 	 * @var integer The depth of the menu we are rendering
@@ -97,7 +94,7 @@ class Menu extends Term {
 	 * @return \Timber\Term
 	 */
 	public static function build(WP_Term $wp_term, array $options = []) : Term {
-		$term = new static(0, $options);
+		$term = new static($wp_term->term_id, $options);
 		$term->init($wp_term);
 		return $term;
 	}
@@ -127,23 +124,14 @@ class Menu extends Term {
 		) );
 
 		$this->depth = (int) $this->options['depth'];
-
-		if ( $slug != 0 && is_numeric($slug) ) {
-			$menu_id = $slug;
-		}
-		if ( !$menu_id ) {
-			$menu_id = Timber::_get_menu_id_from_terms($slug);
-		}
-		if ( $menu_id ) {
-			$this->init($menu_id);
-		}
 	}
 
 	/**
 	 * @internal
 	 * @param int $menu_id
 	 */
-	protected function init( $menu_id ) {
+	protected function init(WP_Term $menu_term) {
+		$menu_id = $menu_term->term_id;
 		$menu = wp_get_nav_menu_items($menu_id);
 		$locations = get_nav_menu_locations();
 
@@ -197,10 +185,8 @@ class Menu extends Term {
 				$menu = $this->strip_to_depth_limit($menu);
 			}
 			$this->items = $menu;
-			$menu_info = wp_get_nav_menu_object($menu_id);
-			if ( $menu_info ) {
-				$this->import($menu_info);
-			}
+
+			$this->import($menu_term);
 			$this->ID = $this->term_id;
 			$this->id = $this->term_id;
 			$this->title = $this->name;

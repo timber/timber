@@ -428,28 +428,6 @@ class Timber {
 		return $factory->from($menu, $options);
 	}
 
-	public static function _get_menu_id_from_locations( $slug, $locations ) {
-		if ( isset($locations[$slug]) ) {
-			$menu_id = $locations[$slug];
-			// TODO do this in filter/Integration
-			if ( function_exists('wpml_object_id_filter') ) {
-				$menu_id = wpml_object_id_filter($locations[$slug], 'nav_menu');
-			}
-
-			return $menu_id;
-		}
-	}
-
-	public static function _get_menu_id_from_terms( $slug = 0 ) {
-		$menus = get_terms('nav_menu', array('hide_empty' => true));
-		if ( is_array($menus) && count($menus) ) {
-			if ( isset($menus[0]->term_id) ) {
-				return $menus[0]->term_id;
-			}
-		}
-		return 0;
-	}
-
 	/**
 	 * @todo implement PagesMenuFactory
 	 */
