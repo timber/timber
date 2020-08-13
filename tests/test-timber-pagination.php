@@ -412,7 +412,48 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	    $pagination = $data['posts']->pagination();
 	    $this->assertEquals('http://example.org/my_cpt/page/3/', $pagination->pages[2]['link']);
 	}
-
-
+	
+	/**
+	 * @ticket #2302
+	 */
+	function testPaginationEndLimits() {
+		$pids = $this->factory->post->create_many( 150 );
+		// Test defaults (mid = 2, end = 1, start = end)
+		$posts = new Timber\PostQuery(array('post_type' => 'post', 'paged' => 13, 'posts_per_page' => 5));
+		$pagination = $posts->pagination(array('show_all' => false));
+		$this->assertEquals( 11, count( $pagination->pages ) );
+		// Test mid_size
+		$posts = new Timber\PostQuery(array('post_type' => 'post', 'paged' => 13, 'posts_per_page' => 5));
+		$pagination = $posts->pagination(array('show_all' => false, 'mid_size' => 1));
+		$this->assertEquals( 7, count( $pagination->pages ) );
+		// Test mid_size = 0
+		$posts = new Timber\PostQuery(array('post_type' => 'post', 'paged' => 13, 'posts_per_page' => 5));
+		$pagination = $posts->pagination(array('show_all' => false, 'mid_size' => 0));
+		$this->assertEquals( 5, count( $pagination->pages ) );
+		// Test end_size
+		$posts = new Timber\PostQuery(array('post_type' => 'post', 'paged' => 13, 'posts_per_page' => 5));
+		$pagination = $posts->pagination(array('show_all' => false, 'end_size' => 2));
+		$this->assertEquals( 13, count( $pagination->pages ) );
+		// Test end_size = 0
+		$posts = new Timber\PostQuery(array('post_type' => 'post', 'paged' => 13, 'posts_per_page' => 5));
+		$pagination = $posts->pagination(array('show_all' => false, 'end_size' => 0));
+		$this->assertEquals( 9, count( $pagination->pages ) );
+		// Test start_size
+		$posts = new Timber\PostQuery(array('post_type' => 'post', 'paged' => 13, 'posts_per_page' => 5));
+		$pagination = $posts->pagination(array('show_all' => false, 'start_size' => 2));
+		$this->assertEquals( 12, count( $pagination->pages ) );
+		// Test start_size = 0
+		$posts = new Timber\PostQuery(array('post_type' => 'post', 'paged' => 13, 'posts_per_page' => 5));
+		$pagination = $posts->pagination(array('show_all' => false, 'start_size' => 0));
+		$this->assertEquals( 10, count( $pagination->pages ) );
+		// Test start_size, end_size
+		$posts = new Timber\PostQuery(array('post_type' => 'post', 'paged' => 13, 'posts_per_page' => 5));
+		$pagination = $posts->pagination(array('show_all' => false, 'start_size' => 2, 'end_size' => 3));
+		$this->assertEquals( 14, count( $pagination->pages ) );
+		// Test start_size, end_size  = 0
+		$posts = new Timber\PostQuery(array('post_type' => 'post', 'paged' => 13, 'posts_per_page' => 5));
+		$pagination = $posts->pagination(array('show_all' => false, 'start_size' => 2, 'end_size' => 0));
+		$this->assertEquals( 11, count( $pagination->pages ) );
+	}
 
 }
