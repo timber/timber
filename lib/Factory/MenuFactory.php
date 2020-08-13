@@ -77,10 +77,13 @@ class MenuFactory {
 		if (!$term) {
 			$locations = get_nav_menu_locations();
 			if (isset($locations[$ident])) {
-				$term = wp_get_nav_menu_object($locations[$ident]);
-			} else {
-				return false;
+				$id   = apply_filters('timber/menu/id_from_location', $locations[$ident]);
+				$term = wp_get_nav_menu_object($id);
 			}
+		}
+
+		if (!$term) {
+			return false;
 		}
 
 		return $this->build($term, $options);

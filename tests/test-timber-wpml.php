@@ -9,6 +9,7 @@ function wpml_object_id_filter( $element_id, $element_type = 'post', $return_ori
 	if (isset($locations['extra-menu'])) {
 		return $locations['extra-menu'];
 	}
+	return $element_id;
 }
 
 class TestTimberWPML extends Timber_UnitTestCase {
