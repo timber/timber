@@ -1,8 +1,11 @@
 <?php
 
+use Timber\PostQuery;
+
 /**
  * @group posts-api
  * @group post-collections
+ * @group pagination
  */
 class TestTimberPagination extends Timber_UnitTestCase {
 
@@ -46,22 +49,19 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$this->assertEquals(4, count($pagination['pages']));
 	}
 
-	/**
-	 * @expectedDeprecated get_pagination
-	 */
 	function testPaginationWithPostQuery() {
 		$pids = $this->factory->post->create_many( 33 );
 		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
 		$this->go_to( home_url( '/' ) );
-		new Timber\PostQuery( array(
-			'query' => 'post_type=portfolio',
-		) );
-		$pagination = Timber::get_pagination();
 
-		global $timber;
-		$timber->active_query = false;
-		unset($timber->active_query);
-		$this->assertEquals(4, count($pagination['pages']));
+		// @todo once the Posts API uses Factories, simplify this to Timber::get_posts([...])
+		$query = new PostQuery([
+			'query' => new WP_Query([
+				'post_type' => 'portfolio',
+			]),
+		]);
+
+		$this->assertCount(6, $query->pagination()->pages);
 	}
 
 	/**

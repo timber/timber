@@ -26,6 +26,7 @@ class PostsIterator extends \ArrayIterator {
 		 * there, because they also need to work for singular templates, where there’s no loop.
 		 */
 		$post = parent::current();
+		// @todo lazily create Post instances here
 		$post->setup();
 
 		return $post;

@@ -19,17 +19,15 @@ class PostCollection extends \ArrayObject {
 	 * @param string $post_class The post class to use.
 	 */
 	public function __construct( $posts = array(), $post_class = '\Timber\Post' ) {
-		$returned_posts = self::init( $posts, $post_class );
+		// @todo for better performance, skip this and pass raw WP_Posts; lazily instantiate them as Timber\Posts in PostsIterator
+		$returned_posts = self::init( $posts ?: [], $post_class );
 
-		parent::__construct( $returned_posts, 0, 'Timber\PostsIterator' );
+		parent::__construct( $returned_posts, 0, PostsIterator::class );
 	}
 
 	protected static function init( $posts, $post_class ) {
 		$returned_posts = array();
-		if ( is_null($posts) ) {
-			$posts = array();
-		}
-		// @todo this will turn into something like $postFactory->from_posts_array($posts)
+
 		foreach ( $posts as $post_object ) {
 			$post_type      = get_post_type($post_object);
 			$post_class_use = PostGetter::get_post_class($post_type, $post_class);
@@ -62,6 +60,7 @@ class PostCollection extends \ArrayObject {
 	 * @return array
 	 */
 	public static function maybe_set_preview( $posts ) {
+		// @todo do this in a filter instead?
 		if ( is_array($posts) && isset($_GET['preview']) && $_GET['preview']
 			   && isset($_GET['preview_id']) && $_GET['preview_id']
 			   && current_user_can('edit_post', $_GET['preview_id']) ) {

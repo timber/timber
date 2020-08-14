@@ -1,7 +1,5 @@
 <?php
 
-use WP_Query;
-
 use Timber\QueryIterator;
 
 /**

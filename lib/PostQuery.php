@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use WP_Query;
+
 /**
  * Class PostQuery
  *
@@ -28,7 +30,19 @@ class PostQuery extends PostCollection {
 	 */
 	public    $found_posts = null;
 
+	/**
+	 * If the user passed an array, it is stored here.
+	 *
+	 * @var array
+	 */
 	protected $userQuery;
+
+	/**
+	 * The internal WP_Query instance that this object is wrapping.
+	 *
+	 * @var \WP_Query
+	 */
+	protected $_query = null;
 
 	/**
 	 * @var PostCollection|QueryIterator
@@ -108,25 +122,36 @@ class PostQuery extends PostCollection {
 			'post_class'    => '\Timber\Post',
 		) );
 
-		if ( is_array($args['query']) && $args['merge_default'] ) {
-			global $wp_query;
+		if ($args['query'] instanceof WP_Query) {
+			// @todo this is the new happy path
+			$this->_query = $args['query'];
+			$this->found_posts = $this->_query->found_posts;
 
-			// Merge query arguments with default query.
-			$args['query'] = wp_parse_args( $args['query'], $wp_query->query_vars );
+			$posts = $this->_query->posts ?: [];
+
+		} else {
+
+			// @todo we can eventually (mostly) remove this path
+			if ( $args['merge_default'] ) {
+				global $wp_query;
+
+				// Merge query arguments with default query.
+				$args['query'] = wp_parse_args( $args['query'], $wp_query->query_vars );
+			}
+
+			// NOTE: instead of doing this here, PostFactory should know whether to instantiate a PostQuery or not.
+			// So if we're at this point we already know we want a QueryIterator!
+			// @todo pass a WP_Query instance directly (we should get one from PostFactory)
+			$this->userQuery     = $args['query'];
+			$this->queryIterator = PostGetter::query_posts( $args['query'], $args['post_class'] );
+
+			if ( $this->queryIterator instanceof QueryIterator ) {
+				$this->found_posts = $this->queryIterator->found_posts();
+			}
+
+			// @todo if we already have a WP_Query instance, we can just get its posts directly.
+			$posts = $this->queryIterator->get_posts();
 		}
-
-		// NOTE: instead of doing this here, PostFactory should know whether to instantiate a PostQuery or not.
-		// So if we're at this point we already know we want a QueryIterator!
-		// @todo pass a WP_Query instance directly (we should get one from PostFactory)
-		$this->userQuery     = $args['query'];
-		$this->queryIterator = PostGetter::query_posts( $args['query'], $args['post_class'] );
-
-		if ( $this->queryIterator instanceof QueryIterator ) {
-			$this->found_posts = $this->queryIterator->found_posts();
-		}
-
-		// @todo if we already have a WP_Query instance, we can just get its posts directly.
-		$posts = $this->queryIterator->get_posts();
 
 		parent::__construct( $posts, $args['post_class'] );
 	}
@@ -165,6 +190,8 @@ class PostQuery extends PostCollection {
 	public function pagination( $prefs = array() ) {
 		if ( !$this->pagination && is_a($this->queryIterator, 'Timber\QueryIterator') ) {
 			$this->pagination = $this->queryIterator->get_pagination($prefs, $this->userQuery);
+		} elseif ( !$this->pagination && $this->_query instanceof WP_Query ) {
+			$this->pagination = new Pagination($prefs, $this->_query);
 		}
 
 		return $this->pagination;

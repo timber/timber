@@ -1,8 +1,11 @@
 <?php
 
+use Timber\PostQuery;
+
 /**
  * @group posts-api
  * @group post-collections
+ * @group pagination
  */
 class TestTimberPostQuery extends Timber_UnitTestCase {
 
@@ -36,7 +39,8 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );
 		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
-		$this->go_to( home_url( '/portfolio/page/3' ) );
+		// @todo what is this testing? Still passes with this line commented out...
+		// $this->go_to( home_url( '/portfolio/page/3' ) );
 		query_posts('post_type=portfolio&paged=3');
 		$posts = new Timber\PostQuery();
 		$pagination = $posts->pagination();
@@ -56,20 +60,10 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		$this->assertEquals('<h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <div class="l--pagination"> <div class="pagination-inner"> <div class="pagination-previous"> <span class="pagination-previous-link pagination-disabled">Previous</span> </div> <div class="pagination-pages"> <ul class="pagination-pages-list"> <li class="pagination-list-item pagination-page">1</li> <li class="pagination-list-item pagination-seperator">of</li> <li class="pagination-list-item pagination-page">13</li> </ul> </div> <div class="pagination-next"> <a href="http://example.org/?paged=2" class="pagination-next-link ">Next</a> </div> </div> </div>', trim($str));
 	}
 
-	function IgnoretestBasicCollectionWithPaginationAndBlankQuery() {
-
-		$pids = $this->factory->post->create_many(130);
-		$this->go_to('/');
-		$pc = new Timber\PostQuery();
-		$str = Timber::compile('assets/collection-pagination.twig', array('posts' => $pc));
-		$str = preg_replace('/\s+/', ' ', $str);
-		$this->assertEquals('<h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <div class="l--pagination"> <div class="pagination-inner"> <div class="pagination-previous"> <span class="pagination-previous-link pagination-disabled">Previous</span> </div> <div class="pagination-pages"> <ul class="pagination-pages-list"> <li class="pagination-list-item pagination-page">1</li> <li class="pagination-list-item pagination-seperator">of</li> <li class="pagination-list-item pagination-page">13</li> </ul> </div> <div class="pagination-next"> <a href="http://example.org/?paged=2" class="pagination-next-link ">Next</a> </div> </div> </div>', trim($str));
-	}
-
 	/**
 	 * @expectedDeprecated Passing query arguments directly to PostQuery
 	 */
-	function testFoundPostsInQuery() {
+	function testFoundPostsDeprecated() {
 		$this->factory->post->create_many( 20 );
 
 		$query = new Timber\PostQuery( [
@@ -126,5 +120,124 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 
 		$this->assertCount( 10, $collection );
 		$this->assertEquals( null, $collection->found_posts );
+	}
+
+
+	/*
+	 * PostCollectionInterface tests
+	 */
+
+	function testTheLoop(){
+		foreach (range(1, 3) as $i) {
+			$this->factory->post->create( array(
+				'post_title' => 'TestPost' . $i,
+				'post_date' => ('2018-09-0'.$i.' 01:56:01')
+			) );
+		}
+
+		$wp_query = new WP_Query('post_type=post');
+
+		$results = Timber::compile_string(
+			'{% for p in posts %}{{fn("get_the_title")}}{% endfor %}',
+			[
+				'posts' => new PostQuery([
+					'query' => $wp_query,
+				]),
+			]
+		);
+
+		// Assert that our posts show up in reverse-chronological order.
+		$this->assertEquals( 'TestPost3TestPost2TestPost1', $results );
+	}
+
+	function testTwigLoopVar() {
+		$this->factory->post->create_many( 3 );
+
+		$wp_query = new WP_Query('post_type=post');
+
+		// Dump the loop object itself each iteration, so we can see its
+		// internals over time.
+		$compiled = Timber::compile_string(
+			"{% for p in posts %}\n{{loop|json_encode}}\n{% endfor %}\n", array(
+			'posts' => new PostQuery([
+				'query' => $wp_query,
+			]),
+		) );
+
+		// Get each iteration as an object (each should have its own line).
+		$loop = array_map('json_decode', explode("\n", trim($compiled)));
+
+		$this->assertSame(1, $loop[0]->index);
+		$this->assertSame(2, $loop[0]->revindex0);
+		$this->assertSame(3, $loop[0]->length);
+		$this->assertTrue($loop[0]->first);
+		$this->assertFalse($loop[0]->last);
+
+		$this->assertSame(2, $loop[1]->index);
+		$this->assertSame(1, $loop[1]->revindex0);
+		$this->assertSame(3, $loop[1]->length);
+		$this->assertFalse($loop[1]->first);
+		$this->assertFalse($loop[1]->last);
+
+		$this->assertSame(3, $loop[2]->index);
+		$this->assertSame(0, $loop[2]->revindex0);
+		$this->assertSame(3, $loop[2]->length);
+		$this->assertFalse($loop[2]->first);
+		$this->assertTrue($loop[2]->last);
+	}
+
+	function testPostCount() {
+		$posts    = $this->factory->post->create_many( 8 );
+
+		// We should be able to call count(...) directly on our collection, by virtue
+		// of it implementing the Countable interface.
+		$this->assertCount(8, new PostQuery([
+			'query' => new WP_Query('post_type=post'),
+		]));
+	}
+
+	function testFoundPosts() {
+		$this->factory->post->create_many( 10 );
+
+		// @todo once the Posts API uses Factories, simplify this to Timber::get_posts([...])
+		$query = new PostQuery([
+			'query' => new WP_Query('post_type=post&posts_per_page=3'),
+		]);
+
+		$this->assertCount(3, $query);
+		$this->assertEquals(10, $query->found_posts);
+	}
+
+	function testArrayAccess() {
+		// Posts are titled in reverse-chronological order.
+		$this->factory->post->create([
+			'post_title' => 'Post 2',
+			'post_date'  => '2020-01-01',
+		]);
+		$this->factory->post->create([
+			'post_title' => 'Post 1',
+			'post_date'  => '2020-01-02',
+		]);
+		$this->factory->post->create([
+			'post_title' => 'Post 0',
+			'post_date'  => '2020-01-03',
+		]);
+
+		// @todo once the Posts API uses Factories, simplify this to Timber::get_posts([...])
+		$query = new PostQuery([
+			'query' => new WP_Query('post_type=post'),
+		]);
+
+		$this->assertEquals('Post 0', $query[0]->title());
+		$this->assertEquals('Post 1', $query[1]->title());
+		$this->assertEquals('Post 2', $query[2]->title());
+	}
+
+	function testIterationWithClassMaps() {
+		$this->markTestSkipped();
+	}
+
+	function testLazyEvaluation() {
+		$this->markTestSkipped();
 	}
 }

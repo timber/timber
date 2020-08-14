@@ -154,6 +154,7 @@ class QueryIterator implements \Iterator, \Countable {
 	}
 
 	//get_posts users numberposts
+	// @todo port this to PostFactory or PostQuery?
 	public static function fix_number_posts_wp_quirk( $query ) {
 		if ( isset($query->query) && isset($query->query['numberposts'])
 				&& !isset($query->query['posts_per_page']) ) {
@@ -163,6 +164,7 @@ class QueryIterator implements \Iterator, \Countable {
 	}
 
 	//get_posts uses category, WP_Query uses cat. Why? who knows...
+	// @todo port this to PostFactory or PostQuery?
 	public static function fix_cat_wp_quirk( $query ) {
 		if ( isset($query->query) && isset($query->query['category'])
 				&& !isset($query->query['cat']) ) {
@@ -178,6 +180,7 @@ class QueryIterator implements \Iterator, \Countable {
 	 * @return \WP_Query
 	 */
 	public static function handle_maybe_custom_posts_page( $query ) {
+		// @todo this logic should probably just move up to Timber::get_posts()
 		if ( $custom_posts_page = get_option('page_for_posts') ) {
 			if ( isset($query->query['p']) && $query->query['p'] == $custom_posts_page ) {
 				return new \WP_Query(array('post_type' => 'post'));
