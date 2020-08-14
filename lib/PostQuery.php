@@ -108,7 +108,7 @@ class PostQuery extends PostCollection {
 			'post_class'    => '\Timber\Post',
 		) );
 
-		if ( $args['merge_default'] ) {
+		if ( is_array($args['query']) && $args['merge_default'] ) {
 			global $wp_query;
 
 			// Merge query arguments with default query.
@@ -129,13 +129,6 @@ class PostQuery extends PostCollection {
 		$posts = $this->queryIterator->get_posts();
 
 		parent::__construct( $posts, $args['post_class'] );
-	}
-
-	/**
-	 * @return mixed The query the user orignally passed to the pagination object.
-	 */
-	protected function get_query() {
-		return $this->userQuery;
 	}
 
 	/**
@@ -171,7 +164,7 @@ class PostQuery extends PostCollection {
 	 */
 	public function pagination( $prefs = array() ) {
 		if ( !$this->pagination && is_a($this->queryIterator, 'Timber\QueryIterator') ) {
-			$this->pagination = $this->queryIterator->get_pagination($prefs, $this->get_query());
+			$this->pagination = $this->queryIterator->get_pagination($prefs, $this->userQuery);
 		}
 
 		return $this->pagination;

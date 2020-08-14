@@ -1,70 +1,78 @@
 <?php
 
+use WP_Query;
+
 use Timber\QueryIterator;
 
 /**
  * @group posts-api
  * @group post-collections
+ * @todo move these tests to test-timber-post-collection.php
  */
 class TestTimberQueryIterator extends Timber_UnitTestCase {
 
-    function testQueryPosts(){
-        $this->factory->post->create();
-        $posts = Timber\PostGetter::query_posts('post_type=post');
-        $this->assertInstanceOf( QueryIterator::class, $posts );
-    }
+	function testTheLoop(){
+		foreach (range(1, 3) as $i) {
+			$this->factory->post->create( array(
+				'post_title' => 'TestPost' . $i,
+				'post_date' => ('2018-09-0'.$i.' 01:56:01')
+			) );
+		}
 
-    function testTheLoop(){
-        for ( $i = 1; $i < 3; $i++ ) {
-            $this->factory->post->create( array(
-                'post_title' => 'TestPost' . $i,
-                'post_date' => ('2018-09-0'.$i.' 01:56:01')
-            ) );
-        }
-        $results = Timber::compile('assets/iterator-test.twig', array(
-            'posts' => Timber\PostGetter::query_posts( 'post_type=post' )
-        ) );
+		$wp_query = new WP_Query('post_type=post');
 
-        $results = trim( $results );
-        $this->assertStringStartsWith( 'TestPost2', $results );
-        $this->assertStringEndsWith( 'TestPost1', $results );
+		$results = Timber::compile_string(
+			'{% for p in posts %}{{fn("get_the_title")}}{% endfor %}',
+			[
+				'posts' => new QueryIterator($wp_query),
+			]
+		);
 
-    }
+		// Assert that our posts show up in reverse-chronological order.
+		$this->assertEquals( 'TestPost3TestPost2TestPost1', $results );
+	}
 
-    function testTwigLoopVar() {
-	    $posts = $this->factory->post->create_many( 3 );
-	    $posts = Timber\PostGetter::query_posts($posts);
+	function testTwigLoopVar() {
+		$this->factory->post->create_many( 3 );
 
-	    $compiled = Timber::compile('assets/iterator-loop-test.twig', array(
-		    'posts' => Timber\PostGetter::query_posts( 'post_type=post' )
-	    ) );
+		$wp_query = new WP_Query('post_type=post');
 
-	    $loop = array_map('json_decode', explode("\n", trim($compiled)));
+		// Dump the loop object itself each iteration, so we can see its
+		// internals over time.
+		$compiled = Timber::compile_string(
+			"{% for p in posts %}\n{{loop|json_encode}}\n{% endfor %}\n", array(
+			'posts' => new QueryIterator($wp_query),
+		) );
 
-	    $this->assertSame(1, $loop[0]->index);
-	    $this->assertSame(2, $loop[0]->revindex0);
-	    $this->assertSame(3, $loop[0]->length);
-	    $this->assertTrue($loop[0]->first);
-	    $this->assertFalse($loop[0]->last);
+		// Get each iteration as an object (each should have its own line).
+		$loop = array_map('json_decode', explode("\n", trim($compiled)));
 
-	    $this->assertSame(2, $loop[1]->index);
-	    $this->assertSame(1, $loop[1]->revindex0);
-	    $this->assertSame(3, $loop[1]->length);
-	    $this->assertFalse($loop[1]->first);
-	    $this->assertFalse($loop[1]->last);
+		$this->assertSame(1, $loop[0]->index);
+		$this->assertSame(2, $loop[0]->revindex0);
+		$this->assertSame(3, $loop[0]->length);
+		$this->assertTrue($loop[0]->first);
+		$this->assertFalse($loop[0]->last);
 
-	    $this->assertSame(3, $loop[2]->index);
-	    $this->assertSame(0, $loop[2]->revindex0);
-	    $this->assertSame(3, $loop[2]->length);
-	    $this->assertFalse($loop[2]->first);
-	    $this->assertTrue($loop[2]->last);
-    }
+		$this->assertSame(2, $loop[1]->index);
+		$this->assertSame(1, $loop[1]->revindex0);
+		$this->assertSame(3, $loop[1]->length);
+		$this->assertFalse($loop[1]->first);
+		$this->assertFalse($loop[1]->last);
 
-    function testPostCount() {
-    	$posts = $this->factory->post->create_many( 8 );
-        $posts = Timber\PostGetter::query_posts('post_type=post');
-        $this->assertEquals( 8, $posts->post_count() );
-        $this->assertEquals( 8, count($posts) );
-    }
+		$this->assertSame(3, $loop[2]->index);
+		$this->assertSame(0, $loop[2]->revindex0);
+		$this->assertSame(3, $loop[2]->length);
+		$this->assertFalse($loop[2]->first);
+		$this->assertTrue($loop[2]->last);
+	}
+
+	function testPostCount() {
+		$posts    = $this->factory->post->create_many( 8 );
+		$wp_query = new WP_Query('post_type=post');
+
+		// We should be able to call count(...) directly on our collection, by virtue
+		// of it implementing the Countable interface.
+		$this->assertCount( 8, new QueryIterator($wp_query)  );
+	}
 
 }
