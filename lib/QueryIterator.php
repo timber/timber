@@ -16,8 +16,10 @@ class QueryIterator implements \Iterator, \Countable {
 	 * @var \WP_Query
 	 */
 	private $_query = null;
+	// @todo remove
 	private $_posts_class = 'Timber\Post';
 
+	// @todo simplify to always take a WP_Query instance
 	public function __construct( $query = false, $posts_class = 'Timber\Post' ) {
 		add_action('pre_get_posts', array($this, 'fix_number_posts_wp_quirk'));
 		add_action('pre_get_posts', array($this, 'fix_cat_wp_quirk'));
@@ -84,6 +86,7 @@ class QueryIterator implements \Iterator, \Countable {
 	}
 
 	public function get_posts( $return_collection = false ) {
+		// @todo simplify to $this->_query->posts ...or we may not even need this method?
 		if ( isset($this->_query->posts) ) {
 			$posts = new PostCollection($this->_query->posts, $this->_posts_class);
 			return ($return_collection) ? $posts : $posts->get_posts();
@@ -131,6 +134,7 @@ class QueryIterator implements \Iterator, \Countable {
 
 		$this->_query->the_post();
 
+		// @todo use PostFactory to apply the Class Map
 		// Sets up the global post, but also return the post, for use in Twig template
 		$posts_class = $this->_posts_class;
 		return new $posts_class($post);

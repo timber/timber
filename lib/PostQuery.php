@@ -115,6 +115,9 @@ class PostQuery extends PostCollection {
 			$args['query'] = wp_parse_args( $args['query'], $wp_query->query_vars );
 		}
 
+		// NOTE: instead of doing this here, PostFactory should know whether to instantiate a PostQuery or not.
+		// So if we're at this point we already know we want a QueryIterator!
+		// @todo pass a WP_Query instance directly (we should get one from PostFactory)
 		$this->userQuery     = $args['query'];
 		$this->queryIterator = PostGetter::query_posts( $args['query'], $args['post_class'] );
 
@@ -122,6 +125,7 @@ class PostQuery extends PostCollection {
 			$this->found_posts = $this->queryIterator->found_posts();
 		}
 
+		// @todo if we already have a WP_Query instance, we can just get its posts directly.
 		$posts = $this->queryIterator->get_posts();
 
 		parent::__construct( $posts, $args['post_class'] );

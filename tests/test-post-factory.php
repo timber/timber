@@ -10,6 +10,7 @@ class MySpecialCustom extends MyCustom {}
 
 /**
  * @group factory
+ * @group post-collections
  */
 class TestPostFactory extends Timber_UnitTestCase {
 
@@ -194,6 +195,7 @@ class TestPostFactory extends Timber_UnitTestCase {
 			$postFactory->from($c_id),
 		]);
 
+		// Here we're operating on a PostArrayObject, which implements ArrayObject/ArrayAccess.
 		$this->assertInstanceOf(Post::class, $res[0]);
 		$this->assertInstanceOf(Post::class, $res[1]);
 		$this->assertInstanceOf(Post::class, $res[2]);
@@ -221,6 +223,7 @@ class TestPostFactory extends Timber_UnitTestCase {
 			'order'     => 'ASC',
 		]);
 
+		// Here we're operating on a PostQuery, which implements ArrayAccess.
 		$this->assertInstanceOf(Post::class,     $res[0]);
 		$this->assertInstanceOf(MyPage::class,   $res[1]);
 		$this->assertInstanceOf(MyCustom::class, $res[2]);

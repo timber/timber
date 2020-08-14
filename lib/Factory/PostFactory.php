@@ -63,6 +63,7 @@ class PostFactory {
 	}
 
 	protected function from_wp_query(WP_Query $query) : Iterable {
+		// @todo return new PostQuery() to wrap $query
 		return array_map([$this, 'build'], $query->posts);
 	}
 

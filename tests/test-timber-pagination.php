@@ -2,6 +2,7 @@
 
 /**
  * @group posts-api
+ * @group post-collections
  */
 class TestTimberPagination extends Timber_UnitTestCase {
 
