@@ -11,20 +11,25 @@ class TestTimberPostIterator extends Timber_UnitTestCase {
 	 * Checks if the 'loop_end' hook runs after last array iteration.
 	 */
 	function testLoopEndAfterLastItem() {
-		$pids = $this->factory->post->create_many(3);
+		$pids = $this->factory->post->create_many(3, [
+			'post_title' => 'My Post',
+		]);
 		$posts = new Timber\PostQuery( array(
 			'query' => $pids
 		) );
+
 		$this->collector = [];
 
-		add_action( 'loop_end', array( $this, 'loop_end' ) );
+		// Later we'll assert that our loop_end hook got called as expected.
+		add_action( 'loop_end', function() {
+			$this->collector[] = 'ended';
+		} );
 
 		foreach ( $posts as $post ) {
 			$this->collector[] = $post->title;
 		}
 
-		$this->assertCount( 4, $this->collector );
-		$this->assertEquals( 'loop_end', $this->collector[3] );
+		$this->assertEquals( ['My Post', 'My Post', 'My Post', 'ended'], $this->collector );
 	}
 
 	function testSetupMethodCalled() {
@@ -43,7 +48,7 @@ class TestTimberPostIterator extends Timber_UnitTestCase {
 			$in_the_loop = $in_the_loop || $wp_query->in_the_loop;
 		}
 
-		$this->assertEquals( $in_the_loop, true );
+		$this->assertTrue( $in_the_loop );
 	}
 
 	/**
@@ -93,9 +98,5 @@ class TestTimberPostIterator extends Timber_UnitTestCase {
 		global $wp_query;
 
 		$this->assertFalse( $wp_query->in_the_loop );
-	}
-
-	public function loop_end() {
-		$this->collector[] = 'loop_end';
 	}
 }

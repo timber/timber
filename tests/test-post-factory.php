@@ -55,7 +55,8 @@ class TestPostFactory extends Timber_UnitTestCase {
 				'custom' => MyCustom::class,
 			];
 		};
-		add_filter( 'timber/post/classmap', $my_class_map );
+
+		$this->add_filter_temporarily( 'timber/post/classmap', $my_class_map );
 
 		$post_id   = $this->factory->post->create(['post_type' => 'post']);
 		$page_id   = $this->factory->post->create(['post_type' => 'page']);
@@ -69,8 +70,6 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(MyPost::class, $post);
 		$this->assertInstanceOf(MyPage::class, $page);
 		$this->assertInstanceOf(MyCustom::class, $custom);
-
-		remove_filter( 'timber/post/classmap', 'my_class_map' );
 	}
 
 	public function testFromWithCallable() {
@@ -85,7 +84,8 @@ class TestPostFactory extends Timber_UnitTestCase {
 				},
 			]);
 		};
-		add_filter( 'timber/post/classmap', $my_class_map );
+
+		$this->add_filter_temporarily( 'timber/post/classmap', $my_class_map );
 
 		$post_id   = $this->factory->post->create(['post_type' => 'post']);
 		$page_id   = $this->factory->post->create(['post_type' => 'page']);
@@ -102,8 +102,6 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(MyPage::class, $page);
 		$this->assertInstanceOf(MyCustom::class, $custom);
 		$this->assertInstanceOf(MySpecialCustom::class, $special);
-
-		remove_filter( 'timber/post/classmap', $my_class_map );
 	}
 
 	public function testFromWpPost() {
@@ -121,7 +119,8 @@ class TestPostFactory extends Timber_UnitTestCase {
 				'custom' => MyCustom::class,
 			];
 		};
-		add_filter( 'timber/post/classmap', $my_class_map );
+		
+		$this->add_filter_temporarily( 'timber/post/classmap', $my_class_map );
 
 		$post_id   = $this->factory->post->create(['post_type' => 'post', 'post_date' => '2020-01-10 19:46:41']);
 		$page_id   = $this->factory->post->create(['post_type' => 'page', 'post_date' => '2020-01-09 19:46:41']);
@@ -134,8 +133,6 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(MyPost::class,   $posts[0]);
 		$this->assertInstanceOf(MyPage::class,   $posts[1]);
 		$this->assertInstanceOf(MyCustom::class, $posts[2]);
-
-		remove_filter( 'timber/post/classmap', 'my_class_map' );
 	}
 
 	public function testFromArray() {
@@ -158,7 +155,8 @@ class TestPostFactory extends Timber_UnitTestCase {
 				'custom' => MyCustom::class,
 			]);
 		};
-		add_filter( 'timber/post/classmap', $my_class_map );
+
+		$this->add_filter_temporarily( 'timber/post/classmap', $my_class_map );
 
 		$postFactory = new PostFactory();
 
@@ -177,8 +175,6 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(Post::class,     $res[0]);
 		$this->assertInstanceOf(MyPage::class,   $res[1]);
 		$this->assertInstanceOf(MyCustom::class, $res[2]);
-
-		remove_filter( 'timber/post/classmap', $my_class_map );
 	}
 
 	public function testFromAssortedArray() {
@@ -196,6 +192,7 @@ class TestPostFactory extends Timber_UnitTestCase {
 		]);
 
 		// Here we're operating on a PostArrayObject, which implements ArrayObject/ArrayAccess.
+		// @todo $this->assertInstanceOf(PostArrayObject::class, $res);
 		$this->assertInstanceOf(Post::class, $res[0]);
 		$this->assertInstanceOf(Post::class, $res[1]);
 		$this->assertInstanceOf(Post::class, $res[2]);
@@ -208,7 +205,8 @@ class TestPostFactory extends Timber_UnitTestCase {
 				'custom' => MyCustom::class,
 			]);
 		};
-		add_filter( 'timber/post/classmap', $my_class_map );
+
+		$this->add_filter_temporarily( 'timber/post/classmap', $my_class_map );
 
 		$this->factory->post->create(['post_type' => 'post',        'post_title' => 'AAA']);
 		$this->factory->post->create(['post_type' => 'page',        'post_title' => 'BBB']);
@@ -224,11 +222,10 @@ class TestPostFactory extends Timber_UnitTestCase {
 		]);
 
 		// Here we're operating on a PostQuery, which implements ArrayAccess.
+		// @todo $this->assertInstanceOf(PostQuery::class, $res);
 		$this->assertInstanceOf(Post::class,     $res[0]);
 		$this->assertInstanceOf(MyPage::class,   $res[1]);
 		$this->assertInstanceOf(MyCustom::class, $res[2]);
-
-		remove_filter( 'timber/post/classmap', $my_class_map );
 	}
 
 }

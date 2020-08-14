@@ -1,15 +1,17 @@
 <?php
 
+use Timber\QueryIterator;
+
 /**
  * @group posts-api
  * @group post-collections
  */
-class TestTimberIterator extends Timber_UnitTestCase {
+class TestTimberQueryIterator extends Timber_UnitTestCase {
 
     function testQueryPosts(){
         $this->factory->post->create();
         $posts = Timber\PostGetter::query_posts('post_type=post');
-        $this->assertInstanceOf( 'Timber\QueryIterator', $posts );
+        $this->assertInstanceOf( QueryIterator::class, $posts );
     }
 
     function testTheLoop(){
