@@ -9,7 +9,17 @@ namespace Timber;
  * @api
  */
 class PostArrayObject extends \ArrayObject implements PostCollectionInterface {
+  /**
+   * @inheritdoc
+   */
   public function pagination(array $options = []) {
     return null;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function to_array() : array {
+    return $this->getArrayCopy();
   }
 }
