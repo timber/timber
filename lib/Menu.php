@@ -2,15 +2,17 @@
 
 namespace Timber;
 
+use WP_Post;
+use WP_Term;
+
+use Timber\Factory\MenuItemFactory;
+
 /**
  * Class Menu
  *
  * @api
  */
 class Menu extends Term {
-
-	public $MenuItemClass = 'Timber\MenuItem';
-	public $PostClass = 'Timber\Post';
 
 	/**
 	 * @api
@@ -84,6 +86,20 @@ class Menu extends Term {
 	public $theme_location = null;
 
 	/**
+	 * @internal
+	 * @param \WP_Term   $wp_term the vanilla WP term object to build from
+	 * @param array      $options Optional. An array of options. Right now, only the `depth` is
+	 *                            supported which says how many levels of hierarchy should be
+	 *                            included in the menu. Default `0`, which is all levels.
+	 * @return \Timber\Term
+	 */
+	public static function build(WP_Term $wp_term, array $options = []) : Term {
+		$term = new static($wp_term->term_id, $options);
+		$term->init($wp_term);
+		return $term;
+	}
+
+	/**
 	 * Initialize a menu.
 	 *
 	 * @api
@@ -108,29 +124,14 @@ class Menu extends Term {
 		) );
 
 		$this->depth = (int) $this->options['depth'];
-
-		if ( $slug != 0 && is_numeric($slug) ) {
-			$menu_id = $slug;
-		} else if ( is_array($locations) && ! empty( $locations ) ) {
-			$menu_id = $this->get_menu_id_from_locations($slug, $locations);
-		} else if ( $slug === false ) {
-			$menu_id = false;
-		}
-		if ( !$menu_id ) {
-			$menu_id = $this->get_menu_id_from_terms($slug);
-		}
-		if ( $menu_id ) {
-			$this->init($menu_id);
-		} else {
-			$this->init_as_page_menu();
-		}
 	}
 
 	/**
 	 * @internal
 	 * @param int $menu_id
 	 */
-	protected function init( $menu_id ) {
+	protected function init(WP_Term $menu_term) {
+		$menu_id = $menu_term->term_id;
 		$menu = wp_get_nav_menu_items($menu_id);
 		$locations = get_nav_menu_locations();
 
@@ -140,6 +141,9 @@ class Menu extends Term {
 		}
 
 		if ( $menu ) {
+			// @todo do we really need to call this fn? It's marked as "private" in the WP docs.
+			// Commenting out this line only breaks a single test: TestTimberMenu::testMenuTwigWithClasses
+			// ...maybe that means there's a way to accomplish what we need without calling a "private" fn.
 			_wp_menu_item_classes_by_context($menu);
 			if ( is_array($menu) ) {
 				/**
@@ -181,10 +185,8 @@ class Menu extends Term {
 				$menu = $this->strip_to_depth_limit($menu);
 			}
 			$this->items = $menu;
-			$menu_info = wp_get_nav_menu_object($menu_id);
-			if ( $menu_info ) {
-				$this->import($menu_info);
-			}
+
+			$this->import($menu_term);
 			$this->ID = $this->term_id;
 			$this->id = $this->term_id;
 			$this->title = $this->name;
@@ -194,7 +196,7 @@ class Menu extends Term {
 	/**
 	 * @internal
 	 */
-	protected function init_as_page_menu() {
+	public function init_as_page_menu() {
 		$menu = get_pages(array('sort_column' => 'menu_order'));
 		if ( $menu ) {
 			foreach ( $menu as $mi ) {
@@ -206,55 +208,6 @@ class Menu extends Term {
 			}
 			$this->items = $menu;
 		}
-	}
-
-	/**
-	 * @internal
-	 * @param string|int $slug
-	 * @param array      $locations
-	 * @return integer
-	 */
-	protected function get_menu_id_from_locations( $slug, $locations ) {
-		if ( $slug === 0 ) {
-			$slug = $this->get_menu_id_from_terms($slug);
-		}
-		if ( is_numeric($slug) ) {
-			$slug = array_search($slug, $locations);
-		}
-		if ( isset($locations[$slug]) ) {
-			$menu_id = $locations[$slug];
-			if ( function_exists('wpml_object_id_filter') ) {
-				$menu_id = wpml_object_id_filter($locations[$slug], 'nav_menu');
-			}
-
-			return $menu_id;
-		}
-	}
-
-	/**
-	 * @internal
-	 * @param int|string $slug
-	 * @return int
-	 */
-	protected function get_menu_id_from_terms( $slug = 0 ) {
-		if ( !is_numeric($slug) && is_string($slug) ) {
-			//we have a string so lets search for that
-			$menu = get_term_by('slug', $slug, 'nav_menu');
-			if ( $menu ) {
-				return $menu->term_id;
-			}
-			$menu = get_term_by('name', $slug, 'nav_menu');
-			if ( $menu ) {
-				return $menu->term_id;
-			}
-		}
-		$menus = get_terms('nav_menu', array('hide_empty' => true));
-		if ( is_array($menus) && count($menus) ) {
-			if ( isset($menus[0]->term_id) ) {
-				return $menus[0]->term_id;
-			}
-		}
-		return 0;
 	}
 
 	/**
@@ -279,46 +232,39 @@ class Menu extends Term {
 	 * @return array
 	 */
 	protected function order_children( $items ) {
-		$index = array();
-		$menu = array();
-		$wp_post_menu_item = null;
+		$items_by_id = [];
+		$menu        = [];
+
 		foreach ( $items as $item ) {
 			if ( isset($item->title) ) {
 				// Items from WordPress can come with a $title property which conflicts with methods
 				$item->__title = $item->title;
 				unset($item->title);
 			}
+
+			// Check it we're working with a post
 			if ( isset($item->ID) ) {
-				if ( is_object($item) && get_class($item) == 'WP_Post' ) {
-					$wp_post_menu_item = $item;
-					$item = new $this->PostClass($item);
-				}
-				$menu_item = $this->create_menu_item($item);
-				if ( $wp_post_menu_item ) {
-					$menu_item->import_classes($wp_post_menu_item);
-				}
-				$wp_post_menu_item = null;
-				$index[$item->ID] = $menu_item;
+				$factory   = new MenuItemFactory();
+				$menu_item = $factory->from($item, $this);
+
+				// Index each item by its ID
+				$items_by_id[$item->ID] = $menu_item;
 			}
 		}
-		foreach ( $index as $item ) {
-			if ( isset($item->menu_item_parent) && $item->menu_item_parent && isset($index[$item->menu_item_parent]) ) {
-				$index[$item->menu_item_parent]->add_child($item);
+
+		// Walk through our indexed items and assign them to their parents as applicable
+		foreach ( $items_by_id as $item ) {
+			if ( !empty($item->menu_item_parent) && isset($items_by_id[$item->menu_item_parent]) ) {
+				// This one is a child item, add it to its parent
+				$items_by_id[$item->menu_item_parent]->add_child($item);
 			} else {
+				// This is a top-level item, add it as such
 				$menu[] = $item;
 			}
 		}
 		return $menu;
 	}
 
-	/**
-	 * @internal
-	 * @param object $item the WP menu item object to wrap
-	 * @return mixed an instance of the user-configured $MenuItemClass
-	 */
-	protected function create_menu_item($item) {
-		return new $this->MenuItemClass( $item, $this );
-	}
 
 	/**
 	 * @internal

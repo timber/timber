@@ -72,7 +72,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @param \WP_Term the vanilla WP term object to build from
 	 * @return \Timber\Term
 	 */
-	public static function build(WP_Term $wp_term) : self {
+	public static function build(WP_Term $wp_term, array $_options = []) : self {
 		$term = new static();
 		$term->init($wp_term);
 		return $term;
