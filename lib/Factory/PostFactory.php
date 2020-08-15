@@ -5,6 +5,8 @@ namespace Timber\Factory;
 use Timber\Attachment;
 use Timber\CoreInterface;
 use Timber\Post;
+use Timber\PostArrayObject;
+use Timber\PostQuery;
 
 use WP_Query;
 use WP_Post;
@@ -27,7 +29,7 @@ class PostFactory {
 		}
 
 		if ($this->is_numeric_array($params)) {
-			return array_map([$this, 'from'], $params);
+			return new PostArrayObject(array_map([$this, 'from'], $params));
 		}
 
 		if (is_array($params)) {
@@ -63,8 +65,9 @@ class PostFactory {
 	}
 
 	protected function from_wp_query(WP_Query $query) : Iterable {
-		// @todo return new PostQuery() to wrap $query
-		return array_map([$this, 'build'], $query->posts);
+		return new PostQuery([
+			'query' => $query,
+		]);
 	}
 
 	protected function get_post_class(WP_Post $post) : string {

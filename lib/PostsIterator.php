@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use Timber\Factory\PostFactory;
+
 /**
  * Class PostsIterator
  */
@@ -15,6 +17,9 @@ class PostsIterator extends \ArrayIterator {
 	 * @return mixed
 	 */
 	public function current() {
+		static $factory;
+		$factory = $factory ?? new PostFactory();
+
 		// Fire action when the loop has just started.
 		if ( 0 === $this->key() ) {
 			do_action_ref_array( 'loop_start', array( &$GLOBALS['wp_query'] ) );
@@ -25,8 +30,10 @@ class PostsIterator extends \ArrayIterator {
 		 * more going on in the Timber\Post::setup() function. The compabitibility improvements live
 		 * there, because they also need to work for singular templates, where there’s no loop.
 		 */
-		$post = parent::current();
-		// @todo lazily create Post instances here
+		$wp_post = parent::current();
+		// Lazily instantiate a Timber\Post instance exactly once.
+		// @todo maybe improve performance by caching the instantiated post.
+		$post = $factory->from($wp_post);
 		$post->setup();
 
 		return $post;

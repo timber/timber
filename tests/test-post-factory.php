@@ -1,6 +1,8 @@
 <?php
 
 use Timber\Post;
+use Timber\PostArrayObject;
+use Timber\PostQuery;
 use Timber\Factory\PostFactory;
 
 class MyPost extends Post {}
@@ -192,7 +194,8 @@ class TestPostFactory extends Timber_UnitTestCase {
 		]);
 
 		// Here we're operating on a PostArrayObject, which implements ArrayObject/ArrayAccess.
-		// @todo $this->assertInstanceOf(PostArrayObject::class, $res);
+		$this->assertInstanceOf(PostArrayObject::class, $res);
+
 		$this->assertInstanceOf(Post::class, $res[0]);
 		$this->assertInstanceOf(Post::class, $res[1]);
 		$this->assertInstanceOf(Post::class, $res[2]);
@@ -222,7 +225,8 @@ class TestPostFactory extends Timber_UnitTestCase {
 		]);
 
 		// Here we're operating on a PostQuery, which implements ArrayAccess.
-		// @todo $this->assertInstanceOf(PostQuery::class, $res);
+		$this->assertInstanceOf(PostQuery::class, $res);
+
 		$this->assertInstanceOf(Post::class,     $res[0]);
 		$this->assertInstanceOf(MyPage::class,   $res[1]);
 		$this->assertInstanceOf(MyCustom::class, $res[2]);

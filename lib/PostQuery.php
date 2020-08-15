@@ -4,6 +4,8 @@ namespace Timber;
 
 use WP_Query;
 
+use Timber\Factory\PostFactory;
+
 /**
  * Class PostQuery
  *
@@ -50,6 +52,13 @@ class PostQuery extends PostCollection {
 	protected $queryIterator;
 
 	protected $pagination = null;
+
+	/**
+	 * Internal cache of Timber\Post instances.
+	 *
+	 * @var array
+	 */
+	protected $instancesById = [];
 
 	/**
 	 * Query for a collection of WordPress posts.
@@ -195,5 +204,23 @@ class PostQuery extends PostCollection {
 		}
 
 		return $this->pagination;
+	}
+
+
+	/**
+	 * Lazily instantiates Timber\Post instances from WP_Post objects.
+	 *
+	 * @internal
+	 */
+	public function offsetGet($offset) {
+		static $factory;
+		$factory = $factory ?? new PostFactory();
+
+		$wp_post = parent::offsetGet($offset);
+		if (empty($this->instancesById[$wp_post->ID])) {
+			$this->instancesById[$wp_post->ID] = $factory->from($wp_post);
+		}
+
+		return $this->instancesById[$wp_post->ID];
 	}
 }

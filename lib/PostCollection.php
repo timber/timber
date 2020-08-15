@@ -20,9 +20,9 @@ class PostCollection extends \ArrayObject {
 	 */
 	public function __construct( $posts = array(), $post_class = '\Timber\Post' ) {
 		// @todo for better performance, skip this and pass raw WP_Posts; lazily instantiate them as Timber\Posts in PostsIterator
-		$returned_posts = self::init( $posts ?: [], $post_class );
+		// $returned_posts = self::init( $posts ?: [], $post_class );
 
-		parent::__construct( $returned_posts, 0, PostsIterator::class );
+		parent::__construct( $posts, 0, PostsIterator::class );
 	}
 
 	protected static function init( $posts, $post_class ) {
