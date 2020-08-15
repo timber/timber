@@ -162,7 +162,7 @@ class PostQuery extends PostCollection {
 			$posts = $this->queryIterator->get_posts();
 		}
 
-		parent::__construct( $posts, $args['post_class'] );
+		parent::__construct( $posts );
 	}
 
 	/**

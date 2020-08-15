@@ -16,35 +16,9 @@ class PostCollection extends \ArrayObject {
 	 * @api
 	 *
 	 * @param array  $posts      An array of posts.
-	 * @param string $post_class The post class to use.
 	 */
-	public function __construct( $posts = array(), $post_class = '\Timber\Post' ) {
-		// @todo for better performance, skip this and pass raw WP_Posts; lazily instantiate them as Timber\Posts in PostsIterator
-		// $returned_posts = self::init( $posts ?: [], $post_class );
-
+	public function __construct( array $posts = [] ) {
 		parent::__construct( $posts, 0, PostsIterator::class );
-	}
-
-	protected static function init( $posts, $post_class ) {
-		$returned_posts = array();
-
-		foreach ( $posts as $post_object ) {
-			$post_type      = get_post_type($post_object);
-			$post_class_use = PostGetter::get_post_class($post_type, $post_class);
-
-			// Don't create yet another object if $post_object is already of the right type
-			if ( is_a($post_object, $post_class_use) ) {
-				$post = $post_object;
-			} else {
-				$post = new $post_class_use($post_object);
-			}
-
-			if ( isset($post->ID) ) {
-				$returned_posts[] = $post;
-			}
-		}
-
-		return self::maybe_set_preview($returned_posts);
 	}
 
 	/**
