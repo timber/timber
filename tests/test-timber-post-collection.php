@@ -1,6 +1,11 @@
 <?php
 
+use Timber\Post;
 use Timber\PostQuery;
+
+class CollectionTestPage extends Post {}
+class CollectionTestPost extends Post {}
+class CollectionTestCustom extends Post {}
 
 /**
  * @group posts-api
@@ -234,10 +239,92 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 	}
 
 	function testIterationWithClassMaps() {
-		$this->markTestSkipped();
+		// Posts are titled in reverse-chronological order.
+		$this->factory->post->create([
+			'post_date'  => '2020-01-03',
+			'post_type'  => 'custom',
+		]);
+		$this->factory->post->create([
+			'post_date'  => '2020-01-02',
+			'post_type'  => 'page',
+		]);
+		$this->factory->post->create([
+			'post_date'  => '2020-01-01',
+			'post_type'  => 'post',
+		]);
+
+		$this->add_filter_temporarily('timber/post/classmap', function() {
+			return [
+				'post'   => CollectionTestPost::class,
+				'page'   => CollectionTestPage::class,
+				'custom' => CollectionTestCustom::class,
+			];
+		});
+
+		$query = new PostQuery([
+			'query' => new WP_Query([
+				'post_type' => ['post', 'page', 'custom']
+			]),
+		]);
+
+		$this->assertInstanceOf(CollectionTestCustom::class, $query[0]);
+		$this->assertInstanceOf(CollectionTestPage::class, $query[1]);
+		$this->assertInstanceOf(CollectionTestPost::class, $query[2]);
 	}
 
-	function testLazyEvaluation() {
-		$this->markTestSkipped();
+	function testLazyInstantiation() {
+		// For performance reasons, we don't want to instantiate every Timber\Post instance
+		// in a collection if we don't need to. We can't inspect the PostsIterator to test
+		// this directly, but we can keep track of how many of each post type has been
+		// instantiated via some fancy Class Map indirection.
+		$postTypeCounts = [
+			'post' => 0,
+			'page' => 0,
+		];
+
+		// Each time a Timber\Post is instantiated, increment the count for its post_type.
+		$callback = function($post) use (&$postTypeCounts) {
+			$postTypeCounts[$post->post_type]++;
+			return Post::class;
+		};
+		$this->add_filter_temporarily('timber/post/classmap', function() use ($callback) {
+			return [
+				'post' => $callback,
+				'page' => $callback,
+			];
+		});
+
+		// All posts should show up before all pages in query results.
+		$this->factory->post->create_many(3, [
+			'post_date'  => '2020-01-02',
+			'post_type'  => 'post',
+		]);
+		$this->factory->post->create_many(3, [
+			'post_date'  => '2020-01-01',
+			'post_type'  => 'page',
+		]);
+
+		$query = new PostQuery([
+			'query' => new WP_Query([
+				'post_type' => ['post', 'page'],
+			]),
+		]);
+
+		// No posts should have been instantiated yet.
+		$this->assertEquals([
+			'post' => 0,
+			'page' => 0,
+		], $postTypeCounts);
+
+		$query[0]; // post #1
+		$query[1]; // post #2
+		$query[2]; // post #3
+		$query[3]; // page #1
+
+		// Two of our pages should be as yet uninstantiated.
+		$this->assertEquals([
+			'post' => 3,
+			'page' => 1,
+		], $postTypeCounts);
 	}
 }
