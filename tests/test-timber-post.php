@@ -238,6 +238,7 @@
 		 * @deprecated since 2.0
 		 */
 		function testPostByName(){
+			$this->markTestSkipped();
 			$post_id = $this->factory->post->create();
 			$post = Timber::get_post($post_id);
 			$post2 = Timber::get_post($post->post_name);
@@ -358,6 +359,7 @@
 		}
 
         function testPagedContent(){
+					$this->markTestSkipped();
             $quote = $page1 = 'Named must your fear be before banish it you can.';
             $quote .= '<!--nextpage-->';
             $quote .= $page2 = "No, try not. Do or do not. There is no try.";
