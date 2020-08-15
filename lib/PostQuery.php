@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use ArrayObject;
 use WP_Query;
 
 use Timber\Factory\PostFactory;
@@ -18,7 +19,7 @@ use Timber\Factory\PostFactory;
  *
  * @api
  */
-class PostQuery extends PostCollection {
+class PostQuery extends ArrayObject {
 
 	/**
 	 * Found posts.
@@ -162,7 +163,7 @@ class PostQuery extends PostCollection {
 			$posts = $this->queryIterator->get_posts();
 		}
 
-		parent::__construct( $posts );
+		parent::__construct( $posts, 0, PostsIterator::class );
 	}
 
 	/**
@@ -204,6 +205,14 @@ class PostQuery extends PostCollection {
 		}
 
 		return $this->pagination;
+	}
+
+	/**
+	 * @api
+	 * @return array
+	 */
+	public function get_posts() {
+		return $this->getArrayCopy();
 	}
 
 
