@@ -30,7 +30,7 @@ class TestTimberPostArrayObject extends Timber_UnitTestCase {
       ],
     ]);
 
-    $coll = new PostArrayObject($query->get_posts());
+    $coll = new PostArrayObject($query->to_array());
 
     $this->assertCount(20, $coll);
   }
@@ -43,7 +43,7 @@ class TestTimberPostArrayObject extends Timber_UnitTestCase {
       ],
     ]);
 
-    $coll = new PostArrayObject($query->get_posts());
+    $coll = new PostArrayObject($query->to_array());
 
     $this->assertNull($coll->pagination());
   }

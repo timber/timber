@@ -102,7 +102,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 
 		$posts = ( new Timber\PostQuery( [
 			'post_type' => 'post',
-		] ) )->get_posts();
+		] ) )->to_array();
 
 		$collection = new Timber\PostQuery( $posts );
 
@@ -119,7 +119,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		$posts = ( new Timber\PostQuery( [
 			'post_type'     => 'post',
 			'no_found_rows' => true,
-		] ) )->get_posts();
+		] ) )->to_array();
 
 		$collection = new Timber\PostQuery( $posts );
 

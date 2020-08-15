@@ -19,7 +19,7 @@ use Timber\Factory\PostFactory;
  *
  * @api
  */
-class PostQuery extends ArrayObject {
+class PostQuery extends ArrayObject implements PostCollectionInterface {
 
 	/**
 	 * Found posts.
@@ -211,7 +211,16 @@ class PostQuery extends ArrayObject {
 	 * @api
 	 * @return array
 	 */
-	public function get_posts() {
+	public function to_array() : array {
+		return $this->getArrayCopy();
+	}
+
+	/**
+	 * @todo should we deprecate this method in favor of to_array()?
+	 * @api
+	 * @return array
+	 */
+	public function get_posts() : array {
 		return $this->getArrayCopy();
 	}
 
