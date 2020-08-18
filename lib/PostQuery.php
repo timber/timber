@@ -217,6 +217,24 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	}
 
 	/**
+	 * Override data printed by var_dump() and similar. Realizes the collection before
+	 * returning. Due to a PHP bug, this only works in PHP >= 7.4.
+	 *
+	 * @see https://bugs.php.net/bug.php?id=69264
+	 * @internal
+	 */
+	public function __debugInfo() {
+		return [
+			'__posts'     => $this->getArrayCopy(),
+			'_query'      => $this->_query,
+			'found_posts' => $this->found_posts,
+			'pagination'  => $this->pagination,
+			'factory'     => $this->factory,
+			'iterator'    => $this->getIterator(),
+		];
+	}
+
+	/**
 	 * @internal
 	 */
 	public function getArrayCopy() {
