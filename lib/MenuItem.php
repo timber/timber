@@ -94,7 +94,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		$this->import($data);
 		$this->import_classes($data);
 		$this->menu_object = $data;
-		$this->_name       = $data->name;
+		$this->_name       = $data->name ?? '';
 		$this->add_class('menu-item-'.$this->ID);
 
 		$this->object_id = (int) get_post_meta( $this->ID, '_menu_item_object_id', true );
@@ -228,7 +228,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		if ( is_array($data) ) {
 			$data = (object) $data;
 		}
-		$this->classes = array_merge($this->classes, $data->classes);
+		$this->classes = array_merge($this->classes, $data->classes ?? []);
 		$this->classes = array_unique($this->classes);
 
 		$options = new \stdClass();
