@@ -1,6 +1,9 @@
 <?php
 
 use Timber\PostArrayObject;
+use Timber\PostQuery;
+
+require_once 'php/SerializablePost.php';
 
 /**
  * @group posts-api
@@ -46,6 +49,36 @@ class TestTimberPostArrayObject extends Timber_UnitTestCase {
     $coll = new PostArrayObject($query->to_array());
 
     $this->assertNull($coll->pagination());
+  }
+
+  function testJsonSerialize() {
+		$this->factory->post->create([
+			'post_title' => 'Tobias',
+			'post_type'  => 'funke',
+			'meta_input' => [
+				'how_many_of_us' => 'DOZENS',
+			],
+		]);
+
+		$this->add_filter_temporarily('timber/post/classmap', function() {
+			return [
+				'funke' => SerializablePost::class,
+			];
+		});
+
+		$query = new PostQuery([
+			'query' => new WP_Query('post_type=>funke'),
+    ]);
+
+    $coll = new PostArrayObject($query->to_array());
+
+		$this->assertEquals([
+			[
+				'post_title'     => 'Tobias',
+				'post_type'      => 'funke',
+				'how_many_of_us' => 'DOZENS',
+			],
+		], json_decode(json_encode($coll), true));
   }
 
 }

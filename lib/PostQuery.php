@@ -3,6 +3,7 @@
 namespace Timber;
 
 use ArrayObject;
+use JsonSerializable;
 use WP_Post;
 use WP_Query;
 
@@ -20,7 +21,7 @@ use Timber\Factory\PostFactory;
  *
  * @api
  */
-class PostQuery extends ArrayObject implements PostCollectionInterface {
+class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSerializable {
 
 	/**
 	 * Found posts.
@@ -291,6 +292,15 @@ class PostQuery extends ArrayObject implements PostCollectionInterface {
 	 * @return array
 	 */
 	public function get_posts() : array {
+		return $this->getArrayCopy();
+	}
+
+	/**
+	 * Returns realized (eagerly instantiated) Timber\Post data to serialize to JSON.
+	 * 
+	 * @internal
+	 */
+	public function jsonSerialize() {
 		return $this->getArrayCopy();
 	}
 

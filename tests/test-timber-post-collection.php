@@ -7,6 +7,8 @@ class CollectionTestPage extends Post {}
 class CollectionTestPost extends Post {}
 class CollectionTestCustom extends Post {}
 
+require_once 'php/SerializablePost.php';
+
 /**
  * @group posts-api
  * @group post-collections
@@ -417,5 +419,33 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		$this->assertInstanceOf(CollectionTestCustom::class, $arr[0]);
 		$this->assertInstanceOf(CollectionTestPage::class,   $arr[1]);
 		$this->assertInstanceOf(CollectionTestPost::class,   $arr[2]);
+	}
+
+	public function testJsonSerialize() {
+		$this->factory->post->create([
+			'post_title' => 'Tobias',
+			'post_type'  => 'funke',
+			'meta_input' => [
+				'how_many_of_us' => 'DOZENS',
+			],
+		]);
+
+		$this->add_filter_temporarily('timber/post/classmap', function() {
+			return [
+				'funke' => SerializablePost::class,
+			];
+		});
+
+		$query = new PostQuery([
+			'query' => new WP_Query('post_type=>funke'),
+		]);
+
+		$this->assertEquals([
+			[
+				'post_title'     => 'Tobias',
+				'post_type'      => 'funke',
+				'how_many_of_us' => 'DOZENS',
+			],
+		], json_decode(json_encode($query), true));
 	}
 }
