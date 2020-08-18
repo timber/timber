@@ -327,4 +327,95 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 			'page' => 1,
 		], $postTypeCounts);
 	}
+
+	function testRealize() {
+		// For performance reasons, we don't want to instantiate every Timber\Post instance
+		// in a collection if we don't need to. But sometimes we want to load them eagerly,
+		// for example if .
+		$postTypeCounts = [
+			'post' => 0,
+			'page' => 0,
+		];
+
+		// Each time a Timber\Post is instantiated, increment the count for its post_type.
+		$callback = function($post) use (&$postTypeCounts) {
+			$postTypeCounts[$post->post_type]++;
+			return Post::class;
+		};
+		$this->add_filter_temporarily('timber/post/classmap', function() use ($callback) {
+			return [
+				'post' => $callback,
+				'page' => $callback,
+			];
+		});
+
+		// All posts should show up before all pages in query results.
+		$this->factory->post->create_many(3, [
+			'post_date'  => '2020-01-02',
+			'post_type'  => 'post',
+		]);
+		$this->factory->post->create_many(3, [
+			'post_date'  => '2020-01-01',
+			'post_type'  => 'page',
+		]);
+
+		$query = new PostQuery([
+			'query' => new WP_Query([
+				'post_type' => ['post', 'page'],
+			]),
+		]);
+
+		// Eagerly instantiate all Posts.
+		$query->realize();
+
+		// All posts should be instantiated.
+		$this->assertEquals([
+			'post' => 3,
+			'page' => 3,
+		], $postTypeCounts);
+
+		$query->realize();
+
+		// Subsequent calls to realize() should be noops.
+		$this->assertEquals([
+			'post' => 3,
+			'page' => 3,
+		], $postTypeCounts);
+	}
+
+	public function testToArray() {
+		// Posts results are in reverse-chronological order.
+		$this->factory->post->create([
+			'post_date'  => '2020-01-03',
+			'post_type'  => 'custom',
+		]);
+		$this->factory->post->create([
+			'post_date'  => '2020-01-02',
+			'post_type'  => 'page',
+		]);
+		$this->factory->post->create([
+			'post_date'  => '2020-01-01',
+			'post_type'  => 'post',
+		]);
+
+		$this->add_filter_temporarily('timber/post/classmap', function() {
+			return [
+				'post'   => CollectionTestPost::class,
+				'page'   => CollectionTestPage::class,
+				'custom' => CollectionTestCustom::class,
+			];
+		});
+
+		$query = new PostQuery([
+			'query' => new WP_Query([
+				'post_type' => ['post', 'page', 'custom']
+			]),
+		]);
+
+		$arr = $query->to_array();
+
+		$this->assertInstanceOf(CollectionTestCustom::class, $arr[0]);
+		$this->assertInstanceOf(CollectionTestPage::class,   $arr[1]);
+		$this->assertInstanceOf(CollectionTestPost::class,   $arr[2]);
+	}
 }
