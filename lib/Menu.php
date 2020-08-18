@@ -242,7 +242,7 @@ class Menu extends Term {
 				unset($item->title);
 			}
 
-			// Check it we're working with a post
+			// Check if we're working with a post
 			if ( isset($item->ID) ) {
 				$factory   = new MenuItemFactory();
 				$menu_item = $factory->from($item, $this);

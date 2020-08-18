@@ -594,6 +594,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @param string $post_class             Optional. The name of the post class to use for the
 	 *                                       returned posts. Default `Timber\Post`.
 	 * @return \Timber\PostQuery
+	 * @todo implement this via Timber::get_posts() instead
 	 */
 	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
 		if ( !strlen($post_class) ) {
