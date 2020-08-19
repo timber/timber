@@ -5,9 +5,11 @@ namespace Timber;
 use Timber\Factory\PostFactory;
 
 /**
- * Class PostsIterator
+ * PostQueryIterator used internally by PostQuery to keep iteration in sync with The Loop.
+ * 
+ * @internal
  */
-class PostsIterator extends \ArrayIterator {
+class PostQueryIterator extends \ArrayIterator {
 	/**
 	 * Prepares the state before working on a post.
 	 *

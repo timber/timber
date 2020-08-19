@@ -172,7 +172,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 			$posts = $this->queryIterator->get_posts();
 		}
 
-		parent::__construct( $posts, 0, PostsIterator::class );
+		parent::__construct( $posts, 0, PostQueryIterator::class );
 	}
 
 	/**

@@ -18,7 +18,7 @@ class PostCollection extends \ArrayObject {
 	 * @param array  $posts      An array of posts.
 	 */
 	public function __construct( array $posts = [] ) {
-		parent::__construct( $posts, 0, PostsIterator::class );
+		parent::__construct( $posts, 0, PostQueryIterator::class );
 	}
 
 	/**
