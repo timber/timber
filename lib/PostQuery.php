@@ -47,7 +47,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	 *
 	 * @var \WP_Query
 	 */
-	protected $_query = null;
+	protected $wp_query = null;
 
 	/**
 	 * @var PostCollection|QueryIterator
@@ -143,10 +143,10 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 
 		if ($args['query'] instanceof WP_Query) {
 			// @todo this is the new happy path
-			$this->_query = $args['query'];
-			$this->found_posts = $this->_query->found_posts;
+			$this->wp_query = $args['query'];
+			$this->found_posts = $this->wp_query->found_posts;
 
-			$posts = $this->_query->posts ?: [];
+			$posts = $this->wp_query->posts ?: [];
 
 		} else {
 
@@ -209,8 +209,8 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	public function pagination( $prefs = array() ) {
 		if ( !$this->pagination && is_a($this->queryIterator, 'Timber\QueryIterator') ) {
 			$this->pagination = $this->queryIterator->get_pagination($prefs, $this->userQuery);
-		} elseif ( !$this->pagination && $this->_query instanceof WP_Query ) {
-			$this->pagination = new Pagination($prefs, $this->_query);
+		} elseif ( !$this->pagination && $this->wp_query instanceof WP_Query ) {
+			$this->pagination = new Pagination($prefs, $this->wp_query);
 		}
 
 		return $this->pagination;
@@ -226,7 +226,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	public function __debugInfo() {
 		return [
 			'__posts'     => $this->getArrayCopy(),
-			'_query'      => $this->_query,
+			'wp_query'    => $this->wp_query,
 			'found_posts' => $this->found_posts,
 			'pagination'  => $this->pagination,
 			'factory'     => $this->factory,
