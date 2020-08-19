@@ -255,19 +255,19 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	 * @api
 	 * @example
 	 * ```php
-	 * $lazyPosts = \Timber\Helper::transient('my_posts', function() {
+	 * $lazy_posts = \Timber\Helper::transient('my_posts', function() {
 	 *   return \Timber\Timber::get_posts([
 	 * 		 'post_type' => 'some_post_type',
 	 *   ]);
 	 * }, HOUR_IN_SECONDS);
 	 *
-	 * foreach ($lazyPosts as $post) {
+	 * foreach ($lazy_posts as $post) {
 	 *   // This will incur the performance cost of Post::setup()
 	 * }
 	 *
 	 * // Contrast with:
 	 *
-	 * $eagerPosts = \Timber\Helper::transient('my_posts', function() {
+	 * $eager_posts = \Timber\Helper::transient('my_posts', function() {
 	 *   $query = \Timber\Timber::get_posts([
 	 * 		 'post_type' => 'some_post_type',
 	 *   ]);
@@ -275,7 +275,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	 *   return $query->realize();
 	 * }, HOUR_IN_SECONDS);
 	 *
-	 * foreach ($eagerPosts as $post) {
+	 * foreach ($eager_posts as $post) {
 	 *   // No additional overhead here.
 	 * }
 	 * ```
