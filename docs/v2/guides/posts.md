@@ -304,7 +304,7 @@ $posts = Timber::get_posts( array(
 
 In the back, the query will not count the number of found rows. This can result in [better performance](https://kinsta.com/blog/wp-query/) if you have a large number of posts.
 
-### Laziness
+### Laziness and Caching
 
 `Timber\Post` instances inside Post Collections are created [lazily](https://en.wikipedia.org/wiki/Lazy_evaluation). That is, until it is accessed directly, each index inside a Post Collection is just a raw `WP_Post` object. We do it this way because creating a `Timber\Post` object may require additional database round trips or other expensive operations to import the comprising data.
 
