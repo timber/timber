@@ -4,7 +4,7 @@ namespace Timber;
 
 /**
  * PostArrayObject class for dealing with arbitrary collections of Posts
- * (typically not from a WP_Query)
+ * (typically not wrapping a `WP_Query` directly, which is what `Timber\PostQuery` does).
  *
  * @api
  */

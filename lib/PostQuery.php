@@ -16,8 +16,8 @@ use Timber\Factory\PostFactory;
  *
  * This is the equivalent of using `WP_Query` in normal WordPress development.
  *
- * PostCollections are used directly in Twig templates to iterate through a collection of posts and
- * retrieve meta information about it.
+ * PostQuery is used directly in Twig templates to iterate through post query results and
+ * retrieve meta information about them.
  *
  * @api
  */
@@ -315,7 +315,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 
 	/**
 	 * Returns realized (eagerly instantiated) Timber\Post data to serialize to JSON.
-	 * 
+	 *
 	 * @internal
 	 */
 	public function jsonSerialize() {

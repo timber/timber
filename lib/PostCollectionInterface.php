@@ -7,8 +7,8 @@ use Countable;
 use Traversable;
 
 /**
- * PostArrayObject class for dealing with arbitrary collections of Posts
- * (typically not from a WP_Query)
+ * Interface for dealing with collections of Posts, whether directly wrapping a WP_Query instance,
+ * a simple (flat/numeric) array of Posts, or some other kind of custom collection.
  *
  * @api
  */
