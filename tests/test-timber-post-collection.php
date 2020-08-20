@@ -3,10 +3,9 @@
 use Timber\Post;
 use Timber\PostQuery;
 
-class CollectionTestPage extends Post {}
-class CollectionTestPost extends Post {}
-class CollectionTestCustom extends Post {}
-
+require_once 'php/CollectionTestPage.php';
+require_once 'php/CollectionTestPost.php';
+require_once 'php/CollectionTestCustom.php';
 require_once 'php/SerializablePost.php';
 
 /**

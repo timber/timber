@@ -9,6 +9,12 @@ namespace Timber;
  * @api
  */
 class PostArrayObject extends \ArrayObject implements PostCollectionInterface {
+	use AccessesPostsLazily;
+
+	public function __construct(array $posts) {
+		parent::__construct($posts, 0, PostsIterator::class);
+	}
+
 	/**
 	 * @inheritdoc
 	 */
