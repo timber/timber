@@ -13,6 +13,13 @@ use JsonSerializable;
 class PostArrayObject extends \ArrayObject implements PostCollectionInterface, JsonSerializable {
 	use AccessesPostsLazily;
 
+	/**
+	 * Takes an arbitrary array of WP_Posts to wrap and (lazily) translate to
+	 * Timber\Post instances.
+	 *
+	 * @api
+	 * @param \WP_Post[] $posts an array of WP_Post objects
+	 */
 	public function __construct(array $posts) {
 		parent::__construct($posts, 0, PostsIterator::class);
 	}
