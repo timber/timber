@@ -7,8 +7,6 @@ use JsonSerializable;
 use WP_Post;
 use WP_Query;
 
-use Timber\Factory\PostFactory;
-
 /**
  * Class PostQuery
  *
@@ -22,6 +20,7 @@ use Timber\Factory\PostFactory;
  * @api
  */
 class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSerializable {
+	use AccessesPostsLazily;
 
 	/**
 	 * Found posts.
@@ -62,13 +61,6 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	 * @var bool
 	 */
 	private $realized = false;
-
-	/**
-	 * PostFactory instance used internally to instantiate Posts.
-	 *
-	 * @var \Timber\Factory\PostFactory
-	 */
-	private $factory;
 
 	/**
 	 * Query for a collection of WordPress posts.
@@ -283,7 +275,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	 */
 	public function realize() : self {
 		if (!$this->realized) {
-			// offsetGet() is where lazy instantiation actually happens.
+			// AccessPostsLazily::offsetGet() is where lazy instantiation actually happens.
 			// Since arbitrary array index access may have happened previously,
 			// leverage that to ensure each Post is instantiated exactly once.
 			// We call parent::getArrayCopy() to avoid infinite mutual recursion.
@@ -322,30 +314,4 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 		return $this->getArrayCopy();
 	}
 
-
-	/**
-	 * Lazily instantiates Timber\Post instances from WP_Post objects.
-	 *
-	 * @internal
-	 */
-	public function offsetGet($offset) {
-		$post = parent::offsetGet($offset);
-		if ($post instanceof WP_Post) {
-			$post = $this->factory()->from($post);
-			$this->offsetSet($offset, $post);
-		}
-
-		return $post;
-	}
-
-	/**
-	 * @internal
-	 */
-	private function factory() : PostFactory {
-		if (!$this->factory) {
-			$this->factory = new PostFactory();
-		}
-
-		return $this->factory;
-	}
 }
