@@ -269,9 +269,14 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 			]),
 		]);
 
-		$this->assertInstanceOf(CollectionTestCustom::class, $query[0]);
-		$this->assertInstanceOf(CollectionTestPage::class, $query[1]);
-		$this->assertInstanceOf(CollectionTestPost::class, $query[2]);
+		$expected = [
+			CollectionTestCustom::class,
+			CollectionTestPage::class,
+			CollectionTestPost::class,
+		];
+		foreach ($query as $idx => $post) {
+			$this->assertInstanceOf($expected[$idx], $post);
+		}
 	}
 
 	function testLazyInstantiation() {
@@ -437,7 +442,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		});
 
 		$query = new PostQuery([
-			'query' => new WP_Query('post_type=>funke'),
+			'query' => new WP_Query('post_type=funke'),
 		]);
 
 		$this->assertEquals([
