@@ -14,11 +14,97 @@ use Timber\Factory\PostFactory;
  */
 trait AccessesPostsLazily {
 	/**
+	 * Whether Timber\Post instances have been lazily instantiated.
+	 *
+	 * @var bool
+	 */
+	private $realized = false;
+
+	/**
 	 * PostFactory instance used internally to instantiate Posts.
 	 *
 	 * @var \Timber\Factory\PostFactory
 	 */
 	private $factory;
+
+	/**
+	 * For better performance, PostQuery does not instantiate `Timber\Post` objects
+	 * at query time. It instantiates each `Timber\Post` only as needed, i.e. while
+	 * iterating or for direct array access (`$coll[$i]`). Since specific `Timber\Post`
+	 * implementations may have expensive `::setup()` operations, this is usually
+	 * what you want, but not always. For example, you may want to force eager
+	 * instantiation to front-load a collection to be cached. To eagerly instantiate
+	 * a lazy collection of objects is to "realize" that collection.
+	 *
+	 * @api
+	 * @example
+	 * ```php
+	 * $lazy_posts = \Timber\Helper::transient('my_posts', function() {
+	 *   return \Timber\Timber::get_posts([
+	 * 		 'post_type' => 'some_post_type',
+	 *   ]);
+	 * }, HOUR_IN_SECONDS);
+	 *
+	 * foreach ($lazy_posts as $post) {
+	 *   // This will incur the performance cost of Post::setup()
+	 * }
+	 *
+	 * // Contrast with:
+	 *
+	 * $eager_posts = \Timber\Helper::transient('my_posts', function() {
+	 *   $query = \Timber\Timber::get_posts([
+	 * 		 'post_type' => 'some_post_type',
+	 *   ]);
+	 *   // Incur Post::setup() cost up front.
+	 *   return $query->realize();
+	 * }, HOUR_IN_SECONDS);
+	 *
+	 * foreach ($eager_posts as $post) {
+	 *   // No additional overhead here.
+	 * }
+	 * ```
+	 * @return \Timber\PostQuery the realized PostQuery
+	 */
+	public function realize() : self {
+		if (!$this->realized) {
+			// AccessPostsLazily::offsetGet() is where lazy instantiation actually happens.
+			// Since arbitrary array index access may have happened previously,
+			// leverage that to ensure each Post is instantiated exactly once.
+			// We call parent::getArrayCopy() to avoid infinite mutual recursion.
+			foreach (array_keys(parent::getArrayCopy()) as $k) {
+				$this->offsetGet($k);
+			}
+			$this->realized = true;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @internal
+	 */
+	public function getArrayCopy() {
+		// Force eager instantiation of Timber\Posts before returning them all in an array.
+		$this->realize();
+		return parent::getArrayCopy();
+	}
+
+	/**
+	 * @api
+	 * @return array
+	 */
+	public function to_array() : array {
+		return $this->getArrayCopy();
+	}
+
+	/**
+	 * @todo should we deprecate this method in favor of to_array()?
+	 * @api
+	 * @return array
+	 */
+	public function get_posts() : array {
+		return $this->getArrayCopy();
+	}
 
 	/**
 	 * Lazily instantiates Timber\Post instances from WP_Post objects.

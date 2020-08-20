@@ -2,13 +2,15 @@
 
 namespace Timber;
 
+use JsonSerializable;
+
 /**
  * PostArrayObject class for dealing with arbitrary collections of Posts
  * (typically not wrapping a `WP_Query` directly, which is what `Timber\PostQuery` does).
  *
  * @api
  */
-class PostArrayObject extends \ArrayObject implements PostCollectionInterface {
+class PostArrayObject extends \ArrayObject implements PostCollectionInterface, JsonSerializable {
 	use AccessesPostsLazily;
 
 	public function __construct(array $posts) {
@@ -23,9 +25,11 @@ class PostArrayObject extends \ArrayObject implements PostCollectionInterface {
 	}
 
 	/**
-	 * @inheritdoc
+	 * Returns realized (eagerly instantiated) Timber\Post data to serialize to JSON.
+	 *
+	 * @internal
 	 */
-	public function to_array() : array {
+	public function jsonSerialize() {
 		return $this->getArrayCopy();
 	}
 }

@@ -120,7 +120,6 @@ class TestTimberPostArrayObject extends Timber_UnitTestCase {
 	}
 
   function testJsonSerialize() {
-    $this->markTestSkipped();
 		$this->factory->post->create([
 			'post_title' => 'Tobias',
 			'post_type'  => 'funke',
