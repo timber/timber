@@ -28,8 +28,8 @@ trait AccessesPostsLazily {
 	private $factory;
 
 	/**
-	 * For better performance, PostQuery does not instantiate `Timber\Post` objects
-	 * at query time. It instantiates each `Timber\Post` only as needed, i.e. while
+	 * For better performance, Post Collections do not instantiate `Timber\Post` objects
+	 * at query time. They instantiate each `Timber\Post` only as needed, i.e. while
 	 * iterating or for direct array access (`$coll[$i]`). Since specific `Timber\Post`
 	 * implementations may have expensive `::setup()` operations, this is usually
 	 * what you want, but not always. For example, you may want to force eager
@@ -63,11 +63,11 @@ trait AccessesPostsLazily {
 	 *   // No additional overhead here.
 	 * }
 	 * ```
-	 * @return \Timber\PostQuery the realized PostQuery
+	 * @return \Timber\PostCollectionInterface the realized PostQuery
 	 */
 	public function realize() : self {
 		if (!$this->realized) {
-			// AccessPostsLazily::offsetGet() is where lazy instantiation actually happens.
+			// offsetGet() is where lazy instantiation actually happens.
 			// Since arbitrary array index access may have happened previously,
 			// leverage that to ensure each Post is instantiated exactly once.
 			// We call parent::getArrayCopy() to avoid infinite mutual recursion.
