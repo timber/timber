@@ -2,9 +2,10 @@
 
 use Timber\Timber;
 use Timber\Post;
+use Timber\PostQuery;
 
 /**
- * @group called-post-constructor
+ * @group post-collections
  */
 class TestTimberContext extends Timber_UnitTestCase {
 	/**
@@ -47,8 +48,8 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$context = Timber::context();
 
 		$this->assertArrayNotHasKey( 'post', $context );
-		$this->assertInstanceOf( 'Timber\PostQuery', $context['posts'] );
-		$this->assertCount( 3, $context['posts']->get_posts() );
+		$this->assertInstanceOf( PostQuery::class, $context['posts'] );
+		$this->assertCount( 3, $context['posts'] );
 	}
 
 	function testIfSetupFunctionIsRunInSingularTemplates() {

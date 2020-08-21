@@ -374,9 +374,9 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	function testGetPostsFromLoop() {
 		$posts = $this->factory->post->create_many( 15 );
 		$this->go_to( '/' );
-		$posts = new Timber\PostQuery();
+		$posts = new Timber\PostQuery($GLOBALS['wp_query']);
 		$this->assertEquals( 10, count( $posts ) );
-		$pc = new Timber\PostQuery();
+		$pc = new Timber\PostQuery($GLOBALS['wp_query']);
 		$this->assertEquals( 10, count( $pc ) );
 	}
 

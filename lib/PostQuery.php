@@ -106,25 +106,30 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	 *                                       for the current template. Default `false`.
 	 * }
 	 */
-	public function __construct( $args = array() ) {
-		// Backwards compatibility.
-		if ( ! empty( $args ) && ! isset( $args['query'] ) ) {
-			$args = array(
-				'query' => $args,
-			);
+	public function __construct( $args = null ) {
+		// @todo remove these if/else clauses completely and deal directly w/ WP_Query
+		if (is_array($args)) {
+			// Backwards compatibility.
+			if ( ! empty( $args ) && ! isset( $args['query'] ) ) {
+				$args = array(
+					'query' => $args,
+				);
 
-			Helper::deprecated(
-				'Passing query arguments directly to PostQuery',
-				'Put your query in an array with a "query" key',
-				'2.0.0'
-			);
+				Helper::deprecated(
+					'Passing query arguments directly to PostQuery',
+					'Put your query in an array with a "query" key',
+					'2.0.0'
+				);
+			}
+
+			$args = wp_parse_args( $args, array(
+				'query'         => false,
+				'merge_default' => false,
+				'post_class'    => '\Timber\Post',
+			) );
+		} else {
+			$args = ['query' => ($args ?? new WP_Query())];
 		}
-
-		$args = wp_parse_args( $args, array(
-			'query'         => false,
-			'merge_default' => false,
-			'post_class'    => '\Timber\Post',
-		) );
 
 		if ($args['query'] instanceof WP_Query) {
 			// @todo this is the new happy path

@@ -635,7 +635,7 @@ class Timber {
 			$post = ( new Post() )->setup();
 			$context['post'] = $post;
 		} elseif ( is_archive() || is_home() ) {
-			$context['posts'] = new PostQuery();
+			$context['posts'] = new PostQuery($GLOBALS['wp_query']);
 		}
 
  		return $context;
