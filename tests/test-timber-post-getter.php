@@ -362,7 +362,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		if ( have_posts() ) {
 			while ( have_posts() ) {
 				the_post();
-				$posts = new Timber\PostQuery();
+				$posts = new Timber\PostQuery($GLOBALS['wp_query']);
 			}
 		}
 		$end = microtime( true );

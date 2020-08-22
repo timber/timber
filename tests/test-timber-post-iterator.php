@@ -1,5 +1,8 @@
 <?php
 
+use Timber\PostArrayObject;
+use Timber\PostQuery;
+
 /**
  * @group posts-api
  * @group post-collections
@@ -14,9 +17,7 @@ class TestTimberPostIterator extends Timber_UnitTestCase {
 		$pids = $this->factory->post->create_many(3, [
 			'post_title' => 'My Post',
 		]);
-		$posts = new Timber\PostQuery( array(
-			'query' => $pids
-		) );
+		$posts = new Timber\PostArrayObject( $pids );
 
 		$this->collector = [];
 
@@ -34,9 +35,7 @@ class TestTimberPostIterator extends Timber_UnitTestCase {
 
 	function testSetupMethodCalled() {
 		$pids = $this->factory->post->create_many(3);
-		$posts = new Timber\PostQuery( array(
-			'query' => $pids
-		) );
+		$posts = new Timber\PostArrayObject( $pids );
 
 		// Make sure $wp_query is set up.
 		$this->go_to( get_permalink( get_option( 'page_for_posts' ) ) );
@@ -56,9 +55,7 @@ class TestTimberPostIterator extends Timber_UnitTestCase {
 	 */
 	function testResetPostDataAfterLastItem() {
 		$pids = $this->factory->post->create_many(3);
-		$posts = new Timber\PostQuery( array(
-			'query' => $pids
-		) );
+		$posts = new Timber\PostArrayObject( $pids );
 
 		// Make sure $wp_query is set up.
 		$this->go_to( get_permalink( get_option( 'page_for_posts' ) ) );
@@ -80,9 +77,7 @@ class TestTimberPostIterator extends Timber_UnitTestCase {
 	 */
 	function testInTheLoopAfterLastItem() {
 		$pids = $this->factory->post->create_many(3);
-		$posts = new Timber\PostQuery( array(
-			'query' => $pids
-		) );
+		$posts = new Timber\PostArrayObject( $pids );
 
 		// Make sure $wp_query is set up.
 		$this->go_to( get_permalink( get_option( 'page_for_posts' ) ) );

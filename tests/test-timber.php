@@ -1,6 +1,7 @@
 <?php
 
 use Timber\LocationManager;
+use Timber\Post;
 
 /**
  * @group posts-api
@@ -161,16 +162,23 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	function testGetPostByQueryArray() {
 		$this->markTestSkipped();
 		$pid = $this->factory->post->create();
-		$posts = new Timber\PostQuery( array(
-			'query'      => array(
-				'post_type' => 'post'
-			),
-			'post_class' => 'TimberAlert',
-		) );
-		$this->assertEquals('TimberAlert', get_class($posts[0]));
+
+		$this->add_filter_temporarily('timber/post/classmap', function() {
+			return [
+				'post' => TimberAlert::class,
+			];
+		});
+
+		$query = [
+			'post_type' => 'post',
+		];
+
+		$posts = Timber::get_posts($query);
+		$this->assertInstanceOf(TimberAlert::class, $posts[0]);
 		$this->assertEquals($pid, $posts[0]->ID);
-		$post = Timber::get_post(array('post_type' => 'post'), 'TimberAlert');
-		$this->assertEquals('TimberAlert', get_class($post));
+
+		$post = Timber::get_post($query);
+		$this->assertInstanceOf(TimberAlert::class, $post);
 		$this->assertEquals($pid, $post->ID);
 	}
 
@@ -195,74 +203,36 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertEquals($pid, $post->ID);
 	}
 
-	function testGetPostsQueryString(){
-		$this->factory->post->create();
-		$this->factory->post->create();
-		$posts = new Timber\PostQuery( array(
-			'query' => 'post_type=post'
-		) );
-		$this->assertGreaterThan(1, count($posts));
-	}
-
 	function testGetPostsQueryArray(){
+		$this->markTestSkipped();
 		$this->factory->post->create();
-		$query = array('post_type' => 'post');
-		$posts = new Timber\PostQuery( array(
-			'query' => $query
-		) );
-		$this->assertEquals('Timber\Post', get_class($posts[0]));
+		$posts = Timber::get_posts([
+			'post_type' => 'post',
+		]);
+		$this->assertInstanceOf(Post::class, $posts[0]);
 	}
 
 	function testGetPostsFromSlug(){
 		$post_id = $this->factory->post->create(array('post_name' => 'mycoolpost'));
 		$post    = Timber::get_post('mycoolpost');
 		$this->assertEquals($post_id, $post->ID);
-
-		$post = Timber::get_post('mycoolpost');
-		$this->assertEquals($post_id, $post->ID);
-	}
-
-	function testGetPostsQueryStringClassName(){
-		$this->factory->post->create();
-		$this->factory->post->create();
-		$posts = new Timber\PostQuery( array(
-			'query' => 'post_type=post'
-		) );
-		$post = $posts[0];
-		$this->assertEquals('Timber\Post', get_class($post));
 	}
 
 	function testGetPostsFromArrayOfIds(){
 		$this->markTestSkipped();
-		$pids = array();
-		$pids[] = $this->factory->post->create();
-		$pids[] = $this->factory->post->create();
-		$pids[] = $this->factory->post->create();
-		$posts  = new Timber\PostQuery( array(
-			'query' => $pids,
-		) );
-		$this->assertEquals('Timber\Post', get_class($posts[0]));
-	}
+		$pids = [
+			$this->factory->post->create(),
+			$this->factory->post->create(),
+			$this->factory->post->create(),
+		];
+		$posts  = Timber::get_posts($pids);
 
-	function testGetPostsArrayCount(){
-		$pids = array();
-		$pids[] = $this->factory->post->create();
-		$pids[] = $this->factory->post->create();
-		$pids[] = $this->factory->post->create();
-		$posts  = new Timber\PostQuery( array(
-			'query' => $pids
-		) );
-		$this->assertEquals(3, count($posts));
-	}
+		$this->assertCount(3, $posts);
+		$this->assertInstanceOf(PostArrayObject::class, $posts);
 
-	function testGetPostsCollection() {
-		$pids   = array();
-		$pids[] = $this->factory->post->create();
-		$pids[] = $this->factory->post->create();
-		$pids[] = $this->factory->post->create();
-		$posts  = new Timber\PostCollection($pids);
-		$this->assertEquals(3, count($posts));
-		$this->assertEquals('Timber\PostCollection', get_class($posts));
+		foreach ($posts as $post) {
+			$this->assertInstanceOf(Post::class, $post);
+		}
 	}
 
 	function testUserInContextAnon() {
@@ -439,6 +409,17 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertCount(3, Timber\Timber::get_posts( array(
 			'category' => $cats,
 		) ));
+	}
+
+	/**
+	 * @group wp_query_hacks
+	 */
+	function testNumberpostsFix() {
+		$this->markTestSkipped('@todo restore support for numberposts fix from QueryIterator::fix_number_posts_wp_quirk');
+		$pids = $this->factory->post->create_many(10);
+		// @todo call Timber::get_posts()
+		$pc = new PostQuery( new WP_Query('post_type=post&numberposts=6') );
+		$this->assertEquals(6, count($pc));
 	}
 
 }

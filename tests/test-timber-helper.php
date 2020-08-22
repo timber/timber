@@ -1,5 +1,7 @@
 <?php
 
+use Timber\PostArrayObject;
+
 	/**
 	 * @group posts-api
 	 * @group terms-api
@@ -235,16 +237,13 @@
 		/**
  		 * @expectedException Twig\Error\RuntimeError
 		 */
-		function testArrayFilterKeyValueUsingPostQuery() {
+		function testArrayFilterKeyValueUsingPostArrayObject() {
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
-			$posts = new Timber\PostQuery( array(
-				'query' => $posts,
-			) );
-			$template = '{% for post in posts | filter({post_content: "Method Man"
-		})%}{{ post.title }}{% endfor %}';
+			$posts = new PostArrayObject( $posts );
+			$template = '{% for post in posts | filter({post_content: "Method Man"})%}{{ post.title }}{% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => $posts));
 			$this->assertEquals('Cheese', trim($str));
 		}

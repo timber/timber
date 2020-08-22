@@ -128,7 +128,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 				'post_class'    => '\Timber\Post',
 			) );
 		} else {
-			$args = ['query' => ($args ?? new WP_Query())];
+			$args = ['query' => $args];
 		}
 
 		if ($args['query'] instanceof WP_Query) {
