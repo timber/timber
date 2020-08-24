@@ -446,7 +446,7 @@ class Helper {
 		}
 
 		// the IteratorIterator wrapping is needed as some internal PHP classes are \Traversable but do not implement \Iterator
-		return new \CallbackFilterIterator( new \IteratorIterator($array), $arrow );
+		return new \CallbackFilterIterator( new \IteratorIterator( $list ), $arrow );
 	}
 
 	/**
