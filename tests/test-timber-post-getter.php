@@ -2,7 +2,7 @@
 
 /**
  * @group posts-api
- * @group called-post-constructor
+ * @group timber
  */
 class TestTimberPostGetter extends Timber_UnitTestCase {
 
@@ -10,68 +10,6 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	function setUp() {
 		delete_option('sticky_posts');
 		parent::setUp();
-	}
-	/**
-	 * @group wp_query_hacks
-	 */
-	function testGettingWithCatAndOtherStuff() {
-		$pids = $this->factory->post->create_many(6);
-		$cat = $this->factory->term->create(array('name' => 'Something', 'taxonomy' => 'category'));
-		$cat_post = $this->factory->post->create(array('post_title' => 'Germany', 'post_category' => array($cat)) );
-		$cat_post = $this->factory->post->create(array('post_title' => 'France', 'post_category' => array($cat)) );
-		$cat_post = $this->factory->post->create(array('post_title' => 'England', 'post_category' => array($cat)) );
-		$args = array(
-            'post_type' => 'post',
-            'posts_per_page' => 2,
-            'post_status' => 'publish',
-            'cat' => $cat
-        );
-		$posts = new Timber\PostQuery( array(
-			'query' => $args,
-		) );
-		$this->assertEquals(2, count($posts));
-	}
-
-	/**
-	 * @group wp_query_hacks
-	 */
-	function testGettingWithCategoryAndOtherStuff() {
-		$pids = $this->factory->post->create_many(6);
-		$cat = $this->factory->term->create(array('name' => 'Something', 'taxonomy' => 'category'));
-		$cat_post = $this->factory->post->create(array('post_title' => 'Germany', 'post_category' => array($cat)) );
-		$cat_post = $this->factory->post->create(array('post_title' => 'France', 'post_category' => array($cat)) );
-		$cat_post = $this->factory->post->create(array('post_title' => 'England', 'post_category' => array($cat)) );
-		$args = array(
-            'post_type' => 'post',
-            'posts_per_page' => 2,
-            'post_status' => 'publish',
-            'category' => $cat
-        );
-		$posts = new Timber\PostQuery( array(
-			'query' => $args
-		) );
-		$this->assertEquals(2, count($posts));
-	}
-
-	/**
-	 * @group wp_query_hacks
-	 */
-	function testGettingWithCat() {
-		$cat = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
-
-		$pids = $this->factory->post->create_many(6);
-		$cats = $this->factory->post->create_many(3, array('post_category' => array($cat)) );
-		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
-
-		$cat_post = Timber::get_post($cat_post);
-		$this->assertEquals('News', $cat_post->category()->title());
-
-		$posts = new Timber\PostQuery( array(
-			'query' => array(
-				'cat' => $cat,
-			),
-		) );
-		$this->assertEquals(4, count($posts));
 	}
 
 	/**
@@ -151,6 +89,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	}
 
 	function testStickyAgainstGetPosts() {
+		$this->markTestSkipped('@todo this behavior is being deprecated');
 		$first = $this->factory->post->create(array('post_date' => '2015-04-23 15:13:52'));
 		$sticky_id = $this->factory->post->create(array('post_date' => '2015-04-21 15:13:52'));
 		$last = $this->factory->post->create(array('post_date' => '2015-04-24 15:13:52'));
@@ -163,29 +102,36 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	}
 
 	function testStickyAgainstTwoSuccessiveLookups() {
+		$this->markTestSkipped('@todo this behavior is being deprecated');
 		$first = $this->factory->post->create(array('post_date' => '2015-04-23 15:13:52'));
 		$sticky_id = $this->factory->post->create(array('post_date' => '2015-04-21 15:13:52'));
 		$last = $this->factory->post->create(array('post_date' => '2015-04-24 15:13:52'));
 		update_option('sticky_posts', array($sticky_id));
 		add_filter( 'timber/get_posts/mirror_wp_get_posts', '__return_true' );
+
 		$posts = Timber::get_posts('post_type=post');
 		$this->assertEquals($last, $posts[0]->ID);
+
 		$posts = new Timber\PostQuery(array('query' => 'post_type=post'));
 		$this->assertEquals($sticky_id, $posts[0]->ID);
 	}
 
 	function testStickyAgainstQuery() {
-		$pids = $this->factory->post->create(array('post_date' => '2015-04-23 15:13:52'));
+		$this->factory->post->create(array('post_date' => '2015-04-23 15:13:52'));
 		$sticky_id = $this->factory->post->create(array('post_date' => '2015-04-21 15:13:52'));
-		$pids = $this->factory->post->create(array('post_date' => '2015-04-24 15:13:52'));
+		$this->factory->post->create(array('post_date' => '2015-04-24 15:13:52'));
+
 		update_option('sticky_posts', array($sticky_id));
-		$posts = new Timber\PostQuery(array('query' => 'post_type=post'));
+
+		$posts = Timber::get_posts([
+			'post_type' => 'post',
+		]);
 		$this->assertEquals($sticky_id, $posts[0]->ID);
+
 		$posts = new WP_Query('post_type=post');
 		$this->assertEquals($sticky_id, $posts->posts[0]->ID);
 	}
 
-	// @todo adapt this to new Class Map API and move to test-timber.php
 	function testGetPostsWithClassMap() {
 		$this->markTestSkipped();
 		register_post_type('portfolio', array('public' => true));
@@ -203,7 +149,6 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		$this->assertEquals( 'TimberPortfolio', get_class($posts[1]) );
 	}
 
-	// @todo adapt this to new Class Map API and move to test-timber.php
 	function testGetPostWithClassMap() {
 		$this->markTestSkipped();
 		register_post_type('portfolio', array('public' => true));
@@ -303,6 +248,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	 * @group wp_query_hacks
 	 */
 	function testNumberPostsAll() {
+		$this->markTestSkipped();
 		$pids = $this->factory->post->create_many( 17 );
 		$query = 'post_type=post&numberposts=-1';
 		$posts = new Timber\PostQuery( array(
@@ -313,6 +259,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	}
 
 	function testPostsPerPage() {
+		$this->markTestSkipped();
 		$pids = $this->factory->post->create_many( 15 );
 		$query = 'post_type=post&posts_per_page=7';
 		$posts = new Timber\PostQuery( array(
@@ -322,6 +269,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	}
 
 	function testPostsPerPageAll() {
+		$this->markTestSkipped();
 		$pids = $this->factory->post->create_many( 23 );
 		$query = 'post_type=post&posts_per_page=-1';
 		$posts = new Timber\PostQuery( array(
@@ -331,6 +279,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 	}
 
 	function testPostsPerPageBig() {
+		$this->markTestSkipped();
 		$pids = $this->factory->post->create_many( 15 );
 		$query = 'post_type=post&posts_per_page=15';
 		$posts = new Timber\PostQuery( array(

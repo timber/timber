@@ -194,13 +194,11 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 			'post_type'  => 'post',
 		]);
 
-		$this->add_filter_temporarily('timber/post/classmap', function() {
-			return [
-				'post'   => CollectionTestPost::class,
-				'page'   => CollectionTestPage::class,
-				'custom' => CollectionTestCustom::class,
-			];
-		});
+		$this->register_post_classmap_temporarily([
+			'post'   => CollectionTestPost::class,
+			'page'   => CollectionTestPage::class,
+			'custom' => CollectionTestCustom::class,
+		]);
 
 		$query = new PostQuery(new WP_Query([
 			'post_type' => ['post', 'page', 'custom']

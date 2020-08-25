@@ -8,6 +8,7 @@ use Timber\Post;
  * @group terms-api
  * @group users-api
  * @group post-collections
+ * @group timber
  */
 class TestTimberMainClass extends Timber_UnitTestCase {
 
@@ -163,11 +164,9 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->markTestSkipped();
 		$pid = $this->factory->post->create();
 
-		$this->add_filter_temporarily('timber/post/classmap', function() {
-			return [
-				'post' => TimberAlert::class,
-			];
-		});
+		$this->register_post_classmap_temporarily([
+			'post' => TimberAlert::class,
+		]);
 
 		$query = [
 			'post_type' => 'post',
@@ -261,7 +260,53 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertInstanceOf( Timber\PostQuery::class, $context['posts'] );
 	}
 
-	/* Terms */
+	function testGetPostsWithClassMap() {
+		$this->markTestSkipped();
+		register_post_type('portfolio', array('public' => true));
+		register_post_type('alert', array('public' => true));
+		$this->factory->post->create(array('post_type' => 'portfolio', 'post_title' => 'A portfolio item', 'post_date' => '2015-04-23 15:13:52'));
+		$this->factory->post->create(array('post_type' => 'alert', 'post_title' => 'An alert', 'post_date' => '2015-06-23 15:13:52'));
+
+		$this->register_post_classmap_temporarily([
+			'alert'     => TimberAlert::class,
+			'portfolio' => TimberPortfolio::class,
+		]);
+
+		$posts = Timber::get_posts([
+			'post_type' => 'any',
+		]);
+
+		$this->assertInstanceOf( TimberAlert::class, $posts[0] );
+		$this->assertInstanceOf( TimberPortfolio::class, $posts[1] );
+	}
+
+	function testGetPostWithClassMap() {
+		$this->markTestSkipped();
+		register_post_type('portfolio', array('public' => true));
+		register_post_type('alert', array('public' => true));
+		$post_id_portfolio = $this->factory->post->create(array('post_type' => 'portfolio', 'post_title' => 'A portfolio item', 'post_date' => '2015-04-23 15:13:52'));
+		$post_id_alert = $this->factory->post->create(array('post_type' => 'alert', 'post_title' => 'An alert', 'post_date' => '2015-06-23 15:13:52'));
+
+		$this->register_post_classmap_temporarily([
+			'alert'     => TimberAlert::class,
+			'portfolio' => TimberPortfolio::class,
+		]);
+
+		$portfolio = Timber::get_post($post_id_portfolio);
+		$alert = Timber::get_post($post_id_alert);
+
+		$this->assertInstanceOf( TimberPortfolio::class, $portfolio );
+		$this->assertEquals( $post_id_portfolio, $portfolio->ID );
+
+		$this->assertInstanceOf( TimberAlert::class, $alert );
+		$this->assertEquals( $post_id_alert, $alert->ID );
+	}
+
+
+
+	/* Terms API */
+
+
 	function testGetTerm(){
 		// @todo #2087
 		$this->markTestSkipped();
@@ -305,51 +350,55 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 
 	}
 
-    /* Previews */
-    function testGetPostPreview(){
-        $editor_user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
-        wp_set_current_user( $editor_user_id );
 
-        $post_id = $this->factory->post->create( array( 'post_author' => $editor_user_id, 'post_content' => "OLD CONTENT HERE" ) );
-        _wp_put_post_revision( array( 'ID' => $post_id, 'post_content' => 'New Stuff Goes here'), true );
 
-        $_GET['preview']    = true;
-        $_GET['preview_id'] = $post_id;
+	/* Previews */
 
-        $the_post = Timber::get_post( $post_id );
-        $this->assertEquals( 'New Stuff Goes here', $the_post->post_content );
-    }
 
-    function testTimberRenderString() {
-    	$pid = $this->factory->post->create(array('post_title' => 'Zoogats'));
-        $post = Timber::get_post($pid);
-        ob_start();
-        Timber::render_string('<h2>{{post.title}}</h2>', array('post' => $post));
-       	$data = ob_get_contents();
-        ob_end_clean();
-        $this->assertEquals('<h2>Zoogats</h2>', trim($data));
-    }
+	function testGetPostPreview(){
+			$editor_user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
+			wp_set_current_user( $editor_user_id );
 
-    function testTimberRender() {
-    	$pid = $this->factory->post->create(array('post_title' => 'Foobar'));
-        $post = Timber::get_post($pid);
-        ob_start();
-        Timber::render('assets/single-post.twig', array('post' => $post));
-       	$data = ob_get_contents();
-        ob_end_clean();
-        $this->assertEquals('<h1>Foobar</h1>', trim($data));
-    }
+			$post_id = $this->factory->post->create( array( 'post_author' => $editor_user_id, 'post_content' => "OLD CONTENT HERE" ) );
+			_wp_put_post_revision( array( 'ID' => $post_id, 'post_content' => 'New Stuff Goes here'), true );
 
-    function testTimberGetCallingScriptFile() {
-    	$calling_file = LocationManager::get_calling_script_file();
-    	$file = getcwd().'/tests/test-timber.php';
-    	$this->assertEquals($calling_file, $file);
-    }
+			$_GET['preview']    = true;
+			$_GET['preview_id'] = $post_id;
 
-    function testCompileNull() {
-    	$str = Timber::compile('assets/single-course.twig', null);
-    	$this->assertEquals('I am single course', $str);
-    }
+			$the_post = Timber::get_post( $post_id );
+			$this->assertEquals( 'New Stuff Goes here', $the_post->post_content );
+	}
+
+	function testTimberRenderString() {
+		$pid = $this->factory->post->create(array('post_title' => 'Zoogats'));
+			$post = Timber::get_post($pid);
+			ob_start();
+			Timber::render_string('<h2>{{post.title}}</h2>', array('post' => $post));
+			$data = ob_get_contents();
+			ob_end_clean();
+			$this->assertEquals('<h2>Zoogats</h2>', trim($data));
+	}
+
+	function testTimberRender() {
+		$pid = $this->factory->post->create(array('post_title' => 'Foobar'));
+			$post = Timber::get_post($pid);
+			ob_start();
+			Timber::render('assets/single-post.twig', array('post' => $post));
+			$data = ob_get_contents();
+			ob_end_clean();
+			$this->assertEquals('<h1>Foobar</h1>', trim($data));
+	}
+
+	function testTimberGetCallingScriptFile() {
+		$calling_file = LocationManager::get_calling_script_file();
+		$file = getcwd().'/tests/test-timber.php';
+		$this->assertEquals($calling_file, $file);
+	}
+
+	function testCompileNull() {
+		$str = Timber::compile('assets/single-course.twig', null);
+		$this->assertEquals('I am single course', $str);
+	}
 
   /**
 	 * @ticket 1660
@@ -415,11 +464,124 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	 * @group wp_query_hacks
 	 */
 	function testNumberpostsFix() {
-		$this->markTestSkipped('@todo restore support for numberposts fix from QueryIterator::fix_number_posts_wp_quirk');
-		$pids = $this->factory->post->create_many(10);
-		// @todo call Timber::get_posts()
-		$pc = new PostQuery( new WP_Query('post_type=post&numberposts=6') );
-		$this->assertEquals(6, count($pc));
+		// $this->markTestSkipped('@todo restore support for numberposts fix from QueryIterator::fix_number_posts_wp_quirk');
+		$this->factory->post->create_many(10);
+
+		$posts = Timber::get_posts( [
+			'post_type'   => 'post',
+			'numberposts' => 6,
+		] );
+		$this->assertCount(6, $posts);
+	}
+
+	/**
+	 * @group wp_query_hacks
+	 */
+	function testNumberPostsAll() {
+		$this->markTestSkipped();
+		$pids = $this->factory->post->create_many( 17 );
+		$query = 'post_type=post&numberposts=-1';
+		$posts = Timber::get_posts( [
+			'post_type' => 'post',
+			'numberposts' => 17,
+		] );
+		$this->assertEquals(17, count($posts));
+
+	}
+
+	function testPostsPerPage() {
+		$pids = $this->factory->post->create_many( 15 );
+
+		$posts = Timber::get_posts( [
+			'post_type' => 'post',
+			'posts_per_page' => 7,
+		] );
+		
+		$this->assertCount(7, $posts);
+	}
+
+	function testPostsPerPageAll() {
+		$pids = $this->factory->post->create_many( 23 );
+
+		$posts = Timber::get_posts( [
+			'post_type' => 'post',
+			'posts_per_page' => -1,
+		] );
+
+		$this->assertCount(23, $posts);
+	}
+
+	function testPostsPerPageBig() {
+		$pids = $this->factory->post->create_many( 15 );
+
+		$posts = Timber::get_posts( [
+			'post_type' => 'post',
+			'posts_per_page' => 15,
+		] );
+
+		$this->assertCount(15, $posts);
+	}
+
+	/**
+	 * @group wp_query_hacks
+	 */
+	function testGettingWithCatAndOtherStuff() {
+		$pids = $this->factory->post->create_many(6);
+		$cat = $this->factory->term->create(array('name' => 'Something', 'taxonomy' => 'category'));
+
+		$this->factory->post->create(array('post_title' => 'Germany', 'post_category' => array($cat)) );
+		$this->factory->post->create(array('post_title' => 'France', 'post_category' => array($cat)) );
+		$this->factory->post->create(array('post_title' => 'England', 'post_category' => array($cat)) );
+
+		$posts = Timber::get_posts([
+			'post_type' => 'post',
+			'posts_per_page' => 2,
+			'post_status' => 'publish',
+			'cat' => $cat
+		]);
+
+		$this->assertEquals(2, count($posts));
+	}
+
+	/**
+	 * @group wp_query_hacks
+	 */
+	function testGettingWithCategoryAndOtherStuff() {
+		$pids = $this->factory->post->create_many(6);
+		$cat = $this->factory->term->create(array('name' => 'Something', 'taxonomy' => 'category'));
+
+		$this->factory->post->create(array('post_title' => 'Germany', 'post_category' => array($cat)) );
+		$this->factory->post->create(array('post_title' => 'France', 'post_category' => array($cat)) );
+		$this->factory->post->create(array('post_title' => 'England', 'post_category' => array($cat)) );
+
+		$posts = Timber::get_posts([
+			'post_type' => 'post',
+			'posts_per_page' => 2,
+			'post_status' => 'publish',
+			'category' => $cat
+		]);
+
+		$this->assertCount(2, $posts);
+	}
+
+	/**
+	 * @group wp_query_hacks
+	 */
+	function testGettingWithCat() {
+		$cat = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+
+		$pids = $this->factory->post->create_many(6);
+		$cats = $this->factory->post->create_many(3, array('post_category' => array($cat)) );
+		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
+
+		$cat_post = Timber::get_post($cat_post);
+		$this->assertEquals('News', $cat_post->category()->title());
+
+		$posts = Timber::get_posts([
+			'cat' => $cat,
+		]);
+
+		$this->assertCount(4, $posts);
 	}
 
 }
