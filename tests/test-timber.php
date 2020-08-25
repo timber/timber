@@ -8,7 +8,6 @@ use Timber\Post;
  * @group terms-api
  * @group users-api
  * @group post-collections
- * @group timber
  */
 class TestTimberMainClass extends Timber_UnitTestCase {
 
@@ -523,6 +522,43 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	}
 
 	/**
+	 * @expectedDeprecated Timber\Timber::query_post()
+	 */
+	function testQueryPost() {
+		$posts = $this->factory->post->create_many( 6 );
+		$post = Timber::get_post( $posts[3] );
+		$this->go_to( home_url( '/?p='.$posts[2] ) );
+		$this->assertNotEquals( get_the_ID(), $post->ID );
+		$post = Timber::query_post( $posts[3] );
+		$this->assertEquals( get_the_ID(), $post->ID );
+	}
+
+	/**
+	 * @expectedDeprecated Timber\Timber::query_post()
+	 */
+	function testBlankQueryPost() {
+		$pid = $this->factory->post->create( );
+		$this->go_to( home_url( '/?p='.$pid ) );
+		$post = Timber::query_post();
+		$this->assertEquals( $pid, $post->ID );
+	}
+
+	function testGetPostsWithMergeDefault() {
+		$this->markTestSkipped('@todo fix merge_default option');
+		update_option( 'show_on_front', 'posts' );
+		$post_ids = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		$this->go_to( '/' );
+
+		$posts = Timber::get_posts( [
+			'post__in' => [$post_ids[1]],
+		], [
+			'merge_default' => true,
+		] );
+
+		$this->assertEquals( $posts[0]->ID, $post_ids[1] );
+	}
+
+	/**
 	 * @group wp_query_hacks
 	 */
 	function testGettingWithCatAndOtherStuff() {
@@ -583,5 +619,194 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 
 		$this->assertCount(4, $posts);
 	}
+
+	function testGettingEmptyArray(){
+		$this->markTestSkipped('@todo switch to PostFactory in ::get_posts()');
+		$this->factory->post->create_many( 15 );
+
+		$this->assertEquals([], Timber::get_posts([]));
+	}
+
+	function testFromFalse(){
+		$this->markTestSkipped('@todo switch to PostFactory in ::get_posts()');
+		$pids = $this->factory->post->create_many( 15 );
+
+		$this->assertFalse(Timber::get_posts(false));
+	}
+
+	function testFromArray() {
+		// Create 15 posts to query by ID directly.
+		$pids = $this->factory->post->create_many(15);
+
+		// Query for our 15 posts.
+		$result_ids = array_map(function($p) { return $p->ID; }, Timber::get_posts($pids));
+
+		// Resulting IDs should match exactly.
+		$this->assertEquals($pids, $result_ids);
+	}
+
+	function testFromArrayWithSticky(){
+		// Create 6 posts to query by ID directly.
+		$pids = $this->factory->post->create_many(6);
+
+		// Make one of the 6 sticky, along with a new one that will not be queried.
+		update_option('sticky_posts', [$pids[0], $this->factory->post->create()]);
+
+		// Query for our 6 posts.
+		$result_ids = array_map(function($p) { return $p->ID; }, Timber::get_posts($pids));
+
+		// Resulting IDs should not include the extra sticky ID.
+		$this->assertEquals($pids, $result_ids);
+	}
+
+	function testStickyAgainstQuery() {
+		// Set up some posts. Make the second one sticky.
+		$ids = [
+			$this->factory->post->create(array('post_date' => '2015-04-23 15:13:52')),
+			$this->factory->post->create(array('post_date' => '2015-04-21 15:13:52')),
+			$this->factory->post->create(array('post_date' => '2015-04-24 15:13:52')),
+		];
+		$sticky_id = $ids[1];
+		update_option('sticky_posts', array($sticky_id));
+
+		$posts = Timber::get_posts( [
+			'post_type' => 'post',
+		] );
+		$this->assertEquals($sticky_id, $posts[0]->ID);
+
+		$query = new WP_Query('post_type=post');
+		$this->assertEquals($sticky_id, $query->posts[0]->ID);
+	}
+
+	function testGetPostsInLoop() {
+		$this->markTestSkipped('@todo fix Timber::get_post()');
+		$posts = $this->factory->post->create_many( 55 );
+		$this->go_to( '/' );
+
+		if ( have_posts() ) {
+			while ( have_posts() ) {
+				the_post();
+				$this->assertInstanceOf(Post::class, Timber::get_post());
+			}
+		}
+	}
+
+	function testFromSlug() {
+		$this->markTestSkipped('@todo fix Timber::get_post()');
+		$this->factory->post->create( array( 'post_name' => 'silly-post' ) );
+
+		$post = Timber::get_post( 'silly-post' );
+
+		$this->assertEquals( 'silly-post', $post->slug );
+	}
+
+	/**
+	 * @todo will this behavior change?
+	 */
+	function testCustomPostTypeOsnSinglePage() {
+		register_post_type('job');
+
+		// Set up the global query context for a single job post.
+		$post_id = $this->factory->post->create( array( 'post_type' => 'job' ) );
+		$post = Timber::get_post($post_id);
+		$this->go_to('?p='.$post->ID);
+
+		// Create more jobs.
+		$this->factory->post->create_many( 10, array('post_type' => 'job'));
+
+		$jobs = Timber::get_posts([
+			'post_type' => 'job',
+		]);
+
+		$this->assertCount(10, $jobs);
+	}
+
+	/**
+	 * Make sure that the_post action is called when we loop over a collection of posts.
+	 */
+	function testThePostHook() {
+		$this->markTestSkipped('@todo fix Timber::get_posts()');
+
+		// Tally up the times that the_post action is called.
+		$the_post_count = 0;
+		add_action( 'the_post', function( $post ) use (&$the_post_count) {
+			$the_post_count++;
+		} );
+
+		$this->factory->post->create_many( 3 );
+
+		foreach ( Timber::get_posts() as $post ) {
+			// whatever
+		}
+
+		$this->assertEquals(3, $the_post_count);
+	}
+
+	function testChangeArgumentInDefaultQuery() {
+		$this->markTestIncomplete('@todo we need to come up with a stronger test because this passes with or without merge_default');
+		update_option( 'show_on_front', 'posts' );
+		$post_ids = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
+		$this->go_to( '/' );
+
+		$posts = new Timber\PostQuery( array(
+			'query' => array(
+				'post__in' => array( $post_ids[1] ),
+			),
+			// 'merge_default' => true,
+		) );
+
+		$posts = $posts->to_array();
+
+		$this->assertEquals( $posts[0]->ID, $post_ids[1] );
+	}
+
+	function testGetAttachment() {
+		$this->markTestSkipped('@todo seems like a lot of what gets tested here is core WP file mgmt. Is that what we want?');
+
+		// Create an attachment and a post to attach it to.
+		$upload_dir = wp_upload_dir();
+		$post_id = $this->factory->post->create();
+		$filename = TestTimberImage::copyTestAttachment( 'flag.png' );
+		$destination_url = str_replace( ABSPATH, 'http://'.$_SERVER['HTTP_HOST'].'/', $filename );
+		$wp_filetype = wp_check_filetype( basename( $filename ), null );
+		$attachment = array(
+			'post_mime_type' => $wp_filetype['type'],
+			'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
+			'post_content' => '',
+			'post_status' => 'inherit'
+		);
+		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
+		add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
+
+		$data = [
+			'post' => Timber::get_post($post_id),
+			'size' => ['width' => 100, 'height' => 50],
+			'crop' => 'default',
+		];
+
+		Timber::compile( 'assets/thumb-test.twig', $data );
+		$exists = file_exists( $filename );
+		$this->assertTrue( $exists );
+		$resized_path = $upload_dir['path'].'/flag-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.png';
+		$exists = file_exists( $resized_path );
+		$this->assertTrue( file_exists() );
+
+		$attachments = Timber::get_posts( [
+			'post_type'   => 'attachment',
+			'post_status' => 'inherit',
+		] );
+		$this->assertGreaterThan(0, count($attachments));
+	}
+
+	function testGetPostsDefault() {
+		$this->factory->post->create_many( 15 );
+		$this->go_to( '/' );
+
+		$this->assertCount( 10, Timber::get_posts() );
+	}
+
+	/*
+	 * @todo add more test coverage here...
+	 */
 
 }
