@@ -62,6 +62,19 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		$this->assertEquals('<h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <div class="l--pagination"> <div class="pagination-inner"> <div class="pagination-previous"> <span class="pagination-previous-link pagination-disabled">Previous</span> </div> <div class="pagination-pages"> <ul class="pagination-pages-list"> <li class="pagination-list-item pagination-page">1</li> <li class="pagination-list-item pagination-seperator">of</li> <li class="pagination-list-item pagination-page">13</li> </ul> </div> <div class="pagination-next"> <a href="http://example.org/?paged=2" class="pagination-next-link ">Next</a> </div> </div> </div>', trim($str));
 	}
 
+	/**
+	 * @expectedDeprecated Timber\PostQuery::get_posts()
+	 */
+	function testGetPostsDeprecated() {
+		$this->factory->post->create_many( 3 );
+
+		$query = new Timber\PostQuery( [
+			'query' => new WP_Query('post_type=post')
+		 ] );
+
+		$this->assertCount( 3, $query->get_posts() );
+	}
+
 	function testFoundPosts() {
 		$this->factory->post->create_many( 20 );
 
