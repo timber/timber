@@ -6,6 +6,7 @@ use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
+use Timber\Helper;
 
 /**
  * Class Timber
@@ -264,6 +265,7 @@ class Timber {
 	 * @return Post|array|bool|null
 	 */
 	public static function query_post( $query = false, $PostClass = 'Timber\Post' ) {
+		Helper::deprecated('Timber\Timber::query_post()', 'Timber\Timber::get_post()', '2.0.0');
 		return PostGetter::query_post($query, $PostClass);
 	}
 
@@ -279,6 +281,7 @@ class Timber {
 	 * @return PostCollection
 	 */
 	public static function query_posts( $query = false, $PostClass = 'Timber\Post' ) {
+		Helper::deprecated('Timber\Timber::query_posts()', 'Timber\Timber::get_posts()', '2.0.0');
 		return PostGetter::query_posts($query, $PostClass);
 	}
 
