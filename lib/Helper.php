@@ -174,7 +174,7 @@ class Helper {
 	/**
 	 * @codeCoverageIgnore
 	 * @deprecated since 1.3.0
-	 * 
+	 *
 	 * @param mixed $function_name        String or array( $class( string|object ), $function_name ).
 	 * @param array $defaults             Optional.
 	 * @param bool  $return_output_buffer Optional. Return function output instead of return value. Default false.
@@ -441,7 +441,12 @@ class Helper {
 			return self::wp_list_filter( $list, $arrow, $operator );
 		}
 
-		return array_filter( $list, $arrow, \ARRAY_FILTER_USE_BOTH );
+		if ( is_array( $list ) ) {
+			return array_filter( $list, $arrow, \ARRAY_FILTER_USE_BOTH );
+		}
+
+		// the IteratorIterator wrapping is needed as some internal PHP classes are \Traversable but do not implement \Iterator
+		return new \CallbackFilterIterator( new \IteratorIterator( $list ), $arrow );
 	}
 
 	/**
