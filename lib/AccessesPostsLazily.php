@@ -5,6 +5,7 @@ namespace Timber;
 use WP_Post;
 
 use Timber\Factory\PostFactory;
+use Timber\Helper;
 
 /**
  * Trait implementing ArrayAccess::getOffset() using lazy instantiation.
@@ -98,11 +99,12 @@ trait AccessesPostsLazily {
 	}
 
 	/**
-	 * @todo should we deprecate this method in favor of to_array()?
+	 * @deprecated 2.0.0 use PostCollectionInterface::to_array() instead
 	 * @api
 	 * @return array
 	 */
 	public function get_posts() : array {
+		Helper::deprecated(sprintf('%s::get_posts()', static::class), sprintf('%s::to_array()', static::class), '2.0.0');
 		return $this->getArrayCopy();
 	}
 
