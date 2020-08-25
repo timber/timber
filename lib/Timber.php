@@ -257,7 +257,7 @@ class Timber {
 	 * Query post.
 	 *
 	 * @api
-	 * @deprecated since 2.0.0 Use `new Timber\Post()` instead.
+	 * @deprecated since 2.0.0 Use `Timber::get_post()` instead.
 	 *
 	 * @param mixed  $query
 	 * @param string $PostClass
@@ -273,7 +273,7 @@ class Timber {
 	 * Query posts.
 	 *
 	 * @api
-	 * @deprecated since 2.0.0 Use `new Timber\PostQuery()` instead.
+	 * @deprecated since 2.0.0 Use `Timber::get_posts()` instead.
 	 *
 	 * @param mixed  $query
 	 * @param string $PostClass

@@ -63,6 +63,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	 * the arguments that can be used for the `$query` parameter.
 	 *
 	 * @api
+	 * @todo update these docs
 	 * @example
 	 * ```php
 	 * // Get posts from default query
