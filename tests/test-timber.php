@@ -216,13 +216,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertInstanceOf(Post::class, $posts[0]);
 	}
 
-	function testGetPostsFromSlug(){
-		$this->markTestSkipped('@todo this behavior is being removed?');
-		$post_id = $this->factory->post->create(array('post_name' => 'mycoolpost'));
-		$post    = Timber::get_post('mycoolpost');
-		$this->assertEquals($post_id, $post->ID);
-	}
-
 	function testGetPostsFromArrayOfIds(){
 		$pids = [
 			$this->factory->post->create(),
@@ -676,15 +669,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 				$this->assertInstanceOf(Post::class, Timber::get_post());
 			}
 		}
-	}
-
-	function testFromSlug() {
-		$this->markTestSkipped('@todo fix Timber::get_post()');
-		$this->factory->post->create( array( 'post_name' => 'silly-post' ) );
-
-		$post = Timber::get_post( 'silly-post' );
-
-		$this->assertEquals( 'silly-post', $post->slug );
 	}
 
 	/**
