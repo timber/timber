@@ -38,6 +38,12 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 
+= 1.18.1 =
+
+**Fixes and improvements**
+
+* Corrects an issue where #2305 tested for arrays but not other Iterables (like `Timber\PostCollection`s) #2314 (thanks @nlemoine)
+
 = 1.18.0 =
 
 **Changes for Theme Developers**
@@ -46,7 +52,7 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 
-* Fixes an error with array_filter and later versions of Twig
+* Fixes an error with array_filter and later versions of Twig #2305
 
 = 1.17.0 =
 
