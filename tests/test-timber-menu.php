@@ -576,6 +576,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$items = $menu->get_items();
 		$item = $items[0];
 		$this->assertEquals( 'funke', $item->tobias );
+		// There are dozens of us! DOZENS!!
 		$this->assertGreaterThan( 0, $item->id );
 	}
 

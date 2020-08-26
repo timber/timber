@@ -1,5 +1,8 @@
 <?php
 
+	/**
+	 * @group posts-api
+	 */
 	class TestTimberPostContent extends Timber_UnitTestCase {
 
 
@@ -27,6 +30,7 @@
 	}
 
 	function testPagedContent(){
+		$this->markTestSkipped();
 		$quote = $page1 = 'Named must your fear be before banish it you can.';
 		$quote .= '<!--nextpage-->';
 		$quote .= $page2 = "No, try not. Do or do not. There is no try.";
@@ -39,7 +43,7 @@
 		setup_postdata( get_post( $post_id ) );
 
 		$post = Timber::get_post();
-			$this->assertEquals($page1, trim(strip_tags( $post->paged_content() )));
+		$this->assertEquals($page1, trim(strip_tags( $post->paged_content() )));
 
 		$pagination = $post->pagination();
 		$this->go_to( $pagination['pages'][1]['link'] );

@@ -46,6 +46,7 @@ use Timber\Factory\UserFactory;
  *     </div>
  * </article>
  * ```
+ * @todo implement JsonSerializable?
  */
 class Post extends Core implements CoreInterface, MetaInterface, DatedInterface, Setupable {
 

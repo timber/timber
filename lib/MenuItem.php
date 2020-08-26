@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use Timber\Factory\PostFactory;
+
 /**
  * Class MenuItem
  *
@@ -87,13 +89,19 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @internal
 	 * @param array|object $data
 	 * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
+	 * @todo make this protected and implement ::build() instead
 	 */
 	public function __construct( $data, $menu = null ) {
 		$this->menu = $menu;
 		$data       = (object) $data;
 		$this->import($data);
 		$this->import_classes($data);
-		$this->menu_object = $data;
+		$this->id = $data->ID;
+		$this->ID = $data->ID;
+
+		$factory = new PostFactory();
+		$this->menu_object = $factory->from($data);
+
 		$this->_name       = $data->name ?? '';
 		$this->add_class('menu-item-'.$this->ID);
 
