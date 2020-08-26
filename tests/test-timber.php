@@ -346,18 +346,28 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 
 
 	function testGetPostPreview(){
-		$this->markTestSkipped('@todo restore preview stuff from PostCollection::maybe_set_preview()');
 		$editor_user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $editor_user_id );
 
 		$post_id = $this->factory->post->create( array( 'post_author' => $editor_user_id, 'post_content' => "OLD CONTENT HERE" ) );
-		_wp_put_post_revision( array( 'ID' => $post_id, 'post_content' => 'New Stuff Goes here'), true );
+		_wp_put_post_revision([
+			'ID'           => $post_id,
+			'post_title'   => 'Revised Title',
+			'post_content' => 'New Stuff Goes here',
+			'post_excerpt' => 'New and improved!',
+		], true );
 
 		$_GET['preview']    = true;
 		$_GET['preview_id'] = $post_id;
 
-		$the_post = Timber::get_post( $post_id );
-		$this->assertEquals( 'New Stuff Goes here', $the_post->post_content );
+		$post = Timber::get_post( $post_id );
+
+		$this->assertEquals( 'Revised Title', $post->post_title );
+		$this->assertEquals( 'New Stuff Goes here', $post->post_content );
+		$this->assertEquals( 'New and improved!', $post->post_excerpt );
+
+		unset($_GET['preview']);
+		unset($_GET['preview_id']);
 	}
 
 	function testTimberRenderString() {

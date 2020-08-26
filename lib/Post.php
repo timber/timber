@@ -396,7 +396,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		if ( is_numeric($pid) ) {
 			$this->ID = $pid;
 		}
-		$post_info = $this->get_info($pid);
+		$post_info = apply_filters('timber/post/import_data', $this->get_info($pid));
 		$this->import($post_info);
 	}
 
