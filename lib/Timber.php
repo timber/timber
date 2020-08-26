@@ -3,6 +3,7 @@
 namespace Timber;
 
 use WP_Query;
+use WP_Post;
 
 use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
@@ -187,8 +188,15 @@ class Timber {
 	public static function get_post( $query = false, array $options = [] ) {
 		$factory = new PostFactory();
 
+		global $wp_query;
+
+		// Has WP already queried and found a post?
+		if ($query === false && ($wp_query->queried_object instanceof WP_Post)) {
+			$query = $wp_query->queried_object;
+		}
+
 		// Default to the global query.
-		$result = $factory->from($query ?: $GLOBALS['wp_query']);
+		$result = $factory->from($query ?: $wp_query);
 
 		// If we got a Collection, return the first Post.
 		if ($result instanceof PostCollectionInterface) {
