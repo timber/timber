@@ -424,50 +424,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	/**
 	 * @group wp_query_hacks
 	 */
-	function testGettingWithCategory() {
-		$this->markTestSkipped('@todo fix cat/category hack');
-		// Create several irrelevant posts that should NOT show up in our query.
-		$this->factory->post->create_many(6);
-
-		$cat = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
-		$cats = $this->factory->post->create_many(3, array('post_category' => array($cat)) );
-		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
-
-		$cat_post = Timber::get_post($cat_post);
-		$this->assertEquals('News', $cat_post->category()->title());
-
-		$this->assertCount(4, Timber\Timber::get_posts( array(
-			'category' => $cat,
-		) ));
-	}
-
-	/**
-	 * @group wp_query_hacks
-	 */
-	function testGettingWithCategoryList() {
-		$this->markTestSkipped('@todo fix cat/category hack');
-		// Create several irrelevant posts that should NOT show up in our query.
-		$this->factory->post->create_many(6);
-
-		// Create a list of categories and get their IDs.
-		$cats = [
-			$this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category')),
-			$this->factory->term->create(array('name' => 'Local', 'taxonomy' => 'category')),
-		];
-
-		// Create three posts with a combination of relevant categories.
-		$this->factory->post->create(array('post_category' => array($cats[0])) );
-		$this->factory->post->create(array('post_category' => array($cats[1])) );
-		$this->factory->post->create(array('post_category' => $cats) );
-
-		$this->assertCount(3, Timber\Timber::get_posts( array(
-			'category' => $cats,
-		) ));
-	}
-
-	/**
-	 * @group wp_query_hacks
-	 */
 	function testNumberpostsFix() {
 		$this->markTestSkipped('@todo restore support for numberposts fix from QueryIterator::fix_number_posts_wp_quirk');
 		$this->factory->post->create_many(10);
@@ -525,6 +481,25 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		] );
 
 		$this->assertCount(15, $posts);
+	}
+
+	/**
+	 * @group wp_query_hacks
+	 */
+	function testGetPostsWithCategoryFix() {
+		// Create several irrelevant posts that should NOT show up in our query.
+		$this->factory->post->create_many(6);
+
+		$cat = $this->factory->term->create(array('name' => 'News', 'taxonomy' => 'category'));
+		$cats = $this->factory->post->create_many(3, array('post_category' => array($cat)) );
+		$cat_post = $this->factory->post->create(array('post_category' => array($cat)) );
+
+		$cat_post = Timber::get_post($cat_post);
+		$this->assertEquals('News', $cat_post->category()->title());
+
+		$this->assertCount(4, Timber\Timber::get_posts( array(
+			'category' => $cat,
+		) ));
 	}
 
 	/**

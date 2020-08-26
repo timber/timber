@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use WP_Query;
+
 use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
 use Timber\Factory\PostFactory;
@@ -115,6 +117,15 @@ class Timber {
 			ImageHelper::init();
 			Admin::init();
 			new Integrations();
+
+			// @todo find a more permanent home for this stuff, maybe in a QueryHelper class?
+			add_filter('pre_get_posts', function(WP_Query $query) {
+				$cat = $query->query['category'] ?? null;
+				if ( $cat && !isset($query->query['cat']) ) {
+					unset($query->query['category']);
+					$query->set('cat', $cat);
+				}
+			});
 
 			/**
 			 * Make an alias for the Timber class.
