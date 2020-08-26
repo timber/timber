@@ -132,7 +132,6 @@ class Timber {
 	 * Get a post by post ID or query (as a query string or an array of arguments).
 	 *
 	 * @api
-	 * @deprecated since 2.0.0 Use `new Timber\Post()` instead.
 	 *
 	 * @param mixed        $query     Optional. Post ID or query (as query string or an array of
 	 *                                arguments for WP_Query). If a query is provided, only the
@@ -151,7 +150,6 @@ class Timber {
 	 * Get posts.
 	 *
 	 * @api
-	 * @deprecated since 2.0.0 Use `new Timber\PostQuery()` instead.
 	 *
 	 * @param mixed        $query
 	 * @param string|array $PostClass
@@ -256,7 +254,7 @@ class Timber {
 	 * Query post.
 	 *
 	 * @api
-	 * @deprecated since 2.0.0 Use `new Timber\Post()` instead.
+	 * @deprecated since 2.0.0 Use `Timber::get_post()` instead.
 	 *
 	 * @param mixed  $query
 	 * @param string $PostClass
@@ -271,7 +269,7 @@ class Timber {
 	 * Query posts.
 	 *
 	 * @api
-	 * @deprecated since 2.0.0 Use `new Timber\PostQuery()` instead.
+	 * @deprecated since 2.0.0 Use `Timber::get_posts()` instead.
 	 *
 	 * @param mixed  $query
 	 * @param string $PostClass
