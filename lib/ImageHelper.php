@@ -378,14 +378,15 @@ class ImageHelper {
 		$file_array = array();
 		$file_array['name'] = PathHelper::basename($matches[0]);
 		$file_array['tmp_name'] = $tmp;
-		// If error storing temporarily, unlink
+		// If error storing temporarily, do not use
 		if ( is_wp_error($tmp) ) {
-			@unlink($file_array['tmp_name']);
 			$file_array['tmp_name'] = '';
 		}
 		// do the validation and storage stuff
 		$locinfo = PathHelper::pathinfo($loc);
 		$file = wp_upload_bits($locinfo['basename'], null, file_get_contents($file_array['tmp_name']));
+		// delete tmp file
+		@unlink($file_array['tmp_name']);
 		return $file['url'];
 	}
 
