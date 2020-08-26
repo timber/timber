@@ -127,6 +127,13 @@ class Timber {
 				}
 			});
 
+			add_filter('pre_get_posts', function(WP_Query $query) {
+				$count = $query->query['numberposts'] ?? null;
+				if ( $count && !isset($query->query['posts_per_page']) ) {
+					$query->set('posts_per_page', $count);
+				}
+			});
+
 			/**
 			 * Make an alias for the Timber class.
 			 *

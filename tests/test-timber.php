@@ -418,7 +418,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	 * @group wp_query_hacks
 	 */
 	function testNumberpostsFix() {
-		$this->markTestSkipped('@todo restore support for numberposts fix from QueryIterator::fix_number_posts_wp_quirk');
 		$this->factory->post->create_many(10);
 
 		$posts = Timber::get_posts( [
@@ -432,7 +431,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	 * @group wp_query_hacks
 	 */
 	function testNumberPostsAll() {
-		$this->markTestSkipped();
 		$pids = $this->factory->post->create_many( 17 );
 		$query = 'post_type=post&numberposts=-1';
 		$posts = Timber::get_posts( [
