@@ -453,6 +453,9 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		}
 	}
 
+	/**
+	 * @expectedDeprecated Timber\PostQuery::get_posts()
+	 */
 	function testChangeArgumentInDefaultQuery() {
 		$this->markTestSkipped('moved to test-timber');
 		update_option( 'show_on_front', 'posts' );
@@ -473,6 +476,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 
 	/**
 	 * @expectedDeprecated Passing query arguments directly to PostQuery
+	 * @expectedDeprecated Timber\PostQuery::get_posts()
 	 */
 	function testDeprecatedPostQueryArguments() {
 		$this->markTestSkipped('removed');
