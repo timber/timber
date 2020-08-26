@@ -2,6 +2,7 @@
 
 use Timber\LocationManager;
 use Timber\Post;
+use Timber\PostArrayObject;
 
 /**
  * @group posts-api
@@ -19,14 +20,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	function testGetPostNumeric(){
 		$post_id = $this->factory->post->create();
 		$post = Timber::get_post($post_id);
-		$this->assertEquals('Timber\Post', get_class($post));
-	}
-
-	// @todo are we dropping support for ::get_post("string") ?
-	function testGetPostString(){
-		$this->markTestSkipped();
-		$this->factory->post->create();
-		$post = Timber::get_post('post_type=post');
 		$this->assertEquals('Timber\Post', get_class($post));
 	}
 
@@ -147,37 +140,42 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertEquals( null, $post );
 	}
 
-	function testGetPostByPostObject() {
-		$this->markTestSkipped();
+	function testGetPostFromPostObject() {
 		$pid = $this->factory->post->create();
 		$wp_post = get_post($pid);
-		$post = new TimberAlert($wp_post);
-		$this->assertEquals('TimberAlert', get_class($post));
-		$this->assertEquals($pid, $post->ID);
-		$post = Timber::get_post($wp_post, 'TimberAlert');
-		$this->assertEquals('TimberAlert', get_class($post));
-		$this->assertEquals($pid, $post->ID);
+
+		$this->register_post_classmap_temporarily([
+			'post' => TimberAlert::class,
+		]);
+
+		$post = Timber::get_post($wp_post);
+		$this->assertInstanceOf(TimberAlert::class, $post);
 	}
 
-	function testGetPostByQueryArray() {
-		$this->markTestSkipped();
+	function testGetPostFromQueryArray() {
 		$pid = $this->factory->post->create();
 
 		$this->register_post_classmap_temporarily([
 			'post' => TimberAlert::class,
 		]);
 
-		$query = [
+		$this->assertInstanceOf(TimberAlert::class, Timber::get_post([
 			'post_type' => 'post',
-		];
+		]));
+	}
 
-		$posts = Timber::get_posts($query);
+	function testGetPostsFromQueryArray() {
+		$pid = $this->factory->post->create();
+
+		$this->register_post_classmap_temporarily([
+			'post' => TimberAlert::class,
+		]);
+
+		$posts = Timber::get_posts([
+			'post_type' => 'post',
+		]);
+
 		$this->assertInstanceOf(TimberAlert::class, $posts[0]);
-		$this->assertEquals($pid, $posts[0]->ID);
-
-		$post = Timber::get_post($query);
-		$this->assertInstanceOf(TimberAlert::class, $post);
-		$this->assertEquals($pid, $post->ID);
 	}
 
 	function testGetPostWithCustomPostType() {
@@ -208,12 +206,13 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertInstanceOf(TimberAlert::class, Timber::get_post($pid));
 	}
 
-	function testGetPostsQueryArray(){
-		$this->markTestSkipped();
+	function testGetPostsQueryArrayDefault(){
 		$this->factory->post->create();
+
 		$posts = Timber::get_posts([
 			'post_type' => 'post',
 		]);
+
 		$this->assertInstanceOf(Post::class, $posts[0]);
 	}
 
@@ -225,7 +224,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	}
 
 	function testGetPostsFromArrayOfIds(){
-		$this->markTestSkipped();
 		$pids = [
 			$this->factory->post->create(),
 			$this->factory->post->create(),
@@ -235,7 +233,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 
 		$this->assertCount(3, $posts);
 		$this->assertInstanceOf(PostArrayObject::class, $posts);
-
 		foreach ($posts as $post) {
 			$this->assertInstanceOf(Post::class, $post);
 		}
@@ -269,7 +266,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	}
 
 	function testGetPostsWithClassMap() {
-		$this->markTestSkipped();
 		register_post_type('portfolio', array('public' => true));
 		register_post_type('alert', array('public' => true));
 		$this->factory->post->create(array('post_type' => 'portfolio', 'post_title' => 'A portfolio item', 'post_date' => '2015-04-23 15:13:52'));
@@ -634,14 +630,18 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	}
 
 	function testGettingEmptyArray(){
-		$this->markTestSkipped('@todo switch to PostFactory in ::get_posts()');
 		$this->factory->post->create_many( 15 );
 
-		$this->assertEquals([], Timber::get_posts([]));
+		$collection = Timber::get_posts([]);
+
+		$this->assertEmpty($collection);
+		$this->assertEquals([], $collection->to_array());
 	}
 
 	function testFromFalse(){
-		$this->markTestSkipped('@todo switch to PostFactory in ::get_posts()');
+		// We don't actually test this directly in TestTimberPostGetter::testGettingWithFalse();
+		// that test directly instantiates a collection.
+		$this->markTestSkipped('@todo what should this be?');
 		$pids = $this->factory->post->create_many( 15 );
 
 		$this->assertFalse(Timber::get_posts(false));
@@ -692,7 +692,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	}
 
 	function testGetPostsInLoop() {
-		$this->markTestSkipped('@todo fix Timber::get_post()');
 		$posts = $this->factory->post->create_many( 55 );
 		$this->go_to( '/' );
 

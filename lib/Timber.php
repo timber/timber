@@ -135,8 +135,6 @@ class Timber {
 	 * Get a post by post ID or query (as a query string or an array of arguments).
 	 *
 	 * @api
-	 * @deprecated since 2.0.0 Use `new Timber\Post()` instead.
-	 *
 	 * @param mixed $query   Optional. Post ID or query (as an array of arguments for WP_Query).
 	 * 	                     If a query is provided, only the first post of the result will be
 	 *                       returned. Default false.
