@@ -635,7 +635,7 @@ class Timber {
 			$post = ( new Post() )->setup();
 			$context['post'] = $post;
 		} elseif ( is_archive() || is_home() ) {
-			$context['posts'] = new PostQuery();
+			$context['posts'] = Timber::get_posts();
 		}
 
  		return $context;

@@ -47,7 +47,7 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$context = Timber::context();
 
 		$this->assertArrayNotHasKey( 'post', $context );
-		$this->assertInstanceOf( 'Timber\PostQuery', $context['posts'] );
+		$this->assertInstanceOf( 'Timber\PostArrayObject', $context['posts'] );
 		$this->assertCount( 3, $context['posts']->get_posts() );
 	}
 
