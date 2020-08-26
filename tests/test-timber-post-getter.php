@@ -477,6 +477,9 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 		}
 	}
 
+	/**
+	 * @expectedDeprecated Timber\PostQuery::get_posts()
+	 */
 	function testChangeArgumentInDefaultQuery() {
 		update_option( 'show_on_front', 'posts' );
 		$post_ids = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
@@ -496,6 +499,7 @@ class TestTimberPostGetter extends Timber_UnitTestCase {
 
 	/**
 	 * @expectedDeprecated Passing query arguments directly to PostQuery
+	 * @expectedDeprecated Timber\PostQuery::get_posts()
 	 */
 	function testDeprecatedPostQueryArguments() {
 		update_option( 'show_on_front', 'posts' );
