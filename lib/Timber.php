@@ -191,7 +191,11 @@ class Timber {
 		$result = $factory->from($query ?: $GLOBALS['wp_query']);
 
 		// If we got a Collection, return the first Post.
-		return ($result instanceof PostCollectionInterface) ? $result[0] : $result;
+		if ($result instanceof PostCollectionInterface) {
+			return $result[0] ?? false;
+		}
+
+		return $result;
 	}
 
 	/**

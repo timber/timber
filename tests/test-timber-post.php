@@ -10,6 +10,10 @@
 	 */
 	class TestTimberPost extends Timber_UnitTestCase {
 
+		function testGetPostWithNoPosts() {
+			$this->assertFalse(Timber::get_post());
+		}
+
 		function testPostObject(){
 			$post_id = $this->factory->post->create();
 			$post = Timber::get_post($post_id);
