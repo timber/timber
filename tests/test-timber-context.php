@@ -5,6 +5,7 @@ use Timber\Post;
 use Timber\PostQuery;
 
 /**
+ * @group posts-api
  * @group post-collections
  */
 class TestTimberContext extends Timber_UnitTestCase {
@@ -12,12 +13,11 @@ class TestTimberContext extends Timber_UnitTestCase {
 	 * This throws an infite loop if memorization isn't working
 	 */
 	function testContextLoop() {
-		add_filter( 'timber/context', function( $context ) {
+		$this->add_filter_temporarily( 'timber/context', function( $context ) {
 			$context          = Timber::context();
 			$context['zebra'] = 'silly horse';
 
 			return $context;
-
 		} );
 
 		$context = Timber::context();

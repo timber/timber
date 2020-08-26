@@ -4,9 +4,11 @@ namespace Timber;
 
 use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
+use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
 use Timber\Helper;
+use Timber\PostCollectionInterface;
 
 /**
  * Class Timber
@@ -135,32 +137,40 @@ class Timber {
 	 * @api
 	 * @deprecated since 2.0.0 Use `new Timber\Post()` instead.
 	 *
-	 * @param mixed        $query     Optional. Post ID or query (as query string or an array of
-	 *                                arguments for WP_Query). If a query is provided, only the
-	 *                                first post of the result will be returned. Default false.
-	 * @param string|array $PostClass Optional. Class to use to wrap the returned post object.
-	 *                                Default 'Timber\Post'.
+	 * @param mixed $query   Optional. Post ID or query (as an array of arguments for WP_Query).
+	 * 	                     If a query is provided, only the first post of the result will be
+	 *                       returned. Default false.
+	 * @param array $options Optional associative array of options. Defaults to an empty array.
 	 *
 	 * @return \Timber\Post|bool Timber\Post object if a post was found, false if no post was
 	 *                           found.
 	 */
-	public static function get_post( $query = false, $PostClass = 'Timber\Post' ) {
-		return PostGetter::get_post($query, $PostClass);
+	public static function get_post( $query = false, array $options = [] ) {
+		$factory = new PostFactory();
+
+		// Default to the global query.
+		$result = $factory->from($query ?: $GLOBALS['wp_query']);
+
+		// If we got a Collection, return the first Post.
+		return ($result instanceof PostCollectionInterface) ? $result[0] : $result;
 	}
 
 	/**
 	 * Get posts.
 	 *
 	 * @api
-	 * @deprecated since 2.0.0 Use `new Timber\PostQuery()` instead.
 	 *
-	 * @param mixed        $query
-	 * @param string|array $PostClass
+	 * @todo improve this docblock
+	 * @param mixed $query
+	 * @param array $options
 	 *
 	 * @return array|bool|null
 	 */
-	public static function get_posts( $query = false, $PostClass = 'Timber\Post', $return_collection = false ) {
-		return PostGetter::get_posts($query, $PostClass, $return_collection);
+	public static function get_posts( $query = false, array $options = [] ) {
+		$factory = new PostFactory();
+
+		// Default to the global query.
+		return $factory->from($query ?: $GLOBALS['wp_query']);
 	}
 
 	/**
@@ -259,14 +269,14 @@ class Timber {
 	 * @api
 	 * @deprecated since 2.0.0 Use `Timber::get_post()` instead.
 	 *
-	 * @param mixed  $query
-	 * @param string $PostClass
+	 * @param mixed $query
+	 * @param array $options
 	 *
 	 * @return Post|array|bool|null
 	 */
-	public static function query_post( $query = false, $PostClass = 'Timber\Post' ) {
+	public static function query_post( $query = false, array $options = [] ) {
 		Helper::deprecated('Timber\Timber::query_post()', 'Timber\Timber::get_post()', '2.0.0');
-		return PostGetter::query_post($query, $PostClass);
+		return self::get_post($query, $options);
 	}
 
 	/**
@@ -275,14 +285,14 @@ class Timber {
 	 * @api
 	 * @deprecated since 2.0.0 Use `Timber::get_posts()` instead.
 	 *
-	 * @param mixed  $query
-	 * @param string $PostClass
+	 * @param mixed $query
+	 * @param array $options
 	 *
 	 * @return PostCollection
 	 */
-	public static function query_posts( $query = false, $PostClass = 'Timber\Post' ) {
+	public static function query_posts( $query = false, array $options = [] ) {
 		Helper::deprecated('Timber\Timber::query_posts()', 'Timber\Timber::get_posts()', '2.0.0');
-		return PostGetter::query_posts($query, $PostClass);
+		return self::get_posts($query, $options);
 	}
 
 	/* Term Retrieval
@@ -635,10 +645,9 @@ class Timber {
 		$context = self::context_global();
 
 		if ( is_singular() ) {
-			$post = ( new Post() )->setup();
-			$context['post'] = $post;
+			$context['post'] = Timber::get_post()->setup();
 		} elseif ( is_archive() || is_home() ) {
-			$context['posts'] = new PostQuery($GLOBALS['wp_query']);
+			$context['posts'] = Timber::get_posts();
 		}
 
  		return $context;
