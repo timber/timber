@@ -173,12 +173,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * If you send the constructor nothing it will try to figure out the current post id based on
 	 * being inside The_Loop.
 	 *
-	 * @api
-	 * @example
-	 * ```php
-	 * $post = new Timber\Post();
-	 * $other_post = new Timber\Post($random_post_id);
-	 * ```
+	 * @internal
 	 *
 	 * @param mixed $pid
 	 */

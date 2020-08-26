@@ -3,7 +3,8 @@
 use Timber\Image\Operation as ImageOperation;
 
 /**
- * @group called-post-constructor
+ * @group posts-api
+ * @group attachments
  */
 class TestTimberImage extends TimberAttachment_UnitTestCase {
 
@@ -15,7 +16,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$pid = $this->factory->post->create();
 		$iid = self::get_attachment( $pid );
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
-        add_post_meta( $iid, '_wp_attachment_metadata', wp_generate_attachment_metadata($iid, get_attached_file($iid)), true );
+		add_post_meta( $iid, '_wp_attachment_metadata', wp_generate_attachment_metadata($iid, get_attached_file($iid)), true );
 		$post = Timber::get_post($pid);
 		return $post;
 	}
@@ -41,7 +42,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 
 	function testTimberImageSrc() {
 		$iid = self::get_attachment();
-		$image = new Timber\Image($iid);
+		$image = Timber::get_post($iid);
 		$post = get_post($iid);
 		$str = '{{ Image(post).src }}';
 		$result = Timber::compile_string( $str, array('post' => $post) );
@@ -612,7 +613,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$this->assertFileExists( $resized_500_file );
 		$this->assertFileExists( $resized_520_file );
 		//Now delete the "parent" image
-		$post = new Timber\Image( $attach_id );
+		$post = Timber::get_post( $attach_id );
 		Timber\ImageHelper::delete_generated_files( $post->file_loc );
 		//Have the children been deleted as well?
 		$this->assertFileNotExists( $resized_520_file );
@@ -909,7 +910,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
 		$str = '{{ Image(post).src }}';
-		$post = new Timber\Image($image);
+		$post = Timber::get_post($image);
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($image->src(), $result);
 	}
@@ -918,7 +919,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
 		$str = '{{ Image(post).src }}';
-		$post = new Timber\Image($image->ID);
+		$post = Timber::get_post($image->ID);
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($image->src(), $result);
 	}

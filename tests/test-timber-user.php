@@ -2,8 +2,6 @@
 
 	/**
 	 * @group users-api
-	 * @group called-post-constructor
-	 * @todo #2094 replace direct Timber\User instantiations
 	 */
 	class TestTimberUser extends Timber_UnitTestCase {
 
@@ -34,7 +32,7 @@
 			    , 'post_content' => 'is fine, I guess'
 			    , 'post_status' => 'publish'
 			    ]);
-			$post = new Timber\Post($post_id);
+			$post = Timber::get_post($post_id);
 			$template = '{{ post.title }} by {{ post.author }}';
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('Baseball by', trim($str));

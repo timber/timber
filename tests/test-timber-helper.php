@@ -323,7 +323,7 @@ use Timber\PostArrayObject;
  			$post_id = $this->factory->post->create();
  			$posts = Timber::get_posts();
  			update_post_meta($post_id, '_thumbnail_id', '707');
- 			$post = new Timber\Post($post_id);
+ 			$post = Timber::get_post($post_id);
  			$thumbnail_id = $post->_thumbnail_id;
  		}  
 

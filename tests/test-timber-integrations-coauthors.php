@@ -1,8 +1,7 @@
 <?php
 
 	/**
-	 * @group called-post-constructor
-	 * @todo #2094 replace direct Timber\User instantiations
+	 * @group posts-api
 	 */
 	class TestTimberIntegrationsCoAuthors extends Timber_UnitTestCase {
 
@@ -184,6 +183,9 @@
 			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
 		}
 
+		/**
+		 * @group attachments
+		 */
 		function testGuestAuthorAvatar(){
 			$pid = $this->factory->post->create();
 			$post = Timber::get_post($pid);
@@ -198,7 +200,7 @@
 				)
 			);
 			$attach_id = self::attach_featured_image($guest_id, 'avt-1.jpg');
-			$image = new Timber\Image(array('ID' => $attach_id));
+			$image = Timber::get_post($attach_id);
 
 			global $coauthors_plus;
 			$coauthors_plus->add_coauthors($pid, array($user_login));

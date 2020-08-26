@@ -35,9 +35,8 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 		update_option('page_on_front', $page_id);
 		$this->go_to(home_url('/'));
 		global $wp_query;
-		$wp_query->queried_object_id = $page_id;
-		// @todo #2094 factories
-		$page = new Timber\Post();
+		$wp_query->queried_object = get_post($page_id);
+		$page = Timber::get_post();
 		$this->assertEquals($page_id, $page->ID);
 	}
 

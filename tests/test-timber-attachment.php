@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @group posts-api
+ * @group attachments
+ */
 class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 
 /* ----------------
@@ -9,7 +13,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
  	function testAttachmentLink() {
  		self::setPermalinkStructure();
  		$attach = self::get_attachment();
- 		$image = new Timber\Attachment($attach);
+ 		$image = Timber::get_post($attach);
  		$links = array();
  		$links[] = 'http://example.org/'.$image->post_name.'/';
  		$links[] = 'http://example.org/?attachment_id='.$image->ID;
@@ -19,7 +23,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
  	function testAttachmentInitWithWP_Post() {
  		$aid = self::get_attachment();
  		$wp_post = get_post($aid);
- 		$attach = new Timber\Attachment($wp_post);
+ 		$attach = Timber::get_post($wp_post);
  		$this->assertEquals($wp_post->ID, $attach->id);
  	}
 
@@ -53,7 +57,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		$filename = self::copyTestAttachment( 'arch.jpg' );
 		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 		$iid = wp_insert_attachment( $attachment, $filename, $pid );
-		$attachment = new Timber\Attachment( $iid );
+		$attachment = Timber::get_post( $iid );
 		$this->assertEquals( 'The Arch', $attachment->title() );
 	}
 
@@ -90,7 +94,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 
 	function testTimberAttachmentSrc() {
 		$iid = self::get_attachment();
-		$attachment = new Timber\Attachment($iid);
+		$attachment = Timber::get_post($iid);
 		$post = get_post($iid);
 		$str = '{{ Attachment(post).src }}';
 		$result = Timber::compile_string( $str, array('post' => $post) );

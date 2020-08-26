@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @group called-post-constructor
+ * @group posts-api
+ * @group attachments
+ * @todo figure out how to distinguish Image instances in Class Maps
  */
 class TestTimberImageRetina extends Timber_UnitTestCase {
 

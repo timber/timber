@@ -87,7 +87,7 @@
 				$car = Timber::get_term($tid);
 			}
 			wp_set_object_terms($pid, $cars, 'cars', false);
-			$post = new Timber\Post($pid);
+			$post = Timber::get_post($pid);
 			$template = "{% for term_item in post.terms({query : {taxonomy: 'cars', orderby: 'term_id', order: 'ASC'}}) %}{{ term_item.name }} {% endfor %}";
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('Honda Civic Toyota Corolla Toyota Camry Dodge Intrepid ', $str);
