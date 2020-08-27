@@ -76,6 +76,21 @@
 			$this->assertTrue( $exists );
 		}
 
+		function testDeleteSideloadedFile() {
+			$filename = 'acGwPDj4_400x400';
+			$img = Timber\ImageHelper::sideload_image('https://pbs.twimg.com/profile_images/768086933310476288/'.$filename.'.jpg');
+			$files = scandir('/tmp');
+			$matches = false;
+			foreach ($files as $file) {
+				$substr = substr($file, 0, strlen($filename));
+				echo $substr."\n";
+				if ( $substr == $filename ) {
+					$matches = true;
+				}
+			}
+			$this->assertFalse($matches);
+		}
+
 		/**
 		 * @doesNotPerformAssertions
 		 */
