@@ -519,7 +519,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	}
 
 	/**
-	 * @expectedDeprecated Timber\Timber::query_post()
+	 * @expectedDeprecated Timber::query_post()
 	 */
 	function testBlankQueryPost() {
 		$pid = $this->factory->post->create( );
@@ -782,6 +782,82 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->go_to( '/' );
 
 		$this->assertCount( 10, Timber::get_posts() );
+	}
+
+	/**
+	 * @expectedIncorrectUsage Timber::get_post()
+	 */
+	function testDeprecatedGetPostFromSlug(){
+		$post_id = $this->factory->post->create( [ 'post_name' => 'mycoolpost' ] );
+		$this->assertFalse( Timber::get_post( 'mycoolpost' ) );
+	}
+
+	/**
+	 * @expectedIncorrectUsage Timber::get_post()
+	 */
+	function testDeprecatedPostClassParameterForGetPost() {
+		$post_id = $this->factory->post->create();
+		$post    = Timber\Timber::get_post( $post_id, 'Deprecated class name param' );
+
+		$this->assertInstanceOf( Post::class, $post );
+	}
+
+	/**
+	 * @expectedIncorrectUsage Timber::get_posts()
+	 */
+	function testDeprecatedPostClassParameterForGetPosts() {
+		$this->factory->post->create_many( 2 );
+
+		$posts = Timber\Timber::get_posts([
+			'post_type' => 'post'
+		], 'Deprecated class name param' );
+
+		$this->assertInstanceOf( Post::class, $posts[0] );
+	}
+
+	/**
+	 * @expectedIncorrectUsage Timber::get_posts()
+	 */
+	function testDeprecatedQueryStringsForGetPosts() {
+		$this->factory->post->create_many( 2 );
+
+		$posts = Timber\Timber::get_posts( 'post_type=post' );
+		$this->assertCount( 2, $posts );
+	}
+
+	/**
+	 * @expectedIncorrectUsage Timber::get_posts()
+	 */
+	function testDeprecatedReturnCollectionParameterInGetPosts() {
+		$this->factory->post->create_many( 2 );
+
+		$posts = Timber\Timber::get_posts(
+			[ 'post_type' => 'post' ],
+			'Timber\Post',
+			true
+		);
+
+		$this->assertEquals( 'Timber\Post', get_class( $posts[0] ) );
+	}
+
+	/**
+	 * @expectedDeprecated Timber::query_post()
+	 */
+	function testDeprecatedQueryPost() {
+		$post_id = $this->factory->post->create( [ 'post_type' => 'post' ] );
+		$post    = Timber\Timber::query_post( $post_id );
+
+		$this->assertEquals( $post->ID, $post_id );
+	}
+
+	/**
+	 * @expectedDeprecated Timber::query_posts()
+	 */
+	function testDeprecatedQueryPosts() {
+		$post_ids = $this->factory->post->create_many( 3, [ 'post_type' => 'post' ] );
+		$posts    = Timber\Timber::query_posts( [ 'post_type' => 'post' ] );
+
+		$this->assertEquals( $posts[0]->ID, $post_ids[0] );
 	}
 
 	/*

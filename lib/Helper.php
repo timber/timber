@@ -237,8 +237,9 @@ class Helper {
 	}
 
 	/**
+	 * Output a value (string, array, object, etc.) to the error log
 	 *
-	 *
+	 * @api
 	 * @param mixed $arg that you want to error_log
 	 * @return void
 	 */
@@ -387,7 +388,7 @@ class Helper {
 		/**
 		 * Filters whether to trigger an error for deprecated functions.
 		 *
-		 * @since 2.5.0
+		 * @since WordPress 2.5.0
 		 *
 		 * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
 		 */

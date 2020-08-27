@@ -174,9 +174,32 @@ class Timber {
 	================================ */
 
 	/**
-	 * Get a post by post ID or query (as a query string or an array of arguments).
+	 * Get a Timber Post from a post ID, WP_Post object, a WP_Query object, or an associative
+	 * array of arguments for WP_Query::__construct().
+	 *
+	 * By default, Timber will use the `Timber\Post` class to create a new post object. To control
+	 * which class is instantiated for your Post object, use [Class Maps](https://timber.github.io/docs/v2/guides/class-maps/)
 	 *
 	 * @api
+	 * @example
+	 * ```php
+	 * // Using a post ID.
+	 * $post = Timber::get_post( 75 );
+	 *
+	 * // Using a WP_Post object.
+	 * $wp_post = get_post( 123 );
+	 * $post    = Timber::get_post( $wp_post );
+	 *
+	 * // Using a WP_Query argument array
+	 * $post = Timber::get_post( [
+	 *   'post_type' => 'page',
+	 * ] );
+	 *
+	 * // Use currently queried post. Same as using get_the_ID() as a parameter.
+	 * $post = Timber::get_post();
+	 * ```
+	 * @see https://developer.wordpress.org/reference/classes/wp_query/__construct/
+	 *
 	 * @param mixed $query   Optional. Post ID or query (as an array of arguments for WP_Query).
 	 * 	                     If a query is provided, only the first post of the result will be
 	 *                       returned. Default false.
@@ -185,7 +208,25 @@ class Timber {
 	 * @return \Timber\Post|bool Timber\Post object if a post was found, false if no post was
 	 *                           found.
 	 */
-	public static function get_post( $query = false, array $options = [] ) {
+	public static function get_post( $query = false, $options = [] ) {
+		if ( is_string( $query ) && ! is_numeric( $query ) ) {
+			Helper::doing_it_wrong(
+				'Timber::get_post()',
+				'Getting a post by post slug or post name was removed from Timber::get_post() in Timber 2.0. Use Timber::get_post_by() instead.',
+				'2.0.0'
+			);
+		}
+
+		if ( is_string( $options ) ) {
+			Helper::doing_it_wrong(
+				'Timber::get_post()',
+				'The $PostClass parameter for passing in the post class to use in Timber::get_posts() was replaced with an $options array in Timber 2.0. To customize which class to instantiate for your post, use Class Maps instead: https://timber.github.io/docs/v2/guides/class-maps/',
+				'2.0.0'
+			);
+
+			$options = [];
+		}
+
 		$factory = new PostFactory();
 
 		global $wp_query;
@@ -217,7 +258,42 @@ class Timber {
 	 *
 	 * @return array|bool|null
 	 */
-	public static function get_posts( $query = false, array $options = [] ) {
+	public static function get_posts( $query = false, $options = [] ) {
+		if ( is_string( $query ) ) {
+			Helper::doing_it_wrong(
+				'Timber::get_posts()',
+				"Querying posts by using a query string was removed in Timber 2.0. Pass in the query string as an options array instead. For example, change Timber::get_posts( 'post_type=portfolio&posts_per_page=3') to Timber::get_posts( [ 'post_type' => 'portfolio', 'posts_per_page' => 3 ] ). Learn more: https://timber.github.io/docs/v2/reference/timber-timber/#get_posts",
+				'2.0.0'
+			);
+
+			$query = new WP_Query( $query );
+		}
+
+		if ( is_string( $options ) ) {
+			Helper::doing_it_wrong(
+				'Timber::get_posts()',
+				'The $PostClass parameter for passing in the post class to use in Timber::get_posts() was replaced with an $options array in Timber 2.0. To customize which class to instantiate for your post, use Class Maps instead: https://timber.github.io/docs/v2/guides/class-maps/',
+				'2.0.0'
+			);
+			$options = [];
+		}
+
+		if ( 3 === func_num_args() ) {
+			Helper::doing_it_wrong(
+				'Timber::get_posts()',
+				'The $return_collection parameter to control whether a post collection is returned in Timber::get_posts() was removed in Timber 2.0.',
+				'2.0.0'
+			);
+		}
+
+		/**
+		 * @todo Define all default $options.
+		 * @todo Actually apply options.
+		 */
+		$options = wp_parse_args( $options, [
+			'merge_default' => false,
+		] );
+
 		$factory = new PostFactory();
 
 		// Default to the global query.
@@ -230,10 +306,11 @@ class Timber {
 	 * @api
 	 * @since 2.0.0
 	 * @example
-	 * ```
-	 * $post = Timber::get_post_by( 'slug', 'about-us' );
-	 * ```
 	 * ```php
+	 * // By slug
+	 * $post = Timber::get_post_by( 'slug', 'about-us' );
+	 *
+	 * // By title
 	 * $post = Timber::get_post_by( 'title', 'About us' );
 	 * ```
 	 *
@@ -245,9 +322,9 @@ class Timber {
 	 * @param array        $args {
 	 *     Optional. An array of arguments to configure what is returned.
 	 *
-	 * 	   @type string|array     $post_type   Optional. What WordPress post type to limit the 
+	 * 	   @type string|array     $post_type   Optional. What WordPress post type to limit the
 	 *                                         results to. Defaults to 'any'
-	 *     @type string           $order_by    Optional. The field to sort by. Defaults to 
+	 *     @type string           $order_by    Optional. The field to sort by. Defaults to
 	 *                                         'post_date'
 	 *     @type string           $order       Optional. The sort to apply. Defaults to ASC
 	 *
@@ -326,7 +403,8 @@ class Timber {
 	 * @return Post|array|bool|null
 	 */
 	public static function query_post( $query = false, array $options = [] ) {
-		Helper::deprecated('Timber\Timber::query_post()', 'Timber\Timber::get_post()', '2.0.0');
+		Helper::deprecated('Timber::query_post()', 'Timber::get_post()', '2.0.0');
+
 		return self::get_post($query, $options);
 	}
 
@@ -342,7 +420,8 @@ class Timber {
 	 * @return PostCollection
 	 */
 	public static function query_posts( $query = false, array $options = [] ) {
-		Helper::deprecated('Timber\Timber::query_posts()', 'Timber\Timber::get_posts()', '2.0.0');
+		Helper::deprecated('Timber::query_posts()', 'Timber::get_posts()', '2.0.0');
+
 		return self::get_posts($query, $options);
 	}
 
