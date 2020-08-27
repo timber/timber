@@ -40,13 +40,15 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$pids = $this->factory->post->create_many( 33 );
 		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
 		$this->go_to( home_url( '/' ) );
-		Timber::get_posts('post_type=portfolio');
+		Timber::get_posts([
+			'post_type' => 'portfolio'
+		]);
 		$pagination = Timber::get_pagination();
 
 		global $timber;
 		$timber->active_query = false;
 		unset($timber->active_query);
-		$this->assertEquals(4, count($pagination['pages']));
+		$this->assertCount(4, $pagination['pages']);
 	}
 
 	function testPaginationWithPostQuery() {

@@ -857,7 +857,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$post_ids = $this->factory->post->create_many( 3, [ 'post_type' => 'post' ] );
 		$posts    = Timber\Timber::query_posts( [ 'post_type' => 'post' ] );
 
-		$this->assertEquals( $posts[0]->ID, $post_ids[0] );
+		$this->assertCount( 3, $posts );
 	}
 
 	/*
