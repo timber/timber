@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use WP_Query;
 use WP_Term;
 
 /**
@@ -555,11 +556,27 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 *
 	 * @api
 	 * @example
+	 * Query the default posts_per_page for this Term:
+	 *
 	 * ```twig
 	 * <h4>Recent posts in {{ term.name }}</h4>
 	 *
 	 * <ul>
-	 * {% for post in term.posts(3, 'post') %}
+	 * {% for post in term.posts() %}
+	 *     <li>
+	 *         <a href="{{ post.link }}">{{ post.title }}</a>
+	 *     </li>
+	 * {% endfor %}
+	 * </ul>
+	 * ```
+	 *
+	 * Query exactly 3 Posts from this Term:
+	 *
+	 * ```twig
+	 * <h4>Recent posts in {{ term.name }}</h4>
+	 *
+	 * <ul>
+	 * {% for post in term.posts(3) %}
 	 *     <li>
 	 *         <a href="{{ post.link }}">{{ post.title }}</a>
 	 *     </li>
@@ -586,61 +603,74 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * ```
 	 *
 	 * @param int|array $numberposts_or_args Optional. Either the number of posts or an array of
-	 *                                       arguments for the post query that this method is going.
-	 *                                       to perform. Default `10`.
-	 * @param string $post_type_or_class     Optional. Either the post type to get or the name of
-	 *                                       post class to use for the returned posts. Default
-	 *                                       `any`.
-	 * @param string $post_class             Optional. The name of the post class to use for the
-	 *                                       returned posts. Default `Timber\Post`.
+	 *                                       arguments for the post query to be performed.
+	 *                                       Default is an empty array, the equivalent of:
+	 *                                       ```php
+	 *                                       [
+	 *                                         'posts_per_page' => get_option('posts_per_page'),
+	 *                                         'post_type'      => 'any',
+	 *                                         'tax_query'      => [ ...tax query for this Term... ]
+	 *                                       ]
+	 *                                       ```
+	 * 																			 Note that this *used* to be
+	 * @param string $post_type_or_class     Deprecated. Before Timber 2.x this was a post_type to be
+	 *                                       used for querying posts OR the Timber\Post subclass to
+	 *                                       instantiate for each post returned. As of Timber 2.0.0,
+	 *                                       specify `post_type` in the `$query` array argument. To
+	 *                                       specify the class, use Class Maps.
+	 * @see https://timber.github.io/docs/v2/guides/posts/
+	 * @see https://timber.github.io/docs/v2/guides/class-maps/
 	 * @return \Timber\PostQuery
-	 * @todo implement this via Timber::get_posts() instead
 	 */
-	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
-		if ( !strlen($post_class) ) {
-			$post_class = $this->PostClass;
+	public function posts( $query = [], $post_type_or_class = null ) {
+		if ( is_string($query) ) {
+			Helper::doing_it_wrong(
+				'Passing a query string to Term::posts()',
+				'Pass a query array instead: e.g. `"posts_per_page=3"` should be replaced with `["posts_per_page" => 3]`',
+				'2.0.0'
+			);
+
+			return false;
 		}
-		$default_tax_query = array(array(
-			'field' => 'id',
-			'terms' => $this->ID,
-			'taxonomy' => $this->taxonomy,
-		));
-		if ( is_string($numberposts_or_args) && strstr($numberposts_or_args, '=') ) {
-			$args = $numberposts_or_args;
-			$new_args = array();
-			parse_str($args, $new_args);
-			$args = $new_args;
-			$args['tax_query'] = $default_tax_query;
-			if ( !isset($args['post_type']) ) {
-				$args['post_type'] = 'any';
-			}
-			if ( class_exists($post_type_or_class) ) {
-				$post_class = $post_type_or_class;
-			}
-		} else if ( is_array($numberposts_or_args) ) {
-			//they sent us an array already baked
-			$args = $numberposts_or_args;
-			if ( !isset($args['tax_query']) ) {
-				$args['tax_query'] = $default_tax_query;
-			}
-			if ( class_exists($post_type_or_class) ) {
-				$post_class = $post_type_or_class;
-			}
-			if ( !isset($args['post_type']) ) {
-				$args['post_type'] = 'any';
-			}
-		} else {
-			$args = array(
-				'numberposts_or_args' => $numberposts_or_args,
-				'tax_query' => $default_tax_query,
-				'post_type' => $post_type_or_class
+
+		if ( is_int($query) ) {
+			$query = [
+				'posts_per_page' => $query,
+				'post_type'      => 'any',
+			];
+		}
+
+		if ( isset($post_type_or_class) ) {
+			Helper::deprecated(
+				'Passing post_type_or_class',
+				'Pass post_type as part of the $query argument. For specifying class, use Class Maps: https://timber.github.io/docs/v2/guides/class-maps/',
+				'2.0.0'
+			);
+
+			// Honor the non-deprecated posts_per_page param over the deprecated second arg.
+			$query['post_type'] = $query['post_type'] ?? $post_type_or_class;
+		}
+
+		if ( func_num_args() > 2 ) {
+			Helper::doing_it_wrong(
+				'Passing a post class',
+				'Use Class Maps instead: https://timber.github.io/docs/v2/guides/class-maps/',
+				'2.0.0'
 			);
 		}
 
-		return new PostQuery( array(
-			'query'      => $args,
-			'post_class' => $post_class,
-		) );
+		$tax_query = [
+			[
+				'field'    => 'id',
+				'terms'    => $this->ID,
+				'taxonomy' => $this->taxonomy,
+			],
+		];
+
+		// Merge a clause for this Term into any user-specified tax_query clauses.
+		$query['tax_query'] = array_merge($query['tax_query'] ?? [], $tax_query);
+
+		return Timber::get_posts( $query );
 	}
 
 
@@ -663,13 +693,11 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @deprecated 2.0.0 use `{{ term.posts }}` instead
 	 *
 	 * @param int $numberposts
-	 * @param string $post_type
-	 * @param string $PostClass
 	 * @return array|bool|null
 	 */
 	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
 		Helper::deprecated('{{ term.get_posts }}', '{{ term.posts }}', '2.0.0');
-		return $this->posts($numberposts, $post_type, $PostClass);
+		return $this->posts($numberposts);
 	}
 
 	/**
