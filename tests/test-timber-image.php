@@ -21,21 +21,19 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		return $post;
 	}
 
-/* ----------------
- * Tests
- ---------------- */
-
 	function testInitFromFilePath() {
+		$this->markTestSkipped('@todo ::from_file');
 		$attachment_file = self::copyTestAttachment();
-		$image = new Timber\Image( $attachment_file );
+		$image = Attachment::from_file( $attachment_file );
 		$size = $image->width();
 		$this->assertEquals( 1500, $size );
 	}
 
 	function testInitFromRelativePath() {
+		$this->markTestSkipped('@todo ::from_file');
 		$filename = self::copyTestAttachment( 'arch.jpg' );
 		$path = str_replace(ABSPATH, '/', $filename);
-		$image = new Timber\Image( $path );
+		$image = Attachment::from_file( $path );
 		$width = $image->width();
 		$this->assertEquals( 1500, $width );
 	}
@@ -821,7 +819,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		if (!is_int($file_id)) {
 			error_log(print_r($file_id, true));
 		}
-		$image = new Timber\Image($file_id);
+		$image = Timber::get_post($file_id);
 		$str = '<img src="{{image.src(\'medium\')}}" />';
 		$result = Timber::compile_string($str, array('image' => $image));
 		$upload_dir = wp_upload_dir();
@@ -839,7 +837,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		if (!is_int($file_id)) {
 			error_log(print_r($file_id, true));
 		}
-		$image = new Timber\Image($file_id);
+		$image = Timber::get_post($file_id);
 		$str = '<img src="{{image.src(\'medium\')}}" />';
 		$result = Timber::compile_string($str, array('image' => $image));
 		$upload_dir = wp_upload_dir();
@@ -884,8 +882,9 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 	}
 
 	function testImageNoParent() {
+		$this->markTestSkipped('@todo ::from_file');
 		$filename = self::copyTestAttachment( 'arch.jpg' );
-		$image = new Timber\Image( $filename );
+		$image = Attachment::from_file( $filename );
 		$this->assertFalse($image->parent());
 	}
 

@@ -15,7 +15,7 @@ namespace Timber;
  * // Lets say you have an alternate large 'cover image' for your post
  * // stored in a custom field which returns an image ID.
  * $cover_image_id = $context['post']->cover_image;
- * $context['cover_image'] = new Timber\Image($cover_image_id);
+ * $context['cover_image'] = Timber::get_post($cover_image_id);
  * Timber::render('single.twig', $context);
  * ```
  *
@@ -81,15 +81,7 @@ class Image extends Attachment {
 	protected $dimensions;
 
 	/**
-	 * Creates a new Timber\Image object
-	 * @example
-	 * ```php
-	 * // You can pass it an ID number
-	 * $myImage = new Timber\Image(552);
-	 *
-	 * //Or send it a URL to an image
-	 * $myImage = new Timber\Image('http://google.com/logo.jpg');
-	 * ```
+	 * @internal
 	 * @param bool|int|string $iid
 	 */
 	public function __construct( $iid ) {

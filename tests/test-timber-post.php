@@ -70,7 +70,7 @@
 			$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 			$iid = wp_insert_attachment( $attachment, $filename, $pid );
 			update_post_meta( $iid, 'architect', 'Eero Saarinen' );
-			$image = new Timber\Image( $iid );
+			$image = Timber::get_post( $iid );
 			$parent = $image->parent();
 			$this->assertEquals($pid, $parent->ID);
 			$this->assertFalse($parent->parent());

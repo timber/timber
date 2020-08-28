@@ -1,5 +1,8 @@
 <?php
 
+	/**
+	 * @group attachments
+	 */
 	class TestTimberWPVIP extends TimberAttachment_UnitTestCase {
 
 		function testDisableCache() {
@@ -51,17 +54,12 @@
 			if (!is_int($file_id)) {
 				error_log(print_r($file_id, true));
 			}
-			$image = new Timber\Image($file_id);
+			$image = Timber::get_post($file_id);
 			$str = '<img src="{{image.src(\'medium\')}}" />';
 			$result = Timber::compile_string($str, array('image' => $image));
 			$upload_dir = wp_upload_dir();
 			$this->assertEquals('<img src="'.$upload_dir['url'].'/'.$image->sizes['medium']['file'].'" />', trim($result));
 			remove_filter( 'timber/allow_fs_write', '__return_false' );
 		}
-
-
-
-
-
 
 	}

@@ -103,7 +103,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
  	}
 
 	function testAttachmentArray() {
-		$this->markTestSkipped('@todo drop support for this');
+		$this->markTestSkipped('@todo drop support for this?');
 		$post_id = $this->factory->post->create();
 		$filename = self::copyTestAttachment('arch.jpg');
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
@@ -122,9 +122,17 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	}
 
 	function testAttachmentPath() {
-		$this->markTestSkipped('@todo Image::from_file');
+		$this->markTestSkipped('@todo ::from_file');
 		$filename = self::copyTestAttachment( 'arch.jpg' );
-		$image = new Timber\Image( $filename );
+		$image = Attachment::from_file( $filename );
+		$this->assertStringStartsWith('/wp-content', $image->path());
+		$this->assertStringEndsWith('.jpg', $image->path());
+	}
+
+	function testAttachmentFromUrl() {
+		$this->markTestSkipped('@todo ::from_url');
+		$filename = self::copyTestAttachment( 'arch.jpg' );
+		$image = Attachment::from_url( $filename );
 		$this->assertStringStartsWith('/wp-content', $image->path());
 		$this->assertStringEndsWith('.jpg', $image->path());
 	}
@@ -141,7 +149,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	function testInitFromFilePath() {
 		$this->markTestSkipped('@todo Image::from_file');
 		$attachment_file = self::copyTestAttachment();
-		$attachment = new Timber\Attachment( $attachment_file );
+		$attachment = Attachment::from_file( $attachment_file );
 		$size = $attachment->size_raw();
 		$this->assertEquals( 154752, $size );
 	}
@@ -150,7 +158,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		$this->markTestSkipped('@todo Image::from_file');
 		$filename = self::copyTestAttachment( 'arch.jpg' );
 		$path = str_replace(ABSPATH, '/', $filename);
-		$attachment = new Timber\Attachment( $path );
+		$attachment = Attachment::from_file( $path );
 		$size = $attachment->size_raw();
 		$this->assertEquals( 154752, $size );
 	}
@@ -160,7 +168,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		$destination_path = self::copyTestAttachment();
 		$destination_path = Timber\URLHelper::get_rel_path( $destination_path );
 		$destination_url = 'http://'.$_SERVER['HTTP_HOST'].$destination_path;
-		$image = new Timber\Attachment( $destination_url );
+		$image = Attachment::from_url( $destination_url );
 		$this->assertEquals( $destination_url, $image->src() );
 		$this->assertEquals( $destination_url, (string)$image );
 	}
@@ -168,7 +176,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	function testPathInfo() {
 		$this->markTestSkipped('@todo Image::from_file');
 		$filename = self::copyTestAttachment( 'arch.jpg' );
-		$image = new Timber\Attachment( $filename );
+		$image = Attachment::from_file( $filename );
 		$path_parts = $image->get_pathinfo();
 		$this->assertEquals('jpg', $path_parts['extension']);
 	}
