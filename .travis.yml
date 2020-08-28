@@ -16,6 +16,8 @@ addons:
 
 php:
   - 7.2
+  - 7.3
+  - 7.4
 
 env:
   global:
@@ -23,9 +25,6 @@ env:
     - COVERALLS_PARALLEL=true
   jobs:
     - WP_VERSION=4.9.8 WP_MULTISITE=0 
-    - WP_VERSION=4.9.8 WP_MULTISITE=1
-    - WP_VERSION=latest WP_MULTISITE=0
-    - WP_VERSION=latest WP_MULTISITE=1
 
 cache:
   directories:
@@ -39,13 +38,11 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install -y "php${TRAVIS_PHP_VERSION}-cli" "php${TRAVIS_PHP_VERSION}-gd"
 
-install:
-  - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-  - composer update $PREFER_LOWEST --prefer-source
+install: skip
 
 script:
-  - php -v
   - which -a php
-  - alias php=/usr/bin/php
+  - php -v
+  - export PATH="/usr/bin:${PATH}
   - php -v
   - php --rf imagewebp
