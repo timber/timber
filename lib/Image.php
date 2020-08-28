@@ -408,7 +408,15 @@ class Image extends Attachment {
 	protected function is_image() {
 		$src        = wp_get_attachment_url( $this->ID );
 		$check      = wp_check_filetype( PathHelper::basename( $src ), null );
-		$image_exts = array( 'jpg', 'jpeg', 'jpe', 'gif', 'png' );
+		$image_exts = apply_filters( 'timber/post/image_extensions', [
+			'jpg',
+			'jpeg',
+			'jpe',
+			'gif',
+			'png',
+			'webp',
+		] );
+
 		return in_array( $check['ext'], $image_exts );
 	}
 
