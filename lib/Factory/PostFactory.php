@@ -4,6 +4,8 @@ namespace Timber\Factory;
 
 use Timber\Attachment;
 use Timber\CoreInterface;
+use Timber\Image;
+use Timber\PathHelper;
 use Timber\Post;
 use Timber\PostArrayObject;
 use Timber\PostQuery;
@@ -39,15 +41,15 @@ class PostFactory {
 		return false;
 	}
 
-  protected function from_id(int $id) {
+	protected function from_id(int $id) {
 		$wp_post = get_post($id);
 
 		if (!$wp_post) {
 			return false;
 		}
 
-    return $this->build($wp_post);
-  }
+		return $this->build($wp_post);
+	}
 
 	protected function from_post_object(object $obj) : CoreInterface {
 		if ($obj instanceof CoreInterface) {
@@ -71,31 +73,49 @@ class PostFactory {
 	}
 
 	protected function get_post_class(WP_Post $post) : string {
-    // Get the user-configured Class Map
-    $map = apply_filters( 'timber/post/classmap', [
-      'post'       => Post::class,
-      'page'       => Post::class,
-      // @todo special logic for attachments?
-      'attachment' => Attachment::class,
-    ] );
+		// Get the user-configured Class Map
+		$map = apply_filters( 'timber/post/classmap', [
+			'post'       => Post::class,
+			'page'       => Post::class,
+			// Apply special logic for attachments.
+			'attachment' => function(WP_Post $attachment) {
+				return $this->is_image($attachment) ? Image::class : Attachment::class;
+			},
+		] );
 
 		$class = $map[$post->post_type] ?? null;
 
-    // If class is a callable, call it to get the actual class name
-    if (is_callable($class)) {
-      $class = $class($post);
-    }
+		// If class is a callable, call it to get the actual class name
+		if (is_callable($class)) {
+			$class = $class($post);
+		}
 
-    // If we don't have a post class by now, fallback on the default class
-    return $class ?? Post::class;
+		// If we don't have a post class by now, fallback on the default class
+		return $class ?? Post::class;
 	}
 
-  protected function build(WP_Post $post) : CoreInterface {
+	protected function is_image(WP_Post $post) {
+		$src   = wp_get_attachment_url( $post->ID );
+		$check = wp_check_filetype( PathHelper::basename( $src ) );
+
+		$extensions = apply_filters( 'timber/post/image_extensions', [
+			'jpg',
+			'jpeg',
+			'jpe',
+			'gif',
+			'png',
+			'webp',
+		] );
+
+		return in_array( $check['ext'], $extensions );
+	}
+
+	protected function build(WP_Post $post) : CoreInterface {
 		$class = $this->get_post_class($post);
 
-    // @todo make Core constructors protected, call Post::build() here
-    return new $class($post);
-  }
+		// @todo make Core constructors protected, call Post::build() here
+		return new $class($post);
+	}
 
 	protected function is_numeric_array($arr) {
 		if ( ! is_array($arr) ) {

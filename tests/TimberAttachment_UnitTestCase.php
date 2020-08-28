@@ -84,7 +84,7 @@
 
 		public static function get_timber_attachment_object($file = 'cropper.png') {
 			$iid = self::get_attachment(0, $file);
-			return new Timber\Image($iid);
+			return Timber::get_post( $iid );
 		}
 
 	}

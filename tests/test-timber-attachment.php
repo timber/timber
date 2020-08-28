@@ -1,14 +1,89 @@
 <?php
 
+use Timber\Attachment;
+use Timber\Image;
+use Timber\Timber;
+
 /**
  * @group posts-api
  * @group attachments
  */
 class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 
-/* ----------------
- * Tests
- ---------------- */
+	function testAttachmentByExtension() {
+		// Add support for "uploading" WEBP images.
+		$this->add_filter_temporarily('upload_mimes', function($types) {
+			return array_merge($types, [
+				'webp' => 'image/webp',
+			]);
+		});
+
+		// Create 7 attachment posts with different extensions.
+ 		$pids = $this->factory->post->create_many(7, [
+			'post_type' => 'attachment',
+		]);
+		$attachment_ids = array_map([self::class, 'get_attachment'], $pids, [
+			'hebrew.jpg',
+			'jarednova.jpeg',
+			'robocop.gif',
+			'flag.png',
+			'mountains.webp',
+			'dummy-pdf.pdf',
+			'white-castle.tif',
+		]);
+
+		// Instantiate our various attachment posts.
+		$attachments = array_map([Timber::class, 'get_post'], $attachment_ids);
+
+		$this->assertInstanceOf(Image::class, $attachments[0]); // hebrew.jpg
+		$this->assertInstanceOf(Image::class, $attachments[1]); // jarednova.jpeg
+		$this->assertInstanceOf(Image::class, $attachments[2]); // robocop.gif
+		$this->assertInstanceOf(Image::class, $attachments[3]); // flag.png
+		$this->assertInstanceOf(Image::class, $attachments[4]); // mountains.webp
+
+		// PDFs and TIFs should be returned as Attachments but NOT images.
+		$this->assertEquals(Attachment::class, get_class($attachments[5]));
+		$this->assertEquals(Attachment::class, get_class($attachments[6]));
+	}
+
+	function testAttachmentWithExtentionFilter() {
+		// Add support for "uploading" WEBP images.
+		$this->add_filter_temporarily('upload_mimes', function($types) {
+			return array_merge($types, [
+				'webp' => 'image/webp',
+			]);
+		});
+
+		// Create 7 attachment posts with different extensions.
+ 		$pids = $this->factory->post->create_many(7, [
+			'post_type' => 'attachment',
+		]);
+		$attachment_ids = array_map([self::class, 'get_attachment'], $pids, [
+			'hebrew.jpg',
+			'jarednova.jpeg',
+			'robocop.gif',
+			'flag.png',
+			'mountains.webp',
+			'dummy-pdf.pdf',
+			'white-castle.tif',
+		]);
+
+		$this->add_filter_temporarily('timber/post/image_extensions', function() {
+			// ONLY these extensions should be considered images.
+			return ['webp', 'pdf', 'tif'];
+		});
+
+		// Instantiate our various attachment posts.
+		$attachments = array_map([Timber::class, 'get_post'], $attachment_ids);
+
+		$this->assertEquals(Attachment::class, get_class($attachments[0])); // hebrew.jpg
+		$this->assertEquals(Attachment::class, get_class($attachments[1])); // jarednova.jpeg
+		$this->assertEquals(Attachment::class, get_class($attachments[2])); // robocop.gif
+		$this->assertEquals(Attachment::class, get_class($attachments[3])); // flag.png
+		$this->assertEquals(Image::class, get_class($attachments[4])); // mountains.webp
+		$this->assertEquals(Image::class, get_class($attachments[5])); // dummy-pdf.pdf
+		$this->assertEquals(Image::class, get_class($attachments[6])); // white-castle.tif
+	}
 
  	function testAttachmentLink() {
  		self::setPermalinkStructure();
@@ -28,6 +103,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
  	}
 
 	function testAttachmentArray() {
+		$this->markTestSkipped('@todo drop support for this');
 		$post_id = $this->factory->post->create();
 		$filename = self::copyTestAttachment('arch.jpg');
 		$wp_filetype = wp_check_filetype( basename( $filename ), null );
@@ -46,6 +122,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	}
 
 	function testAttachmentPath() {
+		$this->markTestSkipped('@todo Image::from_file');
 		$filename = self::copyTestAttachment( 'arch.jpg' );
 		$image = new Timber\Image( $filename );
 		$this->assertStringStartsWith('/wp-content', $image->path());
@@ -62,6 +139,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	}
 
 	function testInitFromFilePath() {
+		$this->markTestSkipped('@todo Image::from_file');
 		$attachment_file = self::copyTestAttachment();
 		$attachment = new Timber\Attachment( $attachment_file );
 		$size = $attachment->size_raw();
@@ -69,6 +147,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	}
 
 	function testInitFromRelativePath() {
+		$this->markTestSkipped('@todo Image::from_file');
 		$filename = self::copyTestAttachment( 'arch.jpg' );
 		$path = str_replace(ABSPATH, '/', $filename);
 		$attachment = new Timber\Attachment( $path );
@@ -77,6 +156,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	}
 
 	function testInitFromURL() {
+		$this->markTestSkipped('@todo Image::from_url');
 		$destination_path = self::copyTestAttachment();
 		$destination_path = Timber\URLHelper::get_rel_path( $destination_path );
 		$destination_url = 'http://'.$_SERVER['HTTP_HOST'].$destination_path;
@@ -86,6 +166,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	}
 
 	function testPathInfo() {
+		$this->markTestSkipped('@todo Image::from_file');
 		$filename = self::copyTestAttachment( 'arch.jpg' );
 		$image = new Timber\Attachment( $filename );
 		$path_parts = $image->get_pathinfo();
@@ -124,6 +205,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		$str = '{{ Attachment(post).size_raw }}';
 		$result = Timber::compile_string( $str, array( 'post' => $iid ) );
 		$this->assertEquals('16555', $result);
+		$this->assertFalse(Timber::get_post($iid)->is_image());
 	}
 
 	function testFileExtension() {
