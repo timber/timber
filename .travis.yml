@@ -43,6 +43,6 @@ install: skip
 script:
   - which -a php
   - php -v
-  - export PATH="/usr/bin:${PATH}
+  - export PATH="/usr/bin:${PATH}"
   - php -v
   - php --rf imagewebp
