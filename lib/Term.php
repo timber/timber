@@ -660,6 +660,8 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		}
 
 		$tax_query = [
+			// Force a tax_query constraint on this term.
+			'relation'   => 'AND',
 			[
 				'field'    => 'id',
 				'terms'    => $this->ID,

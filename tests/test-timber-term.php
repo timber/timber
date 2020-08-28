@@ -236,7 +236,10 @@ class TermTestPage extends Post {}
 						'field'    => 'id',
 						'terms'    => $craft_id,
 						'taxonomy' => 'crafts',
-					]
+					],
+					// This should get overridden; we don't want users to be able to
+					// override the Term we're querying for.
+					'relation'     => 'OR',
 				],
 			]));
 		}
