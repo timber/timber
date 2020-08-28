@@ -34,10 +34,8 @@ jobs:
         - composer update $PREFER_LOWEST --prefer-source
         - composer require --dev 'satooshi/php-coveralls:1.0.*'
       script:
-        - mkdir -p build/logs
-        - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --coverage-clover build/logs/clover.xml
-      after_success:
-        - vendor/bin/coveralls -v
+        - php -m
+        - php --rf imagewebp
     - php: 7.4
       env: WP_VERSION=latest WP_MULTISITE=0
       before_install:
@@ -54,10 +52,8 @@ jobs:
         - vendor/bin/pcov clobber
         - composer require --dev 'satooshi/php-coveralls:1.0.*'
       script:
-        - mkdir -p build/logs
-        - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --coverage-clover build/logs/clover.xml
-      after_success:
-        - vendor/bin/coveralls -v
+        - php -m
+        - php --rf imagewebp
     - php: 7.4
       env: WP_VERSION=latest WP_MULTISITE=1
       before_install:
@@ -70,10 +66,8 @@ jobs:
         - vendor/bin/pcov clobber
         - composer require --dev 'satooshi/php-coveralls:1.0.*'
       script:
-        - mkdir -p build/logs
-        - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --coverage-clover build/logs/clover.xml
-      after_success:
-        - vendor/bin/coveralls -v
+        - php -m
+        - php --rf imagewebp
 
 cache:
   directories:
@@ -88,9 +82,5 @@ install:
   - composer update $PREFER_LOWEST --prefer-source
 
 script:
-  - vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml --verbose
-
-notifications:
-  webhooks:
-    # https://docs.coveralls.io/parallel-build-webhook
-    - 'https://coveralls.io/webhook'
+  - php -m
+  - php --rf imagewebp
