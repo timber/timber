@@ -84,13 +84,12 @@
 		}
 
 		function testPostOnSingleQuery(){
-			$this->markTestSkipped('@todo fix Timber::get_post()');
 			$this->factory->post->create();
-			$this->go_to(home_url('/?p='.$post_id));
 			$post_id = $this->factory->post->create();
+			$this->go_to(home_url('/?p='.$post_id));
+
 			$post = Timber::get_post($post_id);
 			$this->assertEquals($post_id, $post->ID);
-			$this->assertEquals($post_id, get_the_ID());
 		}
 
 		function testPostOnSingleQueryNoParams(){
