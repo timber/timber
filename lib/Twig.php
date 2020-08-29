@@ -7,6 +7,9 @@ use Twig\Extension\CoreExtension;
 use Twig\TwigFunction;
 use Twig\TwigFilter;
 
+use Timber\Factory\PostFactory;
+use Timber\Image;
+
 /**
  * Class Twig
  */
@@ -48,37 +51,42 @@ class Twig {
 		 * Timber object functions.
 		 */
 
-		$twig->addFunction(new TwigFunction('Post', [Timber::class, 'get_post'] ) );
+		$factory = new PostFactory();
+
+		$twig->addFunction(new TwigFunction('Post', [$factory, 'from'] ) );
 
 		$twig->addFunction( new TwigFunction( 'PostQuery', function( $args ) {
 			return new PostQuery( $args );
 		} ) );
 
-		$twig->addFunction(new TwigFunction('Image', function( $post_id, $ImageClass = 'Timber\Image' ) {
-			return self::maybe_convert_array( $post_id, $ImageClass );
+		$twig->addFunction(new TwigFunction('Image', function( $ident ) use ( $factory ) {
+			if ( is_string( $ident ) ) {
+				// TODO Image::from_file();
+				return new Image( $ident );
+			}
+
+			return $factory->from( $ident );
 		} ) );
 		$twig->addFunction(new TwigFunction('Term', [Timber::class, 'get_term']));
 		$twig->addFunction(new TwigFunction('User', [Timber::class, 'get_user'] ) );
-		$twig->addFunction( new TwigFunction( 'Attachment', function( $post_id, $AttachmentClass = 'Timber\Attachment' ) {
-			return self::maybe_convert_array( $post_id, $AttachmentClass );
-		} ) );
+		$twig->addFunction( new TwigFunction( 'Attachment', [$factory, 'from'] ) );
 
 		/**
 		 * Deprecated Timber object functions.
 		 */
 		$twig->addFunction( new TwigFunction(
 			'TimberPost',
-			function( $post_id, $PostClass = 'Timber\Post' ) {
+			function( $ident ) use ( $factory ) {
 				Helper::deprecated( '{{ TimberPost() }}', '{{ Post() }}', '2.0.0' );
-				return self::maybe_convert_array( $post_id, $PostClass );
+				return $factory->from( $ident );
 			}
 		) );
 
 		$twig->addFunction( new TwigFunction(
 			'TimberImage',
-			function( $post_id = false, $ImageClass = 'Timber\Image' ) {
+			function( $post_id = false ) use ( $factory ) {
 				Helper::deprecated( '{{ TimberImage() }}', '{{ Image() }}', '2.0.0' );
-				return self::maybe_convert_array( $post_id, $ImageClass );
+				return $factory->from( $post_id );
 			}
 		) );
 
@@ -96,30 +104,6 @@ class Twig {
 		$twig->addFunction(new TwigFunction('translate_nooped_plural', 'translate_nooped_plural'));
 
 		return $twig;
-	}
-
-	/**
-	 * Converts input to Timber object(s)
-	 *
-	 * @internal
-	 * @since 2.0.0
-	 *
-	 * @param mixed  $post_id A post ID, object or something else that the Timber object class
-	 *                        constructor an read.
-	 * @param string $class   The class to use to convert the input.
-	 *
-	 * @return mixed An object or array of objects.
-	 */
-	public static function maybe_convert_array( $post_id, $class ) {
-		if ( is_array( $post_id ) && ! Helper::is_array_assoc( $post_id ) ) {
-			foreach ( $post_id as &$id ) {
-				$id = new $class( $id );
-			}
-
-			return $post_id;
-		}
-
-		return new $class( $post_id );
 	}
 
 	/**
