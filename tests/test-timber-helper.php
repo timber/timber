@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__.'/php/timber-post-subclass.php');
+
 use Timber\PostArrayObject;
 
 	/**
@@ -41,8 +43,11 @@ use Timber\PostArrayObject;
 		}
 
 		function testPluckObjectWithMethod() {
-			require_once(__DIR__.'/php/timber-post-subclass.php');
-			$tps = new TimberPostSubclass();
+			$this->register_post_classmap_temporarily([
+				'post' => TimberPostSubclass::class,
+			]);
+
+			$tps = Timber::get_post($this->factory->post->create());
 			$jimmy = new stdClass();
 			$jimmy->name = 'Jimmy';
 			$pumpkins = array($tps, $jimmy);

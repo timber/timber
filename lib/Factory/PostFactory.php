@@ -113,8 +113,7 @@ class PostFactory {
 	protected function build(WP_Post $post) : CoreInterface {
 		$class = $this->get_post_class($post);
 
-		// @todo make Core constructors protected, call Post::build() here
-		return new $class($post);
+		return $class::build($post);
 	}
 
 	protected function is_numeric_array($arr) {

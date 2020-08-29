@@ -81,14 +81,6 @@ class Image extends Attachment {
 	protected $dimensions;
 
 	/**
-	 * @internal
-	 * @param bool|int|string $iid
-	 */
-	public function __construct( $iid ) {
-		$this->init($iid);
-	}
-
-	/**
 	 * @return string the src of the file
 	 */
 	public function __toString() {

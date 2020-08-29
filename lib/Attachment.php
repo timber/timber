@@ -120,20 +120,6 @@ class Attachment extends Post implements CoreInterface {
 	public $caption;
 
 	/**
-	 * Creates a new `Timber\Attachment` object.
-	 *
-	 * @api
-	 * @internal
-	 *
-	 * @todo make this protected
-	 * @param int|mixed $attachment An attachment ID, a `Timber\Post`, a `WP_Post` object, an ACF
-	 *                              image array, a path (absolute or relative) or an URL.
-	 */
-	public function __construct( $attachment ) {
-		$this->init( $attachment );
-	}
-
-	/**
 	 * Gets the src for an attachment.
 	 *
 	 * @api
@@ -152,6 +138,7 @@ class Attachment extends Post implements CoreInterface {
 	 * @param int|mixed $iid An attachment identifier.
 	 */
 	public function init( $iid = null ) {
+		// @todo extract important logic out into ::from_url(), ::from_file()
 		$iid = $this->determine_id( $iid );
 
 		/**

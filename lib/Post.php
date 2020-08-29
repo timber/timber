@@ -169,17 +169,22 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 */
 	protected $__type;
 
+	public static function build( WP_Post $wp_post ) {
+		$post = new static( $wp_post );
+
+		return $post;
+	}
+
 	/**
 	 * If you send the constructor nothing it will try to figure out the current post id based on
 	 * being inside The_Loop.
 	 *
 	 * @internal
 	 *
-	 * @param mixed $pid
+	 * @param WP_Post $wp_post
 	 */
-	public function __construct( $pid = null ) {
-		$pid = $this->determine_id($pid);
-		$this->init($pid);
+	public function __construct( $wp_post ) {
+		$this->init($wp_post);
 	}
 
 	/**
@@ -287,47 +292,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		if ( isset($_GET['preview']) && isset($_GET['preview_nonce']) && wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id) ) {
 			return true;
 		}
-	}
-
-	/**
-	 * tries to figure out what post you want to get if not explictly defined (or if it is, allows it to be passed through)
-	 * @internal
-	 * @param mixed a value to test against
-	 * @return int|null the numberic id we should be using for this post object, null when there's no ID (ex: 404 page)
-	 */
-	protected function determine_id( $pid ) {
-		global $wp_query;
-		if ( $pid === null &&
-			isset($wp_query->queried_object_id)
-			&& $wp_query->queried_object_id
-			&& isset($wp_query->queried_object)
-			&& is_object($wp_query->queried_object)
-			&& get_class($wp_query->queried_object) == 'WP_Post'
-		) {
-			$pid = $wp_query->queried_object_id;
-		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id ) {
-			//hack for static page as home page
-			$pid = $wp_query->queried_object_id;
-		} else if ( $pid === null ) {
-			$gtid = false;
-			$maybe_post = get_post();
-			if ( isset($maybe_post->ID) ) {
-				$gtid = true;
-			}
-			if ( $gtid ) {
-				$pid = get_the_ID();
-			}
-			if ( !$pid ) {
-				global $wp_query;
-				if ( isset($wp_query->query['p']) ) {
-					$pid = $wp_query->query['p'];
-				}
-			}
-		}
-		if ( $pid === null && ($pid_from_loop = PostGetter::loop_to_id()) ) {
-			$pid = $pid_from_loop;
-		}
-		return $pid;
 	}
 
 	/**
