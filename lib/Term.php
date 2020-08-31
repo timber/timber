@@ -612,7 +612,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 *                                         'tax_query'      => [ ...tax query for this Term... ]
 	 *                                       ]
 	 *                                       ```
-	 * 																			 Note that this *used* to be
 	 * @param string $post_type_or_class     Deprecated. Before Timber 2.x this was a post_type to be
 	 *                                       used for querying posts OR the Timber\Post subclass to
 	 *                                       instantiate for each post returned. As of Timber 2.0.0,
