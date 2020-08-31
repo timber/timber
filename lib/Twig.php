@@ -48,7 +48,9 @@ class Twig {
 		 * Timber object functions.
 		 */
 
-		$twig->addFunction(new TwigFunction('Post', [Timber::class, 'get_post'] ) );
+		$twig->addFunction(new TwigFunction('Post', function( $post_id, $PostClass = 'Timber\Post' ) {
+			return self::maybe_convert_array( $post_id, $PostClass );
+		} ) );
 
 		$twig->addFunction( new TwigFunction( 'PostQuery', function( $args ) {
 			return new PostQuery( $args );
