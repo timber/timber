@@ -729,6 +729,8 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$this->assertEquals( 1500, $rendered );
 	}
 
+
+
 	function testResizeNamed() {
 		add_image_size('timber-testResizeNamed', $width = 600, $height = 400, $crop = true);
 		$data = array();
@@ -893,7 +895,6 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 	}
 
 	function testTimberImageFromPost() {
-		$this->markTestSkipped('@todo can we still support this use-case?');
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
 		$post = get_post($post->ID);
