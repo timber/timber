@@ -3,7 +3,10 @@
 namespace Timber;
 
 /**
- * Class TermGetter
+ * Class TermGetter 
+ *
+ * @deprecated 2.0.0 use Timber::get_terms or Timber::get_term()
+ * @codeCoverageIgnore
  */
 class TermGetter {
 	/**
