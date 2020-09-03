@@ -52,9 +52,8 @@ class Twig {
 			return self::maybe_convert_array( $post_id, $PostClass );
 		} ) );
 
-		$twig->addFunction( new TwigFunction( 'PostQuery', function( $args ) {
-			return new PostQuery( $args );
-		} ) );
+		// @todo fixing this here for peace of mind, but it will cause a merge conflict. The change in #2178 is the one you want.
+		$twig->addFunction( new TwigFunction( 'PostQuery', [Timber::class, 'get_posts'] ) );
 
 		$twig->addFunction(new TwigFunction('Image', function( $post_id, $ImageClass = 'Timber\Image' ) {
 			return self::maybe_convert_array( $post_id, $ImageClass );

@@ -67,9 +67,7 @@ class PostFactory {
 	}
 
 	protected function from_wp_query(WP_Query $query) : Iterable {
-		return new PostQuery([
-			'query' => $query,
-		]);
+		return new PostQuery($query);
 	}
 
 	protected function get_post_class(WP_Post $post) : string {

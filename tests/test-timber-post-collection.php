@@ -68,11 +68,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 	function testGetPostsDeprecated() {
 		$this->factory->post->create_many( 3 );
 
-		$query = new Timber\PostQuery( [
-			'query' => new WP_Query('post_type=post')
-		 ] );
-
-		$this->assertCount( 3, $query->get_posts() );
+		$this->assertCount( 3, Timber::get_posts(['post_type' => 'post'])->get_posts() );
 	}
 
 	function testFoundPosts() {
