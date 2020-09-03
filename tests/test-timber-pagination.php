@@ -278,14 +278,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	// tests for pagination object set on PostCollection
 
 	function testPostsCollectionPagination() {
-		$pids = $this->factory->post->create_many( 13 );
-		$posts = new PostQuery( array(
-			'query' => array(
-				'post_type' => 'post'
-			)
-		) );
-		$pagination = $posts->pagination();
-		$this->assertEquals( 2, count( $pagination->pages ) );
+		$this->factory->post->create_many( 13 );
+		$pagination = Timber::get_posts(['post_type' => 'post'])->pagination();
+		$this->assertCount( 2, $pagination->pages );
 	}
 
 	function testCollectionPaginationSearch() {
