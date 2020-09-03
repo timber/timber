@@ -69,29 +69,14 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	 * // Get posts from default query
 	 * $posts = new Timber\PostQuery();
 	 *
-	 * // Get custom posts collection with a query string
-	 * $posts = new Timber\PostQuery( array(
-	 *     'query' => 'post_type=article',
-	 * ) );
-	 *
 	 * // Using the WP_Query argument format
-	 * $posts = new Timber\PostQuery( array(
-	 *     'query' => array(
-	 *         'post_type'     => 'article',
-	 *         'category_name' => 'sports',
-	 *     ),
-	 * ) );
+	 * $posts = new Timber\PostQuery( [
+	 *     'post_type'     => 'article',
+	 *     'category_name' => 'sports',
+	 * ] );
 	 *
-	 * // Using a class map for $post_class
-	 * $posts = new Timber\PostQuery( array(
-	 *     'query' => array(
-	 *         'post_type' => 'any',
-	 *     ),
-	 *     'post_class' => array(
-	 *         'portfolio' => 'MyPortfolioClass',
-	 *         'alert'     => 'MyAlertClass',
-	 *     ),
-	 * ) );
+	 * // Passing a WP_Query instance
+	 * $posts = new Timber\PostQuery( new WP_Query( 'post_type=any' ) );
 	 * ```
 	 *
 	 * @param array $args {

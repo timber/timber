@@ -56,10 +56,9 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
 		$this->go_to( home_url( '/' ) );
 
-		// @todo once the Posts API uses Factories, simplify this to Timber::get_posts([...])
-		$query = new PostQuery(new WP_Query([
+		$query = Timber::get_posts([
 			'post_type' => 'portfolio',
-		]));
+		]);
 
 		$this->assertCount(6, $query->pagination()->pages);
 	}
@@ -223,19 +222,24 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testPaginationInCategory() {
-		$no_posts = $this->factory->post->create_many( 73 );
+		$this->factory->post->create_many( 73 );
+
+		$news_id = $this->factory->term->create( [
+			'name' => 'News',
+			'taxonomy' => 'category',
+		] );
 		$posts = $this->factory->post->create_many( 31 );
-		$news_id = wp_insert_term( 'News', 'category' );
 		foreach ( $posts as $post ) {
 			wp_set_object_terms( $post, $news_id, 'category' );
 		}
-		$this->go_to( home_url( '/category/news' ) );
+
+		// Overwrite the main query.
 		query_posts('category_name=news');
-		$post_objects = new PostQuery( array(
-			'query' => false,
-		) );
-		$pagination = $post_objects->pagination();
-		$this->assertEquals(4, count($pagination->pages));
+
+		// Let Timber fall back on the main query.
+		$pagination = Timber::get_posts()->pagination();
+
+		$this->assertCount(4, $pagination->pages);
 	}
 
 	/**

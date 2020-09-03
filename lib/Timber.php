@@ -22,13 +22,14 @@ use Timber\URLHelper;
  * @api
  * @example
  * ```php
- * $posts = new Timber\PostQuery();
- * $posts = new Timber\PostQuery( 'post_type = article' );
- * $posts = new Timber\PostQuery( array(
+ * // Get default posts on an archive page
+ * $posts = Timber::get_posts();
+ *
+ * // Query for some posts
+ * $posts = Timber::get_posts( [
  *     'post_type' => 'article',
  *     'category_name' => 'sports',
- * ) );
- * $posts = new Timber\PostQuery( array( 23, 24, 35, 67 ), 'InkwellArticle' );
+ * ] );
  *
  * $context = Timber::context();
  * $context['posts'] = $posts;
@@ -437,10 +438,10 @@ class Timber {
 	 * ```php
 	 * // By URL
 	 * $attachment = Timber::get_attachment_by( 'url', 'https://example.com/uploads/2020/09/cat.gif' );
-	 * 
+	 *
 	 * // By filepath
 	 * $attachment = Timber::get_attachment_by( 'path', '/path/to/wp-content/uploads/2020/09/cat.gif' );
-	 * 
+	 *
 	 * // Try to handle either case
 	 * $mystery_string = some_function();
 	 * $attachment = Timber::get_attachment_by( $mystery_string );

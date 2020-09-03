@@ -11,15 +11,12 @@ use Timber\URLHelper;
  */
 class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 
-	/**
-	 * 
-	 */
 	function testGetAttachment() {
 		$this->markTestSkipped();
  		$pid = $this->factory->post->create();
 		$iid = self::get_attachment( $pid, 'dummy-pdf.pdf' );
 		$file = URLHelper::file_system_to_url(Timber::get_post($iid)->file_loc);
-		echo ABSPATH;
+
 		$attachment = Timber::get_attachment($file);
 
 		$this->assertEquals('dummy-pdf.pdf', basename($attachment->src()));
@@ -66,8 +63,11 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	}
 
 	function testGetAttachmentByUrlNonsense() {
-		$this->assertFalse(Timber::get_attachment_by('url', 'life finds a way'));
+		// Nonsense URL
+		$this->assertFalse(Timber::get_attachment_by('url', 'life, uh, finds a way'));
+		// Nonsense Path
 		$this->assertFalse(Timber::get_attachment_by('path', 'must go faster'));
+		// Nonsense single arg
 		$this->assertFalse(Timber::get_attachment_by('you two, dig up, dig up dinosaurs'));
 	}
 
