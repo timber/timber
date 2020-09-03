@@ -71,6 +71,20 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		$this->assertFalse(Timber::get_attachment_by('you two, dig up, dig up dinosaurs'));
 	}
 
+	/**
+	 * @expectedIncorrectUsage Timber::get_attachment_by()
+	 */
+	function testGetAttachmentByUrlDoingItWrong() {
+		$this->assertFalse(Timber::get_attachment_by('url'));
+	}
+
+	/**
+	 * @expectedIncorrectUsage Timber::get_attachment_by()
+	 */
+	function testGetAttachmentByPathDoingItWrong() {
+		$this->assertFalse(Timber::get_attachment_by('path'));
+	}
+
 	function testAttachmentByExtension() {
 		// Add support for "uploading" WEBP images.
 		$this->add_filter_temporarily('upload_mimes', function($types) {

@@ -452,12 +452,32 @@ class Timber {
 	 */
 	public static function get_attachment_by( string $field_or_ident, string $ident = '' ) {
 		if ($field_or_ident === 'url') {
+			if (empty($ident)) {
+				Helper::doing_it_wrong(
+					'Timber::get_attachment_by()',
+					'Passing "url" as the first arg requires passing a URL as the second arg.',
+					'2.0.0'
+				);
+
+				return false;
+			}
+
 			$id = attachment_url_to_postid($ident);
 
 			return $id ? (new PostFactory())->from($id) : false;
 		}
 
 		if ($field_or_ident === 'path') {
+			if (empty($ident)) {
+				Helper::doing_it_wrong(
+					'Timber::get_attachment_by()',
+					'Passing "path" as the first arg requires passing an absolute path as the second arg.',
+					'2.0.0'
+				);
+
+				return false;
+			}
+
 			return self::get_attachment_by('url', URLHelper::file_system_to_url($ident));
 		}
 
