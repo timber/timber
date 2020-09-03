@@ -12,6 +12,7 @@ use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
 use Timber\Helper;
 use Timber\PostCollectionInterface;
+use Timber\URLHelper;
 
 /**
  * Class Timber
@@ -423,6 +424,50 @@ class Timber {
 		Helper::deprecated('Timber::query_posts()', 'Timber::get_posts()', '2.0.0');
 
 		return self::get_posts($query, $options);
+	}
+
+	/**
+	 * Get an Attachment by its URL or absolute file path. Honors the `timber/post/image_extensions`
+	 * filter, returning a Timber\Image if the found attachment is identified as an image.
+	 * Also honors Class Maps.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @example
+	 * ```php
+	 * // By URL
+	 * $attachment = Timber::get_attachment_by( 'url', 'https://example.com/uploads/2020/09/cat.gif' );
+	 * 
+	 * // By filepath
+	 * $attachment = Timber::get_attachment_by( 'path', '/path/to/wp-content/uploads/2020/09/cat.gif' );
+	 * 
+	 * // Try to handle either case
+	 * $mystery_string = some_function();
+	 * $attachment = Timber::get_attachment_by( $mystery_string );
+	 * ```
+	 * @param string $field_or_ident can be "url", "path", an attachment URL, or the absolute
+	 * path of an attachment file. If "url" or "path" is given, a second arg is required.
+	 * @param string $ident an attachment URL or absolute path.
+	 * @return \Timber\Attachment|false
+	 */
+	public static function get_attachment_by( string $field_or_ident, string $ident = '' ) {
+		if ($field_or_ident === 'url') {
+			$id = attachment_url_to_postid($ident);
+
+			return $id ? (new PostFactory())->from($id) : false;
+		}
+
+		if ($field_or_ident === 'path') {
+			return self::get_attachment_by('url', URLHelper::file_system_to_url($ident));
+		}
+
+		if (empty($ident)) {
+			$field = URLHelper::starts_with($field_or_ident, ABSPATH) ? 'path' : 'url';
+
+			return self::get_attachment_by($field, $field_or_ident);
+		}
+
+		return false;
 	}
 
 	/* Term Retrieval

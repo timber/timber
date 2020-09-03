@@ -3,12 +3,73 @@
 use Timber\Attachment;
 use Timber\Image;
 use Timber\Timber;
+use Timber\URLHelper;
 
 /**
  * @group posts-api
  * @group attachments
  */
 class TestTimberAttachment extends TimberAttachment_UnitTestCase {
+
+	/**
+	 * 
+	 */
+	function testGetAttachment() {
+		$this->markTestSkipped();
+ 		$pid = $this->factory->post->create();
+		$iid = self::get_attachment( $pid, 'dummy-pdf.pdf' );
+		$file = URLHelper::file_system_to_url(Timber::get_post($iid)->file_loc);
+		echo ABSPATH;
+		$attachment = Timber::get_attachment($file);
+
+		$this->assertEquals('dummy-pdf.pdf', basename($attachment->src()));
+	}
+
+	function testGetAttachmentByUrl() {
+ 		$pid = $this->factory->post->create();
+		$iid = self::get_attachment( $pid, 'dummy-pdf.pdf' );
+		$url = Timber::get_post($iid)->src();
+
+		$attachment = Timber::get_attachment_by('url', $url);
+
+		$this->assertInstanceOf(Attachment::class, $attachment);
+		$this->assertEquals('dummy-pdf.pdf', basename($attachment->src()));
+	}
+
+	function testGetAttachmentByPath() {
+ 		$pid = $this->factory->post->create();
+		$iid  = self::get_attachment( $pid, 'dummy-pdf.pdf' );
+		$path = URLHelper::url_to_file_system( Timber::get_post($iid)->src() );
+
+		$attachment = Timber::get_attachment_by('path', $path);
+
+		$this->assertInstanceOf(Attachment::class, $attachment);
+		$this->assertEquals('dummy-pdf.pdf', basename($attachment->src()));
+	}
+
+	function testGetAttachmentBy() {
+ 		$pid = $this->factory->post->create();
+		$iid  = self::get_attachment( $pid, 'dummy-pdf.pdf' );
+		$url  = Timber::get_post($iid)->src();
+		$path = URLHelper::url_to_file_system( $url );
+
+		$this->assertInstanceOf(Attachment::class, Timber::get_attachment_by($url));
+		$this->assertInstanceOf(Attachment::class, Timber::get_attachment_by($path));
+	}
+
+	function testGetImageByUrl() {
+ 		$pid = $this->factory->post->create();
+		$iid  = self::get_attachment( $pid, 'jarednova.jpeg' );
+		$url  = Timber::get_post($iid)->src();
+
+		$this->assertInstanceOf(Image::class, Timber::get_attachment_by($url));
+	}
+
+	function testGetAttachmentByUrlNonsense() {
+		$this->assertFalse(Timber::get_attachment_by('url', 'life finds a way'));
+		$this->assertFalse(Timber::get_attachment_by('path', 'must go faster'));
+		$this->assertFalse(Timber::get_attachment_by('you two, dig up, dig up dinosaurs'));
+	}
 
 	function testAttachmentByExtension() {
 		// Add support for "uploading" WEBP images.
