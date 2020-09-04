@@ -11,17 +11,6 @@ use Timber\URLHelper;
  */
 class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 
-	function testGetAttachment() {
-		$this->markTestSkipped();
- 		$pid = $this->factory->post->create();
-		$iid = self::get_attachment( $pid, 'dummy-pdf.pdf' );
-		$file = URLHelper::file_system_to_url(Timber::get_post($iid)->file_loc);
-
-		$attachment = Timber::get_attachment($file);
-
-		$this->assertEquals('dummy-pdf.pdf', basename($attachment->src()));
-	}
-
 	function testGetAttachmentByUrl() {
  		$pid = $this->factory->post->create();
 		$iid = self::get_attachment( $pid, 'dummy-pdf.pdf' );
@@ -209,22 +198,6 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		$this->assertEquals('arch.jpg', $filename);
 	}
 
-	function testAttachmentPath() {
-		$this->markTestSkipped('@todo ::from_file');
-		$filename = self::copyTestAttachment( 'arch.jpg' );
-		$image = Attachment::from_file( $filename );
-		$this->assertStringStartsWith('/wp-content', $image->path());
-		$this->assertStringEndsWith('.jpg', $image->path());
-	}
-
-	function testAttachmentFromUrl() {
-		$this->markTestSkipped('@todo ::from_url');
-		$filename = self::copyTestAttachment( 'arch.jpg' );
-		$image = Attachment::from_url( $filename );
-		$this->assertStringStartsWith('/wp-content', $image->path());
-		$this->assertStringEndsWith('.jpg', $image->path());
-	}
-
 	function testInitFromID() {
 		$pid = $this->factory->post->create();
 		$filename = self::copyTestAttachment( 'arch.jpg' );
@@ -232,23 +205,6 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		$iid = wp_insert_attachment( $attachment, $filename, $pid );
 		$attachment = Timber::get_post( $iid );
 		$this->assertEquals( 'The Arch', $attachment->title() );
-	}
-
-	function testInitFromFilePath() {
-		$this->markTestSkipped('@todo Image::from_file');
-		$attachment_file = self::copyTestAttachment();
-		$attachment = Attachment::from_file( $attachment_file );
-		$size = $attachment->size_raw();
-		$this->assertEquals( 154752, $size );
-	}
-
-	function testInitFromRelativePath() {
-		$this->markTestSkipped('@todo Image::from_file');
-		$filename = self::copyTestAttachment( 'arch.jpg' );
-		$path = str_replace(ABSPATH, '/', $filename);
-		$attachment = Attachment::from_file( $path );
-		$size = $attachment->size_raw();
-		$this->assertEquals( 154752, $size );
 	}
 
 	function testPathInfo() {
