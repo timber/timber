@@ -138,7 +138,7 @@ class Attachment extends Post implements CoreInterface {
 	 * @param int|mixed $iid An attachment identifier.
 	 */
 	public function init( $iid = null ) {
-		// @todo extract important logic out into ::from_url(), ::from_file()
+		// @todo simplify this whole init process
 		$iid = $this->determine_id( $iid );
 
 		/**

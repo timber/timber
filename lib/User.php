@@ -546,6 +546,6 @@ class User extends Core implements CoreInterface, MetaInterface {
 			return $this->avatar_override;
 		}
 
-		return new Image( get_avatar_url( $this->id, $args ) );
+		return Timber::get_attachment_by( 'url', get_avatar_url( $this->id, $args ) );
 	}
 }

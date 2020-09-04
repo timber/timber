@@ -44,6 +44,17 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		$this->assertEquals('dummy-pdf.pdf', basename($attachment->src()));
 	}
 
+	function testGetAttachmentByPathRelative() {
+		$pid = $this->factory->post->create();
+		$iid  = self::get_attachment( $pid, 'dummy-pdf.pdf' );
+		$path = URLHelper::url_to_file_system( Timber::get_post($iid)->src() );
+
+		$attachment = Timber::get_attachment_by('path', str_replace(ABSPATH, '/', $path));
+
+		$this->assertInstanceOf(Attachment::class, $attachment);
+		$this->assertEquals('dummy-pdf.pdf', basename($attachment->src()));
+	}
+
 	function testGetAttachmentBy() {
  		$pid = $this->factory->post->create();
 		$iid  = self::get_attachment( $pid, 'dummy-pdf.pdf' );
@@ -238,16 +249,6 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		$attachment = Attachment::from_file( $path );
 		$size = $attachment->size_raw();
 		$this->assertEquals( 154752, $size );
-	}
-
-	function testInitFromURL() {
-		$this->markTestSkipped('@todo Image::from_url');
-		$destination_path = self::copyTestAttachment();
-		$destination_path = Timber\URLHelper::get_rel_path( $destination_path );
-		$destination_url = 'http://'.$_SERVER['HTTP_HOST'].$destination_path;
-		$image = Attachment::from_url( $destination_url );
-		$this->assertEquals( $destination_url, $image->src() );
-		$this->assertEquals( $destination_url, (string)$image );
 	}
 
 	function testPathInfo() {

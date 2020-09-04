@@ -478,6 +478,11 @@ class Timber {
 
 				return false;
 			}
+			
+			if (!file_exists($ident)) {
+				// Deal with a relative path.
+				$ident = URLHelper::get_full_path($ident);
+			}
 
 			return self::get_attachment_by('url', URLHelper::file_system_to_url($ident));
 		}

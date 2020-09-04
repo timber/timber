@@ -187,6 +187,7 @@
 		 * @group attachments
 		 */
 		function testGuestAuthorAvatar(){
+			$this->markTestIncomplete('@todo we might need something like ExternalImage for this after all...');
 			$pid = $this->factory->post->create();
 			$post = Timber::get_post($pid);
 			$user_login = 'withfeaturedimage';

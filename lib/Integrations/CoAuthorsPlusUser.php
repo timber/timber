@@ -2,6 +2,8 @@
 
 namespace Timber\Integrations;
 
+use Timber\Timber;
+
 class CoAuthorsPlusUser extends \Timber\User {
 
 	/**
@@ -44,7 +46,7 @@ class CoAuthorsPlusUser extends \Timber\User {
 			/**
 		 	 * @property string url to use for avatar image
 		 	 */
-			$this->avatar = new \Timber\Image($avatar_url);
+			$this->avatar = Timber::get_attachment_by('url', $avatar_url);
 		}
 
 	}
