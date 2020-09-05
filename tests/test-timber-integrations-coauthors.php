@@ -187,7 +187,6 @@
 		 * @group attachments
 		 */
 		function testGuestAuthorAvatar(){
-			$this->markTestIncomplete('@todo we might need something like ExternalImage for this after all...');
 			$pid = $this->factory->post->create();
 			$post = Timber::get_post($pid);
 			$user_login = 'withfeaturedimage';
@@ -206,7 +205,8 @@
 			global $coauthors_plus;
 			$coauthors_plus->add_coauthors($pid, array($user_login));
 
-			$template_string = '{% for author in post.authors %}{{author.avatar.src}}{% endfor %}';
+			// NOTE: this used to be `{{author.avatar.src}}` but now avatar() just returns a string
+			$template_string = '{% for author in post.authors %}{{author.avatar}}{% endfor %}';
 			Timber\Integrations\CoAuthorsPlus::$prefer_gravatar = false;
 			$str1 = Timber::compile_string($template_string, array('post' => $post));
 			$this->assertEquals($image->src(), $str1);
