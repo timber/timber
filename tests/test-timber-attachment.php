@@ -207,10 +207,13 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		$this->assertEquals( 'The Arch', $attachment->title() );
 	}
 
+	/**
+	 * @expectedDeprecated {{ image.get_pathinfo }}
+	 */
 	function testPathInfo() {
-		$this->markTestSkipped('@todo Image::from_file');
+		$this->markTestSkipped('@todo this one is also erroring despite the @expectedDeprecated tag...');
 		$filename = self::copyTestAttachment( 'arch.jpg' );
-		$image = Attachment::from_file( $filename );
+		$image = Timber::get_attachment_by( 'path', $filename );
 		$path_parts = $image->get_pathinfo();
 		$this->assertEquals('jpg', $path_parts['extension']);
 	}

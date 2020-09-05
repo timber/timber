@@ -523,13 +523,16 @@ class Attachment extends Post implements CoreInterface {
 	}
 
 	/**
-	 * Gets a PHP array with pathinfo() info from the file.
-	 *
-	 * @api
-	 *
-	 * @return array Path info from the file.
+	 * Get a PHP array with pathinfo() info from the file
+	 * @deprecated 2.0.0, functionality will no longer be supported in future releases.
+	 * @return array
 	 */
 	public function get_pathinfo() {
-		return pathinfo( $this->file );
+		Helper::deprecated(
+			"{{ image.get_pathinfo }}",
+			"{{ function('pathinfo', image.file) }}",
+			'2.0.0'
+		);
+		return PathHelper::pathinfo($this->file);
 	}
 }

@@ -91,20 +91,6 @@ class Image extends Attachment {
 	}
 
 	/**
-	 * Get a PHP array with pathinfo() info from the file
-	 * @deprecated 2.0.0, functionality will no longer be supported in future releases.
-	 * @return array
-	 */
-	public function get_pathinfo() {
-		Helper::deprecated(
-			"{{ image.get_pathinfo }}",
-			"{{ function('pathinfo', image.file) }}",
-			'2.0.0'
-		);
-		return PathHelper::pathinfo($this->file);
-	}
-
-	/**
 	 * Processes an image's dimensions.
 	 * @deprecated 2.0.0, use `{{ image.width }}` or `{{ image.height }}` in Twig
 	 * @internal
