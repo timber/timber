@@ -349,7 +349,6 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testCollectionPaginationSearchPretty() {
-		$this->markTestSkipped();
 		$this->setPermalinkStructure( '/blog/%year%/%monthnum%/%postname%/' );
 		$posts = $this->factory->post->create_many( 55 );
 		$archive = home_url( '?s=post' );
@@ -360,7 +359,6 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testCollectionPaginationNextUsesBaseAndFormatArgs() {
-		$this->markTestSkipped();
 		$posts = $this->factory->post->create_many( 55 );
 		$this->go_to( home_url( '/' ) );
 		$posts = Timber::get_posts();
@@ -369,7 +367,6 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testCollectionPaginationPrevUsesBaseAndFormatArgs() {
-		$this->markTestSkipped();
 		for($i=0; $i<30; $i++) {
 			$this->factory->post->create(array('post_title' => 'post'.$i, 'post_date' => '2014-02-'.$i));
 		}
@@ -381,14 +378,14 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	}
 
 	function testCollectionPaginationPrevUsesBaseAndFormatArgsPage() {
-		$this->markTestSkipped();
-		for($i=0; $i<30; $i++) {
-			$this->factory->post->create(array('post_title' => 'post'.$i, 'post_date' => '2014-02-'.$i));
-		}
+		$this->factory->post->create_many(30);
+
+		// Query for the third page of posts. Exactly two pages should precede this page.
 		$posts = Timber::get_posts([
-			'posts' => 3,
+			'paged' => 3,
 		]);
 		$pagination = $posts->pagination( array( 'base' => '/apricot/%_%', 'format' => '?page=%#%' ) );
+
 		$this->assertEquals( '/apricot/?page=2', $pagination->prev['link'] );
 	}
 
@@ -422,7 +419,6 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	 * @ticket #2123
 	 */
 	function testLittlePaginationCateogry() {
-		$this->markTestSkipped();
 		$this->setPermalinkStructure('/%postname%/');
 		// setup
 		$posts = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
@@ -450,7 +446,6 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	 * @ticket #1459
 	 */
 	function test1459Pagintion() {
-		$this->markTestSkipped();
 		$this->setPermalinkStructure('/%year%/%postname%/');
 		global $paged;
 		register_post_type('my_cpt', array('public' => true, 'has_archive' => true));
