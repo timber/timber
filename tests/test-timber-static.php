@@ -2,7 +2,6 @@
 
 /**
  * @group posts-api
- * @group called-post-constructor
  */
 class TestTimberStaticPages extends Timber_UnitTestCase {
 
@@ -51,7 +50,7 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 	}
 
 	function testStaticPostPage() {
-		$this->markTestSkipped();
+		$this->markTestSkipped('@todo Undefined offset: 0 - do we need merge_default for this?');
 		$this->clearPosts();
 		$page_id = $this->factory->post->create(array('post_title' => 'Gobbles', 'post_type' => 'page'));
 		update_option('page_for_posts', $page_id);
@@ -74,8 +73,7 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 
 
 	function testRegularStaticPage() {
-		// @todo what exactly is this testing?
-		$this->markTestSkipped();
+		$this->markTestSkipped('@todo what is this testing?');
 		$page_id = $this->factory->post->create(array('post_title' => 'Mister Slave', 'post_type' => 'page'));
 		$children = $this->factory->post->create_many(10, array('post_title' => 'Timmy'));
 		$this->go_to(home_url('/?p='.$page_id));
@@ -88,8 +86,7 @@ class TestTimberStaticPages extends Timber_UnitTestCase {
 	}
 
 	function testRegularStaticPageFlipped() {
-		// @todo what exactly is this testing?
-		$this->markTestSkipped();
+		$this->markTestSkipped('@todo what is this testing?');
 		$page_id = $this->factory->post->create(array('post_title' => 'Mister Slave', 'post_type' => 'page'));
 		$children = $this->factory->post->create_many(10, array('post_title' => 'Timmy'));
 		$this->go_to(home_url('/?p='.$page_id));
