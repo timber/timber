@@ -44,16 +44,15 @@
 			$this->assertEquals('Battlestar Galactica', $post->name());
 		}
 
-		function testGetImage() {
-			$this->markTestSkipped('@todo how to handle Image instances in Class Map?');
+		function testGetImageViaPostMeta() {
 			$post_id = $this->factory->post->create(array('post_title' => 'St. Louis History'));
 			$filename = TestTimberImage::copyTestAttachment( 'arch.jpg' );
 			$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
 			$iid = wp_insert_attachment( $attachment, $filename, $post_id );
 			update_post_meta($post_id, 'landmark', $iid);
 			$post = Timber::get_post($post_id);
-			$image = $post->meta('landmark');
-			$image = Timber::get_post($image);
+
+			$image = Timber::get_post($post->meta('landmark'));
 			$this->assertEquals('The Arch', $image->title());
 		}
 
@@ -239,15 +238,13 @@
 			$this->assertEquals($post->ID, $post_id);
 		}
 
-		/**
-		 * @deprecated since 2.0
-		 */
-		function testPostByName(){
-			$this->markTestSkipped();
+		function testPostBySlug(){
 			$post_id = $this->factory->post->create();
-			$post = Timber::get_post($post_id);
-			$post2 = Timber::get_post($post->post_name);
-			$this->assertEquals($post2->id, $post_id);
+			$slug    = Timber::get_post($post_id)->post_name;
+
+			$postFromSlug = Timber::get_post_by('slug', $slug);
+
+			$this->assertEquals($postFromSlug->id, $post_id);
 		}
 
 		function testCanEdit(){
@@ -364,7 +361,6 @@
 		}
 
         function testPagedContent(){
-					$this->markTestSkipped();
             $quote = $page1 = 'Named must your fear be before banish it you can.';
             $quote .= '<!--nextpage-->';
             $quote .= $page2 = "No, try not. Do or do not. There is no try.";
@@ -373,7 +369,6 @@
 
             $this->go_to( get_permalink( $post_id ) );
 
-            // @todo The below should work magically when the iterators are merged
             setup_postdata( get_post( $post_id ) );
 
             $post = Timber::get_post();

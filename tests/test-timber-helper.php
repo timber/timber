@@ -222,7 +222,6 @@ use Timber\PostArrayObject;
 		 * @ticket #2124
 		 */
 		function testNewArrayFilter() {
-			$this->markTestSkipped();
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));

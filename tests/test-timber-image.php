@@ -21,23 +21,6 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		return $post;
 	}
 
-	function testInitFromFilePath() {
-		$this->markTestSkipped('@todo ::from_file');
-		$attachment_file = self::copyTestAttachment();
-		$image = Attachment::from_file( $attachment_file );
-		$size = $image->width();
-		$this->assertEquals( 1500, $size );
-	}
-
-	function testInitFromRelativePath() {
-		$this->markTestSkipped('@todo ::from_file');
-		$filename = self::copyTestAttachment( 'arch.jpg' );
-		$path = str_replace(ABSPATH, '/', $filename);
-		$image = Attachment::from_file( $path );
-		$width = $image->width();
-		$this->assertEquals( 1500, $width );
-	}
-
 	function testTimberImageSrc() {
 		$iid = self::get_attachment();
 		$image = Timber::get_post($iid);
