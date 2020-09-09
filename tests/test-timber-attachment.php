@@ -179,23 +179,22 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
  		$this->assertEquals($wp_post->ID, $attach->id);
  	}
 
-	function testAttachmentArray() {
-		$this->markTestSkipped('@todo drop support for this?');
-		$post_id = $this->factory->post->create();
+	function testAttachmentAcfArray() {
+		$post_id  = $this->factory->post->create();
 		$filename = self::copyTestAttachment('arch.jpg');
-		$wp_filetype = wp_check_filetype( basename( $filename ), null );
+
 		$attachment = array(
-			'post_mime_type' => $wp_filetype['type'],
+			'post_mime_type' => 'image/jpeg',
 			'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
 			'post_content' => '',
 			'post_status' => 'inherit'
 		);
+
 		$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
-		$data = array('ID' => $attach_id);
-		$image = new Timber\Image($data);
-		$filename = explode('/', $image->file);
-		$filename = array_pop($filename);
-		$this->assertEquals('arch.jpg', $filename);
+		$image     = Timber::get_post(['ID' => $attach_id]);
+		$path      = explode('/', $image->file);
+
+		$this->assertEquals('arch.jpg', $path[2]);
 	}
 
 	function testInitFromID() {
