@@ -34,6 +34,10 @@ class PostFactory {
 			return new PostArrayObject(array_map([$this, 'from'], $params));
 		}
 
+		if (is_array($params) && !empty($params['ID'])) {
+			return $this->from_id($params['ID']);
+		}
+
 		if (is_array($params)) {
 			return $this->from_wp_query(new WP_Query($params));
 		}

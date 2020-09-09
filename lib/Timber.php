@@ -199,6 +199,12 @@ class Timber {
 	 *
 	 * // Use currently queried post. Same as using get_the_ID() as a parameter.
 	 * $post = Timber::get_post();
+	 *
+	 * // From an associative array with an `ID` key. For ACF compatibility. Using this
+	 * // approach directly is not recommended. If you can, configure the return type of your
+	 * // ACF field to just the ID.
+	 * $post = Timber::get_post( get_field('associated_post_array') ); // Just OK.
+	 * $post = Timber::get_post( get_field('associated_post_id') ); // Better!
 	 * ```
 	 * @see https://developer.wordpress.org/reference/classes/wp_query/__construct/
 	 *
