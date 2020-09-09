@@ -275,7 +275,7 @@ class TestTimberPagesMenu extends Timber_UnitTestCase {
 		$pid = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
 		$iid = TestTimberImage::get_attachment($pid);
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
-		$post = new \Timber\Post($pid);
+		$post = Timber::get_post($pid);
 		$page_menu = Timber::get_pages_menu();
 		$str = '{% for item in menu.items %}{{item.master_object.thumbnail.src}}{% endfor %}';
 		$result = Timber::compile_string($str, array('menu' => $page_menu));

@@ -867,7 +867,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		update_field( '_time', 'I am custom time', $pid );
 		update_field( 'time', 'I am custom time', $pid );
 		$str = '{{ post.time }}';
-		$post = new Post( $pid );
+		$post = Timber::get_post( $pid );
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
 		$this->assertEquals( '8:03 am', trim($str) );
 	}
@@ -879,7 +879,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$pid = $this->factory->post->create(array('post_content' => 'Cool content bro!'));
 		update_field( '_content', 'I am custom content', $pid );
 		$str = '{{ post.content }}';
-		$post = new Post( $pid );
+		$post = Timber::get_post( $pid );
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
 		$this->assertEquals( '<p>Cool content bro!</p>', trim($str) );
 	}

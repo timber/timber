@@ -284,7 +284,7 @@ class ImageHelper {
 	 */
 	public static function _delete_generated_if_image( $post_id ) {
 		if ( wp_attachment_is_image($post_id) ) {
-			$attachment = new Image($post_id);
+			$attachment = Timber::get_post($post_id);
 			if ( $attachment->file_loc ) {
 				ImageHelper::delete_generated_files($attachment->file_loc);
 			}
