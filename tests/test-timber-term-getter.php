@@ -49,7 +49,10 @@
 			$tags_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'post_tag') );
 			$cars_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'cars') );
 			$cats_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'category') );
-			$term = Timber::get_terms(['taxonomy' => 'cars']);
+			$post_id = $this->factory->post->create();
+			wp_set_object_terms($post_id, [$cars_id], 'cars');
+			$terms = Timber::get_terms(['taxonomy' => 'cars']);
+			$term = $terms[0];
 			$this->assertEquals($cars_id, $term->ID);
 			$this->assertEquals('cars', $term->taxonomy);
 			$this->assertEquals('Toyota', $term->name);
