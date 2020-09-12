@@ -65,6 +65,12 @@
 			$cars[] = $this->factory->term->create( array('name' => 'Honda', 'taxonomy' => 'cars') );
 			$cars[] = $this->factory->term->create( array('name' => 'Tesla', 'taxonomy' => 'cars') );
 			$cats_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'category') );
+
+			wp_set_object_terms(
+				$this->factory->post->create(),
+				$cars,
+				'cars'
+			);
 			$terms = Timber::get_terms('cars');
 			$this->assertEquals(3, count($terms));
 			$this->assertEquals('cars', $terms[0]->taxonomy);
@@ -80,7 +86,7 @@
 			$cars[] = $this->factory->term->create( array('name' => 'Honda', 'taxonomy' => 'cars') );
 			$cars[] = $this->factory->term->create( array('name' => 'Tesla', 'taxonomy' => 'cars') );
 			$cats_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'category') );
-			$terms = Timber::get_terms(['taxonomy' => 'cars']);
+			$terms = Timber::get_terms(['taxonomy' => 'cars', 'hide_empty' => false]);
 			$this->assertEquals(3, count($terms));
 			$this->assertEquals('cars', $terms[0]->taxonomy);
 		}
