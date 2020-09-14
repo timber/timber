@@ -205,8 +205,10 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	}
 
 	function testPathInfo() {
+		$pid = $this->factory->post->create();
 		$filename = self::copyTestAttachment( 'arch.jpg' );
-		error_log('$filename = '.$filename);
+		$attachment = array( 'post_title' => 'The Arch', 'post_content' => '' );
+		$iid = wp_insert_attachment( $attachment, $filename, $pid );
 		$image = Timber::get_attachment_by( 'path', $filename );
 		$path_parts = $image->pathinfo();
 		$this->assertEquals('jpg', $path_parts['extension']);
