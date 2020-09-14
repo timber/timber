@@ -9,6 +9,7 @@
 		}
 
 		function setUp(){
+			parent::setUp();
 			$this->_files = array();
 		}
 

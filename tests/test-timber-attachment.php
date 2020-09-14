@@ -75,7 +75,6 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	 * @expectedIncorrectUsage Timber::get_attachment_by()
 	 */
 	function testGetAttachmentByUrlDoingItWrong() {
-		$this->markTestIncomplete('@todo why does the @expectedIncorrectUsage tag not work?');
 		$this->assertFalse(Timber::get_attachment_by('url'));
 	}
 
@@ -83,7 +82,6 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 	 * @expectedIncorrectUsage Timber::get_attachment_by()
 	 */
 	function testGetAttachmentByPathDoingItWrong() {
-		$this->markTestIncomplete('@todo why does the @expectedIncorrectUsage tag not work?');
 		$this->assertFalse(Timber::get_attachment_by('path'));
 	}
 
@@ -208,6 +206,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 
 	function testPathInfo() {
 		$filename = self::copyTestAttachment( 'arch.jpg' );
+		error_log('$filename = '.$filename);
 		$image = Timber::get_attachment_by( 'path', $filename );
 		$path_parts = $image->pathinfo();
 		$this->assertEquals('jpg', $path_parts['extension']);
