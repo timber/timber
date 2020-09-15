@@ -147,7 +147,7 @@ class Loader {
 			$rootPath = null;
 		}
 		$fs = new \Twig\Loader\FilesystemLoader($paths, $rootPath);
-		$fs = apply_filters('timber/loader/loader', $fs);
+		$fs = apply_filters('timber/loader/loader', $fs, $paths, $rootPath);
 		return $fs;
 	}
 
