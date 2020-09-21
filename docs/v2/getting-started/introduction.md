@@ -10,7 +10,7 @@ Let’s get familiar with some of the concepts of Timber and Twig.
 If you want to start from scratch, you can use the following command. Run it from the **wp-content/themes** folder of your WordPress installation.
 
 ```bash
-composer create-project timber/getting-started-theme getting-started-theme
+composer create-project timber/learn-timber-theme learn-timber-theme
 ```
 
 And now …

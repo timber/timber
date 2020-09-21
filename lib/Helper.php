@@ -640,7 +640,12 @@ class Helper {
 			return self::wp_list_filter( $list, $arrow, $operator );
 		}
 
-		return array_filter( $list, $arrow, \ARRAY_FILTER_USE_BOTH );
+		if ( is_array( $list ) ) {
+			return array_filter( $list, $arrow, \ARRAY_FILTER_USE_BOTH );
+		}
+
+		// the IteratorIterator wrapping is needed as some internal PHP classes are \Traversable but do not implement \Iterator
+		return new \CallbackFilterIterator( new \IteratorIterator( $list ), $arrow );
 	}
 
 	/**
