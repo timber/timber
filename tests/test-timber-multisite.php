@@ -116,8 +116,6 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		    restore_current_blog();
 		    // display all posts
 		}
-		error_log(print_r($timber_posts));
-		error_log(print_r($wp_posts));
 		// testing that in multisite we get back posts in a loop 
 		$this->assertGreaterThan(0, count($timber_posts));
 		$this->assertGreaterThan(0, count($wp_posts));
