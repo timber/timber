@@ -532,7 +532,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		update_option( 'show_on_front', 'posts' );
 
 		$cat = $this->factory->term->create([
-			'name'     => 'Meow',
 			'taxonomy' => 'category'
 		]);
 
@@ -735,24 +734,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		}
 
 		$this->assertEquals(3, $the_post_count);
-	}
-
-	function testChangeArgumentInDefaultQuery() {
-		$this->markTestIncomplete('@todo we need to come up with a stronger test because this passes with or without merge_default');
-		update_option( 'show_on_front', 'posts' );
-		$post_ids = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
-		$this->go_to( '/' );
-
-		$posts = new Timber\PostQuery( array(
-			'query' => array(
-				'post__in' => array( $post_ids[1] ),
-			),
-			// 'merge_default' => true,
-		) );
-
-		$posts = $posts->to_array();
-
-		$this->assertEquals( $posts[0]->ID, $post_ids[1] );
 	}
 
 	function testGetAttachment() {
