@@ -391,7 +391,7 @@ class Attachment extends Post implements CoreInterface {
 	 * @api
 	 * @example
 	 * ```twig
-	 * <a href="{{ Attachment(post.meta('job_pdf')).src }}" download>
+	 * <a href="{{ get_attachment(post.meta('job_pdf')).src }}" download>
 	 * ```
 	 * ```html
 	 * <a href="http://example.org/wp-content/uploads/2015/08/job-ad-5noe2304i.pdf" download>
