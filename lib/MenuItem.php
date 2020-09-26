@@ -32,8 +32,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	public $post_name;
 	public $url;
 
-	public $PostClass = 'Timber\Post';
-
 	/**
 	 * Inherited property. Listed here to make it available in the documentation.
 	 *
@@ -182,11 +180,14 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @return mixed Whatever object (Timber\Post, Timber\Term, etc.) the menu item represents.
 	 */
 	public function master_object() {
+		static $factory;
+		$factory = $factory ?: new PostFactory();
+
 		if ( $this->object_id ) {
-			return new $this->PostClass( $this->object_id );
+			return $factory->from( $this->object_id );
 		}
 		if ( $this->menu_object ) {
-			return new $this->PostClass($this->menu_object);
+			return $factory->from( $this->menu_object );
 		}
 	}
 
