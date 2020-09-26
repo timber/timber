@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use Timber\Factory\PostFactory;
+
 /**
  * Class Helper
  *
@@ -680,8 +682,9 @@ class Helper {
 	 */
 	public static function convert_wp_object( $obj ) {
 		if ( $obj instanceof \WP_Post ) {
-			$class = PostGetter::get_post_class($obj->post_type);
-			return new $class($obj->ID);
+			static $postFactory;
+			$postFactory = $postFactory ?: new PostFactory();
+			return $postFactory->from($obj->ID);
 		} elseif ( $obj instanceof \WP_Term ) {
 			return Timber::get_term($obj->term_id);
 		} elseif ( $obj instanceof \WP_User ) {
