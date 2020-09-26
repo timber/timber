@@ -8,6 +8,7 @@ use Timber\Timber;
  * @group users-api
  * @group comments-api
  * @group twig
+ * @group attachments
  */
 class TestTimberTwigObjects extends Timber_UnitTestCase {
 
@@ -25,17 +26,19 @@ class TestTimberTwigObjects extends Timber_UnitTestCase {
 	 * @expectedDeprecated {{ Image() }}
 	 */
 	function testImageInTwig() {
-		$iid = TestTimberImage::get_attachment();
-		$str = '{{ get_image('.$iid.').src }}';
-		$compiled = Timber::compile_string($str);
-		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpg', $compiled);
+		$compiled = Timber::compile_string('{{ Image(iid).src }}', [
+			'iid' => TestTimberImage::get_attachment(),
+		]);
+
+		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $compiled);
 	}
 
 	function testImageWithGetPostInTwig() {
-		$iid = TestTimberImage::get_attachment();
-		$str = '{{ get_post('.$iid.').src }}';
-		$compiled = Timber::compile_string($str);
-		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpg', $compiled);
+		$compiled = Timber::compile_string('{{ get_post(iid).src }}', [
+			'iid' => TestTimberImage::get_attachment(),
+		]);
+
+		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $compiled);
 	}
 
 	/**
@@ -71,14 +74,12 @@ class TestTimberTwigObjects extends Timber_UnitTestCase {
 		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpghttp://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/city-museum.jpg', $compiled);
 	}
 
-	/**
-	 * @expectedDeprecated {{ Image() }}
-	 */
 	function testTimberImageInTwigToString() {
-		$iid = TestTimberImage::get_attachment();
-		$str = '{{ get_image('.$iid.') }}';
-		$compiled = Timber::compile_string($str);
-		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y').'/'.date('m').'/arch.jpg', $compiled);
+		$compiled = Timber::compile_string('{{ get_post(iid) }}', [
+			'iid' => TestTimberImage::get_attachment(),
+		]);
+
+		$this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $compiled);
 	}
 
 	function testTimberImageWithGetPostInTwigToString() {
@@ -111,8 +112,9 @@ class TestTimberTwigObjects extends Timber_UnitTestCase {
 
 	function testGetPostInTwig() {
 		$pid = $this->factory->post->create( [ 'post_title' => 'Foo' ] );
-		$str = '{{ get_post(' . $pid . ').title }}';
-		$this->assertEquals( 'Foo', Timber::compile_string( $str ) );
+		$this->assertEquals( 'Foo', Timber::compile_string( '{{ get_post(pid).title }}', [
+			'pid' => $pid,
+		] ) );
 	}
 
 	/**

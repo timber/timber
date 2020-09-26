@@ -25,7 +25,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$iid = self::get_attachment();
 		$image = Timber::get_post($iid);
 		$post = get_post($iid);
-		$str = '{{ get_image(post).src }}';
+		$str = '{{ get_post(post).src }}';
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($image->src(), $result);
 	}
@@ -45,7 +45,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
  	function testReplacedImage() {
  		$pid = $this->factory->post->create(array('post_type' => 'post'));
  		$attach_id = self::get_attachment($pid, 'arch.jpg');
- 		$template = '{{ get_image(img).src|resize(200, 200) }}';
+		$template = '{{ get_post(img).src|resize(200, 200) }}';
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$resized_one = Timber\ImageHelper::get_server_location($str);
  		sleep(1);
@@ -67,7 +67,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
  	function testResizedReplacedImage() {
  		$pid = $this->factory->post->create(array('post_type' => 'post'));
  		$attach_id = self::get_attachment($pid, 'arch.jpg');
- 		$template = '{{ get_image(img).src|resize(200, 200) }}';
+		$template = '{{ get_post(img).src|resize(200, 200) }}';
  		$str = Timber::compile_string($template, array('img' => $attach_id));
  		$new_id = self::get_attachment($pid, 'pizza.jpg');
  		self::replace_attachment($attach_id, $new_id);
@@ -100,29 +100,29 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$this->assertEquals( 1.5, $image->aspect() );
 	}
 
-    function testImageSrcset() {
-        $post = $this->get_post_with_image();
-        $img = $post->thumbnail();
-        $mine = $img->srcset();
+		function testImageSrcset() {
+				$post = $this->get_post_with_image();
+				$img = $post->thumbnail();
+				$mine = $img->srcset();
 
-        $native = wp_get_attachment_image_srcset($img->ID, 'full');
-        $this->assertEquals($native, $mine);
+				$native = wp_get_attachment_image_srcset($img->ID, 'full');
+				$this->assertEquals($native, $mine);
 
-        $native = wp_get_attachment_image_srcset($img->ID, 'medium');
-        $this->assertNotEquals($native, $mine);
-    }
+				$native = wp_get_attachment_image_srcset($img->ID, 'medium');
+				$this->assertNotEquals($native, $mine);
+		}
 
-    function testImageImgSizes() {
-        $post = $this->get_post_with_image();
-        $img = $post->thumbnail();
-        $mine = $img->img_sizes();
+		function testImageImgSizes() {
+				$post = $this->get_post_with_image();
+				$img = $post->thumbnail();
+				$mine = $img->img_sizes();
 
-        $native = wp_get_attachment_image_sizes($img->ID, 'full');
-        $this->assertEquals($native, $mine);
+				$native = wp_get_attachment_image_sizes($img->ID, 'full');
+				$this->assertEquals($native, $mine);
 
-        $native = wp_get_attachment_image_sizes($img->ID, 'medium');
-        $this->assertNotEquals($native, $mine);
-    }
+				$native = wp_get_attachment_image_sizes($img->ID, 'medium');
+				$this->assertNotEquals($native, $mine);
+		}
 
 	/**
 	 * @group maybeSkipped
@@ -631,7 +631,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		if ( !file_exists($img_dir) ) {
 			$parent = dirname($img_dir);
 			chmod($parent, 0777);
-    		$res = mkdir($img_dir, 0777, true);
+				$res = mkdir($img_dir, 0777, true);
 		}
 	}
 
@@ -701,18 +701,15 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		unlink( realpath(get_template_directory().'/cardinals-lbox-600x300-FF0000.jpg') );
 	}
 
-	function testImageWidthWithFilter() {
-		$pid = $this->factory->post->create();
-		$photo = $this->copyTestAttachment();
-		$photo = Timber\URLHelper::get_rel_path($photo);
-		update_post_meta($pid, 'custom_photo', '/'.$photo);
-		$str = '{{ get_image(post.custom_photo).width }}';
-		$post = Timber::get_post($pid);
-		$rendered = Timber::compile_string( $str, array('post' => $post) );
-		$this->assertEquals( 1500, $rendered );
+	function testGetAttachmentByInTwig() {
+		$attachment = self::get_timber_attachment_object('arch.jpg');
+
+		$src = Timber::compile_string('{{ get_attachment_by("url", url).src }}', [
+			'url' => $attachment->src(),
+		]);
+
+		$this->assertEquals( 'arch.jpg', basename($src) );
 	}
-
-
 
 	function testResizeNamed() {
 		add_image_size('timber-testResizeNamed', $width = 600, $height = 400, $crop = true);
@@ -877,21 +874,10 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$this->assertEquals($post->ID, $image->parent()->ID);
 	}
 
-	function testTimberImageFromPost() {
-		$post = $this->get_post_with_image();
-		$image = $post->thumbnail();
-		$post = get_post($post->ID);
-
-		$str = '{{ get_image(post).src }}';
-		$result = Timber::compile_string( $str, array('post' => $post) );
-
-		$this->assertEquals($image->src(), $result);
-	}
-
 	function testTimberImageFromTimberImage() {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
-		$str = '{{ get_image(post).src }}';
+		$str = '{{ get_post(post).src }}';
 		$post = Timber::get_post($image);
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($image->src(), $result);
@@ -900,7 +886,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 	function testTimberImageFromTimberImageID() {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
-		$str = '{{ get_image(post).src }}';
+		$str = '{{ get_post(post).src }}';
 		$post = Timber::get_post($image->ID);
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($image->src(), $result);
@@ -910,7 +896,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$post = $this->get_post_with_image();
 		$image = $post->thumbnail();
 		$post = $image->ID;
-		$str = '{{ get_image(post).src }}';
+		$str = '{{ get_post(post).src }}';
 		$result = Timber::compile_string( $str, array('post' => $post) );
 		$this->assertEquals($image->src(), $result);
 	}
@@ -955,8 +941,8 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 	}
 
 	/**
-     * @expectedException Twig_Error_Runtime
-     */
+		 * @expectedException Twig_Error_Runtime
+		 */
 	function testAnimagedGifResizeWithoutImagick() {
 		define('TEST_NO_IMAGICK', true);
 		$image = self::copyTestAttachment('robocop.gif');
