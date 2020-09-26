@@ -862,10 +862,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 	}
 
 	function testImageNoParent() {
-		$this->markTestSkipped('@todo ::from_file');
-		$filename = self::copyTestAttachment( 'arch.jpg' );
-		$image = Attachment::from_file( $filename );
-		$this->assertFalse($image->parent());
+		$this->assertFalse($this->get_timber_attachment_object()->parent());
 	}
 
 	function testImageParent() {
