@@ -46,6 +46,7 @@ use Timber\Factory\UserFactory;
  *     </div>
  * </article>
  * ```
+ * @todo implement JsonSerializable?
  */
 class Post extends Core implements CoreInterface, MetaInterface, DatedInterface, Setupable {
 
@@ -168,22 +169,22 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 */
 	protected $__type;
 
+	public static function build( WP_Post $wp_post ) {
+		$post = new static( $wp_post );
+
+		return $post;
+	}
+
 	/**
 	 * If you send the constructor nothing it will try to figure out the current post id based on
 	 * being inside The_Loop.
 	 *
-	 * @api
-	 * @example
-	 * ```php
-	 * $post = new Timber\Post();
-	 * $other_post = new Timber\Post($random_post_id);
-	 * ```
+	 * @internal
 	 *
-	 * @param mixed $pid
+	 * @param WP_Post $wp_post
 	 */
-	public function __construct( $pid = null ) {
-		$pid = $this->determine_id($pid);
-		$this->init($pid);
+	public function __construct( $wp_post ) {
+		$this->init($wp_post);
 	}
 
 	/**
@@ -294,47 +295,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
-	 * tries to figure out what post you want to get if not explictly defined (or if it is, allows it to be passed through)
-	 * @internal
-	 * @param mixed a value to test against
-	 * @return int|null the numberic id we should be using for this post object, null when there's no ID (ex: 404 page)
-	 */
-	protected function determine_id( $pid ) {
-		global $wp_query;
-		if ( $pid === null &&
-			isset($wp_query->queried_object_id)
-			&& $wp_query->queried_object_id
-			&& isset($wp_query->queried_object)
-			&& is_object($wp_query->queried_object)
-			&& get_class($wp_query->queried_object) == 'WP_Post'
-		) {
-			$pid = $wp_query->queried_object_id;
-		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id ) {
-			//hack for static page as home page
-			$pid = $wp_query->queried_object_id;
-		} else if ( $pid === null ) {
-			$gtid = false;
-			$maybe_post = get_post();
-			if ( isset($maybe_post->ID) ) {
-				$gtid = true;
-			}
-			if ( $gtid ) {
-				$pid = get_the_ID();
-			}
-			if ( !$pid ) {
-				global $wp_query;
-				if ( isset($wp_query->query['p']) ) {
-					$pid = $wp_query->query['p'];
-				}
-			}
-		}
-		if ( $pid === null && ($pid_from_loop = PostGetter::loop_to_id()) ) {
-			$pid = $pid_from_loop;
-		}
-		return $pid;
-	}
-
-	/**
 	 * Outputs the title of the post if you do something like `<h1>{{post}}</h1>`
 	 *
 	 * @api
@@ -395,7 +355,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		if ( is_numeric($pid) ) {
 			$this->ID = $pid;
 		}
-		$post_info = $this->get_info($pid);
+		$post_info = apply_filters('timber/post/import_data', $this->get_info($pid));
 		$this->import($post_info);
 	}
 
@@ -1463,9 +1423,26 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 				$content = $contents[$page];
 			}
 		}
+		$content = $this->content_handle_no_teaser_block( $content );
 		$content = apply_filters('the_content', ($content));
 		if ( $len == -1 && $page == 0 ) {
 			$this->___content = $content;
+		}
+		return $content;
+	}
+
+	/**
+	 * Handles for an circumstance with the Block editor where a "more" block has an option to 
+	 * "Hide the excerpt on the full content page" which hides everything prior to the inserted 
+	 * "more" block
+	 * @ticket #2218
+	 * @param string $content
+	 * @return string
+	 */
+	protected function content_handle_no_teaser_block( $content ) {
+		if ( strpos($content, 'noTeaser:true') !== false ) {
+			$arr = explode('<!--noteaser-->', $content);
+			return $arr[1];
 		}
 		return $content;
 	}
@@ -1846,14 +1823,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		if ( is_object($data) ) {
 			$data = Helper::convert_wp_object($data);
 		} else if ( is_array($data) ) {
-			$func = __FUNCTION__;
-			foreach ( $data as &$ele ) {
-				if ( is_array($ele) ) {
-					$ele = $this->$func($ele);
-				} else if ( is_object($ele) ) {
-					$ele = Helper::convert_wp_object($ele);
-				}
-			}
+			$data = array_map([$this, 'convert'], $data);
 		}
 		return $data;
 	}

@@ -1,7 +1,7 @@
 <?php
 
 	/**
-	 * @group called-post-constructor
+	 * @group posts-api
 	 */
 	class TestTimberPostPreviewObject extends Timber_UnitTestCase {
 
@@ -32,7 +32,7 @@
 			$post_id = $this->factory->post->create(array(
 				'post_excerpt' => $this->gettysburg,
 			));
-			$post = new Timber\Post($post_id);
+			$post = Timber::get_post($post_id);
 			$excerpt = $post->excerpt(array(
 				'words'     => 4,
 				'force'     => true,
@@ -47,7 +47,7 @@
 			$post_id = $this->factory->post->create(array(
 				'post_excerpt' => $this->gettysburg,
 			));
-			$post    = new Timber\Post($post_id);
+			$post    = Timber::get_post($post_id);
 			$excerpt = $post->excerpt(array(
 				'chars'     => 20,
 				'force'     => true,
@@ -62,7 +62,7 @@
 			$post_id = $this->factory->post->create(array(
 				'post_excerpt' => $this->gettysburg,
 			));
-			$post    = new Timber\Post($post_id);
+			$post    = Timber::get_post($post_id);
 			$excerpt = $post->excerpt(array(
 				'chars'     => 20,
 				'force'     => true,
@@ -81,7 +81,7 @@
 					. ' <strong>STRONG</strong> '
 					. $this->gettysburg,
 			));
-			$post    = new Timber\Post($post_id);
+			$post    = Timber::get_post($post_id);
 			$excerpt = $post->excerpt(array(
 				'chars'     => 26,
 				'read_more' => false,
@@ -99,7 +99,7 @@
 					. ' <strong>STRONG</strong> '
 					. $this->gettysburg,
 			));
-			$post    = new Timber\Post($post_id);
+			$post    = Timber::get_post($post_id);
 			$excerpt = $post->excerpt(array(
 				'words'     => 5,
 				'read_more' => false,
@@ -118,7 +118,7 @@
 			$post_id = $this->factory->post->create(array(
 				'post_excerpt' => $this->gettysburg,
 			));
-			$post     = new Timber\Post($post_id);
+			$post     = Timber::get_post($post_id);
 			$readmore = 'read more! if you dare...';
 			$excerpt  = $post->excerpt(array(
 				'chars'     => 20,

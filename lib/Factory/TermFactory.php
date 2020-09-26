@@ -26,7 +26,7 @@ class TermFactory {
 		}
 
 		if (is_object($params)) {
-			return $this->from_term_obj($params);
+			return $this->from_term_object($params);
 		}
 
 		if ($this->is_numeric_array($params)) {
@@ -60,7 +60,7 @@ class TermFactory {
 		return array_map([$this, 'build'], $query->get_terms());
 	}
 
-	protected function from_term_obj(object $obj) : CoreInterface {
+	protected function from_term_object(object $obj) : CoreInterface {
 		if ($obj instanceof CoreInterface) {
 			// We already have a Timber Core object of some kind
 			return $obj;

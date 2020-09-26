@@ -228,7 +228,7 @@ $before_today = $post->date( 'Ymd' ) < wp_date( 'Ymd' );
 $before_today = $post->date( 'U' ) < current_datetime()->getTimestamp();
 ```
 
-In Twig, there’s the [`date()`](https://twig.symfony.com/doc/2.x/functions/date.html) function which you can use to compare dates.
+In Twig, there’s the [`date()`](https://twig.symfony.com/doc/functions/date.html) function which you can use to compare dates.
 
 ```twig
 {% if date(post.meta('show_until')) >= date('now') %}

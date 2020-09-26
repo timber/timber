@@ -7,6 +7,7 @@ use Timber\Timber;
  * @group terms-api
  * @group users-api
  * @group comments-api
+ * @group twig
  */
 class TestTimberTwigObjects extends Timber_UnitTestCase {
 

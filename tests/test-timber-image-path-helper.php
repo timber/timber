@@ -27,7 +27,7 @@
 			if (!is_int($file_id)) {
 				error_log(print_r($file_id, true));
 			}
-			$image = new Timber\Image($file_id);
+			$image = Timber::get_post($file_id);
 			$str = '<img src="{{image.src(\'medium\')}}" />';
 			$result = Timber::compile_string($str, array('image' => $image));
 			$upload_dir = wp_upload_dir();

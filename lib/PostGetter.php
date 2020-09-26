@@ -148,6 +148,7 @@ class PostGetter {
 			$query = array($query);
 		}
 
+		// @todo lift this into PostFactory
 		if ( is_array($query) && count($query) && isset($query[0]) && is_object($query[0]) ) {
 			// We have an array of post objects that already have data
 			return new PostCollection($query, $PostClass);

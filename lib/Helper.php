@@ -237,8 +237,9 @@ class Helper {
 	}
 
 	/**
+	 * Output a value (string, array, object, etc.) to the error log
 	 *
-	 *
+	 * @api
 	 * @param mixed $arg that you want to error_log
 	 * @return void
 	 */
@@ -387,7 +388,7 @@ class Helper {
 		/**
 		 * Filters whether to trigger an error for deprecated functions.
 		 *
-		 * @since 2.5.0
+		 * @since WordPress 2.5.0
 		 *
 		 * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
 		 */
@@ -625,6 +626,8 @@ class Helper {
 	 * Uses native Twig Filter.
 	 *
 	 * @since 1.14.0
+	 * @deprecated since 1.17 (to be removed in 2.0). Use array_filter or Helper::wp_list_filter instead
+	 * @todo remove this in 2.x
 	 * @param array                 $list to filter.
 	 * @param callback|string|array $arrow function used for filtering,
 	 *                              string or array for backward compatibility.
@@ -637,7 +640,7 @@ class Helper {
 			return self::wp_list_filter( $list, $arrow, $operator );
 		}
 
-		return twig_array_filter( $list, $arrow );
+		return array_filter( $list, $arrow, \ARRAY_FILTER_USE_BOTH );
 	}
 
 	/**

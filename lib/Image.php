@@ -15,7 +15,7 @@ namespace Timber;
  * // Lets say you have an alternate large 'cover image' for your post
  * // stored in a custom field which returns an image ID.
  * $cover_image_id = $context['post']->cover_image;
- * $context['cover_image'] = new Timber\Image($cover_image_id);
+ * $context['cover_image'] = Timber::get_post($cover_image_id);
  * Timber::render('single.twig', $context);
  * ```
  *
@@ -81,22 +81,6 @@ class Image extends Attachment {
 	protected $dimensions;
 
 	/**
-	 * Creates a new Timber\Image object
-	 * @example
-	 * ```php
-	 * // You can pass it an ID number
-	 * $myImage = new Timber\Image(552);
-	 *
-	 * //Or send it a URL to an image
-	 * $myImage = new Timber\Image('http://google.com/logo.jpg');
-	 * ```
-	 * @param bool|int|string $iid
-	 */
-	public function __construct( $iid ) {
-		$this->init($iid);
-	}
-
-	/**
 	 * @return string the src of the file
 	 */
 	public function __toString() {
@@ -104,20 +88,6 @@ class Image extends Attachment {
 			return $src;
 		}
 		return '';
-	}
-
-	/**
-	 * Get a PHP array with pathinfo() info from the file
-	 * @deprecated 2.0.0, functionality will no longer be supported in future releases.
-	 * @return array
-	 */
-	public function get_pathinfo() {
-		Helper::deprecated(
-			"{{ image.get_pathinfo }}",
-			"{{ function('pathinfo', image.file) }}",
-			'2.0.0'
-		);
-		return PathHelper::pathinfo($this->file);
 	}
 
 	/**
@@ -408,7 +378,15 @@ class Image extends Attachment {
 	protected function is_image() {
 		$src        = wp_get_attachment_url( $this->ID );
 		$check      = wp_check_filetype( PathHelper::basename( $src ), null );
-		$image_exts = array( 'jpg', 'jpeg', 'jpe', 'gif', 'png' );
+		$image_exts = apply_filters( 'timber/post/image_extensions', [
+			'jpg',
+			'jpeg',
+			'jpe',
+			'gif',
+			'png',
+			'webp',
+		] );
+
 		return in_array( $check['ext'], $image_exts );
 	}
 

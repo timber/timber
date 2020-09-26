@@ -1,5 +1,9 @@
 <?php
 
+require_once(__DIR__.'/php/timber-post-subclass.php');
+
+use Timber\PostArrayObject;
+
 	/**
 	 * @group posts-api
 	 * @group terms-api
@@ -39,8 +43,11 @@
 		}
 
 		function testPluckObjectWithMethod() {
-			require_once(__DIR__.'/php/timber-post-subclass.php');
-			$tps = new TimberPostSubclass();
+			$this->register_post_classmap_temporarily([
+				'post' => TimberPostSubclass::class,
+			]);
+
+			$tps = Timber::get_post($this->factory->post->create());
 			$jimmy = new stdClass();
 			$jimmy->name = 'Jimmy';
 			$pumpkins = array($tps, $jimmy);
@@ -234,16 +241,13 @@
 		/**
  		 * @expectedException Twig\Error\RuntimeError
 		 */
-		function testArrayFilterKeyValueUsingPostQuery() {
+		function testArrayFilterKeyValueUsingPostArrayObject() {
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
-			$posts = new Timber\PostQuery( array(
-				'query' => $posts,
-			) );
-			$template = '{% for post in posts | filter({post_content: "Method Man"
-		})%}{{ post.title }}{% endfor %}';
+			$posts = new PostArrayObject( $posts );
+			$template = '{% for post in posts | filter({post_content: "Method Man"})%}{{ post.title }}{% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => $posts));
 			$this->assertEquals('Cheese', trim($str));
 		}
@@ -323,7 +327,7 @@
  			$post_id = $this->factory->post->create();
  			$posts = Timber::get_posts();
  			update_post_meta($post_id, '_thumbnail_id', '707');
- 			$post = new Timber\Post($post_id);
+ 			$post = Timber::get_post($post_id);
  			$thumbnail_id = $post->_thumbnail_id;
  		}  
 

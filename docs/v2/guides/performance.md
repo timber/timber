@@ -16,7 +16,7 @@ You can still use plugins like [W3 Total Cache](https://wordpress.org/plugins/w3
 
 ## Cache the Entire Twig File and Data
 
-When rendering, use the `$expires` argument in [`Timber::render`](https://timber.github.io/docs/reference/timber/#render). For example:
+When rendering, use the `$expires` argument in [`Timber::render`](https://timber.github.io/docs/v2/reference/timber/#render). For example:
 
 ```php
 <?php
@@ -31,7 +31,7 @@ This method is very effective, but crude - the whole template is cached. So if y
 
 ### Set cache mode
 
-As a fourth parameter for [Timber::render()](https://timber.github.io/docs/reference/timber/#render), you can set the `$cache_mode`.
+As a fourth parameter for [Timber::render()](https://timber.github.io/docs/v2/reference/timber/#render), you can set the `$cache_mode`.
 
 ```php
 <?php
@@ -123,12 +123,12 @@ Thus, during development, you should enable the option for `auto_reload`:
 add_filter( 'timber/twig/environment/options', function( $options ) {
     $options['cache']       = true;
     $options['auto_reload'] = true;
-    
+
     return $options;
 });
 ```
 
-Enabling `Timber::$cache` works best as a last step in the production process. Once enabled, any change you make to a `.twig` file (just tweaking the HTML for example) will not go live until the cache is flushed. 
+Enabling `Timber::$cache` works best as a last step in the production process. Once enabled, any change you make to a `.twig` file (just tweaking the HTML for example) will not go live until the cache is flushed.
 
 Note that when `WP_DEBUG` is set to `true`, changes you make to `.twig` files will be reflected on the site regardless of the `Timber::$cache` value.
 

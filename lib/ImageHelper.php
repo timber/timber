@@ -284,7 +284,7 @@ class ImageHelper {
 	 */
 	public static function _delete_generated_if_image( $post_id ) {
 		if ( wp_attachment_is_image($post_id) ) {
-			$attachment = new Image($post_id);
+			$attachment = Timber::get_post($post_id);
 			if ( $attachment->file_loc ) {
 				ImageHelper::delete_generated_files($attachment->file_loc);
 			}
@@ -598,6 +598,13 @@ class ImageHelper {
 		if ( empty($src) ) {
 			return '';
 		}
+
+		$allow_fs_write = apply_filters('timber/allow_fs_write', true);
+
+		if ( $allow_fs_write === false ) {
+			return $src;
+		}
+		
 		$external = false;
 		// if external image, load it first
 		if ( URLHelper::is_external_content($src) ) {
