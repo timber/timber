@@ -168,10 +168,13 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * @internal
 	 * @return Timber\Post
 	 */
-	public static function build( WP_Post $wp_post ) {
-		$post = new static( $wp_post );
+	public static function build( WP_Post $wp_post ) : self {
+		$post = new static();
 
-		return $post;
+		$post->id = $wp_post->ID;
+		$post->ID = $wp_post->ID;
+
+		return $post->init( $wp_post );
 	}
 
 	/**
@@ -179,11 +182,8 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * being inside The_Loop.
 	 *
 	 * @internal
-	 *
-	 * @param WP_Post $wp_post
 	 */
-	public function __construct( $wp_post ) {
-		$this->init($wp_post);
+	protected function __construct() {
 	}
 
 	/**
@@ -348,14 +348,10 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * @param integer $pid
 	 */
 	protected function init( $pid = null ) {
-		if ( $pid === null ) {
-			$pid = get_the_ID();
-		}
-		if ( is_numeric($pid) ) {
-			$this->ID = $pid;
-		}
 		$post_info = apply_filters('timber/post/import_data', $this->get_info($pid));
 		$this->import($post_info);
+
+		return $this;
 	}
 
 	/**

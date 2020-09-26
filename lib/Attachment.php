@@ -174,6 +174,8 @@ class Attachment extends Post implements CoreInterface {
 		if ( isset( $this->ID ) ) {
 			$this->id = $this->ID;
 		}
+
+		return $this;
 	}
 
 	/**
