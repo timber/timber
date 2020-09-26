@@ -239,9 +239,15 @@ class Timber {
 
 		global $wp_query;
 
+		$options = wp_parse_args($options, [
+			'merge_default' => false
+		]);
+
 		// Has WP already queried and found a post?
 		if ($query === false && ($wp_query->queried_object instanceof WP_Post)) {
 			$query = $wp_query->queried_object;
+		} elseif (is_array($query) && $options['merge_default']) {
+			$query = wp_parse_args($wp_query->query_vars);
 		}
 
 		// Default to the global query.

@@ -528,9 +528,38 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertEquals( $pid, $post->ID );
 	}
 
-	function testGetPostsWithMergeDefault() {
-		update_option( 'show_on_front', 'posts' );
+	function testGetPostWithMergeDefault() {
+		$cat = $this->factory->term->create([
+			'taxonomy' => 'category'
+		]);
 
+		// Create some irrelevant posts
+		$this->factory->post->create_many( 3 );
+
+		$id = $this->factory->post->create( [
+			'post_category' => [$cat],
+		] );
+
+		// Create a few other irrelevant posts
+		$this->factory->post->create_many( 3 );
+
+		// Mutate the global query for the Meow cat
+		query_posts([
+			'category__in' => [$cat],
+		]);
+
+		// Because we're merging the default query_vars, this query should
+		// return ONLY those posts categorized under "meow"
+		$post = Timber::get_post( [
+			'post_type' => 'post',
+		], [
+			'merge_default' => true,
+		] );
+
+		$this->assertEquals( $id, $post->id );
+	}
+
+	function testGetPostsWithMergeDefault() {
 		$cat = $this->factory->term->create([
 			'taxonomy' => 'category'
 		]);
