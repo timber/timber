@@ -7,6 +7,9 @@ use Twig\Extension\CoreExtension;
 use Twig\TwigFunction;
 use Twig\TwigFilter;
 
+use Timber\Factory\PostFactory;
+use Timber\Factory\TermFactory;
+
 /**
  * Class Twig
  */
@@ -69,52 +72,54 @@ class Twig {
 		 * Deprecated Timber object functions.
 		 */
 
-		$twig->addFunction(new TwigFunction('Post', function( $post_id, $PostClass = 'Timber\Post' ) {
+		$postFactory = new PostFactory();
+
+		$twig->addFunction(new TwigFunction('Post', function( $post_id ) use ($postFactory) {
 			Helper::deprecated( '{{ Post() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0' );
-			return self::maybe_convert_array( $post_id, $PostClass );
+			return $postFactory->from( $post_id );
 		} ) );
 		$twig->addFunction( new TwigFunction(
 			'TimberPost',
-			function( $post_id, $PostClass = 'Timber\Post' ) {
+			function( $post_id ) use ($postFactory) {
 				Helper::deprecated( '{{ TimberPost() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0' );
-				return self::maybe_convert_array( $post_id, $PostClass );
+				return $postFactory->from( $post_id );
 			}
 		) );
 
-		$twig->addFunction(new TwigFunction('Image', function( $post_id, $ImageClass = 'Timber\Image' ) {
+		$twig->addFunction(new TwigFunction('Image', function( $post_id ) use ($postFactory) {
 			Helper::deprecated( '{{ Image() }}', '{{ get_post() }} or {{ get_attachment_by() }}', '2.0.0' );
-			return self::maybe_convert_array( $post_id, $ImageClass );
+			return $postFactory->from( $post_id );
 		} ) );
 		$twig->addFunction( new TwigFunction(
 			'TimberImage',
-			function( $post_id = false, $ImageClass = 'Timber\Image' ) {
+			function( $post_id = false ) use ($postFactory) {
 				Helper::deprecated( '{{ TimberImage() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0' );
-				return self::maybe_convert_array( $post_id, $ImageClass );
+				return $postFactory->from( $post_id );
 			}
 		) );
 
 		$twig->addFunction( new TwigFunction(
 			'Term',
-			function( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+			function( $term_id ) {
 				Helper::deprecated( '{{ Term() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0' );
 				return Timber::get_term( $term_id );
 			}
 		) );
 		$twig->addFunction( new TwigFunction(
 			'TimberTerm',
-			function( $term_id, $taxonomy = '', $TermClass = 'Timber\Term' ) {
+			function( $term_id ) {
 				Helper::deprecated( '{{ TimberTerm() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0' );
 				return Timber::get_term( $term_id );
 			}
 		) );
 
-		$twig->addFunction(new TwigFunction('User', function( $post_id, $UserClass = 'Timber\User' ) {
+		$twig->addFunction(new TwigFunction('User', function( $post_id ) {
 			Helper::deprecated( '{{ User() }}', '{{ get_user() }} or {{ get_users() }}', '2.0.0' );
 			return Timber::get_user( $post_id );
 		} ) );
 		$twig->addFunction( new TwigFunction(
 			'TimberUser',
-			function( $user_id, $UserClass = 'Timber\User' ) {
+			function( $user_id ) {
 				Helper::deprecated( '{{ TimberUser() }}', '{{ User() }}', '2.0.0' );
 				return Timber::get_user( $user_id );
 			}
@@ -134,30 +139,6 @@ class Twig {
 		$twig->addFunction(new TwigFunction('translate_nooped_plural', 'translate_nooped_plural'));
 
 		return $twig;
-	}
-
-	/**
-	 * Converts input to Timber object(s)
-	 *
-	 * @internal
-	 * @since 2.0.0
-	 *
-	 * @param mixed  $post_id A post ID, object or something else that the Timber object class
-	 *                        constructor an read.
-	 * @param string $class   The class to use to convert the input.
-	 *
-	 * @return mixed An object or array of objects.
-	 */
-	public static function maybe_convert_array( $post_id, $class ) {
-		if ( is_array( $post_id ) && ! Helper::is_array_assoc( $post_id ) ) {
-			foreach ( $post_id as &$id ) {
-				$id = new $class( $id );
-			}
-
-			return $post_id;
-		}
-
-		return new $class( $post_id );
 	}
 
 	/**
