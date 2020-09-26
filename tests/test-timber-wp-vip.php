@@ -36,7 +36,7 @@
 			add_filter( 'timber/allow_fs_write', '__return_false' );
 			$pid = $this->factory->post->create(array('post_type' => 'post'));
  			$attach_id = self::get_attachment($pid, 'arch.jpg');
- 			$template = '<img src="{{Image(img).src|resize(200, 200)}}">';
+			$template = '<img src="{{get_post(img).src|resize(200, 200)}}">';
  			$str = Timber::compile_string($template, array('img' => $attach_id));
  			$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg">', $str);
  			remove_filter( 'timber/allow_fs_write', '__return_false' );
