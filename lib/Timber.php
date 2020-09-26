@@ -389,7 +389,7 @@ class Timber {
 			// Always return the oldest post first.
 			$sql .= ' ORDER BY post_date ASC';
 
-	        $post_id = $wpdb->get_var( $wpdb->prepare( $sql, $query_args ) );
+			$post_id = $wpdb->get_var( $wpdb->prepare( $sql, $query_args ) );
 		}
 
 		if ( ! $post_id ) {
