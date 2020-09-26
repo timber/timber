@@ -529,18 +529,34 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	}
 
 	function testGetPostsWithMergeDefault() {
-		$this->markTestSkipped('@todo fix merge_default option');
 		update_option( 'show_on_front', 'posts' );
-		$post_ids = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
-		$this->go_to( '/' );
 
+		$cat = $this->factory->term->create([
+			'name'     => 'Meow',
+			'taxonomy' => 'category'
+		]);
+
+		$post_ids = $this->factory->post->create_many( 3, [
+			'post_category' => [$cat],
+		] );
+
+		// Create a few other irrelevant posts
+		$this->factory->post->create_many( 5 );
+
+		// Mutate the global query for the Meow cat
+		query_posts([
+			'category__in' => [$cat],
+		]);
+
+		// Because we're merging the default query_vars, this query should
+		// return ONLY those posts categorized under "meow"
 		$posts = Timber::get_posts( [
-			'post__in' => [$post_ids[1]],
+			'post_type' => 'post',
 		], [
 			'merge_default' => true,
 		] );
 
-		$this->assertEquals( $posts[0]->ID, $post_ids[1] );
+		$this->assertCount( 3, $posts );
 	}
 
 	/**

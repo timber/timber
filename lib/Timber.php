@@ -295,17 +295,22 @@ class Timber {
 		}
 
 		/**
-		 * @todo Define all default $options.
-		 * @todo Actually apply options.
+		 * @todo Are there any more default options to support?
 		 */
 		$options = wp_parse_args( $options, [
 			'merge_default' => false,
 		] );
 
+		global $wp_query;
+
+		if ( is_array($query) && $options['merge_default'] ) {
+			$query = wp_parse_args( $query, $wp_query->query_vars );
+		}
+
 		$factory = new PostFactory();
 
 		// Default to the global query.
-		return $factory->from($query ?: $GLOBALS['wp_query']);
+		return $factory->from($query ?: $wp_query);
 	}
 
 	/**
