@@ -445,27 +445,32 @@ class Timber {
 	}
 
 	/**
-	 * Get an Attachment by its URL or absolute file path. Honors the `timber/post/image_extensions`
-	 * filter, returning a Timber\Image if the found attachment is identified as an image.
-	 * Also honors Class Maps.
+	 * Gets an attachment by its URL or absolute file path.
+	 *
+	 * Honors the `timber/post/image_extensions` filter, returning a Timber\Image if the found
+	 * attachment is identified as an image. Also honors Class Maps.
 	 *
 	 * @api
 	 * @since 2.0.0
 	 * @example
 	 * ```php
-	 * // By URL
+	 * // Get attachment by URL.
 	 * $attachment = Timber::get_attachment_by( 'url', 'https://example.com/uploads/2020/09/cat.gif' );
 	 *
-	 * // By filepath
+	 * // Get attachment by filepath.
 	 * $attachment = Timber::get_attachment_by( 'path', '/path/to/wp-content/uploads/2020/09/cat.gif' );
 	 *
-	 * // Try to handle either case
+	 * // Try to handle either case.
 	 * $mystery_string = some_function();
-	 * $attachment = Timber::get_attachment_by( $mystery_string );
+	 * $attachment     = Timber::get_attachment_by( $mystery_string );
 	 * ```
-	 * @param string $field_or_ident can be "url", "path", an attachment URL, or the absolute
-	 * path of an attachment file. If "url" or "path" is given, a second arg is required.
-	 * @param string $ident an attachment URL or absolute path.
+	 *
+	 * @param string $field_or_ident Can be "url", "path", an attachment URL, or the absolute
+	 *                               path of an attachment file. If "url" or "path" is given, a
+	 *                               second arg is required.
+	 * @param string $ident          Optional. An attachment URL or absolute path. Default empty
+	 *                               string.
+	 *
 	 * @return \Timber\Attachment|false
 	 */
 	public static function get_attachment_by( string $field_or_ident, string $ident = '' ) {
@@ -495,7 +500,7 @@ class Timber {
 
 				return false;
 			}
-			
+
 			if (!file_exists($ident)) {
 				// Deal with a relative path.
 				$ident = URLHelper::get_full_path($ident);
