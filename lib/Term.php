@@ -587,11 +587,13 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * ```
 	 *
 	 * @param string|array $query_args  Any array of query parameters for getting the posts.
-	 *                                  See [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/) for supported arguments.
-	 *                                  Defaults to querying all posts assigned to the term.	 *
+	 *                                  See [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/) for supported arguments. Default empty array.
+	 *                                  Defaults to querying all posts assigned to the term.
+	 * @param array        $options     Optional. An array of options that will be forwarded to
+	 *                                  [`Timber::get_posts()`](https://timber.github.io/docs/v2/reference/timber-timber/#get_posts). Default empty array.
 	 * @return \Timber\PostCollection A collection of posts.
 	 */
-	public function posts( $query_args = [] ) {
+	public function posts( $query_args = [], $options = [] ) {
 		if ( is_integer( $query_args ) ) {
 			Helper::doing_it_wrong(
 				'Timber\Term::posts()',
@@ -619,7 +621,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			'post_type' => 'any'
 		] );
 
-		return Timber::get_posts( $query_args );
+		return Timber::get_posts( $query_args, $options );
 	}
 
 
