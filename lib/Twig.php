@@ -230,8 +230,8 @@ class Twig {
 
 		/**
 		 * Date and Time filters.
-		 * 
-		 * @todo copy this formatting to other functions 
+		 *
+		 * @todo copy this formatting to other functions
 		 */
 		$twig->addFilter(new TwigFilter(
 			'date',
@@ -291,17 +291,17 @@ class Twig {
 	/**
 	 * Overwrite Twig defaults.
 	 *
-	 * Makes Twig compatible with how WordPress handles dates, timezones and perhaps other items in 
+	 * Makes Twig compatible with how WordPress handles dates, timezones and perhaps other items in
 	 * the future
 	 *
 	 * @since 2.0.0
 	 *
 	 * @throws \Twig_Error_Runtime
-	 * @param \Twig_Environment $twig Twig Environment
+	 * @param \Twig\Environment $twig Twig Environment.
 	 *
-	 * @return \Twig_Environment
+	 * @return \Twig\Environment
 	 */
-	public function set_defaults( \Twig_Environment $twig ) {
+	public function set_defaults( Environment $twig ) {
 		$twig->getExtension( CoreExtension::class )->setDateFormat( get_option( 'date_format' ), '%d days' );
 		$twig->getExtension( CoreExtension::class )->setTimezone( wp_timezone_string() );
 
@@ -455,7 +455,7 @@ class Twig {
 	 */
 	public static function time_ago( $from, $to = null, $format_past = null, $format_future = null ) {
 		Helper::deprecated( 'time_ago', 'DateTimeHelper::time_ago', '2.0.0' );
-    
+
 		return DateTimeHelper::time_ago( $from, $to, $format_past, $format_future );
 	}
 
