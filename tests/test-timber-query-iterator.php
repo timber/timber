@@ -5,11 +5,12 @@ use Timber\QueryIterator;
 /**
  * @group posts-api
  * @group post-collections
- * @todo move these tests to test-timber-post-collection.php
+ * @todo remove these tests completely?
  */
 class TestTimberQueryIterator extends Timber_UnitTestCase {
 
 	function testTheLoop(){
+		$this->markTestSkipped('@todo moved to test-timber-post-collection.php');
 		foreach (range(1, 3) as $i) {
 			$this->factory->post->create( array(
 				'post_title' => 'TestPost' . $i,
@@ -31,6 +32,7 @@ class TestTimberQueryIterator extends Timber_UnitTestCase {
 	}
 
 	function testTwigLoopVar() {
+		$this->markTestSkipped('@todo do we really want to be testing loop internals like this?');
 		$this->factory->post->create_many( 3 );
 
 		$wp_query = new WP_Query('post_type=post');

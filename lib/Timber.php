@@ -239,9 +239,15 @@ class Timber {
 
 		global $wp_query;
 
+		$options = wp_parse_args($options, [
+			'merge_default' => false
+		]);
+
 		// Has WP already queried and found a post?
 		if ($query === false && ($wp_query->queried_object instanceof WP_Post)) {
 			$query = $wp_query->queried_object;
+		} elseif (is_array($query) && $options['merge_default']) {
+			$query = wp_parse_args($wp_query->query_vars);
 		}
 
 		// Default to the global query.
@@ -295,17 +301,22 @@ class Timber {
 		}
 
 		/**
-		 * @todo Define all default $options.
-		 * @todo Actually apply options.
+		 * @todo Are there any more default options to support?
 		 */
 		$options = wp_parse_args( $options, [
 			'merge_default' => false,
 		] );
 
+		global $wp_query;
+
+		if ( is_array($query) && $options['merge_default'] ) {
+			$query = wp_parse_args( $query, $wp_query->query_vars );
+		}
+
 		$factory = new PostFactory();
 
 		// Default to the global query.
-		return $factory->from($query ?: $GLOBALS['wp_query']);
+		return $factory->from($query ?: $wp_query);
 	}
 
 	/**
@@ -389,7 +400,7 @@ class Timber {
 			// Always return the oldest post first.
 			$sql .= ' ORDER BY post_date ASC';
 
-	        $post_id = $wpdb->get_var( $wpdb->prepare( $sql, $query_args ) );
+			$post_id = $wpdb->get_var( $wpdb->prepare( $sql, $query_args ) );
 		}
 
 		if ( ! $post_id ) {
@@ -434,27 +445,32 @@ class Timber {
 	}
 
 	/**
-	 * Get an Attachment by its URL or absolute file path. Honors the `timber/post/image_extensions`
-	 * filter, returning a Timber\Image if the found attachment is identified as an image.
-	 * Also honors Class Maps.
+	 * Gets an attachment by its URL or absolute file path.
+	 *
+	 * Honors the `timber/post/image_extensions` filter, returning a Timber\Image if the found
+	 * attachment is identified as an image. Also honors Class Maps.
 	 *
 	 * @api
 	 * @since 2.0.0
 	 * @example
 	 * ```php
-	 * // By URL
+	 * // Get attachment by URL.
 	 * $attachment = Timber::get_attachment_by( 'url', 'https://example.com/uploads/2020/09/cat.gif' );
 	 *
-	 * // By filepath
+	 * // Get attachment by filepath.
 	 * $attachment = Timber::get_attachment_by( 'path', '/path/to/wp-content/uploads/2020/09/cat.gif' );
 	 *
-	 * // Try to handle either case
+	 * // Try to handle either case.
 	 * $mystery_string = some_function();
-	 * $attachment = Timber::get_attachment_by( $mystery_string );
+	 * $attachment     = Timber::get_attachment_by( $mystery_string );
 	 * ```
-	 * @param string $field_or_ident can be "url", "path", an attachment URL, or the absolute
-	 * path of an attachment file. If "url" or "path" is given, a second arg is required.
-	 * @param string $ident an attachment URL or absolute path.
+	 *
+	 * @param string $field_or_ident Can be "url", "path", an attachment URL, or the absolute
+	 *                               path of an attachment file. If "url" or "path" is given, a
+	 *                               second arg is required.
+	 * @param string $ident          Optional. An attachment URL or absolute path. Default empty
+	 *                               string.
+	 *
 	 * @return \Timber\Attachment|false
 	 */
 	public static function get_attachment_by( string $field_or_ident, string $ident = '' ) {
@@ -484,7 +500,7 @@ class Timber {
 
 				return false;
 			}
-			
+
 			if (!file_exists($ident)) {
 				// Deal with a relative path.
 				$ident = URLHelper::get_full_path($ident);

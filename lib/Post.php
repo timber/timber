@@ -4,7 +4,9 @@ namespace Timber;
 
 use WP_Post;
 
+use Timber\Factory\PostFactory;
 use Timber\Factory\UserFactory;
+use Timber\Timber;
 
 /**
  * Class Post
@@ -49,16 +51,6 @@ use Timber\Factory\UserFactory;
  * @todo implement JsonSerializable?
  */
 class Post extends Core implements CoreInterface, MetaInterface, DatedInterface, Setupable {
-
-	/**
-	 * @var string The name of the class to handle images by default
-	 */
-	public $ImageClass = 'Timber\Image';
-
-	/**
-	 * @var string The name of the class to handle posts by default
-	 */
-	public $PostClass = 'Timber\Post';
 
 	/**
 	 * @var string What does this class represent in WordPress terms?
@@ -169,10 +161,20 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 */
 	protected $__type;
 
-	public static function build( WP_Post $wp_post ) {
-		$post = new static( $wp_post );
+	/**
+	 * Create and initialize a new instance of the called Post class
+	 * (i.e. Timber\Post or a subclass).
+	 *
+	 * @internal
+	 * @return Timber\Post
+	 */
+	public static function build( WP_Post $wp_post ) : self {
+		$post = new static();
 
-		return $post;
+		$post->id = $wp_post->ID;
+		$post->ID = $wp_post->ID;
+
+		return $post->init( $wp_post );
 	}
 
 	/**
@@ -180,11 +182,8 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * being inside The_Loop.
 	 *
 	 * @internal
-	 *
-	 * @param WP_Post $wp_post
 	 */
-	public function __construct( $wp_post ) {
-		$this->init($wp_post);
+	protected function __construct() {
 	}
 
 	/**
@@ -308,7 +307,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		global $wp_query;
 		if ( $this->is_previewing() ) {
 			$revision_id = $this->get_post_preview_id( $wp_query );
-			return new $this->PostClass( $revision_id );
+			return Timber::get_post( $revision_id );
 		}
 	}
 
@@ -349,14 +348,10 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * @param integer $pid
 	 */
 	protected function init( $pid = null ) {
-		if ( $pid === null ) {
-			$pid = get_the_ID();
-		}
-		if ( is_numeric($pid) ) {
-			$this->ID = $pid;
-		}
 		$post_info = apply_filters('timber/post/import_data', $this->get_info($pid));
 		$this->import($post_info);
+
+		return $this;
 	}
 
 	/**
@@ -1221,7 +1216,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * ```
 	 * @param string|array $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type or you can pass an array of post types.
 	 * @param string|bool  $child_post_class _optional_ a custom post class (ex: 'MyTimber\Post') to return the objects as. By default (false) it will use Timber\Post::$post_class value.
-	 * @return array
+	 * @return Timber\PostCollectionInterface
 	 */
 	public function children( $post_type = 'any', $child_post_class = false ) {
 		if ( $child_post_class === false ) {
@@ -1237,12 +1232,8 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		if ( $this->post_status === 'publish' ) {
 			$query .= '&post_status[]=inherit';
 		}
-		$children = get_children($query);
-		foreach ( $children as &$child ) {
-			$child = new $child_post_class($child->ID);
-		}
-		$children = array_values($children);
-		return $children;
+
+		return $this->factory()->from(get_children($query));
 	}
 
 	/**
@@ -1432,8 +1423,8 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
-	 * Handles for an circumstance with the Block editor where a "more" block has an option to 
-	 * "Hide the excerpt on the full content page" which hides everything prior to the inserted 
+	 * Handles for an circumstance with the Block editor where a "more" block has an option to
+	 * "Hide the excerpt on the full content page" which hides everything prior to the inserted
 	 * "more" block
 	 * @ticket #2218
 	 * @param string $content
@@ -1769,7 +1760,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			}
 
 			if ( $adjacent ) {
-				$this->_next[$in_same_term] = new $this->PostClass($adjacent);
+				$this->_next[$in_same_term] = $this->factory()->from($adjacent);
 			} else {
 				$this->_next[$in_same_term] = false;
 			}
@@ -1844,7 +1835,8 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		if ( !$this->post_parent ) {
 			return false;
 		}
-		return new $this->PostClass($this->post_parent);
+
+		return $this->factory()->from($this->post_parent);
 	}
 
 	/**
@@ -1887,7 +1879,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		$adjacent = get_adjacent_post(($in_same_term), '', true, $within_taxonomy);
 		$prev_in_taxonomy = false;
 		if ( $adjacent ) {
-			$prev_in_taxonomy = new $this->PostClass($adjacent);
+			$prev_in_taxonomy = $this->factory()->from($adjacent);
 		}
 		$this->_prev[$in_same_term] = $prev_in_taxonomy;
 		$post = $old_global;
@@ -1930,7 +1922,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		$tid = $this->thumbnail_id();
 
 		if ( $tid ) {
-			return new $this->ImageClass($tid);
+			return $this->factory()->from($tid);
 		}
 	}
 
@@ -2034,5 +2026,17 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 				'taxonomy' => [$tax],
 			]);
 		}, $taxonomies);
+	}
+
+	/**
+	 * Get a PostFactory instance for internal usage
+	 *
+	 * @internal
+	 * @return \Timber\Factory\PostFactory
+	 */
+	private function factory() {
+		static $factory;
+		$factory = $factory ?: new PostFactory();
+		return $factory;
 	}
 }

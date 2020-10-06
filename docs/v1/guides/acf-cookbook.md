@@ -24,7 +24,7 @@ You can retrieve an image from a custom field, then use it in a Twig template. T
 ### The quick way (for most situations)
 
 ```twig
-<img src="{{ Image(post.meta('hero_image')).src }}" />
+<img src="{{ get_image(post.meta('hero_image')).src }}" />
 ```
 
 ### The long way (for some special situations)
@@ -57,7 +57,7 @@ You can now use all the above functions to transform your custom images in the s
 
 ```twig
 {% for image in post.meta('gallery') %}
-    <img src="{{ Image(image) }}" />
+    <img src="{{ get_image(image) }}" />
 {% endfor %}
 ```
 
@@ -101,7 +101,7 @@ You can access repeater fields within twig files:
 		<div class="item">
 			<h4>{{ item.name }}</h4>
 			<h6>{{ item.info }}</h6>
-			<img src="{{ Image(item.picture).src }}" />
+			<img src="{{ get_image(item.picture).src }}" />
 		</div>
 	{% endfor %}
 </div>
@@ -157,8 +157,8 @@ Similar to repeaters, get the field by the name of the flexible content field:
 ```twig
 {% for media_item in post.meta('media_set') %}
 	{% if media_item.acf_fc_layout == 'image_set' %}
-		<img src="{{ Image(media_item.image).src }}" />
-		<p class="caption">{{ Image(media_item.image).caption }}</p>
+		<img src="{{ get_image(media_item.image).src }}" />
+		<p class="caption">{{ get_image(media_item.image).caption }}</p>
 		<aside class="notes">{{ media_item.notes }}</aside>
 	{% elseif media_item.acf_fc_layout == 'video_set' %}
 		<iframe width="560" height="315" src="http://www.youtube.com/embed/{{ media_item.youtube_id }}" frameborder="0" allowfullscreen></iframe>

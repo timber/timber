@@ -528,19 +528,63 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertEquals( $pid, $post->ID );
 	}
 
-	function testGetPostsWithMergeDefault() {
-		$this->markTestSkipped('@todo fix merge_default option');
-		update_option( 'show_on_front', 'posts' );
-		$post_ids = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
-		$this->go_to( '/' );
+	function testGetPostWithMergeDefault() {
+		$cat = $this->factory->term->create([
+			'taxonomy' => 'category'
+		]);
 
-		$posts = Timber::get_posts( [
-			'post__in' => [$post_ids[1]],
+		// Create some irrelevant posts
+		$this->factory->post->create_many( 3 );
+
+		$id = $this->factory->post->create( [
+			'post_category' => [$cat],
+		] );
+
+		// Create a few other irrelevant posts
+		$this->factory->post->create_many( 3 );
+
+		// Mutate the global query for the Meow cat
+		query_posts([
+			'category__in' => [$cat],
+		]);
+
+		// Because we're merging the default query_vars, this query should
+		// return ONLY those posts categorized under "meow"
+		$post = Timber::get_post( [
+			'post_type' => 'post',
 		], [
 			'merge_default' => true,
 		] );
 
-		$this->assertEquals( $posts[0]->ID, $post_ids[1] );
+		$this->assertEquals( $id, $post->id );
+	}
+
+	function testGetPostsWithMergeDefault() {
+		$cat = $this->factory->term->create([
+			'taxonomy' => 'category'
+		]);
+
+		$post_ids = $this->factory->post->create_many( 3, [
+			'post_category' => [$cat],
+		] );
+
+		// Create a few other irrelevant posts
+		$this->factory->post->create_many( 5 );
+
+		// Mutate the global query for the Meow cat
+		query_posts([
+			'category__in' => [$cat],
+		]);
+
+		// Because we're merging the default query_vars, this query should
+		// return ONLY those posts categorized under "meow"
+		$posts = Timber::get_posts( [
+			'post_type' => 'post',
+		], [
+			'merge_default' => true,
+		] );
+
+		$this->assertCount( 3, $posts );
 	}
 
 	/**
@@ -719,24 +763,6 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		}
 
 		$this->assertEquals(3, $the_post_count);
-	}
-
-	function testChangeArgumentInDefaultQuery() {
-		$this->markTestIncomplete('@todo we need to come up with a stronger test because this passes with or without merge_default');
-		update_option( 'show_on_front', 'posts' );
-		$post_ids = $this->factory->post->create_many( 3, array( 'post_type' => 'post' ) );
-		$this->go_to( '/' );
-
-		$posts = new Timber\PostQuery( array(
-			'query' => array(
-				'post__in' => array( $post_ids[1] ),
-			),
-			// 'merge_default' => true,
-		) );
-
-		$posts = $posts->to_array();
-
-		$this->assertEquals( $posts[0]->ID, $post_ids[1] );
 	}
 
 	function testGetAttachment() {
