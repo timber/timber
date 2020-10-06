@@ -1,10 +1,10 @@
 ---
-title: "Gutenberg"
+title: "Block Editor (Gutenberg)"
 ---
 
-## Using Gutenberg with Timber
+## Using the Block Editor with Timber
 
-Timber works with Gutenberg out of the box. If you use `{{ post.content }}`, Timber will render all the Gutenberg blocks.
+Timber works with the Block Editor (also called Gutenberg) out of the box. If you use `{{ post.content }}`, Timber will render all the Gutenberg blocks.
 
 ## ACF Blocks
 
@@ -112,7 +112,7 @@ function my_acf_block_editor_style() {
 add_action( 'enqueue_block_assets', 'my_acf_block_editor_style' );
 ```
 
-For more details about enqueueing assets read the [Gutenberg Handbook](https://wordpress.org/gutenberg/handbook/blocks/applying-styles-with-stylesheets/#enqueueing-editor-only-block-assets).
+For more details about enqueueing assets read the [Block Editor Handbook](https://developer.wordpress.org/block-editor/tutorials/block-tutorial/applying-styles-with-stylesheets/#enqueueing-editor-only-block-assets).
 
 ### Using repeaters
 
