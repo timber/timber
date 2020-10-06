@@ -81,11 +81,14 @@ class PostFactory {
 		 * Read more about this in the documentation for [Post Class Maps](https://timber.github.io/docs/v2/guides/class-maps/#the-post-class-map).
 		 *
 		 * The default Post Class Map will contain class names for posts, pages that map to
-		 * `Timber\Post` and attachments that map to `Timber\Attachment`.
+		 * `Timber\Post` and a callback that will map attachments to `Timber\Attachment` and
+		 * attachments that are images to `Timber\Image`.
+		 *
+		 * Make sure to merge in your additional classes instead of overwriting the whole Class Map.
 		 *
 		 * @since 2.0.0
 		 * @example
-		 * ```*
+		 * ```
 		 * use Book;
 		 * use Page;
 		 *
@@ -99,9 +102,9 @@ class PostFactory {
 		 * } );
 		 * ```
 		 *
-		 * @param string|array $classmap The post class(es) to use. An associative array where the
-		 *                               key is the post type and the value the name of the class to
-		 *                               use for this post type.
+		 * @param array $classmap The post class(es) to use. An associative array where the key is
+		 *                        the post type and the value the name of the class to use for this
+		 *                        post type or a callback that determines the class to use.
 		 */
 		$map = apply_filters( 'timber/post/classmap', [
 			'post'       => Post::class,
