@@ -106,7 +106,7 @@ class PostFactory {
 		 *                        the post type and the value the name of the class to use for this
 		 *                        post type or a callback that determines the class to use.
 		 */
-		$map = apply_filters( 'timber/post/classmap', [
+		$classmap = apply_filters( 'timber/post/classmap', [
 			'post'       => Post::class,
 			'page'       => Post::class,
 			// Apply special logic for attachments.
@@ -115,7 +115,7 @@ class PostFactory {
 			},
 		] );
 
-		$class = $map[$post->post_type] ?? null;
+		$class = $classmap[$post->post_type] ?? null;
 
 		// If class is a callable, call it to get the actual class name
 		if (is_callable($class)) {
