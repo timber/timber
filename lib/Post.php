@@ -46,6 +46,7 @@ use Timber\Factory\UserFactory;
  *     </div>
  * </article>
  * ```
+ * @todo implement JsonSerializable?
  */
 class Post extends Core implements CoreInterface, MetaInterface, DatedInterface, Setupable {
 
@@ -1463,9 +1464,26 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 				$content = $contents[$page];
 			}
 		}
+		$content = $this->content_handle_no_teaser_block( $content );
 		$content = apply_filters('the_content', ($content));
 		if ( $len == -1 && $page == 0 ) {
 			$this->___content = $content;
+		}
+		return $content;
+	}
+
+	/**
+	 * Handles for an circumstance with the Block editor where a "more" block has an option to 
+	 * "Hide the excerpt on the full content page" which hides everything prior to the inserted 
+	 * "more" block
+	 * @ticket #2218
+	 * @param string $content
+	 * @return string
+	 */
+	protected function content_handle_no_teaser_block( $content ) {
+		if ( strpos($content, 'noTeaser:true') !== false ) {
+			$arr = explode('<!--noteaser-->', $content);
+			return $arr[1];
 		}
 		return $content;
 	}

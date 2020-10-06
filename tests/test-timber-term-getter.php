@@ -27,12 +27,73 @@
 			$this->assertEquals('integer', gettype($term->ID));
 		}
 
+		/*
+		 * Tests taxonomy size: 1, arguments: 1.x style 
+		 */
 		function testGetSingleTermInTaxonomy() {
 			register_taxonomy('cars', 'post');
-			$term_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'cars') );
-			$term = Timber::get_term($term_id, 'cars');
-			$this->assertEquals($term_id, $term->ID);
+			$tags_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'post_tag') );
+			$cars_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'cars') );
+			$cats_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'category') );
+			$term = Timber::get_term($cars_id, 'cars');
+			$this->assertEquals($cars_id, $term->ID);
+			$this->assertEquals('cars', $term->taxonomy);
+			$this->assertEquals('Toyota', $term->name);
 		}
+
+		/*
+		 * Tests taxonomy size: 1, arguments: array
+		 */
+		function testGetSingleTermInTaxonomyViaArray() {
+			register_taxonomy('cars', 'post');
+			$tags_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'post_tag') );
+			$cars_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'cars') );
+			$cats_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'category') );
+			$post_id = $this->factory->post->create();
+			wp_set_object_terms($post_id, [$cars_id], 'cars');
+			$terms = Timber::get_terms(['taxonomy' => 'cars']);
+			$term = $terms[0];
+			$this->assertEquals($cars_id, $term->ID);
+			$this->assertEquals('cars', $term->taxonomy);
+			$this->assertEquals('Toyota', $term->name);
+		}
+
+		/*
+		 * Tests taxonomy size: many, arguments: 1.x style
+		 */
+		function testGetTermsInTaxonomy() {
+			register_taxonomy('cars', 'post');
+			$tags_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'post_tag') );
+			$cars[] = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'cars') );
+			$cars[] = $this->factory->term->create( array('name' => 'Honda', 'taxonomy' => 'cars') );
+			$cars[] = $this->factory->term->create( array('name' => 'Tesla', 'taxonomy' => 'cars') );
+			$cats_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'category') );
+
+			wp_set_object_terms(
+				$this->factory->post->create(),
+				$cars,
+				'cars'
+			);
+			$terms = Timber::get_terms('cars');
+			$this->assertEquals(3, count($terms));
+			$this->assertEquals('cars', $terms[0]->taxonomy);
+		}
+
+		/*
+		 * Tests taxonomy size: many, arguments: array
+		 */
+		function testGetTermInsTaxonomyViaArray() {
+			register_taxonomy('cars', 'post');
+			$tags_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'post_tag') );
+			$cars[] = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'cars') );
+			$cars[] = $this->factory->term->create( array('name' => 'Honda', 'taxonomy' => 'cars') );
+			$cars[] = $this->factory->term->create( array('name' => 'Tesla', 'taxonomy' => 'cars') );
+			$cats_id = $this->factory->term->create( array('name' => 'Toyota', 'taxonomy' => 'category') );
+			$terms = Timber::get_terms(['taxonomy' => 'cars', 'hide_empty' => false]);
+			$this->assertEquals(3, count($terms));
+			$this->assertEquals('cars', $terms[0]->taxonomy);
+		}
+
 
 		function testGetArrayOfTerms(){
 			$term_ids = $this->factory->term->create_many(5);
@@ -91,6 +152,7 @@
 				'taxonomy'   => 'category',
 			]);
 			$this->assertEquals('Uncategorized', $terms[0]->name);
+			$this->assertEquals(1, count($terms));
 		}
 
 		function testGetTermsWithCorrections() {
