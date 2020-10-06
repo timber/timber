@@ -11,6 +11,14 @@
 			switch_theme('default');
 		}
 
+		function testThemeParentWithNoParent() {
+			switch_theme('twentyseventeen');
+			$context = Timber::context();
+			$theme = $context['site']->theme;
+			$output = Timber::compile_string('{{ site.theme.parent.slug }}', $context);
+			$this->assertEquals('twentyseventeen', $output );
+		}
+
 		function testThemeMods(){
 			set_theme_mod('foo', 'bar');
 			$theme = new Timber\Theme();

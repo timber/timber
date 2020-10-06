@@ -284,7 +284,7 @@ class ImageHelper {
 	 */
 	public static function _delete_generated_if_image( $post_id ) {
 		if ( wp_attachment_is_image($post_id) ) {
-			$attachment = new Image($post_id);
+			$attachment = Timber::get_post($post_id);
 			if ( $attachment->file_loc ) {
 				ImageHelper::delete_generated_files($attachment->file_loc);
 			}
@@ -398,14 +398,15 @@ class ImageHelper {
 		$file_array = array();
 		$file_array['name'] = PathHelper::basename($matches[0]);
 		$file_array['tmp_name'] = $tmp;
-		// If error storing temporarily, unlink
+		// If error storing temporarily, do not use
 		if ( is_wp_error($tmp) ) {
-			@unlink($file_array['tmp_name']);
 			$file_array['tmp_name'] = '';
 		}
 		// do the validation and storage stuff
 		$locinfo = PathHelper::pathinfo($loc);
 		$file = wp_upload_bits($locinfo['basename'], null, file_get_contents($file_array['tmp_name']));
+		// delete tmp file
+		@unlink($file_array['tmp_name']);
 		return $file['url'];
 	}
 
@@ -598,6 +599,13 @@ class ImageHelper {
 		if ( empty($src) ) {
 			return '';
 		}
+
+		$allow_fs_write = apply_filters('timber/allow_fs_write', true);
+
+		if ( $allow_fs_write === false ) {
+			return $src;
+		}
+		
 		$external = false;
 		// if external image, load it first
 		if ( URLHelper::is_external_content($src) ) {

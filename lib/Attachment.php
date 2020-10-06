@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use Timber\Factory\PostFactory;
+
 /**
  * Class Attachment
  *
@@ -118,26 +120,6 @@ class Attachment extends Post implements CoreInterface {
 	public $caption;
 
 	/**
-	 * Creates a new `Timber\Attachment` object.
-	 *
-	 * @api
-	 * @example
-	 * ```php
-	 * // You can pass it an ID number
-	 * $myImage = new Timber\Attachment(552);
-	 *
-	 * // Or send it a URL to an image
-	 * $myImage = new Timber\Attachment( 'http://google.com/logo.jpg' );
-	 * ```
-	 *
-	 * @param int|mixed $attachment An attachment ID, a `Timber\Post`, a `WP_Post` object, an ACF
-	 *                              image array, a path (absolute or relative) or an URL.
-	 */
-	public function __construct( $attachment ) {
-		$this->init( $attachment );
-	}
-
-	/**
 	 * Gets the src for an attachment.
 	 *
 	 * @api
@@ -156,6 +138,7 @@ class Attachment extends Post implements CoreInterface {
 	 * @param int|mixed $iid An attachment identifier.
 	 */
 	public function init( $iid = null ) {
+		// @todo simplify this whole init process
 		$iid = $this->determine_id( $iid );
 
 		/**
@@ -191,6 +174,8 @@ class Attachment extends Post implements CoreInterface {
 		if ( isset( $this->ID ) ) {
 			$this->id = $this->ID;
 		}
+
+		return $this;
 	}
 
 	/**
@@ -408,7 +393,7 @@ class Attachment extends Post implements CoreInterface {
 	 * @api
 	 * @example
 	 * ```twig
-	 * <a href="{{ Attachment(post.meta('job_pdf')).src }}" download>
+	 * <a href="{{ get_post(post.meta('job_pdf')).src }}" download>
 	 * ```
 	 * ```html
 	 * <a href="http://example.org/wp-content/uploads/2015/08/job-ad-5noe2304i.pdf" download>
@@ -534,17 +519,32 @@ class Attachment extends Post implements CoreInterface {
 			return false;
 		}
 
-		return new $this->PostClass( $this->post_parent );
+		$factory = new PostFactory();
+
+		return $factory->from( $this->post_parent );
 	}
 
 	/**
-	 * Gets a PHP array with pathinfo() info from the file.
+	 * Get a PHP array with pathinfo() info from the file
 	 *
-	 * @api
-	 *
-	 * @return array Path info from the file.
+	 * @deprecated 2.0.0, use Attachment::pathinfo() instead
+	 * @return array
 	 */
 	public function get_pathinfo() {
-		return pathinfo( $this->file );
+		Helper::deprecated(
+			"{{ image.get_pathinfo }}",
+			"{{ image.pathinfo }}",
+			'2.0.0'
+		);
+		return PathHelper::pathinfo($this->file);
+	}
+
+	/**
+	 * Get a PHP array with pathinfo() info from the file
+	 *
+	 * @return array
+	 */
+	public function pathinfo() {
+		return PathHelper::pathinfo($this->file);
 	}
 }

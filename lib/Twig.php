@@ -7,6 +7,9 @@ use Twig\Extension\CoreExtension;
 use Twig\TwigFunction;
 use Twig\TwigFilter;
 
+use Timber\Factory\PostFactory;
+use Timber\Factory\TermFactory;
+
 /**
  * Class Twig
  */
@@ -48,39 +51,77 @@ class Twig {
 		 * Timber object functions.
 		 */
 
-		$twig->addFunction(new TwigFunction('Post', function( $post_id, $PostClass = 'Timber\Post' ) {
-			return self::maybe_convert_array( $post_id, $PostClass );
-		} ) );
+		// Posts
+		$twig->addFunction( new TwigFunction( 'get_post', [ Timber::class, 'get_post' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_posts', [ Timber::class, 'get_posts' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_attachment_by', [ Timber::class, 'get_attachment_by' ] ) );
 
-		$twig->addFunction( new TwigFunction( 'PostQuery', function( $args ) {
-			return new PostQuery( $args );
-		} ) );
+		// Terms
+		$twig->addFunction( new TwigFunction( 'get_term', [ Timber::class, 'get_term' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_terms', [ Timber::class, 'get_terms' ] ) );
 
-		$twig->addFunction(new TwigFunction('Image', function( $post_id, $ImageClass = 'Timber\Image' ) {
-			return self::maybe_convert_array( $post_id, $ImageClass );
-		} ) );
-		$twig->addFunction(new TwigFunction('Term', [Timber::class, 'get_term']));
-		$twig->addFunction(new TwigFunction('User', [Timber::class, 'get_user'] ) );
-		$twig->addFunction( new TwigFunction( 'Attachment', function( $post_id, $AttachmentClass = 'Timber\Attachment' ) {
-			return self::maybe_convert_array( $post_id, $AttachmentClass );
-		} ) );
+		// Users
+		$twig->addFunction( new TwigFunction( 'get_user', [ Timber::class, 'get_user' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_users', [ Timber::class, 'get_users' ] ) );
+
+		// Comments
+		$twig->addFunction( new TwigFunction( 'get_comment', [ Timber::class, 'get_comment' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_comments', [ Timber::class, 'get_comments' ] ) );
 
 		/**
 		 * Deprecated Timber object functions.
 		 */
+
+		$postFactory = new PostFactory();
+
+		$twig->addFunction(new TwigFunction('Post', function( $post_id ) use ($postFactory) {
+			Helper::deprecated( '{{ Post() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0' );
+			return $postFactory->from( $post_id );
+		} ) );
 		$twig->addFunction( new TwigFunction(
 			'TimberPost',
-			function( $post_id, $PostClass = 'Timber\Post' ) {
-				Helper::deprecated( '{{ TimberPost() }}', '{{ Post() }}', '2.0.0' );
-				return self::maybe_convert_array( $post_id, $PostClass );
+			function( $post_id ) use ($postFactory) {
+				Helper::deprecated( '{{ TimberPost() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0' );
+				return $postFactory->from( $post_id );
+			}
+		) );
+
+		$twig->addFunction(new TwigFunction('Image', function( $post_id ) use ($postFactory) {
+			Helper::deprecated( '{{ Image() }}', '{{ get_post() }} or {{ get_attachment_by() }}', '2.0.0' );
+			return $postFactory->from( $post_id );
+		} ) );
+		$twig->addFunction( new TwigFunction(
+			'TimberImage',
+			function( $post_id = false ) use ($postFactory) {
+				Helper::deprecated( '{{ TimberImage() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0' );
+				return $postFactory->from( $post_id );
 			}
 		) );
 
 		$twig->addFunction( new TwigFunction(
-			'TimberImage',
-			function( $post_id = false, $ImageClass = 'Timber\Image' ) {
-				Helper::deprecated( '{{ TimberImage() }}', '{{ Image() }}', '2.0.0' );
-				return self::maybe_convert_array( $post_id, $ImageClass );
+			'Term',
+			function( $term_id ) {
+				Helper::deprecated( '{{ Term() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0' );
+				return Timber::get_term( $term_id );
+			}
+		) );
+		$twig->addFunction( new TwigFunction(
+			'TimberTerm',
+			function( $term_id ) {
+				Helper::deprecated( '{{ TimberTerm() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0' );
+				return Timber::get_term( $term_id );
+			}
+		) );
+
+		$twig->addFunction(new TwigFunction('User', function( $post_id ) {
+			Helper::deprecated( '{{ User() }}', '{{ get_user() }} or {{ get_users() }}', '2.0.0' );
+			return Timber::get_user( $post_id );
+		} ) );
+		$twig->addFunction( new TwigFunction(
+			'TimberUser',
+			function( $user_id ) {
+				Helper::deprecated( '{{ TimberUser() }}', '{{ User() }}', '2.0.0' );
+				return Timber::get_user( $user_id );
 			}
 		) );
 
@@ -98,49 +139,6 @@ class Twig {
 		$twig->addFunction(new TwigFunction('translate_nooped_plural', 'translate_nooped_plural'));
 
 		return $twig;
-	}
-
-	/**
-	 * Converts input to Timber object(s)
-	 *
-	 * @internal
-	 * @since 2.0.0
-	 *
-	 * @param mixed  $post_id A post ID, object or something else that the Timber object class
-	 *                        constructor an read.
-	 * @param string $class   The class to use to convert the input.
-	 *
-	 * @return mixed An object or array of objects.
-	 */
-	public static function maybe_convert_array( $post_id, $class ) {
-		if ( is_array( $post_id ) && ! Helper::is_array_assoc( $post_id ) ) {
-			foreach ( $post_id as &$id ) {
-				$id = new $class( $id );
-			}
-
-			return $post_id;
-		}
-
-		return new $class( $post_id );
-	}
-
-	/**
-	 * Process the arguments for handle_term_object to determine what arguments the user is sending
-	 * @since 1.5.1
-	 * @author @jarednova
-	 * @param string $maybe_taxonomy probably a taxonomy, but it could be a Timber\Term subclass
-	 * @param string $TermClass a string for the Timber\Term subclass
-	 * @return array of processed arguments
-	 */
-	protected static function process_term_args( $maybe_taxonomy, $TermClass ) {
-		// A user could be sending a TermClass in the first arg, let's test for that ...
-		if ( class_exists($maybe_taxonomy) ) {
-			$tc = new $maybe_taxonomy;
-			if ( is_subclass_of($tc, 'Timber\Term') ) {
-				return array('taxonomy' => '', 'TermClass' => $maybe_taxonomy);
-			}
-		}
-		return array('taxonomy' => $maybe_taxonomy, 'TermClass' => $TermClass);
 	}
 
 	/**
@@ -183,8 +181,7 @@ class Twig {
 
 		/**
 		 * @deprecated since 1.13 (to be removed in 2.0). Use Twig's native filter filter instead
-		 * @todo remove this in 2.x so that filter merely passes to Twig's filter without any
-		 *       modification
+		 * @todo remove this in 2.x so that filter merely passes to Twig's filter without any modification
 		 * @ticket #1594 #2120
 		 */
 		$twig->addFilter(new TwigFilter('filter', array('Timber\Helper', 'filter_array')));

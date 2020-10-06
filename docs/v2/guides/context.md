@@ -27,7 +27,7 @@ Timber::render( 'single.twig', $data );
 <p>{{ message }}</p>
 ```
 
-Of course you don’t have to figure out all the variables you need for yourself. Timber will provide you with a set of useful variables when you call `Timber::context()`. 
+Of course you don’t have to figure out all the variables you need for yourself. Timber will provide you with a set of useful variables when you call `Timber::context()`.
 
 **single.php**
 
@@ -47,12 +47,12 @@ The global context is the context that is always set when you load it through `T
 
 Among others, the following variables will be available:
 
-- **site** – The `site` variable is a [`Timber\Site`](/docs/reference/timber-site/) object which will make it easier for you to retrieve infos about your WordPress site. If you’re used to using `blog_info( 'sitename' )` in PHP, you can use `{{ site.name }}` in Twig instead.
-- **request** - The `request` variable is a `Timber\Request` object, which will make it easier for you to access `$_GET` and `$_POST` variables in your context. Please be aware that you should always be very careful about using `$_GET` and `$_POST` variables in your templates directly. Read more about this in the [Escaping Guide](https://timber.github.io/docs/guides/escaping/).
-- **theme** - The `theme` variable is a [`Timber\Theme`](/docs/reference/timber-theme/) object and contains info about your theme.
-- **user** - The `user` variable will be a [`Timber\User`](/docs/reference/timber-user/) object if a user/visitor is currently logged in and otherwise it will be `false`.
+- **site** – The `site` variable is a [`Timber\Site`](https://timber.github.io/docs/v2/reference/timber-site/) object which will make it easier for you to retrieve infos about your WordPress site. If you’re used to using `blog_info( 'sitename' )` in PHP, you can use `{{ site.name }}` in Twig instead.
+- **request** - The `request` variable is a `Timber\Request` object, which will make it easier for you to access `$_GET` and `$_POST` variables in your context. Please be aware that you should always be very careful about using `$_GET` and `$_POST` variables in your templates directly. Read more about this in the [Escaping Guide](https://timber.github.io/docs/v2/guides/escaping/).
+- **theme** - The `theme` variable is a [`Timber\Theme`](https://timber.github.io/docs/v2/reference/timber-theme/) object and contains info about your theme.
+- **user** - The `user` variable will be a [`Timber\User`](https://timber.github.io/docs/v2/reference/timber-user/) object if a user/visitor is currently logged in and otherwise it will be `false`.
 
-For a full list of variables, go have a look at the reference for [`Timber::context()`](/docs/reference/timber-timber/#context).
+For a full list of variables, go have a look at the reference for [`Timber::context()`](https://timber.github.io/docs/v2/reference/timber-timber/#context).
 
 ### Hook into the global context
 
@@ -75,7 +75,7 @@ For menus to work, you will first need to [register them](https://codex.wordpres
 
 ### Context cache
 
-The global context will be cached. That’s why you need to define your `timber/context` filter before using `Timber::context()` for the first time. Otherwise, the cache will be set before you could add your own data. 
+The global context will be cached. That’s why you need to define your `timber/context` filter before using `Timber::context()` for the first time. Otherwise, the cache will be set before you could add your own data.
 
 Having a cached global context can be useful if you need the context in other places. For example if you compile the template for a shortcode:
 
@@ -117,7 +117,7 @@ By calling `Timber::get_post()` without any arguments, Timber will use the `$pos
 
 #### Using a custom post class
 
-If you want to use [your own post class](/docs/guides/extending-timber/), you can use the [Post Class Map](/docs/guides/posts/#the-post-class-map) to register that class for your post type. `Timber::context()` will then automatically set the `post` variable using your class.
+If you want to use [your own post class](https://timber.github.io/docs/v2/guides/extending-timber/), you can use the [Post Class Map](https://timber.github.io/docs/v2/guides/posts/#the-post-class-map) to register that class for your post type. `Timber::context()` will then automatically set the `post` variable using your class.
 
 If you want to overwrite the existing `post` variable in the context, you can do that.
 
@@ -185,4 +185,4 @@ Timber will accept the parameters that can be found in WordPress’s [WP_Query c
 
 #### Use a custom post class
 
-By default, `Timber::get_posts()` will contain `Timber\Post` objects. If you want to control what class will be used for the posts, you can use the [Post Class Map](/docs/guides/posts#the-post-class-map).
+By default, `Timber::get_posts()` will contain `Timber\Post` objects. If you want to control what class will be used for the posts, you can use the [Post Class Map](https://timber.github.io/docs/v2/guides/posts#the-post-class-map).

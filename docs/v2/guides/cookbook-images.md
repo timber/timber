@@ -5,7 +5,7 @@ order: "1000"
 
 Timber makes it damn easy to use an image in a tag.
 
-Automatically, Timber will interpret images attached to a post’s thumbnail field ("Featured Image" in the admin) and treat them as instances of [Timber\Image](https://timber.github.io/docs/reference/timber-image/). Then, in your Twig templates, you can access them via `{{ post.thumbnail }}`.
+Automatically, Timber will interpret images attached to a post’s thumbnail field ("Featured Image" in the admin) and treat them as instances of [Timber\Image](https://timber.github.io/docs/v2/reference/timber-image/). Then, in your Twig templates, you can access them via `{{ post.thumbnail }}`.
 
 ## Basic image stuff
 
@@ -41,7 +41,7 @@ The first parameter is `width`, the second is `height` (optional). So if you don
 
 All of these filters are written specifically to interact with WordPress’s image API. So don’t worry, no weird TimThumb stuff going on—this is all using WordPress’s internal image sizing stuff.
 
-Be aware of the limitations of this function [when working with a CDN](https://timber.github.io/docs/guides/cookbook-images/#limitations-when-working-with-a-cdn).
+Be aware of the limitations of this function [when working with a CDN](https://timber.github.io/docs/v2/guides/cookbook-images/#limitations-when-working-with-a-cdn).
 
 ## Letterboxing images
 
@@ -102,7 +102,9 @@ When setting up your custom fields you’ll want to save the `image_id` to the f
 ### The quick way (for most situations)
 
 ```twig
-<img src="{{ Image(post.hero_image).src }}" />
+{% set image = get_image(post.hero_image) %}
+
+<img src="{{ image.src }}" alt="{{ image.alt }}" />
 ```
 
 ### The long way (for some special situations)
