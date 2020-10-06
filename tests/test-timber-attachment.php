@@ -125,6 +125,7 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 		// Add support for "uploading" WEBP images.
 		$this->add_filter_temporarily('upload_mimes', function($types) {
 			return array_merge($types, [
+				'tiff|tif' => 'image/tiff',
 				'webp' => 'image/webp',
 			]);
 		});
