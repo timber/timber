@@ -2,10 +2,17 @@
 
 namespace Timber;
 
+use WP_Query;
+use WP_Post;
+
 use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
+use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
+use Timber\Helper;
+use Timber\PostCollectionInterface;
+use Timber\URLHelper;
 
 /**
  * Class Timber
@@ -15,13 +22,14 @@ use Timber\Factory\UserFactory;
  * @api
  * @example
  * ```php
- * $posts = new Timber\PostQuery();
- * $posts = new Timber\PostQuery( 'post_type = article' );
- * $posts = new Timber\PostQuery( array(
+ * // Get default posts on an archive page
+ * $posts = Timber::get_posts();
+ *
+ * // Query for some posts
+ * $posts = Timber::get_posts( [
  *     'post_type' => 'article',
  *     'category_name' => 'sports',
- * ) );
- * $posts = new Timber\PostQuery( array( 23, 24, 35, 67 ), 'InkwellArticle' );
+ * ] );
  *
  * $context = Timber::context();
  * $context['posts'] = $posts;
@@ -113,6 +121,45 @@ class Timber {
 			Admin::init();
 			new Integrations();
 
+			// @todo find a more permanent home for this stuff, maybe in a QueryHelper class?
+			add_filter('pre_get_posts', function(WP_Query $query) {
+				$cat = $query->query['category'] ?? null;
+				if ( $cat && !isset($query->query['cat']) ) {
+					unset($query->query['category']);
+					$query->set('cat', $cat);
+				}
+			});
+
+			add_filter('pre_get_posts', function(WP_Query $query) {
+				$count = $query->query['numberposts'] ?? null;
+				if ( $count && !isset($query->query['posts_per_page']) ) {
+					$query->set('posts_per_page', $count);
+				}
+			});
+
+			add_filter('timber/post/import_data', function($data) {
+				if ( isset($_GET['preview']) && isset($_GET['preview_id']) ) {
+					$preview = wp_get_post_autosave($_GET['preview_id']);
+					if ( is_object($preview) ) {
+
+						$preview = sanitize_post($preview);
+
+						$data->post_content = $preview->post_content;
+						$data->post_title = $preview->post_title;
+						$data->post_excerpt = $preview->post_excerpt;
+
+						// @todo I think we can safely delete this?
+						// It was included in the old PostCollection method but not defined anywhere,
+						// so I think it was always just falling into a magic __call() and doing nothing.
+						// $post->import_custom($preview_id);
+
+						add_filter('get_the_terms', '_wp_preview_terms_filter', 10, 3);
+					}
+				}
+
+				return $data;
+			});
+
 			/**
 			 * Make an alias for the Timber class.
 			 *
@@ -129,37 +176,147 @@ class Timber {
 	================================ */
 
 	/**
-	 * Get a post by post ID or query (as a query string or an array of arguments).
+	 * Get a Timber Post from a post ID, WP_Post object, a WP_Query object, or an associative
+	 * array of arguments for WP_Query::__construct().
+	 *
+	 * By default, Timber will use the `Timber\Post` class to create a new post object. To control
+	 * which class is instantiated for your Post object, use [Class Maps](https://timber.github.io/docs/v2/guides/class-maps/)
 	 *
 	 * @api
-	 * @deprecated since 2.0.0 Use `new Timber\Post()` instead.
+	 * @example
+	 * ```php
+	 * // Using a post ID.
+	 * $post = Timber::get_post( 75 );
 	 *
-	 * @param mixed        $query     Optional. Post ID or query (as query string or an array of
-	 *                                arguments for WP_Query). If a query is provided, only the
-	 *                                first post of the result will be returned. Default false.
-	 * @param string|array $PostClass Optional. Class to use to wrap the returned post object.
-	 *                                Default 'Timber\Post'.
+	 * // Using a WP_Post object.
+	 * $wp_post = get_post( 123 );
+	 * $post    = Timber::get_post( $wp_post );
+	 *
+	 * // Using a WP_Query argument array
+	 * $post = Timber::get_post( [
+	 *   'post_type' => 'page',
+	 * ] );
+	 *
+	 * // Use currently queried post. Same as using get_the_ID() as a parameter.
+	 * $post = Timber::get_post();
+	 *
+	 * // From an associative array with an `ID` key. For ACF compatibility. Using this
+	 * // approach directly is not recommended. If you can, configure the return type of your
+	 * // ACF field to just the ID.
+	 * $post = Timber::get_post( get_field('associated_post_array') ); // Just OK.
+	 * $post = Timber::get_post( get_field('associated_post_id') ); // Better!
+	 * ```
+	 * @see https://developer.wordpress.org/reference/classes/wp_query/__construct/
+	 *
+	 * @param mixed $query   Optional. Post ID or query (as an array of arguments for WP_Query).
+	 * 	                     If a query is provided, only the first post of the result will be
+	 *                       returned. Default false.
+	 * @param array $options Optional associative array of options. Defaults to an empty array.
 	 *
 	 * @return \Timber\Post|bool Timber\Post object if a post was found, false if no post was
 	 *                           found.
 	 */
-	public static function get_post( $query = false, $PostClass = 'Timber\Post' ) {
-		return PostGetter::get_post($query, $PostClass);
+	public static function get_post( $query = false, $options = [] ) {
+		if ( is_string( $query ) && ! is_numeric( $query ) ) {
+			Helper::doing_it_wrong(
+				'Timber::get_post()',
+				'Getting a post by post slug or post name was removed from Timber::get_post() in Timber 2.0. Use Timber::get_post_by() instead.',
+				'2.0.0'
+			);
+		}
+
+		if ( is_string( $options ) ) {
+			Helper::doing_it_wrong(
+				'Timber::get_post()',
+				'The $PostClass parameter for passing in the post class to use in Timber::get_posts() was replaced with an $options array in Timber 2.0. To customize which class to instantiate for your post, use Class Maps instead: https://timber.github.io/docs/v2/guides/class-maps/',
+				'2.0.0'
+			);
+
+			$options = [];
+		}
+
+		$factory = new PostFactory();
+
+		global $wp_query;
+
+		$options = wp_parse_args($options, [
+			'merge_default' => false
+		]);
+
+		// Has WP already queried and found a post?
+		if ($query === false && ($wp_query->queried_object instanceof WP_Post)) {
+			$query = $wp_query->queried_object;
+		} elseif (is_array($query) && $options['merge_default']) {
+			$query = wp_parse_args($wp_query->query_vars);
+		}
+
+		// Default to the global query.
+		$result = $factory->from($query ?: $wp_query);
+
+		// If we got a Collection, return the first Post.
+		if ($result instanceof PostCollectionInterface) {
+			return $result[0] ?? false;
+		}
+
+		return $result;
 	}
 
 	/**
 	 * Get posts.
 	 *
 	 * @api
-	 * @deprecated since 2.0.0 Use `new Timber\PostQuery()` instead.
 	 *
-	 * @param mixed        $query
-	 * @param string|array $PostClass
+	 * @todo improve this docblock
+	 * @param mixed $query
+	 * @param array $options
 	 *
 	 * @return array|bool|null
 	 */
-	public static function get_posts( $query = false, $PostClass = 'Timber\Post', $return_collection = false ) {
-		return PostGetter::get_posts($query, $PostClass, $return_collection);
+	public static function get_posts( $query = false, $options = [] ) {
+		if ( is_string( $query ) ) {
+			Helper::doing_it_wrong(
+				'Timber::get_posts()',
+				"Querying posts by using a query string was removed in Timber 2.0. Pass in the query string as an options array instead. For example, change Timber::get_posts( 'post_type=portfolio&posts_per_page=3') to Timber::get_posts( [ 'post_type' => 'portfolio', 'posts_per_page' => 3 ] ). Learn more: https://timber.github.io/docs/v2/reference/timber-timber/#get_posts",
+				'2.0.0'
+			);
+
+			$query = new WP_Query( $query );
+		}
+
+		if ( is_string( $options ) ) {
+			Helper::doing_it_wrong(
+				'Timber::get_posts()',
+				'The $PostClass parameter for passing in the post class to use in Timber::get_posts() was replaced with an $options array in Timber 2.0. To customize which class to instantiate for your post, use Class Maps instead: https://timber.github.io/docs/v2/guides/class-maps/',
+				'2.0.0'
+			);
+			$options = [];
+		}
+
+		if ( 3 === func_num_args() ) {
+			Helper::doing_it_wrong(
+				'Timber::get_posts()',
+				'The $return_collection parameter to control whether a post collection is returned in Timber::get_posts() was removed in Timber 2.0.',
+				'2.0.0'
+			);
+		}
+
+		/**
+		 * @todo Are there any more default options to support?
+		 */
+		$options = wp_parse_args( $options, [
+			'merge_default' => false,
+		] );
+
+		global $wp_query;
+
+		if ( is_array($query) && $options['merge_default'] ) {
+			$query = wp_parse_args( $query, $wp_query->query_vars );
+		}
+
+		$factory = new PostFactory();
+
+		// Default to the global query.
+		return $factory->from($query ?: $wp_query);
 	}
 
 	/**
@@ -168,10 +325,11 @@ class Timber {
 	 * @api
 	 * @since 2.0.0
 	 * @example
-	 * ```
-	 * $post = Timber::get_post_by( 'slug', 'about-us' );
-	 * ```
 	 * ```php
+	 * // By slug
+	 * $post = Timber::get_post_by( 'slug', 'about-us' );
+	 *
+	 * // By title
 	 * $post = Timber::get_post_by( 'title', 'About us' );
 	 * ```
 	 *
@@ -183,9 +341,9 @@ class Timber {
 	 * @param array        $args {
 	 *     Optional. An array of arguments to configure what is returned.
 	 *
-	 * 	   @type string|array     $post_type   Optional. What WordPress post type to limit the 
+	 * 	   @type string|array     $post_type   Optional. What WordPress post type to limit the
 	 *                                         results to. Defaults to 'any'
-	 *     @type string           $order_by    Optional. The field to sort by. Defaults to 
+	 *     @type string           $order_by    Optional. The field to sort by. Defaults to
 	 *                                         'post_date'
 	 *     @type string           $order       Optional. The sort to apply. Defaults to ASC
 	 *
@@ -242,7 +400,7 @@ class Timber {
 			// Always return the oldest post first.
 			$sql .= ' ORDER BY post_date ASC';
 
-	        $post_id = $wpdb->get_var( $wpdb->prepare( $sql, $query_args ) );
+			$post_id = $wpdb->get_var( $wpdb->prepare( $sql, $query_args ) );
 		}
 
 		if ( ! $post_id ) {
@@ -256,30 +414,108 @@ class Timber {
 	 * Query post.
 	 *
 	 * @api
-	 * @deprecated since 2.0.0 Use `new Timber\Post()` instead.
+	 * @deprecated since 2.0.0 Use `Timber::get_post()` instead.
 	 *
-	 * @param mixed  $query
-	 * @param string $PostClass
+	 * @param mixed $query
+	 * @param array $options
 	 *
 	 * @return Post|array|bool|null
 	 */
-	public static function query_post( $query = false, $PostClass = 'Timber\Post' ) {
-		return PostGetter::query_post($query, $PostClass);
+	public static function query_post( $query = false, array $options = [] ) {
+		Helper::deprecated('Timber::query_post()', 'Timber::get_post()', '2.0.0');
+
+		return self::get_post($query, $options);
 	}
 
 	/**
 	 * Query posts.
 	 *
 	 * @api
-	 * @deprecated since 2.0.0 Use `new Timber\PostQuery()` instead.
+	 * @deprecated since 2.0.0 Use `Timber::get_posts()` instead.
 	 *
-	 * @param mixed  $query
-	 * @param string $PostClass
+	 * @param mixed $query
+	 * @param array $options
 	 *
 	 * @return PostCollection
 	 */
-	public static function query_posts( $query = false, $PostClass = 'Timber\Post' ) {
-		return PostGetter::query_posts($query, $PostClass);
+	public static function query_posts( $query = false, array $options = [] ) {
+		Helper::deprecated('Timber::query_posts()', 'Timber::get_posts()', '2.0.0');
+
+		return self::get_posts($query, $options);
+	}
+
+	/**
+	 * Gets an attachment by its URL or absolute file path.
+	 *
+	 * Honors the `timber/post/image_extensions` filter, returning a Timber\Image if the found
+	 * attachment is identified as an image. Also honors Class Maps.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @example
+	 * ```php
+	 * // Get attachment by URL.
+	 * $attachment = Timber::get_attachment_by( 'url', 'https://example.com/uploads/2020/09/cat.gif' );
+	 *
+	 * // Get attachment by filepath.
+	 * $attachment = Timber::get_attachment_by( 'path', '/path/to/wp-content/uploads/2020/09/cat.gif' );
+	 *
+	 * // Try to handle either case.
+	 * $mystery_string = some_function();
+	 * $attachment     = Timber::get_attachment_by( $mystery_string );
+	 * ```
+	 *
+	 * @param string $field_or_ident Can be "url", "path", an attachment URL, or the absolute
+	 *                               path of an attachment file. If "url" or "path" is given, a
+	 *                               second arg is required.
+	 * @param string $ident          Optional. An attachment URL or absolute path. Default empty
+	 *                               string.
+	 *
+	 * @return \Timber\Attachment|false
+	 */
+	public static function get_attachment_by( string $field_or_ident, string $ident = '' ) {
+		if ($field_or_ident === 'url') {
+			if (empty($ident)) {
+				Helper::doing_it_wrong(
+					'Timber::get_attachment_by()',
+					'Passing "url" as the first arg requires passing a URL as the second arg.',
+					'2.0.0'
+				);
+
+				return false;
+			}
+
+			$id = attachment_url_to_postid($ident);
+
+			return $id ? (new PostFactory())->from($id) : false;
+		}
+
+		if ($field_or_ident === 'path') {
+			if (empty($ident)) {
+				Helper::doing_it_wrong(
+					'Timber::get_attachment_by()',
+					'Passing "path" as the first arg requires passing an absolute path as the second arg.',
+					'2.0.0'
+				);
+
+				return false;
+			}
+
+			if (!file_exists($ident)) {
+				// Deal with a relative path.
+				$ident = URLHelper::get_full_path($ident);
+			}
+
+			return self::get_attachment_by('url', URLHelper::file_system_to_url($ident));
+		}
+
+		if (empty($ident)) {
+			$field = URLHelper::starts_with($field_or_ident, ABSPATH) ? 'path' : 'url';
+
+			return self::get_attachment_by($field, $field_or_ident);
+		}
+
+		return false;
 	}
 
 	/* Term Retrieval
@@ -632,10 +868,9 @@ class Timber {
 		$context = self::context_global();
 
 		if ( is_singular() ) {
-			$post = ( new Post() )->setup();
-			$context['post'] = $post;
+			$context['post'] = Timber::get_post()->setup();
 		} elseif ( is_archive() || is_home() ) {
-			$context['posts'] = new PostQuery();
+			$context['posts'] = Timber::get_posts();
 		}
 
  		return $context;

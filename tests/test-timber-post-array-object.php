@@ -30,30 +30,12 @@ class TestTimberPostArrayObject extends Timber_UnitTestCase {
 
   function testCount() {
     $this->factory->post->create_many( 20 );
-    $query = new Timber\PostQuery([
-      'query' => [
-        'post_type'      => 'post',
-        'posts_per_page' => -1,
-      ],
-    ]);
 
-    $coll = new PostArrayObject($query->to_array());
+    $coll = new PostArrayObject(get_posts('post_type=post&posts_per_page=-1'));
 
     $this->assertCount(20, $coll);
-  }
-
-  function testPagination() {
-    $this->factory->post->create_many( 20 );
-    $query = new Timber\PostQuery([
-      'query' => [
-        'post_type'      => 'post',
-      ],
-    ]);
-
-    $coll = new PostArrayObject($query->to_array());
-
     $this->assertNull($coll->pagination());
-	}
+  }
 
 	function testLazyInstantiation() {
 		// For performance reasons, we don't want to instantiate every Timber\Post instance

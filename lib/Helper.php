@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use Timber\Factory\PostFactory;
+
 /**
  * Class Helper
  *
@@ -237,8 +239,9 @@ class Helper {
 	}
 
 	/**
+	 * Output a value (string, array, object, etc.) to the error log
 	 *
-	 *
+	 * @api
 	 * @param mixed $arg that you want to error_log
 	 * @return void
 	 */
@@ -387,7 +390,7 @@ class Helper {
 		/**
 		 * Filters whether to trigger an error for deprecated functions.
 		 *
-		 * @since 2.5.0
+		 * @since WordPress 2.5.0
 		 *
 		 * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
 		 */
@@ -639,7 +642,12 @@ class Helper {
 			return self::wp_list_filter( $list, $arrow, $operator );
 		}
 
-		return array_filter( $list, $arrow, \ARRAY_FILTER_USE_BOTH );
+		if ( is_array( $list ) ) {
+			return array_filter( $list, $arrow, \ARRAY_FILTER_USE_BOTH );
+		}
+
+		// the IteratorIterator wrapping is needed as some internal PHP classes are \Traversable but do not implement \Iterator
+		return new \CallbackFilterIterator( new \IteratorIterator( $list ), $arrow );
 	}
 
 	/**
@@ -679,8 +687,9 @@ class Helper {
 	 */
 	public static function convert_wp_object( $obj ) {
 		if ( $obj instanceof \WP_Post ) {
-			$class = PostGetter::get_post_class($obj->post_type);
-			return new $class($obj->ID);
+			static $postFactory;
+			$postFactory = $postFactory ?: new PostFactory();
+			return $postFactory->from($obj->ID);
 		} elseif ( $obj instanceof \WP_Term ) {
 			return Timber::get_term($obj->term_id);
 		} elseif ( $obj instanceof \WP_User ) {

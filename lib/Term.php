@@ -2,6 +2,7 @@
 
 namespace Timber;
 
+use WP_Query;
 use WP_Term;
 
 /**
@@ -555,11 +556,27 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 *
 	 * @api
 	 * @example
+	 * Query the default posts_per_page for this Term:
+	 *
 	 * ```twig
 	 * <h4>Recent posts in {{ term.name }}</h4>
 	 *
 	 * <ul>
 	 * {% for post in term.posts() %}
+	 *     <li>
+	 *         <a href="{{ post.link }}">{{ post.title }}</a>
+	 *     </li>
+	 * {% endfor %}
+	 * </ul>
+	 * ```
+	 *
+	 * Query exactly 3 Posts from this Term:
+	 *
+	 * ```twig
+	 * <h4>Recent posts in {{ term.name }}</h4>
+	 *
+	 * <ul>
+	 * {% for post in term.posts(3) %}
 	 *     <li>
 	 *         <a href="{{ post.link }}">{{ post.title }}</a>
 	 *     </li>
@@ -586,29 +603,65 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * </ul>
 	 * ```
 	 *
-	 * @param string|array $query_args  Any array of query parameters for getting the posts.
-	 *                                  See [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/) for supported arguments. Default empty array.
-	 *                                  Defaults to querying all posts assigned to the term.
-	 * @param array        $options     Optional. An array of options that will be forwarded to
-	 *                                  [`Timber::get_posts()`](https://timber.github.io/docs/v2/reference/timber-timber/#get_posts). Default empty array.
-	 * @return \Timber\PostCollection A collection of posts.
+	 * @param int|array $numberposts_or_args Optional. Either the number of posts or an array of
+	 *                                       arguments for the post query to be performed.
+	 *                                       Default is an empty array, the equivalent of:
+	 *                                       ```php
+	 *                                       [
+	 *                                         'posts_per_page' => get_option('posts_per_page'),
+	 *                                         'post_type'      => 'any',
+	 *                                         'tax_query'      => [ ...tax query for this Term... ]
+	 *                                       ]
+	 *                                       ```
+	 * @param string $post_type_or_class     Deprecated. Before Timber 2.x this was a post_type to be
+	 *                                       used for querying posts OR the Timber\Post subclass to
+	 *                                       instantiate for each post returned. As of Timber 2.0.0,
+	 *                                       specify `post_type` in the `$query` array argument. To
+	 *                                       specify the class, use Class Maps.
+	 * @see https://timber.github.io/docs/v2/guides/posts/
+	 * @see https://timber.github.io/docs/v2/guides/class-maps/
+	 * @return \Timber\PostQuery
 	 */
-	public function posts( $query_args = [], $options = [] ) {
-		if ( is_integer( $query_args ) ) {
+	public function posts( $query = [], $post_type_or_class = null ) {
+		if ( is_string($query) ) {
 			Helper::doing_it_wrong(
-				'Timber\Term::posts()',
-				'Using a number of posts as the first argument in {{ term.posts() }} is no longer supported. Use a query with the posts_per_page parameter as a first argument instead.',
+				'Passing a query string to Term::posts()',
+				'Pass a query array instead: e.g. `"posts_per_page=3"` should be replaced with `["posts_per_page" => 3]`',
 				'2.0.0'
 			);
-		} elseif ( is_string( $query_args ) && strstr( $query_args, '=' ) ) {
+
+			return false;
+		}
+
+		if ( is_int($query) ) {
+			$query = [
+				'posts_per_page' => $query,
+				'post_type'      => 'any',
+			];
+		}
+
+		if ( isset($post_type_or_class) ) {
+			Helper::deprecated(
+				'Passing post_type_or_class',
+				'Pass post_type as part of the $query argument. For specifying class, use Class Maps: https://timber.github.io/docs/v2/guides/class-maps/',
+				'2.0.0'
+			);
+
+			// Honor the non-deprecated posts_per_page param over the deprecated second arg.
+			$query['post_type'] = $query['post_type'] ?? $post_type_or_class;
+		}
+
+		if ( func_num_args() > 2 ) {
 			Helper::doing_it_wrong(
-				'Timber\Term::posts()',
-				'Using a query string as the first argument in {{ terms.posts() }} is no longer supported. Use a query array as a first argument instead.',
+				'Passing a post class',
+				'Use Class Maps instead: https://timber.github.io/docs/v2/guides/class-maps/',
 				'2.0.0'
 			);
 		}
 
-		$default_tax_query = [
+		$tax_query = [
+			// Force a tax_query constraint on this term.
+			'relation'   => 'AND',
 			[
 				'field'    => 'id',
 				'terms'    => $this->ID,
@@ -616,12 +669,10 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			],
 		];
 
-		$query_args = wp_parse_args( $query_args, [
-			'tax_query' => $default_tax_query,
-			'post_type' => 'any'
-		] );
+		// Merge a clause for this Term into any user-specified tax_query clauses.
+		$query['tax_query'] = array_merge($query['tax_query'] ?? [], $tax_query);
 
-		return Timber::get_posts( $query_args, $options );
+		return Timber::get_posts( $query );
 	}
 
 
@@ -644,18 +695,11 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @deprecated 2.0.0 use `{{ term.posts }}` instead
 	 *
 	 * @param int $numberposts
-	 * @param string $post_type
-	 * @param string $PostClass
-	 * @return \Timber\PostCollection
+	 * @return array|bool|null
 	 */
 	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
-		Helper::doing_it_wrong(
-			'Timber\Term::get_posts()',
-			'Using {{ term.get_posts }} is no longer supported. Use {{ term.posts }} instead.',
-			'2.0.0'
-		);
-
-		return $this->posts();
+		Helper::deprecated('{{ term.get_posts }}', '{{ term.posts }}', '2.0.0');
+		return $this->posts($numberposts);
 	}
 
 	/**

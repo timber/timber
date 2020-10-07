@@ -2,7 +2,6 @@
 
 /**
  * @group comments-api
- * @group called-post-constructor
  */
 class TestTimberComment extends Timber_UnitTestCase {
 
@@ -130,7 +129,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 
 	function testCommentDepth() {
 		$post_id = $this->_makeCommentPost();
-		$post = new \Timber\Post($post_id);
+		$post = Timber::get_post($post_id);
 		$comments = $post->comments();
 		$children = $comments[1]->children();
 		$grand_children = $children[0]->children();
@@ -151,7 +150,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 
 	function testCommentOrder() {
 		$post_id = $this->_makeCommentPost();
-		$post = new \Timber\Post($post_id);
+		$post = Timber::get_post($post_id);
 		$str = '{% for comment in post.comments %}{{comment.author.name}}, {% endfor %}';
 		$compiled = Timber::compile_string($str, array('post' => $post));
 		$this->assertEquals('Kramer, Elaine Benes, J. Peterman, ', $compiled);
@@ -162,7 +161,7 @@ class TestTimberComment extends Timber_UnitTestCase {
 
 	function testCommentOrderBy() {
 		$post_id = $this->_makeCommentPost();
-		$post = new \Timber\Post($post_id);
+		$post = Timber::get_post($post_id);
 		$str = '{% for comment in post.comments %}{{comment.author.name}}, {% endfor %}';
 		$compiled = Timber::compile_string($str, array('post' => $post));
 		$this->assertEquals('Kramer, Elaine Benes, J. Peterman, ', $compiled);

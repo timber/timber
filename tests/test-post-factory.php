@@ -137,6 +137,15 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(MyCustom::class, $posts[2]);
 	}
 
+	public function testFromAcfArray() {
+		$id = $this->factory->post->create(['post_type' => 'page', 'post_title' => 'Title One']);
+
+		$postFactory = new PostFactory();
+		$post = $postFactory->from(['ID' => $id]);
+
+		$this->assertEquals($id, $post->id);
+	}
+
 	public function testFromArray() {
 		$this->factory->post->create(['post_type' => 'page', 'post_title' => 'Title One']);
 		$this->factory->post->create(['post_type' => 'page', 'post_title' => 'Title Two']);

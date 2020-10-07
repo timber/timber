@@ -539,13 +539,13 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 *
 	 * @param null|array $args Parameters for
 	 *                         [`get_avatar_url()`](https://developer.wordpress.org/reference/functions/get_avatar_url/).
-	 * @return string|\Timber\Image The avatar URL.
+	 * @return string The avatar URL.
 	 */
 	public function avatar( $args = null ) {
 		if ( $this->avatar_override ) {
 			return $this->avatar_override;
 		}
 
-		return new Image( get_avatar_url( $this->id, $args ) );
+		return get_avatar_url( $this->id, $args );
 	}
 }

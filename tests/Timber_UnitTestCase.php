@@ -215,6 +215,12 @@
 			};
 		}
 
+		protected function register_post_classmap_temporarily(array $classmap) {
+			$this->add_filter_temporarily('timber/post/classmap', function(array $current) use ($classmap) {
+				return array_merge($current, $classmap);
+			});
+		}
+
 		/**
 		 * Add the given nav_menu_item post IDs to the given menu.
 		 * @param int $menu_id the term_id of the menu to add to.
