@@ -360,6 +360,11 @@ console.log(post);
 }
 ```
 
+Now you might think: Why do I have to add all the data manually. Could we not just add all the data from all the methods of a post? Well, technically we could. But all that data would end up in your HTML output, which might not be a good idea:
+
+- There could be sensible data that you don’t want to have publicly available in your HTML.
+- All the data you add to the HTML will make your page size bigger. For performance reasons, it makes sense to only load the data you need.
+
 ## Performance
 
 ### Consider using the `pre_get_posts` action
