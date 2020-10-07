@@ -462,6 +462,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	
 	/**
 	 * @ticket #2302
+	 * @expectedDeprecated Passing query arguments directly to PostQuery
 	 */
 	function testPaginationEndLimits() {
 		$pids = $this->factory->post->create_many( 150 );

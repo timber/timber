@@ -260,11 +260,11 @@ class Twig {
 	 * @since 2.0.0
 	 *
 	 * @throws \Twig_Error_Runtime
-	 * @param \Twig_Environment $twig Twig Environment
+	 * @param \Twig\Environment $twig Twig Environment.
 	 *
-	 * @return \Twig_Environment
+	 * @return \Twig\Environment
 	 */
-	public function set_defaults( \Twig_Environment $twig ) {
+	public function set_defaults( Environment $twig ) {
 		$twig->getExtension( CoreExtension::class )->setDateFormat( get_option( 'date_format' ), '%d days' );
 		$twig->getExtension( CoreExtension::class )->setTimezone( wp_timezone_string() );
 

@@ -83,7 +83,6 @@
 			$matches = false;
 			foreach ($files as $file) {
 				$substr = substr($file, 0, strlen($filename));
-				echo $substr."\n";
 				if ( $substr == $filename ) {
 					$matches = true;
 				}
