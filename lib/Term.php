@@ -592,9 +592,10 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 *
 	 * <ul>
 	 * {% for branch in region.posts({
+	 *     post_type: 'branch',
 	 *     posts_per_page: -1,
 	 *     orderby: 'menu_order'
-	 * }, 'branch', 'Branch') %}
+	 * }) %}
 	 *     <li>
 	 *         <a href="{{ branch.link }}">{{ branch.title }}</a>
 	 *     </li>

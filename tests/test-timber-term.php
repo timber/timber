@@ -100,7 +100,6 @@ class TermTestPage extends Post {}
 		}
 
 
-
 		/*
 		 * Term::posts() tests
 		 */
