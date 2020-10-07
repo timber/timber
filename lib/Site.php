@@ -291,7 +291,7 @@ class Site extends Core implements CoreInterface {
 		}
 		$iid = get_option('site_icon');
 		if ( $iid ) {
-			return new Image($iid);
+			return Timber::get_post($iid);
 		}
 	}
 
@@ -300,7 +300,7 @@ class Site extends Core implements CoreInterface {
 		$blog_id = self::switch_to_blog($site_id);
 		$iid = get_blog_option($blog_id, 'site_icon');
 		if ( $iid ) {
-			$image = new Image($iid);
+			$image = Timber::get_post($iid);
 		}
 		restore_current_blog();
 		return $image;

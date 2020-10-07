@@ -1,6 +1,7 @@
 <?php
 
 use Timber\Post;
+use Timber\PostArrayObject;
 use Timber\PostQuery;
 
 require_once 'php/CollectionTestPage.php';
@@ -24,9 +25,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 
 	function testBasicCollection() {
 		$pids = $this->factory->post->create_many(10);
-		$pc = new Timber\PostQuery( array(
-			'query' => 'post_type=post&numberposts=6',
-		) );
+		$pc = new PostQuery( new WP_Query('post_type=post&posts_per_page=6') );
 		$this->assertEquals(6, count($pc));
 	}
 
@@ -34,9 +33,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		$cat = $this->factory->term->create(array('name' => 'Things', 'taxonomy' => 'category'));
 		$pids = $this->factory->post->create_many(4, array('category' => $cat));
 		$posts = get_posts( array('post_category' => array($cat), 'posts_per_page' => 3) );
-		$pc = new Timber\PostQuery( array(
-			'query' => $posts
-		) );
+		$pc = new PostArrayObject( $posts );
 		$pagination = $pc->pagination();
 		$this->assertNull($pagination);
 	}
@@ -45,12 +42,12 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );
 		$pids = $this->factory->post->create_many( 55, array( 'post_type' => 'portfolio' ) );
-		// @todo what is this testing? Still passes with this line commented out...
-		// $this->go_to( home_url( '/portfolio/page/3' ) );
+
+		// Set up the global query
 		query_posts('post_type=portfolio&paged=3');
-		$posts = new Timber\PostQuery();
-		$pagination = $posts->pagination();
-		$this->assertEquals(6, count($pagination->pages));
+
+		$pagination = Timber::get_posts()->pagination();
+		$this->assertCount(6, $pagination->pages);
 	}
 
 	function testBasicCollectionWithPagination() {
@@ -58,9 +55,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		$page = $this->factory->post->create(array('post_title' => 'Test', 'post_type' => 'page'));
 		$this->go_to('/');
 		query_posts(array('post_type=post'));
-		$pc = new Timber\PostQuery( array(
-			'query' => 'post_type=post',
-		) );
+		$pc = new PostQuery( new WP_Query('post_type=post') );
 		$str = Timber::compile('assets/collection-pagination.twig', array('posts' => $pc));
 		$str = preg_replace('/\s+/', ' ', $str);
 		$this->assertEquals('<h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <h1>POST</h1> <div class="l--pagination"> <div class="pagination-inner"> <div class="pagination-previous"> <span class="pagination-previous-link pagination-disabled">Previous</span> </div> <div class="pagination-pages"> <ul class="pagination-pages-list"> <li class="pagination-list-item pagination-page">1</li> <li class="pagination-list-item pagination-seperator">of</li> <li class="pagination-list-item pagination-page">13</li> </ul> </div> <div class="pagination-next"> <a href="http://example.org/?paged=2" class="pagination-next-link ">Next</a> </div> </div> </div>', trim($str));
@@ -72,79 +67,29 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 	function testGetPostsDeprecated() {
 		$this->factory->post->create_many( 3 );
 
-		$query = new Timber\PostQuery( [
-			'query' => new WP_Query('post_type=post')
-		 ] );
-
-		$this->assertCount( 3, $query->get_posts() );
+		$this->assertCount( 3, Timber::get_posts(['post_type' => 'post'])->get_posts() );
 	}
 
-	/**
-	 * @expectedDeprecated Passing query arguments directly to PostQuery
-	 */
-	function testFoundPostsDeprecated() {
+	function testFoundPosts() {
 		$this->factory->post->create_many( 20 );
 
-		$query = new Timber\PostQuery( [
-			'post_type' => 'post',
-		] );
+		$query = new PostQuery( new WP_Query('post_type=post') );
 
 		$this->assertCount( 10, $query );
 		$this->assertEquals( 20, $query->found_posts );
 	}
 
-	/**
-	 * @expectedDeprecated Passing query arguments directly to PostQuery
-	 */
 	function testFoundPostsInQueryWithNoFoundRows() {
 		$this->factory->post->create_many( 20 );
 
-		$query = new Timber\PostQuery( [
+		$query = new PostQuery( new WP_Query( [
 			'post_type'     => 'post',
 			'no_found_rows' => true,
-		] );
+		] ) );
 
 		$this->assertCount( 10, $query );
 		$this->assertEquals( 0, $query->found_posts );
 	}
-
-	/**
-	 * @expectedDeprecated Passing query arguments directly to PostQuery
-	 */
-	function testFoundPostsInCollection() {
-		$this->factory->post->create_many( 20 );
-
-		$posts = ( new Timber\PostQuery( [
-			'post_type' => 'post',
-		] ) )->to_array();
-
-		$collection = new Timber\PostQuery( $posts );
-
-		$this->assertCount( 10, $collection );
-		$this->assertEquals( null, $collection->found_posts );
-	}
-
-	/**
-	 * @expectedDeprecated Passing query arguments directly to PostQuery
-	 */
-	function testFoundPostsInCollectionWithNoFoundRows() {
-		$this->factory->post->create_many( 20 );
-
-		$posts = ( new Timber\PostQuery( [
-			'post_type'     => 'post',
-			'no_found_rows' => true,
-		] ) )->to_array();
-
-		$collection = new Timber\PostQuery( $posts );
-
-		$this->assertCount( 10, $collection );
-		$this->assertEquals( null, $collection->found_posts );
-	}
-
-
-	/*
-	 * PostCollectionInterface tests
-	 */
 
 	function testTheLoop(){
 		foreach (range(1, 3) as $i) {
@@ -159,9 +104,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		$results = Timber::compile_string(
 			'{% for p in posts %}{{fn("get_the_title")}}{% endfor %}',
 			[
-				'posts' => new PostQuery([
-					'query' => $wp_query,
-				]),
+				'posts' => new PostQuery($wp_query),
 			]
 		);
 
@@ -178,9 +121,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		// internals over time.
 		$compiled = Timber::compile_string(
 			"{% for p in posts %}\n{{loop|json_encode}}\n{% endfor %}\n", array(
-			'posts' => new PostQuery([
-				'query' => $wp_query,
-			]),
+			'posts' => new PostQuery($wp_query),
 		) );
 
 		// Get each iteration as an object (each should have its own line).
@@ -210,18 +151,14 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 
 		// We should be able to call count(...) directly on our collection, by virtue
 		// of it implementing the Countable interface.
-		$this->assertCount(8, new PostQuery([
-			'query' => new WP_Query('post_type=post'),
-		]));
+		$this->assertCount(8, new PostQuery(new WP_Query('post_type=post')));
 	}
 
-	function testFoundPosts() {
+	function testFoundPostsWithPostsPerPage() {
 		$this->factory->post->create_many( 10 );
 
 		// @todo once the Posts API uses Factories, simplify this to Timber::get_posts([...])
-		$query = new PostQuery([
-			'query' => new WP_Query('post_type=post&posts_per_page=3'),
-		]);
+		$query = new PostQuery(new WP_Query('post_type=post&posts_per_page=3'));
 
 		$this->assertCount(3, $query);
 		$this->assertEquals(10, $query->found_posts);
@@ -243,9 +180,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 		]);
 
 		// @todo once the Posts API uses Factories, simplify this to Timber::get_posts([...])
-		$query = new PostQuery([
-			'query' => new WP_Query('post_type=post'),
-		]);
+		$query = new PostQuery(new WP_Query('post_type=post'));
 
 		$this->assertEquals('Post 0', $query[0]->title());
 		$this->assertEquals('Post 1', $query[1]->title());
@@ -267,19 +202,15 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 			'post_type'  => 'post',
 		]);
 
-		$this->add_filter_temporarily('timber/post/classmap', function() {
-			return [
-				'post'   => CollectionTestPost::class,
-				'page'   => CollectionTestPage::class,
-				'custom' => CollectionTestCustom::class,
-			];
-		});
-
-		$query = new PostQuery([
-			'query' => new WP_Query([
-				'post_type' => ['post', 'page', 'custom']
-			]),
+		$this->register_post_classmap_temporarily([
+			'post'   => CollectionTestPost::class,
+			'page'   => CollectionTestPage::class,
+			'custom' => CollectionTestCustom::class,
 		]);
+
+		$query = new PostQuery(new WP_Query([
+			'post_type' => ['post', 'page', 'custom']
+		]));
 
 		$expected = [
 			CollectionTestCustom::class,
@@ -323,11 +254,9 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 			'post_type'  => 'page',
 		]);
 
-		$query = new PostQuery([
-			'query' => new WP_Query([
-				'post_type' => ['post', 'page'],
-			]),
-		]);
+		$query = new PostQuery(new WP_Query([
+			'post_type' => ['post', 'page'],
+		]));
 
 		// No posts should have been instantiated yet.
 		$this->assertEquals([
@@ -378,11 +307,9 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 			'post_type'  => 'page',
 		]);
 
-		$query = new PostQuery([
-			'query' => new WP_Query([
-				'post_type' => ['post', 'page'],
-			]),
-		]);
+		$query = new PostQuery(new WP_Query([
+			'post_type' => ['post', 'page'],
+		]));
 
 		// Eagerly instantiate all Posts.
 		$query->realize();
@@ -425,11 +352,9 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 			];
 		});
 
-		$query = new PostQuery([
-			'query' => new WP_Query([
-				'post_type' => ['post', 'page', 'custom']
-			]),
-		]);
+		$query = new PostQuery( new WP_Query([
+			'post_type' => ['post', 'page', 'custom']
+		]));
 
 		$arr = $query->to_array();
 
@@ -453,9 +378,7 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 			];
 		});
 
-		$query = new PostQuery([
-			'query' => new WP_Query('post_type=funke'),
-		]);
+		$query = new PostQuery(new WP_Query('post_type=funke'));
 
 		$this->assertEquals([
 			[

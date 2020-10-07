@@ -2,8 +2,6 @@
 
 	/**
 	 * @group users-api
-	 * @group called-post-constructor
-	 * @todo #2094 replace direct Timber\User instantiations
 	 */
 	class TestTimberUser extends Timber_UnitTestCase {
 
@@ -34,7 +32,7 @@
 			    , 'post_content' => 'is fine, I guess'
 			    , 'post_status' => 'publish'
 			    ]);
-			$post = new Timber\Post($post_id);
+			$post = Timber::get_post($post_id);
 			$template = '{{ post.title }} by {{ post.author }}';
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('Baseball by', trim($str));
@@ -93,5 +91,6 @@
 			$uid = $this->factory->user->create(array('display_name' => 'Maciej Palmowski', 'user_login' => 'palmiak', 'user_email' => 'm.palmowski@spiders.agency'));
 			$user = Timber::get_user($uid);
 			$this->assertEquals('http://2.gravatar.com/avatar/b2965625410b81a2b25ef02b54493ce0?s=96&d=mm&r=g', $user->avatar());
+			$this->assertEquals('http://2.gravatar.com/avatar/b2965625410b81a2b25ef02b54493ce0?s=120&d=mm&r=g', $user->avatar(['size' => 120]));
 		}
 	}
