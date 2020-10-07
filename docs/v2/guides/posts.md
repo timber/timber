@@ -135,7 +135,7 @@ In archive templates like **archive.php** or **category.php**, Timber will alrea
 
 When you query for certain post types, Timber will use the [Post Class Map](https://timber.github.io/docs/v2/guides/class-maps/#the-post-class-map) to check which class it should use to instantiate your posts.
 
-### Post Collections
+## Post Collections
 
 The analogous `Timber` methods for getting Users, Terms, and Comments (`Timber::get_users()`, `Timber::get_terms()`, and `Timber::get_comments()`) all return arrays. But to make pagination work and making Timber compatible with The Loop, we treat Posts with special care.
 
@@ -171,13 +171,13 @@ $filtered = wp_list_filter( $posts->to_array(), [
 ] );
 ```
 
-#### Types of Post Collections
+### Types of Post Collections
 
 Like every other [PHP interface](https://www.php.net/manual/en/language.oop5.interfaces.php), `PostCollectionInterface` cannot be instantiated directly, i.e. `new PostCollectionInterface()` will not work. You can only create instances of concrete *classes* that *implement* the interface.
 
 Timber offers two implementations of `PostCollectionInterface`: the `Timber\PostQuery` and `Timber\PostArrayObject` classes. Both extend PHP’s `ArrayObject` class, which means you can loop over and index them directly (see examples above).
 
-#### The common case: PostQuery
+### The common case: PostQuery
 
 `Timber\PostQuery` is what you will likely deal with most of the time. It is what is returned when:
 
@@ -190,7 +190,7 @@ Timber offers two implementations of `PostCollectionInterface`: the `Timber\Post
 
 The `Timber\PostQuery` class contains some optimization for tight integration with The Loop, including support for advanced [pagination](/docs/v2/guides/pagination). To get a `Pagination` object you can use for rendering a pagination navigation component, call `$post_query->pagination()`.
 
-#### The fallback case: PostArrayObject
+### The fallback case: PostArrayObject
 
 Sometimes you may not have direct access to a `WP_Query` instance; you may only have an array of `WP_Post` objects, e.g. when calling a helper function defined in a plugin:
 
@@ -229,7 +229,7 @@ array_map( 'get_class', $timber_posts );
 
 In short, `Timber\Post` instances are always created *polymorphically*, whether they are inside some kind of Post Collection or not.
 
-#### Debugging Post Collections
+### Debugging Post Collections
 
 At query time and directly afterward, Post Collections do not necessarily contain instances of `Timber\Post`. Instead, `Post` objects are created *lazily*, meaning only when explicitly requested, such as by iterating over a Post Collection or accessing an index:
 
@@ -267,7 +267,7 @@ var_dump( $posts->realize() );
 
 See [Laziness and Caching](#laziness-and-caching) for details about how this interacts with caching.
 
-### Differences from WP core’s `get_posts()`
+## Differences from WP core’s `get_posts()`
 
 It might seem like `Timber::get_posts()` is the same as [`get_posts()`](https://developer.wordpress.org/reference/functions/get_posts/) in WordPress. But it isn’t. It’s more similar to using [`WP_Query`](https://developer.wordpress.org/reference/classes/wp_query/). WP core’s `get_posts()` function applies different default parameters and performs the same database query as it would when calling `Timber::get_posts()` like this:
 
