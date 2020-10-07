@@ -283,6 +283,83 @@ If you’re used to using `get_posts()` instead of `WP_Query`, you will have to 
 
 Of course, the other main difference is that instead of returning plain `WP_Post` objects, `Timber::get_posts()` returns instances of `Timber\Post`.
 
+## Serialization
+
+When you want to work with post data in JavaScript, you will want to convert it to JSON first.
+
+Under normal circumstances, this would be a problem. Timber posts are instantiated lazily. This means that most methods will only calculate and return a value the first time you call them. Take the `Timber\Post::link()` method for example. You use it to get the permalink for a post.
+
+```php
+$permalink = $post->link();
+```
+
+Now let’s say you need to access that link in JavaScript, so you would convert your post data to JSON:
+
+```php
+$post = Timber::get_post( 84 );
+$json = wp_json_encode( $post );
+```
+
+Because `link` is a method of your post object, you wouldn’t have access to it in JavaScript, because when you JSON-encode a post, you will only get its properties.
+
+```js
+console.log(post.link); // undefined
+```
+
+Luckily, support for serialization is baked into Timber queries when you implements PHP’s [JsonSerializable](https://www.php.net/manual/en/class.jsonserializable.php) interface.
+
+Say you create a `Book` class that [extends](/docs/v2/guides/extending-timber/) `Timber\Post`. You define a `jsonSerialize()` method for that class. This method returns an array with all the data you want to use in JavaScript.
+
+```php
+<?php
+
+use Timber\Post;
+
+/**
+ * Class Book
+ *
+ * Implements custom JSON serialization.
+ */
+class Book extends Post implements JsonSerializable {
+    /**
+     * Defines data that is used when post is converted to JSON.
+     *
+     * @return array
+     */
+	public function jsonSerialize() {
+		return [
+            'title'     => $this->title(),
+            'link'      => $this->link(),
+            'thumbnail' => $this->thumbnail()->src( 'thumbnail' ),
+			'price'     => $this->meta( 'price' ),
+		];
+	}
+}
+```
+
+After you defined with [Class Maps](/docs/v2/guides/class-maps/#the-post-class-map) that all `book` posts should be instantiated with your `Book` class, you can directly convert your posts query to JSON:
+
+```php
+$posts = Timber::get_posts( [
+    'post_type' => 'book',
+] );
+
+$posts_json = wp_json_encode( $posts_json );
+```
+
+Now, when you access your posts in JavaScript, you will have all the data you defined in your `Book::jsonSerialize()` method as object properties of your post.
+
+```js
+console.log(post);
+
+{
+    title: 'The magic serialization of posts',
+    link: 'https://example.org/book/the-magic-serialization-of-posts',
+    thumbnail: 'https://example.org/wp-content/uploads/the-magic-serializaton-of-posts-150x150.jpg',
+    price: 100
+}
+```
+
 ## Performance
 
 ### Consider using the `pre_get_posts` action
