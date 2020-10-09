@@ -2,7 +2,7 @@
 
 	class Timber_UnitTestCase extends WP_UnitTestCase {
 		/**
-		 * Maintain a list of hook removals to perform at the end of each test.
+		 * Maintain a list of action/filter hook removals to perform at the end of each test.
 		 */
 		private $temporary_hook_removals = [];
 
@@ -212,6 +212,17 @@
 			add_filter($filter, $callback, $pri, $count);
 			$this->temporary_hook_removals[] = function() use ($filter, $callback, $pri, $count) {
 				remove_filter($filter, $callback, $pri, $count);
+			};
+		}
+
+		/**
+		 * Exactly the same as add_action, but automatically calls remove_action with the same
+		 * arguments during tearDown().
+		 */
+		protected function add_action_temporarily(string $action, callable $callback, int $pri = 10, int $count = 1) {
+			add_action($action, $callback, $pri, $count);
+			$this->temporary_hook_removals[] = function() use ($action, $callback, $pri, $count) {
+				remove_action($action, $callback, $pri, $count);
 			};
 		}
 

@@ -35,7 +35,7 @@ class Twig {
 	 */
 	public function add_timber_functions( $twig ) {
 		$twig->addFunction( new TwigFunction( 'action', function( $action_name, ...$args ) {
-	        do_action_ref_array( $action_name, $args );
+			do_action_ref_array( $action_name, $args );
 		} ) );
 
 		$twig->addFunction(new TwigFunction('function', array(&$this, 'exec_function')));

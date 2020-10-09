@@ -94,18 +94,14 @@
 				$php_unit->assertContains( 'my_action_foo', $action_tally );
 			};
 
-			add_action( 'my_action_foo', $my_action_foo );
-			add_action( 'my_action_args', $my_action_args );
-			add_action( 'timber/compile/done', $timber_compile_done );
+			$this->add_action_temporarily( 'my_action_foo', $my_action_foo );
+			$this->add_action_temporarily( 'my_action_args', $my_action_args );
+			$this->add_action_temporarily( 'timber/compile/done', $timber_compile_done );
 
 			$str = Timber::compile('assets/test-do-action.twig');
 			$str = trim($str);
 
 			$this->assertEquals('Stuff', $str);
-
-			remove_action( 'my_action_foo', $my_action_foo );
-			remove_action( 'my_action_args', $my_action_args );
-			remove_action( 'timber/compile/done', $timber_compile_done );
 		}
 
 		function testWordPressPasswordFilters(){
