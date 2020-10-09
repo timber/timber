@@ -287,7 +287,7 @@ Of course, the other main difference is that instead of returning plain `WP_Post
 
 When you want to work with post data in JavaScript, you will want to convert it to JSON first.
 
-Under normal circumstances, this would be a problem. Timber posts are instantiated lazily. This means that most methods will only calculate and return a value the first time you call them. Take the `Timber\Post::link()` method for example. You use it to get the permalink for a post.
+Under normal circumstances, this wouldn't be a problem. However, Timber posts are instantiated lazily. This means that most methods will only calculate and return a value the first time you call them. Take the `Timber\Post::link()` method for example. You use it to get the permalink for a post.
 
 ```php
 $permalink = $post->link();
@@ -331,13 +331,13 @@ class Book extends Post implements JsonSerializable {
             'title'     => $this->title(),
             'link'      => $this->link(),
             'thumbnail' => $this->thumbnail()->src( 'thumbnail' ),
-			'price'     => $this->meta( 'price' ),
+            'price'     => $this->meta( 'price' ),
 		];
 	}
 }
 ```
 
-After you defined with [Class Maps](/docs/v2/guides/class-maps/#the-post-class-map) that all `book` posts should be instantiated with your `Book` class, you can directly convert your posts query to JSON:
+Once you define with [Class Maps](/docs/v2/guides/class-maps/#the-post-class-map) that all `book` post types should be instantiated with your `Book` class, you can directly convert your posts query to JSON:
 
 ```php
 $posts = Timber::get_posts( [
@@ -360,9 +360,9 @@ console.log(post);
 }
 ```
 
-Now you might think: Why do I have to add all the data manually. Could we not just add all the data from all the methods of a post? Well, technically we could. But all that data would end up in your HTML output, which might not be a good idea:
+Now you might think: Why do I have to add all the data manually? Could we not just add all the data from all the methods of a post? Well, technically we could. But all that data would end up in your HTML output, which might not be a good idea:
 
-- There could be sensible data that you don’t want to have publicly available in your HTML.
+- There could be sensitive data that you don’t want to have publicly available in your HTML.
 - All the data you add to the HTML will make your page size bigger. For performance reasons, it makes sense to only load the data you need.
 
 ## Performance
