@@ -306,7 +306,7 @@ Because `link` is a method of your post object, you wouldn’t have access to it
 console.log(post.link); // undefined
 ```
 
-Luckily, support for serialization is baked into Timber queries when you implements PHP’s [JsonSerializable](https://www.php.net/manual/en/class.jsonserializable.php) interface.
+Luckily, support for serialization is baked into Timber queries when you implement PHP’s [JsonSerializable](https://www.php.net/manual/en/class.jsonserializable.php) interface.
 
 Say you create a `Book` class that [extends](/docs/v2/guides/extending-timber/) `Timber\Post`. You define a `jsonSerialize()` method for that class. This method returns an array with all the data you want to use in JavaScript.
 
