@@ -8,6 +8,7 @@ function deploy () {
 	git clone git@github.com:Upstatement/timber-starter-theme.git
 	rm -rf ~/Sites/timber/timber-starter-theme/.git
 	rm composer.lock
+	composer config platform.php 5.6.4
 	composer install --no-dev --optimize-autoloader
 	rm -rf ~/Sites/timber/vendor/upstatement/routes/.git
 	cd ~/Sites/timber-wp
@@ -42,6 +43,8 @@ function deploy () {
 	cp ~/Sites/timber/bin/timber.php ~/Sites/timber-wp/trunk/timber.php
 	svn commit -m "updating to $1" readme.txt
 	svn commit -m "updating to $1" timber.php
+	cd ~/Sites/timber
+	git checkout composer.json
 }
 
 #!/usr/bin/env bash
