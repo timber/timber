@@ -1,3 +1,5 @@
+# TravisCI configuration for timber/timber
+
 os: linux
 
 dist: xenial
@@ -29,7 +31,8 @@ env:
 
 jobs:
   include:
-    - php: 5.6
+    - name: "Coverage: WP 4.9 on PHP 5.6"
+      php: 5.6
       env: WP_VERSION=4.9.8 WP_MULTISITE=0 PREFER_LOWEST="--prefer-lowest --prefer-stable"
       before_install: skip
       install:
@@ -41,7 +44,8 @@ jobs:
         - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --coverage-clover build/logs/clover.xml
       after_success:
         - vendor/bin/coveralls -v
-    - php: 7.4
+    - name: "Coverage: ImageMagick extension on PHP 7.4"
+      php: 7.4
       env: WP_VERSION=latest WP_MULTISITE=0
       before_install:
         - phpenv config-rm xdebug.ini
@@ -61,7 +65,8 @@ jobs:
         - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --coverage-clover build/logs/clover.xml
       after_success:
         - vendor/bin/coveralls -v
-    - php: 7.4
+    - name: "Coverage: WP multisite on PHP 7.4"
+      php: 7.4
       env: WP_VERSION=latest WP_MULTISITE=1
       before_install:
         - phpenv config-rm xdebug.ini
@@ -77,7 +82,8 @@ jobs:
         - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --coverage-clover build/logs/clover.xml
       after_success:
         - vendor/bin/coveralls -v
-    - php: 7.2
+    - name: "WebP support on PHP 7.2"
+      php: 7.2
       env: WP_VERSION=latest WP_MULTISITE=0
       before_install:
         # Install PHP with WebP support
