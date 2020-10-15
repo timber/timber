@@ -8,9 +8,9 @@ use Timber\Image\Operation as ImageOperation;
  */
 class TestTimberImage extends TimberAttachment_UnitTestCase {
 
-/* ----------------
- * Helper functions
- ---------------- */
+	/* ----------------
+	 * Helper functions
+	 * ---------------- */
 
 	public function get_post_with_image() {
 		$pid = $this->factory->post->create();
@@ -20,6 +20,11 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$post = Timber::get_post($pid);
 		return $post;
 	}
+
+
+	/* ----------------
+	 * Tests
+	 * ---------------- */
 
 	function testTimberImageSrc() {
 		$iid = self::get_attachment();
