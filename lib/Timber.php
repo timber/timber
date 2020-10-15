@@ -262,6 +262,34 @@ class Timber {
 	}
 
 	/**
+	 * Alias of Timber::get_post(). As such, will honor Class Maps and will NOT
+	 * necessarily always return an Attachment object. Intended for cases where you
+	 * already know you have an attachment ID (or WP_Post of type `attachment`,
+	 * etc.), to clarify your own code.
+	 *
+	 * @api
+	 * @see Timber::get_post()
+	 * @see https://timber.github.io/docs/v2/guides/class-maps/
+	 */
+	public static function get_attachment( $query = false, $options = [] ) {
+		return static::get_post( $query, $options );
+	}
+
+	/**
+	 * Alias of Timber::get_post(). As such, will honor Class Maps and will NOT
+	 * necessarily always return an Image object. Intended for cases where you
+	 * already know you have an attachment ID (or WP_Post of type `attachment`,
+	 * etc.), to clarify your own code.
+	 *
+	 * @api
+	 * @see Timber::get_post()
+	 * @see https://timber.github.io/docs/v2/guides/class-maps/
+	 */
+	public static function get_image( $query = false, $options = [] ) {
+		return static::get_post( $query, $options );
+	}
+
+	/**
 	 * Get posts.
 	 *
 	 * @api
