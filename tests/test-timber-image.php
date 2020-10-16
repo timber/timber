@@ -39,9 +39,11 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$attachment = Timber::get_image(self::get_attachment($pid, 'dummy-pdf.pdf'));
 		$post       = Timber::get_image($pid);
 
+		// Image is good, but Timber should recognize that neither Attachment
+		// or Post are actually Image subclasses.
 		$this->assertInstanceOf(Image::class, $image);
-		$this->assertInstanceOf(Attachment::class, $attachment);
-		$this->assertInstanceOf(Post::class, $post);
+		$this->assertFalse($attachment);
+		$this->assertFalse($post);
 	}
 
 	/**
@@ -54,9 +56,11 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$attachment = Timber::get_attachment(self::get_attachment($pid, 'dummy-pdf.pdf'));
 		$post       = Timber::get_image($pid);
 
+		// Image and Attachment are *both* Attachment classes, so they're OK.
+		// A Post is not an Attachment so it should not be treated as such.
 		$this->assertInstanceOf(Image::class, $image);
 		$this->assertInstanceOf(Attachment::class, $attachment);
-		$this->assertInstanceOf(Post::class, $post);
+		$this->assertFalse($post);
 	}
 
 	/**
