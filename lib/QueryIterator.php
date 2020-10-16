@@ -16,8 +16,10 @@ class QueryIterator implements \Iterator, \Countable {
 	 * @var \WP_Query
 	 */
 	private $_query = null;
+	// @todo remove
 	private $_posts_class = 'Timber\Post';
 
+	// @todo simplify to always take a WP_Query instance
 	public function __construct( $query = false, $posts_class = 'Timber\Post' ) {
 		add_action('pre_get_posts', array($this, 'fix_number_posts_wp_quirk'));
 		add_action('pre_get_posts', array($this, 'fix_cat_wp_quirk'));
@@ -84,6 +86,7 @@ class QueryIterator implements \Iterator, \Countable {
 	}
 
 	public function get_posts( $return_collection = false ) {
+		// @todo simplify to $this->_query->posts ...or we may not even need this method?
 		if ( isset($this->_query->posts) ) {
 			$posts = new PostCollection($this->_query->posts, $this->_posts_class);
 			return ($return_collection) ? $posts : $posts->get_posts();
@@ -131,6 +134,7 @@ class QueryIterator implements \Iterator, \Countable {
 
 		$this->_query->the_post();
 
+		// @todo use PostFactory to apply the Class Map
 		// Sets up the global post, but also return the post, for use in Twig template
 		$posts_class = $this->_posts_class;
 		return new $posts_class($post);
@@ -150,6 +154,7 @@ class QueryIterator implements \Iterator, \Countable {
 	}
 
 	//get_posts users numberposts
+	// @todo port this to PostFactory or PostQuery?
 	public static function fix_number_posts_wp_quirk( $query ) {
 		if ( isset($query->query) && isset($query->query['numberposts'])
 				&& !isset($query->query['posts_per_page']) ) {
@@ -159,6 +164,7 @@ class QueryIterator implements \Iterator, \Countable {
 	}
 
 	//get_posts uses category, WP_Query uses cat. Why? who knows...
+	// @todo port this to PostFactory or PostQuery?
 	public static function fix_cat_wp_quirk( $query ) {
 		if ( isset($query->query) && isset($query->query['category'])
 				&& !isset($query->query['cat']) ) {
@@ -174,6 +180,7 @@ class QueryIterator implements \Iterator, \Countable {
 	 * @return \WP_Query
 	 */
 	public static function handle_maybe_custom_posts_page( $query ) {
+		// @todo this logic should probably just move up to Timber::get_posts()
 		if ( $custom_posts_page = get_option('page_for_posts') ) {
 			if ( isset($query->query['p']) && $query->query['p'] == $custom_posts_page ) {
 				return new \WP_Query(array('post_type' => 'post'));
