@@ -52,8 +52,8 @@ class Twig {
 
 		// Posts
 		$twig->addFunction( new TwigFunction( 'get_post', [ Timber::class, 'get_post' ] ) );
-		$twig->addFunction( new TwigFunction( 'get_image', [ Timber::class, 'get_post' ] ) );
-		$twig->addFunction( new TwigFunction( 'get_attachment', [ Timber::class, 'get_post' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_image', [ Timber::class, 'get_image' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_attachment', [ Timber::class, 'get_attachment' ] ) );
 		$twig->addFunction( new TwigFunction( 'get_posts', [ Timber::class, 'get_posts' ] ) );
 		$twig->addFunction( new TwigFunction( 'get_attachment_by', [ Timber::class, 'get_attachment_by' ] ) );
 
