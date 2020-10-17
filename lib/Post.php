@@ -1232,6 +1232,19 @@ class Post extends Core implements CoreInterface {
 		return $content;
 	}
 
+	static function has_noteaser_true( $content ) {
+		if ( (strpos($content, 'noTeaser:true')   !== false || 
+			 strpos($content, 'noTeaser: true')   !== false || 
+			 strpos($content, '"noTeaser":true') !== false ||
+			 strpos($content, '"noTeaser": true') !== false ||
+			 strpos($content, "'noTeaser':true") !== false ||
+			 strpos($content, "'noTeaser': true") !== false) && strpos($content, '<!--noteaser-->') !== false) {
+			return true;
+			
+		}
+		return false;
+	}
+
 	/**
 	 * Handles for an circumstance with the Block editor where a "more" block has an option to
 	 * "Hide the excerpt on the full content page" which hides everything prior to the inserted
@@ -1241,12 +1254,7 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	protected function content_handle_no_teaser_block( $content ) {
-		if ( strpos($content, 'noTeaser:true')   !== false || 
-			 strpos($content, 'noTeaser: true')   !== false || 
-			 strpos($content, '"noTeaser":true') !== false ||
-			 strpos($content, '"noTeaser": true') !== false ||
-			 strpos($content, "'noTeaser':true") !== false ||
-			 strpos($content, "'noTeaser': true") !== false ) {
+		if ( self::has_noteaser_true( $content ) ) {
 			$arr = explode('<!--noteaser-->', $content);
 			return $arr[1];
 		}
