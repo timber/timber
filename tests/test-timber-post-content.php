@@ -65,9 +65,9 @@
 <!-- wp:more {noTeaser:true} --><!--more--><!--noteaser-->';
 		$content_2 = '<!-- /wp:more --><!-- wp:paragraph --><p>WHEN noTeaser is true, ONLY this shows on the single page</p><!-- /wp:paragraph --><!-- wp:paragraph --><p>And this too!</p><!-- /wp:paragraph -->';
 		$this->assertTrue( Timber\Post::has_noteaser_true($content_1.$content_2));
+		
 		$post_id = $this->factory->post->create(['post_content' => $content_1.$content_2 ]);
 		$post = new \Timber\Post($post_id);
-		
 		$this->assertEquals($content_2, $post->content());
 	}
 
@@ -86,7 +86,6 @@
 
 		$post_id = $this->factory->post->create(['post_content' => $content_1.$content_2 ]);
 		$post = new \Timber\Post($post_id);
-		
 		$this->assertEquals($content_2, $post->content());
 	}
 
@@ -102,9 +101,9 @@
 <!-- wp:more {"noTeaser":true} --><!--more--><!--noteaser-->';
 		$content_2 = '<!-- /wp:more --><!-- wp:paragraph --><p>WHEN noTeaser is true, ONLY this shows on the single page</p><!-- /wp:paragraph --><!-- wp:paragraph --><p>And this too!</p><!-- /wp:paragraph -->';
 		$this->assertTrue( Timber\Post::has_noteaser_true($content_1.$content_2));
+		
 		$post_id = $this->factory->post->create(['post_content' => $content_1.$content_2 ]);
 		$post = new \Timber\Post($post_id);
-		
 		$this->assertEquals($content_2, $post->content());
 	}
 
