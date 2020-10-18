@@ -1231,7 +1231,7 @@ class Post extends Core implements CoreInterface {
 		}
 		return $content;
 	}
-	
+
 	/**
 	 * Handles for an circumstance with the Block editor where a "more" block has an option to
 	 * "Hide the excerpt on the full content page" which hides everything prior to the inserted
@@ -1241,13 +1241,9 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	protected function content_handle_no_teaser_block( $content ) {
-		error_log("content_handle_no_teaser_block: \n".$content);
 		if ( strpos($content, '<!--noteaser-->') !== false ) {
-			error_log("IFFF is true\n");
 			$arr = explode('<!--noteaser-->', $content);
 			return $arr[1];
-		} else {
-			error_log("IFFF is false\n");
 		}
 		return $content;
 	}
