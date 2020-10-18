@@ -9,9 +9,10 @@ use Timber\Integrations\ACF;
 
 /**
  * Class TestTimberMeta
- * 
+ *
  * @group comments-api
  * @group users-api
+ * @group terms-api
  * @group called-post-constructor
  */
 class TestTimberMetaDeprecated extends Timber_UnitTestCase {
@@ -130,7 +131,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_filter( 'timber_term_get_meta', $filter, 10, 3 );
 
 		$term_id = $this->factory->term->create();
-		$term    = new Term( $term_id );
+		$term    = Timber::get_term( $term_id );
 
 		update_term_meta( $term_id, 'name', 'A girl has no name.' );
 
@@ -154,7 +155,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_filter( 'timber/term/meta/field', $filter, 10, 4 );
 
 		$term_id = $this->factory->term->create();
-		$term    = new Term( $term_id );
+		$term    = Timber::get_term( $term_id );
 
 		update_term_meta( $term_id, 'name', 'A girl has no name.' );
 
@@ -178,7 +179,7 @@ class TestTimberMetaDeprecated extends Timber_UnitTestCase {
 		add_filter( 'timber_term_get_meta_field', $filter, 10, 4 );
 
 		$term_id = $this->factory->term->create();
-		$term    = new Term( $term_id );
+		$term    = Timber::get_term( $term_id );
 
 		update_term_meta( $term_id, 'name', 'A girl has no name.' );
 

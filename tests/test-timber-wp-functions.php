@@ -90,8 +90,7 @@ class TestTimberWPFunctions extends Timber_UnitTestCase {
 		}
 
 		function testInTwigStringHeadAndFooter(){
-			// TODO restore this test
-			return $this->markTestSkipped();
+			return $this->markTestSkipped('@todo Twig\Error\RuntimeError: An exception has been thrown during the rendering of a template ("readfile(/srv/www/wordpress-trunk/public_html/src/wp-includes/js/wp-emoji-loader.js): failed to open stream: No such file or directory")');
 			global $wp_scripts;
 			$wp_scripts = null;
 			//send colorpicker to the header

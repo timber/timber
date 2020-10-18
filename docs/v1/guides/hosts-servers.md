@@ -1,12 +1,8 @@
 ---
 title: "Hosts & Servers"
-menu:
-  main:
-    parent: "guides"
 ---
 
 This guide serves as reference for any host or server-specific information we gather. If you have experience hosting WordPress with a particular host, stack, or service (AWS, Azure, etc.) please add that information here so it can be shared.
-
 
 ## WordPress VIP
 

@@ -102,14 +102,14 @@ class User extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * Construct a User object. For internal use only: Do not call directly.
 	 * Call `Timber::get_user()` instead.
-	 * 
+	 *
 	 * @internal
 	 */
 	protected function __construct() {
 	}
 
 	/**
-	 * Build a new User object. 
+	 * Build a new User object.
 	 */
 	public static function build( WP_User $wp_user ) : self {
 		$user = new static();
@@ -137,42 +137,21 @@ class User extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @internal
-	 * @param object|int|bool $uid The user ID to use
 	 */
-	protected function init( $uid = false ) {
-		// TODO overhaul/lift some of this logic to an outer layer?
-		// Since constructor is now protected, this shouldn't ever get
-		// called from userland, so we may want to revisit how much of this
-		// code still needs to be here. Specifically, setting a default uid
-		// should probably happen in Timber::get_user()...
-		if ( $uid === false ) {
-			$uid = get_current_user_id();
+	protected function init( $wp_user ) {
+		$data = get_userdata($wp_user->ID);
+		if ( !isset($data->data) ) {
+			return;
 		}
-		if ( is_object($uid) || is_array($uid) ) {
-			$data = $uid;
-			if ( is_array($uid) ) {
-				$data = (object) $uid;
-			}
-			$uid = $data->ID;
-		}
-		if ( is_numeric($uid) ) {
-			$data = get_userdata($uid);
-		} elseif ( is_string($uid) ) {
-			$data = get_user_by('login', $uid);
-		}
-		if ( isset($data) && is_object($data) ) {
-			if ( isset($data->data) ) {
-				$this->import($data->data);
-			} else {
-				$this->import($data);
-			}
+		$this->import($data->data);
 
-			if ( isset($data->roles) ) {
-				$this->roles = $this->get_roles($data->roles);
-			}
+		if ( isset($data->roles) ) {
+			$this->roles = $this->get_roles($data->roles);
 		}
+
+		// Never leak password data
 		unset($this->user_pass);
-		$this->id = $this->ID = (int) $this->ID;
+		$this->id = $this->ID = (int) $wp_user->ID;
 	}
 
 	/**
@@ -560,13 +539,13 @@ class User extends Core implements CoreInterface, MetaInterface {
 	 *
 	 * @param null|array $args Parameters for
 	 *                         [`get_avatar_url()`](https://developer.wordpress.org/reference/functions/get_avatar_url/).
-	 * @return string|\Timber\Image The avatar URL.
+	 * @return string The avatar URL.
 	 */
 	public function avatar( $args = null ) {
 		if ( $this->avatar_override ) {
 			return $this->avatar_override;
 		}
 
-		return new Image( get_avatar_url( $this->id, $args ) );
+		return get_avatar_url( $this->id, $args );
 	}
 }
