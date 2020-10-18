@@ -65,7 +65,7 @@ You can retrieve an image from a custom field, then use it in a Twig template. T
 ### The quick way (for most situations)
 
 ```twig
-<img src="{{ Image(post.meta('hero_image')).src }}" />
+<img src="{{ get_image(post.meta('hero_image')).src }}" />
 ```
 
 ### The long way (for some special situations)
@@ -102,7 +102,7 @@ You can now use all the above functions to transform your custom images in the s
 
 ```twig
 {% for image in post.meta('gallery') %}
-    <img src="{{ Image(image) }}" />
+    <img src="{{ get_image(image) }}" />
 {% endfor %}
 ```
 
@@ -124,6 +124,19 @@ or
 
 * * *
 
+## Relationship field
+
+The post data returned from a relationship field will not contain the Timber methods needed for easy handling inside of your Twig file. To get these, you’ll need to convert them into proper `Timber\Post` objects using `get_posts()`:
+
+```twig
+{% for item in get_posts(post.relationship_field) %}
+   {{ item.title }}
+   {# Do something with item #}
+{% endfor %}
+```
+
+* * *
+
 ## Repeater Field
 
 You can access repeater fields within Twig files:
@@ -137,7 +150,7 @@ You can access repeater fields within Twig files:
         <div class="item">
             <h4>{{ item.name }}</h4>
             <h6>{{ item.info }}</h6>
-            <img src="{{ Image(item.picture).src }}" />
+            <img src="{{ get_image(item.picture).src }}" />
         </div>
     {% endfor %}
 </div>
@@ -193,8 +206,8 @@ Similar to repeaters, get the field by the name of the flexible content field:
 ```twig
 {% for media_item in post.meta('media_set') %}
     {% if media_item.acf_fc_layout == 'image_set' %}
-        <img src="{{ Image(media_item.image).src }}" />
-        <p class="caption">{{ Image(media_item.image).caption }}</p>
+        <img src="{{ get_image(media_item.image).src }}" />
+        <p class="caption">{{ get_image(media_item.image).caption }}</p>
         <aside class="notes">{{ media_item.notes }}</aside>
     {% elseif media_item.acf_fc_layout == 'video_set' %}
         <iframe width="560" height="315" src="http://www.youtube.com/embed/{{media_item.youtube_id}}" frameborder="0" allowfullscreen></iframe>
@@ -211,8 +224,8 @@ Similar to nested repeaters, you should only call the `meta` method once when yo
 {% for media_item in post.meta('media_set') %}
     {% if media_item.acf_fc_layout == 'image_set' %}
         {% for image_item in media_item.image_set %}
-            <img src="{{ Image(image_item.image).src }}" />
-            <p class="caption">{{ Image(image_item.image).caption }}</p>
+            <img src="{{ get_image(image_item.image).src }}" />
+            <p class="caption">{{ get_image(image_item.image).caption }}</p>
             <aside class="notes">{{ image_item.notes }}</aside>
         {% endfor %}
     {% endif %}
@@ -261,13 +274,13 @@ add_filter( 'timber/context', 'global_timber_context' );
 
 /**
  * Filters global context.
- * 
+ *
  * @param array $context An array of existing context variables.
  * @return mixed
  */
 function global_timber_context( $context ) {
     $context['options'] = get_fields( 'option' );
-    
+
     return $context;
 }
 ```

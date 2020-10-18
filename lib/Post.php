@@ -4,7 +4,9 @@ namespace Timber;
 
 use WP_Post;
 
+use Timber\Factory\PostFactory;
 use Timber\Factory\UserFactory;
+use Timber\Timber;
 
 /**
  * Class Post
@@ -46,23 +48,9 @@ use Timber\Factory\UserFactory;
  *     </div>
  * </article>
  * ```
+ * @todo implement JsonSerializable?
  */
 class Post extends Core implements CoreInterface, MetaInterface, DatedInterface, Setupable {
-
-	/**
-	 * @var string The name of the class to handle images by default
-	 */
-	public $ImageClass = 'Timber\Image';
-
-	/**
-	 * @var string The name of the class to handle posts by default
-	 */
-	public $PostClass = 'Timber\Post';
-
-	/**
-	 * @var string The name of the class to handle terms by default
-	 */
-	public $TermClass = 'Timber\Term';
 
 	/**
 	 * @var string What does this class represent in WordPress terms?
@@ -174,21 +162,28 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	protected $__type;
 
 	/**
+	 * Create and initialize a new instance of the called Post class
+	 * (i.e. Timber\Post or a subclass).
+	 *
+	 * @internal
+	 * @return Timber\Post
+	 */
+	public static function build( WP_Post $wp_post ) : self {
+		$post = new static();
+
+		$post->id = $wp_post->ID;
+		$post->ID = $wp_post->ID;
+
+		return $post->init( $wp_post );
+	}
+
+	/**
 	 * If you send the constructor nothing it will try to figure out the current post id based on
 	 * being inside The_Loop.
 	 *
-	 * @api
-	 * @example
-	 * ```php
-	 * $post = new Timber\Post();
-	 * $other_post = new Timber\Post($random_post_id);
-	 * ```
-	 *
-	 * @param mixed $pid
+	 * @internal
 	 */
-	public function __construct( $pid = null ) {
-		$pid = $this->determine_id($pid);
-		$this->init($pid);
+	protected function __construct() {
 	}
 
 	/**
@@ -299,47 +294,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
-	 * tries to figure out what post you want to get if not explictly defined (or if it is, allows it to be passed through)
-	 * @internal
-	 * @param mixed a value to test against
-	 * @return int|null the numberic id we should be using for this post object, null when there's no ID (ex: 404 page)
-	 */
-	protected function determine_id( $pid ) {
-		global $wp_query;
-		if ( $pid === null &&
-			isset($wp_query->queried_object_id)
-			&& $wp_query->queried_object_id
-			&& isset($wp_query->queried_object)
-			&& is_object($wp_query->queried_object)
-			&& get_class($wp_query->queried_object) == 'WP_Post'
-		) {
-			$pid = $wp_query->queried_object_id;
-		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id ) {
-			//hack for static page as home page
-			$pid = $wp_query->queried_object_id;
-		} else if ( $pid === null ) {
-			$gtid = false;
-			$maybe_post = get_post();
-			if ( isset($maybe_post->ID) ) {
-				$gtid = true;
-			}
-			if ( $gtid ) {
-				$pid = get_the_ID();
-			}
-			if ( !$pid ) {
-				global $wp_query;
-				if ( isset($wp_query->query['p']) ) {
-					$pid = $wp_query->query['p'];
-				}
-			}
-		}
-		if ( $pid === null && ($pid_from_loop = PostGetter::loop_to_id()) ) {
-			$pid = $pid_from_loop;
-		}
-		return $pid;
-	}
-
-	/**
 	 * Outputs the title of the post if you do something like `<h1>{{post}}</h1>`
 	 *
 	 * @api
@@ -353,7 +307,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		global $wp_query;
 		if ( $this->is_previewing() ) {
 			$revision_id = $this->get_post_preview_id( $wp_query );
-			return new $this->PostClass( $revision_id );
+			return Timber::get_post( $revision_id );
 		}
 	}
 
@@ -394,14 +348,10 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * @param integer $pid
 	 */
 	protected function init( $pid = null ) {
-		if ( $pid === null ) {
-			$pid = get_the_ID();
-		}
-		if ( is_numeric($pid) ) {
-			$this->ID = $pid;
-		}
-		$post_info = $this->get_info($pid);
+		$post_info = apply_filters('timber/post/import_data', $this->get_info($pid));
 		$this->import($post_info);
+
+		return $this;
 	}
 
 	/**
@@ -637,7 +587,11 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * {% for post in job %}
 	 *     <div class="job">
 	 *         <h2>{{ post.title }}</h2>
-	 *         <p>{{ post.terms( {query:{taxonomy:'category', orderby:'name', order: 'ASC'}} )|join(', ') }}</p>
+	 *         <p>{{ post.terms({
+	 *             taxonomy: 'category',
+	 *             orderby: 'name',
+	 *             order: 'ASC'
+	 *         })|join(', ') }}</p>
 	 *     </div>
 	 * {% endfor %}
 	 * </section>
@@ -662,105 +616,85 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * $terms = $post->terms( array( 'books', 'movies' ) );
 	 *
 	 * // Use custom arguments for taxonomy query and options.
-	 * $terms = $post->terms( array(
-     *     'query' => [
-     *         'taxonomy' => 'custom_tax',
-     *         'orderby'  => 'count',
-     *     ],
-     *     'merge'      => false,
-     *     'term_class' => 'My_Term_Class'
-     * ) );
+	 * $terms = $post->terms( [
+	 *     'taxonomy' => 'custom_tax',
+	 *     'orderby'  => 'count'
+	 * ], [
+	 *     'merge' => false
+	 * ] );
 	 * ```
 	 *
-	 * @param string|array $args {
-	 *     Optional. Name of the taxonomy or array of arguments.
+	 * @param string|array $query_args 	Any array of term query parameters for getting the terms.
+	 *                                  See `WP_Term_Query::__construct()` for supported arguments.
+	 *                                  Use the `taxonomy` argument to choose which taxonomies to
+	 *                                  get. Defaults to querying all registered taxonomies for the
+	 *                                  post type. You can use custom or built-in WordPress
+	 *                                  taxonomies (category, tag). Timber plays nice and figures
+	 *                                  out that `tag`, `tags` or `post_tag` are all the same
+	 *                                  (also for `categories` or `category`). For custom
+	 *                                  taxonomies you need to define the proper name.
+	 * @param array $options {
+	 *     Optional. An array of options for the function.
 	 *
-	 *     @type array $query       Any array of term query parameters for getting the terms. See
-	 *                              `WP_Term_Query::__construct()` for supported arguments. Use the
-	 *                              `taxonomy` argument to choose which taxonomies to get. Defaults
-	 *                              to querying all registered taxonomies for the post type. You can
-	 *                              use custom or built-in WordPress taxonomies (category, tag).
-	 *                              Timber plays nice and figures out that `tag`, `tags` or
-	 *                              `post_tag` are all the same (also for `categories` or
-	 *                              `category`). For custom taxonomies you need to define the
-	 *                              proper name.
-	 *     @type bool $merge        Whether the resulting array should be one big one (`true`) or
-	 *                              whether it should be an array of sub-arrays for each taxonomy
-	 *                              (`false`). Default `true`.
-	 *     @type string $term_class The Timber term class to use for the term objects.
+	 *     @type bool $merge Whether the resulting array should be one big one (`true`) or whether
+	 *                       it should be an array of sub-arrays for each taxonomy (`false`).
+	 *                       Default `true`.
 	 * }
 	 * @return array An array of taxonomies.
 	 */
-	public function terms( $args = array() ) {
-		// Make it possible to use a category or an array of categories as a shorthand.
-		if ( ! is_array( $args ) || isset( $args[0] ) ) {
-			$args = array(
-				'query' => array(
-					'taxonomy' => $args,
-				),
-			);
+	public function terms( $query_args = [], $options = [] ) {
+		// Make it possible to use a taxonomy or an array of taxonomies as a shorthand.
+		if ( ! is_array( $query_args ) || isset( $query_args[0] ) ) {
+			$query_args = [ 'taxonomy' => $query_args ];
+		}
+
+		/**
+		 * Handles backwards compatibility for users who use an array with a query property.
+		 *
+		 * @deprecated 2.0.0 use Post::terms( $query_args, $options )
+		 */
+		if ( is_array($query_args) && isset($query_args['query']) ) {
+			if ( isset($query_args['merge']) && !isset($options['merge']) ) {
+				$options['merge'] = $query_args['merge'];
+			}
+			$query_args = $query_args['query'];
 		}
 
 		// Defaults.
-		$args = wp_parse_args( $args, array(
-			'query' => array(
-				'taxonomy' => 'all',
-			),
-			'merge' => true,
-			'term_class' => $this->TermClass,
-		) );
+		$query_args = wp_parse_args( $query_args, [
+			'taxonomy' => 'all'
+		] );
 
-		$tax        = $args['query']['taxonomy'];
-		$merge      = $args['merge'];
-		$term_class = $args['term_class'];
-		$taxonomies = array();
+		$options = wp_parse_args( $options, [
+			'merge' => true
+		] );
 
-		// Build an array of taxonomies.
-		if ( is_array( $tax ) ) {
-			$taxonomies = $tax;
-		} elseif ( is_string( $tax ) ) {
-			if ( in_array( $tax, array( 'all', 'any', '' ) ) ) {
-				$taxonomies = get_object_taxonomies($this->post_type);
-			} else {
-				$taxonomies = array($tax);
-			}
+		$taxonomies = $query_args['taxonomy'];
+		$merge      = $options['merge'];
+
+		if ( in_array($taxonomies, ['all', 'any', '']) ) {
+			$taxonomies = get_object_taxonomies($this->post_type);
 		}
 
-		$terms = wp_get_post_terms( $this->ID, $taxonomies, $args['query'] );
-
-		if ( is_wp_error( $terms ) ) {
-			/**
-			 * @var $terms \WP_Error
-			 */
-			Helper::error_log( 'Error retrieving terms for taxonomies on a post in lib/Post.php' );
-			Helper::error_log( 'tax = ' . print_r( $tax, true ) );
-			Helper::error_log( 'WP_Error: ' . $terms->get_error_message() );
-
-			return $terms;
+		if ( ! is_array($taxonomies) ) {
+			$taxonomies = [$taxonomies];
 		}
 
-		// Map over array of WordPress terms and transform them into instances of chosen term class.
-		$terms = array_map( function( $term ) use ( $term_class ) {
-			return call_user_func( array( $term_class, 'from' ), $term->term_id, $term->taxonomy );
-		}, $terms );
+		$query = array_merge($query_args, [
+			'object_ids' => [$this->ID],
+			'taxonomy'   => $taxonomies,
+		]);
 
-		if ( ! $merge ) {
-			$terms_sorted = array();
+		if (!$merge) {
+			// get results segmented out per taxonomy
+			$queries    = $this->partition_tax_queries($query, $taxonomies);
+			$termGroups = Timber::get_terms($queries);
 
-			// Initialize sub-arrays.
-			foreach ( $taxonomies as $taxonomy ) {
-				$terms_sorted[ $taxonomy ] = array();
-			}
-
-			// Fill terms into arrays.
-			foreach ( $terms as $term ) {
-				$terms_sorted[ $term->taxonomy ][] = $term;
-			}
-
-			return $terms_sorted;
+			// zip 'em up with the right keys
+			return array_combine($taxonomies, $termGroups);
 		}
 
-		return $terms;
+		return Timber::get_terms($query, $options);
 	}
 
 	/**
@@ -1282,7 +1216,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * ```
 	 * @param string|array $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type or you can pass an array of post types.
 	 * @param string|bool  $child_post_class _optional_ a custom post class (ex: 'MyTimber\Post') to return the objects as. By default (false) it will use Timber\Post::$post_class value.
-	 * @return array
+	 * @return Timber\PostCollectionInterface
 	 */
 	public function children( $post_type = 'any', $child_post_class = false ) {
 		if ( $child_post_class === false ) {
@@ -1298,12 +1232,8 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		if ( $this->post_status === 'publish' ) {
 			$query .= '&post_status[]=inherit';
 		}
-		$children = get_children($query);
-		foreach ( $children as &$child ) {
-			$child = new $child_post_class($child->ID);
-		}
-		$children = array_values($children);
-		return $children;
+
+		return $this->factory()->from(get_children($query));
 	}
 
 	/**
@@ -1866,7 +1796,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			}
 
 			if ( $adjacent ) {
-				$this->_next[$in_same_term] = new $this->PostClass($adjacent);
+				$this->_next[$in_same_term] = $this->factory()->from($adjacent);
 			} else {
 				$this->_next[$in_same_term] = false;
 			}
@@ -1952,14 +1882,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		if ( is_object($data) ) {
 			$data = Helper::convert_wp_object($data);
 		} else if ( is_array($data) ) {
-			$func = __FUNCTION__;
-			foreach ( $data as &$ele ) {
-				if ( is_array($ele) ) {
-					$ele = $this->$func($ele);
-				} else if ( is_object($ele) ) {
-					$ele = Helper::convert_wp_object($ele);
-				}
-			}
+			$data = array_map([$this, 'convert'], $data);
 		}
 		return $data;
 	}
@@ -1980,7 +1903,8 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		if ( !$this->post_parent ) {
 			return false;
 		}
-		return new $this->PostClass($this->post_parent);
+
+		return $this->factory()->from($this->post_parent);
 	}
 
 	/**
@@ -2026,7 +1950,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		$adjacent = get_adjacent_post(($in_same_term), '', true, $within_taxonomy);
 		$prev_in_taxonomy = false;
 		if ( $adjacent ) {
-			$prev_in_taxonomy = new $this->PostClass($adjacent);
+			$prev_in_taxonomy = $this->factory()->from($adjacent);
 		}
 		$this->_prev[$in_same_term] = $prev_in_taxonomy;
 		$post = $old_global;
@@ -2069,7 +1993,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		$tid = $this->thumbnail_id();
 
 		if ( $tid ) {
-			return new $this->ImageClass($tid);
+			return $this->factory()->from($tid);
 		}
 	}
 
@@ -2152,4 +2076,38 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 
+	/**
+	 * Given a base query and a list of taxonomies, return a list of queries
+	 * each of which queries for one of the taxonomies.
+	 * @example
+	 * ```
+	 * $this->partition_tax_queries(["object_ids" => [123]], ["a", "b"]);
+	 *
+	 * // result:
+	 * // [
+	 * //   ["object_ids" => [123], "taxonomy" => ["a"]],
+	 * //   ["object_ids" => [123], "taxonomy" => ["b"]],
+	 * // ]
+	 * ```
+	 * @internal
+	 */
+	private function partition_tax_queries(array $query, array $taxonomies) : array {
+		return array_map(function(string $tax) use ($query) : array {
+			return array_merge($query, [
+				'taxonomy' => [$tax],
+			]);
+		}, $taxonomies);
+	}
+
+	/**
+	 * Get a PostFactory instance for internal usage
+	 *
+	 * @internal
+	 * @return \Timber\Factory\PostFactory
+	 */
+	private function factory() {
+		static $factory;
+		$factory = $factory ?: new PostFactory();
+		return $factory;
+	}
 }

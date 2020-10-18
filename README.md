@@ -10,7 +10,7 @@ By
 [Coby Tamayo](https://github.com/acobster) ([@cobytamayo](https://keybase.io/acobster)),
 [Upstatement](https://twitter.com/upstatement) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors)
 
-[![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.org/timber/timber)
+[![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.com/github/timber/timber)
 [![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg?style=flat-square)](https://coveralls.io/github/timber/timber)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
 [![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
@@ -98,6 +98,7 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 
 #### Related Timber Projects
 * [**Pine**](https://github.com/azeemhassni/pine) A CLI _installer_ for Timber
+* [**Query Monitor Twig Profile**](https://github.com/NielsdeBlaauw/query-monitor-twig-profile) An add-on for [Query Monitor](https://wordpress.org/plugins/query-monitor/) to see what's going on inside your Twig files (automatically works with Timber!)
 * [**Timber CLI**](https://github.com/nclud/wp-timber-cli) A CLI for Timber
 * [**Timber Commented Include**](https://github.com/djboris88/timber-commented-include) Debug output via HTML comments before and after each include statement in Twig
 * [**Timber Debugger**](https://github.com/djboris88/timber-debugger) Package that provides extra debugging options for Timber

@@ -8,6 +8,9 @@
 class TestTimberTwigDateFunction extends Timber_UnitTestCase {
 	/**
 	 * This test also checks whether date() returns a Datetime object.
+	 *
+	 * NOTE: this may randomly fail. There's not really a way around this
+	 * because of how PHP deals with time.
 	 */
 	function testDateNow() {
 		$result = Timber\Timber::compile_string(

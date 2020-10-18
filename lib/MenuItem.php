@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use Timber\Factory\PostFactory;
+
 /**
  * Class MenuItem
  *
@@ -29,8 +31,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	public $level = 0;
 	public $post_name;
 	public $url;
-
-	public $PostClass = 'Timber\Post';
 
 	/**
 	 * Inherited property. Listed here to make it available in the documentation.
@@ -87,14 +87,20 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @internal
 	 * @param array|object $data
 	 * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
+	 * @todo make this protected and implement ::build() instead
 	 */
 	public function __construct( $data, $menu = null ) {
 		$this->menu = $menu;
 		$data       = (object) $data;
 		$this->import($data);
 		$this->import_classes($data);
-		$this->menu_object = $data;
-		$this->_name       = $data->name;
+		$this->id = $data->ID;
+		$this->ID = $data->ID;
+
+		$factory = new PostFactory();
+		$this->menu_object = $factory->from($data);
+
+		$this->_name       = $data->name ?? '';
 		$this->add_class('menu-item-'.$this->ID);
 
 		$this->object_id = (int) get_post_meta( $this->ID, '_menu_item_object_id', true );
@@ -174,11 +180,14 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @return mixed Whatever object (Timber\Post, Timber\Term, etc.) the menu item represents.
 	 */
 	public function master_object() {
+		static $factory;
+		$factory = $factory ?: new PostFactory();
+
 		if ( $this->object_id ) {
-			return new $this->PostClass( $this->object_id );
+			return $factory->from( $this->object_id );
 		}
 		if ( $this->menu_object ) {
-			return new $this->PostClass($this->menu_object);
+			return $factory->from( $this->menu_object );
 		}
 	}
 
@@ -228,7 +237,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		if ( is_array($data) ) {
 			$data = (object) $data;
 		}
-		$this->classes = array_merge($this->classes, $data->classes);
+		$this->classes = array_merge($this->classes, $data->classes ?? []);
 		$this->classes = array_unique($this->classes);
 
 		$options = new \stdClass();

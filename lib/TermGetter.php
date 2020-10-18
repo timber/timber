@@ -3,10 +3,15 @@
 namespace Timber;
 
 /**
- * Class TermGetter
+ * Class TermGetter 
+ *
+ * @deprecated 2.0.0 use Timber::get_terms() or Timber::get_term()
+ * @codeCoverageIgnore
  */
 class TermGetter {
+	
 	/**
+	 * @deprecated 2.0.0 use Timber::get_term()
 	 * @param int|\WP_Term|object $term
 	 * @param string $taxonomy
 	 * @return \Timber\Term|\WP_Error|null
@@ -17,6 +22,7 @@ class TermGetter {
 	}
 
 	/**
+	 * @deprecated 2.0.0 use Timber::get_terms()
 	 * @param string|array $args
 	 * @param array $maybe_args
 	 * @param string $TermClass
@@ -62,6 +68,7 @@ class TermGetter {
 	}
 
 	/**
+	 * @deprecated 2.0.0 with no replacement
 	 * @param string|array $taxonomies
 	 * @param string|array $args
 	 * @param string $TermClass
@@ -110,6 +117,7 @@ class TermGetter {
 	}
 
 	/**
+	 * @deprecated 2.0.0 with no replacement
 	 * @param array $args
 	 * @return \stdClass
 	 */
@@ -137,6 +145,7 @@ class TermGetter {
 	}
 
 	/**
+	 * @deprecated 2.0.0 with no replacement
 	 * @param array $args
 	 * @return \stdClass|null
 	 */
@@ -153,6 +162,7 @@ class TermGetter {
 	}
 
 	/**
+	 * @deprecated 2.0.0 with no replacement
 	 * @param integer[] $args
 	 * @return \stdClass
 	 */
@@ -164,6 +174,7 @@ class TermGetter {
 	}
 
 	/**
+	 * @deprecated 2.0.0 with no replacement
 	 * @param string[] $args
 	 * @return \stdClass
 	 */

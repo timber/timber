@@ -2,6 +2,11 @@
 
 namespace Timber;
 
+use ArrayObject;
+use JsonSerializable;
+use WP_Post;
+use WP_Query;
+
 /**
  * Class PostQuery
  *
@@ -9,12 +14,13 @@ namespace Timber;
  *
  * This is the equivalent of using `WP_Query` in normal WordPress development.
  *
- * PostCollections are used directly in Twig templates to iterate through a collection of posts and
- * retrieve meta information about it.
+ * PostQuery is used directly in Twig templates to iterate through post query results and
+ * retrieve meta information about them.
  *
  * @api
  */
-class PostQuery extends PostCollection {
+class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSerializable {
+	use AccessesPostsLazily;
 
 	/**
 	 * Found posts.
@@ -28,7 +34,19 @@ class PostQuery extends PostCollection {
 	 */
 	public    $found_posts = null;
 
+	/**
+	 * If the user passed an array, it is stored here.
+	 *
+	 * @var array
+	 */
 	protected $userQuery;
+
+	/**
+	 * The internal WP_Query instance that this object is wrapping.
+	 *
+	 * @var \WP_Query
+	 */
+	protected $wp_query = null;
 
 	/**
 	 * @var PostCollection|QueryIterator
@@ -45,93 +63,32 @@ class PostQuery extends PostCollection {
 	 * the arguments that can be used for the `$query` parameter.
 	 *
 	 * @api
+	 * @todo update these docs
 	 * @example
 	 * ```php
 	 * // Get posts from default query
-	 * $posts = new Timber\PostQuery();
-	 *
-	 * // Get custom posts collection with a query string
-	 * $posts = new Timber\PostQuery( array(
-	 *     'query' => 'post_type=article',
-	 * ) );
+	 * global $wp_query;
+	 * $posts = new Timber\PostQuery( $wp_query );
 	 *
 	 * // Using the WP_Query argument format
-	 * $posts = new Timber\PostQuery( array(
-	 *     'query' => array(
-	 *         'post_type'     => 'article',
-	 *         'category_name' => 'sports',
-	 *     ),
-	 * ) );
+	 * $posts = new Timber\PostQuery( [
+	 *     'post_type'     => 'article',
+	 *     'category_name' => 'sports',
+	 * ] );
 	 *
-	 * // Using a class map for $post_class
-	 * $posts = new Timber\PostQuery( array(
-	 *     'query' => array(
-	 *         'post_type' => 'any',
-	 *     ),
-	 *     'post_class' => array(
-	 *         'portfolio' => 'MyPortfolioClass',
-	 *         'alert'     => 'MyAlertClass',
-	 *     ),
-	 * ) );
+	 * // Passing a WP_Query instance
+	 * $posts = new Timber\PostQuery( new WP_Query( 'post_type=any' ) );
 	 * ```
 	 *
-	 * @param array $args {
-	 *     Optional. An array of arguments.
-	 *
-	 *     @type mixed        $query         Optional. A query string or an array of arguments for
-	 *                                       `WP_Query`. Default `false`, which means that the
-	 *                                       default WordPress query is used.
-	 *     @type string|array $post_class    Optional. Class string or class map to wrap the post
-	 *                                       objects in the collection. Default `Timber\Post`.
-	 *     @type bool         $merge_default Optional. Whether to merge the arguments passed in
-	 *                                       `query` with the default arguments that WordPress uses
-	 *                                       for the current template. Default `false`.
-	 * }
+	 * @param WP_Query $query The WP_Query object to wrap.
 	 */
-	public function __construct( $args = array() ) {
-		// Backwards compatibility.
-		if ( ! empty( $args ) && ! isset( $args['query'] ) ) {
-			$args = array(
-				'query' => $args,
-			);
+	public function __construct( WP_Query $query ) {
+		$this->wp_query    = $query;
+		$this->found_posts = $this->wp_query->found_posts;
 
-			Helper::deprecated(
-				'Passing query arguments directly to PostQuery',
-				'Put your query in an array with a "query" key',
-				'2.0.0'
-			);
-		}
+		$posts = $this->wp_query->posts ?: [];
 
-		$args = wp_parse_args( $args, array(
-			'query'         => false,
-			'merge_default' => false,
-			'post_class'    => '\Timber\Post',
-		) );
-
-		if ( $args['merge_default'] ) {
-			global $wp_query;
-
-			// Merge query arguments with default query.
-			$args['query'] = wp_parse_args( $args['query'], $wp_query->query_vars );
-		}
-
-		$this->userQuery     = $args['query'];
-		$this->queryIterator = PostGetter::query_posts( $args['query'], $args['post_class'] );
-
-		if ( $this->queryIterator instanceof QueryIterator ) {
-			$this->found_posts = $this->queryIterator->found_posts();
-		}
-
-		$posts = $this->queryIterator->get_posts();
-
-		parent::__construct( $posts, $args['post_class'] );
-	}
-
-	/**
-	 * @return mixed The query the user orignally passed to the pagination object.
-	 */
-	protected function get_query() {
-		return $this->userQuery;
+		parent::__construct( $posts, 0, PostsIterator::class );
 	}
 
 	/**
@@ -167,9 +124,53 @@ class PostQuery extends PostCollection {
 	 */
 	public function pagination( $prefs = array() ) {
 		if ( !$this->pagination && is_a($this->queryIterator, 'Timber\QueryIterator') ) {
-			$this->pagination = $this->queryIterator->get_pagination($prefs, $this->get_query());
+			$this->pagination = $this->queryIterator->get_pagination($prefs, $this->userQuery);
+		} elseif ( !$this->pagination && $this->wp_query instanceof WP_Query ) {
+			$this->pagination = new Pagination($prefs, $this->wp_query);
 		}
 
 		return $this->pagination;
 	}
+
+	/**
+	 * Override data printed by var_dump() and similar. Realizes the collection before
+	 * returning. Due to a PHP bug, this only works in PHP >= 7.4.
+	 *
+	 * @see https://bugs.php.net/bug.php?id=69264
+	 * @internal
+	 */
+	public function __debugInfo() {
+		return [
+			'info' => sprintf( '
+********************************************************************************
+
+    This output is generated by %s().
+
+    The properties you see here are not actual properties, but only debug
+    output. If you want to access the actual instances of Timber\Posts, loop
+		over the collection or get all posts through $query->to_array().
+
+		More info: https://timber.github.io/docs/v2/guides/posts/#debugging-post-collections
+
+********************************************************************************',
+				__METHOD__
+			),
+			'posts'       => $this->getArrayCopy(),
+			'wp_query'    => $this->wp_query,
+			'found_posts' => $this->found_posts,
+			'pagination'  => $this->pagination,
+			'factory'     => $this->factory,
+			'iterator'    => $this->getIterator(),
+		];
+	}
+
+	/**
+	 * Returns realized (eagerly instantiated) Timber\Post data to serialize to JSON.
+	 *
+	 * @internal
+	 */
+	public function jsonSerialize() {
+		return $this->getArrayCopy();
+	}
+
 }

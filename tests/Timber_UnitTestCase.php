@@ -2,7 +2,7 @@
 
 	class Timber_UnitTestCase extends WP_UnitTestCase {
 		/**
-		 * Maintain a list of hook removals to perform at the end of each test.
+		 * Maintain a list of action/filter hook removals to perform at the end of each test.
 		 */
 		private $temporary_hook_removals = [];
 
@@ -214,5 +214,81 @@
 				remove_filter($filter, $callback, $pri, $count);
 			};
 		}
+    
+    /**
+		 * Exactly the same as add_action, but automatically calls remove_action with the same
+		 * arguments during tearDown().
+		 */
+		protected function add_action_temporarily(string $action, callable $callback, int $pri = 10, int $count = 1) {
+			add_action($action, $callback, $pri, $count);
+			$this->temporary_hook_removals[] = function() use ($action, $callback, $pri, $count) {
+				remove_action($action, $callback, $pri, $count);
+			};
+		}
+
+		protected function register_post_classmap_temporarily(array $classmap) {
+			$this->add_filter_temporarily('timber/post/classmap', function(array $current) use ($classmap) {
+				return array_merge($current, $classmap);
+			});
+		}
+
+		/**
+		 * Add the given nav_menu_item post IDs to the given menu.
+		 * @param int $menu_id the term_id of the menu to add to.
+		 * @param int[] $item_ids the list of nav_menu_item post IDs to add.
+		 */
+		protected function add_menu_items(int $menu_id, array $item_ids) {
+			global $wpdb;
+			foreach ($item_ids as $id) {
+				// $query = "INSERT INTO $wpdb->term_relationships (object_id, term_taxonomy_id, term_order) VALUES ($id, $menu_id, 0);";
+				$wpdb->query(sprintf(
+					'INSERT INTO %s (object_id, term_taxonomy_id, term_order)'
+					. ' VALUES (%d, %d, 0);',
+					$wpdb->term_relationships,
+					$id,
+					$menu_id
+				));
+			}
+			$menu_items_count = count($item_ids);
+			$wpdb->query("UPDATE $wpdb->term_taxonomy SET count = $menu_items_count WHERE taxonomy = 'nav_menu'; ");
+		}
+
+		/**
+		 * Test helper for creating posts and corresponding menu/items from raw post data.
+		 * @param array $posts_data an array of raw post data arrays. Each post array is passed
+		 * separately to wp_insert_post().
+		 * @return array an array of the form:
+		 * [
+		 *   "term" => (WP_Term menu instance),
+		 *   "item_ids" => [(...nav_menu_item post IDs...)],
+		 * ]
+		 */
+		protected function create_menu_from_posts(array $posts_data) {
+			$item_ids = array_map(function(array $post_data) {
+				$post_id = wp_insert_post($post_data);
+				$item_id = wp_insert_post([
+					'post_title'  => '',
+					'post_status' => 'publish',
+					'post_type'   => 'nav_menu_item',
+				]);
+
+				update_post_meta( $item_id, '_menu_item_object_id', $post_id );
+				update_post_meta( $item_id, '_menu_item_type', 'post_type' );
+				update_post_meta( $item_id, '_menu_item_object', 'page' );
+				update_post_meta( $item_id, '_menu_item_menu_item_parent', 0 );
+				update_post_meta( $item_id, '_menu_item_url', '' );
+
+				return $item_id;
+			}, $posts_data);
+
+			$menu_term = wp_insert_term( 'Main Menu', 'nav_menu' );
+			$this->add_menu_items($menu_term['term_id'], $item_ids);
+
+			return [
+				'term'     => $menu_term,
+				'item_ids' => $item_ids,
+			];
+		}
+		
 
 	}
