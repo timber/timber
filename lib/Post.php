@@ -1254,11 +1254,13 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	protected function content_handle_no_teaser_block( $content ) {
-		error_log('content_handle_no_teaser_block = ');
+		error_log("content_handle_no_teaser_block: \n".$content);
 		if ( self::has_noteaser_true( $content ) ) {
-			error_log("true\n");
+			error_log("IFFF is true\n");
 			$arr = explode('<!--noteaser-->', $content);
 			return $arr[1];
+		} else {
+			error_log("IFFF is false\n");
 		}
 		return $content;
 	}

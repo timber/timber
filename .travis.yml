@@ -41,7 +41,7 @@ jobs:
         - composer require --dev 'satooshi/php-coveralls:1.0.*'
       script:
         - mkdir -p build/logs
-        - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --coverage-clover build/logs/clover.xml --filter TestTimberPostContent
+        - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --coverage-clover build/logs/clover.xml --filter TestTimberPostContent::testGutenbergExcerpt
       after_success:
         - vendor/bin/coveralls -v
     - name: "Coverage: ImageMagick extension on PHP 7.4"
@@ -62,7 +62,7 @@ jobs:
         - composer require --dev 'satooshi/php-coveralls:1.0.*'
       script:
         - mkdir -p build/logs
-        - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --coverage-clover build/logs/clover.xml --filter TestTimberPostContent
+        - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --coverage-clover build/logs/clover.xml --filter TestTimberPostContent::testGutenbergExcerpt
       after_success:
         - vendor/bin/coveralls -v
     - name: "Coverage: WP multisite on PHP 7.4"
@@ -79,7 +79,7 @@ jobs:
         - composer require --dev 'satooshi/php-coveralls:1.0.*'
       script:
         - mkdir -p build/logs
-        - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --coverage-clover build/logs/clover.xml --filter TestTimberPostContent
+        - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --coverage-clover build/logs/clover.xml --filter TestTimberPostContent::testGutenbergExcerpt
       after_success:
         - vendor/bin/coveralls -v
     - name: "WebP support on PHP 7.2"
@@ -112,7 +112,7 @@ install:
   - composer update $PREFER_LOWEST --prefer-source
 
 script:
-  - vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml --verbose --filter TestTimberPostContent
+  - vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml --verbose --filter TestTimberPostContent::testGutenbergExcerpt
 
 notifications:
   webhooks:
