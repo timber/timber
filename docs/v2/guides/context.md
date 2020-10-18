@@ -146,7 +146,7 @@ $context['post'] = $post;
 $context['post'] = Timber::get_post()->setup();
 ```
 
-**Be aware!** Whenever you set up **a post in a singular template** (instead of relying on `Timber::context()` to do it for you), **you need set up your post through `$post->setup()`**. The `setup()` function improves compatibility with third-party plugins.
+**Be aware!** Whenever you set up **a post in a singular template** (instead of relying on `Timber::context()` to do it for you), **you need to set up your post through `$post->setup()`**. The `setup()` function improves compatibility with third-party plugins.
 
 ### Archive templates
 
