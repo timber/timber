@@ -54,18 +54,22 @@ Nice! Any gotchas? Unfortunately yes. While the above example will totally work 
 
 ## Make functions available in Twig
 
-If you have functions that you use a lot and want to improve readability of your code, you can make a function available in Twig by using `Timber\Twig_Function` inside the `timber/twig` hook.
+If you have functions that you use a lot and want to improve readability of your code, you can make a function available in Twig by using `Timber\Twig_Function` inside the `timber/twig` filter.
 
 ```php
+add_filter( 'timber/twig', 'add_to_twig' );
+
 /**
  * My custom Twig functionality.
  *
- * @param Twig_Environment $twig
- * @return $twig
+ * @param \Twig\Environment $twig
+ * @return \Twig\Environment
  */
-add_filter( 'timber/twig', function( \Twig_Environment $twig ) {
-	$twig->addFunction( new Timber\Twig_Function( 'edit_post_link', 'edit_post_link' ) );
-	return $twig;
+function add_to_twig( $twig ) {
+    // Adding a function.
+    $twig->addFunction( new Timber\Twig_Function( 'edit_post_link', 'edit_post_link' ) );
+    
+    return $twig;
 } );
 ```
 
@@ -74,7 +78,7 @@ Now you can use it like a "normal" function:
 ```twig
 {# single.twig #}
 <div class="admin-tools">
-    {{ edit_post_link }}
+    {{ edit_post_link() }}
 </div>
 {# Calls edit_post_link using default arguments #}
 

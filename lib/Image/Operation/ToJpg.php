@@ -2,6 +2,8 @@
 
 namespace Timber\Image\Operation;
 
+use Timber\Helper;
+use Timber\ImageHelper;
 use Timber\Image\Operation as ImageOperation;
 
 /**
@@ -44,6 +46,11 @@ class ToJpg extends ImageOperation {
 		if ( !file_exists($load_filename) ) {
 			return false;
 		}
+		
+		// Attempt to check if SVG.
+		if ( ImageHelper::is_svg($load_filename) ) {
+			return false;
+		}
 
 		$ext = wp_check_filetype($load_filename);
 		if ( isset($ext['ext']) ) {
@@ -68,4 +75,5 @@ class ToJpg extends ImageOperation {
 		imagejpeg($output, $save_filename);
 		return true;
 	}
+
 }

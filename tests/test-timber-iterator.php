@@ -11,7 +11,8 @@ class TestTimberIterator extends Timber_UnitTestCase {
     function testTheLoop(){
         for ( $i = 1; $i < 3; $i++ ) {
             $this->factory->post->create( array(
-                'post_title' => 'TestPost' . $i
+                'post_title' => 'TestPost' . $i,
+                'post_date' => ('2018-09-0'.$i.' 01:56:01')
             ) );
         }
         $results = Timber::compile('assets/iterator-test.twig', array(

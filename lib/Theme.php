@@ -7,11 +7,11 @@ use Timber\Theme;
 use Timber\URLHelper;
 
 /**
- * Need to display info about your theme? Well you've come to the right place. By default info on the current theme comes for free with what's fetched by `Timber::get_context()` in which case you can access it your theme like so:
+ * Need to display info about your theme? Well you've come to the right place. By default info on the current theme comes for free with what's fetched by `Timber::context()` in which case you can access it your theme like so:
  * @example
  * ```php
  * <?php
- * $context = Timber::get_context();
+ * $context = Timber::context();
  * Timber::render('index.twig', $context);
  * ?>
  * ```
@@ -62,7 +62,7 @@ class Theme extends Core {
 	private $theme;
 
 	/**
-	 * Constructs a new TimberTheme object. NOTE the TimberTheme object of the current theme comes in the default `Timber::get_context()` call. You can access this in your twig template via `{{site.theme}}.
+	 * Constructs a new TimberTheme object. NOTE the TimberTheme object of the current theme comes in the default `Timber::context()` call. You can access this in your twig template via `{{site.theme}}.
 	 * @param string $slug
 	 * @example
 	 * ```php
@@ -95,7 +95,7 @@ class Theme extends Core {
 
 		$this->uri = $this->theme->get_template_directory_uri();
 
-		if ( $this->theme->parent()) {
+		if ( $this->theme->parent() ) {
 			$this->parent_slug = $this->theme->parent()->get_stylesheet();
 			$this->parent = new Theme($this->parent_slug);
 		}
@@ -114,7 +114,9 @@ class Theme extends Core {
 	 * @return  string the relative path to the theme (ex: `/wp-content/themes/my-timber-theme`)
 	 */
 	public function path() {
-		return URLHelper::get_rel_url($this->link());
+		// force = true to work with specifying the port
+		// @see https://github.com/timber/timber/issues/1739
+		return URLHelper::get_rel_url($this->link(), true);
 	}
 
 	/**
@@ -133,5 +135,42 @@ class Theme extends Core {
 		return get_theme_mods();
 	}
 
+	/**
+	 * Gets a raw, unformatted theme header.
+	 * 
+	 * @api 
+	 * @see \WP_Theme::get()
+	 * @example
+	 * ```twig
+	 * {{ theme.get('Version') }}
+	 * ```
+	 *
+	 * @param string $header Name of the theme header. Name, Description, Author, Version,
+	 *                       ThemeURI, AuthorURI, Status, Tags.
+	 *
+	 * @return false|string String on success, false on failure.
+	 */
+	public function get( $header ) {
+		return $this->theme->get( $header );
+	}
+
+	/**
+	 * Gets a theme header, formatted and translated for display.
+	 *
+	 * @api
+	 * @see \WP_Theme::display()
+	 * @example
+	 * ```twig
+	 * {{ theme.display('Description') }}
+	 * ```
+	 *
+	 * @param string $header Name of the theme header. Name, Description, Author, Version,
+	 *                       ThemeURI, AuthorURI, Status, Tags.
+	 *
+	 * @return false|string
+	 */
+	public function display( $header ) {
+		return $this->theme->display( $header );
+	}
 }
 

@@ -22,12 +22,13 @@ class PostType {
 
 	protected function init( $post_type ) {
 		$obj = get_post_type_object($post_type);
-		foreach ( get_object_vars($obj) as $key => $value ) {
-			if ( $key === '' || ord($key[0]) === 0 ) {
-				continue;
+		if ( ! empty( $obj ) ) {
+			foreach ( get_object_vars($obj) as $key => $value ) {
+				if ( $key === '' || ord($key[0]) === 0 ) {
+					continue;
+				}
+				$this->$key = $value;
 			}
-			$this->$key = $value;
 		}
 	}
-
 }

@@ -1,7 +1,18 @@
+build:
+    nodes:
+        analysis:
+            dependencies:
+                before:
+                    - composer require --dev johnpbloch/wordpress
+            tests:
+                override:
+                    - php-scrutinizer-run
+
 filter:
     excluded_paths:
         - 'tests/*'
         - 'bin/*'
+        
 checks:
     php:
         fix_php_opening_tag: false

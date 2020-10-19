@@ -11,7 +11,7 @@ By default, Timber does *not* escape the output of standard tags (i.e. `{{ post.
 
 ```php
 if ( class_exists('Timber') ) {
-	Timber::$autoescape = true;
+	Timber::$autoescape = 'html';
 }
 ```
 

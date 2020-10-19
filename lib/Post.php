@@ -20,7 +20,7 @@ use WP_Post;
  * @example
  * ```php
  * // single.php, see connected twig example
- * $context = Timber::get_context();
+ * $context = Timber::context();
  * $context['post'] = new Timber\Post(); // It's a new Timber\Post object, but an existing post from WordPress.
  * Timber::render('single.twig', $context);
  * ?>
@@ -80,9 +80,9 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * @internal
-	 * @var string $_content stores the processed content internally
+	 * @var string $___content stores the processed content internally
 	 */
-	protected $_content;
+	protected $___content;
 
 	/**
 	 * @var string $_permalink the returned permalink from WP's get_permalink function
@@ -106,7 +106,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * @api
-	 * @var string $id the numeric WordPress id of a post
+	 * @var int $id the numeric WordPress id of a post
 	 */
 	public $id;
 
@@ -191,7 +191,6 @@ class Post extends Core implements CoreInterface {
 		if ( 'class' === $field ) {
 			return $this->css_class();
 		}
-
 		return parent::__get($field);
 	}
 
@@ -210,7 +209,7 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Determined whether or not an admin/editor is looking at the post in "preview mode" via the
+	 * Determine whether or not an admin/editor is looking at the post in "preview mode" via the
 	 * WordPress admin
 	 * @internal
 	 * @return bool
@@ -226,7 +225,7 @@ class Post extends Core implements CoreInterface {
 	 * tries to figure out what post you want to get if not explictly defined (or if it is, allows it to be passed through)
 	 * @internal
 	 * @param mixed a value to test against
-	 * @return int the numberic id we should be using for this post object
+	 * @return int|null the numberic id we should be using for this post object, null when there's no ID (ex: 404 page)
 	 */
 	protected function determine_id( $pid ) {
 		global $wp_query;
@@ -237,12 +236,7 @@ class Post extends Core implements CoreInterface {
 			&& is_object($wp_query->queried_object)
 			&& get_class($wp_query->queried_object) == 'WP_Post'
 		) {
-
-			if ( self::is_previewing() ) {
-				$pid = $this->get_post_preview_id($wp_query);
-			} else if ( !$pid ) {
-				$pid = $wp_query->queried_object_id;
-			}
+			$pid = $wp_query->queried_object_id;
 		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id ) {
 			//hack for static page as home page
 			$pid = $wp_query->queried_object_id;
@@ -265,15 +259,6 @@ class Post extends Core implements CoreInterface {
 		if ( $pid === null && ($pid_from_loop = PostGetter::loop_to_id()) ) {
 			$pid = $pid_from_loop;
 		}
-		if (
-			isset($_GET['preview'])
-			&& isset($_GET['preview_nonce'])
-			&& wp_verify_nonce($_GET['preview_nonce'], 'post_preview_'.$wp_query->queried_object_id)
-			&& isset($wp_query->queried_object_id)
-			&& ($wp_query->queried_object_id === $pid || (is_object($pid) && $wp_query->queried_object_id === $pid->ID))
-		) {
-			$pid = $this->get_post_preview_id($wp_query);
-		}
 		return $pid;
 	}
 
@@ -283,6 +268,14 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function __toString() {
 		return $this->title();
+	}
+
+	protected function get_post_preview_object() {
+		global $wp_query;
+		if ( $this->is_previewing() ) {
+			$revision_id = $this->get_post_preview_id( $wp_query );
+			return new $this->PostClass( $revision_id );
+		}
 	}
 
 	protected function get_post_preview_id( $query ) {
@@ -411,7 +404,30 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * @return PostPreview
+	 * Gets a preview/excerpt of your post.
+	 *
+	 * If you have text defined in the excerpt textarea of your post, it will use that. Otherwise it
+	 * will pull from the post_content. If there's a `<!-- more -->` tag, it will use that to mark
+	 * where to pull through.
+	 *
+	 * This method returns a `Timber\PostPreview` object, which is a **chainable object**. This
+	 * means that you can change the output of the preview by **adding more methods**. Refer to the
+	 * [documentation of the `Timber\PostPreview` class](https://timber.github.io/docs/reference/timber-postpreview/)
+	 * to get an overview of all the available methods.
+	 *
+	 * @example
+	 * ```twig
+     * {# Use default preview #}
+	 * <p>{{ post.preview }}</p>
+	 *
+	 * {# Change the post preview text #}
+	 * <p>{{ post.preview.read_more('Continue Reading') }}</p>
+	 *
+	 * {# Additionally restrict the length to 50 words #}
+	 * <p>{{ post.preview.length(50).read_more('Continue Reading') }}</p>
+	 * ```
+	 * @see \Timber\PostPreview
+	 * @return \Timber\PostPreview
 	 */
 	public function preview() {
 		return new PostPreview($this);
@@ -515,19 +531,57 @@ class Post extends Core implements CoreInterface {
 	 * @return array
 	 */
 	protected function get_post_custom( $pid ) {
-		apply_filters('timber_post_get_meta_pre', array(), $pid, $this);
-		$customs = get_post_custom($pid);
-		if ( !is_array($customs) || empty($customs) ) {
+		$post_meta = array();
+
+		/**
+		 * Filters post meta data before it is fetched from the database.
+		 *
+		 * Timber loads all meta values into the post object on initialization. With this filter,
+		 * you can disable fetching the meta values through the default method, which uses
+		 * `get_post_meta()`, by returning `false` or an non-empty array.
+		 *
+		 * @example
+		 * ```php
+		 * // Disable fetching meta values.
+		 * add_filter( 'timber_post_get_meta_pre', '__return_false' );
+		 *
+		 * // Add your own meta data.
+		 * add_filter( 'timber_post_get_meta_pre', function( $post_meta, $post_id, $post ) {
+		 *     $post_meta = array(
+		 *         'custom_data_1' => 73,
+		 *         'custom_data_2' => 274,
+		 *     );
+		 *
+		 *     return $post_meta;
+		 * }, 10, 3 );
+		 * ```
+		 *
+		 * @param array $post_meta        An array of custom meta values. Passing false or a
+		 *                                non-empty array will skip fetching the values from the
+		 *                                database and will use the filtered values instead. Default
+		 *                                `array()`.
+		 * @param int          $post_id   The post ID.
+		 * @param \Timber\Post $post      The post object.
+		 */
+		$post_meta = apply_filters('timber_post_get_meta_pre', $post_meta, $pid, $this);
+
+		// Load all meta data when it wasn’t filtered before.
+		if ( false !== $post_meta && empty( $post_meta ) ) {
+			$post_meta = get_post_meta( $pid );
+		}
+
+		if ( !is_array($post_meta) ) {
 			return array();
 		}
-		foreach ( $customs as $key => $value ) {
+
+		foreach ( $post_meta as $key => $value ) {
 			if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
 				$value = $value[0];
 			}
-			$customs[$key] = maybe_unserialize($value);
+			$post_meta[$key] = maybe_unserialize($value);
 		}
-		$customs = apply_filters('timber_post_get_meta', $customs, $pid, $this);
-		return $customs;
+		$post_meta = apply_filters('timber_post_get_meta', $post_meta, $pid, $this);
+		return $post_meta;
 	}
 
 	/**
@@ -561,6 +615,11 @@ class Post extends Core implements CoreInterface {
 		$post->id = $post->ID;
 		$post->slug = $post->post_name;
 		$customs = $this->get_post_custom($post->ID);
+		if ( $this->is_previewing() ) {
+			global $wp_query;
+			$rev_id = $this->get_post_preview_id($wp_query);
+			$customs = $this->get_post_custom($rev_id);
+		}
 		$post->custom = $customs;
 		$post = (object) array_merge((array) $customs, (array) $post);
 		return $post;
@@ -576,89 +635,167 @@ class Post extends Core implements CoreInterface {
 		return Helper::get_comment_form($this->ID, $args);
 	}
 
-
 	/**
-	 * Get the terms associated with the post
-	 * This goes across all taxonomies by default
+	 * Gets the terms associated with the post.
+	 *
 	 * @api
+	 * @todo Remove deprecated parameters in 2.x
 	 * @example
 	 * ```twig
 	 * <section id="job-feed">
 	 * {% for post in job %}
-	 *   <div class="job">
-	 *     <h2>{{ post.title }}</h2>
-	 *     <p>{{ post.terms('category') | join(', ') }}
-	 *   </div>
+	 *     <div class="job">
+	 *         <h2>{{ post.title }}</h2>
+	 *         <p>{{ post.terms( {query:{taxonomy:'category', orderby:'name', order: 'ASC'}} )|join(', ') }}</p>
+	 *     </div>
 	 * {% endfor %}
 	 * </section>
 	 * ```
 	 * ```html
 	 * <section id="job-feed">
-	 *   <div class="job">
-	 * 	   <h2>Cheese Maker</h2>
-	 *     <p>Food, Cheese, Fromage</p>
-	 *   </div>
-	 *   <div class="job">
-	 * 	   <h2>Mime</h2>
-	 *     <p>Performance, Silence</p>
-	 *   </div>
+	 *     <div class="job">
+	 *         <h2>Cheese Maker</h2>
+	 *         <p>Cheese, Food, Fromage</p>
+	 *     </div>
+	 *     <div class="job">
+	 *         <h2>Mime</h2>
+	 *         <p>Performance, Silence</p>
+	 *     </div>
 	 * </section>
 	 * ```
-	 * @param string|array $tax What taxonom(y|ies) to pull from. Defaults to all registered taxonomies for the post type. You can use custom ones, or built-in WordPress taxonomies (category, tag). Timber plays nice and figures out that tag/tags/post_tag are all the same (and categories/category), for custom taxonomies you're on your own.
-	 * @param bool $merge Should the resulting array be one big one (true)? Or should it be an array of sub-arrays for each taxonomy (false)?
-	 * @return array
+	 * ```php
+	 * // Get all terms of a taxonomy.
+	 * $terms = $post->terms( 'category' );
+	 *
+	 * // Get terms of multiple taxonomies.
+	 * $terms = $post->terms( array( 'books', 'movies' ) );
+	 *
+	 * // Use custom arguments for taxonomy query and options.
+	 * $terms = $post->terms( array(
+     *     'query' => [
+     *         'taxonomy' => 'custom_tax',
+     *         'orderby'  => 'count',
+     *     ],
+     *     'merge'      => false,
+     *     'term_class' => 'My_Term_Class'
+     * ) );
+	 * ```
+	 *
+	 * @param string|array $args {
+	 *     Optional. Name of the taxonomy or array of arguments.
+	 *
+	 *     @type array $query       Any array of term query parameters for getting the terms. See
+	 *                              `WP_Term_Query::__construct()` for supported arguments. Use the
+	 *                              `taxonomy` argument to choose which taxonomies to get. Defaults
+	 *                              to querying all registered taxonomies for the post type. You can
+	 *                              use custom or built-in WordPress taxonomies (category, tag).
+	 *                              Timber plays nice and figures out that `tag`, `tags` or
+	 *                              `post_tag` are all the same (also for `categories` or
+	 *                              `category`). For custom taxonomies you need to define the
+	 *                              proper name.
+	 *     @type bool $merge        Whether the resulting array should be one big one (`true`) or
+	 *                              whether it should be an array of sub-arrays for each taxonomy
+	 *                              (`false`). Default `true`.
+	 *     @type string $term_class The Timber term class to use for the term objects.
+	 * }
+	 * @param bool   $merge      Deprecated. Optional. See `$merge` argument in `$args` parameter.
+	 * @param string $term_class Deprecated. Optional. See `$term_class` argument in `$args`
+	 *                           parameter.
+	 * @return array An array of taxonomies.
 	 */
-	public function terms( $tax = '', $merge = true, $TermClass = '' ) {
-		$taxonomies = array();
-		$TermClass = $TermClass ?: $this->TermClass;
+	public function terms( $args = array(), $merge = true, $term_class = '' ) {
+		// Ensure backwards compatibility.
+		if ( ! is_array( $args ) || isset( $args[0] ) ) {
+			$args = array(
+				'query' => array(
+					'taxonomy' => $args,
+				),
+				'merge' => $merge,
+				'term_class' => $term_class,
+			);
 
+			if ( empty( $args['term_class']) ) {
+				$args['term_class'] = $this->TermClass;
+			}
+		}
+
+		// Defaults.
+		$args = wp_parse_args( $args, array(
+			'query' => array(
+				'taxonomy' => 'all',
+			),
+			'merge' => true,
+			'term_class' => $this->TermClass,
+		) );
+
+		$tax        = $args['query']['taxonomy'];
+		$merge      = $args['merge'];
+		$term_class = $args['term_class'];
+
+		$taxonomies = array();
+
+		// @todo: Remove in 2.x
 		if ( is_string($merge) && class_exists($merge) ) {
-			$TermClass = $merge;
+			$term_class = $merge;
 		}
-		if ( is_array($tax) ) {
+
+		// Build an array of taxonomies.
+		if ( is_array( $tax ) ) {
 			$taxonomies = $tax;
-		}
-		if ( is_string($tax) ) {
-			if ( in_array($tax, array('all', 'any', '')) ) {
+		} elseif ( is_string( $tax ) ) {
+			if ( in_array( $tax, array( 'all', 'any', '' ) ) ) {
 				$taxonomies = get_object_taxonomies($this->post_type);
 			} else {
 				$taxonomies = array($tax);
 			}
 		}
 
-		$term_class_objects = array();
-
-		foreach ( $taxonomies as $taxonomy ) {
-			if ( in_array($taxonomy, array('tag', 'tags')) ) {
+		// @todo Remove in 2.x
+		$taxonomies = array_map( function( $taxonomy ) {
+			if ( in_array( $taxonomy, array( 'tag', 'tags' ), true ) ) {
 				$taxonomy = 'post_tag';
-			}
-			if ( $taxonomy == 'categories' ) {
+			} elseif ( 'categories' === $taxonomy ) {
 				$taxonomy = 'category';
 			}
 
-			$terms = wp_get_post_terms($this->ID, $taxonomy);
+			return $taxonomy;
+		}, $taxonomies );
 
-			if ( is_wp_error($terms) ) {
-				/* @var $terms WP_Error */
-				Helper::error_log("Error retrieving terms for taxonomy '$taxonomy' on a post in timber-post.php");
-				Helper::error_log('tax = '.print_r($tax, true));
-				Helper::error_log('WP_Error: '.$terms->get_error_message());
+		$terms = wp_get_post_terms( $this->ID, $taxonomies, $args['query'] );
 
-				return $term_class_objects;
-			}
+		if ( is_wp_error( $terms ) ) {
+			/**
+			 * @var $terms \WP_Error
+			 */
+			Helper::error_log( "Error retrieving terms for taxonomies on a post in timber-post.php" );
+			Helper::error_log( 'tax = ' . print_r( $tax, true ) );
+			Helper::error_log( 'WP_Error: ' . $terms->get_error_message() );
 
-			// map over array of wordpress terms, and transform them into instances of the TermClass
-			$terms = array_map(function( $term ) use ($TermClass, $taxonomy) {
-				return call_user_func(array($TermClass, 'from'), $term->term_id, $taxonomy);
-			}, $terms);
-
-			if ( $merge && is_array($terms) ) {
-				$term_class_objects = array_merge($term_class_objects, $terms);
-			} else if ( count($terms) ) {
-				$term_class_objects[$taxonomy] = $terms;
-			}
+			return $terms;
 		}
-		return $term_class_objects;
+
+		// Map over array of WordPress terms and transform them into instances of the chosen term class.
+		$terms = array_map( function( $term ) use ( $term_class ) {
+			return call_user_func( array( $term_class, 'from' ), $term->term_id, $term->taxonomy );
+		}, $terms );
+
+		if ( ! $merge ) {
+			$terms_sorted = array();
+
+			// Initialize sub-arrays.
+			foreach ( $taxonomies as $taxonomy ) {
+				$terms_sorted[ $taxonomy ] = array();
+			}
+
+			// Fill terms into arrays.
+			foreach ( $terms as $term ) {
+				$terms_sorted[ $term->taxonomy ][] = $term;
+			}
+
+			return $terms_sorted;
+		}
+
+		return $terms;
 	}
 
 	/**
@@ -735,7 +872,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function field_object( $field_name ) {
 		$value = apply_filters('timber/post/meta_object_field', null, $this->ID, $field_name, $this);
-		$value = $this->convert($value, __CLASS__);
+		$value = $this->convert($value);
 		return $value;
 	}
 
@@ -744,6 +881,9 @@ class Post extends Core implements CoreInterface {
 	 * @return mixed
 	 */
 	public function get_field( $field_name ) {
+		if ( $rd = $this->get_revised_data_from_method('get_field', $field_name) ) {
+			return $rd;
+		}
 		$value = apply_filters('timber_post_get_meta_field_pre', null, $this->ID, $field_name, $this);
 		if ( $value === null ) {
 			$value = get_post_meta($this->ID, $field_name);
@@ -755,7 +895,7 @@ class Post extends Core implements CoreInterface {
 			}
 		}
 		$value = apply_filters('timber_post_get_meta_field', $value, $this->ID, $field_name, $this);
-		$value = $this->convert($value, __CLASS__);
+		$value = $this->convert($value);
 		return $value;
 	}
 
@@ -789,6 +929,9 @@ class Post extends Core implements CoreInterface {
 		$old_global_post = $post;
 		$post = $this;
 		$class_array = get_post_class($class, $this->ID);
+		if ( $this->is_previewing() ) {
+			$class_array = get_post_class($class, $this->post_parent);
+		}
 		$post = $old_global_post;
 		if ( is_array($class_array) ) {
 			return implode(' ', $class_array);
@@ -888,7 +1031,7 @@ class Post extends Core implements CoreInterface {
 	/**
 	 * Get the categoires on a particular post
 	 * @api
-	 * @return array of TimberTerms
+	 * @return array of Timber\Terms
 	 */
 	public function categories() {
 		return $this->terms('category');
@@ -898,7 +1041,7 @@ class Post extends Core implements CoreInterface {
 	 * Returns a category attached to a post
 	 * @api
 	 * If mulitpuile categories are set, it will return just the first one
-	 * @return TimberTerm|null
+	 * @return Timber\Term|null
 	 */
 	public function category() {
 		return $this->get_category();
@@ -944,25 +1087,51 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Gets the comments on a Timber\Post and returns them as an array of [TimberComments](#TimberComment) (or whatever comment class you set).
+	 * Gets the comments on a `Timber\Post` and returns them as a `Timber\CommentThread`: a PHP
+	 * ArrayObject of [`Timber\Comment`](https://timber.github.io/docs/reference/timber-comment/)
+	 * (or whatever comment class you set).
 	 * @api
-	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
-	 * @param string $order use ordering set in WordPress admin, or a different scheme
-	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
-	 * @param string $status Could be 'pending', etc.
-	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending TimberComment for your site or app (obviously, totally optional)
+	 *
+	 * @param int    $count        Set the number of comments you want to get. `0` is analogous to
+	 *                             "all".
+	 * @param string $order        Use ordering set in WordPress admin, or a different scheme.
+	 * @param string $type         For when other plugins use the comments table for their own
+	 *                             special purposes. Might be set to 'liveblog' or other, depending
+	 *                             on what’s stored in your comments table.
+	 * @param string $status       Could be 'pending', etc.
+	 * @param string $CommentClass What class to use when returning Comment objects. As you become a
+	 *                             Timber Pro, you might find yourself extending `Timber\Comment`
+	 *                             for your site or app (obviously, totally optional).
+	 * @see \Timber\CommentThread for an example with nested comments
+	 * @return bool|\Timber\CommentThread
+	 *
 	 * @example
+	 *
+	 * **single.twig**
+	 *
 	 * ```twig
-	 * {# single.twig #}
-	 * <h4>Comments:</h4>
-	 * {% for comment in post.comments %}
-	 * 	<div class="comment-{{comment.ID}} comment-order-{{loop.index}}">
-	 * 		<p>{{comment.author.name}} said:</p>
-	 * 		<p>{{comment.content}}</p>
-	 * 	</div>
-	 * {% endfor %}
+	 * <div id="post-comments">
+	 *   <h4>Comments on {{ post.title }}</h4>
+	 *   <ul>
+	 *     {% for comment in post.comments() %}
+	 *       {% include 'comment.twig' %}
+	 *     {% endfor %}
+	 *   </ul>
+	 *   <div class="comment-form">
+	 *     {{ function('comment_form') }}
+	 *   </div>
+	 * </div>
 	 * ```
-	 * @return bool|array
+	 *
+	 * **comment.twig**
+	 *
+	 * ```twig
+	 * {# comment.twig #}
+	 * <li>
+	 *   <p class="comment-author">{{ comment.author.name }} says:</p>
+	 *   <div>{{ comment.content }}</div>
+	 * </li>
+	 * ```
 	 */
 	public function comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
 		global $overridden_cpage, $user_ID;
@@ -978,11 +1147,15 @@ class Post extends Core implements CoreInterface {
 		if ( strtolower($order) == 'wp' || strtolower($order) == 'wordpress' ) {
 			$args['order'] = get_option('comment_order');
 		}
-
 		if ( $user_ID ) {
 			$args['include_unapproved'] = array($user_ID);
 		} elseif ( !empty($comment_author_email) ) {
 			$args['include_unapproved'] = array($comment_author_email);
+		} elseif ( function_exists('wp_get_unapproved_comment_author_email') ) {
+			$unapproved_email = wp_get_unapproved_comment_author_email();
+			if ( $unapproved_email ) {
+				$args['include_unapproved'] = array($unapproved_email);
+			}
 		}
 		$ct = new CommentThread($this->ID, false);
 		$ct->CommentClass = $CommentClass;
@@ -1005,6 +1178,19 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
+	 *
+	 */
+	protected function get_revised_data_from_method( $method, $args = false ) {
+		if ( ! is_array($args) ) {
+			$args = array($args);
+		}
+		$rev = $this->get_post_preview_object();
+		if ( $rev && $this->ID == $rev->post_parent && $this->ID != $rev->ID ) {
+			return call_user_func_array( array($rev, $method), $args );
+		}
+	}
+
+	/**
 	 * Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).
 	 * @api
 	 * @example
@@ -1018,11 +1204,14 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function content( $page = 0, $len = -1 ) {
+		if ( $rd = $this->get_revised_data_from_method('content', array($page, $len) ) ) {
+			return $rd;
+		}
 		if ( $form = $this->maybe_show_password_form() ) {
 			return $form;
 		}
-		if ( $len == -1 && $page == 0 && $this->_content ) {
-			return $this->_content;
+		if ( $len == -1 && $page == 0 && $this->___content ) {
+			return $this->___content;
 		}
 		$content = $this->post_content;
 		if ( $len > 0 ) {
@@ -1035,9 +1224,26 @@ class Post extends Core implements CoreInterface {
 				$content = $contents[$page];
 			}
 		}
+		$content = $this->content_handle_no_teaser_block( $content );
 		$content = apply_filters('the_content', ($content));
 		if ( $len == -1 && $page == 0 ) {
-			$this->_content = $content;
+			$this->___content = $content;
+		}
+		return $content;
+	}
+
+	/**
+	 * Handles for an circumstance with the Block editor where a "more" block has an option to 
+	 * "Hide the excerpt on the full content page" which hides everything prior to the inserted 
+	 * "more" block
+	 * @ticket #2218
+	 * @param string $content
+	 * @return string
+	 */
+	protected function content_handle_no_teaser_block( $content ) {
+		if ( strpos($content, 'noTeaser:true') !== false ) {
+			$arr = explode('<!--noteaser-->', $content);
+			return $arr[1];
 		}
 		return $content;
 	}
@@ -1070,7 +1276,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function date( $date_format = '' ) {
 		$df = $date_format ? $date_format : get_option('date_format');
-		$the_date = (string) mysql2date($df, $this->post_date);
+		$the_date = date_i18n($df, strtotime($this->post_date));
 		return apply_filters('get_the_date', $the_date, $df, $this->id);
 	}
 
@@ -1094,7 +1300,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	public function time( $time_format = '' ) {
 		$tf = $time_format ? $time_format : get_option('time_format');
-		$the_time = (string) mysql2date($tf, $this->post_date);
+		$the_time = date_i18n($tf, strtotime($this->post_date));
 		return apply_filters('get_the_time', $the_time, $tf, $this->id);
 	}
 
@@ -1269,18 +1475,16 @@ class Post extends Core implements CoreInterface {
 	 * @param array|WP_Post $data
 	 * @param string $class
 	 */
-	public function convert( $data, $class = '\Timber\Post' ) {
-		if ( $data instanceof WP_Post ) {
-			$data = new $class($data);
+	public function convert( $data ) {
+		if ( is_object($data) ) {
+			$data = Helper::convert_wp_object($data);
 		} else if ( is_array($data) ) {
 			$func = __FUNCTION__;
 			foreach ( $data as &$ele ) {
-				if ( gettype($ele) === 'array' ) {
-					$ele = $this->$func($ele, $class);
-				} else {
-					if ( $ele instanceof WP_Post ) {
-						$ele = new $class($ele);
-					}
+				if ( is_array($ele) ) {
+					$ele = $this->$func($ele);
+				} else if ( is_object($ele) ) {
+					$ele = Helper::convert_wp_object($ele);
 				}
 			}
 		}
@@ -1366,7 +1570,7 @@ class Post extends Core implements CoreInterface {
 	 * ```twig
 	 * <img src="{{ post.thumbnail.src }}" />
 	 * ```
-	 * @return Timber/Image|null of your thumbnail
+	 * @return Timber\Image|null of your thumbnail
 	 */
 	public function thumbnail() {
 		$tid = get_post_thumbnail_id($this->ID);
@@ -1387,6 +1591,9 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	public function title() {
+		if ( $rd = $this->get_revised_data_from_method('title') ) {
+			return $rd;
+		}
 		return apply_filters('the_title', $this->post_title, $this->ID);
 	}
 
@@ -1470,7 +1677,7 @@ class Post extends Core implements CoreInterface {
 	 * @deprecated since 1.0
 	 * @codeCoverageIgnore
 	 * @see Timber\Post::categories
-	 * @return array of TimberTerms
+	 * @return array of Timber\Terms
 	 */
 	public function get_categories() {
 		return $this->terms('category');
@@ -1492,7 +1699,7 @@ class Post extends Core implements CoreInterface {
 
 	/**
 	 * @param string $field
-	 * @return TimberImage
+	 * @return Timber\Image
 	 */
 	public function get_image( $field ) {
 		return new $this->ImageClass($this->$field);

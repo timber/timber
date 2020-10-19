@@ -15,7 +15,7 @@ class Helper {
 	 * @api
 	 * @example
 	 * ```php
-	 * $context = Timber::get_context();
+	 * $context = Timber::context();
 	 * $context['favorites'] = Timber\Helper::transient('user-' .$uid. '-favorites', function() use ($uid) {
 	 *  	//some expensive query here that's doing something you want to store to a transient
 	 *  	return $favorites;
@@ -145,8 +145,8 @@ class Helper {
 	 *     echo '<form action="form.php"><input type="text" /><input type="submit /></form>';
 	 * }
 	 *
-	 * $context = Timber::get_context();
-	 * $context['post'] = new TimberPost();
+	 * $context = Timber::context();
+	 * $context['post'] = new Timber\Post();
 	 * $context['my_form'] = TimberHelper::ob_function('the_form');
 	 * Timber::render('single-form.twig', $context);
 	 * ```
@@ -172,6 +172,7 @@ class Helper {
 	}
 
 	/**
+	 * @codeCoverageIgnore
 	 * @deprecated since 1.3.0
 	 *
 	 * @param mixed $function_name        String or array( $class( string|object ), $function_name ).
@@ -199,7 +200,7 @@ class Helper {
 		if ( is_object($error) || is_array($error) ) {
 			$error = print_r($error, true);
 		}
-		return error_log($error);
+		return error_log('[ Timber ] '.$error);
 	}
 
 	/**
@@ -423,16 +424,44 @@ class Helper {
 
 	/**
 	 * Filters a list of objects, based on a set of key => value arguments.
+	 * Uses native Twig Filter.
+	 *
+	 * @since 1.14.0
+	 * @deprecated since 1.17 (to be removed in 2.0). Use array_filter or Helper::wp_list_filter instead
+	 * @todo remove this in 2.x
+	 * @param array                 $list to filter.
+	 * @param callback|string|array $arrow function used for filtering,
+	 *                              string or array for backward compatibility.
+	 * @param string                $operator to use (AND, NOT, OR). For backward compatibility.
+	 * @return array
+	 */
+	public static function filter_array( $list, $arrow, $operator = 'AND' ) {
+		if ( ! is_callable( $arrow ) ) {
+			self::warn( 'This filter is using Twig\'s filter by default. If you want to use wp_list_filter use {{ my_array|wp_list_filter }}.' );
+			return self::wp_list_filter( $list, $arrow, $operator );
+		}
+
+		if ( is_array( $list ) ) {
+			return array_filter( $list, $arrow, \ARRAY_FILTER_USE_BOTH );
+		}
+
+		// the IteratorIterator wrapping is needed as some internal PHP classes are \Traversable but do not implement \Iterator
+		return new \CallbackFilterIterator( new \IteratorIterator( $list ), $arrow );
+	}
+
+	/**
+	 * Filters a list of objects, based on a set of key => value arguments.
+	 * Uses WordPress WP_List_Util's filter.
 	 *
 	 * @since 1.5.3
 	 * @ticket #1594
 	 * @param array        $list to filter.
-	 * @param string|array $filter to search for.
+	 * @param string|array $args to search for.
 	 * @param string       $operator to use (AND, NOT, OR).
 	 * @return array
 	 */
-	public static function filter_array( $list, $args, $operator = 'AND' ) {
-		if ( ! is_array($args) ) {
+	public static function wp_list_filter( $list, $args, $operator = 'AND' ) {
+		if ( ! is_array( $args ) ) {
 			$args = array( 'slug' => $args );
 		}
 
@@ -456,6 +485,8 @@ class Helper {
 	 * @return string
 	 */
 	public static function get_comment_form( $post_id = null, $args = array() ) {
+		global $post;
+		$post = get_post($post_id);
 		return self::ob_function('comment_form', array($args, $post_id));
 	}
 
@@ -477,5 +508,27 @@ class Helper {
 	public function get_current_url() {
 		Helper::warn('TimberHelper::get_current_url() is deprecated and will be removed in future versions, use Timber\URLHelper::get_current_url()');
 		return URLHelper::get_current_url();
+	}
+
+	/**
+	 * Converts a WP object (WP_Post, WP_Term) into his
+	 * equivalent Timber class (Timber\Post, Timber\Term).
+	 *
+	 * If no match is found the function will return the inital argument.
+	 *
+	 * @param mix $obj WP Object
+	 * @return mix Instance of equivalent Timber object, or the argument if no match is found
+	 */
+	public static function convert_wp_object( $obj ) {
+		if ( $obj instanceof \WP_Post ) {
+			$class = \Timber\PostGetter::get_post_class($obj->post_type);
+			return new $class($obj->ID);
+		} elseif ( $obj instanceof \WP_Term ) {
+			return new \Timber\Term($obj->term_id);
+		} elseif ( $obj instanceof \WP_User ) {
+			return new \Timber\User($obj->ID);
+		}
+
+		return $obj;
 	}
 }

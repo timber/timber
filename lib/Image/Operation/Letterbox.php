@@ -3,6 +3,8 @@
 namespace Timber\Image\Operation;
 
 use Timber\Helper;
+use Timber\ImageHelper;
+use Timber\PathHelper;
 use Timber\Image\Operation as ImageOperation;
 
 /*
@@ -57,6 +59,11 @@ class Letterbox extends ImageOperation {
 	 * @return bool                  true if everything went fine, false otherwise
 	 */
 	public function run( $load_filename, $save_filename ) {
+		// Attempt to check if SVG.
+		if ( ImageHelper::is_svg($load_filename) ) {
+			return false;
+		}
+		
 		$w = $this->w;
 		$h = $this->h;
 
@@ -97,7 +104,7 @@ class Letterbox extends ImageOperation {
 			$result = $image->save($save_filename);
 			$func = 'imagecreatefromjpeg';
 			$save_func = 'imagejpeg';
-			$ext = pathinfo($save_filename, PATHINFO_EXTENSION);
+			$ext = PathHelper::pathinfo($save_filename, PATHINFO_EXTENSION);
 			if ( $ext == 'gif' ) {
 				$func = 'imagecreatefromgif';
 				$save_func = 'imagegif';

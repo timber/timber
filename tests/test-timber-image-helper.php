@@ -29,6 +29,11 @@
 			$this->assertFalse( TimberImageHelper::is_animated_gif($arch) );
 		}
 
+		function testIsSVG() {
+			$image = TestTimberImage::copyTestImage('timber-logo.svg');
+			$this->assertTrue( TimberImageHelper::is_svg( $image ) );
+		}
+
 		function testServerLocation() {
 			$arch = TestTimberImage::copyTestImage('arch.jpg');
 			$this->assertEquals($arch, \Timber\ImageHelper::get_server_location($arch));
@@ -66,6 +71,27 @@
 			$resized_path = $upload_dir['path'].'/flag-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.png';
 			$exists = file_exists( $resized_path );
 			$this->assertTrue( $exists );
+		}
+
+		function testDeleteSideloadedFile() {
+			$filename = 'acGwPDj4_400x400';
+			$img = Timber\ImageHelper::sideload_image('https://pbs.twimg.com/profile_images/768086933310476288/'.$filename.'.jpg');
+			$files = scandir('/tmp');
+			$matches = false;
+			foreach ($files as $file) {
+				$substr = substr($file, 0, strlen($filename));
+				if ( $substr == $filename ) {
+					$matches = true;
+				}
+			}
+			$this->assertFalse($matches);
+		}
+
+		/**
+		 * @doesNotPerformAssertions
+		 */
+		function testDeleteFalseFile() {
+			TimberImageHelper::delete_generated_files('/etc/www/image.jpg');
 		}
 
 		function testLetterbox() {

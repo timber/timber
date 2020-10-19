@@ -23,6 +23,7 @@ class QueryIterator implements \Iterator, \Countable {
 	public function __construct( $query = false, $posts_class = 'Timber\Post' ) {
 		add_action('pre_get_posts', array($this, 'fix_number_posts_wp_quirk'));
 		add_action('pre_get_posts', array($this, 'fix_cat_wp_quirk'));
+
 		if ( $posts_class ) {
 			$this->_posts_class = $posts_class;
 		}
@@ -61,6 +62,18 @@ class QueryIterator implements \Iterator, \Countable {
 
 	public function post_count() {
 		return $this->_query->post_count;
+	}
+
+	/**
+	 * Gets the amount of found posts in the query.
+	 *
+	 * @api
+	 * @since 1.11.1
+	 *
+	 * @return int
+	 */
+	public function found_posts() {
+		return $this->_query->found_posts;
 	}
 
 	public function get_pagination( $prefs ) {

@@ -27,7 +27,7 @@ class PostGetter {
 
 		$posts = self::get_posts($query, $PostClass);
 
-		if ( $post = reset($posts) ) {
+		if ( is_iterable($posts) && $post = reset($posts) ) {
 			return $post;
 		}
 
@@ -52,6 +52,30 @@ class PostGetter {
 	}
 
 	public static function get_posts( $query = false, $PostClass = '\Timber\Post', $return_collection = false ) {
+
+		/**
+		 * Filters whether Timber::get_posts() should mirror WordPress’s get_posts() function.
+		 *
+		 * When passing `true` in this filter, Timber will set the following parameters for your query:
+		 *
+		 * - `ignore_sticky_posts = true`
+		 * - `suppress_filters = true`
+		 * - `no_found_rows = true`
+		 *
+		 * @since 1.9.5
+		 * @example
+		 * ```php
+		 * add_filter( 'timber/get_posts/mirror_wp_get_posts', '__return_true' );
+		 * ```
+		 *
+		 * @param bool $mirror Whether to mirror the `get_posts()` function of WordPress with all its
+		 *                     parameters. Default `false`.
+		 */
+		$mirror_wp_get_posts = apply_filters( 'timber/get_posts/mirror_wp_get_posts', false );
+		if ( $mirror_wp_get_posts ) {
+			add_filter( 'pre_get_posts', array('Timber\PostGetter', 'set_query_defaults') );
+		}
+
 		$posts = self::query_posts($query, $PostClass);
 		return apply_filters('timber_post_getter_get_posts', $posts->get_posts($return_collection));
 	}
@@ -61,6 +85,27 @@ class PostGetter {
 		if ( method_exists($posts, 'current') && $post = $posts->current() ) {
 			return $post;
 		}
+	}
+
+	/**
+	 * Sets some default values for those parameters for the query when not set. WordPress's get_posts sets a few of
+	 * these parameters true by default (compared to WP_Query), we should do the same.
+	 * @internal
+	 * @param \WP_Query $query
+	 * @return \WP_Query
+	 */
+	public static function set_query_defaults( $query ) {
+		if ( isset($query->query) && !isset($query->query['ignore_sticky_posts']) ) {
+			$query->set('ignore_sticky_posts', true);
+		}
+		if ( isset($query->query) && !isset($query->query['suppress_filters']) ) {
+			$query->set('suppress_filters', true);
+		}
+		if ( isset($query->query) && !isset($query->query['no_found_rows']) ) {
+			$query->set('no_found_rows', true);
+		}
+		remove_filter('pre_get_posts', array('Timber\PostGetter', 'set_query_defaults'));
+		return $query;
 	}
 
 	/**
@@ -129,16 +174,14 @@ class PostGetter {
 		if ( is_array($post_class) ) {
 			if ( isset($post_class[$post_type]) ) {
 				$post_class_use = $post_class[$post_type];
-			} else {
-				Helper::error_log($post_type.' not found in '.print_r($post_class, true));
 			}
 		} elseif ( is_string($post_class) ) {
 			$post_class_use = $post_class;
 		} else {
-			Helper::error_log('Unexpeted value for PostClass: '.print_r($post_class, true));
+			Helper::error_log('Unexpected value for PostClass: '.print_r($post_class, true));
 		}
 
-		if ( $post_class_use === '\Timber\Post' || $post_class_use === 'Timber\Post') {
+		if ( $post_class_use === '\Timber\Post' || $post_class_use === 'Timber\Post' ) {
 			return $post_class_use;
 		}
 

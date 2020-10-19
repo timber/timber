@@ -7,10 +7,18 @@ function deploy () {
 	rm -rf ~/Sites/timber/timber-starter-theme
 	git clone git@github.com:Upstatement/timber-starter-theme.git
 	rm -rf ~/Sites/timber/timber-starter-theme/.git
+	rm composer.lock
+	composer config platform.php 5.6.4
 	composer install --no-dev --optimize-autoloader
 	rm -rf ~/Sites/timber/vendor/upstatement/routes/.git
 	cd ~/Sites/timber-wp
 	mkdir tags/$1
+
+	# Clean the Starter Theme of stuff we don't want on WP.org
+	rm ~/Sites/timber/timber-starter-theme/composer.json
+	rm ~/Sites/timber/timber-starter-theme/composer.lock
+	rm -rf ~/Sites/timber/timber-starter-theme/vendor
+	rm -rf ~/Sites/timber/timber-starter-theme/bin
 
 	cp -r ~/Sites/timber/lib tags/$1/lib
 	cp -r ~/Sites/timber/timber-starter-theme tags/$1/timber-starter-theme
@@ -35,6 +43,8 @@ function deploy () {
 	cp ~/Sites/timber/bin/timber.php ~/Sites/timber-wp/trunk/timber.php
 	svn commit -m "updating to $1" readme.txt
 	svn commit -m "updating to $1" timber.php
+	cd ~/Sites/timber
+	git checkout composer.json
 }
 
 #!/usr/bin/env bash
@@ -42,6 +52,7 @@ read -p "Did you update the changelog and version numbers?" -n 1 -r
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
+	php -v
     echo "Setting up version " $1
 	echo "You still need to use Versions to send to WP.org"
 

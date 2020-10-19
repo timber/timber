@@ -7,10 +7,10 @@ use Timber\Core;
 use Timber\CoreInterface;
 
 /**
- * The TimberComment class is used to view the output of comments. 99% of the time this will be in the context of the comments on a post. However you can also fetch a comment directly using its comment ID.
+ * The Timber\Comment class is used to view the output of comments. 99% of the time this will be in the context of the comments on a post. However you can also fetch a comment directly using its comment ID.
  * @example
  * ```php
- * $comment = new TimberComment($comment_id);
+ * $comment = new Timber\Comment($comment_id);
  * $context['comment_of_the_day'] = $comment;
  * Timber::render('index.twig', $context);
  * ```
@@ -79,16 +79,16 @@ class Comment extends Core implements CoreInterface {
 	 * <h3>Comments by...</h3>
 	 * <ol>
 	 * {% for comment in post.comments %}
-	 * 	<li>{{comment.author.name}}, who is a {{comment.author.role}}</li>
+	 *     <li>{{comment.author.name}}, who has the following roles: {{comment.author.roles|join(', ')}}</li>
 	 * {% endfor %}
 	 * </ol>
 	 * ```
 	 * ```html
 	 * <h3>Comments by...</h3>
 	 * <ol>
-	 * 	<li>Jared Novack, who is a contributor</li>
-	 * 	<li>Katie Ricci, who is a subscriber</li>
-	 * 	<li>Rebecca Pearl, who is a author</li>
+	 *  <li>Jared Novack, who is a contributor</li>
+	 *  <li>Katie Ricci, who is a subscriber</li>
+	 *  <li>Rebecca Pearl, who is a author</li>
 	 * </ol>
 	 * ```
 	 * @return User
@@ -130,13 +130,13 @@ class Comment extends Core implements CoreInterface {
 		}
 
 		$email = $this->avatar_email();
-		
+
 		$args = array('size' => $size, 'default' => $default);
 		$args = apply_filters('pre_get_avatar_data', $args, $email);
 		if ( isset($args['url']) ) {
 			return $args['url'];
 		}
-		
+
 		$email_hash = '';
 		if ( !empty($email) ) {
 			$email_hash = md5(strtolower(trim($email)));
@@ -206,7 +206,7 @@ class Comment extends Core implements CoreInterface {
 	 * @return boolean
 	 */
 	public function approved() {
-		return Helper::is_true($this->comment_approved);		
+		return Helper::is_true($this->comment_approved);
 	}
 
 	/**

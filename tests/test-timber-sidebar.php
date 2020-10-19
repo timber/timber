@@ -3,7 +3,7 @@
 	class TestTimberSidebar extends Timber_UnitTestCase {
 
 		function testTwigSidebar(){
-			$context = Timber::get_context();
+			$context = Timber::context();
 			$sidebar_post = $this->factory->post->create(array('post_title' => 'Sidebar post content'));
 			$sidebar_context = array();
 			$sidebar_context['post'] = new TimberPost($sidebar_post);
@@ -17,7 +17,7 @@
 				$context['sidebar'] = Timber::get_sidebar('assets/my-sidebar.php');
 				return $context;
 			});
-			$context = Timber::get_context();
+			$context = Timber::context();
 			$result = Timber::compile('assets/main-w-sidebar-php.twig', $context);
 			$this->assertEquals("A Fever You Can't Sweat Out by Panic! at the Disco from 2005", trim($result));
 

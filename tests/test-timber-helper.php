@@ -64,6 +64,8 @@
 
 		function testCommentForm() {
 			$post_id = $this->factory->post->create();
+			global $post;
+			$post = get_post($post_id);
 			$form = TimberHelper::ob_function( 'comment_form', array( array(), $post_id ) );
 			$form = trim($form);
 			$this->assertStringStartsWith('<div id="respond"', $form);
@@ -210,17 +212,30 @@
 			$this->assertEquals(1984, $people[1]->year);
 		}
 
-		function testArrayFilter() {
+		/**
+		 * Updated to new syntax
+		 * @ticket #2124
+		 */
+		function testNewArrayFilter() {
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
 			$posts = Timber::get_posts($posts);
-			$template = '{% for post in posts | filter("snoop")%}{{ post.content|striptags }}{% endfor %}';
+			$template = '{% for post in posts | wp_list_filter("snoop")%}{{ post.content|striptags }}{% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => $posts));
 			$this->assertEquals('Felicia Pearson', trim($str));
 		}
 
+		function testTwigFilterFilter() {
+			$template = "{% set sizes = [34, 36, 38, 40, 42] %}{{ sizes|filter(v => v > 38)|join(', ') }}";
+			$str = Timber::compile_string($template);
+			$this->assertEquals("40, 42", $str);
+		}
+
+		/**
+ 		 * @expectedException Twig\Error\RuntimeError
+		 */
 		function testArrayFilterKeyValueUsingPostQuery() {
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
@@ -233,6 +248,9 @@
 			$this->assertEquals('Cheese', trim($str));
 		}
 
+		/**
+ 		 * @expectedException Twig\Error\RuntimeError
+		 */
 		function testArrayFilterMulti() {
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
@@ -244,10 +262,58 @@
 			$this->assertEquals('Stringer Bell Snoop', trim($str));
 		}
 
+		/**
+ 		 * @expectedException Twig\Error\RuntimeError
+		 */
 		function testArrayFilterWithBogusArray() {
 			$template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => 'foobar'));
 			$this->assertEquals('', $str);
 		}
+
+		function testConvertWPObject() {
+
+			// Test WP_Post -> \Timber\Post
+			$post_id = $this->factory->post->create();
+			$wp_post = get_post( $post_id );
+			$timber_post = \Timber\Helper::convert_wp_object($wp_post);
+			$this->assertTrue($timber_post instanceof \Timber\Post);
+
+			// Test WP_Term -> \Timber\Term
+			$term_id = $this->factory->term->create();
+			$wp_term = get_term( $term_id );
+			$timber_term = \Timber\Helper::convert_wp_object($wp_term);
+			$this->assertTrue($timber_term instanceof \Timber\Term);
+
+			// Test WP_User -> \Timber\User
+			$user_id = $this->factory->user->create();
+			$wp_user = get_user_by('id', $user_id);
+			$timber_user = \Timber\Helper::convert_wp_object($wp_user);
+			$this->assertTrue($timber_user instanceof \Timber\User);
+
+			// Test strange input
+			$random_int = 2018;
+			$convert_int = \Timber\Helper::convert_wp_object($random_int);
+			$this->assertTrue($convert_int === $random_int);
+
+			$array = array();
+			$convert_array = \Timber\Helper::convert_wp_object($array);
+			$this->assertTrue(is_array($convert_array));
+		}
+
+ 		function testCovertPostWithClassMap() {
+			register_post_type('book');
+			require_once('assets/Sport.php');
+			add_filter('Timber\PostClassMap', function( $post_classes ) {
+				$post_classes = array('sport' => 'Sport', 'post' => 'Timber');
+				$post_classes['sport'] = 'Sport';
+				return $post_classes;
+			});
+ 			$sport_id = $this->factory->post->create(array('post_type' => 'sport', 'post_title' => 'Basketball Player'));
+			$wp_post = get_post($sport_id);
+			$sport_post = \Timber\Helper::convert_wp_object($wp_post);
+			$this->assertEquals('Sport', get_class($sport_post));
+			$this->assertEquals('ESPN', $sport_post->channel());
+ 		}
 
 	}

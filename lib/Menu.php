@@ -5,7 +5,7 @@ namespace Timber;
 use Timber\Core;
 use Timber\Post;
 
-class Menu extends Core {
+class Menu extends Term {
 
 	public $MenuItemClass = 'Timber\MenuItem';
 	public $PostClass = 'Timber\Post';
@@ -48,35 +48,61 @@ class Menu extends Core {
 
 	/**
 	 * @api
+	 * @var string The name of the menu (ex: `Main Navigation`).
+	 */
+	public $title;
+
+	/**
+	 * Menu options.
+	 *
+	 * @api
+	 * @since 1.9.6
+	 * @var array An array of menu options.
+	 */
+	public $options;
+
+	/**
+	 * @api
 	 * @var array The unfiltered options sent forward via the user in the __construct
 	 */
 	public $raw_options;
 
 	/**
+	 * Theme Location.
+	 *
 	 * @api
-	 * @var string The name of the menu (ex: `Main Navigation`).
+	 * @since 1.9.6
+	 * @var string The theme location of the menu, if available.
 	 */
-	public $title;
-
-
+	public $theme_location = null;
 
 	/**
 	 * Initialize a menu.
 	 *
 	 * @param int|string $slug    A menu slug, the term ID of the menu, the full name from the admin
-	 *                            menu, the slug of theregistered location or nothing. Passing nothing
-	 *                            is good if you only have one menu. Timber will grab what it finds.
-	 * @param array      $options An array of options, right now only `depth` is supported
+	 *                            menu, the slug of the registered location or nothing. Passing
+	 *                            nothing is good if you only have one menu. Timber will grab what
+	 *                            it finds.
+	 * @param array      $options Optional. An array of options. Right now, only the `depth` is
+	 *                            supported which says how many levels of hierarchy should be
+	 *                            included in the menu. Default `0`, which is all levels.
 	 */
 	public function __construct( $slug = 0, $options = array() ) {
 		$menu_id = false;
 		$locations = get_nav_menu_locations();
 
-		$this->set_options((array)$options);
+		// For future enhancements?
+		$this->raw_options = $options;
+
+		$this->options = wp_parse_args( (array) $options, array(
+			'depth' => 0,
+		) );
+
+		$this->depth = (int) $this->options['depth'];
 
 		if ( $slug != 0 && is_numeric($slug) ) {
 			$menu_id = $slug;
-		} else if ( is_array($locations) && count($locations) ) {
+		} else if ( is_array($locations) && ! empty( $locations ) ) {
 			$menu_id = $this->get_menu_id_from_locations($slug, $locations);
 		} else if ( $slug === false ) {
 			$menu_id = false;
@@ -97,9 +123,51 @@ class Menu extends Core {
 	 */
 	protected function init( $menu_id ) {
 		$menu = wp_get_nav_menu_items($menu_id);
+		$locations = get_nav_menu_locations();
+
+		// Set theme location if available.
+		if ( ! empty( $locations ) && in_array( $menu_id, $locations, true ) ) {
+			$this->theme_location = array_search( $menu_id, $locations, true );
+		}
+
 		if ( $menu ) {
 			_wp_menu_item_classes_by_context($menu);
 			if ( is_array($menu) ) {
+				/**
+				 * Default arguments from wp_nav_menu() function.
+				 *
+				 * @see wp_nav_menu()
+				 */
+				$default_args_array = array(
+					'menu'            => '',
+					'container'       => 'div',
+					'container_class' => '',
+					'container_id'    => '',
+					'menu_class'      => 'menu',
+					'menu_id'         => '',
+					'echo'            => true,
+					'fallback_cb'     => 'wp_page_menu',
+					'before'          => '',
+					'after'           => '',
+					'link_before'     => '',
+					'link_after'      => '',
+					'items_wrap'      => '<ul id="%1$s" class="%2$s">%3$s</ul>',
+					'item_spacing'    => 'preserve',
+					'depth'           => $this->depth,
+					'walker'          => '',
+					'theme_location'  => '',
+				);
+
+				/**
+				 * Improve compatibitility with third-party plugins.
+				 *
+				 * @see wp_nav_menu()
+				 */
+				$default_args_array = apply_filters( 'wp_nav_menu_args', $default_args_array );
+				$default_args_obj = (object) $default_args_array;
+
+				$menu = apply_filters( 'wp_nav_menu_objects', $menu, $default_args_obj );
+
 				$menu = self::order_children($menu);
 				$menu = self::strip_to_depth_limit($menu);
 			}
@@ -110,16 +178,6 @@ class Menu extends Core {
 			$this->id = $this->term_id;
 			$this->title = $this->name;
 		}
-	}
-
-	/**
-	 * @internal
-	 * @param mixed $options
-	 */
-	protected function set_options ($options) {
-		// Set any important options
-		$this->depth = (isset($options['depth']) ? (int)$options['depth'] : -1);
-		$this->raw_options = $options; // for future enhancements?
 	}
 
 	/**
@@ -212,6 +270,7 @@ class Menu extends Core {
 	protected function order_children( $items ) {
 		$index = array();
 		$menu = array();
+		$wp_post_menu_item = null;
 		foreach ( $items as $item ) {
 			if ( isset($item->title) ) {
 				// Items from WordPress can come with a $title property which conflicts with methods
@@ -220,13 +279,14 @@ class Menu extends Core {
 			}
 			if ( isset($item->ID) ) {
 				if ( is_object($item) && get_class($item) == 'WP_Post' ) {
-					$old_menu_item = $item;
+					$wp_post_menu_item = $item;
 					$item = new $this->PostClass($item);
 				}
 				$menu_item = $this->create_menu_item($item);
-				if ( isset($old_menu_item) ) {
-					$menu_item->import_classes($old_menu_item);
+				if ( $wp_post_menu_item ) {
+					$menu_item->import_classes($wp_post_menu_item);
 				}
+				$wp_post_menu_item = null;
 				$index[$item->ID] = $menu_item;
 			}
 		}
@@ -246,7 +306,7 @@ class Menu extends Core {
 	 * @return mixed an instance of the user-configured $MenuItemClass
 	 */
 	protected function create_menu_item($item) {
-		return new $this->MenuItemClass($item);
+		return new $this->MenuItemClass( $item, $this );
 	}
 
 	/**

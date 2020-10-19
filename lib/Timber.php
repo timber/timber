@@ -28,14 +28,14 @@ use Timber\Loader;
  *  $posts = Timber::get_posts(array('post_type' => 'article', 'category_name' => 'sports')); // uses wp_query format.
  *  $posts = Timber::get_posts(array(23,24,35,67), 'InkwellArticle');
  *
- *  $context = Timber::get_context(); // returns wp favorites!
+ *  $context = Timber::context(); // returns wp favorites!
  *  $context['posts'] = $posts;
  *  Timber::render('index.twig', $context);
  * ```
  */
 class Timber {
 
-	public static $version = '1.7.1';
+	public static $version = '1.18.2';
 	public static $locations;
 	public static $dirname = 'views';
 	public static $twig_cache = false;
@@ -72,7 +72,7 @@ class Timber {
 		if ( version_compare(phpversion(), '5.3.0', '<') && !is_admin() ) {
 			trigger_error('Timber requires PHP 5.3.0 or greater. You have '.phpversion(), E_USER_ERROR);
 		}
-		if ( !class_exists('Twig_Token') ) {
+		if ( !class_exists('Twig\Token') ) {
 			trigger_error('You have not run "composer install" to download required dependencies for Timber, you can read more on https://github.com/timber/timber#installation', E_USER_ERROR);
 		}
 	}
@@ -157,7 +157,7 @@ class Timber {
 	 * @api
 	 * @param mixed   $query
 	 * @param string  $PostClass
-	 * @return array|bool|null
+	 * @return Post|array|bool|null
 	 */
 	public static function query_post( $query = false, $PostClass = 'Timber\Post' ) {
 		return PostGetter::query_post($query, $PostClass);
@@ -226,6 +226,21 @@ class Timber {
 	================================ */
 
 	/**
+	 * Alias for Timber::get_context() which is deprecated in 2.0.
+	 *
+	 * This will allow us to update the starter theme to use the ::context() method and better
+	 * prepare users for the upgrade (even if the details of what the method returns differs
+	 * slightly).
+	 *
+	 * @see \Timber\Timber::get_context()
+	 * @api
+	 * @return array
+	 */
+	public static function context() {
+		return self::get_context();
+	}
+
+	/**
 	 * Get context.
 	 * @api
 	 * @return array
@@ -263,6 +278,7 @@ class Timber {
 	 * Compile a Twig file.
 	 *
 	 * Passes data to a Twig file and returns the output.
+	 * If the template file doesn't exist it will throw a warning when WP_DEBUG is enabled.
 	 *
 	 * @api
 	 * @example
@@ -316,6 +332,11 @@ class Timber {
 			}
 
 			$output = $loader->render($file, $data, $expires, $cache_mode);
+		} else {
+			if ( is_array($filenames) ) {
+				$filenames = implode(", ", $filenames);
+			}
+			Helper::error_log( 'Error loading your template files: '.$filenames.'. Make sure one of these files exists.' );
 		}
 
 		do_action('timber_compile_done');
@@ -372,7 +393,7 @@ class Timber {
 	 * @api
 	 * @example
 	 * ```php
-	 * $context = Timber::get_context();
+	 * $context = Timber::context();
 	 *
 	 * Timber::render( 'index.twig', $context );
 	 * ```

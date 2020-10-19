@@ -39,13 +39,13 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 	}
 
 	function testWPHead() {
-		$context = Timber::get_context();
+		$context = Timber::context();
 		$str = Timber::compile_string('{{ wp_head }}', $context);
 		$this->assertRegexp('/<title>Test Blog/', trim($str));
 	}
 
 	function testFunctionInTemplate() {
-		$context = Timber::get_context();
+		$context = Timber::context();
 		$str = Timber::compile_string("{{ function('my_boo') }}", $context);
 		$this->assertEquals('bar!', trim($str));
 	}
@@ -61,7 +61,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 			$twig->addFunction(new Timber\Twig_Function('your_boo', array($this, 'your_boo')) );
 			return $twig;
 		});
-		$context = Timber::get_context();
+		$context = Timber::context();
 		$str = Timber::compile_string("{{ your_boo() }}", $context);
 		$this->assertEquals('yourboo', trim($str));
 	}

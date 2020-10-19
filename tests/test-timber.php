@@ -133,7 +133,7 @@ class TestTimber extends Timber_UnitTestCase {
 	}
 
 	function testUserInContextAnon() {
-		$context = Timber::get_context();
+		$context = Timber::context();
 		$this->assertArrayHasKey( 'user', $context );
 		$this->assertFalse($context['user']);
 	}
@@ -145,13 +145,13 @@ class TestTimber extends Timber_UnitTestCase {
 		));
 		$user = wp_set_current_user($uid);
 
-		$context = Timber::get_context();
+		$context = Timber::context();
 		$this->assertArrayHasKey( 'user', $context );
 		$this->assertInstanceOf( 'TimberUser', $context['user'] );
 	}
 
 	function testQueryPostsInContext(){
-        $context = Timber::get_context();
+        $context = Timber::context();
         $this->assertArrayHasKey( 'posts', $context );
         $this->assertInstanceOf( 'Timber\PostCollection', $context['posts'] );
 	}

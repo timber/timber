@@ -60,6 +60,16 @@ class MenuItem extends Core implements CoreInterface {
 	 */
 	public $current_item_ancestor;
 
+	/**
+	 * Timber Menu. Previously this was a public property, but converted to a method to avoid
+	 * recursion (see #2071).
+	 *
+	 * @since 1.12.0
+	 * @see \Timber\Menu::menu();
+	 * @var \Timber\Menu The `Timber\Menu` object the menu item is associated with.
+	 */
+	protected $menu;
+
 	protected $_name;
 	protected $_menu_item_object_id;
 	protected $_menu_item_url;
@@ -68,9 +78,12 @@ class MenuItem extends Core implements CoreInterface {
 	/**
 	 * @internal
 	 * @param array|object $data
+	 * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
 	 */
-	public function __construct( $data ) {
-		$data = (object) $data;
+	public function __construct( $data, $menu = null ) {
+		$this->menu = $menu;
+		$data       = (object) $data;
+
 		$this->import($data);
 		$this->import_classes($data);
 		if ( isset($this->name) ) {
@@ -238,7 +251,33 @@ class MenuItem extends Core implements CoreInterface {
 		}
 		$this->classes = array_merge($this->classes, $data->classes);
 		$this->classes = array_unique($this->classes);
-		$this->classes = apply_filters('nav_menu_css_class', $this->classes, $this, array(), 0);
+
+		$options = new \stdClass();
+		if ( isset($this->menu()->options) ) {
+			// The options need to be an object.
+			$options = (object) $this->menu()->options;
+		}
+
+		/**
+		 * Filters the CSS classes applied to a menu item’s list item.
+		 *
+		 * @param string[]         $classes An array of the CSS classes that can be applied to the
+		 *                                  menu item’s `<li>` element.
+		 * @param \Timber\MenuItem $item    The current menu item.
+		 * @param \stdClass $args           An object of wp_nav_menu() arguments. In Timber, we
+		 *                                  don’t have these arguments because we don’t use a menu
+		 *                                  walker. Instead, you get the options that were used to
+		 *                                  create the `Timber\Menu` object.
+		 * @param int              $depth   Depth of menu item.
+		 */
+		$this->classes = apply_filters(
+			'nav_menu_css_class',
+			$this->classes,
+			$this,
+			$options,
+			0
+		);
+
 		$this->class = trim(implode(' ', $this->classes));
 	}
 
@@ -300,6 +339,18 @@ class MenuItem extends Core implements CoreInterface {
 	public function type() {
 		return $this->_menu_item_type;
 	}
+
+	/**
+	 * Timber Menu.
+	 *
+	 * @api
+	 * @since 1.12.0
+	 * @return \Timber\Menu The `Timber\Menu` object the menu item is associated with.
+	 */
+	public function menu() {
+		return $this->menu;
+	}
+
 
 	/**
 	 * Get a meta value of the menu item.

@@ -172,6 +172,10 @@ class Resize extends ImageOperation {
 	 * @return boolean|null                  true if everything went fine, false otherwise
 	 */
 	public function run( $load_filename, $save_filename ) {
+		// Attempt to check if SVG.
+		if ( ImageHelper::is_svg($load_filename) ) {
+			return false;
+		}
 		$image = wp_get_image_editor($load_filename);
 		if ( !is_wp_error($image) ) {
 			//should be resized by gif resizer

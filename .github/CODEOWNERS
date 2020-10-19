@@ -1,0 +1,10 @@
+# Timber Core
+/lib		@jarednova @palmiak
+
+# Documentation
+/docs		@gchtr
+.md			@gchtr
+phpcs.xml	@gchtr
+
+# Tooling
+*.yml	@jarednova

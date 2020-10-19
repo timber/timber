@@ -9,12 +9,12 @@ use Timber\Theme;
 use Timber\Helper;
 
 /**
- * TimberSite gives you access to information you need about your site. In Multisite setups, you can get info on other sites in your network.
+ * Timber\Site gives you access to information you need about your site. In Multisite setups, you can get info on other sites in your network.
  * @example
  * ```php
- * $context = Timber::get_context();
+ * $context = Timber::context();
  * $other_site_id = 2;
- * $context['other_site'] = new TimberSite($other_site_id);
+ * $context['other_site'] = new Timber\Site($other_site_id);
  * Timber::render('index.twig', $context);
  * ```
  * ```twig
@@ -95,14 +95,14 @@ class Site extends Core implements CoreInterface {
 	public $atom;
 
 	/**
-	 * Constructs a TimberSite object
+	 * Constructs a Timber\Site object
 	 * @example
 	 * ```php
 	 * //multisite setup
-	 * $site = new TimberSite(1);
-	 * $site_two = new TimberSite("My Cool Site");
+	 * $site = new Timber\Site(1);
+	 * $site_two = new Timber\Site("My Cool Site");
 	 * //non-multisite
-	 * $site = new TimberSite();
+	 * $site = new Timber\Site();
 	 * ```
 	 * @param string|int $site_name_or_id
 	 */
@@ -283,7 +283,7 @@ class Site extends Core implements CoreInterface {
 
 	/**
 	 * @deprecated 1.0.4
-	 * @see TimberSite::link
+	 * @see Timber\Site::link
 	 * @return string
 	 */
 	public function url() {

@@ -4,6 +4,24 @@
 
 		protected $gettysburg = 'Four score and seven years ago our fathers brought forth on this continent a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal.';
 
+		function test1886Error() {
+			$expected = '<p>Govenment:</p> <ul> <li>of the <strong>people</strong></li> <li>by the people</li> <li>for the people</li> </ul>';
+			$post_id = $this->factory->post->create(array('post_content' => $expected.'<blockquote>Lincoln</blockquote>', 'post_excerpt' => false));
+			$post = new Timber\Post($post_id);
+			$template = "{{ post.preview.strip('<p><strong><ul><ol><li><br>') }}";
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals($expected.' <p>Lincoln</p>&hellip; <a href="http://example.org/?p='.$post_id.'" class="read-more">Read More</a>', $str);
+		}
+
+		function test1886ErrorWithForce() {
+			$expected = '<p>Govenment:</p> <ul> <li>of the <strong>people</strong></li> <li>by the people</li> <li>for the people</li> </ul>';
+			$post_id = $this->factory->post->create(array('post_excerpt' => $expected, 'post_content' => $this->gettysburg));
+			$post = new Timber\Post($post_id);
+			$template = "{{ post.preview.strip('<ul><li>').length(10).force }}";
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('Govenment: <ul> <li>of the people</li> <li>by the people</li> <li>for the</li></ul>&hellip; <a href="http://example.org/?p='.$post_id.'" class="read-more">Read More</a>', $str);
+		}
+
 		function testPreviewWithStyleTags() {
 			global $wpdb;
 			$style = '<style>body { background-color: red; }</style><b>Yo.</b> ';
@@ -148,6 +166,15 @@
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('', $str);
 		}
+
+		function testPagePreviewOnSearch() {
+			$pid = $this->factory->post->create(array('post_type' => 'page', 'post_content' => 'What a beautiful day for a ballgame!', 'post_excerpt' => ''));
+			$post = new TimberPost( $pid );
+			$template = '{{ post.preview }}';
+			$str = Timber::compile_string($template, array('post' => $post));
+			$this->assertEquals('What a beautiful day for a ballgame!&hellip; <a href="http://example.org/?page_id='.$pid.'" class="read-more">Read More</a>', $str);
+		}
+
 
 
 	}

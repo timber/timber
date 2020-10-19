@@ -4,6 +4,20 @@
 
 		private $mockUploadDir = false;
 
+        function setUp() {
+            $_SERVER['SERVER_PORT'] = 80;
+        }
+
+        function testHTTPSCurrentURL() {
+            $this->go_to('/');
+            $_SERVER['HTTPS'] = 'on';
+            $_SERVER['SERVER_PORT'] = 443;
+            $url = Timber\URLHelper::get_current_url();
+            $this->assertEquals('https://example.org/', trailingslashit($url));
+            $_SERVER['HTTPS'] = 'off';
+            unset($_SERVER['HTTPS']);
+        }
+
         function testSwapProtocolHTTPtoHTTPS() {
             $url = 'http://nytimes.com/news/reports/2017';
             $url = Timber\URLHelper::swap_protocol($url);
@@ -45,7 +59,7 @@
             add_filter('site_url', array($this, 'addWPMLHomeFilterForRegExTest'), 10, 2);
             $image = TestTimberImage::copyTestImage();
             $url = Timber\URLHelper::file_system_to_url($image);
-            $this->assertEquals('http://example2.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
+            $this->assertStringEndsWith('://example2.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
             remove_filter('site_url', array($this, 'addWPMLHomeFilterForRegExTest'));
         }
 
@@ -56,7 +70,7 @@
         function testFileSystemToURL() {
             $image = TestTimberImage::copyTestImage();
             $url = Timber\URLHelper::file_system_to_url($image);
-            $this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
+            $this->assertStringEndsWith('://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
         }
 
         function addWPMLHomeFilter($url, $path) {
@@ -161,6 +175,20 @@
             $this->assertEquals($expected_url, $url);
         }
 
+        function testDoubleSlashesWithS3() {
+            $url = 's3://bucket/folder//thing.html';
+            $expected_url = 's3://bucket/folder/thing.html';
+            $url = Timber\URLHelper::remove_double_slashes($url);
+            $this->assertEquals($expected_url, $url);
+        }
+		
+	function testDoubleSlashesWithGS() {
+            $url = 'gs://bucket/folder//thing.html';
+            $expected_url = 'gs://bucket/folder/thing.html';
+            $url = Timber\URLHelper::remove_double_slashes($url);
+            $this->assertEquals($expected_url, $url);
+        }
+
         function testUserTrailingSlashItFailure() {
             $link = 'http:///example.com';
             $url = Timber\URLHelper::user_trailingslashit($link);
@@ -195,7 +223,7 @@
         	$this->assertFalse(TimberURLHelper::is_local('http://wordpress.org'));
         }
 
-        function testCurrentURLWithServerPort(){
+        function testCurrentURLWithServerPort() {
             $old_port = $_SERVER['SERVER_PORT'];
             $_SERVER['SERVER_PORT'] = 3000;
             if (!isset($_SERVER['SERVER_NAME'])){
@@ -203,17 +231,13 @@
             }
             $this->go_to('/');
             $url = TimberURLHelper::get_current_url();
-            $this->assertEquals('http://example.org:3000/', $url);
+            $this->assertStringEndsWith('://example.org:3000/', $url);
             $_SERVER['SERVER_PORT'] = $old_port;
         }
 
-        function testCurrentURL(){
-            if (!isset($_SERVER['SERVER_PORT'])){
-                $_SERVER['SERVER_PORT'] = 80;
-            }
-            if (!isset($_SERVER['SERVER_NAME'])){
-                $_SERVER['SERVER_NAME'] = 'example.org';
-            }
+        function testCurrentURL() {
+            $_SERVER['SERVER_PORT'] = 80;
+            $_SERVER['SERVER_NAME'] = 'example.org';
             $this->go_to('/');
             $url = TimberURLHelper::get_current_url();
             $this->assertEquals('http://example.org/', $url);
@@ -255,10 +279,12 @@
         function testIsExternal(){
             $local = 'http://example.org';
             $subdomain = 'http://cdn.example.org';
-            $external = 'http://upstatement.com';
+			$external = 'http://upstatement.com';
+			$protocol_relative = '//upstatement.com';
             $this->assertFalse(TimberURLHelper::is_external($local));
             $this->assertFalse(TimberURLHelper::is_external($subdomain));
-            $this->assertTrue(TimberURLHelper::is_external($external));
+			$this->assertTrue(TimberURLHelper::is_external($external));
+			$this->assertTrue(TimberURLHelper::is_external($protocol_relative));
         }
 
 		function testIsExternalContent() {
