@@ -1214,6 +1214,7 @@ class Post extends Core implements CoreInterface {
 			return $this->___content;
 		}
 		$content = $this->post_content;
+		$content = $this->content_handle_no_teaser_block( $content );
 		if ( $len > 0 ) {
 			$content = wp_trim_words($content, $len);
 		}
@@ -1224,7 +1225,7 @@ class Post extends Core implements CoreInterface {
 				$content = $contents[$page];
 			}
 		}
-		$content = $this->content_handle_no_teaser_block( $content );
+		
 		$content = apply_filters('the_content', ($content));
 		if ( $len == -1 && $page == 0 ) {
 			$this->___content = $content;
@@ -1241,7 +1242,12 @@ class Post extends Core implements CoreInterface {
 	 * @return string
 	 */
 	protected function content_handle_no_teaser_block( $content ) {
-		if ( strpos($content, '<!--noteaser-->') !== false ) {
+		if ( strpos($content, 'noTeaser:true')   !== false || 
+			 strpos($content, 'noTeaser: true')   !== false || 
+			 strpos($content, '"noTeaser":true') !== false ||
+			 strpos($content, '"noTeaser": true') !== false ||
+			 strpos($content, "'noTeaser':true") !== false ||
+			 strpos($content, "'noTeaser': true") !== false ) {
 			$arr = explode('<!--noteaser-->', $content);
 			return $arr[1];
 		}
