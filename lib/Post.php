@@ -1242,7 +1242,7 @@ class Post extends Core implements CoreInterface {
 	 */
 	protected function content_handle_no_teaser_block( $content ) {
 		if ( strpos($content, 'noTeaser:true') !== false || strpos($content, '"noTeaser":true') !== false ) {
-			$arr = explode('<!--noteaser-->', $content);
+			$arr = explode('<!-- /wp:more -->', $content);
 			return $arr[1];
 		}
 		return $content;
