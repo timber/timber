@@ -1233,8 +1233,8 @@ class Post extends Core implements CoreInterface {
 	}
 
 	/**
-	 * Handles for an circumstance with the Block editor where a "more" block has an option to 
-	 * "Hide the excerpt on the full content page" which hides everything prior to the inserted 
+	 * Handles for an circumstance with the Block editor where a "more" block has an option to
+	 * "Hide the excerpt on the full content page" which hides everything prior to the inserted
 	 * "more" block
 	 * @ticket #2218
 	 * @param string $content
@@ -1277,7 +1277,7 @@ class Post extends Core implements CoreInterface {
 	public function date( $date_format = '' ) {
 		$df = $date_format ? $date_format : get_option('date_format');
 		$the_date = date_i18n($df, strtotime($this->post_date));
-		return apply_filters('get_the_date', $the_date, $df);
+		return apply_filters('get_the_date', $the_date, $df, $this->id);
 	}
 
 	/**
@@ -1301,7 +1301,7 @@ class Post extends Core implements CoreInterface {
 	public function time( $time_format = '' ) {
 		$tf = $time_format ? $time_format : get_option('time_format');
 		$the_time = date_i18n($tf, strtotime($this->post_date));
-		return apply_filters('get_the_time', $the_time, $tf);
+		return apply_filters('get_the_time', $the_time, $tf, $this->id);
 	}
 
 
@@ -1400,7 +1400,7 @@ class Post extends Core implements CoreInterface {
 	public function modified_date( $date_format = '' ) {
 		$df = $date_format ? $date_format : get_option('date_format');
 		$the_time = $this->get_modified_time($df);
-		return apply_filters('get_the_modified_date', $the_time, $date_format);
+		return apply_filters('get_the_modified_date', $the_time, $date_format, get_post($this->id));
 	}
 
 	/**
@@ -1827,7 +1827,7 @@ class Post extends Core implements CoreInterface {
 	public function get_modified_time( $time_format = '' ) {
 		$tf = $time_format ? $time_format : get_option('time_format');
 		$the_time = get_post_modified_time($tf, false, $this->ID, true);
-		return apply_filters('get_the_modified_time', $the_time, $time_format);
+		return apply_filters('get_the_modified_time', $the_time, $time_format, get_post($this->id));
 	}
 
 	/**
