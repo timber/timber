@@ -51,7 +51,7 @@ The following cache modes are available:
 
 ## Cache _Parts_ of the Twig File and Data
 
-This method implements the [Twig Cache Extension](https://github.com/asm89/twig-cache-extension). It adds the cache tag, for use in templates. Best shown by example:
+This method implements the [Twig Cache Extension](https://github.com/twigphp/twig-cache-extension). It adds the cache tag, for use in templates. Best shown by example:
 
 ```twig
 {% cache 'index/content' posts %}
