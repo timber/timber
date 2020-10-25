@@ -72,7 +72,7 @@ class TestTimberQueryIterator extends Timber_UnitTestCase {
 
 		// We should be able to call count(...) directly on our collection, by virtue
 		// of it implementing the Countable interface.
-		$this->assertCount( 8, new QueryIterator($wp_query)  );
+		$this->assertCount( 8, Timber::get_posts($wp_query)  );
 	}
 
 }
