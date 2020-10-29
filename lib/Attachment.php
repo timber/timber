@@ -139,17 +139,12 @@ class Attachment extends Post implements CoreInterface {
 	 *
 	 * @param WP_Post an attachment WP_Post instance
 	 */
-	public function init( WP_Post $post ) {
-		$iid = $post->ID;
+	protected function init( WP_Post $post ) {
+		$data = $this->get_info( $post );
 
-		$attachment_info = $this->get_attachment_info( $iid );
+		$this->import( $data );
 
-		$this->import( $attachment_info );
-
-		$this->_wp_attached_file = get_post_meta( $this->ID, '_wp_attached_file', true );
-
-		$basedir = wp_get_upload_dir();
-		$basedir = $basedir['basedir'];
+		$basedir = wp_get_upload_dir()['basedir'];
 
 		if ( isset( $this->file ) ) {
 			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
@@ -217,41 +212,14 @@ class Attachment extends Post implements CoreInterface {
 	 * @internal
 	 *
 	 * @param int $attachment_id The ID number of the image in the WP database.
-	 * @return array|int|mixed Attachment info or ID
+	 * @return array Attachment info as an array or ID
 	 */
-	protected function get_attachment_info( $attachment_id ) {
-		$image_info = $attachment_id;
+	protected function get_info( WP_Post $wp_post ) {
+		$post_data   = get_object_vars( parent::get_info( $wp_post ) );
+		$image_info  = wp_get_attachment_metadata( $wp_post->ID ) ?: [];
+		$meta_values = $this->raw_meta();
 
-		if ( is_numeric( $attachment_id ) ) {
-			$image_info = wp_get_attachment_metadata( $attachment_id );
-
-			if ( ! is_array( $image_info ) ) {
-				$image_info = array();
-			}
-
-			$meta_values = $this->raw_meta();
-			$post        = get_post( $attachment_id );
-
-			if ( $post ) {
-				if ( isset( $post->post_excerpt ) ) {
-					$this->caption = $post->post_excerpt;
-				}
-
-				$meta_values = array_merge( $meta_values, get_object_vars( $post ) );
-			}
-
-			return array_merge( $image_info, $meta_values );
-		}
-
-		if ( is_array( $image_info ) && isset( $image_info['image'] ) ) {
-			return $image_info['image'];
-		}
-
-		if ( is_object( $image_info ) ) {
-			return get_object_vars( $image_info );
-		}
-
-		return $attachment_id;
+		return array_merge( $post_data, $image_info, $meta_values );
 	}
 
 	/**

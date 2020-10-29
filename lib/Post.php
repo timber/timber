@@ -532,7 +532,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * @param  int|null|boolean $pid The ID to generate info from.
 	 * @return WP_Post
 	 */
-	protected function get_info( WP_Post $post ) : WP_Post {
+	protected function get_info( WP_Post $post ) {
 		$post->status = $post->post_status;
 		$post->id = $post->ID;
 		$post->slug = $post->post_name;
