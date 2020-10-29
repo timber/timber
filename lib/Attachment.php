@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use WP_Post;
+
 use Timber\Factory\PostFactory;
 
 /**
@@ -135,19 +137,10 @@ class Attachment extends Post implements CoreInterface {
 	 *
 	 * @internal
 	 *
-	 * @param int|mixed $iid An attachment identifier.
+	 * @param WP_Post an attachment WP_Post instance
 	 */
-	public function init( $iid = null ) {
-		// @todo simplify this whole init process
-		$iid = $this->determine_id( $iid );
-
-		/**
-		 * The determine_id returns null when the attachment is a file path,
-		 * thus there’s nothing in the DB for us to do here.
-		 */
-		if ( null === $iid ) {
-			return;
-		}
+	public function init( WP_Post $post ) {
+		$iid = $post->ID;
 
 		$attachment_info = $this->get_attachment_info( $iid );
 
@@ -165,74 +158,7 @@ class Attachment extends Post implements CoreInterface {
 			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
 		}
 
-		if ( isset( $attachment_info['id'] ) ) {
-			$this->ID = $attachment_info['id'];
-		} elseif ( is_numeric( $iid ) ) {
-			$this->ID = $iid;
-		}
-
-		if ( isset( $this->ID ) ) {
-			$this->id = $this->ID;
-		}
-
 		return $this;
-	}
-
-	/**
-	 * Determines attachment ID.
-	 *
-	 * Tries to figure out the attachment ID you want, or otherwise handles the case when a string
-	 * or other data is sent (object, file path, etc.).
-	 *
-	 * @internal
-	 * @param mixed $iid A value to test against.
-	 * @return int|null The numeric ID we should be using for this post object.
-	 */
-	protected function determine_id( $iid ) {
-		// Make sure we actually have something to work with.
-		if ( ! $iid ) {
-			Helper::error_log( 'Initialized Timber\Attachment without providing first parameter.' );
-
-			return null;
-		}
-
-		/**
-		 * If passed a Timber\Attachment or WP_Post object, grab the ID and continue. Otherwise, try
-		 * to check for an ACF image array an take the ID from that array.
-		 */
-		if ( $iid instanceof Attachment
-			|| ( $iid instanceof \WP_Post && 'attachment' === $iid->post_type )
-		) {
-			return (int) $iid->ID;
-		} elseif ( is_array( $iid ) && isset( $iid['ID'] ) ) {
-			// Assume ACF image array.
-			$iid = $iid['ID'];
-		}
-
-		if ( ! is_numeric( $iid ) && is_string( $iid ) ) {
-			if ( strstr( $iid, '://' ) ) {
-				// Assume URL.
-				$this->init_with_url( $iid );
-
-				return null;
-			} elseif ( strstr( $iid, ABSPATH ) ) {
-				// Assume absolute path.
-				$this->init_with_file_path( $iid );
-
-				return null;
-			} else {
-				// Check for image file types.
-				foreach ( $this->image_file_types as $type ) {
-					// Assume a relative path.
-					if ( strstr( strtolower( $iid ), $type ) ) {
-						$this->init_with_relative_path( $iid );
-
-						return null;
-					}
-				}
-			}
-		}
-		return $iid;
 	}
 
 	/**

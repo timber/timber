@@ -347,7 +347,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * @internal
 	 * @param integer $pid
 	 */
-	protected function init( $pid = null ) {
+	protected function init( WP_Post $pid ) {
 		$post_info = apply_filters('timber/post/import_data', $this->get_info($pid));
 		$this->import($post_info);
 
@@ -369,26 +369,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			update_post_meta($this->ID, $field, $value);
 			$this->$field = $value;
 		}
-	}
-
-
-	/**
-	 * takes a mix of integer (post ID), string (post slug),
-	 * or object to return a WordPress post object from WP's built-in get_post() function
-	 * @internal
-	 * @param integer $pid
-	 * @return WP_Post on success
-	 */
-	protected function prepare_post_info( $pid = 0 ) {
-		if ( is_string($pid) || is_numeric($pid) || (is_object($pid) && !isset($pid->post_title)) || $pid === 0 ) {
-			$pid  = self::check_post_id($pid);
-			$post = get_post($pid);
-			if ( $post ) {
-				return $post;
-			}
-		}
-		// we can skip if already is WP_Post.
-		return $pid;
 	}
 
 
@@ -550,14 +530,9 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 *
 	 * @internal
 	 * @param  int|null|boolean $pid The ID to generate info from.
-	 * @return null|object|WP_Post|boolean
+	 * @return WP_Post
 	 */
-	protected function get_info( $pid = null ) {
-		$post = $this->prepare_post_info($pid);
-		if ( !isset($post->post_status) ) {
-			return null;
-		}
-
+	protected function get_info( WP_Post $post ) : WP_Post {
 		$post->status = $post->post_status;
 		$post->id = $post->ID;
 		$post->slug = $post->post_name;
