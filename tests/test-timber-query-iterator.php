@@ -66,13 +66,4 @@ class TestTimberQueryIterator extends Timber_UnitTestCase {
 		$this->assertTrue($loop[2]->last);
 	}
 
-	function testPostCount() {
-		$posts    = $this->factory->post->create_many( 8 );
-		$wp_query = new WP_Query('post_type=post');
-
-		// We should be able to call count(...) directly on our collection, by virtue
-		// of it implementing the Countable interface.
-		$this->assertCount( 8, Timber::get_posts($wp_query)  );
-	}
-
 }

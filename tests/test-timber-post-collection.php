@@ -26,7 +26,10 @@ class TestTimberPostQuery extends Timber_UnitTestCase {
 	function testBasicCollection() {
 		$pids = $this->factory->post->create_many(10);
 		$pc = new PostQuery( new WP_Query('post_type=post&posts_per_page=6') );
-		$this->assertEquals(6, count($pc));
+
+		// We should be able to call count(...) directly on our collection, by virtue
+		// of it implementing the Countable interface.
+		$this->assertCount(6, $pc);
 	}
 
 	function testCollectionWithWP_PostArray() {
