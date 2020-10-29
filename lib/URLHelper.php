@@ -168,7 +168,7 @@ class URLHelper {
 	 */
 	public static function file_system_to_url( $fs ) {
 		$relative_path = self::get_rel_path($fs);
-		$home = site_url('/'.$relative_path);
+		$home = home_url('/'.$relative_path);
 		$home = apply_filters('timber/URLHelper/file_system_to_url', $home);
 		return $home;
 	}

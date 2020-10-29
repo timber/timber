@@ -502,7 +502,7 @@ class ImageHelper {
 		}
 		$url = untrailingslashit($url).'/'.$filename;
 		if ( !$absolute ) {
-			$url = str_replace(site_url(), '', $url);
+			$url = str_replace(home_url(), '', $url);
 		}
 		return $url;
 	}
