@@ -420,8 +420,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	function testDoubleInstantiationOfTimberPostClass() {
 		$post_id = $this->factory->post->create( array( 'post_type' => 'post' ) );
 		// Unlike above, do NOT register a special Class Map.
-		$post = Timber::get_post($post_id);
-		$this->assertEquals('Timber\Post', get_class($post));
+		$this->assertInstanceOf( Post::class, Timber::get_post($post_id) );
 	}
 
 	/**
@@ -458,7 +457,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 			'post_type' => 'post',
 			'posts_per_page' => 7,
 		] );
-		
+
 		$this->assertCount(7, $posts);
 	}
 

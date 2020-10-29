@@ -7,11 +7,11 @@ use Timber\Factory\CommentFactory;
 /**
  * Class CommentThread
  *
- * This object is a special type of array that hold WordPress comments as `Timber\Comment` objects. 
- * You probably won't use this directly. This object is returned when calling `{{ post.comments }}` 
+ * This object is a special type of array that hold WordPress comments as `Timber\Comment` objects.
+ * You probably won't use this directly. This object is returned when calling `{{ post.comments }}`
  * in Twig.
  *
- * @example 
+ * @example
  * ```twig
  * {# single.twig #}
  * <div id="post-comments">
@@ -35,18 +35,17 @@ use Timber\Factory\CommentFactory;
  *   {{ function('comment_form') }}
  *   <!-- nested comments here -->
  *   {% if comment.children %}
- *     <div class="replies"> 
+ *     <div class="replies">
  *	     {% for child_comment in comment.children %}
  *         {% include 'comment.twig' with { comment:child_comment } %}
  *       {% endfor %}
- *     </div> 
- *   {% endif %}    
+ *     </div>
+ *   {% endif %}
  * </li>
  * ```
  */
 class CommentThread extends \ArrayObject {
 
-	var $CommentClass = 'Timber\Comment';
 	var $post_id;
 	var $_orderby = '';
 	var $_order = 'ASC';
@@ -97,7 +96,7 @@ class CommentThread extends \ArrayObject {
 		$this->init();
 		return $this;
 	}
-  
+
   /**
 	 * @internal
 	 */
@@ -109,7 +108,7 @@ class CommentThread extends \ArrayObject {
 
 	/**
 	 * Inits the object.
-	 * 
+	 *
    * @internal
 	 * @param array $args Optional.
 	 */
