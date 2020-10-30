@@ -347,18 +347,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
-	 * Initializes a Post
-	 * @internal
-	 * @param integer $pid
-	 */
-	protected function init( WP_Post $pid ) {
-		$post_info = apply_filters('timber/post/import_data', $this->get_info($pid));
-		$this->import($post_info);
-
-		return $this;
-	}
-
-	/**
 	 * Updates post_meta of the current object with the given value.
 	 *
 	 * @deprecated 2.0.0 Use `update_post_meta()` instead.

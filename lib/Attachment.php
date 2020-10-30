@@ -133,21 +133,6 @@ class Attachment extends Post implements CoreInterface {
 	}
 
 	/**
-	 * Inits the object.
-	 *
-	 * @internal
-	 *
-	 * @param WP_Post an attachment WP_Post instance
-	 */
-	protected function init( WP_Post $post ) {
-		$data = $this->get_info( $post );
-
-		$this->import( $data );
-
-		return $this;
-	}
-
-	/**
 	 * Inits the object with an absolute path.
 	 *
 	 * @internal
