@@ -174,7 +174,11 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		$post->id = $wp_post->ID;
 		$post->ID = $wp_post->ID;
 
-		return $post->init( $wp_post );
+		$data = $post->get_info( $wp_post );
+
+		$post->import( apply_filters('timber/post/import_data', $data ) );
+
+		return $post;
 	}
 
 	/**

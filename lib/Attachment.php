@@ -142,15 +142,6 @@ class Attachment extends Post implements CoreInterface {
 	protected function init( WP_Post $post ) {
 		$data = $this->get_info( $post );
 
-		$basedir = wp_get_upload_dir()['basedir'];
-
-		if ( isset( $data['file'] ) ) {
-			$data['file_loc'] = $basedir . DIRECTORY_SEPARATOR . $data['file'];
-		} elseif ( isset( $data['_wp_attached_file'] ) ) {
-			$data['file']     = $data['_wp_attached_file'];
-			$data['file_loc'] = $basedir . DIRECTORY_SEPARATOR . $data['file'];
-		}
-
 		$this->import( $data );
 
 		return $this;
@@ -219,7 +210,18 @@ class Attachment extends Post implements CoreInterface {
 		$image_info  = wp_get_attachment_metadata( $wp_post->ID ) ?: [];
 		$meta_values = $this->raw_meta();
 
-		return array_merge( $post_data, $image_info, $meta_values );
+		$data = array_merge( $post_data, $image_info, $meta_values );
+
+		$basedir = wp_get_upload_dir()['basedir'];
+
+		if ( isset( $data['file'] ) ) {
+			$data['file_loc'] = $basedir . DIRECTORY_SEPARATOR . $data['file'];
+		} elseif ( isset( $data['_wp_attached_file'] ) ) {
+			$data['file']     = $data['_wp_attached_file'];
+			$data['file_loc'] = $basedir . DIRECTORY_SEPARATOR . $data['file'];
+		}
+
+		return $data;
 	}
 
 	/**
