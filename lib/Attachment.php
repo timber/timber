@@ -142,16 +142,16 @@ class Attachment extends Post implements CoreInterface {
 	protected function init( WP_Post $post ) {
 		$data = $this->get_info( $post );
 
-		$this->import( $data );
-
 		$basedir = wp_get_upload_dir()['basedir'];
 
-		if ( isset( $this->file ) ) {
-			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
-		} elseif ( isset( $this->_wp_attached_file ) ) {
-			$this->file     = $this->_wp_attached_file;
-			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
+		if ( isset( $data['file'] ) ) {
+			$data['file_loc'] = $basedir . DIRECTORY_SEPARATOR . $data['file'];
+		} elseif ( isset( $data['_wp_attached_file'] ) ) {
+			$data['file']     = $data['_wp_attached_file'];
+			$data['file_loc'] = $basedir . DIRECTORY_SEPARATOR . $data['file'];
 		}
+
+		$this->import( $data );
 
 		return $this;
 	}
