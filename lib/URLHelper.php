@@ -187,7 +187,7 @@ class URLHelper {
 		/**
 		 * Filters the path of a parsed URL.
 		 *
-		 * @deprecated 2.0.0, use `timber/url_helper/url_to_file_system/path`
+		 * @deprecated 2.0.0, use `timber/url_helper/url_to_file_system/path` instead.
 		 */
 		$url_parts['path'] = apply_filters_deprecated(
 			'timber/URLHelper/url_to_file_system/path',
@@ -228,7 +228,7 @@ class URLHelper {
 		 *
 		 * @todo Complete summary.
 		 *
-		 * @deprecated 2.0.0, use `timber/url_helper/file_system_to_url`
+		 * @deprecated 2.0.0, use `timber/url_helper/file_system_to_url` instead.
 		 */
 		$home = apply_filters_deprecated(
 			'timber/URLHelper/file_system_to_url',
@@ -264,7 +264,7 @@ class URLHelper {
 		/**
 		 * Filters the home URL that is used to get the path relative to the content directory.
 		 *
-		 * @deprecated 2.0.0, use `timber/url_helper/get_content_subdir/home_url`
+		 * @deprecated 2.0.0, use `timber/url_helper/get_content_subdir/home_url` instead.
 		 */
 		$home_url = apply_filters_deprecated(
 			'timber/URLHelper/get_content_subdir/home_url',

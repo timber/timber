@@ -216,7 +216,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 			/**
 			 * Filters user meta data before it is fetched from the database.
 			 *
-			 * @deprecated 2.0.0, use `timber/user/pre_meta`
+			 * @deprecated 2.0.0, use `timber/user/pre_meta` instead.
 			 */
 			$user_meta = apply_filters_deprecated(
 				'timber_user_get_meta_pre',
@@ -228,7 +228,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 			/**
 			 * Filters a user meta field before it is fetched from the database.
 			 *
-			 * @deprecated 2.0.0, use `timber/user/pre_meta`
+			 * @deprecated 2.0.0, use `timber/user/pre_meta` instead.
 			 */
 			$user_meta = apply_filters_deprecated(
 				'timber_user_get_meta_field_pre',
@@ -283,7 +283,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 			/**
 			 * Filters user meta data fetched from the database.
 			 *
-			 * @deprecated 2.0.0, use `timber/user/meta`
+			 * @deprecated 2.0.0, use `timber/user/meta` instead.
 			 */
 			$user_meta = apply_filters_deprecated(
 				'timber_user_get_meta',
@@ -295,7 +295,7 @@ class User extends Core implements CoreInterface, MetaInterface {
 			/**
 			 * Filters the value for a user meta field.
 			 *
-			 * @deprecated 2.0.0, use `timber/user/meta`
+			 * @deprecated 2.0.0, use `timber/user/meta` instead.
 			 */
 			$user_meta = apply_filters_deprecated(
 				'timber_user_get_meta_field',

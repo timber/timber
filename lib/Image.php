@@ -92,7 +92,7 @@ class Image extends Attachment {
 
 	/**
 	 * Processes an image's dimensions.
-	 * @deprecated 2.0.0, use `{{ image.width }}` or `{{ image.height }}` in Twig
+	 * @deprecated 2.0.0, use `{{ image.width }}` or `{{ image.height }}` in Twig instead.
 	 * @internal
 	 * @param string $dim
 	 * @return array|int
@@ -107,15 +107,15 @@ class Image extends Attachment {
 	}
 
 	/**
-	 * @deprecated 2.0.0, use Image::get_dimension_loaded
+	 * @deprecated 2.0.0, use Image::get_dimension_loaded() instead.
 	 * @internal
 	 * @param string|null $dim
 	 * @return array|int
 	 */
 	protected function get_dimensions_loaded( $dim ) {
 		Helper::deprecated(
-			'Image::get_dimensions',
-			'Image::get_dimension',
+			'Image::get_dimensions_loaded',
+			'Image::get_dimension_loaded',
 			'2.0.0'
 		);
 		$dim = strtolower($dim);
@@ -126,7 +126,7 @@ class Image extends Attachment {
 	}
 
 	/**
-	 * @deprecated 2.0.0, use Image::meta to retrieve specific fields
+	 * @deprecated 2.0.0, use Image::meta() to retrieve specific fields.
 	 * @return array
 	 */
 	protected function get_post_custom( $iid ) {
@@ -191,7 +191,7 @@ class Image extends Attachment {
 		/**
 		 * Filters the src URL for a `Timber\Image`.
 		 *
-		 * @deprecated 2.0.0, use `timber/image/src`
+		 * @deprecated 2.0.0, use `timber/image/src` instead.
 		 */
 		$src = apply_filters_deprecated(
 			'timber_image_src',

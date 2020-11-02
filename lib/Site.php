@@ -74,7 +74,7 @@ class Site extends Core implements CoreInterface {
 	public $name;
 
 	/**
-	 * @deprecated 2.0.0, use $pingback_url
+	 * @deprecated 2.0.0, use $pingback_url instead.
 	 * @var string for people who like trackback spam
 	 */
 	public $pingback;
@@ -273,7 +273,7 @@ class Site extends Core implements CoreInterface {
 	 * Get the value for a site option.
 	 *
 	 * @api
-	 * @deprecated 2.0.0, use `{{ site.option }}` instead
+	 * @deprecated 2.0.0, use `{{ site.option }}` instead.
 	 */
 	public function meta( $option ) {
 		Helper::deprecated( '{{ site.meta() }}', '{{ site.option() }}', '2.0.0' );
@@ -354,7 +354,7 @@ class Site extends Core implements CoreInterface {
 		/**
 		 * Filters a value before it is updated in the site options.
 		 *
-		 * @deprecated 2.0.0, use `timber/site/update_option`
+		 * @deprecated 2.0.0, use `timber/site/update_option` instead.
 		 * @since 0.20.0
 		 */
 		$value = apply_filters_deprecated(

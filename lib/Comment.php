@@ -439,7 +439,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			/**
 			 * Filters the value for a comment meta field before it is fetched from the database.
 			 *
-			 * @deprecated 2.0.0, use `timber/comment/pre_meta`
+			 * @deprecated 2.0.0, use `timber/comment/pre_meta` instead.
 			 */
 			$comment_meta = apply_filters_deprecated(
 				'timber_comment_get_meta_field_pre',
@@ -451,7 +451,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			/**
 			 * Fires before comment meta data is imported into the object.
 			 *
-			 * @deprecated 2.0.0, use `timber/comment/pre_meta`
+			 * @deprecated 2.0.0, use `timber/comment/pre_meta` instead.
 			 * @since      0.19.1 Switched from filter to action functionality.
 			 * @since      0.15.4
 			 */
@@ -509,7 +509,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			/**
 			 * Filters comment meta data fetched from the database.
 			 *
-			 * @deprecated 2.0.0, use `timber/comment/meta`
+			 * @deprecated 2.0.0, use `timber/comment/meta` instead.
 			 * @since 0.15.4
 			 */
 			$comment_meta = apply_filters_deprecated(
@@ -522,7 +522,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			/**
 			 * Filters the value for a comment meta field.
 			 *
-			 * @deprecated 2.0.0, use `timber/comment/meta`
+			 * @deprecated 2.0.0, use `timber/comment/meta` instead.
 			 */
 			$comment_meta = apply_filters_deprecated(
 				'timber_comment_get_meta_field',

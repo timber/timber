@@ -847,7 +847,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			/**
 			 * Filters the value for a post meta field before it is fetched from the database.
 			 *
-			 * @deprecated 2.0.0, use `timber/post/pre_meta`
+			 * @deprecated 2.0.0, use `timber/post/pre_meta` instead.
 			 */
 			$post_meta = apply_filters_deprecated(
 				'timber_post_get_meta_field_pre',
@@ -859,7 +859,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			/**
 			 * Filters post meta data before it is fetched from the database.
 			 *
-			 * @deprecated 2.0.0, use `timber/post/pre_meta`
+			 * @deprecated 2.0.0, use `timber/post/pre_meta` instead.
 			 */
 			do_action_deprecated(
 				'timber_post_get_meta_pre',
@@ -929,7 +929,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			/**
 			 * Filters the value for a post meta field.
 			 *
-			 * @deprecated 2.0.0, use `timber/post/meta`
+			 * @deprecated 2.0.0, use `timber/post/meta` instead.
 			 */
 			$post_meta = apply_filters_deprecated(
 				'timber_post_get_meta_field',
@@ -941,7 +941,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			/**
 			 * Filters post meta data fetched from the database.
 			 *
-			 * @deprecated 2.0.0, use `timber/post/meta`
+			 * @deprecated 2.0.0, use `timber/post/meta` instead.
 			 */
 			$post_meta = apply_filters_deprecated(
 				'timber_post_get_meta',

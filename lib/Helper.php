@@ -83,7 +83,7 @@ class Helper {
 			 *
 			 * @todo Add summary
 			 *
-			 * @deprecated 2.0.0, use `timber/transient/force_transients`
+			 * @deprecated 2.0.0, use `timber/transient/force_transients` instead.
 			 */
 			$force = apply_filters_deprecated(
 				'timber_force_transients',
@@ -111,7 +111,7 @@ class Helper {
 			 *
 			 * @todo Add summary
 			 *
-			 * @deprecated 2.0.0, use `timber/transient/force_transient_{$slug}`
+			 * @deprecated 2.0.0, use `timber/transient/force_transient_{$slug}` instead.
 			 */
 			$force = apply_filters( "timber_force_transient_{$slug}", $force );
 
@@ -438,7 +438,7 @@ class Helper {
 		/**
 		 * Filters the separator used for the page title.
 		 *
-		 * @deprecated 2.0.0, use `timber/helper/wp_title_separator`
+		 * @deprecated 2.0.0, use `timber/helper/wp_title_separator` instead.
 		 */
 		$separator = apply_filters_deprecated( 'timber_wp_title_seperator', array( $separator ), '2.0.0', 'timber/helper/wp_title_separator' );
 

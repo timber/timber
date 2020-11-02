@@ -232,7 +232,7 @@ class PostGetter {
 		/**
 		 * Filters the class(es) used for different post types.
 		 *
-		 * @deprecated 2.0.0, use `timber/post/post_class`
+		 * @deprecated 2.0.0, use `timber/post/post_class` instead.
 		 */
 		$post_class = apply_filters_deprecated(
 			'Timber\PostClassMap',

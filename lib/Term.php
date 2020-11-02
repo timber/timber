@@ -423,7 +423,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			/**
 			 * Filters term meta data fetched from the database.
 			 *
-			 * @deprecated 2.0.0, use `timber/term/meta`
+			 * @deprecated 2.0.0, use `timber/term/meta` instead.
 			 */
 			$term_meta = apply_filters_deprecated(
 				'timber_term_get_meta',
@@ -435,7 +435,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			/**
 			 * Filters the value for a term meta field.
 			 *
-			 * @deprecated 2.0.0, use `timber/term/meta`
+			 * @deprecated 2.0.0, use `timber/term/meta` instead.
 			 */
 			$term_meta = apply_filters_deprecated(
 				'timber/term/meta/field',
@@ -447,7 +447,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			/**
 			 * Filters the value for a term meta field.
 			 *
-			 * @deprecated 2.0.0, use `timber/term/meta`
+			 * @deprecated 2.0.0, use `timber/term/meta` instead.
 			 */
 			$term_meta = apply_filters_deprecated(
 				'timber_term_get_meta_field',
@@ -539,7 +539,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		/**
 		 * Filters the relative link (path) to a term archive page.
 		 *
-		 * @deprecated 2.0.0, use `timber/term/path`
+		 * @deprecated 2.0.0, use `timber/term/path` instead.
 		 */
 		$rel = apply_filters_deprecated(
 			'timber_term_path',

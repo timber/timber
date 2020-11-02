@@ -276,7 +276,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * in Twig).
 	 *
 	 * @internal
-	 * @deprecated 2.0.0, use `item.children` instead.
+	 * @deprecated 2.0.0, use `item.children()` instead.
 	 * @example
 	 * ```twig
 	 * {% for child in item.get_children %}
@@ -490,7 +490,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * Checks to see if the menu item is an external link.
 	 *
 	 * @api
-	 * @deprecated 2.0.0, use `{{ item.is_external }}`
+	 * @deprecated 2.0.0, use `{{ item.is_external }}` instead.
 	 * @see \Timber\MenuItem::is_external()
 	 *
 	 * @return bool Whether the link is external or not.

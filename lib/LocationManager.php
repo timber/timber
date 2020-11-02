@@ -44,7 +44,7 @@ class LocationManager {
 		 *
 		 * @todo Add summary
 		 *
-		 * @deprecated 2.0.0, use `timber/locations`
+		 * @deprecated 2.0.0, use `timber/locations` instead.
 		 */
 		$locs = apply_filters_deprecated( 'timber_locations', array( $locs ), '2.0.0', 'timber/locations' );
 

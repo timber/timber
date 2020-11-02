@@ -527,7 +527,7 @@ class Attachment extends Post implements CoreInterface {
 	/**
 	 * Get a PHP array with pathinfo() info from the file
 	 *
-	 * @deprecated 2.0.0, use Attachment::pathinfo() instead
+	 * @deprecated 2.0.0, use Attachment::pathinfo() instead.
 	 * @return array
 	 */
 	public function get_pathinfo() {
