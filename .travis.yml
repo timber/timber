@@ -82,8 +82,8 @@ jobs:
         - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --coverage-clover build/logs/clover.xml
       after_success:
         - vendor/bin/coveralls -v
-    - name: "WebP support on PHP 7.2"
-      php: 7.2
+    - name: "WebP support on PHP 7.4"
+      php: 7.4
       env: WP_VERSION=latest WP_MULTISITE=0
       before_install:
         # Install PHP with WebP support
