@@ -959,7 +959,7 @@ class Timber {
 			/**
 			 * Filters the global Timber context.
 			 *
-			 * @deprecated 2.0.0, use `timber/context` instead.
+			 * @deprecated 2.0.0, use `timber/context`
 			 */
 			self::$context_cache = apply_filters_deprecated(
 				'timber_context',
@@ -1037,7 +1037,7 @@ class Timber {
 			 * Filters the Twig file that should be rendered.
 			 *
 			 * @codeCoverageIgnore
-			 * @deprecated 2.0.0, use `timber/render/file` instead.
+			 * @deprecated 2.0.0, use `timber/render/file`
 			 */
 			$file = apply_filters_deprecated(
 				'timber_render_file',
@@ -1110,7 +1110,7 @@ class Timber {
 				/**
 				 * Filters the data that should be passed for compiling a Twig template.
 				 *
-				 * @deprecated 2.0.0, use `timber/compile/data` instead.
+				 * @deprecated 2.0.0, use `timber/compile/data`
 				 */
 				$data = apply_filters_deprecated(
 					'timber_compile_data',
@@ -1162,7 +1162,7 @@ class Timber {
 		 * Fires after a Twig template was compiled and before the compiled data
 		 * is returned.
 		 *
-		 * @deprecated 2.0.0, use `timber/compile/done` instead.
+		 * @deprecated 2.0.0, use `timber/compile/done`
 		 */
 		do_action_deprecated( 'timber_compile_done', array(), '2.0.0', 'timber/compile/done' );
 

@@ -62,7 +62,7 @@ class Loader {
 		/**
 		 * Filters the cache mode.
 		 *
-		 * @deprecated 2.0.0, use `timber/cache/mode` instead.
+		 * @deprecated 2.0.0, use `timber/cache/mode`
 		 */
 		$this->cache_mode = apply_filters_deprecated(
 			'timber_cache_mode',
@@ -124,7 +124,7 @@ class Loader {
 				 *
 				 * @todo Add summary
 				 *
-				 * @deprecated 2.0.0, use `timber/loader/render_file` instead.
+				 * @deprecated 2.0.0, use `timber/loader/render_file`
 				 */
 				do_action_deprecated(
 					'timber_loader_render_file',
@@ -151,7 +151,7 @@ class Loader {
 			 *
 			 * @todo Add summary
 			 *
-			 * @deprecated 2.0.0, use `timber/loader/render_data` instead.
+			 * @deprecated 2.0.0, use `timber/loader/render_data`
 			 */
 			$data = apply_filters_deprecated(
 				'timber_loader_render_data',
@@ -187,7 +187,7 @@ class Loader {
 		 *
 		 * @todo       Add summary
 		 *
-		 * @deprecated 2.0.0, use `timber/output` instead.
+		 * @deprecated 2.0.0, use `timber/output`
 		 */
 		$output = apply_filters_deprecated( 'timber_output', array( $output ), '2.0.0', 'timber/output' );
 
@@ -251,7 +251,7 @@ class Loader {
 		 *
 		 * @since 0.20.10
 		 *
-		 * @deprecated 2.0.0, use `timber/locations` instead.
+		 * @deprecated 2.0.0, use `timber/locations`
 		 *
 		 * @param array $paths
 		 */
@@ -487,7 +487,7 @@ class Loader {
 		/**
 		 * Filters …
 		 *
-		 * @deprecated 2.0.0, use `timber/twig/filters` instead.
+		 * @deprecated 2.0.0, use `timber/twig/filters`
 		 */
 		$twig = apply_filters_deprecated( 'twig_apply_filters', array( $twig ), '2.0.0', 'timber/twig/filters' );
 
