@@ -452,59 +452,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
-	 * Get a preview (excerpt) of your post.
-	 *
-	 * @deprecated 1.3.1, use `{{ post.excerpt }}` instead.
-	 * @see        \Timber\Post::excerpt()
-	 *
-	 * @param int         $len      The number of words that WordPress should use to make the
-	 *                              preview.
-	 *                              (Isn’t this better than [this
-	 *                              mess](http://wordpress.org/support/topic/changing-the-default-length-of-the_excerpt-1?replies=14)?).
-	 *                              If you’ve set a post excerpt on a post, we’ll use that for the
-	 *                              preview text; otherwise the first X words of `post_content`.
-	 * @param bool        $force    What happens if your custom post excerpt is longer then the
-	 *                              length requested? By default (`$force = false`) it will use the
-	 *                              full `post_excerpt`. However, you can set this to `true` to
-	 *                              *force* your excerpt to be of the desired length.
-	 * @param string      $readmore The text you want to use for the 'readmore' link.
-	 * @param bool|string $strip    `true` for default, `false` for none, a string for a list of
-	 *                              custom attributes.
-	 * @param string      $end      The text to end the preview with. Default `...`.
-	 *
-	 * @return string The post preview.
-	 */
-	public function get_preview( $len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;' ) {
-		Helper::deprecated('{{ post.get_preview }}', '{{ post.preview }}', '1.3.1');
-		$pp = new PostPreview($this);
-
-		/** This filter is documented in PostPreview.php */
-		add_filter('timber/post/preview/read_more_class', function(){
-			/**
-			 * Filters the CSS class used for the preview link for a post.
-			 *
-			 * This filter only applies when you use `{{ post.get_preview() }}`. When you want to
-			 * change the CSS class for all preview links in general, you can use the
-			 * `timber/post/preview/read_more_class` filter.
-			 *
-			 * @since 0.22.3
-			 * @example
-			 * ```php
-			 * // Change the CSS class for preview links
-			 * add_filter( 'timber/post/get_preview/read_more_class', function( $class ) {
-			 *     return 'post__read-more__link';
-			 * } );
-			 * ```
-			 *
-			 * @param string $class The CSS class to use for the preview link. Default `read-more`.
-			 */
-			return apply_filters('timber/post/get_preview/read_more_class', "read-more");
-		});
-
-		return $pp->length($len)->force($force)->read_more($readmore)->strip($strip)->end($end);
-	}
-
-	/**
 	 * @internal
 	 * @param int $i
 	 * @return string

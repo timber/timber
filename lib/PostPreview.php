@@ -16,6 +16,9 @@ namespace Timber;
  * - have an ellipsis (…) as the end of the text.
  * - have a "Read More" link appended.
  *
+ * @api
+ * @since 1.0.4
+ * @see \Timber\Post::preview()
  * @example
  * ```twig
  * {# Use default preview #}
@@ -27,8 +30,6 @@ namespace Timber;
  * {# Additionally restrict the length to 50 words #}
  * <p>{{ post.preview.length(50).read_more('Continue Reading') }}</p>
  * ```
- * @since 1.0.4
- * @see \Timber\Post::preview()
  */
 class PostPreview {
 	/**
@@ -120,7 +121,7 @@ class PostPreview {
 			'force'     => false,
 			'strip'     => true,
 			'read_more' => 'Read More',
-		));
+		) );
 
 		// Set excerpt properties
 		$this->length      = $options['words'];
