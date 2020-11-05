@@ -318,7 +318,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * In combination with `is_target_blank()`:
 	 *
 	 * ```twig
-	 * <a href="{{ item.link }}" {{ item.is_external or item.is_target_blank ? 'target="_blank"' }}">
+	 * <a href="{{ item.link }}" {{ item.is_external or item.is_target_blank ? 'target="_blank"' }}>
 	 * ```
 	 *
 	 * @return bool Whether the link is external or not.
