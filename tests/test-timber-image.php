@@ -1,6 +1,9 @@
 <?php
 
+use Timber\Attachment;
+use Timber\Image;
 use Timber\Image\Operation as ImageOperation;
+use Timber\Post;
 
 /**
  * @group posts-api
@@ -25,6 +28,68 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 	/* ----------------
 	 * Tests
 	 * ---------------- */
+
+	/**
+	 * @group attachment-aliases
+	 */
+	function testGetImageAlias() {
+		$pid = $this->factory->post->create();
+
+		$image      = Timber::get_image(self::get_attachment($pid, 'arch.jpg'));
+		$attachment = Timber::get_image(self::get_attachment($pid, 'dummy-pdf.pdf'));
+		$post       = Timber::get_image($pid);
+
+		// Image is good, but Timber should recognize that neither Attachment
+		// or Post are actually Image subclasses.
+		$this->assertInstanceOf(Image::class, $image);
+		$this->assertFalse($attachment);
+		$this->assertFalse($post);
+	}
+
+	/**
+	 * @group attachment-aliases
+	 */
+	function testGetAttachmentAlias() {
+		$pid = $this->factory->post->create();
+
+		$image      = Timber::get_attachment(self::get_attachment($pid, 'arch.jpg'));
+		$attachment = Timber::get_attachment(self::get_attachment($pid, 'dummy-pdf.pdf'));
+		$post       = Timber::get_image($pid);
+
+		// Image and Attachment are *both* Attachment classes, so they're OK.
+		// A Post is not an Attachment so it should not be treated as such.
+		$this->assertInstanceOf(Image::class, $image);
+		$this->assertInstanceOf(Attachment::class, $attachment);
+		$this->assertFalse($post);
+	}
+
+	/**
+	 * @group attachment-aliases
+	 */
+	function testGetImageTwigAlias() {
+		$pid = $this->factory->post->create();
+
+		$iid = self::get_attachment($pid, 'arch.jpg');
+		$src = Timber::get_post($iid)->src();
+
+		$this->assertEquals($src, Timber::compile_string('{{ get_image(iid).src }}', [
+			'iid' => $iid,
+		]));
+	}
+
+	/**
+	 * @group attachment-aliases
+	 */
+	function testGetAttachmentTwigAlias() {
+		$pid = $this->factory->post->create();
+
+		$iid = self::get_attachment($pid, 'arch.jpg');
+		$src = Timber::get_post($iid)->src();
+
+		$this->assertEquals($src, Timber::compile_string('{{ get_attachment(iid).src }}', [
+			'iid' => $iid,
+		]));
+	}
 
 	function testTimberImageSrc() {
 		$iid = self::get_attachment();

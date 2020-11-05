@@ -31,7 +31,6 @@ use WP_Comment;
  */
 class Comment extends Core implements CoreInterface, MetaInterface {
 
-	public $PostClass = 'Post';
 	public $object_type = 'comment';
 
 	public static $representation = 'comment';

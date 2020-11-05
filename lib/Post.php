@@ -174,7 +174,11 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		$post->id = $wp_post->ID;
 		$post->ID = $wp_post->ID;
 
-		return $post->init( $wp_post );
+		$data = $post->get_info( $wp_post );
+
+		$post->import( apply_filters('timber/post/import_data', $data ) );
+
+		return $post;
 	}
 
 	/**
@@ -343,18 +347,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
-	 * Initializes a Post
-	 * @internal
-	 * @param integer $pid
-	 */
-	protected function init( $pid = null ) {
-		$post_info = apply_filters('timber/post/import_data', $this->get_info($pid));
-		$this->import($post_info);
-
-		return $this;
-	}
-
-	/**
 	 * Updates post_meta of the current object with the given value.
 	 *
 	 * @deprecated 2.0.0 Use `update_post_meta()` instead.
@@ -369,26 +361,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			update_post_meta($this->ID, $field, $value);
 			$this->$field = $value;
 		}
-	}
-
-
-	/**
-	 * takes a mix of integer (post ID), string (post slug),
-	 * or object to return a WordPress post object from WP's built-in get_post() function
-	 * @internal
-	 * @param integer $pid
-	 * @return WP_Post on success
-	 */
-	protected function prepare_post_info( $pid = 0 ) {
-		if ( is_string($pid) || is_numeric($pid) || (is_object($pid) && !isset($pid->post_title)) || $pid === 0 ) {
-			$pid  = self::check_post_id($pid);
-			$post = get_post($pid);
-			if ( $post ) {
-				return $post;
-			}
-		}
-		// we can skip if already is WP_Post.
-		return $pid;
 	}
 
 
@@ -550,14 +522,9 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 *
 	 * @internal
 	 * @param  int|null|boolean $pid The ID to generate info from.
-	 * @return null|object|WP_Post|boolean
+	 * @return WP_Post
 	 */
-	protected function get_info( $pid = null ) {
-		$post = $this->prepare_post_info($pid);
-		if ( !isset($post->post_status) ) {
-			return null;
-		}
-
+	protected function get_info( WP_Post $post ) {
 		$post->status = $post->post_status;
 		$post->id = $post->ID;
 		$post->slug = $post->post_name;
@@ -1215,13 +1182,9 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * {% endif %}
 	 * ```
 	 * @param string|array $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type or you can pass an array of post types.
-	 * @param string|bool  $child_post_class _optional_ a custom post class (ex: 'MyTimber\Post') to return the objects as. By default (false) it will use Timber\Post::$post_class value.
 	 * @return Timber\PostCollectionInterface
 	 */
-	public function children( $post_type = 'any', $child_post_class = false ) {
-		if ( $child_post_class === false ) {
-			$child_post_class = $this->PostClass;
-		}
+	public function children( $post_type = 'any' ) {
 		if ( $post_type === 'parent' ) {
 			$post_type = $this->post_type;
 		}
@@ -1283,7 +1246,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * </li>
 	 * ```
 	 */
-	public function comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
+	public function comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve' ) {
 		global $overridden_cpage, $user_ID;
 		$overridden_cpage = false;
 
@@ -1308,7 +1271,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			}
 		}
 		$ct = new CommentThread($this->ID, false);
-		$ct->CommentClass = $CommentClass;
 		$ct->init($args);
 		return $ct;
 	}
@@ -1442,9 +1404,9 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * @return string
 	 */
 	protected function content_handle_no_teaser_block( $content ) {
-		if ( strpos($content, 'noTeaser:true') !== false ) {
-			$arr = explode('<!--noteaser-->', $content);
-			return $arr[1];
+		if ( (strpos($content, 'noTeaser:true') !== false || strpos($content, '"noTeaser":true') !== false) && strpos($content, '<!-- /wp:more -->') !== false) {
+			$arr = explode('<!-- /wp:more -->', $content);
+			return trim($arr[1]);
 		}
 		return $content;
 	}
@@ -1889,8 +1851,8 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 
 
 	/**
-	 * Gets the parent (if one exists) from a post as a Timber\Post object (or whatever is set in
-	 * Timber\Post::$PostClass)
+	 * Gets the parent (if one exists) from a post as a Timber\Post object.
+	 * Honors Class Maps.
 	 *
 	 * @api
 	 * @example
