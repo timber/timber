@@ -60,7 +60,7 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		$preview = new PostPreview( $post, [
 			'words'    => 3,
 			'force'    => false,
-			'readmore' => '',
+			'read_more' => '',
 		] );
 		$this->assertEquals( (string) $preview, $post->post_excerpt);
 
@@ -69,7 +69,7 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		$preview = new PostPreview( $post, [
 			'words'    => 3,
 			'force'    => false,
-			'readmore' => 'Custom more',
+			'read_more' => 'Custom more',
 		] );
 		$this->assertRegExp('/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Custom more<\/a>/', (string) $preview);
 
@@ -78,7 +78,7 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		$preview = new PostPreview( $post, [
 			'words'    => 2,
 			'force'    => false,
-			'readmore' => '',
+			'read_more' => '',
 		] );
 		$this->assertEquals('this is super dooper', (string) $preview);
 	}
