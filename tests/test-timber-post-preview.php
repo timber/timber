@@ -151,7 +151,7 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		] );
 		$this->assertEquals(
 			'Lauren is a ??? <a href="'.$post->link().'" class="read-more">Read More</a>',
-			(string) $preview
+			$preview
 		);
 	}
 
