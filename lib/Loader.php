@@ -7,6 +7,7 @@ use Twig\CacheExtension;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
+use Twig\TwigFunction;
 
 class Loader {
 
@@ -433,7 +434,7 @@ class Loader {
 		if ( WP_DEBUG ) {
 			$twig->addExtension(new \Twig\Extension\DebugExtension());
 		} else {
-			$twig->addFunction(new Twig_Function('dump', function() {
+			$twig->addFunction(new TwigFunction('dump', function() {
 				return null;
 			}));
 		}

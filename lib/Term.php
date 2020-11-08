@@ -43,9 +43,6 @@ use WP_Term;
  */
 class Term extends Core implements CoreInterface, MetaInterface {
 
-	public $PostClass = 'Timber\Post';
-	public $TermClass = 'Term';
-
 	public $object_type = 'term';
 	public static $representation = 'term';
 
@@ -592,9 +589,10 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 *
 	 * <ul>
 	 * {% for branch in region.posts({
+	 *     post_type: 'branch',
 	 *     posts_per_page: -1,
 	 *     orderby: 'menu_order'
-	 * }, 'branch', 'Branch') %}
+	 * }) %}
 	 *     <li>
 	 *         <a href="{{ branch.link }}">{{ branch.title }}</a>
 	 *     </li>
@@ -696,7 +694,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @param int $numberposts
 	 * @return array|bool|null
 	 */
-	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
+	public function get_posts( $numberposts = 10 ) {
 		Helper::deprecated('{{ term.get_posts }}', '{{ term.posts }}', '2.0.0');
 		return $this->posts($numberposts);
 	}

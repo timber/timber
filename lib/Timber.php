@@ -262,6 +262,46 @@ class Timber {
 	}
 
 	/**
+	 * Behaves just like Timber::get_post(), except that it returns false if it
+	 * finds a Post that is not an Attachment. Honors Class Maps and falsifies return
+	 * value *after* Class Map for the found Post has been resolved.
+	 *
+	 * @api
+	 * @see Timber::get_post()
+	 * @see https://timber.github.io/docs/v2/guides/class-maps/
+	 * @param mixed $query query or post identifier
+	 * @param array $options options to ::get_post()
+	 * @return Attachment|false
+	 */
+	public static function get_attachment( $query = false, $options = [] ) {
+		$post = static::get_post( $query, $options );
+
+		// @todo make this determination at the Factory level.
+		// No need to instantiate a Post we're not going to use.
+		return ( $post instanceof Attachment ) ? $post : false;
+	}
+
+	/**
+	 * Behaves just like Timber::get_post(), except that it returns false if it
+	 * finds a Post that is not an Image. Honors Class Maps and falsifies return
+	 * value *after* Class Map for the found Post has been resolved.
+	 *
+	 * @api
+	 * @see Timber::get_post()
+	 * @see https://timber.github.io/docs/v2/guides/class-maps/
+	 * @param mixed $query query or post identifier
+	 * @param array $options options to ::get_post()
+	 * @return Image|false
+	 */
+	public static function get_image( $query = false, $options = [] ) {
+		$post = static::get_post( $query, $options );
+
+		// @todo make this determination at the Factory level.
+		// No need to instantiate a Post we're not going to use.
+		return ( $post instanceof Image ) ? $post : false;
+	}
+
+	/**
 	 * Get posts.
 	 *
 	 * @api

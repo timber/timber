@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use WP_Post;
+
 use Timber\Factory\PostFactory;
 
 /**
@@ -131,111 +133,6 @@ class Attachment extends Post implements CoreInterface {
 	}
 
 	/**
-	 * Inits the object.
-	 *
-	 * @internal
-	 *
-	 * @param int|mixed $iid An attachment identifier.
-	 */
-	public function init( $iid = null ) {
-		// @todo simplify this whole init process
-		$iid = $this->determine_id( $iid );
-
-		/**
-		 * The determine_id returns null when the attachment is a file path,
-		 * thus there’s nothing in the DB for us to do here.
-		 */
-		if ( null === $iid ) {
-			return;
-		}
-
-		$attachment_info = $this->get_attachment_info( $iid );
-
-		$this->import( $attachment_info );
-
-		$this->_wp_attached_file = get_post_meta( $this->ID, '_wp_attached_file', true );
-
-		$basedir = wp_get_upload_dir();
-		$basedir = $basedir['basedir'];
-
-		if ( isset( $this->file ) ) {
-			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
-		} elseif ( isset( $this->_wp_attached_file ) ) {
-			$this->file     = $this->_wp_attached_file;
-			$this->file_loc = $basedir . DIRECTORY_SEPARATOR . $this->file;
-		}
-
-		if ( isset( $attachment_info['id'] ) ) {
-			$this->ID = $attachment_info['id'];
-		} elseif ( is_numeric( $iid ) ) {
-			$this->ID = $iid;
-		}
-
-		if ( isset( $this->ID ) ) {
-			$this->id = $this->ID;
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Determines attachment ID.
-	 *
-	 * Tries to figure out the attachment ID you want, or otherwise handles the case when a string
-	 * or other data is sent (object, file path, etc.).
-	 *
-	 * @internal
-	 * @param mixed $iid A value to test against.
-	 * @return int|null The numeric ID we should be using for this post object.
-	 */
-	protected function determine_id( $iid ) {
-		// Make sure we actually have something to work with.
-		if ( ! $iid ) {
-			Helper::error_log( 'Initialized Timber\Attachment without providing first parameter.' );
-
-			return null;
-		}
-
-		/**
-		 * If passed a Timber\Attachment or WP_Post object, grab the ID and continue. Otherwise, try
-		 * to check for an ACF image array an take the ID from that array.
-		 */
-		if ( $iid instanceof Attachment
-			|| ( $iid instanceof \WP_Post && 'attachment' === $iid->post_type )
-		) {
-			return (int) $iid->ID;
-		} elseif ( is_array( $iid ) && isset( $iid['ID'] ) ) {
-			// Assume ACF image array.
-			$iid = $iid['ID'];
-		}
-
-		if ( ! is_numeric( $iid ) && is_string( $iid ) ) {
-			if ( strstr( $iid, '://' ) ) {
-				// Assume URL.
-				$this->init_with_url( $iid );
-
-				return null;
-			} elseif ( strstr( $iid, ABSPATH ) ) {
-				// Assume absolute path.
-				$this->init_with_file_path( $iid );
-
-				return null;
-			} else {
-				// Check for image file types.
-				foreach ( $this->image_file_types as $type ) {
-					// Assume a relative path.
-					if ( strstr( strtolower( $iid ), $type ) ) {
-						$this->init_with_relative_path( $iid );
-
-						return null;
-					}
-				}
-			}
-		}
-		return $iid;
-	}
-
-	/**
 	 * Inits the object with an absolute path.
 	 *
 	 * @internal
@@ -291,41 +188,25 @@ class Attachment extends Post implements CoreInterface {
 	 * @internal
 	 *
 	 * @param int $attachment_id The ID number of the image in the WP database.
-	 * @return array|int|mixed Attachment info or ID
+	 * @return array Attachment info as an array or ID
 	 */
-	protected function get_attachment_info( $attachment_id ) {
-		$image_info = $attachment_id;
+	protected function get_info( WP_Post $wp_post ) {
+		$post_data   = get_object_vars( parent::get_info( $wp_post ) );
+		$image_info  = wp_get_attachment_metadata( $wp_post->ID ) ?: [];
+		$meta_values = $this->raw_meta();
 
-		if ( is_numeric( $attachment_id ) ) {
-			$image_info = wp_get_attachment_metadata( $attachment_id );
+		$data = array_merge( $post_data, $image_info, $meta_values );
 
-			if ( ! is_array( $image_info ) ) {
-				$image_info = array();
-			}
+		$basedir = wp_get_upload_dir()['basedir'];
 
-			$meta_values = $this->raw_meta();
-			$post        = get_post( $attachment_id );
-
-			if ( $post ) {
-				if ( isset( $post->post_excerpt ) ) {
-					$this->caption = $post->post_excerpt;
-				}
-
-				$meta_values = array_merge( $meta_values, get_object_vars( $post ) );
-			}
-
-			return array_merge( $image_info, $meta_values );
+		if ( isset( $data['file'] ) ) {
+			$data['file_loc'] = $basedir . DIRECTORY_SEPARATOR . $data['file'];
+		} elseif ( isset( $data['_wp_attached_file'] ) ) {
+			$data['file']     = $data['_wp_attached_file'];
+			$data['file_loc'] = $basedir . DIRECTORY_SEPARATOR . $data['file'];
 		}
 
-		if ( is_array( $image_info ) && isset( $image_info['image'] ) ) {
-			return $image_info['image'];
-		}
-
-		if ( is_object( $image_info ) ) {
-			return get_object_vars( $image_info );
-		}
-
-		return $attachment_id;
+		return $data;
 	}
 
 	/**
@@ -393,7 +274,7 @@ class Attachment extends Post implements CoreInterface {
 	 * @api
 	 * @example
 	 * ```twig
-	 * <a href="{{ get_post(post.meta('job_pdf')).src }}" download>
+	 * <a href="{{ get_attachment(post.meta('job_pdf')).src }}" download>
 	 * ```
 	 * ```html
 	 * <a href="http://example.org/wp-content/uploads/2015/08/job-ad-5noe2304i.pdf" download>

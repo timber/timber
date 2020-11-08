@@ -97,7 +97,10 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Timber Debug Bar**](https://github.com/timber/debug-bar-timber) Adds a debug bar panel that will show you which template is in-use and the data sent to your twig file.
 
 #### Related Timber Projects
+* [**Editor for Timber**](https://wordpress.org/plugins/editor-for-timber/) Edit your Twig files from the WordPress admin
 * [**Pine**](https://github.com/azeemhassni/pine) A CLI _installer_ for Timber
+* [**Query Monitor Twig Profile**](https://github.com/NielsdeBlaauw/query-monitor-twig-profile) An add-on for [Query Monitor](https://wordpress.org/plugins/query-monitor/) to see what's going on inside your Twig files (automatically works with Timber!)
+* [**Timber ACF WP Blocks**](https://github.com/palmiak/timber-acf-wp-blocks) Easy ACF Gutenberg blocks creation
 * [**Timber CLI**](https://github.com/nclud/wp-timber-cli) A CLI for Timber
 * [**Timber Commented Include**](https://github.com/djboris88/timber-commented-include) Debug output via HTML comments before and after each include statement in Twig
 * [**Timber Debugger**](https://github.com/djboris88/timber-debugger) Package that provides extra debugging options for Timber
@@ -107,7 +110,8 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Timber Sugar**](https://github.com/timber/sugar) A catch-all for goodies to use w Timber
 * [**Timber WebLink Extension**](https://github.com/nlemoine/timber-weblink-extension) Provides Twig functions to manage the Link HTTP header needed for Web Linking when using HTTP/2 Server Push as well as Resource Hints
 * [**Timmy**](https://github.com/MINDKomm/Timmy) Advanced image manipulation for Timber
-* [**Timber ACF WP Blocks**](https://github.com/palmiak/timber-acf-wp-blocks) Easy ACF Gutenberg blocks creation
+
+
 
 #### Projects that use Timber
 * [**Branch**](https://github.com/JeyKeu/branch/) Bootstrap 3 + Timber = Branch starter theme!

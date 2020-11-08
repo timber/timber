@@ -37,9 +37,8 @@ class Twig {
 	 * @return \Twig\Environment
 	 */
 	public function add_timber_functions( $twig ) {
-		/* actions and filters */
-		$twig->addFunction( new TwigFunction( 'action', function() {
-			call_user_func_array( 'do_action', func_get_args() );
+		$twig->addFunction( new TwigFunction( 'action', function( $action_name, ...$args ) {
+			do_action_ref_array( $action_name, $args );
 		} ) );
 
 		$twig->addFunction(new TwigFunction('function', array(&$this, 'exec_function')));
@@ -53,6 +52,8 @@ class Twig {
 
 		// Posts
 		$twig->addFunction( new TwigFunction( 'get_post', [ Timber::class, 'get_post' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_image', [ Timber::class, 'get_image' ] ) );
+		$twig->addFunction( new TwigFunction( 'get_attachment', [ Timber::class, 'get_attachment' ] ) );
 		$twig->addFunction( new TwigFunction( 'get_posts', [ Timber::class, 'get_posts' ] ) );
 		$twig->addFunction( new TwigFunction( 'get_attachment_by', [ Timber::class, 'get_attachment_by' ] ) );
 
@@ -260,11 +261,11 @@ class Twig {
 	 * @since 2.0.0
 	 *
 	 * @throws \Twig_Error_Runtime
-	 * @param \Twig_Environment $twig Twig Environment
+	 * @param \Twig\Environment $twig Twig Environment.
 	 *
-	 * @return \Twig_Environment
+	 * @return \Twig\Environment
 	 */
-	public function set_defaults( \Twig_Environment $twig ) {
+	public function set_defaults( Environment $twig ) {
 		$twig->getExtension( CoreExtension::class )->setDateFormat( get_option( 'date_format' ), '%d days' );
 		$twig->getExtension( CoreExtension::class )->setTimezone( wp_timezone_string() );
 

@@ -102,14 +102,14 @@ class User extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * Construct a User object. For internal use only: Do not call directly.
 	 * Call `Timber::get_user()` instead.
-	 * 
+	 *
 	 * @internal
 	 */
 	protected function __construct() {
 	}
 
 	/**
-	 * Build a new User object. 
+	 * Build a new User object.
 	 */
 	public static function build( WP_User $wp_user ) : self {
 		$user = new static();
