@@ -230,17 +230,6 @@ class Loader {
 	}
 
 	/**
-	 * @deprecated 1.3.5 No longer used internally
-	 * @todo remove in 2.x
-	 * @param string $name
-	 * @return bool
-	 */
-	protected function template_exists( $name ) {
-		return $this->get_loader()->exists($name);
-	}
-
-
-	/**
 	 * @return \Twig\Loader\FilesystemLoader
 	 */
 	public function get_loader() {
