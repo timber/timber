@@ -258,6 +258,30 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 		$this->assertInstanceOf( Timber\PostQuery::class, $context['posts'] );
 	}
 
+	function testContextWithExtraArgs() {
+		$pids = $this->factory->post->create_many(20);
+		$this->go_to('/');
+
+		$context = Timber::context([
+			'extra'  => 'stuff',
+			'fancy'  => [
+				'this' => 'can',
+				'be'   => 'whatever',
+			],
+		]);
+
+		$this->assertEquals( 'stuff', $context['extra'] );
+		$this->assertEquals( [
+			'this' => 'can',
+			'be'   => 'whatever',
+		],	$context['fancy'] );
+		$this->assertInstanceOf( Timber\PostQuery::class, $context['posts'] );
+
+		// Underlying context is immutable and unaffected by extra data.
+		$this->assertFalse( array_key_exists( 'extra', Timber::context() ) );
+		$this->assertFalse( array_key_exists( 'fancy', Timber::context() ) );
+	}
+
 	function testGetPostsWithClassMap() {
 		register_post_type('portfolio', array('public' => true));
 		register_post_type('alert', array('public' => true));

@@ -901,10 +901,13 @@ class Timber {
 	 * @api
 	 * @since 2.0.0
 	 *
+	 * @param array $extra any extra data to merge in. Overrides whatever is
+	 * already there for this call only. In other words, the underlying context
+	 * data is immutable and unaffected by passing this param.
 	 * @return array An array of context variables that is used to pass into Twig templates through
 	 *               a render or compile function.
 	 */
-	public static function context() {
+	public static function context(array $extra = []) {
 		$context = self::context_global();
 
 		if ( is_singular() ) {
@@ -913,7 +916,7 @@ class Timber {
 			$context['posts'] = Timber::get_posts();
 		}
 
- 		return $context;
+		return array_merge( $context, $extra );
 	}
 
 	/**
