@@ -625,33 +625,6 @@ class Helper {
 
 	/**
 	 * Filters a list of objects, based on a set of key => value arguments.
-	 * Uses native Twig Filter.
-	 *
-	 * @since 1.14.0
-	 * @deprecated since 1.17 (to be removed in 2.0). Use array_filter or Helper::wp_list_filter instead
-	 * @todo remove this in 2.x
-	 * @param array                 $list to filter.
-	 * @param callback|string|array $arrow function used for filtering,
-	 *                              string or array for backward compatibility.
-	 * @param string                $operator to use (AND, NOT, OR). For backward compatibility.
-	 * @return array
-	 */
-	public static function filter_array( $list, $arrow, $operator = 'AND' ) {
-		if ( ! is_callable( $arrow ) ) {
-			self::warn( 'This filter is using Twig\'s filter by default. If you want to use wp_list_filter use {{ my_array|wp_list_filter }}.' );
-			return self::wp_list_filter( $list, $arrow, $operator );
-		}
-
-		if ( is_array( $list ) ) {
-			return array_filter( $list, $arrow, \ARRAY_FILTER_USE_BOTH );
-		}
-
-		// the IteratorIterator wrapping is needed as some internal PHP classes are \Traversable but do not implement \Iterator
-		return new \CallbackFilterIterator( new \IteratorIterator( $list ), $arrow );
-	}
-
-	/**
-	 * Filters a list of objects, based on a set of key => value arguments.
 	 * Uses WordPress WP_List_Util's filter.
 	 *
 	 * @api
