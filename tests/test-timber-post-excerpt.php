@@ -30,6 +30,39 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 		$this->assertContains('and-foo', (string) $text);
 	}
 
+	function testReadMoreLinkFilter() {
+		$post_id = $this->factory->post->create( [
+			'post_excerpt' => 'Let this be the excerpt!',
+		] );
+
+		$post    = Timber::get_post( $post_id );
+		$excerpt = $post->excerpt();
+
+		$this->add_filter_temporarily( 'timber/post/excerpt/read_more_link', function( $link ) {
+			return ' Foobar';
+		} );
+
+		$this->assertEquals( 'Let this be the excerpt! Foobar', (string) $excerpt );
+	}
+
+	/**
+	 * @expectedDeprecated timber/post/get_preview/read_more_link
+	 */
+	function testReadMoreLinkFilterDeprecated() {
+		$post_id = $this->factory->post->create( [
+			'post_excerpt' => 'Let this be the excerpt!',
+		] );
+
+		$post    = Timber::get_post( $post_id );
+		$excerpt = $post->excerpt();
+
+		$this->add_filter_temporarily( 'timber/post/get_preview/read_more_link', function( $link ) {
+			return ' Foobar';
+		} );
+
+		$this->assertEquals( 'Let this be the excerpt! Foobar', (string) $excerpt );
+	}
+
 	function testExcerptTags() {
 		$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
 		$post = Timber::get_post($post_id);

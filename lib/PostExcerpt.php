@@ -276,40 +276,80 @@ class PostExcerpt {
 			}
 		}
 
-		/**
-		 * Filters the CSS class used for excerpt links.
-		 *
-		 * @sicne 2.0.0
-		 * @example
-		 * ```php
-		 * // Change the CSS class for excerpt links.
-		 * add_filter( 'timber/post/excerpt/read_more_class', function( $class ) {
-		 *     return 'read-more__link';
-		 * } );
-		 * ```
-		 *
-		 * @param string $class The CSS class to use for the excerpt link. Default `read-more`.
-		 */
-		$read_more_class = apply_filters( 'timber/post/excerpt/read_more_class', 'read-more' );
+		// Maybe add read more link.
+		if ( $this->read_more ) {
+			/**
+			 * Filters the CSS class used for excerpt links.
+			 *
+			 * @since 2.0.0
+			 * @example
+			 * ```php
+			 * // Change the CSS class for excerpt links.
+			 * add_filter( 'timber/post/excerpt/read_more_class', function( $class ) {
+			 *     return 'read-more__link';
+			 * } );
+			 * ```
+			 *
+			 * @param string $class The CSS class to use for the excerpt link. Default `read-more`.
+			 */
+			$read_more_class = apply_filters( 'timber/post/excerpt/read_more_class', 'read-more' );
 
-		/**
-		 * Filters the CSS class used for excerpt links.
-		 *
-		 * @deprecated 2.0.0
-		 * @since 1.0.4
-		 */
-		$read_more_class = apply_filters_deprecated(
-			'timber/post/preview/read_more_class',
-			[ $read_more_class ],
-			'2.0.0',
-			'timber/post/excerpt/read_more_class'
-		);
+			/**
+			 * Filters the CSS class used for excerpt links.
+			 *
+			 * @deprecated 2.0.0
+			 * @since 1.0.4
+			 */
+			$read_more_class = apply_filters_deprecated(
+				'timber/post/preview/read_more_class',
+				[ $read_more_class ],
+				'2.0.0',
+				'timber/post/excerpt/read_more_class'
+			);
 
-		if ( $this->read_more && !empty($readmore_matches) && !empty( $readmore_matches[1]) ) {
-			$text .= ' <a href="'.$this->post->link().'" class="'.$read_more_class.'">'.trim($readmore_matches[1]).'</a>';
-		} elseif ( $this->read_more ) {
-			$text .= ' <a href="'.$this->post->link().'" class="'.$read_more_class.'">'.trim($this->read_more).'</a>';
+			if ( !empty($readmore_matches) && !empty( $readmore_matches[1]) ) {
+				$linktext = trim( $readmore_matches[1] );
+			} else {
+				$linktext = trim( $this->read_more );
+			}
+
+			$link = sprintf( ' <a href="%1$s" class="%2$s">%3$s</a>',
+				$this->post->link(),
+				$read_more_class,
+				$linktext
+			);
+
+			/**
+			 * Filters the link used for a read more text in an excerpt.
+			 *
+			 * @since 2.0.0
+			 * @param string $link The HTML link.
+			 * @param \Timber\Post $post Post instance.
+			 */
+			$link = apply_filters(
+				'timber/post/excerpt/read_more_link',
+				$link,
+				$this->post,
+				$linktext,
+				$read_more_class
+			);
+
+			/**
+			 * Filters the link used for a read more text in an excerpt.
+			 *
+			 * @deprecated 2.0.0
+			 * @since 1.1.3
+			 */
+			$link = apply_filters_deprecated(
+				'timber/post/get_preview/read_more_link',
+				[ $link ],
+				'2.0.0',
+				'timber/post/excerpt/read_more_link'
+			);
+
+			$text .= $link;
 		}
+
 		if ( !$this->strip && $last_p_tag && (strpos($text, '<p>') > -1 || strpos($text, '<p ')) ) {
 			$text .= '</p>';
 		}
