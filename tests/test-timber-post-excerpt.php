@@ -19,7 +19,7 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 	}
 
 	function testReadMoreClassFilter() {
-		$this->add_filter_temporarily('timber/post/preview/read_more_class', function($class) {
+		$this->add_filter_temporarily('timber/post/excerpt/read_more_class', function($class) {
 			return $class . ' and-foo';
 		});
 		$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));

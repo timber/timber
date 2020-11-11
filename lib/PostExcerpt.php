@@ -279,18 +279,31 @@ class PostExcerpt {
 		/**
 		 * Filters the CSS class used for excerpt links.
 		 *
-		 * @since 1.0.4
+		 * @sicne 2.0.0
 		 * @example
 		 * ```php
-		 * // Change the CSS class for excerpt links
-		 * add_filter( 'timber/post/preview/read_more_class', function( $class ) {
+		 * // Change the CSS class for excerpt links.
+		 * add_filter( 'timber/post/excerpt/read_more_class', function( $class ) {
 		 *     return 'read-more__link';
 		 * } );
 		 * ```
 		 *
 		 * @param string $class The CSS class to use for the excerpt link. Default `read-more`.
 		 */
-		$read_more_class = apply_filters('timber/post/preview/read_more_class', "read-more");
+		$read_more_class = apply_filters( 'timber/post/excerpt/read_more_class', 'read-more' );
+
+		/**
+		 * Filters the CSS class used for excerpt links.
+		 *
+		 * @deprecated 2.0.0
+		 * @since 1.0.4
+		 */
+		$read_more_class = apply_filters_deprecated(
+			'timber/post/preview/read_more_class',
+			[ $read_more_class ],
+			'2.0.0',
+			'timber/post/excerpt/read_more_class'
+		);
 
 		if ( $this->read_more && !empty($readmore_matches) && !empty( $readmore_matches[1]) ) {
 			$text .= ' <a href="'.$this->post->link().'" class="'.$read_more_class.'">'.trim($readmore_matches[1]).'</a>';
