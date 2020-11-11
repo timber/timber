@@ -136,9 +136,6 @@
 			$this->assertEquals($expected, ''.$excerpt);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testExcerptWithStyleTags() {
 			global $wpdb;
 			$style = '<style>body { background-color: red; }</style><b>Yo.</b> ';
@@ -154,124 +151,91 @@
 			);
 			$post_id = $wpdb->insert_id;
 			$post = Timber::get_post($post_id);
-			$template = '{{ post.preview.length(9).read_more(false).strip(true) }}';
+			$template = '{{ post.excerpt.length(9).read_more(false).strip(true) }}';
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('Yo. Four score and seven years ago our fathers&hellip;', $str);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testExcerptTags() {
 			$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
 			$post = Timber::get_post($post_id);
-			$template = '{{post.preview.length(3).read_more(false).strip(false)}}';
+			$template = '{{post.excerpt.length(3).read_more(false).strip(false)}}';
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertNotContains('</p>', $str);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testPostExcerptObjectWithCharAndWordLengthWordsWin() {
 			$pid = $this->factory->post->create( array('post_content' => $this->gettysburg, 'post_excerpt' => '') );
-			$template = '{{ post.preview.length(2).chars(20) }}';
+			$template = '{{ post.excerpt.length(2).chars(20) }}';
 			$post = Timber::get_post($pid);
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('Four score&hellip; <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testPostExcerptObjectWithCharAndWordLengthCharsWin() {
 			$pid = $this->factory->post->create( array('post_content' => $this->gettysburg, 'post_excerpt' => '') );
-			$template = '{{ post.preview.length(20).chars(20) }}';
+			$template = '{{ post.excerpt.length(20).chars(20) }}';
 			$post = Timber::get_post($pid);
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('Four score and seven&hellip; <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testPostExcerptObjectWithCharLength() {
 			$pid = $this->factory->post->create( array('post_content' => $this->gettysburg, 'post_excerpt' => '') );
-			$template = '{{ post.preview.chars(20) }}';
+			$template = '{{ post.excerpt.chars(20) }}';
 			$post = Timber::get_post($pid);
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('Four score and seven&hellip; <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testPostExcerptObjectWithLength() {
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck she a big ole duck!', 'post_excerpt' => '') );
-			$template = '{{ post.preview.length(4) }}';
+			$template = '{{ post.excerpt.length(4) }}';
 			$post = Timber::get_post($pid);
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('Lauren is a duck&hellip; <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testPostExcerptObjectWithForcedLength() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been turning over in my mind ever since.') );
-			$template = '{{ post.preview.force.length(3) }}';
+			$template = '{{ post.excerpt.force.length(3) }}';
 			$post = Timber::get_post($pid);
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('In my younger&hellip; <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testPostExcerptObject() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been <a href="http://google.com">turning over</a> in my mind ever since.') );
-			$template = '{{ post.preview }}';
+			$template = '{{ post.excerpt }}';
 			$post = Timber::get_post($pid);
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('In my younger and more vulnerable years my father gave me some advice that I’ve been turning over in my mind ever since. <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testPostExcerptObjectStrip() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been <a href="http://google.com">turning over</a> in my mind ever since.') );
-			$template = '{{ post.preview.strip(false) }}';
+			$template = '{{ post.excerpt.strip(false) }}';
 			$post = Timber::get_post($pid);
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('In my younger and more vulnerable years my father gave me some advice that I’ve been <a href="http://google.com">turning over</a> in my mind ever since. <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testPostExcerptObjectWithReadMore() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been turning over in my mind ever since.') );
-			$template = '{{ post.preview.read_more("Keep Reading") }}';
+			$template = '{{ post.excerpt.read_more("Keep Reading") }}';
 			$post = Timber::get_post($pid);
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('In my younger and more vulnerable years my father gave me some advice that I’ve been turning over in my mind ever since. <a href="http://example.org/?p='.$pid.'" class="read-more">Keep Reading</a>', $str);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testPostExcerptObjectWithEverything() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been turning over in my mind ever since.') );
-			$template = '{{ post.preview.length(6).force.end("-->").read_more("Keep Reading") }}';
+			$template = '{{ post.excerpt.length(6).force.end("-->").read_more("Keep Reading") }}';
 			$post = Timber::get_post($pid);
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('In my younger and more vulnerable--> <a href="http://example.org/?p='.$pid.'" class="read-more">Keep Reading</a>', $str);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testExcerptWithMoreTagAndForcedLength() {
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck<!-- more--> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = Timber::get_post( $pid );
@@ -279,55 +243,40 @@
 			$this->assertEquals('Lauren is a duck <a href="'.$post->link().'" class="read-more">Read More</a>', $post->preview());
 		}
 
-		/**
-			* @expectedDeprecated {{ post.preview }}
-		 */
 		function testExcerptWithCustomMoreTag() {
 			$pid = $this->factory->post->create( array('post_content' => 'Eric is a polar bear <!-- more But what is Elaina? --> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = Timber::get_post( $pid );
 			$this->assertEquals('Eric is a polar bear <a href="'.$post->link().'" class="read-more">But what is Elaina?</a>', $post->preview());
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testExcerptWithSpaceInMoreTag() {
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck, but a great duck let me tell you why <!--more--> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = Timber::get_post( $pid );
-			$template = '{{post.preview.length(3).force}}';
+			$template = '{{post.excerpt.length(3).force}}';
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('Lauren is a&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $str);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testExcerptWithStripAndClosingPTag() {
 			$pid = $this->factory->post->create( array('post_excerpt' => '<p>Lauren is a duck, but a great duck let me tell you why</p>') );
 			$post = Timber::get_post( $pid );
-			$template = '{{post.preview.strip(false)}}';
+			$template = '{{post.excerpt.strip(false)}}';
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('<p>Lauren is a duck, but a great duck let me tell you why <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a></p>', $str);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testExcerptWithStripAndClosingPTagForced() {
 			$pid = $this->factory->post->create( array('post_excerpt' => '<p>Lauren is a duck, but a great duck let me tell you why</p>') );
 			$post = Timber::get_post( $pid );
-			$template = '{{post.preview.strip(false).force(4)}}';
+			$template = '{{post.excerpt.strip(false).force(4)}}';
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('<p>Lauren is a duck, but a great duck let me tell you why&hellip;  <a href="http://example.org/?p='.$pid.'" class="read-more">Read More</a></p>', $str);
 		}
 
-		/**
-		 * @expectedDeprecated {{ post.preview }}
-		 */
 		function testEmptyExcerpt() {
 			$pid = $this->factory->post->create( array('post_excerpt' => '', 'post_content' => '') );
 			$post = Timber::get_post( $pid );
-			$template = '{{ post.preview }}';
+			$template = '{{ post.excerpt }}';
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('', $str);
 		}
