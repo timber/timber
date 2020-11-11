@@ -24,7 +24,10 @@ namespace Timber;
  * {# Use default preview #}
  * <p>{{ post.preview }}</p>
  *
- * {# Change the post preview text #}
+ * {# Use hash notation to pass arguments #}
+ * <div>{{ post.excerpt({ words: 100, read_more: 'Keep reading' }) }}</div>
+ *
+ * {# Change the post preview text only #}
  * <p>{{ post.preview.read_more('Continue Reading') }}</p>
  *
  * {# Additionally restrict the length to 50 words #}
