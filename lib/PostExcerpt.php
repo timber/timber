@@ -378,7 +378,9 @@ class PostExcerpt {
 				$trimmed = true;
 			}
 		}
-		if ( !strlen($text) && preg_match('/<!--\s?more(.*?)?-->/', $this->post->post_content, $readmore_matches) ) {
+
+		// Check for <!-- more --> tag in post content.
+		if ( empty( $text ) && preg_match('/<!--\s?more(.*?)?-->/', $this->post->post_content, $readmore_matches) ) {
 			$pieces = explode($readmore_matches[0], $this->post->post_content);
 			$text = $pieces[0];
 			if ( $this->force ) {
@@ -394,7 +396,9 @@ class PostExcerpt {
 			}
 			$text = do_shortcode($text);
 		}
-		if ( !strlen($text) ) {
+
+		// Build an excerpt text from the post’s content.
+		if ( empty( $text ) ) {
 			$text = $this->post->content();
 			$text = TextHelper::remove_tags($text, $this->destroy_tags);
 			if ( $allowable_tags ) {
@@ -407,13 +411,13 @@ class PostExcerpt {
 			}
 			$trimmed = true;
 		}
-		if ( !strlen(trim($text)) ) {
+		if ( empty( trim( $text ) ) ) {
 			return trim($text);
 		}
 		if ( $this->strip ) {
 			$text = trim(strip_tags($text, $allowable_tags));
 		}
-		if ( strlen($text) ) {
+		if ( ! empty( $text ) ) {
 			return $this->assemble($text, $readmore_matches, $trimmed);
 		}
 
