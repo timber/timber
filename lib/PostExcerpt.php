@@ -357,11 +357,7 @@ class PostExcerpt {
 	}
 
 	protected function run() {
-		$force = $this->force;
-		$len = $this->length;
-		$chars = $this->char_length;
-		$strip = $this->strip;
-		$allowable_tags = ( $strip && is_string($strip)) ? $strip : false;
+		$allowable_tags = ( $this->strip && is_string($this->strip)) ? $this->strip : false;
 		$readmore_matches = array();
 		$text = '';
 		$trimmed = false;
@@ -372,12 +368,12 @@ class PostExcerpt {
 			if ( $this->force ) {
 
 				if ( $allowable_tags ) {
-					$text = TextHelper::trim_words($text, $len, false, strtr($allowable_tags, '<>', '  '));
+					$text = TextHelper::trim_words($text, $this->length, false, strtr($allowable_tags, '<>', '  '));
 				} else {
-					$text = TextHelper::trim_words($text, $len, false);
+					$text = TextHelper::trim_words($text, $this->length, false);
 				}
-				if ( $chars !== false ) {
-					$text = TextHelper::trim_characters($text, $chars, false);
+				if ( $this->char_length !== false ) {
+					$text = TextHelper::trim_characters($text, $this->char_length, false);
 				}
 				$trimmed = true;
 			}
@@ -385,14 +381,14 @@ class PostExcerpt {
 		if ( !strlen($text) && preg_match('/<!--\s?more(.*?)?-->/', $this->post->post_content, $readmore_matches) ) {
 			$pieces = explode($readmore_matches[0], $this->post->post_content);
 			$text = $pieces[0];
-			if ( $force ) {
+			if ( $this->force ) {
 				if ( $allowable_tags ) {
-					$text = TextHelper::trim_words($text, $len, false, strtr($allowable_tags, '<>', '  '));
+					$text = TextHelper::trim_words($text, $this->length, false, strtr($allowable_tags, '<>', '  '));
 				} else {
-					$text = TextHelper::trim_words($text, $len, false);
+					$text = TextHelper::trim_words($text, $this->length, false);
 				}
-				if ( $chars !== false ) {
-					$text = TextHelper::trim_characters($text, $chars, false);
+				if ( $this->char_length !== false ) {
+					$text = TextHelper::trim_characters($text, $this->char_length, false);
 				}
 				$trimmed = true;
 			}
@@ -402,19 +398,19 @@ class PostExcerpt {
 			$text = $this->post->content();
 			$text = TextHelper::remove_tags($text, $this->destroy_tags);
 			if ( $allowable_tags ) {
-				$text = TextHelper::trim_words($text, $len, false, strtr($allowable_tags, '<>', '  '));
+				$text = TextHelper::trim_words($text, $this->length, false, strtr($allowable_tags, '<>', '  '));
 			} else {
-				$text = TextHelper::trim_words($text, $len, false);
+				$text = TextHelper::trim_words($text, $this->length, false);
 			}
-			if ( $chars !== false ) {
-				$text = TextHelper::trim_characters($text, $chars, false);
+			if ( $this->char_length !== false ) {
+				$text = TextHelper::trim_characters($text, $this->char_length, false);
 			}
 			$trimmed = true;
 		}
 		if ( !strlen(trim($text)) ) {
 			return trim($text);
 		}
-		if ( $strip ) {
+		if ( $this->strip ) {
 			$text = trim(strip_tags($text, $allowable_tags));
 		}
 		if ( strlen($text) ) {
