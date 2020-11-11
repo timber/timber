@@ -222,11 +222,13 @@ class PostPreview {
 	 * ```twig
 	 * <p>{{ post.preview.read_more('Learn more') }}</p>
 	 * ```
-	 * @param string $readmore Text for the link. Default 'Read More'.
+	 *
+	 * @param string $text Text for the link. Default 'Read More'.
+	 *
 	 * @return \Timber\PostPreview
 	 */
-	public function read_more( $readmore = 'Read More' ) {
 		$this->readmore = $readmore;
+	public function read_more( $text = 'Read More' ) {
 		return $this;
 	}
 
