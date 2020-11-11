@@ -3,13 +3,13 @@
 namespace Timber;
 
 /**
- * The PostPreview class lets a user modify a post preview/excerpt to their liking.
+ * The PostExcerpt class lets a user modify a post preview/excerpt to their liking.
  *
- * It’s designed to be used through the `Timber\Post::preview()` method. The public methods of this
+ * It’s designed to be used through the `Timber\Post::excerpt()` method. The public methods of this
  * class all return the object itself, which means that this is a **chainable object**. You can
- * change the output of the preview by **adding more methods**.
+ * change the output of the excerpt by **adding more methods**.
  *
- * By default, the preview will
+ * By default, the excerpt will
  *
  * - have a length of 50 words, which will be forced, even if a longer excerpt is set on the post.
  * - be stripped of all HTML tags.
@@ -18,23 +18,23 @@ namespace Timber;
  *
  * @api
  * @since 1.0.4
- * @see \Timber\Post::preview()
+ * @see \Timber\Post::excerpt()
  * @example
  * ```twig
- * {# Use default preview #}
- * <p>{{ post.preview }}</p>
+ * {# Use default excerpt #}
+ * <p>{{ post.excerpt }}</p>
  *
  * {# Use hash notation to pass arguments #}
  * <div>{{ post.excerpt({ words: 100, read_more: 'Keep reading' }) }}</div>
  *
- * {# Change the post preview text only #}
- * <p>{{ post.preview.read_more('Continue Reading') }}</p>
+ * {# Change the post excerpt text only #}
+ * <p>{{ post.excerpt.read_more('Continue Reading') }}</p>
  *
  * {# Additionally restrict the length to 50 words #}
- * <p>{{ post.preview.length(50).read_more('Continue Reading') }}</p>
+ * <p>{{ post.excerpt.length(50).read_more('Continue Reading') }}</p>
  * ```
  */
-class PostPreview {
+class PostExcerpt {
 	/**
 	 * Post.
 	 *
@@ -43,7 +43,7 @@ class PostPreview {
 	protected $post;
 
 	/**
-	 * Preview end.
+	 * Excerpt end.
 	 *
 	 * @var string
 	 */
@@ -92,11 +92,11 @@ class PostPreview {
 	protected $destroy_tags = array('script', 'style');
 
 	/**
-	 * PostPreview constructor.
+	 * PostExcerpt constructor.
 	 *
 	 * @api
 	 *
-	 * @param \Timber\Post $post The post to pull the preview from.
+	 * @param \Timber\Post $post The post to pull the excerpt from.
 	 * @param array        $options {
 	 *     An array of configuration options for generating the excerpt. Default empty.
 	 *
@@ -136,7 +136,7 @@ class PostPreview {
 	}
 
 	/**
-	 * Returns the resulting preview.
+	 * Returns the resulting excerpt.
 	 *
 	 * @api
 	 * @return string
@@ -146,15 +146,15 @@ class PostPreview {
 	}
 
 	/**
-	 * Restricts the length of the preview to a certain amount of words.
+	 * Restricts the length of the excerpt to a certain amount of words.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * <p>{{ post.preview.length(50) }}</p>
+	 * <p>{{ post.excerpt.length(50) }}</p>
 	 * ```
-	 * @param int $length The maximum amount of words (not letters) for the preview. Default `50`.
-	 * @return \Timber\PostPreview
+	 * @param int $length The maximum amount of words (not letters) for the excerpt. Default `50`.
+	 * @return \Timber\PostExcerpt
 	 */
 	public function length( $length = 50 ) {
 		$this->length = $length;
@@ -162,16 +162,16 @@ class PostPreview {
 	}
 
 	/**
-	 * Restricts the length of the preview to a certain amount of characters.
+	 * Restricts the length of the excerpt to a certain amount of characters.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * <p>{{ post.preview.chars(180) }}</p>
+	 * <p>{{ post.excerpt.chars(180) }}</p>
 	 * ```
-	 * @param int|bool $char_length The maximum amount of characters for the preview. Default
+	 * @param int|bool $char_length The maximum amount of characters for the excerpt. Default
 	 *                              `false`.
-	 * @return \Timber\PostPreview
+	 * @return \Timber\PostExcerpt
 	 */
 	public function chars( $char_length = false ) {
 		$this->char_length = $char_length;
@@ -179,15 +179,15 @@ class PostPreview {
 	}
 
 	/**
-	 * Defines the text to end the preview with.
+	 * Defines the text to end the excerpt with.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * <p>{{ post.preview.end('… and much more!') }}</p>
+	 * <p>{{ post.excerpt.end('… and much more!') }}</p>
 	 * ```
-	 * @param string $end The text for the end of the preview. Default `…`.
-	 * @return \Timber\PostPreview
+	 * @param string $end The text for the end of the excerpt. Default `…`.
+	 * @return \Timber\PostExcerpt
 	 */
 	public function end( $end = '&hellip;' ) {
 		$this->end = $end;
@@ -195,7 +195,7 @@ class PostPreview {
 	}
 
 	/**
-	 * Forces preview lengths.
+	 * Forces excerpt lengths.
 	 *
 	 * What happens if your custom post excerpt is longer than the length requested? By default, it
 	 * will use the full `post_excerpt`. However, you can set this to `true` to *force* your excerpt
@@ -204,12 +204,12 @@ class PostPreview {
 	 * @api
 	 * @example
 	 * ```twig
-	 * <p>{{ post.preview.length(20).force }}</p>
+	 * <p>{{ post.excerpt.length(20).force }}</p>
 	 * ```
-	 * @param bool $force Whether the length of the preview should be forced to the requested
+	 * @param bool $force Whether the length of the excerpt should be forced to the requested
 	 *                    length, even if an editor wrote a manual excerpt that is longer than the
 	 *                    set length. Default `true`.
-	 * @return \Timber\PostPreview
+	 * @return \Timber\PostExcerpt
 	 */
 	public function force( $force = true ) {
 		$this->force = $force;
@@ -223,12 +223,12 @@ class PostPreview {
 	 *
 	 * @api
 	 * ```twig
-	 * <p>{{ post.preview.read_more('Learn more') }}</p>
+	 * <p>{{ post.excerpt.read_more('Learn more') }}</p>
 	 * ```
 	 *
 	 * @param string $text Text for the link. Default 'Read More'.
 	 *
-	 * @return \Timber\PostPreview
+	 * @return \Timber\PostExcerpt
 	 */
 	public function read_more( $text = 'Read More' ) {
 		$this->read_more = $text;
@@ -236,17 +236,17 @@ class PostPreview {
 	}
 
 	/**
-	 * Defines how HTML tags should be stripped from the preview.
+	 * Defines how HTML tags should be stripped from the excerpt.
 	 *
 	 * @api
 	 * ```twig
 	 * {# Strips all HTML tags, except for bold or emphasized text #}
-	 * <p>{{ post.preview.length('50').strip('<strong><em>') }}</p>
+	 * <p>{{ post.excerpt.length('50').strip('<strong><em>') }}</p>
 	 * ```
-	 * @param bool|string $strip Whether or how HTML tags in the preview should be stripped. Use
+	 * @param bool|string $strip Whether or how HTML tags in the excerpt should be stripped. Use
 	 *                           `true` to strip all tags, `false` for no stripping, or a string for
 	 *                           a list of allowed tags (e.g. '<p><a>'). Default `true`.
-	 * @return \Timber\PostPreview
+	 * @return \Timber\PostExcerpt
 	 */
 	public function strip( $strip = true ) {
 		$this->strip = $strip;
@@ -277,18 +277,18 @@ class PostPreview {
 		}
 
 		/**
-		 * Filters the CSS class used for preview links.
+		 * Filters the CSS class used for excerpt links.
 		 *
 		 * @since 1.0.4
 		 * @example
 		 * ```php
-		 * // Change the CSS class for preview links
+		 * // Change the CSS class for excerpt links
 		 * add_filter( 'timber/post/preview/read_more_class', function( $class ) {
 		 *     return 'read-more__link';
 		 * } );
 		 * ```
 		 *
-		 * @param string $class The CSS class to use for the preview link. Default `read-more`.
+		 * @param string $class The CSS class to use for the excerpt link. Default `read-more`.
 		 */
 		$read_more_class = apply_filters('timber/post/preview/read_more_class', "read-more");
 

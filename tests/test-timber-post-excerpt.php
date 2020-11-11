@@ -1,21 +1,21 @@
 <?php
 
-use Timber\PostPreview;
+use Timber\PostExcerpt;
 
 /**
  * @group called-post-constructor
  */
-class TestTimberPostPreview extends Timber_UnitTestCase {
+class TestTimberPostExcerpt extends Timber_UnitTestCase {
 	function testDoubleEllipsis(){
 		$post_id = $this->factory->post->create();
 		$post = Timber::get_post($post_id);
 		$post->post_excerpt = 'this is super dooper trooper long words';
-		$preview = new PostPreview( $post, [
+		$excerpt = new PostExcerpt( $post, [
 			'words' => 3,
 			'force' => true,
 		] );
 
-		$this->assertEquals(1, substr_count((string) $preview, '&hellip;'));
+		$this->assertEquals(1, substr_count((string) $excerpt, '&hellip;'));
 	}
 
 	function testReadMoreClassFilter() {
@@ -24,16 +24,16 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		});
 		$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
 		$post = Timber::get_post($post_id);
-		$text = new PostPreview( $post, [
+		$text = new PostExcerpt( $post, [
 			'words' => 10,
 		] );
 		$this->assertContains('and-foo', (string) $text);
 	}
 
-	function testPreviewTags() {
+	function testExcerptTags() {
 		$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
 		$post = Timber::get_post($post_id);
-		$text = new PostPreview( $post, [
+		$text = new PostExcerpt( $post, [
 			'words'    => 20,
 			'force'    => false,
 			'read_more' => '',
@@ -42,7 +42,7 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		$this->assertNotContains('</p>', (string) $text);
 	}
 
-	function testGetPreview() {
+	function testGetExcerpt() {
 		global $wp_rewrite;
 		$struc = false;
 		$wp_rewrite->permalink_structure = $struc;
@@ -57,33 +57,33 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 
 		// excerpt set, force is false, no read more
 		$post->post_excerpt = 'this is excerpt longer than three words';
-		$preview = new PostPreview( $post, [
+		$excerpt = new PostExcerpt( $post, [
 			'words'    => 3,
 			'force'    => false,
 			'read_more' => '',
 		] );
-		$this->assertEquals( (string) $preview, $post->post_excerpt);
+		$this->assertEquals( (string) $excerpt, $post->post_excerpt);
 
 		// custom read more set
 		$post->post_excerpt = '';
-		$preview = new PostPreview( $post, [
+		$excerpt = new PostExcerpt( $post, [
 			'words'    => 3,
 			'force'    => false,
 			'read_more' => 'Custom more',
 		] );
-		$this->assertRegExp('/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Custom more<\/a>/', (string) $preview);
+		$this->assertRegExp('/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Custom more<\/a>/', (string) $excerpt);
 
 		// content with <!--more--> tag, force false
 		$post->post_content = 'this is super dooper<!--more--> trooper long words';
-		$preview = new PostPreview( $post, [
+		$excerpt = new PostExcerpt( $post, [
 			'words'    => 2,
 			'force'    => false,
 			'read_more' => '',
 		] );
-		$this->assertEquals('this is super dooper', (string) $preview);
+		$this->assertEquals('this is super dooper', (string) $excerpt);
 	}
 
-	function testShortcodesInPreviewFromContent() {
+	function testShortcodesInExcerptFromContent() {
 		add_shortcode('mythang', function($text) {
 			return 'mythangy';
 		});
@@ -92,7 +92,7 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		$this->assertEquals( 'jared mythangy&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $post->excerpt() );
 	}
 
-	function testShortcodesInPreviewFromContentWithMoreTag() {
+	function testShortcodesInExcerptFromContentWithMoreTag() {
 		add_shortcode('duck', function($text) {
 			return 'Quack!';
 		});
@@ -101,24 +101,24 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		$this->assertEquals('jared Quack! <a href="'.$post->link().'" class="read-more">Read More</a>', $post->excerpt());
 	}
 
-	function testPreviewWithSpaceInMoreTag() {
+	function testExcerptWithSpaceInMoreTag() {
 		$pid = $this->factory->post->create( [
 			'post_content' => 'Lauren is a duck, but a great duck let me tell you why <!--more--> Lauren is not a duck',
 			'post_excerpt' => ''
 		] );
 		$post = Timber::get_post( $pid );
-		$preview = new PostPreview( $post, [
+		$excerpt = new PostExcerpt( $post, [
 			'words' => 3,
 			'force' => true,
 		] );
 
 		$this->assertEquals(
 			'Lauren is a&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>',
-			(string) $preview
+			(string) $excerpt
 		);
 	}
 
-	function testPreviewWithMoreTagAndForcedLength() {
+	function testExcerptWithMoreTagAndForcedLength() {
 		$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck<!-- more--> Lauren is not a duck', 'post_excerpt' => '') );
 		$post = Timber::get_post( $pid );
 		$this->assertEquals(
@@ -127,7 +127,7 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		);
 	}
 
-	function testPreviewWithCustomMoreTag() {
+	function testExcerptWithCustomMoreTag() {
 		$pid = $this->factory->post->create( array('post_content' => 'Eric is a polar bear <!-- more But what is Elaina? --> Lauren is not a duck', 'post_excerpt' => '') );
 		$post = Timber::get_post( $pid );
 		$this->assertEquals(
@@ -136,13 +136,13 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		);
 	}
 
-	function testPreviewWithCustomEnd() {
+	function testExcerptWithCustomEnd() {
 		$pid = $this->factory->post->create( [
 			'post_content' => 'Lauren is a duck, but a great duck let me tell you why Lauren is a duck',
 			'post_excerpt' => ''
 		] );
 		$post = Timber::get_post( $pid );
-		$preview = new PostPreview( $post, [
+		$excerpt = new PostExcerpt( $post, [
 			'words'    => 3,
 			'force'    => true,
 			'read_more' => 'Read More',
@@ -151,17 +151,17 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		] );
 		$this->assertEquals(
 			'Lauren is a ??? <a href="'.$post->link().'" class="read-more">Read More</a>',
-			$preview
+			$excerpt
 		);
 	}
 
-	function testPreviewWithCustomStripTags() {
+	function testExcerptWithCustomStripTags() {
 		$pid = $this->factory->post->create( [
 			'post_content' => '<span>Even in the <a href="">world</a> of make-believe there have to be rules. The parts have to be consistent and belong together</span>'
 		] );
 		$post = Timber::get_post($pid);
 		$post->post_excerpt = '';
-		$preview = new PostPreview( $post, [
+		$excerpt = new PostExcerpt( $post, [
 			'words'    => 6,
 			'force'    => true,
 			'read_more' => 'Read More',
@@ -169,7 +169,7 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		] );
 		$this->assertEquals(
 			'<span>Even in the world of make-believe</span>&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>',
-			(string) $preview
+			(string) $excerpt
 		);
 	}
 }

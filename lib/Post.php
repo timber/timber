@@ -383,14 +383,14 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
-	 * Gets a preview/excerpt of your post.
+	 * Gets a excerpt of your post.
 	 *
 	 * If you have an excerpt is set on the post, the excerpt will be used. Otherwise it will try to
-	 * pull from a preview from `post_content`. If there’s a `<!-- more -->` tag in the post
+	 * pull from an excerpt from `post_content`. If there’s a `<!-- more -->` tag in the post
 	 * content, it will use that to mark where to pull through.
 	 *
 	 * @api
-	 * @see \Timber\PostPreview
+	 * @see \Timber\PostExcerpt
 	 *
 	 * @param array $options {
 	 *     An array of configuration options for generating the excerpt. Default empty.
@@ -412,43 +412,43 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * <h2>{{ post.title }}</h2>
 	 * <div>{{ post.excerpt({ words: 100, read_more: 'Keep reading' }) }}</div>
 	 * ```
-	 * @return \Timber\PostPreview
+	 * @return \Timber\PostExcerpt
 	 */
 	public function excerpt( array $options = array() ) {
-		return new PostPreview( $this, $options );
+		return new PostExcerpt( $this, $options );
 	}
 
 	/**
-	 * Gets a preview (excerpt) of your post.
+	 * Gets an excerpt of your post.
 	 *
 	 * If you have an excerpt is set on the post, the excerpt will be used. Otherwise it will try to
-	 * pull from a preview from `post_content`. If there’s a `<!-- more -->` tag in the post
+	 * pull from an excerpt from `post_content`. If there’s a `<!-- more -->` tag in the post
 	 * content, it will use that to mark where to pull through.
 	 *
-	 * This method returns a `Timber\PostPreview` object, which is a **chainable object**. This
-	 * means that you can change the output of the preview by **adding more methods**. Refer to the
-	 * [documentation of the `Timber\PostPreview` class](https://timber.github.io/docs/reference/timber-postpreview/)
+	 * This method returns a `Timber\PostExcerpt` object, which is a **chainable object**. This
+	 * means that you can change the output of the excerpt by **adding more methods**. Refer to the
+	 * [documentation of the `Timber\PostExcerpt` class](https://timber.github.io/docs/reference/timber-postexcerpt/)
 	 * to get an overview of all the available methods.
 	 *
 	 * @api
 	 * @deprecated 2.0.0, use `{{ post.excerpt }}` instead.
-	 * @see \Timber\PostPreview
+	 * @see \Timber\PostExcerpt
 	 * @example
 	 * ```twig
-	 * {# Use default preview #}
-	 * <p>{{ post.preview }}</p>
+	 * {# Use default excerpt #}
+	 * <p>{{ post.excerpt }}</p>
 	 *
-	 * {# Change the post preview text #}
-	 * <p>{{ post.preview.read_more('Continue Reading') }}</p>
+	 * {# Change the post excerpt text #}
+	 * <p>{{ post.excerpt.read_more('Continue Reading') }}</p>
 	 *
 	 * {# Additionally restrict the length to 50 words #}
-	 * <p>{{ post.preview.length(50).read_more('Continue Reading') }}</p>
+	 * <p>{{ post.excerpt.length(50).read_more('Continue Reading') }}</p>
 	 * ```
-	 * @return \Timber\PostPreview
+	 * @return \Timber\PostExcerpt
 	 */
 	public function preview() {
 		Helper::deprecated('{{ post.preview }}', '{{ post.excerpt }}', '2.0.0');
-		return new PostPreview($this);
+		return new PostExcerpt($this);
 	}
 
 	/**

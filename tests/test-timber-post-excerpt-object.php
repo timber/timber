@@ -3,7 +3,7 @@
 	/**
 	 * @group posts-api
 	 */
-	class TestTimberPostPreviewObject extends Timber_UnitTestCase {
+	class TestTimberPostExcerptObject extends Timber_UnitTestCase {
 
 		protected $gettysburg = 'Four score and seven years ago our fathers brought forth on this continent a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal.';
 
@@ -22,7 +22,7 @@
 			$post_id = $this->factory->post->create(array('post_excerpt' => $expected, 'post_content' => $this->gettysburg));
 			$post = Timber::get_post($post_id);
 			$template = "{{ post.excerpt({ 	strip: '<ul><li>',
-											words:10, 
+											words:10,
 											force:true }) }}";
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('Govenment: <ul> <li>of the people</li> <li>by the people</li> <li>for the</li></ul>&hellip; <a href="http://example.org/?p='.$post_id.'" class="read-more">Read More</a>', $str);
@@ -139,7 +139,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPreviewWithStyleTags() {
+		function testExcerptWithStyleTags() {
 			global $wpdb;
 			$style = '<style>body { background-color: red; }</style><b>Yo.</b> ';
 			$id = $wpdb->insert(
@@ -162,7 +162,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPreviewTags() {
+		function testExcerptTags() {
 			$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
 			$post = Timber::get_post($post_id);
 			$template = '{{post.preview.length(3).read_more(false).strip(false)}}';
@@ -173,7 +173,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPostPreviewObjectWithCharAndWordLengthWordsWin() {
+		function testPostExcerptObjectWithCharAndWordLengthWordsWin() {
 			$pid = $this->factory->post->create( array('post_content' => $this->gettysburg, 'post_excerpt' => '') );
 			$template = '{{ post.preview.length(2).chars(20) }}';
 			$post = Timber::get_post($pid);
@@ -184,7 +184,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPostPreviewObjectWithCharAndWordLengthCharsWin() {
+		function testPostExcerptObjectWithCharAndWordLengthCharsWin() {
 			$pid = $this->factory->post->create( array('post_content' => $this->gettysburg, 'post_excerpt' => '') );
 			$template = '{{ post.preview.length(20).chars(20) }}';
 			$post = Timber::get_post($pid);
@@ -195,7 +195,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPostPreviewObjectWithCharLength() {
+		function testPostExcerptObjectWithCharLength() {
 			$pid = $this->factory->post->create( array('post_content' => $this->gettysburg, 'post_excerpt' => '') );
 			$template = '{{ post.preview.chars(20) }}';
 			$post = Timber::get_post($pid);
@@ -206,7 +206,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPostPreviewObjectWithLength() {
+		function testPostExcerptObjectWithLength() {
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck she a big ole duck!', 'post_excerpt' => '') );
 			$template = '{{ post.preview.length(4) }}';
 			$post = Timber::get_post($pid);
@@ -217,7 +217,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPostPreviewObjectWithForcedLength() {
+		function testPostExcerptObjectWithForcedLength() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been turning over in my mind ever since.') );
 			$template = '{{ post.preview.force.length(3) }}';
 			$post = Timber::get_post($pid);
@@ -228,7 +228,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPostPreviewObject() {
+		function testPostExcerptObject() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been <a href="http://google.com">turning over</a> in my mind ever since.') );
 			$template = '{{ post.preview }}';
 			$post = Timber::get_post($pid);
@@ -239,7 +239,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPostPreviewObjectStrip() {
+		function testPostExcerptObjectStrip() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been <a href="http://google.com">turning over</a> in my mind ever since.') );
 			$template = '{{ post.preview.strip(false) }}';
 			$post = Timber::get_post($pid);
@@ -250,7 +250,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPostPreviewObjectWithReadMore() {
+		function testPostExcerptObjectWithReadMore() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been turning over in my mind ever since.') );
 			$template = '{{ post.preview.read_more("Keep Reading") }}';
 			$post = Timber::get_post($pid);
@@ -261,7 +261,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPostPreviewObjectWithEverything() {
+		function testPostExcerptObjectWithEverything() {
 			$pid = $this->factory->post->create( array('post_content' => 'Great Gatsby', 'post_excerpt' => 'In my younger and more vulnerable years my father gave me some advice that I’ve been turning over in my mind ever since.') );
 			$template = '{{ post.preview.length(6).force.end("-->").read_more("Keep Reading") }}';
 			$post = Timber::get_post($pid);
@@ -272,7 +272,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPreviewWithMoreTagAndForcedLength() {
+		function testExcerptWithMoreTagAndForcedLength() {
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck<!-- more--> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = Timber::get_post( $pid );
 
@@ -282,7 +282,7 @@
 		/**
 			* @expectedDeprecated {{ post.preview }}
 		 */
-		function testPreviewWithCustomMoreTag() {
+		function testExcerptWithCustomMoreTag() {
 			$pid = $this->factory->post->create( array('post_content' => 'Eric is a polar bear <!-- more But what is Elaina? --> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = Timber::get_post( $pid );
 			$this->assertEquals('Eric is a polar bear <a href="'.$post->link().'" class="read-more">But what is Elaina?</a>', $post->preview());
@@ -291,7 +291,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPreviewWithSpaceInMoreTag() {
+		function testExcerptWithSpaceInMoreTag() {
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck, but a great duck let me tell you why <!--more--> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = Timber::get_post( $pid );
 			$template = '{{post.preview.length(3).force}}';
@@ -302,7 +302,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPreviewWithStripAndClosingPTag() {
+		function testExcerptWithStripAndClosingPTag() {
 			$pid = $this->factory->post->create( array('post_excerpt' => '<p>Lauren is a duck, but a great duck let me tell you why</p>') );
 			$post = Timber::get_post( $pid );
 			$template = '{{post.preview.strip(false)}}';
@@ -313,7 +313,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testPreviewWithStripAndClosingPTagForced() {
+		function testExcerptWithStripAndClosingPTagForced() {
 			$pid = $this->factory->post->create( array('post_excerpt' => '<p>Lauren is a duck, but a great duck let me tell you why</p>') );
 			$post = Timber::get_post( $pid );
 			$template = '{{post.preview.strip(false).force(4)}}';
@@ -324,7 +324,7 @@
 		/**
 		 * @expectedDeprecated {{ post.preview }}
 		 */
-		function testEmptyPreview() {
+		function testEmptyExcerpt() {
 			$pid = $this->factory->post->create( array('post_excerpt' => '', 'post_content' => '') );
 			$post = Timber::get_post( $pid );
 			$template = '{{ post.preview }}';
@@ -332,14 +332,11 @@
 			$this->assertEquals('', $str);
 		}
 
-		function testPagePreviewOnSearch() {
+		function testPageExcerptOnSearch() {
 			$pid = $this->factory->post->create(array('post_type' => 'page', 'post_content' => 'What a beautiful day for a ballgame!', 'post_excerpt' => ''));
 			$post = Timber::get_post( $pid );
 			$template = '{{ post.excerpt }}';
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertEquals('What a beautiful day for a ballgame!&hellip; <a href="http://example.org/?page_id='.$pid.'" class="read-more">Read More</a>', $str);
 		}
-
-
-
 	}
