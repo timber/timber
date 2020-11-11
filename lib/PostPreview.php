@@ -72,7 +72,7 @@ class PostPreview {
 	 *
 	 * @var string
 	 */
-	protected $readmore = 'Read More';
+	protected $read_more = 'Read More';
 
 	/**
 	 * HTML tag stripping behavior.
@@ -129,7 +129,7 @@ class PostPreview {
 		$this->end         = $options['end'];
 		$this->force       = $options['force'];
 		$this->strip       = $options['strip'];
-		$this->readmore    = $options['read_more'];
+		$this->read_more   = $options['read_more'];
 	}
 
 	/**
@@ -227,8 +227,8 @@ class PostPreview {
 	 *
 	 * @return \Timber\PostPreview
 	 */
-		$this->readmore = $readmore;
 	public function read_more( $text = 'Read More' ) {
+		$this->read_more = $text;
 		return $this;
 	}
 
@@ -289,10 +289,10 @@ class PostPreview {
 		 */
 		$read_more_class = apply_filters('timber/post/preview/read_more_class', "read-more");
 
-		if ( $this->readmore && !empty($readmore_matches) && !empty($readmore_matches[1]) ) {
+		if ( $this->read_more && !empty($readmore_matches) && !empty( $readmore_matches[1]) ) {
 			$text .= ' <a href="'.$this->post->link().'" class="'.$read_more_class.'">'.trim($readmore_matches[1]).'</a>';
-		} elseif ( $this->readmore ) {
-			$text .= ' <a href="'.$this->post->link().'" class="'.$read_more_class.'">'.trim($this->readmore).'</a>';
+		} elseif ( $this->read_more ) {
+			$text .= ' <a href="'.$this->post->link().'" class="'.$read_more_class.'">'.trim($this->read_more).'</a>';
 		}
 		if ( !$this->strip && $last_p_tag && (strpos($text, '<p>') > -1 || strpos($text, '<p ')) ) {
 			$text .= '</p>';

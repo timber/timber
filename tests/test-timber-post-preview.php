@@ -36,7 +36,7 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		$text = new PostPreview( $post, [
 			'words'    => 20,
 			'force'    => false,
-			'readmore' => '',
+			'read_more' => '',
 			'strip'    => false,
 		] );
 		$this->assertNotContains('</p>', (string) $text);
@@ -145,7 +145,7 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		$preview = new PostPreview( $post, [
 			'words'    => 3,
 			'force'    => true,
-			'readmore' => 'Read More',
+			'read_more' => 'Read More',
 			'strip'    => true,
 			'end'      => ' ???',
 		] );
@@ -164,7 +164,7 @@ class TestTimberPostPreview extends Timber_UnitTestCase {
 		$preview = new PostPreview( $post, [
 			'words'    => 6,
 			'force'    => true,
-			'readmore' => 'Read More',
+			'read_more' => 'Read More',
 			'strip'    => '<span>',
 		] );
 		$this->assertEquals(
