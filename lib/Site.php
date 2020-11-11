@@ -175,7 +175,7 @@ class Site extends Core implements CoreInterface {
 		$this->rss = get_bloginfo('rss_url');
 		$this->rss2 = get_bloginfo('rss2_url');
 		$this->atom = get_bloginfo('atom_url');
-		$this->language = get_bloginfo('language');
+		$this->language = get_locale();
 		$this->charset = get_bloginfo('charset');
 		$this->pingback = $this->pingback_url = get_bloginfo('pingback_url');
 	}
