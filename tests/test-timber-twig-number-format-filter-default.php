@@ -14,6 +14,12 @@ class TestTimberTwigNumberFormatFilterDefault extends Timber_UnitTestCase {
 		parent::setUp();
 	}
 
+	function tearDown() {
+		// Reset locale
+		$GLOBALS['wp_locale'] = new WP_Locale();
+		parent::tearDown();
+	}
+
 	function get_context() {
 		return [
 			'number1'     => 20,
