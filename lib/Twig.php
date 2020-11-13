@@ -249,7 +249,7 @@ class Twig {
 	/**
 	 * Overwrite Twig defaults.
 	 *
-	 * Makes Twig compatible with how WordPress handles dates, timezones and perhaps other items in
+	 * Makes Twig compatible with how WordPress handles dates, timezones, numbers and perhaps other items in
 	 * the future
 	 *
 	 * @since 2.0.0
@@ -262,6 +262,12 @@ class Twig {
 	public function set_defaults( Environment $twig ) {
 		$twig->getExtension( CoreExtension::class )->setDateFormat( get_option( 'date_format' ), '%d days' );
 		$twig->getExtension( CoreExtension::class )->setTimezone( wp_timezone_string() );
+
+		/** @see https://developer.wordpress.org/reference/functions/number_format_i18n/ */
+		global $wp_locale;
+		if ( isset( $wp_locale ) ) {
+			$twig->getExtension( CoreExtension::class )->setNumberFormat( 0, $wp_locale->number_format['decimal_point'], $wp_locale->number_format['thousands_sep'] );
+		}
 
 		return $twig;
 	}
