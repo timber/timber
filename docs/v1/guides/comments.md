@@ -77,11 +77,11 @@ Timber contains the `CommentThread` class to help manage comment threads. If you
   {{ function('comment_form') }}
   <!-- nested comments here -->
   {% if comment.children %}
-    <div class="replies"> 
+    <div class="replies">
       {% for child_comment in comment.children %}
         {% include 'comment.twig' with { comment:child_comment } %}
       {% endfor %}
-    </div> 
-  {% endif %}    
+    </div>
+  {% endif %}
 </li>
 ```
