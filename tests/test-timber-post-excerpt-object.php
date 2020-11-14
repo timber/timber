@@ -286,6 +286,6 @@
 			$post = Timber::get_post( $pid );
 			$template = '{{ post.excerpt }}';
 			$str = Timber::compile_string($template, array('post' => $post));
-			$this->assertEquals('What a beautiful day for a ballgame!&hellip; <a href="http://example.org/?page_id='.$pid.'" class="read-more">Read More</a>', $str);
+			$this->assertEquals('What a beautiful day for a ballgame! <a href="http://example.org/?page_id='.$pid.'" class="read-more">Read More</a>', $str);
 		}
 	}
