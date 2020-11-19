@@ -168,6 +168,7 @@ We can move this function over to the `BlogPost` class. The only difference is t
 
 ```php
 <?php
+class MySitePost extends \Timber\Post {
 
 /**
  * Class BlogPost
@@ -269,6 +270,7 @@ Of course, `Timber\Post` has no built-in concept of an issue. Imagine there’s 
 
 ```php
 <?php
+class MySitePost extends \Timber\Post {
 
 class MagazinePost extends \Timber\Post {
     /**

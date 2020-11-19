@@ -10,7 +10,7 @@ use Timber\Helper;
 /**
  * Trait implementing ArrayAccess::getOffset() using lazy instantiation.
  *
- * @see /docs/v2/guides/posts.md#laziness-and-caching
+ * @see https://timber.github.io/docs/v2/guides/posts.md#laziness-and-caching
  * @internal
  */
 trait AccessesPostsLazily {

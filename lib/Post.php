@@ -1289,17 +1289,28 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
-	 * Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).
+	 * Gets the actual content of a WordPress post.
+	 *
+	 * As opposed to using `{{ post.post_content }}`, this will run the hooks/filters attached to
+	 * the `the_content` filter. It will return your post’s content with WordPress filters run on it
+	 * – which means it will parse blocks, convert shortcodes or run `wpautop()` on the content.
+	 *
+	 * If you use page breaks in your content to split your post content into multiple pages,
+	 * use `{{ post.paged_content }}` to display only the content for the current page.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * <div class="article">
-	 *     <h2>{{post.title}}</h2>
+	 * <article>
+	 *     <h1>{{ post.title }}</h1>
+	 *
 	 *     <div class="content">{{ post.content }}</div>
-	 * </div>
+	 * </article>
 	 * ```
-	 * @param int $page
+	 *
+	 * @param int $page Optional. The page to show if the content of the post is split into multiple
+	 *                  pages. Read more about this in the [Pagination Guide](https://timber.github.io/docs/v2/guides/pagination/#paged-content-within-a-post). Default `0`.
+	 *
 	 * @return string
 	 */
 	public function content( $page = 0, $len = -1 ) {
@@ -1348,7 +1359,19 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
-	 * @return string
+	 * Gets the paged content for a post.
+	 *
+	 * You will use this, if you use `<!--nextpage-->` in your post content or the Page Break block
+	 * in the Block Editor. Use `{{ post.pagination }}` to create a pagination for your paged
+	 * content. Learn more about this in the [Pagination Guide](https://timber.github.io/docs/v2/guides/pagination/#paged-content-within-a-post).
+	 *
+	 * @example
+	 * ```twig
+	 * {{ post.paged_content }}
+	 * ```
+	 *
+	 * @return string The content for the current page. If there’s no page break found in the
+	 *                content, the whole content is returned.
 	 */
 	public function paged_content() {
 		global $page;
@@ -1652,8 +1675,21 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
+	 * Gets the next post that is adjacent to the current post in a collection.
+	 *
+	 * Works pretty much the same as
+	 * [`get_next_post()`](https://developer.wordpress.org/reference/functions/get_next_post/).
+	 *
 	 * @api
-	 * @param bool|string $in_same_term
+	 * @example
+	 * ```twig
+	 * {% if post.next %}
+	 *     <a href="{{ post.next.link }}">{{ post.next.title }}</a>
+	 * {% endif %}
+	 * ```
+	 * @param bool|string $in_same_term Whether the post should be in a same taxonomy term. Default
+	 *                                  `false`.
+	 *
 	 * @return mixed
 	 */
 	public function next( $in_same_term = false ) {
@@ -1679,10 +1715,42 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
-	 * Get a data array of pagination so you can navigate to the previous/next for a paginated post.
+	 * Gets a data array to display a pagination for your paginated post.
+	 *
+	 * Use this in combination with `{{ post.paged_content }}`.
 	 *
 	 * @api
-	 * @return array
+	 * @example
+	 * Using simple links to the next an previous page.
+	 * ```twig
+	 * {% if post.pagination.next is not empty %}
+	 *     <a href="{{ post.pagination.next.link|e('esc_url') }}">Go to next page</a>
+	 * {% endif %}
+	 *
+	 * {% if post.pagination.prev is not empty %}
+	 *     <a href="{{ post.pagination.prev.link|e('esc_url') }}">Go to previous page</a>
+	 * {% endif %}
+	 * ```
+	 * Using a pagination for all pages.
+	 * ```twig
+	 * {% if post.pagination.pages is not empty %}
+	 *    <nav aria-label="pagination">
+	 *        <ul>
+	 *            {% for page in post.pagination.pages %}
+	 *                <li>
+	 *                    {% if page.current %}
+	 *                        <span aria-current="page">Page {{ page.title }}</span>
+	 *                    {% else %}
+	 *                        <a href="{{ page.link|e('esc_url') }}">Page {{ page.title }}</a>
+	 *                    {% endif %}
+	 *                </li>
+	 *            {% endfor %}
+	 *        </ul>
+	 *    </nav>
+	 * {% endif %}
+	 * ```
+	 *
+	 * @return array An array with data to build your paginated content.
 	 */
 	public function pagination() {
 		global $post, $page, $numpages, $multipage;
@@ -1763,18 +1831,21 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		return URLHelper::get_rel_url($this->link());
 	}
 
-
 	/**
-	 * Get the previous post in a set
+	 * Get the previous post that is adjacent to the current post in a collection.
+	 *
+	 * Works pretty much the same as
+	 * [`get_previous_post()`](https://developer.wordpress.org/reference/functions/get_previous_post/).
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * <h4>Prior Entry:</h4>
-	 * <h3>{{post.prev.title}}</h3>
-	 * <p>{{post.prev.preview(25)}}</p>
+	 * {% if post.prev %}
+	 *     <a href="{{ post.prev.link }}">{{ post.prev.title }}</a>
+	 * {% endif %}
 	 * ```
-	 * @param string|boolean $in_same_term
+	 * @param bool|string $in_same_term Whether the post should be in a same taxonomy term. Default
+	 *                                  `false`.
 	 * @return mixed
 	 */
 	public function prev( $in_same_term = false ) {

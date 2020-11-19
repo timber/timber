@@ -371,16 +371,4 @@ class Site extends Core implements CoreInterface {
 		}
 		$this->$key = $value;
 	}
-
-	/**
-	 * @api
-	 * @deprecated 1.0.4, use `{{ site.link }}` instead.
-	 * @see \Timber\Site::link()
-	 * @return string
-	 */
-	public function url() {
-		Helper::deprecated('{{ site.url }}', '{{ site.link }}', '1.0.4');
-		return $this->link();
-	}
-
 }

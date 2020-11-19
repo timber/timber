@@ -86,7 +86,7 @@ Timber is a tool for developers who want to translate their HTML into high-quali
 * **Accessible**: No black boxes. Every effort is made so the developer has access to 100% of their HTML.
 
 #### What does it look like?
-Nothing. Timber is meant for you to build a theme on. Like [_s](https://github.com/Automattic/_s) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
+Nothing. Timber is meant for you to build a theme on. Like [underscores](https://github.com/Automattic/_s) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
 
 #### Who is it good for?
 Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because while our entire team needs to participate in building WordPress sites, not everyone knows the ins-and-outs of the_loop(),  codex and PHP (nor should they). With Timber your best WordPress engineer can focus on building the `.php` files with requests from WordPress and pass the data into `.twig` files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
@@ -118,7 +118,6 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Flynt**](https://flyntwp.com/) a component based WordPress starter theme built on Timber and ACF Pro
 * [**Gantry5**](https://wordpress.org/plugins/gantry5/) a framework for theme development
 * [**Seedling**](https://github.com/maxdmyers/seedling) A starter theme using Bootstrap 4
-
 
 #### Helpful Links
 * [**CSS Tricks**](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/) introduction to Timber by [@tjFogarty](https://github.com/tjFogarty)
