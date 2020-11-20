@@ -159,7 +159,7 @@
 		function testExcerptTags() {
 			$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
 			$post = Timber::get_post($post_id);
-			$template = '{{post.excerpt.length(3).read_more(false).strip(false)}}';
+			$template = '{{ post.excerpt.length(3).read_more(false).strip(false) }}';
 			$str = Timber::compile_string($template, array('post' => $post));
 			$this->assertNotContains('</p>', $str);
 		}
