@@ -381,12 +381,32 @@ class ImageHelper {
 	/**
 	 * Downloads an external image to the server and stores it on the server.
 	 *
-	 * @param string  $file The URL to the original file.
+	 * External/sideloaded images are saved in a folder named **sideloaded** in the uploads folder.
+	 * If you want to change the folder that is used for your sideloaded images, you can use the
+	 * [`timber/sideload_image/subdir`](https://timber.github.io/docs/v2/hooks/filters/#timber/sideload_image/subdir)
+	 * filter.
+	 *
+	 * @param string $file The URL to the original file.
+	 *
 	 * @return string The URL to the downloaded file.
 	 */
 	public static function sideload_image( $file ) {
+		/**
+		 * Adds a filter to change the upload folder temporarily.
+		 *
+		 * This is necessary so that external images are not downloaded every month in case
+		 * year-month-based folders are used. We need to use the `upload_dir` filter, because we use
+		 * functions like `wp_upload_bits()` which uses `wp_upload_dir()` under the hood.
+		 *
+		 * @ticket 1098
+		 * @link https://github.com/timber/timber/issues/1098
+		 */
+		add_filter( 'upload_dir', [ __CLASS__, 'set_sideload_image_upload_dir' ] );
+
 		$loc = self::get_sideloaded_file_loc($file);
 		if ( file_exists($loc) ) {
+			remove_filter( 'upload_dir', [ __CLASS__, 'set_sideload_image_upload_dir' ] );
+
 			return URLHelper::file_system_to_url($loc);
 		}
 		// Download file to temp location
@@ -407,7 +427,56 @@ class ImageHelper {
 		$file = wp_upload_bits($locinfo['basename'], null, file_get_contents($file_array['tmp_name']));
 		// delete tmp file
 		@unlink($file_array['tmp_name']);
+
+		remove_filter( 'upload_dir', [ __CLASS__, 'set_sideload_image_upload_dir' ] );
+
 		return $file['url'];
+	}
+
+	/**
+	 *
+	 * Used by ImageHelper::sideload_image().
+	 *
+	 * @internal
+	 * @since 2.0.0
+	 * @see   \Timber\ImageHelper::sideload_image()
+	 *
+	 * @param array $upload Array of information about the upload directory.
+	 *
+	 * @return mixed
+	 */
+	public static function set_sideload_image_upload_dir( array $upload ) {
+		$subdir = 'sideloaded';
+
+		/**
+		 * Filters to directory that should be used for sideloaded images.
+		 *
+		 * @since 2.0.0
+		 * @example
+		 * ```php
+		 * // Change the subdirectory used for images.
+		 *
+		 * add_filter( 'timber/sideload_image/subdir', function( $subdir ) {
+		 *     return 'external';
+		 * } );
+		 * ```
+		 *
+		 * @param string $subdir The subdir name to use for sideloaded images. Return an empty
+		 *                       string or a falsey value in order to not use a subfolder. Default
+		 *                       `sideloaded`.
+		 */
+		$subdir = apply_filters( 'timber/sideload_image/subdir', $subdir );
+
+		if ( ! empty( $subdir ) ) {
+			// Remove any slashes.
+			$subdir = trim( $subdir, '/' );
+
+			$upload['subdir'] = '/' . $subdir;
+			$upload['path']   = $upload['basedir'] . $upload['subdir'];
+			$upload['url']    = $upload['baseurl'] . $upload['subdir'];
+		}
+
+		return $upload;
 	}
 
 	/**
@@ -607,7 +676,7 @@ class ImageHelper {
 		if ( $allow_fs_write === false ) {
 			return $src;
 		}
-		
+
 		$external = false;
 		// if external image, load it first
 		if ( URLHelper::is_external_content($src) ) {
