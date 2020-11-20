@@ -405,9 +405,11 @@ class ImageHelper {
 
 		$loc = self::get_sideloaded_file_loc($file);
 		if ( file_exists($loc) ) {
+			$url = URLHelper::file_system_to_url($loc);
+
 			remove_filter( 'upload_dir', [ __CLASS__, 'set_sideload_image_upload_dir' ] );
 
-			return URLHelper::file_system_to_url($loc);
+			return $url;
 		}
 		// Download file to temp location
 		if ( !function_exists('download_url') ) {
