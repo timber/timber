@@ -111,7 +111,7 @@ class TestTimberImageLetterbox extends TimberAttachment_UnitTestCase {
 		$sideloaded = Timber::compile_string( '{{ file|letterbox(500, 500) }}', [ 'file' => $url ] );
 
 		$base_url   = str_replace( basename( $sideloaded ), '', $sideloaded );
-		$expected   = $base_url . md5( $url ) . '-lbox-500x500.jpg';
+		$expected   = $base_url . md5( $url ) . '-lbox-500x500-trans.jpg';
 
 		$this->assertEquals( $expected, $sideloaded );
 	}
