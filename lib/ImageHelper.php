@@ -502,7 +502,9 @@ class ImageHelper {
 		}
 		$url = untrailingslashit($url).'/'.$filename;
 		if ( !$absolute ) {
-			$url = str_replace(site_url(), '', $url);
+			$home = home_url();
+			$home = apply_filters('timber/ImageHelper/_get_file_url/home_url', $home);
+			$url = str_replace($home, '', $url);
 		}
 		return $url;
 	}
