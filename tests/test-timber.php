@@ -369,7 +369,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	/* Previews */
 
 
-	function testGetPostPreview(){
+	function testGetPostExcerpt(){
 		$editor_user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $editor_user_id );
 
