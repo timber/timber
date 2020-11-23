@@ -107,6 +107,24 @@ class PostExcerpt {
 	protected $always_add_end = false;
 
 	/**
+	 * Whether read more link should be added.
+	 *
+	 * @internal
+	 * @since 2.0.0
+	 * @var bool
+	 */
+	protected $add_read_more = false;
+
+	/**
+	 * Whether end string should be added.
+	 *
+	 * @internal
+	 * @since 2.0.0
+	 * @var bool
+	 */
+	protected $add_end = false;
+
+	/**
 	 * Destroy tags.
 	 *
 	 * @var array List of tags that should always be destroyed.
@@ -313,14 +331,12 @@ class PostExcerpt {
 	/**
 	 * @internal
 	 * @param string $text
-	 * @param array|bool $readmore_matches
-	 * @param boolean $trimmed was the text trimmed?
 	 */
-	protected function assemble( $text, $readmore_matches, $trimmed ) {
+	protected function assemble( $text ) {
 		$text = trim($text);
 		$last = $text[strlen($text) - 1];
 		$last_p_tag = null;
-		if ( $last != '.' && $trimmed ) {
+		if ( $last != '.' && ( $this->always_add_end || $this->add_end ) ) {
 			$text .= $this->end;
 		}
 		if ( !$this->strip ) {
@@ -328,13 +344,13 @@ class PostExcerpt {
 			if ( $last_p_tag !== false ) {
 				$text = substr($text, 0, $last_p_tag);
 			}
-			if ( $last != '.' && $trimmed ) {
+			if ( $last != '.' && ( $this->always_add_end || $this->add_end ) ) {
 				$text .= $this->end.' ';
 			}
 		}
 
 		// Maybe add read more link.
-		if ( $this->read_more && ( $this->always_add_read_more || $trimmed ) ) {
+		if ( $this->read_more && ( $this->always_add_read_more || $this->add_read_more ) ) {
 			/**
 			 * Filters the CSS class used for excerpt links.
 			 *
@@ -364,11 +380,7 @@ class PostExcerpt {
 				'timber/post/excerpt/read_more_class'
 			);
 
-			if ( !empty($readmore_matches) && !empty( $readmore_matches[1]) ) {
-				$linktext = trim( $readmore_matches[1] );
-			} else {
 				$linktext = trim( $this->read_more );
-			}
 
 			$link = sprintf( ' <a href="%1$s" class="%2$s">%3$s</a>',
 				$this->post->link(),
@@ -418,7 +430,6 @@ class PostExcerpt {
 		$allowable_tags = ( $this->strip && is_string($this->strip)) ? $this->strip : false;
 		$readmore_matches = array();
 		$text = '';
-		$trimmed = false;
 
 		// A user-specified excerpt is authoritative, so check that first.
 		if ( isset($this->post->post_excerpt) && strlen($this->post->post_excerpt) ) {
@@ -433,14 +444,31 @@ class PostExcerpt {
 				if ( $this->char_length !== false ) {
 					$text = TextHelper::trim_characters($text, $this->char_length, false);
 				}
-				$trimmed = true;
+
+				$this->add_end = true;
 			}
+
+			$this->add_read_more = true;
 		}
 
 		// Check for <!-- more --> tag in post content.
 		if ( empty( $text ) && preg_match('/<!--\s?more(.*?)?-->/', $this->post->post_content, $readmore_matches) ) {
 			$pieces = explode($readmore_matches[0], $this->post->post_content);
 			$text = $pieces[0];
+
+			$this->add_read_more = true;
+
+			/**
+			 * Custom read more text.
+			 *
+			 * The following post content example will result in the read more text to become "But
+			 * what is Elaina?": Eric is a polar bear <!-- more But what is Elaina? --> Lauren is
+			 * not a duck.
+			 */
+			if ( ! empty( $readmore_matches[1] ) ) {
+				$this->read_more = trim( $readmore_matches[1] );
+			}
+
 			if ( $this->force ) {
 				if ( $allowable_tags ) {
 					$text = TextHelper::trim_words($text, $this->length, false, strtr($allowable_tags, '<>', '  '));
@@ -450,8 +478,10 @@ class PostExcerpt {
 				if ( $this->char_length !== false ) {
 					$text = TextHelper::trim_characters($text, $this->char_length, false);
 				}
-				$trimmed = true;
+
+				$this->add_end = true;
 			}
+
 			$text = do_shortcode($text);
 		}
 
@@ -477,7 +507,10 @@ class PostExcerpt {
 			$has_trimmed_chars = ! empty( $text_before_char_trim )
 				&& strlen( $text ) < strlen( $text_before_char_trim );
 
-			$trimmed = $this->always_add_end || $has_trimmed_words || $has_trimmed_chars;
+			if ( $has_trimmed_words || $has_trimmed_chars ) {
+				$this->add_end       = true;
+				$this->add_read_more = true;
+			}
 		}
 		if ( empty( trim( $text ) ) ) {
 			return trim($text);
@@ -486,10 +519,9 @@ class PostExcerpt {
 			$text = trim(strip_tags($text, $allowable_tags));
 		}
 		if ( ! empty( $text ) ) {
-			return $this->assemble($text, $readmore_matches, $trimmed);
+			return $this->assemble($text);
 		}
 
 		return trim($text);
 	}
-
 }
