@@ -6,15 +6,24 @@ namespace Timber;
  * The PostExcerpt class lets a user modify a post preview/excerpt to their liking.
  *
  * It’s designed to be used through the `Timber\Post::excerpt()` method. The public methods of this
- * class all return the object itself, which means that this is a **chainable object**. You can
- * change the output of the excerpt by **adding more methods**.
+ * class all return the object itself, which means that this is a **chainable object**. This means
+ * that you could change the output of the excerpt by **adding more methods**. But you can also pass
+ * in your arguments to the object constructor or to `Timber\Post::excerpt()`.
  *
  * By default, the excerpt will
  *
  * - have a length of 50 words, which will be forced, even if a longer excerpt is set on the post.
  * - be stripped of all HTML tags.
  * - have an ellipsis (…) as the end of the text.
- * - have a "Read More" link appended.
+ * - have a "Read More" link appended, if there’s more to read in the post content.
+ *
+ * One thing to note: If the excerpt already contains all of the text that can also be found in the
+ * post’s content, then the read more link as well as the string to use as the end will not be
+ * added.
+ *
+ * This class will also handle cases where you use the `<!-- more -->` tag inside your post content.
+ * You can also change the text used for the read more link by adding your desired text to the
+ * `<!-- more -->` tag. Here’s an example: `<!-- more Start your journey -->`.
  *
  * You can change the defaults that are used for excerpts through the
  * [`timber/post/excerpt/defaults`](https://timber.github.io/docs/v2/hooks/filters/#timber/post/excerpts/defaults)
@@ -28,7 +37,7 @@ namespace Timber;
  * {# Use default excerpt #}
  * <p>{{ post.excerpt }}</p>
  *
- * {# Use hash notation to pass arguments #}
+ * {# Preferred method: Use hash notation to pass arguments. #}
  * <div>{{ post.excerpt({ words: 100, read_more: 'Keep reading' }) }}</div>
  *
  * {# Change the post excerpt text only #}
@@ -380,7 +389,7 @@ class PostExcerpt {
 				'timber/post/excerpt/read_more_class'
 			);
 
-				$linktext = trim( $this->read_more );
+			$linktext = trim( $this->read_more );
 
 			$link = sprintf( ' <a href="%1$s" class="%2$s">%3$s</a>',
 				$this->post->link(),
