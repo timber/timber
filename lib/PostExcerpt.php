@@ -116,24 +116,6 @@ class PostExcerpt {
 	protected $always_add_end = false;
 
 	/**
-	 * Whether read more link should be added.
-	 *
-	 * @internal
-	 * @since 2.0.0
-	 * @var bool
-	 */
-	protected $add_read_more = false;
-
-	/**
-	 * Whether end string should be added.
-	 *
-	 * @internal
-	 * @since 2.0.0
-	 * @var bool
-	 */
-	protected $add_end = false;
-
-	/**
 	 * Destroy tags.
 	 *
 	 * @var array List of tags that should always be destroyed.
@@ -338,14 +320,18 @@ class PostExcerpt {
 	}
 
 	/**
+	 * Assembles excerpt.
+	 *
 	 * @internal
-	 * @param string $text
+	 *
+	 * @param string $text The text to use for the excerpt.
+	 * @param array  $args An array of arguments for the assembly.
 	 */
-	protected function assemble( $text ) {
+	protected function assemble( $text, $args = [] ) {
 		$text = trim($text);
 		$last = $text[strlen($text) - 1];
 		$last_p_tag = null;
-		if ( $last != '.' && ( $this->always_add_end || $this->add_end ) ) {
+		if ( $last != '.' && ( $this->always_add_end || $args['add_end'] ) ) {
 			$text .= $this->end;
 		}
 		if ( !$this->strip ) {
@@ -353,13 +339,13 @@ class PostExcerpt {
 			if ( $last_p_tag !== false ) {
 				$text = substr($text, 0, $last_p_tag);
 			}
-			if ( $last != '.' && ( $this->always_add_end || $this->add_end ) ) {
+			if ( $last != '.' && ( $this->always_add_end || $args['add_end'] ) ) {
 				$text .= $this->end.' ';
 			}
 		}
 
 		// Maybe add read more link.
-		if ( $this->read_more && ( $this->always_add_read_more || $this->add_read_more ) ) {
+		if ( $this->read_more && ( $this->always_add_read_more || $args['add_read_more'] ) ) {
 			/**
 			 * Filters the CSS class used for excerpt links.
 			 *
@@ -436,9 +422,11 @@ class PostExcerpt {
 	}
 
 	protected function run() {
-		$allowable_tags = ( $this->strip && is_string($this->strip)) ? $this->strip : false;
+		$allowable_tags   = ( $this->strip && is_string( $this->strip ) ) ? $this->strip : false;
 		$readmore_matches = array();
-		$text = '';
+		$text             = '';
+		$add_read_more    = false;
+		$add_end          = false;
 
 		// A user-specified excerpt is authoritative, so check that first.
 		if ( isset($this->post->post_excerpt) && strlen($this->post->post_excerpt) ) {
@@ -454,10 +442,10 @@ class PostExcerpt {
 					$text = TextHelper::trim_characters($text, $this->char_length, false);
 				}
 
-				$this->add_end = true;
+				$add_end = true;
 			}
 
-			$this->add_read_more = true;
+			$add_read_more = true;
 		}
 
 		// Check for <!-- more --> tag in post content.
@@ -465,7 +453,7 @@ class PostExcerpt {
 			$pieces = explode($readmore_matches[0], $this->post->post_content);
 			$text = $pieces[0];
 
-			$this->add_read_more = true;
+			$add_read_more = true;
 
 			/**
 			 * Custom read more text.
@@ -488,7 +476,7 @@ class PostExcerpt {
 					$text = TextHelper::trim_characters($text, $this->char_length, false);
 				}
 
-				$this->add_end = true;
+				$add_end = true;
 			}
 
 			$text = do_shortcode($text);
@@ -517,8 +505,8 @@ class PostExcerpt {
 				&& strlen( $text ) < strlen( $text_before_char_trim );
 
 			if ( $has_trimmed_words || $has_trimmed_chars ) {
-				$this->add_end       = true;
-				$this->add_read_more = true;
+				$add_end       = true;
+				$add_read_more = true;
 			}
 		}
 		if ( empty( trim( $text ) ) ) {
@@ -528,7 +516,10 @@ class PostExcerpt {
 			$text = trim(strip_tags($text, $allowable_tags));
 		}
 		if ( ! empty( $text ) ) {
-			return $this->assemble($text);
+			return $this->assemble( $text, [
+				'add_end'       => $add_end,
+				'add_read_more' => $add_read_more,
+			] );
 		}
 
 		return trim($text);
