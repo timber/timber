@@ -92,14 +92,16 @@ class PostExcerpt {
 	 * Whether a read more link should be added even if the excerpt isn’t trimmed (when the excerpt
 	 * isn’t shorter than the post’s content).
 	 *
+	 * @since 2.0.0
 	 * @var bool
 	 */
-	protected $always_add_read_more = true;
+	protected $always_add_read_more = false;
 
 	/**
 	 * Whether the end string should be added even if the excerpt isn’t trimmed (when the excerpt
 	 * isn’t shorter than the post’s content).
 	 *
+	 * @since 2.0.0
 	 * @var bool
 	 */
 	protected $always_add_end = false;
@@ -126,14 +128,14 @@ class PostExcerpt {
 	 *     @type string   $end       String to append to the end of the excerpt. Default '&hellip;'
 	 *                               (HTML ellipsis character).
 	 *     @type bool     $force     Whether to shorten the excerpt to the length/word count
-	 *                               specified, if the editor wrote a manual excerpt longer than the
-	 *                               set length. Default `false`.
+	 *                               specified, even if an editor wrote a manual excerpt longer
+	 *                               than the set length. Default `false`.
 	 *     @type bool     $strip     Whether to strip HTML tags. Default `true`.
 	 *     @type string   $read_more String for what the "Read More" text should be. Default
 	 *                               'Read More'.
 	 *     @type bool     $always_add_read_more Whether a read more link should be added even if the
 	 *                                          excerpt isn’t trimmed (when the excerpt isn’t
-	 *                                          shorter than the post’s content). Default `true`.
+	 *                                          shorter than the post’s content). Default `false`.
 	 *     @type bool     $always_add_end       Whether the end string should be added even if the
 	 *                                          excerpt isn’t trimmed (when the excerpt isn’t
 	 *                                          shorter than the post’s content). Default `false`.
@@ -149,7 +151,7 @@ class PostExcerpt {
 			'force'                => false,
 			'strip'                => true,
 			'read_more'            => 'Read More',
-			'always_add_read_more' => true,
+			'always_add_read_more' => false,
 			'always_add_end'       => false,
 		];
 
