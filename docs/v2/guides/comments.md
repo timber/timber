@@ -27,7 +27,7 @@ Looking to do non-threaded comments? This pattern can be expanded upon. If you'r
 
 ## Threaded Comments (Method 1)
 
-You can implement threaded comments this way (if you don't mind using WordPres's comment markup).
+You can implement threaded comments this way (if you don't mind using WordPress’s comment markup).
 
 **single.twig**
 ```twig
@@ -78,11 +78,11 @@ Timber contains the `CommentThread` class to help manage comment threads. If you
   {{ function('comment_form') }}
   <!-- nested comments here -->
   {% if comment.children %}
-    <div class="replies"> 
+    <div class="replies">
       {% for child_comment in comment.children %}
         {% include 'comment.twig' with { comment:child_comment } %}
       {% endfor %}
-    </div> 
-  {% endif %}    
+    </div>
+  {% endif %}
 </li>
 ```
