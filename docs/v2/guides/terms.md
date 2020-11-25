@@ -1,7 +1,9 @@
 ---
-title: "Term"
+title: "Terms"
 order: "120"
 ---
+
+## Get a term
 
 To get a term object in Timber, you use `Timber::get_term()` and pass the WordPress term ID as an argument.
 
@@ -23,16 +25,16 @@ What you get in return is a [`Timber\Term`](https://timber.github.io/docs/v2/ref
 
 ## Twig
 
-You can convert terms IDs to term objects in Twig using the `Term()` function.
+You can convert terms IDs to term objects in Twig using the `get_term()` function.
 
 ```twig
-{% set term = Term(term_id) %}
+{% set term = get_term(term_id) %}
 ```
 
-It also works if you have an array of terms IDs that you want to convert to `Timber\Term` objects.
+If you have an array of terms IDs that you want to convert to `Timber\Term` objects, you can use `get_terms()`.
 
 ```twig
-{% for term in Term(term_ids) %}
+{% for term in get_terms(term_ids) %}
 
 {% endfor %}
 ```
@@ -81,7 +83,7 @@ If you want to get a collection of terms, you can use `Timber::get_terms()`.
 
 ```php
 $terms = Timber::get_terms( [
-    'query' => $query,
+    'hide_empty' => false,
 ] );
 ```
 
@@ -90,16 +92,14 @@ You can use this function in a similar way to how you use [`WP_Term_Query`](http
 ```php
 // Using the WP_Term_Query argument format.
 $term_query = new Timber::get_terms( [
-    'query' => [
-        'taxonomy' => 'book_genre',
-        'count'    => true,
-    ],
- ] );
+    'taxonomy' => 'book_genre',
+    'count'    => true,
+] );
 ```
 
-Be aware that you need to pass an array to `Timber::get_terms()` with a `query` parameter. This array can have additional arguments that you can check out in the documentation for [`Timber::get_terms()`](https://timber.github.io/docs/v2/reference/timber/#get-terms).
+Also check out the documentation for [`Timber::get_terms()`](https://timber.github.io/docs/v2/reference/timber/#get-terms).
 
-What you get as a return value is not a pure array of posts, but a `Timber\TermCollection` object, which is an `ArrayObject` that is very similar to an array as you know it. To loop over the terms collection in PHP, you first need to convert it to an array with `$terms->get_terms()`.
+What you get as a return value is not a pure array of term, but a `Timber\TermCollection` object, which is an `ArrayObject` that is very similar to an array as you know it. To loop over the terms collection in PHP, you first need to convert it to an array with `$terms->get_terms()`.
 
 ```php
 foreach ( $terms_query->get_terms() as $term ) {
@@ -115,7 +115,7 @@ In Twig, you can directly loop over it.
 {% endfor %}
 ```
 
-When you query for certain post types, Timber will use the [Term Class Map](https://timber.github.io/docs/v2/guides/class-maps/#the-term-class-map) to check which class it should use to instantiate your posts.
+When you query for terms, Timber will use the [Term Class Map](https://timber.github.io/docs/v2/guides/class-maps/#the-term-class-map) to check which class it should use to instantiate your terms.
 
 ### Listing terms in Twig
 
