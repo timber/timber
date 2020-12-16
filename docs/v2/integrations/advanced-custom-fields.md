@@ -171,6 +171,29 @@ When you run `meta` on an outer ACF field, everything inside is ready to be trav
 {% endfor %}
 ```
 
+### Split into small chunks flexible content fields
+
+We can break flexible content fields into small blocks thanks to `acf_fc_layout` value. This way we have more flexibility and reusability. It could be a way to build a landing page for instance.
+
+Assuming blocks are inside a `blocks` folder:
+
+```twig
+{% for block in post.meta( 'blocks' ) %}
+    {% 
+        include "blocks/#{ block.acf_fc_layout | sanitize ) }.twig"
+        with { block: block }
+    %}
+{% endfor %}
+```
+
+> The filter [sanitize](https://timber.github.io/docs/v2/guides/filters/#sanitize), slugify the block name
+
+And for example for a flexible content named `text` containing a `text` field, inside a `blocks/text.twig` file:
+
+```twig
+<p>{{ block.text }}</p>   
+```
+
 ### Troubleshooting Repeaters
 
 A common problem in working with repeaters is that you should only call the `meta` method **once** on an item. In other words if you have a field inside a field (for example, a relationship inside a repeater or a repeater inside a repeater, **do not** call `meta` on the inner field). More:
