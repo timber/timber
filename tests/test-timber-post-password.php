@@ -1,11 +1,14 @@
 <?php
 
+	/**
+	 * @group called-post-constructor
+	 */
 	class TestTimberPostPassword extends Timber_UnitTestCase {
 
 		function testPasswordedContentDefault(){
 			$quote = 'The way to do well is to do well.';
 			$post_id = $this->factory->post->create();
-			$post = new Timber\Post($post_id);
+			$post = Timber::get_post($post_id);
 			$post->post_content = $quote;
 			$post->post_password = 'burrito';
 			wp_update_post($post);
@@ -19,7 +22,7 @@
 			});
 			$quote = 'The way to do well is to do well.';
 			$post_id = $this->factory->post->create();
-			$post = new Timber\Post($post_id);
+			$post = Timber::get_post($post_id);
 			$post->post_content = $quote;
 			$post->post_password = 'burrito';
 			wp_update_post($post);
@@ -36,7 +39,7 @@
 			}, 10, 2);
 			$quote = 'The way to do well is to do well.';
 			$post_id = $this->factory->post->create(array('post_title' => 'Secrets!'));
-			$post = new Timber\Post($post_id);
+			$post = Timber::get_post($post_id);
 			$post->post_content = $quote;
 			$post->post_password = 'burrito';
 			wp_update_post($post);

@@ -1,5 +1,8 @@
 <?php
 
+	/**
+	 * @group called-post-constructor
+	 */
 	class TestTimberTwig extends Timber_UnitTestCase {
 
 		function tearDown() {
@@ -67,25 +70,37 @@
 			global $php_unit;
 			$php_unit = $this;
 			$action_tally = array();
-			add_action('my_action_foo', function(){
+
+			$my_action_foo = function() {
 				global $action_tally, $php_unit;
-				$php_unit->assertTrue(true);
+				$php_unit->assertTrue( true );
 				$action_tally[] = 'my_action_foo';
+
 				return 'foo';
-			});
-			add_action('my_action_args', function($bar){
+			};
+
+			$my_action_args = function( $bar ) {
 				global $action_tally, $php_unit;
-				$php_unit->assertEquals('bar', $bar);
+				$php_unit->assertEquals( 'bar', $bar );
 				$action_tally[] = 'my_action_args';
+
 				return 'foo';
-			});
-			add_action('timber/compile/done', function(){
+			};
+
+			$timber_compile_done = function() {
 				global $action_tally, $php_unit;
-				$php_unit->assertContains('my_action_args', $action_tally);
-				$php_unit->assertContains('my_action_foo', $action_tally);
-			});
+
+				$php_unit->assertContains( 'my_action_args', $action_tally );
+				$php_unit->assertContains( 'my_action_foo', $action_tally );
+			};
+
+			$this->add_action_temporarily( 'my_action_foo', $my_action_foo );
+			$this->add_action_temporarily( 'my_action_args', $my_action_args );
+			$this->add_action_temporarily( 'timber/compile/done', $timber_compile_done );
+
 			$str = Timber::compile('assets/test-do-action.twig');
 			$str = trim($str);
+
 			$this->assertEquals('Stuff', $str);
 		}
 
@@ -95,7 +110,7 @@
 			add_filter('protected_title_format', function($title){
 				return 'Protected: '.$title;
 			});
-			$context['post'] = new Timber\Post($post_id);
+			$context['post'] = Timber::get_post($post_id);
 			if (post_password_required($post_id)){
 				$this->assertTrue(true);
 				$str = Timber::compile('assets/test-wp-filters.twig', $context);
@@ -129,7 +144,7 @@
 		 */
 		function testFilterFunction() {
 			$pid = $this->factory->post->create(array('post_title' => 'Foo'));
-			$post = new Timber\Post( $pid );
+			$post = Timber::get_post( $pid );
 			$str = 'I am a {{post | get_class }}';
 			$this->assertEquals('I am a Timber\Post', Timber::compile_string($str, array('post' => $post)));
 		}
@@ -208,7 +223,7 @@
      	*/
 		function testSetObject() {
 			$pid = $this->factory->post->create(array('post_title' => 'Spaceballs'));
-			$post = new Timber\Post( $pid );
+			$post = Timber::get_post( $pid );
 			$result = Timber::compile('assets/set-object.twig', array('post' => $post));
 			$this->assertEquals('Spaceballs: may the schwartz be with you', trim($result));
 		}
@@ -221,7 +236,7 @@
 
 		function testAddToTwig() {
 			add_filter('timber/twig', function( $twig ) {
-				$twig->addFilter( new Twig_SimpleFilter( 'foobar', function( $text ) {
+				$twig->addFilter( new \Twig\TwigFilter( 'foobar', function( $text ) {
 					return $text . 'foobar';
 				}) );
 				return $twig;
@@ -232,7 +247,7 @@
 
 		function testTimberTwigObjectFilter() {
 			add_filter('timber/twig', function( $twig ) {
-				$twig->addFilter( new Twig_SimpleFilter( 'quack', function( $text ) {
+				$twig->addFilter( new \Twig\TwigFilter( 'quack', function( $text ) {
 					return $text . ' Quack!';
 				}) );
 				return $twig;
@@ -259,5 +274,63 @@
 
 		}
 
+		/**
+		 * @expectedDeprecated Timber::$autoescape
+		 */
+		function testAutoescapeVariableDeprecated() {
+			Timber::$autoescape = true;
 
+			$str = Timber\Timber::compile_string('The {{ region }} remembers…', array(
+				'region' => '<strong>North</strong>',
+			) );
+
+			$this->assertEquals(
+				'The &lt;strong&gt;North&lt;/strong&gt; remembers…',
+				$str
+			);
+
+			Timber::$autoescape = false;
+		}
+
+		function testAutoescapeTrueBackwardsCompatibilityWithFilter() {
+			$autoescape_filter = function( $options ) {
+				$options['autoescape'] = true;
+
+				return $options;
+			};
+
+			add_filter( 'timber/twig/environment/options', $autoescape_filter );
+
+			$str = Timber\Timber::compile_string('The {{ region }} remembers…', array(
+				'region' => '<strong>North</strong>',
+			) );
+
+			remove_filter( 'timber/twig/environment/options', $autoescape_filter );
+
+			$this->assertEquals(
+				'The &lt;strong&gt;North&lt;/strong&gt; remembers…',
+				$str
+			);
+		}
+
+		function testAutoescapeStrategyWithFilter() {
+			$autoescape_filter = function( $options ) {
+				$options['autoescape'] = 'html';
+
+				return $options;
+			};
+
+			add_filter( 'timber/twig/environment/options', $autoescape_filter );
+
+			$str = Timber\Timber::compile_string('The {{ region }} remembers…', array(
+				'region' => '<strong>North</strong>',
+			) );
+
+			remove_filter( 'timber/twig/environment/options', $autoescape_filter );
+
+			$this->assertEquals(
+				'The &lt;strong&gt;North&lt;/strong&gt; remembers…',
+				$str
+			);
+		}
 	}

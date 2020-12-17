@@ -9,8 +9,9 @@ namespace Timber;
  */
 class Integrations {
 
-	var $acf;
-	var $coauthors_plus;
+	public $acf;
+	public $coauthors_plus;
+	public $wpml;
 
 	public function __construct() {
 		$this->init();
@@ -18,10 +19,6 @@ class Integrations {
 
 	public function init() {
 		add_action('init', array($this, 'maybe_init_integrations'));
-
-		if ( class_exists('WP_CLI_Command') ) {
-			\WP_CLI::add_command('timber', 'Timber\Integrations\Timber_WP_CLI_Command');
-		}
 	}
 
 	public function maybe_init_integrations() {

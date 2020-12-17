@@ -28,16 +28,21 @@
     "docs": "https://timber.github.io/docs/"
   },
   "require": {
-    "php": ">=5.3.0|7.*",
-    "twig/twig": "1.34.*|2.*",
+    "php": "^7.0",
+    "twig/twig": "^2.10",
     "composer/installers": "~1.0",
-    "asm89/twig-cache-extension": "~1.0"
+    "twig/cache-extension": "^1.5.0"
   },
   "require-dev": {
+    "johnpbloch/wordpress": ">=5.4.0",
+    "phpunit/phpunit": "7.*",
+    "squizlabs/php_codesniffer": "3.*",
+    "wp-coding-standards/wpcs": "^2.0",
     "wpackagist-plugin/advanced-custom-fields": "5.*",
-    "phpunit/phpunit": "5.7.16|6.*",
-    "wpackagist-plugin/co-authors-plus": "3.2.*",
-    "johnpbloch/wordpress": "4.*"
+    "wpackagist-plugin/co-authors-plus": "3.2.*|3.4.*",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+    "szepeviktor/phpstan-wordpress": "^0.6.0",
+    "php-stubs/wp-cli-stubs": "^2.2.0"
   },
   "suggest": {
     "satooshi/php-coveralls": "1.0.* for code coverage"
@@ -50,6 +55,10 @@
   "autoload-dev": {
     "classmap": [
       "tests/"
+    ],
+    "exclude-from-classmap": [
+      "tests/php",
+      "tests/phpstan"
     ]
   },
   "repositories": [
@@ -57,5 +66,8 @@
       "type": "composer",
       "url": "https://wpackagist.org"
     }
-  ]
+  ],
+  "scripts": {
+    "lint": "phpcs --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1"
+  }
 }

@@ -2,18 +2,11 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
-use Timber\CommentThread;
-use Timber\Term;
-use Timber\User;
-use Timber\Image;
-use Timber\Helper;
-use Timber\URLHelper;
-use Timber\PostGetter;
-use Timber\PostType;
-
 use WP_Post;
+
+use Timber\Factory\PostFactory;
+use Timber\Factory\UserFactory;
+use Timber\Timber;
 
 /**
  * Class Post
@@ -55,34 +48,14 @@ use WP_Post;
  *     </div>
  * </article>
  * ```
+ * @todo implement JsonSerializable?
  */
-class Post extends Core implements CoreInterface, MetaInterface, Setupable {
-
-	/**
-	 * @var string The name of the class to handle images by default
-	 */
-	public $ImageClass = 'Timber\Image';
-
-	/**
-	 * @var string The name of the class to handle posts by default
-	 */
-	public $PostClass = 'Timber\Post';
-
-	/**
-	 * @var string The name of the class to handle terms by default
-	 */
-	public $TermClass = 'Timber\Term';
+class Post extends Core implements CoreInterface, MetaInterface, DatedInterface, Setupable {
 
 	/**
 	 * @var string What does this class represent in WordPress terms?
 	 */
 	public $object_type = 'post';
-
-	/**
-	 * @api
-	 * @var array Stores custom meta data
-	 */
-	public $custom = array();
 
 	/**
 	 * @var string What does this class represent in WordPress terms?
@@ -91,9 +64,9 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 
 	/**
 	 * @internal
-	 * @var string Stores the processed content internally
+	 * @var string stores the processed content internally
 	 */
-	protected $_content;
+	protected $___content;
 
 	/**
 	 * @var string|boolean The returned permalink from WP's get_permalink function
@@ -183,29 +156,38 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 */
 	public $slug;
 
-	public $_thumbnail_id;
-
 	/**
 	 * @var string Stores the PostType object for the Post
 	 */
 	protected $__type;
 
 	/**
+	 * Create and initialize a new instance of the called Post class
+	 * (i.e. Timber\Post or a subclass).
+	 *
+	 * @internal
+	 * @return Timber\Post
+	 */
+	public static function build( WP_Post $wp_post ) : self {
+		$post = new static();
+
+		$post->id = $wp_post->ID;
+		$post->ID = $wp_post->ID;
+
+		$data = $post->get_info( $wp_post );
+
+		$post->import( apply_filters('timber/post/import_data', $data ) );
+
+		return $post;
+	}
+
+	/**
 	 * If you send the constructor nothing it will try to figure out the current post id based on
 	 * being inside The_Loop.
 	 *
-	 * @api
-	 * @example
-	 * ```php
-	 * $post = new Timber\Post();
-	 * $other_post = new Timber\Post($random_post_id);
-	 * ```
-	 *
-	 * @param mixed $pid
+	 * @internal
 	 */
-	public function __construct( $pid = null ) {
-		$pid = $this->determine_id($pid);
-		$this->init($pid);
+	protected function __construct() {
 	}
 
 	/**
@@ -222,6 +204,15 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		if ( 'class' === $field ) {
 			return $this->css_class();
 		}
+
+		if ( '_thumbnail_id' === $field ) {
+			Helper::doing_it_wrong(
+				"Accessing the thumbnail ID through {{ {$this->object_type}._thumbnail_id }}",
+				"You can retrieve the thumbnail ID via the thumbnail object {{ {$this->object_type}.thumbnail.id }}. If you need the id as stored on this post's postmeta you can use {{ {$this->object_type}.meta('_thumbnail_id') }}",
+				'2.0.0'
+			);
+		}
+
 		return parent::__get($field);
 	}
 
@@ -307,47 +298,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * tries to figure out what post you want to get if not explictly defined (or if it is, allows it to be passed through)
-	 * @internal
-	 * @param mixed a value to test against
-	 * @return int the numberic id we should be using for this post object
-	 */
-	protected function determine_id( $pid ) {
-		global $wp_query;
-		if ( $pid === null &&
-			isset($wp_query->queried_object_id)
-			&& $wp_query->queried_object_id
-			&& isset($wp_query->queried_object)
-			&& is_object($wp_query->queried_object)
-			&& get_class($wp_query->queried_object) == 'WP_Post'
-		) {
-			$pid = $wp_query->queried_object_id;
-		} else if ( $pid === null && $wp_query->is_home && isset($wp_query->queried_object_id) && $wp_query->queried_object_id ) {
-			//hack for static page as home page
-			$pid = $wp_query->queried_object_id;
-		} else if ( $pid === null ) {
-			$gtid = false;
-			$maybe_post = get_post();
-			if ( isset($maybe_post->ID) ) {
-				$gtid = true;
-			}
-			if ( $gtid ) {
-				$pid = get_the_ID();
-			}
-			if ( !$pid ) {
-				global $wp_query;
-				if ( isset($wp_query->query['p']) ) {
-					$pid = $wp_query->query['p'];
-				}
-			}
-		}
-		if ( $pid === null && ($pid_from_loop = PostGetter::loop_to_id()) ) {
-			$pid = $pid_from_loop;
-		}
-		return $pid;
-	}
-
-	/**
 	 * Outputs the title of the post if you do something like `<h1>{{post}}</h1>`
 	 *
 	 * @api
@@ -361,7 +311,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		global $wp_query;
 		if ( $this->is_previewing() ) {
 			$revision_id = $this->get_post_preview_id( $wp_query );
-			return new $this->PostClass( $revision_id );
+			return Timber::get_post( $revision_id );
 		}
 	}
 
@@ -397,22 +347,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * Initializes a Post
-	 * @internal
-	 * @param integer $pid
-	 */
-	protected function init( $pid = null ) {
-		if ( $pid === null ) {
-			$pid = get_the_ID();
-		}
-		if ( is_numeric($pid) ) {
-			$this->ID = $pid;
-		}
-		$post_info = $this->get_info($pid);
-		$this->import($post_info);
-	}
-
-	/**
 	 * Updates post_meta of the current object with the given value.
 	 *
 	 * @deprecated 2.0.0 Use `update_post_meta()` instead.
@@ -427,26 +361,6 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			update_post_meta($this->ID, $field, $value);
 			$this->$field = $value;
 		}
-	}
-
-
-	/**
-	 * takes a mix of integer (post ID), string (post slug),
-	 * or object to return a WordPress post object from WP's built-in get_post() function
-	 * @internal
-	 * @param integer $pid
-	 * @return WP_Post on success
-	 */
-	protected function prepare_post_info( $pid = 0 ) {
-		if ( is_string($pid) || is_numeric($pid) || (is_object($pid) && !isset($pid->post_title)) || $pid === 0 ) {
-			$pid  = self::check_post_id($pid);
-			$post = get_post($pid);
-			if ( $post ) {
-				return $post;
-			}
-		}
-		// we can skip if already is WP_Post.
-		return $pid;
 	}
 
 
@@ -469,206 +383,72 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * Gets a preview/excerpt of your post.
+	 * Gets a excerpt of your post.
 	 *
-	 * If you have text defined in the excerpt textarea of your post, it will use that. Otherwise it
-	 * will pull from the post_content. If there's a `<!-- more -->` tag, it will use that to mark
-	 * where to pull through.
-	 *
-	 * This method returns a `Timber\PostPreview` object, which is a **chainable object**. This
-	 * means that you can change the output of the preview by **adding more methods**. Refer to the
-	 * [documentation of the `Timber\PostPreview` class](https://timber.github.io/docs/reference/timber-postpreview/)
-	 * to get an overview of all the available methods.
-	 *
-	 * @example
-	 * ```twig
-     * {# Use default preview #}
-	 * <p>{{ post.preview }}</p>
-	 *
-	 * {# Change the post preview text #}
-	 * <p>{{ post.preview.read_more('Continue Reading') }}</p>
-	 *
-	 * {# Additionally restrict the length to 50 words #}
-	 * <p>{{ post.preview.length(50).read_more('Continue Reading') }}</p>
-	 * ```
-	 * @see \Timber\PostPreview
-	 * @return \Timber\PostPreview
-	 */
-	public function preview() {
-		return new PostPreview($this);
-	}
-
-	/**
-	 * Get a preview (excerpt) of your post.
+	 * If you have an excerpt is set on the post, the excerpt will be used. Otherwise it will try to
+	 * pull from an excerpt from `post_content`. If there’s a `<!-- more -->` tag in the post
+	 * content, it will use that to mark where to pull through.
 	 *
 	 * @api
-	 * @deprecated 1.3.1, use `{{ post.preview }}` instead.
-	 * @see        \Timber\Post::preview()
+	 * @see \Timber\PostExcerpt
 	 *
-	 * @param int         $len      The number of words that WordPress should use to make the
-	 *                              preview.
-	 *                              (Isn’t this better than [this
-	 *                              mess](http://wordpress.org/support/topic/changing-the-default-length-of-the_excerpt-1?replies=14)?).
-	 *                              If you’ve set a post excerpt on a post, we’ll use that for the
-	 *                              preview text; otherwise the first X words of `post_content`.
-	 * @param bool        $force    What happens if your custom post excerpt is longer then the
-	 *                              length requested? By default (`$force = false`) it will use the
-	 *                              full `post_excerpt`. However, you can set this to `true` to
-	 *                              *force* your excerpt to be of the desired length.
-	 * @param string      $readmore The text you want to use for the 'readmore' link.
-	 * @param bool|string $strip    `true` for default, `false` for none, a string for a list of
-	 *                              custom attributes.
-	 * @param string      $end      The text to end the preview with. Default `...`.
+	 * @param array $options {
+	 *     An array of configuration options for generating the excerpt. Default empty.
 	 *
-	 * @return string The post preview.
+	 *     @type int      $words     Number of words in the excerpt. Default `50`.
+	 *     @type int|bool $chars     Number of characters in the excerpt. Default `false` (no
+	 *                               character limit).
+	 *     @type string   $end       String to append to the end of the excerpt. Default '&hellip;'
+	 *                               (HTML ellipsis character).
+	 *     @type bool     $force     Whether to shorten the excerpt to the length/word count
+	 *                               specified, if the editor wrote a manual excerpt longer than the
+	 *                               set length. Default `false`.
+	 *     @type bool     $strip     Whether to strip HTML tags. Default `true`.
+	 *     @type string   $read_more String for what the "Read More" text should be. Default
+	 *                               'Read More'.
+	 * }
+	 * @example
+	 * ```twig
+	 * <h2>{{ post.title }}</h2>
+	 * <div>{{ post.excerpt({ words: 100, read_more: 'Keep reading' }) }}</div>
+	 * ```
+	 * @return \Timber\PostExcerpt
 	 */
-	public function get_preview( $len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;' ) {
-		Helper::deprecated('{{ post.get_preview }}', '{{ post.preview }}', '1.3.1');
-		$pp = new PostPreview($this);
-
-		/** This filter is documented in PostPreview.php */
-		add_filter('timber/post/preview/read_more_class', function(){
-			/**
-			 * Filters the CSS class used for the preview link for a post.
-			 *
-			 * This filter only applies when you use `{{ post.get_preview() }}`. When you want to
-			 * change the CSS class for all preview links in general, you can use the
-			 * `timber/post/preview/read_more_class` filter.
-			 *
-			 * @since 0.22.3
-			 * @example
-			 * ```php
-			 * // Change the CSS class for preview links
-			 * add_filter( 'timber/post/get_preview/read_more_class', function( $class ) {
-			 *     return 'post__read-more__link';
-			 * } );
-			 * ```
-			 *
-			 * @param string $class The CSS class to use for the preview link. Default `read-more`.
-			 */
-			return apply_filters('timber/post/get_preview/read_more_class', "read-more");
-		});
-
-		return $pp->length($len)->force($force)->read_more($readmore)->strip($strip)->end($end);
+	public function excerpt( array $options = array() ) {
+		return new PostExcerpt( $this, $options );
 	}
 
 	/**
-	 * Gets the post meta data values and attaches it to the current object.
+	 * Gets an excerpt of your post.
 	 *
-	 * @param int $pid A post ID.
+	 * If you have an excerpt is set on the post, the excerpt will be used. Otherwise it will try to
+	 * pull from an excerpt from `post_content`. If there’s a `<!-- more -->` tag in the post
+	 * content, it will use that to mark where to pull through.
+	 *
+	 * This method returns a `Timber\PostExcerpt` object, which is a **chainable object**. This
+	 * means that you can change the output of the excerpt by **adding more methods**. Refer to the
+	 * [documentation of the `Timber\PostExcerpt` class](https://timber.github.io/docs/reference/timber-postexcerpt/)
+	 * to get an overview of all the available methods.
+	 *
+	 * @api
+	 * @deprecated 2.0.0, use `{{ post.excerpt }}` instead.
+	 * @see \Timber\PostExcerpt
+	 * @example
+	 * ```twig
+	 * {# Use default excerpt #}
+	 * <p>{{ post.excerpt }}</p>
+	 *
+	 * {# Change the post excerpt text #}
+	 * <p>{{ post.excerpt.read_more('Continue Reading') }}</p>
+	 *
+	 * {# Additionally restrict the length to 50 words #}
+	 * <p>{{ post.excerpt.length(50).read_more('Continue Reading') }}</p>
+	 * ```
+	 * @return \Timber\PostExcerpt
 	 */
-	public function import_custom( $pid ) {
-		$customs = $this->get_meta_values($pid);
-		$this->import($customs);
-	}
-
-	/**
-	 * Used internally to fetch the metadata fields (wp_postmeta table)
-	 * and attach them to our Timber\Post object
-	 * @internal
-	 *
-	 * @param int|boolean $post_id
-	 *
-	 * @return array
-	 */
-	protected function get_meta_values( $post_id ) {
-		$post_meta = array();
-
-		/**
-		 * Filters post meta data before it is fetched from the database.
-		 *
-		 * Timber loads all meta values into the post object on initialization. With this filter,
-		 * you can disable fetching the meta values through the default method, which uses
-		 * `get_post_meta()`, by returning `false` or an non-empty array.
-		 *
-		 * @example
-		 * ```php
-		 * // Disable fetching meta values.
-		 * add_filter( 'timber/post/pre_get_meta_values', '__return_false' );
-		 *
-		 * // Add your own meta data.
-		 * add_filter( 'timber/post/pre_get_meta_values', function( $post_meta, $post_id, $post ) {
-    	 *     $post_meta = array(
-		 *         'custom_data_1' => 73,
-		 *         'custom_data_2' => 274,
-		 *     );
-		 *
-		 *     return $post_meta;
-		 * }, 10, 3 );
-		 * ```
-		 * @since 2.0.0
-		 *
-		 * @param array        $post_meta An array of custom meta values. Passing false or a non-empty
-		 *                                array will skip fetching the values from the database and
-		 *                                will use the filtered values instead. Default `array()`.
-		 * @param int          $post_id   The post ID.
-		 * @param \Timber\Post $post      The post object.
-		 */
-		$post_meta = apply_filters( 'timber/post/pre_get_meta_values', $post_meta, $post_id, $this );
-
-		/**
-		 * Filters post meta data before it is fetched from the database.
-		 *
-		 * @deprecated 2.0.0, use `timber/post/pre_get_meta_values`
-		 */
-		do_action_deprecated(
-			'timber_post_get_meta_pre',
-			array( $post_meta, $post_id, $this ),
-			'2.0.0',
-			'timber/post/pre_get_meta_values'
-		);
-
-		// Load all meta data when it wasn’t filtered before.
-		if ( false !== $post_meta && empty( $post_meta ) ) {
-			$post_meta = get_post_meta( $post_id );
-		}
-
-		foreach ( $post_meta as $key => $value ) {
-			if ( is_array($value) && count($value) == 1 && isset($value[0]) ) {
-				$value = $value[0];
-			}
-			$post_meta[$key] = maybe_unserialize($value);
-		}
-
-		/**
-		 * Filters post meta data fetched from the database.
-		 *
-		 * Timber loads all meta values into the post object on initialization. With this filter,
-		 * you can change meta values after they were fetched from the database.
-		 *
-		 * @example
-		 * ```php
-		 * add_filter( 'timber/post/get_meta_values', function( $post_meta, $post_id, $post ) {
-		 *     if ( 'event' === $post->post_type ) {
-		 *         // Do something special.
-		 *         $post_meta['foo'] = $post_meta['foo'] . ' bar';
-		 *     }
-		 *
-		 *     return $post_meta;
-		 * }, 10, 3 );
-		 * ```
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param array        $post_meta Post meta data.
-		 * @param int          $post_id   The post ID.
-		 * @param \Timber\Post $post      The post object.
-		 */
-		$post_meta = apply_filters( 'timber/post/get_meta_values', $post_meta, $post_id, $this );
-
-		/**
-		 * Filters post meta data fetched from the database.
-		 *
-		 * @deprecated 2.0.0, use `timber/post/get_meta_values`
-		 */
-		$post_meta = apply_filters_deprecated(
-			'timber_post_get_meta',
-			array( $post_meta, $post_id, $this ),
-			'2.0.0',
-			'timber/post/get_meta_values'
-		);
-
-		return $post_meta;
+	public function preview() {
+		Helper::deprecated('{{ post.preview }}', '{{ post.excerpt }}', '2.0.0');
+		return new PostExcerpt($this);
 	}
 
 	/**
@@ -689,27 +469,13 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 *
 	 * @internal
 	 * @param  int|null|boolean $pid The ID to generate info from.
-	 * @return null|object|WP_Post|boolean
+	 * @return WP_Post
 	 */
-	protected function get_info( $pid = null ) {
-		$post = $this->prepare_post_info($pid);
-		if ( !isset($post->post_status) ) {
-			return null;
-		}
-
+	protected function get_info( WP_Post $post ) {
 		$post->status = $post->post_status;
 		$post->id = $post->ID;
 		$post->slug = $post->post_name;
 
-		$customs = $this->get_meta_values($post->ID);
-
-		if ( $this->is_previewing() ) {
-			global $wp_query;
-			$rev_id = $this->get_post_preview_id($wp_query);
-			$customs = $this->get_meta_values($rev_id);
-		}
-
-		$post->custom = $customs;
 		return $post;
 	}
 
@@ -735,7 +501,11 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * {% for post in job %}
 	 *     <div class="job">
 	 *         <h2>{{ post.title }}</h2>
-	 *         <p>{{ post.terms('category')|join(', ') }}</p>
+	 *         <p>{{ post.terms({
+	 *             taxonomy: 'category',
+	 *             orderby: 'name',
+	 *             order: 'ASC'
+	 *         })|join(', ') }}</p>
 	 *     </div>
 	 * {% endfor %}
 	 * </section>
@@ -744,7 +514,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * <section id="job-feed">
 	 *     <div class="job">
 	 *         <h2>Cheese Maker</h2>
-	 *         <p>Food, Cheese, Fromage</p>
+	 *         <p>Cheese, Food, Fromage</p>
 	 *     </div>
 	 *     <div class="job">
 	 *         <h2>Mime</h2>
@@ -760,105 +530,85 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * $terms = $post->terms( array( 'books', 'movies' ) );
 	 *
 	 * // Use custom arguments for taxonomy query and options.
-	 * $terms = $post->terms( array(
-     *     'query' => [
-     *         'taxonomy' => 'custom_tax',
-     *         'orderby'  => 'count',
-     *     ],
-     *     'merge'      => false,
-     *     'term_class' => 'My_Term_Class'
-     * ) );
+	 * $terms = $post->terms( [
+	 *     'taxonomy' => 'custom_tax',
+	 *     'orderby'  => 'count'
+	 * ], [
+	 *     'merge' => false
+	 * ] );
 	 * ```
 	 *
-	 * @param string|array $args {
-	 *     Optional. Name of the taxonomy or array of arguments.
+	 * @param string|array $query_args 	Any array of term query parameters for getting the terms.
+	 *                                  See `WP_Term_Query::__construct()` for supported arguments.
+	 *                                  Use the `taxonomy` argument to choose which taxonomies to
+	 *                                  get. Defaults to querying all registered taxonomies for the
+	 *                                  post type. You can use custom or built-in WordPress
+	 *                                  taxonomies (category, tag). Timber plays nice and figures
+	 *                                  out that `tag`, `tags` or `post_tag` are all the same
+	 *                                  (also for `categories` or `category`). For custom
+	 *                                  taxonomies you need to define the proper name.
+	 * @param array $options {
+	 *     Optional. An array of options for the function.
 	 *
-	 *     @type array $query       Any array of term query parameters for getting the terms. See
-	 *                              `WP_Term_Query::__construct()` for supported arguments. Use the
-	 *                              `taxonomy` argument to choose which taxonomies to get. Defaults
-	 *                              to querying all registered taxonomies for the post type. You can
-	 *                              use custom or built-in WordPress taxonomies (category, tag).
-	 *                              Timber plays nice and figures out that `tag`, `tags` or
-	 *                              `post_tag` are all the same (also for `categories` or
-	 *                              `category`). For custom taxonomies you need to define the
-	 *                              proper name.
-	 *     @type bool $merge        Whether the resulting array should be one big one (`true`) or
-	 *                              whether it should be an array of sub-arrays for each taxonomy
-	 *                              (`false`). Default `true`.
-	 *     @type string $term_class The Timber term class to use for the term objects.
+	 *     @type bool $merge Whether the resulting array should be one big one (`true`) or whether
+	 *                       it should be an array of sub-arrays for each taxonomy (`false`).
+	 *                       Default `true`.
 	 * }
 	 * @return array An array of taxonomies.
 	 */
-	public function terms( $args = array() ) {
-		// Make it possible to use a category or an array of categories as a shorthand.
-		if ( ! is_array( $args ) || isset( $args[0] ) ) {
-			$args = array(
-				'query' => array(
-					'taxonomy' => $args,
-				),
-			);
+	public function terms( $query_args = [], $options = [] ) {
+		// Make it possible to use a taxonomy or an array of taxonomies as a shorthand.
+		if ( ! is_array( $query_args ) || isset( $query_args[0] ) ) {
+			$query_args = [ 'taxonomy' => $query_args ];
+		}
+
+		/**
+		 * Handles backwards compatibility for users who use an array with a query property.
+		 *
+		 * @deprecated 2.0.0 use Post::terms( $query_args, $options )
+		 */
+		if ( is_array($query_args) && isset($query_args['query']) ) {
+			if ( isset($query_args['merge']) && !isset($options['merge']) ) {
+				$options['merge'] = $query_args['merge'];
+			}
+			$query_args = $query_args['query'];
 		}
 
 		// Defaults.
-		$args = wp_parse_args( $args, array(
-			'query' => array(
-				'taxonomy' => 'all',
-			),
-			'merge' => true,
-			'term_class' => $this->TermClass,
-		) );
+		$query_args = wp_parse_args( $query_args, [
+			'taxonomy' => 'all'
+		] );
 
-		$tax        = $args['query']['taxonomy'];
-		$merge      = $args['merge'];
-		$term_class = $args['term_class'];
-		$taxonomies = array();
+		$options = wp_parse_args( $options, [
+			'merge' => true
+		] );
 
-		// Build an array of taxonomies.
-		if ( is_array( $tax ) ) {
-			$taxonomies = $tax;
-		} elseif ( is_string( $tax ) ) {
-			if ( in_array( $tax, array( 'all', 'any', '' ) ) ) {
-				$taxonomies = get_object_taxonomies($this->post_type);
-			} else {
-				$taxonomies = array($tax);
-			}
+		$taxonomies = $query_args['taxonomy'];
+		$merge      = $options['merge'];
+
+		if ( in_array($taxonomies, ['all', 'any', '']) ) {
+			$taxonomies = get_object_taxonomies($this->post_type);
 		}
 
-		$terms = wp_get_post_terms( $this->ID, $taxonomies, $args['query'] );
-
-		if ( is_wp_error( $terms ) ) {
-			/**
-			 * @var $terms \WP_Error
-			 */
-			Helper::error_log( 'Error retrieving terms for taxonomies on a post in lib/Post.php' );
-			Helper::error_log( 'tax = ' . print_r( $tax, true ) );
-			Helper::error_log( 'WP_Error: ' . $terms->get_error_message() );
-
-			return $terms;
+		if ( ! is_array($taxonomies) ) {
+			$taxonomies = [$taxonomies];
 		}
 
-		// Map over array of WordPress terms and transform them into instances of chosen term class.
-		$terms = array_map( function( $term ) use ( $term_class ) {
-			return call_user_func( array( $term_class, 'from' ), $term->term_id, $term->taxonomy );
-		}, $terms );
+		$query = array_merge($query_args, [
+			'object_ids' => [$this->ID],
+			'taxonomy'   => $taxonomies,
+		]);
 
-		if ( ! $merge ) {
-			$terms_sorted = array();
+		if (!$merge) {
+			// get results segmented out per taxonomy
+			$queries    = $this->partition_tax_queries($query, $taxonomies);
+			$termGroups = Timber::get_terms($queries);
 
-			// Initialize sub-arrays.
-			foreach ( $taxonomies as $taxonomy ) {
-				$terms_sorted[ $taxonomy ] = array();
-			}
-
-			// Fill terms into arrays.
-			foreach ( $terms as $term ) {
-				$terms_sorted[ $term->taxonomy ][] = $term;
-			}
-
-			return $terms_sorted;
+			// zip 'em up with the right keys
+			return array_combine($taxonomies, $termGroups);
 		}
 
-		return $terms;
+		return Timber::get_terms($query, $options);
 	}
 
 	/**
@@ -933,107 +683,222 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	/**
 	 * Gets a post meta value.
 	 *
-	 * Returns a meta value for a post that’s saved in the post meta database table.
+	 * Returns a meta value or all meta values for all custom fields of a post saved in the post
+	 * meta database table.
+	 *
+	 * Fetching all values is only advised during development, because it can have a big performance
+	 * impact, when all filters are applied.
 	 *
 	 * @api
 	 *
-	 * @param string $field_name The field name for which you want to get the value.
-	 * @param array  $args       An array of arguments for getting the meta value. Third-party
-	 *                           integrations can use this argument to make their API arguments
-	 *                           available in Timber. Default empty.
-	 * @return mixed The meta field value.
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
+	 * @param array  $args       {
+	 *      An array of arguments for getting the meta value. Third-party integrations can use this
+	 *      argument to make their API arguments available in Timber. Default empty array.
+	 *
+	 *      @type bool $apply_filters Whether to apply filtering of meta values. You can also use
+	 *                                the `raw_meta()` method as a shortcut to apply this argument.
+	 *                                Default true.
+	 * }
+	 * @return mixed The custom field value or an array of custom field values. Null if no value
+	 *               could be found.
 	 */
-	public function meta( $field_name = null, $args = array() ) {
-		if ( $rd = $this->get_revised_data_from_method('meta', $field_name) ) {
-			return $rd;
+	public function meta( $field_name = '', $args = array() ) {
+		$args = wp_parse_args( $args, [
+			'apply_filters' => true,
+		] );
+
+		$revised_data = $this->get_revised_data_from_method( 'meta', $field_name );
+
+		if ( $revised_data ) {
+			return $revised_data;
 		}
 
-		/**
-		 * Filters the value for a post meta field before it is fetched from the database.
-		 *
-		 * @todo  Add description, example
-		 *
-		 * @see   \Timber\Post::meta()
-		 * @since 2.0.0
-		 *
-		 * @param string       $value      The field value. Default null. Passing a non-null value
-		 *                                 will skip fetching the value from the database.
-		 * @param int          $post_id    The post ID.
-		 * @param string       $field_name The name of the meta field to get the value for.
-		 * @param \Timber\Post $post       The post object.
-		 * @param array        $args       An array of arguments.
-		 */
-		$value = apply_filters(
-			'timber/post/pre_meta',
-			null,
-			$this->ID,
-			$field_name,
-			$this,
-			$args
-		);
+		$post_meta = null;
 
-		/**
-		 * Filters the value for a post meta field before it is fetched from the database.
-		 *
-		 * @deprecated 2.0.0, use `timber/post/pre_meta`
-		 */
-		$value = apply_filters_deprecated(
-			'timber_post_get_meta_field_pre',
-			array( $value, $this->ID, $field_name, $this ),
-			'2.0.0',
-			'timber/post/pre_meta'
-		);
+		if ( $args['apply_filters'] ) {
+			/**
+			 * Filters post meta data before it is fetched from the database.
+			 *
+			 * @example
+			 * ```php
+			 * // Disable fetching meta values.
+			 * add_filter( 'timber/post/pre_meta', '__return_false' );
+			 *
+			 * // Add your own meta data.
+			 * add_filter( 'timber/post/pre_meta', function( $post_meta, $post_id, $post ) {
+			 *     $post_meta = array_merge( $post_meta, array(
+			 *         'custom_data_1' => 73,
+			 *         'custom_data_2' => 274,
+			 *     ) );
+			 *
+			 *     return $post_meta;
+			 * }, 10, 3 );
+			 * ```
+			 *
+			 * @see   \Timber\Post::meta()
+			 * @since 2.0.0
+			 *
+			 * @param string       $post_meta  The field value. Default null. Passing a non-null
+			 *                                 value will skip fetching the value from the database
+			 *                                 and will use the value from the filter instead.
+			 * @param int          $post_id    The post ID.
+			 * @param string       $field_name The name of the meta field to get the value for.
+			 * @param \Timber\Post $post       The post object.
+			 * @param array        $args       An array of arguments.
+			 */
+			$post_meta = apply_filters(
+				'timber/post/pre_meta',
+				$post_meta,
+				$this->ID,
+				$field_name,
+				$this,
+				$args
+			);
 
-		if ( null === $value ) {
-			$value = get_post_meta( $this->ID, $field_name );
-			if ( is_array($value) && count($value) == 1 ) {
-				$value = $value[0];
+			/**
+			 * Filters the value for a post meta field before it is fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/post/pre_meta`
+			 */
+			$post_meta = apply_filters_deprecated(
+				'timber_post_get_meta_field_pre',
+				array( $post_meta, $this->ID, $field_name, $this ),
+				'2.0.0',
+				'timber/post/pre_meta'
+			);
+
+			/**
+			 * Filters post meta data before it is fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/post/pre_meta`
+			 */
+			do_action_deprecated(
+				'timber_post_get_meta_pre',
+				array( $post_meta, $this->ID, $this ),
+				'2.0.0',
+				'timber/post/pre_meta'
+			);
+		}
+
+		if ( null === $post_meta ) {
+			// Fetch values. Auto-fetches all values if $field_name is empty.
+			$post_meta = get_post_meta( $this->ID, $field_name, true );
+
+			// Mimick $single argument when fetching all meta values.
+			if ( empty( $field_name ) && is_array( $post_meta ) && ! empty( $post_meta ) ) {
+				$post_meta = array_map( function( $meta ) {
+					if ( 1 === count( $meta ) && isset( $meta[0] ) ) {
+						return $meta[0];
+					}
+
+					return $meta;
+				}, $post_meta );
 			}
-			if ( is_array($value) && count($value) == 0 ) {
-				$value = null;
+
+			// Empty result.
+			if ( empty( $post_meta ) ) {
+				$post_meta = empty( $field_name ) ? [] : null;
 			}
 		}
 
-		/**
-		 * Filters the value for a post meta field.
-		 *
-		 * This filter is used by the ACF Integration.
-		 *
-		 * @todo  Add description, example
-		 *
-		 * @see   \Timber\Post::meta()
-		 * @since 2.0.0
-		 *
-		 * @param string       $value      The field value.
-		 * @param int          $post_id    The post ID.
-		 * @param string       $field_name The name of the meta field to get the value for.
-		 * @param \Timber\Post $post       The post object.
-		 * @param array        $args       An array of arguments.
-		 */
-		$value = apply_filters(
-			'timber/post/meta',
-			$value,
-			$this->ID,
-			$field_name,
-			$this,
-			$args
-		);
+		if ( $args['apply_filters'] ) {
+			/**
+			 * Filters the value for a post meta field.
+			 *
+			 * This filter is used by the ACF Integration.
+			 *
+			 * @example
+			 * ```php
+			 * add_filter( 'timber/post/meta', function( $post_meta, $post_id, $field_name, $post ) {
+			 *     if ( 'event' === $post->post_type ) {
+			 *         // Do something special.
+			 *         $post_meta['foo'] = $post_meta['foo'] . ' bar';
+			 *     }
+			 *
+			 *     return $post_meta;
+			 * }, 10, 4 );
+			 * ```
+			 *
+			 * @see   \Timber\Post::meta()
+			 * @since 2.0.0
+			 *
+			 * @param string       $post_meta  The field value.
+			 * @param int          $post_id    The post ID.
+			 * @param string       $field_name The name of the meta field to get the value for.
+			 * @param \Timber\Post $post       The post object.
+			 * @param array        $args       An array of arguments.
+			 */
+			$post_meta = apply_filters(
+				'timber/post/meta',
+				$post_meta,
+				$this->ID,
+				$field_name,
+				$this,
+				$args
+			);
 
-		/**
-		 * Filters the value for a post meta field.
-		 *
-		 * @deprecated 2.0.0, use `timber/post/meta`
-		 */
-		$value = apply_filters_deprecated(
-			'timber_post_get_meta_field',
-			array( $value, $this->ID, $field_name, $this ),
-			'2.0.0',
-			'timber/post/meta'
-		);
+			/**
+			 * Filters the value for a post meta field.
+			 *
+			 * @deprecated 2.0.0, use `timber/post/meta`
+			 */
+			$post_meta = apply_filters_deprecated(
+				'timber_post_get_meta_field',
+				array( $post_meta, $this->ID, $field_name, $this ),
+				'2.0.0',
+				'timber/post/meta'
+			);
 
+			/**
+			 * Filters post meta data fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/post/meta`
+			 */
+			$post_meta = apply_filters_deprecated(
+				'timber_post_get_meta',
+				array( $post_meta, $this->ID, $this ),
+				'2.0.0',
+				'timber/post/meta'
+			);
 
-		$value = $this->convert($value);
-		return $value;
+			// Maybe convert values to Timber objects.
+			$post_meta = $this->convert($post_meta);
+		}
+
+		return $post_meta;
+	}
+
+	/**
+	 * Gets a post meta value directly from the database.
+	 *
+	 * Returns a raw meta value or all raw meta values saved in the post meta database table. In
+	 * comparison to `meta()`, this function will return raw values that are not filtered by third-
+	 * party plugins.
+	 *
+	 * Fetching raw values for all custom fields will not have a big performance impact, because
+	 * WordPress gets all meta values, when the first meta value is accessed.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
+	 * @param array  $args       Optional. An array of args for `Post::meta()`. Default empty array.
+	 *
+	 * @return null|mixed The meta field value(s). Null if no value could be found, an empty array
+	 *                    if all fields were requested but no values could be found.
+	 */
+	public function raw_meta( $field_name = '', $args = array() ) {
+		return $this->meta( $field_name, array_merge(
+			$args,
+			[
+				'apply_filters' => false,
+			]
+		) );
 	}
 
 	/**
@@ -1069,6 +934,12 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @param string $field_name
 	 */
 	public function import_field( $field_name ) {
+		Helper::deprecated(
+			"Importing field data onto an object",
+			"{{ post.meta('field_name') }}",
+			'2.0.0'
+		);
+
 		$this->$field_name = $this->meta($field_name);
 	}
 
@@ -1172,7 +1043,8 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 */
 	public function author() {
 		if ( isset($this->post_author) ) {
-			return new User($this->post_author);
+			$factory = new UserFactory();
+			return $factory->from((int) $this->post_author);
 		}
 	}
 
@@ -1214,7 +1086,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 */
 	public function modified_author() {
 		$user_id = get_post_meta($this->ID, '_edit_last', true);
-		return ($user_id ? new User($user_id) : $this->author());
+		return ($user_id ? Timber::get_user($user_id) : $this->author());
 	}
 
 	/**
@@ -1230,8 +1102,9 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	/**
 	 * Returns a category attached to a post
 	 *
+	 * If multiple categories are set, it will return just the first one
+	 *
 	 * @api
-	 * If mulitpuile categories are set, it will return just the first one
 	 * @return \Timber\Term|null
 	 */
 	public function category() {
@@ -1256,13 +1129,9 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * {% endif %}
 	 * ```
 	 * @param string|array $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type or you can pass an array of post types.
-	 * @param string|bool  $child_post_class _optional_ a custom post class (ex: 'MyTimber\Post') to return the objects as. By default (false) it will use Timber\Post::$post_class value.
-	 * @return array
+	 * @return Timber\PostCollectionInterface
 	 */
-	public function children( $post_type = 'any', $child_post_class = false ) {
-		if ( $child_post_class === false ) {
-			$child_post_class = $this->PostClass;
-		}
+	public function children( $post_type = 'any' ) {
 		if ( $post_type === 'parent' ) {
 			$post_type = $this->post_type;
 		}
@@ -1273,38 +1142,58 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		if ( $this->post_status === 'publish' ) {
 			$query .= '&post_status[]=inherit';
 		}
-		$children = get_children($query);
-		foreach ( $children as &$child ) {
-			$child = new $child_post_class($child->ID);
-		}
-		$children = array_values($children);
-		return $children;
+
+		return $this->factory()->from(get_children($query));
 	}
 
 	/**
 	 * Gets the comments on a Timber\Post and returns them as an array of `Timber\Comment` objects (or whatever comment class you set).
 	 *
 	 * @api
+	 * Gets the comments on a `Timber\Post` and returns them as a `Timber\CommentThread`: a PHP
+	 * ArrayObject of [`Timber\Comment`](https://timber.github.io/docs/reference/timber-comment/)
+	 * (or whatever comment class you set).
+	 * @api
+	 *
+	 * @param int    $count        Set the number of comments you want to get. `0` is analogous to
+	 *                             "all".
+	 * @param string $order        Use ordering set in WordPress admin, or a different scheme.
+	 * @param string $type         For when other plugins use the comments table for their own
+	 *                             special purposes. Might be set to 'liveblog' or other, depending
+	 *                             on what’s stored in your comments table.
+	 * @param string $status       Could be 'pending', etc.
+	 * @see \Timber\CommentThread for an example with nested comments
+	 * @return bool|\Timber\CommentThread
+	 *
 	 * @example
+	 *
+	 * **single.twig**
+	 *
 	 * ```twig
-	 * {# single.twig #}
-	 * <h4>Comments:</h4>
-	 * {% for comment in post.comments %}
-	 * 	<div class="comment-{{comment.ID}} comment-order-{{loop.index}}">
-	 * 		<p>{{comment.author.name}} said:</p>
-	 * 		<p>{{comment.content}}</p>
-	 * 	</div>
-	 * {% endfor %}
+	 * <div id="post-comments">
+	 *   <h4>Comments on {{ post.title }}</h4>
+	 *   <ul>
+	 *     {% for comment in post.comments() %}
+	 *       {% include 'comment.twig' %}
+	 *     {% endfor %}
+	 *   </ul>
+	 *   <div class="comment-form">
+	 *     {{ function('comment_form') }}
+	 *   </div>
+	 * </div>
 	 * ```
 	 *
-	 * @param int $count Set the number of comments you want to get. `0` is analogous to "all"
-	 * @param string $order use ordering set in WordPress admin, or a different scheme
-	 * @param string $type For when other plugins use the comments table for their own special purposes, might be set to 'liveblog' or other depending on what's stored in yr comments table
-	 * @param string $status Could be 'pending', etc.
-	 * @param string $CommentClass What class to use when returning Comment objects. As you become a Timber pro, you might find yourself extending Timber\Comment for your site or app (obviously, totally optional)
-	 * @return bool|array
+	 * **comment.twig**
+	 *
+	 * ```twig
+	 * {# comment.twig #}
+	 * <li>
+	 *   <p class="comment-author">{{ comment.author.name }} says:</p>
+	 *   <div>{{ comment.content }}</div>
+	 * </li>
+	 * ```
 	 */
-	public function comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve', $CommentClass = 'Timber\Comment' ) {
+	public function comments( $count = null, $order = 'wp', $type = 'comment', $status = 'approve' ) {
 		global $overridden_cpage, $user_ID;
 		$overridden_cpage = false;
 
@@ -1318,14 +1207,17 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		if ( strtolower($order) == 'wp' || strtolower($order) == 'wordpress' ) {
 			$args['order'] = get_option('comment_order');
 		}
-
 		if ( $user_ID ) {
 			$args['include_unapproved'] = array($user_ID);
 		} elseif ( !empty($comment_author_email) ) {
 			$args['include_unapproved'] = array($comment_author_email);
+		} elseif ( function_exists('wp_get_unapproved_comment_author_email') ) {
+			$unapproved_email = wp_get_unapproved_comment_author_email();
+			if ( $unapproved_email ) {
+				$args['include_unapproved'] = array($unapproved_email);
+			}
 		}
 		$ct = new CommentThread($this->ID, false);
-		$ct->CommentClass = $CommentClass;
 		$ct->init($args);
 		return $ct;
 	}
@@ -1397,17 +1289,28 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).
+	 * Gets the actual content of a WordPress post.
+	 *
+	 * As opposed to using `{{ post.post_content }}`, this will run the hooks/filters attached to
+	 * the `the_content` filter. It will return your post’s content with WordPress filters run on it
+	 * – which means it will parse blocks, convert shortcodes or run `wpautop()` on the content.
+	 *
+	 * If you use page breaks in your content to split your post content into multiple pages,
+	 * use `{{ post.paged_content }}` to display only the content for the current page.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * <div class="article">
-	 *     <h2>{{post.title}}</h2>
+	 * <article>
+	 *     <h1>{{ post.title }}</h1>
+	 *
 	 *     <div class="content">{{ post.content }}</div>
-	 * </div>
+	 * </article>
 	 * ```
-	 * @param int $page
+	 *
+	 * @param int $page Optional. The page to show if the content of the post is split into multiple
+	 *                  pages. Read more about this in the [Pagination Guide](https://timber.github.io/docs/v2/guides/pagination/#paged-content-within-a-post). Default `0`.
+	 *
 	 * @return string
 	 */
 	public function content( $page = 0, $len = -1 ) {
@@ -1417,8 +1320,8 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		if ( $form = $this->maybe_show_password_form() ) {
 			return $form;
 		}
-		if ( $len == -1 && $page == 0 && $this->_content ) {
-			return $this->_content;
+		if ( $len == -1 && $page == 0 && $this->___content ) {
+			return $this->___content;
 		}
 		$content = $this->post_content;
 		if ( $len > 0 ) {
@@ -1431,15 +1334,44 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 				$content = $contents[$page];
 			}
 		}
+		$content = $this->content_handle_no_teaser_block( $content );
 		$content = apply_filters('the_content', ($content));
 		if ( $len == -1 && $page == 0 ) {
-			$this->_content = $content;
+			$this->___content = $content;
 		}
 		return $content;
 	}
 
 	/**
+	 * Handles for an circumstance with the Block editor where a "more" block has an option to
+	 * "Hide the excerpt on the full content page" which hides everything prior to the inserted
+	 * "more" block
+	 * @ticket #2218
+	 * @param string $content
 	 * @return string
+	 */
+	protected function content_handle_no_teaser_block( $content ) {
+		if ( (strpos($content, 'noTeaser:true') !== false || strpos($content, '"noTeaser":true') !== false) && strpos($content, '<!-- /wp:more -->') !== false) {
+			$arr = explode('<!-- /wp:more -->', $content);
+			return trim($arr[1]);
+		}
+		return $content;
+	}
+
+	/**
+	 * Gets the paged content for a post.
+	 *
+	 * You will use this, if you use `<!--nextpage-->` in your post content or the Page Break block
+	 * in the Block Editor. Use `{{ post.pagination }}` to create a pagination for your paged
+	 * content. Learn more about this in the [Pagination Guide](https://timber.github.io/docs/v2/guides/pagination/#paged-content-within-a-post).
+	 *
+	 * @example
+	 * ```twig
+	 * {{ post.paged_content }}
+	 * ```
+	 *
+	 * @return string The content for the current page. If there’s no page break found in the
+	 *                content, the whole content is returned.
 	 */
 	public function paged_content() {
 		global $page;
@@ -1447,14 +1379,43 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * Get the date to use in your template!
+	 * Gets the timestamp when the post was published.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @return false|int Unix timestamp on success, false on failure.
+	 */
+	public function timestamp() {
+		return get_post_timestamp( $this->ID );
+	}
+
+	/**
+	 * Gets the timestamp when the post was last modified.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @return false|int Unix timestamp on success, false on failure.
+	 */
+	public function modified_timestamp() {
+		return get_post_timestamp( $this->ID, 'modified' );
+	}
+
+	/**
+	 * Gets the publishing date of the post.
+	 *
+	 * This function will also apply the
+	 * [`get_the_date`](https://developer.wordpress.org/reference/hooks/get_the_date/) filter to the
+	 * output.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * Published on {{ post.date }} // Uses WP's formatting set in Admin
+	 * {# Uses date format set in Settings → General #}
+	 * Published on {{ post.date }}
 	 * OR
-	 * Published on {{ post.date('F jS') }} // Jan 12th
+	 * Published on {{ post.date('F jS') }}
 	 * ```
 	 *
 	 * ```html
@@ -1462,24 +1423,96 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * OR
 	 * Published on Jan 12th
 	 * ```
-	 * @param string $date_format
+	 *
+	 * @param string|null $date_format Optional. PHP date format. Will use the `date_format` option
+	 *                                 as a default.
+	 *
 	 * @return string
 	 */
-	public function date( $date_format = '' ) {
-		$df       = $date_format ? $date_format : get_option('date_format');
-		$the_date = (string) mysql2date($df, $this->post_date);
-		return apply_filters('get_the_date', $the_date, $df);
+	public function date( $date_format = null ) {
+		$format = $date_format ?: get_option( 'date_format' );
+		$date   = wp_date( $format, $this->timestamp() );
+
+		/**
+		 * Filters the date a post was published.
+		 *
+		 * @see get_the_date()
+		 *
+		 * @param string      $date        The formatted date.
+		 * @param string      $date_format PHP date format. Defaults to 'date_format' option if not
+		 *                                 specified.
+		 * @param int|WP_Post $id          The post object or ID.
+		 */
+		$date = apply_filters( 'get_the_date', $date, $date_format, $this->ID );
+
+		return $date;
 	}
 
 	/**
-	 * Get the time to use in your template
+	 * Gets the date the post was last modified.
+	 *
+	 * This function will also apply the
+	 * [`get_the_modified_date`](https://developer.wordpress.org/reference/hooks/get_the_modified_date/)
+	 * filter to the output.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * Published at {{ post.time }} // Uses WP's formatting set in Admin
+	 * {# Uses date format set in Settings → General #}
+	 * Last modified on {{ post.modified_date }}
 	 * OR
-	 * Published at {{ post.time | time('G:i') }} // 13:25
+	 * Last modified on {{ post.modified_date('F jS') }}
+	 * ```
+	 *
+	 * ```html
+	 * Last modified on January 12, 2015
+	 * OR
+	 * Last modified on Jan 12th
+	 * ```
+	 *
+	 * @param string|null $date_format Optional. PHP date format. Will use the `date_format` option
+	 *                                 as a default.
+	 *
+	 * @return string
+	 */
+	public function modified_date( $date_format = null ) {
+		$format = $date_format ?: get_option( 'date_format' );
+		$date   = wp_date( $format, $this->modified_timestamp() );
+
+		/**
+		 * Filters the date a post was last modified.
+		 *
+		 * This filter expects a `WP_Post` object as the last parameter. We only have a
+		 * `Timber\Post` object available, that wouldn’t match the expected argument. That’s why we
+		 * need to get the post object with get_post(). This is fairly inexpensive, because the post
+		 * will already be in the cache.
+		 *
+		 * @see get_the_modified_date()
+		 *
+		 * @param string|bool  $date        The formatted date or false if no post is found.
+		 * @param string       $date_format PHP date format. Defaults to value specified in
+		 *                                  'date_format' option.
+		 * @param WP_Post|null $post        WP_Post object or null if no post is found.
+		 */
+		$date = apply_filters( 'get_the_modified_date', $date, $date_format, get_post( $this->ID ) );
+
+		return $date;
+	}
+
+	/**
+	 * Gets the time the post was published to use in your template.
+	 *
+	 * This function will also apply the
+	 * [`get_the_time`](https://developer.wordpress.org/reference/hooks/get_the_time/) filter to the
+	 * output.
+	 *
+	 * @api
+	 * @example
+	 * ```twig
+	 * {# Uses time format set in Settings → General #}
+	 * Published at {{ post.time }}
+	 * OR
+	 * Published at {{ post.time|time('G:i') }}
 	 * ```
 	 *
 	 * ```html
@@ -1487,13 +1520,82 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * OR
 	 * Published at 13:25
 	 * ```
-	 * @param  string $time_format
+	 *
+	 * @param string|null $time_format Optional. PHP date format. Will use the `time_format` option
+	 *                                 as a default.
+	 *
 	 * @return string
 	 */
-	public function time( $time_format = '' ) {
-		$tf       = $time_format ? $time_format : get_option('time_format');
-		$the_time = (string) mysql2date($tf, $this->post_date);
-		return apply_filters('get_the_time', $the_time, $tf);
+	public function time( $time_format = null ) {
+		$format = $time_format ?: get_option( 'time_format' );
+		$time   = wp_date( $format, $this->timestamp() );
+
+		/**
+		 * Filters the time a post was written.
+		 *
+		 * @see get_the_time()
+		 *
+		 * @param string      $time        The formatted time.
+		 * @param string      $time_format Format to use for retrieving the time the post was
+		 *                                 written. Accepts 'G', 'U', or php date format value
+		 *                                 specified in `time_format` option. Default empty.
+		 * @param int|WP_Post $id          WP_Post object or ID.
+		 */
+		$time = apply_filters( 'get_the_time', $time, $time_format, $this->ID );
+
+		return $time;
+	}
+
+	/**
+	 * Gets the time of the last modification of the post to use in your template.
+	 *
+	 * This function will also apply the
+	 * [`get_the_time`](https://developer.wordpress.org/reference/hooks/get_the_modified_time/)
+	 * filter to the output.
+	 *
+	 * @api
+	 * @example
+	 * ```twig
+	 * {# Uses time format set in Settings → General #}
+	 * Published at {{ post.time }}
+	 * OR
+	 * Published at {{ post.time|time('G:i') }}
+	 * ```
+	 *
+	 * ```html
+	 * Published at 1:25 pm
+	 * OR
+	 * Published at 13:25
+	 * ```
+	 *
+	 * @param string|null $time_format Optional. PHP date format. Will use the `time_format` option
+	 *                                 as a default.
+	 *
+	 * @return string
+	 */
+	public function modified_time( $time_format = null ) {
+		$format = $time_format ?: get_option( 'time_format' );
+		$time   = wp_date( $format, $this->modified_timestamp() );
+
+		/**
+		 * Filters the localized time a post was last modified.
+		 *
+		 * This filter expects a `WP_Post` object as the last parameter. We only have a
+		 * `Timber\Post` object available, that wouldn’t match the expected argument. That’s why we
+		 * need to get the post object with get_post(). This is fairly inexpensive, because the post
+		 * will already be in the cache.
+		 *
+		 * @see get_the_modified_time()
+		 *
+		 * @param string|bool  $time        The formatted time or false if no post is found.
+		 * @param string       $time_format Format to use for retrieving the time the post was
+		 *                                  written. Accepts 'G', 'U', or php date format. Defaults
+		 *                                  to value specified in 'time_format' option.
+		 * @param WP_Post|null $post        WP_Post object or null if no post is found.
+		 */
+		$time = apply_filters( 'get_the_modified_time', $time, $time_format, get_post( $this->ID ) );
+
+		return $time;
 	}
 
 	/**
@@ -1573,30 +1675,21 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
+	 * Gets the next post that is adjacent to the current post in a collection.
+	 *
+	 * Works pretty much the same as
+	 * [`get_next_post()`](https://developer.wordpress.org/reference/functions/get_next_post/).
+	 *
 	 * @api
-	 * @param string $date_format
-	 * @return string
-	 */
-	public function modified_date( $date_format = '' ) {
-		$df = $date_format ? $date_format : get_option('date_format');
-		$the_time = $this->modified_time($df);
-		return apply_filters('get_the_modified_date', $the_time, $date_format);
-	}
-
-	/**
-	 * @api
-	 * @param string $time_format
-	 * @return string
-	 */
-	public function modified_time( $time_format = '' ) {
-		$tf = $time_format ? $time_format : get_option('time_format');
-		$the_time = get_post_modified_time($tf, false, $this->ID, true);
-		return apply_filters('get_the_modified_time', $the_time, $time_format);
-	}
-
-	/**
-	 * @api
-	 * @param bool|string $in_same_term
+	 * @example
+	 * ```twig
+	 * {% if post.next %}
+	 *     <a href="{{ post.next.link }}">{{ post.next.title }}</a>
+	 * {% endif %}
+	 * ```
+	 * @param bool|string $in_same_term Whether the post should be in a same taxonomy term. Default
+	 *                                  `false`.
+	 *
 	 * @return mixed
 	 */
 	public function next( $in_same_term = false ) {
@@ -1612,7 +1705,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 			}
 
 			if ( $adjacent ) {
-				$this->_next[$in_same_term] = new $this->PostClass($adjacent);
+				$this->_next[$in_same_term] = $this->factory()->from($adjacent);
 			} else {
 				$this->_next[$in_same_term] = false;
 			}
@@ -1622,10 +1715,42 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
-	 * Get a data array of pagination so you can navigate to the previous/next for a paginated post.
+	 * Gets a data array to display a pagination for your paginated post.
+	 *
+	 * Use this in combination with `{{ post.paged_content }}`.
 	 *
 	 * @api
-	 * @return array
+	 * @example
+	 * Using simple links to the next an previous page.
+	 * ```twig
+	 * {% if post.pagination.next is not empty %}
+	 *     <a href="{{ post.pagination.next.link|e('esc_url') }}">Go to next page</a>
+	 * {% endif %}
+	 *
+	 * {% if post.pagination.prev is not empty %}
+	 *     <a href="{{ post.pagination.prev.link|e('esc_url') }}">Go to previous page</a>
+	 * {% endif %}
+	 * ```
+	 * Using a pagination for all pages.
+	 * ```twig
+	 * {% if post.pagination.pages is not empty %}
+	 *    <nav aria-label="pagination">
+	 *        <ul>
+	 *            {% for page in post.pagination.pages %}
+	 *                <li>
+	 *                    {% if page.current %}
+	 *                        <span aria-current="page">Page {{ page.title }}</span>
+	 *                    {% else %}
+	 *                        <a href="{{ page.link|e('esc_url') }}">Page {{ page.title }}</a>
+	 *                    {% endif %}
+	 *                </li>
+	 *            {% endfor %}
+	 *        </ul>
+	 *    </nav>
+	 * {% endif %}
+	 * ```
+	 *
+	 * @return array An array with data to build your paginated content.
 	 */
 	public function pagination() {
 		global $post, $page, $numpages, $multipage;
@@ -1666,22 +1791,15 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		if ( is_object($data) ) {
 			$data = Helper::convert_wp_object($data);
 		} else if ( is_array($data) ) {
-			$func = __FUNCTION__;
-			foreach ( $data as &$ele ) {
-				if ( is_array($ele) ) {
-					$ele = $this->$func($ele);
-				} else if ( is_object($ele) ) {
-					$ele = Helper::convert_wp_object($ele);
-				}
-			}
+			$data = array_map([$this, 'convert'], $data);
 		}
 		return $data;
 	}
 
 
 	/**
-	 * Gets the parent (if one exists) from a post as a Timber\Post object (or whatever is set in
-	 * Timber\Post::$PostClass)
+	 * Gets the parent (if one exists) from a post as a Timber\Post object.
+	 * Honors Class Maps.
 	 *
 	 * @api
 	 * @example
@@ -1694,7 +1812,8 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		if ( !$this->post_parent ) {
 			return false;
 		}
-		return new $this->PostClass($this->post_parent);
+
+		return $this->factory()->from($this->post_parent);
 	}
 
 	/**
@@ -1712,18 +1831,21 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		return URLHelper::get_rel_url($this->link());
 	}
 
-
 	/**
-	 * Get the previous post in a set
+	 * Get the previous post that is adjacent to the current post in a collection.
+	 *
+	 * Works pretty much the same as
+	 * [`get_previous_post()`](https://developer.wordpress.org/reference/functions/get_previous_post/).
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * <h4>Prior Entry:</h4>
-	 * <h3>{{post.prev.title}}</h3>
-	 * <p>{{post.prev.preview(25)}}</p>
+	 * {% if post.prev %}
+	 *     <a href="{{ post.prev.link }}">{{ post.prev.title }}</a>
+	 * {% endif %}
 	 * ```
-	 * @param string|boolean $in_same_term
+	 * @param bool|string $in_same_term Whether the post should be in a same taxonomy term. Default
+	 *                                  `false`.
 	 * @return mixed
 	 */
 	public function prev( $in_same_term = false ) {
@@ -1737,7 +1859,7 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		$adjacent = get_adjacent_post(($in_same_term), '', true, $within_taxonomy);
 		$prev_in_taxonomy = false;
 		if ( $adjacent ) {
-			$prev_in_taxonomy = new $this->PostClass($adjacent);
+			$prev_in_taxonomy = $this->factory()->from($adjacent);
 		}
 		$this->_prev[$in_same_term] = $prev_in_taxonomy;
 		$post = $old_global;
@@ -1755,6 +1877,18 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	}
 
 	/**
+	 * Gets the post’s thumbnail ID.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @return false|int The default post’s ID. False if no thumbnail was defined.
+	 */
+	public function thumbnail_id() {
+		return (int) get_post_meta( $this->ID, '_thumbnail_id', true );
+	}
+
+	/**
 	 * get the featured image as a Timber/Image
 	 *
 	 * @api
@@ -1765,9 +1899,10 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 	 * @return \Timber\Image|null of your thumbnail
 	 */
 	public function thumbnail() {
-		$tid = get_post_thumbnail_id($this->ID);
+		$tid = $this->thumbnail_id();
+
 		if ( $tid ) {
-			return new $this->ImageClass($tid);
+			return $this->factory()->from($tid);
 		}
 	}
 
@@ -1849,4 +1984,39 @@ class Post extends Core implements CoreInterface, MetaInterface, Setupable {
 		return $video;
 	}
 
+
+	/**
+	 * Given a base query and a list of taxonomies, return a list of queries
+	 * each of which queries for one of the taxonomies.
+	 * @example
+	 * ```
+	 * $this->partition_tax_queries(["object_ids" => [123]], ["a", "b"]);
+	 *
+	 * // result:
+	 * // [
+	 * //   ["object_ids" => [123], "taxonomy" => ["a"]],
+	 * //   ["object_ids" => [123], "taxonomy" => ["b"]],
+	 * // ]
+	 * ```
+	 * @internal
+	 */
+	private function partition_tax_queries(array $query, array $taxonomies) : array {
+		return array_map(function(string $tax) use ($query) : array {
+			return array_merge($query, [
+				'taxonomy' => [$tax],
+			]);
+		}, $taxonomies);
+	}
+
+	/**
+	 * Get a PostFactory instance for internal usage
+	 *
+	 * @internal
+	 * @return \Timber\Factory\PostFactory
+	 */
+	private function factory() {
+		static $factory;
+		$factory = $factory ?: new PostFactory();
+		return $factory;
+	}
 }

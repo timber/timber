@@ -2,13 +2,18 @@
 
 use Timber\Timber;
 use Timber\Post;
+use Timber\PostQuery;
 
+/**
+ * @group posts-api
+ * @group post-collections
+ */
 class TestTimberContext extends Timber_UnitTestCase {
 	/**
 	 * This throws an infite loop if memorization isn't working
 	 */
 	function testContextLoop() {
-		add_filter( 'timber/context', function( $context ) {
+		$this->add_filter_temporarily( 'timber/context', function( $context ) {
 			$context          = Timber::context();
 			$context['zebra'] = 'silly horse';
 
@@ -26,10 +31,13 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$this->go_to( get_permalink( $post_id ) );
 
 		$context = Timber::context();
-		$post    = new Post( $post_id );
+		$post    = Timber::get_post( $post_id );
 
 		$this->assertArrayNotHasKey( 'posts', $context );
 		$this->assertEquals( $post, $context['post'] );
+
+		$context = Timber::context();
+		$this->assertEquals('http://example.org', $context['http_host']);
 	}
 
 	function testPostsContextSimple() {
@@ -40,8 +48,8 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$context = Timber::context();
 
 		$this->assertArrayNotHasKey( 'post', $context );
-		$this->assertInstanceOf( 'Timber\PostQuery', $context['posts'] );
-		$this->assertCount( 3, $context['posts']->get_posts() );
+		$this->assertInstanceOf( PostQuery::class, $context['posts'] );
+		$this->assertCount( 3, $context['posts'] );
 	}
 
 	function testIfSetupFunctionIsRunInSingularTemplates() {
@@ -73,6 +81,11 @@ class TestTimberContext extends Timber_UnitTestCase {
 		Timber::context();
 
 		$this->assertTrue( apply_filters( 'touched_the_post_action', false ) );
+	}
+
+  function testContext() {
+		$context = Timber::context();
+		$this->assertEquals('http://example.org', $context['http_host']);
 	}
 
 }

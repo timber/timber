@@ -2,9 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\URLHelper;
-
 /**
  * Class Theme
  *
@@ -46,12 +43,15 @@ class Theme extends Core {
 	public $version;
 
 	/**
-	 * Timber\Theme object for the parent theme (if it exists), false otherwise
+	 * Timber\Theme object for the parent theme.
+	 *
+	 * Always returns the top-most theme. If the current theme is also the parent theme, it will
+	 * return itself.
 	 *
 	 * @api
-	 * @var \Timber\Theme|bool the Timber\Theme object for the parent theme (if it exists), false otherwise
+	 * @var \Timber\Theme the Timber\Theme object for the parent theme
 	 */
-	public $parent = false;
+	public $parent;
 
 	/**
 	 * Slug of the parent theme (ex: `_s`)
@@ -82,7 +82,7 @@ class Theme extends Core {
 	 * Constructs a new `Timber\Theme` object.
 	 *
 	 * The `Timber\Theme` object of the current theme comes in the default `Timber::context()`
-	 * call. You can access this in your twig template via `{{site.theme}}`.
+	 * call. You can access this in your twig template via `{{ site.theme }}`.
 	 *
 	 * @api
 	 * @example
@@ -91,7 +91,6 @@ class Theme extends Core {
 	 *     $theme = new Timber\Theme("my-theme");
 	 *     $context['theme_stuff'] = $theme;
 	 *     Timber::render('single.twig', $context);
-	 * ?>
 	 * ```
 	 * ```twig
 	 * We are currently using the {{ theme_stuff.name }} theme.
@@ -120,7 +119,9 @@ class Theme extends Core {
 
 		$this->uri = $this->theme->get_template_directory_uri();
 
-		if ( $this->theme->parent()) {
+		$this->parent = $this;
+		$this->parent_slug = $this->theme->get_stylesheet();
+		if ( $this->theme->parent() ) {
 			$this->parent_slug = $this->theme->parent()->get_stylesheet();
 			$this->parent = new Theme($this->parent_slug);
 		}
@@ -162,5 +163,41 @@ class Theme extends Core {
 		return get_theme_mods();
 	}
 
-}
+	/**
+	 * Gets a raw, unformatted theme header.
+	 * 
+	 * @api 
+	 * @see \WP_Theme::get()
+	 * @example
+	 * ```twig
+	 * {{ theme.get('Version') }}
+	 * ```
+	 *
+	 * @param string $header Name of the theme header. Name, Description, Author, Version,
+	 *                       ThemeURI, AuthorURI, Status, Tags.
+	 *
+	 * @return false|string String on success, false on failure.
+	 */
+	public function get( $header ) {
+		return $this->theme->get( $header );
+	}
 
+	/**
+	 * Gets a theme header, formatted and translated for display.
+	 *
+	 * @api
+	 * @see \WP_Theme::display()
+	 * @example
+	 * ```twig
+	 * {{ theme.display('Description') }}
+	 * ```
+	 *
+	 * @param string $header Name of the theme header. Name, Description, Author, Version,
+	 *                       ThemeURI, AuthorURI, Status, Tags.
+	 *
+	 * @return false|string
+	 */
+	public function display( $header ) {
+		return $this->theme->display( $header );
+	}
+}

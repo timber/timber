@@ -1,5 +1,14 @@
 <?php
 
+require_once(__DIR__.'/php/timber-post-subclass.php');
+
+use Timber\PostArrayObject;
+
+	/**
+	 * @group posts-api
+	 * @group terms-api
+	 * @group users-api
+	 */
 	class TestTimberHelper extends Timber_UnitTestCase {
 
 		function testPluckArray() {
@@ -34,8 +43,11 @@
 		}
 
 		function testPluckObjectWithMethod() {
-			require_once(__DIR__.'/php/timber-post-subclass.php');
-			$tps = new TimberPostSubclass();
+			$this->register_post_classmap_temporarily([
+				'post' => TimberPostSubclass::class,
+			]);
+
+			$tps = Timber::get_post($this->factory->post->create());
 			$jimmy = new stdClass();
 			$jimmy->name = 'Jimmy';
 			$pumpkins = array($tps, $jimmy);
@@ -205,42 +217,30 @@
 			$this->assertEquals(1984, $people[1]->year);
 		}
 
-		function testArrayFilter() {
+		/**
+		 * Updated to new syntax
+		 * @ticket #2124
+		 */
+		function testNewArrayFilter() {
 			$posts = [];
 			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
 			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
 			$posts = Timber::get_posts($posts);
-			$template = '{% for post in posts | filter("snoop")%}{{ post.content|striptags }}{% endfor %}';
+			$template = '{% for post in posts | wp_list_filter("snoop")%}{{ post.content|striptags }}{% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => $posts));
 			$this->assertEquals('Felicia Pearson', trim($str));
 		}
 
-		function testArrayFilterKeyValueUsingPostQuery() {
-			$posts = [];
-			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
-			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
-			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
-			$posts = new Timber\PostQuery( array(
-				'query' => $posts,
-			) );
-			$template = '{% for post in posts | filter({post_content: "Method Man"
-		})%}{{ post.title }}{% endfor %}';
-			$str = Timber::compile_string($template, array('posts' => $posts));
-			$this->assertEquals('Cheese', trim($str));
+		function testTwigFilterFilter() {
+			$template = "{% set sizes = [34, 36, 38, 40, 42] %}{{ sizes|filter(v => v > 38)|join(', ') }}";
+			$str = Timber::compile_string($template);
+			$this->assertEquals("40, 42", $str);
 		}
 
-		function testArrayFilterMulti() {
-			$posts = [];
-			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
-			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
-			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
-			$posts = Timber::get_posts($posts);
-			$template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
-			$str = Timber::compile_string($template, array('posts' => $posts));
-			$this->assertEquals('Stringer Bell Snoop', trim($str));
-		}
-
+		/**
+ 		 * @expectedException Twig\Error\RuntimeError
+		 */
 		function testArrayFilterWithBogusArray() {
 			$template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => 'foobar'));
@@ -277,19 +277,30 @@
 			$this->assertTrue(is_array($convert_array));
 		}
 
- 		function testCovertPostWithClassMap() {
+ 		function testConvertPostWithClassMap() {
 			register_post_type('sport');
 			require_once('assets/Sport.php');
-			add_filter('timber/post/post_class', function( $post_classes ) {
-				$post_classes = array('sport' => 'Sport', 'post' => 'Timber');
-				$post_classes['sport'] = 'Sport';
-				return $post_classes;
-			});
+
+			$this->register_post_classmap_temporarily([
+				'sport' => Sport::class,
+			]);
+
  			$sport_id = $this->factory->post->create(array('post_type' => 'sport', 'post_title' => 'Basketball Player'));
 			$wp_post = get_post($sport_id);
 			$sport_post = \Timber\Helper::convert_wp_object($wp_post);
-			$this->assertEquals('Sport', get_class($sport_post));
+			$this->assertInstanceOf(Sport::class, $sport_post);
 			$this->assertEquals('ESPN', $sport_post->channel());
  		}
+
+ 		/**
+ 		 * @expectedIncorrectUsage Accessing the thumbnail ID through {{ post._thumbnail_id }}
+ 		 */
+ 		function testDoingItWrong() {
+ 			$post_id = $this->factory->post->create();
+ 			$posts = Timber::get_posts();
+ 			update_post_meta($post_id, '_thumbnail_id', '707');
+ 			$post = Timber::get_post($post_id);
+ 			$thumbnail_id = $post->_thumbnail_id;
+ 		}  
 
 	}

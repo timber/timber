@@ -1,3 +1,3 @@
 ---
-title: "Timber Docs"
+title: "Timber"
 ---

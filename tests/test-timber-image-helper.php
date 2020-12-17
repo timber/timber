@@ -1,5 +1,8 @@
 <?php
 
+	/**
+	 * @group called-post-constructor
+	 */
 	class TestTimberImageHelper extends TimberAttachment_UnitTestCase {
 
 		function testHTTPAnalyze() {
@@ -59,7 +62,7 @@
 			$attach_id = wp_insert_attachment( $attachment, $filename, $post_id );
 			add_post_meta( $post_id, '_thumbnail_id', $attach_id, true );
 			$data = array();
-			$data['post'] = new Timber\Post( $post_id );
+			$data['post'] = Timber::get_post( $post_id );
 			$data['size'] = $size;
 			$data['crop'] = 'default';
 			Timber::compile( $template, $data );
@@ -72,7 +75,21 @@
 			$exists = file_exists( $resized_path );
 			$this->assertTrue( $exists );
 		}
-		
+
+		function testDeleteSideloadedFile() {
+			$filename = 'acGwPDj4_400x400';
+			$img = Timber\ImageHelper::sideload_image('https://pbs.twimg.com/profile_images/768086933310476288/'.$filename.'.jpg');
+			$files = scandir('/tmp');
+			$matches = false;
+			foreach ($files as $file) {
+				$substr = substr($file, 0, strlen($filename));
+				if ( $substr == $filename ) {
+					$matches = true;
+				}
+			}
+			$this->assertFalse($matches);
+		}
+
 		/**
 		 * @doesNotPerformAssertions
 		 */

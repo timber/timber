@@ -2,9 +2,6 @@
 
 namespace Timber;
 
-use Timber\Helper;
-use Timber\Post;
-
 /**
  * Class PostCollection
  *
@@ -19,36 +16,9 @@ class PostCollection extends \ArrayObject {
 	 * @api
 	 *
 	 * @param array  $posts      An array of posts.
-	 * @param string $post_class The post class to use.
 	 */
-	public function __construct( $posts = array(), $post_class = '\Timber\Post' ) {
-		$returned_posts = self::init( $posts, $post_class );
-
-		parent::__construct( $returned_posts, 0, 'Timber\PostsIterator' );
-	}
-
-	protected static function init( $posts, $post_class ) {
-		$returned_posts = array();
-		if ( is_null($posts) ) {
-			$posts = array();
-		}
-		foreach ( $posts as $post_object ) {
-			$post_type      = get_post_type($post_object);
-			$post_class_use = PostGetter::get_post_class($post_type, $post_class);
-
-			// Don't create yet another object if $post_object is already of the right type
-			if ( is_a($post_object, $post_class_use) ) {
-				$post = $post_object;
-			} else {
-				$post = new $post_class_use($post_object);
-			}
-
-			if ( isset($post->ID) ) {
-				$returned_posts[] = $post;
-			}
-		}
-
-		return self::maybe_set_preview($returned_posts);
+	public function __construct( array $posts = [] ) {
+		parent::__construct( $posts, 0, PostsIterator::class );
 	}
 
 	/**
@@ -64,6 +34,7 @@ class PostCollection extends \ArrayObject {
 	 * @return array
 	 */
 	public static function maybe_set_preview( $posts ) {
+		// @todo do this in a filter instead?
 		if ( is_array($posts) && isset($_GET['preview']) && $_GET['preview']
 			   && isset($_GET['preview_id']) && $_GET['preview_id']
 			   && current_user_can('edit_post', $_GET['preview_id']) ) {

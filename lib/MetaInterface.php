@@ -21,7 +21,18 @@ interface MetaInterface {
 	 *                           available in Timber. Default empty.
 	 * @return mixed The meta field value.
 	 */
-	public function meta( $field_name, $args = array() );
+	public function meta( $field_name = '', $args = array() );
+
+	/**
+	 * Gets a meta value directly from the database.
+	 *
+	 * Returns a raw meta value for an object that’s saved in the database. Be aware that the value
+	 * can still be filtered by plugins.
+	 *
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return mixed The raw meta field value.
+	 */
+	public function raw_meta( $field_name = '' );
 
 	/**
 	 * Gets a meta value.

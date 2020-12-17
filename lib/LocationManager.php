@@ -2,6 +2,8 @@
 
 namespace Timber;
 
+use Timber\PathHelper;
+
 class LocationManager {
 
 
@@ -10,13 +12,14 @@ class LocationManager {
 	 * @return array
 	 */
 	public static function get_locations( $caller = false ) {
-		//prioirty: user locations, caller (but not theme), child theme, parent theme, caller
+		//priority: user locations, caller (but not theme), child theme, parent theme, caller, open_basedir
 		$locs = array();
 		$locs = array_merge_recursive( $locs, self::get_locations_user() );
 		$locs = array_merge_recursive( $locs, self::get_locations_caller( $caller ) );
 		//remove themes from caller
 		$locs = array_merge_recursive( $locs, self::get_locations_theme() );
 		$locs = array_merge_recursive( $locs, self::get_locations_caller( $caller ) );
+		$locs = array_merge_recursive( $locs, self::get_locations_open_basedir() );
 		$locs = array_map( 'array_unique', $locs );
 
 		//now make sure theres a trailing slash on everything
@@ -107,7 +110,7 @@ class LocationManager {
 	public static function get_calling_script_dir( $offset = 0 ) {
 		$caller = self::get_calling_script_file($offset);
 		if ( !is_null($caller) ) {
-			$pathinfo = pathinfo($caller);
+			$pathinfo = PathHelper::pathinfo($caller);
 			$dir = $pathinfo['dirname'];
 			return $dir;
 		}
@@ -158,7 +161,7 @@ class LocationManager {
 	}
 
 	/**
-	 * 
+	 *
 	 * Converts the variable to an array with the var as the sole element. Ignores if it's already an array
 	 *
 	 * @param mixed $var the variable to test and maybe convert
@@ -195,6 +198,21 @@ class LocationManager {
 		}
 
 		return $locs;
+	}
+
+	/**
+	 * returns an array of the directory set with "open_basedir"
+	 * see : https://www.php.net/manual/en/ini.core.php#ini.open-basedir
+	 * @return array
+	 */
+	protected static function get_locations_open_basedir() {
+		$open_basedir = ini_get('open_basedir');
+
+		return array(
+			Loader::MAIN_NAMESPACE => array(
+				$open_basedir ? ABSPATH : '/'
+			)
+		);
 	}
 
 

@@ -2,12 +2,8 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
-
-use Timber\Post;
-use Timber\Helper;
-use Timber\URLHelper;
+use WP_Query;
+use WP_Term;
 
 /**
  * Class Term
@@ -18,14 +14,14 @@ use Timber\URLHelper;
  * @api
  * @example
  * ```php
- * //Get a term by its ID
- * $context['term'] = new Timber\Term(6);
- * //Get a term when on a term archive page
- * $context['term_page'] = new Timber\Term();
- * //Get a term with a slug
- * $context['team'] = new Timber\Term('patriots');
- * //Get a team with a slug from a specific taxonomy
- * $context['st_louis'] = new Timber\Term('cardinals', 'baseball');
+ * // Get a term by its ID
+ * $context['term'] = Timber::get_term(6);
+ *
+ * // Get a term when on a term archive page
+ * $context['term_page'] = Timber::get_term();
+ *
+ * // Get a term with a slug
+ * $context['team'] = Timber::get_term('patriots');
  * Timber::render('index.twig', $context);
  * ```
  * ```twig
@@ -47,9 +43,6 @@ use Timber\URLHelper;
  */
 class Term extends Core implements CoreInterface, MetaInterface {
 
-	public $PostClass = 'Timber\Post';
-	public $TermClass = 'Term';
-
 	public $object_type = 'term';
 	public static $representation = 'term';
 
@@ -68,18 +61,19 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	public $taxonomy;
 
 	/**
-	 * @api
-	 * @param int $tid
-	 * @param string $tax
+	 * @internal
 	 */
-	public function __construct( $tid = null, $tax = '' ) {
-		if ( null === $tid ) {
-			$tid = $this->get_term_from_query();
-		}
-		if ( strlen($tax) ) {
-			$this->taxonomy = $tax;
-		}
-		$this->init($tid);
+	protected function __construct() {}
+
+	/**
+	 * @internal
+	 * @param \WP_Term the vanilla WP term object to build from
+	 * @return \Timber\Term
+	 */
+	public static function build(WP_Term $wp_term, array $_options = []) : self {
+		$term = new static();
+		$term->init($wp_term);
+		return $term;
 	}
 
 	/**
@@ -101,6 +95,11 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @return static
 	 */
 	public static function from( $tid, $taxonomy ) {
+		if ( is_array($tid) ) {
+			return array_map( function($term) use ($taxonomy) {
+				return new static($term, $taxonomy);
+			}, $tid);
+		}
 		return new static($tid, $taxonomy);
 	}
 
@@ -127,118 +126,12 @@ class Term extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @internal
-	 * @param int $tid
+	 * @param \WP_Term $term
 	 */
-	protected function init( $tid ) {
-		$term = $this->get_term($tid);
-		if ( isset($term->term_id) ) {
-			$term->ID = $term->term_id;
-		}
-		if ( isset($term->ID) ) {
-			$term->id = $term->ID;
-			$this->import($term);
-		}
-		if ( isset($term->term_id) ) {
-			$this->custom = $this->get_meta_values($term->term_id);
-		}
-	}
-
-	/**
-	 * @internal
-	 * @param int $tid
-	 * @return array
-	 */
-	protected function get_meta_values( $term_id ) {
-		$term_meta = array();
-
-		/**
-		 * Filters term meta data before it is fetched from the database.
-		 *
-		 * Timber loads all meta values into the term object on initialization. With this filter,
-		 * you can disable fetching the meta values through the default method, which uses
-		 * `get_term_meta()`, by returning `false` or a non-empty array.
-		 *
-		 * @example
-		 * ```php
-		 * // Disable fetching meta values.
-		 * add_filter( 'timber/term/pre_get_meta_values', '__return_false' );
-		 *
-		 * // Add your own meta data.
-		 * add_filter( 'timber/term/pre_get_meta_values', function( $term_meta, $term_id, $term ) {
-    	 *     $term_meta = array(
-		 *         'custom_data_1' => 73,
-		 *         'custom_data_2' => 274,
-		 *     );
-		 *
-		 *     return $term_meta;
-		 * }, 10, 3);
-		 * ```
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param array        $term_meta An array of custom meta values. Passing `false` or a
-		 *                              non-empty array will skip fetching the values from the
-		 *                              database and will use the filtered values instead. Default
-		 *                              `array()`.
-		 * @param int          $term_id The term ID.
-		 * @param \Timber\Term $term    The term object.
-		 */
-		$term_meta = apply_filters( 'timber/term/pre_get_meta_values', $term_meta, $term_id, $this );
-
-		// Load all meta data when it wasn’t filtered before.
-		if ( false !== $term_meta && empty( $term_meta ) ) {
-			$term_meta = get_term_meta( $term_id );
-		}
-
-		foreach ( $term_meta as $key => $value ) {
-			if ( is_array( $value ) && 1 === count( $value ) && isset( $value[0] ) ) {
-				$value = $value[0];
-			}
-
-			$term_meta[ $key ] = maybe_unserialize( $value );
-		}
-
-		/**
-		 * Filters term meta data fetched from the database.
-		 *
-		 * Timber loads all meta values into the term object on initialization. With this filter,
-		 * you can change meta values after they were fetched from the database.
-		 *
-		 * This filter is used by the ACF Integration.
-		 *
-		 * @example
-		 * ```php
-		 * add_filter( 'timber/term/get_meta_values', function( $term_meta, $term_id, $term ) {
-		 *     if ( 123 === $term_id ) {
-		 *         // Do something special.
-		 *         $term_meta['foo'] = $term_meta['foo'] . ' bar';
-		 *     }
-		 *
-		 *     return $term_meta;
-		 * }, 10, 3 );
-		 * ```
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param array        $term_meta Custom term meta data.
-		 * @param int          $term_id   Term ID.
-		 * @param \Timber\Term $term      Term object.
-		 */
-		$term_meta = apply_filters( 'timber/term/get_meta_values', $term_meta, $term_id, $this );
-
-		/**
-		 * Filters term meta data fetched from the database.
-		 *
-		 * @deprecated 2.0.0, use `timber/term/meta`
-		 */
-		$term_meta = apply_filters_deprecated(
-			'timber_term_get_meta',
-			array( $term_meta, $term_id, $this ),
-			'2.0.0',
-			'timber/term/get_meta_values'
-		);
-
-		return $term_meta;
+	protected function init( WP_Term $term ) {
+		$this->ID = $term->term_id;
+		$this->id = $term->term_id;
+		$this->import($term);
 	}
 
 	/**
@@ -317,7 +210,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 			"{{ term.meta('field_name') }}",
 			'2.0.0'
 		);
-
 		return $this->meta($field_name);
 	}
 
@@ -329,7 +221,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 		if ( !isset($this->_children) ) {
 			$children = get_term_children($this->ID, $this->taxonomy);
 			foreach ( $children as &$child ) {
-				$child = new Term($child);
+				$child = Timber::get_term($child);
 			}
 			$this->_children = $children;
 		}
@@ -403,10 +295,11 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	/**
 	 * Gets a term meta value.
 	 *
-	 * Returns meta information stored with a term. This will use both data stored under (old) ACF
-	 * hacks and new (WP 4.6+) where term meta has its own table. If retrieving a special ACF field
-	 * (repeater, etc.) you can use the output immediately in Twig — no further processing is
-	 * required.
+	 * Returns a meta value or all meta values for all custom fields of a term saved in the term
+	 * meta database table.
+	 *
+	 * Fetching all values is only advised during development, because it can have a big performance
+	 * impact, when all filters are applied.
 	 *
 	 * @api
 	 * @example
@@ -417,91 +310,180 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * </div>
 	 * ```
 	 *
-	 * @param string $field_name The field name for which you want to get the value.
-	 * @param array  $args       An array of arguments for getting the meta value. Third-party
-	 *                           integrations can use this argument to make their API arguments
-	 *                           available in Timber. Default empty.
-	 * @return mixed The meta field value.
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
+	 * @param array  $args       {
+	 *      An array of arguments for getting the meta value. Third-party integrations can use this
+	 *      argument to make their API arguments available in Timber. Default empty array.
+	 *
+	 *      @type bool $apply_filters Whether to apply filtering of meta values. You can also use
+	 *                                the `raw_meta()` method as a shortcut to apply this argument.
+	 *                                Default true.
+	 * }
+	 * @return mixed The custom field value or an array of custom field values. Null if no value
+	 *               could be found.
 	 */
-	public function meta( $field_name, $args = array() ) {
-		/**
-		 * Filters the value for a term meta field before it is fetched from the database.
-		 *
-		 * @todo  Add description, example
-		 *
-		 * @see   \Timber\Term::meta()
-		 * @since 2.0.0
-		 *
-		 * @param string       $value      The field value. Passing a non-null value will skip
-		 *                                 fetching the value from the database. Default null.
-		 * @param int          $post_id    The post ID.
-		 * @param string       $field_name The name of the meta field to get the value for.
-		 * @param \Timber\Term $term       The term object.
-		 * @param array        $args       An array of arguments.
-		 */
-		$value = apply_filters(
-			'timber/term/pre_meta',
-			null,
-			$this->ID,
-			$field_name,
-			$this,
-			$args
-		);
+	public function meta( $field_name = '', $args = array() ) {
+		$args = wp_parse_args( $args, [
+			'apply_filters' => true,
+		] );
 
-		if ( null === $value ) {
-			$value = get_term_meta($this->ID, $field_name, true);
+		$term_meta = null;
+
+		if ( $args['apply_filters'] ) {
+			/**
+			 * Filters the value for a term meta field before it is fetched from the database.
+			 *
+			 * @example
+			 * ```php
+			 * // Disable fetching meta values.
+			 * add_filter( 'timber/term/pre_meta', '__return_false' );
+			 *
+			 * // Add your own meta data.
+			 * add_filter( 'timber/term/pre_meta', function( $term_meta, $term_id, $term ) {
+			 *     $term_meta = array(
+			 *         'custom_data_1' => 73,
+			 *         'custom_data_2' => 274,
+			 *     );
+			 *
+			 *     return $term_meta;
+			 * }, 10, 3);
+			 * ```
+			 *
+			 * @see   \Timber\Term::meta()
+			 * @since 2.0.0
+			 *
+			 * @param string       $term_meta  The field value. Passing a non-null value will skip
+			 *                                 fetching the value from the database. Default null.
+			 * @param int          $post_id    The post ID.
+			 * @param string       $field_name The name of the meta field to get the value for.
+			 * @param \Timber\Term $term       The term object.
+			 * @param array        $args       An array of arguments.
+			 */
+			$term_meta = apply_filters(
+				'timber/term/pre_meta',
+				$term_meta,
+				$this->ID,
+				$field_name,
+				$this,
+				$args
+			);
 		}
 
-		/**
-		 * Filters the value for a term meta field.
-		 *
-		 * This filter is used by the ACF Integration.
-		 *
-		 * @todo  Add description, example
-		 *
-		 * @see   \Timber\Term::meta()
-		 * @since 0.21.9
-		 *
-		 * @param mixed        $value The field value.
-		 * @param int          $term_id     The term ID.
-		 * @param string       $field_name  The name of the meta field to get the value for.
-		 * @param \Timber\Term $term        The term object.
-		 * @param array        $args        An array of arguments.
-		 */
-		$value = apply_filters(
-			'timber/term/meta',
-			$value,
-			$this->ID,
-			$field_name,
-			$this,
-			$args
-		);
+		if ( null === $term_meta ) {
+			$term_meta = get_term_meta( $this->ID, $field_name, true );
 
-		/**
-		 * Filters the value for a term meta field.
-		 *
-		 * @deprecated 2.0.0, use `timber/term/meta`
-		 */
-		$value = apply_filters_deprecated(
-			'timber/term/meta/field',
-			array( $value, $this->ID, $field_name, $this ),
-			'2.0.0',
-			'timber/term/meta'
-		);
+			// Mimick $single argument when fetching all meta values.
+			if ( empty( $field_name ) && is_array( $term_meta ) && ! empty( $term_meta )  ) {
+				$term_meta = array_map( function( $meta ) {
+					if ( 1 === count( $meta ) && isset( $meta[0] ) ) {
+						return $meta[0];
+					}
 
-		/**
-		 * Filters the value for a term meta field.
-		 *
-		 * @deprecated 2.0.0, use `timber/term/meta`
-		 */
-		$value = apply_filters_deprecated(
-			'timber_term_get_meta_field',
-			array( $value, $this->ID, $field_name, $this ),
-			'2.0.0',
-			'timber/term/meta'
-		);
+					return $meta;
+				}, $term_meta );
+			}
 
-		return $value;
+			// Empty result.
+			if ( empty( $term_meta ) ) {
+				$term_meta = empty( $field_name ) ? [] : null;
+			}
+		}
+
+		if ( $args['apply_filters'] ) {
+			/**
+			 * Filters the value for a term meta field.
+			 *
+			 * This filter is used by the ACF Integration.
+			 *
+			 * @see   \Timber\Term::meta()
+			 * @todo  Add description, example
+			 *
+			 * @since 0.21.9
+			 *
+			 * @param mixed        $term_meta  The field value.
+			 * @param int          $term_id    The term ID.
+			 * @param string       $field_name The name of the meta field to get the value for.
+			 * @param \Timber\Term $term       The term object.
+			 * @param array        $args       An array of arguments.
+			 */
+			$term_meta = apply_filters(
+				'timber/term/meta',
+				$term_meta,
+				$this->ID,
+				$field_name,
+				$this,
+				$args
+			);
+
+			/**
+			 * Filters term meta data fetched from the database.
+			 *
+			 * @deprecated 2.0.0, use `timber/term/meta`
+			 */
+			$term_meta = apply_filters_deprecated(
+				'timber_term_get_meta',
+				array( $term_meta, $this->ID, $this ),
+				'2.0.0',
+				'timber/term/meta'
+			);
+
+			/**
+			 * Filters the value for a term meta field.
+			 *
+			 * @deprecated 2.0.0, use `timber/term/meta`
+			 */
+			$term_meta = apply_filters_deprecated(
+				'timber/term/meta/field',
+				array( $term_meta, $this->ID, $field_name, $this ),
+				'2.0.0',
+				'timber/term/meta'
+			);
+
+			/**
+			 * Filters the value for a term meta field.
+			 *
+			 * @deprecated 2.0.0, use `timber/term/meta`
+			 */
+			$term_meta = apply_filters_deprecated(
+				'timber_term_get_meta_field',
+				array( $term_meta, $this->ID, $field_name, $this ),
+				'2.0.0',
+				'timber/term/meta'
+			);
+		}
+
+		return $term_meta;
+	}
+
+	/**
+	 * Gets a term meta value directly from the database.
+	 *
+	 * Returns a raw meta value or all raw meta values saved in the term meta database table. In
+	 * comparison to `meta()`, this function will return raw values that are not filtered by third-
+	 * party plugins.
+	 *
+	 * Fetching raw values for all custom fields will not have a big performance impact, because
+	 * WordPress gets all meta values, when the first meta value is accessed.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
+	 * @param array  $args       Optional. An array of args for `Term::meta()`. Default empty array.
+	 * @return null|mixed The custom field value(s). Null if no value could be found, an empty array
+	 *                    if all fields were requested but no values could be found.
+	 */
+	public function raw_meta( $field_name = '', $args = array() ) {
+		return $this->meta( $field_name, array_merge(
+			$args,
+			[
+				'apply_filters' => false,
+			]
+		) );
 	}
 
 	/**
@@ -567,67 +549,127 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
+	 * Gets posts that have the current term assigned.
+	 *
 	 * @api
 	 * @example
+	 * Query the default posts_per_page for this Term:
+	 *
 	 * ```twig
 	 * <h4>Recent posts in {{ term.name }}</h4>
+	 *
 	 * <ul>
-	 * {% for post in term.posts(3, 'post') %}
-	 *     <li><a href="{{post.link}}">{{post.title}}</a></li>
+	 * {% for post in term.posts() %}
+	 *     <li>
+	 *         <a href="{{ post.link }}">{{ post.title }}</a>
+	 *     </li>
 	 * {% endfor %}
 	 * </ul>
 	 * ```
 	 *
-	 * @param int|string|array $numberposts_or_args
-	 * @param string           $post_type_or_class
-	 * @param string           $post_class
+	 * Query exactly 3 Posts from this Term:
+	 *
+	 * ```twig
+	 * <h4>Recent posts in {{ term.name }}</h4>
+	 *
+	 * <ul>
+	 * {% for post in term.posts(3) %}
+	 *     <li>
+	 *         <a href="{{ post.link }}">{{ post.title }}</a>
+	 *     </li>
+	 * {% endfor %}
+	 * </ul>
+	 * ```
+	 *
+	 * If you need more control over the query that is going to be performed, you can pass your
+	 * custom query arguments in the first parameter.
+	 *
+	 * ```twig
+	 * <h4>Our branches in {{ region.name }}</h4>
+	 *
+	 * <ul>
+	 * {% for branch in region.posts({
+	 *     post_type: 'branch',
+	 *     posts_per_page: -1,
+	 *     orderby: 'menu_order'
+	 * }) %}
+	 *     <li>
+	 *         <a href="{{ branch.link }}">{{ branch.title }}</a>
+	 *     </li>
+	 * {% endfor %}
+	 * </ul>
+	 * ```
+	 *
+	 * @param int|array $numberposts_or_args Optional. Either the number of posts or an array of
+	 *                                       arguments for the post query to be performed.
+	 *                                       Default is an empty array, the equivalent of:
+	 *                                       ```php
+	 *                                       [
+	 *                                         'posts_per_page' => get_option('posts_per_page'),
+	 *                                         'post_type'      => 'any',
+	 *                                         'tax_query'      => [ ...tax query for this Term... ]
+	 *                                       ]
+	 *                                       ```
+	 * @param string $post_type_or_class     Deprecated. Before Timber 2.x this was a post_type to be
+	 *                                       used for querying posts OR the Timber\Post subclass to
+	 *                                       instantiate for each post returned. As of Timber 2.0.0,
+	 *                                       specify `post_type` in the `$query` array argument. To
+	 *                                       specify the class, use Class Maps.
+	 * @see https://timber.github.io/docs/v2/guides/posts/
+	 * @see https://timber.github.io/docs/v2/guides/class-maps/
 	 * @return \Timber\PostQuery
 	 */
-	public function posts( $numberposts_or_args = 10, $post_type_or_class = 'any', $post_class = '' ) {
-		if ( !strlen($post_class) ) {
-			$post_class = $this->PostClass;
+	public function posts( $query = [], $post_type_or_class = null ) {
+		if ( is_string($query) ) {
+			Helper::doing_it_wrong(
+				'Passing a query string to Term::posts()',
+				'Pass a query array instead: e.g. `"posts_per_page=3"` should be replaced with `["posts_per_page" => 3]`',
+				'2.0.0'
+			);
+
+			return false;
 		}
-		$default_tax_query = array(array(
-			'field' => 'id',
-			'terms' => $this->ID,
-			'taxonomy' => $this->taxonomy,
-		));
-		if ( is_string($numberposts_or_args) && strstr($numberposts_or_args, '=') ) {
-			$args = $numberposts_or_args;
-			$new_args = array();
-			parse_str($args, $new_args);
-			$args = $new_args;
-			$args['tax_query'] = $default_tax_query;
-			if ( !isset($args['post_type']) ) {
-				$args['post_type'] = 'any';
-			}
-			if ( class_exists($post_type_or_class) ) {
-				$post_class = $post_type_or_class;
-			}
-		} else if ( is_array($numberposts_or_args) ) {
-			//they sent us an array already baked
-			$args = $numberposts_or_args;
-			if ( !isset($args['tax_query']) ) {
-				$args['tax_query'] = $default_tax_query;
-			}
-			if ( class_exists($post_type_or_class) ) {
-				$post_class = $post_type_or_class;
-			}
-			if ( !isset($args['post_type']) ) {
-				$args['post_type'] = 'any';
-			}
-		} else {
-			$args = array(
-				'numberposts_or_args' => $numberposts_or_args,
-				'tax_query' => $default_tax_query,
-				'post_type' => $post_type_or_class
+
+		if ( is_int($query) ) {
+			$query = [
+				'posts_per_page' => $query,
+				'post_type'      => 'any',
+			];
+		}
+
+		if ( isset($post_type_or_class) ) {
+			Helper::deprecated(
+				'Passing post_type_or_class',
+				'Pass post_type as part of the $query argument. For specifying class, use Class Maps: https://timber.github.io/docs/v2/guides/class-maps/',
+				'2.0.0'
+			);
+
+			// Honor the non-deprecated posts_per_page param over the deprecated second arg.
+			$query['post_type'] = $query['post_type'] ?? $post_type_or_class;
+		}
+
+		if ( func_num_args() > 2 ) {
+			Helper::doing_it_wrong(
+				'Passing a post class',
+				'Use Class Maps instead: https://timber.github.io/docs/v2/guides/class-maps/',
+				'2.0.0'
 			);
 		}
 
-		return new PostQuery( array(
-			'query'      => $args,
-			'post_class' => $post_class,
-		) );
+		$tax_query = [
+			// Force a tax_query constraint on this term.
+			'relation'   => 'AND',
+			[
+				'field'    => 'id',
+				'terms'    => $this->ID,
+				'taxonomy' => $this->taxonomy,
+			],
+		];
+
+		// Merge a clause for this Term into any user-specified tax_query clauses.
+		$query['tax_query'] = array_merge($query['tax_query'] ?? [], $tax_query);
+
+		return Timber::get_posts( $query );
 	}
 
 
@@ -650,13 +692,11 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @deprecated 2.0.0 use `{{ term.posts }}` instead
 	 *
 	 * @param int $numberposts
-	 * @param string $post_type
-	 * @param string $PostClass
 	 * @return array|bool|null
 	 */
-	public function get_posts( $numberposts = 10, $post_type = 'any', $PostClass = '' ) {
+	public function get_posts( $numberposts = 10 ) {
 		Helper::deprecated('{{ term.get_posts }}', '{{ term.posts }}', '2.0.0');
-		return $this->posts($numberposts, $post_type, $PostClass);
+		return $this->posts($numberposts);
 	}
 
 	/**

@@ -2,12 +2,6 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
-
-use Timber\Theme;
-use Timber\Helper;
-
 /**
  * Class Site
  *
@@ -80,6 +74,12 @@ class Site extends Core implements CoreInterface {
 	public $name;
 
 	/**
+	 * @deprecated 2.0.0, use $pingback_url
+	 * @var string for people who like trackback spam
+	 */
+	public $pingback;
+
+	/**
 	 * @api
 	 * @var string for people who like trackback spam
 	 */
@@ -133,7 +133,6 @@ class Site extends Core implements CoreInterface {
 
 	/**
 	 * Constructs a Timber\Site object
-	 *
 	 * @api
 	 * @example
 	 * ```php
@@ -215,7 +214,7 @@ class Site extends Core implements CoreInterface {
 		$this->rss = get_bloginfo('rss_url');
 		$this->rss2 = get_bloginfo('rss2_url');
 		$this->atom = get_bloginfo('atom_url');
-		$this->language = get_bloginfo('language');
+		$this->language = get_locale();
 		$this->charset = get_bloginfo('charset');
 		$this->pingback = $this->pingback_url = get_bloginfo('pingback_url');
 	}
@@ -292,7 +291,7 @@ class Site extends Core implements CoreInterface {
 		}
 		$iid = get_option('site_icon');
 		if ( $iid ) {
-			return new Image($iid);
+			return Timber::get_post($iid);
 		}
 	}
 
@@ -301,7 +300,7 @@ class Site extends Core implements CoreInterface {
 		$blog_id = self::switch_to_blog($site_id);
 		$iid = get_blog_option($blog_id, 'site_icon');
 		if ( $iid ) {
-			$image = new Image($iid);
+			$image = Timber::get_post($iid);
 		}
 		restore_current_blog();
 		return $image;
@@ -372,16 +371,4 @@ class Site extends Core implements CoreInterface {
 		}
 		$this->$key = $value;
 	}
-
-	/**
-	 * @api
-	 * @deprecated 1.0.4, use `{{ site.link }}` instead.
-	 * @see \Timber\Site::link()
-	 * @return string
-	 */
-	public function url() {
-		Helper::deprecated('{{ site.url }}', '{{ site.link }}', '1.0.4');
-		return $this->link();
-	}
-
 }

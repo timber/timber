@@ -56,11 +56,12 @@
 
         function testFileSystemToURLWithWPML() {
             self::_setLanguage();
-            add_filter('site_url', array($this, 'addWPMLHomeFilterForRegExTest'), 10, 2);
+            add_filter('home_url', array($this, 'addWPMLHomeFilterForRegExTest'), 10, 2);
             $image = TestTimberImage::copyTestAttachment();
+
             $url = Timber\URLHelper::file_system_to_url($image);
             $this->assertStringEndsWith('://example2.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
-            remove_filter('site_url', array($this, 'addWPMLHomeFilterForRegExTest'));
+            remove_filter('home_url', array($this, 'addWPMLHomeFilterForRegExTest'));
         }
 
         function addWPMLHomeFilterForRegExTest($url, $path) {
@@ -171,6 +172,20 @@
         function testDoubleSlashesWithHTTPS() {
             $url = 'https://nytimes.com/news//world/thing.html';
             $expected_url = 'https://nytimes.com/news/world/thing.html';
+            $url = Timber\URLHelper::remove_double_slashes($url);
+            $this->assertEquals($expected_url, $url);
+        }
+
+        function testDoubleSlashesWithS3() {
+            $url = 's3://bucket/folder//thing.html';
+            $expected_url = 's3://bucket/folder/thing.html';
+            $url = Timber\URLHelper::remove_double_slashes($url);
+            $this->assertEquals($expected_url, $url);
+        }
+		
+	function testDoubleSlashesWithGS() {
+            $url = 'gs://bucket/folder//thing.html';
+            $expected_url = 'gs://bucket/folder/thing.html';
             $url = Timber\URLHelper::remove_double_slashes($url);
             $this->assertEquals($expected_url, $url);
         }

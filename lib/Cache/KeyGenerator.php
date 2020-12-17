@@ -2,7 +2,7 @@
 
 namespace Timber\Cache;
 
-use Asm89\Twig\CacheExtension\CacheStrategy\KeyGeneratorInterface;
+use Twig\CacheExtension\CacheStrategy\KeyGeneratorInterface;
 
 class KeyGenerator implements KeyGeneratorInterface {
 

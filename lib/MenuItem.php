@@ -2,10 +2,7 @@
 
 namespace Timber;
 
-use Timber\Core;
-use Timber\CoreInterface;
-
-use Timber\URLHelper;
+use Timber\Factory\PostFactory;
 
 /**
  * Class MenuItem
@@ -35,8 +32,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	public $post_name;
 	public $url;
 
-	public $PostClass = 'Timber\Post';
-
 	/**
 	 * Inherited property. Listed here to make it available in the documentation.
 	 *
@@ -65,23 +60,50 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 */
 	public $current_item_ancestor;
 
+	/**
+	 * Timber Menu. Previously this was a public property, but converted to a method to avoid
+	 * recursion (see #2071).
+	 *
+	 * @since 1.12.0
+	 * @see \Timber\MenuItem::menu()
+	 * @var \Timber\Menu The `Timber\Menu` object the menu item is associated with.
+	 */
+	protected $menu;
+
+	/**
+	 * Object ID.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @var int|null Linked object ID.
+	 */
+	public $object_id = null;
+
 	protected $_name;
-	protected $_menu_item_object_id;
 	protected $_menu_item_url;
 	protected $menu_object;
 
 	/**
 	 * @internal
 	 * @param array|object $data
+	 * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
+	 * @todo make this protected and implement ::build() instead
 	 */
-	public function __construct( $data ) {
-		$data              = (object) $data;
+	public function __construct( $data, $menu = null ) {
+		$this->menu = $menu;
+		$data       = (object) $data;
 		$this->import($data);
 		$this->import_classes($data);
-		$this->menu_object = $data;
-		$this->_name       = $this->name;
-		$this->name        = $this->name();
+		$this->id = $data->ID;
+		$this->ID = $data->ID;
+
+		$factory = new PostFactory();
+		$this->menu_object = $factory->from($data);
+
+		$this->_name       = $data->name ?? '';
 		$this->add_class('menu-item-'.$this->ID);
+
+		$this->object_id = (int) get_post_meta( $this->ID, '_menu_item_object_id', true );
 	}
 
 	/**
@@ -158,12 +180,14 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @return mixed Whatever object (Timber\Post, Timber\Term, etc.) the menu item represents.
 	 */
 	public function master_object() {
-		if ( isset($this->custom['_menu_item_object_id']) &&
-				$this->custom['_menu_item_object_id'] ) {
-			return new $this->PostClass($this->custom['_menu_item_object_id']);
+		static $factory;
+		$factory = $factory ?: new PostFactory();
+
+		if ( $this->object_id ) {
+			return $factory->from( $this->object_id );
 		}
 		if ( $this->menu_object ) {
-			return new $this->PostClass($this->menu_object);
+			return $factory->from( $this->menu_object );
 		}
 	}
 
@@ -213,10 +237,36 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		if ( is_array($data) ) {
 			$data = (object) $data;
 		}
-		$this->classes = array_merge($this->classes, $data->classes);
+		$this->classes = array_merge($this->classes, $data->classes ?? []);
 		$this->classes = array_unique($this->classes);
-		$this->classes = apply_filters('nav_menu_css_class', $this->classes, $this, array(), 0);
-		$this->class   = trim(implode(' ', $this->classes));
+
+		$options = new \stdClass();
+		if ( isset($this->menu()->options) ) {
+			// The options need to be an object.
+			$options = (object) $this->menu()->options;
+		}
+
+		/**
+		 * Filters the CSS classes applied to a menu item’s list item.
+		 *
+		 * @param string[]         $classes An array of the CSS classes that can be applied to the
+		 *                                  menu item’s `<li>` element.
+		 * @param \Timber\MenuItem $item    The current menu item.
+		 * @param \stdClass $args           An object of wp_nav_menu() arguments. In Timber, we
+		 *                                  don’t have these arguments because we don’t use a menu
+		 *                                  walker. Instead, you get the options that were used to
+		 *                                  create the `Timber\Menu` object.
+		 * @param int              $depth   Depth of menu item.
+		 */
+		$this->classes = apply_filters(
+			'nav_menu_css_class',
+			$this->classes,
+			$this,
+			$options,
+			0
+		);
+
+		$this->class = trim(implode(' ', $this->classes));
 	}
 
 	/**
@@ -262,13 +312,13 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * Or when you only want to add a target attribute if it is really needed:
 	 *
 	 * ```twig
-	 * <a href="{{ item.link }}" {{ item.is_external ? 'target="_blank"' }}">
+	 * <a href="{{ item.link }}" {{ item.is_external ? 'target="_blank"' }}>
 	 * ```
 	 *
 	 * In combination with `is_target_blank()`:
 	 *
 	 * ```twig
-	 * <a href="{{ item.link }}" {{ item.is_external or item.is_target_blank ? 'target="_blank"' }}">
+	 * <a href="{{ item.link }}" {{ item.is_external or item.is_target_blank ? 'target="_blank"' }}>
 	 * ```
 	 *
 	 * @return bool Whether the link is external or not.
@@ -341,6 +391,18 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
+	 * Timber Menu.
+	 *
+	 * @api
+	 * @since 1.12.0
+	 * @return \Timber\Menu The `Timber\Menu` object the menu item is associated with.
+	 */
+	public function menu() {
+		return $this->menu;
+	}
+
+
+	/**
 	 * Get a meta value of the menu item.
 	 *
 	 * Plugins like Advanced Custom Fields allow you to set custom fields for menu items.
@@ -351,19 +413,40 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * ```twig
 	 * <a class="icon-{{ item.meta('icon') }}" href="{{ item.link }}">{{ item.title }}</a>
 	 * ```
-	 * @param string $field_name The meta key to get the value for.
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
 	 * @param array  $args       An array of arguments for getting the meta value. Third-party
 	 *                           integrations can use this argument to make their API arguments
 	 *                           available in Timber. Default empty.
 	 * @return mixed Whatever value is stored in the database. Null if no value could be found.
 	 */
-	public function meta( $field_name, $args = array() ) {
+	public function meta( $field_name = '', $args = array() ) {
 		if ( isset($this->$field_name) ) {
 			return $this->$field_name;
 		}
 		if ( is_object($this->menu_object) && method_exists($this->menu_object, 'meta') ) {
 			return $this->menu_object->meta($field_name, $args);
 		}
+	}
+
+	/**
+	 * Gets a menu item’s meta value directly from the database.
+	 *
+	 * Returns a raw meta value for a menu item that’s saved in the post meta database table. Be
+	 * aware that the value can still be filtered by plugins.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return null|mixed The meta field value. Null if no value could be found.
+	 */
+	public function raw_meta( $field_name = '' ) {
+		if ( is_object( $this->menu_object ) && method_exists( $this->menu_object, 'raw_meta' ) ) {
+			return $this->menu_object->raw_meta( $field_name );
+		}
+
+		return null;
 	}
 
 	/**
