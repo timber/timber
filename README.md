@@ -113,7 +113,8 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Branch**](https://github.com/JeyKeu/branch/) Bootstrap 3 + Timber = Branch starter theme!
 * [**Flynt**](https://flyntwp.com/) a component based WordPress starter theme built on Timber and ACF Pro
 * [**Gantry5**](https://wordpress.org/plugins/gantry5/) a framework for theme development
-* [**Seedling**](https://github.com/maxdmyers/seedling) A starter theme using Bootstrap 4
+* [**Hozokit**](https://github.com/csalmeida/hozokit) a component based starter theme
+* [**Seedling**](https://github.com/maxdmyers/seedling) a starter theme using Bootstrap 4
 
 
 #### Helpful Links
