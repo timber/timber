@@ -171,11 +171,11 @@ When you run `meta` on an outer ACF field, everything inside is ready to be trav
 {% endfor %}
 ```
 
-### Split into small chunks flexible content fields
+### Split Flexible Content Fields into includes / chunks
 
-We can break flexible content fields into small blocks thanks to `acf_fc_layout` value. This way we have more flexibility and reusability. It could be a way to build a landing page for instance.
+We can break Flexible Content Fields into small blocks with include files utilizing the `acf_fc_layout` value. This way you have more flexibility and reusability for included sections. For instance, this is a great way to build a landing pages that re-use the same blocks in different configurations.
 
-Assuming blocks are inside a `blocks` folder:
+Assuming block Twig files are inside a `blocks` folder:
 
 ```twig
 {% for block in post.meta( 'blocks' ) %}
@@ -186,9 +186,9 @@ Assuming blocks are inside a `blocks` folder:
 {% endfor %}
 ```
 
-> The filter [sanitize](https://timber.github.io/docs/v2/guides/filters/#sanitize), slugify the block name
+> The filter [sanitize](https://timber.github.io/docs/v2/guides/filters/#sanitize), will slugify the block name
 
-And for example for a flexible content named `text` containing a `text` field, inside a `blocks/text.twig` file:
+And for example for a Flexible Content Field named `text` containing a `text` field, inside a `blocks/text.twig` file:
 
 ```twig
 <p>{{ block.text }}</p>   
