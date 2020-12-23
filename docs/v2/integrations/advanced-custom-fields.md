@@ -186,7 +186,7 @@ Assuming block Twig files are inside a `blocks` folder:
 {% endfor %}
 ```
 
-> The filter [sanitize](https://timber.github.io/docs/v2/guides/filters/#sanitize), will slugify the block name. Consider this example for a Flexible Content Field named `credit` containing a `text` field, inside the `blocks/photo.twig` file:
+The filter [sanitize](https://timber.github.io/docs/v2/guides/filters/#sanitize), will slugify the block name. Consider this example for a Flexible Content Field named `credit` containing a `text` field, inside the `blocks/photo.twig` file:
 
 ```twig
 <p>Photo by: {{ block.credit }}</p>   
