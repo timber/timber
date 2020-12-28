@@ -1,0 +1,4 @@
+contact_links:
+  - name: Support or usage question for Timber
+    url: http://stackoverflow.com/questions/tagged/timber
+    about: Is this a support or usage question? Please post to Stack Overflow using the Timber tag.
