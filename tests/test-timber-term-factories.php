@@ -18,19 +18,33 @@
 			$this->assertEquals('Thingo', $term->name);
 		}
 
-		// function testGetMultiTerm() {
-		// 	register_taxonomy('cars', 'post');
-		// 	$term_ids[] = $this->factory->term->create(['name' => 'Toyota', 'taxonomy' => 'cars']);
-		// 	$term_ids[] = $this->factory->term->create(['name' => 'Honda', 'taxonomy' => 'cars']);
-		// 	$terms = Timber\Term::from($term_ids, 'cars');
-		// 	$this->assertEquals($term_ids[0], $terms[0]->ID);
-		// }
+		function testGetMultiTerm() {
+			register_taxonomy('cars', 'post');
+			$term_ids[] = $this->factory->term->create(['name' => 'Toyota', 'taxonomy' => 'cars']);
+			$term_ids[] = $this->factory->term->create(['name' => 'Honda', 'taxonomy' => 'cars']);
+			$term_ids[] = $this->factory->term->create(['name' => 'Chevy', 'taxonomy' => 'cars']);
+			$post_id = $this->factory->post->create();
+			wp_set_object_terms( $post_id, $term_ids, 'cars' );
 
-		// function testGetSingleTermFrom() {
-		// 	register_taxonomy('cars', 'post');
-		// 	$term_id = $this->factory->term->create(['name' => 'Toyota', 'taxonomy' => 'cars']);
-		// 	$term = Timber\Term::from($term_id, 'cars');
-		// 	error_log(print_r($term, true));
-		// 	$this->assertEquals($term_id, $term->ID);
-		// }
+			$term_get = Timber::get_terms(['taxonomy' => 'cars']);
+			$this->assertEquals('Chevy', $term_get[0]->title());
+
+			$terms_from = Timber\Term::from($term_ids, 'cars');
+			$this->assertEquals('Chevy', $terms_from[0]->title());
+			//$this->assertEquals($term_ids[0], $terms[0]->ID);
+		}
+
+		function testGetSingleTermFrom() {
+			register_taxonomy('cars', 'post');
+			$term_id = $this->factory->term->create(['name' => 'Toyota', 'taxonomy' => 'cars']);
+			$post_id = $this->factory->post->create();
+			wp_set_object_terms( $post_id, $term_id, 'cars' );
+			// passes ....
+			$term_get = Timber::get_term(['taxonomy' => 'cars']);
+			$this->assertEquals($term_id, $term_get->ID);
+
+			// fails ...
+			$term_from = Timber\Term::from($term_id, 'cars');
+			$this->assertEquals($term_id, $term_from->ID);
+		}
 	}
