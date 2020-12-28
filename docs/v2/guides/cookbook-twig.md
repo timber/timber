@@ -60,7 +60,7 @@ Use a variable to determine the included file!
 
 * You're telling Twig to include an array of files
 * Same rules as above
-* ~ (tilda) is what twig uses to concatenate a string with your variable
+* ~ (tilde) is what twig uses to concatenate a string with your variable
 
 ## Twig tools
 

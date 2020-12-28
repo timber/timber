@@ -26,7 +26,7 @@ Looking to do non-threaded comments? This pattern can be expanded upon. If you'r
 
 ## Threaded Comments (Method 1)
 
-You can implement threaded comments this way (if you don't mind using WordPres's comment markup).
+You can implement threaded comments this way (if you don't mind using WordPress’s comment markup).
 
 **single.twig**
 ```twig
