@@ -445,7 +445,8 @@ class ImageHelper {
 	 *
 	 * @param array $upload Array of information about the upload directory.
 	 *
-	 * @return mixed
+	 * @return array 		Array of information about the upload directory, modified by this 
+	 *						function.
 	 */
 	public static function set_sideload_image_upload_dir( array $upload ) {
 		$subdir = 'sideloaded';
@@ -472,7 +473,7 @@ class ImageHelper {
 		$subdir = apply_filters( 'timber/sideload_image/subdir', $subdir );
 
 		if ( ! empty( $subdir ) ) {
-			// Remove any slashes.
+			// Remove slashes before or after.
 			$subdir = trim( $subdir, '/' );
 
 			$upload['subdir'] = '/' . $subdir;
