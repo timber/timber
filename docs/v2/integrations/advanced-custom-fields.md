@@ -163,27 +163,6 @@ When you run `meta` on an outer ACF field, everything inside is ready to be trav
 {% endfor %}
 ```
 
-### Split Flexible Content Fields into includes / chunks
-
-We can break Flexible Content Fields into small blocks with include files utilizing the `acf_fc_layout` value. This way you have more flexibility and reusability for included sections. For instance, this is a great way to build a landing pages that re-use the same blocks in different configurations.
-
-Assuming block Twig files are inside a `blocks` folder:
-
-```twig
-{% for block in post.meta( 'blocks' ) %}
-    {% 
-        include "blocks/#{ block.acf_fc_layout | sanitize ) }.twig"
-        with { block: block }
-    %}
-{% endfor %}
-```
-
-The filter [sanitize](https://timber.github.io/docs/v2/guides/filters/#sanitize), will slugify the block name. Consider this example for a Flexible Content Field named `credit` containing a `text` field, inside the `blocks/photo.twig` file:
-
-```twig
-<p>Photo by: {{ block.credit }}</p>   
-```
-
 ### Troubleshooting Repeaters
 
 A common problem in working with repeaters is that you should only call the `meta` method **once** on an item. In other words if you have a field inside a field (for example, a relationship inside a repeater or a repeater inside a repeater, **do not** call `meta` on the inner field). More:
@@ -243,6 +222,25 @@ Similar to nested repeaters, you should only call the `meta` method once when yo
 {% endfor %}
 ```
 
+### Split Flexible Content Fields into includes / chunks
+
+We can break Flexible Content Fields into small blocks with include files utilizing the `acf_fc_layout` value. This way you have more flexibility and reusability for included sections. For instance, this is a great way to build landing pages that re-use the same blocks in different configurations.
+
+Assuming your block Twig files are inside a **blocks** folder:
+
+```twig
+{% for block in post.meta( 'blocks' ) %}
+    {{ include("blocks/#{ block.acf_fc_layout|sanitize ) }.twig", {
+        block: block
+    }) }}
+{% endfor %}
+```
+
+The [sanitize](https://timber.github.io/docs/v2/guides/filters/#sanitize) filter will slugify the block name. Consider this example for a Flexible Content Field named `credit` containing a `text` field, inside the **blocks/photo.twig** file:
+
+```twig
+<p>Photo by: {{ block.credit }}</p>
+```
 
 ## Options Page
 
