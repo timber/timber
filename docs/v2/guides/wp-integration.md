@@ -310,7 +310,7 @@ With this filter, you can use a **password-protected.php** template file with th
 <?php
 
 $context                  = Timber::context();
-$context['post']          = new Timber\Post();
+$context['post']          = Timber::get_post();
 $context['password_form'] = get_the_password_form();
 
 Timber::render( 'password-protected.twig', $context );

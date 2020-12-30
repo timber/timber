@@ -60,13 +60,15 @@ In this example, you would populate your sidebar from your main PHP file (home.p
 <?php
 /* single.php */
 
-$post     = new Timber\Post();
+$post     = Timber::get_post();
 $post_cat = $post->get_terms( 'category' );
 
 $post_cat = $post_cat[0]->ID;
 
 $sidebar_context = array(
-	'related' => new Timber\PostQuery( 'cat=' . $post_cat ),
+	'related' => Timber::get_posts( [
+	    'cat' => $post_cat
+    ] ),
 );
 
 $context = Timber::context( array(
