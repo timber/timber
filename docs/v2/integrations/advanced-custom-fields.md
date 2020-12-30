@@ -96,8 +96,6 @@ You can now use all the above functions to transform your custom images in the s
 <img src="{{ post.hero_image.src | resize(500, 300) }}" />
 ```
 
-* * *
-
 ## Gallery Field
 
 ```twig
@@ -105,8 +103,6 @@ You can now use all the above functions to transform your custom images in the s
     <img src="{{ get_image(image) }}" />
 {% endfor %}
 ```
-
-* * *
 
 ## Group Field
 ```twig
@@ -122,8 +118,6 @@ or
 {{ group.second_field }}
 ```
 
-* * *
-
 ## Relationship field
 
 The post data returned from a relationship field will not contain the Timber methods needed for easy handling inside of your Twig file. To get these, you’ll need to convert them into proper `Timber\Post` objects using `get_posts()`:
@@ -134,8 +128,6 @@ The post data returned from a relationship field will not contain the Timber met
    {# Do something with item #}
 {% endfor %}
 ```
-
-* * *
 
 ## Repeater Field
 
@@ -218,8 +210,6 @@ A common problem in working with repeaters is that you should only call the `met
 {% endfor %}
 ```
 
-* * *
-
 ## Flexible Content Field
 
 Similar to repeaters, get the field by the name of the flexible content field:
@@ -253,7 +243,6 @@ Similar to nested repeaters, you should only call the `meta` method once when yo
 {% endfor %}
 ```
 
-* * *
 
 ## Options Page
 
@@ -313,8 +302,6 @@ Now, you can use any of the option fields across the site instead of per templat
 ```twig
 <footer>{{ options.copyright_info }}</footer>
 ```
-
-* * *
 
 ## Getting ACF info
 
