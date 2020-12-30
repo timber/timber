@@ -79,7 +79,7 @@ This is where we’ll start in PHP.
 $post = Timber::get_post();
 
 if (isset($post->hero_image) && strlen($post->hero_image)){
-    $post->hero_image = Timber::get_post( $post->hero_image );
+    $post->hero_image = Timber::get_image( $post->hero_image );
 }
 
 $context = Timber::context();
