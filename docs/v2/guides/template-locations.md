@@ -55,6 +55,7 @@ You can always reference **subdirectories** in your template folders relatively.
 ```php
 Timber::render( 'shared/headers/header-home.twig' );
 ```
+
 ... might correspond to a file in
 `/wp-content/themes/my-theme/views/shared/headers/header-home.twig`.
 
@@ -62,9 +63,9 @@ Timber::render( 'shared/headers/header-home.twig' );
 
 You can set your own locations for your twig files with...
 
-```php
-<?php
+**functions.php**
 
+```php
 add_filter( 'timber/locations', function($paths) {
 	$paths[] = array('/Users/lukas/Sandbox/templates');
 
@@ -74,9 +75,9 @@ add_filter( 'timber/locations', function($paths) {
 
 Use the full file path to make sure Timber knows what you're trying to draw from. You can also send an array for multiple locations:
 
-```php
-<?php
+**functions.php**
 
+```php
 add_filter( 'timber/locations', function($paths) {
 	$paths[] = array(
 		'/Users/lukas/Sandbox/templates',
@@ -92,9 +93,9 @@ add_filter( 'timber/locations', function($paths) {
 
 You can use [namespaces](https://symfony.com/doc/current/templating/namespaced_paths.html) in your locations, too. Namespaces allow you to create a shortcut to a particular location. Just define it as the value next to a path, for example:
 
-```php
-<?php
+**functions.php**
 
+```php
 add_filter( 'timber/locations', function($paths) {
 	$paths['styleguide'] = [
 		ABSPATH . '/wp-content/styleguide'
@@ -113,9 +114,9 @@ Assuming you have a template called `menu.twig` within that namespace, you would
 
 You can also register multiple paths for the same namespace. Order is important as it will look top to bottom and return the first one it encounters, for example:
 
-```php
-<?php
+**functions.php**
 
+```php
 add_filter( 'timber/locations', function($paths) {
 	$paths['styleguide'] = array(
 		ABSPATH.'/wp-content/styleguide',

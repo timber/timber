@@ -182,7 +182,6 @@ Converts an array of strings into a comma-separated list.
 **PHP**
 
 ```php
-<?php
 $context['contributors'] = array('Blake Allen','Rachel White','Maddy May');
 ```
 

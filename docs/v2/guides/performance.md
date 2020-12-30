@@ -20,6 +20,7 @@ When rendering, use the `$expires` argument in [`Timber::render`](https://timber
 
 ```php
 <?php
+
 $context['posts'] = new Timber\PostQuery();
 
 Timber::render( 'index.twig', $context, 600 );
@@ -34,7 +35,6 @@ This method is very effective, but crude - the whole template is cached. So if y
 As a fourth parameter for [Timber::render()](https://timber.github.io/docs/v2/reference/timber/#render), you can set the `$cache_mode`.
 
 ```php
-<?php
 Timber::render( $filenames, $data, $expires, $cache_mode );
 ```
 
@@ -71,14 +71,12 @@ This method allows for very fine-grained control over what parts of templates ar
 In your cache, the eventual key will be:
 
 ```php
-<?php
 $annotation . '__GCS__' . $key
 ```
 
 That is in this scenario:
 
 ```php
-<?php
 'index/content__GCS__' . md5( json_encode( $context['post'] ) )
 ```
 
@@ -162,9 +160,10 @@ $context['main_stories'] = TimberHelper::transient( 'main_stories', function(){
         $tease = new Timber\Post( $tease );
     }
 
-    $main_stories = array();
-    $main_stories['posts'] = $posts;
-    $main_stories['extra_teases'] = $extra_teases;
+    $main_stories = [
+        'posts'        => $posts,
+        'extra_teases' => $extra_teases,
+    ];
 
     return $main_stories;
 }, 600 );
@@ -184,6 +183,7 @@ Timber provides some quick shortcuts to measure page timing. Here’s an example
 
 ```php
 <?php
+
 // This generates a starting time
 $start = Timber\Helper::start_timer();
 

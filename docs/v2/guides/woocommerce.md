@@ -182,10 +182,9 @@ This should all sound familiar by now, except for one line:
 {{ fn('timber_set_product', post) }}
 ```
 
-For some reason, products in the loop don’t get the right context by default. This line will call the following function that you need to add somewhere in your `functions.php` file:
+For some reason, products in the loop don’t get the right context by default. This line will call the following function that you need to add somewhere in your **functions.php** file:
 
 ```php
-<?php
 function timber_set_product( $post ) {
     global $product;
 
@@ -207,10 +206,9 @@ One way to get around this is by building your own image calls, that means remov
 {% endif %}
 ```
 
-To remove the default image, add the following to your `functions.php` file:
+To remove the default image, add the following to your **functions.php** file:
 
 ```php
-<?php
 remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail' );
 ```
 

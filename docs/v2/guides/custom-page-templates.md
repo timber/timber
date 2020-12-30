@@ -9,17 +9,16 @@ There are a few ways to manage custom pages in WordPress and Timber, in order fr
 
 ## Custom Twig File
 
-If you're using the [Timber Starter Theme](https://github.com/timber/starter-theme) you can 
+If you're using the [Timber Starter Theme](https://github.com/timber/starter-theme) you can
 
 * Create a file called `page-about-us.twig` inside your `views` and go crazy.
 * Copy and paste the contents of [`page.twig`](https://github.com/timber/starter-theme/blob/master/templates/page.twig) so you have something to work from.
 
 **How does this work?**
 
-In the `page.php` file you'll find this code:
+In the **page.php** file you'll find this code:
 
 ```php
-<?php
 Timber::render( array(
     'page-' . $post->post_name . '.twig',
     'page.twig'

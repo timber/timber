@@ -40,16 +40,15 @@ If you want anything from the template's context, you'll need to pass that manua
 {% do action('my_action', 'foo', post) %}
 ```
 
-```php
-<?php
+**functions.php**
 
+```php
 add_action( 'my_action_with_args', 'my_function_with_args', 10, 2 );
 
 function my_function_with_args( $foo, $post ){
     echo 'I say ' . $foo . '!';
     echo 'For the post with title ' . $post->title();
 }
-
 ```
 
 ## Filters
@@ -129,8 +128,9 @@ And with the `filter` tag, it would look like this:
 Everyone loves widgets! Of course they do...
 
 ```php
-<?php
-$data['footer_widgets'] = Timber::get_widgets( 'footer_widgets' );
+$data = [
+    'footer_widgets' => Timber::get_widgets( 'footer_widgets' ),
+];
 ```
 
 ...where `footer_widgets` is the registered name of the widgets you want to get (in twentythirteen these are called `sidebar-1` and `sidebar-2`).
@@ -152,7 +152,6 @@ You can also use twig templates for your widgets! Let’s imagine we want a widg
 Inside the widget class, the widget function is used to show the widget:
 
 ```php
-<?php
 public function widget( $args, $instance ) {
     $number = rand();
 
@@ -179,7 +178,6 @@ The raw filter is needed here to embed the widget properly.
 You may also want to check if the Timber plugin was loaded before using it:
 
 ```php
-<?php
 public function widget( $args, $instance ) {
     if ( ! class_exists( 'Timber' ) ) {
         // if you want to show some error message, this is the right place
@@ -203,8 +201,9 @@ Well, if it works for widgets, why shouldn't it work for shortcodes? Of course i
 Let’s implement a `[youtube]` shortcode which embeds a youtube video.
 For the desired usage of `[youtube id=xxxx]`, we only need a few lines of code:
 
+**functions.php**
+
 ```php
-<?php
 // Should be called from within an init action hook
 add_shortcode( 'youtube', 'youtube_shortcode' );
 
@@ -255,13 +254,19 @@ It’s recommended to use the [`post_password_required()`](https://developer.wor
 **single.php**
 
 ```php
+<?php
+
 $context = Timber::context();
 $post = Timber::query_post();
 $context['post'] = $post;
+
 if ( post_password_required( $post->ID ) ) {
     Timber::render( 'single-password.twig', $context );
 } else {
-    Timber::render( array( 'single-' . $post->ID . '.twig', 'single-' . $post->post_type . '.twig', 'single.twig' ), $context );
+    Timber::render(
+        array( 'single-' . $post->ID . '.twig', 'single-' . $post->post_type . '.twig', 'single.twig' ),
+        $context
+    );
 }
 ```
 
@@ -275,8 +280,8 @@ if ( post_password_required( $post->ID ) ) {
 {% endblock %}
 ```
 
-
 #### Using a Filter
+
 With a WordPress filter, you can use a specific PHP template for all your password protected posts. Note: this is accomplished using only standard WordPress functions. This is nothing special to Timber
 
 **functions.php**
@@ -307,8 +312,6 @@ function get_password_protected_template( $template ) {
 With this filter, you can use a **password-protected.php** template file with the following contents:
 
 ```php
-<?php
-
 $context                  = Timber::context();
 $context['post']          = new Timber\Post();
 $context['password_form'] = get_the_password_form();

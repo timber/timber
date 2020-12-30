@@ -75,7 +75,6 @@ This is where we’ll start in PHP.
 **single.php**
 
 ```php
-<?php
 $post = new Timber\Post();
 
 if (isset($post->hero_image) && strlen($post->hero_image)){
@@ -269,7 +268,6 @@ ACF Pro has a built in options page, and changes the `get_fields( 'options' )` t
 To use any options fields site wide, add the `option` context to your **functions.php** file:
 
 ```php
-<?php
 add_filter( 'timber/context', 'global_timber_context' );
 
 /**

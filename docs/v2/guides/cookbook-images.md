@@ -115,6 +115,7 @@ This is where we’ll start in PHP.
 
 ```php
 <?php
+
 $post = new Timber\Post();
 
 if ( isset( $post->hero_image ) && strlen( $post->hero_image ) ) {
