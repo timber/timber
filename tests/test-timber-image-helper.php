@@ -84,7 +84,7 @@
 
 			$base_url = str_replace( basename( $url ), '', $url );
 
-			$this->assertEquals( 'http://example.org/wp-content/uploads/sideloaded/', $base_url );
+			$this->assertEquals( 'http://example.org/wp-content/uploads/external/', $base_url );
 		}
 
 		function testSideloadImageFolderChanged() {

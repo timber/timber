@@ -138,7 +138,7 @@ You can now use all the above functions to transform your custom images in the s
 
 Timber can work with URLs to external images. If you use a filter like `|resize`, `|tojpg`, `|towebp` or `|letterbox` and Timber detects that you passed an URL that’s not on your server, it will download that image to your server first and then process it.
 
-External images (we call them sideloaded images) are loaded into a **sideloaded** subfolder in your uploads folder (i.e. `/wp-content/uploads/sideloaded`). You can control this behavior using the [`timber/sideload_image/subdir`](https://timber.github.io/docs/v2/hooks/filters/#timber/sideload_image/subdir) filter.
+External images (we call them sideloaded images) are loaded into an **external** subfolder in your uploads folder (i.e. `/wp-content/uploads/sideloaded`). You can control this behavior using the [`timber/sideload_image/subdir`](https://timber.github.io/docs/v2/hooks/filters/#timber/sideload_image/subdir) filter.
 
 ## Limitations when working with a CDN
 

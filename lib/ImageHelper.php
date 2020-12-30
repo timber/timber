@@ -381,7 +381,7 @@ class ImageHelper {
 	/**
 	 * Downloads an external image to the server and stores it on the server.
 	 *
-	 * External/sideloaded images are saved in a folder named **sideloaded** in the uploads folder.
+	 * External/sideloaded images are saved in a folder named **external** in the uploads folder.
 	 * If you want to change the folder that is used for your sideloaded images, you can use the
 	 * [`timber/sideload_image/subdir`](https://timber.github.io/docs/v2/hooks/filters/#timber/sideload_image/subdir)
 	 * filter. You can disable this behavior using the same filter.
@@ -436,6 +436,7 @@ class ImageHelper {
 	}
 
 	/**
+	 * Gets upload folder definition for sideloaded images.
 	 *
 	 * Used by ImageHelper::sideload_image().
 	 *
@@ -445,11 +446,11 @@ class ImageHelper {
 	 *
 	 * @param array $upload Array of information about the upload directory.
 	 *
-	 * @return array 		Array of information about the upload directory, modified by this 
+	 * @return array 		Array of information about the upload directory, modified by this
 	 *						function.
 	 */
 	public static function set_sideload_image_upload_dir( array $upload ) {
-		$subdir = 'sideloaded';
+		$subdir = 'external';
 
 		/**
 		 * Filters to directory that should be used for sideloaded images.
@@ -459,7 +460,7 @@ class ImageHelper {
 		 * ```php
 		 * // Change the subdirectory used for sideloaded images.
 		 * add_filter( 'timber/sideload_image/subdir', function( $subdir ) {
-		 *     return 'external';
+		 *     return 'sideloaded';
 		 * } );
 		 *
 		 * // Disable subdirectory used for sideloaded images.
@@ -468,7 +469,7 @@ class ImageHelper {
 		 *
 		 * @param string $subdir The subdir name to use for sideloaded images. Return an empty
 		 *                       string or a falsey value in order to not use a subfolder. Default
-		 *                       `sideloaded`.
+		 *                       `external`.
 		 */
 		$subdir = apply_filters( 'timber/sideload_image/subdir', $subdir );
 
