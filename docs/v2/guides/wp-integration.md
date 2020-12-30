@@ -255,9 +255,12 @@ It’s recommended to use the [`post_password_required()`](https://developer.wor
 **single.php**
 
 ```php
-$context = Timber::context();
 $post = Timber::query_post();
-$context['post'] = $post;
+
+$context = Timber::context( [
+    'post' => $post,
+] );
+
 if ( post_password_required( $post->ID ) ) {
     Timber::render( 'single-password.twig', $context );
 } else {
@@ -309,9 +312,10 @@ With this filter, you can use a **password-protected.php** template file with th
 ```php
 <?php
 
-$context                  = Timber::context();
-$context['post']          = new Timber\Post();
-$context['password_form'] = get_the_password_form();
+$context = Timber::context( [
+    'post'          => new Timber\Post(),
+    'password_form' => get_the_password_form(),
+] );
 
 Timber::render( 'password-protected.twig', $context );
 ```

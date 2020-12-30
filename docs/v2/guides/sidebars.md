@@ -24,9 +24,11 @@ Timber::render('sidebar.twig', $context);
 ```php
 <?php
 /* single.php */
-$context = Timber::context();
-$context['sidebar'] = Timber::get_sidebar('sidebar.php');
-Timber::render('single.twig', $context);
+$context = Timber::context( [
+    'sidebar' => Timber::get_sidebar( 'sidebar.php' ),
+] );
+
+Timber::render( 'single.twig', $context );
 ```
 
 * In the final twig file make sure you reserve a spot for your sidebar:
@@ -69,14 +71,13 @@ $sidebar_context = array(
 	'related' => new Timber\PostQuery( 'cat=' . $post_cat ),
 );
 
-$context = Timber::context( array(
-	'post' => $post,
-) );
-
-$context['sidebar'] = Timber::get_sidebar(
-	'sidebar-related.twig',
-	$sidebar_context
-);
+$context = Timber::context( [
+    'post'    => $post,
+    'sidebar' => Timber::get_sidebar(
+        'sidebar-related.twig',
+        $sidebar_context
+    ),
+] );
 
 Timber::render( 'single.twig', $context );
 ```
@@ -97,13 +98,16 @@ This is using WordPress's built-in dynamic_sidebar tools (which, confusingly, ar
 
 ```php
 <?php
-$context = array();
-$context['dynamic_sidebar'] = Timber::get_widgets('dynamic_sidebar');
+
+$context = [
+    'dynamic_sidebar' => Timber::get_widgets( 'dynamic_sidebar' ),
+];
+
 Timber::render('sidebar.twig', $context);
 ```
 
 ```twig
 <aside class="my-sidebar">
-{{dynamic_sidebar}}
+    {{dynamic_sidebar}}
 </aside>
 ```

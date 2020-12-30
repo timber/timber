@@ -187,8 +187,9 @@ Timber provides some quick shortcuts to measure page timing. Here’s an example
 // This generates a starting time
 $start = Timber\Helper::start_timer();
 
-$context = Timber::context();
-$context['whatever'] = get_my_foo();
+$context = Timber::context( [
+    'whatever' => get_my_foo(),
+] );
 
 Timber::render( 'single.twig', $context, 600 );
 
