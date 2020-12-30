@@ -10,12 +10,14 @@ namespace Timber;
  * @api
  * @example
  * ```php
- * $context         = Timber::context();
+ * $context = Timber::context();
  *
  * // Lets say you have an alternate large 'cover image' for your post
  * // stored in a custom field which returns an image ID.
  * $cover_image_id = $context['post']->cover_image;
+ *
  * $context['cover_image'] = Timber::get_post($cover_image_id);
+ *
  * Timber::render('single.twig', $context);
  * ```
  *
