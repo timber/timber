@@ -648,16 +648,17 @@ class Timber {
 	 * $term = Timber::get_term_by( 'slug', 'security' );
 	 *
 	 * // Get a term by name.
-	 * $user = Timber::get_term_by( 'name', 'Security' );
+	 * $term = Timber::get_term_by( 'name', 'Security' );
 	 *
 	 * // Get a term by slug from a specific taxonomy.
-	 * $user = Timber::get_term_by( 'slug', 'security', 'category' );
+	 * $term = Timber::get_term_by( 'slug', 'security', 'category' );
 	 * ```
 	 *
-	 * @param string     $field The name of the field to retrieve the user with. One of: `id`,
-	 *                          `ID`, `slug`, `name` or `term_taxonomy_id`.
-	 * @param int|string $value The value to search for by `$field`.
-	 * @param string     $taxonomy The taxonomy you want to retrieve from. Empty string will search from all.
+	 * @param string     $field    The name of the field to retrieve the term with. One of: `id`,
+	 *                             `ID`, `slug`, `name` or `term_taxonomy_id`.
+	 * @param int|string $value    The value to search for by `$field`.
+	 * @param string     $taxonomy The taxonomy you want to retrieve from. Empty string will search 
+	 *                             from all.
 	 *
 	 * @return \Timber\Term|null
 	 */
