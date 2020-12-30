@@ -633,6 +633,44 @@ class Timber {
 		return $factory->from($term);
 	}
 
+	/**
+	 * Gets a term by field.
+	 *
+	 * This function works like
+	 * [`get_term_by()`](https://developer.wordpress.org/reference/functions/get_term_by/), but
+	 * returns a `Timber\Term` object.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @example
+	 * ```php
+	 * // Get a term by slug.
+	 * $term = Timber::get_term_by( 'slug', 'security' );
+	 *
+	 * // Get a term by name.
+	 * $user = Timber::get_term_by( 'name', 'Security' );
+	 *
+	 * // Get a term by slug from a specific taxonomy.
+	 * $user = Timber::get_term_by( 'slug', 'security', 'category' );
+	 * ```
+	 *
+	 * @param string     $field The name of the field to retrieve the user with. One of: `id`,
+	 *                          `ID`, `slug`, `name` or `term_taxonomy_id`.
+	 * @param int|string $value The value to search for by `$field`.
+	 * @param string     $taxonomy The taxonomy you want to retrieve from. Empty string will search from all.
+	 *
+	 * @return \Timber\Term|null
+	 */
+	public static function get_term_by( string $field, $value, string $taxonomy = '' ) {
+		$wp_term = get_term_by($field, $value, $taxonomy);
+
+		if ($wp_term === false) {
+			return false;
+		}
+
+		return static::get_term($wp_term);
+	}
+
 	/* User Retrieval
 	================================ */
 

@@ -272,4 +272,21 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(MyTerm::class, $res[0]);
 		$this->assertInstanceOf(MyTerm::class, $res[1]);
 	}
+
+	public function testTermBy() {
+		$post_tag_id = $this->factory->term->create(array('name' => 'Security', 'taxonomy' => 'post_tag'));
+		$category_id = $this->factory->term->create(array('name' => 'Security', 'taxonomy' => 'category'));
+
+		$post_id     = $this->factory->post->create();
+		wp_set_object_terms($post_id, $post_tag_id, 'post_tag', true);
+		wp_set_object_terms($post_id, $category_id, 'category', true);
+
+		$term_post_tag  = Timber::get_term_by('slug', 'security', 'post_tag');
+		$this->assertEquals('post_tag', $term_post_tag->taxonomy);
+		$this->assertEquals('Security', $term_post_tag->title());
+
+		$term_category = Timber::get_term_by('name', 'Security', 'category');
+		$this->assertEquals('category', $term_category->taxonomy);
+		$this->assertEquals('Security', $term_category->title());
+	}
 }
