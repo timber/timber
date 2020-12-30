@@ -278,8 +278,6 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$category_id = $this->factory->term->create(array('name' => 'Security', 'taxonomy' => 'category'));
 
 		$post_id     = $this->factory->post->create();
-		wp_set_object_terms($post_id, $post_tag_id, 'post_tag', true);
-		wp_set_object_terms($post_id, $category_id, 'category', true);
 
 		$term_post_tag  = Timber::get_term_by('slug', 'security', 'post_tag');
 		$this->assertEquals('post_tag', $term_post_tag->taxonomy);
