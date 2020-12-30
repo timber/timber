@@ -99,18 +99,20 @@ class Twig {
 			}
 		) );
 
+		$termFactory = new TermFactory();
+
 		$twig->addFunction( new TwigFunction(
 			'Term',
-			function( $term_id ) {
+			function( $term_id ) use ( $termFactory ) {
 				Helper::deprecated( '{{ Term() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0' );
-				return Timber::get_term( $term_id );
+				return $termFactory->from( $term_id );
 			}
 		) );
 		$twig->addFunction( new TwigFunction(
 			'TimberTerm',
-			function( $term_id ) {
+			function( $term_id ) use ( $termFactory ) {
 				Helper::deprecated( '{{ TimberTerm() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0' );
-				return Timber::get_term( $term_id );
+				return $termFactory->from( $term_id );
 			}
 		) );
 
