@@ -163,7 +163,7 @@ public function widget( $args, $instance ) {
 }
 ```
 
-The corresponding template file `random-widget.twig` looks like this:
+The corresponding template file **random-widget.twig** looks like this:
 
 ```twig
 {{ args.before_widget|raw }}
@@ -173,6 +173,7 @@ The corresponding template file `random-widget.twig` looks like this:
 
 {{ args.after_widget|raw }}
 ```
+
 The raw filter is needed here to embed the widget properly.
 
 You may also want to check if the Timber plugin was loaded before using it:
@@ -219,7 +220,7 @@ function youtube_shortcode( $atts ) {
 }
 ```
 
-In `youtube-short.twig` we have the following template:
+In **youtube-short.twig** we have the following template:
 
 ```twig
 {% if id %}
@@ -227,7 +228,7 @@ In `youtube-short.twig` we have the following template:
 {% endif %}
 ```
 
-Now, when the YouTube embed code changes, we only need to edit the `youtube-short.twig` template. No need to search your PHP files for this one particular line.
+Now, when the YouTube embed code changes, we only need to edit the **youtube-short.twig** template. No need to search your PHP files for this one particular line.
 
 ### Layouts with Shortcodes
 
@@ -290,8 +291,8 @@ With a WordPress filter, you can use a specific PHP template for all your passwo
 /**
  * Use specific template for password protected posts.
  *
- * By default, this will use the `password-protected.php` template file. If you want password
- * templates specific to a post type, use `password-protected-$posttype.php`.
+ * By default, this will use the **password-protected.php** template file. If you want password
+ * templates specific to a post type, use **password-protected-$posttype.php**.
  */
 add_filter( 'template_include', 'get_password_protected_template', 99 );
 

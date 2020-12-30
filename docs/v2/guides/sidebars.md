@@ -8,7 +8,7 @@ So you want a sidebar?
 ## Method 1: PHP file
 
 Let's say every page on the site has the same content going into its sidebar. If so, you would:
-Create a `sidebar.php` file in your theme directory (so `wp-content/themes/mytheme/sidebar.php`)
+Create a **sidebar.php** file in your theme directory (so **wp-content/themes/mytheme/sidebar.php**)
 
 **sidebar.php**
 

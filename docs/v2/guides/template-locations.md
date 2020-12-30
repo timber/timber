@@ -106,7 +106,7 @@ add_filter( 'timber/locations', function($paths) {
 ```
 
 In the example above the namespace is called `styleguide`. You must prefix this with `@` when using it in templates (that's how Twig can differentiate namespaces from regular paths).
-Assuming you have a template called `menu.twig` within that namespace, you would call it like so:
+Assuming you have a template called **menu.twig** within that namespace, you would call it like so:
 
 ```twig
 {{ include('@styleguide/menu.twig') }}
@@ -127,4 +127,4 @@ add_filter( 'timber/locations', function($paths) {
 });
 ```
 
-You only need to do this once in your project (in `functions.php` of your theme). When you call one of the render or compile functions from a PHP file (say `single.php`), Timber will look for Twig files in these locations before it checks the child or parent theme.
+You only need to do this once in your project (in **functions.php** of your theme). When you call one of the render or compile functions from a PHP file (say **single.php**), Timber will look for Twig files in these locations before it checks the child or parent theme.
