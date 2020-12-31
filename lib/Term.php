@@ -155,7 +155,7 @@ class Term extends Core implements CoreInterface {
 
 	/**
 	 * @internal
-	 * @param int $tid
+	 * @param int|object|array $tid
 	 * @return mixed
 	 */
 	protected function get_term( $tid ) {
@@ -196,7 +196,7 @@ class Term extends Core implements CoreInterface {
 	 * @param int $tid
 	 * @return int|array
 	 */
-	protected function get_tid( $tid ) {
+	protected static function get_tid( $tid ) {
 		global $wpdb;
 		if ( is_numeric($tid) ) {
 			return $tid;
