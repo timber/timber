@@ -120,8 +120,6 @@ Most of the time, you need the menu on every page. To achieve that, you can add 
 **functions.php**
 
 ```php
-<?php
-
 add_filter( 'timber/context', 'add_to_context' );
 
 /**
@@ -159,8 +157,6 @@ Here’s a small snippet that you can use to automatically set up all your regis
 **functions.php**
 
 ```php
-<?php
-
 add_filter( 'timber/context', 'add_to_context' );
 
 /**
