@@ -22,10 +22,13 @@ Ready? There are a bunch of ways, but one helpful example is:
 **In your PHP file**
 
 ```php
-<?php
-$data['year'] = date('Y');
-$data['copyright'] = get_option("footer_message"); //"Copyright {{year}} by Upstatement, LLC. All Rights Reserved"
-render_twig('footer.twig', $data);
+$data = [
+    'year' => wp_date( 'Y' ),
+    // "Copyright {{year}} by Upstatement, LLC. All Rights Reserved"
+    'copyright' => get_option( 'footer_message' );
+];
+
+Timber::render( 'footer.twig', $data );
 ```
 
 **In your HTML file (let's say **footer.twig**)**

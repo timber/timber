@@ -48,7 +48,7 @@ And then we render that data in your Twig template.
 {% endblock %}
 ```
 
-### Unifies interacting with WordPress data 
+### Unifies interacting with WordPress data
 
 Timber makes Posts, Terms, Users, Comments and Menus more object-oriented. You can use the common WordPress objects in a way that makes sense.
 
