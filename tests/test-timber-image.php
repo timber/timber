@@ -209,7 +209,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$md5 = md5( $data['test_image'] );
 		Timber::compile( 'assets/image-test.twig', $data );
 		$upload_dir = wp_upload_dir();
-		$path = $upload_dir['path'].'/'.$md5;
+		$path = $upload_dir['basedir'] . '/external/' . $md5;
 		/* was the external image D/Ld to the location? */
 		$this->assertFileExists( $path.'.jpg' );
 		/* does resize work on external image? */

@@ -89,7 +89,7 @@ You can use this function in a similar way to how you use [`WP_Term_Query`](http
 
 ```php
 // Using the WP_Term_Query argument format.
-$term_query = new Timber::get_terms( [
+$term_query = Timber::get_terms( [
     'query' => [
         'taxonomy' => 'book_genre',
         'count'    => true,

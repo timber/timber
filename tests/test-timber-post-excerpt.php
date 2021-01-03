@@ -24,9 +24,12 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 		});
 		$post_id = $this->factory->post->create(array('post_excerpt' => 'It turned out that just about anyone in authority — cops, judges, city leaders — was in on the game.'));
 		$post = Timber::get_post($post_id);
+
 		$text = new PostExcerpt( $post, [
-			'words' => 10,
+			'words'                => 10,
+			'always_add_read_more' => true,
 		] );
+
 		$this->assertContains('and-foo', (string) $text);
 	}
 
@@ -36,7 +39,9 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 		] );
 
 		$post    = Timber::get_post( $post_id );
-		$excerpt = $post->excerpt();
+		$excerpt = $post->excerpt( [
+			'always_add_read_more' => true,
+		] );
 
 		$this->add_filter_temporarily( 'timber/post/excerpt/read_more_link', function( $link ) {
 			return ' Foobar';
@@ -54,7 +59,9 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 		] );
 
 		$post    = Timber::get_post( $post_id );
-		$excerpt = $post->excerpt();
+		$excerpt = $post->excerpt( [
+			'always_add_read_more' => true,
+		] );
 
 		$this->add_filter_temporarily( 'timber/post/get_preview/read_more_link', function( $link ) {
 			return ' Foobar';
@@ -85,7 +92,10 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 
 		// no excerpt
 		$post->post_excerpt = '';
-		$str = Timber::compile_string('{{ post.excerpt({ words: 3 }) }}', [ 'post' => $post ] );
+		$str = Timber::compile_string('{{ post.excerpt({
+			words: 3,
+			always_add_read_more: true
+		}) }}', [ 'post' => $post ] );
 		$this->assertRegExp( '/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Read More<\/a>/', $str );
 
 		// excerpt set, force is false, no read more
@@ -100,9 +110,10 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 		// custom read more set
 		$post->post_excerpt = '';
 		$excerpt = new PostExcerpt( $post, [
-			'words'    => 3,
-			'force'    => false,
-			'read_more' => 'Custom more',
+			'words'                => 3,
+			'force'                => false,
+			'read_more'            => 'Custom more',
+			'always_add_read_more' => true,
 		] );
 		$this->assertRegExp('/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Custom more<\/a>/', (string) $excerpt);
 
@@ -122,7 +133,9 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 		});
 		$pid = $this->factory->post->create( [ 'post_content' => 'jared [mythang]', 'post_excerpt' => '' ] );
 		$post = Timber::get_post( $pid );
-		$this->assertEquals( 'jared mythangy&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>', $post->excerpt() );
+		$this->assertEquals( 'jared mythangy', $post->excerpt() );
+
+		remove_shortcode( 'mythang' );
 	}
 
 	function testShortcodesInExcerptFromContentWithMoreTag() {
@@ -131,7 +144,12 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 		});
 		$pid = $this->factory->post->create( array('post_content' => 'jared [duck] <!--more--> joojoo', 'post_excerpt' => '') );
 		$post = Timber::get_post( $pid );
-		$this->assertEquals('jared Quack! <a href="'.$post->link().'" class="read-more">Read More</a>', $post->excerpt());
+		$this->assertEquals(
+			sprintf( 'jared Quack! <a href="%s" class="read-more">Read More</a>', $post->link() ),
+			(string) $post->excerpt()
+		);
+
+		remove_shortcode( 'duck' );
 	}
 
 	function testExcerptWithSpaceInMoreTag() {
@@ -155,8 +173,8 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 		$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck<!-- more--> Lauren is not a duck', 'post_excerpt' => '') );
 		$post = Timber::get_post( $pid );
 		$this->assertEquals(
-			'Lauren is a duck <a href="'.$post->link().'" class="read-more">Read More</a>',
-			$post->excerpt()
+			sprintf( 'Lauren is a duck <a href="%s" class="read-more">Read More</a>', $post->link() ),
+			(string) $post->excerpt()
 		);
 	}
 
@@ -165,7 +183,7 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 		$post = Timber::get_post( $pid );
 		$this->assertEquals(
 			'Eric is a polar bear <a href="'.$post->link().'" class="read-more">But what is Elaina?</a>',
-			$post->excerpt()
+			(string) $post->excerpt()
 		);
 	}
 
@@ -184,7 +202,7 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 		] );
 		$this->assertEquals(
 			'Lauren is a ??? <a href="'.$post->link().'" class="read-more">Read More</a>',
-			$excerpt
+			(string) $excerpt
 		);
 	}
 
@@ -195,14 +213,109 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 		$post = Timber::get_post($pid);
 		$post->post_excerpt = '';
 		$excerpt = new PostExcerpt( $post, [
-			'words'    => 6,
-			'force'    => true,
-			'read_more' => 'Read More',
-			'strip'    => '<span>',
+			'words'                => 6,
+			'force'                => true,
+			'read_more'            => 'Read More',
+			'always_add_read_more' => true,
+			'strip'                => '<span>',
 		] );
 		$this->assertEquals(
 			'<span>Even in the world of make-believe</span>&hellip; <a href="'.$post->link().'" class="read-more">Read More</a>',
 			(string) $excerpt
 		);
+	}
+
+	/**
+	 * When the excerpt is not smaller than the content itself, there should not be a read more
+	 * link.
+	 *
+	 * @ticket #1345
+	 */
+	function testPostContentWithShorterLengthThanExpectedExcerpt() {
+		$post_id = $this->factory->post->create( [
+			'post_content' => 'Let this be the content, albeit a very short one!',
+			'post_excerpt' => '',
+		] );
+
+		$post    = Timber::get_post( $post_id );
+		$excerpt = $post->excerpt( [
+			'always_add_read_more' => false,
+		] );
+
+		$this->assertEquals( 'Let this be the content, albeit a very short one!', (string) $excerpt );
+	}
+
+	/**
+	 * When the excerpt is not smaller than the content itself, there should not be a read more
+	 * link.
+	 *
+	 * @ticket #1345
+	 */
+	function testPostContentWithShorterLengthThanExpectedExcerptUsingFilter() {
+		$this->add_filter_temporarily(
+			'timber/post/excerpt/defaults',
+			function( $defaults ) {
+				$defaults['always_add_read_more'] = false;
+
+				return $defaults;
+			}
+		);
+
+		$post_id = $this->factory->post->create( [
+			'post_content' => 'Let this be the content, albeit a very short one!',
+			'post_excerpt' => '',
+		] );
+
+		$post    = Timber::get_post( $post_id );
+		$excerpt = $post->excerpt();
+
+		$this->assertEquals( 'Let this be the content, albeit a very short one!', (string) $excerpt );
+	}
+
+	/**
+	 * When always_add_end is used, the end character should be added as well as the as a read
+	 * more link, even when always_add_read_more is false.
+	 */
+	function testAlwaysAddEndOption() {
+		$post_id = $this->factory->post->create( [
+			'post_content' => 'Let this be the content, albeit a very short one!',
+			'post_excerpt' => '',
+		] );
+
+		$post    = Timber::get_post( $post_id );
+		$excerpt = $post->excerpt( [
+			'always_add_end'       => true,
+			'always_add_read_more' => false,
+		] );
+
+		$this->assertEquals( sprintf(
+			'Let this be the content, albeit a very short one!&hellip;',
+			$post->link()
+		), (string) $excerpt );
+	}
+
+	/**
+	 * When always_add_end is used, the end character should be added as well as the as a read
+	 * more link, even when always_add_read_more is false.
+	 */
+	function testAlwaysAddEndOptionUsingFilter() {
+		$this->add_filter_temporarily(
+			'timber/post/excerpt/defaults',
+			function( $defaults ) {
+				$defaults['always_add_end'] = true;
+
+				return $defaults;
+			}
+		);
+
+		$post_id = $this->factory->post->create( [
+			'post_content' => 'Let this be the content, albeit a very short one!',
+			'post_excerpt' => '',
+		] );
+
+		$post    = Timber::get_post( $post_id );
+		$excerpt = $post->excerpt();
+
+		$this->assertEquals( 'Let this be the content, albeit a very short one!&hellip;', (string) $excerpt );
 	}
 }

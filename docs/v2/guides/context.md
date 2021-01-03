@@ -91,7 +91,7 @@ add_shortcode( 'company_address', function() {
 } );
 ```
 
-In this example, we've provided all the global context variables to `shortcode/company-address.twig` via `Timber::context_global()`. Whenever you only need the global context, you should use the `Timber::context_global()` function. You can call that function multiple times without losing performance.
+In this example, we've provided all the global context variables to **shortcode/company-address.twig** via `Timber::context_global()`. Whenever you only need the global context, you should use the `Timber::context_global()` function. You can call that function multiple times without losing performance.
 
 Timber will not cache template contexts.
 

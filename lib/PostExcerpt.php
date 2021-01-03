@@ -6,15 +6,28 @@ namespace Timber;
  * The PostExcerpt class lets a user modify a post preview/excerpt to their liking.
  *
  * It’s designed to be used through the `Timber\Post::excerpt()` method. The public methods of this
- * class all return the object itself, which means that this is a **chainable object**. You can
- * change the output of the excerpt by **adding more methods**.
+ * class all return the object itself, which means that this is a **chainable object**. This means
+ * that you could change the output of the excerpt by **adding more methods**. But you can also pass
+ * in your arguments to the object constructor or to `Timber\Post::excerpt()`.
  *
  * By default, the excerpt will
  *
  * - have a length of 50 words, which will be forced, even if a longer excerpt is set on the post.
  * - be stripped of all HTML tags.
  * - have an ellipsis (…) as the end of the text.
- * - have a "Read More" link appended.
+ * - have a "Read More" link appended, if there’s more to read in the post content.
+ *
+ * One thing to note: If the excerpt already contains all of the text that can also be found in the
+ * post’s content, then the read more link as well as the string to use as the end will not be
+ * added.
+ *
+ * This class will also handle cases where you use the `<!-- more -->` tag inside your post content.
+ * You can also change the text used for the read more link by adding your desired text to the
+ * `<!-- more -->` tag. Here’s an example: `<!-- more Start your journey -->`.
+ *
+ * You can change the defaults that are used for excerpts through the
+ * [`timber/post/excerpt/defaults`](https://timber.github.io/docs/v2/hooks/filters/#timber/post/excerpts/defaults)
+ * filter.
  *
  * @api
  * @since 1.0.4
@@ -24,7 +37,7 @@ namespace Timber;
  * {# Use default excerpt #}
  * <p>{{ post.excerpt }}</p>
  *
- * {# Use hash notation to pass arguments #}
+ * {# Preferred method: Use hash notation to pass arguments. #}
  * <div>{{ post.excerpt({ words: 100, read_more: 'Keep reading' }) }}</div>
  *
  * {# Change the post excerpt text only #}
@@ -85,6 +98,24 @@ class PostExcerpt {
 	protected $strip = true;
 
 	/**
+	 * Whether a read more link should be added even if the excerpt isn’t trimmed (when the excerpt
+	 * isn’t shorter than the post’s content).
+	 *
+	 * @since 2.0.0
+	 * @var bool
+	 */
+	protected $always_add_read_more = false;
+
+	/**
+	 * Whether the end string should be added even if the excerpt isn’t trimmed (when the excerpt
+	 * isn’t shorter than the post’s content).
+	 *
+	 * @since 2.0.0
+	 * @var bool
+	 */
+	protected $always_add_end = false;
+
+	/**
 	 * Destroy tags.
 	 *
 	 * @var array List of tags that should always be destroyed.
@@ -106,33 +137,68 @@ class PostExcerpt {
 	 *     @type string   $end       String to append to the end of the excerpt. Default '&hellip;'
 	 *                               (HTML ellipsis character).
 	 *     @type bool     $force     Whether to shorten the excerpt to the length/word count
-	 *                               specified, if the editor wrote a manual excerpt longer than the
-	 *                               set length. Default `false`.
+	 *                               specified, even if an editor wrote a manual excerpt longer
+	 *                               than the set length. Default `false`.
 	 *     @type bool     $strip     Whether to strip HTML tags. Default `true`.
 	 *     @type string   $read_more String for what the "Read More" text should be. Default
 	 *                               'Read More'.
+	 *     @type bool     $always_add_read_more Whether a read more link should be added even if the
+	 *                                          excerpt isn’t trimmed (when the excerpt isn’t
+	 *                                          shorter than the post’s content). Default `false`.
+	 *     @type bool     $always_add_end       Whether the end string should be added even if the
+	 *                                          excerpt isn’t trimmed (when the excerpt isn’t
+	 *                                          shorter than the post’s content). Default `false`.
 	 * }
 	 */
 	public function __construct( $post, array $options = array() ) {
 		$this->post = $post;
 
+		$defaults = [
+			'words'                => 50,
+			'chars'                => false,
+			'end'                  => '&hellip;',
+			'force'                => false,
+			'strip'                => true,
+			'read_more'            => 'Read More',
+			'always_add_read_more' => false,
+			'always_add_end'       => false,
+		];
+
+		/**
+		 * Filters the default options used for post excerpts.
+		 *
+		 * @since 2.0.0
+		 * @example
+		 * ```php
+		 * add_filter( 'timber/post/excerpt/defaults', function( $defaults ) {
+		 *     // Only add a read more link if the post content isn’t longer than the excerpt.
+		 *     $defaults['always_add_read_more'] = false;
+		 *
+		 *     // Set a default character limit.
+		 *     $defaults['words'] = 240;
+		 *
+		 *     return $defaults;
+		 * } );
+		 * ```
+		 *
+		 * @param array $defaults An array of default options. You can see which options you can use
+		 *                         when you look at the `$options` parameter for
+		 *                        [PostExcerpt::__construct()](https://timber.github.io/docs/v2/reference/timber-postexcerpt/#__construct).
+		 */
+		$defaults = apply_filters( 'timber/post/excerpt/defaults', $defaults );
+
 		// Set up excerpt defaults.
-		$options = wp_parse_args( $options, array(
-			'words'     => 50,
-			'chars'     => false,
-			'end'       => '&hellip;',
-			'force'     => false,
-			'strip'     => true,
-			'read_more' => 'Read More',
-		) );
+		$options = wp_parse_args( $options, $defaults );
 
 		// Set excerpt properties
-		$this->length      = $options['words'];
-		$this->char_length = $options['chars'];
-		$this->end         = $options['end'];
-		$this->force       = $options['force'];
-		$this->strip       = $options['strip'];
-		$this->read_more   = $options['read_more'];
+		$this->length               = $options['words'];
+		$this->char_length          = $options['chars'];
+		$this->end                  = $options['end'];
+		$this->force                = $options['force'];
+		$this->strip                = $options['strip'];
+		$this->read_more            = $options['read_more'];
+		$this->always_add_read_more = $options['always_add_read_more'];
+		$this->always_add_end       = $options['always_add_end'];
 	}
 
 	/**
@@ -254,16 +320,18 @@ class PostExcerpt {
 	}
 
 	/**
+	 * Assembles excerpt.
+	 *
 	 * @internal
-	 * @param string $text
-	 * @param array|bool $readmore_matches
-	 * @param boolean $trimmed was the text trimmed?
+	 *
+	 * @param string $text The text to use for the excerpt.
+	 * @param array  $args An array of arguments for the assembly.
 	 */
-	protected function assemble( $text, $readmore_matches, $trimmed ) {
+	protected function assemble( $text, $args = [] ) {
 		$text = trim($text);
 		$last = $text[strlen($text) - 1];
 		$last_p_tag = null;
-		if ( $last != '.' && $trimmed ) {
+		if ( $last != '.' && ( $this->always_add_end || $args['add_end'] ) ) {
 			$text .= $this->end;
 		}
 		if ( !$this->strip ) {
@@ -271,13 +339,13 @@ class PostExcerpt {
 			if ( $last_p_tag !== false ) {
 				$text = substr($text, 0, $last_p_tag);
 			}
-			if ( $last != '.' && $trimmed ) {
+			if ( $last != '.' && ( $this->always_add_end || $args['add_end'] ) ) {
 				$text .= $this->end.' ';
 			}
 		}
 
 		// Maybe add read more link.
-		if ( $this->read_more ) {
+		if ( $this->read_more && ( $this->always_add_read_more || $args['add_read_more'] ) ) {
 			/**
 			 * Filters the CSS class used for excerpt links.
 			 *
@@ -307,11 +375,7 @@ class PostExcerpt {
 				'timber/post/excerpt/read_more_class'
 			);
 
-			if ( !empty($readmore_matches) && !empty( $readmore_matches[1]) ) {
-				$linktext = trim( $readmore_matches[1] );
-			} else {
-				$linktext = trim( $this->read_more );
-			}
+			$linktext = trim( $this->read_more );
 
 			$link = sprintf( ' <a href="%1$s" class="%2$s">%3$s</a>',
 				$this->post->link(),
@@ -339,6 +403,7 @@ class PostExcerpt {
 			 *
 			 * @deprecated 2.0.0
 			 * @since 1.1.3
+			 * @ticket #1142
 			 */
 			$link = apply_filters_deprecated(
 				'timber/post/get_preview/read_more_link',
@@ -357,10 +422,11 @@ class PostExcerpt {
 	}
 
 	protected function run() {
-		$allowable_tags = ( $this->strip && is_string($this->strip)) ? $this->strip : false;
+		$allowable_tags   = ( $this->strip && is_string( $this->strip ) ) ? $this->strip : false;
 		$readmore_matches = array();
-		$text = '';
-		$trimmed = false;
+		$text             = '';
+		$add_read_more    = false;
+		$add_end          = false;
 
 		// A user-specified excerpt is authoritative, so check that first.
 		if ( isset($this->post->post_excerpt) && strlen($this->post->post_excerpt) ) {
@@ -375,14 +441,31 @@ class PostExcerpt {
 				if ( $this->char_length !== false ) {
 					$text = TextHelper::trim_characters($text, $this->char_length, false);
 				}
-				$trimmed = true;
+
+				$add_end = true;
 			}
+
+			$add_read_more = true;
 		}
 
 		// Check for <!-- more --> tag in post content.
 		if ( empty( $text ) && preg_match('/<!--\s?more(.*?)?-->/', $this->post->post_content, $readmore_matches) ) {
 			$pieces = explode($readmore_matches[0], $this->post->post_content);
 			$text = $pieces[0];
+
+			$add_read_more = true;
+
+			/**
+			 * Custom read more text.
+			 *
+			 * The following post content example will result in the read more text to become "But
+			 * what is Elaina?": Eric is a polar bear <!-- more But what is Elaina? --> Lauren is
+			 * not a duck.
+			 */
+			if ( ! empty( $readmore_matches[1] ) ) {
+				$this->read_more = trim( $readmore_matches[1] );
+			}
+
 			if ( $this->force ) {
 				if ( $allowable_tags ) {
 					$text = TextHelper::trim_words($text, $this->length, false, strtr($allowable_tags, '<>', '  '));
@@ -392,8 +475,10 @@ class PostExcerpt {
 				if ( $this->char_length !== false ) {
 					$text = TextHelper::trim_characters($text, $this->char_length, false);
 				}
-				$trimmed = true;
+
+				$add_end = true;
 			}
+
 			$text = do_shortcode($text);
 		}
 
@@ -401,15 +486,28 @@ class PostExcerpt {
 		if ( empty( $text ) ) {
 			$text = $this->post->content();
 			$text = TextHelper::remove_tags($text, $this->destroy_tags);
+			$text_before_trim      = trim( $text );
+			$text_before_char_trim = '';
+
 			if ( $allowable_tags ) {
 				$text = TextHelper::trim_words($text, $this->length, false, strtr($allowable_tags, '<>', '  '));
 			} else {
 				$text = TextHelper::trim_words($text, $this->length, false);
 			}
+
 			if ( $this->char_length !== false ) {
+				$text_before_char_trim = trim( $text );
 				$text = TextHelper::trim_characters($text, $this->char_length, false);
 			}
-			$trimmed = true;
+
+			$has_trimmed_words = strlen( $text ) < strlen( $text_before_trim );
+			$has_trimmed_chars = ! empty( $text_before_char_trim )
+				&& strlen( $text ) < strlen( $text_before_char_trim );
+
+			if ( $has_trimmed_words || $has_trimmed_chars ) {
+				$add_end       = true;
+				$add_read_more = true;
+			}
 		}
 		if ( empty( trim( $text ) ) ) {
 			return trim($text);
@@ -418,10 +516,12 @@ class PostExcerpt {
 			$text = trim(strip_tags($text, $allowable_tags));
 		}
 		if ( ! empty( $text ) ) {
-			return $this->assemble($text, $readmore_matches, $trimmed);
+			return $this->assemble( $text, [
+				'add_end'       => $add_end,
+				'add_read_more' => $add_read_more,
+			] );
 		}
 
 		return trim($text);
 	}
-
 }

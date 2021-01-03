@@ -195,4 +195,15 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		$this->assertLessThan(43136, $fileSizeSmall);
 	}
 
+	function testSideloadedResize() {
+		$filename = 'acGwPDj4_400x400.jpg';
+		$url      = 'https://pbs.twimg.com/profile_images/768086933310476288/' . $filename;
+
+		$sideloaded = Timber\ImageHelper::resize( $url, 100, 300 );
+
+		$base_url = str_replace( basename( $sideloaded ), '', $sideloaded );
+		$expected = $base_url . md5( $url ) . '-100x300-c-default.jpg';
+
+		$this->assertEquals( $expected, $sideloaded );
+	}
 }
