@@ -21,7 +21,7 @@ When rendering, use the `$expires` argument in [`Timber::render`](https://timber
 ```php
 <?php
 
-$context['posts'] = new Timber\PostQuery();
+$context['posts'] = Timber::get_posts();
 
 Timber::render( 'index.twig', $context, 600 );
 ```
@@ -151,13 +151,13 @@ You can also use some [syntactic sugar](http://en.wikipedia.org/wiki/Syntactic_s
 $context = Timber::context();
 
 $context['main_stories'] = TimberHelper::transient( 'main_stories', function(){
-    $posts = new Timber\PostQuery();
+    $posts = Timber::get_posts();
 
     // As an example, do something expensive with these posts
     $extra_teases = get_field( 'my_extra_teases', 'options' );
 
     foreach( $extra_teases as &$tease ){
-        $tease = new Timber\Post( $tease );
+        $tease = Timber::get_post( $tease );
     }
 
     $main_stories = [
