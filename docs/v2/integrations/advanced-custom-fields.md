@@ -222,6 +222,39 @@ Similar to nested repeaters, you should only call the `meta` method once when yo
 {% endfor %}
 ```
 
+### Split Flexible Content Fields into includes / chunks
+
+We can break Flexible Content Fields into small blocks with include files utilizing the `acf_fc_layout` value. This way you have more flexibility and reusability for included sections. For instance, this is a great way to build landing pages that re-use the same blocks in different configurations.
+
+You could use a **blocks** subdirectory where you put all your Twig template files for your blocks. For example:
+**wp-content/themes/example-theme/views/blocks**.
+
+```twig
+{% for block in post.meta( 'blocks' ) %}
+    {{ include("blocks/#{ block.acf_fc_layout|sanitize ) }.twig", {
+        block: block
+    }) }}
+{% endfor %}
+```
+
+The [sanitize](https://timber.github.io/docs/v2/guides/filters/#sanitize) filter will slugify the block name.
+
+Consider this example for a Flexible Content Field named `Photo` with a text field named `credit`. You would create a **blocks/photo.twig** file which is automatically included:
+
+```twig
+<p>Photo by: {{ block.credit }}</p>
+```
+
+To prevent errors with include files that can’t be found, you can optionally use the `ignore_missing` parameter for `include()`:
+
+```twig
+{% for block in post.meta( 'blocks' ) %}
+    {{ include("blocks/#{ block.acf_fc_layout|sanitize ) }.twig", {
+        block: block
+    }, ignore_missing = true) }}
+{% endfor %}
+```
+
 ## Options Page
 
 **PHP**
