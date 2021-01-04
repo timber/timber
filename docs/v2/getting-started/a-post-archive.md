@@ -73,7 +73,7 @@ There are two new things that you see here:
 
 ## Using custom queries
 
-Sometimes you’ll want to use your own queries for archive pages or to display a list of posts in other places. For that, you can use `Timber::get_posts()`. Here’s an example for a more complex query, that selects posts that have certain movie genre and actor terms assigned. The parameters you use are the same as those for [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/)
+Sometimes you’ll want to use your own queries for archive pages or to display a list of posts in other places. For that, you can use `Timber::get_posts()`. Here’s an example for a more complex query, that selects posts that have certain movie genre and actor terms assigned. The parameters you use are the same as those for [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/).
 
 ```php
 <?php
