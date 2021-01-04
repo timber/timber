@@ -257,11 +257,7 @@ It’s recommended to use the [`post_password_required()`](https://developer.wor
 ```php
 <?php
 
-$post = Timber::get_post();
-
-$context = Timber::context( [
-    'post' => $post,
-] );
+$context = Timber::context();
 
 if ( post_password_required( $post->ID ) ) {
     Timber::render( 'single-password.twig', $context );
