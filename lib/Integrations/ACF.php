@@ -7,18 +7,25 @@
 
 namespace Timber\Integrations;
 
-use Timber\Helper;
+use Timber;
 
 /**
  * Class used to handle integration with Advanced Custom Fields
  */
 class ACF {
-	
+
 	public function __construct() {
+
 		add_filter('timber/post/pre_meta', array( __CLASS__, 'post_get_meta_field' ), 10, 5);
 		add_filter('timber/post/meta_object_field', array( __CLASS__, 'post_meta_object' ), 10, 3);
 		add_filter('timber/term/pre_meta', array( __CLASS__, 'term_get_meta_field' ), 10, 5);
 		add_filter('timber/user/pre_meta', array( __CLASS__, 'user_get_meta_field' ), 10, 5);
+
+		add_action('acf/init', array( __CLASS__, 'remove_default_filters' ));
+
+        add_filter('acf/format_value/type=file', array( __CLASS__, 'format_file' ), 10, 3);
+        add_filter('acf/format_value/type=image', array( __CLASS__, 'format_image' ), 10, 3);
+        add_filter('acf/format_value/type=gallery', array( __CLASS__, 'format_gallery' ), 10, 3);
 
 		/**
 		 * Allowed a user to set a meta value
@@ -100,4 +107,94 @@ class ACF {
 
 		return get_field( $field_name, 'user_' . $user_id, $args );
 	}
+
+	/**
+	 * Removes default ACF format filters
+	 */
+	public static function remove_default_filters() {
+		// File
+		$field_type = acf_get_field_type('file');
+		remove_filter( 'acf/format_value/type=file', array( $field_type, 'format_value' ) );
+
+		// Image
+		$field_type = acf_get_field_type('image');
+		remove_filter( 'acf/format_value/type=image', array( $field_type, 'format_value' ) );
+
+		// Gallery
+		$field_type = acf_get_field_type('gallery');
+		remove_filter( 'acf/format_value/type=gallery', array( $field_type, 'format_value' ) );
+	}
+
+    /**
+     * Format ACF file field
+     *
+     * @param string $value
+     * @param int    $post_id
+     * @param array  $field
+     */
+    public static function format_file($value, $post_id, $field) {
+        if (empty($value)) {
+            return false;
+        }
+
+        if (!is_numeric($value)) {
+            return false;
+        }
+
+        $value = intval($value);
+
+        return Timber::get_post($value);
+	}
+
+    /**
+     * Format ACF image field
+     *
+     * @param string $value
+     * @param int    $post_id
+     * @param array  $field
+     */
+    public static function format_image($value, $post_id, $field) {
+        if (empty($value)) {
+            return false;
+        }
+
+        if (!is_numeric($value)) {
+            return false;
+        }
+
+        $value = intval($value);
+
+        return Timber::get_post($value);
+	}
+
+    /**
+     * Format ACF gallery field
+     *
+     * @param array $value
+     * @param int   $post_id
+     * @param array $field
+     */
+    public static function format_gallery($value, $post_id, $field) {
+        if (empty($value)) {
+            return false;
+		}
+
+		$attachment_ids = array_map('intval', acf_array($value));
+
+		$posts = acf_get_posts(array(
+			'post_type'					=> 'attachment',
+			'post__in'					=> $attachment_ids,
+			'update_post_meta_cache' 	=> true,
+			'update_post_term_cache' 	=> false
+		));
+
+		if( !$posts ) {
+			return false;
+		}
+
+        return array_map(function ($attachment_id) {
+            return Timber::get_post($attachment_id);
+        }, $posts);
+    }
+
 }
