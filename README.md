@@ -128,8 +128,8 @@ Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/q
 #### Should I use it?
 It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [tens of thousands of sites](https://www.upstatement.com/timber/#showcase) (and tons more we don't know about)
 
-#### Contributing
-We love PRs! Read the [Contributor Guidelines](https://github.com/timber/timber/blob/master/CONTRIBUTING.md) for more info.
+#### Contributing & Community
+We love PRs! Read the [Contributor Guidelines](https://github.com/timber/timber/blob/master/CONTRIBUTING.md) for more info. Say hello, share your tips/work, and spread the love on Twitter at [@TimberWP](https://twitter.com/TimberWP).
 
 ## Documentation
 
