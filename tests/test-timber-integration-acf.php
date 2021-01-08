@@ -123,27 +123,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 
 	function testACFFormatImage() {
 
-		acf_add_local_field_group( array(
-			'key'      => 'group_2',
-			'title'    => 'Group 2',
-			'fields'   => [
-				[
-					'key'   => 'field_2',
-					'label' => 'Image',
-					'name'  => 'my_image',
-					'type'  => 'image',
-				],
-			],
-			'location' => [
-				[
-					[
-						'param'    => 'post_type',
-						'operator' => '==',
-						'value'    => 'post',
-					],
-				],
-			],
-		) );
+		$this->register_field('my_image', 'image');
 
 		$pid = $this->factory->post->create();
 		$image_id = TimberAttachment_UnitTestCase::get_attachment();
@@ -157,36 +137,57 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 
 	function testACFFormatImageNoConvert() {
 
-		acf_add_local_field_group( array(
-			'key'      => 'group_2',
-			'title'    => 'Group 2',
-			'fields'   => [
-				[
-					'key'   => 'field_2',
-					'label' => 'Image',
-					'name'  => 'my_image',
-					'type'  => 'image',
-				],
-			],
-			'location' => [
-				[
-					[
-						'param'    => 'post_type',
-						'operator' => '==',
-						'value'    => 'post',
-					],
-				],
-			],
-		) );
+		$this->register_field('my_image_no_convert', 'image');
 
 		$pid = $this->factory->post->create();
 		$image_id = TimberAttachment_UnitTestCase::get_attachment();
-		update_field( 'my_image', $image_id, $pid );
+		update_field( 'my_image_no_convert', $image_id, $pid );
 		$post = Timber::get_post( $pid );
 
-		$image = $post->meta('my_image', ['convert_value' => false]);
+		$image = $post->meta('my_image_no_convert', ['convert_value' => false]);
 		$this->assertTrue(is_array($image));
 		$this->assertEquals($image['id'], $image_id);
+	}
+
+	function testACFFormatImageCustomReturnFormat() {
+
+		$this->register_field('my_image_custom_return_format', 'image', ['return_format' => 'id']);
+
+		$pid = $this->factory->post->create();
+		$image_id = TimberAttachment_UnitTestCase::get_attachment();
+		update_field( 'my_image_custom_return_format', $image_id, $pid );
+		$post = Timber::get_post( $pid );
+
+		$image = $post->meta('my_image_custom_return_format', ['convert_value' => false]);
+
+		$this->assertTrue(is_numeric($image));
+		$this->assertEquals($image, $image_id);
+	}
+
+	function testACFFormatDatePicker() {
+
+		$this->register_field('my_date', 'date_picker');
+
+		$pid = $this->factory->post->create();
+		update_field( 'my_date', '20210222', $pid );
+		$post = Timber::get_post( $pid );
+
+		$date = $post->meta('my_date');
+		$this->assertInstanceOf('DateTimeImmutable', $date);
+		$this->assertEquals('2021-02-22', $date->format('Y-m-d'));
+	}
+
+	function testACFFormatDateTimePicker() {
+
+		$this->register_field('my_date_time', 'date_time_picker');
+
+		$pid = $this->factory->post->create();
+		update_field( 'my_date_time', '2021-02-22 17:30:25', $pid );
+		$post = Timber::get_post( $pid );
+
+		$date_time = $post->meta('my_date_time');
+		$this->assertInstanceOf('DateTimeImmutable', $date_time);
+		$this->assertEquals('2021-02-22 17:30:25', $date_time->format('Y-m-d H:i:s'));
 	}
 
 	/**
@@ -237,5 +238,34 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 		$post = Timber::get_post( $pid );
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
 		$this->assertEquals( '<p>Cool content bro!</p>', trim($str) );
+	}
+
+	private function register_field( $field_name, $field_type, $field_args = [] ) {
+
+		$group_key = sprintf('group_%s', uniqid());
+
+		$field = array_merge([
+			'key'   => 'field_2',
+			'label' => 'Field',
+			'name'  => $field_name,
+			'type'  => $field_type,
+		], $field_args);
+
+		acf_add_local_field_group( array(
+			'key'      => $group_key,
+			'title'    => 'Group',
+			'fields'   => [
+				$field,
+			],
+			'location' => [
+				[
+					[
+						'param'    => 'post_type',
+						'operator' => '==',
+						'value'    => 'post',
+					],
+				],
+			],
+		) );
 	}
 }

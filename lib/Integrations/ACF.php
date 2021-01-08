@@ -52,24 +52,34 @@ class ACF {
 		$file_field_type = acf_get_field_type('file');
 		$image_field_type = acf_get_field_type('image');
 		$gallery_field_type = acf_get_field_type('gallery');
+		$date_picker_field_type = acf_get_field_type('date_picker');
+		$date_time_picker_field_type = acf_get_field_type('date_time_picker');
 
 		remove_filter( 'acf/format_value/type=file', array( $file_field_type, 'format_value' ) );
 		remove_filter( 'acf/format_value/type=image', array( $image_field_type, 'format_value' ) );
 		remove_filter( 'acf/format_value/type=gallery', array( $gallery_field_type, 'format_value' ) );
+		remove_filter( 'acf/format_value/type=date_picker', array( $date_picker_field_type, 'format_value' ) );
+		remove_filter( 'acf/format_value/type=date_time_picker', array( $date_time_picker_field_type, 'format_value' ) );
 
         add_filter('acf/format_value/type=file', array( __CLASS__, 'format_file' ), 10, 3);
         add_filter('acf/format_value/type=image', array( __CLASS__, 'format_image' ), 10, 3);
 		add_filter('acf/format_value/type=gallery', array( __CLASS__, 'format_gallery' ), 10, 3);
+		add_filter('acf/format_value/type=date_picker', array( __CLASS__, 'format_date_picker' ), 10, 3);
+		add_filter('acf/format_value/type=date_time_picker', array( __CLASS__, 'format_date_picker' ), 10, 3);
 
 		$value = get_field( $field_name, $post_id, $args['format_value'] );
 
 		add_filter( 'acf/format_value/type=file', array( $file_field_type, 'format_value' ) );
 		add_filter( 'acf/format_value/type=image', array( $image_field_type, 'format_value' ) );
 		add_filter( 'acf/format_value/type=gallery', array( $gallery_field_type, 'format_value' ) );
+		add_filter( 'acf/format_value/type=date_picker', array( $date_picker_field_type, 'format_value' ) );
+		add_filter( 'acf/format_value/type=date_time_picker', array( $date_time_picker_field_type, 'format_value' ) );
 
         remove_filter('acf/format_value/type=file', array( __CLASS__, 'format_file' ), 10, 3);
         remove_filter('acf/format_value/type=image', array( __CLASS__, 'format_image' ), 10, 3);
 		remove_filter('acf/format_value/type=gallery', array( __CLASS__, 'format_gallery' ), 10, 3);
+		remove_filter('acf/format_value/type=date_picker', array( __CLASS__, 'format_date_picker' ), 10, 3);
+		remove_filter('acf/format_value/type=date_time_picker', array( __CLASS__, 'format_date_picker' ), 10, 3);
 
 		return $value;
 	}
@@ -136,7 +146,7 @@ class ACF {
      * @param int    $post_id
      * @param array  $field
      */
-    public static function format_file($value, $post_id, $field) {
+    public static function format_file( $value, $post_id, $field ) {
         if ( empty( $value ) ) {
             return false;
         }
@@ -157,7 +167,7 @@ class ACF {
      * @param int    $post_id
      * @param array  $field
      */
-    public static function format_image($value, $post_id, $field) {
+    public static function format_image( $value, $post_id, $field ) {
         if ( empty( $value ) ) {
             return false;
         }
@@ -178,7 +188,7 @@ class ACF {
      * @param int   $post_id
      * @param array $field
      */
-    public static function format_gallery($value, $post_id, $field) {
+    public static function format_gallery( $value, $post_id, $field ) {
         if ( empty( $value ) ) {
             return false;
 		}
@@ -199,6 +209,22 @@ class ACF {
         return array_map( function( $attachment_id ) {
             return Timber::get_post( $attachment_id );
         }, $posts );
+    }
+
+    /**
+     * Format ACF date picker field
+     *
+     * @param string $value
+     * @param int    $post_id
+     * @param array  $field
+     */
+    public static function format_date_picker( $value, $post_id, $field ) {
+
+		if ( ! $value ) {
+			return $value;
+		}
+
+        return new \DateTimeImmutable( acf_format_date( $value, 'Y-m-d H:i:s' ) );
     }
 
 }
