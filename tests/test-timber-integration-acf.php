@@ -150,11 +150,43 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 		update_field( 'my_image', $image_id, $pid );
 		$post = Timber::get_post( $pid );
 
-		do_action('acf/init');
-
 		$image = $post->meta('my_image');
 		$this->assertInstanceOf('Timber\Image', $image);
 		$this->assertEquals($image_id, $image->ID);
+	}
+
+	function testACFFormatImageNoConvert() {
+
+		acf_add_local_field_group( array(
+			'key'      => 'group_2',
+			'title'    => 'Group 2',
+			'fields'   => [
+				[
+					'key'   => 'field_2',
+					'label' => 'Image',
+					'name'  => 'my_image',
+					'type'  => 'image',
+				],
+			],
+			'location' => [
+				[
+					[
+						'param'    => 'post_type',
+						'operator' => '==',
+						'value'    => 'post',
+					],
+				],
+			],
+		) );
+
+		$pid = $this->factory->post->create();
+		$image_id = TimberAttachment_UnitTestCase::get_attachment();
+		update_field( 'my_image', $image_id, $pid );
+		$post = Timber::get_post( $pid );
+
+		$image = $post->meta('my_image', ['convert_value' => false]);
+		$this->assertTrue(is_array($image));
+		$this->assertEquals($image['id'], $image_id);
 	}
 
 	/**
