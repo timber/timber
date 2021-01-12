@@ -40,52 +40,11 @@ class ACF {
 	 * @return mixed|false
 	 */
 	public static function post_get_meta_field( $value, $post_id, $field_name, $post, $args ) {
-		$args = wp_parse_args( $args, array(
-			'format_value' => true,
-			'convert_value' => true,
-		) );
-
-		if ( ! $args['convert_value'] ) {
-			return get_field( $field_name, $post_id, $args['format_value'] );
-		}
-
-		$file_field_type = acf_get_field_type('file');
-		$image_field_type = acf_get_field_type('image');
-		$gallery_field_type = acf_get_field_type('gallery');
-		$date_picker_field_type = acf_get_field_type('date_picker');
-		$date_time_picker_field_type = acf_get_field_type('date_time_picker');
-
-		remove_filter( 'acf/format_value/type=file', array( $file_field_type, 'format_value' ) );
-		remove_filter( 'acf/format_value/type=image', array( $image_field_type, 'format_value' ) );
-		remove_filter( 'acf/format_value/type=gallery', array( $gallery_field_type, 'format_value' ) );
-		remove_filter( 'acf/format_value/type=date_picker', array( $date_picker_field_type, 'format_value' ) );
-		remove_filter( 'acf/format_value/type=date_time_picker', array( $date_time_picker_field_type, 'format_value' ) );
-
-        add_filter('acf/format_value/type=file', array( __CLASS__, 'format_file' ), 10, 3);
-        add_filter('acf/format_value/type=image', array( __CLASS__, 'format_image' ), 10, 3);
-		add_filter('acf/format_value/type=gallery', array( __CLASS__, 'format_gallery' ), 10, 3);
-		add_filter('acf/format_value/type=date_picker', array( __CLASS__, 'format_date_picker' ), 10, 3);
-		add_filter('acf/format_value/type=date_time_picker', array( __CLASS__, 'format_date_picker' ), 10, 3);
-
-		$value = get_field( $field_name, $post_id, $args['format_value'] );
-
-		add_filter( 'acf/format_value/type=file', array( $file_field_type, 'format_value' ) );
-		add_filter( 'acf/format_value/type=image', array( $image_field_type, 'format_value' ) );
-		add_filter( 'acf/format_value/type=gallery', array( $gallery_field_type, 'format_value' ) );
-		add_filter( 'acf/format_value/type=date_picker', array( $date_picker_field_type, 'format_value' ) );
-		add_filter( 'acf/format_value/type=date_time_picker', array( $date_time_picker_field_type, 'format_value' ) );
-
-        remove_filter('acf/format_value/type=file', array( __CLASS__, 'format_file' ), 10, 3);
-        remove_filter('acf/format_value/type=image', array( __CLASS__, 'format_image' ), 10, 3);
-		remove_filter('acf/format_value/type=gallery', array( __CLASS__, 'format_gallery' ), 10, 3);
-		remove_filter('acf/format_value/type=date_picker', array( __CLASS__, 'format_date_picker' ), 10, 3);
-		remove_filter('acf/format_value/type=date_time_picker', array( __CLASS__, 'format_date_picker' ), 10, 3);
-
-		return $value;
+		return self::get_meta( $value, $post_id, $field_name, $args );
 	}
 
 	public static function post_meta_object( $value, $post_id, $field_name ) {
-		return get_field_object($field_name, $post_id);
+		return get_field_object( $field_name, $post_id );
 	}
 
 	/**
@@ -99,15 +58,7 @@ class ACF {
 	 * @return mixed|false
 	 */
 	public static function term_get_meta_field( $value, $term_id, $field_name, $term, $args ) {
-		$args = wp_parse_args( $args, array(
-			'format_value' => true,
-		) );
-
-		return get_field(
-			$field_name,
-			$term->taxonomy . '_' . $term->ID,
-			$args['format_value']
-		);
+		return self::get_meta( $value, $term->taxonomy . '_' . $term_id, $field_name, $args );
 	}
 
 	/**
@@ -116,7 +67,7 @@ class ACF {
 	 * @return mixed
 	 */
 	public function term_set_meta( $value, $field, $term_id, $term ) {
-		$searcher = $term->taxonomy . '_' . $term->ID;
+		$searcher = $term->taxonomy . '_' . $term_id;
 		update_field($field, $value, $searcher);
 		return $value;
 	}
@@ -132,11 +83,7 @@ class ACF {
 	 * @return mixed|false
 	 */
 	public static function user_get_meta_field( $value, $user_id, $field_name, $user, $args ) {
-		$args = wp_parse_args( $args, array(
-			'format_value' => true,
-		) );
-
-		return get_field( $field_name, 'user_' . $user_id, $args );
+		return self::get_meta( $value, 'user_' . $user_id, $field_name, $args );
 	}
 
 	/**
@@ -225,6 +172,60 @@ class ACF {
 		}
 
         return new \DateTimeImmutable( acf_format_date( $value, 'Y-m-d H:i:s' ) );
-    }
+	}
+
+	/**
+	 * Gets meta value through ACF’s API.
+	 *
+	 * @param string $value
+	 * @param int $id
+	 * @param string $field_name
+	 * @param array $args
+	 * @return mixed|false
+	 */
+	private static function get_meta( $value, $id, $field_name, $args ) {
+		$args = wp_parse_args( $args, [
+			'format_value' => true,
+			'convert_value' => true,
+		] );
+
+		if ( ! $args['convert_value'] ) {
+			return get_field( $field_name, $id, $args['format_value'] );
+		}
+
+		$file_field_type = acf_get_field_type('file');
+		$image_field_type = acf_get_field_type('image');
+		$gallery_field_type = acf_get_field_type('gallery');
+		$date_picker_field_type = acf_get_field_type('date_picker');
+		$date_time_picker_field_type = acf_get_field_type('date_time_picker');
+
+		remove_filter( 'acf/format_value/type=file', array( $file_field_type, 'format_value' ) );
+		remove_filter( 'acf/format_value/type=image', array( $image_field_type, 'format_value' ) );
+		remove_filter( 'acf/format_value/type=gallery', array( $gallery_field_type, 'format_value' ) );
+		remove_filter( 'acf/format_value/type=date_picker', array( $date_picker_field_type, 'format_value' ) );
+		remove_filter( 'acf/format_value/type=date_time_picker', array( $date_time_picker_field_type, 'format_value' ) );
+
+        add_filter('acf/format_value/type=file', array( __CLASS__, 'format_file' ), 10, 3);
+        add_filter('acf/format_value/type=image', array( __CLASS__, 'format_image' ), 10, 3);
+		add_filter('acf/format_value/type=gallery', array( __CLASS__, 'format_gallery' ), 10, 3);
+		add_filter('acf/format_value/type=date_picker', array( __CLASS__, 'format_date_picker' ), 10, 3);
+		add_filter('acf/format_value/type=date_time_picker', array( __CLASS__, 'format_date_picker' ), 10, 3);
+
+		$value = get_field( $field_name, $id, $args['format_value'] );
+
+		add_filter( 'acf/format_value/type=file', array( $file_field_type, 'format_value' ) );
+		add_filter( 'acf/format_value/type=image', array( $image_field_type, 'format_value' ) );
+		add_filter( 'acf/format_value/type=gallery', array( $gallery_field_type, 'format_value' ) );
+		add_filter( 'acf/format_value/type=date_picker', array( $date_picker_field_type, 'format_value' ) );
+		add_filter( 'acf/format_value/type=date_time_picker', array( $date_time_picker_field_type, 'format_value' ) );
+
+        remove_filter('acf/format_value/type=file', array( __CLASS__, 'format_file' ), 10, 3);
+        remove_filter('acf/format_value/type=image', array( __CLASS__, 'format_image' ), 10, 3);
+		remove_filter('acf/format_value/type=gallery', array( __CLASS__, 'format_gallery' ), 10, 3);
+		remove_filter('acf/format_value/type=date_picker', array( __CLASS__, 'format_date_picker' ), 10, 3);
+		remove_filter('acf/format_value/type=date_time_picker', array( __CLASS__, 'format_date_picker' ), 10, 3);
+
+		return $value;
+	}
 
 }
