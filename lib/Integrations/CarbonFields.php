@@ -11,6 +11,7 @@ use Carbon_Fields\Helper\Helper;
 use DateTimeImmutable;
 use Timber;
 use Carbon_Fields\Field\Field;
+use Carbon_Fields\Field\Group_Field;
 
 /**
  * Class used to handle integration with Carbon Fields
@@ -115,7 +116,7 @@ class CarbonFields {
 	 */
 	private static function get_converted_meta( $value, Field $field ) {
 		$type = $field->get_type();
-		if ( ! in_array( $type, [ 'image', 'file', 'date', 'date_time', 'media_gallery' ] ) ) {
+		if ( ! in_array( $type, [ 'image', 'file', 'date', 'date_time', 'time', 'media_gallery', 'complex' ] ) ) {
 			return $value;
 		}
 
@@ -131,10 +132,32 @@ class CarbonFields {
 				break;
 			case 'date':
 			case 'date_time':
+			case 'time':
 				return DateTimeImmutable::createFromFormat( $field->get_storage_format(), $value );
+				break;
+			case 'complex':
+				$fields = $field->get_fields();
+				foreach ( $value as $group_index => $field_group ) {
+					foreach( $field_group as $field_name => $field_value ) {
+						if ( $field_name === '_type' ) {
+							continue;
+						}
+						foreach( $fields as $field ) {
+							if ( ! $field instanceof Field ) {
+								continue;
+							}
+							if ( $field->get_base_name() !== $field_name ) {
+								continue;
+							}
+							$value[ $group_index ][ $field_name ] = self::get_converted_meta( $field_value, $field );
+						}
+					}
+				}
+				return $value;
 				break;
 		}
 
 		return $value;
 	}
+
 }
