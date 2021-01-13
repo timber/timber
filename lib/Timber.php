@@ -125,6 +125,7 @@ class Timber {
 				$integrations = apply_filters('timber/integrations', [
 					Integration\AcfIntegration::class,
 					Integration\CoAuthorsPlusIntegration::class,
+					Integration\WpmlIntegration::class,
 				]);
 				foreach ($integrations as $integration) {
 					self::init_integration(new $integration());
