@@ -1,7 +1,11 @@
 <?php
 
+use Timber\Integration\CoAuthorsPlus\CoAuthorsPlusUser;
+use Timber\Integration\CoAuthorsPlusIntegration;
+
 	/**
 	 * @group posts-api
+	 * @group integrations
 	 */
 	class TestTimberIntegrationsCoAuthors extends Timber_UnitTestCase {
 
@@ -109,7 +113,7 @@
 			$authors = $post->authors();
 			$author = $authors[0];
 			$this->assertEquals($display_name, $author->display_name);
-			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
+			$this->assertInstanceOf(CoAuthorsPlusUser::class, $author);
 		}
 
 		function testGuestAuthorWithRegularAuthor(){
@@ -129,7 +133,7 @@
 			$authors = $post->authors();
 			$author = $authors[1];
 			$this->assertEquals($display_name, $author->display_name);
-			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
+			$this->assertInstanceOf(CoAuthorsPlusUser::class, $author);
 			$template_string = '{% for author in post.authors %}{{author.name}}, {% endfor %}';
 			$str = Timber::compile_string($template_string, array('post' => $post));
 			$this->assertEquals('Alexander Hamilton, Motia,', trim($str));
@@ -161,26 +165,26 @@
 
 			$coauthors_plus->force_guest_authors = false;
 			$authors = $post->authors();
-			
+
 			/**
-			 * Here we're testing to see if we get the LINKED guest author account ("Mr. True Name") 
+			 * Here we're testing to see if we get the LINKED guest author account ("Mr. True Name")
 			 * instead of the temporary guest name ("LGuest D Name") that was created.
 			 */
 			$author = $authors[0];
 			$this->assertEquals("True Name", $author->name());
 			$this->assertInstanceOf('Timber\User', $author);
-			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
+			$this->assertInstanceOf(CoAuthorsPlusUser::class, $author);
 
 			/**
 			 * Here we're testing that when we FORCE guest authors, it uses the original guest author
-			 * account ("LGuest D Name") when reporting the user's name. 
+			 * account ("LGuest D Name") when reporting the user's name.
 			 */
 			$coauthors_plus->force_guest_authors = true;
 			$authors = $post->authors();
 			$author = $authors[0];
 			$this->assertEquals($guest_display_name, $author->name());
 			$this->assertInstanceOf('Timber\User', $author);
-			$this->assertInstanceOf('Timber\Integrations\CoAuthorsPlusUser', $author);
+			$this->assertInstanceOf(CoAuthorsPlusUser::class, $author);
 		}
 
 		/**
@@ -207,11 +211,11 @@
 
 			// NOTE: this used to be `{{author.avatar.src}}` but now avatar() just returns a string
 			$template_string = '{% for author in post.authors %}{{author.avatar}}{% endfor %}';
-			Timber\Integrations\CoAuthorsPlus::$prefer_gravatar = false;
+			CoAuthorsPlusIntegration::$prefer_gravatar = false;
 			$str1 = Timber::compile_string($template_string, array('post' => $post));
 			$this->assertEquals($image->src(), $str1);
 
-			Timber\Integrations\CoAuthorsPlus::$prefer_gravatar = true;
+			CoAuthorsPlusIntegration::$prefer_gravatar = true;
 			$str2 = Timber::compile_string($template_string, array('post' => $post));
 			$this->assertEquals(get_avatar_url($email), $str2);
 		}

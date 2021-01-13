@@ -4,17 +4,9 @@ use Timber\Integrations\Command;
 use Timber\Post;
 
 /**
- * @group called-post-constructor
+ * @group integrations
  */
 class TestTimberIntegrations extends Timber_UnitTestCase {
-
-	function testIntegrationClasses() {
-		$integrations = new \Timber\Integrations();
-		$integrations->maybe_init_integrations();
-		$this->assertEquals('Timber\Integrations', get_class($integrations));
-		$this->assertEquals('Timber\Integrations\ACF', get_class($integrations->acf));
-		$this->assertEquals('Timber\Integrations\CoAuthorsPlus', get_class($integrations->coauthors_plus));
-	}
 
 	function testWPPostConvert() {
 		$pid = $this->factory->post->create();

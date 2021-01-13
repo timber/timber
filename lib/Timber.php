@@ -10,6 +10,7 @@ use Timber\Factory\MenuFactory;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
+use Timber\Integration;
 use Timber\Helper;
 use Timber\PostCollectionInterface;
 use Timber\URLHelper;
@@ -119,7 +120,16 @@ class Timber {
 			Twig::init();
 			ImageHelper::init();
 			Admin::init();
-			new Integrations();
+
+			add_action('init', function() {
+				$integrations = apply_filters('timber/integrations', [
+					Integration\AcfIntegration::class,
+					Integration\CoAuthorsPlusIntegration::class,
+				]);
+				foreach ($integrations as $integration) {
+					self::init_integration(new $integration());
+				}
+			});
 
 			// @todo find a more permanent home for this stuff, maybe in a QueryHelper class?
 			add_filter('pre_get_posts', function(WP_Query $query) {
@@ -169,6 +179,21 @@ class Timber {
 			class_alias( 'Timber\Timber', 'Timber' );
 
 			define('TIMBER_LOADED', true);
+		}
+	}
+
+	/**
+	 * Initialize a single IntegrationInterface instance.
+	 *
+	 * @internal
+	 */
+	protected static function init_integration(
+		Integration\IntegrationInterface $integration
+	) : void {
+		if ($integration->should_init()) {
+			$integration->init();
+		} else {
+			echo 'DID NOT INIT ' . get_class($integration);
 		}
 	}
 

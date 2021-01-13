@@ -5,16 +5,21 @@
  * @package Timber
  */
 
-namespace Timber\Integrations;
+namespace Timber\Integration;
+
+use ACF;
 
 use Timber\Helper;
 
 /**
  * Class used to handle integration with Advanced Custom Fields
  */
-class ACF {
-	
-	public function __construct() {
+class AcfIntegration implements IntegrationInterface {
+	public function should_init() : bool {
+		return class_exists( ACF::class );
+	}
+
+	public function init() : void {
 		add_filter('timber/post/pre_meta', array( __CLASS__, 'post_get_meta_field' ), 10, 5);
 		add_filter('timber/post/meta_object_field', array( __CLASS__, 'post_meta_object' ), 10, 3);
 		add_filter('timber/term/pre_meta', array( __CLASS__, 'term_get_meta_field' ), 10, 5);
