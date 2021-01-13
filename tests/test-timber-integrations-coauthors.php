@@ -66,28 +66,6 @@ use Timber\Integration\CoAuthorsPlusIntegration;
 		 * Tests
 		 ---------------- */
 
-		function testCoAuthors() {
-			$uids = array();
-			$uids[] = $this->factory->user->create(array('display_name' => 'Jared Novack', 'user_login' => 'jarednova'));
-			$uids[] = $this->factory->user->create(array('display_name' => 'Tito Bottitta', 'user_login' => 'mbottitta'));
-			$uids[] = $this->factory->user->create(array('display_name' => 'Mike Swartz', 'user_login' => 'm_swartz'));
-			$uids[] = $this->factory->user->create(array('display_name' => 'JP Boneyard', 'user_login' => 'jpb'));
-			$pid = $this->factory->post->create(array('post_author' => $uids[0]));
-			$post = Timber::get_post($pid);
-			$cap = new CoAuthors_Plus();
-			$added = $cap->add_coauthors($pid, array('mbottitta', 'm_swartz', 'jpb'));
-			$this->assertTrue($added);
-			$cai = new CoAuthorsIterator($pid);
-			$authors = $post->authors();
-			$str = Timber::compile_string('{{post.authors|pluck("name")|list(",", "and")}}', array('post' => $post));
-			global $wp_version;
-			if ( $wp_version >= 4.7 ) {
-				$this->markTestSkipped('Ordering in Co-Authors Plus is broken in WordPress 4.7');
-			} else {
-				$this->assertEquals('Tito Bottitta, Mike Swartz and JP Boneyard', $str);
-			}
-		}
-
 		function testAuthors() {
 			$uid = $this->factory->user->create(array('display_name' => 'Jen Weinman', 'user_login' => 'aquajenus'));
 			$pid = $this->factory->post->create(array('post_author' => $uid));
