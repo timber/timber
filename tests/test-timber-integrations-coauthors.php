@@ -211,11 +211,10 @@ use Timber\Integration\CoAuthorsPlusIntegration;
 
 			// NOTE: this used to be `{{author.avatar.src}}` but now avatar() just returns a string
 			$template_string = '{% for author in post.authors %}{{author.avatar}}{% endfor %}';
-			CoAuthorsPlusIntegration::$prefer_gravatar = false;
 			$str1 = Timber::compile_string($template_string, array('post' => $post));
 			$this->assertEquals($image->src(), $str1);
 
-			CoAuthorsPlusIntegration::$prefer_gravatar = true;
+			add_filter('timber/co_authors_plus/prefer_gravatar', '__return_true');
 			$str2 = Timber::compile_string($template_string, array('post' => $post));
 			$this->assertEquals(get_avatar_url($email), $str2);
 		}

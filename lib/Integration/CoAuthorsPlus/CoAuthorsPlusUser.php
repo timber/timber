@@ -2,7 +2,6 @@
 
 namespace Timber\Integration\CoAuthorsPlus;
 
-use Timber\Integration\CoAuthorsPlusIntegration;
 use Timber\Timber;
 use Timber\User;
 
@@ -47,7 +46,11 @@ class CoAuthorsPlusUser extends User {
 	 * @return string
 	 */
 	public function avatar( $args = null ) {
-		if ( CoAuthorsPlusIntegration::$prefer_gravatar ) {
+		$prefer_gravatar = apply_filters(
+			'timber/co_authors_plus/prefer_gravatar',
+			false
+		);
+		if ( $prefer_gravatar ) {
 			return get_avatar_url( $this->user_email, $args );
 		} else {
 			// 96 is the default wordpress avatar size

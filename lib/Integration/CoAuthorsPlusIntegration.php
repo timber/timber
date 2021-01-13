@@ -9,8 +9,6 @@ use Timber\Integration\CoAuthorsPlus\CoAuthorsPlusUser;
 
 class CoAuthorsPlusIntegration implements IntegrationInterface {
 
-	public static $prefer_gravatar = false;
-
 	public function should_init() : bool {
 		return class_exists( CoAuthors_Plus::class );
 	}
