@@ -2,7 +2,6 @@
 
 /**
  * Mocked function for testing menus in WPML
- * @group menus-api
  */
 function wpml_object_id_filter( $element_id, $element_type = 'post', $return_original_if_missing = false, $language_code = null ) {
 	$locations = get_nav_menu_locations();
@@ -12,6 +11,10 @@ function wpml_object_id_filter( $element_id, $element_type = 'post', $return_ori
 	return $element_id;
 }
 
+/**
+ * @group menus-api
+ * @group integrations
+ */
 class TestTimberWPML extends Timber_UnitTestCase {
 
 	function testWPMLMenu() {
