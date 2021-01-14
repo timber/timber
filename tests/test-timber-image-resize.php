@@ -116,52 +116,6 @@ class TestTimberImageResize extends Timber_UnitTestCase {
 		$this->assertTrue( $is_sized );
 	}
 
-	function testWPMLurlRemote() {
-		// this test replicates the url issue caused by the WPML language identifier in the url
-		// However, WPML can't be installed with composer so this test mocks the WPML plugin
-
-		// WPML uses a filter to alter the home_url
-		// @todo this appears to be operating on a path, rather than a URL, causing:
-		// Error loading /srv/www/wordpress-trunk/public_html/src/en/wp-content/uploads/external/fc990091d1d3ef80591db58450e4dc09.jpg
-		$home_url_filter = function( $url ) {
-			return str_replace('example.org/', 'example.org/en/', $url);
-		};
-		$this->add_filter_temporarily( 'home_url', $home_url_filter, -10, 4 );
-
-		$img = 'https://raw.githubusercontent.com/timber/timber/master/tests/assets/arch-2night.jpg';
-		// test with a local and external file
-		$resized = Timber\ImageHelper::resize($img, 50, 50);
-
-		// make sure the base url has not been duplicated (https://github.com/timber/timber/issues/405)
-		$this->assertLessThanOrEqual( 1, substr_count($resized, 'example.org') );
-		// make sure the image has been resized
-		$resized = Timber\URLHelper::url_to_file_system( $resized );
-		$this->assertTrue( TestTimberImage::checkSize($resized, 50, 50), 'image should be resized' );
-
-	}
-
-	function testWPMLurlLocal() {
-		// this test replicates the url issue caused by the WPML language identifier in the url
-		// However, WPML can't be installed with composer so this test mocks the WPML plugin
-
-		// WPML uses a filter to alter the home_url
-		$home_url_filter = function( $url ) { return $url.'/en'; };
-		add_filter( 'home_url', $home_url_filter, -10, 4 );
-
-		// test with a local and external file
-		$img = 'arch.jpg';
-		$img = TestTimberImage::copyTestAttachment($img);
-
-		$resized = Timber\ImageHelper::resize($img, 50, 50);
-
-		// make sure the base url has not been duplicated (https://github.com/timber/timber/issues/405)
-		$this->assertLessThanOrEqual( 1, substr_count($resized, 'example.org') );
-		// make sure the image has been resized
-		$resized = Timber\URLHelper::url_to_file_system( $resized );
-		$this->assertTrue( TestTimberImage::checkSize($resized, 50, 50), 'image should be resized' );
-
-	}
-
 	function testJPEGQualityDefault() {
 		//make image at best quality
 		$arch = TestTimberImage::copyTestAttachment('arch.jpg');
