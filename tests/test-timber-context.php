@@ -43,14 +43,20 @@ class TestTimberContext extends Timber_UnitTestCase {
 
 	function testPostsContextHomePosts() {
 		update_option( 'show_on_front', 'posts' );
+		$id = $this->factory->post->create([
+			'post_title' => 'Blog',
+			'post_type'  => 'page',
+		]);
+		update_option( 'page_for_posts', $id );
 		$this->factory->post->create_many( 3 );
 		$this->go_to( '/' );
 
 		$context = Timber::context();
 
-		$this->assertArrayNotHasKey( 'post', $context );
 		$this->assertInstanceOf( PostQuery::class, $context['posts'] );
 		$this->assertCount( 3, $context['posts'] );
+		$this->assertInstanceOf( Post::class, $context['post'] );
+		$this->assertEquals( $context['post']->id, $context['posts'][0]->id );
 	}
 
 	function testPostsContextHomePage() {

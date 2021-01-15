@@ -913,13 +913,17 @@ class Timber {
 		if ( is_singular() ) {
 			// NOTE: this also handles the is_front_page() case.
 			$context['post'] = Timber::get_post()->setup();
+		} elseif ( is_home() ) {
+			// show_on_front = page
+			$context['post']  = Timber::get_post()->setup();
+			$context['posts'] = Timber::get_posts();
 		} elseif ( is_category() || is_tag() || is_tax() ) {
 			$context['term']  = Timber::get_term();
 			$context['posts'] = Timber::get_posts();
 		} elseif ( is_search() ) {
 			$context['posts']        = Timber::get_posts();
 			$context['search_query'] = get_search_query();
-		} elseif ( is_archive() || is_home() ) {
+		} elseif ( is_archive() ) {
 			$context['posts'] = Timber::get_posts();
 		}
 
