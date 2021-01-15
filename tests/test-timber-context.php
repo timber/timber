@@ -41,7 +41,7 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$this->assertEquals('http://example.org', $context['http_host']);
 	}
 
-	function testPostsContextSimple() {
+	function testPostsContextHomePosts() {
 		update_option( 'show_on_front', 'posts' );
 		$this->factory->post->create_many( 3 );
 		$this->go_to( '/' );
@@ -51,6 +51,21 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$this->assertArrayNotHasKey( 'post', $context );
 		$this->assertInstanceOf( PostQuery::class, $context['posts'] );
 		$this->assertCount( 3, $context['posts'] );
+	}
+
+	function testPostsContextHomePage() {
+		update_option( 'show_on_front', 'page' );
+		$id = $this->factory->post->create([
+			'post_type' => 'page',
+		]);
+		update_option( 'page_on_front', $id );
+		$this->go_to( '/' );
+
+		$context = Timber::context();
+
+		$this->assertArrayNotHasKey( 'posts', $context );
+		$this->assertInstanceOf( Post::class, $context['post'] );
+		$this->assertEquals( $id, $context['post']->id );
 	}
 
 	function testPostsContextSearch() {

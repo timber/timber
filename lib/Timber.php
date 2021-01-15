@@ -911,6 +911,7 @@ class Timber {
 		$context = self::context_global();
 
 		if ( is_singular() ) {
+			// NOTE: this also handles the is_front_page() case.
 			$context['post'] = Timber::get_post()->setup();
 		} elseif ( is_category() || is_tag() || is_tax() ) {
 			$context['term']  = Timber::get_term();
