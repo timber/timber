@@ -4,6 +4,7 @@ use Timber\Post;
 use Timber\PostQuery;
 use Timber\Term;
 use Timber\Timber;
+use Timber\User;
 
 /**
  * @group posts-api
@@ -91,6 +92,26 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$this->assertInstanceOf( PostQuery::class, $context['posts'] );
 		$this->assertCount( 3, $context['posts'] );
 		$this->assertEquals( 'stuff', $context['search_query'] );
+	}
+
+	function testPostsContextAuthor() {
+		$uid = $this->factory->user->create([
+			'user_login' => 'bob',
+		]);
+		$this->factory->post->create_many( 3, [
+			'post_content' => 'here are some things',
+			'post_author'  => $uid,
+			'post_status'  => 'publish',
+	  ]	);
+		query_posts('author=' . $uid);
+
+		$context = Timber::context();
+
+		$this->assertArrayNotHasKey( 'post', $context );
+		$this->assertInstanceOf( PostQuery::class, $context['posts'] );
+		$this->assertCount( 3, $context['posts'] );
+		$this->assertInstanceOf( User::class, $context['author'] );
+		$this->assertEquals( $uid, $context['author']->id );
 	}
 
 	function testPostsContextCategory() {

@@ -923,6 +923,9 @@ class Timber {
 		} elseif ( is_search() ) {
 			$context['posts']        = Timber::get_posts();
 			$context['search_query'] = get_search_query();
+		} elseif ( is_author() ) {
+			$context['author'] = Timber::get_user(get_query_var('author'));
+			$context['posts']  = Timber::get_posts();
 		} elseif ( is_archive() ) {
 			$context['posts'] = Timber::get_posts();
 		}
