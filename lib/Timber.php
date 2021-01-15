@@ -915,7 +915,10 @@ class Timber {
 		} elseif ( is_category() || is_tag() || is_tax() ) {
 			$context['term']  = Timber::get_term();
 			$context['posts'] = Timber::get_posts();
-		} elseif ( is_archive() || is_home() || is_search() ) {
+		} elseif ( is_search() ) {
+			$context['posts']        = Timber::get_posts();
+			$context['search_query'] = get_search_query();
+		} elseif ( is_archive() || is_home() ) {
 			$context['posts'] = Timber::get_posts();
 		}
 

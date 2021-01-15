@@ -69,6 +69,7 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$this->assertArrayNotHasKey( 'post', $context );
 		$this->assertInstanceOf( PostQuery::class, $context['posts'] );
 		$this->assertCount( 3, $context['posts'] );
+		$this->assertEquals( 'stuff', $context['search_query'] );
 	}
 
 	function testPostsContextCategory() {
