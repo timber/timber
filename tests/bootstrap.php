@@ -37,6 +37,11 @@ if ( !function_exists('is_post_type_viewable') ) {
 }
 
 /**
+ * This constant is always defined by WPML.
+ */
+define('ICL_LANGUAGE_CODE', 'en');
+
+/**
  * Mocked function for testing menus in WPML
  */
 function wpml_object_id_filter( $element_id, $element_type = 'post', $return_original_if_missing = false, $language_code = null ) {

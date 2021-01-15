@@ -1,29 +1,11 @@
 <?php
 
-use Timber\Integration\AcfIntegration;
-
 /**
  * @group integrations
  * @group wpml
  */
 class TestTimberIntegrationWPML extends Timber_UnitTestCase {
-	function _setupWPMLDirectory() {
-        self::_setLanguage();
-
-		$this->add_filter_temporarily( 'home_url', function( $url, $path ) {
-			return 'http://example.org/en' . $path;
-		}, 10, 2 );
-    }
-
-    function _setLanguage() {
-	    if ( ! defined( 'ICL_LANGUAGE_CODE' ) ) {
-		    define( 'ICL_LANGUAGE_CODE', 'en' );
-	    }
-    }
-
 	function testFileSystemToURLWithWPML() {
-        self::_setLanguage();
-
 		$this->add_filter_temporarily( 'home_url', function( $url, $path ) {
 			return 'http://example2.org/en' . $path;
 		}, 10, 2 );
@@ -35,14 +17,17 @@ class TestTimberIntegrationWPML extends Timber_UnitTestCase {
     }
 
     function testFileSystemToURLWithWPMLPrefix() {
-        self::_setupWPMLDirectory();
+				// Mock the WPML "Directory"
+				$this->add_filter_temporarily( 'home_url', function( $url, $path ) {
+					return 'http://example.org/en' . $path;
+				}, 10, 2 );
+
         $image = TestTimberImage::copyTestAttachment();
         $url = Timber\URLHelper::file_system_to_url($image);
         $this->assertEquals('http://example.org/wp-content/uploads/'.date('Y/m').'/arch.jpg', $url);
     }
 
     function testWPMLurlRemote() {
-		self::_setLanguage();
 
 		// this test replicates the url issue caused by the WPML language identifier in the url
 		// However, WPML can't be installed with composer so this test mocks the WPML plugin
@@ -67,8 +52,6 @@ class TestTimberIntegrationWPML extends Timber_UnitTestCase {
 	}
 
 	function testWPMLurlLocal() {
-		self::_setLanguage();
-
 		// this test replicates the url issue caused by the WPML language identifier in the url
 		// However, WPML can't be installed with composer so this test mocks the WPML plugin
 
