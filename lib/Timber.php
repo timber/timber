@@ -912,7 +912,10 @@ class Timber {
 
 		if ( is_singular() ) {
 			$context['post'] = Timber::get_post()->setup();
-		} elseif ( is_archive() || is_home() ) {
+		} elseif ( is_category() || is_tag() || is_tax() ) {
+			$context['term']  = Timber::get_term();
+			$context['posts'] = Timber::get_posts();
+		} elseif ( is_archive() || is_home() || is_search() ) {
 			$context['posts'] = Timber::get_posts();
 		}
 

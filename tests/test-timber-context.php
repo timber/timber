@@ -1,8 +1,9 @@
 <?php
 
-use Timber\Timber;
 use Timber\Post;
 use Timber\PostQuery;
+use Timber\Term;
+use Timber\Timber;
 
 /**
  * @group posts-api
@@ -50,6 +51,113 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$this->assertArrayNotHasKey( 'post', $context );
 		$this->assertInstanceOf( PostQuery::class, $context['posts'] );
 		$this->assertCount( 3, $context['posts'] );
+	}
+
+	function testPostsContextSearch() {
+		$this->factory->post->create_many( 3, [
+			'post_content' => 'here are some things',
+			'post_status'  => 'publish',
+	  ]	);
+		$this->factory->post->create_many( 3, [
+			'post_content' => 'here is some stuff',
+			'post_status'  => 'publish',
+	  ]	);
+		query_posts('s=stuff');
+
+		$context = Timber::context();
+
+		$this->assertArrayNotHasKey( 'post', $context );
+		$this->assertInstanceOf( PostQuery::class, $context['posts'] );
+		$this->assertCount( 3, $context['posts'] );
+	}
+
+	function testPostsContextCategory() {
+		$stuff = wp_insert_term('Stuff', 'category');
+		$cat_posts = $this->factory->post->create_many( 3, [
+			'post_status'  => 'publish',
+	  ]	);
+		foreach ($cat_posts as $id) {
+			wp_set_object_terms($id, $stuff, 'category');
+		}
+
+		// 3 uncategorized posts
+		$this->factory->post->create_many( 3, [
+			'post_status'  => 'publish',
+	  ]	);
+
+		query_posts('cat=' . $stuff['term_id']);
+
+		$context = Timber::context();
+
+		$this->assertArrayNotHasKey( 'post', $context );
+		$this->assertInstanceOf( PostQuery::class, $context['posts'] );
+		$this->assertCount( 3, $context['posts'] );
+
+		$this->assertInstanceOf( Term::class, $context['term'] );
+		$this->assertEquals( 'Stuff', $context['term']->title() );
+	}
+
+	function testPostsContextTag() {
+		$stuff = wp_insert_term('Stuff', 'post_tag');
+		$cat_posts = $this->factory->post->create_many( 3, [
+			'post_status'  => 'publish',
+	  ]	);
+		foreach ($cat_posts as $id) {
+			wp_set_object_terms($id, $stuff, 'post_tag');
+		}
+
+		// 3 untagged posts
+		$this->factory->post->create_many( 3, [
+			'post_status'  => 'publish',
+	  ]	);
+
+		query_posts('tag=stuff');
+
+		$context = Timber::context();
+
+		$this->assertArrayNotHasKey( 'post', $context );
+		$this->assertInstanceOf( PostQuery::class, $context['posts'] );
+		$this->assertCount( 3, $context['posts'] );
+
+		$this->assertInstanceOf( Term::class, $context['term'] );
+		$this->assertEquals( 'Stuff', $context['term']->title() );
+	}
+
+	function testPostsContextTax() {
+		register_taxonomy('thingy', ['post'], [
+			'public' => true,
+		]);
+		$stuff = wp_insert_term('Stuff', 'thingy');
+		$cat_posts = $this->factory->post->create_many( 3, [
+			'post_status'  => 'publish',
+	  ]	);
+		foreach ($cat_posts as $id) {
+			wp_set_object_terms($id, $stuff, 'thingy');
+		}
+
+		// 3 non-thingy posts
+		$this->factory->post->create_many( 3, [
+			'post_status'  => 'publish',
+	  ]	);
+
+		query_posts([
+			'tax_query' => [
+				[
+					'taxonomy' => 'thingy',
+					'terms'    => [$stuff['term_id']],
+					'field'    => 'term_id',
+				],
+			],
+		]);
+
+		$context = Timber::context();
+
+		$this->assertArrayNotHasKey( 'post', $context );
+		$this->assertInstanceOf( PostQuery::class, $context['posts'] );
+		$this->assertCount( 3, $context['posts'] );
+
+		$this->assertInstanceOf( Term::class, $context['term'] );
+		$this->assertEquals( 'Stuff', $context['term']->title() );
 	}
 
 	function testIfSetupFunctionIsRunInSingularTemplates() {
