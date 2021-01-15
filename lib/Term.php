@@ -87,7 +87,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
-	 * @api
+	 * @deprecated 2.0.0, use TermFactory::from instead.
 	 *
 	 * @param $tid
 	 * @param $taxonomy
@@ -95,6 +95,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @return static
 	 */
 	public static function from( $tid, $taxonomy ) {
+		Helper::deprecated('Term::from', 'TermFactory::from', '2.0.0');
 		if ( is_array($tid) ) {
 			return array_map( function($term) use ($taxonomy) {
 				return new static($term, $taxonomy);
@@ -187,7 +188,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	===================== */
 
 	/**
-	 * @api
 	 * @deprecated 2.0.0, use `{{ term.edit_link }}` instead.
 	 * @return string
 	 */
@@ -198,7 +198,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * Gets a term meta value.
-	 * @api
 	 * @deprecated 2.0.0, use `{{ term.meta('field_name') }}` instead.
 	 *
 	 * @param string $field_name The field name for which you want to get the value.
