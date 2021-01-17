@@ -13,13 +13,13 @@ use Timber\Image\Operation as ImageOperation;
  */
 class Grayscale extends ImageOperation {
 
-	private $color;
+	private $quality;
 
 	/**
-	 * @param string $color hex string of color to use for transparent zones
+	 * @param string $quality  ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
 	 */
-	public function __construct( $color ) {
-		$this->color = $color;
+	public function __construct( $quality ) {
+		$this->quality = $quality;
 	}
 
 	/**
@@ -75,7 +75,11 @@ class Grayscale extends ImageOperation {
 			return false;
 		}
 
-		return imagefilter( $input, IMG_FILTER_GRAYSCALE );
+		imagefilter( $input, IMG_FILTER_GRAYSCALE );
+
+		$imageexec_function = 'image' . $ext;
+
+		return $imageexec_function( $input, $save_filename, $this->quality );
 	}
 
 }
