@@ -971,7 +971,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 
 		// Maybe convert values to Timber objects.
 		if ( $args['transform_value'] ) {
-			// $post_meta = $this->convert($post_meta);
+			$post_meta = $this->convert($post_meta);
 		}
 
 		return $post_meta;
