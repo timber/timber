@@ -39,12 +39,11 @@
 			$term_id = $this->factory->term->create(['name' => 'Toyota', 'taxonomy' => 'cars']);
 			$post_id = $this->factory->post->create();
 			wp_set_object_terms( $post_id, $term_id, 'cars' );
-			// passes ....
-			$term_get = Timber::get_term(['taxonomy' => 'cars']);
-			$this->assertEquals($term_id, $term_get->ID);
 
-			// fails ...
+			$term_get = Timber::get_term(['taxonomy' => 'cars']);
+			$this->assertEquals($term_id, $term_get[0]->ID);
+
 			$term_from = Timber\Term::from($term_id, 'cars');
-			$this->assertEquals($term_id, $term_from->ID);
+			$this->assertEquals($term_id, $term_from[0]->ID);
 		}
 	}
