@@ -750,17 +750,67 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * @param array  $args       {
 	 *      An array of arguments for getting the meta value. Third-party integrations can use this
 	 *      argument to make their API arguments available in Timber. Default empty array.
-	 *
-	 *      @type bool $apply_filters Whether to apply filtering of meta values. You can also use
-	 *                                the `raw_meta()` method as a shortcut to apply this argument.
-	 *                                Default true.
 	 * }
 	 * @return mixed The custom field value or an array of custom field values. Null if no value
 	 *               could be found.
 	 */
-	public function meta( $field_name = '', $args = array() ) {
+	public function meta( $field_name = '', $args = [] ) {
+		return $this->fetch_meta( $field_name, $args );
+	}
+
+	/**
+	 * Gets a post meta value directly from the database.
+	 *
+	 * Returns a raw meta value or all raw meta values saved in the post meta database table. In
+	 * comparison to `meta()`, this function will return raw values that are not filtered by third-
+	 * party plugins.
+	 *
+	 * Fetching raw values for all custom fields will not have a big performance impact, because
+	 * WordPress gets all meta values, when the first meta value is accessed.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
+	 *
+	 * @return null|mixed The meta field value(s). Null if no value could be found, an empty array
+	 *                    if all fields were requested but no values could be found.
+	 */
+	public function raw_meta( $field_name = '' ) {
+		return $this->fetch_meta( $field_name, [], false );
+	}
+
+	/**
+	 * Gets a post meta value.
+	 *
+	 * Returns a meta value or all meta values for all custom fields of a post saved in the post
+	 * meta database table.
+	 *
+	 * Fetching all values is only advised during development, because it can have a big performance
+	 * impact, when all filters are applied.
+	 *
+	 * @api
+	 *
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
+	 * @param array  $args       {
+	 *      An array of arguments for getting the meta value. Third-party integrations can use this
+	 *      argument to make their API arguments available in Timber. Default empty array.
+	 * }
+	 * @param bool $apply_filters Whether to apply filtering of meta values. You can also use
+	 *             				  the `raw_meta()` method as a shortcut to apply this argument.
+	 *                            Default true.
+	 *
+	 * @return mixed The custom field value or an array of custom field values. Null if no value
+	 *               could be found.
+	 */
+	protected function fetch_meta( $field_name = '', $args = [], $apply_filters = true ) {
+
 		$args = wp_parse_args( $args, [
-			'apply_filters' => true,
+			'transform_value' => apply_filters('timber/meta/transform_value', false),
 		] );
 
 		$revised_data = $this->get_revised_data_from_method( 'meta', $field_name );
@@ -771,7 +821,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 
 		$post_meta = null;
 
-		if ( $args['apply_filters'] ) {
+		if ( $apply_filters ) {
 			/**
 			 * Filters post meta data before it is fetched from the database.
 			 *
@@ -857,7 +907,7 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 			}
 		}
 
-		if ( $args['apply_filters'] ) {
+		if ( $apply_filters ) {
 			/**
 			 * Filters the value for a post meta field.
 			 *
@@ -917,41 +967,14 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 				'timber/post/meta'
 			);
 
-			// Maybe convert values to Timber objects.
-			$post_meta = $this->convert($post_meta);
+		}
+
+		// Maybe convert values to Timber objects.
+		if ( $args['transform_value'] ) {
+			// $post_meta = $this->convert($post_meta);
 		}
 
 		return $post_meta;
-	}
-
-	/**
-	 * Gets a post meta value directly from the database.
-	 *
-	 * Returns a raw meta value or all raw meta values saved in the post meta database table. In
-	 * comparison to `meta()`, this function will return raw values that are not filtered by third-
-	 * party plugins.
-	 *
-	 * Fetching raw values for all custom fields will not have a big performance impact, because
-	 * WordPress gets all meta values, when the first meta value is accessed.
-	 *
-	 * @api
-	 * @since 2.0.0
-	 *
-	 * @param string $field_name Optional. The field name for which you want to get the value. If
-	 *                           no field name is provided, this function will fetch values for all
-	 *                           custom fields. Default empty string.
-	 * @param array  $args       Optional. An array of args for `Post::meta()`. Default empty array.
-	 *
-	 * @return null|mixed The meta field value(s). Null if no value could be found, an empty array
-	 *                    if all fields were requested but no values could be found.
-	 */
-	public function raw_meta( $field_name = '', $args = array() ) {
-		return $this->meta( $field_name, array_merge(
-			$args,
-			[
-				'apply_filters' => false,
-			]
-		) );
 	}
 
 	/**
