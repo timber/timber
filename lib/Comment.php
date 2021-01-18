@@ -403,14 +403,58 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 	 *                           available in Timber. Default empty.
 	 * @return mixed The meta field value. Null if no value could be found.
 	 */
-	public function meta( $field_name = '', $args = array() ) {
+	public function meta( $field_name = '', $args = [] ) {
+		return $this->fetch_meta( $field_name, $args, true );
+	}
+
+	/**
+	 * Gets a comment meta value directly from the database.
+	 *
+	 * Returns a raw meta value or all raw meta values saved in the comment meta database table. In
+	 * comparison to `meta()`, this function will return raw values that are not filtered by third-
+	 * party plugins.
+	 *
+	 * Fetching raw values for all custom fields will not have a big performance impact, because
+	 * WordPress gets all meta values, when the first meta value is accessed.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @param string $field_name Optional. The field name for which you want to get the value. If
+	 *                           no field name is provided, this function will fetch values for all
+	 *                           custom fields. Default empty string.
+	 *
+	 * @return null|mixed The meta field value(s). Null if no value could be found, an empty array
+	 *                    if all fields were requested but no values could be found.
+	 */
+	public function raw_meta( $field_name = '') {
+		return $this->fetch_meta( $field_name, [], false );
+	}
+
+	/**
+	 * Gets a comment meta value.
+	 *
+	 * Returns a meta value for a comment that’s saved in the comment meta database table.
+	 *
+	 * @api
+	 *
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @param array  $args       An array of arguments for getting the meta value. Third-party
+	 *                           integrations can use this argument to make their API arguments
+	 *                           available in Timber. Default empty.
+	 * @param bool $apply_filters
+	 *
+	 * @return mixed The meta field value. Null if no value could be found.
+	 */
+	protected function fetch_meta( $field_name, $args = [], $apply_filters = true ) {
+
 		$args = wp_parse_args( $args, [
-			'apply_filters' => true,
+			'transform_value' => apply_filters('timber/meta/transform_value', false),
 		] );
 
 		$comment_meta = null;
 
-		if ( $args['apply_filters'] ) {
+		if ( $apply_filters ) {
 			/**
 			 * Filters the value for a comment meta field before it is fetched from the database.
 			 *
@@ -482,7 +526,7 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 			}
 		}
 
-		if ( $args['apply_filters'] ) {
+		if ( $apply_filters ) {
 			/**
 			 * Filters the value for a comment meta field.
 			 *
@@ -532,37 +576,6 @@ class Comment extends Core implements CoreInterface, MetaInterface {
 		}
 
 		return $comment_meta;
-	}
-
-	/**
-	 * Gets a comment meta value directly from the database.
-	 *
-	 * Returns a raw meta value or all raw meta values saved in the comment meta database table. In
-	 * comparison to `meta()`, this function will return raw values that are not filtered by third-
-	 * party plugins.
-	 *
-	 * Fetching raw values for all custom fields will not have a big performance impact, because
-	 * WordPress gets all meta values, when the first meta value is accessed.
-	 *
-	 * @api
-	 * @since 2.0.0
-	 *
-	 * @param string $field_name Optional. The field name for which you want to get the value. If
-	 *                           no field name is provided, this function will fetch values for all
-	 *                           custom fields. Default empty string.
-	 * @param array  $args       Optional. An array of args for `Comment::meta()`. Default empty
-	 *                           array.
-	 *
-	 * @return null|mixed The meta field value(s). Null if no value could be found, an empty array
-	 *                    if all fields were requested but no values could be found.
-	 */
-	public function raw_meta( $field_name = '', $args = array() ) {
-		return $this->meta( $field_name, array_merge(
-			$args,
-			[
-				'apply_filters' => false,
-			]
-		) );
 	}
 
 	/**
