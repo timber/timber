@@ -5,9 +5,9 @@ namespace Timber;
 abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
 
 	/**
-	 * Gets a meta value.
+	 * Gets an object meta value.
 	 *
-	 * Returns a meta value or all meta values for all custom fields of an entity saved in the
+	 * Returns a meta value or all meta values for all custom fields of an object saved in the
 	 * meta database table.
 	 *
 	 * Fetching all values is only advised during development, because it can have a big performance
@@ -30,7 +30,7 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
-	 * Gets a meta value directly from the database.
+	 * Gets an object meta value directly from the database.
 	 *
 	 * Returns a raw meta value or all raw meta values saved in the meta database table. In
 	 * comparison to `meta()`, this function will return raw values that are not filtered by third-
@@ -54,9 +54,9 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
-	 * Gets a post meta value.
+	 * Gets an object meta value.
 	 *
-	 * Returns a meta value or all meta values for all custom fields of a post saved in the post
+	 * Returns a meta value or all meta values for all custom fields of an object saved in the object
 	 * meta database table.
 	 *
 	 * Fetching all values is only advised during development, because it can have a big performance
@@ -84,7 +84,9 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
 			'transform_value' => apply_filters('timber/meta/transform_value', false),
 		] );
 
-		$post_meta = null;
+		$object_meta = null;
+
+		$object_type = $this->get_object_type();
 
 		if ( $apply_filters ) {
 			/**
@@ -109,67 +111,69 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
 			 * @see   \Timber\Post::meta()
 			 * @since 2.0.0
 			 *
-			 * @param string       $post_meta  The field value. Default null. Passing a non-null
+			 * @param string       $object_meta  The field value. Default null. Passing a non-null
 			 *                                 value will skip fetching the value from the database
 			 *                                 and will use the value from the filter instead.
 			 * @param int          $post_id    The post ID.
 			 * @param string       $field_name The name of the meta field to get the value for.
-			 * @param \Timber\Post $post       The post object.
+			 * @param \Timber\{Object} $object       The Timber object.
 			 * @param array        $args       An array of arguments.
 			 */
-			$post_meta = apply_filters(
-				sprintf('timber/%s/pre_meta', $this->get_entity_name()),
-				$post_meta,
+			$object_meta = apply_filters(
+				"timber/{$object_type}/pre_meta",
+				$object_meta,
 				$this->ID,
 				$field_name,
 				$this,
 				$args
 			);
 
-			/**
-			 * Filters the value for a post meta field before it is fetched from the database.
-			 *
-			 * @deprecated 2.0.0, use `timber/post/pre_meta`
-			 */
-			$post_meta = apply_filters_deprecated(
-				sprintf('timber_%s_get_meta_field_pre', $this->get_entity_name()),
-				[ $post_meta, $this->ID, $field_name, $this ],
-				'2.0.0',
-				sprintf('timber/%s/pre_meta', $this->get_entity_name())
-			);
+			// @todo Remove when deprecated filters will be gone
+			if( $object_type !== 'term' ) {
+				/**
+				 * Filters the value for a post meta field before it is fetched from the database.
+				 *
+				 * @deprecated 2.0.0, use `timber/{object_type}/pre_meta`
+				 */
+				$object_meta = apply_filters_deprecated(
+					"timber_{$object_type}_get_meta_field_pre",
+					[ $object_meta, $this->ID, $field_name, $this ],
+					'2.0.0',
+					"timber/{$object_type}/pre_meta"
+				);
 
-			/**
-			 * Filters post meta data before it is fetched from the database.
-			 *
-			 * @deprecated 2.0.0, use `timber/post/pre_meta`
-			 */
-			do_action_deprecated(
-				sprintf('timber_%s_get_meta_pre', $this->get_entity_name()),
-				[ $post_meta, $this->ID, $this ],
-				'2.0.0',
-				sprintf('timber/%s/pre_meta', $this->get_entity_name())
-			);
+				/**
+				 * Filters post meta data before it is fetched from the database.
+				 *
+				 * @deprecated 2.0.0, use `timber/{object_type}/pre_meta`
+				 */
+				do_action_deprecated(
+					"timber_{$object_type}_get_meta_pre",
+					[ $object_meta, $this->ID, $this ],
+					'2.0.0',
+					"timber/{$object_type}/pre_meta"
+				);
+			}
 		}
 
-		if ( null === $post_meta ) {
-			$meta_function = sprintf('get_%s_meta', $this->get_entity_name());
+		if ( null === $object_meta ) {
 			// Fetch values. Auto-fetches all values if $field_name is empty.
-			$post_meta = $meta_function( $this->ID, $field_name, true );
+			$object_meta = call_user_func_array( "get_{$object_type}_meta", [ $this->ID, $field_name, true ] );
 
 			// Mimick $single argument when fetching all meta values.
-			if ( empty( $field_name ) && is_array( $post_meta ) && ! empty( $post_meta ) ) {
-				$post_meta = array_map( function( $meta ) {
+			if ( empty( $field_name ) && is_array( $object_meta ) && ! empty( $object_meta ) ) {
+				$object_meta = array_map( function( $meta ) {
 					if ( 1 === count( $meta ) && isset( $meta[0] ) ) {
 						return $meta[0];
 					}
 
 					return $meta;
-				}, $post_meta );
+				}, $object_meta );
 			}
 
 			// Empty result.
-			if ( empty( $post_meta ) ) {
-				$post_meta = empty( $field_name ) ? [] : null;
+			if ( empty( $object_meta ) ) {
+				$object_meta = empty( $field_name ) ? [] : null;
 			}
 		}
 
@@ -200,47 +204,62 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
 			 * @param \Timber\Post $post       The post object.
 			 * @param array        $args       An array of arguments.
 			 */
-			$post_meta = apply_filters(
-				sprintf('timber/%s/meta', $this->get_entity_name()),
-				$post_meta,
+			$object_meta = apply_filters(
+				"timber/{$object_type}/meta",
+				$object_meta,
 				$this->ID,
 				$field_name,
 				$this,
 				$args
 			);
 
+			// @todo Remove when deprecated filters will be gone
+			if( $object_type === 'term' ) {
+				/**
+				 * Filters the value for a term meta field.
+				 *
+				 * @deprecated 2.0.0, use `timber/term/meta`
+				 */
+				$object_meta = apply_filters_deprecated(
+					'timber/term/meta/field',
+					[ $object_meta, $this->ID, $field_name, $this ],
+					'2.0.0',
+					'timber/term/meta'
+				);
+			}
+
 			/**
-			 * Filters the value for a post meta field.
+			 * Filters the value for an object meta field.
 			 *
-			 * @deprecated 2.0.0, use `timber/post/meta`
+			 * @deprecated 2.0.0, use `timber/{object_type}/meta`
 			 */
-			$post_meta = apply_filters_deprecated(
-				sprintf('timber_%s_get_meta_field', $this->get_entity_name()),
-				[ $post_meta, $this->ID, $field_name, $this ],
+			$object_meta = apply_filters_deprecated(
+				"timber_{$object_type}_get_meta_field",
+				[ $object_meta, $this->ID, $field_name, $this ],
 				'2.0.0',
-				sprintf('timber/%s/meta', $this->get_entity_name())
+				"timber/{$object_type}/meta"
 			);
 
 			/**
-			 * Filters post meta data fetched from the database.
+			 * Filters object meta data fetched from the database.
 			 *
-			 * @deprecated 2.0.0, use `timber/post/meta`
+			 * @deprecated 2.0.0, use `timber/{object_type}/meta`
 			 */
-			$post_meta = apply_filters_deprecated(
-				sprintf('timber_%s_get_meta', $this->get_entity_name()),
-				[ $post_meta, $this->ID, $this ],
+			$object_meta = apply_filters_deprecated(
+				"timber_{$object_type}_get_meta",
+				[ $object_meta, $this->ID, $this ],
 				'2.0.0',
-				sprintf('timber/%s/meta', $this->get_entity_name())
+				"timber/{$object_type}/meta"
 			);
 
+			// Maybe convert values to Timber objects.
+			if ( $args['transform_value'] ) {
+				$object_meta = $this->convert($object_meta);
+			}
+
 		}
 
-		// Maybe convert values to Timber objects.
-		if ( $args['transform_value'] ) {
-			$post_meta = $this->convert($post_meta);
-		}
-
-		return $post_meta;
+		return $object_meta;
 	}
 
 	/**
@@ -259,6 +278,13 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
 		return $data;
 	}
 
-	abstract protected function get_entity_name();
+	/**
+	 * Get the base object type
+	 *
+	 * @return string
+	 */
+	protected function get_object_type() {
+		return $this->object_type;
+	}
 
 }
