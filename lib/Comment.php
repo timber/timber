@@ -527,9 +527,4 @@ class Comment extends CoreEntity implements CoreInterface, MetaInterface {
 		return str_replace('&#038;', '&amp;', esc_url($out));
 	}
 
-
-	protected function get_entity_name() {
-		return 'comment';
-	}
-
 }

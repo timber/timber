@@ -559,9 +559,4 @@ class Term extends CoreEntity implements CoreInterface, MetaInterface {
 		$this->$key = $value;
 	}
 
-
-	protected function get_entity_name() {
-		return 'term';
-	}
-
 }

@@ -378,8 +378,4 @@ class User extends CoreEntity implements CoreInterface, MetaInterface {
 		return get_avatar_url( $this->id, $args );
 	}
 
-
-	protected function get_entity_name() {
-		return 'user';
-	}
 }
