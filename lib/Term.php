@@ -5,6 +5,8 @@ namespace Timber;
 use WP_Query;
 use WP_Term;
 
+use Timber\Factory\TermFactory;
+
 /**
  * Class Term
  *
@@ -95,13 +97,9 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @return static
 	 */
 	public static function from( $tid, $taxonomy ) {
-		Helper::deprecated('Term::from', 'TermFactory::from', '2.0.0');
-		if ( is_array($tid) ) {
-			return array_map( function($term) use ($taxonomy) {
-				return new static($term, $taxonomy);
-			}, $tid);
-		}
-		return new static($tid, $taxonomy);
+		//Helper::deprecated('Term::from', 'Timber\Factory\TermFactory::from', '2.0.0');
+		$termFactory = new TermFactory();
+		return $termFactory->from($tid, $taxonomy);
 	}
 
 

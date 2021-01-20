@@ -29,11 +29,24 @@
 			$term_get = Timber::get_terms(['taxonomy' => 'cars']);
 			$this->assertEquals('Chevy', $term_get[0]->title());
 
-			$terms_from = Timber\Term::from($term_ids, 'cars');
+			$terms_from = Timber\Term::from(get_terms(['taxonomy' => 'cars']), 'cars');
 			$this->assertEquals('Chevy', $terms_from[0]->title());
-			//$this->assertEquals($term_ids[0], $terms[0]->ID);
 		}
 
+		function testTermFrom() {
+			register_taxonomy('baseball', array('post'));
+			register_taxonomy('hockey', array('post'));
+			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'baseball'));
+			$term_id = $this->factory->term->create(array('name' => 'Cardinals', 'taxonomy' => 'baseball'));
+			$term_id = $this->factory->term->create(array('name' => 'Rangers', 'taxonomy' => 'hockey'));
+			$baseball_teams = Timber\Term::from(get_terms(array('taxonomy' => 'baseball', 'hide_empty' => false)), 'baseball');
+			$this->assertEquals(2, count($baseball_teams));
+			$this->assertEquals('Cardinals', $baseball_teams[0]->name);
+		}
+
+		/**
+		 * @expectedDeprecated Term::from
+		 */
 		function testGetSingleTermFrom() {
 			register_taxonomy('cars', 'post');
 			$term_id = $this->factory->term->create(['name' => 'Toyota', 'taxonomy' => 'cars']);
@@ -43,7 +56,7 @@
 			$term_get = Timber::get_term(['taxonomy' => 'cars']);
 			$this->assertEquals($term_id, $term_get[0]->ID);
 
-			$term_from = Timber\Term::from($term_id, 'cars');
+			$term_from = Timber\Term::from(get_terms(['taxonomy' => 'cars', 'hide_empty' => false]), 'cars');
 			$this->assertEquals($term_id, $term_from[0]->ID);
 		}
 	}
