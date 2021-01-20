@@ -215,8 +215,8 @@ class ImageHelper {
    * @param bool    $force
    */
   public static function img_to_webp( $src, $quality = 80, $force = false ) {
-      $op = new Image\Operation\ToWebp($quality);
-      return self::_operate($src, $op, $force);
+    $op = new Image\Operation\ToWebp($quality);
+    return self::_operate($src, $op, $force);
   }
 
 	/**
@@ -228,9 +228,9 @@ class ImageHelper {
    * @param int     $quality  ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
    * @param bool    $force
    */
-  public static function img_grayscale( $src, $quality = 80, $force = false ) {
-      $op = new Image\Operation\Grayscale($quality);
-      return self::_operate($src, $op, $force);
+  public static function img_grayscale( $src, $force = false ) {
+    $op = new Image\Operation\Grayscale();
+    return self::_operate($src, $op, $force);
   }
 
 	//-- end of public methods --//

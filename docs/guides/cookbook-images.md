@@ -99,7 +99,7 @@ You can use this in conjunction with other filters.
 
 Filters are executed from left to right. You’ll probably want to convert to grayscale before running the resizing, etc.
 
-Unfortunately, it’s not possible to use the `|grayscale` filter with transparent images.
+Unfortunately, it’s not possible to use the `|grayscale` filter with transparent images at this time. Transparent pixels will be converted to black.
 
 ## Generating retina sizes
 

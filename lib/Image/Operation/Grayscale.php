@@ -13,22 +13,13 @@ use Timber\Image\Operation as ImageOperation;
  */
 class Grayscale extends ImageOperation {
 
-	private $quality;
-
-	/**
-	 * @param string $quality  ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file)
-	 */
-	public function __construct( $quality ) {
-		$this->quality = $quality;
-	}
-
 	/**
 	 * @param   string    $src_filename     the basename of the file (ex: my-awesome-pic)
-	 * @param   string    $src_extension    ignored
-	 * @return  string    the final filename to be used (ex: my-awesome-pic.jpg)
+	 * @param   string    $src_extension    the extension (ex: .jpg)
+	 * @return  string    the final filename to be used (ex: my-awesome-pic-bw.jpg)
 	 */
-	public function filename( $src_filename, $src_extension = 'jpg' ) {
-		$new_name = $src_filename . '-bw.jpg';
+	public function filename( $src_filename, $src_extension ) {
+		$new_name = $src_filename . '-bw.' . $src_extension;
 		return $new_name;
 	}
 
@@ -79,7 +70,7 @@ class Grayscale extends ImageOperation {
 
 		$imageexec_function = 'image' . $ext;
 
-		return $imageexec_function( $input, $save_filename, $this->quality );
+		return $imageexec_function( $input, $save_filename );
 	}
 
 }
