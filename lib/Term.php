@@ -89,6 +89,7 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
+	 *
 	 * @deprecated 2.0.0, use TermFactory::from instead.
 	 *
 	 * @param $tid
@@ -97,7 +98,12 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @return static
 	 */
 	public static function from( $tid, $taxonomy ) {
-		//Helper::deprecated('Term::from', 'Timber\Factory\TermFactory::from', '2.0.0');
+		Helper::deprecated(
+			"Term::from()", 
+			"Timber\Factory\TermFactory->from()",
+			'2.0.0'
+		);
+
 		$termFactory = new TermFactory();
 		return $termFactory->from($tid, $taxonomy);
 	}
