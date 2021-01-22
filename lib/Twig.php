@@ -60,7 +60,7 @@ class Twig {
 	 * @return array Default Timber functions
 	 */
 	public function get_timber_functions() {
-		$postFactory = new PostFactory();
+		$post_factory = new PostFactory();
 
 		$functions = [
 			'action' => [
@@ -108,36 +108,36 @@ class Twig {
 				'callable' => [Timber::class, 'get_comments'],
 			],
 			'Post' => [
-				'callable' => function ($post_id) use ($postFactory) {
+				'callable' => function ($post_id) use ($post_factory) {
 					Helper::deprecated('{{ Post() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0');
-					return $postFactory->from($post_id);
+					return $post_factory->from($post_id);
 				},
 				'options' => [
 					'deprecated' => true,
 				],
 			],
 			'TimberPost' => [
-				'callable' => function ($post_id) use ($postFactory) {
+				'callable' => function ($post_id) use ($post_factory) {
 					Helper::deprecated('{{ TimberPost() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0');
-					return $postFactory->from($post_id);
+					return $post_factory->from($post_id);
 				},
 				'options' => [
 					'deprecated' => true,
 				],
 			],
 			'Image' => [
-				'callable' => function ($post_id) use ($postFactory) {
+				'callable' => function ($post_id) use ($post_factory) {
 					Helper::deprecated('{{ Image() }}', '{{ get_post() }} or {{ get_attachment_by() }}', '2.0.0');
-					return $postFactory->from($post_id);
+					return $post_factory->from($post_id);
 				},
 				'options' => [
 					'deprecated' => true,
 				],
 			],
 			'TimberImage' => [
-				'callable' => function ($post_id) use ($postFactory) {
+				'callable' => function ($post_id) use ($post_factory) {
 					Helper::deprecated('{{ TimberImage() }}', '{{ get_post() }} or {{ get_posts() }}', '2.0.0');
-					return $postFactory->from($post_id);
+					return $post_factory->from($post_id);
 				},
 				'options' => [
 					'deprecated' => true,
