@@ -74,6 +74,9 @@ class Twig {
 			'get_user' => [
 				'callable' => [Timber::class, 'get_user'],
 			],
+			'get_users' => [
+				'callable' => [Timber::class, 'get_users'],
+			],
 			'get_comment' => [
 				'callable' => [Timber::class, 'get_comment'],
 			],
