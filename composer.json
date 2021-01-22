@@ -66,7 +66,7 @@
     }
   ],
   "scripts": {
-    "test-unit": "vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml --verbose --colors=always",
+    "test-unit": "phpunit -c phpunit-nocover.xml --verbose --colors=always",
     "test-cs": "phpcs --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1",
     "run-tests": [
       "@test-unit",

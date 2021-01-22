@@ -1,6 +1,11 @@
 name: Timber Tests
 
-on: [push]
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
 
 jobs:
   run:
@@ -10,10 +15,13 @@ jobs:
       fail-fast: false
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: [7.2', '7.3', '7.4']
+        # php-versions: [ '8.0', '7.4', '7.3', '7.2', '7.1', '7.0', '5.6.20' ]
+        php-versions: [ 7.4']
+        # wp-versions: ['4.9', 'latest']
         wp-versions: ['latest']
+        wp-multisite: ['1', '0']
 
-    name: WP ${{ matrix.wp-versions }} with PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }}.
+    name: WP ${{ matrix.wp-versions }}${{ matrix.wp-multisite == 1 && ' (MS)' || '' }} with PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }}.
 
     steps:
     - name: Checkout
@@ -24,7 +32,7 @@ jobs:
       with:
         php-version: ${{ matrix.php-versions }}
         coverage: none  # XDebug can be enabled here 'coverage: xdebug'
-        tools: composer:v1, phpunit
+        tools: composer:v1
 
     - name: Start mysql service
       run: sudo /etc/init.d/mysql start
@@ -41,10 +49,12 @@ jobs:
         restore-keys: ${{ runner.os }}-composer-
 
     - name: Install dependencies
-      run: composer update --prefer-lowest --prefer-stable --prefer-source
+      run: composer update --prefer-stable --prefer-source
 
     - name: Install tests
       run: bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1:3306 ${{ matrix.wp-versions }}
 
     - name: Test
       run: composer run test-unit
+      env:
+        WP_MULTISITE: ${{ matrix.multisite }}
