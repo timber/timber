@@ -22,11 +22,36 @@ class Twig {
 	public static function init() {
 		$self = new self();
 
-        add_action( 'timber/twig/filters', [ $self, 'add_timber_filters' ] );
-		add_action( 'timber/twig/functions', [ $self, 'add_timber_functions' ] );
-		add_action( 'timber/twig/escapers', [ $self, 'add_timber_escapers' ] );
+		add_filter( 'timber/twig', [ $self, 'add_timber_functions' ] );
+        add_filter( 'timber/twig', [ $self, 'add_timber_filters' ] );
+		add_filter( 'timber/twig', [ $self, 'add_timber_escapers' ] );
+
+		// Deprecation handling.
+		add_filter( 'timber/twig/filters', [ $self, 'deprecated_timber_twig_filter' ], 9 );
+		add_filter( 'timber/twig/functions', [ $self, 'deprecated_timber_twig_filter' ], 9 );
+		add_filter( 'timber/twig/escaper', [ $self, 'deprecated_timber_twig_filter' ], 9 );
 
         add_filter( 'timber/loader/twig', [ $self, 'set_defaults' ] );
+	}
+
+	/**
+	 * Checks for deprecated usage of timber/twig/… filters.
+	 *
+	 * @param $arg
+	 *
+	 * @return mixed|\Twig\Environment
+	 */
+	public function deprecated_timber_twig_filter( $arg ) {
+		// The timber/twig/… filters accept arrays now, but not a Twig environment.
+		if ( $arg instanceof Environment ) {
+			Helper::deprecated(
+				'Using the timber/twig/filters filter to add functionality to the Twig environment',
+				'Use the timber/twig filter',
+				'2.0.0'
+			);
+		}
+
+		return $arg;
 	}
 
 	/**
