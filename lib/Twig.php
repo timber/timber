@@ -60,10 +60,9 @@ class Twig {
 	 * @return array Default Timber functions
 	 */
 	public function get_timber_functions() {
-
 		$postFactory = new PostFactory();
 
-		return apply_filters( 'timber/twig/default_functions', [
+		$functions = [
 			'action' => [
 				'callable' => function( $action_name, ...$args ) {
 					do_action_ref_array( $action_name, $args );
@@ -186,6 +185,8 @@ class Twig {
 			'bloginfo' => [
 				'callable' => 'bloginfo',
 			],
+
+			// Translation functions.
 			'__' => [
 				'callable' => '__',
 			],
@@ -216,7 +217,45 @@ class Twig {
 			'translate_nooped_plural' => [
 				'callable' => 'translate_nooped_plural',
 			],
-		] );
+		];
+
+		/**
+		 * Filters the functions that are added to Twig.
+		 *
+		 * The `$functions` array is an associative array with the filter name as a key and an
+		 * arguments array as the value. In the arguments array, you pass the function to call with
+		 * a `callable` entry.
+		 *
+		 * This is an alternative filter that you can use instead of adding your function in the
+		 * `timber/twig` filter.
+		 *
+		 * @api
+		 * @since 2.0.0
+		 * @example
+		 * ```php
+		 * add_filter( 'timber/twig/functions', function( $functions ) {
+		 *     // Add your own function.
+		 *     $functions['url_to_domain'] = [
+		 *         'callable' => 'url_to_domain',
+	     *     ];
+		 *
+		 *     // Replace a function.
+		 *     $functions['get_image'] = [
+		 *         'callable' => 'custom_image_get',
+		 *     ];
+		 *
+		 *     // Remove a function.
+		 *     unset( $functions['bloginfo'] );
+		 **
+		 *     return $functions;
+		 * } );
+		 * ```
+		 *
+		 * @param array $functions
+		 */
+		$functions = apply_filters( 'timber/twig/functions', $functions );
+
+		return $functions;
 	}
 
 	/**
@@ -227,13 +266,12 @@ class Twig {
 	 * @return \Twig\Environment
 	 */
 	public function add_timber_functions( $twig ) {
-
-		foreach( $this->get_timber_functions() as $name => $function ) {
+		foreach ( $this->get_timber_functions() as $name => $function ) {
 			$twig->addFunction(
 				new TwigFunction(
 					$name,
 					$function['callable'],
-					isset($function['options']) ? $function['options'] : []
+					isset( $function['options'] ) ? $function['options'] : []
 				)
 			);
 		}
@@ -247,7 +285,7 @@ class Twig {
 	 * @return array Default Timber filters
 	 */
 	public function get_timber_filters() {
-		return apply_filters( 'timber/twig/default_filters', [
+		$filters = [
 			/* image filters */
 			'resize' => [
 				'callable' => ['Timber\ImageHelper', 'resize'],
@@ -265,7 +303,7 @@ class Twig {
 				'callable' => ['Timber\ImageHelper', 'img_to_webp'],
 			],
 
-			/* debugging filters */
+			// Debugging filters.
 			'get_class' => [
 				'callable' => function( $obj ) {
 					Helper::deprecated( '{{ my_object | get_class }}', "{{ function('get_class', my_object) }}", '2.0.0' );
@@ -285,7 +323,7 @@ class Twig {
 				],
 			],
 
-			/* other filters */
+			// Other filters.
 			'stripshortcodes' => [
 				'callable' => 'strip_shortcodes',
 			],
@@ -347,7 +385,7 @@ class Twig {
 				},
 			],
 
-			/* actions and filters */
+			// Actions and filters.
 			'apply_filters' => [
 				'callable' => function() {
 					$args = func_get_args();
@@ -356,8 +394,45 @@ class Twig {
 					return apply_filters_ref_array($tag, $args);
 				},
 			],
-		]);
+		];
 
+		/**
+		 * Filters the filters that are added to Twig.
+		 *
+		 * The `$filters` array is an associative array with the filter name as a key and an
+		 * arguments array as the value. In the arguments array, you pass the function to call with
+		 * a `callable` entry.
+		 *
+		 * This is an alternative filter that you can use instead of adding your filter in the
+		 * `timber/twig` filter.
+		 *
+		 * @api
+		 * @since 2.0.0
+		 * @example
+		 * ```php
+		 * add_filter( 'timber/twig/default_filters', function( $filters ) {
+		 *     // Add your own filter.
+		 *     $filters['price'] = [
+		 *         'callable' => 'format_price',
+	     *     ];
+		 *
+		 *     // Replace a filter.
+		 *     $filters['list'] = [
+		 *         'callable' => 'custom_list_filter',
+		 *     ];
+		 *
+		 *     // Remove a filter.
+		 *     unset( $filters['list'] );
+		 **
+		 *     return $filters;
+		 * } );
+		 * ```
+		 *
+		 * @param array $filters
+		 */
+		$filters = apply_filters( 'timber/twig/filters', $filters );
+
+		return $filters;
 	}
 
 	/**
@@ -368,13 +443,12 @@ class Twig {
 	 * @return \Twig\Environment
 	 */
 	public function add_timber_filters( $twig ) {
-
-		foreach( $this->get_timber_filters() as $name => $function ) {
+		foreach ( $this->get_timber_filters() as $name => $function ) {
 			$twig->addFilter(
 				new TwigFilter(
 					$name,
 					$function['callable'],
-					isset($function['options']) ? $function['options'] : []
+					isset( $function['options'] ) ? $function['options'] : []
 				)
 			);
 		}
