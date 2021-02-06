@@ -19,3 +19,4 @@ docs/output
 /Timber.php
 wordpress
 composer.lock
+.vscode
