@@ -45,10 +45,14 @@ jobs:
           - php: '7.4'
             wp: 'latest'
             extensions: imagick
-            multisite: ['0']
+            multisite: '0'
             dependency-version: 'prefer-stable'
+          - php: '7.4'
+            wp: 'latest'
+            dependency-version: 'prefer-stable'
+            multisite: '0'
 
-    name: PHP ${{ matrix.php }} ${{ matrix.extensions && ' (with ${{ matrix.extensions }})' }} | WP ${{ matrix.wp }}${{ matrix.multisite == 1 && ' (MS)' || '' }} | ${{ matrix.dependency-version }}
+    name: PHP ${{ matrix.php }} ${{ matrix.extensions && ' (with '${{ matrix.extensions }}')' || '' }} | WP ${{ matrix.wp }}${{ matrix.multisite == 1 && ' (MS)' || '' }} | ${{ matrix.dependency-version }}
 
     steps:
       - name: Checkout
