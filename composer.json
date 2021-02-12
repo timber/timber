@@ -66,11 +66,11 @@
     }
   ],
   "scripts": {
+    "lint": "vendor/bin/phpcs --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1",
     "test-unit": "vendor/bin/phpunit -c phpunit-nocover.xml --verbose --colors=always",
-    "test-cs": "vendor/bin/phpcs --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1",
     "run-tests": [
-      "@test-unit",
-      "@test-cs"
+      "@lint",
+      "@test-unit"
     ]
   }
 }
