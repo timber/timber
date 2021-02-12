@@ -34,6 +34,11 @@ jobs:
             wp: '4.9.8'
             multisite: '0'
             dependency-version: 'prefer-lowest'
+          - php: '7.4'
+            wp: 'latest'
+            extensions: imagick
+            multisite: ['0']
+            dependency-version: 'prefer-stable'
 
     name: PHP ${{ matrix.php }} | WP ${{ matrix.wp }}${{ matrix.multisite == 1 && ' (MS)' || '' }}. | ${{ matrix.dependency-version }}
 
@@ -47,6 +52,7 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: none  # XDebug can be enabled here 'coverage: xdebug'
           tools: composer:v1
+          extensions: ${{ matrix.extensions }}
 
       - name: Shutdown default MySQL service
         run: sudo service mysql stop
