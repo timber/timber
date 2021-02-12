@@ -52,7 +52,7 @@ jobs:
             dependency-version: 'prefer-stable'
             multisite: '0'
 
-    name: PHP ${{ matrix.php }} ${{ matrix.extensions && " (with ${{ matrix.extensions }})" || '' }} | WP ${{ matrix.wp }}${{ matrix.multisite == 1 && ' (MS)' || '' }} | ${{ matrix.dependency-version }}
+    name: PHP ${{ matrix.php }} ${{ matrix.extensions && ' (with ' || '' }} ${{ matrix.extensions && matrix.extensions || '' }}${{ matrix.extensions && ')' || '' }} | WP ${{ matrix.wp }}${{ matrix.multisite == 1 && ' (MS)' || '' }} | ${{ matrix.dependency-version }}
 
     steps:
       - name: Checkout
