@@ -105,5 +105,5 @@ script:
 
 notifications:
   webhooks:
-    # https://docs.coveralls.io/parallel-build-webhook
+    # See https://docs.coveralls.io/parallel-build-webhook
     - 'https://coveralls.io/webhook'
