@@ -43,7 +43,7 @@ jobs:
         - yes '' | pecl install imagick
       install:
         - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-        - composer update $PREFER_LOWEST --prefer-source
+        - composer update --prefer-source
         - composer require --dev 'pcov/clobber:^2.0'
         - vendor/bin/pcov clobber
         - composer require --dev 'satooshi/php-coveralls:1.0.*'
@@ -60,7 +60,7 @@ jobs:
         - yes '' | pecl install pcov
       install:
         - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-        - composer update $PREFER_LOWEST --prefer-source
+        - composer update --prefer-source
         - composer require --dev 'pcov/clobber:^2.0'
         - vendor/bin/pcov clobber
         - composer require --dev 'satooshi/php-coveralls:1.0.*'
@@ -81,7 +81,7 @@ jobs:
         - php --rf imagewebp
       install:
         - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-        - composer update $PREFER_LOWEST --prefer-source
+        - composer update --prefer-source
       script:
         - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose ./tests/test-timber-image-towebp.php
       after_success: skip
@@ -91,12 +91,11 @@ cache:
     - "${HOME}/.composer/cache"
 
 before_install:
-  # phpenv config-add myconfig.ini --with-webp-dir
   - phpenv config-rm xdebug.ini
 
 install:
   - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-  - composer update $PREFER_LOWEST --prefer-source
+  - composer update --prefer-source
 
 script:
   - vendor/phpunit/phpunit/phpunit -c phpunit-nocover.xml --verbose
