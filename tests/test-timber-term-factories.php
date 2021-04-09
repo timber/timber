@@ -64,6 +64,6 @@ class TestTimberTermFactories extends Timber_UnitTestCase {
 		$this->assertEquals($term_id, $term_from[0]->ID);
 
 		$term_get = Timber::get_term(['taxonomy' => 'cars']);
-		$this->assertEquals($term_id, $term_get[0]->ID);
+		$this->assertEquals($term_id, $term_get->ID);
 	}
 }

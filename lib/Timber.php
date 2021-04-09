@@ -618,6 +618,7 @@ class Timber {
 	 * ```
 	 */
 	public static function get_term( $term = null ) {
+		
 		if (null === $term) {
 			// get the fallback term_id from the current query
 			global $wp_query;
@@ -630,7 +631,55 @@ class Timber {
 
 		$factory = new TermFactory();
 
-		return $factory->from($term);
+		$terms = $factory->from($term);
+		if ( is_array($terms) ) {
+			$terms = $terms[0];
+		}
+		return $terms;
+	}
+
+	/**
+	 * Gets a term by field.
+	 *
+	 * This function works like
+	 * [`get_term_by()`](https://developer.wordpress.org/reference/functions/get_term_by/), but
+	 * returns a `Timber\Term` object.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @example
+	 * ```php
+	 * // Get a term by slug.
+	 * $term = Timber::get_term_by( 'slug', 'security' );
+	 *
+	 * // Get a term by name.
+	 * $term = Timber::get_term_by( 'name', 'Security' );
+	 *
+	 * // Get a term by slug from a specific taxonomy.
+	 * $term = Timber::get_term_by( 'slug', 'security', 'category' );
+	 * ```
+	 *
+	 * @param string     $field    The name of the field to retrieve the term with. One of: `id`,
+	 *                             `ID`, `slug`, `name` or `term_taxonomy_id`.
+	 * @param int|string $value    The value to search for by `$field`.
+	 * @param string     $taxonomy The taxonomy you want to retrieve from. Empty string will search 
+	 *                             from all.
+	 *
+	 * @return \Timber\Term|null
+	 */
+	public static function get_term_by( string $field, $value, string $taxonomy = '' ) {
+
+		$wp_term = get_term_by($field, $value, $taxonomy);
+
+		if ( $wp_term === false ) {
+			if ( empty($taxonomy) && $field != 'term_taxonomy_id' ) {
+				$search = [$field => $value, $taxonomy => 'any', 'hide_empty' => false];
+				return static::get_term($search);
+			}
+			return false;
+		}
+
+		return static::get_term($wp_term);
 	}
 
 	/* User Retrieval
