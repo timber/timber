@@ -154,7 +154,7 @@ And now, you probably also want to link these terms as well. You can make use of
 )|join(', ', ' and ') }}
 ```
 
-Or you can use a for-loop:
+Or you can use a for loop:
 
 ```twig
 {% for term in terms -%}
