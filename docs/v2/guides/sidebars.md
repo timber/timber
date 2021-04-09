@@ -41,7 +41,7 @@ In the final twig file make sure you reserve a spot for your sidebar:
 
 ```twig
 <aside class="sidebar">
-	{{sidebar}}
+	{{ sidebar }}
 </aside>
 ```
 
@@ -57,7 +57,7 @@ Make a Twig file for what your sidebar should be:
 <h3>Related Stories</h3>
 
 {% for post in related %}
-	<h4><a href="{{post.get_path}}">{{post.post_title}}</a></h4>
+	<h4><a href="{{ post.get_path }}">{{ post.post_title }}</a></h4>
 {% endfor %}
 ```
 
@@ -94,7 +94,7 @@ In the final twig file, make sure you have spot for your sidebar:
 
 ```twig
 <aside class="sidebar">
-	{{sidebar}}
+	{{ sidebar }}
 </aside>
 ```
 
@@ -113,6 +113,6 @@ Timber::render('sidebar.twig', $context);
 
 ```twig
 <aside class="my-sidebar">
-    {{dynamic_sidebar}}
+    {{ dynamic_sidebar }}
 </aside>
 ```
