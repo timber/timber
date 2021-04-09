@@ -105,4 +105,24 @@ class TestTimberImageLetterbox extends TimberAttachment_UnitTestCase {
 		$this->assertEquals('Image? /wp-content/uploads/2016/07/stuff.jpg', $compiled);
 		self::enable_error_log(true);
 	}
+
+	function testSideloadedJPGWithLetterbox() {
+		$url        = 'https://pbs.twimg.com/profile_images/768086933310476288/acGwPDj4_400x400.jpg';
+		$sideloaded = Timber::compile_string( '{{ file|letterbox(500, 500) }}', [ 'file' => $url ] );
+
+		$base_url   = str_replace( basename( $sideloaded ), '', $sideloaded );
+		$expected   = $base_url . md5( $url ) . '-lbox-500x500-trans.jpg';
+
+		$this->assertEquals( $expected, $sideloaded );
+	}
+
+	function testSideloadedPNGWithLetterbox() {
+		$url        = 'https://user-images.githubusercontent.com/2084481/31230351-116569a8-a9e4-11e7-8310-48b7f679892b.png';
+		$sideloaded = Timber::compile_string( '{{ file|letterbox(500, 500) }}', [ 'file' => $url ] );
+
+		$base_url = str_replace( basename( $sideloaded ), '', $sideloaded );
+		$expected = $base_url . md5( $url ) . '-lbox-500x500-trans.png';
+
+		$this->assertEquals( $expected, $sideloaded );
+	}
 }

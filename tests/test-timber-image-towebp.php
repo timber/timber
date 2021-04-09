@@ -63,4 +63,25 @@
 			$this->assertEquals($original_size, $new_size);
 			$this->assertEquals('image/webp', mime_content_type($filename));
 		}
+
+
+		function testSideloadedJPGToWEBP() {
+			$url        = 'https://pbs.twimg.com/profile_images/768086933310476288/acGwPDj4_400x400.jpg';
+			$sideloaded = Timber::compile_string( '{{ file|towebp }}', [ 'file' => $url ] );
+
+			$base_url   = str_replace( basename( $sideloaded ), '', $sideloaded );
+			$expected   = $base_url . md5( $url ) . '.webp';
+
+			$this->assertEquals( $expected, $sideloaded );
+		}
+
+		function testSideloadedPNGToWEBP() {
+			$url        = 'https://user-images.githubusercontent.com/2084481/31230351-116569a8-a9e4-11e7-8310-48b7f679892b.png';
+			$sideloaded = Timber::compile_string( '{{ file|towebp }}', [ 'file' => $url ] );
+
+			$base_url = str_replace( basename( $sideloaded ), '', $sideloaded );
+			$expected = $base_url . md5( $url ) . '.webp';
+
+			$this->assertEquals( $expected, $sideloaded );
+		}
 	}
