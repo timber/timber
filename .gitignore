@@ -17,9 +17,5 @@ docs/cache
 docs/mkdocs
 docs/output
 /Timber.php
-<<<<<<< 75bb47223e32b787fd74e92f692f9fc34dec7e74
 wordpress
 composer.lock
-=======
-wordpress
->>>>>>> get lando environment working
