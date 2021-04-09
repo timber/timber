@@ -95,11 +95,9 @@ Timber::render( 'archive-event.twig', $context );
 
 ### Pagination with `pre_get_posts`
 
-Custom `query_posts` sometimes shows 404 on example.com/page/2. In that case you can also use `pre_get_posts` in your functions.php file:
+Custom `query_posts` sometimes shows 404 on example.com/page/2. In that case you can also use `pre_get_posts` in your **functions.php** file:
 
 ```php
-<?php
-
 function my_home_query( $query ) {
     if ( $query->is_main_query() && ! is_admin() ) {
         $query->set( 'post_type', [ 'movie', 'post' ] );

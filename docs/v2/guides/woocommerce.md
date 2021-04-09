@@ -59,11 +59,11 @@ if ( is_singular( 'product' ) ) {
 }
 ```
 
-You will now need the two Twig files loaded from `woocommerce.php`: `views/woo/single-product.twig` and `views/woo/archive.twig`.
+You will now need the two Twig files loaded from **woocommerce.php**: **views/woo/single-product.twig** and **views/woo/archive.twig**.
 
 ## Archives
 
-Create a Twig file according to the location asked by the above file, in this example that would be `views/woo/archive.twig`:
+Create a Twig file according to the location asked by the above file, in this example that would be **views/woo/archive.twig**:
 
 ```twig
 {% extends 'base.twig' %}
@@ -94,7 +94,7 @@ Next, we’ll take care of the single product view.
 
 ## Single Product
 
-Create a Twig file according to the location asked by the above file, in this example that would be `views/woo/single-product.twig`:
+Create a Twig file according to the location asked by the above file, in this example that would be **views/woo/single-product.twig**:
 
 ```twig
 {% extends "base.twig" %}
@@ -130,10 +130,10 @@ Create a Twig file according to the location asked by the above file, in this ex
 
 Again we are keeping things simple by using WooCommerce’s default hooks. If you need to override the output of any of those hooks, my advice would be to remove and add the relevant actions using PHP, keeping your upgrade path simple.
 
-If you wanna use the same `tease-product.twig` output as your related products, you have to remove the default related-products from theme, add the following to your `functions.php` file:
+If you wanna use the same **tease-product.twig** output as your related products, you have to remove the default related-products from theme, add the following to your **functions.php** file:
 `remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );`
 
-Finally, we’ll need to create a teaser file for products in loops. Considering the code above that would be `views/partials/tease-product.twig`:
+Finally, we’ll need to create a teaser file for products in loops. Considering the code above that would be **views/partials/tease-product.twig**:
 
 ## Tease Product
 
@@ -182,10 +182,9 @@ This should all sound familiar by now, except for one line:
 {{ fn('timber_set_product', post) }}
 ```
 
-For some reason, products in the loop don’t get the right context by default. This line will call the following function that you need to add somewhere in your `functions.php` file:
+For some reason, products in the loop don’t get the right context by default. This line will call the following function that you need to add somewhere in your **functions.php** file:
 
 ```php
-<?php
 function timber_set_product( $post ) {
     global $product;
 
@@ -207,10 +206,9 @@ One way to get around this is by building your own image calls, that means remov
 {% endif %}
 ```
 
-To remove the default image, add the following to your `functions.php` file:
+To remove the default image, add the following to your **functions.php** file:
 
 ```php
-<?php
 remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail' );
 ```
 

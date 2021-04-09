@@ -23,6 +23,18 @@ $term = Timber::get_term( get_queried_object_id() );
 
 What you get in return is a [`Timber\Term`](https://timber.github.io/docs/v2/reference/timber-term/) object, which is similar to `WP_Term`.
 
+## Get term by field
+
+If you don’t have a term ID, you can also get a term by other fields, like `slug` or `name` through `Timber::get_term_by()`.
+
+```php
+// Get a term by slug.
+$term = Timber::get_term_by( 'slug', 'news', 'category' );
+
+// Get a term by name.
+$term = Timber::get_term_by( 'name', 'News', 'category' );
+```
+
 ## Twig
 
 You can convert terms IDs to term objects in Twig using the `get_term()` function.
@@ -91,10 +103,12 @@ You can use this function in a similar way to how you use [`WP_Term_Query`](http
 
 ```php
 // Using the WP_Term_Query argument format.
-$term_query = new Timber::get_terms( [
-    'taxonomy' => 'book_genre',
-    'count'    => true,
-] );
+$term_query = Timber::get_terms( [
+    'query' => [
+        'taxonomy' => 'book_genre',
+        'count'    => true,
+    ],
+ ] );
 ```
 
 Also check out the documentation for [`Timber::get_terms()`](https://timber.github.io/docs/v2/reference/timber/#get-terms).
@@ -142,7 +156,7 @@ And now, you probably also want to link these terms as well. You can make use of
 )|join(', ', ' and ') }}
 ```
 
-Or you can use a for-loop:
+Or you can use a for loop:
 
 ```twig
 {% for term in terms -%}

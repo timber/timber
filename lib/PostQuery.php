@@ -68,16 +68,16 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	 * ```php
 	 * // Get posts from default query
 	 * global $wp_query;
-	 * $posts = new Timber\PostQuery( $wp_query );
+	 * $posts = Timber::get_posts( $wp_query );
 	 *
 	 * // Using the WP_Query argument format
-	 * $posts = new Timber\PostQuery( [
+	 * $posts = Timber::get_posts( [
 	 *     'post_type'     => 'article',
 	 *     'category_name' => 'sports',
 	 * ] );
 	 *
 	 * // Passing a WP_Query instance
-	 * $posts = new Timber\PostQuery( new WP_Query( 'post_type=any' ) );
+	 * $posts = Timber::get_posts( new WP_Query( 'post_type=any' ) );
 	 * ```
 	 *
 	 * @param WP_Query $query The WP_Query object to wrap.

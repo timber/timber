@@ -91,7 +91,7 @@ add_shortcode( 'company_address', function() {
 } );
 ```
 
-In this example, we've provided all the global context variables to `shortcode/company-address.twig` via `Timber::context_global()`. Whenever you only need the global context, you should use the `Timber::context_global()` function. You can call that function multiple times without losing performance.
+In this example, we've provided all the global context variables to **shortcode/company-address.twig** via `Timber::context_global()`. Whenever you only need the global context, you should use the `Timber::context_global()` function. You can call that function multiple times without losing performance.
 
 Timber will not cache template contexts.
 
@@ -99,7 +99,7 @@ Timber will not cache template contexts.
 
 When WordPress decides [which PHP template file](https://wphierarchy.com/) it will display, it has already run database queries to fetch posts for archive templates or to set up the `$post` global for singular templates.
 
-When you call `Timber::context()`, Timber will automatically populate your context with a `post` or `posts` variable, depending on which type of template file you’re in.
+When you call `Timber::context()`, Timber will automatically populate your context with different variables like `post`, `posts`, `term`, `terms` or `author`, depending on which type of template file you’re in.
 
 ### Singular templates
 
@@ -150,9 +150,21 @@ $context['post'] = Timber::get_post()->setup();
 
 ### Archive templates
 
-The `posts` variable will be available in archive templates (when [ `is_archive()`](https://developer.wordpress.org/reference/functions/is_archive/) returns `true`), like your posts index page, category or tag archives, date-based or author archives. It will contain a `Timber\PostCollection` object with the posts that WordPress already fetched for your archive page.
+The `posts` variable will be available in archive templates (when [ `is_archive()`](https://developer.wordpress.org/reference/functions/is_archive/) returns `true`). In addition to that, it will also contain `post` or `term` variables for different archive types. Here’s a small overview.
+
+| Archive | Condition | Context variables |
+|---|---|---|
+| Home | `is_home()` | `post`<br>`posts` |
+| Taxonomy Archive | `is_category()`<br>`is_tag()`<br>`is_tax()` | `term`<br>`posts` |
+| Author Archive | `is_author()` | `author`<br>`posts` |
+| Search Archive | `is_search()` | `posts`<br>`search_query` |
+| All other archives | `is_archive()` | `posts` |
+
+The `posts` variable will contain a `Timber\PostCollection` object with the posts that WordPress already fetched for your archive page.
 
 #### Use the default query
+
+**archive.php**
 
 ```php
 $context = Timber::context();
@@ -163,6 +175,8 @@ Timber::render( 'archive.twig', $context );
 #### Write your own query
 
 When you don’t need the default query, you can pass in your own arguments to `Timber::get_posts()`.
+
+**archive.php**
 
 ```php
 $context          = Timber::context();

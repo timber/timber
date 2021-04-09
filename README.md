@@ -15,7 +15,6 @@ By
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
 [![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
 [![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg?style=flat-square)](https://wordpress.org/plugins/timber-library/)
-[![Join the chat at https://gitter.im/timber/timber](https://img.shields.io/gitter/room/timber/timber.svg?style=flat-square)](https://gitter.im/timber/timber?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![WordPress Rating](https://img.shields.io/wordpress/plugin/r/timber-library.svg?style=flat-square)](https://wordpress.org/support/plugin/timber-library/reviews/)
 
 
@@ -117,7 +116,8 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Branch**](https://github.com/JeyKeu/branch/) Bootstrap 3 + Timber = Branch starter theme!
 * [**Flynt**](https://flyntwp.com/) a component based WordPress starter theme built on Timber and ACF Pro
 * [**Gantry5**](https://wordpress.org/plugins/gantry5/) a framework for theme development
-* [**Seedling**](https://github.com/maxdmyers/seedling) A starter theme using Bootstrap 4
+* [**Hozokit**](https://github.com/csalmeida/hozokit) a component based starter theme
+* [**Seedling**](https://github.com/maxdmyers/seedling) a starter theme using Bootstrap 4
 
 #### Helpful Links
 * [**CSS Tricks**](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/) introduction to Timber by [@tjFogarty](https://github.com/tjFogarty)
@@ -130,8 +130,8 @@ Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/q
 #### Should I use it?
 It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [tens of thousands of sites](https://www.upstatement.com/timber/#showcase) (and tons more we don't know about)
 
-#### Contributing
-We love PRs! Read the [Contributor Guidelines](https://github.com/timber/timber/blob/master/CONTRIBUTING.md) for more info.
+#### Contributing & Community
+We love PRs! Read the [Contributor Guidelines](https://github.com/timber/timber/blob/master/CONTRIBUTING.md) for more info. Say hello, share your tips/work, and spread the love on Twitter at [@TimberWP](https://twitter.com/TimberWP).
 
 ## Documentation
 

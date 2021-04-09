@@ -5,6 +5,8 @@ namespace Timber;
 use WP_Query;
 use WP_Term;
 
+use Timber\Factory\TermFactory;
+
 /**
  * Class Term
  *
@@ -87,7 +89,8 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
-	 * @api
+	 *
+	 * @deprecated 2.0.0, use TermFactory::from instead.
 	 *
 	 * @param $tid
 	 * @param $taxonomy
@@ -95,12 +98,14 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	 * @return static
 	 */
 	public static function from( $tid, $taxonomy ) {
-		if ( is_array($tid) ) {
-			return array_map( function($term) use ($taxonomy) {
-				return new static($term, $taxonomy);
-			}, $tid);
-		}
-		return new static($tid, $taxonomy);
+		Helper::deprecated(
+			"Term::from()", 
+			"Timber\Factory\TermFactory->from()",
+			'2.0.0'
+		);
+
+		$termFactory = new TermFactory();
+		return $termFactory->from($tid, $taxonomy);
 	}
 
 
@@ -187,7 +192,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 	===================== */
 
 	/**
-	 * @api
 	 * @deprecated 2.0.0, use `{{ term.edit_link }}` instead.
 	 * @return string
 	 */
@@ -198,7 +202,6 @@ class Term extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * Gets a term meta value.
-	 * @api
 	 * @deprecated 2.0.0, use `{{ term.meta('field_name') }}` instead.
 	 *
 	 * @param string $field_name The field name for which you want to get the value.

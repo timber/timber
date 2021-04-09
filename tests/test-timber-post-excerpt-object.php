@@ -18,14 +18,16 @@
 		}
 
 		function test1886ErrorWithForce() {
-			$expected = '<p>Govenment:</p> <ul> <li>of the <strong>people</strong></li> <li>by the people</li> <li>for the people</li> </ul>';
+			$expected = '<p>Government:</p> <ul> <li>of the <strong>people</strong></li> <li>by the people</li> <li>for the people</li> </ul>';
 			$post_id = $this->factory->post->create(array('post_excerpt' => $expected, 'post_content' => $this->gettysburg));
 			$post = Timber::get_post($post_id);
-			$template = "{{ post.excerpt({ 	strip: '<ul><li>',
-											words:10,
-											force:true }) }}";
+			$template = '{{ post.excerpt({
+				strip: "<ul><li>",
+				words:10,
+				force:true })
+			}}';
 			$str = Timber::compile_string($template, array('post' => $post));
-			$this->assertEquals('Govenment: <ul> <li>of the people</li> <li>by the people</li> <li>for the</li></ul>&hellip; <a href="http://example.org/?p='.$post_id.'" class="read-more">Read More</a>', $str);
+			$this->assertEquals('Government: <ul> <li>of the people</li> <li>by the people</li> <li>for the</li></ul>&hellip; <a href="http://example.org/?p='.$post_id.'" class="read-more">Read More</a>', $str);
 		}
 
 		public function testExcerptConstructorWithWords() {
@@ -240,7 +242,10 @@
 			$pid = $this->factory->post->create( array('post_content' => 'Lauren is a duck<!-- more--> Lauren is not a duck', 'post_excerpt' => '') );
 			$post = Timber::get_post( $pid );
 
-			$this->assertEquals('Lauren is a duck <a href="'.$post->link().'" class="read-more">Read More</a>', $post->excerpt());
+			$this->assertEquals(
+				'Lauren is a duck <a href="'.$post->link().'" class="read-more">Read More</a>',
+				(string) $post->excerpt()
+			);
 		}
 
 		function testExcerptWithCustomMoreTag() {
@@ -281,11 +286,17 @@
 			$this->assertEquals('', $str);
 		}
 
+		/**
+		 * @ticket #2045
+		 */
 		function testPageExcerptOnSearch() {
 			$pid = $this->factory->post->create(array('post_type' => 'page', 'post_content' => 'What a beautiful day for a ballgame!', 'post_excerpt' => ''));
 			$post = Timber::get_post( $pid );
 			$template = '{{ post.excerpt }}';
 			$str = Timber::compile_string($template, array('post' => $post));
-			$this->assertEquals('What a beautiful day for a ballgame!&hellip; <a href="http://example.org/?page_id='.$pid.'" class="read-more">Read More</a>', $str);
+			$this->assertEquals(
+				'What a beautiful day for a ballgame!',
+				$str
+			);
 		}
 	}
