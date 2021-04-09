@@ -7,9 +7,14 @@ use Timber\User;
 	 * @group users-api
 	 */
 	class TestTimberUser extends Timber_UnitTestCase {
-		/*
-		 * @todo figure out why resetting to default classmap causes failing tests
-		 */
+		function setUp() {
+			parent::setUp();
+
+			// Restore integration-free Class Map for users.
+			$this->add_filter_temporarily('timber/user/classmap', function() {
+				return User::class;
+			});
+		}
 
 		function testIDDataType() {
 			$uid = $this->factory->user->create(array('display_name' => 'James Marshall'));
@@ -45,12 +50,6 @@ use Timber\User;
 		}
 
 		function testUserCapability() {
-			// Restore integration-free Class Map for users.
-			// For some reason, this test fails if this hook is in a setUp method.
-			$this->add_filter_temporarily('timber/user/classmap', function() {
-				return User::class;
-			});
-
 			$uid = $this->factory->user->create(array('display_name' => 'Tito Bottitta', 'user_login' => 'mbottitta', 'role' => 'editor'));
 			$user = Timber::get_user_by('login', 'mbottitta');
 			$this->assertTrue($user->can('edit_posts'));
@@ -58,12 +57,6 @@ use Timber\User;
 		}
 
 		function testUserRole() {
-			// Restore integration-free Class Map for users.
-			// For some reason, this test fails if this hook is in a setUp method.
-			$this->add_filter_temporarily('timber/user/classmap', function() {
-				return User::class;
-			});
-
 			$uid = $this->factory->user->create(array('display_name' => 'Tito Bottitta', 'user_login' => 'mbottitta', 'role' => 'editor'));
 			$user = Timber::get_user_by('login', 'mbottitta');
 			$this->assertArrayHasKey('editor', $user->roles());
