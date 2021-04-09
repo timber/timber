@@ -21,18 +21,30 @@ $term = Timber::get_term( get_queried_object_id() );
 
 What you get in return is a [`Timber\Term`](https://timber.github.io/docs/v2/reference/timber-term/) object, which is similar to `WP_Term`.
 
+## Get term by field
+
+If you don’t have a term ID, you can also get a term by other fields, like `slug` or `name` through `Timber::get_term_by()`.
+
+```php
+// Get a term by slug.
+$term = Timber::get_term_by( 'slug', 'news', 'category' );
+
+// Get a term by name.
+$term = Timber::get_term_by( 'name', 'News', 'category' );
+```
+
 ## Twig
 
 You can convert terms IDs to term objects in Twig using the `Term()` function.
 
 ```twig
-{% set term = Term(term_id) %}
+{% set term = get_term(term_id) %}
 ```
 
 It also works if you have an array of terms IDs that you want to convert to `Timber\Term` objects.
 
 ```twig
-{% for term in Term(term_ids) %}
+{% for term in get_term(term_ids) %}
 
 {% endfor %}
 ```
@@ -142,7 +154,7 @@ And now, you probably also want to link these terms as well. You can make use of
 )|join(', ', ' and ') }}
 ```
 
-Or you can use a for-loop:
+Or you can use a for loop:
 
 ```twig
 {% for term in terms -%}

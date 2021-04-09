@@ -5,6 +5,7 @@ twig-cache/*
 vendor
 build
 /cache
+!/lib/Cache
 *.swp
 *~
 wp-content
