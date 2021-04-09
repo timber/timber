@@ -56,9 +56,9 @@ Timber::render( 'single.twig', $context );
 Another way to do this is to pass your custom data to the `Timber::context()` function itself:
 
 ```php
-$context = Timber::get_context(
-    'today' => wp_date( 'Ymd' ),
-);
+$context = Timber::get_context( [
+    'today' => wp_date( 'Ymd' )
+] );
 
 Timber::render( 'single.twig', $context );
 ```
