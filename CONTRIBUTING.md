@@ -11,7 +11,7 @@ Here are ways to get involved:
 5. Tweet and [blog](http://www.oomphinc.com/blog/2013-10/php-templating-wordpress/#post-content) about the advantages (and criticisms) of the project and Twig.
 6. Browse ["help wanted"](https://github.com/timber/timber/labels/help%20wanted) and ["good first issue"](https://github.com/timber/timber/labels/good%20first%20issue) labels for areas of WordPress/PHP/code you know well to consider, build or document.
 7. Answer questions on [Stack Overflow posted under the «Timber» tag](https://stackoverflow.com/questions/tagged/timber). You can also [subscribe to a tag](https://stackoverflow.blog/2010/12/20/subscribe-to-tags-via-emai/) via email to get notified when someone needs help.
-8. Answer questions in the support channel on [Gitter](https://gitter.im/timber/timber).
+8. Answer questions and join in on [GitHub Discussions](https://github.com/timber/timber/discussions).
 
 ## Table of Contents
 

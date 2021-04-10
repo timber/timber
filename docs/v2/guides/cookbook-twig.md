@@ -22,10 +22,13 @@ Ready? There are a bunch of ways, but one helpful example is:
 **In your PHP file**
 
 ```php
-<?php
-$data['year'] = date('Y');
-$data['copyright'] = get_option("footer_message"); //"Copyright {{year}} by Upstatement, LLC. All Rights Reserved"
-render_twig('footer.twig', $data);
+$data = [
+    'year' => wp_date( 'Y' ),
+    // "Copyright {{year}} by Upstatement, LLC. All Rights Reserved"
+    'copyright' => get_option( 'footer_message' );
+];
+
+Timber::render( 'footer.twig', $data );
 ```
 
 **In your HTML file (let's say **footer.twig**)**
@@ -60,7 +63,7 @@ Use a variable to determine the included file!
 
 * You're telling Twig to include an array of files
 * Same rules as above
-* ~ (tilda) is what twig uses to concatenate a string with your variable
+* ~ (tilde) is what twig uses to concatenate a string with your variable
 
 ## Twig tools
 

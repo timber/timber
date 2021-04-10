@@ -37,6 +37,8 @@ class Twig {
 	public function get_timber_functions() {
 
 		$postFactory = new PostFactory();
+    
+    $termFactory = new TermFactory();
 
 		return apply_filters( 'timber/twig/default_functions', [
 			'action' => [
@@ -119,7 +121,7 @@ class Twig {
 			'Term' => [
 				'callable' => function ($term_id) {
 					Helper::deprecated('{{ Term() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0');
-					return Timber::get_term( $term_id );
+					return $termFactory->from( $term_id );
 				},
 				'options' => [
 					'deprecated' => true,
@@ -128,7 +130,7 @@ class Twig {
 			'TimberTerm' => [
 				'callable' => function ($term_id) {
 					Helper::deprecated('{{ TimberTerm() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0');
-					return Timber::get_term( $term_id );
+					return $termFactory->from( $term_id );
 				},
 				'options' => [
 					'deprecated' => true,
@@ -329,6 +331,7 @@ class Twig {
 				},
 			],
 		]);
+
 
 	}
 

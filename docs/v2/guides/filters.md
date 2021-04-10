@@ -23,8 +23,6 @@ When you need to trim text to a desired length (in words)
 <p class="intro">Steve-O was born in London, England. His mother, Donna Gay (née Wauthier), was Canadian, and his father, Richard Glover, was American. His paternal grandfather was English and his maternal step-grandfather ...</p>
 ```
 
-* * *
-
 ## function
 
 Runs a function where you need. Really valuable for integrating plugins or existing themes
@@ -56,9 +54,8 @@ Runs a function where you need. Really valuable for integrating plugins or exist
 <div class="entry-meta">Posted on September 6, 2013</div>
 ```
 
-* * *
-
 ## relative
+
 Converts an absolute URL into a relative one, for example:
 
 ```twig
@@ -69,12 +66,9 @@ My custom link is <a href="{{ 'http://example.org/2015/08/my-blog-post' | relati
 My custom link is <a href="/2015/08/my-blog-post">here!</a>
 ```
 
-* * *
-
 ## pretags
-Converts tags like `<span>` into `&lt;span&gt;`, but only inside of `<pre>` tags. Great for code samples when you need to preserve other formatting in the non-code sample content.
 
-* * *
+Converts tags like `<span>` into `&lt;span&gt;`, but only inside of `<pre>` tags. Great for code samples when you need to preserve other formatting in the non-code sample content.
 
 ## sanitize
 
@@ -91,8 +85,6 @@ Converts Titles like this into `titles-like-this`
 ```html
 my-awesome-post
 ```
-
-* * *
 
 ## shortcodes
 
@@ -114,8 +106,6 @@ Here is my gallery <div class="gallery" id="gallery-123"><img src="...." />...</
 </section>
 ```
 
-* * *
-
 ## time_ago
 
 Displays a date in timeago format:
@@ -132,8 +122,6 @@ Displays a date in timeago format:
 <p class="entry-meta">Posted: <time>3 days ago</time></p>
 ```
 
-* * *
-
 ## truncate
 
 **Twig**
@@ -147,8 +135,6 @@ Displays a date in timeago format:
 ```html
 <p class="entry-meta">Bruce Wayne's parents were shot outside the opera ...</p>
 ```
-
-* * *
 
 ## wpautop
 
@@ -173,8 +159,6 @@ Adds paragraph breaks to new lines
 </div>
 ```
 
-* * *
-
 ## list
 
 Converts an array of strings into a comma-separated list.
@@ -182,7 +166,6 @@ Converts an array of strings into a comma-separated list.
 **PHP**
 
 ```php
-<?php
 $context['contributors'] = array('Blake Allen','Rachel White','Maddy May');
 ```
 

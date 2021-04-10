@@ -9,13 +9,14 @@ class TestTimberTwigDateFunction extends Timber_UnitTestCase {
 	/**
 	 * This test also checks whether date() returns a Datetime object.
 	 *
-	 * NOTE: this may randomly fail. There's not really a way around this
-	 * because of how PHP deals with time.
+	 * NOTE: we do the rounding because otherwise this can randomly fail when some fraction of ~.5 
+	 * seconds has elapsed between when compile_string is called and the date().getTimestamp()
+	 * method is executed.
 	 */
-	function testDateNow() {
+	function testDateNowRounded() {
 		$result = Timber\Timber::compile_string(
-			"{{ date().getTimestamp() == date ? 'OK' : 'KO' }}",
-			[ 'date' => time() ]
+			"{{ (date().getTimestamp()/10)|round == date ? 'OK' : 'KO' }}",
+			[ 'date' => round(time()/10) ]
 		);
 
 		$this->assertEquals( 'OK', $result );

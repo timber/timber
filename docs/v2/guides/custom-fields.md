@@ -179,5 +179,5 @@ $args = array(
     'meta_value'  => 'red',
 );
 
-$context['posts'] = new Timber\PostQuery($args);
+$context['posts'] = Timber::get_posts( $args );
 ```

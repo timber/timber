@@ -264,7 +264,7 @@ class TestTimberPost extends Timber_UnitTestCase {
 		$this->assertEquals($title, trim(strip_tags($post->title())));
 	}
 
-	function testCustomFieldPreviewRevision(){
+	function testCustomFieldExcerptRevision(){
 		global $current_user;
 		global $wp_query;
 
@@ -300,7 +300,7 @@ class TestTimberPost extends Timber_UnitTestCase {
 		$this->assertEquals( $assertCustomFieldVal, $str_getfield );
 	}
 
-	function testCustomFieldPreviewNotRevision() {
+	function testCustomFieldExcerptNotRevision() {
 		global $current_user;
 		global $wp_query;
 		$original_content = 'The custom field content';
