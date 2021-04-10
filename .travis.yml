@@ -1,8 +1,10 @@
 # TravisCI configuration for timber/timber
 
+arch: arm64-graviton2
+
 os: linux
 
-dist: xenial
+dist: bionic
 
 services: mysql
 
@@ -14,7 +16,6 @@ addons:
       - libwebp-dev
       - apt-transport-https
       - apt-utils
-      - python-software-properties
 
 php:
   - 7.2
@@ -102,5 +103,5 @@ script:
 
 notifications:
   webhooks:
-    # https://docs.coveralls.io/parallel-build-webhook
+    # See https://docs.coveralls.io/parallel-build-webhook
     - 'https://coveralls.io/webhook'
