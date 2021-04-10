@@ -80,8 +80,25 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
 	 */
 	protected function fetch_meta( $field_name = '', $args = [], $apply_filters = true ) {
 
+		/**
+		 * Filters whether to transform a meta value.
+		 *
+		 * If the filter returns `true`, all meta value will be transformed to Timber/standard PHP objects if possible.
+		 *
+		 * @api
+		 * @since 2.0.0
+		 * @example
+		 * ```php
+		 * // Transforms all meta value.
+		 * add_filter( 'timber/meta/transform_value', '__return_true' );
+		 * ```
+		 *
+		 * @param bool $transform
+		 */
+		$transform_value = apply_filters('timber/meta/transform_value', false );
+
 		$args = wp_parse_args( $args, [
-			'transform_value' => apply_filters('timber/meta/transform_value', false),
+			'transform_value' => $transform_value,
 		] );
 
 		$object_meta = null;
@@ -90,7 +107,7 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
 
 		if ( $apply_filters ) {
 			/**
-			 * Filters post meta data before it is fetched from the database.
+			 * Filters object meta data before it is fetched from the database.
 			 *
 			 * @example
 			 * ```php
@@ -99,16 +116,15 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
 			 *
 			 * // Add your own meta data.
 			 * add_filter( 'timber/post/pre_meta', function( $post_meta, $post_id, $post ) {
-			 *     $post_meta = array_merge( $post_meta, array(
+			 *     $post_meta = array_merge( $post_meta, [
 			 *         'custom_data_1' => 73,
 			 *         'custom_data_2' => 274,
-			 *     ) );
+			 *     ] );
 			 *
 			 *     return $post_meta;
 			 * }, 10, 3 );
 			 * ```
 			 *
-			 * @see   \Timber\Post::meta()
 			 * @since 2.0.0
 			 *
 			 * @param string       $object_meta  The field value. Default null. Passing a non-null
