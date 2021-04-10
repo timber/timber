@@ -129,12 +129,49 @@ class Image extends Post implements CoreInterface {
 			return $this->get_dimensions_loaded($dim);
 		}
 		if ( file_exists($this->file_loc) && filesize($this->file_loc) ) {
-			list($width, $height) = getimagesize($this->file_loc);
-			$this->_dimensions = array();
-			$this->_dimensions[0] = $width;
-			$this->_dimensions[1] = $height;
+			if ( ImageHelper::is_svg( $this->file_loc ) ) {
+				$svg_size             = $this->svgs_get_dimensions( $this->file_loc );
+				$this->_dimensions    = array();
+				$this->_dimensions[0] = $svg_size->width;
+				$this->_dimensions[1] = $svg_size->height;
+			} else {
+				list($width, $height) = getimagesize($this->file_loc);
+				$this->_dimensions = array();
+				$this->_dimensions[0] = $width;
+				$this->_dimensions[1] = $height;
+			}
 			return $this->get_dimensions_loaded($dim);
 		}
+	}
+
+	/**
+	 * Retrieve dimensions from SVG file
+	 *
+	 * @internal
+	 * @param string $svg SVG Path
+	 * @return array
+	 */
+	protected function svgs_get_dimensions( $svg ) {
+		$svg    = simplexml_load_file( $svg );
+		$width  = '0';
+		$height = '0';
+
+		if ( false !== $svg ) {
+			$attributes = $svg->attributes();
+			if ( isset( $attributes->viewBox ) ) {
+				$viewbox = explode( ' ', $attributes->viewBox );
+				$width   = $viewbox[2];
+				$height  = $viewbox[3];
+			} elseif ( $attributes->width && $attributes->height ) {
+				$width  = (string) $attributes->width;
+				$height = (string) $attributes->height;
+			}
+		}
+
+		return (object) array(
+			'width'  => $width,
+			'height' => $height,
+		);
 	}
 
 	/**

@@ -36,6 +36,8 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Changes for Theme Developers**
 
+* You can now get dimensions of SVG images #2421 #2432 (thanks @vyskoczilova)
+
 **Fixes and improvements**
 
 = 1.18.2 = 
