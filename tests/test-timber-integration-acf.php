@@ -10,6 +10,7 @@ use Timber\User;
  * @group posts-api
  */
 class TestTimberIntegrationACF extends Timber_UnitTestCase {
+	
 	function testACFInit() {
 		$acf = new ACF();
 		$this->assertInstanceOf( 'Timber\Integrations\ACF', $acf );
