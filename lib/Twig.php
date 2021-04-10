@@ -119,7 +119,7 @@ class Twig {
 				],
 			],
 			'Term' => [
-				'callable' => function ($term_id) {
+				'callable' => function ($term_id) use ($termFactory) {
 					Helper::deprecated('{{ Term() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0');
 					return $termFactory->from( $term_id );
 				},
@@ -128,7 +128,7 @@ class Twig {
 				],
 			],
 			'TimberTerm' => [
-				'callable' => function ($term_id) {
+				'callable' => function ($term_id) use ($termFactory) {
 					Helper::deprecated('{{ TimberTerm() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0');
 					return $termFactory->from( $term_id );
 				},
