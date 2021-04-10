@@ -85,7 +85,6 @@ jobs:
         - composer update --prefer-source
       script:
         - vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose ./tests/test-timber-image-towebp.php
-      after_success: skip
 
 cache:
   directories:
