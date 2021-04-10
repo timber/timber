@@ -9,6 +9,7 @@ use Twig\TwigFilter;
 use Twig\Error\Error;
 
 use Timber\Factory\PostFactory;
+use Timber\Factory\TermFactory;
 
 /**
  * Class Twig
@@ -36,9 +37,8 @@ class Twig {
 	 */
 	public function get_timber_functions() {
 
-		$postFactory = new PostFactory();
-    
-    $termFactory = new TermFactory();
+		$postFactory = new PostFactory();  
+		$termFactory = new TermFactory();
 
 		return apply_filters( 'timber/twig/default_functions', [
 			'action' => [
