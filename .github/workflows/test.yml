@@ -27,26 +27,26 @@ jobs:
 
       fail-fast: false
       matrix:
-        php: ['7.4', '7.3', '7.2'] # , '7.1', '7.0'
+        php: ['7.4']
         wp: ['5.3.6', 'latest']
-        multisite: ['0']
+        multisite: ['0', '1']
         dependency-version: [prefer-stable] # prefer-lowest
         webp: [false]
         coverage: [false]
+        extensions: ['gd']
         include:
-          # Multisite
-          - php: '7.4'
-            wp: 'latest'
-            dependency-version: 'prefer-stable'
-            multisite: '1'
-            coverage: false
           # WP Trunk
           - php: '7.4'
             wp: 'trunk'
             dependency-version: 'prefer-stable'
             multisite: '0'
-            coverage: false
             experimental: true
+          # PHP with Imagick
+          - php: '7.4'
+            wp: 'latest'
+            dependency-version: 'prefer-stable'
+            multisite: '0'
+            extensions: 'imagick'
           # Coverage
           - php: '7.4'
             wp: 'latest'
@@ -54,7 +54,7 @@ jobs:
             multisite: '0'
             coverage: true
 
-    name: PHP ${{ matrix.php }} ${{ matrix.coverage && ' (with coverage)' || '' }} ${{ matrix.extensions && ' (with ' || '' }} ${{ matrix.webp && ' (webp)' || '' }} | WP ${{ matrix.wp }}${{ matrix.multisite == 1 && ' (MS)' || '' }} | ${{ matrix.dependency-version }}
+    name: PHP ${{ matrix.php }} ${{ matrix.extensions == 'imagick' && ' (Imagick)' || '' }}${{ matrix.coverage && ' (with coverage)' || '' }} ${{ matrix.webp && ' (webp)' || '' }} | WP ${{ matrix.wp }}${{ matrix.multisite == 1 && ' (MS)' || '' }} | ${{ matrix.dependency-version }}
 
     steps:
       - name: Checkout
@@ -66,7 +66,7 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: ${{ matrix.coverage && 'pcov' || 'none' }}
           tools: composer:v2
-          extensions: curl, date, dom, gd, iconv, json, libxml, mysql
+          extensions: curl, date, dom, iconv, json, libxml, mysql, ${{ matrix.extensions }}
           ini-values: pcov.directory=lib
 
       - name: Shutdown default MySQL service
