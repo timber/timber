@@ -365,24 +365,6 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 
 
 	/**
-	 * Helps you find the post id regardless of whether you send a string or whatever.
-	 *
-	 * @internal
-	 * @param integer $pid number to check against.
-	 * @return integer ID number of a post
-	 */
-	protected static function check_post_id( $pid ) {
-		if ( is_numeric($pid) && 0 === $pid ) {
-			$pid = get_the_ID();
-			return $pid;
-		}
-		if ( ! is_numeric($pid) && is_string($pid) ) {
-			$pid = PostGetter::get_post_id_by_name($pid);
-		}
-		return $pid;
-	}
-
-	/**
 	 * Gets a excerpt of your post.
 	 *
 	 * If you have an excerpt is set on the post, the excerpt will be used. Otherwise it will try to
