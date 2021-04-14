@@ -14,6 +14,7 @@ namespace Timber;
  * ```php
  * <?php
  * $context = Timber::context();
+ *
  * Timber::render('index.twig', $context);
  * ?>
  * ```
@@ -165,8 +166,8 @@ class Theme extends Core {
 
 	/**
 	 * Gets a raw, unformatted theme header.
-	 * 
-	 * @api 
+	 *
+	 * @api
 	 * @see \WP_Theme::get()
 	 * @example
 	 * ```twig

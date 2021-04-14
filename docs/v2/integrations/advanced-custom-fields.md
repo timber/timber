@@ -81,8 +81,9 @@ if (isset($post->hero_image) && strlen($post->hero_image)){
     $post->hero_image = Timber::get_image( $post->hero_image );
 }
 
-$context = Timber::context();
-$context['post'] = $post;
+$context = Timber::context( [
+    'post' => $post,
+] );
 
 Timber::render('single.twig', $context);
 ```

@@ -82,12 +82,12 @@ if ( ! isset( $paged ) || ! $paged ) {
     $paged = 1;
 }
 
-$context = Timber::context();
-
-$context['posts'] = Timber::get_posts( [
-    'post_type'      => 'event',
-    'posts_per_page' => 5,
-    'paged'          => $paged
+$context = Timber::context( [
+    'posts' => Timber::get_posts( [
+        'post_type'      => 'event',
+        'posts_per_page' => 5,
+        'paged'          => $paged
+    ] ),
 ] );
 
 Timber::render( 'archive-event.twig', $context );
