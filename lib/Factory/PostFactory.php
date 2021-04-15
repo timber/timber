@@ -98,7 +98,9 @@ class PostFactory {
 
 	protected function is_image(WP_Post $post) {
 		$src   = wp_get_attachment_url( $post->ID );
-		$check = wp_check_filetype( PathHelper::basename( $src ) );
+		$mimes = get_allowed_mime_types();
+		$mimes['svg'] = 'image/svg+xml';
+		$check = wp_check_filetype( PathHelper::basename( $src ), $mimes );
 
 		$extensions = apply_filters( 'timber/post/image_extensions', [
 			'jpg',
@@ -106,6 +108,7 @@ class PostFactory {
 			'jpe',
 			'gif',
 			'png',
+			'svg',
 			'webp',
 		] );
 

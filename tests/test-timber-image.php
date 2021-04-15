@@ -1072,12 +1072,9 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 
  	function testSVGDimensions() {
 		$pid = $this->factory->post->create();
-		$filename = self::copyTestImage( 'icon-twitter.svg' );
-		$attachment = array( 'post_title' => 'Twitter Icon', 'post_content' => '' );
-		$iid = wp_insert_attachment( $attachment, $filename, $pid );
-		$image = new TimberImage( $iid );
-		$this->assertEquals( 23, $image->width() );
-		$this->assertEquals( 20, $image->height() );
+		$image = Timber::get_image( self::get_attachment($pid, 'icon-twitter.svg') );
+ 		$this->assertEquals( 23, $image->width() );
+ 		$this->assertEquals( 20, $image->height() );
 	}
 
 }
