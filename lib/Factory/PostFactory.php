@@ -99,7 +99,9 @@ class PostFactory {
 	protected function is_image(WP_Post $post) {
 		$src   = wp_get_attachment_url( $post->ID );
 		$mimes = wp_get_mime_types();
+		// Add mime types that Timber recongizes as images, regardless of config
 		$mimes['svg'] = 'image/svg+xml';
+		$mimes['webp'] = 'image/webp';
 		$check = wp_check_filetype( PathHelper::basename( $src ), $mimes );
 
 		$extensions = apply_filters( 'timber/post/image_extensions', [
