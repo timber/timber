@@ -1069,12 +1069,12 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.date('Y/m').'/icon-twitter.svg" />', trim($str));
 	}
 
-
  	function testSVGDimensions() {
 		$pid = $this->factory->post->create();
 		$image = Timber::get_image( self::get_attachment($pid, 'icon-twitter.svg') );
  		$this->assertEquals( 23, $image->width() );
  		$this->assertEquals( 20, $image->height() );
 	}
+
 
 }
