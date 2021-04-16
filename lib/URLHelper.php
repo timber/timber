@@ -204,6 +204,7 @@ class URLHelper {
 	/**
 	 * @api
 	 * @param string $fs
+	 * @return string
 	 */
 	public static function file_system_to_url( $fs ) {
 		$relative_path = self::get_rel_path($fs);
