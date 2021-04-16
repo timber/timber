@@ -428,7 +428,6 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://upstatement.com', $item->link() );
 		$this->assertEquals( 'http://upstatement.com', $item->url );
 		$this->assertTrue( $item->is_external() );
-
 	}
 
 	function testWPMLMenu() {
