@@ -15,6 +15,7 @@ use Timber\Factory\TermFactory;
  * Class Twig
  */
 class Twig {
+	
 	public static $dir_name;
 
 	/**
