@@ -506,7 +506,7 @@ class URLHelper {
 
 	/**
 	 * Returns the url path parameters, or a single parameter if given an index.
-	 * Normalizes REQUEST_URI to lower-case. Returns null if given a
+	 * Normalizes REQUEST_URI to lower-case. Returns false if given a
 	 * non-existent index.
 	 *
 	 * @example
@@ -530,7 +530,7 @@ class URLHelper {
 	 *
 	 * @api
 	 * @param boolean|int $i the position of the parameter to grab.
-	 * @return array|string|null
+	 * @return array|string|false
 	 */
 	public static function get_params( $i = false ) {
 		$uri    = trim(strtolower($_SERVER['REQUEST_URI']));
@@ -545,7 +545,7 @@ class URLHelper {
 			$i = count($params) + $i;
 		}
 
-		return $params[$i] ?? null;
+		return $params[$i] ?? false;
 	}
 
 }

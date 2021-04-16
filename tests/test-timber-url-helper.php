@@ -182,7 +182,7 @@
             $url = Timber\URLHelper::remove_double_slashes($url);
             $this->assertEquals($expected_url, $url);
         }
-		
+
 	function testDoubleSlashesWithGS() {
             $url = 'gs://bucket/folder//thing.html';
             $expected_url = 'gs://bucket/folder/thing.html';
@@ -367,11 +367,9 @@
             $this->assertEquals('blog', $blog);
         }
 
-        function testGetParamsNadda(){
+        function testGetParamsNada(){
             $_SERVER['REQUEST_URI'] = 'http://example.org/blog/post/news/2014/whatever';
             $params = Timber\URLHelper::get_params(93);
-            $this->assertNull($params);
+            $this->assertFalse($params);
         }
-
-
     }
