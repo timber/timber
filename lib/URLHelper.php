@@ -204,6 +204,7 @@ class URLHelper {
 	/**
 	 * @api
 	 * @param string $fs
+	 * @return string
 	 */
 	public static function file_system_to_url( $fs ) {
 		$relative_path = self::get_rel_path($fs);
@@ -505,7 +506,7 @@ class URLHelper {
 
 	/**
 	 * Returns the url path parameters, or a single parameter if given an index.
-	 * Normalizes REQUEST_URI to lower-case. Returns false if given a
+	 * Normalizes REQUEST_URI to lower-case. Returns null if given a
 	 * non-existent index.
 	 *
 	 * @example
