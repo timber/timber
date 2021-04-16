@@ -98,7 +98,7 @@ class PostFactory {
 
 	protected function is_image(WP_Post $post) {
 		$src   = wp_get_attachment_url( $post->ID );
-		$mimes = get_allowed_mime_types();
+		$mimes = wp_get_mime_types();
 		$mimes['svg'] = 'image/svg+xml';
 		$check = wp_check_filetype( PathHelper::basename( $src ), $mimes );
 
