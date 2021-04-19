@@ -11,9 +11,12 @@ namespace Timber;
  * @api
  * @example
  * ```php
- * $context = Timber::context();
  * $other_site_id = 2;
- * $context['other_site'] = new Timber\Site($other_site_id);
+ *
+ * $context = Timber::context( [
+ *     'other_site' => new Timber\Site( $other_site_id ),
+ * ] );
+ *
  * Timber::render('index.twig', $context);
  * ```
  * ```twig

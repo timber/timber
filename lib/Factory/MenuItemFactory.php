@@ -49,10 +49,9 @@ class MenuItemFactory {
 		return is_object($item) && $item instanceof WP_Post;
 	}
 
-	protected function build($item, Menu $menu) : CoreInterface {
+	protected function build($item, Menu $menu) : MenuItem {
 		$class = apply_filters('timber/menuitem/classmap', MenuItem::class, $item, $menu);
 
-		// @todo call ::build() instead of constructor
-		return new $class($item, $menu);
+		return $class::build($item, $menu);
 	}
 }

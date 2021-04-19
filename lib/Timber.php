@@ -32,8 +32,9 @@ use Timber\URLHelper;
  *     'category_name' => 'sports',
  * ] );
  *
- * $context = Timber::context();
- * $context['posts'] = $posts;
+ * $context = Timber::context( [
+ *     'posts' => $posts,
+ * ] );
  *
  * Timber::render( 'index.twig', $context );
  * ```

@@ -4,8 +4,10 @@
 
 		protected $backup_wp_theme_directories;
 
+		var $theme_slug = 'twentythirty';
+
 		function testThemeVersion() {
-			switch_theme('twentynineteen');
+			switch_theme($this->theme_slug);
 			$theme = new Timber\Theme();
 			$this->assertGreaterThan(1.2, $theme->version);
 			switch_theme('default');
@@ -80,7 +82,7 @@
 		}
 
 		function testThemeGet() {
-			switch_theme('twentynineteen');
+			switch_theme($this->theme_slug);
 			$context = Timber::context();
 			$output = Timber::compile_string('{{site.theme.get("Name")}}', $context);
 			$this->assertEquals('Twenty Nineteen', $output);
@@ -88,7 +90,7 @@
 		}
 
 		function testThemeDisplay() {
-			switch_theme('twentynineteen');
+			switch_theme($this->theme_slug);
 			$context = Timber::context();
 			$output = Timber::compile_string('{{site.theme.display("Description")}}', $context);
 			$this->assertEquals("Our 2019 default theme is designed to show off the power of the block editor. It features custom styles for all the default blocks, and is built so that what you see in the editor looks like what you&#8217;ll see on your website. Twenty Nineteen is designed to be adaptable to a wide range of websites, whether you’re running a photo blog, launching a new business, or supporting a non-profit. Featuring ample whitespace and modern sans-serif headlines paired with classic serif body text, it&#8217;s built to be beautiful on all screen sizes.", $output);
@@ -105,6 +107,11 @@
 
 			wp_clean_themes_cache();
 			unset( $GLOBALS['wp_themes'] );
+
+			$theme = wp_get_theme($this->theme_slug);
+			if ( !$theme->exists() ) {
+				$this->markTestSkipped('The '.$this->theme_slug.' theme is not available');
+			}
 
 		}
 

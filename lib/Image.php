@@ -10,12 +10,14 @@ namespace Timber;
  * @api
  * @example
  * ```php
- * $context         = Timber::context();
+ * $context = Timber::context();
  *
  * // Lets say you have an alternate large 'cover image' for your post
  * // stored in a custom field which returns an image ID.
  * $cover_image_id = $context['post']->cover_image;
+ *
  * $context['cover_image'] = Timber::get_post($cover_image_id);
+ *
  * Timber::render('single.twig', $context);
  * ```
  *
@@ -123,6 +125,36 @@ class Image extends Attachment {
 			return $this->height();
 		}
 		return $this->width();
+	}
+
+	/**
+	 * Retrieve dimensions from SVG file
+	 *
+	 * @internal
+	 * @param string $svg SVG Path
+	 * @return array
+	 */
+	protected function get_dimensions_svg( $svg ) {
+		$svg    = simplexml_load_file( $svg );
+		$width  = '0';
+		$height = '0';
+
+		if ( false !== $svg ) {
+			$attributes = $svg->attributes();
+			if ( isset( $attributes->viewBox ) ) {
+				$viewbox = explode( ' ', $attributes->viewBox );
+				$width   = $viewbox[2];
+				$height  = $viewbox[3];
+			} elseif ( $attributes->width && $attributes->height ) {
+				$width  = (string) $attributes->width;
+				$height = (string) $attributes->height;
+			}
+		}
+
+		return (object) array(
+			'width'  => $width,
+			'height' => $height,
+		);
 	}
 
 	/**
@@ -301,12 +333,16 @@ class Image extends Attachment {
 
 		// Load dimensions.
 		if ( file_exists( $this->file_loc ) && filesize( $this->file_loc ) ) {
-			list( $width, $height ) = getimagesize( $this->file_loc );
+			if ( ImageHelper::is_svg( $this->file_loc) ) {
+				$svg_size			 = $this->get_dimensions_svg( $this->file_loc );
+				$this->dimensions	 = [$svg_size->width, $svg_size->height];
+ 			} else {
+				list( $width, $height ) = getimagesize( $this->file_loc );
 
-			$this->dimensions    = array();
-			$this->dimensions[0] = $width;
-			$this->dimensions[1] = $height;
-
+				$this->dimensions    = array();
+				$this->dimensions[0] = $width;
+				$this->dimensions[1] = $height;
+			}
 			return $this->get_dimension_loaded( $dimension );
 		}
 
