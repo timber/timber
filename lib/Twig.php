@@ -246,7 +246,7 @@ class Twig {
 		 *
 		 *     // Remove a function.
 		 *     unset( $functions['bloginfo'] );
-		 **
+		 *
 		 *     return $functions;
 		 * } );
 		 * ```
@@ -423,7 +423,7 @@ class Twig {
 		 *
 		 *     // Remove a filter.
 		 *     unset( $filters['list'] );
-		 **
+		 *
 		 *     return $filters;
 		 * } );
 		 * ```
