@@ -271,7 +271,7 @@ class Twig {
 				new TwigFunction(
 					$name,
 					$function['callable'],
-					isset( $function['options'] ) ? $function['options'] : []
+					$function['options'] ?? []
 				)
 			);
 		}
@@ -448,7 +448,7 @@ class Twig {
 				new TwigFilter(
 					$name,
 					$function['callable'],
-					isset( $function['options'] ) ? $function['options'] : []
+					$function['options'] ) ?? []
 				)
 			);
 		}
