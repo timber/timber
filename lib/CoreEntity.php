@@ -93,7 +93,7 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
 		 * add_filter( 'timber/meta/transform_value', '__return_true' );
 		 * ```
 		 *
-		 * @param bool $transform
+		 * @param bool $transform_value
 		 */
 		$transform_value = apply_filters('timber/meta/transform_value', false );
 
