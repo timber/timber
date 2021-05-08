@@ -18,10 +18,9 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
 	 * @param string $field_name Optional. The field name for which you want to get the value. If
 	 *                           no field name is provided, this function will fetch values for all
 	 *                           custom fields. Default empty string.
-	 * @param array  $args       {
-	 *      An array of arguments for getting the meta value. Third-party integrations can use this
-	 *      argument to make their API arguments available in Timber. Default empty array.
-	 * }
+	 * @param array $args An array of arguments for getting the meta value. Third-party integrations
+	 *                    can use this argument to make their API arguments available in Timber.
+	 *                    Default empty array.
 	 * @return mixed The custom field value or an array of custom field values. Null if no value
 	 *               could be found.
 	 */
