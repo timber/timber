@@ -533,9 +533,6 @@ class ImageHelper {
 		$parts = PathHelper::pathinfo($tmp);
 		$result['subdir'] = ($parts['dirname'] === '/') ? '' : $parts['dirname'];
 		$result['filename'] = $parts['filename'];
-		// @todo remove this debug dump
-		// without the most recent change in test-timber-image-resize.php, the basename gets set to "en" with no extension
-		if (!isset($parts['extension'])) var_dump($parts);
 		$result['extension'] = strtolower($parts['extension']);
 		$result['basename'] = $parts['basename'];
 		return $result;

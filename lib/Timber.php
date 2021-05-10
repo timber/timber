@@ -194,8 +194,6 @@ class Timber {
 	) : void {
 		if ($integration->should_init()) {
 			$integration->init();
-		} else {
-			echo 'DID NOT INIT ' . get_class($integration);
 		}
 	}
 
@@ -645,7 +643,7 @@ class Timber {
 	 * ```
 	 */
 	public static function get_term( $term = null ) {
-		
+
 		if (null === $term) {
 			// get the fallback term_id from the current query
 			global $wp_query;
@@ -689,7 +687,7 @@ class Timber {
 	 * @param string     $field    The name of the field to retrieve the term with. One of: `id`,
 	 *                             `ID`, `slug`, `name` or `term_taxonomy_id`.
 	 * @param int|string $value    The value to search for by `$field`.
-	 * @param string     $taxonomy The taxonomy you want to retrieve from. Empty string will search 
+	 * @param string     $taxonomy The taxonomy you want to retrieve from. Empty string will search
 	 *                             from all.
 	 *
 	 * @return \Timber\Term|null
