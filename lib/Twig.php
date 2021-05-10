@@ -448,7 +448,7 @@ class Twig {
 				new TwigFilter(
 					$name,
 					$function['callable'],
-					$function['options'] ) ?? []
+					$function['options'] ?? []
 				)
 			);
 		}
