@@ -28,7 +28,7 @@ This is the simplest way to run your integration code when the plugin is activat
 
 Here's a simplified example of the ACF integration. Timber defines and adds an 'AcfIntegration` automatically, but for illustration purposes, let's rename it `MyAcfIntegration`.
 
-```
+```php
 namespace MyProject;
 
 use ACF;
