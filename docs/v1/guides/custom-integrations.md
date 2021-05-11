@@ -10,8 +10,8 @@ To achieve this, that class implements a simple interface: `Timber\Integrations\
 namespace Timber\Integration;
 
 interface IntegrationInterface {
-	public function should_init() : bool;
-	public function init() : void;
+  public function should_init() : bool;
+  public function init() : void;
 }
 ```
 
