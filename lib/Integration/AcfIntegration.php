@@ -20,10 +20,10 @@ class AcfIntegration implements IntegrationInterface {
 	}
 
 	public function init() : void {
-		add_filter('timber/post/pre_meta', array( __CLASS__, 'post_get_meta_field' ), 10, 5);
-		add_filter('timber/post/meta_object_field', array( __CLASS__, 'post_meta_object' ), 10, 3);
-		add_filter('timber/term/pre_meta', array( __CLASS__, 'term_get_meta_field' ), 10, 5);
-		add_filter('timber/user/pre_meta', array( __CLASS__, 'user_get_meta_field' ), 10, 5);
+		add_filter('timber/post/pre_meta', array( $this, 'post_get_meta_field' ), 10, 5);
+		add_filter('timber/post/meta_object_field', array( $this, 'post_meta_object' ), 10, 3);
+		add_filter('timber/term/pre_meta', array( $this, 'term_get_meta_field' ), 10, 5);
+		add_filter('timber/user/pre_meta', array( $this, 'user_get_meta_field' ), 10, 5);
 
 		/**
 		 * Allowed a user to set a meta value
@@ -43,7 +43,7 @@ class AcfIntegration implements IntegrationInterface {
 	 * @param array        $args       An array of arguments.
 	 * @return mixed|false
 	 */
-	public static function post_get_meta_field( $value, $post_id, $field_name, $post, $args ) {
+	public function post_get_meta_field( $value, $post_id, $field_name, $post, $args ) {
 		$args = wp_parse_args( $args, array(
 			'format_value' => true,
 		) );
@@ -51,7 +51,7 @@ class AcfIntegration implements IntegrationInterface {
 		return get_field( $field_name, $post_id, $args['format_value'] );
 	}
 
-	public static function post_meta_object( $value, $post_id, $field_name ) {
+	public function post_meta_object( $value, $post_id, $field_name ) {
 		return get_field_object($field_name, $post_id);
 	}
 
@@ -65,7 +65,7 @@ class AcfIntegration implements IntegrationInterface {
 	 * @param array        $args       An array of arguments.
 	 * @return mixed|false
 	 */
-	public static function term_get_meta_field( $value, $term_id, $field_name, $term, $args ) {
+	public function term_get_meta_field( $value, $term_id, $field_name, $term, $args ) {
 		$args = wp_parse_args( $args, array(
 			'format_value' => true,
 		) );
@@ -98,7 +98,7 @@ class AcfIntegration implements IntegrationInterface {
 	 * @param array        $args       An array of arguments.
 	 * @return mixed|false
 	 */
-	public static function user_get_meta_field( $value, $user_id, $field_name, $user, $args ) {
+	public function user_get_meta_field( $value, $user_id, $field_name, $user, $args ) {
 		$args = wp_parse_args( $args, array(
 			'format_value' => true,
 		) );
