@@ -37,24 +37,24 @@ use ACF;
  * Class used to handle integration with Advanced Custom Fields
  */
 class MyAcfIntegration implements IntegrationInterface {
-	public function should_init() : bool {
-		return class_exists( ACF::class );
-	}
+  public function should_init() : bool {
+    return class_exists( ACF::class );
+  }
 
-	public function init() : void {
+  public function init() : void {
     // Hook into Timber's postmeta logic.
-		add_filter('timber/post/pre_meta', [$this, 'post_get_meta_field'], 10, 5);
-	}
+    add_filter('timber/post/pre_meta', [$this, 'post_get_meta_field'], 10, 5);
+  }
 
-	public static function post_get_meta_field( $value, $post_id, $field_name, $post, $args ) {
-		$args = wp_parse_args( $args, array(
+  public static function post_get_meta_field( $value, $post_id, $field_name, $post, $args ) {
+    $args = wp_parse_args( $args, array(
       // Apply formatting logic (defined when configuring the field)?
-			'format_value' => true,
-		) );
+      'format_value' => true,
+    ) );
 
     // NOTE: get_field() is defined by ACF itself. We're simply delegating.
-		return get_field( $field_name, $post_id, $args['format_value'] );
-	}
+    return get_field( $field_name, $post_id, $args['format_value'] );
+  }
 }
 ```
 
