@@ -23,7 +23,7 @@ class Twig {
 		$self = new self();
 
 		add_filter( 'timber/twig', [ $self, 'add_timber_functions' ] );
-                add_filter( 'timber/twig', [ $self, 'add_timber_filters' ] );
+		add_filter( 'timber/twig', [ $self, 'add_timber_filters' ] );
 		add_filter( 'timber/twig', [ $self, 'add_timber_escapers' ] );
 
 		// Deprecation handling.
