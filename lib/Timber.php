@@ -123,11 +123,22 @@ class Timber {
 			Admin::init();
 
 			add_action('init', function() {
-				$integrations = apply_filters('timber/integrations', [
+				$integrations = [
 					Integration\AcfIntegration::class,
 					Integration\CoAuthorsPlusIntegration::class,
 					Integration\WpmlIntegration::class,
-				]);
+				];
+
+				/**
+				 * Filters the integrations that should be initialized by Timber.
+				 *
+				 * @since 2.0.0
+				 *
+				 * @param array $integrations An array of PHP class names. Default: array of
+				 *                            integrations that Timber initializes by default.
+				 */
+				$integrations = apply_filters( 'timber/integrations', $integrations );
+
 				foreach ($integrations as $integration) {
 					self::init_integration(new $integration());
 				}
