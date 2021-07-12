@@ -75,6 +75,9 @@ add_filter( 'timber/twig/filters', function( $functions ) {
 } );
 ```
 
+### function_wrapper
+
+In Timber versions lower than 1.3, you could use `function_wrapper` to make functions available in Twig. This method is now deprecated. Instead, use the method above.
 
 ## Filters
 
