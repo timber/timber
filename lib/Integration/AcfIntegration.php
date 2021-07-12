@@ -20,17 +20,17 @@ class AcfIntegration implements IntegrationInterface {
 	}
 
 	public function init() : void {
-		add_filter('timber/post/pre_meta', array( $this, 'post_get_meta_field' ), 10, 5);
-		add_filter('timber/post/meta_object_field', array( $this, 'post_meta_object' ), 10, 3);
-		add_filter('timber/term/pre_meta', array( $this, 'term_get_meta_field' ), 10, 5);
-		add_filter('timber/user/pre_meta', array( $this, 'user_get_meta_field' ), 10, 5);
+		add_filter('timber/post/pre_meta', array( __CLASS__, 'post_get_meta_field' ), 10, 5);
+		add_filter('timber/post/meta_object_field', array( __CLASS__, 'post_meta_object' ), 10, 3);
+		add_filter('timber/term/pre_meta', array( __CLASS__, 'term_get_meta_field' ), 10, 5);
+		add_filter('timber/user/pre_meta', array( __CLASS__, 'user_get_meta_field' ), 10, 5);
 
 		/**
 		 * Allowed a user to set a meta value
 		 *
 		 * @deprecated 2.0.0 with no replacement
 		 */
-		add_filter('timber/term/meta/set', array( $this, 'term_set_meta' ), 10, 4);
+		add_filter('timber/term/meta/set', array( __CLASS__, 'term_set_meta' ), 10, 4);
 	}
 
 	/**
@@ -43,7 +43,7 @@ class AcfIntegration implements IntegrationInterface {
 	 * @param array        $args       An array of arguments.
 	 * @return mixed|false
 	 */
-	public function post_get_meta_field( $value, $post_id, $field_name, $post, $args ) {
+	public static function post_get_meta_field( $value, $post_id, $field_name, $post, $args ) {
 		$args = wp_parse_args( $args, array(
 			'format_value' => true,
 		) );
@@ -51,7 +51,7 @@ class AcfIntegration implements IntegrationInterface {
 		return get_field( $field_name, $post_id, $args['format_value'] );
 	}
 
-	public function post_meta_object( $value, $post_id, $field_name ) {
+	public static function post_meta_object( $value, $post_id, $field_name ) {
 		return get_field_object($field_name, $post_id);
 	}
 
@@ -65,7 +65,7 @@ class AcfIntegration implements IntegrationInterface {
 	 * @param array        $args       An array of arguments.
 	 * @return mixed|false
 	 */
-	public function term_get_meta_field( $value, $term_id, $field_name, $term, $args ) {
+	public static function term_get_meta_field( $value, $term_id, $field_name, $term, $args ) {
 		$args = wp_parse_args( $args, array(
 			'format_value' => true,
 		) );
@@ -82,7 +82,7 @@ class AcfIntegration implements IntegrationInterface {
 	 *
 	 * @return mixed
 	 */
-	public function term_set_meta( $value, $field, $term_id, $term ) {
+	public static function term_set_meta( $value, $field, $term_id, $term ) {
 		$searcher = $term->taxonomy . '_' . $term->ID;
 		update_field($field, $value, $searcher);
 		return $value;
@@ -98,7 +98,7 @@ class AcfIntegration implements IntegrationInterface {
 	 * @param array        $args       An array of arguments.
 	 * @return mixed|false
 	 */
-	public function user_get_meta_field( $value, $user_id, $field_name, $user, $args ) {
+	public static function user_get_meta_field( $value, $user_id, $field_name, $user, $args ) {
 		$args = wp_parse_args( $args, array(
 			'format_value' => true,
 		) );
