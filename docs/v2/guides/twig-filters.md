@@ -1,6 +1,6 @@
 ---
-title: "Filters"
-order: "900"
+title: "Twig filters"
+order: "220"
 ---
 
 ## General Filters

@@ -3,7 +3,7 @@ title: "Twig"
 order: "200"
 ---
 
-With Timber, you can use all the features that [Twig](https://twig.symfony.com/doc/) has to offer, plus some more. Here, we repeat some important information.
+With Timber, you can use all the features that [Twig](https://twig.symfony.com/doc/) has to offer, plus some more. In this guide, we repeat some important Twig information.
 
 ## Dot notation
 
@@ -13,9 +13,11 @@ In Twig, you mostly use the dot notation:
 {{ post.title }}
 ```
 
-Now, Twig doesn’t care whether post is an object or an array, or whether title is an array item, an object property or an object method. This is important to understand.
+Twig doesn’t care whether `post` is an object or an array, or whether `title` is an array item, an object property or an object method.
 
-From looking at this code, you wouldn’t know whether `title` is a variable or a function call. In this particular case, you could also add the function parenthesis.
+(It will use what it finds first, in a specific order. This is important to understand and you can read more about this in the [Variables](https://twig.symfony.com/doc/3.x/templates.html#variables) section of the Twig documentation.)
+
+From looking at the code, you wouldn’t know whether `title` is a variable or a function call. In this particular case, you could also add the function parenthesis.
 
 ```twig
 {{ post.title() }}
@@ -29,9 +31,9 @@ Now, because `title` is a function, when you dump the `post` object, you won’t
 {{ dump(post) }}
 ```
 
-Instead, you will see that `post` also contains a `post_title` property. This is what the post inherits from the `WP_Post` object. It’s the raw title that didn’t run through the `the_title` filter.
+Instead, you will see that `post` also contains a `post_title` property. This is what the post inherits from the `WP_Post` object. It’s the raw title that didn’t run through the `the_title` filter yet.
 
-...
+### Accessing array items
 
 Consider this array with a key that has a dash in it:
 
@@ -42,23 +44,23 @@ $item = [
 ];
 ```
 
-In Twig, you could access the `id` with `item.id`, but you couldn’t do…
+In Twig, you could access the `id` with `item.id`, but you couldn’t use `item.has-balcony` because of the `-`. Luckily, you can use `item['has-balcony']`.
 
 ```twig
-# Array item.
+{# Array item. #}
 {{ item[0] }}
 
-# Normal associative array item.
+{# Normal associative array item. #}
 {{ item.id }}
 
-# Array item with special characters in the key.
+{# Array item with special characters in the key. #}
 {{ item['has-balcony'] }}
 
-# Array item with variable as key.
+{# Array item with variable as key. #}
 {{ item[key] }}
 ```
 
-## String concatentation
+## String concatenation
 
 In PHP, you might be used to concatenate your strings with dots (`.`). In Twig, you’ll use a tilde (`~`).
 
@@ -72,6 +74,18 @@ $string = $variable + '-suffix';
 
 ```twig
 {% set string = variable ~ '-suffix' %}
+```
+
+Or, if you want to use [string interpolation](https://twig.symfony.com/doc/3.x/templates.html#string-interpolation):
+
+```twig
+{% set string = "#{variable}-suffix" }
+```
+
+You could also use the [format filter](https://twig.symfony.com/doc/3.x/filters/format.html), which works the same way as [sprintf](https://www.php.net/sprintf).
+
+```twig
+{% set string = '%s-suffix'|format(variable) %}
 ```
 
 ## Includes
@@ -88,7 +102,7 @@ In earlier versions of Twig you would also see includes that looked like this:
 {% include 'footer.twig' %}
 ```
 
-The [include tag](https://twig.symfony.com/doc/3.x/tags/include.html) still works, but Twig recommends to use the [include function](https://twig.symfony.com/doc/3.x/functions/include.html).
+The [include **tag**](https://twig.symfony.com/doc/3.x/tags/include.html) still works, but Twig recommends to use the [include **function**](https://twig.symfony.com/doc/3.x/functions/include.html).
 
 Be sure to read through that documentation, because it provides helpful information. For example, it will tell you how to deal with missing files using `ignore_missing`.
 
@@ -116,9 +130,164 @@ You can pass an array of template to Twig includes. Twig will then use the first
 ) }}
 ```
 
-### Escapers
+## Default values
+
+When you want to define default values for Twig variables that you use in your templates, you can either use the [`default`](https://twig.symfony.com/doc/3.x/filters/default.html) filter or the ternary (`?:`) or null-coalescing (`??`) operator.
+
+Consider a template that you use to display a page title.
+
+**page-title.twig**
+
+```twig
+<h1 class="heading-1">{{ post.title }}</h1>
+```
+
+If you wanted to reuse this for archive pages or pages where you pass a specific title, then you could use a `title` variable that uses `post.title` as the default value.
+
+**archive.twig**
+
+```twig
+{{ include('page-title.twig', {
+    title: 'All posts'
+}) }}
+```
+
+**page-title.twig**
+
+```twig
+<h1 class="heading-1">{{ title|default(post.title) }}</h1>
+
+{# Or with the null-coalescing operator #}
+
+<h1 class="heading-1">{{ title ?? post.title }}</h1>
+```
+
+Pay special attention when you use boolean default values and use `??` instead of the `default` filter.
+
+```twig
+{# 🚫 Don’t do this #}
+{% if show_pagination|default(true) %}
+    {{ include('pagination.twig') }}
+{% endif %}
+
+{# ✅ Do this #}
+{% if show_pagination ?? true %}
+    {{ include('pagination.twig') }}
+{% endif %}
+```
+
+You can read more about this in the [default filter documentation](https://twig.symfony.com/doc/3.x/filters/default.html#default).
+
+## Escapers
 
 …
+
+## WordPress Actions
+
+You can call actions in your Twig templates like this:
+
+```twig
+{# Without parameters #}
+{% do action('my_action') %}
+
+{# With parameters #}
+{% do action('my_action_with_args', 'foo', 'bar') %}
+```
+
+If you ask yourself why there’s no underline between `do` and `action`: The expression [`do`](https://twig.symfony.com/doc/tags/do.html) is a feature of Twig which *calls a function without printing its return value*, like `{{ }}` does. Timber only registers an `action` function, which then calls the `do_action()` function.
+
+If you want anything from the template’s context, you'll need to pass that manually:
+
+```twig
+{% do action('my_action', 'foo', post) %}
+```
+
+**functions.php**
+
+```php
+add_action( 'my_action_with_args', 'my_function_with_args', 10, 2 );
+
+function my_function_with_args( $foo, $post ){
+    echo 'I say ' . $foo . '!';
+    echo 'For the post with title ' . $post->title();
+}
+```
+
+## WordPress Filters
+
+Timber already comes with a [set of useful filters](https://timber.github.io/docs/v2/guides/twig-filters/). If you have your own WordPress filters that you want to easily apply in Twig, you can use `apply_filters`.
+
+**Twig**
+
+```twig
+{{ post.content|apply_filters('default_message') }}
+
+{{ "my custom string"|apply_filters('default_message', param1, param2, ...) }}
+```
+
+Or you can use a filter with the [Twig filter tag](https://twig.symfony.com/doc/2.x/tags/filter.html).
+
+```twig
+{% filter apply_filters('default_message') %}
+    {{ post.content }}
+{% endfilter %}
+
+{% filter apply_filters('default_message', 'foo', 'bar, 'baz' ) %}
+    I love pizza
+{% endfilter %}
+```
+
+In **PHP**, you can get the content of the block with the first parameter and the rest of parameters like that.
+
+```php
+add_filter( 'default_message', 'my_default_message', 10, 4 );
+
+function my_default_message( $tag, $param1, $param2, $param3 ) {
+    var_dump( $tag, $param1, $param2, $param3 ); // 'I love pizza', 'foo', 'bar, 'baz'
+
+    echo 'I have a message: ' . $tag; // I have a message: I love pizza
+}
+```
+
+### Real world example with WooCommerce
+
+Sometimes in **WooCommerce** we find very long lines of code:
+
+```php
+echo '<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">' . apply_filters(
+    'woocommerce_no_available_payment_methods_message',
+    WC()->customer->get_billing_country()
+        ? esc_html__( 'Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce' )
+        : esc_html__( 'Please fill in your details above to see available payment methods.', 'woocommerce' )
+) . '</li>';
+```
+
+In **Twig**, you can do it like this:
+
+```twig
+<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">
+    {{ customer.get_billing_country()
+        ? __('Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce')
+        : __('Please fill in your details above to see available payment methods.', 'woocommerce')
+        |apply_filters('woocommerce_no_available_payment_methods_message')
+    }}
+</li>
+```
+
+And with the `filter` tag, it would look like this:
+
+```twig
+<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">
+    {% filter apply_filters('woocommerce_no_available_payment_methods_message') %}
+        {% if customer.get_billing_country() %}
+            {{ __('Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce') }}
+        {% else %}
+            {{ __('Please fill in your details above to see available payment methods.', 'woocommerce')  }}
+        {% endif %}
+    {% endfilter %}
+</li>
+```
+
 
 ## Using Twig vars in live type
 
