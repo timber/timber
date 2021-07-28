@@ -178,10 +178,6 @@ Pay special attention when you use boolean default values and use `??` instead o
 
 You can read more about this in the [default filter documentation](https://twig.symfony.com/doc/3.x/filters/default.html#default).
 
-## Escapers
-
-…
-
 ## WordPress Actions
 
 You can call actions in your Twig templates like this:
