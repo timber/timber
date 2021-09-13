@@ -241,7 +241,7 @@ use Timber\PostArrayObject;
 		/**
 		 * Test for when we're filtering something that's not an array.
 		 *
- 		 * @expectedException TypeError
+ 		 * @expectedException Twig\Error\RuntimeError
 		 */
 		function testArrayFilterWithBogusArray() {
 			$template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
