@@ -28,8 +28,8 @@
     "docs": "https://timber.github.io/docs/"
   },
   "require": {
-    "php": "^7.0",
-    "twig/twig": "^2.10",
+    "php": "^7.4",
+    "twig/twig": "^2.12|^3.0",
     "composer/installers": "^1.9",
     "twig/cache-extension": "^1.5.0"
   },

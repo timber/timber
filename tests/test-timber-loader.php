@@ -4,8 +4,8 @@
 
 		function testTwigLoaderFilter() {
 		    $php_unit = $this;
-		    add_filter('timber/loader/loader', function ($loader) use ($php_unit) {
-		        $php_unit->assertInstanceOf('Twig_LoaderInterface', $loader);
+			add_filter('timber/loader/loader', function ($loader) use ($php_unit) {
+		        $php_unit->assertInstanceOf('Twig\Loader\LoaderInterface', $loader);
 		        return $loader;
 		    });
 		    $str = Timber::compile('assets/single.twig', array());
