@@ -1,7 +1,5 @@
 # TravisCI configuration for timber/timber
 
-arch: arm64-graviton2
-
 os: linux
 
 dist: bionic
