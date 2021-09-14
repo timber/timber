@@ -219,7 +219,7 @@
 		}
 
 		/**
-     	* @expectedException Twig_Error_Syntax
+     	* @expectedException Twig\Error\SyntaxError
      	*/
 		function testSetObject() {
 			$pid = $this->factory->post->create(array('post_title' => 'Spaceballs'));
