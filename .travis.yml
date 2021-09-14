@@ -14,7 +14,6 @@ addons:
       - libwebp-dev
       - apt-transport-https
       - apt-utils
-      - python-software-properties
 
 php:
   - 7.2
