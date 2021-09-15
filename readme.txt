@@ -40,7 +40,7 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 
-* Fixed a bug when using `switch_to_blog()` in combination with Timber images
+* Fixed a bug when using `switch_to_blog()` in combination with Timber images #1312 #2478 (thanks @gchtr)
 
 = 1.18.2 =
 
