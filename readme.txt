@@ -40,6 +40,8 @@ _Twig is the template language powering Timber; if you need a little background 
 
 **Fixes and improvements**
 
+* Fix documented return type for Timber\Image::thumbnail #2463 (thanks @titouanmathis)
+
 = 1.18.2 = 
 
 **Fixes and improvements**
