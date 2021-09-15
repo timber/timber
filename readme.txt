@@ -55,7 +55,9 @@ _Twig is the template language powering Timber; if you need a little background 
 * Fix for sidebar retrieval in PHP 8 #2385 (thanks @marciojc)
 * Fix for proper ignoring of the Cache directory on case-insensitive file systems #342 #2416 (thanks @toonvandeputte)
 
-= 1.18.2 = 
+* Fixed a bug when using `switch_to_blog()` in combination with Timber images #1312 #2478 (thanks @gchtr)
+
+= 1.18.2 =
 
 **Fixes and improvements**
 
