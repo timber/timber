@@ -37,6 +37,8 @@ _Twig is the template language powering Timber; if you need a little background 
 **Changes for Theme Developers**
 
 **Fixes and improvements**
+* Fix documented return type for Timber\Image::thumbnail #2463 (thanks @titouanmathis)
+
 
 = 1.19.0 =
 
@@ -46,6 +48,7 @@ _Twig is the template language powering Timber; if you need a little background 
 * You can pass additional variables to the `timber/loader/loader` filter #2324 (thanks @neojp)
 
 **Fixes and improvements**
+
 * Fix for double quotes that might appear in a "Read More" in Gutenberg #2337 #2343 (thanks @Keysaw)
 * Fix implementation of WP's `get_the_date` and `get_the_time` filters #2350 (thanks @shvlv)
 * Fix for how the `wp:more` tag works with `noteaser` #2348 #2351 (thanks @jhhazelaar)
