@@ -240,10 +240,18 @@ class Image extends Post implements CoreInterface {
 		return $url;
 	}
 
+	/**
+	 * Gets cached version of wp_upload_dir().
+	 *
+	 * Because wp_upload_dir() returns a different result for each site in a multisite, we shouldn’t
+	 * return the cached version when we switched to a different site in a multisite environment.
+	 *
+	 * @todo Deprecate this function in the future and use wp_upload_dir() directly.
+	 */
 	public static function wp_upload_dir() {
 		static $wp_upload_dir = false;
 
-		if ( !$wp_upload_dir ) {
+		if ( ! $wp_upload_dir || ( is_multisite() && ms_is_switched() ) ) {
 			$wp_upload_dir = wp_upload_dir();
 		}
 
