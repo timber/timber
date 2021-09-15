@@ -11,10 +11,7 @@ If you still want to use Routing as it were before, you can install the package 
 composer require upstatement/routes
 ```
 
-
- this should be handled by a third-party plugin or library like:
-
-Here’s a selection of routing
+Here’s a selection of routing options that you can use in conjunction with Timber:
 
 - [Upstatement/routes](https://github.com/Upstatement/routes)
 - [Rareloop/router](https://github.com/Rareloop/router)
