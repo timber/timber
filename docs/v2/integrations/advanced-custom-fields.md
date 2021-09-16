@@ -75,15 +75,15 @@ This is where we’ll start in PHP.
 **single.php**
 
 ```php
-<?php
-$post = new Timber\Post();
+$post = Timber::get_post();
 
 if (isset($post->hero_image) && strlen($post->hero_image)){
-    $post->hero_image = new Timber\Image($post->hero_image);
+    $post->hero_image = Timber::get_image( $post->hero_image );
 }
 
-$context = Timber::context();
-$context['post'] = $post;
+$context = Timber::context( [
+    'post' => $post,
+] );
 
 Timber::render('single.twig', $context);
 ```
@@ -96,8 +96,6 @@ You can now use all the above functions to transform your custom images in the s
 <img src="{{ post.hero_image.src | resize(500, 300) }}" />
 ```
 
-* * *
-
 ## Gallery Field
 
 ```twig
@@ -106,9 +104,8 @@ You can now use all the above functions to transform your custom images in the s
 {% endfor %}
 ```
 
-* * *
-
 ## Group Field
+
 ```twig
 {{ post.meta('group').first_field }}
 {{ post.meta('group').second_field }}
@@ -122,8 +119,6 @@ or
 {{ group.second_field }}
 ```
 
-* * *
-
 ## Relationship field
 
 The post data returned from a relationship field will not contain the Timber methods needed for easy handling inside of your Twig file. To get these, you’ll need to convert them into proper `Timber\Post` objects using `get_posts()`:
@@ -134,8 +129,6 @@ The post data returned from a relationship field will not contain the Timber met
    {# Do something with item #}
 {% endfor %}
 ```
-
-* * *
 
 ## Repeater Field
 
@@ -197,8 +190,6 @@ A common problem in working with repeaters is that you should only call the `met
 {% endfor %}
 ```
 
-* * *
-
 ## Flexible Content Field
 
 Similar to repeaters, get the field by the name of the flexible content field:
@@ -232,7 +223,38 @@ Similar to nested repeaters, you should only call the `meta` method once when yo
 {% endfor %}
 ```
 
-* * *
+### Split Flexible Content Fields into includes / chunks
+
+We can break Flexible Content Fields into small blocks with include files utilizing the `acf_fc_layout` value. This way you have more flexibility and reusability for included sections. For instance, this is a great way to build landing pages that re-use the same blocks in different configurations.
+
+You could use a **blocks** subdirectory where you put all your Twig template files for your blocks. For example:
+**wp-content/themes/example-theme/views/blocks**.
+
+```twig
+{% for block in post.meta( 'blocks' ) %}
+    {{ include("blocks/#{ block.acf_fc_layout|sanitize ) }.twig", {
+        block: block
+    }) }}
+{% endfor %}
+```
+
+The [sanitize](https://timber.github.io/docs/v2/guides/filters/#sanitize) filter will slugify the block name.
+
+Consider this example for a Flexible Content Field named `Photo` with a text field named `credit`. You would create a **blocks/photo.twig** file which is automatically included:
+
+```twig
+<p>Photo by: {{ block.credit }}</p>
+```
+
+To prevent errors with include files that can’t be found, you can optionally use the `ignore_missing` parameter for `include()`:
+
+```twig
+{% for block in post.meta( 'blocks' ) %}
+    {{ include("blocks/#{ block.acf_fc_layout|sanitize ) }.twig", {
+        block: block
+    }, ignore_missing = true) }}
+{% endfor %}
+```
 
 ## Options Page
 
@@ -269,7 +291,6 @@ ACF Pro has a built in options page, and changes the `get_fields( 'options' )` t
 To use any options fields site wide, add the `option` context to your **functions.php** file:
 
 ```php
-<?php
 add_filter( 'timber/context', 'global_timber_context' );
 
 /**
@@ -292,8 +313,6 @@ Now, you can use any of the option fields across the site instead of per templat
 ```twig
 <footer>{{ options.copyright_info }}</footer>
 ```
-
-* * *
 
 ## Getting ACF info
 

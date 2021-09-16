@@ -204,10 +204,11 @@ class URLHelper {
 	/**
 	 * @api
 	 * @param string $fs
+	 * @return string
 	 */
 	public static function file_system_to_url( $fs ) {
 		$relative_path = self::get_rel_path($fs);
-		$home          = site_url('/' . $relative_path);
+		$home          = home_url('/' . $relative_path);
 
 		/**
 		 * Filters the home URL …
@@ -236,7 +237,6 @@ class URLHelper {
 			'2.0.0',
 			'timber/url_helper/file_system_to_url'
 		);
-
 		return $home;
 	}
 
@@ -505,35 +505,47 @@ class URLHelper {
 	}
 
 	/**
-	 * Returns the url parameters
+	 * Returns the url path parameters, or a single parameter if given an index.
+	 * Normalizes REQUEST_URI to lower-case. Returns false if given a
+	 * non-existent index.
 	 *
-	 * For example, for URL `http://example.org/blog/post/news/2014/whatever` this will return
-	 * `array('blog', 'post', 'news', '2014', 'whatever');` OR if sent an integer like:
-	 * `Timber\URLHelper::get_params(2);` this will return `news`.
+	 * @example
+	 * ```php
+	 * // Given a $_SERVER["REQUEST_URI"] of:
+	 * // http://example.org/blog/post/news/2014/whatever
+	 *
+	 * $params = URLHelper::get_params();
+	 * // => ["blog", "post", "news", "2014", "whatever"]
+	 *
+	 * $third = URLHelper::get_params(2);
+	 * // => "news"
+	 *
+	 * // get_params() supports negative indices:
+	 * $last = URLHelper::get_params(-1);
+	 * // => "whatever"
+	 *
+	 * $nada = URLHelper::get_params(99);
+	 * // => false
+	 * ```
 	 *
 	 * @api
-	 *
-	 * @param int $i the position of the parameter to grab.
-	 *
-	 * @return array|string
+	 * @param boolean|int $i the position of the parameter to grab.
+	 * @return array|string|false
 	 */
 	public static function get_params( $i = false ) {
-		$args    = explode('/', trim(strtolower($_SERVER['REQUEST_URI'])));
-		$newargs = array();
-		foreach ( $args as $arg ) {
-			if ( strlen($arg) ) {
-				$newargs[] = $arg;
-			}
-		}
+		$uri    = trim(strtolower($_SERVER['REQUEST_URI']));
+		$params = array_values(array_filter(explode('/', $uri)));
+
 		if ( false === $i ) {
-			return $newargs;
+			return $params;
 		}
+
+		// Support negative indices.
 		if ( $i < 0 ) {
-			$i = count($newargs) + $i;
+			$i = count($params) + $i;
 		}
-		if ( isset($newargs[ $i ]) ) {
-			return $newargs[ $i ];
-		}
+
+		return $params[$i] ?? false;
 	}
 
 }

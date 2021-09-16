@@ -76,6 +76,62 @@
 			$this->assertTrue( $exists );
 		}
 
+		function testSideloadImageFolder() {
+			$filename = 'acGwPDj4_400x400';
+			$url      = Timber\ImageHelper::sideload_image(
+				'https://pbs.twimg.com/profile_images/768086933310476288/' . $filename . '.jpg'
+			);
+
+			$base_url = str_replace( basename( $url ), '', $url );
+
+			$this->assertEquals( 'http://example.org/wp-content/uploads/external/', $base_url );
+		}
+
+		function testSideloadImageFolderChanged() {
+			$this->add_filter_temporarily( 'timber/sideload_image/subdir', function( $subdir ) {
+				return 'external';
+			} );
+
+			$filename = 'acGwPDj4_400x400';
+			$url      = Timber\ImageHelper::sideload_image(
+				'https://pbs.twimg.com/profile_images/768086933310476288/' . $filename . '.jpg'
+			);
+
+			$base_url = str_replace( basename( $url ), '', $url );
+
+			$this->assertEquals( 'http://example.org/wp-content/uploads/external/', $base_url );
+		}
+
+		function testSideloadImageFolderEmpty() {
+			$this->add_filter_temporarily( 'timber/sideload_image/subdir', function( $subdir ) {
+				return '';
+			} );
+
+			$filename = 'acGwPDj4_400x400';
+			$url      = Timber\ImageHelper::sideload_image(
+				'https://pbs.twimg.com/profile_images/768086933310476288/' . $filename . '.jpg'
+			);
+
+			$base_url   = untrailingslashit( str_replace( basename( $url ), '', $url ) );
+			$upload_dir = wp_upload_dir();
+
+			$this->assertEquals( $upload_dir['url'], $base_url );
+		}
+
+		function testSideloadImageFolderFalse() {
+			$this->add_filter_temporarily( 'timber/sideload_image/subdir', '__return_false' );
+
+			$filename = 'acGwPDj4_400x400';
+			$url      = Timber\ImageHelper::sideload_image(
+				'https://pbs.twimg.com/profile_images/768086933310476288/' . $filename . '.jpg'
+			);
+
+			$base_url   = untrailingslashit( str_replace( basename( $url ), '', $url ) );
+			$upload_dir = wp_upload_dir();
+
+			$this->assertEquals( $upload_dir['url'], $base_url );
+		}
+
 		function testDeleteSideloadedFile() {
 			$filename = 'acGwPDj4_400x400';
 			$img = Timber\ImageHelper::sideload_image('https://pbs.twimg.com/profile_images/768086933310476288/'.$filename.'.jpg');

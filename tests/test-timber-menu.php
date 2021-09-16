@@ -356,7 +356,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertTrue( $menu_items[3]->current );
 		$this->assertContains( 'current-menu-item', $menu_items[3]->classes );
 	}
-  
+
 	function testMenuOptions () {
 		$menu_arr = self::_createTestMenu();
 
@@ -428,7 +428,6 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertEquals( 'http://upstatement.com', $item->link() );
 		$this->assertEquals( 'http://upstatement.com', $item->url );
 		$this->assertTrue( $item->is_external() );
-
 	}
 
 	function testWPMLMenu() {
@@ -886,12 +885,13 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	}
 
 	function testCustomMenuItemClass() {
-		$term    = self::_createTestMenu();
-		$menu_id = $term['term_id'];
+		$term       = self::_createTestMenu();
+		$menu_id    = $term['term_id'];
 		$menu_items = wp_get_nav_menu_items($menu_id);
-		$tmis = [];
+		$tmis       = [];
+
 		foreach( $menu_items as $mi ) {
-			$tmi = new CustomMenuItemClass($mi);
+			$tmi = CustomMenuItemClass::build($mi);
 			array_push($tmis, $tmi);
 		}
 		$this->assertEquals($tmis[4]->post_title, 'People');

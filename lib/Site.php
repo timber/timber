@@ -11,9 +11,12 @@ namespace Timber;
  * @api
  * @example
  * ```php
- * $context = Timber::context();
  * $other_site_id = 2;
- * $context['other_site'] = new Timber\Site($other_site_id);
+ *
+ * $context = Timber::context( [
+ *     'other_site' => new Timber\Site( $other_site_id ),
+ * ] );
+ *
  * Timber::render('index.twig', $context);
  * ```
  * ```twig
@@ -214,7 +217,7 @@ class Site extends Core implements CoreInterface {
 		$this->rss = get_bloginfo('rss_url');
 		$this->rss2 = get_bloginfo('rss2_url');
 		$this->atom = get_bloginfo('atom_url');
-		$this->language = get_bloginfo('language');
+		$this->language = get_locale();
 		$this->charset = get_bloginfo('charset');
 		$this->pingback = $this->pingback_url = get_bloginfo('pingback_url');
 	}

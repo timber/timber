@@ -472,7 +472,7 @@ class Twig {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @throws \Twig_Error_Runtime
+	 * @throws \Twig\Error\RuntimeError
 	 * @param \Twig\Environment $twig Twig Environment.
 	 *
 	 * @return \Twig\Environment

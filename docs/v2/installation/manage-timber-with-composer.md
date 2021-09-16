@@ -26,7 +26,7 @@ Be aware that depending on what is listed in your **composer.json** file, updati
 ```json
 {
   "require": {
-    "timber/timber": "^2.0",
+    "timber/timber": "^2.0"
   }
 }
 ```

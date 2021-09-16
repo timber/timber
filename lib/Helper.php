@@ -17,11 +17,13 @@ class Helper {
 	 * @api
 	 * @example
 	 * ```php
-	 * $context = Timber::context();
-	 * $context['favorites'] = Timber\Helper::transient('user-' .$uid. '-favorites', function() use ($uid) {
-	 *  	//some expensive query here that's doing something you want to store to a transient
-	 *  	return $favorites;
-	 * }, 600);
+	 * $context = Timber::context( [
+	 *     'favorites' => Timber\Helper::transient( 'user-' . $uid . '-favorites' , function() use ( $uid ) {
+	 *  	    // Some expensive query here that’s doing something you want to store to a transient.
+	 *  	    return $favorites;
+	 *     }, 600 ),
+	 * ] );
+	 *
 	 * Timber::render('single.twig', $context);
 	 * ```
 	 *
@@ -30,6 +32,7 @@ class Helper {
 	 * @param integer  	$transient_time (optional) Expiration of transients in seconds
 	 * @param integer 	$lock_timeout   (optional) How long (in seconds) to lock the transient to prevent race conditions
 	 * @param boolean 	$force          (optional) Force callback to be executed when transient is locked
+	 *
 	 * @return mixed
 	 */
 	public static function transient( $slug, $callback, $transient_time = 0, $lock_timeout = 5, $force = false ) {
@@ -212,8 +215,10 @@ class Helper {
 	 *     echo '<form action="form.php"><input type="text" /><input type="submit /></form>';
 	 * }
 	 *
-	 * $context = Timber::context();
-	 * $context['my_form'] = Timber\Helper::ob_function('the_form');
+	 * $context = Timber::context( [
+	 *     'form' => Timber\Helper::ob_function( 'the_form' ),
+	 * ] );
+	 *
 	 * Timber::render('single-form.twig', $context);
 	 * ```
 	 * ```twig

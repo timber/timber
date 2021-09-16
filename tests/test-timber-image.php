@@ -209,7 +209,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$md5 = md5( $data['test_image'] );
 		Timber::compile( 'assets/image-test.twig', $data );
 		$upload_dir = wp_upload_dir();
-		$path = $upload_dir['path'].'/'.$md5;
+		$path = $upload_dir['basedir'] . '/external/' . $md5;
 		/* was the external image D/Ld to the location? */
 		$this->assertFileExists( $path.'.jpg' );
 		/* does resize work on external image? */
@@ -1008,7 +1008,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 	}
 
 	/**
-		 * @expectedException Twig_Error_Runtime
+		 * @expectedException Twig\Error\RuntimeError
 		 */
 	function testAnimagedGifResizeWithoutImagick() {
 		define('TEST_NO_IMAGICK', true);
@@ -1068,5 +1068,13 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		$str = Timber::compile_string( '<img src="{{ test_image|tojpg }}" />', $data );
 		$this->assertEquals('<img src="http://example.org/wp-content/uploads/'.date('Y/m').'/icon-twitter.svg" />', trim($str));
 	}
+
+ 	function testSVGDimensions() {
+		$pid = $this->factory->post->create();
+		$image = Timber::get_image( self::get_attachment($pid, 'icon-twitter.svg') );
+ 		$this->assertEquals( 23, $image->width() );
+ 		$this->assertEquals( 20, $image->height() );
+	}
+
 
 }

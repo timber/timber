@@ -41,7 +41,7 @@ What if you need to pass arguments to a function? Easy, add them as additional a
 </div>
 ```
 
-Nice! Any gotchas? Unfortunately yes. While the above example will totally work in a single.twig file it will not in The Loop. Why? Single.twig/single.php retain the context of the current post. A function like `edit_post_link` will try to guess the ID of the post you want to edit from the current post in The Loop. the same function requires some modification in a file like `archive.twig` or `index.twig`. There, you will need to explicitly pass the post ID:
+Nice! Any gotchas? Unfortunately yes. While the above example will totally work in a single.twig file it will not in The Loop. Why? Single.twig/single.php retain the context of the current post. A function like `edit_post_link` will try to guess the ID of the post you want to edit from the current post in The Loop. the same function requires some modification in a file like **archive.twig** or **index.twig**. There, you will need to explicitly pass the post ID:
 
 ```twig
 {# index.twig #}

@@ -239,6 +239,8 @@ use Timber\PostArrayObject;
 		}
 
 		/**
+		 * Test for when we're filtering something that's not an array.
+		 *
  		 * @expectedException Twig\Error\RuntimeError
 		 */
 		function testArrayFilterWithBogusArray() {
@@ -301,6 +303,6 @@ use Timber\PostArrayObject;
  			update_post_meta($post_id, '_thumbnail_id', '707');
  			$post = Timber::get_post($post_id);
  			$thumbnail_id = $post->_thumbnail_id;
- 		}  
+ 		}
 
 	}
