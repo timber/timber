@@ -31,8 +31,9 @@ use Timber\URLHelper;
  *     'category_name' => 'sports',
  * ] );
  *
- * $context = Timber::context();
- * $context['posts'] = $posts;
+ * $context = Timber::context( [
+ *     'posts' => $posts,
+ * ] );
  *
  * Timber::render( 'index.twig', $context );
  * ```
@@ -618,6 +619,7 @@ class Timber {
 	 * ```
 	 */
 	public static function get_term( $term = null ) {
+		
 		if (null === $term) {
 			// get the fallback term_id from the current query
 			global $wp_query;
@@ -630,7 +632,55 @@ class Timber {
 
 		$factory = new TermFactory();
 
-		return $factory->from($term);
+		$terms = $factory->from($term);
+		if ( is_array($terms) ) {
+			$terms = $terms[0];
+		}
+		return $terms;
+	}
+
+	/**
+	 * Gets a term by field.
+	 *
+	 * This function works like
+	 * [`get_term_by()`](https://developer.wordpress.org/reference/functions/get_term_by/), but
+	 * returns a `Timber\Term` object.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @example
+	 * ```php
+	 * // Get a term by slug.
+	 * $term = Timber::get_term_by( 'slug', 'security' );
+	 *
+	 * // Get a term by name.
+	 * $term = Timber::get_term_by( 'name', 'Security' );
+	 *
+	 * // Get a term by slug from a specific taxonomy.
+	 * $term = Timber::get_term_by( 'slug', 'security', 'category' );
+	 * ```
+	 *
+	 * @param string     $field    The name of the field to retrieve the term with. One of: `id`,
+	 *                             `ID`, `slug`, `name` or `term_taxonomy_id`.
+	 * @param int|string $value    The value to search for by `$field`.
+	 * @param string     $taxonomy The taxonomy you want to retrieve from. Empty string will search 
+	 *                             from all.
+	 *
+	 * @return \Timber\Term|null
+	 */
+	public static function get_term_by( string $field, $value, string $taxonomy = '' ) {
+
+		$wp_term = get_term_by($field, $value, $taxonomy);
+
+		if ( $wp_term === false ) {
+			if ( empty($taxonomy) && $field != 'term_taxonomy_id' ) {
+				$search = [$field => $value, $taxonomy => 'any', 'hide_empty' => false];
+				return static::get_term($search);
+			}
+			return false;
+		}
+
+		return static::get_term($wp_term);
 	}
 
 	/* User Retrieval
@@ -911,8 +961,22 @@ class Timber {
 		$context = self::context_global();
 
 		if ( is_singular() ) {
+			// NOTE: this also handles the is_front_page() case.
 			$context['post'] = Timber::get_post()->setup();
-		} elseif ( is_archive() || is_home() ) {
+		} elseif ( is_home() ) {
+			// show_on_front = page
+			$context['post']  = Timber::get_post()->setup();
+			$context['posts'] = Timber::get_posts();
+		} elseif ( is_category() || is_tag() || is_tax() ) {
+			$context['term']  = Timber::get_term();
+			$context['posts'] = Timber::get_posts();
+		} elseif ( is_search() ) {
+			$context['posts']        = Timber::get_posts();
+			$context['search_query'] = get_search_query();
+		} elseif ( is_author() ) {
+			$context['author'] = Timber::get_user(get_query_var('author'));
+			$context['posts']  = Timber::get_posts();
+		} elseif ( is_archive() ) {
 			$context['posts'] = Timber::get_posts();
 		}
 
@@ -1348,7 +1412,7 @@ class Timber {
 	 * @param array   $data
 	 * @return string
 	 */
-	public static function get_sidebar_from_php( $sidebar = '', $data ) {
+	public static function get_sidebar_from_php( $sidebar = '', $data = array() ) {
 		$caller = LocationManager::get_calling_script_dir( 1 );
 		$uris   = LocationManager::get_locations( $caller );
 		ob_start();

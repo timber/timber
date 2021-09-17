@@ -14,8 +14,12 @@ use WP_Comment;
  * @api
  * @example
  * ```php
- * $comment = new Timber\Comment($comment_id);
- * $context['comment_of_the_day'] = $comment;
+ * $comment = Timber::get_comment( $comment_id );
+ *
+ * $context = [
+ *     'comment_of_the_day' => $comment
+ * ];
+ *
  * Timber::render('index.twig', $context);
  * ```
  *

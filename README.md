@@ -10,13 +10,12 @@ By
 [Coby Tamayo](https://github.com/acobster) ([@cobytamayo](https://keybase.io/acobster)),
 [Upstatement](https://twitter.com/upstatement) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors)
 
-[![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.com/github/timber/timber)
-[![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg?style=flat-square)](https://coveralls.io/github/timber/timber)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
-[![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
-[![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg?style=flat-square)](https://wordpress.org/plugins/timber-library/)
-[![Join the chat at https://gitter.im/timber/timber](https://img.shields.io/gitter/room/timber/timber.svg?style=flat-square)](https://gitter.im/timber/timber?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![WordPress Rating](https://img.shields.io/wordpress/plugin/r/timber-library.svg?style=flat-square)](https://wordpress.org/support/plugin/timber-library/reviews/)
+[![Build Status](https://github.com/timber/timber/actions/workflows/test.yml/badge.svg)](https://github.com/timber/timber/actions/workflows/test.yml)
+[![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg)](https://coveralls.io/github/timber/timber)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
+[![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg)](https://packagist.org/packages/timber/timber)
+[![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg)](https://wordpress.org/plugins/timber-library/)
+[![WordPress Rating](https://img.shields.io/wordpress/plugin/r/timber-library.svg)](https://wordpress.org/support/plugin/timber-library/reviews/)
 
 
 > Because WordPress is awesome, but the_loop isn’t.
@@ -86,7 +85,7 @@ Timber is a tool for developers who want to translate their HTML into high-quali
 * **Accessible**: No black boxes. Every effort is made so the developer has access to 100% of their HTML.
 
 #### What does it look like?
-Nothing. Timber is meant for you to build a theme on. Like [_s](https://github.com/Automattic/_s) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
+Nothing. Timber is meant for you to build a theme on. Like [underscores](https://github.com/Automattic/_s) it comes style-free, because you're the style expert. Instead, Timber handles the logic you need to make a kick-ass looking site.
 
 #### Who is it good for?
 Timber is great for any WordPress developer who cares about writing good, maintainable code. It helps teams of designers and developers working together. At [Upstatement](http://upstatement.com) we made Timber because while our entire team needs to participate in building WordPress sites, not everyone knows the ins-and-outs of the_loop(),  codex and PHP (nor should they). With Timber your best WordPress engineer can focus on building the `.php` files with requests from WordPress and pass the data into `.twig` files. Once there, designers can easily mark-up data and build out a site's look-and-feel.
@@ -117,8 +116,8 @@ Timber is great for any WordPress developer who cares about writing good, mainta
 * [**Branch**](https://github.com/JeyKeu/branch/) Bootstrap 3 + Timber = Branch starter theme!
 * [**Flynt**](https://flyntwp.com/) a component based WordPress starter theme built on Timber and ACF Pro
 * [**Gantry5**](https://wordpress.org/plugins/gantry5/) a framework for theme development
-* [**Seedling**](https://github.com/maxdmyers/seedling) A starter theme using Bootstrap 4
-
+* [**Hozokit**](https://github.com/csalmeida/hozokit) a component based starter theme
+* [**Seedling**](https://github.com/maxdmyers/seedling) a starter theme using Bootstrap 4
 
 #### Helpful Links
 * [**CSS Tricks**](https://css-tricks.com/timber-and-twig-reignited-my-love-for-wordpress/) introduction to Timber by [@tjFogarty](https://github.com/tjFogarty)
@@ -131,8 +130,8 @@ Please post on [StackOverflow under the "Timber" tag](http://stackoverflow.com/q
 #### Should I use it?
 It's MIT-licensed, so please use in personal or commercial work. Just don't re-sell it. Timber is used on [tens of thousands of sites](https://www.upstatement.com/timber/#showcase) (and tons more we don't know about)
 
-#### Contributing
-We love PRs! Read the [Contributor Guidelines](https://github.com/timber/timber/blob/master/CONTRIBUTING.md) for more info.
+#### Contributing & Community
+We love PRs! Read the [Contributor Guidelines](https://github.com/timber/timber/blob/master/CONTRIBUTING.md) for more info. Say hello, share your tips/work, and spread the love on Twitter at [@TimberWP](https://twitter.com/TimberWP).
 
 ## Documentation
 
