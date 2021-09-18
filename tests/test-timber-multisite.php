@@ -195,6 +195,12 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		restore_current_blog();
 
 		$this->assertStringStartsWith($site_2_upload_dir['baseurl'], $image_2_src);
+
+		// test resizing
+		$template = '{{ image|resize(300, 300) }}?template=true';
+		$img_resized_src = Timber::compile_string($template, ['image' => $image_2_src]);
+		$this->assertStringStartsWith($site_2_upload_dir['baseurl'], $img_resized_src);
+
 	}
 
 	public static function createSubDomainSite($domain = 'test.example.org', $title = 'Multisite Test' ) {
