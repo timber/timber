@@ -182,19 +182,25 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		}
 
 		// Load image and cache for Timber\Image::wp_upload_dir() in site 1.
-		new Timber\Image( TestTimberImage::get_image_attachment() );
+		$image_1 = Timber::get_image( TestTimberImage::get_attachment() );
 
 		// Create site 2 and switch to it.
 		self::createSubDirectorySite( '/site-2/', 'Site 2' );
 
 		// Create and load image in site 2.
 		$site_2_upload_dir  = wp_upload_dir();
-		$image_2            = new Timber\Image( TestTimberImage::get_image_attachment() );
-		$image_2_upload_dir = $image_2::wp_upload_dir();
+		$image_2            = Timber::get_image( TestTimberImage::get_attachment() );
 
+		$image_2_src = (string) $image_2->src();
 		restore_current_blog();
 
-		$this->assertEquals( $site_2_upload_dir['baseurl'], $image_2_upload_dir['baseurl'] );
+		$this->assertStringStartsWith($site_2_upload_dir['baseurl'], $image_2_src);
+
+		// test resizing
+		$template = '{{ image|resize(300, 300) }}?template=true';
+		$img_resized_src = Timber::compile_string($template, ['image' => $image_2_src]);
+		$this->assertStringStartsWith($site_2_upload_dir['baseurl'], $img_resized_src);
+
 	}
 
 	public static function createSubDomainSite($domain = 'test.example.org', $title = 'Multisite Test' ) {
