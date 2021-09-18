@@ -182,14 +182,14 @@ class TestTimberMultisite extends Timber_UnitTestCase {
 		}
 
 		// Load image and cache for Timber\Image::wp_upload_dir() in site 1.
-		Timber::get_image( TestTimberImage::get_image_attachment() );
+		Timber::get_image( TestTimberImage::get_attachment() );
 
 		// Create site 2 and switch to it.
 		self::createSubDirectorySite( '/site-2/', 'Site 2' );
 
 		// Create and load image in site 2.
 		$site_2_upload_dir  = wp_upload_dir();
-		$image_2            = Timber::get_image( TestTimberImage::get_image_attachment() );
+		$image_2            = Timber::get_image( TestTimberImage::get_attachment() );
 		$image_2_upload_dir = $image_2::wp_upload_dir();
 
 		restore_current_blog();
