@@ -41,7 +41,6 @@ require "{$_tests_dir}/includes/bootstrap.php";
 
 require_once __DIR__.'/Timber_UnitTestCase.php';
 require_once __DIR__.'/TimberImage_UnitTestCase.php';
-require_once __DIR__.'/timber-mock-classes.php';
 
 if ( !function_exists('is_post_type_viewable') ) {
 	function is_post_type_viewable( $post_type_object ) {
