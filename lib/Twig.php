@@ -9,11 +9,13 @@ use Twig\TwigFilter;
 use Twig\Error\Error;
 
 use Timber\Factory\PostFactory;
+use Timber\Factory\TermFactory;
 
 /**
  * Class Twig
  */
 class Twig {
+
 	public static $dir_name;
 
 	/**
@@ -36,6 +38,7 @@ class Twig {
 	 */
 	public function get_timber_functions() {
 		$post_factory = new PostFactory();
+		$termFactory  = new TermFactory();
 
 		$functions = [
 			'action' => [
@@ -119,18 +122,18 @@ class Twig {
 				],
 			],
 			'Term' => [
-				'callable' => function ($term_id) {
+				'callable' => function ($term_id) use ($termFactory) {
 					Helper::deprecated('{{ Term() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0');
-					return Timber::get_term( $term_id );
+					return $termFactory->from( $term_id );
 				},
 				'options' => [
 					'deprecated' => true,
 				],
 			],
 			'TimberTerm' => [
-				'callable' => function ($term_id) {
+				'callable' => function ($term_id) use ($termFactory) {
 					Helper::deprecated('{{ TimberTerm() }}', '{{ get_term() }} or {{ get_terms() }}', '2.0.0');
-					return Timber::get_term( $term_id );
+					return $termFactory->from( $term_id );
 				},
 				'options' => [
 					'deprecated' => true,
