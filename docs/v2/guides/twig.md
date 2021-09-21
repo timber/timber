@@ -290,13 +290,13 @@ And with the `filter` tag, it would look like this:
 Imagine a scenario where you have a text input for a footer message in the WordPress admin panel that your editor users can edit:
 
 ```
-Copyright {{ year }} by Upstatement, LLC. All Rights Reserved
+Copyright {{ year }} by Timber Corporation, Ltd. All Rights Reserved
 ```
 
 But on the website itself, you want it to render as:
 
 ```
-Copyright 2020 by Upstatement, LLC. All Rights Reserved
+Copyright 2022 by Timber Corporation, Ltd. All Rights Reserved
 ```
 
 Ready? There are a bunch of ways to do this, but here’s one helpful example. First, we’re preparing the data in PHP.

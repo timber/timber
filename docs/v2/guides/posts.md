@@ -465,7 +465,7 @@ if ( post_password_required( $post->ID ) ) {
 
 ### Using a Filter
 
-With a WordPress filter, you can use a specific PHP template for all your password protected posts. Note: this is accomplished using only standard WordPress functions. This is nothing special to Timber
+Alternatively, with a WordPress filter, you can use a specific PHP template for all your password protected posts. Note: this is accomplished using only standard WordPress functions. This is nothing special to Timber
 
 **functions.php**
 
