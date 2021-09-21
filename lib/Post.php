@@ -365,32 +365,14 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 
 
 	/**
-	 * Helps you find the post id regardless of whether you send a string or whatever.
-	 *
-	 * @internal
-	 * @param integer $pid number to check against.
-	 * @return integer ID number of a post
-	 */
-	protected static function check_post_id( $pid ) {
-		if ( is_numeric($pid) && 0 === $pid ) {
-			$pid = get_the_ID();
-			return $pid;
-		}
-		if ( ! is_numeric($pid) && is_string($pid) ) {
-			$pid = PostGetter::get_post_id_by_name($pid);
-		}
-		return $pid;
-	}
-
-	/**
-	 * Gets a preview/excerpt of your post.
+	 * Gets a excerpt of your post.
 	 *
 	 * If you have an excerpt is set on the post, the excerpt will be used. Otherwise it will try to
-	 * pull from a preview from `post_content`. If there’s a `<!-- more -->` tag in the post
+	 * pull from an excerpt from `post_content`. If there’s a `<!-- more -->` tag in the post
 	 * content, it will use that to mark where to pull through.
 	 *
 	 * @api
-	 * @see \Timber\PostPreview
+	 * @see \Timber\PostExcerpt
 	 *
 	 * @param array $options {
 	 *     An array of configuration options for generating the excerpt. Default empty.
@@ -412,96 +394,43 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 * <h2>{{ post.title }}</h2>
 	 * <div>{{ post.excerpt({ words: 100, read_more: 'Keep reading' }) }}</div>
 	 * ```
-	 * @return \Timber\PostPreview
+	 * @return \Timber\PostExcerpt
 	 */
 	public function excerpt( array $options = array() ) {
-		return new PostPreview( $this, $options );
+		return new PostExcerpt( $this, $options );
 	}
 
 	/**
-	 * Gets a preview (excerpt) of your post.
+	 * Gets an excerpt of your post.
 	 *
 	 * If you have an excerpt is set on the post, the excerpt will be used. Otherwise it will try to
-	 * pull from a preview from `post_content`. If there’s a `<!-- more -->` tag in the post
+	 * pull from an excerpt from `post_content`. If there’s a `<!-- more -->` tag in the post
 	 * content, it will use that to mark where to pull through.
 	 *
-	 * This method returns a `Timber\PostPreview` object, which is a **chainable object**. This
-	 * means that you can change the output of the preview by **adding more methods**. Refer to the
-	 * [documentation of the `Timber\PostPreview` class](https://timber.github.io/docs/reference/timber-postpreview/)
+	 * This method returns a `Timber\PostExcerpt` object, which is a **chainable object**. This
+	 * means that you can change the output of the excerpt by **adding more methods**. Refer to the
+	 * [documentation of the `Timber\PostExcerpt` class](https://timber.github.io/docs/reference/timber-postexcerpt/)
 	 * to get an overview of all the available methods.
 	 *
 	 * @api
 	 * @deprecated 2.0.0, use `{{ post.excerpt }}` instead.
-	 * @see \Timber\PostPreview
+	 * @see \Timber\PostExcerpt
 	 * @example
 	 * ```twig
-	 * {# Use default preview #}
-	 * <p>{{ post.preview }}</p>
+	 * {# Use default excerpt #}
+	 * <p>{{ post.excerpt }}</p>
 	 *
-	 * {# Change the post preview text #}
-	 * <p>{{ post.preview.read_more('Continue Reading') }}</p>
+	 * {# Change the post excerpt text #}
+	 * <p>{{ post.excerpt.read_more('Continue Reading') }}</p>
 	 *
 	 * {# Additionally restrict the length to 50 words #}
-	 * <p>{{ post.preview.length(50).read_more('Continue Reading') }}</p>
+	 * <p>{{ post.excerpt.length(50).read_more('Continue Reading') }}</p>
 	 * ```
-	 * @return \Timber\PostPreview
+	 * @return \Timber\PostExcerpt
 	 */
 	public function preview() {
 		Helper::deprecated('{{ post.preview }}', '{{ post.excerpt }}', '2.0.0');
-		return new PostPreview($this);
-	}
-
-	/**
-	 * Get a preview (excerpt) of your post.
-	 *
-	 * @deprecated 1.3.1, use `{{ post.excerpt }}` instead.
-	 * @see        \Timber\Post::excerpt()
-	 *
-	 * @param int         $len      The number of words that WordPress should use to make the
-	 *                              preview.
-	 *                              (Isn’t this better than [this
-	 *                              mess](http://wordpress.org/support/topic/changing-the-default-length-of-the_excerpt-1?replies=14)?).
-	 *                              If you’ve set a post excerpt on a post, we’ll use that for the
-	 *                              preview text; otherwise the first X words of `post_content`.
-	 * @param bool        $force    What happens if your custom post excerpt is longer then the
-	 *                              length requested? By default (`$force = false`) it will use the
-	 *                              full `post_excerpt`. However, you can set this to `true` to
-	 *                              *force* your excerpt to be of the desired length.
-	 * @param string      $readmore The text you want to use for the 'readmore' link.
-	 * @param bool|string $strip    `true` for default, `false` for none, a string for a list of
-	 *                              custom attributes.
-	 * @param string      $end      The text to end the preview with. Default `...`.
-	 *
-	 * @return string The post preview.
-	 */
-	public function get_preview( $len = 50, $force = false, $readmore = 'Read More', $strip = true, $end = '&hellip;' ) {
-		Helper::deprecated('{{ post.get_preview }}', '{{ post.preview }}', '1.3.1');
-		$pp = new PostPreview($this);
-
-		/** This filter is documented in PostPreview.php */
-		add_filter('timber/post/preview/read_more_class', function(){
-			/**
-			 * Filters the CSS class used for the preview link for a post.
-			 *
-			 * This filter only applies when you use `{{ post.get_preview() }}`. When you want to
-			 * change the CSS class for all preview links in general, you can use the
-			 * `timber/post/preview/read_more_class` filter.
-			 *
-			 * @since 0.22.3
-			 * @example
-			 * ```php
-			 * // Change the CSS class for preview links
-			 * add_filter( 'timber/post/get_preview/read_more_class', function( $class ) {
-			 *     return 'post__read-more__link';
-			 * } );
-			 * ```
-			 *
-			 * @param string $class The CSS class to use for the preview link. Default `read-more`.
-			 */
-			return apply_filters('timber/post/get_preview/read_more_class', "read-more");
-		});
-
-		return $pp->length($len)->force($force)->read_more($readmore)->strip($strip)->end($end);
+		return new PostExcerpt($this);
 	}
 
 	/**
@@ -526,8 +455,8 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	 */
 	protected function get_info( WP_Post $post ) {
 		$post->status = $post->post_status;
-		$post->id = $post->ID;
-		$post->slug = $post->post_name;
+		$post->id     = $post->ID;
+		$post->slug   = $post->post_name;
 
 		return $post;
 	}
@@ -1342,17 +1271,28 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
-	 * Gets the actual content of a WP Post, as opposed to post_content this will run the hooks/filters attached to the_content. \This guy will return your posts content with WordPress filters run on it (like for shortcodes and wpautop).
+	 * Gets the actual content of a WordPress post.
+	 *
+	 * As opposed to using `{{ post.post_content }}`, this will run the hooks/filters attached to
+	 * the `the_content` filter. It will return your post’s content with WordPress filters run on it
+	 * – which means it will parse blocks, convert shortcodes or run `wpautop()` on the content.
+	 *
+	 * If you use page breaks in your content to split your post content into multiple pages,
+	 * use `{{ post.paged_content }}` to display only the content for the current page.
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * <div class="article">
-	 *     <h2>{{post.title}}</h2>
+	 * <article>
+	 *     <h1>{{ post.title }}</h1>
+	 *
 	 *     <div class="content">{{ post.content }}</div>
-	 * </div>
+	 * </article>
 	 * ```
-	 * @param int $page
+	 *
+	 * @param int $page Optional. The page to show if the content of the post is split into multiple
+	 *                  pages. Read more about this in the [Pagination Guide](https://timber.github.io/docs/v2/guides/pagination/#paged-content-within-a-post). Default `0`.
+	 *
 	 * @return string
 	 */
 	public function content( $page = 0, $len = -1 ) {
@@ -1401,7 +1341,19 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
-	 * @return string
+	 * Gets the paged content for a post.
+	 *
+	 * You will use this, if you use `<!--nextpage-->` in your post content or the Page Break block
+	 * in the Block Editor. Use `{{ post.pagination }}` to create a pagination for your paged
+	 * content. Learn more about this in the [Pagination Guide](https://timber.github.io/docs/v2/guides/pagination/#paged-content-within-a-post).
+	 *
+	 * @example
+	 * ```twig
+	 * {{ post.paged_content }}
+	 * ```
+	 *
+	 * @return string The content for the current page. If there’s no page break found in the
+	 *                content, the whole content is returned.
 	 */
 	public function paged_content() {
 		global $page;
@@ -1705,8 +1657,21 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
+	 * Gets the next post that is adjacent to the current post in a collection.
+	 *
+	 * Works pretty much the same as
+	 * [`get_next_post()`](https://developer.wordpress.org/reference/functions/get_next_post/).
+	 *
 	 * @api
-	 * @param bool|string $in_same_term
+	 * @example
+	 * ```twig
+	 * {% if post.next %}
+	 *     <a href="{{ post.next.link }}">{{ post.next.title }}</a>
+	 * {% endif %}
+	 * ```
+	 * @param bool|string $in_same_term Whether the post should be in a same taxonomy term. Default
+	 *                                  `false`.
+	 *
 	 * @return mixed
 	 */
 	public function next( $in_same_term = false ) {
@@ -1732,10 +1697,42 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 	}
 
 	/**
-	 * Get a data array of pagination so you can navigate to the previous/next for a paginated post.
+	 * Gets a data array to display a pagination for your paginated post.
+	 *
+	 * Use this in combination with `{{ post.paged_content }}`.
 	 *
 	 * @api
-	 * @return array
+	 * @example
+	 * Using simple links to the next an previous page.
+	 * ```twig
+	 * {% if post.pagination.next is not empty %}
+	 *     <a href="{{ post.pagination.next.link|e('esc_url') }}">Go to next page</a>
+	 * {% endif %}
+	 *
+	 * {% if post.pagination.prev is not empty %}
+	 *     <a href="{{ post.pagination.prev.link|e('esc_url') }}">Go to previous page</a>
+	 * {% endif %}
+	 * ```
+	 * Using a pagination for all pages.
+	 * ```twig
+	 * {% if post.pagination.pages is not empty %}
+	 *    <nav aria-label="pagination">
+	 *        <ul>
+	 *            {% for page in post.pagination.pages %}
+	 *                <li>
+	 *                    {% if page.current %}
+	 *                        <span aria-current="page">Page {{ page.title }}</span>
+	 *                    {% else %}
+	 *                        <a href="{{ page.link|e('esc_url') }}">Page {{ page.title }}</a>
+	 *                    {% endif %}
+	 *                </li>
+	 *            {% endfor %}
+	 *        </ul>
+	 *    </nav>
+	 * {% endif %}
+	 * ```
+	 *
+	 * @return array An array with data to build your paginated content.
 	 */
 	public function pagination() {
 		global $post, $page, $numpages, $multipage;
@@ -1816,18 +1813,21 @@ class Post extends Core implements CoreInterface, MetaInterface, DatedInterface,
 		return URLHelper::get_rel_url($this->link());
 	}
 
-
 	/**
-	 * Get the previous post in a set
+	 * Get the previous post that is adjacent to the current post in a collection.
+	 *
+	 * Works pretty much the same as
+	 * [`get_previous_post()`](https://developer.wordpress.org/reference/functions/get_previous_post/).
 	 *
 	 * @api
 	 * @example
 	 * ```twig
-	 * <h4>Prior Entry:</h4>
-	 * <h3>{{post.prev.title}}</h3>
-	 * <p>{{post.prev.preview(25)}}</p>
+	 * {% if post.prev %}
+	 *     <a href="{{ post.prev.link }}">{{ post.prev.title }}</a>
+	 * {% endif %}
 	 * ```
-	 * @param string|boolean $in_same_term
+	 * @param bool|string $in_same_term Whether the post should be in a same taxonomy term. Default
+	 *                                  `false`.
 	 * @return mixed
 	 */
 	public function prev( $in_same_term = false ) {

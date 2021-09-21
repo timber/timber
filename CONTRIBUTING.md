@@ -11,7 +11,7 @@ Here are ways to get involved:
 5. Tweet and [blog](http://www.oomphinc.com/blog/2013-10/php-templating-wordpress/#post-content) about the advantages (and criticisms) of the project and Twig.
 6. Browse ["help wanted"](https://github.com/timber/timber/labels/help%20wanted) and ["good first issue"](https://github.com/timber/timber/labels/good%20first%20issue) labels for areas of WordPress/PHP/code you know well to consider, build or document.
 7. Answer questions on [Stack Overflow posted under the «Timber» tag](https://stackoverflow.com/questions/tagged/timber). You can also [subscribe to a tag](https://stackoverflow.blog/2010/12/20/subscribe-to-tags-via-emai/) via email to get notified when someone needs help.
-8. Answer questions in the support channel on [Gitter](https://gitter.im/timber/timber).
+8. Answer questions and join in on [GitHub Discussions](https://github.com/timber/timber/discussions).
 
 ## Table of Contents
 
@@ -27,6 +27,9 @@ Here are ways to get involved:
     - [Code examples](#code-examples)
     - [Reference linking with @see tag](#reference-linking-with-see-tag)
     - [Documenting Hooks](#documenting-hooks)
+- [Unit tests](#unit-tests)
+    - [Install WordPress test suite](#install-wordpress-test-suite)
+    - [Run unit tests](#run-unit-tests)
 
 <!-- /TOC -->
 
@@ -55,7 +58,7 @@ To check where the code deviates from the standards, you can use [PHP_CodeSniffe
 
 When you run `composer install` in Timber’s repository root, you will get all required dependencies to check the coding standards.
 
-To run PHP_CodeSniffer with the default settings on all relevant Timber files, use the following command from the root folder of the Timber repository: 
+To run PHP_CodeSniffer with the default settings on all relevant Timber files, use the following command from the root folder of the Timber repository:
 
 ```bash
 composer lint
@@ -115,14 +118,14 @@ The `@example` tag allows you add code examples to your DocBlocks, including fen
 ```php
 /**
  * Function summary.
- * 
+ *
  * Function description.
  *
  * @api
  * @example
  *
  * Optional text to describe the example.
- * 
+ *
  * ```php
  * my_method( 'example', false );
  * ```
@@ -175,14 +178,14 @@ This is needed so that the [Hook Reference Generator](https://github.com/timber/
  * Description.
  *
  * `$var` Optional description of variables that might be used in the filter name.
- * 
+ *
  * @see \Timber\Classname::function()
  * @link https://github.com/timber/timber/pull/1254
  * @since x.x.x
  * @deprecated x.x.x
  * @example
  * Optional text to describe the example.
- * 
+ *
  * ```php
  * // A PHP example
  *
@@ -221,7 +224,7 @@ Additionally to this, document what the variable is by adding it to the descript
 /**
  * Filters the status of a particularly named transient.
  *
- * Allows you to override the behavior on a case-by-case basis.  
+ * Allows you to override the behavior on a case-by-case basis.
  * `$slug` The transient slug.
  *
  * @param bool $force Param description.
@@ -260,6 +263,27 @@ If a filter description is not finished yet, mark it up with the `@todo` tag. It
 ```
 
 As soon as the todo is resolved, the `@todo` tag can be removed.
+
+## Unit tests
+
+### Install WordPress test suite
+
+Run the following command to install the test suite on your local environment:
+
+```
+bash bin/install-wp-tests.sh {db_name} {db_user} {db_password} {db_host} {wp_version}
+```
+
+Replace variables with appropriate values.
+
+
+### Run unit tests
+
+```
+composer test
+```
+
+Will run PHPUnit test suite and ensure your code does not break existing features.
 
 ## Process
 

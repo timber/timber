@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Timber\Factory\PostFactory;
+use Timber\Menu;
 
 /**
  * Class MenuItem
@@ -85,11 +86,20 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 
 	/**
 	 * @internal
+	 * @param array|object $data The data this MenuItem is wrapping
+	 * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
+	 * @return \Timber\MenuItem a new MenuItem instance
+	 */
+	public static function build( $data, Menu $menu = null ) : self {
+		return new static($data, $menu);
+	}
+
+	/**
+	 * @internal
 	 * @param array|object $data
 	 * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
-	 * @todo make this protected and implement ::build() instead
 	 */
-	public function __construct( $data, $menu = null ) {
+	protected function __construct( $data, $menu = null ) {
 		$this->menu = $menu;
 		$data       = (object) $data;
 		$this->import($data);
@@ -312,13 +322,13 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * Or when you only want to add a target attribute if it is really needed:
 	 *
 	 * ```twig
-	 * <a href="{{ item.link }}" {{ item.is_external ? 'target="_blank"' }}">
+	 * <a href="{{ item.link }}" {{ item.is_external ? 'target="_blank"' }}>
 	 * ```
 	 *
 	 * In combination with `is_target_blank()`:
 	 *
 	 * ```twig
-	 * <a href="{{ item.link }}" {{ item.is_external or item.is_target_blank ? 'target="_blank"' }}">
+	 * <a href="{{ item.link }}" {{ item.is_external or item.is_target_blank ? 'target="_blank"' }}>
 	 * ```
 	 *
 	 * @return bool Whether the link is external or not.

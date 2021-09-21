@@ -239,34 +239,8 @@ use Timber\PostArrayObject;
 		}
 
 		/**
- 		 * @expectedException Twig\Error\RuntimeError
-		 */
-		function testArrayFilterKeyValueUsingPostArrayObject() {
-			$posts = [];
-			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
-			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
-			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
-			$posts = new PostArrayObject( $posts );
-			$template = '{% for post in posts | filter({post_content: "Method Man"})%}{{ post.title }}{% endfor %}';
-			$str = Timber::compile_string($template, array('posts' => $posts));
-			$this->assertEquals('Cheese', trim($str));
-		}
-
-		/**
- 		 * @expectedException Twig\Error\RuntimeError
-		 */
-		function testArrayFilterMulti() {
-			$posts = [];
-			$posts[] = $this->factory->post->create(array('post_title' => 'Stringer Bell', 'post_content' => 'Idris Elba'));
-			$posts[] = $this->factory->post->create(array('post_title' => 'Snoop', 'post_content' => 'Felicia Pearson'));
-			$posts[] = $this->factory->post->create(array('post_title' => 'Cheese', 'post_content' => 'Method Man'));
-			$posts = Timber::get_posts($posts);
-			$template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
-			$str = Timber::compile_string($template, array('posts' => $posts));
-			$this->assertEquals('Stringer Bell Snoop', trim($str));
-		}
-
-		/**
+		 * Test for when we're filtering something that's not an array.
+		 *
  		 * @expectedException Twig\Error\RuntimeError
 		 */
 		function testArrayFilterWithBogusArray() {
@@ -329,6 +303,6 @@ use Timber\PostArrayObject;
  			update_post_meta($post_id, '_thumbnail_id', '707');
  			$post = Timber::get_post($post_id);
  			$thumbnail_id = $post->_thumbnail_id;
- 		}  
+ 		}
 
 	}

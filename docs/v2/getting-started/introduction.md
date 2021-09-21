@@ -43,7 +43,7 @@ To render a view, you can use `Timber::render()`.
 Timber::render( 'index.twig' );
 ```
 
-This will look for an `index.twig` file in the **views** folder of your theme and render the contents of that template.
+This will look for an **index.twig** file in the **views** folder of your theme and render the contents of that template.
 
 **index.twig**
 

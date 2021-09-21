@@ -1,13 +1,15 @@
 includes:
     - vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
-    level: max
+    #level: max
+    level: 5
     paths:
-        - %currentWorkingDirectory%/lib/
-    autoload_files:
-        - %currentWorkingDirectory%/tests/phpstan/bootstrap.php
+        - lib/
+    scanFiles:
         # Plugin stubs
-        - %currentWorkingDirectory%/vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+        - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+    bootstrapFiles:
+        - tests/phpstan/bootstrap.php
     ignoreErrors:
         # Uses func_get_args()
         - '#^Function apply_filters invoked with [3456] parameters, 2 required\.$#'

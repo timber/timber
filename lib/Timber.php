@@ -31,8 +31,9 @@ use Timber\URLHelper;
  *     'category_name' => 'sports',
  * ] );
  *
- * $context = Timber::context();
- * $context['posts'] = $posts;
+ * $context = Timber::context( [
+ *     'posts' => $posts,
+ * ] );
  *
  * Timber::render( 'index.twig', $context );
  * ```
@@ -562,38 +563,43 @@ class Timber {
 	================================ */
 
 	/**
-	 * Get terms.
+	 * Gets terms.
+	 *
 	 * @api
-	 * @param string|array $args a string or array identifying the taxonomy or
-	 * `WP_Term_Query` args. Numeric strings are treated as term IDs; non-numeric
-	 * strings are treated as taxonomy names. Numeric arrays are treated as a
-	 * list a of term identifiers; associative arrays are treated as args to
-	 * `WP_Term_Query::__construct()` and accepts any valid parameters to that
-	 * constructor.
-	 * @param array        $options optional; none are currently supported.
-	 * @return Iterable
 	 * @see https://developer.wordpress.org/reference/classes/wp_term_query/__construct/
 	 * @example
 	 * ```php
 	 * // Get all tags.
-	 * $tags = Timber::get_terms('post_tag');
+	 * $tags = Timber::get_terms( 'post_tag' );
 	 * // Note that this is equivalent to:
 	 * $tags = Timber::get_terms( 'tag' );
 	 * $tags = Timber::get_terms( 'tags' );
 	 *
 	 * // Get all categories.
-	 * $cats = Timber::get_terms('category');
+	 * $cats = Timber::get_terms( 'category' );
 	 *
 	 * // Get all terms in a custom taxonomy.
 	 * $cats = Timber::get_terms('my_taxonomy');
 	 *
 	 * // Perform a custom Term query.
-	 * $cats = Timber::get_terms([
+	 * $cats = Timber::get_terms( [
 	 *   'taxonomy' => 'my_taxonomy',
 	 *   'orderby'  => 'slug',
 	 *   'order'    => 'DESC',
-	 * ]);
+	 * ] );
 	 * ```
+	 *
+	 * @param string|array $args    A string or array identifying the taxonomy or
+	 *                              `WP_Term_Query` args. Numeric strings are treated as term IDs;
+	 *                              non-numeric strings are treated as taxonomy names. Numeric
+	 *                              arrays are treated as a list a of term identifiers; associative
+	 *                              arrays are treated as args for `WP_Term_Query::__construct()`
+	 *                              and accept any valid parameters to that constructor.
+	 *                              Default `null`, which will get terms from all queryable
+	 *                              taxonomies.
+	 * @param array        $options Optional. None are currently supported. Default empty array.
+	 *
+	 * @return Iterable
 	 */
 	public static function get_terms( $args = null, array $options = [] ) : Iterable {
 		// default to all queryable taxonomies
@@ -614,10 +620,11 @@ class Timber {
 	 * @example
 	 * ```php
 	 * // Get a Term.
-	 * $tag = Timber::get_term(123);
+	 * $tag = Timber::get_term( 123 );
 	 * ```
 	 */
 	public static function get_term( $term = null ) {
+		
 		if (null === $term) {
 			// get the fallback term_id from the current query
 			global $wp_query;
@@ -630,7 +637,55 @@ class Timber {
 
 		$factory = new TermFactory();
 
-		return $factory->from($term);
+		$terms = $factory->from($term);
+		if ( is_array($terms) ) {
+			$terms = $terms[0];
+		}
+		return $terms;
+	}
+
+	/**
+	 * Gets a term by field.
+	 *
+	 * This function works like
+	 * [`get_term_by()`](https://developer.wordpress.org/reference/functions/get_term_by/), but
+	 * returns a `Timber\Term` object.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @example
+	 * ```php
+	 * // Get a term by slug.
+	 * $term = Timber::get_term_by( 'slug', 'security' );
+	 *
+	 * // Get a term by name.
+	 * $term = Timber::get_term_by( 'name', 'Security' );
+	 *
+	 * // Get a term by slug from a specific taxonomy.
+	 * $term = Timber::get_term_by( 'slug', 'security', 'category' );
+	 * ```
+	 *
+	 * @param string     $field    The name of the field to retrieve the term with. One of: `id`,
+	 *                             `ID`, `slug`, `name` or `term_taxonomy_id`.
+	 * @param int|string $value    The value to search for by `$field`.
+	 * @param string     $taxonomy The taxonomy you want to retrieve from. Empty string will search 
+	 *                             from all.
+	 *
+	 * @return \Timber\Term|null
+	 */
+	public static function get_term_by( string $field, $value, string $taxonomy = '' ) {
+
+		$wp_term = get_term_by($field, $value, $taxonomy);
+
+		if ( $wp_term === false ) {
+			if ( empty($taxonomy) && $field != 'term_taxonomy_id' ) {
+				$search = [$field => $value, $taxonomy => 'any', 'hide_empty' => false];
+				return static::get_term($search);
+			}
+			return false;
+		}
+
+		return static::get_term($wp_term);
 	}
 
 	/* User Retrieval
@@ -901,19 +956,36 @@ class Timber {
 	 * @api
 	 * @since 2.0.0
 	 *
+	 * @param array $extra any extra data to merge in. Overrides whatever is
+	 * already there for this call only. In other words, the underlying context
+	 * data is immutable and unaffected by passing this param.
 	 * @return array An array of context variables that is used to pass into Twig templates through
 	 *               a render or compile function.
 	 */
-	public static function context() {
+	public static function context(array $extra = []) {
 		$context = self::context_global();
 
 		if ( is_singular() ) {
+			// NOTE: this also handles the is_front_page() case.
 			$context['post'] = Timber::get_post()->setup();
-		} elseif ( is_archive() || is_home() ) {
+		} elseif ( is_home() ) {
+			// show_on_front = page
+			$context['post']  = Timber::get_post()->setup();
+			$context['posts'] = Timber::get_posts();
+		} elseif ( is_category() || is_tag() || is_tax() ) {
+			$context['term']  = Timber::get_term();
+			$context['posts'] = Timber::get_posts();
+		} elseif ( is_search() ) {
+			$context['posts']        = Timber::get_posts();
+			$context['search_query'] = get_search_query();
+		} elseif ( is_author() ) {
+			$context['author'] = Timber::get_user(get_query_var('author'));
+			$context['posts']  = Timber::get_posts();
+		} elseif ( is_archive() ) {
 			$context['posts'] = Timber::get_posts();
 		}
 
- 		return $context;
+		return array_merge( $context, $extra );
 	}
 
 	/**
@@ -1345,7 +1417,7 @@ class Timber {
 	 * @param array   $data
 	 * @return string
 	 */
-	public static function get_sidebar_from_php( $sidebar = '', $data ) {
+	public static function get_sidebar_from_php( $sidebar = '', $data = array() ) {
 		$caller = LocationManager::get_calling_script_dir( 1 );
 		$uris   = LocationManager::get_locations( $caller );
 		ob_start();
