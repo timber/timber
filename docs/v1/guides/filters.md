@@ -4,7 +4,7 @@ title: "Filters"
 
 ## General Filters
 
-Twig offers a variety of [filters](http://twig.sensiolabs.org/doc/filters/index.html) to transform text and other information into the desired output. In addition, Timber has added some valuable custom filters for your WP theme:
+Twig offers a variety of [filters](http://twig.symfony.com/doc/filters/index.html) to transform text and other information into the desired output. In addition, Timber has added some valuable custom filters for your WP theme:
 
 ## excerpt
 

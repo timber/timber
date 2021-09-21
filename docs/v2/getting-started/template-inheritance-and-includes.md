@@ -77,7 +77,7 @@ If you look at **single.twig** again, you see opening and closing block declarat
 
 Twig will take the content inside the `{% block %}` tag and put it where you defined your block in **base.twig**. Everything in between `{% block content %}` and `{% endblock %}` in your **single.twig** will go into your `<main>` tag in your **base.twig**.
 
-Blocks are one of the most important and powerful concepts in managing your templates. The official [Twig Documentation](http://twig.sensiolabs.org/doc/templates.html#template-inheritance) has more details.
+Blocks are one of the most important and powerful concepts in managing your templates. The official [Twig Documentation](http://twig.symfony.com/doc/templates.html#template-inheritance) has more details.
 
 While you can define your own custom number of blocks, you can also create any number of base files to extend from (we use the name "base" as a naming convention, but it’s not required).
 

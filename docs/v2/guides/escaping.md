@@ -35,7 +35,7 @@ Read the [Theme Security](https://developer.wordpress.org/themes/theme-security/
 
 ## Escapers
 
-Twig offers a variety of [escaping functions](http://twig.sensiolabs.org/doc/filters/escape.html) out of the box. They are intended to escape a string for safe insertion into the final output.
+Twig offers a variety of [escaping functions](http://twig.symfony.com/doc/filters/escape.html) out of the box. They are intended to escape a string for safe insertion into the final output.
 
 In addition to these standard escaping functions, Timber comes with some valuable custom escapers for your WordPress theme. To use the escaper (see documentation link above), you pipe your content through a function `e` and if you want to use a custom escaper, you would supply an argument to the function, e.g. `e('wp_kses_post')`.
 
