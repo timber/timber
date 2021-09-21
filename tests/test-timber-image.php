@@ -1008,7 +1008,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 	}
 
 	/**
-		 * @expectedException Twig_Error_Runtime
+		 * @expectedException Twig\Error\RuntimeError
 		 */
 	function testAnimagedGifResizeWithoutImagick() {
 		define('TEST_NO_IMAGICK', true);

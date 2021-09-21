@@ -10,12 +10,12 @@ By
 [Coby Tamayo](https://github.com/acobster) ([@cobytamayo](https://keybase.io/acobster)),
 [Upstatement](https://twitter.com/upstatement) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors)
 
-[![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.com/github/timber/timber)
-[![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg?style=flat-square)](https://coveralls.io/github/timber/timber)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
-[![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
-[![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg?style=flat-square)](https://wordpress.org/plugins/timber-library/)
-[![WordPress Rating](https://img.shields.io/wordpress/plugin/r/timber-library.svg?style=flat-square)](https://wordpress.org/support/plugin/timber-library/reviews/)
+[![Build Status](https://github.com/timber/timber/actions/workflows/test.yml/badge.svg)](https://github.com/timber/timber/actions/workflows/test.yml)
+[![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg)](https://coveralls.io/github/timber/timber)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
+[![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg)](https://packagist.org/packages/timber/timber)
+[![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg)](https://wordpress.org/plugins/timber-library/)
+[![WordPress Rating](https://img.shields.io/wordpress/plugin/r/timber-library.svg)](https://wordpress.org/support/plugin/timber-library/reviews/)
 
 
 > Because WordPress is awesome, but the_loop isn’t.
