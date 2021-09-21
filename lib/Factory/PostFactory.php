@@ -4,6 +4,7 @@ namespace Timber\Factory;
 
 use Timber\Attachment;
 use Timber\CoreInterface;
+use Timber\Helper;
 use Timber\Image;
 use Timber\PathHelper;
 use Timber\Post;
@@ -75,8 +76,51 @@ class PostFactory {
 	}
 
 	protected function get_post_class(WP_Post $post) : string {
-		// Get the user-configured Class Map
-		$map = apply_filters( 'timber/post/classmap', [
+		/**
+		 * Pseudo filter that checks whether the non-usable filter was used.
+		 *
+		 * @deprecated 2.0.0, use `timber/post/classmap`
+		 */
+		if ( 'deprecated' !== apply_filters( 'Timber\PostClassMap', 'deprecated' ) ) {
+			Helper::doing_it_wrong(
+				'The `Timber\PostClassMap` filter',
+				'Use the `timber/post/classmap` filter instead.',
+				'2.0.0'
+			);
+		}
+
+		/**
+		 * Filters the class(es) used for different post types.
+		 *
+		 * Read more about this in the documentation for [Post Class Maps](https://timber.github.io/docs/v2/guides/class-maps/#the-post-class-map).
+		 *
+		 * The default Post Class Map will contain class names for posts, pages that map to
+		 * `Timber\Post` and a callback that will map attachments to `Timber\Attachment` and
+		 * attachments that are images to `Timber\Image`.
+		 *
+		 * Make sure to merge in your additional classes instead of overwriting the whole Class Map.
+		 *
+		 * @since 2.0.0
+		 * @example
+		 * ```
+		 * use Book;
+		 * use Page;
+		 *
+		 * add_filter( 'timber/post/classmap', function( $classmap ) {
+		 *     $custom_classmap = [
+		 *         'page' => Page::class,
+		 *         'book' => Book::class,
+		 *     ];
+		 *
+		 *     return array_merge( $classmap, $custom_classmap );
+		 * } );
+		 * ```
+		 *
+		 * @param array $classmap The post class(es) to use. An associative array where the key is
+		 *                        the post type and the value the name of the class to use for this
+		 *                        post type or a callback that determines the class to use.
+		 */
+		$classmap = apply_filters( 'timber/post/classmap', [
 			'post'       => Post::class,
 			'page'       => Post::class,
 			// Apply special logic for attachments.
@@ -85,7 +129,7 @@ class PostFactory {
 			},
 		] );
 
-		$class = $map[$post->post_type] ?? null;
+		$class = $classmap[$post->post_type] ?? null;
 
 		// If class is a callable, call it to get the actual class name
 		if (is_callable($class)) {
