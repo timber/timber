@@ -7,7 +7,7 @@ order: "220"
 
 Twig offers a variety of [filters](http://twig.symfony.com/doc/filters/index.html) to transform text and other information into the desired output. In addition, Timber has added some valuable custom filters for your WordPress theme:
 
-## array
+## `array`
 
 Makes sure a variable is an array to safely loop over it without running into an error.
 
@@ -28,7 +28,7 @@ $things = [ 'thing', 'thang' ];
 {% endfor %}
 ```
 
-## excerpt
+## `excerpt`
 
 Trims text to a certain number of words.
 
@@ -47,7 +47,7 @@ Glover, was American. His paternal grandfather was English
 and his maternal step-grandfather ...</p>
 ```
 
-## excerpt_chars
+## `excerpt_chars`
 
 Trims text to a certain number of characters.
 
@@ -65,7 +65,7 @@ Donna Gay (née Wauthier), was Canadian, and his father, Richard
 Glover, was ...</p>
 ```
 
-## function
+## `function`
 
 Runs a function where you need. Really valuable for integrating plugins or existing themes.
 
@@ -87,7 +87,7 @@ The `|function` filter is deprecated. Use `function()` instead. You can read mor
 <div class="entry-meta">Posted on September 6, 2013</div>
 ```
 
-## relative
+## `relative`
 
 Converts an absolute URL into a relative one, for example:
 
@@ -99,11 +99,11 @@ My custom link is <a href="{{ 'http://example.org/2015/08/my-blog-post'|relative
 My custom link is <a href="/2015/08/my-blog-post">here!</a>
 ```
 
-## pretags
+## `pretags`
 
 Converts tags like `<span>` into `&lt;span&gt;`, but only inside of `<pre>` tags. Great for code samples when you need to preserve other formatting in the non-code sample content.
 
-## sanitize
+## `sanitize`
 
 Converts `Titles like these` into `titles-like-these`. This is great for converting titles to use them in `id` attributes.
 
@@ -119,7 +119,7 @@ Converts `Titles like these` into `titles-like-these`. This is great for convert
 <h1 id="my-awesome-post">My awesome post</h1>
 ```
 
-## shortcodes
+## `shortcodes`
 
 Runs text through WordPress's shortcodes filter. In this example imagine that you've added a shortcode to a custom field like `[gallery id="123" size="medium"]`
 
@@ -139,7 +139,7 @@ Here is my gallery <div class="gallery" id="gallery-123"><img src="...." />...</
 </section>
 ```
 
-## stripshortcodes
+## `stripshortcodes`
 
 Removes all shortcode tags from the given content using [`strip_shortcodes()`](https://developer.wordpress.org/reference/functions/strip_shortcodes/).
 
@@ -149,7 +149,7 @@ Removes all shortcode tags from the given content using [`strip_shortcodes()`](h
 {{ post.content|stripshortcodes }}
 ```
 
-## time_ago
+## `time_ago`
 
 Displays a date in timeago format:
 
@@ -165,7 +165,7 @@ Displays a date in timeago format:
 <p class="entry-meta">Posted: <time>3 days ago</time></p>
 ```
 
-## truncate
+## `truncate`
 
 **Twig**
 
@@ -179,7 +179,7 @@ Displays a date in timeago format:
 <p class="entry-meta">Bruce Wayne’s parents were shot outside the opera ...</p>
 ```
 
-## wpautop
+## `wpautop`
 
 Adds paragraph breaks to new lines.
 
@@ -202,12 +202,13 @@ Adds paragraph breaks to new lines.
 </div>
 ```
 
-## wp_list_filter
+## `wp_list_filter`
 
 Uses `wp_list_filter()`.
-@todo
 
-## list
+<!-- @todo -->
+
+## `list`
 
 Converts an array of strings into a comma-separated list.
 
