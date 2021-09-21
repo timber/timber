@@ -427,7 +427,18 @@ class Loader {
 				return null;
 			}));
 		}
-		$twig->addExtension($this->_get_cache_extension());
+		/**
+		 * Filters the cache extension activation
+		 *
+		 * Allows users to disable the cache extension and use their own
+		 *
+		 * @since 2.0.0
+		 * @param bool $enable_cache_extension
+		 */
+		$enable_cache_extension = apply_filters('timber/enable_cache_extension', true);
+        if ( $enable_cache_extension ) {
+            $twig->addExtension($this->_get_cache_extension());
+        }
 
 		/**
 		 * Filters …
