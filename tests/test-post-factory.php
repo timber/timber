@@ -121,7 +121,7 @@ class TestPostFactory extends Timber_UnitTestCase {
 				'custom' => MyCustom::class,
 			];
 		};
-		
+
 		$this->add_filter_temporarily( 'timber/post/classmap', $my_class_map );
 
 		$post_id   = $this->factory->post->create(['post_type' => 'post', 'post_date' => '2020-01-10 19:46:41']);
@@ -241,4 +241,25 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(MyCustom::class, $res[2]);
 	}
 
+	/**
+	 * @expectedIncorrectUsage The `Timber\PostClassMap` filter
+	 */
+	public function testDeprecatedPostClassMapFilter() {
+		$my_class_map = function() {
+			return [ 'custom' => MyCustom::class ];
+		};
+
+		$this->add_filter_temporarily( 'Timber\PostClassMap', $my_class_map );
+
+		$this->factory->post->create(['post_type' => 'custom', 'post_title' => 'CCC']);
+
+		$post_factory = new PostFactory();
+		$res = $post_factory->from([
+			'post_type' => ['custom'],
+			'orderby'   => 'title',
+			'order'     => 'ASC',
+		]);
+
+		$this->assertInstanceOf(Post::class, $res[0]);
+	}
 }

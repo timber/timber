@@ -4,6 +4,7 @@ namespace Timber\Factory;
 
 use Timber\Attachment;
 use Timber\CoreInterface;
+use Timber\Helper;
 use Timber\Image;
 use Timber\PathHelper;
 use Timber\Post;
@@ -75,6 +76,19 @@ class PostFactory {
 	}
 
 	protected function get_post_class(WP_Post $post) : string {
+		/**
+		 * Pseudo filter that checks whether the non-usable filter was used.
+		 *
+		 * @deprecated 2.0.0, use `timber/post/classmap`
+		 */
+		if ( 'deprecated' !== apply_filters( 'Timber\PostClassMap', 'deprecated' ) ) {
+			Helper::doing_it_wrong(
+				'The `Timber\PostClassMap` filter',
+				'Use the `timber/post/classmap` filter instead.',
+				'2.0.0'
+			);
+		}
+
 		/**
 		 * Filters the class(es) used for different post types.
 		 *
