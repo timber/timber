@@ -60,6 +60,17 @@ class TestTimberContext extends Timber_UnitTestCase {
 		$this->assertEquals( $context['post']->id, $context['posts'][0]->id );
 	}
 
+	function testPostsContextWithPostOnFrontAndNoPageForPosts() {
+		update_option( 'show_on_front', 'posts' );
+		update_option( 'page_for_posts', 0 );
+
+		$this->go_to( '/' );
+
+		$context = Timber::context();
+
+		$this->assertNotContains( 'post', $context );
+	}
+
 	function testPostsContextHomePage() {
 		update_option( 'show_on_front', 'page' );
 		$id = $this->factory->post->create([
