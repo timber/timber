@@ -1,6 +1,6 @@
 function deploy () {
 	cd ~/Sites/timber
-	git checkout master
+	git checkout tags/$1 -b v$1
 	rm ~/Sites/timber/timber.php
 	rm -rf ~/Sites/timber/vendor
 	rm -rf ~/Sites/timber/wp-content
