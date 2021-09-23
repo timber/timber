@@ -69,7 +69,7 @@ What if you want modify `<head>`, etc? Read on to learn all about blocks.
 
 ## Blocks
 
-Blocks are the single most important and powerful concept in managing your templates. The [official Twig Documentation](http://twig.sensiolabs.org/doc/templates.html#template-inheritance) has more details. Let’s cover the basics.
+Blocks are the single most important and powerful concept in managing your templates. The [official Twig Documentation](https://twig.symfony.com/doc/templates.html#template-inheritance) has more details. Let’s cover the basics.
 
 In `single.twig` you see opening and closing block declarations that surround the main page contents.
 

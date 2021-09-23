@@ -7,7 +7,7 @@ order: "75"
 Timber::render( 'teaser.twig' );
 ```
 
-When you use `Timber::render()` or `Timber::compile()` to render a Twig template file, Timber will look for that template in different directories. It will first look in the child theme and then falls back to the parent theme (it’s the same logic as in WordPress).
+When you use [`Timber::render()`](https://timber.github.io/docs/v2/reference/timber-timber/#render), [`Timber::compile()`](https://timber.github.io/docs/v2/reference/timber-timber/#compile), or [Twig includes](https://timber.github.io/docs/v2/guides/twig/#includes) to render a Twig template file, Timber will look for that template in different directories. It will first look in the child theme and then falls back to the parent theme (it’s the same logic as in WordPress).
 
 The default load order is:
 
