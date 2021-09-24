@@ -624,7 +624,7 @@ class Timber {
 	 * ```
 	 */
 	public static function get_term( $term = null ) {
-		
+
 		if (null === $term) {
 			// get the fallback term_id from the current query
 			global $wp_query;
@@ -668,7 +668,7 @@ class Timber {
 	 * @param string     $field    The name of the field to retrieve the term with. One of: `id`,
 	 *                             `ID`, `slug`, `name` or `term_taxonomy_id`.
 	 * @param int|string $value    The value to search for by `$field`.
-	 * @param string     $taxonomy The taxonomy you want to retrieve from. Empty string will search 
+	 * @param string     $taxonomy The taxonomy you want to retrieve from. Empty string will search
 	 *                             from all.
 	 *
 	 * @return \Timber\Term|null
@@ -969,8 +969,14 @@ class Timber {
 			// NOTE: this also handles the is_front_page() case.
 			$context['post'] = Timber::get_post()->setup();
 		} elseif ( is_home() ) {
-			// show_on_front = page
-			$context['post']  = Timber::get_post()->setup();
+			$post = Timber::get_post();
+
+			// When no page_on_front is set, there’s no post we can set up.
+			if ( $post ) {
+				$post->setup();
+			}
+
+			$context['post']  = $post;
 			$context['posts'] = Timber::get_posts();
 		} elseif ( is_category() || is_tag() || is_tax() ) {
 			$context['term']  = Timber::get_term();
