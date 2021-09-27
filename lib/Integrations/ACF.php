@@ -94,6 +94,9 @@ class ACF {
      * @param array  $field
      */
     public static function transform_file( $value, $id, $field ) {
+        if ( empty( $value ) ) {
+            return false;
+        }
         return Timber::get_attachment( $value );
 	}
 
@@ -105,6 +108,9 @@ class ACF {
      * @param array  $field
      */
     public static function transform_image( $value, $id, $field ) {
+        if ( empty( $value ) ) {
+            return false;
+        }
         return Timber::get_image( $value );
 	}
 
