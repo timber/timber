@@ -1,6 +1,6 @@
 <?php
 
-use Timber\Integration\AcfIntegration;
+use Timber\User;
 
 /**
  * @group users-api
