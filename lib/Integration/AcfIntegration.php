@@ -15,6 +15,7 @@ use Timber\Timber;
  * Class used to handle integration with Advanced Custom Fields
  */
 class AcfIntegration implements IntegrationInterface {
+	
 	public function should_init() : bool {
 		return class_exists( ACF::class );
 	}
