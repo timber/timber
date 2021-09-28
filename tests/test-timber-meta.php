@@ -1,11 +1,7 @@
 <?php
 
-use Timber\Comment;
-use Timber\Post;
-use Timber\Term;
 use Timber\Integration\AcfIntegration;
 use Timber\Timber;
-use Timber\User;
 
 /**
  * Class TestTimberMeta
