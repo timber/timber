@@ -1,6 +1,5 @@
 <?php
 
-use Timber\Integrations\ACF;
 use Timber\User;
 
 /**
@@ -10,12 +9,6 @@ use Timber\User;
  * @group posts-api
  */
 class TestTimberIntegrationACF extends Timber_UnitTestCase {
-	
-	function testACFInit() {
-		$acf = new ACF();
-		$this->assertInstanceOf( 'Timber\Integrations\ACF', $acf );
-	}
-
 	function testACFGetFieldPost() {
 		$post_id = $this->factory->post->create();
 		update_field( 'subhead', 'foobar', $post_id );

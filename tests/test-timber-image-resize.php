@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group integrations
+ */
 class TestTimberImageResize extends Timber_UnitTestCase {
 
 	function setUp() {
