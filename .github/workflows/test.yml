@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         php: ['7.4']
-        wp: ['5.3.6', 'latest']
+        wp: ['5.3', '5.8'] # Always use branches not tags (e.g. 5.3 not 5.3.6), new test suite is only available in branches
         multisite: ['0', '1']
         dependency-version: [prefer-stable] # prefer-lowest
         webp: [false]
@@ -41,15 +41,21 @@ jobs:
             dependency-version: 'prefer-stable'
             multisite: '0'
             experimental: true
+          # PHP 8.0
+          - php: '8.0'
+            wp: 'trunk'
+            dependency-version: 'prefer-stable'
+            multisite: '0'
+            experimental: true
           # PHP with Imagick
           - php: '7.4'
-            wp: 'latest'
+            wp: '5.8'
             dependency-version: 'prefer-stable'
             multisite: '0'
             extensions: 'imagick'
           # Coverage
           - php: '7.4'
-            wp: 'latest'
+            wp: '5.8'
             dependency-version: 'prefer-stable'
             multisite: '0'
             coverage: true
@@ -99,6 +105,10 @@ jobs:
       - name: Install composer dependencies
         run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress --no-interaction
 
+      - name: Downgrade PHPUnit to ^7.5 when WP < 5.9
+        if: ${{ matrix.wp < '5.9' }}
+        run: composer req phpunit/phpunit:^7.5 -W --dev
+
       - name: Install tests
         run: bash bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1:${{ job.services.mysql.ports['3306'] }} ${{ matrix.wp }} true
 
@@ -129,4 +139,4 @@ jobs:
 
       - name: Run webp tests
         if: ${{ matrix.webp }}
-        run: vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose ./tests/test-timber-image-towebp.php
+        run: vendor/phpunit/phpunit/phpunit -c phpunit.xml --verbose --filter 'TestTimberImageToWEBP'

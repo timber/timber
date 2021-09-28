@@ -163,7 +163,7 @@
 			$post = Timber::get_post($post_id);
 			$template = '{{ post.excerpt.length(3).read_more(false).strip(false) }}';
 			$str = Timber::compile_string($template, array('post' => $post));
-			$this->assertNotContains('</p>', $str);
+			$this->assertStringNotContainsString('</p>', $str);
 		}
 
 		function testPostExcerptObjectWithCharAndWordLengthWordsWin() {

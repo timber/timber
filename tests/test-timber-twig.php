@@ -5,7 +5,7 @@
 	 */
 	class TestTimberTwig extends Timber_UnitTestCase {
 
-		function tearDown() {
+		function tear_down() {
 			$lang_dir = get_stylesheet_directory().'/languages';
 			if (file_exists($lang_dir.'/en_US.po' )) {
 				unlink($lang_dir.'/en_US.po');
@@ -218,10 +218,8 @@
 
 		}
 
-		/**
-     	* @expectedException Twig\Error\SyntaxError
-     	*/
 		function testSetObject() {
+			$this->expectException(\Twig\Error\SyntaxError::class);
 			$pid = $this->factory->post->create(array('post_title' => 'Spaceballs'));
 			$post = Timber::get_post( $pid );
 			$result = Timber::compile('assets/set-object.twig', array('post' => $post));
@@ -334,10 +332,8 @@
 			);
 		}
 
-		/**
-		 * @expectedException \Twig\Error\SyntaxError
-		 */
 		function testRemoveADefaultFunction() {
+			$this->expectException(\Twig\Error\SyntaxError::class);
 			add_filter('timber/twig/functions', function($functions) {
 				unset($functions['shortcode']);
 				return $functions;
@@ -345,10 +341,8 @@
 			Timber::compile_string( "{{ text|shortcode }}", ['text' => 'A function has been removed'] );
 		}
 
-		/**
-		 * @expectedException \Twig\Error\SyntaxError
-		 */
 		function testRemoveADefaultFilter() {
+			$this->expectException(\Twig\Error\SyntaxError::class);
 			add_filter('timber/twig/filters', function($filters) {
 				unset($filters['wpautop']);
 				return $filters;

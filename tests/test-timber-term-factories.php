@@ -5,12 +5,12 @@
  */
 class TestTimberTermFactories extends Timber_UnitTestCase {
 
-	function setUp() {
+	function set_up() {
 		$this->truncate('term_relationships');
 		$this->truncate('term_taxonomy');
 		$this->truncate('terms');
 		$this->truncate('termmeta');
-		parent::setUp();
+		parent::set_up();
 	}
 
 	function testGetTerm() {

@@ -8,13 +8,13 @@
 			$this->_files[] = $file;
 		}
 
-		function setUp(){
-			parent::setUp();
+		function set_up(){
+			parent::set_up();
 			$this->_files = array();
 		}
 
-		function tearDown() {
-			parent::tearDown();
+		function tear_down() {
+			parent::tear_down();
 			if (isset($this->_files) && is_array($this->_files)) {
 				foreach($this->_files as $file) {
 					if (file_exists($file)) {

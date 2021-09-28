@@ -146,10 +146,8 @@ use Timber\PostArrayObject;
 			$this->assertFalse(\Timber\Helper::get_object_index_by_property('butts', 'skill', 'cooking'));
 		}
 
-		/**
-     	 * @expectedException InvalidArgumentException
-     	 */
 		function testGetObjectByPropertyButNo() {
+			$this->expectException(InvalidArgumentException::class);
 			$obj1 = new stdClass();
 			$obj1->name = 'mark';
 			$obj1->skill = 'acro yoga';
@@ -160,7 +158,7 @@ use Timber\PostArrayObject;
 			$start = Timber\Helper::start_timer();
 			sleep(1);
 			$end = Timber\Helper::stop_timer($start);
-			$this->assertContains(' seconds.', $end);
+			$this->assertStringContainsString(' seconds.', $end);
 			$time = str_replace(' seconds.', '', $end);
 			$this->assertGreaterThan(1, $time);
 		}
@@ -240,10 +238,9 @@ use Timber\PostArrayObject;
 
 		/**
 		 * Test for when we're filtering something that's not an array.
-		 *
- 		 * @expectedException Twig\Error\RuntimeError
 		 */
 		function testArrayFilterWithBogusArray() {
+			$this->expectException(Twig\Error\RuntimeError::class);
 			$template = '{% for post in posts | filter({slug:"snoop", post_content:"Idris Elba"}, "OR")%}{{ post.title }} {% endfor %}';
 			$str = Timber::compile_string($template, array('posts' => 'foobar'));
 			$this->assertEquals('', $str);

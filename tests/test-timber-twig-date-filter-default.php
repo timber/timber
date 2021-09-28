@@ -6,8 +6,8 @@
  * @group Timber\Date
  */
 class TestTimberTwigDateFilterDefault extends Timber_UnitTestCase {
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		update_option( 'date_format', 'Y-m-d' );
 	}

@@ -440,7 +440,7 @@ class TestTimberPost extends Timber_UnitTestCase {
 		$this->assertEquals('Bernstein', $post->modified_author()->name());
 	}
 
-	function tearDown() {
+	function tear_down() {
 		global $wpdb;
 		$query = "DELETE from $wpdb->users WHERE ID > 1";
 		$wpdb->query($query);
@@ -875,6 +875,7 @@ class TestTimberPost extends Timber_UnitTestCase {
 	function testCommentFormOnPost() {
 		$post_id = $this->factory->post->create();
 		$post = Timber::get_post($post_id);
+		$GLOBALS['post'] = $post; // ACF throws an error if not
 		$form = $post->comment_form();
 		$this->assertStringStartsWith('<div id="respond"', trim($form));
 	}
@@ -900,11 +901,10 @@ class TestTimberPost extends Timber_UnitTestCase {
 
 		$pid = $this->factory->post->create(array('post_content' => $quote));
 		$post = Timber::get_post($pid);
-		$expected = array(
-			'<audio class="wp-audio-shortcode" id="audio-1-1" preload="none" style="width: 100%;" controls="controls"><source type="audio/mpeg" src="http://www.noiseaddicts.com/samples_1w72b820/280.mp3?_=1" /><a href="http://www.noiseaddicts.com/samples_1w72b820/280.mp3">http://www.noiseaddicts.com/samples_1w72b820/280.mp3</a></audio>',
-		);
+		$expected = 'http://www.noiseaddicts.com/samples_1w72b820/280.mp3';
 
-		$this->assertEquals($expected, $post->audio());
+		$this->assertStringContainsString($expected, $post->audio()[0]);
+		$this->assertStringStartsWith('<audio', $post->audio()[0]);
 	}
 
 	function testPostWithAudioCustomField() {
@@ -914,11 +914,10 @@ class TestTimberPost extends Timber_UnitTestCase {
 
 		$pid = $this->factory->post->create(array('post_content' => $quote));
 		update_post_meta($pid, 'audio', 'foo');
-		$expected = array(
-			'<audio class="wp-audio-shortcode" id="audio-1-2" preload="none" style="width: 100%;" controls="controls"><source type="audio/mpeg" src="http://www.noiseaddicts.com/samples_1w72b820/280.mp3?_=2" /><a href="http://www.noiseaddicts.com/samples_1w72b820/280.mp3">http://www.noiseaddicts.com/samples_1w72b820/280.mp3</a></audio>',
-		);
+		$expected = 'http://www.noiseaddicts.com/samples_1w72b820/280.mp3';
 		$post = Timber::get_post($pid);
-		$this->assertEquals($expected, $post->audio());
+		$this->assertStringContainsString($expected, $post->audio()[0]);
+		$this->assertStringStartsWith('<audio', $post->audio()[0]);
 	}
 
 	function testPostWithoutVideo() {
@@ -941,7 +940,7 @@ class TestTimberPost extends Timber_UnitTestCase {
 			$video = array_shift( $video );
 		}
 		$expected = '/<iframe [^>]+ src="https:\/\/www\.youtube\.com\/embed\/Jf37RalsnEs\?feature=oembed" [^>]+>/i';
-		$this->assertRegExp( $expected, $video );;
+		$this->assertMatchesRegularExpression( $expected, $video );;
 	}
 
 	function testPathAndLinkWithPort() {

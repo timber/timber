@@ -105,10 +105,8 @@ class TestMenuFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(Menu::class, $factory->from($term));
 	}
 
-	/**
-     * @expectedException InvalidArgumentException
-     */
 	public function testFromTimberMenuObjectGarbageInGarbageOut() {
+		$this->expectException(InvalidArgumentException::class);
 		$factory = new MenuFactory();
 		$this->assertFalse($factory->from(new stdClass()));
 	}
