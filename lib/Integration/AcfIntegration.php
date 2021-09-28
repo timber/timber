@@ -9,7 +9,7 @@ namespace Timber\Integration;
 
 use ACF;
 
-use Timber;
+use Timber\Timber;
 
 /**
  * Class used to handle integration with Advanced Custom Fields
