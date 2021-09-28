@@ -1,6 +1,5 @@
 <?php
 
-use Timber\Integrations\ACF;
 use Timber\User;
 
 /**
