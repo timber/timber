@@ -9,6 +9,7 @@ use Timber\User;
  * @group posts-api
  */
 class TestTimberIntegrationACF extends Timber_UnitTestCase {
+
 	function testACFGetFieldPost() {
 		$post_id = $this->factory->post->create();
 		update_field( 'subhead', 'foobar', $post_id );
@@ -356,6 +357,23 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 		$str = Timber::compile_string( $str, array( 'post' => $post ) );
 		$this->assertEquals( '<p>Cool content bro!</p>', trim($str) );
 	}
+
+	function testACFObjectTransformsDoesNotTriggerNotice() {
+		$field_image_name = 'my_image_empty_meta';
+		$field_file_name = 'my_file_empty_meta';
+		$this->register_field($field_image_name, 'image');
+		$this->register_field($field_file_name, 'file');
+
+		$post_id = $this->factory->post->create();
+		update_field( $field_image_name, '', $post_id );
+		update_field( $field_file_name, '', $post_id );
+		$post = Timber::get_post( $post_id );
+
+		$image = $post->meta($field_image_name, ['transform_value' => true]);
+		$file = $post->meta($field_file_name, ['transform_value' => true]);
+		$this->assertEquals(false, $image);
+		$this->assertEquals(false, $file);
+    }
 
 	private function register_field( $field_name, $field_type, $field_args = [] ) {
 

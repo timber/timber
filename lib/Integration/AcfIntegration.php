@@ -15,6 +15,7 @@ use Timber\Timber;
  * Class used to handle integration with Advanced Custom Fields
  */
 class AcfIntegration implements IntegrationInterface {
+	
 	public function should_init() : bool {
 		return class_exists( ACF::class );
 	}
@@ -98,6 +99,9 @@ class AcfIntegration implements IntegrationInterface {
      * @param array  $field
      */
     public static function transform_file( $value, $id, $field ) {
+        if ( empty( $value ) ) {
+            return false;
+        }
         return Timber::get_attachment( $value );
 	}
 
@@ -109,6 +113,9 @@ class AcfIntegration implements IntegrationInterface {
      * @param array  $field
      */
     public static function transform_image( $value, $id, $field ) {
+        if ( empty( $value ) ) {
+            return false;
+        }
         return Timber::get_image( $value );
 	}
 
