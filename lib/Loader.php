@@ -435,7 +435,7 @@ class Loader {
 		 * @since 2.0.0
 		 * @param bool $enable_cache_extension
 		 */
-		$enable_cache_extension = apply_filters('timber/enable_cache_extension', true);
+		$enable_cache_extension = apply_filters('timber/cache/enable_extension', true);
         if ( $enable_cache_extension ) {
             $twig->addExtension($this->_get_cache_extension());
         }
