@@ -415,7 +415,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 				'post_tag' => MetaTerm::class
 			];
 		});
-		$this->add_filter_temporarily('timber/user/classmap', function() {
+		$this->add_filter_temporarily('timber/user/class', function() {
 			return MetaUser::class;
 		});
 		$this->add_filter_temporarily('timber/comment/classmap', function() {
