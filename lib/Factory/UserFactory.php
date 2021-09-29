@@ -101,7 +101,7 @@ class UserFactory {
 		 * use Administrator;
 		 * use Editor;
 		 *
-		 * add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
+		 * add_filter( 'timber/user/class', function( $class, \WP_User $user ) {
 		 *     if ( in_array( 'editor', $user->roles, true ) ) {
 		 *         return Editor::class;
 		 *     } elseif ( in_array( 'author', $user->roles, true ) ) {
@@ -116,7 +116,7 @@ class UserFactory {
 		 * @param \WP_User $user  The `WP_User` object that is used as the base for the
 		 *                        `Timber\User` object.
 		 */
-		$class = apply_filters( 'timber/user/classmap', User::class, $user );
+		$class = apply_filters( 'timber/user/class', User::class, $user );
 
 		return $class::build($user);
 	}

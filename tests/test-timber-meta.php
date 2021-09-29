@@ -483,7 +483,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = Timber::get_post( $post_id );
 		$term    = Timber::get_term( $term_id );
 
-		$this->add_filter_temporarily('timber/user/classmap', function() {
+		$this->add_filter_temporarily('timber/user/class', function() {
 			return MetaUser::class;
 		});
 		$this->add_filter_temporarily('timber/comment/classmap', function() {
@@ -582,10 +582,10 @@ class TestTimberMeta extends Timber_UnitTestCase {
 
 		update_user_meta( $user_id, 'public_method_with_args', 'I am a meta value' );
 
-		$this->add_filter_temporarily('timber/user/classmap', function() {
+		$this->add_filter_temporarily('timber/user/class', function() {
 			return MetaUser::class;
 		});
-		$this->add_filter_temporarily('timber/user/classmap', function() {
+		$this->add_filter_temporarily('timber/user/class', function() {
 			return MetaUser::class;
 		});
 
@@ -651,7 +651,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 				'post_tag' => MetaTerm::class
 			];
 		});
-		$this->add_filter_temporarily('timber/user/classmap', function() {
+		$this->add_filter_temporarily('timber/user/class', function() {
 			return MetaUser::class;
 		});
 		$this->add_filter_temporarily('timber/comment/classmap', function() {

@@ -62,7 +62,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 				? AdminUser::class
 				: $class;
 		};
-		add_filter( 'timber/user/classmap', $my_class_map, 10, 2 );
+		add_filter( 'timber/user/class', $my_class_map, 10, 2 );
 
 		$admin_id = $this->factory->user->create([
 			'user_email' => 'me@example.com',
@@ -79,7 +79,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(AdminUser::class, $admin);
 		$this->assertInstanceOf(User::class,      $normie);
 
-		remove_filter( 'timber/user/classmap', $my_class_map );
+		remove_filter( 'timber/user/class', $my_class_map );
 	}
 
 	public function testGetUserWithArrayOfIds() {
@@ -88,7 +88,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 				? AdminUser::class
 				: $class;
 		};
-		add_filter( 'timber/user/classmap', $my_class_map, 10, 2 );
+		add_filter( 'timber/user/class', $my_class_map, 10, 2 );
 
 		$admin_id = $this->factory->user->create([
 			'user_email' => 'me@example.com',
@@ -106,7 +106,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(AdminUser::class, $admin);
 		$this->assertInstanceOf(User::class,      $normie);
 
-		remove_filter( 'timber/user/classmap', $my_class_map );
+		remove_filter( 'timber/user/class', $my_class_map );
 	}
 
 	public function testGetUserWithArrayOfIdsIncludingInvalidIds() {
@@ -146,7 +146,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 				? AdminUser::class
 				: $class;
 		};
-		add_filter( 'timber/user/classmap', $my_class_map, 10, 2 );
+		add_filter( 'timber/user/class', $my_class_map, 10, 2 );
 
 		$admin_id = $this->factory->user->create([
 			'user_email' => 'me@example.com',
@@ -163,7 +163,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(AdminUser::class, $userFactory->from($admin_wp_user));
 		$this->assertInstanceOf(User::class, $userFactory->from($normie_wp_user));
 
-		remove_filter( 'timber/user/classmap', $my_class_map );
+		remove_filter( 'timber/user/class', $my_class_map );
 	}
 
 	public function testGetUserWithAssortedArray() {
@@ -172,7 +172,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 				? AdminUser::class
 				: $class;
 		};
-		add_filter( 'timber/user/classmap', $my_class_map, 10, 2 );
+		add_filter( 'timber/user/class', $my_class_map, 10, 2 );
 
 		$admin_id = $this->factory->user->create([
 			'user_email' => 'me@example.com',
@@ -199,7 +199,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(User::class,      $users[1]);
 		$this->assertInstanceOf(User::class,      $users[2]);
 
-		remove_filter( 'timber/user/classmap', $my_class_map );
+		remove_filter( 'timber/user/class', $my_class_map );
 	}
 
 	public function testGetUserWithQueryArray() {
@@ -208,7 +208,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 				? AdminUser::class
 				: $class;
 		};
-		add_filter( 'timber/user/classmap', $my_class_map, 10, 2 );
+		add_filter( 'timber/user/class', $my_class_map, 10, 2 );
 
 		$subscriber_id = $this->factory->user->create([
 			'user_login' => 'aaa',
@@ -238,7 +238,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(AdminUser::class, $users[0]);
 		$this->assertInstanceOf(User::class,      $users[1]);
 
-		remove_filter( 'timber/user/classmap', $my_class_map );
+		remove_filter( 'timber/user/class', $my_class_map );
 	}
 
 	public function testGetUserWithUserQuery() {
@@ -247,7 +247,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 				? AdminUser::class
 				: $class;
 		};
-		add_filter( 'timber/user/classmap', $my_class_map, 10, 2 );
+		add_filter( 'timber/user/class', $my_class_map, 10, 2 );
 
 		$subscriber_id = $this->factory->user->create([
 			'user_login' => 'aaa',
@@ -277,7 +277,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(AdminUser::class, $users[0]);
 		$this->assertInstanceOf(User::class,      $users[1]);
 
-		remove_filter( 'timber/user/classmap', $my_class_map );
+		remove_filter( 'timber/user/class', $my_class_map );
 	}
 
 }
