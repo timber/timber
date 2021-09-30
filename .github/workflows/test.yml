@@ -49,7 +49,7 @@ jobs:
             experimental: true
           # PHP 8.0
           - php: '8.0'
-            wp: '5.8'
+            wp: 'trunk'
             dependency-version: 'prefer-stable'
             multisite: '0'
           # PHP with Imagick
