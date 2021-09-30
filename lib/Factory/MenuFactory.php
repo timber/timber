@@ -151,6 +151,8 @@ class MenuFactory {
 			$class = $class($term, $args);
 		}
 
+		$class = $class ?? Menu::class;
+
 		/**
 		 * Filters the menu class based on your custom criterias.
 		 *
@@ -175,7 +177,7 @@ class MenuFactory {
 		$class = apply_filters( 'timber/menu/class', $class, $term, $args );
 
 		// Fallback on the default class
-		return $class ?? Menu::class;
+		return $class;
 	}
 
 	protected function get_menu_location(WP_Term $term) : ?string {
