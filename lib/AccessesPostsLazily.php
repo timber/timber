@@ -84,7 +84,7 @@ trait AccessesPostsLazily {
 	/**
 	 * @internal
 	 */
-	public function getArrayCopy() {
+	public function getArrayCopy() : array {
 		// Force eager instantiation of Timber\Posts before returning them all in an array.
 		$this->realize();
 		return parent::getArrayCopy();
@@ -113,6 +113,7 @@ trait AccessesPostsLazily {
 	 *
 	 * @internal
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetGet($offset) {
 		$post = parent::offsetGet($offset);
 		if ($post instanceof WP_Post) {

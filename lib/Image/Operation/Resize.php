@@ -75,7 +75,7 @@ class Resize extends ImageOperation {
 		$image = $image->coalesceImages();
 		$crop  = $this->get_target_sizes($editor);
 		foreach ( $image as $frame ) {
-			$frame->cropImage($crop['src_w'], $crop['src_h'], $crop['x'], $crop['y']);
+			$frame->cropImage($crop['src_w'], $crop['src_h'], round($crop['x']), round($crop['y']));
 			$frame->thumbnailImage($w, $h);
 			$frame->setImagePage($w, $h, 0, 0);
 		}
@@ -102,7 +102,8 @@ class Resize extends ImageOperation {
 			//the user wants to resize based on constant height
 			$w = round($h * $src_ratio);
 		}
-		if ( !$crop ) {
+
+		if ( !$crop || $crop === 'default' ) {
 			return array(
 				'x' => 0, 'y' => 0,
 				'src_w' => $src_w, 'src_h' => $src_h,

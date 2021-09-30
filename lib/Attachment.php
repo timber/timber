@@ -236,7 +236,7 @@ class Attachment extends Post implements CoreInterface {
 	 * @return string The URL of the attachment.
 	 */
 	public function link() {
-		if ( strlen( $this->abs_url ) ) {
+		if ( $this->abs_url ) {
 			return $this->abs_url;
 		}
 

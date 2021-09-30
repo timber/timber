@@ -16,6 +16,7 @@ class PostsIterator extends \ArrayIterator {
 	 *
 	 * @return mixed
 	 */
+	#[\ReturnTypeWillChange]
 	public function current() {
 		static $factory;
 		$factory = $factory ?? new PostFactory();
@@ -47,7 +48,7 @@ class PostsIterator extends \ArrayIterator {
 	 *
 	 * @since 2.0.0
 	 */
-	public function next() {
+	public function next() : void {
 		/**
 		 * The `loop_end` action is not the only thing we do to improve compatibility. There’s
 		 * more going on in the Timber\Post::teardown() function. The compabitibility improvements
