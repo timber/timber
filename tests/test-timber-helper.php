@@ -230,6 +230,15 @@ use Timber\PostArrayObject;
 			$this->assertEquals('Felicia Pearson', trim($str));
 		}
 
+		function testIsArrayAssoc() {
+			$arr = [14, 21, 'thing'];
+			$this->assertFalse(Timber\Helper::is_array_assoc($arr));
+
+			$assoc_array = ['thing' => 'yeah', 'foo' => 'bar'];
+			$this->assertTrue(Timber\Helper::is_array_assoc($assoc_array));
+
+		}
+
 		function testTwigFilterFilter() {
 			$template = "{% set sizes = [34, 36, 38, 40, 42] %}{{ sizes|filter(v => v > 38)|join(', ') }}";
 			$str = Timber::compile_string($template);
