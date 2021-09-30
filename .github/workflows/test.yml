@@ -41,12 +41,17 @@ jobs:
             dependency-version: 'prefer-stable'
             multisite: '0'
             experimental: true
-          # PHP 8.0
-          - php: '8.0'
+          # PHP 8.1
+          - php: '8.1'
             wp: 'trunk'
             dependency-version: 'prefer-stable'
             multisite: '0'
             experimental: true
+          # PHP 8.0
+          - php: '8.0'
+            wp: '5.8'
+            dependency-version: 'prefer-stable'
+            multisite: '0'
           # PHP with Imagick
           - php: '7.4'
             wp: '5.8'
