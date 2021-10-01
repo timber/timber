@@ -183,7 +183,7 @@ class MenuItem extends CoreEntity implements CoreInterface, MetaInterface {
 	 *     {% endfor %}
 	 * </div>
 	 * ```
-	 * @return mixed Whatever object (Timber\Post, Timber\Term, etc.) the menu item represents.
+	 * @return mixed|null Whatever object (Timber\Post, Timber\Term, etc.) the menu item represents.
 	 */
 	public function master_object() {
 		static $factory;
@@ -192,9 +192,7 @@ class MenuItem extends CoreEntity implements CoreInterface, MetaInterface {
 		if ( $this->object_id ) {
 			return $factory->from( $this->object_id );
 		}
-		if ( $this->menu_object ) {
-			return $factory->from( $this->menu_object );
-		}
+		return null;
 	}
 
 	/**
