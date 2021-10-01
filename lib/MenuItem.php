@@ -10,7 +10,7 @@ use Timber\Menu;
  *
  * @api
  */
-class MenuItem extends Core implements CoreInterface, MetaInterface {
+class MenuItem extends CoreEntity implements CoreInterface, MetaInterface {
 	/**
 	 * @api
 	 * @var array Array of children of a menu item. Empty if there are no child menu items.
@@ -82,7 +82,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 
 	protected $_name;
 	protected $_menu_item_url;
-	protected $menu_object;
 
 	/**
 	 * @internal
@@ -106,9 +105,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		$this->import_classes($data);
 		$this->id = $data->ID;
 		$this->ID = $data->ID;
-
-		$factory = new PostFactory();
-		$this->menu_object = $factory->from($data);
 
 		$this->_name       = $data->name ?? '';
 		$this->add_class('menu-item-'.$this->ID);
@@ -409,54 +405,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 */
 	public function menu() {
 		return $this->menu;
-	}
-
-
-	/**
-	 * Get a meta value of the menu item.
-	 *
-	 * Plugins like Advanced Custom Fields allow you to set custom fields for menu items.
-	 * With this method you can retrieve the value of these.
-	 *
-	 * @api
-	 * @example
-	 * ```twig
-	 * <a class="icon-{{ item.meta('icon') }}" href="{{ item.link }}">{{ item.title }}</a>
-	 * ```
-	 * @param string $field_name Optional. The field name for which you want to get the value. If
-	 *                           no field name is provided, this function will fetch values for all
-	 *                           custom fields. Default empty string.
-	 * @param array  $args       An array of arguments for getting the meta value. Third-party
-	 *                           integrations can use this argument to make their API arguments
-	 *                           available in Timber. Default empty.
-	 * @return mixed Whatever value is stored in the database. Null if no value could be found.
-	 */
-	public function meta( $field_name = '', $args = array() ) {
-		if ( isset($this->$field_name) ) {
-			return $this->$field_name;
-		}
-		if ( is_object($this->menu_object) && method_exists($this->menu_object, 'meta') ) {
-			return $this->menu_object->meta($field_name, $args);
-		}
-	}
-
-	/**
-	 * Gets a menu item’s meta value directly from the database.
-	 *
-	 * Returns a raw meta value for a menu item that’s saved in the post meta database table. Be
-	 * aware that the value can still be filtered by plugins.
-	 *
-	 * @api
-	 * @since 2.0.0
-	 * @param string $field_name The field name for which you want to get the value.
-	 * @return null|mixed The meta field value. Null if no value could be found.
-	 */
-	public function raw_meta( $field_name = '' ) {
-		if ( is_object( $this->menu_object ) && method_exists( $this->menu_object, 'raw_meta' ) ) {
-			return $this->menu_object->raw_meta( $field_name );
-		}
-
-		return null;
 	}
 
 	/**

@@ -581,7 +581,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		update_post_meta( $item->ID, 'ziggy', 'stardust' );
 		$this->assertNotEquals( $item->ID, $item->master_object->ID );
 		$this->assertEquals( 'bar', $item->foo );
-		$this->assertEquals( 'bar', $item->meta('foo') );
+		$this->assertNotEquals( 'bar', $item->meta('foo') );
 		$this->assertEquals( 'stardust', $item->meta('ziggy') );
 		$this->assertNull( $item->meta('asdfafds') );
 	}
