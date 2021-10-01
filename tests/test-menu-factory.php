@@ -155,9 +155,9 @@ class TestMenuFactory extends Timber_UnitTestCase {
 
 		// Set up our new custom menu location.
 		register_nav_menu('custom', 'Custom nav location');
-		$locations = get_theme_mod('nav_menu_locations');
-		$locations['custom'] = $id;
-		set_theme_mod('nav_menu_locations', $locations);
+		set_theme_mod('nav_menu_locations', [
+			'custom' => $id,
+		]);
 
 		$this->add_filter_temporarily('timber/menu/classmap', function() {
 			return [
