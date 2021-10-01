@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Timber\Factory\PostFactory;
+use Timber\Factory\TermFactory;
 use Timber\Menu;
 
 /**
@@ -11,6 +12,12 @@ use Timber\Menu;
  * @api
  */
 class MenuItem extends CoreEntity implements CoreInterface, MetaInterface {
+
+	/**
+	 * @var string What does this class represent in WordPress terms?
+	 */
+	public $object_type = 'post';
+
 	/**
 	 * @api
 	 * @var array Array of children of a menu item. Empty if there are no child menu items.
@@ -32,6 +39,7 @@ class MenuItem extends CoreEntity implements CoreInterface, MetaInterface {
 	public $level = 0;
 	public $post_name;
 	public $url;
+	public $type;
 
 	/**
 	 * Inherited property. Listed here to make it available in the documentation.
@@ -109,7 +117,14 @@ class MenuItem extends CoreEntity implements CoreInterface, MetaInterface {
 		$this->_name       = $data->name ?? '';
 		$this->add_class('menu-item-'.$this->ID);
 
-		$this->object_id = (int) get_post_meta( $this->ID, '_menu_item_object_id', true );
+		/**
+		 * Because init_as_page_menu already set it to simulate the master object
+		 *
+		 * @see Menu::init_as_page_menu
+		 */
+		if ( !isset($this->object_id) ) {
+			$this->object_id = (int) get_post_meta( $this->ID, '_menu_item_object_id', true );
+		}
 	}
 
 	/**
@@ -186,13 +201,18 @@ class MenuItem extends CoreEntity implements CoreInterface, MetaInterface {
 	 * @return mixed|null Whatever object (Timber\Post, Timber\Term, etc.) the menu item represents.
 	 */
 	public function master_object() {
-		static $factory;
-		$factory = $factory ?: new PostFactory();
-
-		if ( $this->object_id ) {
-			return $factory->from( $this->object_id );
+		if( empty($this->type) || !$this->object_id ) {
+			return null;
 		}
-		return null;
+
+		$factory = null;
+		if ( $this->type === 'post_type' ) {
+			$factory = new PostFactory();
+		} elseif( $this->type === 'taxonomy' ) {
+			$factory = new TermFactory();
+		}
+
+		return $factory ? $factory->from( $this->object_id ) : null;
 	}
 
 	/**
@@ -328,7 +348,7 @@ class MenuItem extends CoreEntity implements CoreInterface, MetaInterface {
 	 * @return bool Whether the link is external or not.
 	 */
 	public function is_external() {
-		if ( $this->type() !== 'custom' ) {
+		if ( $this->type !== 'custom' ) {
 			return false;
 		}
 		return URLHelper::is_external( $this->link() );
@@ -377,21 +397,6 @@ class MenuItem extends CoreEntity implements CoreInterface, MetaInterface {
 			return '_self';
 		}
 		return $target;
-	}
-
-	/**
-	 * Get the type of the menu item.
-	 *
-	 * Depending on what is the menu item links to. Can be `post_type` for posts, pages and custom
-	 * posts, `post_type_archive` for post type archive pages, `taxonomy` for terms or `custom` for
-	 * custom links.
-	 *
-	 * @api
-	 * @since 1.0.4
-	 * @return string The type of the menu item.
-	 */
-	public function type() {
-		return $this->meta('_menu_item_type');
 	}
 
 	/**

@@ -132,7 +132,7 @@ class Menu extends Term {
 	 */
 	protected function init(WP_Term $menu_term) {
 		$menu_id = $menu_term->term_id;
-		$menu = wp_get_nav_menu_items($menu_id);
+		$menu_items = wp_get_nav_menu_items($menu_id);
 		$locations = get_nav_menu_locations();
 
 		// Set theme location if available.
@@ -140,12 +140,12 @@ class Menu extends Term {
 			$this->theme_location = array_search( $menu_id, $locations, true );
 		}
 
-		if ( $menu ) {
+		if ( $menu_items ) {
 			// @todo do we really need to call this fn? It's marked as "private" in the WP docs.
 			// Commenting out this line only breaks a single test: TestTimberMenu::testMenuTwigWithClasses
 			// ...maybe that means there's a way to accomplish what we need without calling a "private" fn.
-			_wp_menu_item_classes_by_context($menu);
-			if ( is_array($menu) ) {
+			_wp_menu_item_classes_by_context($menu_items);
+			if ( is_array($menu_items) ) {
 				/**
 				 * Default arguments from wp_nav_menu() function.
 				 *
@@ -179,12 +179,12 @@ class Menu extends Term {
 				$default_args_array = apply_filters( 'wp_nav_menu_args', $default_args_array );
 				$default_args_obj = (object) $default_args_array;
 
-				$menu = apply_filters( 'wp_nav_menu_objects', $menu, $default_args_obj );
+				$menu_items = apply_filters( 'wp_nav_menu_objects', $menu_items, $default_args_obj );
 
-				$menu = $this->order_children($menu);
-				$menu = $this->strip_to_depth_limit($menu);
+				$menu_items = $this->order_children($menu_items);
+				$menu_items = $this->strip_to_depth_limit($menu_items);
 			}
-			$this->items = $menu;
+			$this->items = $menu_items;
 
 			$this->import($menu_term);
 			$this->ID = $this->term_id;
@@ -201,6 +201,7 @@ class Menu extends Term {
 		if ( $menu ) {
 			foreach ( $menu as $mi ) {
 				$mi->__title = $mi->post_title;
+				$mi->object_id = $mi->ID;
 			}
 			_wp_menu_item_classes_by_context($menu);
 			if ( is_array($menu) ) {
