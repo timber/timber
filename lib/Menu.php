@@ -199,10 +199,7 @@ class Menu extends Term {
 	public function init_as_page_menu() {
 		$menu = get_pages(array('sort_column' => 'menu_order'));
 		if ( $menu ) {
-			foreach ( $menu as $mi ) {
-				$mi->__title = $mi->post_title;
-				$mi->object_id = $mi->ID;
-			}
+			$menu = array_map('wp_setup_nav_menu_item', $menu);
 			_wp_menu_item_classes_by_context($menu);
 			if ( is_array($menu) ) {
 				$menu = $this->order_children($menu);
