@@ -6,8 +6,8 @@
  * @group Timber\Date
  */
 class TestTimberTwigDateFilter extends Timber_UnitTestCase {
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 
 		update_option( 'date_format', 'F j, Y H:i' );
 		update_option( 'timezone_string', 'Europe/Paris' );
@@ -21,10 +21,10 @@ class TestTimberTwigDateFilter extends Timber_UnitTestCase {
 		 */
 	}
 
-	function tearDown() {
+	function tear_down() {
 		update_option( 'timezone_string', 'UTC' );
 
-		parent::tearDown();
+		parent::tear_down();
 	}
 
 	function get_context() {

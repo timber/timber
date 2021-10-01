@@ -9,15 +9,15 @@ use Timber\PostQuery;
  */
 class TestTimberPagination extends Timber_UnitTestCase {
 
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 
 		$this->setPermalinkStructure('/%postname%/');
 		register_post_type( 'portfolio' );
 	}
 
-	public function tearDown() {
-		parent::tearDown();
+	public function tear_down() {
+		parent::tear_down();
 
 		unregister_post_type('portfolio');
 	}
@@ -459,7 +459,7 @@ class TestTimberPagination extends Timber_UnitTestCase {
 	  $pagination = $data['posts']->pagination();
 	  $this->assertEquals('http://example.org/my_cpt/page/3/', $pagination->pages[2]['link']);
 	}
-	
+
 	/**
 	 * @ticket #2302
 	 */

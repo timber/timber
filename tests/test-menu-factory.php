@@ -84,8 +84,9 @@ class TestMenuFactory extends Timber_UnitTestCase {
 
 		// Set up our new custom menu location.
 		register_nav_menu('custom', 'Custom nav location');
-		$locations = get_theme_mod('nav_menu_locations');
-		$locations['custom'] = $id;
+		$locations = [
+			'custom' => $id,
+		];
 		set_theme_mod('nav_menu_locations', $locations);
 
 		$factory = new MenuFactory();
@@ -105,10 +106,8 @@ class TestMenuFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(Menu::class, $factory->from($term));
 	}
 
-	/**
-     * @expectedException InvalidArgumentException
-     */
 	public function testFromTimberMenuObjectGarbageInGarbageOut() {
+		$this->expectException(InvalidArgumentException::class);
 		$factory = new MenuFactory();
 		$this->assertFalse($factory->from(new stdClass()));
 	}

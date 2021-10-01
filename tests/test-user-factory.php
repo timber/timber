@@ -13,10 +13,10 @@ class BadUser {}
  * @group users-api
  */
 class TestUserFactory extends Timber_UnitTestCase {
-	public function tearDown() {
+	public function tear_down() {
 		global $wpdb;
 		$wpdb->query("TRUNCATE TABLE {$wpdb->users}");
-		parent::tearDown();
+		parent::tear_down();
 	}
 
 	public function testGetUser() {
@@ -126,10 +126,9 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$this->assertFalse($maybe_user);
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testInvalidUserClassThrowsError() {
+		$this->expectException(\InvalidArgumentException::class);
+
 		$bad_user_obj = new BadUser();
 
 		$normie_id = $this->factory->user->create([

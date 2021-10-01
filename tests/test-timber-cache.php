@@ -188,7 +188,7 @@
         	if (is_dir($cache_dir)){
         		Timber\Loader::rrmdir($cache_dir);
         	}
-        	$this->assertFileNotExists($cache_dir);
+        	$this->assertFileDoesNotExist($cache_dir);
         	Timber::$twig_cache = true;
         	$pid = $this->factory->post->create();
 					$post = Timber::get_post($pid);
@@ -198,7 +198,7 @@
         	$loader = new Timber\Loader();
         	$loader->clear_cache_twig();
         	Timber::$twig_cache = false;
-        	$this->assertFileNotExists($cache_dir);
+        	$this->assertFileDoesNotExist($cache_dir);
         }
 
         /**
@@ -209,7 +209,7 @@
         	if (is_dir($cache_dir)){
         		Timber\Loader::rrmdir($cache_dir);
         	}
-        	$this->assertFileNotExists($cache_dir);
+        	$this->assertFileDoesNotExist($cache_dir);
         	Timber::$cache = true;
         	$pid = $this->factory->post->create();
 					$post = Timber::get_post($pid);
@@ -220,7 +220,7 @@
         	$loader->clear_cache_twig();
         	Timber::$cache = false;
         	Timber::$twig_cache = false;
-        	$this->assertFileNotExists($cache_dir);
+        	$this->assertFileDoesNotExist($cache_dir);
         }
 
         function testTwigCache(){
@@ -230,7 +230,7 @@
 		        Timber\Loader::rrmdir( $cache_dir );
 	        }
 
-	        $this->assertFileNotExists( $cache_dir );
+	        $this->assertFileDoesNotExist( $cache_dir );
 
 	        $cache_enabler = function( $options ) {
 				$options['cache'] = true;
@@ -249,7 +249,7 @@
 
 	        $loader = new Timber\Loader();
 	        $loader->clear_cache_twig();
-	        $this->assertFileNotExists( $cache_dir );
+	        $this->assertFileDoesNotExist( $cache_dir );
 
 	        remove_filter( 'timber/twig/environment/options', $cache_enabler );
         }
@@ -293,13 +293,13 @@
             $this->assertTrue($works);
         }
 
-        function tearDown() {
+        function tear_down() {
             global $_wp_using_ext_object_cache;
             $_wp_using_ext_object_cache = false;
             global $wpdb;
             $query = "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_timberloader_%'";
             $wpdb->query($query);
-            parent::tearDown();
+            parent::tear_down();
         }
 
         function testTimberLoaderCacheTransients() {

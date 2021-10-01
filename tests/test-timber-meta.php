@@ -20,8 +20,8 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	protected $is_get_term_meta_hit;
 	protected $is_get_comment_meta_hit;
 
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 
 		require_once 'php/MetaPost.php';
 		require_once 'php/MetaTerm.php';
@@ -528,10 +528,9 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	/**
 	 * Tests when you try to directly access a custom field value that is also the name of an
 	 * existing public method on the object that has at least one required parameter.
-	 *
-	 * @expectedException \ArgumentCountError
 	 */
 	function testPostMetaDirectAccessMethodWithRequiredParametersConflict() {
+		$this->expectException(\ArgumentCountError::class);
 		$post_id = $this->factory->post->create();
 
 		update_post_meta( $post_id, 'public_method_with_args', 'I am a meta value' );
@@ -549,10 +548,9 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	/**
 	 * Tests when you try to directly access a custom field value that is also the name of an
 	 * existing method on the object that has at least one required parameter.
-	 *
-	 * @expectedException \ArgumentCountError
 	 */
 	function testTermMetaDirectAccessMethodWithRequiredParametersConflict() {
+		$this->expectException(\ArgumentCountError::class);
 		$term_id = $this->factory->term->create();
 
 		update_term_meta( $term_id, 'public_method_with_args', 'I am a meta value' );
@@ -574,10 +572,10 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	/**
 	 * Tests when you try to directly access a custom field value that is also the name of an
 	 * existing method on the object that has at least one required parameter.
-	 *
-	 * @expectedException \ArgumentCountError
 	 */
 	function testUserMetaDirectAccessMethodWithRequiredParametersConflict() {
+		$this->expectException(\ArgumentCountError::class);
+
 		$user_id = $this->factory->user->create();
 
 		update_user_meta( $user_id, 'public_method_with_args', 'I am a meta value' );
@@ -598,10 +596,9 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	/**
 	 * Tests when you try to directly access a custom field value that is also the name of an
 	 * existing method on the object that has at least one required parameter.
-	 *
-	 * @expectedException \ArgumentCountError
 	 */
 	function testCommentMetaDirectAccessMethodWithRequiredParametersConflict() {
+		$this->expectException(\ArgumentCountError::class);
 
 		$post_id    = $this->factory->post->create();
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));

@@ -15,11 +15,11 @@ require_once 'php/SerializablePost.php';
  */
 class TestTimberPostArrayObject extends Timber_UnitTestCase {
 
-	function setUp() {
+	function set_up() {
 		global $wpdb;
 		$wpdb->query("TRUNCATE TABLE $wpdb->posts");
 		$wpdb->query("ALTER TABLE $wpdb->posts AUTO_INCREMENT = 1");
-		parent::setUp();
+		parent::set_up();
   }
 
   function testEmpty() {
@@ -161,7 +161,7 @@ class TestTimberPostArrayObject extends Timber_UnitTestCase {
 
 		// @todo once the Posts API uses Factories, simplify this to Timber::get_posts([...])
 		$wp_query = new WP_Query('post_type=post');
-    
+
     $collection = new PostArrayObject($wp_query->posts);
 
 		$this->assertEquals('Post 0', $collection[0]->title());
@@ -195,9 +195,9 @@ class TestTimberPostArrayObject extends Timber_UnitTestCase {
     $wp_query = new WP_Query([
       'post_type' => ['post', 'page', 'custom']
     ]);
-    
+
 		$collection = new PostArrayObject($wp_query->posts);
-		
+
 		// Test that iteration realizes the correct class.
 		$expected = [
 			CollectionTestCustom::class,

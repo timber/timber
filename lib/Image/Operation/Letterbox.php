@@ -117,7 +117,7 @@ class Letterbox extends ImageOperation {
 				}
 			}
 			$image = $func($save_filename);
-			imagecopy($bg, $image, $x, $y, 0, 0, $owt, $oht);
+			imagecopy($bg, $image, round($x), round($y), 0, 0, round($owt), round($oht));
 			if ( $save_func === 'imagegif' ) {
 				return $save_func($bg, $save_filename);
 			}
