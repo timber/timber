@@ -16,8 +16,8 @@ use Timber\Integration\AcfIntegration;
  * @group called-post-constructor
  */
 class TestTimberMetaDeprecated extends Timber_UnitTestCase {
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 
 		remove_filter( 'timber/post/pre_meta', array( AcfIntegration::class, 'post_get_meta_field' ) );
 		remove_filter( 'timber/post/meta_object_field', array( AcfIntegration::class, 'post_meta_object' ) );

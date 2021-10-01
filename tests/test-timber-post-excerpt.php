@@ -30,7 +30,7 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 			'always_add_read_more' => true,
 		] );
 
-		$this->assertContains('and-foo', (string) $text);
+		$this->assertStringContainsString('and-foo', (string) $text);
 	}
 
 	function testReadMoreLinkFilter() {
@@ -79,7 +79,7 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 			'read_more' => '',
 			'strip'    => false,
 		] );
-		$this->assertNotContains('</p>', (string) $text);
+		$this->assertStringNotContainsString('</p>', (string) $text);
 	}
 
 	function testGetExcerpt() {
@@ -96,7 +96,7 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 			words: 3,
 			always_add_read_more: true
 		}) }}', [ 'post' => $post ] );
-		$this->assertRegExp( '/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Read More<\/a>/', $str );
+		$this->assertMatchesRegularExpression( '/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Read More<\/a>/', $str );
 
 		// excerpt set, force is false, no read more
 		$post->post_excerpt = 'this is excerpt longer than three words';
@@ -115,7 +115,7 @@ class TestTimberPostExcerpt extends Timber_UnitTestCase {
 			'read_more'            => 'Custom more',
 			'always_add_read_more' => true,
 		] );
-		$this->assertRegExp('/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Custom more<\/a>/', (string) $excerpt);
+		$this->assertMatchesRegularExpression('/this is super&hellip; <a href="http:\/\/example.org\/\?p=\d+" class="read-more">Custom more<\/a>/', (string) $excerpt);
 
 		// content with <!--more--> tag, force false
 		$post->post_content = 'this is super dooper<!--more--> trooper long words';

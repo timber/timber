@@ -7,8 +7,8 @@ use Timber\User;
 	 * @group users-api
 	 */
 	class TestTimberUser extends Timber_UnitTestCase {
-		function setUp() {
-			parent::setUp();
+		function set_up() {
+			parent::set_up();
 
 			// Restore integration-free Class Map for users.
 			$this->add_filter_temporarily('timber/user/classmap', function() {

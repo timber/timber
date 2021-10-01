@@ -20,11 +20,11 @@ use Timber\Integration\CoAuthorsPlusIntegration;
 			parent::expectedDeprecated();
 		}
 
-		function setUp() {
+		function set_up() {
 			if ( !class_exists('CoAuthors_Plus') ) {
 				return $this->markTestSkipped('CoAuthors_Plus plugin not loaded');
 			}
-			parent::setUp();
+			parent::set_up();
 		}
 
 		/* ----------------

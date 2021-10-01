@@ -74,10 +74,9 @@ class TestCommentFactory extends Timber_UnitTestCase {
 		remove_filter( 'timber/comment/classmap', $my_class_map );
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testInvalidCommentClassThrowsError() {
+
+		$this->expectException(\InvalidArgumentException::class);
 
 		$post_comment_id = $this->factory->comment->create([
 			'comment_post_ID' => $this->factory->post->create(),

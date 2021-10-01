@@ -238,9 +238,7 @@ class Helper {
 	public static function ob_function( $function, $args = array(null) ) {
 		ob_start();
 		call_user_func_array($function, $args);
-		$data = ob_get_contents();
-		ob_end_clean();
-		return $data;
+		return ob_get_clean();
 	}
 
 	/**

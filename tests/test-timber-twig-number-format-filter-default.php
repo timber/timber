@@ -6,18 +6,18 @@
  * @group Timber\Number
  */
 class TestTimberTwigNumberFormatFilterDefault extends Timber_UnitTestCase {
-	function setUp() {
+	function set_up() {
 		// Simulate fr_FR locale
 		global $wp_locale;
 		$wp_locale->number_format['decimal_point'] = ',';
 		$wp_locale->number_format['thousands_sep'] = ' ';
-		parent::setUp();
+		parent::set_up();
 	}
 
-	function tearDown() {
+	function tear_down() {
 		// Reset locale
 		$GLOBALS['wp_locale'] = new WP_Locale();
-		parent::tearDown();
+		parent::tear_down();
 	}
 
 	function get_context() {

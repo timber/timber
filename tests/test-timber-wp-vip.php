@@ -28,7 +28,7 @@ class TestTimberWPVIP extends TimberAttachment_UnitTestCase {
 		$data['crop'] = 'default';
 		Timber::compile( 'assets/image-test.twig', $data );
 		$resized_path = $upload_dir['path'].'/arch-'.$data['size']['width'].'x'.$data['size']['height'].'-c-'.$data['crop'].'.jpg';
-		$this->assertFileNotExists( $resized_path );
+		$this->assertFileDoesNotExist( $resized_path );
 		remove_filter( 'timber/allow_fs_write', '__return_false' );
 	}
 

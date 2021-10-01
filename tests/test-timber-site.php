@@ -55,7 +55,7 @@ class TestTimberSite extends Timber_UnitTestCase {
 		$site = new Timber\Site();
 		$icon = $site->icon();
 		$this->assertEquals('Timber\Image', get_class($icon));
-		$this->assertContains('cardinals.jpg', $icon->src());
+		$this->assertStringContainsString('cardinals.jpg', $icon->src());
 	}
 
 
@@ -86,10 +86,10 @@ class TestTimberSite extends Timber_UnitTestCase {
 		$this->assertEquals('j. F Y', $ts->option('date_format'));
 	}
 
-	function setUp() {
+	function set_up() {
 		global $wp_theme_directories;
 
-		parent::setUp();
+		parent::set_up();
 
 		$this->backup_wp_theme_directories = $wp_theme_directories;
 		$wp_theme_directories = array( WP_CONTENT_DIR . '/themes' );
@@ -99,13 +99,13 @@ class TestTimberSite extends Timber_UnitTestCase {
 
 	}
 
-	function tearDown() {
+	function tear_down() {
 		global $wp_theme_directories;
 
 		$wp_theme_directories = $this->backup_wp_theme_directories;
 
 		wp_clean_themes_cache();
 		unset( $GLOBALS['wp_themes'] );
-		parent::tearDown();
+		parent::tear_down();
 	}
 }
