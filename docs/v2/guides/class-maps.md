@@ -10,9 +10,9 @@ The Class Map is the central hub for Timber to select the right PHP class for po
 - `timber/post/classmap` for posts
 - `timber/term/classmap` for terms
 - `timber/comment/classmap` for comments
-- `timber/menu/classmap` for menus
-- `timber/menuitem/classmap` for menus
-- `timber/user/classmap` for users
+- `timber/menu/classmap` and `timber/menu/class` for menus
+- `timber/menuitem/class` for menu items
+- `timber/user/class` for users
 
 ## The Post Class Map
 
@@ -190,80 +190,77 @@ The callback function receives a `WP_Comment` object and should return the name 
 
 ## The Menu Class Map
 
-With the `timber/menu/classmap` filter, you can tell Timber which class it should use for menu objects.
+With the `timber/menu/classmap` filter, you can tell Timber which class it should use for menu objects based on the menu location.
 
 The Menu Class Map is used:
 
 - When you get a menu through `Timber::get_menu()`.
 
-Here’s an a example for a basic filter where you would always return your custom `ExtendedMenu` class.
+Here’s an a example for a basic filter where we select different menu objects based on the `primary` and `secondary` nav menu locations.
 
 **functions.php**
 
 ```php
-use ExtendedMenu;
+add_filter( 'timber/menu/classmap', function( $classmap ) {
+    $custom_classmap = [
+        'primary'   => MenuPrimary::class,
+        'secondary' => MenuSecondary::class,
+    ];
 
-add_filter( 'timber/menu/classmap', function( $class, $menu_object ) {
-    return ExtendedMenu::class;
-}, 10, 2 );
+    return array_merge( $classmap, $custom_classmap );
+}, 10 );
 ```
 
-The Menu Class Map receives the default `Timber\Menu` class name and a menu object (which is a `WP_Term`) as arguments. You should be able to decide which class to use based on these parameters.
+Menu locations that you don’t list in the class map will use `Timber\Menu` as a default class.
 
-The following example demonstrates how you can use a custom class (`MenuPrimary`) that you want to use for the menu assigned to the `primary` menu location.
+If selecting a menu class based on the location isn’t enough for you, you can also use the `timber/menu/class` filter.
+
+The following example demonstrates how you can use custom classes (`SingleLevelMenu` or `MultiLevelMenu`)  based on the depth of the menu.
 
 ```php
-use MenuPrimary;
-
-add_filter( 'timber/menu/classmap', function( $class, $menu_object ) {
-    $locations       = get_nav_menu_locations();
-    $primary_menu_id = $locations['primary'];
-
-    if ( $primary_menu_id === $menu_object->term_id ) {
-        return MenuPrimary::class;
+add_filter( 'timber/menu/class', function( $class, $term, $args ) {
+    if ( $args['depth'] === 1 ) {
+        return SingleLevelMenu::class;
     }
 
-    return $class;
-}, 10, 2 );
+    return MultiLevelMenu::class;
+}, 10, 3 );
 ```
 
-## The MenuItem Class Map
+## The MenuItem class filter
 
-With the `timber/menuitem/classmap` filter, you can tell Timber which class it should use for menu item objects (that is, the actual items within the menu).
+With the `timber/menuitem/class` filter, you can tell Timber which class it should use for menu item objects (that is, the actual items within the menu).
 
-The MenuItem Class Map is used:
+The MenuItem class filter is used:
 
 - When you get a menu through `Timber::get_menu()`.
 
 **functions.php**
 
 ```php
-use MenuPrimary;
-use MenuItemPrimary;
-
-add_filter( 'timber/menuitem/classmap', function( $class, $menu ) {
+add_filter( 'timber/menuitem/class', function( $class, $item, $menu ) {
     if ( $menu instanceof MenuPrimary ) {
         return MenuItemPrimary::class;
     }
 
     return $class;
-}, 10, 2 );
+}, 10, 3 );
 ```
 
-In the above example, the MenuItem Class Map receives the default `Timber\MenuItem` class name, the registered menu location and the `Timber\Menu` it’s assigned to as arguments. You should be able to decide which class to use based on these parameters. This example demonstrates how you can use a custom class (`MenuItemPrimary`) when the parent menu has a (custom) class of `MenuPrimary`.
+In the above example, the MenuItem class filter receives the default `Timber\MenuItem` class name, the WordPress menu item (which is an instance of `WP_Post`) and the `Timber\Menu` object that the item is assigend to. You should be able to decide which class to use based on these parameters. This example demonstrates how you can use a custom class (`MenuItemPrimary`) when the parent menu has a (custom) class of `MenuPrimary`.
 
 Here’s another example where you would use a different class if the menu item is in a menu assigned to the `secondary` menu location.
 
 ```php
 use MenuItemSecondary;
 
-add_filter( 'timber/menuitem/classmap', function( $class, $menu ) {
+add_filter( 'timber/menuitem/class', function( $class, $item, $menu ) {
     if ( 'secondary' === $menu->theme_location ) {
         return MenuItemPrimary::class;
     }
 
     return $class;
-}, 10, 2 );
+}, 10, 3 );
 ```
 
 ## The Pages Menu Class Map
@@ -288,9 +285,9 @@ add_filter( 'timber/pages_menu/classmap', function( $class ) {
 
 The Pages Menu Class Map receives the default `Timber\PagesMenu` class name as an argument.
 
-## The User Class Map
+## The User class filter
 
-With the `timber/user/classmap` filter, you can tell Timber which class it should use for user objects.
+With the `timber/user/class` filter, you can tell Timber which class it should use for user objects.
 
 The User Class Map is used:
 
@@ -303,19 +300,17 @@ The User Class Map is used:
 ```php
 use UserExtended;
 
-add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
+add_filter( 'timber/user/class', function( $class, \WP_User $user ) {
     return UserExtended::class;
 }, 10, 2 );
 ```
 
-In the above example, the User Class Map receives the default User Class Map and a `WP_User` object as arguments. You should be able to decide which class to use based on that user object.
+In the above example, the User class filter receives the default User class and a `WP_User` object as arguments. You should be able to decide which class to use based on that user object.
 
 In case you need a different User class based on the current template you’re displaying, you can use [Conditional Tags](https://developer.wordpress.org/themes/references/list-of-conditional-tags/).
 
 ```php
-use Author;
-
-add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
+add_filter( 'timber/user/class', function( $class, \WP_User $user ) {
     // Use Author class for single post template.
     if ( is_singular( 'post' ) ) {
         return Author::class;
@@ -328,10 +323,7 @@ add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
 If you need to have a special class based on the capabilities a user has, work with `$user->has_cap()`.
 
 ```php
-use Administrator;
-use Editor;
-
-add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
+add_filter( 'timber/user/class', function( $class, \WP_User $user ) {
     if ( $user->has_cap( 'manage_options' ) ) {
         return Administrator::class;
     } elseif ( $user->has_cap( 'edit_pages' ) ) {
@@ -344,12 +336,8 @@ add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
 
 If you need to check for user roles, check the `$user->roles` array. Don’t work with `$user->has_cap()` to check for roles, because it may lead to unreliable results.
 
-
 ```php
-use Administrator;
-use Editor;
-
-add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
+add_filter( 'timber/user/class', function( $class, \WP_User $user ) {
     if ( in_array( 'editor', $user->roles, true ) ) {
         return Editor::class;
     } elseif ( in_array( 'author', $user->roles, true ) ) {
