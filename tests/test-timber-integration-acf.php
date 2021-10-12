@@ -290,7 +290,7 @@ class TestTimberIntegrationACF extends Timber_UnitTestCase {
 
 	function testACFTransformUserMultiple() {
 
-		add_filter( 'timber/user/classmap', function( $class, \WP_User $user ) {
+		add_filter( 'timber/user/class', function( $class, \WP_User $user ) {
     		return User::class;
 		}, 100, 2 );
 

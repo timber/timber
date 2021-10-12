@@ -12,7 +12,7 @@ use WP_User;
  * Class UserFactory
  *
  * Internal class for instantiating User objects/collections. Responsible for applying
- * the `timber/user/classmap` filter.
+ * the `timber/user/class` filter.
  *
  * @internal
  */

@@ -11,7 +11,7 @@ use Timber\User;
 			parent::set_up();
 
 			// Restore integration-free Class Map for users.
-			$this->add_filter_temporarily('timber/user/classmap', function() {
+			$this->add_filter_temporarily('timber/user/class', function() {
 				return User::class;
 			});
 		}
