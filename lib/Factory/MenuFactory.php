@@ -121,15 +121,15 @@ class MenuFactory {
 		 *
 		 * Read more about this in the documentation for [Menu Class Maps](https://timber.github.io/docs/v2/guides/class-maps/#the-menu-class-map).
 		 *
-		 * The default Menu Class Map will contain class names for locations that map to `Timber\Menu`
+		 * The default Menu Class Map will contain class names for locations that map to `Timber\Menu`.
 		 *
 		 * @since 2.0.0
 		 * @example
 		 * ```
 		 * add_filter( 'timber/menu/classmap', function( $classmap ) {
 		 *     $custom_classmap = [
-		 *         'primary' => MenuPrimary::class,
-		 *         'secondary' => MenySecondary::class,
+		 *         'primary'   => MenuPrimary::class,
+		 *         'secondary' => MenuSecondary::class,
 		 *     ];
 		 *
 		 *     return array_merge( $classmap, $custom_classmap );
@@ -163,11 +163,12 @@ class MenuFactory {
 		 * @example
 		 * ```
 		 * add_filter( 'timber/menu/class', function( $class, $term, $args ) {
-		 *     if ($args['depth'] === 1) {
-		 * 	       return SingleLevelMenu::class;
-		 *    }
+		 *     if ( $args['depth'] === 1 ) {
+		 *         return SingleLevelMenu::class;
+		 *     }
+		 *
 		 *     return MultiLevelMenu::class;
-		 * } );
+		 * }, 10, 3 );
 		 * ```
 		 *
 		 * @param string $class The class to use.

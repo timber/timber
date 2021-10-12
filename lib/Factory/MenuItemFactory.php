@@ -38,11 +38,12 @@ class MenuItemFactory {
 		 * @example
 		 * ```
 		 * add_filter( 'timber/menuitem/class', function( $class, $item, $menu ) {
-		 *     if ($item->post_parent) {
-		 * 	       return SubMenuItem::class;
-		 *    }
+		 *     if ( $item->post_parent ) {
+		 *         return SubMenuItem::class;
+		 *     }
+		 *
 		 *     return MenuItem::class;
-		 * } );
+		 * }, 10, 3 );
 		 * ```
 		 *
 		 * @param string $class The class to use.
