@@ -11,7 +11,7 @@ use Timber\Menu;
  *
  * @api
  */
-class MenuItem extends CoreEntity implements CoreInterface, MetaInterface {
+class MenuItem extends CoreEntity {
 
 	/**
 	 * @var string What does this class represent in WordPress terms?

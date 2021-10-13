@@ -33,7 +33,7 @@ use WP_Comment;
  * <p class="comment-attribution">- Sullivan Ballou</p>
  * ```
  */
-class Comment extends CoreEntity implements CoreInterface, MetaInterface {
+class Comment extends CoreEntity {
 
 	public $object_type = 'comment';
 

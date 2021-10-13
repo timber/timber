@@ -15,7 +15,7 @@ use Timber\Factory\PostFactory;
  * @api
  * @since 2.0.0
  */
-class Attachment extends Post implements CoreInterface {
+class Attachment extends Post {
 	/**
 	 * Representation.
 	 *

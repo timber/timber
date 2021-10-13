@@ -287,9 +287,9 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$menu = Timber::get_menu($menu_arr['term_id']);
 		$this->assertIsInt($menu->depth);
 		$this->assertEquals( 0, $menu->depth );
-		$this->assertIsArray($menu->raw_options);
-		$this->assertIsArray($menu->options);
-		$this->assertEquals(array( 'depth' => 0 ), $menu->options);
+		$this->assertIsArray($menu->raw_args);
+		$this->assertIsArray($menu->args);
+		$this->assertEquals(array( 'depth' => 0 ), $menu->args);
 
 		// With Valid options set.
 		$arguments = array(
@@ -298,10 +298,10 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$menu = Timber::get_menu('Menu One', $arguments);
 		$this->assertIsInt($menu->depth);
 		$this->assertEquals( 1, $menu->depth );
-		$this->assertIsArray($menu->raw_options);
-		$this->assertEquals( $arguments, $menu->raw_options );
-		$this->assertIsArray($menu->options);
-		$this->assertEquals(array( 'depth' => 1 ), $menu->options);
+		$this->assertIsArray($menu->raw_args);
+		$this->assertEquals( $arguments, $menu->raw_args );
+		$this->assertIsArray($menu->args);
+		$this->assertEquals(array( 'depth' => 1 ), $menu->args);
 
 		// With invalid option set.
 		$arguments = array(
@@ -362,7 +362,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		) );
 
 		$filter = function( $classes, $item, $args ) {
-			$this->assertEquals( 3, $item->menu->options['depth'] );
+			$this->assertEquals( 3, $item->menu->args['depth'] );
 			$this->assertEquals( 3, $args->depth );
 
 		    return $classes;
