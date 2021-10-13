@@ -187,7 +187,7 @@ class MenuItem extends CoreEntity {
 	}
 
 	/**
-	 * Allows dev to access the "master object" (ex: post or page) the menu item represents
+	 * Allows dev to access the "master object" (ex: post, page, category, post type object) the menu item represents
 	 *
 	 * @api
 	 * @example
@@ -201,18 +201,21 @@ class MenuItem extends CoreEntity {
 	 * @return mixed|null Whatever object (Timber\Post, Timber\Term, etc.) the menu item represents.
 	 */
 	public function master_object() {
-		if( empty($this->type) || !$this->object_id ) {
-			return null;
-		}
+        switch ($this->type) {
+            case 'post_type':
+                $factory = new PostFactory();
+                break;
+            case 'taxonomy':
+                $factory = new TermFactory();
+                break;
+            case 'post_type_archive':
+                return get_post_type_object($this->object);
+            default:
+                $factory = null;
+				break;
+        }
 
-		$factory = null;
-		if ( $this->type === 'post_type' ) {
-			$factory = new PostFactory();
-		} elseif( $this->type === 'taxonomy' ) {
-			$factory = new TermFactory();
-		}
-
-		return $factory ? $factory->from( $this->object_id ) : null;
+		return $factory && $this->object_id ? $factory->from( $this->object_id ) : null;
 	}
 
 	/**
@@ -264,10 +267,10 @@ class MenuItem extends CoreEntity {
 		$this->classes = array_merge($this->classes, $data->classes ?? []);
 		$this->classes = array_unique($this->classes);
 
-		$options = new \stdClass();
-		if ( isset($this->menu()->options) ) {
+		$args = new \stdClass();
+		if ( isset($this->menu()->args) ) {
 			// The options need to be an object.
-			$options = (object) $this->menu()->options;
+			$args = (object) $this->menu()->args;
 		}
 
 		/**
@@ -286,7 +289,7 @@ class MenuItem extends CoreEntity {
 			'nav_menu_css_class',
 			$this->classes,
 			$this,
-			$options,
+			$args,
 			0
 		);
 

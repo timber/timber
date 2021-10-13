@@ -10,6 +10,11 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	const MENU_NAME = 'Menu One';
 
 	public static function _createTestMenu() {
+
+		register_post_type('dummy-post-type', [
+			'has_archive' => true,
+		]);
+
 		$menu_term = wp_insert_term( self::MENU_NAME, 'nav_menu' );
 		$menu_id = $menu_term['term_id'];
 		$menu_items = array();
@@ -122,6 +127,12 @@ class TestTimberMenu extends Timber_UnitTestCase {
 			'menu-item-object-id' => $some_category['term_id'],
 			'menu-item-object' => 'category',
 			'menu-item-type' => 'taxonomy',
+			'menu-item-status' => 'publish',
+		));
+
+		$menu_items[] = wp_update_nav_menu_item($menu_id, 0, array(
+			'menu-item-object' => 'dummy-post-type',
+			'menu-item-type' => 'post_type_archive',
 			'menu-item-status' => 'publish',
 		));
 
@@ -851,8 +862,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$menu = Timber::get_menu( $menu_id );
 		$this->assertInstanceOf( \Timber\Post::class, $menu->items[0]->master_object() );
 		$this->assertInstanceOf( \Timber\Term::class, $menu->items[6]->master_object() );
-
-		// $this->assertInstanceOf( Post::class, $menu->items[0]->master_object() );
+		$this->assertInstanceOf( WP_Post_Type::class, $menu->items[7]->master_object() );
 	}
 
 }
