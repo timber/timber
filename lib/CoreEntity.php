@@ -131,7 +131,7 @@ abstract class CoreEntity extends Core implements CoreInterface, MetaInterface {
 			 *                                 and will use the value from the filter instead.
 			 * @param int          $post_id    The post ID.
 			 * @param string       $field_name The name of the meta field to get the value for.
-			 * @param \Timber\{Object} $object       The Timber object.
+			 * @param object $object           The Timber object.
 			 * @param array        $args       An array of arguments.
 			 */
 			$object_meta = apply_filters(
