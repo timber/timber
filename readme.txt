@@ -3,7 +3,7 @@ Contributors: jarednova
 Tags: template engine, templates, twig
 Requires at least: 4.9.8
 Tested up to: 5.8.1
-Stable tag: 1.19.0
+Stable tag: 1.19.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -39,6 +39,11 @@ _Twig is the template language powering Timber; if you need a little background 
 **Fixes and improvements**
 * Fix documented return type for Timber\Image::thumbnail #2463 (thanks @titouanmathis)
 
+= 1.19.1 =
+
+**Fixes and improvements**
+
+* Fixes issue with AltoRouter introduced in 1.19.0 upgrade
 
 = 1.19.0 =
 
