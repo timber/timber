@@ -3,6 +3,7 @@
 namespace Timber;
 
 use Timber\Factory\PostFactory;
+use Timber\Factory\TermFactory;
 use Timber\Menu;
 
 /**
@@ -10,7 +11,13 @@ use Timber\Menu;
  *
  * @api
  */
-class MenuItem extends Core implements CoreInterface, MetaInterface {
+class MenuItem extends CoreEntity {
+
+	/**
+	 * @var string What does this class represent in WordPress terms?
+	 */
+	public $object_type = 'post';
+
 	/**
 	 * @api
 	 * @var array Array of children of a menu item. Empty if there are no child menu items.
@@ -32,6 +39,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	public $level = 0;
 	public $post_name;
 	public $url;
+	public $type;
 
 	/**
 	 * Inherited property. Listed here to make it available in the documentation.
@@ -82,7 +90,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 
 	protected $_name;
 	protected $_menu_item_url;
-	protected $menu_object;
 
 	/**
 	 * @internal
@@ -107,13 +114,17 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		$this->id = $data->ID;
 		$this->ID = $data->ID;
 
-		$factory = new PostFactory();
-		$this->menu_object = $factory->from($data);
-
 		$this->_name       = $data->name ?? '';
 		$this->add_class('menu-item-'.$this->ID);
 
-		$this->object_id = (int) get_post_meta( $this->ID, '_menu_item_object_id', true );
+		/**
+		 * Because init_as_page_menu already set it to simulate the master object
+		 *
+		 * @see Menu::init_as_page_menu
+		 */
+		if ( !isset($this->object_id) ) {
+			$this->object_id = (int) get_post_meta( $this->ID, '_menu_item_object_id', true );
+		}
 	}
 
 	/**
@@ -176,7 +187,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
-	 * Allows dev to access the "master object" (ex: post or page) the menu item represents
+	 * Allows dev to access the "master object" (ex: post, page, category, post type object) the menu item represents
 	 *
 	 * @api
 	 * @example
@@ -187,18 +198,24 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 *     {% endfor %}
 	 * </div>
 	 * ```
-	 * @return mixed Whatever object (Timber\Post, Timber\Term, etc.) the menu item represents.
+	 * @return mixed|null Whatever object (Timber\Post, Timber\Term, etc.) the menu item represents.
 	 */
 	public function master_object() {
-		static $factory;
-		$factory = $factory ?: new PostFactory();
+        switch ($this->type) {
+            case 'post_type':
+                $factory = new PostFactory();
+                break;
+            case 'taxonomy':
+                $factory = new TermFactory();
+                break;
+            case 'post_type_archive':
+                return get_post_type_object($this->object);
+            default:
+                $factory = null;
+				break;
+        }
 
-		if ( $this->object_id ) {
-			return $factory->from( $this->object_id );
-		}
-		if ( $this->menu_object ) {
-			return $factory->from( $this->menu_object );
-		}
+		return $factory && $this->object_id ? $factory->from( $this->object_id ) : null;
 	}
 
 	/**
@@ -250,10 +267,10 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 		$this->classes = array_merge($this->classes, $data->classes ?? []);
 		$this->classes = array_unique($this->classes);
 
-		$options = new \stdClass();
-		if ( isset($this->menu()->options) ) {
+		$args = new \stdClass();
+		if ( isset($this->menu()->args) ) {
 			// The options need to be an object.
-			$options = (object) $this->menu()->options;
+			$args = (object) $this->menu()->args;
 		}
 
 		/**
@@ -272,7 +289,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 			'nav_menu_css_class',
 			$this->classes,
 			$this,
-			$options,
+			$args,
 			0
 		);
 
@@ -334,7 +351,7 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 * @return bool Whether the link is external or not.
 	 */
 	public function is_external() {
-		if ( $this->type() !== 'custom' ) {
+		if ( $this->type !== 'custom' ) {
 			return false;
 		}
 		return URLHelper::is_external( $this->link() );
@@ -386,21 +403,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	}
 
 	/**
-	 * Get the type of the menu item.
-	 *
-	 * Depending on what is the menu item links to. Can be `post_type` for posts, pages and custom
-	 * posts, `post_type_archive` for post type archive pages, `taxonomy` for terms or `custom` for
-	 * custom links.
-	 *
-	 * @api
-	 * @since 1.0.4
-	 * @return string The type of the menu item.
-	 */
-	public function type() {
-		return $this->meta('_menu_item_type');
-	}
-
-	/**
 	 * Timber Menu.
 	 *
 	 * @api
@@ -409,54 +411,6 @@ class MenuItem extends Core implements CoreInterface, MetaInterface {
 	 */
 	public function menu() {
 		return $this->menu;
-	}
-
-
-	/**
-	 * Get a meta value of the menu item.
-	 *
-	 * Plugins like Advanced Custom Fields allow you to set custom fields for menu items.
-	 * With this method you can retrieve the value of these.
-	 *
-	 * @api
-	 * @example
-	 * ```twig
-	 * <a class="icon-{{ item.meta('icon') }}" href="{{ item.link }}">{{ item.title }}</a>
-	 * ```
-	 * @param string $field_name Optional. The field name for which you want to get the value. If
-	 *                           no field name is provided, this function will fetch values for all
-	 *                           custom fields. Default empty string.
-	 * @param array  $args       An array of arguments for getting the meta value. Third-party
-	 *                           integrations can use this argument to make their API arguments
-	 *                           available in Timber. Default empty.
-	 * @return mixed Whatever value is stored in the database. Null if no value could be found.
-	 */
-	public function meta( $field_name = '', $args = array() ) {
-		if ( isset($this->$field_name) ) {
-			return $this->$field_name;
-		}
-		if ( is_object($this->menu_object) && method_exists($this->menu_object, 'meta') ) {
-			return $this->menu_object->meta($field_name, $args);
-		}
-	}
-
-	/**
-	 * Gets a menu item’s meta value directly from the database.
-	 *
-	 * Returns a raw meta value for a menu item that’s saved in the post meta database table. Be
-	 * aware that the value can still be filtered by plugins.
-	 *
-	 * @api
-	 * @since 2.0.0
-	 * @param string $field_name The field name for which you want to get the value.
-	 * @return null|mixed The meta field value. Null if no value could be found.
-	 */
-	public function raw_meta( $field_name = '' ) {
-		if ( is_object( $this->menu_object ) && method_exists( $this->menu_object, 'raw_meta' ) ) {
-			return $this->menu_object->raw_meta( $field_name );
-		}
-
-		return null;
 	}
 
 	/**

@@ -112,7 +112,7 @@ class TestMenuItemFactory extends Timber_UnitTestCase {
 		$menu = Timber::get_menu($menu_term['term_id']);
 		$factory = new MenuItemFactory();
 
-		$this->add_filter_temporarily('timber/menuitem/classmap', function($class, WP_Post $item, Menu $menu) use ($two) {
+		$this->add_filter_temporarily('timber/menuitem/class', function($class, WP_Post $item, Menu $menu) use ($two) {
 			if ($item->ID === $two) {
 				return MyMenuItem::class;
 			}

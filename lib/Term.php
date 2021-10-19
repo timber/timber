@@ -43,7 +43,7 @@ use Timber\Factory\TermFactory;
  * </ul>
  * ```
  */
-class Term extends CoreEntity implements CoreInterface, MetaInterface {
+class Term extends CoreEntity {
 
 	public $object_type = 'term';
 	public static $representation = 'term';
@@ -99,7 +99,7 @@ class Term extends CoreEntity implements CoreInterface, MetaInterface {
 	 */
 	public static function from( $tid, $taxonomy ) {
 		Helper::deprecated(
-			"Term::from()", 
+			"Term::from()",
 			"Timber\Factory\TermFactory->from()",
 			'2.0.0'
 		);

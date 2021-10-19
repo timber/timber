@@ -40,7 +40,7 @@ use WP_User;
  *     and it’s by David Foster Wallace</p>
  * ```
  */
-class User extends CoreEntity implements CoreInterface, MetaInterface {
+class User extends CoreEntity {
 
 	public $object_type = 'user';
 	public static $representation = 'user';
