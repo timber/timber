@@ -47,25 +47,6 @@ class TestCommentFactory extends Timber_UnitTestCase {
 		$this->assertEquals($comment_id, $comment->id);
 	}
 
-	public function testGetCommentWithClassFilter() {
-		$my_class_filter = function($class, WP_comment $comment) {
-			return DummyComment::class;
-		};
-		add_filter( 'timber/comment/class', $my_class_filter, 10, 2 );
-
-		$post_comment_id = $this->factory->comment->create([
-			'comment_post_ID' => $this->factory->post->create(),
-			'comment_content' => "blorg"
-		]);
-
-		$commentFactory = new CommentFactory();
-		$post_comment   = $commentFactory->from($post_comment_id);
-
-		$this->assertInstanceOf(DummyComment::class, $post_comment);
-
-		remove_filter( 'timber/comment/class', $my_class_filter, 10 );
-	}
-
 	public function testGetCommentWithClassmapFilter() {
 		$my_class_map = function() {
 			return [
@@ -92,6 +73,25 @@ class TestCommentFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(PageComment::class, $page_comment);
 
 		remove_filter( 'timber/comment/classmap', $my_class_map );
+	}
+
+	public function testGetCommentWithClassFilter() {
+		$my_class_filter = function($class, WP_comment $comment) {
+			return DummyComment::class;
+		};
+		add_filter( 'timber/comment/class', $my_class_filter, 10, 2 );
+
+		$post_comment_id = $this->factory->comment->create([
+			'comment_post_ID' => $this->factory->post->create(),
+			'comment_content' => "blorg"
+		]);
+
+		$commentFactory = new CommentFactory();
+		$post_comment   = $commentFactory->from($post_comment_id);
+
+		$this->assertInstanceOf(DummyComment::class, $post_comment);
+
+		remove_filter( 'timber/comment/class', $my_class_filter, 10 );
 	}
 
 	public function testInvalidCommentClassThrowsError() {
