@@ -97,8 +97,32 @@ class TermFactory {
 			$class = $class($term);
 		}
 
-    // If we don't have a term class by now, fallback on the default class
-		return $class ?? Term::class;
+		$class = $class ?? Term::class;
+
+		/**
+		 * Filters the term class based on your custom criterias.
+		 *
+		 * Maybe the taxonomy is not appropriate in some cases.
+		 * This filter will allow you to filter the class on whatever data is available.
+		 *
+		 * @since 2.0.0
+		 * @example
+		 * ```
+		 * add_filter( 'timber/term/class', function( $class, $term ) {
+		 *     if ( get_term_meta($term->term_id, 'is_special_category', true) ) {
+		 *         return MyCustomTermClass::class;
+		 *     }
+		 *
+		 *     return $class;
+		 * }, 10, 2 );
+		 * ```
+		 *
+		 * @param string $class The class to use.
+		 * @param WP_Term $term The term object.
+		 */
+		$class = apply_filters( 'timber/term/class', $class, $term );
+
+		return $class;
 	}
 
 	protected function build(WP_Term $term) : CoreInterface {

@@ -66,7 +66,7 @@ class TestTermFactory extends Timber_UnitTestCase {
 		}
 	}
 
-	public function testGetTermWithOverrides() {
+	public function testGetTermWithClassmapFilter() {
 		register_taxonomy('whackness', 'post');
 		$my_class_map = function() {
 			return [
@@ -89,6 +89,20 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(MyTerm::class,         $tag);
 		$this->assertInstanceOf(MyTerm::class,         $cat);
 		$this->assertInstanceOf(WhacknessLevel::class, $whackness);
+	}
+
+	public function testGetTermWithClassFilter() {
+		$my_class_filter = function() {
+			return WhacknessLevel::class;
+		};
+		$this->add_filter_temporarily( 'timber/term/class', $my_class_filter, 10, 2 );
+
+		$cat_id       = $this->factory->term->create(['name' => 'Chevrolet',     'taxonomy' => 'category']);
+
+		$termFactory = new TermFactory();
+		$cat				 = $termFactory->from($cat_id);
+
+		$this->assertInstanceOf(WhacknessLevel::class, $cat);
 	}
 
 	public function testGetTermWithCallable() {
