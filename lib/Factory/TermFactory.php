@@ -100,10 +100,10 @@ class TermFactory {
 		$class = $class ?? Term::class;
 
 		/**
-		 * Filters the term class based on your custom criterias.
+		 * Filters the term class based on your custom criteria.
 		 *
-		 * Maybe the taxonomy is not appropriate in some cases.
-		 * This filter will allow you to filter the class on whatever data is available.
+		 * Maybe you want to set a custom class based upon a certain category?
+		 * This allows you to filter the PHP class, utilizing data from the WP_Term object.
 		 *
 		 * @since 2.0.0
 		 * @example

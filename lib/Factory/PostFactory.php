@@ -139,10 +139,10 @@ class PostFactory {
 		$class = $class ?? Post::class;
 
 		/**
-		 * Filters the post class based on your custom criterias.
+		 * Filters the post class based on your custom criteria.
 		 *
-		 * Maybe the post type is not appropriate in some cases.
-		 * This filter will allow you to filter the class on whatever data is available.
+		 * Maybe you want to set a custom class based upon how blocks are used?
+		 * This allows you to filter the PHP class, utilizing data from the WP_Post object.
 		 *
 		 * @since 2.0.0
 		 * @example

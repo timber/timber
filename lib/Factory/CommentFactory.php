@@ -78,10 +78,10 @@ class CommentFactory {
 		$class = $class ?? Comment::class;
 
 		/**
-		 * Filters the comment class based on your custom criterias.
+		 * Filters the comment class based on your custom criteria.
 		 *
-		 * Maybe the taxonomy is not appropriate in some cases.
-		 * This filter will allow you to filter the class on whatever data is available.
+		 * Maybe you want to set a custom class based upon the comment type?
+		 * This allows you to filter the PHP class, utilizing data from the WP_Comment object.
 		 *
 		 * @since 2.0.0
 		 * @example
@@ -90,7 +90,6 @@ class CommentFactory {
 		 *     if ( $comment->comment_type === 'pingback' ) {
 		 *         return PingBackComment::class;
 		 *     }
-		 *
 		 *     return $class;
 		 * }, 10, 2 );
 		 * ```
