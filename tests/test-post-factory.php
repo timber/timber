@@ -49,7 +49,7 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$this->assertEquals($post_id, $post->id);
 	}
 
-	public function testFromWithOverrides() {
+	public function testFromWithClassmapFilter() {
 		$my_class_map = function() {
 			return [
 				'post'   => MyPost::class,
@@ -71,6 +71,21 @@ class TestPostFactory extends Timber_UnitTestCase {
 
 		$this->assertInstanceOf(MyPost::class, $post);
 		$this->assertInstanceOf(MyPage::class, $page);
+		$this->assertInstanceOf(MyCustom::class, $custom);
+	}
+
+	public function testFromWithClassFilter() {
+		$my_class_filter = function($class, WP_Post $post) {
+			return MyCustom::class;
+		};
+
+		$this->add_filter_temporarily( 'timber/post/class', $my_class_filter, 10, 2 );
+
+		$custom_id = $this->factory->post->create(['post_type' => 'custom']);
+
+		$postFactory = new PostFactory();
+		$custom      = $postFactory->from($custom_id);
+
 		$this->assertInstanceOf(MyCustom::class, $custom);
 	}
 

@@ -75,8 +75,31 @@ class CommentFactory {
 			$class = $class($comment);
 		}
 
-		// If we don't have a Comment class by now, fallback on the default class
-		return $class ?? Comment::class;
+		$class = $class ?? Comment::class;
+
+		/**
+		 * Filters the comment class based on your custom criteria.
+		 *
+		 * Maybe you want to set a custom class based upon the comment type?
+		 * This allows you to filter the PHP class, utilizing data from the WP_Comment object.
+		 *
+		 * @since 2.0.0
+		 * @example
+		 * ```
+		 * add_filter( 'timber/comment/class', function( $class, $comment ) {
+		 *     if ( $comment->comment_type === 'pingback' ) {
+		 *         return PingBackComment::class;
+		 *     }
+		 *     return $class;
+		 * }, 10, 2 );
+		 * ```
+		 *
+		 * @param string $class The class to use.
+		 * @param WP_Comment $comment The comment object.
+		 */
+		$class = apply_filters( 'timber/comment/class', $class, $comment );
+
+		return $class;
 	}
 
 	protected function build(WP_Comment $comment) : CoreInterface {

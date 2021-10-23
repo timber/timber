@@ -136,8 +136,32 @@ class PostFactory {
 			$class = $class($post);
 		}
 
-		// If we don't have a post class by now, fallback on the default class
-		return $class ?? Post::class;
+		$class = $class ?? Post::class;
+
+		/**
+		 * Filters the post class based on your custom criteria.
+		 *
+		 * Maybe you want to set a custom class based upon how blocks are used?
+		 * This allows you to filter the PHP class, utilizing data from the WP_Post object.
+		 *
+		 * @since 2.0.0
+		 * @example
+		 * ```
+		 * add_filter( 'timber/post/class', function( $class, $post ) {
+		 *     if ( has_blocks($post) ) {
+		 *         return GutenbergPost::class;
+		 *     }
+		 *
+		 *     return $class;
+		 * }, 10, 2 );
+		 * ```
+		 *
+		 * @param string $class The class to use.
+		 * @param WP_Post $post The post object.
+		 */
+		$class = apply_filters( 'timber/post/class', $class, $post );
+
+		return $class;
 	}
 
 	protected function is_image(WP_Post $post) {
