@@ -265,6 +265,7 @@ class Timber {
 			 */
 			self::$context_cache['wp_head'] = new FunctionWrapper( 'wp_head' );
 			self::$context_cache['wp_footer'] = new FunctionWrapper( 'wp_footer' );
+			self::$context_cache['wp_body_open'] = new FunctionWrapper( 'wp_body_open' );
 
 			self::$context_cache = apply_filters('timber_context', self::$context_cache);
 			self::$context_cache = apply_filters('timber/context', self::$context_cache);
