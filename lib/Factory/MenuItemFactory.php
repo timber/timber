@@ -12,7 +12,7 @@ use Timber\MenuItem;
  * Internal API class for instantiating Menus
  */
 class MenuItemFactory {
-	public function from($item, Menu $menu) {
+	public function from($item, Menu $menu) : ?MenuItem {
         if (is_numeric($item)) {
 			$item = get_post($item);
         }
@@ -21,7 +21,7 @@ class MenuItemFactory {
 			return $this->build($item, $menu);
 		}
 
-		return false;
+		return null;
 	}
 
 	protected function build(WP_Post $item, Menu $menu) : CoreInterface {

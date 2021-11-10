@@ -4,50 +4,92 @@ namespace Timber\Factory;
 
 use Timber\CoreInterface;
 use Timber\Menu;
-
 use WP_Term;
 
 /**
  * Internal API class for instantiating Menus
  */
 class MenuFactory {
-	public function from($params, array $args = []) {
-		if ($params === 0) {
-			// We know no nav_menu term exists with ID 0,
-			// so just look at the existing terms in the database.
+
+	/**
+	 * Try to get a menu by all means available in an order that matches the
+	 * most common use cases. It will fallback on the first menu found if no parameters are provided
+	 * or if no menu is found with the current parameters.
+	 *
+	 * Note that this method has pitfalls and might not be the most performant way to get a menu
+	 *
+	 * @param mixed $params
+	 * @param array $args
+	 * @return Menu|null
+	 */
+	public function from($params, array $args = []) : ?Menu {
+		$menu = null;
+
+		if(empty($params)) {
 			return $this->from_nav_menu_terms($args);
 		}
 
+		// If $params is a numeric slug, we might get the wrong menu
 		if (is_numeric($params)) {
-			return $this->from_id((int) $params, $args);
-		}
-
-		if (is_string($params)) {
-			return $this->from_string($params, $args);
+			$menu = $this->from_id((int) $params, $args);
 		}
 
 		if (is_object($params)) {
-			return $this->from_term_object($params, $args);
+			$menu = $this->from_object($params, $args);
 		}
 
-		// Fall back on the first nav_menu term we find.
-		return $this->from_nav_menu_terms($args);
+		if (!$menu && is_string($params)) {
+			// If $location is the same than some menu slug, we might get the wrong menu
+			$menu = $this->from_location($params, $args);
+			if(!$menu) {
+				$menu = $this->from_slug($params, $args);
+			}
+			if(!$menu) {
+				$menu = $this->from_name($params, $args);
+			}
+		}
+
+		if(!$menu) {
+			$menu = $this->from_nav_menu_terms($args);
+		}
+
+		return $menu;
 	}
 
 	/**
-	 * Query the database for existing nav menu terms and return the first one
-	 * as a Timber\Menu object.
+	 * Get the first non empty menu
 	 *
 	 * @internal
 	 */
-	protected function from_nav_menu_terms(array $args) {
-		$terms = get_terms('nav_menu', [
-			'hide_empty' => true,
-		]);
+	protected function from_nav_menu_terms(array $args = []) : ?Menu {
+		$menus = wp_get_nav_menus();
+		foreach ( $menus as $menu_maybe ) {
+			$menu_items = wp_get_nav_menu_items( $menu_maybe->term_id, array( 'update_post_term_cache' => false ) );
+			if ( $menu_items ) {
+				$menu = $menu_maybe;
+				break;
+			}
+		}
+		return isset($menu) ? $this->from_object($menu, $args) : null;
+	}
 
-		$id = $terms[0]->term_id ?? 0;
+	/**
+	 * Get a Menu from its location
+	 */
+	public function from_location(string $location, array $args = []) : ?Menu {
+		$locations = get_nav_menu_locations();
+		if (!isset( $locations[ $location ] )) {
+			return null;
+		}
 
-		return $id ? $this->from_id($id, $args) : false;
+		$term = get_term_by('id', $locations[$location], 'nav_menu');
+		if(!$term) {
+			return null;
+		}
+
+		$args['location'] = $location;
+
+		return $this->build($term, $args);
 	}
 
 	/**
@@ -55,36 +97,48 @@ class MenuFactory {
 	 *
 	 * @internal
 	 */
-	protected function from_id($id, $args) {
-		// WP Menus are WP_Term objects under the hood.
-		$term = wp_get_nav_menu_object($id);
+	public function from_id(int $id, array $args = []) : ?Menu {
+		$term = get_term_by('id', $id, 'nav_menu');
 
 		if (!$term) {
-			return false;
+			return null;
 		}
+
+		$args['menu_id'] = $id;
 
 		return $this->build($term, $args);
 	}
 
 	/**
-	 * Get a Menu by its slug or name, or by a nav menu location name, e.g. "primary-menu"
+	 * Get a Menu by its slug
 	 *
 	 * @internal
 	 */
-	protected function from_string($ident, $args) {
-		$term = get_term_by('slug', $ident, 'nav_menu') ?: get_term_by('name', $ident, 'nav_menu');
-
-		if (!$term) {
-			$locations = get_nav_menu_locations();
-			if (isset($locations[$ident])) {
-				$id   = apply_filters('timber/menu/id_from_location', $locations[$ident]);
-				$term = wp_get_nav_menu_object($id);
-			}
-		}
+	public function from_slug(string $slug, array $args = []) : ?Menu  {
+		$term = get_term_by('slug', $slug, 'nav_menu');
 
 		if (!$term) {
 			return false;
 		}
+
+		$args['menu'] = $slug;
+
+		return $this->build($term, $args);
+	}
+
+	/**
+	 * Get a Menu by its name
+	 *
+	 * @internal
+	 */
+	public function from_name(string $name, array $args = []) : ?Menu  {
+		$term = get_term_by('name', $name, 'nav_menu');
+
+		if (!$term) {
+			return false;
+		}
+
+		$args['menu'] = $name;
 
 		return $this->build($term, $args);
 	}
@@ -94,20 +148,18 @@ class MenuFactory {
 	 *
 	 * @internal
 	 */
-	protected function from_term_object(object $obj, array $args) : CoreInterface {
-		if ($obj instanceof CoreInterface) {
+	protected function from_object(object $obj, array $args = []) : ?Menu {
+		if ($obj instanceof Menu) {
 			// We already have a Timber Core object of some kind
 			return $obj;
 		}
 
 		if ($obj instanceof WP_Term) {
+			$args['menu'] = $obj;
 			return $this->build($obj, $args);
 		}
 
-		throw new \InvalidArgumentException(sprintf(
-			'Expected an instance of Timber\CoreInterface or WP_Term, got %s',
-			get_class($obj)
-		));
+		return null;
 	}
 
 	/**
@@ -151,6 +203,7 @@ class MenuFactory {
 			$class = $class($term, $args);
 		}
 
+		// Fallback on the default class
 		$class = $class ?? Menu::class;
 
 		/**
@@ -177,7 +230,6 @@ class MenuFactory {
 		 */
 		$class = apply_filters( 'timber/menu/class', $class, $term, $args );
 
-		// Fallback on the default class
 		return $class;
 	}
 
@@ -186,7 +238,7 @@ class MenuFactory {
 		return $locations[$term->term_id] ?? null;
     }
 
-	protected function build(WP_Term $term, array $args) : CoreInterface {
+	protected function build(WP_Term $term, $args) : CoreInterface {
 		$class = $this->get_menu_class($term, $args);
 
 		return $class::build($term, $args);

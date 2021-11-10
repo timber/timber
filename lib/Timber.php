@@ -873,27 +873,68 @@ class Timber {
 	 * $menu = Timber::get_menu( 123 );
 	 * ```
 	 *
-	 * @param int|string $ident A menu identifier: a term_id, slug, menu name, or menu location name
-	 * @param array      $options An associative array of options. Currently only one option is
+	 * @param int|string $identifier A menu identifier: a term_id, slug, menu name, or menu location name
+	 * @param array      $args An associative array of options. Currently only one option is
 	 * supported:
 	 * - `depth`: How deep down the tree of menu items to query. Useful if you only want
 	 *   the first N levels of items in the menu.
 	 *
-	 * @return \Timber\Menu|false
+	 * @return \Timber\Menu|null
 	 */
-	public static function get_menu( $ident = null, array $options = [] ) {
+	public static function get_menu($identifier = null, array $args = [] ) : ?Menu {
 		$factory   = new MenuFactory();
+		return $factory->from($identifier, $args);
+	}
 
-		return $factory->from($ident, $options);
+	/**
+	 * Gets a menu by field.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 * @example
+	 * ```php
+	 * // Get a menu by location.
+	 * $menu = Timber::get_menu_by( 'location', 'primary' );
+	 *
+	 * // Get a menu by slug.
+	 * $menu = Timber::get_menu_by( 'slug', 'primary-menu' );
+	 * ```
+	 *
+	 * @param string     $field The name of the field to retrieve the menu with. One of: `id`,
+	 *                          `ID`, `term_id`, `slug`, `name` or `location`.
+	 * @param int|string $value The value to search for by `$field`.
+	 *
+	 * @return \Timber\Menu|null
+	 */
+	public static function get_menu_by(string $field, $value, array $args = []) : ?Menu {
+		$factory   = new MenuFactory();
+		$menu = null;
+
+        switch ($field) {
+            case 'id':
+            case 'term_id':
+            case 'ID':
+                $menu = $factory->from_id($value, $args);
+                break;
+            case 'slug':
+				$menu = $factory->from_slug($value, $args);
+                break;
+            case 'name':
+				$menu = $factory->from_name($value, $args);
+                break;
+            case 'location':
+				$menu = $factory->from_location($value, $args);
+                break;
+        }
+
+		return $menu;
 	}
 
 	/**
 	 * @todo implement PagesMenuFactory
 	 */
-	public static function get_pages_menu( array $pages = [], array $options = [] ) {
-		$menu = new Menu( $pages, $options );
-		$menu->init_as_page_menu();
-		return $menu;
+	public static function get_pages_menu( array $args = [] ) {
+		return Menu::build( null, $args );
 	}
 
 
