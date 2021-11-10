@@ -50,9 +50,9 @@ class TestMenuItemFactory extends Timber_UnitTestCase {
 
 		$menu = Timber::get_menu($menu_term['term_id']);
 		$factory = new MenuItemFactory();
-		$this->assertFalse( $factory->from(null, $menu) );
+		$this->assertNull( $factory->from(null, $menu) );
 
-		$this->assertFalse( $factory->from(23442, $menu) );
+		$this->assertNull( $factory->from(23442, $menu) );
 	}
 
 	public function testMenuFromPost() {

@@ -5,6 +5,7 @@ namespace Timber;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Timber\Menu;
+use WP_Post;
 
 /**
  * Class MenuItem
@@ -12,6 +13,8 @@ use Timber\Menu;
  * @api
  */
 class MenuItem extends CoreEntity {
+
+	protected WP_Post $core_object;
 
 	/**
 	 * @var string What does this class represent in WordPress terms?
@@ -23,12 +26,6 @@ class MenuItem extends CoreEntity {
 	 * @var array Array of children of a menu item. Empty if there are no child menu items.
 	 */
 	public $children = array();
-
-	/**
-	 * @api
-	 * @var bool Whether the menu item has a `menu-item-has-children` CSS class.
-	 */
-	public $has_child_class = false;
 
 	/**
 	 * @api
@@ -97,7 +94,7 @@ class MenuItem extends CoreEntity {
 	 * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
 	 * @return \Timber\MenuItem a new MenuItem instance
 	 */
-	public static function build( $data, Menu $menu = null ) : self {
+	public static function build( $data, ?Menu $menu = null ) : self {
 		return new static($data, $menu);
 	}
 
@@ -107,8 +104,15 @@ class MenuItem extends CoreEntity {
 	 * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
 	 */
 	protected function __construct( $data, $menu = null ) {
+		$this->core_object = $data;
 		$this->menu = $menu;
+
 		$data       = (object) $data;
+
+		// Items from WordPress can come with a $title property which conflicts with methods
+		$data->__title = $data->title;
+		unset($data->title);
+
 		$this->import($data);
 		$this->import_classes($data);
 		$this->id = $data->ID;
@@ -132,9 +136,35 @@ class MenuItem extends CoreEntity {
 	 *
 	 * @param string $class_name CSS class name to be added.
 	 */
-	public function add_class( $class_name ) {
+	public function add_class( string $class_name ) {
+		// Class name is already there
+		if(!in_array($class_name, $this->classes, true)) {
+			return;
+		}
 		$this->classes[] = $class_name;
-		$this->class    .= ' ' . $class_name;
+		$this->update_class();
+	}
+
+	/**
+	 * Add a CSS class the menu item should have.
+	 *
+	 * @param string $class_name CSS class name to be added.
+	 */
+	public function remove_class( string $class_name ) {
+		// Class name is already there
+		if(!in_array($class_name, $this->classes, true)) {
+			return;
+		}
+		$class_key = array_search($class_name, $this->classes, true);
+		unset($this->classes[$class_key]);
+		$this->update_class();
+	}
+
+	/**
+	 * Update class string
+	 */
+	protected function update_class() {
+		$this->class = trim(implode(' ', $this->classes));
 	}
 
 	/**
@@ -225,11 +255,7 @@ class MenuItem extends CoreEntity {
 	 *
 	 * @param \Timber\MenuItem $item The menu item to add.
 	 */
-	public function add_child( $item ) {
-		if ( ! $this->has_child_class ) {
-			$this->add_class('menu-item-has-children');
-			$this->has_child_class = true;
-		}
+	public function add_child( MenuItem $item ) {
 		$this->children[] = $item;
 		$item->level      = $this->level + 1;
 		if ( count($this->children) ) {
@@ -264,36 +290,27 @@ class MenuItem extends CoreEntity {
 		if ( is_array($data) ) {
 			$data = (object) $data;
 		}
-		$this->classes = array_merge($this->classes, $data->classes ?? []);
-		$this->classes = array_unique($this->classes);
+		$this->classes = array_unique(array_merge($this->classes, $data->classes ?? []));
+		$this->classes = array_values(array_filter($this->classes));
 
 		$args = new \stdClass();
-		if ( isset($this->menu()->args) ) {
-			// The options need to be an object.
-			$args = (object) $this->menu()->args;
+		if ( isset($this->menu->args) ) {
+			// The args need to be an object.
+			$args = $this->menu->args;
 		}
 
 		/**
-		 * Filters the CSS classes applied to a menu item’s list item.
-		 *
-		 * @param string[]         $classes An array of the CSS classes that can be applied to the
-		 *                                  menu item’s `<li>` element.
-		 * @param \Timber\MenuItem $item    The current menu item.
-		 * @param \stdClass $args           An object of wp_nav_menu() arguments. In Timber, we
-		 *                                  don’t have these arguments because we don’t use a menu
-		 *                                  walker. Instead, you get the options that were used to
-		 *                                  create the `Timber\Menu` object.
-		 * @param int              $depth   Depth of menu item.
+		 * @see Walker_Nav_Menu
 		 */
 		$this->classes = apply_filters(
 			'nav_menu_css_class',
 			$this->classes,
-			$this,
+			$this->core_object,
 			$args,
-			0
+			0 // TODO: find the right depth
 		);
 
-		$this->class = trim(implode(' ', $this->classes));
+		$this->update_class();
 	}
 
 	/**
@@ -510,7 +527,11 @@ class MenuItem extends CoreEntity {
 	 */
 	public function title() {
 		if ( isset($this->__title) ) {
-			return $this->__title;
+			/**
+			 * @see Walker_Nav_Menu::start_el()
+			 */
+			$title = apply_filters( 'nav_menu_item_title', $this->__title, $this->core_object, $this->menu->args ? $this->menu->args : new \stdClass, $this->level );
+			return $title;
 		}
 	}
 
