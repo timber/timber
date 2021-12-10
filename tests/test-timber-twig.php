@@ -218,9 +218,6 @@
 
 		}
 
-		/**
-     	* @expectedException Twig_Error_Syntax
-     	*/
 		function testSetObject() {
 			$pid = $this->factory->post->create(array('post_title' => 'Spaceballs'));
 			$post = Timber::get_post( $pid );
@@ -332,5 +329,23 @@
 				'The &lt;strong&gt;North&lt;/strong&gt; remembers…',
 				$str
 			);
+		}
+
+		function testRemoveADefaultFunction() {
+			$this->expectException(\Twig\Error\SyntaxError::class);
+			add_filter('timber/twig/functions', function($functions) {
+				unset($functions['shortcode']);
+				return $functions;
+			});
+			Timber::compile_string( "{{ text|shortcode }}", ['text' => 'A function has been removed'] );
+		}
+
+		function testRemoveADefaultFilter() {
+			$this->expectException(\Twig\Error\SyntaxError::class);
+			add_filter('timber/twig/filters', function($filters) {
+				unset($filters['wpautop']);
+				return $filters;
+			});
+			Timber::compile_string( "{{ text|wpautop }}", ['text' => 'A filter has been removed'] );
 		}
 	}

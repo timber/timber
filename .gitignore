@@ -3,6 +3,8 @@ twig-cache/*
 .DS_Store
 .idea
 vendor
+bin/timber.php
+bin/deploy-to-wp-org.sh
 build
 /cache
 !/lib/Cache
@@ -16,6 +18,7 @@ node_modules
 docs/cache
 docs/mkdocs
 docs/output
+readme.txt
 /Timber.php
 wordpress
 composer.lock

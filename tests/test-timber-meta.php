@@ -1,12 +1,7 @@
 <?php
 
-use Timber\Comment;
-use Timber\Post;
-use Timber\Term;
+use Timber\Integration\AcfIntegration;
 use Timber\Timber;
-use Timber\User;
-
-use Timber\Integrations\ACF;
 
 /**
  * Class TestTimberMeta
@@ -25,18 +20,18 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	protected $is_get_term_meta_hit;
 	protected $is_get_comment_meta_hit;
 
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 
 		require_once 'php/MetaPost.php';
 		require_once 'php/MetaTerm.php';
 		require_once 'php/MetaUser.php';
 		require_once 'php/MetaComment.php';
 
-		remove_filter( 'timber/post/pre_meta', array( ACF::class, 'post_get_meta_field' ) );
-		remove_filter( 'timber/post/meta_object_field', array( ACF::class, 'post_meta_object' ) );
-		remove_filter( 'timber/term/pre_meta', array( ACF::class, 'term_get_meta_field' ) );
-		remove_filter( 'timber/user/pre_meta', array( ACF::class, 'user_get_meta_field' ) );
+		remove_filter( 'timber/post/pre_meta', [ AcfIntegration::class, 'post_get_meta_field' ] );
+		remove_filter( 'timber/post/meta_object_field', [ AcfIntegration::class, 'post_meta_object' ] );
+		remove_filter( 'timber/term/pre_meta', [ AcfIntegration::class, 'term_get_meta_field' ] );
+		remove_filter( 'timber/user/pre_meta', [ AcfIntegration::class, 'user_get_meta_field' ] );
 	}
 
 	/**
@@ -128,13 +123,16 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	}
 
 	/**
-	 * We can’t check whether a user meta function is hit, because user metadata
-	 * is requested by other functionality as well.
 	 */
 	function testNonNullReturnInPreMetaFilterDisablesDatabaseFetch() {
 		$this->is_get_post_meta_hit    = false;
 		$this->is_get_term_meta_hit    = false;
 		$this->is_get_comment_meta_hit = false;
+
+		/**
+		 * We can’t check whether a user meta function is hit, because user metadata
+		 * is requested by other functionality as well.
+		 */
 
 		$post_filter = function( $value ) {
 			$this->is_get_post_meta_hit = true;
@@ -417,7 +415,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 				'post_tag' => MetaTerm::class
 			];
 		});
-		$this->add_filter_temporarily('timber/user/classmap', function() {
+		$this->add_filter_temporarily('timber/user/class', function() {
 			return MetaUser::class;
 		});
 		$this->add_filter_temporarily('timber/comment/classmap', function() {
@@ -485,7 +483,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = Timber::get_post( $post_id );
 		$term    = Timber::get_term( $term_id );
 
-		$this->add_filter_temporarily('timber/user/classmap', function() {
+		$this->add_filter_temporarily('timber/user/class', function() {
 			return MetaUser::class;
 		});
 		$this->add_filter_temporarily('timber/comment/classmap', function() {
@@ -530,10 +528,9 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	/**
 	 * Tests when you try to directly access a custom field value that is also the name of an
 	 * existing public method on the object that has at least one required parameter.
-	 *
-	 * @expectedException \ArgumentCountError
 	 */
 	function testPostMetaDirectAccessMethodWithRequiredParametersConflict() {
+		$this->expectException(\ArgumentCountError::class);
 		$post_id = $this->factory->post->create();
 
 		update_post_meta( $post_id, 'public_method_with_args', 'I am a meta value' );
@@ -551,10 +548,9 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	/**
 	 * Tests when you try to directly access a custom field value that is also the name of an
 	 * existing method on the object that has at least one required parameter.
-	 *
-	 * @expectedException \ArgumentCountError
 	 */
 	function testTermMetaDirectAccessMethodWithRequiredParametersConflict() {
+		$this->expectException(\ArgumentCountError::class);
 		$term_id = $this->factory->term->create();
 
 		update_term_meta( $term_id, 'public_method_with_args', 'I am a meta value' );
@@ -576,18 +572,18 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	/**
 	 * Tests when you try to directly access a custom field value that is also the name of an
 	 * existing method on the object that has at least one required parameter.
-	 *
-	 * @expectedException \ArgumentCountError
 	 */
 	function testUserMetaDirectAccessMethodWithRequiredParametersConflict() {
+		$this->expectException(\ArgumentCountError::class);
+
 		$user_id = $this->factory->user->create();
 
 		update_user_meta( $user_id, 'public_method_with_args', 'I am a meta value' );
 
-		$this->add_filter_temporarily('timber/user/classmap', function() {
+		$this->add_filter_temporarily('timber/user/class', function() {
 			return MetaUser::class;
 		});
-		$this->add_filter_temporarily('timber/user/classmap', function() {
+		$this->add_filter_temporarily('timber/user/class', function() {
 			return MetaUser::class;
 		});
 
@@ -600,17 +596,16 @@ class TestTimberMeta extends Timber_UnitTestCase {
 	/**
 	 * Tests when you try to directly access a custom field value that is also the name of an
 	 * existing method on the object that has at least one required parameter.
-	 *
-	 * @expectedException \ArgumentCountError
 	 */
 	function testCommentMetaDirectAccessMethodWithRequiredParametersConflict() {
+		$this->expectException(\ArgumentCountError::class);
 
 		$post_id    = $this->factory->post->create();
 		$comment_id = $this->factory->comment->create(array('comment_post_ID' => $post_id));
 
 		update_comment_meta( $comment_id, 'public_method_with_args', 'I am a meta value' );
 
-		$this->add_filter_temporarily('timber/user/classmap', function() {
+		$this->add_filter_temporarily('timber/user/class', function() {
 			return MetaUser::class;
 		});
 		$this->add_filter_temporarily('timber/comment/classmap', function() {
@@ -653,7 +648,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 				'post_tag' => MetaTerm::class
 			];
 		});
-		$this->add_filter_temporarily('timber/user/classmap', function() {
+		$this->add_filter_temporarily('timber/user/class', function() {
 			return MetaUser::class;
 		});
 		$this->add_filter_temporarily('timber/comment/classmap', function() {
@@ -717,7 +712,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = Timber::get_post( $post_id );
 		$term    = Timber::get_term( $term_id );
 
-		$this->add_filter_temporarily('timber/user/classmap', function() {
+		$this->add_filter_temporarily('timber/user/class', function() {
 			return MetaUser::class;
 		});
 		$this->add_filter_temporarily('timber/comment/classmap', function() {
@@ -845,7 +840,7 @@ class TestTimberMeta extends Timber_UnitTestCase {
 		$post    = Timber::get_post( $post_id );
 		$term    = Timber::get_term( $term_id );
 
-		$this->add_filter_temporarily('timber/user/classmap', function() {
+		$this->add_filter_temporarily('timber/user/class', function() {
 			return MetaUser::class;
 		});
 		$this->add_filter_temporarily('timber/comment/classmap', function() {

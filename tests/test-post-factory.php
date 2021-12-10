@@ -49,7 +49,7 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$this->assertEquals($post_id, $post->id);
 	}
 
-	public function testFromWithOverrides() {
+	public function testFromWithClassmapFilter() {
 		$my_class_map = function() {
 			return [
 				'post'   => MyPost::class,
@@ -71,6 +71,21 @@ class TestPostFactory extends Timber_UnitTestCase {
 
 		$this->assertInstanceOf(MyPost::class, $post);
 		$this->assertInstanceOf(MyPage::class, $page);
+		$this->assertInstanceOf(MyCustom::class, $custom);
+	}
+
+	public function testFromWithClassFilter() {
+		$my_class_filter = function($class, WP_Post $post) {
+			return MyCustom::class;
+		};
+
+		$this->add_filter_temporarily( 'timber/post/class', $my_class_filter, 10, 2 );
+
+		$custom_id = $this->factory->post->create(['post_type' => 'custom']);
+
+		$postFactory = new PostFactory();
+		$custom      = $postFactory->from($custom_id);
+
 		$this->assertInstanceOf(MyCustom::class, $custom);
 	}
 
@@ -121,7 +136,7 @@ class TestPostFactory extends Timber_UnitTestCase {
 				'custom' => MyCustom::class,
 			];
 		};
-		
+
 		$this->add_filter_temporarily( 'timber/post/classmap', $my_class_map );
 
 		$post_id   = $this->factory->post->create(['post_type' => 'post', 'post_date' => '2020-01-10 19:46:41']);
@@ -241,4 +256,25 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(MyCustom::class, $res[2]);
 	}
 
+	/**
+	 * @expectedIncorrectUsage The `Timber\PostClassMap` filter
+	 */
+	public function testDeprecatedPostClassMapFilter() {
+		$my_class_map = function() {
+			return [ 'custom' => MyCustom::class ];
+		};
+
+		$this->add_filter_temporarily( 'Timber\PostClassMap', $my_class_map );
+
+		$this->factory->post->create(['post_type' => 'custom', 'post_title' => 'CCC']);
+
+		$post_factory = new PostFactory();
+		$res = $post_factory->from([
+			'post_type' => ['custom'],
+			'orderby'   => 'title',
+			'order'     => 'ASC',
+		]);
+
+		$this->assertInstanceOf(Post::class, $res[0]);
+	}
 }

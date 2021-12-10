@@ -15,20 +15,13 @@ use Timber\Factory\PostFactory;
  * @api
  * @since 2.0.0
  */
-class Attachment extends Post implements CoreInterface {
+class Attachment extends Post {
 	/**
 	 * Representation.
 	 *
 	 * @var string What does this class represent in WordPress terms?
 	 */
 	public static $representation = 'attachment';
-
-	/**
-	 * Object type.
-	 *
-	 * @var string What the object represents in WordPress terms.
-	 */
-	public $object_type = 'attachment';
 
 	/**
 	 * File.
@@ -243,7 +236,7 @@ class Attachment extends Post implements CoreInterface {
 	 * @return string The URL of the attachment.
 	 */
 	public function link() {
-		if ( strlen( $this->abs_url ) ) {
+		if ( $this->abs_url ) {
 			return $this->abs_url;
 		}
 

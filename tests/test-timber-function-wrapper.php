@@ -42,7 +42,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 		return $this->markTestSkipped('@todo Twig\Error\RuntimeError: An exception has been thrown during the rendering of a template ("readfile(/srv/www/wordpress-trunk/public_html/src/wp-includes/js/wp-emoji-loader.js): failed to open stream: No such file or directory")');
 		$context = Timber::context();
 		$str = Timber::compile_string('{{ function("wp_head") }}', $context);
-		$this->assertRegexp('/<title>Test Blog/', trim($str));
+		$this->assertMatchesRegularExpression('/<title>Test Blog/', trim($str));
 	}
 
 	function testFunctionInTemplate() {
@@ -63,7 +63,7 @@ class TestTimberFunctionWrapper extends Timber_UnitTestCase {
 	}
 
 	function testNakedSoloFunction() {
-		add_filter('timber/twig/functions', function( $twig ) {
+		add_filter('timber/twig', function( $twig ) {
 			$twig->addFunction(new \Twig\TwigFunction('your_boo', array($this, 'your_boo')) );
 			return $twig;
 		});

@@ -2,25 +2,25 @@
 <a href="https://upstatement.com/timber/"><img src="http://i.imgur.com/PbEwvZ9.png" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
 </div>
 
-By
-[Jared Novack](https://github.com/jarednova) ([@jarednova](https://twitter.com/jarednova)),
-[Lukas Gächter](https://github.com/gchtr) ([@lgaechter](https://twitter.com/lgaechter)),
-[Pascal Knecht](https://github.com/pascalknecht) ([@pascalknecht](https://twitter.com/revenwo)),
-[Maciej Palmowski](https://github.com/palmiak) ([@palmiak_fp](https://twitter.com/palmiak_fp)),
+By 
+[Jared Novack](https://github.com/jarednova) ([@jarednova](https://twitter.com/jarednova)), 
+[Lukas Gächter](https://github.com/gchtr) ([@lgaechter](https://twitter.com/lgaechter)), 
 [Coby Tamayo](https://github.com/acobster) ([@cobytamayo](https://keybase.io/acobster)),
+[Maciej Palmowski](https://github.com/palmiak) ([@palmiak_fp](https://twitter.com/palmiak_fp)),
+[Nicolas Lemoine](https://github.com/nlemoine) ([@nlemoine](https://niconico.fr/))
 [Upstatement](https://twitter.com/upstatement) and [hundreds of other GitHub contributors](https://github.com/timber/timber/graphs/contributors)
 
-[![Build Status](https://img.shields.io/travis/timber/timber/master.svg?style=flat-square)](https://travis-ci.com/github/timber/timber)
-[![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg?style=flat-square)](https://coveralls.io/github/timber/timber)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg?style=flat-square)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
-[![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg?style=flat-square)](https://packagist.org/packages/timber/timber)
-[![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg?style=flat-square)](https://wordpress.org/plugins/timber-library/)
-[![WordPress Rating](https://img.shields.io/wordpress/plugin/r/timber-library.svg?style=flat-square)](https://wordpress.org/support/plugin/timber-library/reviews/)
-
+[![Build Status](https://github.com/timber/timber/actions/workflows/test.yml/badge.svg)](https://github.com/timber/timber/actions/workflows/test.yml)
+[![Coverage Status](https://img.shields.io/coveralls/timber/timber.svg)](https://coveralls.io/github/timber/timber)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/timber/timber.svg)](https://scrutinizer-ci.com/g/timber/timber/?branch=master)
+[![Latest Stable Version](https://img.shields.io/packagist/v/timber/timber.svg)](https://packagist.org/packages/timber/timber)
+[![WordPress Download Count](https://img.shields.io/wordpress/plugin/dt/timber-library.svg)](https://wordpress.org/plugins/timber-library/)
+[![WordPress Rating](https://img.shields.io/wordpress/plugin/r/timber-library.svg)](https://wordpress.org/support/plugin/timber-library/reviews/)
 
 > Because WordPress is awesome, but the_loop isn’t.
 
-Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](http://twig.sensiolabs.org/) separate from your PHP files.
+Timber helps you create fully-customized WordPress themes faster with more sustainable code. With Timber, you write your HTML using the [Twig Template Engine](https://twig.symfony.com/) separate from your PHP files.
+
 
 This cleans up your theme code so, for example, your PHP file can focus on being the data/logic, while your Twig file can focus 100% on the HTML and display.
 

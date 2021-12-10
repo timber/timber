@@ -427,40 +427,18 @@ class Loader {
 				return null;
 			}));
 		}
-		$twig->addExtension($this->_get_cache_extension());
-
 		/**
-		 * Filters …
+		 * Filters the cache extension activation
 		 *
-		 * @todo Add summary, description, example
+		 * Allows users to disable the cache extension and use their own
 		 *
-		 * @since 0.21.9
-		 *
-		 * @param \Twig\Environment $twig The Twig environment you can add functionality to.
+		 * @since 2.0.0
+		 * @param bool $enable_cache_extension
 		 */
-		$twig = apply_filters('timber/twig/filters', $twig);
-
-		/**
-		 * Filters …
-		 *
-		 * @todo Add summary, description, example
-		 *
-		 * @since 1.3.0-rc2
-		 *
-		 * @param \Twig\Environment $twig The Twig environment you can add functionality to.
-		 */
-		$twig = apply_filters('timber/twig/functions', $twig);
-
-		/**
-		 * Filters …
-		 *
-		 * @todo Add summary, description, example
-		 *
-		 * @since 1.1.1
-		 *
-		 * @param \Twig\Environment $twig The Twig environment you can add functionality to.
-		 */
-		$twig = apply_filters('timber/twig/escapers', $twig);
+		$enable_cache_extension = apply_filters('timber/cache/enable_extension', true);
+        if ( $enable_cache_extension ) {
+            $twig->addExtension($this->_get_cache_extension());
+        }
 
 		/**
 		 * Filters …
@@ -476,9 +454,9 @@ class Loader {
 		/**
 		 * Filters …
 		 *
-		 * @deprecated 2.0.0, use `timber/twig/filters`
+		 * @deprecated 2.0.0, use `timber/twig`
 		 */
-		$twig = apply_filters_deprecated( 'twig_apply_filters', array( $twig ), '2.0.0', 'timber/twig/filters' );
+		$twig = apply_filters_deprecated( 'twig_apply_filters', [ $twig ], '2.0.0', 'timber/twig' );
 
 		/**
 		 * Filters the Twig environment used in the global context.

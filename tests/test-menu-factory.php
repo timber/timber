@@ -84,8 +84,9 @@ class TestMenuFactory extends Timber_UnitTestCase {
 
 		// Set up our new custom menu location.
 		register_nav_menu('custom', 'Custom nav location');
-		$locations = get_theme_mod('nav_menu_locations');
-		$locations['custom'] = $id;
+		$locations = [
+			'custom' => $id,
+		];
 		set_theme_mod('nav_menu_locations', $locations);
 
 		$factory = new MenuFactory();
@@ -105,10 +106,8 @@ class TestMenuFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(Menu::class, $factory->from($term));
 	}
 
-	/**
-     * @expectedException InvalidArgumentException
-     */
 	public function testFromTimberMenuObjectGarbageInGarbageOut() {
+		$this->expectException(InvalidArgumentException::class);
 		$factory = new MenuFactory();
 		$this->assertFalse($factory->from(new stdClass()));
 	}
@@ -131,7 +130,7 @@ class TestMenuFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(Menu::class, $factory->from($term));
 	}
 
-	public function testFromWithOverride() {
+	public function testMenuClassFilter() {
 		$id = $this->factory->term->create([
 			'name'     => 'Main Menu',
 			'taxonomy' => 'nav_menu',
@@ -139,8 +138,31 @@ class TestMenuFactory extends Timber_UnitTestCase {
 
 		$factory = new MenuFactory();
 
-		$this->add_filter_temporarily('timber/menu/classmap', function() {
+		$this->add_filter_temporarily('timber/menu/class', function() {
 			return MyMenu::class;
+		});
+
+		$this->assertInstanceOf(MyMenu::class, $factory->from($id));
+	}
+
+	public function testMenuClassMapFilter() {
+		$id = $this->factory->term->create([
+			'name'     => 'Main Menu',
+			'taxonomy' => 'nav_menu',
+		]);
+
+		$factory = new MenuFactory();
+
+		// Set up our new custom menu location.
+		register_nav_menu('custom', 'Custom nav location');
+		set_theme_mod('nav_menu_locations', [
+			'custom' => $id,
+		]);
+
+		$this->add_filter_temporarily('timber/menu/classmap', function() {
+			return [
+				'custom' => MyMenu::class
+			];
 		});
 
 		$this->assertInstanceOf(MyMenu::class, $factory->from($id));

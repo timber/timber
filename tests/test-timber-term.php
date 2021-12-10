@@ -28,10 +28,9 @@ class TermTestPage extends Post {}
 			$this->assertEquals('Rangers',   $baseball_teams[1]->title());
 		}
 
-		/**
-		 * @expectedException InvalidArgumentException
-		 */
 		function testTermFromInvalidObject() {
+			$this->expectException(\InvalidArgumentException::class);
+
 			register_taxonomy('baseball', array('post'));
 			$term_id = $this->factory->term->create(['name' => 'Cardinals', 'taxonomy' => 'baseball']);
 			$post_id = $this->factory->post->create(['post_title' => 'Test Post']);
@@ -90,7 +89,7 @@ class TermTestPage extends Post {}
 		function testTermLink() {
 			$term_id = $this->factory->term->create();
 			$term = Timber::get_term($term_id);
-			$this->assertContains('http://', $term->link());
+			$this->assertStringContainsString('http://', $term->link());
 		}
 
 		function testTermPath() {

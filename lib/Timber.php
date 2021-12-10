@@ -10,6 +10,7 @@ use Timber\Factory\MenuFactory;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
+use Timber\Integration;
 use Timber\Helper;
 use Timber\PostCollectionInterface;
 use Timber\URLHelper;
@@ -100,12 +101,6 @@ class Timber {
 		if ( is_admin() || $_SERVER['PHP_SELF'] == '/wp-login.php' ) {
 			return;
 		}
-		if ( version_compare(phpversion(), '5.3.0', '<') && !is_admin() ) {
-			trigger_error('Timber requires PHP 5.3.0 or greater. You have '.phpversion(), E_USER_ERROR);
-		}
-		if ( ! class_exists( 'Twig\Token' ) ) {
-			trigger_error('You have not run "composer install" to download required dependencies for Timber, you can read more on https://github.com/timber/timber#installation', E_USER_ERROR);
-		}
 	}
 
 	public function init_constants() {
@@ -120,7 +115,28 @@ class Timber {
 			Twig::init();
 			ImageHelper::init();
 			Admin::init();
-			new Integrations();
+
+			add_action('init', function() {
+				$integrations = [
+					Integration\AcfIntegration::class,
+					Integration\CoAuthorsPlusIntegration::class,
+					Integration\WpmlIntegration::class,
+				];
+
+				/**
+				 * Filters the integrations that should be initialized by Timber.
+				 *
+				 * @since 2.0.0
+				 *
+				 * @param array $integrations An array of PHP class names. Default: array of
+				 *                            integrations that Timber initializes by default.
+				 */
+				$integrations = apply_filters( 'timber/integrations', $integrations );
+
+				foreach ($integrations as $integration) {
+					self::init_integration(new $integration());
+				}
+			});
 
 			// @todo find a more permanent home for this stuff, maybe in a QueryHelper class?
 			add_filter('pre_get_posts', function(WP_Query $query) {
@@ -170,6 +186,19 @@ class Timber {
 			class_alias( 'Timber\Timber', 'Timber' );
 
 			define('TIMBER_LOADED', true);
+		}
+	}
+
+	/**
+	 * Initialize a single IntegrationInterface instance.
+	 *
+	 * @internal
+	 */
+	protected static function init_integration(
+		Integration\IntegrationInterface $integration
+	) : void {
+		if ($integration->should_init()) {
+			$integration->init();
 		}
 	}
 
@@ -563,38 +592,43 @@ class Timber {
 	================================ */
 
 	/**
-	 * Get terms.
+	 * Gets terms.
+	 *
 	 * @api
-	 * @param string|array $args a string or array identifying the taxonomy or
-	 * `WP_Term_Query` args. Numeric strings are treated as term IDs; non-numeric
-	 * strings are treated as taxonomy names. Numeric arrays are treated as a
-	 * list a of term identifiers; associative arrays are treated as args to
-	 * `WP_Term_Query::__construct()` and accepts any valid parameters to that
-	 * constructor.
-	 * @param array        $options optional; none are currently supported.
-	 * @return Iterable
 	 * @see https://developer.wordpress.org/reference/classes/wp_term_query/__construct/
 	 * @example
 	 * ```php
 	 * // Get all tags.
-	 * $tags = Timber::get_terms('post_tag');
+	 * $tags = Timber::get_terms( 'post_tag' );
 	 * // Note that this is equivalent to:
 	 * $tags = Timber::get_terms( 'tag' );
 	 * $tags = Timber::get_terms( 'tags' );
 	 *
 	 * // Get all categories.
-	 * $cats = Timber::get_terms('category');
+	 * $cats = Timber::get_terms( 'category' );
 	 *
 	 * // Get all terms in a custom taxonomy.
 	 * $cats = Timber::get_terms('my_taxonomy');
 	 *
 	 * // Perform a custom Term query.
-	 * $cats = Timber::get_terms([
+	 * $cats = Timber::get_terms( [
 	 *   'taxonomy' => 'my_taxonomy',
 	 *   'orderby'  => 'slug',
 	 *   'order'    => 'DESC',
-	 * ]);
+	 * ] );
 	 * ```
+	 *
+	 * @param string|array $args    A string or array identifying the taxonomy or
+	 *                              `WP_Term_Query` args. Numeric strings are treated as term IDs;
+	 *                              non-numeric strings are treated as taxonomy names. Numeric
+	 *                              arrays are treated as a list a of term identifiers; associative
+	 *                              arrays are treated as args for `WP_Term_Query::__construct()`
+	 *                              and accept any valid parameters to that constructor.
+	 *                              Default `null`, which will get terms from all queryable
+	 *                              taxonomies.
+	 * @param array        $options Optional. None are currently supported. Default empty array.
+	 *
+	 * @return Iterable
 	 */
 	public static function get_terms( $args = null, array $options = [] ) : Iterable {
 		// default to all queryable taxonomies
@@ -615,11 +649,11 @@ class Timber {
 	 * @example
 	 * ```php
 	 * // Get a Term.
-	 * $tag = Timber::get_term(123);
+	 * $tag = Timber::get_term( 123 );
 	 * ```
 	 */
 	public static function get_term( $term = null ) {
-		
+
 		if (null === $term) {
 			// get the fallback term_id from the current query
 			global $wp_query;
@@ -663,7 +697,7 @@ class Timber {
 	 * @param string     $field    The name of the field to retrieve the term with. One of: `id`,
 	 *                             `ID`, `slug`, `name` or `term_taxonomy_id`.
 	 * @param int|string $value    The value to search for by `$field`.
-	 * @param string     $taxonomy The taxonomy you want to retrieve from. Empty string will search 
+	 * @param string     $taxonomy The taxonomy you want to retrieve from. Empty string will search
 	 *                             from all.
 	 *
 	 * @return \Timber\Term|null
@@ -964,8 +998,14 @@ class Timber {
 			// NOTE: this also handles the is_front_page() case.
 			$context['post'] = Timber::get_post()->setup();
 		} elseif ( is_home() ) {
-			// show_on_front = page
-			$context['post']  = Timber::get_post()->setup();
+			$post = Timber::get_post();
+
+			// When no page_on_front is set, there’s no post we can set up.
+			if ( $post ) {
+				$post->setup();
+			}
+
+			$context['post']  = $post;
 			$context['posts'] = Timber::get_posts();
 		} elseif ( is_category() || is_tag() || is_tax() ) {
 			$context['term']  = Timber::get_term();

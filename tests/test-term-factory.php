@@ -12,9 +12,9 @@ class HellaWhackTerm extends Term {}
  * @group terms-api
  */
 class TestTermFactory extends Timber_UnitTestCase {
-	public function tearDown() {
+	public function tear_down() {
 		unregister_taxonomy_for_object_type('make', 'post');
-		parent::tearDown();
+		parent::tear_down();
 	}
 
 	public function testGetTerm() {
@@ -66,7 +66,7 @@ class TestTermFactory extends Timber_UnitTestCase {
 		}
 	}
 
-	public function testGetTermWithOverrides() {
+	public function testGetTermWithClassmapFilter() {
 		register_taxonomy('whackness', 'post');
 		$my_class_map = function() {
 			return [
@@ -89,6 +89,20 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$this->assertInstanceOf(MyTerm::class,         $tag);
 		$this->assertInstanceOf(MyTerm::class,         $cat);
 		$this->assertInstanceOf(WhacknessLevel::class, $whackness);
+	}
+
+	public function testGetTermWithClassFilter() {
+		$my_class_filter = function() {
+			return WhacknessLevel::class;
+		};
+		$this->add_filter_temporarily( 'timber/term/class', $my_class_filter, 10, 2 );
+
+		$cat_id       = $this->factory->term->create(['name' => 'Chevrolet',     'taxonomy' => 'category']);
+
+		$termFactory = new TermFactory();
+		$cat				 = $termFactory->from($cat_id);
+
+		$this->assertInstanceOf(WhacknessLevel::class, $cat);
 	}
 
 	public function testGetTermWithCallable() {
@@ -289,7 +303,7 @@ class TestTermFactory extends Timber_UnitTestCase {
 	public function testTermByNoTaxonomy() {
 		$category_id = $this->factory->term->create(array('name' => 'Breaking News', 'taxonomy' => 'category'));
 		$terms = Timber::get_terms(['name' => 'Breaking News', 'hide_empty' => false]);
-		
+
 		$term_category = Timber::get_term_by('name', 'Breaking News');
 		$this->assertEquals('category', $term_category->taxonomy);
 		$this->assertEquals('Breaking News', $term_category->title());

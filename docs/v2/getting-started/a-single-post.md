@@ -34,9 +34,24 @@ In this example, you see that we can also use `post.author`, `post.date` and of 
 
 The `{{ post }}` variable in Twig is not an array, it’s a PHP object. More specifically, it’s an instance of [`Timber\Post`](https://timber.github.io/docs/reference/v2/timber-post/). When you look at the documentation for `Timber\Post`, you see what else you can access.
 
-If you look for `title` in that post object in PHP, you will see that it’s actually not a property, but a function. In Twig, we don’t have to write `{{ post.title() }}` including the parentheses, we can simply use `{{ post.title }}` to call the function and echo out what it returns. If this is still all confusing to you, then don’t worry. You don’t have to completely understand this just yet.
+If you look for `title` in that post object in PHP, you will see that it’s actually not a property, but a function.
 
-Apart from the post title, we can also access the assigned author of a post through `{{ post.author }}`. The `author` is another Timber object. It’s not a post object though, but a [`Timber\User`](https://timber.github.io/docs/v2/reference/timber-user/) object. We can get the result of the `name` method through `{{ post.author.name }}`. This displays the name of the author.
+In Twig, we don’t have to write `{{ post.title() }}` including the parentheses, we can simply use `{{ post.title }}` to call the function and echo out what it returns. If this is still all confusing to you, then don’t worry. You don’t have to completely understand this just yet.
+
+When you dump the post object with `{{ dump(post) }}`, you will see that there are properties that you might find familiar:
+
+- `post.post_title`
+- `post.post_content`
+- `post.post_excerpt`
+- …
+
+These are properties that a Timber post inherits from `WP_Post`. They are the raw values directly from the database. You should only use these if you really need the raw value. Otherwise, you should use the methods provided by Timber, because Timber runs these values through the proper filter hooks:
+
+- `post.title` will use `post.post_title` and apply the `the_title` filter.
+- `post.content` will use `post.post_content` and apply the `the_content` filter. The `the_content` filter will convert WordPress block markup into HTML or convert shortcodes.
+- …
+
+Apart from the post title and content, we can also access the assigned author of a post through `{{ post.author }}`. The `author` is another Timber object. It’s not a post object though, but a [`Timber\User`](https://timber.github.io/docs/v2/reference/timber-user/) object. We can get the result of the `name` method through `{{ post.author.name }}`. This displays the name of the author.
 
 There’s also `{{ post.date }}`, but we won’t go into details about it here, because that’s a whole other chapter. You can read more about it in the [Date/Time Guide](https://timber.github.io/docs/guides/v2/date-time/).
 
@@ -96,7 +111,7 @@ $context = Timber::context();
 Timber::render( 'single.twig', $context );
 ```
 
-For very basic themes, this is all you need to start working. But for more advanced functionality, you might have to add your own data. For that, you can add to `$context`.
+For very basic themes, this is all you need to start working. But for more advanced functionality, you might have to add your own data. For that, you can add your data to `$context`.
 
 Here’s an example where you would call a function to calculate the reading time for a post.
 

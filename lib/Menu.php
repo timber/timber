@@ -12,7 +12,9 @@ use Timber\Factory\MenuItemFactory;
  *
  * @api
  */
-class Menu extends Term {
+class Menu extends CoreEntity {
+
+	public $object_type = 'term';
 
 	/**
 	 * @api
@@ -57,13 +59,13 @@ class Menu extends Term {
 	public $title;
 
 	/**
-	 * Menu options.
+	 * Menu args.
 	 *
 	 * @api
 	 * @since 1.9.6
-	 * @var array An array of menu options.
+	 * @var array An array of menu args.
 	 */
-	public $options;
+	public $args;
 
 	/**
 	 * @var MenuItem the current menu item
@@ -72,9 +74,9 @@ class Menu extends Term {
 
 	/**
 	 * @api
-	 * @var array The unfiltered options sent forward via the user in the __construct
+	 * @var array The unfiltered args sent forward via the user in the __construct
 	 */
-	public $raw_options;
+	public $raw_args;
 
 	/**
 	 * Theme Location.
@@ -88,13 +90,13 @@ class Menu extends Term {
 	/**
 	 * @internal
 	 * @param \WP_Term   $wp_term the vanilla WP term object to build from
-	 * @param array      $options Optional. An array of options. Right now, only the `depth` is
+	 * @param array      $args Optional. Right now, only the `depth` is
 	 *                            supported which says how many levels of hierarchy should be
 	 *                            included in the menu. Default `0`, which is all levels.
-	 * @return \Timber\Term
+	 * @return \Timber\Menu
 	 */
-	public static function build(WP_Term $wp_term, array $options = []) : Term {
-		$term = new static($wp_term->term_id, $options);
+	public static function build(WP_Term $wp_term, array $args = []) : Menu {
+		$term = new static($wp_term->term_id, $args);
 		$term->init($wp_term);
 		return $term;
 	}
@@ -108,22 +110,19 @@ class Menu extends Term {
 	 *                            menu, the slug of the registered location or nothing. Passing
 	 *                            nothing is good if you only have one menu. Timber will grab what
 	 *                            it finds.
-	 * @param array      $options Optional. An array of options. Right now, only the `depth` is
+	 * @param array      $args Optional. Right now, only the `depth` is
 	 *                            supported which says how many levels of hierarchy should be
 	 *                            included in the menu. Default `0`, which is all levels.
 	 */
-	public function __construct( $slug = 0, $options = array() ) {
-		$menu_id = false;
-		$locations = get_nav_menu_locations();
-
+	public function __construct( $slug = 0, $args = array() ) {
 		// For future enhancements?
-		$this->raw_options = $options;
+		$this->raw_args = $args;
 
-		$this->options = wp_parse_args( (array) $options, array(
+		$this->args = wp_parse_args( (array) $args, array(
 			'depth' => 0,
 		) );
 
-		$this->depth = (int) $this->options['depth'];
+		$this->depth = (int) $this->args['depth'];
 	}
 
 	/**
@@ -132,7 +131,7 @@ class Menu extends Term {
 	 */
 	protected function init(WP_Term $menu_term) {
 		$menu_id = $menu_term->term_id;
-		$menu = wp_get_nav_menu_items($menu_id);
+		$menu_items = wp_get_nav_menu_items($menu_id);
 		$locations = get_nav_menu_locations();
 
 		// Set theme location if available.
@@ -140,12 +139,12 @@ class Menu extends Term {
 			$this->theme_location = array_search( $menu_id, $locations, true );
 		}
 
-		if ( $menu ) {
+		if ( $menu_items ) {
 			// @todo do we really need to call this fn? It's marked as "private" in the WP docs.
 			// Commenting out this line only breaks a single test: TestTimberMenu::testMenuTwigWithClasses
 			// ...maybe that means there's a way to accomplish what we need without calling a "private" fn.
-			_wp_menu_item_classes_by_context($menu);
-			if ( is_array($menu) ) {
+			_wp_menu_item_classes_by_context($menu_items);
+			if ( is_array($menu_items) ) {
 				/**
 				 * Default arguments from wp_nav_menu() function.
 				 *
@@ -179,12 +178,12 @@ class Menu extends Term {
 				$default_args_array = apply_filters( 'wp_nav_menu_args', $default_args_array );
 				$default_args_obj = (object) $default_args_array;
 
-				$menu = apply_filters( 'wp_nav_menu_objects', $menu, $default_args_obj );
+				$menu_items = apply_filters( 'wp_nav_menu_objects', $menu_items, $default_args_obj );
 
-				$menu = $this->order_children($menu);
-				$menu = $this->strip_to_depth_limit($menu);
+				$menu_items = $this->order_children($menu_items);
+				$menu_items = $this->strip_to_depth_limit($menu_items);
 			}
-			$this->items = $menu;
+			$this->items = $menu_items;
 
 			$this->import($menu_term);
 			$this->ID = $this->term_id;
@@ -199,9 +198,7 @@ class Menu extends Term {
 	public function init_as_page_menu() {
 		$menu = get_pages(array('sort_column' => 'menu_order'));
 		if ( $menu ) {
-			foreach ( $menu as $mi ) {
-				$mi->__title = $mi->post_title;
-			}
+			$menu = array_map('wp_setup_nav_menu_item', $menu);
 			_wp_menu_item_classes_by_context($menu);
 			if ( is_array($menu) ) {
 				$menu = $this->order_children($menu);
@@ -286,6 +283,26 @@ class Menu extends Term {
 		}
 
 		return $menu;
+	}
+
+	/**
+	 * Gets a menu meta value.
+	 *
+	 * @api
+	 * @deprecated 2.0.0, use `{{ menu.meta('field_name') }}` instead.
+	 * @see \Timber\Menu::meta()
+	 *
+	 * @param string $field_name The field name for which you want to get the value.
+	 * @return mixed The meta field value.
+	 */
+	public function get_field( $field_name = null ) {
+		Helper::deprecated(
+			"{{ menu.get_field('field_name') }}",
+			"{{ menu.meta('field_name') }}",
+			'2.0.0'
+		);
+
+		return $this->meta( $field_name );
 	}
 
 	/**

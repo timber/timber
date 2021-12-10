@@ -16,11 +16,11 @@ require_once 'php/SerializablePost.php';
  */
 class TestTimberPostQuery extends Timber_UnitTestCase {
 
-	function setUp() {
+	function set_up() {
 		global $wpdb;
 		$wpdb->query("TRUNCATE TABLE $wpdb->posts");
 		$wpdb->query("ALTER TABLE $wpdb->posts AUTO_INCREMENT = 1");
-		parent::setUp();
+		parent::set_up();
 	}
 
 	function testBasicCollection() {

@@ -139,7 +139,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	 * @see https://bugs.php.net/bug.php?id=69264
 	 * @internal
 	 */
-	public function __debugInfo() {
+	public function __debugInfo() : array {
 		return [
 			'info' => sprintf( '
 ********************************************************************************
@@ -169,6 +169,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	 *
 	 * @internal
 	 */
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize() {
 		return $this->getArrayCopy();
 	}

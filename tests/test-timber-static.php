@@ -5,7 +5,7 @@
  */
 class TestTimberStaticPages extends Timber_UnitTestCase {
 
-	function tearDown() {
+	function tear_down() {
 		update_option('show_on_front', 'posts');
 		update_option('page_on_front', '0');
 		update_option('page_for_posts', '0');
