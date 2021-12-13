@@ -103,7 +103,7 @@ class Resize extends ImageOperation {
 			$w = round($h * $src_ratio);
 		}
 
-		if ( !$crop || $crop === 'default' ) {
+		if ( !$crop ) {
 			return array(
 				'x' => 0, 'y' => 0,
 				'src_w' => $src_w, 'src_h' => $src_h,
