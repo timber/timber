@@ -18,8 +18,11 @@ class KeyGenerator {
 
 		$key = md5(json_encode($value));
 		if ( is_object($value) ) {
-			$key = get_class($value).'|'.$key;
+			$key = get_class( $value ) . ';' . $key;
 		}
+
+		// Replace any of the reserved characters.
+		$key = preg_replace( '/[{}()\/\\\@:]/', ';', $key );
 
 		return $key;
 	}

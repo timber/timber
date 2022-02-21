@@ -39,10 +39,12 @@
     "wpackagist-plugin/co-authors-plus": "^3.3",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
     "php-stubs/wp-cli-stubs": "^2.2.0",
-    "yoast/phpunit-polyfills": "^1.0.1"
+    "yoast/phpunit-polyfills": "^1.0.1",
+    "twig/cache-extra": "^3.3"
   },
   "suggest": {
-    "php-coveralls/php-coveralls": "^2.0 for code coverage"
+    "php-coveralls/php-coveralls": "^2.0 for code coverage",
+    "twig/cache-extra": "For using the cache tag in Twig"
   },
   "autoload": {
     "psr-4": {
