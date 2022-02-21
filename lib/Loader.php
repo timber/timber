@@ -439,7 +439,7 @@ class Loader {
 		$enable_cache_extension = apply_filters( 'timber/cache/enable_extension', true );
 
 		if ( $enable_cache_extension && class_exists( '\Twig\CacheExtension\Extension' ) ) {
-			$twig->addExtension( $this->get_cache_extension() );
+			$twig->addExtension( $this->_get_cache_extension() );
 		}
 
 		/**
@@ -579,7 +579,7 @@ class Loader {
 	/**
 	 * @return \Twig\CacheExtension\Extension
 	 */
-	private function get_cache_extension() {
+	private function _get_cache_extension() {
 		$key_generator   = new \Timber\Cache\KeyGenerator();
 		$cache_provider  = new \Timber\Cache\WPObjectCacheAdapter($this);
 		$cache_lifetime  = apply_filters('timber/cache/extension/lifetime', 0);
