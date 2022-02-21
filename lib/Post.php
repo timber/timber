@@ -253,9 +253,16 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
 		global $post;
 		global $wp_query;
 
-		// Overwrite post global.
+		/**
+		 * Overwrite post global.
+		 *
+		 * We have to overwrite the post global to be compatible with a couple of WordPress plugins
+		 * that work with the post global in certain conditions.
+		 */
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
-		$post = $this;
+		if ( $post->ID !== $this->ID ) {
+			$post = get_post( $this->ID );
+		}
 
 		// Mimick WordPress behavior to improve compatibility with third party plugins.
 		$wp_query->in_the_loop = true;
