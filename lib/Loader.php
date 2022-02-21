@@ -427,18 +427,20 @@ class Loader {
 				return null;
 			}));
 		}
+
 		/**
-		 * Filters the cache extension activation
+		 * Filters the cache extension activation.
 		 *
 		 * Allows users to disable the cache extension and use their own
 		 *
 		 * @since 2.0.0
-		 * @param bool $enable_cache_extension
+		 * @param bool $enable_cache_extension Whether to enable the cache extension.
 		 */
-		$enable_cache_extension = apply_filters('timber/cache/enable_extension', true);
-        if ( $enable_cache_extension ) {
-            $twig->addExtension($this->_get_cache_extension());
-        }
+		$enable_cache_extension = apply_filters( 'timber/cache/enable_extension', true );
+
+		if ( $enable_cache_extension && class_exists( '\Twig\CacheExtension\Extension' ) ) {
+			$twig->addExtension( $this->get_cache_extension() );
+		}
 
 		/**
 		 * Filters …
@@ -577,8 +579,7 @@ class Loader {
 	/**
 	 * @return \Twig\CacheExtension\Extension
 	 */
-	private function _get_cache_extension() {
-
+	private function get_cache_extension() {
 		$key_generator   = new \Timber\Cache\KeyGenerator();
 		$cache_provider  = new \Timber\Cache\WPObjectCacheAdapter($this);
 		$cache_lifetime  = apply_filters('timber/cache/extension/lifetime', 0);

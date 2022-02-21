@@ -2,10 +2,7 @@
 
 namespace Timber\Cache;
 
-use Twig\CacheExtension\CacheStrategy\KeyGeneratorInterface;
-
-class KeyGenerator implements KeyGeneratorInterface {
-
+class KeyGenerator {
 	/**
 	 * @param mixed $value
 	 * @return string
@@ -26,5 +23,4 @@ class KeyGenerator implements KeyGeneratorInterface {
 
 		return $key;
 	}
-
 }
