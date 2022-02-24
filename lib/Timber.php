@@ -96,7 +96,7 @@ class Timber {
 		}
 	}
 
-	public function init_constants() {
+	protected function init_constants() {
 		defined("TIMBER_LOC") or define("TIMBER_LOC", realpath(dirname(__DIR__)));
 	}
 
