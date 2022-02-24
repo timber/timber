@@ -28,6 +28,25 @@ class TermTestPage extends Post {}
 			$this->assertEquals('Rangers',   $baseball_teams[1]->title());
 		}
 
+		/**
+		 * @ticket #2362
+		 */
+		function testMultiTermsWithSameSlug() {
+			$post_tag_id = $this->factory->term->create(array('name' => 'Security', 'taxonomy' => 'post_tag'));
+			$category_id = $this->factory->term->create(array('name' => 'Security', 'taxonomy' => 'category'));
+			$post_id     = $this->factory->post->create();
+			wp_set_object_terms($post_id, $post_tag_id, 'post_tag', true);
+			wp_set_object_terms($post_id, $category_id, 'category', true);
+
+			$term_default  = Timber::get_term_by('slug', 'security');
+			$this->assertEquals('post_tag', $term_default->taxonomy);
+			$this->assertEquals('Security', $term_default->title());
+
+			$term_category = Timber::get_term_by('slug', 'security', 'category');
+			$this->assertEquals('category', $term_category->taxonomy);
+			$this->assertEquals('Security', $term_category->title());
+		}
+
 		function testTermFromInvalidObject() {
 			$this->expectException(\InvalidArgumentException::class);
 
