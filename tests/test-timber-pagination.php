@@ -45,9 +45,6 @@ class TestTimberPagination extends Timber_UnitTestCase {
 		]);
 		$pagination = Timber::get_pagination();
 
-		global $timber;
-		$timber->active_query = false;
-		unset($timber->active_query);
 		$this->assertCount(4, $pagination['pages']);
 	}
 
