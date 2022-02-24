@@ -2,9 +2,9 @@
 <a href="https://upstatement.com/timber/"><img src="http://i.imgur.com/PbEwvZ9.png" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
 </div>
 
-By 
-[Jared Novack](https://github.com/jarednova) ([@jarednova](https://twitter.com/jarednova)), 
-[Lukas Gächter](https://github.com/gchtr) ([@lgaechter](https://twitter.com/lgaechter)), 
+By
+[Jared Novack](https://github.com/jarednova) ([@jarednova](https://twitter.com/jarednova)),
+[Lukas Gächter](https://github.com/gchtr) ([@lgaechter](https://twitter.com/lgaechter)),
 [Coby Tamayo](https://github.com/acobster) ([@cobytamayo](https://keybase.io/acobster)),
 [Maciej Palmowski](https://github.com/palmiak) ([@palmiak_fp](https://twitter.com/palmiak_fp)),
 [Nicolas Lemoine](https://github.com/nlemoine) ([@nlemoine](https://niconico.fr/))
@@ -54,21 +54,23 @@ Once Timber is installed, it gives any WordPress theme the ability to take advan
 
 The GitHub version of Timber requires [Composer](https://getcomposer.org/download/) and is setup for inclusion _within_ a theme or plugin. If you'd prefer one-click installation for your site, you should use the [WordPress.org](https://wordpress.org/plugins/timber-library/) version.
 
-```shell
+```bash
 cd ~/wp-content/themes/my-theme
 composer require timber/timber
 ```
 
-If your theme/plugin is not setup to pull in Composer's autoload file, you will need to
+If your theme/plugin is not setup to pull in Composer’s autoload file, you will need to load the vendor dependencies.
+
+**functions.php**
 
 ```php
-/* functions.php */
-require_once(__DIR__ . '/vendor/autoload.php');
+require_once __DIR__ . '/vendor/autoload.php';
 ```
 
 After this line, initialize Timber with
+
 ```php
-$timber = new \Timber\Timber();
+Timber\Timber::init();
 ```
 
 ### What Now?

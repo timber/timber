@@ -80,18 +80,11 @@ class Timber {
 	public static $autoescape = false;
 
 	/**
+	 * Timber should be loaded with Timber\Timber::init() and not new Timber\Timber();
+	 *
 	 * @codeCoverageIgnore
 	 */
-	public function __construct() {
-		if ( !defined('ABSPATH') ) {
-			return;
-		}
-		if ( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
-			$this->test_compatibility();
-			$this->init_constants();
-			self::init();
-		}
-	}
+	protected function __construct() {}
 
 	/**
 	 * Tests whether we can use Timber
@@ -110,83 +103,93 @@ class Timber {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	protected static function init() {
-		if ( class_exists('\WP') && !defined('TIMBER_LOADED') ) {
-			Twig::init();
-			ImageHelper::init();
-			Admin::init();
+	public static function init() {
+		if ( ! defined( 'ABSPATH')
+			|| ! class_exists('\WP')
+			|| defined( 'TIMBER_LOADED' )
+		) {
+			return;
+		}
 
-			add_action('init', function() {
-				$integrations = [
-					Integration\AcfIntegration::class,
-					Integration\CoAuthorsPlusIntegration::class,
-					Integration\WpmlIntegration::class,
-				];
+		$self = new self();
 
-				/**
-				 * Filters the integrations that should be initialized by Timber.
-				 *
-				 * @since 2.0.0
-				 *
-				 * @param array $integrations An array of PHP class names. Default: array of
-				 *                            integrations that Timber initializes by default.
-				 */
-				$integrations = apply_filters( 'timber/integrations', $integrations );
+		$self->test_compatibility();
+		$self->init_constants();
 
-				foreach ($integrations as $integration) {
-					self::init_integration(new $integration());
-				}
-			});
+		Twig::init();
+		ImageHelper::init();
+		Admin::init();
 
-			// @todo find a more permanent home for this stuff, maybe in a QueryHelper class?
-			add_filter('pre_get_posts', function(WP_Query $query) {
-				$cat = $query->query['category'] ?? null;
-				if ( $cat && !isset($query->query['cat']) ) {
-					unset($query->query['category']);
-					$query->set('cat', $cat);
-				}
-			});
-
-			add_filter('pre_get_posts', function(WP_Query $query) {
-				$count = $query->query['numberposts'] ?? null;
-				if ( $count && !isset($query->query['posts_per_page']) ) {
-					$query->set('posts_per_page', $count);
-				}
-			});
-
-			add_filter('timber/post/import_data', function($data) {
-				if ( isset($_GET['preview']) && isset($_GET['preview_id']) ) {
-					$preview = wp_get_post_autosave($_GET['preview_id']);
-					if ( is_object($preview) ) {
-
-						$preview = sanitize_post($preview);
-
-						$data->post_content = $preview->post_content;
-						$data->post_title = $preview->post_title;
-						$data->post_excerpt = $preview->post_excerpt;
-
-						// @todo I think we can safely delete this?
-						// It was included in the old PostCollection method but not defined anywhere,
-						// so I think it was always just falling into a magic __call() and doing nothing.
-						// $post->import_custom($preview_id);
-
-						add_filter('get_the_terms', '_wp_preview_terms_filter', 10, 3);
-					}
-				}
-
-				return $data;
-			});
+		add_action('init', function() {
+			$integrations = [
+				Integration\AcfIntegration::class,
+				Integration\CoAuthorsPlusIntegration::class,
+				Integration\WpmlIntegration::class,
+			];
 
 			/**
-			 * Make an alias for the Timber class.
+			 * Filters the integrations that should be initialized by Timber.
 			 *
-			 * This way, developers can use Timber::render() instead of Timber\Timber::render, which
-			 * is more user-friendly.
+			 * @since 2.0.0
+			 *
+			 * @param array $integrations An array of PHP class names. Default: array of
+			 *                            integrations that Timber initializes by default.
 			 */
-			class_alias( 'Timber\Timber', 'Timber' );
+			$integrations = apply_filters( 'timber/integrations', $integrations );
 
-			define('TIMBER_LOADED', true);
-		}
+			foreach ($integrations as $integration) {
+				self::init_integration(new $integration());
+			}
+		});
+
+		// @todo find a more permanent home for this stuff, maybe in a QueryHelper class?
+		add_filter('pre_get_posts', function(WP_Query $query) {
+			$cat = $query->query['category'] ?? null;
+			if ( $cat && !isset($query->query['cat']) ) {
+				unset($query->query['category']);
+				$query->set('cat', $cat);
+			}
+		});
+
+		add_filter('pre_get_posts', function(WP_Query $query) {
+			$count = $query->query['numberposts'] ?? null;
+			if ( $count && !isset($query->query['posts_per_page']) ) {
+				$query->set('posts_per_page', $count);
+			}
+		});
+
+		add_filter('timber/post/import_data', function($data) {
+			if ( isset($_GET['preview']) && isset($_GET['preview_id']) ) {
+				$preview = wp_get_post_autosave($_GET['preview_id']);
+				if ( is_object($preview) ) {
+
+					$preview = sanitize_post($preview);
+
+					$data->post_content = $preview->post_content;
+					$data->post_title = $preview->post_title;
+					$data->post_excerpt = $preview->post_excerpt;
+
+					// @todo I think we can safely delete this?
+					// It was included in the old PostCollection method but not defined anywhere,
+					// so I think it was always just falling into a magic __call() and doing nothing.
+					// $post->import_custom($preview_id);
+
+					add_filter('get_the_terms', '_wp_preview_terms_filter', 10, 3);
+				}
+			}
+
+			return $data;
+		});
+
+		/**
+		 * Make an alias for the Timber class.
+		 *
+		 * This way, developers can use Timber::render() instead of Timber\Timber::render, which
+		 * is more user-friendly.
+		 */
+		class_alias( 'Timber\Timber', 'Timber' );
+
+		define('TIMBER_LOADED', true);
 	}
 
 	/**
