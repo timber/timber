@@ -31,7 +31,7 @@ If your theme or project is not already set up to pull in Composer’s autoload 
 require_once __DIR__ . '/vendor/autoload.php';
 
 // Initialize Timber.
-new Timber\Timber();
+Timber\Timber::init();
 ```
 
 ## Use the Starter Theme
