@@ -115,6 +115,9 @@ class Letterbox extends ImageOperation {
 					$quality = $quality / 10;
 					$quality = round(10 - $quality);
 				}
+			} else if ( $ext == 'webp' ) {
+				$func = 'imagecreatefromwebp';
+				$save_func = 'imagewebp';
 			}
 			$image = $func($save_filename);
 			imagecopy($bg, $image, round($x), round($y), 0, 0, round($owt), round($oht));
