@@ -1,4 +1,4 @@
-<div style="text-align:center">
+<div style="text-align: center">
 <a href="https://upstatement.com/timber/"><img src="http://i.imgur.com/PbEwvZ9.png" style="display:block; margin:auto; width:100%; max-width:100%"/></a>
 </div>
 
