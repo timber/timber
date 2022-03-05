@@ -35,7 +35,7 @@ jobs:
       fail-fast: false
       matrix:
         php: ['7.4']
-        wp: ['5.3', '5.8'] # Always use branches not tags (e.g. 5.3 not 5.3.6), new test suite is only available in branches
+        wp: ['5.3', '5.9'] # Always use branches not tags (e.g. 5.3 not 5.3.6), new test suite is only available in branches
         multisite: ['0', '1']
         dependency-version: [prefer-stable] # prefer-lowest
         webp: [false]
