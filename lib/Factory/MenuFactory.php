@@ -57,9 +57,10 @@ class MenuFactory {
 	}
 
 	/**
-	 * Get the first non empty menu
+	 * Get a Menu from its location
 	 *
-	 * @internal
+	 * @param array $args
+	 * @return Menu|null
 	 */
 	protected function from_nav_menu_terms(array $args = []) : ?Menu {
 		$menus = wp_get_nav_menus();
@@ -75,6 +76,10 @@ class MenuFactory {
 
 	/**
 	 * Get a Menu from its location
+	 *
+	 * @param string $location
+	 * @param array $args
+	 * @return Menu|null
 	 */
 	public function from_location(string $location, array $args = []) : ?Menu {
 		$locations = get_nav_menu_locations();
@@ -118,7 +123,7 @@ class MenuFactory {
 		$term = get_term_by('slug', $slug, 'nav_menu');
 
 		if (!$term) {
-			return false;
+			return null;
 		}
 
 		$args['menu'] = $slug;
@@ -135,7 +140,7 @@ class MenuFactory {
 		$term = get_term_by('name', $name, 'nav_menu');
 
 		if (!$term) {
-			return false;
+			return null;
 		}
 
 		$args['menu'] = $name;
@@ -236,11 +241,24 @@ class MenuFactory {
 		return $class;
 	}
 
+	/**
+	 * Get the menu location
+	 *
+	 * @param WP_Term $term
+	 * @return string|null
+	 */
 	protected function get_menu_location(WP_Term $term) : ?string {
         $locations = array_flip(get_nav_menu_locations());
 		return $locations[$term->term_id] ?? null;
     }
 
+	/**
+	 * Build menu
+	 *
+	 * @param WP_Term $term
+	 * @param array $args
+	 * @return CoreInterface
+	 */
 	protected function build(WP_Term $term, $args) : CoreInterface {
 		$class = $this->get_menu_class($term, $args);
 
