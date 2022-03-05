@@ -111,7 +111,8 @@ class MenuItem extends CoreEntity {
 
 		// Items from WordPress can come with a $title property which conflicts with methods
 		$data->__title = $data->title;
-		unset($data->title);
+		// @todo Use case for unsetting title?
+		// unset($data->title);
 
 		$this->import($data);
 		$this->import_classes($data);

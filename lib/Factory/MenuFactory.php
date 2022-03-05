@@ -109,7 +109,7 @@ class MenuFactory {
 			return null;
 		}
 
-		$args['menu_id'] = $id;
+		$args['menu'] = $id;
 
 		return $this->build($term, $args);
 	}

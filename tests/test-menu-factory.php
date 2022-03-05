@@ -55,9 +55,9 @@ class TestMenuFactory extends Timber_UnitTestCase {
 		$menu_by = $factory->from_id($id);
 
 		$this->assertInstanceOf(Menu::class, $menu);
-		$this->assertEquals($id, $menu->args->menu_id);
+		$this->assertEquals($id, $menu->args->menu);
 		$this->assertInstanceOf(Menu::class, $menu_by);
-		$this->assertEquals($id, $menu_by->args->menu_id);
+		$this->assertEquals($id, $menu_by->args->menu);
 	}
 
 	public function testGetMenuFromName() {

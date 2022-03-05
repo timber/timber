@@ -350,7 +350,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 		// With no options set.
 		$menu = Timber::get_menu($menu_arr['term_id']);
-		$defaults['menu_id'] = $menu_arr['term_id'];
+		$defaults['menu'] = $menu_arr['term_id'];
 		$this->assertIsInt($menu->depth);
 		$this->assertEquals( 0, $menu->depth );
 		$this->assertIsArray($menu->raw_args);
@@ -919,15 +919,26 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	function testMenuWalker() {
 		$menu = self::_createTestMenu();
 		$menu_id = $menu['term_id'];
-		$menu = Timber::get_menu( $menu_id, [
+		$args = [
 			'menu_class' => 'my-unique-menu-class',
 			'menu_id' => 'my-unique-menu-id',
 			'container' => 'nav',
 			'container_class' => 'my-unique-container-class',
 			'container_id' => 'my-unique-container-id',
-			'item_spacing' => 'discard',
-		] );
-		// @todo: fix/improve tests on walker
-		$this->assertStringStartsWith('<nav id="my-unique-container-id" class="my-unique-container-class">', (string) $menu);
+		];
+		$menu = Timber::get_menu( $menu_id, $args );
+		$args['menu'] = $menu_id;
+		$args['echo'] = false;
+
+		$nav_menu_wp = wp_nav_menu($args);
+		// Prevents double ids to render
+		remove_filter( 'nav_menu_item_id', '_nav_menu_item_id_use_once', 10, 2 );
+		$nav_menu_timber = (string) $menu;
+
+		$this->assertEquals($nav_menu_wp, $nav_menu_timber);
+		$this->assertStringContainsString('class="my-unique-menu-class"', $nav_menu_timber);
+		$this->assertStringContainsString('id="my-unique-menu-id"', $nav_menu_timber);
+		$this->assertStringContainsString('class="my-unique-container-class"', $nav_menu_timber);
+		$this->assertStringContainsString('id="my-unique-container-id"', $nav_menu_timber);
 	}
 }
