@@ -18,8 +18,9 @@ class MenuItemFactory {
 	 *
 	 * @param int|WP_Post $item
 	 * @param Menu $menu
+	 * @return MenuItem|null
 	 */
-	public function from($item, Menu $menu) {
+	public function from($item, Menu $menu): ?MenuItem {
         if (is_numeric($item)) {
 			$item = get_post($item);
         }
@@ -28,7 +29,7 @@ class MenuItemFactory {
 			return $this->build($item, $menu);
 		}
 
-		return false;
+		return null;
 	}
 
 	protected function build(WP_Post $item, Menu $menu) : CoreInterface {
