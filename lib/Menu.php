@@ -521,4 +521,61 @@ class Menu extends CoreEntity {
 
 		return $current;
 	}
+
+	public function __toString() {
+		static $menu_id_slugs = array();
+
+		$args = $this->args;
+
+		$items = '';
+		$nav_menu = '';
+		$show_container = false;
+
+		if ( $args->container ) {
+			/**
+				* Filters the list of HTML tags that are valid for use as menu containers.
+				*
+				* @since 3.0.0
+				*
+				* @param string[] $tags The acceptable HTML tags for use as menu containers.
+				*                       Default is array containing 'div' and 'nav'.
+				*/
+			$allowed_tags = apply_filters( 'wp_nav_menu_container_allowedtags', array( 'div', 'nav' ) );
+
+			if ( is_string( $args->container ) && in_array( $args->container, $allowed_tags, true ) ) {
+				$show_container = true;
+				$class          = $args->container_class ? ' class="' . esc_attr( $args->container_class ) . '"' : ' class="menu-' . $this->slug . '-container"';
+				$id             = $args->container_id ? ' id="' . esc_attr( $args->container_id ) . '"' : '';
+				$aria_label     = ( 'nav' === $args->container && $args->container_aria_label ) ? ' aria-label="' . esc_attr( $args->container_aria_label ) . '"' : '';
+				$nav_menu      .= '<' . $args->container . $id . $class . $aria_label . '>';
+			}
+		}
+
+		$items .= walk_nav_menu_tree( $this->sorted_menu_items, $args->depth, $args );
+
+		// Attributes.
+		if ( ! empty( $args->menu_id ) ) {
+			$wrap_id = $args->menu_id;
+		} else {
+			$wrap_id = 'menu-' . $this->slug;
+
+			while ( in_array( $wrap_id, $menu_id_slugs, true ) ) {
+				if ( preg_match( '#-(\d+)$#', $wrap_id, $matches ) ) {
+					$wrap_id = preg_replace( '#-(\d+)$#', '-' . ++$matches[1], $wrap_id );
+				} else {
+					$wrap_id = $wrap_id . '-1';
+				}
+			}
+		}
+		$menu_id_slugs[] = $wrap_id;
+
+		$wrap_class = $args->menu_class ? $args->menu_class : '';
+
+		$nav_menu .= sprintf( $args->items_wrap, esc_attr( $wrap_id ), esc_attr( $wrap_class ), $items );
+		if ( $show_container ) {
+			$nav_menu .= '</' . $args->container . '>';
+		}
+
+		return $nav_menu;
+	}
 }
