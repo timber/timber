@@ -441,7 +441,12 @@ class TermTestPage extends Post {}
 
 			//test baseline "bar" data
 			$this->assertEquals('qux', $valid_wp_native_value);
-			$this->assertEquals('qux', $valid_acf_native_value);
+
+			/**
+			 * ACF 5.11 no longer gets value if field does not exist
+			 * @see https://github.com/AdvancedCustomFields/acf/blob/cf20fa18234c87632e1182b52eff73d77b19e3a3/includes/acf-value-functions.php#L69-L83
+			 */
+			$this->assertNull($valid_acf_native_value);
 			$this->assertEquals('qux', $term->bar);
 
 			//test the one that doesn't exist
