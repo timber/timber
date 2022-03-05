@@ -916,4 +916,18 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertInstanceOf( WP_Post_Type::class, $menu->items[7]->master_object() );
 	}
 
+	function testMenuWalker() {
+		$menu = self::_createTestMenu();
+		$menu_id = $menu['term_id'];
+		$menu = Timber::get_menu( $menu_id, [
+			'menu_class' => 'my-unique-menu-class',
+			'menu_id' => 'my-unique-menu-id',
+			'container' => 'nav',
+			'container_class' => 'my-unique-container-class',
+			'container_id' => 'my-unique-container-id',
+			'item_spacing' => 'discard',
+		] );
+		// @todo: fix/improve tests on walker
+		$this->assertStringStartsWith('<nav id="my-unique-container-id" class="my-unique-container-class">', (string) $menu);
+	}
 }
