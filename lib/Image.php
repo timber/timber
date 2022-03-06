@@ -405,8 +405,13 @@ class Image extends Post implements CoreInterface {
 	 * @return float
 	 */
 	public function aspect() {
-		$w = intval($this->width());
 		$h = intval($this->height());
+
+		if ( 0 === $h ) {
+			return 0;
+		}
+
+		$w = intval($this->width());
 		return $w / $h;
 	}
 
