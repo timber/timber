@@ -320,6 +320,11 @@ class Image extends Post implements CoreInterface {
 			$this->file = reset($this->_wp_attached_file);
 			$this->file_loc = $basedir.DIRECTORY_SEPARATOR.$this->file;
 		}
+
+		if ( ! file_exists( $this->file_loc ) ) {
+			Helper::error_log("Image {$this->file_loc} doesn't exists");
+		}
+
 		if ( isset($image_info['id']) ) {
 			$this->ID = $image_info['id'];
 		} else if ( is_numeric($iid) ) {

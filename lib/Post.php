@@ -169,6 +169,11 @@ class Post extends Core implements CoreInterface {
 	protected $__type;
 
 	/**
+	 * @var Image $thumbnail post type thumbnail if exists
+	 */
+	protected $thumbnail;
+
+	/**
 	 * If you send the constructor nothing it will try to figure out the current post id based on being inside The_Loop
 	 * @example
 	 * ```php
@@ -1576,8 +1581,14 @@ class Post extends Core implements CoreInterface {
 		$tid = get_post_thumbnail_id($this->ID);
 		if ( $tid ) {
 			//return new Image($tid);
-			return new $this->ImageClass($tid);
+			if ( null === $this->thumbnail ) {
+				$this->thumbnail = new $this->ImageClass($tid);
+			}
+
+			return $this->thumbnail;
 		}
+
+		return false;
 	}
 
 
