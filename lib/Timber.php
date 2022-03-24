@@ -7,6 +7,7 @@ use WP_Post;
 
 use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
+use Timber\Factory\PagesMenuFactory;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
@@ -931,10 +932,24 @@ class Timber {
 	}
 
 	/**
-	 * @todo implement PagesMenuFactory
+	 * Gets a menu from the existing pages.
+	 *
+	 * @api
+	 * @since 2.0.0
+	 *
+	 * @example
+	 * ```php
+	 * $menu = Timber::get_pages_menu();
+	 * ```
+	 *
+	 * @param array $args Optional. Args for get_pages(), which is used internally by this function.
 	 */
 	public static function get_pages_menu( array $args = [] ) {
-		return Menu::build( null, $args );
+		$factory = new PagesMenuFactory();
+
+		$menu = $factory->from_pages( $args );
+
+		return $menu;
 	}
 
 
