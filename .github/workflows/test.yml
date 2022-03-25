@@ -50,7 +50,7 @@ jobs:
             experimental: true
           # PHP 8.1
           - php: '8.1'
-            wp: 'latest'
+            wp: 'trunk'
             dependency-version: 'prefer-stable'
             multisite: '0'
             experimental: true
