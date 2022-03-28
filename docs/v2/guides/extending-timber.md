@@ -284,7 +284,7 @@ class MagazinePost extends \Timber\Post {
     /**
      * Gets a magazine’s issue.
      *
-     * @return \Timber|Term|false;
+     * @return \Timber|Term|null;
      */
 	public function issue() {
         if ( ! empty( $this->_issue ) ) {

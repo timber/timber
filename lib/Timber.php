@@ -209,7 +209,7 @@ class Timber {
 	================================ */
 
 	/**
-	 * Get a Timber Post from a post ID, WP_Post object, a WP_Query object, or an associative
+	 * Gets a Timber Post from a post ID, WP_Post object, a WP_Query object, or an associative
 	 * array of arguments for WP_Query::__construct().
 	 *
 	 * By default, Timber will use the `Timber\Post` class to create a new post object. To control
@@ -295,11 +295,14 @@ class Timber {
 	}
 
 	/**
-	 * Behaves just like Timber::get_post(), except that it returns false if it
-	 * finds a Post that is not an Attachment. Honors Class Maps and falsifies return
-	 * value *after* Class Map for the found Post has been resolved.
+	 * Gets an attachment.
+	 *
+	 * Behaves just like Timber::get_post(), except that it returns null if it finds a Timber\Post
+	 * that is not an Attachment. Honors Class Maps and falsifies return value *after* Class Map for
+	 * the found Timber\Post has been resolved.
 	 *
 	 * @api
+	 * @since 2.0.0
 	 * @see Timber::get_post()
 	 * @see https://timber.github.io/docs/v2/guides/class-maps/
 	 *
@@ -318,11 +321,14 @@ class Timber {
 	}
 
 	/**
-	 * Behaves just like Timber::get_post(), except that it returns false if it
-	 * finds a Post that is not an Image. Honors Class Maps and falsifies return
-	 * value *after* Class Map for the found Post has been resolved.
+	 * Gets an image.
+	 *
+	 * Behaves just like Timber::get_post(), except that it returns null if it finds a Timber\Post
+	 * that is not an Image. Honors Class Maps and falsifies return value *after* Class Map for the
+	 * found Timber\Post has been resolved.
 	 *
 	 * @api
+	 * @since 2.0.0
 	 * @see Timber::get_post()
 	 * @see https://timber.github.io/docs/v2/guides/class-maps/
 	 *
@@ -428,8 +434,8 @@ class Timber {
 	 * }
 	 *
 	 * @return \Timber\Post|null A Timber post or `null` if no post could be found. If multiple
-	 *                            posts with the same slug or title were found, it will select the
-	 *                            post with the oldest date.
+	 *                           posts with the same slug or title were found, it will select the
+	 *                           post with the oldest date.
 	 */
 	public static function get_post_by( $type, $search_value, $args = array() ) {
 		$post_id = false;
@@ -650,7 +656,8 @@ class Timber {
 	}
 
 	/**
-	 * Get term.
+	 * Gets a term.
+	 *
 	 * @api
 	 * @param int|\WP_Term $term A WP_Term or term_id
 	 * @return \Timber\Term|null
@@ -949,7 +956,10 @@ class Timber {
 
 	/**
 	 * Get comments.
+	 *
 	 * @api
+	 * @since 2.0.0
+	 *
 	 * @param array   $query
 	 * @param array   $options optional; none are currently supported
 	 * @return mixed
@@ -961,8 +971,10 @@ class Timber {
 	}
 
 	/**
-	 * Get comment.
+	 * Gets comment.
+	 *
 	 * @api
+	 * @since 2.0.0
 	 * @param int|\WP_Comment $comment
 	 * @return \Timber\Comment|null
 	 */
@@ -1026,7 +1038,7 @@ class Timber {
 	 * The global context will be cached, which means that you can call this function again without
 	 * losing performance.
 	 *
-	 * Additionally to that, the context will contain template contexts depending on which template
+	 * In addition to that, the context will contain template contexts depending on which template
 	 * is being displayed. For archive templates, a `posts` variable will be present that will
 	 * contain a collection of `Timber\Post` objects for the default query. For singular templates,
 	 * a `post` variable will be present that that contains a `Timber\Post` object of the `$post`
@@ -1035,9 +1047,10 @@ class Timber {
 	 * @api
 	 * @since 2.0.0
 	 *
-	 * @param array $extra any extra data to merge in. Overrides whatever is
-	 * already there for this call only. In other words, the underlying context
-	 * data is immutable and unaffected by passing this param.
+	 * @param array $extra Any extra data to merge in. Overrides whatever is already there for this
+	 *                     call only. In other words, the underlying context data is immutable and
+	 *                     unaffected by passing this param.
+	 *
 	 * @return array An array of context variables that is used to pass into Twig templates through
 	 *               a render or compile function.
 	 */
