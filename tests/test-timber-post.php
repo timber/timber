@@ -9,9 +9,8 @@ require_once 'php/timber-term-subclass.php';
  * @group post-terms
  */
 class TestTimberPost extends Timber_UnitTestCase {
-
 	function testGetPostWithNoPosts() {
-		$this->assertFalse(Timber::get_post());
+		$this->assertNull(Timber::get_post());
 	}
 
 	function testPostObject(){

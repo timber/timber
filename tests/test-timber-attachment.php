@@ -64,25 +64,25 @@ class TestTimberAttachment extends TimberAttachment_UnitTestCase {
 
 	function testGetAttachmentByUrlNonsense() {
 		// Nonsense URL
-		$this->assertFalse(Timber::get_attachment_by('url', 'life, uh, finds a way'));
+		$this->assertNull(Timber::get_attachment_by('url', 'life, uh, finds a way'));
 		// Nonsense Path
-		$this->assertFalse(Timber::get_attachment_by('path', 'must go faster'));
+		$this->assertNull(Timber::get_attachment_by('path', 'must go faster'));
 		// Nonsense single arg
-		$this->assertFalse(Timber::get_attachment_by('you two, dig up, dig up dinosaurs'));
+		$this->assertNull(Timber::get_attachment_by('you two, dig up, dig up dinosaurs'));
 	}
 
 	/**
 	 * @expectedIncorrectUsage Timber::get_attachment_by()
 	 */
 	function testGetAttachmentByUrlDoingItWrong() {
-		$this->assertFalse(Timber::get_attachment_by('url'));
+		$this->assertNull(Timber::get_attachment_by('url'));
 	}
 
 	/**
 	 * @expectedIncorrectUsage Timber::get_attachment_by()
 	 */
 	function testGetAttachmentByPathDoingItWrong() {
-		$this->assertFalse(Timber::get_attachment_by('path'));
+		$this->assertNull(Timber::get_attachment_by('path'));
 	}
 
 	function testAttachmentByExtension() {

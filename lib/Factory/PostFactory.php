@@ -43,14 +43,14 @@ class PostFactory {
 			return $this->from_wp_query(new WP_Query($params));
 		}
 
-		return false;
+		return null;
 	}
 
 	protected function from_id(int $id) {
 		$wp_post = get_post($id);
 
 		if (!$wp_post) {
-			return false;
+			return null;
 		}
 
 		return $this->build($wp_post);

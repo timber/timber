@@ -36,7 +36,7 @@ class TestPostFactory extends Timber_UnitTestCase {
 		$postFactory = new PostFactory();
 		$post        = $postFactory->from( 99999 );
 
-		$this->assertFalse( $post );
+		$this->assertNull( $post );
 	}
 
 	public function testFromIdString() {

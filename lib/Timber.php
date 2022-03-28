@@ -246,7 +246,7 @@ class Timber {
 	 *                       returned. Default false.
 	 * @param array $options Optional associative array of options. Defaults to an empty array.
 	 *
-	 * @return \Timber\Post|bool Timber\Post object if a post was found, false if no post was
+	 * @return \Timber\Post|null Timber\Post object if a post was found, null if no post was
 	 *                           found.
 	 */
 	public static function get_post( $query = false, $options = [] ) {
@@ -288,7 +288,7 @@ class Timber {
 
 		// If we got a Collection, return the first Post.
 		if ($result instanceof PostCollectionInterface) {
-			return $result[0] ?? false;
+			return $result[0] ?? null;
 		}
 
 		return $result;
@@ -302,16 +302,19 @@ class Timber {
 	 * @api
 	 * @see Timber::get_post()
 	 * @see https://timber.github.io/docs/v2/guides/class-maps/
-	 * @param mixed $query query or post identifier
-	 * @param array $options options to ::get_post()
-	 * @return Attachment|false
+	 *
+	 * @param mixed $query   Optional. Query or post identifier. Default false.
+	 * @param array $options Optional. Options for Timber\Timber::get_post().
+	 *
+	 * @return Attachment|null Timber\Attachment object if an attachment was found, null if no
+	 *                         attachment was found.
 	 */
 	public static function get_attachment( $query = false, $options = [] ) {
 		$post = static::get_post( $query, $options );
 
 		// @todo make this determination at the Factory level.
 		// No need to instantiate a Post we're not going to use.
-		return ( $post instanceof Attachment ) ? $post : false;
+		return ( $post instanceof Attachment ) ? $post : null;
 	}
 
 	/**
@@ -322,16 +325,18 @@ class Timber {
 	 * @api
 	 * @see Timber::get_post()
 	 * @see https://timber.github.io/docs/v2/guides/class-maps/
-	 * @param mixed $query query or post identifier
-	 * @param array $options options to ::get_post()
-	 * @return Image|false
+	 *
+	 * @param mixed $query   Optional. Query or post identifier. Default false.
+	 * @param array $options Optional. Options for Timber\Timber::get_post().
+	 *
+	 * @return Image|null
 	 */
 	public static function get_image( $query = false, $options = [] ) {
 		$post = static::get_post( $query, $options );
 
 		// @todo make this determination at the Factory level.
 		// No need to instantiate a Post we're not going to use.
-		return ( $post instanceof Image ) ? $post : false;
+		return ( $post instanceof Image ) ? $post : null;
 	}
 
 	/**
@@ -422,7 +427,7 @@ class Timber {
 	 *
 	 * }
 	 *
-	 * @return \Timber\Post|false A Timber post or `false` if no post could be found. If multiple
+	 * @return \Timber\Post|null A Timber post or `null` if no post could be found. If multiple
 	 *                            posts with the same slug or title were found, it will select the
 	 *                            post with the oldest date.
 	 */
@@ -441,7 +446,7 @@ class Timber {
 			$query = new \WP_Query( $args );
 
 			if ( $query->post_count < 1 ) {
-				return false;
+				return null;
 			}
 
 			$posts   = $query->get_posts();
@@ -477,7 +482,7 @@ class Timber {
 		}
 
 		if ( ! $post_id ) {
-			return false;
+			return null;
 		}
 
 		return self::get_post( $post_id );
@@ -544,7 +549,7 @@ class Timber {
 	 * @param string $ident          Optional. An attachment URL or absolute path. Default empty
 	 *                               string.
 	 *
-	 * @return \Timber\Attachment|false
+	 * @return \Timber\Attachment|null
 	 */
 	public static function get_attachment_by( string $field_or_ident, string $ident = '' ) {
 		if ($field_or_ident === 'url') {
@@ -555,12 +560,12 @@ class Timber {
 					'2.0.0'
 				);
 
-				return false;
+				return null;
 			}
 
 			$id = attachment_url_to_postid($ident);
 
-			return $id ? (new PostFactory())->from($id) : false;
+			return $id ? (new PostFactory())->from($id) : null;
 		}
 
 		if ($field_or_ident === 'path') {
@@ -571,7 +576,7 @@ class Timber {
 					'2.0.0'
 				);
 
-				return false;
+				return null;
 			}
 
 			if (!file_exists($ident)) {
@@ -588,7 +593,7 @@ class Timber {
 			return self::get_attachment_by($field, $field_or_ident);
 		}
 
-		return false;
+		return null;
 	}
 
 	/* Term Retrieval
@@ -647,8 +652,8 @@ class Timber {
 	/**
 	 * Get term.
 	 * @api
-	 * @param int|\WP_Term $term a WP_Term or term_id
-	 * @return \Timber\Term|false
+	 * @param int|\WP_Term $term A WP_Term or term_id
+	 * @return \Timber\Term|null
 	 * @example
 	 * ```php
 	 * // Get a Term.
@@ -656,23 +661,24 @@ class Timber {
 	 * ```
 	 */
 	public static function get_term( $term = null ) {
-
 		if (null === $term) {
 			// get the fallback term_id from the current query
 			global $wp_query;
 			$term = $wp_query->queried_object->term_id ?? null;
 		}
+
 		if (null === $term) {
 			// not able to get term_id from the current query; bail
-			return false;
+			return null;
 		}
 
 		$factory = new TermFactory();
-
 		$terms = $factory->from($term);
+
 		if ( is_array($terms) ) {
 			$terms = $terms[0];
 		}
+
 		return $terms;
 	}
 
@@ -706,7 +712,6 @@ class Timber {
 	 * @return \Timber\Term|null
 	 */
 	public static function get_term_by( string $field, $value, string $taxonomy = '' ) {
-
 		$wp_term = get_term_by($field, $value, $taxonomy);
 
 		if ( $wp_term === false ) {
@@ -714,7 +719,8 @@ class Timber {
 				$search = [$field => $value, $taxonomy => 'any', 'hide_empty' => false];
 				return static::get_term($search);
 			}
-			return false;
+
+			return null;
 		}
 
 		return static::get_term($wp_term);
@@ -801,7 +807,7 @@ class Timber {
 	 * @param int|\WP_User $user A WP_User object or a WordPress user ID. Defaults to the ID of the
 	 *                           currently logged-in user.
 	 *
-	 * @return \Timber\User|false
+	 * @return \Timber\User|null
 	 */
 	public static function get_user( $user = null ) {
 		/*
@@ -843,7 +849,7 @@ class Timber {
 		$wp_user = get_user_by($field, $value);
 
 		if ($wp_user === false) {
-			return false;
+			return null;
 		}
 
 		return static::get_user($wp_user);

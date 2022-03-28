@@ -38,7 +38,7 @@ class CommentFactory {
 		$wp_comment = get_comment($id);
 
 		if (!$wp_comment) {
-			return false;
+			return null;
 		}
 
 		return $this->build($wp_comment);
