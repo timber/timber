@@ -146,7 +146,6 @@ class TestMenuFactory extends Timber_UnitTestCase {
 			'taxonomy' => 'nav_menu',
 		]);
 
-
 		$factory = new MenuFactory();
 		$term    = get_term($id);
 
@@ -165,7 +164,7 @@ class TestMenuFactory extends Timber_UnitTestCase {
 			return MyMenu::class;
 		});
 
-		$this->assertInstanceOf(MyMenu::class, $factory->from($id));
+		$this->assertTrue(MyMenu::class === get_class($factory->from($id)));
 	}
 
 	public function testMenuClassMapFilter() {
@@ -188,6 +187,6 @@ class TestMenuFactory extends Timber_UnitTestCase {
 			];
 		});
 
-		$this->assertInstanceOf(MyMenu::class, $factory->from($id));
+		$this->assertTrue(MyMenu::class === get_class($factory->from($id)));
 	}
 }
