@@ -48,7 +48,7 @@ jobs:
             dependency-version: 'prefer-stable'
             multisite: '0'
             experimental: true
-          # PHP 8.1
+          # PHP 8.1 / expiremntal
           - php: '8.1'
             wp: 'trunk'
             dependency-version: 'prefer-stable'
@@ -56,6 +56,11 @@ jobs:
             experimental: true
           # PHP 8.0
           - php: '8.0'
+            wp: 'latest'
+            dependency-version: 'prefer-stable'
+            multisite: '0'
+          # PHP 8.1
+          - php: '8.1'
             wp: 'latest'
             dependency-version: 'prefer-stable'
             multisite: '0'
