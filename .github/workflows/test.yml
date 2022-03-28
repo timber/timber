@@ -35,7 +35,7 @@ jobs:
       fail-fast: false
       matrix:
         php: ['7.4']
-        wp: ['5.3', '5.8'] # Always use branches not tags (e.g. 5.3 not 5.3.6), new test suite is only available in branches
+        wp: ['5.3', 'latest']
         multisite: ['0', '1']
         dependency-version: [prefer-stable] # prefer-lowest
         webp: [false]
@@ -44,7 +44,7 @@ jobs:
         include:
           # WP Trunk
           - php: '7.4'
-            wp: 'latest'
+            wp: 'trunk'
             dependency-version: 'prefer-stable'
             multisite: '0'
             experimental: true
@@ -61,13 +61,13 @@ jobs:
             multisite: '0'
           # PHP with Imagick
           - php: '7.4'
-            wp: '5.8'
+            wp: 'latest'
             dependency-version: 'prefer-stable'
             multisite: '0'
             extensions: 'imagick'
           # Coverage
           - php: '7.4'
-            wp: '5.8'
+            wp: 'latest'
             dependency-version: 'prefer-stable'
             multisite: '0'
             coverage: true
