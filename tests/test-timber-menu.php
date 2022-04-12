@@ -931,7 +931,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$args['echo'] = false;
 
 		$nav_menu_wp = wp_nav_menu($args);
-		// Prevents double ids to render
+		// Remove this filter that prevents to render duplicate ids
 		remove_filter( 'nav_menu_item_id', '_nav_menu_item_id_use_once', 10, 2 );
 		$nav_menu_timber = (string) $menu;
 

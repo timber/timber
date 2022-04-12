@@ -100,7 +100,7 @@ class Menu extends CoreEntity {
 		 *
 		 * @see wp_nav_menu()
 		 */
-		$defaults = array(
+		$defaults = [
 			'menu'                 => '',
 			'container'            => 'div',
 			'container_class'      => '',
@@ -119,11 +119,11 @@ class Menu extends CoreEntity {
 			'depth'                => 0,
 			'walker'               => '',
 			'theme_location'       => '',
-		);
+		];
 
 		$args = wp_parse_args( $args, $defaults );
 
-		if ( ! in_array( $args['item_spacing'], array( 'preserve', 'discard' ), true ) ) {
+		if ( ! in_array( $args['item_spacing'], ['preserve', 'discard'], true ) ) {
 			// Invalid value, fall back to default.
 			$args['item_spacing'] = $defaults['item_spacing'];
 		}
@@ -150,14 +150,14 @@ class Menu extends CoreEntity {
 			}
 		}
 
-			/**
+		/**
 		 * No valid menu term provided.
 		 *
-		 * In earlier versions, Timber return a pages menu if no menu was found. Now, it returns
+		 * In earlier versions, Timber returned a pages menu if no menu was found. Now, it returns
 		 * null. If you still need the pages menu, you can use Timber\Timber::get_pages_menu().
 		 *
 		 * @see \Timber\Timber::get_pages_menu()
-			 */
+		 */
 		if ( ! $menu ) {
 			return null;
 		}
@@ -256,7 +256,7 @@ class Menu extends CoreEntity {
 	 * @param array $items
 	 * @return MenuItem[]
 	 */
-	protected function convert_menu_items(array $menu_items) {
+	protected function convert_menu_items(array $menu_items) : array {
 		$menu_item_factory = new MenuItemFactory();
 		return array_map(function($item) use($menu_item_factory) : MenuItem {
 			return $menu_item_factory->from($item, $this);
@@ -370,7 +370,7 @@ class Menu extends CoreEntity {
 			return $this->items;
 		}
 
-		return array();
+		return [];
 	}
 
 	/**
@@ -436,7 +436,6 @@ class Menu extends CoreEntity {
 		return $this->current_item( 1 );
 	}
 
-
 	/**
 	 * Traverse an array of MenuItems in search of the current item.
 	 *
@@ -493,13 +492,13 @@ class Menu extends CoreEntity {
 
 		if ( $args->container ) {
 			/**
-				* Filters the list of HTML tags that are valid for use as menu containers.
-				*
-				* @since 3.0.0
-				*
-				* @param string[] $tags The acceptable HTML tags for use as menu containers.
-				*                       Default is array containing 'div' and 'nav'.
-				*/
+			* Filters the list of HTML tags that are valid for use as menu containers.
+			*
+			* @since 3.0.0
+			*
+			* @param string[] $tags The acceptable HTML tags for use as menu containers.
+			*                       Default is array containing 'div' and 'nav'.
+			*/
 			$allowed_tags = apply_filters( 'wp_nav_menu_container_allowedtags', array( 'div', 'nav' ) );
 
 			if ( is_string( $args->container ) && in_array( $args->container, $allowed_tags, true ) ) {

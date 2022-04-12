@@ -51,11 +51,11 @@ class MenuFactory {
 			}
 		}
 
-		if(!$menu) {
-			$menu = $this->from_nav_menu_terms($args);
+		if($menu) {
+			return $menu;
 		}
 
-		return $menu;
+		return $this->from_nav_menu_terms($args);
 	}
 
 	/**

@@ -14,7 +14,7 @@ use WP_Post;
  */
 class MenuItem extends CoreEntity {
 
-	protected WP_Post $core_object;
+	protected WP_Post $wp_object;
 
 	/**
 	 * @var string What does this class represent in WordPress terms?
@@ -100,11 +100,11 @@ class MenuItem extends CoreEntity {
 
 	/**
 	 * @internal
-	 * @param array|object $data
+	 * @param WP_Post $data
 	 * @param \Timber\Menu $menu The `Timber\Menu` object the menu item is associated with.
 	 */
-	protected function __construct( $data, $menu = null ) {
-		$this->core_object = $data;
+	protected function __construct( WP_Post $data, $menu = null ) {
+		$this->wp_object = $data;
 		$this->menu = $menu;
 
 		$data       = (object) $data;
@@ -306,7 +306,7 @@ class MenuItem extends CoreEntity {
 		$this->classes = apply_filters(
 			'nav_menu_css_class',
 			$this->classes,
-			$this->core_object,
+			$this->wp_object,
 			$args,
 			0 // TODO: find the right depth
 		);
@@ -531,7 +531,7 @@ class MenuItem extends CoreEntity {
 			/**
 			 * @see Walker_Nav_Menu::start_el()
 			 */
-			$title = apply_filters( 'nav_menu_item_title', $this->__title, $this->core_object, $this->menu->args ? $this->menu->args : new \stdClass, $this->level );
+			$title = apply_filters( 'nav_menu_item_title', $this->__title, $this->wp_object, $this->menu->args ? $this->menu->args : new \stdClass, $this->level );
 			return $title;
 		}
 	}
