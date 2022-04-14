@@ -68,7 +68,22 @@ class PagesMenu extends Menu {
 		$args['hierarchical'] = 0;
 
 		$pages_menu = new static( $args );
-		$pages_menu->init_pages_menu();
+
+		$menu_items = get_pages( $pages_menu->args );
+
+		if ( ! empty( $menu_items ) ) {
+			$menu_items = array_map( 'wp_setup_nav_menu_item', $menu_items );
+
+			_wp_menu_item_classes_by_context( $menu_items );
+
+			if ( is_array( $menu_items ) ) {
+				$menu_items = $pages_menu->convert_menu_items( $menu_items );
+				$menu_items = $pages_menu->order_children( $menu_items );
+				$menu_items = $pages_menu->strip_to_depth_limit( $menu_items );
+			}
+
+			$pages_menu->items = $menu_items;
+		}
 
 		/**
 		 * Since Timber doesn’t use HTML, serialize the menu object to provide a cacheable string.
@@ -92,26 +107,5 @@ class PagesMenu extends Menu {
 	protected function __construct( $args ) {
 		$this->args = (object) $args;
 		$this->depth = (int) $this->args->depth;
-	}
-
-	/**
-	 * Inits pages menu.
-	 */
-	protected function init_pages_menu() {
-		$menu_items = get_pages( $this->args );
-
-		if ( $menu_items ) {
-			$menu_items = array_map( 'wp_setup_nav_menu_item', $menu_items );
-
-			_wp_menu_item_classes_by_context( $menu_items );
-
-			if ( is_array( $menu_items ) ) {
-				$menu_items = $this->convert_menu_items( $menu_items );
-				$menu_items = $this->order_children( $menu_items );
-				$menu_items = $this->strip_to_depth_limit( $menu_items );
-			}
-
-			$this->items = $menu_items;
-		}
 	}
 }
