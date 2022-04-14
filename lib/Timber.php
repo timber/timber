@@ -942,7 +942,10 @@ class Timber {
 	 * $menu = Timber::get_pages_menu();
 	 * ```
 	 *
-	 * @param array $args Optional. Args for get_pages(), which is used internally by this function.
+	 * @param array $args Optional. Arguments for `wp_list_pages()`. Timber doesn’t use that
+	 *                    function under the hood, but supports all arguments for that function.
+	 *                    It will use `get_pages()` to get the pages that will be used for the Pages
+	 *                    Menu.
 	 */
 	public static function get_pages_menu( array $args = [] ) {
 		$factory = new PagesMenuFactory();
