@@ -30,11 +30,9 @@ class PagesMenuFactory {
 	 */
 	protected function get_menu_class( $args ) : string {
 		/**
-		 * Filters the class(es) used for different menus.
+		 * Filters the class used for different menus.
 		 *
-		 * Read more about this in the documentation for [Menu Class Maps](https://timber.github.io/docs/v2/guides/class-maps/#the-menu-class-map).
-		 *
-		 * The default Menu Class Map will contain class names for locations that map to `Timber\Menu`.
+		 * Read more about this in the documentation for [Pages Menu Class filter](https://timber.github.io/docs/v2/guides/class-maps/#the-pages-menu-class-filter).
 		 *
 		 * @since 2.0.0
 		 * @example
@@ -45,8 +43,9 @@ class PagesMenuFactory {
 		 * ```
 		 *
 		 * @param array $class The pages menu class to use.
+		 * @param array $args  The arguments passed to `Timber::get_pages_menu()`.
 		 */
-		$class = apply_filters( 'timber/pages_menu/class', PagesMenu::class );
+		$class = apply_filters( 'timber/pages_menu/class', PagesMenu::class, $args );
 
 		// If class is a callable, call it to get the actual class name
 		if ( is_callable( $class ) ) {
