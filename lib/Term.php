@@ -141,7 +141,7 @@ class Term extends CoreEntity {
 
 	/**
 	 * @internal
-	 * @param int $tid
+	 * @param int|object|array $tid
 	 * @return mixed
 	 */
 	protected function get_term( $tid ) {
@@ -149,6 +149,19 @@ class Term extends CoreEntity {
 			return $tid;
 		}
 		$tid = self::get_tid($tid);
+
+		if ( is_array($tid) ) {
+			//there's more than one matching $term_id, let's figure out which is correct
+			if ( isset($this->taxonomy) && strlen($this->taxonomy) ) {
+				foreach( $tid as $term_id ) {
+					$maybe_term = get_term($term_id, $this->taxonomy);
+					if ( $maybe_term ) {
+						return $maybe_term;
+					}
+				}
+			}
+			$tid = $tid[0];
+		}
 
 		if ( isset($this->taxonomy) && strlen($this->taxonomy) ) {
 			return get_term($tid, $this->taxonomy);
@@ -167,9 +180,9 @@ class Term extends CoreEntity {
 	/**
 	 * @internal
 	 * @param mixed $tid
-	 * @return int|bool
+	 * @return int|array
 	 */
-	protected function get_tid( $tid ) {
+	protected static function get_tid( $tid ) {
 		global $wpdb;
 		if ( is_numeric($tid) ) {
 			return $tid;
@@ -177,12 +190,17 @@ class Term extends CoreEntity {
 		if ( gettype($tid) === 'object' ) {
 			$tid = $tid->term_id;
 		}
-		$query = $wpdb->prepare("SELECT * FROM $wpdb->terms WHERE slug = %s", $tid);
-		$result = $wpdb->get_row($query);
-		if ( isset($result->term_id) ) {
-			$result->ID = $result->term_id;
-			$result->id = $result->term_id;
-			return $result->ID;
+		if ( is_numeric($tid) ) {
+			$query = $wpdb->prepare("SELECT term_id FROM $wpdb->terms WHERE term_id = %d", $tid);
+		} else {
+			$query = $wpdb->prepare("SELECT term_id FROM $wpdb->terms WHERE slug = %s", $tid);
+		}
+		$result = $wpdb->get_col($query);
+		if ( $result ) {
+			if ( count($result) == 1) {
+				return $result[0];
+			}
+			return $result;
 		}
 		return false;
 	}

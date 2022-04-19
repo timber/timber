@@ -1,15 +1,12 @@
 <?php
 
 class TestTimberClass extends Timber_UnitTestCase {
-
 	/**
 	 * @doesNotPerformAssertions
 	 */
 	function testConstantsDefining() {
-		$timber = $GLOBALS['timber'];
-		$timber->init_constants();
-		$timber->init_constants();
-		/* just testing to make sure the double call doesnt error-out */
+		// Just testing to make sure the double call doesn’t error-out.
+		Timber\Timber::init();
+		Timber\Timber::init();
 	}
-
 }
