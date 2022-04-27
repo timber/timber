@@ -131,11 +131,13 @@
         }
 
         function testKeyGenerator(){
-        	$kg = new Timber\Cache\KeyGenerator();
         	$post_id = $this->factory->post->create(array('post_title' => 'My Test Post'));
-					$post = Timber::get_post($post_id);
+			$post = Timber::get_post($post_id);
+
+        	$kg = new Timber\Cache\KeyGenerator();
         	$key = $kg->generateKey($post);
-        	$this->assertStringStartsWith('Timber\Post|', $key);
+
+        	$this->assertStringStartsWith('Timber;Post;', $key);
         }
 
         function testKeyGeneratorWithTimberKeyGeneratorInterface() {

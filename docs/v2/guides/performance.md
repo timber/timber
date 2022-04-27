@@ -9,7 +9,6 @@ Timber, especially in conjunction with WordPress and Twig, offers a variety of c
 
 In my tests with Debug Bar, Timber has no measurable performance hit. Everything compiles to PHP. @fabpot has an [overview of the performance costs on his blog](http://fabien.potencier.org/article/34/templating-engines-in-php) (scroll down to the table).
 
-
 ## Cache Everything
 
 You can still use plugins like [W3 Total Cache](https://wordpress.org/plugins/w3-total-cache/) in conjunction with Timber. In most settings, this will _skip_ the Twig/Timber layer of your files and serve static pages via whatever mechanism the plugin or settings dictate.
@@ -50,34 +49,56 @@ The following cache modes are available:
 
 ## Cache _Parts_ of the Twig File and Data
 
-This method implements the [Twig Cache Extension](https://github.com/twigphp/twig-cache-extension). It adds the cache tag, for use in templates. Best shown by example:
+If you want to use [`cache` tag](https://twig.symfony.com/doc/3.x/tags/cache.html) in Twig, you’ll have to install the `twig/cache-extra` package:
+
+```bash
+composer require twig/cache-extra
+```
+
+And register it in Timber like this:
+
+**functions.php**
+
+```php
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Adapter\TagAwareAdapter;
+use Twig\Extra\Cache\CacheExtension;
+use Twig\Extra\Cache\CacheRuntime;
+use Twig\RuntimeLoader\RuntimeLoaderInterface;
+
+class RunTimeLoader implements RuntimeLoaderInterface {
+    public function load( $class ) {
+        if ( CacheRuntime::class === $class ) {
+            return new CacheRuntime( new TagAwareAdapter( new FilesystemAdapter() ) );
+        }
+    }
+}
+
+add_filter( 'timber/twig', function( $twig ) {
+    $twig->addExtension( new CacheExtension() );
+    $twig->addRuntimeLoader( new RunTimeLoader() );
+
+    return $twig;
+} );
+```
+
+You can then use it like this:
 
 ```twig
-{% cache 'index/content' posts %}
+{% cache 'index;content' %}
     {% for post in posts %}
-        {% include ['tease-'~post.post_type~'.twig', 'tease.twig'] %}
+        {% include ['tease-' ~ post.post_type ~ '.twig', 'tease.twig'] %}
     {% endfor %}
 {% endcache %}
 ```
 
-`'index/content'` will be used as annotation (label) for the cache, while `posts` will be encoded with all its public fields. You can use anything for the label ("foo", "elephant", "single-posts", whatever).
+Read more about it in [Twig’s `cache` documentation](https://twig.symfony.com/doc/3.x/tags/cache.html).
 
-The mechanism behind it is the same as with render - the cache key is determined based on a hash of the object/array passed in (in the above example posts).
-
-The cache method used is always the default mode, set using the bespoke filter (by default, transient cache).
-
-This method allows for very fine-grained control over what parts of templates are being cached and which are not. When applied on resource-intensive sections, the performance difference is huge.
-
-In your cache, the eventual key will be:
+If you want to use something meaningful for the cache key, you can also generate a cache key from the variables that you use. In the following example, we generate a cache key from `$posts` and then generate a key from it:
 
 ```php
-$annotation . '__GCS__' . $key
-```
-
-That is in this scenario:
-
-```php
-'index/content__GCS__' . md5( json_encode( $context['post'] ) )
+$generator = new Timber\Cache\KeyGenerator();
+$key       = $generator->generateKey( $posts );
 ```
 
 ### Extra: TimberKeyGeneratorInterface
@@ -95,7 +116,7 @@ Every time you render a `.twig` file, Twig compiles all the HTML tags and variab
 
 ```php
 add_filter( 'timber/twig/environment/options', function( $options ) {
-	$options['cache'] = true;
+    $options['cache'] = true;
 
     return $options;
 } );
@@ -107,7 +128,7 @@ If you want to change the path where Timber caches the Twig files, you can pass 
 
 ```php
 add_filter( 'timber/twig/environment/options', function( $options ) {
-	$options['cache'] = '/absolute/path/to/twig_cache';
+    $options['cache'] = '/absolute/path/to/twig_cache';
 
     return $options;
 } );
