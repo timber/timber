@@ -193,7 +193,7 @@ The `posts` variable will be available in archive templates (when [ `is_archive(
 | Search Archive | `is_search()` | `posts`<br>`search_query` |
 | All other archives | `is_archive()` | `posts` |
 
-The `posts` variable will contain a `Timber\PostCollection` object with the posts that WordPress already fetched for your archive page.
+The `posts` variable will contain an object that implements `Timber\PostCollectionInterace` with the posts that WordPress already fetched for your archive page.
 
 #### Use the default query
 

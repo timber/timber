@@ -520,7 +520,7 @@ class Timber {
 	 * @param mixed $query
 	 * @param array $options
 	 *
-	 * @return PostCollection
+	 * @return \Timber\PostCollectionInterface
 	 */
 	public static function query_posts( $query = false, array $options = [] ) {
 		Helper::deprecated('Timber::query_posts()', 'Timber::get_posts()', '2.0.0');

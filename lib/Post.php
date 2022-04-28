@@ -903,7 +903,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
 	 * {% endif %}
 	 * ```
 	 * @param string|array $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type or you can pass an array of post types.
-	 * @return Timber\PostCollectionInterface
+	 * @return \Timber\PostCollectionInterface
 	 */
 	public function children( $post_type = 'any' ) {
 		if ( $post_type === 'parent' ) {
