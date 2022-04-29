@@ -69,7 +69,7 @@ class PostPreview {
 	/**
 	 * Read more text.
 	 *
-	 * @var string
+	 * @var string|bool
 	 */
 	protected $readmore = 'Read More';
 
@@ -187,7 +187,7 @@ class PostPreview {
 	 * ```twig
 	 * <p>{{ post.preview.read_more('Learn more') }}</p>
 	 * ```
-	 * @param string $readmore Text for the link. Default 'Read More'.
+	 * @param string|bool $readmore Text for the link. Default 'Read More'.
 	 * @return \Timber\PostPreview
 	 */
 	public function read_more( $readmore = 'Read More' ) {
