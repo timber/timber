@@ -39,6 +39,12 @@ class MenuItem extends CoreEntity {
 	public $type;
 
 	/**
+	 * Protected is needed here since we want to force Twig to use the `title()` method
+	 * in order to apply the `nav_menu_item_title` filter
+	 */
+	protected $title = '';
+
+	/**
 	 * Inherited property. Listed here to make it available in the documentation.
 	 *
 	 * @api
@@ -108,11 +114,7 @@ class MenuItem extends CoreEntity {
 		$this->menu = $menu;
 
 		$data       = (object) $data;
-
-		// Items from WordPress can come with a $title property which conflicts with methods
-		$data->__title = $data->title;
-		// @todo Use case for unsetting title?
-		// unset($data->title);
+		$this->title = $data->title;
 
 		$this->import($data);
 		$this->import_classes($data);
@@ -527,13 +529,11 @@ class MenuItem extends CoreEntity {
 	 * @return string The public label, like "Foo".
 	 */
 	public function title() {
-		if ( isset($this->__title) ) {
-			/**
-			 * @see Walker_Nav_Menu::start_el()
-			 */
-			$title = apply_filters( 'nav_menu_item_title', $this->__title, $this->wp_object, $this->menu->args ? $this->menu->args : new \stdClass, $this->level );
-			return $title;
-		}
+		/**
+		 * @see Walker_Nav_Menu::start_el()
+		 */
+		$title = apply_filters( 'nav_menu_item_title', $this->title, $this->wp_object, $this->menu->args ? $this->menu->args : new \stdClass, $this->level );
+		return $title;
 	}
 
 }
