@@ -2,10 +2,7 @@
 
 namespace Timber\Cache;
 
-use Twig\CacheExtension\CacheStrategy\KeyGeneratorInterface;
-
-class KeyGenerator implements KeyGeneratorInterface {
-
+class KeyGenerator {
 	/**
 	 * @param mixed $value
 	 * @return string
@@ -21,10 +18,12 @@ class KeyGenerator implements KeyGeneratorInterface {
 
 		$key = md5(json_encode($value));
 		if ( is_object($value) ) {
-			$key = get_class($value).'|'.$key;
+			$key = get_class( $value ) . ';' . $key;
 		}
+
+		// Replace any of the reserved characters.
+		$key = preg_replace( '/[{}()\/\\\@:]/', ';', $key );
 
 		return $key;
 	}
-
 }
