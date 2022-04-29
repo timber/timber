@@ -177,18 +177,18 @@ class Menu extends CoreEntity {
 			$nav_menu = new static(null, $args);
 			$nav_menu->init_pages_menu();
 
-		/**
-		 * Since Timber doesn’t use HTML, serialize the menu object to provide a cacheable string.
-		 *
-		 * Certain caching plugins will use this filter to cache a menu and return it early in the
-		 * `pre_wp_nav_menu` filter.
-		 *
-		 * We can’t use the result of this filter, because it would return a string. That’s why we
-		 * don’t assign the result of the filter to a variable.
-		 *
-		 * @see wp_nav_menu()
-		 */
-		apply_filters( 'wp_nav_menu', serialize( $nav_menu ), $args );
+			/**
+			 * Since Timber doesn’t use HTML, serialize the menu object to provide a cacheable string.
+			 *
+			 * Certain caching plugins will use this filter to cache a menu and return it early in the
+			 * `pre_wp_nav_menu` filter.
+			 *
+			 * We can’t use the result of this filter, because it would return a string. That’s why we
+			 * don’t assign the result of the filter to a variable.
+			 *
+			 * @see wp_nav_menu()
+			 */
+			apply_filters( 'wp_nav_menu', serialize( $nav_menu ), $args );
 
 			return $nav_menu;
 		}

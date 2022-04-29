@@ -205,6 +205,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testMenuCache() {
 		$term = self::_createTestMenu();
+		$term_id = $term['term_id'];
 		$called = 0;
 
 		$cache_menu = function($menu, $args) use(&$called) {
@@ -224,8 +225,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		add_filter('pre_wp_nav_menu', $get_cached_menu, 10, 2);
 
 		// trigger menu cache
-		$menu_uncached = Timber::get_menu($term);
-		$menu_cached = Timber::get_menu($term);
+		$menu_uncached = Timber::get_menu($term_id);
+		$menu_cached = Timber::get_menu($term_id);
 
 		remove_filter('wp_nav_menu', $cache_menu, 10, 2);
 		remove_filter('pre_wp_nav_menu', $get_cached_menu, 10, 2);
