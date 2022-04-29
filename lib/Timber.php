@@ -346,15 +346,43 @@ class Timber {
 	}
 
 	/**
-	 * Get posts.
+	 * Gets a collection of posts.
+	 *
+	 * Refer to the official documentation for
+	 * [WP_Query](https://developer.wordpress.org/reference/classes/wp_query/) for a list of all
+	 * the arguments that can be used for the `$query` parameter.
 	 *
 	 * @api
+	 * @example
+	 * ```php
+	 * // Use the global query.
+	 * $posts = Timber::get_posts();
 	 *
-	 * @todo improve this docblock
-	 * @param mixed $query
-	 * @param array $options
+	 * // Using the WP_Query argument format.
+	 * $posts = Timber::get_posts( [
+	 *    'post_type'     => 'article',
+	 *    'category_name' => 'sports',
+	 * ] );
 	 *
-	 * @return array|bool|null
+	 * // Using a WP_Query instance.
+	 * $posts = Timber::get_posts( new WP_Query( [ 'post_type' => 'any' ) );
+	 *
+	 * // Using an array of post IDs.
+	 * $posts = Timber::get_posts( [ 47, 543, 3220 ] );
+	 * ```
+	 *
+	 * @param mixed $query  Optional. Query args. Default `false`, which means that Timber will use
+	 *                      the global query. Accepts an array of `WP_Query` arguments, a `WP_Query`
+	 *                      instance or a list of post IDs.
+	 * @param array $options {
+	 *     Optional. Options for the query.
+	 *
+	 *     @type bool $merge_default    Merge query parameters with the default query parameters of
+	 *                                  the current template. Default false.
+	 * }
+	 *
+	 * @return \Timber\PostCollectionInterface|null Null if no query could be run with the used
+	 *                                              query parameters.
 	 */
 	public static function get_posts( $query = false, $options = [] ) {
 		if ( is_string( $query ) ) {
