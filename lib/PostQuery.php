@@ -48,11 +48,6 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	 */
 	protected $wp_query = null;
 
-	/**
-	 * @var PostCollection|QueryIterator
-	 */
-	protected $queryIterator;
-
 	protected $pagination = null;
 
 	/**
@@ -123,9 +118,7 @@ class PostQuery extends ArrayObject implements PostCollectionInterface, JsonSeri
 	 * @return \Timber\Pagination object
 	 */
 	public function pagination( $prefs = array() ) {
-		if ( !$this->pagination && is_a($this->queryIterator, 'Timber\QueryIterator') ) {
-			$this->pagination = $this->queryIterator->get_pagination($prefs, $this->userQuery);
-		} elseif ( !$this->pagination && $this->wp_query instanceof WP_Query ) {
+		if ( !$this->pagination && $this->wp_query instanceof \WP_Query ) {
 			$this->pagination = new Pagination($prefs, $this->wp_query);
 		}
 
