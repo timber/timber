@@ -203,6 +203,37 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		flush_rewrite_rules( true );
 	}
 
+	function testMenuCache() {
+		$term = self::_createTestMenu();
+		$term_id = $term['term_id'];
+		$called = 0;
+
+		$cache_menu = function($menu, $args) use(&$called) {
+			$called++;
+			set_transient( 'menu_cache_key', $menu, DAY_IN_SECONDS );
+			return $menu;
+		};
+		$get_cached_menu = function($menu, $args) {
+			$menu = get_transient( 'menu_cache_key' );
+			if(is_string($menu)) {
+				return $menu;
+			}
+			return null;
+		};
+
+		add_filter('wp_nav_menu', $cache_menu, 10, 2);
+		add_filter('pre_wp_nav_menu', $get_cached_menu, 10, 2);
+
+		// trigger menu cache
+		$menu_uncached = Timber::get_menu($term_id);
+		$menu_cached = Timber::get_menu($term_id);
+
+		remove_filter('wp_nav_menu', $cache_menu, 10, 2);
+		remove_filter('pre_wp_nav_menu', $get_cached_menu, 10, 2);
+		$this->assertEquals($menu_uncached, $menu_cached);
+		$this->assertEquals($called, 1);
+	}
+
 	function testBlankMenu() {
 		self::setPermalinkStructure();
 		self::_createTestMenu();
@@ -276,9 +307,10 @@ class TestTimberMenu extends Timber_UnitTestCase {
 	function testNavMenuFilters() {
 		self::_createTestMenu();
 
-		add_filter( 'wp_nav_menu_objects', function( $menu_items ) {
-			$menu_items[4]->current = true;
-			$menu_items[4]->classes = array_merge( (array)$menu_items[4]->classes, array( 'current-menu-item' ) );
+		$this->add_filter_temporarily( 'wp_nav_menu_objects', function( $menu_items ) {
+			// Be carefull with indexes, they are strings here
+			$menu_items['9']->current = true;
+			$menu_items['9']->classes = array_merge( (array)$menu_items[8]->classes, array( 'current-menu-item', 'my-custom-item-class' ) );
 			return $menu_items;
 		}, 2 );
 
@@ -287,38 +319,63 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		);
 		$menu = Timber::get_menu('Menu One', $arguments);
 		$menu_items = $menu->get_items();
-		$this->assertTrue( $menu_items[3]->current );
-		$this->assertContains( 'current-menu-item', $menu_items[3]->classes );
+
+		$this->assertTrue( $menu_items[7]->current );
+		$this->assertContains( 'current-menu-item', $menu_items[7]->classes );
+		$this->assertContains( 'my-custom-item-class', $menu_items[7]->classes );
 	}
 
-	function testMenuOptions () {
+	function testMenuArgs () {
 		$menu_arr = self::_createTestMenu();
+
+		$defaults = [
+			'depth' => 0,
+			'menu' => '',
+			'container' => 'div',
+			'container_class' => '',
+			'container_id' => '',
+			'container_aria_label' => '',
+			'menu_class' => 'menu',
+			'menu_id' => '',
+			'echo' => true,
+			'fallback_cb' => 'wp_page_menu',
+			'before' => '',
+			'after' => '',
+			'link_after' => '',
+			'link_before' => '',
+			'items_wrap' => '<ul id="%1$s" class="%2$s">%3$s</ul>',
+			'item_spacing' => 'preserve',
+			'walker' => '',
+			'theme_location' => '',
+		];
 
 		// With no options set.
 		$menu = Timber::get_menu($menu_arr['term_id']);
+		$defaults['menu'] = $menu_arr['term_id'];
 		$this->assertIsInt($menu->depth);
 		$this->assertEquals( 0, $menu->depth );
 		$this->assertIsArray($menu->raw_args);
-		$this->assertIsArray($menu->args);
-		$this->assertEquals(array( 'depth' => 0 ), $menu->args);
+		$this->assertIsObject($menu->args);
+		$this->assertEquals((object) $defaults, $menu->args);
 
 		// With Valid options set.
-		$arguments = array(
+		$args = wp_parse_args(array(
 			'depth' => 1,
-		);
-		$menu = Timber::get_menu('Menu One', $arguments);
+		), $defaults);
+		$menu = Timber::get_menu('Menu One', $args);
+		$args['menu'] = 'Menu One';
 		$this->assertIsInt($menu->depth);
 		$this->assertEquals( 1, $menu->depth );
 		$this->assertIsArray($menu->raw_args);
-		$this->assertEquals( $arguments, $menu->raw_args );
-		$this->assertIsArray($menu->args);
-		$this->assertEquals(array( 'depth' => 1 ), $menu->args);
+		$this->assertEquals( $args, $menu->raw_args );
+		$this->assertIsObject($menu->args);
+		$this->assertEquals((object) $args, $menu->args);
 
 		// With invalid option set.
-		$arguments = array(
+		$args = array(
 			'depth' => 'boogie',
 		);
-		$menu = Timber::get_menu('Menu One', $arguments);
+		$menu = Timber::get_menu('Menu One', $args);
 		$this->assertIsInt($menu->depth);
 		$this->assertEquals( 0, $menu->depth );
 	}
@@ -373,19 +430,16 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		) );
 
 		$filter = function( $classes, $item, $args ) {
-			$this->assertEquals( 3, $item->menu->args['depth'] );
 			$this->assertEquals( 3, $args->depth );
 
 		    return $classes;
 		};
 
-		add_filter( 'nav_menu_css_class', $filter, 10, 3 );
+		$this->add_filter_temporarily( 'nav_menu_css_class', $filter, 10, 3 );
 
 		Timber::get_menu( $menu_id, [
 			'depth' => 3,
 		] );
-
-		remove_filter( 'nav_menu_css_class', $filter );
 	}
 
 	function testMenuItemIsTargetBlank() {
@@ -422,12 +476,12 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testCustomArchivePage() {
 		self::setPermalinkStructure();
-		add_filter( 'nav_menu_css_class', function( $classes, $menu_item ) {
-				if ( trailingslashit( $menu_item->link() ) == trailingslashit( 'http://example.org/gallery' ) ) {
-					$classes[] = 'current-page-item';
-				}
-				return $classes;
-			}, 10, 2 );
+		$this->add_filter_temporarily( 'nav_menu_css_class', function( $classes, $menu_item ) {
+			if ( trailingslashit( $menu_item->url ) == trailingslashit( 'http://example.org/gallery' ) ) {
+				$classes[] = 'current-page-item';
+			}
+			return $classes;
+		}, 10, 2 );
 		global $wpdb;
 		register_post_type( 'gallery',
 			array(
@@ -786,22 +840,20 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		) );
 
 		$filter = function( $classes, $item, $args ) {
-		    if ( 'secondary' === $item->menu->theme_location ) {
+		    if ( 'secondary' === $args->theme_location ) {
 		        $classes[] = 'test-class';
 		    }
 
 		    return $classes;
 		};
 
-		add_filter( 'nav_menu_css_class', $filter, 10, 3 );
+		$this->add_filter_temporarily( 'nav_menu_css_class', $filter, 10, 3 );
 
 		$menu = Timber::get_menu( $menu_id );
 
 		foreach ( $menu->items as $item ) {
 			$this->assertContains( 'test-class', $item->classes );
 		}
-
-		remove_filter( 'nav_menu_css_class', $filter );
 	}
 
 	function testCustomMenuItemClass() {
@@ -840,7 +892,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$pg_1 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 10 ) );
 		$pg_2 = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 1 ) );
 		$missing_menu = Timber::get_menu( 14 );
-		$this->assertFalse( $missing_menu );
+		$this->assertNull( $missing_menu );
 	}
 
 	function testMenuTwig() {
@@ -848,11 +900,20 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$context = Timber::context();
 		$menu_arr = self::_createTestMenu();
 		$this->go_to( home_url( '/child-page' ) );
+
+		// To check if the filter is applied
+		$this->add_filter_temporarily('nav_menu_item_title', function($title, \WP_Post $item) {
+			if ($item->title !== 'Home') {
+				return $title;
+			}
+			return 'Home Sweet ' . $title;
+		}, 10, 2);
+
 		$context['menu'] = Timber::get_menu($menu_arr['term_id']);
 		$str = Timber::compile( 'assets/child-menu.twig', $context );
 		$str = preg_replace( '/\s+/', '', $str );
 		$str = preg_replace( '/\s+/', '', $str );
-		$this->assertStringStartsWith( '<ulclass="navnavbar-nav"><li><ahref="http://example.org/home/"class="has-children">Home</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page/">ChildPage</a></li></ul><li><ahref="https://upstatement.com"class="no-children">Upstatement</a><li><ahref="/"class="no-children">RootHome</a>', $str );
+		$this->assertStringStartsWith( '<ulclass="navnavbar-nav"><li><ahref="http://example.org/home/"class="has-children">HomeSweetHome</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page/">ChildPage</a></li></ul><li><ahref="https://upstatement.com"class="no-children">Upstatement</a><li><ahref="/"class="no-children">RootHome</a>', $str );
 	}
 
 	function testMasterObject() {
@@ -865,4 +926,29 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$this->assertInstanceOf( WP_Post_Type::class, $menu->items[7]->master_object() );
 	}
 
+	function testMenuWalker() {
+		$menu = self::_createTestMenu();
+		$menu_id = $menu['term_id'];
+		$args = [
+			'menu_class' => 'my-unique-menu-class',
+			'menu_id' => 'my-unique-menu-id',
+			'container' => 'nav',
+			'container_class' => 'my-unique-container-class',
+			'container_id' => 'my-unique-container-id',
+		];
+		$menu = Timber::get_menu( $menu_id, $args );
+		$args['menu'] = $menu_id;
+		$args['echo'] = false;
+
+		$nav_menu_wp = wp_nav_menu($args);
+		// Remove this filter that prevents to render duplicate ids
+		remove_filter( 'nav_menu_item_id', '_nav_menu_item_id_use_once', 10, 2 );
+		$nav_menu_timber = (string) $menu;
+
+		$this->assertEquals($nav_menu_wp, $nav_menu_timber);
+		$this->assertStringContainsString('class="my-unique-menu-class"', $nav_menu_timber);
+		$this->assertStringContainsString('id="my-unique-menu-id"', $nav_menu_timber);
+		$this->assertStringContainsString('class="my-unique-container-class"', $nav_menu_timber);
+		$this->assertStringContainsString('id="my-unique-container-id"', $nav_menu_timber);
+	}
 }

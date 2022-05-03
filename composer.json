@@ -70,5 +70,12 @@
   "scripts": {
     "test": "vendor/bin/phpunit -c phpunit-nocover.xml --verbose --colors=always",
     "lint": "phpcs --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "composer/installers": true,
+      "roots/wordpress-core-installer": true
+    }
   }
 }

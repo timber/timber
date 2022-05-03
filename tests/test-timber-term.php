@@ -444,7 +444,7 @@ class TermTestPage extends Post {}
 			$this->assertEquals('qux', $valid_acf_native_value);
 			$this->assertEquals('qux', $term->bar);
 
-			//test the one taht doesn't exist
+			//test the one that doesn't exist
 			$this->assertEquals('string', gettype($wp_native_value));
 			$this->assertEmpty($wp_native_value);
 			$this->assertNull($acf_native_value);

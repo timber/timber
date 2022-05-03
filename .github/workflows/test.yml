@@ -129,11 +129,11 @@ jobs:
       - name: Install tests
         run: bash bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1:${{ job.services.mysql.ports['3306'] }} ${{ matrix.wp }} true
 
-      - name: Setup PCOV
-        if: ${{ matrix.coverage == true }}
-        run: |
-          composer require --dev --ignore-platform-reqs pcov/clobber
-          vendor/bin/pcov clobber
+      # - name: Setup PCOV
+      #   if: ${{ matrix.coverage == true }}
+      #   run: |
+      #     composer require --dev --ignore-platform-reqs pcov/clobber
+      #     vendor/bin/pcov clobber
 
       - name: Run tests
         if: ${{ !matrix.webp }}
