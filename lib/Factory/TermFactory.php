@@ -43,14 +43,14 @@ class TermFactory {
 			));
 		}
 
-		return false;
+		return null;
 	}
 
 	protected function from_id(int $id) {
 		$wp_term = get_term($id);
 
 		if (!$wp_term) {
-			return false;
+			return null;
 		}
 
 		return $this->build($wp_term);

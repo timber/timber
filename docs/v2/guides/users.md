@@ -51,7 +51,7 @@ It also works if you have an array of user IDs that you want to convert to `Timb
 
 ## Invalid user
 
-If no user can be found with the user ID you provided, the `Timber::get_user()` function will return `false`. With this, you can always check for valid users in a template a simple if statement.
+If no user can be found with the user ID you provided, the `Timber::get_user()` function will return `null`. With this, you can always check for valid users in a template a simple if statement.
 
 ```php
 $user = Timber::get_user( $user_id );
@@ -71,7 +71,7 @@ Or in Twig:
 
 ## Login state
 
-Similar to checking for valid users, you can also check whether a user is currently logged in to WordPress. When you don’t provide an ID for `Timber::get_user()`, it will return `false` if no user is currently logged in.
+Similar to checking for valid users, you can also check whether a user is currently logged in to WordPress. When you don’t provide an ID for `Timber::get_user()`, it will return `null` if no user is currently logged in.
 
 ```php
 $user = Timber::get_user();

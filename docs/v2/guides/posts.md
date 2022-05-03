@@ -62,7 +62,7 @@ It also works if you have an array of post IDs that you want to convert to `Timb
 
 ## Invalid posts
 
-If no valid post can be found with the post ID you provided, the `Timber::get_post()` function will return `false`. With this, you can always check for valid posts with a simple if statement.
+If no valid post can be found with the post ID you provided, the `Timber::get_post()` function will return `null`. With this, you can always check for valid posts with a simple if statement.
 
 ```php
 $post = Timber::get_post( $post_id );
@@ -396,7 +396,7 @@ In the back, the query will not count the number of found rows. This can result 
 
 Here is a timeline of what normally happens when you call `Timber::get_posts()`:
 
-1. Timber decides what kind of Post Collection it will return (or returns `false` on error).
+1. Timber decides what kind of Post Collection it will return (or returns `null` on error).
 2. It populates the new Post Collection, either with `WP_Post` objects it queries from WordPress core or with ones it was already passed, and returns the Collection object.
 3. The Collection (say, `$coll`) now contains zero or more raw `WP_Post` instances passed in/returned from the query.
 4. Calling `$coll[ $numeric_index ]` *realizes* a `Timber\Post` object from the `WP_Post` at `$numeric_index`, running it through any Post Class Map you've defined, and *replaces* the object at that index internally, so it doesn't have to repeat that work in the future.

@@ -34,7 +34,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$userFactory = new UserFactory();
 		$user        = $userFactory->from( 3345 );
 
-		$this->assertFalse( $user );
+		$this->assertNull( $user );
 	}
 
 	public function testGetUserFromIdString() {
@@ -117,13 +117,13 @@ class TestUserFactory extends Timber_UnitTestCase {
 		list( $user, $invalid ) = $userFactory->from( [ $user_id, 256 ] );
 
 		$this->assertInstanceOf( Timber\User::class, $user );
-		$this->assertFalse( $invalid );
+		$this->assertNull( $invalid );
 	}
 
 	public function testGetNonExistentUser() {
 		$user_id     = $this->factory->user->create();
 		$maybe_user  = Timber::get_user_by('id', 3424);
-		$this->assertFalse($maybe_user);
+		$this->assertNull($maybe_user);
 	}
 
 	public function testInvalidUserClassThrowsError() {

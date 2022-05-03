@@ -42,8 +42,8 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		// Image is good, but Timber should recognize that neither Attachment
 		// or Post are actually Image subclasses.
 		$this->assertInstanceOf(Image::class, $image);
-		$this->assertFalse($attachment);
-		$this->assertFalse($post);
+		$this->assertNull($attachment);
+		$this->assertNull($post);
 	}
 
 	/**
@@ -60,7 +60,7 @@ class TestTimberImage extends TimberAttachment_UnitTestCase {
 		// A Post is not an Attachment so it should not be treated as such.
 		$this->assertInstanceOf(Image::class, $image);
 		$this->assertInstanceOf(Attachment::class, $attachment);
-		$this->assertFalse($post);
+		$this->assertNull($post);
 	}
 
 	/**

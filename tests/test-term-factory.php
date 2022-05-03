@@ -34,7 +34,7 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$termFactory = new TermFactory();
 		$term        = $termFactory->from( 99999 );
 
-		$this->assertFalse( $term );
+		$this->assertNull( $term );
 	}
 
 	public function testGetTermFromIdString() {
