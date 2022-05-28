@@ -163,7 +163,7 @@ In Twig, you can also loop over the collection.
 {% endfor %}
 ```
 
-What **doesn’t work** with `Timber\PostCollection` objects are PHP’s [Array functions](https://www.php.net/manual/en/ref.array.php) like `array_filter()` or WordPress helper functions like [`wp_list_filter()`](https://developer.wordpress.org/reference/functions/wp_list_filter/). If you want to work with those, you can turn a `Timber\PostCollectionInterface` instance into a pure array with `to_array()`. But be aware that when you do that, you lose the pagination functionality and compatibility optimizations with The Loop.
+What **doesn’t work** with objects that implement `Timber\PostCollectionInterface` are PHP’s [Array functions](https://www.php.net/manual/en/ref.array.php) like `array_filter()` or WordPress helper functions like [`wp_list_filter()`](https://developer.wordpress.org/reference/functions/wp_list_filter/). If you want to work with those, you can turn a `Timber\PostCollectionInterface` instance into a pure array with `to_array()`. But be aware that when you do that, you lose the pagination functionality and compatibility optimizations with The Loop.
 
 ```php
 $filtered = wp_list_filter( $posts->to_array(), [
