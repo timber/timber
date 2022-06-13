@@ -231,9 +231,9 @@ class TestTimberPagesMenu extends Timber_UnitTestCase {
 		$iid = TestTimberImage::get_attachment( $pid );
 		add_post_meta( $pid, '_thumbnail_id', $iid, true );
 		$post       = Timber::get_post( $pid );
-		$page_menus = Timber::get_pages_menu();
+		$pages_menu = Timber::get_pages_menu();
 		$str        = '{% for item in menu.items %}{{item.master_object.thumbnail.src}}{% endfor %}';
-		$result     = Timber::compile_string( $str, array( 'menu' => $page_menus ) );
+		$result     = Timber::compile_string( $str, array( 'menu' => $pages_menu ) );
 		$this->assertEquals( 'http://example.org/wp-content/uploads/'
 			. date( 'Y/m' )
 			. '/arch.jpg', $result );
@@ -296,6 +296,37 @@ class TestTimberPagesMenu extends Timber_UnitTestCase {
 		//make sure other menus are still more powerful
 		$menu = Timber::get_menu( false );
 		$this->assertGreaterThanOrEqual( 3, count( $menu->get_items() ) );
+	}
+
+	function testPagesMenuWithDepth() {
+		$page_1 = $this->factory->post->create( [ 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 1 ] );
+		$this->factory->post->create( [ 'post_type' => 'page', 'post_title' => 'Foo Subpage 1', 'post_parent' => $page_1 ] );
+		$this->factory->post->create( [ 'post_type' => 'page', 'post_title' => 'Foo Subpage 2', 'post_parent' => $page_1 ] );
+		$this->factory->post->create( [ 'post_type' => 'page', 'post_title' => 'Bar Page', 'menu_order' => 2 ] );
+
+		// Get all levels.
+		$pages_menu = Timber::get_pages_menu( [ 'depth' => 0 ] );
+		$this->assertEquals( 2, count( $pages_menu->get_items() ) );
+		$this->assertEquals( 2, count( $pages_menu->get_items()[0]->children() ) );
+
+		// Get first level only.
+		$pages_menu = Timber::get_pages_menu( [ 'depth' => 1 ] );
+		$this->assertEquals( 2, count( $pages_menu->get_items() ) );
+		$this->assertEmpty( $pages_menu->get_items()[0]->children() );
+	}
+
+	function testMenuItemHasChildrenClass() {
+		$page_1 = $this->factory->post->create( [ 'post_type' => 'page', 'post_title' => 'Foo Page', 'menu_order' => 1 ] );
+		$this->factory->post->create( [ 'post_type' => 'page', 'post_title' => 'Foo Subpage 1', 'post_parent' => $page_1 ] );
+		$this->factory->post->create( [ 'post_type' => 'page', 'post_title' => 'Foo Subpage 2', 'post_parent' => $page_1 ] );
+
+		// Get all levels.
+		$pages_menu = Timber::get_pages_menu();
+		$this->assertContains( 'menu-item-has-children', $pages_menu->get_items()[0]->classes );
+
+		// Get first level only.
+		$pages_menu = Timber::get_pages_menu( [ 'depth' => 1 ] );
+		$this->assertNotContains( 'menu-item-has-children', $pages_menu->get_items()[0]->classes );
 	}
 
 	function testGetCurrentItemWithEmptyMenu() {

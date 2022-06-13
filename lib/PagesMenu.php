@@ -25,6 +25,42 @@ class PagesMenu extends Menu {
 	 */
 	public static function build( $menu, $args = [] ) : ?self {
 		/**
+		 * Default arguments from wp_page_menu() function.
+		 *
+		 * @see wp_page_menu()
+		 */
+		$defaults = array(
+			'sort_column'  => 'menu_order, post_title',
+			'echo'         => true,
+			'link_before'  => '',
+			'link_after'   => '',
+			'before'       => '<ul>',
+			'after'        => '</ul>',
+			'item_spacing' => 'discard',
+			'walker'       => '',
+			'menu_id'      => '',
+			'menu_class'   => 'menu',
+			'container'    => 'div',
+		);
+
+		$args = wp_parse_args( $args, $defaults );
+
+		if ( ! in_array( $args['item_spacing'], [ 'preserve', 'discard' ], true ) ) {
+			// Invalid value, fall back to default.
+			$args['item_spacing'] = $defaults['item_spacing'];
+		}
+
+		/**
+		 * Filters the arguments used to generate a page-based menu.
+		 *
+		 * @see wp_page_menu()
+		 *
+		 * @param array $args An array of page menu arguments. See wp_page_menu() for information on
+		 *                    accepted arguments.
+		 */
+		$args = apply_filters( 'wp_page_menu_args', $args );
+
+		/**
 		 * Default arguments from wp_list_pages() function.
 		 *
 		 * @see wp_list_pages()
@@ -47,7 +83,7 @@ class PagesMenu extends Menu {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		if ( ! in_array( $args['item_spacing'], array( 'preserve', 'discard' ), true ) ) {
+		if ( ! in_array( $args['item_spacing'], [ 'preserve', 'discard' ], true ) ) {
 			// Invalid value, fall back to default.
 			$args['item_spacing'] = $defaults['item_spacing'];
 		}
@@ -56,7 +92,9 @@ class PagesMenu extends Menu {
 		$args['exclude'] = preg_replace( '/[^0-9,]/', '', $args['exclude'] );
 
 		// Allow plugins to filter an array of excluded pages (but don't put a nullstring into the array).
-		$exclude_array = ( $args['exclude'] ) ? explode( ',', $args['exclude'] ) : array();
+		$exclude_array = ( $args['exclude'] )
+			? explode( ',', $args['exclude'] )
+			: [];
 
 		/**
 		 * Filters the array of pages to exclude from the pages list.
@@ -69,14 +107,58 @@ class PagesMenu extends Menu {
 
 		$pages_menu = new static( $args );
 
+		// Query pages.
 		$menu_items = get_pages( $pages_menu->args );
 
 		if ( ! empty( $menu_items ) ) {
+			$menu_items = array_map( [ $pages_menu, 'pre_setup_nav_menu_item' ], $menu_items );
 			$menu_items = array_map( 'wp_setup_nav_menu_item', $menu_items );
+
+			/**
+			 * Can’t really apply the "wp_get_nav_menu_items" filter here, because we don’t have a
+			 * $menu object to pass in.
+			 */
 
 			_wp_menu_item_classes_by_context( $menu_items );
 
+			$menu_items_with_children = [];
+
+			foreach ( (array) $menu_items as $menu_item ) {
+				if ( $menu_item->menu_item_parent ) {
+					$menu_items_with_children[ $menu_item->menu_item_parent ] = true;
+				}
+			}
+
+			// Add the menu-item-has-children class where applicable.
+			if ( ! empty( $menu_items_with_children ) ) {
+				foreach ( $menu_items as &$menu_item ) {
+					if ( isset( $menu_items_with_children[ $menu_item->ID ] ) ) {
+						$menu_item->classes[] = 'menu-item-has-children';
+					}
+				}
+			}
+
+			unset( $menu_item );
+
 			if ( is_array( $menu_items ) ) {
+				/**
+				 * Filters the arguments used to display a navigation menu.
+				 *
+				 * @see wp_nav_menu()
+				 *
+				 * @param array $args Array of wp_nav_menu() arguments.
+				 */
+				$args = apply_filters( 'wp_nav_menu_args', $args );
+				$args = (object) $args;
+
+				/**
+				 * Filters the sorted list of menu item objects before generating the menu's HTML.
+				 *
+				 * @param array     $menu_items The menu items, sorted by each menu item's menu order.
+				 * @param \stdClass $args       An object containing wp_nav_menu() arguments.
+				 */
+				$menu_items = apply_filters( 'wp_nav_menu_objects', $menu_items, $args );
+
 				$menu_items = $pages_menu->convert_menu_items( $menu_items );
 				$menu_items = $pages_menu->order_children( $menu_items );
 				$menu_items = $pages_menu->strip_to_depth_limit( $menu_items );
@@ -107,5 +189,25 @@ class PagesMenu extends Menu {
 	protected function __construct( $args ) {
 		$this->args = (object) $args;
 		$this->depth = (int) $this->args->depth;
+	}
+
+	/**
+	 * Sets up properties needed for mocking nav menu items.
+	 *
+	 * We need to set some properties so that we can use `wp_setup_nav_menu_item()` on the menu
+	 * items and a proper menu item hierarchy can be built.
+	 *
+	 * @param \WP_Post $pages A post object.
+	 *
+	 * @return array Updated post object.
+	 */
+	protected function pre_setup_nav_menu_item( $post ) {
+		$post->object_id        = $post->ID;
+		$post->menu_item_parent = $post->post_parent;
+		$post->object           = $post->post_type;
+		$post->post_type        = 'nav_menu_item';
+		$post->type             = 'post_type';
+
+		return $post;
 	}
 }
