@@ -177,7 +177,7 @@ class BlogPost extends \Timber\Post {
     /**
      * Gets related posts for that post object.
      *
-     * @return \Timber\PostCollection
+     * @return \Timber\PostQuery
      */
     public function related_posts() {
         return Timber::get_posts( [
@@ -221,14 +221,14 @@ class BlogPost extends \Timber\Post {
     /**
      * Related posts cache.
      *
-     * @var \Timber\PostCollection|null
+     * @var \Timber\PostCollectionInterface
      */
     protected $related_posts;
 
     /**
      * Gets related posts for that post object.
      *
-     * @return \Timber\PostCollection
+     * @return \Timber\PostCollectionInterface
      */
     public function related_posts() {
         // Return related posts early if we already loaded them.
@@ -279,14 +279,14 @@ class MagazinePost extends \Timber\Post {
      *
      * @var \Timber\Term
      */
-	protected $issue;
+    protected $issue;
 
     /**
      * Gets a magazine’s issue.
      *
-     * @return \Timber|Term|false;
+     * @return \Timber\Term|null;
      */
-	public function issue() {
+    public function issue() {
         if ( ! empty( $this->_issue ) ) {
             return $this->issue;
         }
@@ -295,12 +295,12 @@ class MagazinePost extends \Timber\Post {
             'taxonomy' => 'issues'
         ] );
 
-		if ( is_array( $issues ) && ! empty( $issues ) ) {
-			$this->issue = $issues[0];
+        if ( is_array( $issues ) && ! empty( $issues ) ) {
+            $this->issue = $issues[0];
         }
 
         return $this->issue;
-	}
+    }
 }
 ```
 
@@ -328,16 +328,16 @@ But you could also define your own `date_display` method to display that date.
  */
 class Event extends \Timber\Post {
     /**
-	 * Gets display date.
-	 *
-	 * @return string
-	 */
+     * Gets display date.
+     *
+     * @return string
+     */
     public function date_display( $date_format = 'F j Y' ) {
         $date_start = DateTimeImmutable::createFromFormat( 'Ymd', $this->meta( 'date_start' ) );
 
         if ( empty( $date_start ) ) {
-			return '';
-		}
+            return '';
+        }
 
         return wp_date( $date_format, $date_start->getTimestamp() );
     }
@@ -374,10 +374,10 @@ class Event extends \Timber\Post {
      * Gets display date.
      *
      * @param array $formats An array of date formats.
-	 *
-	 * @return string
-	 */
-	public function date_display( $formats = [] ) {
+     *
+     * @return string
+     */
+    public function date_display( $formats = [] ) {
         $formats = wp_parse_args( $formats, [
             'single'           => 'F j Y',
             'yearless'         => 'F j',
@@ -385,41 +385,41 @@ class Event extends \Timber\Post {
             'same_month_end'   => 'j F Y'
         ] );
 
-		$date_start = DateTimeImmutable::createFromFormat(
+        $date_start = DateTimeImmutable::createFromFormat(
             'Ymd',
             $this->meta( 'date_start' )
         );
-		$date_end = DateTimeImmutable::createFromFormat(
+        $date_end = DateTimeImmutable::createFromFormat(
             'Ymd',
             $this->meta( 'date_end' )
         );
 
-		if ( empty( $date_start ) ) {
-			return '';
-		}
+        if ( empty( $date_start ) ) {
+            return '';
+        }
 
-		if ( empty( $date_end ) ) {
+        if ( empty( $date_end ) ) {
             // There’s only a start date.
-			$date_string = wp_date( $formats['single'], $date_start->getTimestamp() );
-		} else {
-			// Different format if month is the same.
-			if ( $date_start->format( 'm' ) === $date_end->format( 'm' ) ) {
-				$date_string = sprintf(
+            $date_string = wp_date( $formats['single'], $date_start->getTimestamp() );
+        } else {
+            // Different format if month is the same.
+            if ( $date_start->format( 'm' ) === $date_end->format( 'm' ) ) {
+                $date_string = sprintf(
                     '%1$s &ndash %2$s',
                     wp_date( $formats['same_month_start'], $date_start->getTimestamp() ),
                     wp_date( $formats['same_month_end'], $date_end->getTimestamp() )
                 );
-			} else {
+            } else {
                 $date_string = sprintf(
                     '%1$s &ndash %2$s',
                     wp_date( $formats['yearless'], $date_start->getTimestamp() ),
                     wp_date( $formats['single'], $date_end->getTimestamp() )
                 );
-			}
-		}
+            }
+        }
 
-		return $date_string;
-	}
+        return $date_string;
+    }
 }
 ```
 
@@ -503,14 +503,14 @@ class Event extends \Timber\Post {
     /**
      * Sponsors cache.
      *
-     * @var \Timber\PostCollection|null
+     * @var \Timber\PostCollectionInterface
      */
     protected $sponsors;
 
     /**
      * Gets event sponsors.
      *
-     * @return \Timber\PostCollection
+     * @return \Timber\PostCollectionInterface
      */
     public function sponsors() {
         if ( empty( $this->sponsors ) ) {

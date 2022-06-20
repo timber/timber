@@ -51,11 +51,7 @@ class MenuFactory {
 			}
 		}
 
-		if($menu) {
-			return $menu;
-		}
-
-		return $this->from_nav_menu_terms($args);
+		return $menu;
 	}
 
 	/**
@@ -250,7 +246,7 @@ class MenuFactory {
 	 * @return string|null
 	 */
 	protected function get_menu_location(WP_Term $term) : ?string {
-        $locations = array_flip(get_nav_menu_locations());
+        $locations = array_flip(array_filter(get_nav_menu_locations(), fn($location) => is_string($location) || is_int($location)));
 		return $locations[$term->term_id] ?? null;
     }
 

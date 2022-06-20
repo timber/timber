@@ -253,15 +253,29 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
 		global $post;
 		global $wp_query;
 
-		// Overwrite post global.
-		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
-		$post = $this;
+		// @todo: Load $wp_post in Post::build() and save it in a property.
+		$wp_post = get_post( $this->ID );
 
 		// Mimick WordPress behavior to improve compatibility with third party plugins.
 		$wp_query->in_the_loop = true;
 
+		if ( ! $wp_post ) {
+			return $this;
+		}
+
+		/**
+		 * Maybe set or overwrite post global.
+		 *
+		 * We have to overwrite the post global to be compatible with a couple of WordPress plugins
+		 * that work with the post global in certain conditions.
+		 */
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
+		if ( ! $post || isset( $post->ID ) && $post->ID !== $this->ID ) {
+			$post = $wp_post;
+		}
+
 		// The setup_postdata() function will call the 'the_post' action.
-		$wp_query->setup_postdata( $post->ID );
+		$wp_query->setup_postdata( $wp_post );
 
 		return $this;
 	}
@@ -903,7 +917,7 @@ class Post extends CoreEntity implements DatedInterface, Setupable {
 	 * {% endif %}
 	 * ```
 	 * @param string|array $post_type _optional_ use to find children of a particular post type (attachment vs. page for example). You might want to restrict to certain types of children in case other stuff gets all mucked in there. You can use 'parent' to use the parent's post type or you can pass an array of post types.
-	 * @return Timber\PostCollectionInterface
+	 * @return \Timber\PostCollectionInterface
 	 */
 	public function children( $post_type = 'any' ) {
 		if ( $post_type === 'parent' ) {

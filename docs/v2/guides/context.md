@@ -74,7 +74,7 @@ Among others, the following variables will be available:
 - **site** – The `site` variable is a [`Timber\Site`](https://timber.github.io/docs/v2/reference/timber-site/) object which will make it easier for you to retrieve info about your WordPress site. If you’re used to using `blog_info( 'sitename' )` in PHP, you can use `{{ site.name }}` in Twig instead.
 - **request** - The `request` variable is a `Timber\Request` object, which will make it easier for you to access `$_GET` and `$_POST` variables in your context. Please be aware that you should always be very careful about using `$_GET` and `$_POST` variables in your templates directly. Read more about this in the [Escaping Guide](https://timber.github.io/docs/v2/guides/escaping/).
 - **theme** - The `theme` variable is a [`Timber\Theme`](https://timber.github.io/docs/v2/reference/timber-theme/) object and contains info about your theme.
-- **user** - The `user` variable will be a [`Timber\User`](https://timber.github.io/docs/v2/reference/timber-user/) object if a user/visitor is currently logged in and otherwise it will be `false`.
+- **user** - The `user` variable will be a [`Timber\User`](https://timber.github.io/docs/v2/reference/timber-user/) object if a user/visitor is currently logged in and otherwise it will be `null`.
 
 For a full list of variables, go have a look at the reference for [`Timber::context()`](https://timber.github.io/docs/v2/reference/timber-timber/#context).
 
@@ -193,7 +193,7 @@ The `posts` variable will be available in archive templates (when [ `is_archive(
 | Search Archive | `is_search()` | `posts`<br>`search_query` |
 | All other archives | `is_archive()` | `posts` |
 
-The `posts` variable will contain a `Timber\PostCollection` object with the posts that WordPress already fetched for your archive page.
+The `posts` variable will contain an object that implements `Timber\PostCollectionInterace` with the posts that WordPress already fetched for your archive page.
 
 #### Use the default query
 

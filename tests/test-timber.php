@@ -838,7 +838,7 @@ class TestTimberMainClass extends Timber_UnitTestCase {
 	 */
 	function testDeprecatedGetPostFromSlug(){
 		$post_id = $this->factory->post->create( [ 'post_name' => 'mycoolpost' ] );
-		$this->assertFalse( Timber::get_post( 'mycoolpost' ) );
+		$this->assertNull( Timber::get_post( 'mycoolpost' ) );
 	}
 
 	/**

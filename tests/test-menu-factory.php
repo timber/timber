@@ -189,4 +189,22 @@ class TestMenuFactory extends Timber_UnitTestCase {
 
 		$this->assertTrue(MyMenu::class === get_class($factory->from($id)));
 	}
+
+	/**
+	 * @issue https://github.com/timber/timber/issues/2576
+	 */
+	public function testGetMenuLocation() {
+		$id = $this->factory->term->create([
+			'name'     => 'Main Menu',
+			'taxonomy' => 'nav_menu',
+		]);
+		$locations = [
+			'primary' => $id,
+			'secondary' => null,
+		];
+		set_theme_mod('nav_menu_locations', $locations);
+		$factory = new MenuFactory();
+		$location = $this->callMethod($factory, 'get_menu_location', [get_term($id)]);
+		$this->assertSame('primary', $location);
+	}
 }

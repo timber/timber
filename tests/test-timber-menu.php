@@ -205,6 +205,7 @@ class TestTimberMenu extends Timber_UnitTestCase {
 
 	function testMenuCache() {
 		$term = self::_createTestMenu();
+		$term_id = $term['term_id'];
 		$called = 0;
 
 		$cache_menu = function($menu, $args) use(&$called) {
@@ -224,8 +225,8 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		add_filter('pre_wp_nav_menu', $get_cached_menu, 10, 2);
 
 		// trigger menu cache
-		$menu_uncached = Timber::get_menu($term);
-		$menu_cached = Timber::get_menu($term);
+		$menu_uncached = Timber::get_menu($term_id);
+		$menu_cached = Timber::get_menu($term_id);
 
 		remove_filter('wp_nav_menu', $cache_menu, 10, 2);
 		remove_filter('pre_wp_nav_menu', $get_cached_menu, 10, 2);
@@ -899,11 +900,20 @@ class TestTimberMenu extends Timber_UnitTestCase {
 		$context = Timber::context();
 		$menu_arr = self::_createTestMenu();
 		$this->go_to( home_url( '/child-page' ) );
+
+		// To check if the filter is applied
+		$this->add_filter_temporarily('nav_menu_item_title', function($title, \WP_Post $item) {
+			if ($item->title !== 'Home') {
+				return $title;
+			}
+			return 'Home Sweet ' . $title;
+		}, 10, 2);
+
 		$context['menu'] = Timber::get_menu($menu_arr['term_id']);
 		$str = Timber::compile( 'assets/child-menu.twig', $context );
 		$str = preg_replace( '/\s+/', '', $str );
 		$str = preg_replace( '/\s+/', '', $str );
-		$this->assertStringStartsWith( '<ulclass="navnavbar-nav"><li><ahref="http://example.org/home/"class="has-children">Home</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page/">ChildPage</a></li></ul><li><ahref="https://upstatement.com"class="no-children">Upstatement</a><li><ahref="/"class="no-children">RootHome</a>', $str );
+		$this->assertStringStartsWith( '<ulclass="navnavbar-nav"><li><ahref="http://example.org/home/"class="has-children">HomeSweetHome</a><ulclass="dropdown-menu"role="menu"><li><ahref="http://example.org/child-page/">ChildPage</a></li></ul><li><ahref="https://upstatement.com"class="no-children">Upstatement</a><li><ahref="/"class="no-children">RootHome</a>', $str );
 	}
 
 	function testMasterObject() {

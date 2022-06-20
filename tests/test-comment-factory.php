@@ -31,7 +31,7 @@ class TestCommentFactory extends Timber_UnitTestCase {
 		$commentFactory = new CommentFactory();
 		$comment			  = $commentFactory->from( 99999 );
 
-		$this->assertFalse( $comment );
+		$this->assertNull( $comment );
 	}
 
 	public function testGetCommentFromIdString() {
