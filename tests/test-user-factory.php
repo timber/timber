@@ -76,8 +76,8 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$admin       = $userFactory->from($admin_id);
 		$normie      = $userFactory->from($normie_id);
 
-		$this->assertInstanceOf(AdminUser::class, $admin);
-		$this->assertInstanceOf(User::class,      $normie);
+		$this->assertTrue(AdminUser::class === get_class($admin));
+		$this->assertTrue(User::class === get_class($normie));
 
 		remove_filter( 'timber/user/class', $my_class_map );
 	}
@@ -103,8 +103,8 @@ class TestUserFactory extends Timber_UnitTestCase {
 		// pass a list of IDs
 		list($admin, $normie) = $userFactory->from([$admin_id, $normie_id]);
 
-		$this->assertInstanceOf(AdminUser::class, $admin);
-		$this->assertInstanceOf(User::class,      $normie);
+		$this->assertTrue(AdminUser::class === get_class($admin));
+		$this->assertTrue(User::class === get_class($normie));
 
 		remove_filter( 'timber/user/class', $my_class_map );
 	}
@@ -159,8 +159,8 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$normie_wp_user = get_user_by('id', $normie_id);
 
 		$userFactory = new UserFactory();
-		$this->assertInstanceOf(AdminUser::class, $userFactory->from($admin_wp_user));
-		$this->assertInstanceOf(User::class, $userFactory->from($normie_wp_user));
+		$this->assertTrue(AdminUser::class === get_class($userFactory->from($admin_wp_user)));
+		$this->assertTrue(User::class === get_class($userFactory->from($normie_wp_user)));
 
 		remove_filter( 'timber/user/class', $my_class_map );
 	}
@@ -194,9 +194,9 @@ class TestUserFactory extends Timber_UnitTestCase {
 		// pass an array containing a User, a WP_User instance, and an ID
 		$users = $userFactory->from([$admin_user, $normie_wp_user, $editor_id]);
 
-		$this->assertInstanceOf(AdminUser::class, $users[0]);
-		$this->assertInstanceOf(User::class,      $users[1]);
-		$this->assertInstanceOf(User::class,      $users[2]);
+		$this->assertTrue(AdminUser::class === get_class($users[0]));
+		$this->assertTrue(User::class === get_class($users[1]));
+		$this->assertTrue(User::class === get_class($users[2]));
 
 		remove_filter( 'timber/user/class', $my_class_map );
 	}
@@ -234,8 +234,8 @@ class TestUserFactory extends Timber_UnitTestCase {
 		]);
 
 		$this->assertCount(2, $users);
-		$this->assertInstanceOf(AdminUser::class, $users[0]);
-		$this->assertInstanceOf(User::class,      $users[1]);
+		$this->assertTrue(AdminUser::class === get_class($users[0]));
+		$this->assertTrue(User::class === get_class($users[1]));
 
 		remove_filter( 'timber/user/class', $my_class_map );
 	}
@@ -273,10 +273,9 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$users = $userFactory->from($userQuery);
 
 		$this->assertCount(2, $users);
-		$this->assertInstanceOf(AdminUser::class, $users[0]);
-		$this->assertInstanceOf(User::class,      $users[1]);
+		$this->assertTrue(AdminUser::class === get_class($users[0]));
+		$this->assertTrue(User::class === get_class($users[1]));
 
 		remove_filter( 'timber/user/class', $my_class_map );
 	}
-
 }

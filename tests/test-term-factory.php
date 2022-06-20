@@ -86,9 +86,9 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$cat				 = $termFactory->from($cat_id);
 		$whackness   = $termFactory->from($whackness_id);
 
-		$this->assertInstanceOf(MyTerm::class,         $tag);
-		$this->assertInstanceOf(MyTerm::class,         $cat);
-		$this->assertInstanceOf(WhacknessLevel::class, $whackness);
+		$this->assertTrue(MyTerm::class === get_class($tag));
+		$this->assertTrue(MyTerm::class === get_class($cat));
+		$this->assertTrue(WhacknessLevel::class === get_class($whackness));
 	}
 
 	public function testGetTermWithClassFilter() {
@@ -102,7 +102,7 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$termFactory = new TermFactory();
 		$cat				 = $termFactory->from($cat_id);
 
-		$this->assertInstanceOf(WhacknessLevel::class, $cat);
+		$this->assertTrue(WhacknessLevel::class === get_class($cat));
 	}
 
 	public function testGetTermWithCallable() {
@@ -133,10 +133,10 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$whackness   = $termFactory->from($whackness_id);
 		$hellawhack  = $termFactory->from($hella_id);
 
-		$this->assertInstanceOf(Term::class,           $tag);
-		$this->assertInstanceOf(MyTerm::class,         $cat);
-		$this->assertInstanceOf(WhacknessLevel::class, $whackness);
-		$this->assertInstanceOf(HellaWhackTerm::class, $hellawhack);
+		$this->assertTrue(Term::class === get_class($tag));
+		$this->assertTrue(MyTerm::class === get_class($cat));
+		$this->assertTrue(WhacknessLevel::class === get_class($whackness));
+		$this->assertTrue(HellaWhackTerm::class === get_class($hellawhack));
 	}
 
 	public function testFromArray() {
@@ -181,8 +181,8 @@ class TestTermFactory extends Timber_UnitTestCase {
 
 		$this->assertTrue(true, is_array($res));
 		$this->assertCount(2, $res);
-		$this->assertInstanceOf(MyTerm::class, $res[0]);
-		$this->assertInstanceOf(MyTerm::class, $res[1]);
+		$this->assertTrue(MyTerm::class === get_class($res[0]));
+		$this->assertTrue(MyTerm::class === get_class($res[1]));
 	}
 
 	public function testFromWpTermObject() {
@@ -200,8 +200,8 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$toyota = get_term($toyota_id);
 
 		$termFactory = new TermFactory();
-		$this->assertInstanceOf(MyTerm::class, $termFactory->from($toyota));
-		$this->assertInstanceOf(Term::class,   $termFactory->from($cat));
+		$this->assertTrue(MyTerm::class === get_class($termFactory->from($toyota)));
+		$this->assertTrue(Term::class === get_class($termFactory->from($cat)));
 	}
 
 	public function testFromTermQuery() {
@@ -228,8 +228,8 @@ class TestTermFactory extends Timber_UnitTestCase {
 		$res = $termFactory->from($termQuery);
 
 		$this->assertCount(2, $res);
-		$this->assertInstanceOf(MyTerm::class, $res[0]);
-		$this->assertInstanceOf(MyTerm::class, $res[1]);
+		$this->assertTrue(MyTerm::class === get_class($res[0]));
+		$this->assertTrue(MyTerm::class === get_class($res[1]));
 	}
 
 	public function testFromAssortedArray() {
@@ -255,9 +255,9 @@ class TestTermFactory extends Timber_UnitTestCase {
 		]);
 
 		$this->assertCount(3, $res);
-		$this->assertInstanceOf(MyTerm::class, $res[0]);
-		$this->assertInstanceOf(MyTerm::class, $res[1]);
-		$this->assertInstanceOf(MyTerm::class, $res[2]);
+		$this->assertTrue(MyTerm::class === get_class($res[0]));
+		$this->assertTrue(MyTerm::class === get_class($res[1]));
+		$this->assertTrue(MyTerm::class === get_class($res[2]));
 	}
 
 	public function testFromTermQueryArray() {
@@ -283,8 +283,8 @@ class TestTermFactory extends Timber_UnitTestCase {
 		]);
 
 		$this->assertCount(2, $res);
-		$this->assertInstanceOf(MyTerm::class, $res[0]);
-		$this->assertInstanceOf(MyTerm::class, $res[1]);
+		$this->assertTrue(MyTerm::class === get_class($res[0]));
+		$this->assertTrue(MyTerm::class === get_class($res[1]));
 	}
 
 	public function testTermBy() {
