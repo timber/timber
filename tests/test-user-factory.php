@@ -60,7 +60,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$my_class_map = function(string $class, WP_User $user) {
 			return in_array('administrator', $user->roles)
 				? AdminUser::class
-				: $class;
+				: User::class;
 		};
 		add_filter( 'timber/user/class', $my_class_map, 10, 2 );
 
@@ -86,7 +86,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$my_class_map = function(string $class, WP_User $user) {
 			return in_array('administrator', $user->roles)
 				? AdminUser::class
-				: $class;
+				: User::class;
 		};
 		add_filter( 'timber/user/class', $my_class_map, 10, 2 );
 
@@ -143,7 +143,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$my_class_map = function(string $class, WP_User $user) {
 			return in_array('administrator', $user->roles)
 				? AdminUser::class
-				: $class;
+				: User::class;
 		};
 		add_filter( 'timber/user/class', $my_class_map, 10, 2 );
 
@@ -169,7 +169,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$my_class_map = function(string $class, WP_User $user) {
 			return in_array('administrator', $user->roles)
 				? AdminUser::class
-				: $class;
+				: User::class;
 		};
 		add_filter( 'timber/user/class', $my_class_map, 10, 2 );
 
@@ -205,7 +205,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$my_class_map = function(string $class, WP_User $user) {
 			return in_array('administrator', $user->roles)
 				? AdminUser::class
-				: $class;
+				: User::class;
 		};
 		add_filter( 'timber/user/class', $my_class_map, 10, 2 );
 
@@ -244,7 +244,7 @@ class TestUserFactory extends Timber_UnitTestCase {
 		$my_class_map = function(string $class, WP_User $user) {
 			return in_array('administrator', $user->roles)
 				? AdminUser::class
-				: $class;
+				: User::class;
 		};
 		add_filter( 'timber/user/class', $my_class_map, 10, 2 );
 
