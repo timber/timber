@@ -10,6 +10,7 @@ namespace Timber;
 class Request extends Core implements CoreInterface
 {
     public $post = [];
+
     public $get = [];
 
     /**
@@ -20,6 +21,7 @@ class Request extends Core implements CoreInterface
     {
         $this->init();
     }
+
     /**
      * @internal
      */

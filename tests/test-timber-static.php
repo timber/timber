@@ -101,7 +101,6 @@ class TestTimberStaticPages extends Timber_UnitTestCase
         $this->assertEquals($post_id, $post->ID);
     }
 
-
     public function testRegularStaticPage()
     {
         $this->markTestSkipped('@todo what is this testing?');

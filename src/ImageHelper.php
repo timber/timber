@@ -24,6 +24,7 @@ use Timber\Image\Operation;
 class ImageHelper
 {
     public const BASE_UPLOADS = 1;
+
     public const BASE_CONTENT = 2;
 
     public static $home_url;
@@ -91,9 +92,9 @@ class ImageHelper
     private static function find_wp_dimensions($size)
     {
         global $_wp_additional_image_sizes;
-        if (isset($_wp_additional_image_sizes[ $size ])) {
-            $w = $_wp_additional_image_sizes[ $size ]['width'];
-            $h = $_wp_additional_image_sizes[ $size ]['height'];
+        if (isset($_wp_additional_image_sizes[$size])) {
+            $w = $_wp_additional_image_sizes[$size]['width'];
+            $h = $_wp_additional_image_sizes[$size]['height'];
         } elseif (in_array($size, ['thumbnail', 'medium', 'large'])) {
             $w = get_option($size . '_size_w');
             $h = get_option($size . '_size_h');
@@ -792,7 +793,6 @@ class ImageHelper
             return $src;
         }
     }
-
 
     // -- the below methods are just used for unit testing the URL generation code
 //

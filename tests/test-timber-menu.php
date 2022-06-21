@@ -259,7 +259,6 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->assertEquals('/home/', $item->path());
     }
 
-
     public function testTrailingSlashesOrNot()
     {
         self::setPermalinkStructure();
@@ -337,7 +336,7 @@ class TestTimberMenu extends Timber_UnitTestCase
         $this->add_filter_temporarily('wp_nav_menu_objects', function ($menu_items) {
             // Be carefull with indexes, they are strings here
             $menu_items['9']->current = true;
-            $menu_items['9']->classes = array_merge((array)$menu_items[8]->classes, ['current-menu-item', 'my-custom-item-class']);
+            $menu_items['9']->classes = array_merge((array) $menu_items[8]->classes, ['current-menu-item', 'my-custom-item-class']);
             return $menu_items;
         }, 2);
 

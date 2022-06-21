@@ -204,16 +204,16 @@ class Menu extends CoreEntity
         $sorted_menu_items = [];
         $menu_items_with_children = [];
         foreach ((array) $menu_items as $menu_item) {
-            $sorted_menu_items[ $menu_item->menu_order ] = $menu_item;
+            $sorted_menu_items[$menu_item->menu_order] = $menu_item;
             if ($menu_item->menu_item_parent) {
-                $menu_items_with_children[ $menu_item->menu_item_parent ] = true;
+                $menu_items_with_children[$menu_item->menu_item_parent] = true;
             }
         }
 
         // Add the menu-item-has-children class where applicable.
         if ($menu_items_with_children) {
             foreach ($sorted_menu_items as &$menu_item) {
-                if (isset($menu_items_with_children[ $menu_item->ID ])) {
+                if (isset($menu_items_with_children[$menu_item->ID])) {
                     $menu_item->classes[] = 'menu-item-has-children';
                 }
             }
@@ -508,8 +508,8 @@ class Menu extends CoreEntity
         $currentDepth = 1;
         $i = 0;
 
-        while (isset($items[ $i ])) {
-            $item = $items[ $i ];
+        while (isset($items[$i])) {
+            $item = $items[$i];
 
             if ($item->current) {
                 // cache this item for subsequent calls.

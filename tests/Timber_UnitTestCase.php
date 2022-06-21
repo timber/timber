@@ -14,7 +14,7 @@
         public function expectedDeprecated()
         {
             if (false !== ($key = array_search('wp_title', $this->caught_deprecated))) {
-                unset($this->caught_deprecated[ $key ]);
+                unset($this->caught_deprecated[$key]);
             }
             parent::expectedDeprecated();
         }

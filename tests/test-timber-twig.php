@@ -237,7 +237,6 @@
 
             $this->assertEquals($html, $str);
 
-
             $escaped = "http://localhost/trunk/wp-login.php?action=logout&amp;_wpnonce=cd57d75985";
 
             $str = Timber::compile_string("{{text | e('esc_html')}}", [

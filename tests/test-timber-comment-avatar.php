@@ -142,7 +142,6 @@
             $this->assertTrue(substr($theme_url . $avatar, 0, 5) == "http:");
         }
 
-
         public function valid_avatar($comment, $default_url)
         {
             $avatar = $comment->avatar(32, $default_url);
@@ -154,7 +153,6 @@
             # you get back url?
             $this->assertTrue(substr($avatar, 0, 5) == "http:");
         }
-
 
         public function crawl($url)
         {

@@ -16,7 +16,7 @@ use Timber\Integration\CoAuthorsPlusIntegration;
         public function expectedDeprecated()
         {
             if (false !== ($key = array_search('WP_User->id', $this->caught_deprecated))) {
-                unset($this->caught_deprecated[ $key ]);
+                unset($this->caught_deprecated[$key]);
             }
             parent::expectedDeprecated();
         }
@@ -55,7 +55,6 @@ use Timber\Integration\CoAuthorsPlusIntegration;
             add_post_meta($guest_id, '_thumbnail_id', $attach_id, true);
             return $attach_id;
         }
-
 
         public static function copyTestImage($img = 'avt-1.jpg', $dest_name = null)
         {

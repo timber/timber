@@ -106,8 +106,6 @@ require_once __DIR__ . '/php/timber-custom-comment.php';
             $this->assertEquals(1, count($post->comments()));
         }
 
-
-
         public function testMultilevelThreadedComments()
         {
             update_option('comment_order', 'ASC');

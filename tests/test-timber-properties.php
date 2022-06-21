@@ -33,7 +33,6 @@ class TestTimberProperty extends Timber_UnitTestCase
         $this->assertEquals($comment_id, $comment->id);
     }
 
-
     protected function _initObjects()
     {
         $post_id = $this->factory->post->create();

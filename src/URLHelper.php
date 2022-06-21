@@ -26,7 +26,6 @@ class URLHelper
         return $page_url;
     }
 
-
     /**
      * Get url scheme
      *
@@ -37,7 +36,6 @@ class URLHelper
     {
         return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
     }
-
 
     /**
      * Check to see if the URL begins with the string in question
@@ -56,7 +54,6 @@ class URLHelper
         }
         return false;
     }
-
 
     /**
      * @api
@@ -395,7 +392,6 @@ class URLHelper
         return (bool) (strstr($path, 'http'));
     }
 
-
     /**
      * This function is slightly different from the one below in the case of:
      * an image hosted on the same domain BUT on a different site than the
@@ -450,7 +446,6 @@ class URLHelper
         return false;
     }
 
-
     /**
      * Pass links through untrailingslashit unless they are a single /
      *
@@ -482,7 +477,6 @@ class URLHelper
         $needle = self::swap_protocol($needle);
         return str_replace($needle, '', $haystack);
     }
-
 
     /**
      * Swaps whatever protocol of a URL is sent. http becomes https and vice versa

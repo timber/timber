@@ -73,7 +73,6 @@
 
             //$this->assertEquals($parent_id, $post->parent()->id);
 
-
             self::setRevision($post_id);
             $revision = Timber::get_post();
 

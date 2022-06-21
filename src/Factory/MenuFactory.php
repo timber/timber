@@ -84,7 +84,7 @@ class MenuFactory
     public function from_location(string $location, array $args = []): ?Menu
     {
         $locations = get_nav_menu_locations();
-        if (!isset($locations[ $location ])) {
+        if (!isset($locations[$location])) {
             return null;
         }
 

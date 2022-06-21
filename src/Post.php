@@ -388,7 +388,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         }
     }
 
-
     /**
      * Gets a excerpt of your post.
      *
@@ -656,7 +655,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable
     {
         return get_comments_number($this->ID);
     }
-
 
     /**
      * @api
@@ -1635,7 +1633,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         return $ret;
     }
 
-
     /**
      * Finds any WP_Post objects and converts them to Timber\Posts
      *
@@ -1652,7 +1649,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable
         }
         return $data;
     }
-
 
     /**
      * Gets the parent (if one exists) from a post as a Timber\Post object.
@@ -1768,7 +1764,6 @@ class Post extends CoreEntity implements DatedInterface, Setupable
             return $this->factory()->from($tid);
         }
     }
-
 
     /**
      * Returns the processed title to be used in templates. This returns the title of the post after WP's filters have run. This is analogous to `the_title()` in standard WP template tags.

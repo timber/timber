@@ -10,9 +10,13 @@ namespace Timber;
 class Pagination
 {
     public $current;
+
     public $total;
+
     public $pages;
+
     public $next;
+
     public $prev;
 
     /**

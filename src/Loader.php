@@ -16,9 +16,13 @@ class Loader
     public const TRANS_KEY_LEN = 50;
 
     public const CACHE_NONE = 'none';
+
     public const CACHE_OBJECT = 'cache';
+
     public const CACHE_TRANSIENT = 'transient';
+
     public const CACHE_SITE_TRANSIENT = 'site-transient';
+
     public const CACHE_USE_DEFAULT = 'default';
 
     /** Identifier of the main namespace. Will likely mirror Twig\Loader\FilesystemLoader::MAIN_NAMESPACE */

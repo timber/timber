@@ -20,7 +20,6 @@
             $this->assertEquals(2, $archives->items[1]['post_count']);
         }
 
-
         public function testArchiveMonthly()
         {
             $dates = ['2013-11-08', '2013-12-08', '2013-11-09', '2013-06-08'];

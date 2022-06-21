@@ -8,7 +8,9 @@ namespace Timber;
 abstract class Core
 {
     public $id;
+
     public $ID;
+
     public $object_type;
 
     /**

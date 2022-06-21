@@ -7,7 +7,6 @@
     {
         protected $gettysburg = 'Four score and seven years ago our fathers brought forth on this continent a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal.';
 
-
         public function test1886Error()
         {
             $expected = '<p>Govenment:</p> <ul> <li>of the <strong>people</strong></li> <li>by the people</li> <li>for the people</li> </ul>';

@@ -18,7 +18,9 @@ class TestTimberMeta extends Timber_UnitTestCase
      * @var bool
      */
     protected $is_get_post_meta_hit;
+
     protected $is_get_term_meta_hit;
+
     protected $is_get_comment_meta_hit;
 
     public function set_up()

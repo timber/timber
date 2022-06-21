@@ -83,7 +83,6 @@
             $this->assertEquals('image/webp', mime_content_type($filename));
         }
 
-
         public function testSideloadedJPGToWEBP()
         {
             $url = 'https://pbs.twimg.com/profile_images/768086933310476288/acGwPDj4_400x400.jpg';

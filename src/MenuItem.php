@@ -32,10 +32,15 @@ class MenuItem extends CoreEntity
      * @var array Array of class names.
      */
     public $classes = [];
+
     public $class = '';
+
     public $level = 0;
+
     public $post_name;
+
     public $url;
+
     public $type;
 
     /**
@@ -92,6 +97,7 @@ class MenuItem extends CoreEntity
     public $object_id = null;
 
     protected $_name;
+
     protected $_menu_item_url;
 
     /**

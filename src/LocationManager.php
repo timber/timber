@@ -38,7 +38,6 @@ class LocationManager
          */
         $locs = apply_filters('timber/locations', $locs);
 
-
         /**
          * Filters …
          *
@@ -50,7 +49,6 @@ class LocationManager
 
         return $locs;
     }
-
 
     /**
      * @return array
@@ -67,14 +65,14 @@ class LocationManager
                 continue;
             }
 
-            $theme_locs[ Loader::MAIN_NAMESPACE ][] = $root;
+            $theme_locs[Loader::MAIN_NAMESPACE][] = $root;
             $root = trailingslashit($root);
             foreach ($theme_dirs as $namespace => $dirnames) {
                 $dirnames = self::convert_to_array($dirnames);
                 array_map(function ($dirname) use ($root, $namespace, &$theme_locs) {
                     $tloc = realpath($root . $dirname);
                     if (is_dir($tloc)) {
-                        $theme_locs[ $namespace ][] = $tloc;
+                        $theme_locs[$namespace][] = $tloc;
                     }
                 }, $dirnames);
             }
@@ -82,7 +80,6 @@ class LocationManager
 
         return $theme_locs;
     }
-
 
     /**
      * Get calling script file.
@@ -133,7 +130,6 @@ class LocationManager
         return Timber::$dirname;
     }
 
-
     /**
      * @deprecated since 2.0.0 Use `add_filter('timber/locations', $locations)` instead.
      * @return array
@@ -156,9 +152,9 @@ class LocationManager
                 $tloc = realpath($tloc);
                 if (is_dir($tloc)) {
                     if (!is_string($namespace)) {
-                        $locs[ Loader::MAIN_NAMESPACE ][] = $tloc;
+                        $locs[Loader::MAIN_NAMESPACE][] = $tloc;
                     } else {
-                        $locs[ $namespace ][] = $tloc;
+                        $locs[$namespace][] = $tloc;
                     }
                 }
             }
@@ -192,7 +188,7 @@ class LocationManager
         if ($caller && is_string($caller)) {
             $caller = realpath($caller);
             if (is_dir($caller)) {
-                $locs[ Loader::MAIN_NAMESPACE ][] = $caller;
+                $locs[Loader::MAIN_NAMESPACE][] = $caller;
             }
             $caller = trailingslashit($caller);
             foreach (LocationManager::get_locations_theme_dir() as $namespace => $dirnames) {
@@ -200,7 +196,7 @@ class LocationManager
                 array_map(function ($dirname) use ($caller, $namespace, &$locs) {
                     $caller_sub = realpath($caller . $dirname);
                     if (is_dir($caller_sub)) {
-                        $locs[ $namespace ][] = $caller_sub;
+                        $locs[$namespace][] = $caller_sub;
                     }
                 }, $dirnames);
             }

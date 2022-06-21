@@ -146,7 +146,7 @@ use Timber\PostArrayObject;
                 'prefs' => [
                     'food' => 'spicy',
                     'women' => 'spicier',
-                    
+
                 ],
             ];
             $obj = Timber\Helper::array_to_object($arr);

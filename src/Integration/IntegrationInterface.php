@@ -10,5 +10,6 @@ namespace Timber\Integration;
 interface IntegrationInterface
 {
     public function should_init(): bool;
+
     public function init(): void;
 }

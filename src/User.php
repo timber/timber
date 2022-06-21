@@ -43,6 +43,7 @@ use WP_User;
 class User extends CoreEntity
 {
     public $object_type = 'user';
+
     public static $representation = 'user';
 
     public $_link;
@@ -136,7 +137,6 @@ class User extends CoreEntity
     {
         return $this->name();
     }
-
 
     /**
      * @internal
@@ -294,10 +294,10 @@ class User extends CoreEntity
 
         foreach ($roles as $role) {
             $name = $role;
-            if (isset($names[ $role ])) {
-                $name = translate_user_role($names[ $role ]);
+            if (isset($names[$role])) {
+                $name = translate_user_role($names[$role]);
             }
-            $values[ $role ] = $name;
+            $values[$role] = $name;
         }
 
         return $values;

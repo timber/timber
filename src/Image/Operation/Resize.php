@@ -18,7 +18,9 @@ use Timber\ImageHelper;
 class Resize extends ImageOperation
 {
     private $w;
+
     private $h;
+
     private $crop;
 
     /**

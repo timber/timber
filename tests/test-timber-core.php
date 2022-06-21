@@ -3,8 +3,11 @@
 class TimberCoreTester extends Timber\Post
 {
     public $public = 'public A';
+
     protected $protected = 'protected A';
+
     private $private = 'private A';
+
     public $existing = 'value from A';
 
     public function foo()
@@ -16,8 +19,11 @@ class TimberCoreTester extends Timber\Post
 class ClassB
 {
     public $public = 'public B';
+
     protected $protected = 'protected B';
+
     private $private = 'private B';
+
     public $existing = 'value from B';
 }
 

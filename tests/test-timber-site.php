@@ -66,7 +66,6 @@ class TestTimberSite extends Timber_UnitTestCase
         $this->assertStringContainsString('cardinals.jpg', $icon->src());
     }
 
-
     public function testNullIcon()
     {
         delete_option('site_icon');

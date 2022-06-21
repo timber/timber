@@ -47,7 +47,9 @@ use Timber\Factory\CommentFactory;
 class CommentThread extends \ArrayObject
 {
     public $post_id;
+
     public $_orderby = '';
+
     public $_order = 'ASC';
 
     /**

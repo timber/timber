@@ -172,7 +172,6 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
         $resized_path = Timber\ImageHelper::get_server_location($str);
         $test_md5 = md5(file_get_contents($resized_path));
 
-
         $str_pizza = Timber::compile_string($template, [
             'img' => $new_id,
         ]);
@@ -340,8 +339,6 @@ class TestTimberImage extends TimberAttachment_UnitTestCase
     {
         $this->assertFalse(Timber\ImageHelper::is_animated_gif('notreal.gif'));
     }
-
-
 
     /**
      * @group maybeSkipped

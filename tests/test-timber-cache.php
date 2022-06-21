@@ -311,7 +311,6 @@
             $this->assertEquals(0, $wpdb->num_rows);
         }
 
-
         public function testTimberLoaderCacheObject()
         {
             global $_wp_using_ext_object_cache;

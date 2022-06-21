@@ -226,7 +226,6 @@ class TestTimberPagesMenu extends Timber_UnitTestCase
         flush_rewrite_rules(true);
     }
 
-
     /**
      * @group menuThumbnails
      */
@@ -305,7 +304,6 @@ class TestTimberPagesMenu extends Timber_UnitTestCase
         $menu = $items[0]->menu;
         $this->assertEquals('Timber\Menu', get_class($menu));
     }
-
 
     public function testPagesMenuWithFalse()
     {

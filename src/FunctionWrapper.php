@@ -13,8 +13,11 @@ namespace Timber;
 class FunctionWrapper
 {
     private $_class;
+
     private $_function;
+
     private $_args;
+
     private $_use_ob;
 
     public function __toString()

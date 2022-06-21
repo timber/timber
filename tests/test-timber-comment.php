@@ -195,7 +195,6 @@ class TestTimberComment extends Timber_UnitTestCase
             'display_name' => 'J. Peterman',
         ]);
 
-
         $post_id = $this->factory->post->create([
             'post_date' => '2016-11-28 02:58:18',
         ]);

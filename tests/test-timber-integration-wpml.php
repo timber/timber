@@ -124,7 +124,7 @@ class TestTimberIntegrationWPML extends Timber_UnitTestCase
                 'header-menu' => 0,
                 'extra-menu' => $built_menu_id,
                 'bonus' => 0,
-                
+
             ],
         ];
         update_option('theme_mods_' . $theme->slug, $data);

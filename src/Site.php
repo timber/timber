@@ -128,10 +128,12 @@ class Site extends Core implements CoreInterface
      * @api
      * @var string
      */
-
     public $rdf;
+
     public $rss;
+
     public $rss2;
+
     public $atom;
 
     /**

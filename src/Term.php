@@ -46,6 +46,7 @@ use WP_Term;
 class Term extends CoreEntity
 {
     public $object_type = 'term';
+
     public static $representation = 'term';
 
     public $_children;
@@ -516,7 +517,6 @@ class Term extends CoreEntity
 
         return Timber::get_posts($query);
     }
-
 
     /**
      * @api

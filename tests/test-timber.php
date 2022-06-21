@@ -400,7 +400,6 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
     /* Terms API */
 
-
     public function testGetTerm()
     {
         // @todo #2087
@@ -455,7 +454,6 @@ class TestTimberMainClass extends Timber_UnitTestCase
 
 
     /* Previews */
-
 
     public function testGetPostExcerpt()
     {

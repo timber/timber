@@ -19,7 +19,6 @@
             $this->assertEquals(5, count($ct));
         }
 
-
         public function testCommentThreadCountMethod()
         {
             $post_id = $this->factory->post->create([

@@ -19,7 +19,9 @@ use Timber\PathHelper;
 class Letterbox extends ImageOperation
 {
     private $w;
+
     private $h;
+
     private $color;
 
     /**
@@ -68,7 +70,7 @@ class Letterbox extends ImageOperation
         if (ImageHelper::is_svg($load_filename)) {
             return false;
         }
-        
+
         $w = $this->w;
         $h = $this->h;
 
