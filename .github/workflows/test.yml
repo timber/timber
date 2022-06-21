@@ -129,7 +129,10 @@ jobs:
       - name: Install composer dependencies
         run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress --no-interaction
 
-      - name: Lint
+      - name: Lint composer.json
+        run: composer run lint-composer
+
+      - name: Lint PHP
         run: composer run lint
 
       - name: Check CS
