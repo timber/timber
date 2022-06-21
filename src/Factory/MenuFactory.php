@@ -12,14 +12,17 @@ use WP_Term;
 class MenuFactory
 {
     /**
-     * Try to get a menu by all means available in an order that matches the
-     * most common use cases. It will fallback on the first menu found if no parameters are provided
-     * or if no menu is found with the current parameters.
+     * Tries to get a menu by all means available in an order that matches the most common use
+     * cases.
      *
-     * Note that this method has pitfalls and might not be the most performant way to get a menu
+     * Will fall back on the first menu found if no parameters are provided. If no menu is found
+     * with the given parameters, it will return null.
+     *
+     * Note that this method has pitfalls and might not be the most performant way to get a menu.
      *
      * @param mixed $params
      * @param array $args
+     *
      * @return Menu|null
      */
     public function from($params, array $args = []): ?Menu

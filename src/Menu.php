@@ -151,46 +151,16 @@ class Menu extends CoreEntity
             }
         }
 
-        // No menu term provided, get the pages menu
+        /**
+         * No valid menu term provided.
+         *
+         * In earlier versions, Timber returned a pages menu if no menu was found. Now, it returns
+         * null. If you still need the pages menu, you can use Timber\Timber::get_pages_menu().
+         *
+         * @see \Timber\Timber::get_pages_menu()
+         */
         if (!$menu) {
-            $defaults = [
-                'sort_column' => 'menu_order, post_title',
-                'menu_id' => '',
-                'menu_class' => 'menu',
-                'container' => 'div',
-                'echo' => true,
-                'link_before' => '',
-                'link_after' => '',
-                'before' => '<ul>',
-                'after' => '</ul>',
-                'item_spacing' => 'discard',
-                'walker' => '',
-            ];
-
-            $args = wp_parse_args((array) $args, $defaults);
-
-            /**
-             * @see wp_page_menu()
-             */
-            $args = apply_filters('wp_page_menu_args', $args);
-
-            $nav_menu = new static(null, $args);
-            $nav_menu->init_pages_menu();
-
-            /**
-             * Since Timber doesn’t use HTML, serialize the menu object to provide a cacheable string.
-             *
-             * Certain caching plugins will use this filter to cache a menu and return it early in the
-             * `pre_wp_nav_menu` filter.
-             *
-             * We can’t use the result of this filter, because it would return a string. That’s why we
-             * don’t assign the result of the filter to a variable.
-             *
-             * @see wp_nav_menu()
-             */
-            apply_filters('wp_nav_menu', serialize($nav_menu), $args);
-
-            return $nav_menu;
+            return null;
         }
 
         // Skip the menu term guessing part, we already have our menu term
@@ -282,24 +252,6 @@ class Menu extends CoreEntity
         $this->ID = $this->term_id;
         $this->id = $this->term_id;
         $this->title = $this->name;
-    }
-
-    /**
-     * Init pages menu
-     */
-    protected function init_pages_menu()
-    {
-        $menu_items = get_pages($this->args);
-
-        if ($menu_items) {
-            $menu_items = array_map('wp_setup_nav_menu_item', $menu_items);
-            _wp_menu_item_classes_by_context($menu_items);
-            if (is_array($menu_items)) {
-                $menu_items = $this->convert_menu_items($menu_items);
-                $menu_items = $this->order_children($menu_items);
-            }
-            $this->items = $menu_items;
-        }
     }
 
     /**

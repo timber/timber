@@ -86,8 +86,8 @@ class TestCommentFactory extends Timber_UnitTestCase
         $post_comment = $commentFactory->from($post_comment_id);
         $page_comment = $commentFactory->from($page_comment_id);
 
-        $this->assertInstanceOf(PostComment::class, $post_comment);
-        $this->assertInstanceOf(PageComment::class, $page_comment);
+        $this->assertTrue(PostComment::class === get_class($post_comment));
+        $this->assertTrue(PageComment::class === get_class($page_comment));
 
         remove_filter('timber/comment/classmap', $my_class_map);
     }
@@ -107,7 +107,7 @@ class TestCommentFactory extends Timber_UnitTestCase
         $commentFactory = new CommentFactory();
         $post_comment = $commentFactory->from($post_comment_id);
 
-        $this->assertInstanceOf(DummyComment::class, $post_comment);
+        $this->assertTrue(DummyComment::class === get_class($post_comment));
 
         remove_filter('timber/comment/class', $my_class_filter, 10);
     }
@@ -168,8 +168,8 @@ class TestCommentFactory extends Timber_UnitTestCase
         $post_comment = $commentFactory->from($post_comment_id);
         $page_comment = $commentFactory->from($page_comment_id);
 
-        $this->assertInstanceOf(PostComment::class, $post_comment);
-        $this->assertInstanceOf(PageComment::class, $page_comment);
+        $this->assertTrue(PostComment::class === get_class($post_comment));
+        $this->assertTrue(PageComment::class === get_class($page_comment));
 
         remove_filter('timber/comment/classmap', $my_class_map);
     }

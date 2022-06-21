@@ -156,6 +156,7 @@ class TestTimberPagesMenu extends Timber_UnitTestCase
             $i++;
         }
         self::insertIntoMenu($menu_term['term_id'], $menu_items);
+
         return $menu_term;
     }
 
@@ -241,12 +242,14 @@ class TestTimberPagesMenu extends Timber_UnitTestCase
         $iid = TestTimberImage::get_attachment($pid);
         add_post_meta($pid, '_thumbnail_id', $iid, true);
         $post = Timber::get_post($pid);
-        $page_menu = Timber::get_pages_menu();
+        $pages_menu = Timber::get_pages_menu();
         $str = '{% for item in menu.items %}{{item.master_object.thumbnail.src}}{% endfor %}';
         $result = Timber::compile_string($str, [
-            'menu' => $page_menu,
+            'menu' => $pages_menu,
         ]);
-        $this->assertEquals('http://example.org/wp-content/uploads/' . date('Y/m') . '/arch.jpg', $result);
+        $this->assertEquals('http://example.org/wp-content/uploads/'
+            . date('Y/m')
+            . '/arch.jpg', $result);
     }
 
     public function testPagesMenu()
@@ -261,13 +264,40 @@ class TestTimberPagesMenu extends Timber_UnitTestCase
             'post_title' => 'Bar Page',
             'menu_order' => 1,
         ]);
-        $page_menu = Timber::get_pages_menu();
-        $this->assertEquals(2, count($page_menu->items));
-        $this->assertEquals('Bar Page', $page_menu->items[0]->title());
+        $pages_menu = Timber::get_pages_menu();
+        $this->assertEquals(2, count($pages_menu->items));
+        $this->assertEquals('Bar Page', $pages_menu->items[0]->title());
         self::_createTestMenu();
-        //make sure other menus are still more powerful
+
+        // Make sure other menus are still more powerful.
         $menu = Timber::get_menu();
         $this->assertGreaterThanOrEqual(3, count($menu->get_items()));
+    }
+
+    /**
+     * Tests whether params are correctly passed to the underyling get_pages() function.
+     *
+     * @return void
+     */
+    public function testPagesMenuWithParams()
+    {
+        $page_id_1 = $this->factory->post->create([
+            'post_type' => 'page',
+            'post_title' => 'Foo Page',
+            'menu_order' => 10,
+        ]);
+        $this->factory->post->create([
+            'post_type' => 'page',
+            'post_title' => 'Bar Page',
+            'menu_order' => 1,
+        ]);
+
+        $pages_menu = Timber::get_pages_menu([
+            'include' => [$page_id_1],
+        ]);
+
+        $this->assertEquals(1, count($pages_menu->items));
+        $this->assertEquals('Foo Page', $pages_menu->items[0]->title());
     }
 
     public function testJSONEncodedMenu()
@@ -282,8 +312,8 @@ class TestTimberPagesMenu extends Timber_UnitTestCase
             'post_title' => 'Bar Page',
             'menu_order' => 1,
         ]);
-        $page_menu = Timber::get_pages_menu();
-        $text = json_encode($page_menu->get_items());
+        $pages_menu = Timber::get_pages_menu();
+        $text = json_encode($pages_menu->get_items());
         $this->assertGreaterThan(1, strlen($text));
     }
 
@@ -299,10 +329,10 @@ class TestTimberPagesMenu extends Timber_UnitTestCase
             'post_title' => 'Bar Page',
             'menu_order' => 1,
         ]);
-        $page_menu = Timber::get_pages_menu();
-        $items = $page_menu->get_items();
+        $pages_menu = Timber::get_pages_menu();
+        $items = $pages_menu->get_items();
         $menu = $items[0]->menu;
-        $this->assertEquals('Timber\Menu', get_class($menu));
+        $this->assertEquals('Timber\PagesMenu', get_class($menu));
     }
 
     public function testPagesMenuWithFalse()
@@ -317,13 +347,80 @@ class TestTimberPagesMenu extends Timber_UnitTestCase
             'post_title' => 'Bar Page',
             'menu_order' => 1,
         ]);
-        $page_menu = Timber::get_pages_menu();
-        $this->assertEquals(2, count($page_menu->items));
-        $this->assertEquals('Bar Page', $page_menu->items[0]->title());
+        $pages_menu = Timber::get_pages_menu();
+        $this->assertEquals(2, count($pages_menu->items));
+        $this->assertEquals('Bar Page', $pages_menu->items[0]->title());
         self::_createTestMenu();
         //make sure other menus are still more powerful
         $menu = Timber::get_menu(false);
         $this->assertGreaterThanOrEqual(3, count($menu->get_items()));
+    }
+
+    public function testPagesMenuWithDepth()
+    {
+        $page_1 = $this->factory->post->create([
+            'post_type' => 'page',
+            'post_title' => 'Foo Page',
+            'menu_order' => 1,
+        ]);
+        $this->factory->post->create([
+            'post_type' => 'page',
+            'post_title' => 'Foo Subpage 1',
+            'post_parent' => $page_1,
+        ]);
+        $this->factory->post->create([
+            'post_type' => 'page',
+            'post_title' => 'Foo Subpage 2',
+            'post_parent' => $page_1,
+        ]);
+        $this->factory->post->create([
+            'post_type' => 'page',
+            'post_title' => 'Bar Page',
+            'menu_order' => 2,
+        ]);
+
+        // Get all levels.
+        $pages_menu = Timber::get_pages_menu([
+            'depth' => 0,
+        ]);
+        $this->assertEquals(2, count($pages_menu->get_items()));
+        $this->assertEquals(2, count($pages_menu->get_items()[0]->children()));
+
+        // Get first level only.
+        $pages_menu = Timber::get_pages_menu([
+            'depth' => 1,
+        ]);
+        $this->assertEquals(2, count($pages_menu->get_items()));
+        $this->assertEmpty($pages_menu->get_items()[0]->children());
+    }
+
+    public function testMenuItemHasChildrenClass()
+    {
+        $page_1 = $this->factory->post->create([
+            'post_type' => 'page',
+            'post_title' => 'Foo Page',
+            'menu_order' => 1,
+        ]);
+        $this->factory->post->create([
+            'post_type' => 'page',
+            'post_title' => 'Foo Subpage 1',
+            'post_parent' => $page_1,
+        ]);
+        $this->factory->post->create([
+            'post_type' => 'page',
+            'post_title' => 'Foo Subpage 2',
+            'post_parent' => $page_1,
+        ]);
+
+        // Get all levels.
+        $pages_menu = Timber::get_pages_menu();
+        $this->assertContains('menu-item-has-children', $pages_menu->get_items()[0]->classes);
+
+        // Get first level only.
+        $pages_menu = Timber::get_pages_menu([
+            'depth' => 1,
+        ]);
+        $this->assertNotContains('menu-item-has-children', $pages_menu->get_items()[0]->classes);
     }
 
     public function testGetCurrentItemWithEmptyMenu()

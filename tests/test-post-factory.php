@@ -93,9 +93,9 @@ class TestPostFactory extends Timber_UnitTestCase
         $page = $postFactory->from($page_id);
         $custom = $postFactory->from($custom_id);
 
-        $this->assertInstanceOf(MyPost::class, $post);
-        $this->assertInstanceOf(MyPage::class, $page);
-        $this->assertInstanceOf(MyCustom::class, $custom);
+        $this->assertTrue(MyPost::class === get_class($post));
+        $this->assertTrue(MyPage::class === get_class($page));
+        $this->assertTrue(MyCustom::class === get_class($custom));
     }
 
     public function testFromWithClassFilter()
@@ -113,7 +113,7 @@ class TestPostFactory extends Timber_UnitTestCase
         $postFactory = new PostFactory();
         $custom = $postFactory->from($custom_id);
 
-        $this->assertInstanceOf(MyCustom::class, $custom);
+        $this->assertTrue(MyCustom::class === get_class($custom));
     }
 
     public function testFromWithCallable()
@@ -154,10 +154,10 @@ class TestPostFactory extends Timber_UnitTestCase
         $custom = $postFactory->from($custom_id);
         $special = $postFactory->from($special_id);
 
-        $this->assertInstanceOf(Post::class, $post);
-        $this->assertInstanceOf(MyPage::class, $page);
-        $this->assertInstanceOf(MyCustom::class, $custom);
-        $this->assertInstanceOf(MySpecialCustom::class, $special);
+        $this->assertTrue(Post::class === get_class($post));
+        $this->assertTrue(MyPage::class === get_class($page));
+        $this->assertTrue(MyCustom::class === get_class($custom));
+        $this->assertTrue(MySpecialCustom::class === get_class($special));
     }
 
     public function testFromWpPost()
@@ -202,9 +202,9 @@ class TestPostFactory extends Timber_UnitTestCase
         ]);
         $posts = $postFactory->from($query);
 
-        $this->assertInstanceOf(MyPost::class, $posts[0]);
-        $this->assertInstanceOf(MyPage::class, $posts[1]);
-        $this->assertInstanceOf(MyCustom::class, $posts[2]);
+        $this->assertTrue(MyPost::class === get_class($posts[0]));
+        $this->assertTrue(MyPage::class === get_class($posts[1]));
+        $this->assertTrue(MyCustom::class === get_class($posts[2]));
     }
 
     public function testFromAcfArray()
@@ -276,9 +276,9 @@ class TestPostFactory extends Timber_UnitTestCase
 
         $this->assertTrue(true, is_array($res));
         $this->assertCount(3, $res);
-        $this->assertInstanceOf(Post::class, $res[0]);
-        $this->assertInstanceOf(MyPage::class, $res[1]);
-        $this->assertInstanceOf(MyCustom::class, $res[2]);
+        $this->assertTrue(Post::class === get_class($res[0]));
+        $this->assertTrue(MyPage::class === get_class($res[1]));
+        $this->assertTrue(MyCustom::class === get_class($res[2]));
     }
 
     public function testFromAssortedArray()
@@ -350,11 +350,11 @@ class TestPostFactory extends Timber_UnitTestCase
         ]);
 
         // Here we're operating on a PostQuery, which implements ArrayAccess.
-        $this->assertInstanceOf(PostQuery::class, $res);
+        $this->assertTrue(PostQuery::class === get_class($res));
 
-        $this->assertInstanceOf(Post::class, $res[0]);
-        $this->assertInstanceOf(MyPage::class, $res[1]);
-        $this->assertInstanceOf(MyCustom::class, $res[2]);
+        $this->assertTrue(Post::class === get_class($res[0]));
+        $this->assertTrue(MyPage::class === get_class($res[1]));
+        $this->assertTrue(MyCustom::class === get_class($res[2]));
     }
 
     /**
@@ -382,6 +382,6 @@ class TestPostFactory extends Timber_UnitTestCase
             'order' => 'ASC',
         ]);
 
-        $this->assertInstanceOf(Post::class, $res[0]);
+        $this->assertTrue(Post::class === get_class($res[0]));
     }
 }

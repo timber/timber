@@ -5,6 +5,7 @@ namespace Timber;
 use Timber\Factory\CommentFactory;
 use Timber\Factory\MenuFactory;
 
+use Timber\Factory\PagesMenuFactory;
 use Timber\Factory\PostFactory;
 use Timber\Factory\TermFactory;
 use Timber\Factory\UserFactory;
@@ -245,7 +246,7 @@ class Timber
      * @see https://developer.wordpress.org/reference/classes/wp_query/__construct/
      *
      * @param mixed $query   Optional. Post ID or query (as an array of arguments for WP_Query).
-     *                          If a query is provided, only the first post of the result will be
+     * 	                     If a query is provided, only the first post of the result will be
      *                       returned. Default false.
      * @param array $options Optional associative array of options. Defaults to an empty array.
      *
@@ -460,7 +461,7 @@ class Timber
      * @param array        $args {
      *     Optional. An array of arguments to configure what is returned.
      *
-     *        @type string|array     $post_type   Optional. What WordPress post type to limit the
+     * 	   @type string|array     $post_type   Optional. What WordPress post type to limit the
      *                                         results to. Defaults to 'any'
      *     @type string           $order_by    Optional. The field to sort by. Defaults to
      *                                         'post_date'
@@ -995,11 +996,28 @@ class Timber
     }
 
     /**
-     * @todo implement PagesMenuFactory
+     * Gets a menu from the existing pages.
+     *
+     * @api
+     * @since 2.0.0
+     *
+     * @example
+     * ```php
+     * $menu = Timber::get_pages_menu();
+     * ```
+     *
+     * @param array $args Optional. Arguments for `wp_list_pages()`. Timber doesn’t use that
+     *                    function under the hood, but supports all arguments for that function.
+     *                    It will use `get_pages()` to get the pages that will be used for the Pages
+     *                    Menu.
      */
     public static function get_pages_menu(array $args = [])
     {
-        return Menu::build(null, $args);
+        $factory = new PagesMenuFactory();
+
+        $menu = $factory->from_pages($args);
+
+        return $menu;
     }
 
 
