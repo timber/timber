@@ -147,7 +147,8 @@ use Timber\PostArrayObject;
                     'food' => 'spicy',
                     'women' => 'spicier',
                     
-                ], ];
+                ],
+            ];
             $obj = Timber\Helper::array_to_object($arr);
             $this->assertEquals('spicy', $obj->prefs->food);
         }
