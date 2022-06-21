@@ -85,18 +85,19 @@
   },
   "scripts": {
     "post-install-cmd": [
-      "@composer normalize"
+      "@auto-scripts"
     ],
     "post-update-cmd": [
-      "@composer normalize"
+      "@auto-scripts"
     ],
-    "post-package-install": [
-      "@composer normalize"
-    ],
-    "post-package-uninstall": [
-      "@composer normalize"
+    "analyze": "@php ./vendor/bin/phpstan",
+    "auto-scripts": [
+      "[ $COMPOSER_DEV_MODE -eq 0 ] || composer normalize"
     ],
     "cs": "@php ./vendor/bin/ecs check",
+    "cs:fix": "@php ./vendor/bin/ecs check --fix",
+    "grump": "php ./vendor/bin/grumphp run",
+    "grump:install": "php ./vendor/bin/grumphp git:init",
     "lint": "@php ./vendor/bin/parallel-lint --exclude .git --exclude vendor .",
     "qa": [
       "@lint",
