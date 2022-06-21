@@ -129,9 +129,6 @@ jobs:
       - name: Install composer dependencies
         run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress --no-interaction
 
-      - name: Check Composer configuration
-        run: composer normalize --dry-run
-
       - name: Lint
         run: composer run lint
 
